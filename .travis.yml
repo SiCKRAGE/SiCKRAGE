@@ -7,8 +7,8 @@ python:
 # whitelist
 branches:
   only:
-    - ThePirateBay
-    - Pistachitos
+    - master
+    - dev
 
 before_script: cd ./tests
 script: ./all_tests.py
