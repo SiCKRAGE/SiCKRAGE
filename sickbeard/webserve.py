@@ -1394,6 +1394,7 @@ class ConfigProviders:
                       scc_username=None, scc_password=None,
                       hdtorrents_username=None, hdtorrents_password=None,
                       torrentday_username=None, torrentday_password=None, torrentday_freeleech=None,
+                      speedcd_username=None, speedcd_password=None, speedcd_freeleech=None,
                       hdbits_username=None, hdbits_passkey=None,
                       nextgen_username=None, nextgen_password=None,
                       newzbin_username=None, newzbin_password=None,
