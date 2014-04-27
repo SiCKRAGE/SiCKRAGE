@@ -1,14 +1,13 @@
 language: python
 python:
-  - 2.5
   - 2.6
   - 2.7
 
 # whitelist
 branches:
   only:
-    - ThePirateBay
-    - Pistachitos
+    - master
+    - dev
 
 before_script: cd ./tests
 script: ./all_tests.py
