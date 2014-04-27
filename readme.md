@@ -3,6 +3,9 @@ Sick Beard
 
 *SickBeard-TVRage  is currently in beta release stage. There may be severe bugs in it and at any given time it may not work at all.*
 
+**master:** [![Build Status master](https://secure.travis-ci.org/echel0n/SickBeard-TVRage.png?branch=master)](http://travis-ci.org/echel0n/SickBeard-TVRage)
+**dev:** [![Build Status dev](https://secure.travis-ci.org/echel0n/SickBeard-TVRage.png?branch=dev)](http://travis-ci.org/echel0n/SickBeard-TVRage) 
+
 Sick Beard-TVRage is a PVR for torrent and newsgroup users. It watches for new episodes of your favorite shows and when they are posted it downloads them, sorts and renames them, and optionally generates metadata for them. It retrieves show information from theTVDB.com and TVRage.com.
 
 !!! Please before using this with your existing database (sickbeard.db) please make a backup copy of it and delete any other database files such as cache.db and failed.db if present, we HIGHLY recommend starting out with no database files at all to make this a fresh start but the choice is at your own risk !!!
