@@ -66,7 +66,7 @@ class BinSearchCache(tvcache.TVCache):
 
                 logger.log(u"binsearch cache update URL: "+ url, logger.DEBUG)
 
-                data = self.provider.getURL(url)
+                data = self.provider.getRSSFeed(url)
 
                 return data
 

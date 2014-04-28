@@ -1399,7 +1399,7 @@ class ConfigProviders:
                       nextgen_username=None, nextgen_password=None,
                       newzbin_username=None, newzbin_password=None,
                       speedcd_username=None, speedcd_password=None, speedcd_freeleech=None,
-                      binsearch_max=None, binsearch_alt=None
+                      binsearch_max=None, binsearch_alt=None,
                       provider_order=None):
 
         results = []
