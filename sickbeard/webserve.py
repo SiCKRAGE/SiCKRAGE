@@ -1085,6 +1085,12 @@ class ConfigSearch:
 
         sickbeard.ALLOW_HIGH_PRIORITY = config.checkbox_to_value(allow_high_priority)
 	sickbeard.BACKLOG_STARTUP = config.checkbox_to_value(backlog_startup)
+	if sickbeard.BACKLOG_STARTUP:
+            sickbeard.backlogSearchScheduler.silent = False
+            logger.log(u"Resuming BACKLOG search")
+        else:
+            sickbeard.backlogSearchScheduler.silent = True
+            logger.log(u"Pausing BACKLOG search")
 
         sickbeard.SAB_USERNAME = sab_username
         sickbeard.SAB_PASSWORD = sab_password
