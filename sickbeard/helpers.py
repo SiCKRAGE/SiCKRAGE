@@ -649,28 +649,31 @@ def sanitizeSceneName(name, ezrss=False):
     
     ezrss: If true the scenified version will follow EZRSS's cracksmoker rules as best as possible
     
-    Returns: A string containing the scene version of the show name given.
+    Returns: A string containing the scene version of the show name given or None if invalid
     """
 
-    if not ezrss:
-        bad_chars = u",:()'!?\u2019"
-    # ezrss leaves : and ! in their show names as far as I can tell
+    if name is not None:
+
+        if not ezrss:
+            bad_chars = u",:()'!?\u2019"
+        # ezrss leaves : and ! in their show names as far as I can tell
+        else:
+            bad_chars = u",()'?\u2019"
+
+        # strip out any bad chars
+        for x in bad_chars:
+            name = name.replace(x, "")
+
+        # tidy up stuff that doesn't belong in scene names
+        name = name.replace("- ", ".").replace(" ", ".").replace("&", "and").replace('/', '.')
+        name = re.sub("\.\.*", ".", name)
+
+        if name.endswith('.'):
+            name = name[:-1]
+
+        return name
     else:
-        bad_chars = u",()'?\u2019"
-
-    # strip out any bad chars
-    for x in bad_chars:
-        name = name.replace(x, "")
-
-    # tidy up stuff that doesn't belong in scene names
-    name = name.replace("- ", ".").replace(" ", ".").replace("&", "and").replace('/', '.')
-    name = re.sub("\.\.*", ".", name)
-
-    if name.endswith('.'):
-        name = name[:-1]
-
-    return name
-
+        return None
 
 def create_https_certificates(ssl_cert, ssl_key):
     """
