@@ -90,6 +90,14 @@
                             </label>
                         </div>
 
+                        <div class="field-pair">
+                            <input type="checkbox" name="backlog_startup" id="backlog_startup" #if $sickbeard.BACKLOG_STARTUP == True then "checked=\"checked\"" else ""# />
+                            <label class="clearfix" for="backlog_startup">
+                                <span class="component-title">Startup Search</span>
+                                <span class="component-desc">When starting SickBeard, start searching immediately?</span>
+                            </label>
+                        </div>
+
                         <div class="clearfix"></div>
                         <input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
                         
