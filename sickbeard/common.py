@@ -264,14 +264,21 @@ ANY = Quality.combineQualities(
     [Quality.SDTV, Quality.SDDVD, Quality.HDTV, Quality.FULLHDTV, Quality.HDWEBDL, Quality.FULLHDWEBDL,
      Quality.HDBLURAY, Quality.FULLHDBLURAY, Quality.UNKNOWN], [])  # SD + HD
 
-# legacy template, cant remove due to reference in mainDB upgrade?                                                                                                                                        
+# legacy template, cant remove due to reference in mainDB upgrade?
 BEST = Quality.combineQualities([Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])
+
+# 720p at least with 1080p archive
+BEST_HD = Quality.combineQualities(
+    [Quality.HDTV, Quality.HDWEBDL, Quality.HDBLURAY, Quality.FULLHDTV, Quality.FULLHDWEBDL, Quality.FULLHDBLURAY],
+    [Quality.FULLHDTV, Quality.FULLHDWEBDL, Quality.FULLHDBLURAY],
+)
 
 qualityPresets = (SD, HD, HD720p, HD1080p, ANY)
 qualityPresetStrings = {SD: "SD",
                         HD: "HD",
                         HD720p: "HD720p",
                         HD1080p: "HD1080p",
+                        BEST_HD: "Best HD",
                         ANY: "Any"}
 
 
