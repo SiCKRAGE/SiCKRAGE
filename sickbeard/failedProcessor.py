@@ -54,7 +54,7 @@ class FailedProcessor(object):
 
         parser = NameParser(False)
         try:
-            parsed = parser.parse(releaseName)
+            parsed = parser.parse(releaseName).convert()
         except InvalidNameException:
             self._log(u"Error: release name is invalid: " + releaseName, logger.WARNING)
             raise exceptions.FailedProcessingFailed()
@@ -105,9 +105,9 @@ class FailedProcessor(object):
                 return exception
 
         for show_name in show_names:
-            found_info = helpers.searchDBForShow(show_name)
+            found_info = helpers.get_show_by_name(show_name)
             if found_info is not None:
-                return (found_info[1])
+                return (found_info.indexerid)
 
         return None
 

@@ -187,14 +187,17 @@ ep_regexes = [
 ]
 
 sports_regexs = [
-    ('sports_event_mma',
-     # Show.Name.123.Event.23rd.Nov.2010.Source.Quality.Etc-Group
-      '''
-      ^(?P<series_name>.+?)[. _-]+
-      (?P<sports_event_title>\d{3}.+[. _-]vs[. _-].+?)[. _-]+
-      ((?![. _-]+\d{2})(.*?)(?:\d{4}[. _-]+))?
-      ([. _-]*(?P<extra_info>.+?)((?<![. _-])
-      (?<!WEB)-(?P<release_group>[^- ]+))?)?$
-      '''
+
+    ('sports_standard',
+     # Sports.Name.2010.11.23.Source.Quality.Etc-Group
+     # Sports.Name.23rd.Nov.2010.Source.Quality.Etc-Group
+     '''
+     ^(?P<series_name>(UEFA|MLB|ESPN|WWE|MMA|UFC|TNA|EPL|NASCAR|NBA|NFL|NHL|NRL|PGA|SUPER LEAGUE|FORMULA|FIFA|NETBALL|MOTOGP))[. _-]+
+     ((?P<sports_event_id>\d{3})[. _-]+)?
+     ((?P<sports_event_name>\w+)[. _-]+)?
+     (?P<sports_event_date>(\d{4}[. _-]+\d{1,2}[. _-]+\d{1,2})|(\d{1,2}\w{2}[. _-]+\w+[. _-]+\d{4}))
+     [. _-]*((?P<extra_info>.+?)((?<![. _-])(?<!WEB)
+     -(?P<release_group>[^- ]+))?)?$
+     '''
     ),
 ]

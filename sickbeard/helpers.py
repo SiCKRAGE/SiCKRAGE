@@ -56,12 +56,12 @@ from sickbeard.common import USER_AGENT, mediaExtensions, subtitleExtensions, XM
 from sickbeard import db
 from sickbeard import encodingKludge as ek
 from sickbeard import notifiers
-from sickbeard import exceptions
 from lib import subliminal
 
 urllib._urlopener = classes.SickBeardURLopener()
 
 session = requests.Session()
+
 
 def indentXML(elem, level=0):
     '''
@@ -191,11 +191,13 @@ def getURL(url, post_data=None, headers=None, params=None, timeout=30, json=Fals
             proxies = {
                 "http": sickbeard.PROXY_SETTING,
                 "https": sickbeard.PROXY_SETTING,
-                }
+            }
 
-            r = session.get(url, params=params, data=post_data, headers=dict(zip(it, it)), proxies=proxies, timeout=timeout, verify=False)
+            r = session.get(url, params=params, data=post_data, headers=dict(zip(it, it)), proxies=proxies,
+                            timeout=timeout, verify=False)
         else:
-            r = session.get(url, params=params, data=post_data, headers=dict(zip(it, it)), timeout=timeout, verify=False)
+            r = session.get(url, params=params, data=post_data, headers=dict(zip(it, it)), timeout=timeout,
+                            verify=False)
     except requests.HTTPError, e:
         logger.log(u"HTTP error " + str(e.errno) + " while loading URL " + url, logger.WARNING)
         return None
@@ -288,28 +290,14 @@ def searchDBForShow(regShowName):
     yearRegex = "([^()]+?)\s*(\()?(\d{4})(?(2)\))$"
 
     for showName in showNames:
-
-        show = get_show_by_name(showName, sickbeard.showList)
-        if show:
-            sqlResults = myDB.select("SELECT * FROM tv_shows WHERE show_name LIKE ? OR show_name LIKE ?",
-                                     [show.name, show.name])
-        else:
-            sqlResults = myDB.select("SELECT * FROM tv_shows WHERE show_name LIKE ? OR show_name LIKE ?",
-                                     [showName, showName])
-
-        if len(sqlResults) == 1:
-            return (int(sqlResults[0]["indexer"]), int(sqlResults[0]["indexer_id"]), sqlResults[0]["show_name"])
-
-        else:
-
-            # if we didn't get exactly one result then try again with the year stripped off if possible
-            match = re.match(yearRegex, showName)
-            if match and match.group(1):
-                logger.log(u"Unable to match original name but trying to manually strip and specify show year",
-                           logger.DEBUG)
-                sqlResults = myDB.select(
-                    "SELECT * FROM tv_shows WHERE (show_name LIKE ? OR show_name LIKE ?) AND startyear = ?",
-                    [match.group(1) + '%', match.group(1) + '%', match.group(3)])
+        # if we didn't get exactly one result then try again with the year stripped off if possible
+        match = re.match(yearRegex, showName)
+        if match and match.group(1):
+            logger.log(u"Unable to match original name but trying to manually strip and specify show year",
+                       logger.DEBUG)
+            sqlResults = myDB.select(
+                "SELECT * FROM tv_shows WHERE (show_name LIKE ? OR show_name LIKE ?) AND startyear = ?",
+                [match.group(1) + '%', match.group(1) + '%', match.group(3)])
 
             if len(sqlResults) == 0:
                 logger.log(u"Unable to match a record in the DB for " + showName, logger.DEBUG)
@@ -320,39 +308,41 @@ def searchDBForShow(regShowName):
             else:
                 return (int(sqlResults[0]["indexer"]), int(sqlResults[0]["indexer_id"]), sqlResults[0]["show_name"])
 
-    return None
-
-
 def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
     showNames = list(set([re.sub('[. -]', ' ', regShowName), regShowName]))
 
     # Query Indexers for each search term and build the list of results
-    for indexer in sickbeard.indexerApi().indexers if not indexer else [int(indexer)]:
+    for i in sickbeard.indexerApi().indexers if not indexer else int(indexer or []):
         # Query Indexers for each search term and build the list of results
-        lINDEXER_API_PARMS = sickbeard.indexerApi(indexer).api_params.copy()
-        if ui:lINDEXER_API_PARMS['custom_ui'] = ui
-        t = sickbeard.indexerApi(indexer).indexer(**lINDEXER_API_PARMS)
+        lINDEXER_API_PARMS = sickbeard.indexerApi(i).api_params.copy()
+        if ui is not None: lINDEXER_API_PARMS['custom_ui'] = ui
+        t = sickbeard.indexerApi(i).indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
-            logger.log(u"Trying to find " + name + " on " + sickbeard.indexerApi(indexer).name, logger.DEBUG)
+            logger.log(u"Trying to find " + name + " on " + sickbeard.indexerApi(i).name, logger.DEBUG)
+
+            search = t[indexer_id] if indexer_id else t[name]
             try:
-                search = t[indexer_id] if indexer_id else t[name]
+                seriesname = search.seriesname
+            except:
+                seriesname = None
+            try:
+                series_id = search.id
+            except:
+                series_id = None
 
-                # add search results
-                for i in range(len(search)):
-                    part = search[i]
-                    seriesname = part['seriesname'].lower()
-
-                    if str(name).lower() == seriesname or (indexer_id and part['id'] == indexer_id):
-                        return [sickbeard.indexerApi(indexer).config['id'], part['id']]
-
-            except KeyError:
-                if indexer:
-                    break
-                else:
-                    continue
-            except Exception:
+            if not (seriesname and series_id):
                 continue
+
+            if str(name).lower() == str(seriesname).lower and not indexer_id:
+                return (seriesname, int(sickbeard.indexerApi(i).config['id']), int(series_id))
+            elif int(indexer_id) == int(series_id):
+                return (seriesname, int(sickbeard.indexerApi(i).config['id']), int(indexer_id))
+
+        if indexer:
+            break
+
+    return (None, None, None)
 
 def sizeof_fmt(num):
     '''
@@ -430,10 +420,12 @@ def symlink(src, dst):
     if os.name == 'nt':
         import ctypes
 
-        if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src), 1 if os.path.isdir(src) else 0) in [0,1280]:
+        if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src), 1 if os.path.isdir(src) else 0) in [0,
+                                                                                                                      1280]:
             raise ctypes.WinError()
         else:
             os.symlink(src, dst)
+
 
 def moveAndSymlinkFile(srcFile, destFile):
     try:
@@ -652,7 +644,7 @@ def fixSetGroupID(childPath):
         except OSError:
             logger.log(
                 u"Failed to respect the set-group-ID bit on the parent directory for %s (setting group ID %i)" % (
-                childPath, parentGID), logger.ERROR)
+                    childPath, parentGID), logger.ERROR)
 
 
 def sanitizeSceneName(name, ezrss=False):
@@ -944,21 +936,62 @@ def _check_against_names(name, show):
 
     for showName in showNames:
         nameFromList = full_sanitizeSceneName(showName)
-        #logger.log(u"Comparing names: '"+nameFromList+"' vs '"+nameInQuestion+"'", logger.DEBUG)
         if nameFromList == nameInQuestion:
             return True
 
     return False
 
 
-def get_show_by_name(name, showList, useIndexer=False):
-    if showList:
-        for show in showList:
-            if _check_against_names(name, show):
-                logger.log(u"Matched " + name + " in the showlist to the show " + show.name, logger.DEBUG)
-                return show
+def get_show_by_name(name, checkIndexers=False):
+    if not sickbeard.showList: return
 
-    if useIndexer:
+    in_cache = False
+    foundResult = None
+
+    logger.log(
+        u"Checking the cache for:" + str(name),
+        logger.DEBUG)
+
+    cacheResult = sickbeard.name_cache.retrieveNameFromCache(name)
+    if cacheResult:
+        foundResult = findCertainShow(sickbeard.showList, cacheResult)
+        if foundResult:
+            in_cache = True
+            logger.log(
+                u"Cache lookup found Indexer ID:" + repr(
+                    foundResult.indexerid) + ", using that for " + name,
+                logger.DEBUG)
+
+    if not foundResult:
+        logger.log(
+            u"Checking the database for:" + str(name),
+            logger.DEBUG)
+
+        dbResult = searchDBForShow(name)
+        if dbResult:
+            foundResult = findCertainShow(sickbeard.showList, dbResult[1])
+            if foundResult:
+                logger.log(
+                    u"Database lookup found Indexer ID:" + str(
+                        foundResult.indexerid) + ", using that for " + name, logger.DEBUG)
+
+    if not foundResult:
+        logger.log(
+            u"Checking the scene exceptions list for:" + str(name),
+            logger.DEBUG)
+
+        for show in sickbeard.showList:
+            if _check_against_names(name, show):
+                logger.log(
+                    u"Scene exceptions lookup found Indexer ID:" + str(show.indexerid) + ", using that for " + name,
+                    logger.DEBUG)
+                foundResult = show
+
+    if not foundResult and checkIndexers:
+        logger.log(
+            u"Checking the Indexers for:" + str(name),
+            logger.DEBUG)
+
         for indexer in sickbeard.indexerApi().indexers:
             try:
                 lINDEXER_API_PARMS = sickbeard.indexerApi(indexer).api_params.copy()
@@ -967,14 +1000,21 @@ def get_show_by_name(name, showList, useIndexer=False):
 
                 t = sickbeard.indexerApi(indexer).indexer(**lINDEXER_API_PARMS)
                 showObj = t[name]
-            except:continue
+            except:
+                continue
 
             if showObj:
-                showResult = findCertainShow(sickbeard.showList, int(showObj["id"]))
-                if showResult is not None:
-                    return showResult
+                foundResult = findCertainShow(sickbeard.showList, int(showObj[0]['id']))
+                if foundResult:
+                    logger.log(
+                        u"Indexers lookup found Indexer ID:" + str(
+                            foundResult.indexerid) + ", using that for " + name, logger.DEBUG)
 
-    return None
+    # add to name cache if we didn't get it from the cache
+    if foundResult and not in_cache:
+        sickbeard.name_cache.addNameToCache(name, foundResult.indexerid)
+
+    return foundResult
 
 def is_hidden_folder(folder):
     """
@@ -994,6 +1034,7 @@ def real_path(path):
     Returns: the canonicalized absolute pathname. The resulting path will have no symbolic link, '/./' or '/../' components.
     """
     return ek.ek(os.path.normpath, ek.ek(os.path.normcase, ek.ek(os.path.realpath, path)))
+
 
 def validateShow(show, season=None, episode=None):
     indexer_lang = show.lang

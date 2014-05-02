@@ -38,6 +38,7 @@ from lib.hachoir_parser import createParser
 from sickbeard.name_parser.parser import NameParser, InvalidNameException
 from sickbeard.common import Quality
 
+
 class GenericProvider:
     NZB = "nzb"
     TORRENT = "torrent"
@@ -56,7 +57,8 @@ class GenericProvider:
 
         self.session = requests.session()
         self.session.verify = False
-        self.session.headers.update({'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'})
+        self.session.headers.update({
+            'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'})
 
 
     def getID(self):
@@ -132,7 +134,8 @@ class GenericProvider:
             logger.log(u"Error loading " + self.name + " URL: " + url, logger.ERROR)
             return None
         elif 'error' in f.feed:
-            logger.log(u"Newznab ERROR:[%s] CODE:[%s]" % (f.feed['error']['description'], f.feed['error']['code']), logger.DEBUG)
+            logger.log(u"Newznab ERROR:[%s] CODE:[%s]" % (f.feed['error']['description'], f.feed['error']['code']),
+                       logger.DEBUG)
             return None
         elif not f.entries:
             logger.log(u"No items found on " + self.name + " using URL: " + url, logger.WARNING)
@@ -246,15 +249,15 @@ class GenericProvider:
 
     def getSearchResults(self, show, season, ep_objs, seasonSearch=False, manualSearch=False):
 
-        itemList = []
-        results = {}
-
         self._checkAuth()
         self.show = show
 
-        regexMode = 0
-        if show.sports:
-            regexMode = 2
+        itemList = []
+        results = {}
+
+        useDate = False
+        if self.show.air_by_date or self.show.sports:
+            useDate = True
 
         for ep_obj in ep_objs:
             logger.log(u'Searching "%s" for "%s" as "%s"' % (self.name, ep_obj.prettyName(), ep_obj.scene_prettyName()))
@@ -274,13 +277,13 @@ class GenericProvider:
 
             # parse the file name
             try:
-                myParser = NameParser(False, regexMode=regexMode)
+                myParser = NameParser(False)
                 parse_result = myParser.parse(title).convert()
             except InvalidNameException:
                 logger.log(u"Unable to parse the filename " + title + " into a valid episode", logger.WARNING)
                 continue
 
-            if not show.air_by_date:
+            if not useDate:
                 # this check is meaningless for non-season searches
                 if (parse_result.season_number is not None and parse_result.season_number != season) or (
                                 parse_result.season_number is None and season != 1):
@@ -288,36 +291,55 @@ class GenericProvider:
                         season) + ", ignoring", logger.DEBUG)
                     continue
 
-                # we just use the existing info for normal searches
-                actual_season = parse_result.season_number
-                actual_episodes = parse_result.episode_numbers
+                if manualSearch and (
+                        parse_result.season_number != season or ep_objs[0].episode not in parse_result.episode_numbers):
+                    logger.log(u"Episode " + title + " isn't " + str(season) + "x" + str(
+                        ep_objs[0].episode) + ", skipping it", logger.DEBUG)
+                    continue
 
+                # we just use the existing info for normal searches
+                actual_season = season if manualSearch else parse_result.season_number
+                actual_episodes = [ep_objs[0].episode] if manualSearch else parse_result.episode_numbers
             else:
-                if show.air_by_date and not parse_result.air_by_date:
+                if not (parse_result.air_by_date or parse_result.sports):
                     logger.log(
-                        u"This is supposed to be an air-by-date search but the result " + title + " didn't parse as one, skipping it",
+                        u"This is supposed to be a date search but the result " + title + " didn't parse as one, skipping it",
                         logger.DEBUG)
                     continue
 
-                myDB = db.DBConnection()
-                if parse_result.air_by_date:
-                    sql_results = myDB.select("SELECT season, episode FROM tv_episodes WHERE showid = ? AND airdate = ?",
-                                              [show.indexerid, parse_result.air_date.toordinal()])
-
-                if len(sql_results) != 1:
-                    logger.log(
-                        u"Tried to look up the date for the episode " + title + " but the database didn't give proper results, skipping it",
-                        logger.WARNING)
+                if manualSearch and ((parse_result.air_date != ep_objs[0].airdate and parse_result.air_by_date) or (
+                                parse_result.sports_event_date != ep_objs[0].airdate and parse_result.sports)):
+                    logger.log(u"Episode " + title + " didn't air on " + str(ep_objs[0].airdate) + ", skipping it",
+                               logger.DEBUG)
                     continue
 
-                actual_season = int(sql_results[0]["season"])
-                actual_episodes = [int(sql_results[0]["episode"])]
+                if not manualSearch:
+                    myDB = db.DBConnection()
+                    if parse_result.air_by_date:
+                        sql_results = myDB.select(
+                            "SELECT season, episode FROM tv_episodes WHERE showid = ? AND airdate = ?",
+                            [self.show.indexerid, parse_result.air_date.toordinal()])
+                    elif parse_result.sports:
+                        sql_results = myDB.select(
+                            "SELECT season, episode FROM tv_episodes WHERE showid = ? AND airdate = ?",
+                            [self.show.indexerid, parse_result.sports_event_date.toordinal()])
+
+                    if len(sql_results) != 1:
+                        logger.log(
+                            u"Tried to look up the date for the episode " + title + " but the database didn't give proper results, skipping it",
+                            logger.WARNING)
+                        continue
+
+                actual_season = season if manualSearch else int(sql_results[0]["season"])
+                actual_episodes = [ep_objs[0].episode] if manualSearch else [int(sql_results[0]["episode"])]
+
 
             # make sure we want the episode
+            epObj = None
             wantEp = True
             for epNo in actual_episodes:
-                epObj = show.getEpisode(actual_season, epNo)
-                if not epObj or not show.wantEpisode(epObj.season, epObj.episode, quality, manualSearch=manualSearch):
+                epObj = self.show.getEpisode(actual_season, epNo)
+                if not epObj or not self.show.wantEpisode(epObj.season, epObj.episode, quality,manualSearch=manualSearch):
                     wantEp = False
                     break
 
@@ -351,13 +373,13 @@ class GenericProvider:
                     parse_result.episode_numbers), logger.DEBUG)
             elif len(epObjs) == 0:
                 epNum = SEASON_RESULT
-                result.extraInfo = [show]
+                result.extraInfo = [self.show]
                 logger.log(u"Separating full season result to check for later", logger.DEBUG)
 
             if epNum in results:
                 results[epNum].append(result)
             else:
-                results = {epNum:[result]}
+                results = {epNum: [result]}
 
         return results
 

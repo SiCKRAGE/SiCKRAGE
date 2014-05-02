@@ -148,7 +148,7 @@ class KATProvider(generic.TorrentProvider):
 
             try:
                 myParser = NameParser()
-                parse_result = myParser.parse(fileName)
+                parse_result = myParser.parse(fileName).convert()
             except InvalidNameException:
                 return None
 
@@ -175,6 +175,8 @@ class KATProvider(generic.TorrentProvider):
             search_string['Season'].append(ep_string)
 
         search_string['Episode'] = self._get_episode_search_strings(ep_obj)[0]['Episode']
+
+        return [search_string]
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
         search_string = {'Episode': []}

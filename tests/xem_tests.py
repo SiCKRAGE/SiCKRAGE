@@ -29,8 +29,8 @@ sys.path.append(os.path.abspath('../lib'))
 import test_lib as test
 import sickbeard
 from sickbeard.helpers import sanitizeSceneName
+from sickbeard.name_parser.parser import NameParser
 from sickbeard.tv import TVShow
-from sickbeard.name_parser.parser import NameParser, InvalidNameException
 
 class XEMBasicTests(test.SickbeardTestDBCase):
     def loadFromDB(self):
@@ -48,22 +48,15 @@ class XEMBasicTests(test.SickbeardTestDBCase):
             except Exception, e:
                 print "There was an error creating the show"
 
-    def test_parsing_scene_release(self):
+    def test_formating(self):
         self.loadFromDB()
 
-        # parse the file name
-        scene_parsse_results1 = ''
-        scene_parsse_results2 = ''
-        scene_release = 'Pawn Stars S08E41 Field Trip HDTV x264-tNe'
-        try:
-            myParser = NameParser(False, 1)
-            scene_parsse_results1 = myParser.parse(scene_release)
-            scene_parsse_results2 = myParser.parse(scene_release).convert()
-        except InvalidNameException:
-            print(u"Unable to parse the filename " + scene_release + " into a valid episode")
+        release = "d:\\Downloads\\newdownload\\2.Broke.Girls.S03E10.And.the.First.Day.of.School.720p.WEB-DL.DD5.1.H.264-BS.mkv"
+        # parse the name to break it into show name, season, and episode
+        np = NameParser(file)
+        parse_result = np.parse(release).convert()
 
-        print scene_parsse_results1
-        print scene_parsse_results2
+        print(parse_result)
 
 if __name__ == "__main__":
     print "=================="

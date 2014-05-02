@@ -21,9 +21,9 @@ import os.path
 import re
 import regexes
 import sickbeard
-import calendar
 
 from sickbeard import logger, helpers, scene_numbering
+from dateutil import parser
 
 class NameParser(object):
     ALL_REGEX = 0
@@ -35,7 +35,7 @@ class NameParser(object):
         self.file_name = file_name
         self.regexMode = regexMode
         self.compiled_regexes = []
-        self._compile_regexes(regexMode)
+        self._compile_regexes(self.regexMode)
 
     def clean_series_name(self, series_name):
         """Cleans up series name by removing any . and _
@@ -106,11 +106,11 @@ class NameParser(object):
                 result.series_name = match.group('series_name')
                 if result.series_name:
                     result.series_name = self.clean_series_name(result.series_name)
-
-            if 'sports_event_title' in named_groups:
-                result.sports_event_title = match.group('sports_event_title')
-                if result.sports_event_title:
-                    result.sports_event_title = self.clean_series_name(result.sports_event_title)
+                    name_list = sickbeard.show_name_helpers.sceneToNormalShowNames(result.series_name)
+                    for name in name_list:
+                        result.show = helpers.get_show_by_name(name)
+                        if result.show:
+                            break
 
             if 'season_num' in named_groups:
                 tmp_season = int(match.group('season_num'))
@@ -125,6 +125,22 @@ class NameParser(object):
                 else:
                     result.episode_numbers = [ep_num]
 
+            if 'sports_event_id' in named_groups:
+                result.sports_event_id = int(match.group('sports_event_id'))
+
+            if 'sports_event_name' in named_groups:
+                result.sports_event_name = match.group('sports_event_name')
+                if result.sports_event_name:
+                    result.sports_event_name = self.clean_series_name(result.sports_event_name)
+
+            if 'sports_event_date' in named_groups:
+                sports_event_date = match.group('sports_event_date')
+                if sports_event_date:
+                    try:
+                        result.sports_event_date = parser.parse(sports_event_date, fuzzy=True).date()
+                    except:
+                        continue
+
             if 'air_year' in named_groups and 'air_month' in named_groups and 'air_day' in named_groups:
                 year = int(match.group('air_year'))
                 month = int(match.group('air_month'))
@@ -133,8 +149,8 @@ class NameParser(object):
                 try:
                     dtStr = '%s-%s-%s' % (year, month, day)
                     result.air_date = datetime.datetime.strptime(dtStr, "%Y-%m-%d").date()
-                except ValueError, e:
-                    raise InvalidNameException(e.message)
+                except:
+                    continue
 
             if 'extra_info' in named_groups:
                 tmp_extra_info = match.group('extra_info')
@@ -227,11 +243,15 @@ class NameParser(object):
         # parse the dirname for extra info if needed
         dir_name_result = self._parse_string(dir_name)
 
+        final_result.show = self._combine_results(file_name_result, dir_name_result, 'show')
+
         # build the ParseResult object
         final_result.air_date = self._combine_results(file_name_result, dir_name_result, 'air_date')
 
         # sports event title
-        final_result.sports_event_title = self._combine_results(file_name_result, dir_name_result, 'sports_event_title')
+        final_result.sports_event_id = self._combine_results(file_name_result, dir_name_result, 'sports_event_id')
+        final_result.sports_event_name = self._combine_results(file_name_result, dir_name_result, 'sports_event_name')
+        final_result.sports_event_date = self._combine_results(file_name_result, dir_name_result, 'sports_event_date')
 
         if not final_result.air_date:
             final_result.season_number = self._combine_results(file_name_result, dir_name_result, 'season_number')
@@ -239,6 +259,7 @@ class NameParser(object):
 
         # if the dirname has a release group/show name I believe it over the filename
         final_result.series_name = self._combine_results(dir_name_result, file_name_result, 'series_name')
+
         final_result.extra_info = self._combine_results(dir_name_result, file_name_result, 'extra_info')
         final_result.release_group = self._combine_results(dir_name_result, file_name_result, 'release_group')
 
@@ -264,12 +285,15 @@ class ParseResult(object):
     def __init__(self,
                  original_name,
                  series_name=None,
-                 sports_event_title=None,
+                 sports_event_id=None,
+                 sports_event_name=None,
+                 sports_event_date=None,
                  season_number=None,
                  episode_numbers=None,
                  extra_info=None,
                  release_group=None,
                  air_date=None,
+                 show=None,
     ):
 
         self.original_name = original_name
@@ -286,14 +310,19 @@ class ParseResult(object):
 
         self.air_date = air_date
 
-        self.sports_event_title = sports_event_title
+        self.sports_event_id = sports_event_id
+        self.sports_event_name = sports_event_name
+        self.sports_event_date = sports_event_date
 
         self.which_regex = None
+        self.show = show
 
     def __eq__(self, other):
         if not other:
             return False
 
+        if self.show != other.show:
+            return False
         if self.series_name != other.series_name:
             return False
         if self.season_number != other.season_number:
@@ -306,7 +335,11 @@ class ParseResult(object):
             return False
         if self.air_date != other.air_date:
             return False
-        if self.sports_event_title != other.sports_event_title:
+        if self.sports_event_id != other.sports_event_id:
+            return False
+        if self.sports_event_name != other.sports_event_name:
+            return False
+        if self.sports_event_date != other.sports_event_date:
             return False
 
         return True
@@ -325,7 +358,9 @@ class ParseResult(object):
         if self.air_by_date:
             to_return += str(self.air_date)
         if self.sports:
-            to_return += str(self.sports_event_title)
+            to_return += str(self.sports_event_name)
+            to_return += str(self.sports_event_id)
+            to_return += str(self.sports_event_date)
 
         if self.extra_info:
             to_return += ' - ' + self.extra_info
@@ -339,37 +374,35 @@ class ParseResult(object):
         return to_return.encode('utf-8')
 
     def convert(self):
+        if not self.show: return self
         if self.air_by_date: return self # scene numbering does not apply to air-by-date
         if self.season_number == None: return self  # can't work without a season
         if len(self.episode_numbers) == 0: return self  # need at least one episode
 
-        # convert scene numbered releases before storing to cache
-        indexer_id = helpers.searchDBForShow(self.series_name)
-        if indexer_id:
-            new_episode_numbers = []
-            new_season_numbers = []
-            for epNo in self.episode_numbers:
-                (s, e) = scene_numbering.get_indexer_numbering(indexer_id, self.season_number, epNo)
-                new_episode_numbers.append(e)
-                new_season_numbers.append(s)
+        new_episode_numbers = []
+        new_season_numbers = []
+        for epNo in self.episode_numbers:
+            (s, e) = scene_numbering.get_indexer_numbering(self.show.indexerid, self.season_number, epNo)
+            new_episode_numbers.append(e)
+            new_season_numbers.append(s)
 
-            # need to do a quick sanity check here.  It's possible that we now have episodes
-            # from more than one season (by tvdb numbering), and this is just too much
-            # for sickbeard, so we'd need to flag it.
-            new_season_numbers = list(set(new_season_numbers))  # remove duplicates
-            if len(new_season_numbers) > 1:
-                raise InvalidNameException("Scene numbering results episodes from "
-                                           "seasons %s, (i.e. more than one) and "
-                                           "sickbeard does not support this.  "
-                                           "Sorry." % (str(new_season_numbers)))
+        # need to do a quick sanity check here.  It's possible that we now have episodes
+        # from more than one season (by tvdb numbering), and this is just too much
+        # for sickbeard, so we'd need to flag it.
+        new_season_numbers = list(set(new_season_numbers))  # remove duplicates
+        if len(new_season_numbers) > 1:
+            raise InvalidNameException("Scene numbering results episodes from "
+                                       "seasons %s, (i.e. more than one) and "
+                                       "sickbeard does not support this.  "
+                                       "Sorry." % (str(new_season_numbers)))
 
-            # I guess it's possible that we'd have duplicate episodes too, so lets
-            # eliminate them
-            new_episode_numbers = list(set(new_episode_numbers))
-            new_episode_numbers.sort()
+        # I guess it's possible that we'd have duplicate episodes too, so lets
+        # eliminate them
+        new_episode_numbers = list(set(new_episode_numbers))
+        new_episode_numbers.sort()
 
-            self.episode_numbers = new_episode_numbers
-            self.season_number = new_season_numbers[0]
+        self.episode_numbers = new_episode_numbers
+        self.season_number = new_season_numbers[0]
 
         return self
 
@@ -380,7 +413,7 @@ class ParseResult(object):
     air_by_date = property(_is_air_by_date)
 
     def _is_sports(self):
-        if self.sports_event_title:
+        if self.sports_event_date:
             return True
         return False
     sports = property(_is_sports)
@@ -391,14 +424,14 @@ class NameParserCache(object):
     _previous_parsed = {}
     _cache_size = 100
 
-    def add(self, name, parse_result, convert=False):
+    def add(self, name, parse_result):
         self._previous_parsed[name] = parse_result
         self._previous_parsed_list.append(name)
         while len(self._previous_parsed_list) > self._cache_size:
             del_me = self._previous_parsed_list.pop(0)
             self._previous_parsed.pop(del_me)
 
-    def get(self, name, convert=False):
+    def get(self, name):
         if name in self._previous_parsed:
             logger.log("Using cached parse result for: " + name, logger.DEBUG)
             return self._previous_parsed[name]

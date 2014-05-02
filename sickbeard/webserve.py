@@ -977,7 +977,7 @@ class ConfigGeneral:
                     update_shows_on_start=None, update_frequency=None, launch_browser=None, web_username=None, use_api=None, api_key=None,
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
                     sort_article=None, auto_update=None, proxy_setting=None,
-                    anon_redirect=None, git_path=None, calendar_unprotected=None, date_preset=None, time_preset=None):
+                    anon_redirect=None, git_path=None, calendar_unprotected=None, date_preset=None, time_preset=None, indexer_default=None):
 
         results = []
 
@@ -1006,6 +1006,9 @@ class ConfigGeneral:
 
         if date_preset:
             sickbeard.DATE_PRESET = date_preset
+
+        if indexer_default:
+            sickbeard.INDEXER_DEFAULT = config.to_int(indexer_default)
 
         if time_preset:
             sickbeard.TIME_PRESET_W_SECONDS = time_preset
@@ -1169,6 +1172,13 @@ class ConfigPostProcessing:
         sickbeard.NAMING_STRIP_YEAR = config.checkbox_to_value(naming_strip_year)
         sickbeard.USE_FAILED_DOWNLOADS = config.checkbox_to_value(use_failed_downloads)
         sickbeard.DELETE_FAILED = config.checkbox_to_value(delete_failed)
+
+        sickbeard.METADATA_XBMC = xbmc_data
+        sickbeard.METADATA_XBMC_12PLUS = xbmc_12plus_data
+        sickbeard.METADATA_MEDIABROWSER = mediabrowser_data
+        sickbeard.METADATA_PS3 = sony_ps3_data
+        sickbeard.METADATA_WDTV = wdtv_data
+        sickbeard.METADATA_TIVO = tivo_data
 
         sickbeard.metadata_provider_dict['XBMC'].set_config(sickbeard.METADATA_XBMC)
         sickbeard.metadata_provider_dict['XBMC 12+'].set_config(sickbeard.METADATA_XBMC_12PLUS)
@@ -2062,19 +2072,15 @@ class NewHomeAddShows:
                     if show_name: break
 
                 # default to TVDB if indexer was not detected
-                if show_name and (indexer is None or indexer_id is None):
-                    for idx in sickbeard.indexerApi().indexers:
-                        found_info = helpers.searchIndexerForShowID(show_name, idx, indexer_id, ui=classes.ShowListUI)
-                        if found_info:
-                            # set indexer and indexer_id from found info
-                            if indexer is None:
-                                indexer = found_info[0]
+                if show_name and not (indexer and indexer_id):
+                    (sn,idx,id) = helpers.searchIndexerForShowID(show_name, indexer, indexer_id)
 
-                            if indexer_id is None:
-                                indexer_id = found_info[1]
+                    # set indexer and indexer_id from found info
+                    if indexer is None and idx:
+                        indexer = idx
 
-                            # found our info so continue
-                            break
+                    if indexer_id is None and id:
+                        indexer_id = id
 
                 cur_dir['existing_info'] = (indexer_id, show_name, indexer)
 
@@ -2124,7 +2130,7 @@ class NewHomeAddShows:
 
         t.provided_show_dir = show_dir
         t.other_shows = other_shows
-        t.provided_indexer = int(indexer or 0)
+        t.provided_indexer = int(indexer or sickbeard.INDEXER_DEFAULT)
         t.indexers = sickbeard.indexerApi().indexers
 
         return _munge(t)
@@ -2614,7 +2620,7 @@ class Home:
         cherrypy.response.headers['Cache-Control'] = "max-age=0,no-cache,no-store"
 
         mydb = db.DBConnection()
-        rows = mydb.select("SELECT show_id, show_name, notify_list FROM tv_shows")
+        rows = mydb.select("SELECT show_id, show_name, notify_list FROM tv_shows ORDER BY show_name ASC")
         data = {}
         size = 0
         for r in rows:
@@ -3677,7 +3683,7 @@ class WebInterface:
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
         calendar_shows = myDB.select(
-            "SELECT show_name, indexer_id, network, airs, runtime FROM tv_shows WHERE status = 'Continuing' OR status = 'Returning Series' AND paused != '1'")
+            "SELECT show_name, indexer_id, network, airs, runtime FROM tv_shows WHERE ( status = 'Continuing' OR status = 'Returning Series' ) AND paused != '1'")
         for show in calendar_shows:
             # Get all episodes of this show airing between today and next month
             episode_list = myDB.select(
