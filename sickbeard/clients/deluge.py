@@ -160,20 +160,27 @@ class DelugeAPI(GenericClient):
 
     def _set_torrent_ratio(self, result):
 
-        if sickbeard.TORRENT_RATIO:
-            post_data = json.dumps({"method": "core.set_torrent_stop_at_ratio",
-                                    "params": [result.hash, True],
-                                    "id": 5
-            })
-            self._request(method='post', data=post_data)
+        ratio = ''
+        if result.ratio:
+            ratio = result.ratio
+        elif sickbeard.TORRENT_RATIO:
+            ratio = sickbeard.TORRENT_RATIO
+        else:
+            return True
 
-            post_data = json.dumps({"method": "core.set_torrent_stop_ratio",
-                                    "params": [result.hash, float(sickbeard.TORRENT_RATIO)],
-                                    "id": 6
-            })
-            self._request(method='post', data=post_data)
+        post_data = json.dumps({"method": "core.set_torrent_stop_at_ratio",
+                                "params": [result.hash, True],
+                                "id": 5
+        })
+        self._request(method='post', data=post_data)
 
-            return not self.response.json()['error']
+        post_data = json.dumps({"method": "core.set_torrent_stop_ratio",
+                                "params": [result.hash, float(ratio)],
+                                "id": 6
+        })
+        self._request(method='post', data=post_data)
+
+        return not self.response.json()['error']
 
         return True
 

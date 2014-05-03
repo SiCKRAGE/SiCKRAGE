@@ -79,17 +79,23 @@ class TransmissionAPI(GenericClient):
 
     def _set_torrent_ratio(self, result):
 
+        ratio = ''
+        if result.ratio:
+            ratio = result.ratio
+        elif sickbeard.TORRENT_RATIO:
+            ratio = sickbeard.TORRENT_RATIO
+
         torrent_id = self._get_torrent_hash(result)
 
-        if sickbeard.TORRENT_RATIO == '':
+        if ratio == '':
             # Use global settings
             ratio = None
             mode = 0
-        elif float(sickbeard.TORRENT_RATIO) == 0:
+        elif float(ratio) == 0:
             ratio = 0
             mode = 2
-        elif float(sickbeard.TORRENT_RATIO) > 0:
-            ratio = float(sickbeard.TORRENT_RATIO)
+        elif float(ratio) > 0:
+            ratio = float(ratio)
             mode = 1  # Stop seeding at seedRatioLimit
 
         arguments = {'ids': [torrent_id],
