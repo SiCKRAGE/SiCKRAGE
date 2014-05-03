@@ -313,6 +313,9 @@ class NextGenProvider(generic.TorrentProvider):
 
         return results
 
+    def seedRatio(self):
+        return sickbeard.NEXTGEN_RATIO
+
 
 class NextGenCache(tvcache.TVCache):
     def __init__(self, provider):
