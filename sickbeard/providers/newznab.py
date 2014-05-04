@@ -196,7 +196,7 @@ class NewznabProvider(generic.NZBProvider):
 
         logger.log(u"Search url: " + search_url, logger.DEBUG)
 
-        data = self.getRSSFeed(search_url)
+        data = self.cache.getRSSFeed(search_url)
         if not data:
             return []
 
@@ -268,7 +268,7 @@ class NewznabCache(tvcache.TVCache):
 
         logger.log(self.provider.name + " cache update URL: " + rss_url, logger.DEBUG)
 
-        return self.provider.getRSSFeed(rss_url)
+        return self.getRSSFeed(rss_url)
 
     def _checkAuth(self, data):
         return self.provider._checkAuthFromData(data)
