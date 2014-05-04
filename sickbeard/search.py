@@ -146,7 +146,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
         logger.log(u"Unknown result type, unable to download it", logger.ERROR)
         dlResult = False
 
-    if dlResult == False:
+    if not dlResult:
         return False
 
     if sickbeard.USE_FAILED_DOWNLOADS:
@@ -183,8 +183,6 @@ def searchForNeededEpisodes():
 
         if not curProvider.isActive():
             continue
-
-        curFoundResults = {}
 
         try:
             curFoundResults = curProvider.searchRSS()
@@ -365,62 +363,33 @@ def filterSearchResults(show, results):
 
     return foundResults
 
-def searchProviders(show, season, episode=None, manualSearch=False):
+def searchProviders(show, season, episodes, seasonSearch=False, manualSearch=False):
     logger.log(u"Searching for stuff we need from " + show.name + " season " + str(season))
     foundResults = {}
 
     didSearch = False
-    seasonSearch = False
-
-    # gather all episodes for season and then pick out the wanted episodes and compare to determin if we want whole season or just a few episodes
-    if episode is None:
-        seasonEps = show.getAllEpisodes(season)
-        wantedEps = [x for x in seasonEps if show.getOverview(x.status) in (Overview.WANTED, Overview.QUAL)]
-        if len(seasonEps) == len(wantedEps):
-            seasonSearch = True
-    else:
-        ep_obj = show.getEpisode(season, episode)
-        wantedEps = [ep_obj]
 
     for curProvider in providers.sortedProviderList():
         if not curProvider.isActive():
             continue
 
-        # update cache
-        if manualSearch:
-            curProvider.cache.updateCache()
+        try:
+            curResults = curProvider.findSearchResults(show, season, episodes, seasonSearch, manualSearch)
+        except exceptions.AuthException, e:
+            logger.log(u"Authentication error: " + ex(e), logger.ERROR)
+            continue
+        except Exception, e:
+            logger.log(u"Error while searching " + curProvider.name + ", skipping: " + ex(e), logger.ERROR)
+            logger.log(traceback.format_exc(), logger.DEBUG)
+            continue
 
-        # search cache first for wanted episodes
-        for ep_obj in wantedEps:
-            curResults = curProvider.cache.searchCache(ep_obj, manualSearch)
-            curResults = filterSearchResults(show, curResults)
-            if len(curResults):
-                foundResults.update(curResults)
-                logger.log(u"Cache results: " + repr(foundResults), logger.DEBUG)
-                didSearch = True
+        # finished searching this provider successfully
+        didSearch = True
 
-    if not len(foundResults):
-        for curProvider in providers.sortedProviderList():
-            if not curProvider.isActive():
-                continue
-
-            try:
-                curResults = curProvider.getSearchResults(show, season, wantedEps, seasonSearch, manualSearch)
-            except exceptions.AuthException, e:
-                logger.log(u"Authentication error: " + ex(e), logger.ERROR)
-                continue
-            except Exception, e:
-                logger.log(u"Error while searching " + curProvider.name + ", skipping: " + ex(e), logger.ERROR)
-                logger.log(traceback.format_exc(), logger.DEBUG)
-                continue
-
-            # finished searching this provider successfully
-            didSearch = True
-
-            curResults = filterSearchResults(show, curResults)
-            if len(curResults):
-                foundResults.update(curResults)
-                logger.log(u"Provider search results: " + str(foundResults), logger.DEBUG)
+        curResults = filterSearchResults(show, curResults)
+        if len(curResults):
+            foundResults.update(curResults)
+            logger.log(u"Provider search results: " + str(foundResults), logger.DEBUG)
 
     if not didSearch:
         logger.log(u"No NZB/Torrent providers found or enabled in the sickbeard config. Please check your settings.",

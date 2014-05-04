@@ -484,7 +484,7 @@ class PostProcessor(object):
 
         # parse the name to break it into show name, season, and episode
         np = NameParser(file)
-        parse_result = np.parse(name).convert()
+        parse_result = np.parse(name)
 
         self._log("Parsed " + name + " into " + str(parse_result).decode('utf-8'), logger.DEBUG)
 
@@ -498,9 +498,10 @@ class PostProcessor(object):
             season = parse_result.season_number
             episodes = parse_result.episode_numbers
 
-        if parse_result.show:
-            indexer_id = parse_result.show.indexerid
-            indexer = parse_result.show.indexer
+        showObj = helpers.get_show_by_name(parse_result.series_name)
+        if showObj:
+            indexer_id = showObj.indexerid
+            indexer = showObj.indexer
 
         to_return = (indexer_id, indexer, season, episodes, None)
 
@@ -625,7 +626,7 @@ class PostProcessor(object):
             # now that we've figured out which episode this file is just load it manually
             try:
                 # convert scene numbered release and load episode from database
-                curEp = show_obj.getEpisode(season, cur_episode)
+                curEp = show_obj.getEpisode(season, cur_episode, scene=True)
             except exceptions.EpisodeNotFoundException, e:
                 self._log(u"Unable to create episode: " + ex(e), logger.DEBUG)
                 raise exceptions.PostProcessingFailed()

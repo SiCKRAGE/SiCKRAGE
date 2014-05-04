@@ -113,11 +113,15 @@ class HDTorrentsProvider(generic.TorrentProvider):
     def _get_season_search_strings(self, ep_obj):
 
         search_string = {'Season': [], 'Episode': []}
-        for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-            ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
-            search_string['Season'].append(ep_string)
+        if not (ep_obj.show.air_by_date or ep_obj.show.sports):
+            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                search_string['Season'].append(ep_string)
 
-        search_string['Episode'] = self._get_episode_search_strings(ep_obj)[0]['Episode']
+        elif ep_obj.show.air_by_date or ep_obj.show.sports:
+            search_string['Season'] = self._get_episode_search_strings(ep_obj)[0]['Season']
+
+        #search_string['Episode'] = self._get_episode_search_strings(ep_obj)[0]['Episode']
 
         return [search_string]
 
@@ -360,7 +364,7 @@ class HDTorrentsCache(tvcache.TVCache):
         if not title or not url:
             return None
 
-        logger.log(u"Adding item to cache: " + title, logger.DEBUG)
+        logger.log(u"Adding item to cache: " + str(title), logger.DEBUG)
 
         return self._addCacheEntry(title, url)
 

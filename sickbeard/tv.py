@@ -139,7 +139,7 @@ class TVShow(object):
         sql_selection = sql_selection + " FROM tv_episodes tve WHERE showid = " + str(self.indexerid)
 
         if season is not None:
-            if not self.air_by_date and not self.sports:
+            if not self.air_by_date:
                 sql_selection = sql_selection + " AND season = " + str(season)
             else:
                 segment_year, segment_month = map(int, str(season).split('-'))
@@ -182,7 +182,7 @@ class TVShow(object):
         return ep_list
 
 
-    def getEpisode(self, season, episode, file=None, noCreate=False):
+    def getEpisode(self, season, episode, file=None, noCreate=False, scene=False):
 
         if not season in self.episodes:
             self.episodes[season] = {}
@@ -197,10 +197,15 @@ class TVShow(object):
                 episode) + " didn't exist in the cache, trying to create it", logger.DEBUG)
 
             if file != None:
-                ep = TVEpisode(self, season, episode, file)
+                if scene:
+                    ep = TVEpisode(self, scene_season=season, scene_episode=episode, file=file)
+                else:
+                    ep = TVEpisode(self, season, episode, file)
             else:
-                ep = TVEpisode(self, season, episode)
-
+                if scene:
+                    ep = TVEpisode(self, scene_season=season, scene_episode=episode)
+                else:
+                    ep = TVEpisode(self, season, episode, file)
             if ep != None:
                 self.episodes[season][episode] = ep
 
@@ -296,7 +301,7 @@ class TVShow(object):
 
 
     # find all media files in the show folder and create episodes for as many as possible
-    def loadEpisodesFromDir(self, sceneConvert=False):
+    def loadEpisodesFromDir(self):
 
         if not ek.ek(os.path.isdir, self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, not loading episodes from disk")
@@ -380,6 +385,7 @@ class TVShow(object):
 
             curSeason = int(curResult["season"])
             curEpisode = int(curResult["episode"])
+
             if curSeason not in cachedSeasons:
                 try:
                     cachedSeasons[curSeason] = cachedShow[curSeason]
@@ -1128,10 +1134,7 @@ def dirty_setter(attr_name):
 
 
 class TVEpisode(object):
-    def __init__(self, show, season, episode, file=""):
-        # Convert season/episode to XEM scene numbering
-        scene_season, scene_episode = sickbeard.scene_numbering.get_scene_numbering(show.indexerid, season, episode)
-
+    def __init__(self, show, season=None, episode=None, scene_season=None, scene_episode=None, file=""):
         self._name = ""
         self._season = season
         self._episode = episode
@@ -1161,7 +1164,7 @@ class TVEpisode(object):
 
         self.lock = threading.Lock()
 
-        self.specifyEpisode(self.season, self.episode)
+        self.specifyEpisode(self.season, self.episode, self.scene_season, self.scene_episode)
 
         self.relatedEps = []
 
@@ -1299,7 +1302,7 @@ class TVEpisode(object):
         # if either setting has changed return true, if not return false
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
 
-    def specifyEpisode(self, season, episode):
+    def specifyEpisode(self, season, episode, scene_season=None, scene_episode=None):
 
         sqlResult = self.loadFromDB(season, episode)
 
@@ -1314,16 +1317,35 @@ class TVEpisode(object):
                     pass
 
                 # if we tried loading it from NFO and didn't find the NFO, try the Indexers
-                if self.hasnfo == False:
+                if not self.hasnfo:
                     try:
-                        result = self.loadFromIndexer(season, episode)
+                        result = self.loadFromIndexer(season, episode, scene_season, scene_episode)
                     except exceptions.EpisodeDeletedException:
                         result = False
 
                     # if we failed SQL *and* NFO, Indexers then fail
-                    if result == False:
+                    if not result:
                         raise exceptions.EpisodeNotFoundException(
                             "Couldn't find episode " + str(season) + "x" + str(episode))
+
+        # convert from indexer numbering <-> scene numerbing and back again once we have correct season and episode numbers
+        if self.season and self.episode:
+            self.scene_season, self.scene_episode = sickbeard.scene_numbering.get_scene_numbering(self.show.indexerid,
+                                                                                                    self.show.indexer,
+                                                                                                    self.season, self.episode)
+            self.season, self.episode = sickbeard.scene_numbering.get_indexer_numbering(self.show.indexerid, self.show.indexer,
+                                                                                          self.scene_season,
+                                                                                          self.scene_episode)
+
+        # convert from scene numbering <-> indexer numbering and back again once we have correct season and episode numbers
+        elif self.scene_season and self.scene_episode:
+            self.season, self.episode = sickbeard.scene_numbering.get_indexer_numbering(self.show.indexerid, self.show.indexer,
+                                                                                          self.scene_season,
+                                                                                          self.scene_episode)
+            self.scene_season, self.scene_episode = sickbeard.scene_numbering.get_scene_numbering(self.show.indexerid,
+                                                                                                    self.show.indexer,
+                                                                                                    self.season,
+                                                                                                    self.episode)
 
     def loadFromDB(self, season, episode):
 
@@ -1345,9 +1367,11 @@ class TVEpisode(object):
             #NAMEIT logger.log(u"AAAAA from" + str(self.season)+"x"+str(self.episode) + " -" + self.name + " to " + str(sqlResults[0]["name"]))
             if sqlResults[0]["name"]:
                 self.name = sqlResults[0]["name"]
+
             self.season = season
             self.episode = episode
-
+            self.scene_season = sqlResults[0]["scene_season"]
+            self.scene_episode = sqlResults[0]["scene_episode"]
             self.description = sqlResults[0]["description"]
             if not self.description:
                 self.description = ""
@@ -1379,12 +1403,17 @@ class TVEpisode(object):
             self.dirty = False
             return True
 
-    def loadFromIndexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
+    def loadFromIndexer(self, season=None, episode=None, scene_season=None, scene_episode=None, cache=True, tvapi=None, cachedSeason=None):
 
         if season is None:
             season = self.season
         if episode is None:
             episode = self.episode
+
+        if scene_season is None:
+            scene_season = self.scene_season
+        if scene_episode is None:
+            scene_episode = self.scene_episode
 
         logger.log(str(self.show.indexerid) + u": Loading episode details from " + sickbeard.indexerApi(
             self.show.indexer).name + " for episode " + str(season) + "x" + str(episode), logger.DEBUG)
@@ -1676,11 +1705,13 @@ class TVEpisode(object):
 
         # use a custom update/insert method to get the data into the DB
         return [
-            "INSERT OR REPLACE INTO tv_episodes (episode_id, indexerid, indexer, name, description, subtitles, subtitles_searchcount, subtitles_lastsearch, airdate, hasnfo, hastbn, status, location, file_size, release_name, is_proper, showid, season, episode) VALUES ((SELECT episode_id FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+            "INSERT OR REPLACE INTO tv_episodes (episode_id, indexerid, indexer, name, description, subtitles, subtitles_searchcount, subtitles_lastsearch, airdate, hasnfo, hastbn, status, location, file_size, release_name, is_proper, showid, season, episode, scene_season, scene_episode) VALUES "
+            "((SELECT episode_id FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
             [self.show.indexerid, self.season, self.episode, self.indexerid, self.indexer, self.name, self.description,
              ",".join([sub for sub in self.subtitles]), self.subtitles_searchcount, self.subtitles_lastsearch,
              self.airdate.toordinal(), self.hasnfo, self.hastbn, self.status, self.location, self.file_size,
-             self.release_name, self.is_proper, self.show.indexerid, self.season, self.episode]]
+             self.release_name, self.is_proper, self.show.indexerid, self.season, self.episode, self.scene_season,
+             self.scene_episode]]
 
     def saveToDB(self, forceSave=False):
         """
@@ -1714,7 +1745,9 @@ class TVEpisode(object):
                         "location": self.location,
                         "file_size": self.file_size,
                         "release_name": self.release_name,
-                        "is_proper": self.is_proper}
+                        "is_proper": self.is_proper,
+                        "scene_season": self.scene_season,
+                        "scene_episode": self.scene_episode}
         controlValueDict = {"showid": self.show.indexerid,
                             "season": self.season,
                             "episode": self.episode}
@@ -1738,7 +1771,7 @@ class TVEpisode(object):
 
         return self._format_pattern('%SN - %Sx%0E - %EN')
 
-    def scene_prettyName(self):
+    def prettyABDName(self):
         """
         Returns the name of this episode in a "pretty" human-readable format. Used for logging
         and notifications and such.
@@ -1746,9 +1779,9 @@ class TVEpisode(object):
         Returns: A string representing the episode's name and season/ep numbers
         """
 
-        return self._format_pattern('%SN - %XMSx%0XME - %EN')
+        return self._format_pattern('%SN - %AD - %EN')
 
-    def sports_prettyName(self):
+    def prettySceneName(self):
         """
         Returns the name of this episode in a "pretty" human-readable format. Used for logging
         and notifications and such.
@@ -1756,7 +1789,7 @@ class TVEpisode(object):
         Returns: A string representing the episode's name and season/ep numbers
         """
 
-        return self._format_pattern('%SN - %A-D - %EN')
+        return self._format_pattern('%SN - %XSx%0XE - %EN')
 
     def _ep_name(self):
         """
@@ -1854,13 +1887,13 @@ class TVEpisode(object):
             '%Q.N': dot(Quality.qualityStrings[epQual]),
             '%Q_N': us(Quality.qualityStrings[epQual]),
             '%S': str(self.season),
-            '%0S': '%02d' % self.season,
+            '%0S': '%02d' % int(self.season),
             '%E': str(self.episode),
-            '%0E': '%02d' % self.episode,
-            '%XMS': str(self.scene_season),
-            '%0XMS': '%02d' % self.scene_season,
-            '%XME': str(self.scene_episode),
-            '%0XME': '%02d' % self.scene_episode,
+            '%0E': '%02d' % int(self.episode),
+            '%XS': str(self.scene_season),
+            '%0XS': '%02d' % int(self.scene_season),
+            '%XE': str(self.scene_episode),
+            '%0XE': '%02d' % int(self.scene_episode),
             '%RN': release_name(self.release_name),
             '%RG': release_group(self.release_name),
             '%AD': str(self.airdate).replace('-', ' '),
@@ -2117,17 +2150,17 @@ class TVEpisode(object):
         for cur_related_file in related_files:
             cur_result = helpers.rename_ep_file(cur_related_file, absolute_proper_path,
                                                 absolute_current_path_no_ext_length)
-            if cur_result == False:
+            if not cur_result:
                 logger.log(str(self.indexerid) + u": Unable to rename file " + cur_related_file, logger.ERROR)
 
         for cur_related_sub in related_subs:
             cur_result = helpers.rename_ep_file(cur_related_sub, absolute_proper_subs_path,absolute_current_path_no_ext_length)
-            if cur_result == False:
+            if not cur_result:
                 logger.log(str(self.indexerid) + u": Unable to rename file " + cur_related_sub, logger.ERROR)
 
         # save the ep
         with self.lock:
-            if result != False:
+            if result:
                 self.location = absolute_proper_path + file_ext
                 for relEp in self.relatedEps:
                     relEp.location = absolute_proper_path + file_ext

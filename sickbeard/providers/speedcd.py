@@ -94,12 +94,14 @@ class SpeedCDProvider(generic.TorrentProvider):
 
         #If Every episode in Season is a wanted Episode then search for Season first
         search_string = {'Season': [], 'Episode': []}
-        for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-            ep_string = show_name +' S%02d' % int(ep_obj.scene_season) #1) showName SXX
-            search_string['Season'].append(ep_string)
+        if not (ep_obj.show.air_by_date or ep_obj.show.sports):
+            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
+                ep_string = show_name +' S%02d' % int(ep_obj.scene_season) #1) showName SXX
+                search_string['Season'].append(ep_string)
+        elif ep_obj.show.air_by_date or ep_obj.show.sports:
+            search_string['Season'] = self._get_episode_search_strings(ep_obj)[0]['Season']
 
-        #Building the search string with the episodes we need
-        search_string['Episode'] = self._get_episode_search_strings(ep_obj)[0]['Episode']
+        #search_string['Episode'] = self._get_episode_search_strings(ep_obj)[0]['Episode']
 
         return [search_string]
 
@@ -224,7 +226,7 @@ class SpeedCDProvider(generic.TorrentProvider):
         results = []
 
         sqlResults = db.DBConnection().select('SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
-                                              ' INNER JOIN tv_shows AS s ON (e.showid = s.tvdb_id)' +
+                                              ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
                                               ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
                                               ' AND (e.status IN (' + ','.join([str(x) for x in Quality.DOWNLOADED]) + ')' +
                                               ' OR (e.status IN (' + ','.join([str(x) for x in Quality.SNATCHED]) + ')))'

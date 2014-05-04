@@ -27,7 +27,7 @@ from sickbeard import encodingKludge as ek
 from sickbeard.name_parser.parser import NameParser, InvalidNameException
 
 MIN_DB_VERSION = 9  # oldest db version we support migrating from
-MAX_DB_VERSION = 30
+MAX_DB_VERSION = 31
 
 class MainSanityCheck(db.DBSanityCheck):
     def check(self):
@@ -122,7 +122,6 @@ class MainSanityCheck(db.DBSanityCheck):
         if not self.connection.select("PRAGMA index_info('idx_sta_epi_sta_air')"):
             logger.log(u"Missing idx_sta_epi_sta_air for TV Episodes table detected!, fixing...")
             self.connection.action("CREATE INDEX idx_sta_epi_sta_air ON tv_episodes (season,episode, status, airdate)")
-
 
 def backupDatabase(version):
     logger.log(u"Backing up database before upgrade")
@@ -744,5 +743,21 @@ class AddSportsOption(AddRequireAndIgnoreWords):
                 ql.append(["UPDATE tv_shows SET sports = ? WHERE show_id = ?", [cur_entry["air_by_date"], cur_entry["show_id"]]])
                 ql.append(["UPDATE tv_shows SET air_by_date = 0 WHERE show_id = ?", [cur_entry["show_id"]]])
             self.connection.mass_action(ql)
+
+        self.incDBVersion()
+
+class AddSceneNumberingToTvEpisodes(AddSportsOption):
+    def test(self):
+        return self.checkDBVersion() >= 31
+
+    def execute(self):
+        backupDatabase(31)
+
+        logger.log(u"Adding column scene_season and scene_episode to tvepisodes")
+        if not self.hasColumn("tv_episodes", "scene_season"):
+            self.addColumn("tv_episodes", "scene_season", "NUMERIC", -1)
+
+        if not self.hasColumn("tv_episodes", "scene_episode"):
+            self.addColumn("tv_episodes", "scene_episode", "NUMERIC", -1)
 
         self.incDBVersion()

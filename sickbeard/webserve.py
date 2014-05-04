@@ -926,7 +926,7 @@ class ConfigGeneral:
         sickbeard.ROOT_DIRS = rootDirString
 
     @cherrypy.expose
-    def saveAddShowDefaults(self, defaultFlattenFolders, defaultStatus, anyQualities, bestQualities, subtitles=False):
+    def saveAddShowDefaults(self, defaultStatus, anyQualities, bestQualities, defaultFlattenFolders, subtitles=False):
 
         if anyQualities:
             anyQualities = anyQualities.split(',')
@@ -2297,7 +2297,8 @@ class NewHomeAddShows:
 
             if indexer is not None and indexer_id is not None:
                 # add the show
-                sickbeard.showQueueScheduler.action.addShow(indexer, indexer_id, show_dir, SKIPPED,
+                sickbeard.showQueueScheduler.action.addShow(indexer, indexer_id, show_dir,
+                                                            sickbeard.STATUS_DEFAULT,
                                                             sickbeard.QUALITY_DEFAULT,
                                                             sickbeard.FLATTEN_FOLDERS_DEFAULT,
                                                             sickbeard.SUBTITLES_DEFAULT, refresh=True)
@@ -2831,10 +2832,11 @@ class Home:
         t.epCounts = epCounts
         t.epCats = epCats
 
-        #t.all_scene_exceptions = list(set((get_scene_exceptions(showObj.indexerid) or []) + (get_custom_exceptions(showObj.indexerid) or [])))
-        t.all_scene_exceptions = get_scene_exceptions(showObj.indexerid)
-        t.scene_numbering = get_scene_numbering_for_show(showObj.indexerid)
-        t.xem_numbering = get_xem_numbering_for_show(showObj.indexerid)
+        indexerid = int(showObj.indexerid)
+        indexer = int(showObj.indexer)
+        t.all_scene_exceptions = get_scene_exceptions(indexerid)
+        t.scene_numbering = get_scene_numbering_for_show(indexerid, indexer)
+        t.xem_numbering = get_xem_numbering_for_show(indexerid, indexer)
 
         return _munge(t)
 
@@ -3375,7 +3377,7 @@ class Home:
         return json.dumps({'result': status, 'subtitles': ','.join([x for x in ep_obj.subtitles])})
 
     @cherrypy.expose
-    def setEpisodeSceneNumbering(self, show, forSeason, forEpisode, sceneSeason=None, sceneEpisode=None):
+    def setEpisodeSceneNumbering(self, show, indexer, forSeason, forEpisode, sceneSeason=None, sceneEpisode=None):
 
         # sanitize:
         if sceneSeason in ['null', '']: sceneSeason = None
@@ -3397,6 +3399,7 @@ class Home:
                        (show, forSeason, forEpisode, sceneSeason, sceneEpisode), logger.DEBUG)
 
             show = int(show)
+            indexer = int(indexer)
             forSeason = int(forSeason)
             forEpisode = int(forEpisode)
             if sceneSeason is not None: sceneSeason = int(sceneSeason)
@@ -3404,7 +3407,7 @@ class Home:
 
             set_scene_numbering(show, forSeason, forEpisode, sceneSeason, sceneEpisode)
 
-        sn = get_scene_numbering(show, forSeason, forEpisode)
+        sn = get_scene_numbering(show, indexer, forSeason, forEpisode)
         if sn:
             (result['sceneSeason'], result['sceneEpisode']) = sn
         else:
@@ -3421,7 +3424,7 @@ class Home:
             return json.dumps({'result': 'failure'})
 
         # make a queue item for it and put it on the queue
-        ep_queue_item = search_queue.FailedQueueItem(ep_obj.show, {ep_obj.season: ep_obj.episode})
+        ep_queue_item = search_queue.FailedQueueItem(ep_obj.show, [ep_obj])
         sickbeard.searchQueueScheduler.action.add_item(ep_queue_item)  # @UndefinedVariable
 
         # wait until the queue item tells us whether it worked or not
