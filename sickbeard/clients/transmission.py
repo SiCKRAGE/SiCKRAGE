@@ -21,6 +21,7 @@ import json
 from base64 import b64encode
 
 import sickbeard
+from sickbeard import logger
 from sickbeard.clients.generic import GenericClient
 
 
@@ -84,6 +85,12 @@ class TransmissionAPI(GenericClient):
             ratio = result.ratio
         elif sickbeard.TORRENT_RATIO:
             ratio = sickbeard.TORRENT_RATIO
+
+        try:
+            float(ratio)
+        except ValueError:
+            logger.log(self.name + u': Invalid Ratio. "' + ratio + u'" is not a number', logger.ERROR)
+            return False
 
         torrent_id = self._get_torrent_hash(result)
 

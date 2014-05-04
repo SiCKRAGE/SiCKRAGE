@@ -19,6 +19,7 @@
 import re
 
 import sickbeard
+from sickbeard import logger
 from sickbeard.clients.generic import GenericClient
 
 
@@ -73,6 +74,13 @@ class uTorrentAPI(GenericClient):
             ratio = sickbeard.TORRENT_RATIO
         else:
             return True
+
+        try:
+            float(ratio)
+        except ValueError:
+            logger.log(self.name + u': Invalid Ratio. "' + ratio + u'" is not a number', logger.ERROR)
+            return False
+
         ratio = 10 * float(ratio)
         params = {'action': 'setprops',
                   'hash': result.hash,

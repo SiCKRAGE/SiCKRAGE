@@ -105,7 +105,7 @@ $(document).ready(function(){
             $('#Torrent_username').show();
             $('#Torrent_Paused').hide();
             $('#Torrent_Path').show();
-            $('#Torrent_Ratio').show();
+            $('#Torrent_Ratio').hide();
             $('#Torrent_Seed_Time').hide();
             $('#Torrent_High_Bandwidth').hide();
             $('#host_desc').text('rTorrent Host');
