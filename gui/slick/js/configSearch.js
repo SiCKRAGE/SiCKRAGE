@@ -50,6 +50,7 @@ $(document).ready(function(){
             $('#Torrent_Seed_Time').show();
             $('#Torrent_High_Bandwidth').hide();
             $('#Torrent_Label').show();
+            $('#label_warning').text('');
             $('#host_desc').text('uTorrent Host');
             $('#username_desc').text('uTorrent Username');
             $('#password_desc').text('uTorrent Password');
@@ -80,6 +81,7 @@ $(document).ready(function(){
             $('#username_desc').text('Deluge Username');
             $('#password_desc').text('Deluge Password');
             $('#label_desc').text('Deluge Label');
+            $('#label_warning').text('Note: Label plugin must be enabled in Deluge client. No blank spaces are allowed in label name');
             $('#directory_desc').text('Deluge Directory');
         } else if (selectedProvider == "download_station"){
             $('#t_blackhole_settings').hide();
@@ -110,6 +112,7 @@ $(document).ready(function(){
             $('#username_desc').text('rTorrent Username');
             $('#password_desc').text('rTorrent Password');
             $('#label_desc').text('rTorrent Label');
+            $('#label_warning').text('');
             $('#directory_desc').text('rTorrent Directory');
         }
     }

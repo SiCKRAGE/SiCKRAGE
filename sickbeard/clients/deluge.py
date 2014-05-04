@@ -124,6 +124,10 @@ class DelugeAPI(GenericClient):
     def _set_torrent_label(self, result):
 
         label = sickbeard.TORRENT_LABEL.lower()
+        if ' ' in label:
+            logger.log(self.name + u': Invalid label. Label must not contain a space', logger.ERROR)
+            return False
+
         if label:
             # check if label already exists and create it if not
             post_data = json.dumps({"method": 'label.get_labels',
