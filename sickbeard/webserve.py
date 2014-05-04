@@ -32,7 +32,9 @@ import itertools
 import operator
 
 from Cheetah.Template import Template
+import cherrypy
 import cherrypy.lib
+import cherrypy.lib.cptools
 
 import sickbeard
 
@@ -79,6 +81,11 @@ except ImportError:
 
 from sickbeard import browser
 
+def _handle_reverse_proxy():
+    if sickbeard.HANDLE_REVERSE_PROXY:
+        cherrypy.lib.cptools.proxy()
+
+cherrypy.tools.handle_reverse_proxy = cherrypy.Tool('before_handler', _handle_reverse_proxy)
 
 class PageTemplate(Template):
     def __init__(self, *args, **KWs):
@@ -976,7 +983,7 @@ class ConfigGeneral:
     def saveGeneral(self, log_dir=None, web_port=None, web_log=None, encryption_version=None, web_ipv6=None,
                     update_shows_on_start=None, update_frequency=None, launch_browser=None, web_username=None, use_api=None, api_key=None,
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
-                    sort_article=None, auto_update=None, proxy_setting=None,
+                    handle_reverse_proxy=None, sort_article=None, auto_update=None, proxy_setting=None,
                     anon_redirect=None, git_path=None, calendar_unprotected=None, date_preset=None, time_preset=None, indexer_default=None):
 
         results = []
@@ -1030,6 +1037,8 @@ class ConfigGeneral:
             results += [
                 "Unable to create directory " + os.path.normpath(https_key) + ", https key directory not changed."]
 
+        sickbeard.HANDLE_REVERSE_PROXY = config.checkbox_to_value(handle_reverse_proxy)
+
         sickbeard.save_config()
 
         if len(results) > 0:
@@ -1056,7 +1065,7 @@ class ConfigSearch:
                    sab_apikey=None, sab_category=None, sab_host=None, nzbget_username=None, nzbget_password=None,
                    nzbget_category=None, nzbget_host=None,
                    nzb_method=None, torrent_method=None, usenet_retention=None, search_frequency=None,
-                   download_propers=None, allow_high_priority=None,
+                   download_propers=None, prefer_episode_releases=None, allow_high_priority=None,
                    torrent_dir=None, torrent_username=None, torrent_password=None, torrent_host=None,
                    torrent_label=None, torrent_path=None,
                    torrent_ratio=None, torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None, ignore_words=None):
@@ -1086,6 +1095,7 @@ class ConfigSearch:
         else:
             sickbeard.properFinderScheduler.silent = True
 
+        sickbeard.PREFER_EPISODE_RELEASES = config.checkbox_to_value(prefer_episode_releases)
         sickbeard.ALLOW_HIGH_PRIORITY = config.checkbox_to_value(allow_high_priority)
 
         sickbeard.SAB_USERNAME = sab_username
