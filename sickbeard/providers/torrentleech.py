@@ -267,6 +267,9 @@ class TorrentLeechProvider(generic.TorrentProvider):
 
         return results
 
+    def seedRatio(self):
+        return sickbeard.TORRENTLEECH_RATIO
+
 
 class TorrentLeechCache(tvcache.TVCache):
     def __init__(self, provider):

@@ -182,6 +182,9 @@ class HDBitsProvider(generic.TorrentProvider):
 
         return json.dumps(post_data)
 
+    def seedRatio(self):
+        return sickbeard.HDBITS_RATIO
+
 
 class HDBitsCache(tvcache.TVCache):
     def __init__(self, provider):
