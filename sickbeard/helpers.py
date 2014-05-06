@@ -165,7 +165,7 @@ def sanitizeFileName(name):
     return name
 
 
-def getURL(url, post_data=None, headers=None, params=None, timeout=30, json=False):
+def getURL(url, post_data=None, headers=None, params=None, timeout=30, json=False, use_proxy=False):
     """
     Returns a byte-string retrieved from the url provider.
     """
@@ -186,8 +186,10 @@ def getURL(url, post_data=None, headers=None, params=None, timeout=30, json=Fals
         url = urlparse.urlunparse(parsed)
 
         it = iter(req_headers)
-
-        if sickbeard.PROXY_SETTING:
+        
+        
+        if use_proxy and sickbeard.PROXY_SETTING:
+            logger.log("Using proxy for url: " + url, logger.DEBUG)
             proxies = {
                 "http": sickbeard.PROXY_SETTING,
                 "https": sickbeard.PROXY_SETTING,
@@ -549,6 +551,7 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
 
     # as long as the folder exists and doesn't contain any files, delete it
     while ek.ek(os.path.isdir, check_empty_dir) and check_empty_dir != keep_dir:
+        time.sleep(0.01)
 
         check_files = ek.ek(os.listdir, check_empty_dir)
 
@@ -658,24 +661,26 @@ def sanitizeSceneName(name, ezrss=False):
     Returns: A string containing the scene version of the show name given.
     """
 
-    if not ezrss:
-        bad_chars = u",:()'!?\u2019"
-    # ezrss leaves : and ! in their show names as far as I can tell
-    else:
-        bad_chars = u",()'?\u2019"
+    if name:
 
-    # strip out any bad chars
-    for x in bad_chars:
-        name = name.replace(x, "")
+        if not ezrss:
+            bad_chars = u",:()'!?\u2019"
+        # ezrss leaves : and ! in their show names as far as I can tell
+        else:
+            bad_chars = u",()'?\u2019"
 
-    # tidy up stuff that doesn't belong in scene names
-    name = name.replace("- ", ".").replace(" ", ".").replace("&", "and").replace('/', '.')
-    name = re.sub("\.\.*", ".", name)
+        # strip out any bad chars
+        for x in bad_chars:
+            name = name.replace(x, "")
 
-    if name.endswith('.'):
-        name = name[:-1]
+        # tidy up stuff that doesn't belong in scene names
+        name = name.replace("- ", ".").replace(" ", ".").replace("&", "and").replace('/', '.')
+        name = re.sub("\.\.*", ".", name)
 
-    return name
+        if name.endswith('.'):
+            name = name[:-1]
+
+        return name
 
 
 def create_https_certificates(ssl_cert, ssl_key):
@@ -789,6 +794,7 @@ def backupVersionedFile(old_file, version):
     new_file = old_file + '.' + 'v' + str(version)
 
     while not ek.ek(os.path.isfile, new_file):
+        time.sleep(0.01)
         if not ek.ek(os.path.isfile, old_file):
             logger.log(u"Not creating backup, " + old_file + " doesn't exist", logger.DEBUG)
             break
