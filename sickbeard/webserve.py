@@ -2221,7 +2221,9 @@ class NewHomeAddShows:
         # figure out what show we're adding and where
         series_pieces = whichSeries.split('|')
         if len(series_pieces) < 6:
-            return "Error with show selection."
+            logger.error("Unable to add show due to show selection. (series_pieces was %s and must be > 5)" % repr(series_pieces), logger.ERROR)
+            ui.notifications.error("Unknown error. Unable to add show due to problem with show selection.")
+            redirect('/home/addShows/existingShows/')
 
         indexer = int(series_pieces[1])
         indexer_id = int(series_pieces[3])
