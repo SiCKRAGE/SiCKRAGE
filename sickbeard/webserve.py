@@ -2220,14 +2220,18 @@ class NewHomeAddShows:
 
         # figure out what show we're adding and where
         series_pieces = whichSeries.split('|')
-        if len(series_pieces) < 6:
-            logger.error("Unable to add show due to show selection. (series_pieces was %s and must be > 5)" % repr(series_pieces), logger.ERROR)
-            ui.notifications.error("Unknown error. Unable to add show due to problem with show selection.")
-            redirect('/home/addShows/existingShows/')
-
-        indexer = int(series_pieces[1])
-        indexer_id = int(series_pieces[3])
-        show_name = series_pieces[4]
+        if (whichSeries and rootDir) or (whichSeries and fullShowPath and len(series_pieces) > 1):
+            if len(series_pieces) < 6:
+                logger.log("Unable to add show due to show selection. Not anough arguments: %s" % (repr(series_pieces)), logger.ERROR)
+                ui.notifications.error("Unknown error. Unable to add show due to problem with show selection.")
+                redirect('/home/addShows/existingShows/')
+            indexer = int(series_pieces[1])
+            indexer_id = int(series_pieces[3])
+            show_name = series_pieces[4]
+        else:
+            indexer = 1
+            indexer_id = int(whichSeries)
+            show_name = os.path.basename(os.path.normpath(fullShowPath))
 
         # use the whole path if it's given, or else append the show name to the root dir to get the full show path
         if fullShowPath:
