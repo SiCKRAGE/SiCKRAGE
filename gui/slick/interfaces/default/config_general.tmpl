@@ -334,6 +334,28 @@
                                 <span class="component-desc">Number of threads to assign, the more threads the faster SickRage goes if your hardware can handle it! (eg. 1)</span>
                             </label>
                         </div>
+
+                        <div class="field-pair">
+                            <label class="nocheck clearfix">
+                                <span class="component-title">URL For AniDB Titles xml.gz</span>
+                                <input type="text" name="anidb_cache_reload_url" id="anidb_cache_reload_url" value="$sickbeard.ANIDB_CACHE_RELOAD_URL" size="5" />
+                            </label>
+                            <label class="nocheck clearfix">
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc">The full URL for the anime_titles.xml.gz to use for searching aniDB titles.</span>
+                            </label>
+                        </div>
+
+                        <div class="field-pair">
+                            <label class="nocheck clearfix">
+                                <span class="component-title">AniDB Update interval</span>
+                                <input type="text" name="anidb_cache_reload_time" id="anidb_cache_reload_time" value="$sickbeard.ANIDB_CACHE_RELOAD_TIME" size="5" />
+                            </label>
+                            <label class="nocheck clearfix">
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc">The number of days between updating the cache of anime titles. Do NOT set this lower than 7 days. Default is 30</span>
+                            </label>
+                        </div>
                         <input type="submit" class="btn config_submitter" value="Save Changes" />
                     </fieldset>
                 </div><!-- /component-group4 //-->

@@ -34,7 +34,7 @@ from providers import ezrss, tvtorrents, btn, newznab, womble, thepiratebay, tor
     omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, nextgen, speedcd
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, ConfigMigrator, naming_ep_type
 from sickbeard import searchCurrent, searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
-    subtitles, traktWatchListChecker
+    subtitles, traktWatchListChecker, adbcache
 from sickbeard import helpers, db, exceptions, show_queue, search_queue, scheduler, show_name_helpers
 from sickbeard import logger
 from sickbeard import naming
@@ -83,6 +83,7 @@ properFinderScheduler = None
 autoPostProcesserScheduler = None
 subtitlesFinderScheduler = None
 traktWatchListCheckerSchedular = None
+anidb_cache_scheduler = None
 
 showList = None
 loadingShowList = None
@@ -385,6 +386,10 @@ TRAKT_USE_WATCHLIST = False
 TRAKT_METHOD_ADD = 0
 TRAKT_START_PAUSED = False
 
+USE_ANIDB = 1
+ANIDB_CACHE_RELOAD_TIME = 30
+ANIDB_CACHE_RELOAD_URL = ''
+
 USE_PYTIVO = False
 PYTIVO_NOTIFY_ONSNATCH = False
 PYTIVO_NOTIFY_ONDOWNLOAD = False
@@ -459,6 +464,7 @@ CALENDAR_UNPROTECTED = False
 
 TMDB_API_KEY = 'edc5f123313769de83a71e157758030b'
 
+# noinspection PyRedeclaration
 __INITIALIZED__ = False
 
 
@@ -477,9 +483,9 @@ def initialize(consoleLogging=True):
             TORRENT_USERNAME, TORRENT_PASSWORD, TORRENT_HOST, TORRENT_PATH, TORRENT_RATIO, TORRENT_SEED_TIME, TORRENT_PAUSED, TORRENT_HIGH_BANDWIDTH, TORRENT_LABEL, \
             USE_XBMC, XBMC_NOTIFY_ONSNATCH, XBMC_NOTIFY_ONDOWNLOAD, XBMC_NOTIFY_ONSUBTITLEDOWNLOAD, XBMC_UPDATE_FULL, XBMC_UPDATE_ONLYFIRST, \
             XBMC_UPDATE_LIBRARY, XBMC_HOST, XBMC_USERNAME, XBMC_PASSWORD, \
-            USE_TRAKT, TRAKT_USERNAME, TRAKT_PASSWORD, TRAKT_API, TRAKT_REMOVE_WATCHLIST, TRAKT_USE_WATCHLIST, TRAKT_METHOD_ADD, TRAKT_START_PAUSED, traktWatchListCheckerSchedular, \
+            USE_TRAKT, TRAKT_USERNAME, TRAKT_PASSWORD, TRAKT_API, TRAKT_REMOVE_WATCHLIST, TRAKT_USE_WATCHLIST, TRAKT_METHOD_ADD, TRAKT_START_PAUSED, traktWatchListCheckerSchedular, anidb_cache_scheduler, \
             USE_PLEX, PLEX_NOTIFY_ONSNATCH, PLEX_NOTIFY_ONDOWNLOAD, PLEX_NOTIFY_ONSUBTITLEDOWNLOAD, PLEX_UPDATE_LIBRARY, \
-            PLEX_SERVER_HOST, PLEX_HOST, PLEX_USERNAME, PLEX_PASSWORD, \
+            PLEX_SERVER_HOST, PLEX_HOST, PLEX_USERNAME, PLEX_PASSWORD, USE_ANIDB, ANIDB_CACHE_RELOAD_URL, ANIDB_CACHE_RELOAD_TIME, \
             showUpdateScheduler, __INITIALIZED__, LAUNCH_BROWSER, UPDATE_SHOWS_ON_START, SORT_ARTICLE, showList, loadingShowList, \
             NEWZNAB_DATA, NZBS, NZBS_UID, NZBS_HASH, EZRSS, TVTORRENTS, TVTORRENTS_DIGEST, TVTORRENTS_HASH, TVTORRENTS_OPTIONS, BTN, BTN_API_KEY, BTN_OPTIONS, \
             THEPIRATEBAY, THEPIRATEBAY_TRUSTED, THEPIRATEBAY_PROXY, THEPIRATEBAY_PROXY_URL, THEPIRATEBAY_BLACKLIST, THEPIRATEBAY_OPTIONS, TORRENTLEECH, TORRENTLEECH_USERNAME, TORRENTLEECH_PASSWORD, TORRENTLEECH_OPTIONS, \
@@ -878,6 +884,11 @@ def initialize(consoleLogging=True):
         TRAKT_METHOD_ADD = check_setting_str(CFG, 'Trakt', 'trakt_method_add', "0")
         TRAKT_START_PAUSED = bool(check_setting_int(CFG, 'Trakt', 'trakt_start_paused', 0))
 
+        CheckSection(CFG, 'AniDB')
+        USE_ANIDB = bool(check_setting_int(CFG, 'AniDB', 'use_anidb', 1))
+        ANIDB_CACHE_RELOAD_TIME = check_setting_int(CFG, 'AniDB', 'anidb_cache_reload_time', 30)
+        ANIDB_CACHE_RELOAD_URL = check_setting_str(CFG, 'AniDB', 'anidb_cache_reload_url', 'https://github.com/Ether009/Anime_titles/blob/master/animetitles.xml.gz?raw=true')
+
         CheckSection(CFG, 'pyTivo')
         USE_PYTIVO = bool(check_setting_int(CFG, 'pyTivo', 'use_pytivo', 0))
         PYTIVO_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'pyTivo', 'pytivo_notify_onsnatch', 0))
@@ -1066,6 +1077,11 @@ def initialize(consoleLogging=True):
 
         if not USE_TRAKT:
             traktWatchListCheckerSchedular.silent = True
+            
+        anidb_cache_scheduler = scheduler.Scheduler(adbcache.UpdateTitles(),
+                                                    cycleTime=datetime.timedelta(minutes=10),
+                                                    threadName="ADBCACHEUPDATER",
+                                                    runImmediately=True)
 
         backlogSearchScheduler = searchBacklog.BacklogSearchScheduler(searchBacklog.BacklogSearcher(),
                                                                       cycleTime=datetime.timedelta(
@@ -1096,7 +1112,7 @@ def start():
         showUpdateScheduler, versionCheckScheduler, showQueueScheduler, \
         properFinderScheduler, autoPostProcesserScheduler, searchQueueScheduler, \
         subtitlesFinderScheduler, started, USE_SUBTITLES, \
-        traktWatchListCheckerSchedular, started
+        traktWatchListCheckerSchedular, started, anidb_cache_scheduler
 
     with INIT_LOCK:
 
@@ -1132,6 +1148,9 @@ def start():
 
             # start the trakt watchlist
             traktWatchListCheckerSchedular.thread.start()
+            
+            # start the AniDB Title Cache Updater
+            anidb_cache_scheduler.thread.start()
 
             started = True
 
@@ -1140,7 +1159,7 @@ def halt():
     global __INITIALIZED__, currentSearchScheduler, backlogSearchScheduler, showUpdateScheduler, \
         showQueueScheduler, properFinderScheduler, autoPostProcesserScheduler, searchQueueScheduler, \
         subtitlesFinderScheduler, started, \
-        traktWatchListCheckerSchedular
+        traktWatchListCheckerSchedular, anidb_cache_scheduler
 
     with INIT_LOCK:
 
@@ -1203,6 +1222,13 @@ def halt():
             logger.log(u"Waiting for the TRAKTWATCHLIST thread to exit")
             try:
                 traktWatchListCheckerSchedular.thread.join(10)
+            except:
+                pass
+                
+            anidb_cache_scheduler.abort = True
+            logger.log(u"Waiting for the ADBCACHEUPDATER thread to exit")
+            try:
+                anidb_cache_scheduler.thread.join(10)
             except:
                 pass
 
@@ -1630,6 +1656,11 @@ def save_config():
     new_config['Trakt']['trakt_use_watchlist'] = int(TRAKT_USE_WATCHLIST)
     new_config['Trakt']['trakt_method_add'] = TRAKT_METHOD_ADD
     new_config['Trakt']['trakt_start_paused'] = int(TRAKT_START_PAUSED)
+
+    new_config['AniDB'] = {}
+    new_config['AniDB']['use_anidb'] = int(USE_ANIDB)
+    new_config['AniDB']['anidb_cache_reload_time'] = ANIDB_CACHE_RELOAD_TIME
+    new_config['AniDB']['anidb_cache_reload_url'] = ANIDB_CACHE_RELOAD_URL
 
     new_config['pyTivo'] = {}
     new_config['pyTivo']['use_pytivo'] = int(USE_PYTIVO)
