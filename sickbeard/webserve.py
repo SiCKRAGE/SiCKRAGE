@@ -1650,7 +1650,7 @@ class ConfigNotifications:
         return _munge(t)
 
     @cherrypy.expose
-    def saveNotifications(self, use_xbmc=None, xbmc_notify_onsnatch=None, xbmc_notify_ondownload=None,
+    def saveNotifications(self, use_xbmc=None, xbmc_always_on=None, xbmc_notify_onsnatch=None, xbmc_notify_ondownload=None,
                           xbmc_notify_onsubtitledownload=None, xbmc_update_onlyfirst=None,
                           xbmc_update_library=None, xbmc_update_full=None, xbmc_host=None, xbmc_username=None,
                           xbmc_password=None,
@@ -1696,6 +1696,7 @@ class ConfigNotifications:
         results = []
 
         sickbeard.USE_XBMC = config.checkbox_to_value(use_xbmc)
+        sickbeard.XBMC_ALWAYS_ON = config.checkbox_to_value(xbmc_always_on)
         sickbeard.XBMC_NOTIFY_ONSNATCH = config.checkbox_to_value(xbmc_notify_onsnatch)
         sickbeard.XBMC_NOTIFY_ONDOWNLOAD = config.checkbox_to_value(xbmc_notify_ondownload)
         sickbeard.XBMC_NOTIFY_ONSUBTITLEDOWNLOAD = config.checkbox_to_value(xbmc_notify_onsubtitledownload)
@@ -2220,12 +2221,18 @@ class NewHomeAddShows:
 
         # figure out what show we're adding and where
         series_pieces = whichSeries.split('|')
-        if len(series_pieces) < 6:
-            return "Error with show selection."
-
-        indexer = int(series_pieces[1])
-        indexer_id = int(series_pieces[3])
-        show_name = series_pieces[4]
+        if (whichSeries and rootDir) or (whichSeries and fullShowPath and len(series_pieces) > 1):
+            if len(series_pieces) < 6:
+                logger.log("Unable to add show due to show selection. Not anough arguments: %s" % (repr(series_pieces)), logger.ERROR)
+                ui.notifications.error("Unknown error. Unable to add show due to problem with show selection.")
+                redirect('/home/addShows/existingShows/')
+            indexer = int(series_pieces[1])
+            indexer_id = int(series_pieces[3])
+            show_name = series_pieces[4]
+        else:
+            indexer = 1
+            indexer_id = int(whichSeries)
+            show_name = os.path.basename(os.path.normpath(fullShowPath))
 
         # use the whole path if it's given, or else append the show name to the root dir to get the full show path
         if fullShowPath:
