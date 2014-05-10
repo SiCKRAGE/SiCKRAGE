@@ -9,6 +9,7 @@ failed.db*
 autoProcessTV/autoProcessTV.cfg
 server.crt
 server.key
+anime_titles.xml.gz
 
 #  SB Test Related   #
 ######################
