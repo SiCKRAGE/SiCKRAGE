@@ -27,29 +27,13 @@ from sickbeard import logger
 from sickbeard import db
 
 
-# noinspection PyBroadException
 class UpdateTitles():
-
-    @staticmethod
-    def check_tables(table_name, table_struct):
-        cachedb = db.DBConnection('cache.db')
-        try:
-            sql = "CREATE TABLE "+table_name+" ("+table_struct+");"
-            cachedb.connection.execute(sql)
-            cachedb.connection.commit()
-        except sqlite3.OperationalError, e:
-            if str(e) != "table "+table_name+" already exists":
-                raise
-
     def __init__(self):
-        logger.log(u"Init AniDB Title Cache Updater")
-        self.check_tables('anime_titles', 'title TEXT, aid NUMERIC')
-        self.check_tables('anime_titles_last_update', 'time NUMERIC')
+        logger.log(u"Initializing AniDB Titles Cache Scheduler", logger.DEBUG)
 
     @staticmethod
     def download_xmlgz():
         logger.log(u"Downloading the titles data dump as gzipped XML")
-        logger.log(str(sickbeard.ANIDB_CACHE_RELOAD_URL))
         _return = urllib2.urlopen(sickbeard.ANIDB_CACHE_RELOAD_URL)
         if _return.getcode() == 200:
             _file = open('anime_titles.xml.gz', 'wb')
@@ -70,18 +54,16 @@ class UpdateTitles():
 
         try:
             _last_time = int(cachedb.connection.execute("SELECT * FROM anime_titles_last_update;").fetchone()['time'])
-        except:
+        except (sqlite3.OperationalError, TypeError):
             _last_time = 0
         if int(time.time()) > _last_time + int(float(sickbeard.ANIDB_CACHE_RELOAD_TIME*24*60*60)):
             logger.log(u"Deleting old time record and creating a new one.", logger.DEBUG)
             cachedb.connection.execute("DELETE FROM anime_titles_last_update;")
-            cachedb.connection.commit()
             cachedb.connection.execute("INSERT INTO anime_titles_last_update VALUES("+str(int(time.time()))+");")
             cachedb.connection.commit()
 
             if self.download_xmlgz():
                 cachedb.connection.execute("DELETE FROM anime_titles;")
-                cachedb.connection.commit()
 
             _root = EleTree.fromstring(self.uncompress_xmlgz())
 

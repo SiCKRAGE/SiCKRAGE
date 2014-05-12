@@ -120,3 +120,16 @@ class RemoveKeysFromXemNumbering(ConvertIndexerToInteger):
         self.connection.action("ALTER TABLE xem_numbering DROP UNIQUE (indexer, indexer_id, season, episode)")
         self.connection.action("ALTER TABLE xem_numbering DROP PRIMARY KEY")
 
+class Add_anime_titles(RemoveKeysFromXemNumbering):
+    def test(self):
+        return self.hasTable("anime_titles")
+
+    def execute(self):
+        self.connection.action("CREATE TABLE anime_titles (title TEXT, aid NUMERIC)")
+
+class Add_anime_titles_last_update(Add_anime_titles):
+    def test(self):
+        return self.hasTable("anime_titles_last_update")
+
+    def execute(self):
+        self.connection.action("CREATE TABLE anime_titles_last_update (time NUMERIC)")
