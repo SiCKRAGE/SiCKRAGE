@@ -192,7 +192,6 @@ class DelugeAPI(GenericClient):
 
         return not self.response.json()['error']
 
-        return True
 
     def _set_torrent_path(self, result):
 

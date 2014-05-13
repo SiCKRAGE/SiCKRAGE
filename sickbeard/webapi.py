@@ -2156,8 +2156,6 @@ class CMD_ShowPause(ApiCall):
             showObj.paused = 0
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has been unpaused")
 
-        return _responds(RESULT_FAILURE, msg=str(showObj.name) + " was unable to be paused")
-
 
 class CMD_ShowRefresh(ApiCall):
     _help = {"desc": "refresh a show in sickbeard",
