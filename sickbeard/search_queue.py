@@ -223,7 +223,7 @@ class BacklogQueueItem(generic_queue.QueueItem):
                 logger.log(u"ERROR: expected to find a single show matching " + sqlEp["showid"])
                 return None
 
-            if show == None:
+            if show is None:
                 logger.log(u"Unable to find the show with ID " + str(
                     sqlEp["showid"]) + " in your show list! DB value was " + str(sqlEp), logger.ERROR)
                 return None

@@ -275,7 +275,7 @@ class TVCache():
                 season = int(sql_results[0]["season"])
                 episodes = [int(sql_results[0]["episode"])]
         else:
-            season = parse_result.season_number if parse_result.season_number != None else 1
+            season = parse_result.season_number if parse_result.season_number is not None else 1
             episodes = parse_result.episode_numbers
 
         if season and episodes:
@@ -311,7 +311,7 @@ class TVCache():
 
         sql = "SELECT * FROM [" + self.providerID + "] WHERE name LIKE '%.PROPER.%' OR name LIKE '%.REPACK.%'"
 
-        if date != None:
+        if date is not None:
             sql += " AND time >= " + str(int(time.mktime(date.timetuple())))
 
         return filter(lambda x: x['indexerid'] != 0, myDB.select(sql))
