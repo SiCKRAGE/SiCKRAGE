@@ -57,7 +57,7 @@ def _downloadResult(result):
 
     newResult = False
 
-    if resProvider == None:
+    if resProvider is None:
         logger.log(u"Invalid provider name - this is a coding error, report it please", logger.ERROR)
         return False
 
@@ -119,7 +119,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
         for curEp in result.episodes:
             if datetime.date.today() - curEp.airdate <= datetime.timedelta(days=7):
                 result.priority = 1
-    if re.search('(^|[\. _-])(proper|repack)([\. _-]|$)', result.name, re.I) != None:
+    if re.search('(^|[\. _-])(proper|repack)([\. _-]|$)', result.name, re.I) is not None:
         endStatus = SNATCHED_PROPER
 
     # NZBs can be sent straight to SAB or saved to disk

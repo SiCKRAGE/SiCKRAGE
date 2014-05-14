@@ -137,7 +137,7 @@ class DelugeAPI(GenericClient):
             self._request(method='post', data=post_data)
             labels = self.response.json()['result']
 
-            if labels != None:
+            if labels is not None:
                 if label not in labels:
                     logger.log(self.name + ': ' + label + u" label does not exist in Deluge we must add it",
                                logger.DEBUG)
@@ -192,7 +192,6 @@ class DelugeAPI(GenericClient):
 
         return not self.response.json()['error']
 
-        return True
 
     def _set_torrent_path(self, result):
 

@@ -280,8 +280,8 @@ class GenericProvider:
 
                 if not (self.show.air_by_date or self.show.sports):
                     if not len(parse_result.episode_numbers) and (
-                                    parse_result.season_number != None and parse_result.season_number != ep_obj.season) or (
-                                    parse_result.season_number == None and ep_obj.season != 1):
+                                    parse_result.season_number is not None and parse_result.season_number != ep_obj.season) or (
+                                    parse_result.season_number is None and ep_obj.season != 1):
                         logger.log(u"The result " + title + " doesn't seem to be a valid season for season " + str(
                             ep_obj.season) + ", ignoring", logger.DEBUG)
                         continue

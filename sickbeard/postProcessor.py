@@ -440,10 +440,10 @@ class PostProcessor(object):
         # remember whether it's a proper
         if parse_result.extra_info:
             self.is_proper = re.search('(^|[\. _-])(proper|repack)([\. _-]|$)', parse_result.extra_info,
-                                       re.I) != None
+                                       re.I) is not None
 
         # if the result is complete then remember that for later
-        if parse_result.series_name and parse_result.season_number != None and parse_result.episode_numbers and parse_result.release_group:
+        if parse_result.series_name and parse_result.season_number is not None and parse_result.episode_numbers and parse_result.release_group:
             test_name = ek.ek(os.path.basename, parse_result.original_name)
             if test_name == self.nzb_name:
                 self.good_results[self.NZB_NAME] = True
@@ -553,7 +553,7 @@ class PostProcessor(object):
             if cur_quality and not (self.in_history and quality):
                 quality = cur_quality
 
-            if cur_season != None:
+            if cur_season is not None:
                 season = cur_season
             if cur_episodes:
                 episodes = cur_episodes
@@ -578,12 +578,12 @@ class PostProcessor(object):
                     continue
 
             # if there's no season then we can hopefully just use 1 automatically
-            elif season == None and indexer_id and indexer:
+            elif season is None and indexer_id and indexer:
                 myDB = db.DBConnection()
                 numseasonsSQlResult = myDB.select(
                     "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and indexer = ? and season != 0",
                     [indexer_id, indexer])
-                if int(numseasonsSQlResult[0][0]) == 1 and season == None:
+                if int(numseasonsSQlResult[0][0]) == 1 and season is None:
                     self._log(
                         u"Don't have a season number, but this show appears to only have 1 season, setting seasonnumber to 1...",
                         logger.DEBUG)
@@ -637,7 +637,7 @@ class PostProcessor(object):
                 curEp.scene_episode) + " to Indexer numbering" + str(curEp.season) + "x" + str(curEp.episode))
 
             # associate all the episodes together under a single root episode
-            if root_ep == None:
+            if root_ep is None:
                 root_ep = curEp
                 root_ep.relatedEps = []
             elif curEp not in root_ep.relatedEps:
@@ -794,7 +794,7 @@ class PostProcessor(object):
 
         # try to find the file info
         (indexer_id, indexer, season, episodes, quality) = self._find_info()
-        if not indexer_id or not indexer or season == None or not episodes:
+        if not indexer_id or not indexer or season is None or not episodes:
             self._log(u"Not enough information to determine what episode this is", logger.DEBUG)
             self._log(u"Quitting post-processing", logger.DEBUG)
             return False
