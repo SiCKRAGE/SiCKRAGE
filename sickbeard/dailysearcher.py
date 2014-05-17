@@ -131,10 +131,6 @@ class DailySearcher():
 
                 # find the best result for the current episode
                 bestResult = None
-                for curResult in curFoundResults[curEp]:
-                    if not bestResult or bestResult.quality < curResult.quality:
-                        bestResult = curResult
-
                 bestResult = pickBestResult(curFoundResults[curEp], curEp.show)
 
                 # if all results were rejected move on to the next episode
