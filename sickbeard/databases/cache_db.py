@@ -128,3 +128,17 @@ class AddLastSearch(RemoveKeysFromXemNumbering):
 
     def execute(self):
         self.connection.action("CREATE TABLE lastSearch (provider TEXT, time NUMERIC)")
+
+class AddAnimeTitles(AddLastSearch):
+    def test(self):
+        return self.hasTable("AnimeTitles")
+
+    def execute(self):
+        self.connection.action("CREATE TABLE AnimeTitles (anime TEXT, aid NUMERIC)")
+
+class AddAniDBCache(AddAnimeTitles):
+    def test(self):
+        return self.hasTable("AniDBCache")
+
+    def execute(self):
+        self.connection.action("CREATE TABLE AniDBCache (url TEXT, lastfetched NUMERIC, respose TEXT)")
