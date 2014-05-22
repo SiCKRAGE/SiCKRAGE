@@ -134,11 +134,11 @@ class AddAnimeTitles(AddLastSearch):
         return self.hasTable("AnimeTitles")
 
     def execute(self):
-        self.connection.action("CREATE TABLE AnimeTitles (anime TEXT, aid NUMERIC)")
+        self.connection.action("CREATE TABLE AnimeTitles (anime TEXT, aid NUMERIC, lang TEXT)")
 
 class AddAniDBCache(AddAnimeTitles):
     def test(self):
         return self.hasTable("AniDBCache")
 
     def execute(self):
-        self.connection.action("CREATE TABLE AniDBCache (url TEXT, lastfetched NUMERIC, respose TEXT)")
+        self.connection.action("CREATE TABLE AniDBCache (url TEXT, lastfetched NUMERIC, response TEXT)")
