@@ -1,8 +1,10 @@
 from lib.tvdb_api.tvdb_api import Tvdb
 from lib.tvrage_api.tvrage_api import TVRage
+from lib.anidb_api.anidb_api import AniDB
 
 INDEXER_TVDB = 1
 INDEXER_TVRAGE = 2
+INDEXER_ANIDB = 3
 
 initConfig = {}
 indexerConfig = {}
@@ -36,6 +38,15 @@ indexerConfig[INDEXER_TVRAGE] = {
     },
 }
 
+indexerConfig[INDEXER_ANIDB] = {
+    'id': INDEXER_ANIDB,
+    'name': 'AniDB',
+    'module': AniDB,
+    'api_params': {'apikey': '',
+                   'language': 'en'
+    },
+    }
+
 # TVDB Indexer Settings
 indexerConfig[INDEXER_TVDB]['xem_origin'] = 'tvdb'
 indexerConfig[INDEXER_TVDB]['icon'] = 'thetvdb16.png'
@@ -49,3 +60,10 @@ indexerConfig[INDEXER_TVRAGE]['icon'] = 'tvrage16.png'
 indexerConfig[INDEXER_TVRAGE]['scene_url'] = 'http://raw.github.com/echel0n/sb_tvrage_scene_exceptions/master/exceptions.txt'
 indexerConfig[INDEXER_TVRAGE]['show_url'] = 'http://tvrage.com/shows/id-'
 indexerConfig[INDEXER_TVRAGE]['base_url'] = 'http://tvrage.com/showinfo.php?key=%(apikey)s&sid=' % indexerConfig[INDEXER_TVRAGE]['api_params']
+
+# ANIDB Indexer Settings
+indexerConfig[INDEXER_ANIDB]['xem_origin'] = 'anidb'
+indexerConfig[INDEXER_ANIDB]['icon'] = 'anidb16.png'
+indexerConfig[INDEXER_ANIDB]['scene_url'] = 'http://raw.github.com/Ether009/sb_anidb_scene_exceptions/master/exceptions.txt'
+indexerConfig[INDEXER_ANIDB]['show_url'] = 'http://anidb.net/perl-bin/animedb.pl?show=anime&aid='
+indexerConfig[INDEXER_ANIDB]['base_url'] = 'http://api.anidb.net:9001/httpapi?client=sickrage&clientver=1&protover=1&request=anime&aid='
