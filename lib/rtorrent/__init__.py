@@ -199,6 +199,8 @@ class RTorrent:
 
         return(func_name)
 
+    #This function is not standard from https://github.com/cjlucas/rtorrent-python
+    #I am assuming it came from the sickbeard project in general
     def load_magnet(self, magneturl, info_hash, start=False, verbose=False, verify_load=True):
 
         p = self._get_conn()
@@ -216,7 +218,7 @@ class RTorrent:
             while i < MAX_RETRIES:
                 for torrent in self.get_torrents():
                     if torrent.info_hash != info_hash:
-                        break
+                        continue
                     time.sleep(1)
                     i += 1
 
