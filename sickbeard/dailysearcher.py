@@ -17,10 +17,9 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import with_statement
-import time
+
 import datetime
 import threading
-import traceback
 
 import sickbeard
 from sickbeard import logger
@@ -28,9 +27,6 @@ from sickbeard import db
 from sickbeard import common
 from sickbeard import helpers
 from sickbeard import exceptions
-from sickbeard.exceptions import ex
-from sickbeard.search import pickBestResult, snatchEpisode
-from sickbeard import generic_queue
 
 class DailySearcher():
     def __init__(self):
@@ -41,9 +37,6 @@ class DailySearcher():
     def run(self, force=False):
 
         self.amActive = True
-
-        # remove names from cache that link back to active shows that we watch
-        sickbeard.name_cache.syncNameCache()
 
         logger.log(u"Searching for coming episodes and 1 weeks worth of previously WANTED episodes ...")
 
@@ -61,12 +54,12 @@ class DailySearcher():
                 show = helpers.findCertainShow(sickbeard.showList, int(sqlEp["showid"]))
             except exceptions.MultipleShowObjectsException:
                 logger.log(u"ERROR: expected to find a single show matching " + sqlEp["showid"])
-                return None
+                break
 
-            if show == None:
+            if not show:
                 logger.log(u"Unable to find the show with ID " + str(
                     sqlEp["showid"]) + " in your show list! DB value was " + str(sqlEp), logger.ERROR)
-                return None
+                break
 
             ep = show.getEpisode(sqlEp["season"], sqlEp["episode"])
             with ep.lock:
@@ -88,7 +81,13 @@ class DailySearcher():
         if len(todaysEps):
             for show in todaysEps:
                 segment = todaysEps[show]
+
+                # remove show from name cache if marked invalid
+                sickbeard.name_cache.clearCache(show)
+
                 dailysearch_queue_item = sickbeard.search_queue.DailySearchQueueItem(show, segment)
-                sickbeard.searchQueueScheduler.action.add_item(dailysearch_queue_item)  #@UndefinedVariable
+                sickbeard.searchQueueScheduler.action.add_item(dailysearch_queue_item)
         else:
             logger.log(u"Could not find any needed episodes to search for ...")
+
+        self.amActive = False

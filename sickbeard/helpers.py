@@ -680,7 +680,6 @@ def is_anime_in_show_list():
 def update_anime_support():
     sickbeard.ANIMESUPPORT = is_anime_in_show_list()
 
-
 def get_all_episodes_from_absolute_number(show, indexer_id, absolute_numbers):
     if len(absolute_numbers) == 0:
         raise EpisodeNotFoundByAbsoluteNumberException()
@@ -1014,21 +1013,14 @@ def get_show_by_name(name, useIndexer=False):
         showObj = sickbeard.name_cache.retrieveShowFromCache(name)
         if showObj:
             return showObj
-
         if not showObj and sickbeard.showList:
-            showNames = list(set(sickbeard.show_name_helpers.sceneToNormalShowNames(name)))
-            for showName in showNames:
-                if showName in sickbeard.scene_exceptions.exceptionIndexerCache:
-                    showObj = findCertainShow(sickbeard.showList, int(sickbeard.scene_exceptions.exceptionIndexerCache[showName]))
-                    if showObj:
-                        break
+            if name in sickbeard.scene_exceptions.exceptionIndexerCache:
+                showObj = findCertainShow(sickbeard.showList, int(sickbeard.scene_exceptions.exceptionIndexerCache[name]))
 
-                if useIndexer and not showObj:
-                    (sn, idx, id) = searchIndexerForShowID(showName, ui=classes.ShowListUI)
-                    if id:
-                        showObj = findCertainShow(sickbeard.showList, int(id))
-                        if showObj:
-                            break
+            if useIndexer and not showObj:
+                (sn, idx, id) = searchIndexerForShowID(name, ui=classes.ShowListUI)
+                if id:
+                    showObj = findCertainShow(sickbeard.showList, int(id))
 
         # add show to cache
         if showObj:
