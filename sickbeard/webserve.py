@@ -80,32 +80,32 @@ except ImportError:
 from lib import adba
 
 from Cheetah.Template import Template
-from tornado import gen, autoreload
-from tornado.web import RequestHandler, RedirectHandler, HTTPError, asynchronous
-from tornado.ioloop import IOLoop
+from tornado import gen
+from tornado.web import RequestHandler, HTTPError, asynchronous
 
 # def _handle_reverse_proxy():
 # if sickbeard.HANDLE_REVERSE_PROXY:
 # cherrypy.lib.cptools.proxy()
 
-
 # cherrypy.tools.handle_reverse_proxy = cherrypy.Tool('before_handler', _handle_reverse_proxy)
 
 req_headers = None
-
 
 def authenticated(handler_class):
     def wrap_execute(handler_execute):
         def basicauth(handler, transforms, *args, **kwargs):
             def _request_basic_auth(handler):
                 handler.set_status(401)
-                handler.set_header('WWW-Authenticate', 'Basic realm=Restricted')
+                handler.set_header('WWW-Authenticate', 'Basic realm="SickRage"')
                 handler._transforms = []
                 handler.finish()
                 return False
 
             try:
                 if not (sickbeard.WEB_USERNAME and sickbeard.WEB_PASSWORD):
+                    return True
+                elif handler.request.uri.startswith('/calendar') or (
+                    handler.request.uri.startswith('/api') and '/api/builder' not in handler.request.uri):
                     return True
 
                 auth_hdr = handler.request.headers.get('Authorization')
@@ -134,6 +134,7 @@ def authenticated(handler_class):
     handler_class._execute = wrap_execute(handler_class._execute)
     return handler_class
 
+
 @authenticated
 class IndexHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
@@ -143,22 +144,35 @@ class IndexHandler(RequestHandler):
         sickbeard.REMOTE_IP = self.request.remote_ip
         req_headers = self.request.headers
 
-    def delist_arguments(self, args):
-        """
-        Takes a dictionary, 'args' and de-lists any single-item lists then
-        returns the resulting dictionary.
+    def http_error_401_handler(self):
+        """ Custom handler for 401 error """
+        return r'''<!DOCTYPE html>
+    <html>
+        <head>
+            <title>%s</title>
+        </head>
+        <body>
+            <br/>
+            <font color="#0000FF">Error %s: You need to provide a valid username and password.</font>
+        </body>
+    </html>
+    ''' % ('Access denied', 401)
 
-        In other words, {'foo': ['bar']} would become {'foo': 'bar'}
-        """
-        for arg, value in args.items():
-            if len(value) == 1:
-                args[arg] = value[0]
-        return args
+    def http_error_404_handler(self):
+        """ Custom handler for 404 error, redirect back to main page """
+        self.redirect('/home/')
+
+    def write_error(self, status_code, **kwargs):
+        if status_code == 404:
+            self.redirect('/home/')
+        elif status_code == 401:
+            self.finish(self.http_error_401_handler())
+        else:
+            super(IndexHandler, self).write_error(status_code, **kwargs)
 
     def _dispatch(self):
 
-        args = None
-        path = self.request.uri.split('?')[0]
+        path = self.request.uri.replace(sickbeard.WEB_ROOT, '').split('?')[0]
 
         method = path.strip('/').split('/')[-1]
         if path.startswith('/api'):
@@ -179,8 +193,10 @@ class IndexHandler(RequestHandler):
 
         if klass and not method.startswith('_'):
             # Sanitize argument lists:
-            if self.request.arguments:
-                args = self.delist_arguments(self.request.arguments)
+            args = self.request.arguments
+            for arg, value in args.items():
+                if len(value) == 1:
+                    args[arg] = value[0]
 
             # Regular method handler for classes
             func = getattr(klass, method, None)
@@ -193,30 +209,32 @@ class IndexHandler(RequestHandler):
                     func = getattr(klass, 'index', None)
 
             if func:
-                if args:
-                    return func(**args)
-                else:
-                    return func()
+                return func(**args)
 
         raise HTTPError(404)
-
+    
     def redirect(self, url, permanent=False, status=None):
-        if not self._transforms:
-            self._transforms = []
-
+        self._transforms = []
         super(IndexHandler, self).redirect(sickbeard.WEB_ROOT + url, permanent, status)
 
-    @asynchronous
-    def get(self, *args, **kwargs):
-        try:
-            self.finish(self._dispatch())
-        except Exception as e:
-            logger.log(ex(e), logger.ERROR)
-            logger.log(u"Traceback: " + traceback.format_exc(), logger.DEBUG)
+        super(IndexHandler, self).redirect(url, permanent, status)
 
+    @asynchronous
+    @gen.engine
+    def get(self, *args, **kwargs):
+        response = yield gen.Task(self.getresponse, self._dispatch)
+        self.finish(response)
+
+    @asynchronous
+    @gen.engine
     def post(self, *args, **kwargs):
-        return self._dispatch()
-    
+        response = yield gen.Task(self.getresponse, self._dispatch)
+        self.finish(response)
+
+    def getresponse(self, func, callback):
+        response = func()
+        callback(response)
+
     def robots_txt(self, *args, **kwargs):
         """ Keep web crawlers out """
         self.set_header('Content-Type', 'text/plain')
@@ -257,7 +275,7 @@ class IndexHandler(RequestHandler):
 
         sickbeard.HOME_LAYOUT = layout
 
-        self.redirect("/home/")
+        return self.redirect("/home/")
 
     def setHistoryLayout(self, layout):
 
@@ -266,13 +284,13 @@ class IndexHandler(RequestHandler):
 
         sickbeard.HISTORY_LAYOUT = layout
 
-        self.redirect("/history/")
+        return self.redirect("/history/")
 
     def toggleDisplayShowSpecials(self, show):
 
         sickbeard.DISPLAY_SHOW_SPECIALS = not sickbeard.DISPLAY_SHOW_SPECIALS
 
-        self.redirect("/home/displayShow?show=" + show)
+        return self.redirect("/home/displayShow?show=" + show)
 
     def setComingEpsLayout(self, layout):
         if layout not in ('poster', 'banner', 'list'):
@@ -280,13 +298,13 @@ class IndexHandler(RequestHandler):
 
         sickbeard.COMING_EPS_LAYOUT = layout
 
-        self.redirect("/comingEpisodes/")
+        return self.redirect("/comingEpisodes/")
 
     def toggleComingEpsDisplayPaused(self, *args, **kwargs):
 
         sickbeard.COMING_EPS_DISPLAY_PAUSED = not sickbeard.COMING_EPS_DISPLAY_PAUSED
 
-        self.redirect("/comingEpisodes/")
+        return self.redirect("/comingEpisodes/")
 
     def setComingEpsSort(self, sort):
         if sort not in ('date', 'network', 'show'):
@@ -294,7 +312,7 @@ class IndexHandler(RequestHandler):
 
         sickbeard.COMING_EPS_SORT = sort
 
-        self.redirect("/comingEpisodes/")
+        return self.redirect("/comingEpisodes/")
 
     def comingEpisodes(self, layout="None"):
 
@@ -447,7 +465,6 @@ class IndexHandler(RequestHandler):
 
     browser = WebFileBrowser
 
-
 class PageTemplate(Template):
     def __init__(self, *args, **KWs):
         KWs['file'] = os.path.join(sickbeard.PROG_DIR, "gui/" + sickbeard.GUI_NAME + "/interfaces/default/",
@@ -499,7 +516,7 @@ class IndexerWebUI(IndexHandler):
         showDirList = ""
         for curShowDir in self.config['_showDir']:
             showDirList += "showDir=" + curShowDir + "&"
-        self.redirect("/home/addShows/addShow?" + showDirList + "seriesList=" + searchList)
+        return self.redirect("/home/addShows/addShow?" + showDirList + "seriesList=" + searchList)
 
 
 def _munge(string):
@@ -578,7 +595,7 @@ class ManageSearches(IndexHandler):
             logger.log(u"Backlog search forced")
             ui.notifications.message('Backlog search started')
 
-        self.redirect("/manage/manageSearches/")
+        return self.redirect("/manage/manageSearches/")
 
 
     def forceSearch(self, *args, **kwargs):
@@ -589,7 +606,7 @@ class ManageSearches(IndexHandler):
             logger.log(u"Daily search forced")
             ui.notifications.message('Daily search started')
 
-        self.redirect("/manage/manageSearches/")
+        return self.redirect("/manage/manageSearches/")
 
 
     def forceFindPropers(self, *args, **kwargs):
@@ -600,7 +617,7 @@ class ManageSearches(IndexHandler):
             logger.log(u"Find propers search forced")
             ui.notifications.message('Find propers search started')
 
-        self.redirect("/manage/manageSearches/")
+        return self.redirect("/manage/manageSearches/")
 
 
     def pauseBacklog(self, paused=None):
@@ -609,7 +626,7 @@ class ManageSearches(IndexHandler):
         else:
             sickbeard.searchQueueScheduler.action.unpause_backlog()  # @UndefinedVariable
 
-        self.redirect("/manage/manageSearches/")
+        return self.redirect("/manage/manageSearches/")
 
 
 class Manage(IndexHandler):
@@ -722,7 +739,7 @@ class Manage(IndexHandler):
 
                 Home.setStatus(cur_indexer_id, '|'.join(to_change[cur_indexer_id]), newStatus, direct=True)
 
-        self.redirect('/manage/episodeStatuses/')
+        return self.redirect('/manage/episodeStatuses/')
 
 
     def showSubtitleMissed(self, indexer_id, whichSubs):
@@ -830,7 +847,7 @@ class Manage(IndexHandler):
                 show = sickbeard.helpers.findCertainShow(sickbeard.showList, int(cur_indexer_id))
                 subtitles = show.getEpisode(int(season), int(episode)).downloadSubtitles()
 
-        self.redirect('/manage/subtitleMissed/')
+        return self.redirect('/manage/subtitleMissed/')
 
 
     def backlogShow(self, indexer_id):
@@ -840,7 +857,7 @@ class Manage(IndexHandler):
         if show_obj:
             sickbeard.backlogSearchScheduler.action.searchBacklog([show_obj])  # @UndefinedVariable
 
-        self.redirect("/manage/backlogOverview/")
+        return self.redirect("/manage/backlogOverview/")
 
 
     def backlogOverview(self, *args, **kwargs):
@@ -890,7 +907,7 @@ class Manage(IndexHandler):
         t.submenu = ManageMenu()
 
         if not toEdit:
-            self.redirect("/manage/")
+            return self.redirect("/manage/")
 
         showIDs = toEdit.split("|")
         showList = []
@@ -1055,7 +1072,7 @@ class Manage(IndexHandler):
             ui.notifications.error('%d error%s while saving changes:' % (len(errors), "" if len(errors) == 1 else "s"),
                                    " ".join(errors))
 
-        self.redirect("/manage/")
+        return self.redirect("/manage/")
 
 
     def massUpdate(self, toUpdate=None, toRefresh=None, toRename=None, toDelete=None, toMetadata=None, toSubtitle=None):
@@ -1164,7 +1181,7 @@ class Manage(IndexHandler):
             ui.notifications.message("The following actions were queued:",
                                      messageDetail)
 
-        self.redirect("/manage/")
+        return self.redirect("/manage/")
 
 
     def manageTorrents(self, *args, **kwargs):
@@ -1296,7 +1313,7 @@ class History(IndexHandler):
             myDB.action("DELETE FROM history WHERE 1=1")
 
         ui.notifications.message('History cleared')
-        self.redirect("/history/")
+        return self.redirect("/history/")
 
 
     def trimHistory(self, *args, **kwargs):
@@ -1306,7 +1323,7 @@ class History(IndexHandler):
                 (datetime.datetime.today() - datetime.timedelta(days=30)).strftime(history.dateFormat)))
 
         ui.notifications.message('Removed history entries greater than 30 days old')
-        self.redirect("/history/")
+        return self.redirect("/history/")
 
 
 ConfigMenu = [
@@ -1465,7 +1482,6 @@ class ConfigGeneral(IndexHandler):
         else:
             ui.notifications.message('Configuration Saved', ek.ek(os.path.join, sickbeard.CONFIG_FILE))
 
-        self.redirect("/home/")
 
 class ConfigSearch(IndexHandler):
     def index(self, *args, **kwargs):
@@ -2454,7 +2470,7 @@ class HomePostProcess(IndexHandler):
         if sickbeard.versionCheckScheduler.action.check_for_new_version(force=True):
             logger.log(u"Forcing version check")
 
-        self.redirect("/home/")
+        return self.redirect("/home/")
 
     def processEpisode(self, dir=None, nzbName=None, jobName=None, quiet=None, process_method=None, force=None,
                        is_priority=None, failed="0", type="auto"):
@@ -2475,7 +2491,7 @@ class HomePostProcess(IndexHandler):
             is_priority = False
 
         if not dir:
-            self.redirect("/home/postprocess/")
+            return self.redirect("/home/postprocess/")
         else:
             result = processTV.processDir(dir, nzbName, process_method=process_method, force=force,
                                           is_priority=is_priority, failed=failed, type=type)
@@ -2696,7 +2712,7 @@ class NewHomeAddShows(IndexHandler):
         def finishAddShow():
             # if there are no extra shows then go home
             if not other_shows:
-                self.redirect('/home/')
+                return self.redirect('/home/')
 
             # peel off the next one
             next_show_dir = other_shows[0]
@@ -2721,7 +2737,7 @@ class NewHomeAddShows(IndexHandler):
                 logger.log("Unable to add show due to show selection. Not anough arguments: %s" % (repr(series_pieces)),
                            logger.ERROR)
                 ui.notifications.error("Unknown error. Unable to add show due to problem with show selection.")
-                self.redirect('/home/addShows/existingShows/')
+                return self.redirect('/home/addShows/existingShows/')
             indexer = int(series_pieces[1])
             indexer_id = int(series_pieces[3])
             show_name = series_pieces[4]
@@ -2743,7 +2759,7 @@ class NewHomeAddShows(IndexHandler):
         # blanket policy - if the dir exists you should have used "add existing show" numbnuts
         if ek.ek(os.path.isdir, show_dir) and not fullShowPath:
             ui.notifications.error("Unable to add show", "Folder " + show_dir + " exists already")
-            self.redirect('/home/addShows/existingShows/')
+            return self.redirect('/home/addShows/existingShows/')
 
         # don't create show dir if config says not to
         if sickbeard.ADD_SHOWS_WO_DIR:
@@ -2754,7 +2770,7 @@ class NewHomeAddShows(IndexHandler):
                 logger.log(u"Unable to create the folder " + show_dir + ", can't add the show", logger.ERROR)
                 ui.notifications.error("Unable to add show",
                                        "Unable to create the folder " + show_dir + ", can't add the show")
-                self.redirect("/home/")
+                return self.redirect("/home/")
             else:
                 helpers.chmodAsParent(show_dir)
 
@@ -2859,7 +2875,7 @@ class NewHomeAddShows(IndexHandler):
 
         # if we're done then go home
         if not dirs_only:
-            self.redirect('/home/')
+            return self.redirect('/home/')
 
         # for the remaining shows we need to prompt for each one, so forward this on to the newShow page
         return self.newShow(dirs_only[0], dirs_only[1:])
@@ -2882,7 +2898,7 @@ class ErrorLogs(IndexHandler):
 
     def clearerrors(self, *args, **kwargs):
         classes.ErrorViewer.clear()
-        self.redirect("/errorlogs/")
+        return self.redirect("/errorlogs/")
 
 
     def viewlog(self, minLevel=logger.MESSAGE, maxLines=500):
@@ -3253,7 +3269,7 @@ class Home(IndexHandler):
     def shutdown(self, pid=None):
 
         if str(pid) != str(sickbeard.PID):
-            self.redirect("/home/")
+            return self.redirect("/home/")
 
         threading.Timer(2, sickbeard.invoke_shutdown).start()
 
@@ -3265,7 +3281,7 @@ class Home(IndexHandler):
     def restart(self, pid=None):
 
         if str(pid) != str(sickbeard.PID):
-            self.redirect("/home/")
+            return self.redirect("/home/")
 
         t = PageTemplate(file="restart.tmpl")
         t.submenu = HomeMenu()
@@ -3279,16 +3295,14 @@ class Home(IndexHandler):
     def update(self, pid=None):
 
         if str(pid) != str(sickbeard.PID):
-            self.redirect("/home/")
-
-        # auto-reload
-        tornado.autoreload.start(IOLoop.current())
+            return self.redirect("/home/")
 
         updated = sickbeard.versionCheckScheduler.action.update()  # @UndefinedVariable
-
         if updated:
             # do a hard restart
-            #threading.Timer(2, sickbeard.invoke_restart, [False]).start()
+            if not sickbeard.AUTO_UPDATE:
+                threading.Timer(2, sickbeard.invoke_restart, [False]).start()
+
             t = PageTemplate(file="restart_bare.tmpl")
             return _munge(t)
         else:
@@ -3702,7 +3716,7 @@ class Home(IndexHandler):
             ui.notifications.error('%d error%s while saving changes:' % (len(errors), "" if len(errors) == 1 else "s"),
                                    '<ul>' + '\n'.join(['<li>%s</li>' % error for error in errors]) + "</ul>")
 
-        self.redirect("/home/displayShow?show=" + show)
+        return self.redirect("/home/displayShow?show=" + show)
 
 
     def deleteShow(self, show=None):
@@ -3722,7 +3736,7 @@ class Home(IndexHandler):
         showObj.deleteShow()
 
         ui.notifications.message('<b>%s</b> has been deleted' % showObj.name)
-        self.redirect("/home/")
+        return self.redirect("/home/")
 
 
     def refreshShow(self, show=None):
@@ -3744,7 +3758,7 @@ class Home(IndexHandler):
 
         time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
-        self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
+        return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
 
     def updateShow(self, show=None, force=0):
@@ -3767,7 +3781,7 @@ class Home(IndexHandler):
         # just give it some time
         time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
-        self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
+        return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
 
     def subtitleShow(self, show=None, force=0):
@@ -3785,7 +3799,7 @@ class Home(IndexHandler):
 
         time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
-        self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
+        return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
 
     def updateXBMC(self, showName=None):
@@ -3801,7 +3815,7 @@ class Home(IndexHandler):
             ui.notifications.message("Library update command sent to XBMC host(s): " + host)
         else:
             ui.notifications.error("Unable to contact one or more XBMC host(s): " + host)
-        self.redirect('/home/')
+        return self.redirect('/home/')
 
 
     def updatePLEX(self, *args, **kwargs):
@@ -3810,7 +3824,7 @@ class Home(IndexHandler):
                 "Library update command sent to Plex Media Server host: " + sickbeard.PLEX_SERVER_HOST)
         else:
             ui.notifications.error("Unable to contact Plex Media Server host: " + sickbeard.PLEX_SERVER_HOST)
-        self.redirect('/home/')
+        return self.redirect('/home/')
 
 
     def setStatus(self, show=None, eps=None, status=None, direct=False):
@@ -3924,7 +3938,7 @@ class Home(IndexHandler):
         if direct:
             return json.dumps({'result': 'success'})
         else:
-            self.redirect("/home/displayShow?show=" + show)
+            return self.redirect("/home/displayShow?show=" + show)
 
 
     def testRename(self, show=None):
@@ -3991,7 +4005,7 @@ class Home(IndexHandler):
             return _genericMessage("Error", "Can't rename episodes when the show dir is missing.")
 
         if eps is None:
-            self.redirect("/home/displayShow?show=" + show)
+            return self.redirect("/home/displayShow?show=" + show)
 
         with db.DBConnection() as myDB:
             for curEp in eps.split('|'):
@@ -4018,7 +4032,7 @@ class Home(IndexHandler):
 
                 root_ep_obj.rename()
 
-        self.redirect("/home/displayShow?show=" + show)
+        return self.redirect("/home/displayShow?show=" + show)
 
 
     def searchEpisode(self, show=None, season=None, episode=None):
