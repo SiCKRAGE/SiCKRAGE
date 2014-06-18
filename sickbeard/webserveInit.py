@@ -107,8 +107,8 @@ def initWebServer(options={}):
 
     # Index Handler
     app.add_handlers(".*$", [
-        (r"/", RedirectHandler, {'url': '/home/'}),
         (r'/api/(.*)(/?)', webapi.Api),
+        (r'(?:%s)?/?' % options['web_root'], RedirectHandler, {'url': options['web_root'] + '/home/'}),
         (r'%s(.*)(/?)' % options['web_root'], webserve.IndexHandler)
     ])
 

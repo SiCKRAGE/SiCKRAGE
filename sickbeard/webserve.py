@@ -204,7 +204,7 @@ class IndexHandler(RequestHandler):
         if not self._transforms:
             self._transforms = []
 
-        super(IndexHandler, self).redirect(url, permanent, status)
+        super(IndexHandler, self).redirect(sickbeard.WEB_ROOT + url, permanent, status)
 
     @asynchronous
     def get(self, *args, **kwargs):
