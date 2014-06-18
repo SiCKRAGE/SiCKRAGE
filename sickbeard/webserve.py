@@ -217,8 +217,6 @@ class IndexHandler(RequestHandler):
         self._transforms = []
         super(IndexHandler, self).redirect(sickbeard.WEB_ROOT + url, permanent, status)
 
-        super(IndexHandler, self).redirect(url, permanent, status)
-
     @asynchronous
     @gen.engine
     def get(self, *args, **kwargs):
