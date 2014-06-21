@@ -40,9 +40,9 @@ def filterBadReleases(name):
     """
     Filters out non-english and just all-around stupid releases by comparing them
     to the resultFilters contents.
-    
+
     name: the release name to check
-    
+
     Returns: True if the release name is OK, False if it's bad.
     """
 
@@ -69,9 +69,9 @@ def filterBadReleases(name):
 def sceneToNormalShowNames(name):
     """
         Takes a show name from a scene dirname and converts it to a more "human-readable" format.
-    
+
     name: The show name to convert
-    
+
     Returns: a list of all the possible "normal" names
     """
 
@@ -251,16 +251,17 @@ def allPossibleShowNames(show, season=-1):
     """
     Figures out every possible variation of the name for a particular show. Includes TVDB name, TVRage name,
     country codes on the end, eg. "Show Name (AU)", and any scene exception names.
-    
+
     show: a TVShow object that we should get the names of
-    
+
     Returns: a list of all the possible show names
     """
 
     showNames = get_scene_exceptions(show.indexerid, season=season)
-    if not showNames:  # if we dont have any season specific exceptions fallback to generic exceptions
-        season = -1
-        showNames = get_scene_exceptions(show.indexerid, season=season)
+    if season != -1: # we've already checked if it is -1, why do it again?
+        if not showNames:  # if we dont have any season specific exceptions fallback to generic exceptions
+            season = -1
+            showNames = get_scene_exceptions(show.indexerid, season=season)
 
     if season in [-1, 1]:
         showNames.append(show.name)
