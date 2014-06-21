@@ -106,17 +106,17 @@ class NameParser(object):
         if not name:
             return
 
-        if not self.naming_pattern:
-            if not self.showObj:
-                for curShow in self.showList:
-                    if sickbeard.show_name_helpers.isGoodResult(name, curShow, False):
-                        self.showObj = curShow
-                        break
-
-                    time.sleep(cpu_presets[sickbeard.CPU_PRESET])
-
-            if not self.showObj:
-                return
+#        if not self.naming_pattern:
+#            if not self.showObj:
+#                for curShow in self.showList:
+#                    if sickbeard.show_name_helpers.isGoodResult(name, curShow, False):
+#                        self.showObj = curShow
+#                        break
+#
+#                    time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+#
+#            if not self.showObj:
+#                return
 
         regexMode = self.ALL_REGEX
         if self.showObj and self.showObj.is_anime:
@@ -220,8 +220,8 @@ class NameParser(object):
                 result.release_group = match.group('release_group')
                 result.score += 1
 
-#            if not self.showObj:
-#                self.showObj = helpers.get_show_by_name(result.series_name, useIndexer=self.useIndexers)
+            if not self.showObj:
+                self.showObj = helpers.get_show_by_name(result.series_name, useIndexer=self.useIndexers)
 
             if self.showObj:
                 if self.showObj.air_by_date and result.air_date:
