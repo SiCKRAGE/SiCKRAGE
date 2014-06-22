@@ -117,6 +117,34 @@ class NameParser(object):
         if not name:
             return
 
+        # Regex pattern to return the Show / Series Name regardless of the file pattern tossed at it, matched 53 show name examples from regexes.py
+        show_pattern = '''^(?:[0-9]+)?(?:\[(?:.+?)\][ ._-])?(?P<series_name>.*?)(?:[ ._-])+?(?:Season|Part)?(?:.[eE][0-9][0-9]?)?(?:.?[sS]?[0-9][0-9]?)'''
+        try:
+            show_regex = re.compile(show_pattern, re.VERBOSE | re.IGNORECASE)
+        except re.error, errormsg:
+            logger.log(u"WARNING: Invalid show_pattern, %s. %s" % (errormsg, show_pattern))
+        else:
+            name_match = show_regex.match(name)
+
+        if not self.naming_pattern:
+            if not self.showObj:
+                    # Do we have recognize this show?
+                    self.showObj = helpers.get_show_by_name(name_match.group(1), useIndexer=self.useIndexers)
+
+        if not self.showObj:
+            return
+
+        regexMode = self.ALL_REGEX
+        if self.showObj and self.showObj.is_anime:
+            regexMode = self.ANIME_REGEX
+        elif self.showObj and self.showObj.is_sports:
+            regexMode = self.SPORTS_REGEX
+        elif self.showObj and not self.showObj.is_anime and not self.showObj.is_sports:
+            regexMode = self.NORMAL_REGEX
+
+        self.compiled_regexes = {}
+        self._compile_regexes(regexMode)
+
         matches = []
         result = None
         for (cur_regex_type, cur_regex_name), cur_regex in self.compiled_regexes.items():
@@ -136,22 +164,6 @@ class NameParser(object):
                 if result.series_name:
                     result.series_name = self.clean_series_name(result.series_name)
                     result.score += 1
-
-                    if not self.showObj and not self.naming_pattern:
-                        self.showObj = helpers.get_show_by_name(result.series_name, useIndexer=self.useIndexers)
-
-                    if self.showObj:
-                        result.show = self.showObj
-                        if getattr(self.showObj, 'air_by_date', None) and not cur_regex_type == 'normal':
-                            continue
-                        elif getattr(self.showObj, 'sports', None) and not cur_regex_type == 'sports':
-                            continue
-                        elif getattr(self.showObj, 'anime', None) and not cur_regex_type == 'anime':
-                            continue
-
-            # don't continue parsing if we don't have a show object by now, try next regex pattern
-            if not self.showObj and not self.naming_pattern:
-                continue
 
             if 'season_num' in named_groups:
                 tmp_season = int(match.group('season_num'))
@@ -224,12 +236,21 @@ class NameParser(object):
                 result.release_group = match.group('release_group')
                 result.score += 1
 
-            if getattr(self.showObj, 'air_by_date', None) and result.air_date:
-                result.score += 1
-            elif getattr(self.showObj, 'sports', None) and result.sports_event_date:
-                result.score += 1
-            elif getattr(self.showObj, 'anime', None) and len(result.ab_episode_numbers):
-                result.score += 1
+            if not self.showObj:
+                self.showObj = helpers.get_show_by_name(result.series_name, useIndexer=self.useIndexers)
+
+            if self.showObj:
+                if self.showObj.air_by_date and result.air_date:
+                    result.score += 1
+                elif self.showObj.sports and result.sports_event_date:
+                    result.score += 1
+                elif self.showObj.anime and len(result.ab_episode_numbers):
+                    result.score += 1
+            else:
+                matches.append(result)
+                continue
+
+            result.show = self.showObj
 
             result.score += 1
             matches.append(result)
