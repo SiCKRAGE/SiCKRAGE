@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU General Public Licenses
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import with_statement
@@ -88,7 +88,10 @@ class DBConnection(object):
                 return self._execute(cursor, query, args).fetchall()
             return self._execute(cursor, query, args)
         finally:
-            self.close()
+            try:
+                cursor.close()
+            except:
+                self.close()
 
     def _execute(self, cursor, query, args):
         try:
