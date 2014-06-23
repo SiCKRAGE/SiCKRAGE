@@ -88,7 +88,7 @@ class DBConnection(object):
                 return self._execute(cursor, query, args).fetchall()
             return self._execute(cursor, query, args)
         finally:
-            cursor.close()
+            self.close()
 
     def _execute(self, cursor, query, args):
         try:
