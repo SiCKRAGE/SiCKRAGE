@@ -213,6 +213,15 @@ def getURL(url, post_data=None, headers=None, params=None, timeout=30, json=Fals
         logger.log(u"Connection timed out " + str(e.message) + " while loading URL " + url, logger.WARNING)
         return None
 
+    if headers:
+        if any("If-None-Match" in s for s in headers):    
+            if not r.ok:
+                return (None, None)
+            elif r.status_code == 304:
+                return (None, r.headers.get('etag'))
+            else:
+                return (r.content, r.headers.get('etag'))
+
     if r.ok:
         if json:
             return r.json()

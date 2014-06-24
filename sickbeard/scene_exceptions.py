@@ -137,17 +137,28 @@ def retrieve_exceptions():
     # exceptions are stored on github pages
     for indexer in sickbeard.indexerApi().indexers:
         logger.log(u"Checking for scene exception updates for " + sickbeard.indexerApi(indexer).name + "")
-
         url = sickbeard.indexerApi(indexer).config['scene_url']
+        myDB = db.DBConnection('cache.db')
+        rows = myDB.select("SELECT etag FROM url_etags WHERE url = ?", [url])
+        
+        if rows:
+            etag = rows[0]['etag']
+        else:
+            etag = 0
+            
+        headers = ['If-None-Match', etag]
+        (url_data, etag) = helpers.getURL(url, headers=headers)
 
-        url_data = helpers.getURL(url)
-
-        if url_data is None:
+        if url_data is None and etag is None:
             # When urlData is None, trouble connecting to github
             logger.log(u"Check scene exceptions update failed. Unable to get URL: " + url, logger.ERROR)
             continue
-
+        elif url_data is None and etag:
+            logger.log(u"No new scene exceptions found", logger.DEBUG)
+            continue
         else:
+            myDB.action("INSERT OR REPLACE INTO url_etags (url, etag) VALUES (?,?)", [url, etag])
+            logger.log(u"New scene exceptions found", logger.DEBUG)
             # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
             for cur_line in url_data.splitlines():
                 cur_line = cur_line.decode('utf-8')

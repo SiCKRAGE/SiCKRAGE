@@ -89,3 +89,11 @@ class AddSceneExceptionsRefresh(AddSceneExceptionsCustom):
     def execute(self):
         self.connection.action(
             "CREATE TABLE scene_exceptions_refresh (list TEXT PRIMARY KEY, last_refreshed INTEGER)")
+
+class AddUrlEtags(AddSceneExceptionsRefresh):
+    def test(self):
+        return self.hasTable("url_etags")
+
+    def execute(self):
+        self.connection.action(
+            "CREATE TABLE url_etags (url TEXT PRIMARY KEY, etag TEXT)")
