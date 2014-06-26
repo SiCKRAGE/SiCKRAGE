@@ -53,7 +53,7 @@ class CacheDBConnection(db.DBConnection):
         try:
             if not self.hasTable(providerName):
                 self.action(
-                    "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT)")
+                    "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT PRIMARY KEY, time NUMERIC, quality TEXT)")
         except Exception, e:
             if str(e) != "table [" + providerName + "] already exists":
                 raise
@@ -306,7 +306,7 @@ class TVCache():
             logger.log(u"Added RSS item: [" + name + "] to cache: [" + self.providerID + "]", logger.DEBUG)
 
             return [
-                "INSERT INTO [" + self.providerID + "] (name, season, episodes, indexerid, url, time, quality) VALUES (?,?,?,?,?,?,?)",
+                "INSERT OR IGNORE INTO [" + self.providerID + "] (name, season, episodes, indexerid, url, time, quality) VALUES (?,?,?,?,?,?,?)",
                 [name, season, episodeText, parse_result.show.indexerid, url, curTimestamp, quality]]
 
 
