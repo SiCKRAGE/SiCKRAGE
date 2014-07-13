@@ -325,7 +325,7 @@ class FreshOnTVCache(tvcache.TVCache):
 
         tvcache.TVCache.__init__(self, provider)
 
-        # only poll TorrentBytes every 20 minutes max
+        # poll delay in minutes
         self.minTime = 20
 
     def updateCache(self):
