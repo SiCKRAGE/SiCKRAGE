@@ -93,8 +93,8 @@ class BitSoupProvider(generic.TorrentProvider):
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
 
-        if re.search('Username or password incorrect', response.text):
-	    logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
+        if re.search('Username or password incorrect', response.text);
+            logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
             return False
 
         return True
