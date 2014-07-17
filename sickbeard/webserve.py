@@ -3668,18 +3668,18 @@ class Home(MainHandler):
                 if "global" in bwl.blackDict:
                     t.blackWords = ", ".join(bwl.blackDict["global"])
 
-                    t.whitelist = []
-                    if bwl.whiteDict.has_key("release_group"):
-                        t.whitelist = bwl.whiteDict["release_group"]
+                t.whitelist = []
+                if bwl.whiteDict.has_key("release_group"):
+                    t.whitelist = bwl.whiteDict["release_group"]
 
-                    t.blacklist = []
-                    if bwl.blackDict.has_key("release_group"):
-                        t.blacklist = bwl.blackDict["release_group"]
+                t.blacklist = []
+                if bwl.blackDict.has_key("release_group"):
+                    t.blacklist = bwl.blackDict["release_group"]
 
-                    t.groups = []
-                    if helpers.set_up_anidb_connection():
-                        anime = adba.Anime(sickbeard.ADBA_CONNECTION, name=showObj.name)
-                        t.groups = anime.get_groups()
+                t.groups = []
+                if helpers.set_up_anidb_connection():
+                    anime = adba.Anime(sickbeard.ADBA_CONNECTION, name=showObj.name)
+                    t.groups = anime.get_groups()
 
             with showObj.lock:
                 t.show = showObj
