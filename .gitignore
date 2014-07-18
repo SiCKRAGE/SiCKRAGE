@@ -10,6 +10,7 @@ autoProcessTV/autoProcessTV.cfg
 server.crt
 server.key
 restore/
+lib/adba/anime*.xml
 
 #  SB Test Related   #
 ######################
