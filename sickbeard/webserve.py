@@ -3204,7 +3204,7 @@ class Home(MainHandler):
             for show in sickbeard.showList:
                 if show.is_anime:
                     anime.append(show)
-                if show.is_sport:
+                if show.is_sports:
                     sports.append(show)
                 else:
                     shows.append(show)
