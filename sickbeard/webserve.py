@@ -1395,6 +1395,7 @@ class ConfigGeneral(MainHandler):
         sickbeard.SUBTITLES_DEFAULT = config.checkbox_to_value(subtitles)
 
         sickbeard.ANIME_DEFAULT = config.checkbox_to_value(anime)
+        sickbeard.SPORTS_DEFAULT = config.checkbox_to_value(sports)
         sickbeard.SCENE_DEFAULT = config.checkbox_to_value(scene)
 
         sickbeard.save_config()
@@ -2851,6 +2852,7 @@ class NewHomeAddShows(MainHandler):
                                                         flatten_folders=sickbeard.FLATTEN_FOLDERS_DEFAULT,
                                                         subtitles=sickbeard.SUBTITLES_DEFAULT,
                                                         anime=sickbeard.ANIME_DEFAULT,
+                                                        sports=sickbeard.SPORTS_DEFAULT,
                                                         scene=sickbeard.SCENE_DEFAULT)
 
             ui.notifications.message('Show added', 'Adding the specified show into ' + show_dir)
@@ -3033,6 +3035,7 @@ class NewHomeAddShows(MainHandler):
                                                             flatten_folders=sickbeard.FLATTEN_FOLDERS_DEFAULT,
                                                             subtitles=sickbeard.SUBTITLES_DEFAULT,
                                                             anime=sickbeard.ANIME_DEFAULT,
+                                                            sports=sickbeard.SPORTS_DEFAULT,
                                                             scene=sickbeard.SCENE_DEFAULT)
                 num_added += 1
 
