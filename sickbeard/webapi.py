@@ -1917,6 +1917,8 @@ class CMD_ShowAddNew(ApiCall):
             [])
         self.anime, args = self.check_params(args, kwargs, "anime", int(sickbeard.ANIME_DEFAULT), False, "int",
             [])
+        self.sports, args = self.check_params(args, kwargs, "sports", int(sickbeard.SPORTS_DEFAULT), False, "int",
+            [])
         self.scene, args = self.check_params(args, kwargs, "scene", int(sickbeard.SCENE_DEFAULT), False, "int",
             [])
 
