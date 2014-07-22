@@ -3715,7 +3715,7 @@ class Home(MainHandler):
     def editShow(self, show=None, location=None, anyQualities=[], bestQualities=[], exceptions_list=[],
                  flatten_folders=None, paused=None, directCall=False, air_by_date=None, sports=None, dvdorder=None,
                  indexerLang=None, subtitles=None, archive_firstmatch=None, rls_ignore_words=None,
-                 rls_require_words=None, anime=None, sports=None blackWords=None, whiteWords=None, blacklist=None, whitelist=None,
+                 rls_require_words=None, anime=None, sports=None, blackWords=None, whiteWords=None, blacklist=None, whitelist=None,
                  scene=None):
 
         if show is None:
