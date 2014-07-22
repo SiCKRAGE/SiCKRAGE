@@ -133,9 +133,9 @@ class ShowQueue(generic_queue.GenericQueue):
         return queueItemObj
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
-                lang="en", subtitles=None, anime=None, scene=None):
+                lang="en", subtitles=None, anime=None, sports=None, scene=None):
         queueItemObj = QueueItemAdd(indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang,
-                                    subtitles, anime, scene)
+                                    subtitles, anime, sports, scene)
 
         self.add_item(queueItemObj)
 
@@ -191,7 +191,7 @@ class ShowQueueItem(generic_queue.QueueItem):
 
 
 class QueueItemAdd(ShowQueueItem):
-    def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, anime,
+    def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, anime, sports,
                  scene):
 
         self.indexer = indexer
@@ -203,6 +203,7 @@ class QueueItemAdd(ShowQueueItem):
         self.lang = lang
         self.subtitles = subtitles
         self.anime = anime
+        self.sports = sports
         self.scene = scene
 
         self.show = None
@@ -290,6 +291,7 @@ class QueueItemAdd(ShowQueueItem):
             self.show.quality = self.quality if self.quality else sickbeard.QUALITY_DEFAULT
             self.show.flatten_folders = self.flatten_folders if self.flatten_folders != None else sickbeard.FLATTEN_FOLDERS_DEFAULT
             self.show.anime = self.anime if self.anime != None else sickbeard.ANIME_DEFAULT
+            self.show.sports = self.sports if self.sports != None else sickbeard.SPORTS_DEFAULT
             self.show.scene = self.scene if self.scene != None else sickbeard.SCENE_DEFAULT
             self.show.paused = False
 
