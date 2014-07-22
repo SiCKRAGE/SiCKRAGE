@@ -675,10 +675,17 @@ def is_anime_in_show_list():
             return True
     return False
 
+def is_sports_in_show_list():
+    for show in sickbeard.showList:
+        if show.is_sports:
+            return True
+    return False
 
 def update_anime_support():
     sickbeard.ANIMESUPPORT = is_anime_in_show_list()
 
+def update_sports_support():
+    sickbeard.SPORTSSUPPORT = is_sports_in_show_list()
 
 def get_absolute_number_from_season_and_episode(show, season, episode):
     myDB = db.DBConnection()
