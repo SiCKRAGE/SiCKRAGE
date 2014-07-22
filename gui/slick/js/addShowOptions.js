@@ -17,6 +17,7 @@ $(document).ready(function () {
             defaultFlattenFolders: $('#flatten_folders').prop('checked'),
             subtitles: $('#subtitles').prop('checked'),
             anime: $('#anime').prop('checked'),
+            sports: $('#sports').prop('checked'),
             scene: $('#scene').prop('checked')
         });
 
@@ -28,7 +29,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime').change(function () {
+    $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #sports').change(function () {
         $('#saveDefaultsButton').attr('disabled', false);
     });
 
