@@ -33,11 +33,19 @@
             </label>
         </div>
 
-		<div class="field-pair alt">
+	<div class="field-pair alt">
             <input type="checkbox" name="anime" id="anime" #if $sickbeard.ANIME_DEFAULT then "checked=\"checked\"" else ""# />
             <label for="anime" class="clearfix">
                 <span class="component-title">Anime</span>
                 <span class="component-desc">Is this show an Anime?</span>
+            </label>
+        </div>
+        
+        <div class="field-pair alt">
+            <input type="checkbox" name="sports" id="sports" #if $sickbeard.SPORTS_DEFAULT then "checked=\"checked\"" else ""# />
+            <label for="sports" class="clearfix">
+                <span class="component-title">Sports</span>
+                <span class="component-desc">Is this show Sports?</span>
             </label>
         </div>
 
