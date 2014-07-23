@@ -48,8 +48,8 @@ class ShowUpdater():
 
         # clean out cache directory, remove everything > 12 hours old
         if sickbeard.CACHE_DIR:
-            for indexer in sickbeard.indexerApi().indexers:
-                cache_dir = sickbeard.indexerApi(indexer).cache
+            for indexer in sickbeard.IndexerApi().indexers:
+                cache_dir = sickbeard.IndexerApi(indexer).cache
                 logger.log(u"Trying to clean cache folder " + cache_dir)
 
                 # Does our cache_dir exists
@@ -97,7 +97,7 @@ class ShowUpdater():
                 curShow.nextEpisode()
 
                 # if should_update returns True (not 'Ended') or show is selected stale 'Ended' then update, otherwise just refresh
-                if curShow.should_update(update_date=update_date) or curShow.indexerid in stale_should_update:
+                if curShow.should_update(update_date=update_date) or curShow.indexer_id in stale_should_update:
                     curQueueItem = sickbeard.showQueueScheduler.action.updateShow(curShow, True)  # @UndefinedVariable
                 else:
                     logger.log(

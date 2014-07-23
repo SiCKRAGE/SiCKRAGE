@@ -142,8 +142,8 @@ def snatchEpisode(result, endStatus=SNATCHED):
             # Sets per provider seed ratio
             result.ratio = result.provider.seedRatio()
             result.content = result.provider.getURL(result.url) if not result.url.startswith('magnet') else None
-            client = clients.getClientIstance(sickbeard.TORRENT_METHOD)()
-            dlResult = client.sendTORRENT(result)
+            client = clients.get_client_instance(sickbeard.TORRENT_METHOD)()
+            dlResult = client.send_torrent(result)
     else:
         logger.log(u"Unknown result type, unable to download it", logger.ERROR)
         dlResult = False
@@ -206,7 +206,7 @@ def pickBestResult(results, show, quality_list=None):
     bwl = None
     if show:
         if show.is_anime:
-            bwl = BlackAndWhiteList(show.indexerid)
+            bwl = BlackAndWhiteList(show.indexer_id)
     else:
         logger.log("Could not create black and white list no show was given", logger.DEBUG)
 
@@ -274,7 +274,7 @@ def isFinalResult(result):
 
     bwl = None
     if show_obj.is_anime:
-        bwl = BlackAndWhiteList(show_obj.indexerid)
+        bwl = BlackAndWhiteList(show_obj.indexer_id)
 
     any_qualities, best_qualities = Quality.splitQuality(show_obj.quality)
 
@@ -511,7 +511,7 @@ def searchProviders(show, season, episodes, manualSearch=False):
             myDB = db.DBConnection()
             allEps = [int(x["episode"]) for x in
                       myDB.select("SELECT episode FROM tv_episodes WHERE showid = ? AND season = ?",
-                                  [show.indexerid, season])]
+                                  [show.indexer_id, season])]
             logger.log(u"Episode list: " + str(allEps), logger.DEBUG)
 
             allWanted = True

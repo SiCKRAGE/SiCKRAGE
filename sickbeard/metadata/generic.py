@@ -94,10 +94,10 @@ class GenericMetadata():
         return '|'.join([str(int(x)) for x in config_list])
 
     def get_id(self):
-        return GenericMetadata.makeID(self.name)
+        return GenericMetadata.make_id(self.name)
 
     @staticmethod
-    def makeID(name):
+    def make_id(name):
         name_id = re.sub("[+]", "plus", name)
         name_id = re.sub("[^\w\d_]", "_", name_id).lower()
         return name_id
@@ -142,21 +142,21 @@ class GenericMetadata():
 
     def _has_episode_thumb(self, ep_obj):
         location = self.get_episode_thumb_path(ep_obj)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
 
     def _has_season_poster(self, show_obj, season):
         location = self.get_season_poster_path(show_obj, season)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
 
     def _has_season_banner(self, show_obj, season):
         location = self.get_season_banner_path(show_obj, season)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
@@ -275,16 +275,16 @@ class GenericMetadata():
 
     def update_show_indexer_metadata(self, show_obj):
         if self.show_metadata and show_obj and self._has_show_metadata(show_obj):
-            logger.log(u"Metadata provider " + self.name + " updating show indexer info metadata file for " + show_obj.name, logger.DEBUG)
+            logger.log(u"Metadata provider " + self.name + " updating show indexer info metadata file for " +
+                       show_obj.name, logger.DEBUG)
 
             nfo_file_path = self.get_show_file_path(show_obj)
             try:
                 with ek.ek(open, nfo_file_path, 'r') as xmlFileObj:
                     showXML = etree.ElementTree(file=xmlFileObj)
 
-
                 indexer = showXML.find('indexer')
-                indexerid = showXML.find('id')
+                indexer_id = showXML.find('id')
 
                 root = showXML.getroot()
                 if indexer:
@@ -292,10 +292,10 @@ class GenericMetadata():
                 else:
                     etree.SubElement(root, "indexer").text = str(show_obj.indexer)
 
-                if indexerid:
-                    indexerid.text = show_obj.indexerid
+                if indexer_id:
+                    indexer_id.text = show_obj.indexer_id
                 else:
-                    etree.SubElement(root, "id").text = str(show_obj.indexerid)
+                    etree.SubElement(root, "id").text = str(show_obj.indexer_id)
 
                 # Make it purdy
                 helpers.indentXML(root)
@@ -505,7 +505,7 @@ class GenericMetadata():
             logger.log(u"No thumb is available for this episode, not creating a thumb", logger.DEBUG)
             return False
 
-        thumb_data = metadata_helpers.getShowImage(thumb_url)
+        thumb_data = metadata_helpers.get_show_image(thumb_url)
 
         result = self._write_image(thumb_data, file_path)
 
@@ -608,7 +608,7 @@ class GenericMetadata():
                            logger.DEBUG)
                 continue
 
-            seasonData = metadata_helpers.getShowImage(season_url)
+            seasonData = metadata_helpers.get_show_image(season_url)
 
             if not seasonData:
                 logger.log(u"No season poster data available, skipping this season", logger.DEBUG)
@@ -656,7 +656,7 @@ class GenericMetadata():
                            logger.DEBUG)
                 continue
 
-            seasonData = metadata_helpers.getShowImage(season_url)
+            seasonData = metadata_helpers.get_show_image(season_url)
 
             if not seasonData:
                 logger.log(u"No season banner data available, skipping this season", logger.DEBUG)
@@ -748,7 +748,7 @@ class GenericMetadata():
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
-            lINDEXER_API_PARMS = sickbeard.indexerApi(show_obj.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickbeard.IndexerApi(show_obj.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['banners'] = True
 
@@ -758,15 +758,15 @@ class GenericMetadata():
             if show_obj.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = sickbeard.indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
-            indexer_show_obj = t[show_obj.indexerid]
+            t = sickbeard.IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+            indexer_show_obj = t[show_obj.indexer_id]
         except (sickbeard.indexer_error, IOError), e:
-            logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
+            logger.log(u"Unable to look up show on " + sickbeard.IndexerApi(
                 show_obj.indexer).name + ", not downloading images: " + ex(e), logger.ERROR)
             return None
 
         if image_type not in ('fanart', 'poster', 'banner', 'poster_thumb', 'banner_thumb'):
-            logger.log(u"Invalid image type " + str(image_type) + ", couldn't find it in the " + sickbeard.indexerApi(
+            logger.log(u"Invalid image type " + str(image_type) + ", couldn't find it in the " + sickbeard.IndexerApi(
                 show_obj.indexer).name + " object", logger.ERROR)
             return None
 
@@ -788,7 +788,7 @@ class GenericMetadata():
                 image_url = self._retrieve_show_images_from_tmdb(show_obj, backdrop=True)
 
         if image_url:
-            image_data = metadata_helpers.getShowImage(image_url, which)
+            image_data = metadata_helpers.get_show_image(image_url, which)
             return image_data
 
         return None
@@ -809,7 +809,7 @@ class GenericMetadata():
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
-            lINDEXER_API_PARMS = sickbeard.indexerApi(show_obj.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickbeard.IndexerApi(show_obj.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['banners'] = True
 
@@ -819,10 +819,10 @@ class GenericMetadata():
             if show_obj.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = sickbeard.indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
-            indexer_show_obj = t[show_obj.indexerid]
+            t = sickbeard.IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+            indexer_show_obj = t[show_obj.indexer_id]
         except (sickbeard.indexer_error, IOError), e:
-            logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
+            logger.log(u"Unable to look up show on " + sickbeard.IndexerApi(
                 show_obj.indexer).name + ", not downloading images: " + ex(e), logger.ERROR)
             return result
 
@@ -865,17 +865,17 @@ class GenericMetadata():
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
-            lINDEXER_API_PARMS = sickbeard.indexerApi(show_obj.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickbeard.IndexerApi(show_obj.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['banners'] = True
 
             if indexer_lang and not indexer_lang == 'en':
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
-            t = sickbeard.indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
-            indexer_show_obj = t[show_obj.indexerid]
+            t = sickbeard.IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+            indexer_show_obj = t[show_obj.indexer_id]
         except (sickbeard.indexer_error, IOError), e:
-            logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
+            logger.log(u"Unable to look up show on " + sickbeard.IndexerApi(
                 show_obj.indexer).name + ", not downloading images: " + ex(e), logger.ERROR)
             return result
 
@@ -905,7 +905,8 @@ class GenericMetadata():
 
     def retrieveShowMetadata(self, folder):
         """
-        Used only when mass adding Existing Shows, using previously generated Show metadata to reduce the need to query TVDB.
+        Used only when mass adding Existing Shows, using previously generated Show metadata to reduce the
+        need to query TVDB.
         """
 
         empty_return = (None, None, None)
@@ -922,15 +923,13 @@ class GenericMetadata():
             with ek.ek(open, metadata_path, 'r') as xmlFileObj:
                 showXML = etree.ElementTree(file=xmlFileObj)
 
-            if showXML.findtext('title') == None \
-                    or (showXML.findtext('tvdbid') == None
-                        and showXML.findtext('id') == None) \
-                            and showXML.findtext('indexer') == None:
-                logger.log(u"Invalid info in tvshow.nfo (missing name or id):" \
-                           + str(showXML.findtext('title')) + " " \
-                           + str(showXML.findtext('indexer')) + " " \
-                           + str(showXML.findtext('tvdbid')) + " " \
-                           + str(showXML.findtext('id')))
+            if showXML.findtext('title') is None \
+                    or (showXML.findtext('tvdbid') is None
+                        and showXML.findtext('id') is None) \
+                    and showXML.findtext('indexer') is None:
+                logger.log(u"Invalid info in tvshow.nfo (missing name or id):{0} {1} {2} {3}".format(
+                    str(showXML.findtext('title')), str(showXML.findtext('indexer')), str(showXML.findtext('tvdbid')),
+                    str(showXML.findtext('id'))))
                 return empty_return
 
             name = showXML.findtext('title')
@@ -940,9 +939,9 @@ class GenericMetadata():
             except:
                 indexer = None
 
-            if showXML.findtext('tvdbid') != None:
+            if showXML.findtext('tvdbid') is not None:
                 indexer_id = int(showXML.findtext('tvdbid'))
-            elif showXML.findtext('id') != None:
+            elif showXML.findtext('id') is not None:
                 indexer_id = int(showXML.findtext('id'))
             else:
                 logger.log(u"Empty <id> or <tvdbid> field in NFO, unable to find a ID", logger.WARNING)
@@ -958,7 +957,7 @@ class GenericMetadata():
                 logger.WARNING)
             return empty_return
 
-        return (indexer_id, name, indexer)
+        return indexer_id, name, indexer
 
     def _retrieve_show_images_from_tmdb(self, show, backdrop=False, poster=False):
         # get TMDB configuration info
@@ -976,7 +975,8 @@ class GenericMetadata():
         try:
             search = tmdb.Search()
             for show_name in set(allPossibleShowNames(show)):
-                for result in search.collection({'query': show_name})['results'] + search.tv({'query': show_name})['results']:
+                for result in search.collection({'query': show_name})['results'] + \
+                        search.tv({'query': show_name})['results']:
                     if backdrop and result['backdrop_path']:
                         return "{0}{1}{2}".format(base_url, max_size, result['backdrop_path'])
                     elif poster and result['poster_path']:

@@ -180,7 +180,7 @@ class WDTVMetadata(generic.GenericMetadata):
         indexer_lang = ep_obj.show.lang
 
         try:
-            lINDEXER_API_PARMS = sickbeard.indexerApi(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickbeard.IndexerApi(ep_obj.show.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['actors'] = True
 
@@ -190,12 +190,12 @@ class WDTVMetadata(generic.GenericMetadata):
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = sickbeard.indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
-            myShow = t[ep_obj.show.indexerid]
+            t = sickbeard.IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            myShow = t[ep_obj.show.indexer_id]
         except sickbeard.indexer_shownotfound, e:
             raise exceptions.ShowNotFoundException(e.message)
         except sickbeard.indexer_error, e:
-            logger.log(u"Unable to connect to " + sickbeard.indexerApi(
+            logger.log(u"Unable to connect to " + sickbeard.IndexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - " + ex(e), logger.ERROR)
             return False
 
@@ -208,8 +208,8 @@ class WDTVMetadata(generic.GenericMetadata):
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
                 logger.log(u"Unable to find episode " + str(curEpToWrite.season) + "x" + str(
-                    curEpToWrite.episode) + " on " + sickbeard.indexerApi(
-                    ep_obj.show.indexer).name + "... has it been removed? Should I delete from db?")
+                    curEpToWrite.episode) + " on " + sickbeard.IndexerApi(
+                        ep_obj.show.indexer).name + "... has it been removed? Should I delete from db?")
                 return None
 
             if getattr(myEp, 'firstaired', None) is None and ep_obj.season == 0:
@@ -225,7 +225,7 @@ class WDTVMetadata(generic.GenericMetadata):
 
             # TODO: get right EpisodeID
             episodeID = etree.SubElement(episode, "id")
-            episodeID.text = str(curEpToWrite.indexerid)
+            episodeID.text = str(curEpToWrite.indexer_id)
 
             title = etree.SubElement(episode, "title")
             title.text = ep_obj.prettyName()
@@ -235,7 +235,7 @@ class WDTVMetadata(generic.GenericMetadata):
                 seriesName.text = myShow["seriesname"]
 
             episodeName = etree.SubElement(episode, "episode_name")
-            if curEpToWrite.name != None:
+            if curEpToWrite.name is not None:
                 episodeName.text = curEpToWrite.name
 
             seasonNumber = etree.SubElement(episode, "season_number")
@@ -279,11 +279,11 @@ class WDTVMetadata(generic.GenericMetadata):
                     cur_actor_name.text = actor['name']
                     cur_actor_role = etree.SubElement(cur_actor, "role")
                     cur_actor_role_text = actor['role']
-                    if cur_actor_role_text != None:
+                    if cur_actor_role_text is not None:
                         cur_actor_role.text = cur_actor_role_text
 
             overview = etree.SubElement(episode, "overview")
-            if curEpToWrite.description != None:
+            if curEpToWrite.description is not None:
                 overview.text = curEpToWrite.description
 
             # Make it purdy

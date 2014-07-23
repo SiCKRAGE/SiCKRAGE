@@ -141,13 +141,13 @@ class Api(webserve.MainHandler):
 
         myDB = db.DBConnection(row_type="dict")
         for curShow in t.sortedShowList:
-            seasonSQLResults[curShow.indexerid] = myDB.select(
-                "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season DESC", [curShow.indexerid])
+            seasonSQLResults[curShow.indexer_id] = myDB.select(
+                "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season DESC", [curShow.indexer_id])
 
         for curShow in t.sortedShowList:
-            episodeSQLResults[curShow.indexerid] = myDB.select(
+            episodeSQLResults[curShow.indexer_id] = myDB.select(
                 "SELECT DISTINCT season,episode FROM tv_episodes WHERE showid = ? ORDER BY season DESC, episode DESC",
-                [curShow.indexerid])
+                [curShow.indexer_id])
 
         t.seasonSQLResults = seasonSQLResults
         t.episodeSQLResults = episodeSQLResults
@@ -270,15 +270,15 @@ def filter_params(cmd, args, kwargs):
         all args and kwarks are lowerd
 
         cmd are separated by "|" e.g. &cmd=shows|future
-        kwargs are namespaced with "." e.g. show.indexerid=101501
+        kwargs are namespaced with "." e.g. show.indexer_id=101501
         if a karg has no namespace asing it anyways (global)
 
         full e.g.
-        /api?apikey=1234&cmd=show.seasonlist_asd|show.seasonlist_2&show.seasonlist_asd.indexerid=101501&show.seasonlist_2.indexerid=79488&sort=asc
+        /api?apikey=1234&cmd=show.seasonlist_asd|show.seasonlist_2&show.seasonlist_asd.indexer_id=101501&show.seasonlist_2.indexer_id=79488&sort=asc
 
         two calls of show.seasonlist
         one has the index "asd" the other one "2"
-        the "indexerid" kwargs / params have the indexed cmd as a namspace
+        the "indexer_id" kwargs / params have the indexed cmd as a namspace
         and the kwarg / param "sort" is a used as a global
     """
     curArgs = []
@@ -367,8 +367,8 @@ class ApiCall(object):
         """ function to check passed params for the shorthand wrapper
             and to detect missing/required param
         """
-        # Fix for applications that send tvdbid instead of indexerid
-        if key == "indexerid" and "indexerid" not in kwargs:
+        # Fix for applications that send tvdbid instead of indexer_id
+        if key == "indexer_id" and "indexer_id" not in kwargs:
             key = "tvdbid"
 
         missing = True
@@ -731,13 +731,13 @@ class CMD_ComingEpisodes(ApiCall):
 
         myDB = db.DBConnection(row_type="dict")
         sql_results = myDB.select(
-            "SELECT airdate, airs, episode, name AS 'ep_name', description AS 'ep_plot', network, season, showid AS 'indexerid', show_name, tv_shows.quality AS quality, tv_shows.status AS 'show_status', tv_shows.paused AS 'paused' FROM tv_episodes, tv_shows WHERE season != 0 AND airdate >= ? AND airdate < ? AND tv_shows.indexer_id = tv_episodes.showid AND tv_episodes.status NOT IN (" + ','.join(
+            "SELECT airdate, airs, episode, name AS 'ep_name', description AS 'ep_plot', network, season, showid AS 'indexer_id', show_name, tv_shows.quality AS quality, tv_shows.status AS 'show_status', tv_shows.paused AS 'paused' FROM tv_episodes, tv_shows WHERE season != 0 AND airdate >= ? AND airdate < ? AND tv_shows.indexer_id = tv_episodes.showid AND tv_episodes.status NOT IN (" + ','.join(
                 ['?'] * len(qualList)) + ")", [today, next_week] + qualList)
         for cur_result in sql_results:
-            done_show_list.append(int(cur_result["indexerid"]))
+            done_show_list.append(int(cur_result["indexer_id"]))
 
         more_sql_results = myDB.select(
-            "SELECT airdate, airs, episode, name AS 'ep_name', description AS 'ep_plot', network, season, showid AS 'indexerid', show_name, tv_shows.quality AS quality, tv_shows.status AS 'show_status', tv_shows.paused AS 'paused' FROM tv_episodes outer_eps, tv_shows WHERE season != 0 AND showid NOT IN (" + ','.join(
+            "SELECT airdate, airs, episode, name AS 'ep_name', description AS 'ep_plot', network, season, showid AS 'indexer_id', show_name, tv_shows.quality AS quality, tv_shows.status AS 'show_status', tv_shows.paused AS 'paused' FROM tv_episodes outer_eps, tv_shows WHERE season != 0 AND showid NOT IN (" + ','.join(
                 ['?'] * len(
                     done_show_list)) + ") AND tv_shows.indexer_id = outer_eps.showid AND airdate = (SELECT airdate FROM tv_episodes inner_eps WHERE inner_eps.season != 0 AND inner_eps.showid = outer_eps.showid AND inner_eps.airdate >= ? ORDER BY inner_eps.airdate ASC LIMIT 1) AND outer_eps.status NOT IN (" + ','.join(
                 ['?'] * len(Quality.DOWNLOADED + Quality.SNATCHED)) + ")",
@@ -745,7 +745,7 @@ class CMD_ComingEpisodes(ApiCall):
         sql_results += more_sql_results
 
         more_sql_results = myDB.select(
-            "SELECT airdate, airs, episode, name AS 'ep_name', description AS 'ep_plot', network, season, showid AS 'indexerid', show_name, tv_shows.quality AS quality, tv_shows.status AS 'show_status', tv_shows.paused AS 'paused' FROM tv_episodes, tv_shows WHERE season != 0 AND tv_shows.indexer_id = tv_episodes.showid AND airdate < ? AND airdate >= ? AND tv_episodes.status = ? AND tv_episodes.status NOT IN (" + ','.join(
+            "SELECT airdate, airs, episode, name AS 'ep_name', description AS 'ep_plot', network, season, showid AS 'indexer_id', show_name, tv_shows.quality AS quality, tv_shows.status AS 'show_status', tv_shows.paused AS 'paused' FROM tv_episodes, tv_shows WHERE season != 0 AND tv_shows.indexer_id = tv_episodes.showid AND airdate < ? AND airdate >= ? AND tv_episodes.status = ? AND tv_episodes.status NOT IN (" + ','.join(
                 ['?'] * len(qualList)) + ")", [today, recently, WANTED] + qualList)
         sql_results += more_sql_results
 
@@ -799,7 +799,7 @@ class CMD_ComingEpisodes(ApiCall):
             # start day of the week on 1 (monday)
             ep["weekday"] = 1 + datetime.date.fromordinal(ordinalAirdate).weekday()
             # Add tvdbid for backward compability
-            ep["tvdbid"] = ep['indexerid']
+            ep["tvdbid"] = ep['indexer_id']
 
             # TODO: check if this obsolete
             if not status in finalEpResults:
@@ -812,7 +812,7 @@ class CMD_ComingEpisodes(ApiCall):
 
 class CMD_Episode(ApiCall):
     _help = {"desc": "display detailed info about an episode",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
                                     "season": {"desc": "the season number"},
                                     "episode": {"desc": "the episode number"}
              },
@@ -823,7 +823,7 @@ class CMD_Episode(ApiCall):
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         self.s, args = self.check_params(args, kwargs, "season", None, True, "int", [])
         self.e, args = self.check_params(args, kwargs, "episode", None, True, "int", [])
         # optional
@@ -833,14 +833,14 @@ class CMD_Episode(ApiCall):
 
     def run(self):
         """ display detailed info about an episode """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         myDB = db.DBConnection(row_type="dict")
         sqlResults = myDB.select(
             "SELECT name, description, airdate, status, location, file_size, release_name, subtitles FROM tv_episodes WHERE showid = ? AND episode = ? AND season = ?",
-            [self.indexerid, self.e, self.s])
+            [self.indexer_id, self.e, self.s])
         if not len(sqlResults) == 1:
             raise ApiError("Episode not found")
         episode = sqlResults[0]
@@ -872,7 +872,7 @@ class CMD_Episode(ApiCall):
 
 class CMD_EpisodeSearch(ApiCall):
     _help = {"desc": "search for an episode. the response might take some time",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
                                     "season": {"desc": "the season number"},
                                     "episode": {"desc": "the episode number"}
              }
@@ -880,7 +880,7 @@ class CMD_EpisodeSearch(ApiCall):
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         self.s, args = self.check_params(args, kwargs, "season", None, True, "int", [])
         self.e, args = self.check_params(args, kwargs, "episode", None, True, "int", [])
         # optional
@@ -889,7 +889,7 @@ class CMD_EpisodeSearch(ApiCall):
 
     def run(self):
         """ search for an episode """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -918,7 +918,7 @@ class CMD_EpisodeSearch(ApiCall):
 
 class CMD_EpisodeSetStatus(ApiCall):
     _help = {"desc": "set status of an episode or season (when no ep is provided)",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
                                     "season": {"desc": "the season number"},
                                     "status": {"desc": "the status values: wanted, skipped, archived, ignored, failed"}
              },
@@ -929,7 +929,7 @@ class CMD_EpisodeSetStatus(ApiCall):
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         self.s, args = self.check_params(args, kwargs, "season", None, True, "int", [])
         self.status, args = self.check_params(args, kwargs, "status", None, True, "string",
                                               ["wanted", "skipped", "archived", "ignored", "failed"])
@@ -941,7 +941,7 @@ class CMD_EpisodeSetStatus(ApiCall):
 
     def run(self):
         """ set status of an episode or a season (when no ep is provided) """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -1026,7 +1026,7 @@ class CMD_EpisodeSetStatus(ApiCall):
 
 class CMD_SubtitleSearch(ApiCall):
     _help = {"desc": "search episode subtitles. the response might take some time",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
                                     "season": {"desc": "the season number"},
                                     "episode": {"desc": "the episode number"}
              }
@@ -1034,7 +1034,7 @@ class CMD_SubtitleSearch(ApiCall):
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         self.s, args = self.check_params(args, kwargs, "season", None, True, "int", [])
         self.e, args = self.check_params(args, kwargs, "episode", None, True, "int", [])
         # optional
@@ -1043,7 +1043,7 @@ class CMD_SubtitleSearch(ApiCall):
 
     def run(self):
         """ search episode subtitles """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -1078,14 +1078,14 @@ class CMD_SubtitleSearch(ApiCall):
 
 class CMD_Exceptions(ApiCall):
     _help = {"desc": "display scene exceptions for all or a given show",
-             "optionalParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "optionalParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
              }
     }
 
     def __init__(self, handler, args, kwargs):
         # required
         # optional
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, False, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, False, "int", [])
         # super, missing, help
         ApiCall.__init__(self, handler, args, kwargs)
 
@@ -1093,23 +1093,23 @@ class CMD_Exceptions(ApiCall):
         """ display scene exceptions for all or a given show """
         myDB = db.DBConnection("cache.db", row_type="dict")
 
-        if self.indexerid == None:
-            sqlResults = myDB.select("SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions")
+        if self.indexer_id == None:
+            sqlResults = myDB.select("SELECT show_name, indexer_id AS 'indexer_id' FROM scene_exceptions")
             scene_exceptions = {}
             for row in sqlResults:
-                indexerid = row["indexerid"]
-                if not indexerid in scene_exceptions:
-                    scene_exceptions[indexerid] = []
-                scene_exceptions[indexerid].append(row["show_name"])
+                indexer_id = row["indexer_id"]
+                if not indexer_id in scene_exceptions:
+                    scene_exceptions[indexer_id] = []
+                scene_exceptions[indexer_id].append(row["show_name"])
 
         else:
-            showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+            showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
             if not showObj:
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
             sqlResults = myDB.select(
-                "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions WHERE indexer_id = ?",
-                [self.indexerid])
+                "SELECT show_name, indexer_id AS 'indexer_id' FROM scene_exceptions WHERE indexer_id = ?",
+                [self.indexer_id])
             scene_exceptions = []
             for row in sqlResults:
                 scene_exceptions.append(row["show_name"])
@@ -1167,11 +1167,11 @@ class CMD_History(ApiCall):
             row["quality"] = _get_quality_string(quality)
             row["date"] = _historyDate_to_dateTimeForm(str(row["date"]))
             del row["action"]
-            _rename_element(row, "showid", "indexerid")
+            _rename_element(row, "showid", "indexer_id")
             row["resource_path"] = os.path.dirname(row["resource"])
             row["resource"] = os.path.basename(row["resource"])
             # Add tvdbid for backward compability
-            row['tvdbid'] = row['indexerid']
+            row['tvdbid'] = row['indexer_id']
             results.append(row)
 
         return _responds(RESULT_SUCCESS, results)
@@ -1530,7 +1530,7 @@ class CMD_SickBeardRestart(ApiCall):
 class CMD_SickBeardSearchIndexers(ApiCall):
     _help = {"desc": "search for show on the indexers with a given string and language",
              "optionalParameters": {"name": {"desc": "name of the show you want to search for"},
-                                    "indexerid": {"desc": "thetvdb.com unique id of a show"},
+                                    "indexer_id": {"desc": "thetvdb.com unique id of a show"},
                                     "lang": {"desc": "the 2 letter abbreviation lang id"}
              }
     }
@@ -1545,7 +1545,7 @@ class CMD_SickBeardSearchIndexers(ApiCall):
         # required
         # optional
         self.name, args = self.check_params(args, kwargs, "name", None, False, "string", [])
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, False, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, False, "int", [])
         self.lang, args = self.check_params(args, kwargs, "lang", "en", False, "string", self.valid_languages.keys())
         self.indexer, args = self.check_params(args, kwargs, "indexer", None, False, "string", [])
 
@@ -1554,7 +1554,7 @@ class CMD_SickBeardSearchIndexers(ApiCall):
 
     def run(self):
         """ search for show at tvdb with a given string and language """
-        if self.name and not self.indexerid:  # only name was given
+        if self.name and not self.indexer_id:  # only name was given
             baseURL = "http://thetvdb.com/api/GetSeries.php?"
             params = {"seriesname": str(self.name).encode('utf-8'), 'language': self.lang}
             finalURL = baseURL + urllib.urlencode(params)
@@ -1573,7 +1573,7 @@ class CMD_SickBeardSearchIndexers(ApiCall):
                 series = seriesXML.getiterator('Series')
                 results = []
                 for curSeries in series:
-                    results.append({"indexerid": int(curSeries.findtext('seriesid')),
+                    results.append({"indexer_id": int(curSeries.findtext('seriesid')),
                                     "tvdbid": int(curSeries.findtext('seriesid')),
                                     "name": curSeries.findtext('SeriesName'),
                                     "first_aired": curSeries.findtext('FirstAired')})
@@ -1581,8 +1581,8 @@ class CMD_SickBeardSearchIndexers(ApiCall):
                 lang_id = self.valid_languages[self.lang]
                 return _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})
 
-        elif self.indexerid:
-            lINDEXER_API_PARMS = sickbeard.indexerApi(self.indexer).api_params.copy()
+        elif self.indexer_id:
+            lINDEXER_API_PARMS = sickbeard.IndexerApi(self.indexer).api_params.copy()
 
             lang_id = self.valid_languages[self.lang]
             if self.lang and not self.lang == 'en':
@@ -1590,28 +1590,28 @@ class CMD_SickBeardSearchIndexers(ApiCall):
 
             lINDEXER_API_PARMS['actors'] = False
 
-            t = sickbeard.indexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickbeard.IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
 
             try:
-                myShow = t[int(self.indexerid)]
+                myShow = t[int(self.indexer_id)]
             except (sickbeard.indexer_shownotfound, sickbeard.indexer_error):
-                logger.log(u"API :: Unable to find show with id " + str(self.indexerid), logger.WARNING)
+                logger.log(u"API :: Unable to find show with id " + str(self.indexer_id), logger.WARNING)
                 return _responds(RESULT_SUCCESS, {"results": [], "langid": lang_id})
 
             if not myShow.data['seriesname']:
                 logger.log(
-                    u"API :: Found show with indexerid " + str(self.indexerid) + ", however it contained no show name",
+                    u"API :: Found show with indexer_id " + str(self.indexer_id) + ", however it contained no show name",
                     logger.DEBUG)
                 return _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
 
-            showOut = [{"indexerid": self.indexerid,
-                        "tvdbid": self.indexerid,
+            showOut = [{"indexer_id": self.indexer_id,
+                        "tvdbid": self.indexer_id,
                         "name": unicode(myShow.data['seriesname']),
                         "first_aired": myShow.data['firstaired']}]
 
             return _responds(RESULT_SUCCESS, {"results": showOut, "langid": lang_id})
         else:
-            return _responds(RESULT_FAILURE, msg="Either indexerid or name is required")
+            return _responds(RESULT_FAILURE, msg="Either indexer_id or name is required")
 
 
 class CMD_SickBeardSetDefaults(ApiCall):
@@ -1706,26 +1706,26 @@ class CMD_SickBeardShutdown(ApiCall):
 
 class CMD_Show(ApiCall):
     _help = {"desc": "display information for a given show",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
              }
     }
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         # super, missing, help
         ApiCall.__init__(self, handler, args, kwargs)
 
     def run(self):
         """ display information for a given show """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         showDict = {}
-        showDict["season_list"] = CMD_ShowSeasonList(self.handler, (), {"indexerid": self.indexerid}).run()["data"]
-        showDict["cache"] = CMD_ShowCache(self.handler, (), {"indexerid": self.indexerid}).run()["data"]
+        showDict["season_list"] = CMD_ShowSeasonList(self.handler, (), {"indexer_id": self.indexer_id}).run()["data"]
+        showDict["cache"] = CMD_ShowCache(self.handler, (), {"indexer_id": self.indexer_id}).run()["data"]
 
         genreList = []
         if showObj.genre:
@@ -1794,7 +1794,7 @@ class CMD_ShowAddExisting(ApiCall):
             _INDEXER_INT = None
             _INDEXER = None
         # required
-        self.indexerid, args = self.check_params(args, kwargs, _INDEXER, None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, _INDEXER, None, True, "int", [])
         self.indexer = _INDEXER_INT
         self.location, args = self.check_params(args, kwargs, "location", None, True, "string", [])
         # optional
@@ -1813,20 +1813,20 @@ class CMD_ShowAddExisting(ApiCall):
 
     def run(self):
         """ add a show in sickbeard with an existing folder """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if showObj:
-            return _responds(RESULT_FAILURE, msg="An existing indexerid already exists in the database")
+            return _responds(RESULT_FAILURE, msg="An existing indexer_id already exists in the database")
 
         if not ek.ek(os.path.isdir, self.location):
             return _responds(RESULT_FAILURE, msg='Not a valid location')
 
         indexerName = None
         indexerResult = CMD_SickBeardSearchIndexers(self.handler, [],
-                                                    {"indexerid": self.indexerid, "indexer": self.indexer}).run()
+                                                    {"indexer_id": self.indexer_id, "indexer": self.indexer}).run()
 
         if indexerResult['result'] == result_type_map[RESULT_SUCCESS]:
             if not indexerResult['data']['results']:
-                return _responds(RESULT_FAILURE, msg="Empty results returned, check indexerid and try again")
+                return _responds(RESULT_FAILURE, msg="Empty results returned, check indexer_id and try again")
             if len(indexerResult['data']['results']) == 1 and 'name' in indexerResult['data']['results'][0]:
                 indexerName = indexerResult['data']['results'][0]['name']
 
@@ -1859,7 +1859,7 @@ class CMD_ShowAddExisting(ApiCall):
         if iqualityID or aqualityID:
             newQuality = Quality.combineQualities(iqualityID, aqualityID)
 
-        sickbeard.showQueueScheduler.action.addShow(int(self.indexer), int(self.indexerid), self.location, SKIPPED,
+        sickbeard.showQueueScheduler.action.addShow(int(self.indexer), int(self.indexer_id), self.location, SKIPPED,
                                                     newQuality, int(self.flatten_folders))
 
         return _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")
@@ -1898,7 +1898,7 @@ class CMD_ShowAddNew(ApiCall):
             _INDEXER_INT = None
             _INDEXER = None
         # required
-        self.indexerid, args = self.check_params(args, kwargs, _INDEXER, None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, _INDEXER, None, True, "int", [])
         self.indexer = _INDEXER_INT
         # optional
         self.location, args = self.check_params(args, kwargs, "location", None, False, "string", [])
@@ -1925,9 +1925,9 @@ class CMD_ShowAddNew(ApiCall):
 
     def run(self):
         """ add a show in sickbeard with an existing folder """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if showObj:
-            return _responds(RESULT_FAILURE, msg="An existing indexerid already exists in database")
+            return _responds(RESULT_FAILURE, msg="An existing indexer_id already exists in database")
 
         if not self.location:
             if sickbeard.ROOT_DIRS != "":
@@ -1985,11 +1985,11 @@ class CMD_ShowAddNew(ApiCall):
 
         indexerName = None
         indexerResult = CMD_SickBeardSearchIndexers(self.handler, [],
-                                                    {"indexerid": self.indexerid, "indexer": self.indexer}).run()
+                                                    {"indexer_id": self.indexer_id, "indexer": self.indexer}).run()
 
         if indexerResult['result'] == result_type_map[RESULT_SUCCESS]:
             if not indexerResult['data']['results']:
-                return _responds(RESULT_FAILURE, msg="Empty results returned, check indexerid and try again")
+                return _responds(RESULT_FAILURE, msg="Empty results returned, check indexer_id and try again")
             if len(indexerResult['data']['results']) == 1 and 'name' in indexerResult['data']['results'][0]:
                 indexerName = indexerResult['data']['results'][0]['name']
 
@@ -2011,7 +2011,7 @@ class CMD_ShowAddNew(ApiCall):
             else:
                 helpers.chmodAsParent(showPath)
 
-        sickbeard.showQueueScheduler.action.addShow(int(self.indexer), int(self.indexerid), showPath, newStatus,
+        sickbeard.showQueueScheduler.action.addShow(int(self.indexer), int(self.indexer_id), showPath, newStatus,
                                                     newQuality,
                                                     int(self.flatten_folders), self.lang, self.subtitles, self.anime,
                                                     self.scene)  # @UndefinedVariable
@@ -2021,20 +2021,20 @@ class CMD_ShowAddNew(ApiCall):
 
 class CMD_ShowCache(ApiCall):
     _help = {"desc": "check sickbeard's cache to see if the banner or poster image for a show is valid",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"}
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"}
              }
     }
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         # super, missing, help
         ApiCall.__init__(self, handler, args, kwargs)
 
     def run(self):
         """ check sickbeard's cache to see if the banner or poster image for a show is valid """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2046,9 +2046,9 @@ class CMD_ShowCache(ApiCall):
         has_poster = 0
         has_banner = 0
 
-        if ek.ek(os.path.isfile, cache_obj.poster_path(showObj.indexerid)):
+        if ek.ek(os.path.isfile, cache_obj.poster_path(showObj.indexer_id)):
             has_poster = 1
-        if ek.ek(os.path.isfile, cache_obj.banner_path(showObj.indexerid)):
+        if ek.ek(os.path.isfile, cache_obj.banner_path(showObj.indexer_id)):
             has_banner = 1
 
         return _responds(RESULT_SUCCESS, {"poster": has_poster, "banner": has_banner})
@@ -2056,20 +2056,20 @@ class CMD_ShowCache(ApiCall):
 
 class CMD_ShowDelete(ApiCall):
     _help = {"desc": "delete a show in sickbeard",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
              }
     }
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         # super, missing, help
         ApiCall.__init__(self, handler, args, kwargs)
 
     def run(self):
         """ delete a show in sickbeard """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2083,20 +2083,20 @@ class CMD_ShowDelete(ApiCall):
 
 class CMD_ShowGetQuality(ApiCall):
     _help = {"desc": "get quality setting for a show in sickbeard",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"}
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"}
              }
     }
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         # super, missing, help
         ApiCall.__init__(self, handler, args, kwargs)
 
     def run(self):
         """ get quality setting for a show in sickbeard """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2107,43 +2107,43 @@ class CMD_ShowGetQuality(ApiCall):
 
 class CMD_ShowGetPoster(ApiCall):
     _help = {"desc": "get the poster stored for a show in sickbeard",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"}
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"}
              }
     }
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         # super, missing, help
         ApiCall.__init__(self, handler, args, kwargs)
 
     def run(self):
         """ get the poster for a show in sickbeard """
-        return {'outputType': 'image', 'image': self.handler.showPoster(self.indexerid, 'poster')}
+        return {'outputType': 'image', 'image': self.handler.showPoster(self.indexer_id, 'poster')}
 
 
 class CMD_ShowGetBanner(ApiCall):
     _help = {"desc": "get the banner stored for a show in sickbeard",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"}
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"}
              }
     }
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         # super, missing, help
         ApiCall.__init__(self, handler, args, kwargs)
 
     def run(self):
         """ get the banner for a show in sickbeard """
-        return {'outputType': 'image', 'image': self.handler.showPoster(self.indexerid, 'banner')}
+        return {'outputType': 'image', 'image': self.handler.showPoster(self.indexer_id, 'banner')}
 
 
 class CMD_ShowPause(ApiCall):
     _help = {"desc": "set a show's paused state in sickbeard",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
              },
              "optionalParameters": {"pause": {"desc": "set the pause state of the show"}
              }
@@ -2151,7 +2151,7 @@ class CMD_ShowPause(ApiCall):
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         self.pause, args = self.check_params(args, kwargs, "pause", 0, False, "bool", [])
         # super, missing, help
@@ -2159,7 +2159,7 @@ class CMD_ShowPause(ApiCall):
 
     def run(self):
         """ set a show's paused state in sickbeard """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2175,20 +2175,20 @@ class CMD_ShowPause(ApiCall):
 
 class CMD_ShowRefresh(ApiCall):
     _help = {"desc": "refresh a show in sickbeard",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
              }
     }
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         # super, missing, help
         ApiCall.__init__(self, handler, args, kwargs)
 
     def run(self):
         """ refresh a show in sickbeard """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2202,7 +2202,7 @@ class CMD_ShowRefresh(ApiCall):
 
 class CMD_ShowSeasonList(ApiCall):
     _help = {"desc": "display the season list for a given show",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
              },
              "optionalParameters": {"sort": {"desc": "change the sort order from descending to ascending"}
              }
@@ -2210,7 +2210,7 @@ class CMD_ShowSeasonList(ApiCall):
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         self.sort, args = self.check_params(args, kwargs, "sort", "desc", False, "string",
                                             ["asc", "desc"])  # "asc" and "desc" default and fallback is "desc"
@@ -2219,17 +2219,17 @@ class CMD_ShowSeasonList(ApiCall):
 
     def run(self):
         """ display the season list for a given show """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         myDB = db.DBConnection(row_type="dict")
         if self.sort == "asc":
             sqlResults = myDB.select("SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season ASC",
-                                     [self.indexerid])
+                                     [self.indexer_id])
         else:
             sqlResults = myDB.select("SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season DESC",
-                                     [self.indexerid])
+                                     [self.indexer_id])
         seasonList = []  # a list with all season numbers
         for row in sqlResults:
             seasonList.append(int(row["season"]))
@@ -2239,7 +2239,7 @@ class CMD_ShowSeasonList(ApiCall):
 
 class CMD_ShowSeasons(ApiCall):
     _help = {"desc": "display a listing of episodes for all or a given season",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
              },
              "optionalParameters": {"season": {"desc": "the season number"},
              }
@@ -2247,7 +2247,7 @@ class CMD_ShowSeasons(ApiCall):
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         self.season, args = self.check_params(args, kwargs, "season", None, False, "int", [])
         # super, missing, help
@@ -2255,7 +2255,7 @@ class CMD_ShowSeasons(ApiCall):
 
     def run(self):
         """ display a listing of episodes for all or a given show """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2263,7 +2263,7 @@ class CMD_ShowSeasons(ApiCall):
 
         if self.season == None:
             sqlResults = myDB.select("SELECT name, episode, airdate, status, season FROM tv_episodes WHERE showid = ?",
-                                     [self.indexerid])
+                                     [self.indexer_id])
             seasons = {}
             for row in sqlResults:
                 status, quality = Quality.splitCompositeStatus(int(row["status"]))
@@ -2281,7 +2281,7 @@ class CMD_ShowSeasons(ApiCall):
         else:
             sqlResults = myDB.select(
                 "SELECT name, episode, airdate, status FROM tv_episodes WHERE showid = ? AND season = ?",
-                [self.indexerid, self.season])
+                [self.indexer_id, self.season])
             if len(sqlResults) is 0:
                 return _responds(RESULT_FAILURE, msg="Season not found")
             seasons = {}
@@ -2302,7 +2302,7 @@ class CMD_ShowSeasons(ApiCall):
 class CMD_ShowSetQuality(ApiCall):
     _help = {
         "desc": "set desired quality of a show in sickbeard. if neither initial or archive are provided then the config default quality will be used",
-        "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"}
+        "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"}
         },
         "optionalParameters": {"initial": {"desc": "initial quality for the show"},
                                "archive": {"desc": "archive quality for the show"}
@@ -2311,7 +2311,7 @@ class CMD_ShowSetQuality(ApiCall):
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         # this for whatever reason removes hdbluray not sdtv... which is just wrong. reverting to previous code.. plus we didnt use the new code everywhere.
         # self.archive, args = self.check_params(args, kwargs, "archive", None, False, "list", _getQualityMap().values()[1:])
@@ -2328,7 +2328,7 @@ class CMD_ShowSetQuality(ApiCall):
         """ set the quality for a show in sickbeard by taking in a deliminated
             string of qualities, map to their value and combine for new values
         """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2365,20 +2365,20 @@ class CMD_ShowSetQuality(ApiCall):
 
 class CMD_ShowStats(ApiCall):
     _help = {"desc": "display episode statistics for a given show",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
              }
     }
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         # super, missing, help
         ApiCall.__init__(self, handler, args, kwargs)
 
     def run(self):
         """ display episode statistics for a given show """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2410,7 +2410,7 @@ class CMD_ShowStats(ApiCall):
 
         myDB = db.DBConnection(row_type="dict")
         sqlResults = myDB.select("SELECT status, season FROM tv_episodes WHERE season != 0 AND showid = ?",
-                                 [self.indexerid])
+                                 [self.indexer_id])
         # the main loop that goes through all episodes
         for row in sqlResults:
             status, quality = Quality.splitCompositeStatus(int(row["status"]))
@@ -2469,20 +2469,20 @@ class CMD_ShowStats(ApiCall):
 
 class CMD_ShowUpdate(ApiCall):
     _help = {"desc": "update a show in sickbeard",
-             "requiredParameters": {"indexerid": {"desc": "thetvdb.com unique id of a show"},
+             "requiredParameters": {"indexer_id": {"desc": "thetvdb.com unique id of a show"},
              }
     }
 
     def __init__(self, handler, args, kwargs):
         # required
-        self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
+        self.indexer_id, args = self.check_params(args, kwargs, "indexer_id", None, True, "int", [])
         # optional
         # super, missing, help
         ApiCall.__init__(self, handler, args, kwargs)
 
     def run(self):
         """ update a show in sickbeard """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexer_id))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2496,7 +2496,7 @@ class CMD_ShowUpdate(ApiCall):
 
 class CMD_Shows(ApiCall):
     _help = {"desc": "display all shows in sickbeard",
-             "optionalParameters": {"sort": {"desc": "sort the list of shows by show name instead of indexerid"},
+             "optionalParameters": {"sort": {"desc": "sort the list of shows by show name instead of indexer_id"},
                                     "paused": {"desc": "only show the shows that are set to paused"},
              },
     }
@@ -2510,7 +2510,7 @@ class CMD_Shows(ApiCall):
         ApiCall.__init__(self, handler, args, kwargs)
 
     def run(self):
-        """ display_is_int_multi( self.indexerid )shows in sickbeard """
+        """ display_is_int_multi( self.indexer_id )shows in sickbeard """
         shows = {}
         for curShow in sickbeard.showList:
             nextAirdate = curShow.nextaired
@@ -2529,7 +2529,7 @@ class CMD_Shows(ApiCall):
                 "air_by_date": curShow.air_by_date,
                 "sports": curShow.sports,
                 "anime": curShow.anime,
-                "indexerid": curShow.indexerid,
+                "indexer_id": curShow.indexer_id,
                 "tvdbid": helpers.mapIndexersToShow(curShow)['tvdb_id'],
                 "tvrage_id": helpers.mapIndexersToShow(curShow)['tvrage_id'],
                 "tvrage_name": curShow.name,
@@ -2539,13 +2539,13 @@ class CMD_Shows(ApiCall):
                 "next_ep_airdate": nextAirdate
             }
 
-            showDict["cache"] = CMD_ShowCache(self.handler, (), {"indexerid": curShow.indexerid}).run()["data"]
+            showDict["cache"] = CMD_ShowCache(self.handler, (), {"indexer_id": curShow.indexer_id}).run()["data"]
             if not showDict["network"]:
                 showDict["network"] = ""
             if self.sort == "name":
                 shows[curShow.name] = showDict
             else:
-                shows[curShow.indexerid] = showDict
+                shows[curShow.indexer_id] = showDict
         return _responds(RESULT_SUCCESS, shows)
 
 

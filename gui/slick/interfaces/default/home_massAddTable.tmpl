@@ -30,13 +30,13 @@
     <td><input type="checkbox" id="$show_id" class="dirCheck" checked=checked></td>
     <td><label for="$show_id">$curDir['display_dir']</label></td>
     #if $curDir['existing_info'][1] and $indexer > 0:
-        <td><a href="$sickbeard.indexerApi($indexer).config["show_url"]$curDir['existing_info'][0]">$curDir['existing_info'][1]</a></td>
+        <td><a href="$sickbeard.IndexerApi($indexer).config["show_url"]$curDir['existing_info'][0]">$curDir['existing_info'][1]</a></td>
     #else:
         <td>?</td>
     #end if
     <td>
         <select name="indexer">
-            #for $curIndexer in $sickbeard.indexerApi().indexers.items():
+            #for $curIndexer in $sickbeard.IndexerApi().indexers.items():
                 <option value="$curIndexer[0]" #if $curIndexer[0] == $indexer then "selected=\"selected\"" else "UNKNOWN"#>$curIndexer[1]</option>
             #end for
         </select>

@@ -122,8 +122,8 @@ class ProperFinder():
                 u"Successful match! Result " + parse_result.original_name + " matched to show " + parse_result.show.name,
                 logger.DEBUG)
 
-            # set the indexerid in the db to the show's indexerid
-            curProper.indexerid = parse_result.show.indexerid
+            # set the indexer_id in the db to the show's indexer_id
+            curProper.indexer_id = parse_result.show.indexer_id
 
             # set the indexer in the db to the show's indexer
             curProper.indexer = parse_result.show.indexer
@@ -158,7 +158,7 @@ class ProperFinder():
                 continue
 
             # if we have an air-by-date show then get the real season/episode numbers
-            if (parse_result.is_air_by_date or parse_result.is_sports) and curProper.indexerid:
+            if (parse_result.is_air_by_date or parse_result.is_sports) and curProper.indexer_id:
                 logger.log(
                     u"Looks like this is an air-by-date or sports show, attempting to convert the date to season/episode",
                     logger.DEBUG)
@@ -166,7 +166,7 @@ class ProperFinder():
                 myDB = db.DBConnection()
                 sql_result = myDB.select(
                     "SELECT season, episode FROM tv_episodes WHERE showid = ? and indexer = ? and airdate = ?",
-                    [curProper.indexerid, curProper.indexer, airdate])
+                    [curProper.indexer_id, curProper.indexer, airdate])
 
                 if sql_result:
                     curProper.season = int(sql_result[0][0])
@@ -180,7 +180,7 @@ class ProperFinder():
             myDB = db.DBConnection()
             sqlResults = myDB.select(
                 "SELECT status FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
-                [curProper.indexerid, curProper.season, curProper.episode])
+                [curProper.indexer_id, curProper.season, curProper.episode])
 
             if not sqlResults:
                 continue
@@ -192,8 +192,8 @@ class ProperFinder():
                 continue
 
             # if the show is in our list and there hasn't been a proper already added for that particular episode then add it to our list of propers
-            if curProper.indexerid != -1 and (curProper.indexerid, curProper.season, curProper.episode) not in map(
-                    operator.attrgetter('indexerid', 'season', 'episode'), finalPropers):
+            if curProper.indexer_id != -1 and (curProper.indexer_id, curProper.season, curProper.episode) not in map(
+                    operator.attrgetter('indexer_id', 'season', 'episode'), finalPropers):
                 logger.log(u"Found a proper that we need: " + str(curProper.name))
                 finalPropers.append(curProper)
 
@@ -211,7 +211,7 @@ class ProperFinder():
                 "SELECT resource FROM history "
                 "WHERE showid = ? AND season = ? AND episode = ? AND quality = ? AND date >= ? "
                 "AND action IN (" + ",".join([str(x) for x in Quality.SNATCHED]) + ")",
-                [curProper.indexerid, curProper.season, curProper.episode, curProper.quality,
+                [curProper.indexer_id, curProper.season, curProper.episode, curProper.quality,
                  historyLimit.strftime(history.dateFormat)])
 
             # if we didn't download this episode in the first place we don't know what quality to use for the proper so we can't do it
@@ -235,10 +235,10 @@ class ProperFinder():
                     continue
 
                 # get the episode object
-                showObj = helpers.findCertainShow(sickbeard.showList, curProper.indexerid)
+                showObj = helpers.findCertainShow(sickbeard.showList, curProper.indexer_id)
                 if showObj == None:
-                    logger.log(u"Unable to find the show with indexerid " + str(
-                        curProper                                      .indexerid) + " so unable to download the proper", logger.ERROR)
+                    logger.log(u"Unable to find the show with indexer_id " + str(
+                        curProper                                      .indexer_id) + " so unable to download the proper", logger.ERROR)
                     continue
                 epObj = showObj.getEpisode(curProper.season, curProper.episode)
 

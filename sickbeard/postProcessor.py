@@ -517,7 +517,7 @@ class PostProcessor(object):
             if not indexer_id:
                 show = helpers.get_show(name)
                 if show:
-                    indexer_id = show.indexerid
+                    indexer_id = show.indexer_id
                 else:
                     indexer_id = 0
 
@@ -620,14 +620,14 @@ class PostProcessor(object):
                 myDB = db.DBConnection()
                 sql_result = myDB.select(
                     "SELECT season, episode FROM tv_episodes WHERE showid = ? and indexer = ? and airdate = ?",
-                    [show.indexerid, show.indexer, airdate])
+                    [show.indexer_id, show.indexer, airdate])
 
                 if sql_result:
                     season = int(sql_result[0][0])
                     episodes = [int(sql_result[0][1])]
                 else:
                     self._log(u"Unable to find episode with date " + str(episodes[0]) + u" for show " + str(
-                        show.indexerid) + u", skipping", logger.DEBUG)
+                        show.indexer_id) + u", skipping", logger.DEBUG)
                     # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
                     episodes = []
                     continue
@@ -637,7 +637,7 @@ class PostProcessor(object):
                 myDB = db.DBConnection()
                 numseasonsSQlResult = myDB.select(
                     "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and indexer = ? and season != 0",
-                    [show.indexerid, show.indexer])
+                    [show.indexer_id, show.indexer])
                 if int(numseasonsSQlResult[0][0]) == 1 and season == None:
                     self._log(
                         u"Don't have a season number, but this show appears to only have 1 season, setting season number to 1...",
@@ -758,7 +758,7 @@ class PostProcessor(object):
             script_cmd[0] = ek.ek(os.path.abspath, script_cmd[0])
             self._log(u"Absolute path to script: " + script_cmd[0], logger.DEBUG)
 
-            script_cmd = script_cmd + [ep_obj.location, self.file_path, str(ep_obj.show.indexerid), str(ep_obj.season),
+            script_cmd = script_cmd + [ep_obj.location, self.file_path, str(ep_obj.show.indexer_id), str(ep_obj.season),
                                        str(ep_obj.episode), str(ep_obj.airdate)]
 
             # use subprocess to run the command and capture output

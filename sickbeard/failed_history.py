@@ -116,7 +116,7 @@ def revertEpisode(epObj):
     """Restore the episodes of a failed download to their original state"""
     myDB = db.DBConnection('failed.db')
     sql_results = myDB.select("SELECT * FROM history WHERE showid=? AND season=?",
-                              [epObj.show.indexerid, epObj.season])
+                              [epObj.show.indexer_id, epObj.season])
 
     history_eps = dict([(res["episode"], res) for res in sql_results])
 
@@ -169,7 +169,7 @@ def logSnatch(searchResult):
         myDB.action(
             "INSERT INTO history (date, size, release, provider, showid, season, episode, old_status)"
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            [logDate, searchResult.size, release, provider, show_obj.indexerid, episode.season, episode.episode,
+            [logDate, searchResult.size, release, provider, show_obj.indexer_id, episode.season, episode.episode,
              episode.status])
 
 
@@ -199,14 +199,14 @@ def findRelease(epObj):
 
     # Clear old snatches for this release if any exist
     myDB = db.DBConnection('failed.db')
-    myDB.action("DELETE FROM history WHERE showid=" + str(epObj.show.indexerid) + " AND season=" + str(
+    myDB.action("DELETE FROM history WHERE showid=" + str(epObj.show.indexer_id) + " AND season=" + str(
         epObj.season) + " AND episode=" + str(
         epObj.episode) + " AND date < (SELECT max(date) FROM history WHERE showid=" + str(
-        epObj.show.indexerid) + " AND season=" + str(epObj.season) + " AND episode=" + str(epObj.episode) + ")")
+        epObj.show.indexer_id) + " AND season=" + str(epObj.season) + " AND episode=" + str(epObj.episode) + ")")
 
     # Search for release in snatch history
     results = myDB.select("SELECT release, provider, date FROM history WHERE showid=? AND season=? AND episode=?",
-                          [epObj.show.indexerid, epObj.season, epObj.episode])
+                          [epObj.show.indexer_id, epObj.season, epObj.episode])
 
     for result in results:
         release = str(result["release"])
@@ -221,5 +221,5 @@ def findRelease(epObj):
         return (release, provider)
 
     # Release was not found
-    logger.log(u"No releases found for season (%s) of (%s)" % (epObj.season, epObj.show.indexerid), logger.DEBUG)
+    logger.log(u"No releases found for season (%s) of (%s)" % (epObj.season, epObj.show.indexer_id), logger.DEBUG)
     return (release, provider)

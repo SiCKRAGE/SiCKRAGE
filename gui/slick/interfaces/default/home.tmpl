@@ -235,7 +235,7 @@
     #if $curLoadingShow.show == None:
     Loading... ($curLoadingShow.show_name)
     #else:
-    <a href="displayShow?show=$curLoadingShow.show.indexerid">$curLoadingShow.show.name</a>
+    <a href="displayShow?show=$curLoadingShow.show.indexer_id">$curLoadingShow.show.name</a>
     #end if
     </td>
     <td></td>
@@ -255,20 +255,20 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
     #set $cur_total = 0
     #set $download_stat_tip = ''
 
-    #if $curShow.indexerid in $show_stat:
-        #set $cur_airs_next = $show_stat[$curShow.indexerid]['ep_airs_next']
+    #if $curShow.indexer_id in $show_stat:
+        #set $cur_airs_next = $show_stat[$curShow.indexer_id]['ep_airs_next']
 
-        #set $cur_snatched = $show_stat[$curShow.indexerid]['ep_snatched']
+        #set $cur_snatched = $show_stat[$curShow.indexer_id]['ep_snatched']
         #if not $cur_snatched:
             #set $cur_snatched = 0
         #end if
 
-        #set $cur_downloaded = $show_stat[$curShow.indexerid]['ep_downloaded']
+        #set $cur_downloaded = $show_stat[$curShow.indexer_id]['ep_downloaded']
         #if not $cur_downloaded:
             #set $cur_downloaded = 0
         #end if
 
-        #set $cur_total = $show_stat[$curShow.indexerid]['ep_total']
+        #set $cur_total = $show_stat[$curShow.indexer_id]['ep_total']
         #if not $cur_total:
             #set $cur_total = 0
         #end if
@@ -308,24 +308,24 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
     #if $layout == 'poster':
 	    <td>
 	    	<div class="imgHomeWrapper $layout">
-		    	<a href="$sbRoot/showPoster/?show=$curShow.indexerid&amp;which=$layout" rel="dialog" title="$curShow.name">
-		    		<img src="$sbRoot/showPoster/?show=$curShow.indexerid&amp;which=$which_thumb" class="$layout" alt="$curShow.indexerid"/>
+		    	<a href="$sbRoot/showPoster/?show=$curShow.indexer_id&amp;which=$layout" rel="dialog" title="$curShow.name">
+		    		<img src="$sbRoot/showPoster/?show=$curShow.indexer_id&amp;which=$which_thumb" class="$layout" alt="$curShow.indexer_id"/>
 		    	</a>
 	    	</div>
 	    </td>
-    	<td class="tvShow"><a href="$sbRoot/home/displayShow?show=$curShow.indexerid">$curShow.name</a></td>
+    	<td class="tvShow"><a href="$sbRoot/home/displayShow?show=$curShow.indexer_id">$curShow.name</a></td>
 	#else if $layout == 'banner':
     	<td style="display: none;"/>
 	    <td>
 	    	<span style="display: none;">$curShow.name</span>
 	    	<div class="imgHomeWrapper imgHomeWrapperRounded $layout">
-	    		<a href="$sbRoot/home/displayShow?show=$curShow.indexerid">
-	    		<img src="$sbRoot/showPoster/?show=$curShow.indexerid&amp;which=$which_thumb" class="$layout" alt="$curShow.indexerid" title="$curShow.name"/>
+	    		<a href="$sbRoot/home/displayShow?show=$curShow.indexer_id">
+	    		<img src="$sbRoot/showPoster/?show=$curShow.indexer_id&amp;which=$which_thumb" class="$layout" alt="$curShow.indexer_id" title="$curShow.name"/>
 	    	</div>
 	    </td>
 	#else if $layout == 'simple':
 	    <td style="display: none;"/>
-	    <td class="tvShow"><a href="$sbRoot/home/displayShow?show=$curShow.indexerid">$curShow.name</a></td>
+	    <td class="tvShow"><a href="$sbRoot/home/displayShow?show=$curShow.indexer_id">$curShow.name</a></td>
     #end if
     <!--<td align="center">$curShow.network</td>//-->
     <td align="center" style="color: #555555;font-weight:bold;">
@@ -345,14 +345,14 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 #else:
     <td align="center"><span class="quality Custom">Custom</span></td>
 #end if
-    <td align="center"><span style="display: none;">$download_stat</span><div id="progressbar$curShow.indexerid" style="position:relative;"></div>
+    <td align="center"><span style="display: none;">$download_stat</span><div id="progressbar$curShow.indexer_id" style="position:relative;"></div>
         <script type="text/javascript">
           <!--
                 \$(function() {
-                 \$("\#progressbar$curShow.indexerid").progressbar({
+                 \$("\#progressbar$curShow.indexer_id").progressbar({
                      value: $progressbar_percent
                  });
-                 \$("\#progressbar$curShow.indexerid").append("<div class='progressbarText' title='$download_stat_tip'>$download_stat</div>")
+                 \$("\#progressbar$curShow.indexer_id").append("<div class='progressbarText' title='$download_stat_tip'>$download_stat</div>")
                 });
           //-->
         </script>

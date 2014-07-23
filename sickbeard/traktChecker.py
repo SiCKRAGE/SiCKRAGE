@@ -54,11 +54,11 @@ class TraktChecker():
         except Exception:
             logger.log(traceback.format_exc(), logger.DEBUG)
 
-    def findShow(self, indexerid):
+    def findShow(self, indexer_id):
         library = TraktCall("user/library/shows/all.json/%API%/" + sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_API,
                             sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD)
 
-        results = filter(lambda x: int(x['tvdb_id']) == int(indexerid), library)
+        results = filter(lambda x: int(x['tvdb_id']) == int(indexer_id), library)
         if len(results) == 0:
             return None
         else:
@@ -71,12 +71,12 @@ class TraktChecker():
                 self.addShowToTraktLibrary(myShow)
 
     def removeShowFromTraktLibrary(self, show_obj):
-        if not self.findShow(show_obj.indexerid):
+        if not self.findShow(show_obj.indexer_id):
             return
 
         # URL parameters
         data = {
-            'tvdb_id': show_obj.indexerid,
+            'tvdb_id': show_obj.indexer_id,
             'title': show_obj.name,
             'year': show_obj.startyear,
         }
@@ -93,12 +93,12 @@ class TraktChecker():
         show_obj: The TVShow object to add to trakt
         """
 
-        if self.findShow(show_obj.indexerid):
+        if self.findShow(show_obj.indexer_id):
             return
 
         # URL parameters
         data = {
-            'tvdb_id': show_obj.indexerid,
+            'tvdb_id': show_obj.indexer_id,
             'title': show_obj.name,
             'year': show_obj.startyear,
         }
@@ -152,14 +152,14 @@ class TraktChecker():
                     self.todoWanted.append((int(show["tvdb_id"]), episode["season"], episode["number"]))
             self.startBacklog(newShow)
 
-    def addDefaultShow(self, indexerid, name, status):
+    def addDefaultShow(self, indexer_id, name, status):
         """
         Adds a new show with the default settings
         """
-        if helpers.findCertainShow(sickbeard.showList, int(indexerid)):
+        if helpers.findCertainShow(sickbeard.showList, int(indexer_id)):
             return
 
-        logger.log(u"Adding show " + str(indexerid))
+        logger.log(u"Adding show " + str(indexer_id))
         root_dirs = sickbeard.ROOT_DIRS.split('|')
 
         try:
@@ -176,7 +176,7 @@ class TraktChecker():
             else:
                 helpers.chmodAsParent(showPath)
 
-            sickbeard.showQueueScheduler.action.addShow(1, int(indexerid), showPath, status,
+            sickbeard.showQueueScheduler.action.addShow(1, int(indexer_id), showPath, status,
                                                         int(sickbeard.QUALITY_DEFAULT),
                                                         int(sickbeard.FLATTEN_FOLDERS_DEFAULT))
         else:
@@ -209,7 +209,7 @@ class TraktChecker():
 
 
     def manageNewShow(self, show):
-        episodes = [i for i in self.todoWanted if i[0] == show.indexerid]
+        episodes = [i for i in self.todoWanted if i[0] == show.indexer_id]
         for episode in episodes:
             self.todoWanted.remove(episode)
             if episode[1] == -1 and sickbeard.TRAKT_START_PAUSED:

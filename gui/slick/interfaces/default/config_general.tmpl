@@ -121,8 +121,8 @@
                                 <span class="component-desc">
                                     <select id="indexer_default" name="indexer_default">
                                         <option value="0" #if $indexer == 0 then "selected=\"selected\"" else ""#>All Indexers</option>
-                                        #for $indexer in $sickbeard.indexerApi().indexers
-                                        <option value="$indexer" #if $indexer == $sickbeard.INDEXER_DEFAULT then "selected=\"selected\"" else ""#>$sickbeard.indexerApi().indexers[$indexer]</option>
+                                        #for $indexer in $sickbeard.IndexerApi().indexers
+                                        <option value="$indexer" #if $indexer == $sickbeard.INDEXER_DEFAULT then "selected=\"selected\"" else ""#>$sickbeard.IndexerApi().indexers[$indexer]</option>
                                         #end for
                                     </select>
                                 </span>

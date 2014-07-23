@@ -209,14 +209,14 @@ class BTNProvider(generic.TorrentProvider):
 
         # search
         if ep_obj.show.indexer == 1:
-            current_params['tvdb'] = ep_obj.show.indexerid
+            current_params['tvdb'] = ep_obj.show.indexer_id
             search_params.append(current_params)
         elif ep_obj.show.indexer == 2:
-            current_params['tvrage'] = ep_obj.show.indexerid
+            current_params['tvrage'] = ep_obj.show.indexer_id
             search_params.append(current_params)
         else:
             name_exceptions = list(
-                set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
+                set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexer_id) + [ep_obj.show.name]))
             for name in name_exceptions:
                 # Search by name if we don't have tvdb or tvrage id
                 current_params['series'] = sanitizeSceneName(name)
@@ -247,15 +247,15 @@ class BTNProvider(generic.TorrentProvider):
 
         # search
         if ep_obj.show.indexer == 1:
-            search_params['tvdb'] = ep_obj.show.indexerid
+            search_params['tvdb'] = ep_obj.show.indexer_id
             to_return.append(search_params)
         elif ep_obj.show.indexer == 2:
-            search_params['tvrage'] = ep_obj.show.indexerid
+            search_params['tvrage'] = ep_obj.show.indexer_id
             to_return.append(search_params)
         else:
             # add new query string for every exception
             name_exceptions = list(
-                set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
+                set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexer_id) + [ep_obj.show.name]))
             for cur_exception in name_exceptions:
                 search_params['series'] = sanitizeSceneName(cur_exception)
                 to_return.append(search_params)

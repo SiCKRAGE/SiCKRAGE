@@ -66,7 +66,7 @@
     <optgroup label="$curShowType">
 #end if
     #for $curShow in $curShowList:
-    <option value="$curShow.indexerid" #if $curShow == $show then "selected=\"selected\"" else ""#>$curShow.name</option>
+    <option value="$curShow.indexer_id" #if $curShow == $show then "selected=\"selected\"" else ""#>$curShow.name</option>
     #end for
 #if len($sortedShowLists) > 1:
     </optgroup>
@@ -76,11 +76,11 @@
 <div class="navShow"><img id="nextShow" src="$sbRoot/images/next.gif" alt="&gt;&gt;" title="Next Show" /></div>
 </div></div>
 
-<div class="tvshowImg"><a href="$sbRoot/showPoster/?show=$show.indexerid&amp;which=poster" rel="dialog" title="$show.name"><img src="$sbRoot/showPoster/?show=$show.indexerid&amp;which=poster_thumb" class="posterThumb" alt=""/></a>
+<div class="tvshowImg"><a href="$sbRoot/showPoster/?show=$show.indexer_id&amp;which=poster" rel="dialog" title="$show.name"><img src="$sbRoot/showPoster/?show=$show.indexer_id&amp;which=poster_thumb" class="posterThumb" alt=""/></a>
 </div>
 
 <div class="showInfo">
-<h1 class="title" id="scene_exception_$show.indexerid"><a>$show.name</a></h1>
+<h1 class="title" id="scene_exception_$show.indexer_id"><a>$show.name</a></h1>
 <span class="headerInfo" style="color: #b7b7b7; line-height: 16px;">
 <span class="tvshowLink" style="vertical-align: text-top">
 #if not $show.imdbid
@@ -99,7 +99,7 @@
     #end if
 	<a href="http://www.imdb.com/title/$show.imdbid" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href, '_blank'); return false;" title="http://www.imdb.com/title/$show.imdbid"><img alt="[imdb]" height="16" width="16" src="$sbRoot/images/imdb.png" style="margin-top: -1px;"/>
 #end if
-<a href="$sickbeard.indexerApi($show.indexer).config["show_url"]$show.indexerid" onclick="window.open(this.href, '_blank'); return false;" title="$sickbeard.indexerApi($show.indexer).config["show_url"]$show.indexerid"><img alt="$sickbeard.indexerApi($show.indexer).name" height="16" width="16" src="$sbRoot/images/$sickbeard.indexerApi($show.indexer).config["icon"] "style="margin-top: -1px;"/></a>
+<a href="$sickbeard.IndexerApi($show.indexer).config["show_url"]$show.indexer_id" onclick="window.open(this.href, '_blank'); return false;" title="$sickbeard.IndexerApi($show.indexer).config["show_url"]$show.indexer_id"><img alt="$sickbeard.IndexerApi($show.indexer).name" height="16" width="16" src="$sbRoot/images/$sickbeard.IndexerApi($show.indexer).config["icon"] "style="margin-top: -1px;"/></a>
 #if $xem_numbering or $xem_absolute_numbering:
     <a href="http://thexem.de/search?q=$show.name" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href, '_blank'); return false;" title="http://thexem.de/search?q-$show.name"><img alt="[xem]" height="16" width="16" src="$sbRoot/images/xem.png" style="margin-top: -1px;"/>
 #end if
@@ -145,9 +145,9 @@
     #if $season_special:
     <b>Display Specials:</b>
         #if sickbeard.DISPLAY_SHOW_SPECIALS:
-        <a class="inner" href="$sbRoot/toggleDisplayShowSpecials/?show=$show.indexerid">Hide</a>
+        <a class="inner" href="$sbRoot/toggleDisplayShowSpecials/?show=$show.indexer_id">Hide</a>
         #else:
-        <a class="inner" href="$sbRoot/toggleDisplayShowSpecials/?show=$show.indexerid">Show</a>
+        <a class="inner" href="$sbRoot/toggleDisplayShowSpecials/?show=$show.indexer_id">Show</a>
         #end if
     #end if
 </span>
@@ -243,7 +243,7 @@
 		<option value="$curStatus">$statusStrings[$curStatus]</option>
 		#end for
 	</select>
-	<input type="hidden" id="showID" value="$show.indexerid" />
+	<input type="hidden" id="showID" value="$show.indexer_id" />
 	<input type="hidden" id="indexer" value="$show.indexer" />
 	<input class="btn" type="button" id="changeStatus" value="Go" />
 </div>
@@ -358,7 +358,7 @@
     <td align="center">
             <input type="text" placeholder="<%=str(dfltSeas) + 'x' + str(dfltEpis)%>" size="6" maxlength="8"
                 class="sceneSeasonXEpisode" data-for-season="$epResult["season"]" data-for-episode="$epResult["episode"]"
-                id="sceneSeasonXEpisode_$show.indexerid<%="_"+str(epResult["season"])+"_"+str(epResult["episode"])%>"
+                id="sceneSeasonXEpisode_$show.indexer_id<%="_"+str(epResult["season"])+"_"+str(epResult["episode"])%>"
                 title="Change the value here if scene numbering differs from the indexer episode numbering"
                 #if $dfltEpNumbering:
                     value=""
@@ -372,7 +372,7 @@
     <td align="center">
             <input type="text" placeholder="<%=str(dfltAbsolute)%>" size="6" maxlength="8"
                 class="sceneAbsolute" data-for-absolute="$epResult["absolute_number"]"
-                id="sceneAbsolute_$show.indexerid<%="_"+str(epResult["absolute_number"])%>"
+                id="sceneAbsolute_$show.indexer_id<%="_"+str(epResult["absolute_number"])%>"
                 title="Change the value here if scene absolute numbering differs from the indexer absolute numbering"
                 #if $dfltAbsNumbering:
                     value=""
@@ -386,7 +386,7 @@
 
     <td class="title">
     #if $epResult["description"] != "" and $epResult["description"] != None:
-    <img style="padding-top: 3px;" src="$sbRoot/images/info32.png" width="16" height="16" class="plotInfo" alt="" id="plot_info_$show.indexerid<%="_"+str(epResult["season"])+"_"+str(epResult["episode"])%>" />
+    <img style="padding-top: 3px;" src="$sbRoot/images/info32.png" width="16" height="16" class="plotInfo" alt="" id="plot_info_$show.indexer_id<%="_"+str(epResult["season"])+"_"+str(epResult["episode"])%>" />
 	#end if
     $epResult["name"]
     </td>
@@ -411,13 +411,13 @@
     <td class="search">
     #if int($epResult["season"]) != 0:
 		#if ( int($epResult["status"]) in $Quality.SNATCHED or int($epResult["status"]) in $Quality.DOWNLOADED ) and $sickbeard.USE_FAILED_DOWNLOADS:
-			<a class="epRetry" href="retryEpisode?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search32.png" height="16" alt="retry" title="Retry Download" /></a>
+			<a class="epRetry" href="retryEpisode?show=$show.indexer_id&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search32.png" height="16" alt="retry" title="Retry Download" /></a>
 		#else:
-	    	<a class="epSearch" href="searchEpisode?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search32.png" width="16" height="16" alt="search" title="Manual Search" /></a>
+	    	<a class="epSearch" href="searchEpisode?show=$show.indexer_id&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search32.png" width="16" height="16" alt="search" title="Manual Search" /></a>
 		#end if
     #end if
     #if $sickbeard.USE_SUBTITLES and $show.subtitles and len(set(str($epResult["subtitles"]).split(',')).intersection(set($subtitles.wantedLanguages()))) < len($subtitles.wantedLanguages()) and $epResult["location"]
-      <a class="epSubtitlesSearch" href="searchEpisodeSubtitles?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/closed_captioning.png" height="16" alt="search subtitles" title="Search Subtitles" /></a>
+      <a class="epSubtitlesSearch" href="searchEpisodeSubtitles?show=$show.indexer_id&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/closed_captioning.png" height="16" alt="search subtitles" title="Search Subtitles" /></a>
     #end if
     </td>
    </tr>

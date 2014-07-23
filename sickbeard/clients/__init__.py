@@ -11,21 +11,18 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-__all__ = ['utorrent',
-           'transmission',
-           'deluge',
-           'download_station',
-           'rtorrent'
+__all__ = [
+    'utorrent',
+    'transmission',
+    'deluge',
+    'download_station',
+    'rtorrent'
 ]
-
-import sickbeard
-
-from os import sys
 
 # Mapping error status codes to official W3C names
 http_error_code = {
@@ -63,24 +60,24 @@ http_error_code = {
     524: 'Request to host timedout waiting for reply back'
 }
 
-default_host = {'utorrent': 'http://localhost:8000',
-                'transmission': 'http://localhost:9091',
-                'deluge': 'http://localhost:8112',
-                'download_station': 'http://localhost:5000',
-                'rtorrent': 'scgi://localhost:5000',
+default_host = {
+    'utorrent': 'http://localhost:8000',
+    'transmission': 'http://localhost:9091',
+    'deluge': 'http://localhost:8112',
+    'download_station': 'http://localhost:5000',
+    'rtorrent': 'scgi://localhost:5000',
 }
 
 
-def getClientModule(name):
+def get_client_module(name):
     name = name.lower()
     prefix = "sickbeard.clients."
 
     return __import__(prefix + name, fromlist=__all__)
 
 
-def getClientIstance(name):
-    module = getClientModule(name)
-    className = module.api.__class__.__name__
+def get_client_instance(name):
+    module = get_client_module(name)
+    class_name = module.api.__class__.__name__
 
-    return getattr(module, className)
-    
+    return getattr(module, class_name)

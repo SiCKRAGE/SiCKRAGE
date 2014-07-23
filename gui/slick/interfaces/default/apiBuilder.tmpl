@@ -50,27 +50,27 @@ addList("Command", "History", "?cmd=history", "history");
 addOption("Command", "History.Clear", "?cmd=history.clear", "", "", "action");
 addOption("Command", "History.Trim", "?cmd=history.trim", "", "", "action");
 addList("Command", "Logs", "?cmd=logs", "logs");
-addList("Command", "Show", "?cmd=show", "indexerid");
+addList("Command", "Show", "?cmd=show", "indexer_id");
 addList("Command", "Show.AddExisting", "?cmd=show.addexisting", "show.addexisting", "", "", "action");
 addList("Command", "Show.AddNew", "?cmd=show.addnew", "show.addnew", "", "", "action");
-addList("Command", "Show.Cache", "?cmd=show.cache", "indexerid", "", "", "action");
-addList("Command", "Show.Delete", "?cmd=show.delete", "indexerid", "", "", "action");
-addList("Command", "Show.GetBanner", "?cmd=show.getbanner", "indexerid", "", "", "action");
-addList("Command", "Show.GetPoster", "?cmd=show.getposter", "indexerid", "", "", "action");
-addList("Command", "Show.GetQuality", "?cmd=show.getquality", "indexerid", "", "", "action");
+addList("Command", "Show.Cache", "?cmd=show.cache", "indexer_id", "", "", "action");
+addList("Command", "Show.Delete", "?cmd=show.delete", "indexer_id", "", "", "action");
+addList("Command", "Show.GetBanner", "?cmd=show.getbanner", "indexer_id", "", "", "action");
+addList("Command", "Show.GetPoster", "?cmd=show.getposter", "indexer_id", "", "", "action");
+addList("Command", "Show.GetQuality", "?cmd=show.getquality", "indexer_id", "", "", "action");
 addList("Command", "Show.Pause", "?cmd=show.pause", "show.pause", "", "", "action");
-addList("Command", "Show.Refresh", "?cmd=show.refresh", "indexerid", "", "", "action");
+addList("Command", "Show.Refresh", "?cmd=show.refresh", "indexer_id", "", "", "action");
 addList("Command", "Show.SeasonList", "?cmd=show.seasonlist", "show.seasonlist", "", "", "action");
 addList("Command", "Show.Seasons", "?cmd=show.seasons", "seasons", "", "", "action");
 addList("Command", "Show.SetQuality", "?cmd=show.setquality", "show.setquality", "", "", "action");
-addList("Command", "Show.Stats", "?cmd=show.stats", "indexerid", "", "", "action");
-addList("Command", "Show.Update", "?cmd=show.update", "indexerid", "", "", "action");
+addList("Command", "Show.Stats", "?cmd=show.stats", "indexer_id", "", "", "action");
+addList("Command", "Show.Update", "?cmd=show.update", "indexer_id", "", "", "action");
 addList("Command", "Shows", "?cmd=shows", "shows");
 addOption("Command", "Shows.Stats", "?cmd=shows.stats", "", "", "action");
 
-// addOption("indexerid", "Optional Param", "", 1);
+// addOption("indexer_id", "Optional Param", "", 1);
 #for $curShow in $sortedShowList:
-addOption("indexerid", "$curShow.name", "&indexerid=$curShow.indexerid");
+addOption("indexer_id", "$curShow.name", "&indexer_id=$curShow.indexer_id");
 #end for
 
 addOption("logs", "Optional Param", "", 1);
@@ -99,20 +99,20 @@ addOption("shows", "Show Only Not Paused", "&paused=0");
 addOption("shows", "Sort by Show Name", "&sort=name");
 addOption("shows", "Sort by TVDB ID", "&sort=id");
 
-addList("show.addexisting", "C:\\temp\\show1", "&location=C:\\temp\\show1", "show.addexisting-indexerid");
-addList("show.addexisting", "D:\\Temp\\show2", "&location=D:\\Temp\\show2", "show.addexisting-indexerid");
-addList("show.addexisting", "S:\\TV\\Ancient Aliens", "&location=S:\\TV\\Ancient Aliens", "show.addexisting-indexerid");
-addList("show.addexisting", "S:\\TV\\Chuck", "&location=S:\\TV\\Chuck", "show.addexisting-indexerid");
+addList("show.addexisting", "C:\\temp\\show1", "&location=C:\\temp\\show1", "show.addexisting-indexer_id");
+addList("show.addexisting", "D:\\Temp\\show2", "&location=D:\\Temp\\show2", "show.addexisting-indexer_id");
+addList("show.addexisting", "S:\\TV\\Ancient Aliens", "&location=S:\\TV\\Ancient Aliens", "show.addexisting-indexer_id");
+addList("show.addexisting", "S:\\TV\\Chuck", "&location=S:\\TV\\Chuck", "show.addexisting-indexer_id");
 
-addList("show.addexisting-indexerid", "101501 (Ancient Aliens)", "&indexerid=101501", "show.addexisting-opt");
-addList("show.addexisting-indexerid", "80348 (Chuck)", "&indexerid=80348", "show.addexisting-opt");
+addList("show.addexisting-indexer_id", "101501 (Ancient Aliens)", "&indexer_id=101501", "show.addexisting-opt");
+addList("show.addexisting-indexer_id", "80348 (Chuck)", "&indexer_id=80348", "show.addexisting-opt");
 
 addOption("show.addexisting-opt", "Optional Param", "", 1);
 addList("show.addexisting-opt", "No Season Folder", "&season_folder=0", "quality");
 addList("show.addexisting-opt", "Use Season Folder", "&season_folder=1", "quality");
 
-addList("show.addnew", "101501 (Ancient Aliens)", "&indexerid=101501", "show.addnew-loc");
-addList("show.addnew", "80348 (Chuck)", "&indexerid=80348", "show.addnew-loc");
+addList("show.addnew", "101501 (Ancient Aliens)", "&indexer_id=101501", "show.addnew-loc");
+addList("show.addnew", "80348 (Chuck)", "&indexer_id=80348", "show.addnew-loc");
 
 addOption("show.addnew-loc", "Optional Param", "", 1);
 addList("show.addnew-loc", "C:\\Temp", "&location=C:\\temp", "show.addnew-status");
@@ -137,11 +137,11 @@ addList("sb.searchtvdb", "OffiCE", "&name=OffiCE", "sb.searchtvdb-lang");
 addList("sb.searchtvdb", "Leno", "&name=leno", "sb.searchtvdb-lang");
 addList("sb.searchtvdb", "Top Gear", "&name=Top Gear", "sb.searchtvdb-lang");
 endOptGroup("sb.searchtvdb");
-addOptGroup("sb.searchtvdb", "Search by indexerid");
-addList("sb.searchtvdb", "73739", "&indexerid=73739", "sb.searchtvdb-lang");
-addList("sb.searchtvdb", "74608", "&indexerid=74608", "sb.searchtvdb-lang");
-addList("sb.searchtvdb", "199051", "&indexerid=199051", "sb.searchtvdb-lang");
-addList("sb.searchtvdb", "123456 (invalid show)", "&indexerid=123456", "sb.searchtvdb-lang");
+addOptGroup("sb.searchtvdb", "Search by indexer_id");
+addList("sb.searchtvdb", "73739", "&indexer_id=73739", "sb.searchtvdb-lang");
+addList("sb.searchtvdb", "74608", "&indexer_id=74608", "sb.searchtvdb-lang");
+addList("sb.searchtvdb", "199051", "&indexer_id=199051", "sb.searchtvdb-lang");
+addList("sb.searchtvdb", "123456 (invalid show)", "&indexer_id=123456", "sb.searchtvdb-lang");
 endOptGroup("sb.searchtvdb");
 
 addOption("sb.searchtvdb-lang", "Optional Param", "", 1);
@@ -170,18 +170,18 @@ addOption("sb.searchtvdb-lang", "Swedish", "&lang=sv");   // 8
 addOption("sb.searchtvdb-lang", "Turkish", "&lang=tr");   // 21
 
 #for $curShow in $sortedShowList:
-addList("seasons", "$curShow.name", "&indexerid=$curShow.indexerid", "seasons-$curShow.indexerid");
+addList("seasons", "$curShow.name", "&indexer_id=$curShow.indexer_id", "seasons-$curShow.indexer_id");
 #end for
 
 #for $curShow in $sortedShowList:
-addList("show.seasonlist", "$curShow.name", "&indexerid=$curShow.indexerid", "show.seasonlist-sort");
+addList("show.seasonlist", "$curShow.name", "&indexer_id=$curShow.indexer_id", "show.seasonlist-sort");
 #end for
 
 addOption("show.seasonlist-sort", "Optional Param", "", 1);
 addOption("show.seasonlist-sort", "Sort by Ascending", "&sort=asc");
 
 #for $curShow in $sortedShowList:
-addList("show.setquality", "$curShow.name", "&indexerid=$curShow.indexerid", "quality");
+addList("show.setquality", "$curShow.name", "&indexer_id=$curShow.indexer_id", "quality");
 #end for
 
 //build out generic quality options
@@ -234,7 +234,7 @@ addOption("seasons-$curShow", "$curShowSeason.season", "&season=$curShowSeason.s
 #end for
 
 #for $curShow in $sortedShowList:
-addList("episode", "$curShow.name", "&indexerid=$curShow.indexerid", "episode-$curShow.indexerid");
+addList("episode", "$curShow.name", "&indexer_id=$curShow.indexer_id", "episode-$curShow.indexer_id");
 #end for
 
 // build out each show's season+episode list for episode cmd
@@ -248,7 +248,7 @@ addOption("episode-$curShow-full", "Show Full Path", "&full_path=1");
 
 // build out tvshow list for episode.search
 #for $curShow in $sortedShowList:
-addList("episode.search", "$curShow.name", "&indexerid=$curShow.indexerid", "episode.search-$curShow.indexerid");
+addList("episode.search", "$curShow.name", "&indexer_id=$curShow.indexer_id", "episode.search-$curShow.indexer_id");
 #end for
 
 // build out each show's season+episode list for episode.search cmd
@@ -260,7 +260,7 @@ addOption("episode.search-$curShow", "$curShowSeason.season x $curShowSeason.epi
 
 // build out tvshow list for episode.setstatus
 #for $curShow in $sortedShowList:
-addList("episode.setstatus", "$curShow.name", "&indexerid=$curShow.indexerid", "episode.setstatus-$curShow.indexerid");
+addList("episode.setstatus", "$curShow.name", "&indexer_id=$curShow.indexer_id", "episode.setstatus-$curShow.indexer_id");
 #end for
 
 // build out each show's season+episode list for episode.setstatus cmd
@@ -311,7 +311,7 @@ addOption("history-limit", "Show Only Snatched", "&type=snatched");
 
 addOption("exceptions", "Optional Param", "", 1);
 #for $curShow in $sortedShowList:
-addOption("exceptions", "$curShow.name", "&indexerid=$curShow.indexerid");
+addOption("exceptions", "$curShow.name", "&indexer_id=$curShow.indexer_id");
 #end for
 
 addOption("sb.pausebacklog", "Optional Param", "", 1);
@@ -331,7 +331,7 @@ addOption("sb.deleterootdir", "/usr/bin", "&location=/usr/bin/");
 addOption("sb.deleterootdir", "S:\\Invalid_Location", "&location=S:\\Invalid_Location");
 
 #for $curShow in $sortedShowList:
-addList("show.pause", "$curShow.name", "&indexerid=$curShow.indexerid", "show.pause-opt");
+addList("show.pause", "$curShow.name", "&indexer_id=$curShow.indexer_id", "show.pause-opt");
 #end for
 addOption("show.pause-opt", "Optional Param", "", 1);
 addOption("show.pause-opt", "Unpause", "&pause=0");

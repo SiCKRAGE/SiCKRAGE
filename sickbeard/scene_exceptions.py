@@ -125,7 +125,7 @@ def get_scene_exception_by_name(show_name):
 
 def get_scene_exception_by_name_multiple(show_name):
     """
-    Given a show name, return the indexerid of the exception, None if no exception
+    Given a show name, return the indexer_id of the exception, None if no exception
     is present.
     """
 
@@ -166,11 +166,11 @@ def retrieve_exceptions():
     global exception_dict, anidb_exception_dict, xem_exception_dict
 
     # exceptions are stored on github pages
-    for indexer in sickbeard.indexerApi().indexers:
-        if shouldRefresh(sickbeard.indexerApi(indexer).name):
-            logger.log(u"Checking for scene exception updates for " + sickbeard.indexerApi(indexer).name + "")
+    for indexer in sickbeard.IndexerApi().indexers:
+        if shouldRefresh(sickbeard.IndexerApi(indexer).name):
+            logger.log(u"Checking for scene exception updates for " + sickbeard.IndexerApi(indexer).name + "")
 
-            url = sickbeard.indexerApi(indexer).config['scene_url']
+            url = sickbeard.IndexerApi(indexer).config['scene_url']
 
             url_data = helpers.getURL(url)
 
@@ -180,7 +180,7 @@ def retrieve_exceptions():
                 continue
 
             else:
-                setLastRefresh(sickbeard.indexerApi(indexer).name)
+                setLastRefresh(sickbeard.IndexerApi(indexer).name)
 
                 # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
                 for cur_line in url_data.splitlines():
@@ -278,12 +278,12 @@ def _anidb_exceptions_fetcher():
         for show in sickbeard.showList:
             if show.is_anime and show.indexer == 1:
                 try:
-                    anime = adba.Anime(None, name=show.name, tvdbid=show.indexerid, autoCorrectName=True)
+                    anime = adba.Anime(None, name=show.name, tvdbid=show.indexer_id, autoCorrectName=True)
                 except:
                     continue
                 else:
                     if anime.name and anime.name != show.name:
-                        anidb_exception_dict[show.indexerid] = [{anime.name: -1}]
+                        anidb_exception_dict[show.indexer_id] = [{anime.name: -1}]
 
         setLastRefresh('anidb')
     return anidb_exception_dict
@@ -293,23 +293,23 @@ def _xem_exceptions_fetcher():
     global xem_exception_dict
 
     if shouldRefresh('xem'):
-        for indexer in sickbeard.indexerApi().indexers:
-            logger.log(u"Checking for XEM scene exception updates for " + sickbeard.indexerApi(indexer).name)
+        for indexer in sickbeard.IndexerApi().indexers:
+            logger.log(u"Checking for XEM scene exception updates for " + sickbeard.IndexerApi(indexer).name)
 
-            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickbeard.indexerApi(indexer).config[
+            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickbeard.IndexerApi(indexer).config[
                 'xem_origin']
 
             url_data = helpers.getURL(url, json=True)
             if url_data is None:
-                logger.log(u"Check scene exceptions update failed for " + sickbeard.indexerApi(
+                logger.log(u"Check scene exceptions update failed for " + sickbeard.IndexerApi(
                     indexer).name + ", Unable to get URL: " + url, logger.ERROR)
                 continue
 
             if url_data['result'] == 'failure':
                 continue
 
-            for indexerid, names in url_data['data'].items():
-                xem_exception_dict[int(indexerid)] = names
+            for indexer_id, names in url_data['data'].items():
+                xem_exception_dict[int(indexer_id)] = names
 
         setLastRefresh('xem')
 

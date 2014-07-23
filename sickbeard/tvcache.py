@@ -42,7 +42,7 @@ class CacheDBConnection(db.DBConnection):
         try:
             if not self.hasTable(providerName):
                 self.action(
-                    "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
+                    "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexer_id NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
             else:
                 sqlResults = self.select(
                     "SELECT url, COUNT(url) as count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
@@ -260,7 +260,7 @@ class TVCache():
             myDB = db.DBConnection()
             sql_results = myDB.select(
                 "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ?",
-                [parse_result.show.indexerid, parse_result.show.indexer, airdate])
+                [parse_result.show.indexer_id, parse_result.show.indexer, airdate])
             if sql_results > 0:
                 season = int(sql_results[0]["season"])
                 episodes = [int(sql_results[0]["episode"])]
@@ -287,8 +287,8 @@ class TVCache():
             logger.log(u"Added RSS item: [" + name + "] to cache: [" + self.providerID + "]", logger.DEBUG)
 
             return [
-                "INSERT OR IGNORE INTO [" + self.providerID + "] (name, season, episodes, indexerid, url, time, quality, release_group) VALUES (?,?,?,?,?,?,?,?)",
-                [name, season, episodeText, parse_result.show.indexerid, url, curTimestamp, quality, release_group]]
+                "INSERT OR IGNORE INTO [" + self.providerID + "] (name, season, episodes, indexer_id, url, time, quality, release_group) VALUES (?,?,?,?,?,?,?,?)",
+                [name, season, episodeText, parse_result.show.indexer_id, url, curTimestamp, quality, release_group]]
 
 
     def searchCache(self, episodes, manualSearch=False):
@@ -302,7 +302,7 @@ class TVCache():
         if date != None:
             sql += " AND time >= " + str(int(time.mktime(date.timetuple())))
 
-        return filter(lambda x: x['indexerid'] != 0, myDB.select(sql))
+        return filter(lambda x: x['indexer_id'] != 0, myDB.select(sql))
 
 
     def findNeededEpisodes(self, episodes, manualSearch=False):
@@ -311,8 +311,8 @@ class TVCache():
         for epObj in episodes:
             myDB = self._getDB()
             sqlResults = myDB.select(
-                "SELECT * FROM [" + self.providerID + "] WHERE indexerid = ? AND season = ? AND episodes LIKE ?",
-                [epObj.show.indexerid, epObj.season, "%|" + str(epObj.episode) + "|%"])
+                "SELECT * FROM [" + self.providerID + "] WHERE indexer_id = ? AND season = ? AND episodes LIKE ?",
+                [epObj.show.indexer_id, epObj.season, "%|" + str(epObj.episode) + "|%"])
 
             # for each cache entry
             for curResult in sqlResults:
@@ -323,7 +323,7 @@ class TVCache():
 
                 # get the show object, or if it's not one of our shows then ignore it
                 try:
-                    showObj = helpers.findCertainShow(sickbeard.showList, int(curResult["indexerid"]))
+                    showObj = helpers.findCertainShow(sickbeard.showList, int(curResult["indexer_id"]))
                 except MultipleShowObjectsException:
                     showObj = None
 
