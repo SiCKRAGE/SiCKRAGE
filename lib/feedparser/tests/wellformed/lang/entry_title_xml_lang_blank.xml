@@ -1,6 +1,6 @@
 <!--
 Description: entry title defines blank xml:lang
-Expect:      not bozo and entries[0]['title_detail']['language'] is None
+Expect:      not bozo and entries[0]['title_detail']['language'] == None
 -->
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xml:lang="en">
 <entry>
