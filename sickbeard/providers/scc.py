@@ -12,7 +12,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -40,14 +40,15 @@ from sickbeard.helpers import sanitizeSceneName
 
 
 class SCCProvider(generic.TorrentProvider):
-    urls = {'base_url': 'https://sceneaccess.eu',
-            'login': 'https://sceneaccess.eu/login',
-            'detail': 'https://www.sceneaccess.eu/details?id=%s',
-            'search': 'https://sceneaccess.eu/browse?search=%s&method=1&%s',
-            'nonscene': 'https://sceneaccess.eu/nonscene?search=%s&method=1&c44=44&c45=44',
-            'foreign': 'https://sceneaccess.eu/foreign?search=%s&method=1&c34=34&c33=33',
-            'archive': 'https://sceneaccess.eu/archive?search=%s&method=1&c26=26',
-            'download': 'https://www.sceneaccess.eu/%s',
+    urls = {
+        'base_url': 'https://sceneaccess.eu',
+        'login': 'https://sceneaccess.eu/login',
+        'detail': 'https://www.sceneaccess.eu/details?id=%s',
+        'search': 'https://sceneaccess.eu/browse?search=%s&method=1&%s',
+        'nonscene': 'https://sceneaccess.eu/nonscene?search=%s&method=1&c44=44&c45=44',
+        'foreign': 'https://sceneaccess.eu/foreign?search=%s&method=1&c34=34&c33=33',
+        'archive': 'https://sceneaccess.eu/archive?search=%s&method=1&c26=26',
+        'download': 'https://www.sceneaccess.eu/%s',
     }
 
     def __init__(self):
@@ -69,7 +70,9 @@ class SCCProvider(generic.TorrentProvider):
 
         self.categories = "c27=27&c17=17&c11=11"
 
-        self.headers = {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'}
+        self.headers = {
+            'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/32.0.1700.107 Safari/537.36'}
 
     def isEnabled(self):
         return self.enabled
@@ -92,7 +95,8 @@ class SCCProvider(generic.TorrentProvider):
         self.session = requests.Session()
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, headers=self.headers, timeout=30, verify=False)
+            response = self.session.post(self.urls['login'], data=login_params, headers=self.headers, timeout=30,
+                                         verify=False)
         except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
@@ -206,7 +210,8 @@ class SCCProvider(generic.TorrentProvider):
                                     source = self.name + " (" + html.title.string + ")"
                                 else:
                                     source = self.name
-                                logger.log(u"The Data returned from " + source + " does not contain any torrent", logger.DEBUG)
+                                logger.log(u"The Data returned from " + source + " does not contain any torrent",
+                                           logger.DEBUG)
                                 continue
 
                             for result in torrent_table.find_all('tr')[1:]:
@@ -363,8 +368,6 @@ class SCCCache(tvcache.TVCache):
             if ci is not None:
                 cl.append(ci)
 
-
-
         if len(cl) > 0:
             myDB = self._getDB()
             myDB.mass_action(cl)
@@ -377,7 +380,7 @@ class SCCCache(tvcache.TVCache):
         if not title or not url:
             return None
 
-        logger.log(u"Attempting to cache item:[" + title +"]", logger.DEBUG)
+        logger.log(u"Attempting to cache item:[" + title + "]", logger.DEBUG)
 
         return self._addCacheEntry(title, url)
 

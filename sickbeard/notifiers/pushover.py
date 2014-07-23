@@ -85,7 +85,8 @@ class PushoverNotifier:
                 logger.log("Username is wrong/not a pushover email. Pushover will send an email to it", logger.WARNING)
                 return False
 
-            # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
+            # For HTTP status code 401's, it is because you are passing in either an invalid token,
+            # or the user has not added your service.
             elif e.code == 401:
 
                 #HTTP status 401 if the user doesn't have the service added
@@ -102,7 +103,8 @@ class PushoverNotifier:
                 logger.log("Wrong data sent to pushover", logger.ERROR)
                 return False
 
-            # If you receive a HTTP status code of 429, it is because the message limit has been reached (free limit is 7,500)
+            # If you receive a HTTP status code of 429, it is because the message limit has been reached
+            # (free limit is 7,500)
             elif e.code == 429:
                 logger.log("Pushover API message limit reached - try a different API key", logger.ERROR)
                 return False
@@ -113,7 +115,6 @@ class PushoverNotifier:
     def notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
         if sickbeard.PUSHOVER_NOTIFY_ONSNATCH:
             self._notifyPushover(title, ep_name)
-
 
     def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
         if sickbeard.PUSHOVER_NOTIFY_ONDOWNLOAD:

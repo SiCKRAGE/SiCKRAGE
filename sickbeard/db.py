@@ -76,7 +76,8 @@ class DBConnection(object):
 
     def _cursor(self):
         """Returns the cursor; reconnects if disconnected."""
-        if self.connection is None: self.reconnect()
+        if self.connection is None:
+            self.reconnect()
         return self.connection.cursor()
 
     def execute(self, query, args=None, fetchall=False, fetchone=False):

@@ -146,6 +146,7 @@ def redirect(url, permanent=False, status=None):
     assert url[0] == '/'
     raise HTTPRedirect(sickbeard.WEB_ROOT + url, permanent, status)
 
+
 @authenticated
 class MainHandler(RequestHandler):
     def http_error_401_handler(self):
@@ -2548,7 +2549,8 @@ class HomePostProcess(MainHandler):
 
         redirect("/home/")
 
-    def processEpisode(self, dir=None, nzbName=None, jobName=None, quiet=None, process_method=None, force=None, is_priority=None, failed="0", type="auto", *args, **kwargs):
+    def processEpisode(self, dir=None, nzbName=None, jobName=None, quiet=None, process_method=None, force=None,
+                       is_priority=None, failed="0", type="auto", *args, **kwargs):
 
         if failed == "0":
             failed = False

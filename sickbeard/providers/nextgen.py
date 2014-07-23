@@ -11,7 +11,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -42,12 +42,13 @@ from sickbeard.helpers import sanitizeSceneName
 
 
 class NextGenProvider(generic.TorrentProvider):
-    urls = {'base_url': 'https://nxtgn.org/',
-            'search': 'https://nxtgn.org/browse.php?search=%s&cat=0&incldead=0&modes=%s',
-            'login_page': 'https://nxtgn.org/login.php',
-            'detail': 'https://nxtgn.org/details.php?id=%s',
-            'download': 'https://nxtgn.org/download.php?id=%s',
-            'takelogin': 'https://nxtgn.org/takelogin.php?csrf=',
+    urls = {
+        'base_url': 'https://nxtgn.org/',
+        'search': 'https://nxtgn.org/browse.php?search=%s&cat=0&incldead=0&modes=%s',
+        'login_page': 'https://nxtgn.org/login.php',
+        'detail': 'https://nxtgn.org/details.php?id=%s',
+        'download': 'https://nxtgn.org/download.php?id=%s',
+        'takelogin': 'https://nxtgn.org/takelogin.php?csrf=',
     }
 
     def __init__(self):
@@ -226,9 +227,11 @@ class NextGenProvider(generic.TorrentProvider):
 
                                     try:
                                         torrentName = \
-                                        ((result.find('div', attrs={'id': 'torrent-udgivelse2-users'})).find('a'))['title']
+                                            ((result.find('div', attrs={'id': 'torrent-udgivelse2-users'})).find('a'))[
+                                                'title']
                                         torrentId = (
-                                        ((result.find('div', attrs={'id': 'torrent-download'})).find('a'))['href']).replace(
+                                            ((result.find('div', attrs={'id': 'torrent-download'})).find('a'))[
+                                                'href']).replace(
                                             'download.php?id=', '')
                                         torrent_name = str(torrentName)
                                         torrent_download_url = (self.urls['download'] % torrentId).encode('utf8')
@@ -368,8 +371,6 @@ class NextGenCache(tvcache.TVCache):
             if ci is not None:
                 cl.append(ci)
 
-
-
         if len(cl) > 0:
             myDB = self._getDB()
             myDB.mass_action(cl)
@@ -382,7 +383,7 @@ class NextGenCache(tvcache.TVCache):
         if not title or not url:
             return None
 
-        logger.log(u"Attempting to cache item:[" + title +"]", logger.DEBUG)
+        logger.log(u"Attempting to cache item:[" + title + "]", logger.DEBUG)
 
         return self._addCacheEntry(title, url)
 

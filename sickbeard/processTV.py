@@ -76,7 +76,7 @@ def delete_files(processPath, notwantedFiles):
         cur_file_path = ek.ek(os.path.join, processPath, cur_file)
 
         if not ek.ek(os.path.isfile, cur_file_path):
-            continue  #Prevent error when a notwantedfiles is an associated files
+            continue  # Prevent error when a notwantedfiles is an associated files
 
         returnStr += logHelper(u"Deleting file " + cur_file, logger.DEBUG)
 

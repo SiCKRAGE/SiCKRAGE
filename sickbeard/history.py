@@ -33,7 +33,8 @@ def _logHistoryItem(action, showid, season, episode, quality, resource, provider
 
     myDB = db.DBConnection()
     myDB.action(
-        "INSERT INTO history (action, date, showid, season, episode, quality, resource, provider) VALUES (?,?,?,?,?,?,?,?)",
+        "INSERT INTO history (action, date, showid, season, episode, quality, resource, provider) "
+        "VALUES (?,?,?,?,?,?,?,?)",
         [action, logDate, showid, season, episode, quality, resource, provider])
 
 

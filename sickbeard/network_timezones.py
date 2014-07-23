@@ -38,6 +38,7 @@ network_dict = None
 
 sb_timezone = tz.tzlocal()
 
+
 # helper to remove failed temp download
 def _remove_zoneinfo_failed(filename):
     try:
@@ -276,6 +277,7 @@ def parse_date_time(d, t, network):
             return datetime.datetime(te.year, te.month, te.day, hr, m, tzinfo=sb_timezone)
     except:
         return datetime.datetime(te.year, te.month, te.day, hr, m)
+
 
 def test_timeformat(t):
     mo = time_regex.search(t)

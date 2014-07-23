@@ -16,15 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
-import urllib, httplib
-import datetime
+import urllib
+import httplib
+import urllib2
+import cookielib
 
 import sickbeard
-
 from lib import MultipartPostHandler
-import urllib2, cookielib
 
 try:
     import json
@@ -118,7 +116,8 @@ def sendNZB(nzb):
         logger.log(u"Error trying to get result from SAB, NZB not sent: " + ex(e), logger.ERROR)
         return False
 
-    # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and didn't recieve the NZB
+    # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and
+    # didn't recieve the NZB
     if len(result) == 0:
         logger.log(u"No data returned from SABnzbd, NZB not sent", logger.ERROR)
         return False

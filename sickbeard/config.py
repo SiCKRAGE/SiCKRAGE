@@ -96,7 +96,7 @@ def change_LOG_DIR(log_dir, web_log):
         else:
             return False
 
-    if sickbeard.WEB_LOG != web_log_value or log_dir_changed == True:
+    if sickbeard.WEB_LOG != web_log_value or log_dir_changed is True:
         sickbeard.WEB_LOG = web_log_value
 
     return True

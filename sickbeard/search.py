@@ -42,6 +42,7 @@ from sickbeard.exceptions import ex
 from sickbeard.providers.generic import GenericProvider, tvcache
 from sickbeard.blackandwhitelist import BlackAndWhiteList
 
+
 def _downloadResult(result):
     """
     Downloads a result to the appropriate black hole folder.
@@ -109,7 +110,8 @@ def snatchEpisode(result, endStatus=SNATCHED):
     endStatus: the episode status that should be used for the episode object once it's snatched.
     """
 
-    if result is None: return False
+    if result is None:
+        return False
 
     result.priority = 0  # -1 = low, 0 = normal, 1 = high
     if sickbeard.ALLOW_HIGH_PRIORITY:
@@ -176,7 +178,6 @@ def snatchEpisode(result, endStatus=SNATCHED):
         myDB = db.DBConnection()
         myDB.mass_action(sql_l)
 
-
     return True
 
 
@@ -217,7 +218,9 @@ def pickBestResult(results, show, quality_list=None):
 
         if bwl:
             if not bwl.is_valid(cur_result):
-                logger.log(cur_result.name+" does not match the blacklist or the whitelist, rejecting it. Result: " + bwl.get_last_result_msg(), logger.MESSAGE)
+                logger.log(
+                    cur_result.name + " does not match the blacklist or the whitelist, rejecting it. Result: " + bwl.get_last_result_msg(),
+                    logger.MESSAGE)
                 continue
 
         if quality_list and cur_result.quality not in quality_list:
@@ -331,7 +334,7 @@ def filterSearchResults(show, season, results):
     for curEp in results:
         # skip non-tv crap
         results[curEp] = filter(
-            lambda x: show_name_helpers.filterBadReleases(x.name) and x.show == show,results[curEp])
+            lambda x: show_name_helpers.filterBadReleases(x.name) and x.show == show, results[curEp])
 
         if curEp in foundResults:
             foundResults[curEp] += results[curEp]
@@ -434,7 +437,7 @@ def searchProviders(show, season, episodes, manualSearch=False):
         if seasonSearch and provider.search_mode == 'sponly':
             search_mode = provider.search_mode
 
-        while(True):
+        while (True):
             searchCount += 1
 
             if search_mode == 'sponly':
@@ -599,7 +602,7 @@ def searchProviders(show, season, episodes, manualSearch=False):
                         # but the multi-ep is worse quality, we don't want it
                         # TODO: wtf is this False for
                         # if False and multiResult.quality <= pickBestResult(foundResults[epNum]):
-                        #    notNeededEps.append(epNum)
+                        # notNeededEps.append(epNum)
                         #else:
                         neededEps.append(epNum)
                     else:

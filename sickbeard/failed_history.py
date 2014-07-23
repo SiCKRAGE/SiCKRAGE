@@ -65,7 +65,8 @@ def logFailed(release):
             size = sql_results[0]["size"]
         else:
             logger.log(
-                u"They also vary in size. Deleting the logged snatches and recording this release with no size/provider",
+                u"They also vary in size. Deleting the logged snatches and recording this release with "
+                u"no size/provider",
                 logger.WARNING)
             for result in sql_results:
                 deleteLoggedSnatch(result["release"], result["size"], result["provider"])

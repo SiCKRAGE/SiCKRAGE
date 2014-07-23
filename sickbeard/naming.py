@@ -11,7 +11,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -28,22 +28,26 @@ from sickbeard.name_parser.parser import NameParser, InvalidNameException
 
 from common import Quality, DOWNLOADED
 
-name_presets = ('%SN - %Sx%0E - %EN',
-                '%S.N.S%0SE%0E.%E.N',
-                '%Sx%0E - %EN',
-                'S%0SE%0E - %EN',
-                'Season %0S/%S.N.S%0SE%0E.%Q.N-%RG'
+name_presets = (
+    '%SN - %Sx%0E - %EN',
+    '%S.N.S%0SE%0E.%E.N',
+    '%Sx%0E - %EN',
+    'S%0SE%0E - %EN',
+    'Season %0S/%S.N.S%0SE%0E.%Q.N-%RG'
 )
 
-name_abd_presets = ('%SN - %A-D - %EN',
-                    '%S.N.%A.D.%E.N.%Q.N',
-                    '%Y/%0M/%S.N.%A.D.%E.N-%RG'
+name_abd_presets = (
+    '%SN - %A-D - %EN',
+    '%S.N.%A.D.%E.N.%Q.N',
+    '%Y/%0M/%S.N.%A.D.%E.N-%RG'
 )
 
-name_sports_presets = ('%SN - %A-D - %EN',
-                    '%S.N.%A.D.%E.N.%Q.N',
-                    '%Y/%0M/%S.N.%A.D.%E.N-%RG'
+name_sports_presets = (
+    '%SN - %A-D - %EN',
+    '%S.N.%A.D.%E.N.%Q.N',
+    '%Y/%0M/%S.N.%A.D.%E.N-%RG'
 )
+
 
 class TVShow():
     def __init__(self):
@@ -154,6 +158,7 @@ def check_valid_abd_naming(pattern=None):
 
     return valid
 
+
 def check_valid_sports_naming(pattern=None):
     """
     Checks if the name is can be parsed back to its original form for an sports format.
@@ -167,6 +172,7 @@ def check_valid_sports_naming(pattern=None):
     valid = validate_name(pattern, sports=True)
 
     return valid
+
 
 def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=False, sports=False):
     ep = generate_sample_ep(multi, abd, sports, anime_type)
@@ -201,7 +207,8 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
             logger.log(u"Sports event date incorrect in parsed episode, pattern isn't valid", logger.DEBUG)
             return False
     elif anime_type != 3:
-        if len(result.ab_episode_numbers) and result.ab_episode_numbers != [x.absolute_number for x in [ep] + ep.relatedEps]:
+        if len(result.ab_episode_numbers) and result.ab_episode_numbers != [x.absolute_number for x in
+                                                                            [ep] + ep.relatedEps]:
             logger.log(u"Absolute numbering incorrect in parsed episode, pattern isn't valid", logger.DEBUG)
             return False
     else:

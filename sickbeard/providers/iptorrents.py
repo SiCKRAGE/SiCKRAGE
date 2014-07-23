@@ -11,7 +11,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -40,9 +40,10 @@ from sickbeard.show_name_helpers import allPossibleShowNames
 
 
 class IPTorrentsProvider(generic.TorrentProvider):
-    urls = {'base_url': 'https://www.iptorrents.com',
-            'login': 'https://www.iptorrents.com/torrents/',
-            'search': 'https://www.iptorrents.com/torrents/?%s%s&q=%s&qf=ti',
+    urls = {
+        'base_url': 'https://www.iptorrents.com',
+        'login': 'https://www.iptorrents.com/torrents/',
+        'search': 'https://www.iptorrents.com/torrents/?%s%s&q=%s&qf=ti',
     }
 
     def __init__(self):
@@ -76,9 +77,10 @@ class IPTorrentsProvider(generic.TorrentProvider):
 
     def _doLogin(self):
 
-        login_params = {'username': self.username,
-                        'password': self.password,
-                        'login': 'submit',
+        login_params = {
+            'username': self.username,
+            'password': self.password,
+            'login': 'submit',
         }
 
         try:
@@ -104,7 +106,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -179,7 +181,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
                         torrent_table = html.find('table', attrs={'class': 'torrents'})
                         torrents = torrent_table.find_all('tr') if torrent_table else []
 
-                        #Continue only if one Release is found
+                        # Continue only if one Release is found
                         if len(torrents) < 2:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
                                        logger.WARNING)
@@ -190,7 +192,8 @@ class IPTorrentsProvider(generic.TorrentProvider):
                             try:
                                 torrent = result.find_all('td')[1].find('a')
                                 torrent_name = torrent.string
-                                torrent_download_url = self.urls['base_url'] + (result.find_all('td')[3].find('a'))['href']
+                                torrent_download_url = self.urls['base_url'] + (result.find_all('td')[3].find('a'))[
+                                    'href']
                                 torrent_details_url = self.urls['base_url'] + torrent['href']
                                 torrent_seeders = int(result.find('td', attrs={'class': 'ac t_seeders'}).string)
                                 ## Not used, perhaps in the future ##
@@ -207,7 +210,8 @@ class IPTorrentsProvider(generic.TorrentProvider):
                                 continue
 
                             item = torrent_name, torrent_download_url
-                            logger.log(u"Found result: " + torrent_name + " (" + torrent_details_url + ")", logger.DEBUG)
+                            logger.log(u"Found result: " + torrent_name + " (" + torrent_details_url + ")",
+                                       logger.DEBUG)
                             items[mode].append(item)
 
                 except Exception, e:
@@ -285,6 +289,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
+
 class IPTorrentsCache(tvcache.TVCache):
     def __init__(self, provider):
 
@@ -317,8 +322,6 @@ class IPTorrentsCache(tvcache.TVCache):
             if ci is not None:
                 cl.append(ci)
 
-
-
         if len(cl) > 0:
             myDB = self._getDB()
             myDB.mass_action(cl)
@@ -331,7 +334,7 @@ class IPTorrentsCache(tvcache.TVCache):
         if not title or not url:
             return None
 
-        logger.log(u"Attempting to cache item:[" + title +"]", logger.DEBUG)
+        logger.log(u"Attempting to cache item:[" + title + "]", logger.DEBUG)
 
         return self._addCacheEntry(title, url)
 

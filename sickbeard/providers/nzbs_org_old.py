@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 import datetime
 import re
 import time
@@ -100,7 +98,8 @@ class NZBsProvider(generic.NZBProvider):
 
             if "&i=" not in url and "&h=" not in url:
                 raise exceptions.AuthException(
-                    "The NZBs.org result URL has no auth info which means your UID/hash are incorrect, check your config")
+                    "The NZBs.org result URL has no auth info which means your UID/hash are incorrect, "
+                    "check your config")
 
             results.append(curItem)
 

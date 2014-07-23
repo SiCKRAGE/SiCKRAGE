@@ -39,11 +39,12 @@ from sickbeard.helpers import sanitizeSceneName
 
 
 class TorrentBytesProvider(generic.TorrentProvider):
-    urls = {'base_url': 'https://www.torrentbytes.net',
-            'login': 'https://www.torrentbytes.net/takelogin.php',
-            'detail': 'https://www.torrentbytes.net/details.php?id=%s',
-            'search': 'https://www.torrentbytes.net/browse.php?search=%s%s',
-            'download': 'https://www.torrentbytes.net/download.php?id=%s&name=%s',
+    urls = {
+        'base_url': 'https://www.torrentbytes.net',
+        'login': 'https://www.torrentbytes.net/takelogin.php',
+        'detail': 'https://www.torrentbytes.net/details.php?id=%s',
+        'search': 'https://www.torrentbytes.net/browse.php?search=%s%s',
+        'download': 'https://www.torrentbytes.net/download.php?id=%s&name=%s',
     }
 
     def __init__(self):
@@ -78,9 +79,10 @@ class TorrentBytesProvider(generic.TorrentProvider):
 
     def _doLogin(self):
 
-        login_params = {'username': self.username,
-                        'password': self.password,
-                        'login': 'submit'
+        login_params = {
+            'username': self.username,
+            'password': self.password,
+            'login': 'submit'
         }
 
         self.session = requests.Session()
@@ -106,7 +108,7 @@ class TorrentBytesProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + '.' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -172,7 +174,7 @@ class TorrentBytesProvider(generic.TorrentProvider):
                         torrent_table = html.find('table', attrs={'border': '1'})
                         torrent_rows = torrent_table.find_all('tr') if torrent_table else []
 
-                        #Continue only if one Release is found
+                        # Continue only if one Release is found
                         if len(torrent_rows) < 2:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
                                        logger.DEBUG)
@@ -198,7 +200,7 @@ class TorrentBytesProvider(generic.TorrentProvider):
                             except (AttributeError, TypeError):
                                 continue
 
-                            #Filter unseeded torrent
+                            # Filter unseeded torrent
                             if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                                 continue
 
@@ -213,7 +215,7 @@ class TorrentBytesProvider(generic.TorrentProvider):
                 except Exception, e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]

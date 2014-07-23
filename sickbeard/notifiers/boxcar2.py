@@ -13,7 +13,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -52,11 +52,11 @@ class Boxcar2Notifier:
         curUrl = API_URL
 
         data = urllib.urlencode({
-                'user_credentials': accesstoken,
-                'notification[title]': "SickRage : " + title + ' : ' + msg,
-                'notification[long_message]': msg,
-                'notification[sound]': "notifier-2"
-            })
+            'user_credentials': accesstoken,
+            'notification[title]': "SickRage : " + title + ' : ' + msg,
+            'notification[long_message]': msg,
+            'notification[sound]': "notifier-2"
+        })
 
         # send the request to boxcar2
         try:
@@ -89,7 +89,6 @@ class Boxcar2Notifier:
         if sickbeard.BOXCAR2_NOTIFY_ONSNATCH:
             self._notifyBoxcar2(title, ep_name)
 
-
     def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
         if sickbeard.BOXCAR2_NOTIFY_ONDOWNLOAD:
             self._notifyBoxcar2(title, ep_name)
@@ -97,11 +96,11 @@ class Boxcar2Notifier:
     def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyBoxcar2(title, ep_name + ": " + lang)
-            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_BOXCAR2:
-            update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title=notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
+            title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notifyBoxcar2(title, update_text + new_version)
 
     def _notifyBoxcar2(self, title, message, accesstoken=None):

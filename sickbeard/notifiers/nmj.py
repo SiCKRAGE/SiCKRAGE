@@ -69,7 +69,8 @@ class NMJNotifier:
             logger.log(u"Found NMJ database %s on device %s" % (database, device), logger.DEBUG)
             sickbeard.NMJ_DATABASE = database
         else:
-            logger.log(u"Could not get current NMJ database on %s, NMJ is probably not running!" % (host), logger.WARNING)
+            logger.log(u"Could not get current NMJ database on %s, NMJ is probably not running!" %
+                       host, logger.WARNING)
             return False
 
         # if the device is a remote host then try to parse the mounting URL and save it to the config

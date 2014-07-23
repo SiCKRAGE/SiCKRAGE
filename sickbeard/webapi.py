@@ -55,14 +55,16 @@ RESULT_TIMEOUT = 30  # not used yet :(
 RESULT_ERROR = 40  # only use outside of the run methods !
 RESULT_FATAL = 50  # only use in Api.default() ! this is the "we encountered an internal error" error
 RESULT_DENIED = 60  # only use in Api.default() ! this is the acces denied error
-result_type_map = {RESULT_SUCCESS: "success",
-                   RESULT_FAILURE: "failure",
-                   RESULT_TIMEOUT: "timeout",
-                   RESULT_ERROR: "error",
-                   RESULT_FATAL: "fatal",
-                   RESULT_DENIED: "denied",
+result_type_map = {
+    RESULT_SUCCESS: "success",
+    RESULT_FAILURE: "failure",
+    RESULT_TIMEOUT: "timeout",
+    RESULT_ERROR: "error",
+    RESULT_FATAL: "fatal",
+    RESULT_DENIED: "denied",
 }
 # basically everything except RESULT_SUCCESS / success is bad
+
 
 class Api(webserve.MainHandler):
     """ api class that returns json results """
@@ -76,8 +78,9 @@ class Api(webserve.MainHandler):
 
         # set the output callback
         # default json
-        outputCallbackDict = {'default': self._out_as_json,
-                              'image': lambda x: x['image'],
+        outputCallbackDict = {
+            'default': self._out_as_json,
+            'image': lambda x: x['image'],
         }
 
         # do we have acces ?
@@ -900,15 +903,15 @@ class CMD_EpisodeSearch(ApiCall):
 
         # make a queue item for it and put it on the queue
         ep_queue_item = search_queue.ManualSearchQueueItem(showObj, epObj)
-        sickbeard.searchQueueScheduler.action.add_item(ep_queue_item)  #@UndefinedVariable
+        sickbeard.searchQueueScheduler.action.add_item(ep_queue_item)  # @UndefinedVariable
 
         # wait until the queue item tells us whether it worked or not
-        while ep_queue_item.success is None:  #@UndefinedVariable
+        while ep_queue_item.success is None:  # @UndefinedVariable
             time.sleep(1)
 
         # return the correct json value
         if ep_queue_item.success:
-            status, quality = Quality.splitCompositeStatus(epObj.status)  #@UnusedVariable
+            status, quality = Quality.splitCompositeStatus(epObj.status)  # @UnusedVariable
             # TODO: split quality and status?
             return _responds(RESULT_SUCCESS, {"quality": _get_quality_string(quality)},
                              "Snatched (" + _get_quality_string(quality) + ")")
@@ -1012,7 +1015,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         extra_msg = ""
         if start_backlog:
             cur_backlog_queue_item = search_queue.BacklogQueueItem(showObj, ep_segment)
-            sickbeard.searchQueueScheduler.action.add_item(cur_backlog_queue_item)  #@UndefinedVariable
+            sickbeard.searchQueueScheduler.action.add_item(cur_backlog_queue_item)  # @UndefinedVariable
             for season in ep_segment:
                 logger.log(u"API :: Starting backlog for " + showObj.name + " season " + str(
                     season) + " because some episodes were set to WANTED")
@@ -1363,8 +1366,8 @@ class CMD_SickBeardCheckScheduler(ApiCall):
         myDB = db.DBConnection()
         sqlResults = myDB.select("SELECT last_backlog FROM info")
 
-        backlogPaused = sickbeard.searchQueueScheduler.action.is_backlog_paused()  #@UndefinedVariable
-        backlogRunning = sickbeard.searchQueueScheduler.action.is_backlog_in_progress()  #@UndefinedVariable
+        backlogPaused = sickbeard.searchQueueScheduler.action.is_backlog_paused()  # @UndefinedVariable
+        backlogRunning = sickbeard.searchQueueScheduler.action.is_backlog_in_progress()  # @UndefinedVariable
         nextBacklog = sickbeard.backlogSearchScheduler.nextRun().strftime(dateFormat).decode(sickbeard.SYS_ENCODING)
 
         data = {"backlog_is_paused": int(backlogPaused), "backlog_is_running": int(backlogRunning),
@@ -1487,10 +1490,10 @@ class CMD_SickBeardPauseBacklog(ApiCall):
     def run(self):
         """ pause the backlog search """
         if self.pause:
-            sickbeard.searchQueueScheduler.action.pause_backlog()  #@UndefinedVariable
+            sickbeard.searchQueueScheduler.action.pause_backlog()  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg="Backlog paused")
         else:
-            sickbeard.searchQueueScheduler.action.unpause_backlog()  #@UndefinedVariable
+            sickbeard.searchQueueScheduler.action.unpause_backlog()  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg="Backlog unpaused")
 
 
@@ -1675,7 +1678,7 @@ class CMD_SickBeardSetDefaults(ApiCall):
             # this should be obsolete bcause of the above
             if not self.status in statusStrings.statusStrings:
                 raise ApiError("Invalid Status")
-            #only allow the status options we want
+            # only allow the status options we want
             if int(self.status) not in (3, 5, 6, 7):
                 raise ApiError("Status Prohibited")
             sickbeard.STATUS_DEFAULT = self.status
@@ -1751,7 +1754,7 @@ class CMD_Show(ApiCall):
         showDict["flatten_folders"] = showObj.flatten_folders
         showDict["sports"] = showObj.sports
         showDict["anime"] = showObj.anime
-        #clean up tvdb horrible airs field
+        # clean up tvdb horrible airs field
         showDict["airs"] = str(showObj.airs).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
         showDict["tvrage_id"] = helpers.mapIndexersToShow(showObj)['tvrage_id']
         showDict["tvrage_name"] = showObj.name
@@ -1844,7 +1847,7 @@ class CMD_ShowAddExisting(ApiCall):
                        'fullhdbluray': Quality.FULLHDBLURAY,
                        'unknown': Quality.UNKNOWN}
 
-        #use default quality as a failsafe
+        # use default quality as a failsafe
         newQuality = int(sickbeard.QUALITY_DEFAULT)
         iqualityID = []
         aqualityID = []
@@ -1975,7 +1978,7 @@ class CMD_ShowAddNew(ApiCall):
                 if statusStrings[status].lower() == str(self.status).lower():
                     self.status = status
                     break
-            #TODO: check if obsolete
+            # TODO: check if obsolete
             if not self.status in statusStrings.statusStrings:
                 raise ApiError("Invalid Status")
             # only allow the status options we want
@@ -2038,8 +2041,8 @@ class CMD_ShowCache(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        #TODO: catch if cache dir is missing/invalid.. so it doesn't break show/show.cache
-        #return {"poster": 0, "banner": 0}
+        # TODO: catch if cache dir is missing/invalid.. so it doesn't break show/show.cache
+        # return {"poster": 0, "banner": 0}
 
         cache_obj = image_cache.ImageCache()
 
@@ -2074,7 +2077,7 @@ class CMD_ShowDelete(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         if sickbeard.showQueueScheduler.action.isBeingAdded(
-                showObj) or sickbeard.showQueueScheduler.action.isBeingUpdated(showObj):  #@UndefinedVariable
+                showObj) or sickbeard.showQueueScheduler.action.isBeingUpdated(showObj):  # @UndefinedVariable
             return _responds(RESULT_FAILURE, msg="Show can not be deleted while being added or updated")
 
         showObj.deleteShow()
@@ -2193,7 +2196,7 @@ class CMD_ShowRefresh(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickbeard.showQueueScheduler.action.refreshShow(showObj)  #@UndefinedVariable
+            sickbeard.showQueueScheduler.action.refreshShow(showObj)  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be refreshed")
         except exceptions.CantRefreshException:
             # TODO: log the excption
@@ -2343,7 +2346,7 @@ class CMD_ShowSetQuality(ApiCall):
                        'fullhdbluray': Quality.FULLHDBLURAY,
                        'unknown': Quality.UNKNOWN}
 
-        #use default quality as a failsafe
+        # use default quality as a failsafe
         newQuality = int(sickbeard.QUALITY_DEFAULT)
         iqualityID = []
         aqualityID = []
@@ -2454,7 +2457,7 @@ class CMD_ShowStats(ApiCall):
             else:
                 episodes_stats["snatched"][statusString] = episode_qualities_counts_snatch[statusCode]
 
-        #episodes_stats["total"] = {}
+        # episodes_stats["total"] = {}
         for statusCode in episode_status_counts_total:
             if statusCode == "total":
                 episodes_stats["total"] = episode_status_counts_total[statusCode]
@@ -2487,7 +2490,7 @@ class CMD_ShowUpdate(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickbeard.showQueueScheduler.action.updateShow(showObj, True)  #@UndefinedVariable
+            sickbeard.showQueueScheduler.action.updateShow(showObj, True)  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except exceptions.CantUpdateException, e:
             logger.log(u"API:: Unable to update " + str(showObj.name) + ". " + str(ex(e)), logger.ERROR)

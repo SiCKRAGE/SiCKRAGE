@@ -116,8 +116,8 @@ class BTNProvider(generic.TorrentProvider):
                 # +1 because range(1,4) = 1, 2, 3
                 for page in range(1, pages_needed + 1):
                     parsedJSON = self._api_call(apikey, params, results_per_page, page * results_per_page)
-                    # Note that this these are individual requests and might time out individually. This would result in 'gaps'
-                    # in the results. There is no way to fix this though.
+                    # Note that this these are individual requests and might time out individually. This would
+                    # result in 'gaps in the results. There is no way to fix this though.
                     if 'torrents' in parsedJSON:
                         found_torrents.update(parsedJSON['torrents'])
 

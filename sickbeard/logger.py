@@ -48,10 +48,12 @@ reverseNames = {u'ERROR': ERROR,
                 u'DEBUG': DEBUG,
                 u'DB': DB}
 
+
 # send logging to null
 class NullHandler(logging.Handler):
     def emit(self, record):
         pass
+
 
 class SBRotatingLogHandler(object):
     def __init__(self, log_file, num_files, num_bytes):
@@ -102,7 +104,7 @@ class SBRotatingLogHandler(object):
             old_handler = self.cur_handler
         else:
 
-            #Add a new logging level DB
+            # Add a new logging level DB
             logging.addLevelName(5, 'DB')
 
             # only start consoleLogging on first initialize
@@ -120,8 +122,10 @@ class SBRotatingLogHandler(object):
                      'subliminal': logging.Formatter('%(asctime)s %(levelname)s::SUBLIMINAL :: %(message)s',
                                                      '%H:%M:%S'),
                      'imdbpy': logging.Formatter('%(asctime)s %(levelname)s::IMDBPY :: %(message)s', '%H:%M:%S'),
-                     'tornado.general': logging.Formatter('%(asctime)s %(levelname)s::TORNADO :: %(message)s', '%H:%M:%S'),
-                     'tornado.application': logging.Formatter('%(asctime)s %(levelname)s::TORNADO :: %(message)s', '%H:%M:%S'),
+                     'tornado.general': logging.Formatter('%(asctime)s %(levelname)s::TORNADO :: %(message)s',
+                                                          '%H:%M:%S'),
+                     'tornado.application': logging.Formatter('%(asctime)s %(levelname)s::TORNADO :: %(message)s',
+                                                              '%H:%M:%S'),
                      'feedcache.cache': logging.Formatter('%(asctime)s %(levelname)s::FEEDCACHE :: %(message)s',
                                                           '%H:%M:%S')
                     },
@@ -162,8 +166,8 @@ class SBRotatingLogHandler(object):
         # already logging in new log folder, close the old handler
         if old_handler:
             self.close_log(old_handler)
-            #            old_handler.flush()
-            #            old_handler.close()
+            # old_handler.flush()
+            # old_handler.close()
             #            sb_logger = logging.getLogger('sickbeard')
             #            sub_logger = logging.getLogger('subliminal')
             #            imdb_logger = logging.getLogger('imdbpy')
@@ -183,10 +187,12 @@ class SBRotatingLogHandler(object):
              'subliminal': logging.Formatter('%(asctime)s %(levelname)-8s SUBLIMINAL :: %(message)s',
                                              '%Y-%m-%d %H:%M:%S'),
              'imdbpy': logging.Formatter('%(asctime)s %(levelname)-8s IMDBPY :: %(message)s', '%Y-%m-%d %H:%M:%S'),
-             'tornado.general': logging.Formatter('%(asctime)s %(levelname)-8s TORNADO :: %(message)s', '%Y-%m-%d %H:%M:%S'),
-             'tornado.application': logging.Formatter('%(asctime)s %(levelname)-8s TORNADO :: %(message)s', '%Y-%m-%d %H:%M:%S'),
+             'tornado.general': logging.Formatter('%(asctime)s %(levelname)-8s TORNADO :: %(message)s',
+                                                  '%Y-%m-%d %H:%M:%S'),
+             'tornado.application': logging.Formatter('%(asctime)s %(levelname)-8s TORNADO :: %(message)s',
+                                                      '%Y-%m-%d %H:%M:%S'),
              'feedcache.cache': logging.Formatter('%(asctime)s %(levelname)-8s FEEDCACHE :: %(message)s',
-                                                      '%Y-%m-%d %H:%M:%S')
+                                                  '%Y-%m-%d %H:%M:%S')
             },
             logging.Formatter('%(message)s'), ))
 

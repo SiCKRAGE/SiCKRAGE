@@ -41,7 +41,7 @@ class ShowQueue(generic_queue.GenericQueue):
 
     def _isBeingSomethinged(self, show, actions):
         return self.currentItem is not None and show == self.currentItem.show and \
-               self.currentItem.action_id in actions
+            self.currentItem.action_id in actions
 
     def isInUpdateQueue(self, show):
         return self._isInQueue(show, (ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE))
@@ -105,7 +105,8 @@ class ShowQueue(generic_queue.GenericQueue):
 
         if (self.isBeingUpdated(show) or self.isInUpdateQueue(show)) and not force:
             logger.log(
-                u"A refresh was attempted but there is already an update queued or in progress. Since updates do a refres at the end anyway I'm skipping this request.",
+                u"A refresh was attempted but there is already an update queued or in progress. Since updates do a "
+                u"refresh at the end anyway I'm skipping this request.",
                 logger.DEBUG)
             return
 
@@ -176,7 +177,7 @@ class ShowQueueItem(generic_queue.QueueItem):
 
     def isInQueue(self):
         return self in sickbeard.showQueueScheduler.action.queue + [
-            sickbeard.showQueueScheduler.action.currentItem]  #@UndefinedVariable
+            sickbeard.showQueueScheduler.action.currentItem]  # @UndefinedVariable
 
     def _getName(self):
         return str(self.show.indexerid)
@@ -330,7 +331,7 @@ class QueueItemAdd(ShowQueueItem):
         try:
             self.show.loadIMDbInfo()
         except imdb_exceptions.IMDbError, e:
-            #todo Insert UI notification
+            # todo Insert UI notification
             logger.log(u" Something wrong on IMDb api: " + ex(e), logger.WARNING)
         except Exception, e:
             logger.log(u"Error loading IMDb info: " + ex(e), logger.ERROR)
@@ -373,7 +374,7 @@ class QueueItemAdd(ShowQueueItem):
         # if they started with WANTED eps then run the backlog
         if self.default_status == WANTED:
             logger.log(u"Launching backlog for this show since its episodes are WANTED")
-            sickbeard.backlogSearchScheduler.action.searchBacklog([self.show])  #@UndefinedVariable
+            sickbeard.backlogSearchScheduler.action.searchBacklog([self.show])  # @UndefinedVariable
 
         self.show.writeMetadata()
         self.show.updateMetadata()
@@ -423,7 +424,7 @@ class QueueItemRefresh(ShowQueueItem):
 
         self.show.refreshDir()
         self.show.writeMetadata()
-        #if self.force:
+        # if self.force:
         #    self.show.updateMetadata()
         self.show.populateCache()
 

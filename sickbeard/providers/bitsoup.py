@@ -39,11 +39,12 @@ from sickbeard.helpers import sanitizeSceneName
 
 
 class BitSoupProvider(generic.TorrentProvider):
-    urls = {'base_url': 'https://www.bitsoup.me',
-            'login': 'https://www.bitsoup.me/takelogin.php',
-            'detail': 'https://www.bitsoup.me/details.php?id=%s',
-            'search': 'https://www.bitsoup.me/browse.php?search=%s%s',
-            'download': 'https://bitsoup.me/%s',
+    urls = {
+        'base_url': 'https://www.bitsoup.me',
+        'login': 'https://www.bitsoup.me/takelogin.php',
+        'detail': 'https://www.bitsoup.me/details.php?id=%s',
+        'search': 'https://www.bitsoup.me/browse.php?search=%s%s',
+        'download': 'https://bitsoup.me/%s',
     }
 
     def __init__(self):
@@ -78,9 +79,10 @@ class BitSoupProvider(generic.TorrentProvider):
 
     def _doLogin(self):
 
-        login_params = {'username': self.username,
-                        'password': self.password,
-                        'ssl': 'yes'
+        login_params = {
+            'username': self.username,
+            'password': self.password,
+            'ssl': 'yes'
         }
 
         self.session = requests.Session()
@@ -106,7 +108,7 @@ class BitSoupProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -166,17 +168,17 @@ class BitSoupProvider(generic.TorrentProvider):
                 data = self.getURL(searchURL)
                 if not data:
                     continue
-                
+
                 try:
                     with BS4Parser(data, "html.parser") as html:
                         torrent_table = html.find('table', attrs={'class': 'koptekst'})
                         torrent_rows = torrent_table.find_all('tr') if torrent_table else []
 
-                        #Continue only if one Release is found
+                        # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
-                                 logger.DEBUG)
-                             continue
+                            logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
+                                       logger.DEBUG)
+                            continue
 
                         for result in torrent_rows[1:]:
                             cells = result.find_all('td')
@@ -185,7 +187,7 @@ class BitSoupProvider(generic.TorrentProvider):
                             download_url = self.urls['download'] % cells[3].find('a')['href']
 
                             id = link['href']
-                            id = id.replace('details.php?id=','')
+                            id = id.replace('details.php?id=', '')
                             id = id.replace('&hit=1', '')
 
                             try:
@@ -196,7 +198,7 @@ class BitSoupProvider(generic.TorrentProvider):
                             except (AttributeError, TypeError):
                                 continue
 
-                            #Filter unseeded torrent
+                            # Filter unseeded torrent
                             if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                                 continue
 
@@ -211,7 +213,7 @@ class BitSoupProvider(generic.TorrentProvider):
                 except Exception, e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]

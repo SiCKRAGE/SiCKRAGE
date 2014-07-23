@@ -37,6 +37,7 @@ exceptionsSeasonCache = {}
 
 exceptionLock = threading.Lock()
 
+
 def shouldRefresh(list):
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
@@ -48,11 +49,13 @@ def shouldRefresh(list):
     else:
         return True
 
+
 def setLastRefresh(list):
     myDB = db.DBConnection('cache.db')
     myDB.upsert("scene_exceptions_refresh",
                 {'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple()))},
                 {'list': list})
+
 
 def get_scene_exceptions(indexer_id, season=-1):
     """
@@ -253,6 +256,7 @@ def retrieve_exceptions():
     anidb_exception_dict.clear()
     xem_exception_dict.clear()
 
+
 def update_scene_exceptions(indexer_id, scene_exceptions):
     """
     Given a indexer_id, and a list of all show scene exceptions, update the db.
@@ -269,6 +273,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions):
 
         myDB.action("INSERT INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?)",
                     [indexer_id, cur_exception, -1])
+
 
 def _anidb_exceptions_fetcher():
     global anidb_exception_dict

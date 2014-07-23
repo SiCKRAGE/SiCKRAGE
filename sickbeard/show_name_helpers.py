@@ -36,6 +36,7 @@ resultFilters = ["sub(bed|ed|pack|s)", "(dk|fin|heb|kor|nor|nordic|pl|swe)sub(be
                  "(dir|sample|sub|nfo)fix", "sample", "(dvd)?extras",
                  "dub(bed)?"]
 
+
 def filterBadReleases(name):
     """
     Filters out non-english and just all-around stupid releases by comparing them
@@ -110,7 +111,6 @@ def makeSceneShowSearchStrings(show, season=-1):
 
 
 def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
-
     if show.air_by_date or show.sports:
         numseasons = 0
 
@@ -170,10 +170,9 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
                 for cur_season in seasonStrings:
                     if len(bwl.whiteList) > 0:
                         for keyword in bwl.whiteList:
-                            toReturn.append(keyword + '.' + curShow+ "." + cur_season)
+                            toReturn.append(keyword + '.' + curShow + "." + cur_season)
                     else:
                         toReturn.append(curShow + "." + cur_season)
-
 
     return toReturn
 
@@ -284,12 +283,13 @@ def allPossibleShowNames(show, season=-1):
                 elif curName.endswith(' (' + curCountry + ')'):
                     newShowNames.append(curName.replace(' (' + curCountry + ')', ' (' + country_list[curCountry] + ')'))
 
-            # if we have "Show Name (2013)" this will strip the (2013) show year from the show name
-            #newShowNames.append(re.sub('\(\d{4}\)','',curName))
+                    # if we have "Show Name (2013)" this will strip the (2013) show year from the show name
+                    # newShowNames.append(re.sub('\(\d{4}\)','',curName))
 
         showNames += newShowNames
 
     return showNames
+
 
 def determineReleaseName(dir_name=None, nzb_name=None):
     """Determine a release name from an nzb and/or folder name"""

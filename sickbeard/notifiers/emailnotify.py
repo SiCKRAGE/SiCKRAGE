@@ -54,18 +54,19 @@ class EmailNotifier:
 
         if sickbeard.EMAIL_NOTIFY_ONSNATCH:
             show = self._parseEp(ep_name)
-            to = self._generate_recepients(show)
+            to = self._generate_recipients(show)
             if len(to) == 0:
                 logger.log('Skipping email notify because there are no configured recepients', logger.WARNING)
             else:
                 try:
                     msg = MIMEMultipart('alternative')
                     msg.attach(MIMEText(
-                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - Snatched</h3>\n<p>Show: <b>" + re.search(
-                            "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
-                            ".+ - (.+?-.+) -.+", ep_name).group(
-                            1) + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
-                        'html'))
+                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - "
+                        "Snatched</h3>\n<p>Show: <b>" + re.search(
+                            "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" +
+                        re.search(".+ - (.+?-.+) -.+", ep_name).group(1) + "</b></p>\n\n<footer style='margin-top: "
+                        "2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage."
+                        "</footer></body>", 'html'))
                 except:
                     msg = MIMEText(ep_name)
 
@@ -89,18 +90,18 @@ class EmailNotifier:
 
         if sickbeard.EMAIL_NOTIFY_ONDOWNLOAD:
             show = self._parseEp(ep_name)
-            to = self._generate_recepients(show)
+            to = self._generate_recipients(show)
             if len(to) == 0:
-                logger.log('Skipping email notify because there are no configured recepients', logger.WARNING)
+                logger.log('Skipping email notify because there are no configured recipients', logger.WARNING)
             else:
                 try:
                     msg = MIMEMultipart('alternative')
                     msg.attach(MIMEText(
-                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - Downloaded</h3>\n<p>Show: <b>" + re.search(
-                            "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
-                            ".+ - (.+?-.+) -.+", ep_name).group(
-                            1) + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
-                        'html'))
+                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - "
+                        "Downloaded</h3>\n<p>Show: <b>" + re.search("(.+?) -.+", ep_name).group(1) +
+                        "</b></p>\n<p>Episode: <b>" + re.search(".+ - (.+?-.+) -.+", ep_name).group(1) +
+                        "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: "
+                        "#BBB solid 1px;'>Powered by SickRage.</footer></body>", 'html'))
                 except:
                     msg = MIMEText(ep_name)
 
@@ -124,17 +125,18 @@ class EmailNotifier:
 
         if sickbeard.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD:
             show = self._parseEp(ep_name)
-            to = self._generate_recepients(show)
+            to = self._generate_recipients(show)
             if len(to) == 0:
-                logger.log('Skipping email notify because there are no configured recepients', logger.WARNING)
+                logger.log('Skipping email notify because there are no configured recipients', logger.WARNING)
             else:
                 try:
                     msg = MIMEMultipart('alternative')
                     msg.attach(MIMEText(
-                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - Subtitle Downloaded</h3>\n<p>Show: <b>" + re.search(
-                            "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
-                            ".+ - (.+?-.+) -.+", ep_name).group(
-                            1) + "</b></p>\n<p>Language: <b>" + lang + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
+                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - "
+                        "Subtitle Downloaded</h3>\n<p>Show: <b>" + re.search("(.+?) -.+", ep_name).group(1) +
+                        "</b></p>\n<p>Episode: <b>" + re.search(".+ - (.+?-.+) -.+", ep_name).group(1) +
+                        "</b></p>\n<p>Language: <b>" + lang + "</b></p>\n\n<footer style='margin-top: 2.5em; padding:"
+                        " .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
                         'html'))
                 except:
                     msg = MIMEText(ep_name + ": " + lang)
@@ -152,7 +154,7 @@ class EmailNotifier:
     def notify_git_update(self, new_version="??"):
         pass
 
-    def _generate_recepients(self, show):
+    def _generate_recipients(self, show):
         addrs = []
 
         # Grab the global recipients

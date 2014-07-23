@@ -41,6 +41,7 @@ from lib import requests
 
 MAX_XEM_AGE_SECS = 86400  # 1 day
 
+
 def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=True):
     """
     Returns a tuple, (season, episode), with the scene numbering (if there is one),
@@ -84,7 +85,8 @@ def find_scene_numbering(indexer_id, indexer, season, episode):
 
     myDB = db.DBConnection()
     rows = myDB.select(
-        "SELECT scene_season, scene_episode FROM scene_numbering WHERE indexer = ? and indexer_id = ? and season = ? and episode = ? and (scene_season or scene_episode) != 0",
+        "SELECT scene_season, scene_episode FROM scene_numbering WHERE indexer = ? and indexer_id = ? and "
+        "season = ? and episode = ? and (scene_season or scene_episode) != 0",
         [indexer, indexer_id, season, episode])
 
     if rows:
@@ -196,7 +198,8 @@ def get_indexer_absolute_numbering(indexer_id, indexer, sceneAbsoluteNumber, fal
         return sceneAbsoluteNumber
 
 
-def set_scene_numbering(indexer_id, indexer, season=None, episode=None, absolute_number=None, sceneSeason=None, sceneEpisode=None, sceneAbsolute=None):
+def set_scene_numbering(indexer_id, indexer, season=None, episode=None, absolute_number=None, sceneSeason=None,
+                        sceneEpisode=None, sceneAbsolute=None):
     """
     Set scene numbering for a season/episode.
     To clear the scene numbering, leave both sceneSeason and sceneEpisode as None.
@@ -332,7 +335,7 @@ def get_indexer_absolute_numbering_for_xem(indexer_id, indexer, sceneAbsoluteNum
     else:
         rows = myDB.select(
             "SELECT absolute_number FROM tv_episodes WHERE indexer = ? and showid = ? and scene_absolute_number = ? and scene_season = ?",
-            [indexer, indexer_id, sceneAbsoluteNumber, scene_season])    
+            [indexer, indexer_id, sceneAbsoluteNumber, scene_season])
 
     if rows:
         return int(rows[0]["absolute_number"])
@@ -455,6 +458,7 @@ def get_xem_absolute_numbering_for_show(indexer_id, indexer):
 
     return result
 
+
 def xem_refresh(indexer_id, indexer, force=False):
     """
     Refresh data from xem for a tv show
@@ -529,8 +533,9 @@ def xem_refresh(indexer_id, indexer, force=False):
                 logger.log(u"Empty lookup result - no XEM data for show %s on %s" % (
                     indexer_id, sickbeard.indexerApi(indexer).name,), logger.DEBUG)
         except Exception, e:
-            logger.log(u"Exception while refreshing XEM data for show " + str(indexer_id) + " on " + sickbeard.indexerApi(
-                indexer).name + ": " + ex(e), logger.WARNING)
+            logger.log(
+                u"Exception while refreshing XEM data for show " + str(indexer_id) + " on " + sickbeard.indexerApi(
+                    indexer).name + ": " + ex(e), logger.WARNING)
             logger.log(traceback.format_exc(), logger.DEBUG)
             return None
 
@@ -553,7 +558,7 @@ def fix_xem_numbering(indexer_id, indexer):
 
     # query = [{
     # "name": self.show.name,
-    #              "seasons": [{
+    # "seasons": [{
     #                              "episodes": [{
     #                                               "episode_number": None,
     #                                               "name": None

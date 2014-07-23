@@ -66,7 +66,6 @@ class BoxcarNotifier:
                 'notification[from_remote_service_id]': int(time.time())
             })
 
-
         # send the request to boxcar
         try:
             req = urllib2.Request(curUrl)
@@ -86,13 +85,15 @@ class BoxcarNotifier:
                 logger.log("Username is wrong/not a boxcar email. Boxcar will send an email to it", logger.WARNING)
                 return False
 
-            # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
+            # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user
+            # has not added your service.
             elif e.code == 401:
 
                 # If the user has already added your service, we'll return an HTTP status code of 401.
                 if subscribe:
                     logger.log("Already subscribed to service", logger.ERROR)
-                    # i dont know if this is true or false ... its neither but i also dont know how we got here in the first place
+                    # i dont know if this is true or false ... its neither but i also dont know how we got here
+                    # in the first place
                     return False
 
                 #HTTP status 401 if the user doesn't have the service added

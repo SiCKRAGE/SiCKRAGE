@@ -49,7 +49,8 @@ class NMA_Notifier:
         keys = nma_api.split(',')
         p.addkey(keys)
 
-        if len(keys) > 1: batch = True
+        if len(keys) > 1:
+            batch = True
 
         logger.log("NMA: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, batch=%s" % (
             event, message, nma_priority, batch), logger.DEBUG)
