@@ -16,13 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2
-import sickbeard
+import urllib
+import urllib2
 import telnetlib
 import re
 
+import sickbeard
 from sickbeard import logger
 from sickbeard.exceptions import ex
+
 
 try:
     import xml.etree.cElementTree as etree

@@ -23,9 +23,9 @@ from sickbeard.exceptions import ex
 
 # parse_qsl moved to urlparse module in v2.6
 try:
-    from urlparse import parse_qsl  #@UnusedImport
+    from urlparse import parse_qsl  # @UnusedImport
 except:
-    from cgi import parse_qsl  #@Reimport
+    from cgi import parse_qsl  # @Reimport
 
 import lib.oauth2 as oauth
 import lib.pythontwitter as twitter

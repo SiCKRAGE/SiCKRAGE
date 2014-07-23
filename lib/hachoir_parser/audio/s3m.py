@@ -22,7 +22,7 @@ from lib.hachoir_core.tools import alignValue
 class Chunk:
     def __init__(self, cls, name, offset, size, *args):
         # Todo: swap and have None=unknown instead of now: 0=unknown
-        assert size != None and size>=0
+        assert size is not None and size>=0
         self.cls = cls
         self.name = name
         self.offset = offset
@@ -78,7 +78,7 @@ class ChunkIndexer:
                 count += 1
                 chunk = self.chunks.pop()
                 # Unfortunaly, we also pass the underlying chunks
-                if chunk == None:
+                if chunk is None:
                     obj.info("Couldn't resynch: %u object skipped to reach %u" % \
                              (count, current_pos))
                     return
@@ -165,7 +165,7 @@ class SizeFieldSet(FieldSet):
         FieldSet.__init__(self, parent, name, desc)
         if size:
             self.real_size = size
-            if self.static_size == None:
+            if self.static_size is None:
                 self.setCheckedSizes(size)
 
     def setCheckedSizes(self, size):

@@ -18,13 +18,16 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 import httplib
-import urllib, urllib2
+import urllib
+import urllib2
 import time
 
 import sickbeard
 from sickbeard import logger
-from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
+from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
+    NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
 from sickbeard.exceptions import ex
+
 
 API_URL = "https://api.pushover.net/1/messages.json"
 
@@ -44,10 +47,10 @@ class PushoverNotifier:
         returns: True if the message succeeded, False otherwise
         """
 
-        if userKey == None:
+        if userKey is None:
             userKey = sickbeard.PUSHOVER_USERKEY
 
-        if apiKey == None:
+        if apiKey is None:
             apiKey = sickbeard.PUSHOVER_APIKEY
 
         logger.log("Pushover API KEY in use: " + apiKey, logger.DEBUG)

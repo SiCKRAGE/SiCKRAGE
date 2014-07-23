@@ -103,7 +103,7 @@ def authenticated(handler_class):
 
                 auth_hdr = handler.request.headers.get('Authorization')
 
-                if auth_hdr == None:
+                if auth_hdr is None:
                     return _request_basic_auth(handler)
                 if not auth_hdr.startswith('Basic '):
                     return _request_basic_auth(handler)

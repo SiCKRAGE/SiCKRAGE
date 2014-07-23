@@ -137,7 +137,7 @@ class ProperFinder():
                     logger.log(u"I am sorry '"+curProper.name+"' seams to be an anime proper seach is not yet suported", logger.DEBUG)
                     continue
                 else:
-                    curProper.season = parse_result.season_number if parse_result.season_number != None else 1
+                    curProper.season = parse_result.season_number if parse_result.season_number is not None else 1
                     curProper.episode = parse_result.episode_numbers[0]
 
             curProper.quality = Quality.nameQuality(curProper.name, parse_result.is_anime)
@@ -236,7 +236,7 @@ class ProperFinder():
 
                 # get the episode object
                 showObj = helpers.findCertainShow(sickbeard.showList, curProper.indexerid)
-                if showObj == None:
+                if showObj is None:
                     logger.log(u"Unable to find the show with indexerid " + str(
                         curProper                                      .indexerid) + " so unable to download the proper", logger.ERROR)
                     continue

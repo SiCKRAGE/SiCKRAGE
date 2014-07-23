@@ -18,13 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2
-import time
+import urllib
+import urllib2
 
 import sickbeard
-
 from sickbeard import logger
-from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
+from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
+    NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
 from sickbeard.exceptions import ex
 
 API_URL = "https://new.boxcar.io/api/notifications"
@@ -41,12 +41,13 @@ class Boxcar2Notifier:
         msg: The message to send
         title: The title of the message
         accesstoken: to send to this device	
-			
+
         returns: True if the message succeeded, False otherwise
         """
 
         # build up the URL and parameters
-	#more info goes here - https://boxcar.uservoice.com/knowledgebase/articles/306788-how-to-send-your-boxcar-account-a-notification
+        # more info goes here -
+        # https://boxcar.uservoice.com/knowledgebase/articles/306788-how-to-send-your-boxcar-account-a-notification
         msg = msg.strip()
         curUrl = API_URL
 

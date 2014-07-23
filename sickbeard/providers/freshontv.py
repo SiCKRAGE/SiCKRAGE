@@ -208,7 +208,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
 
                             link = cells[1].find('a', attrs = {'class': 'torrent_name_link'})
                             #skip if torrent has been nuked due to poor quality
-                            if cells[1].find('img', alt='Nuked') != None:
+                            if cells[1].find('img', alt='Nuked') is not None:
                                 continue
 
                             torrent_id = link['href'].replace('/details.php?id=', '')

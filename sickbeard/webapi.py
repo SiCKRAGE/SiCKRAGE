@@ -164,7 +164,7 @@ class Api(webserve.MainHandler):
         try:
             out = json.dumps(dict, indent=self.intent, sort_keys=True)
             callback = self.request.headers.get('callback', None) or self.request.headers.get('jsonp', None)
-            if callback != None:
+            if callback is not None:
                 out = callback + '(' + out + ');'  # wrap with JSONP call if requested
         except Exception, e:  # if we fail to generate the output fake an error
             logger.log(u"API :: " + traceback.format_exc(), logger.DEBUG)
@@ -217,7 +217,7 @@ def call_dispatcher(handler, args, kwargs):
         del kwargs["cmd"]
 
     outDict = {}
-    if cmds != None:
+    if cmds is not None:
         cmds = cmds.split("|")
         multiCmds = bool(len(cmds) > 1)
         for cmd in cmds:
@@ -786,7 +786,7 @@ class CMD_ComingEpisodes(ApiCall):
                     status = "soon"
 
             # skip unwanted
-            if self.type != None and not status in self.type:
+            if self.type is not None and not status in self.type:
                 continue
 
             ordinalAirdate = int(ep["airdate"])
@@ -903,7 +903,7 @@ class CMD_EpisodeSearch(ApiCall):
         sickbeard.searchQueueScheduler.action.add_item(ep_queue_item)  #@UndefinedVariable
 
         # wait until the queue item tells us whether it worked or not
-        while ep_queue_item.success == None:  #@UndefinedVariable
+        while ep_queue_item.success is None:  #@UndefinedVariable
             time.sleep(1)
 
         # return the correct json value
@@ -957,7 +957,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         ep_list = []
         if self.e:
             epObj = showObj.getEpisode(self.s, self.e)
-            if epObj == None:
+            if epObj is None:
                 return _responds(RESULT_FAILURE, msg="Episode not found")
             ep_list = [epObj]
         else:
@@ -985,7 +985,7 @@ class CMD_EpisodeSetStatus(ApiCall):
             with epObj.lock:
                 # don't let them mess up UNAIRED episodes
                 if epObj.status == UNAIRED:
-                    if self.e != None:  # setting the status of a unaired is only considert a failure if we directly wanted this episode, but is ignored on a season request
+                    if self.e is not None:  # setting the status of a unaired is only considert a failure if we directly wanted this episode, but is ignored on a season request
                         ep_results.append(
                             _epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is UNAIRED"))
                         failure = True
@@ -1093,7 +1093,7 @@ class CMD_Exceptions(ApiCall):
         """ display scene exceptions for all or a given show """
         myDB = db.DBConnection("cache.db", row_type="dict")
 
-        if self.indexerid == None:
+        if self.indexerid is None:
             sqlResults = myDB.select("SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions")
             scene_exceptions = {}
             for row in sqlResults:
@@ -1680,10 +1680,10 @@ class CMD_SickBeardSetDefaults(ApiCall):
                 raise ApiError("Status Prohibited")
             sickbeard.STATUS_DEFAULT = self.status
 
-        if self.flatten_folders != None:
+        if self.flatten_folders is not None:
             sickbeard.FLATTEN_FOLDERS_DEFAULT = int(self.flatten_folders)
 
-        if self.future_show_paused != None:
+        if self.future_show_paused is not None:
             sickbeard.COMING_EPS_DISPLAY_PAUSED = int(self.future_show_paused)
 
         return _responds(RESULT_SUCCESS, msg="Saved defaults")
@@ -2261,7 +2261,7 @@ class CMD_ShowSeasons(ApiCall):
 
         myDB = db.DBConnection(row_type="dict")
 
-        if self.season == None:
+        if self.season is None:
             sqlResults = myDB.select("SELECT name, episode, airdate, status, season FROM tv_episodes WHERE showid = ?",
                                      [self.indexerid])
             seasons = {}
@@ -2519,7 +2519,7 @@ class CMD_Shows(ApiCall):
             else:
                 nextAirdate = ''
 
-            if self.paused != None and bool(self.paused) != bool(curShow.paused):
+            if self.paused is not None and bool(self.paused) != bool(curShow.paused):
                 continue
 
             showDict = {

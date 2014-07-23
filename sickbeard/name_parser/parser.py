@@ -277,7 +277,7 @@ class NameParser(object):
         b = getattr(second, attr)
 
         # if a is good use it
-        if a != None or (type(a) == list and len(a)):
+        if a is not None or (type(a) == list and len(a)):
             return a
         # if not use b (if b isn't set it'll just be default)
         else:
@@ -391,7 +391,7 @@ class NameParser(object):
                 "Unable to parse " + name.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace'))
 
         # if there's no useful info in it then raise an exception
-        if final_result.season_number == None and not final_result.episode_numbers and final_result.air_date == None and final_result.sports_air_date == None and not final_result.ab_episode_numbers and not final_result.series_name:
+        if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and final_result.sports_air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
             raise InvalidNameException("Unable to parse " + name.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace'))
 
         if cache_result:
@@ -485,11 +485,11 @@ class ParseResult(object):
         return True
 
     def __str__(self):
-        if self.series_name != None:
+        if self.series_name is not None:
             to_return = self.series_name + u' - '
         else:
             to_return = u''
-        if self.season_number != None:
+        if self.season_number is not None:
             to_return += 'S' + str(self.season_number)
         if self.episode_numbers and len(self.episode_numbers):
             for e in self.episode_numbers:
@@ -588,13 +588,13 @@ class ParseResult(object):
 
     @property
     def is_air_by_date(self):
-        if self.season_number == None and len(self.episode_numbers) == 0 and self.air_date:
+        if self.season_number is None and len(self.episode_numbers) == 0 and self.air_date:
             return True
         return False
 
     @property
     def is_sports(self):
-        if self.season_number == None and len(self.episode_numbers) == 0 and self.sports_air_date:
+        if self.season_number is None and len(self.episode_numbers) == 0 and self.sports_air_date:
             return True
         return False
 

@@ -29,7 +29,7 @@ def diagnose():
     user-readable message indicating possible issues.
     '''
     try:
-        import pynotify  #@UnusedImport
+        import pynotify  # @UnusedImport
     except ImportError:
         return (u"<p>Error: pynotify isn't installed.  On Ubuntu/Debian, install the "
                 u"<a href=\"apt:python-notify\">python-notify</a> package.")

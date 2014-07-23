@@ -266,7 +266,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
             indexerid.text = str(myShow['id'])
 
         indexer = etree.SubElement(tv_node, "indexer")
-        if show_obj.indexer != None:
+        if show_obj.indexer is not None:
             indexer.text = str(show_obj.indexer)
 
         SeriesName = etree.SubElement(tv_node, "SeriesName")
@@ -368,7 +368,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 cur_actor_type.text = "Actor"
                 cur_actor_role = etree.SubElement(cur_actor, "Role")
                 cur_actor_role_text = actor['role']
-                if cur_actor_role_text != None:
+                if cur_actor_role_text is not None:
                     cur_actor_role.text = cur_actor_role_text
 
         helpers.indentXML(tv_node)
@@ -441,7 +441,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 episode = rootNode
 
                 EpisodeName = etree.SubElement(episode, "EpisodeName")
-                if curEpToWrite.name != None:
+                if curEpToWrite.name is not None:
                     EpisodeName.text = curEpToWrite.name
                 else:
                     EpisodeName.text = ""
@@ -471,7 +471,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 MetadataType.text = "Episode"
 
                 Overview = etree.SubElement(episode, "Overview")
-                if curEpToWrite.description != None:
+                if curEpToWrite.description is not None:
                     Overview.text = curEpToWrite.description
                 else:
                     Overview.text = ""

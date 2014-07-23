@@ -1,6 +1,6 @@
 <!--
 Description: entry defines blank xml:lang which children inherit
-Expect:      not bozo and entries[0]['content'][0]['language'] == None
+Expect:      not bozo and entries[0]['content'][0]['language'] is None
 -->
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xml:lang="en">
 <entry xml:lang="">

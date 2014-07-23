@@ -100,7 +100,7 @@ class TVShow(object):
         self.nextaired = ""
 
         otherShow = helpers.findCertainShow(sickbeard.showList, self.indexerid)
-        if otherShow != None:
+        if otherShow is not None:
             raise exceptions.MultipleShowObjectsException("Can't create a show if it already exists")
 
         self.loadFromDB()
@@ -264,7 +264,7 @@ class TVShow(object):
             else:
                 ep = TVEpisode(self, season, episode)
 
-            if ep != None:
+            if ep is not None:
                 # Load XEM data to DB for show
                 sickbeard.scene_numbering.xem_refresh(self.indexerid, self.indexer, force=forceUpdate)
 
@@ -440,7 +440,7 @@ class TVShow(object):
                 curEpisode.release_name = ep_file_name
 
             # store the reference in the show
-            if curEpisode != None:
+            if curEpisode is not None:
                 if self.subtitles:
                     try:
                         curEpisode.refreshSubtitles()
@@ -627,7 +627,7 @@ class TVShow(object):
             return None
 
         # for now lets assume that any episode in the show dir belongs to that show
-        season = parse_result.season_number if parse_result.season_number != None else 1
+        season = parse_result.season_number if parse_result.season_number is not None else 1
         episodes = parse_result.episode_numbers
         rootEp = None
 
@@ -663,7 +663,7 @@ class TVShow(object):
             same_file = False
             curEp = self.getEpisode(season, episode)
 
-            if curEp == None:
+            if curEp is None:
                 try:
                     curEp = self.getEpisode(season, episode, file)
                 except exceptions.EpisodeNotFoundException:
@@ -690,7 +690,7 @@ class TVShow(object):
 
                     curEp.checkForMetaFiles()
 
-            if rootEp == None:
+            if rootEp is None:
                 rootEp = curEp
             else:
                 if curEp not in rootEp.relatedEps:
@@ -737,7 +737,7 @@ class TVShow(object):
                 elif oldStatus not in (SNATCHED, SNATCHED_PROPER):
                     newStatus = DOWNLOADED
 
-                if newStatus != None:
+                if newStatus is not None:
                     with curEp.lock:
                         logger.log(u"STATUS: we have an associated file, so setting the status from " + str(
                             curEp.status) + u" to DOWNLOADED/" + str(Quality.statusFromName(file)), logger.DEBUG)
@@ -799,7 +799,7 @@ class TVShow(object):
                 self.air_by_date = 0
 
             self.anime = sqlResults[0]["anime"]
-            if self.anime == None:
+            if self.anime is None:
                 self.anime = 0
 
             self.sports = sqlResults[0]["sports"]
@@ -982,7 +982,7 @@ class TVShow(object):
                 "SELECT airdate, season, episode FROM tv_episodes WHERE showid = ? AND airdate >= ? AND status in (?,?) ORDER BY airdate ASC LIMIT 1",
                 [self.indexerid, datetime.date.today().toordinal(), UNAIRED, WANTED])
 
-            if sqlResults == None or len(sqlResults) == 0:
+            if sqlResults is None or len(sqlResults) == 0:
                 logger.log(str(self.indexerid) + u": No episode found... need to implement a show status",
                            logger.DEBUG)
                 self.nextaired = ""
@@ -1257,7 +1257,7 @@ class TVShow(object):
             elif epStatus in (SNATCHED, SNATCHED_PROPER, SNATCHED_BEST):
                 return Overview.SNATCHED
             # if they don't want re-downloads then we call it good if they have anything
-            elif maxBestQuality == None:
+            elif maxBestQuality is None:
                 return Overview.GOOD
             # if they have one but it's not the best they want then mark it as qual
             elif curQuality < maxBestQuality:
@@ -1928,7 +1928,7 @@ class TVEpisode(object):
         myDB.upsert("tv_episodes", newValueDict, controlValueDict)
 
     def fullPath(self):
-        if self.location == None or self.location == "":
+        if self.location is None or self.location == "":
             return None
         else:
             return ek.ek(os.path.join, self.show.location, self.location)
@@ -1994,7 +1994,7 @@ class TVEpisode(object):
                     singleName = False
                     break
 
-                if curGoodName == None:
+                if curGoodName is None:
                     curGoodName = match.group(1)
                 elif curGoodName != match.group(1):
                     singleName = False
@@ -2108,13 +2108,13 @@ class TVEpisode(object):
         Manipulates an episode naming pattern and then fills the template in
         """
 
-        if pattern == None:
+        if pattern is None:
             pattern = sickbeard.NAMING_PATTERN
 
-        if multi == None:
+        if multi is None:
             multi = sickbeard.NAMING_MULTI_EP
 
-        if anime_type == None:
+        if anime_type is None:
             anime_type = sickbeard.NAMING_ANIME
 
         replace_map = self._replace_map()
@@ -2283,7 +2283,7 @@ class TVEpisode(object):
         Just the folder name of the episode
         """
 
-        if pattern == None:
+        if pattern is None:
             # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
             if self.show.air_by_date and sickbeard.NAMING_CUSTOM_ABD and not self.relatedEps:
                 pattern = sickbeard.NAMING_ABD_PATTERN
@@ -2305,7 +2305,7 @@ class TVEpisode(object):
         Just the filename of the episode, formatted based on the naming settings
         """
 
-        if pattern == None:
+        if pattern is None:
             # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
             if self.show.air_by_date and sickbeard.NAMING_CUSTOM_ABD and not self.relatedEps:
                 pattern = sickbeard.NAMING_ABD_PATTERN
