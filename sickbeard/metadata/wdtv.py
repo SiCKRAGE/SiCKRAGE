@@ -208,8 +208,9 @@ class WDTVMetadata(generic.GenericMetadata):
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
                 logger.log(u"Unable to find episode " + str(curEpToWrite.season) + "x" + str(
-                    curEpToWrite.episode) + " on " + sickbeard.indexerApi(
-                    ep_obj.show.indexer).name + "... has it been removed? Should I delete from db?")
+                    curEpToWrite.episode) + " on " +
+                    sickbeard.indexerApi(ep_obj.show.indexer).name +
+                    "... has it been removed? Should I delete from db?")
                 return None
 
             if getattr(myEp, 'firstaired', None) is None and ep_obj.season == 0:

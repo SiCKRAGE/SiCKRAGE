@@ -275,13 +275,13 @@ class GenericMetadata():
 
     def update_show_indexer_metadata(self, show_obj):
         if self.show_metadata and show_obj and self._has_show_metadata(show_obj):
-            logger.log(u"Metadata provider " + self.name + " updating show indexer info metadata file for " + show_obj.name, logger.DEBUG)
+            logger.log(u"Metadata provider " + self.name + " updating show indexer info metadata file for " +
+                       show_obj.name, logger.DEBUG)
 
             nfo_file_path = self.get_show_file_path(show_obj)
             try:
                 with ek.ek(open, nfo_file_path, 'r') as xmlFileObj:
                     showXML = etree.ElementTree(file=xmlFileObj)
-
 
                 indexer = showXML.find('indexer')
                 indexerid = showXML.find('id')
@@ -905,7 +905,8 @@ class GenericMetadata():
 
     def retrieveShowMetadata(self, folder):
         """
-        Used only when mass adding Existing Shows, using previously generated Show metadata to reduce the need to query TVDB.
+        Used only when mass adding Existing Shows, using previously generated Show metadata to reduce the need
+        to query TVDB.
         """
 
         empty_return = (None, None, None)
@@ -925,12 +926,10 @@ class GenericMetadata():
             if showXML.findtext('title') is None \
                     or (showXML.findtext('tvdbid') is None
                         and showXML.findtext('id') is None) \
-                            and showXML.findtext('indexer') is None:
-                logger.log(u"Invalid info in tvshow.nfo (missing name or id):" \
-                           + str(showXML.findtext('title')) + " " \
-                           + str(showXML.findtext('indexer')) + " " \
-                           + str(showXML.findtext('tvdbid')) + " " \
-                           + str(showXML.findtext('id')))
+                    and showXML.findtext('indexer') is None:
+                logger.log(u"Invalid info in tvshow.nfo (missing name or id):{0} {1} {2} {3}".format(
+                    str(showXML.findtext('title')), str(showXML.findtext('indexer')), str(showXML.findtext('tvdbid')),
+                    str(showXML.findtext('id'))))
                 return empty_return
 
             name = showXML.findtext('title')
@@ -958,7 +957,7 @@ class GenericMetadata():
                 logger.WARNING)
             return empty_return
 
-        return (indexer_id, name, indexer)
+        return indexer_id, name, indexer
 
     def _retrieve_show_images_from_tmdb(self, show, backdrop=False, poster=False):
         # get TMDB configuration info

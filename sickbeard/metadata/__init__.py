@@ -19,7 +19,14 @@
 __all__ = ['generic', 'helpers', 'xbmc', 'xbmc_12plus', 'mediabrowser', 'ps3', 'wdtv', 'tivo', 'mede8er']
 
 import sys
-import xbmc, xbmc_12plus, mediabrowser, ps3, wdtv, tivo, mede8er
+
+import xbmc
+import xbmc_12plus
+import mediabrowser
+import ps3
+import wdtv
+import tivo
+import mede8er
 
 
 def available_generators():
@@ -53,4 +60,3 @@ def get_metadata_generator_dict():
         result[cur_generator.name] = cur_generator
 
     return result
-        

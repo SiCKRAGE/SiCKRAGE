@@ -59,9 +59,9 @@ class NameParser(object):
         Is basically equivalent to replacing all _ and . with a
         space, but handles decimal numbers in string, for example:
 
-        >>> cleanRegexedSeriesName("an.example.1.0.test")
+        '>>> cleanRegexedSeriesName("an.example.1.0.test")'
         'an example 1.0 test'
-        >>> cleanRegexedSeriesName("an_example_1.0_test")
+        '>>> cleanRegexedSeriesName("an_example_1.0_test")'
         'an example 1.0 test'
 
         Stolen from dbr's tvnamer
@@ -402,21 +402,22 @@ class NameParser(object):
 
 
 class ParseResult(object):
-    def __init__(self,
-                 original_name,
-                 series_name=None,
-                 sports_event_id=None,
-                 sports_event_name=None,
-                 sports_air_date=None,
-                 season_number=None,
-                 episode_numbers=None,
-                 extra_info=None,
-                 release_group=None,
-                 air_date=None,
-                 ab_episode_numbers=None,
-                 show=None,
-                 score=None,
-                 quality=None
+    def __init__(
+            self,
+            original_name,
+            series_name=None,
+            sports_event_id=None,
+            sports_event_name=None,
+            sports_air_date=None,
+            season_number=None,
+            episode_numbers=None,
+            extra_info=None,
+            release_group=None,
+            air_date=None,
+            ab_episode_numbers=None,
+            show=None,
+            score=None,
+            quality=None
     ):
 
         self.original_name = original_name

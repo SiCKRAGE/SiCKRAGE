@@ -59,16 +59,16 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                  season_all_banner=False):
 
         mediabrowser.MediaBrowserMetadata.__init__(self,
-                                         show_metadata,
-                                         episode_metadata,
-                                         fanart,
-                                         poster,
-                                         banner,
-                                         episode_thumbnails,
-                                         season_posters,
-                                         season_banners,
-                                         season_all_poster,
-                                         season_all_banner)
+                                                   show_metadata,
+                                                   episode_metadata,
+                                                   fanart,
+                                                   poster,
+                                                   banner,
+                                                   episode_thumbnails,
+                                                   season_posters,
+                                                   season_banners,
+                                                   season_all_poster,
+                                                   season_all_banner)
 
         self.name = "Mede8er"
 
@@ -122,7 +122,8 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         try:
             myShow = t[int(show_obj.indexerid)]
         except sickbeard.indexer_shownotfound:
-            logger.log(u"Unable to find show with id " + str(show_obj.indexerid) + " on tvdb, skipping it", logger.ERROR)
+            logger.log(u"Unable to find show with id " + str(show_obj.indexerid) + " on tvdb, skipping it",
+                       logger.ERROR)
             raise
 
         except sickbeard.indexer_error:
@@ -132,10 +133,12 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         # check for title and id
         try:
             if myShow['seriesname'] is None or myShow['seriesname'] == "" or myShow['id'] is None or myShow['id'] == "":
-                logger.log(u"Incomplete info for show with id " + str(show_obj.indexerid) + " on tvdb, skipping it", logger.ERROR)
+                logger.log(u"Incomplete info for show with id " + str(show_obj.indexerid) + " on tvdb, skipping it",
+                           logger.ERROR)
                 return False
         except sickbeard.indexer_attributenotfound:
-            logger.log(u"Incomplete info for show with id " + str(show_obj.indexerid) + " on tvdb, skipping it", logger.ERROR)
+            logger.log(u"Incomplete info for show with id " + str(show_obj.indexerid) + " on tvdb, skipping it",
+                       logger.ERROR)
             return False
 
         SeriesName = etree.SubElement(tv_node, "title")
@@ -255,7 +258,8 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
-                logger.log(u"Unable to find episode " + str(curEpToWrite.season) + "x" + str(curEpToWrite.episode) + " on tvdb... has it been removed? Should I delete from db?")
+                logger.log(u"Unable to find episode " + str(curEpToWrite.season) + "x" + str(
+                    curEpToWrite.episode) + " on tvdb... has it been removed? Should I delete from db?")
                 return None
 
             if curEpToWrite == ep_obj:
