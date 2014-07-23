@@ -34,6 +34,7 @@ import base64
 import zipfile
 
 from lib import requests
+
 from lib.requests import exceptions
 from itertools import izip, cycle
 
@@ -64,6 +65,7 @@ urllib._urlopener = classes.SickBeardURLopener()
 session = requests.Session()
 indexerMap = {}
 
+
 def indentXML(elem, level=0):
     '''
     Does our pretty printing, makes Matt very happy
@@ -85,6 +87,7 @@ def indentXML(elem, level=0):
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
 
+
 def remove_extension(name):
     """
     Remove download or media extension from name (if any)
@@ -97,6 +100,7 @@ def remove_extension(name):
 
     return name
 
+
 def remove_non_release_groups(name):
     """
     Remove non release groups from name
@@ -108,6 +112,7 @@ def remove_non_release_groups(name):
             name = name_group[0]
 
     return name
+
 
 def replaceExtension(filename, newExt):
     '''
@@ -464,7 +469,9 @@ def hardlinkFile(srcFile, destFile):
 def symlink(src, dst):
     if os.name == 'nt':
         import ctypes
-        if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src), 1 if os.path.isdir(src) else 0) in [0,1280]: raise ctypes.WinError()
+
+        if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src), 1 if os.path.isdir(src) else 0) in [0,
+                                                                                                                      1280]: raise ctypes.WinError()
     else:
         os.symlink(src, dst)
 

@@ -437,11 +437,11 @@ def ISNULL(x):
     """Emulate SQLObject's ISNULL."""
     # XXX: Should we use null()?  Can null() be a global instance?
     # XXX: Is it safe to test None with the == operator, in this case?
-    return x == None
+    return x is None
 
 def ISNOTNULL(x):
     """Emulate SQLObject's ISNOTNULL."""
-    return x != None
+    return x is not None
 
 def CONTAINSSTRING(expr, pattern):
     """Emulate SQLObject's CONTAINSSTRING."""

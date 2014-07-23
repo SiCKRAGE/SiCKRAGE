@@ -34,7 +34,7 @@ class TraktNotifier:
 
     def notify_subtitle_download(self, ep_name, lang):
         pass
-        
+
     def notify_git_update(self, new_version):
         pass
 
@@ -53,9 +53,9 @@ class TraktNotifier:
                 'title': ep_obj.show.name,
                 'year': ep_obj.show.startyear,
                 'episodes': [{
-                                 'season': ep_obj.season,
-                                 'episode': ep_obj.episode
-                             }]
+                    'season': ep_obj.season,
+                    'episode': ep_obj.episode
+                }]
             }
 
             if data is not None:

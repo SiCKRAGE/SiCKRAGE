@@ -33,7 +33,8 @@ def _logHistoryItem(action, showid, season, episode, quality, resource, provider
 
     myDB = db.DBConnection()
     myDB.action(
-        "INSERT INTO history (action, date, showid, season, episode, quality, resource, provider) VALUES (?,?,?,?,?,?,?,?)",
+        "INSERT INTO history (action, date, showid, season, episode, quality, resource, provider) "
+        "VALUES (?,?,?,?,?,?,?,?)",
         [action, logDate, showid, season, episode, quality, resource, provider])
 
 
@@ -46,7 +47,7 @@ def logSnatch(searchResult):
         quality = searchResult.quality
 
         providerClass = searchResult.provider
-        if providerClass != None:
+        if providerClass is not None:
             provider = providerClass.name
         else:
             provider = "unknown"

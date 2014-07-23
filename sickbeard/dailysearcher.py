@@ -101,7 +101,6 @@ class DailySearcher():
             myDB = db.DBConnection()
             myDB.mass_action(sql_l)
 
-
         if len(todaysEps):
             for show in todaysEps:
                 segment = todaysEps[show]

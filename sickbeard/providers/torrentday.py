@@ -10,7 +10,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -35,10 +35,11 @@ from sickbeard.helpers import sanitizeSceneName
 
 
 class TorrentDayProvider(generic.TorrentProvider):
-    urls = {'base_url': 'http://www.torrentday.com',
-            'login': 'http://www.torrentday.com/torrents/',
-            'search': 'http://www.torrentday.com/V3/API/API.php',
-            'download': 'http://www.torrentday.com/download.php/%s/%s'
+    urls = {
+        'base_url': 'http://www.torrentday.com',
+        'login': 'http://www.torrentday.com/torrents/',
+        'search': 'http://www.torrentday.com/V3/API/API.php',
+        'download': 'http://www.torrentday.com/download.php/%s/%s'
     }
 
     def __init__(self):
@@ -88,10 +89,11 @@ class TorrentDayProvider(generic.TorrentProvider):
 
         else:
 
-            login_params = {'username': self.username,
-                            'password': self.password,
-                            'submit.x': 0,
-                            'submit.y': 0
+            login_params = {
+                'username': self.username,
+                'password': self.password,
+                'submit.x': 0,
+                'submit.y': 0
             }
 
             try:
@@ -108,12 +110,14 @@ class TorrentDayProvider(generic.TorrentProvider):
                 logger.log(u'Invalid username or password for ' + self.name + ', Check your settings!', logger.ERROR)
                 return False
 
-            if requests.utils.dict_from_cookiejar(self.session.cookies)['uid'] and requests.utils.dict_from_cookiejar(self.session.cookies)['pass']:
+            if requests.utils.dict_from_cookiejar(self.session.cookies)['uid'] and \
+                    requests.utils.dict_from_cookiejar(self.session.cookies)['pass']:
                 self._uid = requests.utils.dict_from_cookiejar(self.session.cookies)['uid']
                 self._hash = requests.utils.dict_from_cookiejar(self.session.cookies)['pass']
 
-                self.cookies = {'uid': self._uid,
-                                'pass': self._hash
+                self.cookies = {
+                    'uid': self._uid,
+                    'pass': self._hash
                 }
                 return True
 
@@ -132,7 +136,7 @@ class TorrentDayProvider(generic.TorrentProvider):
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
                 search_string['Season'].append(ep_string)
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -322,8 +326,6 @@ class TorrentDayCache(tvcache.TVCache):
             if ci is not None:
                 cl.append(ci)
 
-
-
         if len(cl) > 0:
             myDB = self._getDB()
             myDB.mass_action(cl)
@@ -336,7 +338,7 @@ class TorrentDayCache(tvcache.TVCache):
         if not title or not url:
             return None
 
-        logger.log(u"Attempting to cache item:[" + title +"]", logger.DEBUG)
+        logger.log(u"Attempting to cache item:[" + title + "]", logger.DEBUG)
 
         return self._addCacheEntry(title, url)
 

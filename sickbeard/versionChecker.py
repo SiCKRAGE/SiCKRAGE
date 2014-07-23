@@ -36,6 +36,7 @@ from sickbeard import logger
 from sickbeard.exceptions import ex
 from sickbeard import encodingKludge as ek
 
+
 class CheckVersion():
     """
     Version check class meant to run as a thread object with the SB scheduler.
@@ -116,6 +117,7 @@ class CheckVersion():
     def update(self):
         if self.updater.need_update():
             return self.updater.update()
+
 
 class UpdateManager():
     def get_github_repo_user(self):
@@ -260,7 +262,7 @@ class WindowsUpdateManager(UpdateManager):
             new_update_path = os.path.join(sickbeard.PROG_DIR, u'updater.exe')
             logger.log(u"Copying new update.exe file from " + old_update_path + " to " + new_update_path)
             shutil.move(old_update_path, new_update_path)
-            
+
             # Notify update successful
             notifiers.notify_git_update(sickbeard.NEWEST_VERSION_STRING)
 
@@ -690,7 +692,7 @@ class SourceUpdateManager(UpdateManager):
                     old_path = os.path.join(content_dir, dirname, curfile)
                     new_path = os.path.join(sickbeard.PROG_DIR, dirname, curfile)
 
-                    #Avoid DLL access problem on WIN32/64
+                    # Avoid DLL access problem on WIN32/64
                     #These files needing to be updated manually
                     #or find a way to kill the access from memory
                     if curfile in ('unrar.dll', 'unrar64.dll'):
@@ -722,5 +724,5 @@ class SourceUpdateManager(UpdateManager):
 
         # Notify update successful
         notifiers.notify_git_update(sickbeard.NEWEST_VERSION_STRING)
-        
+
         return True

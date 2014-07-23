@@ -1,6 +1,7 @@
 import threading
 from Queue import Queue, Empty
 
+
 class Event:
     def __init__(self, type):
         self._type = type
@@ -8,6 +9,7 @@ class Event:
     @property
     def type(self):
         return self._type
+
 
 class Events(threading.Thread):
     def __init__(self, callback):

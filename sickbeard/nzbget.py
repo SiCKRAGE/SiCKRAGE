@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 import httplib
 import datetime
 import re
@@ -37,13 +35,13 @@ from common import Quality
 def sendNZB(nzb, proper=False):
     addToTop = False
     nzbgetprio = 0
-    
+
     if sickbeard.NZBGET_USE_HTTPS:
         nzbgetXMLrpc = "https://%(username)s:%(password)s@%(host)s/xmlrpc"
     else:
         nzbgetXMLrpc = "http://%(username)s:%(password)s@%(host)s/xmlrpc"
 
-    if sickbeard.NZBGET_HOST == None:
+    if sickbeard.NZBGET_HOST is None:
         logger.log(u"No NZBget host found in configuration. Please configure it.", logger.ERROR)
         return False
 
@@ -98,7 +96,8 @@ def sendNZB(nzb, proper=False):
     logger.log(u"URL: " + url, logger.DEBUG)
 
     try:
-        # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old command
+        # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a
+        # 0.x will use the old command
         nzbget_version_str = nzbGetRPC.version()
         nzbget_version = helpers.tryInt(nzbget_version_str[:nzbget_version_str.find(".")])
         if nzbget_version == 0:
@@ -108,7 +107,7 @@ def sendNZB(nzb, proper=False):
                 if nzb.resultType == "nzb":
                     genProvider = GenericProvider("")
                     data = genProvider.getURL(nzb.url)
-                    if (data == None):
+                    if (data is None):
                         return False
                     nzbcontent64 = standard_b64encode(data)
             nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", sickbeard.NZBGET_CATEGORY, addToTop, nzbcontent64)
@@ -123,8 +122,10 @@ def sendNZB(nzb, proper=False):
         # also the return value has changed from boolean to integer 
         # (Positive number representing NZBID of the queue item. 0 and negative numbers represent error codes.)
         elif nzbget_version >= 13:
-            nzbget_result = True if nzbGetRPC.append(nzb.name + ".nzb", nzbcontent64 if nzbcontent64 is not None else nzb.url,
-                                                     sickbeard.NZBGET_CATEGORY, nzbgetprio, False, False, dupekey, dupescore,
+            nzbget_result = True if nzbGetRPC.append(nzb.name + ".nzb",
+                                                     nzbcontent64 if nzbcontent64 is not None else nzb.url,
+                                                     sickbeard.NZBGET_CATEGORY, nzbgetprio, False, False, dupekey,
+                                                     dupescore,
                                                      "score") > 0 else False
         else:
             if nzbcontent64 is not None:

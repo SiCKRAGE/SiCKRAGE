@@ -164,11 +164,11 @@ class TCP(Layer):
         else:
             dst = None
         desc = "TCP"
-        if src != None and dst != None:
+        if src is not None and dst is not None:
             desc += " (%s->%s)" % (src, dst)
-        elif src != None:
+        elif src is not None:
             desc += " (%s->)" % (src)
-        elif dst != None:
+        elif dst is not None:
             desc += " (->%s)" % (dst)
 
         # Get flags

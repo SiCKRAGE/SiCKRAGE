@@ -345,7 +345,7 @@
 #elif $epLoc and (not $epLoc.lower().startswith($show._location.lower()) or not $show._location):
     #set $epLoc = os.path.basename($epLoc)
 #end if
-#if $epLoc != "" and $epLoc != None:
+#if $epLoc != "" and $epLoc is not None:
     <span title="$epLoc" class="addQTip">$epResult["episode"]</span>
 #else
     $epResult["episode"]
@@ -385,7 +385,7 @@
     #end if
 
     <td class="title">
-    #if $epResult["description"] != "" and $epResult["description"] != None:
+    #if $epResult["description"] != "" and $epResult["description"] is not None:
     <img style="padding-top: 3px;" src="$sbRoot/images/info32.png" width="16" height="16" class="plotInfo" alt="" id="plot_info_$show.indexerid<%="_"+str(epResult["season"])+"_"+str(epResult["episode"])%>" />
 	#end if
     $epResult["name"]

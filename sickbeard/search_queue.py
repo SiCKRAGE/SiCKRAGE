@@ -115,6 +115,7 @@ class DailySearchQueueItem(generic_queue.QueueItem):
 
         self.finish()
 
+
 class ManualSearchQueueItem(generic_queue.QueueItem):
     def __init__(self, show, segment):
         generic_queue.QueueItem.__init__(self, 'Manual Search', MANUAL_SEARCH)
@@ -169,7 +170,7 @@ class BacklogQueueItem(generic_queue.QueueItem):
         try:
             for season in self.segment:
                 sickbeard.searchBacklog.BacklogSearcher.currentSearchInfo = {
-                'title': self.show.name + " Season " + str(season)}
+                    'title': self.show.name + " Season " + str(season)}
 
                 wantedEps = self.segment[season]
 

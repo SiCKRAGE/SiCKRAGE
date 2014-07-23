@@ -39,11 +39,12 @@ from sickbeard.helpers import sanitizeSceneName
 
 
 class SpeedCDProvider(generic.TorrentProvider):
-    urls = {'base_url': 'http://speed.cd/',
-            'login': 'http://speed.cd/takelogin.php',
-            'detail': 'http://speed.cd/t/%s',
-            'search': 'http://speed.cd/V3/API/API.php',
-            'download': 'http://speed.cd/download.php?torrent=%s',
+    urls = {
+        'base_url': 'http://speed.cd/',
+        'login': 'http://speed.cd/takelogin.php',
+        'detail': 'http://speed.cd/t/%s',
+        'search': 'http://speed.cd/V3/API/API.php',
+        'download': 'http://speed.cd/download.php?torrent=%s',
     }
 
     def __init__(self):
@@ -79,8 +80,9 @@ class SpeedCDProvider(generic.TorrentProvider):
 
     def _doLogin(self):
 
-        login_params = {'username': self.username,
-                        'password': self.password
+        login_params = {
+            'username': self.username,
+            'password': self.password
         }
 
         try:
@@ -98,7 +100,7 @@ class SpeedCDProvider(generic.TorrentProvider):
 
     def _get_season_search_strings(self, ep_obj):
 
-        #If Every episode in Season is a wanted Episode then search for Season first
+        # If Every episode in Season is a wanted Episode then search for Season first
         search_string = {'Season': []}
         for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
             if ep_obj.show.air_by_date or ep_obj.show.sports:
@@ -106,7 +108,7 @@ class SpeedCDProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -189,7 +191,7 @@ class SpeedCDProvider(generic.TorrentProvider):
                     item = title, url, seeders, leechers
                     items[mode].append(item)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[2], reverse=True)
 
             results += items[mode]
@@ -303,8 +305,6 @@ class SpeedCDCache(tvcache.TVCache):
             ci = self._parseItem(item)
             if ci is not None:
                 cl.append(ci)
-
-
 
         if len(cl) > 0:
             myDB = self._getDB()

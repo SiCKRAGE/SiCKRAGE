@@ -67,8 +67,8 @@ class EZRSSProvider(generic.TorrentProvider):
         results = {}
 
         if show.air_by_date or show.sports:
-            logger.log(self.name + u" doesn't support air-by-date or sports backloging because of limitations on their RSS search.",
-                       logger.WARNING)
+            logger.log(self.name + u" doesn't support air-by-date or sports backloging because of limitations on "
+                                   u"their RSS search.", logger.WARNING)
             return results
 
         results = generic.TorrentProvider.findSearchResults(self, show, season, episodes, search_mode, manualSearch)

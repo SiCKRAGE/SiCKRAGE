@@ -56,10 +56,12 @@ class ProperFinder():
 
         run_at = ""
         if None is sickbeard.properFinderScheduler.start_time:
-            run_in = sickbeard.properFinderScheduler.lastRun + sickbeard.properFinderScheduler.cycleTime - datetime.datetime.now()
+            run_in = sickbeard.properFinderScheduler.lastRun + sickbeard.properFinderScheduler.cycleTime - \
+                datetime.datetime.now()
             hours, remainder = divmod(run_in.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
-            run_at = u", next check in approx. " + ("%dh, %dm" % (hours, minutes) if 0 < hours else "%dm, %ds" % (minutes, seconds))
+            run_at = u", next check in approx. " + ("%dh, %dm" % (hours, minutes) if 0 < hours else "%dm, %ds" %
+                                                                                                    (minutes, seconds))
 
         logger.log(u"Completed the search for new propers%s" % run_at)
 
@@ -137,7 +139,7 @@ class ProperFinder():
                     logger.log(u"I am sorry '"+curProper.name+"' seams to be an anime proper seach is not yet suported", logger.DEBUG)
                     continue
                 else:
-                    curProper.season = parse_result.season_number if parse_result.season_number != None else 1
+                    curProper.season = parse_result.season_number if parse_result.season_number is not None else 1
                     curProper.episode = parse_result.episode_numbers[0]
 
             curProper.quality = Quality.nameQuality(curProper.name, parse_result.is_anime)
@@ -236,7 +238,7 @@ class ProperFinder():
 
                 # get the episode object
                 showObj = helpers.findCertainShow(sickbeard.showList, curProper.indexerid)
-                if showObj == None:
+                if showObj is None:
                     logger.log(u"Unable to find the show with indexerid " + str(
                         curProper                                      .indexerid) + " so unable to download the proper", logger.ERROR)
                     continue

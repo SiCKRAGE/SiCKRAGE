@@ -103,7 +103,7 @@ def authenticated(handler_class):
 
                 auth_hdr = handler.request.headers.get('Authorization')
 
-                if auth_hdr == None:
+                if auth_hdr is None:
                     return _request_basic_auth(handler)
                 if not auth_hdr.startswith('Basic '):
                     return _request_basic_auth(handler)
@@ -145,6 +145,7 @@ class HTTPRedirect(Exception):
 def redirect(url, permanent=False, status=None):
     assert url[0] == '/'
     raise HTTPRedirect(sickbeard.WEB_ROOT + url, permanent, status)
+
 
 @authenticated
 class MainHandler(RequestHandler):
@@ -2548,7 +2549,8 @@ class HomePostProcess(MainHandler):
 
         redirect("/home/")
 
-    def processEpisode(self, dir=None, nzbName=None, jobName=None, quiet=None, process_method=None, force=None, is_priority=None, failed="0", type="auto", *args, **kwargs):
+    def processEpisode(self, dir=None, nzbName=None, jobName=None, quiet=None, process_method=None, force=None,
+                       is_priority=None, failed="0", type="auto", *args, **kwargs):
 
         if failed == "0":
             failed = False

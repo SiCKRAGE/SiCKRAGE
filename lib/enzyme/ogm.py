@@ -69,7 +69,7 @@ class Ogm(core.AVContainer):
 
         for i in range(MAXITERATIONS):
             granule, nextlen = self._parseOGGS(file)
-            if granule == None:
+            if granule is None:
                 if i == 0:
                     # oops, bad file
                     raise ParseError()

@@ -88,7 +88,7 @@ class Media(object):
         lists = []
         for key in self._keys:
             value = getattr(self, key, None)
-            if value == None or key == 'url':
+            if value is None or key == 'url':
                 continue
             if isinstance(value, list):
                 if not value:

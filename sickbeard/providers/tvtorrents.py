@@ -90,7 +90,8 @@ class TvTorrentsCache(tvcache.TVCache):
         # These will be ignored on the serverside.
         ignore_regex = "all.month|month.of|season[\s\d]*complete"
 
-        rss_url = self.provider.url + 'RssServlet?digest=' + provider.digest + '&hash=' + provider.hash + '&fname=true&exclude=(' + ignore_regex + ')'
+        rss_url = self.provider.url + 'RssServlet?digest=' + provider.digest + '&hash=' + provider.hash + \
+                  '&fname=true&exclude=(' + ignore_regex + ')'
         logger.log(self.provider.name + u" cache update URL: " + rss_url, logger.DEBUG)
 
         return self.getRSSFeed(rss_url)

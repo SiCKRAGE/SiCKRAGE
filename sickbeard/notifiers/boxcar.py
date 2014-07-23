@@ -17,14 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2
+import urllib
+import urllib2
 import time
 
 import sickbeard
-
 from sickbeard import logger
-from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
+from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
+    NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
 from sickbeard.exceptions import ex
+
 
 API_URL = "https://boxcar.io/devices/providers/fWc4sgSmpcN6JujtBmR6/notifications"
 
@@ -40,7 +42,8 @@ class BoxcarNotifier:
         msg: The message to send (unicode)
         title: The title of the message
         email: The email address to send the message to (or to subscribe with)
-        subscribe: If true then instead of sending a message this function will send a subscription notification (optional, default is False)
+        subscribe: If true then instead of sending a message this function will send a subscription notification
+        (optional, default is False)
         
         returns: True if the message succeeded, False otherwise
         """
@@ -63,7 +66,6 @@ class BoxcarNotifier:
                 'notification[from_remote_service_id]': int(time.time())
             })
 
-
         # send the request to boxcar
         try:
             req = urllib2.Request(curUrl)
@@ -83,13 +85,15 @@ class BoxcarNotifier:
                 logger.log("Username is wrong/not a boxcar email. Boxcar will send an email to it", logger.WARNING)
                 return False
 
-            # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
+            # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user
+            # has not added your service.
             elif e.code == 401:
 
                 # If the user has already added your service, we'll return an HTTP status code of 401.
                 if subscribe:
                     logger.log("Already subscribed to service", logger.ERROR)
-                    # i dont know if this is true or false ... its neither but i also dont know how we got here in the first place
+                    # i dont know if this is true or false ... its neither but i also dont know how we got here
+                    # in the first place
                     return False
 
                 #HTTP status 401 if the user doesn't have the service added

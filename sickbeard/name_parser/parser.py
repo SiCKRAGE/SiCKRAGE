@@ -59,9 +59,9 @@ class NameParser(object):
         Is basically equivalent to replacing all _ and . with a
         space, but handles decimal numbers in string, for example:
 
-        >>> cleanRegexedSeriesName("an.example.1.0.test")
+        '>>> cleanRegexedSeriesName("an.example.1.0.test")'
         'an example 1.0 test'
-        >>> cleanRegexedSeriesName("an_example_1.0_test")
+        '>>> cleanRegexedSeriesName("an_example_1.0_test")'
         'an example 1.0 test'
 
         Stolen from dbr's tvnamer
@@ -277,7 +277,7 @@ class NameParser(object):
         b = getattr(second, attr)
 
         # if a is good use it
-        if a != None or (type(a) == list and len(a)):
+        if a is not None or (type(a) == list and len(a)):
             return a
         # if not use b (if b isn't set it'll just be default)
         else:
@@ -391,7 +391,7 @@ class NameParser(object):
                 "Unable to parse " + name.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace'))
 
         # if there's no useful info in it then raise an exception
-        if final_result.season_number == None and not final_result.episode_numbers and final_result.air_date == None and final_result.sports_air_date == None and not final_result.ab_episode_numbers and not final_result.series_name:
+        if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and final_result.sports_air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
             raise InvalidNameException("Unable to parse " + name.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace'))
 
         if cache_result:
@@ -402,21 +402,22 @@ class NameParser(object):
 
 
 class ParseResult(object):
-    def __init__(self,
-                 original_name,
-                 series_name=None,
-                 sports_event_id=None,
-                 sports_event_name=None,
-                 sports_air_date=None,
-                 season_number=None,
-                 episode_numbers=None,
-                 extra_info=None,
-                 release_group=None,
-                 air_date=None,
-                 ab_episode_numbers=None,
-                 show=None,
-                 score=None,
-                 quality=None
+    def __init__(
+            self,
+            original_name,
+            series_name=None,
+            sports_event_id=None,
+            sports_event_name=None,
+            sports_air_date=None,
+            season_number=None,
+            episode_numbers=None,
+            extra_info=None,
+            release_group=None,
+            air_date=None,
+            ab_episode_numbers=None,
+            show=None,
+            score=None,
+            quality=None
     ):
 
         self.original_name = original_name
@@ -485,11 +486,11 @@ class ParseResult(object):
         return True
 
     def __str__(self):
-        if self.series_name != None:
+        if self.series_name is not None:
             to_return = self.series_name + u' - '
         else:
             to_return = u''
-        if self.season_number != None:
+        if self.season_number is not None:
             to_return += 'S' + str(self.season_number)
         if self.episode_numbers and len(self.episode_numbers):
             for e in self.episode_numbers:
@@ -588,13 +589,13 @@ class ParseResult(object):
 
     @property
     def is_air_by_date(self):
-        if self.season_number == None and len(self.episode_numbers) == 0 and self.air_date:
+        if self.season_number is None and len(self.episode_numbers) == 0 and self.air_date:
             return True
         return False
 
     @property
     def is_sports(self):
-        if self.season_number == None and len(self.episode_numbers) == 0 and self.sports_air_date:
+        if self.season_number is None and len(self.episode_numbers) == 0 and self.sports_air_date:
             return True
         return False
 

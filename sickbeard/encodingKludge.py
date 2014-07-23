@@ -11,7 +11,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -24,6 +24,7 @@ import sickbeard
 # This module tries to deal with the apparently random behavior of python when dealing with unicode <-> utf-8
 # encodings. It tries to just use unicode, but if that fails then it tries forcing it to utf-8. Any functions
 # which return something should always return unicode.
+
 
 def fixStupidEncodings(x, silent=False):
     if type(x) == str:
@@ -41,12 +42,11 @@ def fixStupidEncodings(x, silent=False):
         return None
 
 
-
 def fixListEncodings(x):
     if type(x) != list and type(x) != tuple:
         return x
     else:
-        return filter(lambda x: x != None, map(fixStupidEncodings, x))
+        return filter(lambda x: x is not None, map(fixStupidEncodings, x))
 
 
 def callPeopleStupid(x):
@@ -54,7 +54,8 @@ def callPeopleStupid(x):
         return x.encode(sickbeard.SYS_ENCODING)
     except UnicodeEncodeError:
         logger.log(
-            u"YOUR COMPUTER SUCKS! Your data is being corrupted by a bad locale/encoding setting. Report this error on the forums or IRC please: " + repr(
+            u"YOUR COMPUTER SUCKS! Your data is being corrupted by a bad locale/encoding setting. "
+            u"Report this error on the forums or IRC please: " + repr(
                 x) + ", " + sickbeard.SYS_ENCODING, logger.ERROR)
         return x.encode(sickbeard.SYS_ENCODING, 'ignore')
 

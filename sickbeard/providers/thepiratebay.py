@@ -18,16 +18,15 @@
 
 from __future__ import with_statement
 
-import time
 import re
-import urllib, urllib2, urlparse
+import urllib
 import sys
 import os
 import datetime
 
 import sickbeard
 import generic
-from sickbeard.common import Quality, cpu_presets
+from sickbeard.common import Quality
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 from sickbeard import db
 from sickbeard import classes
@@ -36,7 +35,6 @@ from sickbeard import tvcache
 from sickbeard import helpers
 from sickbeard import clients
 from sickbeard.show_name_helpers import allPossibleShowNames, sanitizeSceneName
-from sickbeard.common import Overview
 from sickbeard.exceptions import ex
 from sickbeard import encodingKludge as ek
 from lib import requests
@@ -65,7 +63,8 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         self.searchurl = self.url + 'search/%s/0/7/200'  # order by seed       
 
-        self.re_title_url = '/torrent/(?P<id>\d+)/(?P<title>.*?)//1".+?(?P<url>magnet.*?)//1".+?(?P<seeders>\d+)</td>.+?(?P<leechers>\d+)</td>'
+        self.re_title_url = '/torrent/(?P<id>\d+)/(?P<title>.*?)//1".+?(?P<url>magnet.*?)//1".+?(?P<seeders>\d+)' \
+                            '</td>.+?(?P<leechers>\d+)</td>'
 
     def isEnabled(self):
         return self.enabled

@@ -188,7 +188,7 @@ class TraktChecker():
         Sets an episode to wanted, only is it is currently skipped
         """
         epObj = show.getEpisode(int(s), int(e))
-        if epObj == None:
+        if epObj is None:
             return
         with epObj.lock:
             if epObj.status != SKIPPED:

@@ -70,8 +70,8 @@ class XBMCNotifier:
 
         """
 
-        # since we need to maintain python 2.5 compatability we can not pass a timeout delay to urllib2 directly (python 2.6+)
-        # override socket timeout to reduce delay for this call alone
+        # since we need to maintain python 2.5 compatability we can not pass a timeout delay to urllib2 directly
+        # (python 2.6+) override socket timeout to reduce delay for this call alone
         socket.setdefaulttimeout(10)
 
         checkCommand = '{"jsonrpc":"2.0","method":"JSONRPC.Version","id":1}'
