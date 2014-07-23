@@ -351,14 +351,14 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
     showNames = [re.sub('[. -]', ' ', regShowName)]
 
     # Query Indexers for each search term and build the list of results
-    for i in sickbeard.indexerApi().indexers if not indexer else int(indexer or []):
+    for i in sickbeard.IndexerApi().indexers if not indexer else int(indexer or []):
         # Query Indexers for each search term and build the list of results
-        lINDEXER_API_PARMS = sickbeard.indexerApi(i).api_params.copy()
+        lINDEXER_API_PARMS = sickbeard.IndexerApi(i).api_params.copy()
         if ui is not None: lINDEXER_API_PARMS['custom_ui'] = ui
-        t = sickbeard.indexerApi(i).indexer(**lINDEXER_API_PARMS)
+        t = sickbeard.IndexerApi(i).indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
-            logger.log(u"Trying to find " + name + " on " + sickbeard.indexerApi(i).name, logger.DEBUG)
+            logger.log(u"Trying to find " + name + " on " + sickbeard.IndexerApi(i).name, logger.DEBUG)
 
             try:
                 search = t[indexer_id] if indexer_id else t[name]
@@ -379,9 +379,9 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
                 continue
 
             if str(name).lower() == str(seriesname).lower and not indexer_id:
-                return (seriesname, int(sickbeard.indexerApi(i).config['id']), int(series_id))
+                return (seriesname, int(sickbeard.IndexerApi(i).config['id']), int(series_id))
             elif int(indexer_id) == int(series_id):
-                return (seriesname, int(sickbeard.indexerApi(i).config['id']), int(indexer_id))
+                return (seriesname, int(sickbeard.IndexerApi(i).config['id']), int(indexer_id))
 
         if indexer:
             break
@@ -1131,12 +1131,12 @@ def validateShow(show, season=None, episode=None):
     indexer_lang = show.lang
 
     try:
-        lINDEXER_API_PARMS = sickbeard.indexerApi(show.indexer).api_params.copy()
+        lINDEXER_API_PARMS = sickbeard.IndexerApi(show.indexer).api_params.copy()
 
         if indexer_lang and not indexer_lang == 'en':
             lINDEXER_API_PARMS['language'] = indexer_lang
 
-        t = sickbeard.indexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
+        t = sickbeard.IndexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
         if season is None and episode is None:
             return t
 

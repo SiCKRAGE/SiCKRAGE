@@ -239,39 +239,39 @@ class QueueItemAdd(ShowQueueItem):
         # make sure the Indexer IDs are valid
         try:
 
-            lINDEXER_API_PARMS = sickbeard.indexerApi(self.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickbeard.IndexerApi(self.indexer).api_params.copy()
             if self.lang:
                 lINDEXER_API_PARMS['language'] = self.lang
 
-            logger.log(u"" + str(sickbeard.indexerApi(self.indexer).name) + ": " + repr(lINDEXER_API_PARMS))
+            logger.log(u"" + str(sickbeard.IndexerApi(self.indexer).name) + ": " + repr(lINDEXER_API_PARMS))
 
-            t = sickbeard.indexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickbeard.IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
             s = t[self.indexer_id]
 
             # this usually only happens if they have an NFO in their show dir which gave us a Indexer ID that has no proper english version of the show
             if getattr(s, 'seriesname', None) is None:
                 logger.log(u"Show in " + self.showDir + " has no name on " + str(
-                    sickbeard.indexerApi(self.indexer).name) + ", probably the wrong language used to search with.",
+                    sickbeard.IndexerApi(self.indexer).name) + ", probably the wrong language used to search with.",
                            logger.ERROR)
                 ui.notifications.error("Unable to add show",
-                                       "Show in " + self.showDir + " has no name on " + str(sickbeard.indexerApi(
+                                       "Show in " + self.showDir + " has no name on " + str(sickbeard.IndexerApi(
                                            self.indexer).name) + ", probably the wrong language. Delete .nfo and add manually in the correct language.")
                 self._finishEarly()
                 return
             # if the show has no episodes/seasons
             if not s:
                 logger.log(u"Show " + str(s['seriesname']) + " is on " + str(
-                    sickbeard.indexerApi(self.indexer).name) + " but contains no season/episode data.", logger.ERROR)
+                    sickbeard.IndexerApi(self.indexer).name) + " but contains no season/episode data.", logger.ERROR)
                 ui.notifications.error("Unable to add show",
-                                       "Show " + str(s['seriesname']) + " is on " + str(sickbeard.indexerApi(
+                                       "Show " + str(s['seriesname']) + " is on " + str(sickbeard.IndexerApi(
                                            self.indexer).name) + " but contains no season/episode data.")
                 self._finishEarly()
                 return
         except Exception, e:
             logger.log(u"Unable to find show ID:" + str(self.indexer_id) + " on Indexer: " + str(
-                sickbeard.indexerApi(self.indexer).name), logger.ERROR)
+                sickbeard.IndexerApi(self.indexer).name), logger.ERROR)
             ui.notifications.error("Unable to add show",
-                                   "Unable to look up the show in " + self.showDir + " on " + str(sickbeard.indexerApi(
+                                   "Unable to look up the show in " + self.showDir + " on " + str(sickbeard.IndexerApi(
                                        self.indexer).name) + " using ID " + str(
                                        self.indexer_id) + ", not using the NFO. Delete .nfo and try adding manually again.")
             self._finishEarly()
@@ -302,15 +302,15 @@ class QueueItemAdd(ShowQueueItem):
 
         except sickbeard.indexer_exception, e:
             logger.log(
-                u"Unable to add show due to an error with " + sickbeard.indexerApi(self.indexer).name + ": " + ex(e),
+                u"Unable to add show due to an error with " + sickbeard.IndexerApi(self.indexer).name + ": " + ex(e),
                 logger.ERROR)
             if self.show:
                 ui.notifications.error(
-                    "Unable to add " + str(self.show.name) + " due to an error with " + sickbeard.indexerApi(
+                    "Unable to add " + str(self.show.name) + " due to an error with " + sickbeard.IndexerApi(
                         self.indexer).name + "")
             else:
                 ui.notifications.error(
-                    "Unable to add show due to an error with " + sickbeard.indexerApi(self.indexer).name + "")
+                    "Unable to add show due to an error with " + sickbeard.IndexerApi(self.indexer).name + "")
             self._finishEarly()
             return
 
@@ -350,7 +350,7 @@ class QueueItemAdd(ShowQueueItem):
             self.show.loadEpisodesFromIndexer()
         except Exception, e:
             logger.log(
-                u"Error with " + sickbeard.indexerApi(self.show.indexer).name + ", not creating episode list: " + ex(e),
+                u"Error with " + sickbeard.IndexerApi(self.show.indexer).name + ", not creating episode list: " + ex(e),
                 logger.ERROR)
             logger.log(traceback.format_exc(), logger.DEBUG)
 
@@ -499,15 +499,15 @@ class QueueItemUpdate(ShowQueueItem):
 
         logger.log(u"Beginning update of " + self.show.name)
 
-        logger.log(u"Retrieving show info from " + sickbeard.indexerApi(self.show.indexer).name + "", logger.DEBUG)
+        logger.log(u"Retrieving show info from " + sickbeard.IndexerApi(self.show.indexer).name + "", logger.DEBUG)
         try:
             self.show.loadFromIndexer(cache=not self.force)
         except sickbeard.indexer_error, e:
-            logger.log(u"Unable to contact " + sickbeard.indexerApi(self.show.indexer).name + ", aborting: " + ex(e),
+            logger.log(u"Unable to contact " + sickbeard.IndexerApi(self.show.indexer).name + ", aborting: " + ex(e),
                        logger.WARNING)
             return
         except sickbeard.indexer_attributenotfound, e:
-            logger.log(u"Data retrieved from " + sickbeard.indexerApi(
+            logger.log(u"Data retrieved from " + sickbeard.IndexerApi(
                 self.show.indexer).name + " was incomplete, aborting: " + ex(e), logger.ERROR)
             return
 
@@ -531,16 +531,16 @@ class QueueItemUpdate(ShowQueueItem):
         DBEpList = self.show.loadEpisodesFromDB()
 
         # get episode list from TVDB
-        logger.log(u"Loading all episodes from " + sickbeard.indexerApi(self.show.indexer).name + "", logger.DEBUG)
+        logger.log(u"Loading all episodes from " + sickbeard.IndexerApi(self.show.indexer).name + "", logger.DEBUG)
         try:
             IndexerEpList = self.show.loadEpisodesFromIndexer(cache=not self.force)
         except sickbeard.indexer_exception, e:
-            logger.log(u"Unable to get info from " + sickbeard.indexerApi(
+            logger.log(u"Unable to get info from " + sickbeard.IndexerApi(
                 self.show.indexer).name + ", the show info will not be refreshed: " + ex(e), logger.ERROR)
             IndexerEpList = None
 
         if IndexerEpList == None:
-            logger.log(u"No data returned from " + sickbeard.indexerApi(
+            logger.log(u"No data returned from " + sickbeard.IndexerApi(
                 self.show.indexer).name + ", unable to update this show", logger.ERROR)
         else:
             # for each ep we found on TVDB delete it from the DB list

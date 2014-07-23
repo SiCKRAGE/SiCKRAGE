@@ -465,7 +465,7 @@ class TVShow(object):
 
         scannedEps = {}
 
-        lINDEXER_API_PARMS = sickbeard.indexerApi(self.indexer).api_params.copy()
+        lINDEXER_API_PARMS = sickbeard.IndexerApi(self.indexer).api_params.copy()
 
         if self.lang:
             lINDEXER_API_PARMS['language'] = self.lang
@@ -473,7 +473,7 @@ class TVShow(object):
         if self.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
 
-        t = sickbeard.indexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+        t = sickbeard.IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
 
         cachedShow = t[self.indexerid]
         cachedSeasons = {}
@@ -489,7 +489,7 @@ class TVShow(object):
                 try:
                     cachedSeasons[curSeason] = cachedShow[curSeason]
                 except sickbeard.indexer_seasonnotfound, e:
-                    logger.log(u"Error when trying to load the episode from " + sickbeard.indexerApi(
+                    logger.log(u"Error when trying to load the episode from " + sickbeard.IndexerApi(
                         self.indexer).name + ": " + e.message, logger.WARNING)
                     deleteEp = True
 
@@ -517,7 +517,7 @@ class TVShow(object):
 
     def loadEpisodesFromIndexer(self, cache=True):
 
-        lINDEXER_API_PARMS = sickbeard.indexerApi(self.indexer).api_params.copy()
+        lINDEXER_API_PARMS = sickbeard.IndexerApi(self.indexer).api_params.copy()
 
         if not cache:
             lINDEXER_API_PARMS['cache'] = False
@@ -529,16 +529,16 @@ class TVShow(object):
             lINDEXER_API_PARMS['dvdorder'] = True
 
         try:
-            t = sickbeard.indexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickbeard.IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
             showObj = t[self.indexerid]
         except sickbeard.indexer_error:
-            logger.log(u"" + sickbeard.indexerApi(
-                self.indexer).name + " timed out, unable to update episodes from " + sickbeard.indexerApi(
+            logger.log(u"" + sickbeard.IndexerApi(
+                self.indexer).name + " timed out, unable to update episodes from " + sickbeard.IndexerApi(
                 self.indexer).name, logger.ERROR)
             return None
 
         logger.log(
-            str(self.indexerid) + u": Loading all episodes from " + sickbeard.indexerApi(self.indexer).name + "..")
+            str(self.indexerid) + u": Loading all episodes from " + sickbeard.IndexerApi(self.indexer).name + "..")
 
         scannedEps = {}
 
@@ -553,7 +553,7 @@ class TVShow(object):
                     ep = self.getEpisode(season, episode)
                 except exceptions.EpisodeNotFoundException:
                     logger.log(
-                        str(self.indexerid) + ": " + sickbeard.indexerApi(self.indexer).name + " object for " + str(
+                        str(self.indexerid) + ": " + sickbeard.IndexerApi(self.indexer).name + " object for " + str(
                             season) + "x" + str(episode) + " is incomplete, skipping this episode")
                     continue
                 else:
@@ -564,7 +564,7 @@ class TVShow(object):
                         continue
 
                 with ep.lock:
-                    logger.log(str(self.indexerid) + u": Loading info from " + sickbeard.indexerApi(
+                    logger.log(str(self.indexerid) + u": Loading info from " + sickbeard.IndexerApi(
                         self.indexer).name + " for episode " + str(season) + "x" + str(episode), logger.DEBUG)
                     ep.loadFromIndexer(season, episode, tvapi=t)
 
@@ -856,12 +856,12 @@ class TVShow(object):
 
     def loadFromIndexer(self, cache=True, tvapi=None, cachedSeason=None):
 
-        logger.log(str(self.indexerid) + u": Loading show info from " + sickbeard.indexerApi(self.indexer).name)
+        logger.log(str(self.indexerid) + u": Loading show info from " + sickbeard.IndexerApi(self.indexer).name)
 
         # There's gotta be a better way of doing this but we don't wanna
         # change the cache value elsewhere
         if tvapi is None:
-            lINDEXER_API_PARMS = sickbeard.indexerApi(self.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickbeard.IndexerApi(self.indexer).api_params.copy()
 
             if not cache:
                 lINDEXER_API_PARMS['cache'] = False
@@ -872,7 +872,7 @@ class TVShow(object):
             if self.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = sickbeard.indexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickbeard.IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
 
         else:
             t = tvapi
@@ -1552,7 +1552,7 @@ class TVEpisode(object):
         if episode is None:
             episode = self.episode
 
-        logger.log(str(self.show.indexerid) + u": Loading episode details from " + sickbeard.indexerApi(
+        logger.log(str(self.show.indexerid) + u": Loading episode details from " + sickbeard.IndexerApi(
             self.show.indexer).name + " for episode " + str(season) + "x" + str(episode), logger.DEBUG)
 
         indexer_lang = self.show.lang
@@ -1560,7 +1560,7 @@ class TVEpisode(object):
         try:
             if cachedSeason is None:
                 if tvapi is None:
-                    lINDEXER_API_PARMS = sickbeard.indexerApi(self.indexer).api_params.copy()
+                    lINDEXER_API_PARMS = sickbeard.IndexerApi(self.indexer).api_params.copy()
 
                     if not cache:
                         lINDEXER_API_PARMS['cache'] = False
@@ -1571,7 +1571,7 @@ class TVEpisode(object):
                     if self.show.dvdorder != 0:
                         lINDEXER_API_PARMS['dvdorder'] = True
 
-                    t = sickbeard.indexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+                    t = sickbeard.IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
                 else:
                     t = tvapi
                 myEp = t[self.show.indexerid][season][episode]
@@ -1579,19 +1579,19 @@ class TVEpisode(object):
                 myEp = cachedSeason[episode]
 
         except (sickbeard.indexer_error, IOError), e:
-            logger.log(u"" + sickbeard.indexerApi(self.indexer).name + " threw up an error: " + ex(e), logger.DEBUG)
+            logger.log(u"" + sickbeard.IndexerApi(self.indexer).name + " threw up an error: " + ex(e), logger.DEBUG)
             # if the episode is already valid just log it, if not throw it up
             if self.name:
-                logger.log(u"" + sickbeard.indexerApi(
+                logger.log(u"" + sickbeard.IndexerApi(
                     self.indexer).name + " timed out but we have enough info from other sources, allowing the error",
                            logger.DEBUG)
                 return
             else:
-                logger.log(u"" + sickbeard.indexerApi(self.indexer).name + " timed out, unable to create the episode",
+                logger.log(u"" + sickbeard.IndexerApi(self.indexer).name + " timed out, unable to create the episode",
                            logger.ERROR)
                 return False
         except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
-            logger.log(u"Unable to find the episode on " + sickbeard.indexerApi(
+            logger.log(u"Unable to find the episode on " + sickbeard.IndexerApi(
                 self.indexer).name + "... has it been removed? Should I delete from db?", logger.DEBUG)
             # if I'm no longer on the Indexers but I once was then delete myself from the DB
             if self.indexerid != -1:
@@ -1600,7 +1600,7 @@ class TVEpisode(object):
 
         if getattr(myEp, 'episodename', None) is None:
             logger.log(u"This episode (" + self.show.name + " - " + str(season) + "x" + str(
-                episode) + ") has no name on " + sickbeard.indexerApi(self.indexer).name + "")
+                episode) + ") has no name on " + sickbeard.IndexerApi(self.indexer).name + "")
             # if I'm incomplete on TVDB but I once was complete then just delete myself from the DB for now
             if self.indexerid != -1:
                 self.deleteEpisode()
@@ -1608,7 +1608,7 @@ class TVEpisode(object):
 
         if getattr(myEp, 'absolute_number', None) is None:
             logger.log(u"This episode (" + self.show.name + " - " + str(season) + "x" + str(
-                episode) + ") has no absolute number on " + sickbeard.indexerApi(
+                episode) + ") has no absolute number on " + sickbeard.IndexerApi(
                 self.indexer).name
                        , logger.DEBUG)
         else:
@@ -1631,7 +1631,7 @@ class TVEpisode(object):
         try:
             self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError):
-            logger.log(u"Malformed air date retrieved from " + sickbeard.indexerApi(
+            logger.log(u"Malformed air date retrieved from " + sickbeard.IndexerApi(
                 self.indexer).name + " (" + self.show.name + " - " + str(season) + "x" + str(episode) + ")",
                        logger.ERROR)
             # if I'm incomplete on TVDB but I once was complete then just delete myself from the DB for now
@@ -1642,7 +1642,7 @@ class TVEpisode(object):
         # early conversion to int so that episode doesn't get marked dirty
         self.indexerid = getattr(myEp, 'id', None)
         if self.indexerid is None:
-            logger.log(u"Failed to retrieve ID from " + sickbeard.indexerApi(self.indexer).name, logger.ERROR)
+            logger.log(u"Failed to retrieve ID from " + sickbeard.IndexerApi(self.indexer).name, logger.ERROR)
             if self.indexerid != -1:
                 self.deleteEpisode()
             return False

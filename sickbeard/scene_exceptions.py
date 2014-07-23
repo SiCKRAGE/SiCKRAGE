@@ -166,11 +166,11 @@ def retrieve_exceptions():
     global exception_dict, anidb_exception_dict, xem_exception_dict
 
     # exceptions are stored on github pages
-    for indexer in sickbeard.indexerApi().indexers:
-        if shouldRefresh(sickbeard.indexerApi(indexer).name):
-            logger.log(u"Checking for scene exception updates for " + sickbeard.indexerApi(indexer).name + "")
+    for indexer in sickbeard.IndexerApi().indexers:
+        if shouldRefresh(sickbeard.IndexerApi(indexer).name):
+            logger.log(u"Checking for scene exception updates for " + sickbeard.IndexerApi(indexer).name + "")
 
-            url = sickbeard.indexerApi(indexer).config['scene_url']
+            url = sickbeard.IndexerApi(indexer).config['scene_url']
 
             url_data = helpers.getURL(url)
 
@@ -180,7 +180,7 @@ def retrieve_exceptions():
                 continue
 
             else:
-                setLastRefresh(sickbeard.indexerApi(indexer).name)
+                setLastRefresh(sickbeard.IndexerApi(indexer).name)
 
                 # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
                 for cur_line in url_data.splitlines():
@@ -293,15 +293,15 @@ def _xem_exceptions_fetcher():
     global xem_exception_dict
 
     if shouldRefresh('xem'):
-        for indexer in sickbeard.indexerApi().indexers:
-            logger.log(u"Checking for XEM scene exception updates for " + sickbeard.indexerApi(indexer).name)
+        for indexer in sickbeard.IndexerApi().indexers:
+            logger.log(u"Checking for XEM scene exception updates for " + sickbeard.IndexerApi(indexer).name)
 
-            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickbeard.indexerApi(indexer).config[
+            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickbeard.IndexerApi(indexer).config[
                 'xem_origin']
 
             url_data = helpers.getURL(url, json=True)
             if url_data is None:
-                logger.log(u"Check scene exceptions update failed for " + sickbeard.indexerApi(
+                logger.log(u"Check scene exceptions update failed for " + sickbeard.IndexerApi(
                     indexer).name + ", Unable to get URL: " + url, logger.ERROR)
                 continue
 

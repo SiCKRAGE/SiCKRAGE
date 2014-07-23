@@ -2586,7 +2586,7 @@ class NewHomeAddShows(MainHandler):
 
 
     def getIndexerLanguages(self, *args, **kwargs):
-        result = sickbeard.indexerApi().config['valid_languages']
+        result = sickbeard.IndexerApi().config['valid_languages']
 
         # Make sure list is sorted alphabetically but 'en' is in front
         if 'en' in result:
@@ -2611,14 +2611,14 @@ class NewHomeAddShows(MainHandler):
         final_results = []
 
         # Query Indexers for each search term and build the list of results
-        for indexer in sickbeard.indexerApi().indexers if not int(indexer) else [int(indexer)]:
-            lINDEXER_API_PARMS = sickbeard.indexerApi(indexer).api_params.copy()
+        for indexer in sickbeard.IndexerApi().indexers if not int(indexer) else [int(indexer)]:
+            lINDEXER_API_PARMS = sickbeard.IndexerApi(indexer).api_params.copy()
             lINDEXER_API_PARMS['language'] = lang
             lINDEXER_API_PARMS['custom_ui'] = classes.AllShowsListUI
-            t = sickbeard.indexerApi(indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickbeard.IndexerApi(indexer).indexer(**lINDEXER_API_PARMS)
 
             logger.log("Searching for Show with searchterm: %s on Indexer: %s" % (
-                search_term, sickbeard.indexerApi(indexer).name), logger.DEBUG)
+                search_term, sickbeard.IndexerApi(indexer).name), logger.DEBUG)
             try:
                 # add search results
                 results.setdefault(indexer, []).extend(t[search_term])
@@ -2626,10 +2626,10 @@ class NewHomeAddShows(MainHandler):
                 continue
 
         map(final_results.extend,
-            ([[sickbeard.indexerApi(id).name, id, sickbeard.indexerApi(id).config["show_url"], int(show['id']),
+            ([[sickbeard.IndexerApi(id).name, id, sickbeard.IndexerApi(id).config["show_url"], int(show['id']),
                show['seriesname'], show['firstaired']] for show in shows] for id, shows in results.items()))
 
-        lang_id = sickbeard.indexerApi().config['langabbv_to_id'][lang]
+        lang_id = sickbeard.IndexerApi().config['langabbv_to_id'][lang]
         return json.dumps({'results': final_results, 'langid': lang_id})
 
 
@@ -2754,7 +2754,7 @@ class NewHomeAddShows(MainHandler):
         t.provided_show_dir = show_dir
         t.other_shows = other_shows
         t.provided_indexer = int(indexer or sickbeard.INDEXER_DEFAULT)
-        t.indexers = sickbeard.indexerApi().indexers
+        t.indexers = sickbeard.IndexerApi().indexers
 
         return _munge(t)
 
@@ -2792,7 +2792,7 @@ class NewHomeAddShows(MainHandler):
                            scene=None):
 
         indexer = 1
-        indexer_name = sickbeard.indexerApi(int(indexer)).name
+        indexer_name = sickbeard.IndexerApi(int(indexer)).name
         show_url = whichSeries.split('|')[1]
         indexer_id = whichSeries.split('|')[0]
         show_name = whichSeries.split('|')[2]

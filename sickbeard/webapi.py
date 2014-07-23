@@ -1582,7 +1582,7 @@ class CMD_SickBeardSearchIndexers(ApiCall):
                 return _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})
 
         elif self.indexerid:
-            lINDEXER_API_PARMS = sickbeard.indexerApi(self.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickbeard.IndexerApi(self.indexer).api_params.copy()
 
             lang_id = self.valid_languages[self.lang]
             if self.lang and not self.lang == 'en':
@@ -1590,7 +1590,7 @@ class CMD_SickBeardSearchIndexers(ApiCall):
 
             lINDEXER_API_PARMS['actors'] = False
 
-            t = sickbeard.indexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickbeard.IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
 
             try:
                 myShow = t[int(self.indexerid)]

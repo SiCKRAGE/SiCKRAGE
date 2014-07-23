@@ -230,7 +230,7 @@ class Proper:
 
     def __str__(self):
         return str(self.date) + " " + self.name + " " + str(self.season) + "x" + str(self.episode) + " of " + str(
-            self.indexerid) + " from " + str(sickbeard.indexerApi(self.indexer).name)
+            self.indexerid) + " from " + str(sickbeard.IndexerApi(self.indexer).name)
 
 
 class ErrorViewer():

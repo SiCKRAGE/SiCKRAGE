@@ -97,7 +97,7 @@ class XBMC_12PlusMetadata(generic.GenericMetadata):
         show_ID = show_obj.indexerid
 
         indexer_lang = show_obj.lang
-        lINDEXER_API_PARMS = sickbeard.indexerApi(show_obj.indexer).api_params.copy()
+        lINDEXER_API_PARMS = sickbeard.IndexerApi(show_obj.indexer).api_params.copy()
 
         lINDEXER_API_PARMS['actors'] = True
 
@@ -107,26 +107,26 @@ class XBMC_12PlusMetadata(generic.GenericMetadata):
         if show_obj.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
 
-        t = sickbeard.indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+        t = sickbeard.IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
         tv_node = etree.Element("tvshow")
 
         try:
             myShow = t[int(show_ID)]
         except sickbeard.indexer_shownotfound:
-            logger.log(u"Unable to find show with id " + str(show_ID) + " on " + sickbeard.indexerApi(
+            logger.log(u"Unable to find show with id " + str(show_ID) + " on " + sickbeard.IndexerApi(
                 show_obj.indexer).name + ", skipping it", logger.ERROR)
             raise
 
         except sickbeard.indexer_error:
             logger.log(
-                u"" + sickbeard.indexerApi(show_obj.indexer).name + " is down, can't use its data to add this show",
+                u"" + sickbeard.IndexerApi(show_obj.indexer).name + " is down, can't use its data to add this show",
                 logger.ERROR)
             raise
 
         # check for title and id
         if getattr(myShow, 'seriesname', None) is None or getattr(myShow, 'id', None) is None:
-            logger.log(u"Incomplete info for show with id " + str(show_ID) + " on " + sickbeard.indexerApi(
+            logger.log(u"Incomplete info for show with id " + str(show_ID) + " on " + sickbeard.IndexerApi(
                 show_obj.indexer).name + ", skipping it", logger.ERROR)
             return False
 
@@ -155,7 +155,7 @@ class XBMC_12PlusMetadata(generic.GenericMetadata):
         episodeguideurl = etree.SubElement(episodeguide, "url")
         episodeguideurl2 = etree.SubElement(tv_node, "episodeguideurl")
         if getattr(myShow, 'id', None) is not None:
-            showurl = sickbeard.indexerApi(show_obj.indexer).config['base_url'] + str(myShow["id"]) + '/all/en.zip'
+            showurl = sickbeard.IndexerApi(show_obj.indexer).config['base_url'] + str(myShow["id"]) + '/all/en.zip'
             episodeguideurl.text = showurl
             episodeguideurl2.text = showurl
 
@@ -221,7 +221,7 @@ class XBMC_12PlusMetadata(generic.GenericMetadata):
 
         indexer_lang = ep_obj.show.lang
 
-        lINDEXER_API_PARMS = sickbeard.indexerApi(ep_obj.show.indexer).api_params.copy()
+        lINDEXER_API_PARMS = sickbeard.IndexerApi(ep_obj.show.indexer).api_params.copy()
 
         lINDEXER_API_PARMS['actors'] = True
 
@@ -232,12 +232,12 @@ class XBMC_12PlusMetadata(generic.GenericMetadata):
             lINDEXER_API_PARMS['dvdorder'] = True
 
         try:
-            t = sickbeard.indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickbeard.IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except sickbeard.indexer_shownotfound, e:
             raise exceptions.ShowNotFoundException(e.message)
         except sickbeard.indexer_error, e:
-            logger.log(u"Unable to connect to " + sickbeard.indexerApi(
+            logger.log(u"Unable to connect to " + sickbeard.IndexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - " + ex(e), logger.ERROR)
             return
 
@@ -253,7 +253,7 @@ class XBMC_12PlusMetadata(generic.GenericMetadata):
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
                 logger.log(u"Unable to find episode " + str(curEpToWrite.season) + "x" + str(
-                    curEpToWrite.episode) + " on " + sickbeard.indexerApi(
+                    curEpToWrite.episode) + " on " + sickbeard.IndexerApi(
                     ep_obj.show.indexer).name + ".. has it been removed? Should I delete from db?")
                 return None
 
