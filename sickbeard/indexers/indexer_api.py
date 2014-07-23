@@ -21,34 +21,34 @@ import sickbeard
 from indexer_config import initConfig, indexerConfig
 
 
-class indexerApi(object):
-    def __init__(self, indexerID=None):
-        self.indexerID = int(indexerID) if indexerID else None
+class IndexerApi(object):
+    def __init__(self, indexer_id=None):
+        self.indexer_id = int(indexer_id) if indexer_id else None
 
     def __del__(self):
         pass
 
     def indexer(self, *args, **kwargs):
-        if self.indexerID:
-            return indexerConfig[self.indexerID]['module'](*args, **kwargs)
+        if self.indexer_id:
+            return indexerConfig[self.indexer_id]['module'](*args, **kwargs)
 
     @property
     def config(self):
-        if self.indexerID:
-            return indexerConfig[self.indexerID]
+        if self.indexer_id:
+            return indexerConfig[self.indexer_id]
         return initConfig
 
     @property
     def name(self):
-        if self.indexerID:
-            return indexerConfig[self.indexerID]['name']
+        if self.indexer_id:
+            return indexerConfig[self.indexer_id]['name']
 
     @property
     def api_params(self):
-        if self.indexerID:
+        if self.indexer_id:
             if sickbeard.CACHE_DIR:
-                indexerConfig[self.indexerID]['api_params']['cache'] = os.path.join(sickbeard.CACHE_DIR, self.name)
-            return indexerConfig[self.indexerID]['api_params']
+                indexerConfig[self.indexer_id]['api_params']['cache'] = os.path.join(sickbeard.CACHE_DIR, self.name)
+            return indexerConfig[self.indexer_id]['api_params']
 
     @property
     def cache(self):
