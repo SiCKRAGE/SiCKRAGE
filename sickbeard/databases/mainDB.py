@@ -189,7 +189,7 @@ class InitialSchema(db.SchemaUpgrade):
                 "last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, "
                 "rls_ignore_words TEXT, sports NUMERIC);",
 
-                "CREATE TABLE tv_episodes (episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexerid NUMERIC, "
+                "CREATE TABLE tv_episodes (episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexer_id NUMERIC, "
                 "indexer TEXT, name TEXT, season NUMERIC, episode NUMERIC, description TEXT, airdate NUMERIC, "
                 "hasnfo NUMERIC, hastbn NUMERIC, status NUMERIC, location TEXT, file_size NUMERIC, release_name TEXT, "
                 "subtitles TEXT, subtitles_searchcount NUMERIC, subtitles_lastsearch TIMESTAMP, is_proper NUMERIC, "
@@ -671,12 +671,12 @@ class ConvertTVEpisodesToIndexerScheme(ConvertTVShowsToIndexerScheme):
 
         self.connection.action("ALTER TABLE tv_episodes RENAME TO tmp_tv_episodes")
         self.connection.action(
-            "CREATE TABLE tv_episodes (episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexerid NUMERIC, "
+            "CREATE TABLE tv_episodes (episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexer_id NUMERIC, "
             "indexer NUMERIC, name TEXT, season NUMERIC, episode NUMERIC, description TEXT, airdate NUMERIC, "
             "hasnfo NUMERIC, hastbn NUMERIC, status NUMERIC, location TEXT, file_size NUMERIC, release_name TEXT, "
             "subtitles TEXT, subtitles_searchcount NUMERIC, subtitles_lastsearch TIMESTAMP, is_proper NUMERIC)")
         self.connection.action(
-            "INSERT INTO tv_episodes(episode_id, showid, indexerid, name, season, episode, description, airdate, "
+            "INSERT INTO tv_episodes(episode_id, showid, indexer_id, name, season, episode, description, airdate, "
             "hasnfo, hastbn, status, location, file_size, release_name, subtitles, subtitles_searchcount, "
             "subtitles_lastsearch, is_proper) SELECT episode_id, showid, tvdbid, name, season, episode, description, "
             "airdate, hasnfo, hastbn, status, location, file_size, release_name, subtitles, subtitles_searchcount, "

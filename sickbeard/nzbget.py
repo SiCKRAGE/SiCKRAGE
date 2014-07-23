@@ -76,9 +76,9 @@ def sendNZB(nzb, proper=False):
     for curEp in nzb.episodes:
         if dupekey == "":
             if curEp.show.indexer == 1:
-                dupekey = "SickRage-" + str(curEp.show.indexerid)
+                dupekey = "SickRage-" + str(curEp.show.indexer_id)
             elif curEp.show.indexer == 2:
-                dupekey = "SickRage-tvr" + str(curEp.show.indexerid)
+                dupekey = "SickRage-tvr" + str(curEp.show.indexer_id)
         dupekey += "-" + str(curEp.season) + "." + str(curEp.episode)
         if datetime.date.today() - curEp.airdate <= datetime.timedelta(days=7):
             addToTop = True

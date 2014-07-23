@@ -364,7 +364,7 @@ def already_postprocessed(dirName, videofile, force):
             return True
 
         #Needed if we have downloaded the same episode @ different quality
-        search_sql = "SELECT tv_episodes.indexerid, history.resource FROM tv_episodes INNER JOIN history ON history.showid=tv_episodes.showid"
+        search_sql = "SELECT tv_episodes.indexer_id, history.resource FROM tv_episodes INNER JOIN history ON history.showid=tv_episodes.showid"
         search_sql += " WHERE history.season=tv_episodes.season and history.episode=tv_episodes.episode"
         search_sql += " and tv_episodes.status IN (" + ",".join([str(x) for x in common.Quality.DOWNLOADED]) + ")"
         search_sql += " and history.resource LIKE ?"

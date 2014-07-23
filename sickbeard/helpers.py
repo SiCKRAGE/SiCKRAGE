@@ -283,13 +283,13 @@ def download_file(url, filename):
     return True
 
 
-def findCertainShow(showList, indexerid):
+def findCertainShow(showList, indexer_id):
     if not showList:
         return None
 
     results = []
-    if indexerid:
-        results = filter(lambda x: int(x.indexerid) == int(indexerid), showList)
+    if indexer_id:
+        results = filter(lambda x: int(x.indexer_id) == int(indexer_id), showList)
 
     if len(results) == 0:
         return None
@@ -702,7 +702,7 @@ def update_anime_support():
 def get_absolute_number_from_season_and_episode(show, season, episode):
     myDB = db.DBConnection()
     sql = "SELECT * FROM tv_episodes WHERE showid = ? and season = ? and episode = ?"
-    sqlResults = myDB.select(sql, [show.indexerid, season, episode])
+    sqlResults = myDB.select(sql, [show.indexer_id, season, episode])
 
     if len(sqlResults) == 1:
         absolute_number = int(sqlResults[0]["absolute_number"])
@@ -1076,7 +1076,7 @@ def _check_against_names(nameInQuestion, show, season=-1):
     if season in [-1, 1]:
         showNames = [show.name]
 
-    showNames.extend(sickbeard.scene_exceptions.get_scene_exceptions(show.indexerid, season=season))
+    showNames.extend(sickbeard.scene_exceptions.get_scene_exceptions(show.indexer_id, season=season))
 
     for showName in showNames:
         nameFromList = full_sanitizeSceneName(showName)
@@ -1100,7 +1100,7 @@ def get_show(name, indexer_id=0, useIndexer=False):
 
         # add show to cache
         if showObj:
-            sickbeard.name_cache.addNameToCache(name, showObj.indexerid)
+            sickbeard.name_cache.addNameToCache(name, showObj.indexer_id)
 
         return showObj
     except:
@@ -1140,7 +1140,7 @@ def validateShow(show, season=None, episode=None):
         if season is None and episode is None:
             return t
 
-        return t[show.indexerid][season][episode]
+        return t[show.indexer_id][season][episode]
     except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
         pass
 
@@ -1229,7 +1229,7 @@ def mapIndexersToShow(showObj):
                               sickbeard.TRAKT_API_KEY)
 
     if results:
-        result = filter(lambda x: int(showObj.indexerid) in [int(x['tvdb_id']), int(x['tvrage_id'])], results)
+        result = filter(lambda x: int(showObj.indexer_id) in [int(x['tvdb_id']), int(x['tvrage_id'])], results)
         if len(result):
             mapped['tvdb_id'] = int(result[0]['tvdb_id'])
             mapped['tvrage_id'] = int(result[0]['tvrage_id'])

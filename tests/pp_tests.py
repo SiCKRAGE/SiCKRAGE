@@ -53,7 +53,7 @@ class PPPrivateTests(test.SickbeardTestDBCase):
         self.show_obj = TVShow(1,0002)
 
         self.db = test.db.DBConnection()
-        newValueDict = {"indexerid": 1002,
+        newValueDict = {"indexer_id": 1002,
                         "name": test.SHOWNAME,
                         "description": "description",
                         "airdate": 1234,

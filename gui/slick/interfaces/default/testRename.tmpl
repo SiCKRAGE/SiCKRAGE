@@ -2,7 +2,7 @@
 #from sickbeard import common
 #from sickbeard import exceptions
 #set global $title="Test Rename"
-#set global $header = '<a style="color: #343434;" href="' + $sbRoot + '/home/displayShow?show=%d">%s</a>' % ($show.indexerid, $show.name)
+#set global $header = '<a style="color: #343434;" href="' + $sbRoot + '/home/displayShow?show=%d">%s</a>' % ($show.indexer_id, $show.name)
 #set global $sbPath=".."
 
 #set global $topmenu="home"#
@@ -15,7 +15,7 @@
 	<h1 class="title">$title</h1>
 #end if
 
-<input type="hidden" id="showID" value="$show.indexerid" />
+<input type="hidden" id="showID" value="$show.indexer_id" />
 
 <script type="text/javascript" src="$sbRoot/js/testRename.js"></script>
 

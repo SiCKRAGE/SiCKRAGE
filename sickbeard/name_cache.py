@@ -115,25 +115,25 @@ def buildNameCache(show=None):
                 nameCache[name] = indexer_id
 
             for show in sickbeard.showList:
-                for curSeason in [-1] + sickbeard.scene_exceptions.get_scene_seasons(show.indexerid):
+                for curSeason in [-1] + sickbeard.scene_exceptions.get_scene_seasons(show.indexer_id):
                     for name in list(set(
-                                    sickbeard.scene_exceptions.get_scene_exceptions(show.indexerid, season=curSeason) + [
+                                    sickbeard.scene_exceptions.get_scene_exceptions(show.indexer_id, season=curSeason) + [
                                 show.name])):
                         name = sickbeard.helpers.full_sanitizeSceneName(name)
                         if name in nameCache:
                             continue
 
-                        nameCache[name] = int(show.indexerid)
+                        nameCache[name] = int(show.indexer_id)
         else:
             logger.log(u"Building internal name cache for " + show.name, logger.MESSAGE)
 
-            for curSeason in [-1] + sickbeard.scene_exceptions.get_scene_seasons(show.indexerid):
-                for name in list(set(sickbeard.scene_exceptions.get_scene_exceptions(show.indexerid, season=curSeason) + [
+            for curSeason in [-1] + sickbeard.scene_exceptions.get_scene_seasons(show.indexer_id):
+                for name in list(set(sickbeard.scene_exceptions.get_scene_exceptions(show.indexer_id, season=curSeason) + [
                     show.name])):
                     name = sickbeard.helpers.full_sanitizeSceneName(name)
                     if name in nameCache:
                         continue
 
-                    nameCache[name] = int(show.indexerid)
+                    nameCache[name] = int(show.indexer_id)
 
         logger.log(u"Internal name cache set to: " + str(nameCache), logger.DEBUG)

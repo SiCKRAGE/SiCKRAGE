@@ -66,10 +66,10 @@ class GenericProvider:
             'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36'})
 
     def getID(self):
-        return GenericProvider.makeID(self.name)
+        return GenericProvider.make_id(self.name)
 
     @staticmethod
-    def makeID(name):
+    def make_id(name):
         return re.sub("[^\w\d_]", "_", name.strip().lower())
 
     def imageName(self):
@@ -336,7 +336,7 @@ class GenericProvider:
                     myDB = db.DBConnection()
                     sql_results = myDB.select(
                         "SELECT season, episode FROM tv_episodes WHERE showid = ? AND airdate = ?",
-                        [showObj.indexerid, airdate])
+                        [showObj.indexer_id, airdate])
 
                     if len(sql_results) != 1:
                         logger.log(

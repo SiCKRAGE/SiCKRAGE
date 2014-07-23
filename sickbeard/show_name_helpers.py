@@ -148,12 +148,12 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
         myDB = db.DBConnection()
         numseasonsSQlResult = myDB.select(
             "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and season != 0",
-            [show.indexerid])
+            [show.indexer_id])
 
         numseasons = int(numseasonsSQlResult[0][0])
         seasonStrings = ["S%02d" % int(ep_obj.scene_season)]
 
-    bwl = BlackAndWhiteList(show.indexerid)
+    bwl = BlackAndWhiteList(show.indexer_id)
     showNames = set(makeSceneShowSearchStrings(show, ep_obj.scene_season))
 
     toReturn = []
@@ -182,7 +182,7 @@ def makeSceneSearchString(show, ep_obj):
     myDB = db.DBConnection()
     numseasonsSQlResult = myDB.select(
         "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and season != 0",
-        [show.indexerid])
+        [show.indexer_id])
     numseasons = int(numseasonsSQlResult[0][0])
 
     # see if we should use dates instead of episodes
@@ -199,7 +199,7 @@ def makeSceneSearchString(show, ep_obj):
     if numseasons == 1 and not ep_obj.show.is_anime:
         epStrings = ['']
 
-    bwl = BlackAndWhiteList(ep_obj.show.indexerid)
+    bwl = BlackAndWhiteList(ep_obj.show.indexer_id)
     showNames = set(makeSceneShowSearchStrings(show, ep_obj.scene_season))
 
     toReturn = []
@@ -259,10 +259,10 @@ def allPossibleShowNames(show, season=-1):
     Returns: a list of all the possible show names
     """
 
-    showNames = get_scene_exceptions(show.indexerid, season=season)
+    showNames = get_scene_exceptions(show.indexer_id, season=season)
     if not showNames:  # if we dont have any season specific exceptions fallback to generic exceptions
         season = -1
-        showNames = get_scene_exceptions(show.indexerid, season=season)
+        showNames = get_scene_exceptions(show.indexer_id, season=season)
 
     if season in [-1, 1]:
         showNames.append(show.name)

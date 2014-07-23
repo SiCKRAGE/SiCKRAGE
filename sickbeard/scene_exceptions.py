@@ -125,7 +125,7 @@ def get_scene_exception_by_name(show_name):
 
 def get_scene_exception_by_name_multiple(show_name):
     """
-    Given a show name, return the indexerid of the exception, None if no exception
+    Given a show name, return the indexer_id of the exception, None if no exception
     is present.
     """
 
@@ -278,12 +278,12 @@ def _anidb_exceptions_fetcher():
         for show in sickbeard.showList:
             if show.is_anime and show.indexer == 1:
                 try:
-                    anime = adba.Anime(None, name=show.name, tvdbid=show.indexerid, autoCorrectName=True)
+                    anime = adba.Anime(None, name=show.name, tvdbid=show.indexer_id, autoCorrectName=True)
                 except:
                     continue
                 else:
                     if anime.name and anime.name != show.name:
-                        anidb_exception_dict[show.indexerid] = [{anime.name: -1}]
+                        anidb_exception_dict[show.indexer_id] = [{anime.name: -1}]
 
         setLastRefresh('anidb')
     return anidb_exception_dict
@@ -308,8 +308,8 @@ def _xem_exceptions_fetcher():
             if url_data['result'] == 'failure':
                 continue
 
-            for indexerid, names in url_data['data'].items():
-                xem_exception_dict[int(indexerid)] = names
+            for indexer_id, names in url_data['data'].items():
+                xem_exception_dict[int(indexer_id)] = names
 
         setLastRefresh('xem')
 

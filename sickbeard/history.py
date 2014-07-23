@@ -40,7 +40,7 @@ def _logHistoryItem(action, showid, season, episode, quality, resource, provider
 def logSnatch(searchResult):
     for curEpObj in searchResult.episodes:
 
-        showid = int(curEpObj.show.indexerid)
+        showid = int(curEpObj.show.indexer_id)
         season = int(curEpObj.season)
         episode = int(curEpObj.episode)
         quality = searchResult.quality
@@ -59,7 +59,7 @@ def logSnatch(searchResult):
 
 
 def logDownload(episode, filename, new_ep_quality, release_group=None):
-    showid = int(episode.show.indexerid)
+    showid = int(episode.show.indexer_id)
     season = int(episode.season)
     epNum = int(episode.episode)
 
@@ -86,7 +86,7 @@ def logSubtitle(showid, season, episode, status, subtitleResult):
 
 
 def logFailed(epObj, release, provider=None):
-    showid = int(epObj.show.indexerid)
+    showid = int(epObj.show.indexer_id)
     season = int(epObj.season)
     epNum = int(epObj.episode)
     status, quality = Quality.splitCompositeStatus(epObj.status)

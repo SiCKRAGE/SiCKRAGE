@@ -201,7 +201,7 @@ class ShowListUI:
 
     def selectSeries(self, allSeries):
         if sickbeard.showList:
-            idList = [x.indexerid for x in sickbeard.showList]
+            idList = [x.indexer_id for x in sickbeard.showList]
 
             # try to pick a show that's in my show list
             for curShow in allSeries:
@@ -222,7 +222,7 @@ class Proper:
 
         self.show = show
         self.indexer = None
-        self.indexerid = -1
+        self.indexer_id = -1
         self.season = -1
         self.episode = -1
         self.scene_season = -1
@@ -230,7 +230,7 @@ class Proper:
 
     def __str__(self):
         return str(self.date) + " " + self.name + " " + str(self.season) + "x" + str(self.episode) + " of " + str(
-            self.indexerid) + " from " + str(sickbeard.IndexerApi(self.indexer).name)
+            self.indexer_id) + " from " + str(sickbeard.IndexerApi(self.indexer).name)
 
 
 class ErrorViewer():

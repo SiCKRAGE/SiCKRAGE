@@ -213,16 +213,16 @@ class ImageCache:
         # generate the path based on the type & indexer_id
         if img_type == self.POSTER:
             img_type_name = 'poster'
-            dest_path = self.poster_path(show_obj.indexerid)
+            dest_path = self.poster_path(show_obj.indexer_id)
         elif img_type == self.BANNER:
             img_type_name = 'banner'
-            dest_path = self.banner_path(show_obj.indexerid)
+            dest_path = self.banner_path(show_obj.indexer_id)
         elif img_type == self.POSTER_THUMB:
             img_type_name = 'poster_thumb'
-            dest_path = self.poster_thumb_path(show_obj.indexerid)
+            dest_path = self.poster_thumb_path(show_obj.indexer_id)
         elif img_type == self.BANNER_THUMB:
             img_type_name = 'banner_thumb'
-            dest_path = self.banner_thumb_path(show_obj.indexerid)
+            dest_path = self.banner_thumb_path(show_obj.indexer_id)
         else:
             logger.log(u"Invalid cache image type: " + str(img_type), logger.ERROR)
             return False
@@ -243,13 +243,13 @@ class ImageCache:
         show_obj: TVShow object to cache images for
         """
 
-        logger.log(u"Checking if we need any cache images for show " + str(show_obj.indexerid), logger.DEBUG)
+        logger.log(u"Checking if we need any cache images for show " + str(show_obj.indexer_id), logger.DEBUG)
 
         # check if the images are already cached or not
-        need_images = {self.POSTER: not self.has_poster(show_obj.indexerid),
-                       self.BANNER: not self.has_banner(show_obj.indexerid),
-                       self.POSTER_THUMB: not self.has_poster_thumbnail(show_obj.indexerid),
-                       self.BANNER_THUMB: not self.has_banner_thumbnail(show_obj.indexerid)}
+        need_images = {self.POSTER: not self.has_poster(show_obj.indexer_id),
+                       self.BANNER: not self.has_banner(show_obj.indexer_id),
+                       self.POSTER_THUMB: not self.has_poster_thumbnail(show_obj.indexer_id),
+                       self.BANNER_THUMB: not self.has_banner_thumbnail(show_obj.indexer_id)}
 
         if not need_images[self.POSTER] and not need_images[self.BANNER] and not need_images[self.POSTER_THUMB] and not \
         need_images[self.BANNER_THUMB]:
@@ -278,7 +278,7 @@ class ImageCache:
                             logger.log(
                                 u"Found an image in the show dir that doesn't exist in the cache, caching it: " + cur_file_name + ", type " + str(
                                     cur_file_type), logger.DEBUG)
-                            self._cache_image_from_file(cur_file_name, cur_file_type, show_obj.indexerid)
+                            self._cache_image_from_file(cur_file_name, cur_file_type, show_obj.indexer_id)
                             need_images[cur_file_type] = False
             except exceptions.ShowDirNotFoundException:
                 logger.log(u"Unable to search for images in show dir because it doesn't exist", logger.WARNING)

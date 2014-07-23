@@ -140,11 +140,11 @@ class BacklogSearcher:
         if show.air_by_date:
             sqlResults = myDB.select(
                 "SELECT ep.status, ep.season, ep.episode FROM tv_episodes ep, tv_shows show WHERE season != 0 AND ep.showid = show.indexer_id AND show.paused = 0 ANd ep.airdate > ? AND ep.showid = ? AND show.air_by_date = 1",
-                [fromDate.toordinal(), show.indexerid])
+                [fromDate.toordinal(), show.indexer_id])
         else:
             sqlResults = myDB.select(
                 "SELECT status, season, episode FROM tv_episodes WHERE showid = ? AND season > 0 and airdate > ?",
-                [show.indexerid, fromDate.toordinal()])
+                [show.indexer_id, fromDate.toordinal()])
 
         # check through the list of statuses to see if we want any
         wanted = {}

@@ -243,9 +243,9 @@ class MediaBrowserMetadata(generic.GenericMetadata):
         tv_node = etree.Element("Series")
 
         try:
-            myShow = t[int(show_obj.indexerid)]
+            myShow = t[int(show_obj.indexer_id)]
         except sickbeard.indexer_shownotfound:
-            logger.log(u"Unable to find show with id " + str(show_obj.indexerid) + " on " + sickbeard.IndexerApi(
+            logger.log(u"Unable to find show with id " + str(show_obj.indexer_id) + " on " + sickbeard.IndexerApi(
                 show_obj.indexer).name + ", skipping it", logger.ERROR)
             raise
 
@@ -257,16 +257,16 @@ class MediaBrowserMetadata(generic.GenericMetadata):
 
         # check for title and id
         if getattr(myShow, 'seriesname', None) is None or getattr(myShow, 'id', None) is None:
-            logger.log(u"Incomplete info for show with id " + str(show_obj.indexerid) + " on " + sickbeard.IndexerApi(
+            logger.log(u"Incomplete info for show with id " + str(show_obj.indexer_id) + " on " + sickbeard.IndexerApi(
                 show_obj.indexer).name + ", skipping it", logger.ERROR)
             return False
 
-        indexerid = etree.SubElement(tv_node, "id")
+        indexer_id = etree.SubElement(tv_node, "id")
         if getattr(myShow, 'id', None) is not None:
-            indexerid.text = str(myShow['id'])
+            indexer_id.text = str(myShow['id'])
 
         indexer = etree.SubElement(tv_node, "indexer")
-        if show_obj.indexer != None:
+        if show_obj.indexer is not None:
             indexer.text = str(show_obj.indexer)
 
         SeriesName = etree.SubElement(tv_node, "SeriesName")
@@ -368,7 +368,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 cur_actor_type.text = "Actor"
                 cur_actor_role = etree.SubElement(cur_actor, "Role")
                 cur_actor_role_text = actor['role']
-                if cur_actor_role_text != None:
+                if cur_actor_role_text is not None:
                     cur_actor_role.text = cur_actor_role_text
 
         helpers.indentXML(tv_node)
@@ -407,7 +407,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
 
             t = sickbeard.IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
 
-            myShow = t[ep_obj.show.indexerid]
+            myShow = t[ep_obj.show.indexer_id]
         except sickbeard.indexer_shownotfound, e:
             raise exceptions.ShowNotFoundException(e.message)
         except sickbeard.indexer_error, e:
@@ -425,7 +425,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
             except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
                 logger.log(u"Unable to find episode " + str(curEpToWrite.season) + "x" + str(
                     curEpToWrite.episode) + " on " + sickbeard.IndexerApi(
-                    ep_obj.show.indexer).name + ".. has it been removed? Should I delete from db?")
+                        ep_obj.show.indexer).name + ".. has it been removed? Should I delete from db?")
                 return None
 
             if curEpToWrite == ep_obj:
@@ -441,7 +441,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 episode = rootNode
 
                 EpisodeName = etree.SubElement(episode, "EpisodeName")
-                if curEpToWrite.name != None:
+                if curEpToWrite.name is not None:
                     EpisodeName.text = curEpToWrite.name
                 else:
                     EpisodeName.text = ""
@@ -471,7 +471,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 MetadataType.text = "Episode"
 
                 Overview = etree.SubElement(episode, "Overview")
-                if curEpToWrite.description != None:
+                if curEpToWrite.description is not None:
                     Overview.text = curEpToWrite.description
                 else:
                     Overview.text = ""
@@ -489,8 +489,8 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                         IMDB.text = myShow['imdb_id']
                         IMDbId.text = myShow['imdb_id']
 
-                indexerid = etree.SubElement(episode, "id")
-                indexerid.text = str(curEpToWrite.indexerid)
+                indexer_id = etree.SubElement(episode, "id")
+                indexer_id.text = str(curEpToWrite.indexer_id)
 
                 indexer = etree.SubElement(episode, "indexer")
                 indexer.text = str(curEpToWrite.show.indexer)

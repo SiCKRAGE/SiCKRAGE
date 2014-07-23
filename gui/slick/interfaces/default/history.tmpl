@@ -125,7 +125,7 @@
       #else
         #if $hItem["provider"] > 0
           #if $curStatus in [SNATCHED, FAILED]:
-            #set $provider = $providers.getProviderClass($generic.GenericProvider.makeID($hItem["provider"]))
+            #set $provider = $providers.getProviderClass($generic.GenericProvider.make_id($hItem["provider"]))
             #if $provider != None: 
               <img src="$sbRoot/images/providers/<%=provider.imageName()%>" width="16" height="16" alt="$provider.name" title="$provider.name"/>
             #else:
@@ -166,7 +166,7 @@
       #for $action in sorted($hItem["actions"]):
         #set $curStatus, $curQuality = $Quality.splitCompositeStatus(int($action["action"]))
           #if $curStatus in [SNATCHED, FAILED]:
-          #set $provider = $providers.getProviderClass($generic.GenericProvider.makeID($action["provider"]))
+          #set $provider = $providers.getProviderClass($generic.GenericProvider.make_id($action["provider"]))
             #if $provider != None: 
               <img src="$sbRoot/images/providers/<%=provider.imageName()%>" width="16" height="16" alt="$provider.name" style="cursor: help;" title="$provider.name: $os.path.basename($action["resource"])"/>
             #else:

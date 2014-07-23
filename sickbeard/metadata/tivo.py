@@ -83,7 +83,7 @@ class TIVOMetadata(generic.GenericMetadata):
         self.eg_season_all_banner = "<i>not supported</i>"
 
     # Override with empty methods for unsupported features
-    def retrieveShowMetadata(self, folder):
+    def retrieve_show_metadata(self, folder):
         # no show metadata generated, we abort this lookup function
         return (None, None, None)
 
@@ -180,7 +180,7 @@ class TIVOMetadata(generic.GenericMetadata):
                 lINDEXER_API_PARMS['dvdorder'] = True
 
             t = sickbeard.IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
-            myShow = t[ep_obj.show.indexerid]
+            myShow = t[ep_obj.show.indexer_id]
         except sickbeard.indexer_shownotfound, e:
             raise exceptions.ShowNotFoundException(str(e))
         except sickbeard.indexer_error, e:
@@ -193,9 +193,9 @@ class TIVOMetadata(generic.GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
-                logger.log(u"Unable to find episode " + str(curEpToWrite.season) + "x" + str(
-                    curEpToWrite.episode) + " on " + sickbeard.IndexerApi(
-                    ep_obj.show.indexer).name + "... has it been removed? Should I delete from db?")
+                logger.log(u"Unable to find episode " + str(curEpToWrite.season) + "x" + str(curEpToWrite.episode) +
+                           " on " + sickbeard.IndexerApi(ep_obj.show.indexer).name +
+                           "... has it been removed? Should I delete from db?")
                 return None
 
             if getattr(myEp, 'firstaired', None) is None and ep_obj.season == 0:
@@ -249,7 +249,8 @@ class TIVOMetadata(generic.GenericMetadata):
 
             # This must be entered as yyyy-mm-ddThh:mm:ssZ (the t is capitalized and never changes, the Z is also
             # capitalized and never changes). This is the original air date of the episode.
-            # NOTE: Hard coded the time to T00:00:00Z as we really don't know when during the day the first run happened.
+            # NOTE: Hard coded the time to T00:00:00Z as we really don't know when during the day
+            # the first run happened.
             if curEpToWrite.airdate != datetime.date.fromordinal(1):
                 data += ("originalAirDate : " + str(curEpToWrite.airdate) + "T00:00:00Z\n")
 

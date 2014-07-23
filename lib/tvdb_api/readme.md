@@ -24,7 +24,7 @@ The [`tvnamer`][tvnamer] command-line tool can also be installed via `easy_insta
 ## Basic usage
 
     import tvdb_api
-    t = indexerApi()
+    t = IndexerApi()
     episode = t['My Name Is Earl'][1][3] # get season 1, episode 3 of show
     print episode['episodename'] # Print episode name
 
@@ -50,7 +50,7 @@ There are several exceptions you may catch, these can be imported from `tvdb_api
 All data exposed by [thetvdb.com][tvdb] is accessible via the `Show` class. A Show is retrieved by doing..
 
     >>> import tvdb_api
-    >>> t = indexerApi()
+    >>> t = IndexerApi()
     >>> show = t['scrubs']
     >>> type(show)
     <class 'tvdb_api.Show'>

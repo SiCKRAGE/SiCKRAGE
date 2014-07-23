@@ -438,7 +438,7 @@ class MainHandler(RequestHandler):
         for show in calendar_shows:
             # Get all episodes of this show airing between today and next month
             episode_list = myDB.select(
-                "SELECT indexerid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?",
+                "SELECT indexer_id, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?",
                 (past_date, future_date, int(show["indexer_id"])))
 
             utc = tz.gettz('GMT')
@@ -902,7 +902,7 @@ class Manage(MainHandler):
 
             sqlResults = myDB.select(
                 "SELECT * FROM tv_episodes WHERE showid = ? ORDER BY season DESC, episode DESC",
-                [curShow.indexerid])
+                [curShow.indexer_id])
 
             for curResult in sqlResults:
                 curEpCat = curShow.getOverview(int(curResult["status"]))
@@ -910,9 +910,9 @@ class Manage(MainHandler):
                     epCats[str(curResult["season"]) + "x" + str(curResult["episode"])] = curEpCat
                     epCounts[curEpCat] += 1
 
-            showCounts[curShow.indexerid] = epCounts
-            showCats[curShow.indexerid] = epCats
-            showSQLResults[curShow.indexerid] = sqlResults
+            showCounts[curShow.indexer_id] = epCounts
+            showCats[curShow.indexer_id] = epCats
+            showSQLResults[curShow.indexer_id] = sqlResults
 
         t.showCounts = showCounts
         t.showCats = showCats
@@ -2691,7 +2691,7 @@ class NewHomeAddShows(MainHandler):
 
                 indexer_id = show_name = indexer = None
                 for cur_provider in sickbeard.metadata_provider_dict.values():
-                    (indexer_id, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
+                    (indexer_id, show_name, indexer) = cur_provider.retrieve_show_metadata(cur_path)
                     if show_name: break
 
                 # default to TVDB if indexer was not detected
@@ -2782,7 +2782,7 @@ class NewHomeAddShows(MainHandler):
         map(final_results.append,
             ([int(show['tvdb_id']), show['url'], show['title'], show['overview'],
               datetime.date.fromtimestamp(int(show['first_aired']) / 1000.0).strftime('%Y%m%d')] for show in
-             recommendedlist if not helpers.findCertainShow(sickbeard.showList, indexerid=int(show['tvdb_id']))))
+             recommendedlist if not helpers.findCertainShow(sickbeard.showList, indexer_id=int(show['tvdb_id']))))
 
         return json.dumps({'results': final_results})
 
@@ -3169,7 +3169,7 @@ class Home(MainHandler):
 
         connection, accesMsg = sab.getSabAccesMethod(host, username, password, apikey)
         if connection:
-            authed, authMsg = sab.testAuthentication(host, username, password, apikey)  # @UnusedVariable
+            authed, authMsg = sab.test_authentication(host, username, password, apikey)  # @UnusedVariable
             if authed:
                 return "Success. Connected and authenticated"
             else:
@@ -3183,9 +3183,9 @@ class Home(MainHandler):
 
         host = config.clean_url(host)
 
-        client = clients.getClientIstance(torrent_method)
+        client = clients.get_client_instance(torrent_method)
 
-        connection, accesMsg = client(host, username, password).testAuthentication()
+        connection, accesMsg = client(host, username, password).test_authentication()
 
         return accesMsg
 
@@ -3490,16 +3490,16 @@ class Home(MainHandler):
         myDB = db.DBConnection()
         seasonResults = myDB.select(
             "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season desc",
-            [showObj.indexerid]
+            [showObj.indexer_id]
         )
 
         sqlResults = myDB.select(
             "SELECT * FROM tv_episodes WHERE showid = ? ORDER BY season DESC, episode DESC",
-            [showObj.indexerid]
+            [showObj.indexer_id]
         )
 
         t = PageTemplate(headers=self.request.headers, file="displayShow.tmpl")
-        t.submenu = [{'title': 'Edit', 'path': 'home/editShow?show=%d' % showObj.indexerid}]
+        t.submenu = [{'title': 'Edit', 'path': 'home/editShow?show=%d' % showObj.indexer_id}]
 
         try:
             t.showLoc = (showObj.location, True)
@@ -3532,18 +3532,18 @@ class Home(MainHandler):
         if not sickbeard.showQueueScheduler.action.isBeingAdded(showObj):  # @UndefinedVariable
             if not sickbeard.showQueueScheduler.action.isBeingUpdated(showObj):  # @UndefinedVariable
                 t.submenu.append(
-                    {'title': 'Delete', 'path': 'home/deleteShow?show=%d' % showObj.indexerid, 'confirm': True})
-                t.submenu.append({'title': 'Re-scan files', 'path': 'home/refreshShow?show=%d' % showObj.indexerid})
+                    {'title': 'Delete', 'path': 'home/deleteShow?show=%d' % showObj.indexer_id, 'confirm': True})
+                t.submenu.append({'title': 'Re-scan files', 'path': 'home/refreshShow?show=%d' % showObj.indexer_id})
                 t.submenu.append(
-                    {'title': 'Force Full Update', 'path': 'home/updateShow?show=%d&amp;force=1' % showObj.indexerid})
+                    {'title': 'Force Full Update', 'path': 'home/updateShow?show=%d&amp;force=1' % showObj.indexer_id})
                 t.submenu.append({'title': 'Update show in XBMC',
                                   'path': 'home/updateXBMC?showName=%s' % urllib.quote_plus(
                                       showObj.name.encode('utf-8')), 'requires': haveXBMC})
-                t.submenu.append({'title': 'Preview Rename', 'path': 'home/testRename?show=%d' % showObj.indexerid})
+                t.submenu.append({'title': 'Preview Rename', 'path': 'home/testRename?show=%d' % showObj.indexer_id})
                 if sickbeard.USE_SUBTITLES and not sickbeard.showQueueScheduler.action.isBeingSubtitled(
                         showObj) and showObj.subtitles:
                     t.submenu.append(
-                        {'title': 'Download Subtitles', 'path': 'home/subtitleShow?show=%d' % showObj.indexerid})
+                        {'title': 'Download Subtitles', 'path': 'home/subtitleShow?show=%d' % showObj.indexer_id})
 
         t.show = showObj
         t.sqlResults = sqlResults
@@ -3592,20 +3592,20 @@ class Home(MainHandler):
 
         t.bwl = None
         if showObj.is_anime:
-            t.bwl = BlackAndWhiteList(showObj.indexerid)
+            t.bwl = BlackAndWhiteList(showObj.indexer_id)
 
         t.epCounts = epCounts
         t.epCats = epCats
 
-        showObj.exceptions = scene_exceptions.get_scene_exceptions(showObj.indexerid)
+        showObj.exceptions = scene_exceptions.get_scene_exceptions(showObj.indexer_id)
 
-        indexerid = int(showObj.indexerid)
+        indexer_id = int(showObj.indexer_id)
         indexer = int(showObj.indexer)
         t.all_scene_exceptions = showObj.exceptions
-        t.scene_numbering = get_scene_numbering_for_show(indexerid, indexer)
-        t.xem_numbering = get_xem_numbering_for_show(indexerid, indexer)
-        t.scene_absolute_numbering = get_scene_absolute_numbering_for_show(indexerid, indexer)
-        t.xem_absolute_numbering = get_xem_absolute_numbering_for_show(indexerid, indexer)
+        t.scene_numbering = get_scene_numbering_for_show(indexer_id, indexer)
+        t.xem_numbering = get_xem_numbering_for_show(indexer_id, indexer)
+        t.scene_absolute_numbering = get_scene_absolute_numbering_for_show(indexer_id, indexer)
+        t.xem_absolute_numbering = get_xem_absolute_numbering_for_show(indexer_id, indexer)
 
         return _munge(t)
 
@@ -3658,7 +3658,7 @@ class Home(MainHandler):
             t.submenu = HomeMenu()
 
             if showObj.is_anime:
-                bwl = BlackAndWhiteList(showObj.indexerid)
+                bwl = BlackAndWhiteList(showObj.indexer_id)
 
                 t.whiteWords = ""
                 if "global" in bwl.whiteDict:
@@ -3684,7 +3684,7 @@ class Home(MainHandler):
             with showObj.lock:
                 t.show = showObj
 
-            t.scene_exceptions = get_scene_exceptions(showObj.indexerid)
+            t.scene_exceptions = get_scene_exceptions(showObj.indexer_id)
 
             return _munge(t)
 
@@ -3739,7 +3739,7 @@ class Home(MainHandler):
         # If directCall from mass_edit_update no scene exceptions handling
         if not directCall:
             if showObj.is_anime:
-                bwl = BlackAndWhiteList(showObj.indexerid)
+                bwl = BlackAndWhiteList(showObj.indexer_id)
                 if whitelist:
                     whitelist = whitelist.split(",")
                     shortWhiteList = []
@@ -3869,15 +3869,15 @@ class Home(MainHandler):
 
         if do_update_exceptions:
             try:
-                scene_exceptions.update_scene_exceptions(showObj.indexerid, exceptions_list)  # @UndefinedVariable
-                showObj.exceptions = scene_exceptions.get_scene_exceptions(showObj.indexerid)
+                scene_exceptions.update_scene_exceptions(showObj.indexer_id, exceptions_list)  # @UndefinedVariable
+                showObj.exceptions = scene_exceptions.get_scene_exceptions(showObj.indexer_id)
                 time.sleep(cpu_presets[sickbeard.CPU_PRESET])
             except exceptions.CantUpdateException, e:
                 errors.append("Unable to force an update on scene exceptions of the show.")
 
         if do_update_scene_numbering or do_update_scene_absolute_numbering:
             try:
-                sickbeard.scene_numbering.xem_refresh(showObj.indexerid, showObj.indexer)  # @UndefinedVariable
+                sickbeard.scene_numbering.xem_refresh(showObj.indexer_id, showObj.indexer)  # @UndefinedVariable
                 time.sleep(cpu_presets[sickbeard.CPU_PRESET])
             except exceptions.CantUpdateException, e:
                 errors.append("Unable to force an update on scene numbering of the show.")
@@ -3935,7 +3935,7 @@ class Home(MainHandler):
 
         time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
-        redirect("/home/displayShow?show=" + str(showObj.indexerid))
+        redirect("/home/displayShow?show=" + str(showObj.indexer_id))
 
 
     def updateShow(self, show=None, force=0):
@@ -3958,7 +3958,7 @@ class Home(MainHandler):
         # just give it some time
         time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
-        redirect("/home/displayShow?show=" + str(showObj.indexerid))
+        redirect("/home/displayShow?show=" + str(showObj.indexer_id))
 
 
     def subtitleShow(self, show=None, force=0):
@@ -3976,7 +3976,7 @@ class Home(MainHandler):
 
         time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
-        redirect("/home/displayShow?show=" + str(showObj.indexerid))
+        redirect("/home/displayShow?show=" + str(showObj.indexer_id))
 
 
     def updateXBMC(self, showName=None):
@@ -4157,7 +4157,7 @@ class Home(MainHandler):
             ep_obj_rename_list.reverse()
 
         t = PageTemplate(headers=self.request.headers, file="testRename.tmpl")
-        t.submenu = [{'title': 'Edit', 'path': 'home/editShow?show=%d' % showObj.indexerid}]
+        t.submenu = [{'title': 'Edit', 'path': 'home/editShow?show=%d' % showObj.indexer_id}]
         t.ep_obj_list = ep_obj_rename_list
         t.show = showObj
 

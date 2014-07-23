@@ -179,7 +179,7 @@ class ShowQueueItem(generic_queue.QueueItem):
             sickbeard.showQueueScheduler.action.currentItem]  #@UndefinedVariable
 
     def _getName(self):
-        return str(self.show.indexerid)
+        return str(self.show.indexer_id)
 
     def _isLoading(self):
         return False
@@ -368,7 +368,7 @@ class QueueItemAdd(ShowQueueItem):
             logger.log(u"Setting all episodes to the specified default status: " + str(self.default_status))
             myDB = db.DBConnection()
             myDB.action("UPDATE tv_episodes SET status = ? WHERE status = ? AND showid = ? AND season != 0",
-                        [self.default_status, SKIPPED, self.show.indexerid])
+                        [self.default_status, SKIPPED, self.show.indexer_id])
 
         # if they started with WANTED eps then run the backlog
         if self.default_status == WANTED:
@@ -390,10 +390,10 @@ class QueueItemAdd(ShowQueueItem):
                 sickbeard.traktCheckerScheduler.action.addShowToTraktLibrary(self.show)
 
         # Load XEM data to DB for show
-        sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer, force=True)
+        sickbeard.scene_numbering.xem_refresh(self.show.indexer_id, self.show.indexer, force=True)
 
         # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer numbering.
-        if not self.scene and sickbeard.scene_numbering.get_xem_numbering_for_show(self.show.indexerid,
+        if not self.scene and sickbeard.scene_numbering.get_xem_numbering_for_show(self.show.indexer_id,
                                                                                    self.show.indexer):
             self.show.scene = 1
 
@@ -428,7 +428,7 @@ class QueueItemRefresh(ShowQueueItem):
         self.show.populateCache()
 
         # Load XEM data to DB for show
-        sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer, force=self.force)
+        sickbeard.scene_numbering.xem_refresh(self.show.indexer_id, self.show.indexer, force=self.force)
 
         self.inProgress = False
 

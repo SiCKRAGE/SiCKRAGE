@@ -139,7 +139,7 @@ class NameParser(object):
                 # confirm result show object variables
                 if result.show:
                     # confirm passed in show object indexer id matches result show object indexer id
-                    if self.showObj and self.showObj.indexerid != result.show.indexerid:
+                    if self.showObj and self.showObj.indexer_id != result.show.indexer_id:
                         doneSearch = True
                         break
 
@@ -527,13 +527,13 @@ class ParseResult(object):
         if self.show.is_anime and len(self.ab_episode_numbers):
             scene_season = scene_exceptions.get_scene_exception_by_name(self.series_name)[1]
             for epAbsNo in self.ab_episode_numbers:
-                ab = scene_numbering.get_indexer_absolute_numbering(self.show.indexerid, self.show.indexer, epAbsNo,
+                ab = scene_numbering.get_indexer_absolute_numbering(self.show.indexer_id, self.show.indexer, epAbsNo,
                                                                     True, scene_season)
                 if ab:
                     try:
                         (s, e) = helpers.get_all_episodes_from_absolute_number(self.show, None, [ab])
                     except exceptions.EpisodeNotFoundByAbsoluteNumberException:
-                        logger.log(str(self.show.indexerid) + ": Indexer object absolute number " + str(
+                        logger.log(str(self.show.indexer_id) + ": Indexer object absolute number " + str(
                             ab) + " is incomplete, skipping this episode")
                         return self
                     else:
@@ -543,7 +543,7 @@ class ParseResult(object):
 
         elif self.season_number and len(self.episode_numbers):
             for epNo in self.episode_numbers:
-                (s, e) = scene_numbering.get_indexer_numbering(self.show.indexerid, self.show.indexer,
+                (s, e) = scene_numbering.get_indexer_numbering(self.show.indexer_id, self.show.indexer,
                                                                self.season_number,
                                                                epNo)
                 if self.show.is_anime:

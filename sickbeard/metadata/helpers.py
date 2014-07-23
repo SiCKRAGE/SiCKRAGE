@@ -20,21 +20,21 @@ from sickbeard import helpers
 from sickbeard import logger
 
 
-def getShowImage(url, imgNum=None):
+def get_show_image(url, imgnum=None):
     image_data = None  # @UnusedVariable
 
-    if url == None:
+    if url is None:
         return None
 
     # if they provided a fanart number try to use it instead
-    if imgNum != None:
-        tempURL = url.split('-')[0] + "-" + str(imgNum) + ".jpg"
+    if imgnum is not None:
+        temp_url = url.split('-')[0] + "-" + str(imgnum) + ".jpg"
     else:
-        tempURL = url
+        temp_url = url
 
-    logger.log(u"Fetching image from " + tempURL, logger.DEBUG)
+    logger.log(u"Fetching image from " + temp_url, logger.DEBUG)
 
-    image_data = helpers.getURL(tempURL)
+    image_data = helpers.getURL(temp_url)
 
     if image_data is None:
         logger.log(u"There was an error trying to retrieve the image, aborting", logger.ERROR)
