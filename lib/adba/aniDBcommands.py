@@ -58,7 +58,7 @@ class Command:
     def flatten(self, command, parameters):
         tmp = []
         for key, value in parameters.iteritems():
-            if value == None:
+            if value is None:
                 continue
             tmp.append("%s=%s" % (self.escape(key), self.escape(value)))
         return ' '.join([command, '&'.join(tmp)])

@@ -12,19 +12,18 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2, xml.dom.minidom
+import urllib2
 from xml.dom.minidom import parseString
-import sickbeard
-import telnetlib
-import re
 import time
 
+import sickbeard
 from sickbeard import logger
+
 
 try:
     import xml.etree.cElementTree as etree
@@ -35,14 +34,14 @@ except ImportError:
 class NMJv2Notifier:
     def notify_snatch(self, ep_name):
         return False
-        #Not implemented: Start the scanner when snatched does not make any sense
+        # Not implemented: Start the scanner when snatched does not make any sense
 
     def notify_download(self, ep_name):
         self._notifyNMJ()
 
     def notify_subtitle_download(self, ep_name, lang):
         self._notifyNMJ()
-        
+
     def notify_git_update(self, new_version):
         return False
         # Not implemented, no reason to start scanner.
@@ -61,14 +60,15 @@ class NMJv2Notifier:
         Returns: True if the settings were retrieved successfully, False otherwise
         """
         try:
-            url_loc = "http://" + host + ":8008/file_operation?arg0=list_user_storage_file&arg1=&arg2=" + instance + "&arg3=20&arg4=true&arg5=true&arg6=true&arg7=all&arg8=name_asc&arg9=false&arg10=false"
+            url_loc = "http://" + host + ":8008/file_operation?arg0=list_user_storage_file&arg1=&arg2=" + instance + \
+                      "&arg3=20&arg4=true&arg5=true&arg6=true&arg7=all&arg8=name_asc&arg9=false&arg10=false"
             req = urllib2.Request(url_loc)
             handle1 = urllib2.urlopen(req)
             response1 = handle1.read()
             xml = parseString(response1)
             time.sleep(300.0 / 1000.0)
             for node in xml.getElementsByTagName('path'):
-                xmlTag = node.toxml();
+                xmlTag = node.toxml()
                 xmlData = xmlTag.replace('<path>', '').replace('</path>', '').replace('[=]', '')
                 url_db = "http://" + host + ":8008/metadata_database?arg0=check_database&arg1=" + xmlData
                 reqdb = urllib2.Request(url_db)
@@ -78,9 +78,8 @@ class NMJv2Notifier:
                 returnvalue = xmldb.getElementsByTagName('returnValue')[0].toxml().replace('<returnValue>', '').replace(
                     '</returnValue>', '')
                 if returnvalue == "0":
-                    DB_path = xmldb.getElementsByTagName('database_path')[0].toxml().replace('<database_path>',
-                                                                                             '').replace(
-                        '</database_path>', '').replace('[=]', '')
+                    DB_path = xmldb.getElementsByTagName('database_path')[0].toxml().replace(
+                        '<database_path>', '').replace('</database_path>', '').replace('[=]', '')
                     if dbloc == "local" and DB_path.find("localhost") > -1:
                         sickbeard.NMJv2_HOST = host
                         sickbeard.NMJv2_DATABASE = DB_path
@@ -106,11 +105,13 @@ class NMJv2Notifier:
         Returns: True if the request succeeded, False otherwise
         """
 
-        #if a host is provided then attempt to open a handle to that URL
+        # if a host is provided then attempt to open a handle to that URL
         try:
-            url_scandir = "http://" + host + ":8008/metadata_database?arg0=update_scandir&arg1=" + sickbeard.NMJv2_DATABASE + "&arg2=&arg3=update_all"
+            url_scandir = "http://" + host + ":8008/metadata_database?arg0=update_scandir&arg1=" + \
+                          sickbeard.NMJv2_DATABASE + "&arg2=&arg3=update_all"
             logger.log(u"NMJ scan update command sent to host: %s" % (host), logger.DEBUG)
-            url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + sickbeard.NMJv2_DATABASE + "&arg2=background&arg3="
+            url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + \
+                           sickbeard.NMJv2_DATABASE + "&arg2=background&arg3="
             logger.log(u"Try to mount network drive via url: %s" % (host), logger.DEBUG)
             prereq = urllib2.Request(url_scandir)
             req = urllib2.Request(url_updatedb)

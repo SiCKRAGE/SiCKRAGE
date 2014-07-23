@@ -22,65 +22,68 @@ import functools
 
 import sickbeard
 
-date_presets = ('%Y-%m-%d',
-                '%a, %Y-%m-%d',
-                '%A, %Y-%m-%d',
-                '%y-%m-%d',
-                '%a, %y-%m-%d',
-                '%A, %y-%m-%d',
-                '%m/%d/%Y',
-                '%a, %m/%d/%Y',
-                '%A, %m/%d/%Y',
-                '%m/%d/%y',
-                '%a, %m/%d/%y',
-                '%A, %m/%d/%y',
-                '%m-%d-%Y',
-                '%a, %m-%d-%Y',
-                '%A, %m-%d-%Y',
-                '%m-%d-%y',
-                '%a, %m-%d-%y',
-                '%A, %m-%d-%y',
-                '%m.%d.%Y',
-                '%a, %m.%d.%Y',
-                '%A, %m.%d.%Y',
-                '%m.%d.%y',
-                '%a, %m.%d.%y',
-                '%A, %m.%d.%y',
-                '%d-%m-%Y',
-                '%a, %d-%m-%Y',
-                '%A, %d-%m-%Y',
-                '%d-%m-%y',
-                '%a, %d-%m-%y',
-                '%A, %d-%m-%y',
-                '%d.%m.%Y',
-                '%a, %d.%m.%Y',
-                '%A, %d.%m.%Y',
-                '%d.%m.%y',
-                '%a, %d.%m.%y',
-                '%A, %d.%m.%y',
-                '%d. %b %Y',
-                '%a, %d. %b %Y',
-                '%A, %d. %b %Y',
-                '%d. %b %y',
-                '%a, %d. %b %y',
-                '%A, %d. %b %y',
-                '%d. %B %Y',
-                '%a, %d. %B %Y',
-                '%A, %d. %B %Y',
-                '%d. %B %y',
-                '%a, %d. %B %y',
-                '%A, %d. %B %y',
-                '%b %d, %Y',
-                '%a, %b %d, %Y',
-                '%A, %b %d, %Y',
-                '%B %d, %Y',
-                '%a, %B %d, %Y',
-                '%A, %B %d, %Y'
+date_presets = (
+    '%Y-%m-%d',
+    '%a, %Y-%m-%d',
+    '%A, %Y-%m-%d',
+    '%y-%m-%d',
+    '%a, %y-%m-%d',
+    '%A, %y-%m-%d',
+    '%m/%d/%Y',
+    '%a, %m/%d/%Y',
+    '%A, %m/%d/%Y',
+    '%m/%d/%y',
+    '%a, %m/%d/%y',
+    '%A, %m/%d/%y',
+    '%m-%d-%Y',
+    '%a, %m-%d-%Y',
+    '%A, %m-%d-%Y',
+    '%m-%d-%y',
+    '%a, %m-%d-%y',
+    '%A, %m-%d-%y',
+    '%m.%d.%Y',
+    '%a, %m.%d.%Y',
+    '%A, %m.%d.%Y',
+    '%m.%d.%y',
+    '%a, %m.%d.%y',
+    '%A, %m.%d.%y',
+    '%d-%m-%Y',
+    '%a, %d-%m-%Y',
+    '%A, %d-%m-%Y',
+    '%d-%m-%y',
+    '%a, %d-%m-%y',
+    '%A, %d-%m-%y',
+    '%d.%m.%Y',
+    '%a, %d.%m.%Y',
+    '%A, %d.%m.%Y',
+    '%d.%m.%y',
+    '%a, %d.%m.%y',
+    '%A, %d.%m.%y',
+    '%d. %b %Y',
+    '%a, %d. %b %Y',
+    '%A, %d. %b %Y',
+    '%d. %b %y',
+    '%a, %d. %b %y',
+    '%A, %d. %b %y',
+    '%d. %B %Y',
+    '%a, %d. %B %Y',
+    '%A, %d. %B %Y',
+    '%d. %B %y',
+    '%a, %d. %B %y',
+    '%A, %d. %B %y',
+    '%b %d, %Y',
+    '%a, %b %d, %Y',
+    '%A, %b %d, %Y',
+    '%B %d, %Y',
+    '%a, %B %d, %Y',
+    '%A, %B %d, %Y'
 )
 
-time_presets = ('%I:%M:%S %p',
-                '%H:%M:%S'
+time_presets = (
+    '%I:%M:%S %p',
+    '%H:%M:%S'
 )
+
 
 # helper class
 class static_or_instance(object):
@@ -100,8 +103,10 @@ class sbdatetime(datetime.datetime):
     @static_or_instance
     def sbftime(self, dt=None, show_seconds=False, t_preset=None):
 
-        try:locale.setlocale(locale.LC_TIME, self.ORIG_LC_TIME)
-        except:pass
+        try:
+            locale.setlocale(locale.LC_TIME, self.ORIG_LC_TIME)
+        except:
+            pass
 
         try:
             if sbdatetime.has_locale:

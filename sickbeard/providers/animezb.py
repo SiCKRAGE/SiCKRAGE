@@ -29,8 +29,8 @@ from sickbeard.common import *
 from sickbeard import tvcache
 from lib.dateutil.parser import parse as parseDate
 
-class Animezb(generic.NZBProvider):
 
+class Animezb(generic.NZBProvider):
     def __init__(self):
 
         generic.NZBProvider.__init__(self, "Animezb")
@@ -60,7 +60,8 @@ class Animezb(generic.NZBProvider):
     def _get_episode_search_strings(self, ep_obj, add_string=''):
         search_string = []
         for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-            ep_string = '+'.join([helpers.sanitizeSceneName(show_name).replace('.', '+'), str(ep_obj.scene_absolute_number).zfill(2)])
+            ep_string = '+'.join(
+                [helpers.sanitizeSceneName(show_name).replace('.', '+'), str(ep_obj.scene_absolute_number).zfill(2)])
             search_string.append(ep_string)
         return search_string
 
@@ -106,12 +107,12 @@ class Animezb(generic.NZBProvider):
 
         results = []
 
-        for i in [2, 3, 4]: # we will look for a version 2, 3 and 4
+        for i in [2, 3, 4]:  # we will look for a version 2, 3 and 4
             for item in self._doSearch("v" + str(i)):
 
                 (title, url) = self._get_title_and_url(item)
 
-                if item.has_key('published_parsed') and item['published_parsed']:
+                if 'published_parsed' in item and item['published_parsed']:
                     result_date = item.published_parsed
                     if result_date:
                         result_date = datetime.datetime(*result_date[0:6])
@@ -125,10 +126,9 @@ class Animezb(generic.NZBProvider):
 
         return results
 
+
 class AnimezbCache(tvcache.TVCache):
-
     def __init__(self, provider):
-
         tvcache.TVCache.__init__(self, provider)
 
         # only poll Animezb every 20 minutes max
@@ -136,9 +136,9 @@ class AnimezbCache(tvcache.TVCache):
         self.minTime = 20
 
     def _getRSSData(self):
-
-        params = {"cat": "anime".encode('utf-8'),
-                 "max": "100".encode('utf-8')
+        params = {
+            "cat": "anime".encode('utf-8'),
+            "max": "100".encode('utf-8')
         }
 
         rss_url = self.provider.url + 'rss?' + urllib.urlencode(params)
@@ -149,5 +149,6 @@ class AnimezbCache(tvcache.TVCache):
 
     def _checkItemAuth(self, title, url):
         return True
+
 
 provider = Animezb()

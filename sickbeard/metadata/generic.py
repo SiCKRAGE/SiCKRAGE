@@ -142,21 +142,21 @@ class GenericMetadata():
 
     def _has_episode_thumb(self, ep_obj):
         location = self.get_episode_thumb_path(ep_obj)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
 
     def _has_season_poster(self, show_obj, season):
         location = self.get_season_poster_path(show_obj, season)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
 
     def _has_season_banner(self, show_obj, season):
         location = self.get_season_banner_path(show_obj, season)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
@@ -906,7 +906,8 @@ class GenericMetadata():
 
     def retrieveShowMetadata(self, folder):
         """
-        Used only when mass adding Existing Shows, using previously generated Show metadata to reduce the need to query TVDB.
+        Used only when mass adding Existing Shows, using previously generated Show metadata to reduce the need
+        to query TVDB.
         """
 
         empty_return = (None, None, None)
@@ -923,15 +924,13 @@ class GenericMetadata():
             with ek.ek(open, metadata_path, 'r') as xmlFileObj:
                 showXML = etree.ElementTree(file=xmlFileObj)
 
-            if showXML.findtext('title') == None \
-                    or (showXML.findtext('tvdbid') == None
-                        and showXML.findtext('id') == None) \
-                            and showXML.findtext('indexer') == None:
-                logger.log(u"Invalid info in tvshow.nfo (missing name or id):" \
-                           + str(showXML.findtext('title')) + " " \
-                           + str(showXML.findtext('indexer')) + " " \
-                           + str(showXML.findtext('tvdbid')) + " " \
-                           + str(showXML.findtext('id')))
+            if showXML.findtext('title') is None \
+                    or (showXML.findtext('tvdbid') is None
+                        and showXML.findtext('id') is None) \
+                    and showXML.findtext('indexer') is None:
+                logger.log(u"Invalid info in tvshow.nfo (missing name or id):{0} {1} {2} {3}".format(
+                    str(showXML.findtext('title')), str(showXML.findtext('indexer')), str(showXML.findtext('tvdbid')),
+                    str(showXML.findtext('id'))))
                 return empty_return
 
             name = showXML.findtext('title')
@@ -941,9 +940,9 @@ class GenericMetadata():
             except:
                 indexer = None
 
-            if showXML.findtext('tvdbid') != None:
+            if showXML.findtext('tvdbid') is not None:
                 indexer_id = int(showXML.findtext('tvdbid'))
-            elif showXML.findtext('id') != None:
+            elif showXML.findtext('id') is not None:
                 indexer_id = int(showXML.findtext('id'))
             else:
                 logger.log(u"Empty <id> or <tvdbid> field in NFO, unable to find a ID", logger.WARNING)
@@ -959,7 +958,7 @@ class GenericMetadata():
                 logger.WARNING)
             return empty_return
 
-        return (indexer_id, name, indexer)
+        return indexer_id, name, indexer
 
     def _retrieve_show_images_from_tmdb(self, show, backdrop=False, poster=False):
         # get TMDB configuration info
@@ -977,8 +976,8 @@ class GenericMetadata():
         try:
             search = tmdb.Search()
             for show_name in set(allPossibleShowNames(show)):
-                for result in search.collection({'query': show_name})['results'] + search.tv({'query': show_name})[
-                    'results']:
+                for result in search.collection({'query': show_name})['results'] + \
+                        search.tv({'query': show_name})['results']:
                     if backdrop and result['backdrop_path']:
                         return "{0}{1}{2}".format(base_url, max_size, result['backdrop_path'])
                     elif poster and result['poster_path']:

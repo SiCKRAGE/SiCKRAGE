@@ -73,7 +73,7 @@ class SRWebServer(threading.Thread):
         if self.enable_https:
             # If either the HTTPS certificate or key do not exist, make some self-signed ones.
             if not (self.https_cert and os.path.exists(self.https_cert)) or not (
-                self.https_key and os.path.exists(self.https_key)):
+                    self.https_key and os.path.exists(self.https_key)):
                 if not create_https_certificates(self.https_cert, self.https_key):
                     logger.log(u"Unable to create CERT/KEY files, disabling HTTPS")
                     sickbeard.ENABLE_HTTPS = False
@@ -85,12 +85,13 @@ class SRWebServer(threading.Thread):
                 self.enable_https = False
 
         # Load the app
-        self.app = Application([],
-                                 debug=True,
-                                 autoreload=False,
-                                 gzip=True,
-                                 xheaders=sickbeard.HANDLE_REVERSE_PROXY,
-                                 cookie_secret='61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo='
+        self.app = Application(
+            [],
+            debug=True,
+            autoreload=False,
+            gzip=True,
+            xheaders=sickbeard.HANDLE_REVERSE_PROXY,
+            cookie_secret='61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo='
         )
 
         # Main Handler

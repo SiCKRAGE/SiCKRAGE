@@ -225,7 +225,7 @@ class MPField(FieldSet):
 def parseFields(parser):
     # Determine field names
     ext = EXTENSIONS[parser["block_type"].value]
-    if ext == None:
+    if ext is None:
         raise ParserError("Unknown parent '%s'" % parser["block_type"].value)
 
     # Parse fields

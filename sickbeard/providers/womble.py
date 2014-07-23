@@ -67,8 +67,6 @@ class WombleCache(tvcache.TVCache):
                 if ci is not None:
                     cl.append(ci)
 
-
-
         if len(cl) > 0:
             myDB = self._getDB()
             myDB.mass_action(cl)

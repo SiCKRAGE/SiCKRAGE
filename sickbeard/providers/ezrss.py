@@ -67,8 +67,8 @@ class EZRSSProvider(generic.TorrentProvider):
         results = {}
 
         if show.air_by_date or show.sports:
-            logger.log(self.name + u" doesn't support air-by-date or sports backloging because of limitations on their RSS search.",
-                       logger.WARNING)
+            logger.log(self.name + u" doesn't support air-by-date or sports backloging because of limitations on "
+                                   u"their RSS search.", logger.WARNING)
             return results
 
         results = generic.TorrentProvider.findSearchResults(self, show, season, episodes, search_mode, manualSearch)
@@ -133,12 +133,16 @@ class EZRSSProvider(generic.TorrentProvider):
             (title, url) = self._get_title_and_url(curItem)
 
             if title and url:
-                logger.log(u"RSS Feed provider: [" + self.name + "] Attempting to add item to cache: " + title, logger.DEBUG)
+                logger.log(
+                    u"RSS Feed provider: [" + self.name + "] Attempting to add item to cache: " +
+                    title, logger.DEBUG
+                )
                 results.append(curItem)
             else:
                 logger.log(
                     u"The XML returned from the " + self.name + " RSS feed is incomplete, this result is unusable",
-                    logger.ERROR)
+                    logger.ERROR
+                )
 
         return results
 
@@ -186,7 +190,8 @@ class EZRSSCache(tvcache.TVCache):
         (title, url) = self.provider._get_title_and_url(item)
 
         if title and url:
-            logger.log(u"RSS Feed provider: [" + self.provider.name + "] Attempting to add item to cache: " + title, logger.DEBUG)
+            logger.log(u"RSS Feed provider: [" + self.provider.name + "] Attempting to add item to cache: " +
+                       title, logger.DEBUG)
             url = self._translateLinkURL(url)
             return self._addCacheEntry(title, url)
 

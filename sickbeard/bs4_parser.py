@@ -1,6 +1,7 @@
 import sickbeard
 from bs4 import BeautifulSoup
 
+
 class BS4Parser:
     def __init__(self, *args, **kwargs):
         self.soup = BeautifulSoup(*args, **kwargs)

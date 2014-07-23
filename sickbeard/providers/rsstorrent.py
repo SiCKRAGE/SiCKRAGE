@@ -34,6 +34,7 @@ from lib import requests
 from lib.requests import exceptions
 from lib.bencode import bdecode
 
+
 class TorrentRssProvider(generic.TorrentProvider):
     def __init__(self, name, url, cookies='', search_mode='eponly', search_fallback=False, backlog_only=False):
         generic.TorrentProvider.__init__(self, name)
@@ -50,10 +51,13 @@ class TorrentRssProvider(generic.TorrentProvider):
         self.cookies = cookies
 
     def configStr(self):
-        return self.name + '|' + self.url + '|' + self.cookies + '|' + str(int(self.enabled)) + '|' + self.search_mode + '|' + str(int(self.search_fallback)) + '|' + str(int(self.backlog_only))
+        return self.name + '|' + self.url + '|' + self.cookies + '|' + str(
+            int(self.enabled)) + '|' + self.search_mode + '|' + str(int(self.search_fallback)) + '|' + \
+            str(int(self.backlog_only))
 
     def imageName(self):
-        if ek.ek(os.path.isfile, ek.ek(os.path.join, sickbeard.PROG_DIR, 'data', 'images', 'providers', self.getID() + '.png')):
+        if ek.ek(os.path.isfile,
+                 ek.ek(os.path.join, sickbeard.PROG_DIR, 'data', 'images', 'providers', self.getID() + '.png')):
             return self.getID() + '.png'
         return 'torrentrss.png'
 
@@ -91,7 +95,7 @@ class TorrentRssProvider(generic.TorrentProvider):
 
         try:
             if self.cookies:
-                cookie_validator=re.compile("^(\w+=\w+)(;\w+=\w+)*$")
+                cookie_validator = re.compile("^(\w+=\w+)(;\w+=\w+)*$")
                 if not cookie_validator.match(self.cookies):
                     return (False, 'Cookie is not correctly formatted: ' + self.cookies)
 
@@ -147,6 +151,7 @@ class TorrentRssProvider(generic.TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
+
 class TorrentRssCache(tvcache.TVCache):
     def __init__(self, provider):
         tvcache.TVCache.__init__(self, provider)
@@ -157,7 +162,7 @@ class TorrentRssCache(tvcache.TVCache):
 
         request_headers = None
         if self.provider.cookies:
-          request_headers = { 'Cookie': self.provider.cookies }
+            request_headers = {'Cookie': self.provider.cookies}
 
         return self.getRSSFeed(self.provider.url, request_headers=request_headers)
 
