@@ -1221,7 +1221,7 @@ def extractZip(archive, targetDir):
     except Exception as e:
         logger.log(u"Zip extraction error: " + str(e), logger.ERROR)
         return False
-<<<<<<< HEAD
+#<<<<<<< HEAD
 
 
 def mapIndexersToShow(showObj):
@@ -1260,5 +1260,5 @@ def touchFile(self, fname, atime=None):
             pass
 
     return False
-=======
->>>>>>> master
+#=======
+#>>>>>>> master
