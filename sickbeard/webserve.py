@@ -951,6 +951,9 @@ class Manage(MainHandler):
 
         subtitles_all_same = True
         last_subtitles = None
+    
+        sports_all_same = True
+        last_sports = None
 
         scene_all_same = True
         last_scene = None
@@ -977,6 +980,13 @@ class Manage(MainHandler):
                     anime_all_same = False
                 else:
                     last_anime = curShow.is_anime
+                    
+            if sports_all_same:
+                # if we had a value already and this value is different then they're not all the same
+                if last_sports not in (curShow.is_sports, None):
+                    sports_all_same = False
+                else:
+                    last_sports = curShow.is_sports
 
             if flatten_folders_all_same:
                 if last_flatten_folders not in (None, curShow.flatten_folders):
@@ -1008,13 +1018,14 @@ class Manage(MainHandler):
         t.flatten_folders_value = last_flatten_folders if flatten_folders_all_same else None
         t.quality_value = last_quality if quality_all_same else None
         t.subtitles_value = last_subtitles if subtitles_all_same else None
+        t.sports_value = last_sports if sports_all_same else None
         t.scene_value = last_scene if scene_all_same else None
         t.root_dir_list = root_dir_list
 
         return _munge(t)
 
 
-    def massEditSubmit(self, paused=None, anime=None, scene=None, flatten_folders=None, quality_preset=False,
+    def massEditSubmit(self, paused=None, anime=None, sports=None, scene=None, flatten_folders=None, quality_preset=False,
                        subtitles=None,
                        anyQualities=[], bestQualities=[], toEdit=None, *args, **kwargs):
 
@@ -1054,6 +1065,12 @@ class Manage(MainHandler):
             else:
                 new_anime = True if anime == 'enable' else False
             new_anime = 'on' if new_anime else 'off'
+            
+            if sports == 'keep':
+                new_sports = showObj.is_sports
+            else:
+                new_sports = True if sports == 'enable' else False
+            new_sports = 'on' if new_sports else 'off'
 
             if scene == 'keep':
                 new_scene = showObj.is_scene
@@ -1084,7 +1101,8 @@ class Manage(MainHandler):
                                                                        flatten_folders=new_flatten_folders,
                                                                        paused=new_paused,
                                                                        subtitles=new_subtitles, anime=new_anime,
-                                                                       scene=new_scene, directCall=True)
+                                                                       sports=new_sports, scene=new_scene, 
+                                                                       directCall=True)
 
             if curErrors:
                 logger.log(u"Errors: " + str(curErrors), logger.ERROR)
@@ -1358,6 +1376,7 @@ ConfigMenu = [
     {'title': 'Post Processing', 'path': 'config/postProcessing/'},
     {'title': 'Notifications', 'path': 'config/notifications/'},
     {'title': 'Anime', 'path': 'config/anime/'},
+    {'title': 'Sports', 'path': 'config/sports/'},
 ]
 
 
@@ -1374,7 +1393,7 @@ class ConfigGeneral(MainHandler):
 
 
     def saveAddShowDefaults(self, defaultStatus, anyQualities, bestQualities, defaultFlattenFolders, subtitles=False,
-                            anime=False, scene=False):
+                            anime=False, sports=False, scene=False):
 
         if anyQualities:
             anyQualities = anyQualities.split(',')
@@ -1395,6 +1414,7 @@ class ConfigGeneral(MainHandler):
         sickbeard.SUBTITLES_DEFAULT = config.checkbox_to_value(subtitles)
 
         sickbeard.ANIME_DEFAULT = config.checkbox_to_value(anime)
+        sickbeard.SPORTS_DEFAULT = config.checkbox_to_value(sports)
         sickbeard.SCENE_DEFAULT = config.checkbox_to_value(scene)
 
         sickbeard.save_config()
@@ -2483,6 +2503,34 @@ class ConfigAnime(MainHandler):
                                    '<br />\n'.join(results))
         else:
             ui.notifications.message('Configuration Saved', ek.ek(os.path.join, sickbeard.CONFIG_FILE))
+            
+            
+class ConfigSports(MainHandler):
+    def index(self, *args, **kwargs):
+
+        t = PageTemplate(headers=self.request.headers, file="config_sports.tmpl")
+        t.submenu = ConfigMenu
+        return _munge(t)
+
+
+    def saveSports(self, split_home=None):
+
+        results = []
+
+        if split_home == "on":
+            split_home = 1
+        else:
+            split_home = 0
+
+        sickbeard.save_config()
+
+        if len(results) > 0:
+            for x in results:
+                logger.log(x, logger.ERROR)
+            ui.notifications.error('Error(s) Saving Configuration',
+                                   '<br />\n'.join(results))
+        else:
+            ui.notifications.message('Configuration Saved', ek.ek(os.path.join, sickbeard.CONFIG_FILE))
 
 
 class Config(MainHandler):
@@ -2501,6 +2549,7 @@ class Config(MainHandler):
     postProcessing = ConfigPostProcessing
     notifications = ConfigNotifications
     anime = ConfigAnime
+    sports = ConfigSports
 
 
 def haveXBMC():
@@ -2789,7 +2838,7 @@ class NewHomeAddShows(MainHandler):
     def addRecommendedShow(self, whichSeries=None, indexerLang="en", rootDir=None, defaultStatus=None,
                            anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                            fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None, anime=None,
-                           scene=None):
+                           sports=None, scene=None):
 
         indexer = 1
         indexer_name = sickbeard.indexerApi(int(indexer)).name
@@ -2801,7 +2850,7 @@ class NewHomeAddShows(MainHandler):
                                indexerLang, rootDir,
                                defaultStatus,
                                anyQualities, bestQualities, flatten_folders, subtitles, fullShowPath, other_shows,
-                               skipShow, providedIndexer, anime, scene)
+                               skipShow, providedIndexer, anime, sports, scene)
 
     def trendingShows(self, *args, **kwargs):
         """
@@ -2849,6 +2898,7 @@ class NewHomeAddShows(MainHandler):
                                                         flatten_folders=sickbeard.FLATTEN_FOLDERS_DEFAULT,
                                                         subtitles=sickbeard.SUBTITLES_DEFAULT,
                                                         anime=sickbeard.ANIME_DEFAULT,
+                                                        sports=sickbeard.SPORTS_DEFAULT,
                                                         scene=sickbeard.SCENE_DEFAULT)
 
             ui.notifications.message('Show added', 'Adding the specified show into ' + show_dir)
@@ -2862,7 +2912,7 @@ class NewHomeAddShows(MainHandler):
     def addNewShow(self, whichSeries=None, indexerLang="en", rootDir=None, defaultStatus=None,
                    anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                    fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None, anime=None,
-                   scene=None):
+                   sports=None, scene=None):
         """
         Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
         provided then it forwards back to newShow, if not it goes to /home.
@@ -2942,6 +2992,7 @@ class NewHomeAddShows(MainHandler):
         # prepare the inputs for passing along
         scene = config.checkbox_to_value(scene)
         anime = config.checkbox_to_value(anime)
+        sports = config.checkbox_to_value(sports)
         flatten_folders = config.checkbox_to_value(flatten_folders)
         subtitles = config.checkbox_to_value(subtitles)
 
@@ -2958,7 +3009,7 @@ class NewHomeAddShows(MainHandler):
         # add the show
         sickbeard.showQueueScheduler.action.addShow(indexer, indexer_id, show_dir, int(defaultStatus), newQuality,
                                                     flatten_folders, indexerLang, subtitles, anime,
-                                                    scene)  # @UndefinedVariable
+                                                    sports, scene)  # @UndefinedVariable
         ui.notifications.message('Show added', 'Adding the specified show into ' + show_dir)
 
         return finishAddShow()
@@ -3031,6 +3082,7 @@ class NewHomeAddShows(MainHandler):
                                                             flatten_folders=sickbeard.FLATTEN_FOLDERS_DEFAULT,
                                                             subtitles=sickbeard.SUBTITLES_DEFAULT,
                                                             anime=sickbeard.ANIME_DEFAULT,
+                                                            sports=sickbeard.SPORTS_DEFAULT,
                                                             scene=sickbeard.SCENE_DEFAULT)
                 num_added += 1
 
@@ -3142,7 +3194,22 @@ class Home(MainHandler):
     def index(self, *args, **kwargs):
 
         t = PageTemplate(headers=self.request.headers, file="home.tmpl")
-        if sickbeard.ANIME_SPLIT_HOME:
+        
+        if sickbeard.ANIME_SPLIT_HOME and sickbeard.SPORTS_SPLIT_HOME:
+            shows = []
+            anime = []
+            sports = []
+            for show in sickbeard.showList:
+                if show.is_anime:
+                    anime.append(show)
+                elif show.is_sports:
+                    sports.append(show)
+                else:
+                    shows.append(show)
+            t.showlists = [["Shows", shows],
+                           ["Anime", anime],
+                           ["Sports", sports]]
+        elif sickbeard.ANIME_SPLIT_HOME:
             shows = []
             anime = []
             for show in sickbeard.showList:
@@ -3576,7 +3643,21 @@ class Home(MainHandler):
                 x = x[4:]
             return x
 
-        if sickbeard.ANIME_SPLIT_HOME:
+        if sickbeard.ANIME_SPLIT_HOME and sickbeard.SPORTS_SPLIT_HOME:
+            shows = []
+            anime = []
+            sports = []
+            for show in sickbeard.showList:
+                if show.is_anime:
+                    anime.append(show)
+                elif show.is_sports:
+                    sports.append(show)
+                else:
+                    shows.append(show)
+            t.sortedShowLists = [["Shows", sorted(shows, lambda x, y: cmp(titler(x.name), titler(y.name)))],
+                                 ["Anime", sorted(anime, lambda x, y: cmp(titler(x.name), titler(y.name)))],
+                                 ["Sports", sorted(sports, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
+        elif sickbeard.ANIME_SPLIT_HOME:
             shows = []
             anime = []
             for show in sickbeard.showList:

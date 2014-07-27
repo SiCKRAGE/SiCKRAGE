@@ -173,6 +173,27 @@
 	            5: { sorter: 'eps' },
 	        }
     });
+    
+    \$("#showListTableSports:has(tbody tr)").tablesorter({
+
+	        sortList: [[6,1],[2,0]],
+	        textExtraction: {
+				0: function(node) { return \$(node).find("span").text().toLowerCase(); },
+	        #if ( $layout != 'simple'):
+		        3: function(node) { return \$(node).find("img").attr("alt"); },
+	        #end if
+	            4: function(node) { return \$(node).find("span").text(); },
+	            6: function(node) { return \$(node).find("img").attr("alt"); }
+	        },
+	        widgets: ['saveSort', 'zebra'],
+	        headers: {
+				0: { sorter: 'cDate' },
+	            2: { sorter: 'loadingNames' },
+	            3: { sorter: 'network' },
+	            4: { sorter: 'quality' },
+	            5: { sorter: 'eps' },
+	        }
+    });
 
     #set $fuzzydate = 'airdate'
     #if $sickbeard.FUZZY_DATING:
@@ -210,6 +231,10 @@
 #if $curListType == "Anime":
 <h2>Anime List</h2>
 #end if
+#if $curListType == "Sports":
+<h2>Sports List</h2>
+#end if
+
 
 <table id="showListTable$curListType" class="sickbeardTable tablesorter" cellspacing="1" border="0" cellpadding="0">
 
