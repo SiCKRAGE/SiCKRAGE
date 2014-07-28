@@ -51,8 +51,8 @@ class HDBitsProvider(generic.TorrentProvider):
         self.cache = HDBitsCache(self)
 
         self.url = 'http://hdbits.org'
-        self.search_url = 'http://hdbits.org/api/torrents'
-        self.rss_url = 'http://hdbits.org/api/torrents'
+        self.search_url = 'https://hdbits.org/api/torrents'
+        self.rss_url = 'https://hdbits.org/api/torrents'
         self.download_url = 'http://hdbits.org/download.php?'
 
     def isEnabled(self):
