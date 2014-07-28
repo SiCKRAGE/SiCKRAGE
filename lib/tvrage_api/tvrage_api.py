@@ -255,7 +255,7 @@ class Episode(dict):
         
         This primarily for use use by Show.search and Season.search.
         """
-        if term == None:
+        if term is None:
             raise TypeError("must supply string to search for (contents)")
 
         term = unicode(term).lower()

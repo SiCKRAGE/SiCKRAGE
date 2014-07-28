@@ -84,8 +84,9 @@ class TraktChecker():
 
             if data is not None:
                 logger.log(u"Removing " + show_obj.name + " from trakt.tv library", logger.DEBUG)
-                TraktCall("show/unlibrary/%API%", sickbeard.TRAKT_API, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD,
-                          data)
+                TraktCall(
+                    "show/unlibrary/%API%", sickbeard.TRAKT_API, sickbeard.TRAKT_USERNAME,
+                    sickbeard.TRAKT_PASSWORD, data)
 
     def addShowToTraktLibrary(self, show_obj):
         """
@@ -226,7 +227,6 @@ class TraktChecker():
                 backlog = (show, ep_segment)
                 if self.todoBacklog.count(backlog) == 0:
                     self.todoBacklog.append(backlog)
-
 
     def manageNewShow(self, show):
         episodes = [i for i in self.todoWanted if i[0] == show.indexerid]

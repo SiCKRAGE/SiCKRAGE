@@ -11,7 +11,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -40,11 +40,12 @@ from sickbeard.helpers import sanitizeSceneName
 
 
 class TorrentLeechProvider(generic.TorrentProvider):
-    urls = {'base_url': 'http://torrentleech.org/',
-            'login': 'http://torrentleech.org/user/account/login/',
-            'detail': 'http://torrentleech.org/torrent/%s',
-            'search': 'http://torrentleech.org/torrents/browse/index/query/%s/categories/%s',
-            'download': 'http://torrentleech.org%s',
+    urls = {
+        'base_url': 'http://torrentleech.org/',
+        'login': 'http://torrentleech.org/user/account/login/',
+        'detail': 'http://torrentleech.org/torrent/%s',
+        'search': 'http://torrentleech.org/torrents/browse/index/query/%s/categories/%s',
+        'download': 'http://torrentleech.org%s',
     }
 
     def __init__(self):
@@ -79,10 +80,11 @@ class TorrentLeechProvider(generic.TorrentProvider):
 
     def _doLogin(self):
 
-        login_params = {'username': self.username,
-                        'password': self.password,
-                        'remember_me': 'on',
-                        'login': 'submit',
+        login_params = {
+            'username': self.username,
+            'password': self.password,
+            'remember_me': 'on',
+            'login': 'submit',
         }
 
         self.session = requests.Session()
@@ -110,7 +112,7 @@ class TorrentLeechProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -125,26 +127,22 @@ class TorrentLeechProvider(generic.TorrentProvider):
 
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                ep_string = sanitizeSceneName(show_name) + ' ' + str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                ep_string = sanitizeSceneName(show_name) + ' ' + "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode}
-
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode}
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
         return [search_string]
@@ -176,7 +174,7 @@ class TorrentLeechProvider(generic.TorrentProvider):
                         torrent_table = html.find('table', attrs={'id': 'torrenttable'})
                         torrent_rows = torrent_table.find_all('tr') if torrent_table else []
 
-                        #Continue only if one Release is found
+                        # Continue only if one Release is found
                         if len(torrent_rows) < 2:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
                                        logger.DEBUG)
@@ -210,7 +208,7 @@ class TorrentLeechProvider(generic.TorrentProvider):
                 except Exception, e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -295,12 +293,9 @@ class TorrentLeechCache(tvcache.TVCache):
             if ci is not None:
                 cl.append(ci)
 
-
-
         if len(cl) > 0:
             myDB = self._getDB()
             myDB.mass_action(cl)
-
 
     def _parseItem(self, item):
 
@@ -309,9 +304,8 @@ class TorrentLeechCache(tvcache.TVCache):
         if not title or not url:
             return None
 
-        logger.log(u"Attempting to cache item:[" + title +"]", logger.DEBUG)
+        logger.log(u"Attempting to cache item:[" + title + "]", logger.DEBUG)
 
         return self._addCacheEntry(title, url)
-
 
 provider = TorrentLeechProvider()

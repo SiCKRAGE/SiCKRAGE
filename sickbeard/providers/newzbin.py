@@ -20,13 +20,12 @@ import os
 import re
 import sys
 import time
-import urllib, urlparse
-
+import urllib
+import urlparse
 from datetime import datetime, timedelta
 
 import sickbeard
 import generic
-
 import sickbeard.encodingKludge as ek
 from sickbeard import classes, logger, helpers, exceptions, show_name_helpers
 from sickbeard import tvcache
@@ -58,6 +57,7 @@ class NewzbinDownloader(urllib.FancyURLopener):
 
             elif newzbinErrCode == 402:
                 raise exceptions.AuthException("Newzbin account not premium status, can't download NZBs")
+
 
 class NewzbinProvider(generic.NZBProvider):
     def __init__(self):
@@ -112,9 +112,9 @@ class NewzbinProvider(generic.NZBProvider):
 
         # Video Fmt: (XviD, DivX, H.264/x264), NOT 720p, NOT 1080p, NOT 1080i
         video_fmt = 'Video Fmt' in attrs and (
-        'XviD' in attrs['Video Fmt'] or 'DivX' in attrs['Video Fmt'] or 'H.264/x264' in attrs['Video Fmt']) \
-                        and ('720p' not in attrs['Video Fmt']) \
-                        and ('1080p' not in attrs['Video Fmt']) \
+            'XviD' in attrs['Video Fmt'] or 'DivX' in attrs['Video Fmt'] or 'H.264/x264' in attrs['Video Fmt']) \
+            and ('720p' not in attrs['Video Fmt']) \
+            and ('1080p' not in attrs['Video Fmt']) \
             and ('1080i' not in attrs['Video Fmt'])
 
         # Source: TV Cap or HDTV or (None)
@@ -129,9 +129,9 @@ class NewzbinProvider(generic.NZBProvider):
 
         # Video Fmt: (XviD, DivX, H.264/x264), NOT 720p, NOT 1080p, NOT 1080i
         video_fmt = 'Video Fmt' in attrs and (
-        'XviD' in attrs['Video Fmt'] or 'DivX' in attrs['Video Fmt'] or 'H.264/x264' in attrs['Video Fmt']) \
-                        and ('720p' not in attrs['Video Fmt']) \
-                        and ('1080p' not in attrs['Video Fmt']) \
+            'XviD' in attrs['Video Fmt'] or 'DivX' in attrs['Video Fmt'] or 'H.264/x264' in attrs['Video Fmt']) \
+            and ('720p' not in attrs['Video Fmt']) \
+            and ('1080p' not in attrs['Video Fmt']) \
             and ('1080i' not in attrs['Video Fmt'])
 
         # Source: DVD
@@ -145,7 +145,7 @@ class NewzbinProvider(generic.NZBProvider):
     def _is_HDTV(self, attrs):
         # Video Fmt: H.264/x264, 720p
         video_fmt = 'Video Fmt' in attrs and ('H.264/x264' in attrs['Video Fmt']) \
-            and ('720p' in attrs['Video Fmt'])
+                    and ('720p' in attrs['Video Fmt'])
 
         # Source: TV Cap or HDTV or (None)
         source = 'Source' not in attrs or 'TV Cap' in attrs['Source'] or 'HDTV' in attrs['Source']
@@ -159,7 +159,7 @@ class NewzbinProvider(generic.NZBProvider):
 
         # Video Fmt: H.264/x264, 720p
         video_fmt = 'Video Fmt' in attrs and ('H.264/x264' in attrs['Video Fmt']) \
-            and ('720p' in attrs['Video Fmt'])
+                    and ('720p' in attrs['Video Fmt'])
 
         # Source: WEB-DL
         source = 'Source' in attrs and 'WEB-DL' in attrs['Source']
@@ -173,7 +173,7 @@ class NewzbinProvider(generic.NZBProvider):
 
         # Video Fmt: H.264/x264, 720p
         video_fmt = 'Video Fmt' in attrs and ('H.264/x264' in attrs['Video Fmt']) \
-            and ('720p' in attrs['Video Fmt'])
+                    and ('720p' in attrs['Video Fmt'])
 
         # Source: Blu-ray or HD-DVD
         source = 'Source' in attrs and ('Blu-ray' in attrs['Source'] or 'HD-DVD' in attrs['Source'])
@@ -184,13 +184,12 @@ class NewzbinProvider(generic.NZBProvider):
 
         # Video Fmt: H.264/x264, 1080p
         video_fmt = 'Video Fmt' in attrs and ('H.264/x264' in attrs['Video Fmt']) \
-            and ('1080p' in attrs['Video Fmt'])
+                    and ('1080p' in attrs['Video Fmt'])
 
         # Source: Blu-ray or HD-DVD
         source = 'Source' in attrs and ('Blu-ray' in attrs['Source'] or 'HD-DVD' in attrs['Source'])
 
         return video_fmt and source
-
 
     def getIDFromURL(self, url):
         id_regex = re.escape(self.url) + 'browse/post/(\d+)/'
@@ -268,7 +267,6 @@ class NewzbinProvider(generic.NZBProvider):
 
         return item_list
 
-
     def _getRSSData(self, search=None):
 
         params = {
@@ -332,7 +330,8 @@ class NewzbinCache(tvcache.TVCache):
                 logger.ERROR)
             return
 
-        logger.log(u"RSS Feed provider: [" + self.provider.name + "] Attempting to add item to cache: " + title, logger.DEBUG)
+        logger.log(u"RSS Feed provider: [" + self.provider.name + "] Attempting to add item to cache: " + title,
+                   logger.DEBUG)
 
         self._addCacheEntry(title, url)
 

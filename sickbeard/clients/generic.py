@@ -11,6 +11,7 @@ from lib.bencode import bencode, bdecode
 from lib import requests
 from lib.requests import exceptions
 
+
 class GenericClient(object):
     def __init__(self, name, host=None, username=None, password=None):
 
@@ -26,21 +27,23 @@ class GenericClient(object):
         self.session = requests.session()
         self.session.auth = (self.username, self.password)
 
-    def _request(self, method='get', params={}, data=None, files=None):
+    def _request(self, method='get', params=None, data=None, files=None):
 
+        if not params:
+            params = {}
         if time.time() > self.last_time + 1800 or not self.auth:
             self.last_time = time.time()
             self._get_auth()
 
         logger.log(
-            self.name + u': Requested a ' + method.upper() + ' connection to url ' + self.url + ' with Params= ' + str(
-                params) + ' Data=' + str(data if data else 'None')[0:99] + (
-            '...' if len(data if data else 'None') > 200 else ''), logger.DEBUG)
+            self.name + u': Requested a ' + method.upper() + ' connection to url ' + self.url + ' with Params= ' +
+            str(params) + ' Data=' + str(data if data else 'None')[0:99] +
+            ('...' if len(data if data else 'None') > 200 else ''), logger.DEBUG)
 
         logger.log(
-            self.name + u': Requested a ' + method.upper() + ' connection to url ' + self.url + ' with Params= ' + str(
-                params) + (
-                (' Data=' + str(data)[0:100] + ('...' if len(data) > 100 else '')) if data is not None else ""),
+            self.name + u': Requested a ' + method.upper() + ' connection to url ' + self.url + ' with Params= ' +
+            str(params) + ((' Data=' + str(data)[0:100] +
+                            ('...' if len(data) > 100 else '')) if data is not None else ""),
             logger.DEBUG)
 
         if not self.auth:
@@ -154,7 +157,7 @@ class GenericClient(object):
 
         return result
 
-    def sendTORRENT(self, result):
+    def send_torrent(self, result):
 
         r_code = False
 
@@ -202,7 +205,7 @@ class GenericClient(object):
 
         return r_code
 
-    def testAuthentication(self):
+    def test_authentication(self):
 
         try:
             self.response = self.session.get(self.url, timeout=20, verify=False)

@@ -184,7 +184,7 @@ class PageElement:
             newChild = NavigableString(newChild)
 
         position =  min(position, len(self.contents))
-        if hasattr(newChild, 'parent') and newChild.parent != None:
+        if hasattr(newChild, 'parent') and newChild.parent is not None:
             # We're 'inserting' an element that's already one
             # of this object's children.
             if newChild.parent == self:
@@ -508,7 +508,7 @@ class Tag(PageElement):
         self.parserClass = parser.__class__
         self.isSelfClosing = parser.isSelfClosingTag(name)
         self.name = name
-        if attrs == None:
+        if attrs is None:
             attrs = []
         self.attrs = attrs
         self.contents = []
@@ -911,7 +911,7 @@ class SoupStrainer:
         #print "Matching %s against %s" % (markup, matchAgainst)
         result = False
         if matchAgainst == True and type(matchAgainst) == types.BooleanType:
-            result = markup != None
+            result = markup is not None
         elif callable(matchAgainst):
             result = matchAgainst(markup)
         else:
@@ -1253,7 +1253,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         """
 
         nestingResetTriggers = self.NESTABLE_TAGS.get(name)
-        isNestable = nestingResetTriggers != None
+        isNestable = nestingResetTriggers is not None
         isResetNesting = self.RESET_NESTING_TAGS.has_key(name)
         popTo = None
         inclusive = True
@@ -1264,9 +1264,9 @@ class BeautifulStoneSoup(Tag, SGMLParser):
                 #last occurance.
                 popTo = name
                 break
-            if (nestingResetTriggers != None
+            if (nestingResetTriggers is not None
                 and p.name in nestingResetTriggers) \
-                or (nestingResetTriggers == None and isResetNesting
+                or (nestingResetTriggers is None and isResetNesting
                     and self.RESET_NESTING_TAGS.has_key(p.name)):
 
                 #If we encounter one of the nesting reset triggers

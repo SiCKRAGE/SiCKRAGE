@@ -16,13 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2
-import sickbeard
+import urllib
+import urllib2
 import telnetlib
 import re
 
+import sickbeard
 from sickbeard import logger
 from sickbeard.exceptions import ex
+
 
 try:
     import xml.etree.cElementTree as etree
@@ -67,7 +69,8 @@ class NMJNotifier:
             logger.log(u"Found NMJ database %s on device %s" % (database, device), logger.DEBUG)
             sickbeard.NMJ_DATABASE = database
         else:
-            logger.log(u"Could not get current NMJ database on %s, NMJ is probably not running!" % (host), logger.WARNING)
+            logger.log(u"Could not get current NMJ database on %s, NMJ is probably not running!" %
+                       host, logger.WARNING)
             return False
 
         # if the device is a remote host then try to parse the mounting URL and save it to the config

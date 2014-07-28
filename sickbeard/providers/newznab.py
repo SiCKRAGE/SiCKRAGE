@@ -137,7 +137,9 @@ class NewznabProvider(generic.NZBProvider):
             to_return.append(params)
         else:
             # add new query strings for exceptions
-            name_exceptions = list(set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
+            name_exceptions = list(set(scene_exceptions.get_scene_exceptions(
+                ep_obj.show.indexerid) + [ep_obj.show.name]
+            ))
             for cur_exception in name_exceptions:
                 params['q'] = helpers.sanitizeSceneName(cur_exception)
                 to_return.append(params)
@@ -268,7 +270,7 @@ class NewznabProvider(generic.NZBProvider):
 
                 (title, url) = self._get_title_and_url(item)
 
-                if item.has_key('published_parsed') and item['published_parsed']:
+                if 'published_parsed' in item and item['published_parsed']:
                     result_date = item.published_parsed
                     if result_date:
                         result_date = datetime.datetime(*result_date[0:6])
@@ -345,7 +347,6 @@ class NewznabCache(tvcache.TVCache):
                     u"Your authentication credentials for " + self.provider.name + " are incorrect, check your config")
 
         return []
-
 
     # overwrite method with that parses the rageid from the newznab feed
     def _parseItem(self, item):

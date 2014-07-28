@@ -102,10 +102,9 @@ class SearchResult:
         # release group
         self.release_group = ""
 
-
     def __str__(self):
 
-        if self.provider == None:
+        if self.provider is None:
             return "Invalid provider, unable to print self"
 
         myString = self.provider.name + " @ " + self.url + "\n"
@@ -144,6 +143,7 @@ class TorrentSearchResult(SearchResult):
     Torrent result with an URL to the torrent
     """
     resultType = "torrent"
+
 
 class AllShowsListUI:
     """
@@ -186,6 +186,7 @@ class AllShowsListUI:
                                 searchResults += [curShow]
 
         return searchResults
+
 
 class ShowListUI:
     """

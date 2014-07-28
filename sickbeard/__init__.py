@@ -43,8 +43,8 @@ from sickbeard import naming
 from sickbeard import dailysearcher
 from sickbeard import scene_numbering, scene_exceptions, name_cache
 from indexers.indexer_api import indexerApi
-from indexers.indexer_exceptions import indexer_shownotfound, indexer_exception, indexer_error, indexer_episodenotfound, \
-    indexer_attributenotfound, indexer_seasonnotfound, indexer_userabort, indexerExcepts
+from indexers.indexer_exceptions import indexer_shownotfound, indexer_exception, indexer_error, \
+    indexer_episodenotfound, indexer_attributenotfound, indexer_seasonnotfound, indexer_userabort, indexerExcepts
 from sickbeard.common import SD, SKIPPED, NAMING_REPEAT
 from sickbeard.databases import mainDB, cache_db, failed_db
 
@@ -442,29 +442,39 @@ __INITIALIZED__ = False
 def initialize(consoleLogging=True):
     with INIT_LOCK:
 
-        global ACTUAL_LOG_DIR, LOG_DIR, WEB_PORT, WEB_LOG, ENCRYPTION_VERSION, WEB_ROOT, WEB_USERNAME, WEB_PASSWORD, WEB_HOST, WEB_IPV6, USE_API, API_KEY, ENABLE_HTTPS, HTTPS_CERT, HTTPS_KEY, \
-            HANDLE_REVERSE_PROXY, USE_NZBS, USE_TORRENTS, NZB_METHOD, NZB_DIR, DOWNLOAD_PROPERS, CHECK_PROPERS_INTERVAL, ALLOW_HIGH_PRIORITY, TORRENT_METHOD, \
+        global ACTUAL_LOG_DIR, LOG_DIR, WEB_PORT, WEB_LOG, ENCRYPTION_VERSION, WEB_ROOT, WEB_USERNAME, WEB_PASSWORD, \
+            WEB_HOST, WEB_IPV6, USE_API, API_KEY, ENABLE_HTTPS, HTTPS_CERT, HTTPS_KEY, \
+            HANDLE_REVERSE_PROXY, USE_NZBS, USE_TORRENTS, NZB_METHOD, NZB_DIR, DOWNLOAD_PROPERS, \
+            CHECK_PROPERS_INTERVAL, ALLOW_HIGH_PRIORITY, TORRENT_METHOD, \
             SAB_USERNAME, SAB_PASSWORD, SAB_APIKEY, SAB_CATEGORY, SAB_HOST, \
             NZBGET_USERNAME, NZBGET_PASSWORD, NZBGET_CATEGORY, NZBGET_HOST, NZBGET_USE_HTTPS, backlogSearchScheduler, \
-            TORRENT_USERNAME, TORRENT_PASSWORD, TORRENT_HOST, TORRENT_PATH, TORRENT_SEED_TIME, TORRENT_PAUSED, TORRENT_HIGH_BANDWIDTH, TORRENT_LABEL, TORRENT_VERIFY_CERT, \
-            USE_XBMC, XBMC_ALWAYS_ON, XBMC_NOTIFY_ONSNATCH, XBMC_NOTIFY_ONDOWNLOAD, XBMC_NOTIFY_ONSUBTITLEDOWNLOAD, XBMC_UPDATE_FULL, XBMC_UPDATE_ONLYFIRST, \
-            XBMC_UPDATE_LIBRARY, XBMC_HOST, XBMC_USERNAME, XBMC_PASSWORD, BACKLOG_FREQUENCY, \
-            USE_TRAKT, TRAKT_USERNAME, TRAKT_PASSWORD, TRAKT_API, TRAKT_REMOVE_WATCHLIST, TRAKT_USE_WATCHLIST, TRAKT_METHOD_ADD, TRAKT_START_PAUSED, traktCheckerScheduler, TRAKT_USE_RECOMMENDED, TRAKT_SYNC, TRAKT_DEFAULT_INDEXER, \
-            USE_PLEX, PLEX_NOTIFY_ONSNATCH, PLEX_NOTIFY_ONDOWNLOAD, PLEX_NOTIFY_ONSUBTITLEDOWNLOAD, PLEX_UPDATE_LIBRARY, \
-            PLEX_SERVER_HOST, PLEX_HOST, PLEX_USERNAME, PLEX_PASSWORD, DEFAULT_BACKLOG_FREQUENCY, MIN_BACKLOG_FREQUENCY, BACKLOG_STARTUP, SKIP_REMOVED_FILES, \
-            showUpdateScheduler, __INITIALIZED__, LAUNCH_BROWSER, UPDATE_SHOWS_ON_START, SORT_ARTICLE, showList, loadingShowList, \
-            NEWZNAB_DATA, NZBS, NZBS_UID, NZBS_HASH, INDEXER_DEFAULT, INDEXER_TIMEOUT, USENET_RETENTION, TORRENT_DIR, \
-            QUALITY_DEFAULT, FLATTEN_FOLDERS_DEFAULT, SUBTITLES_DEFAULT, STATUS_DEFAULT, DAILYSEARCH_STARTUP, \
-            GROWL_NOTIFY_ONSNATCH, GROWL_NOTIFY_ONDOWNLOAD, GROWL_NOTIFY_ONSUBTITLEDOWNLOAD, TWITTER_NOTIFY_ONSNATCH, TWITTER_NOTIFY_ONDOWNLOAD, TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD, \
-            USE_GROWL, GROWL_HOST, GROWL_PASSWORD, USE_PROWL, PROWL_NOTIFY_ONSNATCH, PROWL_NOTIFY_ONDOWNLOAD, PROWL_NOTIFY_ONSUBTITLEDOWNLOAD, PROWL_API, PROWL_PRIORITY, PROG_DIR, \
-            USE_PYTIVO, PYTIVO_NOTIFY_ONSNATCH, PYTIVO_NOTIFY_ONDOWNLOAD, PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD, PYTIVO_UPDATE_LIBRARY, PYTIVO_HOST, PYTIVO_SHARE_NAME, PYTIVO_TIVO_NAME, \
+            TORRENT_USERNAME, TORRENT_PASSWORD, TORRENT_HOST, TORRENT_PATH, TORRENT_SEED_TIME, TORRENT_PAUSED, \
+            TORRENT_HIGH_BANDWIDTH, TORRENT_LABEL, TORRENT_VERIFY_CERT, \
+            USE_XBMC, XBMC_ALWAYS_ON, XBMC_NOTIFY_ONSNATCH, XBMC_NOTIFY_ONDOWNLOAD, XBMC_NOTIFY_ONSUBTITLEDOWNLOAD, \
+            XBMC_UPDATE_FULL, XBMC_UPDATE_ONLYFIRST, XBMC_UPDATE_LIBRARY, XBMC_HOST, XBMC_USERNAME, XBMC_PASSWORD, \
+            BACKLOG_FREQUENCY, USE_TRAKT, TRAKT_USERNAME, TRAKT_PASSWORD, TRAKT_API, TRAKT_REMOVE_WATCHLIST, \
+            TRAKT_USE_WATCHLIST, TRAKT_METHOD_ADD, TRAKT_START_PAUSED, traktCheckerScheduler, TRAKT_USE_RECOMMENDED, \
+            TRAKT_SYNC, TRAKT_DEFAULT_INDEXER, USE_PLEX, PLEX_NOTIFY_ONSNATCH, PLEX_NOTIFY_ONDOWNLOAD, \
+            PLEX_NOTIFY_ONSUBTITLEDOWNLOAD, PLEX_UPDATE_LIBRARY, PLEX_SERVER_HOST, PLEX_HOST, PLEX_USERNAME, \
+            PLEX_PASSWORD, DEFAULT_BACKLOG_FREQUENCY, MIN_BACKLOG_FREQUENCY, BACKLOG_STARTUP, SKIP_REMOVED_FILES, \
+            showUpdateScheduler, __INITIALIZED__, LAUNCH_BROWSER, UPDATE_SHOWS_ON_START, SORT_ARTICLE, showList, \
+            loadingShowList, NEWZNAB_DATA, NZBS, NZBS_UID, NZBS_HASH, INDEXER_DEFAULT, INDEXER_TIMEOUT, \
+            USENET_RETENTION, TORRENT_DIR, QUALITY_DEFAULT, FLATTEN_FOLDERS_DEFAULT, SUBTITLES_DEFAULT, \
+            STATUS_DEFAULT, DAILYSEARCH_STARTUP, GROWL_NOTIFY_ONSNATCH, GROWL_NOTIFY_ONDOWNLOAD, \
+            GROWL_NOTIFY_ONSUBTITLEDOWNLOAD, TWITTER_NOTIFY_ONSNATCH, TWITTER_NOTIFY_ONDOWNLOAD, \
+            TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD, USE_GROWL, GROWL_HOST, GROWL_PASSWORD, \
+            USE_PROWL, PROWL_NOTIFY_ONSNATCH, PROWL_NOTIFY_ONDOWNLOAD, PROWL_NOTIFY_ONSUBTITLEDOWNLOAD, PROWL_API, \
+            PROWL_PRIORITY, PROG_DIR, USE_PYTIVO, PYTIVO_NOTIFY_ONSNATCH, PYTIVO_NOTIFY_ONDOWNLOAD, \
+            PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD, PYTIVO_UPDATE_LIBRARY, PYTIVO_HOST, PYTIVO_SHARE_NAME, PYTIVO_TIVO_NAME, \
             USE_NMA, NMA_NOTIFY_ONSNATCH, NMA_NOTIFY_ONDOWNLOAD, NMA_NOTIFY_ONSUBTITLEDOWNLOAD, NMA_API, NMA_PRIORITY, \
-            USE_PUSHALOT, PUSHALOT_NOTIFY_ONSNATCH, PUSHALOT_NOTIFY_ONDOWNLOAD, PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD, PUSHALOT_AUTHORIZATIONTOKEN, \
-            USE_PUSHBULLET, PUSHBULLET_NOTIFY_ONSNATCH, PUSHBULLET_NOTIFY_ONDOWNLOAD, PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD, PUSHBULLET_API, PUSHBULLET_DEVICE, \
-            versionCheckScheduler, VERSION_NOTIFY, AUTO_UPDATE, NOTIFY_ON_UPDATE, PROCESS_AUTOMATICALLY, UNPACK, CPU_PRESET, \
-            KEEP_PROCESSED_DIR, PROCESS_METHOD, TV_DOWNLOAD_DIR, MIN_DAILYSEARCH_FREQUENCY, DEFAULT_UPDATE_FREQUENCY, MIN_UPDATE_FREQUENCY, UPDATE_FREQUENCY, \
-            showQueueScheduler, searchQueueScheduler, ROOT_DIRS, CACHE_DIR, ACTUAL_CACHE_DIR, TIMEZONE_DISPLAY, \
-            NAMING_PATTERN, NAMING_MULTI_EP, NAMING_FORCE_FOLDERS, NAMING_ABD_PATTERN, NAMING_CUSTOM_ABD, NAMING_SPORTS_PATTERN, NAMING_CUSTOM_SPORTS, NAMING_STRIP_YEAR, \
+            USE_PUSHALOT, PUSHALOT_NOTIFY_ONSNATCH, PUSHALOT_NOTIFY_ONDOWNLOAD, PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD, \
+            PUSHALOT_AUTHORIZATIONTOKEN, USE_PUSHBULLET, PUSHBULLET_NOTIFY_ONSNATCH, PUSHBULLET_NOTIFY_ONDOWNLOAD, \
+            PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD, PUSHBULLET_API, PUSHBULLET_DEVICE, versionCheckScheduler, \
+            VERSION_NOTIFY, AUTO_UPDATE, NOTIFY_ON_UPDATE, PROCESS_AUTOMATICALLY, UNPACK, CPU_PRESET, \
+            KEEP_PROCESSED_DIR, PROCESS_METHOD, TV_DOWNLOAD_DIR, MIN_DAILYSEARCH_FREQUENCY, DEFAULT_UPDATE_FREQUENCY, \
+            MIN_UPDATE_FREQUENCY, UPDATE_FREQUENCY, showQueueScheduler, searchQueueScheduler, ROOT_DIRS, CACHE_DIR, \
+            ACTUAL_CACHE_DIR, TIMEZONE_DISPLAY, NAMING_PATTERN, NAMING_MULTI_EP, NAMING_FORCE_FOLDERS, \
+            NAMING_ABD_PATTERN, NAMING_CUSTOM_ABD, NAMING_SPORTS_PATTERN, NAMING_CUSTOM_SPORTS, NAMING_STRIP_YEAR, \
             RENAME_EPISODES, AIRDATE_EPISODES, properFinderScheduler, PROVIDER_ORDER, autoPostProcesserScheduler, \
             WOMBLE, OMGWTFNZBS, OMGWTFNZBS_USERNAME, OMGWTFNZBS_APIKEY, providerList, newznabProviderList, torrentRssProviderList, \
             EXTRA_SCRIPTS, USE_TWITTER, TWITTER_USERNAME, TWITTER_PASSWORD, TWITTER_PREFIX, DAILYSEARCH_FREQUENCY, \
@@ -1023,13 +1033,14 @@ def initialize(consoleLogging=True):
 
         # initialize metadata_providers
         metadata_provider_dict = metadata.get_metadata_generator_dict()
-        for cur_metadata_tuple in [(METADATA_XBMC, metadata.xbmc),
-                                   (METADATA_XBMC_12PLUS, metadata.xbmc_12plus),
-                                   (METADATA_MEDIABROWSER, metadata.mediabrowser),
-                                   (METADATA_PS3, metadata.ps3),
-                                   (METADATA_WDTV, metadata.wdtv),
-                                   (METADATA_TIVO, metadata.tivo),
-                                   (METADATA_MEDE8ER, metadata.mede8er),
+        for cur_metadata_tuple in [
+            (METADATA_XBMC, metadata.xbmc),
+            (METADATA_XBMC_12PLUS, metadata.xbmc_12plus),
+            (METADATA_MEDIABROWSER, metadata.mediabrowser),
+            (METADATA_PS3, metadata.ps3),
+            (METADATA_WDTV, metadata.wdtv),
+            (METADATA_TIVO, metadata.tivo),
+            (METADATA_MEDE8ER, metadata.mede8er),
         ]:
             (cur_metadata_config, cur_metadata_class) = cur_metadata_tuple
             tmp_provider = cur_metadata_class.metadata_class()
@@ -1039,38 +1050,48 @@ def initialize(consoleLogging=True):
         # initialize schedulers
         # updaters
         update_now = datetime.timedelta(minutes=0)
-        versionCheckScheduler = scheduler.Scheduler(versionChecker.CheckVersion(),
-                                                    cycleTime=datetime.timedelta(hours=UPDATE_FREQUENCY),
-                                                    threadName="CHECKVERSION",
-                                                    silent=False)
+        versionCheckScheduler = scheduler.Scheduler(
+            versionChecker.CheckVersion(),
+            cycleTime=datetime.timedelta(hours=UPDATE_FREQUENCY),
+            threadName="CHECKVERSION",
+            silent=False
+        )
 
-        showQueueScheduler = scheduler.Scheduler(show_queue.ShowQueue(),
-                                                 cycleTime=datetime.timedelta(seconds=3),
-                                                 threadName="SHOWQUEUE")
+        showQueueScheduler = scheduler.Scheduler(
+            show_queue.ShowQueue(),
+            cycleTime=datetime.timedelta(seconds=3),
+            threadName="SHOWQUEUE"
+        )
 
-        showUpdateScheduler = scheduler.Scheduler(showUpdater.ShowUpdater(),
-                                                  cycleTime=datetime.timedelta(hours=1),
-                                                  threadName="SHOWUPDATER",
-                                                  start_time=datetime.time(hour=3))  # 3 AM
+        showUpdateScheduler = scheduler.Scheduler(
+            showUpdater.ShowUpdater(),
+            cycleTime=datetime.timedelta(hours=1),
+            threadName="SHOWUPDATER",
+            start_time=datetime.time(hour=3)  # 3 AM
+        )
 
         # searchers
-        searchQueueScheduler = scheduler.Scheduler(search_queue.SearchQueue(),
-                                                   cycleTime=datetime.timedelta(seconds=3),
-                                                   threadName="SEARCHQUEUE")
+        searchQueueScheduler = scheduler.Scheduler(
+            search_queue.SearchQueue(),
+            cycleTime=datetime.timedelta(seconds=3),
+            threadName="SEARCHQUEUE"
+        )
 
         update_interval = datetime.timedelta(minutes=DAILYSEARCH_FREQUENCY)
-        dailySearchScheduler = scheduler.Scheduler(dailysearcher.DailySearcher(),
-                                                   cycleTime=update_interval,
-                                                   threadName="DAILYSEARCHER",
-                                                   run_delay=update_now if DAILYSEARCH_STARTUP
-                                                   else update_interval)
+        dailySearchScheduler = scheduler.Scheduler(
+            dailysearcher.DailySearcher(),
+            cycleTime=update_interval,
+            threadName="DAILYSEARCHER",
+            run_delay=update_now if DAILYSEARCH_STARTUP else update_interval
+        )
 
         update_interval = datetime.timedelta(minutes=BACKLOG_FREQUENCY)
-        backlogSearchScheduler = searchBacklog.BacklogSearchScheduler(searchBacklog.BacklogSearcher(),
-                                                                      cycleTime=update_interval,
-                                                                      threadName="BACKLOG",
-                                                                      run_delay=update_now if BACKLOG_STARTUP
-                                                                      else update_interval)
+        backlogSearchScheduler = searchBacklog.BacklogSearchScheduler(
+            searchBacklog.BacklogSearcher(),
+            cycleTime=update_interval,
+            threadName="BACKLOG",
+            run_delay=update_now if BACKLOG_STARTUP else update_interval
+        )
 
         search_intervals = {'15m': 15, '45m': 45, '90m': 90, '4h': 4 * 60, 'daily': 24 * 60}
         if CHECK_PROPERS_INTERVAL in search_intervals:
@@ -1080,34 +1101,42 @@ def initialize(consoleLogging=True):
             update_interval = datetime.timedelta(hours=1)
             run_at = datetime.time(hour=1)  # 1 AM
 
-        properFinderScheduler = scheduler.Scheduler(properFinder.ProperFinder(),
-                                                    cycleTime=update_interval,
-                                                    threadName="FINDPROPERS",
-                                                    start_time=run_at,
-                                                    run_delay=update_interval)
+        properFinderScheduler = scheduler.Scheduler(
+            properFinder.ProperFinder(),
+            cycleTime=update_interval,
+            threadName="FINDPROPERS",
+            start_time=run_at,
+            run_delay=update_interval
+        )
 
         # processors
-        autoPostProcesserScheduler = scheduler.Scheduler(autoPostProcesser.PostProcesser(),
-                                                         cycleTime=datetime.timedelta(
-                                                             minutes=AUTOPOSTPROCESSER_FREQUENCY),
-                                                         threadName="POSTPROCESSER",
-                                                         silent=not PROCESS_AUTOMATICALLY)
+        autoPostProcesserScheduler = scheduler.Scheduler(
+            autoPostProcesser.PostProcesser(),
+            cycleTime=datetime.timedelta(minutes=AUTOPOSTPROCESSER_FREQUENCY),
+            threadName="POSTPROCESSER",
+            silent=not PROCESS_AUTOMATICALLY
+        )
 
-        traktCheckerScheduler = scheduler.Scheduler(traktChecker.TraktChecker(),
-                                                    cycleTime=datetime.timedelta(hours=1),
-                                                    threadName="TRAKTCHECKER",
-                                                    silent=not USE_TRAKT)
+        traktCheckerScheduler = scheduler.Scheduler(
+            traktChecker.TraktChecker(),
+            cycleTime=datetime.timedelta(hours=1),
+            threadName="TRAKTCHECKER",
+            silent=not USE_TRAKT
+        )
 
-        subtitlesFinderScheduler = scheduler.Scheduler(subtitles.SubtitlesFinder(),
-                                                       cycleTime=datetime.timedelta(hours=SUBTITLES_FINDER_FREQUENCY),
-                                                       threadName="FINDSUBTITLES",
-                                                       silent=not USE_SUBTITLES)
+        subtitlesFinderScheduler = scheduler.Scheduler(
+            subtitles.SubtitlesFinder(),
+            cycleTime=datetime.timedelta(hours=SUBTITLES_FINDER_FREQUENCY),
+            threadName="FINDSUBTITLES",
+            silent=not USE_SUBTITLES
+        )
 
         showList = []
         loadingShowList = {}
 
         __INITIALIZED__ = True
         return True
+
 
 def start():
     global __INITIALIZED__, backlogSearchScheduler, \
@@ -1257,7 +1286,7 @@ def halt():
 
 
 def sig_handler(signum=None, frame=None):
-    if type(signum) != type(None):
+    if not isinstance(signum):
         logger.log(u"Signal %i caught, saving and exiting..." % int(signum))
         events.put(events.SystemEvent.SHUTDOWN)
 
@@ -1289,7 +1318,8 @@ def save_config():
     new_config = ConfigObj()
     new_config.filename = CONFIG_FILE
 
-    # For passwords you must include the word `password` in the item_name and add `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save_config()
+    # For passwords you must include the word `password` in the item_name and add
+    # `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save_config()
     new_config['General'] = {}
     new_config['General']['config_version'] = CONFIG_VERSION
     new_config['General']['encryption_version'] = int(ENCRYPTION_VERSION)
@@ -1720,13 +1750,13 @@ def launchBrowser(startPort=None):
 
 
 def getEpList(epIDs, showid=None):
-    if epIDs == None or len(epIDs) == 0:
+    if epIDs is None or len(epIDs) == 0:
         return []
 
     query = "SELECT * FROM tv_episodes WHERE indexerid in (%s)" % (",".join(['?'] * len(epIDs)),)
     params = epIDs
 
-    if showid != None:
+    if showid is not None:
         query += " AND showid = ?"
         params.append(showid)
 

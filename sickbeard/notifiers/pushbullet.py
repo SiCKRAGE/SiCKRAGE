@@ -36,23 +36,25 @@ class PushbulletNotifier:
 
     def notify_snatch(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONSNATCH:
-            self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_SNATCH] + " : " + ep_name, message=ep_name,
-                                 notificationType="note", method="POST")
+            self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_SNATCH] +
+                                 " : " + ep_name, message=ep_name, notificationType="note", method="POST")
 
     def notify_download(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONDOWNLOAD:
-            self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_DOWNLOAD] + " : " + ep_name,
+            self._sendPushbullet(pushbullet_api=None,
+                                 event=common.notifyStrings[common.NOTIFY_DOWNLOAD] + " : " + ep_name,
                                  message=ep_name, notificationType="note", method="POST")
 
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
+            self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[
+                                 common.NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
                                  message=ep_name + ": " + lang, notificationType="note", method="POST")
-                                 
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_PUSHBULLET:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._sendPushbullet(pushbullet_api=None, event=title, message=update_text + new_version, method="POST")
 
     def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None,
@@ -61,9 +63,9 @@ class PushbulletNotifier:
         if not sickbeard.USE_PUSHBULLET and not force:
             return False
 
-        if pushbullet_api == None:
+        if pushbullet_api is None:
             pushbullet_api = sickbeard.PUSHBULLET_API
-        if pushbullet_device == None:
+        if pushbullet_device is None:
             pushbullet_device = sickbeard.PUSHBULLET_DEVICE
 
         if method == 'POST':
@@ -81,7 +83,7 @@ class PushbulletNotifier:
 
         authString = base64.encodestring('%s:' % (pushbullet_api)).replace('\n', '')
 
-        if notificationType == None:
+        if notificationType is None:
             testMessage = True
             try:
                 logger.log(u"Testing Pushbullet authentication and retrieving the device list.", logger.DEBUG)

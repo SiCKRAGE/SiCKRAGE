@@ -258,7 +258,7 @@ would use an outer join::
 
     >>> from sqlalchemy import or_
     >>> print (Session().query(User, User.balance).outerjoin(User.accounts).
-    ...         filter(or_(User.balance < 5000, User.balance == None)))
+    ...         filter(or_(User.balance < 5000, User.balance is None)))
     SELECT "user".id AS user_id, "user".name AS user_name,
     account.balance AS account_balance
     FROM "user" LEFT OUTER JOIN account ON "user".id = account.user_id

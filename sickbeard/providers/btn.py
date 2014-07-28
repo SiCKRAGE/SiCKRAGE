@@ -115,8 +115,8 @@ class BTNProvider(generic.TorrentProvider):
                 # +1 because range(1,4) = 1, 2, 3
                 for page in range(1, pages_needed + 1):
                     parsedJSON = self._api_call(apikey, params, results_per_page, page * results_per_page)
-                    # Note that this these are individual requests and might time out individually. This would result in 'gaps'
-                    # in the results. There is no way to fix this though.
+                    # Note that this these are individual requests and might time out individually. This would
+                    # result in 'gaps in the results. There is no way to fix this though.
                     if 'torrents' in parsedJSON:
                         found_torrents.update(parsedJSON['torrents'])
 
@@ -343,10 +343,12 @@ class BTNCache(tvcache.TVCache):
         if seconds_since_last_update < seconds_minTime:
             seconds_since_last_update = seconds_minTime
 
-        # Set maximum to 24 hours (24 * 60 * 60 = 86400 seconds) of "RSS" data search, older things will need to be done through backlog
+        # Set maximum to 24 hours (24 * 60 * 60 = 86400 seconds) of "RSS" data search, older things will
+        # need to be done through backlog
         if seconds_since_last_update > 86400:
             logger.log(
-                u"The last known successful update on " + self.provider.name + " was more than 24 hours ago, only trying to fetch the last 24 hours!",
+                u"The last known successful update on " + self.provider.name +
+                " was more than 24 hours ago, only trying to fetch the last 24 hours!",
                 logger.WARNING)
             seconds_since_last_update = 86400
 

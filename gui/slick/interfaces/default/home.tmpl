@@ -224,7 +224,7 @@
 
 #for $curLoadingShow in $sickbeard.showQueueScheduler.action.loadingShowList:
 
-  #if $curLoadingShow.show != None and $curLoadingShow.show in $sickbeard.showList:
+  #if $curLoadingShow.show is not None and $curLoadingShow.show in $sickbeard.showList:
     #continue
   #end if
 
@@ -232,7 +232,7 @@
     <td align="center">(loading)</td>
     <td></td>
     <td>
-    #if $curLoadingShow.show == None:
+    #if $curLoadingShow.show is None:
     Loading... ($curLoadingShow.show_name)
     #else:
     <a href="displayShow?show=$curLoadingShow.show.indexerid">$curLoadingShow.show.name</a>

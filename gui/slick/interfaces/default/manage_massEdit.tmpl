@@ -9,7 +9,7 @@
 #set global $topmenu="manage"#
 #import os.path
 #include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_top.tmpl")
-#if $quality_value != None:
+#if $quality_value is not None:
 #set $initial_quality = int($quality_value)
 #else:
 #set $initial_quality = $common.SD
@@ -41,7 +41,7 @@
         <select id="qualityPreset" name="quality_preset">
             <option value="keep">&lt; keep &gt;</option>
             #set $selected = None
-            <option value="0"  #if $quality_value != None and $quality_value not in $common.qualityPresets then "selected=\"selected\"" else ""#>Custom</option>
+            <option value="0"  #if $quality_value is not None and $quality_value not in $common.qualityPresets then "selected=\"selected\"" else ""#>Custom</option>
             #for $curPreset in sorted($common.qualityPresets):
             <option value="$curPreset" #if $quality_value == $curPreset then "selected=\"selected\"" else ""#>$common.qualityPresetStrings[$curPreset]</option>
             #end for

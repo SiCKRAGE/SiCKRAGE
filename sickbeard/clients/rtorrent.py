@@ -1,4 +1,5 @@
-# Author: jkaberg <joel.kaberg@gmail.com>, based on fuzemans work (https://github.com/RuudBurger/CouchPotatoServer/blob/develop/couchpotato/core/downloaders/rtorrent/main.py)
+# Author: jkaberg <joel.kaberg@gmail.com>, based on fuzemans work
+# (https://github.com/RuudBurger/CouchPotatoServer/blob/develop/couchpotato/core/downloaders/rtorrent/main.py)
 # URL: http://code.google.com/p/sickbeard/
 #
 # This file is part of SickRage.
@@ -11,22 +12,19 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from base64 import b64encode
-
 import sickbeard
 from sickbeard.clients.generic import GenericClient
 from lib.rtorrent import RTorrent
-from lib.rtorrent.err import MethodError
 
 
-class rTorrentAPI(GenericClient):
+class RtorrentAPI(GenericClient):
     def __init__(self, host=None, username=None, password=None):
-        super(rTorrentAPI, self).__init__('rTorrent', host, username, password)
+        super(RtorrentAPI, self).__init__('rTorrent', host, username, password)
 
     def _get_auth(self):
         self.auth = None
@@ -150,7 +148,7 @@ class rTorrentAPI(GenericClient):
 
         return True
 
-    def testAuthentication(self):
+    def test_authentication(self):
         try:
             self._get_auth()
 
@@ -162,4 +160,4 @@ class rTorrentAPI(GenericClient):
             return False, 'Error: Unable to connect to ' + self.name
 
 
-api = rTorrentAPI()
+api = RtorrentAPI()

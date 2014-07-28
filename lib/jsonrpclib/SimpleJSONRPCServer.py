@@ -99,7 +99,7 @@ class SimpleJSONRPCDispatcher(SimpleXMLRPCServer.SimpleXMLRPCDispatcher):
             exc_type, exc_value, exc_tb = sys.exc_info()
             fault = Fault(-32603, '%s:%s' % (exc_type, exc_value))
             return fault.response()
-        if 'id' not in request.keys() or request['id'] == None:
+        if 'id' not in request.keys() or request['id'] is None:
             # It's a notification
             return None
         try:
@@ -172,7 +172,7 @@ class SimpleJSONRPCRequestHandler(
             trace_string = '%s | %s' % (err_lines[-3], err_lines[-1])
             fault = jsonrpclib.Fault(-32603, 'Server error: %s' % trace_string)
             response = fault.response()
-        if response == None:
+        if response is None:
             response = ''
         self.send_header("Content-type", "application/json-rpc")
         self.send_header("Content-length", str(len(response)))

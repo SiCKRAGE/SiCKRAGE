@@ -124,7 +124,6 @@ class ImageCache:
         logger.log(u"Checking if file " + str(banner_thumb_path) + " exists", logger.DEBUG)
         return ek.ek(os.path.isfile, banner_thumb_path)
 
-
     BANNER = 1
     POSTER = 2
     BANNER_THUMB = 3
@@ -251,8 +250,8 @@ class ImageCache:
                        self.POSTER_THUMB: not self.has_poster_thumbnail(show_obj.indexerid),
                        self.BANNER_THUMB: not self.has_banner_thumbnail(show_obj.indexerid)}
 
-        if not need_images[self.POSTER] and not need_images[self.BANNER] and not need_images[self.POSTER_THUMB] and not \
-        need_images[self.BANNER_THUMB]:
+        if not need_images[self.POSTER] and not need_images[self.BANNER] and not need_images[self.POSTER_THUMB] \
+                and not need_images[self.BANNER_THUMB]:
             logger.log(u"No new cache images needed, not retrieving new ones")
             return
 
@@ -266,9 +265,11 @@ class ImageCache:
                         cur_file_name = os.path.abspath(cur_provider.get_poster_path(show_obj))
                         cur_file_type = self.which_type(cur_file_name)
 
-                        if cur_file_type == None:
-                            logger.log(u"Unable to retrieve image type, not using the image from " + str(cur_file_name),
-                                       logger.WARNING)
+                        if cur_file_type is None:
+                            logger.log(
+                                u"Unable to retrieve image type, not using the image from " + str(cur_file_name),
+                                logger.WARNING
+                            )
                             continue
 
                         logger.log(u"Checking if image " + cur_file_name + " (type " + str(
@@ -276,8 +277,9 @@ class ImageCache:
 
                         if cur_file_type in need_images and need_images[cur_file_type]:
                             logger.log(
-                                u"Found an image in the show dir that doesn't exist in the cache, caching it: " + cur_file_name + ", type " + str(
-                                    cur_file_type), logger.DEBUG)
+                                u"Found an image in the show dir that doesn't exist in the cache, caching it: " +
+                                cur_file_name + ", type " + str(cur_file_type), logger.DEBUG
+                            )
                             self._cache_image_from_file(cur_file_name, cur_file_type, show_obj.indexerid)
                             need_images[cur_file_type] = False
             except exceptions.ShowDirNotFoundException:
@@ -285,8 +287,10 @@ class ImageCache:
 
         # download from indexer for missing ones
         for cur_image_type in [self.POSTER, self.BANNER, self.POSTER_THUMB, self.BANNER_THUMB]:
-            logger.log(u"Seeing if we still need an image of type " + str(cur_image_type) + ": " + str(
-                need_images[cur_image_type]), logger.DEBUG)
+            logger.log(
+                u"Seeing if we still need an image of type " + str(cur_image_type) + ": " +
+                str(need_images[cur_image_type]), logger.DEBUG
+            )
             if cur_image_type in need_images and need_images[cur_image_type]:
                 self._cache_image_from_indexer(show_obj, cur_image_type)
 

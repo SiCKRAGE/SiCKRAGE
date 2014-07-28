@@ -65,7 +65,8 @@ def logFailed(release):
             size = sql_results[0]["size"]
         else:
             logger.log(
-                u"They also vary in size. Deleting the logged snatches and recording this release with no size/provider",
+                u"They also vary in size. Deleting the logged snatches and recording this release with "
+                u"no size/provider",
                 logger.WARNING)
             for result in sql_results:
                 deleteLoggedSnatch(result["release"], result["size"], result["provider"])
@@ -196,13 +197,14 @@ def findRelease(epObj):
     release = None
     provider = None
 
-
     # Clear old snatches for this release if any exist
     myDB = db.DBConnection('failed.db')
-    myDB.action("DELETE FROM history WHERE showid=" + str(epObj.show.indexerid) + " AND season=" + str(
-        epObj.season) + " AND episode=" + str(
-        epObj.episode) + " AND date < (SELECT max(date) FROM history WHERE showid=" + str(
-        epObj.show.indexerid) + " AND season=" + str(epObj.season) + " AND episode=" + str(epObj.episode) + ")")
+    myDB.action(
+        "DELETE FROM history WHERE showid=" + str(epObj.show.indexerid) + " AND season=" +
+        str(epObj.season) + " AND episode=" + str(epObj.episode) +
+        " AND date < (SELECT max(date) FROM history WHERE showid=" + str(epObj.show.indexerid) +
+        " AND season=" + str(epObj.season) + " AND episode=" + str(epObj.episode) + ")"
+    )
 
     # Search for release in snatch history
     results = myDB.select("SELECT release, provider, date FROM history WHERE showid=? AND season=? AND episode=?",

@@ -242,6 +242,7 @@ class HDBitsCache(tvcache.TVCache):
                 if len(cl) > 0:
                     myDB = self._getDB()
                     myDB.mass_action(cl)
+
             else:
                 raise exceptions.AuthException(
                     "Your authentication info for " + self.provider.name + " is incorrect, check your config")

@@ -96,12 +96,12 @@ def authenticated(handler_class):
                 if not (sickbeard.WEB_USERNAME and sickbeard.WEB_PASSWORD):
                     return True
                 elif handler.request.uri.startswith('/calendar') or (
-                            handler.request.uri.startswith('/api') and '/api/builder' not in handler.request.uri):
+                        handler.request.uri.startswith('/api') and '/api/builder' not in handler.request.uri):
                     return True
 
                 auth_hdr = handler.request.headers.get('Authorization')
 
-                if auth_hdr == None:
+                if auth_hdr is None:
                     return _request_basic_auth(handler)
                 if not auth_hdr.startswith('Basic '):
                     return _request_basic_auth(handler)
@@ -169,7 +169,7 @@ class MainHandler(RequestHandler):
         elif self.settings.get("debug") and "exc_info" in kwargs:
             exc_info = kwargs["exc_info"]
             trace_info = ''.join(["%s<br/>" % line for line in traceback.format_exception(*exc_info)])
-            request_info = ''.join(["<strong>%s</strong>: %s<br/>" % (k, self.request.__dict__[k] ) for k in
+            request_info = ''.join(["<strong>%s</strong>: %s<br/>" % (k, self.request.__dict__[k]) for k in
                                     self.request.__dict__.keys()])
             error = exc_info[1]
 
@@ -339,23 +339,28 @@ class MainHandler(RequestHandler):
 
         myDB = db.DBConnection()
         sql_results = myDB.select(
-            "SELECT *, tv_shows.status as show_status FROM tv_episodes, tv_shows WHERE season != 0 AND airdate >= ? AND airdate < ? AND tv_shows.indexer_id = tv_episodes.showid AND tv_episodes.status NOT IN (" + ','.join(
-                ['?'] * len(qualList)) + ")", [today, next_week] + qualList)
+            "SELECT *, tv_shows.status as show_status FROM tv_episodes, tv_shows WHERE season != 0 AND "
+            "airdate >= ? AND airdate < ? AND tv_shows.indexer_id = tv_episodes.showid AND tv_episodes.status "
+            "NOT IN (" + ','.join(['?'] * len(qualList)) + ")", [today, next_week] + qualList)
 
         for cur_result in sql_results:
             done_show_list.append(int(cur_result["showid"]))
 
         more_sql_results = myDB.select(
-            "SELECT *, tv_shows.status as show_status FROM tv_episodes outer_eps, tv_shows WHERE season != 0 AND showid NOT IN (" + ','.join(
-                ['?'] * len(
-                    done_show_list)) + ") AND tv_shows.indexer_id = outer_eps.showid AND airdate = (SELECT airdate FROM tv_episodes inner_eps WHERE inner_eps.season != 0 AND inner_eps.showid = outer_eps.showid AND inner_eps.airdate >= ? ORDER BY inner_eps.airdate ASC LIMIT 1) AND outer_eps.status NOT IN (" + ','.join(
-                ['?'] * len(Quality.DOWNLOADED + Quality.SNATCHED)) + ")",
+            "SELECT *, tv_shows.status as show_status FROM tv_episodes outer_eps, tv_shows WHERE season != 0 "
+            "AND showid NOT IN (" + ','.join(['?'] * len(done_show_list)) +
+            ") AND tv_shows.indexer_id = outer_eps.showid AND airdate = (SELECT airdate FROM tv_episodes inner_eps "
+            "WHERE inner_eps.season != 0 AND inner_eps.showid = outer_eps.showid AND inner_eps.airdate >= ? ORDER BY "
+            "inner_eps.airdate ASC LIMIT 1) AND outer_eps.status NOT IN (" +
+            ','.join(['?'] * len(Quality.DOWNLOADED + Quality.SNATCHED)) + ")",
             done_show_list + [next_week] + Quality.DOWNLOADED + Quality.SNATCHED)
         sql_results += more_sql_results
 
         more_sql_results = myDB.select(
-            "SELECT *, tv_shows.status as show_status FROM tv_episodes, tv_shows WHERE season != 0 AND tv_shows.indexer_id = tv_episodes.showid AND airdate < ? AND airdate >= ? AND tv_episodes.status = ? AND tv_episodes.status NOT IN (" + ','.join(
-                ['?'] * len(qualList)) + ")", [today, recently, WANTED] + qualList)
+            "SELECT *, tv_shows.status as show_status FROM tv_episodes, tv_shows WHERE season != 0 AND "
+            "tv_shows.indexer_id = tv_episodes.showid AND airdate < ? AND airdate >= ? AND tv_episodes.status = ? "
+            "AND tv_episodes.status NOT IN (" +
+            ','.join(['?'] * len(qualList)) + ")", [today, recently, WANTED] + qualList)
         sql_results += more_sql_results
 
         # sort by localtime
@@ -378,18 +383,20 @@ class MainHandler(RequestHandler):
         t = PageTemplate(headers=self.request.headers, file="comingEpisodes.tmpl")
         # paused_item = { 'title': '', 'path': 'toggleComingEpsDisplayPaused' }
         # paused_item['title'] = 'Hide Paused' if sickbeard.COMING_EPS_DISPLAY_PAUSED else 'Show Paused'
-        paused_item = {'title': 'View Paused:', 'path': {'': ''}}
-        paused_item['path'] = {'Hide': 'toggleComingEpsDisplayPaused'} if sickbeard.COMING_EPS_DISPLAY_PAUSED else {
-            'Show': 'toggleComingEpsDisplayPaused'}
+        paused_item = {'title': 'View Paused:',
+                       'path': {'Hide': 'toggleComingEpsDisplayPaused'} if sickbeard.COMING_EPS_DISPLAY_PAUSED else {
+                           'Show': 'toggleComingEpsDisplayPaused'}}
         t.submenu = [
-            {'title': 'Sort by:', 'path': {'Date': 'setComingEpsSort/?sort=date',
-                                           'Show': 'setComingEpsSort/?sort=show',
-                                           'Network': 'setComingEpsSort/?sort=network',
+            {'title': 'Sort by:', 'path': {
+                'Date': 'setComingEpsSort/?sort=date',
+                'Show': 'setComingEpsSort/?sort=show',
+                'Network': 'setComingEpsSort/?sort=network',
             }},
 
-            {'title': 'Layout:', 'path': {'Banner': 'setComingEpsLayout/?layout=banner',
-                                          'Poster': 'setComingEpsLayout/?layout=poster',
-                                          'List': 'setComingEpsLayout/?layout=list',
+            {'title': 'Layout:', 'path': {
+                'Banner': 'setComingEpsLayout/?layout=banner',
+                'Poster': 'setComingEpsLayout/?layout=poster',
+                'List': 'setComingEpsLayout/?layout=list',
             }},
             paused_item,
         ]
@@ -430,11 +437,13 @@ class MainHandler(RequestHandler):
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
         myDB = db.DBConnection()
         calendar_shows = myDB.select(
-            "SELECT show_name, indexer_id, network, airs, runtime FROM tv_shows WHERE ( status = 'Continuing' OR status = 'Returning Series' ) AND paused != '1'")
+            "SELECT show_name, indexer_id, network, airs, runtime FROM tv_shows WHERE ( status = 'Continuing' "
+            "OR status = 'Returning Series' ) AND paused != '1'")
         for show in calendar_shows:
             # Get all episodes of this show airing between today and next month
             episode_list = myDB.select(
-                "SELECT indexerid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?",
+                "SELECT indexerid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? "
+                "AND airdate < ? AND showid = ?",
                 (past_date, future_date, int(show["indexer_id"])))
 
             utc = tz.gettz('GMT')
@@ -451,20 +460,19 @@ class MainHandler(RequestHandler):
                 ical = ical + 'DTSTART:' + air_date_time.strftime("%Y%m%d") + 'T' + air_date_time.strftime(
                     "%H%M%S") + 'Z\r\n'
                 ical = ical + 'DTEND:' + air_date_time_end.strftime(
-                    "%Y%m%d") + 'T' + air_date_time_end.strftime(
-                    "%H%M%S") + 'Z\r\n'
+                    "%Y%m%d") + 'T' + air_date_time_end.strftime("%H%M%S") + 'Z\r\n'
                 ical = ical + 'SUMMARY:' + show['show_name'] + ': ' + episode['name'] + '\r\n'
-                ical = ical + 'UID:Sick-Beard-' + str(datetime.date.today().isoformat()) + '-' + show[
-                    'show_name'].replace(" ", "-") + '-E' + str(episode['episode']) + 'S' + str(
-                    episode['season']) + '\r\n'
-                if (episode['description'] is not None and episode['description'] != ''):
+                ical = ical + 'UID:Sick-Beard-' + str(datetime.date.today().isoformat()) + '-' + \
+                    show['show_name'].replace(" ", "-") + '-E' + str(episode['episode']) + 'S' + \
+                    str(episode['season']) + '\r\n'
+                if episode['description'] is not None and episode['description'] != '':
                     ical = ical + 'DESCRIPTION:' + show['airs'] + ' on ' + show['network'] + '\\n\\n' + \
-                           episode['description'].splitlines()[0] + '\r\n'
+                        episode['description'].splitlines()[0] + '\r\n'
                 else:
                     ical = ical + 'DESCRIPTION:' + show['airs'] + ' on ' + show['network'] + '\r\n'
                 ical = ical + 'LOCATION:' + 'Episode ' + str(episode['episode']) + ' - Season ' + str(
                     episode['season']) + '\r\n'
-                ical = ical + 'END:VEVENT\r\n'
+                ical += 'END:VEVENT\r\n'
 
         # Ending the iCal
         ical += 'END:VCALENDAR'
@@ -628,7 +636,6 @@ class ManageSearches(MainHandler):
 
         redirect("/manage/manageSearches/")
 
-
     def forceFindPropers(self, *args, **kwargs):
 
         # force it to run the next time it looks
@@ -638,7 +645,6 @@ class ManageSearches(MainHandler):
             ui.notifications.message('Find propers search started')
 
         redirect("/manage/manageSearches/")
-
 
     def pauseBacklog(self, paused=None):
         if paused == "1":
@@ -654,7 +660,6 @@ class Manage(MainHandler):
         t = PageTemplate(headers=self.request.headers, file="manage.tmpl")
         t.submenu = ManageMenu()
         return _munge(t)
-
 
     def showEpisodeStatuses(self, indexer_id, whichStatus):
         status_list = [int(whichStatus)]
@@ -678,7 +683,6 @@ class Manage(MainHandler):
 
         return json.dumps(result)
 
-
     def episodeStatuses(self, whichStatus=None):
 
         if whichStatus:
@@ -699,10 +703,11 @@ class Manage(MainHandler):
 
         myDB = db.DBConnection()
         status_results = myDB.select(
-            "SELECT show_name, tv_shows.indexer_id as indexer_id FROM tv_episodes, tv_shows WHERE tv_episodes.status IN (" + ','.join(
-                ['?'] * len(
-                    status_list)) + ") AND season != 0 AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name",
-            status_list)
+            "SELECT show_name, tv_shows.indexer_id as indexer_id FROM tv_episodes, tv_shows "
+            "WHERE tv_episodes.status IN (" + ','.join(['?'] * len(status_list)) +
+            ") AND season != 0 AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name",
+            status_list
+        )
 
         ep_counts = {}
         show_names = {}
@@ -722,7 +727,6 @@ class Manage(MainHandler):
         t.ep_counts = ep_counts
         t.sorted_show_ids = sorted_show_ids
         return _munge(t)
-
 
     def changeEpisodeStatuses(self, oldStatus, newStatus, *args, **kwargs):
 
@@ -762,12 +766,12 @@ class Manage(MainHandler):
 
         redirect('/manage/episodeStatuses/')
 
-
     def showSubtitleMissed(self, indexer_id, whichSubs):
         myDB = db.DBConnection()
         cur_show_results = myDB.select(
-            "SELECT season, episode, name, subtitles FROM tv_episodes WHERE showid = ? AND season != 0 AND status LIKE '%4'",
-            [int(indexer_id)])
+            "SELECT season, episode, name, subtitles FROM tv_episodes WHERE showid = ? AND season != 0 "
+            "AND status LIKE '%4'", [int(indexer_id)]
+        )
 
         result = {}
         for cur_result in cur_show_results:
@@ -790,11 +794,10 @@ class Manage(MainHandler):
             result[cur_season][cur_episode]["name"] = cur_result["name"]
 
             result[cur_season][cur_episode]["subtitles"] = ",".join(
-                subliminal.language.Language(subtitle).alpha2 for subtitle in cur_result["subtitles"].split(',')) if not \
-                cur_result["subtitles"] == '' else ''
+                subliminal.language.Language(subtitle).alpha2 for subtitle in cur_result["subtitles"].split(',')) \
+                if not cur_result["subtitles"] == '' else ''
 
         return json.dumps(result)
-
 
     def subtitleMissed(self, whichSubs=None):
 
@@ -807,7 +810,9 @@ class Manage(MainHandler):
 
         myDB = db.DBConnection()
         status_results = myDB.select(
-            "SELECT show_name, tv_shows.indexer_id as indexer_id, tv_episodes.subtitles subtitles FROM tv_episodes, tv_shows WHERE tv_shows.subtitles = 1 AND tv_episodes.status LIKE '%4' AND tv_episodes.season != 0 AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name")
+            "SELECT show_name, tv_shows.indexer_id as indexer_id, tv_episodes.subtitles subtitles FROM "
+            "tv_episodes, tv_shows WHERE tv_shows.subtitles = 1 AND tv_episodes.status LIKE '%4' AND "
+            "tv_episodes.season != 0 AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name")
 
         ep_counts = {}
         show_names = {}
@@ -834,7 +839,6 @@ class Manage(MainHandler):
         t.ep_counts = ep_counts
         t.sorted_show_ids = sorted_show_ids
         return _munge(t)
-
 
     def downloadSubtitleMissed(self, *args, **kwargs):
 
@@ -870,7 +874,6 @@ class Manage(MainHandler):
 
         redirect('/manage/subtitleMissed/')
 
-
     def backlogShow(self, indexer_id):
 
         show_obj = helpers.findCertainShow(sickbeard.showList, int(indexer_id))
@@ -879,7 +882,6 @@ class Manage(MainHandler):
             sickbeard.backlogSearchScheduler.action.searchBacklog([show_obj])  # @UndefinedVariable
 
         redirect("/manage/backlogOverview/")
-
 
     def backlogOverview(self, *args, **kwargs):
 
@@ -921,7 +923,6 @@ class Manage(MainHandler):
         t.showSQLResults = showSQLResults
 
         return _munge(t)
-
 
     def massEdit(self, toEdit=None):
 
@@ -1015,7 +1016,6 @@ class Manage(MainHandler):
 
         return _munge(t)
 
-
     def massEditSubmit(self, paused=None, anime=None, scene=None, flatten_folders=None, quality_preset=False,
                        subtitles=None,
                        anyQualities=[], bestQualities=[], toEdit=None, *args, **kwargs):
@@ -1098,7 +1098,6 @@ class Manage(MainHandler):
                                    " ".join(errors))
 
         redirect("/manage/")
-
 
     def massUpdate(self, toUpdate=None, toRefresh=None, toRename=None, toDelete=None, toMetadata=None, toSubtitle=None):
 
@@ -1208,7 +1207,6 @@ class Manage(MainHandler):
 
         redirect("/manage/")
 
-
     def manageTorrents(self, *args, **kwargs):
 
         t = PageTemplate(headers=self.request.headers, file="manage_torrents.tmpl")
@@ -1230,10 +1228,15 @@ class Manage(MainHandler):
             if helpers.check_url(t.webui_url + 'download/'):
                 t.webui_url = t.webui_url + 'download/'
             else:
-                t.info_download_station = '<p>To have a better experience please set the Download Station alias as <code>download</code>, you can check this setting in the Synology DSM <b>Control Panel</b> > <b>Application Portal</b>. Make sure you allow DSM to be embedded with iFrames too in <b>Control Panel</b> > <b>DSM Settings</b> > <b>Security</b>.</p><br/><p>There is more information about this available <a href="https://github.com/midgetspy/Sick-Beard/pull/338">here</a>.</p><br/>'
+                t.info_download_station = '<p>To have a better experience please set the Download Station alias as ' \
+                                          '<code>download</code>, you can check this setting in the Synology DSM <b>' \
+                                          'Control Panel</b> > <b>Application Portal</b>. Make sure you allow DSM to ' \
+                                          'be embedded with iFrames too in <b>Control Panel</b> > <b>DSM Settings</b>' \
+                                          ' > <b>Security</b>.</p><br/><p>There is more information about this ' \
+                                          'available <a href="https://github.com/midgetspy/Sick-Beard/pull/338">here' \
+                                          '</a>.</p><br/>'
 
         return _munge(t)
-
 
     def failedDownloads(self, limit=100, toRemove=None):
 
@@ -1263,15 +1266,18 @@ class Manage(MainHandler):
 class History(MainHandler):
     def index(self, limit=100):
 
-        # sqlResults = myDB.select("SELECT h.*, show_name, name FROM history h, tv_shows s, tv_episodes e WHERE h.showid=s.indexer_id AND h.showid=e.showid AND h.season=e.season AND h.episode=e.episode ORDER BY date DESC LIMIT "+str(numPerPage*(p-1))+", "+str(numPerPage))
+        # sqlResults = myDB.select("SELECT h.*, show_name, name FROM history h, tv_shows s, tv_episodes e
+        # WHERE h.showid=s.indexer_id AND h.showid=e.showid AND h.season=e.season AND h.episode=e.episode
+        # ORDER BY date DESC LIMIT "+str(numPerPage*(p-1))+", "+str(numPerPage))
         myDB = db.DBConnection()
         if limit == "0":
             sqlResults = myDB.select(
                 "SELECT h.*, show_name FROM history h, tv_shows s WHERE h.showid=s.indexer_id ORDER BY date DESC")
         else:
             sqlResults = myDB.select(
-                "SELECT h.*, show_name FROM history h, tv_shows s WHERE h.showid=s.indexer_id ORDER BY date DESC LIMIT ?",
-                [limit])
+                "SELECT h.*, show_name FROM history h, tv_shows s WHERE h.showid=s.indexer_id "
+                "ORDER BY date DESC LIMIT ?", [limit]
+            )
 
         history = {'show_id': 0, 'season': 0, 'episode': 0, 'quality': 0,
                    'actions': [{'time': '', 'action': '', 'provider': ''}]}
@@ -1304,10 +1310,8 @@ class History(MainHandler):
                 history['actions'].sort(key=lambda x: x['time'])
                 compact.append(history)
             else:
-                index = [i for i, dict in enumerate(compact) \
-                         if dict['show_id'] == sql_result['showid'] \
-                         and dict['season'] == sql_result['season'] \
-                         and dict['episode'] == sql_result['episode']
+                index = [i for i, dict in enumerate(compact) if dict['show_id'] == sql_result['showid']
+                         and dict['season'] == sql_result['season'] and dict['episode'] == sql_result['episode']
                          and dict['quality'] == sql_result['quality']][0]
 
                 action = {}
@@ -1331,7 +1335,6 @@ class History(MainHandler):
 
         return _munge(t)
 
-
     def clearHistory(self, *args, **kwargs):
 
         myDB = db.DBConnection()
@@ -1339,7 +1342,6 @@ class History(MainHandler):
 
         ui.notifications.message('History cleared')
         redirect("/history/")
-
 
     def trimHistory(self, *args, **kwargs):
 
@@ -1370,10 +1372,8 @@ class ConfigGeneral(MainHandler):
         t.submenu = ConfigMenu
         return _munge(t)
 
-
     def saveRootDirs(self, rootDirString=None):
         sickbeard.ROOT_DIRS = rootDirString
-
 
     def saveAddShowDefaults(self, defaultStatus, anyQualities, bestQualities, defaultFlattenFolders, subtitles=False,
                             anime=False, scene=False):
@@ -1401,7 +1401,6 @@ class ConfigGeneral(MainHandler):
 
         sickbeard.save_config()
 
-
     def generateKey(self, *args, **kwargs):
         """ Return a new randomized API_KEY
         """
@@ -1424,7 +1423,6 @@ class ConfigGeneral(MainHandler):
         # Return a hex digest of the md5, eg 49f68a5c8493ec2c0bf489821c21fc3b
         logger.log(u"New API generated")
         return m.hexdigest()
-
 
     def saveGeneral(self, log_dir=None, web_port=None, web_log=None, encryption_version=None, web_ipv6=None,
                     update_shows_on_start=None, update_frequency=None, launch_browser=None, web_username=None,
@@ -1538,7 +1536,6 @@ class ConfigBackupRestore(MainHandler):
 
         return finalResult
 
-
     def restore(self, backupFile=None):
 
         finalResult = ''
@@ -1566,7 +1563,6 @@ class ConfigSearch(MainHandler):
         t = PageTemplate(headers=self.request.headers, file="config_search.tmpl")
         t.submenu = ConfigMenu
         return _munge(t)
-
 
     def saveSearch(self, use_nzbs=None, use_torrents=None, nzb_dir=None, sab_username=None, sab_password=None,
                    sab_apikey=None, sab_category=None, sab_host=None, nzbget_username=None, nzbget_password=None,
@@ -1647,7 +1643,6 @@ class ConfigPostProcessing(MainHandler):
         t = PageTemplate(headers=self.request.headers, file="config_postProcessing.tmpl")
         t.submenu = ConfigMenu
         return _munge(t)
-
 
     def savePostProcessing(self, naming_pattern=None, naming_multi_ep=None,
                            xbmc_data=None, xbmc_12plus_data=None, mediabrowser_data=None, sony_ps3_data=None,
@@ -1761,7 +1756,6 @@ class ConfigPostProcessing(MainHandler):
 
         return result
 
-
     def isNamingValid(self, pattern=None, multi=None, abd=False, sports=False, anime_type=None):
         if pattern is None:
             return "invalid"
@@ -1796,7 +1790,6 @@ class ConfigPostProcessing(MainHandler):
         else:
             return "invalid"
 
-
     def isRarSupported(self, *args, **kwargs):
         """
         Test Packing Support:
@@ -1821,7 +1814,6 @@ class ConfigProviders(MainHandler):
         t.submenu = ConfigMenu
         return _munge(t)
 
-
     def canAddNewznabProvider(self, name):
 
         if not name:
@@ -1835,7 +1827,6 @@ class ConfigProviders(MainHandler):
             return json.dumps({'error': 'Provider Name already exists as ' + providerDict[tempProvider.getID()].name})
         else:
             return json.dumps({'success': tempProvider.getID()})
-
 
     def saveNewznabProvider(self, name, url, key=''):
 
@@ -1863,7 +1854,6 @@ class ConfigProviders(MainHandler):
             sickbeard.newznabProviderList.append(newProvider)
             return newProvider.getID() + '|' + newProvider.configStr()
 
-
     def deleteNewznabProvider(self, nnid):
 
         providerDict = dict(zip([x.getID() for x in sickbeard.newznabProviderList], sickbeard.newznabProviderList))
@@ -1878,7 +1868,6 @@ class ConfigProviders(MainHandler):
             sickbeard.PROVIDER_ORDER.remove(nnid)
 
         return '1'
-
 
     def canAddTorrentRssProvider(self, name, url, cookies):
 
@@ -1899,7 +1888,6 @@ class ConfigProviders(MainHandler):
             else:
                 return json.dumps({'error': errMsg})
 
-
     def saveTorrentRssProvider(self, name, url, cookies):
 
         if not name or not url:
@@ -1919,7 +1907,6 @@ class ConfigProviders(MainHandler):
             sickbeard.torrentRssProviderList.append(newProvider)
             return newProvider.getID() + '|' + newProvider.configStr()
 
-
     def deleteTorrentRssProvider(self, id):
 
         providerDict = dict(
@@ -1935,7 +1922,6 @@ class ConfigProviders(MainHandler):
             sickbeard.PROVIDER_ORDER.remove(id)
 
         return '1'
-
 
     def saveProviders(self, newznab_string='', torrentrss_string='', provider_order=None, **kwargs):
 
@@ -2193,7 +2179,6 @@ class ConfigNotifications(MainHandler):
         t.submenu = ConfigMenu
         return _munge(t)
 
-
     def saveNotifications(self, use_xbmc=None, xbmc_always_on=None, xbmc_notify_onsnatch=None,
                           xbmc_notify_ondownload=None,
                           xbmc_notify_onsubtitledownload=None, xbmc_update_onlyfirst=None,
@@ -2401,7 +2386,6 @@ class ConfigSubtitles(MainHandler):
         t.submenu = ConfigMenu
         return _munge(t)
 
-
     def saveSubtitles(self, use_subtitles=None, subtitles_plugins=None, subtitles_languages=None, subtitles_dir=None,
                       service_order=None, subtitles_history=None, subtitles_finder_frequency=None):
         results = []
@@ -2459,7 +2443,6 @@ class ConfigAnime(MainHandler):
         t = PageTemplate(headers=self.request.headers, file="config_anime.tmpl")
         t.submenu = ConfigMenu
         return _munge(t)
-
 
     def saveAnime(self, use_anidb=None, anidb_username=None, anidb_password=None, anidb_use_mylist=None,
                   split_home=None):
@@ -2541,7 +2524,7 @@ class HomePostProcess(MainHandler):
 
     def processEpisode(self, dir=None, nzbName=None, jobName=None, quiet=None, process_method=None, force=None,
                        is_priority=None, failed="0", type="auto", *args, **kwargs):
-
+  
         if failed == "0":
             failed = False
         else:
@@ -2576,7 +2559,6 @@ class NewHomeAddShows(MainHandler):
         t.submenu = HomeMenu()
         return _munge(t)
 
-
     def getIndexerLanguages(self, *args, **kwargs):
         result = sickbeard.indexerApi().config['valid_languages']
 
@@ -2588,10 +2570,8 @@ class NewHomeAddShows(MainHandler):
 
         return json.dumps({'results': result})
 
-
     def sanitizeFileName(self, name):
         return helpers.sanitizeFileName(name)
-
 
     def searchIndexersForShowName(self, search_term, lang="en", indexer=None):
         if not lang or lang == 'null':
@@ -2623,7 +2603,6 @@ class NewHomeAddShows(MainHandler):
 
         lang_id = sickbeard.indexerApi().config['langabbv_to_id'][lang]
         return json.dumps({'results': final_results, 'langid': lang_id})
-
 
     def massAddTable(self, rootDir=None):
         t = PageTemplate(headers=self.request.headers, file="home_massAddTable.tmpl")
@@ -2704,7 +2683,6 @@ class NewHomeAddShows(MainHandler):
         t.dirList = dir_list
 
         return _munge(t)
-
 
     def newShow(self, show_to_add=None, other_shows=None):
         """
@@ -2967,7 +2945,6 @@ class NewHomeAddShows(MainHandler):
 
         return (indexer, show_dir, indexer_id, show_name)
 
-
     def addExistingShows(self, shows_to_add=None, promptForSettings=None):
         """
         Receives a dir list and add them. Adds the ones with given TVDB IDs first, then forwards
@@ -3001,7 +2978,6 @@ class NewHomeAddShows(MainHandler):
                     continue
 
                 indexer_id_given.append((int(indexer), show_dir, int(indexer_id), show_name))
-
 
         # if they want me to prompt for settings then I will just carry on to the newShow page
         if promptForSettings and shows_to_add:
@@ -3049,11 +3025,9 @@ class ErrorLogs(MainHandler):
 
         return _munge(t)
 
-
     def clearerrors(self, *args, **kwargs):
         classes.ErrorViewer.clear()
         redirect("/errorlogs/")
-
 
     def viewlog(self, minLevel=logger.MESSAGE, maxLines=500):
 
@@ -3127,7 +3101,6 @@ class Home(MainHandler):
         else:
             return callback + '(' + json.dumps({"msg": "nope"}) + ');'
 
-
     def index(self, *args, **kwargs):
 
         t = PageTemplate(headers=self.request.headers, file="home.tmpl")
@@ -3166,7 +3139,6 @@ class Home(MainHandler):
         else:
             return "Unable to connect to host"
 
-
     def testTorrent(self, torrent_method=None, host=None, username=None, password=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
@@ -3177,7 +3149,6 @@ class Home(MainHandler):
         connection, accesMsg = client(host, username, password).testAuthentication()
 
         return accesMsg
-
 
     def testGrowl(self, host=None, password=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -3195,7 +3166,6 @@ class Home(MainHandler):
         else:
             return "Registration and Testing of growl failed " + urllib.unquote_plus(host) + pw_append
 
-
     def testProwl(self, prowl_api=None, prowl_priority=0):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
@@ -3204,7 +3174,6 @@ class Home(MainHandler):
             return "Test prowl notice sent successfully"
         else:
             return "Test prowl notice failed"
-
 
     def testBoxcar(self, username=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -3215,7 +3184,6 @@ class Home(MainHandler):
         else:
             return "Error sending Boxcar notification"
 
-
     def testBoxcar2(self, accesstoken=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
@@ -3224,7 +3192,6 @@ class Home(MainHandler):
             return "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
         else:
             return "Error sending Boxcar2 notification"
-
 
     def testPushover(self, userKey=None, apiKey=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -3235,12 +3202,10 @@ class Home(MainHandler):
         else:
             return "Error sending Pushover notification"
 
-
     def twitterStep1(self, *args, **kwargs):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
         return notifiers.twitter_notifier._get_authorization()
-
 
     def twitterStep2(self, key):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -3252,7 +3217,6 @@ class Home(MainHandler):
         else:
             return "Unable to verify key"
 
-
     def testTwitter(self, *args, **kwargs):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
@@ -3261,7 +3225,6 @@ class Home(MainHandler):
             return "Tweet successful, check your twitter to make sure it worked"
         else:
             return "Error sending tweet"
-
 
     def testXBMC(self, host=None, username=None, password=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -3278,7 +3241,6 @@ class Home(MainHandler):
 
         return finalResult
 
-
     def testPLEX(self, host=None, username=None, password=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
@@ -3293,7 +3255,6 @@ class Home(MainHandler):
 
         return finalResult
 
-
     def testLibnotify(self, *args, **kwargs):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
@@ -3301,7 +3262,6 @@ class Home(MainHandler):
             return "Tried sending desktop notification via libnotify"
         else:
             return notifiers.libnotify.diagnose()
-
 
     def testNMJ(self, host=None, database=None, mount=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -3313,7 +3273,6 @@ class Home(MainHandler):
         else:
             return "Test failed to start the scan update"
 
-
     def settingsNMJ(self, host=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
@@ -3323,8 +3282,8 @@ class Home(MainHandler):
             return '{"message": "Got settings from %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
                 "host": host, "database": sickbeard.NMJ_DATABASE, "mount": sickbeard.NMJ_MOUNT}
         else:
-            return '{"message": "Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for detailed info)", "database": "", "mount": ""}'
-
+            return '{"message": "Failed! Make sure your Popcorn is on and NMJ is running. ' \
+                   '(see Log & Errors -> Debug for detailed info)", "database": "", "mount": ""}'
 
     def testNMJv2(self, host=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -3336,19 +3295,17 @@ class Home(MainHandler):
         else:
             return "Test notice failed to " + urllib.unquote_plus(host)
 
-
     def settingsNMJv2(self, host=None, dbloc=None, instance=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
         host = config.clean_host(host)
         result = notifiers.nmjv2_notifier.notify_settings(urllib.unquote_plus(host), dbloc, instance)
         if result:
-            return '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' % {"host": host,
-                                                                                                   "database": sickbeard.NMJv2_DATABASE}
+            return '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' \
+                   % {"host": host, "database": sickbeard.NMJv2_DATABASE}
         else:
-            return '{"message": "Unable to find NMJ Database at location: %(dbloc)s. Is the right location selected and PCH running?", "database": ""}' % {
-                "dbloc": dbloc}
-
+            return '{"message": "Unable to find NMJ Database at location: %(dbloc)s. Is the right location selected ' \
+                   'and PCH running?", "database": ""}' % {"dbloc": dbloc}
 
     def testTrakt(self, api=None, username=None, password=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -3358,7 +3315,6 @@ class Home(MainHandler):
             return "Test notice sent successfully to Trakt"
         else:
             return "Test notice failed to Trakt"
-
 
     def loadShowNotifyLists(self, *args, **kwargs):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -3374,7 +3330,6 @@ class Home(MainHandler):
         data['_size'] = size
         return json.dumps(data)
 
-
     def testEmail(self, host=None, port=None, smtp_from=None, use_tls=None, user=None, pwd=None, to=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
@@ -3383,7 +3338,6 @@ class Home(MainHandler):
             return 'Test email sent successfully! Check inbox.'
         else:
             return 'ERROR: %s' % notifiers.email_notifier.last_err
-
 
     def testNMA(self, nma_api=None, nma_priority=0):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -3394,7 +3348,6 @@ class Home(MainHandler):
         else:
             return "Test NMA notice failed"
 
-
     def testPushalot(self, authorizationToken=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
@@ -3404,7 +3357,6 @@ class Home(MainHandler):
         else:
             return "Error sending Pushalot notification"
 
-
     def testPushbullet(self, api=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
@@ -3413,7 +3365,6 @@ class Home(MainHandler):
             return "Pushbullet notification succeeded. Check your device to make sure it worked"
         else:
             return "Error sending Pushbullet notification"
-
 
     def getPushbulletDevices(self, api=None):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -3462,8 +3413,9 @@ class Home(MainHandler):
             t = PageTemplate(headers=self.request.headers, file="restart_bare.tmpl")
             return _munge(t)
         else:
-            return self._genericMessage("Update Failed",
-                                        "Update wasn't successful, not restarting. Check your log for more information.")
+            return self._genericMessage(
+                "Update Failed",
+                "Update wasn't successful, not restarting. Check your log for more information.")
 
     def branchCheckout(self, branch):
         return self.update(sickbeard.PID, branch)
@@ -3600,14 +3552,12 @@ class Home(MainHandler):
 
         return _munge(t)
 
-
     def plotDetails(self, show, season, episode):
         myDB = db.DBConnection()
         result = myDB.selectOne(
             "SELECT description FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
             (int(show), int(season), int(episode)))
         return result['description'] if result else 'Episode not found.'
-
 
     def sceneExceptions(self, show):
         exceptionsList = sickbeard.scene_exceptions.get_all_scene_exceptions(show)
@@ -3620,7 +3570,6 @@ class Home(MainHandler):
                 season = "*"
             out.append("S" + str(season) + ": " + ", ".join(names))
         return "<br/>".join(out)
-
 
     def editShow(self, show=None, location=None, anyQualities=[], bestQualities=[], exceptions_list=[],
                  flatten_folders=None, paused=None, directCall=False, air_by_date=None, sports=None, dvdorder=None,
@@ -3662,17 +3611,17 @@ class Home(MainHandler):
                     t.blackWords = ", ".join(bwl.blackDict["global"])
 
                 t.whitelist = []
-                if bwl.whiteDict.has_key("release_group"):
+                if "release_group" in bwl.whiteDict:
                     t.whitelist = bwl.whiteDict["release_group"]
 
                 t.blacklist = []
-                if bwl.blackDict.has_key("release_group"):
+                if "release_group" in bwl.blackDict:
                     t.blacklist = bwl.blackDict["release_group"]
 
                 t.groups = []
                 if helpers.set_up_anidb_connection():
                     anime = adba.Anime(sickbeard.ADBA_CONNECTION, name=showObj.name)
-                    t.groups = anime.get_groups()
+                t.groups = anime.get_groups()
 
             with showObj.lock:
                 t.show = showObj
@@ -3818,7 +3767,8 @@ class Home(MainHandler):
                             # rescan the episodes in the new folder
                     except exceptions.NoNFOException:
                         errors.append(
-                            "The folder at <tt>%s</tt> doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SickRage." % location)
+                            "The folder at <tt>%s</tt> doesn't contain a tvshow.nfo - copy your files to that "
+                            "folder before you change the directory in SickRage." % location)
 
             # save it to the DB
             showObj.saveToDB()
@@ -3854,7 +3804,6 @@ class Home(MainHandler):
 
         redirect("/home/displayShow?show=" + show)
 
-
     def deleteShow(self, show=None):
 
         if show is None:
@@ -3878,7 +3827,6 @@ class Home(MainHandler):
         ui.notifications.message('<b>%s</b> has been deleted' % showObj.name)
         redirect("/home/")
 
-
     def refreshShow(self, show=None):
 
         if show is None:
@@ -3899,7 +3847,6 @@ class Home(MainHandler):
         time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
         redirect("/home/displayShow?show=" + str(showObj.indexerid))
-
 
     def updateShow(self, show=None, force=0):
 
@@ -3923,7 +3870,6 @@ class Home(MainHandler):
 
         redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
-
     def subtitleShow(self, show=None, force=0):
 
         if show is None:
@@ -3941,7 +3887,6 @@ class Home(MainHandler):
 
         redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
-
     def updateXBMC(self, showName=None):
 
         # only send update to first host in the list -- workaround for xbmc sql backend users
@@ -3957,7 +3902,6 @@ class Home(MainHandler):
             ui.notifications.error("Unable to contact one or more XBMC host(s): " + host)
         redirect('/home/')
 
-
     def updatePLEX(self, *args, **kwargs):
         if notifiers.plex_notifier.update_library():
             ui.notifications.message(
@@ -3965,7 +3909,6 @@ class Home(MainHandler):
         else:
             ui.notifications.error("Unable to contact Plex Media Server host: " + sickbeard.PLEX_SERVER_HOST)
         redirect('/home/')
-
 
     def setStatus(self, show=None, eps=None, status=None, direct=False):
 
@@ -3977,7 +3920,7 @@ class Home(MainHandler):
             else:
                 return self._genericMessage("Error", errMsg)
 
-        if not statusStrings.has_key(int(status)):
+        if not int(status) in statusStrings:
             errMsg = "Invalid status"
             if direct:
                 ui.notifications.error('Error', errMsg)
@@ -4023,19 +3966,22 @@ class Home(MainHandler):
                         logger.log(u"Refusing to change status of " + curEp + " because it is UNAIRED", logger.ERROR)
                         continue
 
-                    if int(
-                            status) in Quality.DOWNLOADED and epObj.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.DOWNLOADED + [
-                        IGNORED] and not ek.ek(os.path.isfile, epObj.location):
+                    if int(status) in Quality.DOWNLOADED and epObj.status not in Quality.SNATCHED + \
+                            Quality.SNATCHED_PROPER + Quality.DOWNLOADED + [IGNORED] \
+                            and not ek.ek(os.path.isfile, epObj.location):
+
                         logger.log(
-                            u"Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED",
-                            logger.ERROR)
+                            u"Refusing to change status of " + curEp +
+                            " to DOWNLOADED because it's not SNATCHED/DOWNLOADED", logger.ERROR
+                        )
                         continue
 
-                    if int(
-                            status) == FAILED and epObj.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.DOWNLOADED:
+                    if int(status) == FAILED and epObj.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + \
+                            Quality.DOWNLOADED:
                         logger.log(
-                            u"Refusing to change status of " + curEp + " to FAILED because it's not SNATCHED/DOWNLOADED",
-                            logger.ERROR)
+                            u"Refusing to change status of " + curEp +
+                            " to FAILED because it's not SNATCHED/DOWNLOADED", logger.ERROR
+                        )
                         continue
 
                     epObj.status = int(status)
@@ -4062,11 +4008,14 @@ class Home(MainHandler):
                 ui.notifications.message("Backlog started", msg)
 
         if int(status) == FAILED:
-            msg = "Retrying Search was automatically started for the following season of <b>" + showObj.name + "</b>:<br />"
+            msg = "Retrying Search was automatically started for the following season of <b>" + showObj.name + \
+                "</b>:<br />"
             for season in segment:
                 msg += "<li>Season " + str(season) + "</li>"
-                logger.log(u"Retrying Search for " + showObj.name + " season " + str(
-                    season) + " because some eps were set to failed")
+                logger.log(
+                    u"Retrying Search for " + showObj.name + " season " + str(season) +
+                    " because some eps were set to failed"
+                )
             msg += "</ul>"
 
             cur_failed_queue_item = search_queue.FailedQueueItem(showObj, segment)
@@ -4079,7 +4028,6 @@ class Home(MainHandler):
             return json.dumps({'result': 'success'})
         else:
             redirect("/home/displayShow?show=" + show)
-
 
     def testRename(self, show=None):
 
@@ -4126,7 +4074,6 @@ class Home(MainHandler):
 
         return _munge(t)
 
-
     def doRename(self, show=None, eps=None):
 
         if show is None or eps is None:
@@ -4152,7 +4099,8 @@ class Home(MainHandler):
 
             epInfo = curEp.split('x')
 
-            # this is probably the worst possible way to deal with double eps but I've kinda painted myself into a corner here with this stupid database
+            # this is probably the worst possible way to deal with double eps but I've kinda
+            # painted myself into a corner here with this stupid database
             ep_result = myDB.select(
                 "SELECT * FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ? AND 5=5",
                 [show, epInfo[0], epInfo[1]])
@@ -4173,7 +4121,6 @@ class Home(MainHandler):
             root_ep_obj.rename()
 
         redirect("/home/displayShow?show=" + show)
-
 
     def searchEpisode(self, show=None, season=None, episode=None):
 
@@ -4200,12 +4147,12 @@ class Home(MainHandler):
                     quality_class = qualityPresetStrings[x]
                     break
 
-            return json.dumps({'result': statusStrings[ep_obj.status],
-                               'quality': quality_class
+            return json.dumps({
+                'result': statusStrings[ep_obj.status],
+                'quality': quality_class
             })
 
         return json.dumps({'result': 'failure'})
-
 
     def searchEpisodeSubtitles(self, show=None, season=None, episode=None):
 
@@ -4232,17 +4179,22 @@ class Home(MainHandler):
         ui.notifications.message('Subtitles Search', status)
         return json.dumps({'result': status, 'subtitles': ','.join([x for x in ep_obj.subtitles])})
 
-
     def setSceneNumbering(self, show, indexer, forSeason=None, forEpisode=None, forAbsolute=None, sceneSeason=None,
                           sceneEpisode=None, sceneAbsolute=None):
 
         # sanitize:
-        if forSeason in ['null', '']: forSeason = None
-        if forEpisode in ['null', '']: forEpisode = None
-        if forAbsolute in ['null', '']: forAbsolute = None
-        if sceneSeason in ['null', '']: sceneSeason = None
-        if sceneEpisode in ['null', '']: sceneEpisode = None
-        if sceneAbsolute in ['null', '']: sceneAbsolute = None
+        if forSeason in ['null', '']:
+            forSeason = None
+        if forEpisode in ['null', '']:
+            forEpisode = None
+        if forAbsolute in ['null', '']:
+            forAbsolute = None
+        if sceneSeason in ['null', '']:
+            sceneSeason = None
+        if sceneEpisode in ['null', '']:
+            sceneEpisode = None
+        if sceneAbsolute in ['null', '']:
+            sceneAbsolute = None
 
         showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(show))
 
@@ -4274,7 +4226,8 @@ class Home(MainHandler):
             show = int(show)
             indexer = int(indexer)
             forAbsolute = int(forAbsolute)
-            if sceneAbsolute is not None: sceneAbsolute = int(sceneAbsolute)
+            if sceneAbsolute is not None:
+                sceneAbsolute = int(sceneAbsolute)
 
             set_scene_numbering(show, indexer, absolute_number=forAbsolute, sceneAbsolute=sceneAbsolute)
         else:
@@ -4285,8 +4238,10 @@ class Home(MainHandler):
             indexer = int(indexer)
             forSeason = int(forSeason)
             forEpisode = int(forEpisode)
-            if sceneSeason is not None: sceneSeason = int(sceneSeason)
-            if sceneEpisode is not None: sceneEpisode = int(sceneEpisode)
+            if sceneSeason is not None:
+                sceneSeason = int(sceneSeason)
+            if sceneEpisode is not None:
+                sceneEpisode = int(sceneEpisode)
 
             set_scene_numbering(show, indexer, season=forSeason, episode=forEpisode, sceneSeason=sceneSeason,
                                 sceneEpisode=sceneEpisode)
@@ -4305,7 +4260,6 @@ class Home(MainHandler):
                 (result['sceneSeason'], result['sceneEpisode']) = (None, None)
 
         return json.dumps(result)
-
 
     def retryEpisode(self, show, season, episode):
 
@@ -4335,8 +4289,9 @@ class Home(MainHandler):
                     quality_class = qualityPresetStrings[x]
                     break
 
-            return json.dumps({'result': statusStrings[ep_obj.status],
-                               'quality': quality_class
+            return json.dumps({
+                'result': statusStrings[ep_obj.status],
+                'quality': quality_class
             })
 
         return json.dumps({'result': 'failure'})
