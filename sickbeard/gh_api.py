@@ -59,8 +59,7 @@ class GitHub(object):
 
     def commits(self):
         """
-        Uses the API to get a list of the 100 most recent commits from the specified user/repo/branch, starting from
-        HEAD.
+        Uses the API to get a list of the 100 most recent commits from the specified user/repo/branch, starting from HEAD.
 
         user: The github username of the person whose repo you're querying
         repo: The repo name to query
@@ -82,8 +81,7 @@ class GitHub(object):
         head: Current commit sha or branch name to compare
         per_page: number of items per page
 
-        Returns a deserialized json object containing the compare info.
-        See http://developer.github.com/v3/repos/commits/
+        Returns a deserialized json object containing the compare info. See http://developer.github.com/v3/repos/commits/
         """
         access_API = self._access_API(
             ['repos', self.github_repo_user, self.github_repo, 'compare', base + '...' + head],

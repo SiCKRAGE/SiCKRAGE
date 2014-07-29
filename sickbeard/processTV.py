@@ -38,6 +38,7 @@ from lib.unrar2.rar_exceptions import *
 
 
 def delete_folder(folder, check_empty=True):
+
     # check if it's a folder
     if not ek.ek(os.path.isdir, folder):
         return False
@@ -63,20 +64,19 @@ def delete_folder(folder, check_empty=True):
 
     return True
 
-
 def delete_files(processPath, notwantedFiles):
     global returnStr, process_result
 
     if not process_result:
         return
 
-    # Delete all file not needed
+    #Delete all file not needed
     for cur_file in notwantedFiles:
 
         cur_file_path = ek.ek(os.path.join, processPath, cur_file)
 
         if not ek.ek(os.path.isfile, cur_file_path):
-            continue  # Prevent error when a notwantedfiles is an associated files
+            continue  #Prevent error when a notwantedfiles is an associated files
 
         returnStr += logHelper(u"Deleting file " + cur_file, logger.DEBUG)
 
@@ -94,7 +94,6 @@ def delete_files(processPath, notwantedFiles):
             ek.ek(os.remove, cur_file_path)
         except OSError, e:
             returnStr += logHelper(u"Unable to delete file " + cur_file + ': ' + str(e.strerror), logger.DEBUG)
-
 
 def logHelper(logMessage, logLevel=logger.MESSAGE):
     logger.log(logMessage, logLevel)
@@ -133,8 +132,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     # if we didn't find a real dir then quit
     if not ek.ek(os.path.isdir, dirName):
         returnStr += logHelper(
-            u"Unable to figure out what folder to process. If your downloader and SickRage aren't on the same "
-            u"PC make sure you fill out your TV download dir in the config.",
+            u"Unable to figure out what folder to process. If your downloader and SickRage aren't on the same PC make sure you fill out your TV download dir in the config.",
             logger.DEBUG)
         return returnStr
 
@@ -164,7 +162,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
     process_result = True
 
-    # Don't Link media when the media is extracted from a rar in the same path
+    #Don't Link media when the media is extracted from a rar in the same path
     if process_method in ('hardlink', 'symlink') and videoInRar:
         process_result = process_media(path, videoInRar, nzbName, 'move', force, is_priority)
         delete_files(path, rarContent)
@@ -199,13 +197,14 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
                 #Delete all file not needed
                 if process_method != "move" or not process_result \
-                        or type == "manual":  # Avoid to delete files if is Manual PostProcessing
+                        or type == "manual":  #Avoid to delete files if is Manual PostProcessing
                     continue
 
                 delete_files(processPath, notwantedFiles)
 
-                if process_method == "move" and ek.ek(os.path.normpath, processPath) \
-                        != ek.ek(os.path.normpath, sickbeard.TV_DOWNLOAD_DIR):
+                if process_method == "move" and \
+                                ek.ek(os.path.normpath, processPath) != ek.ek(os.path.normpath,
+                                                                              sickbeard.TV_DOWNLOAD_DIR):
                     if delete_folder(processPath, check_empty=False):
                         returnStr += logHelper(u"Deleted folder: " + processPath, logger.DEBUG)
 
@@ -247,8 +246,9 @@ def validateDir(path, dirName, nzbNameOriginal, failed):
     sqlResults = myDB.select("SELECT * FROM tv_shows")
 
     for sqlShow in sqlResults:
-        if dirName.lower().startswith(ek.ek(os.path.realpath, sqlShow["location"]).lower() + os.sep) \
-                or dirName.lower() == ek.ek(os.path.realpath, sqlShow["location"]).lower():
+        if dirName.lower().startswith(
+                        ek.ek(os.path.realpath, sqlShow["location"]).lower() + os.sep) or dirName.lower() == ek.ek(
+                os.path.realpath, sqlShow["location"]).lower():
             returnStr += logHelper(
                 u"You're trying to post process an episode that's already been moved to its show dir, skipping",
                 logger.ERROR)
@@ -264,7 +264,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed):
     videoFiles = filter(helpers.isMediaFile, allFiles)
     allDirs.append(dirName)
 
-    # check if the dir have at least one tv video file
+    #check if the dir have at least one tv video file
     for video in videoFiles:
         try:
             NameParser().parse(video, cache_result=False)
@@ -291,7 +291,6 @@ def validateDir(path, dirName, nzbNameOriginal, failed):
                 pass
 
     return False
-
 
 def unRAR(path, rarFiles, force):
     global process_result, returnStr
@@ -341,7 +340,7 @@ def already_postprocessed(dirName, videofile, force):
     if force:
         return False
 
-    # Needed for accessing DB with a unicode DirName
+    #Needed for accessing DB with a unicode DirName
     if not isinstance(dirName, unicode):
         dirName = unicode(dirName, 'utf_8')
 
@@ -365,8 +364,7 @@ def already_postprocessed(dirName, videofile, force):
             return True
 
         #Needed if we have downloaded the same episode @ different quality
-        search_sql = "SELECT tv_episodes.indexerid, history.resource FROM tv_episodes INNER JOIN " \
-            "history ON history.showid=tv_episodes.showid"
+        search_sql = "SELECT tv_episodes.indexerid, history.resource FROM tv_episodes INNER JOIN history ON history.showid=tv_episodes.showid"
         search_sql += " WHERE history.season=tv_episodes.season and history.episode=tv_episodes.episode"
         search_sql += " and tv_episodes.status IN (" + ",".join([str(x) for x in common.Quality.DOWNLOADED]) + ")"
         search_sql += " and history.resource LIKE ?"
@@ -407,24 +405,23 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
             returnStr += logHelper(u"Processing failed for " + cur_video_file_path + ": " + process_fail_message,
                                    logger.WARNING)
 
-        # If something fail abort the processing on dir
+        #If something fail abort the processing on dir
         if not process_result:
             break
-
 
 def get_path_dir_files(dirName, nzbName, type):
     path = ""
     dirs = []
     files = []
 
-    if dirName == sickbeard.TV_DOWNLOAD_DIR and not nzbName or type == "manual":  # Scheduled Post Processing Active
+    if dirName == sickbeard.TV_DOWNLOAD_DIR and not nzbName or type == "manual":  #Scheduled Post Processing Active
         #Get at first all the subdir in the dirName
         for path, dirs, files in ek.ek(os.walk, dirName):
             break
     else:
-        path, dirs = ek.ek(os.path.split, dirName)  # Script Post Processing
+        path, dirs = ek.ek(os.path.split, dirName)  #Script Post Processing
         if not nzbName is None and not nzbName.endswith('.nzb') and os.path.isfile(
-                os.path.join(dirName, nzbName)):  # For single torrent file without Dir
+                os.path.join(dirName, nzbName)):  #For single torrent file without Dir
             dirs = []
             files = [os.path.join(dirName, nzbName)]
         else:

@@ -35,7 +35,6 @@ from sickbeard import logger
 from sickbeard.exceptions import ex
 from sickbeard import encodingKludge as ek
 
-
 class CheckVersion():
     """
     Version check class meant to run as a thread object with the SB scheduler.
@@ -119,7 +118,6 @@ class CheckVersion():
     def list_remote_branches(self):
         return self.updater.list_remote_branches()
 
-
 class UpdateManager():
     def get_github_repo_user(self):
         return 'echel0n'
@@ -141,8 +139,7 @@ class WindowsUpdateManager(UpdateManager):
         self._newest_version = None
 
         self.gc_url = 'http://code.google.com/p/sickbeard/downloads/list'
-        self.version_url = 'https://raw.github.com/' + self.github_repo_user + '/' + self.github_repo + \
-                           '/' + self.branch + '/updates.txt'
+        self.version_url = 'https://raw.github.com/' + self.github_repo_user + '/' + self.github_repo + '/' + self.branch + '/updates.txt'
 
     def _find_installed_version(self):
         version = ''
@@ -197,8 +194,8 @@ class WindowsUpdateManager(UpdateManager):
         if not self._cur_version:
             newest_text = "Unknown SickRage Windows binary version. Not updating with original version."
         else:
-            newest_text = 'There is a <a href="' + self.gc_url + '" onclick="window.open(this.href); ' \
-                'return false;">newer version available</a> (build ' + str(self._newest_version) + ')'
+            newest_text = 'There is a <a href="' + self.gc_url + '" onclick="window.open(this.href); return false;">newer version available</a> (build ' + str(
+                self._newest_version) + ')'
             newest_text += "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
 
         sickbeard.NEWEST_VERSION_STRING = newest_text
@@ -264,7 +261,7 @@ class WindowsUpdateManager(UpdateManager):
             new_update_path = os.path.join(sickbeard.PROG_DIR, u'updater.exe')
             logger.log(u"Copying new update.exe file from " + old_update_path + " to " + new_update_path)
             shutil.move(old_update_path, new_update_path)
-
+            
             # Notify update successful
             notifiers.notify_git_update(sickbeard.NEWEST_VERSION_STRING)
 
@@ -290,8 +287,7 @@ class GitUpdateManager(UpdateManager):
         self._num_commits_ahead = 0
 
     def _git_error(self):
-        error_message = 'Unable to find your git executable - Shutdown SickRage and EITHER set git_path' \
-            ' in your config.ini OR delete your .git folder and run from source to enable updates.'
+        error_message = 'Unable to find your git executable - Shutdown SickRage and EITHER set git_path in your config.ini OR delete your .git folder and run from source to enable updates.'
         sickbeard.NEWEST_VERSION_STRING = error_message
 
     def _find_working_git(self):
@@ -337,8 +333,7 @@ class GitUpdateManager(UpdateManager):
                     logger.log(u"Not using: " + cur_git, logger.DEBUG)
 
         # Still haven't found a working git
-        error_message = 'Unable to find your git executable - Shutdown SickRage and EITHER set git_path in your ' \
-            'config.ini OR delete your .git folder and run from source to enable updates.'
+        error_message = 'Unable to find your git executable - Shutdown SickRage and EITHER set git_path in your config.ini OR delete your .git folder and run from source to enable updates.'
         sickbeard.NEWEST_VERSION_STRING = error_message
 
         return None
@@ -462,11 +457,9 @@ class GitUpdateManager(UpdateManager):
                 logger.log(u"git didn't return numbers for behind and ahead, not using it", logger.DEBUG)
                 return
 
-        logger.log(
-            u"cur_commit = " + str(self._cur_commit_hash) + u", newest_commit = " + str(self._newest_commit_hash) +
-            u", num_commits_behind = " + str(self._num_commits_behind) + u", num_commits_ahead = " +
-            str(self._num_commits_ahead), logger.DEBUG
-        )
+        logger.log(u"cur_commit = " + str(self._cur_commit_hash) + u", newest_commit = " + str(self._newest_commit_hash)
+                   + u", num_commits_behind = " + str(self._num_commits_behind) + u", num_commits_ahead = " + str(
+            self._num_commits_ahead), logger.DEBUG)
 
     def set_newest_text(self):
 
@@ -485,8 +478,7 @@ class GitUpdateManager(UpdateManager):
             else:
                 url = base_url + '/commits/'
 
-            newest_text = 'There is a <a href="' + url + \
-                '" onclick="window.open(this.href); return false;">newer version available</a> '
+            newest_text = 'There is a <a href="' + url + '" onclick="window.open(this.href); return false;">newer version available</a> '
             newest_text += " (you're " + str(self._num_commits_behind) + " commit"
             if self._num_commits_behind > 1:
                 newest_text += 's'
@@ -635,8 +627,7 @@ class SourceUpdateManager(UpdateManager):
         if not self._cur_commit_hash:
             logger.log(u"Unknown current version number, don't know if we should update or not", logger.DEBUG)
 
-            newest_text = "Unknown current version number: If you've never used the SickRage upgrade system " \
-                "before then current version is not set."
+            newest_text = "Unknown current version number: If you've never used the SickRage upgrade system before then current version is not set."
             newest_text += "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
 
         elif self._num_commits_behind > 0:
@@ -646,8 +637,7 @@ class SourceUpdateManager(UpdateManager):
             else:
                 url = base_url + '/commits/'
 
-            newest_text = 'There is a <a href="' + url + \
-                '" onclick="window.open(this.href); return false;">newer version available</a>'
+            newest_text = 'There is a <a href="' + url + '" onclick="window.open(this.href); return false;">newer version available</a>'
             newest_text += " (you're " + str(self._num_commits_behind) + " commit"
             if self._num_commits_behind > 1:
                 newest_text += "s"
@@ -720,7 +710,7 @@ class SourceUpdateManager(UpdateManager):
                     old_path = os.path.join(content_dir, dirname, curfile)
                     new_path = os.path.join(sickbeard.PROG_DIR, dirname, curfile)
 
-                    # Avoid DLL access problem on WIN32/64
+                    #Avoid DLL access problem on WIN32/64
                     #These files needing to be updated manually
                     #or find a way to kill the access from memory
                     if curfile in ('unrar.dll', 'unrar64.dll'):
@@ -752,7 +742,7 @@ class SourceUpdateManager(UpdateManager):
 
         # Notify update successful
         notifiers.notify_git_update(sickbeard.NEWEST_VERSION_STRING)
-
+        
         return True
 
     def list_remote_branches(self):

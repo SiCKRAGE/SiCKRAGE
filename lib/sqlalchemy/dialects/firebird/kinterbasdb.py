@@ -160,7 +160,7 @@ class FBDialect_kinterbasdb(FBDialect):
             raise AssertionError(
                     "Could not determine version from string '%s'" % version)
 
-        if m.group(5) is not None:
+        if m.group(5) != None:
             return tuple([int(x) for x in m.group(6, 7, 4)] + ['firebird'])
         else:
             return tuple([int(x) for x in m.group(1, 2, 3)] + ['interbase'])

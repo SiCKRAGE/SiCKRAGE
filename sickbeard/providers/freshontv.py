@@ -11,7 +11,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -39,12 +39,11 @@ from sickbeard.helpers import sanitizeSceneName
 
 
 class FreshOnTVProvider(generic.TorrentProvider):
-    urls = {
-        'base_url': 'http://freshon.tv/',
-        'login': 'http://freshon.tv/login.php?action=makelogin',
-        'detail': 'http://freshon.tv/details.php?id=%s',
-        'search': 'http://freshon.tv/browse.php?incldead=%s&words=0&cat=0&search=%s',
-        'download': 'http://freshon.tv/download.php?id=%s&type=torrent',
+    urls = {'base_url': 'http://freshon.tv/',
+            'login': 'http://freshon.tv/login.php?action=makelogin',
+            'detail': 'http://freshon.tv/details.php?id=%s',
+            'search': 'http://freshon.tv/browse.php?incldead=%s&words=0&cat=0&search=%s',
+            'download': 'http://freshon.tv/download.php?id=%s&type=torrent',
     }
 
     def __init__(self):
@@ -85,13 +84,12 @@ class FreshOnTVProvider(generic.TorrentProvider):
 
         if self._uid and self._hash:
 
-            requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
+           requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
 
         else:
-            login_params = {
-                'username': self.username,
-                'password': self.password,
-                'login': 'submit'
+            login_params = {'username': self.username,
+                            'password': self.password,
+                            'login': 'submit'
             }
 
             if not self.session:
@@ -104,22 +102,20 @@ class FreshOnTVProvider(generic.TorrentProvider):
                 return False
 
             if re.search('Username does not exist in the userbase or the account is not confirmed yet.', response.text):
-                logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
-                return False
+               logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
+               return False
 
-            if requests.utils.dict_from_cookiejar(self.session.cookies)['uid'] and \
-                    requests.utils.dict_from_cookiejar(self.session.cookies)['pass']:
-                self._uid = requests.utils.dict_from_cookiejar(self.session.cookies)['uid']
-                self._hash = requests.utils.dict_from_cookiejar(self.session.cookies)['pass']
+            if requests.utils.dict_from_cookiejar(self.session.cookies)['uid'] and requests.utils.dict_from_cookiejar(self.session.cookies)['pass']:
+                    self._uid = requests.utils.dict_from_cookiejar(self.session.cookies)['uid']
+                    self._hash = requests.utils.dict_from_cookiejar(self.session.cookies)['pass']
 
-                self.cookies = {
-                    'uid': self._uid,
-                    'pass': self._hash
-                }
-                return True
+                    self.cookies = {'uid': self._uid,
+                                    'pass': self._hash
+                    }
+                    return True
             else:
-                logger.log(u'Unable to obtain cookie for FreshOnTV', logger.ERROR)
-                return False
+                    logger.log(u'Unable to obtain cookie for FreshOnTV', logger.ERROR)
+                    return False
 
     def _get_season_search_strings(self, ep_obj):
 
@@ -130,7 +126,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + '.' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
+                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  #1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -146,22 +142,24 @@ class FreshOnTVProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                    str(ep_obj.airdate).replace('-', '|')
+                            str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                    str(ep_obj.airdate).replace('-', '|') + '|' + ep_obj.airdate.strftime('%b')
+                            str(ep_obj.airdate).replace('-', '|') + '|' + \
+                            ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + ' ' + "%i" % int(ep_obj.scene_absolute_number)
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
+                            "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                          'episodenumber': ep_obj.scene_episode}
+                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                                  'episodenumber': ep_obj.scene_episode}
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -183,6 +181,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
                 if isinstance(search_string, unicode):
                     search_string = unidecode(search_string)
 
+
                 searchURL = self.urls['search'] % (freeleech, search_string)
 
                 logger.log(u"Search string: " + searchURL, logger.DEBUG)
@@ -197,7 +196,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
                         torrent_table = html.find('table', attrs={'class': 'frame'})
                         torrent_rows = torrent_table.findChildren('tr') if torrent_table else []
 
-                        # Continue only if one Release is found
+                        #Continue only if one Release is found
                         if len(torrent_rows) < 2:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
                                        logger.DEBUG)
@@ -207,15 +206,16 @@ class FreshOnTVProvider(generic.TorrentProvider):
                         for result in torrent_rows[1:]:
                             cells = result.findChildren('td')
 
-                            link = cells[1].find('a', attrs={'class': 'torrent_name_link'})
-                            # skip if torrent has been nuked due to poor quality
-                            if cells[1].find('img', alt='Nuked') is not None:
+                            link = cells[1].find('a', attrs = {'class': 'torrent_name_link'})
+                            #skip if torrent has been nuked due to poor quality
+                            if cells[1].find('img', alt='Nuked') != None:
                                 continue
 
                             torrent_id = link['href'].replace('/details.php?id=', '')
 
+
                             try:
-                                if 'title' in link:
+                                if link.has_key('title'):
                                     title = cells[1].find('a', {'class': 'torrent_name_link'})['title']
                                 else:
                                     title = link.contents[0]
@@ -227,7 +227,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
                             except (AttributeError, TypeError):
                                 continue
 
-                            # Filter unseeded torrent
+                            #Filter unseeded torrent
                             if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                                 continue
 
@@ -242,7 +242,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
                 except Exception, e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
-            # For each search mode sort all the items by seeders
+            #For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -328,6 +328,7 @@ class FreshOnTVCache(tvcache.TVCache):
             myDB = self._getDB()
             myDB.mass_action(cl)
 
+
     def _parseItem(self, item):
 
         (title, url) = item
@@ -335,7 +336,7 @@ class FreshOnTVCache(tvcache.TVCache):
         if not title or not url:
             return None
 
-        logger.log(u"Attempting to cache item:[" + title + "]", logger.DEBUG)
+        logger.log(u"Attempting to cache item:[" + title +"]", logger.DEBUG)
 
         return self._addCacheEntry(title, url)
 

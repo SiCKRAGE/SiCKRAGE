@@ -11,7 +11,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -21,13 +21,12 @@ from __future__ import with_statement
 import sys
 import os
 import traceback
-import urllib
-import urlparse
+import urllib, urlparse
 import re
 import datetime
-
 import sickbeard
 import generic
+
 from sickbeard.common import Quality
 from sickbeard import logger
 from sickbeard import tvcache
@@ -38,6 +37,7 @@ from sickbeard.show_name_helpers import allPossibleShowNames, sanitizeSceneName
 from sickbeard.exceptions import ex
 from sickbeard import encodingKludge as ek
 from sickbeard import clients
+
 from lib import requests
 from lib.requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
@@ -59,8 +59,8 @@ class PublicHDProvider(generic.TorrentProvider):
         self.cache = PublicHDCache(self)
 
         self.url = 'http://phdproxy.com/'
-        # order by seed
-        self.searchurl = self.url + 'index.php?page=torrents&search=%s&active=0&category=%s&order=5&by=2'
+
+        self.searchurl = self.url + 'index.php?page=torrents&search=%s&active=0&category=%s&order=5&by=2'  #order by seed
 
         self.categories = {'Season': ['23'], 'Episode': ['7', '14', '24'], 'RSS': ['7', '14', '23', '24']}
 
@@ -82,13 +82,13 @@ class PublicHDProvider(generic.TorrentProvider):
             if ep_obj.show.air_by_date or ep_obj.show.sports:
                 ep_string = show_name + str(ep_obj.airdate).split('-')[0]
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX -SXXE
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX -SXXE
             search_string['Season'].append(ep_string)
 
             if ep_obj.show.air_by_date or ep_obj.show.sports:
                 ep_string = show_name + ' Season ' + str(ep_obj.airdate).split('-')[0]
             else:
-                ep_string = show_name + ' Season ' + str(ep_obj.scene_season)  # 2) showName Season X
+                ep_string = show_name + ' Season ' + str(ep_obj.scene_season)  #2) showName Season X
             search_string['Season'].append(ep_string)
 
         return [search_string]
@@ -102,18 +102,20 @@ class PublicHDProvider(generic.TorrentProvider):
 
         if self.show.air_by_date:
             for show_name in set(allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + ' ' + str(ep_obj.airdate).replace('-', '|')
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
+                            str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                    str(ep_obj.airdate).replace('-', '|') + '|' + ep_obj.airdate.strftime('%b')
+                            str(ep_obj.airdate).replace('-', '|') + '|' + \
+                            ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                          'episodenumber': ep_obj.scene_episode}
+                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                                  'episodenumber': ep_obj.scene_episode}
 
                 for x in add_string.split('|'):
                     to_search = re.sub('\s+', ' ', ep_string + ' %s' % x)
@@ -142,7 +144,7 @@ class PublicHDProvider(generic.TorrentProvider):
                 if not html:
                     continue
 
-                # remove unneccecary <option> lines which are slowing down BeautifulSoup
+                #remove unneccecary <option> lines which are slowing down BeautifulSoup
                 optreg = re.compile(r'<option.*</option>')
                 html = os.linesep.join([s for s in html.splitlines() if not optreg.search(s)])
 
@@ -182,7 +184,7 @@ class PublicHDProvider(generic.TorrentProvider):
                     logger.log(u"Failed to parsing " + self.name + " Traceback: " + traceback.format_exc(),
                                logger.ERROR)
 
-            # For each search mode sort all the items by seeders
+            #For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -267,9 +269,12 @@ class PublicHDCache(tvcache.TVCache):
             if ci is not None:
                 cl.append(ci)
 
+
+
         if len(cl) > 0:
             myDB = self._getDB()
             myDB.mass_action(cl)
+
 
     def _parseItem(self, item):
 
@@ -278,7 +283,7 @@ class PublicHDCache(tvcache.TVCache):
         if not title or not url:
             return None
 
-        logger.log(u"Attempting to cache item:[" + title + "]", logger.DEBUG)
+        logger.log(u"Attempting to cache item:[" + title +"]", logger.DEBUG)
 
         return self._addCacheEntry(title, url)
 

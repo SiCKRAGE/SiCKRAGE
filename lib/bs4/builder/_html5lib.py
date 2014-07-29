@@ -268,7 +268,7 @@ class Element(html5lib.treebuilders._base.Node):
         return self.element.contents
 
     def getNameTuple(self):
-        if self.namespace is None:
+        if self.namespace == None:
             return namespaces["html"], self.name
         else:
             return self.namespace, self.name

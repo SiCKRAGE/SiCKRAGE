@@ -42,7 +42,6 @@ from sickbeard.exceptions import ex
 from sickbeard.providers.generic import GenericProvider
 from sickbeard.blackandwhitelist import BlackAndWhiteList
 
-
 def _downloadResult(result):
     """
     Downloads a result to the appropriate black hole folder.
@@ -53,7 +52,7 @@ def _downloadResult(result):
     """
 
     resProvider = result.provider
-    if resProvider is None:
+    if resProvider == None:
         logger.log(u"Invalid provider name - this is a coding error, report it please", logger.ERROR)
         return False
 
@@ -108,7 +107,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
         for curEp in result.episodes:
             if datetime.date.today() - curEp.airdate <= datetime.timedelta(days=7):
                 result.priority = 1
-    if re.search('(^|[\. _-])(proper|repack)([\. _-]|$)', result.name, re.I) is not None:
+    if re.search('(^|[\. _-])(proper|repack)([\. _-]|$)', result.name, re.I) != None:
         endStatus = SNATCHED_PROPER
 
     # NZBs can be sent straight to SAB or saved to disk
@@ -205,10 +204,7 @@ def pickBestResult(results, show, quality_list=None):
 
         if bwl:
             if not bwl.is_valid(cur_result):
-                logger.log(
-                    cur_result.name + " does not match the blacklist or the whitelist, rejecting it. Result: " +
-                    bwl.get_last_result_msg(),
-                    logger.MESSAGE)
+                logger.log(cur_result.name+" does not match the blacklist or the whitelist, rejecting it. Result: " + bwl.get_last_result_msg(), logger.MESSAGE)
                 continue
 
         if quality_list and cur_result.quality not in quality_list:
@@ -308,8 +304,7 @@ def isFirstBestMatch(result):
 
     any_qualities, best_qualities = Quality.splitQuality(show_obj.quality)
 
-    # if there is a redownload that's a match to one of our best qualities and we want to archive the
-    # episode then we are done
+    # if there is a redownload that's a match to one of our best qualities and we want to archive the episode then we are done
     if best_qualities and show_obj.archive_firstmatch and result.quality in best_qualities:
         return True
 
@@ -323,7 +318,7 @@ def filterSearchResults(show, season, results):
     for curEp in results:
         # skip non-tv crap
         results[curEp] = filter(
-            lambda x: show_name_helpers.filterBadReleases(x.name) and x.show == show, results[curEp])
+            lambda x: show_name_helpers.filterBadReleases(x.name) and x.show == show,results[curEp])
 
         if curEp in foundResults:
             foundResults[curEp] += results[curEp]
@@ -421,7 +416,7 @@ def searchProviders(show, season, episodes, manualSearch=False):
         if seasonSearch and curProvider.search_mode == 'sponly':
             search_mode = curProvider.search_mode
 
-        while True:
+        while(True):
             searchCount += 1
 
             if search_mode == 'sponly':
@@ -509,13 +504,10 @@ def searchProviders(show, season, episodes, manualSearch=False):
                 else:
                     anyWanted = True
 
-            # if we need every ep in the season and there's nothing better then just download this and be
-            # done with it (unless single episodes are preferred)
+            # if we need every ep in the season and there's nothing better then just download this and be done with it (unless single episodes are preferred)
             if allWanted and bestSeasonNZB.quality == highest_quality_overall:
                 logger.log(
-                    u"Every ep in this season is needed, downloading the whole " +
-                    bestSeasonNZB.provider.providerType + " " + bestSeasonNZB.name
-                )
+                    u"Every ep in this season is needed, downloading the whole " + bestSeasonNZB.provider.providerType + " " + bestSeasonNZB.name)
                 epObjs = []
                 for curEpNum in allEps:
                     epObjs.append(show.getEpisode(season, curEpNum))
@@ -526,8 +518,7 @@ def searchProviders(show, season, episodes, manualSearch=False):
             elif not anyWanted:
                 logger.log(
                     u"No eps from this season are wanted at this quality, ignoring the result of " + bestSeasonNZB.name,
-                    logger.DEBUG
-                )
+                    logger.DEBUG)
 
             else:
 
@@ -551,15 +542,12 @@ def searchProviders(show, season, episodes, manualSearch=False):
                         else:
                             foundResults[curProvider.name][epNum] = [curResult]
 
-                # If this is a torrent all we can do is leech the entire torrent, user will have to select which
-                # eps not do download in his torrent client
+                # If this is a torrent all we can do is leech the entire torrent, user will have to select which eps not do download in his torrent client
                 else:
 
-                    # Season result from Torrent Provider must be a full-season torrent,
-                    # creating multi-ep result for it.
+                    # Season result from Torrent Provider must be a full-season torrent, creating multi-ep result for it.
                     logger.log(
-                        u"Adding multi-ep result for full-season torrent. "
-                        u"Set the episodes you don't want to 'don't download' in your torrent client if desired!")
+                        u"Adding multi-ep result for full-season torrent. Set the episodes you don't want to 'don't download' in your torrent client if desired!")
                     epObjs = []
                     for curEpNum in allEps:
                         epObjs.append(show.getEpisode(season, curEpNum))
@@ -619,10 +607,8 @@ def searchProviders(show, season, episodes, manualSearch=False):
 
                 if not multiNeededEps:
                     logger.log(
-                        u"All of these episodes were covered by another multi-episode nzbs, "
-                        u"ignoring this multi-ep result",
-                        logger.DEBUG
-                    )
+                        u"All of these episodes were covered by another multi-episode nzbs, ignoring this multi-ep result",
+                        logger.DEBUG)
                     continue
 
                 # if we're keeping this multi-result then remember it

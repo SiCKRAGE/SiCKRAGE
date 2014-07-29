@@ -166,7 +166,7 @@
         </td>
         <td class="nowrap" align="center" style="color: #555555; font-size: 16px;"><b><%="%02ix%02i" % (int(cur_result["season"]), int(cur_result["episode"])) %></b></td>
         <td>
-        #if $cur_result["description"] != "" and $cur_result["description"] is not None:
+        #if $cur_result["description"] != "" and $cur_result["description"] != None:
             <img alt="" src="$sbRoot/images/info32.png" height="16" width="16" class="plotInfo" id="plot_info_<%=str(cur_result["showid"])+"_"+str(cur_result["season"])+"_"+str(cur_result["episode"])%>" style="padding-top: 6px;"/>
         #end if
             $cur_result["name"]

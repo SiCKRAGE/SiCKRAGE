@@ -11,7 +11,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -51,11 +51,11 @@ class ProwlNotifier:
         if sickbeard.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
-
-    def notify_git_update(self, new_version="??"):
+                            
+    def notify_git_update(self, new_version = "??"):
         if sickbeard.USE_PROWL:
-            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=title, message=update_text + new_version)
 
@@ -64,16 +64,15 @@ class ProwlNotifier:
         if not sickbeard.USE_PROWL and not force:
             return False
 
-        if prowl_api is None:
+        if prowl_api == None:
             prowl_api = sickbeard.PROWL_API
 
-        if prowl_priority is None:
+        if prowl_priority == None:
             prowl_priority = sickbeard.PROWL_PRIORITY
 
         title = "SickRage"
 
-        logger.log("PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (
-            event, message, prowl_priority, prowl_api), logger.DEBUG)
+        logger.log("PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (event, message, prowl_priority, prowl_api), logger.DEBUG)
 
         http_handler = HTTPSConnection("api.prowlapp.com")
 

@@ -16,13 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib
-import httplib
-import urllib2
-import cookielib
+
+
+import urllib, httplib
+import datetime
 
 import sickbeard
+
 from lib import MultipartPostHandler
+import urllib2, cookielib
 
 try:
     import json
@@ -43,13 +45,13 @@ def sendNZB(nzb):
 
     # set up a dict with the URL params in it
     params = {}
-    if sickbeard.SAB_USERNAME is not None:
+    if sickbeard.SAB_USERNAME != None:
         params['ma_username'] = sickbeard.SAB_USERNAME
-    if sickbeard.SAB_PASSWORD is not None:
+    if sickbeard.SAB_PASSWORD != None:
         params['ma_password'] = sickbeard.SAB_PASSWORD
-    if sickbeard.SAB_APIKEY is not None:
+    if sickbeard.SAB_APIKEY != None:
         params['apikey'] = sickbeard.SAB_APIKEY
-    if sickbeard.SAB_CATEGORY is not None:
+    if sickbeard.SAB_CATEGORY != None:
         params['cat'] = sickbeard.SAB_CATEGORY
 
     # use high priority if specified (recently aired episode)
@@ -105,7 +107,7 @@ def sendNZB(nzb):
         return False
 
     # this means we couldn't open the connection or something just as bad
-    if f is None:
+    if f == None:
         logger.log(u"No data returned from SABnzbd, NZB not sent", logger.ERROR)
         return False
 
@@ -116,8 +118,7 @@ def sendNZB(nzb):
         logger.log(u"Error trying to get result from SAB, NZB not sent: " + ex(e), logger.ERROR)
         return False
 
-    # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and
-    # didn't recieve the NZB
+    # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and didn't recieve the NZB
     if len(result) == 0:
         logger.log(u"No data returned from SABnzbd, NZB not sent", logger.ERROR)
         return False
@@ -176,7 +177,7 @@ def _sabURLOpenSimple(url):
     except httplib.InvalidURL, e:
         logger.log(u"Invalid SAB host, check your config: " + ex(e), logger.ERROR)
         return False, "Invalid SAB host"
-    if f is None:
+    if f == None:
         logger.log(u"No data returned from SABnzbd", logger.ERROR)
         return False, "No data returned from SABnzbd"
     else:
@@ -230,3 +231,4 @@ def testAuthentication(host=None, username=None, password=None, apikey=None):
         return False, sabText
 
     return True, "Success"
+    

@@ -178,7 +178,7 @@ def main():
     params['quiet'] = 1
     
     params['dir'] = dirName
-    if nzbName is not None:
+    if nzbName != None:
         params['nzbName'] = nzbName
     
     if ssl:

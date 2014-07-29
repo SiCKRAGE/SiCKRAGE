@@ -57,8 +57,7 @@ class ProperFinder():
 
         run_at = ""
         if None is sickbeard.properFinderScheduler.start_time:
-            run_in = sickbeard.properFinderScheduler.lastRun + sickbeard.properFinderScheduler.cycleTime - \
-                datetime.datetime.now()
+            run_in = sickbeard.properFinderScheduler.lastRun + sickbeard.properFinderScheduler.cycleTime - datetime.datetime.now()
             hours, remainder = divmod(run_in.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
             run_at = u", next check in approx. " + (
@@ -123,14 +122,12 @@ class ProperFinder():
             if not parse_result.episode_numbers:
                 logger.log(
                     u"Ignoring " + curProper.name + " because it's for a full season rather than specific episode",
-                    logger.DEBUG
-                )
+                    logger.DEBUG)
                 continue
 
             logger.log(
-                u"Successful match! Result " + parse_result.original_name + " matched to show " +
-                parse_result.show.name, logger.DEBUG
-            )
+                u"Successful match! Result " + parse_result.original_name + " matched to show " + parse_result.show.name,
+                logger.DEBUG)
 
             # set the indexerid in the db to the show's indexerid
             curProper.indexerid = parse_result.show.indexerid
@@ -228,12 +225,10 @@ class ProperFinder():
                 [curProper.indexerid, curProper.season, curProper.episode, curProper.quality,
                  historyLimit.strftime(history.dateFormat)])
 
-            # if we didn't download this episode in the first place we don't know what quality
-            # to use for the proper so we can't do it
+            # if we didn't download this episode in the first place we don't know what quality to use for the proper so we can't do it
             if len(historyResults) == 0:
                 logger.log(
-                    u"Unable to find an original history entry for proper " + curProper.name +
-                    " so I'm not downloading it.")
+                    u"Unable to find an original history entry for proper " + curProper.name + " so I'm not downloading it.")
                 continue
 
             else:
@@ -252,7 +247,7 @@ class ProperFinder():
 
                 # get the episode object
                 showObj = helpers.findCertainShow(sickbeard.showList, curProper.indexerid)
-                if showObj is None:
+                if showObj == None:
                     logger.log(u"Unable to find the show with indexerid " + str(
                         curProper.indexerid) + " so unable to download the proper", logger.ERROR)
                     continue

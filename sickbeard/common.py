@@ -37,17 +37,16 @@ mediaExtensions = ['avi', 'mkv', 'mpg', 'mpeg', 'wmv',
 
 subtitleExtensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
 
-cpu_presets = {
-    'HIGH': 0.1,
-    'NORMAL': 0.05,
-    'LOW': 0.01
+cpu_presets = {'HIGH': 0.1,
+               'NORMAL': 0.05,
+               'LOW': 0.01
 }
 
-# Other constants
+### Other constants
 MULTI_EP_RESULT = -1
 SEASON_RESULT = -2
 
-# Notification Types
+### Notification Types
 NOTIFY_SNATCH = 1
 NOTIFY_DOWNLOAD = 2
 NOTIFY_SUBTITLE_DOWNLOAD = 3
@@ -72,7 +71,7 @@ ARCHIVED = 6  # episodes that you don't have locally (counts toward download com
 IGNORED = 7  # episodes that you don't want included in your download stats
 SNATCHED_PROPER = 9  # qualified with quality
 SUBTITLED = 10  # qualified with quality
-FAILED = 11  # episode downloaded or snatched we don't want
+FAILED = 11  #episode downloaded or snatched we don't want
 SNATCHED_BEST = 12  # episode redownloaded using best quality
 
 NAMING_REPEAT = 1
@@ -128,8 +127,8 @@ class Quality:
     def _getStatusStrings(status):
         toReturn = {}
         for x in Quality.qualityStrings.keys():
-            toReturn[Quality.compositeStatus(status, x)] = Quality.statusPrefixes[status] + \
-                " (" + Quality.qualityStrings[x] + ")"
+            toReturn[Quality.compositeStatus(status, x)] = Quality.statusPrefixes[status] + " (" + \
+                                                           Quality.qualityStrings[x] + ")"
         return toReturn
 
     @staticmethod
@@ -168,7 +167,7 @@ class Quality:
             if x == Quality.UNKNOWN:
                 continue
 
-            if x == Quality.NONE:  # Last chance
+            if x == Quality.NONE:  #Last chance
                 return Quality.sceneQuality(name, anime)
 
             regex = '\W' + Quality.qualityStrings[x].replace(' ', '\W') + '\W'
@@ -329,11 +328,10 @@ class StatusStrings:
             else:
                 return self.statusStrings[status] + " (" + Quality.qualityStrings[quality] + ")"
         else:
-            return self.statusStrings[name] if name in self.statusStrings else ''
+            return self.statusStrings[name] if self.statusStrings.has_key(name) else ''
 
     def has_key(self, name):
-        return name in self.statusStrings or name in Quality.DOWNLOADED or name in Quality.SNATCHED or \
-            name in Quality.SNATCHED_PROPER or name in Quality.SNATCHED_BEST
+        return name in self.statusStrings or name in Quality.DOWNLOADED or name in Quality.SNATCHED or name in Quality.SNATCHED_PROPER or name in Quality.SNATCHED_BEST
 
 
 statusStrings = StatusStrings()
@@ -349,23 +347,19 @@ class Overview:
     # For both snatched statuses. Note: SNATCHED/QUAL have same value and break dict.
     SNATCHED = SNATCHED_PROPER = SNATCHED_BEST  # 9
 
-    overviewStrings = {
-        SKIPPED: "skipped",
-        WANTED: "wanted",
-        QUAL: "qual",
-        GOOD: "good",
-        UNAIRED: "unaired",
-        SNATCHED: "snatched"}
+    overviewStrings = {SKIPPED: "skipped",
+                       WANTED: "wanted",
+                       QUAL: "qual",
+                       GOOD: "good",
+                       UNAIRED: "unaired",
+                       SNATCHED: "snatched"}
 
 # Get our xml namespaces correct for lxml
-XML_NSMAP = {
-    'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-    'xsd': 'http://www.w3.org/2001/XMLSchema'
-}
+XML_NSMAP = {'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+             'xsd': 'http://www.w3.org/2001/XMLSchema'}
 
-countryList = {
-    'Australia': 'AU',
-    'Canada': 'CA',
-    'USA': 'US'
+countryList = {'Australia': 'AU',
+               'Canada': 'CA',
+               'USA': 'US'
 }
 

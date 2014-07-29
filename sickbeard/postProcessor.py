@@ -146,8 +146,7 @@ class PostProcessor(object):
 
     def list_associated_files(self, file_path, base_name_only=False, subtitles_only=False):
         """
-        For a given file path searches for files with the same name but different extension and returns
-        their absolute paths
+        For a given file path searches for files with the same name but different extension and returns their absolute paths
 
         file_path: The file to check for associated files
 
@@ -274,7 +273,7 @@ class PostProcessor(object):
                     cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
-            if cur_extension == 'nfo' and sickbeard.NFO_RENAME is True:
+            if cur_extension == 'nfo' and sickbeard.NFO_RENAME == True:
                 cur_extension = 'nfo-orig'
 
             # If new base name then convert name
@@ -338,6 +337,7 @@ class PostProcessor(object):
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_copy,
                                       subtitles=subtitles)
+
 
     def _hardlink(self, file_path, new_path, new_base_name, associated_files=False, subtitles=False):
         """
@@ -437,10 +437,7 @@ class PostProcessor(object):
 
         # remember whether it's a proper
         if parse_result.extra_info:
-            self.is_proper = re.search(
-                '(^|[\. _-])(proper|repack)([\. _-]|$)',
-                parse_result.extra_info, re.I
-            ) is not None
+            self.is_proper = re.search('(^|[\. _-])(proper|repack)([\. _-]|$)', parse_result.extra_info, re.I) != None
 
         # if the result is complete then remember that for later
         # if the result is complete then set release name
@@ -502,11 +499,9 @@ class PostProcessor(object):
         return to_return
 
     def _build_anidb_episode(self, connection, filePath):
-        ep = adba.Episode(
-            connection, filePath=filePath,
-            paramsF=["quality", "anidb_file_name", "crc32"],
-            paramsA=["epno", "english_name", "short_name_list", "other_name", "synonym_list"]
-        )
+        ep = adba.Episode(connection, filePath=filePath,
+                          paramsF=["quality", "anidb_file_name", "crc32"],
+                          paramsA=["epno", "english_name", "short_name_list", "other_name", "synonym_list"])
 
         return ep
 
@@ -530,23 +525,22 @@ class PostProcessor(object):
         episodes = []
 
         # try to look up the nzb in history
-        attempt_list = [
-            self._history_lookup,
+        attempt_list = [self._history_lookup,
 
-            # try to analyze the nzb name
-            lambda: self._analyze_name(self.nzb_name),
+                        # try to analyze the nzb name
+                        lambda: self._analyze_name(self.nzb_name),
 
-            # try to analyze the file name
-            lambda: self._analyze_name(self.file_name),
+                        # try to analyze the file name
+                        lambda: self._analyze_name(self.file_name),
 
-            # try to analyze the dir name
-            lambda: self._analyze_name(self.folder_name),
+                        # try to analyze the dir name
+                        lambda: self._analyze_name(self.folder_name),
 
-            # try to analyze the file + dir names together
-            lambda: self._analyze_name(self.file_path),
+                        # try to analyze the file + dir names together
+                        lambda: self._analyze_name(self.file_path),
 
-            # try to analyze the dir + file name together as one name
-            lambda: self._analyze_name(self.folder_name + u' ' + self.file_name)
+                        # try to analyze the dir + file name together as one name
+                        lambda: self._analyze_name(self.folder_name + u' ' + self.file_name)
         ]
 
         # attempt every possible method to get our info
@@ -570,7 +564,7 @@ class PostProcessor(object):
             if cur_version is not None:
                 version = cur_version
 
-            if cur_season is not None:
+            if cur_season != None:
                 season = cur_season
             if cur_episodes:
                 episodes = cur_episodes
@@ -578,8 +572,7 @@ class PostProcessor(object):
             # for air-by-date shows we need to look up the season/episode from database
             if season == -1 and show and episodes:
                 self._log(
-                    u"Looks like this is an air-by-date or sports show, attempting to convert "
-                    u"the date to season/episode",
+                    u"Looks like this is an air-by-date or sports show, attempting to convert the date to season/episode",
                     logger.DEBUG)
                 airdate = episodes[0].toordinal()
                 myDB = db.DBConnection()
@@ -593,24 +586,20 @@ class PostProcessor(object):
                 else:
                     self._log(u"Unable to find episode with date " + str(episodes[0]) + u" for show " + str(
                         show.indexerid) + u", skipping", logger.DEBUG)
-                    # we don't want to leave dates in the episode list if we couldn't
-                    # convert them to real episode numbers
+                    # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
                     episodes = []
                     continue
 
             # if there's no season then we can hopefully just use 1 automatically
-            elif season is None and show:
+            elif season == None and show:
                 myDB = db.DBConnection()
                 numseasonsSQlResult = myDB.select(
-                    "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and indexer = ? "
-                    "and season != 0",
+                    "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and indexer = ? and season != 0",
                     [show.indexerid, show.indexer])
-                if int(numseasonsSQlResult[0][0]) == 1 and season is None:
+                if int(numseasonsSQlResult[0][0]) == 1 and season == None:
                     self._log(
-                        u"Don't have a season number, but this show appears to only have 1 season, "
-                        u"setting season number to 1...",
-                        logger.DEBUG
-                    )
+                        u"Don't have a season number, but this show appears to only have 1 season, setting season number to 1...",
+                        logger.DEBUG)
                     season = 1
 
             if show and season and episodes:
@@ -642,7 +631,7 @@ class PostProcessor(object):
                 raise exceptions.PostProcessingFailed()
 
             # associate all the episodes together under a single root episode
-            if root_ep is None:
+            if root_ep == None:
                 root_ep = curEp
                 root_ep.relatedEps = []
             elif curEp not in root_ep.relatedEps:
@@ -759,8 +748,7 @@ class PostProcessor(object):
             return True
 
         # if SB downloaded this on purpose then this is a priority download
-        if self.in_history or ep_obj.status \
-                in common.Quality.SNATCHED + common.Quality.SNATCHED_PROPER + common.Quality.SNATCHED_BEST:
+        if self.in_history or ep_obj.status in common.Quality.SNATCHED + common.Quality.SNATCHED_PROPER + common.Quality.SNATCHED_BEST:
             self._log(u"SB snatched this episode so I'm marking it as priority", logger.DEBUG)
             return True
 
@@ -769,17 +757,14 @@ class PostProcessor(object):
         # if the user downloaded it manually and it's higher quality than the existing episode then it's priority
         if new_ep_quality > old_ep_quality and new_ep_quality != common.Quality.UNKNOWN:
             self._log(
-                u"This was manually downloaded but it appears to be better quality than what we have "
-                u"so I'm marking it as priority", logger.DEBUG
-            )
+                u"This was manually downloaded but it appears to be better quality than what we have so I'm marking it as priority",
+                logger.DEBUG)
             return True
 
         # if the user downloaded it manually and it appears to be a PROPER/REPACK then it's priority
         if self.is_proper and new_ep_quality >= old_ep_quality and new_ep_quality != common.Quality.UNKNOWN:
-            self._log(
-                u"This was manually downloaded but it appears to be a proper so I'm marking it as priority",
-                logger.DEBUG
-            )
+            self._log(u"This was manually downloaded but it appears to be a proper so I'm marking it as priority",
+                      logger.DEBUG)
             return True
 
         return False
@@ -812,7 +797,7 @@ class PostProcessor(object):
             self._log(u"This show isn't in your list, you need to add it to SB before post-processing an episode",
                       logger.ERROR)
             raise exceptions.PostProcessingFailed()
-        elif season is None or not episodes:
+        elif season == None or not episodes:
             self._log(u"Not enough information to determine what episode this is", logger.DEBUG)
             self._log(u"Quitting post-processing", logger.DEBUG)
             return False
@@ -872,7 +857,7 @@ class PostProcessor(object):
 
             # set the status of the episodes
             # for curEp in [ep_obj] + ep_obj.relatedEps:
-            # curEp.status = common.Quality.compositeStatus(common.SNATCHED, new_ep_quality)
+            #    curEp.status = common.Quality.compositeStatus(common.SNATCHED, new_ep_quality)
 
         # delete the existing file (and company)
         for cur_ep in [ep_obj] + ep_obj.relatedEps:

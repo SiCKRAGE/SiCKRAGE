@@ -523,7 +523,7 @@ def check_for_errors(result):
         raise NotImplementedError('JSON-RPC version not yet supported.')
     if 'result' not in result.keys() and 'error' not in result.keys():
         raise ValueError('Response does not have a result or error key.')
-    if 'error' in result.keys() and result['error'] is not None:
+    if 'error' in result.keys() and result['error'] != None:
         code = result['error']['code']
         message = result['error']['message']
         raise ProtocolError((code, message))
@@ -550,7 +550,7 @@ def isnotification(request):
     if 'id' not in request.keys():
         # 2.0 notification
         return True
-    if request['id'] is None:
+    if request['id'] == None:
         # 1.0 notification
         return True
     return False

@@ -11,33 +11,32 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-__all__ = [
-    'ezrss',
-    'tvtorrents',
-    'womble',
-    'btn',
-    'thepiratebay',
-    'kat',
-    'torrentleech',
-    'scc',
-    'hdtorrents',
-    'torrentday',
-    'hdbits',
-    'iptorrents',
-    'omgwtfnzbs',
-    'nextgen',
-    'speedcd',
-    'nyaatorrents',
-    'fanzub',
-    'torrentbytes',
-    'animezb',
-    'freshontv',
-    'bitsoup'
+__all__ = ['ezrss',
+           'tvtorrents',
+           'womble',
+           'btn',
+           'thepiratebay',
+           'kat',
+           'torrentleech',
+           'scc',
+           'hdtorrents',
+           'torrentday',
+           'hdbits',
+           'iptorrents',
+           'omgwtfnzbs',
+           'nextgen',
+           'speedcd',
+           'nyaatorrents',
+           'fanzub',
+           'torrentbytes',
+           'animezb',
+           'freshontv',
+           'bitsoup'
 ]
 
 import sickbeard
@@ -63,7 +62,6 @@ def sortedProviderList():
             newList.append(providerDict[curModule])
 
     return newList
-
 
 def makeProviderList():
     return [x.provider for x in [getProviderModule(y) for y in __all__] if x]
@@ -159,8 +157,7 @@ def makeTorrentRssProvider(configString):
             try:
                 name, url, enabled = configString.split('|')
             except ValueError:
-                logger.log(u"Skipping RSS Torrent provider string: '" + configString + "', incorrect format",
-                           logger.ERROR)
+                logger.log(u"Skipping RSS Torrent provider string: '" + configString + "', incorrect format", logger.ERROR)
                 return None
 
     try:
@@ -175,9 +172,7 @@ def makeTorrentRssProvider(configString):
 
 
 def getDefaultNewznabProviders():
-    return 'Sick Beard Index|http://lolo.sickbeard.com/|0|5030,5040|0|eponly|0!!!NZBs.org|' \
-           'https://nzbs.org/||5030,5040|0|eponly|0!!!Usenet-Crawler|https://www.usenet-crawler.com/|' \
-           '|5030,5040|0|eponly|0'
+    return 'Sick Beard Index|http://lolo.sickbeard.com/|0|5030,5040|0|eponly|0!!!NZBs.org|https://nzbs.org/||5030,5040|0|eponly|0!!!Usenet-Crawler|https://www.usenet-crawler.com/||5030,5040|0|eponly|0'
 
 
 def getProviderModule(name):

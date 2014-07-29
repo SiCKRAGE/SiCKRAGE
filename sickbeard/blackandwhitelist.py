@@ -18,7 +18,6 @@
 
 from sickbeard import db, logger
 
-
 class BlackAndWhiteList(object):
     _tableBlack = "blacklist"
     _tableWhite = "whitelist"
@@ -84,14 +83,14 @@ class BlackAndWhiteList(object):
 
     def get_last_result_msg(self):
         blackResult = whiteResult = "Untested"
-        if self.last_black_valid_result is True:
+        if self.last_black_valid_result == True:
             blackResult = "Valid"
-        elif self.last_black_valid_result is False:
+        elif self.last_black_valid_result == False:
             blackResult = "Invalid"
 
-        if self.last_white_valid_result is True:
+        if self.last_white_valid_result == True:
             whiteResult = "Valid"
-        elif self.last_white_valid_result is False:
+        elif self.last_white_valid_result == False:
             whiteResult = "Invalid"
 
         return "Blacklist: " + blackResult + ", Whitelist: " + whiteResult
@@ -99,8 +98,7 @@ class BlackAndWhiteList(object):
     def _add_keywords(self, table, range, values):
         myDB = db.DBConnection()
         for value in values:
-            myDB.action("INSERT INTO " + table + " (show_id, range , keyword) VALUES (?,?,?)",
-                        [self.show_id, range, value])
+            myDB.action("INSERT INTO " + table + " (show_id, range , keyword) VALUES (?,?,?)", [self.show_id, range, value])
 
         self.refresh()
 
@@ -199,19 +197,16 @@ class BlackAndWhiteList(object):
         """
         fromPost = fromPost.lower()
         fromBWList = fromBWList.lower()
-        logger.log(u"BWL: " + str(self.show_id) + " comparing fromPost: " + fromPost + " vs fromBWlist: " + fromBWList,
-                   logger.DEBUG)
+        logger.log(u"BWL: " + str(self.show_id) + " comparing fromPost: " + fromPost + " vs fromBWlist: " + fromBWList, logger.DEBUG)
         return (fromPost.find(fromBWList) >= 0)
-
 
 class BlackWhiteKeyword(object):
     range = ""
     value = []
 
     def __init__(self, range, values):
-        self.range = range  # "global" or a parser group
-        self.value = values  # a list of values may contain only one item (still a list)
-
+        self.range = range # "global" or a parser group
+        self.value = values # a list of values may contain only one item (still a list)
 
 class BlackWhitelistNoShowIDException(Exception):
     "No show_id was given"

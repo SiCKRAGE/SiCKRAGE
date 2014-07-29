@@ -207,7 +207,7 @@ def get_cls_kwargs(cls, _set=None):
     No anonymous tuple arguments please !
 
     """
-    toplevel = _set is None
+    toplevel = _set == None
     if toplevel:
         _set = set()
 

@@ -12,7 +12,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -40,13 +40,12 @@ from sickbeard.helpers import sanitizeSceneName
 
 
 class HDTorrentsProvider(generic.TorrentProvider):
-    urls = {
-        'base_url': 'https://hdts.ru/index.php',
-        'login': 'https://hdts.ru/login.php',
-        'detail': 'https://www.hdts.ru/details.php?id=%s',
-        'search': 'https://hdts.ru/torrents.php?search=%s&active=1&options=0%s',
-        'download': 'https://www.sceneaccess.eu/%s',
-        'home': 'https://www.hdts.ru/%s'
+    urls = {'base_url': 'https://hdts.ru/index.php',
+            'login': 'https://hdts.ru/login.php',
+            'detail': 'https://www.hdts.ru/details.php?id=%s',
+            'search': 'https://hdts.ru/torrents.php?search=%s&active=1&options=0%s',
+            'download': 'https://www.sceneaccess.eu/%s',
+            'home': 'https://www.hdts.ru/%s'
     }
 
     def __init__(self):
@@ -94,10 +93,9 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
         else:
 
-            login_params = {
-                'uid': self.username,
-                'pwd': self.password,
-                'submit': 'Confirm',
+            login_params = {'uid': self.username,
+                            'pwd': self.password,
+                            'submit': 'Confirm',
             }
 
             try:
@@ -114,9 +112,8 @@ class HDTorrentsProvider(generic.TorrentProvider):
             self._uid = requests.utils.dict_from_cookiejar(self.session.cookies)['uid']
             self._hash = requests.utils.dict_from_cookiejar(self.session.cookies)['pass']
 
-            self.cookies = {
-                'uid': self._uid,
-                'pass': self._hash
+            self.cookies = {'uid': self._uid,
+                            'pass': self._hash
             }
 
         return True
@@ -130,9 +127,10 @@ class HDTorrentsProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
 
             search_string['Season'].append(ep_string)
+
 
         return [search_string]
 
@@ -145,22 +143,24 @@ class HDTorrentsProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                    str(ep_obj.airdate).replace('-', '|')
+                            str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                    str(ep_obj.airdate).replace('-', '|') + '|' + ep_obj.airdate.strftime('%b')
+                            str(ep_obj.airdate).replace('-', '|') + '|' + \
+                            ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + ' ' + "%i" % int(ep_obj.scene_absolute_number)
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
+                            "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                          'episodenumber': ep_obj.scene_episode}
+                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                                  'episodenumber': ep_obj.scene_episode}
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -197,7 +197,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        # Get first entry in table
+                        #Get first entry in table
                         entries = html.find_all('td', attrs={'align': 'center'})
 
                         if not entries:
@@ -226,7 +226,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
                         items[mode].append(item)
 
-                        # Now attempt to get any others
+                        #Now attempt to get any others
                         result_table = html.find('table', attrs={'class': 'mainblockcontenttt'})
 
                         if not result_table:
@@ -268,7 +268,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
                 except Exception, e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
-            # For each search mode sort all the items by seeders
+            #For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -306,8 +306,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
         for sqlshow in sqlResults:
             self.show = curshow = helpers.findCertainShow(sickbeard.showList, int(sqlshow["showid"]))
-            if not self.show:
-                continue
+            if not self.show: continue
             curEp = curshow.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
 
             searchString = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
@@ -354,9 +353,12 @@ class HDTorrentsCache(tvcache.TVCache):
             if ci is not None:
                 cl.append(ci)
 
+
+
         if len(cl) > 0:
             myDB = self._getDB()
             myDB.mass_action(cl)
+
 
     def _parseItem(self, item):
 
@@ -365,7 +367,7 @@ class HDTorrentsCache(tvcache.TVCache):
         if not title or not url:
             return None
 
-        logger.log(u"Attempting to cache item:[" + title + "]", logger.DEBUG)
+        logger.log(u"Attempting to cache item:[" + title +"]", logger.DEBUG)
 
         return self._addCacheEntry(title, url)
 

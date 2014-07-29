@@ -134,10 +134,10 @@ class Connection(threading.Thread):
 
     def authed(self, reAuthenticate=False):
         self.lock.acquire()
-        authed = (self.link.session is not None)
+        authed = (self.link.session != None)
         if not authed and (reAuthenticate or self.keepAlive):
             self._reAuthenticate()
-            authed = (self.link.session is not None)
+            authed = (self.link.session != None)
         self.lock.release()
         return authed
 

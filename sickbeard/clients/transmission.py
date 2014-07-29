@@ -11,7 +11,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -21,6 +21,7 @@ import json
 from base64 import b64encode
 
 import sickbeard
+from sickbeard import logger
 from sickbeard.clients.generic import GenericClient
 
 
@@ -43,10 +44,9 @@ class TransmissionAPI(GenericClient):
 
         self.session.headers.update({'x-transmission-session-id': self.auth})
 
-        # Validating Transmission authorization
-        post_data = json.dumps({
-            'arguments': {},
-            'method': 'session-get',
+        #Validating Transmission authorization
+        post_data = json.dumps({'arguments': {},
+                                'method': 'session-get',
         })
         self._request(method='post', data=post_data)
 
@@ -54,14 +54,12 @@ class TransmissionAPI(GenericClient):
 
     def _add_torrent_uri(self, result):
 
-        arguments = {
-            'filename': result.url,
-            'paused': 1 if sickbeard.TORRENT_PAUSED else 0,
-            'download-dir': sickbeard.TORRENT_PATH
+        arguments = {'filename': result.url,
+                     'paused': 1 if sickbeard.TORRENT_PAUSED else 0,
+                     'download-dir': sickbeard.TORRENT_PATH
         }
-        post_data = json.dumps({
-            'arguments': arguments,
-            'method': 'torrent-add',
+        post_data = json.dumps({'arguments': arguments,
+                                'method': 'torrent-add',
         })
         self._request(method='post', data=post_data)
 
@@ -69,14 +67,12 @@ class TransmissionAPI(GenericClient):
 
     def _add_torrent_file(self, result):
 
-        arguments = {
-            'metainfo': b64encode(result.content),
-            'paused': 1 if sickbeard.TORRENT_PAUSED else 0,
-            'download-dir': sickbeard.TORRENT_PATH
+        arguments = {'metainfo': b64encode(result.content),
+                     'paused': 1 if sickbeard.TORRENT_PAUSED else 0,
+                     'download-dir': sickbeard.TORRENT_PATH
         }
-        post_data = json.dumps({
-            'arguments': arguments,
-            'method': 'torrent-add',
+        post_data = json.dumps({'arguments': arguments,
+                                'method': 'torrent-add',
         })
         self._request(method='post', data=post_data)
 
@@ -99,14 +95,12 @@ class TransmissionAPI(GenericClient):
                 ratio = float(ratio)
                 mode = 1  # Stop seeding at seedRatioLimit
 
-        arguments = {
-            'ids': [torrent_id],
-            'seedRatioLimit': ratio,
-            'seedRatioMode': mode
+        arguments = {'ids': [torrent_id],
+                     'seedRatioLimit': ratio,
+                     'seedRatioMode': mode
         }
-        post_data = json.dumps({
-            'arguments': arguments,
-            'method': 'torrent-set',
+        post_data = json.dumps({'arguments': arguments,
+                                'method': 'torrent-set',
         })
         self._request(method='post', data=post_data)
 
@@ -130,9 +124,8 @@ class TransmissionAPI(GenericClient):
         else:
             arguments['priority-normal'] = []
 
-        post_data = json.dumps({
-            'arguments': arguments,
-            'method': 'torrent-set',
+        post_data = json.dumps({'arguments': arguments,
+                                'method': 'torrent-set',
         })
         self._request(method='post', data=post_data)
 

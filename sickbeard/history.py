@@ -47,7 +47,7 @@ def logSnatch(searchResult):
         version = searchResult.version
 
         providerClass = searchResult.provider
-        if providerClass is not None:
+        if providerClass != None:
             provider = providerClass.name
         else:
             provider = "unknown"

@@ -23,7 +23,6 @@ from sickbeard import logger
 nameCache = {}
 nameCacheLock = threading.Lock()
 
-
 def addNameToCache(name, indexer_id=0):
     """
     Adds the show & tvdb id to the scene_names table in cache.db.
@@ -55,7 +54,6 @@ def retrieveNameFromCache(name):
     name = sickbeard.helpers.full_sanitizeSceneName(name)
     if name in nameCache:
         return int(nameCache[name])
-
 
 def clearCache():
     """
@@ -108,9 +106,8 @@ def buildNameCache(show=None):
             for show in sickbeard.showList:
                 for curSeason in [-1] + sickbeard.scene_exceptions.get_scene_seasons(show.indexerid):
                     for name in list(set(
-                        sickbeard.scene_exceptions.get_scene_exceptions(show.indexerid, season=curSeason) +
-                            [show.name]
-                    )):
+                                    sickbeard.scene_exceptions.get_scene_exceptions(show.indexerid, season=curSeason) + [
+                                show.name])):
                         name = sickbeard.helpers.full_sanitizeSceneName(name)
                         if name in nameCache:
                             continue
@@ -120,9 +117,8 @@ def buildNameCache(show=None):
             logger.log(u"Building internal name cache for " + show.name, logger.MESSAGE)
 
             for curSeason in [-1] + sickbeard.scene_exceptions.get_scene_seasons(show.indexerid):
-                for name in list(
-                        set(sickbeard.scene_exceptions.get_scene_exceptions(show.indexerid, season=curSeason) + [
-                            show.name])):
+                for name in list(set(sickbeard.scene_exceptions.get_scene_exceptions(show.indexerid, season=curSeason) + [
+                    show.name])):
                     name = sickbeard.helpers.full_sanitizeSceneName(name)
                     if name in nameCache:
                         continue

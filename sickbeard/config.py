@@ -97,7 +97,7 @@ def change_LOG_DIR(log_dir, web_log):
         else:
             return False
 
-    if sickbeard.WEB_LOG != web_log_value or log_dir_changed is True:
+    if sickbeard.WEB_LOG != web_log_value or log_dir_changed == True:
         sickbeard.WEB_LOG = web_log_value
 
     return True
@@ -156,7 +156,6 @@ def change_AUTOPOSTPROCESSER_FREQUENCY(freq):
 
     sickbeard.autoPostProcesserScheduler.cycleTime = datetime.timedelta(minutes=sickbeard.AUTOPOSTPROCESSER_FREQUENCY)
 
-
 def change_DAILYSEARCH_FREQUENCY(freq):
     sickbeard.DAILYSEARCH_FREQUENCY = to_int(freq, default=sickbeard.DEFAULT_DAILYSEARCH_FREQUENCY)
 
@@ -164,7 +163,6 @@ def change_DAILYSEARCH_FREQUENCY(freq):
         sickbeard.DAILYSEARCH_FREQUENCY = sickbeard.MIN_DAILYSEARCH_FREQUENCY
 
     sickbeard.dailySearchScheduler.cycleTime = datetime.timedelta(minutes=sickbeard.DAILYSEARCH_FREQUENCY)
-
 
 def change_BACKLOG_FREQUENCY(freq):
     sickbeard.BACKLOG_FREQUENCY = to_int(freq, default=sickbeard.DEFAULT_BACKLOG_FREQUENCY)
@@ -174,7 +172,6 @@ def change_BACKLOG_FREQUENCY(freq):
 
     sickbeard.backlogSearchScheduler.cycleTime = datetime.timedelta(minutes=sickbeard.BACKLOG_FREQUENCY)
 
-
 def change_UPDATE_FREQUENCY(freq):
     sickbeard.UPDATE_FREQUENCY = to_int(freq, default=sickbeard.DEFAULT_UPDATE_FREQUENCY)
 
@@ -182,7 +179,6 @@ def change_UPDATE_FREQUENCY(freq):
         sickbeard.UPDATE_FREQUENCY = sickbeard.MIN_UPDATE_FREQUENCY
 
     sickbeard.versionCheckScheduler.cycleTime = datetime.timedelta(hours=sickbeard.UPDATE_FREQUENCY)
-
 
 def change_VERSION_NOTIFY(version_notify):
     oldSetting = sickbeard.VERSION_NOTIFY
@@ -192,7 +188,7 @@ def change_VERSION_NOTIFY(version_notify):
     if not version_notify:
         sickbeard.NEWEST_VERSION_STRING = None
 
-    if oldSetting is False and version_notify is True:
+    if oldSetting == False and version_notify == True:
         sickbeard.versionCheckScheduler.action.run()  # @UndefinedVariable
 
 def CheckSection(CFG, sec):
@@ -305,7 +301,7 @@ def to_int(val, default=0):
     return val
 
 
-# ###############################################################################
+################################################################################
 # Check_setting_int                                                            #
 ################################################################################
 def minimax(val, default, low, high):
@@ -360,8 +356,7 @@ def check_setting_float(config, cfg_name, item_name, def_val):
 # Check_setting_str                                                            #
 ################################################################################
 def check_setting_str(config, cfg_name, item_name, def_val, log=True):
-    # For passwords you must include the word `password` in the item_name and add
-    # `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save_config()
+    # For passwords you must include the word `password` in the item_name and add `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save_config()
     if bool(item_name.find('password') + 1):
         log = False
         encryption_version = sickbeard.ENCRYPTION_VERSION
@@ -385,7 +380,6 @@ def check_setting_str(config, cfg_name, item_name, def_val, log=True):
 
     return my_val
 
-
 class ConfigMigrator():
     def __init__(self, config_obj):
         """
@@ -398,12 +392,11 @@ class ConfigMigrator():
         # check the version of the config
         self.config_version = check_setting_int(config_obj, 'General', 'config_version', sickbeard.CONFIG_VERSION)
         self.expected_config_version = sickbeard.CONFIG_VERSION
-        self.migration_names = {
-            1: 'Custom naming',
-            2: 'Sync backup number with version number',
-            3: 'Rename omgwtfnzb variables',
-            4: 'Add newznab catIDs',
-            5: 'Metadata update'
+        self.migration_names = {1: 'Custom naming',
+                                2: 'Sync backup number with version number',
+                                3: 'Rename omgwtfnzb variables',
+                                4: 'Add newznab catIDs',
+                                5: 'Metadata update'
         }
 
     def migrate_config(self):
@@ -412,12 +405,10 @@ class ConfigMigrator():
         """
 
         if self.config_version > self.expected_config_version:
-            logger.log_error_and_exit(
-                u"Your config version (" + str(self.config_version) +
-                ") has been incremented past what this version of SickRage supports (" +
-                str(self.expected_config_version) + ").\nIf you have used other forks or a newer version of SickRage, "
-                "your config file may be unusable due to their modifications."
-            )
+            logger.log_error_and_exit(u"Your config version (" + str(
+                self.config_version) + ") has been incremented past what this version of SickRage supports (" + str(
+                self.expected_config_version) + ").\n" + \
+                                      "If you have used other forks or a newer version of SickRage, your config file may be unusable due to their modifications.")
 
         sickbeard.CONFIG_VERSION = self.config_version
 
@@ -435,7 +426,7 @@ class ConfigMigrator():
             else:
                 logger.log(u"Proceeding with upgrade")
 
-            # do the migration, expect a method named _migrate_v<num>
+            # do the                                                                                                migration, expect a method named _migrate_v<num>
             logger.log(u"Migrating config up to version " + str(next_version) + migration_name)
             getattr(self, '_migrate_v' + str(next_version))()
             self.config_version = next_version
@@ -480,8 +471,7 @@ class ConfigMigrator():
                     new_season_format = new_season_format.replace('9', '%S')
 
                     logger.log(
-                        u"Changed season folder format from " + old_season_format + " to " + new_season_format +
-                        ", prepending it to your naming config")
+                        u"Changed season folder format from " + old_season_format + " to " + new_season_format + ", prepending it to your naming config")
                     sickbeard.NAMING_PATTERN = new_season_format + os.sep + sickbeard.NAMING_PATTERN
 
                 except (TypeError, ValueError):
@@ -646,8 +636,7 @@ class ConfigMigrator():
                 cur_metadata.append('0')
                 # swap show fanart, show poster
                 cur_metadata[3], cur_metadata[2] = cur_metadata[2], cur_metadata[3]
-                # if user was using use_banner to override the poster, instead enable the banner option
-                # and deactivate poster
+                # if user was using use_banner to override the poster, instead enable the banner option and deactivate poster
                 if metadata_name == 'XBMC' and use_banner:
                     cur_metadata[4], cur_metadata[3] = cur_metadata[3], '0'
                 # write new format

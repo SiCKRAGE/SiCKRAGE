@@ -112,7 +112,7 @@ class RarFileImplementation(object):
                 
                 
     def escaped_password(self):
-        return '-' if self.password is None else self.password
+        return '-' if self.password == None else self.password
         
         
     def call(self, cmd, options=[], files=[]):

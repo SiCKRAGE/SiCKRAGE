@@ -314,7 +314,7 @@ class Episode(dict):
         <Episode 00x00 - An Example>
         >>>
         """
-        if term is None:
+        if term == None:
             raise TypeError("must supply string to search for (contents)")
 
         term = unicode(term).lower()
@@ -889,7 +889,7 @@ class Tvdb:
         for cur_ep in episodes:
             if self.config['dvdorder']:
                 log().debug('Using DVD ordering.')
-                use_dvd = cur_ep['dvd_season'] is not None and cur_ep['dvd_episodenumber'] is not None
+                use_dvd = cur_ep['dvd_season'] != None and cur_ep['dvd_episodenumber'] != None
             else:
                 use_dvd = False
 

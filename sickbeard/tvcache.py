@@ -33,7 +33,6 @@ from name_parser.parser import NameParser, InvalidNameException, InvalidShowExce
 from sickbeard.rssfeeds import RSSFeeds
 from sickbeard import clients
 
-
 class CacheDBConnection(db.DBConnection):
     def __init__(self, providerName):
         db.DBConnection.__init__(self, "cache.db")
@@ -42,8 +41,7 @@ class CacheDBConnection(db.DBConnection):
         try:
             if not self.hasTable(providerName):
                 self.action(
-                    "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, "
-                                                      "url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
+                    "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
             else:
                 sqlResults = self.select(
                     "SELECT url, COUNT(url) as count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
@@ -73,7 +71,6 @@ class CacheDBConnection(db.DBConnection):
         except Exception, e:
             if str(e) != "table lastUpdate already exists":
                 raise
-
 
 class TVCache():
     def __init__(self, provider):
@@ -170,6 +167,7 @@ class TVCache():
                 logger.DEBUG)
             return None
 
+
     def _getLastUpdate(self):
         myDB = self._getDB()
         sqlResults = myDB.select("SELECT time FROM lastUpdate WHERE provider = ?", [self.providerID])
@@ -195,6 +193,7 @@ class TVCache():
             lastTime = 0
 
         return datetime.datetime.fromtimestamp(lastTime)
+
 
     def setLastUpdate(self, toDate=None):
         if not toDate:
@@ -241,7 +240,7 @@ class TVCache():
         if not parse_result:
 
             # create showObj from indexer_id if available
-            showObj = None
+            showObj=None
             if indexer_id:
                 showObj = helpers.findCertainShow(sickbeard.showList, indexer_id)
 
@@ -284,10 +283,9 @@ class TVCache():
             logger.log(u"Added RSS item: [" + name + "] to cache: [" + self.providerID + "]", logger.DEBUG)
 
             return [
-                "INSERT OR IGNORE INTO [" + self.providerID + 
-                "] (name, season, episodes, indexerid, url, time, quality, release_group, version) "
-                "VALUES (?,?,?,?,?,?,?,?,?)",
+                "INSERT OR IGNORE INTO [" + self.providerID + "] (name, season, episodes, indexerid, url, time, quality, release_group, version) VALUES (?,?,?,?,?,?,?,?,?)",
                 [name, season, episodeText, parse_result.show.indexerid, url, curTimestamp, quality, release_group, version]]
+
 
     def searchCache(self, episodes, manualSearch=False):
         neededEps = self.findNeededEpisodes(episodes, manualSearch)
@@ -297,10 +295,11 @@ class TVCache():
         myDB = self._getDB()
         sql = "SELECT * FROM [" + self.providerID + "] WHERE name LIKE '%.PROPER.%' OR name LIKE '%.REPACK.%'"
 
-        if date is not None:
+        if date != None:
             sql += " AND time >= " + str(int(time.mktime(date.timetuple())))
 
         return filter(lambda x: x['indexerid'] != 0, myDB.select(sql))
+
 
     def findNeededEpisodes(self, episodes, manualSearch=False):
         neededEps = {}

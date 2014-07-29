@@ -11,7 +11,7 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
@@ -19,22 +19,21 @@
 import re
 
 import sickbeard
+from sickbeard import logger
 from sickbeard.clients.generic import GenericClient
 
 
-class UtorrentAPI(GenericClient):
+class uTorrentAPI(GenericClient):
     def __init__(self, host=None, username=None, password=None):
 
-        super(UtorrentAPI, self).__init__('uTorrent', host, username, password)
+        super(uTorrentAPI, self).__init__('uTorrent', host, username, password)
 
         self.url = self.host + 'gui/'
 
-    def _request(self, method='get', params=None, files=None, **kwargs):
+    def _request(self, method='get', params={}, files=None):
 
-        if not params:
-            params = {}
         params.update({'token': self.auth})
-        return super(UtorrentAPI, self)._request(method=method, params=params, files=files)
+        return super(uTorrentAPI, self)._request(method=method, params=params, files=files)
 
     def _get_auth(self):
 
@@ -59,11 +58,10 @@ class UtorrentAPI(GenericClient):
 
     def _set_torrent_label(self, result):
 
-        params = {
-            'action': 'setprops',
-            'hash': result.hash,
-            's': 'label',
-            'v': sickbeard.TORRENT_LABEL
+        params = {'action': 'setprops',
+                  'hash': result.hash,
+                  's': 'label',
+                  'v': sickbeard.TORRENT_LABEL
         }
         return self._request(params=params)
 
@@ -74,18 +72,16 @@ class UtorrentAPI(GenericClient):
             ratio = result.ratio
 
         if ratio:
-            params = {
-                'action': 'setprops',
-                'hash': result.hash,
-                's': 'seed_override',
-                'v': '1'
+            params = {'action': 'setprops',
+                      'hash': result.hash,
+                      's': 'seed_override',
+                      'v': '1'
             }
             if self._request(params=params):
-                params = {
-                    'action': 'setprops',
-                    'hash': result.hash,
-                    's': 'seed_ratio',
-                    'v': float(ratio) * 10
+                params = {'action': 'setprops',
+                          'hash': result.hash,
+                          's': 'seed_ratio',
+                          'v': float(ratio) * 10
                 }
                 return self._request(params=params)
             else:
@@ -97,32 +93,30 @@ class UtorrentAPI(GenericClient):
 
         if sickbeard.TORRENT_SEED_TIME:
             time = 3600 * float(sickbeard.TORRENT_SEED_TIME)
-            params = {
-                'action': 'setprops',
-                'hash': result.hash,
-                's': 'seed_override',
-                'v': '1'
+            params = {'action': 'setprops',
+                      'hash': result.hash,
+                      's': 'seed_override',
+                      'v': '1'
             }
             if self._request(params=params):
-                params = {
-                    'action': 'setprops',
-                    'hash': result.hash,
-                    's': 'seed_time',
-                    'v': time
+                params = {'action': 'setprops',
+                          'hash': result.hash,
+                          's': 'seed_time',
+                          'v': time
                 }
                 return self._request(params=params)
             else:
                 return False
         else:
-            return True
-
+            return True         
+        
     def _set_torrent_priority(self, result):
 
         if result.priority == 1:
             params = {'action': 'queuetop', 'hash': result.hash}
             return self._request(params=params)
         else:
-            return True
+            return True            
 
     def _set_torrent_pause(self, result):
 
@@ -134,4 +128,4 @@ class UtorrentAPI(GenericClient):
         return self._request(params=params)
 
 
-api = UtorrentAPI()
+api = uTorrentAPI()       

@@ -21,10 +21,9 @@ indexerConfig[INDEXER_TVDB] = {
     'id': INDEXER_TVDB,
     'name': 'theTVDB',
     'module': Tvdb,
-    'api_params': {
-        'apikey': 'F9C450E78D99172E',
-        'language': 'en',
-        'useZip': True
+    'api_params': {'apikey': 'F9C450E78D99172E',
+                   'language': 'en',
+                   'useZip': True,
     },
 }
 
@@ -32,9 +31,8 @@ indexerConfig[INDEXER_TVRAGE] = {
     'id': INDEXER_TVRAGE,
     'name': 'TVRage',
     'module': TVRage,
-    'api_params': {
-        'apikey': 'Uhewg1Rr0o62fvZvUIZt',
-        'language': 'en'
+    'api_params': {'apikey': 'Uhewg1Rr0o62fvZvUIZt',
+                   'language': 'en',
     },
 }
 
@@ -43,14 +41,11 @@ indexerConfig[INDEXER_TVDB]['xem_origin'] = 'tvdb'
 indexerConfig[INDEXER_TVDB]['icon'] = 'thetvdb16.png'
 indexerConfig[INDEXER_TVDB]['scene_url'] = 'http://midgetspy.github.io/sb_tvdb_scene_exceptions/exceptions.txt'
 indexerConfig[INDEXER_TVDB]['show_url'] = 'http://thetvdb.com/?tab=series&id='
-indexerConfig[INDEXER_TVDB]['base_url'] = 'http://thetvdb.com/api/%(apikey)s/series/' % indexerConfig[INDEXER_TVDB][
-    'api_params']
+indexerConfig[INDEXER_TVDB]['base_url'] = 'http://thetvdb.com/api/%(apikey)s/series/' % indexerConfig[INDEXER_TVDB]['api_params']
 
 # TVRAGE Indexer Settings
 indexerConfig[INDEXER_TVRAGE]['xem_origin'] = 'rage'
 indexerConfig[INDEXER_TVRAGE]['icon'] = 'tvrage16.png'
-indexerConfig[INDEXER_TVRAGE][
-    'scene_url'] = 'https://raw.githubusercontent.com/echel0n/sb_tvrage_scene_exceptions/master/exceptions.txt'
+indexerConfig[INDEXER_TVRAGE]['scene_url'] = 'https://raw.githubusercontent.com/echel0n/sb_tvrage_scene_exceptions/master/exceptions.txt'
 indexerConfig[INDEXER_TVRAGE]['show_url'] = 'http://tvrage.com/shows/id-'
-indexerConfig[INDEXER_TVRAGE]['base_url'] = 'http://tvrage.com/showinfo.php?key=%(apikey)s&sid=' % \
-                                            indexerConfig[INDEXER_TVRAGE]['api_params']
+indexerConfig[INDEXER_TVRAGE]['base_url'] = 'http://tvrage.com/showinfo.php?key=%(apikey)s&sid=' % indexerConfig[INDEXER_TVRAGE]['api_params']

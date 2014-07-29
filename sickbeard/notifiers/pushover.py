@@ -18,16 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 import httplib
-import urllib
-import urllib2
+import urllib, urllib2
 import time
 
 import sickbeard
 from sickbeard import logger
-from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
-    NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
+from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
 from sickbeard.exceptions import ex
-
 
 API_URL = "https://api.pushover.net/1/messages.json"
 
@@ -47,10 +44,10 @@ class PushoverNotifier:
         returns: True if the message succeeded, False otherwise
         """
 
-        if userKey is None:
+        if userKey == None:
             userKey = sickbeard.PUSHOVER_USERKEY
 
-        if apiKey is None:
+        if apiKey == None:
             apiKey = sickbeard.PUSHOVER_APIKEY
 
         logger.log("Pushover API KEY in use: " + apiKey, logger.DEBUG)
@@ -85,11 +82,10 @@ class PushoverNotifier:
                 logger.log("Username is wrong/not a pushover email. Pushover will send an email to it", logger.WARNING)
                 return False
 
-            # For HTTP status code 401's, it is because you are passing in either an invalid token,
-            # or the user has not added your service.
+            # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
             elif e.code == 401:
 
-                # HTTP status 401 if the user doesn't have the service added
+                #HTTP status 401 if the user doesn't have the service added
                 subscribeNote = self._sendPushover(msg, title, userKey, apiKey)
                 if subscribeNote:
                     logger.log("Subscription send", logger.DEBUG)
@@ -103,8 +99,7 @@ class PushoverNotifier:
                 logger.log("Wrong data sent to pushover", logger.ERROR)
                 return False
 
-            # If you receive a HTTP status code of 429, it is because the message limit has been reached
-            # (free limit is 7,500)
+            # If you receive a HTTP status code of 429, it is because the message limit has been reached (free limit is 7,500)
             elif e.code == 429:
                 logger.log("Pushover API message limit reached - try a different API key", logger.ERROR)
                 return False
@@ -116,6 +111,7 @@ class PushoverNotifier:
         if sickbeard.PUSHOVER_NOTIFY_ONSNATCH:
             self._notifyPushover(title, ep_name)
 
+
     def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
         if sickbeard.PUSHOVER_NOTIFY_ONDOWNLOAD:
             self._notifyPushover(title, ep_name)
@@ -123,12 +119,12 @@ class PushoverNotifier:
     def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyPushover(title, ep_name + ": " + lang)
-
-    def notify_git_update(self, new_version="??"):
+            
+    def notify_git_update(self, new_version = "??"):
         if sickbeard.USE_PUSHOVER:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
-            self._notifyPushover(title, update_text + new_version)
+            update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
+            title=notifyStrings[NOTIFY_GIT_UPDATE]
+            self._notifyPushover(title, update_text + new_version) 
 
     def _notifyPushover(self, title, message, userKey=None, apiKey=None, force=False):
         """

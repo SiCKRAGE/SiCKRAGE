@@ -266,7 +266,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
             indexerid.text = str(myShow['id'])
 
         indexer = etree.SubElement(tv_node, "indexer")
-        if show_obj.indexer is not None:
+        if show_obj.indexer != None:
             indexer.text = str(show_obj.indexer)
 
         SeriesName = etree.SubElement(tv_node, "SeriesName")
@@ -368,7 +368,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 cur_actor_type.text = "Actor"
                 cur_actor_role = etree.SubElement(cur_actor, "Role")
                 cur_actor_role_text = actor['role']
-                if cur_actor_role_text is not None:
+                if cur_actor_role_text != None:
                     cur_actor_role.text = cur_actor_role_text
 
         helpers.indentXML(tv_node)
@@ -424,9 +424,8 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
                 logger.log(u"Unable to find episode " + str(curEpToWrite.season) + "x" + str(
-                    curEpToWrite.episode) + " on " +
-                    sickbeard.indexerApi(ep_obj.show.indexer).name +
-                    ".. has it been removed? Should I delete from db?")
+                    curEpToWrite.episode) + " on " + sickbeard.indexerApi(
+                    ep_obj.show.indexer).name + ".. has it been removed? Should I delete from db?")
                 return None
 
             if curEpToWrite == ep_obj:
@@ -442,7 +441,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 episode = rootNode
 
                 EpisodeName = etree.SubElement(episode, "EpisodeName")
-                if curEpToWrite.name is not None:
+                if curEpToWrite.name != None:
                     EpisodeName.text = curEpToWrite.name
                 else:
                     EpisodeName.text = ""
@@ -472,7 +471,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 MetadataType.text = "Episode"
 
                 Overview = etree.SubElement(episode, "Overview")
-                if curEpToWrite.description is not None:
+                if curEpToWrite.description != None:
                     Overview.text = curEpToWrite.description
                 else:
                     Overview.text = ""

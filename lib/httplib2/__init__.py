@@ -712,7 +712,7 @@ p = ProxyInfo(proxy_type=socks.PROXY_TYPE_HTTP, proxy_host='localhost', proxy_po
         self.proxy_user, self.proxy_pass)
 
   def isgood(self):
-    return socks and (self.proxy_host is not None) and (self.proxy_port is not None)
+    return socks and (self.proxy_host != None) and (self.proxy_port != None)
 
 
 class HTTPConnectionWithTimeout(httplib.HTTPConnection):
@@ -958,7 +958,7 @@ the same interface as FileCache."""
                     if response.has_key('location'):
                         location = response['location']
                         (scheme, authority, path, query, fragment) = parse_uri(location)
-                        if authority is None:
+                        if authority == None:
                             response['location'] = urlparse.urljoin(absolute_uri, location)
                     if response.status == 301 and method in ["GET", "HEAD"]:
                         response['-x-permanent-redirect-url'] = response['location']

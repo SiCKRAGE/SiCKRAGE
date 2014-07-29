@@ -995,7 +995,7 @@ class OprofileParser(LineParser):
         if entry.symbol.startswith('"') and entry.symbol.endswith('"'):
             entry.symbol = entry.symbol[1:-1]
         entry.id = ':'.join((entry.application, entry.image, source, entry.symbol))
-        entry.self = fields.get('self', None) is not None
+        entry.self = fields.get('self', None) != None
         if entry.self:
             entry.id += ':self'
         if entry.symbol:

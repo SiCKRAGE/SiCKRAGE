@@ -124,7 +124,7 @@ class InsertBehaviorTest(fixtures.TablesTest):
 
         r = config.db.execute(
             self.tables.autoinc_pk.select().\
-                    where(self.tables.autoinc_pk.c.id is not None)
+                    where(self.tables.autoinc_pk.c.id != None)
         )
 
         assert len(r.fetchall())

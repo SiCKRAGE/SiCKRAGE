@@ -115,7 +115,7 @@ def remove_non_release_groups(name):
 
 
 def replaceExtension(filename, newExt):
-    """
+    '''
     >>> replaceExtension('foo.avi', 'mkv')
     'foo.mkv'
     >>> replaceExtension('.vimrc', 'arglebargle')
@@ -126,7 +126,7 @@ def replaceExtension(filename, newExt):
     ''
     >>> replaceExtension('foo.bar', '')
     'foo.'
-    """
+    '''
     sepFile = filename.rpartition(".")
     if sepFile[0] == "":
         return filename
@@ -173,7 +173,7 @@ def isBeingWritten(filepath):
 
 
 def sanitizeFileName(name):
-    """
+    '''
     >>> sanitizeFileName('a/b/c')
     'a-b-c'
     >>> sanitizeFileName('abc')
@@ -182,7 +182,7 @@ def sanitizeFileName(name):
     'ab'
     >>> sanitizeFileName('.a.b..')
     'a.b'
-    """
+    '''
 
     # remove bad chars from the filename
     name = re.sub(r'[\\/\*]', '-', name)
@@ -270,8 +270,7 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
     for i in sickbeard.indexerApi().indexers if not indexer else int(indexer or []):
         # Query Indexers for each search term and build the list of results
         lINDEXER_API_PARMS = sickbeard.indexerApi(i).api_params.copy()
-        if ui is not None:
-            lINDEXER_API_PARMS['custom_ui'] = ui
+        if ui is not None: lINDEXER_API_PARMS['custom_ui'] = ui
         t = sickbeard.indexerApi(i).indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
@@ -364,8 +363,7 @@ def link(src, dst):
     if os.name == 'nt':
         import ctypes
 
-        if ctypes.windll.kernel32.CreateHardLinkW(unicode(dst), unicode(src), 0) == 0:
-            raise ctypes.WinError()
+        if ctypes.windll.kernel32.CreateHardLinkW(unicode(dst), unicode(src), 0) == 0: raise ctypes.WinError()
     else:
         os.link(src, dst)
 
@@ -383,9 +381,8 @@ def symlink(src, dst):
     if os.name == 'nt':
         import ctypes
 
-        if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src), 1 if os.path.isdir(src) else 0) \
-                in [0, 1280]:
-            raise ctypes.WinError()
+        if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src), 1 if os.path.isdir(src) else 0) in [0,
+                                                                                                                      1280]: raise ctypes.WinError()
     else:
         os.symlink(src, dst)
 
@@ -968,8 +965,6 @@ To add a new encryption_version:
 unique_key1 = hex(uuid.getnode() ** 2)  # Used in encryption v1
 
 # Encryption Functions
-
-
 def encrypt(data, encryption_version=0, decrypt=False):
     # Version 1: Simple XOR encryption (this is not very secure, but works)
     if encryption_version == 1:
@@ -1048,8 +1043,7 @@ def is_hidden_folder(folder):
 
 def real_path(path):
     """
-    Returns: the canonicalized absolute pathname. The resulting path will have no symbolic link,
-    '/./' or '/../' components.
+    Returns: the canonicalized absolute pathname. The resulting path will have no symbolic link, '/./' or '/../' components.
     """
     return ek.ek(os.path.normpath, ek.ek(os.path.normcase, ek.ek(os.path.realpath, path)))
 
@@ -1181,8 +1175,7 @@ def mapIndexersToShow(showObj):
                 logger.log(u"Adding indexer mapping to DB for show: " + showObj.name, logger.DEBUG)
 
                 sql_l.append([
-                    "INSERT OR IGNORE INTO indexer_mapping (indexer_id, indexer, "
-                    "mindexer_id, mindexer) VALUES (?,?,?,?)",
+                    "INSERT OR IGNORE INTO indexer_mapping (indexer_id, indexer, mindexer_id, mindexer) VALUES (?,?,?,?)",
                     [showObj.indexerid, showObj.indexer, int(mapped_show[0]['id']), indexer]])
 
         if len(sql_l) > 0:

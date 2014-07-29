@@ -475,7 +475,7 @@ class MPEG(core.AVContainer):
             new_offset = self.ReadHeader(buffer, offset)
 
             # header scanning detected error, this is no mpeg
-            if new_offset is None:
+            if new_offset == None:
                 return 0
 
             if new_offset:
@@ -609,7 +609,7 @@ class MPEG(core.AVContainer):
             pos, timestamp = self.ReadPESHeader(offset, buffer[offset:])
             if not pos:
                 return 0
-            if timestamp is not None and not hasattr(self, 'start'):
+            if timestamp != None and not hasattr(self, 'start'):
                 self.get_time = self.ReadPTS
                 bpos = buffer[offset + timestamp:offset + timestamp + 5]
                 self.start = self.get_time(bpos)
@@ -653,7 +653,7 @@ class MPEG(core.AVContainer):
         ackcount = 0
         while offset + 1000 < len(buffer):
             pos, timestamp = self.ReadPESHeader(offset, buffer[offset:])
-            if timestamp is not None and retpos == -1:
+            if timestamp != None and retpos == -1:
                 retpos = offset + timestamp
             if pos == 0:
                 # Oops, that was a mpeg header, no PES header
@@ -742,7 +742,7 @@ class MPEG(core.AVContainer):
                 # PES
                 timestamp = self.ReadPESHeader(c + offset, buffer[c + offset:],
                                                tsid)[1]
-                if timestamp is not None:
+                if timestamp != None:
                     if not hasattr(self, 'start'):
                         self.get_time = self.ReadPTS
                         timestamp = c + offset + timestamp
@@ -836,7 +836,7 @@ class MPEG(core.AVContainer):
         end = None
         while 1:
             pos = self.__search__(buffer)
-            if pos is None:
+            if pos == None:
                 break
             end = self.get_time(buffer[pos:]) or end
             buffer = buffer[pos + 100:]
@@ -850,7 +850,7 @@ class MPEG(core.AVContainer):
         get the length in seconds, return -1 if this is not possible
         """
         end = self.get_endpos()
-        if end is None or self.start is None:
+        if end == None or self.start == None:
             return None
         if self.start > end:
             return int(((long(1) << 33) - 1) / 90000) - self.start + end
@@ -874,7 +874,7 @@ class MPEG(core.AVContainer):
             if len(buffer) < 10000:
                 break
             pos = self.__search__(buffer)
-            if pos is not None:
+            if pos != None:
                 # found something
                 nt = self.get_time(buffer[pos:])
                 if nt is not None and nt >= end_time:
@@ -902,7 +902,7 @@ class MPEG(core.AVContainer):
             if len(buffer) < 10000:
                 break
             pos = self.__search__(buffer)
-            if pos is None:
+            if pos == None:
                 continue
             log.debug(u'buffer position: %r' % self.get_time(buffer[pos:]))
 

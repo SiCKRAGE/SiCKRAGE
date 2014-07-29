@@ -29,8 +29,8 @@ from sickbeard.common import *
 from sickbeard import tvcache
 from lib.dateutil.parser import parse as parseDate
 
-
 class Fanzub(generic.NZBProvider):
+
     def __init__(self):
 
         generic.NZBProvider.__init__(self, "Fanzub")
@@ -102,12 +102,12 @@ class Fanzub(generic.NZBProvider):
 
         results = []
 
-        for i in [2, 3, 4]:  # we will look for a version 2, 3 and 4
+        for i in [2, 3, 4]: # we will look for a version 2, 3 and 4
             for item in self._doSearch("v" + str(i)):
 
                 (title, url) = self._get_title_and_url(item)
 
-                if 'published_parsed' in item and item['published_parsed']:
+                if item.has_key('published_parsed') and item['published_parsed']:
                     result_date = item.published_parsed
                     if result_date:
                         result_date = datetime.datetime(*result_date[0:6])
@@ -121,9 +121,10 @@ class Fanzub(generic.NZBProvider):
 
         return results
 
-
 class FanzubCache(tvcache.TVCache):
+
     def __init__(self, provider):
+
         tvcache.TVCache.__init__(self, provider)
 
         # only poll Fanzub every 20 minutes max
@@ -131,9 +132,9 @@ class FanzubCache(tvcache.TVCache):
         self.minTime = 20
 
     def _getRSSData(self):
-        params = {
-            "cat": "anime".encode('utf-8'),
-            "max": "100".encode('utf-8')
+
+        params = {"cat": "anime".encode('utf-8'),
+                 "max": "100".encode('utf-8')
         }
 
         rss_url = self.provider.url + 'rss?' + urllib.urlencode(params)
@@ -144,6 +145,5 @@ class FanzubCache(tvcache.TVCache):
 
     def _checkItemAuth(self, title, url):
         return True
-
 
 provider = Fanzub()

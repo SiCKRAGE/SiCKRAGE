@@ -37,7 +37,6 @@ from sickbeard import clients
 
 from hachoir_parser import createParser
 
-
 class GenericProvider:
     NZB = "nzb"
     TORRENT = "torrent"
@@ -311,9 +310,8 @@ class GenericProvider:
             if not (showObj.air_by_date or showObj.sports):
                 if search_mode == 'sponly' and len(parse_result.episode_numbers):
                     logger.log(
-                        u"This is supposed to be a season pack search but the result " + title +
-                        " is not a valid season pack, skipping it", logger.DEBUG
-                    )
+                        u"This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it",
+                        logger.DEBUG)
                     addCacheEntry = True
                 else:
                     if not len(parse_result.episode_numbers) and (
@@ -338,13 +336,11 @@ class GenericProvider:
             else:
                 if not (parse_result.is_air_by_date or parse_result.is_sports):
                     logger.log(
-                        u"This is supposed to be a date search but the result " + title +
-                        " didn't parse as one, skipping it",
+                        u"This is supposed to be a date search but the result " + title + " didn't parse as one, skipping it",
                         logger.DEBUG)
                     addCacheEntry = True
                 else:
-                    airdate = parse_result.air_date.toordinal() if parse_result.air_date \
-                        else parse_result.sports_air_date.toordinal()
+                    airdate = parse_result.air_date.toordinal() if parse_result.air_date else parse_result.sports_air_date.toordinal()
                     myDB = db.DBConnection()
                     sql_results = myDB.select(
                         "SELECT season, episode FROM tv_episodes WHERE showid = ? AND airdate = ?",
@@ -352,8 +348,7 @@ class GenericProvider:
 
                     if len(sql_results) != 1:
                         logger.log(
-                            u"Tried to look up the date for the episode " + title +
-                            " but the database didn't give proper results, skipping it",
+                            u"Tried to look up the date for the episode " + title + " but the database didn't give proper results, skipping it",
                             logger.WARNING)
                         addCacheEntry = True
 

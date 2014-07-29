@@ -109,7 +109,7 @@ class _GNTPBase(object):
 		Validate GNTP Message against stored password
 		'''
 		self.password = password
-		if password is None: raise Exception()
+		if password == None: raise Exception()
 		keyHash = self.info.get('keyHash',None)
 		if keyHash is None and self.password is None:
 			return True

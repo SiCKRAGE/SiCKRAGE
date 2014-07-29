@@ -38,7 +38,6 @@ network_dict = None
 
 sb_timezone = tz.tzlocal()
 
-
 # helper to remove failed temp download
 def _remove_zoneinfo_failed(filename):
     try:
@@ -171,7 +170,7 @@ def update_network_dict():
     # list of sql commands to update the network_timezones table
     cl = []
     for cur_d, cur_t in d.iteritems():
-        h_k = cur_d in old_d
+        h_k = old_d.has_key(cur_d)
         if h_k and cur_t != old_d[cur_d]:
             # update old record
             cl.append(
@@ -275,7 +274,6 @@ def parse_date_time(d, t, network):
             return datetime.datetime(te.year, te.month, te.day, hr, m, tzinfo=sb_timezone)
     except:
         return datetime.datetime(te.year, te.month, te.day, hr, m)
-
 
 def test_timeformat(t):
     mo = time_regex.search(t)

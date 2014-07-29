@@ -18,15 +18,16 @@
 
 from __future__ import with_statement
 
+import time
 import re
-import urllib
+import urllib, urllib2, urlparse
 import sys
 import os
 import datetime
 
 import sickbeard
 import generic
-from sickbeard.common import Quality
+from sickbeard.common import Quality, cpu_presets
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 from sickbeard import db
 from sickbeard import classes
@@ -35,6 +36,7 @@ from sickbeard import tvcache
 from sickbeard import helpers
 from sickbeard import clients
 from sickbeard.show_name_helpers import allPossibleShowNames, sanitizeSceneName
+from sickbeard.common import Overview
 from sickbeard.exceptions import ex
 from sickbeard import encodingKludge as ek
 from lib import requests
@@ -63,8 +65,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         self.searchurl = self.url + 'search/%s/0/7/200'  # order by seed       
 
-        self.re_title_url = '/torrent/(?P<id>\d+)/(?P<title>.*?)//1".+?(?P<url>magnet.*?)//1".+?(?P<seeders>\d+)' \
-                            '</td>.+?(?P<leechers>\d+)</td>'
+        self.re_title_url = '/torrent/(?P<id>\d+)/(?P<title>.*?)//1".+?(?P<url>magnet.*?)//1".+?(?P<seeders>\d+)</td>.+?(?P<leechers>\d+)</td>'
 
     def isEnabled(self):
         return self.enabled
@@ -143,8 +144,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         for fileName in videoFiles:
             quality = Quality.sceneQuality(os.path.basename(fileName))
-            if quality != Quality.UNKNOWN:
-                break
+            if quality != Quality.UNKNOWN: break
 
         if fileName is not None and quality == Quality.UNKNOWN:
             quality = Quality.assumeQuality(os.path.basename(fileName))
@@ -196,25 +196,26 @@ class ThePirateBayProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                    str(ep_obj.airdate).replace('-', '|')
+                            str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                    str(ep_obj.airdate).replace('-', '|') + '|' + ep_obj.airdate.strftime('%b')
+                            str(ep_obj.airdate).replace('-', '|') + '|' + \
+                            ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + ' ' + "%i" % int(ep_obj.scene_absolute_number)
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
+                            "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                          'episodenumber': ep_obj.scene_episode} + '|' + \
-                    sickbeard.config.naming_ep_type[0] % {'seasonnumber': ep_obj.scene_season,
-                                                          'episodenumber': ep_obj.scene_episode} + \
-                    ' %s' % add_string
+                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                                  'episodenumber': ep_obj.scene_episode} + '|' + \
+                            sickbeard.config.naming_ep_type[0] % {'seasonnumber': ep_obj.scene_season,
+                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
         return [search_string]
@@ -246,8 +247,9 @@ class ThePirateBayProvider(generic.TorrentProvider):
                 #Extracting torrent information from data returned by searchURL                   
                 match = re.compile(re_title_url, re.DOTALL).finditer(urllib.unquote(data))
                 for torrent in match:
-                    #Do not know why but SickBeard skips releases with '_' in name
-                    title = torrent.group('title').replace('_', '.')
+
+                    title = torrent.group('title').replace('_',
+                                                           '.')  #Do not know why but SickBeard skip release with '_' in name
                     url = torrent.group('url')
                     id = int(torrent.group('id'))
                     seeders = int(torrent.group('seeders'))
@@ -263,8 +265,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
                             'title') + " but that doesn't seem like a trusted result so I'm ignoring it", logger.DEBUG)
                         continue
 
-                    #Check number video files = episode in season and find the real Quality for
-                    # full season torrent analyzing files in torrent
+                    #Check number video files = episode in season and find the real Quality for full season torrent analyzing files in torrent 
                     if mode == 'Season' and search_mode == 'sponly':
                         ep_number = int(epcount / len(set(allPossibleShowNames(self.show))))
                         title = self._find_season_quality(title, id, ep_number)
@@ -361,9 +362,12 @@ class ThePirateBayCache(tvcache.TVCache):
             if ci is not None:
                 cl.append(ci)
 
+
+
         if len(cl) > 0:
             myDB = self._getDB()
             myDB.mass_action(cl)
+
 
     def _parseItem(self, item):
 
@@ -372,7 +376,7 @@ class ThePirateBayCache(tvcache.TVCache):
         if not title or not url:
             return None
 
-        logger.log(u"Attempting to cache item:[" + title + "]", logger.DEBUG)
+        logger.log(u"Attempting to cache item:[" + title +"]", logger.DEBUG)
 
         return self._addCacheEntry(title, url)
 

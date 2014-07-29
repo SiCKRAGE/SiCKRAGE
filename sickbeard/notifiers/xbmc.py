@@ -70,8 +70,8 @@ class XBMCNotifier:
 
         """
 
-        # since we need to maintain python 2.5 compatability we can not pass a timeout delay to urllib2 directly
-        # (python 2.6+) override socket timeout to reduce delay for this call alone
+        # since we need to maintain python 2.5 compatability we can not pass a timeout delay to urllib2 directly (python 2.6+)
+        # override socket timeout to reduce delay for this call alone
         socket.setdefaulttimeout(10)
 
         checkCommand = '{"jsonrpc":"2.0","method":"JSONRPC.Version","id":1}'
@@ -140,9 +140,8 @@ class XBMCNotifier:
                         result += curHost + ':' + str(notifyResult)
                 else:
                     logger.log(u"Detected XBMC version >= 12, using XBMC JSON API", logger.DEBUG)
-                    command = '{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":' \
-                              '{"title":"%s","message":"%s", "image": "%s"},"id":1}' % \
-                              (title.encode("utf-8"), message.encode("utf-8"), self.sb_logo_url)
+                    command = '{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"%s","message":"%s", "image": "%s"},"id":1}' % (
+                        title.encode("utf-8"), message.encode("utf-8"), self.sb_logo_url)
                     notifyResult = self._send_to_xbmc_json(command, curHost, username, password)
                     if getattr(notifyResult, 'result', None):
                         result += curHost + ':' + notifyResult["result"].decode(sickbeard.SYS_ENCODING)
@@ -158,8 +157,7 @@ class XBMCNotifier:
     def _send_update_library(self, host, showName=None):
         """Internal wrapper for the update library function to branch the logic for JSON-RPC or legacy HTTP API
 
-        Checks the XBMC API version to branch the logic to call either the legacy HTTP API or the
-        newer JSON-RPC over HTTP methods.
+        Checks the XBMC API version to branch the logic to call either the legacy HTTP API or the newer JSON-RPC over HTTP methods.
 
         Args:
             host: XBMC webserver host:port
@@ -197,7 +195,7 @@ class XBMCNotifier:
 
     # #############################################################################
     # Legacy HTTP API (pre XBMC 12) methods
-    # #############################################################################
+    ##############################################################################
 
     def _send_to_xbmc(self, command, host=None, username=None, password=None):
         """Handles communication to XBMC servers via HTTP API
@@ -285,8 +283,7 @@ class XBMCNotifier:
 
             # use this to get xml back for the path lookups
             xmlCommand = {
-                'command': 'SetResponseFormat(webheader;false;webfooter;false;header;<xml>;footer;</xml>;'
-                           'opentag;<tag>;closetag;</tag>;closefinaltag;false)'}
+                'command': 'SetResponseFormat(webheader;false;webfooter;false;header;<xml>;footer;</xml>;opentag;<tag>;closetag;</tag>;closefinaltag;false)'}
             # sql used to grab path(s)
             sqlCommand = {'command': 'QueryVideoDatabase(%s)' % (pathSql)}
             # set output back to default
@@ -458,8 +455,8 @@ class XBMCNotifier:
                 return False
 
             # lookup tv-show path
-            pathCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.GetTVShowDetails",' \
-                          '"params":{"tvshowid":%d, "properties": ["file"]},"id":1}' % (tvshowid)
+            pathCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.GetTVShowDetails","params":{"tvshowid":%d, "properties": ["file"]},"id":1}' % (
+                tvshowid)
             pathResponse = self._send_to_xbmc_json(pathCommand, host)
 
             path = pathResponse["result"]["tvshowdetails"]["file"]
@@ -484,9 +481,8 @@ class XBMCNotifier:
             for r in request:
                 if 'error' in r:
                     logger.log(
-                        u"Error while attempting to update show directory for " + showName + " on " + host + " at " +
-                        path, logger.ERROR
-                    )
+                        u"Error while attempting to update show directory for " + showName + " on " + host + " at " + path,
+                        logger.ERROR)
                     return False
 
         # do a full update if requested
@@ -516,11 +512,11 @@ class XBMCNotifier:
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.XBMC_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify_xbmc(ep_name + ": " + lang, common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD])
-
-    def notify_git_update(self, new_version="??"):
+            
+    def notify_git_update(self, new_version = "??"):
         if sickbeard.USE_XBMC:
-            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._notify_xbmc(update_text + new_version, title)
 
     def test_notify(self, host, username, password):
@@ -530,10 +526,8 @@ class XBMCNotifier:
     def update_library(self, showName=None):
         """Public wrapper for the update library functions to branch the logic for JSON-RPC or legacy HTTP API
 
-        Checks the XBMC API version to branch the logic to call either the legacy HTTP API or the newer
-        JSON-RPC over HTTP methods.
-        Do the ability of accepting a list of hosts deliminated by comma, only one host is updated, the first to
-        respond with success.
+        Checks the XBMC API version to branch the logic to call either the legacy HTTP API or the newer JSON-RPC over HTTP methods.
+        Do the ability of accepting a list of hosts deliminated by comma, only one host is updated, the first to respond with success.
         This is a workaround for SQL backend users as updating multiple clients causes duplicate entries.
         Future plan is to revist how we store the host/ip/username/pw/options so that it may be more flexible.
 

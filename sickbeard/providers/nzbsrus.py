@@ -28,7 +28,6 @@ except ImportError:
 from sickbeard import exceptions, logger
 from sickbeard import tvcache, show_name_helpers
 
-
 class NZBsRUSProvider(generic.NZBProvider):
     def __init__(self):
         generic.NZBProvider.__init__(self, "NZBs'R'US")
@@ -89,7 +88,7 @@ class NZBsRUSProvider(generic.NZBProvider):
             nzbID = item.id
             key = item.key
             url = self.url + 'nzbdownload_rss.php' + '/' + \
-                nzbID + '/' + sickbeard.NZBSRUS_UID + '/' + key + '/'
+                  nzbID + '/' + sickbeard.NZBSRUS_UID + '/' + key + '/'
         return (title, url)
 
 

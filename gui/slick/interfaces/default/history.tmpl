@@ -126,7 +126,7 @@
         #if $hItem["provider"] > 0
           #if $curStatus in [SNATCHED, FAILED]:
             #set $provider = $providers.getProviderClass($generic.GenericProvider.makeID($hItem["provider"]))
-            #if $provider is not None:
+            #if $provider != None: 
               <img src="$sbRoot/images/providers/<%=provider.imageName()%>" width="16" height="16" alt="$provider.name" title="$provider.name"/>
             #else:
               <img src="$sbRoot/images/providers/missing.png" width="16" height="16" alt="missing provider" title="missing provider"/>
@@ -167,7 +167,7 @@
         #set $curStatus, $curQuality = $Quality.splitCompositeStatus(int($action["action"]))
           #if $curStatus in [SNATCHED, FAILED]:
           #set $provider = $providers.getProviderClass($generic.GenericProvider.makeID($action["provider"]))
-            #if $provider is not None:
+            #if $provider != None: 
               <img src="$sbRoot/images/providers/<%=provider.imageName()%>" width="16" height="16" alt="$provider.name" style="cursor: help;" title="$provider.name: $os.path.basename($action["resource"])"/>
             #else:
               <img src="$sbRoot/images/providers/missing.png" width="16" height="16" alt="missing provider" title="missing provider"/>
