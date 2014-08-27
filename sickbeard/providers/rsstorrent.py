@@ -29,6 +29,7 @@ from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard import clients
 from sickbeard.exceptions import ex
+from sickbeard import show_name_helpers
 
 from lib import requests
 from lib.requests import exceptions
@@ -60,6 +61,16 @@ class TorrentRssProvider(generic.TorrentProvider):
     def isEnabled(self):
         return self.enabled
 
+    #Added for manual searches
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+        return self.cache._getDailyData()
+
+    def _get_season_search_strings(self, episode):
+        return show_name_helpers.makeSceneShowSearchStrings(self.show)
+
+    def _get_episode_search_strings(self, eb_obj, add_string=''):
+        return self._get_season_search_strings(eb_obj)
+    
     def _get_title_and_url(self, item):
 
         title, url = None, None
