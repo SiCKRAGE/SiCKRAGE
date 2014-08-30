@@ -1883,7 +1883,7 @@ class ConfigProviders(MainHandler):
             return json.dumps({'success': tempProvider.getID()})
 
 
-    def saveNewznabProvider(self, name, url, key=''):
+    def saveNewznabProvider(self, name, url, key='', cat=''):
 
         if not name or not url:
             return '0'
@@ -1909,6 +1909,33 @@ class ConfigProviders(MainHandler):
             sickbeard.newznabProviderList.append(newProvider)
             return newProvider.getID() + '|' + newProvider.configStr()
 
+    def getNewznabCategories(self, name, url, key):
+        '''
+        Retrieves a list of possible categories with category id's
+        Using the default url/api?cat
+        http://yournewznaburl.com/api?t=caps&apikey=yourapikey
+        '''
+        errMsg = ""
+        
+        if not name:
+            errMsg += "\nNo Provider Name specified" 
+        if not url:
+            errMsg += "\nNo Provider Url specified"
+        if not key:
+            errMsg += "\nNo Provider Api key specified"
+            
+        if errMsg <> "":
+            return json.dumps({'error': errMsg})
+        
+        #Get list with Newznabproviders        
+        providerDict = dict(zip([x.getID() for x in sickbeard.newznabProviderList], sickbeard.newznabProviderList))
+        
+        #Get newznabprovider obj with provided name
+        tempProvider = newznab.NewznabProvider(name, url, key)
+        
+        tv_categories = tempProvider.get_newznab_categories()
+        
+        return json.dumps(tv_categories)
 
     def deleteNewznabProvider(self, nnid):
 
