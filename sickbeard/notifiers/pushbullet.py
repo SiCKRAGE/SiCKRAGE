@@ -85,7 +85,7 @@ class PushbulletNotifier:
             testMessage = True
             try:
                 logger.log(u"Testing Pushbullet authentication and retrieving the device list.", logger.DEBUG)
-                http_handler.request(method, uri, None, headers={'Authorization': 'Basic %s:' % authString})
+                http_handler.request(method,uri,None,headers={'Authorization':'Basic %s:'%authString, 'Content-Type': 'application/x-www-form-urlencoded'})
             except (SSLError, HTTPException):
                 logger.log(u"Pushbullet notification failed.", logger.ERROR)
                 return False
@@ -98,7 +98,7 @@ class PushbulletNotifier:
                     'device_iden': pushbullet_device,
                     'type': notificationType}
                 http_handler.request(method, uri, body=urlencode(data),
-                                     headers={'Authorization': 'Basic %s' % authString})
+                                     headers={'Authorization': 'Basic %s' % authString, 'Content-Type': 'application/x-www-form-urlencoded'})
                 pass
             except (SSLError, HTTPException):
                 return False
