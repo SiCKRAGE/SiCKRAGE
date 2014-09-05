@@ -158,6 +158,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 
                         #if $hasattr($curNewznabProvider, 'enable_daily'):
                         <div class="field-pair">
+                            <input type="hidden" name="${curNewznabProvider.getID()}_enable_daily" id="${curNewznabProvider.getID()}_enable_daily_hid" value="0" />
                             <input type="checkbox" name="${curNewznabProvider.getID()}_enable_daily" id="${curNewznabProvider.getID()}_enable_daily" #if $curNewznabProvider.enable_daily then "checked=\"checked\"" else ""#/>
                             <label class="clearfix" for="${curNewznabProvider.getID()}_enable_daily">
                                 <span class="component-title">Enable Daily Searches</span>
@@ -169,6 +170,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 
                         #if $hasattr($curNewznabProvider, 'enable_backlog'):
                         <div class="field-pair">
+                            <input type="hidden" name="${curNewznabProvider.getID()}_enable_backlog" id="${curNewznabProvider.getID()}_enable_backlog_hid" value="0" />
                             <input type="checkbox" name="${curNewznabProvider.getID()}_enable_backlog" id="${curNewznabProvider.getID()}_enable_backlog" #if $curNewznabProvider.enable_backlog then "checked=\"checked\"" else ""#/>
                             <label class="clearfix" for="${curNewznabProvider.getID()}_enable_backlog">
                                 <span class="component-title">Enable Backlog Searches</span>
@@ -180,6 +182,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 
                         #if $hasattr($curNewznabProvider, 'search_fallback'):
                         <div class="field-pair">
+                            <input type="hidden" name="${curNewznabProvider.getID()}_search_fallback" id="${curNewznabProvider.getID()}_search_fallback_hid" value="0" />
                             <input type="checkbox" name="${curNewznabProvider.getID()}_search_fallback" id="${curNewznabProvider.getID()}_search_fallback" #if $curNewznabProvider.search_fallback then "checked=\"checked\"" else ""#/>
                             <label class="clearfix" for="${curNewznabProvider.getID()}_search_fallback">
                                 <span class="component-title">Season Search Fallback</span>
@@ -236,6 +239,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 
                         #if $hasattr($curNzbProvider, 'enable_daily'):
                         <div class="field-pair">
+                        	<input type="hidden" name="${curNzbProvider.getID()}_enable_daily" id="${curNzbProvider.getID()}_enable_daily_hid" value="0" />
                             <input type="checkbox" name="${curNzbProvider.getID()}_enable_daily" id="${curNzbProvider.getID()}_enable_daily" #if $curNzbProvider.enable_daily then "checked=\"checked\"" else ""#/>
                             <label class="clearfix" for="${curNzbProvider.getID()}_enable_daily">
                                 <span class="component-title">Enable Daily Searches</span>
@@ -247,6 +251,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 
                         #if $hasattr($curNzbProvider, 'enable_backlog'):
                         <div class="field-pair">
+                            <input type="hidden" name="${curNzbProvider.getID()}_enable_backlog" id="${curNzbProvider.getID()}_enable_backlog_hid" value="0" />
                             <input type="checkbox" name="${curNzbProvider.getID()}_enable_backlog" id="${curNzbProvider.getID()}_enable_backlog" #if $curNzbProvider.enable_backlog then "checked=\"checked\"" else ""#/>
                             <label class="clearfix" for="${curNzbProvider.getID()}_enable_backlog">
                                 <span class="component-title">Enable Backlog Searches</span>
@@ -258,6 +263,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 
                         #if $hasattr($curNzbProvider, 'search_fallback'):
                         <div class="field-pair">
+                        	<input type="hidden" name="${curNzbProvider.getID()}_search_fallback" id="${curNzbProvider.getID()}_search_fallback_hid" value="0" />
                             <input type="checkbox" name="${curNzbProvider.getID()}_search_fallback" id="${curNzbProvider.getID()}_search_fallback" #if $curNzbProvider.search_fallback then "checked=\"checked\"" else ""#/>
                             <label class="clearfix" for="${curNzbProvider.getID()}_search_fallback">
                                 <span class="component-title">Season Search Fallback</span>
@@ -442,6 +448,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 
                         #if $hasattr($curTorrentProvider, 'confirmed'):
                         <div class="field-pair">
+                        	<input type="hidden" name="${curTorrentProvider.getID()}_confirmed" id="${curTorrentProvider.getID()}_confirmed" value="0" />
                             <input type="checkbox" name="${curTorrentProvider.getID()}_confirmed" id="${curTorrentProvider.getID()}_confirmed" #if $curTorrentProvider.confirmed then "checked=\"checked\"" else ""#/>
                             <label class="clearfix" for="${curTorrentProvider.getID()}_confirmed">
                                 <span class="component-title">Confirmed Download</span>
@@ -452,6 +459,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 
                         #if $hasattr($curTorrentProvider, 'freeleech'):
                         <div class="field-pair">
+                            <input type="hidden" name="${curTorrentProvider.getID()}_freeleech" id="${curTorrentProvider.getID()}_freeleech_hid" value="0" />
                             <input type="checkbox" name="${curTorrentProvider.getID()}_freeleech" id="${curTorrentProvider.getID()}_freeleech" #if $curTorrentProvider.freeleech then "checked=\"checked\"" else ""#/>
                             <label class="clearfix" for="${curTorrentProvider.getID()}_freeleech">
                                 <span class="component-title">FreeLeech</span>
@@ -462,6 +470,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 
                         #if $hasattr($curTorrentProvider, 'enable_daily'):
                         <div class="field-pair">
+                            <input type="hidden" name="${curTorrentProvider.getID()}_enable_daily" id="${curTorrentProvider.getID()}_enable_daily_hid" value="0" />
                             <input type="checkbox" name="${curTorrentProvider.getID()}_enable_daily" id="${curTorrentProvider.getID()}_enable_daily" #if $curTorrentProvider.enable_daily then "checked=\"checked\"" else ""#/>
                             <label class="clearfix" for="${curTorrentProvider.getID()}_enable_daily">
                                 <span class="component-title">Enable Daily Searches</span>
@@ -473,6 +482,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 
                         #if $hasattr($curTorrentProvider, 'enable_backlog'):
                         <div class="field-pair">
+                            <input type="hidden" name="${curTorrentProvider.getID()}_enable_backlog" id="${curTorrentProvider.getID()}_enable_backlog_hid" value="0" />
                             <input type="checkbox" name="${curTorrentProvider.getID()}_enable_backlog" id="${curTorrentProvider.getID()}_enable_backlog" #if $curTorrentProvider.enable_backlog then "checked=\"checked\"" else ""#/>
                             <label class="clearfix" for="${curTorrentProvider.getID()}_enable_backlog">
                                 <span class="component-title">Enable Backlog Searches</span>
@@ -484,6 +494,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 
                         #if $hasattr($curTorrentProvider, 'search_fallback'):
                         <div class="field-pair">
+                        	<input type="hidden" name="${curTorrentProvider.getID()}_search_fallback" id="${curTorrentProvider.getID()}_search_fallback_hid" value="0" />
                             <input type="checkbox" name="${curTorrentProvider.getID()}_search_fallback" id="${curTorrentProvider.getID()}_search_fallback" #if $curTorrentProvider.search_fallback then "checked=\"checked\"" else ""#/>
                             <label class="clearfix" for="${curTorrentProvider.getID()}_search_fallback">
                                 <span class="component-title">Season Search Fallback</span>
