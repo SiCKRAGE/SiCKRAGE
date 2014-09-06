@@ -192,8 +192,8 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
             #
             ## Don't post process if files are still being synced
             #if SyncFiles:
-                #returnStr += logHelper(u"Found temporary sync files, skipping post processing", logger.ERROR)
-                #return returnStr
+            #    returnStr += logHelper(u"Found temporary sync files, skipping post processing", logger.ERROR)
+            #    return returnStr
 
             rarFiles = filter(helpers.isRarFile, fileList)
             rarContent = unRAR(processPath, rarFiles, force)
