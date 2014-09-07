@@ -6,6 +6,7 @@ config.ini*
 Logs/*
 sickbeard.db*
 failed.db*
+anidb.db*
 autoProcessTV/autoProcessTV.cfg
 server.crt
 server.key

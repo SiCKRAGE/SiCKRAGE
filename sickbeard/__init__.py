@@ -36,7 +36,7 @@ from providers import ezrss, tvtorrents, btn, newznab, womble, thepiratebay, tor
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
     naming_ep_type
 from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
-    subtitles, traktChecker
+    subtitles, traktChecker, anime_notifications
 from sickbeard import helpers, db, exceptions, show_queue, search_queue, scheduler, show_name_helpers
 from sickbeard import logger
 from sickbeard import naming
@@ -46,7 +46,7 @@ from indexers.indexer_api import indexerApi
 from indexers.indexer_exceptions import indexer_shownotfound, indexer_exception, indexer_error, indexer_episodenotfound, \
     indexer_attributenotfound, indexer_seasonnotfound, indexer_userabort, indexerExcepts
 from sickbeard.common import SD, SKIPPED, NAMING_REPEAT
-from sickbeard.databases import mainDB, cache_db, failed_db
+from sickbeard.databases import mainDB, cache_db, failed_db, anidb
 
 from lib.configobj import ConfigObj
 
@@ -86,6 +86,7 @@ properFinderScheduler = None
 autoPostProcesserScheduler = None
 subtitlesFinderScheduler = None
 traktCheckerScheduler = None
+anidbNotificationsScheduler = None
 
 showList = None
 loadingShowList = None
@@ -336,6 +337,7 @@ ANIDB_PASSWORD = None
 ANIDB_USE_MYLIST = False
 ADBA_CONNECTION = None
 ANIME_SPLIT_HOME = False
+USE_ANIDBNOTIFICATIONS = False
 
 USE_SYNOINDEX = False
 
@@ -486,7 +488,7 @@ def initialize(consoleLogging=True):
             USE_FAILED_DOWNLOADS, DELETE_FAILED, ANON_REDIRECT, LOCALHOST_IP, TMDB_API_KEY, DEBUG, PROXY_SETTING, \
             AUTOPOSTPROCESSER_FREQUENCY, DEFAULT_AUTOPOSTPROCESSER_FREQUENCY, MIN_AUTOPOSTPROCESSER_FREQUENCY, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
-            ANIME_SPLIT_HOME, SCENE_DEFAULT, PLAY_VIDEOS
+            ANIME_SPLIT_HOME, SCENE_DEFAULT, PLAY_VIDEOS, anidbNotificationsScheduler, USE_ANIDBNOTIFICATIONS
 
         if __INITIALIZED__:
             return False
@@ -894,6 +896,7 @@ def initialize(consoleLogging=True):
         ANIDB_USERNAME = check_setting_str(CFG, 'ANIDB', 'anidb_username', '')
         ANIDB_PASSWORD = check_setting_str(CFG, 'ANIDB', 'anidb_password', '')
         ANIDB_USE_MYLIST = bool(check_setting_int(CFG, 'ANIDB', 'anidb_use_mylist', 0))
+        USE_ANIDBNOTIFICATIONS = bool(check_setting_int(CFG, 'ANIDB', 'use_anidbnotifications', 0))
 
         ANIME_SPLIT_HOME = bool(check_setting_int(CFG, 'ANIME', 'anime_split_home', 0))
 
@@ -1041,6 +1044,10 @@ def initialize(consoleLogging=True):
         myDB = db.DBConnection('failed.db')
         db.upgradeDatabase(myDB, failed_db.InitialSchema)
 
+        # initialize the anidb database
+        myDB = db.DBConnection('anidb.db')
+        db.upgradeDatabase(myDB, anidb.InitialSchema)
+
         # fix up any db problems
         myDB = db.DBConnection()
         db.sanityCheckDatabase(myDB, mainDB.MainSanityCheck)
@@ -1131,6 +1138,11 @@ def initialize(consoleLogging=True):
                                                        threadName="FINDSUBTITLES",
                                                        silent=not USE_SUBTITLES)
 
+        anidbNotificationsScheduler = scheduler.Scheduler(anime_notifications.AnidbNotifications(),
+                                                         cycleTime=datetime.timedelta(minutes=20), # minimum time allowed for a notify command
+                                                         threadName="ANIDBNOTIFICATIONS",
+                                                         silent=not USE_ANIDBNOTIFICATIONS,
+                                                         run_delay=datetime.timedelta(minutes=20)) # delay so we don't get banned
         showList = []
         loadingShowList = {}
 
@@ -1184,6 +1196,9 @@ def start():
             if USE_TRAKT:
                 traktCheckerScheduler.start()
 
+            if USE_ANIDBNOTIFICATIONS and USE_ANIDB:
+                anidbNotificationsScheduler.start()
+
             started = True
 
 
@@ -1191,7 +1206,7 @@ def halt():
     global __INITIALIZED__, backlogSearchScheduler, \
         showUpdateScheduler, versionCheckScheduler, showQueueScheduler, \
         properFinderScheduler, autoPostProcesserScheduler, searchQueueScheduler, \
-        subtitlesFinderScheduler, traktCheckerScheduler, \
+        subtitlesFinderScheduler, traktCheckerScheduler, anidbNotificationsScheduler, \
         dailySearchScheduler, events, started
 
     with INIT_LOCK:
@@ -1278,6 +1293,14 @@ def halt():
                 logger.log(u"Waiting for the SUBTITLESFINDER thread to exit")
                 try:
                     subtitlesFinderScheduler.join(10)
+                except:
+                    pass
+
+            if USE_ANIDBNOTIFICATIONS and USE_ANIDBNOTIFICATIONS:
+                anidbNotificationsScheduler.stop.set()
+                logger.log(u"Waiting for the ANIDBNOTIFICATIONS thread to exit")
+                try:
+                    traktCheckerScheduler.join(10)
                 except:
                     pass
 
@@ -1745,6 +1768,7 @@ def save_config():
     new_config['ANIDB']['anidb_username'] = ANIDB_USERNAME
     new_config['ANIDB']['anidb_password'] = helpers.encrypt(ANIDB_PASSWORD, ENCRYPTION_VERSION)
     new_config['ANIDB']['anidb_use_mylist'] = int(ANIDB_USE_MYLIST)
+    new_config['ANIDB']['use_anidbnotifications'] = int(USE_ANIDBNOTIFICATIONS)
 
     new_config['ANIME'] = {}
     new_config['ANIME']['anime_split_home'] = int(ANIME_SPLIT_HOME)
