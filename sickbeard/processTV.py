@@ -138,13 +138,12 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
     path, dirs, files = get_path_dir_files(dirName, nzbName, type)
 
-    # No need not to post process TV dir with sync files.. it preventes synced files to be processed
-    #SyncFiles = filter(helpers.isSyncFile, files)
-    #
-    ## Don't post process if files are still being synced
-    #if SyncFiles:
-    #    returnStr += logHelper(u"Found temporary sync files, skipping post processing", logger.ERROR)
-    #    return returnStr
+    SyncFiles = filter(helpers.isSyncFile, files)
+
+    # Don't post process if files are still being synced and option is activated
+    if SyncFiles and sickbeard.POSTPONE_IF_SYNC_FILES:
+        returnStr += logHelper(u"Found temporary sync files, skipping post processing", logger.ERROR)
+        return returnStr
 
     returnStr += logHelper(u"PostProcessing Path: " + path, logger.DEBUG)
     returnStr += logHelper(u"PostProcessing Dirs: " + str(dirs), logger.DEBUG)
@@ -187,13 +186,12 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
         for processPath, processDir, fileList in ek.ek(os.walk, ek.ek(os.path.join, path, dir), topdown=False):
 
-            # No reason not to postprocess TV folder even if there is sync files.. it's preventing complete files from being processed
-            #SyncFiles = filter(helpers.isSyncFile, fileList)
-            #
-            ## Don't post process if files are still being synced
-            #if SyncFiles:
-            #    returnStr += logHelper(u"Found temporary sync files, skipping post processing", logger.ERROR)
-            #    return returnStr
+            SyncFiles = filter(helpers.isSyncFile, fileList)
+
+            # Don't post process if files are still being synced and option is activated
+            if SyncFiles and sickbeard.POSTPONE_IF_SYNC_FILES:
+                returnStr += logHelper(u"Found temporary sync files, skipping post processing", logger.ERROR)
+                return returnStr
 
             rarFiles = filter(helpers.isRarFile, fileList)
             rarContent = unRAR(processPath, rarFiles, force)
