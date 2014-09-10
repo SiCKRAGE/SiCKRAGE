@@ -38,6 +38,7 @@ from sickbeard import nzbSplitter
 from sickbeard import ui
 from sickbeard import encodingKludge as ek
 from sickbeard import failed_history
+from sickbeard import common
 from sickbeard.exceptions import ex
 from sickbeard.providers.generic import GenericProvider
 from sickbeard.blackandwhitelist import BlackAndWhiteList
@@ -319,12 +320,59 @@ def isFirstBestMatch(result):
 
     return False
 
+def wantedEpisodes(show, fromDate):
+    anyQualities, bestQualities = common.Quality.splitQuality(show.quality)  # @UnusedVariable
+    allQualities = list(set(anyQualities + bestQualities))
+
+    logger.log(u"Seeing if we need anything from " + show.name)
+
+    myDB = db.DBConnection()
+    if show.air_by_date:
+        sqlResults = myDB.select(
+            "SELECT ep.status, ep.season, ep.episode FROM tv_episodes ep, tv_shows show WHERE season != 0 AND ep.showid = show.indexer_id AND show.paused = 0 AND ep.airdate > ? AND ep.showid = ? AND show.air_by_date = 1",
+            [fromDate.toordinal(), show.indexerid])
+    else:
+        sqlResults = myDB.select(
+            "SELECT status, season, episode FROM tv_episodes WHERE showid = ? AND season > 0 and airdate > ?",
+            [show.indexerid, fromDate.toordinal()])
+
+    # check through the list of statuses to see if we want any
+    wanted = []
+    for result in sqlResults:
+        curCompositeStatus = int(result["status"])
+        curStatus, curQuality = common.Quality.splitCompositeStatus(curCompositeStatus)
+
+        if bestQualities:
+            highestBestQuality = max(allQualities)
+        else:
+            highestBestQuality = 0
+
+        # if we need a better one then say yes
+        if (curStatus in (common.DOWNLOADED, common.SNATCHED, common.SNATCHED_PROPER,
+                          common.SNATCHED_BEST) and curQuality < highestBestQuality) or curStatus == common.WANTED:
+
+            epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
+            epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != common.Quality.UNKNOWN)]
+            wanted.append(epObj)
+    return wanted
+
+
 def searchForNeededEpisodes():
     foundResults = {}
 
     didSearch = False
 
     origThreadName = threading.currentThread().name
+
+    show_list = sickbeard.showList
+    fromDate = datetime.date.fromordinal(1)
+    episodeList = []
+
+    for curShow in show_list:
+        if curShow.paused:
+            continue
+
+        episodeList.extend(wantedEpisodes(curShow, fromDate))
 
     providers = [x for x in sickbeard.providers.sortedProviderList() if x.isActive() and x.enable_daily]
     for curProvider in providers:
@@ -333,7 +381,7 @@ def searchForNeededEpisodes():
 
         try:
             curProvider.cache.updateCache()
-            curFoundResults = curProvider.searchRSS()
+            curFoundResults = curProvider.searchRSS(episodeList)
         except exceptions.AuthException, e:
             logger.log(u"Authentication error: " + ex(e), logger.ERROR)
             continue

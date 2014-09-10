@@ -21,6 +21,8 @@ from __future__ import with_statement
 import time
 import datetime
 import sickbeard
+import itertools
+        
 
 from sickbeard import db
 from sickbeard import logger
@@ -279,7 +281,10 @@ class TVCache():
 
     def searchCache(self, episode, manualSearch=False):
         neededEps = self.findNeededEpisodes(episode, manualSearch)
-        return neededEps[episode]
+        if len(neededEps) > 0:
+            return neededEps[episode]
+        else:
+            return []
 
     def listPropers(self, date=None, delimiter="."):
         myDB = self._getDB()
@@ -290,24 +295,29 @@ class TVCache():
 
         return filter(lambda x: x['indexerid'] != 0, myDB.select(sql))
 
-
-    def findNeededEpisodes(self, episode=None, manualSearch=False):
+    def findNeededEpisodes(self, episodes, manualSearch=False):
         neededEps = {}
-
-        if episode:
-            neededEps[episode] = []
-
+        cl = []
         myDB = self._getDB()
-        if not episode:
-            sqlResults = myDB.select("SELECT * FROM [" + self.providerID + "]")
-        else:
+        if manualSearch:
             sqlResults = myDB.select(
                 "SELECT * FROM [" + self.providerID + "] WHERE indexerid = ? AND season = ? AND episodes LIKE ?",
-                [episode.show.indexerid, episode.season, "%|" + str(episode.episode) + "|%"])
+                [episodes.show.indexerid, episodes.season, "%|" + str(episodes.episode) + "|%"])
+        else:
+            if type(episodes) != list:
+                episodes = [episodes]
+            for episode in episodes:
+                cl.append([
+                        "SELECT * FROM [" + self.providerID + "] WHERE indexerid = ? AND season = ? AND episodes LIKE ? "
+                        "AND quality IN (" + ",".join([str(x) for x in episode.wantedQuality]) + ")",
+                        [episode.show.indexerid, episode.season, "%|" + str(episode.episode) + "|%"]])
+
+            sqlResults = myDB.mass_action(cl, fetchall=True)
+            sqlResults = list(itertools.chain(*sqlResults))
+        logger.log("Found "+ str(len(sqlResults)) + " wanted items in cache. Filtering results now...")
 
         # for each cache entry
         for curResult in sqlResults:
-
             # skip non-tv crap
             if not show_name_helpers.filterBadReleases(curResult["name"], parse=False):
                 continue
@@ -336,15 +346,12 @@ class TVCache():
             curVersion = curResult["version"]
 
             # if the show says we want that episode then add it to the list
-            if not showObj.wantEpisode(curSeason, curEp, curQuality, manualSearch):
+            if not showObj.wantEpisode(curSeason, curEp, curQuality, manualSearch=manualSearch):
                 logger.log(u"Skipping " + curResult["name"] + " because we don't want an episode that's " +
                            Quality.qualityStrings[curQuality], logger.DEBUG)
                 continue
 
-            if episode:
-                epObj = episode
-            else:
-                epObj = showObj.getEpisode(curSeason, curEp)
+            epObj = showObj.getEpisode(curSeason, curEp)
 
             # build a result object
             title = curResult["name"]
