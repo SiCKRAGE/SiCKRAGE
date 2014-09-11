@@ -13,7 +13,8 @@
 	$.fn.ajaxEpSearch = function(options){
 		options = $.extend({}, $.ajaxEpSearch.defaults, options);
 		
-	    $('.epSearch').click(function(){
+	    $('.epSearch').click(function(event){
+	    	event.preventDefault();
 	        var parent = $(this).parent();
 	        
 	        // put the ajax spinner (for non white bg) placeholder while we wait

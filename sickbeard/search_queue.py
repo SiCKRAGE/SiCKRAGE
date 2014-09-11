@@ -51,10 +51,26 @@ class SearchQueue(generic_queue.GenericQueue):
 
     def is_ep_in_queue(self, ep_obj):
         for cur_item in self.queue:
-            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.ep_obj == ep_obj:
+            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.segment == ep_obj:
                 return True
         return False
-
+    
+    def is_show_in_queue(self, show):
+        for cur_item in self.queue:
+            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.show.indexerid == show:
+                return True
+        return False
+    
+    def get_all_ep_from_queue(self, show):
+        ep_obj_list = []
+        for cur_item in self.queue:
+            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and str(cur_item.show.indexerid) == show:
+                ep_obj_list.append(cur_item)
+        
+        if ep_obj_list:
+            return ep_obj_list
+        return False
+    
     def pause_backlog(self):
         self.min_priority = generic_queue.QueuePriorities.HIGH
 
@@ -147,12 +163,15 @@ class ManualSearchQueueItem(generic_queue.QueueItem):
         self.success = None
         self.show = show
         self.segment = segment
+        self.started = None
 
     def run(self):
         generic_queue.QueueItem.run(self)
 
         try:
             logger.log("Beginning manual search for [" + self.segment.prettyName() + "]")
+            self.started = True
+            
             searchResult = search.searchProviders(self.show, [self.segment], True)
 
             if searchResult:

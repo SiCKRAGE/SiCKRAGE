@@ -4305,10 +4305,11 @@ class Home(MainHandler):
             root_ep_obj.rename()
 
         redirect("/home/displayShow?show=" + show)
-
-
+    
     def searchEpisode(self, show=None, season=None, episode=None):
-
+        
+        manualRunningSearches = []
+        
         # retrieve the episode object and fail if we can't get one
         ep_obj = _getEpisode(show, season, episode)
         if isinstance(ep_obj, str):
@@ -4316,29 +4317,67 @@ class Home(MainHandler):
 
         # make a queue item for it and put it on the queue
         ep_queue_item = search_queue.ManualSearchQueueItem(ep_obj.show, ep_obj)
+
         sickbeard.searchQueueScheduler.action.add_item(ep_queue_item)  # @UndefinedVariable
-
-        # wait until the queue item tells us whether it worked or not
-        while ep_queue_item.success is None:  # @UndefinedVariable
-            time.sleep(cpu_presets[sickbeard.CPU_PRESET])
-
-        # return the correct json value
+        
         if ep_queue_item.success:
-            # Find the quality class for the episode
-            quality_class = Quality.qualityStrings[Quality.UNKNOWN]
-            ep_status, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
-            for x in (SD, HD720p, HD1080p):
-                if ep_quality in Quality.splitQuality(x)[0]:
-                    quality_class = qualityPresetStrings[x]
-                    break
+            return returnManualSearchResult(ep_queue_item)
+        if ep_queue_item.started and ep_queue_item.success is None:
+            return json.dumps({'result': 'Search Queued'})
+        else:
+            return json.dumps({'result': 'failure'})
 
-            return json.dumps({'result': statusStrings[ep_obj.status],
-                               'quality': quality_class
-            })
+        
 
-        return json.dumps({'result': 'failure'})
+    ### Returns the current ep_queue_item status for the current viewed show.
+    # Possible status: Downloaded, Snatched, etc...
+    # Returns {'show': 279530, 'episodes' : ['episode' : 6, 'season' : 1, 'status' : 'running', 'quality': '4013']
+    def getManualSearchStatus(self, show=None, season=None):
 
+        episodes = []
+        
+        currentManualSearchThreadsQueued = sickbeard.searchQueueScheduler.action.get_all_ep_from_queue(show)
+        currentManualSearchThreadActive = sickbeard.searchQueueScheduler.action.currentItem
+        
+        for searchThread in currentManualSearchThreadsQueued:
+            searchstatus = 'queued'
+                
+            episodes.append({'episode': searchThread.segment.episode, 
+                             'season' : searchThread.segment.season, 
+                             'searchstatus' : searchstatus, 
+                             'status' : statusStrings[searchThread.segment.status], 
+                             'quality': self.getQualityClass(searchThread.segment)})
+        
+        if currentManualSearchThreadActive:
+            searchThread = currentManualSearchThreadActive
+            searchstatus = 'searching'
+            if searchThread.success:
+                searchstatus = 'finished'
+                
+            episodes.append({'episode': searchThread.segment.episode, 
+                             'season' : searchThread.segment.season, 
+                             'searchstatus' : searchstatus, 
+                             'status' : statusStrings[searchThread.segment.status], 
+                             'quality': self.getQualityClass(searchThread.segment)})
+        
+        return json.dumps({'show': show, 'episodes' : episodes})
 
+        #return json.dumps()
+    
+    def getQualityClass(self, ep_obj):
+        # return the correct json value
+    
+        # Find the quality class for the episode
+        quality_class = Quality.qualityStrings[Quality.UNKNOWN]
+        ep_status, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
+        for x in (SD, HD720p, HD1080p):
+            if ep_quality in Quality.splitQuality(x)[0]:
+                quality_class = qualityPresetStrings[x]
+                break
+
+        return quality_class
+        
+    
     def searchEpisodeSubtitles(self, show=None, season=None, episode=None):
 
         # retrieve the episode object and fail if we can't get one
