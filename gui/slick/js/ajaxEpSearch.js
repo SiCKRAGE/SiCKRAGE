@@ -121,7 +121,13 @@ function disableLink(el) {
 		
 	    $('.epSearch').click(function(event){
 	    	event.preventDefault();
-	        var parent = $(this).parent();
+	        
+	    	if ( $(this).attr('class') == "epRetry" ) {
+	    		if ( !confirm("Mark download as bad and retry?") )
+	                return false;
+	    	};
+	    	
+	    	var parent = $(this).parent();
 	        link = $(this);
 	        // put the ajax spinner (for non white bg) placeholder while we wait
 	        //parent.empty();
