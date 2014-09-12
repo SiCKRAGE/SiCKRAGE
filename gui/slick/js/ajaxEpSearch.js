@@ -45,34 +45,25 @@ function updateImages(data) {
         var searchImage = 'search32.png';
         var status = null;
         //Try to get the <a> Element
-        el=$('#' + ep.season + 'x' + ep.episode + '.epSearch,.epRetry');
+        el=$('a[id=' + ep.season + 'x' + ep.episode+']');
         img=el.children('img');
-        
-        if (jQuery.inArray( ep, $.fn.manualSearches) <= 0 ) {
-        	$.fn.manualSearches.push(ep);
-        	status = 'new';
-        }
-        else {
-        	status = 'existing'
-        }
-        
-        
+                
         if (el) {
-			if (ep.searchstatus == 'queued') {
+        	if (ep.searchstatus == 'searching') {
+				//el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
+				img.attr('title','Searching');
+				img.attr('alt','searching');
+				img.attr('src','/images/' + loadingImage);
+				disableLink(el);
+        	}
+        	else if (ep.searchstatus == 'queued') {
 				//el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
 				img.attr('title','Queued');
 				img.attr('alt','queued');
 				img.attr('src','/images/' + queuedImage );
 				disableLink(el);
 			}
-			if (ep.searchstatus == 'searching') {
-				//el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
-				img.attr('title','Searching');
-				img.attr('alt','searching');
-				img.attr('src','/images/' + loadingImage);
-				disableLink(el);
-			}
-			if (ep.searchstatus == 'finished') {
+        	else if (ep.searchstatus == 'finished') {
 				//el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
 				img.attr('title','Searching');
 				img.attr('alt','searching');
