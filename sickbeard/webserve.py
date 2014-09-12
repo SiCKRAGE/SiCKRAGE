@@ -4322,8 +4322,10 @@ class Home(MainHandler):
         
         if ep_queue_item.success:
             return returnManualSearchResult(ep_queue_item)
+        if not ep_queue_item.started and ep_queue_item.success is None:
+            return json.dumps({'result': 'success'})
         if ep_queue_item.started and ep_queue_item.success is None:
-            return json.dumps({'result': 'Search Queued'})
+            return json.dumps({'result': 'success'})
         else:
             return json.dumps({'result': 'failure'})
 
@@ -4339,14 +4341,15 @@ class Home(MainHandler):
         currentManualSearchThreadsQueued = sickbeard.searchQueueScheduler.action.get_all_ep_from_queue(show)
         currentManualSearchThreadActive = sickbeard.searchQueueScheduler.action.currentItem
         
-        for searchThread in currentManualSearchThreadsQueued:
-            searchstatus = 'queued'
-                
-            episodes.append({'episode': searchThread.segment.episode, 
-                             'season' : searchThread.segment.season, 
-                             'searchstatus' : searchstatus, 
-                             'status' : statusStrings[searchThread.segment.status], 
-                             'quality': self.getQualityClass(searchThread.segment)})
+        if currentManualSearchThreadsQueued:
+            for searchThread in currentManualSearchThreadsQueued:
+                searchstatus = 'queued'
+                    
+                episodes.append({'episode': searchThread.segment.episode, 
+                                 'season' : searchThread.segment.season, 
+                                 'searchstatus' : searchstatus, 
+                                 'status' : statusStrings[searchThread.segment.status], 
+                                 'quality': self.getQualityClass(searchThread.segment)})
         
         if currentManualSearchThreadActive:
             searchThread = currentManualSearchThreadActive

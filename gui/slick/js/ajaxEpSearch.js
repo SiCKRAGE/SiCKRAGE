@@ -1,3 +1,137 @@
+var search_status_url = sbRoot + '/getManualSearchStatus';
+$.pnotify.defaults.width = "400px";
+$.pnotify.defaults.styling = "jqueryui";
+$.pnotify.defaults.history = false;
+$.pnotify.defaults.shadow = false;
+$.pnotify.defaults.delay = 4000;
+$.pnotify.defaults.maxonscreen = 5;
+
+$.fn.manualSearches = [];
+
+function check_manual_searches() {
+    var poll_interval = 5000;
+    $.ajax({
+        url: search_status_url + '?show=' + $('#showID').val(),
+        success: function (data) {
+            if (data.episodes) {
+            	poll_interval = 5000;
+            }
+            else {
+            	poll_interval = 15000;
+            }
+        	
+            updateImages(data);
+            //cleanupManualSearches(data);
+        },
+        error: function () {
+            poll_interval = 30000;
+        },
+        type: "GET",
+        dataType: "json",
+        complete: function () {
+            setTimeout(check_manual_searches, poll_interval);
+        },
+        timeout: 15000 // timeout every 15 secs
+    });
+}
+
+
+function updateImages(data) {
+	$.each(data.episodes, function (name, ep) {
+		console.debug(ep.searchstatus);
+		// Get td element for current ep
+		var loadingImage = 'loading16_dddddd.gif';
+        var queuedImage = 'queued.png';
+        var searchImage = 'search32.png';
+        var status = null;
+        //Try to get the <a> Element
+        el=$('#' + ep.season + 'x' + ep.episode + '.epSearch,.epRetry');
+        img=el.children('img');
+        
+        if (jQuery.inArray( ep, $.fn.manualSearches) <= 0 ) {
+        	$.fn.manualSearches.push(ep);
+        	status = 'new';
+        }
+        else {
+        	status = 'existing'
+        }
+        
+        
+        if (el) {
+			if (ep.searchstatus == 'queued') {
+				//el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
+				img.attr('title','Queued');
+				img.attr('alt','queued');
+				img.attr('src','/images/' + queuedImage );
+				disableLink(el);
+			}
+			if (ep.searchstatus == 'searching') {
+				//el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
+				img.attr('title','Searching');
+				img.attr('alt','searching');
+				img.attr('src','/images/' + loadingImage);
+				disableLink(el);
+			}
+			if (ep.searchstatus == 'finished') {
+				//el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
+				img.attr('title','Searching');
+				img.attr('alt','searching');
+				img.parent().attr('class','epRetry');
+				img.attr('src','/images/' + searchImage);
+				enableLink(el);
+			}
+        }
+		
+	});
+}
+
+function cleanupManualSearches(data) {
+	$.fn.manualSearches.forEach(function(savedSearch) { 
+		var found = jQuery.inArray( savedSearch, data.episodes);
+		if (found < 0 ) {
+			
+			var tempArray = $.fn.manualSearches;
+			$.each($.fn.manualSearches, function(i, item){
+					if (item && savedSearch) {  
+						if (item.season == savedSearch.season && item.episode == savedSearch.episode) { 
+							  tempArray.splice(i, 1);
+						};
+					};
+				});
+			
+			$.fn.manualSearches = tempArray;
+			
+			// Can't find the saved search in the returened Json, let's rest the status/img for now
+			//jQuery.removeFromArray(savedSearch, $.fn.manualSearches);
+			el=$('td#' + savedSearch.season + 'x' + savedSearch.episode + '.search img');
+			
+			el.attr('title','Manual Search');
+			el.attr('alt','Manual Search');
+			el.attr('src','/images/search32.png');
+			el.parent().attr('style','epRetry');
+        	status = 'removed';
+        	
+        }
+	});
+};
+
+
+$(document).ready(function () {
+
+	check_manual_searches();
+
+});
+
+function enableLink(el) {
+	$(el).attr('saveHref', el.href);
+	$(this).fadeIn("fast").attr("href", el.saveHref);
+}
+
+function disableLink(el) {
+	$(el).attr('saveHref', el.href);
+	$(el).fadeTo("fast", .5).removeAttr("href"); 
+}
+
 (function(){
 
 	$.ajaxEpSearch = {
@@ -5,6 +139,7 @@
 	        size:				16,
 	        colorRow:         	false,
 	        loadingImage:		'loading16_dddddd.gif',
+	        queuedImage:		'queued.png',
 	        noImage:			'no16.png',
 	        yesImage:			'yes16.png'
 	    }
@@ -18,8 +153,13 @@
 	        var parent = $(this).parent();
 	        
 	        // put the ajax spinner (for non white bg) placeholder while we wait
-	        parent.empty();
-	        parent.append($("<img/>").attr({"src": sbRoot+"/images/"+options.loadingImage, "height": options.size, "alt": "", "title": "loading"}));
+	        //parent.empty();
+	        //parent.append($("<img/>").attr({"src": sbRoot+"/images/"+options.loadingImage, "height": options.size, "alt": "", "title": "loading"}));
+	        img=$(this).children('img');
+	        img.attr('title','loading');
+			img.attr('alt','');
+			img.attr('src','/images/' + options.loadingImage);
+			
 	        
 	        $.getJSON($(this).attr('href'), function(data){
 	            // if they failed then just put the red X
@@ -42,8 +182,13 @@
 	            }
 
 	            // put the corresponding image as the result for the the row
-	            parent.empty();
-	            parent.append($("<img/>").attr({"src": sbRoot+"/images/"+img_name, "height": options.size, "alt": img_result, "title": img_result}));
+	            //parent.empty();
+	            //parent.append($("<img/>").attr({"src": sbRoot+"/images/"+img_name, "height": options.size, "alt": img_result, "title": img_result}));
+	            img.attr('title',img_result);
+				img.attr('alt',img_result);
+				img.attr('height', options.size);
+				img.attr('src',sbRoot+"/images/"+img_name);
+				disableLink(this);
 	        });
 
 	        // fon't follow the link
@@ -51,3 +196,4 @@
 	    });
 	}
 })();
+
