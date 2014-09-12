@@ -47,7 +47,7 @@ function updateImages(data) {
         //Try to get the <a> Element
         el=$('a[id=' + ep.season + 'x' + ep.episode+']');
         img=el.children('img');
-                
+        parent=el.parent();        
         if (el) {
         	if (ep.searchstatus == 'searching') {
 				//el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
@@ -55,6 +55,10 @@ function updateImages(data) {
 				img.attr('alt','searching');
 				img.attr('src','/images/' + loadingImage);
 				disableLink(el);
+				// Update Status and Quality
+				var rSearchTerm = /(\w+)\s\((.+?)\)/;
+	            HtmlContent = ep.searchstatus;
+	            
         	}
         	else if (ep.searchstatus == 'queued') {
 				//el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
@@ -62,6 +66,7 @@ function updateImages(data) {
 				img.attr('alt','queued');
 				img.attr('src','/images/' + queuedImage );
 				disableLink(el);
+				HtmlContent = ep.searchstatus;
 			}
         	else if (ep.searchstatus == 'finished') {
 				//el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
@@ -70,42 +75,19 @@ function updateImages(data) {
 				img.parent().attr('class','epRetry');
 				img.attr('src','/images/' + searchImage);
 				enableLink(el);
+				
+				// Update Status and Quality
+				var rSearchTerm = /(\w+)\s\((.+?)\)/;
+	            HtmlContent = ep.status.replace(rSearchTerm,"$1"+' <span class="quality '+ep.quality+'">'+"$2"+'</span>');
+		        
 			}
+        	// update the status column if it exists
+	        parent.siblings('.status_column').html(HtmlContent)
+        	
         }
 		
 	});
 }
-
-function cleanupManualSearches(data) {
-	$.fn.manualSearches.forEach(function(savedSearch) { 
-		var found = jQuery.inArray( savedSearch, data.episodes);
-		if (found < 0 ) {
-			
-			var tempArray = $.fn.manualSearches;
-			$.each($.fn.manualSearches, function(i, item){
-					if (item && savedSearch) {  
-						if (item.season == savedSearch.season && item.episode == savedSearch.episode) { 
-							  tempArray.splice(i, 1);
-						};
-					};
-				});
-			
-			$.fn.manualSearches = tempArray;
-			
-			// Can't find the saved search in the returened Json, let's rest the status/img for now
-			//jQuery.removeFromArray(savedSearch, $.fn.manualSearches);
-			el=$('td#' + savedSearch.season + 'x' + savedSearch.episode + '.search img');
-			
-			el.attr('title','Manual Search');
-			el.attr('alt','Manual Search');
-			el.attr('src','/images/search32.png');
-			el.parent().attr('style','epRetry');
-        	status = 'removed';
-        	
-        }
-	});
-};
-
 
 $(document).ready(function () {
 
@@ -114,13 +96,11 @@ $(document).ready(function () {
 });
 
 function enableLink(el) {
-	$(el).attr('saveHref', el.href);
-	$(this).fadeIn("fast").attr("href", el.saveHref);
+	el.on('click.disabled', false);
 }
 
 function disableLink(el) {
-	$(el).attr('saveHref', el.href);
-	$(el).fadeTo("fast", .5).removeAttr("href"); 
+	el.off('click.disabled');
 }
 
 (function(){
@@ -142,7 +122,7 @@ function disableLink(el) {
 	    $('.epSearch').click(function(event){
 	    	event.preventDefault();
 	        var parent = $(this).parent();
-	        
+	        link = $(this);
 	        // put the ajax spinner (for non white bg) placeholder while we wait
 	        //parent.empty();
 	        //parent.append($("<img/>").attr({"src": sbRoot+"/images/"+options.loadingImage, "height": options.size, "alt": "", "title": "loading"}));
@@ -160,7 +140,7 @@ function disableLink(el) {
 
 	            // if the snatch was successful then apply the corresponding class and fill in the row appropriately
 	            } else {
-	                img_name = options.yesImage;
+	                img_name = options.loadingImage;
 	                img_result = 'success';
 	                // color the row
 	                if (options.colorRow)
@@ -179,9 +159,9 @@ function disableLink(el) {
 				img.attr('alt',img_result);
 				img.attr('height', options.size);
 				img.attr('src',sbRoot+"/images/"+img_name);
-				disableLink(this);
+				
 	        });
-
+	        disableLink(link);
 	        // fon't follow the link
 	        return false;
 	    });
