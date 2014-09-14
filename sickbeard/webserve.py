@@ -4308,8 +4308,6 @@ class Home(MainHandler):
     
     def searchEpisode(self, show=None, season=None, episode=None):
         
-        manualRunningSearches = []
-        
         # retrieve the episode object and fail if we can't get one
         ep_obj = _getEpisode(show, season, episode)
         if isinstance(ep_obj, str):
@@ -4329,11 +4327,9 @@ class Home(MainHandler):
         else:
             return json.dumps({'result': 'failure'})
 
-        
-
     ### Returns the current ep_queue_item status for the current viewed show.
     # Possible status: Downloaded, Snatched, etc...
-    # Returns {'show': 279530, 'episodes' : ['episode' : 6, 'season' : 1, 'status' : 'running', 'quality': '4013']
+    # Returns {'show': 279530, 'episodes' : ['episode' : 6, 'season' : 1, 'searchstatus' : 'queued', 'status' : 'running', 'quality': '4013']
     def getManualSearchStatus(self, show=None, season=None):
 
         episodes = []
@@ -4345,8 +4341,7 @@ class Home(MainHandler):
         # Finished Searches
         finishedManualSearchThreadItems =  sickbeard.search_queue.MANUAL_SEARCH_HISTORY
         
-        
-        
+     
         if currentManualSearchThreadsQueued:
             for searchThread in currentManualSearchThreadsQueued:
                 searchstatus = 'queued'
@@ -4397,8 +4392,7 @@ class Home(MainHandler):
                 break
 
         return quality_class
-        
-    
+
     def searchEpisodeSubtitles(self, show=None, season=None, episode=None):
 
         # retrieve the episode object and fail if we can't get one

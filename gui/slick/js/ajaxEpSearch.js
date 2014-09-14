@@ -138,10 +138,11 @@ function disableLink(el) {
 	    	};
 	    	
 	    	var parent = $(this).parent();
-	        link = $(this);
-	        // put the ajax spinner (for non white bg) placeholder while we wait
-	        //parent.empty();
-	        //parent.append($("<img/>").attr({"src": sbRoot+"/images/"+options.loadingImage, "height": options.size, "alt": "", "title": "loading"}));
+	        
+	    	// Create var for anchor
+	    	link = $(this);
+	    	
+	    	// Create var for img under anchor and set options for the loading gif
 	        img=$(this).children('img');
 	        img.attr('title','loading');
 			img.attr('alt','');
@@ -149,7 +150,8 @@ function disableLink(el) {
 			
 	        
 	        $.getJSON($(this).attr('href'), function(data){
-	            // if they failed then just put the red X
+	            
+	        	// if they failed then just put the red X
 	            if (data.result == 'failure') {
 	                img_name = options.noImage;
 	                img_result = 'failed';
@@ -165,19 +167,19 @@ function disableLink(el) {
                     var rSearchTerm = /(\w+)\s\((.+?)\)/;
 	                    HtmlContent = data.result.replace(rSearchTerm,"$1"+' <span class="quality '+data.quality+'">'+"$2"+'</span>');
 	                // update the status column if it exists
-                    parent.siblings('.status_column').html(HtmlContent)    	                  
+                    parent.siblings('.status_column').html(HtmlContent)
+                    // Only if the queing was succesfull, disable the onClick event of the loading image
+                    disableLink(link);
 	            }
 
-	            // put the corresponding image as the result for the the row
-	            //parent.empty();
-	            //parent.append($("<img/>").attr({"src": sbRoot+"/images/"+img_name, "height": options.size, "alt": img_result, "title": img_result}));
+	            // put the corresponding image as the result of queuing of the manual search
 	            img.attr('title',img_result);
 				img.attr('alt',img_result);
 				img.attr('height', options.size);
 				img.attr('src',sbRoot+"/images/"+img_name);
-				
 	        });
-	        disableLink(link);
+	        // 
+	        
 	        // don't follow the link
 	        return false;
 	    });
