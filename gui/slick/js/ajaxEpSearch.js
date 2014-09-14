@@ -97,10 +97,14 @@ $(document).ready(function () {
 
 function enableLink(el) {
 	el.on('click.disabled', false);
+	el.attr('enableClick', '1');
+	el.fadeTo("fast", 1)
 }
 
 function disableLink(el) {
 	el.off('click.disabled');
+	el.attr('enableClick', '0');
+	el.fadeTo("fast", .5)
 }
 
 (function(){
@@ -122,6 +126,12 @@ function disableLink(el) {
 	    $('.epSearch').click(function(event){
 	    	event.preventDefault();
 	        
+	    	// Check if we have disabled the click
+	    	if ( $(this).attr('enableClick') == '0' ) {
+	    		console.debug("Already queued, not downloading!");
+	    		return false;
+	    	}
+	    	
 	    	if ( $(this).attr('class') == "epRetry" ) {
 	    		if ( !confirm("Mark download as bad and retry?") )
 	                return false;
@@ -168,7 +178,7 @@ function disableLink(el) {
 				
 	        });
 	        disableLink(link);
-	        // fon't follow the link
+	        // don't follow the link
 	        return false;
 	    });
 	}
