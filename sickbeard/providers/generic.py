@@ -203,8 +203,8 @@ class GenericProvider:
 
         return True
 
-    def searchRSS(self):
-        return self.cache.findNeededEpisodes()
+    def searchRSS(self, episodes):
+        return self.cache.findNeededEpisodes(episodes)
 
     def getQuality(self, item, anime=False):
         """
@@ -263,17 +263,18 @@ class GenericProvider:
 
         searched_scene_season = None
         for epObj in episodes:
-            # search cache for episode result
-            cacheResult = self.cache.searchCache(epObj, manualSearch)
-            if cacheResult:
-                if epObj.episode not in results:
-                    results[epObj.episode] = cacheResult
-                else:
-                    results[epObj.episode].extend(cacheResult)
+            '''# search cache for episode result
+            if manualSearch:
+                cacheResult = self.cache.searchCache(epObj, manualSearch)
+                if cacheResult:
+                    if epObj.episode not in results:
+                        results[epObj.episode] = cacheResult
+                    else:
+                        results[epObj.episode].extend(cacheResult)
 
-                # found result, search next episode
-                continue
-
+                    # found result, search next episode
+                    continue
+            '''
             # skip if season already searched
             if len(episodes) > 1 and searched_scene_season == epObj.scene_season:
                 continue

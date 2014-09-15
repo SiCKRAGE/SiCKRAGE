@@ -29,6 +29,7 @@ from sickbeard import common
 from sickbeard import helpers
 from sickbeard import exceptions
 from sickbeard.exceptions import ex
+from sickbeard import search
 
 
 class DailySearcher():
