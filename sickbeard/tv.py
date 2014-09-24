@@ -272,6 +272,11 @@ class TVShow(object):
 
     def should_update(self, update_date=datetime.date.today()):
 
+        if not self.status:
+            logger.log("Status missing for showid: [%s] with status: [%s], Not going to update the show!" % 
+                       (cur_indexerid, self.status), logger.DEBUG)
+            return False
+        
         # if show is not 'Ended' always update (status 'Continuing' or '')
         if 'Ended' not in self.status:
             return True
