@@ -84,8 +84,9 @@ class SearchQueue(generic_queue.GenericQueue):
         return self.min_priority >= generic_queue.QueuePriorities.NORMAL
 
     def is_manualsearch_in_progress(self):
-        if isinstance(self.currentItem, (ManualSearchQueueItem, FailedQueueItem)):
-            return True
+        for cur_item in self.queue + [self.currentItem]:
+            if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)):
+                return True
         return False
     
     def is_backlog_in_progress(self):
@@ -129,6 +130,7 @@ class SearchQueue(generic_queue.GenericQueue):
 
 class DailySearchQueueItem(generic_queue.QueueItem):
     def __init__(self):
+        self.success = None
         generic_queue.QueueItem.__init__(self, 'Daily Search', DAILY_SEARCH)
 
     def run(self):
@@ -144,7 +146,7 @@ class DailySearchQueueItem(generic_queue.QueueItem):
                 for result in foundResults:
                     # just use the first result for now
                     logger.log(u"Downloading " + result.name + " from " + result.provider.name)
-                    search.snatchEpisode(result)
+                    self.success = search.snatchEpisode(result)
 
                     # give the CPU a break
                     time.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
@@ -152,6 +154,9 @@ class DailySearchQueueItem(generic_queue.QueueItem):
             generic_queue.QueueItem.finish(self)
         except Exception:
             logger.log(traceback.format_exc(), logger.DEBUG)
+
+        if self.success is None:
+            self.success = False
 
         self.finish()
 
