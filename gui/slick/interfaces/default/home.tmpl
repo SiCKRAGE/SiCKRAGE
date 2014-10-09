@@ -269,6 +269,7 @@ function invertSort(){
 <div id="HomeLayout" style="float: right; margin-top: -25px;">
 	<span>Layout:
 		<a class="inner" href="$sbRoot/setHomeLayout/?layout=poster">Poster</a> &middot;
+		<a class="inner" href="$sbRoot/setHomeLayout/?layout=small">Small Poster</a> &middot;
 		<a class="inner" href="$sbRoot/setHomeLayout/?layout=banner">Banner</a> &middot;
 		<a class="inner" href="$sbRoot/setHomeLayout/?layout=simple">Simple</a>
 	</span>
@@ -293,7 +294,6 @@ function invertSort(){
 #end if
 
 #if $layout == 'poster':
-<link rel="stylesheet" type="text/css" href="$sbRoot/css/posterlist.css?$sbPID" />
 <div id=#if $curListType == "Anime" and $layout == 'poster' then "container-anime" else "container"# class="clearfix">
 
 #for $curLoadingShow in $sickbeard.showQueueScheduler.action.loadingShowList:
@@ -429,11 +429,15 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 				</td>
 					
 				<td style="text-align:center; vertical-align:middle;">
-					#if $curShow.network:
-						<img class="show-network-image" src="$sbRoot/images/network/${curShow.network.lower()}.png" alt="$curShow.network" title="$curShow.network" />
+				    #if $layout != 'simple':	
+						#if $curShow.network:
+							<img class="show-network-image" src="$sbRoot/images/network/${curShow.network.replace(u"\u00C9",'e').lower()}.png" alt="$curShow.network" title="$curShow.network" />	
+						#else:
+							<img class="show-network-image" src="$sbRoot/images/network/nonetwork.png" alt="No Network" title="No Network" />
+						#end if
 					#else:
 						$curShow.network
-					#end if
+					#end if	
 				</td>
 					
 				<td style="text-align:center; vertical-align:middle;">
@@ -542,11 +546,20 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
   <tr>
     #if $cur_airs_next
 	#set $ldatetime = $network_timezones.parse_date_time($cur_airs_next,$curShow.airs,$curShow.network)
-    	<td align="center" class="nowrap" style="color: #FFFFFF;"><div class="${fuzzydate}">$sbdatetime.sbdatetime.sbfdate($ldatetime)</div><span class="sort_data">$time.mktime($ldatetime.timetuple())</span> </td>
+    	<td align="center" class="nowrap"><div class="${fuzzydate}">$sbdatetime.sbdatetime.sbfdate($ldatetime)</div><span class="sort_data">$time.mktime($ldatetime.timetuple())</span> </td>
     #else:
-    	<td align="center" class="nowrap" style="color: #FFFFFF;"></td>
+    	<td align="center" class="nowrap"></td>
     #end if
-    #if $layout == 'banner':
+	#if $layout == 'small':
+	    <td>
+	    	<div class="imgsmallposter $layout">
+		    	<a href="$sbRoot/showPoster/?show=$curShow.indexerid&amp;which=$layout" rel="dialog" title="$curShow.name">
+		    		<img src="$sbRoot/showPoster/?show=$curShow.indexerid&amp;which=poster_thumb" class="$layout" alt="$curShow.indexerid"/>
+		    	</a>
+				<a href="$sbRoot/home/displayShow?show=$curShow.indexerid" style="vertical-align: middle;">$curShow.name</a>
+	    	</div>
+	    </td>
+    #else if $layout == 'banner':
 	    <td>
 	    	<span style="display: none;">$curShow.name</span>
 	    	<div class="imgbanner $layout">
@@ -558,10 +571,10 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 	    <td class="tvShow"><a href="$sbRoot/home/displayShow?show=$curShow.indexerid">$curShow.name</a></td>
     #end if
     <!--<td align="center">$curShow.network</td>//-->
-    <td align="center" style="color: #FFFFFF;">
+    <td align="center">
     #if $layout != 'simple':	
         #if $curShow.network:
-        	<img id="network" width="54" height="27" src="$sbRoot/images/network/${curShow.network.lower()}.png" alt="$curShow.network" title="$curShow.network" />
+        	<img id="network" width="54" height="27" src="$sbRoot/images/network/${curShow.network.replace(u"\u00C9",'e').lower()}.png" alt="$curShow.network" title="$curShow.network" />
     	#else:
     		<img id="network" width="54" height="27" src="$sbRoot/images/network/nonetwork.png" alt="No Network" title="No Network" />
 		#end if
@@ -601,7 +614,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
         </script>
     </td>
     <td align="center"><img src="$sbRoot/images/#if int($curShow.paused) == 0 and $curShow.status != "Ended" then "yes16.png\" alt=\"Y\"" else "no16.png\" alt=\"N\""# width="16" height="16" /></td>
-    <td align="center" style="color: #FFFFFF;">$curShow.status</td>
+    <td align="center">$curShow.status</td>
   </tr>
 
 #end for
