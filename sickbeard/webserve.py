@@ -1486,7 +1486,7 @@ class ConfigGeneral(MainHandler):
                     use_api=None, api_key=None, indexer_default=None, timezone_display=None, cpu_preset=None,
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
                     handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
-                    proxy_setting=None, anon_redirect=None, git_path=None, calendar_unprotected=None,
+                    proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, calendar_unprotected=None,
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, play_videos=None, rootDir=None, use_imdbwl=None, imdbWatchlistCsv=None, theme_name=None):
 
@@ -1508,6 +1508,7 @@ class ConfigGeneral(MainHandler):
         sickbeard.CPU_PRESET = cpu_preset
         sickbeard.ANON_REDIRECT = anon_redirect
         sickbeard.PROXY_SETTING = proxy_setting
+        sickbeard.PROXY_INDEXERS = config.checkbox_to_value(proxy_indexers)
         sickbeard.GIT_PATH = git_path
         sickbeard.CALENDAR_UNPROTECTED = config.checkbox_to_value(calendar_unprotected)
         # sickbeard.LOG_DIR is set in config.change_LOG_DIR()
@@ -4450,30 +4451,28 @@ class Home(MainHandler):
         return quality_class
 
     def searchEpisodeSubtitles(self, show=None, season=None, episode=None):
-
         # retrieve the episode object and fail if we can't get one
         ep_obj = _getEpisode(show, season, episode)
         if isinstance(ep_obj, str):
             return json.dumps({'result': 'failure'})
 
         # try do download subtitles for that episode
-        previous_subtitles = ep_obj.subtitles
+        previous_subtitles = set(subliminal.language.Language(x) for x in ep_obj.subtitles)
         try:
-            ep_obj.subtitles = ep_obj.downloadSubtitles()
+            ep_obj.subtitles = set(x.language for x in ep_obj.downloadSubtitles().values()[0])
         except:
             return json.dumps({'result': 'failure'})
 
         # return the correct json value
         if previous_subtitles != ep_obj.subtitles:
             status = 'New subtitles downloaded: %s' % ' '.join([
-                "<img src='" + sickbeard.WEB_ROOT + "/images/flags/" + subliminal.language.Language(
-                    x).alpha2 + ".png' alt='" + subliminal.language.Language(x).name + "'/>" for x in
-                sorted(list(set(ep_obj.subtitles).difference(previous_subtitles)))])
+                "<img src='" + sickbeard.WEB_ROOT + "/images/flags/" + x.alpha2 +
+                ".png' alt='" + x.name + "'/>" for x in
+                sorted(list(ep_obj.subtitles.difference(previous_subtitles)))])
         else:
             status = 'No subtitles downloaded'
         ui.notifications.message('Subtitles Search', status)
-        return json.dumps({'result': status, 'subtitles': ','.join([x for x in ep_obj.subtitles])})
-
+        return json.dumps({'result': status, 'subtitles': ','.join([x.alpha2 for x in ep_obj.subtitles])})
 
     def setSceneNumbering(self, show, indexer, forSeason=None, forEpisode=None, forAbsolute=None, sceneSeason=None,
                           sceneEpisode=None, sceneAbsolute=None):
