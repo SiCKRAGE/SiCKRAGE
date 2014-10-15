@@ -223,11 +223,13 @@
 	#end if
 </div>
 
+<!-- Search box breaks progress bars, needs to be fixed
 #if $layout != 'poster':
 <div class="pull-right">
 	<input class="search form-control form-control-inline input-sm input200" type="search" data-column="1" placeholder="Search Show Name"> <button type="button" class="reset btn btn-inline">Reset Search</button>
 </div>
 #end if
+//-->
 
 #for $curShowlist in $showlists:
 #set $curListType = $curShowlist[0]
