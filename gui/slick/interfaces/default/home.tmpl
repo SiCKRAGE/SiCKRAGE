@@ -10,7 +10,7 @@
 
 #set global $topmenu="home"#
 #import os.path
-#include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_top.tmpl")
+#include $os.path.join($sickbeard.PROG_DIR, "gui/bootstrap/interfaces/default/inc_top.tmpl")
 
 #set $myDB = $db.DBConnection()
 #set $today = str($datetime.date.today().toordinal())
@@ -79,7 +79,29 @@
     	\$(this).remove();
     });
 
-    \$("#showListTable:has(tbody tr)").tablesorter({
+    \$("#showListTableShows:has(tbody tr)").tablesorter({
+        sortList: [[5,1],[1,0]],
+        textExtraction: {
+			3: function(node) { return \$(node).find("span").text().toLowerCase(); },
+			4: function(node) { return \$(node).find("span").text(); },
+			5: function(node) { return \$(node).find("img").attr("alt"); }
+        },
+        widgets: ['saveSort', 'zebra', 'stickyHeaders', 'filter'],
+        headers: {
+			0: { sorter: 'isoDate' },
+			1: { sorter: 'loadingNames' },
+			3: { sorter: 'quality' },
+			4: { sorter: 'eps' }
+        },
+		widgetOptions : {
+            filter_columnFilters: false,
+			filter_saveFilters : true,
+			filter_reset: '.reset'
+		},
+        sortStable: true
+    });
+	
+	\$("#showListTableAnime:has(tbody tr)").tablesorter({
         sortList: [[5,1],[1,0]],
         textExtraction: {
 			3: function(node) { return \$(node).find("span").text().toLowerCase(); },
@@ -385,7 +407,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 
 #else
 
-<table id="showListTable" class="tablesorter" cellspacing="1" border="0" cellpadding="0">
+<table id="showListTable$curListType" class="tablesorter" cellspacing="1" border="0" cellpadding="0">
 
     <thead>
 		<tr>
@@ -408,32 +430,31 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
     
 	<tbody>
 
-	#for $curLoadingShow in $sickbeard.showQueueScheduler.action.loadingShowList:
+#for $curLoadingShow in $sickbeard.showQueueScheduler.action.loadingShowList:
 
-	#if $curLoadingShow.show != None and $curLoadingShow.show in $sickbeard.showList:
-		#continue
-	#end if
+  #if $curLoadingShow.show != None and $curLoadingShow.show in $sickbeard.showList:
+    #continue
+  #end if
 
-		<tr>
-			<td align="center">(loading)</td>
-			<td>
-			#if $curLoadingShow.show == None:
-				Loading... ($curLoadingShow.show_name)
-			#else:
-				<a href="displayShow?show=$curLoadingShow.show.indexerid">$curLoadingShow.show.name</a>
-			#end if
-			</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-	#end for
+  <tr>
+    <td align="center">(loading)</td>
+    <td></td>
+    <td>
+    #if $curLoadingShow.show == None:
+    Loading... ($curLoadingShow.show_name)
+    #else:
+    <a href="displayShow?show=$curLoadingShow.show.indexerid">$curLoadingShow.show.name</a>
+    #end if
+    </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+#end for
 
-	#set $myShowList = $list($sickbeard.showList)
-	$myShowList.sort(lambda x, y: cmp(x.name, y.name))
-	#for $curShow in $myShowList:
+$myShowList.sort(lambda x, y: cmp(x.name, y.name))
+#for $curShow in $myShowList:
 
     #set $cur_airs_next = ''
     #set $cur_snatched = 0
@@ -480,7 +501,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
         #set $den = 1
     #end if
 
-    #set $progressbar_percent = $nom * 100 / $den
+	#set $progressbar_percent = $nom * 100 / $den
 
     <tr>
 	
@@ -575,4 +596,4 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 #end if
 #end for
 
-#include $os.path.join($sickbeard.PROG_DIR,"gui/slick/interfaces/default/inc_bottom.tmpl")
+#include $os.path.join($sickbeard.PROG_DIR,"gui/bootstrap/interfaces/default/inc_bottom.tmpl")
