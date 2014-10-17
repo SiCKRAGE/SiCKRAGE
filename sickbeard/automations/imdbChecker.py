@@ -187,7 +187,8 @@ class IMDB(ImdbBase):
                 else:
                     helpers.chmodAsParent(showPath)
 
-                sickbeard.showQueueScheduler.action.addShow(int(indexer), int(indexer_id), showPath, status,
+                sickbeard.showQueueScheduler.action.addShow(int(indexer), int(indexer_id), showPath,
+                                                            int(sickbeard.STATUS_DEFAULT),
                                                             int(sickbeard.QUALITY_DEFAULT),
                                                             int(sickbeard.FLATTEN_FOLDERS_DEFAULT),
                                                             paused=False, anime = False)
