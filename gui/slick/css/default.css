@@ -3544,42 +3544,42 @@ button.ui-button::-moz-focus-inner {
 	border-radius: 8px;
 }
 
-.sf-sub-indicator { background: url("/images/arrows.png") no-repeat -10px -100px; }
-.sf-shadow ul { background: url("/images/shadow.png") no-repeat bottom right; }
+.sf-sub-indicator { background: url("../images/arrows.png") no-repeat -10px -100px; }
+.sf-shadow ul { background: url("../images/shadow.png") no-repeat bottom right; }
 
-[class^="icon-"], [class*=" icon-"] { background-image: url("/images/glyphicons-halflings.png"); }
-a:hover > i.icon-question-sign, .icon-white { background-image: url("/images/glyphicons-halflings-white.png"); }
-a > i.icon-question-sign { background-image: url("/images/glyphicons-halflings.png"); }
+[class^="icon-"], [class*=" icon-"] { background-image: url("../images/glyphicons-halflings.png"); }
+a:hover > i.icon-question-sign, .icon-white { background-image: url("../images/glyphicons-halflings-white.png"); }
+a > i.icon-question-sign { background-image: url("../images/glyphicons-halflings.png"); }
 
-.dropdown-menu li > a:hover > [class^="icon-"], .dropdown-menu li > a:hover > [class*=" icon-"] { background-image: url("/images/glyphicons-halflings-white.png"); }
-[class^="icon16-"], [class*=" icon16-"] { background-image: url("/images/glyphicons-config.png"); }
+.dropdown-menu li > a:hover > [class^="icon-"], .dropdown-menu li > a:hover > [class*=" icon-"] { background-image: url("../images/glyphicons-halflings-white.png"); }
+[class^="icon16-"], [class*=" icon16-"] { background-image: url("../images/glyphicons-config.png"); }
 
-.ui-autocomplete-loading { background: white url("/images/loading16.gif") right center no-repeat; }
-.browserDialog.busy .ui-dialog-buttonpane { background: url("/images/loading.gif") 10px 50% no-repeat !important; }
-.ui-progressbar .ui-progressbar-overlay { background: url("/css/lib/images/animated-overlay.gif"); }
+.ui-autocomplete-loading { background: white url("../images/loading16.gif") right center no-repeat; }
+.browserDialog.busy .ui-dialog-buttonpane { background: url("../images/loading.gif") 10px 50% no-repeat !important; }
+.ui-progressbar .ui-progressbar-overlay { background: url("../css/lib/images/animated-overlay.gif"); }
 .ui-dialog, .ui-dialog-buttonpane { background: #2a2a2a  50% 50% repeat !important; }
 .ui-dialog-titlebar { background: #3d3d3d; }
 .ui-accordion-content, .ui-tabs-panel { background: #484848 !important; background-image: none !important; }
 
-.ui-widget-content { background: #606060 url("/css/lib/images/ui-bg_flat_0_606060_40x100.png") 50% top repeat-x; }
-.ui-widget-header { background: #606060 url("/css/lib/images/ui-bg_flat_0_606060_40x100.png") 50% 50% repeat-x; }
+.ui-widget-content { background: #606060 url("../css/lib/images/ui-bg_flat_0_606060_40x100.png") 50% top repeat-x; }
+.ui-widget-header { background: #606060 url("../css/lib/images/ui-bg_flat_0_606060_40x100.png") 50% 50% repeat-x; }
 
-.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { background: #dddddd url("/css/lib/images/ui-bg_highlight-soft_75_dddddd_1x100.png") 50% 50% repeat-x; }
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { background: #dddddd url("../css/lib/images/ui-bg_highlight-soft_75_dddddd_1x100.png") 50% 50% repeat-x; }
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active { background: #3d3d3d;  color: #FFFFFF !important; }
 
-.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight { background: #fbf9ee url("/css/lib/images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x; }
-.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error { background: #fef1ec url("/css/lib/images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x; }
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight { background: #fbf9ee url("../css/lib/images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x; }
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error { background: #fef1ec url("../css/lib/images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x; }
 
-.ui-icon, .ui-widget-content .ui-icon { background-image: url("/css/lib/images/ui-icons_ffffff_256x240.png"); }
-.ui-widget-header .ui-icon { background-image: url("/css/lib/images/ui-icons_ffffff_256x240.png"); }
-.ui-state-default .ui-icon { background-image: url("/css/lib/images/ui-icons_09a2ff_256x240.png"); }
-.ui-state-hover .ui-icon, .ui-state-focus .ui-icon { background-image: url("/css/lib/images/ui-icons_ffffff_256x240.png"); }
-.ui-state-active .ui-icon { background-image: url("/css/lib/images/ui-icons_8c291d_256x240.png"); }
-.ui-state-highlight .ui-icon { background-image: url("/css/lib/images/ui-icons_2e83ff_256x240.png"); }
-.ui-state-error .ui-icon, .ui-state-error-text .ui-icon { background-image: url("/css/lib/images/ui-icons_cd0a0a_256x240.png"); }
+.ui-icon, .ui-widget-content .ui-icon { background-image: url("../css/lib/images/ui-icons_ffffff_256x240.png"); }
+.ui-widget-header .ui-icon { background-image: url("../css/lib/images/ui-icons_ffffff_256x240.png"); }
+.ui-state-default .ui-icon { background-image: url("../css/lib/images/ui-icons_09a2ff_256x240.png"); }
+.ui-state-hover .ui-icon, .ui-state-focus .ui-icon { background-image: url("../css/lib/images/ui-icons_ffffff_256x240.png"); }
+.ui-state-active .ui-icon { background-image: url("../css/lib/images/ui-icons_8c291d_256x240.png"); }
+.ui-state-highlight .ui-icon { background-image: url("../css/lib/images/ui-icons_2e83ff_256x240.png"); }
+.ui-state-error .ui-icon, .ui-state-error-text .ui-icon { background-image: url("../css/lib/images/ui-icons_cd0a0a_256x240.png"); }
 
-.ui-widget-overlay { background: #000000 url("/css/lib/images/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x; }
-.ui-widget-shadow { background: #000000 url("/css/lib/images/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x; }
+.ui-widget-overlay { background: #000000 url("../css/lib/images/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x; }
+.ui-widget-shadow { background: #000000 url("../css/lib/images/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x; }
 
 .ui-tabs {
     padding: 0px;
@@ -4195,7 +4195,7 @@ config.css
 }
 
 [class^="icon16-"], [class*=" icon16-"] {
-    background-image: url("/images/glyphicons-config.png");
+    background-image: url("../images/glyphicons-config.png");
     background-position: -40px 0;
     background-repeat: no-repeat;
     display: inline-block;
