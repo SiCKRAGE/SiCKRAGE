@@ -183,7 +183,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
                             logger.log(u"No results found for: " + search_string + " (" + searchURL + ")", logger.DEBUG)
                             continue
 
-                        torrent_table = html.find('table', attrs={'class': 'torrents'})
+                        torrent_table = html.find('table', class_="torrents")
                         torrents = torrent_table.find_all('tr') if torrent_table else []
 
                         #Continue only if one Release is found
