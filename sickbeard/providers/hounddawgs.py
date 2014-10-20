@@ -1,5 +1,5 @@
-# Author: seedboy
-# URL: https://github.com/seedboy
+# Author: Idan Gutman
+# URL: http://code.google.com/p/sickbeard/
 #
 # This file is part of SickRage.
 #
@@ -16,11 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import traceback
-import urllib2
-import urllib
-import time
 import re
+import traceback
 import datetime
 import urlparse
 import sickbeard
@@ -38,16 +35,16 @@ from sickbeard import clients
 from lib import requests
 from lib.requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
+from lib.unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
 
 
-class NextGenProvider(generic.TorrentProvider):
+class HoundDawgsProvider(generic.TorrentProvider):
     urls = {'base_url': 'http://192.99.10.104/',
             'search': 'http://192.99.10.104/torrents.php?type=&userid=&searchstr=%s&searchimdb=&searchtags=&order_by=s3&order_way=desc&%s',
-            'login_page': 'http://192.99.10.104/login.php',
+            'login': 'http://192.99.10.104/login.php',
             'detail': 'https://nxtgn.org/details.php?id=%s',
             'download': 'https://nxtgn.org/download.php?id=%s',
-            'takelogin': 'https://nxtgn.org/takelogin.php?csrf=',
     }
 
     def __init__(self):
@@ -60,37 +57,49 @@ class NextGenProvider(generic.TorrentProvider):
         self.username = None
         self.password = None
         self.ratio = None
+        self.minseed = None
+        self.minleech = None
 
         self.cache = HoundDawgsCache(self)
 
         self.url = self.urls['base_url']
 
-        self.categories = '&filter_cat[58]=1&filter_cat[57]=1&filter_cat[74]=1'
-
-        self.last_login_check = None
-
-        self.login_opener = None
+        self.categories = "&filter_cat[85]=1&filter_cat[58]=1&filter_cat[57]=1&filter_cat[74]=1"
 
     def isEnabled(self):
         return self.enabled
 
     def imageName(self):
-        return 'nextgen.png'
+        return 'hounddawgs.png'
 
     def getQuality(self, item, anime=False):
 
         quality = Quality.sceneQuality(item[0], anime)
         return quality
 
-    def getLoginParams(self):
-        return {
-            'username': self.conf('username'),
-            'password': self.conf('password'),
-            'login': 'Login',
+    def _doLogin(self):
+
+        login_params = {'username': self.username,
+                        'password': self.password,
+                        'keeplogged': 'on',
+                        'login': 'Login',
         }
 
-    def loginSuccess(self, output):
-        return '/logout.php' in output.lower()
+        self.session = requests.Session()
+
+        try:
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30, verify=False)
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
+            logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
+            return False
+
+        if re.search('Dit brugernavn eller kodeord er forkert.', response.text) \
+                or re.search('<title>Login :: HoundDawgs</title>', response.text) \
+                or response.status_code == 401:
+            logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
+            return False
+
+        return True
 
     def _get_season_search_strings(self, ep_obj):
 
@@ -149,73 +158,86 @@ class NextGenProvider(generic.TorrentProvider):
             return []
 
         for mode in search_params.keys():
-
             for search_string in search_params[mode]:
 
+                if isinstance(search_string, unicode):
+                    search_string = unidecode(search_string)
+
+                #if mode == 'RSS':
+                    #searchURL = self.urls['index'] % self.categories
+                #else:
                 searchURL = self.urls['search'] % (search_string, self.categories)
-                logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)
+
+                logger.log(u"Search string: " + searchURL, logger.DEBUG)
 
                 data = self.getURL(searchURL)
-                if not data:
+                strTableStart = "<table class=\"torrent_table"
+                startTableIndex=data.find(strTableStart)
+                trimmedData = data[startTableIndex:]
+                if not trimmedData:
                     continue
 
                 try:
-                    with BS4Parser(data.decode('iso-8859-1'), features=["html5lib", "permissive"]) as html:
-                        resultsTable = html.find('div', attrs={'id': 'torrent-table-wrapper'})
-
-                        if not resultsTable:
+                    with BS4Parser(trimmedData, features=["html5lib", "permissive"]) as html:
+                        result_table = html.find('table', {'id': 'torrent_table'})
+        
+                        if not result_table:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
                                        logger.DEBUG)
                             continue
+                        
+                        result_tbody = result_table.find('tbody')
+                        entries = result_tbody.contents
+                        del entries[1::2]   
 
-                        # Collecting entries
-                        entries_std = html.find_all('div', attrs={'id': 'torrent-std'})
-                        entries_sticky = html.find_all('div', attrs={'id': 'torrent-sticky'})
+                        for result in entries[1:]:
+                            
+                            torrent = result.find_all('td')
+                            if len(torrent) <= 1:
+                                break
+                            
+                            allAs = (torrent[1]).find_all('a')
 
-                        entries = entries_std + entries_sticky
+                            try:
+                                link = self.urls['base_url'] + allAs[2].attrs['href']
+                                #url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
+                                title = allAs[2].string
+                                #Trimming title so accepted by scene check(Feature has been rewuestet i forum)
+                                title = title.replace("custom.", "")
+                                title = title.replace("CUSTOM.", "")
+                                title = title.replace("Custom.", "")
+                                title = title.replace("dk", "")
+                                title = title.replace("DK", "")
+                                title = title.replace("Dk", "")
+                                title = title.replace("subs.", "")
+                                title = title.replace("SUBS.", "")
+                                title = title.replace("Subs.", "")
+                                
+                                download_url = self.urls['base_url']+allAs[0].attrs['href']
+                                id = link.replace(self.urls['base_url']+'torrents.php?id=','')
+                                seeders = int(torrent[7].string)
+                                leechers = int(torrent[8].string)
+                                
+                            except (AttributeError, TypeError):
+                                continue
 
-                        #Xirg STANDARD TORRENTS
-                        #Continue only if one Release is found
-                        if len(entries) > 0:
+                            #Filter unseeded torrent
+                            if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
+                                continue
 
-                            for result in entries:
+                            if not title or not download_url:
+                                continue
 
-                                try:
-                                    torrentName = \
-                                    ((result.find('div', attrs={'id': 'torrent-udgivelse2-users'})).find('a'))['title']
-                                    torrentId = (
-                                    ((result.find('div', attrs={'id': 'torrent-download'})).find('a'))['href']).replace(
-                                        'download.php?id=', '')
-                                    torrent_name = str(torrentName)
-                                    torrent_download_url = (self.urls['download'] % torrentId).encode('utf8')
-                                    torrent_details_url = (self.urls['detail'] % torrentId).encode('utf8')
-                                    #torrent_seeders = int(result.find('div', attrs = {'id' : 'torrent-seeders'}).find('a')['class'][0])
-                                    ## Not used, perhaps in the future ##
-                                    #torrent_id = int(torrent['href'].replace('/details.php?id=', ''))
-                                    #torrent_leechers = int(result.find('td', attrs = {'class' : 'ac t_leechers'}).string)
-                                except (AttributeError, TypeError):
-                                    continue
+                            item = title, download_url, id, seeders, leechers
+                            logger.log(u"Found result: " + title + "(" + download_url + ")", logger.DEBUG)
 
-                                # Filter unseeded torrent and torrents with no name/url
-                                #if mode != 'RSS' and torrent_seeders == 0:
-                                #    continue
-
-                                if not torrent_name or not torrent_download_url:
-                                    continue
-
-                                item = torrent_name, torrent_download_url
-                                logger.log(u"Found result: " + torrent_name + " (" + torrent_details_url + ")",
-                                           logger.DEBUG)
-                                items[mode].append(item)
-
-                        else:
-                            logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
-                                       logger.WARNING)
-                            continue
+                            items[mode].append(item)
 
                 except Exception, e:
-                    logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),
-                               logger.ERROR)
+                    logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
+
+            #For each search mode sort all the items by seeders
+            items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
 
@@ -223,7 +245,7 @@ class NextGenProvider(generic.TorrentProvider):
 
     def _get_title_and_url(self, item):
 
-        title, url = item
+        title, url, id, seeders, leechers = item
 
         if title:
             title = u'' + title
@@ -232,7 +254,7 @@ class NextGenProvider(generic.TorrentProvider):
         if url:
             url = str(url).replace('&amp;', '&')
 
-        return title, url
+        return (title, url)
 
     def findPropers(self, search_date=datetime.datetime.today()):
 
@@ -254,6 +276,7 @@ class NextGenProvider(generic.TorrentProvider):
             self.show = helpers.findCertainShow(sickbeard.showList, int(sqlshow["showid"]))
             if self.show:
                 curEp = self.show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
+
                 searchString = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
 
                 for item in self._doSearch(searchString[0]):
@@ -271,12 +294,12 @@ class HoundDawgsCache(tvcache.TVCache):
 
         tvcache.TVCache.__init__(self, provider)
 
-        # Only poll NextGen every 10 minutes max
-        self.minTime = 10
+        # only poll TorrentLeech every 20 minutes max
+        self.minTime = 20
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
         return self.provider._doSearch(search_params)
 
 
-provider = NextGenProvider()
+provider = HoundDawgsProvider()
