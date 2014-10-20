@@ -30,6 +30,7 @@ from sickbeard import tvcache
 from sickbeard import show_name_helpers
 from sickbeard.bs4_parser import BS4Parser
 from sickbeard import db
+from sickbeard import helpers
 
 class T411Provider(generic.TorrentProvider):
     urls = {'base_url': 'http://www.t411.me/',
