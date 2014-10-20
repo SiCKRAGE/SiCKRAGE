@@ -43,8 +43,6 @@ class HoundDawgsProvider(generic.TorrentProvider):
     urls = {'base_url': 'http://192.99.10.104/',
             'search': 'http://192.99.10.104/torrents.php?type=&userid=&searchstr=%s&searchimdb=&searchtags=&order_by=s3&order_way=desc&%s',
             'login': 'http://192.99.10.104/login.php',
-            'detail': 'https://nxtgn.org/details.php?id=%s',
-            'download': 'https://nxtgn.org/download.php?id=%s',
     }
 
     def __init__(self):
