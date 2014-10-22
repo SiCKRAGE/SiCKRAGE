@@ -1716,7 +1716,7 @@ class ConfigPostProcessing(MainHandler):
                            xbmc_data=None, xbmc_12plus_data=None, mediabrowser_data=None, sony_ps3_data=None,
                            wdtv_data=None, tivo_data=None, mede8er_data=None,
                            keep_processed_dir=None, process_method=None, process_automatically=None,
-                           rename_episodes=None, airdate_episodes=None, unpack=None,
+                           rename_episodes=None, airdate_episodes=None, unpack=None, unpackcleanup=None, #added by CJ 20141022
                            move_associated_files=None, postpone_if_sync_files=None, nfo_rename=None, tv_download_dir=None, naming_custom_abd=None,
                            naming_anime=None,
                            naming_abd_pattern=None, naming_strip_year=None, use_failed_downloads=None,
@@ -1743,10 +1743,20 @@ class ConfigPostProcessing(MainHandler):
                 sickbeard.UNPACK = config.checkbox_to_value(unpack)
             else:
                 sickbeard.UNPACK = 0
+                #ADDED by CJ 20141022
+                sickbeard.UNPACKCLEANUP = 0
                 results.append("Unpacking Not Supported, disabling unpack setting")
+                results.append("Unpacking is disabled, disabling unpackcleanup settings")
         else:
             sickbeard.UNPACK = config.checkbox_to_value(unpack)
 
+			#added by CJ 20141022
+        if sickbeard.UNPACK == 0:
+            sickbeard.UNPACKCLEANUP = 0
+        else: 
+            sickbeard.UNPACKCLEANUP = config.checkbox_to_value(unpackcleanup)
+		    
+		
         sickbeard.KEEP_PROCESSED_DIR = config.checkbox_to_value(keep_processed_dir)
         sickbeard.PROCESS_METHOD = process_method
         sickbeard.EXTRA_SCRIPTS = [x.strip() for x in extra_scripts.split('|') if x.strip()]
