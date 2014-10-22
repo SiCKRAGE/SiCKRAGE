@@ -191,7 +191,19 @@
                                 <span class="component-desc"><b>NOTE:</b> Only working with RAR archive</span>
                             </label>
                         </div>
-                    
+           
+                        <div class="field-pair">
+                            <input id="unpackcleanup" type="checkbox" name="unpackcleanup" #if $sickbeard.UNPACKCLEANUP == True then "checked=\"checked\"" else ""# />
+                            <label class="clearfix" for="unpackcleanup">
+                                <span class="component-title">Unpackcleanup</span>
+                                <span class="component-desc">Delete left over extracted files from unpacking in your <i>TV Download Dir</i>?</span>
+                            </label>
+                            <label class="nocheck clearfix" for="unpackcleanup">
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc"><b>NOTE:</b> unpack[above] must be enabled!.</span>
+                            </label>
+                        </div>
+
                         <div class="field-pair">
                             <input id="use_failed_downloads" type="checkbox" class="enabler" name="use_failed_downloads" #if $sickbeard.USE_FAILED_DOWNLOADS == True then "checked=\"checked\"" else ""# />
                             <label class="clearfix" for="use_failed_downloads">
