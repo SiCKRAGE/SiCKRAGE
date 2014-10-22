@@ -111,7 +111,9 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     type: Type of postprocessing auto or manual
     """
 
-    global process_result, returnStr
+    global process_result, returnStr, unPACK_CleanUP
+
+    unPACK_CleanUP = []
 
     returnStr = ''
 
@@ -222,10 +224,51 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                     if delete_folder(processPath, check_empty=False):
                         returnStr += logHelper(u"Deleted folder: " + processPath, logger.DEBUG)
 
+	#added by CJ 20141021 
+    if (process_method == "copy"):
+      if (sickbeard.UNPACK):
+        if(sickbeard.UNPACKCLEANUP):
+            returnStr += logHelper(u"Starting with cleanup of unwanted remaining files from unpacking: %s " % unPACK_CleanUP, logger.DEBUG)
+            for file_to_be_cleaned in unPACK_CleanUP:
+               deleteunPackedFiles(file_to_be_cleaned)
+        else:
+            returnStr += logHelper(u"Skipping clean-up of unwanted files from unpacking. UNPACKCLEANUP = %s " % sickbeard.UNPACKCLEANUP,logger.DEBUG)
+      else:
+		returnStr += logHelper(u"Skipping clean-up of unwanted files from unpacking. UNPACK = %s " % sickbeard.UNPACK,logger.DEBUG)
+    else:
+      returnStr += logHelper(u"Skipping clean-up of unwanted files from unpacking. PROCESS_METHOD = " + str(process_method),logger.DEBUG)
+      #end
+					 
     if process_result:
         returnStr += logHelper(u"Successfully processed")
     else:
         returnStr += logHelper(u"Problem(s) during processing", logger.WARNING)
+
+    return returnStr
+
+#start
+#Added by CJ 20141021
+#Clean up files function [slight change from delete_files]
+def deleteunPackedFiles(unpackedfilename):
+    global returnStr
+#to be added at a later stage: additional config in GUI and allow users to opt out
+    returnStr += logHelper(u"Checking if unpacked file %s " % unpackedfilename + "exists: %s " % os.path.isfile(unpackedfilename),logger.DEBUG)
+    if os.path.isfile(unpackedfilename):#if file exists... try to delete
+            returnStr += logHelper(u"Deleting unpacked file: %s " % unpackedfilename)
+            try:
+                ek.ek(os.remove, unpackedfilename)
+                returnStr += logHelper(u"File exists at source post deletion?: %s " % os.path.isfile(unpackedfilename),logger.DEBUG)
+                if os.path.isfile(unpackedfilename):
+                                 returnStr += logHelper(u"File %s " % unpackedfilename + "had not been deleted!",logger.WARNING)
+                else:
+                                 returnStr += logHelper(u"File %s " % unpackedfilename + "had been successfully deleted.")
+
+            except OSError, e:
+                returnStr += logHelper(u"Unable to delete file " + unpackedfilename + ': ' + str(e.strerror), logger.WARNING)
+                pass
+
+    else:
+            returnStr += logHelper(u"Skipping deletion of file: %s " % unpackedfilename + "as it does not appear to exist..")
 
     return returnStr
 
@@ -307,7 +350,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed):
     return False
 
 def unRAR(path, rarFiles, force):
-    global process_result, returnStr
+    global process_result, returnStr, unPACK_CleanUP
 
     unpacked_files = []
 
@@ -344,6 +387,10 @@ def unRAR(path, rarFiles, force):
                 continue
 
         returnStr += logHelper(u"UnRar content: " + str(unpacked_files), logger.DEBUG)
+#added by CJ 20141021
+        for unrarcontentCLEANUP in unpacked_files:
+            unPACK_CleanUP += [str(path) + "/" + str(unrarcontentCLEANUP)]
+#END
 
     return unpacked_files
 
