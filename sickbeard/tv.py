@@ -2032,7 +2032,7 @@ class TVEpisode(object):
                 "subtitles_searchcount, subtitles_lastsearch, airdate, hasnfo, hastbn, status, location, file_size, "
                 "release_name, is_proper, showid, season, episode, absolute_number, version, release_group, delete_media) VALUES "
                 "((SELECT episode_id FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?)"
-                ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
                 [self.show.indexerid, self.season, self.episode, self.indexerid, self.indexer, self.name,
                  self.description,
                  ",".join([sub for sub in self.subtitles]), self.subtitles_searchcount, self.subtitles_lastsearch,
