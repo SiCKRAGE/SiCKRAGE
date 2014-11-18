@@ -2847,7 +2847,7 @@ class NewHomeAddShows(MainHandler):
 
                 indexer_id = show_name = indexer = None
                 for cur_provider in sickbeard.metadata_provider_dict.values():
-                    if not (indexer_id and show_name and indexer):
+                    if not (indexer_id and show_name):
                         (indexer_id, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
 
                         # default to TVDB if indexer was not detected
