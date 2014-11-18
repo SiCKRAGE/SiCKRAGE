@@ -2892,7 +2892,7 @@ class NewHomeAddShows(MainHandler):
         if not show_dir:
             t.default_show_name = ''
         elif not show_name:
-            t.default_show_name = ek.ek(os.path.basename, ek.ek(os.path.normpath, show_dir)).replace('.', ' ')
+            t.default_show_name = re.sub(' \(\d{4}\)','', ek.ek(os.path.basename, ek.ek(os.path.normpath, show_dir)).replace('.', ' '))
         else:
             t.default_show_name = show_name
 
