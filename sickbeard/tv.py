@@ -1319,6 +1319,7 @@ class TVEpisode(object):
         self._is_proper = False
         self._version = 0
         self._release_group = ''
+        self._delete_media = ''
 
         # setting any of the above sets the dirty flag
         self.dirty = True
@@ -1363,6 +1364,7 @@ class TVEpisode(object):
     is_proper = property(lambda self: self._is_proper, dirty_setter("_is_proper"))
     version = property(lambda self: self._version, dirty_setter("_version"))
     release_group = property(lambda self: self._release_group, dirty_setter("_release_group"))
+    delete_media = property(lambda self: self._delete_media, dirty_setter("_delete_media"))
 
     def _set_location(self, new_location):
         logger.log(u"Setter sets location to " + new_location, logger.DEBUG)
@@ -1502,6 +1504,76 @@ class TVEpisode(object):
                         raise exceptions.EpisodeNotFoundException(
                             "Couldn't find episode " + str(season) + "x" + str(episode))
 
+    def list_associated_files(self, file_path, base_name_only=True):
+
+        file_path_list = []
+        base_name = file_path.rpartition('.')[0]
+
+        if not base_name_only:
+            base_name = base_name + '.'
+
+        # don't strip it all and use cwd by accident
+        if not base_name:
+            return []
+
+        # don't confuse glob with chars we didn't mean to use
+        base_name = re.sub(r'[\[\]\*\?]', r'[\g<0>]', base_name)
+        for associated_file_path in ek.ek(glob.glob, base_name + '*'):
+		   # only add associated to list
+            if associated_file_path == file_path:
+                continue
+            if ek.ek(os.path.isfile, associated_file_path):
+                file_path_list.append(associated_file_path)
+        return file_path_list
+
+    def deleteMedia(self):
+
+        file_path = self.location
+        file_list = [file_path]
+        file_list = file_list + self.list_associated_files(file_path)
+
+        action = ('delete', 'trash')[sickbeard.TRASH_REMOVE_MEDIA_FILES]
+
+        if not file_path:
+            logger.log(u"There were no files associated, not deleting anything", logger.DEBUG)
+            return
+
+        # delete media file	
+        for cur_file in file_list:
+            logger.log(u'Attempt to %s file %s' % (action, cur_file))
+            if ek.ek(os.path.isfile, cur_file):
+                try:
+                    ek.ek(os.chmod, cur_file, stat.S_IWRITE)
+                    if sickbeard.TRASH_REMOVE_MEDIA_FILES:
+                        send2trash(cur_file)
+                        logger.log(u'%s file %s' % (('Deleted', 'Trashed')[sickbeard.TRASH_REMOVE_MEDIA_FILES], cur_file))
+                    else:
+                        ek.ek(os.remove, cur_file)
+                        logger.log(u'%s file %s' % (('Deleted', 'Trashed')[sickbeard.TRASH_REMOVE_MEDIA_FILES], cur_file))
+                except Exception as e:
+                    logger.log(u'Unable to %s file: %s' % (('delete', 'trash')[sickbeard.TRASH_REMOVE_MEDIA_FILES], str(e)), logger.ERROR)
+                    return False
+
+        self.location = ""
+        self.subtitles = ""
+        self.release_name = ""
+        self.delete_media = ""
+        self.saveToDB()
+        myDB = db.DBConnection()
+        myDB.action("DELETE FROM history WHERE showid=? AND season=? AND episode=?", [self.show.indexerid, self.season, self.episode])
+        return True
+
+    def delaydeleteMedia(self):
+
+        file_path = self.location
+        if not file_path:
+            logger.log(u"There were no files associated, not deleting anything", logger.DEBUG)
+            return
+
+        self.delete_media = 'delete'
+        myDB = db.DBConnection()
+        myDB.action("INSERT INTO delete_media (showid, season, episode, location, status, action_time) VALUES (?,?,?,?,?,?)", [self.show.indexerid, self.season, self.episode, self.location, self.status, datetime.datetime.now()])
+
     def loadFromDB(self, season, episode):
         logger.log(
             str(self.show.indexerid) + u": Loading episode details from DB for episode " + str(season) + "x" + str(
@@ -1589,6 +1661,9 @@ class TVEpisode(object):
 
             if sqlResults[0]["release_group"] is not None:
                 self.release_group = sqlResults[0]["release_group"]
+
+            if sqlResults[0]["delete_media"] is not None:
+                self.delete_media = sqlResults[0]["delete_media"]
 
             self.dirty = False
             return True
@@ -1944,26 +2019,26 @@ class TVEpisode(object):
                 "UPDATE tv_episodes SET indexerid = ?, indexer = ?, name = ?, description = ?, subtitles = ?, "
                 "subtitles_searchcount = ?, subtitles_lastsearch = ?, airdate = ?, hasnfo = ?, hastbn = ?, status = ?, "
                 "location = ?, file_size = ?, release_name = ?, is_proper = ?, showid = ?, season = ?, episode = ?, "
-                "absolute_number = ?, version = ?, release_group = ? WHERE episode_id = ?",
+                "absolute_number = ?, version = ?, release_group = ?, delete_media = ? WHERE episode_id = ?",
                 [self.indexerid, self.indexer, self.name, self.description, ",".join([sub for sub in self.subtitles]),
                  self.subtitles_searchcount, self.subtitles_lastsearch, self.airdate.toordinal(), self.hasnfo,
                  self.hastbn,
                  self.status, self.location, self.file_size, self.release_name, self.is_proper, self.show.indexerid,
-                 self.season, self.episode, self.absolute_number, self.version, self.release_group, epID]]
+                 self.season, self.episode, self.absolute_number, self.version, self.release_group, self.delete_media, epID]]
         else:
             # use a custom insert method to get the data into the DB.
             return [
                 "INSERT OR IGNORE INTO tv_episodes (episode_id, indexerid, indexer, name, description, subtitles, "
                 "subtitles_searchcount, subtitles_lastsearch, airdate, hasnfo, hastbn, status, location, file_size, "
-                "release_name, is_proper, showid, season, episode, absolute_number, version, release_group) VALUES "
+                "release_name, is_proper, showid, season, episode, absolute_number, version, release_group, delete_media) VALUES "
                 "((SELECT episode_id FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?)"
-                ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
                 [self.show.indexerid, self.season, self.episode, self.indexerid, self.indexer, self.name,
                  self.description,
                  ",".join([sub for sub in self.subtitles]), self.subtitles_searchcount, self.subtitles_lastsearch,
                  self.airdate.toordinal(), self.hasnfo, self.hastbn, self.status, self.location, self.file_size,
                  self.release_name, self.is_proper, self.show.indexerid, self.season, self.episode,
-                 self.absolute_number, self.version, self.release_group]]
+                 self.absolute_number, self.version, self.release_group, self.delete_media]]
 
     def saveToDB(self, forceSave=False):
         """
@@ -1998,7 +2073,8 @@ class TVEpisode(object):
                         "is_proper": self.is_proper,
                         "absolute_number": self.absolute_number,
                         "version": self.version,
-                        "release_group": self.release_group
+                        "release_group": self.release_group,
+                        "delete_media": self.delete_media
         }
         controlValueDict = {"showid": self.show.indexerid,
                             "season": self.season,

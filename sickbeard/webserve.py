@@ -1751,15 +1751,15 @@ class ConfigPostProcessing(MainHandler):
     def savePostProcessing(self, naming_pattern=None, naming_multi_ep=None,
                            xbmc_data=None, xbmc_12plus_data=None, mediabrowser_data=None, sony_ps3_data=None,
                            wdtv_data=None, tivo_data=None, mede8er_data=None,
-                           keep_processed_dir=None, process_method=None, process_automatically=None,
-                           rename_episodes=None, airdate_episodes=None, unpack=None,
+                           keep_processed_dir=None, process_method=None, process_automatically=None, delete_files_status=None, delete_checker=None,
+                           rename_episodes=None, airdate_episodes=None, unpack=None, trash_remove_media_files=None,
                            move_associated_files=None, postpone_if_sync_files=None, nfo_rename=None, tv_download_dir=None, naming_custom_abd=None,
                            naming_anime=None,
                            naming_abd_pattern=None, naming_strip_year=None, use_failed_downloads=None,
                            delete_failed=None, extra_scripts=None, skip_removed_files=None,
                            naming_custom_sports=None, naming_sports_pattern=None,
                            naming_custom_anime=None, naming_anime_pattern=None, naming_anime_multi_ep=None,
-                           autopostprocesser_frequency=None):
+                           autopostprocesser_frequency=None, delete_checker_frequency=None):
 
         results = []
 
@@ -1793,8 +1793,18 @@ class ConfigPostProcessing(MainHandler):
         else:
             sickbeard.UNPACK = config.checkbox_to_value(unpack)
 
+        sickbeard.DELETE_CHECKER = config.checkbox_to_value(delete_checker)
+        sickbeard.DELETE_CHECKER_FREQUENCY = config.to_int(delete_checker_frequency, default=60)
+
+        if (sickbeard.DELETE_CHECKER == 1 and sickbeard.DELETE_CHECKER_FREQUENCY > 0):
+            sickbeard.deleteCheckerScheduler.silent = False
+        else:
+            sickbeard.deleteCheckerScheduler.silent = True
+
+        sickbeard.TRASH_REMOVE_MEDIA_FILES = config.checkbox_to_value(trash_remove_media_files)
         sickbeard.KEEP_PROCESSED_DIR = config.checkbox_to_value(keep_processed_dir)
         sickbeard.PROCESS_METHOD = process_method
+        sickbeard.DELETE_FILES_STATUS = delete_files_status
         sickbeard.EXTRA_SCRIPTS = [x.strip() for x in extra_scripts.split('|') if x.strip()]
         sickbeard.RENAME_EPISODES = config.checkbox_to_value(rename_episodes)
         sickbeard.AIRDATE_EPISODES = config.checkbox_to_value(airdate_episodes)
@@ -4229,6 +4239,19 @@ class Home(MainHandler):
                         segments[epObj.season].append(epObj)
                     else:
                         segments[epObj.season] = [epObj]
+
+                if sickbeard.DELETE_CHECKER:
+                    if int(status) == ARCHIVED and sickbeard.DELETE_FILES_STATUS == 'ARCHIVED' or int(status) == IGNORED and sickbeard.DELETE_FILES_STATUS == 'IGNORED':
+
+                        # delete media files without delay
+                        if sickbeard.DELETE_CHECKER_FREQUENCY == 0:
+                            if epObj.deleteMedia() == False:
+                                continue
+
+                        # delete media files with delay of xx minutes
+                        if sickbeard.DELETE_CHECKER_FREQUENCY > 0:
+                            if epObj.delaydeleteMedia() == False:
+                                continue
 
                 with epObj.lock:
                     # don't let them mess up UNAIRED episodes

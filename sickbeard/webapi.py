@@ -1005,6 +1005,19 @@ class CMD_EpisodeSetStatus(ApiCall):
                     failure = True
                     continue
 
+                if sickbeard.DELETE_CHECKER:
+                    if int(status) == ARCHIVED and sickbeard.DELETE_FILES_STATUS == 'ARCHIVED' or int(status) == IGNORED and sickbeard.DELETE_FILES_STATUS == 'IGNORED':
+
+                        # delete media files without delay
+                        if sickbeard.DELETE_CHECKER_FREQUENCY == 0:
+                            if epObj.deleteMedia() == False:
+                                continue
+
+                        # delete media files with delay of xx minutes
+                        if sickbeard.DELETE_CHECKER_FREQUENCY > 0:
+                            if epObj.delaydeleteMedia() == False:
+                                continue
+
                 epObj.status = self.status
                 sql_l.append(epObj.get_sql())
 
