@@ -1577,6 +1577,102 @@ class CMD_SickBeardRestart(ApiCall):
         return _responds(RESULT_SUCCESS, msg="SickRage is restarting...")
 
 
+class CMD_SickBeardSearchAllIndexers(ApiCall):
+    _help = {"desc": "search for show on the indexers with a given string and language",
+             "optionalParameters": {"name": {"desc": "name of the show you want to search for"},
+                                    "indexerid": {"desc": "thetvdb.com or tvrage.com unique id of a show"},
+                                    "lang": {"desc": "the 2 letter abbreviation lang id"},
+                                    "tvdbid": {"desc": "the tvdbid"},
+                                    "tvrageid": {"desc": "the tvrageid"},
+                                    "indexer": {"desc": "0=both, 1=tvdb, 2=tvrage"}
+            }
+    }
+
+    valid_languages = {
+        'el': 20, 'en': 7, 'zh': 27, 'it': 15, 'cs': 28, 'es': 16, 'ru': 22,
+        'nl': 13, 'pt': 26, 'no': 9, 'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31,
+        'de': 14, 'da': 10, 'fi': 11, 'hu': 19, 'ja': 25, 'he': 24, 'ko': 32,
+        'sv': 8, 'sl': 30}
+
+    def __init__(self, handler, args, kwargs):
+        for key, value in kwargs.iteritems():
+            if key == "tvdbid":
+                _INDEXER_INT = 1
+                self.id = int(value)
+                _INDEXER = "tvdbid"
+                break
+            elif key == "tvrageid":
+                self.id = int(value)
+                _INDEXER_INT = 2
+                _INDEXER = "tvrageid"
+                break
+        else:
+            self.id = 0
+            _INDEXER_INT = 0
+            _INDEXER = None
+
+        # required
+        # optional
+        self.name, args = self.check_params(args, kwargs, "name", None, False, "string", [])
+        self.lang, args = self.check_params(args, kwargs, "lang", "en", False, "string", self.valid_languages.keys())
+        self.indexerid, args = self.check_params(args, kwargs, "indexerid", self.id, False, "int", [])
+        self.indexer, args = self.check_params(args, kwargs, "indexer", _INDEXER_INT, False, "int", [0, 1, 2])
+
+        # super, missing, help
+        ApiCall.__init__(self, handler, args, kwargs)
+
+    def run(self):
+        """ Search all indexers for a tvshow"""
+        result_list = []
+
+        if not self.lang or self.lang == 'null':
+            self.lang = "en"
+        lang_id = sickbeard.indexerApi().config['langabbv_to_id'][self.lang]
+
+        # Search a tvdb/tvrage for a tvdbid/tvrageid
+        if self.indexerid > 0 and self.indexer > 0:
+            for self.indexer in sickbeard.indexerApi().indexers if not int(self.indexer) else [int(self.indexer)]:
+                zINDEXER_API_PARMS = sickbeard.indexerApi(self.indexer).api_params.copy()
+                zINDEXER_API_PARMS['language'] = self.lang
+                zINDEXER_API_PARMS['custom_ui'] = classes.AllShowsListUI
+                try:
+                    t = sickbeard.indexerApi(self.indexer).indexer(**zINDEXER_API_PARMS)
+                    dd = {}
+                    zz = t[self.indexerid]
+                    zz.data["url"] = sickbeard.indexerApi(self.indexer).config["show_url"]
+                    zz.data["indexername"] = sickbeard.indexerApi(self.indexer).name.lower()
+                    dd[sickbeard.indexerApi(self.indexer).name.lower()] = [zz.data]
+                    result_list.append(dd)
+                except Exception as e:
+                    continue
+
+            if len(result_list):
+                return _responds(RESULT_SUCCESS, data={'results': result_list, 'langid': lang_id})
+            else:
+                return _responds(RESULT_FAILURE, msg="Did not get result from indexers")
+
+        if self.name:
+            search_term = self.name.encode('utf-8')
+            for self.indexer in sickbeard.indexerApi().indexers if not int(self.indexer) else [int(self.indexer)]:
+                lINDEXER_API_PARMS = sickbeard.indexerApi(self.indexer).api_params.copy()
+                lINDEXER_API_PARMS['language'] = self.lang
+                lINDEXER_API_PARMS['custom_ui'] = classes.AllShowsListUI
+                t = sickbeard.indexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+                logger.log("Searching for Show with searchterm: %s on Indexer: %s" %  (
+                search_term, sickbeard.indexerApi(self.indexer).name), logger.DEBUG)
+                try:
+                    results = {}
+                    results.setdefault(sickbeard.indexerApi(self.indexer).name.lower(), []).extend(t[search_term])
+                    result_list.append(results)
+                except Exception, e:
+                    continue
+
+        if not len(result_list):
+            return _responds(RESULT_FAILURE, msg="Did not get result from indexers")
+
+        return _responds(RESULT_SUCCESS, data={'results': result_list, 'langid': lang_id})
+
+
 class CMD_SickBeardSearchIndexers(ApiCall):
     _help = {"desc": "search for show on the indexers with a given string and language",
              "optionalParameters": {"name": {"desc": "name of the show you want to search for"},
@@ -2662,6 +2758,7 @@ _functionMaper = {"help": CMD_Help,
                   "sb.ping": CMD_SickBeardPing,
                   "sb.restart": CMD_SickBeardRestart,
                   "sb.searchtvdb": CMD_SickBeardSearchIndexers,
+                  "sb.searchindexer": CMD_SickBeardSearchAllIndexers,
                   "sb.setdefaults": CMD_SickBeardSetDefaults,
                   "sb.shutdown": CMD_SickBeardShutdown,
                   "show": CMD_Show,
