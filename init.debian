@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 ### BEGIN INIT INFO
 # Provides:          sickbeard
@@ -11,6 +11,8 @@
 # Short-Description: starts instance of SickBeard
 # Description:       starts instance of SickBeard using start-stop-daemon
 ### END INIT INFO
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games:/opt/vc/bin
 
 # Load the VERBOSE setting and other rcS variables
 . /lib/init/vars.sh
