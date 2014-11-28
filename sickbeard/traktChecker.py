@@ -54,7 +54,7 @@ class TraktChecker():
         library = TraktCall("user/library/shows/all.json/%API%/" + sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_API, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD)
 
         if not library:
-            logger.log(u"Could not connect to trakt service, aborting library check", logger.ERROR)
+            logger.log(u"Could not connect to trakt service, aborting library check")
             return
 
         if not len(library):
@@ -107,7 +107,7 @@ class TraktChecker():
         watchlist = TraktCall("user/watchlist/shows.json/%API%/" + sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_API, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD)
 
         if not watchlist:
-            logger.log(u"Could not connect to trakt service, aborting watchlist update", logger.ERROR)
+            logger.log(u"Could not connect to trakt service, aborting watchlist update")
             return
 
         if not len(watchlist):
@@ -141,7 +141,7 @@ class TraktChecker():
         watchlist = TraktCall("user/watchlist/episodes.json/%API%/" + sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_API, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD)
 
         if not watchlist:
-            logger.log(u"Could not connect to trakt service, aborting watchlist update", logger.ERROR)
+            logger.log(u"Could not connect to trakt service, aborting watchlist update")
             return
 
         if not len(watchlist):
