@@ -25,7 +25,7 @@ Video File Manager for TV Shows, It watches for new episodes of your favorite sh
  - Sports shows are now able to be searched for..
 
 ## Screenshots
-[Desktop (Full-HD)](http://imgur.com/a/TdJ3r)
+[Desktop (Full-HD)](http://imgur.com/a/TdJ3r)<br>
 [Mobile](http://imgur.com/a/WPyG6)
 
 ## Dependencies
