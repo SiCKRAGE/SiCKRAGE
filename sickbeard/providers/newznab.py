@@ -296,7 +296,7 @@ class NewznabProvider(generic.NZBProvider):
 
         while (total >= offset) and (offset < 1000):
             search_url = self.url + 'api?' + urllib.urlencode(params)
-            logger.log(u"Search url: " + search_url, logger.DEBUG)
+            logger.log(u"Search url: " + search_url.replace(self.key,'[API-REMOVED]'), logger.DEBUG)
             data = self.cache.getRSSFeed(search_url)
 
             if not data or not self._checkAuthFromData(data):
