@@ -281,7 +281,7 @@ class NewznabProvider(generic.NZBProvider):
         if search_params:
             params.update(search_params)
 
-        if 'rid' not in search_params and 'q' not in search_params:
+        if 'rid' not in search_params or 'q' not in search_params:
             logger.log("Error no rid or search term given. Report to forums with a full debug log")
             return []
 
