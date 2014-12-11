@@ -297,16 +297,21 @@ class NewznabProvider(generic.NZBProvider):
             if not self._checkAuthFromData(data):
                 break
 
-            for item in data.entries or []:
+            # if the search was empty then data['entries'] will be empty as
+            # well
+            try:
+                for item in data['entries'] or []:
 
-                (title, url) = self._get_title_and_url(item)
+                    (title, url) = self._get_title_and_url(item)
 
-                if title and url:
-                    results.append(item)
-                else:
-                    logger.log(
-                        u"The data returned from the " + self.name + " is incomplete, this result is unusable",
-                        logger.DEBUG)
+                    if title and url:
+                        results.append(item)
+                    else:
+                        logger.log(
+                            u"The data returned from the " + self.name + " is incomplete, this result is unusable",
+                            logger.DEBUG)
+            except AttributeError:
+                break
 
             # get total and offset attribs
             try:
