@@ -283,7 +283,7 @@ class TVShow(object):
 
         # In some situations self.status = None.. need to figure out where that is!
         if not self.status:
-            self.status = ''
+            self.status = UNKNOWN
             logger.log("Status missing for showid: [%s] with status: [%s]" % 
                        (cur_indexerid, self.status), logger.DEBUG)
         
@@ -769,7 +769,7 @@ class TVShow(object):
 
             self.status = sqlResults[0]["status"]
             if not self.status:
-                self.status = ""
+                self.status = UNKNOWN
 
             self.airs = sqlResults[0]["airs"]
             if not self.airs:
@@ -891,7 +891,7 @@ class TVShow(object):
         if getattr(myEp, 'firstaired', None) is not None:
             self.startyear = int(str(myEp["firstaired"]).split('-')[0])
 
-        self.status = getattr(myEp, 'status', '')
+        self.status = getattr(myEp, 'status', UNKNOWN)
 
     def loadIMDbInfo(self, imdbapi=None):
 
@@ -1224,7 +1224,7 @@ class TVShow(object):
             logger.log(u"Unable to find a matching episode in database, ignoring found episode", logger.DEBUG)
             return False
 
-        epStatus = int(sqlResults[0]["status"])
+        epStatus = int(sqlResults[0]["status"] or -1)
         epStatus_text = statusStrings[epStatus]
 
         logger.log(u"Existing episode status: " + str(epStatus) + " (" + epStatus_text + ")", logger.DEBUG)
@@ -1541,7 +1541,7 @@ class TVEpisode(object):
             self.subtitles_lastsearch = sqlResults[0]["subtitles_lastsearch"]
             self.airdate = datetime.date.fromordinal(int(sqlResults[0]["airdate"]))
             # logger.log(u"1 Status changes from " + str(self.status) + " to " + str(sqlResults[0]["status"]), logger.DEBUG)
-            self.status = int(sqlResults[0]["status"])
+            self.status = int(sqlResults[0]["status"] or -1)
 
             # don't overwrite my location
             if sqlResults[0]["location"] and sqlResults[0]["location"]:

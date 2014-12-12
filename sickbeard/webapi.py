@@ -885,7 +885,7 @@ class CMD_Episode(ApiCall):
         episode['airdate'] = sbdatetime.sbdatetime.sbfdate(sbdatetime.sbdatetime.convert_to_setting(
             network_timezones.parse_date_time(int(episode['airdate']), showObj.airs, showObj.network)),
                                                            d_preset=dateFormat)
-        status, quality = Quality.splitCompositeStatus(int(episode["status"]))
+        status, quality = Quality.splitCompositeStatus(int(episode["status"] or -1))
         episode["status"] = _get_status_Strings(status)
         episode["quality"] = _get_quality_string(quality)
         episode["file_size_human"] = _sizeof_fmt(episode["file_size"])
@@ -1309,7 +1309,7 @@ class CMD_Backlog(ApiCall):
 
             for curResult in sqlResults:
 
-                curEpCat = curShow.getOverview(int(curResult["status"]))
+                curEpCat = curShow.getOverview(int(curResult["status"] or -1))
                 if curEpCat and curEpCat in (Overview.WANTED, Overview.QUAL):
                     showEps.append(curResult)
             
@@ -2515,7 +2515,7 @@ class CMD_ShowSeasons(ApiCall):
                 [self.indexerid])
             seasons = {}
             for row in sqlResults:
-                status, quality = Quality.splitCompositeStatus(int(row["status"]))
+                status, quality = Quality.splitCompositeStatus(int(row["status"] or -1))
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = _get_quality_string(quality)
                 dtEpisodeAirs = sbdatetime.sbdatetime.convert_to_setting(
@@ -2539,7 +2539,7 @@ class CMD_ShowSeasons(ApiCall):
             for row in sqlResults:
                 curEpisode = int(row["episode"])
                 del row["episode"]
-                status, quality = Quality.splitCompositeStatus(int(row["status"]))
+                status, quality = Quality.splitCompositeStatus(int(row["status"] or -1))
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = _get_quality_string(quality)
                 dtEpisodeAirs = sbdatetime.sbdatetime.convert_to_setting(
@@ -2676,16 +2676,16 @@ class CMD_ShowStats(ApiCall):
                                  [self.indexerid])
         # the main loop that goes through all episodes
         for row in sqlResults:
-            status, quality = Quality.splitCompositeStatus(int(row["status"]))
+            status, quality = Quality.splitCompositeStatus(int(row["status"] or -1))
 
             episode_status_counts_total["total"] += 1
 
             if status in Quality.DOWNLOADED:
                 episode_qualities_counts_download["total"] += 1
-                episode_qualities_counts_download[int(row["status"])] += 1
+                episode_qualities_counts_download[int(row["status"] or -1)] += 1
             elif status in Quality.SNATCHED + Quality.SNATCHED_PROPER:
                 episode_qualities_counts_snatch["total"] += 1
-                episode_qualities_counts_snatch[int(row["status"])] += 1
+                episode_qualities_counts_snatch[int(row["status"] or -1)] += 1
             elif status == 0:  # we dont count NONE = 0 = N/A
                 pass
             else:

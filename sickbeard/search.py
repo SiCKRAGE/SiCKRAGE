@@ -339,7 +339,11 @@ def wantedEpisodes(show, fromDate):
     # check through the list of statuses to see if we want any
     wanted = []
     for result in sqlResults:
-        curCompositeStatus = int(result["status"])
+        status = result["status"]
+        if status == '':
+            logger.log(u"Invalid status for episode %s %sx%s"% (show.name, result["season"], result["episode"]), logger.WARNING)
+            status = -1 # UNKNOWN
+        curCompositeStatus = int(status)
         curStatus, curQuality = common.Quality.splitCompositeStatus(curCompositeStatus)
 
         if bestQualities:
