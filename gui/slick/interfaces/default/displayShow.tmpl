@@ -309,6 +309,12 @@
 #set $odd = 0
 
 	#for $epResult in $sqlResults:
+		#set $status = $epResult["status"]
+		#if $status == "":
+			#set $status = -1
+		#end if
+		#set $status = int($status)
+
 		#set $epStr = str($epResult["season"]) + "x" + str($epResult["episode"])
 		#if not $epStr in $epCats:
 			#continue
@@ -391,7 +397,7 @@
 		
 		<td class="col-checkbox">
 		
-		#if int($epResult["status"]) != $UNAIRED
+		#if $status != $UNAIRED
 			<input type="checkbox" class="epCheck" id="<%=str(epResult["season"])+'x'+str(epResult["episode"])%>" name="<%=str(epResult["season"]) +"x"+str(epResult["episode"]) %>" />
 		#end if
 		</td>
@@ -483,7 +489,7 @@
 			</td>
 		#end if
 		
-		#set $curStatus, $curQuality = $Quality.splitCompositeStatus(int($epResult["status"]))
+		#set $curStatus, $curQuality = $Quality.splitCompositeStatus($status)
 			#if $curQuality != Quality.NONE:   
 				<td class="col-status">$statusStrings[$curStatus] <span class="quality $Quality.qualityStrings[$curQuality].replace("720p","HD720p").replace("1080p","HD1080p").replace("RawHD TV", "RawHD").replace("HD TV", "HD720p")">$Quality.qualityStrings[$curQuality]</span></td>
 			#else:    
@@ -492,7 +498,7 @@
 		
 		<td class="col-search">
 			#if int($epResult["season"]) != 0:
-			#if ( int($epResult["status"]) in $Quality.SNATCHED or int($epResult["status"]) in $Quality.DOWNLOADED ) and $sickbeard.USE_FAILED_DOWNLOADS:
+			#if ( $status in $Quality.SNATCHED or $status in $Quality.DOWNLOADED ) and $sickbeard.USE_FAILED_DOWNLOADS:
 				<a class="epRetry" id="<%=str(epResult["season"])+'x'+str(epResult["episode"])%>" name="<%=str(epResult["season"]) +"x"+str(epResult["episode"]) %>" href="retryEpisode?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search16.png" height="16" alt="retry" title="Retry Download" /></a>
 			#else:
 				<a class="epSearch" id="<%=str(epResult["season"])+'x'+str(epResult["episode"])%>" name="<%=str(epResult["season"]) +"x"+str(epResult["episode"]) %>" href="searchEpisode?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search16.png" width="16" height="16" alt="search" title="Manual Search" /></a>

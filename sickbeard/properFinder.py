@@ -176,7 +176,7 @@ class ProperFinder():
                 continue
 
             # only keep the proper if we have already retrieved the same quality ep (don't get better/worse ones)
-            oldStatus, oldQuality = Quality.splitCompositeStatus(int(sqlResults[0]["status"]))
+            oldStatus, oldQuality = Quality.splitCompositeStatus(int(sqlResults[0]["status"] or -1))
             if oldStatus not in (DOWNLOADED, SNATCHED) or oldQuality != curProper.quality:
                 continue
 

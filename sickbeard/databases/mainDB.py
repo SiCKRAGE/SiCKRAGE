@@ -257,7 +257,7 @@ class AddSizeAndSceneNameFields(InitialSchema):
                 continue
 
             # get the status/quality of the existing ep and make sure it's what we expect
-            ep_status, ep_quality = common.Quality.splitCompositeStatus(int(ep_results[0]["status"]))
+            ep_status, ep_quality = common.Quality.splitCompositeStatus(int(ep_results[0]["status"] or -1))
             if ep_status != common.DOWNLOADED:
                 continue
 
