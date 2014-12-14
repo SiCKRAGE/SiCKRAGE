@@ -45,7 +45,7 @@ except:
 
 import os
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
 
 # We only need this for compiling an EXE and I will just always do that on 2.6+
 if sys.hexversion >= 0x020600F0:
@@ -343,7 +343,7 @@ class SickRage(object):
                        logger.ERROR)
             if sickbeard.LAUNCH_BROWSER and not self.runAsDaemon:
                 logger.log(u"Launching browser and exiting", logger.ERROR)
-                sickbeard.launchBrowser(self.startPort)
+                sickbeard.launchBrowser('https' if sickbeard.ENABLE_HTTPS else 'http', self.startPort, sickbeard.WEB_ROOT)
             os._exit(1)
 
         if self.consoleLogging:
@@ -368,7 +368,7 @@ class SickRage(object):
 
         # Launch browser
         if sickbeard.LAUNCH_BROWSER and not (self.noLaunch or self.runAsDaemon):
-            sickbeard.launchBrowser(self.startPort)
+            sickbeard.launchBrowser('https' if sickbeard.ENABLE_HTTPS else 'http', self.startPort, sickbeard.WEB_ROOT)
 
         # main loop
         while (True):

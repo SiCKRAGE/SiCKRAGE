@@ -26,6 +26,7 @@ import threading
 import logging
 
 import sickbeard
+import encodingKludge as ek
 
 from sickbeard import classes
 
@@ -33,7 +34,6 @@ try:
     from lib.send2trash import send2trash
 except ImportError:
     pass
-
 
 # number of log files to keep
 NUM_LOGS = 3
@@ -53,13 +53,24 @@ reverseNames = {u'ERROR': ERROR,
                 u'DEBUG': DEBUG,
                 u'DB': DB}
 
+censoredItems = {}
+
 # send logging to null
 class NullHandler(logging.Handler):
     def emit(self, record):
         pass
 
+class CensorFilter(logging.Filter):
+    def filter(self, record):
+        for k,v in censoredItems.items():
+            if v and len(v) > 0 and v in record.msg:
+                record.msg = record.msg.replace(v, len(v)*'*')
+        return True
+
 class SBRotatingLogHandler(object):
     def __init__(self, log_file, num_files, num_bytes):
+        self.blacklistFilter = CensorFilter()
+
         self.num_files = num_files
         self.num_bytes = num_bytes
 
@@ -115,6 +126,9 @@ class SBRotatingLogHandler(object):
                 # define a Handler which writes INFO messages or higher to the sys.stderr
                 console = logging.StreamHandler()
 
+                # filter blacklisted words and replace them with asterisks
+                console.addFilter(self.blacklistFilter)
+
                 console.setLevel(logging.INFO)
                 if sickbeard.DEBUG:
                     console.setLevel(logging.DEBUG)
@@ -141,8 +155,8 @@ class SBRotatingLogHandler(object):
                 logging.getLogger('feedcache').addHandler(console)
 
         self.log_file_path = os.path.join(sickbeard.LOG_DIR, self.log_file)
-
         self.cur_handler = self._config_handler()
+
         logging.getLogger('sickbeard').addHandler(self.cur_handler)
         logging.getLogger('tornado.access').addHandler(NullHandler())
         logging.getLogger('tornado.general').addHandler(self.cur_handler)
@@ -167,14 +181,6 @@ class SBRotatingLogHandler(object):
         # already logging in new log folder, close the old handler
         if old_handler:
             self.close_log(old_handler)
-            #            old_handler.flush()
-            #            old_handler.close()
-            #            sb_logger = logging.getLogger('sickbeard')
-            #            sub_logger = logging.getLogger('subliminal')
-            #            imdb_logger = logging.getLogger('imdbpy')
-            #            sb_logger.removeHandler(old_handler)
-            #            subli_logger.removeHandler(old_handler)
-            #            imdb_logger.removeHandler(old_handler)
 
     def _config_handler(self):
         """
@@ -182,6 +188,10 @@ class SBRotatingLogHandler(object):
         """
 
         file_handler = logging.FileHandler(self.log_file_path, encoding='utf-8')
+
+        # filter blacklisted words and replace them with asterisks
+        file_handler.addFilter(self.blacklistFilter)
+
         file_handler.setLevel(DB)
         file_handler.setFormatter(DispatchingFormatter(
             {'sickbeard': logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', '%Y-%m-%d %H:%M:%S'),
@@ -273,15 +283,21 @@ class SBRotatingLogHandler(object):
             meThread = threading.currentThread().getName()
             message = meThread + u" :: " + toLog
 
-            out_line = message
+            out_line = ek.ss(message)
 
             sb_logger = logging.getLogger('sickbeard')
-            setattr(sb_logger, 'db', lambda *args: sb_logger.log(DB, *args))
-
             sub_logger = logging.getLogger('subliminal')
             imdb_logger = logging.getLogger('imdbpy')
             tornado_logger = logging.getLogger('tornado')
             feedcache_logger = logging.getLogger('feedcache')
+            setattr(sb_logger, 'db', lambda *args: sb_logger.log(DB, *args))
+
+            # filtering
+            sb_logger.addFilter(self.blacklistFilter)
+            sub_logger.addFilter(self.blacklistFilter)
+            imdb_logger.addFilter(self.blacklistFilter)
+            tornado_logger.addFilter(self.blacklistFilter)
+            feedcache_logger.addFilter(self.blacklistFilter)
 
             try:
                 if logLevel == DEBUG:
@@ -292,6 +308,7 @@ class SBRotatingLogHandler(object):
                     sb_logger.warning(out_line)
                 elif logLevel == ERROR:
                     sb_logger.error(out_line)
+
                     # add errors to the UI logger
                     classes.ErrorViewer.add(classes.UIError(message))
                 elif logLevel == DB:
@@ -325,14 +342,11 @@ class DispatchingFormatter:
 
 sb_log_instance = SBRotatingLogHandler('sickbeard.log', NUM_LOGS, LOG_SIZE)
 
-
 def log(toLog, logLevel=MESSAGE):
     sb_log_instance.log(toLog, logLevel)
-
 
 def log_error_and_exit(error_msg):
     sb_log_instance.log_error_and_exit(error_msg)
 
-
 def close():
-    sb_log_instance.close_log()    
+    sb_log_instance.close_log()
