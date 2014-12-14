@@ -207,7 +207,7 @@
 		<tr class="$show_div">
 			## forced to use a div to wrap airdate, the column sort went crazy with a span
 			<td align="center" nowrap="nowrap">
-				<div class="${fuzzydate}">$sbdatetime.sbdatetime.sbfdatetime($cur_result['localtime']).decode($sickbeard.SYS_ENCODING)</div><span class="sort_data">$time.mktime($cur_result['localtime'].timetuple())</span>
+				<div class="${fuzzydate}">$sbdatetime.sbdatetime.sbfdatetime($cur_result['localtime']).encode('utf-8', 'xmlcharrefreplace').decode($sickbeard.SYS_ENCODING)</div><span class="sort_data">$time.mktime($cur_result['localtime'].timetuple())</span>
 			</td>
 
 			<td class="tvShow" nowrap="nowrap"><a href="$sbRoot/home/displayShow?show=${cur_result['showid']}">$cur_result['show_name']</a>
@@ -359,10 +359,10 @@
                 #set $too_late_header = True
                 #elif $cur_ep_enddate >= $today and $cur_ep_airdate < $next_week.date():
                     #if $cur_ep_airdate == $today.date():
-						<br /><h2 class="day">$datetime.date.fromordinal($cur_ep_airdate.toordinal).strftime('%A').decode($sickbeard.SYS_ENCODING).capitalize() <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
+						<br /><h2 class="day">$datetime.date.fromordinal($cur_ep_airdate.toordinal).strftime('%A').encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace').decode($sickbeard.SYS_ENCODING).capitalize() <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
 					#set $today_header = True
                     #else:
-						<br /><h2 class="day">$datetime.date.fromordinal($cur_ep_airdate.toordinal).strftime('%A').decode($sickbeard.SYS_ENCODING).capitalize()</h2>
+						<br /><h2 class="day">$datetime.date.fromordinal($cur_ep_airdate.toordinal).strftime('%A').encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace').decode($sickbeard.SYS_ENCODING).capitalize()</h2>
                     #end if
                 #end if
             #end if
@@ -371,7 +371,7 @@
 
         #if $cur_ep_airdate == $today.date() and not $today_header:
 			<div class="comingepheader">
-			<br /><h2 class="day">$datetime.date.fromordinal($cur_ep_airdate.toordinal).strftime('%A').decode($sickbeard.SYS_ENCODING).capitalize() <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
+			<br /><h2 class="day">$datetime.date.fromordinal($cur_ep_airdate.toordinal).strftime('%A').encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace').decode($sickbeard.SYS_ENCODING).capitalize() <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
             #set $today_header = True
         #end if
         #if $runtime:
@@ -441,7 +441,7 @@
 
 				<div class="clearfix">
 
-					<span class="title">Airs: </span><span class="${fuzzydate}">$sbdatetime.sbdatetime.sbfdatetime($cur_result['localtime']).decode($sickbeard.SYS_ENCODING)</span><%= ('', '<span> on %s</span>' % str(cur_result['network']))[None is not cur_result['network']] %>
+					<span class="title">Airs: </span><span class="${fuzzydate}">$sbdatetime.sbdatetime.sbfdatetime($cur_result['localtime']).encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace').decode($sickbeard.SYS_ENCODING)</span><%= ('', '<span> on %s</span>' % str(cur_result['network']))[None is not cur_result['network']] %>
 				</div>
 
 				<div class="clearfix">
@@ -489,7 +489,7 @@
     #for $day in $dates
     #set $tbl_day += 1
 		<table class="sickbeardTable tablesorter calendarTable <%= 'cal-%s' % (('even', 'odd')[1 == tbl_day % 2]) %>" cellspacing="0" border="0" cellpadding="0">
-		<thead><tr><th>$day.strftime('%A').decode($sickbeard.SYS_ENCODING).capitalize()</th></tr></thead>
+		<thead><tr><th>$day.strftime('%A').encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace').decode($sickbeard.SYS_ENCODING).capitalize()</th></tr></thead>
 		<tbody>
         #set $day_has_show = False
         #for $cur_result in $sql_results:
@@ -503,7 +503,7 @@
 
             #if $airday == $day:
                 #set $day_has_show = True
-                #set $airtime = $sbdatetime.sbdatetime.fromtimestamp($time.mktime($cur_result['localtime'].timetuple())).sbftime().decode($sickbeard.SYS_ENCODING)
+                #set $airtime = $sbdatetime.sbdatetime.fromtimestamp($time.mktime($cur_result['localtime'].timetuple())).sbftime().encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace').decode($sickbeard.SYS_ENCODING)
                 #if $sickbeard.TRIM_ZERO:
                 #set $airtime = re.sub(r'0(\d:\d\d)', r'\1', $airtime, 0, re.IGNORECASE | re.MULTILINE)
                 #end if
