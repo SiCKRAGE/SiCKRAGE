@@ -63,21 +63,24 @@ def ss(x):
     u_x = _toUnicode(x)
 
     try:
-        u_x_encoded = u_x.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace')
+        u_x_encoded = u_x.encode('utf-8', 'xmlcharrefreplace')
     except:
         try:
-            u_x_encoded = u_x.encode(sickbeard.SYS_ENCODING)
+            u_x_encoded = u_x.encode('utf-8', 'replace')
         except:
             try:
-                u_x_encoded = u_x.encode(sickbeard.SYS_ENCODING, 'replace')
+                u_x_encoded = u_x.encode(sickbeard.SYS_ENCODING,'xmlcharrefreplace')
             except:
                 try:
-                    u_x_encoded = u_x.encode('utf-8', 'replace')
+                    u_x_encoded = u_x.encode(sickbeard.SYS_ENCODING)
                 except:
                     try:
-                        u_x_encoded = str(x)
+                        u_x_encoded = u_x.encode(sickbeard.SYS_ENCODING,'replace')
                     except:
-                        u_x_encoded = x
+                        try:
+                            u_x_encoded = str(x)
+                        except:
+                            u_x_encoded = x
 
     return u_x_encoded
 
