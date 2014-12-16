@@ -812,7 +812,7 @@ class CMD_Episode(ApiCall):
         episode['airdate'] = sbdatetime.sbdatetime.sbfdate(sbdatetime.sbdatetime.convert_to_setting(
             network_timezones.parse_date_time(int(episode['airdate']), showObj.airs, showObj.network)),
                                                            d_preset=dateFormat)
-        status, quality = Quality.splitCompositeStatus(int(episode["status"]))
+        status, quality = Quality.splitCompositeStatus(int(episode["status"] or -1))
         episode["status"] = _get_status_Strings(status)
         episode["quality"] = _get_quality_string(quality)
         episode["file_size_human"] = _sizeof_fmt(episode["file_size"])
@@ -2458,7 +2458,7 @@ class CMD_ShowSeasons(ApiCall):
                 [self.indexerid])
             seasons = {}
             for row in sqlResults:
-                status, quality = Quality.splitCompositeStatus(int(row["status"]))
+                status, quality = Quality.splitCompositeStatus(int(row["status"] or -1))
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = _get_quality_string(quality)
                 dtEpisodeAirs = sbdatetime.sbdatetime.convert_to_setting(
@@ -2482,7 +2482,7 @@ class CMD_ShowSeasons(ApiCall):
             for row in sqlResults:
                 curEpisode = int(row["episode"])
                 del row["episode"]
-                status, quality = Quality.splitCompositeStatus(int(row["status"]))
+                status, quality = Quality.splitCompositeStatus(int(row["status"] or -1))
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = _get_quality_string(quality)
                 dtEpisodeAirs = sbdatetime.sbdatetime.convert_to_setting(
@@ -2619,7 +2619,7 @@ class CMD_ShowStats(ApiCall):
                                  [self.indexerid])
         # the main loop that goes through all episodes
         for row in sqlResults:
-            status, quality = Quality.splitCompositeStatus(int(row["status"]))
+            status, quality = Quality.splitCompositeStatus(int(row["status"] or -1))
 
             episode_status_counts_total["total"] += 1
 
@@ -2642,7 +2642,7 @@ class CMD_ShowStats(ApiCall):
             if statusCode == "total":
                 episodes_stats["downloaded"]["total"] = episode_qualities_counts_download[statusCode]
                 continue
-            status, quality = Quality.splitCompositeStatus(int(statusCode))
+            status, quality = Quality.splitCompositeStatus(int(statusCode or -1))
             statusString = Quality.qualityStrings[quality].lower().replace(" ", "_").replace("(", "").replace(")", "")
             episodes_stats["downloaded"][statusString] = episode_qualities_counts_download[statusCode]
 
@@ -2653,7 +2653,7 @@ class CMD_ShowStats(ApiCall):
             if statusCode == "total":
                 episodes_stats["snatched"]["total"] = episode_qualities_counts_snatch[statusCode]
                 continue
-            status, quality = Quality.splitCompositeStatus(int(statusCode))
+            status, quality = Quality.splitCompositeStatus(int(statusCode or -1))
             statusString = Quality.qualityStrings[quality].lower().replace(" ", "_").replace("(", "").replace(")", "")
             if Quality.qualityStrings[quality] in episodes_stats["snatched"]:
                 episodes_stats["snatched"][statusString] += episode_qualities_counts_snatch[statusCode]
@@ -2665,7 +2665,7 @@ class CMD_ShowStats(ApiCall):
             if statusCode == "total":
                 episodes_stats["total"] = episode_status_counts_total[statusCode]
                 continue
-            status, quality = Quality.splitCompositeStatus(int(statusCode))
+            status, quality = Quality.splitCompositeStatus(int(statusCode or -1))
             statusString = statusStrings.statusStrings[statusCode].lower().replace(" ", "_").replace("(", "").replace(
                 ")", "")
             episodes_stats[statusString] = episode_status_counts_total[statusCode]

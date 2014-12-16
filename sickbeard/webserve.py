@@ -1100,7 +1100,12 @@ class Home(WebRoot):
         epCounts[Overview.SNATCHED] = 0
 
         for curResult in sqlResults:
-            curEpCat = showObj.getOverview(int(curResult["status"] or -1))
+            status = curResult["status"]
+            if status == '':
+                logger.log(u"Invalid status for episode %s %sx%s"% (showObj.name, curResult["season"], curResult["episode"]), logger.WARNING)
+                status = -1 # UNKNOWN
+            curEpCat = showObj.getOverview(int(status))
+
             if curEpCat:
                 epCats[str(curResult["season"]) + "x" + str(curResult["episode"])] = curEpCat
                 epCounts[curEpCat] += 1
@@ -2776,7 +2781,12 @@ class Manage(WebRoot):
                 [curShow.indexerid])
 
             for curResult in sqlResults:
-                curEpCat = curShow.getOverview(int(curResult["status"] or -1))
+                status = curResult["status"]
+                if status == '':
+                    logger.log(u"Invalid status for episode %s %sx%s"% (curShow.name, curResult["season"], curResult["episode"]), logger.WARNING)
+                    status = -1 # UNKNOWN
+                curEpCat = curShow.getOverview(int(status))
+
                 if curEpCat:
                     epCats[str(curResult["season"]) + "x" + str(curResult["episode"])] = curEpCat
                     epCounts[curEpCat] += 1
