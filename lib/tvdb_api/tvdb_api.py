@@ -796,6 +796,10 @@ class Tvdb:
             log().debug('Actors result returned zero')
             return
 
+        if type(actorsEt['actor']) is dict:
+            log().debug('Single actor found, converting to list')
+            actorsEt['actor'] = [ actorsEt['actor'] ]
+
         cur_actors = Actors()
         for cur_actor in actorsEt['actor'] if isinstance(actorsEt['actor'], list) else [actorsEt['actor']]:
             curActor = Actor()
