@@ -77,9 +77,10 @@ class T411Provider(generic.TorrentProvider):
         }
 
         self.session = requests.Session()
+        headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1.7) Gecko/20091221 Firefox/3.5.7 (.NET CLR 3.5.30729)'} 
 
         try:
-            response = self.session.post(self.urls['login_page'], data=login_params, timeout=30, verify=False)
+            response = self.session.post(self.urls['login_page'], data=login_params, timeout=30, verify=False, headers = headers)
         except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
