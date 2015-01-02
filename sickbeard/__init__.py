@@ -312,6 +312,12 @@ GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = False
 GROWL_HOST = ''
 GROWL_PASSWORD = None
 
+USE_CUSTOMAPI = False
+CUSTOMAPI_NOTIFY_ONSNATCH = False
+CUSTOMAPI_NOTIFY_ONDOWNLOAD = False
+CUSTOMAPI_NOTIFY_ONSUBTITLEDOWNLOAD = False
+CUSTOMAPI_URL = ''
+
 USE_PROWL = False
 PROWL_NOTIFY_ONSNATCH = False
 PROWL_NOTIFY_ONDOWNLOAD = False
@@ -497,7 +503,7 @@ def initialize(consoleLogging=True):
             showUpdateScheduler, __INITIALIZED__, LAUNCH_BROWSER, UPDATE_SHOWS_ON_START, TRASH_REMOVE_SHOW, TRASH_ROTATE_LOGS, SORT_ARTICLE, showList, loadingShowList, \
             NEWZNAB_DATA, NZBS, NZBS_UID, NZBS_HASH, INDEXER_DEFAULT, INDEXER_TIMEOUT, USENET_RETENTION, TORRENT_DIR, \
             QUALITY_DEFAULT, FLATTEN_FOLDERS_DEFAULT, SUBTITLES_DEFAULT, STATUS_DEFAULT, DAILYSEARCH_STARTUP, \
-            GROWL_NOTIFY_ONSNATCH, GROWL_NOTIFY_ONDOWNLOAD, GROWL_NOTIFY_ONSUBTITLEDOWNLOAD, TWITTER_NOTIFY_ONSNATCH, TWITTER_NOTIFY_ONDOWNLOAD, TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD, \
+            GROWL_NOTIFY_ONSNATCH, GROWL_NOTIFY_ONDOWNLOAD, GROWL_NOTIFY_ONSUBTITLEDOWNLOAD, TWITTER_NOTIFY_ONSNATCH, TWITTER_NOTIFY_ONDOWNLOAD, TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD, USE_CUSTOMAPI, CUSTOMAPI_URL, CUSTOMAPI_NOTIFY_ONSNATCH, CUSTOMAPI_NOTIFY_ONDOWNLOAD, CUSTOMAPI_NOTIFY_ONSUBTITLEDOWNLOAD, \
             USE_GROWL, GROWL_HOST, GROWL_PASSWORD, USE_PROWL, PROWL_NOTIFY_ONSNATCH, PROWL_NOTIFY_ONDOWNLOAD, PROWL_NOTIFY_ONSUBTITLEDOWNLOAD, PROWL_API, PROWL_PRIORITY, PROG_DIR, \
             USE_PYTIVO, PYTIVO_NOTIFY_ONSNATCH, PYTIVO_NOTIFY_ONDOWNLOAD, PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD, PYTIVO_UPDATE_LIBRARY, PYTIVO_HOST, PYTIVO_SHARE_NAME, PYTIVO_TIVO_NAME, \
             USE_NMA, NMA_NOTIFY_ONSNATCH, NMA_NOTIFY_ONDOWNLOAD, NMA_NOTIFY_ONSUBTITLEDOWNLOAD, NMA_API, NMA_PRIORITY, \
@@ -823,6 +829,12 @@ def initialize(consoleLogging=True):
         GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = bool(check_setting_int(CFG, 'Growl', 'growl_notify_onsubtitledownload', 0))
         GROWL_HOST = check_setting_str(CFG, 'Growl', 'growl_host', '')
         GROWL_PASSWORD = check_setting_str(CFG, 'Growl', 'growl_password', '', censor_log=True)
+
+        USE_CUSTOMAPI = bool(check_setting_int(CFG, 'CustomAPI', 'use_customapi', 0))
+        CUSTOMAPI_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'CustomAPI', 'customapi_notify_onsnatch', 0))
+        CUSTOMAPI_NOTIFY_ONDOWNLOAD = bool(check_setting_int(CFG, 'CustomAPI', 'customapi_notify_ondownload', 0))
+        CUSTOMAPI_NOTIFY_ONSUBTITLEDOWNLOAD = bool(check_setting_int(CFG, 'CustomAPI', 'customapi_notify_onsubtitledownload', 0))
+        CUSTOMAPI_URL = check_setting_str(CFG, 'CustomAPI', 'customapi_url', '')
 
         USE_PROWL = bool(check_setting_int(CFG, 'Prowl', 'use_prowl', 0))
         PROWL_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'Prowl', 'prowl_notify_onsnatch', 0))
@@ -1677,6 +1689,13 @@ def save_config():
     new_config['Growl']['growl_notify_onsubtitledownload'] = int(GROWL_NOTIFY_ONSUBTITLEDOWNLOAD)
     new_config['Growl']['growl_host'] = GROWL_HOST
     new_config['Growl']['growl_password'] = helpers.encrypt(GROWL_PASSWORD, ENCRYPTION_VERSION)
+
+    new_config['CustomAPI'] = {}
+    new_config['CustomAPI']['use_customapi'] = int(USE_CUSTOMAPI)
+    new_config['CustomAPI']['customapi_notify_onsnatch'] = int(CUSTOMAPI_NOTIFY_ONSNATCH)
+    new_config['CustomAPI']['customapi_notify_ondownload'] = int(CUSTOMAPI_NOTIFY_ONDOWNLOAD)
+    new_config['CustomAPI']['customapi_notify_onsubtitledownload'] = int(CUSTOMAPI_NOTIFY_ONSUBTITLEDOWNLOAD)
+    new_config['CustomAPI']['customapi_url'] = CUSTOMAPI_URL
 
     new_config['Prowl'] = {}
     new_config['Prowl']['use_prowl'] = int(USE_PROWL)

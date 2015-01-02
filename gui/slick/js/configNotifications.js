@@ -268,6 +268,27 @@ $(document).ready(function(){
                 $('#testNMJv2').prop('disabled', false);
             });
     });
+    
+    $('#testCustomAPI').click(function () {
+        var customapi_url = $.trim($('#customapi_url').val());
+        if (!customapi_url) {
+            $('#testCustomAPI-result').html('Please fill out the necessary fields above.');
+			if (!customapi_url) {
+				$('#customapi_url').addClass('warning');
+			} else {
+				$('#customapi_url').removeClass('warning');
+			}
+            return;
+        }
+		$('#customapi_url').removeClass('warning');
+        $(this).prop('disabled', true);
+        $('#testCustomAPI-result').html(loading);
+        $.get(sbRoot + '/home/testCustomAPI', {'customapi_url': customapi_url})
+            .done(function (data) {
+                $('#testCustomAPI-result').html(data);
+                $('#testCustomAPI').prop('disabled', false);
+            });
+    });
 	
     $('#testTrakt').click(function () {
         var trakt_api = $.trim($('#trakt_api').val());

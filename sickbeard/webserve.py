@@ -749,6 +749,13 @@ class Home(WebRoot):
 
         return accesMsg
 
+    def testCustomAPI(self, customapi_url=None):
+
+        result, message = notifiers.customapi_notifier.test_notify(customapi_url)
+        if result:
+            return "Notification sent successfully."
+        else:
+            return "Problem sending notification: " + message
 
     def testGrowl(self, host=None, password=None):
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -4332,6 +4339,8 @@ class ConfigNotifications(Config):
                           plex_server_host=None, plex_host=None, plex_username=None, plex_password=None,
                           use_growl=None, growl_notify_onsnatch=None, growl_notify_ondownload=None,
                           growl_notify_onsubtitledownload=None, growl_host=None, growl_password=None,
+                          use_customapi=None, customapi_notify_onsnatch=None, customapi_notify_ondownload=None,
+                          customapi_notify_onsubtitledownload=None, customapi_url=None,
                           use_prowl=None, prowl_notify_onsnatch=None, prowl_notify_ondownload=None,
                           prowl_notify_onsubtitledownload=None, prowl_api=None, prowl_priority=0,
                           use_twitter=None, twitter_notify_onsnatch=None, twitter_notify_ondownload=None,
@@ -4397,6 +4406,12 @@ class ConfigNotifications(Config):
         sickbeard.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = config.checkbox_to_value(growl_notify_onsubtitledownload)
         sickbeard.GROWL_HOST = config.clean_host(growl_host, default_port=23053)
         sickbeard.GROWL_PASSWORD = growl_password
+        
+        sickbeard.USE_CUSTOMAPI = config.checkbox_to_value(use_customapi)
+        sickbeard.CUSTOMAPI_NOTIFY_ONSNATCH = config.checkbox_to_value(customapi_notify_onsnatch)
+        sickbeard.CUSTOMAPI_NOTIFY_ONDOWNLOAD = config.checkbox_to_value(customapi_notify_ondownload)
+        sickbeard.CUSTOMAPI_NOTIFY_ONSUBTITLEDOWNLOAD = config.checkbox_to_value(customapi_notify_onsubtitledownload)
+        sickbeard.CUSTOMAPI_URL = customapi_url
 
         sickbeard.USE_PROWL = config.checkbox_to_value(use_prowl)
         sickbeard.PROWL_NOTIFY_ONSNATCH = config.checkbox_to_value(prowl_notify_onsnatch)

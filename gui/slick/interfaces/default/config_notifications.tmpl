@@ -1192,6 +1192,68 @@
 
                     </fieldset>
                 </div><!-- /pushbullet component-group //-->
+                <div class="component-group">
+                    <div class="component-group-desc">
+                        <img class="notifier-icon" src="$sbRoot/images/notifiers/customapi.png" alt="" title="Custom API" />
+                        <h3>Custom API</h3>
+                        <p>Allow you to use a custom API for sending notifications from SickRage.</p>
+                    </div>
+                    <fieldset class="component-group-list">
+                        <div class="field-pair">
+                            <label for="use_customapi">
+                                <span class="component-title">Enable</span>
+                                <span class="component-desc">
+                                    <input type="checkbox" class="enabler" name="use_customapi" id="use_customapi" #if $sickbeard.USE_CUSTOMAPI then "checked=\"checked\"" else ""# /> 
+                                    <p>should SickRage send notifications ?</p>
+                                </span>
+                            </label>
+                        </div>
+
+                        <div id="content_use_customapi">
+                            <div class="field-pair">
+                                <label for="customapi_notify_onsnatch">
+                                    <span class="component-title">Notify on snatch</span>
+                                    <span class="component-desc">
+                                        <input type="checkbox" name="customapi_notify_onsnatch" id="customapi_notify_onsnatch" #if $sickbeard.CUSTOMAPI_NOTIFY_ONSNATCH then "checked=\"checked\"" else ""# /> 
+                                        <p>send a notification when a download starts ?</p>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="field-pair">
+                                <label for="customapi_notify_ondownload">
+                                    <span class="component-title">Notify on download</span>
+                                    <span class="component-desc">
+                                        <input type="checkbox" name="customapi_notify_ondownload" id="customapi_notify_ondownload" #if $sickbeard.CUSTOMAPI_NOTIFY_ONDOWNLOAD then "checked=\"checked\"" else ""# />
+                                        <p>send a notification when a download finishes ?</p>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="field-pair">
+                                <label for="customapi_notify_onsubtitledownload">
+                                    <span class="component-title">Notify on subtitle download</span>
+                                    <span class="component-desc">
+                                        <input type="checkbox" name="customapi_notify_onsubtitledownload" id="customapi_notify_onsubtitledownload" #if $sickbeard.CUSTOMAPI_NOTIFY_ONSUBTITLEDOWNLOAD then "checked=\"checked\"" else ""# />
+                                        <p>send a notification when subtitles are downloaded ?</p>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="field-pair">
+                                <label for="customapi_url">
+                                    <span class="component-title">URL of your API :</span>
+                                    <input type="text" name="customapi_url" id="customapi_url" value="$sickbeard.CUSTOMAPI_URL" class="form-control input-sm input250" />
+                                </label>
+                                <label>
+                                    <span class="component-title">&nbsp;</span>
+                                    <span class="component-desc">Use string %message% as parameter in your custom URL</span>
+                                </label>
+                            </div>
+                            <div class="testNotification" id="testCustomAPI-result">Click below to test your settings.</div>
+                            <input  class="btn" type="button" value="Test SMS" id="testCustomAPI" />
+                            <input type="submit" class="config_submitter btn" value="Save Changes" />
+                        </div><!-- /content_use_customapi //-->
+
+                    </fieldset>
+                </div><!-- /customapi component-group //-->
 
             </div>
             
