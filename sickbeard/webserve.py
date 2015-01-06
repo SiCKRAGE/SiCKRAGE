@@ -941,6 +941,16 @@ class Home(WebRoot):
         return json.dumps(data)
 
 
+    def saveShowNotifyList(self, show=None, emails=None):
+        # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
+
+        myDB = db.DBConnection()
+        if myDB.action("UPDATE tv_shows SET notify_list = ? WHERE show_id = ?", [emails, show]):
+	    return 'OK'
+	else:
+	    return 'ERROR: %s' % myDB.last_err
+
+
     def testEmail(self, host=None, port=None, smtp_from=None, use_tls=None, user=None, pwd=None, to=None):
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
@@ -3162,7 +3172,7 @@ class Manage(Home, WebRoot):
             else:
                 t.webui_url = re.sub('localhost', sickbeard.LOCALHOST_IP, sickbeard.TORRENT_HOST)
         else:
-            t.webui_url = sickbeard.TORRENT_HOST
+            t.webui_url = sickbeard.TORRENT_HOST + 'web/'
 
         if sickbeard.TORRENT_METHOD == 'utorrent':
             t.webui_url = '/'.join(s.strip('/') for s in (t.webui_url, 'gui/'))
@@ -4364,8 +4374,7 @@ class ConfigNotifications(Config):
                           pushbullet_device_list=None,
                           use_email=None, email_notify_onsnatch=None, email_notify_ondownload=None,
                           email_notify_onsubtitledownload=None, email_host=None, email_port=25, email_from=None,
-                          email_tls=None, email_user=None, email_password=None, email_list=None, email_show_list=None,
-                          email_show=None):
+                          email_tls=None, email_user=None, email_password=None, email_list=None):
 
         results = []
 
