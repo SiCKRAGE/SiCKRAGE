@@ -2219,7 +2219,7 @@ class HomeAddShows(Home):
 
         return json.dumps({'results': final_results})
 
-    def addRecommendedShow(self, whichSeries=None, indexerLang="en", rootDir=None, defaultStatus=None,
+    def addRecommendedShow(self, whichSeries=None, indexerLang="de", rootDir=None, defaultStatus=None,
                            anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                            fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None, anime=None,
                            scene=None):
@@ -2316,7 +2316,7 @@ class HomeAddShows(Home):
         # done adding show
         return self.redirect('/home/')
 
-    def addNewShow(self, whichSeries=None, indexerLang="en", rootDir=None, defaultStatus=None,
+    def addNewShow(self, whichSeries=None, indexerLang="de", rootDir=None, defaultStatus=None,
                    anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                    fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None, anime=None,
                    scene=None):
