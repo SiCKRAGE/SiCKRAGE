@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from lib.tvdb_api.tvdb_api import Tvdb
 from lib.tvrage_api.tvrage_api import TVRage
 
@@ -21,8 +24,8 @@ indexerConfig[INDEXER_TVDB] = {
     'id': INDEXER_TVDB,
     'name': 'theTVDB',
     'module': Tvdb,
-    'api_params': {'apikey': 'F9C450E78D99172E',
-                   'language': 'en',
+    'api_params': {'apikey': '9DAF49C96CBF8DAC',
+                   'language': 'de',
                    'useZip': True,
     },
 }
@@ -42,7 +45,7 @@ indexerConfig[INDEXER_TVDB]['xem_origin'] = 'tvdb'
 indexerConfig[INDEXER_TVDB]['icon'] = 'thetvdb16.png'
 indexerConfig[INDEXER_TVDB]['scene_url'] = 'http://midgetspy.github.io/sb_tvdb_scene_exceptions/exceptions.txt'
 indexerConfig[INDEXER_TVDB]['show_url'] = 'http://thetvdb.com/?tab=series&id='
-indexerConfig[INDEXER_TVDB]['base_url'] = 'http://thetvdb.com/api/%(apikey)s/series/' % indexerConfig[INDEXER_TVDB]['api_params']
+indexerConfig[INDEXER_TVDB]['base_url'] = 'http://tvdb.cytec.us/api/%(apikey)s/series/' % indexerConfig[INDEXER_TVDB]['api_params']
 
 # TVRAGE Indexer Settings
 indexerConfig[INDEXER_TVRAGE]['trakt_id'] = 'tvrage_id'

@@ -10,7 +10,7 @@ $(document).ready(function () {
                 var selected, resultStr = '';
 
                 if (data.results.length === 0) {
-                    resultStr = '<option value="en" selected="selected">en</option>';
+                    resultStr = '<option value="de" selected="selected">de</option>';
                 } else {
                     $.each(data.results, function (index, obj) {
                         if (resultStr == '') {

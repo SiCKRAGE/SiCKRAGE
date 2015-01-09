@@ -2013,10 +2013,10 @@ class HomeAddShows(Home):
         result = sickbeard.indexerApi().config['valid_languages']
 
         # Make sure list is sorted alphabetically but 'en' is in front
-        if 'en' in result:
-            del result[result.index('en')]
+        if 'de' in result:
+            del result[result.index('de')]
         result.sort()
-        result.insert(0, 'en')
+        result.insert(0, 'de')
 
         return json.dumps({'results': result})
 
