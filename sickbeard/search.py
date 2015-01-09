@@ -226,6 +226,11 @@ def pickBestResult(results, show=None, quality_list=None):
                        logger.INFO)
             continue
 
+        if show.lang != "de" and filter_release_name(cur_result.name, "german|videoman"):
+            logger.log(u"Ignoring " + cur_result.name + " based on ignored words filter: show language '%s'" % show.lang,
+                       logger.INFO)
+            continue
+
         if show.rls_ignore_words and filter_release_name(cur_result.name, cur_result.show.rls_ignore_words):
             logger.log(u"Ignoring " + cur_result.name + " based on ignored words filter: " + show.rls_ignore_words,
                        logger.INFO)
