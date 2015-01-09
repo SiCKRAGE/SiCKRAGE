@@ -3,8 +3,8 @@
 
 #if $sickbeard.ROOT_DIRS:
 #set $backend_pieces = $sickbeard.ROOT_DIRS.split('|')
-#set $backend_default = 'rd-' + $backend_pieces[0]
-#set $backend_dirs = $backend_pieces[1:]
+#set $backend_default = $backend_pieces[1::2][0]
+#set $backend_dirs = $backend_pieces[3::2]
 #else:
 #set $backend_default = ''
 #set $backend_dirs = []
@@ -13,6 +13,9 @@
 <input type="hidden" id="whichDefaultRootDir" value="$backend_default" />
 <div class="rootdir-selectbox">
 	<select name="rootDir" id="rootDirs" size="6">
+    #if $backend_default:
+		<option selected="selected" value="$backend_default">$backend_default</option>
+    #end if
     #for $cur_dir in $backend_dirs:
 		<option value="$cur_dir">$cur_dir</option>
     #end for
