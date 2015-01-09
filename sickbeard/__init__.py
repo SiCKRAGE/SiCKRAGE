@@ -35,7 +35,6 @@ except ImportError:
     require('pytz')
 
 import shutil_custom
-
 from sickbeard.indexers import indexer_api
 from sickbeard.common import SD, SKIPPED, WANTED
 from sickbeard.databases import mainDB, cache_db, failed_db
@@ -304,6 +303,10 @@ NZBS_HASH = None
 OMGWTFNZBS = False
 OMGWTFNZBS_USERNAME = None
 OMGWTFNZBS_APIKEY = None
+
+NZBTO = False
+NZBTO_USERNAME = None
+NZBTO_APIKEY = None
 
 NEWZBIN = False
 NEWZBIN_USERNAME = None
@@ -663,7 +666,7 @@ def initialize(consoleLogging=True):  # pylint: disable=too-many-locals, too-man
             ANIME_SPLIT_HOME, SCENE_DEFAULT, DOWNLOAD_URL, BACKLOG_DAYS, GIT_USERNAME, GIT_PASSWORD, \
             DEVELOPER, DISPLAY_ALL_SEASONS, SSL_VERIFY, NEWS_LAST_READ, NEWS_LATEST, SOCKET_TIMEOUT, \
             SYNOLOGY_DSM_HOST, SYNOLOGY_DSM_USERNAME, SYNOLOGY_DSM_PASSWORD, SYNOLOGY_DSM_PATH, GUI_LANG, \
-            FANART_BACKGROUND, FANART_BACKGROUND_OPACITY
+            FANART_BACKGROUND, FANART_BACKGROUND_OPACITY, NZBTO, NZBTO_APIKEY, NZBTO_USERNAME
 
         if __INITIALIZED__:
             return False
