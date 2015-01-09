@@ -52,7 +52,7 @@ class NzbtoProvider(generic.NZBProvider):
         self.enabled = False
         self.username = None
         self.api_key = None
-        #self.cache = NzbtoCache(self)
+        self.cache = NzbtoCache(self)
 
         self.urls = {'base_url': 'http://nzb.to/'}
         self.url = self.urls['base_url']
@@ -159,7 +159,7 @@ class NzbtoProvider(generic.NZBProvider):
                 items = html.find_all(id=table_regex)
 
                 if len(items) > 0:
-                    logger.log("found %d result/s" % len(items))
+                    # logger.log("found %d result/s" % len(items))
                     for curItem in items:
                         title, url = self._get_title_and_url(curItem)
     
@@ -172,7 +172,7 @@ class NzbtoProvider(generic.NZBProvider):
                             results.append(i)
 
                 #print results
-                print results
+                # print results
                 return results
                 
 
@@ -230,38 +230,10 @@ class NzbtoProvider(generic.NZBProvider):
 class NzbtoCache(tvcache.TVCache):
     def __init__(self, provider):
         tvcache.TVCache.__init__(self, provider)
-        self.minTime = 20
-
-    def _get_title_and_url(self, item):
-        """
-        Retrieves the title and URL data from the item XML node
-
-        item: An elementtree.ElementTree element representing the <item> tag of the RSS feed
-
-        Returns: A tuple containing two strings representing title and URL respectively
-        """
-
-        title = item.get('title')
-        if title:
-            title = u'' + title
-            title = title.replace(' ', '.')
-
-        url = item.get('link')
-        if url:
-            url = url.replace('&amp;', '&')
-
-        return (title, url)
+        self.minTime = 1
 
     def _getRSSData(self):
-        params = {'user': provider.username,
-                  'api': provider.api_key,
-                  'eng': 1,
-                  'catid': '19,20'}  # SD,HD
-
-        rss_url = 'https://rss.omgwtfnzbs.org/rss-download.php?' + urllib.urlencode(params)
-
-        logger.log(self.provider.name + u" cache update URL: " + rss_url, logger.DEBUG)
-
-        return self.getRSSFeed(rss_url, items=['entries', 'feed'])
+        result = {'entries': self.provider._doSearch("cache")}
+        return result
 
 provider = NzbtoProvider()
