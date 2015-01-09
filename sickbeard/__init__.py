@@ -79,6 +79,8 @@ shutil.copyfile = shutil_custom.copyfile_custom
 requests.packages.urllib3.disable_warnings()
 indexerApi = indexer_api.indexerApi
 
+from random import randrange
+
 PID = None
 
 CFG = None
@@ -269,7 +271,7 @@ DEFAULT_AUTOPOSTPROCESSER_FREQUENCY = 10
 DEFAULT_DAILYSEARCH_FREQUENCY = 40
 DEFAULT_BACKLOG_FREQUENCY = 21
 DEFAULT_UPDATE_FREQUENCY = 1
-DEFAULT_SHOWUPDATE_HOUR = random.randint(2, 4)
+DEFAULT_SHOWUPDATE_HOUR = random.randint(1, 12)
 
 MIN_AUTOPOSTPROCESSER_FREQUENCY = 1
 MIN_DAILYSEARCH_FREQUENCY = 10
