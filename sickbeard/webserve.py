@@ -2025,9 +2025,9 @@ class HomeAddShows(Home):
         return helpers.sanitizeFileName(name)
 
 
-    def searchIndexersForShowName(self, search_term, lang="en", indexer=None):
+    def searchIndexersForShowName(self, search_term, lang="de", indexer=None):
         if not lang or lang == 'null':
-            lang = "en"
+            lang = "de"
 
         search_term = search_term.encode('utf-8')
 
