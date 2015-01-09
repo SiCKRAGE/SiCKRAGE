@@ -115,7 +115,7 @@ GIT_RESET = False
 GIT_REMOTE = ''
 GIT_REMOTE_URL = ''
 CUR_COMMIT_BRANCH = ''
-GIT_ORG = 'SiCKRAGETV'
+GIT_ORG = 'cytec'
 GIT_REPO = 'SickRage'
 GIT_USERNAME = None
 GIT_PASSWORD = None
@@ -566,7 +566,7 @@ def initialize(consoleLogging=True):
         GIT_PASSWORD = check_setting_str(CFG, 'General', 'git_password', '', censor_log=True)
 
         # github api
-        try:gh = Github(user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
+        try:gh = Github(user_agent="SiCKRAGE").get_user(GIT_ORG).get_repo(GIT_REPO)
         except:gh = None
 
         # debugging
@@ -592,7 +592,7 @@ def initialize(consoleLogging=True):
         # git_remote
         GIT_REMOTE = check_setting_str(CFG, 'General', 'git_remote', 'origin')
         GIT_REMOTE_URL = check_setting_str(CFG, 'General', 'git_remote_url',
-                                           'https://github.com/SiCKRAGETV/SickRage.git')
+                                           'https://github.com/cytec/SickRage.git')
 
         # current commit hash
         CUR_COMMIT_HASH = check_setting_str(CFG, 'General', 'cur_commit_hash', '')
