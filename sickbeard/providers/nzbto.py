@@ -81,6 +81,7 @@ class NzbtoProvider(generic.NZBProvider):
         if type(item) == tuple:
             title, url = item
             return title, url
+
         try:
             cur_el = item.tr.find("td", attrs={"class": "title"}).find("a")
             tmp_title = cur_el.text
@@ -156,7 +157,7 @@ class NzbtoProvider(generic.NZBProvider):
         try:
             with BS4Parser(searchResult.text, "html.parser") as html:
                 table_regex = re.compile(r'tbody-.*')
-                items = html.find_all(id=table_regex)
+                items = html.find_all('tbody', id=table_regex)
 
                 if len(items) > 0:
                     # logger.log("found %d result/s" % len(items))
@@ -164,7 +165,7 @@ class NzbtoProvider(generic.NZBProvider):
                         title, url = self._get_title_and_url(curItem)
     
                         if not title or not url:
-                            logger.log(u"The XML returned from the NZBto HTML feed is incomplete, this result is unusable", logger.ERROR)
+                            logger.log(u"The XML returned from the NZBto HTML feed is incomplete, this result is unusable")
                             continue 
 
                         if title != 'Not_Valid' and title != "":
@@ -195,7 +196,6 @@ class NzbtoProvider(generic.NZBProvider):
         #     if not title == 'Not_Valid':
         #         results.append(curItem)
 
-        print results
         return results
 
     def findPropers(self, search_date=None):
