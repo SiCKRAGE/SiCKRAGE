@@ -52,6 +52,8 @@ from sickbeard.databases import mainDB, cache_db, failed_db
 
 from lib.configobj import ConfigObj
 
+from random import randrange
+
 PID = None
 
 CFG = None
@@ -1153,6 +1155,7 @@ def initialize(consoleLogging=True):
         # initialize schedulers
         # updaters
         update_now = datetime.timedelta(minutes=0)
+        random_hour = randrange(1,12)
         versionCheckScheduler = scheduler.Scheduler(versionChecker.CheckVersion(),
                                                     cycleTime=datetime.timedelta(hours=UPDATE_FREQUENCY),
                                                     threadName="CHECKVERSION",
@@ -1165,7 +1168,7 @@ def initialize(consoleLogging=True):
         showUpdateScheduler = scheduler.Scheduler(showUpdater.ShowUpdater(),
                                                   cycleTime=datetime.timedelta(hours=1),
                                                   threadName="SHOWUPDATER",
-                                                  start_time=datetime.time(hour=3))  # 3 AM
+                                                  start_time=datetime.time(hour=random_hour))  # 3 AM
 
         # searchers
         searchQueueScheduler = scheduler.Scheduler(search_queue.SearchQueue(),
