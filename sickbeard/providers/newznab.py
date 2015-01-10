@@ -102,7 +102,7 @@ class NewznabProvider(generic.NZBProvider):
         
         self._checkAuth()
         
-        params = {"t": "caps"}
+        params = {"t": "caps", "o": "json"}
         if self.needs_auth and self.key:
             params['apikey'] = self.key
 
@@ -118,12 +118,15 @@ class NewznabProvider(generic.NZBProvider):
             logger.log(u"Error parsing xml for [%s]" % (self.name),
                        logger.DEBUG)
             return (False, return_categories, "Error parsing xml for [%s]" % (self.name))        
-            
+
         try:
-            for category in xml_categories.iter('category'):
-                if category.get('name') == 'TV':
-                        for subcat in category.findall('subcat'):
-                            return_categories.append(subcat.attrib)
+            for category in xml_categories['categories']['category']:
+                if category["@attributes"]["name"].startswith('TV'):
+                        return_categories.append(category["@attributes"])
+                        for subcat in category['subcat']:
+                            #join names
+                            subcat["@attributes"]["name"] = "%s - %s" % (category["@attributes"]["name"], subcat["@attributes"]["name"])
+                            return_categories.append(subcat["@attributes"])
         except:
             logger.log(u"Error parsing result for [%s]" % (self.name),
                        logger.DEBUG)
