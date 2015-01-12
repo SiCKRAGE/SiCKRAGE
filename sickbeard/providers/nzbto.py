@@ -88,21 +88,34 @@ class NzbtoProvider(generic.NZBProvider):
             dl = item.find("a", attrs={"title": "NZB erstellen"})
             dl = cur_el
             tmp_url = "http://nzb.to/inc/ajax/popupdetails.php?n=" + cur_el["href"].split("nid=")[1]
+
+            while True:
+                x = self.session.get(tmp_url)
+
+                if not x.status_code == 200:
+                    logger.log('to much hits on nzb.to trying again in 5 seconds', logger.DEBUG)
+                    time.sleep(5)
+
+                if x.status_code == 200:
+                    break
+
             x = self.session.get(tmp_url)
             pw = False
             with BS4Parser(x.text, "html.parser") as html:
-                pw = html.find('span', attrs={"style": "color:#ff0000"}).strong.next.next
-    
+                pw = html.find('span', attrs={"style": "color:#ff0000"})
+                if pw:
+                    pw = pw.strong.next.next
+
             if not pw or pw.strip() == "-":
                 title = tmp_title
             else:
                 title = "%s{{%s}}" % (tmp_title, pw.strip())
-    
+
             params = {"nid": dl["href"].split("nid=")[1], "user": self.username, "pass": self.api_key, "rel": title}
             url = 'http://cytec.us/nzbto/index.php?' + urllib.urlencode(params)
-    
+
             logger.log( '_get_title_and_url(), returns (%s, %s)' %(title, url), logger.DEBUG)
-    
+
             return (title, url)
         except AttributeError:
             return "", ""
@@ -119,7 +132,7 @@ class NzbtoProvider(generic.NZBProvider):
         params = {"q": term,
                   "sort": "post_date", #max 50
                   "order": "desc", #nospam
-                  "amount": 50, #min 100MB
+                  "amount": 25, #min 100MB
                   }
 
         searchURL = "http://nzb.to/?p=list&" + urllib.urlencode(params)
@@ -137,7 +150,7 @@ class NzbtoProvider(generic.NZBProvider):
 
         #searchResult = self.getURL(searchURL,[("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:5.0) Gecko/20100101 Firefox/5.0"),("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),("Accept-Language","de-de,de;q=0.8,en-us;q=0.5,en;q=0.3"),("Accept-Charset","ISO-8859-1,utf-8;q=0.7,*;q=0.7"),("Connection","keep-alive"),("Cache-Control","max-age=0")])
         if search == "cache":
-            url = "http://nzb.to/?p=list&cat=13&sa_Video-Genre=3221225407&sort=post_date&order=desc&amount=100"
+            url = "http://nzb.to/?p=list&cat=13&sa_Video-Genre=3221225407&sort=post_date&order=desc&amount=50"
             logger.log(url)
             searchResult = self.session.get(url)
             #logger.log(u"{0}".format(searchResult))
@@ -163,10 +176,10 @@ class NzbtoProvider(generic.NZBProvider):
                     # logger.log("found %d result/s" % len(items))
                     for curItem in items:
                         title, url = self._get_title_and_url(curItem)
-    
+
                         if not title or not url:
                             logger.log(u"The XML returned from the NZBto HTML feed is incomplete, this result is unusable")
-                            continue 
+                            continue
 
                         if title != 'Not_Valid' and title != "":
                             i = title, url
@@ -175,7 +188,7 @@ class NzbtoProvider(generic.NZBProvider):
                 #print results
                 # print results
                 return results
-                
+
 
                 #items = html.find_all("tbody", id=table_regex)
         except Exception, e:
@@ -220,7 +233,7 @@ class NzbtoProvider(generic.NZBProvider):
                 else:
                     #logger.log(u"Proper date for %s is %s" % (title, dateStr.group(1)))
                     resultDate = datetime.strptime(dateStr.group(1), "%d-%m-%Y %H:%M:%S")
-    
+
                 if date == None or resultDate > date:
                     results.append(classes.Proper(title, url, resultDate, self.show))
 
