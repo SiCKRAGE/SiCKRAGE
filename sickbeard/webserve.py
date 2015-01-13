@@ -2013,10 +2013,10 @@ class HomeAddShows(Home):
         result = sickbeard.indexerApi().config['valid_languages']
 
         # Make sure list is sorted alphabetically but 'en' is in front
-        if 'en' in result:
-            del result[result.index('en')]
+        if 'de' in result:
+            del result[result.index('de')]
         result.sort()
-        result.insert(0, 'en')
+        result.insert(0, 'de')
 
         return json.dumps({'results': result})
 
@@ -2025,9 +2025,9 @@ class HomeAddShows(Home):
         return helpers.sanitizeFileName(name)
 
 
-    def searchIndexersForShowName(self, search_term, lang="en", indexer=None):
+    def searchIndexersForShowName(self, search_term, lang="de", indexer=None):
         if not lang or lang == 'null':
-            lang = "en"
+            lang = "de"
 
         search_term = search_term.encode('utf-8')
 
@@ -2219,7 +2219,7 @@ class HomeAddShows(Home):
 
         return json.dumps({'results': final_results})
 
-    def addRecommendedShow(self, whichSeries=None, indexerLang="en", rootDir=None, defaultStatus=None,
+    def addRecommendedShow(self, whichSeries=None, indexerLang="de", rootDir=None, defaultStatus=None,
                            anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                            fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None, anime=None,
                            scene=None):
@@ -2316,7 +2316,7 @@ class HomeAddShows(Home):
         # done adding show
         return self.redirect('/home/')
 
-    def addNewShow(self, whichSeries=None, indexerLang="en", rootDir=None, defaultStatus=None,
+    def addNewShow(self, whichSeries=None, indexerLang="de", rootDir=None, defaultStatus=None,
                    anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                    fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None, anime=None,
                    scene=None):

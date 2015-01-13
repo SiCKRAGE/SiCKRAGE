@@ -34,7 +34,7 @@ from sickbeard import providers, metadata, config, webserveInit
 from sickbeard.providers.generic import GenericProvider
 from providers import ezrss, tvtorrents, btn, newznab, womble, thepiratebay, torrentleech, kat, iptorrents, \
     omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, nextgen, speedcd, nyaatorrents, fanzub, torrentbytes, animezb, \
-    freshontv, bitsoup, t411, tokyotoshokan
+    freshontv, bitsoup, t411, tokyotoshokan, nzbto
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
     naming_ep_type
 from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
@@ -51,6 +51,8 @@ from sickbeard.common import SD, SKIPPED, NAMING_REPEAT
 from sickbeard.databases import mainDB, cache_db, failed_db
 
 from lib.configobj import ConfigObj
+
+from random import randrange
 
 PID = None
 
@@ -113,7 +115,7 @@ GIT_RESET = False
 GIT_REMOTE = ''
 GIT_REMOTE_URL = ''
 CUR_COMMIT_BRANCH = ''
-GIT_ORG = 'SiCKRAGETV'
+GIT_ORG = 'cytec'
 GIT_REPO = 'SickRage'
 GIT_USERNAME = None
 GIT_PASSWORD = None
@@ -252,6 +254,10 @@ WOMBLE = False
 OMGWTFNZBS = False
 OMGWTFNZBS_USERNAME = None
 OMGWTFNZBS_APIKEY = None
+
+NZBTO = False
+NZBTO_USERNAME = None
+NZBTO_APIKEY = None
 
 NEWZBIN = False
 NEWZBIN_USERNAME = None
@@ -464,7 +470,7 @@ DELETE_FAILED = False
 
 EXTRA_SCRIPTS = []
 
-IGNORE_WORDS = "german,french,core2hd,dutch,swedish,reenc,MrLss"
+IGNORE_WORDS = "french,core2hd,dutch,swedish,reenc,MrLss"
 REQUIRE_WORDS = ""
 
 CALENDAR_UNPROTECTED = False
@@ -526,7 +532,7 @@ def initialize(consoleLogging=True):
             AUTOPOSTPROCESSER_FREQUENCY, DEFAULT_AUTOPOSTPROCESSER_FREQUENCY, MIN_AUTOPOSTPROCESSER_FREQUENCY, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
             ANIME_SPLIT_HOME, SCENE_DEFAULT, PLAY_VIDEOS, BACKLOG_DAYS, GIT_ORG, GIT_REPO, GIT_USERNAME, GIT_PASSWORD, \
-            GIT_AUTOISSUES, gh
+            GIT_AUTOISSUES, gh, NZBTO, NZBTO_APIKEY, NZBTO_USERNAME
 
         if __INITIALIZED__:
             return False
@@ -560,7 +566,7 @@ def initialize(consoleLogging=True):
         GIT_PASSWORD = check_setting_str(CFG, 'General', 'git_password', '', censor_log=True)
 
         # github api
-        try:gh = Github(user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
+        try:gh = Github(user_agent="SiCKRAGE").get_user(GIT_ORG).get_repo(GIT_REPO)
         except:gh = None
 
         # debugging
@@ -586,7 +592,7 @@ def initialize(consoleLogging=True):
         # git_remote
         GIT_REMOTE = check_setting_str(CFG, 'General', 'git_remote', 'origin')
         GIT_REMOTE_URL = check_setting_str(CFG, 'General', 'git_remote_url',
-                                           'https://github.com/SiCKRAGETV/SickRage.git')
+                                           'https://github.com/cytec/SickRage.git')
 
         # current commit hash
         CUR_COMMIT_HASH = check_setting_str(CFG, 'General', 'cur_commit_hash', '')
@@ -1149,6 +1155,7 @@ def initialize(consoleLogging=True):
         # initialize schedulers
         # updaters
         update_now = datetime.timedelta(minutes=0)
+        random_hour = randrange(1,12)
         versionCheckScheduler = scheduler.Scheduler(versionChecker.CheckVersion(),
                                                     cycleTime=datetime.timedelta(hours=UPDATE_FREQUENCY),
                                                     threadName="CHECKVERSION",
@@ -1161,7 +1168,7 @@ def initialize(consoleLogging=True):
         showUpdateScheduler = scheduler.Scheduler(showUpdater.ShowUpdater(),
                                                   cycleTime=datetime.timedelta(hours=1),
                                                   threadName="SHOWUPDATER",
-                                                  start_time=datetime.time(hour=3))  # 3 AM
+                                                  start_time=datetime.time(hour=random_hour))  # 3 AM
 
         # searchers
         searchQueueScheduler = scheduler.Scheduler(search_queue.SearchQueue(),

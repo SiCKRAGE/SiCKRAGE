@@ -38,11 +38,13 @@ class NMJv2Notifier:
         #Not implemented: Start the scanner when snatched does not make any sense
 
     def notify_download(self, ep_name):
-        self._notifyNMJ()
+        if sickbeard.USE_NMJv2:
+            self._notifyNMJ()
 
     def notify_subtitle_download(self, ep_name, lang):
-        self._notifyNMJ()
-        
+        if sickbeard.USE_NMJv2:
+            self._notifyNMJ()
+
     def notify_git_update(self, new_version):
         return False
         # Not implemented, no reason to start scanner.
