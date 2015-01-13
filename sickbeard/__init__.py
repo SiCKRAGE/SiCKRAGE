@@ -310,6 +310,8 @@ NZBTO = False
 NZBTO_USERNAME = None
 NZBTO_APIKEY = None
 
+NZBINDEX = False
+
 NEWZBIN = False
 NEWZBIN_USERNAME = None
 NEWZBIN_PASSWORD = None
@@ -668,7 +670,7 @@ def initialize(consoleLogging=True):  # pylint: disable=too-many-locals, too-man
             ANIME_SPLIT_HOME, SCENE_DEFAULT, DOWNLOAD_URL, BACKLOG_DAYS, GIT_USERNAME, GIT_PASSWORD, \
             DEVELOPER, DISPLAY_ALL_SEASONS, SSL_VERIFY, NEWS_LAST_READ, NEWS_LATEST, SOCKET_TIMEOUT, \
             SYNOLOGY_DSM_HOST, SYNOLOGY_DSM_USERNAME, SYNOLOGY_DSM_PASSWORD, SYNOLOGY_DSM_PATH, GUI_LANG, \
-            FANART_BACKGROUND, FANART_BACKGROUND_OPACITY, NZBTO, NZBTO_APIKEY, NZBTO_USERNAME
+            FANART_BACKGROUND, FANART_BACKGROUND_OPACITY, NZBTO, NZBTO_APIKEY, NZBTO_USERNAME, NZBINDEX
 
         if __INITIALIZED__:
             return False
@@ -986,6 +988,8 @@ def initialize(consoleLogging=True):  # pylint: disable=too-many-locals, too-man
         NZBS = bool(check_setting_int(CFG, 'NZBs', 'nzbs', 0))
         NZBS_UID = check_setting_str(CFG, 'NZBs', 'nzbs_uid', '', censor_log=True)
         NZBS_HASH = check_setting_str(CFG, 'NZBs', 'nzbs_hash', '', censor_log=True)
+
+        NZBINDEX = bool(check_setting_int(CFG, 'NZBINDEX', 'nzbindex', 0))
 
         NEWZBIN = bool(check_setting_int(CFG, 'Newzbin', 'newzbin', 0))
         NEWZBIN_USERNAME = check_setting_str(CFG, 'Newzbin', 'newzbin_username', '', censor_log=True)
