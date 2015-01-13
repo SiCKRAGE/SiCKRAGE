@@ -103,25 +103,28 @@ class NewznabProvider(generic.NZBProvider):
         try:
             data = self.cache.getRSSFeed("%s/api?%s" % (self.url, urllib.urlencode(params)))
         except:
-            logger.log(u"Error getting html for [%s]" % 
+            logger.log(u"Error getting html for [%s]" %
                     ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.items())) ), logger.DEBUG)
-            return (False, return_categories, "Error getting html for [%s]" % 
+            return (False, return_categories, "Error getting html for [%s]" %
                     ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.items()) )))
 
         if not self._checkAuthFromData(data):
             logger.log(u"Error parsing xml for [%s]" % (self.name), logger.DEBUG)
             return False, return_categories, "Error parsing xml for [%s]" % (self.name)
-            
+
         try:
             for category in data.feed.categories:
-                if category.get('name') == 'TV':
+                if category.get('name').startswith('TV'):
+                        return_categories.append(category)
                         for subcat in category.subcats:
+                            subcat['name'] = category.get('name') + ' - ' + subcat.get('name')
+                            print subcat
                             return_categories.append(subcat)
         except:
             logger.log(u"Error parsing result for [%s]" % (self.name),
                        logger.DEBUG)
-            return (False, return_categories, "Error parsing result for [%s]" % (self.name))                                         
-          
+            return (False, return_categories, "Error parsing result for [%s]" % (self.name))
+
         return True, return_categories, ""
 
     def _get_season_search_strings(self, ep_obj):
@@ -194,12 +197,12 @@ class NewznabProvider(generic.NZBProvider):
                 # Start with only applying the searchstring to anime shows
                 params['q'] = helpers.sanitizeSceneName(cur_exception)
                 paramsNoEp = params.copy()
-                
+
                 paramsNoEp['q'] = paramsNoEp['q'] + " " + str(paramsNoEp['ep'])
                 if "ep" in paramsNoEp:
                     paramsNoEp.pop("ep")
                 to_return.append(paramsNoEp)
-        
+
         return to_return
 
     def _doGeneralSearch(self, search_string):
@@ -300,11 +303,11 @@ class NewznabProvider(generic.NZBProvider):
             # No items found, prevent from doing another search
             if total == 0:
                 break
-                
+
             if offset != params['offset']:
                 logger.log("Tell your newznab provider to fix their bloody newznab responses")
                 break
-            
+
             params['offset'] += params['limit']
             if (total > int(params['offset'])):
                 offset = int(params['offset'])
