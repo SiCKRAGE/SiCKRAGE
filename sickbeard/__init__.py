@@ -34,7 +34,7 @@ from sickbeard import providers, metadata, config, webserveInit
 from sickbeard.providers.generic import GenericProvider
 from providers import ezrss, tvtorrents, btn, newznab, womble, thepiratebay, torrentleech, kat, iptorrents, \
     omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, nextgen, speedcd, nyaatorrents, fanzub, torrentbytes, animezb, \
-    freshontv, bitsoup, t411, tokyotoshokan, nzbto
+    freshontv, bitsoup, t411, tokyotoshokan, nzbto, nzbindex
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
     naming_ep_type
 from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
@@ -258,6 +258,8 @@ OMGWTFNZBS_APIKEY = None
 NZBTO = False
 NZBTO_USERNAME = None
 NZBTO_APIKEY = None
+
+NZBINDEX = False
 
 NEWZBIN = False
 NEWZBIN_USERNAME = None
@@ -532,7 +534,7 @@ def initialize(consoleLogging=True):
             AUTOPOSTPROCESSER_FREQUENCY, DEFAULT_AUTOPOSTPROCESSER_FREQUENCY, MIN_AUTOPOSTPROCESSER_FREQUENCY, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
             ANIME_SPLIT_HOME, SCENE_DEFAULT, PLAY_VIDEOS, BACKLOG_DAYS, GIT_ORG, GIT_REPO, GIT_USERNAME, GIT_PASSWORD, \
-            GIT_AUTOISSUES, gh, NZBTO, NZBTO_APIKEY, NZBTO_USERNAME
+            GIT_AUTOISSUES, gh, NZBTO, NZBTO_APIKEY, NZBTO_USERNAME, NZBINDEX
 
         if __INITIALIZED__:
             return False
@@ -770,6 +772,8 @@ def initialize(consoleLogging=True):
         NZBS = bool(check_setting_int(CFG, 'NZBs', 'nzbs', 0))
         NZBS_UID = check_setting_str(CFG, 'NZBs', 'nzbs_uid', '', censor_log=True)
         NZBS_HASH = check_setting_str(CFG, 'NZBs', 'nzbs_hash', '', censor_log=True)
+
+        NZBINDEX = bool(check_setting_int(CFG, 'NZBINDEX', 'nzbindex', 0))
 
         NEWZBIN = bool(check_setting_int(CFG, 'Newzbin', 'newzbin', 0))
         NEWZBIN_USERNAME = check_setting_str(CFG, 'Newzbin', 'newzbin_username', '', censor_log=True)

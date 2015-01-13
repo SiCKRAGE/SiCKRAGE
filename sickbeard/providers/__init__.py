@@ -40,6 +40,7 @@ __all__ = ['ezrss',
            't411',
            'tokyotoshokan',
            'nzbto',
+           'nzbindex'
 ]
 
 import sickbeard
