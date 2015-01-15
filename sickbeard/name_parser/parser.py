@@ -73,7 +73,7 @@ class NameParser(object):
                 logger.log("REGEX After: %s" % release_name, logger.DEBUG)
 
         return release_name
-        
+
     @staticmethod
     def clean_series_name(series_name):
         """Cleans up series name by removing any . and _
