@@ -84,18 +84,18 @@ class NewznabProvider(generic.NZBProvider):
 
     def _getURL(self, url, post_data=None, params=None, timeout=30, json=False):
         return self.getURL(url, post_data=post_data, params=params, timeout=timeout, json=json)
-    
+
     def get_newznab_categories(self):
         """
         Uses the newznab provider url and apikey to get the capabilities.
         Makes use of the default newznab caps param. e.a. http://yournewznab/api?t=caps&apikey=skdfiw7823sdkdsfjsfk
-        Returns a tuple with (succes or not, array with dicts [{"id": "5070", "name": "Anime"}, 
+        Returns a tuple with (succes or not, array with dicts [{"id": "5070", "name": "Anime"},
         {"id": "5080", "name": "Documentary"}, {"id": "5020", "name": "Foreign"}...etc}], error message)
         """
         return_categories = []
-        
+
         self._checkAuth()
-        
+
         params = {"t": "caps"}
         if self.needs_auth and self.key:
             params['apikey'] = self.key
@@ -118,7 +118,6 @@ class NewznabProvider(generic.NZBProvider):
                         return_categories.append(category)
                         for subcat in category.subcats:
                             subcat['name'] = category.get('name') + ' - ' + subcat.get('name')
-                            print subcat
                             return_categories.append(subcat)
         except:
             logger.log(u"Error parsing result for [%s]" % (self.name),
@@ -189,7 +188,7 @@ class NewznabProvider(generic.NZBProvider):
         for cur_exception in name_exceptions:
             params['q'] = helpers.sanitizeSceneName(cur_exception)
             to_return.append(params)
-        
+
             if ep_obj.show.anime:
                 # Experimental, add a searchstring without search explicitly for the episode!
                 # Remove the ?ep=e46 paramater and use add the episode number to the query paramater.
