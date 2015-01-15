@@ -268,6 +268,33 @@ $(document).ready(function(){
                 $('#testNMJv2').prop('disabled', false);
             });
     });
+    
+    $('#testFreeMobile').click(function () {
+        var freemobile_id = $.trim($('#freemobile_id').val());
+        var freemobile_apikey = $.trim($('#freemobile_apikey').val());
+        if (!freemobile_id || !freemobile_apikey) {
+            $('#testFreeMobile-result').html('Please fill out the necessary fields above.');
+			if (!freemobile_id) {
+				$('#freemobile_id').addClass('warning');
+			} else {
+				$('#freemobile_id').removeClass('warning');
+			}
+			if (!freemobile_apikey) {
+				$('#freemobile_apikey').addClass('warning');
+			} else {
+				$('#freemobile_apikey').removeClass('warning');
+			}
+            return;
+        }
+		$('#freemobile_id,#freemobile_apikey').removeClass('warning');
+        $(this).prop('disabled', true);
+        $('#testFreeMobile-result').html(loading);
+        $.get(sbRoot + '/home/testFreeMobile', {'freemobile_id': freemobile_id, 'freemobile_apikey': freemobile_apikey})
+            .done(function (data) {
+                $('#testFreeMobile-result').html(data);
+                $('#testFreeMobile').prop('disabled', false);
+            });
+    });
 	
     $('#testTrakt').click(function () {
         var trakt_api = $.trim($('#trakt_api').val());
@@ -465,6 +492,13 @@ $(document).ready(function(){
     }
     // Load the per show notify lists everytime this page is loaded
     load_show_notify_lists();
+
+    $('#email_show_save').click(function() {
+	$.post(sbRoot + "/home/saveShowNotifyList", { show: $('#email_show').val(), emails: $('#email_show_list').val()}, function (data) {
+	    // Reload the per show notify lists to reflect changes
+	    load_show_notify_lists();
+	});
+    });
 
     // show instructions for plex when enabled
     $('#use_plex').click(function() {
