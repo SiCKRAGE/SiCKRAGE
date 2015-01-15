@@ -62,10 +62,14 @@ class NameParser(object):
                           '^<?.* \d{9,} ?-? ', '^\.?zZz\.? ("|\')?', '^(.*) >', '^\[\d{5,}.*\[ ', '^\.: ', '^\s?-?\s?\[.+ presents\s?',
                           '^\s+?\[\d{2}\/\d{2}]\s?-?\s?("|\')?', '^>.*<<\s', '^\[.*\[\d{2}/\d{2}\]\s?-\s?("|\')','^<?.+?\[.*\d{2}] - ("|\')','\[.?TOWN.*\] ?- ?(\[.TV.\]."|\[.partner.*\]\.)?',
                           '\[\d{2}\/\d{2}\](\s|\.)?-(\s|\.)?"', '\/.*presents\.', '^(-\.")', '\.-\.TV\.-\.\d*\.-\.', '^\[\d*\]-\[FULL\]-\[#a.b.teevee.*\]-\[\.',
-                          '\[\d{2}\/\d{2}]\s+-\s"?']
+                          '\[\d{2}\/\d{2}]\s+-\s"?', '^Uploader.Presents-']
 
         for regex in releasetrim:
+            original_name = release_name
             release_name = re.sub(regex, "", release_name)
+            if original_name != release_name:
+                logger.log("REGEX Before: %s" % original_name, logger.DEBUG)
+                logger.log("REGEX After: %s" % release_name, logger.DEBUG)
 
         return release_name
 
