@@ -749,6 +749,13 @@ class Home(WebRoot):
 
         return accesMsg
 
+    def testFreeMobile(self, freemobile_id=None, freemobile_apikey=None):
+
+        result, message = notifiers.freemobile_notifier.test_notify(freemobile_id, freemobile_apikey)
+        if result:
+            return "SMS sent successfully"
+        else:
+            return "Problem sending SMS: " + message
 
     def testGrowl(self, host=None, password=None):
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
@@ -939,6 +946,16 @@ class Home(WebRoot):
             size += 1
         data['_size'] = size
         return json.dumps(data)
+
+
+    def saveShowNotifyList(self, show=None, emails=None):
+        # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
+
+        myDB = db.DBConnection()
+        if myDB.action("UPDATE tv_shows SET notify_list = ? WHERE show_id = ?", [emails, show]):
+	    return 'OK'
+	else:
+	    return 'ERROR: %s' % myDB.last_err
 
 
     def testEmail(self, host=None, port=None, smtp_from=None, use_tls=None, user=None, pwd=None, to=None):
@@ -3172,6 +3189,9 @@ class Manage(Home, WebRoot):
             else:
                 t.info_download_station = '<p>To have a better experience please set the Download Station alias as <code>download</code>, you can check this setting in the Synology DSM <b>Control Panel</b> > <b>Application Portal</b>. Make sure you allow DSM to be embedded with iFrames too in <b>Control Panel</b> > <b>DSM Settings</b> > <b>Security</b>.</p><br/><p>There is more information about this available <a href="https://github.com/midgetspy/Sick-Beard/pull/338">here</a>.</p><br/>'
 
+        if not sickbeard.TORRENT_PASSWORD == "" and not sickbeard.TORRENT_USERNAME == "":
+            t.webui_url = re.sub('://', '://' + str(sickbeard.TORRENT_USERNAME) + ':' + str(sickbeard.TORRENT_PASSWORD) + '@' ,t.webui_url)
+
         return t.respond()
 
 
@@ -3422,7 +3442,7 @@ class ConfigGeneral(Config):
 
         sickbeard.save_config()
 
-    def saveGeneral(self, log_dir=None, web_port=None, web_log=None, encryption_version=None, web_ipv6=None,
+    def saveGeneral(self, log_dir=None, log_nr = 5, log_size = 1048576, web_port=None, web_log=None, encryption_version=None, web_ipv6=None,
                     update_shows_on_start=None, trash_remove_show=None, trash_rotate_logs=None, update_frequency=None,
                     launch_browser=None, web_username=None,
                     api_key=None, indexer_default=None, timezone_display=None, cpu_preset=None,
@@ -3443,7 +3463,8 @@ class ConfigGeneral(Config):
         sickbeard.AUTO_UPDATE = config.checkbox_to_value(auto_update)
         sickbeard.NOTIFY_ON_UPDATE = config.checkbox_to_value(notify_on_update)
         # sickbeard.LOG_DIR is set in config.change_LOG_DIR()
-
+        sickbeard.LOG_NR = log_nr
+        sickbeard.LOG_SIZE = log_size
         sickbeard.UPDATE_SHOWS_ON_START = config.checkbox_to_value(update_shows_on_start)
         sickbeard.TRASH_REMOVE_SHOW = config.checkbox_to_value(trash_remove_show)
         sickbeard.TRASH_ROTATE_LOGS = config.checkbox_to_value(trash_rotate_logs)
@@ -3538,6 +3559,10 @@ class ConfigBackupRestore(Config):
         if backupDir:
             source = [os.path.join(sickbeard.DATA_DIR, 'sickbeard.db'), sickbeard.CONFIG_FILE]
             target = os.path.join(backupDir, 'sickrage-' + time.strftime('%Y%m%d%H%M%S') + '.zip')
+
+            for (dir, _, files) in os.walk(sickbeard.CACHE_DIR):
+                for f in files:
+                    source.append(os.path.join(dir, f))
 
             if helpers.makeZip(source, target):
                 finalResult += "Successful backup to " + target
@@ -4332,6 +4357,8 @@ class ConfigNotifications(Config):
                           plex_server_host=None, plex_host=None, plex_username=None, plex_password=None,
                           use_growl=None, growl_notify_onsnatch=None, growl_notify_ondownload=None,
                           growl_notify_onsubtitledownload=None, growl_host=None, growl_password=None,
+                          use_freemobile=None, freemobile_notify_onsnatch=None, freemobile_notify_ondownload=None,
+                          freemobile_notify_onsubtitledownload=None, freemobile_id=None, freemobile_apikey=None,
                           use_prowl=None, prowl_notify_onsnatch=None, prowl_notify_ondownload=None,
                           prowl_notify_onsubtitledownload=None, prowl_api=None, prowl_priority=0,
                           use_twitter=None, twitter_notify_onsnatch=None, twitter_notify_ondownload=None,
@@ -4397,6 +4424,13 @@ class ConfigNotifications(Config):
         sickbeard.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = config.checkbox_to_value(growl_notify_onsubtitledownload)
         sickbeard.GROWL_HOST = config.clean_host(growl_host, default_port=23053)
         sickbeard.GROWL_PASSWORD = growl_password
+        
+        sickbeard.USE_FREEMOBILE = config.checkbox_to_value(use_freemobile)
+        sickbeard.FREEMOBILE_NOTIFY_ONSNATCH = config.checkbox_to_value(freemobile_notify_onsnatch)
+        sickbeard.FREEMOBILE_NOTIFY_ONDOWNLOAD = config.checkbox_to_value(freemobile_notify_ondownload)
+        sickbeard.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD = config.checkbox_to_value(freemobile_notify_onsubtitledownload)
+        sickbeard.FREEMOBILE_ID = freemobile_id
+        sickbeard.FREEMOBILE_APIKEY = freemobile_apikey
 
         sickbeard.USE_PROWL = config.checkbox_to_value(use_prowl)
         sickbeard.PROWL_NOTIFY_ONSNATCH = config.checkbox_to_value(prowl_notify_onsnatch)
