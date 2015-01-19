@@ -1224,11 +1224,11 @@ class TVShow(object):
             if epStatus in (WANTED, UNAIRED, SKIPPED):
                 logger.log(u"Existing episode status is wanted/unaired/skipped, getting found episode", logger.DEBUG)
                 return True
-            elif manualSearch:
-                logger.log(
-                    u"Usually ignoring found episode, but forced search allows the quality, getting found episode",
-                    logger.DEBUG)
-                return True
+            #elif manualSearch:
+            #    logger.log(
+            #        u"Usually ignoring found episode, but forced search allows the quality, getting found episode",
+            #        logger.DEBUG)
+            #    return True
             else:
                 logger.log(u"Quality is on wanted list, need to check if it's better than existing quality",
                            logger.DEBUG)
@@ -1269,7 +1269,7 @@ class TVShow(object):
 
             if epStatus == FAILED:
                 return Overview.WANTED
-            elif epStatus in (SNATCHED, SNATCHED_PROPER, SNATCHED_BEST):
+            elif epStatus in (SNATCHED_BEST, SNATCHED, SNATCHED_PROPER ) and curQuality == maxBestQuality:
                 return Overview.SNATCHED
             # if they don't want re-downloads then we call it good if they have anything
             elif maxBestQuality == None:

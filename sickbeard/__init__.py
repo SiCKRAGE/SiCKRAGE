@@ -32,7 +32,7 @@ from github import Github
 
 from sickbeard import providers, metadata, config, webserveInit
 from sickbeard.providers.generic import GenericProvider
-from providers import ezrss, tvtorrents, btn, newznab, womble, thepiratebay, torrentleech, kat, iptorrents, \
+from providers import ezrss, btn, newznab, womble, thepiratebay, torrentleech, kat, iptorrents, \
     omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, nextgen, speedcd, nyaatorrents, fanzub, torrentbytes, animezb, \
     freshontv, bitsoup, t411, tokyotoshokan
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
@@ -125,6 +125,8 @@ started = False
 
 ACTUAL_LOG_DIR = None
 LOG_DIR = None
+LOG_NR = 5
+LOG_SIZE = 1048576
 
 SOCKET_TIMEOUT = None
 
@@ -137,6 +139,8 @@ WEB_HOST = None
 WEB_IPV6 = None
 
 PLAY_VIDEOS = False
+
+DOWNLOAD_URL = None
 
 HANDLE_REVERSE_PROXY = False
 PROXY_SETTING = None
@@ -313,6 +317,13 @@ GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = False
 GROWL_HOST = ''
 GROWL_PASSWORD = None
 
+USE_FREEMOBILE = False
+FREEMOBILE_NOTIFY_ONSNATCH = False
+FREEMOBILE_NOTIFY_ONDOWNLOAD = False
+FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD = False
+FREEMOBILE_ID = ''
+FREEMOBILE_APIKEY= ''
+
 USE_PROWL = False
 PROWL_NOTIFY_ONSNATCH = False
 PROWL_NOTIFY_ONDOWNLOAD = False
@@ -485,7 +496,7 @@ def get_backlog_cycle_time():
 def initialize(consoleLogging=True):
     with INIT_LOCK:
 
-        global BRANCH, GIT_RESET, GIT_REMOTE, GIT_REMOTE_URL, CUR_COMMIT_HASH, CUR_COMMIT_BRANCH, ACTUAL_LOG_DIR, LOG_DIR, WEB_PORT, WEB_LOG, ENCRYPTION_VERSION, WEB_ROOT, WEB_USERNAME, WEB_PASSWORD, WEB_HOST, WEB_IPV6, API_KEY, API_ROOT, ENABLE_HTTPS, HTTPS_CERT, HTTPS_KEY, \
+        global BRANCH, GIT_RESET, GIT_REMOTE, GIT_REMOTE_URL, CUR_COMMIT_HASH, CUR_COMMIT_BRANCH, ACTUAL_LOG_DIR, LOG_DIR, LOG_NR, LOG_SIZE, WEB_PORT, WEB_LOG, ENCRYPTION_VERSION, WEB_ROOT, WEB_USERNAME, WEB_PASSWORD, WEB_HOST, WEB_IPV6, API_KEY, API_ROOT, ENABLE_HTTPS, HTTPS_CERT, HTTPS_KEY, \
             HANDLE_REVERSE_PROXY, USE_NZBS, USE_TORRENTS, NZB_METHOD, NZB_DIR, DOWNLOAD_PROPERS, RANDOMIZE_PROVIDERS, CHECK_PROPERS_INTERVAL, ALLOW_HIGH_PRIORITY, TORRENT_METHOD, \
             SAB_USERNAME, SAB_PASSWORD, SAB_APIKEY, SAB_CATEGORY, SAB_CATEGORY_ANIME, SAB_HOST, \
             NZBGET_USERNAME, NZBGET_PASSWORD, NZBGET_CATEGORY, NZBGET_CATEGORY_ANIME, NZBGET_PRIORITY, NZBGET_HOST, NZBGET_USE_HTTPS, backlogSearchScheduler, \
@@ -498,7 +509,7 @@ def initialize(consoleLogging=True):
             showUpdateScheduler, __INITIALIZED__, LAUNCH_BROWSER, UPDATE_SHOWS_ON_START, TRASH_REMOVE_SHOW, TRASH_ROTATE_LOGS, SORT_ARTICLE, showList, loadingShowList, \
             NEWZNAB_DATA, NZBS, NZBS_UID, NZBS_HASH, INDEXER_DEFAULT, INDEXER_TIMEOUT, USENET_RETENTION, TORRENT_DIR, \
             QUALITY_DEFAULT, FLATTEN_FOLDERS_DEFAULT, SUBTITLES_DEFAULT, STATUS_DEFAULT, DAILYSEARCH_STARTUP, \
-            GROWL_NOTIFY_ONSNATCH, GROWL_NOTIFY_ONDOWNLOAD, GROWL_NOTIFY_ONSUBTITLEDOWNLOAD, TWITTER_NOTIFY_ONSNATCH, TWITTER_NOTIFY_ONDOWNLOAD, TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD, \
+            GROWL_NOTIFY_ONSNATCH, GROWL_NOTIFY_ONDOWNLOAD, GROWL_NOTIFY_ONSUBTITLEDOWNLOAD, TWITTER_NOTIFY_ONSNATCH, TWITTER_NOTIFY_ONDOWNLOAD, TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD, USE_FREEMOBILE, FREEMOBILE_ID, FREEMOBILE_APIKEY, FREEMOBILE_NOTIFY_ONSNATCH, FREEMOBILE_NOTIFY_ONDOWNLOAD, FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD, \
             USE_GROWL, GROWL_HOST, GROWL_PASSWORD, USE_PROWL, PROWL_NOTIFY_ONSNATCH, PROWL_NOTIFY_ONDOWNLOAD, PROWL_NOTIFY_ONSUBTITLEDOWNLOAD, PROWL_API, PROWL_PRIORITY, PROG_DIR, \
             USE_PYTIVO, PYTIVO_NOTIFY_ONSNATCH, PYTIVO_NOTIFY_ONDOWNLOAD, PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD, PYTIVO_UPDATE_LIBRARY, PYTIVO_HOST, PYTIVO_SHARE_NAME, PYTIVO_TIVO_NAME, \
             USE_NMA, NMA_NOTIFY_ONSNATCH, NMA_NOTIFY_ONDOWNLOAD, NMA_NOTIFY_ONSUBTITLEDOWNLOAD, NMA_API, NMA_PRIORITY, \
@@ -526,7 +537,7 @@ def initialize(consoleLogging=True):
             USE_FAILED_DOWNLOADS, DELETE_FAILED, ANON_REDIRECT, LOCALHOST_IP, TMDB_API_KEY, DEBUG, PROXY_SETTING, PROXY_INDEXERS, \
             AUTOPOSTPROCESSER_FREQUENCY, DEFAULT_AUTOPOSTPROCESSER_FREQUENCY, MIN_AUTOPOSTPROCESSER_FREQUENCY, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
-            ANIME_SPLIT_HOME, SCENE_DEFAULT, PLAY_VIDEOS, BACKLOG_DAYS, GIT_ORG, GIT_REPO, GIT_USERNAME, GIT_PASSWORD, \
+            ANIME_SPLIT_HOME, SCENE_DEFAULT, PLAY_VIDEOS, DOWNLOAD_URL, BACKLOG_DAYS, GIT_ORG, GIT_REPO, GIT_USERNAME, GIT_PASSWORD, \
             GIT_AUTOISSUES, gh
 
         if __INITIALIZED__:
@@ -569,7 +580,8 @@ def initialize(consoleLogging=True):
 
         ACTUAL_LOG_DIR = check_setting_str(CFG, 'General', 'log_dir', 'Logs')
         LOG_DIR = os.path.normpath(os.path.join(DATA_DIR, ACTUAL_LOG_DIR))
-
+        LOG_NR = check_setting_int(CFG, 'General', 'log_nr', 5) #Default to 5 backup file (sickrage.log.x)
+        LOG_SIZE = check_setting_int(CFG, 'General', 'log_size', 1048576) #Default to max 1MB per logfile
         fileLogging = True
         if not helpers.makeDir(LOG_DIR):
             sys.stderr.write("!!! No log folder, logging to screen only!\n")
@@ -640,6 +652,8 @@ def initialize(consoleLogging=True):
         LAUNCH_BROWSER = bool(check_setting_int(CFG, 'General', 'launch_browser', 1))
 
         PLAY_VIDEOS = bool(check_setting_int(CFG, 'General', 'play_videos', 0))
+
+        DOWNLOAD_URL = check_setting_str(CFG, 'General', 'download_url', "")
 
         LOCALHOST_IP = check_setting_str(CFG, 'General', 'localhost_ip', '')
 
@@ -825,6 +839,13 @@ def initialize(consoleLogging=True):
         GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = bool(check_setting_int(CFG, 'Growl', 'growl_notify_onsubtitledownload', 0))
         GROWL_HOST = check_setting_str(CFG, 'Growl', 'growl_host', '')
         GROWL_PASSWORD = check_setting_str(CFG, 'Growl', 'growl_password', '', censor_log=True)
+
+        USE_FREEMOBILE = bool(check_setting_int(CFG, 'FreeMobile', 'use_freemobile', 0))
+        FREEMOBILE_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'FreeMobile', 'freemobile_notify_onsnatch', 0))
+        FREEMOBILE_NOTIFY_ONDOWNLOAD = bool(check_setting_int(CFG, 'FreeMobile', 'freemobile_notify_ondownload', 0))
+        FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD = bool(check_setting_int(CFG, 'FreeMobile', 'freemobile_notify_onsubtitledownload', 0))
+        FREEMOBILE_ID = check_setting_str(CFG, 'FreeMobile', 'freemobile_id', '')
+        FREEMOBILE_APIKEY = check_setting_str(CFG, 'FreeMobile', 'freemobile_apikey', '')
 
         USE_PROWL = bool(check_setting_int(CFG, 'Prowl', 'use_prowl', 0))
         PROWL_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'Prowl', 'prowl_notify_onsnatch', 0))
@@ -1424,6 +1445,8 @@ def save_config():
     new_config['General']['config_version'] = CONFIG_VERSION
     new_config['General']['encryption_version'] = int(ENCRYPTION_VERSION)
     new_config['General']['log_dir'] = ACTUAL_LOG_DIR if ACTUAL_LOG_DIR else 'Logs'
+    new_config['General']['log_nr'] = int(LOG_NR)
+    new_config['General']['log_size'] = int(LOG_SIZE)
     new_config['General']['socket_timeout'] = SOCKET_TIMEOUT
     new_config['General']['web_port'] = WEB_PORT
     new_config['General']['web_host'] = WEB_HOST
@@ -1433,6 +1456,7 @@ def save_config():
     new_config['General']['web_username'] = WEB_USERNAME
     new_config['General']['web_password'] = helpers.encrypt(WEB_PASSWORD, ENCRYPTION_VERSION)
     new_config['General']['play_videos'] = int(PLAY_VIDEOS)
+    new_config['General']['download_url'] = DOWNLOAD_URL
     new_config['General']['localhost_ip'] = LOCALHOST_IP
     new_config['General']['cpu_preset'] = CPU_PRESET
     new_config['General']['anon_redirect'] = ANON_REDIRECT
@@ -1680,6 +1704,14 @@ def save_config():
     new_config['Growl']['growl_notify_onsubtitledownload'] = int(GROWL_NOTIFY_ONSUBTITLEDOWNLOAD)
     new_config['Growl']['growl_host'] = GROWL_HOST
     new_config['Growl']['growl_password'] = helpers.encrypt(GROWL_PASSWORD, ENCRYPTION_VERSION)
+
+    new_config['FreeMobile'] = {}
+    new_config['FreeMobile']['use_freemobile'] = int(USE_FREEMOBILE)
+    new_config['FreeMobile']['freemobile_notify_onsnatch'] = int(FREEMOBILE_NOTIFY_ONSNATCH)
+    new_config['FreeMobile']['freemobile_notify_ondownload'] = int(FREEMOBILE_NOTIFY_ONDOWNLOAD)
+    new_config['FreeMobile']['freemobile_notify_onsubtitledownload'] = int(FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD)
+    new_config['FreeMobile']['freemobile_id'] = FREEMOBILE_ID
+    new_config['FreeMobile']['freemobile_apikey'] = FREEMOBILE_APIKEY
 
     new_config['Prowl'] = {}
     new_config['Prowl']['use_prowl'] = int(USE_PROWL)
