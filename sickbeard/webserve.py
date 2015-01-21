@@ -3679,6 +3679,7 @@ class ConfigSearch(Config):
         sickbeard.TORRENT_PAUSED = config.checkbox_to_value(torrent_paused)
         sickbeard.TORRENT_HIGH_BANDWIDTH = config.checkbox_to_value(torrent_high_bandwidth)
         sickbeard.TORRENT_HOST = config.clean_url(torrent_host)
+        sickbeard.TORRENT_RPCURL = torrent_rpcurl
 
         sickbeard.save_config()
 
