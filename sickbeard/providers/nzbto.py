@@ -243,7 +243,7 @@ class NzbtoProvider(generic.NZBProvider):
 class NzbtoCache(tvcache.TVCache):
     def __init__(self, provider):
         tvcache.TVCache.__init__(self, provider)
-        self.minTime = 1
+        self.minTime = 20
 
     def _getRSSData(self):
         result = {'entries': self.provider._doSearch("cache")}
