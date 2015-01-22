@@ -4690,34 +4690,12 @@ class ErrorLogs(WebRoot):
         classes.ErrorViewer.clear()
         return self.redirect("/errorlogs/")
 
-    def viewlog(self, minLevel=logger.INFO, logFilter="NONE",logSearch=None, maxLines=500):
+    def viewlog(self, minLevel=logger.INFO, maxLines=500):
 
         t = PageTemplate(rh=self, file="viewlogs.tmpl")
         t.submenu = self.ErrorLogsMenu()
 
         minLevel = int(minLevel)
-
-        logNameFilters = {'NONE': u'None',
-                          'DAILYSEARCH': u'Daily Search',
-                          'BACKLOGSEARCH': u'Backlog Search',
-                          'SHOWUPDATE': u'Show Update',
-                          'VERSIONCHECK': u'Version Check',
-                          'SHOWQUEUE': u'Show Queue',
-                          'SEARCHQUEUE': u'Search Queue',
-                          'PROPERFINDER': u'Proper Finder',
-                          'AUTOPOSTPROCESSER': u'Auto Postprocess',
-                          'POSTPROCESSER': u'Postprocess',
-                          'SUBTITLESFINDER': u'Subtitle Finder',
-                          'TRAKTCHECKER': u'Trakt Checker',
-                          'EVENT': u'Event',
-                          'ERROR': u'Errors',
-                          'TORNADO': u'Tornado',
-                          'THREAD': u'Thread',
-                          'MAIN': u'Main'
-                          }
-
-        if logFilter not in logNameFilters:
-            logFilter = 'NONE'
 
         data = []
         if os.path.isfile(logger.logFile):
@@ -4739,15 +4717,11 @@ class ErrorLogs(WebRoot):
 
             if match:
                 level = match.group(7)
-                logName = match.group(8)
                 if level not in logger.reverseNames:
                     lastLine = False
                     continue
 
-                if logSearch and logSearch in x:
-                    lastLine = True
-                    finalData.append(x)
-                elif not logSearch and logger.reverseNames[level] >= minLevel and (logFilter == 'NONE' or logFilter in logName):
+                if logger.reverseNames[level] >= minLevel:
                     lastLine = True
                     finalData.append(x)
                 else:
@@ -4766,9 +4740,6 @@ class ErrorLogs(WebRoot):
 
         t.logLines = result
         t.minLevel = minLevel
-        t.logNameFilters = logNameFilters
-        t.logFilter = logFilter
-        t.logSearch = logSearch
 
         return t.respond()
 
