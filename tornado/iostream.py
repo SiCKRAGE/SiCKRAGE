@@ -1379,7 +1379,7 @@ def _merge_prefix(deque, size):
     >>> _merge_prefix(d, 100); print(d)
     deque(['abcdefghij'])
     """
-    if len(deque) == 1 and len(deque[0]) <= size:
+    if not deque:
         return
     prefix = []
     remaining = size
