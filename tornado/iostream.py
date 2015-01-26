@@ -1379,6 +1379,8 @@ def _merge_prefix(deque, size):
     >>> _merge_prefix(d, 100); print(d)
     deque(['abcdefghij'])
     """
+    if not deque:
+        deque.appendleft(b"")
     if len(deque) == 1 and len(deque[0]) <= size:
         return
     prefix = []
@@ -1395,9 +1397,6 @@ def _merge_prefix(deque, size):
     # so do the merge based on the type of data that's actually present.
     if prefix:
         deque.appendleft(type(prefix[0])().join(prefix))
-    if not deque:
-        deque.appendleft(b"")
-
 
 def doctests():
     import doctest
