@@ -376,6 +376,7 @@
 				<th class="col-ep">Scene Absolute</th>
 			#end if
 				<th class="col-name">Name</th>
+				<th class="col-ep">Filesize</th>
 				<th class="col-airdate">Airdate</th>
 			#if len($sickbeard.DOWNLOAD_URL) > 0
 				<th class="col-ep">Download</th>
@@ -469,6 +470,13 @@
 				<img src="$sbRoot/images/info32.png" width="16" height="16" class="plotInfoNone" alt="" />
 			#end if
 			$epResult["name"]
+		</td>
+		
+		<td class="col-ep">
+			#if $epResult["file_size"]:
+				#set $file_size = $epResult["file_size"]  / 1024 / 1024 
+				$file_size MB
+			#end if
 		</td>
 		
 		<td class="col-airdate">
