@@ -1800,7 +1800,7 @@ class Home(WebRoot):
                                 'status': statusStrings[searchThread.segment.status],
                                 'quality': self.getQualityClass(searchThread.segment)})
             else:
-                for epObj in searchThread.segment:
+                for epObj in searchThread.segment[0]:
                     results.append({'episode': epObj.episode,
                                     'episodeindexid': epObj.indexerid,
                                     'season': epObj.season,
@@ -1838,7 +1838,7 @@ class Home(WebRoot):
                     episodes += getEpisodes(searchThread, searchstatus)
             else:
                 ### These are only Failed Downloads/Retry SearchThreadItems.. lets loop through the segement/episodes
-                if not [i for i, j in zip(searchThread.segment, episodes) if i.indexerid == j['episodeindexid']]:
+                if not [i for i, j in zip(searchThread.segment[0], episodes) if i.indexerid == j['episodeindexid']]:
                     episodes += getEpisodes(searchThread, searchstatus)
 
         return json.dumps({'show': show, 'episodes': episodes})
