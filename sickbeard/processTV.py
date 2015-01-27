@@ -378,10 +378,17 @@ def already_postprocessed(dirName, videofile, force, result):
             result.output += logHelper(u"You're trying to post process a video that's already been processed, skipping",
                                    logger.DEBUG)
             return True
-
+        
         #Needed if we have downloaded the same episode @ different quality
-        search_sql = "SELECT tv_episodes.indexerid, history.resource FROM tv_episodes INNER JOIN history ON history.showid=tv_episodes.showid"
+        #But we need to make sure we check the history of the episode we're going to PP, and not others
+        np = NameParser(dirName, tryIndexers=True, convert=True)
+        parse_result = np.parse(dirName)
+        search_sql = "SELECT tv_episodes.indexerid, history.resource FROM tv_episodes INNER JOIN history ON history.showid=tv_episodes.showid" #This part is always the same
         search_sql += " WHERE history.season=tv_episodes.season and history.episode=tv_episodes.episode"
+        #If we find a showid, a season number, and one or more episode numbers then we need to use those in the query
+        if parse_result.show.indexerid and parse_result.episode_numbers and parse_result.season_number:
+            search_sql += " and tv_episodes.showid = '" + str(parse_result.show.indexerid) + "' and tv_episodes.season = '" + str(parse_result.season_number) + "' and tv_episodes.episode = '" + str(parse_result.episode_numbers[0]) + "'"
+        
         search_sql += " and tv_episodes.status IN (" + ",".join([str(x) for x in common.Quality.DOWNLOADED]) + ")"
         search_sql += " and history.resource LIKE ?"
         sqlResult = myDB.select(search_sql, [u'%' + videofile])
