@@ -250,7 +250,7 @@ class FailedQueueItem(generic_queue.QueueItem):
         self.started = True
         
         try:
-            for epObj in self.segment:
+            for epObj in self.segment[0]:
             
                 logger.log(u"Marking episode as bad: [" + epObj.prettyName() + "]")
                 
