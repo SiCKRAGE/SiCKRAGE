@@ -39,6 +39,7 @@ __all__ = ['ezrss',
            'bitsoup',
            't411',
            'tokyotoshokan',
+           'rarbg',
 ]
 
 import sickbeard
