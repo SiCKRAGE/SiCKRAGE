@@ -408,14 +408,10 @@ $(document).ready(function(){
         $.get(sbRoot + "/home/getPushbulletDevices", {'api': pushbullet_api},
             function (data) {
                 var devices = jQuery.parseJSON(data).devices;
-                $("#pushbullet_device_list").html('');
+                $("#pushbullet_device_list").html('<option value="" selected>All devices</option>');
                 for (var i = 0; i < devices.length; i++) {
                     if(devices[i].active == true) {
-                        if(current_pushbullet_device == devices[i].iden) {
-                            $("#pushbullet_device_list").append('<option value="'+devices[i].iden+'" selected>' + devices[i].nickname + '</option>')
-                        } else {
-                            $("#pushbullet_device_list").append('<option value="'+devices[i].iden+'">' + devices[i].nickname + '</option>')
-                        }
+                        $("#pushbullet_device_list").append('<option value="'+devices[i].iden+'">' + devices[i].nickname + '</option>');
                     }
                 }
                 if(msg) {
