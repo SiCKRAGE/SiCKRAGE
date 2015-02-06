@@ -1240,6 +1240,10 @@ class TVShow(object):
             logger.log(u"Episode already exists but the found episode has better quality, getting found episode",
                        logger.DEBUG)
             return True
+        elif curStatus == Quality.UNKNOWN and manualSearch:
+            logger.log(u"Episode already exists but quality is Unknown, getting found episode",
+                       logger.DEBUG)
+            return True
         else:
             logger.log(u"Episode already exists and the found episode has same/lower quality, ignoring found episode",
                        logger.DEBUG)
@@ -1269,6 +1273,8 @@ class TVShow(object):
 
             if epStatus == FAILED:
                 return Overview.WANTED
+            if curQuality == Quality.UNKNOWN:
+                return Overview.QUAL
             elif epStatus in (SNATCHED_BEST, SNATCHED, SNATCHED_PROPER ) and curQuality == maxBestQuality:
                 return Overview.SNATCHED
             # if they don't want re-downloads then we call it good if they have anything
@@ -2187,8 +2193,11 @@ class TVEpisode(object):
         if multi == None:
             multi = sickbeard.NAMING_MULTI_EP
 
-        if anime_type == None:
-            anime_type = sickbeard.NAMING_ANIME
+        if sickbeard.NAMING_CUSTOM_ANIME:
+            if anime_type == None:
+                anime_type = sickbeard.NAMING_ANIME
+        else:
+            anime_type = 3
 
         replace_map = self._replace_map()
 

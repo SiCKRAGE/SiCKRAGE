@@ -1,5 +1,5 @@
-# Author: seedboy
-# URL: https://github.com/seedboy
+# Author: Idan Gutman
+# URL: http://code.google.com/p/sickbeard/
 #
 # This file is part of SickRage.
 #
@@ -22,27 +22,28 @@ import datetime
 import urlparse
 import sickbeard
 import generic
-from sickbeard.common import Quality
+from sickbeard.common import Quality, cpu_presets
 from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard import db
 from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
-from sickbeard.exceptions import ex, AuthException
+from sickbeard.common import Overview
+from sickbeard.exceptions import ex
 from sickbeard import clients
 from lib import requests
 from lib.requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
 from lib.unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
-from sickbeard.show_name_helpers import allPossibleShowNames
 
 
-class IPTorrentsProvider(generic.TorrentProvider):
+class HoundDawgsProvider(generic.TorrentProvider):
+
     def __init__(self):
 
-        generic.TorrentProvider.__init__(self, "IPTorrents")
+        generic.TorrentProvider.__init__(self, "HoundDawgs")
 
         self.supportsBacklog = True
 
@@ -50,43 +51,40 @@ class IPTorrentsProvider(generic.TorrentProvider):
         self.username = None
         self.password = None
         self.ratio = None
-        self.freeleech = False
+        self.minseed = None
+        self.minleech = None
 
-        self.cache = IPTorrentsCache(self)
-
-        self.urls = {'base_url': 'https://www.iptorrents.eu',
-                'login': 'https://www.iptorrents.eu/torrents/',
-                'search': 'https://www.iptorrents.eu/torrents/?%s%s&q=%s&qf=ti',
+        self.cache = HoundDawgsCache(self)
+		
+        self.urls = {'base_url': 'http://192.99.10.104/',
+		        'search': 'http://192.99.10.104/torrents.php?type=&userid=&searchstr=%s&searchimdb=&searchtags=&order_by=s3&order_way=desc&%s',
+                'login': 'http://192.99.10.104/login.php',
         }
 
         self.url = self.urls['base_url']
 
-        self.categorie = 'l73=1&l78=1&l66=1&l65=1&l79=1&l5=1&l4=1'
+        self.categories = "&filter_cat[85]=1&filter_cat[58]=1&filter_cat[57]=1&filter_cat[74]=1&filter_cat[92]=1&filter_cat[93]=1"
 
     def isEnabled(self):
         return self.enabled
 
     def imageName(self):
-        return 'iptorrents.png'
+        return 'hounddawgs.png'
 
     def getQuality(self, item, anime=False):
 
         quality = Quality.sceneQuality(item[0], anime)
         return quality
 
-    def _checkAuth(self):
-
-        if not self.username or not self.password:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
-
-        return True
-
     def _doLogin(self):
 
         login_params = {'username': self.username,
                         'password': self.password,
-                        'login': 'submit',
+                        'keeplogged': 'on',
+                        'login': 'Login',
         }
+
+        self.session = requests.Session()
 
         try:
             response = self.session.post(self.urls['login'], data=login_params, timeout=30, verify=False)
@@ -94,10 +92,10 @@ class IPTorrentsProvider(generic.TorrentProvider):
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
 
-        if re.search('tries left', response.text) \
-                or re.search('<title>IPT</title>', response.text) \
+        if re.search('Dit brugernavn eller kodeord er forkert.', response.text) \
+                or re.search('<title>Login :: HoundDawgs</title>', response.text) \
                 or response.status_code == 401:
-            logger.log(u'Invalid username or password for ' + self.name + ', Check your settings!', logger.ERROR)
+            logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
             return False
 
         return True
@@ -125,12 +123,12 @@ class IPTorrentsProvider(generic.TorrentProvider):
             return []
 
         if self.show.air_by_date:
-            for show_name in set(allPossibleShowNames(self.show)):
+            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
                             str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
-            for show_name in set(allPossibleShowNames(self.show)):
+            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
                             str(ep_obj.airdate).replace('-', '|') + '|' + \
                             ep_obj.airdate.strftime('%b')
@@ -144,7 +142,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                                                                  'episodenumber': ep_obj.scene_episode}
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -155,73 +153,90 @@ class IPTorrentsProvider(generic.TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        freeleech = '&free=on' if self.freeleech else ''
-
         if not self._doLogin():
-            return results
+            return []
 
         for mode in search_params.keys():
             for search_string in search_params[mode]:
+
                 if isinstance(search_string, unicode):
                     search_string = unidecode(search_string)
 
-                # URL with 50 tv-show results, or max 150 if adjusted in IPTorrents profile
-                searchURL = self.urls['search'] % (self.categorie, freeleech, search_string)
-                searchURL += ';o=seeders' if mode != 'RSS' else ''
+                #if mode == 'RSS':
+                    #searchURL = self.urls['index'] % self.categories
+                #else:
+                searchURL = self.urls['search'] % (search_string, self.categories)
 
-                logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)
+                logger.log(u"Search string: " + searchURL, logger.DEBUG)
 
                 data = self.getURL(searchURL)
-                if not data:
+                strTableStart = "<table class=\"torrent_table"
+                startTableIndex=data.find(strTableStart)
+                trimmedData = data[startTableIndex:]
+                if not trimmedData:
                     continue
 
                 try:
-                    data = re.sub(r'(?im)<button.+?<[\/]button>', '', data, 0)
-                    with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        if not html:
-                            logger.log(u"Invalid HTML data: " + str(data), logger.DEBUG)
-                            continue
-
-                        if html.find(text='No Torrents Found!'):
-                            logger.log(u"No results found for: " + search_string + " (" + searchURL + ")", logger.DEBUG)
-                            continue
-
-                        torrent_table = html.find('table', attrs={'class': 'torrents'})
-                        torrents = torrent_table.find_all('tr') if torrent_table else []
-
-                        #Continue only if one Release is found
-                        if len(torrents) < 2:
+                    with BS4Parser(trimmedData, features=["html5lib", "permissive"]) as html:
+                        result_table = html.find('table', {'id': 'torrent_table'})
+        
+                        if not result_table:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
-                                       logger.WARNING)
+                                       logger.DEBUG)
                             continue
+                        
+                        result_tbody = result_table.find('tbody')
+                        entries = result_tbody.contents
+                        del entries[1::2]   
 
-                        for result in torrents[1:]:
+                        for result in entries[1:]:
+                            
+                            torrent = result.find_all('td')
+                            if len(torrent) <= 1:
+                                break
+                            
+                            allAs = (torrent[1]).find_all('a')
 
                             try:
-                                torrent = result.find_all('td')[1].find('a')
-                                torrent_name = torrent.string
-                                torrent_download_url = self.urls['base_url'] + (result.find_all('td')[3].find('a'))['href']
-                                torrent_details_url = self.urls['base_url'] + torrent['href']
-                                torrent_seeders = int(result.find('td', attrs={'class': 'ac t_seeders'}).string)
-                                ## Not used, perhaps in the future ##
-                                #torrent_id = int(torrent['href'].replace('/details.php?id=', ''))
-                                #torrent_leechers = int(result.find('td', attrs = {'class' : 'ac t_leechers'}).string)
+                                link = self.urls['base_url'] + allAs[2].attrs['href']
+                                #url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
+                                title = allAs[2].string
+                                #Trimming title so accepted by scene check(Feature has been rewuestet i forum)
+                                title = title.replace("custom.", "")
+                                title = title.replace("CUSTOM.", "")
+                                title = title.replace("Custom.", "")
+                                title = title.replace("dk", "")
+                                title = title.replace("DK", "")
+                                title = title.replace("Dk", "")
+                                title = title.replace("subs.", "")
+                                title = title.replace("SUBS.", "")
+                                title = title.replace("Subs.", "")
+                                
+                                download_url = self.urls['base_url']+allAs[0].attrs['href']
+                                id = link.replace(self.urls['base_url']+'torrents.php?id=','')
+                                seeders = int(torrent[7].string)
+                                leechers = int(torrent[8].string)
+                                
                             except (AttributeError, TypeError):
                                 continue
 
-                            # Filter unseeded torrent and torrents with no name/url
-                            if mode != 'RSS' and torrent_seeders == 0:
+                            #Filter unseeded torrent
+                            if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                                 continue
 
-                            if not torrent_name or not torrent_download_url:
+                            if not title or not download_url:
                                 continue
 
-                            item = torrent_name, torrent_download_url
-                            logger.log(u"Found result: " + torrent_name + " (" + torrent_details_url + ")", logger.DEBUG)
+                            item = title, download_url, id, seeders, leechers
+                            logger.log(u"Found result: " + title + "(" + download_url + ")", logger.DEBUG)
+
                             items[mode].append(item)
 
                 except Exception, e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
+
+            #For each search mode sort all the items by seeders
+            items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
 
@@ -229,7 +244,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
 
     def _get_title_and_url(self, item):
 
-        title, url = item
+        title, url, id, seeders, leechers = item
 
         if title:
             title = u'' + title
@@ -260,6 +275,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
             self.show = helpers.findCertainShow(sickbeard.showList, int(sqlshow["showid"]))
             if self.show:
                 curEp = self.show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
+
                 searchString = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
 
                 for item in self._doSearch(searchString[0]):
@@ -271,17 +287,18 @@ class IPTorrentsProvider(generic.TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
-class IPTorrentsCache(tvcache.TVCache):
+
+class HoundDawgsCache(tvcache.TVCache):
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)
 
-        # Only poll IPTorrents every 10 minutes max
-        self.minTime = 10
+        # only poll HoundDawgs every 20 minutes max
+        self.minTime = 20
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_params)}
 
 
-provider = IPTorrentsProvider()
+provider = HoundDawgsProvider()

@@ -521,6 +521,18 @@ class WebRoot(WebHandler):
 
         return t.respond()
 
+
+class CalendarHandler(BaseHandler):
+    def get(self, *args, **kwargs):
+        if sickbeard.CALENDAR_UNPROTECTED:
+            self.write(self.calendar())
+        else:
+            self.calendar_auth()
+
+    @authenticated
+    def calendar_auth(self):
+        self.write(self.calendar())
+
     # Raw iCalendar implementation by Pedro Jose Pereira Vieito (@pvieito).
     #
     # iCalendar (iCal) - Standard RFC 5545 <http://tools.ietf.org/html/rfc5546>
@@ -928,9 +940,13 @@ class Home(WebRoot):
                 "dbloc": dbloc}
 
 
-    def testTrakt(self, api=None, username=None, password=None):
+    def testTrakt(self, username=None, password=None, disable_ssl=None):
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
-        return notifiers.trakt_notifier.test_notify(api, username, password)
+        if disable_ssl == 'true':
+            disable_ssl = True
+        else:
+            disable_ssl = False
+        return notifiers.trakt_notifier.test_notify(username, password, disable_ssl)
 
 
     def loadShowNotifyLists(self):
@@ -1375,13 +1391,13 @@ class Home(WebRoot):
             showObj.sports = sports
             showObj.subtitles = subtitles
             showObj.air_by_date = air_by_date
+            showObj.default_ep_status = int(defaultEpStatus)
 
             if not directCall:
                 showObj.lang = indexer_lang
                 showObj.dvdorder = dvdorder
                 showObj.rls_ignore_words = rls_ignore_words.strip()
                 showObj.rls_require_words = rls_require_words.strip()
-                showObj.default_ep_status = int(defaultEpStatus)
 
             # if we change location clear the db of episodes, change it, write to db, and rescan
             if os.path.normpath(showObj._location) != os.path.normpath(location):
@@ -1654,7 +1670,7 @@ class Home(WebRoot):
             msg += '<ul>'
 
             for season, segment in segments.items():
-                cur_failed_queue_item = search_queue.FailedQueueItem(showObj, [segment])
+                cur_failed_queue_item = search_queue.FailedQueueItem(showObj, segment)
                 sickbeard.searchQueueScheduler.action.add_item(cur_failed_queue_item)
 
                 msg += "<li>Season " + str(season) + "</li>"
@@ -2218,19 +2234,20 @@ class HomeAddShows(Home):
 
         logger.log(u"Getting recommended shows from Trakt.tv", logger.DEBUG)
 
-        trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD)
+        trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD, sickbeard.TRAKT_DISABLE_SSL_VERIFY)
 
         try:
-            recommendedlist = trakt_api.traktRequest("recommendations/shows.json/%APIKEY%", method='POST')
+            recommendedlist = trakt_api.traktRequest("recommendations/shows?extended=full,images")
 
             if recommendedlist:
-                indexers = ['tvdb_id', 'tvrage_id']
+                indexers = ['tvdb', 'tvrage']
                 map(final_results.append, (
-                    [int(show[indexers[sickbeard.TRAKT_DEFAULT_INDEXER - 1]]), show['url'], show['title'],
-                     show['overview'],
-                     datetime.date.fromtimestamp(int(show['first_aired']) / 1000.0).strftime('%Y%m%d')]
+                    [int(show['show']['ids'][indexers[sickbeard.TRAKT_DEFAULT_INDEXER - 1]]),
+                     'http://www.trakt.tv/shows/%s' % show['show']['ids']['slug'], show['show']['title'],
+                     show['show']['overview'],
+                     datetime.date.fromtimestamp(int(show['show']['first_aired']) / 1000.0).strftime('%Y%m%d')]
                     for show in recommendedlist if not helpers.findCertainShow(sickbeard.showList, [
-                    int(show[indexers[sickbeard.TRAKT_DEFAULT_INDEXER - 1]])])))
+                    int(show['show']['ids'][indexers[sickbeard.TRAKT_DEFAULT_INDEXER - 1]])])))
         except (traktException, traktAuthException, traktServerBusy) as e:
             logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
 
@@ -2273,14 +2290,16 @@ class HomeAddShows(Home):
 
         t.trending_shows = []
 
-        trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD)
+        trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD, sickbeard.TRAKT_DISABLE_SSL_VERIFY)
 
         try:
-            shows = trakt_api.traktRequest("shows/trending.json/%APIKEY%") or []
+            shows = trakt_api.traktRequest("shows/trending?limit=50&extended=full,images") or []
             for show in shows:
                 try:
+                    tvdb_id = int(show['show']['ids']['tvdb'])
+                    tvrage_id = int(show['show']['ids']['tvrage'] or 0)
                     if not helpers.findCertainShow(sickbeard.showList,
-                                                   [int(show['tvdb_id']), int(show['tvrage_id'])]):
+                                                   [tvdb_id, tvrage_id]):
                         t.trending_shows += [show]
                 except exceptions.MultipleShowObjectsException:
                     continue
@@ -2841,6 +2860,9 @@ class Manage(Home, WebRoot):
         paused_all_same = True
         last_paused = None
 
+        default_ep_status_all_same = True
+        last_default_ep_status = None
+
         anime_all_same = True
         last_anime = None
 
@@ -2881,6 +2903,12 @@ class Manage(Home, WebRoot):
                     paused_all_same = False
                 else:
                     last_paused = curShow.paused
+
+            if default_ep_status_all_same:
+                if last_default_ep_status not in (None, curShow.default_ep_status):
+                    default_ep_status_all_same = False
+                else:
+                    last_default_ep_status = curShow.default_ep_status
 
             if anime_all_same:
                 # if we had a value already and this value is different then they're not all the same
@@ -2927,6 +2955,7 @@ class Manage(Home, WebRoot):
 
         t.showList = toEdit
         t.archive_firstmatch_value = last_archive_firstmatch if archive_firstmatch_all_same else None
+        t.default_ep_status_value = last_default_ep_status if default_ep_status_all_same else None
         t.paused_value = last_paused if paused_all_same else None
         t.anime_value = last_anime if anime_all_same else None
         t.flatten_folders_value = last_flatten_folders if flatten_folders_all_same else None
@@ -2940,9 +2969,8 @@ class Manage(Home, WebRoot):
         return t.respond()
 
 
-    def massEditSubmit(self, archive_firstmatch=None, paused=None, anime=None, sports=None, scene=None,
-                       flatten_folders=None,
-                       quality_preset=False,
+    def massEditSubmit(self, archive_firstmatch=None, paused=None, default_ep_status=None,
+                       anime=None, sports=None, scene=None, flatten_folders=None, quality_preset=False,
                        subtitles=None, air_by_date=None, anyQualities=[], bestQualities=[], toEdit=None, *args,
                        **kwargs):
 
@@ -2982,6 +3010,11 @@ class Manage(Home, WebRoot):
             else:
                 new_paused = True if paused == 'enable' else False
             new_paused = 'on' if new_paused else 'off'
+
+            if default_ep_status == 'keep':
+                new_default_ep_status = showObj.default_ep_status
+            else:
+                new_default_ep_status = default_ep_status
 
             if anime == 'keep':
                 new_anime = showObj.anime
@@ -3027,6 +3060,7 @@ class Manage(Home, WebRoot):
 
             curErrors += self.editShow(curShow, new_show_dir, anyQualities,
                                        bestQualities, exceptions_list,
+                                       defaultEpStatus=new_default_ep_status,
                                        archive_firstmatch=new_archive_firstmatch,
                                        flatten_folders=new_flatten_folders,
                                        paused=new_paused, sports=new_sports,
@@ -3450,7 +3484,7 @@ class ConfigGeneral(Config):
                     handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
                     proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, git_remote=None,
                     calendar_unprotected=None,
-                    fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
+                    display_filesize=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, play_videos=None, download_url=None, rootDir=None, theme_name=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None):
 
@@ -3491,7 +3525,8 @@ class ConfigGeneral(Config):
         sickbeard.ENCRYPTION_VERSION = config.checkbox_to_value(encryption_version)
         sickbeard.WEB_USERNAME = web_username
         sickbeard.WEB_PASSWORD = web_password
-
+        
+        sickbeard.DISPLAY_FILESIZE = config.checkbox_to_value(display_filesize)
         sickbeard.FUZZY_DATING = config.checkbox_to_value(fuzzy_dating)
         sickbeard.TRIM_ZERO = config.checkbox_to_value(trim_zero)
 
@@ -3618,8 +3653,8 @@ class ConfigSearch(Config):
                    randomize_providers=None, backlog_startup=None, dailysearch_startup=None,
                    torrent_dir=None, torrent_username=None, torrent_password=None, torrent_host=None,
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
-                   torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None, ignore_words=None,
-                   require_words=None):
+                   torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
+                   torrent_rpcurl=None, ignore_words=None, require_words=None):
 
         results = []
 
@@ -3679,6 +3714,7 @@ class ConfigSearch(Config):
         sickbeard.TORRENT_PAUSED = config.checkbox_to_value(torrent_paused)
         sickbeard.TORRENT_HIGH_BANDWIDTH = config.checkbox_to_value(torrent_high_bandwidth)
         sickbeard.TORRENT_HOST = config.clean_url(torrent_host)
+        sickbeard.TORRENT_RPCURL = torrent_rpcurl
 
         sickbeard.save_config()
 
@@ -4374,10 +4410,10 @@ class ConfigNotifications(Config):
                           libnotify_notify_onsubtitledownload=None,
                           use_nmj=None, nmj_host=None, nmj_database=None, nmj_mount=None, use_synoindex=None,
                           use_nmjv2=None, nmjv2_host=None, nmjv2_dbloc=None, nmjv2_database=None,
-                          use_trakt=None, trakt_username=None, trakt_password=None, trakt_api=None,
+                          use_trakt=None, trakt_username=None, trakt_password=None,
                           trakt_remove_watchlist=None, trakt_use_watchlist=None, trakt_method_add=None,
                           trakt_start_paused=None, trakt_use_recommended=None, trakt_sync=None,
-                          trakt_default_indexer=None, trakt_remove_serieslist=None,
+                          trakt_default_indexer=None, trakt_remove_serieslist=None, trakt_disable_ssl_verify=None,
                           use_synologynotifier=None, synologynotifier_notify_onsnatch=None,
                           synologynotifier_notify_ondownload=None, synologynotifier_notify_onsubtitledownload=None,
                           use_pytivo=None, pytivo_notify_onsnatch=None, pytivo_notify_ondownload=None,
@@ -4426,7 +4462,7 @@ class ConfigNotifications(Config):
         sickbeard.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = config.checkbox_to_value(growl_notify_onsubtitledownload)
         sickbeard.GROWL_HOST = config.clean_host(growl_host, default_port=23053)
         sickbeard.GROWL_PASSWORD = growl_password
-        
+
         sickbeard.USE_FREEMOBILE = config.checkbox_to_value(use_freemobile)
         sickbeard.FREEMOBILE_NOTIFY_ONSNATCH = config.checkbox_to_value(freemobile_notify_onsnatch)
         sickbeard.FREEMOBILE_NOTIFY_ONDOWNLOAD = config.checkbox_to_value(freemobile_notify_ondownload)
@@ -4491,7 +4527,6 @@ class ConfigNotifications(Config):
         sickbeard.USE_TRAKT = config.checkbox_to_value(use_trakt)
         sickbeard.TRAKT_USERNAME = trakt_username
         sickbeard.TRAKT_PASSWORD = trakt_password
-        sickbeard.TRAKT_API = trakt_api
         sickbeard.TRAKT_REMOVE_WATCHLIST = config.checkbox_to_value(trakt_remove_watchlist)
         sickbeard.TRAKT_REMOVE_SERIESLIST = config.checkbox_to_value(trakt_remove_serieslist)
         sickbeard.TRAKT_USE_WATCHLIST = config.checkbox_to_value(trakt_use_watchlist)
@@ -4500,6 +4535,7 @@ class ConfigNotifications(Config):
         sickbeard.TRAKT_USE_RECOMMENDED = config.checkbox_to_value(trakt_use_recommended)
         sickbeard.TRAKT_SYNC = config.checkbox_to_value(trakt_sync)
         sickbeard.TRAKT_DEFAULT_INDEXER = int(trakt_default_indexer)
+        sickbeard.TRAKT_DISABLE_SSL_VERIFY = config.checkbox_to_value(trakt_disable_ssl_verify)
 
         if sickbeard.USE_TRAKT:
             sickbeard.traktCheckerScheduler.silent = False
