@@ -45,4 +45,4 @@ script
     DAEMON_OPTS=" SickBeard.py -q --daemon --nolaunch --datadir=${DATA_DIR} ${EXTRA_DAEMON_OPTS}"
     chdir $APP_PATH
     exec $DAEMON $DAEMON_OPTS
-endscript
+end script
