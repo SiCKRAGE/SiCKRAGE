@@ -21,7 +21,6 @@ kill timeout 30
 setuid sickbeard
 setgid sickbeard
 
-expect fork
 respawn
 respawn limit 10 5
 
