@@ -59,7 +59,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         self.cache = ThePirateBayCache(self)
 
-        self.urls = {'base_url': 'https://oldpiratebay.org/'}
+        self.urls = {'base_url': 'http://thepiratebay.org/'}
 
         self.url = self.urls['base_url']
 
