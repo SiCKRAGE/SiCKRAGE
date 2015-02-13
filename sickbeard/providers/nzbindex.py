@@ -58,6 +58,18 @@ class Nzbindex(generic.NZBProvider):
     def _get_episode_search_strings(self, ep_obj, add_string=''):
         return [x for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
 
+    def _get_title_and_url(self, item):
+        title = item.get('title')
+        if title:
+            title = u'' + title.replace(' ', '.')
+
+        url = item.get('link')
+        if url:
+            url = url.replace('&amp;', '&')
+            url = url.replace('/release/', '/download/')
+
+        return title, url
+
     def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0):
         #http://nzbindex.com/rss/?q=German&sort=agedesc&minsize=100&complete=1&max=50&more=1
 
