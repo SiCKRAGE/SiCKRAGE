@@ -34,17 +34,21 @@ class TraktAPI():
             if not code:
                 # This is pretty much a fatal error if there is no status_code
                 # It means there basically was no response at all
-                raise traktException(e)
+                #raise traktException(e)
+                logger.log(e)
             elif code == 502:
                 # Retry the request, cloudflare had a proxying issue
                 logger.log(u"Retrying trakt api request: auth/login", logger.WARNING)
                 return self.validateAccount()
             elif code == 401:
-                raise traktAuthException(e)
+                #raise traktAuthException(e)
+                logger.log(e)
             elif code == 503:
-                raise traktServerBusy(e)
+                #raise traktServerBusy(e)
+                logger.log(e)
             else:
-                raise traktException(e)
+                #raise traktException(e)
+                logger.log(e)                
         if 'token' in resp:
             self.token = resp['token']
             return True
@@ -73,25 +77,32 @@ class TraktAPI():
             if not code:
                 # This is pretty much a fatal error if there is no status_code
                 # It means there basically was no response at all
-                raise traktException(e)
+                #raise traktException(e)
+                logger.log(e)                
             elif code == 502:
                 # Retry the request, cloudflare had a proxying issue
                 logger.log(u"Retrying trakt api request: %s" % path, logger.WARNING)
                 return self.traktRequest(path, data, method)
             elif code == 401:
-                raise traktAuthException(e)
+                #raise traktAuthException(e)
+                logger.log(e)                
             elif code == 503:
-                raise traktServerBusy(e)
+                #raise traktServerBusy(e)
+                logger.log(e)                
             else:
-                raise traktException(e)
+                #raise traktException(e)
+                logger.log(e)                
 
         # check and confirm trakt call did not fail
         if isinstance(resp, dict) and resp.get('status', False) == 'failure':
             if 'message' in resp:
-                raise traktException(resp['message'])
+                #raise traktException(resp['message'])
+                logger.log(resp['message'])                
             if 'error' in resp:
-                raise traktException(resp['error'])
+                #raise traktException(resp['error'])
+                logger.log(resp['error'])                 
             else:
-                raise traktException('Unknown Error')
+                #raise traktException('Unknown Error')
+                logger.log(resp['Unknown Error'])                 
 
         return resp
