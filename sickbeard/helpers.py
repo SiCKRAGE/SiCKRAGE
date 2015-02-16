@@ -1051,8 +1051,8 @@ def extractZip(archive, targetDir):
         for member in zip_file.namelist():
             filename = os.path.basename(member)
             # skip directories
-            if not filename:
-                continue
+            #if not filename:
+            #    continue
 
             # copy file (taken from zipfile's extract)
             source = zip_file.open(member)
