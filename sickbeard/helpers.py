@@ -19,6 +19,7 @@
 from __future__ import with_statement
 
 import os
+import ctypes
 import random
 import re
 import shutil
@@ -35,6 +36,7 @@ import uuid
 import base64
 import zipfile
 import datetime
+import errno
 
 import sickbeard
 import subliminal
@@ -42,6 +44,8 @@ import adba
 import requests
 import requests.exceptions
 import xmltodict
+
+import subprocess
 
 from sickbeard.exceptions import MultipleShowObjectsException, ex
 from sickbeard import logger, classes
@@ -127,7 +131,7 @@ def replaceExtension(filename, newExt):
 
 def isSyncFile(filename):
     extension = filename.rpartition(".")[2].lower()
-    if extension == '!sync' or extension == 'lftp-pget-status' or extension == 'part':
+    if extension == '!sync' or extension == 'lftp-pget-status' or extension == 'part' or extension == 'bts':
         return True
     else:
         return False
@@ -343,7 +347,7 @@ def listMediaFiles(path):
 
 def copyFile(srcFile, destFile):
     if isPosix():
-        os.system('cp "%s" "%s"' % (srcFile, destFile))
+        subprocess.call(['cp', srcFile, destFile])
     else:
         ek.ek(shutil.copyfile, srcFile, destFile)
         
@@ -355,7 +359,7 @@ def copyFile(srcFile, destFile):
 
 def moveFile(srcFile, destFile):
     try:
-        ek.ek(os.rename, srcFile, destFile)
+        ek.ek(shutil.move, srcFile, destFile)
         fixSetGroupID(destFile)
     except OSError:
         copyFile(srcFile, destFile)
@@ -399,7 +403,7 @@ def symlink(src, dst):
 
 def moveAndSymlinkFile(srcFile, destFile):
     try:
-        ek.ek(os.rename, srcFile, destFile)
+        ek.ek(shutil.move, srcFile, destFile)
         fixSetGroupID(destFile)
         ek.ek(symlink, destFile, srcFile)
     except:
@@ -491,7 +495,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
     # move the file
     try:
         logger.log(u"Renaming file from " + cur_path + " to " + new_path)
-        ek.ek(os.rename, cur_path, new_path)
+        ek.ek(shutil.move, cur_path, new_path)
     except (OSError, IOError), e:
         logger.log(u"Failed renaming " + cur_path + " to " + new_path + ": " + ex(e), logger.ERROR)
         return False
@@ -666,21 +670,26 @@ def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=Non
     return (season, episodes)
 
 
-def sanitizeSceneName(name, ezrss=False):
+def sanitizeSceneName(name, ezrss=False, anime=False):
     """
     Takes a show name and returns the "scenified" version of it.
 
     ezrss: If true the scenified version will follow EZRSS's cracksmoker rules as best as possible
+    
+    anime: Some show have a ' in their name(Kuroko's Basketball) and is needed for search.
 
     Returns: A string containing the scene version of the show name given.
     """
 
     if name:
-        if not ezrss:
-            bad_chars = u",:()'!?\u2019"
+        # anime: removed ' for Kuroko's Basketball
+        if anime:
+            bad_chars = u",:()!?\u2019"
         # ezrss leaves : and ! in their show names as far as I can tell
-        else:
+        elif ezrss:
             bad_chars = u",()'?\u2019"
+        else:
+            bad_chars = u",:()'!?\u2019"
 
         # strip out any bad chars
         for x in bad_chars:
@@ -943,8 +952,21 @@ def is_hidden_folder(folder):
     On Linux based systems hidden folders start with . (dot)
     folder: Full path of folder to check
     """
+    def is_hidden(filepath):
+        name = os.path.basename(os.path.abspath(filepath))
+        return name.startswith('.') or has_hidden_attribute(filepath)
+
+    def has_hidden_attribute(filepath):
+        try:
+            attrs = ctypes.windll.kernel32.GetFileAttributesW(unicode(filepath))
+            assert attrs != -1
+            result = bool(attrs & 2)
+        except (AttributeError, AssertionError):
+            result = False
+        return result
+    
     if ek.ek(os.path.isdir, folder):
-        if ek.ek(os.path.basename, folder).startswith('.'):
+        if is_hidden(folder):
             return True
 
     return False
@@ -1108,8 +1130,13 @@ def touchFile(fname, atime=None):
             with file(fname, 'a'):
                 os.utime(fname, (atime, atime))
                 return True
-        except:
-            logger.log(u"File air date stamping not available on your OS", logger.DEBUG)
+        except Exception as e:
+            if e.errno == errno.ENOSYS:
+                logger.log(u"File air date stamping not available on your OS", logger.DEBUG)
+            elif e.errno == errno.EACCES:
+                logger.log(u"File air date stamping failed(Permission denied). Check permissions for file: {0}".format(fname), logger.ERROR)
+            else:
+                logger.log(u"File air date stamping failed. The error is: {0} and the message is: {1}.".format(e.errno, e.strerror), logger.ERROR)
             pass
 
     return False
@@ -1335,4 +1362,8 @@ if __name__ == '__main__':
     doctest.testmod()
 
 def remove_article(text=''):
-    return re.sub(r'(?i)/^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
+    return re.sub(r'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
+
+def generateCookieSecret():
+
+    return base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
