@@ -96,8 +96,6 @@ class PLEXNotifier(KODINotifier):
                        logger.INFO)
 
             url = "http://%s/library/sections" % sickbeard.PLEX_SERVER_HOST
-            if sickbeard.PLEX_SERVER_TOKEN:
-                url += "/?X-Plex-Token=" + sickbeard.PLEX_SERVER_TOKEN
             try:
                 xml_sections = minidom.parse(urllib.urlopen(url))
             except IOError, e:
@@ -112,8 +110,6 @@ class PLEXNotifier(KODINotifier):
             for s in sections:
                 if s.getAttribute('type') == "show":
                     url = "http://%s/library/sections/%s/refresh" % (sickbeard.PLEX_SERVER_HOST, s.getAttribute('key'))
-                    if sickbeard.PLEX_SERVER_TOKEN:
-                        url += "/?X-Plex-Token=" + sickbeard.PLEX_SERVER_TOKEN
                     try:
                         urllib.urlopen(url)
                     except Exception, e:
