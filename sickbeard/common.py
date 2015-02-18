@@ -212,7 +212,7 @@ class Quality:
             return Quality.SDTV
         elif checkName(["videomann"], all) and not checkName(["(720|1080)[pi]"], all):
             return Quality.SDTV
-        elif checkName(["web.dl|webrip", "xvid|x264|h.?264"], all) and not checkName(["(720|1080)[pi]"], all):
+        elif checkName(["web.dl|web(hd)?rip", "xvid|x264|h.?264"], all) and not checkName(["(720|1080)[pi]"], all):
             return Quality.SDTV
         elif checkName(["(dvdrip|ituneshd|blurayrip|b[r|d](rip)?)(.ws)?.(xvid|divx|x264)"], any) and not checkName(["(720|1080)[pi]"], all):
             return Quality.SDDVD
