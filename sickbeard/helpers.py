@@ -1083,7 +1083,7 @@ def restoreConfigZip(archive, targetDir):
     try:
         if os.path.exists(targetDir):
             shutil.move(targetDir,os.path.join(targetDir, '{0}.bak-{1}'))        
-        elif not os.path.exists(targetDir):
+        else:
             os.mkdir(targetDir)
 
         zip_file = zipfile.ZipFile(archive, 'r')
