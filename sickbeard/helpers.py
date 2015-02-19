@@ -1081,7 +1081,9 @@ def backupConfigZip(fileList, archive, arcname = None):
 
 def restoreConfigZip(archive, targetDir):
     try:
-        if not os.path.exists(targetDir):
+        if os.path.exists(targetDir):
+            shutil.move(targetDir,os.path.join(targetDir, '{0}.bak-{1}'))        
+        elif not os.path.exists(targetDir):
             os.mkdir(targetDir)
 
         zip_file = zipfile.ZipFile(archive, 'r')
