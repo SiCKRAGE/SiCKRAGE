@@ -263,7 +263,7 @@ class SickRage(object):
 
         # Check if we need to perform a restore first
         restoreDir = os.path.join(sickbeard.DATA_DIR, 'restore')
-        if self.consoleLogging and os.path.exists(restoreDir):
+        if self.consoleLogging and os.path.exists(restoreDir) and not os.listdir(restoreDir):
             if self.restore(restoreDir, sickbeard.DATA_DIR):
                 sys.stdout.write("Restore successful...\n")
             else:
