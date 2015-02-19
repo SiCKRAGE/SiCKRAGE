@@ -634,7 +634,7 @@ def initialize(consoleLogging=True):
 
         # Check if we need to perform a restore of the cache folder
         restoreDir = os.path.join(DATA_DIR, 'restore')
-        if os.path.exists(restoreDir):
+        if os.path.exists(restoreDir) and os.path.exists(srcDir):
             def restoreCache(srcDir, dstDir):
                 import ntpath
                 import shutil
