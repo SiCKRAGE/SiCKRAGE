@@ -58,11 +58,11 @@ class FreshOnTVProvider(generic.TorrentProvider):
 
         self.cache = FreshOnTVCache(self)
 
-        self.urls = {'base_url': 'http://freshon.tv/',
-                'login': 'http://freshon.tv/login.php?action=makelogin',
-                'detail': 'http://freshon.tv/details.php?id=%s',
-                'search': 'http://freshon.tv/browse.php?incldead=%s&words=0&cat=0&search=%s',
-                'download': 'http://freshon.tv/download.php?id=%s&type=torrent',
+        self.urls = {'base_url': 'https://freshon.tv/',
+                'login': 'https://freshon.tv/login.php?action=makelogin',
+                'detail': 'https://freshon.tv/details.php?id=%s',
+                'search': 'https://freshon.tv/browse.php?incldead=%s&words=0&cat=0&search=%s',
+                'download': 'https://freshon.tv/download.php?id=%s&type=torrent',
                 }
 
         self.url = self.urls['base_url']
@@ -110,6 +110,10 @@ class FreshOnTVProvider(generic.TorrentProvider):
 
             if re.search('Username does not exist in the userbase or the account is not confirmed yet.', response.text):
                 logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
+                return False
+                
+            if re.search('DDoS protection by CloudFlare', response.text):
+                logger.log(u'Unable to login to ' + self.name + ' due to CloudFlare DDoS javascript check.', logger.ERROR)
                 return False
 
             try:

@@ -17,16 +17,17 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 __all__ = ['ezrss',
-           'tvtorrents',
            'womble',
            'btn',
            'thepiratebay',
+           'oldpiratebay',
            'kat',
            'torrentleech',
            'scc',
            'hdtorrents',
            'torrentday',
            'hdbits',
+		   'hounddawgs',
            'iptorrents',
            'omgwtfnzbs',
            'nextgen',
@@ -39,6 +40,10 @@ __all__ = ['ezrss',
            'bitsoup',
            't411',
            'tokyotoshokan',
+           'alpharatio',
+           'shazbat',
+           'rarbg',
+           'tntvillage',
 ]
 
 import sickbeard
