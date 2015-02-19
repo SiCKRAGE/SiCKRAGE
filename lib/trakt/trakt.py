@@ -2,8 +2,6 @@ import requests
 import json
 from sickbeard import logger
 
-from exceptions import traktException, traktAuthException, traktServerBusy
-
 class TraktAPI():
     def __init__(self, apikey, username=None, password=None, disable_ssl_verify=False, timeout=30):
         self.username = username
@@ -34,17 +32,13 @@ class TraktAPI():
             if not code:
                 # This is pretty much a fatal error if there is no status_code
                 # It means there basically was no response at all
-                raise traktException(e)
+                raise Exception
             elif code == 502:
                 # Retry the request, cloudflare had a proxying issue
                 logger.log(u"Retrying trakt api request: auth/login", logger.WARNING)
                 return self.validateAccount()
-            elif code == 401:
-                raise traktAuthException(e)
-            elif code == 503:
-                raise traktServerBusy(e)
             else:
-                raise traktException(e)
+                logger.log(e, logger.WARNING)
         if 'token' in resp:
             self.token = resp['token']
             return True
@@ -73,25 +67,21 @@ class TraktAPI():
             if not code:
                 # This is pretty much a fatal error if there is no status_code
                 # It means there basically was no response at all
-                raise traktException(e)
+                raise Exception
             elif code == 502:
                 # Retry the request, cloudflare had a proxying issue
                 logger.log(u"Retrying trakt api request: %s" % path, logger.WARNING)
                 return self.traktRequest(path, data, method)
-            elif code == 401:
-                raise traktAuthException(e)
-            elif code == 503:
-                raise traktServerBusy(e)
             else:
-                raise traktException(e)
+                logger.log(e, logger.WARNING)
 
         # check and confirm trakt call did not fail
         if isinstance(resp, dict) and resp.get('status', False) == 'failure':
             if 'message' in resp:
-                raise traktException(resp['message'])
+                logger.log(resp['message'],logger.ERROR)
             if 'error' in resp:
-                raise traktException(resp['error'])
+                logger.log(resp['error'],logger.ERROR)
             else:
-                raise traktException('Unknown Error')
+                logger.log(U"Unknown Error",logger.ERROR)
 
         return resp
