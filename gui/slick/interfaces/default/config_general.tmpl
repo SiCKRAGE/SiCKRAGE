@@ -28,8 +28,49 @@
     #set $indexer = $sickbeard.INDEXER_DEFAULT
 #end if
 
+#set $default_language = 'en'
+#if $sickbeard.DEFAULT_LANGUAGE
+    #set $default_language = $sickbeard.DEFAULT_LANGUAGE
+#end if
+
 <script type="text/javascript" src="$sbRoot/js/config.js?$sbPID"></script>
 <script type="text/javascript" src="$sbRoot/js/rootDirs.js?$sbPID"></script>
+<script type="text/javascript" charset="utf-8">
+<!--
+\$(document).ready(function(){
+
+  \$.getJSON('$sbRoot/home/addShows/getIndexerLanguages', {}, function(data) {
+        var resultStr = '';
+
+        if (data.results.length == 0) {
+            flag = ' class="flag" style="background-image:url($sbRoot/images/flags/${default_language}.png)"';
+            resultStr = '<option value="$default_language" selected="selected" + flag>$default_language</option>';
+        } else {
+            var current_lang_added = false;
+            \$.each(data.results, function(index, obj) {
+
+                if (obj == "$default_language") {
+                        selected = ' selected="selected"';
+                    current_lang_added = true;
+                }
+                else {
+                    selected = '';
+                }
+
+                flag = ' class="flag" style="background-image:url($sbRoot/images/flags/' + obj + '.png);"';
+                resultStr += '<option value="' + obj + '"' + selected + flag + '>' + obj + '</option>';
+            });
+            if (!current_lang_added)
+                resultStr += '<option value="$default_language" selected="selected">$default_language</option>';
+
+        }
+        \$('#defaultLangSelect').html(resultStr)
+
+  });
+
+});
+//-->
+</script>
 
 <div id="config">
 	<div id="config-content">
@@ -53,6 +94,17 @@
 					</div>
 
 					<fieldset class="component-group-list">
+
+						<div class="field-pair">
+							<label for="defaultLang">
+								<span class="component-title">Default Info Language</span>
+								<span class="component-desc">
+									<select id="defaultLangSelect" name="defaultLang" class="form-control input-sm"> </select>
+									<span>as the default selection when adding new shows</span>
+								</span>
+							</label>
+						</div>
+
 						<div class="field-pair">
 							<label for="launch_browser">
 								<span class="component-title">Launch browser</span>
