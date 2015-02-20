@@ -1281,7 +1281,7 @@ def download_file(url, filename, session=None):
                 resp.status_code) + ': ' + clients.http_error_code[resp.status_code], logger.DEBUG)
             return False
 
-        with open(filename, 'wb') as fp:
+        with open(ek.ss(filename), 'wb') as fp:
             for chunk in resp.iter_content(chunk_size=1024):
                 if chunk:
                     fp.write(chunk)
