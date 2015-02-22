@@ -634,8 +634,8 @@
 							<label for="git_autoissues">
 								<span class="component-title">Git auto-issues submit</span>
 								<span class="component-desc">
-									<input type="checkbox" name="git_autoissues" id="git_autoissues" #if True == $sickbeard.GIT_AUTOISSUES then 'checked="checked"' else ''#/>
-									<p>automatically submit bug/issue reports to our issue tracker when errors are logged</p>
+									<input type="checkbox" name="git_autoissues" id="git_autoissues" #if True == $sickbeard.GIT_AUTOISSUES then 'checked="checked"' else ''#  disabled readonly/>
+									<p>automatically submit bug/issue reports to our issue tracker when errors are logged (Option not currently available)</p>
 								</span>
 							</label>
 						</div>
