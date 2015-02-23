@@ -60,9 +60,8 @@
 								<span class="component-desc">
 
 									<select id="indexerDefaultLang" name="indexerDefaultLang" class="form-control input-sm">
-										<option value="0" #if $indexer == 0 then 'selected="selected"' else ''#>All Indexers</option>
 										#for $indexer_default_language in $sickbeard.indexerApi().config['valid_languages']
-										<option value="$indexer_default_language" #if $indexer_default_language == $sickbeard.INDEXER_DEFAULT_LANGUAGE then 'selected="selected"' else ''#>$sickbeard.indexerApi().config['valid_languages'][indexer_default_language]</option>
+										<option value="$indexer_default_language" #if $indexer_default_language == $sickbeard.INDEXER_DEFAULT_LANGUAGE then 'selected="selected"' else ''#>$indexer_default_language</option>
 										#end for
 									</select>
 									<span>as the default selection when adding new shows</span>
