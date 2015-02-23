@@ -155,5 +155,15 @@ class TransmissionAPI(GenericClient):
 
         return self.response.json()['result'] == "success"
 
+    def remove_torrent_downloaded(self,hash):
+
+        arguments = { 'ids': [hash]
+                      }
+        post_data = json.dumps({'arguments': arguments,
+                                'method': 'torrent-remove',
+                                })
+        self._request(method='post', data=post_data)
+
+        return self.response.json()['result'] == "success"
 
 api = TransmissionAPI()

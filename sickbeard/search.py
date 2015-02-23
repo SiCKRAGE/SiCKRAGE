@@ -132,6 +132,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
         else:
             #result.content = result.provider.getURL(result.url) if not result.url.startswith('magnet') else None
             client = clients.getClientIstance(sickbeard.TORRENT_METHOD)()
+            result = client._get_torrent_hash(result)
             dlResult = client.sendTORRENT(result)
     else:
         logger.log(u"Unknown result type, unable to download it", logger.ERROR)
@@ -155,6 +156,9 @@ def snatchEpisode(result, endStatus=SNATCHED):
                 curEpObj.status = Quality.compositeStatus(SNATCHED_BEST, result.quality)
             else:
                 curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
+
+                if result.resultType == "torrent":
+                    curEpObj.torrent_hash = result.hash
 
             sql_l.append(curEpObj.get_sql())
 
