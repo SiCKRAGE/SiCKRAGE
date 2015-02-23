@@ -28,49 +28,8 @@
     #set $indexer = $sickbeard.INDEXER_DEFAULT
 #end if
 
-#set $indexer_default_language = 'en'
-#if $sickbeard.INDEXER_DEFAULT_LANGUAGE
-    #set $indexer_default_language = $sickbeard.INDEXER_DEFAULT_LANGUAGE
-#end if
-
 <script type="text/javascript" src="$sbRoot/js/config.js?$sbPID"></script>
 <script type="text/javascript" src="$sbRoot/js/rootDirs.js?$sbPID"></script>
-<script type="text/javascript" charset="utf-8">
-<!--
-\$(document).ready(function(){
-
-  \$.getJSON('$sbRoot/home/addShows/getIndexerLanguages', {}, function(data) {
-        var resultStr = '';
-
-        if (data.results.length == 0) {
-            flag = ' class="flag" style="background-image:url($sbRoot/images/flags/${indexer_default_language}.png)"';
-            resultStr = '<option value="$indexer_default_language" selected="selected" + flag>$indexer_default_language</option>';
-        } else {
-            var current_lang_added = false;
-            \$.each(data.results, function(index, obj) {
-
-                if (obj == "$indexer_default_language") {
-                        selected = ' selected="selected"';
-                    current_lang_added = true;
-                }
-                else {
-                    selected = '';
-                }
-
-                flag = ' class="flag" style="background-image:url($sbRoot/images/flags/' + obj + '.png);"';
-                resultStr += '<option value="' + obj + '"' + selected + flag + '>' + obj + '</option>';
-            });
-            if (!current_lang_added)
-                resultStr += '<option value="$indexer_default_language" selected="selected">$indexer_default_language</option>';
-
-        }
-        \$('#indexerDefaultLangSelect').html(resultStr)
-
-  });
-
-});
-//-->
-</script>
 
 <div id="config">
 	<div id="config-content">
@@ -99,7 +58,13 @@
 							<label for="indexerDefaultLang">
 								<span class="component-title">Default Info Language</span>
 								<span class="component-desc">
-									<select id="indexerDefaultLangSelect" name="indexerDefaultLang" class="form-control input-sm"> </select>
+
+									<select id="indexerDefaultLang" name="indexerDefaultLang" class="form-control input-sm">
+										<option value="0" #if $indexer == 0 then 'selected="selected"' else ''#>All Indexers</option>
+										#for $indexer_default_language in $sickbeard.indexerApi().config['valid_languages']
+										<option value="$indexer_default_language" #if $indexer_default_language == $sickbeard.INDEXER_DEFAULT_LANGUAGE then 'selected="selected"' else ''#>$sickbeard.indexerApi().config['valid_languages'][indexer_default_language]</option>
+										#end for
+									</select>
 									<span>as the default selection when adding new shows</span>
 								</span>
 							</label>
