@@ -2066,10 +2066,10 @@ class HomeAddShows(Home):
         result = sickbeard.indexerApi().config['valid_languages']
 
         # Make sure list is sorted alphabetically but default language is in front
-        if sickbeard.DEFAULT_LANGUAGE in result:
-            del result[result.index(sickbeard.DEFAULT_LANGUAGE)]
+        if sickbeard.INDEXER_DEFAULT_LANGUAGE in result:
+            del result[result.index(sickbeard.INDEXER_DEFAULT_LANGUAGE)]
         result.sort()
-        result.insert(0, sickbeard.DEFAULT_LANGUAGE)
+        result.insert(0, sickbeard.INDEXER_DEFAULT_LANGUAGE)
 
         return json.dumps({'results': result})
 
@@ -2080,7 +2080,7 @@ class HomeAddShows(Home):
 
     def searchIndexersForShowName(self, search_term, lang=None, indexer=None):
         if not lang or lang == 'null':
-            lang = sickbeard.DEFAULT_LANGUAGE 
+            lang = sickbeard.INDEXER_DEFAULT_LANGUAGE
 
         search_term = search_term.encode('utf-8')
 
@@ -2285,7 +2285,7 @@ class HomeAddShows(Home):
         show_name = whichSeries.split('|')[2]
 
         if not indexerLang or indexerLang == 'null':
-            indexerLang = sickbeard.DEFAULT_LANGUAGE
+            indexerLang = sickbeard.INDEXER_DEFAULT_LANGUAGE
 
         return self.addNewShow('|'.join([indexer_name, str(indexer), show_url, indexer_id, show_name, ""]),
                                indexerLang, rootDir,
@@ -2385,7 +2385,7 @@ class HomeAddShows(Home):
         """
 
         if not indexerLang or indexerLang == 'null':
-            indexerLang = sickbeard.DEFAULT_LANGUAGE
+            indexerLang = sickbeard.INDEXER_DEFAULT_LANGUAGE
 
         # grab our list of other dirs if given
         if not other_shows:
@@ -3504,7 +3504,7 @@ class ConfigGeneral(Config):
 
     def saveGeneral(self, log_dir=None, log_nr = 5, log_size = 1048576, web_port=None, web_log=None, encryption_version=None, web_ipv6=None,
                     update_shows_on_start=None, trash_remove_show=None, trash_rotate_logs=None, update_frequency=None,
-                    defaultLang=None, launch_browser=None, showupdate_hour=3, web_username=None,
+                    indexerDefaultLang=None, launch_browser=None, showupdate_hour=3, web_username=None,
                     api_key=None, indexer_default=None, timezone_display=None, cpu_preset=None,
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
                     handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
@@ -3519,7 +3519,7 @@ class ConfigGeneral(Config):
         # Misc
         sickbeard.PLAY_VIDEOS = config.checkbox_to_value(play_videos)
         sickbeard.DOWNLOAD_URL = download_url
-        sickbeard.DEFAULT_LANGUAGE = defaultLang
+        sickbeard.INDEXER_DEFAULT_LANGUAGE = indexerDefaultLang
         sickbeard.LAUNCH_BROWSER = config.checkbox_to_value(launch_browser)
         sickbeard.SHOWUPDATE_HOUR = config.to_int(showupdate_hour)
         config.change_VERSION_NOTIFY(config.checkbox_to_value(version_notify))

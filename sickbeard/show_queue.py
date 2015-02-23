@@ -135,7 +135,7 @@ class ShowQueue(generic_queue.GenericQueue):
                 lang=None, subtitles=None, anime=None, scene=None, paused=None):
 
         if not lang or lang == 'null':
-            lang = sickbeard.DEFAULT_LANGUAGE
+            lang = sickbeard.INDEXER_DEFAULT_LANGUAGE
 
         queueItemObj = QueueItemAdd(indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang,
                                     subtitles, anime, scene, paused)
