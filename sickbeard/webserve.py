@@ -2284,7 +2284,7 @@ class HomeAddShows(Home):
         indexer_id = whichSeries.split('|')[0]
         show_name = whichSeries.split('|')[2]
 
-        if not indexerLang or indexerLang == 'null':
+        if indexerLang is None:
             indexerLang = sickbeard.INDEXER_DEFAULT_LANGUAGE
 
         return self.addNewShow('|'.join([indexer_name, str(indexer), show_url, indexer_id, show_name, ""]),
@@ -2384,7 +2384,7 @@ class HomeAddShows(Home):
         provided then it forwards back to newShow, if not it goes to /home.
         """
 
-        if not indexerLang or indexerLang == 'null':
+        if indexerLang is None:
             indexerLang = sickbeard.INDEXER_DEFAULT_LANGUAGE
 
         # grab our list of other dirs if given

@@ -134,7 +134,7 @@ class ShowQueue(generic_queue.GenericQueue):
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
                 lang=None, subtitles=None, anime=None, scene=None, paused=None):
 
-        if not lang or lang == 'null':
+        if lang is None:
             lang = sickbeard.INDEXER_DEFAULT_LANGUAGE
 
         queueItemObj = QueueItemAdd(indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang,
