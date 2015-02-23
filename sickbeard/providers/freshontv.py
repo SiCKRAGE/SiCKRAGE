@@ -108,7 +108,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
             except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
                 logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
                 return False
-            logger.log(u'Response to ' + self.name + response.text, logger.DEBUG)
+
             if re.search('/logout.php', response.text):
                 logger.log(u'Login to ' + self.name + ' was successful.', logger.DEBUG)
 
