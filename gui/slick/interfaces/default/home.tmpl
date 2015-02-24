@@ -3,6 +3,7 @@
 #import datetime
 #from sickbeard.common import *
 #from sickbeard import db, sbdatetime, network_timezones
+#from sickbeard.networkLogo import getNetworkLogoFn
 
 #set global $title="Home"
 #set global $header="Show List"
@@ -407,9 +408,9 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 				<td class="show-table">
 				    #if $layout != 'simple':	
 						#if $curShow.network:
-							<img class="show-network-image" src="$sbRoot/images/network/${curShow.network.replace(u"\u00C9",'e').replace(u"\u00E9",'e').lower()}.png" alt="$curShow.network" title="$curShow.network" />	
+							<img class="show-network-image" src="$sbRoot/images/network/#echo $getNetworkLogoFn($curShow.network.replace(u"\u00C9",'e').replace(u"\u00E9",'e').lower())#.png" alt="$curShow.network" title="$curShow.network" />	
 						#else:
-							<img class="show-network-image" src="$sbRoot/images/network/nonetwork.png" alt="No Network" title="No Network" />
+							<img class="show-network-image" src="$sbRoot/images/network/#echo $getNetworkLogoFn('nonetwork')#.png" alt="No Network" title="No Network" />
 						#end if
 					#else:
 						$curShow.network
@@ -565,9 +566,9 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
     #if $layout != 'simple':	
 		<td align="center">
         #if $curShow.network:
-        	<img id="network" width="54" height="27" src="$sbRoot/images/network/${curShow.network.replace(u"\u00C9",'e').replace(u"\u00E9",'e').lower()}.png" alt="$curShow.network" title="$curShow.network" />
+        	<img id="network" width="54" height="27" src="$sbRoot/images/network/#echo $getNetworkLogoFn($curShow.network.replace(u"\u00C9",'e').replace(u"\u00E9",'e').lower())#.png" alt="$curShow.network" title="$curShow.network" />
     	#else:
-    		<img id="network" width="54" height="27" src="$sbRoot/images/network/nonetwork.png" alt="No Network" title="No Network" />
+    		<img id="network" width="54" height="27" src="$sbRoot/images/network/#echo $getNetworkLogoFn('nonetwork')#.png" alt="No Network" title="No Network" />
 		#end if
 		</td>
 	#else:
