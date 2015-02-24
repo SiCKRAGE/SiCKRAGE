@@ -709,7 +709,7 @@ def getNetworkLogoFn(networkName):
                            u'tele 5 hd': u'tele 5 hd',
                            u'tele 5': u'tele 5',
                            u'telecinco': u'telecinco',
-                           u'télé-québec': u'télé-québec',
+                           u'tele-quebec': u'télé-québec',
                            u'teletoon': u'teletoon',
                            u'the cw': u'cw',
                            u'the-cw': u'cw',
