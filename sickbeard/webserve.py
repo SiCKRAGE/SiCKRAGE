@@ -3222,18 +3222,19 @@ class Manage(Home, WebRoot):
         t = PageTemplate(rh=self, file="manage_torrents.tmpl")
         t.info_download_station = ''
         t.submenu = self.ManageMenu()
+        
+        if sickbeard.DYNDNS_HOSTNAME == '':
+            t.webui_url = sickbeard.DYNDNS_HOSTNAME
+        else:
+            if re.search('localhost', sickbeard.TORRENT_HOST):
 
-        if re.search('localhost', sickbeard.TORRENT_HOST):
-
-            if sickbeard.LOCALHOST_IP == '':
-                if sickbeard.DYNDNS_HOSTNAME == '':
+                if sickbeard.LOCALHOST_IP == '':
                     t.webui_url = re.sub('localhost', helpers.get_lan_ip(), sickbeard.TORRENT_HOST)
                 else:
-                    t.webui_url = re.sub('localhost', sickbeard.DYNDNS_HOSTNAME, sickbeard.TORRENT_HOST)
+                    t.webui_url = re.sub('localhost', sickbeard.LOCALHOST_IP, sickbeard.TORRENT_HOST)
             else:
-                t.webui_url = re.sub('localhost', sickbeard.LOCALHOST_IP, sickbeard.TORRENT_HOST)
-        else:
-            t.webui_url = sickbeard.TORRENT_HOST
+                t.webui_url = sickbeard.TORRENT_HOST
+
 
         if sickbeard.TORRENT_METHOD == 'utorrent':
             t.webui_url = '/'.join(s.strip('/') for s in (t.webui_url, 'gui/'))
