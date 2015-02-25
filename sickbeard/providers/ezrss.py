@@ -36,7 +36,7 @@ from sickbeard import helpers
 class EZRSSProvider(generic.TorrentProvider):
     def __init__(self):
 
-        self.urls = {'base_url': 'https://www.ezrss.it/'}
+        self.urls = {'base_url': 'https://web.archive.org/web/20120901132106/http://www.ezrss.it/'}
 
         self.url = self.urls['base_url']
 
