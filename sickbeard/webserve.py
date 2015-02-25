@@ -1824,7 +1824,6 @@ class Home(WebRoot):
     def getManualSearchStatus(self, show=None, season=None):
         def getEpisodes(searchThread, searchstatus):
             results = []
-            showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(show))
 
             if isinstance(searchThread, sickbeard.search_queue.ManualSearchQueueItem):
                 results.append({'episode': searchThread.segment.episode,
@@ -1832,8 +1831,7 @@ class Home(WebRoot):
                                 'season': searchThread.segment.season,
                                 'searchstatus': searchstatus,
                                 'status': statusStrings[searchThread.segment.status],
-                                'quality': self.getQualityClass(searchThread.segment),
-                                'overview': Overview.overviewStrings[showObj.getOverview(int(searchThread.segment.status or -1))]})
+                                'quality': self.getQualityClass(searchThread.segment)})
             else:
                 for epObj in searchThread.segment:
                     results.append({'episode': epObj.episode,
@@ -1841,8 +1839,7 @@ class Home(WebRoot):
                                     'season': epObj.season,
                                     'searchstatus': searchstatus,
                                     'status': statusStrings[epObj.status],
-                                    'quality': self.getQualityClass(epObj),
-                                    'overview': Overview.overviewStrings[showObj.getOverview(int(epObj.status or -1))]})
+                                    'quality': self.getQualityClass(epObj)})
 
             return results
 
@@ -3777,7 +3774,7 @@ class ConfigPostProcessing(Config):
     def savePostProcessing(self, naming_pattern=None, naming_multi_ep=None,
                            kodi_data=None, kodi_12plus_data=None, mediabrowser_data=None, sony_ps3_data=None,
                            wdtv_data=None, tivo_data=None, mede8er_data=None,
-                           keep_processed_dir=None, process_method=None, process_automatically=None,
+                           keep_processed_dir=None, process_method=None, del_rar_contents=None, process_automatically=None,
                            rename_episodes=None, airdate_episodes=None, unpack=None,
                            move_associated_files=None, postpone_if_sync_files=None, nfo_rename=None,
                            tv_download_dir=None, naming_custom_abd=None,
@@ -3821,6 +3818,7 @@ class ConfigPostProcessing(Config):
 
         sickbeard.KEEP_PROCESSED_DIR = config.checkbox_to_value(keep_processed_dir)
         sickbeard.PROCESS_METHOD = process_method
+        sickbeard.DELRARCONTENTS = config.checkbox_to_value(del_rar_contents)
         sickbeard.EXTRA_SCRIPTS = [x.strip() for x in extra_scripts.split('|') if x.strip()]
         sickbeard.RENAME_EPISODES = config.checkbox_to_value(rename_episodes)
         sickbeard.AIRDATE_EPISODES = config.checkbox_to_value(airdate_episodes)
@@ -4775,12 +4773,34 @@ class ErrorLogs(WebRoot):
         classes.ErrorViewer.clear()
         return self.redirect("/errorlogs/")
 
-    def viewlog(self, minLevel=logger.INFO, maxLines=500):
+    def viewlog(self, minLevel=logger.INFO, logFilter="<NONE>",logSearch=None, maxLines=500):
 
         t = PageTemplate(rh=self, file="viewlogs.tmpl")
         t.submenu = self.ErrorLogsMenu()
 
         minLevel = int(minLevel)
+
+        logNameFilters = {'<NONE>': u'&lt;No Filter&gt;',
+                          'DAILYSEARCHER': u'Daily Searcher',
+                          'BACKLOG': u'Backlog',
+                          'SHOWUPDATER': u'Show Updater',
+                          'CHECKVERSION': u'Check Version',
+                          'SHOWQUEUE': u'Show Queue',
+                          'SEARCHQUEUE': u'Search Queue',
+                          'FINDPROPERS': u'Find Propers',
+                          'POSTPROCESSER': u'Postprocesser',
+                          'FINDSUBTITLES': u'Find Subtitles',
+                          'TRAKTCHECKER': u'Trakt Checker',
+                          'EVENT': u'Event',
+                          'ERROR': u'Error',
+                          'TORNADO': u'Tornado',
+                          'Thread': u'Thread',
+                          'MAIN': u'Main'
+                          }
+
+        if logFilter not in logNameFilters:
+            logFilter = '<NONE>'
+
 
         data = []
         if os.path.isfile(logger.logFile):
@@ -4802,11 +4822,15 @@ class ErrorLogs(WebRoot):
 
             if match:
                 level = match.group(7)
+                logName = match.group(8)
                 if level not in logger.reverseNames:
                     lastLine = False
                     continue
 
-                if logger.reverseNames[level] >= minLevel:
+                if logSearch and logSearch.lower() in x.lower():
+                    lastLine = True
+                    finalData.append(x)
+                elif not logSearch and logger.reverseNames[level] >= minLevel and (logFilter == '<NONE>' or logName.startswith(logFilter)):
                     lastLine = True
                     finalData.append(x)
                 else:
@@ -4825,6 +4849,9 @@ class ErrorLogs(WebRoot):
 
         t.logLines = result
         t.minLevel = minLevel
+        t.logNameFilters = logNameFilters
+        t.logFilter = logFilter
+        t.logSearch = logSearch
 
         return t.respond()
 
