@@ -3223,7 +3223,7 @@ class Manage(Home, WebRoot):
         t.info_download_station = ''
         t.submenu = self.ManageMenu()
         
-        if sickbeard.DYNDNS_HOSTNAME == '':
+        if sickbeard.DYNDNS_HOSTNAME != '':
             t.webui_url = sickbeard.DYNDNS_HOSTNAME
         else:
             if re.search('localhost', sickbeard.TORRENT_HOST):
