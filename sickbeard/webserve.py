@@ -3224,7 +3224,7 @@ class Manage(Home, WebRoot):
         t.submenu = self.ManageMenu()
         
         if sickbeard.DYNDNS_HOSTNAME != '':
-            t.webui_url = sickbeard.DYNDNS_HOSTNAME
+            t.webui_url = re.sub('localhost', sickbeard.DYNDNS_HOSTNAME, sickbeard.TORRENT_HOST)
         else:
             if re.search('localhost', sickbeard.TORRENT_HOST):
 
