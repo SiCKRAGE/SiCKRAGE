@@ -3223,8 +3223,13 @@ class Manage(Home, WebRoot):
         t.info_download_station = ''
         t.submenu = self.ManageMenu()
         
+        torrent_host_ip = re.findall( r'[0-9]+(?:\.[0-9]+){3}', sickbeard.TORRENT_HOST )
+        
         if sickbeard.DYNDNS_HOSTNAME != '':
-            t.webui_url = re.sub('localhost', sickbeard.DYNDNS_HOSTNAME, sickbeard.TORRENT_HOST)
+            if torrent_host_ip:
+                t.webui_url = re.sub(torrent_host_ip[0], sickbeard.DYNDNS_HOSTNAME, sickbeard.TORRENT_HOST)
+            else:
+                t.webui_url = re.sub('localhost', sickbeard.DYNDNS_HOSTNAME, sickbeard.TORRENT_HOST)
         else:
             if re.search('localhost', sickbeard.TORRENT_HOST):
 
