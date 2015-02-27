@@ -3232,15 +3232,24 @@ class Manage(Home, WebRoot):
         t = PageTemplate(rh=self, file="manage_torrents.tmpl")
         t.info_download_station = ''
         t.submenu = self.ManageMenu()
-
-        if re.search('localhost', sickbeard.TORRENT_HOST):
-
-            if sickbeard.LOCALHOST_IP == '':
-                t.webui_url = re.sub('localhost', helpers.get_lan_ip(), sickbeard.TORRENT_HOST)
+        
+        torrent_host_ip = re.findall( r'[0-9]+(?:\.[0-9]+){3}', sickbeard.TORRENT_HOST )
+        
+        if sickbeard.DYNDNS_HOSTNAME != '':
+            if torrent_host_ip:
+                t.webui_url = re.sub(torrent_host_ip[0], sickbeard.DYNDNS_HOSTNAME, sickbeard.TORRENT_HOST)
             else:
-                t.webui_url = re.sub('localhost', sickbeard.LOCALHOST_IP, sickbeard.TORRENT_HOST)
+                t.webui_url = re.sub('localhost', sickbeard.DYNDNS_HOSTNAME, sickbeard.TORRENT_HOST)
         else:
-            t.webui_url = sickbeard.TORRENT_HOST
+            if re.search('localhost', sickbeard.TORRENT_HOST):
+
+                if sickbeard.LOCALHOST_IP == '':
+                    t.webui_url = re.sub('localhost', helpers.get_lan_ip(), sickbeard.TORRENT_HOST)
+                else:
+                    t.webui_url = re.sub('localhost', sickbeard.LOCALHOST_IP, sickbeard.TORRENT_HOST)
+            else:
+                t.webui_url = sickbeard.TORRENT_HOST
+
 
         if sickbeard.TORRENT_METHOD == 'utorrent':
             t.webui_url = '/'.join(s.strip('/') for s in (t.webui_url, 'gui/'))
@@ -3508,7 +3517,7 @@ class ConfigGeneral(Config):
                     launch_browser=None, showupdate_hour=3, web_username=None,
                     api_key=None, indexer_default=None, timezone_display=None, cpu_preset=None,
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
-                    handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
+                    handle_reverse_proxy=None, dyndns_hostname=None, sort_article=None, auto_update=None, notify_on_update=None,
                     proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, git_remote=None,
                     calendar_unprotected=None,
                     display_filesize=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
@@ -3590,6 +3599,8 @@ class ConfigGeneral(Config):
                 "Unable to create directory " + os.path.normpath(https_key) + ", https key directory not changed."]
 
         sickbeard.HANDLE_REVERSE_PROXY = config.checkbox_to_value(handle_reverse_proxy)
+
+        sickbeard.DYNDNS_HOSTNAME = dyndns_hostname
 
         sickbeard.THEME_NAME = theme_name
 
