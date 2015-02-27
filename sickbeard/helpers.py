@@ -129,6 +129,8 @@ def isSyncFile(filename):
     extension = filename.rpartition(".")[2].lower()
     if extension == '!sync' or extension == 'lftp-pget-status':
         return True
+    elif filename.startswith(".syncthing."):
+        return True
     else:
         return False
 
