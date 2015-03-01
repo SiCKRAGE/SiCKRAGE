@@ -9,8 +9,8 @@
 #set global $topmenu="config"#
 #include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_top.tmpl")
 
-<script type="text/javascript" src="$sbRoot/js/configNotifications.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/config.js?$sbPID"></script>
+<script type="text/javascript" src="$sbRoot/js/configNotifications.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/config.js?$sb_instance_id"></script>
 
 #if $varExists('header')
     <h1 class="header">$header</h1>

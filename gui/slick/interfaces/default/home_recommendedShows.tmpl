@@ -12,11 +12,11 @@
 
 #include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_top.tmpl")
 
-<link rel="stylesheet" type="text/css" href="$sbRoot/css/formwizard.css?$sbPID" />
-<script type="text/javascript" src="$sbRoot/js/formwizard.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/qualityChooser.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/recommendedShows.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/addShowOptions.js?$sbPID"></script>
+<link rel="stylesheet" type="text/css" href="$sbRoot/css/formwizard.css?$sb_instance_id" />
+<script type="text/javascript" src="$sbRoot/js/formwizard.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/qualityChooser.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/recommendedShows.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/addShowOptions.js?$sb_instance_id"></script>
 
 #if $varExists('header')
 <h1 class="header">$header</h1>
@@ -62,7 +62,7 @@
 <input class="btn" type="button" id="addShowButton" value="Add Show" disabled="disabled" />
 </div>
 
-<script type="text/javascript" src="$sbRoot/js/rootDirs.js?$sbPID"></script>
+<script type="text/javascript" src="$sbRoot/js/rootDirs.js?$sb_instance_id"></script>
 
 </div>
 

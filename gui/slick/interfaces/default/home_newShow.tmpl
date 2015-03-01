@@ -13,11 +13,11 @@
 
 #include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_top.tmpl")
 
-<script type="text/javascript" src="$sbRoot/js/formwizard.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/qualityChooser.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/newShow.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/addShowOptions.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/lib/bootstrap-formhelpers.min-2.3.0.js?$sbPID"></script>
+<script type="text/javascript" src="$sbRoot/js/formwizard.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/qualityChooser.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/newShow.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/addShowOptions.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/lib/bootstrap-formhelpers.min-2.3.0.js?$sb_instance_id"></script>
 
    #if $varExists('header') 
    	<h1 class="header">$header</h1>
@@ -113,7 +113,7 @@
 #end if
 </div>
 
-<script type="text/javascript" src="$sbRoot/js/rootDirs.js?$sbPID"></script>
+<script type="text/javascript" src="$sbRoot/js/rootDirs.js?$sb_instance_id"></script>
 
 </div></div></div></div>
 

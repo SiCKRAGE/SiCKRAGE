@@ -133,7 +133,7 @@ class PageTemplate(CheetahTemplate):
         if len(classes.ErrorViewer.errors):
             logPageTitle += ' (' + str(len(classes.ErrorViewer.errors)) + ')'
         self.logPageTitle = logPageTitle
-        self.sbPID = str(sickbeard.PID)
+        self.sb_instance_id = str(sickbeard.PID)
         self.menu = [
             {'title': 'Home', 'key': 'home'},
             {'title': 'Coming Episodes', 'key': 'comingEpisodes'},
