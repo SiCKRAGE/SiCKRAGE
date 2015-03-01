@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	window.console_debug = false;
 	window.console_prefix = 'Restart: ';
-	window.current_pid = '';
+	window.current_instance_id = '';
 	
 	var is_alive_url = sbRoot + '/home/is_alive/';
 	
@@ -27,8 +27,8 @@ $(document).ready(function() {
 				if (console_debug) {
 					console.log(console_prefix + 'is_alive: Sickrage is shutdowning.');
 				}
-				if (current_pid === '' || data.msg == current_pid) {
-					current_pid = data.msg;
+				if (current_instance_id === '' || data.msg == current_instance_id) {
+					current_instance_id = data.msg;
 				// if we're ready to go then redirect to new url
 				} else {
 					clearInterval(check_isAlive);
