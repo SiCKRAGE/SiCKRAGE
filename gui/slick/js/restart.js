@@ -7,7 +7,7 @@ if (sbHttpsEnabled != "False" && sbHttpsEnabled != 0) {
 var base_url = window.location.protocol + '//' + window.location.host + sbRoot;
 var is_alive_url = sbRoot + '/home/is_alive/';
 var timeout_id;
-var current_pid = '';
+var current_instance_id = '';
 var num_restart_waits = 0;
 var console_debug = false
 var console_prefix = 'Restart: '
@@ -36,8 +36,8 @@ function is_alive() {
         	if (console_debug) {
         		console.log(console_prefix + 'is_alive: Sickrage is shutdowning.')
         	}
-            if (current_pid == '' || data.msg == current_pid) {
-                current_pid = data.msg;
+            if (current_instance_id == '' || data.msg == current_instance_id) {
+                current_instance_id = data.msg;
             // if we're ready to go then redirect to new url
             } else {
             	redirect = true
