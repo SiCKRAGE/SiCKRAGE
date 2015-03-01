@@ -17,8 +17,8 @@
 #else 
     <h1 class="title">$title</h1>
 #end if
-<script type="text/javascript" src="$sbRoot/js/configProviders.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/config.js?$sbPID"></script>
+<script type="text/javascript" src="$sbRoot/js/configProviders.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/config.js?$sb_instance_id"></script>
 #if $sickbeard.USE_NZBS
 <script type="text/javascript" charset="utf-8">
 <!--
@@ -525,6 +525,33 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
                                 <span class="component-title"></span>
                                 <span class="component-desc">
                                     <input type="radio" name="${curTorrentProvider.getID()}_search_mode" id="${curTorrentProvider.getID()}_search_mode_eponly" value="eponly" #if $curTorrentProvider.search_mode=="eponly" then "checked=\"checked\"" else ""# />episodes only.
+                                </span>
+                            </label>
+                        </div>
+                        #end if
+
+                        #if $hasattr($curTorrentProvider, 'cat') and $curTorrentProvider.getID() == 'tntvillage':
+                        <div class="field-pair">
+                            <label for="${curTorrentProvider.getID()}_cat">
+                                <span class="component-title">Category:</span>
+                                <span class="component-desc">
+                                    <select name="${curTorrentProvider.getID()}_cat" id="${curTorrentProvider.getID()}_cat" class="form-control input-sm">
+                                        #for $i in $curTorrentProvider.category_dict.keys():
+                                        <option value="$curTorrentProvider.category_dict[$i]" #if $curTorrentProvider.category_dict[$i] == $curTorrentProvider.cat then "selected=\"selected\"" else ""#>$i</option>
+                                        #end for
+                                    </select>
+                                </span>
+                           </label>
+                        </div>
+                        #end if
+
+                        #if $hasattr($curTorrentProvider, 'subtitle') and $curTorrentProvider.getID() == 'tntvillage':
+                        <div class="field-pair">
+                            <label for="${curTorrentProvider.getID()}_subtitle">
+                                <span class="component-title">Subtitled</span>
+                                <span class="component-desc">
+                                    <input type="checkbox" name="${curTorrentProvider.getID()}_subtitle" id="${curTorrentProvider.getID()}_subtitle" #if $curTorrentProvider.subtitle then "checked=\"checked\"" else ""#/>
+                                    <p>select torrent with Italian subtitle</p>
                                 </span>
                             </label>
                         </div>

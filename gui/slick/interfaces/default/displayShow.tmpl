@@ -14,18 +14,18 @@
 #set $exceptions_string = " | ".join($show.exceptions)
 #include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_top.tmpl")
 
-<script type="text/javascript" src="$sbRoot/js/lib/jquery.bookmarkscroll.js?$sbPID"></script>
+<script type="text/javascript" src="$sbRoot/js/lib/jquery.bookmarkscroll.js?$sb_instance_id"></script>
 <script type="text/javascript" src="$sbRoot/js/jwplayer/jwplayer.js"></script>
 <script type="text/javascript">jwplayer.key="Zq3m618ITHrFxeKGi3Gf33ovC+XtdGQz19MMug==";</script>
 
 <input type="hidden" id="sbRoot" value="$sbRoot" />
 
-<script type="text/javascript" src="$sbRoot/js/displayShow.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/plotTooltip.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/sceneExceptionsTooltip.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/ratingTooltip.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/ajaxEpSearch.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/ajaxEpSubtitles.js?$sbPID"></script>
+<script type="text/javascript" src="$sbRoot/js/displayShow.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/plotTooltip.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/sceneExceptionsTooltip.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/ratingTooltip.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/ajaxEpSearch.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/ajaxEpSubtitles.js?$sb_instance_id"></script>
 <script type="text/javascript" charset="utf-8">
 <!--
 \$(document).ready(function(){
@@ -381,7 +381,7 @@
 			#end if
 			>Name</th>
 			#if ($sickbeard.DISPLAY_FILESIZE == True):
-				<th class="col-ep">Filesize</th>
+				<th class="col-ep">Size</th>
 			#end if
 				<th class="col-airdate">Airdate</th>
 			#if $sickbeard.DOWNLOAD_URL
@@ -481,8 +481,8 @@
 		#if ($sickbeard.DISPLAY_FILESIZE == True):
 		<td class="col-ep">
 			#if $epResult["file_size"]:
-				#set $file_size = $epResult["file_size"]  / 1024 / 1024 
-				$file_size MB
+				#set $file_size = $sickbeard.helpers.pretty_filesize($epResult["file_size"])
+				$file_size
 			#end if
 		</td>
 		#end if

@@ -68,9 +68,11 @@ def delete_folder(folder, check_empty=True):
 
     return True
 
-def delete_files(processPath, notwantedFiles, result):
+def delete_files(processPath, notwantedFiles, result, force=False):
 
-    if not result.result:
+    if not result.result and force:
+        result.output += logHelper(u"Forcing deletion of files, even though last result was not success", logger.DEBUG)
+    elif not result.result:
         return
 
     #Delete all file not needed
@@ -176,6 +178,11 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         delete_files(path, rarContent, result)
         for video in set(videoFiles) - set(videoInRar):
             result.result = process_media(path, [video], nzbName, process_method, force, is_priority, result)
+    elif sickbeard.DELRARCONTENTS and videoInRar:
+        result.result = process_media(path, videoInRar, nzbName, process_method, force, is_priority, result)
+        delete_files(path, rarContent, result, True)
+        for video in set(videoFiles) - set(videoInRar):
+            result.result = process_media(path, [video], nzbName, process_method, force, is_priority, result)
     else:
         for video in videoFiles:
             result.result = process_media(path, [video], nzbName, process_method, force, is_priority, result)
@@ -207,6 +214,11 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                 process_media(processPath, set(videoFiles) - set(videoInRar), nzbName, process_method, force,
                               is_priority, result)
                 delete_files(processPath, rarContent, result)
+            elif sickbeard.DELRARCONTENTS and videoInRar:
+                process_media(processPath, videoInRar, nzbName, process_method, force, is_priority, result)
+                process_media(processPath, set(videoFiles) - set(videoInRar), nzbName, process_method, force,
+                              is_priority, result)
+                delete_files(processPath, rarContent, result, True)
             else:
                 process_media(processPath, videoFiles, nzbName, process_method, force, is_priority, result)
 
@@ -251,7 +263,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
         process_failed(os.path.join(path, dirName), nzbNameOriginal, result)
         return False
 
-    if helpers.is_hidden_folder(dirName):
+    if helpers.is_hidden_folder(os.path.join(path, dirName)):
         result.output += logHelper(u"Ignoring hidden folder: " + dirName, logger.DEBUG)
         return False
 

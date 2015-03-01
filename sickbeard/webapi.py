@@ -38,6 +38,7 @@ from sickbeard import network_timezones, sbdatetime
 from sickbeard.exceptions import ex
 from sickbeard.common import Quality, Overview, qualityPresetStrings, statusStrings, SNATCHED, SNATCHED_PROPER, DOWNLOADED, SKIPPED, UNAIRED, IGNORED, ARCHIVED, WANTED, UNKNOWN
 from sickbeard.webserve import WebRoot
+import codecs
 
 try:
     import json
@@ -1318,7 +1319,7 @@ class CMD_Logs(ApiCall):
 
         data = []
         if os.path.isfile(logger.logFile):
-            with ek.ek(open, logger.logFile) as f:
+            with ek.ek(codecs.open, *[logger.logFile, 'r', 'utf-8']) as f:
                 data = f.readlines()
 
         regex = "^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d):(\d\d)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$"
@@ -1634,7 +1635,7 @@ class CMD_SickBeardPing(ApiCall):
     def run(self):
         """ check to see if sickrage is running """
         if sickbeard.started:
-            return _responds(RESULT_SUCCESS, {"pid": sickbeard.PID}, "Pong")
+            return _responds(RESULT_SUCCESS, {"instance_id": sickbeard.INSTANCE_ID}, "Pong")
         else:
             return _responds(RESULT_SUCCESS, msg="Pong")
 
