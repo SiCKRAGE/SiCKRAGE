@@ -27,7 +27,7 @@ import time
 import signal
 import sys
 import shutil
-import subprocess
+import os
 import traceback
 
 if sys.version_info < (2, 6):
@@ -517,7 +517,7 @@ class SickRage(object):
                     if '--nolaunch' not in popen_list:
                         popen_list += ['--nolaunch']
                     logger.log(u"Restarting SickRage with " + str(popen_list))
-                    subprocess.Popen(popen_list, cwd=os.getcwd())
+                    os.execv(popen_list[0], popen_list)
 
         # system exit
         os._exit(0)
