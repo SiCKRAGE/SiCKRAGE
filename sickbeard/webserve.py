@@ -133,7 +133,7 @@ class PageTemplate(CheetahTemplate):
         if len(classes.ErrorViewer.errors):
             logPageTitle += ' (' + str(len(classes.ErrorViewer.errors)) + ')'
         self.logPageTitle = logPageTitle
-        self.sb_instance_id = str(sickbeard.PID)
+        self.sb_instance_id = str(sickbeard.INSTANCE_ID)
         self.menu = [
             {'title': 'Home', 'key': 'home'},
             {'title': 'Coming Episodes', 'key': 'comingEpisodes'},
@@ -734,7 +734,7 @@ class Home(WebRoot):
 
         if sickbeard.started:
             return callback + '(' + json.dumps(
-                {"msg": str(sickbeard.PID)}) + ');'
+                {"msg": str(sickbeard.INSTANCE_ID)}) + ');'
         else:
             return callback + '(' + json.dumps({"msg": "nope"}) + ');'
 
@@ -1041,8 +1041,8 @@ class Home(WebRoot):
         else:
             return "Error sending Pushbullet notification"
 
-    def shutdown(self, pid=None):
-        if str(pid) != str(sickbeard.PID):
+    def shutdown(self, instance_id=None):
+        if str(instance_id) != str(sickbeard.INSTANCE_ID):
             return self.redirect("/home/")
 
         sickbeard.events.put(sickbeard.events.SystemEvent.SHUTDOWN)
@@ -1052,8 +1052,8 @@ class Home(WebRoot):
 
         return self._genericMessage(title, message)
 
-    def restart(self, pid=None):
-        if str(pid) != str(sickbeard.PID):
+    def restart(self, instance_id=None):
+        if str(instance_id) != str(sickbeard.INSTANCE_ID):
             return self.redirect("/home/")
 
         t = PageTemplate(rh=self, file="restart.tmpl")
@@ -1064,16 +1064,16 @@ class Home(WebRoot):
 
         return t.respond()
 
-    def updateCheck(self, pid=None):
-        if str(pid) != str(sickbeard.PID):
+    def updateCheck(self, instance_id=None):
+        if str(instance_id) != str(sickbeard.INSTANCE_ID):
             return self.redirect('/home/')
 
         sickbeard.versionCheckScheduler.action.check_for_new_version(force=True)
 
         return self.redirect('/home/')
 
-    def update(self, pid=None):
-        if str(pid) != str(sickbeard.PID):
+    def update(self, instance_id=None):
+        if str(instance_id) != str(sickbeard.INSTANCE_ID):
             return self.redirect('/home/')
 
         if sickbeard.versionCheckScheduler.action.update():
@@ -1090,7 +1090,7 @@ class Home(WebRoot):
         if sickbeard.BRANCH != branch:
             sickbeard.BRANCH = branch
             ui.notifications.message('Checking out branch: ', branch)
-            return self.update(sickbeard.PID)
+            return self.update(sickbeard.INSTANCE_ID)
         else:
             ui.notifications.message('Already on branch: ', branch)
 

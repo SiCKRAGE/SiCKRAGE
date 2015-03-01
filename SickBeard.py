@@ -29,6 +29,7 @@ import sys
 import shutil
 import os
 import traceback
+import uuid
 
 if sys.version_info < (2, 6):
     print "Sorry, requires Python 2.6 or 2.7."
@@ -291,8 +292,8 @@ class SickRage(object):
         if self.runAsDaemon:
             self.daemonize()
 
-        # Get PID
-        sickbeard.PID = os.getpid()
+        # Create unique instance ID which will change if we restart
+        sickbeard.INSTANCE_ID = uuid.uuid4().int
 
         # Build from the DB to start with
         self.loadShowsFromDB()

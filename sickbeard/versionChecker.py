@@ -142,7 +142,7 @@ class UpdateManager():
         return sickbeard.GIT_REPO
 
     def get_update_url(self):
-        return sickbeard.WEB_ROOT + "/home/update/?pid=" + str(sickbeard.PID)
+        return sickbeard.WEB_ROOT + "/home/update/?instance_id=" + str(sickbeard.INSTANCE_ID)
 
 class GitUpdateManager(UpdateManager):
     def __init__(self):
