@@ -501,14 +501,15 @@ class SickRage(object):
                 if install_type in ('git', 'source'):
                     popen_list = [sys.executable, sickbeard.MY_FULLNAME]
                 elif install_type == 'win':
+                    sickbeard_pid = str(os.getpid())
                     if hasattr(sys, 'frozen'):
                         # c:\dir\to\updater.exe 12345 c:\dir\to\sickbeard.exe
-                        popen_list = [os.path.join(sickbeard.PROG_DIR, 'updater.exe'), str(sickbeard.PID),
+                        popen_list = [os.path.join(sickbeard.PROG_DIR, 'updater.exe'), sickbeard_pid,
                                       sys.executable]
                     else:
                         logger.log(u"Unknown SR launch method, please file a bug report about this", logger.ERROR)
                         popen_list = [sys.executable, os.path.join(sickbeard.PROG_DIR, 'updater.py'),
-                                      str(sickbeard.PID),
+                                      sickbeard_pid,
                                       sys.executable,
                                       sickbeard.MY_FULLNAME]
 
