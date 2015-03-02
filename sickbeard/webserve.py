@@ -4827,10 +4827,11 @@ class ErrorLogs(WebRoot):
                 data = f.readlines()
 
         while len(data) <= maxLines :
-            for i in range (1 , int(sickbeard.LOG_NR)):
+            for i in range ( 1 , int(sickbeard.LOG_NR) ):
                 if os.path.isfile(logger.logFile + "." + str(i)):
                     with ek.ek(codecs.open, *[logger.logFile + "." + str(i), 'r', 'utf-8']) as f:
                         data += f.readlines()
+            break
 
         regex = "^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d):(\d\d)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$"
 
