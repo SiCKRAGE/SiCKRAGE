@@ -40,7 +40,13 @@ __all__ = ['ezrss',
            'bitsoup',
            't411',
            'tokyotoshokan',
+           'alpharatio',
+           'shazbat',
+           'rarbg',
            'nzbto',
+           'nzbindex',
+           'binsearch',
+           'nzbfriends'
 ]
 
 import sickbeard

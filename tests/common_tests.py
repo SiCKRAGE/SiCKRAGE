@@ -43,6 +43,8 @@ class QualityTests(unittest.TestCase):
         self.assertEqual(common.Quality.SDDVD, common.Quality.nameQuality("Test.Show.S01E02.BDRIP.WS.DiVX-GROUP"))
         self.assertEqual(common.Quality.SDDVD, common.Quality.nameQuality("Test.Show.S01E02.BDRIP.WS.x264-GROUP"))
 
+        self.assertEqual(common.Quality.SDDVD, common.Quality.nameQuality("Test.Show.S01E02.BD.x264-GROUP"))
+
     def test_HDTV(self):
         self.assertEqual(common.Quality.HDTV, common.Quality.nameQuality("Test.Show.S01E02.720p.HDTV.x264-GROUP"))
         self.assertEqual(common.Quality.HDTV, common.Quality.nameQuality("Test.Show.S01E02.HR.WS.PDTV.x264-GROUP"))
@@ -79,6 +81,8 @@ class QualityTests(unittest.TestCase):
     def test_HDBLURAY(self):
         self.assertEqual(common.Quality.HDBLURAY, common.Quality.nameQuality("Test.Show.S01E02.720p.BluRay.x264-GROUP"))
         self.assertEqual(common.Quality.HDBLURAY, common.Quality.nameQuality("Test.Show.S01E02.720p.HDDVD.x264-GROUP"))
+
+        self.assertEqual(common.Quality.HDBLURAY, common.Quality.nameQuality("Test.Show.S01E02.DD51.720p.BD.x264-GROUP"))
 
     def test_FULLHDBLURAY(self):
         self.assertEqual(common.Quality.FULLHDBLURAY, common.Quality.nameQuality("Test.Show.S01E02.1080p.BluRay.x264-GROUP"))

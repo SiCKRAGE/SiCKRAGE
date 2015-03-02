@@ -1674,7 +1674,7 @@ class CMD_SickBeardSearchIndexers(ApiCall):
         # required
         # optional
         self.name, args = self.check_params(args, kwargs, "name", None, False, "string", [])
-        self.lang, args = self.check_params(args, kwargs, "lang", "en", False, "string", self.valid_languages.keys())
+        self.lang, args = self.check_params(args, kwargs, "lang", "de", False, "string", self.valid_languages.keys())
 
         self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, False, "int", [])
 
@@ -2097,7 +2097,7 @@ class CMD_ShowAddNew(ApiCall):
                                                        "bool", [])
         self.status, args = self.check_params(args, kwargs, "status", None, False, "string",
                                               ["wanted", "skipped", "archived", "ignored"])
-        self.lang, args = self.check_params(args, kwargs, "lang", "en", False, "string",
+        self.lang, args = self.check_params(args, kwargs, "lang", "de", False, "string",
                                             self.valid_languages.keys())
         self.subtitles, args = self.check_params(args, kwargs, "subtitles", int(sickbeard.USE_SUBTITLES),
                                                  False, "int",

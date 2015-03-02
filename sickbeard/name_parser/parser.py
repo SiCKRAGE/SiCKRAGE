@@ -51,6 +51,28 @@ class NameParser(object):
         else:
             self._compile_regexes(self.ALL_REGEX)
 
+    def clean_release_name(self, release_name):
+        """removes spam headers from the beginning of a release
+
+        >>> clean_release_name("[144333]-[FULL]-[#a.b.teevee]-[.Anger.Management.S02E26.720p.HDTV.x264-KILLERS.]-[01-26].-.anger.management.s02e26.720p.hdtv.x264-killers.nfo.yEnc")
+        'Anger.Management.S02E26.720p.HDTV.x264-KILLERS.]-[01-26].-.anger.management.s02e26.720p.hdtv.x264-killers.nfo.yEnc'
+        """
+
+        releasetrim = ['^sof-', '^euhd-', '^amb-', '^itg-', '^idtv-', '^zzgtv-', '^itn-', '^tcpa-', '^tvp-',
+                          '^<?.* \d{9,} ?-? ', '^\.?zZz\.? ("|\')?', '^(.*) >', '^\[\d{5,}.*\[ ', '^\.: ', '^\s?-?\s?\[.+ presents\s?',
+                          '^\s+?\[\d{2}\/\d{2}]\s?-?\s?("|\')?', '^>.*<<\s', '^\[.*\[\d{2}/\d{2}\]\s?-\s?("|\')','^<?.+?\[.*\d{2}] - ("|\')','\[.?TOWN.*\] ?- ?(\[.TV.\]."|\[.partner.*\]\.)?',
+                          '\[\d{2}\/\d{2}\](\s|\.)?-(\s|\.)?"', '\/.*presents\.', '^(-\.")', '\.-\.TV\.-\.\d*\.-\.', '^\[\d*\]-\[FULL\]-\[#a.b.teevee.*\]-\[\.',
+                          '\[\d{2}\/\d{2}]\s+-\s"?', '^Uploader.Presents-']
+
+        for regex in releasetrim:
+            original_name = release_name
+            release_name = re.sub(regex, "", release_name)
+            if original_name != release_name:
+                logger.log("REGEX Before: %s" % original_name, logger.DEBUG)
+                logger.log("REGEX After: %s" % release_name, logger.DEBUG)
+
+        return release_name
+
     def clean_series_name(self, series_name):
         """Cleans up series name by removing any . and _
         characters, along with any trailing hyphens.
@@ -226,7 +248,7 @@ class NameParser(object):
                 if sql_result:
                     season_number = int(sql_result[0][0])
                     episode_numbers = [int(sql_result[0][1])]
-                
+
                 if not season_number or not len(episode_numbers):
                     try:
                         lINDEXER_API_PARMS = sickbeard.indexerApi(bestResult.show.indexer).api_params.copy()
@@ -393,6 +415,8 @@ class NameParser(object):
 
     def parse(self, name, cache_result=True):
         name = self._unicodify(name)
+
+        name = self.clean_release_name(name)
 
         if self.naming_pattern:
             cache_result = False

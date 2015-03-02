@@ -3480,7 +3480,7 @@ class ConfigGeneral(Config):
 
     def saveGeneral(self, log_dir=None, log_nr = 5, log_size = 1048576, web_port=None, web_log=None, encryption_version=None, web_ipv6=None,
                     update_shows_on_start=None, trash_remove_show=None, trash_rotate_logs=None, update_frequency=None,
-                    launch_browser=None, web_username=None,
+                    launch_browser=None, showupdate_hour=3, web_username=None,
                     api_key=None, indexer_default=None, timezone_display=None, cpu_preset=None,
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
                     handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
@@ -3496,6 +3496,7 @@ class ConfigGeneral(Config):
         sickbeard.PLAY_VIDEOS = config.checkbox_to_value(play_videos)
         sickbeard.DOWNLOAD_URL = download_url
         sickbeard.LAUNCH_BROWSER = config.checkbox_to_value(launch_browser)
+        sickbeard.SHOWUPDATE_HOUR = config.to_int(showupdate_hour)
         config.change_VERSION_NOTIFY(config.checkbox_to_value(version_notify))
         sickbeard.AUTO_UPDATE = config.checkbox_to_value(auto_update)
         sickbeard.NOTIFY_ON_UPDATE = config.checkbox_to_value(notify_on_update)
@@ -3656,7 +3657,7 @@ class ConfigSearch(Config):
                    torrent_dir=None, torrent_username=None, torrent_password=None, torrent_host=None,
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
                    torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
-                   torrent_rpcurl=None, ignore_words=None, require_words=None):
+                   torrent_rpcurl=None, torrent_auth_type = None, ignore_words=None, require_words=None):
 
         results = []
 
@@ -3717,6 +3718,7 @@ class ConfigSearch(Config):
         sickbeard.TORRENT_HIGH_BANDWIDTH = config.checkbox_to_value(torrent_high_bandwidth)
         sickbeard.TORRENT_HOST = config.clean_url(torrent_host)
         sickbeard.TORRENT_RPCURL = torrent_rpcurl
+        sickbeard.TORRENT_AUTH_TYPE = torrent_auth_type
 
         sickbeard.save_config()
 

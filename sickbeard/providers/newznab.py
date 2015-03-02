@@ -96,7 +96,7 @@ class NewznabProvider(generic.NZBProvider):
 
         self._checkAuth()
 
-        params = {"t": "caps", "o": "json"}
+        params = {"t": "caps"}
         if self.needs_auth and self.key:
             params['apikey'] = self.key
 
@@ -108,15 +108,16 @@ class NewznabProvider(generic.NZBProvider):
             return (False, return_categories, "Error getting html for [%s]" %
                     ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.items()) )))
 
-
         if not self._checkAuthFromData(data):
             logger.log(u"Error parsing xml for [%s]" % (self.name), logger.DEBUG)
             return False, return_categories, "Error parsing xml for [%s]" % (self.name)
 
         try:
             for category in data.feed.categories:
-                if category.get('name') == 'TV':
+                if category.get('name').startswith('TV'):
+                        return_categories.append(category)
                         for subcat in category.subcats:
+                            subcat['name'] = category.get('name') + ' - ' + subcat.get('name')
                             return_categories.append(subcat)
         except:
             logger.log(u"Error parsing result for [%s]" % (self.name),
