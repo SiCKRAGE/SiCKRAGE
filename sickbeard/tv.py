@@ -50,6 +50,9 @@ from sickbeard import notifiers
 from sickbeard import postProcessor
 from sickbeard import subtitles
 from sickbeard import history
+from sickbeard import sbdatetime
+from sickbeard import network_timezones
+from dateutil.tz import *
 
 from sickbeard import encodingKludge as ek
 
@@ -1420,7 +1423,7 @@ class TVEpisode(object):
                         helpers.chmodAsParent(subtitle.path)
 
         except Exception as e:
-            logger.log("Error occurred when downloading subtitles: " + traceback.format_exc(), logger.ERROR)
+            logger.log("Error occurred when downloading subtitles: " + str(e), logger.ERROR)
             return
 
         if sickbeard.SUBTITLES_MULTI:
@@ -2488,11 +2491,11 @@ class TVEpisode(object):
             return
 
         related_files = postProcessor.PostProcessor(self.location).list_associated_files(
-            self.location, base_name_only=True)
+            self.location, base_name_only=True, subfolders=True)
 
         if self.show.subtitles and sickbeard.SUBTITLES_DIR != '':
             related_subs = postProcessor.PostProcessor(self.location).list_associated_files(sickbeard.SUBTITLES_DIR,
-                                                                                            subtitles_only=True)
+                                                                                            subtitles_only=True, subfolders=True)
             absolute_proper_subs_path = ek.ek(os.path.join, sickbeard.SUBTITLES_DIR, self.formatted_filename())
 
         logger.log(u"Files associated to " + self.location + ": " + str(related_files), logger.DEBUG)
@@ -2559,9 +2562,12 @@ class TVEpisode(object):
             min = int((airs.group(2), min)[None is airs.group(2)])
         airtime = datetime.time(hr, min)
 
-        airdatetime = datetime.datetime.combine(self.airdate, airtime)
+        if sickbeard.TIMEZONE_DISPLAY == 'local':
+            airdatetime = sbdatetime.sbdatetime.convert_to_setting( network_timezones.parse_date_time(datetime.date.toordinal(self.airdate), self.show.airs, self.show.network))
+        else:
+            airdatetime = datetime.datetime.combine(self.airdate, airtime).replace(tzinfo=tzlocal())
 
-        filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location))
+        filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location)).replace(tzinfo=tzlocal())
 
         if filemtime != airdatetime:
             import time

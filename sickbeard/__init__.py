@@ -24,6 +24,7 @@ import socket
 import os
 import re
 import os.path
+import shutil
 
 from threading import Lock
 import sys
@@ -34,7 +35,7 @@ from sickbeard import providers, metadata, config, webserveInit
 from sickbeard.providers.generic import GenericProvider
 from providers import ezrss, btn, newznab, womble, thepiratebay, oldpiratebay, torrentleech, kat, iptorrents, \
     omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, nextgen, speedcd, nyaatorrents, fanzub, torrentbytes, animezb, \
-    freshontv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, nzbto, nzbindex, binsearch, nzbfriends
+    freshontv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, nzbto, nzbindex, binsearch, nzbfriends
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
     naming_ep_type
 from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
@@ -49,6 +50,7 @@ from indexers.indexer_exceptions import indexer_shownotfound, indexer_showincomp
     indexer_episodenotfound, indexer_attributenotfound, indexer_seasonnotfound, indexer_userabort, indexerExcepts
 from sickbeard.common import SD, SKIPPED, NAMING_REPEAT
 from sickbeard.databases import mainDB, cache_db, failed_db
+from sickbeard.helpers import ex
 
 from lib.configobj import ConfigObj
 
@@ -245,6 +247,7 @@ AIRDATE_EPISODES = False
 PROCESS_AUTOMATICALLY = False
 KEEP_PROCESSED_DIR = False
 PROCESS_METHOD = None
+DELRARCONTENTS = False
 MOVE_ASSOCIATED_FILES = False
 POSTPONE_IF_SYNC_FILES = True
 NFO_RENAME = True
@@ -487,6 +490,7 @@ EXTRA_SCRIPTS = []
 
 IGNORE_WORDS = "french,core2hd,dutch,swedish,reenc,MrLss"
 REQUIRE_WORDS = ""
+SYNC_FILES = "!sync,lftp-pget-status,part,bts"
 
 CALENDAR_UNPROTECTED = False
 
@@ -525,7 +529,7 @@ def initialize(consoleLogging=True):
             USE_PUSHALOT, PUSHALOT_NOTIFY_ONSNATCH, PUSHALOT_NOTIFY_ONDOWNLOAD, PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD, PUSHALOT_AUTHORIZATIONTOKEN, \
             USE_PUSHBULLET, PUSHBULLET_NOTIFY_ONSNATCH, PUSHBULLET_NOTIFY_ONDOWNLOAD, PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD, PUSHBULLET_API, PUSHBULLET_DEVICE, \
             versionCheckScheduler, VERSION_NOTIFY, AUTO_UPDATE, NOTIFY_ON_UPDATE, PROCESS_AUTOMATICALLY, UNPACK, CPU_PRESET, \
-            KEEP_PROCESSED_DIR, PROCESS_METHOD, TV_DOWNLOAD_DIR, MIN_DAILYSEARCH_FREQUENCY, DEFAULT_UPDATE_FREQUENCY, MIN_UPDATE_FREQUENCY, UPDATE_FREQUENCY, \
+            KEEP_PROCESSED_DIR, PROCESS_METHOD, DELRARCONTENTS, TV_DOWNLOAD_DIR, MIN_DAILYSEARCH_FREQUENCY, DEFAULT_UPDATE_FREQUENCY, MIN_UPDATE_FREQUENCY, UPDATE_FREQUENCY, \
             showQueueScheduler, searchQueueScheduler, ROOT_DIRS, CACHE_DIR, ACTUAL_CACHE_DIR, TIMEZONE_DISPLAY, \
             NAMING_PATTERN, NAMING_MULTI_EP, NAMING_ANIME_MULTI_EP, NAMING_FORCE_FOLDERS, NAMING_ABD_PATTERN, NAMING_CUSTOM_ABD, NAMING_SPORTS_PATTERN, NAMING_CUSTOM_SPORTS, NAMING_ANIME_PATTERN, NAMING_CUSTOM_ANIME, NAMING_STRIP_YEAR, \
             RENAME_EPISODES, AIRDATE_EPISODES, properFinderScheduler, PROVIDER_ORDER, autoPostProcesserScheduler, \
@@ -538,7 +542,7 @@ def initialize(consoleLogging=True):
             USE_SYNOLOGYNOTIFIER, SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH, SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD, SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD, \
             USE_EMAIL, EMAIL_HOST, EMAIL_PORT, EMAIL_TLS, EMAIL_USER, EMAIL_PASSWORD, EMAIL_FROM, EMAIL_NOTIFY_ONSNATCH, EMAIL_NOTIFY_ONDOWNLOAD, EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD, EMAIL_LIST, \
             USE_LISTVIEW, METADATA_KODI, METADATA_KODI_12PLUS, METADATA_MEDIABROWSER, METADATA_PS3, metadata_provider_dict, \
-            NEWZBIN, NEWZBIN_USERNAME, NEWZBIN_PASSWORD, GIT_PATH, MOVE_ASSOCIATED_FILES, POSTPONE_IF_SYNC_FILES, dailySearchScheduler, NFO_RENAME, \
+            NEWZBIN, NEWZBIN_USERNAME, NEWZBIN_PASSWORD, GIT_PATH, MOVE_ASSOCIATED_FILES, SYNC_FILES, POSTPONE_IF_SYNC_FILES, dailySearchScheduler, NFO_RENAME, \
             GUI_NAME, HOME_LAYOUT, HISTORY_LAYOUT, DISPLAY_SHOW_SPECIALS, COMING_EPS_LAYOUT, COMING_EPS_SORT, COMING_EPS_DISPLAY_PAUSED, COMING_EPS_MISSED_RANGE, DISPLAY_FILESIZE, FUZZY_DATING, TRIM_ZERO, DATE_PRESET, TIME_PRESET, TIME_PRESET_W_SECONDS, THEME_NAME, \
             POSTER_SORTBY, POSTER_SORTDIR, \
             METADATA_WDTV, METADATA_TIVO, METADATA_MEDE8ER, IGNORE_WORDS, REQUIRE_WORDS, CALENDAR_UNPROTECTED, CREATE_MISSING_SHOW_DIRS, \
@@ -580,10 +584,6 @@ def initialize(consoleLogging=True):
         GIT_USERNAME = check_setting_str(CFG, 'General', 'git_username', '')
         GIT_PASSWORD = check_setting_str(CFG, 'General', 'git_password', '', censor_log=True)
 
-        # github api
-        try:gh = Github(user_agent="SiCKRAGE").get_user(GIT_ORG).get_repo(GIT_REPO)
-        except:gh = None
-
         # debugging
         DEBUG = bool(check_setting_int(CFG, 'General', 'debug', 0))
 
@@ -598,6 +598,13 @@ def initialize(consoleLogging=True):
 
         # init logging
         logger.initLogging(consoleLogging=consoleLogging, fileLogging=fileLogging, debugLogging=DEBUG)
+
+        # github api
+        try:
+            gh = Github(user_agent="SiCKRAGE").get_user(GIT_ORG).get_repo(GIT_REPO)
+        except Exception as e:
+            gh = None
+            logger.log('Unable to setup github properly, github will not be available. Error: {0}'.format(ex(e)),logger.WARNING)
 
         # git reset on update
         GIT_RESET = bool(check_setting_int(CFG, 'General', 'git_reset', 0))
@@ -631,6 +638,37 @@ def initialize(consoleLogging=True):
         if not helpers.makeDir(CACHE_DIR):
             logger.log(u"!!! Creating local cache dir failed, using system default", logger.ERROR)
             CACHE_DIR = None
+
+        # Check if we need to perform a restore of the cache folder
+        try:
+            restoreDir = os.path.join(DATA_DIR, 'restore')
+            if os.path.exists(restoreDir) and os.path.exists(os.path.join(restoreDir, 'cache')):
+                def restoreCache(srcDir, dstDir):
+                    import ntpath
+
+                    def path_leaf(path):
+                        head, tail = ntpath.split(path)
+                        return tail or ntpath.basename(head)
+
+                    try:
+                        if os.path.isdir(dstDir):
+                            bakFilename = '{0}-{1}'.format(path_leaf(dstDir), datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d_%H%M%S'))
+                            shutil.move(dstDir, os.path.join(ntpath.dirname(dstDir), bakFilename))
+
+                        shutil.move(srcDir, dstDir)
+                        logger.log(u"Restore: restoring cache successful", logger.INFO)
+                    except Exception as e:
+                        logger.log(u"Restore: restoring cache failed: {0}".format(str(e)), logger.ERROR)
+
+                restoreCache(os.path.join(restoreDir, 'cache'), CACHE_DIR)
+        except Exception as e:
+            logger.log(u"Restore: restoring cache failed: {0}".format(str(e)), logger.ERROR)
+        finally:
+            if os.path.exists(os.path.join(DATA_DIR, 'restore')):
+                try:
+                    shutil.rmtree(os.path.join(DATA_DIR, 'restore'))
+                except Exception as e:
+                    logger.log(u"Restore: Unable to remove the restore directory: {0}".format(str(e)), logger.ERROR)
 
         # clean cache folders
         if CACHE_DIR:
@@ -786,8 +824,10 @@ def initialize(consoleLogging=True):
         AIRDATE_EPISODES = bool(check_setting_int(CFG, 'General', 'airdate_episodes', 0))
         KEEP_PROCESSED_DIR = bool(check_setting_int(CFG, 'General', 'keep_processed_dir', 1))
         PROCESS_METHOD = check_setting_str(CFG, 'General', 'process_method', 'copy' if KEEP_PROCESSED_DIR else 'move')
+        DELRARCONTENTS = bool(check_setting_int(CFG, 'General', 'del_rar_contents', 0))
         MOVE_ASSOCIATED_FILES = bool(check_setting_int(CFG, 'General', 'move_associated_files', 0))
         POSTPONE_IF_SYNC_FILES = bool(check_setting_int(CFG, 'General', 'postpone_if_sync_files', 1))
+        SYNC_FILES = check_setting_str(CFG, 'General', 'sync_files', SYNC_FILES)
         NFO_RENAME = bool(check_setting_int(CFG, 'General', 'nfo_rename', 1))
         CREATE_MISSING_SHOW_DIRS = bool(check_setting_int(CFG, 'General', 'create_missing_show_dirs', 0))
         ADD_SHOWS_WO_DIR = bool(check_setting_int(CFG, 'General', 'add_shows_wo_dir', 0))
@@ -1121,6 +1161,13 @@ def initialize(consoleLogging=True):
                 curTorrentProvider.enable_backlog = bool(check_setting_int(CFG, curTorrentProvider.getID().upper(),
                                                                            curTorrentProvider.getID() + '_enable_backlog',
                                                                            1))
+
+            if hasattr(curTorrentProvider, 'cat'):
+                curTorrentProvider.cat = check_setting_int(CFG, curTorrentProvider.getID().upper(),
+                                                                         curTorrentProvider.getID() + '_cat', 0)
+            if hasattr(curTorrentProvider, 'subtitle'):
+                curTorrentProvider.subtitle = bool(check_setting_int(CFG, curTorrentProvider.getID().upper(),
+                                                                         curTorrentProvider.getID() + '_subtitle', 0))
 
         for curNzbProvider in [curProvider for curProvider in providers.sortedProviderList() if
                                curProvider.providerType == GenericProvider.NZB]:
@@ -1550,7 +1597,9 @@ def save_config():
     new_config['General']['tv_download_dir'] = TV_DOWNLOAD_DIR
     new_config['General']['keep_processed_dir'] = int(KEEP_PROCESSED_DIR)
     new_config['General']['process_method'] = PROCESS_METHOD
+    new_config['General']['del_rar_contents'] = int(DELRARCONTENTS)
     new_config['General']['move_associated_files'] = int(MOVE_ASSOCIATED_FILES)
+    new_config['General']['sync_files'] = SYNC_FILES
     new_config['General']['postpone_if_sync_files'] = int(POSTPONE_IF_SYNC_FILES)
     new_config['General']['nfo_rename'] = int(NFO_RENAME)
     new_config['General']['process_automatically'] = int(PROCESS_AUTOMATICALLY)
@@ -1629,6 +1678,12 @@ def save_config():
         if hasattr(curTorrentProvider, 'enable_backlog'):
             new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID() + '_enable_backlog'] = int(
                 curTorrentProvider.enable_backlog)
+        if hasattr(curTorrentProvider, 'cat'):
+            new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID() + '_cat'] = int(
+                curTorrentProvider.cat)
+        if hasattr(curTorrentProvider, 'subtitle'):
+            new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID() + '_subtitle'] = int(
+                curTorrentProvider.subtitle)
 
     for curNzbProvider in [curProvider for curProvider in providers.sortedProviderList() if
                            curProvider.providerType == GenericProvider.NZB]:
