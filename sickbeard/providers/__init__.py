@@ -46,7 +46,7 @@ __all__ = ['ezrss',
            'nzbto',
            'nzbindex',
            'binsearch',
-           'nzbfriends'
+           'nzbfriends',
            'tntvillage',
 ]
 
