@@ -1635,7 +1635,7 @@ class CMD_SickBeardPing(ApiCall):
     def run(self):
         """ check to see if sickrage is running """
         if sickbeard.started:
-            return _responds(RESULT_SUCCESS, {"pid": sickbeard.PID}, "Pong")
+            return _responds(RESULT_SUCCESS, {"instance_id": sickbeard.INSTANCE_ID}, "Pong")
         else:
             return _responds(RESULT_SUCCESS, msg="Pong")
 

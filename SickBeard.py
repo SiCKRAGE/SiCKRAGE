@@ -27,8 +27,9 @@ import time
 import signal
 import sys
 import shutil
-import subprocess
+import os
 import traceback
+import uuid
 
 if sys.version_info < (2, 6):
     print "Sorry, requires Python 2.6 or 2.7."
@@ -291,8 +292,8 @@ class SickRage(object):
         if self.runAsDaemon:
             self.daemonize()
 
-        # Get PID
-        sickbeard.PID = os.getpid()
+        # Create unique instance ID which will change if we restart
+        sickbeard.INSTANCE_ID = uuid.uuid4().int
 
         # Build from the DB to start with
         self.loadShowsFromDB()
@@ -501,14 +502,15 @@ class SickRage(object):
                 if install_type in ('git', 'source'):
                     popen_list = [sys.executable, sickbeard.MY_FULLNAME]
                 elif install_type == 'win':
+                    sickbeard_pid = str(os.getpid())
                     if hasattr(sys, 'frozen'):
                         # c:\dir\to\updater.exe 12345 c:\dir\to\sickbeard.exe
-                        popen_list = [os.path.join(sickbeard.PROG_DIR, 'updater.exe'), str(sickbeard.PID),
+                        popen_list = [os.path.join(sickbeard.PROG_DIR, 'updater.exe'), sickbeard_pid,
                                       sys.executable]
                     else:
                         logger.log(u"Unknown SR launch method, please file a bug report about this", logger.ERROR)
                         popen_list = [sys.executable, os.path.join(sickbeard.PROG_DIR, 'updater.py'),
-                                      str(sickbeard.PID),
+                                      sickbeard_pid,
                                       sys.executable,
                                       sickbeard.MY_FULLNAME]
 
@@ -517,7 +519,7 @@ class SickRage(object):
                     if '--nolaunch' not in popen_list:
                         popen_list += ['--nolaunch']
                     logger.log(u"Restarting SickRage with " + str(popen_list))
-                    subprocess.Popen(popen_list, cwd=os.getcwd())
+                    os.execv(popen_list[0], popen_list)
 
         # system exit
         os._exit(0)

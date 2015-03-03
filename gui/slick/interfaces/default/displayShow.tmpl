@@ -14,18 +14,18 @@
 #set $exceptions_string = " | ".join($show.exceptions)
 #include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_top.tmpl")
 
-<script type="text/javascript" src="$sbRoot/js/lib/jquery.bookmarkscroll.js?$sbPID"></script>
+<script type="text/javascript" src="$sbRoot/js/lib/jquery.bookmarkscroll.js?$sb_instance_id"></script>
 <script type="text/javascript" src="$sbRoot/js/jwplayer/jwplayer.js"></script>
 <script type="text/javascript">jwplayer.key="Zq3m618ITHrFxeKGi3Gf33ovC+XtdGQz19MMug==";</script>
 
 <input type="hidden" id="sbRoot" value="$sbRoot" />
 
-<script type="text/javascript" src="$sbRoot/js/displayShow.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/plotTooltip.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/sceneExceptionsTooltip.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/ratingTooltip.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/ajaxEpSearch.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/ajaxEpSubtitles.js?$sbPID"></script>
+<script type="text/javascript" src="$sbRoot/js/displayShow.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/plotTooltip.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/sceneExceptionsTooltip.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/ratingTooltip.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/ajaxEpSearch.js?$sb_instance_id"></script>
+<script type="text/javascript" src="$sbRoot/js/ajaxEpSubtitles.js?$sb_instance_id"></script>
 <script type="text/javascript" charset="utf-8">
 <!--
 \$(document).ready(function(){
