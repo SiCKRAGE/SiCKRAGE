@@ -1509,6 +1509,7 @@ def save_config():
 
     # For passwords you must include the word `password` in the item_name and add `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save_config()
     new_config['General'] = {}
+    new_config['General']['developper'] = int(DEVELOPPER)    
     new_config['General']['git_autoissues'] = int(GIT_AUTOISSUES)
     new_config['General']['git_username'] = GIT_USERNAME
     new_config['General']['git_password'] = GIT_PASSWORD
