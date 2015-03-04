@@ -4932,9 +4932,20 @@ class ErrorLogs(WebRoot):
 
 
         data = []
-        if os.path.isfile(logger.logFile):
-            with ek.ek(codecs.open, *[logger.logFile, 'r', 'utf-8']) as f:
-                data = f.readlines()
+        logfiles = [logger.logFile]
+        for l in range(1, int(sickbeard.LOG_NR)):
+            logfiles.append(u"{0}.{1}".format(logger.logFile, l))
+        
+        try:
+            for logfile in logfiles:
+                if os.path.isfile(logfile):
+                    with ek.ek(codecs.open, *[logger.logFile, 'r', 'utf-8']) as f:
+                        for line in f:
+                            data.append(line)
+                            if sys.getsizeof(data) >= 31457280:
+                                raise StopIteration
+        except StopIteration:
+            pass
 
         regex = "^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d):(\d\d)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$"
 
