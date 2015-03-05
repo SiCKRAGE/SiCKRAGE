@@ -34,7 +34,8 @@
                 	<li><a href="#core-component-group3">Metadata</a></li>
                 </ul>
                 
-                <div id="core-component-group1" class="component-group">
+                <div id="core-component-group1">
+				<div class="component-group">
 
                     <div class="component-group-desc">
                         <h3>Post-Processing</h3>
@@ -242,6 +243,68 @@
                         <input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
 
                     </fieldset>
+               </div>
+			   <div class="component-group">
+
+					<div class="component-group-desc">
+						<h3>Delete Media</h3>
+						<p>Options to delete media files.</p>
+					</div>
+
+					<fieldset class="component-group-list">
+						<div class="field-pair">
+							<label for="delete_checker">
+								<span class="component-title">Delete media files</span>
+								<span class="component-desc">
+									<input type="checkbox" name="delete_checker" id="delete_checker" #if $sickbeard.DELETE_CHECKER == True then "checked=\"checked\"" else ""# />
+									<p>Ability to delete media and associated files when episode status is changed. This feature can be used to delete 'watched' episodes through Sickrage. Example: If the setting below is archived, media files will be deleted when status is changed to archived. NOTE: to prevent accidental deletion use 'delay media frequency'.</p>
+								</span>
+							</label>
+						</div>
+						<div class="field-pair">
+							<label>
+								<span class="component-title">Delete Media Frequency</span>
+								<input type="text" name="delete_checker_frequency" id="delete_checker_frequency" value="$sickbeard.DELETE_CHECKER_FREQUENCY" class="form-control input-sm input50" />
+							</label>
+							<label>
+								<span class="component-title">&nbsp;</span>
+								<span class="component-desc">
+									<p>Time in minutes to the delay deletion of files. If necessary deletion can be canceled. <b>WARNING:</b> when zero (0) minutes delay is chosen, files are deleted instantly.</p>
+								</span>
+							</label>
+						</div>
+						<div class="field-pair">
+							<label for="delete_files_status">
+								<span class="component-title">Delete media files</span>
+								<span class="component-desc">
+									<select id="delete_files_status" name="delete_files_status" class="form-control input-sm">
+										<option value="ARCHIVED" #if $sickbeard.DELETE_FILES_STATUS == 'ARCHIVED' then "selected=\"selected\"" else ""#>Archived</option>
+										<option value="IGNORED" #if $sickbeard.DELETE_FILES_STATUS == 'IGNORED' then "selected=\"selected\"" else ""#>Ignored</option>
+										<option value="SKIPPED" #if $sickbeard.DELETE_FILES_STATUS == 'SKIPPED' then "selected=\"selected\"" else ""#>Skipped</option>
+									</select>
+								</span>
+							</label>
+							<label>
+								<span class="component-title">&nbsp;</span>
+								<span class="component-desc">Status to be used to delete watched files. </span>
+							</label>
+						</div>
+						<div class="field-pair">
+							<span class="component-title">Send to trash</span>
+							<span class="component-desc">
+								<label for="trash_remove_media_files" class="nextline-block">
+									<input type="checkbox" name="trash_remove_media_files" id="trash_remove_media_files" #if $sickbeard.TRASH_REMOVE_MEDIA_FILES then 'checked="checked"' else ''#/>
+									<p>Can be used to send deleted files to the trashcan instead of permanent deletion.</p>
+								</label>
+							</span>
+						</div><br>
+						
+						<input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
+
+					</fieldset>
+
+				</div>
+
                 </div><!-- /component-group1 //-->
 
                 <div id="core-component-group2" class="component-group">
