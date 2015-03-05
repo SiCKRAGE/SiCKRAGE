@@ -19,6 +19,12 @@
 # all regexes are case insensitive
 
 normal_regexes = [
+    ('itunes',
+     # 01 Ep Name
+     '''
+     ^(?P<ep_num>\d{1,3})[ ](?P<extra_info>.*)$      # 02 Episode Name
+     '''),
+
     ('standard_repeat',
      # Show.Name.S01E02.S01E03.Source.Quality.Etc-Group
      # Show Name - S01E02 - S01E03 - S01E04 - Ep Name
