@@ -45,6 +45,8 @@ __all__ = ['ezrss',
            'rarbg',
            'tntvillage',
            'binsearch',
+		   'nzbindex'
+
 ]
 
 import sickbeard

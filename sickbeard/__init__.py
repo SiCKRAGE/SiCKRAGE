@@ -38,7 +38,7 @@ from sickbeard import providers, metadata, config, webserveInit
 from sickbeard.providers.generic import GenericProvider
 from providers import ezrss, btn, newznab, womble, thepiratebay, oldpiratebay, torrentleech, kat, iptorrents, \
     omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, nextgen, speedcd, nyaatorrents, fanzub, torrentbytes, animezb, \
-    freshontv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, binsearch
+    freshontv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, binsearch, nzbindex
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
     naming_ep_type
 from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
@@ -271,6 +271,8 @@ BINSEARCH = False
 OMGWTFNZBS = False
 OMGWTFNZBS_USERNAME = None
 OMGWTFNZBS_APIKEY = None
+
+NZBINDEX = False
 
 NEWZBIN = False
 NEWZBIN_USERNAME = None
@@ -558,7 +560,7 @@ def initialize(consoleLogging=True):
             AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, DEFAULT_AUTOPOSTPROCESSER_FREQUENCY, MIN_AUTOPOSTPROCESSER_FREQUENCY, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
             ANIME_SPLIT_HOME, SCENE_DEFAULT, PLAY_VIDEOS, DOWNLOAD_URL, BACKLOG_DAYS, GIT_ORG, GIT_REPO, GIT_USERNAME, GIT_PASSWORD, \
-            GIT_AUTOISSUES, DEVELOPER, gh
+            GIT_AUTOISSUES, DEVELOPER, gh, NZBINDEX
 
         if __INITIALIZED__:
             return False
@@ -845,6 +847,8 @@ def initialize(consoleLogging=True):
         NZBS_UID = check_setting_str(CFG, 'NZBs', 'nzbs_uid', '', censor_log=True)
         NZBS_HASH = check_setting_str(CFG, 'NZBs', 'nzbs_hash', '', censor_log=True)
 
+		NZBINDEX = bool(check_setting_int(CFG, 'NZBINDEX', 'nzbindex', 0))
+		
         NEWZBIN = bool(check_setting_int(CFG, 'Newzbin', 'newzbin', 0))
         NEWZBIN_USERNAME = check_setting_str(CFG, 'Newzbin', 'newzbin_username', '', censor_log=True)
         NEWZBIN_PASSWORD = check_setting_str(CFG, 'Newzbin', 'newzbin_password', '', censor_log=True)
