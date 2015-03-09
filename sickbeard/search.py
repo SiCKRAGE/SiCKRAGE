@@ -26,7 +26,7 @@ import traceback
 
 import sickbeard
 
-from common import SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, Quality, SEASON_RESULT, MULTI_EP_RESULT
+from common import AVAILABLE, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, Quality, SEASON_RESULT, MULTI_EP_RESULT
 
 from sickbeard import logger, db, show_name_helpers, exceptions, helpers
 from sickbeard import sab
@@ -87,6 +87,35 @@ def _downloadResult(result):
         newResult = False
 
     return newResult
+
+def markAvailable (result, endStatus=AVAILABLE):
+    """
+    Contains the internal logic necessary to actually mark "available" a result that
+    has been found.
+
+    Returns a bool representing success.
+
+    result: SearchResult instance to be mark ad available.
+    endStatus: the episode status that should be used for the episode object once it's found.
+    """
+
+    if result is None:
+        return False
+
+    # don't notify when we re-download an episode
+    sql_l = []
+    for curEpObj in result.episodes:
+        with curEpObj.lock:
+            curEpObj.status = endStatus
+            sql_l.append(curEpObj.get_sql())
+
+        notifiers.notify_available(curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
+
+    if len(sql_l) > 0:
+        myDB = db.DBConnection()
+        myDB.mass_action(sql_l)
+
+    return True
 
 def snatchEpisode(result, endStatus=SNATCHED):
     """
@@ -395,8 +424,7 @@ def searchForNeededEpisodes():
     episodes = []
 
     for curShow in show_list:
-        if not curShow.paused:
-            episodes.extend(wantedEpisodes(curShow, fromDate))
+        episodes.extend(wantedEpisodes(curShow, fromDate))
 
     providers = [x for x in sickbeard.providers.sortedProviderList(sickbeard.RANDOMIZE_PROVIDERS) if x.isActive() and x.enable_daily]
     for curProvider in providers:

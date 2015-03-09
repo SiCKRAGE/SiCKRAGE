@@ -19,15 +19,17 @@
 
 #set status_quality = '(' + ','.join([str(x) for x in $Quality.SNATCHED + $Quality.SNATCHED_PROPER]) + ')'
 #set status_download = '(' + ','.join([str(x) for x in $Quality.DOWNLOADED + [$ARCHIVED]]) + ')'
+#set status_available = '(' + ','.join([str(x) for x in $Quality.AVAILABLE]) + ')'
 
 #set $sql_statement = 'SELECT showid, '
 
 #set $sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 AND status IN ' + $status_quality + ') AS ep_snatched, '
 #set $sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 AND status IN ' + $status_download + ') AS ep_downloaded, '
+#set $sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 AND status IN ' + $status_available + ') AS ep_available, '
 
 #set $sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 '
 #set $sql_statement += ' AND ((airdate <= ' + $today + ' AND (status = ' + str($SKIPPED) + ' OR status = ' + str($WANTED) + ' OR status = ' + str($FAILED) + ')) '
-#set $sql_statement += ' OR (status IN ' + status_quality + ') OR (status IN ' + status_download + '))) AS ep_total, '
+#set $sql_statement += ' OR (status IN ' + status_available + ') OR (status IN ' + status_quality + ') OR (status IN ' + status_download + '))) AS ep_total, '
 
 #set $sql_statement += ' (SELECT airdate FROM tv_episodes WHERE showid=tv_eps.showid AND airdate >= ' + $today + ' AND (status = ' + str($UNAIRED) + ' OR status = ' + str($WANTED) + ') ORDER BY airdate ASC LIMIT 1) AS ep_airs_next '
 #set $sql_statement += ' FROM tv_episodes tv_eps GROUP BY showid'
@@ -281,6 +283,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
     #set $cur_airs_next = ''
     #set $cur_snatched = 0
     #set $cur_downloaded = 0
+    #set $cur_available = 0
     #set $cur_total = 0
     #set $download_stat_tip = ''
     #set $display_status = $curShow.status
@@ -305,6 +308,11 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
             #set $cur_downloaded = 0
         #end if
 
+        #set $cur_available = $show_stat[$curShow.indexerid]['ep_available']
+        #if not $cur_available:
+            #set $cur_available = 0
+        #end if
+
         #set $cur_total = $show_stat[$curShow.indexerid]['ep_total']
         #if not $cur_total:
             #set $cur_total = 0
@@ -318,14 +326,14 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
             #set $download_stat = download_stat
             #set $download_stat_tip = download_stat_tip + "&#013;" + "Snatched: " + str($cur_snatched)
         #end if
-        #set $download_stat = download_stat + " / " + str($cur_total)
+        #set $download_stat = download_stat + "/" + str($cur_available) + "/" + str($cur_total)
         #set $download_stat_tip = download_stat_tip + "&#013;" + "Total: " + str($cur_total)
     #else
         #set $download_stat = '?'
         #set $download_stat_tip = "no data"
     #end if
 
-    #set $nom = $cur_downloaded
+    #set $nom = $cur_downloaded + $cur_available
     #set $den = $cur_total
     #if $den == 0:
         #set $den = 1
@@ -494,6 +502,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
     #set $cur_airs_next = ''
     #set $cur_snatched = 0
     #set $cur_downloaded = 0
+    #set $cur_available = 0
     #set $cur_total = 0
     #set $download_stat_tip = ''
 
@@ -510,6 +519,11 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
             #set $cur_downloaded = 0
         #end if
 
+        #set $cur_available = $show_stat[$curShow.indexerid]['ep_available']
+        #if not $cur_available:
+            #set $cur_available = 0
+        #end if
+
         #set $cur_total = $show_stat[$curShow.indexerid]['ep_total']
         #if not $cur_total:
             #set $cur_total = 0
@@ -523,14 +537,14 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
             #set $download_stat = download_stat + "+" + str($cur_snatched)
             #set $download_stat_tip = download_stat_tip + "&#013;" + "Snatched: " + str($cur_snatched)
         #end if
-        #set $download_stat = download_stat + " / " + str($cur_total)
+        #set $download_stat = download_stat + "/" + str($cur_available) + "/" + str($cur_total)
         #set $download_stat_tip = download_stat_tip + "&#013;" + "Total: " + str($cur_total)
     #else
         #set $download_stat = '?'
         #set $download_stat_tip = "no data"
     #end if
 
-    #set $nom = $cur_downloaded
+    #set $nom = $cur_downloaded + $cur_available
     #set $den = $cur_total
     #if $den == 0:
         #set $den = 1

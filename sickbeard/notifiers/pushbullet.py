@@ -44,6 +44,10 @@ class PushbulletNotifier:
             self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_DOWNLOAD] + " : " + ep_name,
                                  message=ep_name, notificationType="note", method="POST")
 
+    def notify_available(self, ep_name):
+        if sickbeard.PUSHBULLET_NOTIFY_ONAVAILABLE:
+            self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_AVAILABLE], message=ep_name, notificationType="note", method="POST")
+
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,

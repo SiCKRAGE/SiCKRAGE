@@ -26,7 +26,7 @@
 
 <form action="$sbRoot/manage/episodeStatuses" method="get">
 Manage episodes with status <select name="whichStatus" class="form-control form-control-inline input-sm">
-#for $curStatus in [$common.SKIPPED, $common.SNATCHED, $common.WANTED, $common.ARCHIVED, $common.IGNORED]:
+#for $curStatus in [$common.SKIPPED, $common.AVAILABLE, $common.SNATCHED, $common.WANTED, $common.ARCHIVED, $common.IGNORED]:
 <option value="$curStatus">$common.statusStrings[$curStatus]</option>
 #end for
 </select>
@@ -44,7 +44,7 @@ Manage episodes with status <select name="whichStatus" class="form-control form-
 
 <br />
 
-#if $whichStatus in ($common.ARCHIVED, $common.IGNORED, $common.SNATCHED):
+#if $whichStatus in ($common.ARCHIVED, $common.AVAILABLE, $common.IGNORED, $common.SNATCHED):
 #set $row_class = "good"
 #else
 #set $row_class = $common.Overview.overviewStrings[$whichStatus]

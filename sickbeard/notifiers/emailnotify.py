@@ -55,6 +55,10 @@ class EmailNotifier:
         """
         ep_name = ek.ss(ep_name)
 
+        if not sickbeard.USE_EMAIL:
+            logger.log("Notification for Email not enabled, skipping this notification", logger.DEBUG)
+            return False
+
         if sickbeard.EMAIL_NOTIFY_ONSNATCH:
             show = self._parseEp(ep_name)
             to = self._generate_recepients(show)
@@ -94,6 +98,10 @@ class EmailNotifier:
         """
         ep_name = ek.ss(ep_name)
 
+        if not sickbeard.USE_EMAIL:
+            logger.log("Notification for Email not enabled, skipping this notification", logger.DEBUG)
+            return False
+
         if sickbeard.EMAIL_NOTIFY_ONDOWNLOAD:
             show = self._parseEp(ep_name)
             to = self._generate_recepients(show)
@@ -123,6 +131,45 @@ class EmailNotifier:
                     logger.log("Download notification sent to [%s] for '%s'" % (to, ep_name), logger.DEBUG)
                 else:
                     logger.log("Download notification ERROR: %s" % self.last_err, logger.ERROR)
+    
+    def notify_available(self, ep_name, title="Available:"):
+        """
+        Send a notification that an episode is Available
+
+        ep_name: The name of the episode that is Available
+        title: The title of the notification (optional)
+        """
+        ep_name = ep_name.encode('utf-8', 'replace')
+
+        if not sickbeard.USE_EMAIL:
+            logger.log("Notification for Email not enabled, skipping this notification", logger.DEBUG)
+            return False
+
+        if sickbeard.EMAIL_NOTIFY_ONAVAILABLE:
+            show = self._parseEp(ep_name)
+            to = self._generate_recepients(show)
+            if len(to) == 0:
+                logger.log('Skipping email notify because there are no configured recepients', logger.WARNING)
+            else:
+                try:
+                    msg = MIMEMultipart('alternative')
+                    msg.attach(MIMEText(
+                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickBeard Notification - Available</h3>\n<p>Show: <b>" + re.search(
+                            "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
+                            ".+ - (.+?-.+) -.+", ep_name).group(
+                            1) + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickBeard.</footer></body>",
+                        'html'))
+                except:
+                    msg = MIMEText(ep_name)
+
+                msg['Subject'] = 'Available: ' + ep_name
+                msg['From'] = sickbeard.EMAIL_FROM
+                msg['To'] = ','.join(to)
+                if self._sendmail(sickbeard.EMAIL_HOST, sickbeard.EMAIL_PORT, sickbeard.EMAIL_FROM, sickbeard.EMAIL_TLS,
+                                  sickbeard.EMAIL_USER, sickbeard.EMAIL_PASSWORD, to, msg):
+                    logger.log("Available notification sent to [%s] for '%s'" % (to, ep_name), logger.DEBUG)
+                else:
+                    logger.log("Available notification ERROR: %s" % self.last_err, logger.ERROR)
 
     def notify_subtitle_download(self, ep_name, lang, title="Downloaded subtitle:"):
         """
@@ -132,6 +179,10 @@ class EmailNotifier:
         lang: Subtitle language wanted
         """
         ep_name = ek.ss(ep_name)
+
+        if not sickbeard.USE_EMAIL:
+            logger.log("Notification for Email not enabled, skipping this notification", logger.DEBUG)
+            return False
 
         if sickbeard.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD:
             show = self._parseEp(ep_name)

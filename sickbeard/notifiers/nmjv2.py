@@ -40,6 +40,9 @@ class NMJv2Notifier:
     def notify_download(self, ep_name):
         self._notifyNMJ()
 
+    def notify_available(self, ep_name):
+        return False
+
     def notify_subtitle_download(self, ep_name, lang):
         self._notifyNMJ()
         

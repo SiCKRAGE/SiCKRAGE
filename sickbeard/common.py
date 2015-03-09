@@ -48,10 +48,12 @@ NOTIFY_DOWNLOAD = 2
 NOTIFY_SUBTITLE_DOWNLOAD = 3
 NOTIFY_GIT_UPDATE = 4
 NOTIFY_GIT_UPDATE_TEXT = 5
+NOTIFY_AVAILABLE = 6
 
 notifyStrings = {}
 notifyStrings[NOTIFY_SNATCH] = "Started Download"
 notifyStrings[NOTIFY_DOWNLOAD] = "Download Finished"
+notifyStrings[NOTIFY_AVAILABLE] = "Download Available"
 notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] = "Subtitle Download Finished"
 notifyStrings[NOTIFY_GIT_UPDATE] = "SickRage Updated"
 notifyStrings[NOTIFY_GIT_UPDATE_TEXT] = "SickRage Updated To Commit#: "
@@ -69,6 +71,7 @@ SNATCHED_PROPER = 9  # qualified with quality
 SUBTITLED = 10  # qualified with quality
 FAILED = 11  #episode downloaded or snatched we don't want
 SNATCHED_BEST = 12  # episode redownloaded using best quality
+AVAILABLE = 13 #episode available on torrent provider
 
 NAMING_REPEAT = 1
 NAMING_EXTEND = 2
@@ -117,6 +120,7 @@ class Quality:
                       SNATCHED: "Snatched",
                       SNATCHED_PROPER: "Snatched (Proper)",
                       FAILED: "Failed",
+                      AVAILABLE: "Available",
                       SNATCHED_BEST: "Snatched (Best)"}
 
     @staticmethod
@@ -271,6 +275,7 @@ class Quality:
     DOWNLOADED = None
     SNATCHED = None
     SNATCHED_PROPER = None
+    AVAILABLE = None    
     FAILED = None
     SNATCHED_BEST = None
 
@@ -279,6 +284,7 @@ Quality.DOWNLOADED = [Quality.compositeStatus(DOWNLOADED, x) for x in Quality.qu
 Quality.SNATCHED = [Quality.compositeStatus(SNATCHED, x) for x in Quality.qualityStrings.keys()]
 Quality.SNATCHED_PROPER = [Quality.compositeStatus(SNATCHED_PROPER, x) for x in Quality.qualityStrings.keys()]
 Quality.FAILED = [Quality.compositeStatus(FAILED, x) for x in Quality.qualityStrings.keys()]
+Quality.AVAILABLE = [Quality.compositeStatus(AVAILABLE, x) for x in Quality.qualityStrings.keys()]
 Quality.SNATCHED_BEST = [Quality.compositeStatus(SNATCHED_BEST, x) for x in Quality.qualityStrings.keys()]
 
 SD = Quality.combineQualities([Quality.SDTV, Quality.SDDVD], [])
@@ -315,10 +321,11 @@ class StatusStrings:
                               IGNORED: "Ignored",
                               SUBTITLED: "Subtitled",
                               FAILED: "Failed",
-                              SNATCHED_BEST: "Snatched (Best)"}
+                              SNATCHED_BEST: "Snatched (Best)",
+                              AVAILABLE: "Available"}
 
     def __getitem__(self, name):
-        if name in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST:
+        if name in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.AVAILABLE + Quality.SNATCHED_BEST:
             status, quality = Quality.splitCompositeStatus(name)
             if quality == Quality.NONE:
                 return self.statusStrings[status]
@@ -328,7 +335,7 @@ class StatusStrings:
             return self.statusStrings[name] if self.statusStrings.has_key(name) else ''
 
     def has_key(self, name):
-        return name in self.statusStrings or name in Quality.DOWNLOADED or name in Quality.SNATCHED or name in Quality.SNATCHED_PROPER or name in Quality.SNATCHED_BEST
+        return name in self.statusStrings or name in Quality.DOWNLOADED or name in Quality.SNATCHED or name in Quality.SNATCHED_PROPER or name in Quality.SNATCHED_BEST or name in Quality.AVAILABLE
 
 
 statusStrings = StatusStrings()
@@ -340,6 +347,7 @@ class Overview:
     WANTED = WANTED  # 3
     GOOD = 4
     SKIPPED = SKIPPED  # 5
+    AVAILABLE = AVAILABLE # 13
 
     # For both snatched statuses. Note: SNATCHED/QUAL have same value and break dict.
     SNATCHED = SNATCHED_PROPER = SNATCHED_BEST  # 9
@@ -349,7 +357,8 @@ class Overview:
                        QUAL: "qual",
                        GOOD: "good",
                        UNAIRED: "unaired",
-                       SNATCHED: "snatched"}
+                       SNATCHED: "snatched",
+                       AVAILABLE: "available"}
 
 # Get our xml namespaces correct for lxml
 XML_NSMAP = {'xsi': 'http://www.w3.org/2001/XMLSchema-instance',

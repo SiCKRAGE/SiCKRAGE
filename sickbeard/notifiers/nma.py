@@ -19,6 +19,10 @@ class NMA_Notifier:
             self._sendNMA(nma_api=None, nma_priority=None, event=common.notifyStrings[common.NOTIFY_DOWNLOAD],
                           message=ep_name)
 
+    def notify_available(self, ep_name):
+        if sickbeard.NMA_NOTIFY_ONAVAILABLE:
+            self._sendNMA(nma_api=None, nma_priority=None, event=common.notifyStrings[common.NOTIFY_AVAILABLE], message=ep_name)
+
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.NMA_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendNMA(nma_api=None, nma_priority=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD],

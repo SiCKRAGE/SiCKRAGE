@@ -1102,6 +1102,9 @@ ul.tags li a{
 .wanted {
   background-color: #ffb0b0;
 }
+.available {
+  background-color: #fafa9e;
+}
 .snatched {
   background-color: #ebc1ea;
 }
@@ -1130,12 +1133,17 @@ span.snatched {
   	color: #652164;
 	border: 1px solid #652164;
 }
+span.available {
+  	color: #F5F500;
+	border: 1px solid #652164;
+}
 
 span.unaired b,
 span.skipped b,
 span.good b,
 span.qual b,
 span.wanted b,
+span.available b,
 span.snatched b {
   	color: #000000;
 	font-weight: 800;
