@@ -101,7 +101,7 @@ class NzbtoProvider(generic.NZBProvider):
 
             x = self.session.get(tmp_url)
             pw = False
-            p00_test3 = "Test"
+            p00_test3 = ""
             with BS4Parser(x.text, "html.parser") as html:
                 pw = html.find('span', attrs={"style": "color:#ff0000"})
                 if pw:
@@ -115,9 +115,9 @@ class NzbtoProvider(generic.NZBProvider):
                     #ogger.log('Password Check2: {{%s}}' %(p00_test), logger.DEBUG)
                     p00_test2 = p00_test.decode(encoding='ascii',errors='ignore')
                     #logger.log('Password Check3: {{%s}}' %(p00_test2), logger.DEBUG)
-                    p00_test3 = strip_non_ascii(p00_test2)
+                    p00_test3 = self.strip_non_ascii(p00_test2)
                     #logger.log('Password Check4: {{%s}}' %(p00_test3), logger.DEBUG)
-					
+
             if not pw or pw.strip() == "-":
                 title = tmp_title
             else:
@@ -225,6 +225,11 @@ class NzbtoProvider(generic.NZBProvider):
         #         results.append(curItem)
 
         return results
+
+    def strip_non_ascii(string):
+        ''' Returns the string without non ASCII characters'''
+        stripped = (c for c in string if 0 < ord(c) < 127)
+        return ''.join(stripped)
 
     def findPropers(self, search_date=None):
         search_terms = ['.PROPER.', '.REPACK.']
