@@ -1562,7 +1562,7 @@ class Home(WebRoot):
 
         if do_available_search:
             try:
-                sickbeard.downloadableSearchScheduler.action.searchBacklog([showObj]) 
+                sickbeard.backlogSearchScheduler.action.searchBacklog([showObj]) 
                 time.sleep(cpu_presets[sickbeard.CPU_PRESET])
             except exceptions.CantUpdateException, e:
                 errors.append("Unable to force an update on the backlog search.")
