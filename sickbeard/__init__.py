@@ -1501,6 +1501,9 @@ def halt():
                 except:
                     pass
 
+            #stop logging, otherwise logrotation will fail on windows
+            logger.shutdown()
+            
             __INITIALIZED__ = False
             started = False
 
