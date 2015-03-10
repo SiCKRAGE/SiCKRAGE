@@ -15,6 +15,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+#
+#Heavily based on the OldPirateBay provider
 
 from __future__ import with_statement
 
@@ -339,7 +341,7 @@ class TPTBCache(tvcache.TVCache):
 
         tvcache.TVCache.__init__(self, provider)
 
-        # only poll OldPirateBay every 10 minutes max
+        # only poll TPTB every 10 minutes max
         self.minTime = 20
 
     def _getRSSData(self):
