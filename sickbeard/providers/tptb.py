@@ -73,7 +73,7 @@ class TPTBProvider(generic.TorrentProvider):
         return self.enabled
 
     def imageName(self):
-        return 'tpbt.png'
+        return 'tpbt.ico'
 
     def getQuality(self, item, anime=False):
 
