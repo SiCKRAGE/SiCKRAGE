@@ -65,7 +65,7 @@ class TPTBProvider(generic.TorrentProvider):
 
         self.url = self.urls['base_url']
 
-        self.searchurl = self.url + 'search.php?q=%s&Torrent_sort=seeders.desc' # order by seed
+        self.searchurl = self.url + 'search?q=%s&Torrent_sort=seeders.desc' # order by seed
 
         self.re_title_url = '/torrent/(?P<id>\d+)/(?P<title>.*?)//1".+?(?P<url>magnet.*?)//1".+?(?P<seeders>\d+)</td>.+?(?P<leechers>\d+)</td>'
 
@@ -73,7 +73,7 @@ class TPTBProvider(generic.TorrentProvider):
         return self.enabled
 
     def imageName(self):
-        return 'oldpiratebay.png'
+        return 'tpbt.png'
 
     def getQuality(self, item, anime=False):
 
