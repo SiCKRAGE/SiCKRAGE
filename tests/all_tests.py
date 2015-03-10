@@ -22,9 +22,17 @@ import glob
 import unittest
 import sys
 
+# Some tests should not be run on a regular basis
+# such as those which will connect to the internet
+blacklist = [
+    'all_tests.py',
+    'issue_submitter_tests.py',
+]
+
+
 class AllTests(unittest.TestCase):
     def setUp(self):
-        self.test_file_strings = [ x for x in glob.glob('*_tests.py') if not x in __file__]
+        self.test_file_strings = [ x for x in glob.glob('*_tests.py') if not x in blacklist ]
         self.module_strings = [file_string[0:len(file_string) - 3] for file_string in self.test_file_strings]
         self.suites = [unittest.defaultTestLoader.loadTestsFromName(file_string) for file_string in self.module_strings]
         self.testSuite = unittest.TestSuite(self.suites)
