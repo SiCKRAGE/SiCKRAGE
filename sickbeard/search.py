@@ -106,7 +106,7 @@ def markAvailable (result, endStatus=AVAILABLE):
     sql_l = []
     for curEpObj in result.episodes:
         with curEpObj.lock:
-            curEpObj.status = endStatus
+            curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
             sql_l.append(curEpObj.get_sql())
 
         notifiers.notify_available(curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)

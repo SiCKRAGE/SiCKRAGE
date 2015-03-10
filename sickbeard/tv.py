@@ -1266,15 +1266,13 @@ class TVShow(object):
 
         if epStatus == WANTED:
             return Overview.WANTED
-        elif epStatus == AVAILABLE:
-            return Overview.AVAILABLE
         elif epStatus in (UNAIRED, UNKNOWN):
             return Overview.UNAIRED
         elif epStatus in (SKIPPED, IGNORED):
             return Overview.SKIPPED
         elif epStatus == ARCHIVED:
             return Overview.GOOD
-        elif epStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.FAILED + Quality.SNATCHED_BEST:
+        elif epStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.FAILED + Quality.SNATCHED_BEST + Quality.AVAILABLE:
 
             anyQualities, bestQualities = Quality.splitQuality(self.quality)  # @UnusedVariable
             if bestQualities:
@@ -1294,6 +1292,8 @@ class TVShow(object):
                 if curQuality < maxBestQuality:
                     return Overview.QUAL
                 return Overview.SNATCHED
+            elif epStatus == AVAILABLE:
+                return Overview.AVAILABLE
             elif maxBestQuality == None:
                 return Overview.GOOD
             # if the want only first match and already have one call it good

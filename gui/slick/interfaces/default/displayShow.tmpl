@@ -274,7 +274,7 @@
 	<div class="pull-left" >
 		Change selected episodes to:</br>
 		<select id="statusSelect" class="form-control form-control-inline input-sm">
-			#for $curStatus in [$WANTED, $SKIPPED, $AVAILABLE, $ARCHIVED, $IGNORED, $FAILED] + sorted($Quality.DOWNLOADED):
+			#for $curStatus in [$WANTED, $SKIPPED, $ARCHIVED, $IGNORED, $FAILED] + sorted($Quality.DOWNLOADED):
 			#if $curStatus == $DOWNLOADED:
 			#continue
 			#end if
