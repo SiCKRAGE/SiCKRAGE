@@ -96,9 +96,13 @@ class DelugeAPI(GenericClient):
 
     def _add_torrent_uri(self, result):
 
+        params_data = {}
+        if sickbeard.TV_DOWNLOAD_DIR:
+            params_data["move_completed"] = "true"
+            params_data["move_completed_path"] = sickbeard.TV_DOWNLOAD_DIR
+
         post_data = json.dumps({"method": "core.add_torrent_magnet",
-                                "params": [result.url, {"move_completed": "true",
-                                                        "move_completed_path": sickbeard.TV_DOWNLOAD_DIR}],
+                                "params": [result.url, params_data],
                                 "id": 2
         })
         self._request(method='post', data=post_data)
