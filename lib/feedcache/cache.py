@@ -32,7 +32,7 @@ __module_id__ = "$Id$"
 #
 # Import system modules
 #
-from feedparser import feedparser
+from lib.feedparser import feedparser
 
 import logging
 import time
