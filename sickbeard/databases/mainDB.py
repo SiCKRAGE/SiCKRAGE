@@ -974,3 +974,35 @@ class AlterTVShowsFieldTypes(AddDefaultEpStatusToTvShows):
         self.connection.action("DROP TABLE tmp_tv_shows")
 
         self.incDBVersion()
+
+class MigrateSickBeardDB(AlterTVShowsFieldTypes):
+    def test(self):
+        return not self.hasColumn("info", "last_downloadablesearch")
+
+    def execute(self):
+        backupDatabase(self.checkDBVersion())
+        logger.log(u"Migrate SickBrard TPB Database to SickRage Database")
+
+        self.connection.action("ALTER TABLE info RENAME TO tmp_info")
+        self.connection.action("CREATE TABLE info (last_backlog NUMERIC, last_indexer NUMERIC, last_proper_search NUMERIC)")
+        self.connection.action("INSERT INTO info(last_backlog, last_indexer,  last_proper_search) SELECT last_backlog, last_indexer,  last_proper_search FROM tmp_info")
+        self.connection.action("DROP TABLE tmp_info")
+
+        self.connection.action("ALTER TABLE scene_numbering RENAME TO tmp_scene_numbering")
+        self.connection.action("CREATE TABLE scene_numbering(indexer TEXT, indexer_id INTEGER, season INTEGER, episode INTEGER,scene_season INTEGER, scene_episode INTEGER, absolute_number NUMERIC, scene_absolute_number NUMERIC, PRIMARY KEY(indexer_id, season, episode))")
+        self.connection.action("INSERT INTO scene_numbering SELECT * FROM tmp_scene_numbering")
+        self.connection.action("DROP TABLE tmp_scene_numbering")
+
+        self.connection.action("ALTER TABLE tv_episodes RENAME TO tmp_tv_episodes")
+        self.connection.action("CREATE TABLE tv_episodes (episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexerid NUMERIC, indexer TEXT, name TEXT, season NUMERIC, episode NUMERIC, description TEXT, airdate NUMERIC, hasnfo NUMERIC, hastbn NUMERIC, status NUMERIC, location TEXT, file_size NUMERIC, release_name TEXT, subtitles TEXT, subtitles_searchcount NUMERIC, subtitles_lastsearch TIMESTAMP, is_proper NUMERIC, scene_season NUMERIC, scene_episode NUMERIC, absolute_number NUMERIC, scene_absolute_number NUMERIC, version NUMERIC, release_group TEXT, torrent_hash TEXT)")
+        self.connection.action("INSERT INTO tv_episodes(episode_id, showid, indexerid, indexer, name, season, episode, description, airdate, hasnfo, hastbn, status, location, file_size, release_name, subtitles, subtitles_searchcount, subtitles_lastsearch, is_proper, scene_season, scene_episode, absolute_number, scene_absolute_number, version, release_group, torrent_hash) SELECT episode_id, showid, indexerid, indexer, name, season, episode, description, airdate, hasnfo, hastbn, status, location, file_size, release_name, subtitles, subtitles_searchcount, subtitles_lastsearch, is_proper, scene_season, scene_episode, absolute_number, scene_absolute_number, version, release_group, torrent_hash  FROM tmp_tv_episodes")
+        self.connection.action("DROP TABLE tmp_tv_episodes")
+
+        self.connection.action("ALTER TABLE tv_shows RENAME TO tmp_tv_shows")
+        self.connection.action("CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC)")
+        self.connection.action("INSERT INTO tv_shows(show_id, indexer_id, indexer, show_name, location, network, genre, classification, runtime, quality, airs, status, flatten_folders, paused, startyear, air_by_date, lang, subtitles, notify_list, imdb_id, last_update_indexer, dvdorder, archive_firstmatch, rls_require_words, rls_ignore_words, sports, anime, scene, default_ep_status) SELECT show_id, indexer_id, indexer, show_name, location, network, genre, classification, runtime, quality, airs, status, flatten_folders, paused, startyear, air_by_date, lang, subtitles, notify_list, imdb_id, last_update_indexer, dvdorder, archive_firstmatch, rls_require_words, rls_ignore_words, sports, anime, scene, default_ep_status FROM tmp_tv_shows")
+        self.connection.action("DROP TABLE tmp_tv_shows")
+
+        self.connection.action("update tv_episodes set status = 5 where status = 12")
+
+        self.connection.action("UPDATE db_version SET db_version = 42")
