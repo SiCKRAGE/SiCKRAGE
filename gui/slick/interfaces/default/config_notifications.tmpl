@@ -75,6 +75,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label class="clearfix" for="kodi_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -84,6 +85,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="kodi_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -201,6 +203,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                            <div class="field-pair">
                                 <label class="clearfix" for="plex_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -210,6 +213,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="plex_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -520,6 +524,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">  
                                 <label class="clearfix" for="synologynotifier_notify_onavailadable">
                                     <span class="component-title">Notify on available</span>
@@ -529,6 +534,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="synologynotifier_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -642,6 +648,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label class="clearfix" for="growl_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -651,6 +658,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <input type="checkbox" name="growl_notify_onsubtitledownload" id="growl_notify_onsubtitledownload" #if $sickbeard.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD then "checked=\"checked\"" else ""# />
                                 <label for="growl_notify_onsubtitledownload">
@@ -730,6 +738,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label for="prowl_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -739,6 +748,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="prowl_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -819,6 +829,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label class="clearfix" for="libnotify_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -828,6 +839,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="libnotify_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -883,6 +895,7 @@
 
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label class="clearfix" for="pushover_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -892,6 +905,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="pushover_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -965,6 +979,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label class="clearfix" for="boxcar_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -974,6 +989,7 @@
                                    </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="boxcar_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -1037,6 +1053,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label for="boxcar2_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -1046,6 +1063,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="boxcar2_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -1109,6 +1127,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label class="clearfix" for="nma_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -1118,6 +1137,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="nma_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -1197,6 +1217,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label for="pushalot_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -1206,6 +1227,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="pushalot_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -1270,6 +1292,7 @@
 
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label class="clearfix" for="pushbullet_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -1279,6 +1302,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="pushbullet_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -1353,6 +1377,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label class="clearfix" for="freemobile_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -1362,6 +1387,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="freemobile_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -1442,6 +1468,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label class="clearfix" for="twitter_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -1451,6 +1478,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="twitter_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>
@@ -1668,6 +1696,7 @@
                                     </span>
                                 </label>
                             </div>
+#if $sickbeard.AVAILABLE_CHECK
                             <div class="field-pair">
                                 <label class="clearfix" for="email_notify_onavailable">
                                     <span class="component-title">Notify on available</span>
@@ -1677,6 +1706,7 @@
                                     </span>
                                 </label>
                             </div>
+#end if
                             <div class="field-pair">
                                 <label for="email_notify_onsubtitledownload">
                                     <span class="component-title">Notify on subtitle download</span>

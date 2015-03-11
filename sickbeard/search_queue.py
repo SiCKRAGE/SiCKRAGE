@@ -143,30 +143,34 @@ class DailySearchQueueItem(generic_queue.QueueItem):
             else:
                 for result in foundResults:
                     #snatch episode
-                    snatch_result = deepcopy(result)
-                    epObjList = []
-                    for epObj in snatch_result.episodes:
-                        #logger.log(u"snatch_result.episodes: " + str(snatch_result.episodes))
-                        if epObj.status == common.WANTED:
-                            epObjList.append(epObj)
-                    snatch_result.episodes = epObjList
+                    if sickbeard.AVAILABLE_CHECK:
+                        snatch_result = deepcopy(result)
+                        epObjList = []
+                        for epObj in snatch_result.episodes:
+                            #logger.log(u"snatch_result.episodes: " + str(snatch_result.episodes))
+                            if epObj.status == common.WANTED:
+                                epObjList.append(epObj)
+                        snatch_result.episodes = epObjList
 
-                    # just use the first result for now
-                    if len(epObjList):
-                        logger.log(u"Downloading " + snatch_result.name + " from " + snatch_result.provider.name)
-                        self.success = search.snatchEpisode(snatch_result)
+                        # just use the first result for now
+                        if len(epObjList):
+                            logger.log(u"Downloading " + snatch_result.name + " from " + snatch_result.provider.name)
+                            self.success = search.snatchEpisode(snatch_result)
 
-                    #make episode status to available
-                    available_result = deepcopy(result)
-                    epObjList = []
-                    for epObj in available_result.episodes:
-                        if epObj.status != common.WANTED:
-                            epObjList.append(epObj)
-                    available_result.episodes = epObjList
+                        #make episode status to available
+                        available_result = deepcopy(result)
+                        epObjList = []
+                        for epObj in available_result.episodes:
+                            if epObj.status != common.WANTED:
+                                epObjList.append(epObj)
+                        available_result.episodes = epObjList
 
-                    if len(available_result.episodes):
-                        logger.log(u"Marking " + available_result.name + " from " + available_result.provider.name + "as available")
-                        self.success = search.markAvailable(available_result)
+                        if len(available_result.episodes):
+                            logger.log(u"Marking " + available_result.name + " from " + available_result.provider.name + "as available")
+                            self.success = search.markAvailable(available_result)
+                    else:
+                        logger.log(u"Downloading " + result.name + " from " + result.provider.name)
+                        search.snatchEpisode(result)
 
                     # give the CPU a break
                     time.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
@@ -245,31 +249,35 @@ class BacklogQueueItem(generic_queue.QueueItem):
             if searchResult:
                 for result in searchResult:
 
-                    #snatch episode
-                    snatch_result = deepcopy(result)
-                    epObjList = []
-                    for epObj in snatch_result.episodes:
-                        #logger.log(u"snatch_result.episodes: " + str(snatch_result.episodes))
-                        if epObj.status == common.WANTED:
-                            epObjList.append(epObj)
-                    snatch_result.episodes = epObjList
+                    if sickbeard.AVAILABLE_CHECK:
+                        #snatch episode
+                        snatch_result = deepcopy(result)
+                        epObjList = []
+                        for epObj in snatch_result.episodes:
+                            #logger.log(u"snatch_result.episodes: " + str(snatch_result.episodes))
+                            if epObj.status == common.WANTED:
+                                epObjList.append(epObj)
+                        snatch_result.episodes = epObjList
 
-                    # just use the first result for now
-                    if len(epObjList):
-                        logger.log(u"Downloading " + snatch_result.name + " from " + snatch_result.provider.name)
-                        search.snatchEpisode(snatch_result)
+                        # just use the first result for now
+                        if len(epObjList):
+                            logger.log(u"Downloading " + snatch_result.name + " from " + snatch_result.provider.name)
+                            search.snatchEpisode(snatch_result)
 
-                    #make episode status to available
-                    available_result = deepcopy(result)
-                    epObjList = []
-                    for epObj in available_result.episodes:
-                        if epObj.status != common.WANTED:
-                            epObjList.append(epObj)
-                    available_result.episodes = epObjList
+                        #make episode status to available
+                        available_result = deepcopy(result)
+                        epObjList = []
+                        for epObj in available_result.episodes:
+                            if epObj.status != common.WANTED:
+                                epObjList.append(epObj)
+                        available_result.episodes = epObjList
 
-                    if len(available_result.episodes):
-                        logger.log(u"Marking " + available_result.name + " from " + available_result.provider.name + "as available")
-                        search.markAvailable(available_result)
+                        if len(available_result.episodes):
+                            logger.log(u"Marking " + available_result.name + " from " + available_result.provider.name + "as available")
+                            search.markAvailable(available_result)
+                    else:
+                        logger.log(u"Downloading " + result.name + " from " + result.provider.name)
+                        search.snatchEpisode(result)
 
                     # give the CPU a break
                     time.sleep(common.cpu_presets[sickbeard.CPU_PRESET])

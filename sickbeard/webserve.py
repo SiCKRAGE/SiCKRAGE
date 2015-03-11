@@ -42,7 +42,7 @@ from sickbeard import network_timezones
 from sickbeard import sbdatetime
 from sickbeard.providers import newznab, rsstorrent
 from sickbeard.common import Quality, Overview, statusStrings, qualityPresetStrings, cpu_presets
-from sickbeard.common import SNATCHED, UNAIRED, IGNORED, ARCHIVED, WANTED, FAILED, SKIPPED
+from sickbeard.common import SNATCHED, UNAIRED, IGNORED, ARCHIVED, WANTED, FAILED, SKIPPED, AVAILABLE
 from sickbeard.common import SD, HD720p, HD1080p
 from sickbeard.exceptions import ex
 from sickbeard.blackandwhitelist import BlackAndWhiteList
@@ -1560,7 +1560,7 @@ class Home(WebRoot):
             except exceptions.CantUpdateException, e:
                 errors.append("Unable to force an update on scene exceptions of the show.")
 
-        if do_available_search:
+        if do_available_search and sickbeard.AVAILABLE_CHECK:
             try:
                 sickbeard.backlogSearchScheduler.action.searchBacklog([showObj]) 
                 time.sleep(cpu_presets[sickbeard.CPU_PRESET])
@@ -1744,7 +1744,7 @@ class Home(WebRoot):
                 if epObj is None:
                     return self._genericMessage("Error", "Episode couldn't be retrieved")
 
-                if int(status) in [WANTED, FAILED, SKIPPED]:
+                if int(status) in [WANTED, FAILED] or (int(status) == SKIPPED and sickbeard.AVAILABLE_CHECK):
                     # figure out what episodes are wanted so we can backlog them
                     if epObj.season in segments:
                         segments[epObj.season].append(epObj)
@@ -1796,7 +1796,7 @@ class Home(WebRoot):
                 myDB = db.DBConnection()
                 myDB.mass_action(sql_l)
 
-        if (int(status) == WANTED and not showObj.paused) or int(status) == SKIPPED:
+        if (int(status) == WANTED and not showObj.paused) or (int(status) == SKIPPED and sickbeard.AVAILABLE_CHECK):
             msg = "Backlog was automatically started for the following seasons of <b>" + showObj.name + "</b>:<br />"
             msg += '<ul>'
 
@@ -2730,6 +2730,8 @@ class Manage(Home, WebRoot):
         status_list = [int(whichStatus)]
         if status_list[0] == SNATCHED:
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
+        elif status_list[0] == AVAILABLE:
+            status_list = Quality.AVAILABLE
 
         myDB = db.DBConnection()
         cur_show_results = myDB.select(
@@ -2755,6 +2757,8 @@ class Manage(Home, WebRoot):
             status_list = [whichStatus]
             if status_list[0] == SNATCHED:
                 status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
+            elif status_list[0] == AVAILABLE:
+                status_list = Quality.AVAILABLE
         else:
             status_list = []
 
@@ -2798,6 +2802,8 @@ class Manage(Home, WebRoot):
         status_list = [int(oldStatus)]
         if status_list[0] == SNATCHED:
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
+        elif status_list[0] == AVAILABLE:
+            status_list = Quality.AVAILABLE
 
         to_change = {}
 
@@ -3811,7 +3817,7 @@ class ConfigSearch(Config):
     def saveSearch(self, use_nzbs=None, use_torrents=None, nzb_dir=None, sab_username=None, sab_password=None,
                    sab_apikey=None, sab_category=None, sab_category_anime=None, sab_host=None, nzbget_username=None,
                    nzbget_password=None, nzbget_category=None, nzbget_category_anime=None, nzbget_priority=None,
-                   nzbget_host=None, nzbget_use_https=None, backlog_days=None, backlog_frequency=None,
+                   nzbget_host=None, nzbget_use_https=None, backlog_days=None, backlog_frequency=None, available_check=None,
                    dailysearch_frequency=None, nzb_method=None, torrent_method=None, usenet_retention=None,
                    download_propers=None, check_propers_interval=None, allow_high_priority=None,
                    randomize_providers=None, backlog_startup=None, use_failed_downloads=None, delete_failed=None,
@@ -3832,6 +3838,7 @@ class ConfigSearch(Config):
 
         config.change_BACKLOG_FREQUENCY(backlog_frequency)
         sickbeard.BACKLOG_DAYS = config.to_int(backlog_days, default=7)
+        sickbeard.AVAILABLE_CHECK = config.checkbox_to_value(available_check)
 
         sickbeard.USE_NZBS = config.checkbox_to_value(use_nzbs)
         sickbeard.USE_TORRENTS = config.checkbox_to_value(use_torrents)
