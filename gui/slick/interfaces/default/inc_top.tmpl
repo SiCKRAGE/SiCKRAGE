@@ -92,6 +92,7 @@
 				\$("#SubMenu a[href$='/errorlogs/clearerrors/']").addClass('btn').html('<span class="ui-icon ui-icon-trash pull-left"></span> Clear Errors');
 				#if sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD:
 				\$("#SubMenu a[href$='/errorlogs/submit_errors/']").addClass('btn').html('<span class="ui-icon ui-icon-arrowreturnthick-1-n pull-left"></span> Submit Errors');
+				\$("#SubMenu a[href$='/errorlogs/submit_custom_log/']").addClass('btn').html('<span class="ui-icon ui-icon-arrowreturnthick-1-n pull-left"></span> Submit Log for Support');
 				#end if
 				\$("#SubMenu a:contains('Re-scan')").addClass('btn').html('<span class="ui-icon ui-icon-refresh pull-left"></span> Re-scan');
 				\$("#SubMenu a:contains('Backlog Overview')").addClass('btn').html('<span class="ui-icon ui-icon-refresh pull-left"></span> Backlog Overview');

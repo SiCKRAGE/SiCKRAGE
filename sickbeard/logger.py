@@ -149,8 +149,9 @@ class Logger(object):
         else:
             sys.exit(1)
 
-    def submit_errors(self):
-        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and len(classes.ErrorViewer.errors) > 0):
+    def submit_errors(self,manual_submit=False,logLines=None):
+        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and (len(classes.ErrorViewer.errors) > 0 or (manual_submit == True and logLines))):
+            ui.notifications.error("Error", "Nothing to subtmit")
             return
 
         gh_org = sickbeard.GIT_ORG or 'SiCKRAGETV'
@@ -159,69 +160,93 @@ class Logger(object):
         gh = Github(login_or_token=sickbeard.GIT_USERNAME, password=sickbeard.GIT_PASSWORD, user_agent="SiCKRAGE")
 
         try:
-            # read log file
-            log_data = None
 
-            if os.path.isfile(self.logFile):
-                with ek.ek(codecs.open, *[self.logFile, 'r', 'utf-8']) as f:
-                    log_data = f.readlines()
-                    
-            for i in range (1 , int(sickbeard.LOG_NR)):
-                if os.path.isfile(self.logFile + "." + str(i)) and (len(log_data) <= 500):
-                    with ek.ek(codecs.open, *[self.logFile + "." + str(i), 'r', 'utf-8']) as f:
-                            log_data += f.readlines()
-
-            log_data = [line for line in reversed(log_data)]
-
-            # parse and submit errors to issue tracker
-            for curError in sorted(classes.ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
-                if not curError.title:
-                    continue
-
+            if manual_submit == False:
+                # read log file
+                log_data = None
+                
+                if os.path.isfile(self.logFile):
+                    with ek.ek(codecs.open, *[self.logFile, 'r', 'utf-8']) as f:
+                        log_data = f.readlines()
+                        
+                for i in range (1 , int(sickbeard.LOG_NR)):
+                    if os.path.isfile(self.logFile + "." + str(i)) and (len(log_data) <= 500):
+                        with ek.ek(codecs.open, *[self.logFile + "." + str(i), 'r', 'utf-8']) as f:
+                                log_data += f.readlines()
+                
+                log_data = [line for line in reversed(log_data)]
+                
+                # parse and submit errors to issue tracker
+                for curError in sorted(classes.ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
+                    if not curError.title:
+                        continue
+                
+                    gist = None
+                    regex = "^(%s)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$" % curError.time
+                    for i, x in enumerate(log_data):
+                        x = ek.ss(x)
+                        match = re.match(regex, x)
+                        if match:
+                            level = match.group(2)
+                            if reverseNames[level] == ERROR:
+                                paste_data = "".join(log_data[i:i+50])
+                                if paste_data:
+                                    gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
+                                break
+                        else:
+                            gist = 'No ERROR found'
+            else:
                 gist = None
-                regex = "^(%s)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$" % curError.time
-                for i, x in enumerate(log_data):
-                    x = ek.ss(x)
-                    match = re.match(regex, x)
-                    if match:
-                        level = match.group(2)
-                        if reverseNames[level] == ERROR:
-                            paste_data = "".join(log_data[i:i+50])
-                            if paste_data:
-                                gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
-                            break
-                    else:
-                        gist = 'No ERROR found'
+                paste_data = "".join(logLines)
+                if paste_data:
+                    gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
 
-                message = u"### INFO\n"
-                message += u"Python Version: **" + sys.version[:120] + "**\n"
-                message += u"Operating System: **" + platform.platform() + "**\n"
-                if not 'Windows' in platform.platform():
-                    try:
-                        message += u"Locale: " + locale.getdefaultlocale()[1] + "\n"
-                    except:
-                        message += u"Locale: unknown" + "\n"                        
-                message += u"Branch: **" + sickbeard.BRANCH + "**\n"
-                message += u"Commit: SiCKRAGETV/SickRage@" + sickbeard.CUR_COMMIT_HASH + "\n"
-                if gist and gist != 'No ERROR found':
-                    message += u"Link to Log: " + gist.html_url + "\n"
-                else:
-                    message += u"No Log available with ERRORS: " + "\n"
+            message = u"### INFO\n"
+            message += u"Python Version: **" + sys.version[:120].replace('\n',' ') + "**\n"
+            message += u"Operating System: **" + platform.platform() + "**\n"
+            if not 'Windows' in platform.platform():
+                try:
+                    message += u"Locale: " + locale.getdefaultlocale()[1] + "\n"
+                except:
+                    message += u"Locale: unknown" + "\n"                        
+            message += u"Branch: **" + sickbeard.BRANCH + "**\n"
+            message += u"Commit: SiCKRAGETV/SickRage@" + sickbeard.CUR_COMMIT_HASH + "\n"
+            if gist and gist != 'No ERROR found':
+                message += u"Link to Log: " + gist.html_url + "\n"
+            else:
+                message += u"No Log available with ERRORS: " + "\n"
+            if manual_submit == False:   
                 message += u"### ERROR\n"
                 message += u"```\n"
                 message += curError.message + "\n"
                 message += u"```\n"
                 message += u"---\n"
-                message += u"_STAFF NOTIFIED_: @SiCKRAGETV/owners @SiCKRAGETV/moderators"
+            message += u"_STAFF NOTIFIED_: @SiCKRAGETV/owners @SiCKRAGETV/moderators"
+            if manual_submit == True:   
+                message += "\n"
+                message += "\n"
+                message += u"**PLEASE ANSWER THE QUESTIONS BELOW:**""\n"
+                message += "\n"
+                message += u"What you did: " + "\n"
+                message += "\n"
+                message += u"What happened: " + "\n"
+                message += "\n"
+                message += u"What you expected: " + "\n"
 
+
+            if manual_submit == False:
                 issue = gh.get_organization(gh_org).get_repo(gh_repo).create_issue("[APP SUBMITTED]: " + str(curError.title), message)
-                if issue:
-                    self.log('Your issue ticket #%s was submitted successfully!' % issue.number)
+            else:
+                issue = gh.get_organization(gh_org).get_repo(gh_repo).create_issue("[USER SUBMITTED]: " + str(" *** EDIT THIS AND ADD TITLE *** "), message)
 
-                # clear error from error list
+            if issue:
+                self.log('Your issue ticket #%s was submitted successfully!' % issue.number)
+
+            # clear error from error list
+            if manual_submit == False:
                 classes.ErrorViewer.errors.remove(curError)
 
-                return issue
+            return issue
         except Exception as e:
             self.log(sickbeard.exceptions.ex(e), ERROR)
 
