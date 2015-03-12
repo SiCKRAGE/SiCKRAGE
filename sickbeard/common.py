@@ -225,7 +225,7 @@ class Quality:
             return Quality.FULLHDTV
         elif checkName(["720p", "web.?dl|webrip|webhd(rip)?|netflixhd"], all) or checkName(["720p", "(webhd|itunes)", "(h|x).?264"], all) or checkName(["720p", "(webhd|itunes)", "avc"], all):
             return Quality.HDWEBDL
-        elif checkName(["1080p", "web.?dl|webrip|webhd(rip)?|netflixhd"], all) or checkName(["1080p", "(webhd|itunes)", "(h|x).?264"], all):
+        elif checkName(["1080p", "web.?dl|webrip|webhd(rip)?|netflixhd"], all) or checkName(["1080p", "(webhd|itunes)", "(h|x).?264"], all) or checkName(["1080p", "(webhd|itunes)", "avc"], all):
             return Quality.FULLHDWEBDL
         elif checkName(["720p", "bluray|hddvd|b[r|d](rip)?", "(h|x)264"], all):
             return Quality.HDBLURAY
