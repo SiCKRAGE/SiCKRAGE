@@ -19,7 +19,6 @@
 from __future__ import with_statement
 
 import os
-import shutil
 import stat
 
 import sickbeard
@@ -35,6 +34,12 @@ from sickbeard import failedProcessor
 
 from lib.unrar2 import RarFile, RarInfo
 from lib.unrar2.rar_exceptions import *
+
+import shutil
+import lib.shutil_custom
+
+shutil.copyfile = lib.shutil_custom.copyfile_custom
+
 
 class ProcessResult:
     def __init__(self):
@@ -146,6 +151,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     # Don't post process if files are still being synced and option is activated
     if SyncFiles and sickbeard.POSTPONE_IF_SYNC_FILES:
         result.output += logHelper(u"Found temporary sync files, skipping post processing", logger.WARNING)
+        result.output += logHelper(u"Sync Files: " + str(SyncFiles) + " in path " + path, logger.WARNING)
         return result.output
 
     result.output += logHelper(u"PostProcessing Path: " + path, logger.DEBUG)
@@ -174,18 +180,18 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
     #Don't Link media when the media is extracted from a rar in the same path
     if process_method in ('hardlink', 'symlink') and videoInRar:
-        result.result = process_media(path, videoInRar, nzbName, 'move', force, is_priority, result)
+        process_media(path, videoInRar, nzbName, 'move', force, is_priority, result)
         delete_files(path, rarContent, result)
         for video in set(videoFiles) - set(videoInRar):
-            result.result = process_media(path, [video], nzbName, process_method, force, is_priority, result)
+            process_media(path, [video], nzbName, process_method, force, is_priority, result)
     elif sickbeard.DELRARCONTENTS and videoInRar:
-        result.result = process_media(path, videoInRar, nzbName, process_method, force, is_priority, result)
+        process_media(path, videoInRar, nzbName, process_method, force, is_priority, result)
         delete_files(path, rarContent, result, True)
         for video in set(videoFiles) - set(videoInRar):
-            result.result = process_media(path, [video], nzbName, process_method, force, is_priority, result)
+            process_media(path, [video], nzbName, process_method, force, is_priority, result)
     else:
         for video in videoFiles:
-            result.result = process_media(path, [video], nzbName, process_method, force, is_priority, result)
+            process_media(path, [video], nzbName, process_method, force, is_priority, result)
 
     #Process Video File in all TV Subdir
     for dir in [x for x in dirs if validateDir(path, x, nzbNameOriginal, failed, result)]:
@@ -193,12 +199,16 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         result.result = True
 
         for processPath, processDir, fileList in ek.ek(os.walk, ek.ek(os.path.join, path, dir), topdown=False):
-
+            
+            if (not validateDir(path, processPath, nzbNameOriginal, failed, result)):
+                continue
+            
             SyncFiles = filter(helpers.isSyncFile, fileList)
 
             # Don't post process if files are still being synced and option is activated
             if SyncFiles and sickbeard.POSTPONE_IF_SYNC_FILES:
                 result.output += logHelper(u"Found temporary sync files, skipping post processing", logger.WARNING)
+                result.output += logHelper(u"Sync Files: " + str(SyncFiles) + " in path " + processPath, logger.WARNING)
                 return result.output
 
             rarFiles = filter(helpers.isRarFile, fileList)
@@ -232,7 +242,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                 if process_method == "move" and \
                                 ek.ek(os.path.normpath, processPath) != ek.ek(os.path.normpath,
                                                                               sickbeard.TV_DOWNLOAD_DIR):
-                    if delete_folder(processPath, check_empty=False):
+                    if delete_folder(processPath, check_empty=True):
                         result.output += logHelper(u"Deleted folder: " + processPath, logger.DEBUG)
 
     if result.result:
@@ -353,6 +363,27 @@ def unRAR(path, rarFiles, force, result):
                         if basename not in unpacked_files:
                             unpacked_files.append(basename)
                 del rar_handle
+
+            except FatalRARError:
+                result.output += logHelper(u"Failed Unrar archive {0}: Unrar: Fatal Error".format(archive), logger.ERROR)
+                result.result = False
+                continue
+            except CRCRARError:
+                result.output += logHelper(u"Failed Unrar archive {0}: Unrar: Archive CRC Error".format(archive), logger.ERROR)
+                result.result = False
+                continue
+            except IncorrectRARPassword:
+                result.output += logHelper(u"Failed Unrar archive {0}: Unrar: Invalid Password".format(archive), logger.ERROR)
+                result.result = False
+                continue
+            except NoFileToExtract:
+                result.output += logHelper(u"Failed Unrar archive {0}: Unrar: No file extracted, check the parent folder and destination file permissions.".format(archive), logger.ERROR)
+                result.result = False
+                continue
+            except GenericRARError:
+                result.output += logHelper(u"Failed Unrar archive {0}: Unrar: Generic Error".format(archive), logger.ERROR)
+                result.result = False
+                continue
             except Exception, e:
                 result.output += logHelper(u"Failed Unrar archive " + archive + ': ' + ex(e), logger.ERROR)
                 result.result = False
@@ -393,7 +424,7 @@ def already_postprocessed(dirName, videofile, force, result):
         
         #Needed if we have downloaded the same episode @ different quality
         #But we need to make sure we check the history of the episode we're going to PP, and not others
-        np = NameParser(dirName, tryIndexers=True, convert=True)
+        np = NameParser(dirName, tryIndexers=True, trySceneExceptions=True, convert=True)
         try: #if it fails to find any info (because we're doing an unparsable folder (like the TV root dir) it will throw an exception, which we want to ignore
             parse_result = np.parse(dirName)
         except: #ignore the exception, because we kind of expected it, but create parse_result anyway so we can perform a check on it.

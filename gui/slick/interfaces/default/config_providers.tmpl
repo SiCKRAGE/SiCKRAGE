@@ -37,7 +37,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
 <!--
 \$(document).ready(function(){
 #for $curTorrentRssProvider in $sickbeard.torrentRssProviderList:
-    \$(this).addTorrentRssProvider('$curTorrentRssProvider.getID()', '$curTorrentRssProvider.name', '$curTorrentRssProvider.url', '$curTorrentRssProvider.cookies');
+    \$(this).addTorrentRssProvider('$curTorrentRssProvider.getID()', '$curTorrentRssProvider.name', '$curTorrentRssProvider.url', '$curTorrentRssProvider.cookies', '$curTorrentRssProvider.titleTAG');
 #end for
 });
 //-->
@@ -115,7 +115,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
                     
                     <fieldset class="component-group-list">
                         <div class="field-pair">
-                            <label for="editAProvider">
+                            <label for="editAProvider" id="provider-list">
                                 <span class="component-title">Configure provider:</span>
                                 <span class="component-desc">
                                     #set $provider_config_list = []
@@ -613,7 +613,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
                             </label>
                         </div>
                         
-                        <div class="field-pair">
+                        <div class="field-pair" id="newznabcapdiv">
                             <label>
                                 <span class="component-title">Newznab search categories:</span>
                                 <select id="newznab_cap" multiple="multiple" style="min-width:10em;" ></select>
@@ -625,7 +625,9 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
                             </label>
                             <label>
                                 <span class="component-title">&nbsp;</span>
-                                <span class="component-desc"><input class="btn" type="button" class="newznab_cat_update" id="newznab_cat_update" value="Update Categories" /></span>                                
+                                <span class="component-desc"><input class="btn" type="button" class="newznab_cat_update" id="newznab_cat_update" value="Update Categories" />
+                                    <span class="updating_categories"></span>
+                                </span>
                             </label>
                         </div>
                         
@@ -686,7 +688,16 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
                                 <span class="component-desc">eg. uid=xx;pass=yy</span>
                             </label>
                         </div>
-                        
+                        <div class="field-pair">
+                            <label for="torrentrss_titleTAG">
+                                <span class="component-title">Search element:</span>
+                                <input type="text" id="torrentrss_titleTAG" class="form-control input-sm input200" value="title"/>
+                            </label>
+                            <label>
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc">eg: title</span>
+                            </label>
+                        </div>
                         <div id="torrentrss_add_div">
                             <input type="button" class="btn torrentrss_save" id="torrentrss_add" value="Add" />
                         </div>
@@ -698,7 +709,7 @@ var show_nzb_providers = #if $sickbeard.USE_NZBS then "true" else "false"#;
             </div><!-- /component-group4 //-->
             #end if
 
-            <br/><input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
+            <br/><input type="submit" class="btn config_submitter_refresh" value="Save Changes" /><br/>
                 
             </div><!-- /config-components //-->
 
