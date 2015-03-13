@@ -48,10 +48,10 @@ from lib.requests import exceptions
 from lib.unidecode import unidecode
 
 
-class TPTBProvider(generic.TorrentProvider):
+class TPBTProvider(generic.TorrentProvider):
     def __init__(self):
 
-        generic.TorrentProvider.__init__(self, "TPTB")
+        generic.TorrentProvider.__init__(self, "TPBT")
 
         self.supportsBacklog = True
 
@@ -61,7 +61,7 @@ class TPTBProvider(generic.TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = TPTBCache(self)
+        self.cache = TPBTCache(self)
 
         self.urls = {'base_url': 'https://tpbt.org/'}
 
@@ -267,7 +267,7 @@ class TPTBProvider(generic.TorrentProvider):
 
                         #Accept Torrent only from Good People for every Episode Search
                     if self.confirmed and re.search('(VIP|Trusted|Helper|Moderator)', torrent.group(0)) is None:
-                        logger.log(u"TPTB Provider found result " + torrent.group(
+                        logger.log(u"TPBT Provider found result " + torrent.group(
                             'title') + " but that doesn't seem like a trusted result so I'm ignoring it", logger.DEBUG)
                         continue
 
@@ -336,16 +336,16 @@ class TPTBProvider(generic.TorrentProvider):
         return self.ratio
 
 
-class TPTBCache(tvcache.TVCache):
+class TPBTCache(tvcache.TVCache):
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)
 
-        # only poll TPTB every 10 minutes max
+        # only poll TPBT every 10 minutes max
         self.minTime = 20
 
     def _getRSSData(self):
         search_params = {'RSS': ['rss']}
         return {'entries': self.provider._doSearch(search_params)}
 
-provider = TPTBProvider()
+provider = TPBTProvider()
