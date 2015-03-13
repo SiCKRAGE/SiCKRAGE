@@ -4827,6 +4827,7 @@ class ErrorLogs(WebRoot):
     def ErrorLogsMenu(self):
         menu = [
             {'title': 'Clear Errors', 'path': 'errorlogs/clearerrors/'},
+            {'title': 'Submit Log', 'path': 'errorlogs/submit_custom_log/'},
             {'title': 'Submit Errors', 'path': 'errorlogs/submit_errors/', 'requires': self.haveErrors},
         ]
 
@@ -4934,14 +4935,15 @@ class ErrorLogs(WebRoot):
         
 
                
+        global log_data
+        log_data = "".join(data)
 
-        result = "".join(data)
-
-        t.logLines = result
+        t.logLines = log_data
         t.minLevel = minLevel
         t.logNameFilters = logNameFilters
         t.logFilter = logFilter
         t.logSearch = logSearch
+
 
         return t.respond()
 
@@ -4950,8 +4952,20 @@ class ErrorLogs(WebRoot):
             ui.notifications.error("Missing information", "Please set your GitHub username and password in the config.")
             logger.log(u'Please set your GitHub username and password in the config, unable to submit issue ticket to GitHub!')
         else:
-            issue = logger.submit_errors()
+            issue = logger.submit_errors(False,None)
             if issue:
                 ui.notifications.message('Your issue ticket #%s was submitted successfully!' % issue.number)
 
-        return self.redirect("/errorlogs/")
+        return self.redirect("https://github.com/SiCKRAGETV/sickrage-issues/issues/" + str(issue.number))
+
+    def submit_custom_log(self):
+        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD):
+            ui.notifications.error("Missing information", "Please set your GitHub username and password in the config.")
+            logger.log(u'Please set your GitHub username and password in the config, unable to submit issue ticket to GitHub!')
+        else:
+            if log_data:
+                issue = logger.submit_errors(True,log_data)
+                if issue:
+                    ui.notifications.message('Your issue ticket #%s was submitted successfully!' % issue.number)
+
+        return self.redirect("https://github.com/SiCKRAGETV/sickrage-issues/issues/" + str(issue.number))
