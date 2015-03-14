@@ -148,7 +148,13 @@ class GenericClient(object):
             if len(result.hash) == 32:
                 result.hash = b16encode(b32decode(result.hash)).lower()
         else:
-            info = bdecode(result.content)["info"]
+            if 'info_hash' in result.content:
+                info = bdecode(result.content)["info_hash"]
+            elif 'info' in result.content:
+                info = bdecode(result.content)["info"]
+            else:
+                #Raise error
+                info = None
             result.hash = sha1(bencode(info)).hexdigest()
 
         return result
