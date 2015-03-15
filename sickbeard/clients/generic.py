@@ -151,7 +151,6 @@ class GenericClient(object):
         else:
             if not result.content:
                 logger.log('Torrent without content', logger.ERROR)
-                raise
 
             try:
                 torrent_bdecode = bdecode(result.content)
