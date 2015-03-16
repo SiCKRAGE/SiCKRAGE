@@ -80,7 +80,7 @@ def validReleaseForShowLang(name, showlang):
             logger.log(u"Ignoring " + name + " because it contains at least one language word filters for languge '%s': %s" % (lang, languageMap[lang]), logger.INFO)
             return False
 
-    return False
+    return True
 
 
 def filterBadReleases(name, parse=True):
