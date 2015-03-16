@@ -1,4 +1,4 @@
-# Author: Mr_Orange <mr_orange@hotmail.it>
+#Support @matigonkas <matigonkas@outlook.com>
 # URL: http://code.google.com/p/sickbeard/
 #
 # This file is part of SickRage.
@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 #
-#Heavily based on the OldPirateBay provider
+#Heavily based on the OldPirateBay provider (Mr_Orange <mr_orange@hotmail.it>)
 
 from __future__ import with_statement
 
