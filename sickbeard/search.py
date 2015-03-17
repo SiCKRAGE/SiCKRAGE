@@ -221,12 +221,12 @@ def pickBestResult(results, show, quality_list=None):
             logger.log(cur_result.name + " is a quality we know we don't want, rejecting it", logger.DEBUG)
             continue
 
-        if show.lang == "de" and show_name_helpers.containsAtLeastOneWord(cur_result.name, "german|videoman"):
+        if show.lang == "de" and not show_name_helpers.containsAtLeastOneWord(cur_result.name, "german|videoman"):
             logger.log(u"Ignoring " + cur_result.name + " based on ignored words filter: show language 'de'",
                        logger.INFO)
             continue
 
-        if show.lang != "de" and not show_name_helpers.containsAtLeastOneWord(cur_result.name, "german|videoman"):
+        if show.lang != "de" and show_name_helpers.containsAtLeastOneWord(cur_result.name, "german|videoman"):
             logger.log(u"Ignoring " + cur_result.name + " based on ignored words filter: show language '%s'" % show.lang,
                        logger.INFO)
             continue
