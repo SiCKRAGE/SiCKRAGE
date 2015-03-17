@@ -1113,6 +1113,10 @@ ul.tags li a{
 	vertical-align: -2px;
 }
 
+.delete {
+  background-color: #B2B2B2 !important;
+  text-decoration: line-through;
+}
 .unaired {
   background-color: #f5f1e4;
 }
@@ -2535,6 +2539,11 @@ input sizing (for config pages)
 
 .btn-inline {
 	margin-top: -3px;
+}
+
+.input50 {
+	width: 50px;
+	margin-top: -4px;
 }
 
 .input75 {

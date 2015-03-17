@@ -397,8 +397,9 @@
 		#end if    
 
 		#set $epLoc = $epResult["location"]
+		#set $curDelete = $epResult["delete_media"]
 		
-		<tr class="$Overview.overviewStrings[$epCats[$epStr]] season-$curSeason seasonstyle">
+		<tr class="$Overview.overviewStrings[$epCats[$epStr]] $curDelete season-$curSeason seasonstyle">
 		
 		<td class="col-checkbox">
 		
@@ -527,6 +528,7 @@
 			#end if
 		
 		<td class="col-search">
+			#if $sickbeard.DELETE_CHECKER and str($epResult["delete_media"]) != 'delete'
 			#if int($epResult["season"]) != 0:
 			#if ( int($epResult["status"]) in $Quality.SNATCHED or int($epResult["status"]) in $Quality.DOWNLOADED ) and $sickbeard.USE_FAILED_DOWNLOADS:
 				<a class="epRetry" id="<%=str(epResult["season"])+'x'+str(epResult["episode"])%>" name="<%=str(epResult["season"]) +"x"+str(epResult["episode"]) %>" href="retryEpisode?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search16.png" height="16" alt="retry" title="Retry Download" /></a>
@@ -534,9 +536,16 @@
 				<a class="epSearch" id="<%=str(epResult["season"])+'x'+str(epResult["episode"])%>" name="<%=str(epResult["season"]) +"x"+str(epResult["episode"]) %>" href="searchEpisode?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search16.png" width="16" height="16" alt="search" title="Manual Search" /></a>
 			#end if
 			#end if
+			#end if
 			
+			#if $sickbeard.DELETE_CHECKER and str($epResult["delete_media"]) != 'delete'
 			#if $sickbeard.USE_SUBTITLES and $show.subtitles and len(set(str($epResult["subtitles"]).split(',')).intersection(set($subtitles.wantedLanguages()))) < len($subtitles.wantedLanguages()) and $epResult["location"]
 				<a class="epSubtitlesSearch" href="searchEpisodeSubtitles?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/closed_captioning.png" height="16" alt="search subtitles" title="Search Subtitles" /></a>
+			#end if
+			#end if
+
+			#if $sickbeard.DELETE_CHECKER and str($epResult["delete_media"]) == 'delete'
+				<a class="epCancelDelete" href="cancelDeleteMedia?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/cancel32.png" height="16" alt="cancel deletion" title="Cancel Deletion" /></a>
 			#end if
 		</td>
 	</tr>
