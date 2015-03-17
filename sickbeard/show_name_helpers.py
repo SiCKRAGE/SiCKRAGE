@@ -68,12 +68,10 @@ def validReleaseForShowLang(name, showlang):
 
     Returns: False if the release is not falid for the given language
     """
-
     if showlang in languageMap:
         if not containsAtLeastOneWord(name, languageMap[showlang]):
-            logger.log(u"Ignoring " + name + " based on show language words filter '%s'" % showlang, logger.INFO)
+            logger.log(u"Ignoring " + name + " based on show language words filter '%s': %s" % (showlang, languageMap[showlang]), logger.INFO)
             return False
-
     #check for each other languages words, if present it's not a valid result
     for lang in languageMap:
         if lang != showlang and containsAtLeastOneWord(name, languageMap[lang]):
