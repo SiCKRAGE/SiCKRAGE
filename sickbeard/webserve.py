@@ -1074,76 +1074,26 @@ class Home(WebRoot):
         return self.redirect('/home/')
 
     def update(self, pid=None):
+        
         if str(pid) != str(sickbeard.PID):
             return self.redirect('/home/')
+            
+        checkversion = CheckVersion()
+        backup = checkversion._runbackup()
 
-        def _keeplatestbackup(backupDir):
-            import glob
-            files = glob.glob(os.path.join(backupDir,'*.zip'))
-            if not files:
-                return True
-            now = time.time()
-            newest = files[0], now - os.path.getctime(files[0])
-            for file in files[1:]:
-                age = now - os.path.getctime(file)
-                if age < newest[1]:
-                    newest = file, age
-            files.remove(newest[0])
+        if backup == True:
 
-            for file in files:
-                os.remove(file)
-        
-        # TODO: Merge with backup in helpers
-        def _backup(backupDir=None):
-            if backupDir:
-                source = [os.path.join(sickbeard.DATA_DIR, 'sickbeard.db'), sickbeard.CONFIG_FILE]
-                source.append(os.path.join(sickbeard.DATA_DIR, 'failed.db'))
-                source.append(os.path.join(sickbeard.DATA_DIR, 'cache.db'))
-                target = os.path.join(backupDir, 'sickrage-' + time.strftime('%Y%m%d%H%M%S') + '.zip')
-
-                for (path, dirs, files) in os.walk(sickbeard.CACHE_DIR, topdown=True):
-                    for dirname in dirs:
-                        if path == sickbeard.CACHE_DIR and dirname not in ['images']:
-                            dirs.remove(dirname)
-                    for filename in files:
-                        source.append(os.path.join(path, filename))
-
-                if helpers.backupConfigZip(source, target, sickbeard.DATA_DIR):
-                    return True
-                else:
-                    return False
+            if sickbeard.versionCheckScheduler.action.update():
+                # do a hard restart
+                sickbeard.events.put(sickbeard.events.SystemEvent.RESTART)
+            
+                t = PageTemplate(rh=self, file="restart.tmpl")
+                return t.respond()
             else:
-                return False
-
-        # Do a system backup
-        ui.notifications.message('Backup', 'Config backup in progress...')
-        try:
-            backupDir = os.path.join(sickbeard.DATA_DIR, 'backup')
-            if not os.path.isdir(backupDir):
-                os.mkdir(backupDir)
-
-            _keeplatestbackup(backupDir)
-
-            if _backup(backupDir):
-                ui.notifications.message('Backup', 'Config backup successful, updating...')
-            else:
-                ui.notifications.message('Backup', 'Config backup failed, aborting update')
-                return self.redirect('/home/')
-
-        except Exception as e:
-            ui.notifications.message('Backup', 'Config backup failed, aborting update')
-            logger.log('Update: Config backup failed. Error: {0}'.format(ex(e)),logger.DEBUG)
-            return self.redirect('/home/')
-
-        if sickbeard.versionCheckScheduler.action.update():
-            # do a hard restart
-            sickbeard.events.put(sickbeard.events.SystemEvent.RESTART)
-
-            t = PageTemplate(rh=self, file="restart.tmpl")
-            return t.respond()
+                return self._genericMessage("Update Failed",
+                                            "Update wasn't successful, not restarting. Check your log for more information.")
         else:
-            return self._genericMessage("Update Failed",
-                                        "Update wasn't successful, not restarting. Check your log for more information.")
+            return self.redirect('/home/')
 
     def branchCheckout(self, branch):
         if sickbeard.BRANCH != branch:
@@ -1771,7 +1721,11 @@ class Home(WebRoot):
                             u"Refusing to change status of " + curEp + " to FAILED because it's not SNATCHED/DOWNLOADED",
                             logger.ERROR)
                         continue
-
+                    
+                    if epObj.status in Quality.DOWNLOADED and int(status) == WANTED:
+                        logger.log(u"Removing release_name for episode as you want to set a downloaded episode back to wanted, so obviously you want it replaced")
+                        epObj.release_name = ""
+                        
                     epObj.status = int(status)
 
                     # mass add to database
@@ -2159,7 +2113,7 @@ class HomePostProcess(Home):
         return t.respond()
 
     def processEpisode(self, dir=None, nzbName=None, jobName=None, quiet=None, process_method=None, force=None,
-                       is_priority=None, failed="0", type="auto", *args, **kwargs):
+                       is_priority=None, delete_on="0", failed="0", type="auto", *args, **kwargs):
 
         if failed == "0":
             failed = False
@@ -2175,12 +2129,17 @@ class HomePostProcess(Home):
             is_priority = True
         else:
             is_priority = False
-
+            
+        if delete_on in ["on", "1"]:
+            delete_on = True
+        else:
+            delete_on = False
+            
         if not dir:
             return self.redirect("/home/postprocess/")
         else:
             result = processTV.processDir(dir, nzbName, process_method=process_method, force=force,
-                                          is_priority=is_priority, failed=failed, type=type)
+                                          is_priority=is_priority, delete_on=delete_on, failed=failed, type=type)
             if quiet is not None and int(quiet) == 1:
                 return result
 
@@ -2401,7 +2360,7 @@ class HomeAddShows(Home):
                     [int(show['ids'][indexers[sickbeard.TRAKT_DEFAULT_INDEXER - 1]]),
                      'http://www.trakt.tv/shows/%s' % show['ids']['slug'], show['title'],
                      show['overview'],
-                     None if show['first_aired'] is None else dateutil_parser.parse(show['first_aired']).strftime('%Y%m%d')]
+                     None if show['first_aired'] is None else dateutil_parser.parse(show['first_aired']).strftime(sickbeard.DATE_PRESET)]
                     for show in recommendedlist if not helpers.findCertainShow(sickbeard.showList, [
                     int(show['ids'][indexers[sickbeard.TRAKT_DEFAULT_INDEXER - 1]])])))
         except (traktException, traktAuthException, traktServerBusy) as e:
@@ -2449,20 +2408,55 @@ class HomeAddShows(Home):
         trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
         try:
-            shows = trakt_api.traktRequest("shows/trending?limit=50&extended=full,images") or []
+            if sickbeard.TRAKT_BLACKLIST_NAME is not None:
+                not_liked_show = trakt_api.traktRequest("users/" + sickbeard.TRAKT_USERNAME + "/lists/" + sickbeard.TRAKT_BLACKLIST_NAME + "/items") or []
+
+            limit_show = 50 + len(not_liked_show)
+
+            shows = trakt_api.traktRequest("shows/trending?limit=" + str(limit_show) + "&extended=full,images") or []
+
+            library_shows = trakt_api.traktRequest("sync/collection/shows?extended=full") or []
             for show in shows:
                 try:
                     tvdb_id = int(show['show']['ids']['tvdb'])
                     tvrage_id = int(show['show']['ids']['tvrage'] or 0)
                     if not helpers.findCertainShow(sickbeard.showList,
                                                    [tvdb_id, tvrage_id]):
-                        t.trending_shows += [show]
+                        if show['show']['ids']['tvdb'] not in (lshow['show']['ids']['tvdb'] for lshow in library_shows):
+                            if not_liked_show:
+                                if show['show']['ids']['tvdb'] not in (show['show']['ids']['tvdb'] for show in not_liked_show if show['type'] == 'show'):	
+                                    t.trending_shows += [show]
                 except exceptions.MultipleShowObjectsException:
                     continue
+
+            if sickbeard.TRAKT_BLACKLIST_NAME != '':
+                t.blacklist = True
+            else:
+                t.blacklist = False
+
         except (traktException, traktAuthException, traktServerBusy) as e:
             logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
 
         return t.respond()
+
+    def addShowToBlacklist(self, indexer_id):
+
+        # URL parameters
+        data = {
+            'shows': [
+                {
+                    'ids': {
+                           'tvdb': indexer_id
+                           }
+                }
+            ]
+        }
+
+        trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD)
+
+        result=trakt_api.traktRequest("users/" + sickbeard.TRAKT_USERNAME + "/lists/" + sickbeard.TRAKT_BLACKLIST_NAME + "/items", data, method='POST')
+
+        return self.redirect('/home/addShows/trendingShows/')
 
     def existingShows(self):
         """
@@ -3819,11 +3813,11 @@ class ConfigSearch(Config):
                    nzbget_password=None, nzbget_category=None, nzbget_category_anime=None, nzbget_priority=None,
                    nzbget_host=None, nzbget_use_https=None, backlog_days=None, backlog_frequency=None, available_check=None,
                    dailysearch_frequency=None, nzb_method=None, torrent_method=None, usenet_retention=None,
-                   download_propers=None, check_propers_interval=None, allow_high_priority=None,
+                   download_propers=None, check_propers_interval=None, allow_high_priority=None, sab_forced=None,
                    randomize_providers=None, backlog_startup=None, use_failed_downloads=None, delete_failed=None,
                    dailysearch_startup=None, torrent_dir=None, torrent_username=None, torrent_password=None, torrent_host=None,
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
-                   torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
+                   torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None, coming_eps_missed_range=None,
                    torrent_rpcurl=None, torrent_auth_type = None, ignore_words=None, require_words=None):
 
         results = []
@@ -3835,9 +3829,11 @@ class ConfigSearch(Config):
             results += ["Unable to create directory " + os.path.normpath(torrent_dir) + ", dir not changed."]
 
         config.change_DAILYSEARCH_FREQUENCY(dailysearch_frequency)
+        
 
         config.change_BACKLOG_FREQUENCY(backlog_frequency)
         sickbeard.BACKLOG_DAYS = config.to_int(backlog_days, default=7)
+        sickbeard.COMING_EPS_MISSED_RANGE = config.to_int(coming_eps_missed_range,default=7)
         sickbeard.AVAILABLE_CHECK = config.checkbox_to_value(available_check)
 
         sickbeard.USE_NZBS = config.checkbox_to_value(use_nzbs)
@@ -3868,6 +3864,7 @@ class ConfigSearch(Config):
         sickbeard.SAB_CATEGORY = sab_category
         sickbeard.SAB_CATEGORY_ANIME = sab_category_anime
         sickbeard.SAB_HOST = config.clean_url(sab_host)
+        sickbeard.SAB_FORCED = config.checkbox_to_value(sab_forced)
 
         sickbeard.NZBGET_USERNAME = nzbget_username
         sickbeard.NZBGET_PASSWORD = nzbget_password
@@ -4604,7 +4601,7 @@ class ConfigNotifications(Config):
                           use_trakt=None, trakt_username=None, trakt_password=None,
                           trakt_remove_watchlist=None, trakt_sync_watchlist=None, trakt_method_add=None,
                           trakt_start_paused=None, trakt_use_recommended=None, trakt_sync=None,
-                          trakt_default_indexer=None, trakt_remove_serieslist=None, trakt_disable_ssl_verify=None, trakt_timeout=None,
+                          trakt_default_indexer=None, trakt_remove_serieslist=None, trakt_disable_ssl_verify=None, trakt_timeout=None, trakt_blacklist_name=None,
                           use_synologynotifier=None, synologynotifier_notify_onsnatch=None,
                           synologynotifier_notify_ondownload=None, synologynotifier_notify_onavailable=None, synologynotifier_notify_onsubtitledownload=None,
                           use_pytivo=None, pytivo_notify_onsnatch=None, pytivo_notify_ondownload=None, pytivo_notify_onavailable=None,
@@ -4739,6 +4736,7 @@ class ConfigNotifications(Config):
         sickbeard.TRAKT_DEFAULT_INDEXER = int(trakt_default_indexer)
         sickbeard.TRAKT_DISABLE_SSL_VERIFY = config.checkbox_to_value(trakt_disable_ssl_verify)
         sickbeard.TRAKT_TIMEOUT = int(trakt_timeout)
+        sickbeard.TRAKT_BLACKLIST_NAME = trakt_blacklist_name
 
         if sickbeard.USE_TRAKT:
             sickbeard.traktCheckerScheduler.silent = False

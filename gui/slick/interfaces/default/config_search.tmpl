@@ -119,6 +119,16 @@
 
 						<div class="field-pair">
 							<label>
+								<span class="component-title">Missed episodes range</span>
+								<span class="component-desc">
+									<input type="number" step="1" min="7" name="coming_eps_missed_range" id="coming_eps_missed_range" value="$sickbeard.COMING_EPS_MISSED_RANGE" class="form-control input-sm input75" />
+									<p>Set the range in days of the missed episodes</p>
+								</span>
+							</label>
+						</div>
+
+						<div class="field-pair">
+							<label>
 								<span class="component-title">Usenet retention</span>
 								<span class="component-desc">
 									<input type="text" name="usenet_retention" value="$sickbeard.USENET_RETENTION" class="form-control input-sm input75" />
@@ -132,7 +142,9 @@
 								<span class="component-title">Ignore words</span>
 								<span class="component-desc">
 									<input type="text" name="ignore_words" value="$sickbeard.IGNORE_WORDS" class="form-control input-sm input350" />
-									<div class="clear-left">results containing any word in the comma separated word list will be ignored</div>
+									<div class="clear-left">results with one or more word from this list will be ignored<br />
+									separate words with a comma, e.g. "word1,word2,word3"
+									</div>
 								</span>
 							</label>
 						</div>
@@ -142,7 +154,9 @@
 								<span class="component-title">Require words</span>
 								<span class="component-desc">
 									<input type="text" name="require_words" value="$sickbeard.REQUIRE_WORDS" class="form-control input-sm input350" />
-									<div class="clear-left">results not containing all words in the comma separated word list will be ignored</div>
+									<div class="clear-left">results with no word from this list will be ignored<br />
+									separate words with a comma, e.g. "word1,word2,word3"
+									</div>
 								</span>
 							</label>
 						</div>
@@ -315,6 +329,16 @@
 									</span>
 								</label>
 							</div>
+							#if sickbeard.ALLOW_HIGH_PRIORITY == True
+							<div class="field-pair">
+								<label for="sab_forced">
+									<span class="component-title">Use forced priority</span>
+									<span class="component-desc">
+										<input type="checkbox" name="sab_forced" class="enabler" id="sab_forced" <%= html_checked if sickbeard.SAB_FORCED else '' %>/>
+										<p>enable to change priority from HIGH to FORCED</p></span>
+								</label>
+							</div>
+							#end if
 						</div>
 
 						<div id="nzbget_settings">
@@ -503,7 +527,7 @@
 								</label>
 							</div>
 
-							<div class="field-pair" id="torrent_auth_type">
+							<div class="field-pair" id="torrent_auth_type_option">
 								<label>
 									<span class="component-title">Http Authentication</span>
 									<span class="component-desc">
@@ -511,7 +535,7 @@
 										#set $http_authtype = {'none': "None", 'basic': "Basic", 'digest': "Digest"}
 										#for $authvalue,$authname in $http_authtype.items():
     									#set $selected = $html_selected if $sickbeard.TORRENT_AUTH_TYPE == $authvalue else ''
-										    <option value="$authvalue"$selected>$authname</option>
+										    <option id="torrent_auth_type_value" value="$authvalue"$selected>$authname</option>
 										#end for
 										</select>
 										<p></p>
@@ -530,7 +554,7 @@
 								</label>
 							</div>
 
-							<div class="field-pair">
+							<div class="field-pair" id="torrent_username_option">
 								<label>
 									<span class="component-title" id="username_title">Client username</span>
 									<span class="component-desc">
@@ -540,7 +564,7 @@
 								</label>
 							</div>
 
-							<div class="field-pair">
+							<div class="field-pair" id="torrent_password_option">
 								<label>
 									<span class="component-title" id="password_title">Client password</span>
 									<span class="component-desc">
@@ -588,8 +612,8 @@
 
 							<div class="field-pair" id="torrent_seed_time_option">
 								<label>
-									<span class="component-title">Minimum seeding time is</span>
-									<span class="component-desc"><input type="number" step="0.1" name="torrent_seed_time" id="torrent_seed_time" value="$sickbeard.TORRENT_SEED_TIME" class="form-control input-sm input100" />
+									<span class="component-title" id="torrent_seed_time_label">Minimum seeding time is</span>
+									<span class="component-desc"><input type="number" step="1" name="torrent_seed_time" id="torrent_seed_time" value="$sickbeard.TORRENT_SEED_TIME" class="form-control input-sm input100" />
 									<p>hours. (default:'0' passes blank to client and '-1' passes nothing)</p></span>
 								</label>
 							</div>

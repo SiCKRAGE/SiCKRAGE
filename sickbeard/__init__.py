@@ -37,8 +37,8 @@ from github import Github
 from sickbeard import providers, metadata, config, webserveInit
 from sickbeard.providers.generic import GenericProvider
 from providers import ezrss, btn, newznab, womble, thepiratebay, oldpiratebay, torrentleech, kat, iptorrents, \
-    omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, nextgen, speedcd, nyaatorrents, fanzub, torrentbytes, animezb, \
-    freshontv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, binsearch
+    omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, nextgen, speedcd, nyaatorrents, fanzub, animenzb, torrentbytes, animezb, \
+    freshontv, morethantv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, binsearch
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
     naming_ep_type
 from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
@@ -223,6 +223,7 @@ TORRENT_DIR = None
 DOWNLOAD_PROPERS = False
 CHECK_PROPERS_INTERVAL = None
 ALLOW_HIGH_PRIORITY = False
+SAB_FORCED = False
 RANDOMIZE_PROVIDERS = False
 
 AUTOPOSTPROCESSER_FREQUENCY = None
@@ -432,6 +433,7 @@ TRAKT_SYNC = False
 TRAKT_DEFAULT_INDEXER = None
 TRAKT_DISABLE_SSL_VERIFY = False
 TRAKT_TIMEOUT = 60
+TRAKT_BLACKLIST_NAME = ''
 
 USE_PYTIVO = False
 PYTIVO_NOTIFY_ONSNATCH = False
@@ -533,13 +535,13 @@ def initialize(consoleLogging=True):
     with INIT_LOCK:
 
         global BRANCH, GIT_RESET, GIT_REMOTE, GIT_REMOTE_URL, CUR_COMMIT_HASH, CUR_COMMIT_BRANCH, ACTUAL_LOG_DIR, LOG_DIR, LOG_NR, LOG_SIZE, WEB_PORT, WEB_LOG, ENCRYPTION_VERSION, WEB_ROOT, WEB_USERNAME, WEB_PASSWORD, WEB_HOST, WEB_IPV6, WEB_COOKIE_SECRET, API_KEY, API_ROOT, ENABLE_HTTPS, HTTPS_CERT, HTTPS_KEY, \
-            HANDLE_REVERSE_PROXY, USE_NZBS, USE_TORRENTS, NZB_METHOD, NZB_DIR, DOWNLOAD_PROPERS, RANDOMIZE_PROVIDERS, CHECK_PROPERS_INTERVAL, ALLOW_HIGH_PRIORITY, TORRENT_METHOD, \
+            HANDLE_REVERSE_PROXY, USE_NZBS, USE_TORRENTS, NZB_METHOD, NZB_DIR, DOWNLOAD_PROPERS, RANDOMIZE_PROVIDERS, CHECK_PROPERS_INTERVAL, ALLOW_HIGH_PRIORITY, SAB_FORCED, TORRENT_METHOD, \
             SAB_USERNAME, SAB_PASSWORD, SAB_APIKEY, SAB_CATEGORY, SAB_CATEGORY_ANIME, SAB_HOST, \
             NZBGET_USERNAME, NZBGET_PASSWORD, NZBGET_CATEGORY, NZBGET_CATEGORY_ANIME, NZBGET_PRIORITY, NZBGET_HOST, NZBGET_USE_HTTPS, backlogSearchScheduler, \
             TORRENT_USERNAME, TORRENT_PASSWORD, TORRENT_HOST, TORRENT_PATH, TORRENT_SEED_TIME, TORRENT_PAUSED, TORRENT_HIGH_BANDWIDTH, TORRENT_LABEL, TORRENT_LABEL_ANIME, TORRENT_VERIFY_CERT, TORRENT_RPCURL, TORRENT_AUTH_TYPE, \
             USE_KODI, KODI_ALWAYS_ON, KODI_NOTIFY_ONSNATCH, KODI_NOTIFY_ONDOWNLOAD, KODI_NOTIFY_ONAVAILABLE, KODI_NOTIFY_ONSUBTITLEDOWNLOAD, KODI_UPDATE_FULL, KODI_UPDATE_ONLYFIRST, \
             KODI_UPDATE_LIBRARY, KODI_HOST, KODI_USERNAME, KODI_PASSWORD, BACKLOG_FREQUENCY, AVAILABLE_CHECK, \
-            USE_TRAKT, TRAKT_USERNAME, TRAKT_PASSWORD, TRAKT_REMOVE_WATCHLIST, TRAKT_SYNC_WATCHLIST, TRAKT_METHOD_ADD, TRAKT_START_PAUSED, traktCheckerScheduler, TRAKT_USE_RECOMMENDED, TRAKT_SYNC, TRAKT_DEFAULT_INDEXER, TRAKT_REMOVE_SERIESLIST, TRAKT_DISABLE_SSL_VERIFY, TRAKT_TIMEOUT, \
+            USE_TRAKT, TRAKT_USERNAME, TRAKT_PASSWORD, TRAKT_REMOVE_WATCHLIST, TRAKT_SYNC_WATCHLIST, TRAKT_METHOD_ADD, TRAKT_START_PAUSED, traktCheckerScheduler, TRAKT_USE_RECOMMENDED, TRAKT_SYNC, TRAKT_DEFAULT_INDEXER, TRAKT_REMOVE_SERIESLIST, TRAKT_DISABLE_SSL_VERIFY, TRAKT_TIMEOUT, TRAKT_BLACKLIST_NAME, \
             USE_PLEX, PLEX_NOTIFY_ONSNATCH, PLEX_NOTIFY_ONDOWNLOAD, PLEX_NOTIFY_ONAVAILABLE, PLEX_NOTIFY_ONSUBTITLEDOWNLOAD, PLEX_UPDATE_LIBRARY, \
             PLEX_SERVER_HOST, PLEX_SERVER_TOKEN, PLEX_HOST, PLEX_USERNAME, PLEX_PASSWORD, DEFAULT_BACKLOG_FREQUENCY, MIN_BACKLOG_FREQUENCY, BACKLOG_STARTUP, SKIP_REMOVED_FILES, \
             showUpdateScheduler, __INITIALIZED__, LAUNCH_BROWSER, UPDATE_SHOWS_ON_START, UPDATE_SHOWS_ON_SNATCH, TRASH_REMOVE_SHOW, TRASH_ROTATE_LOGS, SORT_ARTICLE, showList, loadingShowList, \
@@ -872,6 +874,7 @@ def initialize(consoleLogging=True):
         SAB_CATEGORY = check_setting_str(CFG, 'SABnzbd', 'sab_category', 'tv')
         SAB_CATEGORY_ANIME = check_setting_str(CFG, 'SABnzbd', 'sab_category_anime', 'anime')
         SAB_HOST = check_setting_str(CFG, 'SABnzbd', 'sab_host', '')
+        SAB_FORCED = bool(check_setting_int(CFG, 'SABnzbd', 'sab_forced', 0))
 
         NZBGET_USERNAME = check_setting_str(CFG, 'NZBget', 'nzbget_username', 'nzbget', censor_log=True)
         NZBGET_PASSWORD = check_setting_str(CFG, 'NZBget', 'nzbget_password', 'tegbzn6789', censor_log=True)
@@ -1018,6 +1021,7 @@ def initialize(consoleLogging=True):
         TRAKT_DEFAULT_INDEXER = check_setting_int(CFG, 'Trakt', 'trakt_default_indexer', 1)
         TRAKT_DISABLE_SSL_VERIFY = bool(check_setting_int(CFG, 'Trakt', 'trakt_disable_ssl_verify', 0))
         TRAKT_TIMEOUT = check_setting_int(CFG, 'Trakt', 'trakt_timeout', 30)
+        TRAKT_BLACKLIST_NAME = check_setting_str(CFG, 'Trakt', 'trakt_blacklist_name', '')
 
         CheckSection(CFG, 'pyTivo')
         USE_PYTIVO = bool(check_setting_int(CFG, 'pyTivo', 'use_pytivo', 0))
@@ -1502,9 +1506,6 @@ def halt():
                     ADBA_CONNECTION.join(10)
                 except:
                     pass
-
-            #stop logging, otherwise logrotation will fail on windows
-            logger.shutdown()
             
             __INITIALIZED__ = False
             started = False
@@ -1774,6 +1775,7 @@ def save_config():
     new_config['SABnzbd']['sab_category'] = SAB_CATEGORY
     new_config['SABnzbd']['sab_category_anime'] = SAB_CATEGORY_ANIME
     new_config['SABnzbd']['sab_host'] = SAB_HOST
+    new_config['SABnzbd']['sab_forced'] = int(SAB_FORCED)
 
     new_config['NZBget'] = {}
 
@@ -1931,6 +1933,7 @@ def save_config():
     new_config['Trakt']['trakt_default_indexer'] = int(TRAKT_DEFAULT_INDEXER)
     new_config['Trakt']['trakt_disable_ssl_verify'] = int(TRAKT_DISABLE_SSL_VERIFY)
     new_config['Trakt']['trakt_timeout'] = int(TRAKT_TIMEOUT)
+    new_config['Trakt']['trakt_blacklist_name'] = TRAKT_BLACKLIST_NAME
 
     new_config['pyTivo'] = {}
     new_config['pyTivo']['use_pytivo'] = int(USE_PYTIVO)
