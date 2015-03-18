@@ -38,6 +38,7 @@ from sickbeard import network_timezones, sbdatetime
 from sickbeard.exceptions import ex
 from sickbeard.common import Quality, Overview, qualityPresetStrings, statusStrings, SNATCHED, SNATCHED_PROPER, DOWNLOADED, SKIPPED, UNAIRED, IGNORED, ARCHIVED, WANTED, UNKNOWN
 from sickbeard.webserve import WebRoot
+import codecs
 
 try:
     import json
@@ -748,7 +749,11 @@ class CMD_ComingEpisodes(ApiCall):
         for curType in self.type:
             finalEpResults[curType] = []
 
-        for ep in sql_results:
+        # Safety Measure to convert rows in sql_results to dict.
+        # This should not be required as the DB connections should only be returning dict results not sqlite3.row_type
+        dict_results = [dict(row) for row in sql_results]
+        
+        for ep in dict_results:
             """
                 Missed:   yesterday... (less than 1week)
                 Today:    today
@@ -1318,7 +1323,7 @@ class CMD_Logs(ApiCall):
 
         data = []
         if os.path.isfile(logger.logFile):
-            with ek.ek(open, logger.logFile) as f:
+            with ek.ek(codecs.open, *[logger.logFile, 'r', 'utf-8']) as f:
                 data = f.readlines()
 
         regex = "^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d):(\d\d)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$"

@@ -19,8 +19,8 @@ function(){
     \$('#minLevel,#logFilter,#logSearch').change(function(){
         if ( \$('#logSearch').val().length > 0 ) {
             \$('#logSearch').prop('disabled', true);
-            \$('#logFilter option[value=<NONE>]').prop('selected', true); 
-            \$('#minLevel option[value=INFO]').prop('selected', true); 
+            \$('#logFilter option[value=\\<NONE\\>]').prop('selected', true); 
+            \$('#minLevel option[value=5]').prop('selected', true); 
         }
         \$('#minLevel').prop('disabled', true);
         \$('#logFilter').prop('disabled', true);
@@ -48,8 +48,8 @@ function(){
 
     \$('#logSearch').keyup(function() {
         if ( \$('#logSearch').val().length == 0 ) {
-            \$('#logFilter option[value=<NONE>]').prop('selected', true); 
-            \$('#minLevel option[value=INFO]').prop('selected', true); 
+            \$('#logFilter option[value=\\<NONE\\>]').prop('selected', true); 
+            \$('#minLevel option[value=20]').prop('selected', true); 
             \$('#minLevel').prop('disabled', false);
             \$('#logFilter').prop('disabled', false);
             url = '$sbRoot/errorlogs/viewlog/?minLevel='+\$('select[name=minLevel]').val()+'&logFilter='+\$('select[name=logFilter]').val()+'&logSearch='+\$('#logSearch').val()
@@ -83,11 +83,13 @@ Filter log by: <select name="logFilter" id="logFilter" class="form-control form-
 #end for
 </select>
 Search log by:
-<input type="text" name="logSearch" id="logSearch" value="#if $logSearch then $logSearch else ""#" class="form-control form-control-inline input-sm" />
+<input type="text" name="logSearch" placeholder="clear to reset" id="logSearch" value="#if $logSearch then $logSearch else ""#" class="form-control form-control-inline input-sm" />
 </div>
 <br />
 <div class="align-left"><pre>
+#filter WebSafe
 $logLines
+#end filter
 </pre>
 </div>
 <br />

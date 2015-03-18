@@ -1444,15 +1444,16 @@
                                 </label>
                             </div>
                             <div class="field-pair">
-                                <label for="trakt_use_watchlist">
-                                    <span class="component-title">Use watchlist:</span>
+                                <label for="trakt_sync_watchlist">
+                                    <span class="component-title">Sync watchlist:</span>
                                     <span class="component-desc">
-                                        <input type="checkbox" class="enabler" name="trakt_use_watchlist" id="trakt_use_watchlist" #if $sickbeard.TRAKT_USE_WATCHLIST then "checked=\"checked\"" else ""# />
-                                        <p>get new shows from your trakt watchlist.</p>
+                                        <input type="checkbox" class="enabler" name="trakt_sync_watchlist" id="trakt_sync_watchlist" #if $sickbeard.TRAKT_SYNC_WATCHLIST then "checked=\"checked\"" else ""# />
+                                        <p>sync your SickRage show watchlist with your trakt show watchlist (either Show and Episode).</p>
+                                        <p>Episode will be added on watch list when wanted or snatched and will be removed when downloaded </p>
                                     </span>
                                 </label>
                             </div>
-                            <div id="content_trakt_use_watchlist">
+                            <div id="content_trakt_sync_watchlist">
                                 <div class="field-pair">
                                     <label for="trakt_method_add">
                                         <span class="component-title">Watchlist add method:</span>
@@ -1494,6 +1495,16 @@
                                         </span>
                                     </label>
                                 </div>
+                            </div>
+                            <div class="field-pair">
+                                <label for="trakt_blacklist_name">
+                                    <span class="component-title">Traktv BlackList name:</span>
+                                    <input type="text" name="trakt_blacklist_name" id="trakt_blacklist_name" value="$sickbeard.TRAKT_BLACKLIST_NAME" class="form-control input-sm input150" />
+                                </label>
+                                <label>
+                                    <span class="component-title">&nbsp;</span>
+                                    <span class="component-desc">Name(slug) of List on Traktv for blacklisting show on tranding page</span>
+                                </label>
                             </div>
                             <div class="testNotification" id="testTrakt-result">Click below to test.</div>
                             <input type="button" class="btn" value="Test Trakt" id="testTrakt" />

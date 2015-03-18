@@ -1,5 +1,5 @@
-# -*- coding: latin-1 -*-
 # Author: djoole <bobby.djoole@gmail.com>
+# Author: CoRpO <corpo@gruk.org>
 # URL: http://code.google.com/p/sickbeard/
 #
 # This file is part of Sick Beard.
@@ -18,19 +18,16 @@
 # along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
 
 import traceback
-import time
 import re
 import datetime
+import urllib
+
 import sickbeard
 import generic
-import cookielib
-import urllib
-import urllib2
 
 from lib import requests
-from lib.requests import exceptions
 
-from sickbeard.common import USER_AGENT, Quality, cpu_presets
+from sickbeard.common import Quality
 from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard import show_name_helpers
@@ -39,7 +36,6 @@ from sickbeard import db
 from sickbeard import helpers
 from sickbeard import classes
 from sickbeard.helpers import sanitizeSceneName
-from sickbeard.exceptions import ex
 
 
 class RarbgProvider(generic.TorrentProvider):
@@ -47,35 +43,48 @@ class RarbgProvider(generic.TorrentProvider):
     def __init__(self):
         generic.TorrentProvider.__init__(self, "Rarbg")
 
-        self.supportsBacklog = True
         self.enabled = False
 
-        self.cache = RarbgCache(self)
+        self.supportsBacklog = True
 
         self.ratio = None
 
-        self.cookies = cookielib.CookieJar()
-	self.cookie = cookielib.Cookie(version=0, name='7fAY799j', value='VtdTzG69', port=None, port_specified=False, domain='rarbg.com', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=False, expires=None, discard=True, comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False)
-	self.cookies.set_cookie(self.cookie)
-        self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookies))
-        self.opener.addheaders=[('User-agent', 'Mozilla/5.0')]
+        self.cache = RarbgCache(self)
 
-        self.urls = {'base_url': 'https://rarbg.com/torrents.php',
-                'search': 'https://rarbg.com/torrents.php?search=%s&category[]=%s',
-                'download': 'https://rarbg.com/download.php?id=%s&f=%s',
-                }
+        self.urls = {'url': 'https://rarbg.com',
+                     'base_url': 'https://rarbg.com/torrents.php',
+                     'search': 'https://rarbg.com/torrents.php?search=%s&category=%s&page=%s',
+                     'download': 'https://rarbg.com/download.php?id=%s&f=%s',
+                     }
 
         self.url = self.urls['base_url']
 
-        self.subcategories = ['18;41']
+        self.subcategories = [18,41]
+        self.pages = [1,2,3,4,5]
 
+        self.cookie = {
+            "version": 0,
+            "name": '7fAY799j',
+            "value": 'VtdTzG69',
+            "port": None,
+            # "port_specified": False,
+            "domain": 'rarbg.com',
+            # "domain_specified": False,
+            # "domain_initial_dot": False,
+            "path": '/',
+            # "path_specified": True,
+            "secure": False,
+            "expires": None,
+            "discard": True,
+            "comment": None,
+            "comment_url": None,
+            "rest": {},
+            "rfc2109": False
+        }
 
-    def getURL(self, url, post_data=None, params=None, timeout=30, json=False):
-        logger.log(u"Rarbg downloading url :" + url, logger.DEBUG)
-	request = urllib2.Request(url)
-	content = self.opener.open(request)
-	return content.read()
-
+        self.session = requests.session()
+        self.session.headers.update({'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.99 Safari/537.36'})
+        self.session.cookies.set(**self.cookie)
 
     def isEnabled(self):
         return self.enabled
@@ -86,26 +95,6 @@ class RarbgProvider(generic.TorrentProvider):
     def getQuality(self, item, anime=False):
         quality = Quality.sceneQuality(item[0], anime)
         return quality
-
-#    def _doLogin(self):
-#        login_params = {'login': self.username,
-#                        'password': self.password,
-#        }
-#
-#        self.session = requests.Session()
-#
-#        try:
-#            response = self.session.post(self.urls['login_page'], data=login_params, timeout=30, verify=False)
-#            response = self.session.get(self.urls['base_url'], timeout=30, verify=False)
-#        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
-#            logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
-#            return False
-#
-#        if not re.search('/users/logout/', response.text.lower()):
-#            logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
-#            return False
-#
-#        return True
 
     def _get_season_search_strings(self, ep_obj):
 
@@ -160,64 +149,64 @@ class RarbgProvider(generic.TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-	# Get cookie
-	#dummy = self.getURL(self.url)
-
-#        if not self._doLogin():
-#            return results
-
         for mode in search_params.keys():
 
             for search_string in search_params[mode]:
 
                 for sc in self.subcategories:
-                    searchURL = self.urls['search'] % (urllib.quote(search_string.encode('UTF-8')), sc)
-                    logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)
 
-                    data = self.getURL(searchURL)
-                    if not data:
-                        continue
+                    for page in self.pages:
 
-                    try:
-                        with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                            resultsTable = html.find('table', attrs={'class': 'lista2t'})
+                        searchURL = self.urls['search'] % (search_string.encode('UTF-8'), sc, page)
+                        logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)
 
-                            if not resultsTable:
-                                logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
-                                           logger.DEBUG)
-                                continue
+                        data = self.getURL(searchURL)
+                        if not data:
+                            continue
 
-                            entries = resultsTable.find("tbody").findAll("tr")
+                        try:
+                            with BS4Parser(data, features=["html5lib", "permissive"]) as html:
+                                resultsTable = html.find('table', attrs={'class': 'lista2t'})
 
-                            if len(entries) > 0:
-                                for result in entries:
-
-                                    try:
-                                        link = result.find('a', title=True)
-                                        torrentName = link['title']
-                                        torrent_name = str(torrentName)
-                                        torrentId = result.find_all('td')[1].find_all('a')[0]['href'][1:].replace(
-                                            'torrent/', '')
-                                        torrent_download_url = (self.urls['download'] % (torrentId, urllib.quote(torrent_name) + '-[rarbg.com].torrent')).encode('utf8')
-                                    except (AttributeError, TypeError):
-                                        continue
-
-                                    if not torrent_name or not torrent_download_url:
-                                        continue
-
-                                    item = torrent_name, torrent_download_url
-                                    logger.log(u"Found result: " + torrent_name + " (" + torrent_download_url + ")",
+                                if not resultsTable:
+                                    logger.log(u"Data returned from " + self.name + " do not contains any torrent",
                                                logger.DEBUG)
-                                    items[mode].append(item)
+                                    continue
 
-                            else:
-                                logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
-                                           logger.WARNING)
-                                continue
+                                entries = resultsTable.find("tbody").findAll("tr")
 
-                    except Exception, e:
-                        logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),
-                                   logger.ERROR)
+                                if len(entries) > 0:
+                                    for result in entries:
+
+                                        try:
+                                            link = result.find('a', title=True)
+                                            torrentName = link['title']
+                                            torrent_name = str(torrentName)
+                                            torrentId = result.find_all('td')[1].find_all('a')[0]['href'][1:].replace(
+                                                'torrent/', '')
+                                            torrent_download_url = (self.urls['download'] % (torrentId, urllib.quote(torrent_name) + '-[rarbg.com].torrent')).encode('utf8')
+                                        except (AttributeError, TypeError):
+                                            continue
+
+                                        if not torrent_name or not torrent_download_url:
+                                            continue
+
+                                        item = torrent_name, torrent_download_url
+                                        logger.log(u"Found result: " + torrent_name + " (" + torrent_download_url + ")",
+                                                   logger.DEBUG)
+                                        items[mode].append(item)
+
+                                else:
+                                    logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
+                                               logger.WARNING)
+                                    continue
+
+                                if len(entries) < 25:
+                                    break
+
+                        except Exception, e:
+                            logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),
+                                       logger.ERROR)
             results += items[mode]
 
         return results
@@ -266,12 +255,14 @@ class RarbgProvider(generic.TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
+
 class RarbgCache(tvcache.TVCache):
     def __init__(self, provider):
+
         tvcache.TVCache.__init__(self, provider)
 
-        # Only poll Rarbg every 30 minutes max
-        self.minTime = 30
+        # only poll RARbg every 15 minutes max
+        self.minTime = 15
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
