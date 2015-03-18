@@ -480,7 +480,18 @@
 #if 'calendar' == $layout:
 
 #set $today = datetime.date.today()
-#set $dates = [$today + datetime.timedelta(days = $i) for $i in range(7)]
+
+#if $sickbeard.COMING_EPS_DISPLAY_PAUSED == 0
+#set $last_date = [x['localtime'] for x in $sql_results if x['paused'] == 0 ]
+#else
+#set $last_date = [x['localtime'] for x in $sql_results]
+#end if
+
+#set $last_ep_missed = min(last_date).date()
+#set $missed_rage_date = datetime.date.today() - datetime.timedelta(days = $sickbeard.COMING_EPS_MISSED_RANGE)
+#set $missed = max($last_ep_missed,$missed_rage_date)
+
+#set $dates = [$missed + datetime.timedelta(days = $i) for $i in range(7 + int($sickbeard.COMING_EPS_MISSED_RANGE))]
 #set $tbl_day = 0
 <br>
 <br>
@@ -489,7 +500,7 @@
     #for $day in $dates
     #set $tbl_day += 1
 		<table class="sickbeardTable tablesorter calendarTable <%= 'cal-%s' % (('even', 'odd')[1 == tbl_day % 2]) %>" cellspacing="0" border="0" cellpadding="0">
-		<thead><tr><th>$day.strftime('%A').decode($sickbeard.SYS_ENCODING).capitalize()</th></tr></thead>
+		<thead><tr><th>$day.strftime('%a, %b %d').decode($sickbeard.SYS_ENCODING).capitalize()</th></tr></thead>
 		<tbody>
         #set $day_has_show = False
         #for $cur_result in $sql_results:
@@ -544,6 +555,7 @@
 <div class="clearfix"></div>
 
 <script type="text/javascript" charset="utf-8">
+window.alert(\$sql_results)
 <!--
 window.setInterval('location.reload(true)', 600000); // Refresh every 10 minutes
 //-->
