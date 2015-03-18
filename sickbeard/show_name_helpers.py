@@ -65,19 +65,21 @@ def validReleaseForShowLang(name, showlang):
 
     name: name to check
     showlang: the ISO 3166-2 code of the language (de, en) etc
+
+    Returns: False if the release is not falid for the given language
     """
+    if showlang in languageMap:
+        if not containsAtLeastOneWord(name, languageMap[showlang]):
+            logger.log(u"Ignoring " + name + " based on show language words filter '%s': %s" % (showlang, languageMap[showlang]), logger.INFO)
+            return False
+    #check for each other languages words, if present it's not a valid result
+    for lang in languageMap:
+        if lang != showlang and containsAtLeastOneWord(name, languageMap[lang]):
+            logger.log(u"Ignoring " + name + " because it contains at least one language word filters for languge '%s': %s" % (lang, languageMap[lang]), logger.INFO)
+            return False
 
-    if showlang == "de" and not containsAtLeastOneWord(name, ["german","videoman"]):
-            logger.log(u"Ignoring " + name + " based on show language words filter 'de'",
-                       logger.INFO)
-            return True
+    return True
 
-    if showlang != "de" and containsAtLeastOneWord(name, ["german","videoman"]):
-            logger.log(u"Ignoring " + name + " based on show language words filter 'de'",
-                       logger.INFO)
-            return True
-
-    return False
 
 
 def filterBadReleases(name, parse=True):
