@@ -29,7 +29,9 @@
 #set $sql_statement += ' AND ((airdate <= ' + $today + ' AND (status = ' + str($SKIPPED) + ' OR status = ' + str($WANTED) + ' OR status = ' + str($FAILED) + ')) '
 #set $sql_statement += ' OR (status IN ' + status_quality + ') OR (status IN ' + status_download + '))) AS ep_total, '
 
-#set $sql_statement += ' (SELECT airdate FROM tv_episodes WHERE showid=tv_eps.showid AND airdate >= ' + $today + ' AND (status = ' + str($UNAIRED) + ' OR status = ' + str($WANTED) + ') ORDER BY airdate ASC LIMIT 1) AS ep_airs_next '
+#set $sql_statement += ' (SELECT airdate FROM tv_episodes WHERE showid=tv_eps.showid AND airdate >= ' + $today + ' AND (status = ' + str($UNAIRED) + ' OR status = ' + str($WANTED) + ') ORDER BY airdate ASC LIMIT 1) AS ep_airs_next, '
+
+#set $sql_statement += ' (SELECT airdate FROM tv_episodes WHERE showid=tv_eps.showid AND airdate <> 1 AND status <> ' + str($UNAIRED) + ' ORDER BY airdate DESC LIMIT 1) AS ep_airs_prev '
 #set $sql_statement += ' FROM tv_episodes tv_eps GROUP BY showid'
 
 #set $sql_result = $myDB.select($sql_statement)
@@ -89,10 +91,11 @@
         sortList: [[5,1],[1,0]],
         textExtraction: {
 			0: function(node) { return \$(node).find("span").text().toLowerCase(); },
-			2: function(node) { return \$(node).find("span").prop("title").toLowerCase(); },
-			3: function(node) { return \$(node).find("span").text().toLowerCase(); },
-			4: function(node) { return \$(node).find("span").text(); },
-			5: function(node) { return \$(node).find("img").attr("alt"); }
+			1: function(node) { return \$(node).find("span").text().toLowerCase(); },
+			3: function(node) { return \$(node).find("span").prop("title").toLowerCase(); },
+			4: function(node) { return \$(node).find("span").text().toLowerCase(); },
+			5: function(node) { return \$(node).find("span").text(); },
+			6: function(node) { return \$(node).find("img").attr("alt"); }
         },
         widgets: ['saveSort', 'zebra', 'stickyHeaders', 'filter'],
         headers: {
@@ -281,6 +284,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 #for $curShow in $myShowList:
 
     #set $cur_airs_next = ''
+    #set $cur_airs_prev = ''
     #set $cur_snatched = 0
     #set $cur_downloaded = 0
     #set $cur_total = 0
@@ -296,7 +300,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 
     #if $curShow.indexerid in $show_stat:
         #set $cur_airs_next = $show_stat[$curShow.indexerid]['ep_airs_next']
-
+        #set $cur_airs_prev = $show_stat[$curShow.indexerid]['ep_airs_prev']
         #set $cur_snatched = $show_stat[$curShow.indexerid]['ep_snatched']
         #if not $cur_snatched:
             #set $cur_snatched = 0
@@ -405,7 +409,24 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
     $output_html
 #end if
         </div>
-
+		
+		<div class="show-date2">
+#if $cur_airs_prev
+    #set $mdatetime = $sbdatetime.sbdatetime.convert_to_setting($network_timezones.parse_date_time($cur_airs_prev,$curShow.airs,$curShow.network))
+			<span class="${fuzzydate}">$sbdatetime.sbdatetime.sbfdate($mdatetime)</span>
+#else
+    #set $output_html = '?'
+    #if None is not $display_status
+        #if 'nded' not in $display_status and 1 == int($curShow.paused)
+            #set $output_html = 'Paused'
+        #else if $display_status
+            #set $output_html = $display_status
+        #end if
+    #end if
+    $output_html
+#end if
+        </div>
+		
 		<table width="100%" cellspacing="1" border="0" cellpadding="0">
 			<tr>
 				<td class="show-table">
@@ -449,6 +470,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
     <thead>
 		<tr>
 			<th class="nowrap">Next Ep</th>
+			<th class="nowrap">Prev Ep</th>
 			<th>Show</th>
 			<th>Network</th>
 			<th>Quality</th>
@@ -494,6 +516,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 #for $curShow in $myShowList:
 
     #set $cur_airs_next = ''
+    #set $cur_airs_prev = ''
     #set $cur_snatched = 0
     #set $cur_downloaded = 0
     #set $cur_total = 0
@@ -501,6 +524,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 
     #if $curShow.indexerid in $show_stat:
         #set $cur_airs_next = $show_stat[$curShow.indexerid]['ep_airs_next']
+        #set $cur_airs_prev = $show_stat[$curShow.indexerid]['ep_airs_prev']
 
         #set $cur_snatched = $show_stat[$curShow.indexerid]['ep_snatched']
         #if not $cur_snatched:
@@ -551,6 +575,13 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 		  Invalid date
 		#end try
 		</div><span class="sort_data">$calendar.timegm($ldatetime.timetuple())</span></td>
+    #else:
+    	<td align="center" class="nowrap"></td>
+    #end if
+	
+	#if $cur_airs_prev
+    #set $mdatetime = $sbdatetime.sbdatetime.convert_to_setting($network_timezones.parse_date_time($cur_airs_prev,$curShow.airs,$curShow.network))
+		<td align="center" class="nowrap"><div class="${fuzzydate}">$sbdatetime.sbdatetime.sbfdate($mdatetime)</div><span class="sort_data">$time.mktime($mdatetime.timetuple())</span></td>
     #else:
     	<td align="center" class="nowrap"></td>
     #end if
