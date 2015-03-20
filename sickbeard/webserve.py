@@ -1074,10 +1074,10 @@ class Home(WebRoot):
         return self.redirect('/home/')
 
     def update(self, pid=None):
-        
+
         if str(pid) != str(sickbeard.PID):
             return self.redirect('/home/')
-            
+
         checkversion = CheckVersion()
         backup = checkversion._runbackup()
 
@@ -1086,7 +1086,7 @@ class Home(WebRoot):
             if sickbeard.versionCheckScheduler.action.update():
                 # do a hard restart
                 sickbeard.events.put(sickbeard.events.SystemEvent.RESTART)
-            
+
                 t = PageTemplate(rh=self, file="restart.tmpl")
                 return t.respond()
             else:
@@ -1456,9 +1456,9 @@ class Home(WebRoot):
             showObj.subtitles = subtitles
             showObj.air_by_date = air_by_date
             showObj.default_ep_status = int(defaultEpStatus)
+            showObj.lang = indexer_lang
 
             if not directCall:
-                showObj.lang = indexer_lang
                 showObj.dvdorder = dvdorder
                 showObj.rls_ignore_words = rls_ignore_words.strip()
                 showObj.rls_require_words = rls_require_words.strip()
@@ -1707,11 +1707,11 @@ class Home(WebRoot):
                             u"Refusing to change status of " + curEp + " to FAILED because it's not SNATCHED/DOWNLOADED",
                             logger.ERROR)
                         continue
-                    
+
                     if epObj.status in Quality.DOWNLOADED and int(status) == WANTED:
                         logger.log(u"Removing release_name for episode as you want to set a downloaded episode back to wanted, so obviously you want it replaced")
                         epObj.release_name = ""
-                        
+
                     epObj.status = int(status)
 
                     # mass add to database
@@ -1754,7 +1754,7 @@ class Home(WebRoot):
                 ui.notifications.message("Backlog started", msg)
         elif int(status) == WANTED and showObj.paused:
             logger.log(u"Some episodes were set to wanted, but " + showObj.name + " is paused. Not adding to Backlog until show is unpaused")
-            
+
         if int(status) == FAILED:
             msg = "Retrying Search was automatically started for the following season of <b>" + showObj.name + "</b>:<br />"
             msg += '<ul>'
@@ -2115,12 +2115,12 @@ class HomePostProcess(Home):
             is_priority = True
         else:
             is_priority = False
-            
+
         if delete_on in ["on", "1"]:
             delete_on = True
         else:
             delete_on = False
-            
+
         if not dir:
             return self.redirect("/home/postprocess/")
         else:
@@ -2410,7 +2410,7 @@ class HomeAddShows(Home):
                                                    [tvdb_id, tvrage_id]):
                         if show['show']['ids']['tvdb'] not in (lshow['show']['ids']['tvdb'] for lshow in library_shows):
                             if not_liked_show:
-                                if show['show']['ids']['tvdb'] not in (show['show']['ids']['tvdb'] for show in not_liked_show if show['type'] == 'show'):	
+                                if show['show']['ids']['tvdb'] not in (show['show']['ids']['tvdb'] for show in not_liked_show if show['type'] == 'show'):
                                     t.trending_shows += [show]
                 except exceptions.MultipleShowObjectsException:
                     continue
@@ -3107,7 +3107,7 @@ class Manage(Home, WebRoot):
 
     def massEditSubmit(self, archive_firstmatch=None, paused=None, default_ep_status=None,
                        anime=None, sports=None, scene=None, flatten_folders=None, quality_preset=False,
-                       subtitles=None, air_by_date=None, anyQualities=[], bestQualities=[], toEdit=None, *args,
+                       subtitles=None, air_by_date=None, anyQualities=[], bestQualities=[], toEdit=None, indexerLang=None,*args,
                        **kwargs):
 
         dir_map = {}
@@ -3134,6 +3134,11 @@ class Manage(Home, WebRoot):
                     u"For show " + showObj.name + " changing dir from " + showObj._location + " to " + new_show_dir)
             else:
                 new_show_dir = showObj._location
+
+            if indexerLang and indexerLang in sickbeard.indexerApi(showObj.indexer).indexer().config['valid_languages']:
+                indexer_lang = indexerLang
+            else:
+                indexer_lang = showObj.lang
 
             if archive_firstmatch == 'keep':
                 new_archive_firstmatch = showObj.archive_firstmatch
@@ -3202,7 +3207,7 @@ class Manage(Home, WebRoot):
                                        paused=new_paused, sports=new_sports,
                                        subtitles=new_subtitles, anime=new_anime,
                                        scene=new_scene, air_by_date=new_air_by_date,
-                                       directCall=True)
+                                       indexerLang=indexer_lang, directCall=True)
 
             if curErrors:
                 logger.log(u"Errors: " + str(curErrors), logger.ERROR)
@@ -4893,15 +4898,15 @@ class ErrorLogs(WebRoot):
         return self.redirect("/errorlogs/")
 
     def viewlog(self, minLevel=logger.INFO, logFilter="<NONE>",logSearch=None, maxLines=500):
-        
+
         def Get_Data(Levelmin, data_in, lines_in, regex, Filter, Search, mlines):
-            
+
             lastLine = False
             numLines = lines_in
             numToShow = min(maxLines, numLines + len(data_in))
-            
-            finalData = [] 
-            
+
+            finalData = []
+
             for x in reversed(data_in):
 
                 x = ek.ss(x)
@@ -4930,13 +4935,13 @@ class ErrorLogs(WebRoot):
                     finalData.append("AA" + x)
                     numLines += 1
 
-                
+
 
                 if numLines >= numToShow:
                     return finalData
-                
+
             return finalData
-            
+
         t = PageTemplate(rh=self, file="viewlogs.tmpl")
         t.submenu = self.ErrorLogsMenu()
 
@@ -4964,21 +4969,21 @@ class ErrorLogs(WebRoot):
             logFilter = '<NONE>'
 
         regex = "^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d):(\d\d)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$"
-        
+
         data = []
-        
+
         if os.path.isfile(logger.logFile):
             with ek.ek(codecs.open, *[logger.logFile, 'r', 'utf-8']) as f:
                 data = Get_Data(minLevel, f.readlines(), 0, regex, logFilter, logSearch, maxLines)
-                
+
         for i in range (1 , int(sickbeard.LOG_NR)):
             if os.path.isfile(logger.logFile + "." + str(i)) and (len(data) <= maxLines):
                 with ek.ek(codecs.open, *[logger.logFile + "." + str(i), 'r', 'utf-8']) as f:
                         data += Get_Data(minLevel, f.readlines(), len(data), regex, logFilter, logSearch, maxLines)
 
-        
 
-               
+
+
 
         result = "".join(data)
 

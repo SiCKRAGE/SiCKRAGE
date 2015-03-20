@@ -18,6 +18,7 @@
 #set $anyQualities, $bestQualities = $common.Quality.splitQuality($initial_quality)
 <script type="text/javascript" src="$sbRoot/js/qualityChooser.js?$sbPID"></script>
 <script type="text/javascript" src="$sbRoot/js/massEdit.js?$sbPID"></script>
+<script type="text/javascript" src="$sbRoot/js/lib/bootstrap-formhelpers.min-2.3.0.js?$sbPID"></script>
 
 <form action="massEditSubmit" method="post">
 <input type="hidden" name="toEdit" value="$showList" />
@@ -37,7 +38,16 @@
 
 </div>
 
-<div class="optionWrapper">
+
+<div class="optionWrapper clearfix">
+    <span class="selectTitle">Show Language <b>*</b></span>
+    <div class="selectChoices">
+        <select name="indexerLang" id="indexerLangSelect" class="form-control form-control-inline input-sm bfh-languages" data-language="" data-available="#echo ','.join($sickbeard.indexerApi().config['valid_languages'])#">
+        </select>
+    </div>
+</div>
+
+<div class="optionWrapper clearfix">
 <span class="selectTitle">Quality</span>
     <div class="selectChoices">
         <select id="qualityPreset" name="quality_preset" class="form-control form-control-inline input-sm">
