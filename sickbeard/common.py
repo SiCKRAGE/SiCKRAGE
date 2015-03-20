@@ -29,7 +29,7 @@ mediaExtensions = ['avi', 'mkv', 'mpg', 'mpeg', 'wmv',
                    'ogm', 'mp4', 'iso', 'img', 'divx',
                    'm2ts', 'm4v', 'ts', 'flv', 'f4v',
                    'mov', 'rmvb', 'vob', 'dvr-ms', 'wtv',
-                   'ogv', '3gp', 'webm']
+                   'ogv', '3gp', 'webm', 'tp']
 
 subtitleExtensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
 
@@ -216,8 +216,7 @@ class Quality:
             return Quality.SDTV
         elif checkName(["(dvdrip|ituneshd|blurayrip|b[r|d](rip)?)(.ws)?.(xvid|divx|x264)"], any) and not checkName(["(720|1080)[pi]"], all):
             return Quality.SDDVD
-        elif checkName(["720p", "hdtv", "x264"], all) or checkName(["hr.ws.pdtv.x264"], any) and not checkName(
-                ["(1080)[pi]"], all) or checkName(["videomann", "720p"], all):
+        elif checkName(["720p", "hdtv", "x264"], all) or checkName(["hr.ws.pdtv.x264"], any) and not checkName(["(1080)[pi]"], all) or checkName(["videomann", "720p"], all):
             return Quality.HDTV
         elif checkName(["720p|1080i", "hdtv", "mpeg-?2"], all) or checkName(["1080[pi].hdtv", "h.?264"], all):
             return Quality.RAWHDTV
