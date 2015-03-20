@@ -3640,7 +3640,7 @@ class ConfigGeneral(Config):
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
                     handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
                     proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, git_remote=None,
-                    calendar_unprotected=None,
+                    calendar_unprotected=None, no_restart=None,
                     display_filesize=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, play_videos=None, download_url=None, rootDir=None, theme_name=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None):
@@ -3676,6 +3676,7 @@ class ConfigGeneral(Config):
         sickbeard.GIT_PATH = git_path
         sickbeard.GIT_REMOTE = git_remote
         sickbeard.CALENDAR_UNPROTECTED = config.checkbox_to_value(calendar_unprotected)
+        sickbeard.NO_RESTART = config.checkbox_to_value(no_restart)
         # sickbeard.LOG_DIR is set in config.change_LOG_DIR()
 
         sickbeard.WEB_PORT = config.to_int(web_port)
@@ -3915,7 +3916,7 @@ class ConfigPostProcessing(Config):
                            kodi_data=None, kodi_12plus_data=None, mediabrowser_data=None, sony_ps3_data=None,
                            wdtv_data=None, tivo_data=None, mede8er_data=None,
                            keep_processed_dir=None, process_method=None, del_rar_contents=None, process_automatically=None,
-                           rename_episodes=None, airdate_episodes=None, unpack=None,
+                           no_delete=None, rename_episodes=None, airdate_episodes=None, unpack=None,
                            move_associated_files=None, sync_files=None, postpone_if_sync_files=None, nfo_rename=None,
                            tv_download_dir=None, naming_custom_abd=None,
                            naming_anime=None,
@@ -3955,7 +3956,7 @@ class ConfigPostProcessing(Config):
                 results.append("Unpacking Not Supported, disabling unpack setting")
         else:
             sickbeard.UNPACK = config.checkbox_to_value(unpack)
-
+        sickbeard.NO_DELETE = config.checkbox_to_value(no_delete)
         sickbeard.KEEP_PROCESSED_DIR = config.checkbox_to_value(keep_processed_dir)
         sickbeard.PROCESS_METHOD = process_method
         sickbeard.DELRARCONTENTS = config.checkbox_to_value(del_rar_contents)
