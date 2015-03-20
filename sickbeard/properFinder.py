@@ -44,6 +44,7 @@ class ProperFinder():
 
         if not sickbeard.DOWNLOAD_PROPERS:
             logger.log(u"Download propers are disabled. Can't start the search.")
+            ui.notifications.message('Find propers is disabled')
             return
 
         logger.log(u"Beginning the search for new propers")
