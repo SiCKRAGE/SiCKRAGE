@@ -69,16 +69,17 @@ class DBConnection(object):
             else:
                 self.connection.row_factory = sqlite3.Row
         except Exception as e:
-            logger.log(u"DB error: " + ex(e), logger.ERROR)
-            raise
+            logger.log(u"DB error: " + repr(e), logger.ERROR)
 
     def _execute(self, query, args):
         try:
             if not args:
                 return self.connection.cursor().execute(query)
             return self.connection.cursor().execute(query, args)
+        except sqlite3.OperationalError:
+            logger.log(u"Please check your database write permission. It's read only, logger.ERROR)
         except Exception as e:
-            raise
+            logger.log(u"DB error: " + repr(e), logger.ERROR)
 
     def execute(self, query, args=None, fetchall=False, fetchone=False):
         try:
@@ -89,7 +90,7 @@ class DBConnection(object):
             else:
                 return self._execute(query, args)
         except Exception as e:
-            raise
+            logger.log(u"DB error: " + repr(e), logger.ERROR)
 
     def checkDBVersion(self):
 
@@ -139,14 +140,12 @@ class DBConnection(object):
                         attempt += 1
                         time.sleep(1)
                     else:
-                        logger.log(u"DB error: " + ex(e), logger.ERROR)
-                        raise
+                        logger.log(u"DB error: " + repr(e), logger.ERROR)
                 except sqlite3.DatabaseError, e:
                     sqlResult = []
                     if self.connection:
                         self.connection.rollback()
-                    logger.log(u"Fatal error executing query: " + ex(e), logger.ERROR)
-                    raise
+                    logger.log(u"Fatal error executing query: " + repr(e), logger.ERROR)
 
             #time.sleep(0.02)
 
@@ -173,15 +172,13 @@ class DBConnection(object):
                     break
                 except sqlite3.OperationalError, e:
                     if "unable to open database file" in e.args[0] or "database is locked" in e.args[0]:
-                        logger.log(u"DB error: " + ex(e), logger.WARNING)
+                        logger.log(u"DB error: " + repr(e), logger.WARNING)
                         attempt += 1
                         time.sleep(1)
                     else:
-                        logger.log(u"DB error: " + ex(e), logger.ERROR)
-                        raise
+                        logger.log(u"DB error: " + repr(e), logger.ERROR)
                 except sqlite3.DatabaseError, e:
-                    logger.log(u"Fatal error executing query: " + ex(e), logger.ERROR)
-                    raise
+                    logger.log(u"Fatal error executing query: " + repr(e), logger.ERROR)
 
             #time.sleep(0.02)
 
@@ -309,8 +306,7 @@ def _processUpgrade(connection, upgradeClass):
                         restored = True
 
                 if not restored:
-                    print "Error in " + str(upgradeClass.__name__) + ": " + ex(e)
-                    raise
+                    print "Error in " + str(upgradeClass.__name__) + ": " + repr(e)
         logger.log(upgradeClass.__name__ + " upgrade completed", logger.DEBUG)
     else:
         logger.log(upgradeClass.__name__ + " upgrade not required", logger.DEBUG)
