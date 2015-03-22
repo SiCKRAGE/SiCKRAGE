@@ -38,7 +38,7 @@ resultFilters = ["sub(bed|ed|pack|s)", "(dk|fin|heb|kor|nor|nordic|pl|swe)sub(be
                  "dub(bed)?"]
 
 languageMap = {
-    "de": ["german","videoman"],
+    "de": ["german","videomann"],
     "fr": ["french"]
 }
 
