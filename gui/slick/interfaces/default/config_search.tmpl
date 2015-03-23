@@ -81,10 +81,26 @@
 							<label>
 								<span class="component-title">Backlog search day(s)</span>
 								<span class="component-desc">
+#from sickbeard import db
+#import datetime
+#set $myDB = $db.DBConnection()
+#set sql_statement = ' SELECT min(tv_episodes.airdate) AS airdate FROM tv_episodes'
+#set sql_statement += ' JOIN tv_shows ON tv_episodes.showid = tv_shows.indexer_id'
+#set sql_statement += ' WHERE tv_episodes.airdate <>1 AND tv_episodes.status = 3 '
+#set sql_statement += ' AND tv_shows.paused = 0 LIMIT 1'
+#set $sql_result = $myDB.select($sql_statement)
+#for $row in $sql_result
+  #set $oldest = datetime.date.fromordinal(int($row['airdate']))
+  #set $oldest_days = (datetime.date.today() - $oldest).days
+#end for
 									<input type="text" name="backlog_days" value="$sickbeard.BACKLOG_DAYS" class="form-control input-sm input75" />
-									<p>number of day(s) that the search will cover (e.g. 7)</p>
 								</span>
 							</label>
+#if $sickbeard.BACKLOG_DAYS <= $oldest_days
+								<span class="component-title">&nbsp;</span>
+								<span class="component-desc"><b><font color="red">WARNING:</font></b> Your oldest WANTED episode was aired in $oldest.</span>
+								<span class="component-desc">To keep backlog searching for this episode please set to a value greater than:</span> <span class="component-desc"><b>$oldest_days days</b>.</span>
+#end if
 						</div>
 
 						<div class="field-pair">
