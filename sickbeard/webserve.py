@@ -1885,7 +1885,7 @@ class Home(WebRoot):
 
         return self.redirect("/home/displayShow?show=" + show)
 
-    def searchEpisode(self, show=None, season=None, episode=None):
+    def searchEpisode(self, show=None, season=None, episode=None, downCurQuality=0):
 
         # retrieve the episode object and fail if we can't get one
         ep_obj = self._getEpisode(show, season, episode)
@@ -1893,7 +1893,7 @@ class Home(WebRoot):
             return json.dumps({'result': 'failure'})
 
         # make a queue item for it and put it on the queue
-        ep_queue_item = search_queue.ManualSearchQueueItem(ep_obj.show, ep_obj)
+        ep_queue_item = search_queue.ManualSearchQueueItem(ep_obj.show, ep_obj, bool(int(downCurQuality)))
 
         sickbeard.searchQueueScheduler.action.add_item(ep_queue_item)
 
@@ -1908,13 +1908,14 @@ class Home(WebRoot):
     ### Returns the current ep_queue_item status for the current viewed show.
     # Possible status: Downloaded, Snatched, etc...
     # Returns {'show': 279530, 'episodes' : ['episode' : 6, 'season' : 1, 'searchstatus' : 'queued', 'status' : 'running', 'quality': '4013']
-    def getManualSearchStatus(self, show=None, season=None):
+    def getManualSearchStatus(self, show=None):
         def getEpisodes(searchThread, searchstatus):
             results = []
             showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(searchThread.show.indexerid))
 
             if isinstance(searchThread, sickbeard.search_queue.ManualSearchQueueItem):
-                results.append({'episode': searchThread.segment.episode,
+                results.append({'show': searchThread.show.indexerid,
+                                'episode': searchThread.segment.episode,
                                 'episodeindexid': searchThread.segment.indexerid,
                                 'season': searchThread.segment.season,
                                 'searchstatus': searchstatus,
@@ -1923,7 +1924,8 @@ class Home(WebRoot):
                                 'overview': Overview.overviewStrings[showObj.getOverview(int(searchThread.segment.status or -1))]})
             else:
                 for epObj in searchThread.segment:
-                    results.append({'episode': epObj.episode,
+                    results.append({'show': epObj.show.indexerid,
+                                    'episode': epObj.episode,
                                     'episodeindexid': epObj.indexerid,
                                     'season': epObj.season,
                                     'searchstatus': searchstatus,
@@ -1934,9 +1936,6 @@ class Home(WebRoot):
             return results
 
         episodes = []
-
-        if not show and not season:
-            return json.dumps({'show': show, 'episodes': episodes})
 
         # Queued Searches
         searchstatus = 'queued'
@@ -1956,8 +1955,9 @@ class Home(WebRoot):
         # Finished Searches
         searchstatus = 'finished'
         for searchThread in sickbeard.search_queue.MANUAL_SEARCH_HISTORY:
-            if not str(searchThread.show.indexerid) == show:
-                continue
+            if show is not None:
+                if not str(searchThread.show.indexerid) == show:
+                    continue
 
             if isinstance(searchThread, sickbeard.search_queue.ManualSearchQueueItem):
                 if not [x for x in episodes if x['episodeindexid'] == searchThread.segment.indexerid]:
@@ -1967,7 +1967,7 @@ class Home(WebRoot):
                 if not [i for i, j in zip(searchThread.segment, episodes) if i.indexerid == j['episodeindexid']]:
                     episodes += getEpisodes(searchThread, searchstatus)
 
-        return json.dumps({'show': show, 'episodes': episodes})
+        return json.dumps({'episodes': episodes})
 
     def getQualityClass(self, ep_obj):
         # return the correct json value
@@ -2082,7 +2082,7 @@ class Home(WebRoot):
         return json.dumps(result)
 
 
-    def retryEpisode(self, show, season, episode):
+    def retryEpisode(self, show, season, episode, downCurQuality):
 
         # retrieve the episode object and fail if we can't get one
         ep_obj = self._getEpisode(show, season, episode)
@@ -2090,7 +2090,7 @@ class Home(WebRoot):
             return json.dumps({'result': 'failure'})
 
         # make a queue item for it and put it on the queue
-        ep_queue_item = search_queue.FailedQueueItem(ep_obj.show, [ep_obj])
+        ep_queue_item = search_queue.FailedQueueItem(ep_obj.show, [ep_obj], bool(int(downCurQuality)))
         sickbeard.searchQueueScheduler.action.add_item(ep_queue_item)
 
         if not ep_queue_item.started and ep_queue_item.success is None:
@@ -3850,6 +3850,22 @@ class ConfigSearch(Config):
         sickbeard.RANDOMIZE_PROVIDERS = config.checkbox_to_value(randomize_providers)
 
         sickbeard.DOWNLOAD_PROPERS = config.checkbox_to_value(download_propers)
+        config.change_DOWNLOAD_PROPERS(sickbeard.DOWNLOAD_PROPERS)
+
+        if sickbeard.DOWNLOAD_PROPERS and not sickbeard.properFinderScheduler.isAlive():
+            sickbeard.properFinderScheduler.silent = False
+            try:
+                sickbeard.properFinderScheduler.start()
+            except:
+                pass
+        elif not sickbeard.DOWNLOAD_PROPERS:
+            sickbeard.properFinderScheduler.stop.set()
+            sickbeard.properFinderScheduler.silent = True
+            try:
+                sickbeard.properFinderScheduler.join(5)
+            except:
+                pass
+
         sickbeard.CHECK_PROPERS_INTERVAL = check_propers_interval
 
         sickbeard.ALLOW_HIGH_PRIORITY = config.checkbox_to_value(allow_high_priority)
