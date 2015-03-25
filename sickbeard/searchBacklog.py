@@ -94,7 +94,7 @@ class BacklogSearcher:
         # go through non air-by-date shows and see if they need any episodes
         for curShow in show_list:
 
-            if sickbeard.AVAILABLE_CHECK and curShow.paused:
+            if not sickbeard.AVAILABLE_CHECK and curShow.paused:
                 continue
 
             segments = self._get_segments(curShow, fromDate)

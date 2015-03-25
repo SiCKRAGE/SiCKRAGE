@@ -366,7 +366,7 @@ class QueueItemAdd(ShowQueueItem):
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if self.show.default_ep_status == WANTED or (self.show.default_ep_status == SKIPPED and sickbeard.AVAILABLE_CHECK):
-            logger.log(u"Launching backlog for this show since its episodes are WANTED or SKIPPED")
+            logger.log(u"Launching backlog for this show since its episodes are WANTED or SKIPPED", logger.DEBUG)
             sickbeard.backlogSearchScheduler.action.searchBacklog([self.show])
 
         self.show.writeMetadata()
