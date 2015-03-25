@@ -579,7 +579,7 @@
 							<label for="proxy_indexers">
 								<span class="component-title">Use proxy for indexers</span>
 								<span class="component-desc">
-									<input type="checkbox" name="proxy_indexers" id="proxy_indexers" #if True == $sickbeard.PROXY_INDEXERS then 'checked="checked"' else ''#/>
+									<input type="checkbox" name="proxy_indexers" id="proxy_indexers" #if True == $sickbeard.PROXY_INDEXERS and True == $sickbeard.PROXY_SETTING then 'checked="checked"' else ''#/>
 									<p>use proxy host for connecting to indexers (thetvdb, tvrage)</p>
 								</span>
 							</label>
