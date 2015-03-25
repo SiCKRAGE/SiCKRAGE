@@ -1441,6 +1441,8 @@ class Home(WebRoot):
         with showObj.lock:
             newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
             if newQuality != showObj.quality:
+               myDB = db.DBConnection()
+               myDB.select('update tv_episodes set status = 5 where status in ('+','.join([str(x) for x in Quality.AVAILABLE])+')')
                do_available_search = True 
             else:
                do_available_search = False
