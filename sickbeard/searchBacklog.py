@@ -94,7 +94,7 @@ class BacklogSearcher:
         # go through non air-by-date shows and see if they need any episodes
         for curShow in show_list:
 
-            if not sickbeard.AVAILABLE_CHECK and curShow.paused:
+            if not sickbeard.EP_AVAILABILITY_CHECK and curShow.paused:
                 continue
 
             segments = self._get_segments(curShow, fromDate)
@@ -141,7 +141,7 @@ class BacklogSearcher:
 
         myDB = db.DBConnection()
         if show.air_by_date:
-            if sickbeard.AVAILABLE_CHECK:
+            if sickbeard.EP_AVAILABILITY_CHECK:
                 sqlResults = myDB.select(
                     "SELECT ep.status, ep.season, ep.episode FROM tv_episodes ep, tv_shows show WHERE season != 0 AND ep.showid = show.indexer_id AND ep.airdate > ? AND ep.showid = ? AND show.air_by_date = 1",
                     [fromDate.toordinal(), show.indexerid])
@@ -167,7 +167,7 @@ class BacklogSearcher:
 
             # if we need a better one then say yes
             if (curStatus in (common.DOWNLOADED, common.SNATCHED, common.SNATCHED_PROPER,
-                              common.SNATCHED_BEST) and curQuality < highestBestQuality) or curStatus == common.WANTED or (curStatus == common.SKIPPED and sickbeard.AVAILABLE_CHECK):
+                              common.SNATCHED_BEST) and curQuality < highestBestQuality) or curStatus == common.WANTED or (curStatus == common.SKIPPED and sickbeard.EP_AVAILABILITY_CHECK):
 
                 epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
                 if epObj.season not in wanted:

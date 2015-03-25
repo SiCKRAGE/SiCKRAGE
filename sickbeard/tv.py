@@ -1226,7 +1226,7 @@ class TVShow(object):
         logger.log(u"Existing episode status: " + str(epStatus) + " (" + epStatus_text + ")", logger.DEBUG)
 
         # if we know we don't want it then just say no
-        if sickbeard.AVAILABLE_CHECK:
+        if sickbeard.EP_AVAILABILITY_CHECK:
             if epStatus in (IGNORED, ARCHIVED) and not manualSearch:
                 logger.log(u"Existing episode status is ignored/archived, ignoring found episode", logger.DEBUG)
                 return False
@@ -1253,7 +1253,7 @@ class TVShow(object):
                            logger.DEBUG)
 
         # if we are re-downloading then we only want it if it's in our bestQualities list and better than what we have
-        if (curStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST or (curStatus == Quality.AVAILABLE and sickbeard.AVAILABLE_CHECK)) and quality in bestQualities and quality > curQuality:
+        if (curStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST or (curStatus == Quality.AVAILABLE and sickbeard.EP_AVAILABILITY_CHECK)) and quality in bestQualities and quality > curQuality:
             logger.log(u"Episode already exists but the found episode has better quality, getting found episode",
                        logger.DEBUG)
             return True

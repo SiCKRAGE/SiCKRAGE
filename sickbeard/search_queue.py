@@ -143,7 +143,7 @@ class DailySearchQueueItem(generic_queue.QueueItem):
             else:
                 for result in foundResults:
                     #snatch episode
-                    if sickbeard.AVAILABLE_CHECK:
+                    if sickbeard.EP_AVAILABILITY_CHECK:
                         snatch_result = deepcopy(result)
                         epObjList = []
                         for epObj in snatch_result.episodes:
@@ -250,7 +250,7 @@ class BacklogQueueItem(generic_queue.QueueItem):
             if searchResult:
                 for result in searchResult:
 
-                    if sickbeard.AVAILABLE_CHECK:
+                    if sickbeard.EP_AVAILABILITY_CHECK:
                         #snatch episode
                         snatch_result = deepcopy(result)
                         epObjList = []

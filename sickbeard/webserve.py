@@ -1518,7 +1518,7 @@ class Home(WebRoot):
             if not sickbeard.traktRollingScheduler.action.updateWantedList():
                 errors.append("Unable to force an update on wanted episode")
 
-        if do_available_search and sickbeard.AVAILABLE_CHECK:
+        if do_available_search and sickbeard.EP_AVAILABILITY_CHECK:
             try:
                 sickbeard.backlogSearchScheduler.action.searchBacklog([showObj]) 
                 time.sleep(cpu_presets[sickbeard.CPU_PRESET])
@@ -1702,7 +1702,7 @@ class Home(WebRoot):
                 if epObj is None:
                     return self._genericMessage("Error", "Episode couldn't be retrieved")
 
-                if int(status) in [WANTED, FAILED] or (int(status) == SKIPPED and sickbeard.AVAILABLE_CHECK):
+                if int(status) in [WANTED, FAILED] or (int(status) == SKIPPED and sickbeard.EP_AVAILABILITY_CHECK):
                     # figure out what episodes are wanted so we can backlog them
                     if epObj.season in segments:
                         segments[epObj.season].append(epObj)
@@ -1758,7 +1758,7 @@ class Home(WebRoot):
                 myDB = db.DBConnection()
                 myDB.mass_action(sql_l)
 
-        if (int(status) == WANTED and not showObj.paused) or (int(status) == SKIPPED and sickbeard.AVAILABLE_CHECK):
+        if (int(status) == WANTED and not showObj.paused) or (int(status) == SKIPPED and sickbeard.EP_AVAILABILITY_CHECK):
             msg = "Backlog was automatically started for the following seasons of <b>" + showObj.name + "</b>:<br />"
             msg += '<ul>'
 
@@ -3821,7 +3821,7 @@ class ConfigSearch(Config):
     def saveSearch(self, use_nzbs=None, use_torrents=None, nzb_dir=None, sab_username=None, sab_password=None,
                    sab_apikey=None, sab_category=None, sab_category_anime=None, sab_host=None, nzbget_username=None,
                    nzbget_password=None, nzbget_category=None, nzbget_category_anime=None, nzbget_priority=None,
-                   nzbget_host=None, nzbget_use_https=None, backlog_days=None, backlog_frequency=None, available_check=None,
+                   nzbget_host=None, nzbget_use_https=None, backlog_days=None, backlog_frequency=None, ep_availability_check=None,
                    dailysearch_frequency=None, nzb_method=None, torrent_method=None, usenet_retention=None,
                    download_propers=None, check_propers_interval=None, allow_high_priority=None, sab_forced=None,
                    randomize_providers=None, backlog_startup=None, use_failed_downloads=None, delete_failed=None,
@@ -3844,7 +3844,7 @@ class ConfigSearch(Config):
         config.change_BACKLOG_FREQUENCY(backlog_frequency)
         sickbeard.BACKLOG_DAYS = config.to_int(backlog_days, default=7)
         sickbeard.COMING_EPS_MISSED_RANGE = config.to_int(coming_eps_missed_range,default=7)
-        sickbeard.AVAILABLE_CHECK = config.checkbox_to_value(available_check)
+        sickbeard.EP_AVAILABILITY_CHECK = config.checkbox_to_value(ep_availability_check)
 
         sickbeard.USE_NZBS = config.checkbox_to_value(use_nzbs)
         sickbeard.USE_TORRENTS = config.checkbox_to_value(use_torrents)
