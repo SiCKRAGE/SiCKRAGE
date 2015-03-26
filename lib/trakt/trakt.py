@@ -2,7 +2,7 @@ import requests
 import json
 from sickbeard import logger
 
-from exceptions import traktException, traktAuthException, traktServerBusy
+from exceptions import traktException, traktAuthException, traktServerBusy, traktInternalError
 
 class TraktAPI():
     def __init__(self, apikey, username=None, password=None, disable_ssl_verify=False, timeout=30):
@@ -82,6 +82,8 @@ class TraktAPI():
                 raise traktAuthException(e)
             elif code == 503:
                 raise traktServerBusy(e)
+            elif code == 500:
+                raise traktInternalError(e)
             else:
                 raise traktException(e)
 
