@@ -56,7 +56,7 @@ from lib.dateutil import tz, parser as dateutil_parser
 from lib.unrar2 import RarFile
 from lib import adba, subliminal
 from lib.trakt import TraktAPI
-from lib.trakt.exceptions import traktException, traktAuthException, traktServerBusy
+from lib.trakt.exceptions import traktException
 from versionChecker import CheckVersion
 
 try:
@@ -959,13 +959,13 @@ class Home(WebRoot):
                 "dbloc": dbloc}
 
 
-    def testTrakt(self, username=None, password=None, disable_ssl=None):
+    def testTrakt(self, username=None, password=None, disable_ssl=None, blacklist_name=None):
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         if disable_ssl == 'true':
             disable_ssl = True
         else:
             disable_ssl = False
-        return notifiers.trakt_notifier.test_notify(username, password, disable_ssl)
+        return notifiers.trakt_notifier.test_notify(username, password, disable_ssl, blacklist_name)
 
 
     def loadShowNotifyLists(self):
@@ -2365,7 +2365,7 @@ class HomeAddShows(Home):
                      None if show['first_aired'] is None else dateutil_parser.parse(show['first_aired']).strftime(sickbeard.DATE_PRESET)]
                     for show in recommendedlist if not helpers.findCertainShow(sickbeard.showList, [
                     int(show['ids'][indexers[sickbeard.TRAKT_DEFAULT_INDEXER - 1]])])))
-        except (traktException, traktAuthException, traktServerBusy) as e:
+        except traktException as e:
             logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
 
         return json.dumps({'results': final_results})
@@ -2413,8 +2413,11 @@ class HomeAddShows(Home):
         trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
         try:
-            if sickbeard.TRAKT_BLACKLIST_NAME is not None:
+            not_liked_show = ""
+            if sickbeard.TRAKT_BLACKLIST_NAME is not None and sickbeard.TRAKT_BLACKLIST_NAME:
                 not_liked_show = trakt_api.traktRequest("users/" + sickbeard.TRAKT_USERNAME + "/lists/" + sickbeard.TRAKT_BLACKLIST_NAME + "/items") or []
+            else:
+                logger.log(u"trending blacklist name is empty", logger.DEBUG)
 
             limit_show = 50 + len(not_liked_show)
 
@@ -2431,6 +2434,9 @@ class HomeAddShows(Home):
                             if not_liked_show:
                                 if show['show']['ids']['tvdb'] not in (show['show']['ids']['tvdb'] for show in not_liked_show if show['type'] == 'show'):	
                                     t.trending_shows += [show]
+                            else:
+                                t.trending_shows += [show]
+
                 except exceptions.MultipleShowObjectsException:
                     continue
 
@@ -2439,7 +2445,7 @@ class HomeAddShows(Home):
             else:
                 t.blacklist = False
 
-        except (traktException, traktAuthException, traktServerBusy) as e:
+        except traktException as e:
             logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
 
         return t.respond()
@@ -2557,7 +2563,8 @@ class HomeAddShows(Home):
 
             indexer = int(series_pieces[1])
             indexer_id = int(series_pieces[3])
-            show_name = series_pieces[4]
+            # Show name was sent in UTF-8 in the form
+            show_name = series_pieces[4].decode('utf-8')
         else:
             # if no indexer was provided use the default indexer set in General settings
             if not providedIndexer:
@@ -3650,13 +3657,12 @@ class ConfigGeneral(Config):
                     proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, git_remote=None,
                     calendar_unprotected=None, no_restart=None,
                     display_filesize=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
-                    indexer_timeout=None, play_videos=None, download_url=None, rootDir=None, theme_name=None,
+                    indexer_timeout=None, download_url=None, rootDir=None, theme_name=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None):
 
         results = []
 
         # Misc
-        sickbeard.PLAY_VIDEOS = config.checkbox_to_value(play_videos)
         sickbeard.DOWNLOAD_URL = download_url
         sickbeard.INDEXER_DEFAULT_LANGUAGE = indexerDefaultLang
         sickbeard.LAUNCH_BROWSER = config.checkbox_to_value(launch_browser)
@@ -4847,7 +4853,7 @@ class ConfigSubtitles(Config):
 
     def saveSubtitles(self, use_subtitles=None, subtitles_plugins=None, subtitles_languages=None, subtitles_dir=None,
                       service_order=None, subtitles_history=None, subtitles_finder_frequency=None,
-                      subtitles_multi=None):
+                      subtitles_multi=None, embedded_subtitles_all=None):
 
         results = []
 
@@ -4873,6 +4879,7 @@ class ConfigSubtitles(Config):
             subtitles_languages.replace(' ', '').split(','))] if subtitles_languages != '' else ''
         sickbeard.SUBTITLES_DIR = subtitles_dir
         sickbeard.SUBTITLES_HISTORY = config.checkbox_to_value(subtitles_history)
+        sickbeard.EMBEDDED_SUBTITLES_ALL = config.checkbox_to_value(embedded_subtitles_all)
         sickbeard.SUBTITLES_FINDER_FREQUENCY = config.to_int(subtitles_finder_frequency, default=1)
         sickbeard.SUBTITLES_MULTI = config.checkbox_to_value(subtitles_multi)
 
