@@ -104,12 +104,19 @@ def markAvailable (result, endStatus=AVAILABLE):
 
     # don't notify when we re-download an episode
     sql_l = []
+    status_changed = False
     for curEpObj in result.episodes:
-        with curEpObj.lock:
-            curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
-            sql_l.append(curEpObj.get_sql())
+        if Quality.splitCompositeStatus(curEpObj.status)[0] != endStatus:
+            with curEpObj.lock:
+                curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
+                sql_l.append(curEpObj.get_sql())
 
-        notifiers.notify_available(curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
+            status_changed = True
+
+            notifiers.notify_available(curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
+
+    if status_changed:
+        logger.log(u"Marking " + result.name + " from " + result.provider.name + "as available")
 
     if len(sql_l) > 0:
         myDB = db.DBConnection()
@@ -182,19 +189,22 @@ def snatchEpisode(result, endStatus=SNATCHED):
     # don't notify when we re-download an episode
     sql_l = []
     trakt_data = []
+    status_changed = False
     for curEpObj in result.episodes:
-        with curEpObj.lock:
-            if isFirstBestMatch(result):
-                curEpObj.status = Quality.compositeStatus(SNATCHED_BEST, result.quality)
-            else:
-                curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
+        if Quality.splitCompositeStatus(curEpObj.status)[0] != endStatus:
+            status_changed = True
+            with curEpObj.lock:
+                if isFirstBestMatch(result):
+                    curEpObj.status = Quality.compositeStatus(SNATCHED_BEST, result.quality)
+                else:
+                    curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
 
-            sql_l.append(curEpObj.get_sql())
+                sql_l.append(curEpObj.get_sql())
 
-        if curEpObj.status not in Quality.DOWNLOADED:
-            notifiers.notify_snatch(curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
+            if curEpObj.status not in Quality.DOWNLOADED:
+                notifiers.notify_snatch(curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
 
-            trakt_data.append((curEpObj.season, curEpObj.episode))
+                trakt_data.append((curEpObj.season, curEpObj.episode))
 
     data = notifiers.trakt_notifier.trakt_episode_data_generate(trakt_data)
 
@@ -202,6 +212,9 @@ def snatchEpisode(result, endStatus=SNATCHED):
         logger.log(u"Add episodes, showid: indexerid " + str(result.show.indexerid) + ", Title " + str(result.show.name) + " to Traktv Watchlist", logger.DEBUG)
         if data:
             notifiers.trakt_notifier.update_watchlist(result.show, data_episode=data, update="add")
+
+    if status_changed:
+        logger.log(u"Downloading " + snatch_result.name + " from " + snatch_result.provider.name)
 
     if len(sql_l) > 0:
         myDB = db.DBConnection()
@@ -411,7 +424,8 @@ def searchForNeededEpisodes():
     episodes = []
 
     for curShow in show_list:
-        episodes.extend(wantedEpisodes(curShow, fromDate))
+        if sickbeard.EP_AVAILABILITY_CHECK or not curShow.paused:
+            episodes.extend(wantedEpisodes(curShow, fromDate))
 
     providers = [x for x in sickbeard.providers.sortedProviderList(sickbeard.RANDOMIZE_PROVIDERS) if x.isActive() and x.enable_daily]
     for curProvider in providers:
