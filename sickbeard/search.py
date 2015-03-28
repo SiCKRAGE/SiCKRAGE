@@ -214,7 +214,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
             notifiers.trakt_notifier.update_watchlist(result.show, data_episode=data, update="add")
 
     if status_changed:
-        logger.log(u"Downloading " + snatch_result.name + " from " + snatch_result.provider.name)
+        logger.log(u"Downloading " + result.name + " from " + result.provider.name)
 
     if len(sql_l) > 0:
         myDB = db.DBConnection()
