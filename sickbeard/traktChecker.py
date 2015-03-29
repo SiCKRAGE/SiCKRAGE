@@ -64,20 +64,20 @@ def check_token():
     """
     Checks to see if token will be expiring soon and requests new token
     """
+    if 'token_expire' in sickbeard.TRAKT_OAUTH:
+        if ((sickbeard.TRAKT_OAUTH['token_expire'] - calendar.timegm(datetime.datetime.utcnow().timetuple())) <= 604800):
+            trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)      
+            response = trakt_api.getToken(True)
 
-    if ((sickbeard.TRAKT_OAUTH['token_expire'] - calendar.timegm(datetime.datetime.utcnow().timetuple())) <= 604800):
-        trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)      
-        response = trakt_api.getToken(True)
+            if 'access_token' in response:
+                sickbeard.TRAKT_OAUTH['access_token'] = response['access_token']
 
-        if 'access_token' in response:
-            sickbeard.TRAKT_OAUTH['access_token'] = response['access_token']
-
-        if 'refresh_token' in response:
-            sickbeard.TRAKT_OAUTH['refresh_token']  = response['refresh_token']
-            
-        if 'expires_in' in response:
-            sickbeard.TRAKT_OAUTH['token_expire'] = calendar.timegm((datetime.datetime.utcnow()+datetime.timedelta(seconds=response['expires_in'])).timetuple())
-        sickbeard.save_config()
+            if 'refresh_token' in response:
+                sickbeard.TRAKT_OAUTH['refresh_token']  = response['refresh_token']
+                
+            if 'expires_in' in response:
+                sickbeard.TRAKT_OAUTH['token_expire'] = calendar.timegm((datetime.datetime.utcnow()+datetime.timedelta(seconds=response['expires_in'])).timetuple())
+            sickbeard.save_config()
                 
 class TraktChecker():
 
