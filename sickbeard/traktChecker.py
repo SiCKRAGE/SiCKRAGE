@@ -413,13 +413,14 @@ class TraktChecker():
         else:
             watchlist = self.ShowWatchlist
 
+        trakt_id = sickbeard.indexerApi(show_obj.indexer).config['trakt_id']
         for watchlist_el in watchlist:
 
-            trakt_id = sickbeard.indexerApi(show_obj.indexer).config['trakt_id']
             if trakt_id == 'tvdb_id':
                 indexer_id = int(watchlist_el['show']['ids']["tvdb"])
             else:
-                indexer_id = int(watchlist_el['show']['ids']["tvrage"])
+                if not watchlist_el['show']['ids']["tvrage"] is None
+                    indexer_id = int(watchlist_el['show']['ids']["tvrage"])
 
             if indexer_id == show_obj.indexerid and season is None and episode is None:
                 found=True
