@@ -1009,7 +1009,7 @@ def initialize(consoleLogging=True):
         TRAKT_ROLLING_NUM_EP = check_setting_int(CFG, 'Trakt', 'trakt_rolling_num_ep', 0)
         TRAKT_ROLLING_ADD_PAUSED = check_setting_int(CFG, 'Trakt', 'trakt_rolling_add_paused', 1)
         TRAKT_ROLLING_FREQUENCY = check_setting_int(CFG, 'Trakt', 'trakt_rolling_frequency', 15)
-        TRAKT_ROLLING_DEFAULT_WATCHED_STATUS = check_setting_int(CFG, 'Trakt', 'trakt_rolling_default_watched_status', 3)
+        TRAKT_ROLLING_DEFAULT_WATCHED_STATUS = check_setting_int(CFG, 'Trakt', 'trakt_rolling_default_watched_status', 7)
 
         CheckSection(CFG, 'pyTivo')
         USE_PYTIVO = bool(check_setting_int(CFG, 'pyTivo', 'use_pytivo', 0))
