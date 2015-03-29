@@ -421,6 +421,8 @@ class TraktChecker():
             else:
                 if not watchlist_el['show']['ids']["tvrage"] is None
                     indexer_id = int(watchlist_el['show']['ids']["tvrage"])
+                else:
+                    indexer_id = 0
 
             if indexer_id == show_obj.indexerid and season is None and episode is None:
                 found=True
