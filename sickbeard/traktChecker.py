@@ -419,7 +419,7 @@ class TraktChecker():
             if trakt_id == 'tvdb_id':
                 indexer_id = int(watchlist_el['show']['ids']["tvdb"])
             else:
-                if not watchlist_el['show']['ids']["tvrage"] is None
+                if not watchlist_el['show']['ids']["tvrage"] is None:
                     indexer_id = int(watchlist_el['show']['ids']["tvrage"])
                 else:
                     indexer_id = 0
