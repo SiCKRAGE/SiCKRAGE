@@ -1386,23 +1386,33 @@
 
                         <div id="content_use_trakt">
                             <div class="field-pair">
-                                <label for="trakt_username">
-                                    <span class="component-title">Trakt username</span>
-                                    <input type="text" name="trakt_username" id="trakt_username" value="$sickbeard.TRAKT_USERNAME" class="form-control input-sm input250" />
+                                <label for="trakt_client_id">
+                                    <span class="component-title">Trakt Client ID</span>
+                                    <input type="text" name="trakt_client_id" id="trakt_client_id" value="$sickbeard.TRAKT_OAUTH['client_id']" class="form-control input-sm input250" />
                                 </label>
                                 <p>
-                                    <span class="component-desc">username of your Trakt account.</span>
+                                    <span class="component-desc">Client ID to for Trakt</span>
                                 </p>
                             </div>
                             <div class="field-pair">
-                                <label for="trakt_password">
-                                    <span class="component-title">Trakt password</span>
-                                    <input type="password" name="trakt_password" id="trakt_password" value="$sickbeard.TRAKT_PASSWORD" class="form-control input-sm input250" />
+                                <label for="trakt_client_secret">
+                                    <span class="component-title">Trakt Client Secret</span>
+                                    <input type="text" name="trakt_client_secret" id="trakt_client_secret" value="$sickbeard.TRAKT_OAUTH['client_secret']" class="form-control input-sm input250" />
                                 </label>
                                 <p>
-                                    <span class="component-desc">password of your Trakt account.</span>
+                                    <span class="component-desc">Client Secret to for Trakt</span>
                                 </p>
                             </div>
+                            <div class="field-pair">
+                                <label for="trakt_username">
+                                    <span class="component-title">Trakt Username</span>
+                                    <input type="text" name="trakt_username" id="trakt_username" value="$sickbeard.TRAKT_OAUTH['username']" class="form-control input-sm input250" />
+                                </label>
+                                <p>
+                                    <span class="component-desc">Username of your Trakt account.</span>
+                                </p>
+                            </div>
+                            <input type="button" class="btn" value="Get Authorization" id="authTrakt" />
                             <div class="field-pair">
                                 <label for="trakt_disable_ssl_verify">
                                     <span class="component-title">Disable SSL Verification:</span>

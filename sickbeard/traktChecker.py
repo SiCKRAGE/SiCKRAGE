@@ -19,6 +19,7 @@
 import os
 import traceback
 import datetime
+import calendar
 import json
 
 import sickbeard
@@ -59,11 +60,31 @@ def setEpisodeToWanted(show, s, e):
                 s) + " episode " + str(e) + " because some eps were set to wanted")
 
 
+def check_token():
+    """
+    Checks to see if token will be expiring soon and requests new token
+    """
+
+    if ((sickbeard.TRAKT_OAUTH['token_expire'] - calendar.timegm(datetime.datetime.utcnow().timetuple())) <= 604800):
+        trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)      
+        response = trakt_api.getToken(True)
+
+        if 'access_token' in response:
+            sickbeard.TRAKT_OAUTH['access_token'] = response['access_token']
+
+        if 'refresh_token' in response:
+            sickbeard.TRAKT_OAUTH['refresh_token']  = response['refresh_token']
+            
+        if 'expires_in' in response:
+            sickbeard.TRAKT_OAUTH['token_expire'] = calendar.timegm((datetime.datetime.utcnow()+datetime.timedelta(seconds=response['expires_in'])).timetuple())
+        sickbeard.save_config()
+                
 class TraktChecker():
 
     def __init__(self):
         self.todoWanted = []
-        self.trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+        check_token()
+        self.trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
         self.todoBacklog = []
         self.ShowWatchlist = []
         self.EpisodeWatchlist = []
@@ -119,6 +140,7 @@ class TraktChecker():
             self.addShowToTraktLibrary(myShow)
 
     def removeShowFromTraktLibrary(self, show_obj):
+
         if self.findShow(show_obj.indexer, show_obj.indexerid):
             trakt_id = sickbeard.indexerApi(show_obj.indexer).config['trakt_id']
 
@@ -411,7 +433,8 @@ class TraktChecker():
 class TraktRolling():
 
     def __init__(self):
-        self.trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+        check_token()
+        self.trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
         self.EpisodeWatched = []
 
     def run(self, force=False):
