@@ -90,8 +90,8 @@ class DailySearcher():
                     ep.status = common.SKIPPED
                 else:
                     myDB = db.DBConnection()
-                    sql_selection="SELECT show_name, indexer_id, season, episode, paused FROM (SELECT * FROM tv_shows s,tv_episodes e WHERE s.indexer_id = e.showid) T1 WHERE T1.paused = 0 and T1.episode_id IN (SELECT T2.episode_id FROM tv_episodes T2 WHERE T2.showid = T1.indexer_id and T2.status in (?) ORDER BY T2.season,T2.episode LIMIT 1) and airdate is not null and indexer_id = ? ORDER BY T1.show_name,season,episode"
-                    results = myDB.select(sql_selection, [common.SKIPPED, sqlEp["showid"]])
+                    sql_selection="SELECT show_name, indexer_id, season, episode, paused FROM (SELECT * FROM tv_shows s,tv_episodes e WHERE s.indexer_id = e.showid) T1 WHERE T1.paused = 0 and T1.episode_id IN (SELECT T2.episode_id FROM tv_episodes T2 WHERE T2.showid = T1.indexer_id and T2.status in (" + ",".join([str(x) for x in Quality.AVAILABLE + [SKIPPED]]) + ") ORDER BY T2.season,T2.episode LIMIT 1) and airdate is not null and indexer_id = ? ORDER BY T1.show_name,season,episode"
+                    results = myDB.select(sql_selection, [sqlEp["showid"]])
                     if not sickbeard.TRAKT_USE_ROLLING_DOWNLOAD:
                         if ep.season == 0: 
                             logger.log(u"New episode " + ep.prettyName() + " airs today, setting status to SKIPPED, due to trakt integration")

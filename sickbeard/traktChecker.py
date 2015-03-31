@@ -43,7 +43,7 @@ def setEpisodeToWanted(show, s, e):
     if epObj:
 
         with epObj.lock:
-            if epObj.status != SKIPPED or epObj.airdate == datetime.date.fromordinal(1):
+            if epObj.status not in [SKIPPED] + Quality.AVAILABLE or epObj.airdate == datetime.date.fromordinal(1):
                 return
 
             logger.log(u"Setting episode s" + str(s) + "e" + str(e) + " of show " + show.name + " to wanted")
@@ -463,7 +463,7 @@ class TraktRolling():
 
         myDB = db.DBConnection()
 
-        sql_selection="SELECT indexer, indexer_id, imdb_id, show_name, season, episode, paused FROM (SELECT * FROM tv_shows s,tv_episodes e WHERE s.indexer_id = e.showid) T1 WHERE T1.episode_id IN (SELECT T2.episode_id FROM tv_episodes T2 WHERE T2.showid = T1.indexer_id and T2.status in (?) and T2.season!=0 and airdate is not null ORDER BY T2.season,T2.episode LIMIT 1)"
+        sql_selection="SELECT indexer, indexer_id, imdb_id, show_name, season, episode, paused FROM (SELECT * FROM tv_shows s,tv_episodes e WHERE s.indexer_id = e.showid) T1 WHERE T1.episode_id IN (SELECT T2.episode_id FROM tv_episodes T2 WHERE T2.showid = T1.indexer_id and T2.status in (" + ",".join([str(x) for x in Quality.AVAILABLE + [SKIPPED]]) + ") and T2.season!=0 and airdate is not null ORDER BY T2.season,T2.episode LIMIT 1)"
 
         if indexer_id is not None:
             sql_selection=sql_selection + " and indexer_id = " + str(indexer_id)
@@ -472,7 +472,7 @@ class TraktRolling():
 
 	    sql_selection=sql_selection + " ORDER BY T1.show_name,season,episode"
 
-        results = myDB.select(sql_selection,[SKIPPED])
+        results = myDB.select(sql_selection)
 
         for cur_result in results:
 
@@ -493,7 +493,7 @@ class TraktRolling():
                 logger.log(u"Could not connect to trakt service, cannot download last season for show", logger.ERROR)
                 return False
 
-            logger.log(u"indexer_id: " + str(indexer_id) + ", Show: " + show_name + " - First skipped Episode: Season " + str(sn_sb) + ", Episode " + str(ep_sb), logger.DEBUG)
+            logger.log(u"indexer_id: " + str(indexer_id) + ", Show: " + show_name + " - First skipped/available Episode: Season " + str(sn_sb) + ", Episode " + str(ep_sb), logger.DEBUG)
 
             if imdb_id not in (show['show']['ids']['imdb'] for show in self.EpisodeWatched):
                 logger.log(u"Show not founded in Watched list", logger.DEBUG)
