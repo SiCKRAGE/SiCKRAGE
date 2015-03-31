@@ -17,6 +17,8 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 import sickbeard
+import datetime
+import calendar
 from sickbeard import logger
 from sickbeard.exceptions import ex
 from lib.trakt import TraktAPI
@@ -45,9 +47,9 @@ class TraktNotifier:
 
         ep_obj: The TVEpisode object to add to trakt
         """
-
+        self.check_token()
         trakt_id = sickbeard.indexerApi(ep_obj.show.indexer).config['trakt_id']
-        trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+        trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
         if sickbeard.USE_TRAKT:
             try:
@@ -113,8 +115,8 @@ class TraktNotifier:
         data_episode: structured object of episodes traktv type
         update: type o action add or remove
         """
-
-        trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD)
+        self.check_token()
+        trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
         if sickbeard.USE_TRAKT:
 
@@ -219,7 +221,26 @@ class TraktNotifier:
 
         return post_data
 
-    def test_notify(self, username, password, disable_ssl, blacklist_name=None):
+    def check_token(self):
+        """
+        Checks to see if token will be expiring soon and requests new token
+        """
+        if 'token_expire' in sickbeard.TRAKT_OAUTH:
+            if ((sickbeard.TRAKT_OAUTH['token_expire'] - calendar.timegm(datetime.datetime.utcnow().timetuple())) <= 604800):
+                trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)      
+                response = trakt_api.getToken(True)
+
+                if 'access_token' in response:
+                    sickbeard.TRAKT_OAUTH['access_token'] = response['access_token']
+
+                if 'refresh_token' in response:
+                    sickbeard.TRAKT_OAUTH['refresh_token']  = response['refresh_token']
+                    
+                if 'expires_in' in response:
+                    sickbeard.TRAKT_OAUTH['token_expire'] = calendar.timegm((datetime.datetime.utcnow()+datetime.timedelta(seconds=response['expires_in'])).timetuple())
+                sickbeard.save_config()
+                
+    def test_notify(self, disable_ssl, blacklist_name=None):
         """
         Sends a test notification to trakt with the given authentication info and returns a boolean
         representing success.
@@ -231,11 +252,12 @@ class TraktNotifier:
 
         Returns: True if the request succeeded, False otherwise
         """
+        self.check_token()
         try:
-            trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, username, password, disable_ssl, sickbeard.TRAKT_TIMEOUT)
-            trakt_api.validateAccount()
+            trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, disable_ssl, sickbeard.TRAKT_TIMEOUT)
+#            trakt_api.validateAccount()
             if blacklist_name and blacklist_name is not None:
-                trakt_lists = trakt_api.traktRequest("users/" + username + "/lists")
+                trakt_lists = trakt_api.traktRequest("users/" + sickbeard.TRAKT_OAUTH['username'] + "/lists")
                 found = False
                 for trakt_list in trakt_lists:
                     if (trakt_list['ids']['slug'] == blacklist_name):

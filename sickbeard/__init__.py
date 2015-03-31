@@ -55,6 +55,11 @@ from sickbeard.common import SD, SKIPPED, NAMING_REPEAT
 from sickbeard.databases import mainDB, cache_db, failed_db
 from sickbeard.helpers import ex
 
+try:
+    import json
+except ImportError:
+    from lib import simplejson as json
+    
 from lib.configobj import ConfigObj
 
 from lib import requests
@@ -411,8 +416,6 @@ SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD = False
 SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = False
 
 USE_TRAKT = False
-TRAKT_USERNAME = None
-TRAKT_PASSWORD = None
 TRAKT_REMOVE_WATCHLIST = False
 TRAKT_REMOVE_SERIESLIST = False
 TRAKT_SYNC_WATCHLIST = False
@@ -429,6 +432,7 @@ TRAKT_ROLLING_NUM_EP = 0
 TRAKT_ROLLING_ADD_PAUSED = 1
 TRAKT_ROLLING_FREQUENCY = 15
 TRAKT_ROLLING_DEFAULT_WATCHED_STATUS = 7
+TRAKT_OAUTH = json.loads("{}")
 
 USE_PYTIVO = False
 PYTIVO_NOTIFY_ONSNATCH = False
@@ -513,7 +517,6 @@ CALENDAR_UNPROTECTED = False
 NO_RESTART = False
 
 TMDB_API_KEY = 'edc5f123313769de83a71e157758030b'
-TRAKT_API_KEY = 'd4161a7a106424551add171e5470112e4afdaf2438e6ef2fe0548edc75924868'
 FANART_API_KEY = '9b3afaf26f6241bdb57d6cc6bd798da7'
 
 __INITIALIZED__ = False
@@ -534,7 +537,7 @@ def initialize(consoleLogging=True):
             TORRENT_USERNAME, TORRENT_PASSWORD, TORRENT_HOST, TORRENT_PATH, TORRENT_SEED_TIME, TORRENT_PAUSED, TORRENT_HIGH_BANDWIDTH, TORRENT_LABEL, TORRENT_LABEL_ANIME, TORRENT_VERIFY_CERT, TORRENT_RPCURL, TORRENT_AUTH_TYPE, \
             USE_KODI, KODI_ALWAYS_ON, KODI_NOTIFY_ONSNATCH, KODI_NOTIFY_ONDOWNLOAD, KODI_NOTIFY_ONSUBTITLEDOWNLOAD, KODI_UPDATE_FULL, KODI_UPDATE_ONLYFIRST, \
             KODI_UPDATE_LIBRARY, KODI_HOST, KODI_USERNAME, KODI_PASSWORD, BACKLOG_FREQUENCY, \
-            USE_TRAKT, TRAKT_USERNAME, TRAKT_PASSWORD, TRAKT_REMOVE_WATCHLIST, TRAKT_SYNC_WATCHLIST, TRAKT_METHOD_ADD, TRAKT_START_PAUSED, traktCheckerScheduler, traktRollingScheduler, TRAKT_USE_RECOMMENDED, TRAKT_SYNC, TRAKT_DEFAULT_INDEXER, TRAKT_REMOVE_SERIESLIST, TRAKT_DISABLE_SSL_VERIFY, TRAKT_TIMEOUT, TRAKT_BLACKLIST_NAME, TRAKT_USE_ROLLING_DOWNLOAD, TRAKT_ROLLING_NUM_EP, TRAKT_ROLLING_ADD_PAUSED, TRAKT_ROLLING_FREQUENCY, TRAKT_ROLLING_DEFAULT_WATCHED_STATUS, \
+            USE_TRAKT, TRAKT_REMOVE_WATCHLIST, TRAKT_SYNC_WATCHLIST, TRAKT_METHOD_ADD, TRAKT_START_PAUSED, traktCheckerScheduler, traktRollingScheduler, TRAKT_USE_RECOMMENDED, TRAKT_SYNC, TRAKT_DEFAULT_INDEXER, TRAKT_REMOVE_SERIESLIST, TRAKT_DISABLE_SSL_VERIFY, TRAKT_TIMEOUT, TRAKT_BLACKLIST_NAME, TRAKT_USE_ROLLING_DOWNLOAD, TRAKT_ROLLING_NUM_EP, TRAKT_ROLLING_ADD_PAUSED, TRAKT_ROLLING_FREQUENCY, TRAKT_ROLLING_DEFAULT_WATCHED_STATUS, TRAKT_CLIENT_ID, TRAKT_OAUTH, \
             USE_PLEX, PLEX_NOTIFY_ONSNATCH, PLEX_NOTIFY_ONDOWNLOAD, PLEX_NOTIFY_ONSUBTITLEDOWNLOAD, PLEX_UPDATE_LIBRARY, \
             PLEX_SERVER_HOST, PLEX_SERVER_TOKEN, PLEX_HOST, PLEX_USERNAME, PLEX_PASSWORD, DEFAULT_BACKLOG_FREQUENCY, MIN_BACKLOG_FREQUENCY, BACKLOG_STARTUP, SKIP_REMOVED_FILES, \
             showUpdateScheduler, __INITIALIZED__, INDEXER_DEFAULT_LANGUAGE, LAUNCH_BROWSER, UPDATE_SHOWS_ON_START, UPDATE_SHOWS_ON_SNATCH, TRASH_REMOVE_SHOW, TRASH_ROTATE_LOGS, SORT_ARTICLE, showList, loadingShowList, \
@@ -994,8 +997,6 @@ def initialize(consoleLogging=True):
             check_setting_int(CFG, 'SynologyNotifier', 'synologynotifier_notify_onsubtitledownload', 0))
 
         USE_TRAKT = bool(check_setting_int(CFG, 'Trakt', 'use_trakt', 0))
-        TRAKT_USERNAME = check_setting_str(CFG, 'Trakt', 'trakt_username', '', censor_log=True)
-        TRAKT_PASSWORD = check_setting_str(CFG, 'Trakt', 'trakt_password', '', censor_log=True)
         TRAKT_REMOVE_WATCHLIST = bool(check_setting_int(CFG, 'Trakt', 'trakt_remove_watchlist', 0))
         TRAKT_REMOVE_SERIESLIST = bool(check_setting_int(CFG, 'Trakt', 'trakt_remove_serieslist', 0))
         TRAKT_SYNC_WATCHLIST = bool(check_setting_int(CFG, 'Trakt', 'trakt_sync_watchlist', 0))
@@ -1012,7 +1013,13 @@ def initialize(consoleLogging=True):
         TRAKT_ROLLING_ADD_PAUSED = check_setting_int(CFG, 'Trakt', 'trakt_rolling_add_paused', 1)
         TRAKT_ROLLING_FREQUENCY = check_setting_int(CFG, 'Trakt', 'trakt_rolling_frequency', 15)
         TRAKT_ROLLING_DEFAULT_WATCHED_STATUS = check_setting_int(CFG, 'Trakt', 'trakt_rolling_default_watched_status', 3)
-
+        if (check_setting_str(CFG, 'Trakt', 'trakt_oauth', '', censor_log=True) == ""):
+            TRAKT_OAUTH = json.loads("{}")
+            TRAKT_OAUTH['username'] = ""
+            TRAKT_OAUTH['client_id'] = ""
+            TRAKT_OAUTH['client_secret'] = ""
+        else:
+            TRAKT_OAUTH = json.loads(check_setting_str(CFG, 'Trakt', 'trakt_oauth', '', censor_log=True))
         CheckSection(CFG, 'pyTivo')
         USE_PYTIVO = bool(check_setting_int(CFG, 'pyTivo', 'use_pytivo', 0))
         PYTIVO_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'pyTivo', 'pytivo_notify_onsnatch', 0))
@@ -1919,8 +1926,6 @@ def save_config():
 
     new_config['Trakt'] = {}
     new_config['Trakt']['use_trakt'] = int(USE_TRAKT)
-    new_config['Trakt']['trakt_username'] = TRAKT_USERNAME
-    new_config['Trakt']['trakt_password'] = helpers.encrypt(TRAKT_PASSWORD, ENCRYPTION_VERSION)
     new_config['Trakt']['trakt_remove_watchlist'] = int(TRAKT_REMOVE_WATCHLIST)
     new_config['Trakt']['trakt_remove_serieslist'] = int(TRAKT_REMOVE_SERIESLIST)
     new_config['Trakt']['trakt_sync_watchlist'] = int(TRAKT_SYNC_WATCHLIST)
@@ -1937,7 +1942,8 @@ def save_config():
     new_config['Trakt']['trakt_rolling_add_paused'] = int(TRAKT_ROLLING_ADD_PAUSED)
     new_config['Trakt']['trakt_rolling_frequency'] = int(TRAKT_ROLLING_FREQUENCY)
     new_config['Trakt']['trakt_rolling_default_watched_status'] = int(TRAKT_ROLLING_DEFAULT_WATCHED_STATUS)
-
+    new_config['Trakt']['trakt_oauth'] = json.dumps(TRAKT_OAUTH)
+    
     new_config['pyTivo'] = {}
     new_config['pyTivo']['use_pytivo'] = int(USE_PYTIVO)
     new_config['pyTivo']['pytivo_notify_onsnatch'] = int(PYTIVO_NOTIFY_ONSNATCH)

@@ -25,6 +25,7 @@ import urllib
 import re
 import datetime
 import codecs
+import calendar
 
 import sickbeard
 from sickbeard import config, sab
@@ -81,7 +82,25 @@ from concurrent.futures import ThreadPoolExecutor
 
 route_locks = {}
 
+def check_token():
+    """
+    Checks to see if token will be expiring soon and requests new token
+    """
+    if 'token_expire' in sickbeard.TRAKT_OAUTH:
+        if ((sickbeard.TRAKT_OAUTH['token_expire'] - calendar.timegm(datetime.datetime.utcnow().timetuple())) <= 604800):
+            trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)      
+            response = trakt_api.getToken(True)
 
+            if 'access_token' in response:
+                sickbeard.TRAKT_OAUTH['access_token'] = response['access_token']
+
+            if 'refresh_token' in response:
+                sickbeard.TRAKT_OAUTH['refresh_token']  = response['refresh_token']
+                
+            if 'expires_in' in response:
+                sickbeard.TRAKT_OAUTH['token_expire'] = calendar.timegm((datetime.datetime.utcnow()+datetime.timedelta(seconds=response['expires_in'])).timetuple())
+            sickbeard.save_config()
+        
 class html_entities(CheetahFilter):
     def filter(self, val, **dummy_kw):
         if isinstance(val, unicode):
@@ -959,13 +978,35 @@ class Home(WebRoot):
                 "dbloc": dbloc}
 
 
-    def testTrakt(self, username=None, password=None, disable_ssl=None, blacklist_name=None):
+    def getTraktToken(self, trakt_authorization_code=None, trakt_client_id=None, trakt_client_secret=None, trakt_username=None):
+        
+
+        sickbeard.TRAKT_OAUTH['client_id'] = trakt_client_id
+        sickbeard.TRAKT_OAUTH['client_secret'] = trakt_client_secret
+        sickbeard.TRAKT_OAUTH['username'] = trakt_username
+        sickbeard.save_config()  
+
+        trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)      
+        response = trakt_api.getToken(False,trakt_authorization_code)
+
+        if 'access_token' in response:
+            sickbeard.TRAKT_OAUTH['access_token'] = response['access_token']
+
+        if 'refresh_token' in response:
+            sickbeard.TRAKT_OAUTH['refresh_token']  = response['refresh_token']
+            
+        if 'expires_in' in response:
+            sickbeard.TRAKT_OAUTH['token_expire'] = calendar.timegm((datetime.datetime.utcnow()+datetime.timedelta(seconds=response['expires_in'])).timetuple())
+
+        sickbeard.save_config()         
+        
+    def testTrakt(self, disable_ssl=None, blacklist_name=None):
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         if disable_ssl == 'true':
             disable_ssl = True
         else:
             disable_ssl = False
-        return notifiers.trakt_notifier.test_notify(username, password, disable_ssl, blacklist_name)
+        return notifiers.trakt_notifier.test_notify(disable_ssl, blacklist_name)
 
 
     def loadShowNotifyLists(self):
@@ -2337,8 +2378,8 @@ class HomeAddShows(Home):
         final_results = []
 
         logger.log(u"Getting recommended shows from Trakt.tv", logger.DEBUG)
-
-        trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+        check_token()
+        trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
         try:
             recommendedlist = trakt_api.traktRequest("recommendations/shows?extended=full,images")
@@ -2396,13 +2437,13 @@ class HomeAddShows(Home):
         t.submenu = self.HomeMenu()
 
         t.trending_shows = []
-
-        trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+        check_token()   
+        trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
         try:
             not_liked_show = ""
             if sickbeard.TRAKT_BLACKLIST_NAME is not None and sickbeard.TRAKT_BLACKLIST_NAME:
-                not_liked_show = trakt_api.traktRequest("users/" + sickbeard.TRAKT_USERNAME + "/lists/" + sickbeard.TRAKT_BLACKLIST_NAME + "/items") or []
+                not_liked_show = trakt_api.traktRequest("users/" + sickbeard.TRAKT_OAUTH['username'] + "/lists/" + sickbeard.TRAKT_BLACKLIST_NAME + "/items") or []
             else:
                 logger.log(u"trending blacklist name is empty", logger.DEBUG)
 
@@ -2449,10 +2490,11 @@ class HomeAddShows(Home):
                 }
             ]
         }
+        
+        check_token()
+        trakt_api = TraktAPI(sickbeard.TRAKT_OAUTH, sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
-        trakt_api = TraktAPI(sickbeard.TRAKT_API_KEY, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD)
-
-        result=trakt_api.traktRequest("users/" + sickbeard.TRAKT_USERNAME + "/lists/" + sickbeard.TRAKT_BLACKLIST_NAME + "/items", data, method='POST')
+        result=trakt_api.traktRequest("users/" + sickbeard.TRAKT_OAUTH['username'] + "/lists/" + sickbeard.TRAKT_BLACKLIST_NAME + "/items", data, method='POST')
 
         return self.redirect('/home/addShows/trendingShows/')
 
@@ -4628,11 +4670,10 @@ class ConfigNotifications(Config):
                           libnotify_notify_onsubtitledownload=None,
                           use_nmj=None, nmj_host=None, nmj_database=None, nmj_mount=None, use_synoindex=None,
                           use_nmjv2=None, nmjv2_host=None, nmjv2_dbloc=None, nmjv2_database=None,
-                          use_trakt=None, trakt_username=None, trakt_password=None,
-                          trakt_remove_watchlist=None, trakt_sync_watchlist=None, trakt_method_add=None,
+                          use_trakt=None, trakt_remove_watchlist=None, trakt_sync_watchlist=None, trakt_method_add=None,
                           trakt_start_paused=None, trakt_use_recommended=None, trakt_sync=None,
                           trakt_default_indexer=None, trakt_remove_serieslist=None, trakt_disable_ssl_verify=None, trakt_timeout=None, trakt_blacklist_name=None,
-                          trakt_use_rolling_download=None, trakt_rolling_num_ep=None, trakt_rolling_add_paused=None, trakt_rolling_frequency=None, trakt_rolling_default_watched_status=None, 
+                          trakt_use_rolling_download=None, trakt_rolling_num_ep=None, trakt_rolling_add_paused=None, trakt_rolling_frequency=None, trakt_rolling_default_watched_status=None, trakt_username=None, trakt_client_id=None, trakt_client_secret=None,
                           use_synologynotifier=None, synologynotifier_notify_onsnatch=None,
                           synologynotifier_notify_ondownload=None, synologynotifier_notify_onsubtitledownload=None,
                           use_pytivo=None, pytivo_notify_onsnatch=None, pytivo_notify_ondownload=None,
@@ -4744,8 +4785,6 @@ class ConfigNotifications(Config):
             synologynotifier_notify_onsubtitledownload)
 
         sickbeard.USE_TRAKT = config.checkbox_to_value(use_trakt)
-        sickbeard.TRAKT_USERNAME = trakt_username
-        sickbeard.TRAKT_PASSWORD = trakt_password
         sickbeard.TRAKT_REMOVE_WATCHLIST = config.checkbox_to_value(trakt_remove_watchlist)
         sickbeard.TRAKT_REMOVE_SERIESLIST = config.checkbox_to_value(trakt_remove_serieslist)
         sickbeard.TRAKT_SYNC_WATCHLIST = config.checkbox_to_value(trakt_sync_watchlist)
@@ -4762,6 +4801,9 @@ class ConfigNotifications(Config):
         sickbeard.TRAKT_ROLLING_ADD_PAUSED = config.checkbox_to_value(trakt_rolling_add_paused)
         sickbeard.TRAKT_ROLLING_FREQUENCY = int(trakt_rolling_frequency)
         sickbeard.TRAKT_ROLLING_DEFAULT_WATCHED_STATUS = int(trakt_rolling_default_watched_status)
+        sickbeard.TRAKT_OAUTH['username'] = trakt_username
+        sickbeard.TRAKT_OAUTH['trakt_client_id'] = trakt_client_id
+        sickbeard.TRAKT_OAUTH['trakt_client_secret'] = trakt_client_secret
 
         if sickbeard.USE_TRAKT:
             sickbeard.traktCheckerScheduler.silent = False

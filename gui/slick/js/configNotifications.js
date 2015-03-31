@@ -296,22 +296,41 @@ $(document).ready(function(){
             });
     });
 
+        
+    $('#authTrakt').click(function () {
+        var button_type = $.trim($('#authTrakt').val());
+        var trakt_username = $.trim($('#trakt_username').val());
+        var trakt_client_id = $.trim($('#trakt_client_id').val());
+        var trakt_client_secret = $.trim($('#trakt_client_secret').val());
+        
+        if (button_type == "Get Authorization") {
+            var w;
+            w = window.open("https://api-v2launch.trakt.tv/oauth/authorize?response_type=code&client_id=" + trakt_client_id + "&redirect_uri=urn:ietf:wg:oauth:2.0:oob&state=state&username=" + trakt_username, "popUp", "toolbar=no, scrollbars=no, resizable=no, top=200, left=200, width=650, height=550");
+            
+            $('#authTrakt').val("Input Authorization")
+        }
+        else if (button_type == "Input Authorization") {          
+            var authorization_code = prompt("Please enter the Authorization Code from Trakt:", "");
+            if (authorization_code != null) {
+                $.get(sbRoot + '/home/getTraktToken', { "trakt_authorization_code": authorization_code, "trakt_client_id" : trakt_client_id, "trakt_client_secret" : trakt_client_secret, "trakt_username" : trakt_username })
+                    .done(function (data) {
+                        $('#authTrakt').val("Get Authorization")                        
+                    });              
+            }
+        }
+    });     
+
+        
     $('#testTrakt').click(function () {
         var trakt_username = $.trim($('#trakt_username').val());
-        var trakt_password = $.trim($('#trakt_password').val());
         var trakt_trending_blacklist = $.trim($('#trakt_blacklist_name').val());
         var trakt_disable_ssl_verify = $('#trakt_disable_ssl_verify').is(':checked');
-        if (!trakt_username || !trakt_password) {
+        if (!trakt_username) {
             $('#testTrakt-result').html('Please fill out the necessary fields above.');
 			if (!trakt_username) {
 				$('#trakt_username').addClass('warning');
 			} else {
 				$('#trakt_username').removeClass('warning');
-			}
-			if (!trakt_password) {
-				$('#trakt_password').addClass('warning');
-			} else {
-				$('#trakt_password').removeClass('warning');
 			}
             return;
         }
@@ -321,11 +340,11 @@ $(document).ready(function(){
 	    $('#trakt_blacklist_name').addClass('warning');
             return;
         }
-		$('#trakt_username,#trakt_password').removeClass('warning');
+		$('#trakt_username').removeClass('warning');
 	        $('#trakt_blacklist_name').removeClass('warning');
         $(this).prop('disabled', true);
         $('#testTrakt-result').html(loading);
-        $.get(sbRoot + '/home/testTrakt', {'username': trakt_username, 'password': trakt_password, 'disable_ssl': trakt_disable_ssl_verify, 'blacklist_name': trakt_trending_blacklist})
+        $.get(sbRoot + '/home/testTrakt', {'disable_ssl': trakt_disable_ssl_verify, 'blacklist_name': trakt_trending_blacklist})
             .done(function (data) {
                 $('#testTrakt-result').html(data);
                 $('#testTrakt').prop('disabled', false);
