@@ -32,6 +32,26 @@
 <script type="text/javascript" src="$sbRoot/js/rootDirs.js?$sbPID"></script>
 <script type="text/javascript" src="$sbRoot/js/lib/bootstrap-formhelpers.min-2.3.0.js?$sbPID"></script>
 
+<script type="text/javascript" charset="utf-8">
+	<!--
+	\$(document).ready(function(){
+		if (\$("input[name='proxy_setting']").val().length == 0) {
+			\$("input[id='proxy_indexers']").prop('checked', false);
+			\$("label[for='proxy_indexers']").hide();
+		}
+		
+		\$("input[name='proxy_setting']").on('input', function() {
+			if( \$(this).val().length === 0 ) {
+				\$("input[id='proxy_indexers']").prop('checked', false);
+				\$("label[for='proxy_indexers']").hide();
+			} else {
+				\$("label[for='proxy_indexers']").show();
+			}
+		});
+	});
+	//-->
+</script>
+
 <div id="config">
 	<div id="config-content">
 
@@ -64,7 +84,21 @@
 								</span>
 							</label>
 						</div>
-
+#if not $sickbeard.SKIP_REMOVED_FILES or $sickbeard.TRAKT_USE_ROLLING_DOWNLOAD
+                                                <div class="field-pair">
+                                                    <label for="ep_default_deleted_status">
+                                                        <span class="component-title">Default deleted episode status:</span>
+                                                        <span class="component-desc">
+                                                            <select name="ep_default_deleted_status" id="ep_default_deleted_status" class="form-control input-sm">
+                                                            #for $defStatus in [$ARCHIVED, $IGNORED]:
+                                                                <option value="$defStatus" #if $defStatus == $sickbeard.EP_DEFAULT_DELETED_STATUS then 'selected="selected"' else ''#>$statusStrings[$defStatus]</option>
+                                                            #end for
+                                                            </select>
+                                                            <span>Define the status to be set for media file that has been deleted.</span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+#end if
 						<div class="field-pair">
 							<label for="launch_browser">
 								<span class="component-title">Launch browser</span>
@@ -352,16 +386,6 @@
 						</div>
 
 						<div class="field-pair">
-							<label for="play_videos">
-								<span class="component-title">Browser video player</span>
-								<span class="component-desc">
-									<input type="checkbox" name="play_videos" id="play_videos" #if $sickbeard.PLAY_VIDEOS then 'checked="checked"' else ''#/>
-									<p>play video files from display show page</p>
-								</span>
-							</label>
-						</div>
-
-						<div class="field-pair">
 							<label for="download_url">
 						    		<span class="component-title">Download url</span>
 						    		<input type="text" name="download_url" id="download_url" value="$sickbeard.DOWNLOAD_URL" size="35" />
@@ -527,6 +551,16 @@
 								<span class="component-desc">
 									<input type="text" name="anon_redirect" value="$sickbeard.ANON_REDIRECT" class="form-control input-sm input300" />
 									<div class="clear-left"><p>backlink protection via anonymizer service, must end in "?"</p></div>
+								</span>
+							</label>
+						</div>
+						
+						<div class="field-pair">
+							<label for="debug">
+								<span class="component-title">Enable debug</span>
+								<span class="component-desc">
+									<input type="checkbox" name="debug" id="debug" #if $sickbeard.DEBUG then 'checked="checked"' else ''#/>
+									<p>Enable debug logs<p>
 								</span>
 							</label>
 						</div>
