@@ -185,6 +185,21 @@ class GenericProvider:
                 if self._verify_download(filename):
                     return True
 
+        # Fallback: if the torrent link could not be downloaded, we save the magnet link instead
+        # Softwares such as Deluge with plugin AutoAdd can automatically add it, otherwise the user
+        # can add it manually.
+        if self.providerType == GenericProvider.TORRENT:
+            filename_fallback = re.sub(r'torrent$', r'magnet', filename)
+            if filename_fallback != filename and re.match('^magnet:', result.url):
+                try:
+                    f = open(filename_fallback, 'w')
+                    f.write(result.url)
+                    f.close()
+                    logger.log(u"Saved magnet link to " + filename_fallback, logger.INFO)
+                    return True
+                except:
+                    pass
+
         logger.log(u"Failed to download result", logger.WARNING)
         return False
 
