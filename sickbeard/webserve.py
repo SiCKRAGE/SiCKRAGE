@@ -3657,7 +3657,7 @@ class ConfigGeneral(Config):
                 sickbeard.showUpdateScheduler.join(10) # Wait 10 sec for the thread to exit
             except:
                 pass
-            if  sickbeard.showUpdateScheduler.isAlive():
+            if  sickbeard.showUpdateScheduler.action.amActive == True and sickbeard.showUpdateScheduler.isAlive():
                 logger.log(u"Unable to stop SHOWUPDATER thread, the new configuration will be applied after a restart", logger.WARNING)
             else:
                 logger.log(u"Starting SHOWUPDATER thread with the new start hour: " + str(config.to_int(showupdate_hour)))
