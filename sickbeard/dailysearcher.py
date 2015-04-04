@@ -30,7 +30,7 @@ from sickbeard import helpers
 from sickbeard import exceptions
 from sickbeard import network_timezones
 from sickbeard.exceptions import ex
-from sickbeard.common import SKIPPED, ARCHIVED
+from sickbeard.common import SKIPPED
 from common import Quality, qualityPresetStrings, statusStrings
 
 
