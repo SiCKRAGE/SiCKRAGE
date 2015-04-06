@@ -64,10 +64,59 @@
                     )[0 < ep_snatched]
                 %>
                 &nbsp;/&nbsp;<span class="footerhighlight">$ep_total</span> Episodes Downloaded $ep_percentage       
-        | Daily Search: <span class="footerhighlight"><%=str(sickbeard.dailySearchScheduler.timeLeft()).split('.')[0]%></span> 
+        | Daily Search: <span id="dailySearchFooterHighlight" class="footerhighlight"><%=str(sickbeard.dailySearchScheduler.timeLeft()).split('.')[0]%></span> 
         | Backlog Search: <span class="footerhighlight">$sbdatetime.sbdatetime.sbfdate($sickbeard.backlogSearchScheduler.nextRun())</span>
 
 	</div>
+    <script type="text/javascript" charset="utf-8">
+
+        // This section updates the daily search time left every 1s.
+        // The Date.now() logic is required so that it properly updates when 
+        // the tab is inactive.
+        // When the time left reaches or goes below 0, it will reset automatically
+        // with the cycle time.
+
+        function getTimeNumber(timeArr) {
+            var time  = Number(timeArr[0])*1000*60*60;
+                time += Number(timeArr[1])*1000*60;
+                time += Math.floor(Number(timeArr[2])*1000);
+            return time;
+        }
+
+        var cycleTimeArr = "<%=str(sickbeard.dailySearchScheduler.cycleTime)%>".split(":");
+        var cycleTime = getTimeNumber(cycleTimeArr);
+        var timeLeftArr = "<%=str(sickbeard.dailySearchScheduler.timeLeft())%>".split(":");
+        var timeLeft = getTimeNumber(timeLeftArr);
+
+        function pad(n) {
+            return (n < 10) ? ("0" + n) : n;
+        }
+
+        function updateTimeLeft(delta) {
+            timeLeft -= delta;
+            if (timeLeft <= 0) {
+                timeLeft += cycleTime;
+            }
+        }
+
+        function getTimeLeftStr() {
+            var hours = Math.floor(timeLeft/1000/60/60);
+            var minutes = Math.floor(timeLeft/1000/60)%60;
+            var seconds = Math.floor(timeLeft/1000)%60;
+            return hours+":"+pad(minutes)+":"+pad(seconds);
+        }
+
+        var dailySearchSpan = \$("#dailySearchFooterHighlight");
+
+        var before = Date.now();
+        setInterval(function() {
+            var now = Date.now();
+            updateTimeLeft(now-before);
+            dailySearchSpan.text(getTimeLeftStr());
+            before = now;
+        }, 1000);
+
+    </script>
 		<!-- 
 		<ul style="display: table; margin: 0 auto; font-size: 12px; list-style-type: none; padding: 0; padding-top: 10px;">
 			<li><a href="$sbRoot/manage/manageSearches/forceVersionCheck"><img src="$sbRoot/images/menu/update16.png" alt="" width="16" height="16" style="vertical-align:middle;" />Force Version Check</a></li>
