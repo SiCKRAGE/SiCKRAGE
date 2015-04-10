@@ -130,9 +130,12 @@ def snatchEpisode(result, endStatus=SNATCHED):
         if sickbeard.TORRENT_METHOD == "blackhole":
             dlResult = _downloadResult(result)
         else:
-            #result.content = result.provider.getURL(result.url) if not result.url.startswith('magnet') else None
-            client = clients.getClientIstance(sickbeard.TORRENT_METHOD)()
-            dlResult = client.sendTORRENT(result)
+            if result.content or result.url.startswith('magnet'):
+                client = clients.getClientIstance(sickbeard.TORRENT_METHOD)()
+                dlResult = client.sendTORRENT(result)
+            else:
+                logger.log(u"Torrent file content is empty", logger.ERROR)
+                dlResult = False
     else:
         logger.log(u"Unknown result type, unable to download it", logger.ERROR)
         dlResult = False
@@ -176,28 +179,12 @@ def snatchEpisode(result, endStatus=SNATCHED):
         myDB.mass_action(sql_l)
 
     if sickbeard.UPDATE_SHOWS_ON_SNATCH and not sickbeard.showQueueScheduler.action.isBeingUpdated(result.show) and result.show.status == "Continuing":
-        sickbeard.showQueueScheduler.action.updateShow(result.show, True)
+        try:
+            sickbeard.showQueueScheduler.action.updateShow(result.show, True)
+        except exceptions.CantUpdateException as e:
+            logger.log("Unable to update show: {0}".format(str(e)),logger.DEBUG)
 
     return True
-
-
-def filter_release_name(name, filter_words):
-    """
-    Filters out results based on filter_words
-
-    name: name to check
-    filter_words : Words to filter on, separated by comma
-
-    Returns: False if the release name is OK, True if it contains one of the filter_words
-    """
-    if filter_words:
-        filters = [re.compile('.*%s.*' % filter.strip(), re.I) for filter in filter_words.split(',')]
-        for regfilter in filters:
-            if regfilter.search(name):
-                logger.log(u"" + name + " contains pattern: " + regfilter.pattern, logger.DEBUG)
-                return True
-
-    return False
 
 
 def pickBestResult(results, show, quality_list=None):
@@ -240,12 +227,12 @@ def pickBestResult(results, show, quality_list=None):
             logger.log(cur_result.name + " is a quality we know we don't want, rejecting it", logger.DEBUG)
             continue
 
-        if show.rls_ignore_words and filter_release_name(cur_result.name, cur_result.show.rls_ignore_words):
+        if show.rls_ignore_words and show_name_helpers.containsAtLeastOneWord(cur_result.name, cur_result.show.rls_ignore_words):
             logger.log(u"Ignoring " + cur_result.name + " based on ignored words filter: " + show.rls_ignore_words,
                        logger.INFO)
             continue
 
-        if show.rls_require_words and not filter_release_name(cur_result.name, cur_result.show.rls_require_words):
+        if show.rls_require_words and not show_name_helpers.containsAtLeastOneWord(cur_result.name, cur_result.show.rls_require_words):
             logger.log(u"Ignoring " + cur_result.name + " based on required words filter: " + show.rls_require_words,
                        logger.INFO)
             continue
@@ -440,7 +427,7 @@ def searchForNeededEpisodes():
     return foundResults.values()
 
 
-def searchProviders(show, episodes, manualSearch=False):
+def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
     foundResults = {}
     finalResults = []
 
@@ -490,7 +477,7 @@ def searchProviders(show, episodes, manualSearch=False):
                 logger.log(u"Performing season pack search for " + show.name)
 
             try:
-                searchResults = curProvider.findSearchResults(show, episodes, search_mode, manualSearch)
+                searchResults = curProvider.findSearchResults(show, episodes, search_mode, manualSearch, downCurQuality)
             except exceptions.AuthException, e:
                 logger.log(u"Authentication error: " + ex(e), logger.ERROR)
                 break
@@ -564,7 +551,7 @@ def searchProviders(show, episodes, manualSearch=False):
             anyWanted = False
             for curEpNum in allEps:
                 for season in set([x.season for x in episodes]):
-                    if not show.wantEpisode(season, curEpNum, seasonQual):
+                    if not show.wantEpisode(season, curEpNum, seasonQual, downCurQuality):
                         allWanted = False
                     else:
                         anyWanted = True
@@ -675,6 +662,8 @@ def searchProviders(show, episodes, manualSearch=False):
 
                 # if we're keeping this multi-result then remember it
                 for epObj in multiResult.episodes:
+                    if not multiResult.url.startswith('magnet'):
+                        multiResult.content = multiResult.provider.getURL(cur_result.url)
                     multiResults[epObj.episode] = multiResult
 
                 # don't bother with the single result if we're going to get it with a multi result

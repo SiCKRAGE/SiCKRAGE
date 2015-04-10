@@ -33,7 +33,12 @@
 			<td>
 				<select name="process_method" id="process_method" class="form-control form-control-inline input-sm" >
 				#set $process_method_text = {'copy': "Copy", 'move': "Move", 'hardlink': "Hard Link", 'symlink' : "Symbolic Link"}
-				#for $curAction in ('copy', 'move', 'hardlink', 'symlink'):
+				#if sys.platform == 'win32'
+					#set $process_action = ('copy', 'move')
+				#else
+					#set $process_action = ('copy', 'move', 'hardlink', 'symlink')                                        
+				#end if
+				#for $curAction in $process_action:
 				#if $sickbeard.PROCESS_METHOD == $curAction:
 					#set $process_method = "selected=\"selected\""
 				#else
@@ -59,6 +64,15 @@
 			<td>
 				<input id="is_priority" name="is_priority" type="checkbox">
 				<span style="line-height: 0; font-size: 12px;"><i>&nbsp;(Check it to replace the file even if it exists at higher quality)</i></span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Delete files and folders:</b>
+			</td>
+			<td>
+				<input id="delete_on" name="delete_on" type="checkbox">
+				<span style="line-height: 0; font-size: 12px;"><i>&nbsp;(Check it to delete files and folders like auto processing)</i></span>
 			</td>
 		</tr>
 		#if $sickbeard.USE_FAILED_DOWNLOADS:

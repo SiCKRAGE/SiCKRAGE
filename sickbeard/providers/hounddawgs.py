@@ -22,6 +22,7 @@ import datetime
 import urlparse
 import sickbeard
 import generic
+import urllib
 from sickbeard.common import Quality, cpu_presets
 from sickbeard import logger
 from sickbeard import tvcache
@@ -87,6 +88,7 @@ class HoundDawgsProvider(generic.TorrentProvider):
         self.session = requests.Session()
 
         try:
+            self.session.get(self.urls['base_url'], timeout=30, verify=False)
             response = self.session.post(self.urls['login'], data=login_params, timeout=30, verify=False)
         except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
@@ -94,6 +96,7 @@ class HoundDawgsProvider(generic.TorrentProvider):
 
         if re.search('Dit brugernavn eller kodeord er forkert.', response.text) \
                 or re.search('<title>Login :: HoundDawgs</title>', response.text) \
+                or re.search('Dine cookies er ikke aktiveret.', response.text) \
                 or response.status_code == 401:
             logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
             return False
@@ -148,7 +151,7 @@ class HoundDawgsProvider(generic.TorrentProvider):
 
         return [search_string]
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -166,7 +169,7 @@ class HoundDawgsProvider(generic.TorrentProvider):
                 #if mode == 'RSS':
                     #searchURL = self.urls['index'] % self.categories
                 #else:
-                searchURL = self.urls['search'] % (search_string, self.categories)
+                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
 
                 logger.log(u"Search string: " + searchURL, logger.DEBUG)
 
@@ -223,7 +226,7 @@ class HoundDawgsProvider(generic.TorrentProvider):
                                 continue
 
                             item = title, download_url
-                            logger.log(u"Found result: " + title + "(" + download_url + ")", logger.DEBUG)
+                            logger.log(u"Found result: " + title.replace(' ','.') + " (" + download_url + ")", logger.DEBUG)
 
                             items[mode].append(item)
 

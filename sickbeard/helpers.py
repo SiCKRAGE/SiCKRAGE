@@ -36,6 +36,8 @@ import base64
 import zipfile
 import datetime
 import errno
+import ast
+import operator
 
 import sickbeard
 import subliminal
@@ -705,6 +707,38 @@ def sanitizeSceneName(name, ezrss=False, anime=False):
         return ''
 
 
+_binOps = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.div,
+    ast.Mod: operator.mod
+}
+
+
+def arithmeticEval(s):
+    """
+    A safe eval supporting basic arithmetic operations.
+
+    :param s: expression to evaluate
+    :return: value
+    """
+    node = ast.parse(s, mode='eval')
+
+    def _eval(node):
+        if isinstance(node, ast.Expression):
+            return _eval(node.body)
+        elif isinstance(node, ast.Str):
+            return node.s
+        elif isinstance(node, ast.Num):
+            return node.n
+        elif isinstance(node, ast.BinOp):
+            return _binOps[type(node.op)](_eval(node.left), _eval(node.right))
+        else:
+            raise Exception('Unsupported type {}'.format(node))
+
+    return _eval(node.body)
+
 def create_https_certificates(ssl_cert, ssl_key):
     """
     Create self-signed HTTPS certificares and store in paths 'ssl_cert' and 'ssl_key'
@@ -889,6 +923,13 @@ def encrypt(data, encryption_version=0, decrypt=False):
         else:
             return base64.encodestring(
                 ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(unique_key1)))).strip()
+    # Version 2: Simple XOR encryption (this is not very secure, but works)
+    elif encryption_version == 2:
+        if decrypt:
+            return ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(base64.decodestring(data), cycle(sickbeard.ENCRYPTION_SECRET)))
+        else:
+            return base64.encodestring(
+                ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(sickbeard.ENCRYPTION_SECRET)))).strip()
     # Version 0: Plain text
     else:
         return data
@@ -993,7 +1034,7 @@ def validateShow(show, season=None, episode=None):
     try:
         lINDEXER_API_PARMS = sickbeard.indexerApi(show.indexer).api_params.copy()
 
-        if indexer_lang and not indexer_lang == 'en':
+        if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
         t = sickbeard.indexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
@@ -1206,7 +1247,7 @@ def _getTempDir():
 
     return os.path.join(tempfile.gettempdir(), "sickrage-%s" % (uid))
 
-def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=None, json=False):
+def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=None, json=False, proxyGlypeProxySSLwarning=None):
     """
     Returns a byte-string retrieved from the url provider.
     """
@@ -1244,6 +1285,15 @@ def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=Non
             logger.log(u"Requested url " + url + " returned status code is " + str(
                 resp.status_code) + ': ' + clients.http_error_code[resp.status_code], logger.DEBUG)
             return
+
+        if proxyGlypeProxySSLwarning is not None:
+            if re.search('The site you are attempting to browse is on a secure connection', resp.text):
+                resp = session.get(proxyGlypeProxySSLwarning)
+
+                if not resp.ok:
+                    logger.log(u"GlypeProxySSLwarning: Requested url " + url + " returned status code is " + str(
+                        resp.status_code) + ': ' + clients.http_error_code[resp.status_code], logger.DEBUG)
+                    return
 
     except requests.exceptions.HTTPError, e:
         logger.log(u"HTTP error " + str(e.errno) + " while loading URL " + url, logger.WARNING)
@@ -1414,3 +1464,61 @@ def remove_article(text=''):
 def generateCookieSecret():
 
     return base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
+
+def verify_freespace(src, dest, oldfile=None):
+    """ Checks if the target system has enough free space to copy or move a file,
+    Returns true if there is, False if there isn't.
+    Also returns True if the OS doesn't support this option
+    """
+    if not isinstance(oldfile, list):
+        oldfile = [oldfile]
+
+    logger.log("Trying to determine free space on destination drive", logger.DEBUG)
+    
+    if hasattr(os, 'statvfs'):  # POSIX
+        def disk_usage(path):
+            st = os.statvfs(path)
+            free = st.f_bavail * st.f_frsize
+            return free
+    
+    elif os.name == 'nt':       # Windows
+        import sys
+    
+        def disk_usage(path):
+            _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
+                               ctypes.c_ulonglong()
+            if sys.version_info >= (3,) or isinstance(path, unicode):
+                fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW
+            else:
+                fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA
+            ret = fun(path, ctypes.byref(_), ctypes.byref(total), ctypes.byref(free))
+            if ret == 0:
+                logger.log("Unable to determine free space, something went wrong", logger.WARNING)
+                raise ctypes.WinError()
+            return free.value
+    else:
+        logger.log("Unable to determine free space on your OS")
+        return True
+
+    if not ek.ek(os.path.isfile, src):
+        logger.log("A path to a file is required for the source. " + src + " is not a file.", logger.WARNING)
+        return False
+    
+    try:
+        diskfree = disk_usage(dest)
+    except:
+        logger.log("Unable to determine free space, so I will assume there is enough.", logger.WARNING)
+        return True
+    
+    neededspace = ek.ek(os.path.getsize, src)
+    
+    if oldfile:
+        for file in oldfile:
+            if ek.ek(os.path.isfile, file.location):
+                diskfree += ek.ek(os.path.getsize, file.location)
+        
+    if diskfree > neededspace:
+        return True
+    else:
+        logger.log("Not enough free space: Needed: " + str(neededspace) + " bytes (" + pretty_filesize(neededspace) + "), found: " + str(diskfree) + " bytes (" + pretty_filesize(diskfree) + ")", logger.WARNING)
+        return False  

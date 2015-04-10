@@ -1082,12 +1082,12 @@ class TVShow(object):
                 # check if downloaded files still exist, update our data if this has changed
                 if not sickbeard.SKIP_REMOVED_FILES:
                     with curEp.lock:
-                        # if it used to have a file associated with it and it doesn't anymore then set it to IGNORED
+                        # if it used to have a file associated with it and it doesn't anymore then set it to sickbeard.EP_DEFAULT_DELETED_STATUS
                         if curEp.location and curEp.status in Quality.DOWNLOADED:
                             logger.log(str(self.indexerid) + u": Location for " + str(season) + "x" + str(
-                                episode) + " doesn't exist, removing it and changing our status to IGNORED",
+                                episode) + " doesn't exist, removing it and changing our status to " + statusStrings[sickbeard.EP_DEFAULT_DELETED_STATUS],
                                        logger.DEBUG)
-                            curEp.status = IGNORED
+                            curEp.status = sickbeard.EP_DEFAULT_DELETED_STATUS
                             curEp.subtitles = list()
                             curEp.subtitles_searchcount = 0
                             curEp.subtitles_lastsearch = str(datetime.datetime.min)
@@ -1198,7 +1198,7 @@ class TVShow(object):
         return toReturn
 
 
-    def wantEpisode(self, season, episode, quality, manualSearch=False):
+    def wantEpisode(self, season, episode, quality, manualSearch=False, downCurQuality=False):
 
         logger.log(u"Checking if found episode " + str(season) + "x" + str(episode) + " is wanted at quality " +
                    Quality.qualityStrings[quality], logger.DEBUG)
@@ -1230,21 +1230,22 @@ class TVShow(object):
             logger.log(u"Existing episode status is skipped/ignored/archived, ignoring found episode", logger.DEBUG)
             return False
 
+        curStatus, curQuality = Quality.splitCompositeStatus(epStatus)
+
         # if it's one of these then we want it as long as it's in our allowed initial qualities
         if quality in anyQualities + bestQualities:
             if epStatus in (WANTED, UNAIRED, SKIPPED):
                 logger.log(u"Existing episode status is wanted/unaired/skipped, getting found episode", logger.DEBUG)
                 return True
-            #elif manualSearch:
-            #    logger.log(
-            #        u"Usually ignoring found episode, but forced search allows the quality, getting found episode",
-            #        logger.DEBUG)
-            #    return True
+            elif manualSearch:
+                if (downCurQuality and quality >= curQuality) or (not downCurQuality and quality > curQuality):
+                    logger.log(
+                        u"Usually ignoring found episode, but forced search allows the quality, getting found episode",
+                        logger.DEBUG)
+                    return True
             else:
                 logger.log(u"Quality is on wanted list, need to check if it's better than existing quality",
                            logger.DEBUG)
-
-        curStatus, curQuality = Quality.splitCompositeStatus(epStatus)
 
         # if we are re-downloading then we only want it if it's in our bestQualities list and better than what we have
         if curStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST and quality in bestQualities and quality > curQuality:
@@ -1264,7 +1265,7 @@ class TVShow(object):
 
     def getOverview(self, epStatus):
 
-        if epStatus == WANTED:
+        if epStatus == WANTED and not self.paused:
             return Overview.WANTED
         elif epStatus in (UNAIRED, UNKNOWN):
             return Overview.UNAIRED
@@ -1287,9 +1288,8 @@ class TVShow(object):
             if epStatus == FAILED:
                 return Overview.WANTED
             elif epStatus in (SNATCHED, SNATCHED_PROPER, SNATCHED_BEST):
-                if curQuality < maxBestQuality:
-                    return Overview.QUAL
                 return Overview.SNATCHED
+            # if they don't want re-downloads then we call it good if they have anything
             elif maxBestQuality == None:
                 return Overview.GOOD
             # if the want only first match and already have one call it good
@@ -1735,7 +1735,7 @@ class TVEpisode(object):
         if not ek.ek(os.path.isdir,
                      self.show._location) and not sickbeard.CREATE_MISSING_SHOW_DIRS and not sickbeard.ADD_SHOWS_WO_DIR:
             logger.log(
-                u"The show dir is missing, not bothering to change the episode statuses since it'd probably be invalid")
+                u"The show dir " + str(self.show._location) + " is missing, not bothering to change the episode statuses since it'd probably be invalid")
             return
 
         if self.location:
@@ -1768,7 +1768,10 @@ class TVEpisode(object):
 
                 # if we somehow are still UNKNOWN then just use the shows defined default status or SKIPPED
                 elif self.status == UNKNOWN:
-                    self.status = self.show.default_ep_status
+                    if self.season > 0: #If it's not a special
+                        self.status = self.show.default_ep_status
+                    else:
+                        self.status = SKIPPED
 
                 else:
                     logger.log(
