@@ -1261,7 +1261,7 @@ def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=Non
     session.headers.update(headers)
 
     # request session ssl verify
-    session.verify = False
+    session.verify = True
 
     # request session paramaters
     session.params = params
@@ -1319,7 +1319,7 @@ def download_file(url, filename, session=None):
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
 
     # request session ssl verify
-    session.verify = False
+    session.verify = True
 
     # request session streaming
     session.stream = True
