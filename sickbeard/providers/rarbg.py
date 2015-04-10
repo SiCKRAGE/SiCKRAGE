@@ -77,7 +77,7 @@ class RarbgProvider(generic.TorrentProvider):
                         'format': '&format={format}',
                         'ranked': '&ranked={ranked}',
         }
-        
+
         self.defaultOptions = self.urlOptions['categories'].format(categories='18;41') + \
                                 self.urlOptions['sorting'].format(sorting='last') + \
                                 self.urlOptions['limit'].format(limit='100') + \
@@ -102,7 +102,7 @@ class RarbgProvider(generic.TorrentProvider):
         resp_json = None
 
         try:
-            response = self.session.get(self.urls['token'], timeout=30, verify=False)
+            response = self.session.get(self.urls['token'], timeout=30)
             response.raise_for_status()
             resp_json = response.json()
         except RequestException as e:
@@ -274,7 +274,7 @@ class RarbgProvider(generic.TorrentProvider):
                                 logger.log(u'{name} skipping invalid result'.format(name=self.name), logger.DEBUG)
                         except Exception:
                             logger.log(u'{name} skipping invalid result: {traceback_info}'.format(name=self.name, traceback_info=traceback.format_exc()), logger.DEBUG)
-                        
+
                 except Exception:
                     logger.log(u'{name} failed parsing data: {traceback_info}'.format(name=self.name, traceback_info=traceback.format_exc()), logger.ERROR)
             results += items[mode]
