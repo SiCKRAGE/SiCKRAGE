@@ -675,7 +675,7 @@ def sanitizeSceneName(name, ezrss=False, anime=False):
     Takes a show name and returns the "scenified" version of it.
 
     ezrss: If true the scenified version will follow EZRSS's cracksmoker rules as best as possible
-    
+
     anime: Some show have a ' in their name(Kuroko's Basketball) and is needed for search.
 
     Returns: A string containing the scene version of the show name given.
@@ -974,18 +974,18 @@ def get_show(name, tryIndexers=False, trySceneExceptions=False):
         if cache:
             fromCache = True
             showObj = findCertainShow(sickbeard.showList, int(cache))
-        
-        #try indexers    
+
+        #try indexers
         if not showObj and tryIndexers:
             showObj = findCertainShow(sickbeard.showList,
                                       searchIndexerForShowID(full_sanitizeSceneName(name), ui=classes.ShowListUI)[2])
-        
+
         #try scene exceptions
         if not showObj and trySceneExceptions:
             ShowID = sickbeard.scene_exceptions.get_scene_exception_by_name(name)[0]
             if ShowID:
                 showObj = findCertainShow(sickbeard.showList, int(ShowID))
-                
+
         # add show to cache
         if showObj and not fromCache:
             sickbeard.name_cache.addNameToCache(name, showObj.indexerid)
@@ -1013,7 +1013,7 @@ def is_hidden_folder(folder):
         except (AttributeError, AssertionError):
             result = False
         return result
-    
+
     if ek.ek(os.path.isdir, folder):
         if is_hidden(folder):
             return True
@@ -1474,16 +1474,16 @@ def verify_freespace(src, dest, oldfile=None):
         oldfile = [oldfile]
 
     logger.log("Trying to determine free space on destination drive", logger.DEBUG)
-    
+
     if hasattr(os, 'statvfs'):  # POSIX
         def disk_usage(path):
             st = os.statvfs(path)
             free = st.f_bavail * st.f_frsize
             return free
-    
+
     elif os.name == 'nt':       # Windows
         import sys
-    
+
         def disk_usage(path):
             _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
                                ctypes.c_ulonglong()
@@ -1503,22 +1503,22 @@ def verify_freespace(src, dest, oldfile=None):
     if not ek.ek(os.path.isfile, src):
         logger.log("A path to a file is required for the source. " + src + " is not a file.", logger.WARNING)
         return False
-    
+
     try:
         diskfree = disk_usage(dest)
     except:
         logger.log("Unable to determine free space, so I will assume there is enough.", logger.WARNING)
         return True
-    
+
     neededspace = ek.ek(os.path.getsize, src)
-    
+
     if oldfile:
         for file in oldfile:
             if ek.ek(os.path.isfile, file.location):
                 diskfree += ek.ek(os.path.getsize, file.location)
-        
+
     if diskfree > neededspace:
         return True
     else:
         logger.log("Not enough free space: Needed: " + str(neededspace) + " bytes (" + pretty_filesize(neededspace) + "), found: " + str(diskfree) + " bytes (" + pretty_filesize(diskfree) + ")", logger.WARNING)
-        return False  
+        return False
