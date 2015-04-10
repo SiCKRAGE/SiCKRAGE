@@ -39,8 +39,8 @@ class EZTVProvider(generic.TorrentProvider):
         self.cache = EZTVCache(self)
 
         self.urls = {
-            'base_url': 'http://eztvapi.re/',
-            'show': 'http://eztvapi.re/show/%s',
+            'base_url': 'https://eztvapi.re/',
+            'show': 'https://eztvapi.re/show/%s',
         }
 
         self.url = self.urls['base_url']
