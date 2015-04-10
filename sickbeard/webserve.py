@@ -4721,7 +4721,7 @@ class ConfigNotifications(Config):
         sickbeard.TRAKT_DISABLE_SSL_VERIFY = config.checkbox_to_value(trakt_disable_ssl_verify)
         sickbeard.TRAKT_TIMEOUT = int(trakt_timeout)
         sickbeard.TRAKT_BLACKLIST_NAME = trakt_blacklist_name
-        config.change_TRAKT_USE_ROLLING_DOWNLOAD(trakt_use_rolling_download)
+        sickbeard.TRAKT_USE_ROLLING_DOWNLOAD = config.checkbox_to_value(trakt_use_rolling_download)
         sickbeard.TRAKT_ROLLING_NUM_EP = int(trakt_rolling_num_ep)
         sickbeard.TRAKT_ROLLING_ADD_PAUSED = config.checkbox_to_value(trakt_rolling_add_paused)
         sickbeard.TRAKT_ROLLING_FREQUENCY = int(trakt_rolling_frequency)
