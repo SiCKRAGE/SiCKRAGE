@@ -2871,12 +2871,13 @@ thead.tablesorter-stickyHeader {
 
 .tablesorter tfoot tr {
 	text-align: center;
-	text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
+	text-shadow: 2px 2px 0 rgba(0,0,0,0.6);
 	background-color: #333;
 	border-collapse: collapse;
 }
 
 .tablesorter tfoot a {
+    color: #fff;
 	text-decoration: none;
 }
 
