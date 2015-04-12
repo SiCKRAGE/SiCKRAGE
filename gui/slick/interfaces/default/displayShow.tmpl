@@ -58,7 +58,7 @@
 
 	#for $epResult in $sqlResults:
 		#if int($epResult["season"]) != $curSeason:
-			#set $curSeason = int($epResult["season"])
+            #set $curSeason = int($epResult["season"])
     \$("#showSeasonTable$epResult["season"]").tablesorter({
         widgets: ['columnSelector'],
 		widgetOptions : {
@@ -80,8 +80,10 @@
 	    })
 	    // bootstrap popover event triggered when the popover opens
 	    .on('shown.bs.popover', function () {
+        #set $curSeason = -1        
         #for $epResult in $sqlResults:
-            #if int($epResult["season"]) != $curSeason:        
+            #if int($epResult["season"]) != $curSeason:
+                #set $curSeason = int($epResult["season"])
             \$.tablesorter.columnSelector.attachTo( \$('#showSeasonTable$epResult["season"]'), '#popover-target');
             #end if
         #end for
@@ -397,22 +399,15 @@
 				<th data-sorter="false" class="col-metadata">NFO</th>
 				<th data-sorter="false" class="col-metadata">TBN</th>
 				<th data-sorter="false" class="col-ep">Episode</th>
-			#if $show.is_anime:
-				<th data-sorter="false" class="col-ep">Absolute</th>
-			#end if
-			#if $scene:
-				<th data-sorter="false" class="col-ep">Scene</th>
-			#end if
-			#if $scene_anime:
-				<th data-sorter="false" class="col-ep">Scene Absolute</th>
-			#end if
+				<th data-sorter="false" #if not $show.is_anime then "class=\"col-ep columnSelector-false\"" else "class=\"col-ep\""#>Absolute</th>
+				<th data-sorter="false" #if not $scene then "class=\"col-ep columnSelector-false\"" else "class=\"col-ep\""#>Scene</th>
+				<th data-sorter="false" #if not $scene_anime then "class=\"col-ep columnSelector-false\"" else "class=\"col-ep\""#>Scene Absolute</th>
 				<th data-sorter="false" class="col-name">Name</th>
+                <th data-sorter="false" class="col-name">File Name</th>
 				<th data-sorter="false" class="col-ep">Size</th>
 				<th data-sorter="false" class="col-airdate">Airdate</th>
-				<th data-sorter="false" class="col-ep">Download</th>
-			#if $sickbeard.USE_SUBTITLES and $show.subtitles:
-				<th data-sorter="false" class="col-subtitles">Subtitles</th>
-			#end if
+				<th data-sorter="false" #if not $sickbeard.DOWNLOAD_URL then "class=\"col-ep columnSelector-false\"" else "class=\"col-ep\""#>Download</th>
+				<th data-sorter="false" #if not $sickbeard.USE_SUBTITLES then "class=\"col-ep columnSelector-false\"" else "class=\"col-ep\""#>Subtitles</th>
 				<th data-sorter="false" class="col-status">Status</th>
 				<th data-sorter="false" class="col-search">Search</th>        
         </tr>
@@ -440,10 +435,7 @@
                     $epResult["episode"]
                 #end if
             </td>
-		#if $show.is_anime:
 			<td align="center">$epResult["absolute_number"]</td>
-		#end if
-		#if $scene:
 			<td align="center">
 				<input type="text" placeholder="<%=str(dfltSeas) + 'x' + str(dfltEpis)%>" size="6" maxlength="8"
 					class="sceneSeasonXEpisode form-control input-scene" data-for-season="$epResult["season"]" data-for-episode="$epResult["episode"]"
@@ -456,7 +448,6 @@
 					#end if
 						style="padding: 0; text-align: center; max-width: 60px;" />
 			</td>
-		#elif $scene_anime:
 			<td align="center">
 				<input type="text" placeholder="<%=str(dfltAbsolute)%>" size="6" maxlength="8"
 					class="sceneAbsolute form-control input-scene" data-for-absolute="$epResult["absolute_number"]"
@@ -469,7 +460,6 @@
 					#end if
 						style="padding: 0; text-align: center; max-width: 60px;" />
 			</td>
-		#end if
 		<td class="col-name">
 			#if $epResult["description"] != "" and $epResult["description"] != None:
 				<img src="$sbRoot/images/info32.png" width="16" height="16" class="plotInfo" alt="" id="plot_info_$show.indexerid<%="_" + str(epResult["season"]) + "_" + str(epResult["episode"])%>" />
@@ -477,7 +467,16 @@
 				<img src="$sbRoot/images/info32.png" width="16" height="16" class="plotInfoNone" alt="" />
 			#end if
 			$epResult["name"]
-		</td>	
+		</td>
+        <td class="col-name]">
+                #set $epLoc = $epResult["location"]  
+                #if $epLoc and $show._location and $epLoc.lower().startswith($show._location.lower()):
+                    #set $epLoc = $epLoc[len($show._location)+1:]
+                #elif $epLoc and (not $epLoc.lower().startswith($show._location.lower()) or not $show._location):
+                    #set $epLoc = $epLoc
+                #end if
+                $epLoc
+        </td>
 		<td class="col-ep">
 			#if $epResult["file_size"]:
 				#set $file_size = $sickbeard.helpers.pretty_filesize($epResult["file_size"])
@@ -486,21 +485,21 @@
 		</td>
 		<td class="col-airdate">
 			<span class="${fuzzydate}">#if int($epResult['airdate']) == 1 then 'never' else $sbdatetime.sbdatetime.sbfdate($sbdatetime.sbdatetime.convert_to_setting($network_timezones.parse_date_time($epResult['airdate'],$show.airs,$show.network)))#</span>
-		</td>
-		
+		</td>		
 		<td>
-            #if $epResult['location']
-			#set $filename = $epResult['location']
-		  	#for $rootDir in $sickbeard.ROOT_DIRS.split('|')
-		   		#if $rootDir.startswith('/')
-		   			#set $filename = $filename.replace($rootDir, "")
-		   		#end if
-		   	#end for
-			#set $filename = $sickbeard.DOWNLOAD_URL + $urllib.quote($filename.encode('utf8'))
+            #if $sickbeard.DOWNLOAD_URL and $epResult['location']
+                #if $epResult['location']
+                    #set $filename = $epResult['location']
+                    #for $rootDir in $sickbeard.ROOT_DIRS.split('|')
+                        #if $rootDir.startswith('/')
+                            #set $filename = $filename.replace($rootDir, "")
+                        #end if
+                    #end for
+                    #set $filename = $sickbeard.DOWNLOAD_URL + $urllib.quote($filename.encode('utf8'))
 			<center><a href="$filename">Download</a></center>
-            #end if		
+                #end if
+            #end if
 		</td>
-		#if $sickbeard.USE_SUBTITLES and $show.subtitles:
 			<td class="col-subtitles" align="center">
         #if $epResult["subtitles"]:
             #for $sub_lang in subliminal.language.language_list([x.strip() for x in $epResult["subtitles"].split(',') if x != ""]):
@@ -512,7 +511,6 @@
             #end for
         #end if
 			</td>
-		#end if
 		#set $curStatus, $curQuality = $Quality.splitCompositeStatus(int($epResult["status"]))
 			#if $curQuality != Quality.NONE:   
 				<td class="col-status">$statusStrings[$curStatus] <span class="quality $Quality.qualityStrings[$curQuality].replace("720p","HD720p").replace("1080p","HD1080p").replace("RawHD TV", "RawHD").replace("HD TV", "HD720p")">$Quality.qualityStrings[$curQuality]</span></td>
