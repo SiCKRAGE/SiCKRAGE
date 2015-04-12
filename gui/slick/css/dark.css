@@ -1200,9 +1200,11 @@ span.snatched b {
 	text-align: center;
 	border: none;
 	empty-cells: show;
-	color: #000;
 }
 
+.sickbeardTable tr{
+	color: #000;
+}
 .sickbeardTable th{
 	color: #fff;
 	text-align: center;
@@ -2747,7 +2749,6 @@ tablesorter.css
 	width: 100%;
 	margin-right: auto;
 	margin-left: auto;
-	color: #fff;
 	text-align: left;
 	background-color: #333;
 	border-spacing: 0;
@@ -2768,12 +2769,12 @@ tablesorter.css
 }
 
 .tablesorter th {
-	color: #fff;
 	text-align: center;
-	text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
+    color: #fff;
+/*	text-shadow: -1px -1px 0 rgba(0,0,0,0.3); */
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.6);
 	background-color: #15528F;
 	border-collapse: collapse;
-	font-weight: normal;
 }
 
 .tablesorter .tablesorter-header {
@@ -2836,6 +2837,28 @@ thead.tablesorter-stickyHeader {
 	border-bottom: 1px solid #111;
 }
 
+/* hidden filter row */
+.tablesorter-filter-row.hideme td {
+  /*** *********************************************** ***/
+  /*** change this padding to modify the thickness     ***/
+  /*** of the closed filter row (height = padding x 2) ***/
+  padding: 2px;
+  /*** *********************************************** ***/
+  margin: 0;
+  line-height: 0;
+  cursor: pointer;
+}
+.tablesorter-filter-row.hideme * {
+  height: 1px;
+  min-height: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  /* don't use visibility: hidden because it disables tabbing */
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+
 /* optional disabled input styling */
 .tablesorter input.tablesorter-filter-row .disabled {
 	display: none;
@@ -2847,7 +2870,6 @@ thead.tablesorter-stickyHeader {
 }
 
 .tablesorter tfoot tr {
-	color: #fff;
 	text-align: center;
 	text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
 	background-color: #333;
@@ -2855,7 +2877,6 @@ thead.tablesorter-stickyHeader {
 }
 
 .tablesorter tfoot a {
-	color:#fff;
 	text-decoration: none;
 }
 
