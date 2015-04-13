@@ -351,7 +351,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
         #set $download_stat = str($cur_downloaded)
         #set $download_stat_tip = "Downloaded: " + str($cur_downloaded)
         #if $cur_snatched > 0:
-            #set $download_stat = download_stat
+            #set $download_stat = download_stat + "+" + str($cur_snatched)
             #set $download_stat_tip = download_stat_tip + "&#013;" + "Snatched: " + str($cur_snatched)
         #end if
         #if $sickbeard.EP_AVAILABILITY_CHECK:
@@ -366,7 +366,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
     #end if
 
     #if $sickbeard.EP_AVAILABILITY_CHECK:
-        #set $nom = $cur_downloaded + $cur_available
+        #set $nom = $cur_downloaded + $cur_available + $cur_snatched
     #else
         #set $nom = $cur_downloaded
     #end if
@@ -601,7 +601,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
     #end if
 
     #if $sickbeard.EP_AVAILABILITY_CHECK:
-        #set $nom = $cur_downloaded + $cur_available
+        #set $nom = $cur_downloaded + $cur_available + $cur_snatched
     #else
         #set $nom = $cur_downloaded
     #end if
