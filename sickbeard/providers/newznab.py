@@ -239,7 +239,7 @@ class NewznabProvider(generic.NZBProvider):
         else:
             logger.log(u"Unknown error given from " + self.name + ": " + err_desc, logger.ERROR)
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         self._checkAuth()
 
@@ -360,16 +360,16 @@ class NewznabProvider(generic.NZBProvider):
 
                 try:
                     result_date = datetime.datetime(*item['published_parsed'][0:6])
-                except AttributeError:
+                except (AttributeError, KeyError):
                     try:
                         result_date = datetime.datetime(*item['updated_parsed'][0:6])
-                    except AttributeError:
+                    except (AttributeError, KeyError):
                         try:
                             result_date = datetime.datetime(*item['created_parsed'][0:6])
-                        except AttributeError:
+                        except (AttributeError, KeyError):
                             try:
                                 result_date = datetime.datetime(*item['date'][0:6])
-                            except AttributeError:
+                            except (AttributeError, KeyError):
                                 logger.log(u"Unable to figure out the date for entry " + title + ", skipping it")
                                 continue
 

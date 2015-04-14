@@ -1,34 +1,5 @@
 $(document).ready(function () {
 
-    function populateSelect() {
-        if (!$('#nameToSearch').length) {
-            return;
-        }
-
-        if ($('#indexerLangSelect option').length <= 1) {
-            $.getJSON(sbRoot + '/home/addShows/getIndexerLanguages', {}, function (data) {
-                var selected, resultStr = '';
-
-                if (data.results.length === 0) {
-                    resultStr = '<option value="en" selected="selected">en</option>';
-                } else {
-                    $.each(data.results, function (index, obj) {
-                        if (resultStr == '') {
-                            selected = ' selected="selected"';
-                        } else {
-                            selected = '';
-                        }
-
-                        resultStr += '<option value="' + obj + '"' + selected + '>' + obj + '</option>';
-                    });
-                }
-
-                $('#indexerLangSelect').html(resultStr);
-                $('#indexerLangSelect').change(function () { searchIndexers(); });
-            });
-        }
-    }
-
     var searchRequestXhr = null;
 
     function searchIndexers() {
@@ -38,12 +9,12 @@ $(document).ready(function () {
 
         if (searchRequestXhr) searchRequestXhr.abort();
 
-        var searchingFor = $('#nameToSearch').val() + ' on ' + $('#providedIndexer option:selected').text() + ' in ' + $('#indexerLangSelect').val();
+        var searchingFor = $('#nameToSearch').val().trim() + ' on ' + $('#providedIndexer option:selected').text() + ' in ' + $('#indexerLangSelect').val();
         $('#searchResults').empty().html('<img id="searchingAnim" src="' + sbRoot + '/images/loading32' + themeSpinner + '.gif" height="32" width="32" /> searching ' + searchingFor + '...');
 
         searchRequestXhr = $.ajax({
             url: sbRoot + '/home/addShows/searchIndexersForShowName',
-            data: {'search_term': $('#nameToSearch').val(), 'lang': $('#indexerLangSelect').val(), 'indexer': $('#providedIndexer').val()},
+            data: {'search_term': $('#nameToSearch').val().trim(), 'lang': $('#indexerLangSelect').val(), 'indexer': $('#providedIndexer').val()},
             timeout: parseInt($('#indexer_timeout').val(), 10) * 1000,
             dataType: 'json',
             error: function () {
@@ -51,7 +22,7 @@ $(document).ready(function () {
             },
             success: function (data) {
                 var firstResult = true;
-                var resultStr = '<fieldset>\n<legend>Search Results:</legend>\n';
+                var resultStr = '<fieldset>\n<legend class="legendStep">Search Results:</legend>\n';
                 var checked = '';
 
                 if (data.results.length === 0) {
@@ -68,7 +39,7 @@ $(document).ready(function () {
                         var whichSeries = obj.join('|');
 
 
-                        resultStr += '<input type="radio" id="whichSeries" name="whichSeries" value="' + whichSeries + '"' + checked + ' /> ';
+                        resultStr += '<input type="radio" id="whichSeries" name="whichSeries" value="' + whichSeries.replace(/"/g, "")  + '"' + checked + ' /> ';
                         if (data.langid && data.langid != "") {
                             resultStr += '<a href="' + anonURL + obj[2] + obj[3] + '&lid=' + data.langid + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
                         } else {
@@ -136,7 +107,6 @@ $(document).ready(function () {
         formid: 'addShowForm',
         revealfx: ['slide', 500],
         oninit: function () {
-            populateSelect();
             updateSampleText();
             if ($('input:hidden[name=whichSeries]').length && $('#fullShowPath').length) {
                 goToStep(3);

@@ -15,8 +15,6 @@
 #include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_top.tmpl")
 
 <script type="text/javascript" src="$sbRoot/js/lib/jquery.bookmarkscroll.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/jwplayer/jwplayer.js"></script>
-<script type="text/javascript">jwplayer.key="Zq3m618ITHrFxeKGi3Gf33ovC+XtdGQz19MMug==";</script>
 
 <input type="hidden" id="sbRoot" value="$sbRoot" />
 
@@ -166,7 +164,7 @@
 #else
     #if 'country_codes' in $show.imdb_info:
         #for $country in $show.imdb_info['country_codes'].split('|')
-				<img src="$sbRoot/images/flags/${$country}.png" width="16" height="11" style="margin-left: 3px; vertical-align:middle;" />
+				<img src="$sbRoot/images/blank.png" class="country-flag flag-${$country}" width="16" height="11" style="margin-left: 3px; vertical-align:middle;" />
         #end for
     #end if
     #if 'year' in $show.imdb_info:
@@ -255,7 +253,7 @@
 					<tr><td class="showLegend">Subtitles: </td><td><img src="$sbRoot/images/#if int($show.subtitles) == 1 then "yes16.png\" alt=\"Y" else "no16.png\" alt=\"N"#" width="16" height="16" /></td></tr>
 					#end if
 					<tr><td class="showLegend">Flat Folders: </td><td><img src="$sbRoot/images/#if $show.flatten_folders == 1 or $sickbeard.NAMING_FORCE_FOLDERS then "yes16.png\" alt=\"Y" else "no16.png\" alt=\"N"#" width="16" height="16" /></td></tr>
-					<tr><td class="showLegend">Paused: </td><td><img src="$sbRoot/images/#if int($show.paused) == 1 then "yes16.png\" alt=\"Y" else "no16.png\" alt=\"N"#" width="16" height="16" /></td></tr>
+					<tr><td class="showLegend">Paused: </td><td><button class="btn btn-xs clearAll" id="pause">#if int($show.paused) == 1 then "<span class=\"ui-icon ui-icon-play\"></span>" else "<span class=\"ui-icon ui-icon-play\"></span>"#</button></td></tr>
 					<tr><td class="showLegend">Air-by-Date: </td><td><img src="$sbRoot/images/#if int($show.air_by_date) == 1 then "yes16.png\" alt=\"Y" else "no16.png\" alt=\"N"#" width="16" height="16" /></td></tr>
 					<tr><td class="showLegend">Sports: </td><td><img src="$sbRoot/images/#if int($show.is_sports) == 1 then "yes16.png\" alt=\"Y" else "no16.png\" alt=\"N"#" width="16" height="16" /></td></tr>
 					<tr><td class="showLegend">Anime: </td><td><img src="$sbRoot/images/#if int($show.is_anime) == 1 then "yes16.png\" alt=\"Y" else "no16.png\" alt=\"N"#" width="16" height="16" /></td></tr>
@@ -360,9 +358,6 @@
 			
 			<tr id="season-$epResult["season"]-cols" class="seasoncols">
 				<th class="col-checkbox"><input type="checkbox" class="seasonCheck" id="$epResult["season"]" /></th>
-			#if $sickbeard.PLAY_VIDEOS:
-				<th>Video</th>
-			#end if
 				<th class="col-metadata">NFO</th>
 				<th class="col-metadata">TBN</th>
 				<th class="col-ep">Episode</th>
@@ -375,9 +370,16 @@
 			#if $scene_anime:
 				<th class="col-ep">Scene Absolute</th>
 			#end if
-				<th class="col-name">Name</th>
+				<th class="col-name"
+			#if ($sickbeard.DISPLAY_FILESIZE == True):
+			style="min-width: 190px"
+			#end if
+			>Name</th>
+			#if ($sickbeard.DISPLAY_FILESIZE == True):
+				<th class="col-ep">Size</th>
+			#end if
 				<th class="col-airdate">Airdate</th>
-			#if len($sickbeard.DOWNLOAD_URL) > 0
+			#if $sickbeard.DOWNLOAD_URL
 				<th class="col-ep">Download</th>
 			#end if
 			#if $sickbeard.USE_SUBTITLES and $show.subtitles:
@@ -399,18 +401,6 @@
 			<input type="checkbox" class="epCheck" id="<%=str(epResult["season"])+'x'+str(epResult["episode"])%>" name="<%=str(epResult["season"]) +"x"+str(epResult["episode"]) %>" />
 		#end if
 		</td>
-    
-		#if $sickbeard.PLAY_VIDEOS:
-			<td align="center">
-			#if $epResult["location"]:
-				#set $video_root = $os.path.dirname($show._location)
-				#set $video_source = $sbRoot + $epResult["location"].replace($video_root, '/videos')
-				<div id="$video_source" class="jwvideo">Loading the player...</div>
-			#else:
-				No Video
-			#end if
-			</td>
-		#end if
 		
 		<td align="center"><img src="$sbRoot/images/#if $epResult["hasnfo"] == 1 then "nfo.gif\" alt=\"Y" else "nfo-no.gif\" alt=\"N"#" width="23" height="11" /></td>
 		
@@ -471,11 +461,19 @@
 			$epResult["name"]
 		</td>
 		
+		#if ($sickbeard.DISPLAY_FILESIZE == True):
+		<td class="col-ep">
+			#if $epResult["file_size"]:
+				#set $file_size = $sickbeard.helpers.pretty_filesize($epResult["file_size"])
+				$file_size
+			#end if
+		</td>
+		#end if
 		<td class="col-airdate">
 			<span class="${fuzzydate}">#if int($epResult['airdate']) == 1 then 'never' else $sbdatetime.sbdatetime.sbfdate($sbdatetime.sbdatetime.convert_to_setting($network_timezones.parse_date_time($epResult['airdate'],$show.airs,$show.network)))#</span>
 		</td>
 
-		#if len($sickbeard.DOWNLOAD_URL) > 0 and len($epResult['location']) > 0
+		#if $sickbeard.DOWNLOAD_URL and $epResult['location']
 		<td>
 			#set $filename = $epResult['location']
 		  	#for $rootDir in $sickbeard.ROOT_DIRS.split('|')
@@ -486,19 +484,21 @@
 			#set $filename = $sickbeard.DOWNLOAD_URL + $urllib.quote($filename.encode('utf8'))
 			<center><a href="$filename">Download</a></center>
 		</td>
-		#elif len($sickbeard.DOWNLOAD_URL) > 0
+		#elif $sickbeard.DOWNLOAD_URL
 			<td></td>
 		#end if
 		
 		#if $sickbeard.USE_SUBTITLES and $show.subtitles:
 			<td class="col-subtitles" align="center">
-		#if $epResult["subtitles"]:
-		#for $sub_lang in subliminal.language.language_list([x.strip() for x in $epResult["subtitles"].split(',')]):
-        #if sub_lang.alpha2 != ""
-           	<img src="$sbRoot/images/flags/${sub_lang.alpha2}.png" width="16" height="11" alt="${sub_lang}" />
-		#end if
-		#end for
-		#end if
+        #if $epResult["subtitles"]:
+            #for $sub_lang in subliminal.language.language_list([x.strip() for x in $epResult["subtitles"].split(',') if x != ""]):
+                #if sub_lang.alpha2 != ""
+                    <img src="$sbRoot/images/flags/${sub_lang.alpha2}.png" width="16" height="11" alt="${sub_lang}" />
+                #else
+                    <img src="$sbRoot/images/flags/unknown.png" width="16" height="11" alt="Unknown" />
+                #end if
+            #end for
+        #end if
 			</td>
 		#end if
 		
@@ -512,9 +512,9 @@
 		<td class="col-search">
 			#if int($epResult["season"]) != 0:
 			#if ( int($epResult["status"]) in $Quality.SNATCHED or int($epResult["status"]) in $Quality.DOWNLOADED ) and $sickbeard.USE_FAILED_DOWNLOADS:
-				<a class="epRetry" id="<%=str(epResult["season"])+'x'+str(epResult["episode"])%>" name="<%=str(epResult["season"]) +"x"+str(epResult["episode"]) %>" href="retryEpisode?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search16.png" height="16" alt="retry" title="Retry Download" /></a>
+				<a class="epRetry" id="#echo $str($show.indexerid)+'x'+$str(epResult["season"])+'x'+$str(epResult["episode"])#" name="#echo $str($show.indexerid)+'x'+$str(epResult["season"])+'x'+$str(epResult["episode"])#" href="retryEpisode?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search16.png" height="16" alt="retry" title="Retry Download" /></a>
 			#else:
-				<a class="epSearch" id="<%=str(epResult["season"])+'x'+str(epResult["episode"])%>" name="<%=str(epResult["season"]) +"x"+str(epResult["episode"]) %>" href="searchEpisode?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search16.png" width="16" height="16" alt="search" title="Manual Search" /></a>
+				<a class="epSearch" id="#echo $str($show.indexerid)+'x'+$str(epResult["season"])+'x'+$str(epResult["episode"])#" name="#echo $str($show.indexerid)+'x'+$str(epResult["season"])+'x'+$str(epResult["episode"])#" href="searchEpisode?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><img src="$sbRoot/images/search16.png" width="16" height="16" alt="search" title="Manual Search" /></a>
 			#end if
 			#end if
 			
@@ -527,5 +527,47 @@
 	#end for
 	
 </table>
+
+<!--Begin - Bootstrap Modal-->
+
+<div id="manualSearchModalFailed" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Manual Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to mark this episode as failed?</p>
+                <p class="text-warning"><small>The episode release name will be added to the failed history, preventing it to be downloaded again.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="manualSearchModalQuality" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Manual Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to include the current episode quality in the search?</p>
+                <p class="text-warning"><small>Choosing No will ignore any releases with the same episode quality as the one currently downloaded/snatched.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--End - Bootstrap Modal-->
 
 #include $os.path.join($sickbeard.PROG_DIR,"gui/slick/interfaces/default/inc_bottom.tmpl")

@@ -41,10 +41,6 @@ class ProperFinder():
         self.amActive = False
 
     def run(self, force=False):
-
-        if not sickbeard.DOWNLOAD_PROPERS:
-            return
-
         logger.log(u"Beginning the search for new propers")
 
         self.amActive = True
@@ -146,7 +142,7 @@ class ProperFinder():
             curProper.content = None
 
             # filter release
-            bestResult = pickBestResult(curProper)
+            bestResult = pickBestResult(curProper, parse_result.show)
             if not bestResult:
                 logger.log(u"Proper " + curProper.name + " were rejected by our release filters.", logger.DEBUG)
                 continue
@@ -243,6 +239,7 @@ class ProperFinder():
                 result.quality = curProper.quality
                 result.release_group = curProper.release_group
                 result.version = curProper.version
+                result.content = curProper.content
 
                 # snatch it
                 search.snatchEpisode(result, SNATCHED_PROPER)

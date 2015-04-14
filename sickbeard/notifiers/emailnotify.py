@@ -22,6 +22,7 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import formatdate
 
 import re
 
@@ -42,12 +43,13 @@ class EmailNotifier:
         msg['Subject'] = 'SickRage: Test Message'
         msg['From'] = smtp_from
         msg['To'] = to
+        msg['Date'] = formatdate(localtime=True)
         return self._sendmail(host, port, smtp_from, use_tls, user, pwd, [to], msg, True)
 
     def notify_snatch(self, ep_name, title="Snatched:"):
         """
         Send a notification that an episode was snatched
-        
+
         ep_name: The name of the episode that was snatched
         title: The title of the notification (optional)
         """
@@ -76,6 +78,7 @@ class EmailNotifier:
                 msg['Subject'] = 'Snatched: ' + ep_name
                 msg['From'] = sickbeard.EMAIL_FROM
                 msg['To'] = ','.join(to)
+                msg['Date'] = formatdate(localtime=True)
                 if self._sendmail(sickbeard.EMAIL_HOST, sickbeard.EMAIL_PORT, sickbeard.EMAIL_FROM, sickbeard.EMAIL_TLS,
                                   sickbeard.EMAIL_USER, sickbeard.EMAIL_PASSWORD, to, msg):
                     logger.log("Snatch notification sent to [%s] for '%s'" % (to, ep_name), logger.DEBUG)
@@ -109,11 +112,12 @@ class EmailNotifier:
                     try:
                         msg = MIMEText(ep_name)
                     except:
-                        mag = 'Episode Downloaded'
+                        msg = MIMEText('Episode Downloaded')
 
                 msg['Subject'] = 'Downloaded: ' + ep_name
                 msg['From'] = sickbeard.EMAIL_FROM
                 msg['To'] = ','.join(to)
+                msg['Date'] = formatdate(localtime=True)
                 if self._sendmail(sickbeard.EMAIL_HOST, sickbeard.EMAIL_PORT, sickbeard.EMAIL_FROM, sickbeard.EMAIL_TLS,
                                   sickbeard.EMAIL_USER, sickbeard.EMAIL_PASSWORD, to, msg):
                     logger.log("Download notification sent to [%s] for '%s'" % (to, ep_name), logger.DEBUG)
@@ -147,7 +151,7 @@ class EmailNotifier:
                     try:
                         msg = MIMEText(ep_name + ": " + lang)
                     except:
-                        msg = "Episode Subtitle Downloaded"
+                        msg = MIMEText("Episode Subtitle Downloaded")
 
                 msg['Subject'] = lang + ' Subtitle Downloaded: ' + ep_name
                 msg['From'] = sickbeard.EMAIL_FROM
@@ -186,7 +190,13 @@ class EmailNotifier:
     def _sendmail(self, host, port, smtp_from, use_tls, user, pwd, to, msg, smtpDebug=False):
         logger.log('HOST: %s; PORT: %s; FROM: %s, TLS: %s, USER: %s, PWD: %s, TO: %s' % (
             host, port, smtp_from, use_tls, user, pwd, to), logger.DEBUG)
-        srv = smtplib.SMTP(host, int(port))
+        try:
+            srv = smtplib.SMTP(host, int(port))
+        except Exception as e:
+            logger.log(u"Exception generated while sending e-mail: " + str(e), logger.ERROR)
+            logger.log(traceback.format_exc(), logger.DEBUG)
+            return False
+            
         if smtpDebug:
             srv.set_debuglevel(1)
         try:

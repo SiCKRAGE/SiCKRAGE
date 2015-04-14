@@ -130,9 +130,12 @@ def snatchEpisode(result, endStatus=SNATCHED):
         if sickbeard.TORRENT_METHOD == "blackhole":
             dlResult = _downloadResult(result)
         else:
-            #result.content = result.provider.getURL(result.url) if not result.url.startswith('magnet') else None
-            client = clients.getClientIstance(sickbeard.TORRENT_METHOD)()
-            dlResult = client.sendTORRENT(result)
+            if result.content or result.url.startswith('magnet'):
+                client = clients.getClientIstance(sickbeard.TORRENT_METHOD)()
+                dlResult = client.sendTORRENT(result)
+            else:
+                logger.log(u"Torrent file content is empty", logger.ERROR)
+                dlResult = False
     else:
         logger.log(u"Unknown result type, unable to download it", logger.ERROR)
         dlResult = False
@@ -149,6 +152,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
 
     # don't notify when we re-download an episode
     sql_l = []
+    trakt_data = []
     for curEpObj in result.episodes:
         with curEpObj.lock:
             if isFirstBestMatch(result):
@@ -161,33 +165,29 @@ def snatchEpisode(result, endStatus=SNATCHED):
         if curEpObj.status not in Quality.DOWNLOADED:
             notifiers.notify_snatch(curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
 
+            trakt_data.append((curEpObj.season, curEpObj.episode))
+
+    data = notifiers.trakt_notifier.trakt_episode_data_generate(trakt_data)
+
+    if sickbeard.USE_TRAKT and sickbeard.TRAKT_SYNC_WATCHLIST:
+        logger.log(u"Add episodes, showid: indexerid " + str(result.show.indexerid) + ", Title " + str(result.show.name) + " to Traktv Watchlist", logger.DEBUG)
+        if data:
+            notifiers.trakt_notifier.update_watchlist(result.show, data_episode=data, update="add")
+
     if len(sql_l) > 0:
         myDB = db.DBConnection()
         myDB.mass_action(sql_l)
 
+    if sickbeard.UPDATE_SHOWS_ON_SNATCH and not sickbeard.showQueueScheduler.action.isBeingUpdated(result.show) and result.show.status == "Continuing":
+        try:
+            sickbeard.showQueueScheduler.action.updateShow(result.show, True)
+        except exceptions.CantUpdateException as e:
+            logger.log("Unable to update show: {0}".format(str(e)),logger.DEBUG)
+
     return True
 
 
-def filter_release_name(name, filter_words):
-    """
-    Filters out results based on filter_words
-
-    name: name to check
-    filter_words : Words to filter on, separated by comma
-
-    Returns: False if the release name is OK, True if it contains one of the filter_words
-    """
-    if filter_words:
-        filters = [re.compile('.*%s.*' % filter.strip(), re.I) for filter in filter_words.split(',')]
-        for regfilter in filters:
-            if regfilter.search(name):
-                logger.log(u"" + name + " contains pattern: " + regfilter.pattern, logger.DEBUG)
-                return True
-
-    return False
-
-
-def pickBestResult(results, show=None, quality_list=None):
+def pickBestResult(results, show, quality_list=None):
     results = results if isinstance(results, list) else [results]
 
     logger.log(u"Picking the best result out of " + str([x.name for x in results]), logger.DEBUG)
@@ -201,7 +201,13 @@ def pickBestResult(results, show=None, quality_list=None):
             continue
 
         # filter out possible bad torrents from providers such as ezrss
-        if cur_result.resultType == "torrent" and sickbeard.TORRENT_METHOD != "blackhole":
+        if isinstance(cur_result, sickbeard.classes.SearchResult):
+            if cur_result.resultType == "torrent" and sickbeard.TORRENT_METHOD != "blackhole":
+                if not cur_result.url.startswith('magnet'):
+                    cur_result.content = cur_result.provider.getURL(cur_result.url)
+                    if not cur_result.content:
+                        continue
+        else:
             if not cur_result.url.startswith('magnet'):
                 cur_result.content = cur_result.provider.getURL(cur_result.url)
                 if not cur_result.content:
@@ -221,12 +227,12 @@ def pickBestResult(results, show=None, quality_list=None):
             logger.log(cur_result.name + " is a quality we know we don't want, rejecting it", logger.DEBUG)
             continue
 
-        if show.rls_ignore_words and filter_release_name(cur_result.name, cur_result.show.rls_ignore_words):
+        if show.rls_ignore_words and show_name_helpers.containsAtLeastOneWord(cur_result.name, cur_result.show.rls_ignore_words):
             logger.log(u"Ignoring " + cur_result.name + " based on ignored words filter: " + show.rls_ignore_words,
                        logger.INFO)
             continue
 
-        if show.rls_require_words and not filter_release_name(cur_result.name, cur_result.show.rls_require_words):
+        if show.rls_require_words and not show_name_helpers.containsAtLeastOneWord(cur_result.name, cur_result.show.rls_require_words):
             logger.log(u"Ignoring " + cur_result.name + " based on required words filter: " + show.rls_require_words,
                        logger.INFO)
             continue
@@ -236,10 +242,11 @@ def pickBestResult(results, show=None, quality_list=None):
                        logger.INFO)
             continue
 
-        if sickbeard.USE_FAILED_DOWNLOADS and failed_history.hasFailed(cur_result.name, cur_result.size,
-                                                                       cur_result.provider.name):
-            logger.log(cur_result.name + u" has previously failed, rejecting it")
-            continue
+        if hasattr(cur_result, 'size'):
+            if sickbeard.USE_FAILED_DOWNLOADS and failed_history.hasFailed(cur_result.name, cur_result.size,
+                                                                           cur_result.provider.name):
+                logger.log(cur_result.name + u" has previously failed, rejecting it")
+                continue
 
         if not bestResult or bestResult.quality < cur_result.quality and cur_result.quality != Quality.UNKNOWN:
             bestResult = cur_result
@@ -420,7 +427,7 @@ def searchForNeededEpisodes():
     return foundResults.values()
 
 
-def searchProviders(show, episodes, manualSearch=False):
+def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
     foundResults = {}
     finalResults = []
 
@@ -457,6 +464,10 @@ def searchProviders(show, episodes, manualSearch=False):
         searchCount = 0
         search_mode = curProvider.search_mode
 
+        # Always search for episode when manually searching when in sponly and fallback false
+        if search_mode == 'sponly' and manualSearch == True and curProvider.search_fallback == False:
+            search_mode = 'eponly'
+
         while(True):
             searchCount += 1
 
@@ -466,7 +477,7 @@ def searchProviders(show, episodes, manualSearch=False):
                 logger.log(u"Performing season pack search for " + show.name)
 
             try:
-                searchResults = curProvider.findSearchResults(show, episodes, search_mode, manualSearch)
+                searchResults = curProvider.findSearchResults(show, episodes, search_mode, manualSearch, downCurQuality)
             except exceptions.AuthException, e:
                 logger.log(u"Authentication error: " + ex(e), logger.ERROR)
                 break
@@ -540,7 +551,7 @@ def searchProviders(show, episodes, manualSearch=False):
             anyWanted = False
             for curEpNum in allEps:
                 for season in set([x.season for x in episodes]):
-                    if not show.wantEpisode(season, curEpNum, seasonQual):
+                    if not show.wantEpisode(season, curEpNum, seasonQual, downCurQuality):
                         allWanted = False
                     else:
                         anyWanted = True
@@ -651,6 +662,8 @@ def searchProviders(show, episodes, manualSearch=False):
 
                 # if we're keeping this multi-result then remember it
                 for epObj in multiResult.episodes:
+                    if not multiResult.url.startswith('magnet'):
+                        multiResult.content = multiResult.provider.getURL(cur_result.url)
                     multiResults[epObj.episode] = multiResult
 
                 # don't bother with the single result if we're going to get it with a multi result

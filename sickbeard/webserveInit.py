@@ -3,7 +3,7 @@ import threading
 import sys
 import sickbeard
 
-from sickbeard.webserve import LoginHandler, LogoutHandler, KeyHandler
+from sickbeard.webserve import LoginHandler, LogoutHandler, KeyHandler, CalendarHandler
 from sickbeard.webapi import ApiHandler
 from sickbeard import logger
 from sickbeard.helpers import create_https_certificates, generateApiKey
@@ -69,9 +69,9 @@ class SRWebServer(threading.Thread):
         self.app = Application([],
                                  debug=True,
                                  autoreload=False,
-                                 gzip=True,
+                                 gzip=sickbeard.WEB_USE_GZIP,
                                  xheaders=sickbeard.HANDLE_REVERSE_PROXY,
-                                 cookie_secret='61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=',
+                                 cookie_secret=sickbeard.WEB_COOKIE_SECRET,
                                  login_url='%s/login/' % self.options['web_root'],
         )
 
@@ -92,6 +92,11 @@ class SRWebServer(threading.Thread):
 
             # webui handlers
         ] + route.get_routes(self.options['web_root']))
+
+        # Web calendar handler (Needed because option Unprotected calendar)
+        self.app.add_handlers('.*$', [
+            (r'%s/calendar' % self.options['web_root'], CalendarHandler),
+        ])
 
         # Static File Handlers
         self.app.add_handlers(".*$", [

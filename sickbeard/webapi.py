@@ -38,6 +38,7 @@ from sickbeard import network_timezones, sbdatetime
 from sickbeard.exceptions import ex
 from sickbeard.common import Quality, Overview, qualityPresetStrings, statusStrings, SNATCHED, SNATCHED_PROPER, DOWNLOADED, SKIPPED, UNAIRED, IGNORED, ARCHIVED, WANTED, UNKNOWN
 from sickbeard.webserve import WebRoot
+import codecs
 
 try:
     import json
@@ -130,7 +131,7 @@ class ApiHandler(RequestHandler):
         except:pass
 
     def _out_as_json(self, dict):
-        self.set_header("Content-Type", "application/json;charset=UTF-8'")
+        self.set_header("Content-Type", "application/json;charset=UTF-8")
         try:
             out = json.dumps(dict, indent=self.intent, ensure_ascii=False, sort_keys=True)
             callback = self.get_query_argument('callback', None) or self.get_query_argument('jsonp', None)
@@ -748,7 +749,11 @@ class CMD_ComingEpisodes(ApiCall):
         for curType in self.type:
             finalEpResults[curType] = []
 
-        for ep in sql_results:
+        # Safety Measure to convert rows in sql_results to dict.
+        # This should not be required as the DB connections should only be returning dict results not sqlite3.row_type
+        dict_results = [dict(row) for row in sql_results]
+        
+        for ep in dict_results:
             """
                 Missed:   yesterday... (less than 1week)
                 Today:    today
@@ -1318,7 +1323,7 @@ class CMD_Logs(ApiCall):
 
         data = []
         if os.path.isfile(logger.logFile):
-            with ek.ek(open, logger.logFile) as f:
+            with ek.ek(codecs.open, *[logger.logFile, 'r', 'utf-8']) as f:
                 data = f.readlines()
 
         regex = "^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d):(\d\d)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$"
@@ -1664,17 +1669,12 @@ class CMD_SickBeardSearchIndexers(ApiCall):
              }
     }
 
-    valid_languages = {
-        'el': 20, 'en': 7, 'zh': 27, 'it': 15, 'cs': 28, 'es': 16, 'ru': 22,
-        'nl': 13, 'pt': 26, 'no': 9, 'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31,
-        'de': 14, 'da': 10, 'fi': 11, 'hu': 19, 'ja': 25, 'he': 24, 'ko': 32,
-        'sv': 8, 'sl': 30}
-
     def __init__(self, args, kwargs):
+        self.valid_languages = sickbeard.indexerApi().config['langabbv_to_id']
         # required
         # optional
         self.name, args = self.check_params(args, kwargs, "name", None, False, "string", [])
-        self.lang, args = self.check_params(args, kwargs, "lang", "en", False, "string", self.valid_languages.keys())
+        self.lang, args = self.check_params(args, kwargs, "lang", sickbeard.INDEXER_DEFAULT_LANGUAGE, False, "string", self.valid_languages.keys())
 
         self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, False, "int", [])
 
@@ -1691,7 +1691,7 @@ class CMD_SickBeardSearchIndexers(ApiCall):
             for _indexer in sickbeard.indexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = sickbeard.indexerApi(_indexer).api_params.copy()
 
-                if self.lang and not self.lang == 'en':
+                if self.lang and not self.lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                     lINDEXER_API_PARMS['language'] = self.lang
 
                 lINDEXER_API_PARMS['actors'] = False
@@ -1717,7 +1717,7 @@ class CMD_SickBeardSearchIndexers(ApiCall):
             for _indexer in sickbeard.indexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = sickbeard.indexerApi(_indexer).api_params.copy()
 
-                if self.lang and not self.lang == 'en':
+                if self.lang and not self.lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                     lINDEXER_API_PARMS['language'] = self.lang
 
                 lINDEXER_API_PARMS['actors'] = False
@@ -2073,13 +2073,8 @@ class CMD_ShowAddNew(ApiCall):
              }
     }
 
-    valid_languages = {
-        'el': 20, 'en': 7, 'zh': 27, 'it': 15, 'cs': 28, 'es': 16, 'ru': 22,
-        'nl': 13, 'pt': 26, 'no': 9, 'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31,
-        'de': 14, 'da': 10, 'fi': 11, 'hu': 19, 'ja': 25, 'he': 24, 'ko': 32,
-        'sv': 8, 'sl': 30}
-
     def __init__(self, args, kwargs):
+        self.valid_languages = sickbeard.indexerApi().config['langabbv_to_id']
         # required
         self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
 
@@ -2097,7 +2092,7 @@ class CMD_ShowAddNew(ApiCall):
                                                        "bool", [])
         self.status, args = self.check_params(args, kwargs, "status", None, False, "string",
                                               ["wanted", "skipped", "archived", "ignored"])
-        self.lang, args = self.check_params(args, kwargs, "lang", "en", False, "string",
+        self.lang, args = self.check_params(args, kwargs, "lang", sickbeard.INDEXER_DEFAULT_LANGUAGE, False, "string",
                                             self.valid_languages.keys())
         self.subtitles, args = self.check_params(args, kwargs, "subtitles", int(sickbeard.USE_SUBTITLES),
                                                  False, "int",
@@ -2747,8 +2742,8 @@ class CMD_ShowUpdate(ApiCall):
         try:
             sickbeard.showQueueScheduler.action.updateShow(showObj, True)  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
-        except exceptions.CantUpdateException, e:
-            logger.log(u"API:: Unable to update " + str(showObj.name) + ". " + str(ex(e)), logger.ERROR)
+        except exceptions.CantUpdateException as e:
+            logger.log("API::Unable to update show: {0}".format(str(e)),logger.DEBUG)
             return _responds(RESULT_FAILURE, msg="Unable to update " + str(showObj.name))
 
 

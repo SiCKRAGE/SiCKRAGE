@@ -19,9 +19,9 @@
 from __future__ import with_statement
 
 import os
+import ctypes
 import random
 import re
-import shutil
 import socket
 import stat
 import tempfile
@@ -35,6 +35,9 @@ import uuid
 import base64
 import zipfile
 import datetime
+import errno
+import ast
+import operator
 
 import sickbeard
 import subliminal
@@ -42,6 +45,8 @@ import adba
 import requests
 import requests.exceptions
 import xmltodict
+
+import subprocess
 
 from sickbeard.exceptions import MultipleShowObjectsException, ex
 from sickbeard import logger, classes
@@ -53,6 +58,11 @@ from sickbeard import clients
 
 from cachecontrol import CacheControl, caches
 from itertools import izip, cycle
+
+import shutil
+import lib.shutil_custom
+
+shutil.copyfile = lib.shutil_custom.copyfile_custom
 
 urllib._urlopener = classes.SickBeardURLopener()
 
@@ -127,7 +137,9 @@ def replaceExtension(filename, newExt):
 
 def isSyncFile(filename):
     extension = filename.rpartition(".")[2].lower()
-    if extension == '!sync' or extension == 'lftp-pget-status' or extension == 'part':
+    #if extension == '!sync' or extension == 'lftp-pget-status' or extension == 'part' or extension == 'bts':
+    syncfiles = sickbeard.SYNC_FILES
+    if extension in syncfiles.split(","):
         return True
     else:
         return False
@@ -186,6 +198,7 @@ def sanitizeFileName(name):
     # remove bad chars from the filename
     name = re.sub(r'[\\/\*]', '-', name)
     name = re.sub(r'[:"<>|?]', '', name)
+    name = re.sub(ur'\u2122', '', name) # Trade Mark Sign
 
     # remove leading/trailing periods and spaces
     name = name.strip(' .')
@@ -281,21 +294,22 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
                 continue
 
             try:
-                seriesname = search.seriesname
+                seriesname = search[0]['seriesname']
             except:
                 seriesname = None
 
             try:
-                series_id = search.id
+                series_id = search[0]['id']
             except:
                 series_id = None
 
             if not (seriesname and series_id):
                 continue
-
-            if str(name).lower() == str(seriesname).lower and not indexer_id:
+            ShowObj = findCertainShow(sickbeard.showList, int(series_id))
+            #Check if we can find the show in our list (if not, it's not the right show)
+            if (indexer_id is None) and (ShowObj is not None) and (ShowObj.indexerid == int(series_id)):
                 return (seriesname, i, int(series_id))
-            elif int(indexer_id) == int(series_id):
+            elif (indexer_id is not None) and (int(indexer_id) == int(series_id)):
                 return (seriesname, i, int(indexer_id))
 
         if indexer:
@@ -342,11 +356,7 @@ def listMediaFiles(path):
 
 
 def copyFile(srcFile, destFile):
-    if isPosix():
-        os.system('cp "%s" "%s"' % (srcFile, destFile))
-    else:
-        ek.ek(shutil.copyfile, srcFile, destFile)
-        
+    ek.ek(shutil.copyfile, srcFile, destFile)
     try:
         ek.ek(shutil.copymode, srcFile, destFile)
     except OSError:
@@ -355,7 +365,7 @@ def copyFile(srcFile, destFile):
 
 def moveFile(srcFile, destFile):
     try:
-        ek.ek(os.rename, srcFile, destFile)
+        ek.ek(shutil.move, srcFile, destFile)
         fixSetGroupID(destFile)
     except OSError:
         copyFile(srcFile, destFile)
@@ -369,12 +379,6 @@ def link(src, dst):
         if ctypes.windll.kernel32.CreateHardLinkW(unicode(dst), unicode(src), 0) == 0: raise ctypes.WinError()
     else:
         os.link(src, dst)
-
-def isPosix(): 
-    if os.name.startswith('posix'):
-        return True
-    else:
-        return False
 
 
 def hardlinkFile(srcFile, destFile):
@@ -399,7 +403,7 @@ def symlink(src, dst):
 
 def moveAndSymlinkFile(srcFile, destFile):
     try:
-        ek.ek(os.rename, srcFile, destFile)
+        ek.ek(shutil.move, srcFile, destFile)
         fixSetGroupID(destFile)
         ek.ek(symlink, destFile, srcFile)
     except:
@@ -491,7 +495,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
     # move the file
     try:
         logger.log(u"Renaming file from " + cur_path + " to " + new_path)
-        ek.ek(os.rename, cur_path, new_path)
+        ek.ek(shutil.move, cur_path, new_path)
     except (OSError, IOError), e:
         logger.log(u"Failed renaming " + cur_path + " to " + new_path + ": " + ex(e), logger.ERROR)
         return False
@@ -666,21 +670,26 @@ def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=Non
     return (season, episodes)
 
 
-def sanitizeSceneName(name, ezrss=False):
+def sanitizeSceneName(name, ezrss=False, anime=False):
     """
     Takes a show name and returns the "scenified" version of it.
 
     ezrss: If true the scenified version will follow EZRSS's cracksmoker rules as best as possible
+    
+    anime: Some show have a ' in their name(Kuroko's Basketball) and is needed for search.
 
     Returns: A string containing the scene version of the show name given.
     """
 
     if name:
-        if not ezrss:
-            bad_chars = u",:()'!?\u2019"
+        # anime: removed ' for Kuroko's Basketball
+        if anime:
+            bad_chars = u",:()!?\u2019"
         # ezrss leaves : and ! in their show names as far as I can tell
-        else:
+        elif ezrss:
             bad_chars = u",()'?\u2019"
+        else:
+            bad_chars = u",:()'!?\u2019"
 
         # strip out any bad chars
         for x in bad_chars:
@@ -697,6 +706,38 @@ def sanitizeSceneName(name, ezrss=False):
     else:
         return ''
 
+
+_binOps = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.div,
+    ast.Mod: operator.mod
+}
+
+
+def arithmeticEval(s):
+    """
+    A safe eval supporting basic arithmetic operations.
+
+    :param s: expression to evaluate
+    :return: value
+    """
+    node = ast.parse(s, mode='eval')
+
+    def _eval(node):
+        if isinstance(node, ast.Expression):
+            return _eval(node.body)
+        elif isinstance(node, ast.Str):
+            return node.s
+        elif isinstance(node, ast.Num):
+            return node.n
+        elif isinstance(node, ast.BinOp):
+            return _binOps[type(node.op)](_eval(node.left), _eval(node.right))
+        else:
+            raise Exception('Unsupported type {}'.format(node))
+
+    return _eval(node.body)
 
 def create_https_certificates(ssl_cert, ssl_key):
     """
@@ -882,6 +923,13 @@ def encrypt(data, encryption_version=0, decrypt=False):
         else:
             return base64.encodestring(
                 ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(unique_key1)))).strip()
+    # Version 2: Simple XOR encryption (this is not very secure, but works)
+    elif encryption_version == 2:
+        if decrypt:
+            return ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(base64.decodestring(data), cycle(sickbeard.ENCRYPTION_SECRET)))
+        else:
+            return base64.encodestring(
+                ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(sickbeard.ENCRYPTION_SECRET)))).strip()
     # Version 0: Plain text
     else:
         return data
@@ -910,12 +958,15 @@ def _check_against_names(nameInQuestion, show, season=-1):
     return False
 
 
-def get_show(name, tryIndexers=False):
+def get_show(name, tryIndexers=False, trySceneExceptions=False):
     if not sickbeard.showList:
         return
 
     showObj = None
     fromCache = False
+
+    if not name:
+        return showObj
 
     try:
         # check cache for show
@@ -923,11 +974,18 @@ def get_show(name, tryIndexers=False):
         if cache:
             fromCache = True
             showObj = findCertainShow(sickbeard.showList, int(cache))
-
+        
+        #try indexers    
         if not showObj and tryIndexers:
             showObj = findCertainShow(sickbeard.showList,
                                       searchIndexerForShowID(full_sanitizeSceneName(name), ui=classes.ShowListUI)[2])
-
+        
+        #try scene exceptions
+        if not showObj and trySceneExceptions:
+            ShowID = sickbeard.scene_exceptions.get_scene_exception_by_name(name)[0]
+            if ShowID:
+                showObj = findCertainShow(sickbeard.showList, int(ShowID))
+                
         # add show to cache
         if showObj and not fromCache:
             sickbeard.name_cache.addNameToCache(name, showObj.indexerid)
@@ -943,8 +1001,21 @@ def is_hidden_folder(folder):
     On Linux based systems hidden folders start with . (dot)
     folder: Full path of folder to check
     """
+    def is_hidden(filepath):
+        name = os.path.basename(os.path.abspath(filepath))
+        return name.startswith('.') or has_hidden_attribute(filepath)
+
+    def has_hidden_attribute(filepath):
+        try:
+            attrs = ctypes.windll.kernel32.GetFileAttributesW(unicode(filepath))
+            assert attrs != -1
+            result = bool(attrs & 2)
+        except (AttributeError, AssertionError):
+            result = False
+        return result
+    
     if ek.ek(os.path.isdir, folder):
-        if ek.ek(os.path.basename, folder).startswith('.'):
+        if is_hidden(folder):
             return True
 
     return False
@@ -963,9 +1034,12 @@ def validateShow(show, season=None, episode=None):
     try:
         lINDEXER_API_PARMS = sickbeard.indexerApi(show.indexer).api_params.copy()
 
-        if indexer_lang and not indexer_lang == 'en':
+        if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
+        if show.dvdorder != 0:
+            lINDEXER_API_PARMS['dvdorder'] = True
+            
         t = sickbeard.indexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
         if season is None and episode is None:
             return t
@@ -986,16 +1060,20 @@ def set_up_anidb_connection():
 
     if not sickbeard.ADBA_CONNECTION:
         anidb_logger = lambda x: logger.log("ANIDB: " + str(x), logger.DEBUG)
-        sickbeard.ADBA_CONNECTION = adba.Connection(keepAlive=True, log=anidb_logger)
-
-    if not sickbeard.ADBA_CONNECTION.authed():
         try:
-            sickbeard.ADBA_CONNECTION.auth(sickbeard.ANIDB_USERNAME, sickbeard.ANIDB_PASSWORD)
-        except Exception, e:
-            logger.log(u"exception msg: " + str(e))
+            sickbeard.ADBA_CONNECTION = adba.Connection(keepAlive=True, log=anidb_logger)
+        except Exception as e:
+            logger.log(u"anidb exception msg: " + str(e))
             return False
-    else:
-        return True
+
+    try:
+        if not sickbeard.ADBA_CONNECTION.authed():
+            sickbeard.ADBA_CONNECTION.auth(sickbeard.ANIDB_USERNAME, sickbeard.ANIDB_PASSWORD)
+        else:
+            return True
+    except Exception as e:
+        logger.log(u"anidb exception msg: " + str(e))
+        return False
 
     return sickbeard.ADBA_CONNECTION.authed()
 
@@ -1042,6 +1120,41 @@ def extractZip(archive, targetDir):
         return True
     except Exception as e:
         logger.log(u"Zip extraction error: " + str(e), logger.ERROR)
+        return False
+
+
+def backupConfigZip(fileList, archive, arcname = None):
+    try:
+        a = zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED)
+        for f in fileList:
+            a.write(f, os.path.relpath(f, arcname))
+        a.close()
+        return True
+    except Exception as e:
+        logger.log(u"Zip creation error: " + str(e), logger.ERROR)
+        return False
+
+
+def restoreConfigZip(archive, targetDir):
+    import ntpath
+    try:
+        if not os.path.exists(targetDir):
+            os.mkdir(targetDir)
+        else:
+            def path_leaf(path):
+                head, tail = ntpath.split(path)
+                return tail or ntpath.basename(head)
+            bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d_%H%M%S'))
+            shutil.move(targetDir, os.path.join(ntpath.dirname(targetDir), bakFilename))
+
+        zip_file = zipfile.ZipFile(archive, 'r')
+        for member in zip_file.namelist():
+            zip_file.extract(member, targetDir)
+        zip_file.close()
+        return True
+    except Exception as e:
+        logger.log(u"Zip extraction error: " + str(e), logger.ERROR)
+        shutil.rmtree(targetDir)
         return False
 
 
@@ -1108,8 +1221,13 @@ def touchFile(fname, atime=None):
             with file(fname, 'a'):
                 os.utime(fname, (atime, atime))
                 return True
-        except:
-            logger.log(u"File air date stamping not available on your OS", logger.DEBUG)
+        except Exception as e:
+            if e.errno == errno.ENOSYS:
+                logger.log(u"File air date stamping not available on your OS", logger.DEBUG)
+            elif e.errno == errno.EACCES:
+                logger.log(u"File air date stamping failed(Permission denied). Check permissions for file: {0}".format(fname), logger.ERROR)
+            else:
+                logger.log(u"File air date stamping failed. The error is: {0} and the message is: {1}.".format(e.errno, e.strerror), logger.ERROR)
             pass
 
     return False
@@ -1132,7 +1250,7 @@ def _getTempDir():
 
     return os.path.join(tempfile.gettempdir(), "sickrage-%s" % (uid))
 
-def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=None, json=False):
+def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=None, json=False, proxyGlypeProxySSLwarning=None):
     """
     Returns a byte-string retrieved from the url provider.
     """
@@ -1170,6 +1288,15 @@ def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=Non
             logger.log(u"Requested url " + url + " returned status code is " + str(
                 resp.status_code) + ': ' + clients.http_error_code[resp.status_code], logger.DEBUG)
             return
+
+        if proxyGlypeProxySSLwarning is not None:
+            if re.search('The site you are attempting to browse is on a secure connection', resp.text):
+                resp = session.get(proxyGlypeProxySSLwarning)
+
+                if not resp.ok:
+                    logger.log(u"GlypeProxySSLwarning: Requested url " + url + " returned status code is " + str(
+                        resp.status_code) + ': ' + clients.http_error_code[resp.status_code], logger.DEBUG)
+                    return
 
     except requests.exceptions.HTTPError, e:
         logger.log(u"HTTP error " + str(e.errno) + " while loading URL " + url, logger.WARNING)
@@ -1285,7 +1412,11 @@ def get_size(start_path='.'):
     for dirpath, dirnames, filenames in ek.ek(os.walk, start_path):
         for f in filenames:
             fp = ek.ek(os.path.join, dirpath, f)
-            total_size += ek.ek(os.path.getsize, fp)
+            try:
+                total_size += ek.ek(os.path.getsize, fp)
+            except OSError as e:
+                logger.log('Unable to get size for file {filePath}. Error msg is: {errorMsg}'.format(filePath=fp, errorMsg=str(e)), logger.ERROR)
+                logger.log(traceback.format_exc(), logger.DEBUG)
     return total_size
 
 def generateApiKey():
@@ -1335,4 +1466,82 @@ if __name__ == '__main__':
     doctest.testmod()
 
 def remove_article(text=''):
-    return re.sub(r'(?i)/^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
+    return re.sub(r'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
+
+def generateCookieSecret():
+
+    return base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
+
+def verify_freespace(src, dest, oldfile=None):
+    """ Checks if the target system has enough free space to copy or move a file,
+    Returns true if there is, False if there isn't.
+    Also returns True if the OS doesn't support this option
+    """
+    if not isinstance(oldfile, list):
+        oldfile = [oldfile]
+
+    logger.log("Trying to determine free space on destination drive", logger.DEBUG)
+    
+    if hasattr(os, 'statvfs'):  # POSIX
+        def disk_usage(path):
+            st = os.statvfs(path)
+            free = st.f_bavail * st.f_frsize
+            return free
+    
+    elif os.name == 'nt':       # Windows
+        import sys
+    
+        def disk_usage(path):
+            _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
+                               ctypes.c_ulonglong()
+            if sys.version_info >= (3,) or isinstance(path, unicode):
+                fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW
+            else:
+                fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA
+            ret = fun(path, ctypes.byref(_), ctypes.byref(total), ctypes.byref(free))
+            if ret == 0:
+                logger.log("Unable to determine free space, something went wrong", logger.WARNING)
+                raise ctypes.WinError()
+            return free.value
+    else:
+        logger.log("Unable to determine free space on your OS")
+        return True
+
+    if not ek.ek(os.path.isfile, src):
+        logger.log("A path to a file is required for the source. " + src + " is not a file.", logger.WARNING)
+        return False
+    
+    try:
+        diskfree = disk_usage(dest)
+    except:
+        logger.log("Unable to determine free space, so I will assume there is enough.", logger.WARNING)
+        return True
+    
+    neededspace = ek.ek(os.path.getsize, src)
+    
+    if oldfile:
+        for file in oldfile:
+            if ek.ek(os.path.isfile, file.location):
+                diskfree += ek.ek(os.path.getsize, file.location)
+        
+    if diskfree > neededspace:
+        return True
+    else:
+        logger.log("Not enough free space: Needed: " + str(neededspace) + " bytes (" + pretty_filesize(neededspace) + "), found: " + str(diskfree) + " bytes (" + pretty_filesize(diskfree) + ")", logger.WARNING)
+        return False
+
+# https://gist.github.com/thatalextaylor/7408395
+def pretty_time_delta(seconds):
+    sign_string = '-' if seconds < 0 else ''
+    seconds = abs(int(seconds))
+    days, seconds = divmod(seconds, 86400)
+    hours, seconds = divmod(seconds, 3600)
+    minutes, seconds = divmod(seconds, 60)
+    if days > 0:
+        return '%s%dd%02dh%02dm%02ds' % (sign_string, days, hours, minutes, seconds)
+    elif hours > 0:
+        return '%s%02dh%02dm%02ds' % (sign_string, hours, minutes, seconds)
+    elif minutes > 0:
+        return '%s%02dm%02ds' % (sign_string, minutes, seconds)
+    else:
+        return '%s%02ds' % (sign_string, seconds)

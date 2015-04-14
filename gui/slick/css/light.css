@@ -544,20 +544,20 @@ home.tmpl
 }
 
 .progress-100 {
-	background-image: -moz-linear-gradient(#395f07, #2a4705) !important;
-	background-image: linear-gradient(#395f07, #2a4705) !important;
-	background-image: -webkit-linear-gradient(#395f07, #2a4705) !important;
-	background-image: -o-linear-gradient(#395f07, #2a4705) !important;
+	background-image: -moz-linear-gradient(#a6cf41, #5b990d) !important;
+	background-image: linear-gradient(#a6cf41, #5b990d) !important;
+	background-image: -webkit-linear-gradient(#a6cf41, #5b990d) !important;
+	background-image: -o-linear-gradient(#a6cf41, #5b990d) !important;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
 
 .progress-80 {
-	background-image: -moz-linear-gradient(#a6cf41, #5b990d) !important;
-	background-image: linear-gradient(#a6cf41, #5b990d) !important;
-	background-image: -webkit-linear-gradient(#a6cf41, #5b990d) !important;
-	background-image: -o-linear-gradient(#a6cf41, #5b990d) !important;
+	background-image: -moz-linear-gradient(#e1ff97, #9db269) !important;
+	background-image: linear-gradient(#e1ff97, #9db269) !important;
+	background-image: -webkit-linear-gradient(#e1ff97, #9db269) !important;
+	background-image: -o-linear-gradient(#e1ff97, #9db269) !important;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
@@ -766,6 +766,17 @@ td.tvShow a {
 td.tvShow a:hover {
     cursor: pointer;
     color: #428BCA;
+}
+
+#popover-target label {
+  margin: 0 5px;
+  display: block;
+}
+#popover-target input {
+  margin-left: 5px;
+}
+.popover {
+  margin-left: -50px;
 }
 
 /* =======================================================================
@@ -2763,6 +2774,29 @@ thead.tablesorter-stickyHeader {
 	display: none;
 }
 
+/* hidden filter row */
+.tablesorter-filter-row.hideme td {
+  /*** *********************************************** ***/
+  /*** change this padding to modify the thickness     ***/
+  /*** of the closed filter row (height = padding x 2) ***/
+  padding: 2px;
+  /*** *********************************************** ***/
+  margin: 0;
+  line-height: 0;
+  cursor: pointer;
+}
+.tablesorter-filter-row.hideme * {
+  height: 1px;
+  min-height: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  /* don't use visibility: hidden because it disables tabbing */
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+
+
 .tablesorter-header-inner {
 	padding: 0 2px;
 	text-align: center;
@@ -3009,3 +3043,19 @@ jquery.confirm.css
 #confirmBox .red:hover {
 	background-color: #A13331;
 }
+
+/* =======================================================================
+bootstarp modal
+========================================================================== */
+
+.modal-header {
+    padding:9px 15px;
+    border-bottom:1px solid #eee;
+    background-color: #F5F1E4;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+     border-top-left-radius: 5px;
+     border-top-right-radius: 5px;
+ }
