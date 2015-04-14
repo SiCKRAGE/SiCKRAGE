@@ -37,6 +37,7 @@ from tornado.log import gen_log, app_log
 from tornado import simple_httpclient
 from tornado.tcpclient import TCPClient
 from tornado.util import _websocket_mask
+from sickbeard import logger
 
 try:
     from urllib.parse import urlparse # py2
@@ -236,6 +237,7 @@ class WebSocketHandler(tornado.web.RequestHandler):
         regular expression, just like the arguments to
         `tornado.web.RequestHandler.get`.
         """
+        logger.log('Client IP which accessed SickRage: ' + self.request.remote_ip)
         pass
 
     def on_message(self, message):
