@@ -24,10 +24,10 @@ normal_regexes = [
      # Show Name - S01E02 - S01E03 - S01E04 - Ep Name
      '''
      ^(?P<series_name>.+?)[. _-]+                # Show_Name and separator
-     s(?P<season_num>\d+)[. _-]*                 # S01 and optional separator
-     e(?P<ep_num>\d+)                            # E02 and separator
-     ([. _-]+s(?P=season_num)[. _-]*             # S01 and optional separator
-     e(?P<extra_ep_num>\d+))+                    # E03/etc and separator
+     [sS](?P<season_num>\d+)[. _-]*                 # S01 and optional separator
+     [eE](?P<ep_num>\d+)                            # E02 and separator
+     ([. _-]+[sS](?P=season_num)[. _-]*             # S01 and optional separator
+     [eE](?P<extra_ep_num>\d+))+                    # E03/etc and separator
      [. _-]*((?P<extra_info>.+?)                 # Source_Quality_Etc-
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$              # Group
@@ -56,8 +56,8 @@ normal_regexes = [
      # Show.Name.S01.E02.E03
      '''
      ^((?P<series_name>.+?)[. _-]+)?             # Show_Name and separator
-     (\()?s(?P<season_num>\d+)[. _-]*            # S01 and optional separator
-     e(?P<ep_num>\d+)(\))?                       # E02 and separator
+     (\()?[sS](?P<season_num>\d+)[. _-]*            # S01 and optional separator
+     [eE](?P<ep_num>\d+)(\))?                       # E02 and separator
      (([. _-]*e|-)                               # linking e/- char
      (?P<extra_ep_num>(?!(1080|720|480)[pi])\d+)(\))?)*   # additional E03/etc
      [. _-]*((?P<extra_info>.+?)                 # Source_Quality_Etc-
@@ -119,9 +119,9 @@ normal_regexes = [
      # Show Name Season 1 Episode 2 Ep Name
      '''
      ^(?P<series_name>.+?)[. _-]+                # Show Name and separator
-     season[. _-]+                               # season and separator
+     [sS]eason[. _-]+                               # season and separator
      (?P<season_num>\d+)[. _-]+                  # 1
-     episode[. _-]+                              # episode and separator
+     [eE]pisode[. _-]+                              # episode and separator
      (?P<ep_num>\d+)[. _-]+                      # 02 and separator
      (?P<extra_info>.+)$                         # Source_Quality_Etc-
      '''),
@@ -130,7 +130,7 @@ normal_regexes = [
      # Show.Name.S01.Source.Quality.Etc-Group
      '''
      ^((?P<series_name>.+?)[. _-]+)?             # Show_Name and separator
-     s(eason[. _-])?                             # S01/Season 01
+     [sS](eason[. _-])?                             # S01/Season 01
      (?P<season_num>\d+)[. _-]*                  # S01 and optional separator
      [. _-]*((?P<extra_info>.+?)                 # Source_Quality_Etc-
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
@@ -143,7 +143,7 @@ normal_regexes = [
      # Show.Name.E02.2010
      '''
      ^((?P<series_name>.+?)[. _-]+)?             # Show_Name and separator
-     (e(p(isode)?)?|part|pt)[. _-]?              # e, ep, episode, or part
+     ([eE](p(isode)?)?|part|pt)[. _-]?              # e, ep, episode, or part
      (?P<ep_num>(\d+|[ivx]+))                    # first ep num
      ((([. _-]+(and|&|to)[. _-]+)|-)             # and/&/to joiner
      (?P<extra_ep_num>(?!(1080|720|480)[pi])(\d+|[ivx]+))[. _-])            # second ep num
@@ -159,10 +159,10 @@ normal_regexes = [
      # Show.Name.Part.1.and.Part.2.Blah-Group
      '''
      ^((?P<series_name>.+?)[. _-]+)?             # Show_Name and separator
-     (e(p(isode)?)?|part|pt)[. _-]?              # e, ep, episode, or part
+     ([eE](p(isode)?)?|part|pt)[. _-]?              # e, ep, episode, or part
      (?P<ep_num>(\d+|([ivx]+(?=[. _-]))))                    # first ep num
      ([. _-]+((and|&|to)[. _-]+)?                # and/&/to joiner
-     ((e(p(isode)?)?|part|pt)[. _-]?)           # e, ep, episode, or part
+     (([eE](p(isode)?)?|part|pt)[. _-]?)           # e, ep, episode, or part
      (?P<extra_ep_num>(?!(1080|720|480)[pi])
      (\d+|([ivx]+(?=[. _-]))))[. _-])*            # second ep num
      ([. _-]*(?P<extra_info>.+?)                 # Source_Quality_Etc-
@@ -210,8 +210,9 @@ anime_regexes = [
      (?:(?:(?:[\[\(])(?P<extra_info>\d{3,4}[xp]?\d{0,4}[\.\w\s-]*)(?:[\]\)]))|(?:\d{3,4}[xp]))
      .*?
      '''),
+     
     ('anime_ultimate',
-     """
+     '''
      ^(?:\[(?P<release_group>.+?)\][ ._-]*)
      (?P<series_name>.+?)[ ._-]+
      (?P<ep_ab_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3})
@@ -221,7 +222,7 @@ anime_regexes = [
      (?:(?:(?:[\[\(])(?P<extra_info>\d{3,4}[xp]?\d{0,4}[\.\w\s-]*)(?:[\]\)]))|(?:\d{3,4}[xp]))
      (?:[ ._]?\[(?P<crc>\w+)\])?
      .*?
-     """),
+     '''),
 
     ('anime_Kaerizaki-Fansub',
      # [Kaerizaki-Fansub]_One_Piece_679_[VOSTFR][HD_1280x720].mp4
@@ -279,7 +280,7 @@ anime_regexes = [
      (?P<series_name>.+?)[ ._-]+           # Show_Name and separator
      (?P<ep_ab_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3})                # E01
      (-(?P<extra_ab_ep_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3}))?      # E02
-     (v(?P<version>[0-9]))?                # version
+     ([vV](?P<version>[0-9]))?                # version
      [ ._-]+\[(?P<extra_info>\d{3,4}p)     # Source_Quality_Etc-
      (\[(?P<crc>\w{8})\])?                 # CRC
      .*?                                   # Separator and EOL
@@ -320,12 +321,12 @@ anime_regexes = [
      ^(?P<series_name>.+?)[ ._-]+                 # start of string and series name and non optinal separator
      [sS](?P<season_num>\d+)[. _-]*               # S01 and optional separator
      [eE](?P<ep_num>\d+)                          # epipisode E02
-     (([. _-]*e|-)                                # linking e/- char
+     (([. _-]*[eE]|-)                                # linking e/- char
      (?P<extra_ep_num>\d+))*                      # additional E03/etc
      ([ ._-]{2,}|[ ._]+)                          # if "-" is used to separate at least something else has to be there(->{2,}) "s16e03-04-313-314" would make sens any way
      ((?P<ep_ab_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3}))?                       # absolute number
      (-(?P<extra_ab_ep_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3}))?             # "-" as separator and anditional absolute number, all optinal
-     (v(?P<version>[0-9]))?                       # the version e.g. "v2"
+     ([vV](?P<version>[0-9]))?                       # the version e.g. "v2"
      .*?
      '''
 
@@ -360,7 +361,7 @@ anime_regexes = [
      ([ ._-]{2,}|[ ._]+)                          # if "-" is used to separate at least something else has to be there(->{2,}) "s16e03-04-313-314" would make sens any way
      [sS](?P<season_num>\d+)[. _-]*               # S01 and optional separator
      [eE](?P<ep_num>\d+)                          # epipisode E02
-     (([. _-]*e|-)                                # linking e/- char
+     (([. _-]*[eE]|-)                                # linking e/- char
      (?P<extra_ep_num>\d+))*                      # additional E03/etc
      .*?
      '''
@@ -371,7 +372,7 @@ anime_regexes = [
      '''
      ^(?P<ep_ab_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3})                       # start of string and absolute number
      (-(?P<extra_ab_ep_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3}))?              # "-" as separator and anditional absolute number, all optinal
-     (v(?P<version>[0-9]))?[ ._-]+                 # the version e.g. "v2"
+     ([vV](?P<version>[0-9]))?[ ._-]+                 # the version e.g. "v2"
      (?P<series_name>.+?)[ ._-]+
      [sS](?P<season_num>\d+)[. _-]*                 # S01 and optional separator
      [eE](?P<ep_num>\d+)
