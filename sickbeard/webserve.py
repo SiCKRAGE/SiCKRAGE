@@ -962,6 +962,20 @@ class Home(WebRoot):
                 "dbloc": dbloc}
 
 
+    def togglePause(self, cmd=None, showid=None):
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(showid))
+        if not showObj:
+            return "Show not found"
+
+        if cmd == "Pause":
+            showObj.paused = 1
+            showObj.saveToDB()
+            return "Complete"
+        else:
+            showObj.paused = 0
+            showObj.saveToDB()
+            return "Complete"
+    
     def testTrakt(self, username=None, password=None, disable_ssl=None, blacklist_name=None):
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         if disable_ssl == 'true':
@@ -2997,7 +3011,7 @@ class Manage(Home, WebRoot):
             epCounts[Overview.AVAILABLE] = 0
 
             sqlResults = myDB.select(
-                "SELECT * FROM tv_episodes WHERE showid = ? ORDER BY season DESC, episode DESC",
+                "SELECT * FROM tv_episodes WHERE tv_episodes.showid in (SELECT tv_shows.indexer_id FROM tv_shows WHERE tv_shows.indexer_id = ? AND paused = 0) ORDER BY tv_episodes.season DESC, tv_episodes.episode DESC",
                 [curShow.indexerid])
 
             for curResult in sqlResults:
@@ -3666,7 +3680,7 @@ class ConfigGeneral(Config):
                     handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
                     proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, git_remote=None,
                     calendar_unprotected=None, debug=None, no_restart=None, coming_eps_missed_range=None,
-                    display_filesize=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
+                    display_filesize=None, filter_row=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None):
 
@@ -3718,6 +3732,7 @@ class ConfigGeneral(Config):
         sickbeard.WEB_PASSWORD = web_password
 
         sickbeard.DISPLAY_FILESIZE = config.checkbox_to_value(display_filesize)
+        sickbeard.FILTER_ROW = config.checkbox_to_value(filter_row)
         sickbeard.FUZZY_DATING = config.checkbox_to_value(fuzzy_dating)
         sickbeard.TRIM_ZERO = config.checkbox_to_value(trim_zero)
 
@@ -4617,7 +4632,7 @@ class ConfigNotifications(Config):
                           use_nmjv2=None, nmjv2_host=None, nmjv2_dbloc=None, nmjv2_database=None,
                           use_trakt=None, trakt_username=None, trakt_password=None,
                           trakt_remove_watchlist=None, trakt_sync_watchlist=None, trakt_method_add=None,
-                          trakt_start_paused=None, trakt_use_recommended=None, trakt_sync=None,
+                          trakt_start_paused=None, trakt_use_recommended=None, trakt_sync=None, trakt_sync_remove=None,
                           trakt_default_indexer=None, trakt_remove_serieslist=None, trakt_disable_ssl_verify=None, trakt_timeout=None, trakt_blacklist_name=None,
                           trakt_use_rolling_download=None, trakt_rolling_num_ep=None, trakt_rolling_add_paused=None, trakt_rolling_frequency=None,
                           use_synologynotifier=None, synologynotifier_notify_onsnatch=None,
@@ -4751,6 +4766,7 @@ class ConfigNotifications(Config):
         sickbeard.TRAKT_START_PAUSED = config.checkbox_to_value(trakt_start_paused)
         sickbeard.TRAKT_USE_RECOMMENDED = config.checkbox_to_value(trakt_use_recommended)
         sickbeard.TRAKT_SYNC = config.checkbox_to_value(trakt_sync)
+        sickbeard.TRAKT_SYNC_REMOVE = config.checkbox_to_value(trakt_sync_remove)
         sickbeard.TRAKT_DEFAULT_INDEXER = int(trakt_default_indexer)
         sickbeard.TRAKT_DISABLE_SSL_VERIFY = config.checkbox_to_value(trakt_disable_ssl_verify)
         sickbeard.TRAKT_TIMEOUT = int(trakt_timeout)
@@ -5002,7 +5018,8 @@ class ErrorLogs(WebRoot):
                           'ERROR': u'Error',
                           'TORNADO': u'Tornado',
                           'Thread': u'Thread',
-                          'MAIN': u'Main'
+                          'MAIN': u'Main',
+                          'TRAKTROLLING': u'Trakt Rolling'
                           }
 
         if logFilter not in logNameFilters:
