@@ -1265,7 +1265,7 @@ class TVShow(object):
 
     def getOverview(self, epStatus):
 
-        if epStatus == WANTED and not self.paused:
+        if epStatus == WANTED:
             return Overview.WANTED
         elif epStatus in (UNAIRED, UNKNOWN):
             return Overview.UNAIRED
@@ -1742,7 +1742,7 @@ class TVEpisode(object):
         if not ek.ek(os.path.isdir,
                      self.show._location) and not sickbeard.CREATE_MISSING_SHOW_DIRS and not sickbeard.ADD_SHOWS_WO_DIR:
             logger.log(
-                u"The show dir is missing, not bothering to change the episode statuses since it'd probably be invalid")
+                u"The show dir " + str(self.show._location) + " is missing, not bothering to change the episode statuses since it'd probably be invalid")
             return
 
         if self.location:

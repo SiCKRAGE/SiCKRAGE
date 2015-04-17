@@ -1037,6 +1037,9 @@ def validateShow(show, season=None, episode=None):
         if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
+        if show.dvdorder != 0:
+            lINDEXER_API_PARMS['dvdorder'] = True
+            
         t = sickbeard.indexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
         if season is None and episode is None:
             return t
@@ -1409,7 +1412,11 @@ def get_size(start_path='.'):
     for dirpath, dirnames, filenames in ek.ek(os.walk, start_path):
         for f in filenames:
             fp = ek.ek(os.path.join, dirpath, f)
-            total_size += ek.ek(os.path.getsize, fp)
+            try:
+                total_size += ek.ek(os.path.getsize, fp)
+            except OSError as e:
+                logger.log('Unable to get size for file {filePath}. Error msg is: {errorMsg}'.format(filePath=fp, errorMsg=str(e)), logger.ERROR)
+                logger.log(traceback.format_exc(), logger.DEBUG)
     return total_size
 
 def generateApiKey():
@@ -1514,11 +1521,27 @@ def verify_freespace(src, dest, oldfile=None):
     
     if oldfile:
         for file in oldfile:
-            if os.path.isfile(file.location):
+            if ek.ek(os.path.isfile, file.location):
                 diskfree += ek.ek(os.path.getsize, file.location)
         
     if diskfree > neededspace:
         return True
     else:
         logger.log("Not enough free space: Needed: " + str(neededspace) + " bytes (" + pretty_filesize(neededspace) + "), found: " + str(diskfree) + " bytes (" + pretty_filesize(diskfree) + ")", logger.WARNING)
-        return False  
+        return False
+
+# https://gist.github.com/thatalextaylor/7408395
+def pretty_time_delta(seconds):
+    sign_string = '-' if seconds < 0 else ''
+    seconds = abs(int(seconds))
+    days, seconds = divmod(seconds, 86400)
+    hours, seconds = divmod(seconds, 3600)
+    minutes, seconds = divmod(seconds, 60)
+    if days > 0:
+        return '%s%dd%02dh%02dm%02ds' % (sign_string, days, hours, minutes, seconds)
+    elif hours > 0:
+        return '%s%02dh%02dm%02ds' % (sign_string, hours, minutes, seconds)
+    elif minutes > 0:
+        return '%s%02dm%02ds' % (sign_string, minutes, seconds)
+    else:
+        return '%s%02ds' % (sign_string, seconds)
