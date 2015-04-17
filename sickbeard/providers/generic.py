@@ -276,25 +276,27 @@ class GenericProvider:
                 # found result, search next episode
                 continue
 
-            # skip if season already searched
-            if len(episodes) > 1 and searched_scene_season == epObj.scene_season:
-                continue
-
-            # mark season searched for season pack searches so we can skip later on
-            searched_scene_season = epObj.scene_season
-
-            if len(episodes) > 1:
-                # get season search results
-                for curString in self._get_season_search_strings(epObj):
-                    itemList += self._doSearch(curString, search_mode, len(episodes), epObj=epObj)
-            else:
-                # get single episode search results
-                for curString in self._get_episode_search_strings(epObj):
-                    itemList += self._doSearch(curString, 'eponly', len(episodes), epObj=epObj)
-
         # if we found what we needed already from cache then return results and exit
         if len(results) == len(episodes):
             return results
+        else:
+            for epObj in episodes:
+
+                # skip if season already searched
+                if len(episodes) > 1 and searched_scene_season == epObj.scene_season:
+                    continue
+
+                # mark season searched for season pack searches so we can skip later on
+                searched_scene_season = epObj.scene_season
+
+                if len(episodes) > 1:
+                    # get season search results
+                    for curString in self._get_season_search_strings(epObj):
+                        itemList += self._doSearch(curString, search_mode, len(episodes), epObj=epObj)
+                else:
+                    # get single episode search results
+                    for curString in self._get_episode_search_strings(epObj):
+                        itemList += self._doSearch(curString, 'eponly', len(episodes), epObj=epObj)
 
         # sort list by quality
         if len(itemList):
