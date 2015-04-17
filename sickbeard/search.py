@@ -552,7 +552,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
             anyWanted = False
             for curEpNum in allEps:
                 for season in set([x.season for x in episodes]):
-                    if not show.wantEpisode(season, curEpNum, seasonQual, downCurQuality)):
+                    if not show.wantEpisode(season, curEpNum, seasonQual, downCurQuality):
                         allWanted = False
                     else:
                         anyWanted = True
