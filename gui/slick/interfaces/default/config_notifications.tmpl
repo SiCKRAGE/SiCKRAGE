@@ -1558,10 +1558,17 @@
                                 <div class="field-pair">
                                     <label for="trakt_start_paused">
                                         <span class="component-title">Start paused:</span>
+#if not $sickbeard.TRAKT_USE_ROLLING_DOWNLOAD
                                         <span class="component-desc">
                                             <input type="checkbox" name="trakt_start_paused" id="trakt_start_paused" #if $sickbeard.TRAKT_START_PAUSED then "checked=\"checked\"" else ""# />
                                             <p>show's grabbed from your trakt watchlist start paused.</p>
                                         </span>
+#else
+                                        <span class="component-desc">
+                                            <input type="checkbox" name="trakt_start_paused" id="trakt_start_paused" #if $sickbeard.TRAKT_START_PAUSED then "checked=\"checked\"" else ""# disabled="disable"/>
+                                            <p>show's grabbed from your trakt watchlist start paused.</p>
+                                        </span>
+#end if
                                     </label>
                                 </div>
                             </div>
@@ -1587,13 +1594,13 @@
                             <div id="content_trakt_use_rolling_download">
                                   <div class="field-pair">
                                     <label for="trakt_rolling_num_ep">
-                                        <span class="component-title">Number of Episode:</span>
+                                        <span class="component-title">Quantity of episodes:</span>
                                         <span class="component-desc">
                                         <input type="number" name="trakt_rolling_num_ep" id="trakt_rolling_num_ep" value="$sickbeard.TRAKT_ROLLING_NUM_EP" class="form-control input-sm input75"/>
                                     </label>
                                     <label>
                                         <span class="component-title">&nbsp;</span>
-                                        <span class="component-desc">numebr of episode that SickBeard try to download fron last watched episode</span>
+                                        <span class="component-desc">Episodes that Sickrage will download based on the last watched episode</span>
                                     </label>    
                                 </div>
                                 <div class="field-pair">
@@ -1607,13 +1614,13 @@
                                 </div>
                                   <div class="field-pair">
                                     <label for="trakt_rolling_add_paused">
-                                        <span class="component-title">Should new show to be added paused?:</span>
+                                        <span class="component-title">Add new show as paused:</span>
                                         <span class="component-desc">
                                         <input type="checkbox" name="trakt_rolling_add_paused" id="trakt_rolling_add_paused" #if $sickbeard.TRAKT_ROLLING_ADD_PAUSED then "checked=\"checked\"" else ""# />
                                     </label>
                                     <label>
                                         <span class="component-title">&nbsp;</span>
-                                        <span class="component-desc">This feauture will try to snatch <i>number of episode</i> if the show is active. Whould you like to add new show in paused mode(this override previous choice)?</span>
+                                        <span class="component-desc">Stop rolling download to start to download episode.</span>
                                     </label>    
                                 </div>
                             </div>
