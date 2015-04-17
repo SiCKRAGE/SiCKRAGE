@@ -161,6 +161,8 @@ def snatchEpisode(result, endStatus=SNATCHED):
             else:
                 curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
 
+	        if result.resultType == "torrent":
+	    	    curEpObj.torrent_hash = result.hash
             sql_l.append(curEpObj.get_sql())
 
         if curEpObj.status not in Quality.DOWNLOADED:
