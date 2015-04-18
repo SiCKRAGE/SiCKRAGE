@@ -14,7 +14,8 @@ before_script:
  - chmod +x ./tests/all_tests.py
 
 script:
-  - ./tests/all_tests.py
+  - cd ./tests
+  - ./all_tests.py
 
 notifications:
   irc: "irc.freenode.net#sickrage-updates"
