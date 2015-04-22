@@ -1708,7 +1708,7 @@ class Home(WebRoot):
             return self.redirect('/home/')
 
     def updatePLEX(self):
-        if notifiers.plex_notifier.update_library():
+        if None is notifiers.plex_notifier.update_library():
             ui.notifications.message(
                 "Library update command sent to Plex Media Server host: " + sickbeard.PLEX_SERVER_HOST)
         else:
@@ -1987,7 +1987,7 @@ class Home(WebRoot):
             showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(searchThread.show.indexerid))
             
             if not showObj:
-                logger.log('No Show Object found for show with indexerID: ' + searchThread.show.indexerid, logger.ERROR)
+                logger.log('No Show Object found for show with indexerID: ' + str(searchThread.show.indexerid), logger.ERROR)
                 return results
             
             if isinstance(searchThread, sickbeard.search_queue.ManualSearchQueueItem):
@@ -3718,7 +3718,7 @@ class ConfigGeneral(Config):
                     handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
                     proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, git_remote=None,
                     calendar_unprotected=None, debug=None, no_restart=None, coming_eps_missed_range=None,
-                    display_filesize=None, filter_row=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
+                    filter_row=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None):
 
@@ -3769,7 +3769,6 @@ class ConfigGeneral(Config):
         sickbeard.WEB_USERNAME = web_username
         sickbeard.WEB_PASSWORD = web_password
 
-        sickbeard.DISPLAY_FILESIZE = config.checkbox_to_value(display_filesize)
         sickbeard.FILTER_ROW = config.checkbox_to_value(filter_row)
         sickbeard.FUZZY_DATING = config.checkbox_to_value(fuzzy_dating)
         sickbeard.TRIM_ZERO = config.checkbox_to_value(trim_zero)

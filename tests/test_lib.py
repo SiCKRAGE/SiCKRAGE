@@ -20,15 +20,12 @@
 from __future__ import with_statement
 
 import unittest
-
 import sqlite3
-
-import sys
-import os.path
 from configobj import ConfigObj
 
-sys.path.append(os.path.abspath('..'))
-sys.path.append(os.path.abspath('../lib'))
+import sys, os.path
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import sickbeard
 
@@ -148,7 +145,7 @@ class TestDBConnection(db.DBConnection, object):
 
     def __init__(self, dbFileName=TESTDBNAME):
         dbFileName = os.path.join(TESTDIR, dbFileName)
-        super(TestDBConnection, self).__init__(dbFileName)
+        super(TestDBConnection, self).__init__(dbFileName, testdb=True)
 
 
 class TestCacheDBConnection(TestDBConnection, object):
@@ -248,7 +245,6 @@ def tearDown_test_show_dir():
     if os.path.exists(SHOWDIR):
         shutil.rmtree(SHOWDIR)
 
-tearDown_test_db()
 
 if __name__ == '__main__':
     print "=================="
