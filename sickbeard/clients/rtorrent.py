@@ -18,6 +18,7 @@
 
 from base64 import b64encode
 import traceback
+import socket
 
 import sickbeard
 from sickbeard import logger
@@ -126,9 +127,14 @@ class rTorrentAPI(GenericClient):
             torrent.start()
 
             return True
-
+        except socket.timeout:
+            logger.log(u'Connection to rtorrent timed out. Please check if the client is running and/or your settings', logger.WARNING)            
+            return False            
         except Exception as e:
-            logger.log(traceback.format_exc(), logger.DEBUG)
+            if e.reason.message == 'timed out':
+                logger.log(u'Connection to rtorrent timed out. Please check if the client is running and/or your settings', logger.WARNING)  
+            elif:
+                logger.log(traceback.format_exc(), logger.DEBUG)
             return False
 
     def _set_torrent_ratio(self, name):
