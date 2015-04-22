@@ -1,4 +1,86 @@
-### 4.0.14 (2014-03-29)
+### 4.0.17 (2015-04-19)
+
+[full changelog](https://github.com/SiCKRAGETV/SickRage/compare/v4.0.16...v4.0.17)
+
+* libnotify: Use gir-notify instead of pynotify.
+* Fix for xml_declaration unexpected keyword in python 2.6.
+* Fix UnboundLocalError exception can be thrown at piList.append(curQueueItem).
+* Fix Auto determine indexer when indexer tag not present in nfo.
+* Fix editShow: Select the default indexer language instead of forcing en.
+* Fix Catch emailnotify smtp error.
+* Fix Change log timeout errors to WARNING in requests provider clients.
+* Fix Ignore OSError when obtaining the size of a path in get_size.
+* New Add RSS to EZTV provider.
+* New SceneTime provider.
+* Fix iptorrent: Add missing import.
+* New Add Pause Button on displayShow page.
+* Fix Episode Thumbnail url when show is in DVD Order.
+* Fix Catch all errors from Kodi notify.
+* Fix Add user agent to RARBG when login.
+* New Use better logging for get_size exceptions.
+* New Added qbittorrent support.
+* Fix rarbg: remove urllib.quote.
+* Update PNotify to latest version.
+* Fix Plex Notification.
+* New added the option to use Plex Token vs Username / Password.
+* Fix PP Case Sensitive associated files check.
+* Fix unknown quality being accepted as a valid quality in PP.
+* Fix added notification of unsupported multiepisode torrent.
+* Fix proper: saveSearch broken for download propers.
+* New Add logline to show found associated files.
+* New Add a log line containing connecting IP on login.
+* Fix eztv provider.
+* Fix Title of None for Errors submitted through UI.
+* New Stay on Show Page after "Update Kodi".
+* Fix NoneType object has no attribute getOverview.
+* New  Manage Rolling Download on unpause from submenu button.
+* Fix provide a more detailed http code error.
+* Fix Show subtitle service unavailable as info.
+* New Column Selection for displayShow.
+* Fix Update IPTorrents search URL.
+
+### 4.0.16 (2015-04-12)
+
+[full changelog](https://github.com/SiCKRAGETV/SickRage/compare/v4.0.15...v4.0.16)
+
+* New Feature: Added option to add a filter row on main show page (enabled in general settings - interface)
+* New Feature: added scheduling status page
+* Fixed EZTV rss blank result
+* Fixed RARBG tokend
+* Fixed Home page filter: change to allow to use parsed data for active(yes/no)
+* Fixed OldTPB: Check if the returned results ar proper|repack
+* Don't display paused show in backlogOverview
+* Trakt Sync by Episode not by Show
+* Added gzip setting in config.ini
+* Added TRAKTROLLING to filter in viewlog
+* Redone Scheduler
+* Replace fuzzy images on Add Show ( Add Trending) 
+
+### 4.0.15 (2015-04-05)
+
+[full changelog](https://github.com/SiCKRAGETV/SickRage/compare/v4.0.14...v4.0.15)
+
+* Fixed KAT season search
+* Fixed episode description decode error in calendar
+* Fixed torrent empty in multi-episode
+* Fixed XEM invalid entries
+* Fixed unicode error in verify_freespace
+* Fixed rtorrent encoding issue in windows
+* Fixed "add shows" with white spaces
+* Fixed frequency definition in start queue
+* Fixed EZTV import error
+* Added qbittorrent sync file extention to ignore list
+* Added T411 API - instead of web scrapping
+* Added RARBG API - instead of web scrapping
+* Added option to choose removed episodes status
+* Added removeWordsList from all providers - clean release names if provider add more text to it
+* Added more network logos
+* Added check in manual postprocess to remove hard/sym links in windows
+* Added code to debug scheduler errors
+* Updated TRAKT api urls
+* Relocated coming_eps_missed_range to general settings
+
+### 4.0.14 (2015-03-29)
 
 [full changelog](https://github.com/SiCKRAGETV/SickRage/compare/v4.0.13...v4.0.14)
 
@@ -30,7 +112,7 @@
 * Hide Proxy indexers settings when proxy host is empty
 * Change removed episodes status from IGNORED to ARCHIVED 
 
-### 4.0.13 (2014-03-22)
+### 4.0.13 (2015-03-22)
 
 [full changelog](https://github.com/SiCKRAGETV/SickRage/compare/v4.0.12...v4.0.13)
 
@@ -85,7 +167,7 @@
 * New Feature: Added the ability to choose displaying columns in home page
 
 
-### 4.0.12 (2014-03-15)
+### 4.0.12 (2015-03-15)
 
 [full changelog](https://github.com/SiCKRAGETV/SickRage/compare/v4.0.11...v4.0.12)
 
@@ -118,7 +200,7 @@
 * Added limit title length when Submitting log
 * Send LOCALE when submitting issue
 
-### 4.0.11 (2014-03-08)
+### 4.0.11 (2015-03-08)
 [full changelog](https://github.com/SiCKRAGETV/SickRage/compare/v4.0.10...v4.0.11)
 
 * Use Scene Exceptions in Post Processing
@@ -138,7 +220,7 @@
 * If you missed this feature: you can change the number of logs in settings and size per file)
 * WARNING: Windows users: please set number of logs to 0 (zero) to avoid errors. Known issue.
 
-### 4.0.10 (2014-03-03)
+### 4.0.10 (2015-03-03)
 [full changelog](https://github.com/SiCKRAGETV/SickRage/compare/v4.0.9...v4.0.10)
 
 * Add "Use failed downloads" to search settings

@@ -52,6 +52,7 @@ from sickbeard import history
 from sickbeard import sbdatetime
 from sickbeard import network_timezones
 from dateutil.tz import *
+from lib.subliminal.exceptions import ServiceError
 
 from sickbeard import encodingKludge as ek
 
@@ -1265,7 +1266,7 @@ class TVShow(object):
 
     def getOverview(self, epStatus):
 
-        if epStatus == WANTED and not self.paused:
+        if epStatus == WANTED:
             return Overview.WANTED
         elif epStatus in (UNAIRED, UNKNOWN):
             return Overview.UNAIRED
@@ -1435,7 +1436,9 @@ class TVEpisode(object):
                     for subtitle in subtitles.get(video):
                         added_subtitles.append(subtitle.language.alpha2)
                         helpers.chmodAsParent(subtitle.path)
-
+        except ServiceError as e:
+            logger.log("Service is unavailable: {0}".format(str(e)), logger.INFO)
+            return
         except Exception as e:
             logger.log("Error occurred when downloading subtitles: " + str(e), logger.ERROR)
             return

@@ -119,6 +119,9 @@
 				\$("#SubMenu a:contains('Notification')").addClass('btn').html('<span class="ui-icon ui-icon-note pull-left"></span> Notifications');
 				\$("#SubMenu a:contains('Update show in KODI')").addClass('btn').html('<span class="submenu-icon-kodi pull-left"></span> Update show in KODI');
 				\$("#SubMenu a[href$='/home/updateKODI/']").addClass('btn').html('<span class="submenu-icon-kodi pull-left"></span> Update KODI');
+                \$("#SubMenu a:contains('Pause')").addClass('btn').html('<span class="ui-icon ui-icon-pause pull-left"></span> Pause');
+                \$("#SubMenu a:contains('Resume')").addClass('btn').html('<span class="ui-icon ui-icon-play pull-left"></span> Resume');                
+                
 			}
 
 			\$(document).ready(function() {
@@ -226,6 +229,7 @@
                                 <li><a href="$sbRoot/home/restart/?pid=$sbPID" class="confirm restart"><i class="menu-icon-restart"></i>&nbsp;Restart</a></li>
                                 <li><a href="$sbRoot/home/shutdown/?pid=$sbPID" class="confirm shutdown"><i class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
                                 <li><a href="$sbRoot/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a></li>
+                                <li><a href="$sbRoot/home/status/"><i class="menu-icon-help"></i>&nbsp;Server Status</a></li>
 							</ul>
 						</li>
 			            <li id="donate"><a href="http://sr-upgrade.appspot.com" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><img src="$sbRoot/images/donate.jpg" alt="[donate]" class="navbaricon hidden-xs" /></a></li>
