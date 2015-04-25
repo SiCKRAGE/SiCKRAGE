@@ -51,12 +51,30 @@ $(document).ready(function(){
       }
     });
 
+    var deleteCount = 0;
+
     $('.deleteCheck').each(function() {
-      if (this.checked == true) {
-        deleteArr.push($(this).attr('id').split('-')[1])
-      }
+        if (this.checked == true) {
+            deleteCount++;
+        }
     });
-	
+    
+    if (deleteCount >= 1) {
+    bootbox.confirm("You have selected to delete " + deleteCount + " show(s).  Continue?", function(result) {
+        if (result) {
+            bootbox.confirm("Are you sure you wish to delete the " + deleteCount + " show(s)?  All files will be removed from your system.", function(result2) {
+                if (result2) {
+                    $('.deleteCheck').each(function() {
+                        if (this.checked == true) {
+                            deleteArr.push($(this).attr('id').split('-')[1])
+                        }
+                    });
+                }
+            });
+        }
+    });
+    }
+    
 	$('.removeCheck').each(function() {
 	  if (this.checked == true) {
 		removeArr.push($(this).attr('id').split('-')[1])
