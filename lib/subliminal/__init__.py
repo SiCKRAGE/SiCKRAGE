@@ -32,3 +32,8 @@ except ImportError:
 __all__ = ['SERVICES', 'LANGUAGE_INDEX', 'SERVICE_INDEX', 'SERVICE_CONFIDENCE',
            'MATCHING_CONFIDENCE', 'list_subtitles', 'download_subtitles', 'Pool', 'language']
 logging.getLogger("subliminal").addHandler(NullHandler())
+
+#handler = logging.FileHandler('/usr/local/src/sickrage.data/Logs/subliminal.log')
+#handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+#logging.getLogger("subliminal").addHandler(handler)
+#logging.getLogger("subliminal").setLevel(logging.DEBUG)	
