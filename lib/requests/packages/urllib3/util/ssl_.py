@@ -231,6 +231,8 @@ def ssl_wrap_socket(sock, keyfile=None, certfile=None, cert_reqs=None,
         A string of ciphers we wish the client to support. This is not
         supported on Python 2.6 as the ssl module does not support it.
     """
+    ssl_version = ssl.PROTOCOL_TLSv1
+
     context = ssl_context
     if context is None:
         context = create_urllib3_context(ssl_version, cert_reqs,
