@@ -57,14 +57,14 @@ class SCCProvider(generic.TorrentProvider):
 
         self.cache = SCCCache(self)
 
-        self.urls = {'base_url': 'https://sceneaccess.eu',
-                'login': 'https://sceneaccess.eu/login',
-                'detail': 'https://www.sceneaccess.eu/details?id=%s',
-                'search': 'https://sceneaccess.eu/browse?search=%s&method=1&%s',
-                'nonscene': 'https://sceneaccess.eu/nonscene?search=%s&method=1&c44=44&c45=44',
-                'foreign': 'https://sceneaccess.eu/foreign?search=%s&method=1&c34=34&c33=33',
-                'archive': 'https://sceneaccess.eu/archive?search=%s&method=1&c26=26',
-                'download': 'https://www.sceneaccess.eu/%s',
+        self.urls = {'base_url': 'http://sceneaccess.eu:443',
+                'login': 'http://sceneaccess.eu:443/login',
+                'detail': 'http://www.sceneaccess.eu:443/details?id=%s',
+                'search': 'http://sceneaccess.eu:443/browse?search=%s&method=1&%s',
+                'nonscene': 'http://sceneaccess.eu:443/nonscene?search=%s&method=1&c44=44&c45=44',
+                'foreign': 'http://sceneaccess.eu:443/foreign?search=%s&method=1&c34=34&c33=33',
+                'archive': 'http://sceneaccess.eu:443/archive?search=%s&method=1&c26=26',
+                'download': 'http://www.sceneaccess.eu:443/%s',
                 }
 
         self.url = self.urls['base_url']
