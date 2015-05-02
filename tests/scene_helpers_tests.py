@@ -1,9 +1,10 @@
 import unittest
 import test_lib as test
 
-import sys, os.path
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+if __name__ == "__main__":
+    import sys, os.path
+    sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+    sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sickbeard import show_name_helpers, scene_exceptions, common, name_cache
 
