@@ -1,19 +1,20 @@
 import unittest
-import sys, os.path
 import test_lib as test
 
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+if __name__ == '__main__':
+    import sys, os.path
+    sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+    sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sickbeard.rssfeeds import RSSFeeds
 
 class FeedParserTests(unittest.TestCase):
-    def test_newznab(self):
+    def test_can_parse_feeds(self):
         RSSFeeds().clearCache()
-        result = RSSFeeds().getFeed('http://lolo.sickbeard.com/api?t=caps')
-        self.assertTrue('entries' in result)
+        result = RSSFeeds().getFeed('http://showrss.info/feeds/978.rss')
         self.assertTrue('feed' in result)
-        self.assertTrue('categories' in result.feed)
+        self.assertTrue('subtitle' in result.feed)
+        self.assertTrue('links' in result.feed)
 
 if __name__ == "__main__":
     print "=================="

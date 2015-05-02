@@ -21,9 +21,10 @@ from __future__ import with_statement
 
 import unittest
 
-import sys, os.path
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+if __name__ == "__main__":
+    import sys, os.path
+    sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+    sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import urlparse
 import test_lib as test

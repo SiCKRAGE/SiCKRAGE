@@ -17,9 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os.path
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+if __name__ == '__main__':
+    import sys, os.path
+    sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+    sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 import test_lib as test
@@ -54,5 +55,5 @@ if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(DBBasicTests)
     unittest.TextTestRunner(verbosity=2).run(suite)
 
-    #suite = unittest.TestLoader().loadTestsFromTestCase(DBMultiTests)
-    #unittest.TextTestRunner(verbosity=2).run(suite)
+    suite = unittest.TestLoader().loadTestsFromTestCase(DBMultiTests)
+    unittest.TextTestRunner(verbosity=2).run(suite)
