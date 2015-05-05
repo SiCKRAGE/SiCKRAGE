@@ -844,7 +844,7 @@ def restoreVersionedFile(backup_file, version):
 
 
 # try to convert to int, if it fails the default will be returned
-def tryInt(s, s_default=0):
+def tryInt(s, s_default=1):
     try:
         return int(s)
     except:
