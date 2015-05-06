@@ -62,11 +62,11 @@ class MoreThanTVProvider(generic.TorrentProvider):
 
         self.cache = MoreThanTVCache(self)
 
-        self.urls = {'base_url': 'http://www.morethan.tv/',
-                'login': 'http://www.morethan.tv/login.php',
-                'detail': 'http://www.morethan.tv/torrents.php?id=%s',
-                'search': 'http://www.morethan.tv/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s',
-                'download': 'http://www.morethan.tv/torrents.php?action=download&id=%s',
+        self.urls = {'base_url': 'https://www.morethan.tv/',
+                'login': 'https://www.morethan.tv/login.php',
+                'detail': 'https://www.morethan.tv/torrents.php?id=%s',
+                'search': 'https://www.morethan.tv/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s',
+                'download': 'https://www.morethan.tv/torrents.php?action=download&id=%s',
                 }
 
         self.url = self.urls['base_url']
@@ -162,7 +162,7 @@ class MoreThanTVProvider(generic.TorrentProvider):
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
-		search_string['Episode'].append(re.sub('\.', '+', ep_string))
+                search_string['Episode'].append(re.sub('\.', '+', ep_string))
 
         return [search_string]
 
