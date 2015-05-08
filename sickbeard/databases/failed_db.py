@@ -27,7 +27,7 @@ class InitialSchema(db.SchemaUpgrade):
 
     def execute(self):
         queries = [
-            ('CREATE TABLE failed (release TEXT);',),
+            ('CREATE TABLE failed (release TEXT, url TEXT);',),
             ('CREATE TABLE db_version (db_version INTEGER);',),
             ('INSERT INTO db_version (db_version) VALUES (?)', 1),
         ]
@@ -55,7 +55,7 @@ class History(SizeAndProvider):
 
     def execute(self):
         self.connection.action('CREATE TABLE history (date NUMERIC, ' +
-                               'size NUMERIC, release TEXT, provider TEXT);')
+                               'size NUMERIC, release TEXT, provider TEXT, url TEXT);')
 
 
 class HistoryStatus(History):
