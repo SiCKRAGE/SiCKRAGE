@@ -239,7 +239,7 @@ def pickBestResult(results, show, quality_list=None):
             continue
 
         if hasattr(cur_result, 'size'):
-            if sickbeard.USE_FAILED_DOWNLOADS and failed_history.hasFailed(cur_result.name, cur_result.size,
+            if sickbeard.USE_FAILED_DOWNLOADS and failed_history.hasFailed(cur_result.name, cur_result.size, cur_result.url,
                                                                            cur_result.provider.name):
                 logger.log(cur_result.name + u" has previously failed, rejecting it")
                 continue
@@ -609,7 +609,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
 
                 logger.log(u"Seeing if we want to bother with multi-episode result " + multiResult.name, logger.DEBUG)
 
-                if sickbeard.USE_FAILED_DOWNLOADS and failed_history.hasFailed(multiResult.name, multiResult.size,
+                if sickbeard.USE_FAILED_DOWNLOADS and failed_history.hasFailed(multiResult.name, multiResult.size, multiResult.url,
                                                                                multiResult.provider.name):
                     logger.log(multiResult.name + u" has previously failed, rejecting this multi-ep result")
                     continue

@@ -58,15 +58,17 @@ def logFailed(release):
         logger.log(u"Multiple logged snatches found for release", logger.WARNING)
         sizes = len(set(x["size"] for x in sql_results))
         providers = len(set(x["provider"] for x in sql_results))
-        if sizes == 1:
-            logger.log(u"However, they're all the same size. Continuing with found size.", logger.WARNING)
+        urls = len(set(x["url"] for x in sql_results))
+        if sizes == 1 and urls == 1:
+            logger.log(u"However, they're all the same size and url. Continuing with found size.", logger.WARNING)
             size = sql_results[0]["size"]
+            url = sql_results[0]["url"]
         else:
             logger.log(
-                u"They also vary in size. Deleting the logged snatches and recording this release with no size/provider",
+                u"They also vary in size or url. Deleting the logged snatches and recording this release with no size/provider",
                 logger.WARNING)
             for result in sql_results:
-                deleteLoggedSnatch(result["release"], result["size"], result["provider"])
+                deleteLoggedSnatch(result["release"], result["size"], result["provider"], result["url"])
 
         if providers == 1:
             logger.log(u"They're also from the same provider. Using it as well.")
@@ -74,12 +76,13 @@ def logFailed(release):
     else:
         size = sql_results[0]["size"]
         provider = sql_results[0]["provider"]
+        url = sql_results[0]["url"]
 
-    if not hasFailed(release, size, provider):
+    if not hasFailed(release, size, url, provider):
         myDB = db.DBConnection('failed.db')
-        myDB.action("INSERT INTO failed (release, size, provider) VALUES (?, ?, ?)", [release, size, provider])
+        myDB.action("INSERT INTO failed (release, size, provider, url) VALUES (?, ?, ?, ?)", [release, size, provider, url])
 
-    deleteLoggedSnatch(release, size, provider)
+    deleteLoggedSnatch(release, size, provider, url)
 
     return log_str
 
@@ -91,7 +94,7 @@ def logSuccess(release):
     myDB.action("DELETE FROM history WHERE release=?", [release])
 
 
-def hasFailed(release, size, provider="%"):
+def hasFailed(release, size, url, provider="%"):
     """
     Returns True if a release has previously failed.
 
@@ -104,8 +107,8 @@ def hasFailed(release, size, provider="%"):
 
     myDB = db.DBConnection('failed.db')
     sql_results = myDB.select(
-        "SELECT * FROM failed WHERE release=? AND size=? AND provider LIKE ?",
-        [release, size, provider])
+        "SELECT * FROM failed WHERE release=? AND size=? AND url=? AND provider LIKE ?",
+        [release, size, url, provider])
 
     return (len(sql_results) > 0)
 
@@ -165,18 +168,18 @@ def logSnatch(searchResult):
     myDB = db.DBConnection('failed.db')
     for episode in searchResult.episodes:
         myDB.action(
-            "INSERT INTO history (date, size, release, provider, showid, season, episode, old_status)"
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO history (date, size, release, provider, showid, season, episode, old_status, url)"
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [logDate, searchResult.size, release, provider, show_obj.indexerid, episode.season, episode.episode,
-             episode.status])
+             episode.status, searchResult.url])
 
 
-def deleteLoggedSnatch(release, size, provider):
+def deleteLoggedSnatch(release, size, provider, url):
     release = prepareFailedName(release)
 
     myDB = db.DBConnection('failed.db')
-    myDB.action("DELETE FROM history WHERE release=? AND size=? AND provider=?",
-                [release, size, provider])
+    myDB.action("DELETE FROM history WHERE release=? AND size=? AND provider=? AND url=?",
+                [release, size, provider, url])
 
 
 def trimHistory():
