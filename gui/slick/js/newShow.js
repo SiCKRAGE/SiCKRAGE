@@ -1,34 +1,5 @@
 $(document).ready(function () {
 
-    function populateSelect() {
-        if (!$('#nameToSearch').length) {
-            return;
-        }
-
-        if ($('#indexerLangSelect option').length <= 1) {
-            $.getJSON(sbRoot + '/home/addShows/getIndexerLanguages', {}, function (data) {
-                var selected, resultStr = '';
-
-                if (data.results.length === 0) {
-                    resultStr = '<option value="en" selected="selected">en</option>';
-                } else {
-                    $.each(data.results, function (index, obj) {
-                        if (resultStr == '') {
-                            selected = ' selected="selected"';
-                        } else {
-                            selected = '';
-                        }
-
-                        resultStr += '<option value="' + obj + '"' + selected + '>' + obj + '</option>';
-                    });
-                }
-
-                $('#indexerLangSelect').html(resultStr);
-                $('#indexerLangSelect').change(function () { searchIndexers(); });
-            });
-        }
-    }
-
     var searchRequestXhr = null;
 
     function searchIndexers() {
@@ -38,12 +9,12 @@ $(document).ready(function () {
 
         if (searchRequestXhr) searchRequestXhr.abort();
 
-        var searchingFor = $('#nameToSearch').val() + ' on ' + $('#providedIndexer option:selected').text() + ' in ' + $('#indexerLangSelect').val();
+        var searchingFor = $('#nameToSearch').val().trim() + ' on ' + $('#providedIndexer option:selected').text() + ' in ' + $('#indexerLangSelect').val();
         $('#searchResults').empty().html('<img id="searchingAnim" src="' + sbRoot + '/images/loading32' + themeSpinner + '.gif" height="32" width="32" /> searching ' + searchingFor + '...');
 
         searchRequestXhr = $.ajax({
             url: sbRoot + '/home/addShows/searchIndexersForShowName',
-            data: {'search_term': $('#nameToSearch').val(), 'lang': $('#indexerLangSelect').val(), 'indexer': $('#providedIndexer').val()},
+            data: {'search_term': $('#nameToSearch').val().trim(), 'lang': $('#indexerLangSelect').val(), 'indexer': $('#providedIndexer').val()},
             timeout: parseInt($('#indexer_timeout').val(), 10) * 1000,
             dataType: 'json',
             error: function () {
@@ -51,7 +22,7 @@ $(document).ready(function () {
             },
             success: function (data) {
                 var firstResult = true;
-                var resultStr = '<fieldset>\n<legend>Search Results:</legend>\n';
+                var resultStr = '<fieldset>\n<legend class="legendStep">Search Results:</legend>\n';
                 var checked = '';
 
                 if (data.results.length === 0) {
@@ -68,7 +39,7 @@ $(document).ready(function () {
                         var whichSeries = obj.join('|');
 
 
-                        resultStr += '<input type="radio" id="whichSeries" name="whichSeries" value="' + whichSeries + '"' + checked + ' /> ';
+                        resultStr += '<input type="radio" id="whichSeries" name="whichSeries" value="' + whichSeries.replace(/"/g, "")  + '"' + checked + ' /> ';
                         if (data.langid && data.langid != "") {
                             resultStr += '<a href="' + anonURL + obj[2] + obj[3] + '&lid=' + data.langid + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
                         } else {
@@ -113,7 +84,7 @@ $(document).ready(function () {
             alert('You must choose a show to continue');
             return false;
         }
-
+        generate_bwlist()
         $('#addShowForm').submit();
     });
 
@@ -136,7 +107,6 @@ $(document).ready(function () {
         formid: 'addShowForm',
         revealfx: ['slide', 500],
         oninit: function () {
-            populateSelect();
             updateSampleText();
             if ($('input:hidden[name=whichSeries]').length && $('#fullShowPath').length) {
                 goToStep(3);
@@ -168,7 +138,7 @@ $(document).ready(function () {
         } else {
             show_name = '';
         }
-
+        update_bwlist(show_name);
         var sample_text = 'Adding show <b>' + show_name + '</b> into <b>';
 
         // if we have a root dir selected, figure out the path
@@ -216,7 +186,7 @@ $(document).ready(function () {
     }
 
     $('#rootDirText').change(updateSampleText);
-    $('#whichSeries').live('change', updateSampleText);
+    $('#searchResults').on('change', '#whichSeries', updateSampleText);
 
     $('#nameToSearch').keyup(function (event) {
         if (event.keyCode == 13) {
@@ -224,4 +194,32 @@ $(document).ready(function () {
         }
     });
 
+    $('#anime').change (function () {
+        updateSampleText();
+        myform.loadsection(2);
+    });
+
+    function update_bwlist (show_name) {
+        $('#white').children().remove();
+        $('#black').children().remove();
+        $('#pool').children().remove();
+
+        if ($('#anime').prop('checked')) {
+            $('#blackwhitelist').show();
+            if (show_name) {
+                $.getJSON(sbRoot + '/home/fetch_releasegroups', {'show_name': show_name}, function (data) {
+                if (data['result'] == 'success') {
+                    $.each(data.groups, function(i, group) {
+                        var option = $("<option>");
+                        option.attr("value", group.name);
+                        option.html(group.name + ' | ' + group.rating + ' | ' + group.range);
+                        option.appendTo('#pool');
+                    });
+                }
+             });
+            }
+        } else {
+            $('#blackwhitelist').hide();
+        }
+    };
 });

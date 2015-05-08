@@ -61,7 +61,7 @@ class Animezb(generic.NZBProvider):
             search_string.append(ep_string)
         return search_string
 
-    def _doSearch(self, search_string, epcount=0, age=0):
+    def _doSearch(self, search_string, epcount=0, age=0, epObj=None):
         if self.show and not self.show.is_anime:
             logger.log(u"" + str(self.show.name) + " is not an anime skiping ...")
             return []
@@ -132,6 +132,6 @@ class AnimezbCache(tvcache.TVCache):
 
         logger.log(self.provider.name + u" cache update URL: " + rss_url, logger.DEBUG)
 
-        return self.getRSSFeed(rss_url, items=['entries', 'feed'])
+        return self.getRSSFeed(rss_url)
 
 provider = Animezb()

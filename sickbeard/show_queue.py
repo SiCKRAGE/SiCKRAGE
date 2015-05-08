@@ -25,10 +25,11 @@ import sickbeard
 from lib.imdb import _exceptions as imdb_exceptions
 from sickbeard.common import SKIPPED, WANTED
 from sickbeard.tv import TVShow
-from sickbeard import exceptions, logger, ui, db
+from sickbeard import exceptions, logger, ui, db, notifiers
 from sickbeard import generic_queue
 from sickbeard import name_cache
 from sickbeard.exceptions import ex
+from sickbeard.blackandwhitelist import BlackAndWhiteList, short_group_names
 
 
 class ShowQueue(generic_queue.GenericQueue):
@@ -79,15 +80,15 @@ class ShowQueue(generic_queue.GenericQueue):
 
         if self.isBeingAdded(show):
             raise exceptions.CantUpdateException(
-                "Show is still being added, wait until it is finished before you update.")
+                str(show.name) + u" is still being added, wait until it is finished before you update.")
 
         if self.isBeingUpdated(show):
             raise exceptions.CantUpdateException(
-                "This show is already being updated, can't update again until it's done.")
+                str(show.name) + u" is already being updated by Post-processor or manually started, can't update again until it's done.")
 
         if self.isInUpdateQueue(show):
             raise exceptions.CantUpdateException(
-                "This show is already being updated, can't update again until it's done.")
+                str(show.name) + u" is in process of being updated by Post-processor or manually started, can't update again until it's done.")
 
         if not force:
             queueItemObj = QueueItemUpdate(show)
@@ -105,7 +106,7 @@ class ShowQueue(generic_queue.GenericQueue):
 
         if (self.isBeingUpdated(show) or self.isInUpdateQueue(show)) and not force:
             logger.log(
-                u"A refresh was attempted but there is already an update queued or in progress. Since updates do a refres at the end anyway I'm skipping this request.",
+                u"A refresh was attempted but there is already an update queued or in progress. Since updates do a refresh at the end anyway I'm skipping this request.",
                 logger.DEBUG)
             return
 
@@ -132,9 +133,13 @@ class ShowQueue(generic_queue.GenericQueue):
         return queueItemObj
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
-                lang="en", subtitles=None, anime=None, scene=None, paused=None):
+                lang=None, subtitles=None, anime=None, scene=None, paused=None, blacklist=None, whitelist=None):
+
+        if lang is None:
+            lang = sickbeard.INDEXER_DEFAULT_LANGUAGE
+
         queueItemObj = QueueItemAdd(indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang,
-                                    subtitles, anime, scene, paused)
+                                    subtitles, anime, scene, paused, blacklist, whitelist)
 
         self.add_item(queueItemObj)
 
@@ -191,7 +196,7 @@ class ShowQueueItem(generic_queue.QueueItem):
 
 class QueueItemAdd(ShowQueueItem):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, anime,
-                 scene, paused):
+                 scene, paused, blacklist, whitelist):
 
         self.indexer = indexer
         self.indexer_id = indexer_id
@@ -204,6 +209,14 @@ class QueueItemAdd(ShowQueueItem):
         self.anime = anime
         self.scene = scene
         self.paused = paused
+        self.blacklist = blacklist
+        self.whitelist = whitelist
+
+        if sickbeard.TRAKT_USE_ROLLING_DOWNLOAD and sickbeard.USE_TRAKT:
+            self.paused = sickbeard.TRAKT_ROLLING_ADD_PAUSED
+
+        # Process add show in priority
+        self.priority = generic_queue.QueuePriorities.HIGH
 
         self.show = None
 
@@ -297,6 +310,13 @@ class QueueItemAdd(ShowQueueItem):
             logger.log(u"Setting all episodes to the specified default status: " + str(self.show.default_ep_status))
             self.show.default_ep_status = self.default_status
 
+            if self.show.anime:
+                self.show.release_groups = BlackAndWhiteList(self.show.indexerid)
+                if self.blacklist:
+                    self.show.release_groups.set_black_keywords(self.blacklist)
+                if self.whitelist:
+                    self.show.release_groups.set_white_keywords(self.whitelist)
+                    
             # be smartish about this
             if self.show.genre and "talk show" in self.show.genre.lower():
                 self.show.air_by_date = 1
@@ -320,7 +340,7 @@ class QueueItemAdd(ShowQueueItem):
             return
 
         except exceptions.MultipleShowObjectsException:
-            logger.log(u"The show in " + self.showDir + " is already in your show list, skipping", logger.ERROR)
+            logger.log(u"The show in " + self.showDir + " is already in your show list, skipping", logger.WARNING)
             ui.notifications.error('Show skipped', "The show in " + self.showDir + " is already in your show list")
             self._finishEarly()
             return
@@ -335,7 +355,6 @@ class QueueItemAdd(ShowQueueItem):
         try:
             self.show.loadIMDbInfo()
         except imdb_exceptions.IMDbError, e:
-            #todo Insert UI notification
             logger.log(u" Something wrong on IMDb api: " + ex(e), logger.WARNING)
         except Exception, e:
             logger.log(u"Error loading IMDb info: " + ex(e), logger.ERROR)
@@ -368,6 +387,8 @@ class QueueItemAdd(ShowQueueItem):
             logger.log(u"Error searching dir for episodes: " + ex(e), logger.ERROR)
             logger.log(traceback.format_exc(), logger.DEBUG)
 
+        sickbeard.traktRollingScheduler.action.updateWantedList(self.show.indexerid)
+
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if self.show.default_ep_status == WANTED:
             logger.log(u"Launching backlog for this show since its episodes are WANTED")
@@ -386,6 +407,10 @@ class QueueItemAdd(ShowQueueItem):
             # add show to trakt.tv library
             if sickbeard.TRAKT_SYNC:
                 sickbeard.traktCheckerScheduler.action.addShowToTraktLibrary(self.show)
+
+            if sickbeard.TRAKT_SYNC_WATCHLIST:
+                logger.log(u"update watchlist")
+                notifiers.trakt_notifier.update_watchlist(self.show)
 
         # Load XEM data to DB for show
         sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer, force=True)

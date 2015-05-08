@@ -37,23 +37,28 @@
 		<link rel="stylesheet" type="text/css" href="$sbRoot/css/lib/bootstrap.css?$sbPID"/>
 		<link rel="stylesheet" type="text/css" href="$sbRoot/css/browser.css?$sbPID" />
 		<link rel="stylesheet" type="text/css" href="$sbRoot/css/lib/jquery-ui-1.10.4.custom.css?$sbPID" />
-		<link rel="stylesheet" type="text/css" href="$sbRoot/css/lib/jquery.qtip-2.0.1.min.css?$sbPID"/>
-		<link rel="stylesheet" type="text/css" href="$sbRoot/css/lib/pnotify.custom.min.css?$sbPID" />
+		<link rel="stylesheet" type="text/css" href="$sbRoot/css/lib/jquery.qtip-2.2.1.min.css?$sbPID"/>
 		<link rel="stylesheet" type="text/css" href="$sbRoot/css/style.css?$sbPID"/>
 		<link rel="stylesheet" type="text/css" href="$sbRoot/css/${sickbeard.THEME_NAME}.css?$sbPID" />
+		#if $sbLogin:
+		<link rel="stylesheet" type="text/css" href="$sbRoot/css/lib/pnotify.custom.min.css?$sbPID" />
+		<link rel="stylesheet" type="text/css" href="$sbRoot/css/country-flags.css?$sbPID"/>
+		#end if
 
 
-		<script type="text/javascript" src="$sbRoot/js/lib/jquery-1.8.3.min.js?$sbPID"></script>
+		<script type="text/javascript" src="$sbRoot/js/lib/jquery-1.11.2.min.js?$sbPID"></script>
 		<script type="text/javascript" src="$sbRoot/js/lib/bootstrap.min.js?$sbPID"></script>
 		<script type="text/javascript" src="$sbRoot/js/lib/bootstrap-hover-dropdown.min.js?$sbPID"></script>
 		<script type="text/javascript" src="$sbRoot/js/lib/jquery-ui-1.10.4.custom.min.js?$sbPID"></script>
+		#if $sbLogin:
 		<script type="text/javascript" src="$sbRoot/js/lib/jquery.cookie.js?$sbPID"></script>
 		<script type="text/javascript" src="$sbRoot/js/lib/jquery.cookiejar.js?$sbPID"></script>
 		<script type="text/javascript" src="$sbRoot/js/lib/jquery.json-2.2.min.js?$sbPID"></script>
 		<script type="text/javascript" src="$sbRoot/js/lib/jquery.selectboxes.min.js?$sbPID"></script>
 		<script type="text/javascript" src="$sbRoot/js/lib/jquery.tablesorter-2.17.7.min.js?$sbPID"></script>
 		<script type="text/javascript" src="$sbRoot/js/lib/jquery.tablesorter.widgets-2.17.7.min.js?$sbPID"></script>
-		<script type="text/javascript" src="$sbRoot/js/lib/jquery.qtip-2.0.1.min.js?$sbPID"></script>
+		<script type="text/javascript" src="$sbRoot/js/lib/jquery.tablesorter.widget-columnSelector-2.17.7.js?$sbPID"></script>
+		<script type="text/javascript" src="$sbRoot/js/lib/jquery.qtip-2.2.1.min.js?$sbPID"></script>
 		<script type="text/javascript" src="$sbRoot/js/lib/pnotify.custom.min.js"></script>
 		<script type="text/javascript" src="$sbRoot/js/lib/jquery.form-3.35.js?$sbPID"></script>
 		<script type="text/javascript" src="$sbRoot/js/lib/jquery.ui.touch-punch-0.2.2.min.js?$sbPID"></script>
@@ -89,7 +94,9 @@
 				\$("#SubMenu a:contains('Clear History')").addClass('btn clearhistory').html('<span class="ui-icon ui-icon-trash pull-left"></span> Clear History');
 				\$("#SubMenu a:contains('Trim History')").addClass('btn trimhistory').html('<span class="ui-icon ui-icon-trash pull-left"></span> Trim History');
 				\$("#SubMenu a[href$='/errorlogs/clearerrors/']").addClass('btn').html('<span class="ui-icon ui-icon-trash pull-left"></span> Clear Errors');
+				#if sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD:
 				\$("#SubMenu a[href$='/errorlogs/submit_errors/']").addClass('btn').html('<span class="ui-icon ui-icon-arrowreturnthick-1-n pull-left"></span> Submit Errors');
+				#end if
 				\$("#SubMenu a:contains('Re-scan')").addClass('btn').html('<span class="ui-icon ui-icon-refresh pull-left"></span> Re-scan');
 				\$("#SubMenu a:contains('Backlog Overview')").addClass('btn').html('<span class="ui-icon ui-icon-refresh pull-left"></span> Backlog Overview');
 				\$("#SubMenu a[href$='/home/updatePLEX/']").addClass('btn').html('<span class="ui-icon ui-icon-refresh pull-left"></span> Update PLEX');
@@ -112,6 +119,9 @@
 				\$("#SubMenu a:contains('Notification')").addClass('btn').html('<span class="ui-icon ui-icon-note pull-left"></span> Notifications');
 				\$("#SubMenu a:contains('Update show in KODI')").addClass('btn').html('<span class="submenu-icon-kodi pull-left"></span> Update show in KODI');
 				\$("#SubMenu a[href$='/home/updateKODI/']").addClass('btn').html('<span class="submenu-icon-kodi pull-left"></span> Update KODI');
+                \$("#SubMenu a:contains('Pause')").addClass('btn').html('<span class="ui-icon ui-icon-pause pull-left"></span> Pause');
+                \$("#SubMenu a:contains('Resume')").addClass('btn').html('<span class="ui-icon ui-icon-play pull-left"></span> Resume');                
+                
 			}
 		
 			\$(document).ready(function() {
@@ -125,7 +135,8 @@
 			});
 		//-->
 		</script>
-        <script type="text/javascript" src="$sbRoot/js/confirmations.js?$sbPID"></script>
+	<script type="text/javascript" src="$sbRoot/js/confirmations.js?$sbPID"></script>
+	#end if
 	</head>
 
 	<body>
@@ -176,7 +187,7 @@
 							#end if	
 							#if $sickbeard.USE_TORRENTS and $sickbeard.TORRENT_METHOD != 'blackhole' \
 							and ($sickbeard.ENABLE_HTTPS and $sickbeard.TORRENT_HOST[:5] == 'https' \
-							or not $sickbeard.ENABLE_HTTPS and $sickbeard.TORRENT_HOST[:5] == 'http:'):                            
+							or not $sickbeard.ENABLE_HTTPS and $sickbeard.TORRENT_HOST[:5] == 'http:'):
 								<li><a href="$sbRoot/manage/manageTorrents/"><i class="menu-icon-bittorrent"></i>&nbsp;Manage Torrents</a></li>
 							#end if
 							#if $sickbeard.USE_FAILED_DOWNLOADS:
@@ -218,9 +229,9 @@
                                 <li><a href="$sbRoot/home/restart/?pid=$sbPID" class="confirm restart"><i class="menu-icon-restart"></i>&nbsp;Restart</a></li>
                                 <li><a href="$sbRoot/home/shutdown/?pid=$sbPID" class="confirm shutdown"><i class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
                                 <li><a href="$sbRoot/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a></li>
+                                <li><a href="$sbRoot/home/status/"><i class="menu-icon-help"></i>&nbsp;Server Status</a></li>
 							</ul>
 						</li>
-			            <li id="donate"><a href="http://sr-upgrade.appspot.com" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><img src="$sbRoot/images/donate.jpg" alt="[donate]" class="navbaricon hidden-xs" /></a></li>
 					</ul>
 			#end if
 				</div><!-- /.navbar-collapse -->
@@ -250,8 +261,14 @@
 		</span>
 		</div>
 		#end if
-	  
-		#if $sickbeard.NEWEST_VERSION_STRING:	
+	  	
+	  	#if $sickbeard.BRANCH and $sickbeard.BRANCH != 'master' and not $sickbeard.DEVELOPER and $sbLogin
+		<div class="alert alert-danger upgrade-notification" role="alert">
+			<span>You're using the $sickbeard.BRANCH branch. Please use 'master' unless specifically asked</span>
+		</div>
+		#end if
+		
+		#if $sickbeard.NEWEST_VERSION_STRING and $sbLogin	
 		<div class="alert alert-success upgrade-notification" role="alert">
 			<span>$sickbeard.NEWEST_VERSION_STRING</span>
 		</div>

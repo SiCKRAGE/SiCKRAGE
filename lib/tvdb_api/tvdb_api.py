@@ -21,8 +21,8 @@ import warnings
 import logging
 import zipfile
 import datetime as dt
-import requests
-import requests.exceptions
+from lib import requests
+from lib.requests import exceptions
 import xmltodict
 
 try:
@@ -680,7 +680,11 @@ class Tvdb:
         log().debug("Searching for show %s" % series)
         self.config['params_getSeries']['seriesname'] = series
 
-        return self._getetsrc(self.config['url_getSeries'], self.config['params_getSeries']).values()[0]
+        results = self._getetsrc(self.config['url_getSeries'], self.config['params_getSeries'])
+        if not results:
+            return
+
+        return results.values()[0]
 
     def _getSeries(self, series):
         """This searches TheTVDB.com for the series name,
@@ -736,7 +740,7 @@ class Tvdb:
             return
 
         banners = {}
-        for cur_banner in bannersEt['banner']:
+        for cur_banner in bannersEt['banner'] if isinstance(bannersEt['banner'], list) else [bannersEt['banner']]:
             bid = cur_banner['id']
             btype = cur_banner['bannertype']
             btype2 = cur_banner['bannertype2']
@@ -797,7 +801,7 @@ class Tvdb:
             return
 
         cur_actors = Actors()
-        for cur_actor in actorsEt['actor']:
+        for cur_actor in actorsEt['actor'] if isinstance(actorsEt['actor'], list) else [actorsEt['actor']]:
             curActor = Actor()
             for k, v in cur_actor.items():
                 if k is None or v is None:
@@ -874,6 +878,9 @@ class Tvdb:
             if not epsEt:
                 log().debug('Series results incomplete')
                 raise tvdb_showincomplete("Show search returned incomplete results (cannot find complete show on TVDB)")
+
+            if 'episode' not in epsEt:
+                return False
 
             episodes = epsEt["episode"]
             if not isinstance(episodes, list):

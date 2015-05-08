@@ -24,8 +24,9 @@ import os
 import re
 import itertools
 import urllib
+
 import sickbeard
-import requests
+from lib import requests
 
 from sickbeard import helpers, classes, logger, db
 from sickbeard.common import MULTI_EP_RESULT, SEASON_RESULT, USER_AGENT
@@ -48,6 +49,7 @@ class GenericProvider:
         self.name = name
 
         self.proxy = ProviderProxy()
+        self.proxyGlypeProxySSLwarning = None
         self.urls = {}
         self.url = ''
 
@@ -66,7 +68,7 @@ class GenericProvider:
 
         self.session = requests.session()
 
-        self.headers = {'User-Agent': USER_AGENT}
+        self.headers = {'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': USER_AGENT}
 
     def getID(self):
         return GenericProvider.makeID(self.name)
@@ -124,9 +126,13 @@ class GenericProvider:
         if not self._doLogin():
             return
 
-        self.headers.update({'Referer': self.proxy.getProxyURL()})
+        if self.proxy.isEnabled():
+            self.headers.update({'Referer': self.proxy.getProxyURL()})
+            # GlypeProxy SSL warning message
+            self.proxyGlypeProxySSLwarning = self.proxy.getProxyURL() + 'includes/process.php?action=sslagree&submit=Continue anyway...'
+
         return helpers.getURL(self.proxy._buildURL(url), post_data=post_data, params=params, headers=self.headers, timeout=timeout,
-                              session=self.session, json=json)
+                              session=self.session, json=json, proxyGlypeProxySSLwarning=self.proxyGlypeProxySSLwarning)
 
     def downloadResult(self, result):
         """
@@ -142,7 +148,7 @@ class GenericProvider:
                 torrent_hash = re.findall('urn:btih:([\w]{32,40})', result.url)[0].upper()
 
                 if len(torrent_hash) == 32:
-                    torrent_hash = b16encode(b32decode(torrent_hash)).lower()
+                    torrent_hash = b16encode(b32decode(torrent_hash)).upper()
 
                 if not torrent_hash:
                     logger.log("Unable to extract torrent hash from link: " + ex(result.url), logger.ERROR)
@@ -150,8 +156,8 @@ class GenericProvider:
 
                 urls = [
                     'http://torcache.net/torrent/' + torrent_hash + '.torrent',
-                    'http://torrage.com/torrent/' + torrent_hash + '.torrent',
-                    'http://zoink.it/torrent/' + torrent_hash + '.torrent',
+                    'http://zoink.ch/torrent/' + torrent_hash + '.torrent',
+                    'http://torrage.com/torrent/' + torrent_hash.lower() + '.torrent',
                 ]
             except:
                 urls = [result.url]
@@ -221,7 +227,7 @@ class GenericProvider:
         quality = Quality.sceneQuality(title, anime)
         return quality
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
         return []
 
     def _get_season_search_strings(self, episode):
@@ -249,7 +255,7 @@ class GenericProvider:
 
         return title, url
 
-    def findSearchResults(self, show, episodes, search_mode, manualSearch=False):
+    def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False):
 
         self._checkAuth()
         self.show = show
@@ -260,7 +266,7 @@ class GenericProvider:
         searched_scene_season = None
         for epObj in episodes:
             # search cache for episode result
-            cacheResult = self.cache.searchCache(epObj, manualSearch)
+            cacheResult = self.cache.searchCache(epObj, manualSearch, downCurQuality)
             if cacheResult:
                 if epObj.episode not in results:
                     results[epObj.episode] = cacheResult
@@ -271,20 +277,20 @@ class GenericProvider:
                 continue
 
             # skip if season already searched
-            if len(episodes) > 1 and searched_scene_season == epObj.scene_season:
+            if len(episodes) > 1 and search_mode == 'sponly' and searched_scene_season == epObj.scene_season:
                 continue
 
             # mark season searched for season pack searches so we can skip later on
             searched_scene_season = epObj.scene_season
 
-            if len(episodes) > 1:
+            if len(episodes) > 1 and search_mode == 'sponly':
                 # get season search results
                 for curString in self._get_season_search_strings(epObj):
-                    itemList += self._doSearch(curString, search_mode, len(episodes))
+                    itemList += self._doSearch(curString, search_mode, len(episodes), epObj=epObj)
             else:
                 # get single episode search results
                 for curString in self._get_episode_search_strings(epObj):
-                    itemList += self._doSearch(curString, 'eponly', len(episodes))
+                    itemList += self._doSearch(curString, 'eponly', len(episodes), epObj=epObj)
 
         # if we found what we needed already from cache then return results and exit
         if len(results) == len(episodes):
@@ -396,7 +402,7 @@ class GenericProvider:
             # make sure we want the episode
             wantEp = True
             for epNo in actual_episodes:
-                if not showObj.wantEpisode(actual_season, epNo, quality, manualSearch):
+                if not showObj.wantEpisode(actual_season, epNo, quality, manualSearch, downCurQuality):
                     wantEp = False
                     break
 
@@ -421,8 +427,8 @@ class GenericProvider:
             result.name = title
             result.quality = quality
             result.release_group = release_group
-            result.content = None
             result.version = version
+            result.content = None
 
             if len(epObj) == 1:
                 epNum = epObj[0].episode
@@ -474,6 +480,32 @@ class TorrentProvider(GenericProvider):
         GenericProvider.__init__(self, name)
 
         self.providerType = GenericProvider.TORRENT
+        
+        # Don't add a rule to remove everything between bracket, it will break anime release
+        self.removeWordsList = {'\[rartv\]$': 'searchre',
+                               '\[rarbg\]$': 'searchre',
+                               '\[eztv\]$': 'searchre',
+                               '\[ettv\]$': 'searchre',
+                               '\[GloDLS\]$': 'searchre',
+                               '\[silv4\]$': 'searchre',
+                               '\[Seedbox\]$': 'searchre',
+                               '\[AndroidTwoU\]$': 'searchre',
+                               '\.RiPSaLoT$': 'searchre',
+                              }
+
+    def _clean_title_from_provider(self, title):
+        torrent_title = title
+        for remove_string, remove_type in self.removeWordsList.iteritems():
+            if remove_type == 'search':
+                torrent_title = torrent_title.replace(remove_string, '')
+            elif remove_type == 'searchre':
+                torrent_title = re.sub(remove_string, '', torrent_title)
+
+        if torrent_title != title:
+            logger.log(u'Change title from {old_name} to {new_name}'.format(old_name=title, new_name=torrent_title), logger.DEBUG)
+
+        return torrent_title
+
 
 class ProviderProxy:
     def __init__(self):
@@ -501,7 +533,7 @@ class ProviderProxy:
     def _buildURL(self, url):
         """ Return the Proxyfied URL of the page """
         if self.isEnabled():
-            url = self.getProxyURL() + self.param + urllib.quote_plus(url) + self.option
+            url = self.getProxyURL() + self.param + urllib.quote_plus(url.encode('UTF-8')) + self.option
             logger.log(u"Proxified URL: " + url, logger.DEBUG)
 
         return url

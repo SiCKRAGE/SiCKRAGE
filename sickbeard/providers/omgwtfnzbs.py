@@ -101,7 +101,7 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
     def _get_title_and_url(self, item):
         return (item['release'], item['getnzb'])
 
-    def _doSearch(self, search, search_mode='eponly', epcount=0, retention=0):
+    def _doSearch(self, search, search_mode='eponly', epcount=0, retention=0, epObj=None):
 
         self._checkAuth()
 
@@ -188,6 +188,6 @@ class OmgwtfnzbsCache(tvcache.TVCache):
 
         logger.log(self.provider.name + u" cache update URL: " + rss_url, logger.DEBUG)
 
-        return self.getRSSFeed(rss_url, items=['entries', 'feed'])
+        return self.getRSSFeed(rss_url)
 
 provider = OmgwtfnzbsProvider()

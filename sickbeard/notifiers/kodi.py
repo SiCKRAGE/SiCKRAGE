@@ -247,8 +247,8 @@ class KODINotifier:
             logger.log(u"KODI HTTP response: " + result.replace('\n', ''), logger.DEBUG)
             return result
 
-        except (urllib2.URLError, IOError), e:
-            logger.log(u"Warning: Couldn't contact KODI HTTP at " + ek.ss(url) + " " + ex(e),
+        except Exception as e:
+            logger.log(u"Warning: Couldn't contact KODI HTTP at " + ek.ss(url) + " " + str(e),
                        logger.WARNING)
             return False
 
@@ -271,7 +271,7 @@ class KODINotifier:
             logger.log(u'No KODI host passed, aborting update', logger.DEBUG)
             return False
 
-        logger.log(u"Updating XMBC library via HTTP method for host: " + host, logger.DEBUG)
+        logger.log(u"Updating KODI library via HTTP method for host: " + host, logger.DEBUG)
 
         # if we're doing per-show
         if showName:
@@ -397,7 +397,7 @@ class KODINotifier:
                 logger.log(u"KODI JSON response: " + str(result), logger.DEBUG)
                 return result  # need to return response for parsing
             except ValueError, e:
-                logger.log(u"Unable to decode JSON: " + response, logger.WARNING)
+                logger.log(u"Unable to decode JSON: " +  str(response.read()), logger.WARNING)
                 return False
 
         except IOError, e:
@@ -424,7 +424,7 @@ class KODINotifier:
             logger.log(u'No KODI host passed, aborting update', logger.DEBUG)
             return False
 
-        logger.log(u"Updating XMBC library via JSON method for host: " + host, logger.INFO)
+        logger.log(u"Updating KODI library via JSON method for host: " + host, logger.INFO)
 
         # if we're doing per-show
         if showName:

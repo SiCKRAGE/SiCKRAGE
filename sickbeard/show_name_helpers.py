@@ -20,6 +20,7 @@ import os
 
 import re
 import datetime
+from functools import partial
 
 import sickbeard
 from sickbeard import common
@@ -35,6 +36,25 @@ from sickbeard.blackandwhitelist import BlackAndWhiteList
 resultFilters = ["sub(bed|ed|pack|s)", "(dk|fin|heb|kor|nor|nordic|pl|swe)sub(bed|ed|s)?",
                  "(dir|sample|sub|nfo)fix", "sample", "(dvd)?extras",
                  "dub(bed)?"]
+
+
+def containsAtLeastOneWord(name, words):
+    """
+    Filters out results based on filter_words
+
+    name: name to check
+    words : string of words separated by a ',' or list of words
+
+    Returns: False if the name doesn't contain any word of words list, or the found word from the list.
+    """
+    if isinstance(words, basestring):
+        words = words.split(',')
+    items = [(re.compile('(^|[\W_])%s($|[\W_])' % re.escape(word.strip()), re.I), word.strip()) for word in words]
+    for regexp, word in items:
+        if regexp.search(name):
+            return word
+    return False
+
 
 def filterBadReleases(name, parse=True):
     """
@@ -58,24 +78,21 @@ def filterBadReleases(name, parse=True):
     #    return False
 
     # if any of the bad strings are in the name then say no
+    ignore_words = list(resultFilters)
     if sickbeard.IGNORE_WORDS:
-        resultFilters.extend(sickbeard.IGNORE_WORDS.split(','))
-    filters = [re.compile('(^|[\W_])%s($|[\W_])' % re.escape(filter.strip()), re.I) for filter in resultFilters]
-    for regfilter in filters:
-        if regfilter.search(name):
-            logger.log(u"Invalid scene release: " + name + " contained: " + regfilter.pattern + ", ignoring it",
-                       logger.DEBUG)
-            return False
+        ignore_words.extend(sickbeard.IGNORE_WORDS.split(','))
+    word = containsAtLeastOneWord(name, ignore_words)
+    if word:
+        logger.log(u"Invalid scene release: " + name + " contains " + word + ", ignoring it", logger.DEBUG)
+        return False
 
     # if any of the good strings aren't in the name then say no
     if sickbeard.REQUIRE_WORDS:
-        require_words = sickbeard.REQUIRE_WORDS.split(',')
-        filters = [re.compile('(^|[\W_])%s($|[\W_])' % re.escape(filter.strip()), re.I) for filter in require_words]
-        for regfilter in filters:
-            if not regfilter.search(name):
-                logger.log(u"Invalid scene release: " + name + " doesn't contain: " + regfilter.pattern + ", ignoring it",
-                           logger.DEBUG)
-                return False
+        require_words = sickbeard.REQUIRE_WORDS
+        if not containsAtLeastOneWord(name, require_words):
+            logger.log(u"Invalid scene release: " + name + " doesn't contain any of " + sickbeard.REQUIRE_WORDS +
+                       ", ignoring it", logger.DEBUG)
+            return False
 
     return True
 
@@ -114,11 +131,15 @@ def sceneToNormalShowNames(name):
     return list(set(results))
 
 
-def makeSceneShowSearchStrings(show, season=-1):
+def makeSceneShowSearchStrings(show, season=-1, anime=False):
     showNames = allPossibleShowNames(show, season=season)
 
     # scenify the names
-    return map(sanitizeSceneName, showNames)
+    if anime:
+        sanitizeSceneNameAnime = partial(sanitizeSceneName, anime=True)
+        return map(sanitizeSceneNameAnime, showNames)
+    else:
+        return map(sanitizeSceneName, showNames)
 
 
 def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
@@ -165,7 +186,6 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
         numseasons = int(numseasonsSQlResult[0][0])
         seasonStrings = ["S%02d" % int(ep_obj.scene_season)]
 
-    bwl = BlackAndWhiteList(show.indexerid)
     showNames = set(makeSceneShowSearchStrings(show, ep_obj.scene_season))
 
     toReturn = []
@@ -180,8 +200,8 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
             # for providers that don't allow multiple searches in one request we only search for Sxx style stuff
             else:
                 for cur_season in seasonStrings:
-                    if len(bwl.whiteList) > 0:
-                        for keyword in bwl.whiteList:
+                    if len(show.release_groups.whitelist) > 0:
+                        for keyword in show.release_groups.whitelist:
                             toReturn.append(keyword + '.' + curShow+ "." + cur_season)
                     else:
                         toReturn.append(curShow + "." + cur_season)
@@ -211,15 +231,14 @@ def makeSceneSearchString(show, ep_obj):
     if numseasons == 1 and not ep_obj.show.is_anime:
         epStrings = ['']
 
-    bwl = BlackAndWhiteList(ep_obj.show.indexerid)
     showNames = set(makeSceneShowSearchStrings(show, ep_obj.scene_season))
 
     toReturn = []
 
     for curShow in showNames:
         for curEpString in epStrings:
-            if len(bwl.whiteList) > 0:
-                for keyword in bwl.whiteList:
+            if len(ep_obj.show.release_groups.whitelist) > 0:
+                for keyword in ep_obj.show.release_groups.whitelist:
                     toReturn.append(keyword + '.' + curShow + '.' + curEpString)
             else:
                 toReturn.append(curShow + '.' + curEpString)

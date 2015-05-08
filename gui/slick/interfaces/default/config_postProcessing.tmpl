@@ -49,7 +49,11 @@
                             </label>
                             <label class="nocheck">
                                 <span class="component-title">&nbsp;</span>
-                                <span class="component-desc">The folder where your download client puts TV downloads.</span>
+                                <span class="component-desc">The folder where your download client puts the completed TV downloads.</span>
+                            </label>
+                            <label class="nocheck">
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc"><b>NOTE:</b> Please use seperate downloading and completed folders in your download client if possible. Also, if you keep seeding torrents after they finish, please set Process Method to 'copy' instead of move to prevent errors while moving files.</span>
                             </label>
                             <label class="nocheck">
                                 <span class="component-title">&nbsp;</span>
@@ -84,10 +88,17 @@
                             </label>
                         </div>
                         <div class="field-pair">
+                            <input type="checkbox" name="del_rar_contents" id="del_rar_contents" #if $sickbeard.DELRARCONTENTS == True then "checked=\"checked\"" else ""# />
+                            <label for="del_rar_contents">
+                                <span class="component-title">Delete RAR contents</span>
+                                <span class="component-desc">Delete content of RAR files, even if Process Method not set to move?</span>
+                            </label>	
+                        </div>
+                        <div class="field-pair">
                             <input type="checkbox" name="skip_removed_files" id="skip_removed_files" #if $sickbeard.SKIP_REMOVED_FILES == True then "checked=\"checked\"" else ""# />
                             <label for="skip_removed_files">
                                 <span class="component-title">Skip Remove Detection</span>
-                                <span class="component-desc">Skip detection of removed files, so they don't get set to ignored?</span>
+                                <span class="component-desc">Skip detection of removed files, so they don't get set to ignored/archived?</span>
                             </label>
 							<label class="nocheck">
 						        <span class="component-title">&nbsp;</span>
@@ -101,12 +112,23 @@
 						    </label>
 						    <label class="nocheck">
 						        <span class="component-title">&nbsp;</span>
-						        <span class="component-desc">Additional scripts separated by <b>|</b>.</span>
+						        <span class="component-desc"><b>NOTE:</b></span>
 						    </label>
 						    <label class="nocheck">
 						        <span class="component-title">&nbsp;</span>
-						        <span class="component-desc"><b>NOTE:</b> Scripts are called after SickRage's own post-processing.</span>
-						    </label>						    
+								<span class="component-desc">
+									<ul>
+										<li>See <a href="https://github.com/SiCKRAGETV/SickRage/wiki/Post%20Processing"><font color='red'><b>Wiki</b></font></a> for a script arguments description.</li>
+										<li>Additional scripts separated by <b>|</b>.</li>
+										<li>Scripts are called after SickRage's own post-processing.</li>
+										<li>For any scripted languages, include the interpreter executable before the script. See the following example:</li>
+										<ul>
+											<li>For Windows: <pre>C:\Python27\pythonw.exe C:\Script\test.py</pre></li>
+											<li>For Linux: <pre>python /Script/test.py</pre></li>
+										</ul>
+									</ul>
+								</span>
+						    </label>
 						</div>
 
                         <div class="field-pair">
@@ -116,12 +138,21 @@
                                 <span class="component-desc">Move srr/srt/sfv/etc files with the episode when processed?</span>
                             </label>
                         </div>
-						
+						<div class="field-pair">
+                            <label class="nocheck">
+                                <span class="component-title">Sync File Extensions</span>
+                                <input type="text" name="sync_files" id="sync_files" value="$sickbeard.SYNC_FILES" class="form-control input-sm input350" />
+                            </label>
+                            <label class="nocheck">
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc">comma seperated list of extensions SickRage ignores when Post Processing</span>
+                            </label>
+                        </div>
                         <div class="field-pair">
                             <input type="checkbox" name="postpone_if_sync_files" id="postpone_if_sync_files" #if $sickbeard.POSTPONE_IF_SYNC_FILES == True then "checked=\"checked\"" else ""# />
                             <label for="postpone_if_sync_files">
                                 <span class="component-title">Postpone post processing</span>
-                                <span class="component-desc">if !sync files are present in the TV download dir</span>
+                                <span class="component-desc">if sync files are present in the TV download dir</span>
                             </label>
                         </div>
 
@@ -168,6 +199,18 @@
                                 <span class="component-desc">eg. NZBMedia w/ NZBGET, sabToSickbeard w/ SABnzbd+!</span>
                             </label>                            
                         </div>
+                        
+                        <div class="field-pair">
+                            <input type="checkbox" name="no_delete" id="no_delete" #if $sickbeard.NO_DELETE == True then "checked=\"checked\"" else ""# />
+                            <label for="no_delete">
+                                <span class="component-title">Don't delete empty folders</span>
+                                <span class="component-desc">Leave empty folders when Post Processing?</span>
+                            </label>
+                            <label class="nocheck" for="no_delete">
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc"><b>NOTE:</b> Can be overridden using manual Post Processing</span>
+                            </label>
+                        </div>
 
                         <div class="field-pair">
                             <label class="nocheck">
@@ -200,7 +243,6 @@
                             </label>
                             <label class="nocheck" for="use_failed_downloads">
                                 <span class="component-title">&nbsp;</span>
-                                <span class="component-desc"><b>NOTE:</b> See <i>readme-FailedDownloads.md</i> before enabling.</span>
                             </label>
                         </div>
 						
@@ -263,6 +305,10 @@
                                         <img src="$sbRoot/images/legend16.png" width="16" height="16" alt="[Toggle Key]" id="show_naming_key" title="Toggle Naming Legend" class="legend" class="legend" />
                                     </span>
                                 </label>
+                                <label class="nocheck">
+                                    <span class="component-title">&nbsp;</span>
+                                    <span class="component-desc"><b>NOTE:</b> Dont' forget to add quality pattern. Otherwise after post-procesing the episode will have UNKNOWN quality</span>
+                                 </label>
                             </div>
 
                             <div id="naming_key" class="nocheck" style="display: none;">

@@ -17,28 +17,37 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 __all__ = ['ezrss',
-           'tvtorrents',
            'womble',
            'btn',
            'thepiratebay',
+           'oldpiratebay',
            'kat',
            'torrentleech',
            'scc',
            'hdtorrents',
            'torrentday',
            'hdbits',
+		   'hounddawgs',
            'iptorrents',
            'omgwtfnzbs',
            'nextgen',
            'speedcd',
            'nyaatorrents',
-           'fanzub',
+           'animenzb',
            'torrentbytes',
            'animezb',
            'freshontv',
+           'morethantv',
            'bitsoup',
            't411',
            'tokyotoshokan',
+           'alpharatio',
+           'shazbat',
+           'rarbg',
+           'tntvillage',
+           'binsearch',
+           'eztv',
+           'scenetime',
 ]
 
 import sickbeard
@@ -161,6 +170,7 @@ def makeTorrentRssProvider(configString):
         return None
 
     cookies = None
+    titleTAG = 'title'
     search_mode = 'eponly'
     search_fallback = 0
     enable_daily = 0
@@ -168,12 +178,14 @@ def makeTorrentRssProvider(configString):
 
     try:
         values = configString.split('|')
-        if len(values) == 8:
+        if len(values) == 9:
+            name, url, cookies, titleTAG, enabled, search_mode, search_fallback, enable_daily, enable_backlog = values
+        elif len(values) == 8:
             name, url, cookies, enabled, search_mode, search_fallback, enable_daily, enable_backlog = values
         else:
             name = values[0]
             url = values[1]
-            enabled = values[3]
+            enabled = values[4]
     except ValueError:
         logger.log(u"Skipping RSS Torrent provider string: '" + configString + "', incorrect format",
                    logger.ERROR)
@@ -184,7 +196,7 @@ def makeTorrentRssProvider(configString):
     except:
         return
 
-    newProvider = torrentRss.TorrentRssProvider(name, url, cookies, search_mode, search_fallback, enable_daily,
+    newProvider = torrentRss.TorrentRssProvider(name, url, cookies, titleTAG, search_mode, search_fallback, enable_daily,
                                                 enable_backlog)
     newProvider.enabled = enabled == '1'
 

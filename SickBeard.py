@@ -20,12 +20,19 @@
 # Check needed software dependencies to nudge users to fix their setup
 from __future__ import with_statement
 
+import codecs
+codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+
 import time
 import signal
 import sys
-import shutil
 import subprocess
 import traceback
+
+import shutil
+import lib.shutil_custom
+
+shutil.copyfile = lib.shutil_custom.copyfile_custom
 
 if sys.version_info < (2, 6):
     print "Sorry, requires Python 2.6 or 2.7."
@@ -49,6 +56,23 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'
 # We only need this for compiling an EXE and I will just always do that on 2.6+
 if sys.hexversion >= 0x020600F0:
     from multiprocessing import freeze_support  # @UnresolvedImport
+
+if sys.version_info >= (2, 7, 9):
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
+else:
+    try:
+        import cryptography
+    except ImportError:
+        try:
+            from OpenSSL.version import __version__ as pyOpenSSL_Version
+            if int(pyOpenSSL_Version.replace('.', '')[:3]) > 13:
+                raise ImportError
+        except ImportError:
+            print('\nSNI is disabled with pyOpenSSL >= 0.14 when the cryptography module is missing,\n' +
+                    'you will encounter SSL errors with HTTPS! To fix this issue:\n' +
+                    'pip install pyopenssl==0.13.1 (easy) or pip install cryptography (pita)')
+
 
 import locale
 import datetime
@@ -99,9 +123,9 @@ class SickRage(object):
         help_msg += "    -q          --quiet             Disables logging to console\n"
         help_msg += "                --nolaunch          Suppress launching web browser on startup\n"
 
-        if sys.platform == 'win32':
+        if sys.platform == 'win32' or sys.platform == 'darwin':
             help_msg += "    -d          --daemon            Running as real daemon is not supported on Windows\n"
-            help_msg += "                                    On Windows, --daemon is substituted with: --quiet --nolaunch\n"
+            help_msg += "                                    On Windows and MAC, --daemon is substituted with: --quiet --nolaunch\n"
         else:
             help_msg += "    -d          --daemon            Run as double forked daemon (includes options --quiet --nolaunch)\n"
             help_msg += "                --pidfile=<path>    Combined with --daemon creates a pidfile (full path including filename)\n"
@@ -138,6 +162,10 @@ class SickRage(object):
 
         if not hasattr(sys, "setdefaultencoding"):
             reload(sys)
+  
+        if sys.platform == 'win32':
+            if sys.getwindowsversion()[0] >= 6 and sys.stdout.encoding == 'cp65001':
+                sickbeard.SYS_ENCODING = 'UTF-8'
 
         try:
             # pylint: disable=E1101
@@ -193,7 +221,7 @@ class SickRage(object):
                 self.consoleLogging = False
                 self.noLaunch = True
 
-                if sys.platform == 'win32':
+                if sys.platform == 'win32' or sys.platform == 'darwin':
                     self.runAsDaemon = False
 
             # Write a pidfile if requested
@@ -258,12 +286,15 @@ class SickRage(object):
         os.chdir(sickbeard.DATA_DIR)
 
         # Check if we need to perform a restore first
-        restoreDir = os.path.join(sickbeard.DATA_DIR, 'restore')
-        if self.consoleLogging and os.path.exists(restoreDir):
-            if self.restore(restoreDir, sickbeard.DATA_DIR):
-                sys.stdout.write("Restore successful...\n")
-            else:
-                sys.stdout.write("Restore FAILED!\n")
+        try:
+            restoreDir = os.path.join(sickbeard.DATA_DIR, 'restore')
+            if self.consoleLogging and os.path.exists(restoreDir):
+                if self.restoreDB(restoreDir, sickbeard.DATA_DIR):
+                    sys.stdout.write("Restore: restoring DB and config.ini successful...\n")
+                else:
+                    sys.stdout.write("Restore: restoring DB and config.ini FAILED!\n")
+        except Exception as e:
+            sys.stdout.write("Restore: restoring DB and config.ini FAILED!\n")
 
         # Load the config and publish it to the sickbeard package
         if self.consoleLogging and not os.path.isfile(sickbeard.CONFIG_FILE):
@@ -349,7 +380,7 @@ class SickRage(object):
 
         # Start an update if we're supposed to
         if self.forceUpdate or sickbeard.UPDATE_SHOWS_ON_START:
-            sickbeard.showUpdateScheduler.action.run(force=True)  # @UndefinedVariable
+            sickbeard.showUpdateScheduler.forceRun()
 
         # Launch browser
         if sickbeard.LAUNCH_BROWSER and not (self.noLaunch or self.runAsDaemon):
@@ -443,16 +474,17 @@ class SickRage(object):
                     logger.ERROR)
                 logger.log(traceback.format_exc(), logger.DEBUG)
 
-    def restore(self, srcDir, dstDir):
+    def restoreDB(self, srcDir, dstDir):
         try:
-            for file in os.listdir(srcDir):
-                srcFile = os.path.join(srcDir, file)
-                dstFile = os.path.join(dstDir, file)
-                bakFile = os.path.join(dstDir, file + '.bak')
-                shutil.move(dstFile, bakFile)
-                shutil.move(srcFile, dstFile)
+            filesList = ['sickbeard.db', 'config.ini', 'failed.db', 'cache.db']
 
-            os.rmdir(srcDir)
+            for filename in filesList:
+                srcFile = os.path.join(srcDir, filename)
+                dstFile = os.path.join(dstDir, filename)
+                bakFile = os.path.join(dstDir, '{0}.bak-{1}'.format(filename, datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d_%H%M%S')))
+                if os.path.isfile(dstFile):
+                    shutil.move(dstFile, bakFile)
+                shutil.move(srcFile, dstFile)
             return True
         except:
             return False
@@ -497,14 +529,16 @@ class SickRage(object):
                                       sys.executable,
                                       sickbeard.MY_FULLNAME]
 
-                if popen_list:
+                if popen_list and not sickbeard.NO_RESTART:
                     popen_list += sickbeard.MY_ARGS
                     if '--nolaunch' not in popen_list:
                         popen_list += ['--nolaunch']
                     logger.log(u"Restarting SickRage with " + str(popen_list))
+                    logger.shutdown() #shutdown the logger to make sure it's released the logfile BEFORE it restarts SR.
                     subprocess.Popen(popen_list, cwd=os.getcwd())
 
         # system exit
+        logger.shutdown() #Make sure the logger has stopped, just in case
         os._exit(0)
 
 

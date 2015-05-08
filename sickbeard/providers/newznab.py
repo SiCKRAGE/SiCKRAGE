@@ -15,17 +15,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-import traceback
 
 import urllib
 import time
 import datetime
 import os
-
-try:
-    import xml.etree.cElementTree as etree
-except ImportError:
-    import elementtree.ElementTree as etree
 
 import sickbeard
 import generic
@@ -36,11 +30,7 @@ from sickbeard import scene_exceptions
 from sickbeard import encodingKludge as ek
 from sickbeard import logger
 from sickbeard import tvcache
-from sickbeard.exceptions import ex, AuthException
-
-from lib import requests
-from lib.requests import exceptions
-from lib.bencode import bdecode
+from sickbeard.exceptions import AuthException
 
 class NewznabProvider(generic.NZBProvider):
     def __init__(self, name, url, key='', catIDs='5030,5040', search_mode='eponly', search_fallback=False,
@@ -111,31 +101,28 @@ class NewznabProvider(generic.NZBProvider):
             params['apikey'] = self.key
 
         try:
-            xml_categories = self.getURL("%s/api" % (self.url), params=params, timeout=10, json=True)
+            data = self.cache.getRSSFeed("%s/api?%s" % (self.url, urllib.urlencode(params)))
         except:
             logger.log(u"Error getting html for [%s]" % 
                     ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.items())) ), logger.DEBUG)
             return (False, return_categories, "Error getting html for [%s]" % 
                     ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.items()) )))
-        
-        #xml_categories = helpers.parse_xml(categories)
-        
-        if not xml_categories:
-            logger.log(u"Error parsing xml for [%s]" % (self.name),
-                       logger.DEBUG)
-            return (False, return_categories, "Error parsing xml for [%s]" % (self.name))        
+
+        if not self._checkAuthFromData(data):
+            logger.log(u"Error parsing xml for [%s]" % (self.name), logger.DEBUG)
+            return False, return_categories, "Error parsing xml for [%s]" % (self.name)
             
         try:
-            for category in xml_categories.iter('category'):
+            for category in data.feed.categories:
                 if category.get('name') == 'TV':
-                        for subcat in category.findall('subcat'):
-                            return_categories.append(subcat.attrib)
+                        for subcat in category.subcats:
+                            return_categories.append(subcat)
         except:
             logger.log(u"Error parsing result for [%s]" % (self.name),
                        logger.DEBUG)
             return (False, return_categories, "Error parsing result for [%s]" % (self.name))                                         
           
-        return (True, return_categories, "")
+        return True, return_categories, ""
 
     def _get_season_search_strings(self, ep_obj):
 
@@ -252,7 +239,7 @@ class NewznabProvider(generic.NZBProvider):
         else:
             logger.log(u"Unknown error given from " + self.name + ": " + err_desc, logger.ERROR)
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         self._checkAuth()
 
@@ -287,7 +274,7 @@ class NewznabProvider(generic.NZBProvider):
             search_url = self.url + 'api?' + urllib.urlencode(params)
             logger.log(u"Search url: " + search_url, logger.DEBUG)
 
-            data = self.cache.getRSSFeed(search_url, items=['entries', 'feed'])
+            data = self.cache.getRSSFeed(search_url)
             if not self._checkAuthFromData(data):
                 break
 
@@ -373,16 +360,16 @@ class NewznabProvider(generic.NZBProvider):
 
                 try:
                     result_date = datetime.datetime(*item['published_parsed'][0:6])
-                except AttributeError:
+                except (AttributeError, KeyError):
                     try:
                         result_date = datetime.datetime(*item['updated_parsed'][0:6])
-                    except AttributeError:
+                    except (AttributeError, KeyError):
                         try:
                             result_date = datetime.datetime(*item['created_parsed'][0:6])
-                        except AttributeError:
+                        except (AttributeError, KeyError):
                             try:
                                 result_date = datetime.datetime(*item['date'][0:6])
-                            except AttributeError:
+                            except (AttributeError, KeyError):
                                 logger.log(u"Unable to figure out the date for entry " + title + ", skipping it")
                                 continue
 
@@ -418,7 +405,7 @@ class NewznabCache(tvcache.TVCache):
 
         logger.log(self.provider.name + " cache update URL: " + rss_url, logger.DEBUG)
 
-        return self.getRSSFeed(rss_url, items=['entries', 'feed'])
+        return self.getRSSFeed(rss_url)
 
     def _checkAuth(self, data):
         return self.provider._checkAuthFromData(data)

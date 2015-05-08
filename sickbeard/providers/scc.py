@@ -23,6 +23,7 @@ import datetime
 import urlparse
 import sickbeard
 import generic
+import urllib
 from sickbeard.common import Quality
 from sickbeard import logger
 from sickbeard import tvcache
@@ -129,12 +130,12 @@ class SCCProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                            str(ep_obj.airdate).replace('-', '.')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
+                            str(ep_obj.airdate).replace('-', '.') + '|' + \
                             ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
@@ -159,7 +160,7 @@ class SCCProvider(generic.TorrentProvider):
         else:
             return False
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -176,16 +177,19 @@ class SCCProvider(generic.TorrentProvider):
                 if isinstance(search_string, unicode):
                     search_string = unidecode(search_string)
 
-                if mode == 'Season':
-                    searchURLS += [self.urls['archive'] % (search_string)]
+                if mode == 'Season' and search_mode == 'sponly':
+                    searchURLS += [self.urls['archive'] % (urllib.quote(search_string))]
                 else:
-                    searchURLS += [self.urls['search'] % (search_string, self.categories)]
-                    searchURLS += [self.urls['nonscene'] % (search_string)]
-                    searchURLS += [self.urls['foreign'] % (search_string)]
+                    searchURLS += [self.urls['search'] % (urllib.quote(search_string), self.categories)]
+                    searchURLS += [self.urls['nonscene'] % (urllib.quote(search_string))]
+                    searchURLS += [self.urls['foreign'] % (urllib.quote(search_string))]
 
                 for searchURL in searchURLS:
                     logger.log(u"Search string: " + searchURL, logger.DEBUG)
-                    data += [x for x in [self.getURL(searchURL)] if x]
+                    try:
+                        data += [x for x in [self.getURL(searchURL)] if x]
+                    except Exception as e:
+                        logger.log(u"Unable to fetch data reason: {0}".format(str(e)), logger.WARNING)
 
                 if not len(data):
                     continue
@@ -236,7 +240,7 @@ class SCCProvider(generic.TorrentProvider):
                                 continue
 
                             item = title, download_url, id, seeders, leechers
-                            #logger.log(u"Found result: " + title + "(" + searchURL + ")", logger.DEBUG)
+                            logger.log(u"Found result: " + title.replace(' ','.') + " (" + searchURL + ")", logger.DEBUG)
 
                             items[mode].append(item)
 
@@ -257,6 +261,7 @@ class SCCProvider(generic.TorrentProvider):
         if title:
             title = u'' + title
             title = title.replace(' ', '.')
+            title = self._clean_title_from_provider(title)
 
         if url:
             url = str(url).replace('&amp;', '&')

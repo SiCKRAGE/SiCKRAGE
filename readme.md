@@ -3,7 +3,7 @@ SickRage
 Video File Manager for TV Shows, It watches for new episodes of your favorite shows and when they are posted it does its magic.
 
 ## Branch Build Status
-[![Build Status](https://travis-ci.org/SiCKRAGETV/SickRage.svg?branch=nightly)](https://travis-ci.org/SiCKRAGETV/SickRage)
+[![Build Status](https://travis-ci.org/SiCKRAGETV/SickRage.svg?branch=develop)](https://travis-ci.org/SiCKRAGETV/SickRage)
 
 ## Features
  - XBMC library updates, poster/fanart downloads, and NFO/TBN generation
@@ -26,13 +26,21 @@ Video File Manager for TV Shows, It watches for new episodes of your favorite sh
 -[Mobile](http://imgur.com/a/WPyG6)
 
 ## Dependencies
- To run SickRage from source you will need Python 2.6+ and Cheetah 2.1.0+.
+ To run SickRage from source you will need Python 2.6+, Cheetah 2.1.0+, and PyOpenSSL 0.13.1 or lower.
 
 ## Forums
  Any questions or setup info your looking for can be found at out forums https://www.sickrage.tv
 
 ## Bug/Issues
 [SickRage Issue Tracker](https://github.com/SiCKRAGETV/sickrage-issues)
+
+## FAQ
+
+https://github.com/SiCKRAGETV/SickRage/wiki/Frequently-Asked-Questions
+
+## Wiki
+
+https://github.com/SiCKRAGETV/SickRage/wiki
 
 ## Important
 Please before using this with your existing database (sickbeard.db) please make a backup copy of it and delete any other database files such as cache.db and failed.db if present, we HIGHLY recommend starting out with no database files at all to make this a fresh start but the choice is at your own risk

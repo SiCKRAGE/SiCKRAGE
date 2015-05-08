@@ -26,7 +26,7 @@ import re
 
 import sickbeard
 
-from sickbeard import exceptions, helpers
+from sickbeard import helpers
 from sickbeard.metadata import helpers as metadata_helpers
 from sickbeard import logger
 from sickbeard import encodingKludge as ek
@@ -34,6 +34,9 @@ from sickbeard.exceptions import ex
 from sickbeard.show_name_helpers import allPossibleShowNames
 
 from lib.tmdb_api.tmdb_api import TMDB
+
+import fanart
+from fanart.core import Request as fanartRequest
 
 class GenericMetadata():
     """
@@ -283,14 +286,9 @@ class GenericMetadata():
                 with ek.ek(open, nfo_file_path, 'r') as xmlFileObj:
                     showXML = etree.ElementTree(file=xmlFileObj)
 
-                indexer = showXML.find('indexer')
                 indexerid = showXML.find('id')
 
                 root = showXML.getroot()
-                if indexer:
-                    indexer.text = show_obj.indexer
-                else:
-                    etree.SubElement(root, "indexer").text = str(show_obj.indexer)
 
                 if indexerid:
                     indexerid.text = show_obj.indexerid
@@ -615,6 +613,7 @@ class GenericMetadata():
                 continue
 
             result = result + [self._write_image(seasonData, season_poster_file_path)]
+
         if result:
             return all(result)
         else:
@@ -663,6 +662,7 @@ class GenericMetadata():
                 continue
 
             result = result + [self._write_image(seasonData, season_banner_file_path)]
+
         if result:
             return all(result)
         else:
@@ -752,7 +752,7 @@ class GenericMetadata():
 
             lINDEXER_API_PARMS['banners'] = True
 
-            if indexer_lang and not indexer_lang == 'en':
+            if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
@@ -762,7 +762,8 @@ class GenericMetadata():
             indexer_show_obj = t[show_obj.indexerid]
         except (sickbeard.indexer_error, IOError), e:
             logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
-                show_obj.indexer).name + ", not downloading images: " + ex(e), logger.ERROR)
+                show_obj.indexer).name + ", not downloading images: " + ex(e), logger.WARNING)
+            logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)                
             return None
 
         if image_type not in ('fanart', 'poster', 'banner', 'poster_thumb', 'banner_thumb'):
@@ -821,7 +822,7 @@ class GenericMetadata():
 
             lINDEXER_API_PARMS['banners'] = True
 
-            if indexer_lang and not indexer_lang == 'en':
+            if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
@@ -831,7 +832,8 @@ class GenericMetadata():
             indexer_show_obj = t[show_obj.indexerid]
         except (sickbeard.indexer_error, IOError), e:
             logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
-                show_obj.indexer).name + ", not downloading images: " + ex(e), logger.ERROR)
+                show_obj.indexer).name + ", not downloading images: " + ex(e), logger.WARNING)
+            logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
             return result
 
         # if we have no season banners then just finish
@@ -852,7 +854,7 @@ class GenericMetadata():
 
         # find the correct season in the TVDB and TVRAGE object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
-            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == 'en':
+            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
 
         return result
@@ -877,14 +879,15 @@ class GenericMetadata():
 
             lINDEXER_API_PARMS['banners'] = True
 
-            if indexer_lang and not indexer_lang == 'en':
+            if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             t = sickbeard.indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
         except (sickbeard.indexer_error, IOError), e:
             logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
-                show_obj.indexer).name + ", not downloading images: " + ex(e), logger.ERROR)
+                show_obj.indexer).name + ", not downloading images: " + ex(e), logger.WARNING)
+            logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
             return result
 
         # if we have no season banners then just finish
@@ -906,7 +909,7 @@ class GenericMetadata():
 
         # find the correct season in the TVDB and TVRAGE object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
-            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == 'en':
+            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
 
         return result
@@ -932,21 +935,14 @@ class GenericMetadata():
 
             if showXML.findtext('title') == None \
                     or (showXML.findtext('tvdbid') == None
-                        and showXML.findtext('id') == None) \
-                            and showXML.findtext('indexer') == None:
+                        and showXML.findtext('id') == None):
                 logger.log(u"Invalid info in tvshow.nfo (missing name or id):" \
                            + str(showXML.findtext('title')) + " " \
-                           + str(showXML.findtext('indexer')) + " " \
                            + str(showXML.findtext('tvdbid')) + " " \
                            + str(showXML.findtext('id')))
                 return empty_return
 
             name = showXML.findtext('title')
-
-            try:
-                indexer = int(showXML.findtext('indexer'))
-            except:
-                indexer = None
 
             if showXML.findtext('tvdbid') != None:
                 indexer_id = int(showXML.findtext('tvdbid'))
@@ -959,6 +955,16 @@ class GenericMetadata():
             if indexer_id is None:
                 logger.log(u"Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file", logger.WARNING)
                 return empty_return
+
+            indexer = None
+            if showXML.find('episodeguide/url') != None:
+                epg_url = showXML.findtext('episodeguide/url').lower()
+                if str(indexer_id) in epg_url:
+                    if 'thetvdb.com' in epg_url:
+                        indexer = 1
+                    elif 'tvrage' in epg_url:
+                        indexer = 2
+
 
         except Exception, e:
             logger.log(
@@ -997,22 +1003,20 @@ class GenericMetadata():
         except Exception as e:
             pass
 
-        logger.log(u"Could not find any images on TMDB for " + show.name, logger.DEBUG)
+        logger.log(u"Could not find any " + type + " images on TMDB for " + show.name, logger.DEBUG)
 
-    def _retrieve_show_images_from_fanart(self, show, type):
-        from fanart.core import Request
-        import fanart
-
+    def _retrieve_show_images_from_fanart(self, show, type, thumb=False):
         types = {'poster': fanart.TYPE.TV.POSTER,
                  'banner': fanart.TYPE.TV.BANNER,
-                 'fanart': fanart.TYPE.TV.ART,
-                 'poster_thumb': fanart.TYPE.TV.THUMB,
-                 'banner_thumb': fanart.TYPE.TV.BANNER}
+                 'poster_thumb': fanart.TYPE.TV.POSTER,
+                 'banner_thumb': fanart.TYPE.TV.BANNER,
+                 'fanart': fanart.TYPE.TV.BACKGROUND,
+        }
 
         try:
             indexerid = helpers.mapIndexersToShow(show)[1]
             if indexerid:
-                request = Request(
+                request = fanartRequest(
                     apikey=sickbeard.FANART_API_KEY,
                     id=indexerid,
                     ws=fanart.WS.TV,
@@ -1022,8 +1026,11 @@ class GenericMetadata():
                 )
 
                 resp = request.response()
-                return resp.values()[-1].values()[-2][-1]['url']
+                url = resp[types[type]][0]['url']
+                if thumb:
+                    url = re.sub('/fanart/', '/preview/', url)
+                return url
         except Exception as e:
             pass
 
-        logger.log(u"Could not find any images on Fanart.tv for " + show.name, logger.DEBUG)
+        logger.log(u"Could not find any " + type + " images on Fanart.tv for " + show.name, logger.DEBUG)

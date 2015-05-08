@@ -59,7 +59,7 @@ class DBConnection(object):
                 self.connection = sqlite3.connect(dbFilename(self.filename, self.suffix), 20, check_same_thread=False)
                 self.connection.text_factory = self._unicode_text_factory
                 self.connection.isolation_level = None
-
+                self.connection.cursor().execute('''PRAGMA locking_mode = EXCLUSIVE''')
                 db_cons[self.filename] = self.connection
             else:
                 self.connection = db_cons[self.filename]
@@ -73,21 +73,12 @@ class DBConnection(object):
             raise
 
     def _execute(self, query, args):
-        def convert(x):
-            if isinstance(x, basestring):
-                try:
-                    x = unicode(x).decode(sickbeard.SYS_ENCODING)
-                except:
-                    pass
-            return x
-
         try:
             if not args:
                 return self.connection.cursor().execute(query)
-            # args = map(convert, args)
             return self.connection.cursor().execute(query, args)
         except Exception as e:
-            raise e
+            raise
 
     def execute(self, query, args=None, fetchall=False, fetchone=False):
         try:
@@ -98,7 +89,7 @@ class DBConnection(object):
             else:
                 return self._execute(query, args)
         except Exception as e:
-            raise e
+            raise
 
     def checkDBVersion(self):
 
@@ -238,7 +229,10 @@ class DBConnection(object):
         return columns
 
     def _unicode_text_factory(self, x):
-        return unicode(x, 'utf-8')
+        try:
+            return unicode(x, 'utf-8')
+        except:
+            return unicode(x, sickbeard.SYS_ENCODING)
 
     def _dict_factory(self, cursor, row):
         d = {}

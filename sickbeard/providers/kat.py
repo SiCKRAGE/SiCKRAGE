@@ -55,7 +55,7 @@ class KATProvider(generic.TorrentProvider):
 
         self.cache = KATCache(self)
 
-        self.urls = {'base_url': 'http://kickass.so/'}
+        self.urls = {'base_url': 'https://kat.cr/'}
 
         self.url = self.urls['base_url']
 
@@ -177,8 +177,8 @@ class KATProvider(generic.TorrentProvider):
                 ep_string = show_name + ' S%02d' % int(ep_obj.scene_season) + ' -S%02d' % int(
                     ep_obj.scene_season) + 'E' + ' category:tv'  #1) showName SXX -SXXE
                 search_string['Season'].append(ep_string)
-                ep_string = show_name + ' Season ' + str(
-                    ep_obj.scene_season) + ' -Ep*' + ' category:tv'  # 2) showName Season X
+                ep_string = show_name + ' "Season ' + str(
+                    ep_obj.scene_season) + '" -Ep*' + ' category:tv'  # 2) showName "Season X"
                 search_string['Season'].append(ep_string)
 
         return [search_string]
@@ -214,7 +214,7 @@ class KATProvider(generic.TorrentProvider):
         return [search_string]
 
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -232,14 +232,14 @@ class KATProvider(generic.TorrentProvider):
                 logger.log(u"Search string: " + searchURL, logger.DEBUG)
 
                 try:
-                    entries = self.cache.getRSSFeed(searchURL, items=['entries', 'feed'])['entries']
+                    entries = self.cache.getRSSFeed(searchURL)['entries']
                     for item in entries or []:
                         try:
                             link = item['link']
                             id = item['guid']
                             title = item['title']
                             url = item['torrent_magneturi']
-                            verified = bool(item['torrent_verified'] or 0)
+                            verified = bool(int(item['torrent_verified']) or 0)
                             seeders = int(item['torrent_seeds'])
                             leechers = int(item['torrent_peers'])
                             size = int(item['torrent_contentlength'])
@@ -299,6 +299,7 @@ class KATProvider(generic.TorrentProvider):
         if title:
             title = u'' + title
             title = title.replace(' ', '.')
+            title = self._clean_title_from_provider(title)
 
         if url:
             url = url.replace('&amp;', '&')

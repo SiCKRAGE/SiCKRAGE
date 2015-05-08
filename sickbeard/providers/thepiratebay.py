@@ -59,11 +59,11 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         self.cache = ThePirateBayCache(self)
 
-        self.urls = {'base_url': 'https://oldpiratebay.org/'}
+        self.urls = {'base_url': 'https://thepiratebay.se/'}
 
         self.url = self.urls['base_url']
 
-        self.searchurl = self.url + 'search.php?q=%s&Torrent_sort=seeders.desc' # order by seed
+        self.searchurl = self.url + 'search/%s/0/7/200' # order by seed
 
         self.re_title_url = '/torrent/(?P<id>\d+)/(?P<title>.*?)//1".+?(?P<url>magnet.*?)//1".+?(?P<seeders>\d+)</td>.+?(?P<leechers>\d+)</td>'
 
@@ -122,7 +122,9 @@ class ThePirateBayProvider(generic.TorrentProvider):
         filesList = re.findall('<td.+>(.*?)</td>', data)
 
         if not filesList:
-            logger.log(u"Unable to get the torrent file list for " + title, logger.ERROR)
+            # disabled errormsg for now
+            # logger.log(u"Unable to get the torrent file list for " + title, logger.ERROR)
+            return None
 
         videoFiles = filter(lambda x: x.rpartition(".")[2].lower() in mediaExtensions, filesList)
 
@@ -216,7 +218,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         return [search_string]
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -238,17 +240,14 @@ class ThePirateBayProvider(generic.TorrentProvider):
                     continue
 
                 re_title_url = self.proxy._buildRE(self.re_title_url)
-                match = re.compile(re_title_url, re.DOTALL).finditer(urllib.unquote(data))
-
-                for torrent in match:
-
+                matches = re.compile(re_title_url, re.DOTALL).finditer(urllib.unquote(data))
+                for torrent in matches:
                     title = torrent.group('title').replace('_',
                                                            '.')  #Do not know why but SickBeard skip release with '_' in name
                     url = torrent.group('url')
                     id = int(torrent.group('id'))
                     seeders = int(torrent.group('seeders'))
                     leechers = int(torrent.group('leechers'))
-
                     #Filter unseeded torrent
                     if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                         continue
@@ -284,6 +283,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         if title:
             title = u'' + title.replace(' ', '.')
+            title = self._clean_title_from_provider(title)
 
         if url:
             url = url.replace('&amp;', '&')

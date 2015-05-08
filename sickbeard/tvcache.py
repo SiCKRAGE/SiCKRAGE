@@ -22,17 +22,17 @@ import time
 import datetime
 import itertools
 import traceback
+import urllib2
 
 import sickbeard
 
 from sickbeard import db
 from sickbeard import logger
 from sickbeard.common import Quality
-from sickbeard import helpers, show_name_helpers
-from sickbeard.exceptions import MultipleShowObjectsException, ex
+from sickbeard import helpers
+from sickbeard.exceptions import ex
 from sickbeard.exceptions import AuthException
 from sickbeard.rssfeeds import RSSFeeds
-from sickbeard import clients
 from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 from sickbeard import encodingKludge as ek
 
@@ -47,8 +47,7 @@ class CacheDBConnection(db.DBConnection):
                 self.action(
                     "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
             else:
-                sqlResults = self.select(
-                    "SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
+                sqlResults = self.select("SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
 
                 for cur_dupe in sqlResults:
                     self.action("DELETE FROM [" + providerName + "] WHERE url = ?", [cur_dupe["url"]])
@@ -135,12 +134,29 @@ class TVCache():
         except AuthException, e:
             logger.log(u"Authentication error: " + ex(e), logger.ERROR)
         except Exception, e:
-            logger.log(u"Error while searching " + self.provider.name + ", skipping: " + ex(e), logger.ERROR)
-            logger.log(traceback.format_exc(), logger.DEBUG)
+            logger.log(u"Error while searching " + self.provider.name + ", skipping: " + repr(e), logger.DEBUG)
 
     def getRSSFeed(self, url, post_data=None, items=[]):
-        self.provider.headers.update({'Referer': self.provider.proxy.getProxyURL()})
-        return RSSFeeds(self.providerID).getFeed(self.provider.proxy._buildURL(url), post_data, self.provider.headers, items)
+        handlers = []
+
+        if self.provider.proxy.isEnabled():
+            self.provider.headers.update({'Referer': self.provider.proxy.getProxyURL()})
+        elif sickbeard.PROXY_SETTING:
+            logger.log("Using proxy for url: " + url, logger.DEBUG)
+            scheme, address = urllib2.splittype(sickbeard.PROXY_SETTING)
+            if not scheme:
+                scheme = 'http'
+                address = 'http://' + sickbeard.PROXY_SETTING
+            else:
+                address = sickbeard.PROXY_SETTING
+            handlers = [urllib2.ProxyHandler({scheme: address})]
+
+        return RSSFeeds(self.providerID).getFeed(
+            self.provider.proxy._buildURL(url),
+            post_data,
+            self.provider.headers,
+            items,
+            handlers=handlers)
 
     def _translateTitle(self, title):
         return u'' + title.replace(' ', '.')
@@ -281,9 +297,9 @@ class TVCache():
                 [name, season, episodeText, parse_result.show.indexerid, url, curTimestamp, quality, release_group, version]]
 
 
-    def searchCache(self, episode, manualSearch=False):
-        neededEps = self.findNeededEpisodes(episode, manualSearch)
-        return neededEps[episode] if len(neededEps) > 0 else []
+    def searchCache(self, episode, manualSearch=False, downCurQuality=False):
+        neededEps = self.findNeededEpisodes(episode, manualSearch, downCurQuality)
+        return neededEps[episode] if episode in neededEps else []
 
     def listPropers(self, date=None, delimiter="."):
         myDB = self._getDB()
@@ -295,7 +311,7 @@ class TVCache():
         return filter(lambda x: x['indexerid'] != 0, myDB.select(sql))
 
 
-    def findNeededEpisodes(self, episode, manualSearch=False):
+    def findNeededEpisodes(self, episode, manualSearch=False, downCurQuality=False):
         neededEps = {}
         cl = []
 
@@ -316,11 +332,6 @@ class TVCache():
 
         # for each cache entry
         for curResult in sqlResults:
-
-            # skip non-tv crap
-            if not show_name_helpers.filterBadReleases(curResult["name"], parse=False):
-                continue
-
             # get the show object, or if it's not one of our shows then ignore it
             showObj = helpers.findCertainShow(sickbeard.showList, int(curResult["indexerid"]))
             if not showObj:
@@ -345,7 +356,7 @@ class TVCache():
             curVersion = curResult["version"]
 
             # if the show says we want that episode then add it to the list
-            if not showObj.wantEpisode(curSeason, curEp, curQuality, manualSearch):
+            if not showObj.wantEpisode(curSeason, curEp, curQuality, manualSearch, downCurQuality):
                 logger.log(u"Skipping " + curResult["name"] + " because we don't want an episode that's " +
                            Quality.qualityStrings[curQuality], logger.DEBUG)
                 continue

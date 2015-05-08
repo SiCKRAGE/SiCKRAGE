@@ -1,4 +1,4 @@
-from requests.adapters import HTTPAdapter
+from lib.requests.adapters import HTTPAdapter
 
 from .controller import CacheController
 from .cache import DictCache
@@ -58,7 +58,11 @@ class CacheControlAdapter(HTTPAdapter):
                 response = cached_response
             else:
                 # try to cache the response
-                self.controller.cache_response(request, response)
+                try:
+                    self.controller.cache_response(request, response)
+                except Exception as e:
+                    # Failed to cache the results
+                    pass
 
         resp = super(CacheControlAdapter, self).build_response(
             request, response
