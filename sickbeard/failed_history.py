@@ -97,18 +97,44 @@ def logSuccess(release):
 def hasFailed(release, size, url, provider="%"):
     """
     Returns True if a release has previously failed.
+    """
+
+    release = prepareFailedName(release)
+    myDB = db.DBConnection('failed.db')
+
+    #if the provider does not give the actual size
+    if size == -1:
+        return hasFailedByUrl(release, url, myDB)
+    else:
+        return hasFailedBySize(release, size, myDB, provider)
+
+
+def hasFailedBySize(release, size, myDB, provider="%"):
+    """
+    Returns True if a release has previously failed based on
+    its release name and size.
 
     If provider is given, return True only if the release is found
     with that specific provider. Otherwise, return True if the release
     is found with any provider.
     """
 
-    release = prepareFailedName(release)
-
-    myDB = db.DBConnection('failed.db')
     sql_results = myDB.select(
-        "SELECT * FROM failed WHERE release=? AND size=? AND url=? AND provider LIKE ?",
-        [release, size, url, provider])
+        "SELECT * FROM failed WHERE release=? AND size=? AND provider LIKE ?",
+        [release, size, provider])
+
+    return (len(sql_results) > 0)
+
+
+def hasFailedByUrl(release, url, myDB):
+    """
+    Returns True if a release has previously failed based on
+    its release name and url.
+    """
+
+    sql_results = myDB.select(
+        "SELECT * FROM failed WHERE release=? AND url=?",
+        [release, url])
 
     return (len(sql_results) > 0)
 
