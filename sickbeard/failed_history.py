@@ -20,6 +20,8 @@ import re
 import urllib
 import datetime
 
+
+from hashlib import sha256
 from sickbeard import db
 from sickbeard import logger
 from sickbeard.exceptions import ex, EpisodeNotFoundException
@@ -80,6 +82,8 @@ def logFailed(release):
 
     if not hasFailed(release, size, url, provider):
         myDB = db.DBConnection('failed.db')
+        logger.log(url)
+        url = sha256(url).hexdigest()
         myDB.action("INSERT INTO failed (release, size, provider, url) VALUES (?, ?, ?, ?)", [release, size, provider, url])
 
     deleteLoggedSnatch(release, size, provider, url)
@@ -131,7 +135,8 @@ def hasFailedByUrl(release, url, myDB):
     Returns True if a release has previously failed based on
     its release name and url.
     """
-
+    logger.log(url)
+    url = sha256(url).hexdigest()
     sql_results = myDB.select(
         "SELECT * FROM failed WHERE release=? AND url=?",
         [release, url])
@@ -193,17 +198,21 @@ def logSnatch(searchResult):
 
     myDB = db.DBConnection('failed.db')
     for episode in searchResult.episodes:
+        logger.log(searchResult.url)
+        url = sha256(searchResult.url).hexdigest()
         myDB.action(
             "INSERT INTO history (date, size, release, provider, showid, season, episode, old_status, url)"
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [logDate, searchResult.size, release, provider, show_obj.indexerid, episode.season, episode.episode,
-             episode.status, searchResult.url])
+             episode.status, url])
 
 
 def deleteLoggedSnatch(release, size, provider, url):
     release = prepareFailedName(release)
 
     myDB = db.DBConnection('failed.db')
+    logger.log(url)
+    url = sha256(url).hexdigest()
     myDB.action("DELETE FROM history WHERE release=? AND size=? AND provider=? AND url=?",
                 [release, size, provider, url])
 
