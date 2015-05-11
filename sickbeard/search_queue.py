@@ -21,7 +21,7 @@ from __future__ import with_statement
 import time
 import traceback
 import threading
-import pdb
+
 import sickbeard
 from sickbeard import db, logger, common, exceptions, helpers
 from sickbeard import generic_queue, scheduler
@@ -248,7 +248,6 @@ class FailedQueueItem(generic_queue.QueueItem):
         self.downCurQuality = downCurQuality
 
     def run(self):
-        pdb.set_trace()
         generic_queue.QueueItem.run(self)
         self.started = True
         

@@ -23,7 +23,7 @@ import re
 import threading
 import datetime
 import traceback
-
+import ipdb
 import sickbeard
 
 from common import SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, Quality, SEASON_RESULT, MULTI_EP_RESULT
@@ -471,6 +471,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                 logger.log(u"Performing season pack search for " + show.name)
 
             try:
+                ipdb.set_trace()
                 searchResults = curProvider.findSearchResults(show, episodes, search_mode, manualSearch, downCurQuality)
             except exceptions.AuthException, e:
                 logger.log(u"Authentication error: " + ex(e), logger.ERROR)
