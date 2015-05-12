@@ -27,7 +27,7 @@ class InitialSchema(db.SchemaUpgrade):
 
     def execute(self):
         queries = [
-            ('CREATE TABLE failed (release TEXT, url TEXT);',),
+            ('CREATE TABLE failed (release TEXT);',),
             ('CREATE TABLE db_version (db_version INTEGER);',),
             ('INSERT INTO db_version (db_version) VALUES (?)', 1),
         ]
@@ -40,11 +40,12 @@ class InitialSchema(db.SchemaUpgrade):
 
 class SizeAndProvider(InitialSchema):
     def test(self):
-        return self.hasColumn('failed', 'size') and self.hasColumn('failed', 'provider')
+        return self.hasColumn('failed', 'size') and self.hasColumn('failed', 'provider') and self.hasColumn('failed', 'url')
 
     def execute(self):
         self.addColumn('failed', 'size')
         self.addColumn('failed', 'provider', 'TEXT', '')
+        self.addColumn('failed', 'url', 'TEXT', '')
 
 
 class History(SizeAndProvider):
