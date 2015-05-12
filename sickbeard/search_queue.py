@@ -250,7 +250,6 @@ class FailedQueueItem(generic_queue.QueueItem):
     def run(self):
         generic_queue.QueueItem.run(self)
         self.started = True
-        
         try:
             for epObj in self.segment:
             
