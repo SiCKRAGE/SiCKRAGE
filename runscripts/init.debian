@@ -76,7 +76,7 @@ EXTRA_SSD_OPTS=${SSD_OPTS-}
 ##
 
 PID_PATH=$(dirname $PID_FILE)
-DAEMON_OPTS=" SickRage.py -q --daemon --nolaunch --pidfile=${PID_FILE} --datadir=${DATA_DIR} ${EXTRA_DAEMON_OPTS}"
+DAEMON_OPTS=" SickBeard.py -q --daemon --nolaunch --pidfile=${PID_FILE} --datadir=${DATA_DIR} ${EXTRA_DAEMON_OPTS}"
 
 ##
 
