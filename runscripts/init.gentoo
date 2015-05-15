@@ -1,0 +1,78 @@
+#!/sbin/runscript
+# Copyright 1999-2013 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+# History
+# -------
+# 1/29 Created          Richard Powell          richard@powell.ws
+
+# You will need to create a configuration file in order for this script
+# to work properly. Please create /etc/conf.d/sickrage with the following:
+#
+# SICKRAGE_USER=<user you want sickrage to run under>
+# SICKRAGE_GROUP=<group you want sickrage to run under>
+# SICKRAGE_DIR=<path to Sickbeard.py>
+# PATH_TO_PYTHON_2=/usr/bin/python2
+# SICKRAGE_DATADIR=<directory that contains sickbeard.db file>
+# SICKRAGE_CONFDIR=<directory that contains Sickrage's config.ini file>
+#
+
+RUNDIR=/var/run/sickrage
+
+depend() {
+    need net
+}
+
+get_pidfile() {
+    # Parse the config.ini file for the value of web_port in the General section
+    eval `sed -e 's/[[:space:]]*\=[[:space:]]*/=/g' \
+        -e 's/;.*$//' \
+        -e 's/[[:space:]]*$//' \
+        -e 's/^[[:space:]]*//' \
+        -e "s/^\(.*\)=\([^\"']*\)$/\1=\"\2\"/" \
+       <  ${SICKRAGE_CONFDIR}/config.ini \
+        | sed -n -e "/^\[General\]/,/^\s*\[/{/^[^;].*\=.*/p;}"`
+
+    echo "${RUNDIR}/sickrage-${web_port}.pid"
+}
+
+start() {
+    ebegin "Starting Sickrage"
+
+    checkpath -q -d -o ${SICKRAGE_USER}:${SICKRAGE_GROUP} -m 0770 "${RUNDIR}"
+
+    start-stop-daemon \
+        --quiet \
+        --start \
+        --user ${SICKRAGE_USER} \
+        --group ${SICKRAGE_GROUP} \
+        --name sickrage \
+        --background \
+        --pidfile $(get_pidfile) \
+        --exec ${PATH_TO_PYTHON_2} \
+        -- \
+        ${SICKRAGE_DIR}/SickBeard.py \
+        -d \
+        --pidfile $(get_pidfile) \
+        --config ${SICKRAGE_CONFDIR}/config.ini \
+        --datadir ${SICKRAGE_DATADIR}
+    eend $?
+}
+
+start_pre() {
+    if [ "$RC_CMD" == "restart" ]; then
+        local pidfile=$(get_pidfile)
+        while [ -e ${pidfile} ]; do
+            sleep 1
+        done
+    fi
+
+    return 0
+}
+
+stop() {
+    local pidfile=$(get_pidfile)
+    local rc
+
+    ebegin "Stopping Sickrage"
+}

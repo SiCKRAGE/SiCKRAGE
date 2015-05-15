@@ -26,7 +26,7 @@ import itertools
 import urllib
 
 import sickbeard
-import requests
+from lib import requests
 
 from sickbeard import helpers, classes, logger, db
 from sickbeard.common import MULTI_EP_RESULT, SEASON_RESULT, USER_AGENT
@@ -156,8 +156,9 @@ class GenericProvider:
 
                 urls = [
                     'http://torcache.net/torrent/' + torrent_hash + '.torrent',
-                    'http://zoink.ch/torrent/' + torrent_hash + '.torrent',
-                    'http://torrage.com/torrent/' + torrent_hash.lower() + '.torrent',
+                    #zoink.ch misconfigured, torrage.com domain expired.
+                    #'http://zoink.ch/torrent/' + torrent_hash + '.torrent',
+                    #'http://torrage.com/torrent/' + torrent_hash.lower() + '.torrent',
                 ]
             except:
                 urls = [result.url]
@@ -277,13 +278,13 @@ class GenericProvider:
                 continue
 
             # skip if season already searched
-            if len(episodes) > 1 and searched_scene_season == epObj.scene_season:
+            if len(episodes) > 1 and search_mode == 'sponly' and searched_scene_season == epObj.scene_season:
                 continue
 
             # mark season searched for season pack searches so we can skip later on
             searched_scene_season = epObj.scene_season
 
-            if len(episodes) > 1:
+            if len(episodes) > 1 and search_mode == 'sponly':
                 # get season search results
                 for curString in self._get_season_search_strings(epObj):
                     itemList += self._doSearch(curString, search_mode, len(episodes), epObj=epObj)
