@@ -20,6 +20,8 @@ import re
 import urllib
 import datetime
 
+
+from hashlib import sha256
 from sickbeard import db
 from sickbeard import logger
 from sickbeard.exceptions import ex, EpisodeNotFoundException
@@ -58,15 +60,17 @@ def logFailed(release):
         logger.log(u"Multiple logged snatches found for release", logger.WARNING)
         sizes = len(set(x["size"] for x in sql_results))
         providers = len(set(x["provider"] for x in sql_results))
-        if sizes == 1:
-            logger.log(u"However, they're all the same size. Continuing with found size.", logger.WARNING)
+        urls = len(set(x["url"] for x in sql_results))
+        if sizes == 1 and urls == 1:
+            logger.log(u"However, they're all the same size and url. Continuing with found size.", logger.WARNING)
             size = sql_results[0]["size"]
+            url = sql_results[0]["url"]
         else:
             logger.log(
-                u"They also vary in size. Deleting the logged snatches and recording this release with no size/provider",
+                u"They also vary in size or url. Deleting the logged snatches and recording this release with no size/provider",
                 logger.WARNING)
             for result in sql_results:
-                deleteLoggedSnatch(result["release"], result["size"], result["provider"])
+                deleteLoggedSnatch(result["release"], result["size"], result["provider"], result["url"])
 
         if providers == 1:
             logger.log(u"They're also from the same provider. Using it as well.")
@@ -74,12 +78,13 @@ def logFailed(release):
     else:
         size = sql_results[0]["size"]
         provider = sql_results[0]["provider"]
+        url = sql_results[0]["url"]
 
-    if not hasFailed(release, size, provider):
+    if not hasFailed(release, size, url, provider):
         myDB = db.DBConnection('failed.db')
-        myDB.action("INSERT INTO failed (release, size, provider) VALUES (?, ?, ?)", [release, size, provider])
+        myDB.action("INSERT INTO failed (release, size, provider, url) VALUES (?, ?, ?, ?)", [release, size, provider, url])
 
-    deleteLoggedSnatch(release, size, provider)
+    deleteLoggedSnatch(release, size, provider, url)
 
     return log_str
 
@@ -91,9 +96,10 @@ def logSuccess(release):
     myDB.action("DELETE FROM history WHERE release=?", [release])
 
 
-def hasFailed(release, size, provider="%"):
+def hasFailed(release, size, url, provider="%"):
     """
-    Returns True if a release has previously failed.
+    Returns True if a release has previously failed based on
+    its release name, size and url.
 
     If provider is given, return True only if the release is found
     with that specific provider. Otherwise, return True if the release
@@ -101,11 +107,24 @@ def hasFailed(release, size, provider="%"):
     """
 
     release = prepareFailedName(release)
-
     myDB = db.DBConnection('failed.db')
+
+    #if the provider does not give the actual size
+    if size == -1:
+        return hasFailedByUrl(release, url, myDB)
+    else:
+        sql_results = myDB.select("SELECT * FROM failed WHERE release=? AND size=? AND provider LIKE ?", [release, size, provider])
+        return (len(sql_results) > 0)
+
+
+def hasFailedByUrl(release, url, myDB):
+    """
+    Returns True if a release has previously failed based on
+    its release name and url.
+    """
     sql_results = myDB.select(
-        "SELECT * FROM failed WHERE release=? AND size=? AND provider LIKE ?",
-        [release, size, provider])
+        "SELECT * FROM failed WHERE release=? AND url=?",
+        [release, url])
 
     return (len(sql_results) > 0)
 
@@ -164,19 +183,20 @@ def logSnatch(searchResult):
 
     myDB = db.DBConnection('failed.db')
     for episode in searchResult.episodes:
+        url = sha256(searchResult.url).hexdigest()
         myDB.action(
-            "INSERT INTO history (date, size, release, provider, showid, season, episode, old_status)"
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO history (date, size, release, provider, showid, season, episode, old_status, url)"
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [logDate, searchResult.size, release, provider, show_obj.indexerid, episode.season, episode.episode,
-             episode.status])
+             episode.status, url])
 
 
-def deleteLoggedSnatch(release, size, provider):
+def deleteLoggedSnatch(release, size, provider, url):
     release = prepareFailedName(release)
 
     myDB = db.DBConnection('failed.db')
-    myDB.action("DELETE FROM history WHERE release=? AND size=? AND provider=?",
-                [release, size, provider])
+    myDB.action("DELETE FROM history WHERE release=? AND size=? AND provider=? AND url=?",
+                [release, size, provider, url])
 
 
 def trimHistory():

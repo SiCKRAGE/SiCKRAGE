@@ -40,11 +40,12 @@ class InitialSchema(db.SchemaUpgrade):
 
 class SizeAndProvider(InitialSchema):
     def test(self):
-        return self.hasColumn('failed', 'size') and self.hasColumn('failed', 'provider')
+        return self.hasColumn('failed', 'size') and self.hasColumn('failed', 'provider') and self.hasColumn('failed', 'url')
 
     def execute(self):
         self.addColumn('failed', 'size')
         self.addColumn('failed', 'provider', 'TEXT', '')
+        self.addColumn('failed', 'url', 'TEXT', '')
 
 
 class History(SizeAndProvider):
@@ -55,7 +56,7 @@ class History(SizeAndProvider):
 
     def execute(self):
         self.connection.action('CREATE TABLE history (date NUMERIC, ' +
-                               'size NUMERIC, release TEXT, provider TEXT);')
+                               'size NUMERIC, release TEXT, provider TEXT, url TEXT);')
 
 
 class HistoryStatus(History):
