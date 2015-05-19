@@ -27,12 +27,17 @@ import os
 import struct
 import sys
 
+try:
+    from hashlib import md5 as md5
+except ImportError:
+    from md5 import md5
+
 from sickbeard import encodingKludge as ek
 import sickbeard
 
 
 __all__ = ['EXTENSIONS', 'MIMETYPES', 'Video', 'Episode', 'Movie', 'UnknownVideo',
-           'scan', 'hash_opensubtitles', 'hash_thesubdb']
+           'scan', 'hash_opensubtitles', 'hash_thesubdb', 'hash_napiprojekt']
 logger = logging.getLogger("subliminal")
 
 #: Video extensions
@@ -124,6 +129,7 @@ class Video(object):
         """Compute different hashes"""
         self.hashes['OpenSubtitles'] = hash_opensubtitles(self.path)
         self.hashes['TheSubDB'] = hash_thesubdb(self.path)
+        self.hashes['NapiProjekt'] = hash_napiprojekt(self.path)
 
     def scan(self):
         """Scan and return associated subtitles
@@ -309,4 +315,26 @@ def hash_thesubdb(path):
         data += f.read(readsize)
     returnedhash = hashlib.md5(data).hexdigest()
     logger.debug(u'Computed TheSubDB hash %s for %s' % (returnedhash, path)) if sys.platform != 'win32' else logger.debug('Log line suppressed on windows')
+    return returnedhash
+
+
+def hash_napiprojekt(path):
+    """Compute a hash using TheSubDB's algorithm
+
+    :param string path: path
+    :return: hash
+    :rtype: string
+
+    """
+    hash  = md5()
+
+    try:
+        hash.update(open(path).read(10485760))
+    except (IOError, OSError), e:
+        logger.warning(u'Hashing failed: %s', e) if sys.platform != 'win32' else logger.debug('Log line suppressed on windows')
+        return None
+
+    returnedhash = hash.hexdigest()
+
+    logger.debug(u'Computed NapiProjekt hash %s for %s' % (returnedhash, path)) if sys.platform != 'win32' else logger.debug('Log line suppressed on windows')
     return returnedhash
