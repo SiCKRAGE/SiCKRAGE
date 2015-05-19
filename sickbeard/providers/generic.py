@@ -213,6 +213,28 @@ class GenericProvider:
 
         return True
 
+    def _get_size(self, item):
+        """Gets the size from the newznab:attr if available
+        non-newznab providers should override this"""
+
+        try:
+            attrs = item.getElementsByTagName('newznab:attr')
+        except:
+            logger.log(u"Size logging needs to be implemented for " + self.name + ". Please report this.")
+            return -1
+
+        try:
+            size = next(x.getAttribute('value') for x in attrs if x.getAttribute('name') == 'size')
+            size = int(size)
+        except StopIteration:
+            logger.log(u"RSS did not contain size", logger.DEBUG)
+            logger.log(u"Provider: " + self.provider.getID(), logger.DEBUG)
+            logger.log(u"Attrs: " + str(attrs), logger.DEBUG)
+            #logger.log(u"Data: " + item.toprettyxml(), logger.DEBUG)
+            return -1
+
+        return size
+
     def searchRSS(self, episodes):
         return self.cache.findNeededEpisodes(episodes)
 
@@ -318,6 +340,7 @@ class GenericProvider:
         cl = []
         for item in itemList:
             (title, url) = self._get_title_and_url(item)
+            size = self._get_size(item)
 
             # parse the file name
             try:
@@ -430,6 +453,7 @@ class GenericProvider:
             result.release_group = release_group
             result.version = version
             result.content = None
+            result.size = size
 
             if len(epObj) == 1:
                 epNum = epObj[0].episode
