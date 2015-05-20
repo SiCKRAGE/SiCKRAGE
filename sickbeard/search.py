@@ -234,7 +234,6 @@ def pickBestResult(results, show, quality_list=None):
 
     logger.log(u"Picking the best result out of " + str([x.name for x in results]), logger.DEBUG)
 
-    bwl = None
     bestResult = None
 
     # find the best result for the current episode
@@ -256,11 +255,8 @@ def pickBestResult(results, show, quality_list=None):
                     continue
 
         # build the black And white list
-        if cur_result.show.is_anime:
-            if not bwl:
-                bwl = BlackAndWhiteList(cur_result.show.indexerid)
-            if not bwl.is_valid(cur_result):
-                logger.log(cur_result.name+" does not match the blacklist or the whitelist, rejecting it. Result: " + bwl.get_last_result_msg(), logger.INFO)
+        if show.is_anime:
+            if not show.release_groups.is_valid(cur_result):
                 continue
 
         logger.log("Quality of " + cur_result.name + " is " + Quality.qualityStrings[cur_result.quality])
@@ -323,9 +319,6 @@ def isFinalResult(result):
 
     show_obj = result.episodes[0].show
 
-    bwl = None
-    if show_obj.is_anime:
-        bwl = BlackAndWhiteList(show_obj.indexerid)
 
     any_qualities, best_qualities = Quality.splitQuality(show_obj.quality)
 
@@ -334,7 +327,7 @@ def isFinalResult(result):
         return False
 
     # if it does not match the shows black and white list its no good
-    elif bwl and not bwl.is_valid(result):
+    elif show_obj.is_anime and show_obj.release_groups.is_valid(result):
         return False
 
     # if there's no redownload that's higher (above) and this is the highest initial download then we're good
@@ -464,7 +457,7 @@ def searchForNeededEpisodes():
     if not didSearch:
         logger.log(
             u"No NZB/Torrent providers found or enabled in the sickrage config for daily searches. Please check your settings.",
-            logger.ERROR)
+            logger.WARNING)
 
     return foundResults.values()
 
@@ -756,6 +749,6 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
 
     if not didSearch:
         logger.log(u"No NZB/Torrent providers found or enabled in the sickrage config for backlog searches. Please check your settings.",
-                   logger.ERROR)
+                   logger.WARNING)
 
     return finalResults

@@ -26,7 +26,7 @@ import itertools
 import urllib
 
 import sickbeard
-import requests
+from lib import requests
 
 from sickbeard import helpers, classes, logger, db
 from sickbeard.common import MULTI_EP_RESULT, SEASON_RESULT, USER_AGENT
@@ -156,8 +156,9 @@ class GenericProvider:
 
                 urls = [
                     'http://torcache.net/torrent/' + torrent_hash + '.torrent',
-                    'http://zoink.ch/torrent/' + torrent_hash + '.torrent',
-                    'http://torrage.com/torrent/' + torrent_hash.lower() + '.torrent',
+                    #zoink.ch misconfigured, torrage.com domain expired.
+                    #'http://zoink.ch/torrent/' + torrent_hash + '.torrent',
+                    #'http://torrage.com/torrent/' + torrent_hash.lower() + '.torrent',
                 ]
             except:
                 urls = [result.url]
@@ -255,6 +256,21 @@ class GenericProvider:
 
         return title, url
 
+    def _get_size(self, item):
+        """Gets the size from the item"""
+        if self.providerType != GenericProvider.NZB:
+            logger.log(u"Torrent Generic providers doesn't have _get_size() implemented yet", logger.DEBUG)
+            return -1
+        else:
+            size = item.get('links')[1].get('length')
+            if size:
+                size = int(size)
+                return size
+            else:
+                logger.log(u"Size was not found in your provider response", logger.DEBUG)
+                return -1
+
+
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False):
 
         self._checkAuth()
@@ -277,13 +293,13 @@ class GenericProvider:
                 continue
 
             # skip if season already searched
-            if len(episodes) > 1 and searched_scene_season == epObj.scene_season:
+            if len(episodes) > 1 and search_mode == 'sponly' and searched_scene_season == epObj.scene_season:
                 continue
 
             # mark season searched for season pack searches so we can skip later on
             searched_scene_season = epObj.scene_season
 
-            if len(episodes) > 1:
+            if len(episodes) > 1 and search_mode == 'sponly':
                 # get season search results
                 for curString in self._get_season_search_strings(epObj):
                     itemList += self._doSearch(curString, search_mode, len(episodes), epObj=epObj)
@@ -429,6 +445,7 @@ class GenericProvider:
             result.release_group = release_group
             result.version = version
             result.content = None
+            result.size = self._get_size(item)
 
             if len(epObj) == 1:
                 epNum = epObj[0].episode
