@@ -100,7 +100,7 @@ class EZTVProvider(generic.TorrentProvider):
 
                     try:
                         with BS4Parser(HTML, features=["html5lib", "permissive"]) as parsedHTML:
-                            resultsTable = parsedHTML.find_all('tr', attrs={'name': 'hover', 'class': 'header_brd'})
+                            resultsTable = parsedHTML.find_all('tr', attrs={'name': 'hover', 'class': 'forum_header_border'})
 
                             if not resultsTable:
                                 logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
@@ -109,14 +109,20 @@ class EZTVProvider(generic.TorrentProvider):
 
                             for entries in resultsTable:
                                 title = entries.find('a', attrs={'class': 'epinfo'}).contents[0]
-                                link = entries.find('a', attrs={'class': 'magnet'}).get('href')
+                                for link_type in ('magnet', 'download_1', 'download_3'):
+                                    link = entries.find('a', attrs={'class': link_type})
+                                    if link:
+                                        link = link.get('href')
+                                    else:
+                                        continue
 
-                                item = {
-                                    'title': title,
-                                    'link': link,
-                                }
+                                    item = {
+                                        'title': title,
+                                        'link': link,
+                                    }
 
-                                items[mode].append(item)
+                                    items[mode].append(item)
+                                    continue
 
                     except Exception, e:
                         logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),
@@ -143,12 +149,27 @@ class EZTVProvider(generic.TorrentProvider):
 
                                 for quality in episode['torrents'].keys():
                                     link = episode['torrents'][quality]['url']
-                                    getTitle = re.search('&dn=(.*?)&', link)
-                                    if getTitle:
-                                        title = getTitle.group(1)
-                                    else:
+                                    if not re.match('magnet', link) and not re.match('http', link):
                                         continue
 
+                                    # Get title from link:
+                                    #     1) try magnet link
+                                    #     2) try rarbg link
+                                    #     3) try extratorrent link
+                                    #     4) try '([^/]+$)' : everything after last slash character (not accurate)
+                                    #     5) fallback, title is equal to link
+                                    if re.match('.*&dn=(.*?)&', link):
+                                        title = re.match('.*&dn=(.*?)&', link).group(1)
+                                    elif re.match('http://rarbg.to', link):
+                                        title = re.search('([^=]+$)', link).group(0)
+                                    elif re.match('http://extratorrent.cc', link):
+                                        title = re.search('([^/]+$)', link).group(0)
+                                    elif re.search('([^/]+$)', link):
+                                        title = re.search('([^/]+$)', link).group(0)
+                                    else:
+                                        title = link
+
+                                    title = title.replace('+', '.').replace('%20', '.').replace('%5B', '[').replace('%5D', ']')
                                     item = {
                                         'title': title,
                                         'link': link,
