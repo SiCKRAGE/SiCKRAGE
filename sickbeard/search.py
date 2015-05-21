@@ -26,7 +26,7 @@ import traceback
 
 import sickbeard
 
-from common import SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, Quality, SEASON_RESULT, MULTI_EP_RESULT
+from common import AVAILABLE, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, Quality, SEASON_RESULT, MULTI_EP_RESULT
 
 from sickbeard import logger, db, show_name_helpers, exceptions, helpers
 from sickbeard import sab
@@ -87,6 +87,42 @@ def _downloadResult(result):
         newResult = False
 
     return newResult
+
+def markAvailable (result, endStatus=AVAILABLE):
+    """
+    Contains the internal logic necessary to actually mark "available" a result that
+    has been found.
+
+    Returns a bool representing success.
+
+    result: SearchResult instance to be mark ad available.
+    endStatus: the episode status that should be used for the episode object once it's found.
+    """
+
+    if result is None:
+        return False
+
+    # don't notify when we re-download an episode
+    sql_l = []
+    status_changed = False
+    for curEpObj in result.episodes:
+        if Quality.splitCompositeStatus(curEpObj.status)[0] != endStatus:
+            with curEpObj.lock:
+                curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
+                sql_l.append(curEpObj.get_sql())
+
+            status_changed = True
+
+            notifiers.notify_available(curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
+
+    if status_changed:
+        logger.log(u"Marking " + result.name + " from " + result.provider.name + "as available")
+
+    if len(sql_l) > 0:
+        myDB = db.DBConnection()
+        myDB.mass_action(sql_l)
+
+    return True
 
 def snatchEpisode(result, endStatus=SNATCHED):
     """
@@ -153,19 +189,22 @@ def snatchEpisode(result, endStatus=SNATCHED):
     # don't notify when we re-download an episode
     sql_l = []
     trakt_data = []
+    status_changed = False
     for curEpObj in result.episodes:
-        with curEpObj.lock:
-            if isFirstBestMatch(result):
-                curEpObj.status = Quality.compositeStatus(SNATCHED_BEST, result.quality)
-            else:
-                curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
+        if Quality.splitCompositeStatus(curEpObj.status)[0] != endStatus:
+            status_changed = True
+            with curEpObj.lock:
+                if isFirstBestMatch(result):
+                    curEpObj.status = Quality.compositeStatus(SNATCHED_BEST, result.quality)
+                else:
+                    curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
 
-            sql_l.append(curEpObj.get_sql())
+                sql_l.append(curEpObj.get_sql())
 
-        if curEpObj.status not in Quality.DOWNLOADED:
-            notifiers.notify_snatch(curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
+            if curEpObj.status not in Quality.DOWNLOADED:
+                notifiers.notify_snatch(curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
 
-            trakt_data.append((curEpObj.season, curEpObj.episode))
+                trakt_data.append((curEpObj.season, curEpObj.episode))
 
     data = notifiers.trakt_notifier.trakt_episode_data_generate(trakt_data)
 
@@ -173,6 +212,9 @@ def snatchEpisode(result, endStatus=SNATCHED):
         logger.log(u"Add episodes, showid: indexerid " + str(result.show.indexerid) + ", Title " + str(result.show.name) + " to Traktv Watchlist", logger.DEBUG)
         if data:
             notifiers.trakt_notifier.update_watchlist(result.show, data_episode=data, update="add")
+
+    if status_changed:
+        logger.log(u"Downloading " + result.name + " from " + result.provider.name)
 
     if len(sql_l) > 0:
         myDB = db.DBConnection()
@@ -375,7 +417,7 @@ def searchForNeededEpisodes():
     episodes = []
 
     for curShow in show_list:
-        if not curShow.paused:
+        if sickbeard.EP_AVAILABILITY_CHECK or not curShow.paused:
             episodes.extend(wantedEpisodes(curShow, fromDate))
 
     providers = [x for x in sickbeard.providers.sortedProviderList(sickbeard.RANDOMIZE_PROVIDERS) if x.isActive() and x.enable_daily]

@@ -59,7 +59,7 @@ from sickbeard import encodingKludge as ek
 
 from common import Quality, Overview, statusStrings
 from common import DOWNLOADED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, ARCHIVED, IGNORED, UNAIRED, WANTED, SKIPPED, \
-    UNKNOWN, FAILED
+    UNKNOWN, FAILED, AVAILABLE
 from common import NAMING_DUPLICATE, NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_SEPARATED_REPEAT, \
     NAMING_LIMITED_EXTEND_E_PREFIXED
 
@@ -1232,15 +1232,20 @@ class TVShow(object):
         logger.log(u"Existing episode status: " + str(epStatus) + " (" + epStatus_text + ")", logger.DEBUG)
 
         # if we know we don't want it then just say no
-        if epStatus in (SKIPPED, IGNORED, ARCHIVED) and not manualSearch:
-            logger.log(u"Existing episode status is skipped/ignored/archived, ignoring found episode", logger.DEBUG)
-            return False
+        if sickbeard.EP_AVAILABILITY_CHECK:
+            if epStatus in (IGNORED, ARCHIVED) and not manualSearch:
+                logger.log(u"Existing episode status is ignored/archived, ignoring found episode", logger.DEBUG)
+                return False
+        else:
+            if epStatus in (SKIPPED, IGNORED, ARCHIVED) and not manualSearch:
+                logger.log(u"Existing episode status is skipped/ignored/archived, ignoring found episode", logger.DEBUG)
+                return False
 
         curStatus, curQuality = Quality.splitCompositeStatus(epStatus)
 
         # if it's one of these then we want it as long as it's in our allowed initial qualities
         if quality in anyQualities + bestQualities:
-            if epStatus in (WANTED, UNAIRED, SKIPPED):
+            if epStatus in (WANTED, UNAIRED, SKIPPED) or epStatus in Quality.AVAILABLE:
                 logger.log(u"Existing episode status is wanted/unaired/skipped, getting found episode", logger.DEBUG)
                 return True
             elif manualSearch:
@@ -1254,7 +1259,7 @@ class TVShow(object):
                            logger.DEBUG)
 
         # if we are re-downloading then we only want it if it's in our bestQualities list and better than what we have
-        if curStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST and quality in bestQualities and quality > curQuality:
+        if (curStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST or (curStatus == Quality.AVAILABLE and sickbeard.EP_AVAILABILITY_CHECK)) and quality in bestQualities and quality > curQuality:
             logger.log(u"Episode already exists but the found episode has better quality, getting found episode",
                        logger.DEBUG)
             return True
@@ -1279,7 +1284,7 @@ class TVShow(object):
             return Overview.SKIPPED
         elif epStatus == ARCHIVED:
             return Overview.GOOD
-        elif epStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.FAILED + Quality.SNATCHED_BEST:
+        elif epStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.FAILED + Quality.SNATCHED_BEST + Quality.AVAILABLE:
 
             anyQualities, bestQualities = Quality.splitQuality(self.quality)  # @UnusedVariable
             if bestQualities:
@@ -1297,6 +1302,8 @@ class TVShow(object):
                 return Overview.QUAL
             elif epStatus in (SNATCHED, SNATCHED_PROPER, SNATCHED_BEST):
                 return Overview.SNATCHED
+            elif epStatus == AVAILABLE:
+                return Overview.AVAILABLE
             # if they don't want re-downloads then we call it good if they have anything
             elif maxBestQuality == None:
                 return Overview.GOOD

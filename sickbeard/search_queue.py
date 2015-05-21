@@ -29,6 +29,7 @@ from sickbeard import search, failed_history, history
 from sickbeard import ui
 from sickbeard.exceptions import ex
 from sickbeard.search import pickBestResult
+from copy import deepcopy
 
 search_queue_lock = threading.Lock()
 
@@ -141,9 +142,32 @@ class DailySearchQueueItem(generic_queue.QueueItem):
                 logger.log(u"No needed episodes found")
             else:
                 for result in foundResults:
-                    # just use the first result for now
-                    logger.log(u"Downloading " + result.name + " from " + result.provider.name)
-                    self.success = search.snatchEpisode(result)
+                    #snatch episode
+                    if sickbeard.EP_AVAILABILITY_CHECK:
+                        snatch_result = deepcopy(result)
+                        epObjList = []
+                        for epObj in snatch_result.episodes:
+                            #logger.log(u"snatch_result.episodes: " + str(snatch_result.episodes))
+                            if epObj.status == common.WANTED:
+                                epObjList.append(epObj)
+                        snatch_result.episodes = epObjList
+
+                        # just use the first result for now
+                        if len(epObjList):
+                            self.success = search.snatchEpisode(snatch_result)
+
+                        #make episode status to available
+                        available_result = deepcopy(result)
+                        epObjList = []
+                        for epObj in available_result.episodes:
+                            if epObj.status != common.WANTED:
+                                epObjList.append(epObj)
+                        available_result.episodes = epObjList
+
+                        if len(available_result.episodes):
+                            self.success = search.markAvailable(available_result)
+                    else:
+                        search.snatchEpisode(result)
 
                     # give the CPU a break
                     time.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
@@ -222,9 +246,33 @@ class BacklogQueueItem(generic_queue.QueueItem):
 
             if searchResult:
                 for result in searchResult:
-                    # just use the first result for now
-                    logger.log(u"Downloading " + result.name + " from " + result.provider.name)
-                    search.snatchEpisode(result)
+
+                    if sickbeard.EP_AVAILABILITY_CHECK:
+                        #snatch episode
+                        snatch_result = deepcopy(result)
+                        epObjList = []
+                        for epObj in snatch_result.episodes:
+                            #logger.log(u"snatch_result.episodes: " + str(snatch_result.episodes))
+                            if epObj.status == common.WANTED:
+                                epObjList.append(epObj)
+                        snatch_result.episodes = epObjList
+
+                        # just use the first result for now
+                        if len(epObjList):
+                            search.snatchEpisode(snatch_result)
+
+                        #make episode status to available
+                        available_result = deepcopy(result)
+                        epObjList = []
+                        for epObj in available_result.episodes:
+                            if epObj.status != common.WANTED:
+                                epObjList.append(epObj)
+                        available_result.episodes = epObjList
+
+                        if len(available_result.episodes):
+                            search.markAvailable(available_result)
+                    else:
+                        search.snatchEpisode(result)
 
                     # give the CPU a break
                     time.sleep(common.cpu_presets[sickbeard.CPU_PRESET])

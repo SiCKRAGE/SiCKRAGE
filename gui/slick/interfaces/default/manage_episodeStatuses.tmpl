@@ -26,9 +26,15 @@
 
 <form action="$sbRoot/manage/episodeStatuses" method="get">
 Manage episodes with status <select name="whichStatus" class="form-control form-control-inline input-sm">
-#for $curStatus in [$common.SKIPPED, $common.SNATCHED, $common.WANTED, $common.ARCHIVED, $common.IGNORED]:
-<option value="$curStatus">$common.statusStrings[$curStatus]</option>
-#end for
+#if $sickbeard.EP_AVAILABILITY_CHECK:
+    #for $curStatus in [$common.SKIPPED, $common.AVAILABLE, $common.SNATCHED, $common.WANTED, $common.ARCHIVED, $common.IGNORED]:
+    <option value="$curStatus">$common.statusStrings[$curStatus]</option>
+    #end for
+#else
+    #for $curStatus in [$common.SKIPPED, $common.SNATCHED, $common.WANTED, $common.ARCHIVED, $common.IGNORED]:
+    <option value="$curStatus">$common.statusStrings[$curStatus]</option>
+    #end for
+#end if
 </select>
 <input class="btn btn-inline" type="submit" value="Manage" /> 
 </form>
@@ -44,10 +50,18 @@ Manage episodes with status <select name="whichStatus" class="form-control form-
 
 <br />
 
-#if $whichStatus in ($common.ARCHIVED, $common.IGNORED, $common.SNATCHED):
-#set $row_class = "good"
+#if $sickbeard.EP_AVAILABILITY_CHECK:
+    #if $whichStatus in ($common.ARCHIVED, $common.AVAILABLE, $common.IGNORED, $common.SNATCHED):
+        #set $row_class = "good"
+    #else
+        #set $row_class = $common.Overview.overviewStrings[$whichStatus]
+    #end if
 #else
-#set $row_class = $common.Overview.overviewStrings[$whichStatus]
+    #if $whichStatus in ($common.ARCHIVED, $common.IGNORED, $common.SNATCHED):
+        #set $row_class = "good"
+    #else
+        #set $row_class = $common.Overview.overviewStrings[$whichStatus]
+    #end if
 #end if
 <input type="hidden" id="row_class" value="$row_class" />
 

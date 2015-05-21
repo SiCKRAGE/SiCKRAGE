@@ -510,6 +510,10 @@ class KODINotifier:
         if sickbeard.KODI_NOTIFY_ONDOWNLOAD:
             self._notify_kodi(ep_name, common.notifyStrings[common.NOTIFY_DOWNLOAD])
 
+    def notify_available(self, ep_name):
+        if sickbeard.KODI_NOTIFY_ONAVAILABLE:
+            self._notify_kodi(ep_name, common.notifyStrings[common.NOTIFY_AVAILABLE])
+
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.KODI_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify_kodi(ep_name + ": " + lang, common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD])

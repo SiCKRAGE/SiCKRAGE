@@ -90,6 +90,10 @@ class LibnotifyNotifier:
         if sickbeard.LIBNOTIFY_NOTIFY_ONDOWNLOAD:
             self._notify(common.notifyStrings[common.NOTIFY_DOWNLOAD], ep_name)
 
+    def notify_available(self, ep_name):
+        if sickbeard.LIBNOTIFY_NOTIFY_ONAVAILABLE:
+            self._notify(common.notifyStrings[common.NOTIFY_AVAILABLE], ep_name)
+
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify(common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)

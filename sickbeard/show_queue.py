@@ -390,8 +390,8 @@ class QueueItemAdd(ShowQueueItem):
         sickbeard.traktRollingScheduler.action.updateWantedList(self.show.indexerid)
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
-        if self.show.default_ep_status == WANTED:
-            logger.log(u"Launching backlog for this show since its episodes are WANTED")
+        if self.show.default_ep_status == WANTED or (self.show.default_ep_status == SKIPPED and sickbeard.EP_AVAILABILITY_CHECK):
+            logger.log(u"Launching backlog for this show since its episodes are WANTED or SKIPPED", logger.DEBUG)
             sickbeard.backlogSearchScheduler.action.searchBacklog([self.show])
 
         self.show.writeMetadata()

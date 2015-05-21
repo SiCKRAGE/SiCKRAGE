@@ -34,6 +34,9 @@ class pyTivoNotifier:
     def notify_download(self, ep_name):
         pass
 
+    def notify_available(self, ep_name):
+        pass
+
     def notify_subtitle_download(self, ep_name, lang):
         pass
         

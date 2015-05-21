@@ -89,6 +89,16 @@
 
 						<div class="field-pair">
 							<label>
+								<span class="component-title">Make avalable check</span>
+								<span class="component-desc">
+									<input type="checkbox" name="ep_availability_check" id="ep_availability_check" class="enabler" <%= html_checked if sickbeard.EP_AVAILABILITY_CHECK == True else '' %>/>
+									<p>check providers looking for available torrent without snatching it</p>
+								</span>
+							</label>
+						</div>
+
+						<div class="field-pair">
+							<label>
 								<span class="component-title">Daily search frequency</span>
 								<span class="component-desc">
 									<input type="text" name="dailysearch_frequency" value="$sickbeard.DAILYSEARCH_FREQUENCY" class="form-control input-sm input75" />
