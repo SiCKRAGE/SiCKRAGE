@@ -1303,7 +1303,7 @@ def initialize(consoleLogging=True):
                                                  threadName="SHOWQUEUE")
 
         showUpdateScheduler = scheduler.Scheduler(showUpdater.ShowUpdater(),
-                                                  cycleTime=datetime.timedelta(hours=1),
+                                                  cycleTime=datetime.timedelta(hours=24),
                                                   threadName="SHOWUPDATER",
                                                   start_time=datetime.time(hour=SHOWUPDATE_HOUR))
 
