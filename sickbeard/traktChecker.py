@@ -197,7 +197,12 @@ class TraktChecker():
 
             if len(trakt_data):
                 data = self.trakt_bulk_data_generate(trakt_data)
-                self.trakt_api.traktRequest("sync/collection/remove", data, method='POST')
+                try:
+                    self.trakt_api.traktRequest("sync/collection/remove", data, method='POST')
+                except traktException as e:
+                    logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                    return
+
                 self._getShowCollection()                
  
             logger.log(u"COLLECTION::REMOVE::FINISH - Look for Episodes to Remove From Trakt Collection", logger.DEBUG)
@@ -219,7 +224,12 @@ class TraktChecker():
 
                 if len(trakt_data):
                     data = self.trakt_bulk_data_generate(trakt_data)
-                    self.trakt_api.traktRequest("sync/collection", data, method='POST')
+                    try:
+                        self.trakt_api.traktRequest("sync/collection", data, method='POST')
+                    except traktException as e:
+                        logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                        return
+
                     self._getShowCollection()
 
             logger.log(u"COLLECTION::ADD::FINISH - Look for Episodes to Add to Trakt Collection", logger.DEBUG)  
@@ -255,7 +265,12 @@ class TraktChecker():
 
             if len(trakt_data):
                 data = self.trakt_bulk_data_generate(trakt_data)
-                self.trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
+                try:
+                    self.trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
+                except traktException as e:
+                    logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                    return
+
                 self._getEpisodeWatchlist()                
 
             logger.log(u"WATCHLIST::REMOVE::FINISH - Look for Episodes to Remove from Trakt Watchlist", logger.DEBUG)
@@ -277,7 +292,12 @@ class TraktChecker():
 
                 if len(trakt_data):
                     data = self.trakt_bulk_data_generate(trakt_data)
-                    self.trakt_api.traktRequest("sync/watchlist", data, method='POST')
+                    try:
+                        self.trakt_api.traktRequest("sync/watchlist", data, method='POST')
+                    except traktException as e:
+                        logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                        return
+
                     self._getEpisodeWatchlist()
 
             logger.log(u"WATCHLIST::ADD::FINISH - Look for Episodes to Add to Trakt Watchlist", logger.DEBUG)
@@ -301,7 +321,12 @@ class TraktChecker():
 
                 if len(trakt_data):
                     data = {'shows': trakt_data}
-                    self.trakt_api.traktRequest("sync/watchlist", data, method='POST')
+                    try:
+                        self.trakt_api.traktRequest("sync/watchlist", data, method='POST')
+                    except traktException as e:
+                        logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                        return
+
                     self._getShowWatchlist()
 
             logger.log(u"SHOW_WATCHLIST::ADD::FINISH - Look for Shows to Add to Trakt Watchlist", logger.DEBUG)
@@ -444,7 +469,12 @@ class TraktChecker():
         
         try:
             self.ShowWatchlist = { 'tvdb_id' : {}, 'tvrage_id': {} }
-            TraktShowWatchlist = self.trakt_api.traktRequest("sync/watchlist/shows")
+            try:
+                TraktShowWatchlist = self.trakt_api.traktRequest("sync/watchlist/shows")
+            except traktException as e:
+                logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                return
+
             tvdb_id = 'tvdb'
             tvrage_id = 'tvrage'
             
@@ -479,7 +509,12 @@ class TraktChecker():
         
         try:
             self.EpisodeWatchlist = { 'tvdb_id' : {}, 'tvrage_id': {} }
-            TraktEpisodeWatchlist = self.trakt_api.traktRequest("sync/watchlist/episodes")
+            try:
+                TraktEpisodeWatchlist = self.trakt_api.traktRequest("sync/watchlist/episodes")
+            except traktException as e:
+                logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                return
+
             tvdb_id = 'tvdb'
             tvrage_id = 'tvrage'
             
@@ -533,7 +568,12 @@ class TraktChecker():
         
             self.Collectionlist = { 'tvdb_id' : {}, 'tvrage_id': {} }
             logger.log(u"Getting Show Collection", logger.DEBUG)
-            TraktCollectionList = self.trakt_api.traktRequest("sync/collection/shows")
+            try:
+                TraktCollectionList = self.trakt_api.traktRequest("sync/collection/shows")
+            except traktException as e:
+                logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                return
+
             tvdb_id = 'tvdb'
             tvrage_id = 'tvrage'
             
@@ -697,9 +737,14 @@ class TraktRolling():
             season = 1
             episode = 0
 
-            last_per_season = self.trakt_api.traktRequest("shows/" + str(imdb_id) + "/seasons?extended=full")
-            if not last_per_season:
-                logger.log(u"Could not connect to trakt service, cannot download last season for show", logger.ERROR)
+            try:
+                last_per_season = self.trakt_api.traktRequest("shows/" + str(imdb_id) + "/seasons?extended=full")
+
+                if not last_per_season:
+                    logger.log(u"Could not connect to trakt service, cannot download last season for show", logger.ERROR)
+                    return False
+            except traktException as e:
+                logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
                 return False
 
             logger.log(u"indexer_id: " + str(indexer_id) + ", Show: " + show_name + " - First skipped Episode: Season " + str(sn_sb) + ", Episode " + str(ep_sb), logger.DEBUG)
