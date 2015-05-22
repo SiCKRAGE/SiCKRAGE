@@ -1,0 +1,29 @@
+.coverflow{
+	margin-top: 100px;
+	height: 100%;
+}
+.coverflow .cover {
+	cursor: pointer;
+	text-align: center;
+}
+.coverflow .cover.current {
+	opacity: 1;
+	border-bottom: none;
+	box-shadow:	0 0 16px rgba(0,0,0,.5);
+}
+.coverflow .cover.current:after {
+	content:			' ';
+	display:			block;
+	position:			absolute;
+	width:				132px;
+	height:				16px;
+	left:				-16px;
+	bottom:				-16px;
+}
+.coverflow .cover img{
+	height: 441px;
+	width: auto;
+	-webkit-box-shadow: 0px -19px 99px -30px rgba(255,255,255,1);
+	-moz-box-shadow: 0px -19px 99px -30px rgba(255,255,255,1);
+	box-shadow: 0px -19px 99px -30px rgba(255,255,255,1);
+}
