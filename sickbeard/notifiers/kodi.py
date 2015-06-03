@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+import httplib
 import urllib
 import urllib2
 import socket
@@ -41,7 +42,7 @@ except ImportError:
 
 
 class KODINotifier:
-    sb_logo_url = 'https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/slick/images/sickrage-shark-mascot.png'
+    sr_logo_url = 'https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/slick/images/sickrage-shark-mascot.png'
 
     def _get_kodi_version(self, host, username, password):
         """Returns KODI JSON-RPC API version (odd # = dev, even # = stable)
@@ -141,7 +142,7 @@ class KODINotifier:
                 else:
                     logger.log(u"Detected KODI version >= 12, using KODI JSON API", logger.DEBUG)
                     command = '{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"%s","message":"%s", "image": "%s"},"id":1}' % (
-                        title.encode("utf-8"), message.encode("utf-8"), self.sb_logo_url)
+                        title.encode("utf-8"), message.encode("utf-8"), self.sr_logo_url)
                     notifyResult = self._send_to_kodi_json(command, curHost, username, password)
                     if notifyResult.get('result'):
                         result += curHost + ':' + notifyResult["result"].decode(sickbeard.SYS_ENCODING)
@@ -385,7 +386,7 @@ class KODINotifier:
 
             try:
                 response = urllib2.urlopen(req)
-            except urllib2.URLError, e:
+            except (httplib.BadStatusLine, urllib2.URLError), e:
                 logger.log(u"Error while trying to retrieve KODI API version for " + host + ": " + ex(e),
                            logger.WARNING)
                 return False
