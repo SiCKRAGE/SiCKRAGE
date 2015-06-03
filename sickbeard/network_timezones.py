@@ -73,7 +73,7 @@ def _update_zoneinfo():
     sb_timezone = tz.tzlocal()
 
     # now check if the zoneinfo needs update
-    url_zv = 'http://sickragetv.github.io/sb_network_timezones/zoneinfo.txt'
+    url_zv = 'https://sickragetv.github.io/sb_network_timezones/zoneinfo.txt'
 
     try:
         url_data = helpers.getURL(url_zv)
@@ -96,7 +96,7 @@ def _update_zoneinfo():
         return
 
     # now load the new zoneinfo
-    url_tar = u'http://sickragetv.github.io/sb_network_timezones/%s' % new_zoneinfo
+    url_tar = u'https://sickragetv.github.io/sb_network_timezones/%s' % new_zoneinfo
 
     zonefile = helpers.real_path(ek.ek(join, ek.ek(os.path.dirname, lib.dateutil.zoneinfo.__file__), new_zoneinfo))
     zonefile_tmp = re.sub(r'\.tar\.gz$', '.tmp', zonefile)
@@ -148,7 +148,7 @@ def update_network_dict():
     d = {}
 
     # network timezones are stored on github pages
-    url = 'http://sickragetv.github.io/sb_network_timezones/network_timezones.txt'
+    url = 'https://sickragetv.github.io/sb_network_timezones/network_timezones.txt'
 
     url_data = helpers.getURL(url)
     if url_data is None:
