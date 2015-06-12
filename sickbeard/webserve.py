@@ -401,7 +401,7 @@ class WebRoot(WebHandler):
 
     def setHomeLayout(self, layout):
 
-        if layout not in ('poster', 'small', 'banner', 'simple'):
+        if layout not in ('poster', 'small', 'banner', 'simple', 'coverflow'):
             layout = 'poster'
 
         sickbeard.HOME_LAYOUT = layout
@@ -4477,6 +4477,19 @@ class ConfigProviders(Config):
                         kwargs[curTorrentProvider.getID() + '_confirmed'])
                 except:
                     curTorrentProvider.confirmed = 0
+
+            if hasattr(curTorrentProvider, 'ranked'):
+                try:
+                    curTorrentProvider.ranked = config.checkbox_to_value(
+                        kwargs[curTorrentProvider.getID() + '_ranked'])
+                except:
+                    curTorrentProvider.ranked = 0
+
+            if hasattr(curTorrentProvider, 'sorting'):
+                try:
+                    curTorrentProvider.sorting = str(kwargs[curTorrentProvider.getID() + '_sorting']).strip()
+                except:
+                     curTorrentProvider.sorting = 'seeders'
 
             if hasattr(curTorrentProvider, 'proxy'):
                 try:
