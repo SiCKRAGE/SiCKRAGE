@@ -98,10 +98,14 @@ class CacheController(object):
         headers = CaseInsensitiveDict(resp.headers)
 
         now = time.time()
-        date = calendar.timegm(
-            parsedate_tz(headers['date'])
-        )
-        current_age = max(0, now - date)
+
+        if 'date' in headers:
+          date = calendar.timegm(
+              parsedate_tz(headers['date'])
+          )
+          current_age = max(0, now - date)
+	else:
+	  current_age = 0
 
         # TODO: There is an assumption that the result will be a
         # urllib3 response object. This may not be best since we
