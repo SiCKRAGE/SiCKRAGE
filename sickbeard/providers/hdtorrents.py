@@ -197,6 +197,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
                 data = self.getURL(searchURL)
                 if not data:
+                    logger.log(u"No data received", logger.DEBUG)
                     continue
 
                 # Remove HDTorrents NEW list
@@ -224,13 +225,16 @@ class HDTorrentsProvider(generic.TorrentProvider):
                             id = entries[23].find('div')['id']
                             seeders = int(entries[20].get_text())
                             leechers = int(entries[21].get_text())
-                        except (AttributeError, TypeError):
+                        except (AttributeError, TypeError) as e:
+                            logger.log(u'Error while parsing page: ' + ex(e), logger.ERROR)
                             continue
 
                         if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
+                            logger.log(u"Seeders/Leechers is less than minimal seed/leech set in provider settings", logger.DEBUG)
                             continue
 
                         if not title or not download_url:
+                            logger.log(u"No download URL or Title available", logger.DEBUG)
                             continue
 
                         item = title, download_url, id, seeders, leechers
