@@ -38,7 +38,7 @@ from sickbeard import providers, metadata, config, webserveInit
 from sickbeard.providers.generic import GenericProvider
 from providers import btn, newznab, womble, thepiratebay, torrentleech, kat, iptorrents, \
     omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, nextgen, speedcd, nyaatorrents, animenzb, torrentbytes, animezb, \
-    freshontv, morethantv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, binsearch, scenetime
+    freshontv, morethantv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, binsearch, scenetime, nzbfriends, nzbindex, nzbto
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
     naming_ep_type
 from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
@@ -279,6 +279,12 @@ BINSEARCH = False
 OMGWTFNZBS = False
 OMGWTFNZBS_USERNAME = None
 OMGWTFNZBS_APIKEY = None
+
+NZBINDEX = False
+
+NZBTO = False
+NZBTO_USERNAME = None
+NZBTO_APIKEY = None
 
 NEWZBIN = False
 NEWZBIN_USERNAME = None
@@ -585,7 +591,8 @@ def initialize(consoleLogging=True):
             AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, DEFAULT_AUTOPOSTPROCESSER_FREQUENCY, MIN_AUTOPOSTPROCESSER_FREQUENCY, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
             ANIME_SPLIT_HOME, SCENE_DEFAULT, DOWNLOAD_URL, BACKLOG_DAYS, GIT_ORG, GIT_REPO, GIT_USERNAME, GIT_PASSWORD, \
-            GIT_AUTOISSUES, DEVELOPER, gh, DISPLAY_ALL_SEASONS
+            GIT_AUTOISSUES, DEVELOPER, gh, DISPLAY_ALL_SEASONS, NZBINDEX, NZBTO, NZBTO_APIKEY, NZBTO_USERNAME
+
 
         if __INITIALIZED__:
             return False
@@ -881,6 +888,8 @@ def initialize(consoleLogging=True):
         NZBS = bool(check_setting_int(CFG, 'NZBs', 'nzbs', 0))
         NZBS_UID = check_setting_str(CFG, 'NZBs', 'nzbs_uid', '', censor_log=True)
         NZBS_HASH = check_setting_str(CFG, 'NZBs', 'nzbs_hash', '', censor_log=True)
+
+	NZBINDEX = bool(check_setting_int(CFG, 'NZBINDEX', 'nzbindex', 0))
 
         NEWZBIN = bool(check_setting_int(CFG, 'Newzbin', 'newzbin', 0))
         NEWZBIN_USERNAME = check_setting_str(CFG, 'Newzbin', 'newzbin_username', '', censor_log=True)
