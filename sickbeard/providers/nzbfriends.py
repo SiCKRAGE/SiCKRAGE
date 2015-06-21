@@ -25,6 +25,7 @@ import generic
 from sickbeard import classes, show_name_helpers, helpers
 
 from sickbeard import exceptions, logger
+from sickbeard import scene_exceptions
 from sickbeard.common import *
 from sickbeard import tvcache
 from lib.dateutil.parser import parse as parseDate
@@ -70,7 +71,7 @@ class Nzbfriends(generic.NZBProvider):
 
         return title, url
 
-    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
         #http://nzbindex.com/rss/?q=German&sort=agedesc&minsize=100&complete=1&max=50&more=1
 
         params = {
@@ -94,25 +95,31 @@ class Nzbfriends(generic.NZBProvider):
 
         return results
 
-    def findPropers(self, date=None):
-
+    def findPropers(self, search_date=datetime.datetime.today()):
         results = []
 
-        for item in self._doSearch("v2|v3|v4|v5"):
+        myDB = db.DBConnection()
+        sqlResults = myDB.select(
+            'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
+            ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
+            ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
+            ' AND (e.status IN (' + ','.join([str(x) for x in Quality.DOWNLOADED]) + ')' +
+            ' OR (e.status IN (' + ','.join([str(x) for x in Quality.SNATCHED]) + ')))'
+        )
 
-            (title, url) = self._get_title_and_url(item)
+        if not sqlResults:
+            return []
 
-            if item.has_key('published_parsed') and item['published_parsed']:
-                result_date = item.published_parsed
-                if result_date:
-                    result_date = datetime.datetime(*result_date[0:6])
-            else:
-                logger.log(u"Unable to figure out the date for entry " + title + ", skipping it")
-                continue
-
-            if not date or result_date > date:
-                search_result = classes.Proper(title, url, result_date, self.show)
-                results.append(search_result)
+        for sqlshow in sqlResults:
+            self.show = helpers.findCertainShow(sickbeard.showList, int(sqlshow["showid"]))
+            if self.show:
+                curEp = self.show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
+                searchStrings = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
+                for searchString in searchStrings:
+                    for item in self._doSearch(searchString):
+                        title, url = self._get_title_and_url(item)
+                        if(re.match(r'.*(REPACK|PROPER).*', title, re.I)):
+                             results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
 
         return results
 
