@@ -1,3 +1,7 @@
+# Author: Marcos Almeida Jr. <junalmeida@gmail.com>
+# URL: https://github.com/junalmeida/Sick-Beard
+# Ported by :Matigonkas
+#
 # This file is part of SickRage.
 #
 # SickRage is free software: you can redistribute it and/or modify
@@ -43,7 +47,7 @@ class TORRENTZProvider(generic.TorrentProvider):
         self.confirmed = False
         self.cache = TORRENTZCache(self)
 
-        self.url = 'http://torrentz.eu/'
+        self.url = 'https://torrentz.eu/'
 
     def isEnabled(self):
         return self.enabled
@@ -65,7 +69,7 @@ class TORRENTZProvider(generic.TorrentProvider):
     
         return [params]    
     
-    def _get_episode_search_strings(self, ep_obj):
+    def _get_episode_search_strings(self, ep_obj, add_string=''):
     
         params = {}
         
@@ -192,20 +196,20 @@ class TORRENTZCache(tvcache.TVCache):
         self.minTime = 15
 
     def _getRSSData(self):
-        # params = { }
+        params = { }
         
-        # if sickbeard.TORRENTZ_VERIFIED:
-            # params.update({"baseurl" : "feed_verified"})
+        # if self.confirmed:
+        params.update({"baseurl" : "feed_verified"})
         # else:
             # params.update({"baseurl" : "feedA"})
-        # url = self.provider.url + '%(baseurl)s?q=' % params
+        url = self.provider.url + '%(baseurl)s?q=' % params
                
-        # logger.log(self.provider.name + u" cache update URL: " + url)
+        logger.log(self.provider.name + u" cache update URL: " + url)
 
-        # data = self.provider.getURL(url)
-        # return data
-        params = {'RSS': ['rss']}
-        return {'entries': self.provider._doSearch(params)}
+        data = self.provider.getURL(url)
+        return data
+        # params = {'RSS': ['rss']}
+        # return {'entries': self.provider._doSearch(params)}
     
     def _parseItem(self, item):
         try:      
