@@ -107,7 +107,7 @@ class MoreThanTVProvider(generic.TorrentProvider):
                 self.session = requests.Session()
 
             try:
-                response = self.session.post(self.urls['login'], data=login_params, timeout=30, verify=False)
+                response = self.session.post(self.urls['login'], data=login_params, timeout=30)
             except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
                 logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
                 return False
@@ -265,8 +265,6 @@ class MoreThanTVProvider(generic.TorrentProvider):
         title, url, id, seeders, leechers = item
 
         if title:
-            title = u'' + title
-            title = title.replace(' ', '.')
             title = self._clean_title_from_provider(title)
 
         if url:

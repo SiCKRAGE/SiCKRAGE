@@ -54,10 +54,10 @@ class TorrentDayProvider(generic.TorrentProvider):
 
         self.cache = TorrentDayCache(self)
 
-        self.urls = {'base_url': 'https://tdonline.org',
-                'login': 'https://tdonline.org/torrents/',
-                'search': 'https://tdonline.org/V3/API/API.php',
-                'download': 'https://tdonline.org/download.php/%s/%s'
+        self.urls = {'base_url': 'https://classic.torrentday.com',
+                'login': 'https://classic.torrentday.com/torrents/',
+                'search': 'https://classic.torrentday.com/V3/API/API.php',
+                'download': 'https://classic.torrentday.com/download.php/%s/%s'
         }
 
         self.url = self.urls['base_url']
@@ -97,7 +97,7 @@ class TorrentDayProvider(generic.TorrentProvider):
                 self.session = requests.Session()
 
             try:
-                response = self.session.post(self.urls['login'], data=login_params, timeout=30, verify=False)
+                response = self.session.post(self.urls['login'], data=login_params, timeout=30)
             except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
                 logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
                 return False
@@ -236,8 +236,6 @@ class TorrentDayProvider(generic.TorrentProvider):
         title, url = item[0], item[1]
 
         if title:
-            title = u'' + title
-            title = title.replace(' ', '.')
             title = self._clean_title_from_provider(title)
 
         if url:
