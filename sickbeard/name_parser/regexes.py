@@ -267,7 +267,7 @@ anime_regexes = [
      (?P<ep_ab_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3})                                       # E01
      (-(?P<extra_ab_ep_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3}))?                             # E02
      (v(?P<version>[0-9]))?                                       # version
-     [ ._-]+\[(?P<extra_info>\d{3,4}[xp]?\d{0,4}[\.\w\s-]*)\]       # Source_Quality_Etc-
+     ([ ._-]+\[(?P<extra_info>\d{3,4}[xp]?\d{0,4}[\.\w\s-]*)\])?  # Source_Quality_Etc-
      (\[(?P<crc>\w{8})\])?                                        # CRC
      .*?                                                          # Separator and EOL
      '''),
@@ -282,7 +282,7 @@ anime_regexes = [
      (?P<ep_ab_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3})                                                   # E01
      (-(?P<extra_ab_ep_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3}))?                                         # E02
      (v(?P<version>[0-9]))?                                                   # version
-     [ ._-]+\((?P<extra_info>(CX[ ._-]?)?\d{3,4}[xp]?\d{0,4}[\.\w\s-]*)\)     # Source_Quality_Etc-
+     ([ ._-]+\((?P<extra_info>(CX[ ._-]?)?\d{3,4}[xp]?\d{0,4}[\.\w\s-]*)\))?  # Source_Quality_Etc-
      (\[(?P<crc>\w{8})\])?                                                    # CRC
      .*?                                                                      # Separator and EOL
      '''),
