@@ -1289,8 +1289,8 @@ def headURL(url, params=None, headers={}, timeout=30, session=None, json=False, 
     """
 
     # request session
-    cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')))
+    if session is None:
+        session = requests.session()
 
     # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
