@@ -53,7 +53,7 @@ from sickbeard.blackandwhitelist import BlackAndWhiteList
 from sickbeard import sbdatetime
 from sickbeard import network_timezones
 from dateutil.tz import *
-from lib.subliminal.exceptions import ServiceError
+from lib.subliminal.exceptions import Error as ServiceError
 
 from sickbeard import encodingKludge as ek
 
@@ -65,6 +65,8 @@ from common import NAMING_DUPLICATE, NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMIN
 
 import shutil
 import lib.shutil_custom
+
+import babelfish
 
 shutil.copyfile = lib.shutil_custom.copyfile_custom
 
@@ -1478,7 +1480,7 @@ class TVEpisode(object):
         newsubtitles = set(self.subtitles).difference(set(previous_subtitles))
 
         if newsubtitles:
-            subtitleList = ", ".join(subliminal.language.Language(x).name for x in newsubtitles)
+            subtitleList = ", ".join(babelfish.language.Language(x).name for x in newsubtitles)
             logger.log(str(self.show.indexerid) + u": Downloaded " + subtitleList + " subtitles for episode " + str(
                 self.season) + "x" + str(self.episode), logger.DEBUG)
 
