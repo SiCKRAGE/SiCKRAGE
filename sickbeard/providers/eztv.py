@@ -25,7 +25,6 @@ from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import logger, tvcache, db
 from sickbeard.common import Quality
-from sickbeard.bs4_parser import BS4Parser
 
 class EZTVProvider(generic.TorrentProvider):
 
@@ -39,8 +38,7 @@ class EZTVProvider(generic.TorrentProvider):
         self.cache = EZTVCache(self)
 
         self.urls = {
-            'base_url': 'https://eztv.ch/',
-            'rss': 'https://eztv.ch/',
+            'base_url': 'http://eztvapi.re',
             'episode': 'http://eztvapi.re/show/%s',
         }
 
@@ -87,48 +85,7 @@ class EZTVProvider(generic.TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_params.keys():
-
-            if mode == 'RSS':
-                for search_string in search_params[mode]:
-                    searchURL = self.urls['rss']
-                    logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)
-
-                    HTML = self.getURL(searchURL)
-                    if not HTML:
-                        logger.log(u"" + self.name + " could not retrieve page URL:" + searchURL, logger.DEBUG)
-                        return results
-
-                    try:
-                        with BS4Parser(HTML, features=["html5lib", "permissive"]) as parsedHTML:
-                            resultsTable = parsedHTML.find_all('tr', attrs={'name': 'hover', 'class': 'forum_header_border'})
-
-                            if not resultsTable:
-                                logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
-                                           logger.DEBUG)
-                                continue
-
-                            for entries in resultsTable:
-                                title = entries.find('a', attrs={'class': 'epinfo'}).contents[0]
-                                for link_type in ('magnet', 'download_1', 'download_3'):
-                                    link = entries.find('a', attrs={'class': link_type})
-                                    if link:
-                                        link = link.get('href')
-                                    else:
-                                        continue
-
-                                    item = {
-                                        'title': title,
-                                        'link': link,
-                                    }
-
-                                    items[mode].append(item)
-                                    continue
-
-                    except Exception, e:
-                        logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),
-                                    logger.ERROR)
-
-            elif mode == 'Episode':
+            if mode == 'Episode':
                 for search_string in search_params[mode]:
                     searchURL = self.urls['episode'] % (search_string['imdb_id'])
                     logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)
