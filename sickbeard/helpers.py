@@ -699,34 +699,41 @@ def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=Non
     return (season, episodes)
 
 
-def sanitizeSceneName(name, anime=False):
+def sanitizeSceneName(name, ezrss=False, anime=False):
     """
     Takes a show name and returns the "scenified" version of it.
 
+    ezrss: If true the scenified version will follow EZRSS's cracksmoker rules as best as possible
+    
     anime: Some show have a ' in their name(Kuroko's Basketball) and is needed for search.
 
     Returns: A string containing the scene version of the show name given.
     """
 
-    if not name:
+    if name:
+        # anime: removed ' for Kuroko's Basketball
+        if anime:
+            bad_chars = u",:()!?\u2019"
+        # ezrss leaves : and ! in their show names as far as I can tell
+        elif ezrss:
+            bad_chars = u",()'?\u2019"
+        else:
+            bad_chars = u",:()'!?\u2019"
+
+        # strip out any bad chars
+        for x in bad_chars:
+            name = name.replace(x, "")
+
+        # tidy up stuff that doesn't belong in scene names
+        name = name.replace("- ", ".").replace(" ", ".").replace("&", "and").replace('/', '.')
+        name = re.sub("\.\.*", ".", name)
+
+        if name.endswith('.'):
+            name = name[:-1]
+
+        return name
+    else:
         return ''
-
-    bad_chars = u',:()!?\u2019'
-    if not anime:
-        bad_chars += u"'"
-
-    # strip out any bad chars
-    for x in bad_chars:
-        name = name.replace(x, "")
-
-    # tidy up stuff that doesn't belong in scene names
-    name = name.replace("- ", ".").replace(" ", ".").replace("&", "and").replace('/', '.')
-    name = re.sub("\.\.*", ".", name)
-
-    if name.endswith('.'):
-        name = name[:-1]
-
-    return name
 
 
 _binOps = {

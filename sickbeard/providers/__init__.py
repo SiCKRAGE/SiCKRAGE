@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-__all__ = ['womble',
+__all__ = ['ezrss',
+           'womble',
            'btn',
            'thepiratebay',
            'kat',
@@ -25,7 +26,7 @@ __all__ = ['womble',
            'hdtorrents',
            'torrentday',
            'hdbits',
-           'hounddawgs',
+		   'hounddawgs',
            'iptorrents',
            'omgwtfnzbs',
            'nextgen',
@@ -44,6 +45,7 @@ __all__ = ['womble',
            'rarbg',
            'tntvillage',
            'binsearch',
+           'eztv',
            'scenetime',
 ]
 
