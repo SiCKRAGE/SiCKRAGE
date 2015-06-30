@@ -66,7 +66,7 @@ def _remove_file_failed(file):
 
 def download_file(url, filename):
     try:
-        r = requests.get(url, stream=True, verify=False)
+        r = requests.get(url, stream=True, verify=True)
         with open(filename, 'wb') as fp:
             for chunk in r.iter_content(chunk_size=1024):
                 if chunk:

@@ -66,8 +66,7 @@ for env_cert_var in ['REQUESTS_CA_BUNDLE', 'CURL_CA_BUNDLE']:
 
 
 if sys.version_info >= (2, 7, 9):
-    import ssl
-    ssl._create_default_https_context = ssl._create_unverified_context
+    pass
 else:
     try:
         import cryptography

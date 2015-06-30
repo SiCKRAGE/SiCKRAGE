@@ -702,7 +702,7 @@ def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=Non
 def sanitizeSceneName(name, anime=False):
     """
     Takes a show name and returns the "scenified" version of it.
-    
+
     anime: Some show have a ' in their name(Kuroko's Basketball) and is needed for search.
 
     Returns: A string containing the scene version of the show name given.
@@ -996,18 +996,18 @@ def get_show(name, tryIndexers=False, trySceneExceptions=False):
         if cache:
             fromCache = True
             showObj = findCertainShow(sickbeard.showList, int(cache))
-        
-        #try indexers    
+
+        #try indexers
         if not showObj and tryIndexers:
             showObj = findCertainShow(sickbeard.showList,
                                       searchIndexerForShowID(full_sanitizeSceneName(name), ui=classes.ShowListUI)[2])
-        
+
         #try scene exceptions
         if not showObj and trySceneExceptions:
             ShowID = sickbeard.scene_exceptions.get_scene_exception_by_name(name)[0]
             if ShowID:
                 showObj = findCertainShow(sickbeard.showList, int(ShowID))
-                
+
         # add show to cache
         if showObj and not fromCache:
             sickbeard.name_cache.addNameToCache(name, showObj.indexerid)
@@ -1035,7 +1035,7 @@ def is_hidden_folder(folder):
         except (AttributeError, AssertionError):
             result = False
         return result
-    
+
     if ek.ek(os.path.isdir, folder):
         if is_hidden(folder):
             return True
@@ -1289,8 +1289,8 @@ def headURL(url, params=None, headers={}, timeout=30, session=None, json=False, 
     """
 
     # request session
-    cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')))
+    if session is None:
+        session = requests.session()
 
     # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
@@ -1343,15 +1343,15 @@ def getURL(url, post_data=None, params={}, headers={}, timeout=30, session=None,
     """
 
     # request session
-    cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')))
+    if session is None:
+        session = requests.session()
 
     # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
     session.headers.update(headers)
 
     # request session ssl verify
-    session.verify = certifi.where()
+    session.verify = True
 
     # request session paramaters
     session.params = params
@@ -1402,14 +1402,14 @@ def getURL(url, post_data=None, params={}, headers={}, timeout=30, session=None,
 
 def download_file(url, filename, session=None):
     # create session
-    cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')))
+    if session is None:
+        session = requests.session()
 
     # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
 
     # request session ssl verify
-    session.verify = certifi.where()
+    session.verify = True
 
     # request session streaming
     session.stream = True
@@ -1573,16 +1573,16 @@ def verify_freespace(src, dest, oldfile=None):
         oldfile = [oldfile]
 
     logger.log("Trying to determine free space on destination drive", logger.DEBUG)
-    
+
     if hasattr(os, 'statvfs'):  # POSIX
         def disk_usage(path):
             st = os.statvfs(path)
             free = st.f_bavail * st.f_frsize
             return free
-    
+
     elif os.name == 'nt':       # Windows
         import sys
-    
+
         def disk_usage(path):
             _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
                                ctypes.c_ulonglong()
@@ -1602,20 +1602,19 @@ def verify_freespace(src, dest, oldfile=None):
     if not ek.ek(os.path.isfile, src):
         logger.log("A path to a file is required for the source. " + src + " is not a file.", logger.WARNING)
         return True
-    
     try:
         diskfree = disk_usage(dest)
     except:
         logger.log("Unable to determine free space, so I will assume there is enough.", logger.WARNING)
         return True
-    
+
     neededspace = ek.ek(os.path.getsize, src)
-    
+
     if oldfile:
         for file in oldfile:
             if ek.ek(os.path.isfile, file.location):
                 diskfree += ek.ek(os.path.getsize, file.location)
-        
+
     if diskfree > neededspace:
         return True
     else:
