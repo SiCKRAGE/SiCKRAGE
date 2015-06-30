@@ -28,6 +28,7 @@ from sickbeard import name_cache
 from sickbeard import logger
 from sickbeard import db
 from sickbeard import encodingKludge as ek
+import os
 
 exception_dict = {}
 anidb_exception_dict = {}
@@ -166,23 +167,29 @@ def retrieve_exceptions():
     """
     global exception_dict, anidb_exception_dict, xem_exception_dict
 
-    # exceptions are stored on github pages
+    # exceptions are stored in submodules in this repo, sourced from the github repos
+    # TODO: `git submodule update`
     for indexer in sickbeard.indexerApi().indexers:
         if shouldRefresh(sickbeard.indexerApi(indexer).name):
             logger.log(u"Checking for scene exception updates for " + sickbeard.indexerApi(indexer).name + "")
 
-            url = sickbeard.indexerApi(indexer).config['scene_url']
+            loc = sickbeard.indexerApi(indexer).config['scene_loc']
+            if loc.startswith("http"):
+                data = helpers.getURL(loc)
+            else:
+                loc = helpers.real_path(ek.ek(os.path.join, ek.ek(os.path.dirname, __file__), loc))
+                with open(loc, 'r') as file:
+                    data = file.read()
 
-            url_data = helpers.getURL(url)
-            if url_data is None:
-                # When urlData is None, trouble connecting to github
-                logger.log(u"Check scene exceptions update failed. Unable to get URL: " + url, logger.WARNING)
+            if data is None:
+                # When data is None, trouble connecting to github, or reading file failed
+                logger.log(u"Check scene exceptions update failed. Unable to update from: " + loc, logger.WARNING)
                 continue
 
             setLastRefresh(sickbeard.indexerApi(indexer).name)
 
             # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
-            for cur_line in url_data.splitlines():
+            for cur_line in data.splitlines():
                 indexer_id, sep, aliases = cur_line.partition(':')  # @UnusedVariable
 
                 if not aliases:
@@ -197,7 +204,7 @@ def retrieve_exceptions():
                 del alias_list
 
             # cleanup
-            del url_data
+            del data
 
     # XEM scene exceptions
     _xem_exceptions_fetcher()
