@@ -16,8 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-__all__ = ['ezrss',
-           'womble',
+__all__ = ['womble',
            'btn',
            'thepiratebay',
            'kat',
