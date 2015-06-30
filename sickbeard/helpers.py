@@ -41,6 +41,8 @@ import operator
 
 import sickbeard
 import subliminal
+import babelfish
+
 import adba
 from lib import requests
 import certifi
@@ -57,6 +59,7 @@ from sickbeard import notifiers
 from sickbeard import clients
 
 from lib.cachecontrol import CacheControl, caches
+
 from itertools import izip, cycle
 
 import shutil
@@ -66,6 +69,10 @@ shutil.copyfile = lib.shutil_custom.copyfile_custom
 
 urllib._urlopener = classes.SickBeardURLopener()
 
+
+def fixGlob(path):
+    path = re.sub(r'\[', '[[]', path)
+    return re.sub(r'(?<!\[)\]', '[]]', path)
 
 def indentXML(elem, level=0):
     '''
@@ -511,7 +518,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
 
         # Check if the language extracted from filename is a valid language
         try:
-            language = subliminal.language.Language(sublang, strict=True)
+            language = babelfish.language.Language(sublang, strict=True)
             cur_file_ext = '.' + sublang + cur_file_ext
         except ValueError:
             pass
@@ -1290,7 +1297,7 @@ def headURL(url, params=None, headers={}, timeout=30, session=None, json=False, 
 
     # request session
     cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')))
+    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')), cache_etags=False)
 
     # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
@@ -1332,8 +1339,9 @@ def headURL(url, params=None, headers={}, timeout=30, session=None, json=False, 
         logger.log(u"Connection error " + str(e.message) + " in headURL " + url, logger.WARNING)
     except requests.exceptions.Timeout, e:
         logger.log(u"Connection timed out " + str(e.message) + " in headURL " + url, logger.WARNING)
-    except Exception:
-        logger.log(u"Unknown exception in headURL " + url + ": " + traceback.format_exc(), logger.WARNING)
+    except Exception as e:
+        logger.log(u"Unknown exception in headURL " + url + ": " + str(e.message), logger.WARNING)
+        logger.log(traceback.format_exc(), logger.WARNING)
 
     return False
 
@@ -1344,7 +1352,7 @@ def getURL(url, post_data=None, params={}, headers={}, timeout=30, session=None,
 
     # request session
     cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')))
+    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')), cache_etags=False)
 
     # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
@@ -1394,19 +1402,21 @@ def getURL(url, post_data=None, params={}, headers={}, timeout=30, session=None,
     except requests.exceptions.Timeout, e:
         logger.log(u"Connection timed out " + str(e.message) + " while loading URL " + url, logger.WARNING)
         return
-    except Exception:
-        logger.log(u"Unknown exception while loading URL " + url + ": " + traceback.format_exc(), logger.WARNING)
+    except Exception as e:
+        logger.log(u"Unknown exception in headURL " + url + ": " + str(e.message), logger.WARNING)
+        logger.log(traceback.format_exc(), logger.WARNING)
         return
 
     return resp.content if not json else resp.json()
 
-def download_file(url, filename, session=None):
+def download_file(url, filename, session=None, headers={}):
     # create session
     cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')))
+    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')), cache_etags=False)
 
     # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
+    session.headers.update(headers)
 
     # request session ssl verify
     session.verify = certifi.where()
@@ -1464,39 +1474,6 @@ def download_file(url, filename, session=None):
 
     return True
 
-
-def clearCache(force=False):
-    update_datetime = datetime.datetime.now()
-
-    # clean out cache directory, remove everything > 12 hours old
-    if sickbeard.CACHE_DIR:
-        logger.log(u"Trying to clean cache folder " + sickbeard.CACHE_DIR, logger.DEBUG)
-
-        # Does our cache_dir exists
-        if not ek.ek(os.path.isdir, sickbeard.CACHE_DIR):
-            logger.log(u"Can't clean " + sickbeard.CACHE_DIR + " if it doesn't exist", logger.WARNING)
-        else:
-            max_age = datetime.timedelta(hours=12)
-
-            # Get all our cache files
-            exclude = ['rss', 'images']
-            for cache_root, cache_dirs, cache_files in os.walk(sickbeard.CACHE_DIR, topdown=True):
-                cache_dirs[:] = [d for d in cache_dirs if d not in exclude]
-
-                for file in cache_files:
-                    cache_file = ek.ek(os.path.join, cache_root, file)
-
-                    if ek.ek(os.path.isfile, cache_file):
-                        cache_file_modified = datetime.datetime.fromtimestamp(
-                            ek.ek(os.path.getmtime, cache_file))
-
-                        if force or (update_datetime - cache_file_modified > max_age):
-                            try:
-                                ek.ek(os.remove, cache_file)
-                            except OSError, e:
-                                logger.log(u"Unable to clean " + cache_root + ": " + repr(e) + " / " + str(e),
-                                           logger.WARNING)
-                                break
 
 def get_size(start_path='.'):
 
