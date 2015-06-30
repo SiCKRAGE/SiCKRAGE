@@ -1343,8 +1343,8 @@ def getURL(url, post_data=None, params={}, headers={}, timeout=30, session=None,
     """
 
     # request session
-    cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')))
+    if session is None:
+        session = requests.session()
 
     # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
@@ -1402,8 +1402,8 @@ def getURL(url, post_data=None, params={}, headers={}, timeout=30, session=None,
 
 def download_file(url, filename, session=None):
     # create session
-    cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')))
+    if session is None:
+        session = requests.session()
 
     # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
