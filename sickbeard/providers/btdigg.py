@@ -131,8 +131,8 @@ class BTDIGGProvider(generic.TorrentProvider):
     def _get_title_and_url(self, item):
         return item
     
-    def parseResults(self, searchUrl):
-		data = self.getURL(searchUrl)
+    def parseResults(self, searchUrl, sess):
+		data = self.getURL(searchUrl, sess=self.session)
 		results=[]
 		tmp_results=[]
 		if data:
