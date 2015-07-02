@@ -19,7 +19,8 @@
 # along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
-import urllib, urllib2, cookielib
+#import urllib, urllib2, cookielib
+import requests
 import sys
 import datetime
 import os
@@ -41,13 +42,12 @@ from sickbeard.exceptions import ex
 
 class BTDIGGProvider(generic.TorrentProvider):
     def __init__(self):
-        generic.TorrentProvider.__init__(self, "BTDigg")
+		generic.TorrentProvider.__init__(self, "BTDigg")
 		
-        self.supportsBacklog = True
+		self.supportsBacklog = True
+		self.session = requests.Session()
+		self.url = 'https://api.btdigg.org/'
 		
-        self.url = 'https://api.btdigg.org/'
-    
-    
     def isEnabled(self):
         return self.enabled
     
@@ -101,7 +101,7 @@ class BTDIGGProvider(generic.TorrentProvider):
         return search_string
 
 
-    def _get_episode_search_strings(self, ep_obj):
+    def _get_episode_search_strings(self, ep_obj, add_string=''):
         
         search_string = []
        
@@ -111,10 +111,14 @@ class BTDIGGProvider(generic.TorrentProvider):
             for show_name in set(show_name_helpers.allPossibleShowNames(ep_obj.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) +' '+ str(ep_obj.airdate).replace('-', '.')
                 search_string.append(ep_string)
+		if len(add_string):
+			ep_string += ' %s' % add_string
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(ep_obj.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) +' '+ sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.season, 'episodenumber': ep_obj.episode}
                 search_string.append(ep_string)
+		if len(add_string):
+			ep_string += ' %s' % add_string
         return search_string    
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
@@ -128,49 +132,50 @@ class BTDIGGProvider(generic.TorrentProvider):
         return item
     
     def parseResults(self, searchUrl):
-        data = self.getURL(searchUrl)
-        results=[]
-        tmp_results=[]
-        if data:
-            logger.log("parseResults() URL: " + searchUrl, logger.DEBUG)
-            jdata = json.load(data)
-            for torrent in sorted(jdata, key=itemgetter('reqs'), reverse=True):
-                found=0
+        #data = self.getURL(searchUrl)
+		data = self.getURL(searchUrl, sess=self.session)
+		results=[]
+		tmp_results=[]
+		if data:
+			logger.log("parseResults() URL: " + searchUrl, logger.DEBUG)
+			jdata = json.load(data)
+			for torrent in sorted(jdata, key=itemgetter('reqs'), reverse=True):
+				found=0
                 
-                if torrent['ff'] > 0.0:
-                    continue
+				if torrent['ff'] > 0.0:
+					continue
                                
-                torrent['name'] = torrent['name'].replace('|', '').replace('.',' ')
+				torrent['name'] = torrent['name'].replace('|', '').replace('.',' ')
                 
-                item = (torrent['name'],torrent['magnet'], torrent['reqs'])                
-                for r in tmp_results:
-                    if r[0].lower() == torrent['name'].lower():
-                        found=1
-                        if r[2] < torrent['reqs']:
-                            tmp_results[tmp_results.index(r)]=item
+				item = (torrent['name'],torrent['magnet'], torrent['reqs'])                
+				for r in tmp_results:
+					if r[0].lower() == torrent['name'].lower():
+						found=1
+						if r[2] < torrent['reqs']:
+							tmp_results[tmp_results.index(r)]=item
                             
-                if not found:
-                    tmp_results.append(item)
-                logger.log("parseResults() Title: " + torrent['name'], logger.DEBUG)
+				if not found:
+					tmp_results.append(item)
+				logger.log("parseResults() Title: " + torrent['name'], logger.DEBUG)
             
-            for r in tmp_results:
-                item=(r[0],r[1])
-                results.append(item)
-        else:
-            logger.log("parseResults() Error no data returned!!")
-        return results
+			for r in tmp_results:
+				item=(r[0],r[1])
+				results.append(item)
+		else:
+			logger.log("parseResults() Error no data returned!!")
+		return results
 
     
-    def getURL(self, url, headers=None):
-        response = None
-        logger.log("Requesting - " + url)
-        try:
-            #response = helpers.getURL(url, headers)
-            response = urllib.urlopen(url)
-        except (urllib2.HTTPError, IOError, Exception), e:
-            logger.log("getURL() Error loading " + self.name + " URL: " + str(sys.exc_info()) + " - " + ex(e), logger.ERROR)
-            return None
-        return response
+    # def getURL(self, url, headers=None):
+        # response = None
+        # logger.log("Requesting - " + url)
+        # try:
+            # response = helpers.getURL(url, headers)
+            # response = urllib.urlopen(url)
+        # except (urllib2.HTTPError, IOError, Exception), e:
+            # logger.log("getURL() Error loading " + self.name + " URL: " + str(sys.exc_info()) + " - " + ex(e), logger.ERROR)
+            # return None
+        # return response
 
 
 provider = BTDIGGProvider()
