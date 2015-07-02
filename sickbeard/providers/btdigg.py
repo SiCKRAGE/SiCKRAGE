@@ -121,18 +121,19 @@ class BTDIGGProvider(generic.TorrentProvider):
 			ep_string += ' %s' % add_string
         return search_string    
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
-        search_params = search_params.replace('+',' ')
-        logger.log("Performing Search: {0}".format(search_params))
-        searchUrl = self.url + "api/private-341ada3245790954/s02?q=" + search_params + "&p=0&order=0"
-        return self.parseResults(searchUrl)
+    def _doSearch(self, search_params, searchUrl, search_mode='eponly', epcount=0, age=0, epObj=None):
+		search_params = search_params.replace('+',' ')
+		logger.log("Performing Search: {0}".format(search_params))
+		searchUrl = self.url + "api/private-341ada3245790954/s02?q=" + search_params + "&p=0&order=0"
+		logger.log("Performing Search on URL: {0}".format(searchUrl))
+		return self.parseResults(searchUrl)
     
 
     def _get_title_and_url(self, item):
         return item
     
-    def parseResults(self, searchUrl, sess):
-		data = self.getURL(searchUrl, sess=self.session)
+    def parseResults(self, searchUrl):
+		data = self.getURL(searchUrl)
 		results=[]
 		tmp_results=[]
 		if data:
