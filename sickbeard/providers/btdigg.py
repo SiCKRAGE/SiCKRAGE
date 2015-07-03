@@ -44,7 +44,6 @@ class BTDIGGProvider(generic.TorrentProvider):
 		generic.TorrentProvider.__init__(self, "BTDigg")
 		
 		self.supportsBacklog = True
-		self.session = requests.Session()
 		self.url = 'https://api.btdigg.org/'
 		
     def isEnabled(self):
