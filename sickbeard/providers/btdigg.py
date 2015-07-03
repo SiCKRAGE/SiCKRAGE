@@ -127,19 +127,18 @@ class BTDIGGProvider(generic.TorrentProvider):
         return item
     
     def parseResults(self, searchUrl):
-		data = self.getURL(searchUrl)
+		jdata = self.getURL(searchUrl, json=True)
 		results=[]
 		tmp_results=[]
-		if data:
-			logger.log("parseResults() URL: " + searchUrl, logger.DEBUG)
-			jdata = json.load(data)
+		if jdata:
+			logger.log("URL to be parsed: " + searchUrl, logger.DEBUG)
 			for torrent in sorted(jdata, key=itemgetter('reqs'), reverse=True):
 				found=0
                 
 				if torrent['ff'] > 0.0:
 					continue
                                
-				torrent['name'] = torrent['name'].replace('|', '').replace('.',' ')
+				torrent['name'] = torrent['name'].replace('|', '.').replace(' ','.').replace('_','.')
                 
 				item = (torrent['name'],torrent['magnet'], torrent['reqs'])                
 				for r in tmp_results:
@@ -156,7 +155,7 @@ class BTDIGGProvider(generic.TorrentProvider):
 				item=(r[0],r[1])
 				results.append(item)
 		else:
-			logger.log("No data returned to be parsed!!")
+			logger.log("No data returned to be parsed!!!")
 		return results
 
 
