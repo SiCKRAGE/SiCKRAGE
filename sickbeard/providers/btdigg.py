@@ -110,15 +110,17 @@ class BTDIGGProvider(generic.TorrentProvider):
         if ep_obj.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(ep_obj.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) +' '+ str(ep_obj.airdate).replace('-', '.')
-                search_string.append(ep_string)
 		if len(add_string):
 			ep_string += ' %s' % add_string
+
+                search_string.append(ep_string)
+
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(ep_obj.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) +' '+ sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.season, 'episodenumber': ep_obj.episode}
-                search_string.append(ep_string)
 		if len(add_string):
 			ep_string += ' %s' % add_string
+                search_string.append(ep_string)
         return search_string    
 
     def _doSearch(self, search_params, searchUrl, search_mode='eponly', epcount=0, age=0, epObj=None):
@@ -132,7 +134,7 @@ class BTDIGGProvider(generic.TorrentProvider):
     def _get_title_and_url(self, item):
         return item
     
-    def parseResults(self, searchUrl, session):
+    def parseResults(self, searchUrl):
 		data = self.getURL(searchUrl, session=self.session)
 		results=[]
 		tmp_results=[]
