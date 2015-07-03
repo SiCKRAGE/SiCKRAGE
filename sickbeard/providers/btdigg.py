@@ -19,7 +19,6 @@
 # along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
-#import urllib, urllib2, cookielib
 import requests
 import sys
 import datetime
@@ -55,12 +54,6 @@ class BTDIGGProvider(generic.TorrentProvider):
     def imageName(self):
         return 'btdigg.png'
     
-
-    # def getQuality(self, item):        
-
-        # quality = Quality.sceneQuality(item[0], anime)
-        # return quality
-
 
     def _get_airbydate_season_range(self, season):        
         if season == None:
@@ -135,7 +128,7 @@ class BTDIGGProvider(generic.TorrentProvider):
         return item
     
     def parseResults(self, searchUrl):
-		data = self.getURL(searchUrl, session=self.session)
+		data = self.getURL(searchUrl)
 		results=[]
 		tmp_results=[]
 		if data:
@@ -158,26 +151,14 @@ class BTDIGGProvider(generic.TorrentProvider):
                             
 				if not found:
 					tmp_results.append(item)
-				logger.log("parseResults() Title: " + torrent['name'], logger.DEBUG)
+				logger.log("Parsed Result Title: " + torrent['name'], logger.DEBUG)
             
 			for r in tmp_results:
 				item=(r[0],r[1])
 				results.append(item)
 		else:
-			logger.log("parseResults() Error no data returned!!")
+			logger.log("No data returned to be parsed!!")
 		return results
-
-    
-    # def getURL(self, url, headers=None):
-        # response = None
-        # logger.log("Requesting - " + url)
-        # try:
-            # response = helpers.getURL(url, headers)
-            # response = urllib.urlopen(url)
-        # except (urllib2.HTTPError, IOError, Exception), e:
-            # logger.log("getURL() Error loading " + self.name + " URL: " + str(sys.exc_info()) + " - " + ex(e), logger.ERROR)
-            # return None
-        # return response
 
 
 provider = BTDIGGProvider()
