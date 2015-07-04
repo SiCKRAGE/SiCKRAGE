@@ -27,6 +27,7 @@ from lib.rtorrent.err import MethodError
 
 
 class rTorrentAPI(GenericClient):
+
     def __init__(self, host=None, username=None, password=None):
         super(rTorrentAPI, self).__init__('rTorrent', host, username, password)
 

@@ -55,10 +55,10 @@ class TorrentDayProvider(generic.TorrentProvider):
         self.cache = TorrentDayCache(self)
 
         self.urls = {'base_url': 'https://classic.torrentday.com',
-                'login': 'https://classic.torrentday.com/torrents/',
-                'search': 'https://classic.torrentday.com/V3/API/API.php',
-                'download': 'https://classic.torrentday.com/download.php/%s/%s'
-        }
+                     'login': 'https://classic.torrentday.com/torrents/',
+                     'search': 'https://classic.torrentday.com/V3/API/API.php',
+                     'download': 'https://classic.torrentday.com/download.php/%s/%s'
+                     }
 
         self.url = self.urls['base_url']
 
@@ -91,14 +91,14 @@ class TorrentDayProvider(generic.TorrentProvider):
                             'password': self.password,
                             'submit.x': 0,
                             'submit.y': 0
-            }
+                            }
 
             if not self.session:
                 self.session = requests.Session()
 
             try:
                 response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-            except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
+            except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
                 logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
                 return False
 
@@ -117,14 +117,13 @@ class TorrentDayProvider(generic.TorrentProvider):
 
                     self.cookies = {'uid': self._uid,
                                     'pass': self._hash
-                    }
+                                    }
                     return True
             except:
                 pass
 
             logger.log(u'Unable to obtain cookie for TorrentDay', logger.ERROR)
             return False
-
 
     def _get_season_search_strings(self, ep_obj):
 
@@ -136,7 +135,7 @@ class TorrentDayProvider(generic.TorrentProvider):
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
                 search_string['Season'].append(ep_string)
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -152,24 +151,24 @@ class TorrentDayProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                    str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -212,7 +211,7 @@ class TorrentDayProvider(generic.TorrentProvider):
                 for torrent in torrents:
 
                     title = re.sub(r"\[.*\=.*\].*\[/.*\]", "", torrent['name'])
-                    url = self.urls['download'] % ( torrent['id'], torrent['fname'] )
+                    url = self.urls['download'] % (torrent['id'], torrent['fname'])
                     seeders = int(torrent['seed'])
                     leechers = int(torrent['leech'])
 
@@ -221,7 +220,12 @@ class TorrentDayProvider(generic.TorrentProvider):
                         continue
 
                     if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
-                        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                        logger.log(
+                            u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                title,
+                                seeders,
+                                leechers),
+                            logger.DEBUG)
                         continue
 
                     item = title, url, seeders, leechers
@@ -277,6 +281,7 @@ class TorrentDayProvider(generic.TorrentProvider):
 
 
 class TorrentDayCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

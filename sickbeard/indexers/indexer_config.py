@@ -25,7 +25,7 @@ indexerConfig[INDEXER_TVDB] = {
     'api_params': {'apikey': 'F9C450E78D99172E',
                    'language': 'en',
                    'useZip': True,
-    },
+                   },
     'session': requests.Session()
 }
 
@@ -35,7 +35,7 @@ indexerConfig[INDEXER_TVRAGE] = {
     'module': TVRage,
     'api_params': {'apikey': 'Uhewg1Rr0o62fvZvUIZt',
                    'language': 'en',
-    },
+                   },
     'session': requests.Session()
 }
 

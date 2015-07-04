@@ -33,25 +33,27 @@ name_presets = ('%SN - %Sx%0E - %EN',
                 '%Sx%0E - %EN',
                 'S%0SE%0E - %EN',
                 'Season %0S/%S.N.S%0SE%0E.%Q.N-%RG'
-)
+                )
 
 name_anime_presets = name_presets
 
 name_abd_presets = ('%SN - %A-D - %EN',
                     '%S.N.%A.D.%E.N.%Q.N',
                     '%Y/%0M/%S.N.%A.D.%E.N-%RG'
-)
+                    )
 
 name_sports_presets = ('%SN - %A-D - %EN',
-                    '%S.N.%A.D.%E.N.%Q.N',
-                    '%Y/%0M/%S.N.%A.D.%E.N-%RG'
-)
+                       '%S.N.%A.D.%E.N.%Q.N',
+                       '%Y/%0M/%S.N.%A.D.%E.N-%RG'
+                       )
+
 
 class TVShow():
+
     def __init__(self):
         self.name = "Show Name"
         self.genre = "Comedy"
-        self.indexerid = 00001
+        self.indexerid = 0o0001
         self.air_by_date = 0
         self.sports = 0
         self.anime = 0
@@ -83,6 +85,7 @@ class TVShow():
 
 
 class TVEpisode(tv.TVEpisode):
+
     def __init__(self, season, episode, absolute_number, name):
         self.relatedEps = []
         self._name = name
@@ -103,18 +106,18 @@ def check_force_season_folders(pattern=None, multi=None, anime_type=None):
     """
     Checks if the name can still be parsed if you strip off the folders to determine if we need to force season folders
     to be enabled or not.
-    
+
     Returns true if season folders need to be forced on or false otherwise.
     """
-    if pattern == None:
+    if pattern is None:
         pattern = sickbeard.NAMING_PATTERN
 
-    if anime_type == None:
+    if anime_type is None:
         anime_type = sickbeard.NAMING_ANIME
 
     valid = not validate_name(pattern, None, anime_type, file_only=True)
 
-    if multi != None:
+    if multi is not None:
         valid = valid or not validate_name(pattern, multi, anime_type, file_only=True)
 
     return valid
@@ -123,19 +126,19 @@ def check_force_season_folders(pattern=None, multi=None, anime_type=None):
 def check_valid_naming(pattern=None, multi=None, anime_type=None):
     """
     Checks if the name is can be parsed back to its original form for both single and multi episodes.
-    
+
     Returns true if the naming is valid, false if not.
     """
-    if pattern == None:
+    if pattern is None:
         pattern = sickbeard.NAMING_PATTERN
 
-    if anime_type == None:
+    if anime_type is None:
         anime_type = sickbeard.NAMING_ANIME
 
     logger.log(u"Checking whether the pattern " + pattern + " is valid for a single episode", logger.DEBUG)
     valid = validate_name(pattern, None, anime_type)
 
-    if multi != None:
+    if multi is not None:
         logger.log(u"Checking whether the pattern " + pattern + " is valid for a multi episode", logger.DEBUG)
         valid = valid and validate_name(pattern, multi, anime_type)
 
@@ -145,10 +148,10 @@ def check_valid_naming(pattern=None, multi=None, anime_type=None):
 def check_valid_abd_naming(pattern=None):
     """
     Checks if the name is can be parsed back to its original form for an air-by-date format.
-    
+
     Returns true if the naming is valid, false if not.
     """
-    if pattern == None:
+    if pattern is None:
         pattern = sickbeard.NAMING_PATTERN
 
     logger.log(u"Checking whether the pattern " + pattern + " is valid for an air-by-date episode", logger.DEBUG)
@@ -156,19 +159,21 @@ def check_valid_abd_naming(pattern=None):
 
     return valid
 
+
 def check_valid_sports_naming(pattern=None):
     """
     Checks if the name is can be parsed back to its original form for an sports format.
 
     Returns true if the naming is valid, false if not.
     """
-    if pattern == None:
+    if pattern is None:
         pattern = sickbeard.NAMING_PATTERN
 
     logger.log(u"Checking whether the pattern " + pattern + " is valid for an sports episode", logger.DEBUG)
     valid = validate_name(pattern, sports=True)
 
     return valid
+
 
 def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=False, sports=False):
     ep = generate_sample_ep(multi, abd, sports, anime_type)
@@ -188,7 +193,7 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
 
     try:
         result = parser.parse(new_name)
-    except Exception, e:
+    except Exception as e:
         logger.log(u"Unable to parse " + new_name + ", not valid", logger.DEBUG)
         return False
 
@@ -233,7 +238,7 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
         else:
             ep._release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
 
-    if multi != None:
+    if multi is not None:
         ep._name = "Ep Name (1)"
 
         if anime_type != 3:

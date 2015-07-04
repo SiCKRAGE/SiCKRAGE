@@ -12,7 +12,9 @@ from lib import requests
 from lib.requests import exceptions
 from lib.bencode.BTL import BTFailure
 
+
 class GenericClient(object):
+
     def __init__(self, name, host=None, username=None, password=None):
 
         self.name = name
@@ -37,7 +39,7 @@ class GenericClient(object):
         logger.log(
             self.name + u': Requested a ' + method.upper() + ' connection to url ' + self.url + ' with Params= ' + str(
                 params) + ' Data=' + str(data if data else 'None')[0:99] + (
-            '...' if len(data if data else 'None') > 200 else ''), logger.DEBUG)
+                '...' if len(data if data else 'None') > 200 else ''), logger.DEBUG)
 
         logger.log(
             self.name + u': Requested a ' + method.upper() + ' connection to url ' + self.url + ' with Params= ' + str(
@@ -51,19 +53,19 @@ class GenericClient(object):
         try:
             self.response = self.session.__getattribute__(method)(self.url, params=params, data=data, files=files,
                                                                   timeout=120, verify=False)
-        except requests.exceptions.ConnectionError, e:
+        except requests.exceptions.ConnectionError as e:
             logger.log(self.name + u': Unable to connect ' + str(e), logger.ERROR)
             return False
         except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):
             logger.log(self.name + u': Invalid Host', logger.ERROR)
             return False
-        except requests.exceptions.HTTPError, e:
+        except requests.exceptions.HTTPError as e:
             logger.log(self.name + u': Invalid HTTP Request ' + str(e), logger.ERROR)
             return False
-        except requests.exceptions.Timeout, e:
+        except requests.exceptions.Timeout as e:
             logger.log(self.name + u': Connection Timeout ' + str(e), logger.WARNING)
             return False
-        except Exception, e:
+        except Exception as e:
             logger.log(self.name + u': Unknown exception raised when send torrent to ' + self.name + ': ' + str(e),
                        logger.ERROR)
             return False
@@ -212,7 +214,7 @@ class GenericClient(object):
             if result.priority != 0 and not self._set_torrent_priority(result):
                 logger.log(self.name + u': Unable to set priority for Torrent', logger.ERROR)
 
-        except Exception, e:
+        except Exception as e:
             logger.log(self.name + u': Failed Sending Torrent', logger.ERROR)
             logger.log(self.name + u': Exception raised when sending torrent: ' + str(result) + u'. Error: ' + str(e), logger.DEBUG)
             return r_code
@@ -223,7 +225,7 @@ class GenericClient(object):
 
         try:
             self.response = self.session.get(self.url, timeout=120, verify=False)
-        except requests.exceptions.ConnectionError, e:
+        except requests.exceptions.ConnectionError as e:
             return False, 'Error: ' + self.name + ' Connection Error'
         except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):
             return False, 'Error: Invalid ' + self.name + ' host'

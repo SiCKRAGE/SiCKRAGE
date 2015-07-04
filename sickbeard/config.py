@@ -101,7 +101,7 @@ def change_LOG_DIR(log_dir, web_log):
         else:
             return False
 
-    if sickbeard.WEB_LOG != web_log_value or log_dir_changed == True:
+    if sickbeard.WEB_LOG != web_log_value or log_dir_changed:
         sickbeard.WEB_LOG = web_log_value
 
     return True
@@ -160,6 +160,7 @@ def change_AUTOPOSTPROCESSER_FREQUENCY(freq):
 
     sickbeard.autoPostProcesserScheduler.cycleTime = datetime.timedelta(minutes=sickbeard.AUTOPOSTPROCESSER_FREQUENCY)
 
+
 def change_DAILYSEARCH_FREQUENCY(freq):
     sickbeard.DAILYSEARCH_FREQUENCY = to_int(freq, default=sickbeard.DEFAULT_DAILYSEARCH_FREQUENCY)
 
@@ -167,6 +168,7 @@ def change_DAILYSEARCH_FREQUENCY(freq):
         sickbeard.DAILYSEARCH_FREQUENCY = sickbeard.MIN_DAILYSEARCH_FREQUENCY
 
     sickbeard.dailySearchScheduler.cycleTime = datetime.timedelta(minutes=sickbeard.DAILYSEARCH_FREQUENCY)
+
 
 def change_BACKLOG_FREQUENCY(freq):
     sickbeard.BACKLOG_FREQUENCY = to_int(freq, default=sickbeard.DEFAULT_BACKLOG_FREQUENCY)
@@ -177,6 +179,7 @@ def change_BACKLOG_FREQUENCY(freq):
 
     sickbeard.backlogSearchScheduler.cycleTime = datetime.timedelta(minutes=sickbeard.BACKLOG_FREQUENCY)
 
+
 def change_UPDATE_FREQUENCY(freq):
     sickbeard.UPDATE_FREQUENCY = to_int(freq, default=sickbeard.DEFAULT_UPDATE_FREQUENCY)
 
@@ -184,6 +187,7 @@ def change_UPDATE_FREQUENCY(freq):
         sickbeard.UPDATE_FREQUENCY = sickbeard.MIN_UPDATE_FREQUENCY
 
     sickbeard.versionCheckScheduler.cycleTime = datetime.timedelta(hours=sickbeard.UPDATE_FREQUENCY)
+
 
 def change_SHOWUPDATE_HOUR(freq):
     sickbeard.SHOWUPDATE_HOUR = to_int(freq, default=sickbeard.DEFAULT_SHOWUPDATE_HOUR)
@@ -195,12 +199,14 @@ def change_SHOWUPDATE_HOUR(freq):
 
     sickbeard.showUpdateScheduler.start_time = datetime.time(hour=sickbeard.SHOWUPDATE_HOUR)
 
+
 def change_SUBTITLES_FINDER_FREQUENCY(subtitles_finder_frequency):
-    
+
     if subtitles_finder_frequency == '' or subtitles_finder_frequency is None:
-            subtitles_finder_frequency = 1
-    
+        subtitles_finder_frequency = 1
+
     sickbeard.SUBTITLES_FINDER_FREQUENCY = to_int(subtitles_finder_frequency, 1)
+
 
 def change_VERSION_NOTIFY(version_notify):
     oldSetting = sickbeard.VERSION_NOTIFY
@@ -213,9 +219,10 @@ def change_VERSION_NOTIFY(version_notify):
     if oldSetting == False and version_notify == True:
         sickbeard.versionCheckScheduler.forceRun()
 
+
 def change_DOWNLOAD_PROPERS(download_propers):
     download_propers = checkbox_to_value(download_propers)
-    
+
     if sickbeard.DOWNLOAD_PROPERS == download_propers:
         return
 
@@ -232,9 +239,10 @@ def change_DOWNLOAD_PROPERS(download_propers):
         sickbeard.traktCheckerScheduler.silent = True
         logger.log(u"Stopping PROPERFINDER thread", logger.INFO)
 
+
 def change_USE_TRAKT(use_trakt):
     use_trakt = checkbox_to_value(use_trakt)
-    
+
     if sickbeard.USE_TRAKT == use_trakt:
         return
 
@@ -251,14 +259,15 @@ def change_USE_TRAKT(use_trakt):
         sickbeard.traktCheckerScheduler.silent = True
         logger.log(u"Stopping TRAKTCHECKER thread", logger.INFO)
 
+
 def change_TRAKT_USE_ROLLING_DOWNLOAD(trakt_use_rolling_download):
     trakt_use_rolling_download = checkbox_to_value(trakt_use_rolling_download)
-    
+
     if sickbeard.TRAKT_USE_ROLLING_DOWNLOAD == trakt_use_rolling_download:
         return
-    
+
     sickbeard.TRAKT_USE_ROLLING_DOWNLOAD = trakt_use_rolling_download
-    
+
     if sickbeard.USE_TRAKT and sickbeard.TRAKT_USE_ROLLING_DOWNLOAD:
         if not sickbeard.traktRollingScheduler.enable:
             logger.log(u"Starting TRAKTROLLING thread", logger.INFO)
@@ -271,9 +280,10 @@ def change_TRAKT_USE_ROLLING_DOWNLOAD(trakt_use_rolling_download):
         sickbeard.traktRollingScheduler.silent = True
         logger.log(u"Stopping TRAKTROLLING thread", logger.INFO)
 
+
 def change_USE_SUBTITLES(use_subtitles):
     use_subtitles = checkbox_to_value(use_subtitles)
-    
+
     if sickbeard.USE_SUBTITLES == use_subtitles:
         return
 
@@ -290,9 +300,10 @@ def change_USE_SUBTITLES(use_subtitles):
         sickbeard.subtitlesFinderScheduler.silent = True
         logger.log(u"Stopping SUBTITLESFINDER thread", logger.INFO)
 
+
 def change_PROCESS_AUTOMATICALLY(process_automatically):
     process_automatically = checkbox_to_value(process_automatically)
-    
+
     if sickbeard.PROCESS_AUTOMATICALLY == process_automatically:
         return
 
@@ -308,6 +319,7 @@ def change_PROCESS_AUTOMATICALLY(process_automatically):
         logger.log(u"Stopping POSTPROCESSER thread", logger.INFO)
         sickbeard.autoPostProcesserScheduler.enable = False
         sickbeard.autoPostProcesserScheduler.silent = True
+
 
 def CheckSection(CFG, sec):
     """ Check if INI section exists, if not create it """
@@ -325,7 +337,7 @@ def checkbox_to_value(option, value_on=1, value_off=0):
     any other value returns value_off (0)
     """
 
-    if type(option) is list:
+    if isinstance(option, list):
         option = option[-1]
 
     if option == 'on' or option == 'true':
@@ -519,7 +531,9 @@ def check_setting_str(config, cfg_name, item_name, def_val, silent=True, censor_
 
     return my_val
 
+
 class ConfigMigrator():
+
     def __init__(self, config_obj):
         """
         Initializes a config migrator that can take the config from the version indicated in the config
@@ -538,7 +552,7 @@ class ConfigMigrator():
                                 5: 'Metadata update',
                                 6: 'Convert from XBMC to new KODI variables',
                                 7: 'Use version 2 for password encryption'
-        }
+                                }
 
     def migrate_config(self):
         """
@@ -548,8 +562,8 @@ class ConfigMigrator():
         if self.config_version > self.expected_config_version:
             logger.log_error_and_exit(u"Your config version (" + str(
                 self.config_version) + ") has been incremented past what this version of SickRage supports (" + str(
-                self.expected_config_version) + ").\n" + \
-                                      "If you have used other forks or a newer version of SickRage, your config file may be unusable due to their modifications.")
+                self.expected_config_version) + ").\n" +
+                "If you have used other forks or a newer version of SickRage, your config file may be unusable due to their modifications.")
 
         sickbeard.CONFIG_VERSION = self.config_version
 

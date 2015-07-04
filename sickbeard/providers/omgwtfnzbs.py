@@ -41,6 +41,7 @@ except ImportError:
 
 
 class OmgwtfnzbsProvider(generic.NZBProvider):
+
     def __init__(self):
         generic.NZBProvider.__init__(self, "omgwtfnzbs")
         self.enabled = False
@@ -162,6 +163,7 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
 
 
 class OmgwtfnzbsCache(tvcache.TVCache):
+
     def __init__(self, provider):
         tvcache.TVCache.__init__(self, provider)
         self.minTime = 20

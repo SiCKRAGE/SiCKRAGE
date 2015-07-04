@@ -26,6 +26,7 @@ from sickbeard.exceptions import ex
 
 
 class Scheduler(threading.Thread):
+
     def __init__(self, action, cycleTime=datetime.timedelta(minutes=10), run_delay=datetime.timedelta(minutes=0),
                  start_time=None, threadName="ScheduledThread", silent=True):
         super(Scheduler, self).__init__()
@@ -74,7 +75,7 @@ class Scheduler(threading.Thread):
                 if self.enable:
                     current_time = datetime.datetime.now()
                     should_run = False
-                    #Is self.force enable
+                    # Is self.force enable
                     if self.force:
                         should_run = True
                     # check if interval has passed
@@ -102,6 +103,6 @@ class Scheduler(threading.Thread):
                 time.sleep(1)
             # exiting thread
             self.stop.clear()
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Exception generated in thread " + self.name + ": " + ex(e), logger.ERROR)
             logger.log(repr(traceback.format_exc()), logger.DEBUG)

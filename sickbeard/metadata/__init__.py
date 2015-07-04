@@ -19,7 +19,13 @@
 __all__ = ['generic', 'helpers', 'kodi', 'kodi_12plus', 'mediabrowser', 'ps3', 'wdtv', 'tivo', 'mede8er']
 
 import sys
-import kodi, kodi_12plus, mediabrowser, ps3, wdtv, tivo, mede8er
+import kodi
+import kodi_12plus
+import mediabrowser
+import ps3
+import wdtv
+import tivo
+import mede8er
 
 
 def available_generators():
@@ -53,4 +59,3 @@ def get_metadata_generator_dict():
         result[cur_generator.name] = cur_generator
 
     return result
-        

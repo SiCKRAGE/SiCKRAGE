@@ -40,6 +40,7 @@ from sickbeard.exceptions import ex
 
 
 class T411Provider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "T411")
 
@@ -57,7 +58,7 @@ class T411Provider(generic.TorrentProvider):
                      'search': 'https://api.t411.io/torrents/search/%s?cid=%s&limit=100',
                      'login_page': 'https://api.t411.io/auth',
                      'download': 'https://api.t411.io/torrents/download/%s',
-        }
+                     }
 
         self.url = self.urls['base_url']
 
@@ -89,7 +90,7 @@ class T411Provider(generic.TorrentProvider):
 
         try:
             response = helpers.getURL(self.urls['login_page'], post_data=login_params, timeout=30, session=self.session, json=True)
-        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
 
@@ -129,24 +130,24 @@ class T411Provider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + '.' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                    str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + '.' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + '.' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + '.' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', '.', ep_string))
 
@@ -202,7 +203,7 @@ class T411Provider(generic.TorrentProvider):
                                        logger.WARNING)
                             continue
 
-                    except Exception, e:
+                    except Exception as e:
                         logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),
                                    logger.ERROR)
             results += items[mode]
@@ -254,7 +255,9 @@ class T411Provider(generic.TorrentProvider):
 
 
 class T411Auth(AuthBase):
+
     """Attaches HTTP Authentication to the given Request object."""
+
     def __init__(self, token):
         self.token = token
 
@@ -264,6 +267,7 @@ class T411Auth(AuthBase):
 
 
 class T411Cache(tvcache.TVCache):
+
     def __init__(self, provider):
         tvcache.TVCache.__init__(self, provider)
 

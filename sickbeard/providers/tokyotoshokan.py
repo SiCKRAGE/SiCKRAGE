@@ -32,6 +32,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class TokyoToshokanProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "TokyoToshokan")
@@ -89,7 +90,7 @@ class TokyoToshokanProvider(generic.TorrentProvider):
 
         params = {
             "terms": search_string.encode('utf-8'),
-            "type": 1, # get anime types
+            "type": 1,  # get anime types
         }
 
         searchURL = self.url + 'search.php?' + urllib.urlencode(params)
@@ -106,30 +107,30 @@ class TokyoToshokanProvider(generic.TorrentProvider):
             with BS4Parser(data, features=["html5lib", "permissive"]) as soup:
                 torrent_table = soup.find('table', attrs={'class': 'listing'})
                 torrent_rows = torrent_table.find_all('tr') if torrent_table else []
-                if torrent_rows: 
+                if torrent_rows:
                     if torrent_rows[0].find('td', attrs={'class': 'centertext'}):
                         a = 1
                     else:
                         a = 0
-    
+
                     for top, bottom in zip(torrent_rows[a::2], torrent_rows[a::2]):
                         title = top.find('td', attrs={'class': 'desc-top'}).text
                         url = top.find('td', attrs={'class': 'desc-top'}).find('a')['href']
-    
+
                         if not title or not url:
                             continue
-    
+
                         item = title.lstrip(), url
                         results.append(item)
 
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Failed to parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
-
 
         return results
 
 
 class TokyoToshokanCache(tvcache.TVCache):
+
     def __init__(self, provider):
         tvcache.TVCache.__init__(self, provider)
 

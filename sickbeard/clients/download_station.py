@@ -23,6 +23,7 @@
 import sickbeard
 from sickbeard.clients.generic import GenericClient
 
+
 class DownloadStationAPI(GenericClient):
 
     def __init__(self, host=None, username=None, password=None):
@@ -33,7 +34,8 @@ class DownloadStationAPI(GenericClient):
 
     def _get_auth(self):
 
-        auth_url = self.host + 'webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&account=' + self.username + '&passwd=' + self.password + '&session=DownloadStation&format=sid'
+        auth_url = self.host + 'webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&account=' + \
+            self.username + '&passwd=' + self.password + '&session=DownloadStation&format=sid'
 
         try:
             self.response = self.session.get(auth_url, verify=False)
@@ -45,11 +47,11 @@ class DownloadStationAPI(GenericClient):
 
     def _add_torrent_uri(self, result):
 
-        data = {'api':'SYNO.DownloadStation.Task',
-                'version':'1', 'method':'create',
-                'session':'DownloadStation',
-                '_sid':self.auth,
-                'uri':result.url
+        data = {'api': 'SYNO.DownloadStation.Task',
+                'version': '1', 'method': 'create',
+                'session': 'DownloadStation',
+                '_sid': self.auth,
+                'uri': result.url
                 }
         if sickbeard.TORRENT_PATH:
             data['destination'] = sickbeard.TORRENT_PATH
@@ -59,15 +61,15 @@ class DownloadStationAPI(GenericClient):
 
     def _add_torrent_file(self, result):
 
-        data = {'api':'SYNO.DownloadStation.Task',
-                'version':'1',
-                'method':'create',
-                'session':'DownloadStation',
-                '_sid':self.auth
+        data = {'api': 'SYNO.DownloadStation.Task',
+                'version': '1',
+                'method': 'create',
+                'session': 'DownloadStation',
+                '_sid': self.auth
                 }
         if sickbeard.TORRENT_PATH:
             data['destination'] = sickbeard.TORRENT_PATH
-        files = {'file':(result.name + '.torrent', result.content)}
+        files = {'file': (result.name + '.torrent', result.content)}
         self._request(method='post', data=data, files=files)
 
         return self.response.json()['success']

@@ -31,6 +31,7 @@ from sickbeard import tvcache
 
 
 class ShazbatProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Shazbat.tv")
@@ -74,6 +75,7 @@ class ShazbatProvider(generic.TorrentProvider):
 
 
 class ShazbatCache(tvcache.TVCache):
+
     def __init__(self, provider):
         tvcache.TVCache.__init__(self, provider)
 

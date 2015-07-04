@@ -56,11 +56,11 @@ class HoundDawgsProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = HoundDawgsCache(self)
-		
+
         self.urls = {'base_url': 'https://hounddawgs.org/',
-		        'search': 'https://hounddawgs.org/torrents.php?type=&userid=&searchstr=%s&searchimdb=&searchtags=&order_by=s3&order_way=desc&%s',
-                'login': 'https://hounddawgs.org/login.php',
-        }
+                     'search': 'https://hounddawgs.org/torrents.php?type=&userid=&searchstr=%s&searchimdb=&searchtags=&order_by=s3&order_way=desc&%s',
+                     'login': 'https://hounddawgs.org/login.php',
+                     }
 
         self.url = self.urls['base_url']
 
@@ -83,14 +83,14 @@ class HoundDawgsProvider(generic.TorrentProvider):
                         'password': self.password,
                         'keeplogged': 'on',
                         'login': 'Login',
-        }
+                        }
 
         self.session = requests.Session()
 
         try:
             self.session.get(self.urls['base_url'], timeout=30)
             response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
 
@@ -112,7 +112,7 @@ class HoundDawgsProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -128,24 +128,24 @@ class HoundDawgsProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                    str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode}
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode}
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -160,22 +160,22 @@ class HoundDawgsProvider(generic.TorrentProvider):
             return results
 
         for mode in search_params.keys():
-		
+
             for search_string in search_params[mode]:
 
                 if isinstance(search_string, unicode):
                     search_string = unidecode(search_string)
 
-                #if mode == 'RSS':
+                # if mode == 'RSS':
                     #searchURL = self.urls['index'] % self.categories
-                #else:
+                # else:
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
 
                 logger.log(u"Search string: " + searchURL, logger.DEBUG)
 
                 data = self.getURL(searchURL)
                 strTableStart = "<table class=\"torrent_table"
-                startTableIndex=data.find(strTableStart)
+                startTableIndex = data.find(strTableStart)
                 trimmedData = data[startTableIndex:]
                 if not trimmedData:
                     continue
@@ -183,29 +183,29 @@ class HoundDawgsProvider(generic.TorrentProvider):
                 try:
                     with BS4Parser(trimmedData, features=["html5lib", "permissive"]) as html:
                         result_table = html.find('table', {'id': 'torrent_table'})
-        
+
                         if not result_table:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
                                        logger.DEBUG)
                             continue
-                        
+
                         result_tbody = result_table.find('tbody')
                         entries = result_tbody.contents
-                        del entries[1::2]   
+                        del entries[1::2]
 
                         for result in entries[1:]:
-                            
+
                             torrent = result.find_all('td')
                             if len(torrent) <= 1:
                                 break
-                            
+
                             allAs = (torrent[1]).find_all('a')
 
                             try:
                                 link = self.urls['base_url'] + allAs[2].attrs['href']
                                 #url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
                                 title = allAs[2].string
-                                #Trimming title so accepted by scene check(Feature has been rewuestet i forum)
+                                # Trimming title so accepted by scene check(Feature has been rewuestet i forum)
                                 title = title.replace("custom.", "")
                                 title = title.replace("CUSTOM.", "")
                                 title = title.replace("Custom.", "")
@@ -215,10 +215,10 @@ class HoundDawgsProvider(generic.TorrentProvider):
                                 title = title.replace("subs.", "")
                                 title = title.replace("SUBS.", "")
                                 title = title.replace("Subs.", "")
-                                
-                                download_url = self.urls['base_url']+allAs[0].attrs['href']
-                                id = link.replace(self.urls['base_url']+'torrents.php?id=','')
-                                
+
+                                download_url = self.urls['base_url'] + allAs[0].attrs['href']
+                                id = link.replace(self.urls['base_url'] + 'torrents.php?id=', '')
+
                             except (AttributeError, TypeError):
                                 continue
 
@@ -226,11 +226,11 @@ class HoundDawgsProvider(generic.TorrentProvider):
                                 continue
 
                             item = title, download_url
-                            logger.log(u"Found result: " + title.replace(' ','.') + " (" + download_url + ")", logger.DEBUG)
+                            logger.log(u"Found result: " + title.replace(' ', '.') + " (" + download_url + ")", logger.DEBUG)
 
                             items[mode].append(item)
 
-                except Exception, e:
+                except Exception as e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
             results += items[mode]
@@ -284,6 +284,7 @@ class HoundDawgsProvider(generic.TorrentProvider):
 
 
 class HoundDawgsCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

@@ -28,6 +28,7 @@ from sickbeard import exceptions, logger
 from sickbeard.common import *
 from sickbeard import tvcache
 
+
 class Animezb(generic.NZBProvider):
 
     def __init__(self):
@@ -97,7 +98,7 @@ class Animezb(generic.NZBProvider):
 
             (title, url) = self._get_title_and_url(item)
 
-            if item.has_key('published_parsed') and item['published_parsed']:
+            if 'published_parsed' in item and item['published_parsed']:
                 result_date = item.published_parsed
                 if result_date:
                     result_date = datetime.datetime(*result_date[0:6])

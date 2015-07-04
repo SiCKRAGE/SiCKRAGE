@@ -28,6 +28,7 @@ from sickbeard import encodingKludge as ek
 
 
 class pyTivoNotifier:
+
     def notify_snatch(self, ep_name):
         pass
 
@@ -36,7 +37,7 @@ class pyTivoNotifier:
 
     def notify_subtitle_download(self, ep_name, lang):
         pass
-        
+
     def notify_git_update(self, new_version):
         pass
 
@@ -52,17 +53,16 @@ class pyTivoNotifier:
         tsn = sickbeard.PYTIVO_TIVO_NAME
 
         # There are two more values required, the container and file.
-        # 
+        #
         # container: The share name, show name and season
         #
         # file: The file name
-        # 
+        #
         # Some slicing and dicing of variables is required to get at these values.
         #
-        # There might be better ways to arrive at the values, but this is the best I have been able to 
+        # There might be better ways to arrive at the values, but this is the best I have been able to
         # come up with.
         #
-
 
         # Calculated values
 
@@ -90,15 +90,15 @@ class pyTivoNotifier:
         request = Request(requestUrl)
 
         try:
-            response = urlopen(request)  #@UnusedVariable
-        except HTTPError , e:
+            response = urlopen(request)  # @UnusedVariable
+        except HTTPError as e:
             if hasattr(e, 'reason'):
                 logger.log(u"pyTivo notification: Error, failed to reach a server - " + e.reason, logger.ERROR)
                 return False
             elif hasattr(e, 'code'):
                 logger.log(u"pyTivo notification: Error, the server couldn't fulfill the request - " + e.code, logger.ERROR)
             return False
-        except Exception, e:
+        except Exception as e:
             logger.log(u"PYTIVO: Unknown exception: " + ex(e), logger.ERROR)
             return False
         else:

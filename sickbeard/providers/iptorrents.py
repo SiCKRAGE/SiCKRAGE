@@ -44,6 +44,7 @@ from sickbeard.name_parser.parser import NameParser, InvalidNameException, Inval
 
 
 class IPTorrentsProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "IPTorrents")
@@ -59,9 +60,9 @@ class IPTorrentsProvider(generic.TorrentProvider):
         self.cache = IPTorrentsCache(self)
 
         self.urls = {'base_url': 'https://iptorrents.eu',
-                'login': 'https://iptorrents.eu/torrents/',
-                'search': 'https://iptorrents.eu/t?%s%s&q=%s&qf=#torrents',
-        }
+                     'login': 'https://iptorrents.eu/torrents/',
+                     'search': 'https://iptorrents.eu/t?%s%s&q=%s&qf=#torrents',
+                     }
 
         self.url = self.urls['base_url']
 
@@ -90,11 +91,11 @@ class IPTorrentsProvider(generic.TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password,
                         'login': 'submit',
-        }
+                        }
 
         try:
             response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
 
@@ -116,26 +117,26 @@ class IPTorrentsProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', ' ')
+                    str(ep_obj.airdate).replace('-', ' ')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', ' ') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', ' ') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + '|' + \
-                            sickbeard.config.naming_ep_type[0] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + '|' + \
+                    sickbeard.config.naming_ep_type[0] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -150,7 +151,9 @@ class IPTorrentsProvider(generic.TorrentProvider):
         itemList = []
 
         if search_mode == 'sponly':
-            logger.log(u"This provider doesn't support season pack. Consider setting Season search mode to episodes only and unchecked Season search fallback", logger.WARNING)
+            logger.log(
+                u"This provider doesn't support season pack. Consider setting Season search mode to episodes only and unchecked Season search fallback",
+                logger.WARNING)
             search_mode = 'eponly'
 
         for epObj in episodes:
@@ -212,23 +215,23 @@ class IPTorrentsProvider(generic.TorrentProvider):
 
             addCacheEntry = False
             if not (showObj.air_by_date or showObj.sports):
-                if search_mode == 'sponly': 
+                if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         logger.log(
                             u"This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it",
                             logger.DEBUG)
                         addCacheEntry = True
                     if len(parse_result.episode_numbers) and (
-                                    parse_result.season_number not in set([ep.season for ep in episodes]) or not [ep for ep in episodes if
-                                                                                 ep.scene_episode in parse_result.episode_numbers]):
+                        parse_result.season_number not in set([ep.season for ep in episodes]) or not [ep for ep in episodes if
+                                                                                                      ep.scene_episode in parse_result.episode_numbers]):
                         logger.log(
                             u"The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring",
                             logger.DEBUG)
                         addCacheEntry = True
                 else:
-                    if not len(parse_result.episode_numbers) and parse_result.season_number and not [ep for ep in
-                                                                                                     episodes if
-                                                                                                     ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
+                    if not len(
+                            parse_result.episode_numbers) and parse_result.season_number and not [
+                            ep for ep in episodes if ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         logger.log(
                             u"The result " + title + " doesn't seem to be a valid season that we are trying to snatch, ignoring",
                             logger.DEBUG)
@@ -368,7 +371,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
                         torrent_table = html.find('table', attrs={'class': 'torrents'})
                         torrents = torrent_table.find_all('tr') if torrent_table else []
 
-                        #Continue only if one Release is found
+                        # Continue only if one Release is found
                         if len(torrents) < 2:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
                                        logger.WARNING)
@@ -399,7 +402,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
                             logger.log(u"Found result: " + torrent_name + " (" + torrent_details_url + ")", logger.DEBUG)
                             items[mode].append(item)
 
-                except Exception, e:
+                except Exception as e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
             results += items[mode]
@@ -450,7 +453,9 @@ class IPTorrentsProvider(generic.TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
+
 class IPTorrentsCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

@@ -93,7 +93,7 @@ class NameParser(object):
             for cur_pattern_num, (cur_pattern_name, cur_pattern) in enumerate(regexItem):
                 try:
                     cur_regex = re.compile(cur_pattern, re.VERBOSE | re.IGNORECASE)
-                except re.error, errormsg:
+                except re.error as errormsg:
                     logger.log(u"WARNING: Invalid episode_pattern using %s regexs, %s. %s" % (dbg_str, errormsg, cur_pattern))
                 else:
                     self.compiled_regexes.append((cur_pattern_num, cur_pattern_name, cur_regex))
@@ -228,7 +228,7 @@ class NameParser(object):
                 if sql_result:
                     season_number = int(sql_result[0][0])
                     episode_numbers = [int(sql_result[0][1])]
-                
+
                 if not season_number or not len(episode_numbers):
                     try:
                         lINDEXER_API_PARMS = sickbeard.indexerApi(bestResult.show.indexer).api_params.copy()
@@ -243,9 +243,13 @@ class NameParser(object):
                         season_number = int(epObj["seasonnumber"])
                         episode_numbers = [int(epObj["episodenumber"])]
                     except sickbeard.indexer_episodenotfound:
-                        logger.log(u"Unable to find episode with date " + str(bestResult.air_date) + " for show " + bestResult.show.name + ", skipping", logger.WARNING)
+                        logger.log(u"Unable to find episode with date " +
+                                   str(bestResult.air_date) +
+                                   " for show " +
+                                   bestResult.show.name +
+                                   ", skipping", logger.WARNING)
                         episode_numbers = []
-                    except sickbeard.indexer_error, e:
+                    except sickbeard.indexer_error as e:
                         logger.log(u"Unable to contact " + sickbeard.indexerApi(bestResult.show.indexer).name + ": " + ex(e), logger.WARNING)
                         episode_numbers = []
 
@@ -307,12 +311,10 @@ class NameParser(object):
 
             # I guess it's possible that we'd have duplicate episodes too, so lets
             # eliminate them
-            new_episode_numbers = list(set(new_episode_numbers))
-            new_episode_numbers.sort()
+            new_episode_numbers = sorted(set(new_episode_numbers))
 
             # maybe even duplicate absolute numbers so why not do them as well
-            new_absolute_numbers = list(set(new_absolute_numbers))
-            new_absolute_numbers.sort()
+            new_absolute_numbers = sorted(set(new_absolute_numbers))
 
             if len(new_absolute_numbers):
                 bestResult.ab_episode_numbers = new_absolute_numbers
@@ -348,7 +350,7 @@ class NameParser(object):
         b = getattr(second, attr)
 
         # if a is good use it
-        if a != None or (type(a) == list and len(a)):
+        if a is not None or (isinstance(a, list) and len(a)):
             return a
         # if not use b (if b isn't set it'll just be default)
         else:
@@ -380,7 +382,7 @@ class NameParser(object):
             roman_to_int_map = (('M', 1000), ('CM', 900), ('D', 500), ('CD', 400), ('C', 100),
                                 ('XC', 90), ('L', 50), ('XL', 40), ('X', 10),
                                 ('IX', 9), ('V', 5), ('IV', 4), ('I', 1)
-            )
+                                )
 
             roman_numeral = str(org_number).upper()
             number = 0
@@ -458,7 +460,7 @@ class NameParser(object):
                 "Unable to parse " + name.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace'))
 
         # if there's no useful info in it then raise an exception
-        if final_result.season_number == None and not final_result.episode_numbers and final_result.air_date == None and not final_result.ab_episode_numbers and not final_result.series_name:
+        if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
             raise InvalidNameException("Unable to parse " + name.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace'))
 
         if cache_result:
@@ -469,6 +471,7 @@ class NameParser(object):
 
 
 class ParseResult(object):
+
     def __init__(self,
                  original_name,
                  series_name=None,
@@ -482,7 +485,7 @@ class ParseResult(object):
                  score=None,
                  quality=None,
                  version=None
-    ):
+                 ):
 
         self.original_name = original_name
 
@@ -544,11 +547,11 @@ class ParseResult(object):
         return True
 
     def __str__(self):
-        if self.series_name != None:
+        if self.series_name is not None:
             to_return = self.series_name + u' - '
         else:
             to_return = u''
-        if self.season_number != None:
+        if self.season_number is not None:
             to_return += 'S' + str(self.season_number)
         if self.episode_numbers and len(self.episode_numbers):
             for e in self.episode_numbers:
@@ -604,8 +607,10 @@ name_parser_cache = NameParserCache()
 
 
 class InvalidNameException(Exception):
+
     "The given release name is not valid"
 
 
 class InvalidShowException(Exception):
+
     "The given show name is not valid"

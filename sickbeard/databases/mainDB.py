@@ -29,7 +29,9 @@ from sickbeard.name_parser.parser import NameParser, InvalidNameException, Inval
 MIN_DB_VERSION = 9  # oldest db version we support migrating from
 MAX_DB_VERSION = 42
 
+
 class MainSanityCheck(db.DBSanityCheck):
+
     def check(self):
         self.fix_missing_table_indexes()
         self.fix_duplicate_shows()
@@ -192,6 +194,7 @@ class MainSanityCheck(db.DBSanityCheck):
         else:
             logger.log(u"No bad episode airdates, check passed", logger.DEBUG)
 
+
 def backupDatabase(version):
     logger.log(u"Backing up database before upgrade")
     if not helpers.backupVersionedFile(db.dbFilename(), version):
@@ -204,7 +207,9 @@ def backupDatabase(version):
 # ======================
 # Add new migrations at the bottom of the list; subclass the previous migration.
 
+
 class InitialSchema(db.SchemaUpgrade):
+
     def test(self):
         return self.hasTable("db_version")
 
@@ -228,8 +233,7 @@ class InitialSchema(db.SchemaUpgrade):
                 "CREATE INDEX idx_sta_epi_sta_air ON tv_episodes(season, episode, status, airdate);",
                 "CREATE INDEX idx_status ON tv_episodes(status,season,episode,airdate);",
                 "CREATE INDEX idx_tv_episodes_showid_airdate ON tv_episodes(showid, airdate);",
-                "INSERT INTO db_version(db_version) VALUES (42);"
-            ]
+                "INSERT INTO db_version(db_version) VALUES (42);"]
             for query in queries:
                 self.connection.action(query)
 
@@ -238,20 +242,21 @@ class InitialSchema(db.SchemaUpgrade):
 
             if cur_db_version < MIN_DB_VERSION:
                 logger.log_error_and_exit(u"Your database version (" + str(
-                    cur_db_version) + ") is too old to migrate from what this version of SickRage supports (" + \
-                                          str(MIN_DB_VERSION) + ").\n" + \
-                                          "Upgrade using a previous version (tag) build 496 to build 501 of SickRage first or remove database file to begin fresh."
+                    cur_db_version) + ") is too old to migrate from what this version of SickRage supports (" +
+                    str(MIN_DB_VERSION) + ").\n" +
+                    "Upgrade using a previous version (tag) build 496 to build 501 of SickRage first or remove database file to begin fresh."
                 )
 
             if cur_db_version > MAX_DB_VERSION:
                 logger.log_error_and_exit(u"Your database version (" + str(
-                    cur_db_version) + ") has been incremented past what this version of SickRage supports (" + \
-                                          str(MAX_DB_VERSION) + ").\n" + \
-                                          "If you have used other forks of SickRage, your database may be unusable due to their modifications."
+                    cur_db_version) + ") has been incremented past what this version of SickRage supports (" +
+                    str(MAX_DB_VERSION) + ").\n" +
+                    "If you have used other forks of SickRage, your database may be unusable due to their modifications."
                 )
 
 
 class AddSizeAndSceneNameFields(InitialSchema):
+
     def test(self):
         return self.checkDBVersion() >= 10
 
@@ -326,7 +331,7 @@ class AddSizeAndSceneNameFields(InitialSchema):
                 except (InvalidNameException, InvalidShowException):
                     continue
 
-                if parse_result.series_name and parse_result.season_number != None and parse_result.episode_numbers and parse_result.release_group:
+                if parse_result.series_name and parse_result.season_number is not None and parse_result.episode_numbers and parse_result.release_group:
                     # if all is well by this point we'll just put the release name into the database
                     self.connection.action("UPDATE tv_episodes SET release_name = ? WHERE episode_id = ?",
                                            [cur_name, ep_results[0]["episode_id"]])
@@ -364,6 +369,7 @@ class AddSizeAndSceneNameFields(InitialSchema):
 
 
 class RenameSeasonFolders(AddSizeAndSceneNameFields):
+
     def test(self):
         return self.checkDBVersion() >= 11
 
@@ -385,6 +391,7 @@ class RenameSeasonFolders(AddSizeAndSceneNameFields):
 
 
 class Add1080pAndRawHDQualities(RenameSeasonFolders):
+
     """Add support for 1080p related qualities along with RawHD
 
     Quick overview of what the upgrade needs to do:
@@ -458,7 +465,7 @@ class Add1080pAndRawHDQualities(RenameSeasonFolders):
         old_hd = common.Quality.combineQualities(
             [common.Quality.HDTV, common.Quality.HDWEBDL >> 2, common.Quality.HDBLURAY >> 3], [])
         new_hd = common.Quality.combineQualities([common.Quality.HDTV, common.Quality.HDWEBDL, common.Quality.HDBLURAY],
-            [])
+                                                 [])
 
         # update ANY -- shift existing qualities and add new 1080p qualities, note that rawHD was not added to the ANY template
         old_any = common.Quality.combineQualities(
@@ -520,6 +527,7 @@ class Add1080pAndRawHDQualities(RenameSeasonFolders):
 
 
 class AddShowidTvdbidIndex(Add1080pAndRawHDQualities):
+
     """ Adding index on tvdb_id (tv_shows) and showid (tv_episodes) to speed up searches/queries """
 
     def test(self):
@@ -541,6 +549,7 @@ class AddShowidTvdbidIndex(Add1080pAndRawHDQualities):
 
 
 class AddLastUpdateTVDB(AddShowidTvdbidIndex):
+
     """ Adding column last_update_tvdb to tv_shows for controlling nightly updates """
 
     def test(self):
@@ -557,6 +566,7 @@ class AddLastUpdateTVDB(AddShowidTvdbidIndex):
 
 
 class AddDBIncreaseTo15(AddLastUpdateTVDB):
+
     def test(self):
         return self.checkDBVersion() >= 15
 
@@ -565,6 +575,7 @@ class AddDBIncreaseTo15(AddLastUpdateTVDB):
 
 
 class AddIMDbInfo(AddDBIncreaseTo15):
+
     def test(self):
         return self.checkDBVersion() >= 16
 
@@ -579,6 +590,7 @@ class AddIMDbInfo(AddDBIncreaseTo15):
 
 
 class AddProperNamingSupport(AddIMDbInfo):
+
     def test(self):
         return self.checkDBVersion() >= 17
 
@@ -588,6 +600,7 @@ class AddProperNamingSupport(AddIMDbInfo):
 
 
 class AddEmailSubscriptionTable(AddProperNamingSupport):
+
     def test(self):
         return self.checkDBVersion() >= 18
 
@@ -597,6 +610,7 @@ class AddEmailSubscriptionTable(AddProperNamingSupport):
 
 
 class AddProperSearch(AddEmailSubscriptionTable):
+
     def test(self):
         return self.checkDBVersion() >= 19
 
@@ -611,6 +625,7 @@ class AddProperSearch(AddEmailSubscriptionTable):
 
 
 class AddDvdOrderOption(AddProperSearch):
+
     def test(self):
         return self.checkDBVersion() >= 20
 
@@ -623,6 +638,7 @@ class AddDvdOrderOption(AddProperSearch):
 
 
 class AddSubtitlesSupport(AddDvdOrderOption):
+
     def test(self):
         return self.checkDBVersion() >= 21
 
@@ -636,6 +652,7 @@ class AddSubtitlesSupport(AddDvdOrderOption):
 
 
 class ConvertTVShowsToIndexerScheme(AddSubtitlesSupport):
+
     def test(self):
         return self.checkDBVersion() >= 22
 
@@ -649,7 +666,8 @@ class ConvertTVShowsToIndexerScheme(AddSubtitlesSupport):
             self.connection.action("DROP TABLE tmp_tv_shows")
 
         self.connection.action("ALTER TABLE tv_shows RENAME TO tmp_tv_shows")
-        self.connection.action("CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC)")
+        self.connection.action(
+            "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC)")
         self.connection.action("INSERT INTO tv_shows SELECT * FROM tmp_tv_shows")
         self.connection.action("DROP TABLE tmp_tv_shows")
 
@@ -662,6 +680,7 @@ class ConvertTVShowsToIndexerScheme(AddSubtitlesSupport):
 
 
 class ConvertTVEpisodesToIndexerScheme(ConvertTVShowsToIndexerScheme):
+
     def test(self):
         return self.checkDBVersion() >= 23
 
@@ -693,6 +712,7 @@ class ConvertTVEpisodesToIndexerScheme(ConvertTVShowsToIndexerScheme):
 
 
 class ConvertIMDBInfoToIndexerScheme(ConvertTVEpisodesToIndexerScheme):
+
     def test(self):
         return self.checkDBVersion() >= 24
 
@@ -716,6 +736,7 @@ class ConvertIMDBInfoToIndexerScheme(ConvertTVEpisodesToIndexerScheme):
 
 
 class ConvertInfoToIndexerScheme(ConvertIMDBInfoToIndexerScheme):
+
     def test(self):
         return self.checkDBVersion() >= 25
 
@@ -739,6 +760,7 @@ class ConvertInfoToIndexerScheme(ConvertIMDBInfoToIndexerScheme):
 
 
 class AddArchiveFirstMatchOption(ConvertInfoToIndexerScheme):
+
     def test(self):
         return self.checkDBVersion() >= 26
 
@@ -753,6 +775,7 @@ class AddArchiveFirstMatchOption(ConvertInfoToIndexerScheme):
 
 
 class AddSceneNumbering(AddArchiveFirstMatchOption):
+
     def test(self):
         return self.checkDBVersion() >= 27
 
@@ -769,6 +792,7 @@ class AddSceneNumbering(AddArchiveFirstMatchOption):
 
 
 class ConvertIndexerToInteger(AddSceneNumbering):
+
     def test(self):
         return self.checkDBVersion() >= 28
 
@@ -790,6 +814,7 @@ class ConvertIndexerToInteger(AddSceneNumbering):
 
 
 class AddRequireAndIgnoreWords(ConvertIndexerToInteger):
+
     """ Adding column rls_require_words and rls_ignore_words to tv_shows """
 
     def test(self):
@@ -810,6 +835,7 @@ class AddRequireAndIgnoreWords(ConvertIndexerToInteger):
 
 
 class AddSportsOption(AddRequireAndIgnoreWords):
+
     def test(self):
         return self.checkDBVersion() >= 30
 
@@ -836,6 +862,7 @@ class AddSportsOption(AddRequireAndIgnoreWords):
 
 
 class AddSceneNumberingToTvEpisodes(AddSportsOption):
+
     def test(self):
         return self.checkDBVersion() >= 31
 
@@ -848,7 +875,9 @@ class AddSceneNumberingToTvEpisodes(AddSportsOption):
 
         self.incDBVersion()
 
+
 class AddAnimeTVShow(AddSceneNumberingToTvEpisodes):
+
     def test(self):
         return self.checkDBVersion() >= 32
 
@@ -860,7 +889,9 @@ class AddAnimeTVShow(AddSceneNumberingToTvEpisodes):
 
         self.incDBVersion()
 
+
 class AddAbsoluteNumbering(AddAnimeTVShow):
+
     def test(self):
         return self.checkDBVersion() >= 33
 
@@ -872,7 +903,9 @@ class AddAbsoluteNumbering(AddAnimeTVShow):
 
         self.incDBVersion()
 
+
 class AddSceneAbsoluteNumbering(AddAbsoluteNumbering):
+
     def test(self):
         return self.checkDBVersion() >= 34
 
@@ -884,6 +917,7 @@ class AddSceneAbsoluteNumbering(AddAbsoluteNumbering):
         self.addColumn("scene_numbering", "scene_absolute_number", "NUMERIC", "0")
 
         self.incDBVersion()
+
 
 class AddAnimeBlacklistWhitelist(AddSceneAbsoluteNumbering):
 
@@ -900,7 +934,9 @@ class AddAnimeBlacklistWhitelist(AddSceneAbsoluteNumbering):
 
         self.incDBVersion()
 
+
 class AddSceneAbsoluteNumbering(AddAnimeBlacklistWhitelist):
+
     def test(self):
         return self.checkDBVersion() >= 36
 
@@ -912,7 +948,9 @@ class AddSceneAbsoluteNumbering(AddAnimeBlacklistWhitelist):
 
         self.incDBVersion()
 
+
 class AddXemRefresh(AddSceneAbsoluteNumbering):
+
     def test(self):
         return self.checkDBVersion() >= 37
 
@@ -925,7 +963,9 @@ class AddXemRefresh(AddSceneAbsoluteNumbering):
 
         self.incDBVersion()
 
+
 class AddSceneToTvShows(AddXemRefresh):
+
     def test(self):
         return self.checkDBVersion() >= 38
 
@@ -937,7 +977,9 @@ class AddSceneToTvShows(AddXemRefresh):
 
         self.incDBVersion()
 
+
 class AddIndexerMapping(AddSceneToTvShows):
+
     def test(self):
         return self.checkDBVersion() >= 39
 
@@ -953,7 +995,9 @@ class AddIndexerMapping(AddSceneToTvShows):
 
         self.incDBVersion()
 
+
 class AddVersionToTvEpisodes(AddIndexerMapping):
+
     def test(self):
         return self.checkDBVersion() >= 40
 
@@ -967,7 +1011,9 @@ class AddVersionToTvEpisodes(AddIndexerMapping):
 
         self.incDBVersion()
 
+
 class AddDefaultEpStatusToTvShows(AddVersionToTvEpisodes):
+
     def test(self):
         return self.checkDBVersion() >= 41
 
@@ -979,7 +1025,9 @@ class AddDefaultEpStatusToTvShows(AddVersionToTvEpisodes):
 
         self.incDBVersion()
 
+
 class AlterTVShowsFieldTypes(AddDefaultEpStatusToTvShows):
+
     def test(self):
         return self.checkDBVersion() >= 42
 
@@ -988,7 +1036,8 @@ class AlterTVShowsFieldTypes(AddDefaultEpStatusToTvShows):
 
         logger.log(u"Converting column indexer and default_ep_status field types to numeric")
         self.connection.action("ALTER TABLE tv_shows RENAME TO tmp_tv_shows")
-        self.connection.action("CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC)")
+        self.connection.action(
+            "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC)")
         self.connection.action("INSERT INTO tv_shows SELECT * FROM tmp_tv_shows")
         self.connection.action("DROP TABLE tmp_tv_shows")
 

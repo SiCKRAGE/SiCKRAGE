@@ -57,12 +57,12 @@ class NextGenProvider(generic.TorrentProvider):
         self.cache = NextGenCache(self)
 
         self.urls = {'base_url': 'https://nxtgn.org/',
-                'search': 'https://nxtgn.org/browse.php?search=%s&cat=0&incldead=0&modes=%s',
-                'login_page': 'https://nxtgn.org/login.php',
-                'detail': 'https://nxtgn.org/details.php?id=%s',
-                'download': 'https://nxtgn.org/download.php?id=%s',
-                'takelogin': 'https://nxtgn.org/takelogin.php?csrf=',
-                }
+                     'search': 'https://nxtgn.org/browse.php?search=%s&cat=0&incldead=0&modes=%s',
+                     'login_page': 'https://nxtgn.org/login.php',
+                     'detail': 'https://nxtgn.org/details.php?id=%s',
+                     'download': 'https://nxtgn.org/download.php?id=%s',
+                     'takelogin': 'https://nxtgn.org/takelogin.php?csrf=',
+                     }
 
         self.url = self.urls['base_url']
 
@@ -146,7 +146,7 @@ class NextGenProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -162,24 +162,24 @@ class NextGenProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                    str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -219,17 +219,17 @@ class NextGenProvider(generic.TorrentProvider):
 
                         entries = entries_std + entries_sticky
 
-                        #Xirg STANDARD TORRENTS
-                        #Continue only if one Release is found
+                        # Xirg STANDARD TORRENTS
+                        # Continue only if one Release is found
                         if len(entries) > 0:
 
                             for result in entries:
 
                                 try:
                                     torrentName = \
-                                    ((result.find('div', attrs={'id': 'torrent-udgivelse2-users'})).find('a'))['title']
+                                        ((result.find('div', attrs={'id': 'torrent-udgivelse2-users'})).find('a'))['title']
                                     torrentId = (
-                                    ((result.find('div', attrs={'id': 'torrent-download'})).find('a'))['href']).replace(
+                                        ((result.find('div', attrs={'id': 'torrent-download'})).find('a'))['href']).replace(
                                         'download.php?id=', '')
                                     torrent_name = str(torrentName)
                                     torrent_download_url = (self.urls['download'] % torrentId).encode('utf8')
@@ -242,14 +242,14 @@ class NextGenProvider(generic.TorrentProvider):
                                     continue
 
                                 # Filter unseeded torrent and torrents with no name/url
-                                #if mode != 'RSS' and torrent_seeders == 0:
+                                # if mode != 'RSS' and torrent_seeders == 0:
                                 #    continue
 
                                 if not torrent_name or not torrent_download_url:
                                     continue
 
                                 item = torrent_name, torrent_download_url
-                                logger.log(u"Found result: " + torrent_name.replace(' ','.') + " (" + torrent_details_url + ")",
+                                logger.log(u"Found result: " + torrent_name.replace(' ', '.') + " (" + torrent_details_url + ")",
                                            logger.DEBUG)
                                 items[mode].append(item)
 
@@ -258,7 +258,7 @@ class NextGenProvider(generic.TorrentProvider):
                                        logger.WARNING)
                             continue
 
-                except Exception, e:
+                except Exception as e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),
                                logger.ERROR)
 
@@ -312,6 +312,7 @@ class NextGenProvider(generic.TorrentProvider):
 
 
 class NextGenCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

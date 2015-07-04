@@ -18,6 +18,7 @@
 
 from sickbeard import encodingKludge as ek
 
+
 def ex(e):
     """
     Returns a unicode string from the exception text if it exists.
@@ -52,92 +53,115 @@ def ex(e):
 
 
 class SickBeardException(Exception):
+
     "Generic SickRage Exception - should never be thrown, only subclassed"
 
 
 class ConfigErrorException(SickBeardException):
+
     "Error in the config file"
 
 
 class LaterException(SickBeardException):
+
     "Something bad happened that I'll make a real exception for later"
 
 
 class NoNFOException(SickBeardException):
+
     "No NFO was found!"
 
 
 class NoShowDirException(SickBeardException):
+
     "Unable to find the show's directory"
 
 
 class FileNotFoundException(SickBeardException):
+
     "The specified file doesn't exist"
 
 
 class MultipleDBEpisodesException(SickBeardException):
+
     "Found multiple episodes in the DB! Must fix DB first"
 
 
 class MultipleDBShowsException(SickBeardException):
+
     "Found multiple shows in the DB! Must fix DB first"
 
 
 class MultipleShowObjectsException(SickBeardException):
+
     "Found multiple objects for the same show! Something is very wrong"
 
 
 class WrongShowException(SickBeardException):
+
     "The episode doesn't belong to the same show as its parent folder"
 
 
 class ShowNotFoundException(SickBeardException):
+
     "The show wasn't found on the Indexer"
 
 
 class EpisodeNotFoundException(SickBeardException):
+
     "The episode wasn't found on the Indexer"
 
 
 class NewzbinAPIThrottled(SickBeardException):
+
     "Newzbin has throttled us, deal with it"
 
 
 class ShowDirNotFoundException(SickBeardException):
+
     "The show dir doesn't exist"
 
 
 class AuthException(SickBeardException):
+
     "Your authentication information is incorrect"
 
 
 class EpisodeDeletedException(SickBeardException):
+
     "This episode has been deleted"
 
 
 class CantRefreshException(SickBeardException):
+
     "The show can't be refreshed right now"
 
 
 class CantUpdateException(SickBeardException):
+
     "The show can't be updated right now"
 
 
 class PostProcessingFailed(SickBeardException):
+
     "Post-processing the episode failed"
 
 
 class FailedProcessingFailed(SickBeardException):
+
     "Post-processing the failed release failed"
 
 
 class FailedHistoryMultiSnatchException(SickBeardException):
+
     "Episode was snatched again before the first one was done"
 
 
 class FailedHistoryNotFoundException(SickBeardException):
+
     "The release was not found in the failed download history tracker"
 
 
 class EpisodeNotFoundByAbsoluteNumberException(SickBeardException):
+
     "The show wasn't found in the DB while looking at Absolute Numbers"

@@ -40,6 +40,7 @@ exceptionsSeasonCache = {}
 
 exceptionLock = threading.Lock()
 
+
 def shouldRefresh(list):
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
@@ -51,11 +52,13 @@ def shouldRefresh(list):
     else:
         return True
 
+
 def setLastRefresh(list):
     myDB = db.DBConnection('cache.db')
     myDB.upsert("scene_exceptions_refresh",
                 {'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple()))},
                 {'list': list})
+
 
 def get_scene_exceptions(indexer_id, season=-1):
     """
@@ -71,7 +74,7 @@ def get_scene_exceptions(indexer_id, season=-1):
         if exceptions:
             exceptionsList = list(set([cur_exception["show_name"] for cur_exception in exceptions]))
 
-            if not indexer_id in exceptionsCache:
+            if indexer_id not in exceptionsCache:
                 exceptionsCache[indexer_id] = {}
             exceptionsCache[indexer_id][season] = exceptionsList
     else:
@@ -112,7 +115,7 @@ def get_scene_seasons(indexer_id):
         if sqlResults:
             exceptionsSeasonList = list(set([int(x["season"]) for x in sqlResults]))
 
-            if not indexer_id in exceptionsSeasonCache:
+            if indexer_id not in exceptionsSeasonCache:
                 exceptionsSeasonCache[indexer_id] = {}
 
             exceptionsSeasonCache[indexer_id] = exceptionsSeasonList
@@ -233,7 +236,7 @@ def retrieve_exceptions():
         existing_exceptions = [x["show_name"] for x in
                                myDB.select("SELECT * FROM scene_exceptions WHERE indexer_id = ?", [cur_indexer_id])]
 
-        if not cur_indexer_id in exception_dict:
+        if cur_indexer_id not in exception_dict:
             continue
 
         for cur_exception_dict in exception_dict[cur_indexer_id]:
@@ -256,6 +259,7 @@ def retrieve_exceptions():
     anidb_exception_dict.clear()
     xem_exception_dict.clear()
 
+
 def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     """
     Given a indexer_id, and a list of all show scene exceptions, update the db.
@@ -265,7 +269,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     myDB.action('DELETE FROM scene_exceptions WHERE indexer_id=? and season=?', [indexer_id, season])
 
     logger.log(u"Updating scene exceptions", logger.INFO)
-    
+
     # A change has been made to the scene exception list. Let's clear the cache, to make this visible
     if indexer_id in exceptionsCache:
         exceptionsCache[indexer_id] = {}
@@ -274,6 +278,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     for cur_exception in scene_exceptions:
         myDB.action("INSERT INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?)",
                     [indexer_id, cur_exception, season])
+
 
 def _anidb_exceptions_fetcher():
     global anidb_exception_dict
@@ -295,6 +300,7 @@ def _anidb_exceptions_fetcher():
 
 
 xem_session = requests.Session()
+
 
 def _xem_exceptions_fetcher():
     global xem_exception_dict

@@ -34,6 +34,7 @@ except ImportError:
 
 
 class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
+
     """
     Metadata generation class for Mede8er based on the MediaBrowser.
 
@@ -61,16 +62,16 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                  season_all_banner=False):
 
         mediabrowser.MediaBrowserMetadata.__init__(self,
-                                         show_metadata,
-                                         episode_metadata,
-                                         fanart,
-                                         poster,
-                                         banner,
-                                         episode_thumbnails,
-                                         season_posters,
-                                         season_banners,
-                                         season_all_poster,
-                                         season_all_banner)
+                                                   show_metadata,
+                                                   episode_metadata,
+                                                   fanart,
+                                                   poster,
+                                                   banner,
+                                                   episode_thumbnails,
+                                                   season_posters,
+                                                   season_banners,
+                                                   season_all_poster,
+                                                   season_all_banner)
 
         self.name = "Mede8er"
 
@@ -133,7 +134,8 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
         # check for title and id
         try:
-            if getattr(myShow, 'seriesname', None) == None or getattr(myShow, 'seriesname', "") == "" or getattr(myShow, 'id', None) == None or getattr(myShow, 'id', "") == "":
+            if getattr(myShow, 'seriesname', None) == None or getattr(myShow, 'seriesname', "") == "" or getattr(
+                    myShow, 'id', None) == None or getattr(myShow, 'id', "") == "":
                 logger.log(u"Incomplete info for show with id " + str(show_obj.indexerid) + " on tvdb, skipping it", logger.ERROR)
                 return False
         except sickbeard.indexer_attributenotfound:
@@ -142,7 +144,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
         SeriesName = etree.SubElement(tv_node, "title")
         SeriesName.text = myShow['seriesname']
-        
+
         Genres = etree.SubElement(tv_node, "genres")
         if getattr(myShow, "genre", None) != None:
             for genre in myShow['genre'].split('|'):
@@ -173,7 +175,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                 rating = 0
             Rating = etree.SubElement(tv_node, "rating")
             rating_text = str(rating)
-            if rating_text != None:
+            if rating_text is not None:
                 Rating.text = rating_text
 
         Status = etree.SubElement(tv_node, "status")
@@ -202,7 +204,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         if getattr(myShow, '_actors', None) is not None:
             for actor in myShow['_actors']:
                 cur_actor_name_text = getattr(actor, 'name', None)
-                if cur_actor_name_text != None and cur_actor_name_text.strip():
+                if cur_actor_name_text is not None and cur_actor_name_text.strip():
                     cur_actor = etree.SubElement(cast, "actor")
                     cur_actor.text = cur_actor_name_text.strip()
 
@@ -237,9 +239,9 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
             t = sickbeard.indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
-        except sickbeard.indexer_shownotfound, e:
+        except sickbeard.indexer_shownotfound as e:
             raise exceptions.ShowNotFoundException(e.message)
-        except sickbeard.indexer_error, e:
+        except sickbeard.indexer_error as e:
             logger.log(u"Unable to connect to TVDB while creating meta files - skipping - " + ex(e), logger.ERROR)
             return False
 
@@ -256,7 +258,11 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
-                logger.log(u"Unable to find episode " + str(curEpToWrite.season) + "x" + str(curEpToWrite.episode) + " on tvdb... has it been removed? Should I delete from db?")
+                logger.log(u"Unable to find episode " +
+                           str(curEpToWrite.season) +
+                           "x" +
+                           str(curEpToWrite.episode) +
+                           " on tvdb... has it been removed? Should I delete from db?")
                 return None
 
             if curEpToWrite == ep_obj:
@@ -272,7 +278,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                 episode = movie
 
                 EpisodeName = etree.SubElement(episode, "title")
-                if curEpToWrite.name != None:
+                if curEpToWrite.name is not None:
                     EpisodeName.text = curEpToWrite.name
                 else:
                     EpisodeName.text = ""
@@ -297,7 +303,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                     plot.text = myShow["overview"]
 
                 Overview = etree.SubElement(episode, "episodeplot")
-                if curEpToWrite.description != None:
+                if curEpToWrite.description is not None:
                     Overview.text = curEpToWrite.description
                 else:
                     Overview.text = ""
@@ -314,17 +320,17 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                             rating = 0
                         Rating = etree.SubElement(episode, "rating")
                         rating_text = str(rating)
-                        if rating_text != None:
+                        if rating_text is not None:
                             Rating.text = rating_text
 
                 director = etree.SubElement(episode, "director")
                 director_text = getattr(myEp, 'director', None)
-                if director_text != None:
+                if director_text is not None:
                     director.text = director_text
 
                 credits = etree.SubElement(episode, "credits")
                 credits_text = getattr(myEp, 'writer', None)
-                if credits_text != None:
+                if credits_text is not None:
                     credits.text = credits_text
 
                 cast = etree.SubElement(episode, "cast")
@@ -333,7 +339,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                     for actor in myShow['_actors']:
                         cur_actor_name_text = actor['name']
 
-                        if cur_actor_name_text != None and cur_actor_name_text.strip():
+                        if cur_actor_name_text is not None and cur_actor_name_text.strip():
                             cur_actor = etree.SubElement(cast, "actor")
                             cur_actor.text = cur_actor_name_text.strip()
 
@@ -393,13 +399,13 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             data.write(nfo_file, encoding="UTF-8")
             nfo_file.close()
             helpers.chmodAsParent(nfo_file_path)
-        except IOError, e:
+        except IOError as e:
             logger.log(u"Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? " + ex(e),
                        logger.ERROR)
             return False
 
         return True
-    
+
     def write_ep_file(self, ep_obj):
         """
         Generates and writes ep_obj's metadata under the given path with the
@@ -438,7 +444,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             data.write(nfo_file, encoding="UTF-8")
             nfo_file.close()
             helpers.chmodAsParent(nfo_file_path)
-        except IOError, e:
+        except IOError as e:
             logger.log(u"Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? " + ex(e),
                        logger.ERROR)
             return False

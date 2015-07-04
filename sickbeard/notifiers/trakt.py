@@ -22,7 +22,9 @@ from sickbeard.exceptions import ex
 from lib.trakt import TraktAPI
 from lib.trakt.exceptions import traktException, traktServerBusy, traktAuthException
 
+
 class TraktNotifier:
+
     """
     A "notifier" for trakt.tv which keeps track of what has and hasn't been added to your library.
     """
@@ -61,7 +63,7 @@ class TraktNotifier:
                         }
                     ]
                 }
-                               
+
                 if trakt_id == 'tvdb_id':
                     data['shows'][0]['ids']['tvdb'] = ep_obj.show.indexerid
                 else:
@@ -72,23 +74,22 @@ class TraktNotifier:
                         trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
 
                 # Add Season and Episode + Related Episodes
-                data['shows'][0]['seasons']=[{'number': ep_obj.season,'episodes': [] }]
-                
+                data['shows'][0]['seasons'] = [{'number': ep_obj.season, 'episodes': []}]
+
                 for relEp_Obj in [ep_obj] + ep_obj.relatedEps:
                     data['shows'][0]['seasons'][0]['episodes'].append({'number': relEp_Obj.episode})
-                        
+
                 if sickbeard.TRAKT_SYNC_WATCHLIST:
                     if sickbeard.TRAKT_REMOVE_WATCHLIST:
                         trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
-                
+
                 # update library
                 trakt_api.traktRequest("sync/collection", data, method='POST')
-                
+
             except (traktException, traktAuthException, traktServerBusy) as e:
                 logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
 
-    def update_watchlist (self, show_obj = None, s = None, e = None, data_show = None, data_episode = None, update = "add"):
-
+    def update_watchlist(self, show_obj=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
         """
         Sends a request to trakt indicating that the given episode is part of our library.
 
@@ -117,7 +118,7 @@ class TraktNotifier:
                                 'ids': {},
                             }
                         ]
-                     }
+                    }
 
                     if trakt_id == 'tvdb_id':
                         data['shows'][0]['ids']['tvdb'] = show_obj.indexerid
@@ -126,7 +127,9 @@ class TraktNotifier:
                 elif data_show is not None:
                     data.update(data_show)
                 else:
-                    logger.log(u"there's a coding problem contact developer. It's needed to be provided at lest one of the two: data_show or show_obj", logger.WARNING)
+                    logger.log(
+                        u"there's a coding problem contact developer. It's needed to be provided at lest one of the two: data_show or show_obj",
+                        logger.WARNING)
                     return False
 
                 if data_episode is not None:
@@ -140,7 +143,7 @@ class TraktNotifier:
                                 'number': s,
                             }
                         ]
-                     }
+                    }
 
                     if e is not None:
                         # traktv URL parameters
@@ -150,14 +153,14 @@ class TraktNotifier:
                                     'number': e
                                 }
                             ]
-                         }
+                        }
 
                         season['season'][0].update(episode)
-                    
+
                     data['shows'][0].update(season)
 
                 trakt_url = "sync/watchlist"
-                if update=="remove":
+                if update == "remove":
                     trakt_url += "/remove"
 
                 trakt_api.traktRequest(trakt_url, data, method='POST')
@@ -192,7 +195,7 @@ class TraktNotifier:
             if season not in uniqueSeasons:
                 uniqueSeasons.append(season)
 
-        #build the query
+        # build the query
         seasonsList = []
         for searchedSeason in uniqueSeasons:
             episodesList = []

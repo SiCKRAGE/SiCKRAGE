@@ -33,6 +33,7 @@ import xml.etree.cElementTree as etree
 
 
 class WDTVMetadata(generic.GenericMetadata):
+
     """
     Metadata generation class for WDTV
 
@@ -192,9 +193,9 @@ class WDTVMetadata(generic.GenericMetadata):
 
             t = sickbeard.indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
-        except sickbeard.indexer_shownotfound, e:
+        except sickbeard.indexer_shownotfound as e:
             raise exceptions.ShowNotFoundException(e.message)
-        except sickbeard.indexer_error, e:
+        except sickbeard.indexer_error as e:
             logger.log(u"Unable to connect to " + sickbeard.indexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - " + ex(e), logger.ERROR)
             return False
@@ -235,7 +236,7 @@ class WDTVMetadata(generic.GenericMetadata):
                 seriesName.text = myShow["seriesname"]
 
             episodeName = etree.SubElement(episode, "episode_name")
-            if curEpToWrite.name != None:
+            if curEpToWrite.name is not None:
                 episodeName.text = curEpToWrite.name
 
             seasonNumber = etree.SubElement(episode, "season_number")
@@ -285,7 +286,7 @@ class WDTVMetadata(generic.GenericMetadata):
                         cur_actor_role.text = actor['role']
 
             overview = etree.SubElement(episode, "overview")
-            if curEpToWrite.description != None:
+            if curEpToWrite.description is not None:
                 overview.text = curEpToWrite.description
 
             # Make it purdy

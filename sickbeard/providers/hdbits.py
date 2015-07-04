@@ -30,6 +30,7 @@ except ImportError:
 
 
 class HDBitsProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "HDBits")
@@ -47,7 +48,7 @@ class HDBitsProvider(generic.TorrentProvider):
                      'search': 'https://hdbits.org/api/torrents',
                      'rss': 'https://hdbits.org/api/torrents',
                      'download': 'https://hdbits.org/download.php?'
-        }
+                     }
 
         self.url = self.urls['base_url']
 
@@ -193,6 +194,7 @@ class HDBitsProvider(generic.TorrentProvider):
 
 
 class HDBitsCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

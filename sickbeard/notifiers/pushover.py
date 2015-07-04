@@ -18,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 import httplib
-import urllib, urllib2
+import urllib
+import urllib2
 import time
 
 import sickbeard
@@ -30,24 +31,25 @@ API_URL = "https://api.pushover.net/1/messages.json"
 
 
 class PushoverNotifier:
+
     def test_notify(self, userKey=None, apiKey=None):
         return self._notifyPushover("This is a test notification from SickRage", 'Test', userKey, apiKey, force=True)
 
     def _sendPushover(self, msg, title, userKey=None, apiKey=None):
         """
         Sends a pushover notification to the address provided
-        
+
         msg: The message to send (unicode)
         title: The title of the message
         userKey: The pushover user id to send the message to (or to subscribe with)
-        
+
         returns: True if the message succeeded, False otherwise
         """
 
-        if userKey == None:
+        if userKey is None:
             userKey = sickbeard.PUSHOVER_USERKEY
 
-        if apiKey == None:
+        if apiKey is None:
             apiKey = sickbeard.PUSHOVER_APIKEY
 
         logger.log("Pushover API KEY in use: " + apiKey, logger.DEBUG)
@@ -69,7 +71,7 @@ class PushoverNotifier:
                              "expire": 3600,
                          }), {"Content-type": "application/x-www-form-urlencoded"})
 
-        except urllib2.HTTPError, e:
+        except urllib2.HTTPError as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
             if not hasattr(e, 'code'):
                 logger.log("Pushover notification failed." + ex(e), logger.ERROR)
@@ -85,7 +87,7 @@ class PushoverNotifier:
             # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
             elif e.code == 401:
 
-                #HTTP status 401 if the user doesn't have the service added
+                # HTTP status 401 if the user doesn't have the service added
                 subscribeNote = self._sendPushover(msg, title, userKey, apiKey)
                 if subscribeNote:
                     logger.log("Subscription send", logger.DEBUG)
@@ -111,7 +113,6 @@ class PushoverNotifier:
         if sickbeard.PUSHOVER_NOTIFY_ONSNATCH:
             self._notifyPushover(title, ep_name)
 
-
     def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
         if sickbeard.PUSHOVER_NOTIFY_ONDOWNLOAD:
             self._notifyPushover(title, ep_name)
@@ -119,12 +120,12 @@ class PushoverNotifier:
     def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyPushover(title, ep_name + ": " + lang)
-            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_PUSHOVER:
-            update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title=notifyStrings[NOTIFY_GIT_UPDATE]
-            self._notifyPushover(title, update_text + new_version) 
+            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
+            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            self._notifyPushover(title, update_text + new_version)
 
     def _notifyPushover(self, title, message, userKey=None, apiKey=None, force=False):
         """
@@ -132,7 +133,7 @@ class PushoverNotifier:
 
         title: The title of the notification to send
         message: The message string to send
-        userKey: The userKey to send the notification to 
+        userKey: The userKey to send the notification to
         force: Enforce sending, for instance for testing
         """
 

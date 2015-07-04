@@ -26,6 +26,7 @@ from sickbeard.exceptions import AuthException
 
 
 class WombleProvider(generic.NZBProvider):
+
     def __init__(self):
         generic.NZBProvider.__init__(self, "Womble's Index")
         self.enabled = False
@@ -38,6 +39,7 @@ class WombleProvider(generic.NZBProvider):
 
 
 class WombleCache(tvcache.TVCache):
+
     def __init__(self, provider):
         tvcache.TVCache.__init__(self, provider)
         # only poll Womble's Index every 15 minutes max
@@ -74,4 +76,3 @@ class WombleCache(tvcache.TVCache):
         return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None
 
 provider = WombleProvider()
-

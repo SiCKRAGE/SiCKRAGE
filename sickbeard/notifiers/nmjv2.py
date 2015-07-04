@@ -17,7 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2, xml.dom.minidom
+import urllib
+import urllib2
+import xml.dom.minidom
 from xml.dom.minidom import parseString
 import sickbeard
 import telnetlib
@@ -33,16 +35,17 @@ except ImportError:
 
 
 class NMJv2Notifier:
+
     def notify_snatch(self, ep_name):
         return False
-        #Not implemented: Start the scanner when snatched does not make any sense
+        # Not implemented: Start the scanner when snatched does not make any sense
 
     def notify_download(self, ep_name):
         self._notifyNMJ()
 
     def notify_subtitle_download(self, ep_name, lang):
         self._notifyNMJ()
-        
+
     def notify_git_update(self, new_version):
         return False
         # Not implemented, no reason to start scanner.
@@ -53,22 +56,23 @@ class NMJv2Notifier:
     def notify_settings(self, host, dbloc, instance):
         """
         Retrieves the NMJv2 database location from Popcorn hour
-        
+
         host: The hostname/IP of the Popcorn Hour server
         dbloc: 'local' for PCH internal harddrive. 'network' for PCH network shares
         instance: Allows for selection of different DB in case of multiple databases
-        
+
         Returns: True if the settings were retrieved successfully, False otherwise
         """
         try:
-            url_loc = "http://" + host + ":8008/file_operation?arg0=list_user_storage_file&arg1=&arg2=" + instance + "&arg3=20&arg4=true&arg5=true&arg6=true&arg7=all&arg8=name_asc&arg9=false&arg10=false"
+            url_loc = "http://" + host + ":8008/file_operation?arg0=list_user_storage_file&arg1=&arg2=" + \
+                instance + "&arg3=20&arg4=true&arg5=true&arg6=true&arg7=all&arg8=name_asc&arg9=false&arg10=false"
             req = urllib2.Request(url_loc)
             handle1 = urllib2.urlopen(req)
             response1 = handle1.read()
             xml = parseString(response1)
             time.sleep(300.0 / 1000.0)
             for node in xml.getElementsByTagName('path'):
-                xmlTag = node.toxml();
+                xmlTag = node.toxml()
                 xmlData = xmlTag.replace('<path>', '').replace('</path>', '').replace('[=]', '')
                 url_db = "http://" + host + ":8008/metadata_database?arg0=check_database&arg1=" + xmlData
                 reqdb = urllib2.Request(url_db)
@@ -90,7 +94,7 @@ class NMJv2Notifier:
                         sickbeard.NMJv2_DATABASE = DB_path
                         return True
 
-        except IOError, e:
+        except IOError as e:
             logger.log(u"Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e), logger.WARNING)
             return False
         return False
@@ -98,15 +102,15 @@ class NMJv2Notifier:
     def _sendNMJ(self, host):
         """
         Sends a NMJ update command to the specified machine
-        
+
         host: The hostname/IP to send the request to (no port)
         database: The database to send the requst to
         mount: The mount URL to use (optional)
-        
+
         Returns: True if the request succeeded, False otherwise
         """
 
-        #if a host is provided then attempt to open a handle to that URL
+        # if a host is provided then attempt to open a handle to that URL
         try:
             url_scandir = "http://" + host + ":8008/metadata_database?arg0=update_scandir&arg1=" + sickbeard.NMJv2_DATABASE + "&arg2=&arg3=update_all"
             logger.log(u"NMJ scan update command sent to host: %s" % (host), logger.DEBUG)
@@ -119,19 +123,19 @@ class NMJv2Notifier:
             time.sleep(300.0 / 1000.0)
             handle2 = urllib2.urlopen(req)
             response2 = handle2.read()
-        except IOError, e:
+        except IOError as e:
             logger.log(u"Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e), logger.WARNING)
             return False
         try:
             et = etree.fromstring(response1)
             result1 = et.findtext("returnValue")
-        except SyntaxError, e:
+        except SyntaxError as e:
             logger.log(u"Unable to parse XML returned from the Popcorn Hour: update_scandir, %s" % (e), logger.ERROR)
             return False
         try:
             et = etree.fromstring(response2)
             result2 = et.findtext("returnValue")
-        except SyntaxError, e:
+        except SyntaxError as e:
             logger.log(u"Unable to parse XML returned from the Popcorn Hour: scanner_start, %s" % (e), logger.ERROR)
             return False
 
@@ -160,7 +164,7 @@ class NMJv2Notifier:
     def _notifyNMJ(self, host=None, force=False):
         """
         Sends a NMJ update command based on the SB config settings
-        
+
         host: The host to send the command to (optional, defaults to the host in the config)
         database: The database to use (optional, defaults to the database in the config)
         mount: The mount URL (optional, defaults to the mount URL in the config)

@@ -26,7 +26,9 @@ from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard.exceptions import AuthException
 
+
 class BinSearchProvider(generic.NZBProvider):
+
     def __init__(self):
         generic.NZBProvider.__init__(self, "BinSearch")
         self.enabled = False
@@ -37,7 +39,9 @@ class BinSearchProvider(generic.NZBProvider):
     def isEnabled(self):
         return self.enabled
 
+
 class BinSearchCache(tvcache.TVCache):
+
     def __init__(self, provider):
         tvcache.TVCache.__init__(self, provider)
         # only poll Binsearch every 30 minutes max
@@ -96,9 +100,10 @@ class BinSearchCache(tvcache.TVCache):
         self.setLastUpdate()
 
         cl = []
-        for group in ['alt.binaries.boneless','alt.binaries.misc','alt.binaries.hdtv','alt.binaries.hdtv.x264','alt.binaries.tv','alt.binaries.tvseries','alt.binaries.teevee']:
+        for group in ['alt.binaries.boneless', 'alt.binaries.misc', 'alt.binaries.hdtv',
+                      'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries', 'alt.binaries.teevee']:
             url = self.provider.url + 'rss.php?'
-            urlArgs = {'max': 1000,'g': group}
+            urlArgs = {'max': 1000, 'g': group}
 
             url += urllib.urlencode(urlArgs)
 

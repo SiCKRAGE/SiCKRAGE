@@ -48,11 +48,13 @@ censoredItems = {}
 
 
 class NullHandler(logging.Handler):
+
     def emit(self, record):
         pass
 
 
 class CensoredFormatter(logging.Formatter, object):
+
     def __init__(self, *args, **kwargs):
         super(CensoredFormatter, self).__init__(*args, **kwargs)
 
@@ -62,11 +64,12 @@ class CensoredFormatter(logging.Formatter, object):
             if v and len(v) > 0 and v in msg:
                 msg = msg.replace(v, len(v) * '*')
         # Needed because Newznab apikey isn't stored as key=value in a section.
-        msg = re.sub(r'([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)',r'\1=**********\2', msg)
+        msg = re.sub(r'([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)', r'\1=**********\2', msg)
         return msg
 
 
 class Logger(object):
+
     def __init__(self):
         self.logger = logging.getLogger('sickrage')
 
@@ -123,11 +126,11 @@ class Logger(object):
 
             for logger in self.loggers:
                 logger.addHandler(rfh)
-                
+
     def shutdown(self):
-        
+
         logging.shutdown()
-        
+
     def log(self, msg, level=INFO, *args, **kwargs):
         meThread = threading.currentThread().getName()
         message = meThread + u" :: " + msg
@@ -135,8 +138,11 @@ class Logger(object):
         # pass exception information if debugging enabled
 
         if level == ERROR:
-            #Replace the SSL error with a link to information about how to fix it.
-            message = re.sub(r'error \[Errno 1\] _ssl.c:\d{3}: error:\d{8}:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error', r'See: http://git.io/vJrkM', message)
+            # Replace the SSL error with a link to information about how to fix it.
+            message = re.sub(
+                r'error \[Errno 1\] _ssl.c:\d{3}: error:\d{8}:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error',
+                r'See: http://git.io/vJrkM',
+                message)
             self.logger.exception(message, *args, **kwargs)
             classes.ErrorViewer.add(classes.UIError(message))
 
@@ -175,17 +181,17 @@ class Logger(object):
             if os.path.isfile(self.logFile):
                 with ek.ek(codecs.open, *[self.logFile, 'r', 'utf-8']) as f:
                     log_data = f.readlines()
-                    
-            for i in range (1 , int(sickbeard.LOG_NR)):
+
+            for i in range(1, int(sickbeard.LOG_NR)):
                 if os.path.isfile(self.logFile + "." + str(i)) and (len(log_data) <= 500):
                     with ek.ek(codecs.open, *[self.logFile + "." + str(i), 'r', 'utf-8']) as f:
-                            log_data += f.readlines()
+                        log_data += f.readlines()
 
             log_data = [line for line in reversed(log_data)]
 
             # parse and submit errors to issue tracker
             for curError in sorted(classes.ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
-                #Skip SSL Error, we pointed them to a URL.
+                # Skip SSL Error, we pointed them to a URL.
                 if re.search('http://git.io/vJrkM', curError.message):
                     classes.ErrorViewer.errors.remove(curError)
                     continue
@@ -207,7 +213,7 @@ class Logger(object):
                     if match:
                         level = match.group(2)
                         if reverseNames[level] == ERROR:
-                            paste_data = "".join(log_data[i:i+50])
+                            paste_data = "".join(log_data[i:i + 50])
                             if paste_data:
                                 gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
                             break
@@ -215,13 +221,13 @@ class Logger(object):
                         gist = 'No ERROR found'
 
                 message = u"### INFO\n"
-                message += u"Python Version: **" + sys.version[:120].replace('\n','') + "**\n"
+                message += u"Python Version: **" + sys.version[:120].replace('\n', '') + "**\n"
                 message += u"Operating System: **" + platform.platform() + "**\n"
                 if not 'Windows' in platform.platform():
                     try:
                         message += u"Locale: " + locale.getdefaultlocale()[1] + "\n"
                     except:
-                        message += u"Locale: unknown" + "\n"                        
+                        message += u"Locale: unknown" + "\n"
                 message += u"Branch: **" + sickbeard.BRANCH + "**\n"
                 message += u"Commit: SiCKRAGETV/SickRage@" + sickbeard.CUR_COMMIT_HASH + "\n"
                 if gist and gist != 'No ERROR found':
@@ -245,7 +251,7 @@ class Logger(object):
                         comment = report.create_comment(message)
                         if comment:
                             issue_id = report.number
-                            self.log('Commented on existing issue #%s successfully!'  % issue_id )
+                            self.log('Commented on existing issue #%s successfully!' % issue_id)
                             issue_found = True
                         break
 
@@ -253,7 +259,7 @@ class Logger(object):
                     issue = gh.get_organization(gh_org).get_repo(gh_repo).create_issue(title_Error, message)
                     if issue:
                         issue_id = issue.number
-                        self.log('Your issue ticket #%s was submitted successfully!'  % issue_id )
+                        self.log('Your issue ticket #%s was submitted successfully!' % issue_id)
 
                 # clear error from error list
                 classes.ErrorViewer.errors.remove(curError)
@@ -264,6 +270,7 @@ class Logger(object):
             self.log(sickbeard.exceptions.ex(e), ERROR)
 
         self.submitter_running = False
+
 
 class Wrapper(object):
     instance = Logger()

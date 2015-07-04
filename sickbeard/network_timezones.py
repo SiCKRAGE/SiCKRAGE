@@ -179,7 +179,7 @@ def update_network_dict():
     # list of sql commands to update the network_timezones table
     cl = []
     for cur_d, cur_t in d.iteritems():
-        h_k = old_d.has_key(cur_d)
+        h_k = cur_d in old_d
         if h_k and cur_t != old_d[cur_d]:
             # update old record
             cl.append(

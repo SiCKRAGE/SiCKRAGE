@@ -60,14 +60,14 @@ class SCCProvider(generic.TorrentProvider):
         self.cache = SCCCache(self)
 
         self.urls = {'base_url': 'https://sceneaccess.eu',
-                'login': 'https://sceneaccess.eu/login',
-                'detail': 'https://www.sceneaccess.eu/details?id=%s',
-                'search': 'https://sceneaccess.eu/browse?search=%s&method=1&%s',
-                'nonscene': 'https://sceneaccess.eu/nonscene?search=%s&method=1&c44=44&c45=44',
-                'foreign': 'https://sceneaccess.eu/foreign?search=%s&method=1&c34=34&c33=33',
-                'archive': 'https://sceneaccess.eu/archive?search=%s&method=1&c26=26',
-                'download': 'https://www.sceneaccess.eu/%s',
-                }
+                     'login': 'https://sceneaccess.eu/login',
+                     'detail': 'https://www.sceneaccess.eu/details?id=%s',
+                     'search': 'https://sceneaccess.eu/browse?search=%s&method=1&%s',
+                     'nonscene': 'https://sceneaccess.eu/nonscene?search=%s&method=1&c44=44&c45=44',
+                     'foreign': 'https://sceneaccess.eu/foreign?search=%s&method=1&c34=34&c33=33',
+                     'archive': 'https://sceneaccess.eu/archive?search=%s&method=1&c26=26',
+                     'download': 'https://www.sceneaccess.eu/%s',
+                     }
 
         self.url = self.urls['base_url']
 
@@ -89,14 +89,14 @@ class SCCProvider(generic.TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password,
                         'submit': 'come on in',
-        }
+                        }
 
         self.session = requests.Session()
 
         try:
             from lib import certifi
             response = self.session.post(self.urls['login'], data=login_params, headers=self.headers, timeout=30)
-        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
 
@@ -135,13 +135,13 @@ class SCCProvider(generic.TorrentProvider):
                 ep_string = sanitizeSceneName(show_name) + ' ' + str(ep_obj.airdate).replace('-', '.')
             elif self.show.sports:
                 ep_string = sanitizeSceneName(show_name) + ' ' + str(ep_obj.airdate).replace('-', '.') + '|' + \
-                        ep_obj.airdate.strftime('%b')
+                    ep_obj.airdate.strftime('%b')
             elif self.show.anime:
                 ep_string = sanitizeSceneName(show_name) + ' %i' % int(ep_obj.scene_absolute_number)
             else:
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                        sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode}
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode}
 
             if len(add_string):
                 ep_string += ' %s' % add_string
@@ -189,7 +189,7 @@ class SCCProvider(generic.TorrentProvider):
                     torrent_table = html.find('table', attrs={'id': 'torrents-table'})
                     torrent_rows = torrent_table.find_all('tr') if torrent_table else []
 
-                    #Continue only if at least one Release is found
+                    # Continue only if at least one Release is found
                     if len(torrent_rows) < 2:
                         info = u'The Data returned from %s does not contain any torrent' % self.name
                         if html.title:
@@ -225,7 +225,7 @@ class SCCProvider(generic.TorrentProvider):
                             continue
 
                         item = title, download_url, id, seeders, leechers
-                        logger.log(u"Found result: " + title.replace(' ','.') + " (" + searchURL + ")", logger.DEBUG)
+                        logger.log(u"Found result: " + title.replace(' ', '.') + " (" + searchURL + ")", logger.DEBUG)
 
                         results.append(item)
 
@@ -279,6 +279,7 @@ class SCCProvider(generic.TorrentProvider):
 
 
 class SCCCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

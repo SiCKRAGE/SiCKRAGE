@@ -19,6 +19,7 @@
 import sickbeard
 from sickbeard import db, logger, helpers
 
+
 class BlackAndWhiteList(object):
     blacklist = []
     whitelist = []
@@ -33,11 +34,11 @@ class BlackAndWhiteList(object):
         logger.log(u'Building black and white list for ' + str(self.show_id), logger.DEBUG)
         self.blacklist = self._load_list('blacklist')
         self.whitelist = self._load_list('whitelist')
-        
+
     def _add_keywords(self, table, values):
         myDB = db.DBConnection()
         for value in values:
-            myDB.action('INSERT INTO [' + table + '] (show_id, keyword) VALUES (?,?)', [self.show_id, value]) 
+            myDB.action('INSERT INTO [' + table + '] (show_id, keyword) VALUES (?,?)', [self.show_id, value])
 
     def set_black_keywords(self, values):
         self._del_all_keywords('blacklist')
@@ -49,12 +50,12 @@ class BlackAndWhiteList(object):
         self._del_all_keywords('whitelist')
         self._add_keywords('whitelist', values)
         self.whitelist = values
-        logger.log('Whitelist set to: %s' % self.whitelist, logger.DEBUG)            
+        logger.log('Whitelist set to: %s' % self.whitelist, logger.DEBUG)
 
     def _del_all_keywords(self, table):
         myDB = db.DBConnection()
-        myDB.action('DELETE FROM [' + table + '] WHERE show_id = ?', [self.show_id])        
-        
+        myDB.action('DELETE FROM [' + table + '] WHERE show_id = ?', [self.show_id])
+
     def _load_list(self, table):
         myDB = db.DBConnection()
         sqlResults = myDB.select('SELECT keyword FROM [' + table + '] WHERE show_id = ?', [self.show_id])
@@ -63,7 +64,7 @@ class BlackAndWhiteList(object):
         groups = []
         for result in sqlResults:
             groups.append(result["keyword"])
-            
+
         logger.log('BWL: ' + str(self.show_id) + ' loaded keywords from ' + table + ': ' + str(groups), logger.DEBUG)
         return groups
 
@@ -86,15 +87,18 @@ class BlackAndWhiteList(object):
             logger.log('Whitelist check passed: %s. Blacklist check passed: %s' % (white_result, black_result), logger.DEBUG)
 
             if white_result and black_result:
-                 return True 
+                return True
             else:
-                 return False
+                return False
         else:
             logger.log('No Whitelist and  Blacklist defined, check passed.', logger.DEBUG)
-            return True 
-             
+            return True
+
+
 class BlackWhitelistNoShowIDException(Exception):
+
     'No show_id was given'
+
 
 def short_group_names(groups):
     groups = groups.split(",")
@@ -106,7 +110,7 @@ def short_group_names(groups):
                 if line["shortname"]:
                     shortGroupList.append(line["shortname"])
                 else:
-                    if not groupName in shortGroupList:
+                    if groupName not in shortGroupList:
                         shortGroupList.append(groupName)
     else:
         shortGroupList = groups

@@ -38,6 +38,7 @@ from name_parser.parser import NameParser, InvalidNameException, InvalidShowExce
 
 
 class ProperFinder():
+
     def __init__(self):
         self.amActive = False
 
@@ -80,10 +81,10 @@ class ProperFinder():
 
             try:
                 curPropers = curProvider.findPropers(search_date)
-            except exceptions.AuthException, e:
+            except exceptions.AuthException as e:
                 logger.log(u"Authentication error: " + ex(e), logger.ERROR)
                 continue
-            except Exception, e:
+            except Exception as e:
                 logger.log(u"Error while searching " + curProvider.name + ", skipping: " + ex(e), logger.ERROR)
                 logger.log(traceback.format_exc(), logger.DEBUG)
                 continue
@@ -93,7 +94,7 @@ class ProperFinder():
             # if they haven't been added by a different provider than add the proper to the list
             for x in curPropers:
                 name = self._genericName(x.name)
-                if not name in propers:
+                if name not in propers:
                     logger.log(u"Found new proper: " + x.name, logger.DEBUG)
                     x.provider = curProvider
                     propers[name] = x
@@ -183,7 +184,11 @@ class ProperFinder():
                     continue
 
                 if oldRelease_group != bestResult.release_group:
-                    logger.log("Skipping proper from release group: " + bestResult.release_group + ", does not match existing release group: " + oldRelease_group)
+                    logger.log(
+                        "Skipping proper from release group: " +
+                        bestResult.release_group +
+                        ", does not match existing release group: " +
+                        oldRelease_group)
                     continue
 
             # if the show is in our list and there hasn't been a proper already added for that particular episode then add it to our list of propers

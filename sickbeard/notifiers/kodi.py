@@ -223,7 +223,7 @@ class KODINotifier:
             return False
 
         for key in command:
-            if type(command[key]) == unicode:
+            if isinstance(command[key], unicode):
                 command[key] = command[key].encode('utf-8')
 
         enc_command = urllib.urlencode(command)
@@ -305,7 +305,7 @@ class KODINotifier:
             encSqlXML = urllib.quote(sqlXML, ':\\/<>')
             try:
                 et = etree.fromstring(encSqlXML)
-            except SyntaxError, e:
+            except SyntaxError as e:
                 logger.log(u"Unable to parse XML returned from KODI: " + ex(e), logger.ERROR)
                 return False
 
@@ -386,7 +386,7 @@ class KODINotifier:
 
             try:
                 response = urllib2.urlopen(req)
-            except (httplib.BadStatusLine, urllib2.URLError), e:
+            except (httplib.BadStatusLine, urllib2.URLError) as e:
                 logger.log(u"Error while trying to retrieve KODI API version for " + host + ": " + ex(e),
                            logger.WARNING)
                 return False
@@ -397,11 +397,11 @@ class KODINotifier:
                 response.close()
                 logger.log(u"KODI JSON response: " + str(result), logger.DEBUG)
                 return result  # need to return response for parsing
-            except ValueError, e:
-                logger.log(u"Unable to decode JSON: " +  str(response.read()), logger.WARNING)
+            except ValueError as e:
+                logger.log(u"Unable to decode JSON: " + str(response.read()), logger.WARNING)
                 return False
 
-        except IOError, e:
+        except IOError as e:
             logger.log(u"Warning: Couldn't contact KODI JSON API at " + ek.ss(url) + " " + ex(e),
                        logger.WARNING)
             return False
@@ -471,7 +471,6 @@ class KODINotifier:
                 logger.log(u'Exact show name not matched in KODI TV show list', logger.DEBUG)
                 return False
 
-
             # lookup tv-show path if we don't already know it
             if not len(path):
                 pathCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.GetTVShowDetails","params":{"tvshowid":%d, "properties": ["file"]},"id":1}' % (
@@ -532,11 +531,11 @@ class KODINotifier:
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.KODI_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify_kodi(ep_name + ": " + lang, common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD])
-            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_KODI:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._notify_kodi(update_text + new_version, title)
 
     def test_notify(self, host, username, password):

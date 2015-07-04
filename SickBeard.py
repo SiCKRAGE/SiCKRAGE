@@ -78,8 +78,8 @@ else:
                 raise ImportError
         except ImportError:
             print('\nSNI is disabled with pyOpenSSL >= 0.14 when the cryptography module is missing,\n' +
-                    'you will encounter SSL errors with HTTPS! To fix this issue:\n' +
-                    'pip install pyopenssl==0.13.1 (easy) or pip install cryptography (pita)')
+                  'you will encounter SSL errors with HTTPS! To fix this issue:\n' +
+                  'pip install pyopenssl==0.13.1 (easy) or pip install cryptography (pita)')
 
 
 import locale
@@ -102,6 +102,7 @@ signal.signal(signal.SIGTERM, sickbeard.sig_handler)
 
 
 class SickRage(object):
+
     def __init__(self):
         # system event callback for shutdown/restart
         sickbeard.events = Events(self.shutdown)
@@ -170,7 +171,7 @@ class SickRage(object):
 
         if not hasattr(sys, "setdefaultencoding"):
             reload(sys)
-  
+
         if sys.platform == 'win32':
             if sys.getwindowsversion()[0] >= 6 and sys.stdout.encoding == 'cp65001':
                 sickbeard.SYS_ENCODING = 'UTF-8'
@@ -275,8 +276,8 @@ class SickRage(object):
         # Make sure that we can create the data dir
         if not os.access(sickbeard.DATA_DIR, os.F_OK):
             try:
-                os.makedirs(sickbeard.DATA_DIR, 0744)
-            except os.error, e:
+                os.makedirs(sickbeard.DATA_DIR, 0o744)
+            except os.error as e:
                 raise SystemExit("Unable to create datadir '" + sickbeard.DATA_DIR + "'")
 
         # Make sure we can write to the data dir
@@ -402,7 +403,7 @@ class SickRage(object):
             pid = os.fork()  # @UndefinedVariable - only available in UNIX
             if pid != 0:
                 os._exit(0)
-        except OSError, e:
+        except OSError as e:
             sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
 
@@ -417,7 +418,7 @@ class SickRage(object):
             pid = os.fork()  # @UndefinedVariable - only available in UNIX
             if pid != 0:
                 os._exit(0)
-        except OSError, e:
+        except OSError as e:
             sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
 
@@ -427,7 +428,7 @@ class SickRage(object):
             logger.log(u"Writing PID: " + pid + " to " + str(self.PIDFILE))
             try:
                 file(self.PIDFILE, 'w').write("%s\n" % pid)
-            except IOError, e:
+            except IOError as e:
                 logger.log_error_and_exit(
                     u"Unable to write PID file: " + self.PIDFILE + " Error: " + str(e.strerror) + " [" + str(
                         e.errno) + "]")
@@ -470,7 +471,7 @@ class SickRage(object):
                 curShow = TVShow(int(sqlShow["indexer"]), int(sqlShow["indexer_id"]))
                 curShow.nextEpisode()
                 sickbeard.showList.append(curShow)
-            except Exception, e:
+            except Exception as e:
                 logger.log(
                     u"There was an error creating the show in " + sqlShow["location"] + ": " + str(e).decode('utf-8'),
                     logger.ERROR)
@@ -536,11 +537,11 @@ class SickRage(object):
                     if '--nolaunch' not in popen_list:
                         popen_list += ['--nolaunch']
                     logger.log(u"Restarting SickRage with " + str(popen_list))
-                    logger.shutdown() #shutdown the logger to make sure it's released the logfile BEFORE it restarts SR.
+                    logger.shutdown()  # shutdown the logger to make sure it's released the logfile BEFORE it restarts SR.
                     subprocess.Popen(popen_list, cwd=os.getcwd())
 
         # system exit
-        logger.shutdown() #Make sure the logger has stopped, just in case
+        logger.shutdown()  # Make sure the logger has stopped, just in case
         os._exit(0)
 
 

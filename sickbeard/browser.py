@@ -34,12 +34,14 @@ if os.name == 'nt':
     from ctypes import windll
 
 # adapted from http://stackoverflow.com/questions/827371/is-there-a-way-to-list-all-the-available-drive-letters-in-python/827490
+
+
 def getWinDrives():
     """ Return list of detected drives """
     assert os.name == 'nt'
 
     drives = []
-    bitmask = windll.kernel32.GetLogicalDrives()  #@UndefinedVariable
+    bitmask = windll.kernel32.GetLogicalDrives()  # @UndefinedVariable
     for letter in string.uppercase:
         if bitmask & 1:
             drives.append(letter)
@@ -82,7 +84,7 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
 
     try:
         fileList = [{'name': filename, 'path': ek.ek(os.path.join, path, filename)} for filename in ek.ek(os.listdir, path)]
-    except OSError, e:
+    except OSError as e:
         logger.log(u"Unable to open " + path + ": " + repr(e) + " / " + str(e), logger.WARNING)
         fileList = [{'name': filename, 'path': ek.ek(os.path.join, parentPath, filename)} for filename in ek.ek(os.listdir, parentPath)]
 

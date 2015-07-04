@@ -36,6 +36,7 @@ from sickbeard.exceptions import ex
 
 
 class EmailNotifier:
+
     def __init__(self):
         self.last_err = None
 
@@ -64,12 +65,18 @@ class EmailNotifier:
             else:
                 try:
                     msg = MIMEMultipart('alternative')
-                    msg.attach(MIMEText(
-                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - Snatched</h3>\n<p>Show: <b>" + re.search(
-                            "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
-                            ".+ - (.+?-.+) -.+", ep_name).group(
-                            1) + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
-                        'html'))
+                    msg.attach(
+                        MIMEText(
+                            "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - Snatched</h3>\n<p>Show: <b>" +
+                            re.search(
+                                "(.+?) -.+",
+                                ep_name).group(1) +
+                            "</b></p>\n<p>Episode: <b>" +
+                            re.search(
+                                ".+ - (.+?-.+) -.+",
+                                ep_name).group(1) +
+                            "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
+                            'html'))
                 except:
                     try:
                         msg = MIMEText(ep_name)
@@ -89,7 +96,7 @@ class EmailNotifier:
     def notify_download(self, ep_name, title="Completed:"):
         """
         Send a notification that an episode was downloaded
-        
+
         ep_name: The name of the episode that was downloaded
         title: The title of the notification (optional)
         """
@@ -103,12 +110,18 @@ class EmailNotifier:
             else:
                 try:
                     msg = MIMEMultipart('alternative')
-                    msg.attach(MIMEText(
-                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - Downloaded</h3>\n<p>Show: <b>" + re.search(
-                            "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
-                            ".+ - (.+?-.+) -.+", ep_name).group(
-                            1) + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
-                        'html'))
+                    msg.attach(
+                        MIMEText(
+                            "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - Downloaded</h3>\n<p>Show: <b>" +
+                            re.search(
+                                "(.+?) -.+",
+                                ep_name).group(1) +
+                            "</b></p>\n<p>Episode: <b>" +
+                            re.search(
+                                ".+ - (.+?-.+) -.+",
+                                ep_name).group(1) +
+                            "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
+                            'html'))
                 except:
                     try:
                         msg = MIMEText(ep_name)
@@ -128,7 +141,7 @@ class EmailNotifier:
     def notify_subtitle_download(self, ep_name, lang, title="Downloaded subtitle:"):
         """
         Send a notification that an subtitle was downloaded
-        
+
         ep_name: The name of the episode that was downloaded
         lang: Subtitle language wanted
         """
@@ -142,12 +155,20 @@ class EmailNotifier:
             else:
                 try:
                     msg = MIMEMultipart('alternative')
-                    msg.attach(MIMEText(
-                        "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - Subtitle Downloaded</h3>\n<p>Show: <b>" + re.search(
-                            "(.+?) -.+", ep_name).group(1) + "</b></p>\n<p>Episode: <b>" + re.search(
-                            ".+ - (.+?-.+) -.+", ep_name).group(
-                            1) + "</b></p>\n<p>Language: <b>" + lang + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
-                        'html'))
+                    msg.attach(
+                        MIMEText(
+                            "<body style='font-family:Helvetica, Arial, sans-serif;'><h3>SickRage Notification - Subtitle Downloaded</h3>\n<p>Show: <b>" +
+                            re.search(
+                                "(.+?) -.+",
+                                ep_name).group(1) +
+                            "</b></p>\n<p>Episode: <b>" +
+                            re.search(
+                                ".+ - (.+?-.+) -.+",
+                                ep_name).group(1) +
+                            "</b></p>\n<p>Language: <b>" +
+                            lang +
+                            "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
+                            'html'))
                 except:
                     try:
                         msg = MIMEText(ep_name + ": " + lang)
@@ -162,7 +183,6 @@ class EmailNotifier:
                     logger.log("Download notification sent to [%s] for '%s'" % (to, ep_name), logger.DEBUG)
                 else:
                     logger.log("Download notification ERROR: %s" % self.last_err, logger.ERROR)
-
 
     def notify_git_update(self, new_version="??"):
         pass
@@ -197,14 +217,14 @@ class EmailNotifier:
             logger.log(u"Exception generated while sending e-mail: " + str(e), logger.ERROR)
             logger.log(traceback.format_exc(), logger.DEBUG)
             return False
-            
+
         if smtpDebug:
             srv.set_debuglevel(1)
         try:
-            if (use_tls == '1' or use_tls == True) or (len(user) > 0 and len(pwd) > 0):
+            if (use_tls == '1' or use_tls) or (len(user) > 0 and len(pwd) > 0):
                 srv.ehlo()
                 logger.log('Sent initial EHLO command!', logger.DEBUG)
-            if use_tls == '1' or use_tls == True:
+            if use_tls == '1' or use_tls:
                 srv.starttls()
                 logger.log('Sent STARTTLS command!', logger.DEBUG)
             if len(user) > 0 and len(pwd) > 0:

@@ -17,7 +17,6 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import os
 import subprocess
 
@@ -29,6 +28,7 @@ from sickbeard.exceptions import ex
 
 
 class synoIndexNotifier:
+
     def notify_snatch(self, ep_name):
         pass
 
@@ -37,7 +37,7 @@ class synoIndexNotifier:
 
     def notify_subtitle_download(self, ep_name, lang):
         pass
-        
+
     def notify_git_update(self, new_version):
         pass
 
@@ -56,9 +56,9 @@ class synoIndexNotifier:
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                      cwd=sickbeard.PROG_DIR)
-                out, err = p.communicate()  #@UnusedVariable
+                out, err = p.communicate()  # @UnusedVariable
                 logger.log(u"Script result: " + str(out), logger.DEBUG)
-            except OSError, e:
+            except OSError as e:
                 logger.log(u"Unable to run synoindex: " + ex(e), logger.ERROR)
 
     def deleteFolder(self, cur_path):
@@ -81,9 +81,9 @@ class synoIndexNotifier:
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                      cwd=sickbeard.PROG_DIR)
-                out, err = p.communicate()  #@UnusedVariable
+                out, err = p.communicate()  # @UnusedVariable
                 logger.log(u"Script result: " + str(out), logger.DEBUG)
-            except OSError, e:
+            except OSError as e:
                 logger.log(u"Unable to run synoindex: " + ex(e), logger.ERROR)
 
 

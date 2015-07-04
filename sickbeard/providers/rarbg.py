@@ -41,7 +41,7 @@ from sickbeard import classes
 from sickbeard.exceptions import ex
 from sickbeard.helpers import sanitizeSceneName
 from lib.requests.exceptions import RequestException
-from sickbeard.indexers.indexer_config import INDEXER_TVDB,INDEXER_TVRAGE
+from sickbeard.indexers.indexer_config import INDEXER_TVDB, INDEXER_TVRAGE
 
 
 class GetOutOfLoop(Exception):
@@ -75,23 +75,23 @@ class RarbgProvider(generic.TorrentProvider):
         self.url = self.urls['listing']
 
         self.urlOptions = {'categories': '&category={categories}',
-                        'seeders': '&min_seeders={min_seeders}',
-                        'leechers': '&min_leechers={min_leechers}',
-                        'sorting' : '&sort={sorting}',
-                        'limit': '&limit={limit}',
-                        'format': '&format={format}',
-                        'ranked': '&ranked={ranked}',
-                        'token': '&token={token}',
-        }
-        
+                           'seeders': '&min_seeders={min_seeders}',
+                           'leechers': '&min_leechers={min_leechers}',
+                           'sorting': '&sort={sorting}',
+                           'limit': '&limit={limit}',
+                           'format': '&format={format}',
+                           'ranked': '&ranked={ranked}',
+                           'token': '&token={token}',
+                           }
+
         self.defaultOptions = self.urlOptions['categories'].format(categories='tv') + \
-                                self.urlOptions['limit'].format(limit='100') + \
-                                self.urlOptions['format'].format(format='json')
+            self.urlOptions['limit'].format(limit='100') + \
+            self.urlOptions['format'].format(format='json')
 
         self.next_request = datetime.datetime.now()
 
         self.cache = RarbgCache(self)
-        
+
         self.headers = {'User-Agent': USER_AGENT}
 
     def isEnabled(self):
@@ -142,7 +142,7 @@ class RarbgProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName.SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName.SXX
 
             search_string['Season'].append(ep_string)
 
@@ -158,24 +158,24 @@ class RarbgProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                    str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode}
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode}
                 if add_string:
                     ep_string = ep_string + ' %s' % add_string
 
@@ -191,14 +191,14 @@ class RarbgProvider(generic.TorrentProvider):
         if not self._doLogin():
             return results
 
-        if epObj != None:
+        if epObj is not None:
             ep_indexerid = epObj.show.indexerid
             ep_indexer = epObj.show.indexer
         else:
             ep_indexerid = None
             ep_indexer = None
 
-        for mode in search_params.keys(): #Mode = RSS, Season, Episode
+        for mode in search_params.keys():  # Mode = RSS, Season, Episode
             for search_string in search_params[mode]:
                 if mode == 'RSS':
                     searchURL = self.urls['listing'] + self.defaultOptions
@@ -224,7 +224,7 @@ class RarbgProvider(generic.TorrentProvider):
 
                 if self.minseed:
                     searchURL += self.urlOptions['seeders'].format(min_seeders=int(self.minseed))
-                    
+
                 if self.sorting:
                     searchURL += self.urlOptions['sorting'].format(sorting=self.sorting)
 
@@ -283,7 +283,7 @@ class RarbgProvider(generic.TorrentProvider):
                             searchURL = searchURL.replace(u'https', 'http')
                             continue
 
-                        #No error found break
+                        # No error found break
                         break
                     else:
                         logger.log(u'{name} Retried 3 times without getting results.'.format(name=self.name), logger.DEBUG)
@@ -313,7 +313,11 @@ class RarbgProvider(generic.TorrentProvider):
                             else:
                                 logger.log(u'{name} skipping invalid result'.format(name=self.name), logger.DEBUG)
                         except Exception:
-                            logger.log(u'{name} skipping invalid result: {traceback_info}'.format(name=self.name, traceback_info=traceback.format_exc()), logger.DEBUG)
+                            logger.log(
+                                u'{name} skipping invalid result: {traceback_info}'.format(
+                                    name=self.name,
+                                    traceback_info=traceback.format_exc()),
+                                logger.DEBUG)
                 except Exception:
                     logger.log(u'{name} failed parsing data: {traceback_info}'.format(name=self.name, traceback_info=traceback.format_exc()), logger.ERROR)
             results += items[mode]
@@ -372,6 +376,7 @@ class RarbgProvider(generic.TorrentProvider):
 
 
 class RarbgCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

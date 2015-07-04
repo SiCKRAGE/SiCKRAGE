@@ -41,6 +41,7 @@ from lib.unidecode import unidecode
 
 
 class KATProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "KickAssTorrents")
@@ -120,7 +121,7 @@ class KATProvider(generic.TorrentProvider):
                 files = [x.text for x in file_table.find_all('td', attrs={'class': 'torFileName'})]
                 videoFiles = filter(lambda x: x.rpartition(".")[2].lower() in mediaExtensions, files)
 
-                #Filtering SingleEpisode/MultiSeason Torrent
+                # Filtering SingleEpisode/MultiSeason Torrent
                 if len(videoFiles) < ep_number or len(videoFiles) > float(ep_number * 1.1):
                     logger.log(u"Result " + title + " have " + str(
                         ep_number) + " episode and episodes retrived in torrent are " + str(len(videoFiles)), logger.DEBUG)
@@ -134,7 +135,8 @@ class KATProvider(generic.TorrentProvider):
 
                 for fileName in videoFiles:
                     quality = Quality.sceneQuality(os.path.basename(fileName))
-                    if quality != Quality.UNKNOWN: break
+                    if quality != Quality.UNKNOWN:
+                        break
 
                 if fileName is not None and quality == Quality.UNKNOWN:
                     quality = Quality.assumeQuality(os.path.basename(fileName))
@@ -157,9 +159,8 @@ class KATProvider(generic.TorrentProvider):
 
                 return title
 
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
-
 
     def _get_season_search_strings(self, ep_obj):
         search_string = {'Season': []}
@@ -175,7 +176,7 @@ class KATProvider(generic.TorrentProvider):
                 search_string['Season'].append(ep_string)
             else:
                 ep_string = show_name + ' S%02d' % int(ep_obj.scene_season) + ' -S%02d' % int(
-                    ep_obj.scene_season) + 'E' + ' category:tv'  #1) showName SXX -SXXE
+                    ep_obj.scene_season) + 'E' + ' category:tv'  # 1) showName SXX -SXXE
                 search_string['Season'].append(ep_string)
                 ep_string = show_name + ' "Season ' + str(
                     ep_obj.scene_season) + '" -Ep*' + ' category:tv'  # 2) showName "Season X"
@@ -189,30 +190,29 @@ class KATProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', ' ')
+                    str(ep_obj.airdate).replace('-', ' ')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%02i" % int(ep_obj.scene_absolute_number)
+                    "%02i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + '|' + \
-                            sickbeard.config.naming_ep_type[0] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s category:tv' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + '|' + \
+                    sickbeard.config.naming_ep_type[0] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s category:tv' % add_string
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
         return [search_string]
-
 
     def _get_size(self, item):
         title, url, id, seeders, leechers, size, pubdate = item
@@ -262,7 +262,7 @@ class KATProvider(generic.TorrentProvider):
                                 logger.DEBUG)
                             continue
 
-                        #Check number video files = episode in season and find the real Quality for full season torrent analyzing files in torrent
+                        # Check number video files = episode in season and find the real Quality for full season torrent analyzing files in torrent
                         if mode == 'Season' and search_mode == 'sponly':
                             ep_number = int(epcount / len(set(allPossibleShowNames(self.show))))
                             title = self._find_season_quality(title, link, ep_number)
@@ -288,11 +288,11 @@ class KATProvider(generic.TorrentProvider):
 
                         items[mode].append(item)
 
-                except Exception, e:
+                except Exception as e:
                     logger.log(u"Failed to parsing " + self.name + " Traceback: " + traceback.format_exc(),
                                logger.ERROR)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -347,6 +347,7 @@ class KATProvider(generic.TorrentProvider):
 
 
 class KATCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)
