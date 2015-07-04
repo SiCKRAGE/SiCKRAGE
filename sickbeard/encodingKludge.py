@@ -20,21 +20,23 @@ import os
 import chardet
 import sickbeard
 
+
 def fixStupidEncodings(x, silent=False):
-    if type(x) == str:
+    if isinstance(x, str):
         try:
             return x.decode(sickbeard.SYS_ENCODING)
         except UnicodeDecodeError:
             logger.log(u"Unable to decode value: " + repr(x), logger.ERROR)
             return None
-    elif type(x) == unicode:
+    elif isinstance(x, unicode):
         return x
     else:
         logger.log(
             u"Unknown value passed in, ignoring it: " + str(type(x)) + " (" + repr(x) + ":" + repr(type(x)) + ")",
             logger.DEBUG if silent else logger.ERROR)
         return None
-        
+
+
 def _toUnicode(x):
     try:
         if not isinstance(x, unicode):
@@ -44,6 +46,7 @@ def _toUnicode(x):
                 x = x.decode(sickbeard.SYS_ENCODING)
     finally:
         return x
+
 
 def ss(x):
     x = _toUnicode(x)
@@ -59,11 +62,12 @@ def ss(x):
     finally:
         return x
 
+
 def fixListEncodings(x):
     if not isinstance(x, (list, tuple)):
         return x
     else:
-        return filter(lambda x: x != None, map(_toUnicode, x))
+        return filter(lambda x: x is not None, map(_toUnicode, x))
 
 
 def ek(func, *args, **kwargs):

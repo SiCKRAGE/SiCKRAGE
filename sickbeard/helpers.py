@@ -75,6 +75,7 @@ def fixGlob(path):
     path = re.sub(r'\[', '[[]', path)
     return re.sub(r'(?<!\[)\]', '[]]', path)
 
+
 def indentXML(elem, level=0):
     '''
     Does our pretty printing, makes Matt very happy
@@ -122,22 +123,22 @@ def remove_non_release_groups(name):
     # Check your database for funky release_names and add them here, to improve failed handling, archiving, and history.
     # select release_name from tv_episodes WHERE LENGTH(release_name);
     # [eSc], [SSG], [GWC] are valid release groups for non-anime
-    removeWordsList = {'\[rartv\]$':       'searchre',
-                       '\[rarbg\]$':       'searchre',
-                       '\[eztv\]$':        'searchre',
-                       '\[ettv\]$':        'searchre',
-                       '\[vtv\]$':         'searchre',
-                       '\[GloDLS\]$':      'searchre',
-                       '\[silv4\]$':       'searchre',
-                       '\[Seedbox\]$':     'searchre',
+    removeWordsList = {'\[rartv\]$': 'searchre',
+                       '\[rarbg\]$': 'searchre',
+                       '\[eztv\]$': 'searchre',
+                       '\[ettv\]$': 'searchre',
+                       '\[vtv\]$': 'searchre',
+                       '\[GloDLS\]$': 'searchre',
+                       '\[silv4\]$': 'searchre',
+                       '\[Seedbox\]$': 'searchre',
                        '\[AndroidTwoU\]$': 'searchre',
-                       '\.RiPSaLoT$':      'searchre',
-                       '-NZBGEEK$':        'searchre',
-                       '-RP$':             'searchre',
-                       '-20-40$':          'searchre',
+                       '\.RiPSaLoT$': 'searchre',
+                       '-NZBGEEK$': 'searchre',
+                       '-RP$': 'searchre',
+                       '-20-40$': 'searchre',
                        '^\[ www\.TorrentDay\.com \] - ': 'searchre',
                        '^\[ www\.Cpasbien\.pw \] ': 'searchre',
-                      }
+                       }
 
     _name = name
     for remove_string, remove_type in removeWordsList.iteritems():
@@ -172,9 +173,10 @@ def replaceExtension(filename, newExt):
 def notTorNZBFile(filename):
     return not (filename.endswith(".torrent") or filename.endswith(".nzb"))
 
+
 def isSyncFile(filename):
     extension = filename.rpartition(".")[2].lower()
-    #if extension == '!sync' or extension == 'lftp-pget-status' or extension == 'part' or extension == 'bts':
+    # if extension == '!sync' or extension == 'lftp-pget-status' or extension == 'part' or extension == 'bts':
     syncfiles = sickbeard.SYNC_FILES
     if extension in syncfiles.split(","):
         return True
@@ -235,7 +237,7 @@ def sanitizeFileName(name):
     # remove bad chars from the filename
     name = re.sub(r'[\\/\*]', '-', name)
     name = re.sub(r'[:"<>|?]', '', name)
-    name = re.sub(ur'\u2122', '', name) # Trade Mark Sign
+    name = re.sub(ur'\u2122', '', name)  # Trade Mark Sign
 
     # remove leading/trailing periods and spaces
     name = name.strip(' .')
@@ -248,6 +250,7 @@ def _remove_file_failed(file):
         ek.ek(os.remove, file)
     except:
         pass
+
 
 def findCertainShow(showList, indexerid):
 
@@ -263,6 +266,7 @@ def findCertainShow(showList, indexerid):
         return results[0]
     elif len(results) > 1:
         raise MultipleShowObjectsException()
+
 
 def makeDir(path):
     if not ek.ek(os.path.isdir, path):
@@ -319,7 +323,8 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
     for i in sickbeard.indexerApi().indexers if not indexer else int(indexer or []):
         # Query Indexers for each search term and build the list of results
         lINDEXER_API_PARMS = sickbeard.indexerApi(i).api_params.copy()
-        if ui is not None: lINDEXER_API_PARMS['custom_ui'] = ui
+        if ui is not None:
+            lINDEXER_API_PARMS['custom_ui'] = ui
         t = sickbeard.indexerApi(i).indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
@@ -343,7 +348,7 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
             if not (seriesname and series_id):
                 continue
             ShowObj = findCertainShow(sickbeard.showList, int(series_id))
-            #Check if we can find the show in our list (if not, it's not the right show)
+            # Check if we can find the show in our list (if not, it's not the right show)
             if (indexer_id is None) and (ShowObj is not None) and (ShowObj.indexerid == int(series_id)):
                 return (seriesname, i, int(series_id))
             elif (indexer_id is not None) and (int(indexer_id) == int(series_id)):
@@ -413,7 +418,8 @@ def link(src, dst):
     if os.name == 'nt':
         import ctypes
 
-        if ctypes.windll.kernel32.CreateHardLinkW(unicode(dst), unicode(src), 0) == 0: raise ctypes.WinError()
+        if ctypes.windll.kernel32.CreateHardLinkW(unicode(dst), unicode(src), 0) == 0:
+            raise ctypes.WinError()
     else:
         os.link(src, dst)
 
@@ -422,7 +428,7 @@ def hardlinkFile(srcFile, destFile):
     try:
         ek.ek(link, srcFile, destFile)
         fixSetGroupID(destFile)
-    except Exception, e:
+    except Exception as e:
         logger.log(u"Failed to create hardlink of " + srcFile + " at " + destFile + ": " + ex(e) + ". Copying instead",
                    logger.ERROR)
         copyFile(srcFile, destFile)
@@ -433,7 +439,8 @@ def symlink(src, dst):
         import ctypes
 
         if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src), 1 if os.path.isdir(src) else 0) in [0,
-                                                                                                                      1280]: raise ctypes.WinError()
+                                                                                                                      1280]:
+            raise ctypes.WinError()
     else:
         os.symlink(src, dst)
 
@@ -462,7 +469,7 @@ def make_dirs(path):
             try:
                 logger.log(u"Folder " + path + " didn't exist, creating it", logger.DEBUG)
                 ek.ek(os.makedirs, path)
-            except (OSError, IOError), e:
+            except (OSError, IOError) as e:
                 logger.log(u"Failed creating " + path + " : " + ex(e), logger.ERROR)
                 return False
 
@@ -486,7 +493,7 @@ def make_dirs(path):
                     chmodAsParent(ek.ek(os.path.normpath, sofar))
                     # do the library update for synoindex
                     notifiers.synoindex_notifier.addFolder(sofar)
-                except (OSError, IOError), e:
+                except (OSError, IOError) as e:
                     logger.log(u"Failed creating " + sofar + " : " + ex(e), logger.ERROR)
                     return False
 
@@ -533,7 +540,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
     try:
         logger.log(u"Renaming file from " + cur_path + " to " + new_path)
         ek.ek(shutil.move, cur_path, new_path)
-    except (OSError, IOError), e:
+    except (OSError, IOError) as e:
         logger.log(u"Failed renaming " + cur_path + " to " + new_path + ": " + ex(e), logger.ERROR)
         return False
 
@@ -569,7 +576,7 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
                 ek.ek(os.rmdir, check_empty_dir)
                 # do the library update for synoindex
                 notifiers.synoindex_notifier.deleteFolder(check_empty_dir)
-            except OSError, e:
+            except OSError as e:
                 logger.log(u"Unable to delete " + check_empty_dir + ": " + repr(e) + " / " + str(e), logger.WARNING)
                 break
             check_empty_dir = ek.ek(os.path.dirname, check_empty_dir)
@@ -710,7 +717,7 @@ def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=Non
 def sanitizeSceneName(name, anime=False):
     """
     Takes a show name and returns the "scenified" version of it.
-    
+
     anime: Some show have a ' in their name(Kuroko's Basketball) and is needed for search.
 
     Returns: A string containing the scene version of the show name given.
@@ -769,6 +776,7 @@ def arithmeticEval(s):
 
     return _eval(node.body)
 
+
 def create_https_certificates(ssl_cert, ssl_key):
     """
     Create self-signed HTTPS certificares and store in paths 'ssl_cert' and 'ssl_key'
@@ -777,7 +785,7 @@ def create_https_certificates(ssl_cert, ssl_key):
         from OpenSSL import crypto  # @UnresolvedImport
         from lib.certgen import createKeyPair, createCertRequest, createCertificate, TYPE_RSA, \
             serial  # @UnresolvedImport
-    except Exception, e:
+    except Exception as e:
         logger.log(u"pyopenssl module missing, please install for https access", logger.WARNING)
         return False
 
@@ -801,6 +809,7 @@ def create_https_certificates(ssl_cert, ssl_key):
 
     return True
 
+
 def backupVersionedFile(old_file, version):
     numTries = 0
 
@@ -816,7 +825,7 @@ def backupVersionedFile(old_file, version):
             shutil.copy(old_file, new_file)
             logger.log(u"Backup done", logger.DEBUG)
             break
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Error while trying to back up " + old_file + " to " + new_file + " : " + ex(e), logger.WARNING)
             numTries += 1
             time.sleep(1)
@@ -844,7 +853,7 @@ def restoreVersionedFile(backup_file, version):
             u"Trying to backup " + new_file + " to " + new_file + "." + "r" + str(version) + " before restoring backup",
             logger.DEBUG)
         shutil.move(new_file, new_file + '.' + 'r' + str(version))
-    except Exception, e:
+    except Exception as e:
         logger.log(
             u"Error while trying to backup DB file " + restore_file + " before proceeding with restore: " + ex(e),
             logger.WARNING)
@@ -860,7 +869,7 @@ def restoreVersionedFile(backup_file, version):
             shutil.copy(restore_file, new_file)
             logger.log(u"Restore done", logger.DEBUG)
             break
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Error while trying to restore " + restore_file + ": " + ex(e), logger.WARNING)
             numTries += 1
             time.sleep(1)
@@ -899,8 +908,11 @@ def md5_for_file(filename, block_size=2 ** 16):
 
 
 def get_lan_ip():
-    try:return [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][0]
-    except:return socket.gethostname()
+    try:
+        return [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][0]
+    except:
+        return socket.gethostname()
+
 
 def check_url(url):
     """
@@ -916,7 +928,7 @@ def check_url(url):
         conn = httplib.HTTPConnection(host)
         conn.request('HEAD', path)
         return conn.getresponse().status in good_codes
-    except StandardError:
+    except Exception:
         return None
 
 
@@ -945,6 +957,8 @@ To add a new encryption_version:
 unique_key1 = hex(uuid.getnode() ** 2)  # Used in encryption v1
 
 # Encryption Functions
+
+
 def encrypt(data, encryption_version=0, decrypt=False):
     # Version 1: Simple XOR encryption (this is not very secure, but works)
     if encryption_version == 1:
@@ -1004,18 +1018,18 @@ def get_show(name, tryIndexers=False, trySceneExceptions=False):
         if cache:
             fromCache = True
             showObj = findCertainShow(sickbeard.showList, int(cache))
-        
-        #try indexers    
+
+        # try indexers
         if not showObj and tryIndexers:
             showObj = findCertainShow(sickbeard.showList,
                                       searchIndexerForShowID(full_sanitizeSceneName(name), ui=classes.ShowListUI)[2])
-        
-        #try scene exceptions
+
+        # try scene exceptions
         if not showObj and trySceneExceptions:
             ShowID = sickbeard.scene_exceptions.get_scene_exception_by_name(name)[0]
             if ShowID:
                 showObj = findCertainShow(sickbeard.showList, int(ShowID))
-                
+
         # add show to cache
         if showObj and not fromCache:
             sickbeard.name_cache.addNameToCache(name, showObj.indexerid)
@@ -1043,7 +1057,7 @@ def is_hidden_folder(folder):
         except (AttributeError, AssertionError):
             result = False
         return result
-    
+
     if ek.ek(os.path.isdir, folder):
         if is_hidden(folder):
             return True
@@ -1069,7 +1083,7 @@ def validateShow(show, season=None, episode=None):
 
         if show.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
-            
+
         t = sickbeard.indexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
         if season is None and episode is None:
             return t
@@ -1153,7 +1167,7 @@ def extractZip(archive, targetDir):
         return False
 
 
-def backupConfigZip(fileList, archive, arcname = None):
+def backupConfigZip(fileList, archive, arcname=None):
     try:
         a = zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED)
         for f in fileList:
@@ -1280,6 +1294,7 @@ def _getTempDir():
 
     return os.path.join(tempfile.gettempdir(), "sickrage-%s" % (uid))
 
+
 def codeDescription(status_code):
     """
     Returns the description of the URL error code
@@ -1326,9 +1341,10 @@ def _setUpSession(session, headers):
         session.headers.update({'Referer': address})
 
     if 'Content-Type' in session.headers:
-       session.headers.pop('Content-Type')
+        session.headers.pop('Content-Type')
 
     return session
+
 
 def headURL(url, params=None, headers={}, timeout=30, session=None, json=False, proxyGlypeProxySSLwarning=None):
     """
@@ -1357,11 +1373,11 @@ def headURL(url, params=None, headers={}, timeout=30, session=None, json=False, 
 
         return resp.status_code == 200
 
-    except requests.exceptions.HTTPError, e:
+    except requests.exceptions.HTTPError as e:
         logger.log(u"HTTP error " + str(e.errno) + " in headURL " + url, logger.WARNING)
-    except requests.exceptions.ConnectionError, e:
+    except requests.exceptions.ConnectionError as e:
         logger.log(u"Connection error " + str(e.message) + " in headURL " + url, logger.WARNING)
-    except requests.exceptions.Timeout, e:
+    except requests.exceptions.Timeout as e:
         logger.log(u"Connection timed out " + str(e.message) + " in headURL " + url, logger.WARNING)
     except Exception as e:
         logger.log(u"Unknown exception in headURL " + url + ": " + str(e.message), logger.WARNING)
@@ -1400,13 +1416,13 @@ def getURL(url, post_data=None, params={}, headers={}, timeout=30, session=None,
                         resp.status_code) + ': ' + codeDescription(resp.status_code), logger.DEBUG)
                     return
 
-    except requests.exceptions.HTTPError, e:
+    except requests.exceptions.HTTPError as e:
         logger.log(u"HTTP error " + str(e.errno) + " while loading URL " + url, logger.WARNING)
         return
-    except requests.exceptions.ConnectionError, e:
+    except requests.exceptions.ConnectionError as e:
         logger.log(u"Connection error " + str(e.message) + " while loading URL " + url, logger.WARNING)
         return
-    except requests.exceptions.Timeout, e:
+    except requests.exceptions.Timeout as e:
         logger.log(u"Connection timed out " + str(e.message) + " while loading URL " + url, logger.WARNING)
         return
     except Exception as e:
@@ -1440,19 +1456,19 @@ def download_file(url, filename, session=None, headers={}):
             except:
                 logger.log(u"Problem setting permissions or writing file to: %s" % filename, logger.WARNING)
 
-    except requests.exceptions.HTTPError, e:
+    except requests.exceptions.HTTPError as e:
         _remove_file_failed(filename)
         logger.log(u"HTTP error " + str(e.errno) + " while loading URL " + url, logger.WARNING)
         return False
-    except requests.exceptions.ConnectionError, e:
+    except requests.exceptions.ConnectionError as e:
         _remove_file_failed(filename)
         logger.log(u"Connection error " + str(e.message) + " while loading URL " + url, logger.WARNING)
         return False
-    except requests.exceptions.Timeout, e:
+    except requests.exceptions.Timeout as e:
         _remove_file_failed(filename)
         logger.log(u"Connection timed out " + str(e.message) + " while loading URL " + url, logger.WARNING)
         return False
-    except EnvironmentError, e:
+    except EnvironmentError as e:
         _remove_file_failed(filename)
         logger.log(u"Unable to save the file: " + ex(e), logger.WARNING)
         return False
@@ -1477,6 +1493,7 @@ def get_size(start_path='.'):
                 logger.log(traceback.format_exc(), logger.DEBUG)
     return total_size
 
+
 def generateApiKey():
     """ Return a new randomized API_KEY
     """
@@ -1499,6 +1516,7 @@ def generateApiKey():
     # Return a hex digest of the md5, eg 49f68a5c8493ec2c0bf489821c21fc3b
     logger.log(u"New API generated")
     return m.hexdigest()
+
 
 def pretty_filesize(file_bytes):
     file_bytes = float(file_bytes)
@@ -1523,12 +1541,15 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
+
 def remove_article(text=''):
     return re.sub(r'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
+
 
 def generateCookieSecret():
 
     return base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
+
 
 def verify_freespace(src, dest, oldfile=None):
     """ Checks if the target system has enough free space to copy or move a file,
@@ -1539,19 +1560,19 @@ def verify_freespace(src, dest, oldfile=None):
         oldfile = [oldfile]
 
     logger.log("Trying to determine free space on destination drive", logger.DEBUG)
-    
+
     if hasattr(os, 'statvfs'):  # POSIX
         def disk_usage(path):
             st = os.statvfs(path)
             free = st.f_bavail * st.f_frsize
             return free
-    
+
     elif os.name == 'nt':       # Windows
         import sys
-    
+
         def disk_usage(path):
             _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
-                               ctypes.c_ulonglong()
+                ctypes.c_ulonglong()
             if sys.version_info >= (3,) or isinstance(path, unicode):
                 fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW
             else:
@@ -1568,27 +1589,39 @@ def verify_freespace(src, dest, oldfile=None):
     if not ek.ek(os.path.isfile, src):
         logger.log("A path to a file is required for the source. " + src + " is not a file.", logger.WARNING)
         return True
-    
+
     try:
         diskfree = disk_usage(dest)
     except:
         logger.log("Unable to determine free space, so I will assume there is enough.", logger.WARNING)
         return True
-    
+
     neededspace = ek.ek(os.path.getsize, src)
-    
+
     if oldfile:
         for file in oldfile:
             if ek.ek(os.path.isfile, file.location):
                 diskfree += ek.ek(os.path.getsize, file.location)
-        
+
     if diskfree > neededspace:
         return True
     else:
-        logger.log("Not enough free space: Needed: " + str(neededspace) + " bytes (" + pretty_filesize(neededspace) + "), found: " + str(diskfree) + " bytes (" + pretty_filesize(diskfree) + ")", logger.WARNING)
+        logger.log(
+            "Not enough free space: Needed: " +
+            str(neededspace) +
+            " bytes (" +
+            pretty_filesize(neededspace) +
+            "), found: " +
+            str(diskfree) +
+            " bytes (" +
+            pretty_filesize(diskfree) +
+            ")",
+            logger.WARNING)
         return False
 
 # https://gist.github.com/thatalextaylor/7408395
+
+
 def pretty_time_delta(seconds):
     sign_string = '-' if seconds < 0 else ''
     seconds = abs(int(seconds))
@@ -1603,14 +1636,15 @@ def pretty_time_delta(seconds):
         return '%s%02dm%02ds' % (sign_string, minutes, seconds)
     else:
         return '%s%02ds' % (sign_string, seconds)
-    
+
+
 def isFileLocked(file, writeLockCheck=False):
     '''
     Checks to see if a file is locked. Performs three checks
         1. Checks if the file even exists
         2. Attempts to open the file for reading. This will determine if the file has a write lock.
             Write locks occur when the file is being edited or copied to, e.g. a file copy destination
-        3. If the readLockCheck parameter is True, attempts to rename the file. If this fails the 
+        3. If the readLockCheck parameter is True, attempts to rename the file. If this fails the
             file is open by some other process for reading. The file can be read, but not written to
             or deleted.
     @param file: the file being checked
@@ -1623,7 +1657,7 @@ def isFileLocked(file, writeLockCheck=False):
         f.close()
     except IOError:
         return True
-    
+
     if(writeLockCheck):
         lockFile = file + ".lckchk"
         if(os.path.exists(lockFile)):
@@ -1634,5 +1668,5 @@ def isFileLocked(file, writeLockCheck=False):
             os.rename(lockFile, file)
         except (OSError, IOError):
             return True
-           
+
     return False

@@ -41,6 +41,7 @@ from sickbeard.helpers import sanitizeSceneName
 
 
 class HDTorrentsProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "HDTorrents")
@@ -62,7 +63,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
                      'search': 'https://hdts.ru/torrents.php?search=%s&active=1&options=0%s',
                      'download': 'https://www.sceneaccess.eu/%s',
                      'home': 'https://www.hdts.ru/%s'
-        }
+                     }
 
         self.url = self.urls['base_url']
 
@@ -104,11 +105,11 @@ class HDTorrentsProvider(generic.TorrentProvider):
             login_params = {'uid': self.username,
                             'pwd': self.password,
                             'submit': 'Confirm',
-            }
+                            }
 
             try:
                 response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-            except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
+            except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
                 logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
                 return False
 
@@ -122,7 +123,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
             self.cookies = {'uid': self._uid,
                             'pass': self._hash
-            }
+                            }
 
         return True
 
@@ -135,10 +136,9 @@ class HDTorrentsProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
-
 
         return [search_string]
 
@@ -151,24 +151,24 @@ class HDTorrentsProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                    str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -205,7 +205,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        #Get first entry in table
+                        # Get first entry in table
                         entries = html.find_all('td', attrs={'align': 'center'})
 
                         if html.find(text='No torrents here...'):
@@ -218,7 +218,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
                             continue
 
                         try:
-                            title = entries[22].find('a')['title'].replace('History - ','').replace('Blu-ray', 'bd50')
+                            title = entries[22].find('a')['title'].replace('History - ', '').replace('Blu-ray', 'bd50')
                             url = self.urls['home'] % entries[15].find('a')['href']
                             download_url = self.urls['home'] % entries[15].find('a')['href']
                             id = entries[23].find('div')['id']
@@ -234,11 +234,11 @@ class HDTorrentsProvider(generic.TorrentProvider):
                             continue
 
                         item = title, download_url, id, seeders, leechers
-                        logger.log(u"Found result: " + title.replace(' ','.') + " (" + searchURL + ")", logger.DEBUG)
+                        logger.log(u"Found result: " + title.replace(' ', '.') + " (" + searchURL + ")", logger.DEBUG)
 
                         items[mode].append(item)
 
-                        #Now attempt to get any others
+                        # Now attempt to get any others
                         result_table = html.find('table', attrs={'class': 'mainblockcontenttt'})
 
                         if not result_table:
@@ -273,14 +273,14 @@ class HDTorrentsProvider(generic.TorrentProvider):
                                 continue
 
                             item = title, download_url, id, seeders, leechers
-                            logger.log(u"Found result: " + title.replace(' ','.') + " (" + searchURL + ")", logger.DEBUG)
+                            logger.log(u"Found result: " + title.replace(' ', '.') + " (" + searchURL + ")", logger.DEBUG)
 
                             items[mode].append(item)
 
-                except Exception, e:
+                except Exception as e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -317,7 +317,8 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
         for sqlshow in sqlResults:
             self.show = curshow = helpers.findCertainShow(sickbeard.showList, int(sqlshow["showid"]))
-            if not self.show: continue
+            if not self.show:
+                continue
             curEp = curshow.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
 
             proper_searchString = self._get_episode_search_strings(curEp, add_string='PROPER')
@@ -325,7 +326,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
             for item in self._doSearch(proper_searchString[0]):
                 title, url = self._get_title_and_url(item)
                 results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
-                
+
             repack_searchString = self._get_episode_search_strings(curEp, add_string='REPACK')
 
             for item in self._doSearch(repack_searchString[0]):
@@ -339,6 +340,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
 
 class HDTorrentsCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

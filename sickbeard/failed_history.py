@@ -28,6 +28,7 @@ from sickbeard.common import Quality
 from sickbeard.common import WANTED, FAILED
 from sickbeard import encodingKludge as ek
 
+
 def prepareFailedName(release):
     """Standardizes release name for failed DB"""
 
@@ -130,7 +131,7 @@ def revertEpisode(epObj):
                 epObj.status = WANTED
                 epObj.saveToDB()
 
-    except EpisodeNotFoundException, e:
+    except EpisodeNotFoundException as e:
         logger.log(u"Unable to create episode, please set its status manually: " + ex(e),
                    logger.WARNING)
 
@@ -144,7 +145,7 @@ def markFailed(epObj):
             epObj.status = Quality.compositeStatus(FAILED, quality)
             epObj.saveToDB()
 
-    except EpisodeNotFoundException, e:
+    except EpisodeNotFoundException as e:
         logger.log(u"Unable to get episode, please set its status manually: " + ex(e), logger.WARNING)
 
     return log_str
@@ -193,7 +194,6 @@ def findRelease(epObj):
 
     release = None
     provider = None
-
 
     # Clear old snatches for this release if any exist
     myDB = db.DBConnection('failed.db')

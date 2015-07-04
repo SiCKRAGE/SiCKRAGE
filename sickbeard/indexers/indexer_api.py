@@ -22,6 +22,7 @@ from indexer_config import initConfig, indexerConfig
 
 
 class indexerApi(object):
+
     def __init__(self, indexerID=None):
         self.indexerID = int(indexerID) if indexerID else None
 

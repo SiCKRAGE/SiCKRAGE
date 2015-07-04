@@ -57,11 +57,11 @@ class TorrentBytesProvider(generic.TorrentProvider):
         self.cache = TorrentBytesCache(self)
 
         self.urls = {'base_url': 'https://www.torrentbytes.net',
-                'login': 'https://www.torrentbytes.net/takelogin.php',
-                'detail': 'https://www.torrentbytes.net/details.php?id=%s',
-                'search': 'https://www.torrentbytes.net/browse.php?search=%s%s',
-                'download': 'https://www.torrentbytes.net/download.php?id=%s&name=%s',
-                }
+                     'login': 'https://www.torrentbytes.net/takelogin.php',
+                     'detail': 'https://www.torrentbytes.net/details.php?id=%s',
+                     'search': 'https://www.torrentbytes.net/browse.php?search=%s%s',
+                     'download': 'https://www.torrentbytes.net/download.php?id=%s&name=%s',
+                     }
 
         self.url = self.urls['base_url']
 
@@ -83,13 +83,13 @@ class TorrentBytesProvider(generic.TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password,
                         'login': 'Log in!'
-        }
+                        }
 
         self.session = requests.Session()
 
         try:
             response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
 
@@ -108,7 +108,7 @@ class TorrentBytesProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + '.' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -124,24 +124,24 @@ class TorrentBytesProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                    str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -174,7 +174,7 @@ class TorrentBytesProvider(generic.TorrentProvider):
                         torrent_table = html.find('table', attrs={'border': '1'})
                         torrent_rows = torrent_table.find_all('tr') if torrent_table else []
 
-                        #Continue only if one Release is found
+                        # Continue only if one Release is found
                         if len(torrent_rows) < 2:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
                                        logger.DEBUG)
@@ -189,7 +189,7 @@ class TorrentBytesProvider(generic.TorrentProvider):
                             torrent_id = full_id.split("&")[0]
 
                             try:
-                                if link.has_key('title'):
+                                if 'title' in link:
                                     title = cells[1].find('a', {'class': 'index'})['title']
                                 else:
                                     title = link.contents[0]
@@ -200,7 +200,7 @@ class TorrentBytesProvider(generic.TorrentProvider):
                             except (AttributeError, TypeError):
                                 continue
 
-                            #Filter unseeded torrent
+                            # Filter unseeded torrent
                             if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                                 continue
 
@@ -208,14 +208,14 @@ class TorrentBytesProvider(generic.TorrentProvider):
                                 continue
 
                             item = title, download_url, id, seeders, leechers
-                            logger.log(u"Found result: " + title.replace(' ','.') + " (" + searchURL + ")", logger.DEBUG)
+                            logger.log(u"Found result: " + title.replace(' ', '.') + " (" + searchURL + ")", logger.DEBUG)
 
                             items[mode].append(item)
 
-                except Exception, e:
+                except Exception as e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -268,6 +268,7 @@ class TorrentBytesProvider(generic.TorrentProvider):
 
 
 class TorrentBytesCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

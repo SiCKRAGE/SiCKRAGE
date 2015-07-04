@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2
+import urllib
+import urllib2
 import sickbeard
 import telnetlib
 import re
@@ -31,12 +32,13 @@ except ImportError:
 
 
 class NMJNotifier:
+
     def notify_settings(self, host):
         """
         Retrieves the settings from a NMJ/Popcorn hour
-        
+
         host: The hostname/IP of the Popcorn Hour server
-        
+
         Returns: True if the settings were retrieved successfully, False otherwise
         """
 
@@ -87,7 +89,7 @@ class NMJNotifier:
 
     def notify_snatch(self, ep_name):
         return False
-        #Not implemented: Start the scanner when snatched does not make any sense
+        # Not implemented: Start the scanner when snatched does not make any sense
 
     def notify_download(self, ep_name):
         if sickbeard.USE_NMJ:
@@ -96,7 +98,7 @@ class NMJNotifier:
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.USE_NMJ:
             self._notifyNMJ()
-            
+
     def notify_git_update(self, new_version):
         return False
         # Not implemented, no reason to start scanner.
@@ -107,11 +109,11 @@ class NMJNotifier:
     def _sendNMJ(self, host, database, mount=None):
         """
         Sends a NMJ update command to the specified machine
-        
+
         host: The hostname/IP to send the request to (no port)
         database: The database to send the requst to
         mount: The mount URL to use (optional)
-        
+
         Returns: True if the request succeeded, False otherwise
         """
 
@@ -121,13 +123,13 @@ class NMJNotifier:
                 req = urllib2.Request(mount)
                 logger.log(u"Try to mount network drive via url: %s" % (mount), logger.DEBUG)
                 handle = urllib2.urlopen(req)
-            except IOError, e:
+            except IOError as e:
                 if hasattr(e, 'reason'):
                     logger.log(u"NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason), logger.WARNING)
                 elif hasattr(e, 'code'):
                     logger.log(u"NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code), logger.WARNING)
                 return False
-            except Exception, e:
+            except Exception as e:
                 logger.log(u"NMJ: Unknown exception: " + ex(e), logger.ERROR)
                 return False
 
@@ -148,13 +150,13 @@ class NMJNotifier:
             logger.log(u"Sending NMJ scan update command via url: %s" % (updateUrl), logger.DEBUG)
             handle = urllib2.urlopen(req)
             response = handle.read()
-        except IOError, e:
+        except IOError as e:
             if hasattr(e, 'reason'):
                 logger.log(u"NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason), logger.WARNING)
             elif hasattr(e, 'code'):
                 logger.log(u"NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code), logger.WARNING)
             return False
-        except Exception, e:
+        except Exception as e:
             logger.log(u"NMJ: Unknown exception: " + ex(e), logger.ERROR)
             return False
 
@@ -162,7 +164,7 @@ class NMJNotifier:
         try:
             et = etree.fromstring(response)
             result = et.findtext("returnValue")
-        except SyntaxError, e:
+        except SyntaxError as e:
             logger.log(u"Unable to parse XML returned from the Popcorn Hour: %s" % (e), logger.ERROR)
             return False
 
@@ -177,7 +179,7 @@ class NMJNotifier:
     def _notifyNMJ(self, host=None, database=None, mount=None, force=False):
         """
         Sends a NMJ update command based on the SB config settings
-        
+
         host: The host to send the command to (optional, defaults to the host in the config)
         database: The database to use (optional, defaults to the database in the config)
         mount: The mount URL (optional, defaults to the mount URL in the config)

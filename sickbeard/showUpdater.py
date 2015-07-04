@@ -30,13 +30,15 @@ from sickbeard import db
 from sickbeard import network_timezones
 from sickbeard import failed_history
 
+
 class ShowUpdater():
+
     def __init__(self):
         self.lock = threading.Lock()
         self.amActive = False
 
     def run(self, force=False):
- 
+
         self.amActive = True
 
         update_datetime = datetime.datetime.now()
@@ -77,20 +79,21 @@ class ShowUpdater():
                     try:
                         piList.append(sickbeard.showQueueScheduler.action.updateShow(curShow, True))  # @UndefinedVariable
                     except exceptions.CantUpdateException as e:
-                        logger.log("Unable to update show: {0}".format(str(e)),logger.DEBUG)
+                        logger.log("Unable to update show: {0}".format(str(e)), logger.DEBUG)
                 else:
                     logger.log(
-                        u"Not updating episodes for show " + curShow.name + " because it's marked as ended and last/next episode is not within the grace period.",
+                        u"Not updating episodes for show " + curShow.name +
+                        " because it's marked as ended and last/next episode is not within the grace period.",
                         logger.DEBUG)
                     piList.append(sickbeard.showQueueScheduler.action.refreshShow(curShow, True))  # @UndefinedVariable
 
-            except (exceptions.CantUpdateException, exceptions.CantRefreshException), e:
+            except (exceptions.CantUpdateException, exceptions.CantRefreshException) as e:
                 logger.log(u"Automatic update failed: " + ex(e), logger.ERROR)
 
         ui.ProgressIndicators.setIndicator('dailyUpdate', ui.QueueProgressIndicator("Daily Update", piList))
 
         logger.log(u"Completed full update on all shows")
-        
+
         self.amActive = False
 
     def __del__(self):

@@ -33,10 +33,11 @@ class SickBeardURLopener(urllib.FancyURLopener):
 
 
 class AuthURLOpener(SickBeardURLopener):
+
     """
     URLOpener class that supports http auth without needing interactive password entry.
     If the provided username/password don't work it simply fails.
-    
+
     user: username to use for HTTP auth
     pw: password to use for HTTP auth
     """
@@ -73,6 +74,7 @@ class AuthURLOpener(SickBeardURLopener):
 
 
 class SearchResult:
+
     """
     Represents a search result from an indexer.
     """
@@ -136,6 +138,7 @@ class SearchResult:
 
 
 class NZBSearchResult(SearchResult):
+
     """
     Regular NZB result with an URL to the NZB
     """
@@ -143,6 +146,7 @@ class NZBSearchResult(SearchResult):
 
 
 class NZBDataSearchResult(SearchResult):
+
     """
     NZB result where the actual NZB XML data is stored in the extraInfo
     """
@@ -150,6 +154,7 @@ class NZBDataSearchResult(SearchResult):
 
 
 class TorrentSearchResult(SearchResult):
+
     """
     Torrent result with an URL to the torrent
     """
@@ -157,6 +162,7 @@ class TorrentSearchResult(SearchResult):
 
 
 class AllShowsListUI:
+
     """
     This class is for indexer api. Instead of prompting with a UI to pick the
     desired result out of a list of shows it tries to be smart about it
@@ -200,10 +206,11 @@ class AllShowsListUI:
 
 
 class ShowListUI:
+
     """
     This class is for tvdb-api. Instead of prompting with a UI to pick the
     desired result out of a list of shows it tries to be smart about it
-    based on what shows are in SB. 
+    based on what shows are in SB.
     """
 
     def __init__(self, config, log=None):
@@ -224,6 +231,7 @@ class ShowListUI:
 
 
 class Proper:
+
     def __init__(self, name, url, date, show):
         self.name = name
         self.url = url
@@ -247,6 +255,7 @@ class Proper:
 
 
 class ErrorViewer():
+
     """
     Keeps a static list of UIErrors to be displayed on the UI and allows
     the list to be cleared.
@@ -271,6 +280,7 @@ class ErrorViewer():
 
 
 class UIError():
+
     """
     Represents an error to be displayed in the web UI.
     """

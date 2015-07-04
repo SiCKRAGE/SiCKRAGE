@@ -60,9 +60,9 @@ def filterBadReleases(name, parse=True):
     """
     Filters out non-english and just all-around stupid releases by comparing them
     to the resultFilters contents.
-    
+
     name: the release name to check
-    
+
     Returns: True if the release name is OK, False if it's bad.
     """
 
@@ -100,9 +100,9 @@ def filterBadReleases(name, parse=True):
 def sceneToNormalShowNames(name):
     """
         Takes a show name from a scene dirname and converts it to a more "human-readable" format.
-    
+
     name: The show name to convert
-    
+
     Returns: a list of all the possible "normal" names
     """
 
@@ -204,10 +204,9 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
                         if ep_obj.show.release_groups is not None:
                             if len(show.release_groups.whitelist) > 0:
                                 for keyword in show.release_groups.whitelist:
-                                    toReturn.append(keyword + '.' + curShow+ "." + cur_season)
+                                    toReturn.append(keyword + '.' + curShow + "." + cur_season)
                     else:
                         toReturn.append(curShow + "." + cur_season)
-
 
     return toReturn
 
@@ -264,7 +263,8 @@ def isGoodResult(name, show, log=True, season=-1):
             escaped_name = re.sub('\\\\[\\s.-]', '\W+', re.escape(curName))
             if show.startyear:
                 escaped_name += "(?:\W+" + str(show.startyear) + ")?"
-            curRegex = '^' + escaped_name + '\W+(?:(?:S\d[\dE._ -])|(?:\d\d?x)|(?:\d{4}\W\d\d\W\d\d)|(?:(?:part|pt)[\._ -]?(\d|[ivx]))|Season\W+\d+\W+|E\d+\W+|(?:\d{1,3}.+\d{1,}[a-zA-Z]{2}\W+[a-zA-Z]{3,}\W+\d{4}.+))'
+            curRegex = '^' + escaped_name + \
+                '\W+(?:(?:S\d[\dE._ -])|(?:\d\d?x)|(?:\d{4}\W\d\d\W\d\d)|(?:(?:part|pt)[\._ -]?(\d|[ivx]))|Season\W+\d+\W+|E\d+\W+|(?:\d{1,3}.+\d{1,}[a-zA-Z]{2}\W+[a-zA-Z]{3,}\W+\d{4}.+))'
         else:
             escaped_name = re.sub('\\\\[\\s.-]', '[\W_]+', re.escape(curName))
             # FIXME: find a "automatically-created" regex for anime releases # test at http://regexr.com?2uon3
@@ -288,9 +288,9 @@ def allPossibleShowNames(show, season=-1):
     """
     Figures out every possible variation of the name for a particular show. Includes TVDB name, TVRage name,
     country codes on the end, eg. "Show Name (AU)", and any scene exception names.
-    
+
     show: a TVShow object that we should get the names of
-    
+
     Returns: a list of all the possible show names
     """
 
@@ -320,11 +320,12 @@ def allPossibleShowNames(show, season=-1):
                     newShowNames.append(curName.replace(' (' + curCountry + ')', ' (' + country_list[curCountry] + ')'))
 
             # if we have "Show Name (2013)" this will strip the (2013) show year from the show name
-            #newShowNames.append(re.sub('\(\d{4}\)','',curName))
+            # newShowNames.append(re.sub('\(\d{4}\)','',curName))
 
         showNames += newShowNames
 
     return showNames
+
 
 def determineReleaseName(dir_name=None, nzb_name=None):
     """Determine a release name from an nzb and/or folder name"""

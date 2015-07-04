@@ -40,6 +40,7 @@ from datetime import datetime
 
 
 class BTNProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "BTN")
 
@@ -53,7 +54,6 @@ class BTNProvider(generic.TorrentProvider):
         self.cache = BTNCache(self)
 
         self.urls = {'base_url': "http://api.btnapps.net"}
-
 
         self.url = self.urls['base_url']
 
@@ -145,9 +145,9 @@ class BTNProvider(generic.TorrentProvider):
         try:
             parsedJSON = server.getTorrents(apikey, params, int(results_per_page), int(offset))
 
-        except jsonrpclib.jsonrpc.ProtocolError, error:
+        except jsonrpclib.jsonrpc.ProtocolError as error:
             if error.message == 'Call Limit Exceeded':
-                logger.log(u"You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account.", logger.WARNING)                
+                logger.log(u"You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account.", logger.WARNING)
             else:
                 logger.log(u"JSON-RPC protocol error while accessing " + self.name + ": " + ex(error), logger.ERROR)
             parsedJSON = {'api-error': ex(error)}
@@ -156,11 +156,11 @@ class BTNProvider(generic.TorrentProvider):
         except socket.timeout:
             logger.log(u"Timeout while accessing " + self.name, logger.WARNING)
 
-        except socket.error, error:
+        except socket.error as error:
             # Note that sometimes timeouts are thrown as socket errors
             logger.log(u"Socket error while accessing " + self.name + ": " + error[1], logger.ERROR)
 
-        except Exception, error:
+        except Exception as error:
             errorstring = str(error)
             if (errorstring.startswith('<') and errorstring.endswith('>')):
                 errorstring = errorstring[1:-1]
@@ -379,23 +379,23 @@ class BTNProvider(generic.TorrentProvider):
 
             addCacheEntry = False
             if not (showObj.air_by_date or showObj.sports):
-                if search_mode == 'sponly': 
+                if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         logger.log(
                             u"This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it",
                             logger.DEBUG)
                         addCacheEntry = True
                     if len(parse_result.episode_numbers) and (
-                                    parse_result.season_number not in set([ep.season for ep in episodes]) or not [ep for ep in episodes if
-                                                                                 ep.scene_episode in parse_result.episode_numbers]):
+                        parse_result.season_number not in set([ep.season for ep in episodes]) or not [ep for ep in episodes if
+                                                                                                      ep.scene_episode in parse_result.episode_numbers]):
                         logger.log(
                             u"The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring",
                             logger.DEBUG)
                         addCacheEntry = True
                 else:
-                    if not len(parse_result.episode_numbers) and parse_result.season_number and not [ep for ep in
-                                                                                                     episodes if
-                                                                                                     ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
+                    if not len(
+                            parse_result.episode_numbers) and parse_result.season_number and not [
+                            ep for ep in episodes if ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         logger.log(
                             u"The result " + title + " doesn't seem to be a valid season that we are trying to snatch, ignoring",
                             logger.DEBUG)
@@ -498,6 +498,7 @@ class BTNProvider(generic.TorrentProvider):
 
 
 class BTNCache(tvcache.TVCache):
+
     def __init__(self, provider):
         tvcache.TVCache.__init__(self, provider)
 

@@ -40,6 +40,7 @@ from sickbeard.common import Quality
 from hachoir_parser import createParser
 from base64 import b16encode, b32decode
 
+
 class GenericProvider:
     NZB = "nzb"
     TORRENT = "torrent"
@@ -72,10 +73,10 @@ class GenericProvider:
         self.headers = {'User-Agent': USER_AGENT}
 
         self.btCacheURLS = [
-                'http://torcache.net/torrent/{torrent_hash}.torrent',
-                'http://zoink.ch/torrent/{torrent_name}.torrent',
-                'http://torrage.com/torrent/{torrent_hash}.torrent',
-            ]
+            'http://torcache.net/torrent/{torrent_hash}.torrent',
+            'http://zoink.ch/torrent/{torrent_name}.torrent',
+            'http://torrage.com/torrent/{torrent_hash}.torrent',
+        ]
 
         random.shuffle(self.btCacheURLS)
 
@@ -146,7 +147,6 @@ class GenericProvider:
         return helpers.getURL(self.proxy._buildURL(url), post_data=post_data, params=params, headers=self.headers, timeout=timeout,
                               session=self.session, json=json, proxyGlypeProxySSLwarning=self.proxyGlypeProxySSLwarning)
 
-
     def _makeURL(self, result):
         urls = []
         filename = u''
@@ -177,7 +177,6 @@ class GenericProvider:
                              helpers.sanitizeFileName(result.name) + '.' + self.providerType)
 
         return (urls, filename)
-
 
     def headURL(self, result):
         """
@@ -267,10 +266,10 @@ class GenericProvider:
     def getQuality(self, item, anime=False):
         """
         Figures out the quality of the given RSS item node
-        
+
         item: An elementtree.ElementTree element representing the <item> tag of the RSS feed
-        
-        Returns a Quality value obtained from the node's data 
+
+        Returns a Quality value obtained from the node's data
         """
         (title, url) = self._get_title_and_url(item)
         quality = Quality.sceneQuality(title, anime)
@@ -317,7 +316,6 @@ class GenericProvider:
             else:
                 logger.log(u"Size was not found in your provider response", logger.DEBUG)
                 return -1
-
 
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False):
 
@@ -400,23 +398,23 @@ class GenericProvider:
 
             addCacheEntry = False
             if not (showObj.air_by_date or showObj.sports):
-                if search_mode == 'sponly': 
+                if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         logger.log(
                             u"This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it",
                             logger.DEBUG)
                         addCacheEntry = True
                     if len(parse_result.episode_numbers) and (
-                                    parse_result.season_number not in set([ep.season for ep in episodes]) or not [ep for ep in episodes if
-                                                                                 ep.scene_episode in parse_result.episode_numbers]):
+                        parse_result.season_number not in set([ep.season for ep in episodes]) or not [ep for ep in episodes if
+                                                                                                      ep.scene_episode in parse_result.episode_numbers]):
                         logger.log(
                             u"The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring",
                             logger.DEBUG)
                         addCacheEntry = True
                 else:
-                    if not len(parse_result.episode_numbers) and parse_result.season_number and not [ep for ep in
-                                                                                                     episodes if
-                                                                                                     ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
+                    if not len(
+                            parse_result.episode_numbers) and parse_result.season_number and not [
+                            ep for ep in episodes if ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         logger.log(
                             u"The result " + title + " doesn't seem to be a valid season that we are trying to snatch, ignoring",
                             logger.DEBUG)
@@ -534,6 +532,7 @@ class GenericProvider:
 
 
 class NZBProvider(GenericProvider):
+
     def __init__(self, name):
         GenericProvider.__init__(self, name)
 
@@ -541,6 +540,7 @@ class NZBProvider(GenericProvider):
 
 
 class TorrentProvider(GenericProvider):
+
     def __init__(self, name):
         GenericProvider.__init__(self, name)
 
@@ -553,6 +553,7 @@ class TorrentProvider(GenericProvider):
 
 
 class ProviderProxy:
+
     def __init__(self):
         self.Type = 'GlypeProxy'
         self.param = 'browse.php?u='

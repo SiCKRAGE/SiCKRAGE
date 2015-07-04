@@ -26,6 +26,7 @@ from sickbeard.name_parser.parser import NameParser, InvalidNameException, Inval
 
 
 class FailedProcessor(object):
+
     """Take appropriate action when a download fails to complete"""
 
     def __init__(self, dirName, nzbName):

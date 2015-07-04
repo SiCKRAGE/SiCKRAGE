@@ -34,6 +34,7 @@ from sickbeard import logger, common
 
 
 class ProwlNotifier:
+
     def test_notify(self, prowl_api, prowl_priority):
         return self._sendProwl(prowl_api, prowl_priority, event="Test",
                                message="Testing Prowl settings from SickRage", force=True)
@@ -52,11 +53,11 @@ class ProwlNotifier:
         if sickbeard.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
-                            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_PROWL:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=title, message=update_text + new_version)
 
@@ -65,15 +66,17 @@ class ProwlNotifier:
         if not sickbeard.USE_PROWL and not force:
             return False
 
-        if prowl_api == None:
+        if prowl_api is None:
             prowl_api = sickbeard.PROWL_API
 
-        if prowl_priority == None:
+        if prowl_priority is None:
             prowl_priority = sickbeard.PROWL_PRIORITY
 
         title = "SickRage"
 
-        logger.log("PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (event, message, prowl_priority, prowl_api), logger.DEBUG)
+        logger.log(
+            "PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" %
+            (event, message, prowl_priority, prowl_api), logger.DEBUG)
 
         http_handler = HTTPSConnection("api.prowlapp.com")
 

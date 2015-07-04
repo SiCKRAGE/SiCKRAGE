@@ -38,34 +38,36 @@ from sickbeard.helpers import sanitizeSceneName
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 
 category_excluded = {
-              'Sport' : 22,
-              'Teatro' : 23,
-              'Video Musicali' : 21,
-              'Film' : 4,
-              'Musica' : 2,
-              'Students Releases' : 13,
-              'E Books' : 3,
-              'Linux' : 6,
-              'Macintosh' : 9,
-              'Windows Software' : 10,
-              'Pc Game' : 11,
-              'Playstation 2' : 12,
-              'Wrestling' : 24,
-              'Varie' : 25,
-              'Xbox' : 26,
-              'Immagini sfondi' : 27,
-              'Altri Giochi' : 28,
-              'Fumetteria' : 30,
-              'Trash' : 31,
-              'PlayStation 1' : 32,
-              'PSP Portable' : 33,
-              'A Book' : 34,
-              'Podcast' : 35,
-              'Edicola' : 36,
-              'Mobile' : 37,
-             }
+    'Sport': 22,
+    'Teatro': 23,
+    'Video Musicali': 21,
+    'Film': 4,
+    'Musica': 2,
+    'Students Releases': 13,
+    'E Books': 3,
+    'Linux': 6,
+    'Macintosh': 9,
+    'Windows Software': 10,
+    'Pc Game': 11,
+    'Playstation 2': 12,
+    'Wrestling': 24,
+    'Varie': 25,
+    'Xbox': 26,
+    'Immagini sfondi': 27,
+    'Altri Giochi': 28,
+    'Fumetteria': 30,
+    'Trash': 31,
+    'PlayStation 1': 32,
+    'PSP Portable': 33,
+    'A Book': 34,
+    'Podcast': 35,
+    'Edicola': 36,
+    'Mobile': 37,
+}
+
 
 class TNTVillageProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "TNTVillage")
@@ -85,41 +87,41 @@ class TNTVillageProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.hdtext = [
-                       ' - Versione 720p',
-                       ' Versione 720p',
-                       ' V 720p',
-                       ' V 720',
-                       ' V HEVC',
-                       ' V  HEVC',
-                       ' V 1080',
-                       ' Versione 1080p',
-                       ' 720p HEVC',
-                       ' Ver 720',
-                       ' 720p HEVC',
-                       ' 720p',
-                      ]
+            ' - Versione 720p',
+            ' Versione 720p',
+            ' V 720p',
+            ' V 720',
+            ' V HEVC',
+            ' V  HEVC',
+            ' V 1080',
+            ' Versione 1080p',
+            ' 720p HEVC',
+            ' Ver 720',
+            ' 720p HEVC',
+            ' 720p',
+        ]
 
         self.category_dict = {
-                              'Serie TV' : 29,
-                              'Cartoni' : 8,
-                              'Anime' : 7,
-                              'Programmi e Film TV' : 1,
-                              'Documentari' : 14,
-                              'All' : 0, 
-                             }
-
-        self.urls = {'base_url' : 'http://forum.tntvillage.scambioetico.org',
-            'login' : 'http://forum.tntvillage.scambioetico.org/index.php?act=Login&CODE=01',
-            'detail' : 'http://forum.tntvillage.scambioetico.org/index.php?showtopic=%s',
-            'search' : 'http://forum.tntvillage.scambioetico.org/?act=allreleases&%s',
-            'search_page' : 'http://forum.tntvillage.scambioetico.org/?act=allreleases&st={0}&{1}',
-            'download' : 'http://forum.tntvillage.scambioetico.org/index.php?act=Attach&type=post&id=%s',
+            'Serie TV': 29,
+            'Cartoni': 8,
+            'Anime': 7,
+            'Programmi e Film TV': 1,
+            'Documentari': 14,
+            'All': 0,
         }
 
+        self.urls = {'base_url': 'http://forum.tntvillage.scambioetico.org',
+                     'login': 'http://forum.tntvillage.scambioetico.org/index.php?act=Login&CODE=01',
+                     'detail': 'http://forum.tntvillage.scambioetico.org/index.php?showtopic=%s',
+                     'search': 'http://forum.tntvillage.scambioetico.org/?act=allreleases&%s',
+                     'search_page': 'http://forum.tntvillage.scambioetico.org/?act=allreleases&st={0}&{1}',
+                     'download': 'http://forum.tntvillage.scambioetico.org/index.php?act=Attach&type=post&id=%s',
+                     }
+
         self.sub_string = [
-                           'sub',
-                           'softsub',
-                          ]
+            'sub',
+            'softsub',
+        ]
 
         self.url = self.urls['base_url']
 
@@ -153,7 +155,7 @@ class TNTVillageProvider(generic.TorrentProvider):
                         'PassWord': self.password,
                         'CookieDate': 0,
                         'submit': 'Connettiti al Forum',
-        }
+                        }
 
         try:
             response = self.session.post(self.urls['login'], data=login_params, timeout=30)
@@ -162,8 +164,8 @@ class TNTVillageProvider(generic.TorrentProvider):
             return False
 
         if re.search('Sono stati riscontrati i seguenti errori', response.text) \
-        or re.search('<title>Connettiti</title>', response.text) \
-        or response.status_code == 401:
+                or re.search('<title>Connettiti</title>', response.text) \
+                or response.status_code == 401:
             logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
             return False
 
@@ -178,7 +180,7 @@ class TNTVillageProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
             search_string['Season'].append(ep_string)
         return [search_string]
 
@@ -192,24 +194,24 @@ class TNTVillageProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                    str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -240,20 +242,20 @@ class TNTVillageProvider(generic.TorrentProvider):
 
         return quality_string
 
-    def _episodeQuality(self,torrent_rows):
+    def _episodeQuality(self, torrent_rows):
         """
             Return The quality from the scene episode HTML row.
         """
-        file_quality=''
+        file_quality = ''
 
         img_all = (torrent_rows.find_all('td'))[1].find_all('img')
-        
+
         if len(img_all) > 0:
             for img_type in img_all:
                 try:
-                    file_quality = file_quality + " " + img_type['src'].replace("style_images/mkportal-636/","").replace(".gif","").replace(".png","")
+                    file_quality = file_quality + " " + img_type['src'].replace("style_images/mkportal-636/", "").replace(".gif", "").replace(".png", "")
                 except Exception:
-                    logger.log(u"Failed parsing " + self.name + " Traceback: "  + traceback.format_exc(), logger.ERROR)
+                    logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
         else:
             file_quality = (torrent_rows.find_all('td'))[1].get_text()
@@ -262,7 +264,7 @@ class TNTVillageProvider(generic.TorrentProvider):
         checkName = lambda list, func: func([re.search(x, file_quality, re.I) for x in list])
 
         dvdOptions = checkName(["dvd", "dvdrip", "dvdmux", "DVD9", "DVD5"], any)
-        bluRayOptions = checkName(["BD","BDmux", "BDrip", "BRrip", "Bluray"], any)
+        bluRayOptions = checkName(["BD", "BDmux", "BDrip", "BRrip", "Bluray"], any)
         sdOptions = checkName(["h264", "divx", "XviD", "tv", "TVrip", "SATRip", "DTTrip", "Mpeg2"], any)
         hdOptions = checkName(["720p"], any)
         fullHD = checkName(["1080p", "fullHD"], any)
@@ -272,7 +274,7 @@ class TNTVillageProvider(generic.TorrentProvider):
 
         webdl = checkName(["webdl", "webmux", "webrip", "dl-webmux", "web-dlmux", "webdl-mux", "web-dl", "webdlmux", "dlmux"], any)
 
-        logger.log(u"Episode options: dvdOptions: " + str(dvdOptions) + ", bluRayOptions: " + str(bluRayOptions) + \
+        logger.log(u"Episode options: dvdOptions: " + str(dvdOptions) + ", bluRayOptions: " + str(bluRayOptions) +
                    ", sdOptions: " + str(sdOptions) + ", hdOptions: " + str(hdOptions) + ", fullHD: " + str(fullHD) + ", webdl: " + str(webdl), logger.DEBUG)
 
         if sdOptions and not dvdOptions and not fullHD and not hdOptions:
@@ -294,7 +296,7 @@ class TNTVillageProvider(generic.TorrentProvider):
         else:
             return Quality.UNKNOWN
 
-    def _is_italian(self,torrent_rows):
+    def _is_italian(self, torrent_rows):
 
         is_italian = 0
 
@@ -302,7 +304,7 @@ class TNTVillageProvider(generic.TorrentProvider):
 
         name = str(span_tag)
 
-        subFound=0
+        subFound = 0
 
         for sub in self.sub_string:
 
@@ -315,14 +317,14 @@ class TNTVillageProvider(generic.TorrentProvider):
 
             if re.search("ita", name[0], re.I):
                 logger.log(u"Found Italian release", logger.DEBUG)
-                is_italian=1
+                is_italian = 1
                 break
 
         if not subFound:
             if re.search("ita", name, re.I):
                 logger.log(u"Found Italian release", logger.DEBUG)
-                is_italian=1
-        
+                is_italian = 1
+
         return is_italian
 
     def _is_season_pack(self, name):
@@ -338,7 +340,7 @@ class TNTVillageProvider(generic.TorrentProvider):
             return False
 
         myDB = db.DBConnection()
-        sql_selection="select count(*) as count from tv_episodes where showid = ? and season = ?"
+        sql_selection = "select count(*) as count from tv_episodes where showid = ? and season = ?"
         episodes = myDB.select(sql_selection, [parse_result.show.indexerid, parse_result.season_number])
         if int(episodes[0]['count']) == len(parse_result.episode_numbers):
             return True
@@ -362,23 +364,23 @@ class TNTVillageProvider(generic.TorrentProvider):
                 if mode == 'RSS':
                     self.page = 2
 
-                last_page=0
-                y=int(self.page)
+                last_page = 0
+                y = int(self.page)
 
                 if search_string == '':
                     continue
 
                 search_string = str(search_string).replace('.', ' ')
 
-                for x in range(0,y):
-                    z=x*20
+                for x in range(0, y):
+                    z = x * 20
                     if last_page:
-                        break	
+                        break
 
                     if mode != 'RSS':
-                        searchURL = (self.urls['search_page'] + '&filter={2}').format(z,self.categories,search_string)
+                        searchURL = (self.urls['search_page'] + '&filter={2}').format(z, self.categories, search_string)
                     else:
-                        searchURL = self.urls['search_page'].format(z,self.categories)
+                        searchURL = self.urls['search_page'].format(z, self.categories)
 
                     logger.log(u"Search string: " + searchURL, logger.DEBUG)
 
@@ -389,19 +391,19 @@ class TNTVillageProvider(generic.TorrentProvider):
 
                     try:
                         with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                            torrent_table = html.find('table', attrs = {'class' : 'copyright'})
+                            torrent_table = html.find('table', attrs={'class': 'copyright'})
                             torrent_rows = torrent_table.find_all('tr') if torrent_table else []
 
-                            #Continue only if one Release is found
-                            if len(torrent_rows)<3:
+                            # Continue only if one Release is found
+                            if len(torrent_rows) < 3:
                                 logger.log(u"The server returned no torrents", logger.DEBUG)
-                                last_page=1
+                                last_page = 1
                                 continue
 
-                            logger.log(u"Parsing results from page " + str(x+1), logger.DEBUG)
+                            logger.log(u"Parsing results from page " + str(x + 1), logger.DEBUG)
 
                             if len(torrent_rows) < 42:
-                                last_page=1
+                                last_page = 1
 
                             for result in torrent_table.find_all('tr')[2:]:
 
@@ -426,15 +428,15 @@ class TNTVillageProvider(generic.TorrentProvider):
                                 filename_qt = self._reverseQuality(self._episodeQuality(result))
                                 for text in self.hdtext:
                                     title1 = title
-                                    title = title.replace(text,filename_qt)
+                                    title = title.replace(text, filename_qt)
                                     if title != title1:
                                         break
 
                                 if Quality.nameQuality(title) == Quality.UNKNOWN:
-                                    title += filename_qt 
+                                    title += filename_qt
 
                                 if not self._is_italian(result) and not self.subtitle:
-                                    logger.log(u"Subtitled, skipping "  + title + "(" + searchURL + ")", logger.DEBUG)
+                                    logger.log(u"Subtitled, skipping " + title + "(" + searchURL + ")", logger.DEBUG)
                                     continue
 
                                 if self._is_season_pack(title):
@@ -448,7 +450,7 @@ class TNTVillageProvider(generic.TorrentProvider):
                     except Exception:
                         logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
-                #For each search mode sort all the items by seeders
+                # For each search mode sort all the items by seeders
                 items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
                 results += items[mode]
@@ -485,7 +487,8 @@ class TNTVillageProvider(generic.TorrentProvider):
 
         for sqlshow in sqlResults:
             self.show = curshow = helpers.findCertainShow(sickbeard.showList, int(sqlshow["showid"]))
-            if not self.show: continue
+            if not self.show:
+                continue
             curEp = curshow.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
 
             searchString = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
@@ -501,6 +504,7 @@ class TNTVillageProvider(generic.TorrentProvider):
 
 
 class TNTVillageCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

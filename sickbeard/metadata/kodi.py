@@ -26,6 +26,7 @@ from sickbeard import encodingKludge as ek
 
 
 class KODIMetadata(kodi_12plus.KODI_12PlusMetadata):
+
     """
     Metadata generation class for KODI (legacy).
 

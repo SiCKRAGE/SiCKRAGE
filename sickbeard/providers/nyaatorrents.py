@@ -30,6 +30,7 @@ from sickbeard import show_name_helpers
 
 
 class NyaaProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "NyaaTorrents")
@@ -110,6 +111,7 @@ class NyaaProvider(generic.TorrentProvider):
 
 
 class NyaaCache(tvcache.TVCache):
+
     def __init__(self, provider):
         tvcache.TVCache.__init__(self, provider)
 

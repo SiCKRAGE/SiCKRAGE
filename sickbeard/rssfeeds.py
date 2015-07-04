@@ -15,6 +15,7 @@ from sqliteshelf import SQLiteShelf
 
 
 class RSSFeeds:
+
     def __init__(self, db_name='feeds'):
         try:
             db_name = ek.ek(os.path.join, sickbeard.CACHE_DIR, 'rss', db_name) + '.db'
@@ -32,7 +33,6 @@ class RSSFeeds:
             self.rssDB.close()
 
     def getFeed(self, url, post_data=None, request_headers=None, items=None, handlers=[]):
-
 
         if post_data:
             url += urllib.urlencode(post_data)

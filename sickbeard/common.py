@@ -21,6 +21,7 @@ import operator
 import platform
 import re
 import uuid
+from functools import reduce
 
 INSTANCE_ID = str(uuid.uuid1())
 USER_AGENT = ('SickRage/(' + platform.system() + '; ' + platform.release() + '; ' + INSTANCE_ID + ')')
@@ -36,13 +37,13 @@ subtitleExtensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
 cpu_presets = {'HIGH': 5,
                'NORMAL': 2,
                'LOW': 1
-}
+               }
 
-### Other constants
+# Other constants
 MULTI_EP_RESULT = -1
 SEASON_RESULT = -2
 
-### Notification Types
+# Notification Types
 NOTIFY_SNATCH = 1
 NOTIFY_DOWNLOAD = 2
 NOTIFY_SUBTITLE_DOWNLOAD = 3
@@ -56,7 +57,7 @@ notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] = "Subtitle Download Finished"
 notifyStrings[NOTIFY_GIT_UPDATE] = "SickRage Updated"
 notifyStrings[NOTIFY_GIT_UPDATE_TEXT] = "SickRage Updated To Commit#: "
 
-### Episode statuses
+# Episode statuses
 UNKNOWN = -1  # should never happen
 UNAIRED = 1  # episodes that haven't aired yet
 SNATCHED = 2  # qualified with quality
@@ -67,7 +68,7 @@ ARCHIVED = 6  # episodes that you don't have locally (counts toward download com
 IGNORED = 7  # episodes that you don't want included in your download stats
 SNATCHED_PROPER = 9  # qualified with quality
 SUBTITLED = 10  # qualified with quality
-FAILED = 11  #episode downloaded or snatched we don't want
+FAILED = 11  # episode downloaded or snatched we don't want
 SNATCHED_BEST = 12  # episode redownloaded using best quality
 
 NAMING_REPEAT = 1
@@ -94,7 +95,7 @@ class Quality:
     RAWHDTV = 1 << 3  # 8  -- 720p/1080i mpeg2 (trollhd releases)
     FULLHDTV = 1 << 4  # 16 -- 1080p HDTV (QCF releases)
     HDWEBDL = 1 << 5  # 32
-    FULLHDWEBDL = 1 << 6  # 64 -- 1080p web-dl                        
+    FULLHDWEBDL = 1 << 6  # 64 -- 1080p web-dl
     HDBLURAY = 1 << 7  # 128
     FULLHDBLURAY = 1 << 8  # 256
 
@@ -124,7 +125,7 @@ class Quality:
         toReturn = {}
         for x in Quality.qualityStrings.keys():
             toReturn[Quality.compositeStatus(status, x)] = Quality.statusPrefixes[status] + " (" + \
-                                                           Quality.qualityStrings[x] + ")"
+                Quality.qualityStrings[x] + ")"
         return toReturn
 
     @staticmethod
@@ -156,7 +157,7 @@ class Quality:
         If no quality is achieved it will try sceneQuality regex
         """
 
-        #Try Scene names first
+        # Try Scene names first
         quality = Quality.sceneQuality(name, anime)
         if quality != Quality.UNKNOWN:
             return quality
@@ -178,7 +179,7 @@ class Quality:
     @staticmethod
     def sceneQuality(name, anime=False):
         """
-        Return The quality from the scene episode File 
+        Return The quality from the scene episode File
         """
         if not name:
             return Quality.UNKNOWN
@@ -295,7 +296,7 @@ ANY = Quality.combineQualities(
     [Quality.SDTV, Quality.SDDVD, Quality.HDTV, Quality.FULLHDTV, Quality.HDWEBDL, Quality.FULLHDWEBDL,
      Quality.HDBLURAY, Quality.FULLHDBLURAY, Quality.UNKNOWN], [])  # SD + HD
 
-# legacy template, cant remove due to reference in mainDB upgrade?                                                                                                                                        
+# legacy template, cant remove due to reference in mainDB upgrade?
 BEST = Quality.combineQualities([Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])
 
 qualityPresets = (SD, HD, HD720p, HD1080p, ANY)
@@ -307,6 +308,7 @@ qualityPresetStrings = {SD: "SD",
 
 
 class StatusStrings:
+
     def __init__(self):
         self.statusStrings = {UNKNOWN: "Unknown",
                               UNAIRED: "Unaired",
@@ -329,7 +331,7 @@ class StatusStrings:
             else:
                 return self.statusStrings[status] + " (" + Quality.qualityStrings[quality] + ")"
         else:
-            return self.statusStrings[name] if self.statusStrings.has_key(name) else ''
+            return self.statusStrings[name] if name in self.statusStrings else ''
 
     def has_key(self, name):
         return name in self.statusStrings or name in Quality.DOWNLOADED or name in Quality.SNATCHED or name in Quality.SNATCHED_PROPER or name in Quality.SNATCHED_BEST
@@ -362,5 +364,4 @@ XML_NSMAP = {'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
 countryList = {'Australia': 'AU',
                'Canada': 'CA',
                'USA': 'US'
-}
-
+               }

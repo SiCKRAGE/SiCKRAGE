@@ -48,6 +48,7 @@ from sickbeard.helpers import verify_freespace
 
 
 class PostProcessor(object):
+
     """
     A class which will process a media file according to the post processing settings in the config.
     """
@@ -94,7 +95,7 @@ class PostProcessor(object):
         self.is_priority = is_priority
 
         self.log = ''
-        
+
         self.version = None
 
     def _log(self, message, level=logger.INFO):
@@ -182,21 +183,28 @@ class PostProcessor(object):
 
         # don't confuse glob with chars we didn't mean to use
         base_name = re.sub(r'[\[\]\*\?]', r'[\g<0>]', base_name)
-        
-        if subfolders: # subfolders are only checked in show folder, so names will always be exactly alike
-            filelist = ek.ek(recursive_glob, ek.ek(os.path.dirname, file_path), base_name + '*') # just create the list of all files starting with the basename
-        else: # this is called when PP, so we need to do the filename check case-insensitive
+
+        if subfolders:  # subfolders are only checked in show folder, so names will always be exactly alike
+            filelist = ek.ek(recursive_glob, ek.ek(os.path.dirname, file_path), base_name + '*')  # just create the list of all files starting with the basename
+        else:  # this is called when PP, so we need to do the filename check case-insensitive
             filelist = []
-                
-            checklist = ek.ek(glob.glob, helpers.fixGlob(ek.ek(os.path.join, ek.ek(os.path.dirname, file_path), '*'))) # get a list of all the files in the folder
-            for filefound in checklist: # loop through all the files in the folder, and check if they are the same name even when the cases don't match
+
+            checklist = ek.ek(
+                glob.glob,
+                helpers.fixGlob(
+                    ek.ek(
+                        os.path.join,
+                        ek.ek(
+                            os.path.dirname,
+                            file_path),
+                        '*')))  # get a list of all the files in the folder
+            for filefound in checklist:  # loop through all the files in the folder, and check if they are the same name even when the cases don't match
                 file_name = filefound.rpartition('.')[0]
                 if not base_name_only:
                     file_name = file_name + '.'
-                if file_name.lower() == base_name.lower(): # if there's no difference in the filename add it to the filelist
-                    filelist.append(filefound) 
-             
-                             
+                if file_name.lower() == base_name.lower():  # if there's no difference in the filename add it to the filelist
+                    filelist.append(filefound)
+
         for associated_file_path in filelist:
             # only add associated to list
             if associated_file_path == file_path:
@@ -211,12 +219,12 @@ class PostProcessor(object):
 
             if ek.ek(os.path.isfile, associated_file_path):
                 file_path_list.append(associated_file_path)
-        
+
         if file_path_list:
             self._log(u"Found the following associated files: " + str(file_path_list), logger.DEBUG)
         else:
             self._log(u"No associated files were during this pass", logger.DEBUG)
-            
+
         return file_path_list
 
     def _delete(self, file_path, associated_files=False):
@@ -304,7 +312,7 @@ class PostProcessor(object):
                     cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
-            if cur_extension == 'nfo' and sickbeard.NFO_RENAME == True:
+            if cur_extension == 'nfo' and sickbeard.NFO_RENAME:
                 cur_extension = 'nfo-orig'
 
             # If new base name then convert name
@@ -341,7 +349,7 @@ class PostProcessor(object):
             try:
                 helpers.moveFile(cur_file_path, new_file_path)
                 helpers.chmodAsParent(new_file_path)
-            except (IOError, OSError), e:
+            except (IOError, OSError) as e:
                 self._log("Unable to move file " + cur_file_path + " to " + new_file_path + ": " + ex(e), logger.ERROR)
                 raise
 
@@ -362,13 +370,12 @@ class PostProcessor(object):
             try:
                 helpers.copyFile(cur_file_path, new_file_path)
                 helpers.chmodAsParent(new_file_path)
-            except (IOError, OSError), e:
+            except (IOError, OSError) as e:
                 logger.log("Unable to copy file " + cur_file_path + " to " + new_file_path + ": " + ex(e), logger.ERROR)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_copy,
                                       subtitles=subtitles)
-
 
     def _hardlink(self, file_path, new_path, new_base_name, associated_files=False, subtitles=False):
         """
@@ -384,7 +391,7 @@ class PostProcessor(object):
             try:
                 helpers.hardlinkFile(cur_file_path, new_file_path)
                 helpers.chmodAsParent(new_file_path)
-            except (IOError, OSError), e:
+            except (IOError, OSError) as e:
                 self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": " + ex(e), logger.ERROR)
                 raise
 
@@ -404,7 +411,7 @@ class PostProcessor(object):
             try:
                 helpers.moveAndSymlinkFile(cur_file_path, new_file_path)
                 helpers.chmodAsParent(new_file_path)
-            except (IOError, OSError), e:
+            except (IOError, OSError) as e:
                 self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": " + ex(e), logger.ERROR)
                 raise
 
@@ -487,7 +494,6 @@ class PostProcessor(object):
             logger.log(u" or Parse result(air_date): " + str(parse_result.air_date), logger.DEBUG)
             logger.log(u"Parse result(release_group): " + str(parse_result.release_group), logger.DEBUG)
 
-
     def _analyze_name(self, name, file=True):
         """
         Takes a name and tries to figure out a show, season, and episode from it.
@@ -541,7 +547,7 @@ class PostProcessor(object):
             self._log(u"Adding the file to the anidb mylist", logger.DEBUG)
             try:
                 self.anidbEpisode.add_to_mylist(status=1)  # status = 1 sets the status of the file to "internal HDD"
-            except Exception, e:
+            except Exception as e:
                 self._log(u"exception msg: " + str(e))
 
     def _find_info(self):
@@ -569,14 +575,14 @@ class PostProcessor(object):
 
                         # try to analyze the dir + file name together as one name
                         lambda: self._analyze_name(self.folder_name + u' ' + self.file_name)
-        ]
+                        ]
 
         # attempt every possible method to get our info
         for cur_attempt in attempt_list:
 
             try:
                 (cur_show, cur_season, cur_episodes, cur_quality, cur_version) = cur_attempt()
-            except (InvalidNameException, InvalidShowException), e:
+            except (InvalidNameException, InvalidShowException) as e:
                 logger.log(u"Unable to parse, skipping: " + ex(e), logger.DEBUG)
                 continue
 
@@ -592,7 +598,7 @@ class PostProcessor(object):
             if cur_version is not None:
                 version = cur_version
 
-            if cur_season != None:
+            if cur_season is not None:
                 season = cur_season
             if cur_episodes:
                 episodes = cur_episodes
@@ -622,18 +628,18 @@ class PostProcessor(object):
                         episodes = [int(sql_result[0][1])]
                     else:
                         self._log(u"Unable to find episode with date " + str(episodes[0]) + u" for show " + str(
-                        show.indexerid) + u", skipping", logger.DEBUG)
+                            show.indexerid) + u", skipping", logger.DEBUG)
                         # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
                         episodes = []
                         continue
 
             # if there's no season then we can hopefully just use 1 automatically
-            elif season == None and show:
+            elif season is None and show:
                 myDB = db.DBConnection()
                 numseasonsSQlResult = myDB.select(
                     "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and indexer = ? and season != 0",
                     [show.indexerid, show.indexer])
-                if int(numseasonsSQlResult[0][0]) == 1 and season == None:
+                if int(numseasonsSQlResult[0][0]) == 1 and season is None:
                     self._log(
                         u"Don't have a season number, but this show appears to only have 1 season, setting season number to 1...",
                         logger.DEBUG)
@@ -665,12 +671,12 @@ class PostProcessor(object):
                 curEp = show.getEpisode(season, cur_episode)
                 if not curEp:
                     raise exceptions.EpisodeNotFoundException()
-            except exceptions.EpisodeNotFoundException, e:
+            except exceptions.EpisodeNotFoundException as e:
                 self._log(u"Unable to create episode: " + ex(e), logger.DEBUG)
                 raise exceptions.PostProcessingFailed()
 
             # associate all the episodes together under a single root episode
-            if root_ep == None:
+            if root_ep is None:
                 root_ep = curEp
                 root_ep.relatedEps = []
             elif curEp not in root_ep.relatedEps:
@@ -766,10 +772,10 @@ class PostProcessor(object):
                 out, err = p.communicate()  # @UnusedVariable
                 self._log(u"Script result: " + str(out), logger.DEBUG)
 
-            except OSError, e:
+            except OSError as e:
                 self._log(u"Unable to run extra_script: " + ex(e))
 
-            except Exception, e:
+            except Exception as e:
                 self._log(u"Unable to run extra_script: " + ex(e))
 
     def _is_priority(self, ep_obj, new_ep_quality):
@@ -802,7 +808,7 @@ class PostProcessor(object):
                 self._log(u"SB snatched this episode and it is a proper of equal or higher quality so I'm marking it as priority", logger.DEBUG)
                 return True
             return False
-            
+
         # if the user downloaded it manually and it's higher quality than the existing episode then it's priority
         if new_ep_quality > old_ep_quality and new_ep_quality != common.Quality.UNKNOWN:
             self._log(
@@ -846,7 +852,7 @@ class PostProcessor(object):
             self._log(u"This show isn't in your list, you need to add it to SB before post-processing an episode",
                       logger.WARNING)
             raise exceptions.PostProcessingFailed()
-        elif season == None or not episodes:
+        elif season is None or not episodes:
             self._log(u"Not enough information to determine what episode this is", logger.DEBUG)
             self._log(u"Quitting post-processing", logger.DEBUG)
             return False
@@ -909,7 +915,7 @@ class PostProcessor(object):
             self._log(
                 u"This download is marked a priority download so I'm going to replace an existing file if I find one",
                 logger.DEBUG)
-        
+
         # try to find out if we have enough space to perform the copy or move action.
         if not helpers.isFileLocked(self.file_path, False):
             if not verify_freespace(self.file_path, ek.ek(os.path.dirname, ep_obj.show._location), [ep_obj] + ep_obj.relatedEps):
@@ -917,7 +923,6 @@ class PostProcessor(object):
                 return False
         else:
             self._log("Unable to determine needed filespace as the source file is locked for access")
-        
 
         # delete the existing file (and company)
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
@@ -1020,7 +1025,7 @@ class PostProcessor(object):
         # add to anidb
         if ep_obj.show.is_anime and sickbeard.ANIDB_USE_MYLIST:
             self._add_to_anidb_mylist(self.file_path)
-        
+
         try:
             # move the episode and associated files to the show dir
             if self.process_method == "copy":
@@ -1046,7 +1051,7 @@ class PostProcessor(object):
                 raise exceptions.PostProcessingFailed("Unable to move the files to their new home")
         except (OSError, IOError):
             raise exceptions.PostProcessingFailed("Unable to move the files to their new home")
-                
+
         # download subtitles
         if sickbeard.USE_SUBTITLES and ep_obj.show.subtitles:
             for cur_ep in [ep_obj] + ep_obj.relatedEps:

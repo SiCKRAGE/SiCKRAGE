@@ -32,20 +32,27 @@ import babelfish
 subliminal.cache_region.configure('dogpile.cache.memory')
 
 SINGLE = 'und'
+
+
 def sortedServiceList():
     newList = []
 
     curIndex = 0
     for curService in sickbeard.SUBTITLES_SERVICES_LIST:
         if curService in subliminal.provider_manager.available_providers:
-            curServiceDict = {'id': curService, 'image': curService+'.png', 'name': curService, 'enabled': sickbeard.SUBTITLES_SERVICES_ENABLED[curIndex] == 1}
+            curServiceDict = {
+                'id': curService,
+                'image': curService +
+                '.png',
+                'name': curService,
+                'enabled': sickbeard.SUBTITLES_SERVICES_ENABLED[curIndex] == 1}
             newList.append(curServiceDict)
         curIndex += 1
 
     # add any services that are missing from that list
     for curService in subliminal.provider_manager.available_providers:
         if curService not in [x['id'] for x in newList]:
-            curServiceDict = {'id': curService, 'image': curService+'.png', 'name': curService, 'enabled': False}
+            curServiceDict = {'id': curService, 'image': curService + '.png', 'name': curService, 'enabled': False}
             newList.append(curServiceDict)
 
     return newList
@@ -53,18 +60,22 @@ def sortedServiceList():
 
 def getEnabledServiceList():
     return [x['name'] for x in sortedServiceList() if x['enabled']]
-    
+
+
 def isValidLanguage(language):
     return language if language in babelfish.language_converters['alpha2'].codes else u''
+
 
 def getLanguageName(selectLang):
     return babelfish.Language.fromalpha2(selectLang).name
 
-def wantedLanguages(sqlLike = False):
+
+def wantedLanguages(sqlLike=False):
     wantedLanguages = sorted(sickbeard.SUBTITLES_LANGUAGES)
     if sqlLike:
         return '%' + ','.join(wantedLanguages) + '%'
     return wantedLanguages
+
 
 def subtitlesLanguages(video_path):
     """Return a list detected subtitles for the given video file"""
@@ -73,14 +84,19 @@ def subtitlesLanguages(video_path):
     return u','.join([lang.alpha2 for lang in languages if lang.alpha2 in babelfish.language_converters['alpha2'].codes])
 
 # Return a list with languages that have alpha2 code
+
+
 def subtitleLanguageFilter():
     return [language for language in babelfish.LANGUAGE_MATRIX if language.alpha2 in babelfish.language_converters['alpha2'].codes]
 
+
 class SubtitlesFinder():
+
     """
     The SubtitlesFinder will be executed every hour but will not necessarly search
     and download subtitles. Only if the defined rule is true
     """
+
     def run(self, force=False):
         if not sickbeard.USE_SUBTITLES:
             return
@@ -92,7 +108,7 @@ class SubtitlesFinder():
         logger.log(u'Checking for subtitles', logger.INFO)
 
         # get episodes on which we want subtitles
-        # criteria is: 
+        # criteria is:
         #  - show subtitles = 1
         #  - episode subtitles != config wanted languages or SINGLE (depends on config multi)
         #  - search count < 2 and diff(airdate, now) > 1 week : now -> 1d
@@ -102,38 +118,55 @@ class SubtitlesFinder():
 
         # you have 5 minutes to understand that one. Good luck
         myDB = db.DBConnection()
-        sqlResults = myDB.select('SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.subtitles, e.subtitles_searchcount AS searchcount, e.subtitles_lastsearch AS lastsearch, e.location, (? - e.airdate) AS airdate_daydiff FROM tv_episodes AS e INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id) WHERE s.subtitles = 1 AND e.subtitles NOT LIKE (?) AND ((e.subtitles_searchcount <= 2 AND (? - e.airdate) > 7) OR (e.subtitles_searchcount <= 7 AND (? - e.airdate) <= 7)) AND (e.status IN ('+','.join([str(x) for x in Quality.DOWNLOADED])+') OR (e.status IN ('+','.join([str(x) for x in Quality.SNATCHED + Quality.SNATCHED_PROPER])+') AND e.location != ""))', [today, wantedLanguages(True), today, today])
+        sqlResults = myDB.select(
+            'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.subtitles, e.subtitles_searchcount AS searchcount, e.subtitles_lastsearch AS lastsearch, e.location, (? - e.airdate) AS airdate_daydiff FROM tv_episodes AS e INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id) WHERE s.subtitles = 1 AND e.subtitles NOT LIKE (?) AND ((e.subtitles_searchcount <= 2 AND (? - e.airdate) > 7) OR (e.subtitles_searchcount <= 7 AND (? - e.airdate) <= 7)) AND (e.status IN (' +
+            ','.join(
+                [
+                    str(x) for x in Quality.DOWNLOADED]) +
+            ') OR (e.status IN (' +
+            ','.join(
+                [
+                    str(x) for x in Quality.SNATCHED +
+                    Quality.SNATCHED_PROPER]) +
+            ') AND e.location != ""))',
+            [
+                today,
+                wantedLanguages(True),
+                today,
+                today])
         if len(sqlResults) == 0:
             logger.log('No subtitles to download', logger.INFO)
             return
-        
+
         rules = self._getRules()
         now = datetime.datetime.now()
         for epToSub in sqlResults:
 
             if not ek.ek(os.path.isfile, epToSub['location']):
-                logger.log('Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' % (epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
+                logger.log(
+                    'Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' %
+                    (epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
                 continue
-            
+
             # Old shows rule
             throwaway = datetime.datetime.strptime('20110101', '%Y%m%d')
             if ((epToSub['airdate_daydiff'] > 7 and epToSub['searchcount'] < 2 and now - datetime.datetime.strptime(epToSub['lastsearch'], '%Y-%m-%d %H:%M:%S') > datetime.timedelta(hours=rules['old'][epToSub['searchcount']])) or
-                # Recent shows rule 
-                (epToSub['airdate_daydiff'] <= 7 and epToSub['searchcount'] < 7 and now - datetime.datetime.strptime(epToSub['lastsearch'], '%Y-%m-%d %H:%M:%S') > datetime.timedelta(hours=rules['new'][epToSub['searchcount']]))):
+                    # Recent shows rule
+                    (epToSub['airdate_daydiff'] <= 7 and epToSub['searchcount'] < 7 and now - datetime.datetime.strptime(epToSub['lastsearch'], '%Y-%m-%d %H:%M:%S') > datetime.timedelta(hours=rules['new'][epToSub['searchcount']]))):
                 logger.log('Downloading subtitles for episode %dx%d of show %s' % (epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
-                
+
                 showObj = helpers.findCertainShow(sickbeard.showList, int(epToSub['showid']))
                 if not showObj:
                     logger.log(u'Show not found', logger.DEBUG)
                     return
-                
+
                 epObj = showObj.getEpisode(int(epToSub["season"]), int(epToSub["episode"]))
                 if isinstance(epObj, str):
                     logger.log(u'Episode not found', logger.DEBUG)
                     return
-                
+
                 previous_subtitles = epObj.subtitles
-                
+
                 try:
                     epObj.downloadSubtitles()
                 except:

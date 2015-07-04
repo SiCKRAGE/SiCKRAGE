@@ -24,6 +24,7 @@ from sickbeard import encodingKludge as ek
 
 
 class PS3Metadata(generic.GenericMetadata):
+
     """
     Metadata generation class for Sony PS3.
 

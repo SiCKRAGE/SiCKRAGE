@@ -26,6 +26,7 @@ from sickbeard.clients.generic import GenericClient
 
 
 class TransmissionAPI(GenericClient):
+
     def __init__(self, host=None, username=None, password=None):
 
         super(TransmissionAPI, self).__init__('Transmission', host, username, password)
@@ -54,10 +55,10 @@ class TransmissionAPI(GenericClient):
 
         self.session.headers.update({'x-transmission-session-id': self.auth})
 
-        #Validating Transmission authorization
+        # Validating Transmission authorization
         post_data = json.dumps({'arguments': {},
                                 'method': 'session-get',
-        })
+                                })
         self._request(method='post', data=post_data)
 
         return self.auth
@@ -67,10 +68,10 @@ class TransmissionAPI(GenericClient):
         arguments = {'filename': result.url,
                      'paused': 1 if sickbeard.TORRENT_PAUSED else 0,
                      'download-dir': sickbeard.TORRENT_PATH
-        }
+                     }
         post_data = json.dumps({'arguments': arguments,
                                 'method': 'torrent-add',
-        })
+                                })
         self._request(method='post', data=post_data)
 
         return self.response.json()['result'] == "success"
@@ -80,10 +81,10 @@ class TransmissionAPI(GenericClient):
         arguments = {'metainfo': b64encode(result.content),
                      'paused': 1 if sickbeard.TORRENT_PAUSED else 0,
                      'download-dir': sickbeard.TORRENT_PATH
-        }
+                     }
         post_data = json.dumps({'arguments': arguments,
                                 'method': 'torrent-add',
-        })
+                                })
         self._request(method='post', data=post_data)
 
         return self.response.json()['result'] == "success"
@@ -106,10 +107,10 @@ class TransmissionAPI(GenericClient):
         arguments = {'ids': [result.hash],
                      'seedRatioLimit': ratio,
                      'seedRatioMode': mode
-        }
+                     }
         post_data = json.dumps({'arguments': arguments,
                                 'method': 'torrent-set',
-        })
+                                })
         self._request(method='post', data=post_data)
 
         return self.response.json()['result'] == "success"
@@ -121,11 +122,11 @@ class TransmissionAPI(GenericClient):
             arguments = {'ids': [result.hash],
                          'seedIdleLimit': time,
                          'seedIdleMode': 1
-            }
+                         }
 
             post_data = json.dumps({'arguments': arguments,
-                                'method': 'torrent-set',
-            })
+                                    'method': 'torrent-set',
+                                    })
             self._request(method='post', data=post_data)
 
             return self.response.json()['result'] == "success"
@@ -150,7 +151,7 @@ class TransmissionAPI(GenericClient):
 
         post_data = json.dumps({'arguments': arguments,
                                 'method': 'torrent-set',
-        })
+                                })
         self._request(method='post', data=post_data)
 
         return self.response.json()['result'] == "success"

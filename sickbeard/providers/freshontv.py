@@ -60,11 +60,11 @@ class FreshOnTVProvider(generic.TorrentProvider):
         self.cache = FreshOnTVCache(self)
 
         self.urls = {'base_url': 'https://freshon.tv/',
-                'login': 'https://freshon.tv/login.php?action=makelogin',
-                'detail': 'https://freshon.tv/details.php?id=%s',
-                'search': 'https://freshon.tv/browse.php?incldead=%s&words=0&cat=0&search=%s',
-                'download': 'https://freshon.tv/download.php?id=%s&type=torrent',
-                }
+                     'login': 'https://freshon.tv/login.php?action=makelogin',
+                     'detail': 'https://freshon.tv/details.php?id=%s',
+                     'search': 'https://freshon.tv/browse.php?incldead=%s&words=0&cat=0&search=%s',
+                     'download': 'https://freshon.tv/download.php?id=%s&type=torrent',
+                     }
 
         self.url = self.urls['base_url']
 
@@ -98,7 +98,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
             login_params = {'username': self.username,
                             'password': self.password,
                             'login': 'submit'
-            }
+                            }
 
             if not self.session:
                 self.session = requests.Session()
@@ -119,7 +119,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
 
                         self.cookies = {'uid': self._uid,
                                         'pass': self._hash
-                        }
+                                        }
                         return True
                 except:
                     logger.log(u'Unable to obtain cookie for FreshOnTV', logger.ERROR)
@@ -135,7 +135,6 @@ class FreshOnTVProvider(generic.TorrentProvider):
 
                     return False
 
-
     def _get_season_search_strings(self, ep_obj):
 
         search_string = {'Season': []}
@@ -145,7 +144,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + '.' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -161,24 +160,24 @@ class FreshOnTVProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                    str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -206,13 +205,13 @@ class FreshOnTVProvider(generic.TorrentProvider):
                 max_page_number = 0
 
                 if not init_html:
-                    logger.log(u"The opening search response from " + self.name + " is empty.",logger.DEBUG)
+                    logger.log(u"The opening search response from " + self.name + " is empty.", logger.DEBUG)
                     continue
 
                 try:
                     with BS4Parser(init_html, features=["html5lib", "permissive"]) as init_soup:
 
-                        #Check to see if there is more than 1 page of results
+                        # Check to see if there is more than 1 page of results
                         pager = init_soup.find('div', {'class': 'pager'})
                         if pager:
                             page_links = pager.find_all('a', href=True)
@@ -227,10 +226,10 @@ class FreshOnTVProvider(generic.TorrentProvider):
                                     if page_int > max_page_number:
                                         max_page_number = page_int
 
-                        #limit page number to 15 just in case something goes wrong
+                        # limit page number to 15 just in case something goes wrong
                         if max_page_number > 15:
                             max_page_number = 15
-                        #limit RSS search
+                        # limit RSS search
                         if max_page_number > 3 and mode is 'RSS':
                             max_page_number = 3
                 except:
@@ -240,7 +239,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
                 data_response_list = []
                 data_response_list.append(init_html)
 
-                #Freshon starts counting pages from zero, even though it displays numbers from 1
+                # Freshon starts counting pages from zero, even though it displays numbers from 1
                 if max_page_number > 1:
                     for i in range(1, max_page_number):
 
@@ -250,7 +249,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
                         page_html = self.getURL(page_searchURL)
 
                         if not page_html:
-                            logger.log(u"The search response for page number " + str(i) + " is empty." + self.name,logger.DEBUG)
+                            logger.log(u"The search response for page number " + str(i) + " is empty." + self.name, logger.DEBUG)
                             continue
 
                         data_response_list.append(page_html)
@@ -263,14 +262,14 @@ class FreshOnTVProvider(generic.TorrentProvider):
 
                             torrent_rows = html.findAll("tr", {"class": re.compile('torrent_[0-9]*')})
 
-                            #Continue only if a Release is found
+                            # Continue only if a Release is found
                             if len(torrent_rows) == 0:
                                 logger.log(u"The Data returned from " + self.name + " does not contain any torrent", logger.DEBUG)
                                 continue
 
                             for individual_torrent in torrent_rows:
 
-                                #skip if torrent has been nuked due to poor quality
+                                # skip if torrent has been nuked due to poor quality
                                 if individual_torrent.find('img', alt='Nuked') != None:
                                     continue
 
@@ -285,7 +284,12 @@ class FreshOnTVProvider(generic.TorrentProvider):
                                     id = int((re.match('.*?([0-9]+)$', details_url).group(1)).strip())
                                     download_url = self.urls['download'] % (str(id))
                                 except:
-                                    logger.log(u"Unable to parse torrent id & download url  " + self.name + " Traceback: " + traceback.format_exc(), logger.DEBUG)
+                                    logger.log(
+                                        u"Unable to parse torrent id & download url  " +
+                                        self.name +
+                                        " Traceback: " +
+                                        traceback.format_exc(),
+                                        logger.DEBUG)
                                     continue
 
                                 try:
@@ -299,7 +303,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
                                     logger.log(u"Unable to parse torrent leechers content " + self.name + " Traceback: " + traceback.format_exc(), logger.DEBUG)
                                     leechers = 0
 
-                                #Filter unseeded torrent
+                                # Filter unseeded torrent
                                 if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                                     continue
 
@@ -314,7 +318,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
                 except Exception as e:
                     logger.log(u"Failed parsing " + " Traceback: " + traceback.format_exc(), logger.DEBUG)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -367,6 +371,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
 
 
 class FreshOnTVCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

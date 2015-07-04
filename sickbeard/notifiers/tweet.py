@@ -23,9 +23,9 @@ from sickbeard.exceptions import ex
 
 # parse_qsl moved to urlparse module in v2.6
 try:
-    from urlparse import parse_qsl  #@UnusedImport
+    from urlparse import parse_qsl  # @UnusedImport
 except:
-    from cgi import parse_qsl  #@Reimport
+    from cgi import parse_qsl  # @Reimport
 
 import lib.oauth2 as oauth
 import lib.pythontwitter as twitter
@@ -51,11 +51,11 @@ class TwitterNotifier:
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyTwitter(common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
-            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_TWITTER:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._notifyTwitter(title + " - " + update_text + new_version)
 
     def test_notify(self):
@@ -63,7 +63,7 @@ class TwitterNotifier:
 
     def _get_authorization(self):
 
-        signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()  #@UnusedVariable
+        signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()  # @UnusedVariable
         oauth_consumer = oauth.Consumer(key=self.consumer_key, secret=self.consumer_secret)
         oauth_client = oauth.Client(oauth_consumer)
 
@@ -93,7 +93,7 @@ class TwitterNotifier:
 
         logger.log('Generating and signing request for an access token using key ' + key, logger.DEBUG)
 
-        signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()  #@UnusedVariable
+        signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()  # @UnusedVariable
         oauth_consumer = oauth.Consumer(key=self.consumer_key, secret=self.consumer_secret)
         logger.log('oauth_consumer: ' + str(oauth_consumer), logger.DEBUG)
         oauth_client = oauth.Client(oauth_consumer, token)
@@ -115,7 +115,6 @@ class TwitterNotifier:
             sickbeard.TWITTER_PASSWORD = access_token['oauth_token_secret']
             return True
 
-
     def _send_tweet(self, message=None):
 
         username = self.consumer_key
@@ -129,7 +128,7 @@ class TwitterNotifier:
 
         try:
             api.PostUpdate(message.encode('utf8'))
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Error Sending Tweet: " + ex(e), logger.ERROR)
             return False
 

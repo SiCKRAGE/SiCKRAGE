@@ -43,13 +43,14 @@ shutil.copyfile = lib.shutil_custom.copyfile_custom
 
 
 class CheckVersion():
+
     """
     Version check class meant to run as a thread object with the sr scheduler.
     """
 
     def __init__(self):
         self.updater = None
-        self.install_type = None        
+        self.install_type = None
         self.amActive = False
         if sickbeard.gh:
             self.install_type = self.find_install_type()
@@ -85,24 +86,24 @@ class CheckVersion():
             backupDir = os.path.join(sickbeard.DATA_DIR, 'backup')
             if not os.path.isdir(backupDir):
                 os.mkdir(backupDir)
-    
+
             if self._keeplatestbackup(backupDir) == True and self._backup(backupDir) == True:
                 logger.log(u"Config backup successful, updating...")
                 ui.notifications.message('Backup', 'Config backup successful, updating...')
                 return True
             else:
-                logger.log(u"Config backup failed, aborting update",logger.ERROR)
+                logger.log(u"Config backup failed, aborting update", logger.ERROR)
                 ui.notifications.message('Backup', 'Config backup failed, aborting update')
                 return False
         except Exception as e:
-            logger.log('Update: Config backup failed. Error: {0}'.format(ex(e)),logger.ERROR)
+            logger.log('Update: Config backup failed. Error: {0}'.format(ex(e)), logger.ERROR)
             ui.notifications.message('Backup', 'Config backup failed, aborting update')
             return False
 
-    def _keeplatestbackup(self,backupDir=None):
+    def _keeplatestbackup(self, backupDir=None):
         if backupDir:
             import glob
-            files = glob.glob(os.path.join(backupDir,'*.zip'))
+            files = glob.glob(os.path.join(backupDir, '*.zip'))
             if not files:
                 return True
             now = time.time()
@@ -112,15 +113,15 @@ class CheckVersion():
                 if age < newest[1]:
                     newest = file, age
             files.remove(newest[0])
-            
+
             for file in files:
                 os.remove(file)
             return True
         else:
             return False
-    
+
     # TODO: Merge with backup in helpers
-    def _backup(self,backupDir=None):
+    def _backup(self, backupDir=None):
         if backupDir:
             source = [os.path.join(sickbeard.DATA_DIR, 'sickbeard.db'), sickbeard.CONFIG_FILE]
             source.append(os.path.join(sickbeard.DATA_DIR, 'failed.db'))
@@ -161,7 +162,7 @@ class CheckVersion():
             except:
                 logger.log(u"We can't proceed with the update. Unable to compare DB version", logger.ERROR)
                 return False
-        
+
         def postprocessor_safe(self):
             if not sickbeard.autoPostProcesserScheduler.action.amActive:
                 logger.log(u"We can proceed with the update. Post-Processor is not running", logger.DEBUG)
@@ -169,7 +170,7 @@ class CheckVersion():
             else:
                 logger.log(u"We can't proceed with the update. Post-Processor is running", logger.DEBUG)
                 return False
-        
+
         def showupdate_safe(self):
             if not sickbeard.showUpdateScheduler.action.amActive:
                 logger.log(u"We can proceed with the update. Shows are not being updated", logger.DEBUG)
@@ -182,7 +183,7 @@ class CheckVersion():
         postprocessor_safe = postprocessor_safe(self)
         showupdate_safe = showupdate_safe(self)
 
-        if db_safe == True and postprocessor_safe == True and showupdate_safe == True:
+        if db_safe and postprocessor_safe and showupdate_safe:
             logger.log(u"Proceeding with auto update", logger.DEBUG)
             return True
         else:
@@ -191,9 +192,9 @@ class CheckVersion():
 
     def getDBcompare(self, branchDest):
         try:
-            response = requests.get("https://raw.githubusercontent.com/SICKRAGETV/SickRage/" + str(branchDest) +"/sickbeard/databases/mainDB.py")
+            response = requests.get("https://raw.githubusercontent.com/SICKRAGETV/SickRage/" + str(branchDest) + "/sickbeard/databases/mainDB.py")
             response.raise_for_status()
-            match = re.search(r"MAX_DB_VERSION\s=\s(?P<version>\d{2,3})",response.text)
+            match = re.search(r"MAX_DB_VERSION\s=\s(?P<version>\d{2,3})", response.text)
             branchDestDBversion = int(match.group('version'))
             myDB = db.DBConnection()
             branchCurrDBversion = myDB.checkDBVersion()
@@ -278,6 +279,7 @@ class CheckVersion():
 
 
 class UpdateManager():
+
     def get_github_org(self):
         return sickbeard.GIT_ORG
 
@@ -287,7 +289,9 @@ class UpdateManager():
     def get_update_url(self):
         return sickbeard.WEB_ROOT + "/home/update/?pid=" + str(sickbeard.PID)
 
+
 class GitUpdateManager(UpdateManager):
+
     def __init__(self):
         self._git_path = self._find_working_git()
         self.github_org = self.get_github_org()
@@ -322,7 +326,6 @@ class GitUpdateManager(UpdateManager):
             logger.log(u"Not using: " + main_git, logger.DEBUG)
 
         # trying alternatives
-
 
         alternative_git = []
 
@@ -374,7 +377,6 @@ class GitUpdateManager(UpdateManager):
             if output:
                 output = output.strip()
 
-
         except OSError:
             logger.log(u"Command " + cmd + " didn't work")
             exit_status = 1
@@ -385,7 +387,7 @@ class GitUpdateManager(UpdateManager):
 
         elif exit_status == 1:
             if 'stash' in output:
-                logger.log(u"Please enable 'git reset' in settings or stash your changes in local files",logger.WARNING)
+                logger.log(u"Please enable 'git reset' in settings or stash your changes in local files", logger.WARNING)
             else:
                 logger.log(cmd + u" returned : " + str(output), logger.ERROR)
             exit_status = 1
@@ -429,9 +431,9 @@ class GitUpdateManager(UpdateManager):
             if branch:
                 sickbeard.BRANCH = branch
                 return branch
-                
+
         return ""
-        
+
     def _check_github_for_update(self):
         """
         Uses git commands to check if there is a newer version that the provided
@@ -524,7 +526,7 @@ class GitUpdateManager(UpdateManager):
         else:
             try:
                 self._check_github_for_update()
-            except Exception, e:
+            except Exception as e:
                 logger.log(u"Unable to contact github, can't check for update: " + repr(e), logger.WARNING)
                 return False
 
@@ -595,7 +597,9 @@ class GitUpdateManager(UpdateManager):
     def update_remote_origin(self):
         self._run_git(self._git_path, 'config remote.%s.url %s' % (sickbeard.GIT_REMOTE, sickbeard.GIT_REMOTE_URL))
 
+
 class SourceUpdateManager(UpdateManager):
+
     def __init__(self):
         self.github_org = self.get_github_org()
         self.github_repo = self.get_github_repo()
@@ -613,12 +617,12 @@ class SourceUpdateManager(UpdateManager):
             return "master"
         else:
             return sickbeard.CUR_COMMIT_BRANCH
-        
+
     def need_update(self):
         # need this to run first to set self._newest_commit_hash
         try:
             self._check_github_for_update()
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Unable to contact github, can't check for update: " + repr(e), logger.WARNING)
             return False
 
@@ -754,13 +758,13 @@ class SourceUpdateManager(UpdateManager):
 
                     # Avoid DLL access problem on WIN32/64
                     # These files needing to be updated manually
-                    #or find a way to kill the access from memory
+                    # or find a way to kill the access from memory
                     if curfile in ('unrar.dll', 'unrar64.dll'):
                         try:
                             os.chmod(new_path, stat.S_IWRITE)
                             os.remove(new_path)
                             os.renames(old_path, new_path)
-                        except Exception, e:
+                        except Exception as e:
                             logger.log(u"Unable to update " + new_path + ': ' + ex(e), logger.DEBUG)
                             os.remove(old_path)  # Trash the updated file without moving in new path
                         continue
@@ -771,8 +775,8 @@ class SourceUpdateManager(UpdateManager):
 
             sickbeard.CUR_COMMIT_HASH = self._newest_commit_hash
             sickbeard.CUR_COMMIT_BRANCH = self.branch
-            
-        except Exception, e:
+
+        except Exception as e:
             logger.log(u"Error while trying to update: " + ex(e), logger.ERROR)
             logger.log(u"Traceback: " + traceback.format_exc(), logger.DEBUG)
             return False

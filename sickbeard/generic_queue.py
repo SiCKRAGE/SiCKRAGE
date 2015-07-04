@@ -29,6 +29,7 @@ class QueuePriorities:
 
 
 class GenericQueue(object):
+
     def __init__(self):
 
         self.currentItem = None
@@ -92,7 +93,9 @@ class GenericQueue(object):
                 self.currentItem.name = self.queue_name + '-' + self.currentItem.name
                 self.currentItem.start()
 
+
 class QueueItem(threading.Thread):
+
     def __init__(self, name, action_id=0):
         super(QueueItem, self).__init__()
 

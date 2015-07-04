@@ -22,13 +22,15 @@ from sickbeard.common import Quality
 
 # Add new migrations at the bottom of the list; subclass the previous migration.
 class InitialSchema(db.SchemaUpgrade):
+
     def test(self):
         return self.hasTable('db_version')
 
     def execute(self):
         queries = [
             ('CREATE TABLE failed (release TEXT, size NUMERIC, provider TEXT);',),
-            ('CREATE TABLE history (date NUMERIC, size NUMERIC, release TEXT, provider TEXT, old_status NUMERIC DEFAULT 0, showid NUMERIC DEFAULT -1, season NUMERIC DEFAULT -1, episode NUMERIC DEFAULT -1);',),
+            ('CREATE TABLE history (date NUMERIC, size NUMERIC, release TEXT, provider TEXT, old_status NUMERIC DEFAULT 0, showid NUMERIC DEFAULT -1, season NUMERIC DEFAULT -1, episode NUMERIC DEFAULT -1);',
+             ),
             ('CREATE TABLE db_version (db_version INTEGER);',),
             ('INSERT INTO db_version (db_version) VALUES (1);',),
         ]
@@ -40,6 +42,7 @@ class InitialSchema(db.SchemaUpgrade):
 
 
 class SizeAndProvider(InitialSchema):
+
     def test(self):
         return self.hasColumn('failed', 'size') and self.hasColumn('failed', 'provider')
 
@@ -49,6 +52,7 @@ class SizeAndProvider(InitialSchema):
 
 
 class History(SizeAndProvider):
+
     """Snatch history that can't be modified by the user"""
 
     def test(self):
@@ -60,6 +64,7 @@ class History(SizeAndProvider):
 
 
 class HistoryStatus(History):
+
     """Store episode status before snatch to revert to if necessary"""
 
     def test(self):

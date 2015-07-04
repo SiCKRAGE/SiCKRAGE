@@ -38,7 +38,9 @@ from lib.tmdb_api.tmdb_api import TMDB
 import fanart
 from fanart.core import Request as fanartRequest
 
+
 class GenericMetadata():
+
     """
     Base class for all metadata providers. Default behavior is meant to mostly
     follow KODI 12+ metadata standards. Has support for:
@@ -144,21 +146,21 @@ class GenericMetadata():
 
     def _has_episode_thumb(self, ep_obj):
         location = self.get_episode_thumb_path(ep_obj)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
 
     def _has_season_poster(self, show_obj, season):
         location = self.get_season_poster_path(show_obj, season)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
 
     def _has_season_banner(self, show_obj, season):
         location = self.get_season_banner_path(show_obj, season)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
@@ -302,7 +304,7 @@ class GenericMetadata():
                 helpers.chmodAsParent(nfo_file_path)
 
                 return True
-            except IOError, e:
+            except IOError as e:
                 logger.log(
                     u"Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? " + ex(e),
                     logger.ERROR)
@@ -429,7 +431,7 @@ class GenericMetadata():
             data.write(nfo_file, encoding="utf-8")
             nfo_file.close()
             helpers.chmodAsParent(nfo_file_path)
-        except IOError, e:
+        except IOError as e:
             logger.log(u"Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? " + ex(e),
                        logger.ERROR)
             return False
@@ -474,7 +476,7 @@ class GenericMetadata():
             data.write(nfo_file, encoding="utf-8")
             nfo_file.close()
             helpers.chmodAsParent(nfo_file_path)
-        except IOError, e:
+        except IOError as e:
             logger.log(u"Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? " + ex(e),
                        logger.ERROR)
             return False
@@ -724,7 +726,7 @@ class GenericMetadata():
             outFile.write(image_data)
             outFile.close()
             helpers.chmodAsParent(image_path)
-        except IOError, e:
+        except IOError as e:
             logger.log(
                 u"Unable to write image to " + image_path + " - are you sure the show folder is writable? " + ex(e),
                 logger.ERROR)
@@ -760,10 +762,10 @@ class GenericMetadata():
 
             t = sickbeard.indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
-        except (sickbeard.indexer_error, IOError), e:
+        except (sickbeard.indexer_error, IOError) as e:
             logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
                 show_obj.indexer).name + ", not downloading images: " + ex(e), logger.WARNING)
-            logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)                
+            logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
             return None
 
         if image_type not in ('fanart', 'poster', 'banner', 'poster_thumb', 'banner_thumb'):
@@ -830,7 +832,7 @@ class GenericMetadata():
 
             t = sickbeard.indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
-        except (sickbeard.indexer_error, IOError), e:
+        except (sickbeard.indexer_error, IOError) as e:
             logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
                 show_obj.indexer).name + ", not downloading images: " + ex(e), logger.WARNING)
             logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
@@ -884,7 +886,7 @@ class GenericMetadata():
 
             t = sickbeard.indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
-        except (sickbeard.indexer_error, IOError), e:
+        except (sickbeard.indexer_error, IOError) as e:
             logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
                 show_obj.indexer).name + ", not downloading images: " + ex(e), logger.WARNING)
             logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
@@ -936,9 +938,9 @@ class GenericMetadata():
             if showXML.findtext('title') == None \
                     or (showXML.findtext('tvdbid') == None
                         and showXML.findtext('id') == None):
-                logger.log(u"Invalid info in tvshow.nfo (missing name or id):" \
-                           + str(showXML.findtext('title')) + " " \
-                           + str(showXML.findtext('tvdbid')) + " " \
+                logger.log(u"Invalid info in tvshow.nfo (missing name or id):"
+                           + str(showXML.findtext('title')) + " "
+                           + str(showXML.findtext('tvdbid')) + " "
                            + str(showXML.findtext('id')))
                 return empty_return
 
@@ -965,8 +967,7 @@ class GenericMetadata():
                     elif 'tvrage' in epg_url:
                         indexer = 2
 
-
-        except Exception, e:
+        except Exception as e:
             logger.log(
                 u"There was an error parsing your existing metadata file: '" + metadata_path + "' error: " + ex(e),
                 logger.WARNING)
@@ -1011,7 +1012,7 @@ class GenericMetadata():
                  'poster_thumb': fanart.TYPE.TV.POSTER,
                  'banner_thumb': fanart.TYPE.TV.BANNER,
                  'fanart': fanart.TYPE.TV.BACKGROUND,
-        }
+                 }
 
         try:
             indexerid = helpers.mapIndexersToShow(show)[1]

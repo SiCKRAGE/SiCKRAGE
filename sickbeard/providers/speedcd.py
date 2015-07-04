@@ -57,11 +57,11 @@ class SpeedCDProvider(generic.TorrentProvider):
         self.cache = SpeedCDCache(self)
 
         self.urls = {'base_url': 'http://speed.cd/',
-                'login': 'http://speed.cd/take_login.php',
-                'detail': 'http://speed.cd/t/%s',
-                'search': 'http://speed.cd/V3/API/API.php',
-                'download': 'http://speed.cd/download.php?torrent=%s',
-                }
+                     'login': 'http://speed.cd/take_login.php',
+                     'detail': 'http://speed.cd/t/%s',
+                     'search': 'http://speed.cd/V3/API/API.php',
+                     'download': 'http://speed.cd/download.php?torrent=%s',
+                     }
 
         self.url = self.urls['base_url']
 
@@ -82,11 +82,11 @@ class SpeedCDProvider(generic.TorrentProvider):
 
         login_params = {'username': self.username,
                         'password': self.password
-        }
+                        }
 
         try:
             response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
 
@@ -99,7 +99,7 @@ class SpeedCDProvider(generic.TorrentProvider):
 
     def _get_season_search_strings(self, ep_obj):
 
-        #If Every episode in Season is a wanted Episode then search for Season first
+        # If Every episode in Season is a wanted Episode then search for Season first
         search_string = {'Season': []}
         for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
             if ep_obj.show.air_by_date or ep_obj.show.sports:
@@ -107,7 +107,7 @@ class SpeedCDProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -123,24 +123,24 @@ class SpeedCDProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                    str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -192,7 +192,7 @@ class SpeedCDProvider(generic.TorrentProvider):
                     item = title, url, seeders, leechers
                     items[mode].append(item)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[2], reverse=True)
 
             results += items[mode]
@@ -245,6 +245,7 @@ class SpeedCDProvider(generic.TorrentProvider):
 
 
 class SpeedCDCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)
@@ -257,4 +258,3 @@ class SpeedCDCache(tvcache.TVCache):
         return {'entries': self.provider._doSearch(search_params)}
 
 provider = SpeedCDProvider()
-

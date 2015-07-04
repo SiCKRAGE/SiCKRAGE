@@ -46,7 +46,7 @@ __all__ = ['womble',
            'binsearch',
            'scenetime',
            'btdigg',
-]
+           ]
 
 import sickbeard
 import generic
@@ -54,6 +54,7 @@ import generic
 from sickbeard import logger
 from os import sys
 from random import shuffle
+
 
 def sortedProviderList(randomize=False):
     initialList = sickbeard.providerList + sickbeard.newznabProviderList + sickbeard.torrentRssProviderList
@@ -202,7 +203,7 @@ def makeTorrentRssProvider(configString):
 
 
 def getDefaultNewznabProviders():
-    #name|url|key|catIDs|enabled|search_mode|search_fallback|enable_daily|enable_backlog
+    # name|url|key|catIDs|enabled|search_mode|search_fallback|enable_daily|enable_backlog
     return 'NZB.Cat|https://nzb.cat/||5030,5040,5010,5060|0|eponly|1|1|1!!!' + \
            'Sick Beard Index|http://lolo.sickbeard.com/|0|5030,5040|0|eponly|0|0|0!!!' + \
            'NZBs.org|https://nzbs.org/||5030,5040|0|eponly|0|0|0!!!' + \

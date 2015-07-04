@@ -37,7 +37,9 @@ from name_parser.parser import NameParser, InvalidNameException, InvalidShowExce
 from sickbeard import encodingKludge as ek
 from sickbeard import show_name_helpers
 
+
 class CacheDBConnection(db.DBConnection):
+
     def __init__(self, providerName):
         db.DBConnection.__init__(self, "cache.db")
 
@@ -45,7 +47,9 @@ class CacheDBConnection(db.DBConnection):
         try:
             if not self.hasTable(providerName):
                 self.action(
-                    "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
+                    "CREATE TABLE [" +
+                    providerName +
+                    "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
             else:
                 sqlResults = self.select("SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
 
@@ -63,7 +67,7 @@ class CacheDBConnection(db.DBConnection):
             if not self.hasColumn(providerName, 'version'):
                 self.addColumn(providerName, 'version', "NUMERIC", "-1")
 
-        except Exception, e:
+        except Exception as e:
             if str(e) != "table [" + providerName + "] already exists":
                 raise
 
@@ -71,12 +75,13 @@ class CacheDBConnection(db.DBConnection):
         try:
             if not self.hasTable('lastUpdate'):
                 self.action("CREATE TABLE lastUpdate (provider TEXT, time NUMERIC)")
-        except Exception, e:
+        except Exception as e:
             if str(e) != "table lastUpdate already exists":
                 raise
 
 
 class TVCache():
+
     def __init__(self, provider):
         self.provider = provider
         self.providerID = self.provider.getID()
@@ -131,9 +136,9 @@ class TVCache():
                     myDB = self._getDB()
                     myDB.mass_action(cl)
 
-        except AuthException, e:
+        except AuthException as e:
             logger.log(u"Authentication error: " + ex(e), logger.ERROR)
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Error while searching " + self.provider.name + ", skipping: " + repr(e), logger.DEBUG)
 
     def getRSSFeed(self, url, post_data=None, items=[]):
@@ -205,7 +210,6 @@ class TVCache():
             lastTime = 0
 
         return datetime.datetime.fromtimestamp(lastTime)
-
 
     def setLastUpdate(self, toDate=None):
         if not toDate:
@@ -292,9 +296,9 @@ class TVCache():
             logger.log(u"Added RSS item: [" + name + "] to cache: [" + self.providerID + "]", logger.DEBUG)
 
             return [
-                "INSERT OR IGNORE INTO [" + self.providerID + "] (name, season, episodes, indexerid, url, time, quality, release_group, version) VALUES (?,?,?,?,?,?,?,?,?)",
+                "INSERT OR IGNORE INTO [" + self.providerID +
+                "] (name, season, episodes, indexerid, url, time, quality, release_group, version) VALUES (?,?,?,?,?,?,?,?,?)",
                 [name, season, episodeText, parse_result.show.indexerid, url, curTimestamp, quality, release_group, version]]
-
 
     def searchCache(self, episode, manualSearch=False, downCurQuality=False):
         neededEps = self.findNeededEpisodes(episode, manualSearch, downCurQuality)
@@ -304,11 +308,10 @@ class TVCache():
         myDB = self._getDB()
         sql = "SELECT * FROM [" + self.providerID + "] WHERE name LIKE '%.PROPER.%' OR name LIKE '%.REPACK.%'"
 
-        if date != None:
+        if date is not None:
             sql += " AND time >= " + str(int(time.mktime(date.timetuple())))
 
         return filter(lambda x: x['indexerid'] != 0, myDB.select(sql))
-
 
     def findNeededEpisodes(self, episode, manualSearch=False, downCurQuality=False):
         neededEps = {}
@@ -317,7 +320,7 @@ class TVCache():
         myDB = self._getDB()
         if not episode:
             sqlResults = myDB.select("SELECT * FROM [" + self.providerID + "]")
-        elif type(episode) != list:
+        elif not isinstance(episode, list):
             sqlResults = myDB.select(
                 "SELECT * FROM [" + self.providerID + "] WHERE indexerid = ? AND season = ? AND episodes LIKE ?",
                 [episode.show.indexerid, episode.season, "%|" + str(episode.episode) + "|%"])
@@ -395,4 +398,3 @@ class TVCache():
         self.setLastSearch()
 
         return neededEps
-

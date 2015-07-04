@@ -20,7 +20,9 @@ from __future__ import with_statement
 
 import time
 import re
-import urllib, urllib2, urlparse
+import urllib
+import urllib2
+import urlparse
 import sys
 import os
 import datetime
@@ -45,6 +47,7 @@ from lib.unidecode import unidecode
 
 
 class ThePirateBayProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "ThePirateBay")
@@ -63,7 +66,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         self.url = self.urls['base_url']
 
-        self.searchurl = self.url + 'search/%s/0/7/200' # order by seed
+        self.searchurl = self.url + 'search/%s/0/7/200'  # order by seed
 
         self.re_title_url = '/torrent/(?P<id>\d+)/(?P<title>.*?)//1".+?(?P<url>magnet.*?)//1".+?(?P<seeders>\d+)</td>.+?(?P<leechers>\d+)</td>'
 
@@ -128,7 +131,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         videoFiles = filter(lambda x: x.rpartition(".")[2].lower() in mediaExtensions, filesList)
 
-        #Filtering SingleEpisode/MultiSeason Torrent
+        # Filtering SingleEpisode/MultiSeason Torrent
         if len(videoFiles) < ep_number or len(videoFiles) > float(ep_number * 1.1):
             logger.log(
                 u"Result " + title + " have " + str(ep_number) + " episode and episodes retrived in torrent are " + str(
@@ -142,7 +145,8 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         for fileName in videoFiles:
             quality = Quality.sceneQuality(os.path.basename(fileName))
-            if quality != Quality.UNKNOWN: break
+            if quality != Quality.UNKNOWN:
+                break
 
         if fileName is not None and quality == Quality.UNKNOWN:
             quality = Quality.assumeQuality(os.path.basename(fileName))
@@ -194,26 +198,26 @@ class ThePirateBayProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', ' ')
+                    str(ep_obj.airdate).replace('-', ' ')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%02i" % int(ep_obj.scene_absolute_number)
+                    "%02i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + '|' + \
-                            sickbeard.config.naming_ep_type[0] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + '|' + \
+                    sickbeard.config.naming_ep_type[0] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
         return [search_string]
@@ -243,22 +247,22 @@ class ThePirateBayProvider(generic.TorrentProvider):
                 matches = re.compile(re_title_url, re.DOTALL).finditer(urllib.unquote(data))
                 for torrent in matches:
                     title = torrent.group('title').replace('_',
-                                                           '.')  #Do not know why but SickBeard skip release with '_' in name
+                                                           '.')  # Do not know why but SickBeard skip release with '_' in name
                     url = torrent.group('url')
                     id = int(torrent.group('id'))
                     seeders = int(torrent.group('seeders'))
                     leechers = int(torrent.group('leechers'))
-                    #Filter unseeded torrent
+                    # Filter unseeded torrent
                     if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                         continue
 
-                        #Accept Torrent only from Good People for every Episode Search
+                        # Accept Torrent only from Good People for every Episode Search
                     if self.confirmed and re.search('(VIP|Trusted|Helper|Moderator)', torrent.group(0)) is None:
                         logger.log(u"ThePirateBay Provider found result " + torrent.group(
                             'title') + " but that doesn't seem like a trusted result so I'm ignoring it", logger.DEBUG)
                         continue
 
-                    #Check number video files = episode in season and find the real Quality for full season torrent analyzing files in torrent 
+                    # Check number video files = episode in season and find the real Quality for full season torrent analyzing files in torrent
                     if mode == 'Season' and search_mode == 'sponly':
                         ep_number = int(epcount / len(set(allPossibleShowNames(self.show))))
                         title = self._find_season_quality(title, id, ep_number)
@@ -270,7 +274,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
                     items[mode].append(item)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -324,6 +328,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
 
 class ThePirateBayCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

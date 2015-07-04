@@ -136,7 +136,7 @@ normal_regexes = [
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$              # Group
      '''
-    ),
+     ),
 
     ('no_season_multi_ep',
      # Show.Name.E02-03
@@ -151,7 +151,7 @@ normal_regexes = [
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$              # Group
      '''
-    ),
+     ),
 
     ('no_season_general',
      # Show.Name.E23.Test
@@ -169,7 +169,7 @@ normal_regexes = [
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$              # Group
      '''
-    ),
+     ),
 
     ('no_season',
      # Show Name - 01 - Ep Name
@@ -184,7 +184,7 @@ normal_regexes = [
      ((?<![. _-])(?<!WEB)                            # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$  # Group
      '''
-    ),
+     ),
 
     ('bare',
      # Show.Name.102.Source.Quality.Etc-Group
@@ -344,7 +344,7 @@ anime_regexes = [
      .*?
      '''
 
-    ),
+     ),
 
     ('anime_and_normal_x',
      # Bleach - s16e03-04 - 313-314
@@ -363,7 +363,7 @@ anime_regexes = [
      .*?
      '''
 
-    ),
+     ),
 
     ('anime_and_normal_reverse',
      # Bleach - 313-314 - s16e03-04
@@ -379,7 +379,7 @@ anime_regexes = [
      (?P<extra_ep_num>\d+))*                      # additional E03/etc
      .*?
      '''
-    ),
+     ),
 
     ('anime_and_normal_front',
      # 165.Naruto Shippuuden.s08e014
@@ -394,7 +394,7 @@ anime_regexes = [
      (?P<extra_ep_num>\d+))*                      # additional E03/etc
      .*?
      '''
-    ),
+     ),
 
     ('anime_ep_name',
      '''
@@ -408,7 +408,7 @@ anime_regexes = [
     (?:\[(?P<crc>\w{8})\])?
     .*?
      '''
-    ),
+     ),
 
     ('anime_WarB3asT',
      # 003. Show Name - Ep Name.ext

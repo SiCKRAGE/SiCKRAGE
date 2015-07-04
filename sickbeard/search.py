@@ -43,6 +43,7 @@ from sickbeard.providers.generic import GenericProvider
 from sickbeard.blackandwhitelist import BlackAndWhiteList
 from sickbeard import common
 
+
 def _downloadResult(result):
     """
     Downloads a result to the appropriate black hole folder.
@@ -53,7 +54,7 @@ def _downloadResult(result):
     """
 
     resProvider = result.provider
-    if resProvider == None:
+    if resProvider is None:
         logger.log(u"Invalid provider name - this is a coding error, report it please", logger.ERROR)
         return False
 
@@ -77,7 +78,7 @@ def _downloadResult(result):
 
             helpers.chmodAsParent(fileName)
 
-        except EnvironmentError, e:
+        except EnvironmentError as e:
             logger.log(u"Error trying to save NZB to black hole: " + ex(e), logger.ERROR)
             newResult = False
     elif resProvider.providerType == "torrent":
@@ -87,6 +88,7 @@ def _downloadResult(result):
         newResult = False
 
     return newResult
+
 
 def snatchEpisode(result, endStatus=SNATCHED):
     """
@@ -185,7 +187,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
         try:
             sickbeard.showQueueScheduler.action.updateShow(result.show, True)
         except exceptions.CantUpdateException as e:
-            logger.log("Unable to update show: {0}".format(str(e)),logger.DEBUG)
+            logger.log("Unable to update show: {0}".format(str(e)), logger.DEBUG)
 
     return True
 
@@ -201,7 +203,6 @@ def pickBestResult(results, show):
     for cur_result in results:
         if show and cur_result.show is not show:
             continue
-
 
         # build the black And white list
         if show.is_anime:
@@ -242,7 +243,7 @@ def pickBestResult(results, show):
         if len(cur_result.url) and cur_result.provider:
             cur_result.url = cur_result.provider.headURL(cur_result)
             if not len(cur_result.url):
-                logger.log('Skipping %s, URL check failed. Bad result from provider.' % cur_result.name,logger.INFO) 
+                logger.log('Skipping %s, URL check failed. Bad result from provider.' % cur_result.name, logger.INFO)
                 continue
 
         if cur_result.quality in bestQualities and (not bestResult or bestResult.quality < cur_result.quality or bestResult not in bestQualities):
@@ -278,7 +279,6 @@ def isFinalResult(result):
     logger.log(u"Checking if we should keep searching after we've found " + result.name, logger.DEBUG)
 
     show_obj = result.episodes[0].show
-
 
     any_qualities, best_qualities = Quality.splitQuality(show_obj.quality)
 
@@ -320,8 +320,9 @@ def isFirstBestMatch(result):
 
     return False
 
+
 def wantedEpisodes(show, fromDate):
-    anyQualities, bestQualities = common.Quality.splitQuality(show.quality) # @UnusedVariable
+    anyQualities, bestQualities = common.Quality.splitQuality(show.quality)  # @UnusedVariable
     allQualities = list(set(anyQualities + bestQualities))
 
     logger.log(u"Seeing if we need anything from " + show.name, logger.DEBUG)
@@ -330,7 +331,7 @@ def wantedEpisodes(show, fromDate):
     if show.air_by_date:
         sqlResults = myDB.select(
             "SELECT ep.status, ep.season, ep.episode FROM tv_episodes ep, tv_shows show WHERE season != 0 AND ep.showid = show.indexer_id AND show.paused = 0 AND ep.airdate > ? AND ep.showid = ? AND show.air_by_date = 1",
-        [fromDate.toordinal(), show.indexerid])
+            [fromDate.toordinal(), show.indexerid])
     else:
         sqlResults = myDB.select(
             "SELECT status, season, episode FROM tv_episodes WHERE showid = ? AND season > 0 and airdate > ?",
@@ -349,13 +350,14 @@ def wantedEpisodes(show, fromDate):
 
         # if we need a better one then say yes
         if (curStatus in (common.DOWNLOADED, common.SNATCHED, common.SNATCHED_PROPER,
-            common.SNATCHED_BEST) and curQuality < highestBestQuality) or curStatus == common.WANTED:
+                          common.SNATCHED_BEST) and curQuality < highestBestQuality) or curStatus == common.WANTED:
 
             epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
             epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != common.Quality.UNKNOWN)]
             wanted.append(epObj)
 
     return wanted
+
 
 def searchForNeededEpisodes():
     foundResults = {}
@@ -390,10 +392,10 @@ def searchForNeededEpisodes():
         curFoundResults = {}
         try:
             curFoundResults = curProvider.searchRSS(episodes)
-        except exceptions.AuthException, e:
+        except exceptions.AuthException as e:
             logger.log(u"Authentication error: " + ex(e), logger.ERROR)
             continue
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Error while searching " + curProvider.name + ", skipping: " + ex(e), logger.ERROR)
             logger.log(traceback.format_exc(), logger.DEBUG)
             continue
@@ -463,7 +465,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
         search_mode = curProvider.search_mode
 
         # Always search for episode when manually searching when in sponly and fallback false
-        if search_mode == 'sponly' and manualSearch == True and curProvider.search_fallback == False:
+        if search_mode == 'sponly' and manualSearch and curProvider.search_fallback == False:
             search_mode = 'eponly'
 
         while(True):
@@ -476,10 +478,10 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
 
             try:
                 searchResults = curProvider.findSearchResults(show, episodes, search_mode, manualSearch, downCurQuality)
-            except exceptions.AuthException, e:
+            except exceptions.AuthException as e:
                 logger.log(u"Authentication error: " + ex(e), logger.ERROR)
                 break
-            except Exception, e:
+            except Exception as e:
                 logger.log(u"Error while searching " + curProvider.name + ", skipping: " + ex(e), logger.ERROR)
                 logger.log(traceback.format_exc(), logger.DEBUG)
                 break

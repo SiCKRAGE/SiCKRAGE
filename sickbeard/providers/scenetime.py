@@ -57,11 +57,11 @@ class SceneTimeProvider(generic.TorrentProvider):
         self.cache = SceneTimeCache(self)
 
         self.urls = {'base_url': 'https://www.scenetime.com',
-                'login': 'https://www.scenetime.com/takelogin.php',
-                'detail': 'https://www.scenetime.com/details.php?id=%s',
-                'search': 'https://www.scenetime.com/browse.php?search=%s%s',
-                'download': 'https://www.scenetime.com/download.php/%s/%s',
-                }
+                     'login': 'https://www.scenetime.com/takelogin.php',
+                     'detail': 'https://www.scenetime.com/details.php?id=%s',
+                     'search': 'https://www.scenetime.com/browse.php?search=%s%s',
+                     'download': 'https://www.scenetime.com/download.php/%s/%s',
+                     }
 
         self.url = self.urls['base_url']
 
@@ -82,13 +82,13 @@ class SceneTimeProvider(generic.TorrentProvider):
 
         login_params = {'username': self.username,
                         'password': self.password
-        }
+                        }
 
         self.session = requests.Session()
 
         try:
             response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
 
@@ -107,7 +107,7 @@ class SceneTimeProvider(generic.TorrentProvider):
             elif ep_obj.show.anime:
                 ep_string = show_name + '.' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  #1) showName SXX
+                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  # 1) showName SXX
 
             search_string['Season'].append(ep_string)
 
@@ -123,24 +123,24 @@ class SceneTimeProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                    str(ep_obj.airdate).replace('-', '|')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
-                            ep_obj.airdate.strftime('%b')
+                    str(ep_obj.airdate).replace('-', '|') + '|' + \
+                    ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
+                    "%i" % int(ep_obj.scene_absolute_number)
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+                    sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                          'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
@@ -170,24 +170,24 @@ class SceneTimeProvider(generic.TorrentProvider):
 
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        torrent_table = html.select("#torrenttable table");
+                        torrent_table = html.select("#torrenttable table")
                         torrent_rows = torrent_table[0].select("tr") if torrent_table else []
 
-                        #Continue only if one Release is found
+                        # Continue only if one Release is found
                         if len(torrent_rows) < 2:
                             logger.log(u"The Data returned from %s does not contain any torrent links" % self.name,
                                        logger.DEBUG)
                             continue
-                       
+
                         # Scenetime apparently uses different number of cells in #torrenttable based
                         # on who you are. This works around that by extracting labels from the first
                         # <tr> and using their index to find the correct download/seeders/leechers td.
-                        labels = [ label.get_text() for label in torrent_rows[0].find_all('td') ]
+                        labels = [label.get_text() for label in torrent_rows[0].find_all('td')]
 
                         for result in torrent_rows[1:]:
                             cells = result.find_all('td')
 
-                            link = cells[labels.index('Name')].find('a');
+                            link = cells[labels.index('Name')].find('a')
 
                             full_id = link['href'].replace('details.php?id=', '')
                             torrent_id = full_id.split("&")[0]
@@ -195,10 +195,10 @@ class SceneTimeProvider(generic.TorrentProvider):
                             try:
                                 title = link.contents[0].get_text()
 
-                                filename = "%s.torrent" % title.replace(" ", ".") 
-                                
+                                filename = "%s.torrent" % title.replace(" ", ".")
+
                                 download_url = self.urls['download'] % (torrent_id, filename)
-                              
+
                                 id = int(torrent_id)
                                 seeders = int(cells[labels.index('Seeders')].get_text())
                                 leechers = int(cells[labels.index('Leechers')].get_text())
@@ -206,7 +206,7 @@ class SceneTimeProvider(generic.TorrentProvider):
                             except (AttributeError, TypeError):
                                 continue
 
-                            #Filter unseeded torrent
+                            # Filter unseeded torrent
                             if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                                 continue
 
@@ -214,14 +214,14 @@ class SceneTimeProvider(generic.TorrentProvider):
                                 continue
 
                             item = title, download_url, id, seeders, leechers
-                            logger.log(u"Found result: " + title.replace(' ','.') + " (" + searchURL + ")", logger.DEBUG)
+                            logger.log(u"Found result: " + title.replace(' ', '.') + " (" + searchURL + ")", logger.DEBUG)
 
                             items[mode].append(item)
 
-                except Exception, e:
+                except Exception as e:
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -274,6 +274,7 @@ class SceneTimeProvider(generic.TorrentProvider):
 
 
 class SceneTimeCache(tvcache.TVCache):
+
     def __init__(self, provider):
 
         tvcache.TVCache.__init__(self, provider)

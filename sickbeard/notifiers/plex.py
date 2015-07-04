@@ -61,7 +61,7 @@ class PLEXNotifier:
             return False
 
         for key in command:
-            if type(command[key]) == unicode:
+            if isinstance(command[key], unicode):
                 command[key] = command[key].encode('utf-8')
 
         enc_command = urllib.urlencode(command)
@@ -88,7 +88,7 @@ class PLEXNotifier:
             # could return result response = re.compile('<html><li>(.+\w)</html>').findall(result)
             return 'OK'
 
-        except (urllib2.URLError, IOError), e:
+        except (urllib2.URLError, IOError) as e:
             logger.log(u'PLEX: Warning: Couldn\'t contact Plex at ' + fixStupidEncodings(url) + ' ' + ex(e), logger.WARNING)
             return False
 
@@ -182,10 +182,10 @@ class PLEXNotifier:
                 username = sickbeard.PLEX_USERNAME
             if not password:
                 password = sickbeard.PLEX_PASSWORD
-                
+
             if not plex_server_token:
                 plex_server_token = sickbeard.PLEX_SERVER_TOKEN
-            
+
             # if username and password were provided, fetch the auth token from plex.tv
             token_arg = ''
             if plex_server_token:
@@ -211,7 +211,7 @@ class PLEXNotifier:
 
                 except (ValueError, IndexError) as e:
                     logger.log(u'PLEX: Error parsing plex.tv response: ' + ex(e), logger.DEBUG)
-                
+
             file_location = '' if None is ep_obj else ep_obj.location
             host_list = [x.strip() for x in host.split(',')]
             hosts_all = {}
@@ -223,7 +223,7 @@ class PLEXNotifier:
                 try:
                     xml_tree = etree.parse(urllib.urlopen(url))
                     media_container = xml_tree.getroot()
-                except IOError, e:
+                except IOError as e:
                     logger.log(u'PLEX: Error while trying to contact Plex Media Server: ' + ex(e), logger.WARNING)
                     hosts_failed.append(cur_host)
                     continue
@@ -265,7 +265,7 @@ class PLEXNotifier:
                 try:
                     force and urllib.urlopen(url)
                     host_list.append(cur_host)
-                except Exception, e:
+                except Exception as e:
                     logger.log(u'PLEX: Error updating library section for Plex Media Server: ' + ex(e), logger.WARNING)
                     hosts_failed.append(cur_host)
 

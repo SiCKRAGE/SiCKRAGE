@@ -31,6 +31,7 @@ from sickbeard import common
 
 
 class BacklogSearchScheduler(scheduler.Scheduler):
+
     def forceSearch(self):
         self.action._set_lastBacklog(1)
         self.lastRun = datetime.datetime.fromordinal(1)
@@ -43,6 +44,7 @@ class BacklogSearchScheduler(scheduler.Scheduler):
 
 
 class BacklogSearcher:
+
     def __init__(self):
 
         self._lastBacklog = self._get_lastBacklog()
@@ -105,7 +107,7 @@ class BacklogSearcher:
                 backlog_queue_item = search_queue.BacklogQueueItem(curShow, segment)
                 sickbeard.searchQueueScheduler.action.add_item(backlog_queue_item)  # @UndefinedVariable
             else:
-                logger.log(u"Nothing needs to be downloaded for {show_name}, skipping".format(show_name=curShow.name),logger.DEBUG)
+                logger.log(u"Nothing needs to be downloaded for {show_name}, skipping".format(show_name=curShow.name), logger.DEBUG)
 
         # don't consider this an actual backlog search if we only did recent eps
         # or if we only did certain shows
@@ -183,7 +185,6 @@ class BacklogSearcher:
             myDB.action("INSERT INTO info (last_backlog, last_indexer) VALUES (?,?)", [str(when), 0])
         else:
             myDB.action("UPDATE info SET last_backlog=" + str(when))
-
 
     def run(self, force=False):
         try:

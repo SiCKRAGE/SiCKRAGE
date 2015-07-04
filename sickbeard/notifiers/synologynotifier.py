@@ -16,7 +16,6 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import os
 import subprocess
 
@@ -29,6 +28,7 @@ from sickbeard import common
 
 
 class synologyNotifier:
+
     def notify_snatch(self, ep_name):
         if sickbeard.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH:
             self._send_synologyNotifier(ep_name, common.notifyStrings[common.NOTIFY_SNATCH])
@@ -40,11 +40,11 @@ class synologyNotifier:
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._send_synologyNotifier(ep_name + ": " + lang, common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD])
-            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_SYNOLOGYNOTIFIER:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._send_synologyNotifier(update_text + new_version, title)
 
     def _send_synologyNotifier(self, message, title):
@@ -54,9 +54,9 @@ class synologyNotifier:
         try:
             p = subprocess.Popen(synodsmnotify_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  cwd=sickbeard.PROG_DIR)
-            out, err = p.communicate()  #@UnusedVariable
+            out, err = p.communicate()  # @UnusedVariable
             logger.log(u"Script result: " + str(out), logger.DEBUG)
-        except OSError, e:
+        except OSError as e:
             logger.log(u"Unable to run synodsmnotify: " + ex(e))
 
 
