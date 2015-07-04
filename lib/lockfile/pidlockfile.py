@@ -132,10 +132,10 @@ def read_pid_from_pidfile(pidfile_path):
         pass
     else:
         # According to the FHS 2.3 section on PID files in /var/run:
-        # 
+        #
         #   The file must consist of the process identifier in
         #   ASCII-encoded decimal, followed by a newline character.
-        # 
+        #
         #   Programs that read PID files should be somewhat flexible
         #   in what they accept; i.e., they should ignore extra
         #   whitespace, leading zeroes, absence of the trailing

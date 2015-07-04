@@ -13,7 +13,7 @@ __contact__ = "Philip.Kershaw@stfc.ac.uk"
 __revision__ = '$Id$'
 try:
     from pyasn1.type import univ, constraint, char, namedtype, tag
-    
+   
 except ImportError, e:
     import_error_msg = ('Error importing pyasn1, subjectAltName check for SSL '
                         'peer verification will be disabled.  Import error '
@@ -23,8 +23,8 @@ except ImportError, e:
     class Pyasn1ImportError(ImportError):
         "Raise for pyasn1 import error"
     raise Pyasn1ImportError(import_error_msg)
-    
-    
+   
+   
 MAX = 64
 
 

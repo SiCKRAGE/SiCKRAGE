@@ -21,7 +21,7 @@ class TraktAPI():
         }
 
     def traktToken(self, trakt_pin=None, refresh=False, count=0):
-   
+  
         if count > 3:
             sickbeard.TRAKT_ACCESS_TOKEN = ''
             return False
@@ -43,7 +43,7 @@ class TraktAPI():
             data['grant_type'] = 'authorization_code'
             if not None == trakt_pin:
                 data['code'] = trakt_pin
-       
+      
         headers = {
             'Content-Type': 'application/json'
         }
@@ -56,24 +56,24 @@ class TraktAPI():
                 sickbeard.TRAKT_REFRESH_TOKEN = resp['refresh_token']
             return True
         return False
-       
+      
     def validateAccount(self):
-           
+          
         resp = self.traktRequest('users/settings')
-       
+      
         if 'account' in resp:
             return True
         return False
-       
+      
     def traktRequest(self, path, data=None, headers=None, url=None, method='GET', count=0):
         if None == url:
             url = self.api_url
-       
+      
         count = count + 1
-       
+      
         if None == headers:
             headers = self.headers
-       
+      
         if None == sickbeard.TRAKT_ACCESS_TOKEN:
             logger.log(u'You must get a Trakt TOKEN. Check your Trakt settings', logger.WARNING)
             return {}

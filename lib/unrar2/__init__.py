@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 """
-pyUnRAR2 is a ctypes based wrapper around the free UnRAR.dll. 
+pyUnRAR2 is a ctypes based wrapper around the free UnRAR.dll.
 
 It is an modified version of Jimmy Retzlaff's pyUnRAR - more simple,
 stable and foolproof.
@@ -45,8 +45,8 @@ if in_windows:
     from windows import RarFileImplementation
 else:
     from unix import RarFileImplementation
-    
-    
+   
+   
 import fnmatch, time, weakref
 
 class RarInfo(object):
@@ -62,7 +62,7 @@ class RarInfo(object):
         isdir - True if the file is a directory
         size - size in bytes of the uncompressed file
         comment - comment associated with the file
-        
+       
     Note - this is not currently intended to be a Python file-like object.
     """
 
@@ -128,37 +128,37 @@ class RarFile(RarFileImplementation):
         """Read specific files from archive into memory.
         If "condition" is a list of numbers, then return files which have those positions in infolist.
         If "condition" is a string, then it is treated as a wildcard for names of files to extract.
-        If "condition" is a function, it is treated as a callback function, which accepts a RarInfo object 
+        If "condition" is a function, it is treated as a callback function, which accepts a RarInfo object
             and returns boolean True (extract) or False (skip).
         If "condition" is omitted, all files are returned.
-        
+       
         Returns list of tuples (RarInfo info, str contents)
         """
         checker = condition2checker(condition)
         return RarFileImplementation.read_files(self, checker)
-        
+       
 
     def extract(self,  condition='*', path='.', withSubpath=True, overwrite=True):
         """Extract specific files from archive to disk.
-        
+       
         If "condition" is a list of numbers, then extract files which have those positions in infolist.
         If "condition" is a string, then it is treated as a wildcard for names of files to extract.
         If "condition" is a function, it is treated as a callback function, which accepts a RarInfo object
             and returns either boolean True (extract) or boolean False (skip).
-        DEPRECATED: If "condition" callback returns string (only supported for Windows) - 
+        DEPRECATED: If "condition" callback returns string (only supported for Windows) -
             that string will be used as a new name to save the file under.
         If "condition" is omitted, all files are extracted.
-        
+       
         "path" is a directory to extract to
         "withSubpath" flag denotes whether files are extracted with their full path in the archive.
         "overwrite" flag denotes whether extracted files will overwrite old ones. Defaults to true.
-        
+       
         Returns list of RarInfos for extracted files."""
         checker = condition2checker(condition)
         return RarFileImplementation.extract(self, checker, path, withSubpath, overwrite)
 
     def get_volume(self):
-        """Determine which volume is it in a multi-volume archive. Returns None if it's not a 
+        """Determine which volume is it in a multi-volume archive. Returns None if it's not a
         multi-volume archive, 0-based volume number otherwise."""
         return RarFileImplementation.get_volume(self)
 

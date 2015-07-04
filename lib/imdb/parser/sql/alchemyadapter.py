@@ -475,11 +475,11 @@ def setConnection(uri, tables, encoding='utf8', debug=False):
         else:
             uri += '?'
         uri += 'charset=%s' % encoding
-        
+       
         # On some server configurations, we will need to explictly enable
         # loading data from local files
         params['local_infile'] = 1
-   
+  
     if debug:
         params['echo'] = True
     if uri.startswith('ibm_db'):

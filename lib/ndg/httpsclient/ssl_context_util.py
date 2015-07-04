@@ -42,16 +42,16 @@ def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
     Creates SSL context containing certificate and key file locations.
     """
     ssl_context = SSL.Context(method)
-    
+   
     # Key file defaults to certificate file if present.
     if cert_file:
         ssl_context.use_certificate_file(cert_file)
-        
+       
     if key_file_passphrase:
         passwd_cb = lambda max_passphrase_len, set_prompt, userdata: \
-                           key_file_passphrase 
+                           key_file_passphrase
         ssl_context.set_passwd_cb(passwd_cb)
-        
+       
     if key_file:
         ssl_context.use_privatekey_file(key_file)
     elif cert_file:
@@ -65,7 +65,7 @@ def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
         Performs no checks and returns the status passed in.
         """
         return preverify_ok
-    
+   
     verify_callback = _callback
 
     if verify_peer:
@@ -76,11 +76,11 @@ def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
             ssl_context.set_verify(SSL.VERIFY_PEER, verify_callback)
     else:
         ssl_context.set_verify(SSL.VERIFY_NONE, verify_callback)
-        
+       
     return ssl_context
 
 
-def set_peer_verification_for_url_hostname(ssl_context, url, 
+def set_peer_verification_for_url_hostname(ssl_context, url,
                                            if_verify_enabled=False):
     '''Convenience routine to set peer verification callback based on
     ServerSSLCertVerification class'''

@@ -94,7 +94,7 @@ class Quality:
     RAWHDTV = 1 << 3  # 8  -- 720p/1080i mpeg2 (trollhd releases)
     FULLHDTV = 1 << 4  # 16 -- 1080p HDTV (QCF releases)
     HDWEBDL = 1 << 5  # 32
-    FULLHDWEBDL = 1 << 6  # 64 -- 1080p web-dl                        
+    FULLHDWEBDL = 1 << 6  # 64 -- 1080p web-dl                       
     HDBLURAY = 1 << 7  # 128
     FULLHDBLURAY = 1 << 8  # 256
 
@@ -178,7 +178,7 @@ class Quality:
     @staticmethod
     def sceneQuality(name, anime=False):
         """
-        Return The quality from the scene episode File 
+        Return The quality from the scene episode File
         """
         if not name:
             return Quality.UNKNOWN
@@ -295,7 +295,7 @@ ANY = Quality.combineQualities(
     [Quality.SDTV, Quality.SDDVD, Quality.HDTV, Quality.FULLHDTV, Quality.HDWEBDL, Quality.FULLHDWEBDL,
      Quality.HDBLURAY, Quality.FULLHDBLURAY, Quality.UNKNOWN], [])  # SD + HD
 
-# legacy template, cant remove due to reference in mainDB upgrade?                                                                                                                                        
+# legacy template, cant remove due to reference in mainDB upgrade?                                                                                                                                       
 BEST = Quality.combineQualities([Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])
 
 qualityPresets = (SD, HD, HD720p, HD1080p, ANY)

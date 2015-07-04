@@ -33,7 +33,7 @@ class PostProcesser():
     def run(self, force=False):
 
         self.amActive = True
-        
+       
         if not ek.ek(os.path.isdir, sickbeard.TV_DOWNLOAD_DIR):
             logger.log(u"Automatic post-processing attempted but dir " + sickbeard.TV_DOWNLOAD_DIR + " doesn't exist",
                        logger.ERROR)
@@ -44,11 +44,11 @@ class PostProcesser():
             logger.log(
                 u"Automatic post-processing attempted but dir " + sickbeard.TV_DOWNLOAD_DIR + " is relative (and probably not what you really want to process)",
                 logger.ERROR)
-            self.amActive = False   
+            self.amActive = False  
             return
 
         processTV.processDir(sickbeard.TV_DOWNLOAD_DIR)
-        
+       
         self.amActive = False
 
     def __del__(self):

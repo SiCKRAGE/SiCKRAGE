@@ -75,7 +75,7 @@ class SSLSocket(object):
 #            # Make errors on shutdown non-fatal
 #            pass
 
-        if self._makefile_refs < 1:        
+        if self._makefile_refs < 1:       
             self.__ssl_conn.shutdown()
         else:
             self._makefile_refs -= 1
@@ -231,7 +231,7 @@ class SSLSocket(object):
         @rtype: cStringIO.StringO
         """
         self._makefile_refs += 1
-        
+       
         # Optimisation
         _buf_size = self.buf_size
 
@@ -272,7 +272,7 @@ class SSLSocket(object):
 #        # close=True so as to decrement the reference count when done with
 #        # the file-like object.
 #        return socket._fileobject(self.socket, mode, bufsize, close=True)
-    
+   
     def getsockname(self):
         """
         @return: the socket's own address

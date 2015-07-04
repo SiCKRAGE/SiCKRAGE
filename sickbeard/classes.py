@@ -36,7 +36,7 @@ class AuthURLOpener(SickBeardURLopener):
     """
     URLOpener class that supports http auth without needing interactive password entry.
     If the provided username/password don't work it simply fails.
-    
+   
     user: username to use for HTTP auth
     pw: password to use for HTTP auth
     """
@@ -203,7 +203,7 @@ class ShowListUI:
     """
     This class is for tvdb-api. Instead of prompting with a UI to pick the
     desired result out of a list of shows it tries to be smart about it
-    based on what shows are in SB. 
+    based on what shows are in SB.
     """
 
     def __init__(self, config, log=None):

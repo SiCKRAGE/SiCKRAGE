@@ -20,18 +20,18 @@ def isProcRunning(pid):
     """See if a pid is running or not"""
 
     tasklist_cmd = 'tasklist /FI "PID eq '+str(pid)+'" /FO CSV'
-    
+   
     p = subprocess.Popen(tasklist_cmd, stdout=subprocess.PIPE)
     out, err = p.communicate()
 
     results = out.split('\r\n')
-    
+   
     regex = '".*\\.exe","'+str(pid)+'",("[^"]*",?){3}'
 
     for cur_line in results:
         if re.match(regex, cur_line, re.I):
             return True
-    
+   
     return False
 
 if len(sys.argv) < 3:
@@ -42,12 +42,12 @@ try:
 
     # this should be retrieved from sys.args
     pid = sys.argv[1]
-    
+   
     # process to re-launch
     sb_executable = sys.argv[2:]
-    
+   
     sb_closed = False
-    
+   
     # try 15 times to make sure it's closed
     for i in range(15):
         isRunning = isProcRunning(pid)
@@ -57,14 +57,14 @@ try:
         else:
             sb_closed = True
             break
-    
+   
     if not sb_closed:
         log("SickRage didn't close, unable to update. You'll have to manually restart it.")
         sys.exit()
-    
+   
     sb_root = os.path.dirname(sb_executable[0])
     sb_update_dir = os.path.join(sb_root, 'sb-update')
-    
+   
     # do the update if applicable
     if os.path.isdir(sb_update_dir):
         # find update dir name
@@ -73,7 +73,7 @@ try:
             log("Invalid update data, update failed.")
             sys.exit()
         content_dir = os.path.join(sb_update_dir, update_dir_contents[0])
-    
+   
         # copy everything from sb_update_dir to sb_root
         for dirname, dirnames, filenames in os.walk(content_dir):
             dirname = dirname[len(content_dir)+1:]
@@ -82,14 +82,14 @@ try:
                     continue
                 old_path = os.path.join(content_dir, dirname, curfile)
                 new_path = os.path.join(sb_root, dirname, curfile)
-    
+   
                 if os.path.isfile(new_path):
                     os.remove(new_path)
                 os.renames(old_path, new_path)
-    
+   
         if os.path.isdir(sb_update_dir):
             shutil.rmtree(sb_update_dir)
-    
+   
     # re-launch SB
     p = subprocess.Popen(sb_executable, cwd=os.getcwd())
 
@@ -98,4 +98,4 @@ except Exception, e:
     raise
 
 if log_file:
-    log_file.close()                        
+    log_file.close()                       

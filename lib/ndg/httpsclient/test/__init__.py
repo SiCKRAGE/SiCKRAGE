@@ -1,6 +1,6 @@
 """Unit tests package for ndg_httpsclient
 
-PyOpenSSL utility to make a httplib-like interface suitable for use with 
+PyOpenSSL utility to make a httplib-like interface suitable for use with
 urllib2
 """
 __author__ = "P J Kershaw (STFC)"
@@ -11,7 +11,7 @@ __contact__ = "Philip.Kershaw@stfc.ac.uk"
 __revision__ = '$Id$'
 import os
 import unittest
-    
+   
 class Constants(object):
     '''Convenience base class from which other unit tests can extend.  Its
     sets the generic data directory path'''

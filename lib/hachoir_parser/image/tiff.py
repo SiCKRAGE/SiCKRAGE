@@ -138,7 +138,7 @@ class ImageFile(SeekableFieldSet):
                 count = entry["count"].value
                 if entryType == String:
                     yield String(self, entry.name, count, desc, "\0", "ISO-8859-1")
-                else:    
+                else:   
                     d = Data(self, entry.name, desc, entryType, count)
                     datas[d.name] = d
                     yield d

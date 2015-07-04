@@ -710,7 +710,7 @@ def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=Non
 def sanitizeSceneName(name, anime=False):
     """
     Takes a show name and returns the "scenified" version of it.
-    
+   
     anime: Some show have a ' in their name(Kuroko's Basketball) and is needed for search.
 
     Returns: A string containing the scene version of the show name given.
@@ -1004,18 +1004,18 @@ def get_show(name, tryIndexers=False, trySceneExceptions=False):
         if cache:
             fromCache = True
             showObj = findCertainShow(sickbeard.showList, int(cache))
-        
-        #try indexers    
+       
+        #try indexers   
         if not showObj and tryIndexers:
             showObj = findCertainShow(sickbeard.showList,
                                       searchIndexerForShowID(full_sanitizeSceneName(name), ui=classes.ShowListUI)[2])
-        
+       
         #try scene exceptions
         if not showObj and trySceneExceptions:
             ShowID = sickbeard.scene_exceptions.get_scene_exception_by_name(name)[0]
             if ShowID:
                 showObj = findCertainShow(sickbeard.showList, int(ShowID))
-                
+               
         # add show to cache
         if showObj and not fromCache:
             sickbeard.name_cache.addNameToCache(name, showObj.indexerid)
@@ -1043,7 +1043,7 @@ def is_hidden_folder(folder):
         except (AttributeError, AssertionError):
             result = False
         return result
-    
+   
     if ek.ek(os.path.isdir, folder):
         if is_hidden(folder):
             return True
@@ -1069,7 +1069,7 @@ def validateShow(show, season=None, episode=None):
 
         if show.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
-            
+           
         t = sickbeard.indexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
         if season is None and episode is None:
             return t
@@ -1539,16 +1539,16 @@ def verify_freespace(src, dest, oldfile=None):
         oldfile = [oldfile]
 
     logger.log("Trying to determine free space on destination drive", logger.DEBUG)
-    
+   
     if hasattr(os, 'statvfs'):  # POSIX
         def disk_usage(path):
             st = os.statvfs(path)
             free = st.f_bavail * st.f_frsize
             return free
-    
+   
     elif os.name == 'nt':       # Windows
         import sys
-    
+   
         def disk_usage(path):
             _, total, free = ctypes.c_ulonglong(), ctypes.c_ulonglong(), \
                                ctypes.c_ulonglong()
@@ -1568,20 +1568,20 @@ def verify_freespace(src, dest, oldfile=None):
     if not ek.ek(os.path.isfile, src):
         logger.log("A path to a file is required for the source. " + src + " is not a file.", logger.WARNING)
         return True
-    
+   
     try:
         diskfree = disk_usage(dest)
     except:
         logger.log("Unable to determine free space, so I will assume there is enough.", logger.WARNING)
         return True
-    
+   
     neededspace = ek.ek(os.path.getsize, src)
-    
+   
     if oldfile:
         for file in oldfile:
             if ek.ek(os.path.isfile, file.location):
                 diskfree += ek.ek(os.path.getsize, file.location)
-        
+       
     if diskfree > neededspace:
         return True
     else:
@@ -1603,14 +1603,14 @@ def pretty_time_delta(seconds):
         return '%s%02dm%02ds' % (sign_string, minutes, seconds)
     else:
         return '%s%02ds' % (sign_string, seconds)
-    
+   
 def isFileLocked(file, writeLockCheck=False):
     '''
     Checks to see if a file is locked. Performs three checks
         1. Checks if the file even exists
         2. Attempts to open the file for reading. This will determine if the file has a write lock.
             Write locks occur when the file is being edited or copied to, e.g. a file copy destination
-        3. If the readLockCheck parameter is True, attempts to rename the file. If this fails the 
+        3. If the readLockCheck parameter is True, attempts to rename the file. If this fails the
             file is open by some other process for reading. The file can be read, but not written to
             or deleted.
     @param file: the file being checked
@@ -1623,7 +1623,7 @@ def isFileLocked(file, writeLockCheck=False):
         f.close()
     except IOError:
         return True
-    
+   
     if(writeLockCheck):
         lockFile = file + ".lckchk"
         if(os.path.exists(lockFile)):
@@ -1634,5 +1634,5 @@ def isFileLocked(file, writeLockCheck=False):
             os.rename(lockFile, file)
         except (OSError, IOError):
             return True
-           
+          
     return False

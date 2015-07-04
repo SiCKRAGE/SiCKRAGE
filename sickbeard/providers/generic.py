@@ -267,10 +267,10 @@ class GenericProvider:
     def getQuality(self, item, anime=False):
         """
         Figures out the quality of the given RSS item node
-        
+       
         item: An elementtree.ElementTree element representing the <item> tag of the RSS feed
-        
-        Returns a Quality value obtained from the node's data 
+       
+        Returns a Quality value obtained from the node's data
         """
         (title, url) = self._get_title_and_url(item)
         quality = Quality.sceneQuality(title, anime)
@@ -400,7 +400,7 @@ class GenericProvider:
 
             addCacheEntry = False
             if not (showObj.air_by_date or showObj.sports):
-                if search_mode == 'sponly': 
+                if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         logger.log(
                             u"This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it",

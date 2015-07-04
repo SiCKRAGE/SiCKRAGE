@@ -532,7 +532,7 @@ class KODINotifier:
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.KODI_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify_kodi(ep_name + ": " + lang, common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD])
-            
+           
     def notify_git_update(self, new_version = "??"):
         if sickbeard.USE_KODI:
             update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]

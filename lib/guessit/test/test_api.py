@@ -34,7 +34,7 @@ class TestApi(TestGuessit):
 
         assert guessit.guess_file_info(movie_path, type='movie') == movie_info
         assert guessit.guess_file_info(movie_path, type='video') == video_info
-        assert guessit.guess_file_info(movie_path, type='episode') == episode_info 
+        assert guessit.guess_file_info(movie_path, type='episode') == episode_info
 
         assert guessit.guess_file_info(movie_path, options={'type': 'movie'}) == movie_info
         assert guessit.guess_file_info(movie_path, options={'type': 'video'}) == video_info

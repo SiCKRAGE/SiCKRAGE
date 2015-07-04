@@ -249,7 +249,7 @@ class Episode(dict):
         """Search episode data for term, if it matches, return the Episode (self).
         The key parameter can be used to limit the search to a specific element,
         for example, episodename.
-        
+       
         This primarily for use use by Show.search and Season.search.
         """
         if term == None:

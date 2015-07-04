@@ -2834,7 +2834,7 @@ try:
     del regex
 except NameError:
     pass
-    
+   
 def _parse_date_iso8601(dateString):
     '''Parse a variety of ISO-8601-compatible formats like 20040105'''
     m = None
@@ -3076,7 +3076,7 @@ def _parse_date_w3dtf(datestr):
             parts.append('00:00:00z')
     elif len(parts) > 2:
         return None
-    date = parts[0].split('-', 2) 
+    date = parts[0].split('-', 2)
     if not date or len(date[0]) != 4:
         return None
     # Ensure that `date` has 3 elements. Using '1' sets the default
@@ -3417,7 +3417,7 @@ def convert_to_utf8(http_headers, data):
                                  u'application/xml-external-parsed-entity')
     text_content_types = (u'text/xml', u'text/xml-external-parsed-entity')
     if (http_content_type in application_content_types) or \
-       (http_content_type.startswith(u'application/') and 
+       (http_content_type.startswith(u'application/') and
         http_content_type.endswith(u'+xml')):
         acceptable_content_type = 1
         rfc3023_encoding = http_encoding or xml_encoding or u'utf-8'
@@ -3604,7 +3604,7 @@ def _parse_georss_polygon(value, swap=True, dims=2):
     # A polygon contains a space separated list of latitude-longitude pairs,
     # with each pair separated by whitespace. There must be at least four
     # pairs, with the last being identical to the first (so a polygon has a
-    # minimum of three actual points). 
+    # minimum of three actual points).
     try:
         ring = list(_gen_georss_coords(value, swap, dims))
     except (IndexError, ValueError):

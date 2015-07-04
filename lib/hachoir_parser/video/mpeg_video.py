@@ -503,7 +503,7 @@ class Chunk(FieldSet):
                 self._name, self.parser, self._description = ("stream[]", Stream, "Data Stream Packet")
         else:
             self.parser = defaultParser
-        
+       
         if not self.parser:
             self.parser = defaultParser
         elif self.parser != PackHeader and "length" in self:

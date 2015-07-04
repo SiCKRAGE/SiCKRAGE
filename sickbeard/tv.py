@@ -117,7 +117,7 @@ class TVShow(object):
         self.episodes = {}
         self.nextaired = ""
         self.release_groups = None
-        
+       
         otherShow = helpers.findCertainShow(sickbeard.showList, self.indexerid)
         if otherShow != None:
             raise exceptions.MultipleShowObjectsException("Can't create a show if it already exists")
@@ -829,8 +829,8 @@ class TVShow(object):
                 self.imdbid = sqlResults[0]["imdb_id"]
 
             if self.is_anime:
-                self.release_groups = BlackAndWhiteList(self.indexerid)  
-                
+                self.release_groups = BlackAndWhiteList(self.indexerid) 
+               
         # Get IMDb_info from database
         myDB = db.DBConnection()
         sqlResults = myDB.select("SELECT * FROM imdb_info WHERE indexer_id = ?", [self.indexerid])
@@ -1994,16 +1994,16 @@ class TVEpisode(object):
             if not self.dirty and not forceSave:
                 logger.log(str(self.show.indexerid) + u": Not creating SQL queue - record is not dirty", logger.DEBUG)
                 return
-            
+           
             myDB = db.DBConnection()
             rows = myDB.select(
                 'SELECT episode_id, subtitles FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?',
                 [self.show.indexerid, self.season, self.episode])
-            
+           
             epID = None
             if rows:
                 epID = int(rows[0]['episode_id'])
-            
+           
             if epID:
                 # use a custom update method to get the data into the DB for existing records.
                 # Multi or added subtitle or removed subtitles
@@ -2050,7 +2050,7 @@ class TVEpisode(object):
     def saveToDB(self, forceSave=False):
         """
         Saves this episode to the database if any of its data has been changed since the last save.
-        
+       
         forceSave: If True it will save to the database even if no data has been changed since the
                     last save (aka if the record is not dirty).
         """
@@ -2120,7 +2120,7 @@ class TVEpisode(object):
         Returns the name of this episode in a "pretty" human-readable format. Used for logging
         and notifications and such.
 
-        Returns: A string representing the episode's name and season/ep numbers 
+        Returns: A string representing the episode's name and season/ep numbers
         """
 
         if self.show.anime and not self.show.scene:
@@ -2174,7 +2174,7 @@ class TVEpisode(object):
         """
         Generates a replacement map for this episode which maps all possible custom naming patterns to the correct
         value for this episode.
-        
+       
         Returns: A dict with patterns as the keys and their replacement values as the values.
         """
 
@@ -2214,11 +2214,11 @@ class TVEpisode(object):
             show_name = re.sub("\(\d+\)$", "", self.show.name).rstrip()
         else:
             show_name = self.show.name
-        
+       
         #try to get the release group
         rel_grp = {};
         rel_grp["SiCKRAGE"] = 'SiCKRAGE';
-        if hasattr(self, 'location'): #from the location name 
+        if hasattr(self, 'location'): #from the location name
             rel_grp['location'] = release_group(self.show, self.location);
             if (rel_grp['location'] == ''): del rel_grp['location']
         if hasattr(self, '_release_group'): #from the release group field in db
@@ -2227,14 +2227,14 @@ class TVEpisode(object):
         if hasattr(self, 'release_name'): #from the release name field in db
             rel_grp['release_name'] = release_group(self.show, self.release_name);
             if (rel_grp['release_name'] == ''): del rel_grp['release_name']
-        
-        # use release_group, release_name, location in that order 
+       
+        # use release_group, release_name, location in that order
         if ('database' in rel_grp): relgrp = 'database'
         elif ('release_name' in rel_grp): relgrp = 'release_name'
         elif ('location' in rel_grp): relgrp = 'location'
-        else: relgrp = 'SiCKRAGE' 
-            
-        
+        else: relgrp = 'SiCKRAGE'
+           
+       
         return {
             '%SN': show_name,
             '%S.N': dot(show_name),
@@ -2304,30 +2304,30 @@ class TVEpisode(object):
         replace_map = self._replace_map()
 
         result_name = pattern
-        
+       
         # if there's no release group in the db, let the user know we replaced it
-        if (not hasattr(self, '_release_group') and (not replace_map['%RG'] == 'SiCKRAGE')):        
+        if (not hasattr(self, '_release_group') and (not replace_map['%RG'] == 'SiCKRAGE')):       
             logger.log(u"Episode has no release group, replacing it with '" + replace_map['%RG'] + "'", logger.DEBUG);
             self._release_group = replace_map['%RG'] #if release_group is not in the db, put it there
         elif ((self._release_group == '') and (not replace_map['%RG'] == 'SiCKRAGE')):
             logger.log(u"Episode has no release group, replacing it with '" + replace_map['%RG'] + "'", logger.DEBUG);
             self._release_group = replace_map['%RG'] #if release_group is not in the db, put it there
-    
+   
         # if there's no release name then replace it with a reasonable facsimile
         if not replace_map['%RN']:
 
             if self.show.air_by_date or self.show.sports:
                 result_name = result_name.replace('%RN', '%S.N.%A.D.%E.N-' + replace_map['%RG'])
                 result_name = result_name.replace('%rn', '%s.n.%A.D.%e.n-' + replace_map['%RG'].lower())
-                    
+                   
             elif anime_type != 3:
                 result_name = result_name.replace('%RN', '%S.N.%AB.%E.N-' + replace_map['%RG'])
                 result_name = result_name.replace('%rn', '%s.n.%ab.%e.n-' + replace_map['%RG'].lower())
-                                
+                               
             else:
                 result_name = result_name.replace('%RN', '%S.N.S%0SE%0E.%E.N-' + replace_map['%RG'])
                 result_name = result_name.replace('%rn', '%s.n.s%0se%0e.%e.n-' + replace_map['%RG'].lower())
-            
+           
             logger.log(u"Episode has no release name, replacing it with a generic one: " + result_name, logger.DEBUG)
 
         if not replace_map['%RT']:
@@ -2451,7 +2451,7 @@ class TVEpisode(object):
         return result_name
 
     def proper_path(self):
-        """    
+        """   
         Figures out the path where this episode SHOULD live according to the renaming rules, relative from the show dir
         """
 
@@ -2570,8 +2570,8 @@ class TVEpisode(object):
             #First get the absolute proper-path dir
             proper_related_dir = ek.ek(os.path.dirname, ek.ek(os.path.abspath, absolute_proper_path + file_ext))
             proper_related_path = absolute_proper_path.replace(proper_related_dir, proper_related_dir + subfolder)
-            
-            
+           
+           
             cur_result = helpers.rename_ep_file(cur_related_file, proper_related_path,
                                                 absolute_current_path_no_ext_length + len(subfolder))
             if not cur_result:

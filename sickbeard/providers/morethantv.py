@@ -233,7 +233,7 @@ class MoreThanTVProvider(generic.TorrentProvider):
                             except (AttributeError, TypeError):
                                 continue
 
- 
+
                             #Filter unseeded torrent
                             if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                                 continue

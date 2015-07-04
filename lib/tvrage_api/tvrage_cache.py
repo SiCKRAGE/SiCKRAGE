@@ -87,7 +87,7 @@ def store_in_cache(cache_location, url, response):
         return True
     else:
         return False
-        
+       
 @locked_function
 def delete_from_cache(cache_location, url):
     """Deletes a response in cache."""
@@ -216,7 +216,7 @@ class CachedResponse(StringIO.StringIO):
             self.cache_location,
             self.url
         )
-    
+   
 
 if __name__ == "__main__":
     def main():

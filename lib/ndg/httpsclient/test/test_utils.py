@@ -1,6 +1,6 @@
 """unit tests module for ndg.httpsclient.utils module
 
-PyOpenSSL utility to make a httplib-like interface suitable for use with 
+PyOpenSSL utility to make a httplib-like interface suitable for use with
 urllib2
 """
 __author__ = "P J Kershaw (STFC)"
@@ -31,31 +31,31 @@ class TestUtilsModule(unittest.TestCase):
         config = Configuration(SSL.Context(SSL.SSLv3_METHOD), True)
         res = fetch_from_url(Constants.TEST_URI, config)
         self.assert_(res)
-        
+       
     def test03_open_url(self):
         config = Configuration(SSL.Context(SSL.SSLv3_METHOD), True)
         res = open_url(Constants.TEST_URI, config)
-        self.assertEqual(res[0], 200, 
+        self.assertEqual(res[0], 200,
                          'open_url for %r failed' % Constants.TEST_URI)
-        
+       
     def test04__should_use_proxy(self):
         if 'no_proxy' in os.environ:
             no_proxy = os.environ['no_proxy']
             del os.environ['no_proxy']
         else:
             no_proxy = None
-               
-        self.assertTrue(_should_use_proxy(Constants.TEST_URI), 
+              
+        self.assertTrue(_should_use_proxy(Constants.TEST_URI),
                         'Expecting use proxy = True')
-        
+       
         os.environ['no_proxy'] = 'localhost,localhost.localdomain'
-        self.assertFalse(_should_use_proxy(Constants.TEST_URI), 
+        self.assertFalse(_should_use_proxy(Constants.TEST_URI),
                          'Expecting use proxy = False')
-        
+       
         if no_proxy is not None:
             os.environ['no_proxy'] = no_proxy
         else:
             del os.environ['no_proxy']
-    
+   
 if __name__ == "__main__":
     unittest.main()

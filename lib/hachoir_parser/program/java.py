@@ -280,7 +280,7 @@ class OpcodeCPIndex(JavaOpcode):
         yield CPIndex(self, "index")
     def createDisplay(self):
         return "%s(%i)"%(self.op, self["index"].value)
-        
+       
 class OpcodeCPIndexShort(JavaOpcode):
     OPSIZE = 2
     def createFields(self):

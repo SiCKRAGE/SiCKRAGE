@@ -79,7 +79,7 @@ def main(urls=[]):
         # Start a few worker threads
         worker_threads = []
         for i in range(num_threads):
-            t = threading.Thread(target=fetch_urls, 
+            t = threading.Thread(target=fetch_urls,
                                  args=(storage, url_queue, entry_queue,))
             worker_threads.append(t)
             t.setDaemon(True)
@@ -100,8 +100,8 @@ def main(urls=[]):
         # Poison the print thread and wait for it to exit
         entry_queue.put((None,None))
         entry_queue.join()
-        printer_thread.join()        
-        
+        printer_thread.join()       
+       
     finally:
         storage.close()
     return

@@ -79,7 +79,7 @@ class CacheShoveTest(HTTPTestBase):
             modified, shelved_data = storage[self.TEST_URL]
         finally:
             storage.close()
-            
+           
         # The data should be the same
         self.failUnlessEqual(parsed_data, shelved_data)
         return

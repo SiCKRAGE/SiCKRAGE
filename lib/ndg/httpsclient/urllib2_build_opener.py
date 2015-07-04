@@ -8,8 +8,8 @@ __license__ = "BSD - see LICENSE file in top-level directory"
 __contact__ = "Philip.Kershaw@stfc.ac.uk"
 __revision__ = '$Id$'
 import logging
-from urllib2 import (ProxyHandler, UnknownHandler, HTTPDefaultErrorHandler, 
-                     FTPHandler, FileHandler, HTTPErrorProcessor, HTTPHandler, 
+from urllib2 import (ProxyHandler, UnknownHandler, HTTPDefaultErrorHandler,
+                     FTPHandler, FileHandler, HTTPErrorProcessor, HTTPHandler,
                      OpenerDirector, HTTPRedirectHandler)
 
 from ndg.httpsclient.https import HTTPSContextHandler
@@ -49,10 +49,10 @@ def build_opener(*handlers, **kw):
     for klass in default_classes:
         if klass not in skip:
             opener.add_handler(klass())
-            
+           
     # Pick up SSL context from keyword settings
     ssl_context = kw.get('ssl_context')
-    
+   
     # Add the HTTPS handler with ssl_context
     if HTTPSContextHandler not in skip:
         opener.add_handler(HTTPSContextHandler(ssl_context))

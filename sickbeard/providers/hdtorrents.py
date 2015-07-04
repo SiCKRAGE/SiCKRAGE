@@ -325,7 +325,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
             for item in self._doSearch(proper_searchString[0]):
                 title, url = self._get_title_and_url(item)
                 results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
-                
+               
             repack_searchString = self._get_episode_search_strings(curEp, add_string='REPACK')
 
             for item in self._doSearch(repack_searchString[0]):

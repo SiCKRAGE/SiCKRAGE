@@ -103,7 +103,7 @@ def check_force_season_folders(pattern=None, multi=None, anime_type=None):
     """
     Checks if the name can still be parsed if you strip off the folders to determine if we need to force season folders
     to be enabled or not.
-    
+   
     Returns true if season folders need to be forced on or false otherwise.
     """
     if pattern == None:
@@ -123,7 +123,7 @@ def check_force_season_folders(pattern=None, multi=None, anime_type=None):
 def check_valid_naming(pattern=None, multi=None, anime_type=None):
     """
     Checks if the name is can be parsed back to its original form for both single and multi episodes.
-    
+   
     Returns true if the naming is valid, false if not.
     """
     if pattern == None:
@@ -145,7 +145,7 @@ def check_valid_naming(pattern=None, multi=None, anime_type=None):
 def check_valid_abd_naming(pattern=None):
     """
     Checks if the name is can be parsed back to its original form for an air-by-date format.
-    
+   
     Returns true if the naming is valid, false if not.
     """
     if pattern == None:

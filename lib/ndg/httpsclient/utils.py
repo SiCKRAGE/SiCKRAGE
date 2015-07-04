@@ -14,7 +14,7 @@ import logging
 from optparse import OptionParser
 import os
 import urllib2
-from urllib2 import (HTTPHandler, HTTPCookieProcessor, 
+from urllib2 import (HTTPHandler, HTTPCookieProcessor,
                      HTTPBasicAuthHandler, HTTPPasswordMgrWithDefaultRealm)
 
 import urlparse
@@ -61,7 +61,7 @@ class AccumulatingHTTPCookieProcessor(HTTPCookieProcessor):
 
 class URLFetchError(Exception):
     """Error fetching content from URL"""
-    
+   
 
 def fetch_from_url(url, config, data=None, handlers=None):
     """Returns data retrieved from a URL.
@@ -101,7 +101,7 @@ def fetch_from_url_to_file(url, config, output_file, data=None, handlers=None):
         outfile = open(output_file, "w")
         outfile.write(return_data)
         outfile.close()
-        
+       
     return return_code, return_message, return_code == httplib.OK
 
 
@@ -147,7 +147,7 @@ def open_url(url, config, data=None, handlers=None):
         cj = config.cookie
     else:
         cj = cookielib.CookieJar()
-        
+       
     # Use a cookie processor that accumulates cookies when redirects occur so
     # that an application can redirect for authentication and retain both any
     # cookies for the application and the security system (c.f.,
@@ -156,15 +156,15 @@ def open_url(url, config, data=None, handlers=None):
 
     if not handlers:
         handlers = []
-        
+       
     handlers.append(cookie_handler)
 
     if config.debug:
         http_handler = HTTPHandler(debuglevel=debuglevel)
-        https_handler = HTTPSContextHandler(config.ssl_context, 
+        https_handler = HTTPSContextHandler(config.ssl_context,
                                             debuglevel=debuglevel)
         handlers.extend([http_handler, https_handler])
-        
+       
     if config.http_basicauth:
         # currently only supports http basic auth
         auth_handler = HTTPBasicAuthHandler(HTTPPasswordMgrWithDefaultRealm())
@@ -175,8 +175,8 @@ def open_url(url, config, data=None, handlers=None):
 
 
     # Explicitly remove proxy handling if the host is one listed in the value of
-    # the no_proxy environment variable because urllib2 does use proxy settings 
-    # set via http_proxy and https_proxy, but does not take the no_proxy value 
+    # the no_proxy environment variable because urllib2 does use proxy settings
+    # set via http_proxy and https_proxy, but does not take the no_proxy value
     # into account.
     if not _should_use_proxy(url, config.no_proxy):
         handlers.append(urllib2.ProxyHandler({}))
@@ -186,11 +186,11 @@ def open_url(url, config, data=None, handlers=None):
         log.debug("Configuring proxies: %s" % config.proxies)
 
     opener = build_opener(*handlers, ssl_context=config.ssl_context)
-    
+   
     headers = config.headers
-    if headers is None: 
+    if headers is None:
         headers = {}
-        
+       
     request = urllib2.Request(url, data, headers)
 
     # Open the URL and check the response.
@@ -204,24 +204,24 @@ def open_url(url, config, data=None, handlers=None):
         if log.isEnabledFor(logging.DEBUG):
             for index, cookie in enumerate(cj):
                 log.debug("%s  :  %s", index, cookie)
-                
+               
     except urllib2.HTTPError, exc:
         return_code = exc.code
         return_message = "Error: %s" % exc.msg
         if log.isEnabledFor(logging.DEBUG):
             log.debug("%s %s", exc.code, exc.msg)
-            
+           
     except Exception, exc:
         return_message = "Error: %s" % exc.__str__()
         if log.isEnabledFor(logging.DEBUG):
             import traceback
             log.debug(traceback.format_exc())
-            
+           
     return (return_code, return_message, response)
 
 
 def _should_use_proxy(url, no_proxy=None):
-    """Determines whether a proxy should be used to open a connection to the 
+    """Determines whether a proxy should be used to open a connection to the
     specified URL, based on the value of the no_proxy environment variable.
     @param url: URL
     @type url: basestring or urllib2.Request
@@ -265,7 +265,7 @@ class Configuration(object):
         @type ssl_context: OpenSSL.SSL.Context
         @param debug: if True, output debugging information
         @type debug: bool
-        @param proxies: proxies to use for 
+        @param proxies: proxies to use for
         @type proxies: dict with basestring keys and values
         @param no_proxy: hosts for which a proxy should not be used
         @type no_proxy: basestring
@@ -295,11 +295,11 @@ def main():
     parser.add_option("-k", "--private-key", dest="key_file", metavar="FILE",
                       default=None,
                       help="Private key file - defaults to the certificate file")
-    parser.add_option("-t", "--ca-certificate-dir", dest="ca_dir", 
+    parser.add_option("-t", "--ca-certificate-dir", dest="ca_dir",
                       metavar="PATH",
                       default=None,
                       help="Trusted CA certificate file directory")
-    parser.add_option("-d", "--debug", action="store_true", dest="debug", 
+    parser.add_option("-d", "--debug", action="store_true", dest="debug",
                       default=False,
                       help="Print debug information.")
     parser.add_option("-p", "--post-data-file", dest="data_file",
@@ -307,14 +307,14 @@ def main():
                       help="POST data file")
     parser.add_option("-f", "--fetch", dest="output_file", metavar="FILE",
                       default=None, help="Output file")
-    parser.add_option("-n", "--no-verify-peer", action="store_true", 
+    parser.add_option("-n", "--no-verify-peer", action="store_true",
                       dest="no_verify_peer", default=False,
                       help="Skip verification of peer certificate.")
-    parser.add_option("-a", "--basicauth", dest="basicauth", 
+    parser.add_option("-a", "--basicauth", dest="basicauth",
                       metavar="USER:PASSWD",
                       default=None,
                       help="HTTP authentication credentials")
-    parser.add_option("--header", action="append", dest="headers", 
+    parser.add_option("--header", action="append", dest="headers",
                       metavar="HEADER: VALUE",
                       help="Add HTTP header to request")
     (options, args) = parser.parse_args()
@@ -330,17 +330,17 @@ def main():
         key_file = options.key_file
     else:
         key_file = None
-    
+   
     if options.cert_file and os.path.exists(options.cert_file):
         cert_file = options.cert_file
     else:
         cert_file = None
-    
+   
     if options.ca_dir and os.path.exists(options.ca_dir):
-        ca_dir = options.ca_dir 
+        ca_dir = options.ca_dir
     else:
         ca_dir = None
-        
+       
     verify_peer = not options.no_verify_peer
 
     if options.data_file and os.path.exists(options.data_file):
@@ -349,7 +349,7 @@ def main():
         data_file.close()
     else:
         data = None
-    
+   
     if options.basicauth:
         http_basicauth = options.basicauth.split(':', 1)
     else:
@@ -360,23 +360,23 @@ def main():
         for h in options.headers:
             key, val = h.split(':', 1)
             headers[key.strip()] = val.lstrip()
-            
-    # If a private key file is not specified, the key is assumed to be stored in 
+           
+    # If a private key file is not specified, the key is assumed to be stored in
     # the certificate file.
     ssl_context = ssl_context_util.make_ssl_context(key_file,
                                                     cert_file,
                                                     None,
                                                     ca_dir,
-                                                    verify_peer, 
+                                                    verify_peer,
                                                     url)
 
-    config = Configuration(ssl_context, 
+    config = Configuration(ssl_context,
                            options.debug,
                            http_basicauth=http_basicauth,
                            headers=headers)
     if options.output_file:
         return_code, return_message = fetch_from_url_to_file(
-                                                      url, 
+                                                      url,
                                                       config,
                                                       options.output_file,
                                                       data)[:2]

@@ -316,7 +316,7 @@ class QueueItemAdd(ShowQueueItem):
                     self.show.release_groups.set_black_keywords(self.blacklist)
                 if self.whitelist:
                     self.show.release_groups.set_white_keywords(self.whitelist)
-                    
+                   
             # be smartish about this
             if self.show.genre and "talk show" in self.show.genre.lower():
                 self.show.air_by_date = 1

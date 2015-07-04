@@ -26,7 +26,7 @@ nameCacheLock = threading.Lock()
 def addNameToCache(name, indexer_id=0):
     """
     Adds the show & tvdb id to the scene_names table in cache.db.
-    
+   
     name: The show name to cache
     indexer_id: the TVDB and TVRAGE id that this show should be cached with (can be None/0 for unknown)
     """
@@ -45,9 +45,9 @@ def addNameToCache(name, indexer_id=0):
 def retrieveNameFromCache(name):
     """
     Looks up the given name in the scene_names table in cache.db.
-    
+   
     name: The show name to look up.
-    
+   
     Returns: the TVDB and TVRAGE id that resulted from the cache lookup or None if the show wasn't found in the cache
     """
     global nameCache

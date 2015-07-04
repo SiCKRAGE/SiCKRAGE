@@ -183,22 +183,22 @@ class HoundDawgsProvider(generic.TorrentProvider):
                 try:
                     with BS4Parser(trimmedData, features=["html5lib", "permissive"]) as html:
                         result_table = html.find('table', {'id': 'torrent_table'})
-        
+       
                         if not result_table:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
                                        logger.DEBUG)
                             continue
-                        
+                       
                         result_tbody = result_table.find('tbody')
                         entries = result_tbody.contents
-                        del entries[1::2]   
+                        del entries[1::2]  
 
                         for result in entries[1:]:
-                            
+                           
                             torrent = result.find_all('td')
                             if len(torrent) <= 1:
                                 break
-                            
+                           
                             allAs = (torrent[1]).find_all('a')
 
                             try:
@@ -215,10 +215,10 @@ class HoundDawgsProvider(generic.TorrentProvider):
                                 title = title.replace("subs.", "")
                                 title = title.replace("SUBS.", "")
                                 title = title.replace("Subs.", "")
-                                
+                               
                                 download_url = self.urls['base_url']+allAs[0].attrs['href']
                                 id = link.replace(self.urls['base_url']+'torrents.php?id=','')
-                                
+                               
                             except (AttributeError, TypeError):
                                 continue
 

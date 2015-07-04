@@ -33,11 +33,11 @@ class FreeMobileNotifier:
     def _sendFreeMobileSMS(self, title, msg, id=None, apiKey=None):
         """
         Sends a SMS notification
-        
+       
         msg: The message to send (unicode)
         title: The title of the message
         userKey: The pushover user id to send the message to (or to subscribe with)
-        
+       
         returns: True if the message succeeded, False otherwise
         """
 
@@ -52,7 +52,7 @@ class FreeMobileNotifier:
         msg = msg.strip()
         msg_quoted = urllib2.quote(title + ": " + msg)
         URL = "https://smsapi.free-mobile.fr/sendmsg?user=" + id + "&pass=" + apiKey + "&msg=" + msg_quoted
-        
+       
         req = urllib2.Request(URL)
         # send the request to Free Mobile
         try:
@@ -75,11 +75,11 @@ class FreeMobileNotifier:
                     message = "Server error. Please retry in few moment."
                     logger.log(message, logger.ERROR)
                     return False, message
-                    
+                   
         message = "Free Mobile SMS successful."
         logger.log(message, logger.INFO)
         return True, message
-     
+    
 
 
 
@@ -95,12 +95,12 @@ class FreeMobileNotifier:
     def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyFreeMobile(title, ep_name + ": " + lang)
-            
+           
     def notify_git_update(self, new_version = "??"):
         if sickbeard.USE_FREEMOBILE:
             update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title=notifyStrings[NOTIFY_GIT_UPDATE]
-            self._notifyFreeMobile(title, update_text + new_version) 
+            self._notifyFreeMobile(title, update_text + new_version)
 
     def _notifyFreeMobile(self, title, message, id=None, apiKey=None, force=False):
         """

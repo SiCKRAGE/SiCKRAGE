@@ -23,7 +23,7 @@ class NMA_Notifier:
         if sickbeard.NMA_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendNMA(nma_api=None, nma_priority=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD],
                           message=ep_name + ": " + lang)
-                          
+                         
     def notify_git_update(self, new_version = "??"):
         if sickbeard.USE_NMA:
             update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]

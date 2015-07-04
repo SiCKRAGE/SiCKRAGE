@@ -1,7 +1,7 @@
 """ndg_httpsclient HTTPS module containing PyOpenSSL implementation of
 httplib.HTTPSConnection
 
-PyOpenSSL utility to make a httplib-like interface suitable for use with 
+PyOpenSSL utility to make a httplib-like interface suitable for use with
 urllib2
 """
 __author__ = "P J Kershaw (STFC)"
@@ -31,7 +31,7 @@ class HTTPSConnection(HTTPConnection):
     Note: This uses the constructor inherited from HTTPConnection to allow it to
     be used with httplib and HTTPSContextHandler. To use the class directly with
     an SSL context set ssl_context after construction.
-    
+   
     @cvar default_port: default port for this class (443)
     @type default_port: int
     @cvar default_ssl_method: default SSL method used if no SSL context is
@@ -40,7 +40,7 @@ class HTTPSConnection(HTTPConnection):
     """
     default_port = HTTPS_PORT
     default_ssl_method = SSL.SSLv23_METHOD
-    
+   
     def __init__(self, host, port=None, strict=None,
                  timeout=socket._GLOBAL_DEFAULT_TIMEOUT, ssl_context=None):
         HTTPConnection.__init__(self, host, port, strict, timeout)
@@ -52,9 +52,9 @@ class HTTPSConnection(HTTPConnection):
                 raise TypeError('Expecting OpenSSL.SSL.Context type for "'
                                 'ssl_context" keyword; got %r instead' %
                                 ssl_context)
-                
+               
             self.ssl_context = ssl_context
-            
+           
     def connect(self):
         """Create SSL socket and connect to peer
         """
@@ -68,22 +68,22 @@ class HTTPSConnection(HTTPConnection):
             ssl_context = SSL.Context(self.__class__.default_ssl_method)
 
         sock = socket.create_connection((self.host, self.port), self.timeout)
-        
-        # Tunnel if using a proxy - ONLY available for Python 2.6.2 and above      
+       
+        # Tunnel if using a proxy - ONLY available for Python 2.6.2 and above     
         if getattr(self, '_tunnel_host', None):
             self.sock = sock
             self._tunnel()
-            
+           
         self.sock = SSLSocket(ssl_context, sock)
-        
+       
         # Go to client mode.
         self.sock.set_connect_state()
 
     def close(self):
         """Close socket and shut down SSL connection"""
         self.sock.close()
-        
-        
+       
+       
 class HTTPSContextHandler(AbstractHTTPHandler):
     '''HTTPS handler that allows a SSL context to be set for the SSL
     connections.

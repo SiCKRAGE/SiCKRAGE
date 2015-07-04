@@ -38,7 +38,7 @@ class TMDB:
             raise Exception('method: ' + method + ' not supported.')
         response = json.loads(content.decode('utf-8'))
         return response
-    
+   
     #
     # Set attributes to dictionary values.
     # - e.g.
@@ -81,7 +81,7 @@ class TMDB:
             response = TMDB._request('GET', path, params)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
         # optional parameters: page, language
         def lists(self, params={}):
             path = 'account' + '/' + str(self.session_id) + '/lists'
@@ -121,7 +121,7 @@ class TMDB:
             response = TMDB._request('GET', path, params)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
         # required JSON body: movie_id, movie_watchlist
         def movie_watchlist_post(self, json_body):
             path = 'account' + '/' + str(json_body['movie_id']) + \
@@ -175,7 +175,7 @@ class TMDB:
             response = TMDB._request('GET', path, params)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
         # optional parameters: page, start_date, end_date
         def person(self, params={}):
             path = 'person/changes'
@@ -218,7 +218,7 @@ class TMDB:
             response = TMDB._request('GET', path)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
         # optional parameters: page, language
         def movies(self, params={}):
             path = 'company' + '/' + str(self.id) + '/movies'
@@ -249,9 +249,9 @@ class TMDB:
         def __init__(self):
             pass
 
-        # optional parameters: page, language, sort_by, include_adult, year, 
-        # primary_release_year, vote_count.gte, vote_average.gte, with_genres, 
-        # release_date.gte, release_date.lte, certification_country, 
+        # optional parameters: page, language, sort_by, include_adult, year,
+        # primary_release_year, vote_count.gte, vote_average.gte, with_genres,
+        # release_date.gte, release_date.lte, certification_country,
         # certification.lte, with_companies
         def movie(self, params):
             path = 'discover/movie'
@@ -297,7 +297,7 @@ class TMDB:
             response = TMDB._request('GET', path, params)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
         # optional parameters: page, language, include_all_movies, include_adult
         def movies(self, params={}):
             path = 'genre' + '/' + str(self.id) + '/movies'
@@ -318,7 +318,7 @@ class TMDB:
             response = TMDB._request('GET', path)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
     #
     # Keywords
     # http://docs.themoviedb.apiary.io/#keywords
@@ -378,7 +378,7 @@ class TMDB:
             response = TMDB._request('POST', path, params, json_body)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
         # required JSON body: media_id
         def remove_item(self, json_body):
             path = 'list' + '/' + str(self.id) + '/remove_item'
@@ -460,21 +460,21 @@ class TMDB:
             response = TMDB._request('GET', path, params)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
         # optional parameters: page, language
         def reviews(self, params={}):
             path = 'movie' + '/' + str(self.id) + '/reviews'
             response = TMDB._request('GET', path, params)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
         # optional parameters: page, language
         def lists(self, params={}):
             path = 'movie' + '/' + str(self.id) + '/lists'
             response = TMDB._request('GET', path, params)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
         # optional parameters: start_date, end_date
         def changes(self, params={}):
             path = 'movie' + '/' + str(self.id) + '/changes'
@@ -501,7 +501,7 @@ class TMDB:
             response = TMDB._request('GET', path, params)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
         # optional parameters: page, language
         def popular(self, params={}):
             path = 'movie/popular'
@@ -629,7 +629,7 @@ class TMDB:
             pass
 
         # required parameters: query
-        # optional parameters: page, language, include_adult, year, 
+        # optional parameters: page, language, include_adult, year,
         # primary_release_year, search_type
         def movie(self, params):
             path = 'search/movie'
@@ -699,7 +699,7 @@ class TMDB:
             response = TMDB._request('GET', path, params)
             TMDB._set_attrs_to_values(self, response)
             return response
-            
+           
         # optional parameter: language
         def credits(self, params={}):
             path = 'tv' + '/' + str(self.id) + '/credits'

@@ -24,7 +24,7 @@ def easter(year, method=EASTER_WESTERN):
 
     This algorithm implements three different easter
     calculation methods:
-    
+   
     1 - Original calculation in Julian calendar, valid in
         dates after 326 AD
     2 - Original method, with date converted to Gregorian
@@ -39,7 +39,7 @@ def easter(year, method=EASTER_WESTERN):
     EASTER_WESTERN  = 3
 
     The default method is method 3.
-    
+   
     More about the algorithm may be found at:
 
     http://users.chariot.net.au/~gmarts/eastalg.htm
