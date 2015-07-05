@@ -118,15 +118,15 @@ class uTorrentAPI(GenericClient):
             else:
                 return False
         else:
-            return True         
-        
+            return True        
+       
     def _set_torrent_priority(self, result):
 
         if result.priority == 1:
             params = {'action': 'queuetop', 'hash': result.hash}
             return self._request(params=params)
         else:
-            return True            
+            return True           
 
     def _set_torrent_pause(self, result):
 
@@ -138,4 +138,4 @@ class uTorrentAPI(GenericClient):
         return self._request(params=params)
 
 
-api = uTorrentAPI()       
+api = uTorrentAPI()      

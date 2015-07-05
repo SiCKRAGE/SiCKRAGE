@@ -258,7 +258,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
                             'title') + " but that doesn't seem like a trusted result so I'm ignoring it", logger.DEBUG)
                         continue
 
-                    #Check number video files = episode in season and find the real Quality for full season torrent analyzing files in torrent 
+                    #Check number video files = episode in season and find the real Quality for full season torrent analyzing files in torrent
                     if mode == 'Season' and search_mode == 'sponly':
                         ep_number = int(epcount / len(set(allPossibleShowNames(self.show))))
                         title = self._find_season_quality(title, id, ep_number)

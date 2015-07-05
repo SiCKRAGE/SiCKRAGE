@@ -78,7 +78,7 @@ class CacheShelveTest(HTTPTestBase):
 
             # Now retrieve the same data directly from the shelf
             modified, shelved_data = storage[self.TEST_URL]
-            
+           
             # The data should be the same
             self.failUnlessEqual(parsed_data, shelved_data)
         finally:

@@ -261,7 +261,7 @@ z.close()
 
 print "Created zip at", zipFilename
 
-# i store my google code username/pw in a config so i can have this file in public source control 
+# i store my google code username/pw in a config so i can have this file in public source control
 config = ConfigParser.ConfigParser()
 configFilename = os.path.join(compile_dir, "gc.ini")
 config.read(configFilename)

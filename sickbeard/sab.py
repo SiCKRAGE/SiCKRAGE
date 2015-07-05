@@ -39,7 +39,7 @@ from sickbeard.exceptions import ex
 def sendNZB(nzb):
     """
     Sends an NZB to SABnzbd via the API.
-    
+   
     nzb: The NZBSearchResult object to send to SAB
     """
 
@@ -89,7 +89,7 @@ def sendNZB(nzb):
     logger.log(u"URL: " + url, logger.DEBUG)
 
     try:
-        # if we have the URL to an NZB then we've built up the SAB API URL already so just call it 
+        # if we have the URL to an NZB then we've built up the SAB API URL already so just call it
         if nzb.resultType == "nzb":
             f = urllib.urlopen(url)
 
@@ -207,12 +207,12 @@ def getSabAccesMethod(host=None, username=None, password=None, apikey=None):
 def testAuthentication(host=None, username=None, password=None, apikey=None):
     """
     Sends a simple API request to SAB to determine if the given connection information is connect
-    
+   
     host: The host where SAB is running (incl port)
     username: The username to use for the HTTP request
     password: The password to use for the HTTP request
     apikey: The API key to provide to SAB
-    
+   
     Returns: A tuple containing the success boolean and a message
     """
 
@@ -237,4 +237,4 @@ def testAuthentication(host=None, username=None, password=None, apikey=None):
         return False, sabText
 
     return True, "Success"
-    
+   

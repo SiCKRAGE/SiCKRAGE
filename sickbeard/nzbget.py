@@ -40,7 +40,7 @@ def sendNZB(nzb, proper=False):
     category = sickbeard.NZBGET_CATEGORY
     if nzb.show.is_anime:
         category = sickbeard.NZBGET_CATEGORY_ANIME
-    
+   
     if sickbeard.NZBGET_USE_HTTPS:
         nzbgetXMLrpc = "https://%(username)s:%(password)s@%(host)s/xmlrpc"
     else:
@@ -123,7 +123,7 @@ def sendNZB(nzb, proper=False):
                 nzbget_result = nzbGetRPC.appendurl(nzb.name + ".nzb", category, nzbgetprio, False,
                                                     nzb.url, False, dupekey, dupescore, "score")
         # v13+ has a new combined append method that accepts both (url and content)
-        # also the return value has changed from boolean to integer 
+        # also the return value has changed from boolean to integer
         # (Positive number representing NZBID of the queue item. 0 and negative numbers represent error codes.)
         elif nzbget_version >= 13:
             nzbget_result = True if nzbGetRPC.append(nzb.name + ".nzb", nzbcontent64 if nzbcontent64 is not None else nzb.url,

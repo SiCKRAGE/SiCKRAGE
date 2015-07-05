@@ -1177,7 +1177,7 @@ class DOMHTMLCriticReviewsParser(DOMParserBase):
                 path="//div[@class='article']/div[@class='see-more']/a",
                 attrs=Attribute(key='metacritic url',
                                 path="./@href")) ]
-    
+   
 class DOMHTMLOfficialsitesParser(DOMParserBase):
     """Parser for the "official sites", "external reviews", "newsgroup
     reviews", "miscellaneous links", "sound clips", "video clips" and

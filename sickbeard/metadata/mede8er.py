@@ -142,7 +142,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
         SeriesName = etree.SubElement(tv_node, "title")
         SeriesName.text = myShow['seriesname']
-        
+       
         Genres = etree.SubElement(tv_node, "genres")
         if getattr(myShow, "genre", None) != None:
             for genre in myShow['genre'].split('|'):
@@ -399,7 +399,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             return False
 
         return True
-    
+   
     def write_ep_file(self, ep_obj):
         """
         Generates and writes ep_obj's metadata under the given path with the

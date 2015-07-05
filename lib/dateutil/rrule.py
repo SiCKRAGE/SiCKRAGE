@@ -431,7 +431,7 @@ class rrule(rrulebase):
                      HOURLY:ii.ddayset,
                      MINUTELY:ii.ddayset,
                      SECONDLY:ii.ddayset}[freq]
-        
+       
         if freq < HOURLY:
             timeset = self._timeset
         else:

@@ -54,11 +54,11 @@ class ServerSSLCertVerification(object):
         server to avoid errors matching hostnames.  This is useful
         where the hostname is not fully qualified
         @type hostname: string
-        @param hostname: hostname to match against peer certificate 
+        @param hostname: hostname to match against peer certificate
         subjectAltNames or subject common name
         @type subj_alt_name_match: bool
         @param subj_alt_name_match: flag to enable/disable matching of hostname
-        against peer certificate subjectAltNames.  Nb. A setting of True will 
+        against peer certificate subjectAltNames.  Nb. A setting of True will
         be ignored if the pyasn1 package is not installed
         """
         self.__certDN = None
@@ -69,13 +69,13 @@ class ServerSSLCertVerification(object):
 
         if hostname is not None:
             self.hostname = hostname
-        
+       
         if subj_alt_name_match:
             if not SUBJ_ALT_NAME_SUPPORT:
                 log.warning('Overriding "subj_alt_name_match" keyword setting: '
                             'peer verification with subjectAltNames is disabled')
                 self.__subj_alt_name_match = False
-            else:    
+            else:   
                 self.__subj_alt_name_match = True
         else:
             log.debug('Disabling peer verification with subject '
@@ -136,8 +136,8 @@ class ServerSSLCertVerification(object):
                     dns_names = self._get_subj_alt_name(peerCert)
                     if self.hostname in dns_names:
                         return preverifyOK
-                
-                # If no subjectAltNames, default to check of subject Common Name   
+               
+                # If no subjectAltNames, default to check of subject Common Name  
                 if peerCertSubj.commonName == self.hostname:
                     return preverifyOK
                 else:
@@ -166,7 +166,7 @@ class ServerSSLCertVerification(object):
     @classmethod
     def _get_subj_alt_name(cls, peer_cert):
         '''Extract subjectAltName DNS name settings from certificate extensions
-        
+       
         @param peer_cert: peer certificate in SSL connection.  subjectAltName
         settings if any will be extracted from this
         @type peer_cert: OpenSSL.crypto.X509
@@ -180,17 +180,17 @@ class ServerSSLCertVerification(object):
             if ext_name == cls.SUBJ_ALT_NAME_EXT_NAME:
                 # PyOpenSSL returns extension data in ASN.1 encoded form
                 ext_dat = ext.get_data()
-                decoded_dat = der_decoder.decode(ext_dat, 
+                decoded_dat = der_decoder.decode(ext_dat,
                                                  asn1Spec=general_names)
-                
+               
                 for name in decoded_dat:
                     if isinstance(name, SubjectAltName):
                         for entry in range(len(name)):
                             component = name.getComponentByPosition(entry)
                             dns_name.append(str(component.getComponent()))
-                            
+                           
         return dns_name
-        
+       
     def _getCertDN(self):
         return self.__certDN
 

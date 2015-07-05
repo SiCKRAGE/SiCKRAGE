@@ -87,18 +87,18 @@ class NewznabProvider(generic.NZBProvider):
 
     def _getURL(self, url, post_data=None, params=None, timeout=30, json=False):
         return self.getURL(url, post_data=post_data, params=params, timeout=timeout, json=json)
-    
+   
     def get_newznab_categories(self):
         """
         Uses the newznab provider url and apikey to get the capabilities.
         Makes use of the default newznab caps param. e.a. http://yournewznab/api?t=caps&apikey=skdfiw7823sdkdsfjsfk
-        Returns a tuple with (succes or not, array with dicts [{"id": "5070", "name": "Anime"}, 
+        Returns a tuple with (succes or not, array with dicts [{"id": "5070", "name": "Anime"},
         {"id": "5080", "name": "Documentary"}, {"id": "5020", "name": "Foreign"}...etc}], error message)
         """
         return_categories = []
-        
+       
         self._checkAuth()
-        
+       
         params = {"t": "caps"}
         if self.needs_auth and self.key:
             params['apikey'] = self.key
@@ -106,15 +106,15 @@ class NewznabProvider(generic.NZBProvider):
         try:
             data = self.cache.getRSSFeed("%s/api?%s" % (self.url, urllib.urlencode(params)))
         except:
-            logger.log(u"Error getting html for [%s]" % 
+            logger.log(u"Error getting html for [%s]" %
                     ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.items())) ), logger.DEBUG)
-            return (False, return_categories, "Error getting html for [%s]" % 
+            return (False, return_categories, "Error getting html for [%s]" %
                     ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.items()) )))
 
         if not self._checkAuthFromData(data):
             logger.log(u"Error parsing xml for [%s]" % (self.name), logger.DEBUG)
             return False, return_categories, "Error parsing xml for [%s]" % (self.name)
-            
+           
         try:
             for category in data.feed.categories:
                 if category.get('name') == 'TV':
@@ -123,8 +123,8 @@ class NewznabProvider(generic.NZBProvider):
         except:
             logger.log(u"Error parsing result for [%s]" % (self.name),
                        logger.DEBUG)
-            return (False, return_categories, "Error parsing result for [%s]" % (self.name))                                         
-          
+            return (False, return_categories, "Error parsing result for [%s]" % (self.name))                                        
+         
         return True, return_categories, ""
 
     def _get_season_search_strings(self, ep_obj):

@@ -219,7 +219,7 @@ class EscapeTestCase(unittest.TestCase):
     def test_squeeze(self):
         self.assertEqual(squeeze(u('sequences     of    whitespace   chars'))
             , u('sequences of whitespace chars'))
-    
+   
     def test_recursive_unicode(self):
         tests = {
             'dict': {b"foo": b"bar"},

@@ -8,15 +8,15 @@ class LockError(Exception):
 
 class ReadWriteMutex(object):
     """A mutex which allows multiple readers, single writer.
-    
+   
     :class:`.ReadWriteMutex` uses a Python ``threading.Condition``
     to provide this functionality across threads within a process.
-    
+   
     The Beaker package also contained a file-lock based version
     of this concept, so that readers/writers could be synchronized
-    across processes with a common filesystem.  A future Dogpile 
+    across processes with a common filesystem.  A future Dogpile
     release may include this additional class at some point.
-    
+   
     """
 
     def __init__(self):
@@ -48,7 +48,7 @@ class ReadWriteMutex(object):
         finally:
             self.condition.release()
 
-        if not wait: 
+        if not wait:
             return True
 
     def release_read_lock(self):
@@ -57,7 +57,7 @@ class ReadWriteMutex(object):
         try:
             self.async -= 1
 
-            # check if we are the last asynchronous reader thread 
+            # check if we are the last asynchronous reader thread
             # out the door.
             if self.async == 0:
                 # yes. so if a sync operation is waiting, notifyAll to wake
@@ -88,7 +88,7 @@ class ReadWriteMutex(object):
                 if self.current_sync_operation is not None:
                     return False
 
-            # establish ourselves as the current sync 
+            # establish ourselves as the current sync
             # this indicates to other read/write operations
             # that they should wait until this is None again
             self.current_sync_operation = threading.currentThread()
@@ -106,7 +106,7 @@ class ReadWriteMutex(object):
         finally:
             self.condition.release()
 
-        if not wait: 
+        if not wait:
             return True
 
     def release_write_lock(self):
@@ -117,7 +117,7 @@ class ReadWriteMutex(object):
                 raise LockError("Synchronizer error - current thread doesn't "
                                 "have the write lock")
 
-            # reset the current sync operation so 
+            # reset the current sync operation so
             # another can get it
             self.current_sync_operation = None
 

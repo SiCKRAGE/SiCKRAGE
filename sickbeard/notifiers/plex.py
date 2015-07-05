@@ -182,10 +182,10 @@ class PLEXNotifier:
                 username = sickbeard.PLEX_USERNAME
             if not password:
                 password = sickbeard.PLEX_PASSWORD
-                
+               
             if not plex_server_token:
                 plex_server_token = sickbeard.PLEX_SERVER_TOKEN
-            
+           
             # if username and password were provided, fetch the auth token from plex.tv
             token_arg = ''
             if plex_server_token:
@@ -211,7 +211,7 @@ class PLEXNotifier:
 
                 except (ValueError, IndexError) as e:
                     logger.log(u'PLEX: Error parsing plex.tv response: ' + ex(e), logger.DEBUG)
-                
+               
             file_location = '' if None is ep_obj else ep_obj.location
             host_list = [x.strip() for x in host.split(',')]
             hosts_all = {}

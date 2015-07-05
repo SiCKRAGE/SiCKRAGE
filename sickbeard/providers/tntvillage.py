@@ -105,7 +105,7 @@ class TNTVillageProvider(generic.TorrentProvider):
                               'Anime' : 7,
                               'Programmi e Film TV' : 1,
                               'Documentari' : 14,
-                              'All' : 0, 
+                              'All' : 0,
                              }
 
         self.urls = {'base_url' : 'http://forum.tntvillage.scambioetico.org',
@@ -247,7 +247,7 @@ class TNTVillageProvider(generic.TorrentProvider):
         file_quality=''
 
         img_all = (torrent_rows.find_all('td'))[1].find_all('img')
-        
+       
         if len(img_all) > 0:
             for img_type in img_all:
                 try:
@@ -322,7 +322,7 @@ class TNTVillageProvider(generic.TorrentProvider):
             if re.search("ita", name, re.I):
                 logger.log(u"Found Italian release", logger.DEBUG)
                 is_italian=1
-        
+       
         return is_italian
 
     def _is_season_pack(self, name):
@@ -431,7 +431,7 @@ class TNTVillageProvider(generic.TorrentProvider):
                                         break
 
                                 if Quality.nameQuality(title) == Quality.UNKNOWN:
-                                    title += filename_qt 
+                                    title += filename_qt
 
                                 if not self._is_italian(result) and not self.subtitle:
                                     logger.log(u"Subtitled, skipping "  + title + "(" + searchURL + ")", logger.DEBUG)

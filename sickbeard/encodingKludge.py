@@ -34,7 +34,7 @@ def fixStupidEncodings(x, silent=False):
             u"Unknown value passed in, ignoring it: " + str(type(x)) + " (" + repr(x) + ":" + repr(type(x)) + ")",
             logger.DEBUG if silent else logger.ERROR)
         return None
-        
+       
 def _toUnicode(x):
     try:
         if not isinstance(x, unicode):

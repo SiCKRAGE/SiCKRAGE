@@ -62,7 +62,7 @@ class qbittorrentAPI(GenericClient):
         return self._request(method='post', data=data)
 
     def _set_torrent_pause(self, result):
-        
+       
         self.url = self.host+'command/resume'
         if sickbeard.TORRENT_PAUSED:
             self.url = self.host+'command/pause'

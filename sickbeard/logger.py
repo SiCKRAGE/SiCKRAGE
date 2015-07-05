@@ -123,11 +123,11 @@ class Logger(object):
 
             for logger in self.loggers:
                 logger.addHandler(rfh)
-                
+               
     def shutdown(self):
-        
+       
         logging.shutdown()
-        
+       
     def log(self, msg, level=INFO, *args, **kwargs):
         meThread = threading.currentThread().getName()
         message = meThread + u" :: " + msg
@@ -175,7 +175,7 @@ class Logger(object):
             if os.path.isfile(self.logFile):
                 with ek.ek(codecs.open, *[self.logFile, 'r', 'utf-8']) as f:
                     log_data = f.readlines()
-                    
+                   
             for i in range (1 , int(sickbeard.LOG_NR)):
                 if os.path.isfile(self.logFile + "." + str(i)) and (len(log_data) <= 500):
                     with ek.ek(codecs.open, *[self.logFile + "." + str(i), 'r', 'utf-8']) as f:
@@ -221,7 +221,7 @@ class Logger(object):
                     try:
                         message += u"Locale: " + locale.getdefaultlocale()[1] + "\n"
                     except:
-                        message += u"Locale: unknown" + "\n"                        
+                        message += u"Locale: unknown" + "\n"                       
                 message += u"Branch: **" + sickbeard.BRANCH + "**\n"
                 message += u"Commit: SiCKRAGETV/SickRage@" + sickbeard.CUR_COMMIT_HASH + "\n"
                 if gist and gist != 'No ERROR found':

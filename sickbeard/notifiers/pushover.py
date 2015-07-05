@@ -36,11 +36,11 @@ class PushoverNotifier:
     def _sendPushover(self, msg, title, userKey=None, apiKey=None):
         """
         Sends a pushover notification to the address provided
-        
+       
         msg: The message to send (unicode)
         title: The title of the message
         userKey: The pushover user id to send the message to (or to subscribe with)
-        
+       
         returns: True if the message succeeded, False otherwise
         """
 
@@ -119,12 +119,12 @@ class PushoverNotifier:
     def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyPushover(title, ep_name + ": " + lang)
-            
+           
     def notify_git_update(self, new_version = "??"):
         if sickbeard.USE_PUSHOVER:
             update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title=notifyStrings[NOTIFY_GIT_UPDATE]
-            self._notifyPushover(title, update_text + new_version) 
+            self._notifyPushover(title, update_text + new_version)
 
     def _notifyPushover(self, title, message, userKey=None, apiKey=None, force=False):
         """
@@ -132,7 +132,7 @@ class PushoverNotifier:
 
         title: The title of the notification to send
         message: The message string to send
-        userKey: The userKey to send the notification to 
+        userKey: The userKey to send the notification to
         force: Enforce sending, for instance for testing
         """
 

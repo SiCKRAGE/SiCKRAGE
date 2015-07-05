@@ -36,7 +36,7 @@ class ShowUpdater():
         self.amActive = False
 
     def run(self, force=False):
- 
+
         self.amActive = True
 
         update_datetime = datetime.datetime.now()
@@ -90,7 +90,7 @@ class ShowUpdater():
         ui.ProgressIndicators.setIndicator('dailyUpdate', ui.QueueProgressIndicator("Daily Update", piList))
 
         logger.log(u"Completed full update on all shows")
-        
+       
         self.amActive = False
 
     def __del__(self):

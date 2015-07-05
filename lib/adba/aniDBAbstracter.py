@@ -97,7 +97,7 @@ class aniDBabstractObject(object):
         """
         type - Type of notification: type=>  0=all, 1=new, 2=group, 3=complete
         priority - low = 0, medium = 1, high = 2 (unconfirmed)
-        
+       
         """
         if self.aid:
             self.aniDB.notifyadd(aid=self.aid, type=1, priority=1)
@@ -267,7 +267,7 @@ class Episode(aniDBabstractObject):
         1    on hdd    - the file is stored on hdd
         2    on cd    - the file is stored on cd
         3    deleted    - the file has been deleted or is not available for other reasons (i.e. reencoded)
-        
+       
         """
         if self.filePath and not (self.ed2k or self.size):
             (self.ed2k, self.size) = self._calculate_file_stuff(self.filePath)

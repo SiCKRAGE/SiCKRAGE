@@ -174,7 +174,7 @@ class HTTPHeaderDict(dict):
     values = MutableMapping.values
     get = MutableMapping.get
     update = MutableMapping.update
-    
+   
     if not PY3: # Python 2
         iterkeys = MutableMapping.iterkeys
         itervalues = MutableMapping.itervalues
@@ -239,7 +239,7 @@ class HTTPHeaderDict(dict):
             raise TypeError("update() takes at least 1 argument (0 given)")
         self = args[0]
         other = args[1] if len(args) >= 2 else ()
-        
+       
         if isinstance(other, Mapping):
             for key in other:
                 self.add(key, other[key])
@@ -310,7 +310,7 @@ class HTTPHeaderDict(dict):
         # ret now contains only the last header line for each duplicate.
         # Importing with all duplicates would be nice, but this would
         # mean to repeat most of the raw parsing already done, when the
-        # message object was created. Extracting only the headers of interest 
+        # message object was created. Extracting only the headers of interest
         # separately, the cookies, should be faster and requires less
         # extra code.
         for key in duplicates:

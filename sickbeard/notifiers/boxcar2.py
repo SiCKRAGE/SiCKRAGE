@@ -37,7 +37,7 @@ class Boxcar2Notifier:
     def _sendBoxcar2(self, msg, title, accesstoken):
         """
         Sends a boxcar2 notification to the address provided
-        
+       
         msg: The message to send
         title: The title of the message
         accesstoken: to send to this device	
@@ -96,7 +96,7 @@ class Boxcar2Notifier:
     def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyBoxcar2(title, ep_name + ": " + lang)
-            
+           
     def notify_git_update(self, new_version = "??"):
         if sickbeard.USE_BOXCAR2:
             update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]

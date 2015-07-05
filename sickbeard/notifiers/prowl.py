@@ -52,7 +52,7 @@ class ProwlNotifier:
         if sickbeard.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
-                            
+                           
     def notify_git_update(self, new_version = "??"):
         if sickbeard.USE_PROWL:
             update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]

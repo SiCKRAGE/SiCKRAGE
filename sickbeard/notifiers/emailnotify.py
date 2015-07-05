@@ -89,7 +89,7 @@ class EmailNotifier:
     def notify_download(self, ep_name, title="Completed:"):
         """
         Send a notification that an episode was downloaded
-        
+       
         ep_name: The name of the episode that was downloaded
         title: The title of the notification (optional)
         """
@@ -128,7 +128,7 @@ class EmailNotifier:
     def notify_subtitle_download(self, ep_name, lang, title="Downloaded subtitle:"):
         """
         Send a notification that an subtitle was downloaded
-        
+       
         ep_name: The name of the episode that was downloaded
         lang: Subtitle language wanted
         """
@@ -197,7 +197,7 @@ class EmailNotifier:
             logger.log(u"Exception generated while sending e-mail: " + str(e), logger.ERROR)
             logger.log(traceback.format_exc(), logger.DEBUG)
             return False
-            
+           
         if smtpDebug:
             srv.set_debuglevel(1)
         try:

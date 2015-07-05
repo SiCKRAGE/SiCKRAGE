@@ -73,16 +73,16 @@
     is: function(s) {
         return false;
     },
-    format: function(s) { 
+    format: function(s) {
         return s.replace('hd1080p',5).replace('hd720p',4).replace('hd',3).replace('sd',2).replace('any',1).replace('custom',7);
     },
     type: 'numeric'
 });
 
-\$.tablesorter.addParser({ 
+\$.tablesorter.addParser({
     id: 'eps',
     is: function(s) {
-        return false; 
+        return false;
     },
     format: function(s) {
         match = s.match(/^(.*)/);
@@ -113,7 +113,7 @@
 });
 
 
-\$(document).ready(function(){ 
+\$(document).ready(function(){
 	
     \$("img#network").on('error', function(){
     	\$(this).parent().text(\$(this).attr('alt'));
@@ -158,22 +158,22 @@
                                 if (result[1] === "<") {
                                     if (pct < parseInt(result[2])) {
                                         test = true;
-                                    }                            
+                                    }                           
                                 } else if (result[1] === "<=") {
                                     if (pct <= parseInt(result[2])) {
                                         test = true;
-                                    }                            
+                                    }                           
                                 } else if (result[1] === ">=") {
                                     if (pct >= parseInt(result[2])) {
                                         test = true;
-                                    }                            
+                                    }                           
                                 } else if (result[1] === ">") {
                                     if (pct > parseInt(result[2])) {
                                         test = true;
-                                    }                            
+                                    }                           
                                 }
                             }
-                            
+                           
                             var result = f.match(/(\d+)\s(-|to)\s(\d+)/i);
                             if (result) {
                                 if ((result[2] === "-") || (result[2] === "to")) {
@@ -182,7 +182,7 @@
                                     }
                                 }
                             }
-                            
+                           
                             var result = f.match(/(=)?\s?(\d+)\s?(=)?/i);
                             if (result) {
                                 if ((result[1] === "=") || (result[3] === "=")) {
@@ -191,17 +191,17 @@
                                     }
                                 }
                             }
-                            
+                           
                             if (!isNaN(parseFloat(f)) && isFinite(f)) {
                                 if (parseInt(f) === pct) {
                                     test = true;
                                 }
-                            }                            
+                            }                           
                         }
                         return test;
                     },
                 },
-            #else 
+            #else
                 filter_columnFilters: false,
             #end if
 			filter_reset: '.resetshows',
@@ -249,22 +249,22 @@
                                 if (result[1] === "<") {
                                     if (pct < parseInt(result[2])) {
                                         test = true;
-                                    }                            
+                                    }                           
                                 } else if (result[1] === "<=") {
                                     if (pct <= parseInt(result[2])) {
                                         test = true;
-                                    }                            
+                                    }                           
                                 } else if (result[1] === ">=") {
                                     if (pct >= parseInt(result[2])) {
                                         test = true;
-                                    }                            
+                                    }                           
                                 } else if (result[1] === ">") {
                                     if (pct > parseInt(result[2])) {
                                         test = true;
-                                    }                            
+                                    }                           
                                 }
                             }
-                            
+                           
                             var result = f.match(/(\d+)\s(-|to)\s(\d+)/i);
                             if (result) {
                                 if ((result[2] === "-") || (result[2] === "to")) {
@@ -273,7 +273,7 @@
                                     }
                                 }
                             }
-                            
+                           
                             var result = f.match(/(=)?\s?(\d+)\s?(=)?/i);
                             if (result) {
                                 if ((result[1] === "=") || (result[3] === "=")) {
@@ -282,17 +282,17 @@
                                     }
                                 }
                             }
-                            
+                           
                             if (!isNaN(parseFloat(f)) && isFinite(f)) {
                                 if (parseInt(f) === pct) {
                                     test = true;
                                 }
-                            }                            
+                            }                           
                         }
                         return test;
                     },
                 },
-            #else 
+            #else
                 filter_columnFilters: false,
             #end if
 			filter_reset: '.resetanime',
@@ -335,7 +335,7 @@
 				isFitWidth: true
 			},
 			getSortData: {
-				name: function( itemElem ) { 
+				name: function( itemElem ) {
 					var name = \$( itemElem ).attr('data-name');
 					#if not $sickbeard.SORT_ARTICLE:
 						return (name || '').replace(/^(The|A|An)\s/i,'');
@@ -391,9 +391,9 @@
 //-->
 </script>
 
-#if $varExists('header') 
+#if $varExists('header')
 	<h1 class="header">$header</h1>
-#else 
+#else
 	<h1 class="title">$title</h1>
 #end if
 
@@ -401,7 +401,7 @@
     #if $layout != 'poster':
         <button id="popover" type="button" class="btn btn-inline">Select Column</button>
     #end if
-	<span> Layout: 
+	<span> Layout:
 		<select name="layout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
 			<option value="$sbRoot/setHomeLayout/?layout=poster" #if $sickbeard.HOME_LAYOUT == "poster" then "selected=\"selected\"" else ""#>Poster</option>
 			<option value="$sbRoot/setHomeLayout/?layout=small" #if $sickbeard.HOME_LAYOUT == "small" then "selected=\"selected\"" else ""#>Small Poster</option>
@@ -417,7 +417,7 @@
 	
 	#if $layout == 'poster':
 	&nbsp;
-	<span> Sort By: 
+	<span> Sort By:
 		<select id="postersort" class="form-control form-control-inline input-sm">
             <option value="name" data-sort="$sbRoot/setPosterSortBy/?sort=name" #if $sickbeard.POSTER_SORTBY == "name" then "selected=\"selected\"" else ""#>Name</option>
             <option value="date" data-sort="$sbRoot/setPosterSortBy/?sort=date" #if $sickbeard.POSTER_SORTBY == "date" then "selected=\"selected\"" else ""#>Next Episode</option>
@@ -426,7 +426,7 @@
 		</select>
 	</span>
 	&nbsp;
-	<span> Sort Order: 
+	<span> Sort Order:
 		<select id="postersortdirection" class="form-control form-control-inline input-sm">
             <option value="true" data-sort="$sbRoot/setPosterSortDir/?direction=1" #if $sickbeard.POSTER_SORTDIR == 1 then "selected=\"selected\"" else ""#>Asc</option>
             <option value="false" data-sort="$sbRoot/setPosterSortDir/?direction=0" #if $sickbeard.POSTER_SORTDIR == 0 then "selected=\"selected\"" else ""#>Desc</option>
@@ -452,7 +452,7 @@
 	#if $curLoadingShow.show != None and $curLoadingShow.show in $sickbeard.showList:
     #continue
 	#end if
-    
+   
 	#if $curLoadingShow.show == None:
 		<div class="show" data-name="0" data-date="010101" data-network="0" data-progress="101">
 			<img alt="" title="$curLoadingShow.show_name" class="show-image" style="border-bottom: 1px solid #111;" src="$sbRoot/images/poster.png" />
@@ -623,12 +623,12 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 		</table>
 		
 	</div>
-  
+ 
 
-    
-#end for    
-</div> 
-</div> 
+   
+#end for   
+</div>
+</div>
 
 #else
 
@@ -659,7 +659,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
 			<th>&nbsp;</th>
         </tr>
     </tfoot>
-    
+   
 
 #if $sickbeard.showQueueScheduler.action.loadingShowList
     <tbody class="tablesorter-infoOnly">
@@ -703,7 +703,7 @@ $myShowList.sort(lambda x, y: cmp(x.name, y.name))
     #if $curShow.indexerid in $show_stat:
         #set $cur_airs_next = $show_stat[$curShow.indexerid]['ep_airs_next']
         #set $cur_airs_prev = $show_stat[$curShow.indexerid]['ep_airs_prev']
-        
+       
 
         #set $cur_snatched = $show_stat[$curShow.indexerid]['ep_snatched']
         #if not $cur_snatched:

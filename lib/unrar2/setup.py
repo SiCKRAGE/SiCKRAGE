@@ -25,7 +25,7 @@ for dirpath, dirnames, filenames in os.walk(r'.'):
     for filename in [fn for fn in filenames if os.path.splitext(fn)[-1].lower() in ('.pyc', '.pyo', '.scc')]:
         filenames.remove(filename)
     parts = ['UnRAR2']+dirpath.split(os.sep)[1:]
-    
+   
     data_files.append((os.path.join(*parts), [os.path.join(dirpath, fn) for fn in filenames]))
 
 setup(name='pyUnRAR2',

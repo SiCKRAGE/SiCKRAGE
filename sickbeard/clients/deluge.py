@@ -147,7 +147,7 @@ class DelugeAPI(GenericClient):
                     self._request(method='post', data=post_data)
                     logger.log(self.name + ': ' + label + u" label added to Deluge", logger.DEBUG)
 
-                # add label to torrent    
+                # add label to torrent   
                 post_data = json.dumps({"method": 'label.set_torrent',
                                         "params": [result.hash, label],
                                         "id": 5

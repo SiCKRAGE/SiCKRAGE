@@ -147,7 +147,7 @@ class BTNProvider(generic.TorrentProvider):
 
         except jsonrpclib.jsonrpc.ProtocolError, error:
             if error.message == 'Call Limit Exceeded':
-                logger.log(u"You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account.", logger.WARNING)                
+                logger.log(u"You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account.", logger.WARNING)               
             else:
                 logger.log(u"JSON-RPC protocol error while accessing " + self.name + ": " + ex(error), logger.ERROR)
             parsedJSON = {'api-error': ex(error)}
@@ -379,7 +379,7 @@ class BTNProvider(generic.TorrentProvider):
 
             addCacheEntry = False
             if not (showObj.air_by_date or showObj.sports):
-                if search_mode == 'sponly': 
+                if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         logger.log(
                             u"This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it",

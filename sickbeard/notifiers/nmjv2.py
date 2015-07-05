@@ -42,7 +42,7 @@ class NMJv2Notifier:
 
     def notify_subtitle_download(self, ep_name, lang):
         self._notifyNMJ()
-        
+       
     def notify_git_update(self, new_version):
         return False
         # Not implemented, no reason to start scanner.
@@ -53,11 +53,11 @@ class NMJv2Notifier:
     def notify_settings(self, host, dbloc, instance):
         """
         Retrieves the NMJv2 database location from Popcorn hour
-        
+       
         host: The hostname/IP of the Popcorn Hour server
         dbloc: 'local' for PCH internal harddrive. 'network' for PCH network shares
         instance: Allows for selection of different DB in case of multiple databases
-        
+       
         Returns: True if the settings were retrieved successfully, False otherwise
         """
         try:
@@ -98,11 +98,11 @@ class NMJv2Notifier:
     def _sendNMJ(self, host):
         """
         Sends a NMJ update command to the specified machine
-        
+       
         host: The hostname/IP to send the request to (no port)
         database: The database to send the requst to
         mount: The mount URL to use (optional)
-        
+       
         Returns: True if the request succeeded, False otherwise
         """
 
@@ -160,7 +160,7 @@ class NMJv2Notifier:
     def _notifyNMJ(self, host=None, force=False):
         """
         Sends a NMJ update command based on the SB config settings
-        
+       
         host: The host to send the command to (optional, defaults to the host in the config)
         database: The database to use (optional, defaults to the database in the config)
         mount: The mount URL (optional, defaults to the mount URL in the config)
