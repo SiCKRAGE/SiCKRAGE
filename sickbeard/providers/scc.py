@@ -111,7 +111,7 @@ class SCCProvider(generic.TorrentProvider):
     def _get_season_search_strings(self, ep_obj):
 
         search_strings = []
-        for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
+        for show_name in set(show_name_helpers.allPossibleShowNames(ep_obj.show)):
             if ep_obj.show.air_by_date or ep_obj.show.sports:
                 sp_string = show_name + ' ' + str(ep_obj.airdate).split('-')[0]
             elif ep_obj.show.anime:
@@ -130,7 +130,7 @@ class SCCProvider(generic.TorrentProvider):
         if not ep_obj:
             return []
 
-        for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
+        for show_name in set(show_name_helpers.allPossibleShowNames(ep_obj.show)):
             if self.show.air_by_date:
                 ep_string = sanitizeSceneName(show_name) + ' ' + str(ep_obj.airdate).replace('-', '.')
             elif self.show.sports:

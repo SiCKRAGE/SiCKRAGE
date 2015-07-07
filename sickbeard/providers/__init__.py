@@ -46,6 +46,7 @@ __all__ = ['womble',
            'binsearch',
            'scenetime',
            'btdigg',
+           'torrentz',
 ]
 
 import sickbeard
