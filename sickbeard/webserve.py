@@ -54,10 +54,11 @@ from sickbeard.scene_numbering import get_scene_numbering, set_scene_numbering, 
 
 from lib.dateutil import tz, parser as dateutil_parser
 from lib.unrar2 import RarFile
-from lib import adba, subliminal
+import adba, subliminal
 from lib.trakt import TraktAPI
 from lib.trakt.exceptions import traktException
 from versionChecker import CheckVersion
+import babelfish
 
 try:
     import json
@@ -2012,24 +2013,23 @@ class Home(WebRoot):
             return json.dumps({'result': 'failure'})
 
         # try do download subtitles for that episode
-        previous_subtitles = set(subliminal.language.Language(x) for x in ep_obj.subtitles)
+        previous_subtitles = ep_obj.subtitles
         try:
-            ep_obj.subtitles = set(x.language for x in ep_obj.downloadSubtitles().values()[0])
+            ep_obj.downloadSubtitles()
         except:
             return json.dumps({'result': 'failure'})
 
         # return the correct json value
-        if previous_subtitles != ep_obj.subtitles:
+        newSubtitles = frozenset(ep_obj.subtitles).difference(previous_subtitles)
+        if newSubtitles:
+            newLangs = [babelfish.Language.fromietf(newSub) for newSub in newSubtitles]
             status = 'New subtitles downloaded: %s' % ' '.join([
-                "<img src='" + sickbeard.WEB_ROOT + "/images/flags/" + x.alpha2 +
-                ".png' alt='" + x.name + "'/>" for x in
-                sorted(list(ep_obj.subtitles.difference(previous_subtitles)))])
+                "<img src='" + sickbeard.WEB_ROOT + "/images/flags/" + newLang.alpha3 +
+                ".png' alt='" + newLang.name + "'/>" for newLang in newLangs])
         else:
             status = 'No subtitles downloaded'
         ui.notifications.message('Subtitles Search', status)
-        return json.dumps({'result': status, 'subtitles': ','.join(sorted([x.alpha2 for x in
-                                                                           ep_obj.subtitles.union(
-                                                                               previous_subtitles)]))})
+        return json.dumps({'result': status, 'subtitles': ','.join(ep_obj.subtitles)})
 
     def setSceneNumbering(self, show, indexer, forSeason=None, forEpisode=None, forAbsolute=None, sceneSeason=None,
                           sceneEpisode=None, sceneAbsolute=None):
@@ -2885,10 +2885,9 @@ class Manage(Home, WebRoot):
         result = {}
         for cur_result in cur_show_results:
             if whichSubs == 'all':
-                if len(set(cur_result["subtitles"].split(',')).intersection(set(subtitles.wantedLanguages()))) >= len(
-                        subtitles.wantedLanguages()):
+                if not frozenset(subtitles.wantedLanguages()).difference(cur_result["subtitles"].split(',')):
                     continue
-            elif whichSubs in cur_result["subtitles"].split(','):
+            elif whichSubs in cur_result["subtitles"]:
                 continue
 
             cur_season = int(cur_result["season"])
@@ -2902,9 +2901,7 @@ class Manage(Home, WebRoot):
 
             result[cur_season][cur_episode]["name"] = cur_result["name"]
 
-            result[cur_season][cur_episode]["subtitles"] = ",".join(
-                subliminal.language.Language(subtitle).alpha2 for subtitle in cur_result["subtitles"].split(',')) if not \
-                cur_result["subtitles"] == '' else ''
+            result[cur_season][cur_episode]["subtitles"] = cur_result["subtitles"]
 
         return json.dumps(result)
 
@@ -2920,17 +2917,19 @@ class Manage(Home, WebRoot):
 
         myDB = db.DBConnection()
         status_results = myDB.select(
-            "SELECT show_name, tv_shows.indexer_id as indexer_id, tv_episodes.subtitles subtitles FROM tv_episodes, tv_shows WHERE tv_shows.subtitles = 1 AND tv_episodes.status LIKE '%4' AND tv_episodes.season != 0 AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name")
+            "SELECT show_name, tv_shows.indexer_id as indexer_id, tv_episodes.subtitles subtitles " +
+            "FROM tv_episodes, tv_shows " +
+            "WHERE tv_shows.subtitles = 1 AND tv_episodes.status LIKE '%4' AND tv_episodes.season != 0 " +
+            "AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name")
 
         ep_counts = {}
         show_names = {}
         sorted_show_ids = []
         for cur_status_result in status_results:
             if whichSubs == 'all':
-                if len(set(cur_status_result["subtitles"].split(',')).intersection(
-                        set(subtitles.wantedLanguages()))) >= len(subtitles.wantedLanguages()):
+                if not frozenset(subtitles.wantedLanguages()).difference(cur_status_result["subtitles"].split(',')):
                     continue
-            elif whichSubs in cur_status_result["subtitles"].split(','):
+            elif whichSubs in cur_status_result["subtitles"]:
                 continue
 
             cur_indexer_id = int(cur_status_result["indexer_id"])
@@ -3368,33 +3367,33 @@ class Manage(Home, WebRoot):
                 sickbeard.showQueueScheduler.action.downloadSubtitles(showObj)
                 subtitles.append(showObj.name)
 
-        if len(errors) > 0:
+        if errors:
             ui.notifications.error("Errors encountered",
                                    '<br >\n'.join(errors))
 
         messageDetail = ""
 
-        if len(updates) > 0:
+        if updates:
             messageDetail += "<br /><b>Updates</b><br /><ul><li>"
             messageDetail += "</li><li>".join(updates)
             messageDetail += "</li></ul>"
 
-        if len(refreshes) > 0:
+        if refreshes:
             messageDetail += "<br /><b>Refreshes</b><br /><ul><li>"
             messageDetail += "</li><li>".join(refreshes)
             messageDetail += "</li></ul>"
 
-        if len(renames) > 0:
+        if renames:
             messageDetail += "<br /><b>Renames</b><br /><ul><li>"
             messageDetail += "</li><li>".join(renames)
             messageDetail += "</li></ul>"
 
-        if len(subtitles) > 0:
+        if subtitles:
             messageDetail += "<br /><b>Subtitles</b><br /><ul><li>"
             messageDetail += "</li><li>".join(subtitles)
             messageDetail += "</li></ul>"
 
-        if len(updates + refreshes + renames + subtitles) > 0:
+        if updates + refreshes + renames + subtitles:
             ui.notifications.message("The following actions were queued:",
                                      messageDetail)
 
@@ -4648,7 +4647,7 @@ class ConfigNotifications(Config):
                           use_nmj=None, nmj_host=None, nmj_database=None, nmj_mount=None, use_synoindex=None,
                           use_nmjv2=None, nmjv2_host=None, nmjv2_dbloc=None, nmjv2_database=None,
                           use_trakt=None, trakt_username=None, trakt_pin=None,
-                          trakt_remove_watchlist=None, trakt_sync_watchlist=None, trakt_method_add=None,
+                          trakt_remove_watchlist=None, trakt_sync_watchlist=None, trakt_remove_show_from_sickrage=None, trakt_method_add=None,
                           trakt_start_paused=None, trakt_use_recommended=None, trakt_sync=None, trakt_sync_remove=None,
                           trakt_default_indexer=None, trakt_remove_serieslist=None, trakt_disable_ssl_verify=None, trakt_timeout=None, trakt_blacklist_name=None,
                           trakt_use_rolling_download=None, trakt_rolling_num_ep=None, trakt_rolling_add_paused=None, trakt_rolling_frequency=None,
@@ -4769,6 +4768,7 @@ class ConfigNotifications(Config):
         sickbeard.TRAKT_USERNAME = trakt_username
         sickbeard.TRAKT_REMOVE_WATCHLIST = config.checkbox_to_value(trakt_remove_watchlist)
         sickbeard.TRAKT_REMOVE_SERIESLIST = config.checkbox_to_value(trakt_remove_serieslist)
+        sickbeard.TRAKT_REMOVE_SHOW_FROM_SICKRAGE = config.checkbox_to_value(trakt_remove_show_from_sickrage)
         sickbeard.TRAKT_SYNC_WATCHLIST = config.checkbox_to_value(trakt_sync_watchlist)
         sickbeard.TRAKT_METHOD_ADD = int(trakt_method_add)
         sickbeard.TRAKT_START_PAUSED = config.checkbox_to_value(trakt_start_paused)
@@ -4858,8 +4858,7 @@ class ConfigSubtitles(Config):
         config.change_SUBTITLES_FINDER_FREQUENCY(subtitles_finder_frequency)
         config.change_USE_SUBTITLES(use_subtitles)
 
-        sickbeard.SUBTITLES_LANGUAGES = [lang.alpha2 for lang in subtitles.isValidLanguage(
-            subtitles_languages.replace(' ', '').split(','))] if subtitles_languages != '' else ''
+        sickbeard.SUBTITLES_LANGUAGES = [lang.strip() for lang in subtitles_languages.split(',') if subtitles.isValidLanguage(lang.strip())] if subtitles_languages else []
         sickbeard.SUBTITLES_DIR = subtitles_dir
         sickbeard.SUBTITLES_HISTORY = config.checkbox_to_value(subtitles_history)
         sickbeard.EMBEDDED_SUBTITLES_ALL = config.checkbox_to_value(embedded_subtitles_all)
