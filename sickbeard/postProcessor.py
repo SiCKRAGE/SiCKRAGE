@@ -963,7 +963,7 @@ class PostProcessor(object):
                 else:
                     cur_ep.release_name = ""
 
-                if cur_ep.torrent_hash != '':
+                if cur_ep.torrent_hash != '' and self.process_method == "move":
                     client = clients.getClientIstance(sickbeard.TORRENT_METHOD)()
                     torrent_removed = client.remove_torrent_downloaded(cur_ep.torrent_hash)
                     if torrent_removed:
