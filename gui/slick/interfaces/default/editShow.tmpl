@@ -36,14 +36,10 @@
 <b>Scene Exception:</b><br />
 <input type="text" id="SceneName" class="form-control form-control-inline input-sm input200">
 <input class="btn btn-inline" type="button" value="Add" id="addSceneName"><br />
+This will <b>affect the episode show search</b> on nzb and torrent provider.<br />
+        This list overrides the original name, it doesn't append to it.<br />
 
 <div id="SceneException" >
-    <div>
-        <p>This will <b>affect the episode show search</b> on nzb and torrent provider.<br />
-        This list overrides the original name, it doesn't append to it.<br />
-        </p>
-    </div>
-
     <div class="pull-left" style="text-align:center;">
         <h4>Exceptions List</h4>
         <select id="exceptions_list" name="exceptions_list" multiple="multiple" style="min-width:10em;" >
@@ -51,11 +47,11 @@
                     <option value="$cur_exception">$cur_exception</option>
                 #end for
         </select>
-    <div>
-        <input id="removeSceneName" value="Remove" class="btn float-left" type="button" style="margin-top: 10px;"/>
+        <div>
+            <input id="removeSceneName" value="Remove" class="btn float-left" type="button" style="margin-top: 10px;"/>
+        </div>
+        <br />
     </div>
-<br />
-</div>
 </div>
 <div class="clearfix"></div>
 <br />
@@ -68,7 +64,7 @@
 <br />
 
 <b>Default Episode Status:</b><br />
-(this will set a default status to be applied to any newly added episodes)<br />
+(this will set the status for future episodes)<br />
 <select name="defaultEpStatus" id="defaultEpStatusSelect" class="form-control form-control-inline input-sm">
     #for $curStatus in [$WANTED, $SKIPPED, $ARCHIVED, $IGNORED]:
     <option value="$curStatus" #if $curStatus == $show.default_ep_status then 'selected="selected"' else ''#>$statusStrings[$curStatus]</option>
@@ -78,7 +74,7 @@
 
 <b>Info Language:</b><br />
 (this will only affect the language of the retrieved metadata file contents and episode filenames)<br />
-<select name="indexerLang" id="indexerLangSelect" class="form-control form-control-inline input-sm bfh-languages" data-language="#echo $sickbeard.INDEXER_DEFAULT_LANGUAGE#" data-available="#echo ','.join($sickbeard.indexerApi().config['valid_languages'])#"></select><br />
+<select name="indexerLang" id="indexerLangSelect" class="form-control form-control-inline input-sm bfh-languages" data-language="#echo $show.lang#" data-available="#echo ','.join($sickbeard.indexerApi().config['valid_languages'])#"></select><br />
 <br />
 
 <b>Flatten files (no folders): </b> <input type="checkbox" name="flatten_folders" #if $show.flatten_folders == 1 and not $sickbeard.NAMING_FORCE_FOLDERS then "checked=\"checked\"" else ""# #if $sickbeard.NAMING_FORCE_FOLDERS then "disabled=\"disabled\"" else ""#/><br />

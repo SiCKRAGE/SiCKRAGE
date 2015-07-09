@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+import time
 import datetime
 import operator
 import threading
@@ -31,7 +32,7 @@ from sickbeard import helpers, logger
 from sickbeard import search
 from sickbeard import history
 
-from sickbeard.common import DOWNLOADED, SNATCHED, SNATCHED_PROPER, Quality
+from sickbeard.common import DOWNLOADED, SNATCHED, SNATCHED_PROPER, Quality, cpu_presets
 
 from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 
@@ -243,6 +244,7 @@ class ProperFinder():
 
                 # snatch it
                 search.snatchEpisode(result, SNATCHED_PROPER)
+                time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
     def _genericName(self, name):
         return name.replace(".", " ").replace("-", " ").replace("_", " ").lower()

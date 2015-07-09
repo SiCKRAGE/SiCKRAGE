@@ -24,9 +24,10 @@ import os
 import re
 import itertools
 import urllib
+import random
 
 import sickbeard
-from lib import requests
+import requests
 
 from sickbeard import helpers, classes, logger, db
 from sickbeard.common import MULTI_EP_RESULT, SEASON_RESULT, USER_AGENT
@@ -66,9 +67,18 @@ class GenericProvider:
 
         self.cache = tvcache.TVCache(self)
 
-        self.session = requests.session()
+        self.session = requests.Session()
 
-        self.headers = {'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': USER_AGENT}
+        self.headers = {'User-Agent': USER_AGENT}
+
+        self.btCacheURLS = [
+                'http://torcache.net/torrent/{torrent_hash}.torrent',
+                'http://zoink.ch/torrent/{torrent_name}.torrent',
+                'http://torrage.com/torrent/{torrent_hash}.torrent',
+                'http://itorrents.org/torrent/{torrent_hash}.torrent',
+            ]
+
+        random.shuffle(self.btCacheURLS)
 
     def getID(self):
         return GenericProvider.makeID(self.name)
@@ -128,11 +138,73 @@ class GenericProvider:
 
         if self.proxy.isEnabled():
             self.headers.update({'Referer': self.proxy.getProxyURL()})
-            # GlypeProxy SSL warning message
             self.proxyGlypeProxySSLwarning = self.proxy.getProxyURL() + 'includes/process.php?action=sslagree&submit=Continue anyway...'
+        else:
+            if 'Referer' in self.headers:
+                self.headers.pop('Referer')
+            self.proxyGlypeProxySSLwarning = None
 
         return helpers.getURL(self.proxy._buildURL(url), post_data=post_data, params=params, headers=self.headers, timeout=timeout,
                               session=self.session, json=json, proxyGlypeProxySSLwarning=self.proxyGlypeProxySSLwarning)
+
+
+    def _makeURL(self, result):
+        urls = []
+        filename = u''
+        if result.url.startswith('magnet'):
+            try:
+                torrent_hash = re.findall('urn:btih:([\w]{32,40})', result.url)[0].upper()
+                torrent_name = re.findall('dn=([^&]+)', result.url)[0]
+
+                if len(torrent_hash) == 32:
+                    torrent_hash = b16encode(b32decode(torrent_hash)).upper()
+
+                if not torrent_hash:
+                    logger.log("Unable to extract torrent hash from link: " + ex(result.url), logger.ERROR)
+                    return (urls, filename)
+
+                urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btCacheURLS]
+            except:
+                urls = [result.url]
+        else:
+            urls = [result.url]
+
+        if self.providerType == GenericProvider.TORRENT:
+            filename = ek.ek(os.path.join, sickbeard.TORRENT_DIR,
+                             helpers.sanitizeFileName(result.name) + '.' + self.providerType)
+
+        elif self.providerType == GenericProvider.NZB:
+            filename = ek.ek(os.path.join, sickbeard.NZB_DIR,
+                             helpers.sanitizeFileName(result.name) + '.' + self.providerType)
+
+        return (urls, filename)
+
+
+    def headURL(self, result):
+        """
+        Check if URL is valid and the file exists at URL
+        """
+
+        # check for auth
+        if not self._doLogin():
+            return False
+
+        urls, filename = self._makeURL(result)
+
+        if self.proxy.isEnabled():
+            self.headers.update({'Referer': self.proxy.getProxyURL()})
+            self.proxyGlypeProxySSLwarning = self.proxy.getProxyURL() + 'includes/process.php?action=sslagree&submit=Continue anyway...'
+        else:
+            if 'Referer' in self.headers:
+                self.headers.pop('Referer')
+            self.proxyGlypeProxySSLwarning = None
+
+        for url in urls:
+            if helpers.headURL(self.proxy._buildURL(url), session=self.session, headers=self.headers,
+                               proxyGlypeProxySSLwarning=self.proxyGlypeProxySSLwarning):
+                return url
+
+        return u''
 
     def downloadResult(self, result):
         """
@@ -143,49 +215,26 @@ class GenericProvider:
         if not self._doLogin():
             return False
 
-        if self.providerType == GenericProvider.TORRENT:
-            try:
-                torrent_hash = re.findall('urn:btih:([\w]{32,40})', result.url)[0].upper()
+        urls, filename = self._makeURL(result)
 
-                if len(torrent_hash) == 32:
-                    torrent_hash = b16encode(b32decode(torrent_hash)).upper()
-
-                if not torrent_hash:
-                    logger.log("Unable to extract torrent hash from link: " + ex(result.url), logger.ERROR)
-                    return False
-
-                urls = [
-                    'http://torcache.net/torrent/' + torrent_hash + '.torrent',
-                    #zoink.ch misconfigured, torrage.com domain expired.
-                    #'http://zoink.ch/torrent/' + torrent_hash + '.torrent',
-                    #'http://torrage.com/torrent/' + torrent_hash.lower() + '.torrent',
-                ]
-            except:
-                urls = [result.url]
-
-            filename = ek.ek(os.path.join, sickbeard.TORRENT_DIR,
-                             helpers.sanitizeFileName(result.name) + '.' + self.providerType)
-        elif self.providerType == GenericProvider.NZB:
-            urls = [result.url]
-
-            filename = ek.ek(os.path.join, sickbeard.NZB_DIR,
-                             helpers.sanitizeFileName(result.name) + '.' + self.providerType)
-        else:
-            return
+        if self.proxy.isEnabled():
+            self.headers.update({'Referer': self.proxy.getProxyURL()})
+        elif 'Referer' in self.headers:
+            self.headers.pop('Referer')
 
         for url in urls:
-            if helpers.download_file(url, filename, session=self.session):
-                logger.log(u"Downloading a result from " + self.name + " at " + url)
-
-                if self.providerType == GenericProvider.TORRENT:
-                    logger.log(u"Saved magnet link to " + filename, logger.INFO)
-                else:
-                    logger.log(u"Saved result to " + filename, logger.INFO)
-
+            logger.log(u"Downloading a result from " + self.name + " at " + url)
+            if helpers.download_file(self.proxy._buildURL(url), filename, session=self.session, headers=self.headers):
                 if self._verify_download(filename):
+                    logger.log(u"Saved result to " + filename, logger.INFO)
                     return True
+                else:
+                    logger.log(u"Could not download %s" % url, logger.WARNING)
+                    helpers._remove_file_failed(filename)
 
-        logger.log(u"Failed to download result", logger.WARNING)
+        if len(urls):
+            logger.log(u"Failed to download any results", logger.WARNING)
+
         return False
 
     def _verify_download(self, file_name=None):
@@ -208,7 +257,7 @@ class GenericProvider:
             except Exception as e:
                 logger.log(u"Failed to validate torrent file: " + ex(e), logger.DEBUG)
 
-            logger.log(u"Result is not a valid torrent file", logger.WARNING)
+            logger.log(u"Result is not a valid torrent file", logger.DEBUG)
             return False
 
         return True
@@ -255,6 +304,21 @@ class GenericProvider:
             url = url.replace('&amp;', '&')
 
         return title, url
+
+    def _get_size(self, item):
+        """Gets the size from the item"""
+        if self.providerType != GenericProvider.NZB:
+            logger.log(u"Torrent Generic providers doesn't have _get_size() implemented yet", logger.DEBUG)
+            return -1
+        else:
+            size = item.get('links')[1].get('length')
+            if size:
+                size = int(size)
+                return size
+            else:
+                logger.log(u"Size was not found in your provider response", logger.DEBUG)
+                return -1
+
 
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False):
 
@@ -430,6 +494,7 @@ class GenericProvider:
             result.release_group = release_group
             result.version = version
             result.content = None
+            result.size = self._get_size(item)
 
             if len(epObj) == 1:
                 epNum = epObj[0].episode
@@ -481,31 +546,11 @@ class TorrentProvider(GenericProvider):
         GenericProvider.__init__(self, name)
 
         self.providerType = GenericProvider.TORRENT
-        
-        # Don't add a rule to remove everything between bracket, it will break anime release
-        self.removeWordsList = {'\[rartv\]$': 'searchre',
-                               '\[rarbg\]$': 'searchre',
-                               '\[eztv\]$': 'searchre',
-                               '\[ettv\]$': 'searchre',
-                               '\[GloDLS\]$': 'searchre',
-                               '\[silv4\]$': 'searchre',
-                               '\[Seedbox\]$': 'searchre',
-                               '\[AndroidTwoU\]$': 'searchre',
-                               '\.RiPSaLoT$': 'searchre',
-                              }
 
     def _clean_title_from_provider(self, title):
-        torrent_title = title
-        for remove_string, remove_type in self.removeWordsList.iteritems():
-            if remove_type == 'search':
-                torrent_title = torrent_title.replace(remove_string, '')
-            elif remove_type == 'searchre':
-                torrent_title = re.sub(remove_string, '', torrent_title)
-
-        if torrent_title != title:
-            logger.log(u'Change title from {old_name} to {new_name}'.format(old_name=title, new_name=torrent_title), logger.DEBUG)
-
-        return torrent_title
+        if title:
+            title = u'' + title.replace(' ', '.')
+        return title
 
 
 class ProviderProxy:

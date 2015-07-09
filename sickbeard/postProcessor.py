@@ -38,7 +38,7 @@ from sickbeard import notifiers
 from sickbeard import show_name_helpers
 from sickbeard import failed_history
 from sickbeard import name_cache
-
+from sickbeard import subtitles
 from sickbeard import encodingKludge as ek
 from sickbeard.exceptions import ex
 
@@ -185,10 +185,11 @@ class PostProcessor(object):
         base_name = re.sub(r'[\[\]\*\?]', r'[\g<0>]', base_name)
         
         if subfolders: # subfolders are only checked in show folder, so names will always be exactly alike
-            filelist = ek.ek(recursive_glob, ek.ek(os.path.dirname, file_path),  base_name + '*') # just create the list of all files starting with the basename
+            filelist = ek.ek(recursive_glob, ek.ek(os.path.dirname, file_path), base_name + '*') # just create the list of all files starting with the basename
         else: # this is called when PP, so we need to do the filename check case-insensitive
             filelist = []
-            checklist = ek.ek(glob.glob, ek.ek(os.path.join, ek.ek(os.path.dirname, file_path), '*')) # get a list of all the files in the folder
+                
+            checklist = ek.ek(glob.glob, helpers.fixGlob(ek.ek(os.path.join, ek.ek(os.path.dirname, file_path), '*'))) # get a list of all the files in the folder
             for filefound in checklist: # loop through all the files in the folder, and check if they are the same name even when the cases don't match
                 file_name = filefound.rpartition('.')[0]
                 if not base_name_only:
@@ -300,7 +301,7 @@ class PostProcessor(object):
             # check if file have subtitles language
             if os.path.splitext(cur_extension)[1][1:] in common.subtitleExtensions:
                 cur_lang = os.path.splitext(cur_extension)[0]
-                if cur_lang in sickbeard.SUBTITLES_LANGUAGES:
+                if cur_lang in subtitles.wantedSubtitles():
                     cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
@@ -498,12 +499,12 @@ class PostProcessor(object):
         if none were found.
         """
 
-        logger.log(u"Analyzing name " + repr(name))
-
         to_return = (None, None, [], None, None)
 
         if not name:
             return to_return
+
+        logger.log(u"Analyzing name " + repr(name), logger.DEBUG)
 
         name = helpers.remove_non_release_groups(helpers.remove_extension(name))
 
@@ -911,9 +912,13 @@ class PostProcessor(object):
                 logger.DEBUG)
         
         # try to find out if we have enough space to perform the copy or move action.
-        if not verify_freespace(self.file_path, ek.ek(os.path.dirname, ep_obj.show._location), [ep_obj] + ep_obj.relatedEps):
-            self._log("Not enough space to continue PP, exiting")
-            return False
+        if not helpers.isFileLocked(self.file_path, False):
+            if not verify_freespace(self.file_path, ek.ek(os.path.dirname, ep_obj.show._location), [ep_obj] + ep_obj.relatedEps):
+                self._log("Not enough space to continue PP, exiting")
+                return False
+        else:
+            self._log("Unable to determine needed filespace as the source file is locked for access")
+        
 
         # delete the existing file (and company)
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
@@ -972,7 +977,7 @@ class PostProcessor(object):
                 else:
                     cur_ep.status = common.Quality.compositeStatus(common.DOWNLOADED, new_ep_quality)
 
-                cur_ep.subtitles = []
+                cur_ep.subtitles = u''
 
                 cur_ep.subtitles_searchcount = 0
 
@@ -1029,15 +1034,21 @@ class PostProcessor(object):
         try:
             # move the episode and associated files to the show dir
             if self.process_method == "copy":
+                if helpers.isFileLocked(self.file_path, False):
+                    raise exceptions.PostProcessingFailed("File is locked for reading")
                 self._copy(self.file_path, dest_path, new_base_name, sickbeard.MOVE_ASSOCIATED_FILES,
                            sickbeard.USE_SUBTITLES and ep_obj.show.subtitles)
             elif self.process_method == "move":
+                if helpers.isFileLocked(self.file_path, True):
+                    raise exceptions.PostProcessingFailed("File is locked for reading/writing")
                 self._move(self.file_path, dest_path, new_base_name, sickbeard.MOVE_ASSOCIATED_FILES,
                            sickbeard.USE_SUBTITLES and ep_obj.show.subtitles)
             elif self.process_method == "hardlink":
                 self._hardlink(self.file_path, dest_path, new_base_name, sickbeard.MOVE_ASSOCIATED_FILES,
                                sickbeard.USE_SUBTITLES and ep_obj.show.subtitles)
             elif self.process_method == "symlink":
+                if helpers.isFileLocked(self.file_path, True):
+                    raise exceptions.PostProcessingFailed("File is locked for reading/writing")
                 self._moveAndSymlink(self.file_path, dest_path, new_base_name, sickbeard.MOVE_ASSOCIATED_FILES,
                                      sickbeard.USE_SUBTITLES and ep_obj.show.subtitles)
             else:

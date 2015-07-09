@@ -38,24 +38,29 @@ import datetime
 import errno
 import ast
 import operator
+from contextlib import closing
 
 import sickbeard
 import subliminal
+import babelfish
+
 import adba
-from lib import requests
+import requests
+import certifi
 import xmltodict
 
 import subprocess
 
 from sickbeard.exceptions import MultipleShowObjectsException, ex
 from sickbeard import logger, classes
-from sickbeard.common import USER_AGENT, mediaExtensions, subtitleExtensions
+from sickbeard.common import USER_AGENT, cpu_presets, mediaExtensions, subtitleExtensions
 from sickbeard import db
 from sickbeard import encodingKludge as ek
 from sickbeard import notifiers
 from sickbeard import clients
 
 from lib.cachecontrol import CacheControl, caches
+
 from itertools import izip, cycle
 
 import shutil
@@ -65,6 +70,10 @@ shutil.copyfile = lib.shutil_custom.copyfile_custom
 
 urllib._urlopener = classes.SickBeardURLopener()
 
+
+def fixGlob(path):
+    path = re.sub(r'\[', '[[]', path)
+    return re.sub(r'(?<!\[)\]', '[]]', path)
 
 def indentXML(elem, level=0):
     '''
@@ -106,12 +115,38 @@ def remove_non_release_groups(name):
     Remove non release groups from name
     """
 
-    if name and "-" in name:
-        name_group = name.rsplit('-', 1)
-        if name_group[-1].upper() in ["RP", "NZBGEEK"]:
-            name = name_group[0]
+    if not name:
+        return name
 
-    return name
+    # Do not remove all [....] suffixes, or it will break anime releases ## Need to verify this is true now
+    # Check your database for funky release_names and add them here, to improve failed handling, archiving, and history.
+    # select release_name from tv_episodes WHERE LENGTH(release_name);
+    # [eSc], [SSG], [GWC] are valid release groups for non-anime
+    removeWordsList = {'\[rartv\]$':       'searchre',
+                       '\[rarbg\]$':       'searchre',
+                       '\[eztv\]$':        'searchre',
+                       '\[ettv\]$':        'searchre',
+                       '\[vtv\]$':         'searchre',
+                       '\[GloDLS\]$':      'searchre',
+                       '\[silv4\]$':       'searchre',
+                       '\[Seedbox\]$':     'searchre',
+                       '\[AndroidTwoU\]$': 'searchre',
+                       '\.RiPSaLoT$':      'searchre',
+                       '-NZBGEEK$':        'searchre',
+                       '-RP$':             'searchre',
+                       '-20-40$':          'searchre',
+                       '^\[ www\.TorrentDay\.com \] - ': 'searchre',
+                       '^\[ www\.Cpasbien\.pw \] ': 'searchre',
+                      }
+
+    _name = name
+    for remove_string, remove_type in removeWordsList.iteritems():
+        if remove_type == 'search':
+            _name = _name.replace(remove_string, '')
+        elif remove_type == 'searchre':
+            _name = re.sub(r'(?i)' + remove_string, '', _name)
+
+    return _name.strip('.- ')
 
 
 def replaceExtension(filename, newExt):
@@ -133,6 +168,9 @@ def replaceExtension(filename, newExt):
     else:
         return sepFile[0] + "." + newExt
 
+
+def notTorNZBFile(filename):
+    return not (filename.endswith(".torrent") or filename.endswith(".nzb"))
 
 def isSyncFile(filename):
     extension = filename.rpartition(".")[2].lower()
@@ -481,7 +519,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
 
         # Check if the language extracted from filename is a valid language
         try:
-            language = subliminal.language.Language(sublang, strict=True)
+            language = babelfish.language.Language(sublang, strict=True)
             cur_file_ext = '.' + sublang + cur_file_ext
         except ValueError:
             pass
@@ -669,41 +707,34 @@ def get_all_episodes_from_absolute_number(show, absolute_numbers, indexer_id=Non
     return (season, episodes)
 
 
-def sanitizeSceneName(name, ezrss=False, anime=False):
+def sanitizeSceneName(name, anime=False):
     """
     Takes a show name and returns the "scenified" version of it.
-
-    ezrss: If true the scenified version will follow EZRSS's cracksmoker rules as best as possible
     
     anime: Some show have a ' in their name(Kuroko's Basketball) and is needed for search.
 
     Returns: A string containing the scene version of the show name given.
     """
 
-    if name:
-        # anime: removed ' for Kuroko's Basketball
-        if anime:
-            bad_chars = u",:()!?\u2019"
-        # ezrss leaves : and ! in their show names as far as I can tell
-        elif ezrss:
-            bad_chars = u",()'?\u2019"
-        else:
-            bad_chars = u",:()'!?\u2019"
-
-        # strip out any bad chars
-        for x in bad_chars:
-            name = name.replace(x, "")
-
-        # tidy up stuff that doesn't belong in scene names
-        name = name.replace("- ", ".").replace(" ", ".").replace("&", "and").replace('/', '.')
-        name = re.sub("\.\.*", ".", name)
-
-        if name.endswith('.'):
-            name = name[:-1]
-
-        return name
-    else:
+    if not name:
         return ''
+
+    bad_chars = u',:()!?\u2019'
+    if not anime:
+        bad_chars += u"'"
+
+    # strip out any bad chars
+    for x in bad_chars:
+        name = name.replace(x, "")
+
+    # tidy up stuff that doesn't belong in scene names
+    name = name.replace("- ", ".").replace(" ", ".").replace("&", "and").replace('/', '.')
+    name = re.sub("\.\.*", ".", name)
+
+    if name.endswith('.'):
+        name = name[:-1]
+
+    return name
 
 
 _binOps = {
@@ -1259,36 +1290,98 @@ def codeDescription(status_code):
         logger.log(u"Unknown error code. Please submit an issue", logger.WARNING)
         return 'unknown'
 
-def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=None, json=False, proxyGlypeProxySSLwarning=None):
+
+def _setUpSession(session, headers):
     """
-    Returns a byte-string retrieved from the url provider.
+    Returns a session initialized with default cache and parameter settings
     """
 
     # request session
     cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')))
+    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')), cache_etags=False)
+
+    # request session clear residual referer
+    if 'Referer' in session.headers and not 'Referer' in headers:
+        session.headers.pop('Referer')
 
     # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
     session.headers.update(headers)
 
     # request session ssl verify
-    session.verify = False
+    session.verify = certifi.where()
 
-    # request session paramaters
+    # request session allow redirects
+    session.allow_redirects = True
+
+    # request session proxies
+    if not 'Referer' in session.headers and sickbeard.PROXY_SETTING:
+        logger.log("Using proxy for url: " + url, logger.DEBUG)
+        scheme, address = urllib2.splittype(sickbeard.PROXY_SETTING)
+        address = sickbeard.PROXY_SETTING if scheme else 'http://' + sickbeard.PROXY_SETTING
+        session.proxies = {
+            "http": address,
+            "https": address,
+        }
+        session.headers.update({'Referer': address})
+
+    if 'Content-Type' in session.headers:
+       session.headers.pop('Content-Type')
+
+    return session
+
+def headURL(url, params=None, headers={}, timeout=30, session=None, json=False, proxyGlypeProxySSLwarning=None):
+    """
+    Checks if URL is valid, without reading it
+    """
+
+    session = _setUpSession(session, headers)
     session.params = params
 
     try:
-        # request session proxies
-        if sickbeard.PROXY_SETTING:
-            logger.log("Using proxy for url: " + url, logger.DEBUG)
-            session.proxies = {
-                "http": sickbeard.PROXY_SETTING,
-                "https": sickbeard.PROXY_SETTING,
-            }
+        resp = session.head(url, timeout=timeout)
 
+        if not resp.ok:
+            logger.log(u"Requested url " + url + " returned status code is " + str(
+                resp.status_code) + ': ' + codeDescription(resp.status_code), logger.DEBUG)
+            return False
+
+        if proxyGlypeProxySSLwarning is not None:
+            if re.search('The site you are attempting to browse is on a secure connection', resp.text):
+                resp = session.get(proxyGlypeProxySSLwarning)
+
+                if not resp.ok:
+                    logger.log(u"GlypeProxySSLwarning: Requested headURL " + url + " returned status code is " + str(
+                        resp.status_code) + ': ' + codeDescription(resp.status_code), logger.DEBUG)
+                    return False
+
+        return resp.status_code == 200
+
+    except requests.exceptions.HTTPError, e:
+        logger.log(u"HTTP error in headURL {0}. Error: {1}".format(url,e.errno), logger.WARNING)
+    except requests.exceptions.ConnectionError, e:
+        logger.log(u"Connection error to {0}. Error: {1}".format(url,e.message), logger.WARNING)
+    except requests.exceptions.Timeout, e:
+        logger.log(u"Connection timed out accessing {0}. Error: {1}".format(url,e.message), logger.WARNING)
+    except Exception as e:
+        logger.log(u"Unknown exception in headURL {0}. Error: {1}".format(url,e.message), logger.WARNING)
+        logger.log(traceback.format_exc(), logger.WARNING)
+
+    return False
+
+
+def getURL(url, post_data=None, params={}, headers={}, timeout=30, session=None, json=False, proxyGlypeProxySSLwarning=None):
+    """
+    Returns a byte-string retrieved from the url provider.
+    """
+
+    session = _setUpSession(session, headers)
+    session.params = params
+
+    try:
         # decide if we get or post data to server
         if post_data:
+            session.headers.update({'Content-Type': 'application/x-www-form-urlencoded'})
             resp = session.post(url, data=post_data, timeout=timeout)
         else:
             resp = session.get(url, timeout=timeout)
@@ -1308,57 +1401,45 @@ def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=Non
                     return
 
     except requests.exceptions.HTTPError, e:
-        logger.log(u"HTTP error " + str(e.errno) + " while loading URL " + url, logger.WARNING)
+        logger.log(u"HTTP error in getURL {0}. Error: {1}".format(url,e.errno), logger.WARNING)
         return
     except requests.exceptions.ConnectionError, e:
-        logger.log(u"Connection error " + str(e.message) + " while loading URL " + url, logger.WARNING)
+        logger.log(u"Connection error to {0}. Error: {1}".format(url,e.message), logger.WARNING)
         return
     except requests.exceptions.Timeout, e:
-        logger.log(u"Connection timed out " + str(e.message) + " while loading URL " + url, logger.WARNING)
+        logger.log(u"Connection timed out accessing {0}. Error: {1}".format(url,e.message), logger.WARNING)
         return
-    except Exception:
-        logger.log(u"Unknown exception while loading URL " + url + ": " + traceback.format_exc(), logger.WARNING)
+    except Exception as e:
+        logger.log(u"Unknown exception in getURL {0}. Error: {1}".format(url,e.message), logger.WARNING)
+        logger.log(traceback.format_exc(), logger.WARNING)
         return
 
     return resp.content if not json else resp.json()
 
-def download_file(url, filename, session=None):
-    # create session
-    cache_dir = sickbeard.CACHE_DIR or _getTempDir()
-    session = CacheControl(sess=session, cache=caches.FileCache(os.path.join(cache_dir, 'sessions')))
 
-    # request session headers
-    session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
+def download_file(url, filename, session=None, headers={}):
 
-    # request session ssl verify
-    session.verify = False
-
-    # request session streaming
+    session = _setUpSession(session, headers)
     session.stream = True
 
-    # request session proxies
-    if sickbeard.PROXY_SETTING:
-        logger.log("Using proxy for url: " + url, logger.DEBUG)
-        session.proxies = {
-            "http": sickbeard.PROXY_SETTING,
-            "https": sickbeard.PROXY_SETTING,
-        }
-
     try:
-        resp = session.get(url)
-            
-        if not resp.ok:
-            logger.log(u"Requested url " + url + " returned status code is " + str(
-                resp.status_code) + ': ' + codeDescription(resp.status_code), logger.DEBUG)
-            return False
+        with closing(session.get(url)) as resp:
+            if not resp.ok:
+                logger.log(u"Requested url " + url + " returned status code is " + str(
+                    resp.status_code) + ': ' + codeDescription(resp.status_code), logger.DEBUG)
+                return False
 
-        with open(filename, 'wb') as fp:
-            for chunk in resp.iter_content(chunk_size=1024):
-                if chunk:
-                    fp.write(chunk)
-                    fp.flush()
+            try:
+                with open(filename, 'wb') as fp:
+                    for chunk in resp.iter_content(chunk_size=1024):
+                        if chunk:
+                            fp.write(chunk)
+                            fp.flush()
 
-        chmodAsParent(filename)
+                chmodAsParent(filename)
+            except:
+                logger.log(u"Problem setting permissions or writing file to: %s" % filename, logger.WARNING)
+
     except requests.exceptions.HTTPError, e:
         _remove_file_failed(filename)
         logger.log(u"HTTP error " + str(e.errno) + " while loading URL " + url, logger.WARNING)
@@ -1373,7 +1454,7 @@ def download_file(url, filename, session=None):
         return False
     except EnvironmentError, e:
         _remove_file_failed(filename)
-        logger.log(u"Unable to save the file: " + ex(e), logger.ERROR)
+        logger.log(u"Unable to save the file: " + ex(e), logger.WARNING)
         return False
     except Exception:
         _remove_file_failed(filename)
@@ -1382,39 +1463,6 @@ def download_file(url, filename, session=None):
 
     return True
 
-
-def clearCache(force=False):
-    update_datetime = datetime.datetime.now()
-
-    # clean out cache directory, remove everything > 12 hours old
-    if sickbeard.CACHE_DIR:
-        logger.log(u"Trying to clean cache folder " + sickbeard.CACHE_DIR)
-
-        # Does our cache_dir exists
-        if not ek.ek(os.path.isdir, sickbeard.CACHE_DIR):
-            logger.log(u"Can't clean " + sickbeard.CACHE_DIR + " if it doesn't exist", logger.WARNING)
-        else:
-            max_age = datetime.timedelta(hours=12)
-
-            # Get all our cache files
-            exclude = ['rss', 'images']
-            for cache_root, cache_dirs, cache_files in os.walk(sickbeard.CACHE_DIR, topdown=True):
-                cache_dirs[:] = [d for d in cache_dirs if d not in exclude]
-
-                for file in cache_files:
-                    cache_file = ek.ek(os.path.join, cache_root, file)
-
-                    if ek.ek(os.path.isfile, cache_file):
-                        cache_file_modified = datetime.datetime.fromtimestamp(
-                            ek.ek(os.path.getmtime, cache_file))
-
-                        if force or (update_datetime - cache_file_modified > max_age):
-                            try:
-                                ek.ek(os.remove, cache_file)
-                            except OSError, e:
-                                logger.log(u"Unable to clean " + cache_root + ": " + repr(e) + " / " + str(e),
-                                           logger.WARNING)
-                                break
 
 def get_size(start_path='.'):
 
@@ -1519,7 +1567,7 @@ def verify_freespace(src, dest, oldfile=None):
 
     if not ek.ek(os.path.isfile, src):
         logger.log("A path to a file is required for the source. " + src + " is not a file.", logger.WARNING)
-        return False
+        return True
     
     try:
         diskfree = disk_usage(dest)
@@ -1555,3 +1603,36 @@ def pretty_time_delta(seconds):
         return '%s%02dm%02ds' % (sign_string, minutes, seconds)
     else:
         return '%s%02ds' % (sign_string, seconds)
+    
+def isFileLocked(file, writeLockCheck=False):
+    '''
+    Checks to see if a file is locked. Performs three checks
+        1. Checks if the file even exists
+        2. Attempts to open the file for reading. This will determine if the file has a write lock.
+            Write locks occur when the file is being edited or copied to, e.g. a file copy destination
+        3. If the readLockCheck parameter is True, attempts to rename the file. If this fails the 
+            file is open by some other process for reading. The file can be read, but not written to
+            or deleted.
+    @param file: the file being checked
+    @param writeLockCheck: when true will check if the file is locked for writing (prevents move operations)
+    '''
+    if not ek.ek(os.path.exists, file):
+        return True
+    try:
+        f = ek.ek(open, file, 'r')
+        f.close()
+    except IOError:
+        return True
+    
+    if(writeLockCheck):
+        lockFile = file + ".lckchk"
+        if ek.ek(os.path.exists, lockFile):
+            ek.ek(os.remove, lockFile)
+        try:
+            ek.ek(os.rename, file, lockFile)
+            time.sleep(1)
+            ek.ek(os.rename, lockFile, file)
+        except (OSError, IOError):
+            return True
+           
+    return False

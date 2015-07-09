@@ -26,8 +26,8 @@ import datetime
 import json
 import time
 
-from lib import requests
-from lib.requests import exceptions
+import requests
+from requests import exceptions
 
 import sickbeard
 from sickbeard.common import Quality, USER_AGENT
@@ -40,7 +40,7 @@ from sickbeard import helpers
 from sickbeard import classes
 from sickbeard.exceptions import ex
 from sickbeard.helpers import sanitizeSceneName
-from lib.requests.exceptions import RequestException
+from requests.exceptions import RequestException
 from sickbeard.indexers.indexer_config import INDEXER_TVDB,INDEXER_TVRAGE
 
 
@@ -54,20 +54,21 @@ class RarbgProvider(generic.TorrentProvider):
         generic.TorrentProvider.__init__(self, "Rarbg")
 
         self.enabled = False
-        self.session = None
         self.supportsBacklog = True
         self.ratio = None
         self.minseed = None
+        self.ranked = None
+        self.sorting = None
         self.minleech = None
         self.token = None
         self.tokenExpireDate = None
 
         self.urls = {'url': u'https://rarbg.com',
-                     'token': u'https://torrentapi.org/pubapi.php?get_token=get_token&format=json',
-                     'listing': u'https://torrentapi.org/pubapi.php?mode=list',
-                     'search': u'https://torrentapi.org/pubapi.php?mode=search&search_string={search_string}',
-                     'search_tvdb': u'https://torrentapi.org/pubapi.php?mode=search&search_tvdb={tvdb}&search_string={search_string}',
-                     'search_tvrage': u'https://torrentapi.org/pubapi.php?mode=search&search_tvrage={tvrage}&search_string={search_string}',
+                     'token': u'http://torrentapi.org/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage',
+                     'listing': u'https://torrentapi.org/pubapi_v2.php?mode=list&app_id=sickrage',
+                     'search': u'https://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_string={search_string}',
+                     'search_tvdb': u'https://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb={tvdb}&search_string={search_string}',
+                     'search_tvrage': u'https://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_tvrage={tvrage}&search_string={search_string}',
                      'api_spec': u'https://rarbg.com/pubapi/apidocs.txt',
                      }
 
@@ -83,11 +84,9 @@ class RarbgProvider(generic.TorrentProvider):
                         'token': '&token={token}',
         }
         
-        self.defaultOptions = self.urlOptions['categories'].format(categories='18;41') + \
-                                self.urlOptions['sorting'].format(sorting='last') + \
+        self.defaultOptions = self.urlOptions['categories'].format(categories='tv') + \
                                 self.urlOptions['limit'].format(limit='100') + \
-                                self.urlOptions['format'].format(format='json') + \
-                                self.urlOptions['ranked'].format(ranked='1')
+                                self.urlOptions['format'].format(format='json')
 
         self.next_request = datetime.datetime.now()
 
@@ -105,14 +104,13 @@ class RarbgProvider(generic.TorrentProvider):
         if self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
             return True
 
-        self.session = requests.Session()
         resp_json = None
 
         try:
-            response = self.session.get(self.urls['token'], timeout=30, verify=False, headers=self.headers)
+            response = self.session.get(self.urls['token'], timeout=30, headers=self.headers)
             response.raise_for_status()
             resp_json = response.json()
-        except RequestException as e:
+        except (RequestException) as e:
             logger.log(u'Unable to connect to {name} provider: {error}'.format(name=self.name, error=ex(e)), logger.ERROR)
             return False
 
@@ -226,6 +224,12 @@ class RarbgProvider(generic.TorrentProvider):
 
                 if self.minseed:
                     searchURL += self.urlOptions['seeders'].format(min_seeders=int(self.minseed))
+                    
+                if self.sorting:
+                    searchURL += self.urlOptions['sorting'].format(sorting=self.sorting)
+
+                if self.ranked:
+                    searchURL += self.urlOptions['ranked'].format(ranked=int(self.ranked))
 
                 logger.log(u'{name} search page URL: {url}'.format(name=self.name, url=searchURL), logger.DEBUG)
 
@@ -274,6 +278,11 @@ class RarbgProvider(generic.TorrentProvider):
                                 return results
                             logger.log(u'{name} Using new token'.format(name=self.name), logger.DEBUG)
                             continue
+                        if re.search('<div id="error">.*</div>', data):
+                            logger.log(u'{name} {proxy} does not support https.'.format(name=self.name, proxy=self.proxy.getProxyURL()), logger.DEBUG)
+                            searchURL = searchURL.replace(u'https', 'http')
+                            continue
+
                         #No error found break
                         break
                     else:
@@ -283,7 +292,11 @@ class RarbgProvider(generic.TorrentProvider):
                     continue
 
                 try:
-                    data_json = json.loads(data)
+                    data = re.search('\[\{\"filename\".*\}\]', data)
+                    if data is not None:
+                        data_json = json.loads(data.group())
+                    else:
+                        data_json = {}
                 except Exception as e:
                     logger.log(u'{name} json load failed: {traceback_info}'.format(name=self.name, traceback_info=traceback.format_exc()), logger.DEBUG)
                     logger.log(u'{name} json load failed. Data dump = {data}'.format(name=self.name, data=data), logger.DEBUG)
@@ -293,8 +306,8 @@ class RarbgProvider(generic.TorrentProvider):
                 try:
                     for item in data_json:
                         try:
-                            torrent_title = item['f']
-                            torrent_download = item['d']
+                            torrent_title = item['filename']
+                            torrent_download = item['download']
                             if torrent_title and torrent_download:
                                 items[mode].append((torrent_title, torrent_download))
                             else:
@@ -319,8 +332,6 @@ class RarbgProvider(generic.TorrentProvider):
         title, url = item
 
         if title:
-            title = u'' + title
-            title = title.replace(' ', '.')
             title = self._clean_title_from_provider(title)
 
         if url:

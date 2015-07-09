@@ -57,6 +57,14 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'
 if sys.hexversion >= 0x020600F0:
     from multiprocessing import freeze_support  # @UnresolvedImport
 
+
+import certifi
+for env_cert_var in ['REQUESTS_CA_BUNDLE', 'CURL_CA_BUNDLE']:
+    ca_cert_loc = os.environ.get(env_cert_var)
+    if (not isinstance(ca_cert_loc, basestring)) or (not os.path.isfile(ca_cert_loc)):
+        os.environ[env_cert_var] = certifi.where()
+
+
 if sys.version_info >= (2, 7, 9):
     import ssl
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -368,12 +376,6 @@ class SickRage(object):
         # Fire up all our threads
         sickbeard.start()
 
-        # Build internal name cache
-        name_cache.buildNameCache()
-
-        # refresh network timezones
-        network_timezones.update_network_dict()
-
         # sure, why not?
         if sickbeard.USE_FAILED_DOWNLOADS:
             failed_history.trimHistory()
@@ -457,7 +459,7 @@ class SickRage(object):
         Populates the showList with shows from the database
         """
 
-        logger.log(u"Loading initial show list")
+        logger.log(u"Loading initial show list", logger.DEBUG)
 
         myDB = db.DBConnection()
         sqlResults = myDB.select("SELECT * FROM tv_shows")

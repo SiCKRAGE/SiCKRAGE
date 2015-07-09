@@ -34,8 +34,8 @@ from sickbeard import show_name_helpers
 from sickbeard.common import Overview
 from sickbeard.exceptions import ex
 from sickbeard import clients
-from lib import requests
-from lib.requests import exceptions
+import requests
+from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
 from lib.unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
@@ -89,7 +89,7 @@ class AlphaRatioProvider(generic.TorrentProvider):
         self.session = requests.Session()
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30, verify=False)
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30)
         except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
@@ -222,8 +222,6 @@ class AlphaRatioProvider(generic.TorrentProvider):
         title, url, id, seeders, leechers = item
 
         if title:
-            title = u'' + title
-            title = title.replace(' ', '.')
             title = self._clean_title_from_provider(title)
 
         if url:
