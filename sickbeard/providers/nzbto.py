@@ -101,15 +101,30 @@ class NzbtoProvider(generic.NZBProvider):
 
             x = self.session.get(tmp_url)
             pw = False
+            p00_test3 = ""
             with BS4Parser(x.text, "html.parser") as html:
                 pw = html.find('span', attrs={"style": "color:#ff0000"})
                 if pw:
-                    pw = pw.strong.next.next
+                    pw = pw.strong
+                    #logger.log('Password Check: {{%s}}' %(pw.strip()), logger.DEBUG)
+                    pw = pw.next
+                    #logger.log('Password Check0: {{%s}}' %(pw.strip()), logger.DEBUG)
+                    pw = pw.next
+                    #logger.log('Password Check1: {{%s}}' %(pw.strip()), logger.DEBUG)
+                    p00_test = unicode(pw.string)
+                    #ogger.log('Password Check2: {{%s}}' %(p00_test), logger.DEBUG)
+                    p00_test2 = p00_test.decode(encoding='ascii',errors='ignore')
+                    #logger.log('Password Check3: {{%s}}' %(p00_test2), logger.DEBUG)
+                    p00_test3 = self.strip_non_ascii(p00_test2)
+                    #logger.log('Password Check4: {{%s}}' %(p00_test3), logger.DEBUG)
 
             if not pw or pw.strip() == "-":
                 title = tmp_title
             else:
-                title = "%s{{%s}}" % (tmp_title, pw.strip())
+                #title = "%s{{%s}}" % (tmp_title, pw.strip())
+                #logger.log('Password found: {{%s}}' %(pw.strip()), logger.DEBUG)
+                title = "%s{{%s}}" % (tmp_title, p00_test3)
+                logger.log('Password found: {{%s}}' %(p00_test3), logger.DEBUG)
 
             params = {"nid": dl["href"].split("nid=")[1], "user": self.username, "pass": self.api_key, "rel": title}
             url = 'http://cytec.us/nzbto/index.php?' + urllib.urlencode(params)
@@ -210,6 +225,11 @@ class NzbtoProvider(generic.NZBProvider):
         #         results.append(curItem)
 
         return results
+
+    def strip_non_ascii(self, string):
+        ''' Returns the string without non ASCII characters'''
+        stripped = (c for c in string if 0 < ord(c) < 127)
+        return ''.join(stripped)
 
     def findPropers(self, search_date=None):
         search_terms = ['.PROPER.', '.REPACK.']
