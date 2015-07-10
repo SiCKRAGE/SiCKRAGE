@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from lib.tvdb_api.tvdb_api import Tvdb
 from lib.tvrage_api.tvrage_api import TVRage
+import requests
 
 INDEXER_TVDB = 1
 INDEXER_TVRAGE = 2
@@ -24,10 +22,11 @@ indexerConfig[INDEXER_TVDB] = {
     'id': INDEXER_TVDB,
     'name': 'theTVDB',
     'module': Tvdb,
-    'api_params': {'apikey': '9DAF49C96CBF8DAC',
-                   'language': 'de',
+    'api_params': {'apikey': 'F9C450E78D99172E',
+                   'language': 'en',
                    'useZip': True,
     },
+    'session': requests.Session()
 }
 
 indexerConfig[INDEXER_TVRAGE] = {
@@ -37,20 +36,21 @@ indexerConfig[INDEXER_TVRAGE] = {
     'api_params': {'apikey': 'Uhewg1Rr0o62fvZvUIZt',
                    'language': 'en',
     },
+    'session': requests.Session()
 }
 
 # TVDB Indexer Settings
 indexerConfig[INDEXER_TVDB]['trakt_id'] = 'tvdb_id'
 indexerConfig[INDEXER_TVDB]['xem_origin'] = 'tvdb'
 indexerConfig[INDEXER_TVDB]['icon'] = 'thetvdb16.png'
-indexerConfig[INDEXER_TVDB]['scene_url'] = 'http://cytec.github.io/sb_tvdb_scene_exceptions/exceptions.txt'
+indexerConfig[INDEXER_TVDB]['scene_loc'] = '../lib/scene_exceptions/tvdb/exceptions.txt'
 indexerConfig[INDEXER_TVDB]['show_url'] = 'http://thetvdb.com/?tab=series&id='
-indexerConfig[INDEXER_TVDB]['base_url'] = 'http://tvdb.cytec.us/api/%(apikey)s/series/' % indexerConfig[INDEXER_TVDB]['api_params']
+indexerConfig[INDEXER_TVDB]['base_url'] = 'http://thetvdb.com/api/%(apikey)s/series/' % indexerConfig[INDEXER_TVDB]['api_params']
 
 # TVRAGE Indexer Settings
 indexerConfig[INDEXER_TVRAGE]['trakt_id'] = 'tvrage_id'
 indexerConfig[INDEXER_TVRAGE]['xem_origin'] = 'rage'
 indexerConfig[INDEXER_TVRAGE]['icon'] = 'tvrage16.png'
-indexerConfig[INDEXER_TVRAGE]['scene_url'] = 'https://raw.githubusercontent.com/echel0n/sb_tvrage_scene_exceptions/master/exceptions.txt'
+indexerConfig[INDEXER_TVRAGE]['scene_loc'] = '../lib/scene_exceptions/tvrage/exceptions.txt'
 indexerConfig[INDEXER_TVRAGE]['show_url'] = 'http://tvrage.com/shows/id-'
 indexerConfig[INDEXER_TVRAGE]['base_url'] = 'http://tvrage.com/showinfo.php?key=%(apikey)s&sid=' % indexerConfig[INDEXER_TVRAGE]['api_params']

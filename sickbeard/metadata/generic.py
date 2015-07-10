@@ -286,14 +286,9 @@ class GenericMetadata():
                 with ek.ek(open, nfo_file_path, 'r') as xmlFileObj:
                     showXML = etree.ElementTree(file=xmlFileObj)
 
-                indexer = showXML.find('indexer')
                 indexerid = showXML.find('id')
 
                 root = showXML.getroot()
-                if indexer:
-                    indexer.text = show_obj.indexer
-                else:
-                    etree.SubElement(root, "indexer").text = str(show_obj.indexer)
 
                 if indexerid:
                     indexerid.text = show_obj.indexerid
@@ -757,7 +752,7 @@ class GenericMetadata():
 
             lINDEXER_API_PARMS['banners'] = True
 
-            if indexer_lang and not indexer_lang == 'en':
+            if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
@@ -827,7 +822,7 @@ class GenericMetadata():
 
             lINDEXER_API_PARMS['banners'] = True
 
-            if indexer_lang and not indexer_lang == 'en':
+            if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
@@ -859,7 +854,7 @@ class GenericMetadata():
 
         # find the correct season in the TVDB and TVRAGE object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
-            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == 'en':
+            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
 
         return result
@@ -884,7 +879,7 @@ class GenericMetadata():
 
             lINDEXER_API_PARMS['banners'] = True
 
-            if indexer_lang and not indexer_lang == 'en':
+            if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             t = sickbeard.indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
@@ -914,7 +909,7 @@ class GenericMetadata():
 
         # find the correct season in the TVDB and TVRAGE object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
-            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == 'en':
+            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
 
         return result
@@ -940,21 +935,14 @@ class GenericMetadata():
 
             if showXML.findtext('title') == None \
                     or (showXML.findtext('tvdbid') == None
-                        and showXML.findtext('id') == None) \
-                            and showXML.findtext('indexer') == None:
+                        and showXML.findtext('id') == None):
                 logger.log(u"Invalid info in tvshow.nfo (missing name or id):" \
                            + str(showXML.findtext('title')) + " " \
-                           + str(showXML.findtext('indexer')) + " " \
                            + str(showXML.findtext('tvdbid')) + " " \
                            + str(showXML.findtext('id')))
                 return empty_return
 
             name = showXML.findtext('title')
-
-            try:
-                indexer = int(showXML.findtext('indexer'))
-            except:
-                indexer = None
 
             if showXML.findtext('tvdbid') != None:
                 indexer_id = int(showXML.findtext('tvdbid'))
@@ -967,6 +955,16 @@ class GenericMetadata():
             if indexer_id is None:
                 logger.log(u"Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file", logger.WARNING)
                 return empty_return
+
+            indexer = None
+            if showXML.find('episodeguide/url') != None:
+                epg_url = showXML.findtext('episodeguide/url').lower()
+                if str(indexer_id) in epg_url:
+                    if 'thetvdb.com' in epg_url:
+                        indexer = 1
+                    elif 'tvrage' in epg_url:
+                        indexer = 2
+
 
         except Exception, e:
             logger.log(

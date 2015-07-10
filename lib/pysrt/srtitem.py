@@ -2,10 +2,13 @@
 """
 SubRip's subtitle parser
 """
+
 from pysrt.srtexc import InvalidItem, InvalidIndex
 from pysrt.srttime import SubRipTime
 from pysrt.comparablemixin import ComparableMixin
-from pysrt.compat import str
+from pysrt.compat import str, is_py2
+import re
+
 
 class SubRipItem(ComparableMixin):
     """
@@ -16,13 +19,13 @@ class SubRipItem(ComparableMixin):
     text -> unicode: text content for item.
     position -> unicode: raw srt/vtt "display coordinates" string
     """
-    ITEM_PATTERN = '%s\n%s --> %s%s\n%s\n'
+    ITEM_PATTERN = str('%s\n%s --> %s%s\n%s\n')
     TIMESTAMP_SEPARATOR = '-->'
 
     def __init__(self, index=0, start=None, end=None, text='', position=''):
         try:
             self.index = int(index)
-        except (TypeError, ValueError): # try to cast as int, but it's not mandatory
+        except (TypeError, ValueError):  # try to cast as int, but it's not mandatory
             self.index = index
 
         self.start = SubRipTime.coerce(start or 0)
@@ -30,10 +33,32 @@ class SubRipItem(ComparableMixin):
         self.position = str(position)
         self.text = str(text)
 
+    @property
+    def duration(self):
+        return self.end - self.start
+
+    @property
+    def text_without_tags(self):
+        RE_TAG = re.compile(r'<[^>]*?>')
+        return RE_TAG.sub('', self.text)
+
+    @property
+    def characters_per_second(self):
+        characters_count = len(self.text_without_tags.replace('\n', ''))
+        try:
+            return characters_count / (self.duration.ordinal / 1000.0)
+        except ZeroDivisionError:
+            return 0.0
+
     def __str__(self):
         position = ' %s' % self.position if self.position.strip() else ''
         return self.ITEM_PATTERN % (self.index, self.start, self.end,
                                     position, self.text)
+    if is_py2:
+        __unicode__ = __str__
+
+        def __str__(self):
+            raise NotImplementedError('Use unicode() instead!')
 
     def _cmpkey(self):
         return (self.start, self.end)

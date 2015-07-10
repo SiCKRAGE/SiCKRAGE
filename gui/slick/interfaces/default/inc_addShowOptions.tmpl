@@ -16,7 +16,7 @@
         
         <div class="field-pair">
             <label for="statusSelect">
-                <span class="component-title">Set the initial status<br /> of already aired episodes</span>
+                <span class="component-title">Status for previously aired episodes</span>
                 <span class="component-desc">
                     <select name="defaultStatus" id="statusSelect" class="form-control form-control-inline input-sm">
                     #for $curStatus in [$SKIPPED, $WANTED, $ARCHIVED, $IGNORED]:
@@ -26,7 +26,6 @@
                 </span>
             </label>
         </div>
-
         <div class="field-pair alt">
             <label for="flatten_folders" class="clearfix">
                 <span class="component-title">Flatten Folders</span>
@@ -37,6 +36,7 @@
             </label>
         </div>
 
+#if $enable_anime_options
 		<div class="field-pair alt">
             <label for="anime" class="clearfix">
                 <span class="component-title">Anime</span>
@@ -46,6 +46,7 @@
                 </span>
             </label>
         </div>
+#end if
 
         <div class="field-pair alt">
 
@@ -72,3 +73,10 @@
                 </span>
             </label>
         </div><br>
+
+#if $enable_anime_options        
+#import sickbeard.blackandwhitelist
+#include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_blackwhitelist.tmpl")
+#else
+		<input type="hidden" name="anime" id="anime" value="0" />
+#end if

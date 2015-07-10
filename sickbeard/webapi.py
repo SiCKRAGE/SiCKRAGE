@@ -28,6 +28,7 @@ import traceback
 
 import sickbeard
 
+from versionChecker import CheckVersion
 from sickbeard import db, logger, exceptions, history, ui, helpers
 from sickbeard import encodingKludge as ek
 from sickbeard import search_queue
@@ -45,7 +46,8 @@ try:
 except ImportError:
     from lib import simplejson as json
 
-from lib import subliminal
+import subliminal
+import babelfish
 
 from tornado.web import RequestHandler
 
@@ -749,7 +751,11 @@ class CMD_ComingEpisodes(ApiCall):
         for curType in self.type:
             finalEpResults[curType] = []
 
-        for ep in sql_results:
+        # Safety Measure to convert rows in sql_results to dict.
+        # This should not be required as the DB connections should only be returning dict results not sqlite3.row_type
+        dict_results = [dict(row) for row in sql_results]
+
+        for ep in dict_results:
             """
                 Missed:   yesterday... (less than 1week)
                 Today:    today
@@ -1078,8 +1084,8 @@ class CMD_SubtitleSearch(ApiCall):
         # return the correct json value
         if previous_subtitles != epObj.subtitles:
             status = 'New subtitles downloaded: %s' % ' '.join([
-                "<img src='" + sickbeard.WEB_ROOT + "/images/flags/" + subliminal.language.Language(
-                    x).alpha2 + ".png' alt='" + subliminal.language.Language(x).name + "'/>" for x in
+                "<img src='" + sickbeard.WEB_ROOT + "/images/flags/" + babelfish.language.Language(
+                    x).alpha2 + ".png' alt='" + babelfish.language.Language(x).name + "'/>" for x in
                 sorted(list(set(epObj.subtitles).difference(previous_subtitles)))])
             response = _responds(RESULT_SUCCESS, msg='New subtitles found')
         else:
@@ -1379,6 +1385,7 @@ class CMD_PostProcess(ApiCall):
         self.process_method, args = self.check_params(args, kwargs, "process_method", False, False,
                                                       "string", ["copy", "symlink", "hardlink", "move"])
         self.is_priority, args = self.check_params(args, kwargs, "is_priority", 0, False, "bool", [])
+        self.failed, args = self.check_params(args, kwargs, "failed", 0, False, "bool", [])
         self.type, args = self.check_params(args, kwargs, "type", "auto", None, "string",
                                             ["auto", "manual"])
         # super, missing, help
@@ -1396,7 +1403,7 @@ class CMD_PostProcess(ApiCall):
             self.type = 'manual'
 
         data = processTV.processDir(self.path, process_method=self.process_method, force=self.force_replace,
-                                    is_priority=self.is_priority, failed=False, type=self.type)
+                                    is_priority=self.is_priority, failed=self.failed, type=self.type)
 
         if not self.return_data:
             data = ""
@@ -1477,6 +1484,35 @@ class CMD_SickBeardAddRootDir(ApiCall):
         sickbeard.ROOT_DIRS = root_dirs_new
         return _responds(RESULT_SUCCESS, _getRootDirs(), msg="Root directories updated")
 
+class CMD_SickBeardCheckVersion(ApiCall):
+    _help = {"desc": "check if a new version of SickRage is available"}
+
+    def __init__(self, args, kwargs):
+        # required
+        # optional
+        # super, missing, help
+        ApiCall.__init__(self, args, kwargs)
+
+    def run(self):
+        checkversion = CheckVersion()
+        needs_update = checkversion.check_for_new_version()
+
+        data = {
+            "current_version": {
+                "branch": checkversion.get_branch(),
+                "commit": checkversion.updater.get_cur_commit_hash(),
+                "version": checkversion.updater.get_cur_version(),
+            },
+            "latest_version": {
+                "branch": checkversion.get_branch(),
+                "commit": checkversion.updater.get_newest_commit_hash(),
+                "version": checkversion.updater.get_newest_version(),
+            },
+            "commits_offset": checkversion.updater.get_num_commits_behind(),
+            "needs_update": needs_update,
+        }
+
+        return _responds(RESULT_SUCCESS, data)
 
 class CMD_SickBeardCheckScheduler(ApiCall):
     _help = {"desc": "query the scheduler"}
@@ -1665,17 +1701,12 @@ class CMD_SickBeardSearchIndexers(ApiCall):
              }
     }
 
-    valid_languages = {
-        'el': 20, 'en': 7, 'zh': 27, 'it': 15, 'cs': 28, 'es': 16, 'ru': 22,
-        'nl': 13, 'pt': 26, 'no': 9, 'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31,
-        'de': 14, 'da': 10, 'fi': 11, 'hu': 19, 'ja': 25, 'he': 24, 'ko': 32,
-        'sv': 8, 'sl': 30}
-
     def __init__(self, args, kwargs):
+        self.valid_languages = sickbeard.indexerApi().config['langabbv_to_id']
         # required
         # optional
         self.name, args = self.check_params(args, kwargs, "name", None, False, "string", [])
-        self.lang, args = self.check_params(args, kwargs, "lang", "de", False, "string", self.valid_languages.keys())
+        self.lang, args = self.check_params(args, kwargs, "lang", sickbeard.INDEXER_DEFAULT_LANGUAGE, False, "string", self.valid_languages.keys())
 
         self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, False, "int", [])
 
@@ -1692,7 +1723,7 @@ class CMD_SickBeardSearchIndexers(ApiCall):
             for _indexer in sickbeard.indexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = sickbeard.indexerApi(_indexer).api_params.copy()
 
-                if self.lang and not self.lang == 'en':
+                if self.lang and not self.lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                     lINDEXER_API_PARMS['language'] = self.lang
 
                 lINDEXER_API_PARMS['actors'] = False
@@ -1704,7 +1735,7 @@ class CMD_SickBeardSearchIndexers(ApiCall):
                     apiData = t[str(self.name).encode()]
                 except (sickbeard.indexer_shownotfound, sickbeard.indexer_showincomplete, sickbeard.indexer_error):
                     logger.log(u"API :: Unable to find show with id " + str(self.indexerid), logger.WARNING)
-                    return _responds(RESULT_SUCCESS, {"results": [], "langid": lang_id})
+                    continue
 
                 for curSeries in apiData:
                     results.append({indexer_ids[_indexer]: int(curSeries['id']),
@@ -1718,7 +1749,7 @@ class CMD_SickBeardSearchIndexers(ApiCall):
             for _indexer in sickbeard.indexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = sickbeard.indexerApi(_indexer).api_params.copy()
 
-                if self.lang and not self.lang == 'en':
+                if self.lang and not self.lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                     lINDEXER_API_PARMS['language'] = self.lang
 
                 lINDEXER_API_PARMS['actors'] = False
@@ -1868,6 +1899,27 @@ class CMD_SickBeardShutdown(ApiCall):
         sickbeard.events.put(sickbeard.events.SystemEvent.SHUTDOWN)
         return _responds(RESULT_SUCCESS, msg="SickRage is shutting down...")
 
+class CMD_SickBeardUpdate(ApiCall):
+    _help = {"desc": "update SickRage to the latest version available"}
+
+    def __init__(self, args, kwargs):
+        # required
+        # optional
+        # super, missing, help
+        ApiCall.__init__(self, args, kwargs)
+
+    def run(self):
+        checkversion = CheckVersion()
+
+        if checkversion.check_for_new_version():
+            if checkversion.run_backup_if_safe():
+                checkversion.update()
+
+                return _responds(RESULT_SUCCESS, msg="SickRage is updating ...")
+
+            return _responds(RESULT_FAILURE, msg="SickRage could not backup config ...")
+
+        return _responds(RESULT_FAILURE, msg="SickRage is already up to date")
 
 class CMD_Show(ApiCall):
     _help = {"desc": "display information for a given show",
@@ -2074,13 +2126,8 @@ class CMD_ShowAddNew(ApiCall):
              }
     }
 
-    valid_languages = {
-        'el': 20, 'en': 7, 'zh': 27, 'it': 15, 'cs': 28, 'es': 16, 'ru': 22,
-        'nl': 13, 'pt': 26, 'no': 9, 'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31,
-        'de': 14, 'da': 10, 'fi': 11, 'hu': 19, 'ja': 25, 'he': 24, 'ko': 32,
-        'sv': 8, 'sl': 30}
-
     def __init__(self, args, kwargs):
+        self.valid_languages = sickbeard.indexerApi().config['langabbv_to_id']
         # required
         self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
 
@@ -2098,7 +2145,7 @@ class CMD_ShowAddNew(ApiCall):
                                                        "bool", [])
         self.status, args = self.check_params(args, kwargs, "status", None, False, "string",
                                               ["wanted", "skipped", "archived", "ignored"])
-        self.lang, args = self.check_params(args, kwargs, "lang", "de", False, "string",
+        self.lang, args = self.check_params(args, kwargs, "lang", sickbeard.INDEXER_DEFAULT_LANGUAGE, False, "string",
                                             self.valid_languages.keys())
         self.subtitles, args = self.check_params(args, kwargs, "subtitles", int(sickbeard.USE_SUBTITLES),
                                                  False, "int",
@@ -2393,9 +2440,11 @@ class CMD_ShowPause(ApiCall):
 
         if self.pause:
             showObj.paused = 1
+            showObj.saveToDB()
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has been paused")
         else:
             showObj.paused = 0
+            showObj.saveToDB()
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has been unpaused")
 
 class CMD_ShowRefresh(ApiCall):
@@ -2748,8 +2797,8 @@ class CMD_ShowUpdate(ApiCall):
         try:
             sickbeard.showQueueScheduler.action.updateShow(showObj, True)  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
-        except exceptions.CantUpdateException, e:
-            logger.log(u"API:: Unable to update " + str(showObj.name) + ". " + str(ex(e)), logger.ERROR)
+        except exceptions.CantUpdateException as e:
+            logger.log("API::Unable to update show: {0}".format(str(e)),logger.DEBUG)
             return _responds(RESULT_FAILURE, msg="Unable to update " + str(showObj.name))
 
 
@@ -2870,6 +2919,7 @@ _functionMaper = {"help": CMD_Help,
                   "sb": CMD_SickBeard,
                   "postprocess": CMD_PostProcess,
                   "sb.addrootdir": CMD_SickBeardAddRootDir,
+                  "sb.checkversion": CMD_SickBeardCheckVersion,
                   "sb.checkscheduler": CMD_SickBeardCheckScheduler,
                   "sb.deleterootdir": CMD_SickBeardDeleteRootDir,
                   "sb.getdefaults": CMD_SickBeardGetDefaults,
@@ -2882,6 +2932,7 @@ _functionMaper = {"help": CMD_Help,
                   "sb.searchtvdb": CMD_SickBeardSearchTVDB,
                   "sb.searchtvrage": CMD_SickBeardSearchTVRAGE,
                   "sb.setdefaults": CMD_SickBeardSetDefaults,
+                  "sb.update": CMD_SickBeardUpdate,
                   "sb.shutdown": CMD_SickBeardShutdown,
                   "show": CMD_Show,
                   "show.addexisting": CMD_ShowAddExisting,

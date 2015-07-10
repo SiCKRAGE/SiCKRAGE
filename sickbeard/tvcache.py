@@ -35,7 +35,7 @@ from sickbeard.exceptions import AuthException
 from sickbeard.rssfeeds import RSSFeeds
 from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 from sickbeard import encodingKludge as ek
-
+from sickbeard import show_name_helpers
 
 class CacheDBConnection(db.DBConnection):
     def __init__(self, providerName):
@@ -144,12 +144,11 @@ class TVCache():
         elif sickbeard.PROXY_SETTING:
             logger.log("Using proxy for url: " + url, logger.DEBUG)
             scheme, address = urllib2.splittype(sickbeard.PROXY_SETTING)
-            if not scheme:
-                scheme = 'http'
-                address = 'http://' + sickbeard.PROXY_SETTING
-            else:
-                address = sickbeard.PROXY_SETTING
-            handlers = [urllib2.ProxyHandler({scheme: address})]
+            address = sickbeard.PROXY_SETTING if scheme else 'http://' + sickbeard.PROXY_SETTING
+            handlers = [urllib2.ProxyHandler({'http': address, 'https': address})]
+            self.provider.headers.update({'Referer': address})
+        elif 'Referer' in self.provider.headers:
+            self.provider.headers.pop('Referer')
 
         return RSSFeeds(self.providerID).getFeed(
             self.provider.proxy._buildURL(url),
@@ -297,9 +296,9 @@ class TVCache():
                 [name, season, episodeText, parse_result.show.indexerid, url, curTimestamp, quality, release_group, version]]
 
 
-    def searchCache(self, episode, manualSearch=False):
-        neededEps = self.findNeededEpisodes(episode, manualSearch)
-        return neededEps[episode] if len(neededEps) > 0 else []
+    def searchCache(self, episode, manualSearch=False, downCurQuality=False):
+        neededEps = self.findNeededEpisodes(episode, manualSearch, downCurQuality)
+        return neededEps[episode] if episode in neededEps else []
 
     def listPropers(self, date=None, delimiter="."):
         myDB = self._getDB()
@@ -311,12 +310,14 @@ class TVCache():
         return filter(lambda x: x['indexerid'] != 0, myDB.select(sql))
 
 
-    def findNeededEpisodes(self, episode, manualSearch=False):
+    def findNeededEpisodes(self, episode, manualSearch=False, downCurQuality=False):
         neededEps = {}
         cl = []
 
         myDB = self._getDB()
-        if type(episode) != list:
+        if not episode:
+            sqlResults = myDB.select("SELECT * FROM [" + self.providerID + "]")
+        elif type(episode) != list:
             sqlResults = myDB.select(
                 "SELECT * FROM [" + self.providerID + "] WHERE indexerid = ? AND season = ? AND episodes LIKE ?",
                 [episode.show.indexerid, episode.season, "%|" + str(episode.episode) + "|%"])
@@ -332,6 +333,10 @@ class TVCache():
 
         # for each cache entry
         for curResult in sqlResults:
+            # ignored/required words, and non-tv junk
+            if not show_name_helpers.filterBadReleases(curResult["name"]):
+                continue
+
             # get the show object, or if it's not one of our shows then ignore it
             showObj = helpers.findCertainShow(sickbeard.showList, int(curResult["indexerid"]))
             if not showObj:
@@ -346,9 +351,11 @@ class TVCache():
             curSeason = int(curResult["season"])
             if curSeason == -1:
                 continue
+
             curEp = curResult["episodes"].split("|")[1]
             if not curEp:
                 continue
+
             curEp = int(curEp)
 
             curQuality = int(curResult["quality"])
@@ -356,7 +363,7 @@ class TVCache():
             curVersion = curResult["version"]
 
             # if the show says we want that episode then add it to the list
-            if not showObj.wantEpisode(curSeason, curEp, curQuality, manualSearch):
+            if not showObj.wantEpisode(curSeason, curEp, curQuality, manualSearch, downCurQuality):
                 logger.log(u"Skipping " + curResult["name"] + " because we don't want an episode that's " +
                            Quality.qualityStrings[curQuality], logger.DEBUG)
                 continue

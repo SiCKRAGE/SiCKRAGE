@@ -36,14 +36,10 @@
 <b>Scene Exception:</b><br />
 <input type="text" id="SceneName" class="form-control form-control-inline input-sm input200">
 <input class="btn btn-inline" type="button" value="Add" id="addSceneName"><br />
+This will <b>affect the episode show search</b> on nzb and torrent provider.<br />
+        This list overrides the original name, it doesn't append to it.<br />
 
 <div id="SceneException" >
-    <div>
-        <p>This will <b>affect the episode show search</b> on nzb and torrent provider.<br />
-        This list overrides the original name, it doesn't append to it.<br />
-        </p>
-    </div>
-
     <div class="pull-left" style="text-align:center;">
         <h4>Exceptions List</h4>
         <select id="exceptions_list" name="exceptions_list" multiple="multiple" style="min-width:10em;" >
@@ -51,11 +47,11 @@
                     <option value="$cur_exception">$cur_exception</option>
                 #end for
         </select>
-    <div>
-        <input id="removeSceneName" value="Remove" class="btn float-left" type="button" style="margin-top: 10px;"/>
+        <div>
+            <input id="removeSceneName" value="Remove" class="btn float-left" type="button" style="margin-top: 10px;"/>
+        </div>
+        <br />
     </div>
-<br />
-</div>
 </div>
 <div class="clearfix"></div>
 <br />
@@ -68,7 +64,7 @@
 <br />
 
 <b>Default Episode Status:</b><br />
-(this will set a default status to be applied to any newly added episodes)<br />
+(this will set the status for future episodes)<br />
 <select name="defaultEpStatus" id="defaultEpStatusSelect" class="form-control form-control-inline input-sm">
     #for $curStatus in [$WANTED, $SKIPPED, $ARCHIVED, $IGNORED]:
     <option value="$curStatus" #if $curStatus == $show.default_ep_status then 'selected="selected"' else ''#>$statusStrings[$curStatus]</option>
@@ -81,10 +77,17 @@
 <select name="indexerLang" id="indexerLangSelect" class="form-control form-control-inline input-sm bfh-languages" data-language="$show.lang" data-available="#echo ','.join($sickbeard.indexerApi().config['valid_languages'])#"></select><br />
 <br />
 
-<b>Flatten files (no folders):</b> <input type="checkbox" name="flatten_folders" #if $show.flatten_folders == 1 and not $sickbeard.NAMING_FORCE_FOLDERS then "checked=\"checked\"" else ""# #if $sickbeard.NAMING_FORCE_FOLDERS then "disabled=\"disabled\"" else ""#/><br />
-<b>Paused:</b> <input type="checkbox" name="paused" #if $show.paused == 1 then "checked=\"checked\"" else ""# /><br />
-<b>Subtitles:</b> <input type="checkbox" name="subtitles"#if $show.subtitles == 1 and $sickbeard.USE_SUBTITLES then " checked=\"checked\"" else ""##if not $sickbeard.USE_SUBTITLES then " disabled=\"disabled\"" else ""#/><br />
-<br/>
+<b>Flatten files (no folders): </b> <input type="checkbox" name="flatten_folders" #if $show.flatten_folders == 1 and not $sickbeard.NAMING_FORCE_FOLDERS then "checked=\"checked\"" else ""# #if $sickbeard.NAMING_FORCE_FOLDERS then "disabled=\"disabled\"" else ""#/><br />
+(Disabled: episodes folder-grouped by season. Enabled: no season folders)<br/>
+<br />
+
+<b>Paused: </b> <input type="checkbox" name="paused" #if $show.paused == 1 then "checked=\"checked\"" else ""# /><br />
+(check this if you wish to pause this show. Will not download anything until unpause)<br/>
+<br />
+
+<b>Subtitles: </b> <input type="checkbox" name="subtitles"#if $show.subtitles == 1 and $sickbeard.USE_SUBTITLES then " checked=\"checked\"" else ""##if not $sickbeard.USE_SUBTITLES then " disabled=\"disabled\"" else ""#/><br />
+(check this if you wish to search for subtitles in this show)<br/>
+<br />
 
 <b>Scene Numbering: </b>
 <input type="checkbox" name="scene" #if $show.scene == 1 then "checked=\"checked\"" else ""# /><br/>
@@ -93,12 +96,12 @@
 
 <b>Air by date: </b>
 <input type="checkbox" name="air_by_date" #if $show.air_by_date == 1 then "checked=\"checked\"" else ""# /><br />
-(check this if the show is released as Show.03.02.2010 rather than Show.S02E03)<br />
+(check this if the show is released as Show.03.02.2010 rather than Show.S02E03. <span style="color:red">In case air date conflict between regular and special episodes, the later will be ignored.</span>)<br />
 <br />
 
 <b>Sports: </b>
 <input type="checkbox" name="sports" #if $show.sports == 1 then "checked=\"checked\"" else ""# /><br />
-(check this if the show is a sporting or MMA event and released as Show.03.02.2010 rather than Show.S02E03)<br />
+(check this if the show is a sporting or MMA event and released as Show.03.02.2010 rather than Show.S02E03. <span style="color:red">In case air date conflict between regular and special episodes, the later will be ignored.</span>)<br />
 <br />
 
 <b>Anime: </b>
@@ -108,7 +111,7 @@
 
 <b>DVD Order: </b>
 <input type="checkbox" name="dvdorder" #if $show.dvdorder == 1 then "checked=\"checked\"" else ""# /><br/>
-(check this if you wish to use the DVD order instead of the Airing order)
+(check this if you wish to use the DVD order instead of the Airing order. A "Force Full Update" is necessary, and if you have existing episodes you need to move them)
 <br/><br/>
 
 #if $anyQualities + $bestQualities
@@ -131,12 +134,10 @@ Separate words with a comma, e.g. "word1,word2,word3"<br />
 <br />
 
 #if $show.is_anime:
-#from sickbeard.blackandwhitelist import *
-#include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_blackwhitelist.tmpl")
+    #from sickbeard.blackandwhitelist import *
+    #include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_blackwhitelist.tmpl")
+    <script type="text/javascript" src="$sbRoot/js/blackwhite.js?$sbPID"></script>
 #end if
-
-<input type="hidden" name="whitelist" id="whitelist"/>
-<input type="hidden" name="blacklist" id="blacklist"/>
 
 <input type="submit" id="submit" value="Submit" class="btn btn-primary" />
 </form>
@@ -144,7 +145,7 @@ Separate words with a comma, e.g. "word1,word2,word3"<br />
 <script type="text/javascript" charset="utf-8">
 <!--
     var all_exceptions = new Array;
-
+    
     jQuery('#location').fileBrowser({ title: 'Select Show Location' });
 
     \$('#submit').click(function(){
@@ -155,21 +156,12 @@ Separate words with a comma, e.g. "word1,word2,word3"<br />
         });
 
         \$("#exceptions_list").val(all_exceptions);
-
-        var realvalues = [];
-
-        \$('#white option').each(function(i, selected) {
-            realvalues[i] = \$(selected).val();
+  
+        #if $show.is_anime:
+            generate_bwlist()
+            
+        #end if
         });
-        \$("#whitelist").val(realvalues.join(","));
-
-        realvalues = [];
-        \$('#black option').each(function(i, selected) {
-            realvalues[i] = \$(selected).val();
-        });
-        \$("#blacklist").val(realvalues.join(","));
-
-    });
 
     \$('#addSceneName').click(function() {
         var scene_ex = \$('#SceneName').val()
@@ -212,43 +204,6 @@ Separate words with a comma, e.g. "word1,word2,word3"<br />
     }
 
     \$(this).toggle_SceneException();
-
-    \$('#removeW').click(function() {
-        return !\$('#white option:selected').remove().appendTo('#pool');
-    });
-    \$('#addW').click(function() {
-        return !\$('#pool option:selected').remove().appendTo('#white');
-    });
-    \$('#addB').click(function() {
-        return !\$('#pool option:selected').remove().appendTo('#black');
-     });
-    \$('#removeP').click(function() {
-        return !\$('#pool option:selected').remove();
-    });
-    \$('#removeB').click(function() {
-        return !\$('#black option:selected').remove().appendTo('#pool');
-    });
-
-    \$('#addToWhite').click(function() {
-        var group = \$('#addToPoolText').val()
-        if(group == "")
-            return
-        \$('#addToPoolText').val("")
-        var option = \$("<option>")
-        option.prop("value",group)
-        option.html(group)
-        return option.appendTo('#white');
-    });
-    \$('#addToBlack').click(function() {
-        var group = \$('#addToPoolText').val()
-        if(group == "")
-            return
-        \$('#addToPoolText').val("")
-        var option = \$("<option>")
-        option.prop("value",group)
-        option.html(group)
-        return option.appendTo('#black');
-    });
 
 //-->
 </script>

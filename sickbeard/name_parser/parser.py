@@ -26,7 +26,8 @@ import os.path
 import regexes
 import sickbeard
 
-from sickbeard import logger, helpers, scene_numbering, common, exceptions as ex, scene_exceptions, encodingKludge as ek, db
+from sickbeard import logger, helpers, scene_numbering, common, scene_exceptions, encodingKludge as ek, db
+from sickbeard.exceptions import ex
 from dateutil import parser
 
 
@@ -100,13 +101,13 @@ class NameParser(object):
 
     def _compile_regexes(self, regexMode):
         if regexMode == self.ANIME_REGEX:
-            logger.log(u"Using ANIME regexs", logger.DEBUG)
+            dbg_str = u"ANIME"
             uncompiled_regex = [regexes.anime_regexes, regexes.normal_regexes]
         elif regexMode == self.NORMAL_REGEX:
-            logger.log(u"Using NORMAL regexs", logger.DEBUG)
+            dbg_str = u"NORMAL"
             uncompiled_regex = [regexes.normal_regexes]
         else:
-            logger.log(u"Using ALL regexes", logger.DEBUG)
+            dbg_str = u"ALL"
             uncompiled_regex = [regexes.normal_regexes, regexes.anime_regexes]
 
         self.compiled_regexes = []
@@ -115,7 +116,7 @@ class NameParser(object):
                 try:
                     cur_regex = re.compile(cur_pattern, re.VERBOSE | re.IGNORECASE)
                 except re.error, errormsg:
-                    logger.log(u"WARNING: Invalid episode_pattern, %s. %s" % (errormsg, cur_pattern))
+                    logger.log(u"WARNING: Invalid episode_pattern using %s regexs, %s. %s" % (dbg_str, errormsg, cur_pattern))
                 else:
                     self.compiled_regexes.append((cur_pattern_num, cur_pattern_name, cur_regex))
 

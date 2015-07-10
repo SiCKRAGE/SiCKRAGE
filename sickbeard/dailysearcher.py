@@ -30,6 +30,8 @@ from sickbeard import helpers
 from sickbeard import exceptions
 from sickbeard import network_timezones
 from sickbeard.exceptions import ex
+from sickbeard.common import SKIPPED
+from common import Quality, qualityPresetStrings, statusStrings
 
 
 class DailySearcher():
@@ -84,12 +86,20 @@ class DailySearcher():
                 # if an error occured assume the episode hasn't aired yet
                 continue
 
+            UpdateWantedList = 0
             ep = show.getEpisode(int(sqlEp["season"]), int(sqlEp["episode"]))
             with ep.lock:
                 if ep.show.paused:
                     ep.status = common.SKIPPED
+                elif ep.season == 0:
+                    logger.log(u"New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
+                    ep.status = common.SKIPPED
+                elif sickbeard.TRAKT_USE_ROLLING_DOWNLOAD and sickbeard.USE_TRAKT:
+                    ep.status = common.SKIPPED
+                    UpdateWantedList = 1
                 else:
-                    ep.status = common.WANTED
+                    logger.log(u"New episode " + ep.prettyName() + " airs today, setting status to WANTED")
+                    ep.status = ep.show.default_ep_status
 
                 sql_l.append(ep.get_sql())
         else:
@@ -98,6 +108,8 @@ class DailySearcher():
         if len(sql_l) > 0:
             myDB = db.DBConnection()
             myDB.mass_action(sql_l)
+
+        sickbeard.traktRollingScheduler.action.updateWantedList()
 
         # queue episode for daily search
         dailysearch_queue_item = sickbeard.search_queue.DailySearchQueueItem()

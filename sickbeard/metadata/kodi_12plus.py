@@ -101,7 +101,7 @@ class KODI_12PlusMetadata(generic.GenericMetadata):
 
         lINDEXER_API_PARMS['actors'] = True
 
-        if indexer_lang and not indexer_lang == 'en':
+        if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
         if show_obj.dvdorder != 0:
@@ -153,11 +153,8 @@ class KODI_12PlusMetadata(generic.GenericMetadata):
 
         episodeguide = etree.SubElement(tv_node, "episodeguide")
         episodeguideurl = etree.SubElement(episodeguide, "url")
-        episodeguideurl2 = etree.SubElement(tv_node, "episodeguideurl")
         if getattr(myShow, 'id', None) is not None:
-            showurl = sickbeard.indexerApi(show_obj.indexer).config['base_url'] + str(myShow["id"]) + '/all/en.zip'
-            episodeguideurl.text = showurl
-            episodeguideurl2.text = showurl
+            episodeguideurl.text = sickbeard.indexerApi(show_obj.indexer).config['base_url'] + str(myShow["id"]) + '/all/en.zip'
 
         mpaa = etree.SubElement(tv_node, "mpaa")
         if getattr(myShow, 'contentrating', None) is not None:
@@ -166,10 +163,6 @@ class KODI_12PlusMetadata(generic.GenericMetadata):
         indexerid = etree.SubElement(tv_node, "id")
         if getattr(myShow, 'id', None) is not None:
             indexerid.text = str(myShow["id"])
-
-        indexer = etree.SubElement(tv_node, "indexer")
-        if show_obj.indexer is not None:
-            indexer.text = str(show_obj.indexer)
 
         genre = etree.SubElement(tv_node, "genre")
         if getattr(myShow, 'genre', None) is not None:
@@ -222,7 +215,7 @@ class KODI_12PlusMetadata(generic.GenericMetadata):
 
         lINDEXER_API_PARMS['actors'] = True
 
-        if indexer_lang and not indexer_lang == 'en':
+        if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
         if ep_obj.show.dvdorder != 0:

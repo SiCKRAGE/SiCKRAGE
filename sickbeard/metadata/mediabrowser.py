@@ -232,7 +232,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
 
         lINDEXER_API_PARMS['actors'] = True
 
-        if indexer_lang and not indexer_lang == 'en':
+        if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
         if show_obj.dvdorder != 0:
@@ -265,9 +265,6 @@ class MediaBrowserMetadata(generic.GenericMetadata):
         if getattr(myShow, 'id', None) is not None:
             indexerid.text = str(myShow['id'])
 
-        indexer = etree.SubElement(tv_node, "indexer")
-        if show_obj.indexer != None:
-            indexer.text = str(show_obj.indexer)
 
         SeriesName = etree.SubElement(tv_node, "SeriesName")
         if getattr(myShow, 'seriesname', None) is not None:
@@ -402,7 +399,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
 
             lINDEXER_API_PARMS['actors'] = True
 
-            if indexer_lang and not indexer_lang == 'en':
+            if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
@@ -495,16 +492,13 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 indexerid = etree.SubElement(episode, "id")
                 indexerid.text = str(curEpToWrite.indexerid)
 
-                indexer = etree.SubElement(episode, "indexer")
-                indexer.text = str(curEpToWrite.show.indexer)
-
                 Persons = etree.SubElement(episode, "Persons")
 
                 Language = etree.SubElement(episode, "Language")
                 try:
                     Language.text = myEp['language']
                 except:
-                    Language.text = 'en'  # tvrage api doesn't provide language so we must assume a value here
+                    Language.text = sickbeard.INDEXER_DEFAULT_LANGUAGE  # tvrage api doesn't provide language so we must assume a value here
 
                 thumb = etree.SubElement(episode, "filename")
                 # TODO: See what this is needed for.. if its still needed

@@ -56,24 +56,44 @@ $(document).ready(function(){
             });
     });
 
-    $('#testPLEX').click(function () {
-        var plex_host = $.trim($('#plex_host').val());
-        var plex_username = $.trim($('#plex_username').val());
-        var plex_password = $.trim($('#plex_password').val());
-        if (!plex_host) {
-            $('#testPLEX-result').html('Please fill out the necessary fields above.');
+	$('#testPMC').click(function () {
+		var plex_host = $.trim($('#plex_host').val());
+		var plex_client_username = $.trim($('#plex_client_username').val());
+		var plex_client_password = $.trim($('#plex_client_password').val());
+		if (!plex_host) {
+			$('#testPMC-result').html('Please fill out the necessary fields above.');
 			$('#plex_host').addClass('warning');
-            return;
-        }
-        $('#plex_host').removeClass('warning');
+			return;
+		}
+		$('#plex_host').removeClass('warning');
 		$(this).prop('disabled', true);
-        $('#testPLEX-result').html(loading);
-        $.get(sbRoot + '/home/testPLEX', {'host': plex_host, 'username': plex_username, 'password': plex_password})
-            .done(function (data) {
-                $('#testPLEX-result').html(data);
-                $('#testPLEX').prop('disabled', false);
-            });
-    });
+		$('#testPMC-result').html(loading);
+		$.get(sbRoot + '/home/testPMC', {'host': plex_host, 'username': plex_client_username, 'password': plex_client_password})
+			.done(function (data) {
+				$('#testPMC-result').html(data);
+				$('#testPMC').prop('disabled', false);
+			});
+	});
+
+	$('#testPMS').click(function () {
+		var plex_server_host = $.trim($('#plex_server_host').val());
+		var plex_username = $.trim($('#plex_username').val());
+		var plex_password = $.trim($('#plex_password').val());
+        var plex_server_token = $.trim($('#plex_server_token').val());
+		if (!plex_server_host) {
+			$('#testPMS-result').html('Please fill out the necessary fields above.');
+			$('#plex_server_host').addClass('warning');
+			return;
+		}
+		$('#plex_server_host').removeClass('warning');
+		$(this).prop('disabled', true);
+		$('#testPMS-result').html(loading);
+		$.get(sbRoot + '/home/testPMS', {'host': plex_server_host, 'username': plex_username, 'password': plex_password, 'plex_server_token': plex_server_token})
+			.done(function (data) {
+				$('#testPMS-result').html(data);
+				$('#testPMS').prop('disabled', false);
+			});
+	});
 
     $('#testBoxcar').click(function() {
 		var boxcar_username = $.trim($('#boxcar_username').val());
@@ -296,28 +316,76 @@ $(document).ready(function(){
             });
     });
 
+    $('#TraktGetPin').click(function () { 
+        var trakt_pin_url = $('#trakt_pin_url').val();
+        var w;
+        w = window.open(trakt_pin_url, "popUp", "toolbar=no, scrollbars=no, resizable=no, top=200, left=200, width=650, height=550");
+         $('#trakt_pin').removeClass('hide');
+    });  
+    
+    $('#trakt_pin').change(function() {
+        var trakt_pin = $('#trakt_pin').val();
+        
+        if (trakt_pin.length !=0) {
+            $('#TraktGetPin').addClass('hide');
+            $('#authTrakt').removeClass('hide');
+        }
+        else {
+            $('#TraktGetPin').removeClass('hide');
+            $('#authTrakt').addClass('hide');
+        }
+    });
+    
+    $('#trakt_pin').keyup(function () {
+        var trakt_pin = $('#trakt_pin').val();
+        
+        if (trakt_pin.length !=0) {
+            $('#TraktGetPin').addClass('hide');
+            $('#authTrakt').removeClass('hide');
+        }
+        else {
+            $('#TraktGetPin').removeClass('hide');
+            $('#authTrakt').addClass('hide');
+        }
+    });
+    
+    $('#authTrakt').click(function() {
+        var trakt_pin = $('#trakt_pin').val();
+        if (trakt_pin.length !=0) {
+            $.get(sbRoot + '/home/getTraktToken', { "trakt_pin": trakt_pin })
+                .done(function (data) {
+                    $('#testTrakt-result').html(data);
+                    $('#authTrakt').addClass('hide');
+                    $('#trakt_pin').addClass('hide');               
+                    $('#TraktGetPin').addClass('hide');                 
+            });              
+        }
+    });
+    
     $('#testTrakt').click(function () {
         var trakt_username = $.trim($('#trakt_username').val());
-        var trakt_password = $.trim($('#trakt_password').val());
+        var trakt_trending_blacklist = $.trim($('#trakt_blacklist_name').val());
         var trakt_disable_ssl_verify = $('#trakt_disable_ssl_verify').is(':checked');
-        if (!trakt_username || !trakt_password) {
+        if (!trakt_username) {
             $('#testTrakt-result').html('Please fill out the necessary fields above.');
 			if (!trakt_username) {
 				$('#trakt_username').addClass('warning');
 			} else {
 				$('#trakt_username').removeClass('warning');
 			}
-			if (!trakt_password) {
-				$('#trakt_password').addClass('warning');
-			} else {
-				$('#trakt_password').removeClass('warning');
-			}
             return;
         }
-		$('#trakt_username,#trakt_password').removeClass('warning');
+
+        if (/\s/g.test(trakt_trending_blacklist)) {
+            $('#testTrakt-result').html('Check blacklist name; the value need to be a trakt slug');
+	    $('#trakt_blacklist_name').addClass('warning');
+            return;
+        }
+		$('#trakt_username').removeClass('warning');
+	        $('#trakt_blacklist_name').removeClass('warning');
         $(this).prop('disabled', true);
         $('#testTrakt-result').html(loading);
-        $.get(sbRoot + '/home/testTrakt', {'username': trakt_username, 'password': trakt_password, 'disable_ssl': trakt_disable_ssl_verify})
+        $.get(sbRoot + '/home/testTrakt', {'username': trakt_username, 'disable_ssl': trakt_disable_ssl_verify, 'blacklist_name': trakt_trending_blacklist})
             .done(function (data) {
                 $('#testTrakt-result').html(data);
                 $('#testTrakt').prop('disabled', false);
@@ -508,5 +576,5 @@ $(document).ready(function(){
             $('.plexinfo').addClass('hide');
         }
     });
-
+    
 });

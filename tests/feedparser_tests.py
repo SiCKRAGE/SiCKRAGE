@@ -1,20 +1,20 @@
 import unittest
-import sys
-import os.path
+import sys, os.path
 import test_lib as test
 
-sys.path.append(os.path.abspath('..'))
-sys.path.append(os.path.abspath('../lib'))
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sickbeard.rssfeeds import RSSFeeds
-
+from sickbeard.tvcache import TVCache
 class FeedParserTests(unittest.TestCase):
-    def test_newznab(self):
+    def test_womble(self):
         RSSFeeds().clearCache()
-        result = RSSFeeds().getFeed('http://lolo.sickbeard.com/api?t=caps')
+        result = RSSFeeds().getFeed('https://newshost.co.za/rss/?sec=tv-sd&fr=false')
         self.assertTrue('entries' in result)
         self.assertTrue('feed' in result)
-        self.assertTrue('categories' in result.feed)
+        for item in result['entries']:
+            self.assertTrue(TVCache._parseItem(item))
 
 if __name__ == "__main__":
     print "=================="

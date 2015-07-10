@@ -51,9 +51,6 @@ class ShowUpdater():
 
         logger.log(u"Doing full update on all shows")
 
-        # clean out cache directory, remove everything > 12 hours old
-        sickbeard.helpers.clearCache()
-
         # select 10 'Ended' tv_shows updated more than 90 days ago to include in this update
         stale_should_update = []
         stale_update_date = (update_date - datetime.timedelta(days=90)).toordinal()
@@ -77,14 +74,15 @@ class ShowUpdater():
 
                 # if should_update returns True (not 'Ended') or show is selected stale 'Ended' then update, otherwise just refresh
                 if curShow.should_update(update_date=update_date) or curShow.indexerid in stale_should_update:
-                    curQueueItem = sickbeard.showQueueScheduler.action.updateShow(curShow, True)  # @UndefinedVariable
+                    try:
+                        piList.append(sickbeard.showQueueScheduler.action.updateShow(curShow, True))  # @UndefinedVariable
+                    except exceptions.CantUpdateException as e:
+                        logger.log("Unable to update show: {0}".format(str(e)),logger.DEBUG)
                 else:
                     logger.log(
                         u"Not updating episodes for show " + curShow.name + " because it's marked as ended and last/next episode is not within the grace period.",
                         logger.DEBUG)
-                    curQueueItem = sickbeard.showQueueScheduler.action.refreshShow(curShow, True)  # @UndefinedVariable
-
-                piList.append(curQueueItem)
+                    piList.append(sickbeard.showQueueScheduler.action.refreshShow(curShow, True))  # @UndefinedVariable
 
             except (exceptions.CantUpdateException, exceptions.CantRefreshException), e:
                 logger.log(u"Automatic update failed: " + ex(e), logger.ERROR)

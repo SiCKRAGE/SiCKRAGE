@@ -148,8 +148,8 @@ class SubRipFile(UserList, object):
         If you do not provide any encoding, it can be detected if the file
         contain a bit order mark, unless it is set to utf-8 as default.
         """
+        source_file, encoding = cls._open_unicode_file(path, claimed_encoding=encoding)
         new_file = cls(path=path, encoding=encoding)
-        source_file = cls._open_unicode_file(path, claimed_encoding=encoding)
         new_file.read(source_file, error_handling=error_handling)
         source_file.close()
         return new_file
@@ -298,7 +298,7 @@ class SubRipFile(UserList, object):
             file_bom = source_file.read(len(possible_bom))
             if not file_bom == possible_bom:
                 source_file.seek(0)  # if not rewind
-        return source_file
+        return source_file, encoding
 
     @classmethod
     def _handle_error(cls, error, error_handling, index):

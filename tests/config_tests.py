@@ -2,10 +2,11 @@ import unittest
 
 import sys
 import os.path
-sys.path.append(os.path.abspath('..'))
+
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sickbeard import config
-
 
 class QualityTests(unittest.TestCase):
 
@@ -14,6 +15,7 @@ class QualityTests(unittest.TestCase):
         self.assertEqual(config.clean_url("google.com/xml.rpc"), "http://google.com/xml.rpc")
         self.assertEqual(config.clean_url("google.com"), "http://google.com/")
         self.assertEqual(config.clean_url("http://www.example.com/folder/"), "http://www.example.com/folder/")
+        self.assertEqual(config.clean_url("scgi:///home/user/.config/path/socket"), "scgi:///home/user/.config/path/socket")
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(QualityTests)

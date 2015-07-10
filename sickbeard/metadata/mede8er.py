@@ -107,7 +107,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
         lINDEXER_API_PARMS['actors'] = True
 
-        if indexer_lang and not indexer_lang == 'en':
+        if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
 
         if show_obj.dvdorder != 0:
@@ -229,7 +229,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             # change the language value elsewhere
             lINDEXER_API_PARMS = sickbeard.indexerApi(ep_obj.show.indexer).api_params.copy()
 
-            if indexer_lang and not indexer_lang == 'en':
+            if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
@@ -390,7 +390,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
             nfo_file = ek.ek(open, nfo_file_path, 'w')
 
-            data.write(nfo_file, encoding="utf-8", xml_declaration=True)
+            data.write(nfo_file, encoding="UTF-8")
             nfo_file.close()
             helpers.chmodAsParent(nfo_file_path)
         except IOError, e:
@@ -435,7 +435,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
             nfo_file = ek.ek(open, nfo_file_path, 'w')
 
-            data.write(nfo_file, encoding="utf-8", xml_declaration = True)
+            data.write(nfo_file, encoding="UTF-8")
             nfo_file.close()
             helpers.chmodAsParent(nfo_file_path)
         except IOError, e:

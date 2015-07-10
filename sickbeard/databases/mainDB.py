@@ -38,6 +38,7 @@ class MainSanityCheck(db.DBSanityCheck):
         self.fix_unaired_episodes()
         self.fix_tvrage_show_statues()
         self.fix_episode_statuses()
+        self.fix_invalid_airdates()
 
     def fix_duplicate_shows(self, column='indexer_id'):
 
@@ -61,7 +62,7 @@ class MainSanityCheck(db.DBSanityCheck):
                 self.connection.action("DELETE FROM tv_shows WHERE show_id = ?", [cur_dupe_id["show_id"]])
 
         else:
-            logger.log(u"No duplicate show, check passed")
+            logger.log(u"No duplicate show, check passed", logger.DEBUG)
 
     def fix_duplicate_episodes(self):
 
@@ -85,7 +86,7 @@ class MainSanityCheck(db.DBSanityCheck):
                 self.connection.action("DELETE FROM tv_episodes WHERE episode_id = ?", [cur_dupe_id["episode_id"]])
 
         else:
-            logger.log(u"No duplicate episode, check passed")
+            logger.log(u"No duplicate episode, check passed", logger.DEBUG)
 
     def fix_orphan_episodes(self):
 
@@ -99,12 +100,12 @@ class MainSanityCheck(db.DBSanityCheck):
             self.connection.action("DELETE FROM tv_episodes WHERE episode_id = ?", [cur_orphan["episode_id"]])
 
         else:
-            logger.log(u"No orphan episodes, check passed")
+            logger.log(u"No orphan episodes, check passed", logger.DEBUG)
 
     def fix_missing_table_indexes(self):
         if not self.connection.select("PRAGMA index_info('idx_indexer_id')"):
             logger.log(u"Missing idx_indexer_id for TV Shows table detected!, fixing...")
-            self.connection.action("CREATE UNIQUE INDEX idx_indexer_id ON tv_shows (indexer_id);")
+            self.connection.action("CREATE UNIQUE INDEX idx_indexer_id ON tv_shows(indexer_id);")
 
         if not self.connection.select("PRAGMA index_info('idx_tv_episodes_showid_airdate')"):
             logger.log(u"Missing idx_tv_episodes_showid_airdate for TV Episodes table detected!, fixing...")
@@ -142,7 +143,7 @@ class MainSanityCheck(db.DBSanityCheck):
                                    [common.UNAIRED, cur_unaired["episode_id"]])
 
         else:
-            logger.log(u"No UNAIRED episodes, check passed")
+            logger.log(u"No UNAIRED episodes, check passed", logger.DEBUG)
 
     def fix_tvrage_show_statues(self):
         status_map = {
@@ -174,8 +175,22 @@ class MainSanityCheck(db.DBSanityCheck):
             self.connection.action("UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
                                    [common.UNKNOWN, cur_ep["episode_id"]])
         else:
-            logger.log(u"No MALFORMED episode statuses, check passed")
+            logger.log(u"No MALFORMED episode statuses, check passed", logger.DEBUG)
 
+    def fix_invalid_airdates(self):
+
+        sqlResults = self.connection.select(
+            "SELECT episode_id, showid FROM tv_episodes WHERE airdate >= ? OR airdate < 1",
+            [datetime.date.max.toordinal()])
+
+        for bad_airdate in sqlResults:
+            logger.log(u"Bad episode airdate detected! episode_id: " + str(bad_airdate["episode_id"]) + " showid: " + str(
+                bad_airdate["showid"]), logger.DEBUG)
+            logger.log(u"Fixing bad episode airdate for episode_id: " + str(bad_airdate["episode_id"]))
+            self.connection.action("UPDATE tv_episodes SET airdate = '1' WHERE episode_id = ?", [bad_airdate["episode_id"]])
+
+        else:
+            logger.log(u"No bad episode airdates, check passed", logger.DEBUG)
 
 def backupDatabase(version):
     logger.log(u"Backing up database before upgrade")
@@ -196,20 +211,24 @@ class InitialSchema(db.SchemaUpgrade):
     def execute(self):
         if not self.hasTable("tv_shows") and not self.hasTable("db_version"):
             queries = [
-                "CREATE TABLE db_version (db_version INTEGER);",
-                "CREATE TABLE history (action NUMERIC, date NUMERIC, showid NUMERIC, season NUMERIC, episode NUMERIC, quality NUMERIC, resource TEXT, provider TEXT)",
-                "CREATE TABLE imdb_info (indexer_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC)",
-                "CREATE TABLE info (last_backlog NUMERIC, last_indexer NUMERIC, last_proper_search NUMERIC)",
-                "CREATE TABLE scene_numbering(indexer TEXT, indexer_id INTEGER, season INTEGER, episode INTEGER,scene_season INTEGER, scene_episode INTEGER, PRIMARY KEY(indexer_id, season, episode))",
-                "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC);",
-                "CREATE TABLE tv_episodes (episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexerid NUMERIC, indexer TEXT, name TEXT, season NUMERIC, episode NUMERIC, description TEXT, airdate NUMERIC, hasnfo NUMERIC, hastbn NUMERIC, status NUMERIC, location TEXT, file_size NUMERIC, release_name TEXT, subtitles TEXT, subtitles_searchcount NUMERIC, subtitles_lastsearch TIMESTAMP, is_proper NUMERIC, scene_season NUMERIC, scene_episode NUMERIC);",
-                "CREATE UNIQUE INDEX idx_indexer_id ON tv_shows (indexer_id)",
-                "CREATE INDEX idx_showid ON tv_episodes (showid);",
-                "CREATE INDEX idx_sta_epi_air ON tv_episodes (status,episode, airdate);",
-                "CREATE INDEX idx_sta_epi_sta_air ON tv_episodes (season,episode, status, airdate);",
-                "CREATE INDEX idx_status ON tv_episodes (status,season,episode,airdate);",
-                "CREATE INDEX idx_tv_episodes_showid_airdate ON tv_episodes(showid,airdate)",
-                "INSERT INTO db_version (db_version) VALUES (31);"
+                "CREATE TABLE db_version(db_version INTEGER);",
+                "CREATE TABLE history(action NUMERIC, date NUMERIC, showid NUMERIC, season NUMERIC, episode NUMERIC, quality NUMERIC, resource TEXT, provider TEXT, version NUMERIC DEFAULT -1);",
+                "CREATE TABLE imdb_info(indexer_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC);",
+                "CREATE TABLE info(last_backlog NUMERIC, last_indexer NUMERIC, last_proper_search NUMERIC);",
+                "CREATE TABLE scene_numbering(indexer TEXT, indexer_id INTEGER, season INTEGER, episode INTEGER, scene_season INTEGER, scene_episode INTEGER, absolute_number NUMERIC, scene_absolute_number NUMERIC, PRIMARY KEY(indexer_id, season, episode));",
+                "CREATE TABLE tv_shows(show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC DEFAULT -1);",
+                "CREATE TABLE tv_episodes(episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexerid NUMERIC, indexer TEXT, name TEXT, season NUMERIC, episode NUMERIC, description TEXT, airdate NUMERIC, hasnfo NUMERIC, hastbn NUMERIC, status NUMERIC, location TEXT, file_size NUMERIC, release_name TEXT, subtitles TEXT, subtitles_searchcount NUMERIC, subtitles_lastsearch TIMESTAMP, is_proper NUMERIC, scene_season NUMERIC, scene_episode NUMERIC, absolute_number NUMERIC, scene_absolute_number NUMERIC, version NUMERIC DEFAULT -1, release_group TEXT);",
+                "CREATE TABLE blacklist (show_id INTEGER, range TEXT, keyword TEXT);",
+                "CREATE TABLE whitelist (show_id INTEGER, range TEXT, keyword TEXT);",
+                "CREATE TABLE xem_refresh (indexer TEXT, indexer_id INTEGER PRIMARY KEY, last_refreshed INTEGER);",
+                "CREATE TABLE indexer_mapping (indexer_id INTEGER, indexer NUMERIC, mindexer_id INTEGER, mindexer NUMERIC, PRIMARY KEY (indexer_id, indexer));",
+                "CREATE UNIQUE INDEX idx_indexer_id ON tv_shows(indexer_id);",
+                "CREATE INDEX idx_showid ON tv_episodes(showid);",
+                "CREATE INDEX idx_sta_epi_air ON tv_episodes(status, episode, airdate);",
+                "CREATE INDEX idx_sta_epi_sta_air ON tv_episodes(season, episode, status, airdate);",
+                "CREATE INDEX idx_status ON tv_episodes(status,season,episode,airdate);",
+                "CREATE INDEX idx_tv_episodes_showid_airdate ON tv_episodes(showid, airdate);",
+                "INSERT INTO db_version(db_version) VALUES (42);"
             ]
             for query in queries:
                 self.connection.action(query)

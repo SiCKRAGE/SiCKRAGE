@@ -13,12 +13,10 @@ is_py3 = (_ver[0] == 3)
 from io import open as io_open
 
 if is_py2:
-    builtin_str = str
     basestring = basestring
     str = unicode
     open = io_open
 elif is_py3:
-    builtin_str = str
     basestring = (str, bytes)
     str = str
     open = open

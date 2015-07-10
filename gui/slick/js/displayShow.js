@@ -259,13 +259,5 @@ $(document).ready(function () {
             sceneAbsolute = m[1];
         }
         setAbsoluteSceneNumbering(forAbsolute, sceneAbsolute);
-    });
-
-    $('.jwvideo').each(function () {
-        jwplayer(this.id).setup({
-            file: $(this).attr("id"),
-            width:120,
-            height:120
-        });
-    });
+    });   
 });

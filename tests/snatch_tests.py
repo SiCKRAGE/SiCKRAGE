@@ -23,6 +23,8 @@ import unittest
 import test_lib as test
 
 import sys, os.path
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import sickbeard.search as search
 import sickbeard
@@ -81,7 +83,7 @@ def test_generator(tvdbdid, show_name, curData, forceSearch):
             episode.status = c.WANTED
             episode.saveToDB()
 
-        bestResult = search.searchProviders(show, episode.season, episode.episode, forceSearch)
+        bestResult = search.searchProviders(show, episode.episode, forceSearch)
         if not bestResult:
             self.assertEqual(curData["b"], bestResult)
         self.assertEqual(curData["b"], bestResult.name) #first is expected, second is choosen one

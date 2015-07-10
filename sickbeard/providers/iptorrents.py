@@ -24,6 +24,7 @@ import itertools
 
 import sickbeard
 import generic
+from sickbeard.common import MULTI_EP_RESULT, SEASON_RESULT
 from sickbeard.common import Quality
 from sickbeard import logger
 from sickbeard import tvcache
@@ -33,8 +34,8 @@ from sickbeard import helpers
 from sickbeard import show_name_helpers
 from sickbeard.exceptions import ex, AuthException
 from sickbeard import clients
-from lib import requests
-from lib.requests import exceptions
+import requests
+from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
 from lib.unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
@@ -59,12 +60,12 @@ class IPTorrentsProvider(generic.TorrentProvider):
 
         self.urls = {'base_url': 'https://iptorrents.eu',
                 'login': 'https://iptorrents.eu/torrents/',
-                'search': 'https://iptorrents.eu/torrents/?%s%s&q=%s&qf=ti',
+                'search': 'https://iptorrents.eu/t?%s%s&q=%s&qf=#torrents',
         }
 
         self.url = self.urls['base_url']
 
-        self.categorie = 'l73=1&l78=1&l66=1&l65=1&l79=1&l5=1&l4=1'
+        self.categorie = 'l73='
 
     def isEnabled(self):
         return self.enabled
@@ -92,7 +93,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
         }
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30, verify=False)
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30)
         except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
@@ -115,12 +116,12 @@ class IPTorrentsProvider(generic.TorrentProvider):
         if self.show.air_by_date:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|')
+                            str(ep_obj.airdate).replace('-', ' ')
                 search_string['Episode'].append(ep_string)
         elif self.show.sports:
             for show_name in set(allPossibleShowNames(self.show)):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
+                            str(ep_obj.airdate).replace('-', ' ') + '|' + \
                             ep_obj.airdate.strftime('%b')
                 search_string['Episode'].append(ep_string)
         elif self.show.anime:
@@ -132,13 +133,15 @@ class IPTorrentsProvider(generic.TorrentProvider):
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
                 ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                                  'episodenumber': ep_obj.scene_episode} + '|' + \
+                            sickbeard.config.naming_ep_type[0] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
 
         return [search_string]
 
-    def findSearchResults(self, show, episodes, search_mode, manualSearch=False):
+    def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False):
 
         self._checkAuth()
         self.show = show
@@ -152,7 +155,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
 
         for epObj in episodes:
             # search cache for episode result
-            cacheResult = self.cache.searchCache(epObj, manualSearch)
+            cacheResult = self.cache.searchCache(epObj, manualSearch, downCurQuality)
             if cacheResult:
                 if epObj.episode not in results:
                     results[epObj.episode] = cacheResult
@@ -275,7 +278,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
             # make sure we want the episode
             wantEp = True
             for epNo in actual_episodes:
-                if not showObj.wantEpisode(actual_season, epNo, quality, manualSearch):
+                if not showObj.wantEpisode(actual_season, epNo, quality, manualSearch, downCurQuality):
                     wantEp = False
                     break
 
@@ -326,7 +329,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
 
         return results
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}

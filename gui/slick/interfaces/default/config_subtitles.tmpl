@@ -1,7 +1,7 @@
 #from sickbeard import subtitles
 #import sickbeard
 #from sickbeard.helpers import anon_url
-
+#from babelfish import Language
 #set global $title="Config - Subtitles"
 #set global $header="Subtitles"
 
@@ -19,7 +19,7 @@
   	\$(document).ready(function() {
 		\$("#subtitles_languages").tokenInput(
 				[
-	                <%=",\r\n".join("{id: \"" + lang[2] + "\", name: \"" + lang[3] + "\"}" for lang in subtitles.subtitleLanguageFilter())%>
+	                <%=",\r\n".join("{id: \"" + lang.alpha3 + "\", name: \"" + lang.name + "\"}" for lang in subtitles.subtitleLanguageFilter())%>
 	            ],
 	            {
 					method: "POST",
@@ -29,7 +29,7 @@
 	            		
 		            		[
 		            			<%=
-		            					",\r\n".join("{id: \"" + lang + "\", name: \"" + subtitles.getLanguageName(lang) + "\"}" for lang in sickbeard.SUBTITLES_LANGUAGES) if sickbeard.SUBTITLES_LANGUAGES != '' else ''
+		            					",\r\n".join("{id: \"" + Language.fromietf(lang).alpha3 + "\", name: \"" + Language.fromietf(lang).name + "\"}" for lang in subtitles.wantedLanguages()) if subtitles.wantedLanguages() else ''
 		            			%>
 		            		]
 	            }
@@ -63,56 +63,69 @@
                     
 					<fieldset class="component-group-list">
 			            <div class="field-pair">
-                            <input type="checkbox" class="enabler" #if $sickbeard.USE_SUBTITLES then " checked=\"checked\"" else ""# id="use_subtitles" name="use_subtitles">
                             <label for="use_subtitles" class="clearfix">
                                 <span class="component-title">Search Subtitles</span>
+								<span class="component-desc">
+									<input type="checkbox" class="enabler" #if $sickbeard.USE_SUBTITLES then " checked=\"checked\"" else ""# id="use_subtitles" name="use_subtitles">
+								</span>
                             </label>
                         </div>
                         <div id="content_use_subtitles">
 	                        	<div class="field-pair">
-		                            <label class="nocheck">
+		                            <label>
 		                                <span class="component-title">Subtitle Languages</span>
 		                                <span class="component-desc"><input type="text" id="subtitles_languages" name="subtitles_languages" /></span>
 		                            </label>
 		                        </div>
                         		<div class="field-pair">
-	                        		<label class="nocheck">
+	                        		<label>
 		                                <span class="component-title">Subtitle Directory</span>
 		                                <input type="text" value="$sickbeard.SUBTITLES_DIR" id="subtitles_dir" name="subtitles_dir" class="form-control input-sm input350">
 		                            </label>
-	                            	<label class="nocheck">
+	                            	<label>
 	    	                            	<span class="component-title">&nbsp;</span>
 			                                <span class="component-desc">The directory where SickRage should store your <i>Subtitles</i> files.</span>
 	          	                	</label>
-	                            	<label class="nocheck">
+	                            	<label>
 	    	                            	<span class="component-title">&nbsp;</span>
 			                                <span class="component-desc"><b>NOTE:</b> Leave empty if you want store subtitle in episode path.</span>
 	          	                	</label>
                         		</div>
 	                            <div class="field-pair">
-	                            	<label class="nocheck">
+	                            	<label>
 	                                	<span class="component-title">Subtitle Find Frequency</span>
 	                                    <input type="number" name="subtitles_finder_frequency" value="$sickbeard.SUBTITLES_FINDER_FREQUENCY" hours="1" class="form-control input-sm input75" />
-	                                </label>
-	                                <label class="nocheck">
-	                                	<span class="component-title">&nbsp;</span>
-	                                    <span class="component-desc">Time in hours between scans (hours. 1)</span>
+										<span class="component-desc">time in hours between scans (default: 1)</span>
 	                                </label>
 	                            </div>
 		                        <div class="field-pair">
-		                            <input type="checkbox" name="subtitles_history" id="subtitles_history" #if $sickbeard.SUBTITLES_HISTORY then " checked=\"checked\"" else ""#/>
 		                            <label class="clearfix" for="subtitles_history">
 		                                <span class="component-title">Subtitles History</span>
-		                                <span class="component-desc">Log downloaded Subtitle on History page?</span>
+		                                <span class="component-desc">
+											<input type="checkbox" name="subtitles_history" id="subtitles_history" #if $sickbeard.SUBTITLES_HISTORY then " checked=\"checked\"" else ""#/>
+											<p>Log downloaded Subtitle on History page?</p>
+										</span>
 		                            </label>
 		                        </div>                        		
 		                        <div class="field-pair">
-		                            <input type="checkbox" name="subtitles_multi" id="subtitles_multi" #if $sickbeard.SUBTITLES_MULTI then " checked=\"checked\"" else ""#/>
 		                            <label class="clearfix" for="subtitles_multi">
 		                                <span class="component-title">Subtitles Multi-Language</span>
-		                                <span class="component-desc">Append language codes to subtitle filenames?</span>
+		                                <span class="component-desc">
+											<input type="checkbox" name="subtitles_multi" id="subtitles_multi" #if $sickbeard.SUBTITLES_MULTI then " checked=\"checked\"" else ""#/>
+											<p>Append language codes to subtitle filenames?</p>
+										</span>
 		                            </label>
 		                        </div>
+								<div class="field-pair">
+									<label class="clearfix" for="embedded_subtitles_all">
+										<span class="component-title">Embedded Subtitles</span>
+										<span class="component-desc">
+											<input type="checkbox" name="embedded_subtitles_all" id="embedded_subtitles_all" #if $sickbeard.EMBEDDED_SUBTITLES_ALL then " checked=\"checked\"" else ""#/>
+											<p>Ignore subtitles embedded inside video file?</p>
+											<p><b>Warning: </b>this will ignore <u>all</u> embedded subtitles for every video file!</p>
+										</span>
+									</label>
+								</div>   
 	                    <br/><input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
                         </div>
                     </fieldset>
@@ -130,20 +143,17 @@
                     <fieldset class="component-group-list" style="margin-left: 50px; margin-top:36px">
                         <ul id="service_order_list">
                         #for $curService in $sickbeard.subtitles.sortedServiceList():
-                            #set $curName = $curService.id
-                          <li class="ui-state-default" id="$curName">
-                            <input type="checkbox" id="enable_$curName" class="service_enabler" #if $curService.enabled then "checked=\"checked\"" else ""#/>
-                            #set $provider_url = $curService.url
-                            <a href="<%= anon_url(provider_url) %>" class="imgLink" target="_new">
-                                <img src="$sbRoot/images/subtitles/$curService.image" alt="$curService.name" title="$curService.name" width="16" height="16" style="vertical-align:middle;"/>
-                            </a>
-                            <span style="vertical-align:middle;">$curService.name.capitalize()</span>
-                            #if not $curService.api_based then "*" else ""#
+                            <li class="ui-state-default" id="$curService['name']">
+                                <input type="checkbox" id="enable_$curService['name']" class="service_enabler" #if $curService['enabled'] then "checked=\"checked\"" else ""#/>
+                                <a href="<%= anon_url(curService['url']) %>" class="imgLink" target="_new">
+                                    <img src="$sbRoot/images/subtitles/$curService.image" alt="$curService['url']" title="$curService['url']" width="16" height="16" style="vertical-align:middle;"/>
+                                </a>
+                            <span style="vertical-align:middle;">$curService['name'].capitalize()</span>
                             <span class="ui-icon ui-icon-arrowthick-2-n-s pull-right" style="vertical-align:middle;"></span>
                           </li>
                         #end for
                         </ul>
-                        <input type="hidden" name="service_order" id="service_order" value="<%=" ".join([x.get('id')+':'+str(int(x.get('enabled'))) for x in sickbeard.subtitles.sortedServiceList()])%>"/>
+                        <input type="hidden" name="service_order" id="service_order" value="<%=" ".join(['%s:%d' % (x['name'], x['enabled']) for x in sickbeard.subtitles.sortedServiceList()])%>"/>
                         
                         <br/><input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
                     </fieldset>
