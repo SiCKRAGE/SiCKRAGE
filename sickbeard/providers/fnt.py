@@ -91,7 +91,7 @@ class FNTProvider(generic.TorrentProvider):
         try:
             response = self.session.post(self.urls['login'], data=login_params, timeout=30)
         except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
-            logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
+            logger.log(u'Unable to connect to {0} provider: {1}'.format(self.name,ex(e)), logger.ERROR)
             return False
 
         if re.search('/account-logout.php', response.text):

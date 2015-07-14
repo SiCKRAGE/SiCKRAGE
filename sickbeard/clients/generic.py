@@ -52,20 +52,19 @@ class GenericClient(object):
             self.response = self.session.__getattribute__(method)(self.url, params=params, data=data, files=files,
                                                                   timeout=120, verify=False)
         except requests.exceptions.ConnectionError, e:
-            logger.log(self.name + u': Unable to connect ' + str(e), logger.ERROR)
+            logger.log(u'{0}: Unable to connect {1} '.format(self.name,str(e)), logger.ERROR)
             return False
         except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):
             logger.log(self.name + u': Invalid Host', logger.ERROR)
             return False
         except requests.exceptions.HTTPError, e:
-            logger.log(self.name + u': Invalid HTTP Request ' + str(e), logger.ERROR)
+            logger.log(u'{0}: Invalid HTTP Request {1} '.format(self.name,str(e)), logger.ERROR)
             return False
         except requests.exceptions.Timeout, e:
-            logger.log(self.name + u': Connection Timeout ' + str(e), logger.WARNING)
+            logger.log(u'{0}: Connection Timeout {1}'.format(self.name,str(e)), logger.ERROR)
             return False
         except Exception, e:
-            logger.log(self.name + u': Unknown exception raised when send torrent to ' + self.name + ': ' + str(e),
-                       logger.ERROR)
+            logger.log(u'{0}: Unknown exception raised when send torrent to {0} : {1}'.format(self.name,str(e)), logger.ERROR)            
             return False
 
         if self.response.status_code == 401:
@@ -73,10 +72,10 @@ class GenericClient(object):
             return False
 
         if self.response.status_code in http_error_code.keys():
-            logger.log(self.name + u': ' + http_error_code[self.response.status_code], logger.DEBUG)
+            logger.log(u'{0}: {1}'.format(self.name,http_error_code[self.response.status_code]), logger.DEBUG)
             return False
 
-        logger.log(self.name + u': Response to ' + method.upper() + ' request is ' + self.response.text, logger.DEBUG)
+        logger.log(u'{0}: Response to {1} request is {2}'.format(self.name,method.upper(),self.response.text), logger.DEBUG)
 
         return True
 
@@ -214,7 +213,7 @@ class GenericClient(object):
 
         except Exception, e:
             logger.log(self.name + u': Failed Sending Torrent', logger.ERROR)
-            logger.log(self.name + u': Exception raised when sending torrent: ' + str(result) + u'. Error: ' + str(e), logger.DEBUG)
+            logger.log(u'{0}: Exception raised when sending torrent: {1}. Error: {2}'.format(self.name,str(result),str(e)), logger.DEBUG)
             return r_code
 
         return r_code
