@@ -130,7 +130,7 @@ normal_regexes = [
      # Show.Name.S01.Source.Quality.Etc-Group
      '''
      ^((?P<series_name>.+?)[. _-]+)?             # Show_Name and separator
-     s(eason[. _-])?                             # S01/Season 01
+     s((ea|ai)son[. _-])?                        # S01/Season 01
      (?P<season_num>\d+)[. _-]*                  # S01 and optional separator
      [. _-]*((?P<extra_info>.+?)                 # Source_Quality_Etc-
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
