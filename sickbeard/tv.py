@@ -1442,6 +1442,11 @@ class TVEpisode(object):
         #logging.getLogger('subliminal').addHandler(logging.StreamHandler())
         #logging.getLogger('subliminal').setLevel(logging.DEBUG)
 
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
+        logging.getLogger('subliminal').addHandler(handler)
+        logging.getLogger('subliminal').setLevel(logging.DEBUG)
+
         try:
             languages = set()
             for language in frozenset(subtitles.wantedLanguages()).difference(self.subtitles):
@@ -1466,14 +1471,15 @@ class TVEpisode(object):
                 return
 
             # TODO: Add gui option for hearing_impaired parameter ?
-            foundSubs = subliminal.download_best_subtitles([video], languages=languages, providers=providers, single=not sickbeard.SUBTITLES_MULTI, hearing_impaired=False)
+            foundSubs = subliminal.download_best_subtitles([video], languages=languages, providers=providers, only_one=not sickbeard.SUBTITLES_MULTI, hearing_impaired=False)
             if not foundSubs:
                 logger.log(u'%s: No subtitles found for S%02dE%02d on any provider' % (self.show.indexerid, self.season, self.episode), logger.DEBUG)
                 return
 
             subs_new_path = sickbeard.SUBTITLES_DIR if sickbeard.SUBTITLES_DIR and ek.ek(os.path.exists, sickbeard.SUBTITLES_DIR) else None
 
-            subliminal.save_subtitles(foundSubs, directory=subs_new_path, single=not sickbeard.SUBTITLES_MULTI)
+            for v, subs in foundSubs.items():
+                subliminal.save_subtitles(v, subs, directory=subs_new_path, single=not sickbeard.SUBTITLES_MULTI)
 
             for video, subs in foundSubs.iteritems():
                 for sub in subs:

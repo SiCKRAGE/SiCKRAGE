@@ -30,7 +30,7 @@ import subliminal
 import babelfish
 import subprocess
 
-subliminal.cache_region.configure('dogpile.cache.memory')
+subliminal.region.configure('dogpile.cache.memory')
 
 provider_urls = {'addic7ed': 'http://www.addic7ed.com',
                  'opensubtitles': 'http://www.opensubtitles.org',
@@ -46,7 +46,7 @@ def sortedServiceList():
 
     curIndex = 0
     for curService in sickbeard.SUBTITLES_SERVICES_LIST:
-        if curService in subliminal.provider_manager.available_providers:
+        if curService in subliminal.provider_manager.names():
             newList.append({'name': curService,
                             'url': provider_urls[curService] if curService in provider_urls else lmgtfy % curService,
                             'image': curService + '.png',
@@ -54,7 +54,7 @@ def sortedServiceList():
                            })
         curIndex += 1
 
-    for curService in subliminal.provider_manager.available_providers:
+    for curService in subliminal.provider_manager.names():
         if curService not in [x['name'] for x in newList]:
             newList.append({'name': curService,
                             'url': provider_urls[curService] if curService in provider_urls else lmgtfy % curService,
@@ -88,6 +88,21 @@ def wantedLanguages(sqlLike = False):
         return '%' + ','.join(wantedLanguages) + '%'
     return wantedLanguages
 
+
+def scan_subtitle_languages(path):
+    language_extensions = tuple('.' + c for c in babelfish.language_converters['alpha2'].codes)
+    dirpath, filename = os.path.split(path)
+    subtitles = set()
+    for p in os.listdir(dirpath):
+        if not isinstance(p, bytes) and p.startswith(os.path.splitext(filename)[0]) and p.endswith(subliminal.video.SUBTITLE_EXTENSIONS):
+            if os.path.splitext(p)[0].endswith(language_extensions):
+                subtitles.add(babelfish.Language.fromalpha2(os.path.splitext(p)[0][-2:]))
+            else:
+                subtitles.add(babelfish.Language('und'))
+    logger.debug('Found subtitles %r', subtitles)
+    return subtitles
+
+
 def subtitlesLanguages(video_path):
     """Return a list detected subtitles for the given video file"""
     resultList = []
@@ -95,9 +110,9 @@ def subtitlesLanguages(video_path):
     if sickbeard.SUBTITLES_DIR and ek.ek(os.path.exists, sickbeard.SUBTITLES_DIR):
         video_path = ek.ek(os.path.join, sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, video_path))
 
-    languages = subliminal.video.scan_subtitle_languages(video_path)
+    languages = scan_subtitle_languages(video_path)
 
-    for language in languages:
+    for language in set([babelfish.Language.fromopensubtitles(x) for x in wantedLanguages()]) - video.subtitle_languages:
         if hasattr(language, 'opensubtitles') and language.opensubtitles:
             resultList.append(language.opensubtitles)
         elif hasattr(language, 'alpha3') and language.alpha3:
