@@ -190,7 +190,7 @@ class Quality:
         if anime:
             dvdOptions = checkName(["dvd", "dvdrip"], any)
             blueRayOptions = checkName(["BD", "blue?-?ray"], any)
-            sdOptions = checkName(["360p", "480p", "848x480", "XviD"], any)
+            sdOptions = checkName(["360p", "480p", "848x480", "XviD","hdtv"], any)
             hdOptions = checkName(["720p", "1280x720", "960x720"], any)
             fullHD = checkName(["1080p", "1920x1080"], any)
 
@@ -211,7 +211,7 @@ class Quality:
             else:
                 return Quality.UNKNOWN
 
-        if checkName(["(pdtv|hdtv|dsr|tvrip).(xvid|x264|h.?264)"], all) and not checkName(["(720|1080)[pi]"], all) and\
+        if (checkName(["(pdtv|hdtv|dsr|tvrip).(xvid|x264|h.?264)"], all)  or checkName(["(pdtv|hdtv|dsr|tvrip)"], all)) and not checkName(["(720|1080)[pi]"], all) and\
                 not checkName(["hr.ws.pdtv.x264"], any):
             return Quality.SDTV
         elif checkName(["web.dl|webrip", "xvid|x264|h.?264"], all) and not checkName(["(720|1080)[pi]"], all):
