@@ -242,6 +242,7 @@ def pickBestResult(results, show):
         if len(cur_result.url) and cur_result.provider:
             cur_result.url = cur_result.provider.headURL(cur_result)
             if not len(cur_result.url):
+                logger.log('Skipping %s, URL check failed. Bad result from provider.' % cur_result.name,logger.INFO) 
                 continue
 
         if cur_result.quality in bestQualities and (not bestResult or bestResult.quality < cur_result.quality or bestResult not in bestQualities):
@@ -320,19 +321,14 @@ def isFirstBestMatch(result):
     return False
 
 def wantedEpisodes(show, fromDate):
+
     anyQualities, bestQualities = common.Quality.splitQuality(show.quality) # @UnusedVariable
     allQualities = list(set(anyQualities + bestQualities))
 
     logger.log(u"Seeing if we need anything from " + show.name, logger.DEBUG)
     myDB = db.DBConnection()
 
-    if show.air_by_date:
-        sqlResults = myDB.select(
-            "SELECT ep.status, ep.season, ep.episode FROM tv_episodes ep, tv_shows show WHERE season != 0 AND ep.showid = show.indexer_id AND show.paused = 0 AND ep.airdate > ? AND ep.showid = ? AND show.air_by_date = 1",
-        [fromDate.toordinal(), show.indexerid])
-    else:
-        sqlResults = myDB.select(
-            "SELECT status, season, episode FROM tv_episodes WHERE showid = ? AND season > 0 and airdate > ?",
+    sqlResults = myDB.select("SELECT status, season, episode FROM tv_episodes WHERE showid = ? AND season > 0 and airdate > ?",
             [show.indexerid, fromDate.toordinal()])
 
     # check through the list of statuses to see if we want any

@@ -359,27 +359,19 @@ class SickRage(object):
         }
 
         # start web server
-        try:
-            self.webserver = SRWebServer(self.web_options)
-            self.webserver.start()
-        except IOError:
-            logger.log(u"Unable to start web server, is something else running on port %d?" % self.startPort,
-                       logger.ERROR)
-            if sickbeard.LAUNCH_BROWSER and not self.runAsDaemon:
-                logger.log(u"Launching browser and exiting", logger.ERROR)
-                sickbeard.launchBrowser('https' if sickbeard.ENABLE_HTTPS else 'http', self.startPort, sickbeard.WEB_ROOT)
-            os._exit(1)
+        self.webserver = SRWebServer(self.web_options)
+        self.webserver.start()
 
         if self.consoleLogging:
             print "Starting up SickRage " + sickbeard.BRANCH + " from " + sickbeard.CONFIG_FILE
 
         # Fire up all our threads
         sickbeard.start()
-
+        
         # Build internal name cache
         name_cache.buildNameCache()
 
-        # refresh network timezones
+        # Prepopulate network timezones, it isn't thread safe
         network_timezones.update_network_dict()
 
         # sure, why not?
@@ -468,7 +460,7 @@ class SickRage(object):
         logger.log(u"Loading initial show list", logger.DEBUG)
 
         myDB = db.DBConnection()
-        sqlResults = myDB.select("SELECT * FROM tv_shows")
+        sqlResults = myDB.select("SELECT * FROM tv_shows;")
 
         sickbeard.showList = []
         for sqlShow in sqlResults:
@@ -481,6 +473,33 @@ class SickRage(object):
                     u"There was an error creating the show in " + sqlShow["location"] + ": " + str(e).decode('utf-8'),
                     logger.ERROR)
                 logger.log(traceback.format_exc(), logger.DEBUG)
+
+        self.fix_subtitles_codes()
+
+
+    def fix_subtitles_codes(self):
+        myDB = db.DBConnection()
+        sqlResults = myDB.select(
+            "SELECT showid, subtitles_lastsearch, season, episode FROM tv_episodes " +
+            "WHERE subtitles != '' AND subtitles_lastsearch < ?;",
+                [datetime.datetime(2015, 7, 15, 17, 20, 44, 326380).strftime("%Y-%m-%d %H:%M:%S")])
+
+        if not sqlResults:
+            return
+
+        logger.log("Fixing old subtitle codes")
+        for sqlResult in sqlResults:
+            showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(sqlResult['showid']))
+            if not showObj:
+                continue
+
+            epObj = showObj.getEpisode(int(sqlResult["season"]), int(sqlResult["episode"]))
+            if isinstance(epObj, str):
+                continue
+
+            epObj.refreshSubtitles()
+            epObj.subtitles_lastsearch = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            epObj.saveToDB()
 
     def restoreDB(self, srcDir, dstDir):
         try:

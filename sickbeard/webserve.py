@@ -54,10 +54,11 @@ from sickbeard.scene_numbering import get_scene_numbering, set_scene_numbering, 
 
 from lib.dateutil import tz, parser as dateutil_parser
 from lib.unrar2 import RarFile
-from lib import adba, subliminal
+import adba, subliminal
 from lib.trakt import TraktAPI
 from lib.trakt.exceptions import traktException
 from versionChecker import CheckVersion
+import babelfish
 
 try:
     import json
@@ -80,7 +81,7 @@ from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
 
 route_locks = {}
-
+import chardet
 
 class html_entities(CheetahFilter):
     def filter(self, val, **dummy_kw):
@@ -90,13 +91,24 @@ class html_entities(CheetahFilter):
             filtered = ''
         elif isinstance(val, str):
             try:
-                filtered = val.decode(sickbeard.SYS_ENCODING).encode('ascii', 'xmlcharrefreplace')
-            except UnicodeDecodeError as e:
-                logger.log(u'Unable to decode using {0}, trying utf-8. Error is: {1}'.format(sickbeard.SYS_ENCODING, ex(e)),logger.DEBUG)
+                filtered = unicode(val)
+            except Exception:
                 try:
-                    filtered = val.decode('utf-8').encode('ascii', 'xmlcharrefreplace')
-                except UnicodeDecodeError as e:
-                    logger.log(u'Unable to decode using utf-8, Error is {0}.'.format(ex(e)),logger.ERROR)
+                    filtered = unicode(val, sickbeard.SYS_ENCODING)
+                except Exception:
+                    try:
+                        filtered = unicode(val, 'utf-8')
+                    except Exception:
+                        try:
+                            filtered = unicode(val, 'latin-1')
+                        except Exception:
+                            logger.log(u'Unable to decode using %s, utf-8, or latin-1. Falling back to chardet!' %
+                                    sickbeard.SYS_ENCODING, logger.ERROR)
+                            filtered = unicode(val, chardet.detect(val).get('encoding'))
+            try:
+                filtered = filtered.encode('ascii', 'xmlcharrefreplace')
+            except Exception:
+                logger.log(u'Unable to encode to ascii using xmlcharrefreplace.', logger.ERROR)
         else:
             filtered = self.filter(str(val))
 
@@ -251,7 +263,7 @@ class WebHandler(BaseHandler):
     def async_call(self, function):
         try:
             kwargs = self.request.arguments
-            for arg, value in kwargs.items():
+            for arg, value in kwargs.iteritems():
                 if len(value) == 1:
                     kwargs[arg] = value[0]
 
@@ -397,6 +409,18 @@ class WebRoot(WebHandler):
                 static_image_path = os.path.normpath(image_file_name.replace(sickbeard.CACHE_DIR, '/cache'))
 
         static_image_path = static_image_path.replace('\\', '/')
+        return self.redirect(static_image_path)
+
+    def showNetworkLogo(self, show=None):
+        show = sickbeard.helpers.findCertainShow(sickbeard.showList, int(show))
+
+        if show:
+            image_file_name = show.network_logo_name
+        else:
+            image_file_name = 'nonetwork'
+
+        static_image_path = '%s/images/network/%s.png' % (sickbeard.WEB_ROOT, image_file_name)
+
         return self.redirect(static_image_path)
 
     def setHomeLayout(self, layout):
@@ -994,7 +1018,7 @@ class Home(WebRoot):
    
     def getTraktToken(self, trakt_pin=None):
         
-        trakt_api = TraktAPI(sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)      
+        trakt_api = TraktAPI(sickbeard.SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
         response = trakt_api.traktToken(trakt_pin)
         if response:
             return "Trakt Authorized"
@@ -1447,7 +1471,7 @@ class Home(WebRoot):
             showObj.sports = sports
             showObj.subtitles = subtitles
             showObj.air_by_date = air_by_date
-            #showObj.default_ep_status = int(defaultEpStatus)
+            showObj.default_ep_status = int(defaultEpStatus)
 
             if not directCall:
                 showObj.lang = indexer_lang
@@ -1773,7 +1797,7 @@ class Home(WebRoot):
             msg = "Backlog was automatically started for the following seasons of <b>" + showObj.name + "</b>:<br />"
             msg += '<ul>'
 
-            for season, segment in segments.items():
+            for season, segment in segments.iteritems():
                 cur_backlog_queue_item = search_queue.BacklogQueueItem(showObj, segment)
                 sickbeard.searchQueueScheduler.action.add_item(cur_backlog_queue_item)
 
@@ -1792,7 +1816,7 @@ class Home(WebRoot):
             msg = "Retrying Search was automatically started for the following season of <b>" + showObj.name + "</b>:<br />"
             msg += '<ul>'
 
-            for season, segment in segments.items():
+            for season, segment in segments.iteritems():
                 cur_failed_queue_item = search_queue.FailedQueueItem(showObj, segment)
                 sickbeard.searchQueueScheduler.action.add_item(cur_failed_queue_item)
 
@@ -2012,24 +2036,21 @@ class Home(WebRoot):
             return json.dumps({'result': 'failure'})
 
         # try do download subtitles for that episode
-        previous_subtitles = set(subliminal.language.Language(x) for x in ep_obj.subtitles)
+        previous_subtitles = ep_obj.subtitles
         try:
-            ep_obj.subtitles = set(x.language for x in ep_obj.downloadSubtitles().values()[0])
+            ep_obj.downloadSubtitles()
         except:
             return json.dumps({'result': 'failure'})
 
         # return the correct json value
-        if previous_subtitles != ep_obj.subtitles:
-            status = 'New subtitles downloaded: %s' % ' '.join([
-                "<img src='" + sickbeard.WEB_ROOT + "/images/flags/" + x.alpha2 +
-                ".png' alt='" + x.name + "'/>" for x in
-                sorted(list(ep_obj.subtitles.difference(previous_subtitles)))])
+        newSubtitles = frozenset(ep_obj.subtitles).difference(previous_subtitles)
+        if newSubtitles:
+            newLangs = [subtitles.fromietf(newSub) for newSub in newSubtitles]
+            status = 'New subtitles downloaded: %s' % ', '.join([newLang.name for newLang in newLangs])
         else:
             status = 'No subtitles downloaded'
-        ui.notifications.message('Subtitles Search', status)
-        return json.dumps({'result': status, 'subtitles': ','.join(sorted([x.alpha2 for x in
-                                                                           ep_obj.subtitles.union(
-                                                                               previous_subtitles)]))})
+        ui.notifications.message(ep_obj.show.name, status)
+        return json.dumps({'result': status, 'subtitles': ','.join(ep_obj.subtitles)})
 
     def setSceneNumbering(self, show, indexer, forSeason=None, forEpisode=None, forAbsolute=None, sceneSeason=None,
                           sceneEpisode=None, sceneAbsolute=None):
@@ -2225,7 +2246,7 @@ class HomeAddShows(Home):
 
         map(final_results.extend,
             ([[sickbeard.indexerApi(id).name, id, sickbeard.indexerApi(id).config["show_url"], int(show['id']),
-               show['seriesname'], show['firstaired']] for show in shows] for id, shows in results.items()))
+               show['seriesname'], show['firstaired']] for show in shows] for id, shows in results.iteritems()))
 
         lang_id = sickbeard.indexerApi().config['langabbv_to_id'][lang]
         return json.dumps({'results': final_results, 'langid': lang_id})
@@ -2380,7 +2401,7 @@ class HomeAddShows(Home):
 
         t.trending_shows = []
         
-        trakt_api = TraktAPI(sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+        trakt_api = TraktAPI(sickbeard.SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
         try:
             not_liked_show = ""
@@ -2441,7 +2462,7 @@ class HomeAddShows(Home):
 
         t.trending_shows = []
 
-        trakt_api = TraktAPI(sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+        trakt_api = TraktAPI(sickbeard.SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
         try:
             not_liked_show = ""
@@ -2493,7 +2514,7 @@ class HomeAddShows(Home):
             ]
         }
 
-        trakt_api = TraktAPI(sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+        trakt_api = TraktAPI(sickbeard.SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
         result=trakt_api.traktRequest("users/" + sickbeard.TRAKT_USERNAME + "/lists/" + sickbeard.TRAKT_BLACKLIST_NAME + "/items", data, method='POST')
 
@@ -2534,7 +2555,8 @@ class HomeAddShows(Home):
                                                         flatten_folders=sickbeard.FLATTEN_FOLDERS_DEFAULT,
                                                         subtitles=sickbeard.SUBTITLES_DEFAULT,
                                                         anime=sickbeard.ANIME_DEFAULT,
-                                                        scene=sickbeard.SCENE_DEFAULT)
+                                                        scene=sickbeard.SCENE_DEFAULT,
+                                                        default_status_after=sickbeard.STATUS_DEFAULT_AFTER)
 
             ui.notifications.message('Show added', 'Adding the specified show into ' + show_dir)
         else:
@@ -2547,7 +2569,7 @@ class HomeAddShows(Home):
     def addNewShow(self, whichSeries=None, indexerLang=None, rootDir=None, defaultStatus=None,
                    anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                    fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None, anime=None,
-                   scene=None, blacklist=None, whitelist=None):
+                   scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None):
         """
         Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
         provided then it forwards back to newShow, if not it goes to /home.
@@ -2653,7 +2675,7 @@ class HomeAddShows(Home):
         # add the show
         sickbeard.showQueueScheduler.action.addShow(indexer, indexer_id, show_dir, int(defaultStatus), newQuality,
                                                     flatten_folders, indexerLang, subtitles, anime,
-                                                    scene, None, blacklist, whitelist)
+                                                    scene, None, blacklist, whitelist, int(defaultStatusAfter))
         ui.notifications.message('Show added', 'Adding the specified show into ' + show_dir)
 
         return finishAddShow()
@@ -2726,7 +2748,8 @@ class HomeAddShows(Home):
                                                             flatten_folders=sickbeard.FLATTEN_FOLDERS_DEFAULT,
                                                             subtitles=sickbeard.SUBTITLES_DEFAULT,
                                                             anime=sickbeard.ANIME_DEFAULT,
-                                                            scene=sickbeard.SCENE_DEFAULT)
+                                                            scene=sickbeard.SCENE_DEFAULT,
+                                                            default_status_after=sickbeard.STATUS_DEFAULT_AFTER)
                 num_added += 1
 
         if num_added:
@@ -2885,10 +2908,9 @@ class Manage(Home, WebRoot):
         result = {}
         for cur_result in cur_show_results:
             if whichSubs == 'all':
-                if len(set(cur_result["subtitles"].split(',')).intersection(set(subtitles.wantedLanguages()))) >= len(
-                        subtitles.wantedLanguages()):
+                if not frozenset(subtitles.wantedLanguages()).difference(cur_result["subtitles"].split(',')):
                     continue
-            elif whichSubs in cur_result["subtitles"].split(','):
+            elif whichSubs in cur_result["subtitles"]:
                 continue
 
             cur_season = int(cur_result["season"])
@@ -2902,9 +2924,7 @@ class Manage(Home, WebRoot):
 
             result[cur_season][cur_episode]["name"] = cur_result["name"]
 
-            result[cur_season][cur_episode]["subtitles"] = ",".join(
-                subliminal.language.Language(subtitle).alpha2 for subtitle in cur_result["subtitles"].split(',')) if not \
-                cur_result["subtitles"] == '' else ''
+            result[cur_season][cur_episode]["subtitles"] = cur_result["subtitles"]
 
         return json.dumps(result)
 
@@ -2920,17 +2940,19 @@ class Manage(Home, WebRoot):
 
         myDB = db.DBConnection()
         status_results = myDB.select(
-            "SELECT show_name, tv_shows.indexer_id as indexer_id, tv_episodes.subtitles subtitles FROM tv_episodes, tv_shows WHERE tv_shows.subtitles = 1 AND tv_episodes.status LIKE '%4' AND tv_episodes.season != 0 AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name")
+            "SELECT show_name, tv_shows.indexer_id as indexer_id, tv_episodes.subtitles subtitles " +
+            "FROM tv_episodes, tv_shows " +
+            "WHERE tv_shows.subtitles = 1 AND tv_episodes.status LIKE '%4' AND tv_episodes.season != 0 " +
+            "AND tv_episodes.showid = tv_shows.indexer_id ORDER BY show_name")
 
         ep_counts = {}
         show_names = {}
         sorted_show_ids = []
         for cur_status_result in status_results:
             if whichSubs == 'all':
-                if len(set(cur_status_result["subtitles"].split(',')).intersection(
-                        set(subtitles.wantedLanguages()))) >= len(subtitles.wantedLanguages()):
+                if not frozenset(subtitles.wantedLanguages()).difference(cur_status_result["subtitles"].split(',')):
                     continue
-            elif whichSubs in cur_status_result["subtitles"].split(','):
+            elif whichSubs in cur_status_result["subtitles"]:
                 continue
 
             cur_indexer_id = int(cur_status_result["indexer_id"])
@@ -3368,33 +3390,33 @@ class Manage(Home, WebRoot):
                 sickbeard.showQueueScheduler.action.downloadSubtitles(showObj)
                 subtitles.append(showObj.name)
 
-        if len(errors) > 0:
+        if errors:
             ui.notifications.error("Errors encountered",
                                    '<br >\n'.join(errors))
 
         messageDetail = ""
 
-        if len(updates) > 0:
+        if updates:
             messageDetail += "<br /><b>Updates</b><br /><ul><li>"
             messageDetail += "</li><li>".join(updates)
             messageDetail += "</li></ul>"
 
-        if len(refreshes) > 0:
+        if refreshes:
             messageDetail += "<br /><b>Refreshes</b><br /><ul><li>"
             messageDetail += "</li><li>".join(refreshes)
             messageDetail += "</li></ul>"
 
-        if len(renames) > 0:
+        if renames:
             messageDetail += "<br /><b>Renames</b><br /><ul><li>"
             messageDetail += "</li><li>".join(renames)
             messageDetail += "</li></ul>"
 
-        if len(subtitles) > 0:
+        if subtitles:
             messageDetail += "<br /><b>Subtitles</b><br /><ul><li>"
             messageDetail += "</li><li>".join(subtitles)
             messageDetail += "</li></ul>"
 
-        if len(updates + refreshes + renames + subtitles) > 0:
+        if updates + refreshes + renames + subtitles:
             ui.notifications.message("The following actions were queued:",
                                      messageDetail)
 
@@ -3652,7 +3674,7 @@ class ConfigGeneral(Config):
         sickbeard.ROOT_DIRS = rootDirString
 
     def saveAddShowDefaults(self, defaultStatus, anyQualities, bestQualities, defaultFlattenFolders, subtitles=False,
-                            anime=False, scene=False):
+                            anime=False, scene=False, defaultStatusAfter=WANTED):
 
         if anyQualities:
             anyQualities = anyQualities.split(',')
@@ -3667,6 +3689,7 @@ class ConfigGeneral(Config):
         newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
 
         sickbeard.STATUS_DEFAULT = int(defaultStatus)
+        sickbeard.STATUS_DEFAULT_AFTER = int(defaultStatusAfter)
         sickbeard.QUALITY_DEFAULT = int(newQuality)
 
         sickbeard.FLATTEN_FOLDERS_DEFAULT = config.checkbox_to_value(defaultFlattenFolders)
@@ -3684,7 +3707,7 @@ class ConfigGeneral(Config):
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
                     handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
                     proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, git_remote=None,
-                    calendar_unprotected=None, debug=None, no_restart=None, coming_eps_missed_range=None,
+                    calendar_unprotected=None, debug=None, ssl_verify=None, no_restart=None, coming_eps_missed_range=None,
                     filter_row=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None, display_all_seasons=None):
@@ -3723,6 +3746,7 @@ class ConfigGeneral(Config):
         sickbeard.CALENDAR_UNPROTECTED = config.checkbox_to_value(calendar_unprotected)
         sickbeard.NO_RESTART = config.checkbox_to_value(no_restart)
         sickbeard.DEBUG = config.checkbox_to_value(debug)
+        sickbeard.SSL_VERIFY = config.checkbox_to_value(ssl_verify)
         # sickbeard.LOG_DIR is set in config.change_LOG_DIR()
         sickbeard.COMING_EPS_MISSED_RANGE = config.to_int(coming_eps_missed_range,default=7)
         sickbeard.DISPLAY_ALL_SEASONS = config.checkbox_to_value(display_all_seasons)
@@ -4397,6 +4421,7 @@ class ConfigProviders(Config):
             if curProvider.getID() not in finishedNames:
                 sickbeard.torrentRssProviderList.remove(curProvider)
 
+        disabled_list = []
         # do the enable/disable
         for curProviderStr in provider_str_list:
             curProvider, curEnabled = curProviderStr.split(':')
@@ -4407,11 +4432,17 @@ class ConfigProviders(Config):
             if curProvObj:
                 curProvObj[0].enabled = bool(curEnabled)
 
-            provider_list.append(curProvider)
+            if curEnabled:
+                provider_list.append(curProvider)
+            else:
+                disabled_list.append(curProvider)
+
             if curProvider in newznabProviderDict:
                 newznabProviderDict[curProvider].enabled = bool(curEnabled)
             elif curProvider in torrentRssProviderDict:
                 torrentRssProviderDict[curProvider].enabled = bool(curEnabled)
+
+        provider_list = provider_list + disabled_list
 
         # dynamically load provider settings
         for curTorrentProvider in [curProvider for curProvider in sickbeard.providers.sortedProviderList() if
@@ -4642,15 +4673,15 @@ class ConfigNotifications(Config):
                           use_boxcar2=None, boxcar2_notify_onsnatch=None, boxcar2_notify_ondownload=None,
                           boxcar2_notify_onsubtitledownload=None, boxcar2_accesstoken=None,
                           use_pushover=None, pushover_notify_onsnatch=None, pushover_notify_ondownload=None,
-                          pushover_notify_onsubtitledownload=None, pushover_userkey=None, pushover_apikey=None,
+                          pushover_notify_onsubtitledownload=None, pushover_userkey=None, pushover_apikey=None, pushover_device=None,
                           use_libnotify=None, libnotify_notify_onsnatch=None, libnotify_notify_ondownload=None,
                           libnotify_notify_onsubtitledownload=None,
                           use_nmj=None, nmj_host=None, nmj_database=None, nmj_mount=None, use_synoindex=None,
                           use_nmjv2=None, nmjv2_host=None, nmjv2_dbloc=None, nmjv2_database=None,
                           use_trakt=None, trakt_username=None, trakt_pin=None,
-                          trakt_remove_watchlist=None, trakt_sync_watchlist=None, trakt_method_add=None,
+                          trakt_remove_watchlist=None, trakt_sync_watchlist=None, trakt_remove_show_from_sickrage=None, trakt_method_add=None,
                           trakt_start_paused=None, trakt_use_recommended=None, trakt_sync=None, trakt_sync_remove=None,
-                          trakt_default_indexer=None, trakt_remove_serieslist=None, trakt_disable_ssl_verify=None, trakt_timeout=None, trakt_blacklist_name=None,
+                          trakt_default_indexer=None, trakt_remove_serieslist=None, trakt_timeout=None, trakt_blacklist_name=None,
                           trakt_use_rolling_download=None, trakt_rolling_num_ep=None, trakt_rolling_add_paused=None, trakt_rolling_frequency=None,
                           use_synologynotifier=None, synologynotifier_notify_onsnatch=None,
                           synologynotifier_notify_ondownload=None, synologynotifier_notify_onsubtitledownload=None,
@@ -4741,6 +4772,7 @@ class ConfigNotifications(Config):
         sickbeard.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD = config.checkbox_to_value(pushover_notify_onsubtitledownload)
         sickbeard.PUSHOVER_USERKEY = pushover_userkey
         sickbeard.PUSHOVER_APIKEY = pushover_apikey
+        sickbeard.PUSHOVER_DEVICE = pushover_device
 
         sickbeard.USE_LIBNOTIFY = config.checkbox_to_value(use_libnotify)
         sickbeard.LIBNOTIFY_NOTIFY_ONSNATCH = config.checkbox_to_value(libnotify_notify_onsnatch)
@@ -4769,6 +4801,7 @@ class ConfigNotifications(Config):
         sickbeard.TRAKT_USERNAME = trakt_username
         sickbeard.TRAKT_REMOVE_WATCHLIST = config.checkbox_to_value(trakt_remove_watchlist)
         sickbeard.TRAKT_REMOVE_SERIESLIST = config.checkbox_to_value(trakt_remove_serieslist)
+        sickbeard.TRAKT_REMOVE_SHOW_FROM_SICKRAGE = config.checkbox_to_value(trakt_remove_show_from_sickrage)
         sickbeard.TRAKT_SYNC_WATCHLIST = config.checkbox_to_value(trakt_sync_watchlist)
         sickbeard.TRAKT_METHOD_ADD = int(trakt_method_add)
         sickbeard.TRAKT_START_PAUSED = config.checkbox_to_value(trakt_start_paused)
@@ -4776,7 +4809,6 @@ class ConfigNotifications(Config):
         sickbeard.TRAKT_SYNC = config.checkbox_to_value(trakt_sync)
         sickbeard.TRAKT_SYNC_REMOVE = config.checkbox_to_value(trakt_sync_remove)
         sickbeard.TRAKT_DEFAULT_INDEXER = int(trakt_default_indexer)
-        sickbeard.TRAKT_DISABLE_SSL_VERIFY = config.checkbox_to_value(trakt_disable_ssl_verify)
         sickbeard.TRAKT_TIMEOUT = int(trakt_timeout)
         sickbeard.TRAKT_BLACKLIST_NAME = trakt_blacklist_name
         config.change_TRAKT_USE_ROLLING_DOWNLOAD(trakt_use_rolling_download)
@@ -4858,8 +4890,7 @@ class ConfigSubtitles(Config):
         config.change_SUBTITLES_FINDER_FREQUENCY(subtitles_finder_frequency)
         config.change_USE_SUBTITLES(use_subtitles)
 
-        sickbeard.SUBTITLES_LANGUAGES = [lang.alpha2 for lang in subtitles.isValidLanguage(
-            subtitles_languages.replace(' ', '').split(','))] if subtitles_languages != '' else ''
+        sickbeard.SUBTITLES_LANGUAGES = [lang.strip() for lang in subtitles_languages.split(',') if subtitles.isValidLanguage(lang.strip())] if subtitles_languages else []
         sickbeard.SUBTITLES_DIR = subtitles_dir
         sickbeard.SUBTITLES_HISTORY = config.checkbox_to_value(subtitles_history)
         sickbeard.EMBEDDED_SUBTITLES_ALL = config.checkbox_to_value(embedded_subtitles_all)

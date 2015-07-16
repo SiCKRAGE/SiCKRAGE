@@ -107,9 +107,9 @@ class NewznabProvider(generic.NZBProvider):
             data = self.cache.getRSSFeed("%s/api?%s" % (self.url, urllib.urlencode(params)))
         except:
             logger.log(u"Error getting html for [%s]" % 
-                    ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.items())) ), logger.DEBUG)
+                    ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.iteritems())) ), logger.DEBUG)
             return (False, return_categories, "Error getting html for [%s]" % 
-                    ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.items()) )))
+                    ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.iteritems()) )))
 
         if not self._checkAuthFromData(data):
             logger.log(u"Error parsing xml for [%s]" % (self.name), logger.DEBUG)
@@ -118,6 +118,7 @@ class NewznabProvider(generic.NZBProvider):
         try:
             for category in data.feed.categories:
                 if category.get('name') == 'TV':
+                        return_categories.append(category)
                         for subcat in category.subcats:
                             return_categories.append(subcat)
         except:
@@ -197,7 +198,7 @@ class NewznabProvider(generic.NZBProvider):
             if add_string:
                 params['q'] += ' ' + add_string
 
-            to_return.append(params)
+            to_return.append(dict(params))
 
             if ep_obj.show.anime:
                 paramsNoEp = params.copy()
@@ -254,7 +255,7 @@ class NewznabProvider(generic.NZBProvider):
         self._checkAuth()
 
         params = {"t": "tvsearch",
-                  "maxage": sickbeard.USENET_RETENTION,
+                  "maxage": (4, age)[age],
                   "limit": 100,
                   "attrs": "rageid",
                   "offset": 0}
@@ -267,13 +268,13 @@ class NewznabProvider(generic.NZBProvider):
         else:
             params['cat'] = self.catIDs
 
-        params['maxage'] = (4, age)[age]
-
         if search_params:
             params.update(search_params)
 
         if self.needs_auth and self.key:
             params['apikey'] = self.key
+
+        params['maxage'] = min(params['maxage'], sickbeard.USENET_RETENTION)
 
         results = []
         offset = total = 0

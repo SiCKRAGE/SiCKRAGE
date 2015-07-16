@@ -20,44 +20,38 @@ import os
 import chardet
 import sickbeard
 
-def fixStupidEncodings(x, silent=False):
-    if type(x) == str:
-        try:
-            return x.decode(sickbeard.SYS_ENCODING)
-        except UnicodeDecodeError:
-            logger.log(u"Unable to decode value: " + repr(x), logger.ERROR)
-            return None
-    elif type(x) == unicode:
-        return x
-    else:
-        logger.log(
-            u"Unknown value passed in, ignoring it: " + str(type(x)) + " (" + repr(x) + ":" + repr(type(x)) + ")",
-            logger.DEBUG if silent else logger.ERROR)
-        return None
-        
 def _toUnicode(x):
-    try:
-        if not isinstance(x, unicode):
-            if chardet.detect(x).get('encoding') == 'utf-8':
-                x = x.decode('utf-8')
-            elif isinstance(x, str):
-                x = x.decode(sickbeard.SYS_ENCODING)
-    finally:
-        return x
+    if isinstance(x, str):
+        try:
+            x = unicode(x)
+        except Exception:
+            try:
+                x = unicode(x, sickbeard.SYS_ENCODING)
+            except Exception:
+                try:
+                   x = unicode(x, 'utf-8')
+                except Exception:
+                    try:
+                        x = unicode(x, 'latin-1')
+                    except Exception:
+                        # Chardet can be wrong, so try it last
+                        x = unicode(x, chardet.detect(x).get('encoding'))
+    return x
 
 def ss(x):
     x = _toUnicode(x)
 
     try:
+        x = x.encode(sickbeard.SYS_ENCODING)
+    except Exception:
         try:
+            x = x.encode('utf-8')
+        except Exception:
             try:
-                x = x.encode(sickbeard.SYS_ENCODING)
-            except:
-                x = x.encode(sickbeard.SYS_ENCODING, 'ignore')
-        except:
-            x = x.encode('utf-8', 'ignore')
-    finally:
-        return x
+                x = x.encode(sickbeard.SYS_ENCODING, 'replace')
+            except Exception:
+                x = x.encode('utf-8', 'ignore')
+    return x
 
 def fixListEncodings(x):
     if not isinstance(x, (list, tuple)):

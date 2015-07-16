@@ -44,7 +44,10 @@ __all__ = ['womble',
            'rarbg',
            'tntvillage',
            'binsearch',
+           'bluetigers',
+           'fnt',
            'scenetime',
+           'btdigg',
 ]
 
 import sickbeard
@@ -63,6 +66,11 @@ def sortedProviderList(randomize=False):
     # add all modules in the priority list, in order
     for curModule in sickbeard.PROVIDER_ORDER:
         if curModule in providerDict:
+            newList.append(providerDict[curModule])
+
+    # add all enabled providers first
+    for curModule in providerDict:
+        if providerDict[curModule] not in newList and providerDict[curModule].isEnabled():
             newList.append(providerDict[curModule])
 
     # add any modules that are missing from that list

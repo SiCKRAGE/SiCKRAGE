@@ -62,7 +62,7 @@ def setEpisodeToWanted(show, s, e):
 class TraktChecker():
 
     def __init__(self):
-        self.trakt_api = TraktAPI(sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+        self.trakt_api = TraktAPI(sickbeard.SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
         self.todoBacklog = []
         self.todoWanted = []        
         self.ShowWatchlist = {}
@@ -228,6 +228,8 @@ class TraktChecker():
         if sickbeard.TRAKT_SYNC_WATCHLIST and sickbeard.USE_TRAKT:
             logger.log(u"Sync SickRage with Trakt Watchlist", logger.DEBUG)
 
+            self.removeShowFromSickRage()
+
             if self._getShowWatchlist():
                 self.addShowToTraktWatchList()
                 self.updateShows()
@@ -305,6 +307,25 @@ class TraktChecker():
                     self._getShowWatchlist()
 
             logger.log(u"SHOW_WATCHLIST::ADD::FINISH - Look for Shows to Add to Trakt Watchlist", logger.DEBUG)
+
+    def removeShowFromSickRage(self):
+        if sickbeard.TRAKT_SYNC_WATCHLIST and sickbeard.USE_TRAKT and sickbeard.TRAKT_REMOVE_SHOW_FROM_SICKRAGE:
+            logger.log(u"SHOW_SICKRAGE::REMOVE::START - Look for Shows to remove from SickRage", logger.DEBUG)
+
+            if sickbeard.showList is not None:
+                for show in sickbeard.showList:
+                    if show.status == "Ended":
+                        try:
+                            progress = self.trakt_api.traktRequest("shows/" + show.imdbid + "/progress/watched") or []
+                        except traktException as e:
+                            logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                            return
+
+                        if progress['aired'] == progress['completed']:
+                            show.deleteShow(full=True)
+                            logger.log(u"Show: " + show.name + " has been removed from SickRage", logger.DEBUG)
+
+            logger.log(u"SHOW_SICKRAGE::REMOVE::FINISH - Trakt Show Watchlist", logger.DEBUG)
 
     def updateShows(self):
         logger.log(u"SHOW_WATCHLIST::CHECK::START - Trakt Show Watchlist", logger.DEBUG)
@@ -619,11 +640,11 @@ class TraktChecker():
             showList.append(show)
         post_data = {'shows': showList}
         return post_data
-        
+
 class TraktRolling():
 
     def __init__(self):
-        self.trakt_api = TraktAPI(sickbeard.TRAKT_DISABLE_SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+        self.trakt_api = TraktAPI(sickbeard.SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
         self.EpisodeWatched = []
 
     def run(self, force=False):
