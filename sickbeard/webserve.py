@@ -1728,6 +1728,10 @@ class Home(WebRoot):
         if eps is not None:
 
             sql_l = []
+
+            if int(status) == SKIPPED:
+                client = clients.getClientIstance(sickbeard.TORRENT_METHOD)()
+
             for curEp in eps.split('|'):
 
                 logger.log(u"Attempting to set status on episode " + curEp + " to " + status, logger.DEBUG)
@@ -1777,6 +1781,10 @@ class Home(WebRoot):
                     sql_l.append(epObj.get_sql())
 
                     trakt_data.append((epObj.season, epObj.episode))
+
+                    if int(status) == SKIPPED and epObj.torrent_hash != '':
+                        torrent_removed = client.remove_torrent_downloaded(epObj.torrent_hash)
+                        epObj.torrent_hash = ''
 
             data = notifiers.trakt_notifier.trakt_episode_data_generate(trakt_data)
 

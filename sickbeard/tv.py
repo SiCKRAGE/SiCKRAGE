@@ -1367,6 +1367,7 @@ class TVEpisode(object):
         self._file_size = 0
         self._release_name = ''
         self._is_proper = False
+        self._torrent_hash = ""
         self._version = 0
         self._release_group = ''
 
@@ -1411,6 +1412,7 @@ class TVEpisode(object):
     file_size = property(lambda self: self._file_size, dirty_setter("_file_size"))
     release_name = property(lambda self: self._release_name, dirty_setter("_release_name"))
     is_proper = property(lambda self: self._is_proper, dirty_setter("_is_proper"))
+    torrent_hash = property(lambda self: self._torrent_hash, dirty_setter("_torrent_hash"))
     version = property(lambda self: self._version, dirty_setter("_version"))
     release_group = property(lambda self: self._release_group, dirty_setter("_release_group"))
 
@@ -1645,6 +1647,9 @@ class TVEpisode(object):
 
             if sqlResults[0]["is_proper"]:
                 self.is_proper = int(sqlResults[0]["is_proper"])
+
+            if sqlResults[0]["torrent_hash"] is not None:
+                self.torrent_hash = sqlResults[0]["torrent_hash"]
 
             if sqlResults[0]["version"]:
                 self.version = int(sqlResults[0]["version"])
@@ -2012,37 +2017,37 @@ class TVEpisode(object):
                     return [
                         "UPDATE tv_episodes SET indexerid = ?, indexer = ?, name = ?, description = ?, subtitles = ?, "
                         "subtitles_searchcount = ?, subtitles_lastsearch = ?, airdate = ?, hasnfo = ?, hastbn = ?, status = ?, "
-                        "location = ?, file_size = ?, release_name = ?, is_proper = ?, showid = ?, season = ?, episode = ?, "
+                        "location = ?, file_size = ?, release_name = ?, is_proper = ?, showid = ?, season = ?, episode = ?, torrent_hash = ?, "
                         "absolute_number = ?, version = ?, release_group = ? WHERE episode_id = ?",
                         [self.indexerid, self.indexer, self.name, self.description, ",".join(self.subtitles),
                          self.subtitles_searchcount, self.subtitles_lastsearch, self.airdate.toordinal(), self.hasnfo,
                          self.hastbn,
                          self.status, self.location, self.file_size, self.release_name, self.is_proper, self.show.indexerid,
-                         self.season, self.episode, self.absolute_number, self.version, self.release_group, epID]]
+                         self.season, self.episode, self.torrent_hash, self.absolute_number, self.version, self.release_group, epID]]
                 else:
                     # Don't update the subtitle language when the srt file doesn't contain the alpha2 code, keep value from subliminal
                     return [
                         "UPDATE tv_episodes SET indexerid = ?, indexer = ?, name = ?, description = ?, "
                         "subtitles_searchcount = ?, subtitles_lastsearch = ?, airdate = ?, hasnfo = ?, hastbn = ?, status = ?, "
-                        "location = ?, file_size = ?, release_name = ?, is_proper = ?, showid = ?, season = ?, episode = ?, "
+                        "location = ?, file_size = ?, release_name = ?, is_proper = ?, showid = ?, season = ?, episode = ?, torrent_hash = ?, "
                         "absolute_number = ?, version = ?, release_group = ? WHERE episode_id = ?",
                         [self.indexerid, self.indexer, self.name, self.description,
                          self.subtitles_searchcount, self.subtitles_lastsearch, self.airdate.toordinal(), self.hasnfo,
                          self.hastbn,
                          self.status, self.location, self.file_size, self.release_name, self.is_proper, self.show.indexerid,
-                         self.season, self.episode, self.absolute_number, self.version, self.release_group, epID]]
+                         self.season, self.episode, self.torrent_hash, self.absolute_number, self.version, self.release_group, epID]]
             else:
                 # use a custom insert method to get the data into the DB.
                 return [
                     "INSERT OR IGNORE INTO tv_episodes (episode_id, indexerid, indexer, name, description, subtitles, "
                     "subtitles_searchcount, subtitles_lastsearch, airdate, hasnfo, hastbn, status, location, file_size, "
-                    "release_name, is_proper, showid, season, episode, absolute_number, version, release_group) VALUES "
+                    "release_name, is_proper, showid, season, episode, torrent_hash, absolute_number, version, release_group) VALUES "
                     "((SELECT episode_id FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?)"
-                    ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                    ",?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
                     [self.show.indexerid, self.season, self.episode, self.indexerid, self.indexer, self.name,
                      self.description, ",".join(self.subtitles), self.subtitles_searchcount, self.subtitles_lastsearch,
                      self.airdate.toordinal(), self.hasnfo, self.hastbn, self.status, self.location, self.file_size,
-                     self.release_name, self.is_proper, self.show.indexerid, self.season, self.episode,
+                     self.release_name, self.is_proper, self.show.indexerid, self.season, self.episode, self.torrent_hash,
                      self.absolute_number, self.version, self.release_group]]
         except Exception as e:
                 logger.log(u"Error while updating database: %s" %
@@ -2079,6 +2084,7 @@ class TVEpisode(object):
                         "file_size": self.file_size,
                         "release_name": self.release_name,
                         "is_proper": self.is_proper,
+                        "torrent_hash": self.torrent_hash,
                         "absolute_number": self.absolute_number,
                         "version": self.version,
                         "release_group": self.release_group

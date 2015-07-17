@@ -28,6 +28,7 @@ import stat
 import sickbeard
 
 from sickbeard import db
+from sickbeard import clients
 from sickbeard import common
 from sickbeard import exceptions
 from sickbeard import helpers
@@ -961,6 +962,15 @@ class PostProcessor(object):
                     cur_ep.release_name = self.release_name
                 else:
                     cur_ep.release_name = ""
+
+                if cur_ep.torrent_hash != '' and self.process_method == "move":
+                    client = clients.getClientIstance(sickbeard.TORRENT_METHOD)()
+                    torrent_removed = client.remove_torrent_downloaded(cur_ep.torrent_hash)
+                    if torrent_removed:
+                        logger.log("Torrent removed correctly", logger.DEBUG)
+                    else:
+                        self._log(u"Error removing torrent from client, ids: " + cur_ep.torrent_hash, logger.ERROR)
+                    cur_ep.torrent_hash = ''
 
                 if ep_obj.status in common.Quality.SNATCHED_BEST:
                     cur_ep.status = common.Quality.compositeStatus(common.ARCHIVED, new_ep_quality)
