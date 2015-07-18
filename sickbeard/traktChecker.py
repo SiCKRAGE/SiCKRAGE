@@ -720,8 +720,12 @@ class TraktRolling():
 
             last_per_season = self.trakt_api.traktRequest("shows/" + str(imdb_id) + "/seasons?extended=full")
             if not last_per_season:
-                logger.log(u"Could not connect to trakt service, cannot download last season for show", logger.ERROR)
-                return False
+                resultt = re.sub(r'([^a-zA-Z\n\r():?<>\[\]{};:",.\/\\])', "-", show_name)
+                resulttt = re.sub(r'([\n\r():?<>\[\]{};:",.\/\\])', "", resultt)
+                last_per_season = self.trakt_api.traktRequest("shows/" + str(resulttt) + "/seasons?extended=full")
+                if not last_per_season:
+                     logger.log("Could not connect to trakt service, cannot download last season for show", logger.ERROR)
+                     return False
 
             logger.log(u"indexer_id: " + str(indexer_id) + ", Show: " + show_name + " - First skipped Episode: Season " + str(sn_sb) + ", Episode " + str(ep_sb), logger.DEBUG)
 
