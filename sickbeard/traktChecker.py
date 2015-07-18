@@ -20,6 +20,7 @@ import os
 import traceback
 import datetime
 import json
+import re
 
 import sickbeard
 from sickbeard import encodingKludge as ek
