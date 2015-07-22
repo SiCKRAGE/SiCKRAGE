@@ -61,6 +61,7 @@ from versionChecker import CheckVersion
 
 import requests
 import markdown2
+import netaddr
 
 try:
     import json
@@ -298,12 +299,17 @@ class LoginHandler(BaseHandler):
                 and (self.get_argument('password') == password or not password):
             api_key = sickbeard.API_KEY
 
+        ip_logged = self.request.remote_ip
+        local = ip_logged in netaddr.IPNetwork('192.168/16') or ip_logged in netaddr.IPNetwork('172.16/12') or ip_logged in netaddr.IPNetwork('10/8') 
+        if not local:
+            ip_logged = '*.*.*.*'
+
         if api_key:
             remember_me = int(self.get_argument('remember_me', default=0) or 0)
             self.set_secure_cookie('sickrage_user', api_key, expires_days=30 if remember_me > 0 else None)
-            logger.log('User logged into the SickRage web interface from IP: ' + self.request.remote_ip, logger.INFO)
+            logger.log('User logged into the SickRage web interface from IP: ' + str(ip_logged), logger.INFO)
         else:
-            logger.log('User attempted a failed login to the SickRage web interface from IP: ' + self.request.remote_ip, logger.WARNING)    
+            logger.log('User attempted a failed login to the SickRage web interface from IP: ' + str(ip_logged), logger.WARNING)    
 
         self.redirect('/home/')
 
