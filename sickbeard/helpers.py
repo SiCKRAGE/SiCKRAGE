@@ -1366,7 +1366,7 @@ def headURL(url, params=None, headers={}, timeout=30, session=None, json=False, 
         logger.log(u"Connection timed out accessing {0}. Error: {1}".format(url,e.message), logger.WARNING)
         pass
     except requests.exceptions.ContentDecodingError:
-        logger.log(u"Content-Encoding was gzip, but content was not compressed. We got %s instead" % (resp.headers.get('content-encoding')), logger.WARNING)
+        logger.log(u"Content-Encoding was gzip, but content was not compressed. Headers: " % (resp.headers), logger.WARNING)
         pass
     except Exception as e:
         logger.log(u"Unknown exception in headURL {0}. Error: {1}".format(url,e.message), logger.WARNING)
