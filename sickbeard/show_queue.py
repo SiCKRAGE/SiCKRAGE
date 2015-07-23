@@ -30,6 +30,8 @@ from sickbeard import generic_queue
 from sickbeard import name_cache
 from sickbeard.exceptions import ex
 from sickbeard.blackandwhitelist import BlackAndWhiteList, short_group_names
+import json, requests
+
 
 
 class ShowQueue(generic_queue.GenericQueue):
@@ -416,8 +418,25 @@ class QueueItemAdd(ShowQueueItem):
                 notifiers.trakt_notifier.update_watchlist(self.show)
 
         # Load XEM data to DB for show
-        sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer, force=True)
-
+        
+        if self.show.indexer == 1:
+            xem_origin = 'tvdb' 
+        elif self.show.indexer == 2:
+            xem_origin = 'rage'
+        else:
+            xem_origin = 'anidb'            
+            
+        xem_url = "http://thexem.de/map/havemap?origin=%s" % xem_origin
+        response = requests.get(xem_url)
+        parsedJSON = json.loads(response.text)
+        mappedIDs = parsedJSON['data']
+        
+        if self.show.indexerid in mappedIDs:
+            sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer, force=True)
+        else:
+            logger.log(u"Show is not mapped at XEM. Skipping refresh")       
+        
+ 
         # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer numbering.
         if not self.scene and sickbeard.scene_numbering.get_xem_numbering_for_show(self.show.indexerid,
                                                                                    self.show.indexer):
@@ -457,7 +476,23 @@ class QueueItemRefresh(ShowQueueItem):
         self.show.populateCache()
 
         # Load XEM data to DB for show
-        sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer)
+        
+        if self.show.indexer == 1:
+            xem_origin = 'tvdb' 
+        elif self.show.indexer == 2:
+            xem_origin = 'rage'
+        else:
+            xem_origin = 'anidb'            
+            
+        xem_url = "http://thexem.de/map/havemap?origin=%s" % xem_origin
+        response = requests.get(xem_url)
+        parsedJSON = json.loads(response.text)
+        mappedIDs = parsedJSON['data']
+        
+        if self.show.indexerid in mappedIDs:
+            sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer)
+        else:
+            logger.log(u"Show is not mapped at XEM. Skipping refresh")
 
         self.inProgress = False
 
