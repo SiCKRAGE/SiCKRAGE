@@ -842,7 +842,7 @@ def initialize(consoleLogging=True):  # pylint: disable=too-many-locals, too-man
 
         SSL_VERIFY = bool(check_setting_int(CFG, 'General', 'ssl_verify', 1))
 
-        INDEXER_DEFAULT_LANGUAGE = check_setting_str(CFG, 'General', 'indexerDefaultLang', 'en')
+        INDEXER_DEFAULT_LANGUAGE = check_setting_str(CFG, 'General', 'indexerDefaultLang', 'de')
         EP_DEFAULT_DELETED_STATUS = check_setting_int(CFG, 'General', 'ep_default_deleted_status', 6)
 
         LAUNCH_BROWSER = bool(check_setting_int(CFG, 'General', 'launch_browser', 1))
