@@ -57,7 +57,13 @@ class DBConnection(object):
                 db_locks[self.filename] = threading.Lock()
 
                 self.connection = sqlite3.connect(dbFilename(self.filename, self.suffix), 20, check_same_thread=False)
-                self.connection.text_factory = self._unicode_text_factory
+
+                # Lets test without this for awhile. If non-unicode data is getting to the DB, fix it at the source.
+                # There are too many places we convert when we don't need to, 
+                # sqlite, browsers, python, everything understands unicode
+
+                #self.connection.text_factory = self._unicode_text_factory
+
                 db_cons[self.filename] = self.connection
             else:
                 self.connection = db_cons[self.filename]
@@ -229,20 +235,25 @@ class DBConnection(object):
 
     def _unicode_text_factory(self, x):
         try:
+            # Already unicode, empty string, or ascii
             x = unicode(x)
-        except UnicodeDecodeError:
+        except Exception:
             try:
-                x = unicode(x, chardet.detect(x).get('encoding'))
-            except UnicodeDecodeError:
+                # most common encoding from web
+                x = unicode(x, 'utf-8')
+            except Exception:
                 try:
-                    x = unicode(x, sickbeard.SYS_ENCODING)
-                except UnicodeDecodeError:
+                    # most common from web if utf-8 fails
+                    x = unicode(x, 'latin-1')
+                except Exception:
                     try:
-                        x = unicode(x, 'utf-8')
-                    except UnicodeDecodeError:
+                        # try system encoding before trusting chardet
+                        x = unicode(x, sickbeard.SYS_ENCODING)
+                    except Exception:
                         try:
-                            x = unicode(x, 'latin-1')
-                        except UnicodeDecodeError:
+                            # Chardet can be wrong, so try it last before ignoring
+                            x = unicode(x, chardet.detect(x).get('encoding'))
+                        except Exception:
                             x = unicode(x, sickbeard.SYS_ENCODING, errors="ignore")
         return x
 

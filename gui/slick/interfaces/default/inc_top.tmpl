@@ -6,7 +6,14 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width">
+
+		<!-- These values come from css/dark.css and css/light.css -->
+		#if $sickbeard.THEME_NAME == "dark":
+		<meta name="theme-color" content="#15528F">
+		#elif $sickbeard.THEME_NAME == "light":
+		<meta name="theme-color" content="#333333">
+		#end if
 	
 		<title>SickRage - BRANCH:[$sickbeard.BRANCH] - $title</title>
 	
@@ -155,6 +162,12 @@
 			#if $sbLogin:
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-right">
+						<li id="NAVnews">
+                            <a href="$sbRoot/news/">News</a>
+                        </li>
+						<li id="NAVnews">
+                            <a href="$sbRoot/IRC/">IRC</a>
+                        </li>
 						<li id="NAVhome">
                             <a href="$sbRoot/home/">Shows</a>
                         </li>
@@ -221,13 +234,14 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="$sbRoot/images/menu/system18-2.png" class="navbaricon hidden-xs" /><b class="caret hidden-xs"></b><span class="visible-xs">System <b class="caret"></b></span></a>
 							<ul class="dropdown-menu">
 								<li><a href="$sbRoot/home/updateCheck?pid=$sbPID"><i class="menu-icon-update"></i>&nbsp;Check For Updates</a></li>
+                                <li><a href="$sbRoot/changes"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
                                 <li><a href="$sbRoot/home/restart/?pid=$sbPID" class="confirm restart"><i class="menu-icon-restart"></i>&nbsp;Restart</a></li>
                                 <li><a href="$sbRoot/home/shutdown/?pid=$sbPID" class="confirm shutdown"><i class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
                                 <li><a href="$sbRoot/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a></li>
                                 <li><a href="$sbRoot/home/status/"><i class="menu-icon-help"></i>&nbsp;Server Status</a></li>
 							</ul>
 						</li>
-			            <li id="donate"><a href="http://sr-upgrade.appspot.com" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><img src="$sbRoot/images/donate.jpg" alt="[donate]" class="navbaricon hidden-xs" /></a></li>
+			            <li id="donate"><a href="https://github.com/SiCKRAGETV/SickRage/wiki/Donations" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><img src="$sbRoot/images/donate.jpg" alt="[donate]" class="navbaricon hidden-xs" /></a></li>
 					</ul>
 			#end if
 				</div><!-- /.navbar-collapse -->

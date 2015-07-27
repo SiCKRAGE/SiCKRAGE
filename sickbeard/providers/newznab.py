@@ -87,18 +87,18 @@ class NewznabProvider(generic.NZBProvider):
 
     def _getURL(self, url, post_data=None, params=None, timeout=30, json=False):
         return self.getURL(url, post_data=post_data, params=params, timeout=timeout, json=json)
-
+    
     def get_newznab_categories(self):
         """
         Uses the newznab provider url and apikey to get the capabilities.
         Makes use of the default newznab caps param. e.a. http://yournewznab/api?t=caps&apikey=skdfiw7823sdkdsfjsfk
-        Returns a tuple with (succes or not, array with dicts [{"id": "5070", "name": "Anime"},
+        Returns a tuple with (succes or not, array with dicts [{"id": "5070", "name": "Anime"}, 
         {"id": "5080", "name": "Documentary"}, {"id": "5020", "name": "Foreign"}...etc}], error message)
         """
         return_categories = []
-
+        
         self._checkAuth()
-
+        
         params = {"t": "caps"}
         if self.needs_auth and self.key:
             params['apikey'] = self.key
@@ -106,27 +106,26 @@ class NewznabProvider(generic.NZBProvider):
         try:
             data = self.cache.getRSSFeed("%s/api?%s" % (self.url, urllib.urlencode(params)))
         except:
-            logger.log(u"Error getting html for [%s]" %
-                    ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.items())) ), logger.DEBUG)
-            return (False, return_categories, "Error getting html for [%s]" %
-                    ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.items()) )))
+            logger.log(u"Error getting html for [%s]" % 
+                    ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.iteritems())) ), logger.DEBUG)
+            return (False, return_categories, "Error getting html for [%s]" % 
+                    ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x,y) for x,y in params.iteritems()) )))
 
         if not self._checkAuthFromData(data):
             logger.log(u"Error parsing xml for [%s]" % (self.name), logger.DEBUG)
             return False, return_categories, "Error parsing xml for [%s]" % (self.name)
-
+            
         try:
             for category in data.feed.categories:
-                if category.get('name').startswith('TV'):
+                if category.get('name') == 'TV':
                         return_categories.append(category)
                         for subcat in category.subcats:
-                            subcat['name'] = category.get('name') + ' - ' + subcat.get('name')
                             return_categories.append(subcat)
         except:
             logger.log(u"Error parsing result for [%s]" % (self.name),
                        logger.DEBUG)
-            return (False, return_categories, "Error parsing result for [%s]" % (self.name))
-
+            return (False, return_categories, "Error parsing result for [%s]" % (self.name))                                         
+          
         return True, return_categories, ""
 
     def _get_season_search_strings(self, ep_obj):
@@ -150,7 +149,7 @@ class NewznabProvider(generic.NZBProvider):
         rid = helpers.mapIndexersToShow(ep_obj.show)[2]
         if rid:
             cur_params['rid'] = rid
-        elif 'rid' in params:
+        elif 'rid' in cur_params:
             cur_params.pop('rid')
 
         # add new query strings for exceptions
@@ -199,12 +198,11 @@ class NewznabProvider(generic.NZBProvider):
             if add_string:
                 params['q'] += ' ' + add_string
 
-            to_return.append(params)
+            to_return.append(dict(params))
 
             if ep_obj.show.anime:
                 paramsNoEp = params.copy()
-                paramsNoEp['q'] = paramsNoEp['q'] + " " + str(paramsNoEp['ep'])
-
+                paramsNoEp['q'] = paramsNoEp['q'] + " " + paramsNoEp['ep']
                 if "ep" in paramsNoEp:
                     paramsNoEp.pop("ep")
                 to_return.append(paramsNoEp)
@@ -262,6 +260,9 @@ class NewznabProvider(generic.NZBProvider):
                   "attrs": "rageid",
                   "offset": 0}
 
+        if search_params:
+            params.update(search_params)
+
         # category ids
         if self.show and self.show.is_sports:
             params['cat'] = self.catIDs + ',5060'
@@ -270,9 +271,6 @@ class NewznabProvider(generic.NZBProvider):
         else:
             params['cat'] = self.catIDs
 
-        if search_params:
-            params.update(search_params)
-
         if self.needs_auth and self.key:
             params['apikey'] = self.key
 
@@ -280,6 +278,9 @@ class NewznabProvider(generic.NZBProvider):
 
         results = []
         offset = total = 0
+
+        if 'lolo.sickbeard.com' in self.url and params['maxage'] < 33:
+            params['maxage'] = 33
 
         while (total >= offset):
             search_url = self.url + 'api?' + urllib.urlencode(params)
@@ -380,6 +381,9 @@ class NewznabCache(tvcache.TVCache):
                   "attrs": "rageid",
                   "maxage": 4,
                  }
+
+        if 'lolo.sickbeard.com' in self.provider.url:
+            params['maxage'] = 33
 
         if self.provider.needs_auth and self.provider.key:
             params['apikey'] = self.provider.key

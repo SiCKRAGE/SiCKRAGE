@@ -1,7 +1,6 @@
 #from sickbeard import subtitles
 #import sickbeard
 #from sickbeard.helpers import anon_url
-#from babelfish import Language
 #set global $title="Config - Subtitles"
 #set global $header="Subtitles"
 
@@ -19,7 +18,7 @@
   	\$(document).ready(function() {
 		\$("#subtitles_languages").tokenInput(
 				[
-	                <%=",\r\n".join("{id: \"" + lang.alpha3 + "\", name: \"" + lang.name + "\"}" for lang in subtitles.subtitleLanguageFilter())%>
+	                <%=",\r\n".join("{id: \"" + lang.opensubtitles + "\", name: \"" + lang.name + "\"}" for lang in subtitles.subtitleLanguageFilter())%>
 	            ],
 	            {
 					method: "POST",
@@ -29,7 +28,7 @@
 	            		
 		            		[
 		            			<%=
-		            					",\r\n".join("{id: \"" + Language.fromietf(lang).alpha3 + "\", name: \"" + Language.fromietf(lang).name + "\"}" for lang in subtitles.wantedLanguages()) if subtitles.wantedLanguages() else ''
+		            					",\r\n".join("{id: \"" + subtitles.fromietf(lang).opensubtitles + "\", name: \"" + subtitles.fromietf(lang).name + "\"}" for lang in subtitles.wantedLanguages()) if subtitles.wantedLanguages() else ''
 		            			%>
 		            		]
 	            }
@@ -125,7 +124,33 @@
 											<p><b>Warning: </b>this will ignore <u>all</u> embedded subtitles for every video file!</p>
 										</span>
 									</label>
-								</div>   
+								</div>
+								<div class="field-pair">
+        						    <label class="nocheck">
+        						        <span class="component-title">Extra Scripts</span>
+           						        <input type="text" name="subtitles_extra_scripts" value="<%='|'.join(sickbeard.SUBTITLES_EXTRA_SCRIPTS)%>" class="form-control input-sm input350" />
+        						    </label>
+        						    <label class="nocheck">
+        						        <span class="component-title">&nbsp;</span>
+        						        <span class="component-desc"><b>NOTE:</b></span>
+        						    </label>
+        						    <label class="nocheck">
+        						        <span class="component-title">&nbsp;</span>
+        								<span class="component-desc">
+        									<ul>
+            										<li>See <a href="https://github.com/SiCKRAGETV/SickRage/wiki/Subtitle%20Scripts"><font color='red'><b>Wiki</b></font></a> for a script arguments description.</li>
+            										<li>Additional scripts separated by <b>|</b>.</li>
+            										<li>Scripts are called after each episode has searched and downloaded subtitles.</li>
+										            <li>For any scripted languages, include the interpreter executable before the script. See the following example:</li>
+										            <ul>
+											            <li>For Windows: <pre>C:\Python27\pythonw.exe C:\Script\test.py</pre></li>
+											            <li>For Linux: <pre>python /Script/test.py</pre></li>
+										            </ul>
+									        </ul>
+								        </span>
+						            </label>
+						        </div>
+
 	                    <br/><input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
                         </div>
                     </fieldset>

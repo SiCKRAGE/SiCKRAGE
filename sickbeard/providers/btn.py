@@ -33,9 +33,9 @@ from sickbeard.exceptions import ex, AuthException
 from sickbeard.common import MULTI_EP_RESULT, SEASON_RESULT, USER_AGENT
 from sickbeard import db
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
-from sickbeard.common import Quality
+from sickbeard.common import Quality, cpu_presets
 
-from lib import jsonrpclib
+import jsonrpclib
 from datetime import datetime
 
 
@@ -144,6 +144,7 @@ class BTNProvider(generic.TorrentProvider):
 
         try:
             parsedJSON = server.getTorrents(apikey, params, int(results_per_page), int(offset))
+            time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
         except jsonrpclib.jsonrpc.ProtocolError, error:
             if error.message == 'Call Limit Exceeded':
@@ -353,7 +354,7 @@ class BTNProvider(generic.TorrentProvider):
                     else:
                         items[quality].append(item)
 
-            itemList = list(itertools.chain(*[v for (k, v) in sorted(items.items(), reverse=True)]))
+            itemList = list(itertools.chain(*[v for (k, v) in sorted(items.iteritems(), reverse=True)]))
             itemList += itemsUnknown if itemsUnknown else []
 
         # filter results
@@ -363,7 +364,7 @@ class BTNProvider(generic.TorrentProvider):
 
             # parse the file name
             try:
-                myParser = NameParser(False, convert=True)
+                myParser = NameParser(False)
                 parse_result = myParser.parse(title)
             except InvalidNameException:
                 logger.log(u"Unable to parse the filename " + title + " into a valid episode", logger.DEBUG)  # @UndefinedVariable

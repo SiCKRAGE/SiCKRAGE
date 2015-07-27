@@ -36,7 +36,7 @@ import requests
 from requests import exceptions
 from bs4 import BeautifulSoup as soup
 #from sickbeard.bs4_parser import BS4Parser
-from lib.unidecode import unidecode
+from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
 from requests.auth import AuthBase
 from datetime import datetime
@@ -232,7 +232,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
                 except (AttributeError, TypeError, KeyError, ValueError):
                     continue
 
-                if not title or not url or not seeders or not leechers or not size or \
+                if not title or not url or not seeders or leechers is None or not size or \
                         seeders < self.minseed or leechers < self.minleech:
                     continue
 

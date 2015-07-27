@@ -43,7 +43,7 @@ from sickbeard.exceptions import ex
 
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 
-from lib import adba
+import adba
 from sickbeard.helpers import verify_freespace
 
 
@@ -508,7 +508,7 @@ class PostProcessor(object):
         name = helpers.remove_non_release_groups(helpers.remove_extension(name))
 
         # parse the name to break it into show name, season, and episode
-        np = NameParser(file, tryIndexers=True, trySceneExceptions=True, convert=True)
+        np = NameParser(file, tryIndexers=True, trySceneExceptions=True)
         parse_result = np.parse(name)
 
         # show object
@@ -912,7 +912,7 @@ class PostProcessor(object):
         
         # try to find out if we have enough space to perform the copy or move action.
         if not helpers.isFileLocked(self.file_path, False):
-            if not verify_freespace(self.file_path, ek.ek(os.path.dirname, ep_obj.show._location), [ep_obj] + ep_obj.relatedEps):
+            if not verify_freespace(self.file_path, ep_obj.show._location, [ep_obj] + ep_obj.relatedEps):
                 self._log("Not enough space to continue PP, exiting")
                 return False
         else:

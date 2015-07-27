@@ -24,14 +24,21 @@ def _toUnicode(x):
     if isinstance(x, str):
         try:
             x = unicode(x)
-        except UnicodeDecodeError:
+        except Exception:
             try:
-                x = unicode(x, chardet.detect(x).get('encoding'))
-            except UnicodeDecodeError:
+                x = unicode(x, 'utf-8')
+            except Exception:
                 try:
-                    x = unicode(x, sickbeard.SYS_ENCODING)
-                except UnicodeDecodeError:
-                    pass
+                   x = unicode(x, 'latin-1')
+                except Exception:
+                    try:
+                        x = unicode(x, sickbeard.SYS_ENCODING)
+                    except Exception:
+                        try:
+                            # Chardet can be wrong, so try it last
+                            x = unicode(x, chardet.detect(x).get('encoding'))
+                        except Exception:
+                            x = unicode(x, sickbeard.SYS_ENCODING, 'replace')
     return x
 
 def ss(x):
@@ -39,16 +46,15 @@ def ss(x):
 
     try:
         x = x.encode(sickbeard.SYS_ENCODING)
-    except UnicodeDecodeError, UnicodeEncodeError:
+    except Exception:
         try:
             x = x.encode('utf-8')
-        except UnicodeDecodeError, UnicodeEncodeError:
+        except Exception:
             try:
                 x = x.encode(sickbeard.SYS_ENCODING, 'replace')
-            except UnicodeDecodeError, UnicodeEncodeError:
+            except Exception:
                 x = x.encode('utf-8', 'ignore')
-    finally:
-        return x
+    return x
 
 def fixListEncodings(x):
     if not isinstance(x, (list, tuple)):

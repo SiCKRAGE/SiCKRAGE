@@ -3,12 +3,10 @@
 #import sickbeard.helpers
 #from sickbeard.common import *
 #from sickbeard.helpers import anon_url
-#import subliminal
 #import os.path, os
 #import datetime
 #import urllib
 #import ntpath
-#import babelfish
 
 #set global $title=$show.name
 ##set global $header = '<a></a>' % 
@@ -132,7 +130,7 @@
         #end if
 
         #if not $sickbeard.DISPLAY_SHOW_SPECIALS and $season_special:
-            #$seasonResults.pop(-1)
+            #set lastSeason = $seasonResults.pop(-1); del lastSeason
         #end if
 
         <span class="h2footer displayspecials pull-right">
@@ -286,8 +284,8 @@
                 </table>
             
                 <table style="width:180px; float: right; vertical-align: middle; height: 100%;">
-                    #set $info_flag = $babelfish.Language.fromietf($show.lang).alpha3 if $subtitles.isValidLanguage($show.lang) else 'unknown'
-                    <tr><td class="showLegend">Info Language:</td><td><img src="$sbRoot/images/flags/${info_flag}.png" width="16" height="11" alt="$show.lang" title="$show.lang" onError="this.onerror=null;this.src='$sbRoot/images/flags/unknown.png';"/></td></tr>
+                    #set $info_flag = $subtitles.fromietf($show.lang).opensubtitles if $show.lang else ''
+                    <tr><td class="showLegend">Info Language:</td><td><img src="$sbRoot/images/subtitles/flags/${info_flag}.png" width="16" height="11" alt="$show.lang" title="$show.lang" onError="this.onerror=null;this.src='$sbRoot/images/flags/unknown.png';"/></td></tr>
                     #if $sickbeard.USE_SUBTITLES
                     <tr><td class="showLegend">Subtitles: </td><td><img src="$sbRoot/images/#if $show.subtitles then "yes16.png\" alt=\"Y" else "no16.png\" alt=\"N"#" width="16" height="16" /></td></tr>
                     #end if
@@ -549,9 +547,10 @@
                 #if $epResult['location']
                     #set $filename = $epResult['location']
                     #for $rootDir in $sickbeard.ROOT_DIRS.split('|')
-                        #if $rootDir.startswith('/')
-                            #set $filename = ntpath.basename($filename)
+                        #if not $rootDir.startswith('/')
+                            #set $filename = $filename.replace('\\','\\\\')
                         #end if
+                        #set $filename = ntpath.basename($filename)   
                     #end for
                     $filename
                 #end if    
@@ -580,9 +579,9 @@
                 #end if
             </td>
             <td class="col-subtitles" align="center">
-            #for $sub_lang in [babelfish.Language.fromietf(x) for x in $epResult["subtitles"].split(',') if $epResult["subtitles"]]:
-                #set $flag = $sub_lang.alpha3 if $hasattr($sub_lang, 'alpha3') and $sub_lang.alpha3 else $sub_lang.alpha2 if $hasattr($sub_lang, 'alpha2') and $sub_lang.alpha2 else 'unknown'
-                <img src="$sbRoot/images/flags/${flag}.png" width="16" height="11" alt="${sub_lang.name}" onError="this.onerror=null;this.src='$sbRoot/images/flags/unknown.png';" />
+            #for $sub_lang in [$subtitles.fromietf(x) for x in $epResult["subtitles"].split(',') if $epResult["subtitles"]]:
+                #set $flag = $sub_lang.opensubtitles
+                <img src="$sbRoot/images/subtitles/flags/${flag}.png" width="16" height="11" alt="${sub_lang.name}" onError="this.onerror=null;this.src='$sbRoot/images/flags/unknown.png';" />
             #end for
             </td>
             #set $curStatus, $curQuality = $Quality.splitCompositeStatus(int($epResult["status"]))

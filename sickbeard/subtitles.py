@@ -20,14 +20,15 @@ import time
 import datetime
 import sickbeard
 from sickbeard.common import *
+from sickbeard.exceptions import ex
 from sickbeard import notifiers
 from sickbeard import logger
-from sickbeard import helpers
 from sickbeard import encodingKludge as ek
 from sickbeard import db
 from sickbeard import history
 import subliminal
 import babelfish
+import subprocess
 
 subliminal.cache_region.configure('dogpile.cache.memory')
 
@@ -41,7 +42,7 @@ provider_urls = {'addic7ed': 'http://www.addic7ed.com',
 SINGLE = 'und'
 def sortedServiceList():
     newList = []
-    lmgtfy = 'http://lmgtfy.com/?q='
+    lmgtfy = 'http://lmgtfy.com/?q=%s'
 
     curIndex = 0
     for curService in sickbeard.SUBTITLES_SERVICES_LIST:
@@ -66,19 +67,23 @@ def sortedServiceList():
 def getEnabledServiceList():
     return [x['name'] for x in sortedServiceList() if x['enabled']]
 
+#Hack around this for now.
+def fromietf(language):
+    return babelfish.Language.fromopensubtitles(language)
+
 def isValidLanguage(language):
     try:
-        langObj = babelfish.Language.fromietf(language)
+        langObj = fromietf(language)
     except:
         return False
     return True
 
 def getLanguageName(language):
-    return babelfish.Language.fromietf(language).name
+    return fromietf(language ).name
 
 # TODO: Filter here for non-languages in sickbeard.SUBTITLES_LANGUAGES
 def wantedLanguages(sqlLike = False):
-    wantedLanguages = sorted(sickbeard.SUBTITLES_LANGUAGES)
+    wantedLanguages = [x for x in sorted(sickbeard.SUBTITLES_LANGUAGES) if x in babelfish.language_converters['opensubtitles'].codes]
     if sqlLike:
         return '%' + ','.join(wantedLanguages) + '%'
     return wantedLanguages
@@ -86,11 +91,17 @@ def wantedLanguages(sqlLike = False):
 def subtitlesLanguages(video_path):
     """Return a list detected subtitles for the given video file"""
     resultList = []
+
+    if sickbeard.SUBTITLES_DIR and ek.ek(os.path.exists, sickbeard.SUBTITLES_DIR):
+        video_path = ek.ek(os.path.join, sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, video_path))
+
     languages = subliminal.video.scan_subtitle_languages(video_path)
 
     for language in languages:
-        if hasattr(language, 'alpha3') and language.alpha3:
-                resultList.append(language.alpha3)
+        if hasattr(language, 'opensubtitles') and language.opensubtitles:
+            resultList.append(language.opensubtitles)
+        elif hasattr(language, 'alpha3') and language.alpha3:
+            resultList.append(language.alpha3)
         elif hasattr(language, 'alpha2') and language.alpha2:
             resultList.append(language.alpha2)
 
@@ -98,11 +109,14 @@ def subtitlesLanguages(video_path):
     if len(resultList) is 1 and len(defaultLang) is 1:
         return defaultLang
 
+    if ('pob' in defaultLang or 'pb' in defaultLang) and ('pt' not in defaultLang and 'por' not in defaultLang):
+            resultList = [x if not x in ['por', 'pt'] else u'pob' for x in resultList]
+
     return sorted(resultList)
 
 # TODO: Return only languages our providers allow
 def subtitleLanguageFilter():
-    return [language for language in babelfish.LANGUAGE_MATRIX if hasattr(language, 'alpha2') and language.alpha2]
+    return [babelfish.Language.fromopensubtitles(language) for language in babelfish.language_converters['opensubtitles'].codes if len(language) == 3]
 
 class SubtitlesFinder():
     """
@@ -158,7 +172,7 @@ class SubtitlesFinder():
                 (epToSub['airdate_daydiff'] <= 7 and epToSub['searchcount'] < 7 and now - datetime.datetime.strptime(epToSub['lastsearch'], '%Y-%m-%d %H:%M:%S') > datetime.timedelta(hours=rules['new'][epToSub['searchcount']]))):
                 logger.log('Downloading subtitles for episode %dx%d of show %s' % (epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
                 
-                showObj = helpers.findCertainShow(sickbeard.showList, int(epToSub['showid']))
+                showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(epToSub['showid']))
                 if not showObj:
                     logger.log(u'Show not found', logger.DEBUG)
                     return
@@ -188,3 +202,32 @@ class SubtitlesFinder():
         - the number of searches done so far (searchcount), represented by the index of the list
         """
         return {'old': [0, 24], 'new': [0, 4, 8, 4, 16, 24, 24]}
+
+
+def run_subs_extra_scripts(epObj, foundSubs):
+
+    for curScriptName in sickbeard.SUBTITLES_EXTRA_SCRIPTS:
+        script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
+        script_cmd[0] = ek.ek(os.path.abspath, script_cmd[0])
+        logger.log(u"Absolute path to script: " + script_cmd[0], logger.DEBUG)
+
+        for video, subs in foundSubs.iteritems():
+            subpaths = []
+            for sub in subs:
+                subpath = subliminal.subtitle.get_subtitle_path(video.name, sub.language)
+                if sickbeard.SUBTITLES_DIR and ek.ek(os.path.exists, sickbeard.SUBTITLES_DIR):
+                    subpath = ek.ek(os.path.join, sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, subpath))
+
+                inner_cmd = script_cmd + [video.name] + [subpath] + [sub.language.opensubtitles] + [epObj.show.name] + \
+                                         [epObj.season] + [epObj.episode] + [epObj.name]
+
+                # use subprocess to run the command and capture output
+                logger.log(u"Executing command: %s" % inner_cmd)
+                try:
+                    p = subprocess.Popen(inner_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, cwd=sickbeard.PROG_DIR)
+                    out, err = p.communicate()  # @UnusedVariable
+                    logger.log(u"Script result: %s" % out, logger.DEBUG)
+
+                except Exception as e:
+                    logger.log(u"Unable to run subs_extra_script: " + ex(e))

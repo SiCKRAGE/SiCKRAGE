@@ -175,12 +175,10 @@ def retrieve_exceptions():
             logger.log(u"Checking for scene exception updates for " + sickbeard.indexerApi(indexer).name + "")
 
             loc = sickbeard.indexerApi(indexer).config['scene_loc']
-            if loc.startswith("http"):
+            try:
                 data = helpers.getURL(loc, session=sickbeard.indexerApi(indexer).session)
-            else:
-                loc = helpers.real_path(ek.ek(os.path.join, ek.ek(os.path.dirname, __file__), loc))
-                with open(loc, 'r') as file:
-                    data = file.read()
+            except Exception:
+                continue
 
             if data is None:
                 # When data is None, trouble connecting to github, or reading file failed
@@ -223,30 +221,22 @@ def retrieve_exceptions():
         else:
             exception_dict[anidb_ex] = anidb_exception_dict[anidb_ex]
 
-    changed_exceptions = False
-
-    # write all the exceptions we got off the net into the database
+    queries = []
     myDB = db.DBConnection('cache.db')
     for cur_indexer_id in exception_dict:
-
-        # get a list of the existing exceptions for this ID
-        existing_exceptions = [x["show_name"] for x in
-                               myDB.select("SELECT * FROM scene_exceptions WHERE indexer_id = ?", [cur_indexer_id])]
-
+        sql_ex = myDB.select("SELECT * FROM scene_exceptions WHERE indexer_id = ?;", [cur_indexer_id])
+        existing_exceptions = [x["show_name"] for x in sql_ex]
         if not cur_indexer_id in exception_dict:
             continue
 
         for cur_exception_dict in exception_dict[cur_indexer_id]:
-            cur_exception, curSeason = cur_exception_dict.items()[0]
-
-            # if this exception isn't already in the DB then add it
-            if cur_exception not in existing_exceptions:
-                myDB.action("INSERT INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?)",
-                            [cur_indexer_id, cur_exception, curSeason])
-                changed_exceptions = True
-
-    # since this could invalidate the results of the cache we clear it out after updating
-    if changed_exceptions:
+            for ex in cur_exception_dict.iteritems():
+                cur_exception, curSeason = ex
+                if cur_exception not in existing_exceptions:
+                    queries.append(["INSERT OR IGNORE INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?);",
+                            [cur_indexer_id, cur_exception, curSeason]])
+    if queries:
+        myDB.mass_action(queries)
         logger.log(u"Updated scene exceptions", logger.DEBUG)
     else:
         logger.log(u"No scene exceptions update needed", logger.DEBUG)
@@ -316,7 +306,7 @@ def _xem_exceptions_fetcher():
             if parsedJSON['result'] == 'failure':
                 continue
 
-            for indexerid, names in parsedJSON['data'].items():
+            for indexerid, names in parsedJSON['data'].iteritems():
                 try:
                     xem_exception_dict[int(indexerid)] = names
                 except Exception as e:

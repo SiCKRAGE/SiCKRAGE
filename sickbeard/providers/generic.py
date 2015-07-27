@@ -62,6 +62,8 @@ class GenericProvider:
 
         self.search_mode = None
         self.search_fallback = False
+
+        self.enabled = False
         self.enable_daily = False
         self.enable_backlog = False
 
@@ -73,9 +75,10 @@ class GenericProvider:
 
         self.btCacheURLS = [
                 'http://torcache.net/torrent/{torrent_hash}.torrent',
-                'http://zoink.ch/torrent/{torrent_name}.torrent',
-                'http://torrage.com/torrent/{torrent_hash}.torrent',
-                'http://itorrents.org/torrent/{torrent_hash}.torrent',
+                'http://thetorrent.org/torrent/{torrent_hash}.torrent',
+                'http://btdig.com/torrent/{torrent_hash}.torrent',
+                #'http://torrage.com/torrent/{torrent_hash}.torrent',
+                #'http://itorrents.org/torrent/{torrent_hash}.torrent',
             ]
 
         random.shuffle(self.btCacheURLS)
@@ -154,18 +157,23 @@ class GenericProvider:
         if result.url.startswith('magnet'):
             try:
                 torrent_hash = re.findall('urn:btih:([\w]{32,40})', result.url)[0].upper()
-                torrent_name = re.findall('dn=([^&]+)', result.url)[0]
+
+                try:
+                    torrent_name = re.findall('dn=([^&]+)', result.url)[0]
+                except:
+                    torrent_name = 'NO_DOWNLOAD_NAME'
 
                 if len(torrent_hash) == 32:
                     torrent_hash = b16encode(b32decode(torrent_hash)).upper()
 
                 if not torrent_hash:
-                    logger.log("Unable to extract torrent hash from link: " + ex(result.url), logger.ERROR)
+                    logger.log("Unable to extract torrent hash from magnet: " + ex(result.url), logger.ERROR)
                     return (urls, filename)
 
                 urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btCacheURLS]
             except:
-                urls = [result.url]
+                logger.log("Unable to extract torrent hash or name from magnet: " + ex(result.url), logger.ERROR)
+                return (urls, filename)
         else:
             urls = [result.url]
 
@@ -200,6 +208,8 @@ class GenericProvider:
             self.proxyGlypeProxySSLwarning = None
 
         for url in urls:
+            if 'NO_DOWNLOAD_NAME' in url:
+                continue
             if helpers.headURL(self.proxy._buildURL(url), session=self.session, headers=self.headers,
                                proxyGlypeProxySSLwarning=self.proxyGlypeProxySSLwarning):
                 return url
@@ -223,6 +233,9 @@ class GenericProvider:
             self.headers.pop('Referer')
 
         for url in urls:
+            if 'NO_DOWNLOAD_NAME' in url:
+                continue
+
             logger.log(u"Downloading a result from " + self.name + " at " + url)
             if helpers.download_file(self.proxy._buildURL(url), filename, session=self.session, headers=self.headers):
                 if self._verify_download(filename):
@@ -375,7 +388,7 @@ class GenericProvider:
                     else:
                         items[quality].append(item)
 
-            itemList = list(itertools.chain(*[v for (k, v) in sorted(items.items(), reverse=True)]))
+            itemList = list(itertools.chain(*[v for (k, v) in sorted(items.iteritems(), reverse=True)]))
             itemList += itemsUnknown if itemsUnknown else []
 
         # filter results
@@ -385,7 +398,7 @@ class GenericProvider:
 
             # parse the file name
             try:
-                myParser = NameParser(False, convert=True)
+                myParser = NameParser(False)
                 parse_result = myParser.parse(title)
             except InvalidNameException:
                 logger.log(u"Unable to parse the filename " + title + " into a valid episode", logger.DEBUG)

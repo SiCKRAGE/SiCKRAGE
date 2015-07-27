@@ -231,8 +231,7 @@ class TVCache():
     def shouldUpdate(self):
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
-            logger.log(u"Last update was too soon, using old cache: today()-" + str(self.lastUpdate) + "<" + str(
-                datetime.timedelta(minutes=self.minTime)), logger.DEBUG)
+            logger.log(u"Last update was too soon, using old cache: " + str(self.lastUpdate) + ". Updated less then " + str(self.minTime) + " minutes ago", logger.DEBUG)
             return False
 
         return True
@@ -255,7 +254,7 @@ class TVCache():
                 showObj = helpers.findCertainShow(sickbeard.showList, indexer_id)
 
             try:
-                myParser = NameParser(showObj=showObj, convert=True)
+                myParser = NameParser(showObj=showObj)
                 parse_result = myParser.parse(name)
             except InvalidNameException:
                 logger.log(u"Unable to parse the filename " + name + " into a valid episode", logger.DEBUG)

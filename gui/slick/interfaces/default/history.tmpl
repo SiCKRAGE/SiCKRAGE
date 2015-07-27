@@ -12,6 +12,7 @@
 #set global $sbPath=".."
 #set global $topmenu="history"#
 #set $layout = $sickbeard.HISTORY_LAYOUT
+#set $history_limit = $sickbeard.HISTORY_LIMIT
 
 #include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_top.tmpl")
 
@@ -87,11 +88,11 @@
   <h1 class="title">$title</h1>
 #end if
 <div class="h2footer pull-right"><b>Limit:</b> 
-    <select name="limit" id="limit" class="form-control form-control-inline input-sm">
-        <option value="100" #if $limit == "100" then "selected=\"selected\"" else ""#>100</option>
-        <option value="250" #if $limit == "250" then "selected=\"selected\"" else ""#>250</option>
-        <option value="500" #if $limit == "500" then "selected=\"selected\"" else ""#>500</option>
-        <option value="0" #if $limit == "0" then "selected=\"selected\"" else ""#>All</option>
+    <select name="history_limit" id="history_limit" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
+        <option value="$sbRoot/setHistoryLimit/?history_limit=100" #if $history_limit == "100" then "selected=\"selected\"" else ""#>100</option>
+        <option value="$sbRoot/setHistoryLimit/?history_limit=250" #if $history_limit == "250" then "selected=\"selected\"" else ""#>250</option>
+        <option value="$sbRoot/setHistoryLimit/?history_limit=500" #if $history_limit == "500" then "selected=\"selected\"" else ""#>500</option>
+        <option value="$sbRoot/setHistoryLimit/?history_limit=0" #if $history_limit == "0" then "selected=\"selected\"" else ""#>All</option>
     </select>
 
 
@@ -131,7 +132,7 @@
 				<td class="tvShow" width="35%"><a href="$sbRoot/home/displayShow?show=$hItem["showid"]#season-$hItem["season"]">$hItem["show_name"] - <%="S%02i" % int(hItem["season"])+"E%02i" % int(hItem["episode"]) %>#if "proper" in $hItem["resource"].lower() or "repack" in $hItem["resource"].lower() then ' <span class="quality Proper">Proper</span>' else ""#</a></td>
 				<td align="center" #if $curStatus == SUBTITLED then 'class="subtitles_column"' else ''#>
 				#if $curStatus == SUBTITLED:
-					<img width="16" height="11" style="vertical-align:middle;" src="$sbRoot/images/flags/${hItem['resource']}.png" onError="this.onerror=null;this.src='$sbRoot/images/flags/unknown.png';">
+					<img width="16" height="11" style="vertical-align:middle;" src="$sbRoot/images/subtitles/flags/${hItem['resource']}.png" onError="this.onerror=null;this.src='$sbRoot/images/flags/unknown.png';">
 				#end if
 					<span style="cursor: help; vertical-align:middle;" title="$os.path.basename($hItem['resource'])">$statusStrings[$curStatus]</span>
 				</td>

@@ -77,7 +77,7 @@ def clearCache(indexerid=0):
 def saveNameCacheToDb():
     cacheDB = db.DBConnection('cache.db')
 
-    for name, indexer_id in nameCache.items():
+    for name, indexer_id in nameCache.iteritems():
         cacheDB.action("INSERT OR REPLACE INTO scene_names (indexer_id, name) VALUES (?, ?)", [indexer_id, name])
 
 
@@ -91,7 +91,7 @@ def buildNameCache(show=None):
         for show in sickbeard.showList:
             buildNameCache(show)
     else:
-        logger.log(u"Building internal name cache for " + show.name, logger.INFO)
+        logger.log(u"Building internal name cache for " + show.name, logger.DEBUG)
         clearCache(show.indexerid)
         for curSeason in [-1] + sickbeard.scene_exceptions.get_scene_seasons(show.indexerid):
             for name in list(set(sickbeard.scene_exceptions.get_scene_exceptions(show.indexerid, season=curSeason) + [show.name])):
