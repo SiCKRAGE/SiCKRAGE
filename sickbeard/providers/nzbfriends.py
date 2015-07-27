@@ -70,7 +70,7 @@ class Nzbfriends(generic.NZBProvider):
 
         return title, url
 
-    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
         #http://nzbindex.com/rss/?q=German&sort=agedesc&minsize=100&complete=1&max=50&more=1
 
         params = {

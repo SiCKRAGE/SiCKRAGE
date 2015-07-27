@@ -135,7 +135,7 @@ class NzbtoProvider(generic.NZBProvider):
         except AttributeError:
             return "", ""
 
-    def _doSearch(self, search, search_mode='eponly', epcount=0, retention=0):
+    def _doSearch(self, search, search_mode='eponly', epcount=0, retention=0, epObj=None):
 
         self._checkAuth()
         self.session.post("http://nzb.to/login.php", data={"action": "login", "username": self.username, "password": self.api_key, "Submit": ".%3AEinloggen%3A.", "ret_url": ""})
