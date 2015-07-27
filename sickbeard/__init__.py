@@ -747,13 +747,9 @@ def initialize(consoleLogging=True):
 
         WEB_USE_GZIP = bool(check_setting_int(CFG, 'General', 'web_use_gzip', 1))
 
-<<<<<<< HEAD
-        INDEXER_DEFAULT_LANGUAGE = check_setting_str(CFG, 'General', 'indexerDefaultLang', 'de')
-=======
         SSL_VERIFY = bool(check_setting_int(CFG, 'General', 'ssl_verify', 1))
 
-        INDEXER_DEFAULT_LANGUAGE = check_setting_str(CFG, 'General', 'indexerDefaultLang', 'en')
->>>>>>> upstream/master
+        INDEXER_DEFAULT_LANGUAGE = check_setting_str(CFG, 'General', 'indexerDefaultLang', 'de')
         EP_DEFAULT_DELETED_STATUS = check_setting_int(CFG, 'General', 'ep_default_deleted_status', 6)
 
         LAUNCH_BROWSER = bool(check_setting_int(CFG, 'General', 'launch_browser', 1))
