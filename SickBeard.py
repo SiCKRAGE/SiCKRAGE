@@ -156,6 +156,7 @@ class SickRage(object):
                  "sickbeard/clients/qbittorrent.py",
                  "sickbeard/clients/transmission.py",
                  "sickbeard/clients/deluge.py",
+                 "sickbeard/clients/deluged.py",
                  "sickbeard/clients/rtorrent.py"
                 ]
                 
