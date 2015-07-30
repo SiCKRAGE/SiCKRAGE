@@ -171,6 +171,7 @@ class DelugeRPC(object):
             self.connect()
             self.client.label.set_torrent(torrent_id, label).get()
         except Exception as err:
+            logger.log('DelugeD: Failed to set label for torrent: ' + err + ' ' + traceback.format_exc(), logger.ERROR)
             return False
         finally:
             if self.client:
@@ -183,9 +184,11 @@ class DelugeRPC(object):
             self.client.core.pause_torrent(torrent_ids).get()
         except Exception as err:
             logger.log('DelugeD: Failed to pause torrent: ' + err + ' ' + traceback.format_exc(), logger.ERROR)
+            return False
         finally:
             if self.client:
                 self.disconnect()
+        return True
 
     def disconnect(self):
         self.client.disconnect()
