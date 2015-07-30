@@ -99,7 +99,7 @@ class DelugeDAPI(GenericClient):
     def _set_torrent_pause(self, result):
 
         if sickbeard.TORRENT_PAUSED:
-            return self.drpc.pause_torrent(result.hash):
+            return self.drpc.pause_torrent(result.hash)
 
     def testAuthentication(self):
         print "Test Auth"
