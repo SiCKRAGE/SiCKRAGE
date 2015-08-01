@@ -1,31 +1,15 @@
 #import sickbeard
 #import datetime
 #import re
+#import os.path
 #from sickbeard.common import *
 #from sickbeard import sbdatetime
 #from sickbeard.helpers import anon_url
-
-#set global $title='Trending Shows'
-#set global $header='Trending Shows'
-
-
-#set global $topmenu='home'
-#import os.path
-#include $os.path.join($sickbeard.PROG_DIR, 'gui/slick/interfaces/default/inc_top.tmpl')
-
-<script type="text/javascript" src="$sbRoot/js/addTrendingShow.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/rootDirs.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/plotTooltip.js?$sbPID"></script>
 
 <script type="text/javascript" charset="utf-8">
 <!--
 
 \$(document).ready(function(){
-    \$( "#tabs" ).tabs({
-        collapsible: true,
-        selected: #if $sickbeard.ROOT_DIRS then '-1' else '0'#
-    });
-
     // initialise combos for dirty page refreshes
     \$('#showsort').val('original');
     \$('#showsortdirection').val('asc');
@@ -84,49 +68,37 @@
 //-->
 </script>
 
-#if $varExists('header')
-    <h1 class="header">$header</h1>
+<div id="container">
+#if not $trending_shows
+    <div class="trakt_show" style="width:100%; margin-top:20px">
+        <p class="red-text">Trakt API did not return any results, please check your config.
+    </div>
 #else
-    <h1 class="title">$title</h1>
+#for $cur_show in $trending_shows:
+    #set $show_url = 'http://www.trakt.tv/shows/%s' % $cur_show['show']['ids']['slug']
+
+    <div class="trakt_show" data-name="$cur_show['show']['title']" data-rating="$cur_show['show']['rating']" data-votes="$cur_show['show']['votes']">
+        <div class="traktContainer">
+            <div class="trakt-image">
+                <a class="trakt-image" href="<%= anon_url(show_url) %>" target="_blank"><img alt="" class="trakt-image" src="$cur_show['show']['images']['poster']['thumb']" /></a>
+            </div>
+
+            <div class="show-title">
+                <%= (cur_show['show']['title'], '<span>&nbsp;</span>')[ '' == cur_show['show']['title']] %>
+            </div>
+
+        <div class="clearfix">
+            <p><%= int(cur_show['show']['rating']*10) %>% <img src="$sbRoot/images/heart.png"></p>
+            <i>$cur_show['show']['votes'] votes</i>
+            <div class="traktShowTitleIcons">
+                <a href="$sbRoot/home/addShows/addTraktShow?indexer_id=${cur_show['show']['ids']['tvdb'] or cur_show['show']['ids']['tvrage']}&amp;showName=${cur_show['show']['title']}" class="btn btn-xs">Add Show</a>
+#if $blacklist
+                <a href="$sbRoot/home/addShows/addShowToBlacklist?indexer_id=${cur_show['show']['ids']['tvdb'] or cur_show['show']['ids']['tvrage']}" class="btn btn-xs">Remove Show</a>
 #end if
-
-<div id="tabs">
-    <ul>
-        <li><a href="#tabs-1">Manage Directories</a></li>
-        <li><a href="#tabs-2">Customize Options</a></li>
-    </ul>
-    <div id="tabs-1" class="existingtabs">
-        #include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_rootDirs.tmpl")
+            </div>
+        </div>
+        </div>
     </div>
-    <div id="tabs-2" class="existingtabs">
-        #include $os.path.join($sickbeard.PROG_DIR, "gui/slick/interfaces/default/inc_addShowOptions.tmpl")
-    </div>
-    <br>
-
-    <span>Sort By:</span>
-    <select id="showsort" class="form-control form-control-inline input-sm">
-        <option value="name">Name</option>
-        <option value="original" selected="selected">Original</option>
-        <option value="votes">Votes</option>
-        <option value="rating">% Rating</option>
-        <option value="rating_votes">% Rating > Votes</option>
-    </select>
-
-    <span style="margin-left:12px">Sort Order:</span>
-    <select id="showsortdirection" class="form-control form-control-inline input-sm">
-        <option value="asc" selected="selected">Asc</option>
-        <option value="desc">Desc</option>
-    </select>
+#end for
+#end if
 </div>
-
-<br />
-<div id="trendingShows"></div>
-<br />
-
-<script type="text/javascript" charset="utf-8">
-<!--
-window.setInterval('location.reload(true)', 600000); // Refresh every 10 minutes
-//-->
-</script>
-
-#include $os.path.join($sickbeard.PROG_DIR, 'gui/slick/interfaces/default/inc_bottom.tmpl')
