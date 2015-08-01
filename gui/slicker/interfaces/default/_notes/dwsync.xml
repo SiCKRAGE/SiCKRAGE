@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="IRC.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823272190365591" remote="130823272190000000" Dst="2" />
+<file name="apiBuilder.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823198083342373" remote="130823198080000000" Dst="2" />
+<file name="config_general.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823199594303662" remote="130823199590000000" Dst="2" />
+<file name="config_notifications.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823201185355018" remote="130823201180000000" Dst="2" />
+<file name="config_subtitles.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823203301516837" remote="130823203300000000" Dst="2" />
+<file name="displayShow.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823207704315583" remote="130823207700000000" Dst="2" />
+<file name="editShow.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823208072390902" remote="130823208070000000" Dst="2" />
+<file name="history.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130829054106814130" remote="130829054100000000" Dst="2" />
+<file name="home.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823210404717898" remote="130823210400000000" Dst="2" />
+<file name="inc_addShowOptions.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823211040393426" remote="130823211040000000" Dst="2" />
+<file name="inc_bottom.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823211543993861" remote="130823211540000000" Dst="2" />
+<file name="inc_qualityChooser.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823212155519377" remote="130823212150000000" Dst="2" />
+<file name="inc_top.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823270274283962" remote="130823270270000000" Dst="2" />
+<file name="manage_subtitleMissed.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823218265764598" remote="130823218260000000" Dst="2" />
+<file name="markdown.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823275733408613" remote="130823275730000000" Dst="2" />
+<file name="restart_bare.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823219887360977" remote="130823219880000000" Dst="2" />
+<file name="status.tmpl" server="//SERVER/Sickrage Theme/gui/slicker/" local="130823223338648918" remote="130823223330000000" Dst="2" />
+</dwsync>
