@@ -59,6 +59,8 @@ from libtrakt import TraktAPI
 from libtrakt.exceptions import traktException
 from versionChecker import CheckVersion
 
+import imdbPopular
+
 import requests
 import markdown2
 
@@ -2448,7 +2450,7 @@ class HomeAddShows(Home):
         return t.respond()
 
 
-    def newShow(self, show_to_add=None, other_shows=None):
+    def newShow(self, show_to_add=None, other_shows=None, search_string=None):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
         posts them to addNewShow
@@ -2469,7 +2471,10 @@ class HomeAddShows(Home):
 
         # use the given show_dir for the indexer search if available
         if not show_dir:
-            t.default_show_name = ''
+            if search_string:
+                t.default_show_name = search_string
+            else:
+                t.default_show_name = ''
         elif not show_name:
             t.default_show_name = re.sub(' \(\d{4}\)', '',
                                          ek.ek(os.path.basename, ek.ek(os.path.normpath, show_dir)).replace('.', ' '))
@@ -2494,6 +2499,22 @@ class HomeAddShows(Home):
         t.blacklist = []
         t.groups = []
         return t.respond()
+
+    def popularShows(self):
+        """
+        Fetches data from IMDB.
+        """
+        t = PageTemplate(rh=self, file="home_popularShows.tmpl")
+        t.submenu = self.HomeMenu()
+        t.enable_anime_options = False
+
+        try:
+            t.popular_shows = imdbPopular.fetch_popular_shows()
+        except:
+            t.popular_shows = None
+
+        return t.respond()
+
 
     def recommendedShows(self):
         """
