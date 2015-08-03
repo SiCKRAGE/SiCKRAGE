@@ -147,7 +147,7 @@ class NewznabProvider(generic.NZBProvider):
 
         # search
         rid = helpers.mapIndexersToShow(ep_obj.show)[2]
-        if rid:
+        if rid and self.name not in "Usenet-Crawler":
             cur_params['rid'] = rid
         elif 'rid' in cur_params:
             cur_params.pop('rid')
@@ -172,20 +172,21 @@ class NewznabProvider(generic.NZBProvider):
             return [params]
 
         params['maxage'] = (datetime.datetime.now() - datetime.datetime.combine(ep_obj.airdate, datetime.datetime.min.time())).days + 1
-
+        
+        episode = 'ep' if self.name not in "Usenet-Crawler" else 'episode'
         if ep_obj.show.air_by_date or ep_obj.show.sports:
             date_str = str(ep_obj.airdate)
             params['season'] = date_str.partition('-')[0]
-            params['ep'] = date_str.partition('-')[2].replace('-', '/')
+            params[episode] = date_str.partition('-')[2].replace('-', '/')
         elif ep_obj.show.anime:
-            params['ep'] = "%i" % int(ep_obj.scene_absolute_number if int(ep_obj.scene_absolute_number) > 0 else ep_obj.scene_episode)
+            params[episode] = "%i" % int(ep_obj.scene_absolute_number if int(ep_obj.scene_absolute_number) > 0 else ep_obj.scene_episode)
         else:
             params['season'] = ep_obj.scene_season
-            params['ep'] = ep_obj.scene_episode
+            params[episode] = ep_obj.scene_episode
 
         # search
         rid = helpers.mapIndexersToShow(ep_obj.show)[2]
-        if rid:
+        if rid and self.name not in "Usenet-Crawler":
             params['rid'] = rid
         elif 'rid' in params:
             params.pop('rid')
@@ -202,9 +203,9 @@ class NewznabProvider(generic.NZBProvider):
 
             if ep_obj.show.anime:
                 paramsNoEp = params.copy()
-                paramsNoEp['q'] = paramsNoEp['q'] + " " + paramsNoEp['ep']
-                if "ep" in paramsNoEp:
-                    paramsNoEp.pop("ep")
+                paramsNoEp['q'] = paramsNoEp['q'] + " " + paramsNoEp[episode]
+                if episode in paramsNoEp:
+                    paramsNoEp.pop(episode)
                 to_return.append(paramsNoEp)
 
         return to_return
