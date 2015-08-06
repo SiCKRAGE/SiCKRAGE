@@ -557,7 +557,7 @@ class TVShow(object):
         except sickbeard.indexer_error:
             logger.log(u"" + sickbeard.indexerApi(
                 self.indexer).name + " timed out, unable to update episodes from " + sickbeard.indexerApi(
-                self.indexer).name, logger.ERROR)
+                self.indexer).name, logger.WARNING)
             return None
 
         logger.log(
@@ -1254,16 +1254,16 @@ class TVShow(object):
         logger.log(u"Existing episode status: " + str(epStatus) + " (" + epStatus_text + ")", logger.DEBUG)
 
         # if we know we don't want it then just say no
-        if epStatus in (SKIPPED, IGNORED, ARCHIVED) and not manualSearch:
-            logger.log(u"Existing episode status is skipped/ignored/archived, ignoring found episode", logger.DEBUG)
+        if epStatus in (UNAIRED, SKIPPED, IGNORED, ARCHIVED) and not manualSearch:
+            logger.log(u"Existing episode status is unaired/skipped/ignored/archived, ignoring found episode", logger.DEBUG)
             return False
 
         curStatus, curQuality = Quality.splitCompositeStatus(epStatus)
 
         # if it's one of these then we want it as long as it's in our allowed initial qualities
         if quality in anyQualities + bestQualities:
-            if epStatus in (WANTED, UNAIRED, SKIPPED):
-                logger.log(u"Existing episode status is wanted/unaired/skipped, getting found episode", logger.DEBUG)
+            if epStatus in (WANTED, SKIPPED):
+                logger.log(u"Existing episode status is wanted or skipped, getting found episode", logger.DEBUG)
                 return True
             elif manualSearch:
                 if (downCurQuality and quality >= curQuality) or (not downCurQuality and quality > curQuality):
