@@ -1619,12 +1619,27 @@ class Home(WebRoot):
                 logger.log("Trakt: Unable to delete show: {0}. Error: {1}".format(showObj.name, ex(e)),logger.ERROR)
                 return self._genericMessage("Error", "Unable to delete show: {0}".format(showObj.name))
 
-        showObj.deleteShow(bool(full))
-
-        ui.notifications.message('%s has been %s %s' %
+        try:
+            from sickbeard.show_queue import ShowQueue
+            ShowActions = ShowQueue()
+            queue_actions = (ShowQueueActions.ADD, ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE, ShowQueueActions.REFRESH, ShowQueueActions.RENAME, ShowQueueActions.SUBTITLE)
+            if not ShowActions._isInQueue(showObj, queue_actions) and not ShowActions._isBeingSomethinged(showObj, queue_actions):
+                #Delete show if not in queue or doing something with it
+                showObj.deleteShow(bool(full))
+                ui.notifications.message('%s has been %s %s' %
                                  (showObj.name,
                                   ('deleted', 'trashed')[sickbeard.TRASH_REMOVE_SHOW],
                                   ('(media untouched)', '(with all related media)')[bool(full)]))
+            else:
+                ui.notifications.message('%s has not been %s %s because it is in a download/refresh/update queue' %
+                                 (showObj.name,
+                                  ('deleted', 'trashed')[sickbeard.TRASH_REMOVE_SHOW],
+                                  ('(media untouched)', '(with all related media)')[bool(full)]))
+                logger.log('Could not remove show because this it is in a download/refresh/update queue. Try again later!')                
+        except:
+            logger.log("Could not remove show. Try again later!")
+
+
         #Dont redirect to default page so user can confirm show was deleted
         return self.redirect('/home/')
 
