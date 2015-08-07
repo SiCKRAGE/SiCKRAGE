@@ -251,26 +251,6 @@ def change_USE_TRAKT(use_trakt):
         sickbeard.traktCheckerScheduler.silent = True
         logger.log(u"Stopping TRAKTCHECKER thread", logger.INFO)
 
-def change_TRAKT_USE_ROLLING_DOWNLOAD(trakt_use_rolling_download):
-    trakt_use_rolling_download = checkbox_to_value(trakt_use_rolling_download)
-    
-    if sickbeard.TRAKT_USE_ROLLING_DOWNLOAD == trakt_use_rolling_download:
-        return
-    
-    sickbeard.TRAKT_USE_ROLLING_DOWNLOAD = trakt_use_rolling_download
-    
-    if sickbeard.USE_TRAKT and sickbeard.TRAKT_USE_ROLLING_DOWNLOAD:
-        if not sickbeard.traktRollingScheduler.enable:
-            logger.log(u"Starting TRAKTROLLING thread", logger.INFO)
-            sickbeard.traktRollingScheduler.silent = False
-            sickbeard.traktRollingScheduler.enable = True
-        else:
-            logger.log(u"Unable to start TRAKTROLLING thread. Already running", logger.INFO)
-    else:
-        sickbeard.traktRollingScheduler.enable = False
-        sickbeard.traktRollingScheduler.silent = True
-        logger.log(u"Stopping TRAKTROLLING thread", logger.INFO)
-
 def change_USE_SUBTITLES(use_subtitles):
     use_subtitles = checkbox_to_value(use_subtitles)
     
