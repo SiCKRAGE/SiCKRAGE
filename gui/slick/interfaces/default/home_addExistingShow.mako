@@ -1,5 +1,8 @@
 <%!
+    import os.path
     import sickbeard
+    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from sickbeard.common import Quality, qualityPresets, qualityPresetStrings
 %>
 <%include file="/inc_top.mako"/>
 <script type="text/javascript" src="${sbRoot}/js/qualityChooser.js?${sbPID}"></script>
@@ -11,20 +14,22 @@
 $(document).ready(function(){
     $( "#tabs" ).tabs({
         collapsible: true,
-        selected: '${('0', '-1')[bool(sickbeard.ROOT_DIRS)]}'
+        selected: ${('0', '-1')[sickbeard.ROOT_DIRS == True]}
     });
 });
 </script>
 
 % if not header is UNDEFINED:
-<h1 class="header">${header}</h1>
+    <h1 class="header">${header}</h1>
 % else:
-<h1 class="title">${title}</h1>
+    <h1 class="title">${title}</h1>
 % endif
 
 <div id="newShowPortal">
     <div id="config-components">
-        <ul><li><a href="#core-component-group1">Add Existing Show</a></li></ul>
+        <ul>
+            <li><a href="#core-component-group1">Add Existing Show</a></li>
+        </ul>
 
     <div id="core-component-group1" class="tab-pane active component-group">
 
@@ -53,7 +58,8 @@ $(document).ready(function(){
 
     <p><b>Displaying folders within these directories which aren't already added to SickRage:</b></p>
 
-    <ul id="rootDirStaticList"><li></li</ul>
+    <ul id="rootDirStaticList"><li></li></ul>
+
     <br />
     <div id="tableDiv"></div>
     <br />
