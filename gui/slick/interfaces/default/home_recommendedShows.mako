@@ -2,7 +2,8 @@
     import sickbeard
     import datetime
     import re
-    from sickbeard.common import *
+    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from sickbeard.common import Quality, qualityPresets, qualityPresetStrings
     from sickbeard import sbdatetime
     from sickbeard.helpers import anon_url
 %>
@@ -76,7 +77,7 @@ $(document).ready(function(){
 
 % if not header is UNDEFINED:
     <h1 class="header">${header}</h1>
-% else
+% else:
     <h1 class="title">${title}</h1>
 % endif
 
