@@ -18,7 +18,7 @@ $(document).ready(function(){
     $('#showsortdirection').val('asc');
 
     var $container = [$('#container')];
-    $.each($container, function (j) {
+    jQuery.each($container, function (j) {
         this.isotope({
             itemSelector: '.trakt_show',
             sortBy: 'original-order',

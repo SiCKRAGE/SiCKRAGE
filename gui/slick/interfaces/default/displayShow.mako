@@ -361,15 +361,15 @@ $(document).ready(function(){
                 <th data-sorter="false" class="col-metadata">NFO</th>
                 <th data-sorter="false" class="col-metadata">TBN</th>
                 <th data-sorter="false" class="col-ep">Episode</th>
-                <th data-sorter="false" ${('class="col-ep columnSelector-false"', 'class="col-ep"')[bool(show.is_anime)]}>Absolute</th>
-                <th data-sorter="false" ${('class="col-ep columnSelector-false"', 'class="col-ep"')[bool(scene)]}>Scene</th>
-                <th data-sorter="false" ${('class="col-ep columnSelector-false"', 'class="col-ep"')[bool(scene_anime)]}>Scene Absolute</th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>Absolute</th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene)]}>Scene</th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene_anime)]}>Scene Absolute</th>
                 <th data-sorter="false" class="col-name">Name</th>
                 <th data-sorter="false" class="col-name columnSelector-false">File Name</th>
                 <th data-sorter="false" class="col-ep columnSelector-false">Size</th>
                 <th data-sorter="false" class="col-airdate">Airdate</th>
-                <th data-sorter="false" ${('class="col-ep columnSelector-false"', 'class="col-ep"')[bool(sickbeard.DOWNLOAD_URL)]}>Download</th>
-                <th data-sorter="false" ${('class="col-ep columnSelector-false"', 'class="col-ep"')[bool(sickbeard.USE_SUBTITLES)]}>Subtitles</th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickbeard.DOWNLOAD_URL)]}>Download</th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickbeard.USE_SUBTITLES)]}>Subtitles</th>
                 <th data-sorter="false" class="col-status">Status</th>
                 <th data-sorter="false" class="col-search">Search</th>
         </tr>
@@ -381,6 +381,7 @@ $(document).ready(function(){
                 % if sickbeard.DISPLAY_ALL_SEASONS == False:
                     <button id="showseason-${epResult['season']}" type="button" class="btn btn-xs pull-right" data-toggle="collapse" data-target="#collapseSeason-${epResult['season']}">Show Episodes</button>
                     <script type="text/javascript">
+                    <!--
                         $(function() {
                             $('#collapseSeason-${epResult['season']}').on('hide.bs.collapse', function () {
                                 $('#showseason-${epResult['season']}').text('Show Episodes');
@@ -389,6 +390,7 @@ $(document).ready(function(){
                                 $('#showseason-${epResult['season']}').text('Hide Episodes');
                             })
                         });
+                    //-->
                     </script>
                 % endif
             </th>
@@ -500,8 +502,12 @@ $(document).ready(function(){
                     class="sceneAbsolute form-control input-scene" data-for-absolute="${epResult["absolute_number"]}"
                     id="sceneAbsolute_${show.indexerid}${"_"+str(epResult["absolute_number"])}"
                     title="Change the value here if scene absolute numbering differs from the indexer absolute numbering"
-                    value="${('', str(scAbsolute))[bool(dfltAbsNumbering)]}"
-                    style="padding: 0; text-align: center; max-width: 60px;" />
+                    % if dfltAbsNumbering:
+                        value=""
+                    % else:
+                        value="${str(scAbsolute)}"
+                    % endif
+                        style="padding: 0; text-align: center; max-width: 60px;" />
             </td>
             <td class="col-name">
             % if epResult["description"] != "" and epResult["description"] != None:
@@ -518,6 +524,7 @@ $(document).ready(function(){
                     for rootDir in sickbeard.ROOT_DIRS.split('|'):
                         if not rootDir.startswith('/'):
                             filename = filename.replace('\\','\\\\')
+
                         filename = ntpath.basename(filename)
                     %>
                     ${filename}

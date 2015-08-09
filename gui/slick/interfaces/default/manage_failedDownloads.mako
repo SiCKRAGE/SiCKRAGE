@@ -57,10 +57,15 @@ $(document).ready(function(){
   </tfoot>
   <tbody>
 % for hItem in failedResults:
+<% curRemove  = "<input type=\"checkbox\" class=\"removeCheck\" id=\"remove-"+hItem["release"]+"\" />" %>
   <tr>
-    <td class="nowrap">${hItem['release']}</td>
+    <td class="nowrap">${hItem["release"]}</td>
     <td align="center">
-        ${('?', hItem['size'])[hItem['size'] != -1]}
+    % if hItem["size"] != -1:
+        ${hItem["size"]}
+    % else:
+        ?
+    % endif
     </td>
     <td align="center">
     <% provider = providers.getProviderClass(generic.GenericProvider.makeID(hItem["provider"])) %>
@@ -70,7 +75,7 @@ $(document).ready(function(){
         <img src="${sbRoot}/images/providers/missing.png" width="16" height="16" alt="missing provider" title="missing provider"/>
     % endif
     </td>
-    <td align="center"><input type="checkbox" class="removeCheck" id="remove-${hItem['release']}" /></td>
+    <td align="center">${curRemove}</td>
   </tr>
 % endfor
   </tbody>
