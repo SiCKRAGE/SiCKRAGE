@@ -787,8 +787,8 @@
 <div></div>
 
 <script type="text/javascript" charset="utf-8">
-    jQuery('#log_dir').fileBrowser({ title: 'Select log file folder location' });
-    jQuery('#config-components').tabs();
+    $('#log_dir').fileBrowser({ title: 'Select log file folder location' });
+    $('#config-components').tabs();
 </script>
 
 <%include file="/inc_bottom.mako"/>
