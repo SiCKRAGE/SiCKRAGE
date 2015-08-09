@@ -31,8 +31,7 @@ $.tablesorter.addParser({
     type: 'numeric'
 });
 
-$(document).ready(function()
-{
+$(document).ready(function(){
     $("#massUpdateTable:has(tbody tr)").tablesorter({
         sortList: [[1,0]],
         textExtraction: {
@@ -123,40 +122,40 @@ $(document).ready(function()
         <% curRemove_disabled = "" %>
 
         % if sickbeard.showQueueScheduler.action.isBeingUpdated(curShow) or sickbeard.showQueueScheduler.action.isInUpdateQueue(curShow):
-            <% curUpdate_disabled = "disabled=\"disabled\" " %>
+            <% curUpdate_disabled = 'disabled="disabled"' %>
         % endif
 
-        <% curUpdate = "<input type=\"checkbox\" class=\"updateCheck\" id=\"update-"+str(curShow.indexerid)+"\" "+curUpdate_disabled+"/>" %>
+        <% curUpdate = '<input type="checkbox" class="updateCheck" id="update-'+str(curShow.indexerid)+'" '+curUpdate_disabled+'/>' %>
 
         % if sickbeard.showQueueScheduler.action.isBeingRefreshed(curShow) or sickbeard.showQueueScheduler.action.isInRefreshQueue(curShow):
-            <% curRefresh_disabled = "disabled=\"disabled\" " %>
+            <% curRefresh_disabled = 'disabled="disabled"' %>
         % endif
 
-        <% curRefresh = "<input type=\"checkbox\" class=\"refreshCheck\" id=\"refresh-"+str(curShow.indexerid)+"\" "+curRefresh_disabled+"/>" %>
+        <% curRefresh = '<input type="checkbox" class="refreshCheck" id="refresh-'+str(curShow.indexerid)+'" '+curRefresh_disabled+'/>' %>
 
         % if sickbeard.showQueueScheduler.action.isBeingRenamed(curShow) or sickbeard.showQueueScheduler.action.isInRenameQueue(curShow):
-            <% curRename = "disabled=\"disabled\" " %>
+            <% curRename = 'disabled="disabled"' %>
         % endif
 
-        <% curRename = "<input type=\"checkbox\" class=\"renameCheck\" id=\"rename-"+str(curShow.indexerid)+"\" "+curRename_disabled+"/>" %>
+        <% curRename = '<input type="checkbox" class="renameCheck" id="rename-'+str(curShow.indexerid)+'" '+curRename_disabled+'/>' %>
 
         % if not curShow.subtitles or sickbeard.showQueueScheduler.action.isBeingSubtitled(curShow) or sickbeard.showQueueScheduler.action.isInSubtitleQueue(curShow):
-            <% curSubtitle_disabled = "disabled=\"disabled\" " %>
+            <% curSubtitle_disabled = 'disabled="disabled"' %>
         % endif
 
-        <% curSubtitle = "<input type=\"checkbox\" class=\"subtitleCheck\" id=\"subtitle-"+str(curShow.indexerid)+"\" "+curSubtitle_disabled+"/>" %>
+        <% curSubtitle = '<input type="checkbox" class="subtitleCheck" id="subtitle-'+str(curShow.indexerid)+'" '+curSubtitle_disabled+'/>' %>
 
         % if sickbeard.showQueueScheduler.action.isBeingRenamed(curShow) or sickbeard.showQueueScheduler.action.isInRenameQueue(curShow) or sickbeard.showQueueScheduler.action.isInRefreshQueue(curShow):
-            curDelete = "disabled=\"disabled\" " %>
+            curDelete = 'disabled="disabled"' %>
         % endif
 
-        <% curDelete = "<input type=\"checkbox\" class=\"deleteCheck\" id=\"delete-"+str(curShow.indexerid)+"\" "+curDelete_disabled+"/>" %>
+        <% curDelete = '<input type="checkbox" class="deleteCheck" id="delete-'+str(curShow.indexerid)+'" '+curDelete_disabled+'/>' %>
 
         % if sickbeard.showQueueScheduler.action.isBeingRenamed(curShow) or sickbeard.showQueueScheduler.action.isInRenameQueue(curShow) or sickbeard.showQueueScheduler.action.isInRefreshQueue(curShow):
-            <% curRemove = "disabled=\"disabled\" " %>
+            <% curRemove = 'disabled="disabled"' %>
         % endif
 
-        <% curRemove = "<input type=\"checkbox\" class=\"removeCheck\" id=\"remove-"+str(curShow.indexerid)+"\" "+curRemove_disabled+"/>" %>
+        <% curRemove = '<input type="checkbox" class="removeCheck" id="remove-'+str(curShow.indexerid)+'" '+curRemove_disabled+'/>' %>
         <tr>
             <td align="center"><input type="checkbox" class="editCheck" id="edit-${curShow.indexerid}" /></td>
             <td class="tvShow"><a href="${sbRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a></td>

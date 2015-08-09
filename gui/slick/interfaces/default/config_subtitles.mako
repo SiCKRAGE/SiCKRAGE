@@ -51,7 +51,7 @@
                             <label for="use_subtitles" class="clearfix">
                                 <span class="component-title">Search Subtitles</span>
                                 <span class="component-desc">
-                                    <input type="checkbox" class="enabler" ${("", " checked=\"checked\"")[bool(sickbeard.USE_SUBTITLES)]} id="use_subtitles" name="use_subtitles">
+                                    <input type="checkbox" class="enabler" ${('', 'checked="checked"')[bool(sickbeard.USE_SUBTITLES)]} id="use_subtitles" name="use_subtitles">
                                 </span>
                             </label>
                         </div>
@@ -180,7 +180,7 @@
 
 <div class="clearfix"></div>
 <script type="text/javascript" charset="utf-8">
-    jQuery('#config-components').tabs();
-    jQuery('#subtitles_dir').fileBrowser({ title: 'Select Subtitles Download Directory' });
+    $('#config-components').tabs();
+    $('#subtitles_dir').fileBrowser({ title: 'Select Subtitles Download Directory' });
 </script>
 <%include file="/inc_bottom.mako"/>
