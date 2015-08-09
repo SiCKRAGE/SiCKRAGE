@@ -659,7 +659,7 @@
                                 </label>
                                 <label>
                                     <span class="component-title">&nbsp;</span>
-                                    <span class="component-desc">(Messages & Settings > Account & System Information > System Information > DVR name)</span>
+                                    <span class="component-desc">(Messages &amp; Settings > Account &amp; System Information > System Information > DVR name)</span>
                                 </label>
                             </div>
                             <input type="submit" class="config_submitter btn" value="Save Changes" />
