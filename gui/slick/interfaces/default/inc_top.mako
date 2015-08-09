@@ -130,10 +130,13 @@
             };
 
             $(document).ready(function() {
+
                 initActions();
 
                 $("#NAV${topmenu}").addClass("active");
+
                 $('.dropdown-toggle').dropdownHover();
+
             });
         </script>
     <script type="text/javascript" src="${sbRoot}/js/confirmations.js?${sbPID}"></script>

@@ -317,7 +317,7 @@ $(document).ready(function(){
 
     var $container = [$('#container'), $('#container-anime')];
 
-    $.each($container, function (j) {
+    jQuery.each($container, function (j) {
         this.isotope({
             itemSelector: '.show',
             sortBy : '${sickbeard.POSTER_SORTBY}',

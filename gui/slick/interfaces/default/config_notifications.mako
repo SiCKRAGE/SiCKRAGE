@@ -1831,6 +1831,6 @@
 
 <div class="clearfix"></div>
 <script type="text/javascript" charset="utf-8">
-    $('#config-components').tabs();
+    jQuery('#config-components').tabs();
 </script>
 <%include file="/inc_bottom.mako"/>
