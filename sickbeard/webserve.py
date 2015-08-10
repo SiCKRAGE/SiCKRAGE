@@ -4882,6 +4882,8 @@ class ConfigNotifications(Config):
         sickbeard.TRAKT_ROLLING_ADD_PAUSED = config.checkbox_to_value(trakt_rolling_add_paused)
         sickbeard.TRAKT_ROLLING_FREQUENCY = int(trakt_rolling_frequency)
 
+        sickbeard.USE_IMDB_POPULAR = config.checkbox_to_value(use_imdb_popular)
+
         sickbeard.USE_EMAIL = config.checkbox_to_value(use_email)
         sickbeard.EMAIL_NOTIFY_ONSNATCH = config.checkbox_to_value(email_notify_onsnatch)
         sickbeard.EMAIL_NOTIFY_ONDOWNLOAD = config.checkbox_to_value(email_notify_ondownload)
