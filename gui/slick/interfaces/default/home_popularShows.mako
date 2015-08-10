@@ -1,3 +1,5 @@
+<% from sickbeard.helpers import anon_url %>
+
 <%include file="/inc_top.mako"/>
 
 % if not popular_shows:
@@ -17,7 +19,7 @@
                 % endif
 
                 <p>${cur_result['outline']}<span class="year"> - Released ${cur_result['year']}<span></p>
-                <span class="imdb_url"><a href="${cur_result['imdb_url']}">View on IMDB</a></span>&nbsp;&nbsp;|&nbsp;&nbsp;
+                <span class="imdb_url"><a href="${anon_url(cur_result['imdb_url'])}">View on IMDB</a></span>&nbsp;&nbsp;|&nbsp;&nbsp;
                 <span class="imdb_sickrage_search"><a href="/home/addShows/newShow/?search_string=${cur_result['name']}">
                     Add Show</a></span>
 
