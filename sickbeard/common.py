@@ -40,6 +40,8 @@ user_agents = ['Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gec
               ]
 
 INSTANCE_ID = str(uuid.uuid1())
+if len(sickbeard.CUR_COMMIT_HASH) == 40:
+    INSTANCE_ID += '-' + sickbeard.CUR_COMMIT_HASH[:7] # Append github style short hash
 USER_AGENT = ('SickRage/(' + platform.system() + '; ' + platform.release() + '; ' + INSTANCE_ID + ')')
 
 if SPOOF_USER_AGENT:
