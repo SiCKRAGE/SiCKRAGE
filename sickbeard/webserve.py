@@ -3774,7 +3774,7 @@ class ConfigGeneral(Config):
     def saveGeneral(self, log_dir=None, log_nr = 5, log_size = 1048576, web_port=None, web_log=None, encryption_version=None, web_ipv6=None,
                     update_shows_on_start=None, update_shows_on_snatch=None, trash_remove_show=None, trash_rotate_logs=None, update_frequency=None,
                     indexerDefaultLang='en', ep_default_deleted_status=None, launch_browser=None, showupdate_hour=3, web_username=None,
-                    api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL',
+                    api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL', no_showupdate=None,
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
                     handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
                     proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, git_remote=None,
@@ -3792,6 +3792,7 @@ class ConfigGeneral(Config):
         sickbeard.LAUNCH_BROWSER = config.checkbox_to_value(launch_browser)
         config.change_SHOWUPDATE_HOUR(showupdate_hour)
         config.change_VERSION_NOTIFY(config.checkbox_to_value(version_notify))
+        config.change_NOSHOWUPDATE(config.checkbox_to_value(no_showupdate))
         sickbeard.AUTO_UPDATE = config.checkbox_to_value(auto_update)
         sickbeard.NOTIFY_ON_UPDATE = config.checkbox_to_value(notify_on_update)
         # sickbeard.LOG_DIR is set in config.change_LOG_DIR()
@@ -3801,6 +3802,7 @@ class ConfigGeneral(Config):
         sickbeard.UPDATE_SHOWS_ON_SNATCH = config.checkbox_to_value(update_shows_on_snatch)
         sickbeard.TRASH_REMOVE_SHOW = config.checkbox_to_value(trash_remove_show)
         sickbeard.TRASH_ROTATE_LOGS = config.checkbox_to_value(trash_rotate_logs)
+        sickbeard.NO_SHOWUPDATE = config.checkbox_to_value(no_showupdate)
         config.change_UPDATE_FREQUENCY(update_frequency)
         sickbeard.LAUNCH_BROWSER = config.checkbox_to_value(launch_browser)
         sickbeard.SORT_ARTICLE = config.checkbox_to_value(sort_article)

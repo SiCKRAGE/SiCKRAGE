@@ -90,7 +90,7 @@ events = None
 # github
 gh = None
 
-# schedualers
+# schedulers
 dailySearchScheduler = None
 backlogSearchScheduler = None
 showUpdateScheduler = None
@@ -179,6 +179,7 @@ ACTUAL_CACHE_DIR = None
 ROOT_DIRS = None
 UPDATE_SHOWS_ON_START = False
 UPDATE_SHOWS_ON_SNATCH = False
+NO_SHOWUPDATE = False
 TRASH_REMOVE_SHOW = False
 TRASH_ROTATE_LOGS = False
 SORT_ARTICLE = False
@@ -569,7 +570,7 @@ def initialize(consoleLogging=True):
             PLEX_SERVER_HOST, PLEX_SERVER_TOKEN, PLEX_HOST, PLEX_USERNAME, PLEX_PASSWORD, DEFAULT_BACKLOG_FREQUENCY, MIN_BACKLOG_FREQUENCY, BACKLOG_STARTUP, SKIP_REMOVED_FILES, \
             USE_EMBY, EMBY_HOST, EMBY_APIKEY, \
             showUpdateScheduler, __INITIALIZED__, INDEXER_DEFAULT_LANGUAGE, EP_DEFAULT_DELETED_STATUS, LAUNCH_BROWSER, UPDATE_SHOWS_ON_START, UPDATE_SHOWS_ON_SNATCH, TRASH_REMOVE_SHOW, TRASH_ROTATE_LOGS, SORT_ARTICLE, showList, loadingShowList, \
-            NEWZNAB_DATA, NZBS, NZBS_UID, NZBS_HASH, INDEXER_DEFAULT, INDEXER_TIMEOUT, USENET_RETENTION, TORRENT_DIR, \
+            NEWZNAB_DATA, NZBS, NZBS_UID, NZBS_HASH, INDEXER_DEFAULT, INDEXER_TIMEOUT, USENET_RETENTION, TORRENT_DIR, NO_SHOWUPDATE, \
             QUALITY_DEFAULT, FLATTEN_FOLDERS_DEFAULT, SUBTITLES_DEFAULT, STATUS_DEFAULT, STATUS_DEFAULT_AFTER, DAILYSEARCH_STARTUP, \
             GROWL_NOTIFY_ONSNATCH, GROWL_NOTIFY_ONDOWNLOAD, GROWL_NOTIFY_ONSUBTITLEDOWNLOAD, TWITTER_NOTIFY_ONSNATCH, TWITTER_NOTIFY_ONDOWNLOAD, TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD, USE_FREEMOBILE, FREEMOBILE_ID, FREEMOBILE_APIKEY, FREEMOBILE_NOTIFY_ONSNATCH, FREEMOBILE_NOTIFY_ONDOWNLOAD, FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD, \
             USE_GROWL, GROWL_HOST, GROWL_PASSWORD, USE_PROWL, PROWL_NOTIFY_ONSNATCH, PROWL_NOTIFY_ONDOWNLOAD, PROWL_NOTIFY_ONSUBTITLEDOWNLOAD, PROWL_API, PROWL_PRIORITY, PROG_DIR, \
@@ -781,6 +782,7 @@ def initialize(consoleLogging=True):
         UPDATE_SHOWS_ON_SNATCH = bool(check_setting_int(CFG, 'General', 'update_shows_on_snatch', 0))
         TRASH_REMOVE_SHOW = bool(check_setting_int(CFG, 'General', 'trash_remove_show', 0))
         TRASH_ROTATE_LOGS = bool(check_setting_int(CFG, 'General', 'trash_rotate_logs', 0))
+        NO_SHOWUPDATE = bool(check_setting_int(CFG, 'General', 'no_showupdate', 0))
 
         SORT_ARTICLE = bool(check_setting_int(CFG, 'General', 'sort_article', 0))
 
@@ -1434,7 +1436,12 @@ def start():
             backlogSearchScheduler.start()
 
             # start the show updater
-            showUpdateScheduler.enable = True
+            if NO_SHOWUPDATE:
+                showUpdateScheduler.silent = True
+                showUpdateScheduler.enable = False
+            else:
+                showUpdateScheduler.silent = False
+                showUpdateScheduler.enable = True
             showUpdateScheduler.start()
 
             # start the version checker
@@ -1725,6 +1732,7 @@ def save_config():
     new_config['General']['update_shows_on_snatch'] = int(UPDATE_SHOWS_ON_SNATCH)
     new_config['General']['trash_remove_show'] = int(TRASH_REMOVE_SHOW)
     new_config['General']['trash_rotate_logs'] = int(TRASH_ROTATE_LOGS)
+    new_config['General']['no_showupdate'] = int(NO_SHOWUPDATE)
     new_config['General']['sort_article'] = int(SORT_ARTICLE)
     new_config['General']['proxy_setting'] = PROXY_SETTING
     new_config['General']['proxy_indexers'] = int(PROXY_INDEXERS)
