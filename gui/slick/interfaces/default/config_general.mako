@@ -103,6 +103,16 @@
                             </label>
                         </div>
                         <div class="field-pair">
+                            <label for="no_showupdate">
+                                <span class="component-title">Disable automatic show updates</span>
+                                <span class="component-desc">
+                                    <input type="checkbox" name="no_showupdate" id="no_showupdate" ${('', 'checked="checked"')[bool(sickbeard.NO_SHOWUPDATE)]}/>
+
+                                    <p>shows will not get updated automatically, ie. we will not find new seasons/episodes as they air. Makes next option on timing irrelevant. 
+                                </span>
+                            </label>
+                        </div>
+                        <div class="field-pair">
                             <label for="showupdate_hour">
                                 <span class="component-title">When to update shows</span>
                                 <span class="component-desc">

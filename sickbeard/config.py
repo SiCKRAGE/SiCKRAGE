@@ -195,6 +195,23 @@ def change_SHOWUPDATE_HOUR(freq):
 
     sickbeard.showUpdateScheduler.start_time = datetime.time(hour=sickbeard.SHOWUPDATE_HOUR)
 
+def change_NOSHOWUPDATE(noshowupdate):
+    oldSetting = sickbeard.NO_SHOWUPDATE
+
+    sickbeard.NO_SHOWUPDATE = noshowupdate
+
+    sickbeard.showUpdateScheduler.enable = noshowupdate
+
+    if oldSetting == True and noshowupdate == False:
+        # showUpdater is being enabled, also invoking a forced run of the updater
+        sickbeard.showUpdateScheduler.silent = False
+        sickbeard.showUpdateScheduler.enable = True
+        sickbeard.showUpdateScheduler.forceRun()
+
+    if oldSetting == False and noshowupdate == True:
+        sickbeard.showUpdateScheduler.silent = True
+        sickbeard.showUpdateScheduler.enable = False
+
 def change_SUBTITLES_FINDER_FREQUENCY(subtitles_finder_frequency):
     
     if subtitles_finder_frequency == '' or subtitles_finder_frequency is None:
