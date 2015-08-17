@@ -2209,7 +2209,6 @@ class HomeNews(Home):
         super(HomeNews, self).__init__(*args, **kwargs)
 
     def index(self):
-
         try:
             news = helpers.getURL('http://sickragetv.github.io/sickrage-news/news.md', session=requests.Session())
         except Exception:
