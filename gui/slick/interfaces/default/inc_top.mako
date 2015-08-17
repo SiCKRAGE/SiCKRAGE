@@ -175,7 +175,7 @@
                             <a href="${sbRoot}/history/">History</a>
                         </li>
 
-                        <li id="NAVmanage" class="dropdown" ${('', 'class="active"')[topmenu == 'manage']}>
+                        <li id="NAVmanage" class="dropdown ${('', 'active')[topmenu == 'manage']}">
                             <a href="${sbRoot}/manage/" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="${sbRoot}/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a></li>
