@@ -164,7 +164,7 @@
                         <li id="NAVnews">
                             <a href="${sbRoot}/news/">News</a>
                         </li>
-                        <li id="NAVnews">
+                        <li id="NAVirc">
                             <a href="${sbRoot}/IRC/">IRC</a>
                         </li>
                         <li id="NAVhome">
