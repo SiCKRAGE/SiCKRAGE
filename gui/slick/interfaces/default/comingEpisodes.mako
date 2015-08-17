@@ -460,8 +460,8 @@ $(document).ready(function(){
 
 % if 'calendar' == layout:
 
-<% today = datetime.date.today() %>
-<% dates = [today + datetime.timedelta(days = i) for i in range(7)] %>
+## <% today = datetime.date.today() %>
+<% dates = [today.date() + datetime.timedelta(days = i) for i in range(7)] %>
 <% tbl_day = 0 %>
 <br>
 <br>
