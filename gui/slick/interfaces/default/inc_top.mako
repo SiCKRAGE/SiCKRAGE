@@ -132,13 +132,9 @@
             };
 
             $(document).ready(function() {
-
                 initActions();
 
-                $("#NAV${topmenu}").addClass("active");
-
                 $('.dropdown-toggle').dropdownHover();
-
             });
         </script>
     <script type="text/javascript" src="${sbRoot}/js/confirmations.js?${sbPID}"></script>
@@ -161,25 +157,25 @@
             % if sbLogin:
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
-                        <li id="NAVnews">
+                        <li id="NAVnews" ${('', 'class="active"')[topmenu == 'news']}>
                             <a href="${sbRoot}/news/">News</a>
                         </li>
-                        <li id="NAVirc">
+                        <li id="NAVirc" ${('', 'class="active"')[topmenu == 'irc']}>
                             <a href="${sbRoot}/IRC/">IRC</a>
                         </li>
-                        <li id="NAVhome">
+                        <li id="NAVhome" ${('', 'class="active"')[topmenu == 'home']}>
                             <a href="${sbRoot}/home/">Shows</a>
                         </li>
 
-                        <li id="NAVcomingEpisodes">
+                        <li id="NAVcomingEpisodes" ${('', 'class="active"')[topmenu == 'comingEpisodes']}>
                             <a href="${sbRoot}/comingEpisodes/">Coming Episodes</a>
                         </li>
 
-                        <li id="NAVhistory">
+                        <li id="NAVhistory" ${('', 'class="active"')[topmenu == 'history']}>
                             <a href="${sbRoot}/history/">History</a>
                         </li>
 
-                        <li id="NAVmanage" class="dropdown">
+                        <li id="NAVmanage" class="dropdown" ${('', 'class="active"')[topmenu == 'manage']}>
                             <a href="${sbRoot}/manage/" class="dropdown-toggle" data-toggle="dropdown">Manage <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="${sbRoot}/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a></li>
@@ -207,7 +203,7 @@
                             </ul>
                         </li>
 
-                        <li id="NAVerrorlogs" class="dropdown">
+                        <li id="NAVerrorlogs" class="dropdown" ${('', 'class="active"')[topmenu == 'errorlogs']}>
                             <a href="${sbRoot}/errorlogs/" class="dropdown-toggle" data-toggle="dropdown">${logPageTitle} <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="${sbRoot}/errorlogs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Log (Errors)</a></li>
@@ -215,7 +211,7 @@
                             </ul>
                         </li>
 
-                        <li id="NAVconfig" class="dropdown">
+                        <li id="NAVconfig" class="dropdown" ${('', 'class="active"')[topmenu == 'config']}>
                             <a href="${sbRoot}/config/" class="dropdown-toggle" data-toggle="dropdown"><img src="${sbRoot}/images/menu/system18.png" class="navbaricon hidden-xs" /><b class="caret hidden-xs"></b><span class="visible-xs">Config <b class="caret"></b></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="${sbRoot}/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp; Info</a></li>
