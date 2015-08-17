@@ -27,7 +27,6 @@
 <script type="text/javascript" src="${sbRoot}/js/lib/bootstrap-formhelpers.min-2.3.0.js?${sbPID}"></script>
 
 <script type="text/javascript" charset="utf-8">
-    <!--
     $(document).ready(function(){
         if ($("input[name='proxy_setting']").val().length == 0) {
             $("input[id='proxy_indexers']").prop('checked', false);
@@ -43,7 +42,6 @@
             }
         });
     });
-    //-->
 </script>
 
 <div id="config">

@@ -2201,7 +2201,7 @@ class HomeIRC(Home):
     def index(self):
 
         t = PageTemplate(rh=self, file="IRC.mako")
-        return t.render(topmenu="IRC", header="IRC", title="IRC", submenu=self.HomeMenu())
+        return t.render(topmenu="irc", header="IRC", title="IRC", submenu=self.HomeMenu())
 
 @route('/news(/?.*)')
 class HomeNews(Home):
