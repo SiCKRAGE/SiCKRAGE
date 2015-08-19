@@ -175,12 +175,10 @@ def retrieve_exceptions():
             logger.log(u"Checking for scene exception updates for " + sickbeard.indexerApi(indexer).name + "")
 
             loc = sickbeard.indexerApi(indexer).config['scene_loc']
-            if loc.startswith("http"):
+            try:
                 data = helpers.getURL(loc, session=sickbeard.indexerApi(indexer).session)
-            else:
-                loc = helpers.real_path(ek.ek(os.path.join, ek.ek(os.path.dirname, __file__), loc))
-                with open(loc, 'r') as file:
-                    data = file.read()
+            except Exception:
+                continue
 
             if data is None:
                 # When data is None, trouble connecting to github, or reading file failed
@@ -296,10 +294,10 @@ def _xem_exceptions_fetcher():
         for indexer in sickbeard.indexerApi().indexers:
             logger.log(u"Checking for XEM scene exception updates for " + sickbeard.indexerApi(indexer).name)
 
-            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickbeard.indexerApi(indexer).config[
+            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1&language=us" % sickbeard.indexerApi(indexer).config[
                 'xem_origin']
 
-            parsedJSON = helpers.getURL(url, session=xem_session, json=True)
+            parsedJSON = helpers.getURL(url, session=xem_session, timeout = 90, json=True)
             if not parsedJSON:
                 logger.log(u"Check scene exceptions update failed for " + sickbeard.indexerApi(
                     indexer).name + ", Unable to get URL: " + url, logger.ERROR)

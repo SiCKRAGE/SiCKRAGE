@@ -75,8 +75,9 @@ class GenericProvider:
 
         self.btCacheURLS = [
                 'http://torcache.net/torrent/{torrent_hash}.torrent',
-                'http://zoink.ch/torrent/{torrent_name}.torrent',
-                'http://torrage.com/torrent/{torrent_hash}.torrent',
+                'http://thetorrent.org/torrent/{torrent_hash}.torrent',
+                'http://btdig.com/torrent/{torrent_hash}.torrent',
+                #'http://torrage.com/torrent/{torrent_hash}.torrent',
                 #'http://itorrents.org/torrent/{torrent_hash}.torrent',
             ]
 
@@ -156,18 +157,23 @@ class GenericProvider:
         if result.url.startswith('magnet'):
             try:
                 torrent_hash = re.findall('urn:btih:([\w]{32,40})', result.url)[0].upper()
-                torrent_name = re.findall('dn=([^&]+)', result.url)[0]
+
+                try:
+                    torrent_name = re.findall('dn=([^&]+)', result.url)[0]
+                except:
+                    torrent_name = 'NO_DOWNLOAD_NAME'
 
                 if len(torrent_hash) == 32:
                     torrent_hash = b16encode(b32decode(torrent_hash)).upper()
 
                 if not torrent_hash:
-                    logger.log("Unable to extract torrent hash from link: " + ex(result.url), logger.ERROR)
+                    logger.log("Unable to extract torrent hash from magnet: " + ex(result.url), logger.ERROR)
                     return (urls, filename)
 
                 urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btCacheURLS]
             except:
-                urls = [result.url]
+                logger.log("Unable to extract torrent hash or name from magnet: " + ex(result.url), logger.ERROR)
+                return (urls, filename)
         else:
             urls = [result.url]
 
@@ -181,32 +187,6 @@ class GenericProvider:
 
         return (urls, filename)
 
-
-    def headURL(self, result):
-        """
-        Check if URL is valid and the file exists at URL
-        """
-
-        # check for auth
-        if not self._doLogin():
-            return False
-
-        urls, filename = self._makeURL(result)
-
-        if self.proxy.isEnabled():
-            self.headers.update({'Referer': self.proxy.getProxyURL()})
-            self.proxyGlypeProxySSLwarning = self.proxy.getProxyURL() + 'includes/process.php?action=sslagree&submit=Continue anyway...'
-        else:
-            if 'Referer' in self.headers:
-                self.headers.pop('Referer')
-            self.proxyGlypeProxySSLwarning = None
-
-        for url in urls:
-            if helpers.headURL(self.proxy._buildURL(url), session=self.session, headers=self.headers,
-                               proxyGlypeProxySSLwarning=self.proxyGlypeProxySSLwarning):
-                return url
-
-        return u''
 
     def downloadResult(self, result):
         """
@@ -225,6 +205,9 @@ class GenericProvider:
             self.headers.pop('Referer')
 
         for url in urls:
+            if 'NO_DOWNLOAD_NAME' in url:
+                continue
+
             logger.log(u"Downloading a result from " + self.name + " at " + url)
             if helpers.download_file(self.proxy._buildURL(url), filename, session=self.session, headers=self.headers):
                 if self._verify_download(filename):
@@ -270,10 +253,10 @@ class GenericProvider:
     def getQuality(self, item, anime=False):
         """
         Figures out the quality of the given RSS item node
-        
+
         item: An elementtree.ElementTree element representing the <item> tag of the RSS feed
-        
-        Returns a Quality value obtained from the node's data 
+
+        Returns a Quality value obtained from the node's data
         """
         (title, url) = self._get_title_and_url(item)
         quality = Quality.sceneQuality(title, anime)
@@ -350,14 +333,29 @@ class GenericProvider:
             # mark season searched for season pack searches so we can skip later on
             searched_scene_season = epObj.scene_season
 
+            search_strings = []
             if len(episodes) > 1 and search_mode == 'sponly':
                 # get season search results
-                for curString in self._get_season_search_strings(epObj):
-                    itemList += self._doSearch(curString, search_mode, len(episodes), epObj=epObj)
-            else:
+                search_strings = self._get_season_search_strings(epObj)
+            elif search_mode == 'eponly':
                 # get single episode search results
-                for curString in self._get_episode_search_strings(epObj):
-                    itemList += self._doSearch(curString, 'eponly', len(episodes), epObj=epObj)
+                search_strings = self._get_episode_search_strings(epObj)
+
+            if search_strings:
+                logger.log(u'search_strings = %s' % repr(search_strings), logger.DEBUG)
+            first = search_strings and isinstance(search_strings[0], dict) and 'rid' in search_strings[0]
+            if first:
+                logger.log(u'First search_string has rid', logger.DEBUG)
+
+            for curString in search_strings:
+                itemList += self._doSearch(curString, search_mode, len(episodes), epObj=epObj)
+                if first:
+                    first = False
+                    if itemList:
+                        logger.log(u'First search_string had rid, and returned results, skipping query by string', logger.DEBUG)
+                        break
+                    else:
+                        logger.log(u'First search_string had rid, but returned no results, searching with string query', logger.DEBUG)
 
         # if we found what we needed already from cache then return results and exit
         if len(results) == len(episodes):
@@ -387,7 +385,7 @@ class GenericProvider:
 
             # parse the file name
             try:
-                myParser = NameParser(False, convert=True)
+                myParser = NameParser(False)
                 parse_result = myParser.parse(title)
             except InvalidNameException:
                 logger.log(u"Unable to parse the filename " + title + " into a valid episode", logger.DEBUG)
@@ -403,7 +401,7 @@ class GenericProvider:
 
             addCacheEntry = False
             if not (showObj.air_by_date or showObj.sports):
-                if search_mode == 'sponly': 
+                if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         logger.log(
                             u"This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it",
@@ -477,7 +475,7 @@ class GenericProvider:
                 logger.log(
                     u"Ignoring result " + title + " because we don't want an episode that is " +
                     Quality.qualityStrings[
-                        quality], logger.DEBUG)
+                        quality], logger.INFO)
 
                 continue
 

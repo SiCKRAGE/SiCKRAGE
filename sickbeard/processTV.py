@@ -32,13 +32,13 @@ from sickbeard import common
 
 from sickbeard import failedProcessor
 
-from lib.unrar2 import RarFile, RarInfo
-from lib.unrar2.rar_exceptions import *
+from unrar2 import RarFile, RarInfo
+from unrar2.rar_exceptions import *
 
 import shutil
-import lib.shutil_custom
+import shutil_custom
 
-shutil.copyfile = lib.shutil_custom.copyfile_custom
+shutil.copyfile = shutil_custom.copyfile_custom
 
 
 class ProcessResult:
@@ -318,7 +318,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
                 os.path.realpath, sqlShow["location"]).lower():
             result.output += logHelper(
                 u"Cannot process an episode that's already been moved to its show dir, skipping " + dirName,
-                logger.ERROR)
+                logger.WARNING)
             return False
 
     # Get the videofile list for the next checks
@@ -452,7 +452,7 @@ def already_postprocessed(dirName, videofile, force, result):
         
         #Needed if we have downloaded the same episode @ different quality
         #But we need to make sure we check the history of the episode we're going to PP, and not others
-        np = NameParser(dirName, tryIndexers=True, trySceneExceptions=True, convert=True)
+        np = NameParser(dirName, tryIndexers=True, trySceneExceptions=True)
         try: #if it fails to find any info (because we're doing an unparsable folder (like the TV root dir) it will throw an exception, which we want to ignore
             parse_result = np.parse(dirName)
         except: #ignore the exception, because we kind of expected it, but create parse_result anyway so we can perform a check on it.

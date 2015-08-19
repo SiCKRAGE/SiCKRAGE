@@ -1,4 +1,4 @@
-from lib.hachoir_core.field import FieldSet, ParserError
+from hachoir_core.field import FieldSet, ParserError
 
 class StaticFieldSet(FieldSet):
     """
@@ -20,7 +20,7 @@ class StaticFieldSet(FieldSet):
         if cls._class is not cls.__name__:
             cls._class = cls.__name__
             cls.static_size = cls._computeStaticSize()
-        return object.__new__(cls)
+        return object.__new__(cls, *args, **kw)
 
     @staticmethod
     def _computeItemSize(item):

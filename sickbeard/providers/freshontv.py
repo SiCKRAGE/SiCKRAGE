@@ -35,7 +35,7 @@ from sickbeard import clients
 import requests
 from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
-from lib.unidecode import unidecode
+from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
 
 
@@ -122,7 +122,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
                         }
                         return True
                 except:
-                    logger.log(u'Unable to obtain cookie for FreshOnTV', logger.ERROR)
+                    logger.log(u'Unable to obtain cookie for FreshOnTV', logger.WARNING)
                     return False
 
             else:

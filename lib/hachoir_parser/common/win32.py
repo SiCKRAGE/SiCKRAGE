@@ -1,9 +1,9 @@
-from lib.hachoir_core.field import (FieldSet,
+from hachoir_core.field import (FieldSet,
     UInt16, UInt32, Enum, String, Bytes, Bits, TimestampUUID60)
-from lib.hachoir_parser.video.fourcc import video_fourcc_name
-from lib.hachoir_core.bits import str2hex
-from lib.hachoir_core.text_handler import textHandler, hexadecimal
-from lib.hachoir_parser.network.common import MAC48_Address
+from hachoir_parser.video.fourcc import video_fourcc_name
+from hachoir_core.bits import str2hex
+from hachoir_core.text_handler import textHandler, hexadecimal
+from hachoir_parser.network.common import MAC48_Address
 
 # Dictionary: Windows codepage => Python charset name
 CODEPAGE_CHARSET = {
@@ -23,6 +23,26 @@ CODEPAGE_CHARSET = {
      1258: "WINDOWS-1258",
     65001: "UTF-8",
 }
+
+class PascalStringWin16(FieldSet):
+    def __init__(self, parent, name, description=None, strip=None, charset="UTF-16-LE"):
+        FieldSet.__init__(self, parent, name, description)
+        length = self["length"].value
+        self._size = 16 + length * 16
+        self.strip = strip
+        self.charset = charset
+
+    def createFields(self):
+        yield UInt16(self, "length", "Length in widechar characters")
+        size = self["length"].value
+        if size:
+            yield String(self, "text", size*2, charset=self.charset, strip=self.strip)
+
+    def createValue(self):
+        if "text" in self:
+            return self["text"].value
+        else:
+            return None
 
 class PascalStringWin32(FieldSet):
     def __init__(self, parent, name, description=None, strip=None, charset="UTF-16-LE"):

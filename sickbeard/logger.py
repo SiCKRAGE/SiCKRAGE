@@ -135,8 +135,6 @@ class Logger(object):
         # pass exception information if debugging enabled
 
         if level == ERROR:
-            #Replace the SSL error with a link to information about how to fix it.
-            message = re.sub(r'error \[Errno 1\] _ssl.c:\d{3}: error:\d{8}:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error', r'See: http://git.io/vJrkM', message)
             self.logger.exception(message, *args, **kwargs)
             classes.ErrorViewer.add(classes.UIError(message))
 
@@ -154,9 +152,22 @@ class Logger(object):
             sys.exit(1)
 
     def submit_errors(self):
-        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and len(classes.ErrorViewer.errors) > 0):
-            self.log('Please set your GitHub username and password in the config, unable to submit issue ticket to GitHub!')
+        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and sickbeard.DEBUG and len(classes.ErrorViewer.errors) > 0):
+            self.log('Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!')
             return
+          
+        try:
+            from versionChecker import CheckVersion
+            checkversion = CheckVersion()
+            needs_update = checkversion.check_for_new_version()
+            commits_behind = checkversion.updater.get_num_commits_behind()
+        except:
+            self.log('Could not check if your SickRage is updated, unable to submit issue ticket to GitHub!')
+            return
+
+        if commits_behind is None or commits_behind > 0:
+            self.log('Please update SickRage, unable to submit issue ticket to GitHub with an outdated version!')
+            return          
 
         if self.submitter_running:
             return 'RUNNING'
@@ -185,17 +196,15 @@ class Logger(object):
 
             # parse and submit errors to issue tracker
             for curError in sorted(classes.ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
-                #Skip SSL Error, we pointed them to a URL.
-                if re.search('http://git.io/vJrkM', curError.message):
-                    classes.ErrorViewer.errors.remove(curError)
-                    continue
-
                 try:
                     title_Error = str(curError.title)
                     if not len(title_Error) or title_Error == 'None':
                         title_Error = re.match("^[A-Z0-9\-\[\] :]+::\s*(.*)$", ek.ss(str(curError.message))).group(1)
-                    if len(title_Error) > 1024:
-                        title_Error = title_Error[0:1024]
+
+                    # if len(title_Error) > (1024 - len(u"[APP SUBMITTED]: ")):
+                    # 1000 just looks better than 1007 and adds some buffer
+                    if len(title_Error) > 1000:
+                        title_Error = title_Error[0:1000]
                 except Exception as e:
                     self.log("Unable to get error title : " + sickbeard.exceptions.ex(e), ERROR)
 
@@ -236,7 +245,7 @@ class Logger(object):
                 message += u"_STAFF NOTIFIED_: @SiCKRAGETV/owners @SiCKRAGETV/moderators"
 
                 title_Error = u"[APP SUBMITTED]: " + title_Error
-                reports = gh.get_organization(gh_org).get_repo(gh_repo).get_issues()
+                reports = gh.get_organization(gh_org).get_repo(gh_repo).get_issues(state="all")
 
                 issue_found = False
                 issue_id = 0

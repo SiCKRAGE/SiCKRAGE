@@ -58,7 +58,7 @@ class DailySearcher():
         curTime = datetime.datetime.now(network_timezones.sb_timezone)
 
         myDB = db.DBConnection()
-        sqlResults = myDB.select("SELECT * FROM tv_episodes WHERE status = ? AND season > 0 AND airdate <= ?",
+        sqlResults = myDB.select("SELECT * FROM tv_episodes WHERE status = ? AND season > 0 AND (airdate <= ? and airdate > 1)",
                                  [common.UNAIRED, curDate])
 
         sql_l = []
@@ -70,7 +70,7 @@ class DailySearcher():
                     show = helpers.findCertainShow(sickbeard.showList, int(sqlEp["showid"]))
 
                 # for when there is orphaned series in the database but not loaded into our showlist
-                if not show:
+                if not show or show.paused:
                     continue
 
             except exceptions.MultipleShowObjectsException:
@@ -88,30 +88,22 @@ class DailySearcher():
                 # if an error occured assume the episode hasn't aired yet
                 continue
 
-            UpdateWantedList = 0
             ep = show.getEpisode(int(sqlEp["season"]), int(sqlEp["episode"]))
             with ep.lock:
-                if ep.show.paused:
-                    ep.status = common.SKIPPED
-                elif ep.season == 0:
+                if ep.season == 0:
                     logger.log(u"New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
                     ep.status = common.SKIPPED
-                elif sickbeard.TRAKT_USE_ROLLING_DOWNLOAD and sickbeard.USE_TRAKT:
-                    ep.status = common.SKIPPED
-                    UpdateWantedList = 1
                 else:
                     logger.log(u"New episode %s airs today, setting to default episode status for this show: %s" % (ep.prettyName(), common.statusStrings[ep.show.default_ep_status]))
                     ep.status = ep.show.default_ep_status
 
                 sql_l.append(ep.get_sql())
-        else:
-            logger.log(u"No new released episodes found ...")
 
         if len(sql_l) > 0:
             myDB = db.DBConnection()
             myDB.mass_action(sql_l)
-
-        sickbeard.traktRollingScheduler.action.updateWantedList()
+        else:
+            logger.log(u"No new released episodes found ...")
 
         # queue episode for daily search
         dailysearch_queue_item = sickbeard.search_queue.DailySearchQueueItem()

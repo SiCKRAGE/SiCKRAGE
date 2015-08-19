@@ -22,7 +22,7 @@ import traceback
 
 import sickbeard
 
-from lib.imdb import _exceptions as imdb_exceptions
+from imdb import _exceptions as imdb_exceptions
 from sickbeard.common import SKIPPED, WANTED
 from sickbeard.tv import TVShow
 from sickbeard import exceptions, logger, ui, db, notifiers
@@ -112,6 +112,8 @@ class ShowQueue(generic_queue.GenericQueue):
 
         queueItemObj = QueueItemRefresh(show, force=force)
 
+        logger.log(u"Queueing show refresh for " + show.name, logger.DEBUG)
+
         self.add_item(queueItemObj)
 
         return queueItemObj
@@ -133,13 +135,13 @@ class ShowQueue(generic_queue.GenericQueue):
         return queueItemObj
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
-                lang=None, subtitles=None, anime=None, scene=None, paused=None, blacklist=None, whitelist=None):
+                lang=None, subtitles=None, anime=None, scene=None, paused=None, blacklist=None, whitelist=None, default_status_after=None):
 
         if lang is None:
             lang = sickbeard.INDEXER_DEFAULT_LANGUAGE
 
         queueItemObj = QueueItemAdd(indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang,
-                                    subtitles, anime, scene, paused, blacklist, whitelist)
+                                    subtitles, anime, scene, paused, blacklist, whitelist, default_status_after)
 
         self.add_item(queueItemObj)
 
@@ -196,7 +198,7 @@ class ShowQueueItem(generic_queue.QueueItem):
 
 class QueueItemAdd(ShowQueueItem):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, anime,
-                 scene, paused, blacklist, whitelist):
+                 scene, paused, blacklist, whitelist, default_status_after):
 
         self.indexer = indexer
         self.indexer_id = indexer_id
@@ -211,17 +213,15 @@ class QueueItemAdd(ShowQueueItem):
         self.paused = paused
         self.blacklist = blacklist
         self.whitelist = whitelist
-
-        if sickbeard.TRAKT_USE_ROLLING_DOWNLOAD and sickbeard.USE_TRAKT:
-            self.paused = sickbeard.TRAKT_ROLLING_ADD_PAUSED
-
-        # Process add show in priority
-        self.priority = generic_queue.QueuePriorities.HIGH
+        self.default_status_after = default_status_after
 
         self.show = None
 
         # this will initialize self.show to None
         ShowQueueItem.__init__(self, ShowQueueActions.ADD, self.show)
+
+        # Process add show in priority
+        self.priority = generic_queue.QueuePriorities.HIGH
 
     def _getName(self):
         """
@@ -316,14 +316,14 @@ class QueueItemAdd(ShowQueueItem):
                     self.show.release_groups.set_black_keywords(self.blacklist)
                 if self.whitelist:
                     self.show.release_groups.set_white_keywords(self.whitelist)
-                    
+
             # be smartish about this
-            if self.show.genre and "talk show" in self.show.genre.lower():
-                self.show.air_by_date = 1
-            if self.show.genre and "documentary" in self.show.genre.lower():
-                self.show.air_by_date = 0
-            if self.show.classification and "sports" in self.show.classification.lower():
-                self.show.sports = 1
+            #if self.show.genre and "talk show" in self.show.genre.lower():
+            #    self.show.air_by_date = 1
+            #if self.show.genre and "documentary" in self.show.genre.lower():
+            #    self.show.air_by_date = 0
+            #if self.show.classification and "sports" in self.show.classification.lower():
+            #    self.show.sports = 1
 
         except sickbeard.indexer_exception, e:
             logger.log(
@@ -387,9 +387,8 @@ class QueueItemAdd(ShowQueueItem):
             logger.log(u"Error searching dir for episodes: " + ex(e), logger.ERROR)
             logger.log(traceback.format_exc(), logger.DEBUG)
 
-        sickbeard.traktRollingScheduler.action.updateWantedList(self.show.indexerid)
-
         # if they set default ep status to WANTED then run the backlog to search for episodes
+        # FIXME: This needs to be a backlog queue item!!!
         if self.show.default_ep_status == WANTED:
             logger.log(u"Launching backlog for this show since its episodes are WANTED")
             sickbeard.backlogSearchScheduler.action.searchBacklog([self.show])
@@ -420,8 +419,8 @@ class QueueItemAdd(ShowQueueItem):
                                                                                    self.show.indexer):
             self.show.scene = 1
 
-        # After initial add, set back to WANTED.
-        self.show.default_ep_status = WANTED
+        # After initial add, set to default_status_after.
+        self.show.default_ep_status = self.default_status_after
 
         self.finish()
 
@@ -437,7 +436,7 @@ class QueueItemRefresh(ShowQueueItem):
         ShowQueueItem.__init__(self, ShowQueueActions.REFRESH, show)
 
         # do refreshes first because they're quick
-        self.priority = generic_queue.QueuePriorities.HIGH
+        self.priority = generic_queue.QueuePriorities.NORMAL
 
         # force refresh certain items
         self.force = force
@@ -545,6 +544,7 @@ class QueueItemUpdate(ShowQueueItem):
             logger.log(u"Error loading IMDb info: " + ex(e), logger.ERROR)
             logger.log(traceback.format_exc(), logger.DEBUG)
 
+        # have to save show before reading episodes from db
         try:
             self.show.saveToDB()
         except Exception, e:
@@ -564,7 +564,6 @@ class QueueItemUpdate(ShowQueueItem):
                 self.show.indexer).name + ", the show info will not be refreshed: " + ex(e), logger.ERROR)
             IndexerEpList = None
 
-        foundMissingEps = False
         if IndexerEpList is None:
             logger.log(u"No data returned from " + sickbeard.indexerApi(
                 self.show.indexer).name + ", unable to update this show", logger.ERROR)
@@ -572,15 +571,13 @@ class QueueItemUpdate(ShowQueueItem):
             # for each ep we found on the Indexer delete it from the DB list
             for curSeason in IndexerEpList:
                 for curEpisode in IndexerEpList[curSeason]:
-                    logger.log(u"Removing " + str(curSeason) + "x" + str(curEpisode) + " from the DB list",
-                               logger.DEBUG)
+                    curEp = self.show.getEpisode(curSeason, curEpisode)
+                    curEp.saveToDB()
+
                     if curSeason in DBEpList and curEpisode in DBEpList[curSeason]:
                         del DBEpList[curSeason][curEpisode]
-                    else:
-                        # found missing episodes
-                        foundMissingEps = True
 
-            # for the remaining episodes in the DB list just delete them from the DB
+            # remaining episodes in the DB list are not on the indexer, just delete them from the DB
             for curSeason in DBEpList:
                 for curEpisode in DBEpList[curSeason]:
                     logger.log(u"Permanently deleting episode " + str(curSeason) + "x" + str(
@@ -591,10 +588,14 @@ class QueueItemUpdate(ShowQueueItem):
                     except exceptions.EpisodeDeletedException:
                         pass
 
-        # if they set default ep status to WANTED then run the backlog
-        if foundMissingEps and self.show.default_ep_status == WANTED:
-            logger.log(u"Launching backlog for this show since we found missing episodes")
-            sickbeard.backlogSearchScheduler.action.searchBacklog([self.show])
+        # save show again, in case episodes have changed
+        try:
+            self.show.saveToDB()
+        except Exception, e:
+            logger.log(u"Error saving show info to the database: " + ex(e), logger.ERROR)
+            logger.log(traceback.format_exc(), logger.DEBUG)
+
+        logger.log(u"Finished update of " + self.show.name, logger.DEBUG)
 
         sickbeard.showQueueScheduler.action.refreshShow(self.show, self.force)
 

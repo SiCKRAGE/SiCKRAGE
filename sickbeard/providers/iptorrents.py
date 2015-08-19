@@ -37,7 +37,7 @@ from sickbeard import clients
 import requests
 from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
-from lib.unidecode import unidecode
+from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
 from sickbeard.show_name_helpers import allPossibleShowNames
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
@@ -93,6 +93,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
         }
 
         try:
+            self.session.get(self.urls['login'], timeout=30)
             response = self.session.post(self.urls['login'], data=login_params, timeout=30)
         except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
@@ -196,7 +197,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
 
             # parse the file name
             try:
-                myParser = NameParser(False, convert=True)
+                myParser = NameParser(False)
                 parse_result = myParser.parse(title)
             except InvalidNameException:
                 logger.log(u"Unable to parse the filename " + title + " into a valid episode", logger.DEBUG)
@@ -286,7 +287,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
                 logger.log(
                     u"Ignoring result " + title + " because we don't want an episode that is " +
                     Quality.qualityStrings[
-                        quality], logger.DEBUG)
+                        quality], logger.INFO)
 
                 continue
 

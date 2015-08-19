@@ -58,6 +58,7 @@ class DBConnection(object):
 
                 self.connection = sqlite3.connect(dbFilename(self.filename, self.suffix), 20, check_same_thread=False)
                 self.connection.text_factory = self._unicode_text_factory
+
                 db_cons[self.filename] = self.connection
             else:
                 self.connection = db_cons[self.filename]
@@ -229,22 +230,10 @@ class DBConnection(object):
 
     def _unicode_text_factory(self, x):
         try:
-            x = unicode(x)
-        except UnicodeDecodeError:
-            try:
-                x = unicode(x, chardet.detect(x).get('encoding'))
-            except UnicodeDecodeError:
-                try:
-                    x = unicode(x, sickbeard.SYS_ENCODING)
-                except UnicodeDecodeError:
-                    try:
-                        x = unicode(x, 'utf-8')
-                    except UnicodeDecodeError:
-                        try:
-                            x = unicode(x, 'latin-1')
-                        except UnicodeDecodeError:
-                            x = unicode(x, sickbeard.SYS_ENCODING, errors="ignore")
-        return x
+            # Just revert to the old code for now, until we can fix unicode
+            return unicode(x, 'utf-8')
+        except:
+            return unicode(x, sickbeard.SYS_ENCODING,errors="ignore")
 
     def _dict_factory(self, cursor, row):
         d = {}

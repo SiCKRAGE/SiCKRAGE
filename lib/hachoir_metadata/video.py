@@ -1,14 +1,14 @@
-from lib.hachoir_core.field import MissingField
-from lib.hachoir_metadata.metadata import (registerExtractor,
+from hachoir_core.field import MissingField
+from hachoir_metadata.metadata import (registerExtractor,
     Metadata, RootMetadata, MultipleMetadata)
-from lib.hachoir_metadata.metadata_item import QUALITY_GOOD
-from lib.hachoir_metadata.safe import fault_tolerant
-from lib.hachoir_parser.video import MovFile, AsfFile, FlvFile
-from lib.hachoir_parser.video.asf import Descriptor as ASF_Descriptor
-from lib.hachoir_parser.container import MkvFile
-from lib.hachoir_parser.container.mkv import dateToDatetime
-from lib.hachoir_core.i18n import _
-from lib.hachoir_core.tools import makeUnicode, makePrintable, timedelta2seconds
+from hachoir_metadata.metadata_item import QUALITY_GOOD
+from hachoir_metadata.safe import fault_tolerant
+from hachoir_parser.video import MovFile, AsfFile, FlvFile
+from hachoir_parser.video.asf import Descriptor as ASF_Descriptor
+from hachoir_parser.container import MkvFile
+from hachoir_parser.container.mkv import dateToDatetime
+from hachoir_core.i18n import _
+from hachoir_core.tools import makeUnicode, makePrintable, timedelta2seconds
 from datetime import timedelta
 
 class MkvMetadata(MultipleMetadata):
@@ -59,9 +59,10 @@ class MkvMetadata(MultipleMetadata):
     def trackCommon(self, track, meta):
         if "Name/unicode" in track:
             meta.title = track["Name/unicode"].value
-        if "Language/string" in track \
-        and track["Language/string"].value not in ("mis", "und"):
+        if "Language/string" in track:
             meta.language = track["Language/string"].value
+        else:
+            meta.language = "eng"
 
     def processVideo(self, track):
         video = Metadata(self)
@@ -222,7 +223,7 @@ class MovMetadata(RootMetadata):
         self.last_modification = hdr["lastmod_date"].value
         self.duration = timedelta(seconds=float(hdr["duration"].value) / hdr["time_scale"].value)
         self.comment = _("Play speed: %.1f%%") % (hdr["play_speed"].value*100)
-        self.comment = _("User volume: %.1f%%") % (float(hdr["volume"].value)*100//255)
+        self.comment = _("User volume: %.1f%%") % (float(hdr["volume"].value)*100)
 
     @fault_tolerant
     def processTrackHeader(self, hdr):

@@ -1,11 +1,11 @@
-from lib.hachoir_metadata.metadata_item import QUALITY_BEST, QUALITY_FASTEST
-from lib.hachoir_metadata.safe import fault_tolerant, getValue
-from lib.hachoir_metadata.metadata import (
+from hachoir_metadata.metadata_item import QUALITY_BEST, QUALITY_FASTEST
+from hachoir_metadata.safe import fault_tolerant, getValue
+from hachoir_metadata.metadata import (
     RootMetadata, Metadata, MultipleMetadata, registerExtractor)
-from lib.hachoir_parser.archive import (Bzip2Parser, CabFile, GzipParser,
+from hachoir_parser.archive import (Bzip2Parser, CabFile, GzipParser,
     TarFile, ZipFile, MarFile)
-from lib.hachoir_core.tools import humanUnixAttributes
-from lib.hachoir_core.i18n import _
+from hachoir_core.tools import humanUnixAttributes
+from hachoir_core.i18n import _
 
 def maxNbFile(meta):
     if meta.quality <= QUALITY_FASTEST:
@@ -110,7 +110,7 @@ class CabMetadata(MultipleMetadata):
     def extract(self, cab):
         if "folder[0]" in cab:
             self.useFolder(cab["folder[0]"])
-        self.format_version = "Microsoft Cabinet version %s" % cab["cab_version"].display
+        self.format_version = "Microsoft Cabinet version %s.%s" % (cab["major_version"].display, cab["minor_version"].display)
         self.comment = "%s folders, %s files" % (
             cab["nb_folder"].value, cab["nb_files"].value)
         max_nb = maxNbFile(self)

@@ -2,12 +2,12 @@
 Parent of all (field) classes in Hachoir: Field.
 """
 
-from lib.hachoir_core.compatibility import reversed
-from lib.hachoir_core.stream import InputFieldStream
-from lib.hachoir_core.error import HachoirError, HACHOIR_ERRORS
-from lib.hachoir_core.log import Logger
-from lib.hachoir_core.i18n import _
-from lib.hachoir_core.tools import makePrintable
+from hachoir_core.compatibility import reversed
+from hachoir_core.stream import InputFieldStream
+from hachoir_core.error import HachoirError, HACHOIR_ERRORS
+from hachoir_core.log import Logger
+from hachoir_core.i18n import _
+from hachoir_core.tools import makePrintable
 from weakref import ref as weakref_ref
 
 class FieldError(HachoirError):
@@ -70,6 +70,8 @@ class Field(Logger):
         assert issubclass(parent.__class__, Field)
         assert (size is None) or (0 <= size)
         self._parent = parent
+        if not name:
+            raise ValueError("empty field name")
         self._name = name
         self._address = parent.nextFieldAddress()
         self._size = size
@@ -166,7 +168,7 @@ class Field(Logger):
             return '/'
         names = []
         field = self
-        while field:
+        while field is not None:
             names.append(field._name)
             field = field._parent
         names[-1] = ''

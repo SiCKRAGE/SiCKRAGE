@@ -1,7 +1,7 @@
-from lib.hachoir_core.tools import (humanDatetime, humanDuration,
+from hachoir_core.tools import (humanDatetime, humanDuration,
     timestampUNIX, timestampMac32, timestampUUID60,
     timestampWin64, durationWin64)
-from lib.hachoir_core.field import Bits, FieldSet
+from hachoir_core.field import Bits, FieldSet
 from datetime import datetime
 
 class GenericTimestamp(Bits):
@@ -32,7 +32,7 @@ def timestampFactory(cls_name, handler, size):
 
 TimestampUnix32 = timestampFactory("TimestampUnix32", timestampUNIX, 32)
 TimestampUnix64 = timestampFactory("TimestampUnix64", timestampUNIX, 64)
-TimestampMac32 = timestampFactory("TimestampUnix32", timestampMac32, 32)
+TimestampMac32 = timestampFactory("TimestampMac32", timestampMac32, 32)
 TimestampUUID60 = timestampFactory("TimestampUUID60", timestampUUID60, 60)
 TimestampWin64 = timestampFactory("TimestampWin64", timestampWin64, 64)
 

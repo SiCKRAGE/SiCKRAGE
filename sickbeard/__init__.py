@@ -25,37 +25,37 @@ import os
 import re
 import os.path
 import shutil
-import lib.shutil_custom
+import shutil_custom
 
-shutil.copyfile = lib.shutil_custom.copyfile_custom
+shutil.copyfile = shutil_custom.copyfile_custom
 
 from threading import Lock
 import sys
 
 from github import Github
 
-from sickbeard import providers, metadata, config, webserveInit
-from sickbeard.providers.generic import GenericProvider
-from providers import btn, newznab, womble, thepiratebay, torrentleech, kat, iptorrents, \
-    omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, nextgen, speedcd, nyaatorrents, animenzb, bluetigers, fnt, torrentbytes, animezb, \
-    freshontv, morethantv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, binsearch, scenetime, btdigg
-from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
+from . import providers, metadata, config, webserveInit
+from .providers.generic import GenericProvider
+from .providers import btn, newznab, womble, thepiratebay, torrentleech, kat, iptorrents, \
+    omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, nextgen, speedcd, nyaatorrents, animenzb, bluetigers, cpasbien, fnt, xthor, torrentbytes, \
+    frenchtorrentdb, freshontv, titansoftv, libertalia, morethantv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, binsearch, scenetime, btdigg
+from .config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
     naming_ep_type
-from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
+from . import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
     subtitles, traktChecker
-from sickbeard import helpers, db, exceptions, show_queue, search_queue, scheduler, show_name_helpers
-from sickbeard import logger
-from sickbeard import naming
-from sickbeard import dailysearcher
-from sickbeard import scene_numbering, scene_exceptions, name_cache
-from indexers.indexer_api import indexerApi
-from indexers.indexer_exceptions import indexer_shownotfound, indexer_showincomplete, indexer_exception, indexer_error, \
+from . import helpers, db, exceptions, show_queue, search_queue, scheduler, show_name_helpers
+from . import logger
+from . import naming
+from . import dailysearcher
+from . import scene_numbering, scene_exceptions, name_cache
+from .indexers.indexer_api import indexerApi
+from .indexers.indexer_exceptions import indexer_shownotfound, indexer_showincomplete, indexer_exception, indexer_error, \
     indexer_episodenotfound, indexer_attributenotfound, indexer_seasonnotfound, indexer_userabort, indexerExcepts
-from sickbeard.common import SD, SKIPPED, NAMING_REPEAT
-from sickbeard.databases import mainDB, cache_db, failed_db
-from sickbeard.helpers import ex
+from .common import SD, SKIPPED, WANTED, NAMING_REPEAT
+from .databases import mainDB, cache_db, failed_db
+from .helpers import ex
 
-from lib.configobj import ConfigObj
+from configobj import ConfigObj
 
 import requests
 requests.packages.urllib3.disable_warnings()
@@ -101,7 +101,6 @@ properFinderScheduler = None
 autoPostProcesserScheduler = None
 subtitlesFinderScheduler = None
 traktCheckerScheduler = None
-traktRollingScheduler = None
 
 showList = None
 loadingShowList = None
@@ -119,7 +118,7 @@ NOTIFY_ON_UPDATE = False
 CUR_COMMIT_HASH = None
 BRANCH = ''
 
-GIT_RESET = False
+GIT_RESET = True
 GIT_REMOTE = ''
 GIT_REMOTE_URL = ''
 CUR_COMMIT_BRANCH = ''
@@ -156,6 +155,7 @@ DOWNLOAD_URL = None
 HANDLE_REVERSE_PROXY = False
 PROXY_SETTING = None
 PROXY_INDEXERS = True
+SSL_VERIFY = True
 
 LOCALHOST_IP = None
 
@@ -176,13 +176,13 @@ LAUNCH_BROWSER = False
 CACHE_DIR = None
 ACTUAL_CACHE_DIR = None
 ROOT_DIRS = None
-UPDATE_SHOWS_ON_START = False
-UPDATE_SHOWS_ON_SNATCH = False
+
 TRASH_REMOVE_SHOW = False
 TRASH_ROTATE_LOGS = False
 SORT_ARTICLE = False
 DEBUG = False
 DISPLAY_ALL_SEASONS = True
+DEFAULT_PAGE = 'home'
 
 
 USE_LISTVIEW = False
@@ -196,6 +196,7 @@ METADATA_MEDE8ER = None
 
 QUALITY_DEFAULT = None
 STATUS_DEFAULT = None
+STATUS_DEFAULT_AFTER = None
 FLATTEN_FOLDERS_DEFAULT = False
 SUBTITLES_DEFAULT = False
 INDEXER_DEFAULT = None
@@ -338,6 +339,10 @@ USE_PLEX_CLIENT = False
 PLEX_CLIENT_USERNAME = None
 PLEX_CLIENT_PASSWORD = None
 
+USE_EMBY = False
+EMBY_HOST = None
+EMBY_APIKEY = None
+
 USE_GROWL = False
 GROWL_NOTIFY_ONSNATCH = False
 GROWL_NOTIFY_ONDOWNLOAD = False
@@ -366,6 +371,8 @@ TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD = False
 TWITTER_USERNAME = None
 TWITTER_PASSWORD = None
 TWITTER_PREFIX = None
+TWITTER_DMTO = None
+TWITTER_USEDM = False
 
 USE_BOXCAR = False
 BOXCAR_NOTIFY_ONSNATCH = False
@@ -388,6 +395,7 @@ PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD = False
 PUSHOVER_USERKEY = None
 PUSHOVER_APIKEY = None
 PUSHOVER_DEVICE = None
+PUSHOVER_SOUND = None
 
 USE_LIBNOTIFY = False
 LIBNOTIFY_NOTIFY_ONSNATCH = False
@@ -419,6 +427,8 @@ SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH = False
 SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD = False
 SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = False
 
+USE_IMDB_POPULAR = True
+
 USE_TRAKT = False
 TRAKT_USERNAME = None
 TRAKT_ACCESS_TOKEN = None
@@ -433,13 +443,8 @@ TRAKT_USE_RECOMMENDED = False
 TRAKT_SYNC = False
 TRAKT_SYNC_REMOVE = False
 TRAKT_DEFAULT_INDEXER = None
-TRAKT_DISABLE_SSL_VERIFY = False
 TRAKT_TIMEOUT = None
 TRAKT_BLACKLIST_NAME = None
-TRAKT_USE_ROLLING_DOWNLOAD = None
-TRAKT_ROLLING_NUM_EP = None
-TRAKT_ROLLING_ADD_PAUSED = None
-TRAKT_ROLLING_FREQUENCY = None
 
 USE_PYTIVO = False
 PYTIVO_NOTIFY_ONSNATCH = False
@@ -485,6 +490,7 @@ EMAIL_LIST = None
 GUI_NAME = None
 HOME_LAYOUT = None
 HISTORY_LAYOUT = None
+HISTORY_LIMIT = 0
 DISPLAY_SHOW_SPECIALS = False
 COMING_EPS_LAYOUT = None
 COMING_EPS_DISPLAY_PAUSED = False
@@ -499,7 +505,7 @@ TIMEZONE_DISPLAY = None
 THEME_NAME = None
 POSTER_SORTBY = None
 POSTER_SORTDIR = None
-FILTER_ROW = False
+FILTER_ROW = True
 
 USE_SUBTITLES = False
 SUBTITLES_LANGUAGES = []
@@ -510,6 +516,7 @@ SUBTITLES_HISTORY = False
 EMBEDDED_SUBTITLES_ALL = False
 SUBTITLES_FINDER_FREQUENCY = 1
 SUBTITLES_MULTI = False
+SUBTITLES_EXTRA_SCRIPTS = []
 
 USE_FAILED_DOWNLOADS = False
 DELETE_FAILED = False
@@ -552,12 +559,13 @@ def initialize(consoleLogging=True):
             TORRENT_USERNAME, TORRENT_PASSWORD, TORRENT_HOST, TORRENT_PATH, TORRENT_SEED_TIME, TORRENT_PAUSED, TORRENT_HIGH_BANDWIDTH, TORRENT_LABEL, TORRENT_LABEL_ANIME, TORRENT_VERIFY_CERT, TORRENT_RPCURL, TORRENT_AUTH_TYPE, \
             USE_KODI, KODI_ALWAYS_ON, KODI_NOTIFY_ONSNATCH, KODI_NOTIFY_ONDOWNLOAD, KODI_NOTIFY_ONSUBTITLEDOWNLOAD, KODI_UPDATE_FULL, KODI_UPDATE_ONLYFIRST, \
             KODI_UPDATE_LIBRARY, KODI_HOST, KODI_USERNAME, KODI_PASSWORD, BACKLOG_FREQUENCY, \
-            USE_TRAKT, TRAKT_USERNAME, TRAKT_ACCESS_TOKEN, TRAKT_REFRESH_TOKEN, TRAKT_REMOVE_WATCHLIST, TRAKT_SYNC_WATCHLIST, TRAKT_REMOVE_SHOW_FROM_SICKRAGE, TRAKT_METHOD_ADD, TRAKT_START_PAUSED, traktCheckerScheduler, traktRollingScheduler, TRAKT_USE_RECOMMENDED, TRAKT_SYNC, TRAKT_SYNC_REMOVE, TRAKT_DEFAULT_INDEXER, TRAKT_REMOVE_SERIESLIST, TRAKT_DISABLE_SSL_VERIFY, TRAKT_TIMEOUT, TRAKT_BLACKLIST_NAME, TRAKT_USE_ROLLING_DOWNLOAD, TRAKT_ROLLING_NUM_EP, TRAKT_ROLLING_ADD_PAUSED, TRAKT_ROLLING_FREQUENCY, \
+            USE_TRAKT, TRAKT_USERNAME, TRAKT_ACCESS_TOKEN, TRAKT_REFRESH_TOKEN, TRAKT_REMOVE_WATCHLIST, TRAKT_SYNC_WATCHLIST, TRAKT_REMOVE_SHOW_FROM_SICKRAGE, TRAKT_METHOD_ADD, TRAKT_START_PAUSED, traktCheckerScheduler, TRAKT_USE_RECOMMENDED, TRAKT_SYNC, TRAKT_SYNC_REMOVE, TRAKT_DEFAULT_INDEXER, TRAKT_REMOVE_SERIESLIST, TRAKT_TIMEOUT, TRAKT_BLACKLIST_NAME, USE_IMDB_POPULAR, \
             USE_PLEX, PLEX_NOTIFY_ONSNATCH, PLEX_NOTIFY_ONDOWNLOAD, PLEX_NOTIFY_ONSUBTITLEDOWNLOAD, PLEX_UPDATE_LIBRARY, USE_PLEX_CLIENT, PLEX_CLIENT_USERNAME, PLEX_CLIENT_PASSWORD, \
             PLEX_SERVER_HOST, PLEX_SERVER_TOKEN, PLEX_HOST, PLEX_USERNAME, PLEX_PASSWORD, DEFAULT_BACKLOG_FREQUENCY, MIN_BACKLOG_FREQUENCY, BACKLOG_STARTUP, SKIP_REMOVED_FILES, \
-            showUpdateScheduler, __INITIALIZED__, INDEXER_DEFAULT_LANGUAGE, EP_DEFAULT_DELETED_STATUS, LAUNCH_BROWSER, UPDATE_SHOWS_ON_START, UPDATE_SHOWS_ON_SNATCH, TRASH_REMOVE_SHOW, TRASH_ROTATE_LOGS, SORT_ARTICLE, showList, loadingShowList, \
+            USE_EMBY, EMBY_HOST, EMBY_APIKEY, \
+            showUpdateScheduler, __INITIALIZED__, INDEXER_DEFAULT_LANGUAGE, EP_DEFAULT_DELETED_STATUS, LAUNCH_BROWSER, TRASH_REMOVE_SHOW, TRASH_ROTATE_LOGS, SORT_ARTICLE, showList, loadingShowList, \
             NEWZNAB_DATA, NZBS, NZBS_UID, NZBS_HASH, INDEXER_DEFAULT, INDEXER_TIMEOUT, USENET_RETENTION, TORRENT_DIR, \
-            QUALITY_DEFAULT, FLATTEN_FOLDERS_DEFAULT, SUBTITLES_DEFAULT, STATUS_DEFAULT, DAILYSEARCH_STARTUP, \
+            QUALITY_DEFAULT, FLATTEN_FOLDERS_DEFAULT, SUBTITLES_DEFAULT, STATUS_DEFAULT, STATUS_DEFAULT_AFTER, DAILYSEARCH_STARTUP, \
             GROWL_NOTIFY_ONSNATCH, GROWL_NOTIFY_ONDOWNLOAD, GROWL_NOTIFY_ONSUBTITLEDOWNLOAD, TWITTER_NOTIFY_ONSNATCH, TWITTER_NOTIFY_ONDOWNLOAD, TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD, USE_FREEMOBILE, FREEMOBILE_ID, FREEMOBILE_APIKEY, FREEMOBILE_NOTIFY_ONSNATCH, FREEMOBILE_NOTIFY_ONDOWNLOAD, FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD, \
             USE_GROWL, GROWL_HOST, GROWL_PASSWORD, USE_PROWL, PROWL_NOTIFY_ONSNATCH, PROWL_NOTIFY_ONDOWNLOAD, PROWL_NOTIFY_ONSUBTITLEDOWNLOAD, PROWL_API, PROWL_PRIORITY, PROG_DIR, \
             USE_PYTIVO, PYTIVO_NOTIFY_ONSNATCH, PYTIVO_NOTIFY_ONDOWNLOAD, PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD, PYTIVO_UPDATE_LIBRARY, PYTIVO_HOST, PYTIVO_SHARE_NAME, PYTIVO_TIVO_NAME, \
@@ -570,24 +578,24 @@ def initialize(consoleLogging=True):
             NAMING_PATTERN, NAMING_MULTI_EP, NAMING_ANIME_MULTI_EP, NAMING_FORCE_FOLDERS, NAMING_ABD_PATTERN, NAMING_CUSTOM_ABD, NAMING_SPORTS_PATTERN, NAMING_CUSTOM_SPORTS, NAMING_ANIME_PATTERN, NAMING_CUSTOM_ANIME, NAMING_STRIP_YEAR, \
             RENAME_EPISODES, AIRDATE_EPISODES, properFinderScheduler, PROVIDER_ORDER, autoPostProcesserScheduler, \
             WOMBLE, BINSEARCH, OMGWTFNZBS, OMGWTFNZBS_USERNAME, OMGWTFNZBS_APIKEY, providerList, newznabProviderList, torrentRssProviderList, \
-            EXTRA_SCRIPTS, USE_TWITTER, TWITTER_USERNAME, TWITTER_PASSWORD, TWITTER_PREFIX, DAILYSEARCH_FREQUENCY, \
+            EXTRA_SCRIPTS, USE_TWITTER, TWITTER_USERNAME, TWITTER_PASSWORD, TWITTER_PREFIX, DAILYSEARCH_FREQUENCY, TWITTER_DMTO, TWITTER_USEDM, \
             USE_BOXCAR, BOXCAR_USERNAME, BOXCAR_PASSWORD, BOXCAR_NOTIFY_ONDOWNLOAD, BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD, BOXCAR_NOTIFY_ONSNATCH, \
             USE_BOXCAR2, BOXCAR2_ACCESSTOKEN, BOXCAR2_NOTIFY_ONDOWNLOAD, BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD, BOXCAR2_NOTIFY_ONSNATCH, \
-            USE_PUSHOVER, PUSHOVER_USERKEY, PUSHOVER_APIKEY, PUSHOVER_DEVICE, PUSHOVER_NOTIFY_ONDOWNLOAD, PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD, PUSHOVER_NOTIFY_ONSNATCH, \
+            USE_PUSHOVER, PUSHOVER_USERKEY, PUSHOVER_APIKEY, PUSHOVER_DEVICE, PUSHOVER_NOTIFY_ONDOWNLOAD, PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD, PUSHOVER_NOTIFY_ONSNATCH, PUSHOVER_SOUND, \
             USE_LIBNOTIFY, LIBNOTIFY_NOTIFY_ONSNATCH, LIBNOTIFY_NOTIFY_ONDOWNLOAD, LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD, USE_NMJ, NMJ_HOST, NMJ_DATABASE, NMJ_MOUNT, USE_NMJv2, NMJv2_HOST, NMJv2_DATABASE, NMJv2_DBLOC, USE_SYNOINDEX, \
             USE_SYNOLOGYNOTIFIER, SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH, SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD, SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD, \
             USE_EMAIL, EMAIL_HOST, EMAIL_PORT, EMAIL_TLS, EMAIL_USER, EMAIL_PASSWORD, EMAIL_FROM, EMAIL_NOTIFY_ONSNATCH, EMAIL_NOTIFY_ONDOWNLOAD, EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD, EMAIL_LIST, \
             USE_LISTVIEW, METADATA_KODI, METADATA_KODI_12PLUS, METADATA_MEDIABROWSER, METADATA_PS3, metadata_provider_dict, \
             NEWZBIN, NEWZBIN_USERNAME, NEWZBIN_PASSWORD, GIT_PATH, MOVE_ASSOCIATED_FILES, SYNC_FILES, POSTPONE_IF_SYNC_FILES, dailySearchScheduler, NFO_RENAME, \
             GUI_NAME, HOME_LAYOUT, HISTORY_LAYOUT, DISPLAY_SHOW_SPECIALS, COMING_EPS_LAYOUT, COMING_EPS_SORT, COMING_EPS_DISPLAY_PAUSED, COMING_EPS_MISSED_RANGE, DISPLAY_FILESIZE, FUZZY_DATING, TRIM_ZERO, DATE_PRESET, TIME_PRESET, TIME_PRESET_W_SECONDS, THEME_NAME, FILTER_ROW, \
-            POSTER_SORTBY, POSTER_SORTDIR, \
+            POSTER_SORTBY, POSTER_SORTDIR, HISTORY_LIMIT, \
             METADATA_WDTV, METADATA_TIVO, METADATA_MEDE8ER, IGNORE_WORDS, REQUIRE_WORDS, CALENDAR_UNPROTECTED, NO_RESTART, CREATE_MISSING_SHOW_DIRS, \
-            ADD_SHOWS_WO_DIR, USE_SUBTITLES, SUBTITLES_LANGUAGES, SUBTITLES_DIR, SUBTITLES_SERVICES_LIST, SUBTITLES_SERVICES_ENABLED, SUBTITLES_HISTORY, SUBTITLES_FINDER_FREQUENCY, SUBTITLES_MULTI, EMBEDDED_SUBTITLES_ALL, subtitlesFinderScheduler, \
-            USE_FAILED_DOWNLOADS, DELETE_FAILED, ANON_REDIRECT, LOCALHOST_IP, TMDB_API_KEY, DEBUG, PROXY_SETTING, PROXY_INDEXERS, \
+            ADD_SHOWS_WO_DIR, USE_SUBTITLES, SUBTITLES_LANGUAGES, SUBTITLES_DIR, SUBTITLES_SERVICES_LIST, SUBTITLES_SERVICES_ENABLED, SUBTITLES_HISTORY, SUBTITLES_FINDER_FREQUENCY, SUBTITLES_MULTI, EMBEDDED_SUBTITLES_ALL, SUBTITLES_EXTRA_SCRIPTS, subtitlesFinderScheduler, \
+            USE_FAILED_DOWNLOADS, DELETE_FAILED, ANON_REDIRECT, LOCALHOST_IP, TMDB_API_KEY, DEBUG, DEFAULT_PAGE, PROXY_SETTING, PROXY_INDEXERS, \
             AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, DEFAULT_AUTOPOSTPROCESSER_FREQUENCY, MIN_AUTOPOSTPROCESSER_FREQUENCY, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
             ANIME_SPLIT_HOME, SCENE_DEFAULT, DOWNLOAD_URL, BACKLOG_DAYS, GIT_ORG, GIT_REPO, GIT_USERNAME, GIT_PASSWORD, \
-            GIT_AUTOISSUES, DEVELOPER, gh, DISPLAY_ALL_SEASONS
+            GIT_AUTOISSUES, DEVELOPER, gh, DISPLAY_ALL_SEASONS, SSL_VERIFY
 
         if __INITIALIZED__:
             return False
@@ -599,6 +607,7 @@ def initialize(consoleLogging=True):
         CheckSection(CFG, 'NZBget')
         CheckSection(CFG, 'KODI')
         CheckSection(CFG, 'PLEX')
+        CheckSection(CFG, 'Emby')
         CheckSection(CFG, 'Growl')
         CheckSection(CFG, 'Prowl')
         CheckSection(CFG, 'Twitter')
@@ -613,6 +622,7 @@ def initialize(consoleLogging=True):
         CheckSection(CFG, 'Pushalot')
         CheckSection(CFG, 'Pushbullet')
         CheckSection(CFG, 'Subtitles')
+        CheckSection(CFG, 'pyTivo')
 
         # Need to be before any passwords
         ENCRYPTION_VERSION = check_setting_int(CFG, 'General', 'encryption_version', 0)
@@ -627,6 +637,8 @@ def initialize(consoleLogging=True):
 
         # debugging
         DEBUG = bool(check_setting_int(CFG, 'General', 'debug', 0))
+
+        DEFAULT_PAGE = check_setting_str(CFG, 'General', 'default_page', 'home')
 
         ACTUAL_LOG_DIR = check_setting_str(CFG, 'General', 'log_dir', 'Logs')
         LOG_DIR = os.path.normpath(os.path.join(DATA_DIR, ACTUAL_LOG_DIR))
@@ -648,7 +660,7 @@ def initialize(consoleLogging=True):
             logger.log('Unable to setup github properly, github will not be available. Error: {0}'.format(ex(e)),logger.WARNING)
 
         # git reset on update
-        GIT_RESET = bool(check_setting_int(CFG, 'General', 'git_reset', 0))
+        GIT_RESET = bool(check_setting_int(CFG, 'General', 'git_reset', 1))
 
         # current git branch
         BRANCH = check_setting_str(CFG, 'General', 'branch', '')
@@ -739,6 +751,8 @@ def initialize(consoleLogging=True):
 
         WEB_USE_GZIP = bool(check_setting_int(CFG, 'General', 'web_use_gzip', 1))
 
+        SSL_VERIFY = bool(check_setting_int(CFG, 'General', 'ssl_verify', 1))
+
         INDEXER_DEFAULT_LANGUAGE = check_setting_str(CFG, 'General', 'indexerDefaultLang', 'en')
         EP_DEFAULT_DELETED_STATUS = check_setting_int(CFG, 'General', 'ep_default_deleted_status', 6)
 
@@ -758,8 +772,6 @@ def initialize(consoleLogging=True):
         if not ANON_REDIRECT.endswith('?'):
             ANON_REDIRECT = ''
 
-        UPDATE_SHOWS_ON_START = bool(check_setting_int(CFG, 'General', 'update_shows_on_start', 0))
-        UPDATE_SHOWS_ON_SNATCH = bool(check_setting_int(CFG, 'General', 'update_shows_on_snatch', 0))
         TRASH_REMOVE_SHOW = bool(check_setting_int(CFG, 'General', 'trash_remove_show', 0))
         TRASH_ROTATE_LOGS = bool(check_setting_int(CFG, 'General', 'trash_rotate_logs', 0))
 
@@ -780,6 +792,7 @@ def initialize(consoleLogging=True):
 
         QUALITY_DEFAULT = check_setting_int(CFG, 'General', 'quality_default', SD)
         STATUS_DEFAULT = check_setting_int(CFG, 'General', 'status_default', SKIPPED)
+        STATUS_DEFAULT_AFTER = check_setting_int(CFG, 'General', 'status_default_after', WANTED)
         VERSION_NOTIFY = bool(check_setting_int(CFG, 'General', 'version_notify', 1))
         AUTO_UPDATE = bool(check_setting_int(CFG, 'General', 'auto_update', 0))
         NOTIFY_ON_UPDATE = bool(check_setting_int(CFG, 'General', 'notify_on_update', 1))
@@ -813,7 +826,7 @@ def initialize(consoleLogging=True):
             NZB_METHOD = 'blackhole'
 
         TORRENT_METHOD = check_setting_str(CFG, 'General', 'torrent_method', 'blackhole')
-        if TORRENT_METHOD not in ('blackhole', 'utorrent', 'transmission', 'deluge', 'download_station', 'rtorrent', 'qbittorrent'):
+        if TORRENT_METHOD not in ('blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent', 'qbittorrent'):
             TORRENT_METHOD = 'blackhole'
 
         DOWNLOAD_PROPERS = bool(check_setting_int(CFG, 'General', 'download_propers', 1))
@@ -939,7 +952,11 @@ def initialize(consoleLogging=True):
         USE_PLEX_CLIENT = bool(check_setting_int(CFG, 'Plex', 'use_plex_client', 0))
         PLEX_CLIENT_USERNAME = check_setting_str(CFG, 'Plex', 'plex_client_username', '', censor_log=True)
         PLEX_CLIENT_PASSWORD = check_setting_str(CFG, 'Plex', 'plex_client_password', '', censor_log=True)
-       
+
+        USE_EMBY = bool(check_setting_int(CFG, 'Emby', 'use_emby', 0))
+        EMBY_HOST = check_setting_str(CFG, 'Emby', 'emby_host', '')
+        EMBY_APIKEY = check_setting_str(CFG, 'Emby', 'emby_apikey', '')
+
         USE_GROWL = bool(check_setting_int(CFG, 'Growl', 'use_growl', 0))
         GROWL_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'Growl', 'growl_notify_onsnatch', 0))
         GROWL_NOTIFY_ONDOWNLOAD = bool(check_setting_int(CFG, 'Growl', 'growl_notify_ondownload', 0))
@@ -969,6 +986,8 @@ def initialize(consoleLogging=True):
         TWITTER_USERNAME = check_setting_str(CFG, 'Twitter', 'twitter_username', '', censor_log=True)
         TWITTER_PASSWORD = check_setting_str(CFG, 'Twitter', 'twitter_password', '', censor_log=True)
         TWITTER_PREFIX = check_setting_str(CFG, 'Twitter', 'twitter_prefix', 'SickRage')
+        TWITTER_DMTO = check_setting_str(CFG, 'Twitter', 'twitter_dmto', '')
+        TWITTER_USEDM = bool(check_setting_int(CFG, 'Twitter', 'twitter_usedm', 0))
 
         USE_BOXCAR = bool(check_setting_int(CFG, 'Boxcar', 'use_boxcar', 0))
         BOXCAR_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'Boxcar', 'boxcar_notify_onsnatch', 0))
@@ -989,6 +1008,7 @@ def initialize(consoleLogging=True):
         PUSHOVER_USERKEY = check_setting_str(CFG, 'Pushover', 'pushover_userkey', '', censor_log=True)
         PUSHOVER_APIKEY = check_setting_str(CFG, 'Pushover', 'pushover_apikey', '', censor_log=True)
         PUSHOVER_DEVICE = check_setting_str(CFG, 'Pushover', 'pushover_device', '')
+        PUSHOVER_SOUND = check_setting_str(CFG, 'Pushover', 'pushover_sound', 'pushover')
 
         USE_LIBNOTIFY = bool(check_setting_int(CFG, 'Libnotify', 'use_libnotify', 0))
         LIBNOTIFY_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'Libnotify', 'libnotify_notify_onsnatch', 0))
@@ -1029,17 +1049,11 @@ def initialize(consoleLogging=True):
         TRAKT_SYNC = bool(check_setting_int(CFG, 'Trakt', 'trakt_sync', 0))
         TRAKT_SYNC_REMOVE = bool(check_setting_int(CFG, 'Trakt', 'trakt_sync_remove', 0))
         TRAKT_DEFAULT_INDEXER = check_setting_int(CFG, 'Trakt', 'trakt_default_indexer', 1)
-        TRAKT_DISABLE_SSL_VERIFY = bool(check_setting_int(CFG, 'Trakt', 'trakt_disable_ssl_verify', 0))
         TRAKT_TIMEOUT = check_setting_int(CFG, 'Trakt', 'trakt_timeout', 30)
         TRAKT_BLACKLIST_NAME = check_setting_str(CFG, 'Trakt', 'trakt_blacklist_name', '')
-        TRAKT_USE_ROLLING_DOWNLOAD = bool(check_setting_int(CFG, 'Trakt', 'trakt_use_rolling_download', 0))
-        TRAKT_ROLLING_NUM_EP = check_setting_int(CFG, 'Trakt', 'trakt_rolling_num_ep', 0)
-        TRAKT_ROLLING_ADD_PAUSED = check_setting_int(CFG, 'Trakt', 'trakt_rolling_add_paused', 1)
-        TRAKT_ROLLING_FREQUENCY = check_setting_int(CFG, 'Trakt', 'trakt_rolling_frequency', 8)
-        if TRAKT_ROLLING_FREQUENCY < 4:
-            TRAKT_ROLLING_FREQUENCY = 4
-       
-        CheckSection(CFG, 'pyTivo')
+
+        USE_IMDB_POPULAR = bool(check_setting_int(CFG, 'IMDB', 'use_imdb_popular', 1))
+
         USE_PYTIVO = bool(check_setting_int(CFG, 'pyTivo', 'use_pytivo', 0))
         PYTIVO_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'pyTivo', 'pytivo_notify_onsnatch', 0))
         PYTIVO_NOTIFY_ONDOWNLOAD = bool(check_setting_int(CFG, 'pyTivo', 'pytivo_notify_ondownload', 0))
@@ -1098,6 +1112,9 @@ def initialize(consoleLogging=True):
         SUBTITLES_FINDER_FREQUENCY = check_setting_int(CFG, 'Subtitles', 'subtitles_finder_frequency', 1)
         SUBTITLES_MULTI = bool(check_setting_int(CFG, 'Subtitles', 'subtitles_multi', 1))
 
+        SUBTITLES_EXTRA_SCRIPTS = [x.strip() for x in check_setting_str(CFG, 'Subtitles', 'subtitles_extra_scripts', '').split('|') if
+                         x.strip()]
+
         USE_FAILED_DOWNLOADS = bool(check_setting_int(CFG, 'FailedDownloads', 'use_failed_downloads', 0))
         DELETE_FAILED = bool(check_setting_int(CFG, 'FailedDownloads', 'delete_failed', 0))
 
@@ -1133,6 +1150,7 @@ def initialize(consoleLogging=True):
 
         HOME_LAYOUT = check_setting_str(CFG, 'GUI', 'home_layout', 'poster')
         HISTORY_LAYOUT = check_setting_str(CFG, 'GUI', 'history_layout', 'detailed')
+        HISTORY_LIMIT = check_setting_str(CFG, 'GUI', 'history_limit', '100')
         DISPLAY_SHOW_SPECIALS = bool(check_setting_int(CFG, 'GUI', 'display_show_specials', 1))
         COMING_EPS_LAYOUT = check_setting_str(CFG, 'GUI', 'coming_eps_layout', 'banner')
         COMING_EPS_DISPLAY_PAUSED = bool(check_setting_int(CFG, 'GUI', 'coming_eps_display_paused', 0))
@@ -1146,7 +1164,7 @@ def initialize(consoleLogging=True):
         TIMEZONE_DISPLAY = check_setting_str(CFG, 'GUI', 'timezone_display', 'network')
         POSTER_SORTBY = check_setting_str(CFG, 'GUI', 'poster_sortby', 'name')
         POSTER_SORTDIR = check_setting_int(CFG, 'GUI', 'poster_sortdir', 1)
-        FILTER_ROW =  bool(check_setting_int(CFG, 'GUI', 'filter_row', 0))
+        FILTER_ROW =  bool(check_setting_int(CFG, 'GUI', 'filter_row', 1))
         DISPLAY_ALL_SEASONS = bool(check_setting_int(CFG, 'General', 'display_all_seasons', 1))
 
         # initialize NZB and TORRENT providers
@@ -1366,11 +1384,6 @@ def initialize(consoleLogging=True):
                                                     threadName="TRAKTCHECKER",
                                                     silent=not USE_TRAKT)
 
-        traktRollingScheduler = scheduler.Scheduler(traktChecker.TraktRolling(),
-                                                    cycleTime=datetime.timedelta(hours=TRAKT_ROLLING_FREQUENCY),
-                                                    threadName="TRAKTROLLING",
-                                                    silent=not TRAKT_USE_ROLLING_DOWNLOAD)
-
         subtitlesFinderScheduler = scheduler.Scheduler(subtitles.SubtitlesFinder(),
                                                        cycleTime=datetime.timedelta(hours=SUBTITLES_FINDER_FREQUENCY),
                                                        threadName="FINDSUBTITLES",
@@ -1387,7 +1400,7 @@ def start():
     global __INITIALIZED__, backlogSearchScheduler, \
         showUpdateScheduler, versionCheckScheduler, showQueueScheduler, \
         properFinderScheduler, autoPostProcesserScheduler, searchQueueScheduler, \
-        subtitlesFinderScheduler, USE_SUBTITLES, traktCheckerScheduler, traktRollingScheduler,  \
+        subtitlesFinderScheduler, USE_SUBTITLES, traktCheckerScheduler,  \
         dailySearchScheduler, events, started
 
     with INIT_LOCK:
@@ -1455,15 +1468,6 @@ def start():
                 traktCheckerScheduler.silent = True
             traktCheckerScheduler.start()
 
-            # start the trakt checker
-            if TRAKT_USE_ROLLING_DOWNLOAD and USE_TRAKT:
-                traktRollingScheduler.silent = False
-                traktRollingScheduler.enable = True
-            else:
-                traktRollingScheduler.enable = False
-                traktRollingScheduler.silent = True
-            traktRollingScheduler.start()
-
             started = True
 
 
@@ -1471,7 +1475,7 @@ def halt():
     global __INITIALIZED__, backlogSearchScheduler, \
         showUpdateScheduler, versionCheckScheduler, showQueueScheduler, \
         properFinderScheduler, autoPostProcesserScheduler, searchQueueScheduler, \
-        subtitlesFinderScheduler, traktCheckerScheduler, traktRollingScheduler, \
+        subtitlesFinderScheduler, traktCheckerScheduler, \
         dailySearchScheduler, events, started
 
     with INIT_LOCK:
@@ -1540,13 +1544,6 @@ def halt():
             logger.log(u"Waiting for the TRAKTCHECKER thread to exit")
             try:
                 traktCheckerScheduler.join(10)
-            except Exception:
-                pass
-
-            traktRollingScheduler.stop.set()
-            logger.log(u"Waiting for the TRAKTROLLING thread to exit")
-            try:
-                traktRollingScheduler.join(10)
             except Exception:
                 pass
 
@@ -1636,12 +1633,14 @@ def save_config():
     new_config['General']['web_password'] = helpers.encrypt(WEB_PASSWORD, ENCRYPTION_VERSION)
     new_config['General']['web_cookie_secret'] = WEB_COOKIE_SECRET
     new_config['General']['web_use_gzip'] = int(WEB_USE_GZIP)
+    new_config['General']['ssl_verify'] = int(SSL_VERIFY)
     new_config['General']['download_url'] = DOWNLOAD_URL
     new_config['General']['localhost_ip'] = LOCALHOST_IP
     new_config['General']['cpu_preset'] = CPU_PRESET
     new_config['General']['anon_redirect'] = ANON_REDIRECT
     new_config['General']['api_key'] = API_KEY
     new_config['General']['debug'] = int(DEBUG)
+    new_config['General']['default_page'] = DEFAULT_PAGE
     new_config['General']['enable_https'] = int(ENABLE_HTTPS)
     new_config['General']['https_cert'] = HTTPS_CERT
     new_config['General']['https_key'] = HTTPS_KEY
@@ -1665,6 +1664,7 @@ def save_config():
     new_config['General']['skip_removed_files'] = int(SKIP_REMOVED_FILES)
     new_config['General']['quality_default'] = int(QUALITY_DEFAULT)
     new_config['General']['status_default'] = int(STATUS_DEFAULT)
+    new_config['General']['status_default_after'] = int(STATUS_DEFAULT_AFTER)
     new_config['General']['flatten_folders_default'] = int(FLATTEN_FOLDERS_DEFAULT)
     new_config['General']['indexer_default'] = int(INDEXER_DEFAULT)
     new_config['General']['indexer_timeout'] = int(INDEXER_TIMEOUT)
@@ -1688,8 +1688,6 @@ def save_config():
     new_config['General']['indexerDefaultLang'] = INDEXER_DEFAULT_LANGUAGE
     new_config['General']['ep_default_deleted_status'] = int(EP_DEFAULT_DELETED_STATUS)
     new_config['General']['launch_browser'] = int(LAUNCH_BROWSER)
-    new_config['General']['update_shows_on_start'] = int(UPDATE_SHOWS_ON_START)
-    new_config['General']['update_shows_on_snatch'] = int(UPDATE_SHOWS_ON_SNATCH)
     new_config['General']['trash_remove_show'] = int(TRASH_REMOVE_SHOW)
     new_config['General']['trash_rotate_logs'] = int(TRASH_ROTATE_LOGS)
     new_config['General']['sort_article'] = int(SORT_ARTICLE)
@@ -1901,6 +1899,11 @@ def save_config():
     new_config['Plex']['plex_username'] = PLEX_USERNAME
     new_config['Plex']['plex_password'] = helpers.encrypt(PLEX_PASSWORD, ENCRYPTION_VERSION)
 
+    new_config['Emby'] = {}
+    new_config['Emby']['use_emby'] = int(USE_EMBY)
+    new_config['Emby']['emby_host'] = EMBY_HOST
+    new_config['Emby']['emby_apikey'] = EMBY_APIKEY
+
     new_config['Growl'] = {}
     new_config['Growl']['use_growl'] = int(USE_GROWL)
     new_config['Growl']['growl_notify_onsnatch'] = int(GROWL_NOTIFY_ONSNATCH)
@@ -1933,6 +1936,8 @@ def save_config():
     new_config['Twitter']['twitter_username'] = TWITTER_USERNAME
     new_config['Twitter']['twitter_password'] = helpers.encrypt(TWITTER_PASSWORD, ENCRYPTION_VERSION)
     new_config['Twitter']['twitter_prefix'] = TWITTER_PREFIX
+    new_config['Twitter']['twitter_dmto'] = TWITTER_DMTO
+    new_config['Twitter']['twitter_usedm'] = int(TWITTER_USEDM)
 
     new_config['Boxcar'] = {}
     new_config['Boxcar']['use_boxcar'] = int(USE_BOXCAR)
@@ -1956,6 +1961,7 @@ def save_config():
     new_config['Pushover']['pushover_userkey'] = PUSHOVER_USERKEY
     new_config['Pushover']['pushover_apikey'] = PUSHOVER_APIKEY
     new_config['Pushover']['pushover_device'] = PUSHOVER_DEVICE
+    new_config['Pushover']['pushover_sound]'] = PUSHOVER_SOUND
 
     new_config['Libnotify'] = {}
     new_config['Libnotify']['use_libnotify'] = int(USE_LIBNOTIFY)
@@ -2000,13 +2006,11 @@ def save_config():
     new_config['Trakt']['trakt_sync'] = int(TRAKT_SYNC)
     new_config['Trakt']['trakt_sync_remove'] = int(TRAKT_SYNC_REMOVE)
     new_config['Trakt']['trakt_default_indexer'] = int(TRAKT_DEFAULT_INDEXER)
-    new_config['Trakt']['trakt_disable_ssl_verify'] = int(TRAKT_DISABLE_SSL_VERIFY)
     new_config['Trakt']['trakt_timeout'] = int(TRAKT_TIMEOUT)
     new_config['Trakt']['trakt_blacklist_name'] = TRAKT_BLACKLIST_NAME
-    new_config['Trakt']['trakt_use_rolling_download'] = int(TRAKT_USE_ROLLING_DOWNLOAD)
-    new_config['Trakt']['trakt_rolling_num_ep'] = int(TRAKT_ROLLING_NUM_EP)
-    new_config['Trakt']['trakt_rolling_add_paused'] = int(TRAKT_ROLLING_ADD_PAUSED)
-    new_config['Trakt']['trakt_rolling_frequency'] = int(TRAKT_ROLLING_FREQUENCY)
+
+    new_config['IMDB'] = {}
+    new_config['IMDB']['use_imdb_popular'] = int(USE_IMDB_POPULAR)
 
     new_config['pyTivo'] = {}
     new_config['pyTivo']['use_pytivo'] = int(USE_PYTIVO)
@@ -2065,6 +2069,7 @@ def save_config():
     new_config['GUI']['theme_name'] = THEME_NAME
     new_config['GUI']['home_layout'] = HOME_LAYOUT
     new_config['GUI']['history_layout'] = HISTORY_LAYOUT
+    new_config['GUI']['history_limit'] = HISTORY_LIMIT
     new_config['GUI']['display_show_specials'] = int(DISPLAY_SHOW_SPECIALS)
     new_config['GUI']['coming_eps_layout'] = COMING_EPS_LAYOUT
     new_config['GUI']['coming_eps_display_paused'] = int(COMING_EPS_DISPLAY_PAUSED)
@@ -2078,7 +2083,7 @@ def save_config():
     new_config['GUI']['poster_sortby'] = POSTER_SORTBY
     new_config['GUI']['poster_sortdir'] = POSTER_SORTDIR
     new_config['GUI']['filter_row'] = int(FILTER_ROW)
-   
+
     new_config['Subtitles'] = {}
     new_config['Subtitles']['use_subtitles'] = int(USE_SUBTITLES)
     new_config['Subtitles']['subtitles_languages'] = ','.join(SUBTITLES_LANGUAGES)
@@ -2090,6 +2095,7 @@ def save_config():
     new_config['Subtitles']['embedded_subtitles_all'] = int(EMBEDDED_SUBTITLES_ALL)
     new_config['Subtitles']['subtitles_finder_frequency'] = int(SUBTITLES_FINDER_FREQUENCY)
     new_config['Subtitles']['subtitles_multi'] = int(SUBTITLES_MULTI)
+    new_config['Subtitles']['subtitles_extra_scripts'] = '|'.join(SUBTITLES_EXTRA_SCRIPTS)
 
     new_config['FailedDownloads'] = {}
     new_config['FailedDownloads']['use_failed_downloads'] = int(USE_FAILED_DOWNLOADS)

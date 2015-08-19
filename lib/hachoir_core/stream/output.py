@@ -1,7 +1,7 @@
 from cStringIO import StringIO
-from lib.hachoir_core.endian import BIG_ENDIAN
-from lib.hachoir_core.bits import long2raw
-from lib.hachoir_core.stream import StreamError
+from hachoir_core.endian import BIG_ENDIAN, LITTLE_ENDIAN
+from hachoir_core.bits import long2raw
+from hachoir_core.stream import StreamError
 from errno import EBADF
 
 MAX_READ_NBYTES = 2 ** 16
@@ -21,6 +21,7 @@ class OutputStream(object):
     filename = property(_getFilename)
 
     def writeBit(self, state, endian):
+        assert endian in (BIG_ENDIAN, LITTLE_ENDIAN) # middle endian not yet supported
         if self._bit_pos == 7:
             self._bit_pos = 0
             if state:
@@ -39,6 +40,7 @@ class OutputStream(object):
             self._bit_pos += 1
 
     def writeBits(self, count, value, endian):
+        assert endian in (BIG_ENDIAN, LITTLE_ENDIAN) # middle endian not yet supported
         assert 0 <= value < 2**count
 
         # Feed bits to align to byte address
