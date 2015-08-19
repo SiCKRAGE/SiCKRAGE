@@ -1,46 +1,43 @@
-#import sickbeard
-#from sickbeard import subtitles, sbdatetime, network_timezones
-#import sickbeard.helpers
-#from sickbeard.common import *
-#from sickbeard.helpers import anon_url
-#import os.path, os
-#import datetime
-#import urllib
-#import ntpath
+<%!
+    import datetime
+    import urllib
+    import ntpath
+    import sickbeard
+    from sickbeard import subtitles, sbdatetime, network_timezones
+    import sickbeard.helpers
 
-#set global $title=$show.name
-##set global $header = '<a></a>' % 
-#set global $topmenu="manageShows"#
-#set $exceptions_string = " | ".join($show.exceptions)
-#include $os.path.join($sickbeard.PROG_DIR, "gui/slicker/interfaces/default/inc_top.tmpl")
+    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from sickbeard.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, Overview
 
-<script type="text/javascript" src="$sbRoot/js/lib/jquery.bookmarkscroll.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/raterater.jquery.js"></script>
-<link rel="stylesheet" type="text/css" href="$sbRoot/css/raterater.css?$sbPID"/>
+    from sickbeard.helpers import anon_url
+%>
 
-<input type="hidden" id="sbRoot" value="$sbRoot" />
+<%include file="/inc_top.mako"/>
+<script type="text/javascript" src="${sbPID}/js/lib/jquery.bookmarkscroll.js?${sbPID}"></script>
+<script type="text/javascript" src="${sbPID}/js/raterater.jquery.js"></script>
+<link rel="stylesheet" type="text/css" href="${sbPID}/css/raterater.css?${sbPID}"/>
 
-<script type="text/javascript" src="$sbRoot/js/displayShow.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/plotTooltip.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/sceneExceptionsTooltip.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/ratingTooltip.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/ajaxEpSearch.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/ajaxEpSubtitles.js?$sbPID"></script>
-<script type="text/javascript" src="$sbRoot/js/lib/jquery.collapser.min.js?$sbPID"></script>
+<input type="hidden" id="sbRoot" value="${sbPID}" />
+
+<script type="text/javascript" src="${sbPID}/js/displayShow.js?${sbPID}"></script>
+<script type="text/javascript" src="${sbPID}/js/plotTooltip.js?${sbPID}"></script>
+<script type="text/javascript" src="${sbPID}/js/sceneExceptionsTooltip.js?${sbPID}"></script>
+<script type="text/javascript" src="${sbPID}/js/ratingTooltip.js?${sbPID}"></script>
+<script type="text/javascript" src="${sbPID}/js/ajaxEpSearch.js?${sbPID}"></script>
+<script type="text/javascript" src="${sbPID}/js/ajaxEpSubtitles.js?${sbPID}"></script>
+<script type="text/javascript" src="${sbPID}/js/lib/jquery.collapser.min.js?${sbPID}"></script>
 <script type="text/javascript" charset="utf-8">
-<!--
-\$(document).ready(function(){
-    #set $fuzzydate = 'airdate'
-    #if $sickbeard.FUZZY_DATING:
+$(document).ready(function(){
+    <% fuzzydate = 'airdate' %>
+    % if sickbeard.FUZZY_DATING:
     fuzzyMoment({
         containerClass : '.${fuzzydate}',
         dateHasTime : false,
         dateFormat : '${sickbeard.DATE_PRESET}',
         timeFormat : '${sickbeard.TIME_PRESET}',
-        trimZero : #if $sickbeard.TRIM_ZERO then "true" else "false"#
+        trimZero : ${("false", "true")[bool(sickbeard.TRIM_ZERO)]}
     });
-    #end if
-    #raw
+    % endif
     $('.addQTip').each(function () {
         $(this).css({'cursor':'help', 'text-shadow':'0px 0px 0.5px #666'});
         $(this).qtip({
@@ -49,88 +46,73 @@
             style: {tip:{corner:true, method:'polygon'}, classes:'qtip-rounded qtip-shadow ui-tooltip-sb'}
         });
     });
-    #end raw
-    
-    \$.fn.generateStars = function() {
-        return this.each(function(i,e){\$(e).html(\$('<span/>').width(\$(e).text()*12));});
+    $.fn.generateStars = function() {
+        return this.each(function(i,e){
+            $(e).html($('<span/>').width($(e).text()*12));
+        });
     };
 
-    \$('.imdbstars').generateStars();
+    $('.imdbstars').generateStars();
 
-
-
-            #if $show.is_anime:
-    \$("#animeTable").tablesorter({
-            #else:
-    \$("#showTable").tablesorter({
-            #end if
+    $("${('#showTable', '#animeTable')[bool(show.is_anime)]}").tablesorter({
         widgets: ['saveSort', 'stickyHeaders', 'columnSelector'],
         widgetOptions : {
             columnSelector_saveColumns: true,
             columnSelector_layout : '<br/><label><input type="checkbox">{name}</label>',
             columnSelector_mediaquery: false,
             columnSelector_cssChecked : 'checked'
-            },
-        });    
+        },
+    });
 
-    
-    
-    \$('#popover')
-        .popover({
-          placement: 'bottom',
-          html: true, // required if content has HTML
-          content: '<div id="popover-target"></div>'
-        })
-        // bootstrap popover event triggered when the popover opens
-        .on('shown.bs.popover', function () {
-                #if $show.is_anime:
-            \$.tablesorter.columnSelector.attachTo( \$('#animeTable'), '#popover-target');
-                #else:
-            \$.tablesorter.columnSelector.attachTo( \$('#showTable'), '#popover-target');                
-                #end if
-        });      
+    $('#popover').popover({
+        placement: 'bottom',
+        html: true, // required if content has HTML
+        content: '<div id="popover-target"></div>'
+    })
+    // bootstrap popover event triggered when the popover opens
+    .on('shown.bs.popover', function () {
+        $.tablesorter.columnSelector.attachTo( $("${('#showTable', '#animeTable')[bool(show.is_anime)]}"), '#popover-target');
+    });
 });
-//-->
-
-\$(document).ready(function(){ 
-    \$('#title-select-box').hide();
-    \$('#show-title-h1').hover(function() {
-        \$(this).css('cursor','pointer');
+$(document).ready(function(){
+    $('#title-select-box').hide();
+    $('#show-title-h1').hover(function() {
+        $(this).css('cursor','pointer');
     });
-    \$('#show-title-h1').click(function() {
-        \$(this).hide();
-        \$('#title-select-box').show();
+    $('#show-title-h1').click(function() {
+        $(this).hide();
+        $('#title-select-box').show();
     });
-    \$('html').click(function() {
-        \$('#show-title-h1').show();
-        \$('#title-select-box').hide();
+    $('html').click(function() {
+        $('#show-title-h1').show();
+        $('#title-select-box').hide();
     });
-    \$('#title-select-area').click(function(event){
+    $('#title-select-area').click(function(event){
         event.stopPropagation();
     });
 });
 </script>
 
-#if $show_message:
+% if show_message:
     <div class="alert alert-info">
-        $show_message
+        ${show_message}
     </div>
-#end if
+% endif
 
 <div class="show-container">
 	<div class="row clearfix">
-		
+
 		<div class="col-md-2 column">
 			<h3>Summary</h3>
 			<ul>
-				#set $_show = $show
+				<% _show = show %>
 				#if not $show.imdbid
         			<li><strong>Release:</strong> $show.startyear</li>
         			<li><strong>Runtime:</strong> $show.runtime minutes</li>
 				#else
     				#if 'country_codes' in $show.imdb_info:
-        				#for $country in $show.imdb_info['country_codes'].split('|')        					
-                			<li><strong>Country:</strong> <img src="$sbRoot/images/flags/${$country}.png" width="16" height="11" alt="$show.lang" title="$country" /></li>	
+        				#for $country in $show.imdb_info['country_codes'].split('|')
+                			<li><strong>Country:</strong> <img src="${sbPID}/images/flags/${$country}.png" width="16" height="11" alt="$show.lang" title="$country" /></li>
                 		#end for
     				#end if
     				#if 'year' in $show.imdb_info:
@@ -140,7 +122,7 @@
 				#end if
 				<li><strong>Status:</strong> $show.status</li>
                 #set $info_flag = $subtitles.fromietf($show.lang).opensubtitles if $show.lang else ''
-                <li>Info Language:<img src="$sbRoot/images/subtitles/flags/${info_flag}.png" width="16" height="11" alt="$show.lang" title="$show.lang" onError="this.onerror=null;this.src='$sbRoot/images/flags/unknown.png';"/></li>
+                <li>Info Language:<img src="${sbPID}/images/subtitles/flags/${info_flag}.png" width="16" height="11" alt="$show.lang" title="$show.lang" onError="this.onerror=null;this.src='${sbPID}/images/flags/unknown.png';"/></li>
   			</ul>
 			<ul>
                 #if $sickbeard.USE_SUBTITLES
@@ -153,9 +135,9 @@
                 <li>#if int($show.is_anime) == 1 then "<i class='fa fa-check-square-o'></i>" else "<i class='fa fa-square-o'></i>"# Anime</li>
                 <li>#if int($show.dvdorder) == 1 then "<i class='fa fa-check-square-o'></i>" else "<i class='fa fa-square-o'></i>"# DVD Order</li>
                 <li>#if int($show.scene) == 1 then "<i class='fa fa-check-square-o'></i>" else "<i class='fa fa-square-o'></i>"# Scene Numbering</li>
-        	</ul>            												
+        	</ul>
 		</div>
-		
+
 		<div class="col-md-6 column">
 			<div id="title-select-area">
 				<div id="title-select-box" class="input-group">
@@ -195,14 +177,14 @@
         		##There is a special/season_0?##
         		#if int($seasonResults[-1]["season"]) == 0:
             		#set $season_special = 1
-        		#else: 
+        		#else:
             		#set $season_special = 0
         		#end if
 
         		#if not $sickbeard.DISPLAY_SHOW_SPECIALS and $season_special:
             		#set lastSeason = $seasonResults.pop(-1); del lastSeason
         		#end if
-        		
+
         		#if (len($seasonResults) > 14):
                 	<select id="seasonJump" class="form-control">
                    		<option value="jump">Jump to Season</option>
@@ -219,31 +201,31 @@
                     	#end if
                 	#end for
             	#end if
-            	
+
             	#if $season_special:
                 	#if sickbeard.DISPLAY_SHOW_SPECIALS:
-                    	<a href="$sbRoot/toggleDisplayShowSpecials/?show=$show.indexerid" class="label label-warning">Hide Specials</a>
+                    	<a href="${sbPID}/toggleDisplayShowSpecials/?show=$show.indexerid" class="label label-warning">Hide Specials</a>
                 	#else:
-                    	<a href="$sbRoot/toggleDisplayShowSpecials/?show=$show.indexerid" class="label label-success">Show Specials</a>
+                    	<a href="${sbPID}/toggleDisplayShowSpecials/?show=$show.indexerid" class="label label-success">Show Specials</a>
                 	#end if
             	#end if
         	#end if
-        	
+
         	<h3>Genres<span class="info">Click label to discover popular series in that genre on Trakt.tv</span></h3>
         	#if not $show.imdbid
             	#if $show.genre:
                 	#for $genre in $show.genre[1:-1].split('|')
-                		<a href="<%= anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower()) %>" class="label label-primary" target="_blank" title="View other popular $genre shows on trakt.tv."><i class="fa fa-bookmark"></i> $genre</a>                    	
+                		<a href="<%= anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower()) %>" class="label label-primary" target="_blank" title="View other popular $genre shows on trakt.tv."><i class="fa fa-bookmark"></i> $genre</a>
                     #end for
                 #end if
             #end if
-                    
+
             #if 'year' in $show.imdb_info:
             	#for $imdbgenre in $show.imdb_info['genres'].replace('Sci-Fi','Science-Fiction').split('|')
-            		<a href="<%= anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower()) %>" class="label label-primary" target="_blank" title="View other popular $imdbgenre shows on trakt.tv."><i class="fa fa-bookmark"></i> $imdbgenre</a> 
+            		<a href="<%= anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower()) %>" class="label label-primary" target="_blank" title="View other popular $imdbgenre shows on trakt.tv."><i class="fa fa-bookmark"></i> $imdbgenre</a>
                 #end for
             #end if
-            
+
             <h3><i class="fa fa-hdd-o"></i> Disk information</h3>
             #if $showLoc[1]:
              	<strong>Location:</strong> $showLoc[0] <br/>
@@ -251,7 +233,7 @@
             	<strong><span style="color: red;">Location:</strong> $showLoc[0]</span> (dir is missing) <br/>
             #end if
             <strong>Size on disk:</strong> $sickbeard.helpers.pretty_filesize(sickbeard.helpers.get_size($showLoc[0]))
-            
+
             <h3><i class="fa fa-search"></i> Search releases</h3>
             #if $show.rls_require_words:
             	<li><strong>Required Words:</strong> #echo $show.rls_require_words#</li>
@@ -270,7 +252,7 @@
                 <li><strong>Unwanted Group#if len($bwl.blacklist)>1 then "s" else ""#:</strong> #echo ', '.join($bwl.blacklist)#</li>
             #end if
 		</div>
-		
+
 		<div class="col-md-4 column">
 			#if 'rating' in $show.imdb_info:
 				#set $rating_tip = str($show.imdb_info['rating']) + " / 10" + " Stars" + " - " + str($show.imdb_info['votes']) + " Votes"
@@ -278,8 +260,8 @@
                 	<div class="ratebox" data-toggle="tooltip" data-placement="top" title="" data-original-title="$rating_tip" data-id="1" data-numStars="10" data-rating="$show.imdb_info['rating']"></div>
 				</div>
 			#end if
-			<div class="img-poster ribbon-container">				
-				<a href="$sbRoot/showPoster/?show=$show.indexerid&amp;which=poster" rel="dialog" title="View Poster for $show.name"><img src="$sbRoot/showPoster/?show=$show.indexerid&amp;which=poster_thumb" class="tvshowImg" alt=""/>
+			<div class="img-poster ribbon-container">
+				<a href="${sbPID}/showPoster/?show=$show.indexerid&amp;which=poster" rel="dialog" title="View Poster for $show.name"><img src="${sbPID}/showPoster/?show=$show.indexerid&amp;which=poster_thumb" class="tvshowImg" alt=""/>
 				#if 'nded' in $show.status:
 					<span class="ribbon ribbon-red"><i class="fa fa-exclamation-triangle"></i> Ended</span>
 				#else if 'nknown' in $show.status:
@@ -287,7 +269,7 @@
 				#end if
 	     		</a>
         	</div>
-			<div class="col-md-6 column right bottom-space">			
+			<div class="col-md-6 column right bottom-space">
 				<span class="show-preset-quality">
 				#set $anyQualities, $bestQualities = $Quality.splitQuality(int($show.quality))
                	#if $show.quality in $qualityPresets:
@@ -301,17 +283,17 @@
                 	#end if
                 #end if
                 </span>
-				
+
 				#if $show.network:
-					<span title="$show.network"><img src="$sbRoot/images/network/${show.network.replace(u"\u00C9",'e').replace(u"\u00E9",'e').lower()}.png" height="28" alt="$show.network" title="$show.network" /></span>	
+					<span title="$show.network"><img src="${sbPID}/images/network/${show.network.replace(u"\u00C9",'e').replace(u"\u00E9",'e').lower()}.png" height="28" alt="$show.network" title="$show.network" /></span>
 				#else:
-					<span title="No Network"><img src="$sbRoot/images/network/nonetwork.png" height="28" alt="No Network" title="No Network" /></span>
+					<span title="No Network"><img src="${sbPID}/images/network/nonetwork.png" height="28" alt="No Network" title="No Network" /></span>
 				#end if
 			</div>
 		</div>
-	
+
 	</div> <!-- end row clearfix -->
-	
+
 	<div class="row clearfix dark">
 		<div class="pull-left col-md-4">
 			<div class="form-group">
@@ -343,15 +325,15 @@
             <label for="good"><span class="label label-success"><input type="checkbox" id="good" checked="checked" /> Downloaded: <b>$epCounts[$Overview.GOOD]</b></span></label>
             <label for="skipped"><span class="label label-default"><input type="checkbox" id="skipped" checked="checked" /> Skipped: <b>$epCounts[$Overview.SKIPPED]</b></span></label>
             <label for="snatched"><span class="label label-primary"><input type="checkbox" id="snatched" checked="checked" /> Snatched: <b>$epCounts[$Overview.SNATCHED]</b></span></label>
-        
+
         	<button id="popover" type="button" class="btn btn-xs">Select Columns</button>
         	<div class="pull-right" >
-            	<button class="btn btn-xs seriesCheck">Select Filtered Episodes</button> 
+            	<button class="btn btn-xs seriesCheck">Select Filtered Episodes</button>
             	<button class="btn btn-xs clearAll">Clear All</button>
         	</div>
     	</div>
-    	
-    	
+
+
     	<table #if not $show.is_anime then "id=\"showTable\"" else "id=\"animeTable\""# class="display_show table table-hover table-condensed" cellspacing="0" border="0" cellpadding="0">
 			#set $curSeason = -1
 			#set $seasonCount = 0
@@ -363,7 +345,7 @@
         		#end if
         		#if not $sickbeard.DISPLAY_SHOW_SPECIALS and int($epResult["season"]) == 0:
             		#continue
-        		#end if    
+        		#end if
         		#set $scene = False
         		#set $scene_anime = False
         		#if not $show.air_by_date and not $show.is_sports and not $show.is_anime and $show.is_scene:
@@ -395,7 +377,7 @@
             		#set $dfltEpNumbering = True
         		#end if
 
-        		#set $epLoc = $epResult["location"]       
+        		#set $epLoc = $epResult["location"]
 
         		#if int($epResult["season"]) != $curSeason:
             		#if $curSeason == -1:
@@ -415,12 +397,12 @@
                 				<th data-sorter="false" #if not $sickbeard.DOWNLOAD_URL then "class=\"col-ep columnSelector-false\"" else "class=\"col-ep\""#>Download</th>
                 				<th data-sorter="false" #if not $sickbeard.USE_SUBTITLES then "class=\"col-ep columnSelector-false\"" else "class=\"col-ep\""#>Subtitles</th>
                 				<th data-sorter="false" class="col-status">Status</th>
-                				<th data-sorter="false" class="col-search">Search</th>        
+                				<th data-sorter="false" class="col-search">Search</th>
         					</tr>
-    					</thead>            
-    					<tbody class="tablesorter-no-sort">      
+    					</thead>
+    					<tbody class="tablesorter-no-sort">
         					<tr>
-            					<th class="row-seasonheader displayShowTable" colspan="13" style="width: auto;">          
+            					<th class="row-seasonheader displayShowTable" colspan="13" style="width: auto;">
                 					<h3><a id="season-$epResult["season"]" name="season-$epResult["season"]"></a>#if int($epResult["season"]) == 0 then "Specials" else "Season " + str($epResult["season"])#</h3>
             					</th>
         					</tr>
@@ -441,11 +423,11 @@
             					<th class="col-ep">Download</th>
             					<th class="col-ep">Subtitles</th>
             					<th class="col-status">Status</th>
-            					<th class="col-search">Search</th>        
+            					<th class="col-search">Search</th>
         					</tr>
             		#else:
     					</tbody>
-    					<tbody class="tablesorter-no-sort">       
+    					<tbody class="tablesorter-no-sort">
         					<tr>
                 				<th class="row-seasonheader displayShowTable" colspan="13" style="width: auto;">
                     				<h3><a id="season-$epResult["season"]" name="season-$epResult["season"]"></a>#if int($epResult["season"]) == 0 then "Specials" else "Season " + str($epResult["season"])#</h3>
@@ -464,7 +446,7 @@
                         					});
                     						//-->
                     						</script>
-                    					</div>                    
+                    					</div>
                 					#end if
 								</th>
         					</tr>
@@ -485,8 +467,8 @@
             					<th class="col-ep">Download</th>
             					<th class="col-ep">Subtitles</th>
             					<th class="col-status">Status</th>
-            					<th class="col-search">Search</th> 
-        					</tr>                    
+            					<th class="col-search">Search</th>
+        					</tr>
             		#end if
     				</tbody>
                 	#set $seasonCount = $seasonCount + 1
@@ -494,24 +476,24 @@
     					<tbody class="collapse" id="collapseSeason-$epResult['season']">
                 	#else
     					<tbody>
-                	#end if  
+                	#end if
             		#set $curSeason = int($epResult["season"])
         		#end if
-        		#set $epLoc = $epResult["location"]            
+        		#set $epLoc = $epResult["location"]
         		<tr class="$Overview.overviewStrings[$epCats[$epStr]] season-$curSeason seasonstyle">
-            		<td class="col-checkbox">    
+            		<td class="col-checkbox">
                 		#if int($epResult["status"]) != $UNAIRED
                     		<input type="checkbox" class="epCheck" id="<%=str(epResult["season"])+'x'+str(epResult["episode"])%>" name="<%=str(epResult["season"]) +"x"+str(epResult["episode"]) %>" />
                 		#end if
-            		</td>    
+            		</td>
             		<td align="center">#if $epResult["hasnfo"] == 1:
-            								<span class="label label-xs label-success">NFO</span> 
+            								<span class="label label-xs label-success">NFO</span>
             						   #else:
             						   		<span class="label label-xs label-default">NFO</span>
             						   #end if
-            		</td>    
+            		</td>
             <td align="center">#if $epResult["hastbn"] == 1:
-            						<span class="label label-xs label-success">TBN</span> 
+            						<span class="label label-xs label-success">TBN</span>
             				   #else:
             						<span class="label label-xs label-default">TBN</span>
             				   #end if
@@ -522,7 +504,7 @@
                 #elif $epLoc and (not $epLoc.lower().startswith($show._location.lower()) or not $show._location):
                     #set $epLoc = $epLoc
                 #end if
-            
+
                 #if $epLoc != "" and $epLoc != None:
                     <span title="$epLoc" class="addQTip">$epResult["episode"]</span>
                 #else
@@ -556,9 +538,9 @@
             </td>
             <td class="col-name">
             #if $epResult["description"] != "" and $epResult["description"] != None:
-                <img src="$sbRoot/images/info32.png" width="16" height="16" class="plotInfo" alt="" id="plot_info_$show.indexerid<%="_" + str(epResult["season"]) + "_" + str(epResult["episode"])%>" />
+                <img src="${sbPID}/images/info32.png" width="16" height="16" class="plotInfo" alt="" id="plot_info_$show.indexerid<%="_" + str(epResult["season"]) + "_" + str(epResult["episode"])%>" />
             #else:
-                <img src="$sbRoot/images/info32.png" width="16" height="16" class="plotInfoNone" alt="" />
+                <img src="${sbPID}/images/info32.png" width="16" height="16" class="plotInfoNone" alt="" />
             #end if
             $epResult["name"]
             </td>
@@ -569,10 +551,10 @@
                         #if not $rootDir.startswith('/')
                             #set $filename = $filename.replace('\\','\\\\')
                         #end if
-						#set $filename = ntpath.basename($filename) 
+						#set $filename = ntpath.basename($filename)
                     #end for
                     $filename
-                #end if    
+                #end if
             </td>
             <td class="col-ep">
                 #if $epResult["file_size"]:
@@ -582,7 +564,7 @@
             </td>
             <td class="col-airdate">
                 <span class="${fuzzydate}">#if int($epResult['airdate']) == 1 then 'never' else $sbdatetime.sbdatetime.sbfdate($sbdatetime.sbdatetime.convert_to_setting($network_timezones.parse_date_time($epResult['airdate'],$show.airs,$show.network)))#</span>
-            </td>        
+            </td>
             <td>
                 #if $sickbeard.DOWNLOAD_URL and $epResult['location']
                     #if $epResult['location']
@@ -600,13 +582,13 @@
             <td class="col-subtitles" align="center">
             #for $sub_lang in [$subtitles.fromietf(x) for x in $epResult["subtitles"].split(',') if $epResult["subtitles"]]:
                #set $flag = $sub_lang.opensubtitles
-                <img src="$sbRoot/images/subtitles/flags/${flag}.png" width="16" height="11" alt="${sub_lang.name}" onError="this.onerror=null;this.src='$sbRoot/images/flags/unknown.png';" />
+                <img src="${sbPID}/images/subtitles/flags/${flag}.png" width="16" height="11" alt="${sub_lang.name}" onError="this.onerror=null;this.src='${sbPID}/images/flags/unknown.png';" />
             #end for
             </td>
             #set $curStatus, $curQuality = $Quality.splitCompositeStatus(int($epResult["status"]))
-                #if $curQuality != Quality.NONE:   
+                #if $curQuality != Quality.NONE:
                     <td class="col-status">$statusStrings[$curStatus] <span class="quality $Quality.qualityStrings[$curQuality].replace("720p","HD720p").replace("1080p","HD1080p").replace("RawHD TV", "RawHD").replace("HD TV", "HD720p")">$Quality.qualityStrings[$curQuality]</span></td>
-                #else:    
+                #else:
                     <td class="col-status">$statusStrings[$curStatus]</td>
                 #end if
             <td class="col-search">
@@ -621,18 +603,18 @@
                     <a class="epSubtitlesSearch" href="searchEpisodeSubtitles?show=$show.indexerid&amp;season=$epResult["season"]&amp;episode=$epResult["episode"]"><i class="fa fa-comments"></i></a>
                 #end if
             </td>
-        </tr>      
+        </tr>
     #end for
     </tbody>
 </table>
-    	
-    	
+
+
 	</div> <!-- end row clearfix -->
-	
+
 </div> <!-- end show-container -->
 
 
-    
+
 <!--Begin - Bootstrap Modal-->
 
 <div id="manualSearchModalFailed" class="modal fade">
@@ -675,12 +657,12 @@
 
 <!--End - Bootstrap Modal-->
 <script>
-	\$('.ratebox').raterater({ 
-		numStars: 10, 
+	\$('.ratebox').raterater({
+		numStars: 10,
 		allowChange: false,
 		starWidth: 21
 	});
-	
+
 	\$('.seasonLink').click(function(){
     	\$('.show-container').mCustomScrollbar("scrollTo", \$(this).attr('href'));
     });
