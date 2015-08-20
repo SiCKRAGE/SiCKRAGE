@@ -26,7 +26,7 @@ from .generic import GenericClient
 class PutioAPI(GenericClient):
     def __init__(self, host=None, username=None, password=None):
 
-        super(PutioAPI, self).__init__('putio', host, username, password)
+        super(PutioAPI, self).__init__('put_io', host, username, password)
         
         self.url = 'https://api.put.io/v2/oauth2/authenticate?client_id=2103&response_type=token&redirect_uri=http%3A%2F%2Fdevclinton.com'
    
