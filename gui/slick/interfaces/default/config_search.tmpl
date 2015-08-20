@@ -447,8 +447,8 @@
                                 <span class="component-title">Send .torrent files to:</span>
                                 <span class="component-desc">
                                 <select name="torrent_method" id="torrent_method" class="form-control input-sm">
-#set $torrent_method_text = {'blackhole': "Black hole", 'utorrent': "uTorrent", 'transmission': "Transmission", 'deluge': "Deluge", 'download_station': "Synology DS", 'rtorrent': "rTorrent", 'qbittorrent': "qbittorrent", 'put.io' : "Put.io" }
-#for $curAction in ('blackhole', 'utorrent', 'transmission', 'deluge', 'download_station', 'rtorrent', 'qbittorrent', 'put.io'):
+#set $torrent_method_text = {'blackhole': "Black hole", 'utorrent': "uTorrent", 'transmission': "Transmission", 'deluge': "Deluge", 'download_station': "Synology DS", 'rtorrent': "rTorrent", 'qbittorrent': "qbittorrent", 'put_io' : "Put.io" }
+#for $curAction in ('blackhole', 'utorrent', 'transmission', 'deluge', 'download_station', 'rtorrent', 'qbittorrent', 'put_io'):
     #set $selected = $html_selected if $sickbeard.TORRENT_METHOD == $curAction else ''
                                 <option value="$curAction"$selected>$torrent_method_text[$curAction]</option>
 #end for

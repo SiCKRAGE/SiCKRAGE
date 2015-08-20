@@ -22,7 +22,7 @@ __all__ = ['utorrent',
            'download_station',
            'rtorrent',
            'qbittorrent',
-           'put.io'
+           'put_io'
 ]
 
 import sickbeard

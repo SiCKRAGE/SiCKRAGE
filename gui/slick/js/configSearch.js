@@ -156,8 +156,8 @@ $(document).ready(function(){
                 $(torrent_label_option).hide();
                 $(torrent_label_anime_option).hide();
                 $('#host_desc_torrent').text('URL to your qbittorrent client (e.g. http://localhost:8080)');
-            } else if ('put.io' == selectedProvider){
-                client = 'put.io';
+            } else if ('put_io' == selectedProvider){
+                client = 'put_io';
                 $(torrent_rpcurl_option).prev().hide(); // hide the host
                 $(torrent_label_option).hide();
                 $(torrent_label_anime_option).hide();
