@@ -308,7 +308,7 @@ class TVRage:
         if apikey is not None:
             self.config['apikey'] = apikey
         else:
-            self.config['apikey'] = "Uhewg1Rr0o62fvZvUIZt"  # tvdb_api's API key
+            self.config['apikey'] = "Uhewg1Rr0o62fvZvUIZt"  # tvrage_api's API key
 
         self.config['debug_enabled'] = debug  # show debugging messages
 
@@ -636,18 +636,52 @@ class TVRage:
                 return False
 
             seasons = epsEt['episodelist']['season']
+            try:
+                # Specials are stored elsewhere
+                specials = epsEt['episodelist']['special']
+            except KeyError:
+                specials = []
             if not isinstance(seasons, list):
                 seasons = [seasons]
+            if not isinstance(specials, list):
+                specials = [specials]
+
+            seasons += specials
+
+            # Keep track of special episode numbers for specials
+            # Maps seasons to counter of specials seen
+            special_ep_counter = {}
 
             for season in seasons:
-                seas_no = int(season['@no'])
+                try:
+                    seas_no = int(season['@no'])
+                except KeyError:
+                    # Specials have their season listed per episode
+                    seas_no = None
 
                 episodes = season['episode']
                 if not isinstance(episodes, list):
                     episodes = [episodes]
 
                 for episode in episodes:
-                    ep_no = int(episode['episodenumber'])
+                    try:
+                        ep_no = int(episode['episodenumber'])
+                    except KeyError:
+                        # Specials have no episode number
+                        # but they do have a season number
+                        # If this is 0, it is a duplicate (maybe?)
+                        seas_no = int(episode['season'])
+                        if seas_no is 0:
+                            continue
+
+                        # Increment our episode number counter as necessary
+                        try:
+                            special_ep_counter[seas_no] += 1
+                        except KeyError:
+                            special_ep_counter[seas_no] = 1
+
+                        # We'll tack on an 'S' so we don't overwrite real eps
+                        ep_no = 'S' + str(special_ep_counter[seas_no])
 
                     for k, v in episode.items():
                         k = k.lower()
