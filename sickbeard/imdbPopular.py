@@ -92,10 +92,6 @@ class imdbPopular():
         full_path = os.path.join(path, os.path.basename(image_url))
 
         if not os.path.isfile(full_path):
-            r = requests.get(image_url)
-            if r.status_code == 200:
-                with open(full_path, 'wb') as f:
-                    for chunk in r.iter_content(1024):
-                        f.write(chunk)
+            helpers.download_file(image_url, full_path, session=self.session)
 
 imdb_popular = imdbPopular()
