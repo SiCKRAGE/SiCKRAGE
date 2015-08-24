@@ -38,7 +38,7 @@ class DelugeDAPI(GenericClient):
             label = sickbeard.TORRENT_LABEL_ANIME
 
         options = {
-            'add_paused': sickbeard.TORRENT_PAUSED,
+            'add_paused': sickbeard.TORRENT_PAUSED
         }
         if sickbeard.TORRENT_PATH:
             options['move_completed_path']= sickbeard.TORRENT_PATH
@@ -64,7 +64,7 @@ class DelugeDAPI(GenericClient):
             return None
 
         options = {
-            'add_paused': sickbeard.TORRENT_PAUSED,
+            'add_paused': sickbeard.TORRENT_PAUSED
         }
         if sickbeard.TORRENT_PATH:
             options['move_completed_path']= sickbeard.TORRENT_PATH
