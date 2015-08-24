@@ -23,7 +23,7 @@ class imdbPopular():
         if not data:
             return None
 
-        soup = BeautifulSoup(data)
+        soup = BeautifulSoup(data, 'html.parser')
         results = soup.find("table", {"class": "results"})
         rows = results.find_all("tr");
 
