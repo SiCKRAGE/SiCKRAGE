@@ -82,7 +82,8 @@ class imdbPopular():
         else:
             return image_url
 
-    def cache_image(self, image_url):
+
+    def cache_image(image_url):
         path = ek.ek(os.path.abspath, ek.ek(os.path.join, sickbeard.CACHE_DIR, 'images', 'imdb_popular'))
 
         if not os.path.exists(path):
@@ -91,6 +92,10 @@ class imdbPopular():
         full_path = os.path.join(path, os.path.basename(image_url))
 
         if not os.path.isfile(full_path):
-            helpers.download_file(image_url, full_path, session=self.session)
+            r = requests.get(image_url)
+            if r.status_code == 200:
+                with open(full_path, 'wb') as f:
+                    for chunk in r.iter_content(1024):
+                        f.write(chunk)
 
 imdb_popular = imdbPopular()
