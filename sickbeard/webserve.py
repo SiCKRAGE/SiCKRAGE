@@ -2573,13 +2573,14 @@ class HomeAddShows(Home):
         Fetches data from IMDB to show a list of popular shows.
         """
         t = PageTemplate(rh=self, file="home_popularShows.mako")
+        e = None
 
         try:
             popular_shows = imdbPopular.fetch_popular_shows()
-        except:
+        except Exception as e:
             popular_shows = None
 
-        return t.render(submenu = self.HomeMenu(), popular_shows=popular_shows)
+        return t.render(submenu = self.HomeMenu(), popular_shows=popular_shows, imdb_exception=e)
 
 
     def addShowToBlacklist(self, indexer_id):
