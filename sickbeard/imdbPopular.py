@@ -83,7 +83,7 @@ class imdbPopular():
             return image_url
 
 
-    def cache_image(image_url):
+    def cache_image(self, image_url):
         path = ek.ek(os.path.abspath, ek.ek(os.path.join, sickbeard.CACHE_DIR, 'images', 'imdb_popular'))
 
         if not os.path.exists(path):
