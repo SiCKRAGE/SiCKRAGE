@@ -284,6 +284,9 @@ def extractMetadata(parser, quality=QUALITY_NORMAL):
         metadata.extract(parser)
     except HACHOIR_ERRORS, err:
         error("Error during metadata extraction: %s" % unicode(err))
+        return None
+    except Exception:
+        return None
     if metadata:
         metadata.mime_type = parser.mime_type
         metadata.endian = endian_name[parser.endian]
