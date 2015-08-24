@@ -38,8 +38,11 @@ class DelugeDAPI(GenericClient):
             label = sickbeard.TORRENT_LABEL_ANIME
 
         options = {
-            'add_paused': sickbeard.TORRENT_PAUSED
+            'add_paused': sickbeard.TORRENT_PAUSED,
         }
+        if sickbeard.TORRENT_PATH:
+            options['move_completed_path']= sickbeard.TORRENT_PATH
+            options['move_completed'] = 1
 
         remote_torrent = self.drpc.add_torrent_magnet(result.url, options)
 
@@ -61,9 +64,14 @@ class DelugeDAPI(GenericClient):
             return None
 
         options = {
-            'add_paused': sickbeard.TORRENT_PAUSED
+            'add_paused': sickbeard.TORRENT_PAUSED,
         }
+        if sickbeard.TORRENT_PATH:
+            options['move_completed_path']= sickbeard.TORRENT_PATH
+            options['move_completed'] = 1
 
+            
+    	
         remote_torrent = self.drpc.add_torrent_file(result.name + '.torrent', result.content, options)
 
         if not remote_torrent:
