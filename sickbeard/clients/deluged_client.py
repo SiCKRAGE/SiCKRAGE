@@ -63,7 +63,8 @@ class DelugeDAPI(GenericClient):
         options = {
             'add_paused': sickbeard.TORRENT_PAUSED
         }
-
+            
+    	
         remote_torrent = self.drpc.add_torrent_file(result.name + '.torrent', result.content, options)
 
         if not remote_torrent:
@@ -93,8 +94,13 @@ class DelugeDAPI(GenericClient):
         return True
 
     def _set_torrent_path(self, result):
+    
 
-        return True
+    	path = sickbeard.TORRENT_PATH
+        if path:
+            if self.drpc.set_torrent_path(result.hash, path):
+                return True
+        return False
 
     def _set_torrent_pause(self, result):
 
@@ -179,6 +185,19 @@ class DelugeRPC(object):
                 self.disconnect()
         return True
 
+    def set_torrent_path(self, torrent_id, path):
+        try:
+            self.connect()
+            self.client.core.set_torrent_move_completed_path(torrent_id, path).get()
+            self.client.core.set_torrent_move_completed(torrent_id, 1).get()
+        except Exception as err:
+            logger.log('DelugeD: Failed to set path for torrent: ' + err + ' ' + traceback.format_exc(), logger.ERROR)
+            return False
+        finally:
+            if self.client:
+                self.disconnect()
+        return True
+		
     def pause_torrent(self, torrent_ids):
         try:
             self.connect()
