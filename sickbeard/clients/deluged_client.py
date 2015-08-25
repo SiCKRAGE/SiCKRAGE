@@ -189,6 +189,7 @@ class DelugeRPC(object):
         try:
             self.connect()
             self.client.core.set_torrent_move_completed_path(torrent_id, path).get()
+            self.client.core.set_torrent_move_completed(torrent_id, 1).get()
         except Exception as err:
             logger.log('DelugeD: Failed to set path for torrent: ' + err + ' ' + traceback.format_exc(), logger.ERROR)
             return False
