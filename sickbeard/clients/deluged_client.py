@@ -1,10 +1,14 @@
 # Author: Paul Wollaston
+# Contributions: Luke Mullan
 #
 # This client script allows connection to Deluge Daemon directly, completely
 # circumventing the requirement to use the WebUI.
 
 import json
-from base64 import b64encode
+from base64 import b64encode, b16encode, b32decode
+from hashlib import sha1
+import re
+from bencode import bencode as benc, bdecode
 
 import sickbeard
 from sickbeard import logger
@@ -225,9 +229,14 @@ class DelugeRPC(object):
 
         torrent_hash = torrent_hash.lower()
         torrent_check = self.client.core.get_torrent_status(torrent_hash, {}).get()
+        # Lets try to resume the torrent unless user wants torrents paused on adding.
+        if not sickbeard.TORRENT_PAUSED:
+            self.client.core.resume_torrent([torrent_hash]).get()
+        print torrent_hash
+        print torrent_check
         if torrent_check['hash']:
+            logger.log('DelugeD: Torrent already exists in Deluge: ', logger.DEBUG)
             return torrent_hash
-
         return False
 
 api = DelugeDAPI()
