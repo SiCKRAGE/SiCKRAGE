@@ -1,9 +1,9 @@
-from lib.hachoir_core.field import (FieldSet, ParserError,
+from hachoir_core.field import (FieldSet, ParserError,
     Bit, UInt8, UInt16, UInt32, TimestampUnix32,
     Bytes, String, Enum,
     PaddingBytes, PaddingBits, NullBytes, NullBits)
-from lib.hachoir_core.text_handler import textHandler, hexadecimal, filesizeHandler
-from lib.hachoir_core.error import HACHOIR_ERRORS
+from hachoir_core.text_handler import textHandler, hexadecimal, filesizeHandler
+from hachoir_core.error import HACHOIR_ERRORS
 
 class SectionHeader(FieldSet):
     static_size = 40 * 8
@@ -72,7 +72,7 @@ class SectionHeader(FieldSet):
                 return "section_%s" % name
         except HACHOIR_ERRORS, err:
             self.warning(unicode(err))
-            return "section[]"
+        return "section[]"
 
 class DataDirectory(FieldSet):
     def createFields(self):

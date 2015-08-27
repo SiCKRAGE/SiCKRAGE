@@ -78,6 +78,19 @@ def deluge():
     
     return (dirName, nzbName)
 
+def deluged() :
+
+    if len(sys.argv) < 4:
+        scriptlogger.error('No folder supplied - is this being called from Deluge?')
+        print "No folder supplied - is this being called from Deluge?"
+        time.sleep(3)
+        sys.exit()
+
+    dirName = sys.argv[3]
+    nzbName = sys.argv[2]
+
+    return (dirName, nzbName)
+
 def blackhole():
 
     if None != os.getenv('TR_TORRENT_DIR'):
@@ -150,7 +163,7 @@ def main():
         time.sleep(3)
         sys.exit()
         
-    if not torrent_method in ['utorrent', 'transmission', 'deluge', 'blackhole']:
+    if not torrent_method in ['utorrent', 'transmission', 'deluge', 'deluged', 'blackhole']:
         scriptlogger.error(u'Unknown Torrent Method. Aborting!')
         print u'Unknown Torrent Method. Aborting!'
         time.sleep(3)
@@ -190,18 +203,21 @@ def main():
         host = 'localhost'
     
     url = protocol + host + ":" + port + web_root + "/home/postprocess/processEpisode"
+    login_url = protocol + host + ":" + port + web_root + "/login"
     
     scriptlogger.debug("Opening URL: " + url + ' with params=' + str(params))   
     print "Opening URL: " + url + ' with params=' + str(params)
     
     try:
-        response = requests.get(url, auth=(username, password), params=params, verify=False)
+        sess = requests.Session()
+        sess.post(login_url, data={'username': username, 'password': password}, stream=True, verify=False)
+        response = sess.get(url, auth=(username, password), params=params, verify=False,  allow_redirects=False)
     except Exception, e:
         scriptlogger.error(u': Unknown exception raised when opening url: ' + str(e))
         time.sleep(3)
         sys.exit()
     
-    if response.status_code == 401:
+    if response.status_code == 302:
         scriptlogger.error(u'Invalid Sickbeard Username or Password, check your config')
         print 'Invalid Sickbeard Username or Password, check your config'
         time.sleep(3)

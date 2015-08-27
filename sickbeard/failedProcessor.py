@@ -47,7 +47,7 @@ class FailedProcessor(object):
             raise exceptions.FailedProcessingFailed()
 
         try:
-            parser = NameParser(False, convert=True)
+            parser = NameParser(False)
             parsed = parser.parse(releaseName)
         except InvalidNameException:
             self._log(u"Error: release name is invalid: " + releaseName, logger.DEBUG)
@@ -72,7 +72,7 @@ class FailedProcessor(object):
 
         return True
 
-    def _log(self, message, level=logger.MESSAGE):
+    def _log(self, message, level=logger.INFO):
         """Log to regular logfile and save for return for PP script log"""
         logger.log(message, level)
         self.log += message + "\n"

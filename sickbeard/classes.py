@@ -16,12 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 import re
+import sys
+import traceback
 
 import sickbeard
 
 import urllib
 import datetime
-from lib.dateutil import parser
+from dateutil import parser
 
 from common import USER_AGENT, Quality
 
@@ -105,9 +107,15 @@ class SearchResult:
         # version
         self.version = -1
 
+        # hash
+        self.hash = None
+
+        # content
+        self.content = None
+
     def __str__(self):
 
-        if self.provider == None:
+        if self.provider is None:
             return "Invalid provider, unable to print self"
 
         myString = self.provider.name + " @ " + self.url + "\n"
@@ -146,10 +154,6 @@ class TorrentSearchResult(SearchResult):
     Torrent result with an URL to the torrent
     """
     resultType = "torrent"
-
-    # torrent hash
-    content = None
-    hash = None
 
 
 class AllShowsListUI:
@@ -261,6 +265,10 @@ class ErrorViewer():
     def clear():
         ErrorViewer.errors = []
 
+    @staticmethod
+    def get():
+        return ErrorViewer.errors
+
 
 class UIError():
     """
@@ -268,5 +276,6 @@ class UIError():
     """
 
     def __init__(self, message):
+        self.title = sys.exc_info()[-2] or message
         self.message = message
         self.time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')

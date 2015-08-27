@@ -20,7 +20,7 @@ import db
 import datetime
 
 from sickbeard.common import SNATCHED, SUBTITLED, FAILED, Quality
-from sickbeard.encodingKludge import toUnicode
+from sickbeard import encodingKludge as ek
 
 
 dateFormat = "%Y%m%d%H%M%S"
@@ -28,7 +28,7 @@ dateFormat = "%Y%m%d%H%M%S"
 
 def _logHistoryItem(action, showid, season, episode, quality, resource, provider, version=-1):
     logDate = datetime.datetime.today().strftime(dateFormat)
-    resource = toUnicode(resource)
+    resource = ek.ss(resource)
 
     myDB = db.DBConnection()
     myDB.action(
@@ -77,8 +77,9 @@ def logDownload(episode, filename, new_ep_quality, release_group=None, version=-
 
 
 def logSubtitle(showid, season, episode, status, subtitleResult):
-    resource = subtitleResult.path
-    provider = subtitleResult.service
+    resource = subtitleResult.language.opensubtitles
+    provider = subtitleResult.provider_name
+
     status, quality = Quality.splitCompositeStatus(status)
     action = Quality.compositeStatus(SUBTITLED, quality)
 

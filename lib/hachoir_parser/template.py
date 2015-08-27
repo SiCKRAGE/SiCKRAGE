@@ -13,17 +13,17 @@ Creation date: YYYY-mm-DD
 """
 
 # TODO: Just keep what you need
-from lib.hachoir_parser import Parser
-from lib.hachoir_core.field import (ParserError,
+from hachoir_parser import Parser
+from hachoir_core.field import (ParserError,
     UInt8, UInt16, UInt32, String, RawBytes)
-from lib.hachoir_core.endian import LITTLE_ENDIAN, BIG_ENDIAN
+from hachoir_core.endian import LITTLE_ENDIAN, BIG_ENDIAN
 
 class TODOFile(Parser):
     PARSER_TAGS = {
         "id": "TODO",
         "category": "TODO",    # "archive", "audio", "container", ...
         "file_ext": ("TODO",), # TODO: Example ("bmp",) to parse the file "image.bmp"
-        "mime": (u"TODO"),      # TODO: Example: "image/png"
+        "mime": (u"TODO",),    # TODO: Example: "image/png"
         "min_size": 0,         # TODO: Minimum file size (x bits, or x*8 in bytes)
         "description": "TODO", # TODO: Example: "A bitmap picture"
     }

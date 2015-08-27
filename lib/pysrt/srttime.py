@@ -9,6 +9,7 @@ from pysrt.srtexc import InvalidTimeString
 from pysrt.comparablemixin import ComparableMixin
 from pysrt.compat import str, basestring
 
+
 class TimeItemDescriptor(object):
     # pylint: disable-msg=R0903
     def __init__(self, ratio, super_ratio=0):

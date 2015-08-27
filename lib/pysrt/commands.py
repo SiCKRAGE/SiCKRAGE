@@ -13,6 +13,7 @@ from textwrap import dedent
 from chardet import detect
 from pysrt import SubRipFile, SubRipTime, VERSION_STRING
 
+
 def underline(string):
     return "\033[4m%s\033[0m" % string
 

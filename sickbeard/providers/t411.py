@@ -12,54 +12,58 @@
 # Sick Beard is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
 
 import traceback
-import time
 import re
 import datetime
+import time
+from requests.auth import AuthBase
 import sickbeard
 import generic
 
-from lib import requests
-from sickbeard.common import USER_AGENT, Quality, cpu_presets
+import requests
+from requests import exceptions
+
+from sickbeard.common import Quality
 from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard import show_name_helpers
-from sickbeard.bs4_parser import BS4Parser
 from sickbeard import db
 from sickbeard import helpers
 from sickbeard import classes
 from sickbeard.helpers import sanitizeSceneName
+from sickbeard.exceptions import ex
+
 
 class T411Provider(generic.TorrentProvider):
-    urls = {'base_url': 'http://www.t411.me/',
-            'search': 'http://www.t411.me/torrents/search/?name=%s&cat=210&subcat=433&search=%s&submit=Recherche',
-            'login_page': 'http://www.t411.me/users/login/',
-            'download': 'http://www.t411.me/torrents/download/?id=%s',
-    }
-
     def __init__(self):
-
         generic.TorrentProvider.__init__(self, "T411")
 
         self.supportsBacklog = True
-
         self.enabled = False
         self.username = None
         self.password = None
         self.ratio = None
+        self.token = None
+        self.tokenLastUpdate = None
 
         self.cache = T411Cache(self)
 
+        self.urls = {'base_url': 'http://www.t411.io/',
+                     'search': 'https://api.t411.io/torrents/search/%s?cid=%s&limit=100',
+                     'login_page': 'https://api.t411.io/auth',
+                     'download': 'https://api.t411.io/torrents/download/%s',
+        }
+
         self.url = self.urls['base_url']
 
-        self.last_login_check = None
+        self.subcategories = [433, 637, 455, 639]
 
-        self.login_opener = None
+        self.session = requests.Session()
 
     def isEnabled(self):
         return self.enabled
@@ -68,173 +72,135 @@ class T411Provider(generic.TorrentProvider):
         return 't411.png'
 
     def getQuality(self, item, anime=False):
-
         quality = Quality.sceneQuality(item[0], anime)
         return quality
 
-    def getLoginParams(self):
-        return {
-            'login': self.username,
-            'password': self.password,
-            'remember': '1',
-        }
-
-    def loginSuccess(self, output):
-        if "<span>Ratio: <strong class" in output.text:
-            return True
-        else:
-            return False
-
     def _doLogin(self):
 
-        now = time.time()
-
-        if self.login_opener and self.last_login_check < (now - 3600):
-            try:
-                output = self.login_opener.open(self.urls['test'])
-                if self.loginSuccess(output):
-                    self.last_login_check = now
-                    return True
-                else:
-                    self.login_opener = None
-            except:
-                self.login_opener = None
-
-        if self.login_opener:
-            return True
-
-        try:
-            login_params = self.getLoginParams()
-            self.session = requests.Session()
-            self.session.headers.update({'User-Agent': USER_AGENT})
-            data = self.session.get(self.urls['login_page'], verify=False)
-            output = self.session.post(self.urls['login_page'], data=login_params, verify=False)
-            if self.loginSuccess(output):
-                self.last_login_check = now
-                self.login_opener = self.session
+        if self.token is not None:
+            if time.time() < (self.tokenLastUpdate + 30 * 60):
+                logger.log('T411 Authentication token is still valid', logger.DEBUG)
                 return True
 
-            error = 'unknown'
-        except:
-            error = traceback.format_exc()
-            self.login_opener = None
+        login_params = {'username': self.username,
+                        'password': self.password}
 
-        self.login_opener = None
-        logger.log(u'Failed to login:' + str(error), logger.ERROR)
-        return False
+        logger.log('Performing authentication to T411', logger.DEBUG)
+
+        try:
+            response = helpers.getURL(self.urls['login_page'], post_data=login_params, timeout=30, session=self.session, json=True)
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
+            logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.WARNING)
+            return False
+
+        if response and 'token' in response:
+            self.token = response['token']
+            self.tokenLastUpdate = time.time()
+            self.uid = response['uid'].encode('ascii', 'ignore')
+            self.session.auth = T411Auth(self.token)
+            logger.log('Using T411 Authorization token : ' + self.token, logger.DEBUG)
+            return True
+        else:
+            logger.log('T411 token not found in authentication response', logger.WARNING)
+            return False
 
     def _get_season_search_strings(self, ep_obj):
-
         search_string = {'Season': []}
+        if not ep_obj:
+            return [search_string]
+
         for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
             if ep_obj.show.air_by_date or ep_obj.show.sports:
                 ep_string = show_name + '.' + str(ep_obj.airdate).split('-')[0]
             elif ep_obj.show.anime:
                 ep_string = show_name + '.' + "%d" % ep_obj.scene_absolute_number
             else:
-                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  #1) showName.SXX
+                ep_string = show_name + '.S%02d' % int(ep_obj.scene_season)  # 1) showName.SXX
 
             search_string['Season'].append(ep_string)
 
         return [search_string]
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
-
         search_string = {'Episode': []}
-
         if not ep_obj:
-            return []
+            return [search_string]
 
-        if self.show.air_by_date:
-            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + '.' + \
-                            str(ep_obj.airdate).replace('-', '|')
-                search_string['Episode'].append(ep_string)
-        elif self.show.sports:
-            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + '.' + \
-                            str(ep_obj.airdate).replace('-', '|') + '|' + \
+        for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
+            ep_string = sanitizeSceneName(show_name) + '.'
+            if self.show.air_by_date:
+                ep_string += str(ep_obj.airdate).replace('-', '|')
+            elif self.show.sports:
+                ep_string += str(ep_obj.airdate).replace('-', '|') + '|' + \
                             ep_obj.airdate.strftime('%b')
-                search_string['Episode'].append(ep_string)
-        elif self.show.anime:
-            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = sanitizeSceneName(show_name) + '.' + \
-                            "%i" % int(ep_obj.scene_absolute_number)
-                search_string['Episode'].append(ep_string)
-        else:
-            for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = show_name_helpers.sanitizeSceneName(show_name) + '.' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
+            elif self.show.anime:
+                ep_string += "%i" % int(ep_obj.scene_absolute_number)
+            else:
+                 ep_string += sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                                                                   'episodenumber': ep_obj.scene_episode}
 
-                search_string['Episode'].append(re.sub('\s+', '.', ep_string))
+            if add_string:
+                ep_string += ' %s' % add_string
+            search_string['Episode'].append(re.sub('\s+', '.', ep_string))
 
         return [search_string]
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+
+        logger.log(u"_doSearch started with ..." + str(search_params), logger.DEBUG)
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         if not self._doLogin():
-            return []
+            return results
 
         for mode in search_params.keys():
 
             for search_string in search_params[mode]:
 
-                if search_string == '':
-                    search_string2 = ''
-                else:
-                    search_string2 = '%40name+' + search_string + '+'
-                    
-                searchURL = self.urls['search'] % (search_string, search_string2)
-                logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)
+                for sc in self.subcategories:
+                    searchURL = self.urls['search'] % (search_string, sc)
+                    logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)
 
-                data = self.getURL(searchURL)
+                    data = self.getURL(searchURL, json=True)
+                    if not data:
+                        continue
+                    try:
 
-                if not data:
-                    continue
-
-                try:
-                    with BS4Parser(data.decode('iso-8859-1'), features=["html5lib", "permissive"]) as html:
-                        resultsTable = html.find('table', attrs={'class': 'results'})
-
-                        if not resultsTable:
-                            logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
-                                       logger.DEBUG)
+                        if 'torrents' not in data:
+                            logger.log(
+                                u"The Data returned from " + self.name + " do not contains any torrent : " + str(data),
+                                logger.DEBUG)
                             continue
 
-                        entries = resultsTable.find("tbody").findAll("tr")
+                        torrents = data['torrents']
 
-                        if len(entries) > 0:
-                            for result in entries:
+                        if not torrents:
+                            logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
+                                       logger.WARNING)
+                            continue
 
-                                try:
-                                    link = result.find('a', title=True)
-                                    torrentName = link['title']
-                                    torrent_name = str(torrentName)
-                                    torrentId = result.find_all('td')[2].find_all('a')[0]['href'][1:].replace('torrents/nfo/?id=','')
-                                    torrent_download_url = (self.urls['download'] % torrentId).encode('utf8')
-                                except (AttributeError, TypeError):
-                                    continue
+                        for torrent in torrents:
+                            try:
+                                torrent_name = torrent['name']
+                                torrent_id = torrent['id']
+                                torrent_download_url = (self.urls['download'] % torrent_id).encode('utf8')
 
                                 if not torrent_name or not torrent_download_url:
                                     continue
 
                                 item = torrent_name, torrent_download_url
-                                logger.log(u"Found result: " + torrent_name + " (" + torrent_download_url + ")", logger.DEBUG)
+                                logger.log(u"Found result: " + torrent_name + " (" + torrent_download_url + ")",
+                                           logger.DEBUG)
                                 items[mode].append(item)
+                            except Exception as e:
+                                logger.log(u"Invalid torrent data, skipping results: {0}".format(str(torrent)), logger.DEBUG)
+                                continue
 
-                        else:
-                            logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
-                                       logger.WARNING)
-                            continue
-
-                except Exception, e:
-                    logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),
-                               logger.ERROR)
-
+                    except Exception, e:
+                        logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),
+                                   logger.ERROR)
             results += items[mode]
 
         return results
@@ -244,8 +210,7 @@ class T411Provider(generic.TorrentProvider):
         title, url = item
 
         if title:
-            title = u'' + title
-            title = title.replace(' ', '.')
+            title = self._clean_title_from_provider(title)
 
         if url:
             url = str(url).replace('&amp;', '&')
@@ -274,9 +239,11 @@ class T411Provider(generic.TorrentProvider):
                 curEp = self.show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
                 searchString = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
 
-                for item in self._doSearch(searchString[0]):
+                searchResults = self._doSearch(searchString[0])
+                for item in searchResults:
                     title, url = self._get_title_and_url(item)
-                    results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
+                    if title and url:
+                        results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
 
         return results
 
@@ -284,17 +251,26 @@ class T411Provider(generic.TorrentProvider):
         return self.ratio
 
 
+class T411Auth(AuthBase):
+    """Attaches HTTP Authentication to the given Request object."""
+    def __init__(self, token):
+        self.token = token
+
+    def __call__(self, r):
+        r.headers['Authorization'] = self.token
+        return r
+
+
 class T411Cache(tvcache.TVCache):
     def __init__(self, provider):
-
         tvcache.TVCache.__init__(self, provider)
 
         # Only poll T411 every 10 minutes max
         self.minTime = 10
 
-    def _getDailyData(self):
+    def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return self.provider._doSearch(search_params)
+        return {'entries': self.provider._doSearch(search_params)}
 
 
 provider = T411Provider()

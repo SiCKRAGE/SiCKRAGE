@@ -33,18 +33,12 @@ from sickbeard import show_name_helpers
 from sickbeard.common import Overview
 from sickbeard.exceptions import ex
 from sickbeard import clients
-from lib import requests
-from lib.requests import exceptions
+import requests
+from requests import exceptions
 from sickbeard.helpers import sanitizeSceneName
 
 
 class SpeedCDProvider(generic.TorrentProvider):
-    urls = {'base_url': 'http://speed.cd/',
-            'login': 'http://speed.cd/take_login.php',
-            'detail': 'http://speed.cd/t/%s',
-            'search': 'http://speed.cd/V3/API/API.php',
-            'download': 'http://speed.cd/download.php?torrent=%s',
-    }
 
     def __init__(self):
 
@@ -61,6 +55,13 @@ class SpeedCDProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = SpeedCDCache(self)
+
+        self.urls = {'base_url': 'http://speed.cd/',
+                'login': 'http://speed.cd/take_login.php',
+                'detail': 'http://speed.cd/t/%s',
+                'search': 'http://speed.cd/V3/API/API.php',
+                'download': 'http://speed.cd/download.php?torrent=%s',
+                }
 
         self.url = self.urls['base_url']
 
@@ -84,7 +85,7 @@ class SpeedCDProvider(generic.TorrentProvider):
         }
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30, verify=False)
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30)
         except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
@@ -145,13 +146,13 @@ class SpeedCDProvider(generic.TorrentProvider):
 
         return [search_string]
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         if not self._doLogin():
-            return []
+            return results
 
         for mode in search_params.keys():
             for search_string in search_params[mode]:
@@ -203,8 +204,7 @@ class SpeedCDProvider(generic.TorrentProvider):
         title, url, seeders, leechers = item
 
         if title:
-            title = u'' + title
-            title = title.replace(' ', '.')
+            title = self._clean_title_from_provider(title)
 
         if url:
             url = str(url).replace('&amp;', '&')
@@ -254,9 +254,7 @@ class SpeedCDCache(tvcache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return self.provider._doSearch(search_params)
-
-
+        return {'entries': self.provider._doSearch(search_params)}
 
 provider = SpeedCDProvider()
 

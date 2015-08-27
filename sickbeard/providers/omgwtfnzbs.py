@@ -17,8 +17,9 @@
 # along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
 import urllib
-import generic
+
 import sickbeard
+import generic
 
 from sickbeard import tvcache
 from sickbeard import helpers
@@ -36,7 +37,7 @@ except ImportError:
 try:
     import json
 except ImportError:
-    from lib import simplejson as json
+    import simplejson as json
 
 
 class OmgwtfnzbsProvider(generic.NZBProvider):
@@ -46,7 +47,10 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
         self.username = None
         self.api_key = None
         self.cache = OmgwtfnzbsCache(self)
-        self.url = 'https://omgwtfnzbs.org/'
+
+        self.urls = {'base_url': 'https://omgwtfnzbs.org/'}
+        self.url = self.urls['base_url']
+
         self.supportsBacklog = True
 
     def isEnabled(self):
@@ -97,7 +101,15 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
     def _get_title_and_url(self, item):
         return (item['release'], item['getnzb'])
 
-    def _doSearch(self, search, search_mode='eponly', epcount=0, retention=0):
+    def _get_size(self, item):
+        try:
+            size = int(item['sizebytes'])
+        except (ValueError, TypeError, AttributeError, KeyError):
+            return -1
+
+        return size
+
+    def _doSearch(self, search, search_mode='eponly', epcount=0, retention=0, epObj=None):
 
         self._checkAuth()
 
@@ -163,12 +175,12 @@ class OmgwtfnzbsCache(tvcache.TVCache):
         Returns: A tuple containing two strings representing title and URL respectively
         """
 
-        title = item.title if item.title else None
+        title = item.get('title')
         if title:
             title = u'' + title
             title = title.replace(' ', '.')
 
-        url = item.link if item.link else None
+        url = item.get('link')
         if url:
             url = url.replace('&amp;', '&')
 
@@ -184,11 +196,6 @@ class OmgwtfnzbsCache(tvcache.TVCache):
 
         logger.log(self.provider.name + u" cache update URL: " + rss_url, logger.DEBUG)
 
-        data = self.getRSSFeed(rss_url)
-
-        if data and 'entries' in data:
-            return data.entries
-        else:
-            return []
+        return self.getRSSFeed(rss_url)
 
 provider = OmgwtfnzbsProvider()

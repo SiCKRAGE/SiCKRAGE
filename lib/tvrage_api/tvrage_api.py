@@ -24,7 +24,7 @@ import warnings
 import logging
 import datetime as dt
 import requests
-import requests.exceptions
+from requests import exceptions
 import xmltodict
 
 try:
@@ -32,7 +32,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as ElementTree
 
-from lib.dateutil.parser import parse
+from dateutil.parser import parse
 from cachecontrol import CacheControl, caches
 
 from tvrage_ui import BaseUI
@@ -327,6 +327,8 @@ class TVRage:
         else:
             raise ValueError("Invalid value for Cache %r (type was %s)" % (cache, type(cache)))
 
+        self.config['session'] = requests.Session()
+
         if self.config['debug_enabled']:
             warnings.warn("The debug argument to tvrage_api.__init__ will be removed in the next version. "
                           "To enable debug messages, use the following code before importing: "
@@ -392,14 +394,14 @@ class TVRage:
 
         return os.path.join(tempfile.gettempdir(), "tvrage_api-%s" % (uid))
 
-    #@retry(tvrage_error)
+    @retry(tvrage_error)
     def _loadUrl(self, url, params=None):
         try:
             log().debug("Retrieving URL %s" % url)
 
             # get response from TVRage
             if self.config['cache_enabled']:
-                session = CacheControl(cache=caches.FileCache(self.config['cache_location']))
+                session = CacheControl(sess=self.config['session'], cache=caches.FileCache(self.config['cache_location']), cache_etags=False)
                 if self.config['proxy']:
                     log().debug("Using proxy for URL: %s" % url)
                     session.proxies = {
@@ -407,10 +409,11 @@ class TVRage:
                         "https": self.config['proxy'],
                     }
 
-                resp = session.get(url.strip(), cache_auto=True, params=params)
+                resp = session.get(url.strip(), params=params)
             else:
                 resp = requests.get(url.strip(), params=params)
 
+            resp.raise_for_status()
         except requests.exceptions.HTTPError, e:
             raise tvrage_error("HTTP error " + str(e.errno) + " while loading URL " + str(url))
         except requests.exceptions.ConnectionError, e:
@@ -438,6 +441,22 @@ class TVRage:
                 'seasonnum': 'episodenumber'
             }
 
+            status_map = {
+                'returning series': 'Continuing',
+                'canceled/ended': 'Ended',
+                'tbd/on the bubble': 'Continuing',
+                'in development': 'Continuing',
+                'new series': 'Continuing',
+                'never aired': 'Ended',
+                'final season': 'Continuing',
+                'on hiatus': 'Continuing',
+                'pilot ordered': 'Continuing',
+                'pilot rejected': 'Ended',
+                'canceled': 'Ended',
+                'ended': 'Ended',
+                '': 'Unknown',
+            }
+
             try:
                 key = name_map[key.lower()]
             except (ValueError, TypeError, KeyError):
@@ -446,8 +465,17 @@ class TVRage:
             # clean up value and do type changes
             if value:
                 if isinstance(value, dict):
+                    if key == 'status':
+                        try:
+                            value = status_map[str(value).lower()]
+                            if not value:
+                                raise
+                        except:
+                            value = 'Unknown'
+
                     if key == 'network':
                         value = value['#text']
+
                     if key == 'genre':
                         value = value['genre']
                         if not value:
@@ -456,6 +484,7 @@ class TVRage:
                             value = [value]
                         value = filter(None, value)
                         value = '|' + '|'.join(value) + '|'
+
                 try:
                     if key == 'firstaired' and value in "0000-00-00":
                         new_value = str(dt.date.fromordinal(1))
@@ -470,11 +499,10 @@ class TVRage:
 
             return (key, value)
 
-        if resp.ok:
-            try:
-                return xmltodict.parse(resp.content.strip(), postprocessor=remap_keys)
-            except:
-                return dict([(u'data', None)])
+        try:
+            return xmltodict.parse(resp.content.decode('utf-8'), postprocessor=remap_keys)
+        except:
+            return dict([(u'data', None)])
 
     def _getetsrc(self, url, params=None):
         """Loads a URL using caching, returns an ElementTree of the source
@@ -523,7 +551,7 @@ class TVRage:
         - Trailing whitespace
         """
 
-        if not isinstance(data, dict or list):
+        if isinstance(data, basestring):
             data = data.replace(u"&amp;", u"&")
             data = data.strip()
 
@@ -537,7 +565,11 @@ class TVRage:
         log().debug("Searching for show %s" % series)
         self.config['params_getSeries']['show'] = series
 
-        return self._getetsrc(self.config['url_getSeries'], self.config['params_getSeries']).values()[0]
+        results = self._getetsrc(self.config['url_getSeries'], self.config['params_getSeries'])
+        if not results:
+            return
+
+        return results.values()[0]
 
     def _getSeries(self, series):
         """This searches tvrage.com for the series name,
@@ -579,7 +611,7 @@ class TVRage:
 
         if not seriesInfoEt:
             log().debug('Series result returned zero')
-            raise tvrage_shownotfound("Show search returned zero results (cannot find show on TVRAGE)")
+            raise tvrage_error("Series result returned zero")
 
         # get series data
         for k, v in seriesInfoEt.items():
@@ -599,6 +631,9 @@ class TVRage:
                 log().debug('Series results incomplete')
                 raise tvrage_showincomplete(
                     "Show search returned incomplete results (cannot find complete show on TVRAGE)")
+
+            if 'episodelist' not in epsEt:
+                return False
 
             seasons = epsEt['episodelist']['season']
             if not isinstance(seasons, list):

@@ -7,11 +7,11 @@ Status: To statufy
 Author: Christophe Gisquet <christophe.gisquet@free.fr>
 """
 
-from lib.hachoir_parser import Parser
-from lib.hachoir_core.field import (FieldSet, ParserError,
+from hachoir_parser import Parser
+from hachoir_core.field import (FieldSet, ParserError,
     String, RawBytes)
-from lib.hachoir_core.endian import LITTLE_ENDIAN
-from lib.hachoir_core.tools import makePrintable, timestampUNIX, humanFilesize
+from hachoir_core.endian import LITTLE_ENDIAN
+from hachoir_core.tools import makePrintable, timestampUNIX, humanFilesize
 
 # Maximum number of bytes for string length
 MAX_STRING_LENGTH = 6   # length in 0..999999
@@ -128,7 +128,7 @@ class DictionaryItem(FieldSet):
 
 # Map first chunk byte => type
 TAGS = {'d': Dictionary, 'i': Integer, 'l': List}
-for index in xrange(1, 9+1):
+for index in xrange(0, 9+1):
     TAGS[str(index)] = TorrentString
 
 # Create an entry

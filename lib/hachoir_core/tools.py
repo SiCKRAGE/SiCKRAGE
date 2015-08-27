@@ -4,7 +4,7 @@
 Various utilities.
 """
 
-from lib.hachoir_core.i18n import _, ngettext
+from hachoir_core.i18n import _, ngettext
 import re
 import stat
 from datetime import datetime, timedelta, MAXYEAR
@@ -330,7 +330,14 @@ def makeUnicode(text):
     if isinstance(text, str):
         text = unicode(text, "ISO-8859-1")
     elif not isinstance(text, unicode):
-        text = unicode(text)
+        try:
+            text = unicode(text)
+        except UnicodeError:
+            try:
+                text = str(text)
+            except Exception:
+                text = repr(text)
+            return makeUnicode(text)
     text = regex_control_code.sub(
         lambda regs: controlchars[ord(regs.group(1))], text)
     text = re.sub(r"\\x0([0-7])(?=[^0-7]|$)", r"\\\1", text)

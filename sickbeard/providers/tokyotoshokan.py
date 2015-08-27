@@ -44,7 +44,8 @@ class TokyoToshokanProvider(generic.TorrentProvider):
 
         self.cache = TokyoToshokanCache(self)
 
-        self.url = 'http://tokyotosho.info/'
+        self.urls = {'base_url': 'http://tokyotosho.info/'}
+        self.url = self.urls['base_url']
 
     def isEnabled(self):
         return self.enabled
@@ -72,8 +73,8 @@ class TokyoToshokanProvider(generic.TorrentProvider):
         quality = Quality.sceneQuality(item[0], anime)
         return quality
 
-    def findSearchResults(self, show, episodes, search_mode, manualSearch=False):
-        return generic.TorrentProvider.findSearchResults(self, show, episodes, search_mode, manualSearch)
+    def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False):
+        return generic.TorrentProvider.findSearchResults(self, show, episodes, search_mode, manualSearch, downCurQuality)
 
     def _get_season_search_strings(self, ep_obj):
         return [x.replace('.', ' ') for x in show_name_helpers.makeSceneSeasonSearchString(self.show, ep_obj)]
@@ -81,7 +82,7 @@ class TokyoToshokanProvider(generic.TorrentProvider):
     def _get_episode_search_strings(self, ep_obj, add_string=''):
         return [x.replace('.', ' ') for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
 
-    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
         if self.show and not self.show.is_anime:
             logger.log(u"" + str(self.show.name) + " is not an anime skiping " + str(self.name))
             return []
@@ -146,8 +147,7 @@ class TokyoToshokanCache(tvcache.TVCache):
 
         title = item.title if item.title else None
         if title:
-            title = u'' + title
-            title = title.replace(' ', '.')
+            title = self._clean_title_from_provider(title)
 
         url = item.link if item.link else None
         if url:
@@ -164,12 +164,7 @@ class TokyoToshokanCache(tvcache.TVCache):
 
         logger.log(u"TokyoToshokan cache update URL: " + url, logger.DEBUG)
 
-        data = self.getRSSFeed(url)
-
-        if data and 'entries' in data:
-            return data.entries
-        else:
-            return []
+        return self.getRSSFeed(url)
 
 
 provider = TokyoToshokanProvider()

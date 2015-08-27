@@ -20,8 +20,10 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 import smtplib
+import traceback
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import formatdate
 
 import re
 
@@ -29,7 +31,7 @@ import sickbeard
 
 from sickbeard import logger, common
 from sickbeard import db
-from sickbeard.encodingKludge import toUnicode
+from sickbeard import encodingKludge as ek
 from sickbeard.exceptions import ex
 
 
@@ -42,22 +44,23 @@ class EmailNotifier:
         msg['Subject'] = 'SickRage: Test Message'
         msg['From'] = smtp_from
         msg['To'] = to
+        msg['Date'] = formatdate(localtime=True)
         return self._sendmail(host, port, smtp_from, use_tls, user, pwd, [to], msg, True)
 
     def notify_snatch(self, ep_name, title="Snatched:"):
         """
         Send a notification that an episode was snatched
-        
+
         ep_name: The name of the episode that was snatched
         title: The title of the notification (optional)
         """
-        ep_name = toUnicode(ep_name)
+        ep_name = ek.ss(ep_name)
 
         if sickbeard.EMAIL_NOTIFY_ONSNATCH:
             show = self._parseEp(ep_name)
-            to = self._generate_recepients(show)
+            to = self._generate_recipients(show)
             if len(to) == 0:
-                logger.log('Skipping email notify because there are no configured recepients', logger.WARNING)
+                logger.log('Skipping email notify because there are no configured recipients', logger.WARNING)
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -68,11 +71,15 @@ class EmailNotifier:
                             1) + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
                         'html'))
                 except:
-                    msg = MIMEText(ep_name)
+                    try:
+                        msg = MIMEText(ep_name)
+                    except:
+                        msg = MIMEText("Episode Snatched")
 
                 msg['Subject'] = 'Snatched: ' + ep_name
                 msg['From'] = sickbeard.EMAIL_FROM
                 msg['To'] = ','.join(to)
+                msg['Date'] = formatdate(localtime=True)
                 if self._sendmail(sickbeard.EMAIL_HOST, sickbeard.EMAIL_PORT, sickbeard.EMAIL_FROM, sickbeard.EMAIL_TLS,
                                   sickbeard.EMAIL_USER, sickbeard.EMAIL_PASSWORD, to, msg):
                     logger.log("Snatch notification sent to [%s] for '%s'" % (to, ep_name), logger.DEBUG)
@@ -86,13 +93,13 @@ class EmailNotifier:
         ep_name: The name of the episode that was downloaded
         title: The title of the notification (optional)
         """
-        ep_name = toUnicode(ep_name)
+        ep_name = ek.ss(ep_name)
 
         if sickbeard.EMAIL_NOTIFY_ONDOWNLOAD:
             show = self._parseEp(ep_name)
-            to = self._generate_recepients(show)
+            to = self._generate_recipients(show)
             if len(to) == 0:
-                logger.log('Skipping email notify because there are no configured recepients', logger.WARNING)
+                logger.log('Skipping email notify because there are no configured recipients', logger.WARNING)
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -103,11 +110,15 @@ class EmailNotifier:
                             1) + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
                         'html'))
                 except:
-                    msg = MIMEText(ep_name)
+                    try:
+                        msg = MIMEText(ep_name)
+                    except:
+                        msg = MIMEText('Episode Downloaded')
 
                 msg['Subject'] = 'Downloaded: ' + ep_name
                 msg['From'] = sickbeard.EMAIL_FROM
                 msg['To'] = ','.join(to)
+                msg['Date'] = formatdate(localtime=True)
                 if self._sendmail(sickbeard.EMAIL_HOST, sickbeard.EMAIL_PORT, sickbeard.EMAIL_FROM, sickbeard.EMAIL_TLS,
                                   sickbeard.EMAIL_USER, sickbeard.EMAIL_PASSWORD, to, msg):
                     logger.log("Download notification sent to [%s] for '%s'" % (to, ep_name), logger.DEBUG)
@@ -121,13 +132,13 @@ class EmailNotifier:
         ep_name: The name of the episode that was downloaded
         lang: Subtitle language wanted
         """
-        ep_name = toUnicode(ep_name)
+        ep_name = ek.ss(ep_name)
 
         if sickbeard.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD:
             show = self._parseEp(ep_name)
-            to = self._generate_recepients(show)
+            to = self._generate_recipients(show)
             if len(to) == 0:
-                logger.log('Skipping email notify because there are no configured recepients', logger.WARNING)
+                logger.log('Skipping email notify because there are no configured recipients', logger.WARNING)
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -138,7 +149,10 @@ class EmailNotifier:
                             1) + "</b></p>\n<p>Language: <b>" + lang + "</b></p>\n\n<footer style='margin-top: 2.5em; padding: .7em 0; color: #777; border-top: #BBB solid 1px;'>Powered by SickRage.</footer></body>",
                         'html'))
                 except:
-                    msg = MIMEText(ep_name + ": " + lang)
+                    try:
+                        msg = MIMEText(ep_name + ": " + lang)
+                    except:
+                        msg = MIMEText("Episode Subtitle Downloaded")
 
                 msg['Subject'] = lang + ' Subtitle Downloaded: ' + ep_name
                 msg['From'] = sickbeard.EMAIL_FROM
@@ -153,7 +167,7 @@ class EmailNotifier:
     def notify_git_update(self, new_version="??"):
         pass
 
-    def _generate_recepients(self, show):
+    def _generate_recipients(self, show):
         addrs = []
 
         # Grab the global recipients
@@ -171,13 +185,19 @@ class EmailNotifier:
                             addrs.append(addr)
 
         addrs = set(addrs)
-        logger.log('Notification recepients: %s' % addrs, logger.DEBUG)
+        logger.log('Notification recipients: %s' % addrs, logger.DEBUG)
         return addrs
 
     def _sendmail(self, host, port, smtp_from, use_tls, user, pwd, to, msg, smtpDebug=False):
         logger.log('HOST: %s; PORT: %s; FROM: %s, TLS: %s, USER: %s, PWD: %s, TO: %s' % (
             host, port, smtp_from, use_tls, user, pwd, to), logger.DEBUG)
-        srv = smtplib.SMTP(host, int(port))
+        try:
+            srv = smtplib.SMTP(host, int(port))
+        except Exception as e:
+            logger.log(u"Exception generated while sending e-mail: " + str(e), logger.ERROR)
+            logger.log(traceback.format_exc(), logger.DEBUG)
+            return False
+            
         if smtpDebug:
             srv.set_debuglevel(1)
         try:
@@ -198,7 +218,7 @@ class EmailNotifier:
             return False
 
     def _parseEp(self, ep_name):
-        ep_name = toUnicode(ep_name)
+        ep_name = ek.ss(ep_name)
 
         sep = " - "
         titles = ep_name.split(sep)

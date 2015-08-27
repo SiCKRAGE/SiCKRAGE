@@ -1,21 +1,24 @@
-#  SB User Related   #
+#  SR User Related   #
 ######################
-cache/*
+/cache/
+/Logs/
+/restore/
+/backup/
 cache.db*
 config.ini*
-Logs/*
 sickbeard.db*
 failed.db*
-autoProcessTV/autoProcessTV.cfg
+/autoProcessTV/autoProcessTV.cfg
 server.crt
 server.key
-restore/
 
-#  SB Test Related   #
+#  SR Test Related   #
 ######################
-tests/Logs/*
-tests/sickbeard.*
-tests/cache.db
+/tests/Logs/*
+/tests/cache/*
+/tests/sickbeard.db*
+/tests/cache.db*
+/tests/failed.db
 
 #  Compiled source   #
 ######################
@@ -34,6 +37,10 @@ tests/cache.db
 *.sw?
 Session.vim
 .ropeproject/*
+*.iml
+.idea
+*.ipr
+.settings/*
 
 # OS generated files #
 ######################
@@ -45,5 +52,8 @@ ehthumbs.db
 Thumbs.db
 .directory
 *~
-/.idea/
 *.torrent
+
+# Unrar Executable   #
+######################
+lib/unrar2/UnRAR.exe

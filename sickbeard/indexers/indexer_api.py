@@ -36,7 +36,12 @@ class indexerApi(object):
     def config(self):
         if self.indexerID:
             return indexerConfig[self.indexerID]
-        return initConfig
+        _ = initConfig
+        if sickbeard.INDEXER_DEFAULT_LANGUAGE in _:
+            del _[_['valid_languages'].index(sickbeard.INDEXER_DEFAULT_LANGUAGE)]
+        _['valid_languages'].sort()
+        _['valid_languages'].insert(0, sickbeard.INDEXER_DEFAULT_LANGUAGE)
+        return _
 
     @property
     def name(self):
@@ -61,3 +66,8 @@ class indexerApi(object):
     @property
     def indexers(self):
         return dict((int(x['id']), x['name']) for x in indexerConfig.values())
+
+    @property
+    def session(self):
+        if self.indexerID:
+            return indexerConfig[self.indexerID]['session']

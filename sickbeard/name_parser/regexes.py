@@ -56,10 +56,10 @@ normal_regexes = [
      # Show.Name.S01.E02.E03
      '''
      ^((?P<series_name>.+?)[. _-]+)?             # Show_Name and separator
-     s(?P<season_num>\d+)[. _-]*                 # S01 and optional separator
-     e(?P<ep_num>\d+)                            # E02 and separator
+     (\()?s(?P<season_num>\d+)[. _-]*            # S01 and optional separator
+     e(?P<ep_num>\d+)(\))?                       # E02 and separator
      (([. _-]*e|-)                               # linking e/- char
-     (?P<extra_ep_num>(?!(1080|720|480)[pi])\d+))*   # additional E03/etc
+     (?P<extra_ep_num>(?!(1080|720|480)[pi])\d+)(\))?)*   # additional E03/etc
      [. _-]*((?P<extra_info>.+?)                 # Source_Quality_Etc-
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$              # Group
@@ -198,6 +198,18 @@ normal_regexes = [
 ]
 
 anime_regexes = [
+    ('anime_horriblesubs',
+     # [HorribleSubs] Maria the Virgin Witch - 01 [720p].mkv
+     '''
+     ^(?:\[(?P<release_group>HorribleSubs)\][\s\.])
+     (?:(?P<series_name>.+?)[\s\.]-[\s\.])
+     (?P<ep_ab_num>((?!(1080|720|480)[pi]))\d{1,3})
+     (-(?P<extra_ab_ep_num>((?!(1080|720|480)[pi])|(?![hx].?264))\d{1,3}))?
+     (?:v(?P<version>[0-9]))?
+     (?:[\w\.\s]*)
+     (?:(?:(?:[\[\(])(?P<extra_info>\d{3,4}[xp]?\d{0,4}[\.\w\s-]*)(?:[\]\)]))|(?:\d{3,4}[xp]))
+     .*?
+     '''),
     ('anime_ultimate',
      """
      ^(?:\[(?P<release_group>.+?)\][ ._-]*)
@@ -209,8 +221,39 @@ anime_regexes = [
      (?:(?:(?:[\[\(])(?P<extra_info>\d{3,4}[xp]?\d{0,4}[\.\w\s-]*)(?:[\]\)]))|(?:\d{3,4}[xp]))
      (?:[ ._]?\[(?P<crc>\w+)\])?
      .*?
-     """
-    ),
+     """),
+
+    ('anime_ISLAND',
+     # [ISLAND]One_Piece_679_[VOSTFR]_[V1]_[8bit]_[720p]_[EB7838FC].mp4
+     # [ISLAND]One_Piece_679_[VOSTFR]_[8bit]_[720p]_[EB7838FC].mp4
+     '''
+     ^\[(?P<release_group>ISLAND?)\]                                          # Release Group
+	 (?P<series_name>.+?)[ ._-]+                                              # Show_Name and separator
+	 (?P<ep_ab_num>\d{1,3})[ ._-]+                                            # Episode number
+	 (\[VOSTFR\])
+	 ([ ._-]+\[[vV](?P<version>[0-9])\])*[ ._-]+                              # Version
+	 (\[(8bit|10bit)\])?[ ._-]+
+	 \[(?P<extra_info>(\d{3,4}[xp]?\d{0,4})?[\.\w\s-]*)\][ ._-]+              # Extra info
+	 (\[(?P<crc>\w{8})\])?                                                    # CRC
+	 .*?
+     '''),
+
+    ('anime_Kaerizaki-Fansub',
+     # [Kaerizaki-Fansub]_One_Piece_679_[VOSTFR][HD_1280x720].mp4
+     # [Kaerizaki-Fansub]_One_Piece_681_[VOSTFR][HD_1280x720]_V2.mp4
+     # [Kaerizaki-Fansub] High School DxD New 04 VOSTFR HD (1280x720) V2.mp4
+     # [Kaerizaki-Fansub] One Piece 603 VOSTFR PS VITA (960x544) V2.mp4
+     '''
+     ^\[(?P<release_group>Kaerizaki-Fansub?)\][ ._-]*                         # Release Group and separator
+     (?P<series_name>.+?)[ ._-]+                                              # Show_Name and separator
+     (?P<ep_ab_num>((?!\[VOSTFR|VOSTFR))\d{1,3})                              # Episode number
+     (-(?P<extra_ab_ep_num>((?!\[VOSTFR|VOSTFR))\d{1,3}))?                    # Extra episode number
+     ([ ._](\[VOSTFR\]|VOSTFR))?
+     (\[|[ ._])?(?P<extra_info>([SH]D_\d{3,4}x\d{3,4}|((SD|HD|PS\sVITA)[ ._]\(\d{3,4}x\d{3,4}\))))(\])?         # Extra info
+     ([ ._][vV](?P<version>[0-9]))?                                           # Version
+     .*?                                                                      # Separator and EOL
+     '''),
+
     ('anime_standard',
      # [Group Name] Show Name.13-14
      # [Group Name] Show Name - 13-14
@@ -366,6 +409,13 @@ anime_regexes = [
     .*?
      '''
     ),
+
+    ('anime_WarB3asT',
+     # 003. Show Name - Ep Name.ext
+     # 003-004. Show Name - Ep Name.ext
+     '''
+     ^(?P<ep_ab_num>\d{3,4})(-(?P<extra_ab_ep_num>\d{3,4}))?\.\s+(?P<series_name>.+?)\s-\s.*
+     '''),
 
     ('anime_bare',
      # One Piece - 102

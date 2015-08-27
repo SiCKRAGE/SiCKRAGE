@@ -18,7 +18,8 @@
 
 from __future__ import with_statement
 
-import urllib2
+import requests
+
 import xml.etree.cElementTree as etree
 import xml.etree
 import re
@@ -29,8 +30,6 @@ from sickbeard import encodingKludge as ek
 from sickbeard.exceptions import ex
 
 from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
-from sickbeard.encodingKludge import toUnicode
-
 
 def getSeasonNZBs(name, urlData, season):
     try:
@@ -85,7 +84,7 @@ def createNZBString(fileElements, xmlns):
     for curFile in fileElements:
         rootElement.append(stripNS(curFile, xmlns))
 
-    return xml.etree.ElementTree.tostring(toUnicode(rootElement))
+    return xml.etree.ElementTree.tostring(ek.ss(rootElement))
 
 
 def saveNZB(nzbName, nzbString):
@@ -106,7 +105,7 @@ def stripNS(element, ns):
 
 
 def splitResult(result):
-    urlData = helpers.getURL(result.url)
+    urlData = helpers.getURL(result.url, session=requests.Session())
     if urlData is None:
         logger.log(u"Unable to load url " + result.url + ", can't download season NZB", logger.ERROR)
         return False
@@ -161,7 +160,7 @@ def splitResult(result):
         for epNo in parse_result.episode_numbers:
             if not result.extraInfo[0].wantEpisode(season, epNo, result.quality):
                 logger.log(u"Ignoring result " + newNZB + " because we don't want an episode that is " +
-                           Quality.qualityStrings[result.quality], logger.DEBUG)
+                           Quality.qualityStrings[result.quality], logger.INFO)
                 wantEp = False
                 break
         if not wantEp:

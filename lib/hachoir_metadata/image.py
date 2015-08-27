@@ -1,12 +1,12 @@
-from lib.hachoir_metadata.metadata import (registerExtractor,
+from hachoir_metadata.metadata import (registerExtractor,
     Metadata, RootMetadata, MultipleMetadata)
-from lib.hachoir_parser.image import (
+from hachoir_parser.image import (
     BmpFile, IcoFile, PcxFile, GifFile, PngFile, TiffFile,
     XcfFile, TargaFile, WMF_File, PsdFile)
-from lib.hachoir_parser.image.png import getBitsPerPixel as pngBitsPerPixel
-from lib.hachoir_parser.image.xcf import XcfProperty
-from lib.hachoir_core.i18n import _
-from lib.hachoir_metadata.safe import fault_tolerant
+from hachoir_parser.image.png import getBitsPerPixel as pngBitsPerPixel
+from hachoir_parser.image.xcf import XcfProperty
+from hachoir_core.i18n import _
+from hachoir_metadata.safe import fault_tolerant
 
 def computeComprRate(meta, compr_size):
     """
@@ -240,7 +240,7 @@ class GifMetadata(RootMetadata):
     def useScreen(self, screen):
         self.width = screen["width"].value
         self.height = screen["height"].value
-        self.bits_per_pixel = (1 + screen["bpp"].value)
+        self.bits_per_pixel = (1 + screen["size_global_map"].value)
 
 class TargaMetadata(RootMetadata):
     def extract(self, tga):

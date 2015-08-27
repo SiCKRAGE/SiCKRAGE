@@ -21,10 +21,11 @@ import socket
 import sickbeard
 from sickbeard import logger, common
 from sickbeard.exceptions import ex
-from lib.growl import gntp
-
+from libgrowl import gntp
 
 class GrowlNotifier:
+    sr_logo_url = 'https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/slick/images/sickrage-shark-mascot.png'
+
     def test_notify(self, host, password):
         self._sendRegistration(host, password, 'Test')
         return self._sendGrowl("Test Growl", "Testing Growl settings from SickRage", "Test", host, password,
@@ -67,8 +68,7 @@ class GrowlNotifier:
         if options['priority']:
             notice.add_header('Notification-Priority', options['priority'])
         if options['icon']:
-            notice.add_header('Notification-Icon',
-                              'https://raw.github.com/SiCKRAGETV/SickRage/master/gui/slick/images/sickrage.png')
+            notice.add_header('Notification-Icon', self.sr_logo_url)
 
         if message:
             notice.add_header('Notification-Text', message)
@@ -171,8 +171,7 @@ class GrowlNotifier:
         #Send Registration
         register = gntp.GNTPRegister()
         register.add_header('Application-Name', opts['app'])
-        register.add_header('Application-Icon',
-                            'https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/slick/images/sickrage-shark-mascot.png')
+        register.add_header('Application-Icon', self.sr_logo_url)
 
         register.add_notification('Test', True)
         register.add_notification(common.notifyStrings[common.NOTIFY_SNATCH], True)

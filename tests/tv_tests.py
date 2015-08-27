@@ -20,6 +20,10 @@
 import unittest
 import test_lib as test
 
+import sys, os.path
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import sickbeard
 from sickbeard.tv import TVEpisode, TVShow
 
@@ -39,7 +43,7 @@ class TVShowTests(test.SickbeardTestDBCase):
         show.network = "cbs"
         show.genre = "crime"
         show.runtime = 40
-        show.status = "5"
+        show.status = "Ended"
         show.default_ep_status = "5"
         show.airs = "monday"
         show.startyear = 1987
@@ -88,7 +92,7 @@ class TVTests(test.SickbeardTestDBCase):
         show.network = "cbs"
         show.genre = "crime"
         show.runtime = 40
-        show.status = "5"
+        show.status = "Ended"
         show.default_ep_status = "5"
         show.airs = "monday"
         show.startyear = 1987

@@ -68,10 +68,7 @@ class SearchQueue(generic_queue.GenericQueue):
         for cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and str(cur_item.show.indexerid) == show:
                 ep_obj_list.append(cur_item)
-        
-        if ep_obj_list:
-            return ep_obj_list
-        return False
+        return ep_obj_list
     
     def pause_backlog(self):
         self.min_priority = generic_queue.QueuePriorities.HIGH
@@ -162,7 +159,7 @@ class DailySearchQueueItem(generic_queue.QueueItem):
 
 
 class ManualSearchQueueItem(generic_queue.QueueItem):
-    def __init__(self, show, segment):
+    def __init__(self, show, segment, downCurQuality=False):
         generic_queue.QueueItem.__init__(self, 'Manual Search', MANUAL_SEARCH)
         self.priority = generic_queue.QueuePriorities.HIGH
         self.name = 'MANUAL-' + str(show.indexerid)
@@ -170,6 +167,7 @@ class ManualSearchQueueItem(generic_queue.QueueItem):
         self.show = show
         self.segment = segment
         self.started = None
+        self.downCurQuality = downCurQuality
 
     def run(self):
         generic_queue.QueueItem.run(self)
@@ -178,7 +176,7 @@ class ManualSearchQueueItem(generic_queue.QueueItem):
             logger.log("Beginning manual search for: [" + self.segment.prettyName() + "]")
             self.started = True
             
-            searchResult = search.searchProviders(self.show, [self.segment], True)
+            searchResult = search.searchProviders(self.show, [self.segment], True, self.downCurQuality)
 
             if searchResult:
                 # just use the first result for now
@@ -218,28 +216,29 @@ class BacklogQueueItem(generic_queue.QueueItem):
     def run(self):
         generic_queue.QueueItem.run(self)
 
-        try:
-            logger.log("Beginning backlog search for: [" + self.show.name + "]")
-            searchResult = search.searchProviders(self.show, self.segment, False)
+        if not self.show.paused:
+            try:
+                logger.log("Beginning backlog search for: [" + self.show.name + "]")
+                searchResult = search.searchProviders(self.show, self.segment, False)
 
-            if searchResult:
-                for result in searchResult:
-                    # just use the first result for now
-                    logger.log(u"Downloading " + result.name + " from " + result.provider.name)
-                    search.snatchEpisode(result)
+                if searchResult:
+                    for result in searchResult:
+                        # just use the first result for now
+                        logger.log(u"Downloading " + result.name + " from " + result.provider.name)
+                        search.snatchEpisode(result)
 
-                    # give the CPU a break
-                    time.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
-            else:
-                logger.log(u"No needed episodes found during backlog search for: [" + self.show.name + "]")
-        except Exception:
-            logger.log(traceback.format_exc(), logger.DEBUG)
+                        # give the CPU a break
+                        time.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
+                else:
+                    logger.log(u"No needed episodes found during backlog search for: [" + self.show.name + "]")
+            except Exception:
+                logger.log(traceback.format_exc(), logger.DEBUG)
 
         self.finish()
 
 
 class FailedQueueItem(generic_queue.QueueItem):
-    def __init__(self, show, segment):
+    def __init__(self, show, segment, downCurQuality=False):
         generic_queue.QueueItem.__init__(self, 'Retry', FAILED_SEARCH)
         self.priority = generic_queue.QueuePriorities.HIGH
         self.name = 'RETRY-' + str(show.indexerid)
@@ -247,6 +246,7 @@ class FailedQueueItem(generic_queue.QueueItem):
         self.segment = segment
         self.success = None
         self.started = None
+        self.downCurQuality = downCurQuality
 
     def run(self):
         generic_queue.QueueItem.run(self)
@@ -267,7 +267,7 @@ class FailedQueueItem(generic_queue.QueueItem):
                 failed_history.revertEpisode(epObj)
                 logger.log("Beginning failed download search for: [" + epObj.prettyName() + "]")
 
-            searchResult = search.searchProviders(self.show, self.segment, True)
+            searchResult = search.searchProviders(self.show, self.segment, True, self.downCurQuality)
 
             if searchResult:
                 for result in searchResult:

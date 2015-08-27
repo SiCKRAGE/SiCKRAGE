@@ -28,6 +28,11 @@ from sickbeard import logger
 from sickbeard import naming
 from sickbeard import db
 
+# Address poor support for scgi over unix domain sockets
+# this is not nicely handled by python currently
+# http://bugs.python.org/issue23636
+urlparse.uses_netloc.append('scgi')
+
 naming_ep_type = ("%(seasonnumber)dx%(episodenumber)02d",
                   "s%(seasonnumber)02de%(episodenumber)02d",
                   "S%(seasonnumber)02dE%(episodenumber)02d",
@@ -89,7 +94,7 @@ def change_LOG_DIR(log_dir, web_log):
             sickbeard.ACTUAL_LOG_DIR = os.path.normpath(log_dir)
             sickbeard.LOG_DIR = abs_log_dir
 
-            logger.sb_log_instance.initLogging()
+            logger.initLogging()
             logger.log(u"Initialized new log file in " + sickbeard.LOG_DIR)
             log_dir_changed = True
 
@@ -180,6 +185,23 @@ def change_UPDATE_FREQUENCY(freq):
 
     sickbeard.versionCheckScheduler.cycleTime = datetime.timedelta(hours=sickbeard.UPDATE_FREQUENCY)
 
+def change_SHOWUPDATE_HOUR(freq):
+    sickbeard.SHOWUPDATE_HOUR = to_int(freq, default=sickbeard.DEFAULT_SHOWUPDATE_HOUR)
+
+    if sickbeard.SHOWUPDATE_HOUR > 23:
+        sickbeard.SHOWUPDATE_HOUR = 0
+    elif sickbeard.SHOWUPDATE_HOUR < 0:
+        sickbeard.SHOWUPDATE_HOUR = 0
+
+    sickbeard.showUpdateScheduler.start_time = datetime.time(hour=sickbeard.SHOWUPDATE_HOUR)
+
+def change_SUBTITLES_FINDER_FREQUENCY(subtitles_finder_frequency):
+
+    if subtitles_finder_frequency == '' or subtitles_finder_frequency is None:
+            subtitles_finder_frequency = 1
+
+    sickbeard.SUBTITLES_FINDER_FREQUENCY = to_int(subtitles_finder_frequency, 1)
+
 def change_VERSION_NOTIFY(version_notify):
     oldSetting = sickbeard.VERSION_NOTIFY
 
@@ -189,52 +211,84 @@ def change_VERSION_NOTIFY(version_notify):
         sickbeard.NEWEST_VERSION_STRING = None
 
     if oldSetting == False and version_notify == True:
-        sickbeard.versionCheckScheduler.action.run()  # @UndefinedVariable
+        sickbeard.versionCheckScheduler.forceRun()
 
 def change_DOWNLOAD_PROPERS(download_propers):
+    download_propers = checkbox_to_value(download_propers)
+
     if sickbeard.DOWNLOAD_PROPERS == download_propers:
         return
 
     sickbeard.DOWNLOAD_PROPERS = download_propers
     if sickbeard.DOWNLOAD_PROPERS:
-        sickbeard.properFinderScheduler.start()
+        if not sickbeard.properFinderScheduler.enable:
+            logger.log(u"Starting PROPERFINDER thread", logger.INFO)
+            sickbeard.properFinderScheduler.silent = False
+            sickbeard.properFinderScheduler.enable = True
+        else:
+            logger.log(u"Unable to start PROPERFINDER thread. Already running", logger.INFO)
     else:
-        sickbeard.properFinderScheduler.stop.set()
-        logger.log(u"Waiting for the PROPERFINDER thread to exit")
-        try:
-            sickbeard.properFinderScheduler.join(10)
-        except:
-            pass
+        sickbeard.properFinderScheduler.enable = False
+        sickbeard.traktCheckerScheduler.silent = True
+        logger.log(u"Stopping PROPERFINDER thread", logger.INFO)
 
 def change_USE_TRAKT(use_trakt):
+    use_trakt = checkbox_to_value(use_trakt)
+
     if sickbeard.USE_TRAKT == use_trakt:
         return
 
     sickbeard.USE_TRAKT = use_trakt
     if sickbeard.USE_TRAKT:
-        sickbeard.traktCheckerScheduler.start()
+        if not sickbeard.traktCheckerScheduler.enable:
+            logger.log(u"Starting TRAKTCHECKER thread", logger.INFO)
+            sickbeard.traktCheckerScheduler.silent = False
+            sickbeard.traktCheckerScheduler.enable = True
+        else:
+            logger.log(u"Unable to start TRAKTCHECKER thread. Already running", logger.INFO)
     else:
-        sickbeard.traktCheckerScheduler.stop.set()
-        logger.log(u"Waiting for the TRAKTCHECKER thread to exit")
-        try:
-            sickbeard.traktCheckerScheduler.join(10)
-        except:
-            pass
+        sickbeard.traktCheckerScheduler.enable = False
+        sickbeard.traktCheckerScheduler.silent = True
+        logger.log(u"Stopping TRAKTCHECKER thread", logger.INFO)
+
 
 def change_USE_SUBTITLES(use_subtitles):
+    use_subtitles = checkbox_to_value(use_subtitles)
+
     if sickbeard.USE_SUBTITLES == use_subtitles:
         return
 
     sickbeard.USE_SUBTITLES = use_subtitles
     if sickbeard.USE_SUBTITLES:
-        sickbeard.subtitlesFinderScheduler.start()
+        if not sickbeard.subtitlesFinderScheduler.enable:
+            logger.log(u"Starting SUBTITLESFINDER thread", logger.INFO)
+            sickbeard.subtitlesFinderScheduler.silent = False
+            sickbeard.subtitlesFinderScheduler.enable = True
+        else:
+            logger.log(u"Unable to start SUBTITLESFINDER thread. Already running", logger.INFO)
     else:
-        sickbeard.subtitlesFinderScheduler.stop.set()
-        logger.log(u"Waiting for the SUBTITLESFINDER thread to exit")
-        try:
-            sickbeard.subtitlesFinderScheduler.join(10)
-        except:
-            pass
+        sickbeard.subtitlesFinderScheduler.enable = False
+        sickbeard.subtitlesFinderScheduler.silent = True
+        logger.log(u"Stopping SUBTITLESFINDER thread", logger.INFO)
+
+def change_PROCESS_AUTOMATICALLY(process_automatically):
+    process_automatically = checkbox_to_value(process_automatically)
+
+    if sickbeard.PROCESS_AUTOMATICALLY == process_automatically:
+        return
+
+    sickbeard.PROCESS_AUTOMATICALLY = process_automatically
+    if sickbeard.PROCESS_AUTOMATICALLY:
+        if not sickbeard.autoPostProcesserScheduler.enable:
+            logger.log(u"Starting POSTPROCESSER thread", logger.INFO)
+            sickbeard.autoPostProcesserScheduler.silent = False
+            sickbeard.autoPostProcesserScheduler.enable = True
+        else:
+            logger.log(u"Unable to start POSTPROCESSER thread. Already running", logger.INFO)
+    else:
+        logger.log(u"Stopping POSTPROCESSER thread", logger.INFO)
+        sickbeard.autoPostProcesserScheduler.enable = False
+        sickbeard.autoPostProcesserScheduler.silent = True
 
 def CheckSection(CFG, sec):
     """ Check if INI section exists, if not create it """
@@ -326,10 +380,8 @@ def clean_url(url):
 
         scheme, netloc, path, query, fragment = urlparse.urlsplit(url, 'http')
 
-        if not path.endswith('/'):
-            basename, ext = ek.ek(os.path.splitext, ek.ek(os.path.basename, path))  # @UnusedVariable
-            if not ext:
-                path = path + '/'
+        if not path:
+            path = path + '/'
 
         cleaned_url = urlparse.urlunsplit((scheme, netloc, path, query, fragment))
 
@@ -369,9 +421,18 @@ def minimax(val, default, low, high):
 ################################################################################
 # Check_setting_int                                                            #
 ################################################################################
-def check_setting_int(config, cfg_name, item_name, def_val):
+def check_setting_int(config, cfg_name, item_name, def_val, silent=True):
     try:
-        my_val = int(config[cfg_name][item_name])
+        my_val = config[cfg_name][item_name]
+        if str(my_val).lower() == "true":
+            my_val = 1
+        elif str(my_val).lower() == "false":
+            my_val = 0
+
+        my_val = int(my_val)
+
+        if str(my_val) == str(None):
+            raise
     except:
         my_val = def_val
         try:
@@ -379,16 +440,21 @@ def check_setting_int(config, cfg_name, item_name, def_val):
         except:
             config[cfg_name] = {}
             config[cfg_name][item_name] = my_val
-    logger.log(item_name + " -> " + str(my_val), logger.DEBUG)
+
+    if not silent:
+        logger.log(item_name + " -> " + str(my_val), logger.DEBUG)
+
     return my_val
 
 
 ################################################################################
 # Check_setting_float                                                          #
 ################################################################################
-def check_setting_float(config, cfg_name, item_name, def_val):
+def check_setting_float(config, cfg_name, item_name, def_val, silent=True):
     try:
         my_val = float(config[cfg_name][item_name])
+        if str(my_val) == str(None):
+            raise
     except:
         my_val = def_val
         try:
@@ -397,14 +463,16 @@ def check_setting_float(config, cfg_name, item_name, def_val):
             config[cfg_name] = {}
             config[cfg_name][item_name] = my_val
 
-    logger.log(item_name + " -> " + str(my_val), logger.DEBUG)
+    if not silent:
+        logger.log(item_name + " -> " + str(my_val), logger.DEBUG)
+
     return my_val
 
 
 ################################################################################
 # Check_setting_str                                                            #
 ################################################################################
-def check_setting_str(config, cfg_name, item_name, def_val, log=True):
+def check_setting_str(config, cfg_name, item_name, def_val, silent=True, censor_log=False):
     # For passwords you must include the word `password` in the item_name and add `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save_config()
     if bool(item_name.find('password') + 1):
         log = False
@@ -414,6 +482,8 @@ def check_setting_str(config, cfg_name, item_name, def_val, log=True):
 
     try:
         my_val = helpers.decrypt(config[cfg_name][item_name], encryption_version)
+        if str(my_val) == str(None):
+            raise
     except:
         my_val = def_val
         try:
@@ -422,10 +492,11 @@ def check_setting_str(config, cfg_name, item_name, def_val, log=True):
             config[cfg_name] = {}
             config[cfg_name][item_name] = helpers.encrypt(my_val, encryption_version)
 
-    if log:
+    if censor_log or (cfg_name, item_name) in logger.censoredItems.iteritems():
+        logger.censoredItems[cfg_name, item_name] = my_val
+
+    if not silent:
         logger.log(item_name + " -> " + str(my_val), logger.DEBUG)
-    else:
-        logger.log(item_name + " -> ******", logger.DEBUG)
 
     return my_val
 
@@ -445,7 +516,9 @@ class ConfigMigrator():
                                 2: 'Sync backup number with version number',
                                 3: 'Rename omgwtfnzb variables',
                                 4: 'Add newznab catIDs',
-                                5: 'Metadata update'
+                                5: 'Metadata update',
+                                6: 'Convert from XBMC to new KODI variables',
+                                7: 'Use version 2 for password encryption'
         }
 
     def migrate_config(self):
@@ -475,7 +548,7 @@ class ConfigMigrator():
             else:
                 logger.log(u"Proceeding with upgrade")
 
-            # do the                                                                                                migration, expect a method named _migrate_v<num>
+            # do the migration, expect a method named _migrate_v<num>
             logger.log(u"Migrating config up to version " + str(next_version) + migration_name)
             getattr(self, '_migrate_v' + str(next_version))()
             self.config_version = next_version
@@ -712,3 +785,23 @@ class ConfigMigrator():
         sickbeard.METADATA_WDTV = _migrate_metadata(metadata_wdtv, 'WDTV', use_banner)
         sickbeard.METADATA_TIVO = _migrate_metadata(metadata_tivo, 'TIVO', use_banner)
         sickbeard.METADATA_MEDE8ER = _migrate_metadata(metadata_mede8er, 'Mede8er', use_banner)
+
+    # Migration v6: Convert from XBMC to KODI variables
+    def _migrate_v6(self):
+        sickbeard.USE_KODI = bool(check_setting_int(self.config_obj, 'XBMC', 'use_xbmc', 0))
+        sickbeard.KODI_ALWAYS_ON = bool(check_setting_int(self.config_obj, 'XBMC', 'xbmc_always_on', 1))
+        sickbeard.KODI_NOTIFY_ONSNATCH = bool(check_setting_int(self.config_obj, 'XBMC', 'xbmc_notify_onsnatch', 0))
+        sickbeard.KODI_NOTIFY_ONDOWNLOAD = bool(check_setting_int(self.config_obj, 'XBMC', 'xbmc_notify_ondownload', 0))
+        sickbeard.KODI_NOTIFY_ONSUBTITLEDOWNLOAD = bool(check_setting_int(self.config_obj, 'XBMC', 'xbmc_notify_onsubtitledownload', 0))
+        sickbeard.KODI_UPDATE_LIBRARY = bool(check_setting_int(self.config_obj, 'XBMC', 'xbmc_update_library', 0))
+        sickbeard.KODI_UPDATE_FULL = bool(check_setting_int(self.config_obj, 'XBMC', 'xbmc_update_full', 0))
+        sickbeard.KODI_UPDATE_ONLYFIRST = bool(check_setting_int(self.config_obj, 'XBMC', 'xbmc_update_onlyfirst', 0))
+        sickbeard.KODI_HOST = check_setting_str(self.config_obj, 'XBMC', 'xbmc_host', '')
+        sickbeard.KODI_USERNAME = check_setting_str(self.config_obj, 'XBMC', 'xbmc_username', '', censor_log=True)
+        sickbeard.KODI_PASSWORD = check_setting_str(self.config_obj, 'XBMC', 'xbmc_password', '', censor_log=True)
+        sickbeard.METADATA_KODI = check_setting_str(self.config_obj, 'General', 'metadata_xbmc', '0|0|0|0|0|0|0|0|0|0')
+        sickbeard.METADATA_KODI_12PLUS = check_setting_str(self.config_obj, 'General', 'metadata_xbmc_12plus', '0|0|0|0|0|0|0|0|0|0')
+
+    # Migration v6: Use version 2 for password encryption
+    def _migrate_v7(self):
+        sickbeard.ENCRYPTION_VERSION = 2

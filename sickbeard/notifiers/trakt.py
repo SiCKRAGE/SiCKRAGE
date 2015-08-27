@@ -18,8 +18,10 @@
 
 import sickbeard
 from sickbeard import logger
-from lib.trakt import *
+from sickbeard.exceptions import ex
 
+from libtrakt import TraktAPI
+from libtrakt.exceptions import traktException, traktServerBusy, traktAuthException
 
 class TraktNotifier:
     """
@@ -41,98 +43,196 @@ class TraktNotifier:
     def update_library(self, ep_obj):
         """
         Sends a request to trakt indicating that the given episode is part of our library.
-        
+
         ep_obj: The TVEpisode object to add to trakt
         """
 
         trakt_id = sickbeard.indexerApi(ep_obj.show.indexer).config['trakt_id']
+        trakt_api = TraktAPI(sickbeard.SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
         if sickbeard.USE_TRAKT:
-            # URL parameters
-            data = {
-                'title': ep_obj.show.name,
-                'year': ep_obj.show.startyear,
-                'episodes': [{
-                                 'season': ep_obj.season,
-                                 'episode': ep_obj.episode
-                             }]
-            }
-
-            if trakt_id == 'tvdb_id':
-                data[trakt_id] = ep_obj.show.indexerid
-
-            # update library
-            TraktCall("show/episode/library/%API%", self._api(), self._username(), self._password(), data)
-
-            # remove from watchlist
-            if sickbeard.TRAKT_REMOVE_WATCHLIST:
-                TraktCall("show/episode/unwatchlist/%API%", self._api(), self._username(), self._password(), data)
-
-            if sickbeard.TRAKT_REMOVE_SERIESLIST:
+            try:
+                # URL parameters
                 data = {
                     'shows': [
                         {
                             'title': ep_obj.show.name,
-                            'year': ep_obj.show.startyear
+                            'year': ep_obj.show.startyear,
+                            'ids': {},
                         }
                     ]
                 }
-
+                               
                 if trakt_id == 'tvdb_id':
-                    data['shows'][trakt_id] = ep_obj.show.indexerid
+                    data['shows'][0]['ids']['tvdb'] = ep_obj.show.indexerid
+                else:
+                    data['shows'][0]['ids']['tvrage'] = ep_obj.show.indexerid
 
-                TraktCall("show/unwatchlist/%API%", self._api(), self._username(), self._password(), data)
+                if sickbeard.TRAKT_SYNC_WATCHLIST:
+                    if sickbeard.TRAKT_REMOVE_SERIESLIST:
+                        trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
 
-                # Remove all episodes from episode watchlist
-                # Start by getting all episodes in the watchlist
-                watchlist = TraktCall("user/watchlist/episodes.json/%API%/" + sickbeard.TRAKT_USERNAME,
-                                      sickbeard.TRAKT_API, sickbeard.TRAKT_USERNAME, sickbeard.TRAKT_PASSWORD)
+                # Add Season and Episode + Related Episodes
+                data['shows'][0]['seasons']=[{'number': ep_obj.season,'episodes': [] }]
+                
+                for relEp_Obj in [ep_obj] + ep_obj.relatedEps:
+                    data['shows'][0]['seasons'][0]['episodes'].append({'number': relEp_Obj.episode})
+                        
+                if sickbeard.TRAKT_SYNC_WATCHLIST:
+                    if sickbeard.TRAKT_REMOVE_WATCHLIST:
+                        trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
+                
+                # update library
+                trakt_api.traktRequest("sync/collection", data, method='POST')
+                
+            except (traktException, traktAuthException, traktServerBusy) as e:
+                logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
 
-                # Convert watchlist to only contain current show
-                if watchlist:
-                    for show in watchlist:
-                        if show[trakt_id] == ep_obj.show.indexerid:
-                            data_show = {
-                                'title': show['title'],
-                                trakt_id: show[trakt_id],
-                                'episodes': []
+    def update_watchlist (self, show_obj = None, s = None, e = None, data_show = None, data_episode = None, update = "add"):
+
+        """
+        Sends a request to trakt indicating that the given episode is part of our library.
+
+        show_obj: The TVShow object to add to trakt
+        s: season number
+        e: episode number
+        data_show: structured object of shows traktv type
+        data_episode: structured object of episodes traktv type
+        update: type o action add or remove
+        """
+
+        trakt_api = TraktAPI(sickbeard.SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+
+        if sickbeard.USE_TRAKT:
+
+            data = {}
+            try:
+                # URL parameters
+                if show_obj is not None:
+                    trakt_id = sickbeard.indexerApi(show_obj.indexer).config['trakt_id']
+                    data = {
+                        'shows': [
+                            {
+                                'title': show_obj.name,
+                                'year': show_obj.startyear,
+                                'ids': {},
                             }
+                        ]
+                     }
 
-                            # Add series and episode (number) to the array
-                            for episodes in show['episodes']:
-                                ep = {'season': episodes['season'], 'episode': episodes['number']}
-                                data_show['episodes'].append(ep)
+                    if trakt_id == 'tvdb_id':
+                        data['shows'][0]['ids']['tvdb'] = show_obj.indexerid
+                    else:
+                        data['shows'][0]['ids']['tvrage'] = show_obj.indexerid
+                elif data_show is not None:
+                    data.update(data_show)
+                else:
+                    logger.log(u"there's a coding problem contact developer. It's needed to be provided at lest one of the two: data_show or show_obj", logger.WARNING)
+                    return False
 
-                            TraktCall("show/episode/unwatchlist/%API%", sickbeard.TRAKT_API, sickbeard.TRAKT_USERNAME,
-                                      sickbeard.TRAKT_PASSWORD, data_show)
+                if data_episode is not None:
+                    data['shows'][0].update(data_episode)
 
-    def test_notify(self, api, username, password):
+                elif s is not None:
+                    # traktv URL parameters
+                    season = {
+                        'season': [
+                            {
+                                'number': s,
+                            }
+                        ]
+                     }
+
+                    if e is not None:
+                        # traktv URL parameters
+                        episode = {
+                            'episodes': [
+                                {
+                                    'number': e
+                                }
+                            ]
+                         }
+
+                        season['season'][0].update(episode)
+                    
+                    data['shows'][0].update(season)
+
+                trakt_url = "sync/watchlist"
+                if update=="remove":
+                    trakt_url += "/remove"
+
+                trakt_api.traktRequest(trakt_url, data, method='POST')
+
+            except (traktException, traktAuthException, traktServerBusy) as e:
+                logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+                return False
+
+        return True
+
+    def trakt_show_data_generate(self, data):
+
+        showList = []
+        for indexer, indexerid, title, year in data:
+            trakt_id = sickbeard.indexerApi(indexer).config['trakt_id']
+            show = {'title': title, 'year': year, 'ids': {}}
+            if trakt_id == 'tvdb_id':
+                show['ids']['tvdb'] = indexerid
+            else:
+                show['ids']['tvrage'] = indexerid
+            showList.append(show)
+
+        post_data = {'shows': showList}
+
+        return post_data
+
+    def trakt_episode_data_generate(self, data):
+
+        # Find how many unique season we have
+        uniqueSeasons = []
+        for season, episode in data:
+            if season not in uniqueSeasons:
+                uniqueSeasons.append(season)
+
+        #build the query
+        seasonsList = []
+        for searchedSeason in uniqueSeasons:
+            episodesList = []
+            for season, episode in data:
+                if season == searchedSeason:
+                    episodesList.append({'number': episode})
+            seasonsList.append({'number': searchedSeason, 'episodes': episodesList})
+
+        post_data = {'seasons': seasonsList}
+
+        return post_data
+
+    def test_notify(self, username, disable_ssl, blacklist_name=None):
         """
         Sends a test notification to trakt with the given authentication info and returns a boolean
         representing success.
-        
+
         api: The api string to use
         username: The username to use
         password: The password to use
-        
+        blacklist_name: slug of trakt list used to hide not interested show
+
         Returns: True if the request succeeded, False otherwise
         """
-
-        data = TraktCall("account/test/%API%", api, username, password)
-        if data and data["status"] == "success":
-            return True
-
-    def _username(self):
-        return sickbeard.TRAKT_USERNAME
-
-    def _password(self):
-        return sickbeard.TRAKT_PASSWORD
-
-    def _api(self):
-        return sickbeard.TRAKT_API
-
-    def _use_me(self):
-        return sickbeard.USE_TRAKT
-
+        try:
+            trakt_api = TraktAPI(disable_ssl, sickbeard.TRAKT_TIMEOUT)
+            trakt_api.validateAccount()
+            if blacklist_name and blacklist_name is not None:
+                trakt_lists = trakt_api.traktRequest("users/" + username + "/lists")
+                found = False
+                for trakt_list in trakt_lists:
+                    if (trakt_list['ids']['slug'] == blacklist_name):
+                        return "Test notice sent successfully to Trakt"
+                if not found:
+                    return "Trakt blacklist doesn't exists"
+            else:
+                return "Test notice sent successfully to Trakt"
+        except (traktException, traktAuthException, traktServerBusy) as e:
+            logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
+            return "Test notice failed to Trakt: %s" % ex(e)
 
 notifier = TraktNotifier

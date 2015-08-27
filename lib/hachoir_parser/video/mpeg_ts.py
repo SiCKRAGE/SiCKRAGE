@@ -9,11 +9,11 @@ Author: Victor Stinner
 Creation date: 13 january 2007
 """
 
-from lib.hachoir_parser import Parser
-from lib.hachoir_core.field import (FieldSet, ParserError, MissingField,
+from hachoir_parser import Parser
+from hachoir_core.field import (FieldSet, ParserError, MissingField,
     UInt8, Enum, Bit, Bits, RawBytes)
-from lib.hachoir_core.endian import BIG_ENDIAN
-from lib.hachoir_core.text_handler import textHandler, hexadecimal
+from hachoir_core.endian import BIG_ENDIAN
+from hachoir_core.text_handler import textHandler, hexadecimal
 
 class Packet(FieldSet):
     def __init__(self, *args):
@@ -92,11 +92,11 @@ class MPEG_TS(Parser):
         return True
 
     def createFields(self):
-        sync = self.stream.searchBytes("\x47", 0, 204*8)
-        if sync is None:
-            raise ParserError("Unable to find synchronization byte")
-        elif sync:
-            yield RawBytes(self, "incomplete_packet", sync//8)
         while not self.eof:
+            sync = self.stream.searchBytes("\x47", self.current_size, self.current_size+204*8)
+            if sync is None:
+                raise ParserError("Unable to find synchronization byte")
+            elif sync:
+                yield RawBytes(self, "incomplete_packet[]", (sync-self.current_size)//8)
             yield Packet(self, "packet[]")
 

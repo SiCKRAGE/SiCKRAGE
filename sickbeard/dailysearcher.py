@@ -30,6 +30,8 @@ from sickbeard import helpers
 from sickbeard import exceptions
 from sickbeard import network_timezones
 from sickbeard.exceptions import ex
+from sickbeard.common import SKIPPED
+from common import Quality, qualityPresetStrings, statusStrings
 
 
 class DailySearcher():
@@ -38,6 +40,8 @@ class DailySearcher():
         self.amActive = False
 
     def run(self, force=False):
+        if self.amActive:
+            return
 
         self.amActive = True
 
@@ -49,12 +53,12 @@ class DailySearcher():
         if network_timezones.network_dict:
             curDate = (datetime.date.today() + datetime.timedelta(days=1)).toordinal()
         else:
-            curDate = (datetime.date.today() - datetime.timedelta(days=2)).toordinal()
+            curDate = (datetime.date.today() + datetime.timedelta(days=2)).toordinal()
 
         curTime = datetime.datetime.now(network_timezones.sb_timezone)
 
         myDB = db.DBConnection()
-        sqlResults = myDB.select("SELECT * FROM tv_episodes WHERE status = ? AND season > 0 AND airdate <= ?",
+        sqlResults = myDB.select("SELECT * FROM tv_episodes WHERE status = ? AND season > 0 AND (airdate <= ? and airdate > 1)",
                                  [common.UNAIRED, curDate])
 
         sql_l = []
@@ -66,7 +70,7 @@ class DailySearcher():
                     show = helpers.findCertainShow(sickbeard.showList, int(sqlEp["showid"]))
 
                 # for when there is orphaned series in the database but not loaded into our showlist
-                if not show:
+                if not show or show.paused:
                     continue
 
             except exceptions.MultipleShowObjectsException:
@@ -74,7 +78,9 @@ class DailySearcher():
                 continue
 
             try:
-                end_time = network_timezones.parse_date_time(sqlEp['airdate'], show.airs, show.network) + datetime.timedelta(minutes=helpers.tryInt(show.runtime, 60))
+                end_time = network_timezones.parse_date_time(sqlEp['airdate'], show.airs,
+                                                             show.network) + datetime.timedelta(
+                    minutes=helpers.tryInt(show.runtime, 60))
                 # filter out any episodes that haven't aried yet
                 if end_time > curTime:
                     continue
@@ -84,18 +90,20 @@ class DailySearcher():
 
             ep = show.getEpisode(int(sqlEp["season"]), int(sqlEp["episode"]))
             with ep.lock:
-                if ep.show.paused:
+                if ep.season == 0:
+                    logger.log(u"New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
                     ep.status = common.SKIPPED
                 else:
-                    ep.status = common.WANTED
+                    logger.log(u"New episode %s airs today, setting to default episode status for this show: %s" % (ep.prettyName(), common.statusStrings[ep.show.default_ep_status]))
+                    ep.status = ep.show.default_ep_status
 
                 sql_l.append(ep.get_sql())
-        else:
-            logger.log(u"No new released episodes found ...")
 
         if len(sql_l) > 0:
             myDB = db.DBConnection()
             myDB.mass_action(sql_l)
+        else:
+            logger.log(u"No new released episodes found ...")
 
         # queue episode for daily search
         dailysearch_queue_item = sickbeard.search_queue.DailySearchQueueItem()

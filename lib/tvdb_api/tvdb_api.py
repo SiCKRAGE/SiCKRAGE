@@ -22,7 +22,7 @@ import logging
 import zipfile
 import datetime as dt
 import requests
-import requests.exceptions
+from requests import exceptions
 import xmltodict
 
 try:
@@ -35,8 +35,8 @@ try:
 except ImportError:
     gzip = None
 
-from lib.dateutil.parser import parse
-from lib.cachecontrol import CacheControl, caches
+from dateutil.parser import parse
+from cachecontrol import CacheControl, caches
 
 from tvdb_ui import BaseUI, ConsoleUI
 from tvdb_exceptions import (tvdb_error, tvdb_userabort, tvdb_shownotfound, tvdb_showincomplete,
@@ -479,6 +479,8 @@ class Tvdb:
         else:
             raise ValueError("Invalid value for Cache %r (type was %s)" % (cache, type(cache)))
 
+        self.config['session'] = requests.Session()
+
         self.config['banners_enabled'] = banners
         self.config['actors_enabled'] = actors
 
@@ -563,7 +565,8 @@ class Tvdb:
 
             # get response from TVDB
             if self.config['cache_enabled']:
-                session = CacheControl(cache=caches.FileCache(self.config['cache_location']))
+
+                session = CacheControl(sess=self.config['session'], cache=caches.FileCache(self.config['cache_location']), cache_etags=False)
                 if self.config['proxy']:
                     log().debug("Using proxy for URL: %s" % url)
                     session.proxies = {
@@ -571,9 +574,11 @@ class Tvdb:
                         "https": self.config['proxy'],
                     }
 
-                resp = session.get(url, cache_auto=True, params=params)
+                resp = session.get(url.strip(), params=params)
             else:
-                resp = requests.get(url, params=params)
+                resp = requests.get(url.strip(), params=params)
+
+            resp.raise_for_status()
         except requests.exceptions.HTTPError, e:
             raise tvdb_error("HTTP error " + str(e.errno) + " while loading URL " + str(url))
         except requests.exceptions.ConnectionError, e:
@@ -604,24 +609,22 @@ class Tvdb:
                 except:
                     pass
 
-            return (key, value)
+            return key, value
 
-        if resp.ok:
-            if 'application/zip' in resp.headers.get("Content-Type", ''):
-                try:
-                    # TODO: The zip contains actors.xml and banners.xml, which are currently ignored [GH-20]
-                    log().debug("We recived a zip file unpacking now ...")
-                    zipdata = StringIO.StringIO()
-                    zipdata.write(resp.content)
-                    myzipfile = zipfile.ZipFile(zipdata)
-                    return xmltodict.parse(myzipfile.read('%s.xml' % language), postprocessor=process)
-                except zipfile.BadZipfile:
-                    raise tvdb_error("Bad zip file received from thetvdb.com, could not read it")
-            else:
-                try:
-                    return xmltodict.parse(resp.content.strip(), postprocessor=process)
-                except:
-                    return dict([(u'data', None)])
+        if 'application/zip' in resp.headers.get("Content-Type", ''):
+            try:
+                log().debug("We recived a zip file unpacking now ...")
+                zipdata = StringIO.StringIO()
+                zipdata.write(resp.content)
+                myzipfile = zipfile.ZipFile(zipdata)
+                return xmltodict.parse(myzipfile.read('%s.xml' % language), postprocessor=process)
+            except zipfile.BadZipfile:
+                raise tvdb_error("Bad zip file received from thetvdb.com, could not read it")
+        else:
+            try:
+                return xmltodict.parse(resp.content.decode('utf-8'), postprocessor=process)
+            except:
+                return dict([(u'data', None)])
 
     def _getetsrc(self, url, params=None, language=None):
         """Loads a URL using caching, returns an ElementTree of the source
@@ -680,7 +683,11 @@ class Tvdb:
         log().debug("Searching for show %s" % series)
         self.config['params_getSeries']['seriesname'] = series
 
-        return self._getetsrc(self.config['url_getSeries'], self.config['params_getSeries']).values()[0]
+        results = self._getetsrc(self.config['url_getSeries'], self.config['params_getSeries'])
+        if not results:
+            return
+
+        return results.values()[0]
 
     def _getSeries(self, series):
         """This searches TheTVDB.com for the series name,
@@ -736,7 +743,7 @@ class Tvdb:
             return
 
         banners = {}
-        for cur_banner in bannersEt['banner']:
+        for cur_banner in bannersEt['banner'] if isinstance(bannersEt['banner'], list) else [bannersEt['banner']]:
             bid = cur_banner['id']
             btype = cur_banner['bannertype']
             btype2 = cur_banner['bannertype2']
@@ -797,18 +804,20 @@ class Tvdb:
             return
 
         cur_actors = Actors()
-        for curActorItem in actorsEt["actor"]:
+        for cur_actor in actorsEt['actor'] if isinstance(actorsEt['actor'], list) else [actorsEt['actor']]:
             curActor = Actor()
-            for k, v in curActorItem.items():
+            for k, v in cur_actor.items():
+                if k is None or v is None:
+                    continue
+
                 k = k.lower()
-                if v is not None:
-                    if k == "image":
-                        v = self.config['url_artworkPrefix'] % (v)
-                    else:
-                        v = self._cleanData(v)
+                if k == "image":
+                    v = self.config['url_artworkPrefix'] % (v)
+                else:
+                    v = self._cleanData(v)
+
                 curActor[k] = v
             cur_actors.append(curActor)
-
         self._setShowData(sid, '_actors', cur_actors)
 
     def _getShowData(self, sid, language, getEpInfo=False):
@@ -839,7 +848,7 @@ class Tvdb:
 
         if not seriesInfoEt:
             log().debug('Series result returned zero')
-            raise tvdb_shownotfound("Show search returned zero results (cannot find show on TVDB)")
+            raise tvdb_error("Series result returned zero")
 
         # get series data
         for k, v in seriesInfoEt['series'].items():
@@ -872,6 +881,9 @@ class Tvdb:
             if not epsEt:
                 log().debug('Series results incomplete')
                 raise tvdb_showincomplete("Show search returned incomplete results (cannot find complete show on TVDB)")
+
+            if 'episode' not in epsEt:
+                return False
 
             episodes = epsEt["episode"]
             if not isinstance(episodes, list):

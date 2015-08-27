@@ -42,7 +42,9 @@ class NyaaProvider(generic.TorrentProvider):
 
         self.cache = NyaaCache(self)
 
-        self.url = 'http://www.nyaa.se/'
+        self.urls = {'base_url': 'http://www.nyaa.se/'}
+
+        self.url = self.urls['base_url']
 
     def isEnabled(self):
         return self.enabled
@@ -51,27 +53,27 @@ class NyaaProvider(generic.TorrentProvider):
         return 'nyaatorrents.png'
 
     def getQuality(self, item, anime=False):
-        title = item.title
+        title = item.get('title')
         quality = Quality.sceneQuality(title, anime)
         return quality
 
-    def findSearchResults(self, show, episodes, search_mode, manualSearch=False):
-        return generic.TorrentProvider.findSearchResults(self, show, episodes, search_mode, manualSearch)
+    def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False):
+        return generic.TorrentProvider.findSearchResults(self, show, episodes, search_mode, manualSearch, downCurQuality)
 
     def _get_season_search_strings(self, ep_obj):
-        return show_name_helpers.makeSceneShowSearchStrings(self.show)
+        return [x for x in show_name_helpers.makeSceneSeasonSearchString(self.show, ep_obj)]
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
-        return self._get_season_search_strings(ep_obj)
+        return [x for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
 
-    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
         if self.show and not self.show.is_anime:
             logger.log(u"" + str(self.show.name) + " is not an anime skiping " + str(self.name))
             return []
 
         params = {
             "term": search_string.encode('utf-8'),
-            "cats": '1_37',  # Limit to English-translated Anime (for now)
+            "cats": '1_0',  # All anime
             "sort": '2',     # Sort Descending By Seeders
         }
 
@@ -79,32 +81,20 @@ class NyaaProvider(generic.TorrentProvider):
 
         logger.log(u"Search string: " + searchURL, logger.DEBUG)
 
-        data = self.cache.getRSSFeed(searchURL)
-        if not data:
-            return []
+        results = []
+        for curItem in self.cache.getRSSFeed(searchURL, items=['entries'])['entries'] or []:
+            (title, url) = self._get_title_and_url(curItem)
 
-        if 'entries' in data:
-            items = data.entries
+            if title and url:
+                results.append(curItem)
+            else:
+                logger.log(
+                    u"The data returned from the " + self.name + " is incomplete, this result is unusable",
+                    logger.DEBUG)
 
-            results = []
-
-            for curItem in items:
-
-                (title, url) = self._get_title_and_url(curItem)
-
-                if title and url:
-                    results.append(curItem)
-                else:
-                    logger.log(
-                        u"The data returned from the " + self.name + " is incomplete, this result is unusable",
-                        logger.DEBUG)
-
-            return results
-
-        return []
+        return results
 
     def _get_title_and_url(self, item):
-
         return generic.TorrentProvider._get_title_and_url(self, item)
 
     def _extract_name_from_filename(self, filename):
@@ -137,12 +127,6 @@ class NyaaCache(tvcache.TVCache):
 
         logger.log(u"NyaaTorrents cache update URL: " + url, logger.DEBUG)
 
-        data = self.getRSSFeed(url)
-
-        if data and 'entries' in data:
-            return data.entries
-        else:
-            return []
-
+        return self.getRSSFeed(url)
 
 provider = NyaaProvider()

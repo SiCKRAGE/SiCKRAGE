@@ -3,13 +3,17 @@ import urllib
 import ConfigParser
 import sys
 import os
-import shutil
 import zipfile
 import subprocess
 import fnmatch
 import googlecode_upload
 
 from distutils.core import setup
+
+import shutil
+import shutil_custom
+
+shutil.copyfile = shutil_custom.copyfile_custom
 
 try:
     import py2exe

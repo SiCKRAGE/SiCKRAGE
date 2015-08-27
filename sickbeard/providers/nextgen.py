@@ -35,20 +35,13 @@ from sickbeard import show_name_helpers
 from sickbeard.common import Overview
 from sickbeard.exceptions import ex
 from sickbeard import clients
-from lib import requests
-from lib.requests import exceptions
+import requests
+from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
 from sickbeard.helpers import sanitizeSceneName
 
 
 class NextGenProvider(generic.TorrentProvider):
-    urls = {'base_url': 'https://nxtgn.org/',
-            'search': 'https://nxtgn.org/browse.php?search=%s&cat=0&incldead=0&modes=%s',
-            'login_page': 'https://nxtgn.org/login.php',
-            'detail': 'https://nxtgn.org/details.php?id=%s',
-            'download': 'https://nxtgn.org/download.php?id=%s',
-            'takelogin': 'https://nxtgn.org/takelogin.php?csrf=',
-    }
 
     def __init__(self):
 
@@ -62,6 +55,14 @@ class NextGenProvider(generic.TorrentProvider):
         self.ratio = None
 
         self.cache = NextGenCache(self)
+
+        self.urls = {'base_url': 'https://nxtgn.org/',
+                'search': 'https://nxtgn.org/browse.php?search=%s&cat=0&incldead=0&modes=%s',
+                'login_page': 'https://nxtgn.org/login.php',
+                'detail': 'https://nxtgn.org/details.php?id=%s',
+                'download': 'https://nxtgn.org/download.php?id=%s',
+                'takelogin': 'https://nxtgn.org/takelogin.php?csrf=',
+                }
 
         self.url = self.urls['base_url']
 
@@ -117,7 +118,7 @@ class NextGenProvider(generic.TorrentProvider):
             self.session = requests.Session()
             self.session.headers.update(
                 {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20130519 Firefox/24.0)'})
-            data = self.session.get(self.urls['login_page'], verify=False)
+            data = self.session.get(self.urls['login_page'])
             with BS4Parser(data.content.decode('iso-8859-1')) as bs:
                 csrfraw = bs.find('form', attrs={'id': 'login'})['action']
                 output = self.session.post(self.urls['base_url'] + csrfraw, data=login_params)
@@ -184,19 +185,19 @@ class NextGenProvider(generic.TorrentProvider):
 
         return [search_string]
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0):
+    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         if not self._doLogin():
-            return []
+            return results
 
         for mode in search_params.keys():
 
             for search_string in search_params[mode]:
 
-                searchURL = self.urls['search'] % (search_string, self.categories)
+                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
                 logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)
 
                 data = self.getURL(searchURL)
@@ -248,7 +249,7 @@ class NextGenProvider(generic.TorrentProvider):
                                     continue
 
                                 item = torrent_name, torrent_download_url
-                                logger.log(u"Found result: " + torrent_name + " (" + torrent_details_url + ")",
+                                logger.log(u"Found result: " + torrent_name.replace(' ','.') + " (" + torrent_details_url + ")",
                                            logger.DEBUG)
                                 items[mode].append(item)
 
@@ -320,7 +321,7 @@ class NextGenCache(tvcache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return self.provider._doSearch(search_params)
+        return {'entries': self.provider._doSearch(search_params)}
 
 
 provider = NextGenProvider()

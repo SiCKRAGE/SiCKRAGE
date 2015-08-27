@@ -434,7 +434,7 @@ inc_top.tmpl
 	background-position: -357px 0px;
 }
 
-.menu-icon-xbmc {
+.menu-icon-kodi {
 	background-position: -378px 0px;
 }
 
@@ -468,7 +468,7 @@ inc_top.tmpl
 	background-position: -294px 0px;
 }
 
-.submenu-icon-xbmc {
+.submenu-icon-kodi {
 	background-position: -378px 0px;
 }
 
@@ -555,6 +555,16 @@ home.tmpl
 	vertical-align: middle;
 	font-size: 12px;
 	color: #000000;
+}
+
+.progress-100 {
+	background-image: -moz-linear-gradient(#395f07, #2a4705) !important;
+	background-image: linear-gradient(#395f07, #2a4705) !important;
+	background-image: -webkit-linear-gradient(#395f07, #2a4705) !important;
+	background-image: -o-linear-gradient(#395f07, #2a4705) !important;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
 
 .progress-80 {
@@ -782,6 +792,17 @@ td.tvShow a {
 td.tvShow a:hover {
 	cursor: pointer;
 	color: #428BCA;
+}
+
+#popover-target label {
+  margin: 0 5px;
+  display: block;
+}
+#popover-target input {
+  margin-left: 5px;
+}
+.popover {
+  margin-left: -50px;
 }
 
 /* =======================================================================
@@ -1172,6 +1193,33 @@ span.snatched b {
 	opacity: 0.4;
 }
 
+.displayShowTable {
+	table-layout: auto;
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+	text-align: center;
+	border: none;
+	empty-cells: show;
+	color: #000 !important;
+}
+
+.displayShowTable.display_show {
+	clear:both
+}
+
+.displayShowTable th.row-seasonheader {
+	border: none !important;
+	background-color: #222 !important;
+	color: #fff !important;
+	padding-top: 15px !important;
+	text-align: left !important;
+}
+
+.displayShowTable td.col-search {
+    text-align: center;
+}
+
 .sickbeardTable {
 	table-layout: auto;
 	width: 100%;
@@ -1261,7 +1309,7 @@ td.col-subtitles {
 
 th.col-status,
 td.col-status {
-	width: 200px;
+	width: 210px;
 	text-align: center;
 }
 
@@ -1865,6 +1913,10 @@ span.HD {
 	background-color: #2672B6;
 }
 
+span.HDTV {
+	background-color: #2672B6;
+}
+
 span.HD720p {
 	background-color: #5b990d;
 }
@@ -1877,7 +1929,15 @@ span.RawHD {
 	background-color: #cd7300;
 }
 
+span.RawHDTV {
+	background-color: #cd7300;
+}
+
 span.SD {
+	background-color: #BE2625;
+}
+
+span.SDTV {
 	background-color: #BE2625;
 }
 
@@ -1939,32 +1999,19 @@ div.blackwhitelist{
 	float:left;
 	text-align: center; 
 }
-
 div.blackwhitelist input {
-	margin: 5px 5px;
+	margin: 5px 0px;
 }
-
 div.blackwhitelist.pool select{
-	width: 300px;
+	width: 230px;
 }
-
-div.blackwhitelist.pool {
-	margin:5px;
-}
-
 div.blackwhitelist.white select, div.blackwhitelist.black select {
-	width: 180px;
+	width: 150px;
 }
-
-div.blackwhitelist.white, div.blackwhitelist.black {
-	margin:5px;
-}
-
 div.blackwhitelist span {
 	display: block;
 	text-align: center;
 }
-
 div.blackwhitelist.anidb, div.blackwhitelist.manual {
 	margin: 7px 0px;
 }
@@ -3133,4 +3180,120 @@ pnotify.css
 .ui-pnotify-closer {
     margin-top: -12px;
     margin-right: -10px;
+}
+
+/* =======================================================================
+login.css
+========================================================================== */
+
+.login {
+	display: block;
+}
+
+	.login h1 {
+		padding: 0 0 10px;
+		font-size: 60px;
+		font-family: Lobster;
+		font-weight: normal;
+	}
+
+	.login form {
+		padding: 0;
+		height: 300px;
+		width: 400px;
+		position: fixed;
+		left: 50%;
+		top: 50%;
+		margin: -200px 0 0 -200px;
+	}
+		@media all and (max-width: 480px) {
+
+			.login form {
+				padding: 0;
+				height: 300px;
+				width: 90%;
+				position: absolute;
+				left: 5%;
+				top: 10px;
+				margin: 0;
+			}
+
+		}
+
+	.login .ctrlHolder {
+		padding: 0;
+		margin: 0 0 20px;
+	}
+		.login .ctrlHolder:hover {
+			background: none;
+		}
+
+	.login input[type=text],
+	.login input[type=password] {
+		width: 100% !important;
+		font-size: 25px;
+		padding: 14px !important;
+	}
+
+	.login .remember_me {
+		font-size: 15px;
+		float: left;
+		width: 150px;
+		padding: 20px 0;
+	}
+
+		.login .remember_me .check {
+			margin: 5px 5px 0 0;
+		}
+
+	.login .button {
+		font-size: 25px;
+		padding: 20px;
+		float: right;
+	}
+
+/* =======================================================================
+IMDB Popular
+========================================================================== */
+
+.popularShow{
+	margin-bottom:30px;
+}
+
+.popularShow h3{
+	padding:0px;
+	margin:0px;
+	display:inline-block;
+	margin-right:30px;
+}
+
+.popularShow .left{
+	float:left;
+	width:100px;
+}
+
+.popularShow .right{
+	float:left;
+	width:600px;
+}
+
+.popularShow .year{
+	font-style:italic;
+	opacity:0.7;
+}
+
+.popularShow .coverImage{
+	width:80%;
+	padding-left:20px;
+	margin-top:4px;
+}
+
+.popularShow .rating{
+	font-size:90%;
+	display:inline-block;
+	margin-left:0px;
+}
+
+.popularShow p{
+	margin-bottom:0px;
 }

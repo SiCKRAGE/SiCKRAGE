@@ -30,7 +30,8 @@ class WombleProvider(generic.NZBProvider):
         generic.NZBProvider.__init__(self, "Womble's Index")
         self.enabled = False
         self.cache = WombleCache(self)
-        self.url = 'https://newshost.co.za/'
+        self.urls = {'base_url': 'https://newshost.co.za/'}
+        self.url = self.urls['base_url']
 
     def isEnabled(self):
         return self.enabled
@@ -43,42 +44,34 @@ class WombleCache(tvcache.TVCache):
         self.minTime = 15
 
     def updateCache(self):
-
-        # delete anything older then 7 days
-        self._clearCache()
-
-        data = None
-
+        # check if we should update
         if not self.shouldUpdate():
             return
 
+        # clear cache
+        self._clearCache()
+
+        # set updated
+        self.setLastUpdate()
+
         cl = []
-        for url in [self.provider.url + 'rss/?sec=tv-sd&fr=false', self.provider.url + 'rss/?sec=tv-hd&fr=false']:
-            logger.log(u"Womble's Index cache update URL: " + url, logger.DEBUG)
-            data = self.getRSSFeed(url)
+        for url in [self.provider.url + 'rss/?sec=tv-x264&fr=false',
+                    self.provider.url + 'rss/?sec=tv-sd&fr=false',
+                    self.provider.url + 'rss/?sec=tv-dvd&fr=false',
+                    self.provider.url + 'rss/?sec=tv-hd&fr=false']:
+            logger.log(u'Womble\'s Index cache update URL: ' + url, logger.DEBUG)
 
-            # As long as we got something from the provider we count it as an update
-            if not data:
-                return []
-
-            # By now we know we've got data and no auth errors, all we need to do is put it in the database
-            for item in data.entries:
+            for item in self.getRSSFeed(url)['entries'] or []:
                 ci = self._parseItem(item)
                 if ci is not None:
                     cl.append(ci)
-
-
 
         if len(cl) > 0:
             myDB = self._getDB()
             myDB.mass_action(cl)
 
-        # set last updated
-        if data:
-            self.setLastUpdate()
-
     def _checkAuth(self, data):
-        return data != 'Invalid Link'
+        return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None
 
 provider = WombleProvider()
 
