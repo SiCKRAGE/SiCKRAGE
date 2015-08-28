@@ -30,8 +30,8 @@ from sickbeard import generic_queue
 from sickbeard import name_cache
 from sickbeard.exceptions import ex
 from sickbeard.blackandwhitelist import BlackAndWhiteList, short_group_names
-from lib.trakt import TraktAPI
-from lib.trakt.exceptions import traktException, traktServerBusy, traktAuthException
+from libtrakt import TraktAPI
+from libtrakt.exceptions import traktException, traktServerBusy, traktAuthException
 
 class ShowQueue(generic_queue.GenericQueue):
     def __init__(self):
