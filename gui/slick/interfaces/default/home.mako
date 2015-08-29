@@ -579,11 +579,7 @@ $(document).ready(function(){
                 </td>
 
                 <td class="show-table">
-                    % if curShow.quality in qualityPresets:
-                        <span class="show-quality">${qualityPresetStrings[curShow.quality]}</span>
-                    % else:
-                        <span class="show-quality">Custom</span>
-                    % endif
+		    ${renderQualityPill(curShow.quality, overrideClass="show-quality")}
                 </td>
             </tr>
         </table>
