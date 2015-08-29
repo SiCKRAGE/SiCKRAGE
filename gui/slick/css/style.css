@@ -1894,6 +1894,17 @@ span.quality {
 	border-radius: 4px;
 }
 
+span.any-hd {
+	background-color: #2672b6;
+	background: repeating-linear-gradient(
+		-45deg,
+		#2672b6,
+		#2672b6 10px,
+		#5b990d 10px,
+		#5b990d 20px
+	);
+}
+
 span.Custom {
 	background-color: #621993;
 }

@@ -118,6 +118,9 @@ class Quality:
     FULLHDWEBDL = 1 << 6  # 64 -- 1080p web-dl
     HDBLURAY = 1 << 7  # 128
     FULLHDBLURAY = 1 << 8  # 256
+    ANYHDTV = HDTV | FULLHDTV  # 20
+    ANYWEBDL = HDWEBDL | FULLHDWEBDL  # 96
+    ANYBLURAY = HDBLURAY | FULLHDBLURAY  # 384
 
     # put these bits at the other end of the spectrum, far enough out that they shouldn't interfere
     UNKNOWN = 1 << 15  # 32768
@@ -133,6 +136,25 @@ class Quality:
                       FULLHDWEBDL: "1080p WEB-DL",
                       HDBLURAY: "720p BluRay",
                       FULLHDBLURAY: "1080p BluRay"}
+
+    combinedQualityStrings = {ANYHDTV: "Any HDTV",
+                              ANYWEBDL: "WEB-DL",
+                              ANYBLURAY: "BluRay"}
+
+    cssClassStrings = {NONE: "N/A",
+                       UNKNOWN: "Unknown",
+                       SDTV: "SDTV",
+                       SDDVD: "SD DVD",
+                       HDTV: "HD720p",
+                       RAWHDTV: "RawHD",
+                       FULLHDTV: "HD1080p",
+                       HDWEBDL: "HD720p",
+                       FULLHDWEBDL: "HD1080p",
+                       HDBLURAY: "HD720p",
+                       FULLHDBLURAY: "HD1080p",
+                       ANYHDTV: "any-hd",
+                       ANYWEBDL: "any-hd",
+                       ANYBLURAY: "any-hd"}
 
     statusPrefixes = {DOWNLOADED: "Downloaded",
                       SNATCHED: "Snatched",
