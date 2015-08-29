@@ -1301,6 +1301,11 @@ td.col-status {
 	text-align: center;
 }
 
+th.col-quality,
+td.col-quality {
+	width: 110px;
+}
+
 th.col-legend,
 td.col-legend {
 	width: 80px;
