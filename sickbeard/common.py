@@ -141,10 +141,10 @@ class Quality:
                               ANYWEBDL: "WEB-DL",
                               ANYBLURAY: "BluRay"}
 
-    cssClassStrings = {NONE: "N/A",
+    cssClassStrings = {NONE: "Unknown",
                        UNKNOWN: "Unknown",
                        SDTV: "SDTV",
-                       SDDVD: "SD DVD",
+                       SDDVD: "SD",
                        HDTV: "HD720p",
                        RAWHDTV: "RawHD",
                        FULLHDTV: "HD1080p",
