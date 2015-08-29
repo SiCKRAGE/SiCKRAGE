@@ -129,7 +129,7 @@ class Quality:
                       UNKNOWN: "Unknown",
                       SDTV: "SDTV",
                       SDDVD: "SD DVD",
-                      HDTV: "HDTV",
+                      HDTV: "720p HDTV",
                       RAWHDTV: "RawHD",
                       FULLHDTV: "1080p HDTV",
                       HDWEBDL: "720p WEB-DL",
@@ -137,7 +137,7 @@ class Quality:
                       HDBLURAY: "720p BluRay",
                       FULLHDBLURAY: "1080p BluRay"}
 
-    combinedQualityStrings = {ANYHDTV: "Any HDTV",
+    combinedQualityStrings = {ANYHDTV: "HDTV",
                               ANYWEBDL: "WEB-DL",
                               ANYBLURAY: "BluRay"}
 
