@@ -7,7 +7,7 @@
     import sickbeard.helpers
 
     from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, Overview
+    from sickbeard.common import Quality, qualityPresets, statusStrings, Overview
 
     from sickbeard.helpers import anon_url
 %>
