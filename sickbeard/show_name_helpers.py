@@ -39,7 +39,9 @@ resultFilters = ["sub(bed|ed|pack|s)", "(dk|fin|heb|kor|nor|nordic|pl|swe)sub(be
 
 languageMap = {
     "de": ["german","videomann"],
-    "fr": ["french"]
+    "fr": ["french"],
+    "it": ["ita", "italian"],
+    "es": ["spanish"]
 }
 
 def containsAtLeastOneWord(name, words):
