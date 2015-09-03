@@ -37,7 +37,7 @@ from sickbeard import db
 from sickbeard import classes
 from sickbeard.show_name_helpers import allPossibleShowNames, sanitizeSceneName
 from sickbeard.bs4_parser import BS4Parser
-from unidecode import unidecode
+
 
 
 class KATProvider(generic.TorrentProvider):
@@ -117,8 +117,9 @@ class KATProvider(generic.TorrentProvider):
 
         for mode in search_params.keys():
             for search_string in search_params[mode]:
-                if isinstance(search_string, unicode):
-                    search_string = unidecode(search_string)
+                if not isinstance(search_string, unicode):
+                    logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+                    continue
 
                 if mode != 'RSS':
                     searchURL = self.url + 'usearch/%s/?field=seeders&sorder=desc&rss=1' % urllib.quote_plus(search_string)

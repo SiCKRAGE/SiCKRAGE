@@ -40,7 +40,7 @@ from sickbeard import show_name_helpers
 from sickbeard import db
 from sickbeard import helpers
 from sickbeard import classes
-from unidecode import unidecode
+
 from sickbeard.helpers import sanitizeSceneName
 from sickbeard.exceptions import ex
 
@@ -64,20 +64,20 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
         self.enabled = False
         self.username = None
         self.password = None
-        self.ratio = None        
+        self.ratio = None
         self.minseed = None
         self.minleech = None
 
     def isEnabled(self):
         return self.enabled
-        
+
     def imageName(self):
         return 'frenchtorrentdb.png'
-        
+
     def getQuality(self, item, anime=False):
         quality = Quality.sceneQuality(item[0], anime)
         return quality
-        
+
     def _doLogin(self):
 
         challenge = self.opener.open(self.url + '/?section=LOGIN&challenge=1')
@@ -94,9 +94,9 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
         })
 
         self.opener.open(self.url + '/?section=LOGIN&ajax=1', data).read()
-        
+
         return True
-        
+
     def _getSecureLogin(self, challenges):
 
         def fromCharCode(*args):
@@ -135,7 +135,7 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
         for challenge in challenges:
             secureLogin += decodeChallenge(challenge)
         return secureLogin
-        
+
     def _get_episode_search_strings(self, ep_obj, add_string=''):
 
         search_string = {'Episode': []}
@@ -168,11 +168,11 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
                 search_string['Episode'].append(re.sub('\s+', '.', ep_string))
 
         return [search_string]
-        
+
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         logger.log(u"_doSearch started with ..." + str(search_params), logger.DEBUG)
-    
+
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
@@ -181,11 +181,10 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
             return results
 
         for mode in search_params.keys():
-
             for search_string in search_params[mode]:
-
-                if isinstance(search_string, unicode):
-                    search_string = unidecode(search_string)
+                if not isinstance(search_string, unicode):
+                    logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+                    continue
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
 
@@ -216,7 +215,7 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
             results += items[mode]
 
         return results
-        
+
     def _get_title_and_url(self, item):
 
         title, url = item
@@ -229,7 +228,7 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
             url = str(url).replace('&amp;', '&')
 
         return (title, url)
-        
+
     def findPropers(self, search_date=datetime.datetime.today()):
 
         results = []

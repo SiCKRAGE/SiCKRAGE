@@ -65,9 +65,13 @@ class animenzb(generic.NZBProvider):
             logger.log(u"" + str(self.show.name) + " is not an anime skiping ...")
             return []
 
+        if not isinstance(search_string, unicode):
+            logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+            return []
+
         params = {
             "cat": "anime",
-            "q": search_string.encode('utf-8'),
+            "q": search_string,
             "max": "100"
         }
 

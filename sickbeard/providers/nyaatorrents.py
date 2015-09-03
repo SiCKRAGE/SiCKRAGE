@@ -71,8 +71,12 @@ class NyaaProvider(generic.TorrentProvider):
             logger.log(u"" + str(self.show.name) + " is not an anime skiping " + str(self.name))
             return []
 
+        if not isinstance(search_string, unicode):
+            logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+            return []
+
         params = {
-            "term": search_string.encode('utf-8'),
+            "term": search_string,
             "cats": '1_0',  # All anime
             "sort": '2',     # Sort Descending By Seeders
         }

@@ -35,7 +35,7 @@ from sickbeard import clients
 import requests
 from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
-from unidecode import unidecode
+
 from sickbeard.helpers import sanitizeSceneName
 
 
@@ -197,8 +197,9 @@ class FreshOnTVProvider(generic.TorrentProvider):
         for mode in search_params.keys():
             for search_string in search_params[mode]:
 
-                if isinstance(search_string, unicode):
-                    search_string = unidecode(search_string)
+                if not isinstance(search_string, unicode):
+                    logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+                    continue
 
                 searchURL = self.urls['search'] % (freeleech, search_string)
                 logger.log(u"Search string: " + searchURL, logger.DEBUG)

@@ -87,8 +87,12 @@ class TokyoToshokanProvider(generic.TorrentProvider):
             logger.log(u"" + str(self.show.name) + " is not an anime skiping " + str(self.name))
             return []
 
+        if not isinstance(search_string, unicode):
+            logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+            return []
+
         params = {
-            "terms": search_string.encode('utf-8'),
+            "terms": search_string,
             "type": 1, # get anime types
         }
 
@@ -106,19 +110,19 @@ class TokyoToshokanProvider(generic.TorrentProvider):
             with BS4Parser(data, features=["html5lib", "permissive"]) as soup:
                 torrent_table = soup.find('table', attrs={'class': 'listing'})
                 torrent_rows = torrent_table.find_all('tr') if torrent_table else []
-                if torrent_rows: 
+                if torrent_rows:
                     if torrent_rows[0].find('td', attrs={'class': 'centertext'}):
                         a = 1
                     else:
                         a = 0
-    
+
                     for top, bottom in zip(torrent_rows[a::2], torrent_rows[a::2]):
                         title = top.find('td', attrs={'class': 'desc-top'}).text
                         url = top.find('td', attrs={'class': 'desc-top'}).find('a')['href']
-    
+
                         if not title or not url:
                             continue
-    
+
                         item = title.lstrip(), url
                         results.append(item)
 

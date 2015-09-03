@@ -33,7 +33,7 @@ from sickbeard import clients
 import requests
 from requests.exceptions import RequestException
 from sickbeard.bs4_parser import BS4Parser
-from unidecode import unidecode
+
 from sickbeard.helpers import sanitizeSceneName
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 
@@ -105,7 +105,7 @@ class TNTVillageProvider(generic.TorrentProvider):
                               'Anime' : 7,
                               'Programmi e Film TV' : 1,
                               'Documentari' : 14,
-                              'All' : 0, 
+                              'All' : 0,
                              }
 
         self.urls = {'base_url' : 'http://forum.tntvillage.scambioetico.org',
@@ -244,7 +244,7 @@ class TNTVillageProvider(generic.TorrentProvider):
         file_quality=''
 
         img_all = (torrent_rows.find_all('td'))[1].find_all('img')
-        
+
         if len(img_all) > 0:
             for img_type in img_all:
                 try:
@@ -312,7 +312,7 @@ class TNTVillageProvider(generic.TorrentProvider):
         if not subFound and re.search("ita", name, re.I):
             logger.log(u"Found Italian release", logger.DEBUG)
             italian = True
-        
+
         return italian
 
     def _is_season_pack(self, name):
@@ -345,9 +345,9 @@ class TNTVillageProvider(generic.TorrentProvider):
 
         for mode in search_params.keys():
             for search_string in search_params[mode]:
-
-                if isinstance(search_string, unicode):
-                    search_string = unidecode(search_string)
+                if not isinstance(search_string, unicode):
+                    logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+                    continue
 
                 if mode == 'RSS':
                     self.page = 2
@@ -363,7 +363,7 @@ class TNTVillageProvider(generic.TorrentProvider):
                 for x in range(0,y):
                     z=x*20
                     if last_page:
-                        break	
+                        break
 
                     if mode != 'RSS':
                         searchURL = (self.urls['search_page'] + '&filter={2}').format(z,self.categories,search_string)
@@ -421,7 +421,7 @@ class TNTVillageProvider(generic.TorrentProvider):
                                         break
 
                                 if Quality.nameQuality(title) == Quality.UNKNOWN:
-                                    title += filename_qt 
+                                    title += filename_qt
 
                                 if not self._is_italian(result) and not self.subtitle:
                                     logger.log(u"Subtitled, skipping "  + title + "(" + searchURL + ")", logger.DEBUG)
