@@ -653,7 +653,6 @@ $(document).ready(function(){
 
 <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
 % for curShow in myShowList:
-
 <%
     cur_airs_next = ''
     cur_airs_prev = ''
@@ -778,25 +777,21 @@ $(document).ready(function(){
         </td>
 
         <td align="center">
-            <img data-aload="${sbRoot}/images/${('no16.png" alt="No"', 'yes16.png" alt="Yes"')[int(curShow.paused) == 0 and curShow.status == 'Continuing']} width="16" height="16" />
+            <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
+            <img data-aload="${sbRoot}/images/${('no16.png', 'yes16.png')[bool(paused)]}" alt="${('No', 'Yes')[bool(paused)]}" width="16" height="16" />
         </td>
 
         <td align="center">
-<% display_status = curShow.status %>
-% if None is not display_status:
-    % if re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
-        <% display_status = 'Continuing' %>
-    % elif re.search(r'(?i)(?:nded)', curShow.status):
-        <% display_status = 'Ended' %>
-    % endif
-% endif
-
-        ${display_status}
-
+        <% display_status = curShow.status %>
+        % if None is not display_status:
+            % if re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
+                Continuing
+            % elif re.search(r'(?i)(?:nded)', curShow.status):
+                Ended
+            % endif
+        % endif
         </td>
-
     </tr>
-
 % endfor
 </tbody>
 </table>

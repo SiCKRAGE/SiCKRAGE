@@ -31,6 +31,9 @@
             <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
             <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <meta name="msapplication-TileColor" content="#FFFFFF">
+        <meta name="msapplication-TileImage" content="${sbRoot}/images/ico/favicon-144.png">
+        <meta name="msapplication-config" content="${sbRoot}/css/browserconfig.xml">
 
         <link rel="shortcut icon" href="${sbRoot}/images/ico/favicon.ico">
         <link rel="icon" sizes="16x16 32x32 64x64" href="${sbRoot}/images/ico/favicon.ico">
@@ -47,9 +50,6 @@
         <link rel="apple-touch-icon" sizes="76x76" href="${sbRoot}/images/ico/favicon-76.png">
         <link rel="apple-touch-icon" sizes="72x72" href="${sbRoot}/images/ico/favicon-72.png">
         <link rel="apple-touch-icon" href="${sbRoot}/images/ico/favicon-57.png">
-        <meta name="msapplication-TileColor" content="#FFFFFF">
-        <meta name="msapplication-TileImage" content="${sbRoot}/images/ico/favicon-144.png">
-        <meta name="msapplication-config" content="${sbRoot}/css/browserconfig.xml">
 
         <link rel="stylesheet" type="text/css" href="${sbRoot}/css/lib/bootstrap.min.css?${sbPID}"/>
         <link rel="stylesheet" type="text/css" href="${sbRoot}/css/browser.css?${sbPID}" />
@@ -170,28 +170,28 @@
 
         % if not submenu is UNDEFINED:
         <div id="SubMenu" class="hidden-print">
-        <span>
-        <% first = True %>
-        % for menuItem in submenu:
-            % if 'requires' not in menuItem or menuItem['requires']:
-                <% icon_class = '' if 'icon' not in menuItem else ' ' + menuItem['icon'] %>
-                  % if type(menuItem['path']) == dict:
-                      ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
-                      <%
-                          first = False
-                          inner_first = True
-                      %>
-                      % for cur_link in menuItem['path']:
-                          ${("&middot; ", "")[bool(inner_first)]}<a class="inner" href="${sbRoot}/${menuItem['path'][cur_link]}">${cur_link}</a>
-                          <% inner_first = False %>
-                      % endfor
-                  % else:
-                      <a href="${sbRoot}/${menuItem['path']}" class="btn${('', ' confirm')['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem['title']}</a>
-                      <% first = False %>
-                  % endif
-            % endif
-        % endfor
-        </span>
+            <span>
+            <% first = True %>
+            % for menuItem in submenu:
+                % if 'requires' not in menuItem or menuItem['requires']:
+                    <% icon_class = '' if 'icon' not in menuItem else ' ' + menuItem['icon'] %>
+                      % if type(menuItem['path']) == dict:
+                          ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
+                          <%
+                              first = False
+                              inner_first = True
+                          %>
+                          % for cur_link in menuItem['path']:
+                              ${("&middot; ", "")[bool(inner_first)]}<a class="inner" href="${sbRoot}/${menuItem['path'][cur_link]}">${cur_link}</a>
+                              <% inner_first = False %>
+                          % endfor
+                      % else:
+                          <a href="${sbRoot}/${menuItem['path']}" class="btn${('', ' confirm')['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem['title']}</a>
+                          <% first = False %>
+                      % endif
+                % endif
+            % endfor
+            </span>
         </div>
         % endif
 
@@ -214,46 +214,45 @@
         </div> <!-- /contentWrapper -->
 
         <footer>
-        <div class="footer clearfix">
-        <%
-            myDB = db.DBConnection()
-            today = str(datetime.date.today().toordinal())
-            status_quality = '(%s)' % ','.join([str(quality) for quality in Quality.SNATCHED + Quality.SNATCHED_PROPER])
-            status_download = '(%s)' % ','.join([str(quality) for quality in Quality.DOWNLOADED + [ARCHIVED]])
+            <div class="footer clearfix">
+            <%
+                myDB = db.DBConnection()
+                today = str(datetime.date.today().toordinal())
+                status_quality = '(%s)' % ','.join([str(quality) for quality in Quality.SNATCHED + Quality.SNATCHED_PROPER])
+                status_download = '(%s)' % ','.join([str(quality) for quality in Quality.DOWNLOADED + [ARCHIVED]])
 
-            sql_statement = 'SELECT ' \
-            + '(SELECT COUNT(*) FROM tv_episodes WHERE season > 0 AND episode > 0 AND airdate > 1 AND status IN %s) AS ep_snatched, ' % status_quality \
-            + '(SELECT COUNT(*) FROM tv_episodes WHERE season > 0 AND episode > 0 AND airdate > 1 AND status IN %s) AS ep_downloaded, ' % status_download \
-            + '(SELECT COUNT(*) FROM tv_episodes WHERE season > 0 AND episode > 0 AND airdate > 1 AND ((airdate <= %s AND (status = %s OR status = %s)) ' % (today, str(SKIPPED), str(WANTED)) \
-            + ' OR (status IN %s) OR (status IN %s))) AS ep_total FROM tv_episodes tv_eps LIMIT 1' % (status_quality, status_download)
+                sql_statement = 'SELECT ' \
+                + '(SELECT COUNT(*) FROM tv_episodes WHERE season > 0 AND episode > 0 AND airdate > 1 AND status IN %s) AS ep_snatched, ' % status_quality \
+                + '(SELECT COUNT(*) FROM tv_episodes WHERE season > 0 AND episode > 0 AND airdate > 1 AND status IN %s) AS ep_downloaded, ' % status_download \
+                + '(SELECT COUNT(*) FROM tv_episodes WHERE season > 0 AND episode > 0 AND airdate > 1 AND ((airdate <= %s AND (status = %s OR status = %s)) ' % (today, str(SKIPPED), str(WANTED)) \
+                + ' OR (status IN %s) OR (status IN %s))) AS ep_total FROM tv_episodes tv_eps LIMIT 1' % (status_quality, status_download)
 
-            sql_result = myDB.select(sql_statement)
+                sql_result = myDB.select(sql_statement)
 
-            shows_total = len(sickbeard.showList)
-            shows_active = len([show for show in sickbeard.showList if show.paused == 0 and show.status == "Continuing"])
+                shows_total = len(sickbeard.showList)
+                shows_active = len([show for show in sickbeard.showList if show.paused == 0 and show.status == "Continuing"])
 
-            if sql_result:
-                ep_snatched = sql_result[0]['ep_snatched']
-                ep_downloaded = sql_result[0]['ep_downloaded']
-                ep_total = sql_result[0]['ep_total']
-            else:
-                ep_snatched = 0
-                ep_downloaded = 0
-                ep_total = 0
+                if sql_result:
+                    ep_snatched = sql_result[0]['ep_snatched']
+                    ep_downloaded = sql_result[0]['ep_downloaded']
+                    ep_total = sql_result[0]['ep_total']
+                else:
+                    ep_snatched = 0
+                    ep_downloaded = 0
+                    ep_total = 0
 
-            ep_percentage = '' if ep_total == 0 else '(<span class="footerhighlight">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
+                ep_percentage = '' if ep_total == 0 else '(<span class="footerhighlight">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
 
-            try:
-                localRoot = sbRoot
-            except NotFound:
-                localRoot = ''
+                try:
+                    localRoot = sbRoot
+                except NotFound:
+                    localRoot = ''
 
-            try:
-                localheader = header
-            except NotFound:
-                localheader = ''
-        %>
-
+                try:
+                    localheader = header
+                except NotFound:
+                    localheader = ''
+            %>
                 <span class="footerhighlight">${shows_total}</span> Shows (<span class="footerhighlight">${shows_active}</span> Active)
                 | <span class="footerhighlight">${ep_downloaded}</span>
 
@@ -265,49 +264,42 @@
                 | Daily Search: <span class="footerhighlight">${str(sickbeard.dailySearchScheduler.timeLeft()).split('.')[0]}</span>
                 | Backlog Search: <span class="footerhighlight">${str(sickbeard.backlogSearchScheduler.timeLeft()).split('.')[0]}</span>
             </div>
-                <!--
-                <ul style="display: table; margin: 0 auto; font-size: 12px; list-style-type: none; padding: 0; padding-top: 10px;">
-                    <li><a href="${sbRoot}/manage/manageSearches/forceVersionCheck"><img src="${sbRoot}/images/menu/update16.png" alt="" width="16" height="16" style="vertical-align:middle;" />Force Version Check</a></li>
-                    <li><a href="${sbRoot}/home/restart/?pid=${sbPID}" class="confirm"><img src="${sbRoot}/images/menu/restart16.png" alt="" width="16" height="16" style="vertical-align:middle;" /><i class="menu-icon-restart"></i> Restart</a></li>
-                    <li><a href="${sbRoot}/home/shutdown/?pid=${sbPID}" class="confirm"><img src="${sbRoot}/images/menu/shutdown16.png" alt="" width="16" height="16" style="vertical-align:middle;" /><i class="menu-icon-shutdown"></i> Shutdown</a></li>
-                </ul>
-                -->
         </footer>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery-1.11.2.min.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/bootstrap.min.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/bootstrap-hover-dropdown.min.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery-ui-1.10.4.custom.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery-1.11.2.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/bootstrap.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/bootstrap-hover-dropdown.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery-ui-1.10.4.custom.min.js?${sbPID}"></script>
     % if sbLogin:
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.cookie.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.cookiejar.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.json-2.2.min.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.selectboxes.min.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.tablesorter-2.17.7.min.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.tablesorter.widgets-2.17.7.min.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.tablesorter.widget-columnSelector-2.17.7.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.qtip-2.2.1.min.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/pnotify.custom.min.js"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.form-3.35.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.ui.touch-punch-0.2.2.min.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/isotope.pkgd.min.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.confirm.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/script.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.cookie.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.cookiejar.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.json-2.2.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.selectboxes.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.tablesorter-2.17.7.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.tablesorter.widgets-2.17.7.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.tablesorter.widget-columnSelector-2.17.7.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.qtip-2.2.1.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/pnotify.custom.min.js"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.form-3.35.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.ui.touch-punch-0.2.2.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/isotope.pkgd.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.confirm.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/script.js?${sbPID}"></script>
 
         % if sickbeard.FUZZY_DATING:
-        <script type="text/javascript" async src="${sbRoot}/js/moment/moment.min.js?${sbPID}"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/fuzzyMoment.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/moment/moment.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/fuzzyMoment.js?${sbPID}"></script>
         % endif
-        <script type="text/javascript" charset="utf-8">
+        <script type="text/javascript">
             sbRoot = '${sbRoot}'; // needed for browser.js & ajaxNotifications.js
             //HTML for scrolltopcontrol, which is auto wrapped in DIV w/ ID="topcontrol"
             top_image_html = '<img src="${sbRoot}/images/top.gif" width="31" height="11" alt="Jump to top" />';
             themeSpinner = '${('', '-dark')[sickbeard.THEME_NAME == 'dark']}';
-            anonURL = '${sickbeard.ANON_REDIRECT}'
+            anonURL = '${sickbeard.ANON_REDIRECT}';
         </script>
-        <script type="text/javascript" async src="${sbRoot}/js/lib/jquery.scrolltopcontrol-1.1.js"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/browser.js"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/ajaxNotifications.js"></script>
-        <script type="text/javascript" async src="${sbRoot}/js/confirmations.js?${sbPID}"></script>
+        <script type="text/javascript" src="${sbRoot}/js/lib/jquery.scrolltopcontrol-1.1.js"></script>
+        <script type="text/javascript" src="${sbRoot}/js/browser.js"></script>
+        <script type="text/javascript" src="${sbRoot}/js/ajaxNotifications.js"></script>
+        <script type="text/javascript" src="${sbRoot}/js/confirmations.js?${sbPID}"></script>
     % endif
         <script type="text/javascript">
             $(document).ready(function() {
