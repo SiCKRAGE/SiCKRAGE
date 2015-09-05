@@ -43,22 +43,22 @@ import cookielib
 class CpasbienProvider(generic.TorrentProvider):
 
     def __init__(self):
-        
+
         generic.TorrentProvider.__init__(self, "Cpasbien")
 
         self.supportsBacklog = True
         self.ratio = None
-        
+
         self.url = "http://www.cpasbien.pw"
-        
-        
+
+
     def isEnabled(self):
-        
+
         return self.enabled
-    
+
     def imageName(self):
         return 'cpasbien.png'
-    
+
     def getQuality(self, item, anime=False):
         quality = Quality.sceneQuality(item[0], anime)
         return quality
@@ -110,16 +110,18 @@ class CpasbienProvider(generic.TorrentProvider):
                 search_string['Episode'].append(re.sub('\s+', '.', ep_string))
 
         return [search_string]
-        
+
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
-        
+
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
-        
-        for mode in search_params.keys():
 
+        for mode in search_params.keys():
             for search_string in search_params[mode]:
-        
+                if not isinstance(search_string, unicode):
+                    logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+                    continue
+
                 searchURL = self.url + '/recherche/'+search_string.replace('.','-')+'.html'
                 data = self.getURL(searchURL)
 
@@ -128,7 +130,7 @@ class CpasbienProvider(generic.TorrentProvider):
 
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        
+
                         lin=0
                         erlin=0
                         resultdiv=[]
@@ -144,11 +146,11 @@ class CpasbienProvider(generic.TorrentProvider):
                                     erlin=1
                             except:
                                 erlin=1
-                        
+
                         for row in resultdiv:
                             try:
                                 link = row.find("a", title=True)
-                                torrent_name = str(link.text).lower().strip()  
+                                torrent_name = str(link.text).lower().strip()
                                 pageURL = link['href']
 
                                 #downloadTorrentLink = torrentSoup.find("a", title.startswith('Cliquer'))
@@ -157,11 +159,11 @@ class CpasbienProvider(generic.TorrentProvider):
                                 downloadTorrentLink = ('http://www.cpasbien.pw/telechargement/%s' % tmp)
 
                                 if downloadTorrentLink:
-                
+
                                     torrent_download_url = downloadTorrentLink
                             except (AttributeError, TypeError):
                                     continue
-                            
+
                             if not torrent_name or not torrent_download_url:
                                 continue
 
@@ -173,7 +175,7 @@ class CpasbienProvider(generic.TorrentProvider):
                     logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),logger.ERROR)
             results += items[mode]
         return results
-    
+
     def _get_title_and_url(self, item):
 
         title, url = item
@@ -186,7 +188,7 @@ class CpasbienProvider(generic.TorrentProvider):
             url = str(url).replace('&amp;', '&')
 
         return title, url
-    
+
     def findPropers(self, search_date=datetime.datetime.today()):
 
         results = []
@@ -214,7 +216,7 @@ class CpasbienProvider(generic.TorrentProvider):
                     results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
 
         return results
-    
+
     def seedRatio(self):
         return self.ratio
 

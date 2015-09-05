@@ -1,5 +1,5 @@
 # -*- coding: latin-1 -*-
-# Authors: Raver2046 
+# Authors: Raver2046
 #          adaur
 # based on tpi.py
 # URL: http://code.google.com/p/sickbeard/
@@ -41,32 +41,32 @@ from sickbeard import show_name_helpers
 from sickbeard import db
 from sickbeard import helpers
 from sickbeard import classes
-from unidecode import unidecode
+
 from sickbeard.helpers import sanitizeSceneName
 from sickbeard.exceptions import ex
 
 class LibertaliaProvider(generic.TorrentProvider):
 
     def __init__(self):
-        
+
         generic.TorrentProvider.__init__(self, "Libertalia")
 
         self.supportsBacklog = True
-        
+
         self.cj = cookielib.CookieJar()
-        
+
         self.url = "https://libertalia.me"
         self.urlsearch = "https://libertalia.me/torrents.php?name=%s%s"
-        
+
         self.categories = "&cat%5B%5D=9"
-        
+
         self.enabled = False
         self.username = None
         self.password = None
-        self.ratio = None        
+        self.ratio = None
         self.minseed = None
         self.minleech = None
-        
+
     def isEnabled(self):
         return self.enabled
 
@@ -120,18 +120,18 @@ class LibertaliaProvider(generic.TorrentProvider):
                 search_string['Episode'].append(re.sub('\s+', '.', ep_string))
 
         return [search_string]
-    
+
     def getQuality(self, item, anime=False):
         quality = Quality.sceneQuality(item[0], anime)
         return quality
-    
+
     def _doLogin(self):
- 
+
         if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
             return True
-            
+
         header = {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.8 (KHTML, like Gecko) Chrome/17.0.940.0 Safari/535.8'}
-        
+
         login_params = {'username': self.username,
                             'password': self.password
         }
@@ -148,64 +148,63 @@ class LibertaliaProvider(generic.TorrentProvider):
 
         if re.search('upload.php', response.text):
             logger.log(u'Login to ' + self.name + ' was successful.', logger.DEBUG)
-            return True                
+            return True
         else:
-            logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.DEBUG)                
+            logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.DEBUG)
             return False
 
         return True
-            
+
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
-    
+
         logger.log(u"_doSearch started with ..." + str(search_params), logger.DEBUG)
-    
+
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
-        
+
         # check for auth
         if not self._doLogin():
             return results
-            
+
         for mode in search_params.keys():
-
             for search_string in search_params[mode]:
+                if not isinstance(search_string, unicode):
+                    logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+                    continue
 
-                if isinstance(search_string, unicode):
-                    search_string = unidecode(search_string)
-        
                 searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
-         
+
                 logger.log(u"Search string: " + searchURL, logger.DEBUG)
-                
+
                 data = self.getURL(searchURL)
                 if not data:
                     continue
-                
+
                 with BS4Parser(data, features=["html5lib", "permissive"]) as html:
                     resultsTable = html.find("table", { "class" : "torrent_table"  })
                     if resultsTable:
-                        logger.log(u"Libertalia found result table ! " , logger.DEBUG)  
+                        logger.log(u"Libertalia found result table ! " , logger.DEBUG)
                         rows = resultsTable.findAll("tr" ,  {"class" : "torrent_row  new  "}  )  # torrent_row new
-                        
+
                         for row in rows:
-                                       
-                            #bypass first row because title only  
-                            columns = row.find('td', {"class" : "torrent_name"} )                            
-                            logger.log(u"Libertalia found rows ! " , logger.DEBUG) 
+
+                            #bypass first row because title only
+                            columns = row.find('td', {"class" : "torrent_name"} )
+                            logger.log(u"Libertalia found rows ! " , logger.DEBUG)
                             isvfclass = row.find('td', {"class" : "sprite-vf"} )
-                            isvostfrclass = row.find('td', {"class" : "sprite-vostfr"} ) 
-                            link = columns.find("a",  href=re.compile("torrents"))    
-                            if link:               
+                            isvostfrclass = row.find('td', {"class" : "sprite-vostfr"} )
+                            link = columns.find("a",  href=re.compile("torrents"))
+                            if link:
                                 title = link.text
                                 recherched=searchURL.replace(".","(.*)").replace(" ","(.*)").replace("'","(.*)")
-                                logger.log(u"Libertalia title : " + title, logger.DEBUG)                                 
-                                downloadURL =  row.find("a",href=re.compile("torrent_pass"))['href']   
-                                logger.log(u"Libertalia download URL : " + downloadURL, logger.DEBUG)                                   
+                                logger.log(u"Libertalia title : " + title, logger.DEBUG)
+                                downloadURL =  row.find("a",href=re.compile("torrent_pass"))['href']
+                                logger.log(u"Libertalia download URL : " + downloadURL, logger.DEBUG)
                                 item = title, downloadURL
                                 items[mode].append(item)
             results += items[mode]
-         
+
         return results
 
     def seedRatio(self):
@@ -237,7 +236,7 @@ class LibertaliaProvider(generic.TorrentProvider):
                     title, url = self._get_title_and_url(item)
                     results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
 
-        return results  
+        return results
 
     def _get_title_and_url(self, item):
 
@@ -250,6 +249,6 @@ class LibertaliaProvider(generic.TorrentProvider):
         if url:
             url = str(url).replace('&amp;', '&')
 
-        return (title, url)        
+        return (title, url)
 
 provider = LibertaliaProvider()

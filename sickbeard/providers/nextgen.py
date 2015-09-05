@@ -194,8 +194,11 @@ class NextGenProvider(generic.TorrentProvider):
             return results
 
         for mode in search_params.keys():
-
             for search_string in search_params[mode]:
+
+                if not isinstance(search_string, unicode):
+                    logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+                    continue
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
                 logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)

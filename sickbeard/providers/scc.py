@@ -38,7 +38,7 @@ from sickbeard import clients
 import requests
 from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
-from unidecode import unidecode
+
 from sickbeard.helpers import sanitizeSceneName
 
 
@@ -162,8 +162,9 @@ class SCCProvider(generic.TorrentProvider):
 
         for search_string in [search_params]:
 
-            if isinstance(search_string, unicode):
-                search_string = unidecode(search_string)
+            if not isinstance(search_string, unicode):
+                logger.log(u'A non unicode search_string was found in %s. String: %s', (self.name, search_string), logger.ERROR)
+                continue
 
             searchURLS = []
             if search_mode == 'sponly':

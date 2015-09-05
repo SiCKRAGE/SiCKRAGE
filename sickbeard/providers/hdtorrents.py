@@ -35,7 +35,6 @@ from sickbeard import clients
 import requests
 from requests import exceptions
 from bs4 import BeautifulSoup as soup
-from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
 from requests.auth import AuthBase
 from datetime import datetime
@@ -154,9 +153,9 @@ class HDTorrentsProvider(generic.TorrentProvider):
             return results
 
         for search_string in search_params if search_params else '':
-            if isinstance(search_string, unicode):
-                search_string = unidecode(search_string)
-
+            if not isinstance(search_string, unicode):
+                logger.log(u'A non unicode search_string was found in %s. String: %s', (self.name, search_string), logger.ERROR)
+                continue
 
             searchURL = self.urls['search'] % (urllib.quote_plus(search_string.replace('.', ' ')), self.categories)
             logger.log(u"Search string: " + searchURL, logger.DEBUG)

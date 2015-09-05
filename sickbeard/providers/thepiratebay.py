@@ -41,7 +41,7 @@ from sickbeard.exceptions import ex
 from sickbeard import encodingKludge as ek
 import requests
 from requests import exceptions
-from unidecode import unidecode
+
 
 
 class ThePirateBayProvider(generic.TorrentProvider):
@@ -133,8 +133,9 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         for mode in search_params.keys():
             for search_string in search_params[mode]:
-                if isinstance(search_string, unicode):
-                    search_string = unidecode(search_string)
+                if not isinstance(search_string, unicode):
+                    logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+                    continue
 
                 if mode != 'RSS':
                     searchURL = self.searchurl % (urllib.quote(search_string))

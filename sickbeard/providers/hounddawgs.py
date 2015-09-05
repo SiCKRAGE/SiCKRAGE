@@ -36,7 +36,7 @@ from sickbeard import clients
 import requests
 from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
-from unidecode import unidecode
+
 from sickbeard.helpers import sanitizeSceneName
 
 
@@ -56,7 +56,7 @@ class HoundDawgsProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = HoundDawgsCache(self)
-		
+
         self.urls = {'base_url': 'https://hounddawgs.org/',
 		        'search': 'https://hounddawgs.org/torrents.php?type=&userid=&searchstr=%s&searchimdb=&searchtags=&order_by=s3&order_way=desc&%s',
                 'login': 'https://hounddawgs.org/login.php',
@@ -160,11 +160,10 @@ class HoundDawgsProvider(generic.TorrentProvider):
             return results
 
         for mode in search_params.keys():
-		
             for search_string in search_params[mode]:
-
-                if isinstance(search_string, unicode):
-                    search_string = unidecode(search_string)
+                if not isinstance(search_string, unicode):
+                    logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+                    continue
 
                 #if mode == 'RSS':
                     #searchURL = self.urls['index'] % self.categories
@@ -183,22 +182,22 @@ class HoundDawgsProvider(generic.TorrentProvider):
                 try:
                     with BS4Parser(trimmedData, features=["html5lib", "permissive"]) as html:
                         result_table = html.find('table', {'id': 'torrent_table'})
-        
+
                         if not result_table:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
                                        logger.DEBUG)
                             continue
-                        
+
                         result_tbody = result_table.find('tbody')
                         entries = result_tbody.contents
-                        del entries[1::2]   
+                        del entries[1::2]
 
                         for result in entries[1:]:
-                            
+
                             torrent = result.find_all('td')
                             if len(torrent) <= 1:
                                 break
-                            
+
                             allAs = (torrent[1]).find_all('a')
 
                             try:
@@ -215,10 +214,10 @@ class HoundDawgsProvider(generic.TorrentProvider):
                                 title = title.replace("subs.", "")
                                 title = title.replace("SUBS.", "")
                                 title = title.replace("Subs.", "")
-                                
+
                                 download_url = self.urls['base_url']+allAs[0].attrs['href']
                                 id = link.replace(self.urls['base_url']+'torrents.php?id=','')
-                                
+
                             except (AttributeError, TypeError):
                                 continue
 

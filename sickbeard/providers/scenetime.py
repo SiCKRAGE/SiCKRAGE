@@ -35,7 +35,7 @@ from sickbeard import clients
 import requests
 from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
-from unidecode import unidecode
+
 from sickbeard.helpers import sanitizeSceneName
 
 
@@ -156,9 +156,9 @@ class SceneTimeProvider(generic.TorrentProvider):
 
         for mode in search_params.keys():
             for search_string in search_params[mode]:
-
-                if isinstance(search_string, unicode):
-                    search_string = unidecode(search_string)
+                if not isinstance(search_string, unicode):
+                    logger.log(u'A non unicode search_string was found in %s. Mode: %s, String: %s', (self.name, mode, search_string), logger.ERROR)
+                    continue
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
 
@@ -178,7 +178,7 @@ class SceneTimeProvider(generic.TorrentProvider):
                             logger.log(u"The Data returned from %s does not contain any torrent links" % self.name,
                                        logger.DEBUG)
                             continue
-                       
+
                         # Scenetime apparently uses different number of cells in #torrenttable based
                         # on who you are. This works around that by extracting labels from the first
                         # <tr> and using their index to find the correct download/seeders/leechers td.
@@ -195,10 +195,10 @@ class SceneTimeProvider(generic.TorrentProvider):
                             try:
                                 title = link.contents[0].get_text()
 
-                                filename = "%s.torrent" % title.replace(" ", ".") 
-                                
+                                filename = "%s.torrent" % title.replace(" ", ".")
+
                                 download_url = self.urls['download'] % (torrent_id, filename)
-                              
+
                                 id = int(torrent_id)
                                 seeders = int(cells[labels.index('Seeders')].get_text())
                                 leechers = int(cells[labels.index('Leechers')].get_text())

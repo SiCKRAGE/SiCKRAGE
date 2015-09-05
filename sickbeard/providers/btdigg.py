@@ -132,6 +132,10 @@ class BTDIGGProvider(generic.TorrentProvider):
 
         logger.log("Performing Search: {0}".format(search_params))
 
+        if not isinstance(search_string, unicode):
+            logger.log(u'A non unicode search_string was found in %s. String: %s', (self.name, search_params), logger.WARNING)
+            return []
+
         # TODO: Make order configurable. 0: weight, 1: req, 2: added, 3: size, 4: files, 5
         searchUrl = self.url + "api/private-341ada3245790954/s02?q=" + search_params + "&p=0&order=1"
 
