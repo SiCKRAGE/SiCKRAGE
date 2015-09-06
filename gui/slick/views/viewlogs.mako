@@ -1,12 +1,12 @@
-<%include file="/inc_top.mako"/>
+<%inherit file="/layouts/main.mako"/>
 <%!
     import sickbeard
     from sickbeard import classes
     from sickbeard.logger import reverseNames
 %>
-<script type="text/javascript" charset="utf-8">
+<%block name="scripts">
+<script type="text/javascript">
 $(document).ready(
-
 function(){
     $('#minLevel,#logFilter,#logSearch').change(function(){
         if ( $('#logSearch').val().length > 0 ) {
@@ -52,8 +52,10 @@ function(){
         }
     });
 });
+window.setInterval( "location.reload(true)", 600000); // Refresh every 10 minutes
 </script>
-
+</%block>
+<%block name="content">
 % if not header is UNDEFINED:
     <h1 class="header">${header}</h1>
 % else:
@@ -85,8 +87,4 @@ ${logLines}
 </pre>
 </div>
 <br />
-<script type="text/javascript" charset="utf-8">
-window.setInterval( "location.reload(true)", 600000); // Refresh every 10 minutes
-</script>
-
-<%include file="/inc_bottom.mako"/>
+</%block>
