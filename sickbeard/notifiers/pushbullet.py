@@ -60,9 +60,9 @@ class PushbulletNotifier:
         if not sickbeard.USE_PUSHBULLET and not force:
             return False
 
-        if pushbullet_api == None:
+        if pushbullet_api is None:
             pushbullet_api = sickbeard.PUSHBULLET_API
-        if pushbullet_device == None:
+        if pushbullet_device is None:
             pushbullet_device = sickbeard.PUSHBULLET_DEVICE
 
         if method == 'POST':
@@ -78,7 +78,7 @@ class PushbulletNotifier:
 
         http_handler = HTTPSConnection("api.pushbullet.com")
 
-        if notificationType == None:
+        if notificationType is None:
             testMessage = True
             try:
                 logger.log(u"Testing Pushbullet authentication and retrieving the device list.", logger.DEBUG)

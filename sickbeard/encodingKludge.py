@@ -60,7 +60,7 @@ def fixListEncodings(x):
     if not isinstance(x, (list, tuple)):
         return x
     else:
-        return filter(lambda x: x != None, map(_toUnicode, x))
+        return filter(lambda x: x is not None, map(_toUnicode, x))
 
 
 def ek(func, *args, **kwargs):

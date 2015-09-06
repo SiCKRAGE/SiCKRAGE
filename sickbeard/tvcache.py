@@ -302,7 +302,7 @@ class TVCache():
         myDB = self._getDB()
         sql = "SELECT * FROM [" + self.providerID + "] WHERE name LIKE '%.PROPER.%' OR name LIKE '%.REPACK.%'"
 
-        if date != None:
+        if date is not None:
             sql += " AND time >= " + str(int(time.mktime(date.timetuple())))
 
         return filter(lambda x: x['indexerid'] != 0, myDB.select(sql))
