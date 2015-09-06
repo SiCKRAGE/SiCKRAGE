@@ -1,3 +1,4 @@
+<%inherit file="/layouts/main.mako"/>
 <%!
     import sickbeard
     import os.path
@@ -12,18 +13,18 @@
 
     from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
     from sickbeard.common import Quality, statusStrings, Overview
-%>
-<%
+
     layout = sickbeard.HISTORY_LAYOUT
     history_limit = sickbeard.HISTORY_LIMIT
-%>
-<%namespace file="/inc_defs.mako" import="renderQualityPill"/>
-<%include file="/inc_top.mako"/>
 
+    fuzzydate = 'airdate'
+%>
+<%block name="css">
 <style type="text/css">
 .sort_data {display:none;}
 </style>
-
+</%block>
+<%block name="scripts">
 <script type="text/javascript">
 $.tablesorter.addParser({
     id: 'cDate',
@@ -68,7 +69,6 @@ $(document).ready(function(){
         window.location.href = url
     });
 
-    <% fuzzydate = 'airdate' %>
     % if sickbeard.FUZZY_DATING:
     fuzzyMoment({
         containerClass : '.${fuzzydate}',
@@ -82,6 +82,9 @@ $(document).ready(function(){
 
 });
 </script>
+</%block>
+<%block name="content">
+<%namespace file="/inc_defs.mako" import="renderQualityPill"/>
 % if not header is UNDEFINED:
   <h1 class="header">${header}</h1>
 % else:
@@ -236,5 +239,4 @@ $(document).ready(function(){
     </table>
 
 % endif
-
-<%include file="/inc_bottom.mako"/>
+</%block>
