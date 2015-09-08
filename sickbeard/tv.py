@@ -1426,6 +1426,7 @@ class TVEpisode(object):
     def refreshSubtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
         self.subtitles = subtitles.subtitlesLanguages(self.location)
+        logger.log(u'sub location path   ' + self.location, logger.ERROR)
 
     def downloadSubtitles(self, force=False):
         if not ek.ek(os.path.isfile, self.location):
@@ -1453,9 +1454,10 @@ class TVEpisode(object):
 
             providers = sickbeard.subtitles.getEnabledServiceList()
             vname = self.location
+            logger.log(u'vname   ' + vname, logger.ERROR)
             video = None
             try:
-                video = subliminal.scan_video(vname, subtitles=not force, embedded_subtitles=not sickbeard.EMBEDDED_SUBTITLES_ALL or not force)
+                video = subliminal.scan_video(vname, subtitles=False, embedded_subtitles=not sickbeard.EMBEDDED_SUBTITLES_ALL or not force)
             except Exception:
                 logger.log(u'%s: Exception caught in subliminal.scan_video for S%02dE%02d' %
                     (self.show.indexerid, self.season, self.episode), logger.DEBUG)
@@ -1463,9 +1465,11 @@ class TVEpisode(object):
                 pass
 
             if not video:
+                logger.log(u'ooooooops   ' + video, logger.ERROR)
                 return
 
             # TODO: Add gui option for hearing_impaired parameter ?
+            logger.log(u'found vids   ' + video.name, logger.ERROR)
             foundSubs = subliminal.download_best_subtitles([video], languages=languages, providers=providers, single=not sickbeard.SUBTITLES_MULTI, hearing_impaired=False)
             if not foundSubs:
                 logger.log(u'%s: No subtitles found for S%02dE%02d on any provider' % (self.show.indexerid, self.season, self.episode), logger.DEBUG)
@@ -1487,11 +1491,11 @@ class TVEpisode(object):
 
             for video, subs in foundSubs.iteritems():
                 for sub in subs:
-                    subpath = subliminal.subtitle.get_subtitle_path(video.name, sub.language if sickbeard.SUBTITLES_MULTI else None)
-                    if sickbeard.SUBTITLES_DIR and ek.ek(os.path.exists, sickbeard.SUBTITLES_DIR):
-                        subpath = ek.ek(os.path.join, sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, subpath))
-                    elif sickbeard.SUBTITLES_DIR:
-                        subpath = ek.ek(os.path.join, ek.ek(os.path.dirname, self.location), sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, subpath))
+                    # video_path = subs_new_path + "/" + video.name.rsplit("/", 1)[-1]
+                    # subpath = subliminal.subtitle.get_subtitle_path(video_path, sub.language if sickbeard.SUBTITLES_MULTI else None)
+                    video_path = subs_new_path + "/" + video.name.rsplit("/", 1)[-1]
+                    subpath = subliminal.subtitle.get_subtitle_path(video_path, sub.language if sickbeard.SUBTITLES_MULTI else None)
+                    logger.log(u'video path bideo  ' + subpath, logger.ERROR)
                     helpers.chmodAsParent(subpath)
                     helpers.fixSetGroupID(subpath)
 
