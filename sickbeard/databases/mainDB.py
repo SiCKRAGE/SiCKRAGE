@@ -51,44 +51,39 @@ class MainSanityCheck(db.DBSanityCheck):
         from sickbeard.indexers.indexer_config import INDEXER_TVDB
 
         sqlResults = self.connection.select(
-            "SELECT indexer_id, show_name FROM tv_shows WHERE indexer = %i" %
-            INDEXER_TVRAGE)
+            "SELECT indexer_id, show_name FROM tv_shows WHERE indexer = %i" % INDEXER_TVRAGE)
 
         if sqlResults:
-            logger.log(u'Found %i shows with TVRage ID\', FIXING!' % + \
-            len(sqlResults), logger.WARNING)
+            logger.log(u'Found %i shows with TVRage ID\', FIXING!' % len(sqlResults), logger.WARNING)
 
         for tvrage_show in sqlResults:
             mapping = self.connection.select(
-                "SELECT indexer_id FROM indexer_mapping WHERE " + \
-                "mindexer_id=%i AND mindexer=%i AND indexer=%i" % + \
-                (tvrage_show['indexer_id'], INDEXER_TVRAGE, INDEXER_TVDB)
+                "SELECT indexer_id FROM indexer_mapping WHERE mindexer_id=%i AND mindexer=%i AND indexer=%i" %
+                    (tvrage_show['indexer_id'], INDEXER_TVRAGE, INDEXER_TVDB)
             )
 
             if len(mapping) != 1:
-                logger.log(u'Error mapping show from tvrage to tvdb for %s,' + \
-                'found %i results. This show will no longer update!' % + \
-                (tvrage_show['show_name'], len(mapping)), logger.WARNING)
+                logger.log(
+                    u'Error mapping show from tvrage to tvdb for %s, found %i results. This show will no longer update!' %
+                        (tvrage_show['show_name'], len(mapping)), logger.WARNING
+                    )
 
                 continue
 
-            logger.log(u'Mapping %s to tvdb id %i' % + \
-            tvrage_show['show_name'], mapping[0]['indexer_id'])
+            logger.log('Mapping %s to tvdb id %i' % tvrage_show['show_name'], mapping[0]['indexer_id'])
 
             self.connection.action(
-                "UPDATE tv_shows SET indexer=%i, indexer_id=%i WHERE " + \
-                "indexer_id=%i" % + \
-                (INDEXER_TVDB, mapping[0]['indexer_id'], tvrage_show['indexer_id'])
+                "UPDATE tv_shows SET indexer=%i, indexer_id=%i WHERE indexer_id=%i" %
+                    (INDEXER_TVDB, mapping[0]['indexer_id'], tvrage_show['indexer_id'])
                 )
 
             logger.log(u'Relinking episodes to show')
             self.connection.action(
-                "UPDATE tv_episodes SET indexer=%i, showid=%i, indexerid=0 WHERE " + \
-                "showid=%i" % + \
-                (INDEXER_TVDB, mapping[0]['indexer_id'], tvrage_show['indexer_id'])
-            )
-            logger.log('Please perform a full update on %s' % + \
-            tvrage_show['show_name'], logger.WARNING)
+                "UPDATE tv_episodes SET indexer=%i, showid=%i, indexerid=0 WHERE showid=%i" %
+                    (INDEXER_TVDB, mapping[0]['indexer_id'], tvrage_show['indexer_id'])
+                )
+
+            logger.log('Please perform a full update on %s' % tvrage_show['show_name'], logger.WARNING)
 
 
     def fix_duplicate_shows(self, column='indexer_id'):
