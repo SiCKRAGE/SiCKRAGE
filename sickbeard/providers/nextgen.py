@@ -177,7 +177,7 @@ class NextGenProvider(generic.TorrentProvider):
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
@@ -197,7 +197,7 @@ class NextGenProvider(generic.TorrentProvider):
 
             for search_string in search_params[mode]:
 
-                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
+                searchURL = self.urls['search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
                 logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)
 
                 data = self.getURL(searchURL)
