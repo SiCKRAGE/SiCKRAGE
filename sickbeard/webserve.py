@@ -1135,7 +1135,7 @@ class Home(WebRoot):
         checkversion = CheckVersion()
         backup = checkversion._runbackup()
 
-        if backup == True:
+        if backup is True:
 
             if sickbeard.versionCheckScheduler.action.update():
                 # do a hard restart

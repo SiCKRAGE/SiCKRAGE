@@ -113,10 +113,10 @@ def processEpisode(dir_to_process, org_NZB_name=None, status=None):
     params['quiet'] = 1
 
     params['dir'] = dir_to_process
-    if org_NZB_name != None:
+    if org_NZB_name is not None:
         params['nzbName'] = org_NZB_name
 
-    if status != None:
+    if status is not None:
         params['failed'] = status
 
     if ssl:

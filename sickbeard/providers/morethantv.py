@@ -210,7 +210,7 @@ class MoreThanTVProvider(generic.TorrentProvider):
                             logger.log(u"link=" + link_str, logger.DEBUG)
 
                             #skip if torrent has been nuked due to poor quality
-                            if cells[1].find('img', alt='Nuked') != None:
+                            if cells[1].find('img', alt='Nuked') is not None:
                                 continue
                             torrent_id_long = link['href'].replace('torrents.php?action=download&id=', '')
                             torrent_id = torrent_id_long.split('&', 1)[0]

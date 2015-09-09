@@ -120,7 +120,7 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
             regexUnquote   = re.compile('\'')
             if (challenge == 'a'):
                 return '05f'
-            if (re.match(regexIsEncoded, challenge) == None):
+            if (re.match(regexIsEncoded, challenge) is None):
                 return re.sub(regexUnquote, '', challenge)
             args = re.findall(regexGetArgs, challenge)
             decoded = decodeString(args[0][0], args[0][1], args[0][2], args[0][3].split('|'), 0, {})

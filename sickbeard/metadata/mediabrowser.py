@@ -441,7 +441,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 episode = rootNode
 
                 EpisodeName = etree.SubElement(episode, "EpisodeName")
-                if curEpToWrite.name != None:
+                if curEpToWrite.name is not None:
                     EpisodeName.text = curEpToWrite.name
                 else:
                     EpisodeName.text = ""
@@ -471,7 +471,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
                 MetadataType.text = "Episode"
 
                 Overview = etree.SubElement(episode, "Overview")
-                if curEpToWrite.description != None:
+                if curEpToWrite.description is not None:
                     Overview.text = curEpToWrite.description
                 else:
                     Overview.text = ""
