@@ -29,8 +29,6 @@ from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
 from sickbeard.exceptions import ex, AuthException
-from sickbeard import clients
-import requests
 from requests.exceptions import RequestException
 from sickbeard.bs4_parser import BS4Parser
 from unidecode import unidecode
@@ -105,7 +103,7 @@ class TNTVillageProvider(generic.TorrentProvider):
                               'Anime' : 7,
                               'Programmi e Film TV' : 1,
                               'Documentari' : 14,
-                              'All' : 0, 
+                              'All' : 0,
                              }
 
         self.urls = {'base_url' : 'http://forum.tntvillage.scambioetico.org',
@@ -152,15 +150,13 @@ class TNTVillageProvider(generic.TorrentProvider):
                         'submit': 'Connettiti al Forum',
         }
 
-        try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-        except RequestException as e:
-            logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
+        response = self.getURL(self.urls['login'],  post_data=login_params, timeout=30)
+        if not response:
+            logger.log(u'Unable to connect to ' + self.name + ' provider.', logger.ERROR)
             return False
 
-        if re.search('Sono stati riscontrati i seguenti errori', response.text) \
-        or re.search('<title>Connettiti</title>', response.text) \
-        or response.status_code == 401:
+        if re.search('Sono stati riscontrati i seguenti errori', response) \
+        or re.search('<title>Connettiti</title>', response):
             logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
             return False
 
@@ -204,7 +200,7 @@ class TNTVillageProvider(generic.TorrentProvider):
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
@@ -244,7 +240,7 @@ class TNTVillageProvider(generic.TorrentProvider):
         file_quality=''
 
         img_all = (torrent_rows.find_all('td'))[1].find_all('img')
-        
+
         if len(img_all) > 0:
             for img_type in img_all:
                 try:
@@ -312,7 +308,7 @@ class TNTVillageProvider(generic.TorrentProvider):
         if not subFound and re.search("ita", name, re.I):
             logger.log(u"Found Italian release", logger.DEBUG)
             italian = True
-        
+
         return italian
 
     def _is_season_pack(self, name):
@@ -363,7 +359,7 @@ class TNTVillageProvider(generic.TorrentProvider):
                 for x in range(0,y):
                     z=x*20
                     if last_page:
-                        break	
+                        break
 
                     if mode != 'RSS':
                         searchURL = (self.urls['search_page'] + '&filter={2}').format(z,self.categories,search_string)
@@ -421,11 +417,22 @@ class TNTVillageProvider(generic.TorrentProvider):
                                         break
 
                                 if Quality.nameQuality(title) == Quality.UNKNOWN:
-                                    title += filename_qt 
+                                    title += filename_qt
 
                                 if not self._is_italian(result) and not self.subtitle:
                                     logger.log(u"Subtitled, skipping "  + title + "(" + searchURL + ")", logger.DEBUG)
                                     continue
+
+                                search_show = re.split(r'([Ss][\d{1,2}]+)', search_string)[0]
+                                show_title = search_show
+                                rindex = re.search(r'([Ss][\d{1,2}]+)', title)
+                                if rindex:
+                                    show_title = title[:rindex.start()]
+                                    ep_params = title[rindex.start():]
+                                if show_title.lower() != search_show.lower() and search_show.lower() in show_title.lower():
+                                    new_title = search_show + ep_params
+                                    logger.log(u"WARNING - Changing found title from: " + title + " to: " + new_title, logger.DEBUG)
+                                    title = new_title
 
                                 if self._is_season_pack(title):
                                     title = re.sub(r'([Ee][\d{1,2}\-?]+)', '', title)

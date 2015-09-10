@@ -29,10 +29,9 @@ import re
 
 import sickbeard
 
-from sickbeard import logger, common
+from sickbeard import logger
 from sickbeard import db
 from sickbeard import encodingKludge as ek
-from sickbeard.exceptions import ex
 
 
 class EmailNotifier:
@@ -58,9 +57,9 @@ class EmailNotifier:
 
         if sickbeard.EMAIL_NOTIFY_ONSNATCH:
             show = self._parseEp(ep_name)
-            to = self._generate_recepients(show)
+            to = self._generate_recipients(show)
             if len(to) == 0:
-                logger.log('Skipping email notify because there are no configured recepients', logger.WARNING)
+                logger.log('Skipping email notify because there are no configured recipients', logger.WARNING)
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -97,9 +96,9 @@ class EmailNotifier:
 
         if sickbeard.EMAIL_NOTIFY_ONDOWNLOAD:
             show = self._parseEp(ep_name)
-            to = self._generate_recepients(show)
+            to = self._generate_recipients(show)
             if len(to) == 0:
-                logger.log('Skipping email notify because there are no configured recepients', logger.WARNING)
+                logger.log('Skipping email notify because there are no configured recipients', logger.WARNING)
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -136,9 +135,9 @@ class EmailNotifier:
 
         if sickbeard.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD:
             show = self._parseEp(ep_name)
-            to = self._generate_recepients(show)
+            to = self._generate_recipients(show)
             if len(to) == 0:
-                logger.log('Skipping email notify because there are no configured recepients', logger.WARNING)
+                logger.log('Skipping email notify because there are no configured recipients', logger.WARNING)
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -167,7 +166,7 @@ class EmailNotifier:
     def notify_git_update(self, new_version="??"):
         pass
 
-    def _generate_recepients(self, show):
+    def _generate_recipients(self, show):
         addrs = []
 
         # Grab the global recipients
@@ -185,7 +184,7 @@ class EmailNotifier:
                             addrs.append(addr)
 
         addrs = set(addrs)
-        logger.log('Notification recepients: %s' % addrs, logger.DEBUG)
+        logger.log('Notification recipients: %s' % addrs, logger.DEBUG)
         return addrs
 
     def _sendmail(self, host, port, smtp_from, use_tls, user, pwd, to, msg, smtpDebug=False):

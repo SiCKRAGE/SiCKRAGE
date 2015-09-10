@@ -115,9 +115,12 @@ class Quality:
     RAWHDTV = 1 << 3  # 8  -- 720p/1080i mpeg2 (trollhd releases)
     FULLHDTV = 1 << 4  # 16 -- 1080p HDTV (QCF releases)
     HDWEBDL = 1 << 5  # 32
-    FULLHDWEBDL = 1 << 6  # 64 -- 1080p web-dl                        
+    FULLHDWEBDL = 1 << 6  # 64 -- 1080p web-dl
     HDBLURAY = 1 << 7  # 128
     FULLHDBLURAY = 1 << 8  # 256
+    ANYHDTV = HDTV | FULLHDTV  # 20
+    ANYWEBDL = HDWEBDL | FULLHDWEBDL  # 96
+    ANYBLURAY = HDBLURAY | FULLHDBLURAY  # 384
 
     # put these bits at the other end of the spectrum, far enough out that they shouldn't interfere
     UNKNOWN = 1 << 15  # 32768
@@ -126,7 +129,7 @@ class Quality:
                       UNKNOWN: "Unknown",
                       SDTV: "SDTV",
                       SDDVD: "SD DVD",
-                      HDTV: "HDTV",
+                      HDTV: "720p HDTV",
                       RAWHDTV: "RawHD",
                       FULLHDTV: "1080p HDTV",
                       HDWEBDL: "720p WEB-DL",
@@ -134,12 +137,31 @@ class Quality:
                       HDBLURAY: "720p BluRay",
                       FULLHDBLURAY: "1080p BluRay"}
 
+    combinedQualityStrings = {ANYHDTV: "HDTV",
+                              ANYWEBDL: "WEB-DL",
+                              ANYBLURAY: "BluRay"}
+
+    cssClassStrings = {NONE: "N/A",
+                       UNKNOWN: "Unknown",
+                       SDTV: "SDTV",
+                       SDDVD: "SDDVD",
+                       HDTV: "HD720p",
+                       RAWHDTV: "RawHD",
+                       FULLHDTV: "HD1080p",
+                       HDWEBDL: "HD720p",
+                       FULLHDWEBDL: "HD1080p",
+                       HDBLURAY: "HD720p",
+                       FULLHDBLURAY: "HD1080p",
+                       ANYHDTV: "any-hd",
+                       ANYWEBDL: "any-hd",
+                       ANYBLURAY: "any-hd"}
+
     statusPrefixes = {DOWNLOADED: "Downloaded",
                       SNATCHED: "Snatched",
                       SNATCHED_PROPER: "Snatched (Proper)",
                       FAILED: "Failed",
-                      SNATCHED_BEST: "Snatched (Best)"}
-
+                      SNATCHED_BEST: "Snatched (Best)",
+                      ARCHIVED: "Archived"}
     @staticmethod
     def _getStatusStrings(status):
         toReturn = {}
@@ -182,24 +204,16 @@ class Quality:
         if quality != Quality.UNKNOWN:
             return quality
 
-        name = os.path.basename(name)
-
-        # if we have our exact text then assume we put it there
-        for x in sorted(Quality.qualityStrings.keys(), reverse=True):
-            if x == Quality.UNKNOWN or x == Quality.NONE:
-                continue
-
-            regex = '\W' + Quality.qualityStrings[x].replace(' ', '\W') + '\W'
-            regex_match = re.search(regex, name, re.I)
-            if regex_match:
-                return x
+        quality = Quality.assumeQuality(name)
+        if quality != Quality.UNKNOWN:
+            return quality
 
         return Quality.UNKNOWN
 
     @staticmethod
     def sceneQuality(name, anime=False):
         """
-        Return The quality from the scene episode File 
+        Return The quality from the scene episode File
         """
         if not name:
             return Quality.UNKNOWN
@@ -235,14 +249,14 @@ class Quality:
         if checkName(["(pdtv|hdtv|dsr|tvrip).(xvid|x264|h.?264)"], all) and not checkName(["(720|1080)[pi]"], all) and\
                 not checkName(["hr.ws.pdtv.x264"], any) or checkName(["videoman"], all) and not checkName(["(720|1080)[pi]"], all):
             return Quality.SDTV
-        elif checkName(["web.dl|webrip", "xvid|x264|h.?264"], all) and not checkName(["(720|1080)[pi]"], all):
+        elif checkName(["web.dl|webrip", "xvid|x26[45]|h.?26[45]"], all) and not checkName(["(720|1080)[pi]"], all):
             return Quality.SDTV
-        elif checkName(["(dvdrip|b[rd]rip|blue?-?ray)(.ws)?.(xvid|divx|x264)"], any) and not checkName(["(720|1080)[pi]"], all):
+        elif checkName(["(dvdrip|b[rd]rip|blue?-?ray)(.ws)?.(xvid|divx|x26[45])"], any) and not checkName(["(720|1080)[pi]"], all):
             return Quality.SDDVD
         elif checkName(["720p", "hdtv", "(h|x)264"], all) or checkName(["hr.ws.pdtv.x264"], any) and not checkName(
                 ["1080[pi]"], all):
             return Quality.HDTV
-        elif checkName(["720p|1080i", "hdtv", "mpeg-?2"], all) or checkName(["1080[pi].hdtv", "h.?264"], all):
+        elif checkName(["720p|1080i", "hdtv", "mpeg-?2"], all) or checkName(["1080[pi].hdtv", "h.?26[45]"], all):
             return Quality.RAWHDTV
         elif checkName(["1080p", "hdtv", "(h|x)264"], all):
             return Quality.FULLHDTV
@@ -259,12 +273,62 @@ class Quality:
 
     @staticmethod
     def assumeQuality(name):
-        if name.lower().endswith((".avi", ".mp4")):
-            return Quality.SDTV
-        elif name.lower().endswith(".ts"):
+        quality = Quality.qualityFromFileMeta(name)
+        if quality != Quality.UNKNOWN:
+            return quality
+
+        if name.lower().endswith(".ts"):
             return Quality.RAWHDTV
         else:
             return Quality.UNKNOWN
+
+    @staticmethod
+    def qualityFromFileMeta(filename):
+        from hachoir_parser import createParser
+        from hachoir_metadata import extractMetadata
+
+        try:
+            parser = createParser(filename)
+        except Exception:
+            parser = None
+
+        if not parser:
+            return Quality.UNKNOWN
+
+        try:
+            metadata = extractMetadata(parser)
+        except Exception:
+            metadata = None
+
+        try:
+            parser.stream._input.close()
+        except:
+            pass
+
+        if not metadata:
+            return Quality.UNKNOWN
+
+        height = 0
+        if metadata.has('height'):
+            height = int(metadata.get('height') or 0)
+        else:
+            test = getattr(metadata, "iterGroups", None)
+            if callable(test):
+                for metagroup in metadata.iterGroups():
+                    if metagroup.has('height'):
+                        height = int(metagroup.get('height') or 0)
+
+        if not height:
+            return Quality.UNKNOWN
+
+        if height > 1040:
+            return Quality.FULLHDTV
+        elif height > 680 and height < 760:
+            return Quality.HDTV
+        elif height < 680:
+            return Quality.SDTV
+
+        return Quality.UNKNOWN
 
     @staticmethod
     def compositeStatus(status, quality):
@@ -298,13 +362,14 @@ class Quality:
     SNATCHED_PROPER = None
     FAILED = None
     SNATCHED_BEST = None
-
+    ARCHIVED = None
 
 Quality.DOWNLOADED = [Quality.compositeStatus(DOWNLOADED, x) for x in Quality.qualityStrings.keys()]
 Quality.SNATCHED = [Quality.compositeStatus(SNATCHED, x) for x in Quality.qualityStrings.keys()]
 Quality.SNATCHED_PROPER = [Quality.compositeStatus(SNATCHED_PROPER, x) for x in Quality.qualityStrings.keys()]
 Quality.FAILED = [Quality.compositeStatus(FAILED, x) for x in Quality.qualityStrings.keys()]
 Quality.SNATCHED_BEST = [Quality.compositeStatus(SNATCHED_BEST, x) for x in Quality.qualityStrings.keys()]
+Quality.ARCHIVED = [Quality.compositeStatus(ARCHIVED, x) for x in Quality.qualityStrings.keys()]
 
 SD = Quality.combineQualities([Quality.SDTV, Quality.SDDVD], [])
 HD = Quality.combineQualities(
@@ -316,7 +381,7 @@ ANY = Quality.combineQualities(
     [Quality.SDTV, Quality.SDDVD, Quality.HDTV, Quality.FULLHDTV, Quality.HDWEBDL, Quality.FULLHDWEBDL,
      Quality.HDBLURAY, Quality.FULLHDBLURAY, Quality.UNKNOWN], [])  # SD + HD
 
-# legacy template, cant remove due to reference in mainDB upgrade?                                                                                                                                        
+# legacy template, cant remove due to reference in mainDB upgrade?
 BEST = Quality.combineQualities([Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])
 
 qualityPresets = (SD, HD, HD720p, HD1080p, ANY)
@@ -343,7 +408,7 @@ class StatusStrings:
                               SNATCHED_BEST: "Snatched (Best)"}
 
     def __getitem__(self, name):
-        if name in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST:
+        if name in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED:
             status, quality = Quality.splitCompositeStatus(name)
             if quality == Quality.NONE:
                 return self.statusStrings[status]
@@ -384,4 +449,3 @@ countryList = {'Australia': 'AU',
                'Canada': 'CA',
                'USA': 'US'
 }
-

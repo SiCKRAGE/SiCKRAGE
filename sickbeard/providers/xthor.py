@@ -17,21 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import traceback
 import re
 import datetime
-import time
-from requests.auth import AuthBase
 import sickbeard
 import generic
 import cookielib
 import urllib
 import requests
-from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
 from sickbeard.common import Quality
 from sickbeard import logger
-from sickbeard import tvcache
 from sickbeard import show_name_helpers
 from sickbeard import db
 from sickbeard import helpers
@@ -43,13 +38,13 @@ from sickbeard.exceptions import ex
 class XthorProvider(generic.TorrentProvider):
 
     def __init__(self):
-        
+
         generic.TorrentProvider.__init__(self, "Xthor")
 
         self.supportsBacklog = True
-        
+
         self.cj = cookielib.CookieJar()
-        
+
         self.url = "https://xthor.bz"
         self.urlsearch = "https://xthor.bz/browse.php?search=%s%s"
         self.categories = "&searchin=title&incldead=0"
@@ -57,13 +52,14 @@ class XthorProvider(generic.TorrentProvider):
         self.enabled = False
         self.username = None
         self.password = None
-        
+        self.ratio = None
+
     def isEnabled(self):
         return self.enabled
 
     def imageName(self):
         return 'xthor.png'
-        
+
     def _get_season_search_strings(self, ep_obj):
 
         search_string = {'Season': []}
@@ -104,14 +100,14 @@ class XthorProvider(generic.TorrentProvider):
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = show_name_helpers.sanitizeSceneName(show_name) + '.' + \
+                ep_string = sanitizeSceneName(show_name) + '.' + \
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub('\s+', '.', ep_string))
 
         return [search_string]
-    
+
     def _get_title_and_url(self, item):
 
         title, url = item
@@ -123,66 +119,60 @@ class XthorProvider(generic.TorrentProvider):
         if url:
             url = str(url).replace('&amp;', '&')
 
-        return (title, url)  
-    
+        return (title, url)
+
     def getQuality(self, item, anime=False):
         quality = Quality.sceneQuality(item[0], anime)
         return quality
-    
+
     def _doLogin(self):
-    
+
         if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
             return True
 
-        header = {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.8 (KHTML, like Gecko) Chrome/17.0.940.0 Safari/535.8'}
-        
         login_params = {'username': self.username,
                         'password': self.password,
                         'submitme': 'X'
         }
-        
-        if not self.session:
-            self.session = requests.Session()
-            
+
         logger.log('Performing authentication to Xthor', logger.DEBUG)
-        
-        try:
-            response = self.session.post(self.url + '/takelogin.php', data=login_params, timeout=30, headers=header)
-        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
-            logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
+
+        response = self.getURL(self.url + '/takelogin.php',  post_data=login_params, timeout=30)
+        if not response:
+            logger.log(u'Unable to connect to ' + self.name + ' provider.', logger.ERROR)
             return False
 
-        if re.search('donate.php', response.text):
+        if re.search('donate.php', response):
             logger.log(u'Login to ' + self.name + ' was successful.', logger.DEBUG)
-            return True                
+            return True
         else:
-            logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.DEBUG)                
+            logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.DEBUG)
             return False
 
-        return True     
+        return True
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         logger.log(u"_doSearch started with ..." + str(search_params), logger.DEBUG)
-    
+
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
-        
+
         # check for auth
         if not self._doLogin():
-            return False
-            
+            return results
+
         for mode in search_params.keys():
 
             for search_string in search_params[mode]:
 
                 if isinstance(search_string, unicode):
                     search_string = unidecode(search_string)
-        
+
                 searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
-         
+
                 logger.log(u"Search string: " + searchURL, logger.DEBUG)
-                
+
                 data = self.getURL(searchURL)
 
                 if not data:
@@ -193,17 +183,17 @@ class XthorProvider(generic.TorrentProvider):
                     if resultsTable:
                         rows = resultsTable.findAll("tr")
                         for row in rows:
-                            link = row.find("a",href=re.compile("details.php"))                                                           
-                            if link:               
+                            link = row.find("a",href=re.compile("details.php"))
+                            if link:
                                 title = link.text
-                                logger.log(u"Xthor title : " + title, logger.DEBUG)                                                                      
-                                downloadURL =  self.url + '/' + row.find("a",href=re.compile("download.php"))['href']             
-                                logger.log(u"Xthor download URL : " + downloadURL, logger.DEBUG)                                   
+                                logger.log(u"Xthor title : " + title, logger.DEBUG)
+                                downloadURL =  self.url + '/' + row.find("a",href=re.compile("download.php"))['href']
+                                logger.log(u"Xthor download URL : " + downloadURL, logger.DEBUG)
                                 item = title, downloadURL
                                 items[mode].append(item)
             results += items[mode]
-        return results 
-        
+        return results
+
     def seedRatio(self):
         return self.ratio
 
@@ -221,7 +211,7 @@ class XthorProvider(generic.TorrentProvider):
         )
 
         if not sqlResults:
-            return []
+            return results
 
         for sqlshow in sqlResults:
             self.show = helpers.findCertainShow(sickbeard.showList, int(sqlshow["showid"]))
@@ -233,6 +223,6 @@ class XthorProvider(generic.TorrentProvider):
                     title, url = self._get_title_and_url(item)
                     results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
 
-        return results  
+        return results
 
 provider = XthorProvider()

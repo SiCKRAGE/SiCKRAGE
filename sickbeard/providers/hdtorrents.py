@@ -18,12 +18,10 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
-import traceback
-import urlparse
 import sickbeard
 import generic
 import urllib
-from sickbeard.common import Quality, cpu_presets
+from sickbeard.common import Quality
 from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard import db
@@ -31,14 +29,10 @@ from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
 from sickbeard.exceptions import ex, AuthException
-from sickbeard import clients
 import requests
-from requests import exceptions
 from bs4 import BeautifulSoup as soup
-#from sickbeard.bs4_parser import BS4Parser
 from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
-from requests.auth import AuthBase
 from datetime import datetime
 
 class HDTorrentsProvider(generic.TorrentProvider):
@@ -48,10 +42,6 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
         self.supportsBacklog = True
 
-        self.enabled = False
-        #self._uid = None
-        #self._hash = None
-        self.session = requests.Session()
         self.username = None
         self.password = None
         self.ratio = None
@@ -69,8 +59,6 @@ class HDTorrentsProvider(generic.TorrentProvider):
         self.cache = HDTorrentsCache(self)
 
         self.categories = "&category[]=59&category[]=60&category[]=30&category[]=38"
-
-        #self.cookies = None
 
     def isEnabled(self):
         return self.enabled
@@ -90,40 +78,24 @@ class HDTorrentsProvider(generic.TorrentProvider):
         if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
             return True
 
-        # requests automatically handles cookies.
-        #if self._uid and self._hash:
+        login_params = {'uid': self.username,
+                        'pwd': self.password,
+                        'submit': 'Confirm'}
 
-        #    requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
+        response = self.getURL(self.urls['login'],  post_data=login_params, timeout=30)
+        if not response:
+            logger.log(u'Unable to connect to ' + self.name + ' provider.', logger.ERROR)
+            return False
 
-        else:
-
-            login_params = {'uid': self.username,
-                            'pwd': self.password,
-                            'submit': 'Confirm',
-            }
-
-            try:
-                response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-            except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
-                logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
-                return False
-
-            if re.search('You need cookies enabled to log in.', response.text) \
-                    or response.status_code == 401:
-                logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
-                return False
-
-            #self._uid = requests.utils.dict_from_cookiejar(self.session.cookies)['uid']
-            #self._hash = requests.utils.dict_from_cookiejar(self.session.cookies)['pass']
-            #self.cookies = {'uid': self._uid,
-            #                'pass': self._hash
-            #}
+        if re.search('You need cookies enabled to log in.', response):
+            logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
+            return False
 
         return True
 
     def _get_season_search_strings(self, ep_obj):
         if not ep_obj:
-            return search_strings
+            return []
 
         search_strings = []
         for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
@@ -136,12 +108,11 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
             search_strings.append(ep_string)
 
-
         return [search_strings]
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
         if not ep_obj:
-            return search_strings
+            return []
 
         search_strings = []
         for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
@@ -156,7 +127,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
                 ep_string = sanitizeSceneName(show_name) + ' ' + \
                             "%i" % int(ep_obj.scene_absolute_number)
             else:
-                ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode}
             if add_string:
@@ -191,10 +162,12 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
             empty = html.find('No torrents here')
             if empty:
+                logger.log(u"Could not find any torrents", logger.ERROR)
                 continue
 
             tables = html.find('table', attrs={'class': 'mainblockcontenttt'})
             if not tables:
+                logger.log(u"Could not find table of torrents mainblockcontenttt", logger.ERROR)
                 continue
 
             torrents = tables.findChildren('tr')
@@ -222,7 +195,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
                     # Skip torrents released before the episode aired (fakes)
                     if re.match('..:..:..  ..:..:....', cells[6].text):
                         if (datetime.strptime(cells[6].text, '%H:%M:%S  %m/%d/%Y') -
-                            datetime.combine(ep_obj.airdate, datetime.min.time())).days < 0:
+                            datetime.combine(epObj.airdate, datetime.min.time())).days < 0:
                             continue
 
                     # Need size for failed downloads handling

@@ -20,10 +20,9 @@ import re
 import traceback
 import datetime
 import time
-import urlparse
 import sickbeard
 import generic
-from sickbeard.common import Quality, cpu_presets
+from sickbeard.common import Quality
 from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard import db
@@ -31,9 +30,7 @@ from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
 from sickbeard.exceptions import ex, AuthException
-from sickbeard import clients
 import requests
-from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
 from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
@@ -100,16 +97,12 @@ class FreshOnTVProvider(generic.TorrentProvider):
                             'login': 'submit'
             }
 
-            if not self.session:
-                self.session = requests.Session()
-
-            try:
-                response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-            except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
-                logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
+            response = self.getURL(self.urls['login'],  post_data=login_params, timeout=30)
+            if not response:
+                logger.log(u'Unable to connect to ' + self.name + ' provider.', logger.ERROR)
                 return False
 
-            if re.search('/logout.php', response.text):
+            if re.search('/logout.php', response):
                 logger.log(u'Login to ' + self.name + ' was successful.', logger.DEBUG)
 
                 try:
@@ -122,15 +115,15 @@ class FreshOnTVProvider(generic.TorrentProvider):
                         }
                         return True
                 except:
-                    logger.log(u'Unable to obtain cookie for FreshOnTV', logger.ERROR)
+                    logger.log(u'Unable to obtain cookie for FreshOnTV', logger.WARNING)
                     return False
 
             else:
                 logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.DEBUG)
-                if re.search('Username does not exist in the userbase or the account is not confirmed yet.', response.text):
+                if re.search('Username does not exist in the userbase or the account is not confirmed yet.', response):
                     logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
 
-                if re.search('DDoS protection by CloudFlare', response.text):
+                if re.search('DDoS protection by CloudFlare', response):
                     logger.log(u'Unable to login to ' + self.name + ' due to CloudFlare DDoS javascript check.', logger.ERROR)
 
                     return False
@@ -176,7 +169,7 @@ class FreshOnTVProvider(generic.TorrentProvider):
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 

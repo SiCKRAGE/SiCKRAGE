@@ -37,7 +37,7 @@ class SplitExplicitGroups(Transformer):
         :return: return the string split into explicit groups, that is, those either
         between parenthese, square brackets or curly braces, and those separated
         by a dash."""
-        for c in mtree.children:
+        for c in mtree.unidentified_leaves():
             groups = find_first_level_groups(c.value, group_delimiters[0])
             for delimiters in group_delimiters:
                 flatten = lambda l, x: l + find_first_level_groups(x, delimiters)
@@ -47,4 +47,24 @@ class SplitExplicitGroups(Transformer):
             # patterns, such as dates, etc...
             # groups = functools.reduce(lambda l, x: l + x.split('-'), groups, [])
 
-            c.split_on_components(groups)
+            c.split_on_components(groups, category='explicit')
+
+    def post_process(self, mtree, options=None):
+        """
+        Decrease confidence for properties found in explicit groups.
+
+        :param mtree:
+        :param options:
+        :return:
+        """
+        if not options.get('name_only'):
+            explicit_nodes = [node for node in mtree.nodes() if node.category == 'explicit' and node.is_explicit()]
+
+            for explicit_node in explicit_nodes:
+                self.alter_confidence(explicit_node, 0.5)
+
+    def alter_confidence(self, node, factor):
+        for guess in node.guesses:
+            for k in guess.keys():
+                confidence = guess.confidence(k)
+                guess.set_confidence(k, confidence * factor)

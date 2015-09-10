@@ -19,7 +19,6 @@
 import re
 import traceback
 import datetime
-import urlparse
 import itertools
 
 import sickbeard
@@ -33,9 +32,7 @@ from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
 from sickbeard.exceptions import ex, AuthException
-from sickbeard import clients
 import requests
-from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
 from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
@@ -92,16 +89,14 @@ class IPTorrentsProvider(generic.TorrentProvider):
                         'login': 'submit',
         }
 
-        try:
-            self.session.get(self.urls['login'], timeout=30)
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
-            logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
+        self.getURL(self.urls['login'], timeout=30)
+        response = self.getURL(self.urls['login'],  post_data=login_params, timeout=30)
+        if not response:
+            logger.log(u'Unable to connect to ' + self.name + ' provider.', logger.ERROR)
             return False
 
-        if re.search('tries left', response.text) \
-                or re.search('<title>IPT</title>', response.text) \
-                or response.status_code == 401:
+        if re.search('tries left', response) \
+                or re.search('<title>IPT</title>', response):
             logger.log(u'Invalid username or password for ' + self.name + ', Check your settings!', logger.ERROR)
             return False
 
@@ -132,7 +127,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode} + '|' + \
                             sickbeard.config.naming_ep_type[0] % {'seasonnumber': ep_obj.scene_season,
@@ -213,7 +208,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
 
             addCacheEntry = False
             if not (showObj.air_by_date or showObj.sports):
-                if search_mode == 'sponly': 
+                if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         logger.log(
                             u"This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it",
@@ -287,7 +282,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
                 logger.log(
                     u"Ignoring result " + title + " because we don't want an episode that is " +
                     Quality.qualityStrings[
-                        quality], logger.DEBUG)
+                        quality], logger.INFO)
 
                 continue
 

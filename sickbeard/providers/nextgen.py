@@ -17,26 +17,20 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 import traceback
-import urllib2
 import urllib
 import time
 import re
 import datetime
-import urlparse
 import sickbeard
 import generic
-from sickbeard.common import Quality, cpu_presets
+from sickbeard.common import Quality
 from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard import db
 from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
-from sickbeard.common import Overview
-from sickbeard.exceptions import ex
-from sickbeard import clients
 import requests
-from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
 from sickbeard.helpers import sanitizeSceneName
 
@@ -98,10 +92,9 @@ class NextGenProvider(generic.TorrentProvider):
     def _doLogin(self):
 
         now = time.time()
-
         if self.login_opener and self.last_login_check < (now - 3600):
             try:
-                output = self.login_opener.open(self.urls['test'])
+                output = self.getURL(self.urls['test'])
                 if self.loginSuccess(output):
                     self.last_login_check = now
                     return True
@@ -115,13 +108,10 @@ class NextGenProvider(generic.TorrentProvider):
 
         try:
             login_params = self.getLoginParams()
-            self.session = requests.Session()
-            self.session.headers.update(
-                {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20130519 Firefox/24.0)'})
-            data = self.session.get(self.urls['login_page'])
-            with BS4Parser(data.content.decode('iso-8859-1')) as bs:
+            data = self.getURL(self.urls['login_page'])
+            with BS4Parser(data) as bs:
                 csrfraw = bs.find('form', attrs={'id': 'login'})['action']
-                output = self.session.post(self.urls['base_url'] + csrfraw, data=login_params)
+                output = self.getURL(self.urls['base_url'] + csrfraw, post_data=login_params)
 
                 if self.loginSuccess(output):
                     self.last_login_check = now
@@ -177,11 +167,11 @@ class NextGenProvider(generic.TorrentProvider):
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
-                search_string['Episode'].append(re.sub('\s+', ' ', ep_string))
+                search_string['Episode'].append(re.sub(r'\s+', ' ', ep_string))
 
         return [search_string]
 
@@ -197,7 +187,7 @@ class NextGenProvider(generic.TorrentProvider):
 
             for search_string in search_params[mode]:
 
-                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
+                searchURL = self.urls['search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
                 logger.log(u"" + self.name + " search page URL: " + searchURL, logger.DEBUG)
 
                 data = self.getURL(searchURL)
