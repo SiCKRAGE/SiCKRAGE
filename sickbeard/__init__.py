@@ -772,7 +772,7 @@ def initialize(consoleLogging=True):
 
         CPU_PRESET = check_setting_str(CFG, 'General', 'cpu_preset', 'NORMAL')
 
-        ANON_REDIRECT = check_setting_str(CFG, 'General', 'anon_redirect', 'http://dereferer.org/?')
+        ANON_REDIRECT = check_setting_str(CFG, 'General', 'anon_redirect', 'https://www.nullrefer.com/?')
         PROXY_SETTING = check_setting_str(CFG, 'General', 'proxy_setting', '')
         PROXY_INDEXERS = bool(check_setting_int(CFG, 'General', 'proxy_indexers', 1))
 
