@@ -19,6 +19,7 @@ function(){
         $('#logSearch').prop('disabled', true);
         url = '${sbRoot}/errorlogs/viewlog/?minLevel='+$('select[name=minLevel]').val()+'&logFilter='+$('select[name=logFilter]').val()+'&logSearch='+$('#logSearch').val()
         $.get(url, function(data){
+            history.pushState('data', '', url);
             $('pre').html($(data).find('pre').html());
             $('#minLevel').removeProp('disabled');
             $('#logFilter').removeProp('disabled');
@@ -40,19 +41,25 @@ function(){
         document.body.style.cursor='default';
     });
 
-    $('#logSearch').keyup(function() {
-        if ( $('#logSearch').val().length == 0 ) {
-            $('#logFilter option[value=\\<NONE\\>]').prop('selected', true);
-            $('#minLevel option[value=20]').prop('selected', true);
-            $('#minLevel').prop('disabled', false);
-            $('#logFilter').prop('disabled', false);
-            url = '${sbRoot}/errorlogs/viewlog/?minLevel='+$('select[name=minLevel]').val()+'&logFilter='+$('select[name=logFilter]').val()+'&logSearch='+$('#logSearch').val()
-            window.location.href = url
-        } else {
-            $('#minLevel').prop('disabled', true);
-            $('#logFilter').prop('disabled', true);
-        }
-    });
+    // $('#logSearch').keyup(function() {
+    //     if ( $('#logSearch').val().length == 0 ) {
+    //         $('#logFilter option[value=\\<NONE\\>]').prop('selected', true);
+    //         $('#minLevel option[value=20]').prop('selected', true);
+    //         $('#minLevel').prop('disabled', false);
+    //         $('#logFilter').prop('disabled', false);
+    //         url = '${sbRoot}/errorlogs/viewlog/?minLevel='+$('select[name=minLevel]').val()+'&logFilter='+$('select[name=logFilter]').val()+'&logSearch='+$('#logSearch').val()
+    //         $.get(url, function(data){
+    //             history.pushState('data', '', url);
+    //             $('pre').html($(data).find('pre').html());
+    //             $('#minLevel').removeProp('disabled');
+    //             $('#logFilter').removeProp('disabled');
+    //             $('#logSearch').removeProp('disabled');
+    //         });
+    //     } else {
+    //         $('#minLevel').prop('disabled', true);
+    //         $('#logFilter').prop('disabled', true);
+    //     }
+    // });
 });
 window.setInterval( "location.reload(true)", 600000); // Refresh every 10 minutes
 </script>
