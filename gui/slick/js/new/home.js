@@ -80,8 +80,7 @@ $(document).ready(function(){
             3: function(node) { return $(node).find("span").prop("title").toLowerCase(); },
             4: function(node) { return $(node).find("span").text().toLowerCase(); },
             5: function(node) { return $(node).find("span:first").text(); },
-            6: function(node) { return $(node).data('show-size'); },
-            7: function(node) { return $(node).find("img").attr("alt"); }
+            6: function(node) { return $(node).find("img").attr("alt"); }
         },
         widgets: ['saveSort', 'zebra', 'stickyHeaders', 'filter', 'columnSelector'],
         headers: (function(){
@@ -92,7 +91,7 @@ $(document).ready(function(){
                     2: { sorter: 'loadingNames' },
                     4: { sorter: 'quality' },
                     5: { sorter: 'eps' },
-                    7: { filter : 'parsed' }
+                    6: { filter : 'parsed' }
                 }
             } else {
                 return {
@@ -179,15 +178,14 @@ $(document).ready(function(){
     });
 
     $("#showListTableAnime:has(tbody tr)").tablesorter({
-        sortList: [[7,1],[2,0]],
+        sortList: [[6,1],[2,0]],
         textExtraction: {
             0: function(node) { return $(node).find("span").text().toLowerCase(); },
             1: function(node) { return $(node).find("span").text().toLowerCase(); },
             3: function(node) { return $(node).find("span").prop("title").toLowerCase(); },
             4: function(node) { return $(node).find("span").text().toLowerCase(); },
             5: function(node) { return $(node).find("span:first").text(); },
-            6: function(node) { return $(node).data('show-size'); },
-            7: function(node) { return $(node).find("img").attr("alt"); }
+            6: function(node) { return $(node).find("img").attr("alt"); }
         },
         widgets: ['saveSort', 'zebra', 'stickyHeaders', 'filter', 'columnSelector'],
         headers: (function(){
@@ -198,7 +196,7 @@ $(document).ready(function(){
                     2: { sorter: 'loadingNames' },
                     4: { sorter: 'quality' },
                     5: { sorter: 'eps' },
-                    7: { filter : 'parsed' }
+                    6: { filter : 'parsed' }
                 }
             } else {
                 return {
