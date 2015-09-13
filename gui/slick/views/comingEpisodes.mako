@@ -8,123 +8,10 @@
     import re
 %>
 <%block name="scripts">
-<% fuzzydate = 'airdate' %>
-<% sort = sickbeard.COMING_EPS_SORT %>
+<meta data-var="sickbeard.COMING_EPS_SORT" data-content="${sickbeard.COMING_EPS_SORT}">
+<meta data-var="sickbeard.COMING_EPS_LAYOUT" data-content="${sickbeard.COMING_EPS_LAYOUT}">
 <script type="text/javascript" src="${sbRoot}/js/ajaxEpSearch.js?${sbPID}"></script>
-% if 'list' == layout:
 <script type="text/javascript" src="${sbRoot}/js/plotTooltip.js?${sbPID}"></script>
-<script type="text/javascript" charset="utf-8">
-$.tablesorter.addParser({
-    id: 'loadingNames',
-    is: function(s) {
-        return false
-    },
-    format: function(s) {
-        if (0 == s.indexOf('Loading...'))
-            return s.replace('Loading...', '000')
-% if not sickbeard.SORT_ARTICLE:
-            return (s || '').replace(/^(The|A|An)\s/i, '')
-% else:
-            return (s || '')
-% endif
-    },
-    type: 'text'
-});
-$.tablesorter.addParser({
-    id: 'quality',
-    is: function(s) {
-        return false
-    },
-    format: function(s) {
-        return s.replace('hd1080p', 5).replace('hd720p', 4).replace('hd', 3).replace('sd', 2).replace('any', 1).replace('best', 0).replace('custom', 7)
-    },
-    type: 'numeric'
-});
-$.tablesorter.addParser({
-    id: 'cDate',
-    is: function(s) {
-        return false
-    },
-    format: function(s) {
-        return s
-    },
-    type: 'numeric'
-});
-
-$(document).ready(function(){
-<% sort_codes = {'date': 0, 'show': 1, 'network': 4} %>
-% if sort not in sort_codes:
-    <% sort = 'date' %>
-% endif
-
-    sortList = [[${sort_codes[sort]}, 0]];
-
-    $('#showListTable:has(tbody tr)').tablesorter({
-        widgets: ['stickyHeaders'],
-        sortList: sortList,
-        textExtraction: {
-            0: function(node) { return $(node).find('span').text().toLowerCase() },
-            5: function(node) { return $(node).find('span').text().toLowerCase() }
-        },
-        headers: {
-            0: { sorter: 'cDate' },
-            1: { sorter: 'loadingNames' },
-            2: { sorter: false },
-            3: { sorter: false },
-            4: { sorter: 'loadingNames' },
-            5: { sorter: 'quality' },
-            6: { sorter: false },
-            7: { sorter: false },
-            8: { sorter: false }
-        }
-    });
-
-    $('#sbRoot').ajaxEpSearch();
-
-    <% fuzzydate = 'airdate' %>
-    % if sickbeard.FUZZY_DATING:
-    fuzzyMoment({
-        containerClass : '.${fuzzydate}',
-        dateHasTime : true,
-        dateFormat : '${sickbeard.DATE_PRESET}',
-        timeFormat : '${sickbeard.TIME_PRESET}',
-        trimZero : ${('false', 'true')[bool(sickbeard.TRIM_ZERO)]}
-    });
-    % endif
-
-});
-</script>
-% elif layout in ['banner', 'poster']:
-<script type="text/javascript" charset="utf-8">
-$(document).ready(function(){
-    $('#sbRoot').ajaxEpSearch({'size': 16, 'loadingImage': 'loading16' + themeSpinner + '.gif'});
-    $('.ep_summary').hide();
-    $('.ep_summaryTrigger').click(function() {
-        $(this).next('.ep_summary').slideToggle('normal', function() {
-            $(this).prev('.ep_summaryTrigger').attr('src', function(i, src) {
-                return $(this).next('.ep_summary').is(':visible') ? src.replace('plus','minus') : src.replace('minus','plus')
-            });
-        });
-    });
-
-    % if sickbeard.FUZZY_DATING:
-    fuzzyMoment({
-        dtInline : true,
-        dtGlue : ' at ',
-        containerClass : '.${fuzzydate}',
-        dateHasTime : true,
-        dateFormat : '${sickbeard.DATE_PRESET}',
-        timeFormat : '${sickbeard.TIME_PRESET}',
-        trimZero : ${('false', 'true')[bool(sickbeard.TRIM_ZERO)]}
-    });
-    % endif
-
-});
-</script>
-% endif
-<script type="text/javascript" charset="utf-8">
-window.setInterval('location.reload(true)', 600000); // Refresh every 10 minutes
-</script>
 </%block>
 <%block name="css">
 <style type="text/css">
@@ -256,7 +143,7 @@ window.setInterval('location.reload(true)', 600000); // Refresh every 10 minutes
             </td>
 
             <td align="center">
-	        ${renderQualityPill(cur_result['quality'])}
+            ${renderQualityPill(cur_result['quality'])}
             </td>
 
             <td align="center" style="vertical-align: middle;">
@@ -430,7 +317,7 @@ window.setInterval('location.reload(true)', 600000); // Refresh every 10 minutes
 
                 <div class="clearfix">
                     <span class="title">Quality:</span>
-	            ${renderQualityPill(cur_result['quality'])}
+                ${renderQualityPill(cur_result['quality'])}
                 </div>
             </td>
         </tr>

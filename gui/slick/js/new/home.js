@@ -4,10 +4,11 @@ $.tablesorter.addParser({
         return false;
     },
     format: function(s) {
-        if (s.indexOf('Loading...') == 0)
-          return s.replace('Loading...','000');
-        else
-        return ($('meta[data-var="sickbeard.SORT_ARTICLE"]').data('content') == 'False' ? (s || '') : (s || '').replace(/^(The|A|An)\s/i,''));
+        if (s.indexOf('Loading...') == 0) {
+            return s.replace('Loading...','000');
+        } else {
+            return ($('meta[data-var="sickbeard.SORT_ARTICLE"]').data('content') == 'False' ? (s || '') : (s || '').replace(/^(The|A|An)\s/i,''));
+        }
     },
     type: 'text'
 });
