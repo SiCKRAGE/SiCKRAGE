@@ -43,6 +43,9 @@
         <meta name="msapplication-TileImage" content="${sbRoot}/images/ico/favicon-144.png">
         <meta name="msapplication-config" content="${sbRoot}/css/browserconfig.xml">
 
+        <meta data-var="sickbeard.FUZZY_DATING" data-content="${sickbeard.FUZZY_DATING}">
+        <%block name="metas" />
+
         <link rel="shortcut icon" href="${sbRoot}/images/ico/favicon.ico">
         <link rel="icon" sizes="16x16 32x32 64x64" href="${sbRoot}/images/ico/favicon.ico">
         <link rel="icon" type="image/png" sizes="196x196" href="${sbRoot}/images/ico/favicon-196.png">
@@ -281,7 +284,6 @@
                 </div>
             </div>
         </footer>
-        <meta data-var="sickbeard.FUZZY_DATING" data-content="${sickbeard.FUZZY_DATING}">
         <script type="text/javascript" src="${sbRoot}/js/lib/jquery-1.11.2.min.js?${sbPID}"></script>
         <script type="text/javascript" src="${sbRoot}/js/lib/bootstrap.min.js?${sbPID}"></script>
         <script type="text/javascript" src="${sbRoot}/js/lib/bootstrap-hover-dropdown.min.js?${sbPID}"></script>

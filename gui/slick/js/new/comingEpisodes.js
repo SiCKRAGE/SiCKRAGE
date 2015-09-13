@@ -36,9 +36,9 @@ if($('meta[data-var="sickbeard.COMING_EPS_LAYOUT"]').data('content') == 'list')
 
 $(document).ready(function(){
     if($('meta[data-var="sickbeard.COMING_EPS_LAYOUT"]').data('content') == 'list')
-        var sortCodes = {'date': 0, 'show': 1, 'network': 4}
+        var sortCodes = {'date': 0, 'show': 1, 'network': 4};
         var sort = $('meta[data-var="sickbeard.COMING_EPS_SORT"]').data('content');
-        var sortList = sort_codes[sort] ? [[sort_codes[sort], 0]] : [[0, 0]];
+        var sortList = (sort in sortCodes) ? [[sortCodes[sort], 0]] : [[0, 0]];
 
         $('#showListTable:has(tbody tr)').tablesorter({
             widgets: ['stickyHeaders'],

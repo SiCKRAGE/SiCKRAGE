@@ -14,8 +14,10 @@
 
     fuzzydate = 'airdate'
 %>
-<%block name="scripts">
+<%block name="metas">
 <meta data-var="show.is_anime" data-content="${show.is_anime}">
+</%block>
+<%block name="scripts">
 <script type="text/javascript" src="${sbRoot}/js/lib/jquery.bookmarkscroll.js?${sbPID}"></script>
 <script type="text/javascript" src="${sbRoot}/js/displayShow.js?${sbPID}"></script>
 <script type="text/javascript" src="${sbRoot}/js/plotTooltip.js?${sbPID}"></script>

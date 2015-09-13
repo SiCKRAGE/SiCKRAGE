@@ -7,11 +7,14 @@
     import time
     import re
 %>
-<%block name="scripts">
+<%block name="metas">
 <meta data-var="sickbeard.COMING_EPS_SORT" data-content="${sickbeard.COMING_EPS_SORT}">
 <meta data-var="sickbeard.COMING_EPS_LAYOUT" data-content="${sickbeard.COMING_EPS_LAYOUT}">
+</%block>
+<%block name="scripts">
 <script type="text/javascript" src="${sbRoot}/js/ajaxEpSearch.js?${sbPID}"></script>
 <script type="text/javascript" src="${sbRoot}/js/plotTooltip.js?${sbPID}"></script>
+<script type="text/javascript" src="${sbRoot}/js/new/comingEpisodes.js"></script>
 </%block>
 <%block name="css">
 <style type="text/css">
@@ -112,11 +115,15 @@
                 show_div = 'listing-default'
 %>
 
-        <!-- start ${cur_result['show_name']} //-->
         <tr class="${show_div}">
             ## forced to use a div to wrap airdate, the column sort went crazy with a span
             <td align="center" nowrap="nowrap">
-                <div class="${fuzzydate}">${sbdatetime.sbdatetime.sbfdatetime(cur_result['localtime']).decode(sickbeard.SYS_ENCODING)}</div><span class="sort_data">${time.mktime(cur_result['localtime'].timetuple())}</span>
+                <% airDate = sbdatetime.sbdatetime.sbfdatetime(cur_result['localtime']).decode(sickbeard.SYS_ENCODING) %>
+                <% isoDate = sbdatetime.sbdatetime.convert_to_setting(cur_result['localtime']).isoformat('T') %>
+                <span class="${fuzzydate}">
+                    <time datetime="${isoDate}" class="date">${airDate}</time>
+                </span>
+                <span class="sort_data">${time.mktime(cur_result['localtime'].timetuple())}</span>
             </td>
 
             <td class="tvShow" nowrap="nowrap"><a href="${sbRoot}/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}</a>
@@ -157,7 +164,6 @@
                 <a href="${sbRoot}/home/searchEpisode?show=${cur_result['showid']}&amp;season=${cur_result['season']}&amp;episode=${cur_result['episode']}" title="Manual Search" id="forceUpdate-${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}" class="forceUpdate epSearch"><img alt="[search]" height="16" width="16" src="${sbRoot}/images/search16.png" id="forceUpdateImage-${cur_result['showid']}" /></a>
             </td>
         </tr>
-        <!-- end ${cur_result['show_name']} //-->
 % endfor
     </tbody>
 
