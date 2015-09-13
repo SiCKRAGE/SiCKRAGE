@@ -67,16 +67,16 @@ function initFancybox() {
             $("head").append("<link rel='stylesheet' href='" + sbRoot + "/js/fancybox/jquery.fancybox.css'>");
             $("a[rel=dialog]").fancybox({
                 type: "image",
-				padding: 0,
-				helpers : {
-					title : null,
-					overlay : {
-						locked: false,
-						css : {
-							'background' : 'rgba(0, 0, 0, 0.4)'
-						}
-					}
-				}
+                padding: 0,
+                helpers : {
+                    title : null,
+                    overlay : {
+                        locked: false,
+                        css : {
+                            'background' : 'rgba(0, 0, 0, 0.4)'
+                        }
+                    }
+                }
             });
         });
     }
@@ -135,4 +135,27 @@ function init() {
 
 $(document).ready(function () {
     init();
+    $('.dropdown-toggle').dropdownHover();
+    if($('meta[data-var="sickbeard.FUZZY_DATING"]').data('content') == 'True')
+        $.timeago.settings.allowFuture = true;
+        $.timeago.settings.strings = {
+            prefixAgo: null,
+            prefixFromNow: 'In ',
+            suffixAgo: "ago",
+            suffixFromNow: "",
+            seconds: "less than a minute",
+            minute: "about a minute",
+            minutes: "%d minutes",
+            hour: "about an hour",
+            hours: "about %d hours",
+            day: "a day",
+            days: "%d days",
+            month: "about a month",
+            months: "%d months",
+            year: "about a year",
+            years: "%d years",
+            wordSeparator: " ",
+            numbers: []
+        };
+        $("[datetime]").timeago();
 });

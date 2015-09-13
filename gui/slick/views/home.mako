@@ -46,14 +46,12 @@
 <meta data-var="sickbeard.ANIME_SPLIT_HOME" data-content="${sickbeard.ANIME_SPLIT_HOME}">
 <meta data-var="sickbeard.POSTER_SORTBY" data-content="${sickbeard.POSTER_SORTBY}">
 <meta data-var="sickbeard.POSTER_SORTDIR" data-content="${sickbeard.POSTER_SORTDIR}">
-<meta data-var="sickbeard.FUZZY_DATING" data-content="${sickbeard.FUZZY_DATING}">
 <meta data-var="sickbeard.DATE_PRESET" data-content="${sickbeard.DATE_PRESET}">
 <meta data-var="sickbeard.TIME_PRESET" data-content="${sickbeard.TIME_PRESET}">
 <meta data-var="sickbeard.TRIM_ZERO" data-content="${sickbeard.TRIM_ZERO}">
 <meta data-var="max_download_count" data-content="${max_download_count}">
 <meta data-var="layout" data-content="${layout}">
 <meta data-var="fuzzydate" data-content="${fuzzydate}">
-<script type="text/javascript" src="${sbRoot}/js/lib/jquery.timeago.js"></script>
 <script type="text/javascript" src="${sbRoot}/js/new/home.js"></script>
 </%block>
 <%block name="content">

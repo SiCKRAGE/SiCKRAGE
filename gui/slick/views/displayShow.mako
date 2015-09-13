@@ -15,6 +15,7 @@
     fuzzydate = 'airdate'
 %>
 <%block name="scripts">
+<meta data-var="show.is_anime" data-content="${show.is_anime}">
 <script type="text/javascript" src="${sbRoot}/js/lib/jquery.bookmarkscroll.js?${sbPID}"></script>
 <script type="text/javascript" src="${sbRoot}/js/displayShow.js?${sbPID}"></script>
 <script type="text/javascript" src="${sbRoot}/js/plotTooltip.js?${sbPID}"></script>
@@ -22,52 +23,7 @@
 <script type="text/javascript" src="${sbRoot}/js/ratingTooltip.js?${sbPID}"></script>
 <script type="text/javascript" src="${sbRoot}/js/ajaxEpSearch.js?${sbPID}"></script>
 <script type="text/javascript" src="${sbRoot}/js/ajaxEpSubtitles.js?${sbPID}"></script>
-<script type="text/javascript" charset="utf-8">
-$(document).ready(function(){
-    % if sickbeard.FUZZY_DATING:
-    fuzzyMoment({
-        containerClass : '.${fuzzydate}',
-        dateHasTime : false,
-        dateFormat : '${sickbeard.DATE_PRESET}',
-        timeFormat : '${sickbeard.TIME_PRESET}',
-        trimZero : ${("false", "true")[bool(sickbeard.TRIM_ZERO)]}
-    });
-    % endif
-    $('.addQTip').each(function () {
-        $(this).css({'cursor':'help', 'text-shadow':'0px 0px 0.5px #666'});
-        $(this).qtip({
-            show: {solo:true},
-            position: {viewport:$(window), my:'left center', adjust:{ y: -10, x: 2 }},
-            style: {tip:{corner:true, method:'polygon'}, classes:'qtip-rounded qtip-shadow ui-tooltip-sb'}
-        });
-    });
-    $.fn.generateStars = function() {
-        return this.each(function(i,e){$(e).html($('<span/>').width($(e).text()*12));});
-    };
-
-    $('.imdbstars').generateStars();
-
-    $("${('#showTable', '#animeTable')[bool(show.is_anime)]}").tablesorter({
-        widgets: ['saveSort', 'stickyHeaders', 'columnSelector'],
-        widgetOptions : {
-            columnSelector_saveColumns: true,
-            columnSelector_layout : '<br/><label><input type="checkbox">{name}</label>',
-            columnSelector_mediaquery: false,
-            columnSelector_cssChecked : 'checked'
-        },
-    });
-
-    $('#popover').popover({
-        placement: 'bottom',
-        html: true, // required if content has HTML
-        content: '<div id="popover-target"></div>'
-    })
-    // bootstrap popover event triggered when the popover opens
-    .on('shown.bs.popover', function () {
-        $.tablesorter.columnSelector.attachTo( $("${('#showTable', '#animeTable')[bool(show.is_anime)]}"), '#popover-target');
-    });
-});
-</script>
+<script type="text/javascript" src="${sbRoot}/js/new/displayShow.js"></script>
 </%block>
 <%block name="content">
 <%namespace file="/inc_defs.mako" import="renderQualityPill"/>
@@ -543,7 +499,15 @@ $(document).ready(function(){
                 % endif
             </td>
             <td class="col-airdate">
-                <span class="${fuzzydate}">${(sbdatetime.sbdatetime.sbfdate(sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(epResult['airdate'], show.airs, show.network))), 'never')[int(epResult['airdate']) == 1]}</span>
+                <% airDate = (sbdatetime.sbdatetime.sbfdate(sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(epResult['airdate'], show.airs, show.network))), 'never')[int(epResult['airdate']) == 1] %>
+                % if airDate is not 'never':
+                    <% isoDate = sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(epResult['airdate'], show.airs, show.network)).isoformat('T') %>
+                    <span class="${fuzzydate}">
+                        <time datetime="${isoDate}" class="date">${airDate}</time>
+                    </span>
+                % else:
+                    <span class="${fuzzydate}">${airDate}</span>
+                % endif
             </td>
             <td>
                 % if sickbeard.DOWNLOAD_URL and epResult['location']:
@@ -625,7 +589,5 @@ $(document).ready(function(){
         </div>
     </div>
 </div>
-
 <!--End - Bootstrap Modal-->
-
 </%block>
