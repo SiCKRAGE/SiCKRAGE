@@ -337,6 +337,7 @@ class PostProcessor(object):
 
             self._log(u"Moving file from " + cur_file_path + " to " + new_file_path, logger.DEBUG)
             try:
+                helpers.make_dirs(new_file_path)
                 helpers.moveFile(cur_file_path, new_file_path)
                 helpers.chmodAsParent(new_file_path)
             except (IOError, OSError), e:
