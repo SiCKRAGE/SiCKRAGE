@@ -211,7 +211,6 @@ class MoreThanTVProvider(generic.TorrentProvider):
                             torrent_id_long = link['href'].replace('torrents.php?action=download&id=', '')
                             torrent_id = torrent_id_long.split('&', 1)[0]
 
-
                             try:
                                 if link.has_key('title'):
                                     title = cells[1].find('a', {'title': 'View torrent'}).contents[0].strip()
@@ -226,7 +225,6 @@ class MoreThanTVProvider(generic.TorrentProvider):
                             except (AttributeError, TypeError):
                                 continue
 
-
                             #Filter unseeded torrent
                             if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                                 continue
@@ -236,7 +234,6 @@ class MoreThanTVProvider(generic.TorrentProvider):
 
 # Debug
 #                            logger.log(u"title = " + title + ", download_url = " + download_url + ", torrent_id = " + torrent_id + ", seeders = " + seeders + ", leechers = " + leechers, logger.DEBUG)
-
 
                             item = title, download_url, torrent_id, seeders, leechers
                             logger.log(u"Found result: " + title + "(" + searchURL + ")", logger.DEBUG)

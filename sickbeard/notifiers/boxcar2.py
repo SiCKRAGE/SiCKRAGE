@@ -23,7 +23,8 @@ import urllib, urllib2
 import sickbeard
 
 from sickbeard import logger
-from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
+from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, \
+    NOTIFY_GIT_UPDATE_TEXT
 from sickbeard.exceptions import ex
 
 API_URL = "https://new.boxcar.io/api/notifications"
@@ -45,21 +46,21 @@ class Boxcar2Notifier:
         """
 
         # build up the URL and parameters
-	#more info goes here - https://boxcar.uservoice.com/knowledgebase/articles/306788-how-to-send-your-boxcar-account-a-notification
+        # #more info goes here - https://boxcar.uservoice.com/knowledgebase/articles/306788-how-to-send-your-boxcar-account-a-notification
         msg = msg.strip()
         curUrl = API_URL
 
         data = urllib.urlencode({
-                'user_credentials': accesstoken,
-                'notification[title]': "SickRage : " + title + ' : ' + msg,
-                'notification[long_message]': msg,
-                'notification[sound]': "notifier-2"
-            })
+            'user_credentials': accesstoken,
+            'notification[title]': "SickRage : " + title + ' : ' + msg,
+            'notification[long_message]': msg,
+            'notification[sound]': "notifier-2"
+        })
 
         # send the request to boxcar2
         try:
             req = urllib2.Request(curUrl)
-            handle = urllib2.urlopen(req, data,timeout=60)
+            handle = urllib2.urlopen(req, data, timeout=60)
             handle.close()
 
         except Exception as e:
@@ -87,7 +88,6 @@ class Boxcar2Notifier:
         if sickbeard.BOXCAR2_NOTIFY_ONSNATCH:
             self._notifyBoxcar2(title, ep_name)
 
-
     def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
         if sickbeard.BOXCAR2_NOTIFY_ONDOWNLOAD:
             self._notifyBoxcar2(title, ep_name)
@@ -95,11 +95,11 @@ class Boxcar2Notifier:
     def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyBoxcar2(title, ep_name + ": " + lang)
-            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_BOXCAR2:
-            update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title=notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
+            title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notifyBoxcar2(title, update_text + new_version)
 
     def _notifyBoxcar2(self, title, message, accesstoken=None):

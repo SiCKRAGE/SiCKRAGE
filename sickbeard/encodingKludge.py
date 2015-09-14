@@ -20,6 +20,7 @@ import os
 import chardet
 import sickbeard
 
+
 def _toUnicode(x):
     if isinstance(x, str):
         try:
@@ -29,7 +30,7 @@ def _toUnicode(x):
                 x = unicode(x, 'utf-8')
             except Exception:
                 try:
-                   x = unicode(x, 'latin-1')
+                    x = unicode(x, 'latin-1')
                 except Exception:
                     try:
                         x = unicode(x, sickbeard.SYS_ENCODING)
@@ -40,6 +41,7 @@ def _toUnicode(x):
                         except Exception:
                             x = unicode(x, sickbeard.SYS_ENCODING, 'replace')
     return x
+
 
 def ss(x):
     x = _toUnicode(x)
@@ -56,11 +58,12 @@ def ss(x):
                 x = x.encode('utf-8', 'ignore')
     return x
 
+
 def fixListEncodings(x):
     if not isinstance(x, (list, tuple)):
         return x
     else:
-        return filter(lambda x: x != None, map(_toUnicode, x))
+        return filter(lambda x: x is not None, map(_toUnicode, x))
 
 
 def ek(func, *args, **kwargs):

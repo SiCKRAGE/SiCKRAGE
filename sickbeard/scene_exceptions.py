@@ -37,6 +37,7 @@ exceptionsSeasonCache = {}
 
 exceptionLock = threading.Lock()
 
+
 def shouldRefresh(list):
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
@@ -48,11 +49,13 @@ def shouldRefresh(list):
     else:
         return True
 
+
 def setLastRefresh(list):
     myDB = db.DBConnection('cache.db')
     myDB.upsert("scene_exceptions_refresh",
                 {'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple()))},
                 {'list': list})
+
 
 def get_scene_exceptions(indexer_id, season=-1):
     """
@@ -230,8 +233,9 @@ def retrieve_exceptions():
             for ex in cur_exception_dict.iteritems():
                 cur_exception, curSeason = ex
                 if cur_exception not in existing_exceptions:
-                    queries.append(["INSERT OR IGNORE INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?);",
-                            [cur_indexer_id, cur_exception, curSeason]])
+                    queries.append(
+                        ["INSERT OR IGNORE INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?);",
+                         [cur_indexer_id, cur_exception, curSeason]])
     if queries:
         myDB.mass_action(queries)
         logger.log(u"Updated scene exceptions", logger.DEBUG)
@@ -243,6 +247,7 @@ def retrieve_exceptions():
     anidb_exception_dict.clear()
     xem_exception_dict.clear()
 
+
 def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     """
     Given a indexer_id, and a list of all show scene exceptions, update the db.
@@ -252,7 +257,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     myDB.action('DELETE FROM scene_exceptions WHERE indexer_id=? and season=?', [indexer_id, season])
 
     logger.log(u"Updating scene exceptions", logger.INFO)
-    
+
     # A change has been made to the scene exception list. Let's clear the cache, to make this visible
     if indexer_id in exceptionsCache:
         exceptionsCache[indexer_id] = {}
@@ -261,6 +266,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     for cur_exception in scene_exceptions:
         myDB.action("INSERT INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?)",
                     [indexer_id, cur_exception, season])
+
 
 def _anidb_exceptions_fetcher():
     global anidb_exception_dict
@@ -283,6 +289,7 @@ def _anidb_exceptions_fetcher():
 
 xem_session = requests.Session()
 
+
 def _xem_exceptions_fetcher():
     global xem_exception_dict
     global xem_session
@@ -291,10 +298,11 @@ def _xem_exceptions_fetcher():
         for indexer in sickbeard.indexerApi().indexers:
             logger.log(u"Checking for XEM scene exception updates for " + sickbeard.indexerApi(indexer).name)
 
-            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1&language=us" % sickbeard.indexerApi(indexer).config[
-                'xem_origin']
+            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1&language=us" % \
+                  sickbeard.indexerApi(indexer).config[
+                      'xem_origin']
 
-            parsedJSON = helpers.getURL(url, session=xem_session, timeout = 90, json=True)
+            parsedJSON = helpers.getURL(url, session=xem_session, timeout=90, json=True)
             if not parsedJSON:
                 logger.log(u"Check scene exceptions update failed for " + sickbeard.indexerApi(
                     indexer).name + ", Unable to get URL: " + url, logger.ERROR)
@@ -307,7 +315,8 @@ def _xem_exceptions_fetcher():
                 try:
                     xem_exception_dict[int(indexerid)] = names
                 except Exception as e:
-                    logger.log(u"XEM: Rejected entry: indexerid:{0}; names:{1}".format(indexerid, names), logger.WARNING)
+                    logger.log(u"XEM: Rejected entry: indexerid:{0}; names:{1}".format(indexerid, names),
+                               logger.WARNING)
                     logger.log(u"XEM: Rejected entry error message:{0}".format(str(e)), logger.DEBUG)
 
         setLastRefresh('xem')

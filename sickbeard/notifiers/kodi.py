@@ -29,7 +29,6 @@ from sickbeard import common
 from sickbeard.exceptions import ex
 from sickbeard import encodingKludge as ek
 
-
 try:
     import xml.etree.cElementTree as etree
 except ImportError:
@@ -39,6 +38,7 @@ try:
     import json
 except ImportError:
     import simplejson as json
+
 
 class KODINotifier:
     sr_logo_url = 'https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/slick/images/sickrage-shark-mascot.png'
@@ -397,7 +397,7 @@ class KODINotifier:
                 logger.log(u"KODI JSON response: " + str(result), logger.DEBUG)
                 return result  # need to return response for parsing
             except ValueError, e:
-                logger.log(u"Unable to decode JSON: " +  str(response.read()), logger.WARNING)
+                logger.log(u"Unable to decode JSON: " + str(response.read()), logger.WARNING)
                 return False
 
         except IOError, e:
@@ -470,7 +470,6 @@ class KODINotifier:
                 logger.log(u'Exact show name not matched in KODI TV show list', logger.DEBUG)
                 return False
 
-
             # lookup tv-show path if we don't already know it
             if not len(path):
                 pathCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.GetTVShowDetails","params":{"tvshowid":%d, "properties": ["file"]},"id":1}' % (
@@ -531,11 +530,11 @@ class KODINotifier:
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.KODI_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify_kodi(ep_name + ": " + lang, common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD])
-            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_KODI:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._notify_kodi(update_text + new_version, title)
 
     def test_notify(self, host, username, password):

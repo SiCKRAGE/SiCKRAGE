@@ -264,7 +264,7 @@ def sanitizeFileName(name):
     # remove bad chars from the filename
     name = re.sub(r'[\\/\*]', '-', name)
     name = re.sub(r'[:"<>|?]', '', name)
-    name = re.sub(ur'\u2122', '', name) # Trade Mark Sign
+    name = re.sub(ur'\u2122', '', name)  # Trade Mark Sign
 
     # remove leading/trailing periods and spaces
     name = name.strip(' .')
@@ -348,7 +348,9 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
     for i in sickbeard.indexerApi().indexers if not indexer else int(indexer or []):
         # Query Indexers for each search term and build the list of results
         lINDEXER_API_PARMS = sickbeard.indexerApi(i).api_params.copy()
-        if ui is not None: lINDEXER_API_PARMS['custom_ui'] = ui
+        if ui is not None:
+            lINDEXER_API_PARMS['custom_ui'] = ui
+
         t = sickbeard.indexerApi(i).indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
@@ -442,7 +444,8 @@ def link(src, dst):
     if os.name == 'nt':
         import ctypes
 
-        if ctypes.windll.kernel32.CreateHardLinkW(unicode(dst), unicode(src), 0) == 0: raise ctypes.WinError()
+        if ctypes.windll.kernel32.CreateHardLinkW(unicode(dst), unicode(src), 0) == 0:
+            raise ctypes.WinError()
     else:
         os.link(src, dst)
 
@@ -462,7 +465,8 @@ def symlink(src, dst):
         import ctypes
 
         if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src), 1 if os.path.isdir(src) else 0) in [0,
-                                                                                                                      1280]: raise ctypes.WinError()
+                                                                                                                      1280]:
+            raise ctypes.WinError()
     else:
         os.symlink(src, dst)
 
@@ -925,8 +929,10 @@ def md5_for_file(filename, block_size=2 ** 16):
 
 
 def get_lan_ip():
-    try:return [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][0]
-    except:return socket.gethostname()
+    try:
+        return [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][0]
+    except:
+        return socket.gethostname()
 
 def check_url(url):
     """

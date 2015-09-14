@@ -55,7 +55,6 @@ class BTNProvider(generic.TorrentProvider):
 
         self.urls = {'base_url': "http://api.btnapps.net"}
 
-
         self.url = self.urls['base_url']
 
     def isEnabled(self):
@@ -149,7 +148,9 @@ class BTNProvider(generic.TorrentProvider):
 
         except jsonrpclib.jsonrpc.ProtocolError, error:
             if error.message == 'Call Limit Exceeded':
-                logger.log(u"You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account.", logger.WARNING)
+                logger.log(
+                    u"You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account.",
+                    logger.WARNING)
             else:
                 logger.log(u"JSON-RPC protocol error while accessing " + self.name + ": " + ex(error), logger.ERROR)
             parsedJSON = {'api-error': ex(error)}
@@ -362,7 +363,8 @@ class BTNProvider(generic.TorrentProvider):
                 myParser = NameParser(False)
                 parse_result = myParser.parse(title)
             except InvalidNameException:
-                logger.log(u"Unable to parse the filename " + title + " into a valid episode", logger.DEBUG)  # @UndefinedVariable
+                logger.log(u"Unable to parse the filename " + title + " into a valid episode",
+                           logger.DEBUG)  # @UndefinedVariable
                 continue
             except InvalidShowException:
                 logger.log(u"Unable to parse the filename " + title + " into a valid show", logger.DEBUG)
@@ -382,8 +384,11 @@ class BTNProvider(generic.TorrentProvider):
                             logger.DEBUG)
                         addCacheEntry = True
                     if len(parse_result.episode_numbers) and (
-                                    parse_result.season_number not in set([ep.season for ep in episodes]) or not [ep for ep in episodes if
-                                                                                 ep.scene_episode in parse_result.episode_numbers]):
+                                    parse_result.season_number not in set([ep.season for ep in episodes]) or not [ep for
+                                                                                                                  ep in
+                                                                                                                  episodes
+                                                                                                                  if
+                                                                                                                  ep.scene_episode in parse_result.episode_numbers]):
                         logger.log(
                             u"The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring",
                             logger.DEBUG)

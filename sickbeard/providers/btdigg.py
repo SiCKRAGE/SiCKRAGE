@@ -1,7 +1,7 @@
 # Author: Jodi Jones <venom@gen-x.co.nz>
 # URL: http://code.google.com/p/sickbeard/
 #
-#Ported to sickrage by: matigonkas
+# Ported to sickrage by: matigonkas
 #
 # This file is part of Sick Beard.
 #
@@ -29,8 +29,8 @@ from sickbeard.common import WANTED
 from sickbeard.config import naming_ep_type
 from sickbeard.helpers import sanitizeSceneName
 
-class BTDIGGProvider(generic.TorrentProvider):
 
+class BTDIGGProvider(generic.TorrentProvider):
     def __init__(self):
         generic.TorrentProvider.__init__(self, "BTDigg")
 
@@ -42,22 +42,19 @@ class BTDIGGProvider(generic.TorrentProvider):
     def isEnabled(self):
         return self.enabled
 
-
     def imageName(self):
         return 'btdigg.png'
 
-
     def _get_airbydate_season_range(self, season):
-        if season == None:
+        if season is None:
             return ()
         year, month = map(int, season.split('-'))
         min_date = datetime.date(year, month, 1)
         if month == 12:
             max_date = datetime.date(year, month, 31)
         else:
-            max_date = datetime.date(year, month+1, 1) -  datetime.timedelta(days=1)
+            max_date = datetime.date(year, month + 1, 1) - datetime.timedelta(days=1)
         return (min_date, max_date)
-
 
     def _get_season_search_strings(self, show, season=None):
         search_string = []
@@ -69,21 +66,25 @@ class BTDIGGProvider(generic.TorrentProvider):
 
         if show.air_by_date:
             (min_date, max_date) = self._get_airbydate_season_range(season)
-            sqlResults = myDB.select("SELECT DISTINCT airdate FROM tv_episodes WHERE showid = ? AND airdate >= ? AND airdate <= ? AND status = ?", [show.tvdbid,  min_date.toordinal(), max_date.toordinal(), WANTED])
+            sqlResults = myDB.select(
+                "SELECT DISTINCT airdate FROM tv_episodes WHERE showid = ? AND airdate >= ? AND airdate <= ? AND status = ?",
+                [show.tvdbid, min_date.toordinal(), max_date.toordinal(), WANTED])
         else:
-            sqlResults = myDB.select("SELECT DISTINCT season FROM tv_episodes WHERE showid = ? AND season = ? AND status = ?", [show.tvdbid, season, WANTED])
+            sqlResults = myDB.select(
+                "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? AND season = ? AND status = ?",
+                [show.tvdbid, season, WANTED])
 
         for sqlEp in sqlResults:
             for show_name in set(show_name_helpers.allPossibleShowNames(show)):
                 if show.air_by_date:
-                    ep_string = sanitizeSceneName(show_name) +' '+ str(datetime.date.fromordinal(sqlEp["airdate"])).replace('-', '.')
+                    ep_string = sanitizeSceneName(show_name) + ' ' + str(
+                        datetime.date.fromordinal(sqlEp["airdate"])).replace('-', '.')
                     search_string.append(ep_string)
                 else:
                     ep_string = sanitizeSceneName(show_name) + ' S%02d' % sqlEp["season"]
                     search_string.append(ep_string)
 
         return search_string
-
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
 
@@ -106,7 +107,6 @@ class BTDIGGProvider(generic.TorrentProvider):
 
         return search_string
 
-
     def _get_title_and_url(self, item):
         title, url, size = item
         if title:
@@ -117,13 +117,11 @@ class BTDIGGProvider(generic.TorrentProvider):
 
         return (title, url)
 
-
     def _get_size(self, item):
         title, url, size = item
         logger.log(u'Size: %s' % size, logger.DEBUG)
 
         return size
-
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
@@ -150,7 +148,6 @@ class BTDIGGProvider(generic.TorrentProvider):
 
 class BTDiggCache(tvcache.TVCache):
     def __init__(self, provider):
-
         tvcache.TVCache.__init__(self, provider)
 
         # set this 0 to suppress log line, since we aren't updating it anyways
@@ -160,5 +157,6 @@ class BTDiggCache(tvcache.TVCache):
         # no rss for btdigg, can't search with empty string
         # newest results are always > 1 day since added anyways
         return {'entries': {}}
+
 
 provider = BTDIGGProvider()

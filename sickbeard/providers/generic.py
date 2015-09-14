@@ -41,7 +41,6 @@ from sickbeard.common import Quality
 from sickbeard.common import user_agents
 
 
-
 class GenericProvider:
     NZB = "nzb"
     TORRENT = "torrent"
@@ -78,12 +77,12 @@ class GenericProvider:
         self.headers = {'User-Agent': user_agents[0]}
 
         self.btCacheURLS = [
-                'http://torcache.net/torrent/{torrent_hash}.torrent',
-                'http://thetorrent.org/torrent/{torrent_hash}.torrent',
-                'http://btdig.com/torrent/{torrent_hash}.torrent',
-                #'http://torrage.com/torrent/{torrent_hash}.torrent',
-                #'http://itorrents.org/torrent/{torrent_hash}.torrent',
-            ]
+            'http://torcache.net/torrent/{torrent_hash}.torrent',
+            'http://thetorrent.org/torrent/{torrent_hash}.torrent',
+            'http://btdig.com/torrent/{torrent_hash}.torrent',
+            # 'http://torrage.com/torrent/{torrent_hash}.torrent',
+            # 'http://itorrents.org/torrent/{torrent_hash}.torrent',
+        ]
 
         shuffle(self.btCacheURLS)
 
@@ -147,9 +146,9 @@ class GenericProvider:
                 self.headers.pop('Referer')
             self.proxyGlypeProxySSLwarning = None
 
-        return helpers.getURL(self.proxy._buildURL(url), post_data=post_data, params=params, headers=self.headers, timeout=timeout,
+        return helpers.getURL(self.proxy._buildURL(url), post_data=post_data, params=params, headers=self.headers,
+                              timeout=timeout,
                               session=self.session, json=json, proxyGlypeProxySSLwarning=self.proxyGlypeProxySSLwarning)
-
 
     def _makeURL(self, result):
         urls = []
@@ -186,7 +185,6 @@ class GenericProvider:
                              helpers.sanitizeFileName(result.name) + '.' + self.providerType)
 
         return (urls, filename)
-
 
     def downloadResult(self, result):
         """
@@ -304,7 +302,6 @@ class GenericProvider:
                 logger.log(u"Size was not found in your provider response", logger.DEBUG)
                 return -1
 
-
     def findSearchResults(self, show, episodes, search_mode, manualSearch=False, downCurQuality=False):
 
         self._checkAuth()
@@ -352,10 +349,12 @@ class GenericProvider:
                 if first:
                     first = False
                     if itemList:
-                        logger.log(u'First search_string had rid, and returned results, skipping query by string', logger.DEBUG)
+                        logger.log(u'First search_string had rid, and returned results, skipping query by string',
+                                   logger.DEBUG)
                         break
                     else:
-                        logger.log(u'First search_string had rid, but returned no results, searching with string query', logger.DEBUG)
+                        logger.log(u'First search_string had rid, but returned no results, searching with string query',
+                                   logger.DEBUG)
 
         # if we found what we needed already from cache then return results and exit
         if len(results) == len(episodes):
@@ -408,8 +407,11 @@ class GenericProvider:
                             logger.DEBUG)
                         addCacheEntry = True
                     if len(parse_result.episode_numbers) and (
-                                    parse_result.season_number not in set([ep.season for ep in episodes]) or not [ep for ep in episodes if
-                                                                                 ep.scene_episode in parse_result.episode_numbers]):
+                                    parse_result.season_number not in set([ep.season for ep in episodes]) or not [ep for
+                                                                                                                  ep in
+                                                                                                                  episodes
+                                                                                                                  if
+                                                                                                                  ep.scene_episode in parse_result.episode_numbers]):
                         logger.log(
                             u"The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring",
                             logger.DEBUG)

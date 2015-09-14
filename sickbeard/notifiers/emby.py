@@ -24,14 +24,13 @@ import sickbeard
 from sickbeard import logger
 from sickbeard.exceptions import ex
 
-
 try:
     import json
 except ImportError:
     import simplejson as json
 
-class EMBYNotifier:
 
+class EMBYNotifier:
     def _notify_emby(self, message, host=None, emby_apikey=None):
         """Handles notifying Emby host via HTTP API
 
@@ -47,7 +46,8 @@ class EMBYNotifier:
             emby_apikey = sickbeard.EMBY_APIKEY
 
         url = 'http://%s/emby/Notifications/Admin' % (host)
-        values = {'Name': 'SickRage', 'Description': message, 'ImageUrl': 'https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/slick/images/sickrage-shark-mascot.png'}
+        values = {'Name': 'SickRage', 'Description': message,
+                  'ImageUrl': 'https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/slick/images/sickrage-shark-mascot.png'}
         data = json.dumps(values)
         try:
             req = urllib2.Request(url, data)
@@ -66,9 +66,9 @@ class EMBYNotifier:
             return False
 
 
-##############################################################################
-# Public functions
-##############################################################################
+            ##############################################################################
+            # Public functions
+            ##############################################################################
 
     def test_notify(self, host, emby_apikey):
         return self._notify_emby('This is a test notification from SickRage', host, emby_apikey)
@@ -117,5 +117,6 @@ class EMBYNotifier:
             except (urllib2.URLError, IOError), e:
                 logger.log(u'EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + ex(e), logger.WARNING)
                 return False
+
 
 notifier = EMBYNotifier

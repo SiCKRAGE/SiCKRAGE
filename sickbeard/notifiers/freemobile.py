@@ -21,7 +21,9 @@ import urllib2
 
 import sickbeard
 from sickbeard import logger
-from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
+from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, \
+    NOTIFY_GIT_UPDATE_TEXT
+
 
 class FreeMobileNotifier:
     def test_notify(self, id=None, apiKey=None):
@@ -38,9 +40,9 @@ class FreeMobileNotifier:
         returns: True if the message succeeded, False otherwise
         """
 
-        if id == None:
+        if id is None:
             id = sickbeard.FREEMOBILE_ID
-        if apiKey == None:
+        if apiKey is None:
             apiKey = sickbeard.FREEMOBILE_APIKEY
 
         logger.log("Free Mobile in use with API KEY: " + apiKey, logger.DEBUG)
@@ -49,13 +51,13 @@ class FreeMobileNotifier:
         msg = msg.strip()
         msg_quoted = urllib2.quote(title.encode('utf-8') + ": " + msg.encode('utf-8'))
         URL = "https://smsapi.free-mobile.fr/sendmsg?user=" + id + "&pass=" + apiKey + "&msg=" + msg_quoted
-        
+
         req = urllib2.Request(URL)
         # send the request to Free Mobile
         try:
             reponse = urllib2.urlopen(req)
         except IOError, e:
-            if hasattr(e,'code'):
+            if hasattr(e, 'code'):
                 if e.code == 400:
                     message = "Missing parameter(s)."
                     logger.log(message, logger.ERROR)
@@ -73,21 +75,17 @@ class FreeMobileNotifier:
                     logger.log(message, logger.ERROR)
                     return False, message
         except Exception, e:
-                message = u"Error while sending SMS: {0}".format(e)
-                logger.log(message, logger.ERROR)
-                return False, message
+            message = u"Error while sending SMS: {0}".format(e)
+            logger.log(message, logger.ERROR)
+            return False, message
 
         message = "Free Mobile SMS successful."
         logger.log(message, logger.INFO)
         return True, message
-     
-
-
 
     def notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
         if sickbeard.FREEMOBILE_NOTIFY_ONSNATCH:
             self._notifyFreeMobile(title, ep_name)
-
 
     def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
         if sickbeard.FREEMOBILE_NOTIFY_ONDOWNLOAD:
@@ -96,12 +94,12 @@ class FreeMobileNotifier:
     def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyFreeMobile(title, ep_name + ": " + lang)
-            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_FREEMOBILE:
-            update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title=notifyStrings[NOTIFY_GIT_UPDATE]
-            self._notifyFreeMobile(title, update_text + new_version) 
+            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
+            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            self._notifyFreeMobile(title, update_text + new_version)
 
     def _notifyFreeMobile(self, title, message, id=None, apiKey=None, force=False):
         """

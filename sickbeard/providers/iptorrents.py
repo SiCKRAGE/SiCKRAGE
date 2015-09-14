@@ -446,6 +446,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
+
 class IPTorrentsCache(tvcache.TVCache):
     def __init__(self, provider):
 

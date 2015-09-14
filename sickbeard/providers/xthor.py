@@ -35,8 +35,8 @@ from sickbeard import classes
 from sickbeard.helpers import sanitizeSceneName
 from sickbeard.exceptions import ex
 
-class XthorProvider(generic.TorrentProvider):
 
+class XthorProvider(generic.TorrentProvider):
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Xthor")
@@ -133,11 +133,11 @@ class XthorProvider(generic.TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password,
                         'submitme': 'X'
-        }
+                        }
 
         logger.log('Performing authentication to Xthor', logger.DEBUG)
 
-        response = self.getURL(self.url + '/takelogin.php',  post_data=login_params, timeout=30)
+        response = self.getURL(self.url + '/takelogin.php', post_data=login_params, timeout=30)
         if not response:
             logger.log(u'Unable to connect to ' + self.name + ' provider.', logger.ERROR)
             return False
@@ -179,15 +179,15 @@ class XthorProvider(generic.TorrentProvider):
                     continue
 
                 with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                    resultsTable = html.find("table", { "class" : "table2 table-bordered2"  })
+                    resultsTable = html.find("table", {"class": "table2 table-bordered2"})
                     if resultsTable:
                         rows = resultsTable.findAll("tr")
                         for row in rows:
-                            link = row.find("a",href=re.compile("details.php"))
+                            link = row.find("a", href=re.compile("details.php"))
                             if link:
                                 title = link.text
                                 logger.log(u"Xthor title : " + title, logger.DEBUG)
-                                downloadURL =  self.url + '/' + row.find("a",href=re.compile("download.php"))['href']
+                                downloadURL = self.url + '/' + row.find("a", href=re.compile("download.php"))['href']
                                 logger.log(u"Xthor download URL : " + downloadURL, logger.DEBUG)
                                 item = title, downloadURL
                                 items[mode].append(item)
@@ -224,5 +224,6 @@ class XthorProvider(generic.TorrentProvider):
                     results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
 
         return results
+
 
 provider = XthorProvider()

@@ -38,6 +38,7 @@ from tmdb_api.tmdb_api import TMDB
 import fanart
 from fanart.core import Request as fanartRequest
 
+
 class GenericMetadata():
     """
     Base class for all metadata providers. Default behavior is meant to mostly
@@ -144,21 +145,21 @@ class GenericMetadata():
 
     def _has_episode_thumb(self, ep_obj):
         location = self.get_episode_thumb_path(ep_obj)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
 
     def _has_season_poster(self, show_obj, season):
         location = self.get_season_poster_path(show_obj, season)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
 
     def _has_season_banner(self, show_obj, season):
         location = self.get_season_banner_path(show_obj, season)
-        result = location != None and ek.ek(os.path.isfile, location)
+        result = location is not None and ek.ek(os.path.isfile, location)
         if location:
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
         return result
@@ -694,7 +695,7 @@ class GenericMetadata():
 
         return self._write_image(banner_data, banner_path)
 
-    def _write_image(self, image_data, image_path, obj = None):
+    def _write_image(self, image_data, image_path, obj=None):
         """
         Saves the data in image_data to the location image_path. Returns True/False
         to represent success or failure.
@@ -763,7 +764,8 @@ class GenericMetadata():
         except (sickbeard.indexer_error, IOError), e:
             logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
                 show_obj.indexer).name + ", not downloading images: " + ex(e), logger.WARNING)
-            logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
+            logger.log(u"Indexer " + sickbeard.indexerApi(
+                show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
             return None
 
         if image_type not in ('fanart', 'poster', 'banner', 'poster_thumb', 'banner_thumb'):
@@ -833,7 +835,8 @@ class GenericMetadata():
         except (sickbeard.indexer_error, IOError), e:
             logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
                 show_obj.indexer).name + ", not downloading images: " + ex(e), logger.WARNING)
-            logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
+            logger.log(u"Indexer " + sickbeard.indexerApi(
+                show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
             return result
 
         # if we have no season banners then just finish
@@ -854,7 +857,8 @@ class GenericMetadata():
 
         # find the correct season in the TVDB object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
-            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == sickbeard.INDEXER_DEFAULT_LANGUAGE:
+            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID][
+                'language'] == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
 
         return result
@@ -887,7 +891,8 @@ class GenericMetadata():
         except (sickbeard.indexer_error, IOError), e:
             logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
                 show_obj.indexer).name + ", not downloading images: " + ex(e), logger.WARNING)
-            logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
+            logger.log(u"Indexer " + sickbeard.indexerApi(
+                show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
             return result
 
         # if we have no season banners then just finish
@@ -909,7 +914,8 @@ class GenericMetadata():
 
         # find the correct season in the TVDB object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
-            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == sickbeard.INDEXER_DEFAULT_LANGUAGE:
+            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID][
+                'language'] == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
 
         return result
@@ -963,7 +969,8 @@ class GenericMetadata():
                     if 'thetvdb.com' in epg_url:
                         indexer = 1
                     elif 'tvrage' in epg_url:
-                        logger.log(u"Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file because it has TVRage info", logger.WARNING)
+                        logger.log(u"Invalid Indexer ID (" + str(
+                            indexer_id) + "), not using metadata file because it has TVRage info", logger.WARNING)
                         return empty_return
 
 
@@ -997,7 +1004,8 @@ class GenericMetadata():
         try:
             search = tmdb.Search()
             for show_name in set(allPossibleShowNames(show)):
-                for result in search.collection({'query': show_name})['results'] + search.tv({'query': show_name})['results']:
+                for result in search.collection({'query': show_name})['results'] + search.tv({'query': show_name})[
+                    'results']:
                     if types[type] and getattr(result, types[type]):
                         return "{0}{1}{2}".format(base_url, max_size, result[types[type]])
 
@@ -1012,7 +1020,7 @@ class GenericMetadata():
                  'poster_thumb': fanart.TYPE.TV.POSTER,
                  'banner_thumb': fanart.TYPE.TV.BANNER,
                  'fanart': fanart.TYPE.TV.BACKGROUND,
-        }
+                 }
 
         try:
             indexerid = helpers.mapIndexersToShow(show)[1]

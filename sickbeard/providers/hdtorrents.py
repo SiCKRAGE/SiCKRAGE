@@ -35,6 +35,7 @@ from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
 from datetime import datetime
 
+
 class HDTorrentsProvider(generic.TorrentProvider):
     def __init__(self):
 
@@ -52,7 +53,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
                      'login': 'https://hd-torrents.org/login.php',
                      'search': 'https://hd-torrents.org/torrents.php?search=%s&active=1&options=0%s',
                      'home': 'https://hd-torrents.org/%s'
-        }
+                     }
 
         self.url = self.urls['base_url']
 
@@ -82,7 +83,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
                         'pwd': self.password,
                         'submit': 'Confirm'}
 
-        response = self.getURL(self.urls['login'],  post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logger.log(u'Unable to connect to ' + self.name + ' provider.', logger.ERROR)
             return False
@@ -148,7 +149,6 @@ class HDTorrentsProvider(generic.TorrentProvider):
             if isinstance(search_string, unicode):
                 search_string = unidecode(search_string)
 
-
             searchURL = self.urls['search'] % (urllib.quote_plus(search_string.replace('.', ' ')), self.categories)
             logger.log(u"Search string: " + searchURL, logger.DEBUG)
             data = self.getURL(searchURL)
@@ -172,12 +172,13 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
             torrents = tables.findChildren('tr')
             if not torrents:
-                 continue
+                continue
 
             # Skip column headers
             for result in torrents[1:]:
                 try:
-                    cells = result.findChildren('td', attrs={'class': re.compile(r'(green|yellow|red|mainblockcontent)')})
+                    cells = result.findChildren('td',
+                                                attrs={'class': re.compile(r'(green|yellow|red|mainblockcontent)')})
                     if not cells:
                         continue
 
@@ -188,28 +189,30 @@ class HDTorrentsProvider(generic.TorrentProvider):
                             if None is title and cell.get('title') and cell.get('title') in 'Download':
                                 title = re.search('f=(.*).torrent', cell.a['href']).group(1).replace('+', '.')
                                 url = self.urls['home'] % cell.a['href']
-                            if None is seeders and cell.get('class')[0] and cell.get('class')[0] in 'green' 'yellow' 'red':
+                            if None is seeders and cell.get('class')[0] and cell.get('class')[
+                                0] in 'green' 'yellow' 'red':
                                 seeders = int(cell.text)
-                            elif None is leechers and cell.get('class')[0] and cell.get('class')[0] in 'green' 'yellow' 'red':
+                            elif None is leechers and cell.get('class')[0] and cell.get('class')[
+                                0] in 'green' 'yellow' 'red':
                                 leechers = int(cell.text)
-    
+
                             # Skip torrents released before the episode aired (fakes)
                             if re.match('..:..:..  ..:..:....', cells[6].text):
                                 if (datetime.strptime(cells[6].text, '%H:%M:%S  %m/%d/%Y') -
-                                    datetime.combine(epObj.airdate, datetime.min.time())).days < 0:
+                                        datetime.combine(epObj.airdate, datetime.min.time())).days < 0:
                                     continue
-        
+
                             # Need size for failed downloads handling
                             if re.match('[0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+', cells[7].text):
                                 size = self._convertSize(cells[7].text)
-        
+
                             if not title or not url or not seeders or leechers is None or not size or \
-                                    seeders < self.minseed or leechers < self.minleech:
+                                            seeders < self.minseed or leechers < self.minleech:
                                 continue
-            
+
                             item = title, url, seeders, leechers, size
                             logger.log(u"Found result: " + title + " (" + searchURL + ")", logger.DEBUG)
-            
+
                             results.append(item)
 
                         except:
@@ -283,16 +286,16 @@ class HDTorrentsProvider(generic.TorrentProvider):
         if modifier in 'KB':
             size = size * 1024
         elif modifier in 'MB':
-            size = size * 1024**2
+            size = size * 1024 ** 2
         elif modifier in 'GB':
-            size = size * 1024**3
+            size = size * 1024 ** 3
         elif modifier in 'TB':
-            size = size * 1024**4
+            size = size * 1024 ** 4
         return size
+
 
 class HDTorrentsCache(tvcache.TVCache):
     def __init__(self, provider):
-
         tvcache.TVCache.__init__(self, provider)
 
         # only poll HDTorrents every 10 minutes max

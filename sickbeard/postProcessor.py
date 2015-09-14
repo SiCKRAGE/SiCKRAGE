@@ -181,19 +181,18 @@ class PostProcessor(object):
         # don't confuse glob with chars we didn't mean to use
         base_name = re.sub(r'[\[\]\*\?]', r'[\g<0>]', base_name)
 
-        if subfolders: # subfolders are only checked in show folder, so names will always be exactly alike
-            filelist = ek.ek(recursive_glob, ek.ek(os.path.dirname, file_path), base_name + '*') # just create the list of all files starting with the basename
-        else: # this is called when PP, so we need to do the filename check case-insensitive
+        if subfolders:  # subfolders are only checked in show folder, so names will always be exactly alike
+            filelist = ek.ek(recursive_glob, ek.ek(os.path.dirname, file_path), base_name + '*')  # just create the list of all files starting with the basename
+        else:  # this is called when PP, so we need to do the filename check case-insensitive
             filelist = []
 
-            checklist = ek.ek(glob.glob, helpers.fixGlob(ek.ek(os.path.join, ek.ek(os.path.dirname, file_path), '*'))) # get a list of all the files in the folder
-            for filefound in checklist: # loop through all the files in the folder, and check if they are the same name even when the cases don't match
+            checklist = ek.ek(glob.glob, helpers.fixGlob(ek.ek(os.path.join, ek.ek(os.path.dirname, file_path), '*')))  # get a list of all the files in the folder
+            for filefound in checklist:  # loop through all the files in the folder, and check if they are the same name even when the cases don't match
                 file_name = filefound.rpartition('.')[0]
                 if not base_name_only:
                     file_name = file_name + '.'
                 if file_name.lower() == base_name.lower(): # if there's no difference in the filename add it to the filelist
                     filelist.append(filefound)
-
 
         for associated_file_path in filelist:
             # only add associated to list
@@ -302,7 +301,7 @@ class PostProcessor(object):
                     cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
-            if cur_extension == 'nfo' and sickbeard.NFO_RENAME == True:
+            if cur_extension == 'nfo' and sickbeard.NFO_RENAME is True:
                 cur_extension = 'nfo-orig'
 
             # If new base name then convert name
@@ -366,7 +365,6 @@ class PostProcessor(object):
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_copy,
                                       subtitles=subtitles)
-
 
     def _hardlink(self, file_path, new_path, new_base_name, associated_files=False, subtitles=False):
         """
@@ -485,7 +483,6 @@ class PostProcessor(object):
             logger.log(u" or Parse result(air_date): " + str(parse_result.air_date), logger.DEBUG)
             logger.log(u"Parse result(release_group): " + str(parse_result.release_group), logger.DEBUG)
 
-
     def _analyze_name(self, name, file=True):
         """
         Takes a name and tries to figure out a show, season, and episode from it.
@@ -590,7 +587,7 @@ class PostProcessor(object):
             if cur_version is not None:
                 version = cur_version
 
-            if cur_season != None:
+            if cur_season is not None:
                 season = cur_season
             if cur_episodes:
                 episodes = cur_episodes
@@ -626,12 +623,12 @@ class PostProcessor(object):
                         continue
 
             # if there's no season then we can hopefully just use 1 automatically
-            elif season == None and show:
+            elif season is None and show:
                 myDB = db.DBConnection()
                 numseasonsSQlResult = myDB.select(
                     "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and indexer = ? and season != 0",
                     [show.indexerid, show.indexer])
-                if int(numseasonsSQlResult[0][0]) == 1 and season == None:
+                if int(numseasonsSQlResult[0][0]) == 1 and season is None:
                     self._log(
                         u"Don't have a season number, but this show appears to only have 1 season, setting season number to 1...",
                         logger.DEBUG)
@@ -844,7 +841,7 @@ class PostProcessor(object):
             self._log(u"This show isn't in your list, you need to add it to SB before post-processing an episode",
                       logger.WARNING)
             raise exceptions.PostProcessingFailed()
-        elif season == None or not episodes:
+        elif season is None or not episodes:
             self._log(u"Not enough information to determine what episode this is", logger.DEBUG)
             self._log(u"Quitting post-processing", logger.DEBUG)
             return False
@@ -915,7 +912,6 @@ class PostProcessor(object):
                 return False
         else:
             self._log("Unable to determine needed filespace as the source file is locked for access")
-
 
         # delete the existing file (and company)
         for cur_ep in [ep_obj] + ep_obj.relatedEps:

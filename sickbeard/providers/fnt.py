@@ -191,7 +191,7 @@ class FNTProvider(generic.TorrentProvider):
                                         id = download_url.replace(self.urls['base_url'] + "/" + 'download.php?id=', '').replace('&amp;dl=oui', '').replace('&dl=oui', '')
                                         logger.log(u"FNT id du torrent  " + str(id), logger.DEBUG)
                                         defailseedleech = link['mtcontent']
-                                        seeders =  int(defailseedleech.split("<font color='#00b72e'>")[1].split("</font>")[0])
+                                        seeders = int(defailseedleech.split("<font color='#00b72e'>")[1].split("</font>")[0])
                                         logger.log(u"FNT seeders :  " + str(seeders), logger.DEBUG)
                                         leechers = int(defailseedleech.split("<font color='red'>")[1].split("</font>")[0])
                                         logger.log(u"FNT leechers :  " + str(leechers), logger.DEBUG)

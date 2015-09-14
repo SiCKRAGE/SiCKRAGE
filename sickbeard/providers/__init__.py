@@ -52,14 +52,15 @@ __all__ = ['womble',
            'xthor',
            'scenetime',
            'btdigg',
-		   'strike',
-]
+           'strike',
+           ]
 
 import sickbeard
 
 from sickbeard import logger
 from os import sys
 from random import shuffle
+
 
 def sortedProviderList(randomize=False):
     initialList = sickbeard.providerList + sickbeard.newznabProviderList + sickbeard.torrentRssProviderList
@@ -205,7 +206,8 @@ def makeTorrentRssProvider(configString):
     except:
         return
 
-    newProvider = torrentRss.TorrentRssProvider(name, url, cookies, titleTAG, search_mode, search_fallback, enable_daily,
+    newProvider = torrentRss.TorrentRssProvider(name, url, cookies, titleTAG, search_mode, search_fallback,
+                                                enable_daily,
                                                 enable_backlog)
     newProvider.enabled = enabled == '1'
 
@@ -213,7 +215,7 @@ def makeTorrentRssProvider(configString):
 
 
 def getDefaultNewznabProviders():
-    #name|url|key|catIDs|enabled|search_mode|search_fallback|enable_daily|enable_backlog
+    # name|url|key|catIDs|enabled|search_mode|search_fallback|enable_daily|enable_backlog
     return 'NZB.Cat|https://nzb.cat/||5030,5040,5010|0|eponly|1|1|1!!!' + \
            'NZBGeek|https://api.nzbgeek.info/||5030,5040|0|eponly|0|0|0!!!' + \
            'NZBs.org|https://nzbs.org/||5030,5040|0|eponly|0|0|0!!!' + \

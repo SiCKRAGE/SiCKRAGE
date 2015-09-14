@@ -53,7 +53,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         self.url = self.urls['base_url']
 
-        self.searchurl = self.url + 'search/%s/0/7/200' # order by seed
+        self.searchurl = self.url + 'search/%s/0/7/200'  # order by seed
 
         self.re_title_url = '/torrent/(?P<id>\d+)/(?P<title>.*?)//1".+?(?P<url>magnet.*?)//1".+?(?P<seeders>\d+)</td>.+?(?P<leechers>\d+)</td>'
 
@@ -146,11 +146,11 @@ class ThePirateBayProvider(generic.TorrentProvider):
                     seeders = int(torrent.group('seeders'))
                     leechers = int(torrent.group('leechers'))
 
-                    #Filter unseeded torrent
+                    # Filter unseeded torrent
                     if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
                         continue
 
-                    #Accept Torrent only from Good People for every Episode Search
+                    # Accept Torrent only from Good People for every Episode Search
                     if self.confirmed and re.search('(VIP|Trusted|Helper|Moderator)', torrent.group(0)) is None:
                         logger.log(u"ThePirateBay Provider found result " + torrent.group(
                             'title') + " but that doesn't seem like a trusted result so I'm ignoring it", logger.DEBUG)
@@ -163,7 +163,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
                     items[mode].append(item)
 
-            #For each search mode sort all the items by seeders
+            # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -218,7 +218,6 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
 class ThePirateBayCache(tvcache.TVCache):
     def __init__(self, provider):
-
         tvcache.TVCache.__init__(self, provider)
 
         # only poll ThePirateBay every 10 minutes max
@@ -227,5 +226,6 @@ class ThePirateBayCache(tvcache.TVCache):
     def _getRSSData(self):
         search_params = {'RSS': ['rss']}
         return {'entries': self.provider._doSearch(search_params)}
+
 
 provider = ThePirateBayProvider()

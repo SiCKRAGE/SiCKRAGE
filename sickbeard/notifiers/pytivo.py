@@ -63,7 +63,6 @@ class pyTivoNotifier:
         # come up with.
         #
 
-
         # Calculated values
 
         showPath = ep_obj.show.location

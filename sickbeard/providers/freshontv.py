@@ -128,7 +128,6 @@ class FreshOnTVProvider(generic.TorrentProvider):
 
                     return False
 
-
     def _get_season_search_strings(self, ep_obj):
 
         search_string = {'Season': []}

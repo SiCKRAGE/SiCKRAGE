@@ -381,7 +381,6 @@ class TraktChecker():
             indexer_id = int(show_el)
             show = self.EpisodeWatchlist[trakt_id][show_el]
 
-
             newShow = helpers.findCertainShow(sickbeard.showList, indexer_id)
 
             try:

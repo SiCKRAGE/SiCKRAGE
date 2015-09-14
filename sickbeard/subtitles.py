@@ -34,9 +34,11 @@ provider_urls = {'addic7ed': 'http://www.addic7ed.com',
                  'podnapisi': 'http://www.podnapisi.net',
                  'thesubdb': 'http://www.thesubdb.com',
                  'tvsubtitles': 'http://www.tvsubtitles.net'
-                }
+                 }
 
 SINGLE = 'und'
+
+
 def sortedServiceList():
     newList = []
     lmgtfy = 'http://lmgtfy.com/?q=%s'
@@ -48,7 +50,7 @@ def sortedServiceList():
                             'url': provider_urls[curService] if curService in provider_urls else lmgtfy % curService,
                             'image': curService + '.png',
                             'enabled': sickbeard.SUBTITLES_SERVICES_ENABLED[curIndex] == 1
-                           })
+                            })
         curIndex += 1
 
     for curService in subliminal.provider_manager.available_providers:
@@ -57,16 +59,19 @@ def sortedServiceList():
                             'url': provider_urls[curService] if curService in provider_urls else lmgtfy % curService,
                             'image': curService + '.png',
                             'enabled': False,
-                           })
+                            })
 
     return newList
+
 
 def getEnabledServiceList():
     return [x['name'] for x in sortedServiceList() if x['enabled']]
 
-#Hack around this for now.
+
+# Hack around this for now.
 def fromietf(language):
     return babelfish.Language.fromopensubtitles(language)
+
 
 def isValidLanguage(language):
     try:
@@ -75,15 +80,19 @@ def isValidLanguage(language):
         return False
     return True
 
+
 def getLanguageName(language):
-    return fromietf(language ).name
+    return fromietf(language).name
+
 
 # TODO: Filter here for non-languages in sickbeard.SUBTITLES_LANGUAGES
-def wantedLanguages(sqlLike = False):
-    wantedLanguages = [x for x in sorted(sickbeard.SUBTITLES_LANGUAGES) if x in babelfish.language_converters['opensubtitles'].codes]
+def wantedLanguages(sqlLike=False):
+    wantedLanguages = [x for x in sorted(sickbeard.SUBTITLES_LANGUAGES) if
+                       x in babelfish.language_converters['opensubtitles'].codes]
     if sqlLike:
         return '%' + ','.join(wantedLanguages) + '%'
     return wantedLanguages
+
 
 def subtitlesLanguages(video_path):
     """Return a list detected subtitles for the given video file"""
@@ -93,7 +102,8 @@ def subtitlesLanguages(video_path):
         video_path = ek.ek(os.path.join, sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, video_path))
     # Search subtitles in the relative path
     if sickbeard.SUBTITLES_DIR:
-        video_path = ek.ek(os.path.join, ek.ek(os.path.dirname, video_path), sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, video_path))
+        video_path = ek.ek(os.path.join, ek.ek(os.path.dirname, video_path), sickbeard.SUBTITLES_DIR,
+                           ek.ek(os.path.basename, video_path))
 
     languages = subliminal.video.scan_subtitle_languages(video_path)
 
@@ -110,19 +120,23 @@ def subtitlesLanguages(video_path):
         return defaultLang
 
     if ('pob' in defaultLang or 'pb' in defaultLang) and ('pt' not in defaultLang and 'por' not in defaultLang):
-            resultList = [x if not x in ['por', 'pt'] else u'pob' for x in resultList]
+        resultList = [x if not x in ['por', 'pt'] else u'pob' for x in resultList]
 
     return sorted(resultList)
 
+
 # TODO: Return only languages our providers allow
 def subtitleLanguageFilter():
-    return [babelfish.Language.fromopensubtitles(language) for language in babelfish.language_converters['opensubtitles'].codes if len(language) == 3]
+    return [babelfish.Language.fromopensubtitles(language) for language in
+            babelfish.language_converters['opensubtitles'].codes if len(language) == 3]
+
 
 class SubtitlesFinder():
     """
     The SubtitlesFinder will be executed every hour but will not necessarly search
     and download subtitles. Only if the defined rule is true
     """
+
     def __init__(self):
         self.amActive = False
 
@@ -133,7 +147,9 @@ class SubtitlesFinder():
             return
 
         if len(sickbeard.subtitles.getEnabledServiceList()) < 1:
-            logger.log(u'Not enough services selected. At least 1 service is required to search subtitles in the background', logger.ERROR)
+            logger.log(
+                u'Not enough services selected. At least 1 service is required to search subtitles in the background',
+                logger.ERROR)
             return
 
         logger.log(u'Checking for subtitles', logger.INFO)
@@ -151,11 +167,11 @@ class SubtitlesFinder():
         myDB = db.DBConnection()
 
         sqlResults = myDB.select('SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.subtitles, ' +
-        'e.subtitles_searchcount AS searchcount, e.subtitles_lastsearch AS lastsearch, e.location, (? - e.airdate) AS airdate_daydiff ' +
-        'FROM tv_episodes AS e INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id) ' +
-        'WHERE s.subtitles = 1 AND e.subtitles NOT LIKE (?) ' +
-        'AND (e.subtitles_searchcount <= 2 OR (e.subtitles_searchcount <= 7 AND airdate_daydiff <= 7)) ' +
-        'AND e.location != ""', [today, wantedLanguages(True)])
+                                 'e.subtitles_searchcount AS searchcount, e.subtitles_lastsearch AS lastsearch, e.location, (? - e.airdate) AS airdate_daydiff ' +
+                                 'FROM tv_episodes AS e INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id) ' +
+                                 'WHERE s.subtitles = 1 AND e.subtitles NOT LIKE (?) ' +
+                                 'AND (e.subtitles_searchcount <= 2 OR (e.subtitles_searchcount <= 7 AND airdate_daydiff <= 7)) ' +
+                                 'AND e.location != ""', [today, wantedLanguages(True)])
 
         if len(sqlResults) == 0:
             logger.log('No subtitles to download', logger.INFO)
@@ -166,15 +182,22 @@ class SubtitlesFinder():
         for epToSub in sqlResults:
 
             if not ek.ek(os.path.isfile, epToSub['location']):
-                logger.log('Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' % (epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
+                logger.log('Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' % (
+                epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
                 continue
 
             # Old shows rule
             throwaway = datetime.datetime.strptime('20110101', '%Y%m%d')
-            if ((epToSub['airdate_daydiff'] > 7 and epToSub['searchcount'] < 2 and now - datetime.datetime.strptime(epToSub['lastsearch'], '%Y-%m-%d %H:%M:%S') > datetime.timedelta(hours=rules['old'][epToSub['searchcount']])) or
+            if ((epToSub['airdate_daydiff'] > 7 and epToSub['searchcount'] < 2 and now - datetime.datetime.strptime(
+                    epToSub['lastsearch'], '%Y-%m-%d %H:%M:%S') > datetime.timedelta(
+                    hours=rules['old'][epToSub['searchcount']])) or
                 # Recent shows rule
-                (epToSub['airdate_daydiff'] <= 7 and epToSub['searchcount'] < 7 and now - datetime.datetime.strptime(epToSub['lastsearch'], '%Y-%m-%d %H:%M:%S') > datetime.timedelta(hours=rules['new'][epToSub['searchcount']]))):
-                logger.log('Downloading subtitles for episode %dx%d of show %s' % (epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
+                    (epToSub['airdate_daydiff'] <= 7 and epToSub[
+                        'searchcount'] < 7 and now - datetime.datetime.strptime(epToSub['lastsearch'],
+                                                                                '%Y-%m-%d %H:%M:%S') > datetime.timedelta(
+                        hours=rules['new'][epToSub['searchcount']]))):
+                logger.log('Downloading subtitles for episode %dx%d of show %s' % (
+                epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
 
                 showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(epToSub['showid']))
                 if not showObj:
@@ -197,7 +220,8 @@ class SubtitlesFinder():
 
                 newSubtitles = frozenset(epObj.subtitles).difference(previous_subtitles)
                 if newSubtitles:
-                    logger.log(u'Downloaded subtitles for S%02dE%02d in %s' % (epToSub["season"], epToSub["episode"], ', '.join(newSubtitles)))
+                    logger.log(u'Downloaded subtitles for S%02dE%02d in %s' % (
+                    epToSub["season"], epToSub["episode"], ', '.join(newSubtitles)))
 
         self.amActive = False
 
@@ -211,7 +235,6 @@ class SubtitlesFinder():
 
 
 def run_subs_extra_scripts(epObj, foundSubs):
-
     for curScriptName in sickbeard.SUBTITLES_EXTRA_SCRIPTS:
         script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
         script_cmd[0] = ek.ek(os.path.abspath, script_cmd[0])
@@ -224,16 +247,17 @@ def run_subs_extra_scripts(epObj, foundSubs):
                 if sickbeard.SUBTITLES_DIR and ek.ek(os.path.exists, sickbeard.SUBTITLES_DIR):
                     subpath = ek.ek(os.path.join, sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, subpath))
                 elif sickbeard.SUBTITLES_DIR:
-                    subpath = ek.ek(os.path.join, ek.ek(os.path.dirname, subpath), sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, subpath))
+                    subpath = ek.ek(os.path.join, ek.ek(os.path.dirname, subpath), sickbeard.SUBTITLES_DIR,
+                                    ek.ek(os.path.basename, subpath))
 
                 inner_cmd = script_cmd + [video.name, subpath, sub.language.opensubtitles, epObj.show.name,
-                                         str(epObj.season), str(epObj.episode), epObj.name, str(epObj.show.indexerid)]
+                                          str(epObj.season), str(epObj.episode), epObj.name, str(epObj.show.indexerid)]
 
                 # use subprocess to run the command and capture output
                 logger.log(u"Executing command: %s" % inner_cmd)
                 try:
                     p = subprocess.Popen(inner_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT, cwd=sickbeard.PROG_DIR)
+                                         stderr=subprocess.STDOUT, cwd=sickbeard.PROG_DIR)
                     out, err = p.communicate()  # @UnusedVariable
                     logger.log(u"Script result: %s" % out, logger.DEBUG)
 

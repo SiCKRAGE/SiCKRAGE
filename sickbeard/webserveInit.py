@@ -11,6 +11,7 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.routes import route
 
+
 class SRWebServer(threading.Thread):
     def __init__(self, options={}, io_loop=None):
         threading.Thread.__init__(self)
@@ -66,13 +67,13 @@ class SRWebServer(threading.Thread):
 
         # Load the app
         self.app = Application([],
-                                 debug=True,
-                                 autoreload=False,
-                                 gzip=sickbeard.WEB_USE_GZIP,
-                                 xheaders=sickbeard.HANDLE_REVERSE_PROXY,
-                                 cookie_secret=sickbeard.WEB_COOKIE_SECRET,
-                                 login_url='%s/login/' % self.options['web_root'],
-        )
+                               debug=True,
+                               autoreload=False,
+                               gzip=sickbeard.WEB_USE_GZIP,
+                               xheaders=sickbeard.HANDLE_REVERSE_PROXY,
+                               cookie_secret=sickbeard.WEB_COOKIE_SECRET,
+                               login_url='%s/login/' % self.options['web_root'],
+                               )
 
         # Main Handlers
         self.app.add_handlers('.*$', [
@@ -83,7 +84,8 @@ class SRWebServer(threading.Thread):
             (r'%s/getkey(/?.*)' % self.options['web_root'], KeyHandler),
 
             # webapi builder redirect
-            (r'%s/api/builder' % self.options['web_root'], RedirectHandler, {"url": self.options['web_root'] + '/apibuilder/'}),
+            (r'%s/api/builder' % self.options['web_root'], RedirectHandler,
+             {"url": self.options['web_root'] + '/apibuilder/'}),
 
             # webui login/logout handlers
             (r'%s/login(/?)' % self.options['web_root'], LoginHandler),
@@ -138,7 +140,8 @@ class SRWebServer(threading.Thread):
             self.server.listen(self.options['port'], self.options['host'])
         except:
             if sickbeard.LAUNCH_BROWSER and not self.daemon:
-                sickbeard.launchBrowser('https' if sickbeard.ENABLE_HTTPS else 'http', self.options['port'], sickbeard.WEB_ROOT)
+                sickbeard.launchBrowser('https' if sickbeard.ENABLE_HTTPS else 'http', self.options['port'],
+                                        sickbeard.WEB_ROOT)
                 logger.log(u"Launching browser and exiting")
             logger.log(u"Could not start webserver on port %s, already in use!" % self.options['port'])
             os._exit(1)

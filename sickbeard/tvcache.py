@@ -36,6 +36,7 @@ from name_parser.parser import NameParser, InvalidNameException, InvalidShowExce
 from sickbeard import encodingKludge as ek
 from sickbeard import show_name_helpers
 
+
 class CacheDBConnection(db.DBConnection):
     def __init__(self, providerName):
         db.DBConnection.__init__(self, "cache.db")
@@ -46,7 +47,8 @@ class CacheDBConnection(db.DBConnection):
                 self.action(
                     "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
             else:
-                sqlResults = self.select("SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
+                sqlResults = self.select(
+                    "SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
 
                 for cur_dupe in sqlResults:
                     self.action("DELETE FROM [" + providerName + "] WHERE url = ?", [cur_dupe["url"]])
@@ -205,7 +207,6 @@ class TVCache():
 
         return datetime.datetime.fromtimestamp(lastTime)
 
-
     def setLastUpdate(self, toDate=None):
         if not toDate:
             toDate = datetime.datetime.today()
@@ -230,7 +231,9 @@ class TVCache():
     def shouldUpdate(self):
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
-            logger.log(u"Last update was too soon, using old cache: " + str(self.lastUpdate) + ". Updated less then " + str(self.minTime) + " minutes ago", logger.DEBUG)
+            logger.log(
+                u"Last update was too soon, using old cache: " + str(self.lastUpdate) + ". Updated less then " + str(
+                    self.minTime) + " minutes ago", logger.DEBUG)
             return False
 
         return True
@@ -291,8 +294,8 @@ class TVCache():
 
             return [
                 "INSERT OR IGNORE INTO [" + self.providerID + "] (name, season, episodes, indexerid, url, time, quality, release_group, version) VALUES (?,?,?,?,?,?,?,?,?)",
-                [name, season, episodeText, parse_result.show.indexerid, url, curTimestamp, quality, release_group, version]]
-
+                [name, season, episodeText, parse_result.show.indexerid, url, curTimestamp, quality, release_group,
+                 version]]
 
     def searchCache(self, episode, manualSearch=False, downCurQuality=False):
         neededEps = self.findNeededEpisodes(episode, manualSearch, downCurQuality)
@@ -302,11 +305,10 @@ class TVCache():
         myDB = self._getDB()
         sql = "SELECT * FROM [" + self.providerID + "] WHERE name LIKE '%.PROPER.%' OR name LIKE '%.REPACK.%'"
 
-        if date != None:
+        if date is not None:
             sql += " AND time >= " + str(int(time.mktime(date.timetuple())))
 
         return filter(lambda x: x['indexerid'] != 0, myDB.select(sql))
-
 
     def findNeededEpisodes(self, episode, manualSearch=False, downCurQuality=False):
         neededEps = {}
@@ -393,4 +395,3 @@ class TVCache():
         self.setLastSearch()
 
         return neededEps
-

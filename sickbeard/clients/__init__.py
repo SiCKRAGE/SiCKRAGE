@@ -26,7 +26,6 @@ __all__ = ['utorrent',
 ]
 
 
-
 # Mapping error status codes to official W3C names
 http_error_code = {
     300: 'Multiple Choices',

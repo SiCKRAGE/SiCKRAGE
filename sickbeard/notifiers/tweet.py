@@ -115,7 +115,6 @@ class TwitterNotifier:
             sickbeard.TWITTER_PASSWORD = access_token['oauth_token_secret']
             return True
 
-
     def _send_tweet(self, message=None):
 
         username = self.consumer_key

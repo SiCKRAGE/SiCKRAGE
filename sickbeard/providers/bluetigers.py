@@ -173,12 +173,12 @@ class BLUETIGERSProvider(generic.TorrentProvider):
                             for link in result_linkz:
                                 title = link.text
                                 logger.log(u"BLUETIGERS TITLE TEMP: " + title, logger.DEBUG)
-                                download_url =   self.urls['base_url']  + "/" + link['href']
+                                download_url = self.urls['base_url']  + "/" + link['href']
                                 download_url = download_url.replace("torrents-details","download")
                                 logger.log(u"BLUETIGERS downloadURL: " + download_url, logger.DEBUG)
 
                                 if not title or not download_url:
-                                   continue
+                                    continue
 
                                 item = title, download_url
                                 logger.log(u"Found result: " + title.replace(' ','.') + " (" + download_url + ")", logger.DEBUG)

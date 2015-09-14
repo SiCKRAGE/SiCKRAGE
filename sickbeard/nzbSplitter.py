@@ -31,6 +31,7 @@ from sickbeard.exceptions import ex
 
 from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 
+
 def getSeasonNZBs(name, urlData, season):
     try:
         showXML = etree.ElementTree(etree.XML(urlData))
@@ -65,7 +66,7 @@ def getSeasonNZBs(name, urlData, season):
             xmlns = xmlnsMatch.group(1)
         match = re.search(regex, curFile.get("subject"), re.I)
         if not match:
-            #print curFile.get("subject"), "doesn't match", regex
+            # print curFile.get("subject"), "doesn't match", regex
             continue
         curEp = match.group(1)
         if curEp not in epFiles:
@@ -122,7 +123,7 @@ def splitResult(result):
         return False
 
     # bust it up
-    season = parse_result.season_number if parse_result.season_number != None else 1
+    season = parse_result.season_number if parse_result.season_number is not None else 1
 
     separateNZBs, xmlns = getSeasonNZBs(result.name, urlData, season)
 
@@ -144,8 +145,8 @@ def splitResult(result):
             return False
 
         # make sure the result is sane
-        if (parse_result.season_number != None and parse_result.season_number != season) or (
-                parse_result.season_number == None and season != 1):
+        if (parse_result.season_number is not None and parse_result.season_number != season) or (
+                        parse_result.season_number == None and season != 1):
             logger.log(
                 u"Found " + newNZB + " inside " + result.name + " but it doesn't seem to belong to the same season, ignoring it",
                 logger.WARNING)
