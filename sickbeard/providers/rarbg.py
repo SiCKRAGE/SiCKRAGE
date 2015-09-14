@@ -177,14 +177,14 @@ class RarbgProvider(generic.TorrentProvider):
         if not self._doLogin():
             return results
 
-        if epObj != None:
+        if epObj is not None:
             ep_indexerid = epObj.show.indexerid
             ep_indexer = epObj.show.indexer
         else:
             ep_indexerid = None
             ep_indexer = None
 
-        for mode in search_params.keys(): #Mode = RSS, Season, Episode
+        for mode in search_params.keys():  #Mode = RSS, Season, Episode
             for search_string in search_params[mode]:
                 if mode == 'RSS':
                     searchURL = self.urls['listing'] + self.defaultOptions

@@ -28,13 +28,14 @@ from sickbeard import db
 from sickbeard import network_timezones
 from sickbeard import failed_history
 
+
 class ShowUpdater():
     def __init__(self):
         self.lock = threading.Lock()
         self.amActive = False
 
     def run(self, force=False):
- 
+
         self.amActive = True
 
         update_datetime = datetime.datetime.now()
@@ -73,9 +74,10 @@ class ShowUpdater():
                 # if should_update returns True (not 'Ended') or show is selected stale 'Ended' then update, otherwise just refresh
                 if curShow.should_update(update_date=update_date) or curShow.indexerid in stale_should_update:
                     try:
-                        piList.append(sickbeard.showQueueScheduler.action.updateShow(curShow, True))  # @UndefinedVariable
+                        piList.append(
+                            sickbeard.showQueueScheduler.action.updateShow(curShow, True))  # @UndefinedVariable
                     except exceptions.CantUpdateException as e:
-                        logger.log("Unable to update show: {0}".format(str(e)),logger.DEBUG)
+                        logger.log("Unable to update show: {0}".format(str(e)), logger.DEBUG)
                 else:
                     logger.log(
                         u"Not updating episodes for show " + curShow.name + " because it's marked as ended and last/next episode is not within the grace period.",
@@ -88,7 +90,7 @@ class ShowUpdater():
         ui.ProgressIndicators.setIndicator('dailyUpdate', ui.QueueProgressIndicator("Daily Update", piList))
 
         logger.log(u"Completed full update on all shows")
-        
+
         self.amActive = False
 
     def __del__(self):

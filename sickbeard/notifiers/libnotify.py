@@ -29,7 +29,7 @@ def diagnose():
     user-readable message indicating possible issues.
     '''
     try:
-        from gi.repository import Notify #@UnusedImport
+        from gi.repository import Notify  # @UnusedImport
     except ImportError:
         return (u"<p>Error: gir-notify isn't installed. On Ubuntu/Debian, install the "
                 u"<a href=\"apt:gir1.2-notify-0.7\">gir1.2-notify-0.7</a> or "
@@ -73,7 +73,8 @@ class LibnotifyNotifier:
         try:
             from gi.repository import GObject
         except ImportError:
-            logger.log(u"Unable to import GObject from gi.repository. We can't catch a GError in display.", logger.ERROR)
+            logger.log(u"Unable to import GObject from gi.repository. We can't catch a GError in display.",
+                       logger.ERROR)
             return False
         if not Notify.init('SickRage'):
             logger.log(u"Initialization of Notify failed. libnotify notifications won't work.", logger.ERROR)
@@ -93,11 +94,11 @@ class LibnotifyNotifier:
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify(common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
-            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_LIBNOTIFY:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._notify(title, update_text + new_version)
 
     def test_notify(self):

@@ -89,6 +89,7 @@ time_presets = ('%I:%M:%S %p',
                 '%H:%M:%S'
 )
 
+
 # helper class
 class static_or_instance(object):
     def __init__(self, func):
@@ -126,8 +127,10 @@ class sbdatetime(datetime.datetime):
     @static_or_instance
     def sbftime(self, dt=None, show_seconds=False, t_preset=None):
 
-        try:locale.setlocale(locale.LC_TIME, '')
-        except:pass
+        try:
+            locale.setlocale(locale.LC_TIME, '')
+        except:
+            pass
 
         try:
             if sbdatetime.has_locale:

@@ -100,7 +100,7 @@ def change_LOG_DIR(log_dir, web_log):
         else:
             return False
 
-    if sickbeard.WEB_LOG != web_log_value or log_dir_changed == True:
+    if sickbeard.WEB_LOG != web_log_value or log_dir_changed is True:
         sickbeard.WEB_LOG = web_log_value
 
     return True
@@ -209,7 +209,7 @@ def change_VERSION_NOTIFY(version_notify):
     if not version_notify:
         sickbeard.NEWEST_VERSION_STRING = None
 
-    if oldSetting == False and version_notify == True:
+    if oldSetting is False and version_notify is True:
         sickbeard.versionCheckScheduler.forceRun()
 
 def change_DOWNLOAD_PROPERS(download_propers):
@@ -498,6 +498,7 @@ def check_setting_str(config, cfg_name, item_name, def_val, silent=True, censor_
         logger.log(item_name + " -> " + str(my_val), logger.DEBUG)
 
     return my_val
+
 
 class ConfigMigrator():
     def __init__(self, config_obj):

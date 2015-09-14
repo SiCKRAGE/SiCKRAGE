@@ -74,9 +74,9 @@ class KATProvider(generic.TorrentProvider):
                 ep_string += "%02d" % ep_obj.scene_absolute_number
                 search_string['Season'].append(ep_string)
             else:
-                ep_string = '%s S%02d -S%02dE category:tv' % (sanitizeSceneName(show_name), ep_obj.scene_season, ep_obj.scene_season) #1) showName SXX -SXXE
+                ep_string = '%s S%02d -S%02dE category:tv' % (sanitizeSceneName(show_name), ep_obj.scene_season, ep_obj.scene_season)  #1) showName SXX -SXXE
                 search_string['Season'].append(ep_string)
-                ep_string = '%s "Season %d" -Ep* category:tv' % (sanitizeSceneName(show_name), ep_obj.scene_season) # 2) showName "Season X"
+                ep_string = '%s "Season %d" -Ep* category:tv' % (sanitizeSceneName(show_name), ep_obj.scene_season)  # 2) showName "Season X"
                 search_string['Season'].append(ep_string)
 
         return [search_string]

@@ -162,6 +162,7 @@ class Quality:
                       FAILED: "Failed",
                       SNATCHED_BEST: "Snatched (Best)",
                       ARCHIVED: "Archived"}
+
     @staticmethod
     def _getStatusStrings(status):
         toReturn = {}

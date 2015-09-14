@@ -87,7 +87,7 @@ class TokyoToshokanProvider(generic.TorrentProvider):
 
         params = {
             "terms": search_string.encode('utf-8'),
-            "type": 1, # get anime types
+            "type": 1,  # get anime types
         }
 
         searchURL = self.url + 'search.php?' + urllib.urlencode(params)
@@ -122,7 +122,6 @@ class TokyoToshokanProvider(generic.TorrentProvider):
 
         except Exception, e:
             logger.log(u"Failed to parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
-
 
         return results
 

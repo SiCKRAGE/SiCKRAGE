@@ -63,7 +63,6 @@ class BoxcarNotifier:
                 'notification[from_remote_service_id]': int(time.time())
             })
 
-
         # send the request to boxcar
         try:
             req = urllib2.Request(curUrl)
@@ -113,7 +112,6 @@ class BoxcarNotifier:
     def notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
         if sickbeard.BOXCAR_NOTIFY_ONSNATCH:
             self._notifyBoxcar(title, ep_name)
-
 
     def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
         if sickbeard.BOXCAR_NOTIFY_ONDOWNLOAD:

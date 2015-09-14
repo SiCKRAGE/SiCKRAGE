@@ -33,8 +33,8 @@ from sickbeard import helpers
 from sickbeard import classes
 from sickbeard.helpers import sanitizeSceneName
 
-class FrenchTorrentDBProvider(generic.TorrentProvider):
 
+class FrenchTorrentDBProvider(generic.TorrentProvider):
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "FrenchTorrentDB")
@@ -43,7 +43,7 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
 
         self.urls = {
             'base_url': 'http://www.frenchtorrentdb.com',
-            }
+        }
 
         self.url = self.urls['base_url']
         self.search_params = {
@@ -58,7 +58,7 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
             "section": "TORRENTS",
             "exact": 1,
             "submit": "GO"
-            }
+        }
 
         self.enabled = False
         self.username = None
@@ -87,11 +87,11 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
         data = self.getURL(self.url, params=params, json=True)
 
         post_data = {
-            'username'    : self.username,
-            'password'    : self.password,
+            'username': self.username,
+            'password': self.password,
             'secure_login': self._getSecureLogin(data['challenge']),
-            'hash'        : data['hash']
-            }
+            'hash': data['hash']
+        }
 
         params.pop('challenge')
         params['ajax'] = 1
@@ -107,12 +107,14 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
         def decodeString(p, a, c, k, e, d):
             a = int(a)
             c = int(c)
+
             def e(c):
                 if c < a:
                     f = ''
                 else:
                     f = e(c / a)
                 return f + fromCharCode(c % a + 161)
+
             while c:
                 c -= 1
                 if k[c]:
@@ -169,7 +171,7 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
                             sickbeard.config.naming_ep_type[2] % {
                                 'seasonnumber': ep_obj.scene_season,
                                 'episodenumber': ep_obj.scene_episode
-                                } + ' %s' % add_string
+                            } + ' %s' % add_string
 
                 search_string['Episode'].append(re.sub(r'\s+', '.', ep_string))
 
@@ -201,10 +203,12 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
                             link = row.find("a", title=True)
                             title = link['title']
 
-                            autogetURL = self.url +'/' + (row.find("li", {"class": "torrents_name"}).find('a')['href'][1:]).replace('#FTD_MENU' ,'&menu=4')
+                            autogetURL = self.url + '/' + (
+                            row.find("li", {"class": "torrents_name"}).find('a')['href'][1:]).replace('#FTD_MENU',
+                                                                                                      '&menu=4')
                             r = self.getURL(autogetURL)
                             with BS4Parser(r, features=["html5lib", "permissive"]) as html:
-                                downloadURL = html.find("div", {"class" : "autoget"}).find('a')['href']
+                                downloadURL = html.find("div", {"class": "autoget"}).find('a')['href']
                                 item = title, downloadURL
                                 logger.log(u"Download URL : " + downloadURL, logger.DEBUG)
 
@@ -258,7 +262,6 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
-
     def _get_season_search_strings(self, ep_obj):
 
         search_string = {'Season': []}
@@ -274,8 +277,10 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
 
         return [search_string]
 
+
 class FrenchTorrentDBAuth(AuthBase):
     """Attaches HTTP Authentication to the given Request object."""
+
     def __init__(self, token):
         self.token = token
 
@@ -294,5 +299,6 @@ class FrenchTorrentDBCache(tvcache.TVCache):
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_strings)}
+
 
 provider = FrenchTorrentDBProvider()

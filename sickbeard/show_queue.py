@@ -35,6 +35,7 @@ from sickbeard.exceptions import ex
 from sickbeard.blackandwhitelist import BlackAndWhiteList
 from libtrakt import TraktAPI
 
+
 class ShowQueue(generic_queue.GenericQueue):
     def __init__(self):
         generic_queue.GenericQueue.__init__(self)
@@ -44,7 +45,7 @@ class ShowQueue(generic_queue.GenericQueue):
         return show.indexerid in [x.show.indexerid for x in self.queue if x.action_id in actions]
 
     def _isBeingSomethinged(self, show, actions):
-        return self.currentItem != None and show == self.currentItem.show and \
+        return self.currentItem is not None and show == self.currentItem.show and \
                self.currentItem.action_id in actions
 
     def isInUpdateQueue(self, show):
@@ -75,7 +76,7 @@ class ShowQueue(generic_queue.GenericQueue):
         return self._isBeingSomethinged(show, (ShowQueueActions.SUBTITLE,))
 
     def _getLoadingShowList(self):
-        return [x for x in self.queue + [self.currentItem] if x != None and x.isLoading]
+        return [x for x in self.queue + [self.currentItem] if x is not None and x.isLoading]
 
     loadingShowList = property(_getLoadingShowList)
 
@@ -87,11 +88,13 @@ class ShowQueue(generic_queue.GenericQueue):
 
         if self.isBeingUpdated(show):
             raise exceptions.CantUpdateException(
-                str(show.name) + u" is already being updated by Post-processor or manually started, can't update again until it's done.")
+                str(
+                    show.name) + u" is already being updated by Post-processor or manually started, can't update again until it's done.")
 
         if self.isInUpdateQueue(show):
             raise exceptions.CantUpdateException(
-                str(show.name) + u" is in process of being updated by Post-processor or manually started, can't update again until it's done.")
+                str(
+                    show.name) + u" is in process of being updated by Post-processor or manually started, can't update again until it's done.")
 
         if not force:
             queueItemObj = QueueItemUpdate(show)
@@ -138,7 +141,8 @@ class ShowQueue(generic_queue.GenericQueue):
         return queueItemObj
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
-                lang=None, subtitles=None, anime=None, scene=None, paused=None, blacklist=None, whitelist=None, default_status_after=None):
+                lang=None, subtitles=None, anime=None, scene=None, paused=None, blacklist=None, whitelist=None,
+                default_status_after=None):
 
         if lang is None:
             lang = sickbeard.INDEXER_DEFAULT_LANGUAGE
@@ -164,6 +168,7 @@ class ShowQueue(generic_queue.GenericQueue):
 
         return queueItemObj
 
+
 class ShowQueueActions:
     REFRESH = 1
     ADD = 2
@@ -180,7 +185,7 @@ class ShowQueueActions:
              RENAME: 'Rename',
              SUBTITLE: 'Subtitle',
              REMOVE: 'Remove Show'
-    }
+             }
 
 
 class ShowQueueItem(generic_queue.QueueItem):
@@ -201,7 +206,7 @@ class ShowQueueItem(generic_queue.QueueItem):
 
     def isInQueue(self):
         return self in sickbeard.showQueueScheduler.action.queue + [
-            sickbeard.showQueueScheduler.action.currentItem]  #@UndefinedVariable
+            sickbeard.showQueueScheduler.action.currentItem]  # @UndefinedVariable
 
     def _getName(self):
         return str(self.show.indexerid)
@@ -246,7 +251,7 @@ class QueueItemAdd(ShowQueueItem):
         Returns the show name if there is a show object created, if not returns
         the dir that the show is being added to.
         """
-        if self.show == None:
+        if self.show is None:
             return self.showDir
         return self.show.name
 
@@ -257,7 +262,7 @@ class QueueItemAdd(ShowQueueItem):
         Returns True if we've gotten far enough to have a show object, or False
         if we still only know the folder name.
         """
-        if self.show == None:
+        if self.show is None:
             return True
         return False
 
@@ -300,8 +305,9 @@ class QueueItemAdd(ShowQueueItem):
                 self._finishEarly()
                 return
         except Exception, e:
-            logger.log(u"Show name with ID %s doesn't exist on %s anymore. If you are using trakt, it will be removed from your TRAKT watchlist. If you are adding manually, try removing the nfo and adding again" %
-                (self.indexer_id,sickbeard.indexerApi(self.indexer).name) , logger.ERROR)
+            logger.log(
+                u"Show name with ID %s doesn't exist on %s anymore. If you are using trakt, it will be removed from your TRAKT watchlist. If you are adding manually, try removing the nfo and adding again" %
+                (self.indexer_id, sickbeard.indexerApi(self.indexer).name), logger.ERROR)
 
             ui.notifications.error("Unable to add show",
                                    "Unable to look up the show in " + self.showDir + " on " + str(sickbeard.indexerApi(
@@ -340,12 +346,12 @@ class QueueItemAdd(ShowQueueItem):
 
             # set up initial values
             self.show.location = self.showDir
-            self.show.subtitles = self.subtitles if self.subtitles != None else sickbeard.SUBTITLES_DEFAULT
+            self.show.subtitles = self.subtitles if self.subtitles is not None else sickbeard.SUBTITLES_DEFAULT
             self.show.quality = self.quality if self.quality else sickbeard.QUALITY_DEFAULT
-            self.show.flatten_folders = self.flatten_folders if self.flatten_folders != None else sickbeard.FLATTEN_FOLDERS_DEFAULT
-            self.show.anime = self.anime if self.anime != None else sickbeard.ANIME_DEFAULT
-            self.show.scene = self.scene if self.scene != None else sickbeard.SCENE_DEFAULT
-            self.show.paused = self.paused if self.paused != None else False
+            self.show.flatten_folders = self.flatten_folders if self.flatten_folders is not None else sickbeard.FLATTEN_FOLDERS_DEFAULT
+            self.show.anime = self.anime if self.anime is not None else sickbeard.ANIME_DEFAULT
+            self.show.scene = self.scene if self.scene is not None else sickbeard.SCENE_DEFAULT
+            self.show.paused = self.paused if self.paused is not None else False
 
             # set up default new/missing episode status
             logger.log(u"Setting all episodes to the specified default status: " + str(self.show.default_ep_status))
@@ -358,13 +364,13 @@ class QueueItemAdd(ShowQueueItem):
                 if self.whitelist:
                     self.show.release_groups.set_white_keywords(self.whitelist)
 
-            # be smartish about this
-            #if self.show.genre and "talk show" in self.show.genre.lower():
-            #    self.show.air_by_date = 1
-            #if self.show.genre and "documentary" in self.show.genre.lower():
-            #    self.show.air_by_date = 0
-            #if self.show.classification and "sports" in self.show.classification.lower():
-            #    self.show.sports = 1
+                    # be smartish about this
+                    # if self.show.genre and "talk show" in self.show.genre.lower():
+                    #    self.show.air_by_date = 1
+                    # if self.show.genre and "documentary" in self.show.genre.lower():
+                    #    self.show.air_by_date = 0
+                    # if self.show.classification and "sports" in self.show.classification.lower():
+                    #    self.show.sports = 1
 
         except sickbeard.indexer_exception, e:
             logger.log(
@@ -466,7 +472,7 @@ class QueueItemAdd(ShowQueueItem):
         self.finish()
 
     def _finishEarly(self):
-        if self.show != None:
+        if self.show is not None:
             sickbeard.showQueueScheduler.action.removeShow(self.show)
 
         self.finish()
@@ -489,7 +495,7 @@ class QueueItemRefresh(ShowQueueItem):
 
         self.show.refreshDir()
         self.show.writeMetadata()
-        #if self.force:
+        # if self.force:
         #    self.show.updateMetadata()
         self.show.populateCache()
 
@@ -497,6 +503,7 @@ class QueueItemRefresh(ShowQueueItem):
         sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer)
 
         self.finish()
+
 
 class QueueItemRename(ShowQueueItem):
     def __init__(self, show=None):
@@ -538,6 +545,7 @@ class QueueItemRename(ShowQueueItem):
 
         self.finish()
 
+
 class QueueItemSubtitle(ShowQueueItem):
     def __init__(self, show=None):
         ShowQueueItem.__init__(self, ShowQueueActions.SUBTITLE, show)
@@ -549,6 +557,7 @@ class QueueItemSubtitle(ShowQueueItem):
 
         self.show.downloadSubtitles()
         self.finish()
+
 
 class QueueItemUpdate(ShowQueueItem):
     def __init__(self, show=None):
@@ -638,10 +647,12 @@ class QueueItemUpdate(ShowQueueItem):
         sickbeard.showQueueScheduler.action.refreshShow(self.show, self.force)
         self.finish()
 
+
 class QueueItemForceUpdate(QueueItemUpdate):
     def __init__(self, show=None):
         ShowQueueItem.__init__(self, ShowQueueActions.FORCEUPDATE, show)
         self.force = True
+
 
 class QueueItemRemove(ShowQueueItem):
     def __init__(self, show=None, full=False):
@@ -660,6 +671,6 @@ class QueueItemRemove(ShowQueueItem):
             try:
                 sickbeard.traktCheckerScheduler.action.removeShowFromTraktLibrary(self.show)
             except Exception as e:
-                logger.log(u"Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, ex(e)),logger.WARNING)
+                logger.log(u"Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, ex(e)), logger.WARNING)
 
         self.finish()

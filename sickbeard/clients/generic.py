@@ -10,6 +10,7 @@ from bencode import bencode, bdecode
 import requests
 from bencode.BTL import BTFailure
 
+
 class GenericClient(object):
     def __init__(self, name, host=None, username=None, password=None):
 
@@ -35,7 +36,7 @@ class GenericClient(object):
         logger.log(
             self.name + u': Requested a ' + method.upper() + ' connection to url ' + self.url + ' with Params= ' + str(
                 params) + ' Data=' + str(data if data else 'None')[0:99] + (
-            '...' if len(data if data else 'None') > 200 else ''), logger.DEBUG)
+                '...' if len(data if data else 'None') > 200 else ''), logger.DEBUG)
 
         logger.log(
             self.name + u': Requested a ' + method.upper() + ' connection to url ' + self.url + ' with Params= ' + str(
@@ -212,7 +213,8 @@ class GenericClient(object):
 
         except Exception, e:
             logger.log(self.name + u': Failed Sending Torrent', logger.ERROR)
-            logger.log(self.name + u': Exception raised when sending torrent: ' + str(result) + u'. Error: ' + str(e), logger.DEBUG)
+            logger.log(self.name + u': Exception raised when sending torrent: ' + str(result) + u'. Error: ' + str(e),
+                       logger.DEBUG)
             return r_code
 
         return r_code

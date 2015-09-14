@@ -206,7 +206,6 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
                     else:
                         toReturn.append(curShow + "." + cur_season)
 
-
     return toReturn
 
 

@@ -18,6 +18,7 @@
 
 from sickbeard import encodingKludge as ek
 
+
 def ex(e):
     """
     Returns a unicode string from the exception text if it exists.
@@ -119,8 +120,10 @@ class CantRefreshException(SickBeardException):
 class CantUpdateException(SickBeardException):
     "The show can't be updated right now"
 
+
 class CantRemoveException(SickBeardException):
     "The show can't be removed right now"
+
 
 class PostProcessingFailed(SickBeardException):
     "Post-processing the episode failed"

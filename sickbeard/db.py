@@ -32,6 +32,7 @@ from sickbeard.exceptions import ex
 db_cons = {}
 db_locks = {}
 
+
 def dbFilename(filename="sickbeard.db", suffix=None):
     """
     @param filename: The sqlite database filename to use. If not specified,
@@ -43,6 +44,7 @@ def dbFilename(filename="sickbeard.db", suffix=None):
     if suffix:
         filename = "%s.%s" % (filename, suffix)
     return ek.ek(os.path.join, sickbeard.DATA_DIR, filename)
+
 
 class DBConnection(object):
     def __init__(self, filename="sickbeard.db", suffix=None, row_type=None):
@@ -146,12 +148,12 @@ class DBConnection(object):
                     logger.log(u"Fatal error executing query: " + ex(e), logger.ERROR)
                     raise
 
-            #time.sleep(0.02)
+            # time.sleep(0.02)
 
             return sqlResult
 
     def action(self, query, args=None, fetchall=False, fetchone=False):
-        if query == None:
+        if query is None:
             return
 
         sqlResult = None
@@ -160,7 +162,7 @@ class DBConnection(object):
         with db_locks[self.filename]:
             while attempt < 5:
                 try:
-                    if args == None:
+                    if args is None:
                         logger.log(self.filename + ": " + query, logger.DB)
                     else:
                         logger.log(self.filename + ": " + query + " with args " + str(args), logger.DB)
@@ -182,7 +184,7 @@ class DBConnection(object):
                     logger.log(u"Fatal error executing query: " + ex(e), logger.ERROR)
                     raise
 
-            #time.sleep(0.02)
+            # time.sleep(0.02)
 
             return sqlResult
 
@@ -190,7 +192,7 @@ class DBConnection(object):
 
         sqlResults = self.action(query, args, fetchall=True)
 
-        if sqlResults == None:
+        if sqlResults is None:
             return []
 
         return sqlResults
@@ -199,7 +201,7 @@ class DBConnection(object):
 
         sqlResults = self.action(query, args, fetchone=True)
 
-        if sqlResults == None:
+        if sqlResults is None:
             return []
 
         return sqlResults
@@ -232,7 +234,7 @@ class DBConnection(object):
             # Just revert to the old code for now, until we can fix unicode
             return unicode(x, 'utf-8')
         except:
-            return unicode(x, sickbeard.SYS_ENCODING,errors="ignore")
+            return unicode(x, sickbeard.SYS_ENCODING, errors="ignore")
 
     def _dict_factory(self, cursor, row):
         d = {}
@@ -241,7 +243,7 @@ class DBConnection(object):
         return d
 
     def hasTable(self, tableName):
-        return len(self.select("SELECT 1 FROM sqlite_master WHERE name = ?;", (tableName, ))) > 0
+        return len(self.select("SELECT 1 FROM sqlite_master WHERE name = ?;", (tableName,))) > 0
 
     def hasColumn(self, tableName, column):
         return column in self.tableInfo(tableName)
@@ -250,8 +252,10 @@ class DBConnection(object):
         self.action("ALTER TABLE %s ADD %s %s" % (table, column, type))
         self.action("UPDATE %s SET %s = ?" % (table, column), (default,))
 
+
 def sanityCheckDatabase(connection, sanity_check):
     sanity_check(connection).check()
+
 
 class DBSanityCheck(object):
     def __init__(self, connection):
@@ -325,7 +329,7 @@ class SchemaUpgrade(object):
         self.connection = connection
 
     def hasTable(self, tableName):
-        return len(self.connection.select("SELECT 1 FROM sqlite_master WHERE name = ?;", (tableName, ))) > 0
+        return len(self.connection.select("SELECT 1 FROM sqlite_master WHERE name = ?;", (tableName,))) > 0
 
     def hasColumn(self, tableName, column):
         return column in self.connection.tableInfo(tableName)

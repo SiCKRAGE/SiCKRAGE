@@ -11,8 +11,8 @@ from sickbeard import logger
 from .generic import GenericClient
 from synchronousdeluge import DelugeClient
 
-class DelugeDAPI(GenericClient):
 
+class DelugeDAPI(GenericClient):
     drpc = None
 
     def __init__(self, host=None, username=None, password=None):
@@ -24,11 +24,11 @@ class DelugeDAPI(GenericClient):
 
         return True
 
-    def connect(self, reconnect = False):
+    def connect(self, reconnect=False):
         hostname = self.host.replace("/", "").split(':')
 
         if not self.drpc or reconnect:
-            self.drpc = DelugeRPC(hostname[1], port = hostname[2], username = self.username, password = self.password)
+            self.drpc = DelugeRPC(hostname[1], port=hostname[2], username=self.username, password=self.password)
 
         return self.drpc
 
@@ -55,7 +55,8 @@ class DelugeDAPI(GenericClient):
         if result.show.is_anime:
             label = sickbeard.TORRENT_LABEL_ANIME
 
-        if not result.content: result.content = {}
+        if not result.content:
+            result.content = {}
 
         if not result.content:
             return None
@@ -85,7 +86,6 @@ class DelugeDAPI(GenericClient):
         if label:
             return self.drpc.set_torrent_label(result.hash, label)
         return True
-
 
     def _set_torrent_ratio(self, result):
         if result.ratio:
@@ -117,15 +117,15 @@ class DelugeDAPI(GenericClient):
         else:
             return False, 'Error: Unable to Authenticate!  Please check your config!'
 
-class DelugeRPC(object):
 
+class DelugeRPC(object):
     host = 'localhost'
     port = 58846
     username = None
     password = None
     client = None
 
-    def __init__(self, host = 'localhost', port = 58846, username = None, password = None):
+    def __init__(self, host='localhost', port=58846, username=None, password=None):
         super(DelugeRPC, self).__init__()
 
         self.host = host
@@ -241,5 +241,6 @@ class DelugeRPC(object):
             logger.log('DelugeD: Torrent already exists in Deluge', logger.DEBUG)
             return torrent_hash
         return False
+
 
 api = DelugeDAPI()

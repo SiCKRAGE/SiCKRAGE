@@ -114,7 +114,6 @@ class TorrentDayProvider(generic.TorrentProvider):
             logger.log(u'Unable to obtain cookie for TorrentDay', logger.WARNING)
             return False
 
-
     def _get_season_search_strings(self, ep_obj):
 
         search_string = {'Season': []}

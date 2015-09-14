@@ -23,7 +23,6 @@ import datetime
 import sickbeard
 import generic
 
-
 from sickbeard.common import Quality
 from sickbeard import logger
 from sickbeard import show_name_helpers
@@ -34,26 +33,23 @@ from sickbeard import classes
 from sickbeard.helpers import sanitizeSceneName
 
 
-
 class CpasbienProvider(generic.TorrentProvider):
-
     def __init__(self):
-        
+
         generic.TorrentProvider.__init__(self, "Cpasbien")
 
         self.supportsBacklog = True
         self.ratio = None
-        
+
         self.url = "http://www.cpasbien.pw"
-        
-        
+
     def isEnabled(self):
-        
+
         return self.enabled
-    
+
     def imageName(self):
         return 'cpasbien.png'
-    
+
     def getQuality(self, item, anime=False):
         quality = Quality.sceneQuality(item[0], anime)
         return quality
@@ -105,17 +101,17 @@ class CpasbienProvider(generic.TorrentProvider):
                 search_string['Episode'].append(re.sub('\s+', '.', ep_string))
 
         return [search_string]
-        
+
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
-        
+
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
-        
+
         for mode in search_params.keys():
 
             for search_string in search_params[mode]:
-        
-                searchURL = self.url + '/recherche/'+search_string.replace('.','-')+'.html'
+
+                searchURL = self.url + '/recherche/' + search_string.replace('.', '-') + '.html'
                 data = self.getURL(searchURL)
 
                 if not data:
@@ -123,52 +119,52 @@ class CpasbienProvider(generic.TorrentProvider):
 
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        
-                        lin=0
-                        erlin=0
-                        resultdiv=[]
-                        while erlin==0:
+
+                        lin = 0
+                        erlin = 0
+                        resultdiv = []
+                        while erlin == 0:
                             try:
-                                classlin='ligne'+str(lin)
-                                resultlin=html.findAll(attrs = {'class' : [classlin]})
+                                classlin = 'ligne' + str(lin)
+                                resultlin = html.findAll(attrs={'class': [classlin]})
                                 if resultlin:
                                     for ele in resultlin:
                                         resultdiv.append(ele)
-                                    lin+=1
+                                    lin += 1
                                 else:
-                                    erlin=1
+                                    erlin = 1
                             except:
-                                erlin=1
-                        
+                                erlin = 1
+
                         for row in resultdiv:
                             try:
                                 link = row.find("a", title=True)
-                                torrent_name = str(link.text).lower().strip()  
+                                torrent_name = str(link.text).lower().strip()
                                 pageURL = link['href']
 
-                                #downloadTorrentLink = torrentSoup.find("a", title.startswith('Cliquer'))
-                                tmp = pageURL.split('/')[-1].replace('.html','.torrent')
+                                # downloadTorrentLink = torrentSoup.find("a", title.startswith('Cliquer'))
+                                tmp = pageURL.split('/')[-1].replace('.html', '.torrent')
 
                                 downloadTorrentLink = ('http://www.cpasbien.pw/telechargement/%s' % tmp)
 
                                 if downloadTorrentLink:
-                
                                     torrent_download_url = downloadTorrentLink
                             except (AttributeError, TypeError):
-                                    continue
-                            
+                                continue
+
                             if not torrent_name or not torrent_download_url:
                                 continue
 
                             item = torrent_name, torrent_download_url
-                            logger.log(u"Found result: " + torrent_name + " (" + torrent_download_url + ")",logger.DEBUG)
+                            logger.log(u"Found result: " + torrent_name + " (" + torrent_download_url + ")",
+                                       logger.DEBUG)
                             items[mode].append(item)
 
                 except Exception, e:
-                    logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(),logger.ERROR)
+                    logger.log(u"Failed parsing " + self.name + " Traceback: " + traceback.format_exc(), logger.ERROR)
             results += items[mode]
         return results
-    
+
     def _get_title_and_url(self, item):
 
         title, url = item
@@ -181,7 +177,7 @@ class CpasbienProvider(generic.TorrentProvider):
             url = str(url).replace('&amp;', '&')
 
         return title, url
-    
+
     def findPropers(self, search_date=datetime.datetime.today()):
 
         results = []
@@ -209,8 +205,9 @@ class CpasbienProvider(generic.TorrentProvider):
                     results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
 
         return results
-    
+
     def seedRatio(self):
         return self.ratio
+
 
 provider = CpasbienProvider()

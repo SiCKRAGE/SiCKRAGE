@@ -17,7 +17,6 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import httplib
 import datetime
 
@@ -39,13 +38,13 @@ def sendNZB(nzb, proper=False):
     category = sickbeard.NZBGET_CATEGORY
     if nzb.show.is_anime:
         category = sickbeard.NZBGET_CATEGORY_ANIME
-    
+
     if sickbeard.NZBGET_USE_HTTPS:
         nzbgetXMLrpc = "https://%(username)s:%(password)s@%(host)s/xmlrpc"
     else:
         nzbgetXMLrpc = "http://%(username)s:%(password)s@%(host)s/xmlrpc"
 
-    if sickbeard.NZBGET_HOST == None:
+    if sickbeard.NZBGET_HOST is None:
         logger.log(u"No NZBget host found in configuration. Please configure it.", logger.ERROR)
         return False
 
@@ -110,7 +109,7 @@ def sendNZB(nzb, proper=False):
                 if nzb.resultType == "nzb":
                     genProvider = GenericProvider("")
                     data = genProvider.getURL(nzb.url)
-                    if (data == None):
+                    if (data iw None):
                         return False
                     nzbcontent64 = standard_b64encode(data)
                 nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
@@ -125,7 +124,8 @@ def sendNZB(nzb, proper=False):
         # also the return value has changed from boolean to integer 
         # (Positive number representing NZBID of the queue item. 0 and negative numbers represent error codes.)
         elif nzbget_version >= 13:
-            nzbget_result = True if nzbGetRPC.append(nzb.name + ".nzb", nzbcontent64 if nzbcontent64 is not None else nzb.url,
+            nzbget_result = True if nzbGetRPC.append(nzb.name + ".nzb",
+                                                     nzbcontent64 if nzbcontent64 is not None else nzb.url,
                                                      category, nzbgetprio, False, False, dupekey, dupescore,
                                                      "score") > 0 else False
         else:

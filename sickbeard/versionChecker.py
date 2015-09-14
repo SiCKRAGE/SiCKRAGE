@@ -189,7 +189,7 @@ class CheckVersion():
         postprocessor_safe = postprocessor_safe(self)
         showupdate_safe = showupdate_safe(self)
 
-        if db_safe == True and postprocessor_safe == True and showupdate_safe == True:
+        if db_safe is True and postprocessor_safe is True and showupdate_safe is True:
             logger.log(u"Proceeding with auto update", logger.DEBUG)
             return True
         else:
@@ -294,6 +294,7 @@ class UpdateManager():
     def get_update_url(self):
         return sickbeard.WEB_ROOT + "/home/update/?pid=" + str(sickbeard.PID)
 
+
 class GitUpdateManager(UpdateManager):
     def __init__(self):
         self._git_path = self._find_working_git()
@@ -345,7 +346,6 @@ class GitUpdateManager(UpdateManager):
 
         # trying alternatives
 
-
         alternative_git = []
 
         # osx people who start sr from launchd have a broken path, so try a hail-mary attempt for them
@@ -395,7 +395,6 @@ class GitUpdateManager(UpdateManager):
 
             if output:
                 output = output.strip()
-
 
         except OSError:
             logger.log(u"Command " + cmd + " didn't work")

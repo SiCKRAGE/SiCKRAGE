@@ -23,7 +23,8 @@ import time
 
 import sickbeard
 from sickbeard import logger
-from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
+from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, \
+    NOTIFY_GIT_UPDATE_TEXT
 from sickbeard.exceptions import ex
 
 API_URL = "https://api.pushover.net/1/messages.json"
@@ -45,13 +46,13 @@ class PushoverNotifier:
         returns: True if the message succeeded, False otherwise
         """
 
-        if userKey == None:
+        if userKey is None:
             userKey = sickbeard.PUSHOVER_USERKEY
 
-        if apiKey == None:
+        if apiKey is None:
             apiKey = sickbeard.PUSHOVER_APIKEY
 
-        if sound == None:
+        if sound is None:
             sound = sickbeard.PUSHOVER_SOUND
 
         logger.log("Pushover API KEY in use: " + apiKey, logger.DEBUG)
@@ -63,26 +64,26 @@ class PushoverNotifier:
         try:
             if sickbeard.PUSHOVER_SOUND != "default":
                 args = {
-                        "token": apiKey,
-                        "user": userKey,
-                        "title": title.encode('utf-8'),
-                        "message": msg.encode('utf-8'),
-                        "timestamp": int(time.time()),
-                        "retry": 60,
-                        "expire": 3600,
-                        "sound": sound,
-                       }
+                    "token": apiKey,
+                    "user": userKey,
+                    "title": title.encode('utf-8'),
+                    "message": msg.encode('utf-8'),
+                    "timestamp": int(time.time()),
+                    "retry": 60,
+                    "expire": 3600,
+                    "sound": sound,
+                }
             else:
                 # sound is default, so don't send it
                 args = {
-                        "token": apiKey,
-                        "user": userKey,
-                        "title": title.encode('utf-8'),
-                        "message": msg.encode('utf-8'),
-                        "timestamp": int(time.time()),
-                        "retry": 60,
-                        "expire": 3600,
-                       }
+                    "token": apiKey,
+                    "user": userKey,
+                    "title": title.encode('utf-8'),
+                    "message": msg.encode('utf-8'),
+                    "timestamp": int(time.time()),
+                    "retry": 60,
+                    "expire": 3600,
+                }
 
             if sickbeard.PUSHOVER_DEVICE:
                 args["device"] = sickbeard.PUSHOVER_DEVICE
@@ -107,7 +108,7 @@ class PushoverNotifier:
             # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
             elif e.code == 401:
 
-                #HTTP status 401 if the user doesn't have the service added
+                # HTTP status 401 if the user doesn't have the service added
                 subscribeNote = self._sendPushover(msg, title, userKey, apiKey)
                 if subscribeNote:
                     logger.log("Subscription sent", logger.DEBUG)
@@ -133,7 +134,6 @@ class PushoverNotifier:
         if sickbeard.PUSHOVER_NOTIFY_ONSNATCH:
             self._notifyPushover(title, ep_name)
 
-
     def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
         if sickbeard.PUSHOVER_NOTIFY_ONDOWNLOAD:
             self._notifyPushover(title, ep_name)
@@ -141,12 +141,12 @@ class PushoverNotifier:
     def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyPushover(title, ep_name + ": " + lang)
-            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_PUSHOVER:
-            update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title=notifyStrings[NOTIFY_GIT_UPDATE]
-            self._notifyPushover(title, update_text + new_version) 
+            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
+            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            self._notifyPushover(title, update_text + new_version)
 
     def _notifyPushover(self, title, message, sound=None, userKey=None, apiKey=None, force=False):
         """

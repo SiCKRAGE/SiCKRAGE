@@ -63,6 +63,7 @@ category_excluded = {
               'Mobile' : 37,
              }
 
+
 class TNTVillageProvider(generic.TorrentProvider):
     def __init__(self):
 
@@ -482,7 +483,8 @@ class TNTVillageProvider(generic.TorrentProvider):
 
         for sqlshow in sqlResults:
             self.show = curshow = helpers.findCertainShow(sickbeard.showList, int(sqlshow["showid"]))
-            if not self.show: continue
+            if not self.show:
+                continue
             curEp = curshow.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
 
             searchString = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')

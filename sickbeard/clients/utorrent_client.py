@@ -31,11 +31,11 @@ class uTorrentAPI(GenericClient):
 
     def _request(self, method='get', params={}, files=None):
 
-        #Workaround for uTorrent 2.2.1
-        #Need a odict but only supported in 2.7+ and sickrage is 2.6+
+        # Workaround for uTorrent 2.2.1
+        # Need a odict but only supported in 2.7+ and sickrage is 2.6+
         ordered_params = {'token': self.auth}
 
-        for k,v in params.iteritems():
+        for k, v in params.iteritems():
             ordered_params.update({k: v})
 
         return super(uTorrentAPI, self)._request(method=method, params=ordered_params, files=files)
@@ -71,7 +71,7 @@ class uTorrentAPI(GenericClient):
                   'hash': result.hash,
                   's': 'label',
                   'v': label
-        }
+                  }
         return self._request(params=params)
 
     def _set_torrent_ratio(self, result):
@@ -85,13 +85,13 @@ class uTorrentAPI(GenericClient):
                       'hash': result.hash,
                       's': 'seed_override',
                       'v': '1'
-            }
+                      }
             if self._request(params=params):
                 params = {'action': 'setprops',
                           'hash': result.hash,
                           's': 'seed_ratio',
                           'v': float(ratio) * 10
-                }
+                          }
                 return self._request(params=params)
             else:
                 return False
@@ -106,26 +106,26 @@ class uTorrentAPI(GenericClient):
                       'hash': result.hash,
                       's': 'seed_override',
                       'v': '1'
-            }
+                      }
             if self._request(params=params):
                 params = {'action': 'setprops',
                           'hash': result.hash,
                           's': 'seed_time',
                           'v': time
-                }
+                          }
                 return self._request(params=params)
             else:
                 return False
         else:
-            return True         
-        
+            return True
+
     def _set_torrent_priority(self, result):
 
         if result.priority == 1:
             params = {'action': 'queuetop', 'hash': result.hash}
             return self._request(params=params)
         else:
-            return True            
+            return True
 
     def _set_torrent_pause(self, result):
 
@@ -137,4 +137,4 @@ class uTorrentAPI(GenericClient):
         return self._request(params=params)
 
 
-api = uTorrentAPI()       
+api = uTorrentAPI()

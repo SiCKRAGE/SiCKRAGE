@@ -173,7 +173,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                 rating = 0
             Rating = etree.SubElement(tv_node, "rating")
             rating_text = str(rating)
-            if rating_text != None:
+            if rating_text is not None:
                 Rating.text = rating_text
 
         Status = etree.SubElement(tv_node, "status")
@@ -202,7 +202,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         if getattr(myShow, '_actors', None) is not None:
             for actor in myShow['_actors']:
                 cur_actor_name_text = getattr(actor, 'name', None)
-                if cur_actor_name_text != None and cur_actor_name_text.strip():
+                if cur_actor_name_text is not None and cur_actor_name_text.strip():
                     cur_actor = etree.SubElement(cast, "actor")
                     cur_actor.text = cur_actor_name_text.strip()
 
@@ -272,7 +272,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                 episode = movie
 
                 EpisodeName = etree.SubElement(episode, "title")
-                if curEpToWrite.name != None:
+                if curEpToWrite.name is not None:
                     EpisodeName.text = curEpToWrite.name
                 else:
                     EpisodeName.text = ""
@@ -297,7 +297,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                     plot.text = myShow["overview"]
 
                 Overview = etree.SubElement(episode, "episodeplot")
-                if curEpToWrite.description != None:
+                if curEpToWrite.description is not None:
                     Overview.text = curEpToWrite.description
                 else:
                     Overview.text = ""
@@ -314,17 +314,17 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                             rating = 0
                         Rating = etree.SubElement(episode, "rating")
                         rating_text = str(rating)
-                        if rating_text != None:
+                        if rating_text is not None:
                             Rating.text = rating_text
 
                 director = etree.SubElement(episode, "director")
                 director_text = getattr(myEp, 'director', None)
-                if director_text != None:
+                if director_text is not None:
                     director.text = director_text
 
                 credits = etree.SubElement(episode, "credits")
                 credits_text = getattr(myEp, 'writer', None)
-                if credits_text != None:
+                if credits_text is not None:
                     credits.text = credits_text
 
                 cast = etree.SubElement(episode, "cast")
@@ -333,7 +333,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                     for actor in myShow['_actors']:
                         cur_actor_name_text = actor['name']
 
-                        if cur_actor_name_text != None and cur_actor_name_text.strip():
+                        if cur_actor_name_text is not None and cur_actor_name_text.strip():
                             cur_actor = etree.SubElement(cast, "actor")
                             cur_actor.text = cur_actor_name_text.strip()
 

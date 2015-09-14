@@ -39,8 +39,8 @@ from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
 from sickbeard.exceptions import ex
 
-class LibertaliaProvider(generic.TorrentProvider):
 
+class LibertaliaProvider(generic.TorrentProvider):
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Libertalia")
@@ -125,11 +125,11 @@ class LibertaliaProvider(generic.TorrentProvider):
             return True
 
         login_params = {'username': self.username,
-                            'password': self.password
-        }
+                        'password': self.password
+                        }
 
         logger.log('Performing authentication to Libertalia', logger.DEBUG)
-        response = self.getURL(self.url + '/login.php',  post_data=login_params, timeout=30)
+        response = self.getURL(self.url + '/login.php', post_data=login_params, timeout=30)
         if not response:
             logger.log(u'Unable to connect to ' + self.name + ' provider.', logger.ERROR)
             return False
@@ -142,7 +142,6 @@ class LibertaliaProvider(generic.TorrentProvider):
             return False
 
         return True
-
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
@@ -171,24 +170,24 @@ class LibertaliaProvider(generic.TorrentProvider):
                     continue
 
                 with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                    resultsTable = html.find("table", { "class" : "torrent_table"  })
+                    resultsTable = html.find("table", {"class": "torrent_table"})
                     if resultsTable:
-                        logger.log(u"Libertalia found result table ! " , logger.DEBUG)
-                        rows = resultsTable.findAll("tr" ,  {"class" : "torrent_row  new  "}  )  # torrent_row new
+                        logger.log(u"Libertalia found result table ! ", logger.DEBUG)
+                        rows = resultsTable.findAll("tr", {"class": "torrent_row  new  "})  # torrent_row new
 
                         for row in rows:
 
-                            #bypass first row because title only
-                            columns = row.find('td', {"class" : "torrent_name"} )
-                            logger.log(u"Libertalia found rows ! " , logger.DEBUG)
-                            isvfclass = row.find('td', {"class" : "sprite-vf"} )
-                            isvostfrclass = row.find('td', {"class" : "sprite-vostfr"} )
-                            link = columns.find("a",  href=re.compile("torrents"))
+                            # bypass first row because title only
+                            columns = row.find('td', {"class": "torrent_name"})
+                            logger.log(u"Libertalia found rows ! ", logger.DEBUG)
+                            isvfclass = row.find('td', {"class": "sprite-vf"})
+                            isvostfrclass = row.find('td', {"class": "sprite-vostfr"})
+                            link = columns.find("a", href=re.compile("torrents"))
                             if link:
                                 title = link.text
-                                recherched=searchURL.replace(".","(.*)").replace(" ","(.*)").replace("'","(.*)")
+                                recherched = searchURL.replace(".", "(.*)").replace(" ", "(.*)").replace("'", "(.*)")
                                 logger.log(u"Libertalia title : " + title, logger.DEBUG)
-                                downloadURL =  row.find("a",href=re.compile("torrent_pass"))['href']
+                                downloadURL = row.find("a", href=re.compile("torrent_pass"))['href']
                                 logger.log(u"Libertalia download URL : " + downloadURL, logger.DEBUG)
                                 item = title, downloadURL
                                 items[mode].append(item)
@@ -239,5 +238,6 @@ class LibertaliaProvider(generic.TorrentProvider):
             url = str(url).replace('&amp;', '&')
 
         return (title, url)
+
 
 provider = LibertaliaProvider()

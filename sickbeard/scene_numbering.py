@@ -32,6 +32,7 @@ from sickbeard import db
 from sickbeard.exceptions import ex
 from sickbeard import helpers
 
+
 def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=True):
     """
     Returns a tuple, (season, episode), with the scene numbering (if there is one),
@@ -218,7 +219,7 @@ def set_scene_numbering(indexer_id, indexer, season=None, episode=None, absolute
             "UPDATE scene_numbering SET scene_absolute_number = ? WHERE indexer = ? and indexer_id = ? and absolute_number = ?",
             [sceneAbsolute, indexer, indexer_id, absolute_number])
 
-    #Reload data from DB so that cache and db are in sync
+    # Reload data from DB so that cache and db are in sync
     show = helpers.findCertainShow(sickbeard.showList, indexer_id)
     show.flushEpisodes()
 
@@ -492,15 +493,18 @@ def xem_refresh(indexer_id, indexer, force=False):
             # XEM MAP URL
             url = "http://thexem.de/map/havemap?origin=%s" % sickbeard.indexerApi(indexer).config['xem_origin']
             parsedJSON = sickbeard.helpers.getURL(url, session=xem_session, json=True)
-            if not parsedJSON or 'result' not in parsedJSON or 'success' not in parsedJSON['result'] or 'data' not in parsedJSON or str(indexer_id) not in parsedJSON['data']:
+            if not parsedJSON or 'result' not in parsedJSON or 'success' not in parsedJSON[
+                'result'] or 'data' not in parsedJSON or str(indexer_id) not in parsedJSON['data']:
                 return
 
             # XEM API URL
-            url = "http://thexem.de/map/all?id=%s&origin=%s&destination=scene" % (indexer_id, sickbeard.indexerApi(indexer).config['xem_origin'])
+            url = "http://thexem.de/map/all?id=%s&origin=%s&destination=scene" % (
+            indexer_id, sickbeard.indexerApi(indexer).config['xem_origin'])
 
             parsedJSON = sickbeard.helpers.getURL(url, session=xem_session, json=True)
             if not parsedJSON or not 'result' in parsedJSON or not 'success' in parsedJSON['result']:
-                logger.log(u'No XEM data for show "%s on %s"' % (indexer_id, sickbeard.indexerApi(indexer).name,), logger.INFO)
+                logger.log(u'No XEM data for show "%s on %s"' % (indexer_id, sickbeard.indexerApi(indexer).name,),
+                           logger.INFO)
                 return
 
             cl = []
@@ -514,7 +518,7 @@ def xem_refresh(indexer_id, indexer, force=False):
                          indexer_id,
                          entry[sickbeard.indexerApi(indexer).config['xem_origin']]['season'],
                          entry[sickbeard.indexerApi(indexer).config['xem_origin']]['episode']
-                        ]])
+                         ]])
                 if 'scene_2' in entry:  # for doubles
                     cl.append([
                         "UPDATE tv_episodes SET scene_season = ?, scene_episode = ?, scene_absolute_number = ? WHERE showid = ? AND season = ? AND episode = ?",
@@ -524,7 +528,7 @@ def xem_refresh(indexer_id, indexer, force=False):
                          indexer_id,
                          entry[sickbeard.indexerApi(indexer).config['xem_origin']]['season'],
                          entry[sickbeard.indexerApi(indexer).config['xem_origin']]['episode']
-                        ]])
+                         ]])
 
             if len(cl) > 0:
                 myDB = db.DBConnection()
@@ -535,6 +539,7 @@ def xem_refresh(indexer_id, indexer, force=False):
                 u"Exception while refreshing XEM data for show " + str(indexer_id) + " on " + sickbeard.indexerApi(
                     indexer).name + ": " + ex(e), logger.WARNING)
             logger.log(traceback.format_exc(), logger.DEBUG)
+
 
 def fix_xem_numbering(indexer_id, indexer):
     """
@@ -622,7 +627,7 @@ def fix_xem_numbering(indexer_id, indexer):
                  indexer_id,
                  season,
                  episode
-                ]])
+                 ]])
             update_absolute_number = False
 
         if update_scene_season:
@@ -632,7 +637,7 @@ def fix_xem_numbering(indexer_id, indexer):
                  indexer_id,
                  season,
                  episode
-                ]])
+                 ]])
             update_scene_season = False
 
         if update_scene_episode:
@@ -642,7 +647,7 @@ def fix_xem_numbering(indexer_id, indexer):
                  indexer_id,
                  season,
                  episode
-                ]])
+                 ]])
             update_scene_episode = False
 
         if update_scene_absolute_number:
@@ -652,7 +657,7 @@ def fix_xem_numbering(indexer_id, indexer):
                  indexer_id,
                  season,
                  episode
-                ]])
+                 ]])
             update_scene_absolute_number = False
 
     if len(cl) > 0:

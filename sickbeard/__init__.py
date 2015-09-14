@@ -555,7 +555,6 @@ def get_backlog_cycle_time():
     cycletime = DAILYSEARCH_FREQUENCY * 2 + 7
     return max([cycletime, 720])
 
-
 def initialize(consoleLogging=True):
     with INIT_LOCK:
 
@@ -730,7 +729,6 @@ def initialize(consoleLogging=True):
                     shutil.rmtree(os.path.join(DATA_DIR, 'restore'))
                 except Exception as e:
                     logger.log(u"Restore: Unable to remove the restore directory: {0}".format(str(e)), logger.ERROR)
-
 
         GUI_NAME = check_setting_str(CFG, 'GUI', 'gui_name', 'slick')
 
@@ -2132,13 +2130,13 @@ def launchBrowser(protocol='http', startPort=None, web_root='/'):
 
 
 def getEpList(epIDs, showid=None):
-    if epIDs == None or len(epIDs) == 0:
+    if epIDs is None or len(epIDs) == 0:
         return []
 
     query = "SELECT * FROM tv_episodes WHERE indexerid in (%s)" % (",".join(['?'] * len(epIDs)),)
     params = epIDs
 
-    if showid != None:
+    if showid is not None:
         query += " AND showid = ?"
         params.append(showid)
 
