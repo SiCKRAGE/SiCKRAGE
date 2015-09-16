@@ -44,7 +44,7 @@ class ShowQueue(generic_queue.GenericQueue):
         return show.indexerid in [x.show.indexerid for x in self.queue if x.action_id in actions]
 
     def _isBeingSomethinged(self, show, actions):
-        return self.currentItem != None and show == self.currentItem.show and \
+        return self.currentItem is not None and show == self.currentItem.show and \
                self.currentItem.action_id in actions
 
     def isInUpdateQueue(self, show):

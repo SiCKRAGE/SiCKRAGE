@@ -47,7 +47,7 @@ class STRIKEProvider(generic.TorrentProvider):
 
 
     def _get_airbydate_season_range(self, season):
-        if season == None:
+        if season is None:
             return ()
         year, month = map(int, season.split('-'))
         min_date = datetime.date(year, month, 1)

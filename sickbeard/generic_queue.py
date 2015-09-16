@@ -41,6 +41,8 @@ class GenericQueue(object):
 
         self.lock = threading.Lock()
 
+        self.amActive = None
+
     def pause(self):
         logger.log(u"Pausing queue")
         self.min_priority = 999999999999

@@ -1138,7 +1138,7 @@ class Home(WebRoot):
         checkversion = CheckVersion()
         backup = checkversion._runbackup()
 
-        if backup == True:
+        if backup:
 
             if sickbeard.versionCheckScheduler.action.update():
                 # do a hard restart
@@ -4200,11 +4200,11 @@ class ConfigProviders(Config):
             return newProvider.getID() + '|' + newProvider.configStr()
 
     def getNewznabCategories(self, name, url, key):
-        '''
+        """
         Retrieves a list of possible categories with category id's
         Using the default url/api?cat
         http://yournewznaburl.com/api?t=caps&apikey=yourapikey
-        '''
+        """
         error = ""
         success = False
 

@@ -527,10 +527,10 @@ class GenericProvider:
                 results]
 
     def seedRatio(self):
-        '''
+        """
         Provider should override this value if custom seed ratio enabled
         It should return the value of the provider seed ratio
-        '''
+        """
         return ''
 
 

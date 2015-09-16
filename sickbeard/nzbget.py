@@ -45,7 +45,7 @@ def sendNZB(nzb, proper=False):
     else:
         nzbgetXMLrpc = "http://%(username)s:%(password)s@%(host)s/xmlrpc"
 
-    if sickbeard.NZBGET_HOST == None:
+    if sickbeard.NZBGET_HOST is None:
         logger.log(u"No NZBget host found in configuration. Please configure it.", logger.ERROR)
         return False
 

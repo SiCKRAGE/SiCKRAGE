@@ -89,9 +89,9 @@ def fixGlob(path):
     return re.sub(r'(?<!\[)\]', '[]]', path)
 
 def indentXML(elem, level=0):
-    '''
+    """
     Does our pretty printing, makes Matt very happy
-    '''
+    """
     i = "\n" + level * "  "
     if len(elem):
         if not elem.text or not elem.text.strip():
@@ -1613,7 +1613,7 @@ def pretty_time_delta(seconds):
     return time_delta
 
 def isFileLocked(file, writeLockCheck=False):
-    '''
+    """
     Checks to see if a file is locked. Performs three checks
         1. Checks if the file even exists
         2. Attempts to open the file for reading. This will determine if the file has a write lock.
@@ -1623,7 +1623,7 @@ def isFileLocked(file, writeLockCheck=False):
             or deleted.
     @param file: the file being checked
     @param writeLockCheck: when true will check if the file is locked for writing (prevents move operations)
-    '''
+    """
     if not ek.ek(os.path.exists, file):
         return True
     try:
@@ -1646,10 +1646,10 @@ def isFileLocked(file, writeLockCheck=False):
     return False
 
 def getDiskSpaceUsage(diskPath=None):
-    '''
+    """
     returns the free space in MB for a given path or False if no path given
     @param diskPath: the filesystem path being checked
-    '''
+    """
 
     if diskPath:
         if platform.system() == 'Windows':
