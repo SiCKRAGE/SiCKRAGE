@@ -109,6 +109,7 @@ class TVShow(object):
         self._rls_require_words = ""
         self._default_ep_status = SKIPPED
         self.dirty = True
+        self._isDirGood = False
 
         self._location = ""
         self.lock = threading.Lock()
@@ -1480,9 +1481,9 @@ class TVEpisode(object):
                 subs_new_path = ek.ek(os.path.join, ek.ek(os.path.dirname, self.location), sickbeard.SUBTITLES_DIR)
                 dir_exists = helpers.makeDir(subs_new_path)
                 if not dir_exists:
-	                logger.log(u'Unable to create subtitles folder ' + subs_new_path, logger.ERROR)
+                    logger.log(u'Unable to create subtitles folder ' + subs_new_path, logger.ERROR)
                 else:
-	                helpers.chmodAsParent(subs_new_path)
+                    helpers.chmodAsParent(subs_new_path)
             else:
                 subs_new_path = ek.ek(os.path.join, ek.ek(os.path.dirname, self.location))
 

@@ -323,7 +323,7 @@ class Quality:
 
         if height > 1040:
             return Quality.FULLHDTV
-        elif height > 680 and height < 760:
+        elif 680 < height < 760:
             return Quality.HDTV
         elif height < 680:
             return Quality.SDTV

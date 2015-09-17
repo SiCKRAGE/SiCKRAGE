@@ -271,7 +271,12 @@ class ApiCall(ApiHandler):
     _help = {"desc": "No help message available. Please tell the devs that a help msg is missing for this cmd"}
 
     def __init__(self, args, kwargs):
-        # missing
+
+        self._requiredParams = []
+        self._optionalParams = []
+        self.indexer = None
+        self._missing = []
+
         try:
             if self._missing:
                 self.run = self.return_missing

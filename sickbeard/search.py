@@ -52,7 +52,7 @@ def _downloadResult(result):
     """
 
     resProvider = result.provider
-    if resProvider == None:
+    if resProvider is None:
         logger.log(u"Invalid provider name - this is a coding error, report it please", logger.ERROR)
         return False
 
@@ -592,7 +592,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
 
                 logger.log(u"Seeing if we want to bother with multi-episode result " + _multiResult.name, logger.DEBUG)
 
-		# Filter result by ignore/required/whitelist/blacklist/quality, etc
+        # Filter result by ignore/required/whitelist/blacklist/quality, etc
                 multiResult = pickBestResult(_multiResult, show)
                 if not multiResult:
                     continue

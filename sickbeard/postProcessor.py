@@ -95,6 +95,8 @@ class PostProcessor(object):
 
         self.version = None
 
+        self.anidbEpisode  = False
+
     def _log(self, message, level=logger.INFO):
         """
         A wrapper for the internal logger which also keeps track of messages and saves them to a string for later.
