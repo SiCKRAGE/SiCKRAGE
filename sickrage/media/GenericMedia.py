@@ -27,16 +27,18 @@ from sickrage.helper.encoding import ek
 
 
 class GenericMedia:
-    def __init__(self, indexer_id, media_format='normal'):
+    allowed_media_format = (u'normal', u'thumb')
+
+    def __init__(self, indexer_id, media_format=u'normal'):
         """
         :param indexer_id: The indexer id of the show
-        :param media_format: The format of the media to get. Must be either 'normal' or 'thumb'
+        :param media_format: The format of the media to get. Must be one of ``self.allowed_media_format``
         """
 
-        if media_format in ('normal', 'thumb'):
+        if media_format in self.allowed_media_format:
             self.media_format = media_format
         else:
-            self.media_format = 'normal'
+            self.media_format = u'normal'
 
         try:
             self.indexer_id = int(indexer_id)
@@ -49,7 +51,7 @@ class GenericMedia:
         :return: The name of the file to use as a fallback if the show media file is missing
         """
 
-        return ''
+        return u''
 
     def get_media(self):
         """
@@ -59,7 +61,7 @@ class GenericMedia:
         static_media_path = self.get_static_media_path()
 
         if ek(isfile, static_media_path):
-            with open(static_media_path, 'rb') as content:
+            with open(static_media_path, u'rb') as content:
                 return content.read()
 
         return None
@@ -70,7 +72,7 @@ class GenericMedia:
         :return: The path to the media related to ``self.indexer_id``
         """
 
-        return ''
+        return u''
 
     @staticmethod
     def get_media_root():
@@ -78,7 +80,7 @@ class GenericMedia:
         :return: The root folder containing the media
         """
 
-        return ek(join, sickbeard.PROG_DIR, 'gui', 'slick')
+        return ek(join, sickbeard.PROG_DIR, u'gui', u'slick')
 
     def get_media_type(self):
         """
@@ -90,7 +92,7 @@ class GenericMedia:
         if ek(isfile, static_media_path):
             return guess_type(static_media_path)[0]
 
-        return ''
+        return u''
 
     def get_show(self):
         """
@@ -113,6 +115,6 @@ class GenericMedia:
             if ek(isfile, media_path):
                 return normpath(media_path)
 
-        image_path = ek(join, self.get_media_root(), 'images', self.get_default_media_name())
+        image_path = ek(join, self.get_media_root(), u'images', self.get_default_media_name())
 
-        return image_path.replace('\\', '/')
+        return image_path.replace(u'\\', u'/')

@@ -16,6 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-dateFormat = '%Y-%m-%d'
-dateTimeFormat = '%Y-%m-%d %H:%M:%S'
-timeFormat = '%A %I:%M %p'
+dateFormat = u'%Y-%m-%d'
+dateTimeFormat = u'%Y-%m-%d %H:%M:%S'
+timeFormat = u'%A %I:%M %p'

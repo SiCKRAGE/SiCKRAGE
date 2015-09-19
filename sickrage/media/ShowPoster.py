@@ -26,14 +26,14 @@ class ShowPoster(GenericMedia):
     """
 
     def get_default_media_name(self):
-        return 'poster.png'
+        return u'poster.png'
 
     def get_media_path(self):
         if self.get_show():
-            if self.media_format == 'normal':
+            if self.media_format == u'normal':
                 return ImageCache().poster_path(self.indexer_id)
 
-            if self.media_format == 'thumb':
+            if self.media_format == u'thumb':
                 return ImageCache().poster_thumb_path(self.indexer_id)
 
-        return ''
+        return u''

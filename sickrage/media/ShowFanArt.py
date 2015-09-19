@@ -26,10 +26,10 @@ class ShowFanArt(GenericMedia):
     """
 
     def get_default_media_name(self):
-        return 'fanart.png'
+        return u'fanart.png'
 
     def get_media_path(self):
         if self.get_show():
             return ImageCache().fanart_path(self.indexer_id)
 
-        return ''
+        return u''
