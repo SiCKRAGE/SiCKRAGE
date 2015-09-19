@@ -1,5 +1,6 @@
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -34,8 +35,8 @@ class Notifications(object):
         """
         Add a regular notification to the queue
 
-        title: The title of the notification
-        message: The message portion of the notification
+        :param title: The title of the notification
+        :param message: The message portion of the notification
         """
         self._messages.append(Notification(title, message, MESSAGE))
 
@@ -43,8 +44,8 @@ class Notifications(object):
         """
         Add an error notification to the queue
 
-        title: The title of the notification
-        message: The message portion of the notification
+        :param title: The title of the notification
+        :param message: The message portion of the notification
         """
         self._errors.append(Notification(title, message, ERROR))
 
@@ -53,7 +54,7 @@ class Notifications(object):
         Return all the available notifications in a list. Marks them all as seen
         as it returns them. Also removes timed out Notifications from the queue.
 
-        Returns: A list of Notification objects
+        :return: A list of Notification objects
         """
 
         # filter out expired notifications

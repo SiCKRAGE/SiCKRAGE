@@ -1,5 +1,6 @@
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -41,45 +42,76 @@ class ShowQueue(generic_queue.GenericQueue):
         self.queue_name = "SHOWQUEUE"
 
     def _isInQueue(self, show, actions):
+        """
+        Returns the show indexerid when there are entries in current queue for listed actions
+
+        :param show: Show object to check
+        :param actions: Actions to see are queued
+        :return: Show object if queued, None if not
+        """
         return show.indexerid in [x.show.indexerid for x in self.queue if x.action_id in actions]
 
     def _isBeingSomethinged(self, show, actions):
+        """
+        Returns boolean True/False if action is queued for show object
+
+        :param show: Show object
+        :param actions: Actions to see are queued
+        :return: Boolean, True if show object has specific actions in queue
+        """
         return self.currentItem != None and show == self.currentItem.show and \
                self.currentItem.action_id in actions
 
     def isInUpdateQueue(self, show):
+        """Returns true if show object has outstanding entries in update queue"""
         return self._isInQueue(show, (ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE))
 
     def isInRefreshQueue(self, show):
+        """Returns true if show object has outstanding entries in refresh queue"""
         return self._isInQueue(show, (ShowQueueActions.REFRESH,))
 
     def isInRenameQueue(self, show):
+        """Returns true if show object has outstanding entries in rename queue"""
         return self._isInQueue(show, (ShowQueueActions.RENAME,))
 
     def isInSubtitleQueue(self, show):
+        """Returns true if show object has outstanding entries in subtitile queue"""
         return self._isInQueue(show, (ShowQueueActions.SUBTITLE,))
 
     def isBeingAdded(self, show):
+        """Returns true if show object is in the process of being added to SickRage"""
         return self._isBeingSomethinged(show, (ShowQueueActions.ADD,))
 
     def isBeingUpdated(self, show):
+        """Returns true if show object is forcibly being updated at the moment"""
         return self._isBeingSomethinged(show, (ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE))
 
     def isBeingRefreshed(self, show):
+        """Returns true of show object is being refreshed"""
         return self._isBeingSomethinged(show, (ShowQueueActions.REFRESH,))
 
     def isBeingRenamed(self, show):
+        """Returns true if show object is being renamed"""
         return self._isBeingSomethinged(show, (ShowQueueActions.RENAME,))
 
     def isBeingSubtitled(self, show):
+        """Returns true if show object is being subtitled"""
         return self._isBeingSomethinged(show, (ShowQueueActions.SUBTITLE,))
 
     def _getLoadingShowList(self):
+        """Returns list of shows that currently are loading"""
         return [x for x in self.queue + [self.currentItem] if x != None and x.isLoading]
 
     loadingShowList = property(_getLoadingShowList)
 
     def updateShow(self, show, force=False):
+        """
+        Schedules show for update, creates queue item
+
+        :param show: Show object to update
+        :param force: Boolean to indicate if we should force the update or not
+        :return: QueueItem object
+        """
 
         if self.isBeingAdded(show):
             raise exceptions.CantUpdateException(
@@ -103,6 +135,13 @@ class ShowQueue(generic_queue.GenericQueue):
         return queueItemObj
 
     def refreshShow(self, show, force=False):
+        """
+        Schedules show for refresh, creates queue item
+
+        :param show: Show object to refresh
+        :param force: Boolean, to forcibly create an item in the queue
+        :return: QueueItem object
+        """
 
         if self.isBeingRefreshed(show) and not force:
             raise exceptions.CantRefreshException("This show is already being refreshed, not refreshing again.")
@@ -122,6 +161,13 @@ class ShowQueue(generic_queue.GenericQueue):
         return queueItemObj
 
     def renameShowEpisodes(self, show, force=False):
+        """
+        Schedules episode renamer to run, creates queue item
+
+        :param show: Show object to run the renamer for
+        :param force: Boolean, currently not used
+        :return: QueueItem object
+        """
 
         queueItemObj = QueueItemRename(show)
 
@@ -130,6 +176,12 @@ class ShowQueue(generic_queue.GenericQueue):
         return queueItemObj
 
     def downloadSubtitles(self, show, force=False):
+        """
+        Schedules subtitle downloader to run, creates queue item
+
+        :param show: Show object to run the subtitle downloader for
+        :param force: Boolean, currently not used
+        """
 
         queueItemObj = QueueItemSubtitle(show)
 
@@ -139,6 +191,25 @@ class ShowQueue(generic_queue.GenericQueue):
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
                 lang=None, subtitles=None, anime=None, scene=None, paused=None, blacklist=None, whitelist=None, default_status_after=None):
+        """
+        Adds a show to SickRage, creates queue item to do this
+
+        :param indexer: Indexer this show is using
+        :param indexer_id: ID at the show indexer
+        :param showDir: Directory where the show resides
+        :param default_status: status prefix for new episodes
+        :param quality: desired quality prefix for this show
+        :param flatten_folders: Boolean, should we create/maintain folder structure inside the showDir
+        :param lang: Language to get metadata in
+        :param subtitles: Boolean, download subtitles for this show
+        :param anime: Boolean, is this show anime
+        :param scene: Boolean, should we use scene numbering
+        :param paused: Boolean, should we process this show actively
+        :param blacklist: Blacklist entries for this show
+        :param whitelist: Whitelist entries for this show
+        :param default_status_after: Default status for older shows
+        :return: QueueItem object for queue entry
+        """
 
         if lang is None:
             lang = sickbeard.INDEXER_DEFAULT_LANGUAGE
@@ -151,6 +222,13 @@ class ShowQueue(generic_queue.GenericQueue):
         return queueItemObj
 
     def removeShow(self, show, full=False):
+        """
+        Schedules show for removal, creates queue entry
+
+        :param show: Show object to remove
+        :param full: Boolean, True if we need to remove media files from disk as well
+        :return: QueueItem object
+        """
         if self._isInQueue(show, ShowQueueActions.REMOVE):
             raise sickbeard.exceptions.CantRemoveException("This show is already queued to be removed")
 
@@ -264,6 +342,7 @@ class QueueItemAdd(ShowQueueItem):
     isLoading = property(_isLoading)
 
     def run(self):
+        """Process the ShowQueue item"""
 
         ShowQueueItem.run(self)
 
@@ -466,6 +545,7 @@ class QueueItemAdd(ShowQueueItem):
         self.finish()
 
     def _finishEarly(self):
+        """Remove show from queue"""
         if self.show != None:
             sickbeard.showQueueScheduler.action.removeShow(self.show)
 

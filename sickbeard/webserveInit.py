@@ -124,6 +124,7 @@ class SRWebServer(threading.Thread):
               {"path": self.video_root})])
 
     def run(self):
+        """Run the webserver"""
         if self.enable_https:
             protocol = "https"
             self.server = HTTPServer(self.app, ssl_options={"certfile": self.https_cert, "keyfile": self.https_key})
@@ -151,5 +152,6 @@ class SRWebServer(threading.Thread):
             pass
 
     def shutDown(self):
+        """Stop the webserver"""
         self.alive = False
         self.io_loop.stop()

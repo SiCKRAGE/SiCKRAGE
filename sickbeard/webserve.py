@@ -1,5 +1,6 @@
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -175,7 +176,7 @@ class BaseHandler(RequestHandler):
         #self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
 
     def write_error(self, status_code, **kwargs):
-        # handle 404 http errors
+        """handle 404 http errors"""
         if status_code == 404:
             url = self.request.uri
             if sickbeard.WEB_ROOT and self.request.uri.startswith(sickbeard.WEB_ROOT):
@@ -216,6 +217,9 @@ class BaseHandler(RequestHandler):
         HTTP status code; otherwise either 301 (permanent) or 302
         (temporary) is chosen based on the ``permanent`` argument.
         The default is 302 (temporary).
+
+        :param permanent: bool, force sending a permanent error
+        :param status: int, http status to return instead
         """
         import urlparse
         from tornado.escape import utf8
@@ -381,6 +385,13 @@ class WebRoot(WebHandler):
         return t.render(title="Api Builder", header="Api Builder", sortedShowList=sortedShowList, seasonSQLResults=seasonSQLResults, episodeSQLResults=episodeSQLResults, apikey=apikey)
 
     def showPoster(self, show=None, which=None):
+        """
+        Gets the show poster
+
+        :param show: Show to get poster for
+        :param which: Which type of poster to get banner/fanart/poster/network
+        :return: None
+        """
         media = None
         media_format = ('normal', 'thumb')[which in ('banner_thumb', 'poster_thumb', 'small')]
 
@@ -401,6 +412,7 @@ class WebRoot(WebHandler):
         return None
 
     def setHomeLayout(self, layout):
+        """Updates home layout format"""
 
         if layout not in ('poster', 'small', 'banner', 'simple', 'coverflow'):
             layout = 'poster'
@@ -410,6 +422,7 @@ class WebRoot(WebHandler):
         return self.redirect("/home/")
 
     def setPosterSortBy(self, sort):
+        """Updates poster sort method"""
 
         if sort not in ('name', 'date', 'network', 'progress'):
             sort = 'name'
@@ -418,12 +431,12 @@ class WebRoot(WebHandler):
         sickbeard.save_config()
 
     def setPosterSortDir(self, direction):
-
+        """Updates poster sort direction"""
         sickbeard.POSTER_SORTDIR = int(direction)
         sickbeard.save_config()
 
     def setHistoryLayout(self, layout):
-
+        """Updates history Layout"""
         if layout not in ('compact', 'detailed'):
             layout = 'detailed'
 
@@ -432,12 +445,13 @@ class WebRoot(WebHandler):
         return self.redirect("/history/")
 
     def toggleDisplayShowSpecials(self, show):
-
+        """Toggles displaying of show specials"""
         sickbeard.DISPLAY_SHOW_SPECIALS = not sickbeard.DISPLAY_SHOW_SPECIALS
 
         return self.redirect("/home/displayShow?show=" + show)
 
     def setComingEpsLayout(self, layout):
+        """Updates layout of coming episodes"""
         if layout not in ('poster', 'banner', 'list', 'calendar'):
             layout = 'banner'
 
@@ -449,12 +463,13 @@ class WebRoot(WebHandler):
         return self.redirect("/comingEpisodes/")
 
     def toggleComingEpsDisplayPaused(self):
-
+        """Toggles if upcoming episodes should display paused"""
         sickbeard.COMING_EPS_DISPLAY_PAUSED = not sickbeard.COMING_EPS_DISPLAY_PAUSED
 
         return self.redirect("/comingEpisodes/")
 
     def setComingEpsSort(self, sort):
+        """Updates sorting of coming episodes"""
         if sort not in ('date', 'network', 'show'):
             sort = 'date'
 
@@ -467,7 +482,7 @@ class WebRoot(WebHandler):
         return self.redirect("/comingEpisodes/")
 
     def comingEpisodes(self, layout="None"):
-
+        """Renders comingEpisodes view"""
         today1 = datetime.date.today()
         today = today1.toordinal()
         next_week1 = (datetime.date.today() + datetime.timedelta(days=7))
@@ -551,6 +566,7 @@ class WebRoot(WebHandler):
 
 
 class CalendarHandler(BaseHandler):
+    """Renders calendar views"""
     def get(self, *args, **kwargs):
         if sickbeard.CALENDAR_UNPROTECTED:
             self.write(self.calendar())
@@ -566,8 +582,7 @@ class CalendarHandler(BaseHandler):
     # iCalendar (iCal) - Standard RFC 5545 <http://tools.ietf.org/html/rfc5546>
     # Works with iCloud, Google Calendar and Outlook.
     def calendar(self):
-        """ Provides a subscribeable URL for iCal subscriptions
-        """
+        """ Provides a subscribeable URL for iCal subscriptions"""
 
         logger.log(u"Receiving iCal request from %s" % self.request.remote_ip)
 
@@ -657,6 +672,7 @@ class UI(WebRoot):
 
 @route('/browser(/?.*)')
 class WebFileBrowser(WebRoot):
+    # TODO: Figure out if this is still used somewhere, as it may pose a security risk
     def __init__(self, *args, **kwargs):
         super(WebFileBrowser, self).__init__(*args, **kwargs)
 
@@ -715,6 +731,7 @@ class Home(WebRoot):
         return epObj
 
     def index(self):
+        """Render /home/ view"""
         t = PageTemplate(rh=self, file="home.mako")
         if sickbeard.ANIME_SPLIT_HOME:
             shows = []
@@ -784,12 +801,10 @@ class Home(WebRoot):
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
         host = config.clean_url(host)
-
         client = clients.getClientIstance(torrent_method)
+        connection, accessMsg = client(host, username, password).testAuthentication()
 
-        connection, accesMsg = client(host, username, password).testAuthentication()
-
-        return accesMsg
+        return accessMsg
 
     def testFreeMobile(self, freemobile_id=None, freemobile_apikey=None):
 
@@ -1090,6 +1105,7 @@ class Home(WebRoot):
             return "Error sending Pushbullet notification"
 
     def status(self):
+        """Renders status page"""
         tvdirFree = helpers.getDiskSpaceUsage(sickbeard.TV_DOWNLOAD_DIR)
         rootDir = {}
         if sickbeard.ROOT_DIRS:
@@ -1115,6 +1131,7 @@ class Home(WebRoot):
         return self._genericMessage(title, message)
 
     def restart(self, pid=None):
+        """Renders restart page"""
         if not Restart.restart(pid):
             return self.redirect('/' + sickbeard.DEFAULT_PAGE + '/')
 
@@ -2151,6 +2168,7 @@ class HomeIRC(Home):
         super(HomeIRC, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Renders inpage IRC client"""
 
         t = PageTemplate(rh=self, file="IRC.mako")
         return t.render(topmenu="irc", header="IRC", title="IRC", submenu=self.HomeMenu())
@@ -2161,6 +2179,8 @@ class HomeNews(Home):
         super(HomeNews, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Renders application news"""
+
         try:
             news = helpers.getURL('http://sickragetv.github.io/sickrage-news/news.md', session=requests.Session())
         except Exception:
@@ -2179,6 +2199,7 @@ class HomeChangeLog(Home):
         super(HomeChangeLog, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Renders changelog"""
         try:
             changes = helpers.getURL('http://sickragetv.github.io/sickrage-news/CHANGES.md', session=requests.Session())
         except Exception:
@@ -2197,6 +2218,7 @@ class HomePostProcess(Home):
         super(HomePostProcess, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Renders the postprocessor page"""
         t = PageTemplate(rh=self, file="home_postprocess.mako")
         return t.render(submenu=self.HomeMenu(), title='Post Processing', header='Post Processing')
 
@@ -2241,6 +2263,7 @@ class HomeAddShows(Home):
         super(HomeAddShows, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Renders the view to add shows to SickRage"""
         t = PageTemplate(rh=self, file="home_addShows.mako")
         return t.render(submenu=self.HomeMenu(), title='Add Shows', header='Add Shows')
 
@@ -2423,6 +2446,7 @@ class HomeAddShows(Home):
         return t.render(title="Recommended Shows", header="Recommended Shows", submenu=self.HomeMenu(), enable_anime_options=False)
 
     def getRecommendedShows(self):
+        """Renders the recommended shows from Trakt"""
         t = PageTemplate(rh=self, file="trendingShows.mako")
 
         trending_shows = []
@@ -2562,6 +2586,7 @@ class HomeAddShows(Home):
         return t.render(submenu=self.HomeMenu(), enable_anime_options=False, title='Existing Show', header='Existing Show', topmenu="home")
 
     def addTraktShow(self, indexer_id, showName):
+        """Adds show to SickRage because Trakt says we should"""
         if helpers.findCertainShow(sickbeard.showList, int(indexer_id)):
             return
 
@@ -2602,7 +2627,7 @@ class HomeAddShows(Home):
                    fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None, anime=None,
                    scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None):
         """
-        Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
+        Receive indexer id, dir, and other options and create a show from them. If extra show dirs are
         provided then it forwards back to newShow, if not it goes to /home.
         """
 
@@ -2730,7 +2755,7 @@ class HomeAddShows(Home):
 
     def addExistingShows(self, shows_to_add=None, promptForSettings=None):
         """
-        Receives a dir list and add them. Adds the ones with given TVDB IDs first, then forwards
+        Receives a dir list and add them. Adds the ones with given indexer IDs first, then forwards
         along to the newShow page.
         """
 
@@ -2821,6 +2846,7 @@ class Manage(Home, WebRoot):
         return menu
 
     def index(self):
+        """Renders the Manage view"""
         t = PageTemplate(rh=self, file="manage.mako")
         return t.render(submenu=self.ManageMenu(), title='Mass Update', header='Mass Update', topmenu='manage')
 
@@ -3041,7 +3067,7 @@ class Manage(Home, WebRoot):
 
 
     def backlogOverview(self):
-
+        """Renders the backlog overview"""
         t = PageTemplate(rh=self, file="manage_backlogOverview.mako")
 
         showCounts = {}
@@ -3079,6 +3105,7 @@ class Manage(Home, WebRoot):
 
 
     def massEdit(self, toEdit=None):
+        """Renders the mass edit view"""
 
         t = PageTemplate(rh=self, file="manage_massEdit.mako")
 
@@ -3445,7 +3472,7 @@ class Manage(Home, WebRoot):
 
 
     def manageTorrents(self):
-
+        """Renders the in-page torrent webclients"""
         t = PageTemplate(rh=self, file="manage_torrents.mako")
         info_download_station = ''
 
@@ -3474,7 +3501,7 @@ class Manage(Home, WebRoot):
 
 
     def failedDownloads(self, limit=100, toRemove=None):
-
+        """Renders the failed downloads overview"""
         myDB = db.DBConnection('failed.db')
 
         if limit == "0":
@@ -3501,6 +3528,7 @@ class ManageSearches(Manage):
         super(ManageSearches, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Renders the manage searches view"""
         t = PageTemplate(rh=self, file="manage_manageSearches.mako")
         # t.backlogPI = sickbeard.backlogSearchScheduler.action.getProgressIndicator()
 
@@ -3557,6 +3585,7 @@ class History(WebRoot):
         self.history = HistoryTool()
 
     def index(self, limit=100):
+        """Renders the history view"""
         limit = int(limit)
         sickbeard.HISTORY_LIMIT = limit
 
@@ -3639,6 +3668,7 @@ class Config(WebRoot):
         return menu
 
     def index(self):
+        """Renders the config view"""
         t = PageTemplate(rh=self, file="config.mako")
 
         return t.render(submenu=self.ConfigMenu(), title='Configuration', header='Configuration', topmenu="config")
@@ -3650,6 +3680,7 @@ class ConfigGeneral(Config):
         super(ConfigGeneral, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Renders the general config view"""
         t = PageTemplate(rh=self, file="config_general.mako")
 
         return t.render(title='Config - General', header='General Configuration', topmenu='config', submenu=self.ConfigMenu())
@@ -3809,6 +3840,7 @@ class ConfigBackupRestore(Config):
         super(ConfigBackupRestore, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Render config backup/restore view"""
         t = PageTemplate(rh=self, file="config_backuprestore.mako")
 
         return t.render(submenu=self.ConfigMenu(), title='Config - Backup/Restore', header='Backup/Restore', topmenu='config')
@@ -3869,6 +3901,7 @@ class ConfigSearch(Config):
         super(ConfigSearch, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Render config search settings view"""
         t = PageTemplate(rh=self, file="config_search.mako")
 
         return t.render(submenu=self.ConfigMenu(), title='Config - Episode Search', header='Search Settings', topmenu='config')
@@ -3966,6 +3999,7 @@ class ConfigPostProcessing(Config):
         super(ConfigPostProcessing, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Render config postprocessing settings"""
         t = PageTemplate(rh=self, file="config_postProcessing.mako")
 
         return t.render(submenu=self.ConfigMenu(), title='Config - Post Processing', header='Post Processing', topmenu='config')
@@ -4155,6 +4189,7 @@ class ConfigProviders(Config):
         super(ConfigProviders, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Render provider config view"""
         t = PageTemplate(rh=self, file="config_providers.mako")
 
         return t.render(submenu=self.ConfigMenu(), title='Config - Providers', header='Search Providers', topmenu='config')
@@ -4200,11 +4235,11 @@ class ConfigProviders(Config):
             return newProvider.getID() + '|' + newProvider.configStr()
 
     def getNewznabCategories(self, name, url, key):
-        '''
+        """
         Retrieves a list of possible categories with category id's
         Using the default url/api?cat
         http://yournewznaburl.com/api?t=caps&apikey=yourapikey
-        '''
+        """
         error = ""
         success = False
 
@@ -4630,6 +4665,7 @@ class ConfigNotifications(Config):
         super(ConfigNotifications, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Render config notifications view"""
         t = PageTemplate(rh=self, file="config_notifications.mako")
 
         return t.render(submenu=self.ConfigMenu(), title='Config - Notifications', header='Notifications', topmenu='config')
@@ -4864,6 +4900,7 @@ class ConfigSubtitles(Config):
         super(ConfigSubtitles, self).__init__(*args, **kwargs)
 
     def index(self):
+        """Render config subtitle view"""
         t = PageTemplate(rh=self, file="config_subtitles.mako")
 
         return t.render(submenu=self.ConfigMenu(), title='Config - Subtitles', header='Subtitles', topmenu='config')
@@ -4915,7 +4952,7 @@ class ConfigAnime(Config):
         super(ConfigAnime, self).__init__(*args, **kwargs)
 
     def index(self):
-
+        """Render config anime view"""
         t = PageTemplate(rh=self, file="config_anime.mako")
 
         return t.render(submenu=self.ConfigMenu(), title='Config - Anime', header='Anime', topmenu='config')
@@ -4958,7 +4995,7 @@ class ErrorLogs(WebRoot):
         return menu
 
     def index(self):
-
+        """Render errorlogs view"""
         t = PageTemplate(rh=self, file="errorlogs.mako")
         return t.render(header="Logs &amp; Errors", title="Logs &amp; Errors", topmenu="errorlogs", submenu=self.ErrorLogsMenu())
 

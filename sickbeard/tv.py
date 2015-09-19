@@ -1,5 +1,6 @@
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -70,6 +71,7 @@ shutil.copyfile = shutil_custom.copyfile_custom
 
 
 def dirty_setter(attr_name):
+    """Sets show as dirty (should save to DB)"""
     def wrapper(self, val):
         if getattr(self, attr_name) != val:
             setattr(self, attr_name, val)
@@ -197,8 +199,8 @@ class TVShow(object):
 
     location = property(_getLocation, _setLocation)
 
-    # delete references to anything that's not in the internal lists
     def flushEpisodes(self):
+        """Delete references to anything that's not in the internal lists"""
 
         for curSeason in self.episodes:
             for curEp in self.episodes[curSeason]:
@@ -207,6 +209,13 @@ class TVShow(object):
                 del myEp
 
     def getAllEpisodes(self, season=None, has_location=False):
+        """
+        Gets all episodes for a show that we have
+
+        :param season: Check within a specific season only (defaults to None)
+        :param has_location: Boolean, only get episodes we know the location of
+        :return: list of Episodes
+        """
 
         sql_selection = "SELECT season, episode, "
 
@@ -250,6 +259,17 @@ class TVShow(object):
 
 
     def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None, forceUpdate=False):
+        """
+        Gets information on an episode
+
+        :param season: Season we're looking for
+        :param episode: Episode we're looking for
+        :param file: Filepath, if we know it (defaults to None)
+        :param noCreate: Boolean, should we create an episode if it's not previously known (defaults to False)
+        :param absolute_number: The absolute number of this show (defaults to None)
+        :param forceUpdate: Currently not implemented
+        :return:
+        """
 
         # if we get an anime get the real season and episode
         if self.is_anime and absolute_number and not season and not episode:
@@ -292,6 +312,12 @@ class TVShow(object):
         return self.episodes[season][episode]
 
     def should_update(self, update_date=datetime.date.today()):
+        """
+        Should we process update requests for this show at this moment
+
+        :param update_date: When to run the updater. Defaults to current date/time
+        :return: Boolean, True if this show should update
+        """
 
         # if show is not 'Ended' always update (status 'Continuing')
         if self.status == 'Continuing':
@@ -334,6 +360,11 @@ class TVShow(object):
         return False
 
     def writeShowNFO(self):
+        """
+        Write NFO for show to showDir
+
+        :return: Boolean, True if write was successful
+        """
 
         result = False
 
@@ -348,6 +379,11 @@ class TVShow(object):
         return result
 
     def writeMetadata(self, show_only=False):
+        """
+        Write all NFOs for show to right dir
+
+        :param show_only: Boolean, should we only write show NFO, not ep NFO (defaults to False)
+        """
 
         if not ek.ek(os.path.isdir, self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
@@ -361,6 +397,7 @@ class TVShow(object):
             self.writeEpisodeNFOs()
 
     def writeEpisodeNFOs(self):
+        """Write all NFOs for episodes to their dir"""
 
         if not ek.ek(os.path.isdir, self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
@@ -381,6 +418,7 @@ class TVShow(object):
 
 
     def updateMetadata(self):
+        """Update show metadata"""
 
         if not ek.ek(os.path.isdir, self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
@@ -389,6 +427,11 @@ class TVShow(object):
         self.updateShowNFO()
 
     def updateShowNFO(self):
+        """
+        Update show NFO file
+
+        :return: Boolean, True on success
+        """
 
         result = False
 
@@ -402,8 +445,8 @@ class TVShow(object):
 
         return result
 
-    # find all media files in the show folder and create episodes for as many as possible
     def loadEpisodesFromDir(self):
+        """Find all media files in the show folder and create episodes for as mamy as possible"""
 
         if not ek.ek(os.path.isdir, self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, not loading episodes from disk", logger.DEBUG)
@@ -469,6 +512,11 @@ class TVShow(object):
 
 
     def loadEpisodesFromDB(self):
+        """
+        Load episodes we know of from DB
+
+        :return: list of found episodes
+        """
 
         logger.log(u"Loading all episodes from the DB", logger.DEBUG)
 
@@ -520,7 +568,7 @@ class TVShow(object):
                 if not curEp:
                     raise exceptions.EpisodeNotFoundException
 
-                # if we found out that the ep is no longer on TVDB then delete it from our database too
+                # if we found out that the ep is no longer on indexer then delete it from our database too
                 if deleteEp:
                     curEp.deleteEpisode()
 
@@ -537,6 +585,12 @@ class TVShow(object):
         return scannedEps
 
     def loadEpisodesFromIndexer(self, cache=True):
+        """
+        Contact the indexer for the show, see what it knows
+
+        :param cache: Boolean, allow use of SickRage internal cache. Defaults to True
+        :return:
+        """
 
         lINDEXER_API_PARMS = sickbeard.indexerApi(self.indexer).api_params.copy()
 
@@ -604,6 +658,12 @@ class TVShow(object):
         return scannedEps
 
     def getImages(self, fanart=None, poster=None):
+        """
+        Find images for show online
+
+        :param fanart: Include fanart as well?
+        :param poster: Are we looking for a poster?
+        """
         fanart_result = poster_result = banner_result = False
         season_posters_result = season_banners_result = season_all_poster_result = season_all_banner_result = False
 
@@ -624,6 +684,12 @@ class TVShow(object):
 
     # make a TVEpisode object from a media file
     def makeEpFromFile(self, file):
+        """
+        Use a file as basis to create TVEpisode object
+
+        :param file: Media file
+        :return: TVEpisode object
+        """
 
         if not ek.ek(os.path.isfile, file):
             logger.log(str(self.indexerid) + u": That isn't even a real file dude... " + file)
@@ -764,6 +830,11 @@ class TVShow(object):
         return rootEp
 
     def loadFromDB(self, skipNFO=False):
+        """
+        Get show information from database, populate self
+
+        :param skipNFO: Currently not used
+        """
 
         logger.log(str(self.indexerid) + u": Loading show info from database", logger.DEBUG)
 
@@ -845,6 +916,12 @@ class TVShow(object):
         return True
 
     def loadFromIndexer(self, cache=True, tvapi=None, cachedSeason=None):
+        """
+        Get show information from indexer
+        :param cache: Boolean, use SickRage's cache (defaults to true)
+        :param tvapi: TODO
+        :param cachedSeason: Currently not used
+        """
 
         if self.indexer is not INDEXER_TVRAGE:
             logger.log(str(self.indexerid) + u": Loading show info from " + sickbeard.indexerApi(self.indexer).name, logger.DEBUG)
@@ -897,6 +974,11 @@ class TVShow(object):
             logger.log(str(self.indexerid) + u": NOT loading info from " + sickbeard.indexerApi(self.indexer).name + " as it is temporarily disabled.", logger.WARNING)
 
     def loadIMDbInfo(self, imdbapi=None):
+        """
+        Get show info from IMDB
+
+        :param imdbapi: Currently not used
+        """
 
         imdb_info = {'imdb_id': self.imdbid,
                      'title': '',
@@ -972,6 +1054,7 @@ class TVShow(object):
             logger.log(str(self.indexerid) + u": Obtained info from IMDb ->" + str(self.imdb_info), logger.DEBUG)
 
     def nextEpisode(self):
+        """Detect next aired episode"""
         logger.log(str(self.indexerid) + ": Finding the episode which airs next", logger.DEBUG)
 
         curDate = datetime.date.today().toordinal()
@@ -992,6 +1075,11 @@ class TVShow(object):
         return self.nextaired
 
     def deleteShow(self, full=False):
+        """
+        Remove show from DB
+
+        :param full: Include media as well
+        """
 
         sql_l = [["DELETE FROM tv_episodes WHERE showid = ?", [self.indexerid]],
                  ["DELETE FROM tv_shows WHERE indexer_id = ?", [self.indexerid]],
@@ -1053,12 +1141,14 @@ class TVShow(object):
             notifiers.trakt_notifier.update_watchlist(self, update="remove")
 
     def populateCache(self):
+        """Fill up cache"""
         cache_inst = image_cache.ImageCache()
 
         logger.log(u"Checking & filling cache for show " + self.name, logger.DEBUG)
         cache_inst.fill_cache(self)
 
     def refreshDir(self):
+        """See if the filesystem still agrees with DB"""
 
         # make sure the show dir is where we think it is unless dirs are created on the fly
         if not ek.ek(os.path.isdir, self._location) and not sickbeard.CREATE_MISSING_SHOW_DIRS:
@@ -1120,6 +1210,11 @@ class TVShow(object):
             myDB.mass_action(sql_l)
 
     def downloadSubtitles(self, force=False):
+        """
+        Download subtitles for a show
+
+        :param force: Currently not used
+        """
         # TODO: Add support for force option
         if not ek.ek(os.path.isdir, self._location):
             logger.log(str(self.indexerid) + ": Show dir doesn't exist, can't download subtitles", logger.DEBUG)
@@ -1141,6 +1236,11 @@ class TVShow(object):
             logger.log(traceback.format_exc(), logger.ERROR)
 
     def saveToDB(self, forceSave=False):
+        """
+        Save from memory/cache to DB
+
+        :param forceSave: Boolean, even save if record is not dirty
+        """
 
         if not self.dirty and not forceSave:
             logger.log(str(self.indexerid) + ": Not saving show to db - record is not dirty", logger.DEBUG)
@@ -1213,6 +1313,12 @@ class TVShow(object):
 
 
     def qualitiesToString(self, qualities=[]):
+        """
+        Gets a human readable version of a Quality prefix
+
+        :param qualities: list of quality prefixes
+        :return: human readable list
+        """
         result = u''
         for quality in qualities:
             if Quality.qualityStrings.has_key(quality):
@@ -1229,6 +1335,16 @@ class TVShow(object):
 
 
     def wantEpisode(self, season, episode, quality, manualSearch=False, downCurQuality=False):
+        """
+        Determine if we want this new episode
+
+        :param season: season of episode
+        :param episode: number of episode
+        :param quality: found quality
+        :param manualSearch: Boolean, is this a manual search
+        :param downCurQuality: Boolean, do we allow a quality downgrade
+        :return: Boolean, True if we want this episode
+        """
 
         logger.log(u"Checking if found episode %s S%02dE%02d is wanted at quality %s" % (self.name, season, episode, Quality.qualityStrings[quality]) , logger.DEBUG)
 
@@ -1293,6 +1409,12 @@ class TVShow(object):
         return False
 
     def getOverview(self, epStatus):
+        """
+        See globally what we want with this episode
+
+        :param epStatus: Current status of episode
+        :return: Overview prefix
+        """
 
         if epStatus == WANTED:
             return Overview.WANTED
@@ -1479,9 +1601,9 @@ class TVEpisode(object):
                 subs_new_path = ek.ek(os.path.join, ek.ek(os.path.dirname, self.location), sickbeard.SUBTITLES_DIR)
                 dir_exists = helpers.makeDir(subs_new_path)
                 if not dir_exists:
-	                logger.log(u'Unable to create subtitles folder ' + subs_new_path, logger.ERROR)
+                    logger.log(u'Unable to create subtitles folder ' + subs_new_path, logger.ERROR)
                 else:
-	                helpers.chmodAsParent(subs_new_path)
+                    helpers.chmodAsParent(subs_new_path)
             else:
                 subs_new_path = ek.ek(os.path.join, ek.ek(os.path.dirname, self.location))
 
@@ -1530,6 +1652,10 @@ class TVEpisode(object):
 
 
     def checkForMetaFiles(self):
+        """
+        Check for new meta files
+        :return: If either nfo or tbn has changed, returns True
+        """
 
         oldhasnfo = self.hasnfo
         oldhastbn = self.hastbn
@@ -1559,6 +1685,12 @@ class TVEpisode(object):
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
 
     def specifyEpisode(self, season, episode):
+        """
+        Specify episode to find metadata for
+
+        :param season: season
+        :param episode: episode
+        """
 
         sqlResult = self.loadFromDB(season, episode)
 
@@ -1582,6 +1714,13 @@ class TVEpisode(object):
                         raise exceptions.EpisodeNotFoundException("Couldn't find episode S%02dE%02d" % (season, episode))
 
     def loadFromDB(self, season, episode):
+        """
+        Get episode information from DB
+
+        :param season: season
+        :param episode: episode
+        :return: True if information is loaded from DB
+        """
         logger.log(u"%s: Loading episode details from DB for episode %s S%02dE%02d" % (self.show.indexerid, self.show.name, season, episode), logger.DEBUG)
 
         myDB = db.DBConnection()
@@ -1670,6 +1809,16 @@ class TVEpisode(object):
             return True
 
     def loadFromIndexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
+        """
+        Get episode metadata from indexer
+
+        :param season: season
+        :param episode: episode
+        :param cache: Boolean, use SickRage cache
+        :param tvapi: TODO
+        :param cachedSeason: TODO
+        :return: False on error
+        """
 
         if season is None:
             season = self.season
@@ -1813,6 +1962,11 @@ class TVEpisode(object):
             self.status = UNKNOWN
 
     def loadFromNFO(self, location):
+        """
+        Load episode information from NFO
+
+        :param location: location of the NFO
+        """
 
         if not ek.ek(os.path.isdir, self.show._location):
             logger.log(
@@ -1914,6 +2068,7 @@ class TVEpisode(object):
         return toReturn
 
     def createMetaFiles(self):
+        """Creates all metadata files for a shows episodes"""
 
         if not ek.ek(os.path.isdir, self.show._location):
             logger.log(str(self.show.indexerid) + u": The show dir is missing, not bothering to try to create metadata")
@@ -1926,7 +2081,11 @@ class TVEpisode(object):
             self.saveToDB()
 
     def createNFO(self):
+        """
+        Create NFO files for episodes
 
+        :return: Boolean, True on success
+        """
         result = False
 
         for cur_provider in sickbeard.metadata_provider_dict.values():
@@ -1935,6 +2094,11 @@ class TVEpisode(object):
         return result
 
     def createThumbnail(self):
+        """
+        Create thumbnails for episodes
+
+        :return: Boolean, True on success
+        """
 
         result = False
 
@@ -1944,6 +2108,7 @@ class TVEpisode(object):
         return result
 
     def deleteEpisode(self):
+        """Remove episode from DB (for instance when it was removed from indexer)"""
 
         logger.log(u"Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season, self.episode), logger.DEBUG)
 
@@ -1965,7 +2130,7 @@ class TVEpisode(object):
         """
         Creates SQL queue for this episode if any of its data has been changed since the last save.
 
-        forceSave: If True it will create SQL queue even if no data has been changed since the
+        :param forceSave: If True it will create SQL queue even if no data has been changed since the
                     last save (aka if the record is not dirty).
         """
         try:
@@ -2029,7 +2194,7 @@ class TVEpisode(object):
         """
         Saves this episode to the database if any of its data has been changed since the last save.
 
-        forceSave: If True it will save to the database even if no data has been changed since the
+        :param forceSave: If True it will save to the database even if no data has been changed since the
                     last save (aka if the record is not dirty).
         """
 
@@ -2098,7 +2263,7 @@ class TVEpisode(object):
         Returns the name of this episode in a "pretty" human-readable format. Used for logging
         and notifications and such.
 
-        Returns: A string representing the episode's name and season/ep numbers
+        :return: A string representing the episode's name and season/ep numbers
         """
 
         if self.show.anime and not self.show.scene:
@@ -2153,7 +2318,7 @@ class TVEpisode(object):
         Generates a replacement map for this episode which maps all possible custom naming patterns to the correct
         value for this episode.
 
-        Returns: A dict with patterns as the keys and their replacement values as the values.
+        :return: A dict with patterns as the keys and their replacement values as the values.
         """
 
         ep_name = self._ep_name()

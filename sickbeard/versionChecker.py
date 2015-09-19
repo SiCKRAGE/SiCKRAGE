@@ -1,5 +1,6 @@
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -82,6 +83,7 @@ class CheckVersion():
         self.amActive = False
 
     def run_backup_if_safe(self):
+        """Starts a backup, but only if it's safe"""
         return self.safe_to_update() is True and self._runbackup() is True
 
     def _runbackup(self):
@@ -239,9 +241,8 @@ class CheckVersion():
         """
         Checks the internet for a newer version.
 
-        returns: bool, True for new version or False for no new version.
-
-        force: if true the VERSION_NOTIFY setting will be ignored and a check will be forced
+        :param force: if true the VERSION_NOTIFY setting will be ignored and a check will be forced
+        :return: bool, True for new version or False for no new version.
         """
 
         if not self.updater or not sickbeard.VERSION_NOTIFY and not sickbeard.AUTO_UPDATE and not force:
@@ -376,7 +377,7 @@ class GitUpdateManager(UpdateManager):
         return None
 
     def _run_git(self, git_path, args):
-
+        # TODO: Replace this with something that doesn't popen a git binary, maybe GitPython
         output = err = exit_status = None
 
         if not git_path:
@@ -428,7 +429,7 @@ class GitUpdateManager(UpdateManager):
 
         Uses git show to get commit version.
 
-        Returns: True for success or False for failure
+        :return: True for success or False for failure
         """
 
         output, err, exit_status = self._run_git(self._git_path, 'rev-parse HEAD')  # @UnusedVariable
@@ -673,8 +674,6 @@ class SourceUpdateManager(UpdateManager):
         """
         Uses pygithub to ask github if there is a newer version that the provided
         commit hash. If there is a newer version it sets SickRage's version text.
-
-        commit_hash: hash that we're checking against
         """
 
         self._num_commits_behind = 0
@@ -792,7 +791,7 @@ class SourceUpdateManager(UpdateManager):
 
                     # Avoid DLL access problem on WIN32/64
                     # These files needing to be updated manually
-                    #or find a way to kill the access from memory
+                    # or find a way to kill the access from memory
                     if curfile in ('unrar.dll', 'unrar64.dll'):
                         try:
                             os.chmod(new_path, stat.S_IWRITE)

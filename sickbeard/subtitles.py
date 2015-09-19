@@ -1,5 +1,6 @@
 # Author: Nyaran <nyayukko@gmail.com>, based on Antoine Bertin <diaoulael@gmail.com> work
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -38,6 +39,10 @@ provider_urls = {'addic7ed': 'http://www.addic7ed.com',
 
 SINGLE = 'und'
 def sortedServiceList():
+    """
+    Returns an ordered list of subtitle services and available providers
+    :return: list
+    """
     newList = []
     lmgtfy = 'http://lmgtfy.com/?q=%s'
 
@@ -62,6 +67,7 @@ def sortedServiceList():
     return newList
 
 def getEnabledServiceList():
+    """Return list of enabled services"""
     return [x['name'] for x in sortedServiceList() if x['enabled']]
 
 #Hack around this for now.
@@ -69,6 +75,7 @@ def fromietf(language):
     return babelfish.Language.fromopensubtitles(language)
 
 def isValidLanguage(language):
+    """Returns True if this language is valid"""
     try:
         langObj = fromietf(language)
     except:

@@ -1,5 +1,6 @@
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -34,6 +35,11 @@ class ShowUpdater():
         self.amActive = False
 
     def run(self, force=False):
+        """
+        Start updating shows
+
+        :param force: Force new update if current one is still running
+        """
  
         self.amActive = True
 

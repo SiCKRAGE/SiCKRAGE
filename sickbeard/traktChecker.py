@@ -1,5 +1,6 @@
 # Author: Frank Fenton
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -71,6 +72,11 @@ class TraktChecker():
         self.amActive = False
 
     def run(self, force=False):
+        """
+        Start the TRAKT searcher thread
+
+        :param force: Start this even if another one is running
+        """
 
         self.amActive = True
 
@@ -95,6 +101,13 @@ class TraktChecker():
         self.amActive = False
 
     def findShow(self, indexer, indexerid):
+        """
+        Find a show on TRAKT
+
+        :param indexer: Which indexer do we look up
+        :param indexerid: ID from indexer
+        :return: traktShow object
+        """
         traktShow = None
 
         try:
@@ -115,6 +128,10 @@ class TraktChecker():
         return traktShow
 
     def removeShowFromTraktLibrary(self, show_obj):
+        """
+        Remove show from your TRAKT library
+        :param show_obj: Show object to remove
+        """
         if self.findShow(show_obj.indexer, show_obj.indexerid):
             trakt_id = sickbeard.indexerApi(show_obj.indexer).config['trakt_id']
 
@@ -143,7 +160,7 @@ class TraktChecker():
         """
         Sends a request to trakt indicating that the given show and all its episodes is part of our library.
 
-        show_obj: The TVShow object to add to trakt
+        :param show_obj: The TVShow object to add to trakt
         """
 
         data = {}
@@ -175,6 +192,7 @@ class TraktChecker():
                 return
 
     def syncLibrary(self):
+        """Syncs TRAKT library to SR"""
         if sickbeard.TRAKT_SYNC and sickbeard.USE_TRAKT:
             logger.log(u"Sync SickRage with Trakt Collection", logger.DEBUG)
 
@@ -184,6 +202,7 @@ class TraktChecker():
                     self.removeEpisodeFromTraktCollection()
 
     def removeEpisodeFromTraktCollection(self):
+        """Remove episode from TRAKT"""
         if sickbeard.TRAKT_SYNC_REMOVE and sickbeard.TRAKT_SYNC and sickbeard.USE_TRAKT:
             logger.log(u"COLLECTION::REMOVE::START - Look for Episodes to Remove From Trakt Collection", logger.DEBUG)
 
@@ -208,6 +227,7 @@ class TraktChecker():
             logger.log(u"COLLECTION::REMOVE::FINISH - Look for Episodes to Remove From Trakt Collection", logger.DEBUG)
 
     def addEpisodeToTraktCollection(self):
+        """Adds episode to TRAKT"""
         if sickbeard.TRAKT_SYNC and sickbeard.USE_TRAKT:
             logger.log(u"COLLECTION::ADD::START - Look for Episodes to Add to Trakt Collection", logger.DEBUG)
 
@@ -231,6 +251,7 @@ class TraktChecker():
             logger.log(u"COLLECTION::ADD::FINISH - Look for Episodes to Add to Trakt Collection", logger.DEBUG)
 
     def syncWatchlist(self):
+        """Syncs SR with TRAKT Watchlist"""
         if sickbeard.TRAKT_SYNC_WATCHLIST and sickbeard.USE_TRAKT:
             logger.log(u"Sync SickRage with Trakt Watchlist", logger.DEBUG)
 
@@ -246,6 +267,7 @@ class TraktChecker():
                 self.updateEpisodes()
 
     def removeEpisodeFromTraktWatchList(self):
+        """Removes episode from Trakt watchlist"""
         if sickbeard.TRAKT_SYNC_WATCHLIST and sickbeard.USE_TRAKT:
             logger.log(u"WATCHLIST::REMOVE::START - Look for Episodes to Remove from Trakt Watchlist", logger.DEBUG)
 
@@ -270,6 +292,7 @@ class TraktChecker():
             logger.log(u"WATCHLIST::REMOVE::FINISH - Look for Episodes to Remove from Trakt Watchlist", logger.DEBUG)
 
     def addEpisodeToTraktWatchList(self):
+        """Adds episode to Trakt watchlist"""
         if sickbeard.TRAKT_SYNC_WATCHLIST and sickbeard.USE_TRAKT:
             logger.log(u"WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist", logger.DEBUG)
 
@@ -293,6 +316,7 @@ class TraktChecker():
             logger.log(u"WATCHLIST::ADD::FINISH - Look for Episodes to Add to Trakt Watchlist", logger.DEBUG)
 
     def addShowToTraktWatchList(self):
+        """Adds show to Trakt Watchlist"""
         if sickbeard.TRAKT_SYNC_WATCHLIST and sickbeard.USE_TRAKT:
             logger.log(u"SHOW_WATCHLIST::ADD::START - Look for Shows to Add to Trakt Watchlist", logger.DEBUG)
 
@@ -317,6 +341,7 @@ class TraktChecker():
             logger.log(u"SHOW_WATCHLIST::ADD::FINISH - Look for Shows to Add to Trakt Watchlist", logger.DEBUG)
 
     def removeShowFromSickRage(self):
+        """Removes show from SickRage"""
         if sickbeard.TRAKT_SYNC_WATCHLIST and sickbeard.USE_TRAKT and sickbeard.TRAKT_REMOVE_SHOW_FROM_SICKRAGE:
             logger.log(u"SHOW_SICKRAGE::REMOVE::START - Look for Shows to remove from SickRage", logger.DEBUG)
 
@@ -336,6 +361,7 @@ class TraktChecker():
             logger.log(u"SHOW_SICKRAGE::REMOVE::FINISH - Trakt Show Watchlist", logger.DEBUG)
 
     def updateShows(self):
+        """Update SR shows on TRAKT Watchlist"""
         logger.log(u"SHOW_WATCHLIST::CHECK::START - Trakt Show Watchlist", logger.DEBUG)
 
         if not len(self.ShowWatchlist):

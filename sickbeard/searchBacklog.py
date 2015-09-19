@@ -1,5 +1,6 @@
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -32,10 +33,12 @@ from sickbeard import common
 
 class BacklogSearchScheduler(scheduler.Scheduler):
     def forceSearch(self):
+        """Force an immediate backlog search"""
         self.action._set_lastBacklog(1)
         self.lastRun = datetime.datetime.fromordinal(1)
 
     def nextRun(self):
+        """Returns time till next planned run"""
         if self.action._lastBacklog <= 1:
             return datetime.date.today()
         else:

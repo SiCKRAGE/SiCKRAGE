@@ -1,5 +1,6 @@
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -45,24 +46,28 @@ class SearchQueue(generic_queue.GenericQueue):
         self.queue_name = "SEARCHQUEUE"
 
     def is_in_queue(self, show, segment):
+        """Returns true if show and episode can be found in queue"""
         for cur_item in self.queue:
             if isinstance(cur_item, BacklogQueueItem) and cur_item.show == show and cur_item.segment == segment:
                 return True
         return False
 
     def is_ep_in_queue(self, segment):
+        """Returns true if an episode is in the queue"""
         for cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.segment == segment:
                 return True
         return False
     
     def is_show_in_queue(self, show):
+        """Returns true if show is queued"""
         for cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and cur_item.show.indexerid == show:
                 return True
         return False
     
     def get_all_ep_from_queue(self, show):
+        """Returns a list of episodes in queue"""
         ep_obj_list = []
         for cur_item in self.queue:
             if isinstance(cur_item, (ManualSearchQueueItem, FailedQueueItem)) and str(cur_item.show.indexerid) == show:
@@ -70,34 +75,45 @@ class SearchQueue(generic_queue.GenericQueue):
         return ep_obj_list
     
     def pause_backlog(self):
+        """Pauses the backlog thread"""
         self.min_priority = generic_queue.QueuePriorities.HIGH
 
     def unpause_backlog(self):
+        """Unpases the backlog thread"""
         self.min_priority = 0
 
     def is_backlog_paused(self):
+        """Returns True if backlog is paused"""
         # backlog priorities are NORMAL, this should be done properly somewhere
         return self.min_priority >= generic_queue.QueuePriorities.NORMAL
 
     def is_manualsearch_in_progress(self):
+        """Returns True if manual search is currently running"""
         # Only referenced in webserve.py, only current running manualsearch or failedsearch is needed!!
         if isinstance(self.currentItem, (ManualSearchQueueItem, FailedQueueItem)):
             return True
         return False
     
     def is_backlog_in_progress(self):
+        """Returns True if backlog is currently running"""
         for cur_item in self.queue + [self.currentItem]:
             if isinstance(cur_item, BacklogQueueItem):
                 return True
         return False
 
     def is_dailysearch_in_progress(self):
+        """Returns true if daily searcher is currently running"""
         for cur_item in self.queue + [self.currentItem]:
             if isinstance(cur_item, DailySearchQueueItem):
                 return True
         return False
 
     def queue_length(self):
+        """
+        Gets number of items in all queues
+
+        :return: key/value pair, queue/length
+        """
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
         for cur_item in self.queue:
             if isinstance(cur_item, DailySearchQueueItem):
@@ -112,6 +128,7 @@ class SearchQueue(generic_queue.GenericQueue):
 
 
     def add_item(self, item):
+        """Add item to queue"""
         if isinstance(item, DailySearchQueueItem):
             # daily searches
             generic_queue.GenericQueue.add_item(self, item)
