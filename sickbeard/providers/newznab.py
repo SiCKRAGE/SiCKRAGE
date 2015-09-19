@@ -270,6 +270,9 @@ class NewznabProvider(generic.NZBProvider):
         if 'lolo.sickbeard.com' in self.url and params['maxage'] < 33:
             params['maxage'] = 33
 
+        if 'https://www.usenet-crawler.com/' in self.url and params['maxage'] < 2000:
+            params['maxage'] = 2300
+
         while (total >= offset):
             search_url = self.url + 'api?' + urllib.urlencode(params)
 
