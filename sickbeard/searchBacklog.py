@@ -51,6 +51,7 @@ class BacklogSearcher:
         self.amActive = False
         self.amPaused = False
         self.amWaiting = False
+        self.currentSearchInfo = {}
 
         self._resetPI()
 

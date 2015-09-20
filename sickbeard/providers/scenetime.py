@@ -29,8 +29,6 @@ from sickbeard import db
 from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
-from sickbeard.exceptions import ex
-import requests
 from sickbeard.bs4_parser import BS4Parser
 from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
@@ -164,7 +162,7 @@ class SceneTimeProvider(generic.TorrentProvider):
 
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        torrent_table = html.select("#torrenttable table");
+                        torrent_table = html.select("#torrenttable table")
                         torrent_rows = torrent_table[0].select("tr") if torrent_table else []
 
                         #Continue only if one Release is found
@@ -181,7 +179,7 @@ class SceneTimeProvider(generic.TorrentProvider):
                         for result in torrent_rows[1:]:
                             cells = result.find_all('td')
 
-                            link = cells[labels.index('Name')].find('a');
+                            link = cells[labels.index('Name')].find('a')
 
                             full_id = link['href'].replace('details.php?id=', '')
                             torrent_id = full_id.split("&")[0]

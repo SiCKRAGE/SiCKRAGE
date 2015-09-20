@@ -191,8 +191,6 @@ class KODINotifier:
                        logger.WARNING)
             return False
 
-        return False
-
     # #############################################################################
     # Legacy HTTP API (pre KODI 12) methods
     ##############################################################################

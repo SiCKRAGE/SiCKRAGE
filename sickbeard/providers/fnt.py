@@ -33,7 +33,6 @@ from sickbeard import db
 from sickbeard import helpers
 from sickbeard import classes
 from sickbeard.helpers import sanitizeSceneName
-from sickbeard.exceptions import ex
 
 
 class FNTProvider(generic.TorrentProvider):
@@ -95,8 +94,6 @@ class FNTProvider(generic.TorrentProvider):
         else:
             logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.DEBUG)
             return False
-
-        return True
 
     def _get_season_search_strings(self, ep_obj):
 

@@ -18,6 +18,7 @@ class SRWebServer(threading.Thread):
         self.alive = True
         self.name = "TORNADO"
         self.io_loop = io_loop or IOLoop.current()
+        self.server = HTTPServer()
 
         self.options = options
         self.options.setdefault('port', 8081)

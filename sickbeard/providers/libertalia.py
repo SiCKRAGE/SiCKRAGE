@@ -37,7 +37,6 @@ from sickbeard import helpers
 from sickbeard import classes
 from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
-from sickbeard.exceptions import ex
 
 class LibertaliaProvider(generic.TorrentProvider):
 
@@ -140,8 +139,6 @@ class LibertaliaProvider(generic.TorrentProvider):
         else:
             logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.DEBUG)
             return False
-
-        return True
 
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):

@@ -21,7 +21,6 @@ import re
 
 import generic
 
-from sickbeard import show_name_helpers
 from sickbeard import logger
 from sickbeard.common import Quality
 from sickbeard import tvcache
