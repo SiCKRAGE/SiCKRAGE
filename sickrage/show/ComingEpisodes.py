@@ -36,9 +36,9 @@ class ComingEpisodes:
     """
     categories = [u'later', u'missed', u'soon', u'today']
     sorts = {
-        u'date': (lambda a, b: cmp(a[u'localtime'], b[u'localtime'])),
-        u'network': (lambda a, b: cmp((a[u'network'], a[u'localtime']), (b[u'network'], b[u'localtime']))),
-        u'show': (lambda a, b: cmp((a[u'show_name'], a[u'localtime']), (b[u'show_name'], b[u'localtime']))),
+        'date': (lambda a, b: cmp(a[u'localtime'], b[u'localtime'])),
+        'network': (lambda a, b: cmp((a[u'network'], a[u'localtime']), (b[u'network'], b[u'localtime']))),
+        'show': (lambda a, b: cmp((a[u'show_name'], a[u'localtime']), (b[u'show_name'], b[u'localtime']))),
     }
 
     def __init__(self):
@@ -55,7 +55,7 @@ class ComingEpisodes:
         """
 
         if not isinstance(categories, list):
-            categories = categories.split(u'|')
+            categories = categories.split('|')
 
         if sort not in ComingEpisodes.sorts.keys():
             sort = u'date'
@@ -66,7 +66,7 @@ class ComingEpisodes:
         qualities_list = Quality.DOWNLOADED + Quality.SNATCHED + Quality.ARCHIVED + [IGNORED]
 
         db = DBConnection()
-        fields_to_select = u', '.join(
+        fields_to_select = ', '.join(
             [u'airdate', u'airs', u'description', u'episode', u'imdb_id', u'e.indexer', u'indexer_id', u'name',
              u'network', u'paused', u'quality', u'runtime', u'season', u'show_name', u'showid', u's.status']
         )
@@ -77,13 +77,13 @@ class ComingEpisodes:
             u'AND airdate >= ? '
             u'AND airdate < ? '
             u'AND s.indexer_id = e.showid '
-            u'AND e.status NOT IN (' + u','.join([u'?'] * len(qualities_list)) + u')',
+            u'AND e.status NOT IN (' + ','.join([u'?'] * len(qualities_list)) + u')',
             [today, next_week] + qualities_list
         )
 
-        done_shows_list = [int(result[u'showid']) for result in results]
-        placeholder = u','.join([u'?'] * len(done_shows_list))
-        placeholder2 = u','.join([u'?'] * len(Quality.DOWNLOADED + Quality.SNATCHED))
+        done_shows_list = [int(result['showid']) for result in results]
+        placeholder = ','.join([u'?'] * len(done_shows_list))
+        placeholder2 = ','.join([u'?'] * len(Quality.DOWNLOADED + Quality.SNATCHED))
 
         results += db.select(
             u'SELECT %s ' % fields_to_select +
@@ -109,15 +109,15 @@ class ComingEpisodes:
             u'AND airdate < ? '
             u'AND airdate >= ? '
             u'AND e.status = ? '
-            u'AND e.status NOT IN (' + u','.join([u'?'] * len(qualities_list)) + u')',
+            u'AND e.status NOT IN (' + ','.join([u'?'] * len(qualities_list)) + u')',
             [today, recently, WANTED] + qualities_list
         )
 
         results = [dict(result) for result in results]
 
         for index, item in enumerate(results):
-            results[index][u'localtime'] = sbdatetime.convert_to_setting(
-                parse_date_time(item[u'airdate'], item[u'airs'], item[u'network']))
+            results[index]['localtime'] = sbdatetime.convert_to_setting(
+                parse_date_time(item['airdate'], item['airs'], item['network']))
 
         results.sort(ComingEpisodes.sorts[sort])
 
@@ -127,34 +127,33 @@ class ComingEpisodes:
         grouped_results = {category: [] for category in categories}
 
         for result in results:
-            if result[u'paused'] and not paused:
+            if result['paused'] and not paused:
                 continue
 
-            result[u'airs'] = str(result[u'airs']).replace(u'am', u' AM').replace(u'pm', u' PM').replace(u'  ', u' ')
-            result[u'airdate'] = result[u'localtime'].toordinal()
+            result['airs'] = str(result['airs']).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
+            result['airdate'] = result['localtime'].toordinal()
 
-            if result[u'airdate'] < today:
-                category = u'missed'
-            elif result[u'airdate'] >= next_week:
-                category = u'later'
-            elif result[u'airdate'] == today:
-                category = u'today'
+            if result['airdate'] < today:
+                category = 'missed'
+            elif result['airdate'] >= next_week:
+                category = 'later'
+            elif result['airdate'] == today:
+                category = 'today'
             else:
-                category = u'soon'
+                category = 'soon'
 
             if len(categories) > 0 and category not in categories:
                 continue
 
-            if not result[u'network']:
-                result[u'network'] = u''
+            if not result['network']:
+                result['network'] = u''
 
-            result[u'quality'] = get_quality_string(result[u'quality'])
-            result[u'airs'] = sbdatetime.sbftime(result[u'localtime'], t_preset=timeFormat) \
-                .lstrip(u'0').replace(u' 0', u' ')
-            result[u'weekday'] = 1 + date.fromordinal(result[u'airdate']).weekday()
-            result[u'tvdbid'] = result[u'indexer_id']
-            result[u'airdate'] = sbdatetime.sbfdate(result[u'localtime'], d_preset=dateFormat)
-            result[u'localtime'] = result[u'localtime'].toordinal()
+            result['quality'] = get_quality_string(result['quality'])
+            result['airs'] = sbdatetime.sbftime(result['localtime'], t_preset=timeFormat).lstrip('0').replace(' 0', ' ')
+            result['weekday'] = 1 + date.fromordinal(result['airdate']).weekday()
+            result['tvdbid'] = result['indexer_id']
+            result['airdate'] = sbdatetime.sbfdate(result['localtime'], d_preset=dateFormat)
+            result['localtime'] = result['localtime'].toordinal()
 
             grouped_results[category].append(result)
 

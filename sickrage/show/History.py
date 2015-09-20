@@ -59,7 +59,7 @@ class History:
         common_sql = u'SELECT action, date, episode, provider, h.quality, resource, season, show_name, showid ' \
                      u'FROM history h, tv_shows s ' \
                      u'WHERE h.showid = s.indexer_id '
-        filter_sql = u'AND action in (' + u','.join([u'?'] * len(actions)) + u') '
+        filter_sql = u'AND action in (' + ','.join([u'?'] * len(actions)) + u') '
         order_sql = u'ORDER BY date DESC '
 
         if limit == 0:
@@ -76,15 +76,15 @@ class History:
         data = []
         for result in results:
             data.append({
-                u'action': result[u'action'],
-                u'date': result[u'date'],
-                u'episode': result[u'episode'],
-                u'provider': result[u'provider'],
-                u'quality': result[u'quality'],
-                u'resource': result[u'resource'],
-                u'season': result[u'season'],
-                u'show_id': result[u'showid'],
-                u'show_name': result[u'show_name']
+                'action': result['action'],
+                'date': result['date'],
+                'episode': result['episode'],
+                'provider': result['provider'],
+                'quality': result['quality'],
+                'resource': result['resource'],
+                'season': result['season'],
+                'show_id': result['showid'],
+                'show_name': result['show_name']
             })
 
         return data

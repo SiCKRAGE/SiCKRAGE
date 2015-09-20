@@ -61,7 +61,7 @@ class GenericMedia:
         static_media_path = self.get_static_media_path()
 
         if ek(isfile, static_media_path):
-            with open(static_media_path, u'rb') as content:
+            with open(static_media_path, 'rb') as content:
                 return content.read()
 
         return None
@@ -117,4 +117,4 @@ class GenericMedia:
 
         image_path = ek(join, self.get_media_root(), u'images', self.get_default_media_name())
 
-        return image_path.replace(u'\\', u'/')
+        return image_path.replace('\\', '/')

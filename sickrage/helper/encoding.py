@@ -33,7 +33,7 @@ def ek(function, *args, **kwargs):
     :return: Unicode-converted function output (string, list or tuple, depends on input)
     """
 
-    if name == u'nt':
+    if name == 'nt':
         result = function(*args, **kwargs)
     else:
         result = function(*[ss(x) if isinstance(x, (str, unicode)) else x for x in args], **kwargs)
@@ -61,12 +61,12 @@ def ss(var):
         var = var.encode(sickbeard.SYS_ENCODING)
     except Exception:
         try:
-            var = var.encode(u'utf-8')
+            var = var.encode('utf-8')
         except Exception:
             try:
-                var = var.encode(sickbeard.SYS_ENCODING, u'replace')
+                var = var.encode(sickbeard.SYS_ENCODING, 'replace')
             except Exception:
-                var = var.encode(u'utf-8', u'ignore')
+                var = var.encode('utf-8', 'ignore')
 
     return var
 
@@ -98,18 +98,18 @@ def _to_unicode(var):
             var = unicode(var)
         except Exception:
             try:
-                var = unicode(var, u'utf-8')
+                var = unicode(var, 'utf-8')
             except Exception:
                 try:
-                    var = unicode(var, u'latin-1')
+                    var = unicode(var, 'latin-1')
                 except Exception:
                     try:
                         var = unicode(var, sickbeard.SYS_ENCODING)
                     except Exception:
                         try:
                             # Chardet can be wrong, so try it last
-                            var = unicode(var, detect(var).get(u'encoding'))
+                            var = unicode(var, detect(var).get('encoding'))
                         except Exception:
-                            var = unicode(var, sickbeard.SYS_ENCODING, u'replace')
+                            var = unicode(var, sickbeard.SYS_ENCODING, 'replace')
 
     return var
