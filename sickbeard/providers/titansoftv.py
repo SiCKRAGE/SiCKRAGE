@@ -19,7 +19,6 @@
 
 import urllib
 
-import requests
 import generic
 from sickbeard import logger
 from sickbeard import tvcache

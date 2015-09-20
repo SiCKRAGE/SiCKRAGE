@@ -108,7 +108,7 @@ def _update_zoneinfo():
 
     if ek(os.path.exists, zonefile_tmp):
         try:
-            ekk(os.remove, zonefile_tmp)
+            ek(os.remove, zonefile_tmp)
         except:
             logger.log(u'Unable to delete: %s' % zonefile_tmp, logger.WARNING)
             return

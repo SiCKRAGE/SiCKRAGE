@@ -31,10 +31,8 @@ from sickbeard import tvcache
 from sickbeard import show_name_helpers
 from sickbeard import db
 from sickbeard import helpers
-from unidecode import unidecode
 from sickbeard import classes
 from sickbeard.helpers import sanitizeSceneName
-from sickbeard.exceptions import ex
 
 
 class BLUETIGERSProvider(generic.TorrentProvider):
@@ -96,8 +94,6 @@ class BLUETIGERSProvider(generic.TorrentProvider):
         else:
             logger.log(u'Login to %s was unsuccessful.' % self.name, logger.DEBUG)
             return False
-
-        return True
 
     def _get_season_search_strings(self, ep_obj):
 

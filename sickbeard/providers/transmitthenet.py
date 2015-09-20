@@ -18,7 +18,6 @@ import traceback
 import datetime
 import sickbeard
 import generic
-import requests
 
 from sickbeard.common import Quality
 from sickbeard import logger
@@ -27,10 +26,9 @@ from sickbeard import db
 from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
-from sickbeard.exceptions import ex, AuthException
+from sickbeard.exceptions import AuthException
 from sickbeard.helpers import sanitizeSceneName
 from sickbeard.bs4_parser import BS4Parser
-from unidecode import unidecode
 from urllib import urlencode
 
 

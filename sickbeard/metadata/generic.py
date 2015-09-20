@@ -620,7 +620,6 @@ class GenericMetadata():
         else:
             return False
 
-        return True
 
     def save_season_banners(self, show_obj, season):
         """
@@ -668,8 +667,6 @@ class GenericMetadata():
             return all(result)
         else:
             return False
-
-        return True
 
     def save_season_all_poster(self, show_obj, which=None):
         # use the default season all poster name

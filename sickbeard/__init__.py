@@ -41,8 +41,7 @@ from sickbeard.providers import btn, newznab, womble, thepiratebay, torrentleech
     omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, nextgen, speedcd, nyaatorrents, animenzb, bluetigers, cpasbien, fnt, xthor, torrentbytes, \
     frenchtorrentdb, freshontv, titansoftv, libertalia, morethantv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, binsearch, \
     scenetime, btdigg, strike, transmitthenet, tvchaosuk
-from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
-    naming_ep_type
+from sickbeard.config import CheckSection, check_setting_int, check_setting_str, ConfigMigrator,
 from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
     subtitles, traktChecker
 from sickbeard import db
@@ -53,9 +52,6 @@ from sickbeard import show_queue
 from sickbeard import logger
 from sickbeard import naming
 from sickbeard import dailysearcher
-from sickbeard.indexers.indexer_api import indexerApi
-from sickbeard.indexers.indexer_exceptions import indexer_shownotfound, indexer_showincomplete, indexer_exception, indexer_error, \
-    indexer_episodenotfound, indexer_attributenotfound, indexer_seasonnotfound, indexer_userabort, indexerExcepts
 from sickbeard.common import SD
 from sickbeard.common import SKIPPED
 from sickbeard.common import WANTED

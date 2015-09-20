@@ -33,7 +33,6 @@ from sickbeard import helpers
 from unidecode import unidecode
 from sickbeard import classes
 from sickbeard.helpers import sanitizeSceneName
-from sickbeard.exceptions import ex
 
 class XthorProvider(generic.TorrentProvider):
 
@@ -148,8 +147,6 @@ class XthorProvider(generic.TorrentProvider):
         else:
             logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.DEBUG)
             return False
-
-        return True
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 

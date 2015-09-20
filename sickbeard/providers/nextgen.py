@@ -30,7 +30,6 @@ from sickbeard import db
 from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
-import requests
 from sickbeard.bs4_parser import BS4Parser
 from sickbeard.helpers import sanitizeSceneName
 

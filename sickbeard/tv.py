@@ -115,6 +115,7 @@ class TVShow(object):
         self.episodes = {}
         self.nextaired = ""
         self.release_groups = None
+        self._isDirGood = None
 
         otherShow = helpers.findCertainShow(sickbeard.showList, self.indexerid)
         if otherShow != None:
@@ -1478,9 +1479,9 @@ class TVEpisode(object):
                 subs_new_path = ek(os.path.join, ek(os.path.dirname, self.location), sickbeard.SUBTITLES_DIR)
                 dir_exists = helpers.makeDir(subs_new_path)
                 if not dir_exists:
-	                logger.log(u'Unable to create subtitles folder ' + subs_new_path, logger.ERROR)
+                    logger.log(u'Unable to create subtitles folder ' + subs_new_path, logger.ERROR)
                 else:
-	                helpers.chmodAsParent(subs_new_path)
+                    helpers.chmodAsParent(subs_new_path)
             else:
                 subs_new_path = ek(os.path.join, ek(os.path.dirname, self.location))
 
@@ -2193,16 +2194,16 @@ class TVEpisode(object):
             show_name = self.show.name
 
         #try to get the release group
-        rel_grp = {};
-        rel_grp["SiCKRAGE"] = 'SiCKRAGE';
+        rel_grp = {}
+        rel_grp["SiCKRAGE"] = 'SiCKRAGE'
         if hasattr(self, 'location'): #from the location name
-            rel_grp['location'] = release_group(self.show, self.location);
+            rel_grp['location'] = release_group(self.show, self.location)
             if (rel_grp['location'] == ''): del rel_grp['location']
         if hasattr(self, '_release_group'): #from the release group field in db
-            rel_grp['database'] = self._release_group;
+            rel_grp['database'] = self._release_group
             if (rel_grp['database'] == ''): del rel_grp['database']
         if hasattr(self, 'release_name'): #from the release name field in db
-            rel_grp['release_name'] = release_group(self.show, self.release_name);
+            rel_grp['release_name'] = release_group(self.show, self.release_name)
             if (rel_grp['release_name'] == ''): del rel_grp['release_name']
 
         # use release_group, release_name, location in that order
@@ -2284,10 +2285,10 @@ class TVEpisode(object):
 
         # if there's no release group in the db, let the user know we replaced it
         if (not hasattr(self, '_release_group') and (not replace_map['%RG'] == 'SiCKRAGE')):
-            logger.log(u"Episode has no release group, replacing it with '" + replace_map['%RG'] + "'", logger.DEBUG);
+            logger.log(u"Episode has no release group, replacing it with '" + replace_map['%RG'] + "'", logger.DEBUG)
             self._release_group = replace_map['%RG'] #if release_group is not in the db, put it there
         elif ((self._release_group == '') and (not replace_map['%RG'] == 'SiCKRAGE')):
-            logger.log(u"Episode has no release group, replacing it with '" + replace_map['%RG'] + "'", logger.DEBUG);
+            logger.log(u"Episode has no release group, replacing it with '" + replace_map['%RG'] + "'", logger.DEBUG)
             self._release_group = replace_map['%RG'] #if release_group is not in the db, put it there
 
         # if there's no release name then replace it with a reasonable facsimile

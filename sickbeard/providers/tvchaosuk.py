@@ -14,7 +14,6 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
-import traceback
 import datetime
 import sickbeard
 import generic
@@ -26,7 +25,7 @@ from sickbeard import db
 from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
-from sickbeard.exceptions import ex, AuthException
+from sickbeard.exceptions import AuthException
 from sickbeard.helpers import sanitizeSceneName
 from sickbeard.bs4_parser import BS4Parser
 
