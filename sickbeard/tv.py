@@ -28,10 +28,7 @@ import traceback
 
 import sickbeard
 
-try:
-    import xml.etree.cElementTree as etree
-except ImportError:
-    import xml.etree.ElementTree as etree
+import xml.etree.cElementTree as etree
 
 from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 
@@ -44,7 +41,8 @@ except ImportError:
 
 from imdb import imdb
 from sickbeard import db
-from sickbeard import helpers, logger
+from sickbeard import helpers, exceptions, logger
+from sickbeard.exceptions import ex
 from sickbeard import image_cache
 from sickbeard import notifiers
 from sickbeard import postProcessor
@@ -56,10 +54,6 @@ from sickbeard import network_timezones
 from sickbeard.indexers.indexer_config import INDEXER_TVRAGE
 from sickrage.helper.common import dateTimeFormat
 from sickrage.helper.encoding import ek
-from sickrage.helper.exceptions import EpisodeDeletedException, EpisodeNotFoundException, ex
-from sickrage.helper.exceptions import MultipleEpisodesInDatabaseException, MultipleShowsInDatabaseException
-from sickrage.helper.exceptions import MultipleShowObjectsException, NoNFOException, ShowDirectoryNotFoundException
-from sickrage.helper.exceptions import ShowNotFoundException
 from dateutil.tz import *
 
 from common import Quality, Overview, statusStrings
@@ -123,8 +117,8 @@ class TVShow(object):
         self.release_groups = None
 
         otherShow = helpers.findCertainShow(sickbeard.showList, self.indexerid)
-        if otherShow != None:
-            raise MultipleShowObjectsException("Can't create a show if it already exists")
+        if otherShow is not None:
+            raise exceptions.MultipleShowObjectsException("Can't create a show if it already exists")
 
         self.loadFromDB()
 
@@ -190,7 +184,7 @@ class TVShow(object):
         if ek(os.path.isdir, self._location):
             return self._location
         else:
-            raise ShowDirectoryNotFoundException("Show folder doesn't exist, you shouldn't be using it")
+            raise exceptions.ShowDirNotFoundException("Show folder doesn't exist, you shouldn't be using it")
 
     def _setLocation(self, newLocation):
         logger.log(u"Setter sets location to " + newLocation, logger.DEBUG)
@@ -199,7 +193,7 @@ class TVShow(object):
             dirty_setter("_location")(self, newLocation)
             self._isDirGood = True
         else:
-            raise NoNFOException("Invalid folder for the show!")
+            raise exceptions.NoNFOException("Invalid folder for the show!")
 
     location = property(_getLocation, _setLocation)
 
@@ -430,10 +424,10 @@ class TVShow(object):
             logger.log(str(self.indexerid) + u": Creating episode from " + mediaFile, logger.DEBUG)
             try:
                 curEpisode = self.makeEpFromFile(ek(os.path.join, self._location, mediaFile))
-            except (ShowNotFoundException, EpisodeNotFoundException), e:
+            except (exceptions.ShowNotFoundException, exceptions.EpisodeNotFoundException), e:
                 logger.log(u"Episode " + mediaFile + " returned an exception: " + ex(e), logger.ERROR)
                 continue
-            except EpisodeDeletedException:
+            except exceptions.EpisodeDeletedException:
                 logger.log(u"The episode deleted itself when I tried making an object for it", logger.DEBUG)
 
             if curEpisode is None:
@@ -523,7 +517,7 @@ class TVShow(object):
             try:
                 curEp = self.getEpisode(curSeason, curEpisode)
                 if not curEp:
-                    raise EpisodeNotFoundException
+                    raise exceptions.EpisodeNotFoundException
 
                 # if we found out that the ep is no longer on TVDB then delete it from our database too
                 if deleteEp:
@@ -532,7 +526,7 @@ class TVShow(object):
                 curEp.loadFromDB(curSeason, curEpisode)
                 curEp.loadFromIndexer(tvapi=t, cachedSeason=cachedSeasons[curSeason])
                 scannedEps[curSeason][curEpisode] = True
-            except EpisodeDeletedException:
+            except exceptions.EpisodeDeletedException:
                 logger.log(u"Tried loading an episode from the DB that should have been deleted, skipping it",
                            logger.DEBUG)
                 continue
@@ -578,14 +572,14 @@ class TVShow(object):
                 try:
                     ep = self.getEpisode(season, episode)
                     if not ep:
-                        raise EpisodeNotFoundException
-                except EpisodeNotFoundException:
+                        raise exceptions.EpisodeNotFoundException
+                except exceptions.EpisodeNotFoundException:
                     logger.log("%s: %s object for S%02dE%02d is incomplete, skipping this episode" % (self.indexerid, sickbeard.indexerApi(self.indexer).name, season, episode))
                     continue
                 else:
                     try:
                         ep.loadFromIndexer(tvapi=t)
-                    except EpisodeDeletedException:
+                    except exceptions.EpisodeDeletedException:
                         logger.log(u"The episode was deleted, skipping the rest of the load")
                         continue
 
@@ -671,8 +665,8 @@ class TVShow(object):
                 try:
                     curEp = self.getEpisode(season, episode, file)
                     if not curEp:
-                        raise EpisodeNotFoundException
-                except EpisodeNotFoundException:
+                        raise exceptions.EpisodeNotFoundException
+                except exceptions.EpisodeNotFoundException:
                     logger.log(str(self.indexerid) + u": Unable to figure out what this file is, skipping",
                                logger.ERROR)
                     continue
@@ -776,7 +770,7 @@ class TVShow(object):
         sqlResults = myDB.select("SELECT * FROM tv_shows WHERE indexer_id = ?", [self.indexerid])
 
         if len(sqlResults) > 1:
-            raise MultipleShowsInDatabaseException()
+            raise exceptions.MultipleDBShowsException()
         elif len(sqlResults) == 0:
             logger.log(str(self.indexerid) + ": Unable to find the show in the database")
             return
@@ -1048,7 +1042,7 @@ class TVShow(object):
                            (('Deleted', 'Trashed')[sickbeard.TRASH_REMOVE_SHOW],
                             self._location))
 
-            except ShowDirectoryNotFoundException:
+            except exceptions.ShowDirNotFoundException:
                 logger.log(u"Show folder does not exist, no need to %s %s" % (action, self._location), logger.WARNING)
             except OSError, e:
                 logger.log(u'Unable to %s %s: %s / %s' % (action, self._location, repr(e), str(e)), logger.WARNING)
@@ -1087,8 +1081,8 @@ class TVShow(object):
             try:
                 curEp = self.getEpisode(season, episode)
                 if not curEp:
-                    raise EpisodeDeletedException
-            except EpisodeDeletedException:
+                    raise exceptions.EpisodeDeletedException
+            except exceptions.EpisodeDeletedException:
                 logger.log(u"The episode was deleted while we were refreshing it, moving on to the next one",
                            logger.DEBUG)
                 continue
@@ -1572,19 +1566,19 @@ class TVEpisode(object):
             if ek(os.path.isfile, self.location):
                 try:
                     self.loadFromNFO(self.location)
-                except NoNFOException:
+                except exceptions.NoNFOException:
                     logger.log(u"%s: There was an error loading the NFO for episode S%02dE%02d" % (self.show.indexerid, season, episode), logger.ERROR)
 
                 # if we tried loading it from NFO and didn't find the NFO, try the Indexers
                 if not self.hasnfo:
                     try:
                         result = self.loadFromIndexer(season, episode)
-                    except EpisodeDeletedException:
+                    except exceptions.EpisodeDeletedException:
                         result = False
 
                     # if we failed SQL *and* NFO, Indexers then fail
                     if not result:
-                        raise EpisodeNotFoundException("Couldn't find episode S%02dE%02d" % (season, episode))
+                        raise exceptions.EpisodeNotFoundException("Couldn't find episode S%02dE%02d" % (season, episode))
 
     def loadFromDB(self, season, episode):
         logger.log(u"%s: Loading episode details from DB for episode %s S%02dE%02d" % (self.show.indexerid, self.show.name, season, episode), logger.DEBUG)
@@ -1594,7 +1588,7 @@ class TVEpisode(object):
                                  [self.show.indexerid, season, episode])
 
         if len(sqlResults) > 1:
-            raise MultipleEpisodesInDatabaseException("Your DB has two records for the same show somehow.")
+            raise exceptions.MultipleDBEpisodesException("Your DB has two records for the same show somehow.")
         elif len(sqlResults) == 0:
             logger.log(u"%s: Episode S%02dE%02d not found in the database" % (self.show.indexerid, self.season, self.episode), logger.DEBUG)
             return False
@@ -1853,7 +1847,7 @@ class TVEpisode(object):
                         logger.log(
                             u"Failed to rename your episode's NFO file - you need to delete it or fix it: " + ex(e),
                             logger.ERROR)
-                    raise NoNFOException("Error in NFO format")
+                    raise exceptions.NoNFOException("Error in NFO format")
 
                 for epDetails in showXML.getiterator('episodedetails'):
                     if epDetails.findtext('season') is None or int(epDetails.findtext('season')) != self.season or \
@@ -1864,7 +1858,7 @@ class TVEpisode(object):
                         continue
 
                     if epDetails.findtext('title') is None or epDetails.findtext('aired') is None:
-                        raise NoNFOException("Error in NFO format (missing episode title or airdate)")
+                        raise exceptions.NoNFOException("Error in NFO format (missing episode title or airdate)")
 
                     self.name = epDetails.findtext('title')
                     self.episode = int(epDetails.findtext('episode'))
@@ -1964,7 +1958,7 @@ class TVEpisode(object):
             self.season) + " AND episode=" + str(self.episode)
         myDB.action(sql)
 
-        raise EpisodeDeletedException()
+        raise exceptions.EpisodeDeletedException()
 
     def get_sql(self, forceSave=False):
         """
