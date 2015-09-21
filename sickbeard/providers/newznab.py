@@ -67,7 +67,7 @@ class NewznabProvider(generic.NZBProvider):
 
         self.enabled = True
         self.supportsBacklog = True
-
+        self.public = True
         self.default = False
         self.last_search = datetime.datetime.now()
 
