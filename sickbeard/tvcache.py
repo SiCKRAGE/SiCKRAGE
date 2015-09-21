@@ -206,7 +206,6 @@ class TVCache():
 
         return datetime.datetime.fromtimestamp(lastTime)
 
-
     def setLastUpdate(self, toDate=None):
         if not toDate:
             toDate = datetime.datetime.today()
@@ -294,7 +293,6 @@ class TVCache():
                 "INSERT OR IGNORE INTO [" + self.providerID + "] (name, season, episodes, indexerid, url, time, quality, release_group, version) VALUES (?,?,?,?,?,?,?,?,?)",
                 [name, season, episodeText, parse_result.show.indexerid, url, curTimestamp, quality, release_group, version]]
 
-
     def searchCache(self, episode, manualSearch=False, downCurQuality=False):
         neededEps = self.findNeededEpisodes(episode, manualSearch, downCurQuality)
         return neededEps[episode] if episode in neededEps else []
@@ -303,11 +301,10 @@ class TVCache():
         myDB = self._getDB()
         sql = "SELECT * FROM [" + self.providerID + "] WHERE name LIKE '%.PROPER.%' OR name LIKE '%.REPACK.%'"
 
-        if date != None:
+        if date is not None:
             sql += " AND time >= " + str(int(time.mktime(date.timetuple())))
 
         return filter(lambda x: x['indexerid'] != 0, myDB.select(sql))
-
 
     def findNeededEpisodes(self, episode, manualSearch=False, downCurQuality=False):
         neededEps = {}
