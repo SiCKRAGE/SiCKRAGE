@@ -139,7 +139,7 @@ class LibertaliaProvider(generic.TorrentProvider):
             logger.log(u'Login to ' + self.name + ' was successful.', logger.DEBUG)
             return True
         else:
-            logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.DEBUG)
+            logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.ERROR)
             return False
 
         return True
