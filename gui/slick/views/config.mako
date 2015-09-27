@@ -59,8 +59,8 @@
     <tr><td class="infoTableHeader">SR Cache Dir:</td><td class="infoTableCell">${sickbeard.CACHE_DIR}</td></tr>
     <tr><td class="infoTableHeader">SR Log Dir:</td><td class="infoTableCell">${sickbeard.LOG_DIR}</td></tr>
     <tr><td class="infoTableHeader">SR Arguments:</td><td class="infoTableCell">${sickbeard.MY_ARGS}</td></tr>
-% if sickbeard.WEB_ROOT:
-    <tr><td class="infoTableHeader">SR Web Root:</td><td class="infoTableCell">${sickbeard.WEB_ROOT}</td></tr>
+% if srRoot:
+    <tr><td class="infoTableHeader">SR Web Root:</td><td class="infoTableCell">${srRoot}</td></tr>
 % endif
     <tr><td class="infoTableHeader">Python Version:</td><td class="infoTableCell">${sys.version[:120]}</td></tr>
     <tr class="infoTableSeperator"><td class="infoTableHeader"><i class="icon16-sb"></i> Homepage</td><td class="infoTableCell"><a href="${anon_url('http://www.sickrage.tv/')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">http://www.sickrage.tv/</a></td></tr>

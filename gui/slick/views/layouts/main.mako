@@ -15,9 +15,6 @@
     except ImportError:
         has_resource_module = False
 %>
-<%
-    srRoot = sickbeard.WEB_ROOT
-%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,9 +24,9 @@
         <meta name="viewport" content="width=device-width">
 
         <!-- These values come from css/dark.css and css/light.css -->
-        % if sickbeard.THEME_NAME == "dark":
+        % if sbThemeName == "dark":
         <meta name="theme-color" content="#15528F">
-        % elif sickbeard.THEME_NAME == "light":
+        % elif sbThemeName == "light":
         <meta name="theme-color" content="#333333">
         % endif
 
@@ -67,7 +64,7 @@
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery-ui-1.10.4.custom.min.css?${sbPID}" />
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery.qtip-2.2.1.min.css?${sbPID}"/>
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${sbPID}"/>
-        <link rel="stylesheet" type="text/css" href="${srRoot}/css/${sickbeard.THEME_NAME}.css?${sbPID}" />
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/${sbThemeName}.css?${sbPID}" />
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/print.css?${sbPID}" />
         % if sbLogin:
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/pnotify.custom.min.css?${sbPID}" />
@@ -126,7 +123,7 @@
                             % if sickbeard.USE_EMBY and sickbeard.EMBY_HOST != "" and sickbeard.EMBY_APIKEY != "":
                                 <li><a href="${srRoot}/home/updateEMBY/"><i class="menu-icon-backlog-view"></i>&nbsp;Update Emby</a></li>
                             % endif
-                            % if sickbeard.USE_TORRENTS and sickbeard.TORRENT_METHOD != 'blackhole' and (sickbeard.ENABLE_HTTPS and sickbeard.TORRENT_HOST[:5] == 'https' or not sickbeard.ENABLE_HTTPS and sickbeard.TORRENT_HOST[:5] == 'http:'):
+                            % if sickbeard.USE_TORRENTS and sickbeard.TORRENT_METHOD != 'blackhole' and (sbHttpsEnabled and sickbeard.TORRENT_HOST[:5] == 'https' or not sbHttpsEnabled and sickbeard.TORRENT_HOST[:5] == 'http:'):
                                 <li><a href="${srRoot}/manage/manageTorrents/"><i class="menu-icon-bittorrent"></i>&nbsp;Manage Torrents</a></li>
                             % endif
                             % if sickbeard.USE_FAILED_DOWNLOADS:
@@ -309,7 +306,7 @@
             srRoot = '${srRoot}'; // needed for browser.js & ajaxNotifications.js
             //HTML for scrolltopcontrol, which is auto wrapped in DIV w/ ID="topcontrol"
             top_image_html = '<img src="${srRoot}/images/top.gif" width="31" height="11" alt="Jump to top" />';
-            themeSpinner = '${('', '-dark')[sickbeard.THEME_NAME == 'dark']}';
+            themeSpinner = '${('', '-dark')[sbThemeName == 'dark']}';
             anonURL = '${sickbeard.ANON_REDIRECT}';
         </script>
         <script type="text/javascript" src="${srRoot}/js/lib/jquery.scrolltopcontrol-1.1.js"></script>
