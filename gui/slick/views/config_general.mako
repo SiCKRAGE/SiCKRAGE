@@ -12,10 +12,10 @@
     from sickbeard.helpers import anon_url
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${sbRoot}/js/config.js?${sbPID}"></script>
-<script type="text/javascript" src="${sbRoot}/js/rootDirs.js?${sbPID}"></script>
-<script type="text/javascript" src="${sbRoot}/js/lib/bootstrap-formhelpers.min-2.3.0.js?${sbPID}"></script>
-<script type="text/javascript" src="${sbRoot}/js/new/config_general.js"></script>
+<script type="text/javascript" src="${srRoot}/js/config.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/rootDirs.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/lib/bootstrap-formhelpers.min-2.3.0.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/new/config_general.js"></script>
 </%block>
 <%block name="content">
 % if not header is UNDEFINED:
@@ -614,13 +614,13 @@
                                     <span class="component-desc">
 % if not sickbeard.SKIP_REMOVED_FILES:
                                         <select name="ep_default_deleted_status" id="ep_default_deleted_status" class="form-control input-sm">
-                                        % for defStatus in [ARCHIVED, IGNORED]:
+                                        % for defStatus in [SKIPPED, IGNORED]:
                                             <option value="${defStatus}" ${('', 'selected="selected"')[sickbeard.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
                                         % endfor
                                         </select>
 % else:
                                         <select name="ep_default_deleted_status" id="ep_default_deleted_status" class="form-control input-sm" disabled="disabled">
-                                        % for defStatus in [ARCHIVED, IGNORED]:
+                                        % for defStatus in [SKIPPED, IGNORED]:
                                             <option value="${defStatus}" ${('', 'selected="selected"')[sickbeard.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
                                         % endfor
                                         </select>
