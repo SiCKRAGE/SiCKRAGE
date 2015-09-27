@@ -1,5 +1,6 @@
 # Author: Tyler Fenby <tylerfenby@gmail.com>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -19,10 +20,10 @@ from __future__ import with_statement
 
 import sickbeard
 from sickbeard import logger
-from sickbeard import exceptions
 from sickbeard import show_name_helpers
 from sickbeard import search_queue
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
+from sickrage.helper.exceptions import FailedPostProcessingFailedException
 
 
 class FailedProcessor(object):
@@ -30,8 +31,8 @@ class FailedProcessor(object):
 
     def __init__(self, dirName, nzbName):
         """
-        dirName: Full path to the folder of the failed download
-        nzbName: Full name of the nzb file that failed
+        :param dirName: Full path to the folder of the failed download
+        :param nzbName: Full name of the nzb file that failed
         """
         self.dir_name = dirName
         self.nzb_name = nzbName
@@ -39,22 +40,27 @@ class FailedProcessor(object):
         self.log = ""
 
     def process(self):
+        """
+        Do the actual work
+
+        :return: True
+        """
         self._log(u"Failed download detected: (" + str(self.nzb_name) + ", " + str(self.dir_name) + ")")
 
         releaseName = show_name_helpers.determineReleaseName(self.dir_name, self.nzb_name)
         if releaseName is None:
             self._log(u"Warning: unable to find a valid release name.", logger.WARNING)
-            raise exceptions.FailedProcessingFailed()
+            raise FailedPostProcessingFailedException()
 
         try:
             parser = NameParser(False)
             parsed = parser.parse(releaseName)
         except InvalidNameException:
             self._log(u"Error: release name is invalid: " + releaseName, logger.DEBUG)
-            raise exceptions.FailedProcessingFailed()
+            raise FailedPostProcessingFailedException()
         except InvalidShowException:
             self._log(u"Error: unable to parse release name " + releaseName + " into a valid show", logger.DEBUG)
-            raise exceptions.FailedProcessingFailed()
+            raise FailedPostProcessingFailedException()
 
         logger.log(u"name_parser info: ", logger.DEBUG)
         logger.log(u" - " + str(parsed.series_name), logger.DEBUG)

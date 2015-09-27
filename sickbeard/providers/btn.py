@@ -29,12 +29,12 @@ from sickbeard import scene_exceptions
 from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard.helpers import sanitizeSceneName
-from sickbeard.exceptions import ex, AuthException
 from sickbeard.common import MULTI_EP_RESULT
 from sickbeard.common import SEASON_RESULT
 from sickbeard import db
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 from sickbeard.common import Quality, cpu_presets
+from sickrage.helper.exceptions import AuthException, ex
 
 import jsonrpclib
 from datetime import datetime
@@ -45,6 +45,7 @@ class BTNProvider(generic.TorrentProvider):
         generic.TorrentProvider.__init__(self, "BTN")
 
         self.supportsBacklog = True
+        self.public = False
         self.supportsAbsoluteNumbering = True
 
         self.enabled = False
@@ -53,10 +54,10 @@ class BTNProvider(generic.TorrentProvider):
 
         self.cache = BTNCache(self)
 
-        self.urls = {'base_url': "http://api.btnapps.net"}
+        self.urls = {'base_url': u'http://api.btnapps.net',
+                     'website': u'http://broadcasthe.net/',}
 
-
-        self.url = self.urls['base_url']
+        self.url = self.urls['website']
 
     def isEnabled(self):
         return self.enabled
@@ -140,7 +141,7 @@ class BTNProvider(generic.TorrentProvider):
 
     def _api_call(self, apikey, params={}, results_per_page=1000, offset=0):
 
-        server = jsonrpclib.Server(self.url)
+        server = jsonrpclib.Server(self.urls['base_url'])
         parsedJSON = {}
 
         try:

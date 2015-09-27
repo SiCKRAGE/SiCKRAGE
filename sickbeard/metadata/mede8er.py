@@ -23,14 +23,15 @@ import sickbeard
 
 import mediabrowser
 
-from sickbeard import logger, exceptions, helpers
-from sickbeard.exceptions import ex
-from sickbeard import encodingKludge as ek
+from sickbeard import logger, helpers
+from sickrage.helper.common import dateFormat
+from sickrage.helper.encoding import ek
+from sickrage.helper.exceptions import ex, ShowNotFoundException
 
 try:
     import xml.etree.cElementTree as etree
 except ImportError:
-    import elementtree.ElementTree as etree
+    import xml.etree.ElementTree as etree
 
 
 class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
@@ -142,7 +143,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
         SeriesName = etree.SubElement(tv_node, "title")
         SeriesName.text = myShow['seriesname']
-        
+
         Genres = etree.SubElement(tv_node, "genres")
         if getattr(myShow, "genre", None) != None:
             for genre in myShow['genre'].split('|'):
@@ -157,7 +158,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         year = etree.SubElement(tv_node, "year")
         if getattr(myShow, "firstaired", None) != None:
             try:
-                year_text = str(datetime.datetime.strptime(myShow["firstaired"], '%Y-%m-%d').year)
+                year_text = str(datetime.datetime.strptime(myShow["firstaired"], dateFormat).year)
                 if year_text:
                     year.text = year_text
             except:
@@ -238,7 +239,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             t = sickbeard.indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except sickbeard.indexer_shownotfound, e:
-            raise exceptions.ShowNotFoundException(e.message)
+            raise ShowNotFoundException(e.message)
         except sickbeard.indexer_error, e:
             logger.log(u"Unable to connect to TVDB while creating meta files - skipping - " + ex(e), logger.ERROR)
             return False
@@ -286,7 +287,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                 year = etree.SubElement(episode, "year")
                 if getattr(myShow, "firstaired", None) != None:
                     try:
-                        year_text = str(datetime.datetime.strptime(myShow["firstaired"], '%Y-%m-%d').year)
+                        year_text = str(datetime.datetime.strptime(myShow["firstaired"], dateFormat).year)
                         if year_text:
                             year.text = year_text
                     except:
@@ -378,17 +379,17 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             return False
 
         nfo_file_path = self.get_show_file_path(show_obj)
-        nfo_file_dir = ek.ek(os.path.dirname, nfo_file_path)
+        nfo_file_dir = ek(os.path.dirname, nfo_file_path)
 
         try:
-            if not ek.ek(os.path.isdir, nfo_file_dir):
+            if not ek(os.path.isdir, nfo_file_dir):
                 logger.log(u"Metadata dir didn't exist, creating it at " + nfo_file_dir, logger.DEBUG)
-                ek.ek(os.makedirs, nfo_file_dir)
+                ek(os.makedirs, nfo_file_dir)
                 helpers.chmodAsParent(nfo_file_dir)
 
             logger.log(u"Writing show nfo file to " + nfo_file_path, logger.DEBUG)
 
-            nfo_file = ek.ek(open, nfo_file_path, 'w')
+            nfo_file = ek(open, nfo_file_path, 'w')
 
             data.write(nfo_file, encoding="UTF-8")
             nfo_file.close()
@@ -399,7 +400,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             return False
 
         return True
-    
+
     def write_ep_file(self, ep_obj):
         """
         Generates and writes ep_obj's metadata under the given path with the
@@ -423,17 +424,17 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             return False
 
         nfo_file_path = self.get_episode_file_path(ep_obj)
-        nfo_file_dir = ek.ek(os.path.dirname, nfo_file_path)
+        nfo_file_dir = ek(os.path.dirname, nfo_file_path)
 
         try:
-            if not ek.ek(os.path.isdir, nfo_file_dir):
+            if not ek(os.path.isdir, nfo_file_dir):
                 logger.log(u"Metadata dir didn't exist, creating it at " + nfo_file_dir, logger.DEBUG)
-                ek.ek(os.makedirs, nfo_file_dir)
+                ek(os.makedirs, nfo_file_dir)
                 helpers.chmodAsParent(nfo_file_dir)
 
             logger.log(u"Writing episode nfo file to " + nfo_file_path, logger.DEBUG)
 
-            nfo_file = ek.ek(open, nfo_file_path, 'w')
+            nfo_file = ek(open, nfo_file_path, 'w')
 
             data.write(nfo_file, encoding="UTF-8")
             nfo_file.close()

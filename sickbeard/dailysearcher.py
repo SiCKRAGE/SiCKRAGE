@@ -1,5 +1,6 @@
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -26,8 +27,8 @@ from sickbeard import logger
 from sickbeard import db
 from sickbeard import common
 from sickbeard import helpers
-from sickbeard import exceptions
-from sickbeard import network_timezones
+from sickbeard import sbdatetime, network_timezones
+from sickrage.helper.exceptions import MultipleShowObjectsException
 
 
 class DailySearcher():
@@ -36,6 +37,11 @@ class DailySearcher():
         self.amActive = False
 
     def run(self, force=False):
+        """
+        Runs the daily searcher, queuing selected episodes for search
+
+        :param force: Force search
+        """
         if self.amActive:
             return
 
@@ -69,14 +75,17 @@ class DailySearcher():
                 if not show or show.paused:
                     continue
 
-            except exceptions.MultipleShowObjectsException:
+            except MultipleShowObjectsException:
                 logger.log(u"ERROR: expected to find a single show matching " + str(sqlEp['showid']))
                 continue
 
             try:
-                end_time = network_timezones.parse_date_time(sqlEp['airdate'], show.airs,
-                                                             show.network) + datetime.timedelta(
+                end_time = sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(sqlEp['airdate'], show.airs,
+                                                             show.network)) + datetime.timedelta(
                     minutes=helpers.tryInt(show.runtime, 60))
+                #Keep this for future debug
+                #logger.log(u"Show %s ends at %s and now it is %s. Runtime is %s and airs %s" % (show.name, end_time, curTime, show.runtime, show.airs),logger.DEBUG )
+
                 # filter out any episodes that haven't aried yet
                 if end_time > curTime:
                     continue

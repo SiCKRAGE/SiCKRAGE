@@ -39,11 +39,9 @@ function showMsg(msg, loader, timeout, ms) {
         feedback.removeAttr("style");
     }
     feedback.fadeIn();
-    var message = $("<div class='msg'>" + msg + "</div>");
-    if (loader) {
-        var message = $("<div class='msg'><img src='interfaces/default/images/loader_black.gif' alt='loading' class='loader' style='position: relative;top:10px;margin-top:-15px; margin-left:-10px;'/>" + msg + "</div>");
-        feedback.css("padding", "14px 10px")
-    }
+    var tmpMessage = $("<div class='msg'>" + msg + "</div>");
+    var message = loader ? $("<div class='msg'><img src='interfaces/default/images/loader_black.gif' alt='loading' class='loader' style='position: relative;top:10px;margin-top:-15px; margin-left:-10px;'/>" + msg + "</div>") : tmpMessage;
+    if (loader) feedback.css("padding", "14px 10px");
     $(feedback).prepend(message);
     if (timeout) {
         setTimeout(function () {
@@ -63,20 +61,20 @@ function resetFilters(text) {
 
 function initFancybox() {
     if ($("a[rel=dialog]").length > 0) {
-        $.getScript(sbRoot + '/js/fancybox/jquery.fancybox.pack.js', function () {
-            $("head").append("<link rel='stylesheet' href='" + sbRoot + "/js/fancybox/jquery.fancybox.css'>");
+        $.getScript(srRoot + '/js/fancybox/jquery.fancybox.pack.js', function () {
+            $("head").append("<link rel='stylesheet' href='" + srRoot + "/js/fancybox/jquery.fancybox.css'>");
             $("a[rel=dialog]").fancybox({
                 type: "image",
-				padding: 0,
-				helpers : {
-					title : null,
-					overlay : {
-						locked: false,
-						css : {
-							'background' : 'rgba(0, 0, 0, 0.4)'
-						}
-					}
-				}
+                padding: 0,
+                helpers : {
+                    title : null,
+                    overlay : {
+                        locked: false,
+                        css : {
+                            'background' : 'rgba(0, 0, 0, 0.4)'
+                        }
+                    }
+                }
             });
         });
     }
@@ -91,11 +89,11 @@ function initTabs() {
 
             if (lastOpenedPanel) {
             } else {
-                lastOpenedPanel = $(ui.oldPanel)
+                lastOpenedPanel = $(ui.oldPanel);
             }
 
             if (!$(this).data("topPositionTab")) {
-                $(this).data("topPositionTab", $(ui.newPanel).position()['top'])
+                $(this).data("topPositionTab", $(ui.newPanel).position().top);
             }
 
             //Dont use the builtin fx effects. This will fade in/out both tabs, we dont want that
@@ -103,7 +101,6 @@ function initTabs() {
             $(ui.newPanel).hide().fadeIn(0);
 
             if (lastOpenedPanel) {
-
                 // 1. Show the previous opened tab by removing the jQuery UI class
                 // 2. Make the tab temporary position:absolute so the two tabs will overlap
                 // 3. Set topposition so they will overlap if you go from tab 1 to tab 0
@@ -116,7 +113,6 @@ function initTabs() {
                         $(this)
                             .css("position", "");
                     });
-
             }
 
             //Saving the last tab has been opened
@@ -135,4 +131,30 @@ function init() {
 
 $(document).ready(function () {
     init();
+    $(document).ready(function() {
+        $('.dropdown-toggle').dropdownHover();
+        if(['True', 1].indexOf($('meta[data-var="sickbeard.FUZZY_DATING"]').data('content')) >= 0){
+            $.timeago.settings.allowFuture = true;
+            $.timeago.settings.strings = {
+                prefixAgo: null,
+                prefixFromNow: 'In ',
+                suffixAgo: "ago",
+                suffixFromNow: "",
+                seconds: "less than a minute",
+                minute: "about a minute",
+                minutes: "%d minutes",
+                hour: "about an hour",
+                hours: "about %d hours",
+                day: "a day",
+                days: "%d days",
+                month: "about a month",
+                months: "%d months",
+                year: "about a year",
+                years: "%d years",
+                wordSeparator: " ",
+                numbers: []
+            };
+            $("[datetime]").timeago();
+        }
+    });
 });

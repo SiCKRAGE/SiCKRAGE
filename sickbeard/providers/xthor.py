@@ -33,7 +33,7 @@ from sickbeard import helpers
 from unidecode import unidecode
 from sickbeard import classes
 from sickbeard.helpers import sanitizeSceneName
-from sickbeard.exceptions import ex
+
 
 class XthorProvider(generic.TorrentProvider):
 
@@ -42,11 +42,12 @@ class XthorProvider(generic.TorrentProvider):
         generic.TorrentProvider.__init__(self, "Xthor")
 
         self.supportsBacklog = True
+        self.public = False
 
         self.cj = cookielib.CookieJar()
 
         self.url = "https://xthor.bz"
-        self.urlsearch = "https://xthor.bz/browse.php?search=%s%s"
+        self.urlsearch = "https://xthor.bz/browse.php?search=\"%s%s\""
         self.categories = "&searchin=title&incldead=0"
 
         self.enabled = False

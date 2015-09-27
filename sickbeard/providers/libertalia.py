@@ -37,7 +37,7 @@ from sickbeard import helpers
 from sickbeard import classes
 from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
-from sickbeard.exceptions import ex
+
 
 class LibertaliaProvider(generic.TorrentProvider):
 
@@ -46,6 +46,7 @@ class LibertaliaProvider(generic.TorrentProvider):
         generic.TorrentProvider.__init__(self, "Libertalia")
 
         self.supportsBacklog = True
+        self.public = False
 
         self.cj = cookielib.CookieJar()
 
@@ -138,7 +139,7 @@ class LibertaliaProvider(generic.TorrentProvider):
             logger.log(u'Login to ' + self.name + ' was successful.', logger.DEBUG)
             return True
         else:
-            logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.DEBUG)
+            logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.WARNING)
             return False
 
         return True

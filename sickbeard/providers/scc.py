@@ -31,8 +31,6 @@ from sickbeard import db
 from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
-from sickbeard.exceptions import ex
-import requests
 from sickbeard.bs4_parser import BS4Parser
 from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
@@ -45,6 +43,7 @@ class SCCProvider(generic.TorrentProvider):
         generic.TorrentProvider.__init__(self, "SceneAccess")
 
         self.supportsBacklog = True
+        self.public = False
 
         self.enabled = False
         self.username = None
@@ -214,6 +213,7 @@ class SCCProvider(generic.TorrentProvider):
                             continue
 
                         if not title or not download_url or seeders < self.minseed or leechers < self.minleech:
+                            logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
                             continue
 
                         item = title, download_url, id, seeders, leechers

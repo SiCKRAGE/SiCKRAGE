@@ -4,7 +4,7 @@
     from sickbeard import common
     from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickbeard.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
-    from sickbeard import exceptions
+    from sickrage.helper import exceptions
 %>
 <%block name="scripts">
 <%
@@ -16,11 +16,9 @@
 
     anyQualities, bestQualities = common.Quality.splitQuality(initial_quality)
 %>
-<script type="text/javascript" src="${sbRoot}/js/qualityChooser.js?${sbPID}"></script>
-<script type="text/javascript" src="${sbRoot}/js/massEdit.js?${sbPID}"></script>
-<script type="text/javascript" charset="utf-8">
-    $('#location').fileBrowser({ title: 'Select Show Location' });
-</script>
+<script type="text/javascript" src="${srRoot}/js/qualityChooser.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/massEdit.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/new/manage_massEdit.js"></script>
 </%block>
 <%block name="content">
 <%
@@ -64,7 +62,7 @@
 
     <div id="customQuality">
         <div class="manageCustom pull-left">
-        <h4>Inital</h4>
+        <h5>Allowed</h5>
             <% anyQualityList = filter(lambda x: x > common.Quality.NONE, common.Quality.qualityStrings) %>
             <select id="anyQualities" name="anyQualities" multiple="multiple" size="${len(anyQualityList)}">
             % for curQuality in sorted(anyQualityList):
@@ -73,9 +71,9 @@
             </select>
         </div>
         <div class="manageCustom pull-left">
-        <h4>Archive</h4>
+        <h5>Preferred</h5>
             <% bestQualityList = filter(lambda x: x >= common.Quality.SDTV, common.Quality.qualityStrings) %>
-            <select id="bestQualities" name="bestQualities" multiple="multiple" size="len(${bestQualityList})">
+            <select id="bestQualities" name="bestQualities" multiple="multiple" size="${len(bestQualityList)}">
             % for curQuality in sorted(bestQualityList):
             <option value="${curQuality}" ${('', 'selected="selected"')[curQuality in bestQualities]}>${common.Quality.qualityStrings[curQuality]}</option>
             % endfor
@@ -133,7 +131,7 @@
     <div class="selectChoices">
       <select id="edit_default_ep_status" name="default_ep_status" class="form-control form-control-inline input-sm">
           <option value="keep">&lt; keep &gt;</option>
-          % for curStatus in [WANTED, SKIPPED, ARCHIVED, IGNORED]:
+          % for curStatus in [WANTED, SKIPPED, IGNORED]:
           <option value="${curStatus}" ${('', 'selected="selected"')[curStatus == default_ep_status_value]}>${statusStrings[curStatus]}</option>
           % endfor
       </select>

@@ -24,12 +24,16 @@ import sickbeard
 
 import generic
 
-from sickbeard import logger, exceptions, helpers
-from sickbeard import encodingKludge as ek
+from sickbeard import logger, helpers
 
-from sickbeard.exceptions import ex
+from sickrage.helper.common import dateFormat
+from sickrage.helper.encoding import ek
+from sickrage.helper.exceptions import ex, ShowNotFoundException
 
-import xml.etree.cElementTree as etree
+try:
+    import xml.etree.cElementTree as etree
+except ImportError:
+    import xml.etree.ElementTree as etree
 
 
 class MediaBrowserMetadata(generic.GenericMetadata):
@@ -110,10 +114,10 @@ class MediaBrowserMetadata(generic.GenericMetadata):
         ep_obj: a TVEpisode object to get the path for
         """
 
-        if ek.ek(os.path.isfile, ep_obj.location):
-            xml_file_name = helpers.replaceExtension(ek.ek(os.path.basename, ep_obj.location), self._ep_nfo_extension)
-            metadata_dir_name = ek.ek(os.path.join, ek.ek(os.path.dirname, ep_obj.location), 'metadata')
-            xml_file_path = ek.ek(os.path.join, metadata_dir_name, xml_file_name)
+        if ek(os.path.isfile, ep_obj.location):
+            xml_file_name = helpers.replaceExtension(ek(os.path.basename, ep_obj.location), self._ep_nfo_extension)
+            metadata_dir_name = ek(os.path.join, ek(os.path.dirname, ep_obj.location), 'metadata')
+            xml_file_path = ek(os.path.join, metadata_dir_name, xml_file_name)
         else:
             logger.log(u"Episode location doesn't exist: " + str(ep_obj.location), logger.DEBUG)
             return ''
@@ -128,10 +132,10 @@ class MediaBrowserMetadata(generic.GenericMetadata):
         ep_obj: a TVEpisode object to get the path from
         """
 
-        if ek.ek(os.path.isfile, ep_obj.location):
-            tbn_file_name = helpers.replaceExtension(ek.ek(os.path.basename, ep_obj.location), 'jpg')
-            metadata_dir_name = ek.ek(os.path.join, ek.ek(os.path.dirname, ep_obj.location), 'metadata')
-            tbn_file_path = ek.ek(os.path.join, metadata_dir_name, tbn_file_name)
+        if ek(os.path.isfile, ep_obj.location):
+            tbn_file_name = helpers.replaceExtension(ek(os.path.basename, ep_obj.location), 'jpg')
+            metadata_dir_name = ek(os.path.join, ek(os.path.dirname, ep_obj.location), 'metadata')
+            tbn_file_path = ek(os.path.join, metadata_dir_name, tbn_file_name)
         else:
             return None
 
@@ -144,8 +148,8 @@ class MediaBrowserMetadata(generic.GenericMetadata):
         If no season folder exists, None is returned
         """
 
-        dir_list = [x for x in ek.ek(os.listdir, show_obj.location) if
-                    ek.ek(os.path.isdir, ek.ek(os.path.join, show_obj.location, x))]
+        dir_list = [x for x in ek(os.listdir, show_obj.location) if
+                    ek(os.path.isdir, ek(os.path.join, show_obj.location, x))]
 
         season_dir_regex = '^Season\s+(\d+)$'
 
@@ -175,7 +179,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
 
         logger.log(u"Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season), logger.DEBUG)
 
-        return ek.ek(os.path.join, show_obj.location, season_dir, 'folder.jpg')
+        return ek(os.path.join, show_obj.location, season_dir, 'folder.jpg')
 
     def get_season_banner_path(self, show_obj, season):
         """
@@ -184,8 +188,8 @@ class MediaBrowserMetadata(generic.GenericMetadata):
         If no season folder exists, None is returned
         """
 
-        dir_list = [x for x in ek.ek(os.listdir, show_obj.location) if
-                    ek.ek(os.path.isdir, ek.ek(os.path.join, show_obj.location, x))]
+        dir_list = [x for x in ek(os.listdir, show_obj.location) if
+                    ek(os.path.isdir, ek(os.path.join, show_obj.location, x))]
 
         season_dir_regex = '^Season\s+(\d+)$'
 
@@ -215,7 +219,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
 
         logger.log(u"Using " + str(season_dir) + "/banner.jpg as season dir for season " + str(season), logger.DEBUG)
 
-        return ek.ek(os.path.join, show_obj.location, season_dir, 'banner.jpg')
+        return ek(os.path.join, show_obj.location, season_dir, 'banner.jpg')
 
     def _show_data(self, show_obj):
         """
@@ -316,7 +320,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
         ProductionYear = etree.SubElement(tv_node, "ProductionYear")
         if getattr(myShow, 'firstaired', None) is not None:
             try:
-                year_text = str(datetime.datetime.strptime(myShow['firstaired'], '%Y-%m-%d').year)
+                year_text = str(datetime.datetime.strptime(myShow['firstaired'], dateFormat).year)
                 if year_text:
                     ProductionYear.text = year_text
             except:
@@ -409,7 +413,7 @@ class MediaBrowserMetadata(generic.GenericMetadata):
 
             myShow = t[ep_obj.show.indexerid]
         except sickbeard.indexer_shownotfound, e:
-            raise exceptions.ShowNotFoundException(e.message)
+            raise ShowNotFoundException(e.message)
         except sickbeard.indexer_error, e:
             logger.log(u"Unable to connect to " + sickbeard.indexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - " + ex(e), logger.ERROR)

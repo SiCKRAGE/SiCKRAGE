@@ -2,7 +2,7 @@ import threading
 import traceback
 from Queue import Queue, Empty
 from sickbeard import logger
-from sickbeard.exceptions import ex
+from sickrage.helper.exceptions import ex
 
 
 class Event:
@@ -27,6 +27,9 @@ class Events(threading.Thread):
         self.queue.put(type)
 
     def run(self):
+        """
+        Actually runs the thread to process events
+        """
         try:
             while (not self.stop.is_set()):
                 try:

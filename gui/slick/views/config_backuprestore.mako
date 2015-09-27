@@ -11,12 +11,8 @@
     from sickbeard.metadata.generic import GenericMetadata
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${sbRoot}/js/configBackupRestore.js?${sbPID}"></script>
-<script type="text/javascript" charset="utf-8">
-    $('#backupDir').fileBrowser({ title: 'Select backup folder to save to', key: 'backupPath' });
-    $('#backupFile').fileBrowser({ title: 'Select backup files to restore', key: 'backupFile', includeFiles: 1 });
-    $('#config-components').tabs();
-</script>
+<script type="text/javascript" src="${srRoot}/js/configBackupRestore.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/new/config_backuprestore.js"></script>
 </%block>
 <%block name="content">
 % if not header is UNDEFINED:
@@ -30,7 +26,7 @@
     <% indexer = sickbeard.INDEXER_DEFAULT %>
 % endif
 
-<script type="text/javascript" src="${sbRoot}/js/config.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/config.js?${sbPID}"></script>
 
 <div id="config">
     <div id="config-content">

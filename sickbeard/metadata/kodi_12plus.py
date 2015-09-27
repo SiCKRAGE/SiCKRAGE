@@ -20,10 +20,14 @@ import datetime
 
 import sickbeard
 
-from sickbeard import logger, exceptions, helpers
-from sickbeard.exceptions import ex
+from sickbeard import logger, helpers
+from sickrage.helper.common import dateFormat
+from sickrage.helper.exceptions import ex, ShowNotFoundException
 
-import xml.etree.cElementTree as etree
+try:
+    import xml.etree.cElementTree as etree
+except ImportError:
+    import xml.etree.ElementTree as etree
 
 
 class KODI_12PlusMetadata(generic.GenericMetadata):
@@ -141,7 +145,7 @@ class KODI_12PlusMetadata(generic.GenericMetadata):
         year = etree.SubElement(tv_node, "year")
         if getattr(myShow, 'firstaired', None) is not None:
             try:
-                year_text = str(datetime.datetime.strptime(myShow["firstaired"], '%Y-%m-%d').year)
+                year_text = str(datetime.datetime.strptime(myShow["firstaired"], dateFormat).year)
                 if year_text:
                     year.text = year_text
             except:
@@ -225,7 +229,7 @@ class KODI_12PlusMetadata(generic.GenericMetadata):
             t = sickbeard.indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except sickbeard.indexer_shownotfound, e:
-            raise exceptions.ShowNotFoundException(e.message)
+            raise ShowNotFoundException(e.message)
         except sickbeard.indexer_error, e:
             logger.log(u"Unable to connect to " + sickbeard.indexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - " + ex(e), logger.ERROR)

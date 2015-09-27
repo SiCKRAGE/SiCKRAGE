@@ -19,24 +19,28 @@
 import datetime
 import sickbeard
 from sickbeard.common import *
-from sickbeard.exceptions import ex
 from sickbeard import logger
-from sickbeard import encodingKludge as ek
 from sickbeard import db
+from sickrage.helper.common import dateTimeFormat
+from sickrage.helper.encoding import ek
+from sickrage.helper.exceptions import ex
 import subliminal
 import babelfish
 import subprocess
 
 subliminal.cache_region.configure('dogpile.cache.memory')
 
-provider_urls = {'addic7ed': 'http://www.addic7ed.com',
-                 'opensubtitles': 'http://www.opensubtitles.org',
-                 'podnapisi': 'http://www.podnapisi.net',
-                 'thesubdb': 'http://www.thesubdb.com',
-                 'tvsubtitles': 'http://www.tvsubtitles.net'
-                }
+provider_urls = {
+    'addic7ed': 'http://www.addic7ed.com',
+    'opensubtitles': 'http://www.opensubtitles.org',
+    'podnapisi': 'http://www.podnapisi.net',
+    'thesubdb': 'http://www.thesubdb.com',
+    'tvsubtitles': 'http://www.tvsubtitles.net'
+}
 
 SINGLE = 'und'
+
+
 def sortedServiceList():
     newList = []
     lmgtfy = 'http://lmgtfy.com/?q=%s'
@@ -76,7 +80,7 @@ def isValidLanguage(language):
     return True
 
 def getLanguageName(language):
-    return fromietf(language ).name
+    return fromietf(language).name
 
 # TODO: Filter here for non-languages in sickbeard.SUBTITLES_LANGUAGES
 def wantedLanguages(sqlLike = False):
@@ -89,15 +93,19 @@ def subtitlesLanguages(video_path):
     """Return a list detected subtitles for the given video file"""
     resultList = []
 
-    if sickbeard.SUBTITLES_DIR and ek.ek(os.path.exists, sickbeard.SUBTITLES_DIR):
-        video_path = ek.ek(os.path.join, sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, video_path))
+    # Serch for embedded subtitles
+    embedded_languages = subliminal.scan_video(video_path, subtitles=False, embedded_subtitles=not sickbeard.EMBEDDED_SUBTITLES_ALL)
+
+    # Search subtitles in the absolute path
+    if sickbeard.SUBTITLES_DIR and ek(os.path.exists, sickbeard.SUBTITLES_DIR):
+        video_path = ek(os.path.join, sickbeard.SUBTITLES_DIR, ek(os.path.basename, video_path))
     # Search subtitles in the relative path
-    if sickbeard.SUBTITLES_DIR:
-        video_path = ek.ek(os.path.join, ek.ek(os.path.dirname, video_path), sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, video_path))
+    elif sickbeard.SUBTITLES_DIR:
+        video_path = ek(os.path.join, ek(os.path.dirname, video_path), sickbeard.SUBTITLES_DIR, ek(os.path.basename, video_path))
 
     languages = subliminal.video.scan_subtitle_languages(video_path)
 
-    for language in languages:
+    for language in languages.union(embedded_languages.subtitle_languages):
         if hasattr(language, 'opensubtitles') and language.opensubtitles:
             resultList.append(language.opensubtitles)
         elif hasattr(language, 'alpha3') and language.alpha3:
@@ -106,8 +114,6 @@ def subtitlesLanguages(video_path):
             resultList.append(language.alpha2)
 
     defaultLang = wantedLanguages()
-    if len(resultList) is 1 and len(defaultLang) is 1:
-        return defaultLang
 
     if ('pob' in defaultLang or 'pb' in defaultLang) and ('pt' not in defaultLang and 'por' not in defaultLang):
             resultList = [x if not x in ['por', 'pt'] else u'pob' for x in resultList]
@@ -165,15 +171,15 @@ class SubtitlesFinder():
         now = datetime.datetime.now()
         for epToSub in sqlResults:
 
-            if not ek.ek(os.path.isfile, epToSub['location']):
+            if not ek(os.path.isfile, epToSub['location']):
                 logger.log('Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' % (epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
                 continue
 
             # Old shows rule
             throwaway = datetime.datetime.strptime('20110101', '%Y%m%d')
-            if ((epToSub['airdate_daydiff'] > 7 and epToSub['searchcount'] < 2 and now - datetime.datetime.strptime(epToSub['lastsearch'], '%Y-%m-%d %H:%M:%S') > datetime.timedelta(hours=rules['old'][epToSub['searchcount']])) or
+            if ((epToSub['airdate_daydiff'] > 7 and epToSub['searchcount'] < 2 and now - datetime.datetime.strptime(epToSub['lastsearch'], dateTimeFormat) > datetime.timedelta(hours=rules['old'][epToSub['searchcount']])) or
                 # Recent shows rule
-                (epToSub['airdate_daydiff'] <= 7 and epToSub['searchcount'] < 7 and now - datetime.datetime.strptime(epToSub['lastsearch'], '%Y-%m-%d %H:%M:%S') > datetime.timedelta(hours=rules['new'][epToSub['searchcount']]))):
+                (epToSub['airdate_daydiff'] <= 7 and epToSub['searchcount'] < 7 and now - datetime.datetime.strptime(epToSub['lastsearch'], dateTimeFormat) > datetime.timedelta(hours=rules['new'][epToSub['searchcount']]))):
                 logger.log('Downloading subtitles for episode %dx%d of show %s' % (epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
 
                 showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(epToSub['showid']))
@@ -214,17 +220,17 @@ def run_subs_extra_scripts(epObj, foundSubs):
 
     for curScriptName in sickbeard.SUBTITLES_EXTRA_SCRIPTS:
         script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
-        script_cmd[0] = ek.ek(os.path.abspath, script_cmd[0])
+        script_cmd[0] = ek(os.path.abspath, script_cmd[0])
         logger.log(u"Absolute path to script: " + script_cmd[0], logger.DEBUG)
 
         for video, subs in foundSubs.iteritems():
             subpaths = []
             for sub in subs:
                 subpath = subliminal.subtitle.get_subtitle_path(video.name, sub.language)
-                if sickbeard.SUBTITLES_DIR and ek.ek(os.path.exists, sickbeard.SUBTITLES_DIR):
-                    subpath = ek.ek(os.path.join, sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, subpath))
+                if sickbeard.SUBTITLES_DIR and ek(os.path.exists, sickbeard.SUBTITLES_DIR):
+                    subpath = ek(os.path.join, sickbeard.SUBTITLES_DIR, ek(os.path.basename, subpath))
                 elif sickbeard.SUBTITLES_DIR:
-                    subpath = ek.ek(os.path.join, ek.ek(os.path.dirname, subpath), sickbeard.SUBTITLES_DIR, ek.ek(os.path.basename, subpath))
+                    subpath = ek(os.path.join, ek(os.path.dirname, subpath), sickbeard.SUBTITLES_DIR, ek(os.path.basename, subpath))
 
                 inner_cmd = script_cmd + [video.name, subpath, sub.language.opensubtitles, epObj.show.name,
                                          str(epObj.season), str(epObj.episode), epObj.name, str(epObj.show.indexerid)]
