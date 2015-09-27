@@ -17,7 +17,6 @@
 
 import re
 import datetime
-import urlparse
 import sickbeard
 import generic
 from sickbeard.common import Quality
@@ -28,9 +27,7 @@ from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
 from sickbeard.exceptions import ex
-from sickbeard import clients
 import requests
-from requests import exceptions
 from sickbeard.helpers import sanitizeSceneName
 
 
@@ -93,21 +90,13 @@ class TorrentDayProvider(generic.TorrentProvider):
                             'submit.y': 0
             }
 
-            if not self.session:
-                self.session = requests.Session()
-
-            try:
-                response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-            except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
-                logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
+            response = self.getURL(self.urls['login'],  post_data=login_params, timeout=30)
+            if not response:
+                logger.log(u'Unable to connect to ' + self.name + ' provider.', logger.ERROR)
                 return False
 
-            if re.search('You tried too often', response.text):
+            if re.search('You tried too often', response):
                 logger.log(u'Too many login access for ' + self.name + ', can''t retrive any data', logger.ERROR)
-                return False
-
-            if response.status_code == 401:
-                logger.log(u'Invalid username or password for ' + self.name + ', Check your settings!', logger.ERROR)
                 return False
 
             try:
@@ -122,7 +111,7 @@ class TorrentDayProvider(generic.TorrentProvider):
             except:
                 pass
 
-            logger.log(u'Unable to obtain cookie for TorrentDay', logger.ERROR)
+            logger.log(u'Unable to obtain cookie for TorrentDay', logger.WARNING)
             return False
 
 
@@ -167,7 +156,7 @@ class TorrentDayProvider(generic.TorrentProvider):
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 

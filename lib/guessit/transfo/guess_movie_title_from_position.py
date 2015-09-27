@@ -23,6 +23,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from guessit.plugins.transformers import Transformer
 from guessit.matcher import found_property
 from guessit import u
+from guessit.patterns.list import all_separators
+from guessit.language import all_lang_prefixes_suffixes
 
 
 class GuessMovieTitleFromPosition(Transformer):
@@ -36,6 +38,13 @@ class GuessMovieTitleFromPosition(Transformer):
         options = options or {}
         return not options.get('skip_title') and not mtree.guess.get('type', '').startswith('episode')
 
+    @staticmethod
+    def excluded_word(*values):
+        for value in values:
+            if value.clean_value.lower() in all_separators + all_lang_prefixes_suffixes:
+                return True
+        return False
+
     def process(self, mtree, options=None):
         """
         try to identify the remaining unknown groups by looking at their
@@ -44,14 +53,16 @@ class GuessMovieTitleFromPosition(Transformer):
         if 'title' in mtree.info:
             return
 
-        basename = mtree.node_at((-2,))
+        path_nodes = list(filter(lambda x: x.category == 'path', mtree.nodes()))
+
+        basename = path_nodes[-2]
         all_valid = lambda leaf: len(leaf.clean_value) > 0
         basename_leftover = list(basename.unidentified_leaves(valid=all_valid))
 
         try:
-            folder = mtree.node_at((-3,))
+            folder = path_nodes[-3]
             folder_leftover = list(folder.unidentified_leaves())
-        except ValueError:
+        except IndexError:
             folder = None
             folder_leftover = []
 
@@ -61,7 +72,9 @@ class GuessMovieTitleFromPosition(Transformer):
         # specific cases:
         # if we find the same group both in the folder name and the filename,
         # it's a good candidate for title
-        if folder_leftover and basename_leftover and folder_leftover[0].clean_value == basename_leftover[0].clean_value:
+        if (folder_leftover and basename_leftover and
+                        folder_leftover[0].clean_value == basename_leftover[0].clean_value and
+                        not GuessMovieTitleFromPosition.excluded_word(folder_leftover[0])):
             found_property(folder_leftover[0], 'title', confidence=0.8)
             return
 
@@ -89,7 +102,8 @@ class GuessMovieTitleFromPosition(Transformer):
                 if (series.clean_value != title.clean_value and
                             series.clean_value != film_number.clean_value and
                             basename_leaves.index(film_number) == 0 and
-                            basename_leaves.index(title) == 1):
+                            basename_leaves.index(title) == 1 and
+                            not GuessMovieTitleFromPosition.excluded_word(title, series)):
 
                     found_property(title, 'title', confidence=0.6)
                     found_property(series, 'filmSeries', confidence=0.6)
@@ -103,8 +117,9 @@ class GuessMovieTitleFromPosition(Transformer):
                 if groups_before:
                     try:
                         node = next(groups_before)
-                        found_property(node, 'title', confidence=0.8)
-                        return
+                        if not GuessMovieTitleFromPosition.excluded_word(node):
+                            found_property(node, 'title', confidence=0.8)
+                            return
                     except StopIteration:
                         pass
 
@@ -125,8 +140,10 @@ class GuessMovieTitleFromPosition(Transformer):
                 # if they're all in the same group, take leftover info from there
                 leftover = mtree.node_at((group_idx,)).unidentified_leaves()
                 try:
-                    found_property(next(leftover), 'title', confidence=0.7)
-                    return
+                    node = next(leftover)
+                    if not GuessMovieTitleFromPosition.excluded_word(node):
+                        found_property(node, 'title', confidence=0.7)
+                        return
                 except StopIteration:
                     pass
 
@@ -138,7 +155,8 @@ class GuessMovieTitleFromPosition(Transformer):
             # ex: Movies/Alice in Wonderland DVDRip.XviD-DiAMOND/dmd-aw.avi
             # ex: Movies/Somewhere.2010.DVDRip.XviD-iLG/i-smwhr.avi  <-- TODO: gets caught here?
             if (basename_leftover[0].clean_value.count(' ') == 0 and
-                    folder_leftover and folder_leftover[0].clean_value.count(' ') >= 2):
+                    folder_leftover and folder_leftover[0].clean_value.count(' ') >= 2 and
+                    not GuessMovieTitleFromPosition.excluded_word(folder_leftover[0])):
 
                 found_property(folder_leftover[0], 'title', confidence=0.7)
                 return
@@ -148,26 +166,28 @@ class GuessMovieTitleFromPosition(Transformer):
             # ex: Movies/[阿维达].Avida.2006.FRENCH.DVDRiP.XViD-PROD.avi
             if basename_leftover[0].is_explicit():
                 for basename_leftover_elt in basename_leftover:
-                    if not basename_leftover_elt.is_explicit():
+                    if not basename_leftover_elt.is_explicit() and not GuessMovieTitleFromPosition.excluded_word(basename_leftover_elt):
                         found_property(basename_leftover_elt, 'title', confidence=0.8)
                         return
 
             # if all else fails, take the first remaining unidentified group in the
             # basename as title
-            found_property(basename_leftover[0], 'title', confidence=0.6)
-            return
+            if not GuessMovieTitleFromPosition.excluded_word(basename_leftover[0]):
+                found_property(basename_leftover[0], 'title', confidence=0.6)
+                return
 
         # if there are no leftover groups in the basename, look in the folder name
-        if folder_leftover:
+        if folder_leftover and not GuessMovieTitleFromPosition.excluded_word(folder_leftover[0]):
             found_property(folder_leftover[0], 'title', confidence=0.5)
             return
 
         # if nothing worked, look if we have a very small group at the beginning
         # of the basename
-        basename = mtree.node_at((-2,))
         basename_leftover = basename.unidentified_leaves(valid=lambda leaf: True)
         try:
-            found_property(next(basename_leftover), 'title', confidence=0.4)
-            return
+            node = next(basename_leftover)
+            if not GuessMovieTitleFromPosition.excluded_word(node):
+                found_property(node, 'title', confidence=0.4)
+                return
         except StopIteration:
             pass

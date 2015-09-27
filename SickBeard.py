@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.7
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -37,49 +37,13 @@ import shutil_custom
 
 shutil.copyfile = shutil_custom.copyfile_custom
 
-if sys.version_info < (2, 6):
-    print "Sorry, requires Python 2.6 or 2.7."
+if sys.version_info < (2, 7):
+    print "Sorry, requires Python 2.7.x"
     sys.exit(1)
-
-try:
-    import Cheetah
-    if Cheetah.Version[0] != '2':
-        raise ValueError
-except ValueError:
-    print "Sorry, requires Python module Cheetah 2.1.0 or newer."
-    sys.exit(1)
-except:
-    print "The Python module Cheetah is required"
-    sys.exit(1)
-
-# We only need this for compiling an EXE and I will just always do that on 2.6+
-if sys.hexversion >= 0x020600F0:
-    from multiprocessing import freeze_support  # @UnresolvedImport
-
-
-import certifi
-for env_cert_var in ['REQUESTS_CA_BUNDLE', 'CURL_CA_BUNDLE']:
-    ca_cert_loc = os.environ.get(env_cert_var)
-    if (not isinstance(ca_cert_loc, basestring)) or (not os.path.isfile(ca_cert_loc)):
-        os.environ[env_cert_var] = certifi.where()
-
 
 if sys.version_info >= (2, 7, 9):
     import ssl
     ssl._create_default_https_context = ssl._create_unverified_context
-else:
-    try:
-        import cryptography
-    except ImportError:
-        try:
-            from OpenSSL.version import __version__ as pyOpenSSL_Version
-            if int(pyOpenSSL_Version.replace('.', '')[:3]) > 13:
-                raise ImportError
-        except ImportError:
-            print('\nSNI is disabled with pyOpenSSL >= 0.14 when the cryptography module is missing,\n' +
-                    'you will encounter SSL errors with HTTPS! To fix this issue:\n' +
-                    'pip install pyopenssl==0.13.1 (easy) or pip install cryptography (pita)')
-
 
 import locale
 import datetime
@@ -90,7 +54,6 @@ import sickbeard
 from sickbeard import db, logger, network_timezones, failed_history, name_cache
 from sickbeard.tv import TVShow
 from sickbeard.webserveInit import SRWebServer
-from sickbeard.databases.mainDB import MIN_DB_VERSION, MAX_DB_VERSION
 from sickbeard.event_queue import Events
 from configobj import ConfigObj
 from sickbeard import encodingKludge as ek
@@ -113,7 +76,6 @@ class SickRage(object):
 
         # webserver constants
         self.webserver = None
-        self.forceUpdate = False
         self.forcedPort = None
         self.noLaunch = False
 
@@ -127,7 +89,6 @@ class SickRage(object):
         help_msg += "Options:\n"
         help_msg += "\n"
         help_msg += "    -h          --help              Prints this message\n"
-        help_msg += "    -f          --forceupdate       Force update all shows in the DB (from tvdb) on startup\n"
         help_msg += "    -q          --quiet             Disables logging to console\n"
         help_msg += "                --nolaunch          Suppress launching web browser on startup\n"
 
@@ -148,17 +109,18 @@ class SickRage(object):
         help_msg += "                --noresize          Prevent resizing of the banner/posters even if PIL is installed\n"
 
         return help_msg
-        
+
     def fix_clients_nonsense(self):
-    
+
         files = ["sickbeard/clients/download_station.py",
                  "sickbeard/clients/utorrent.py",
                  "sickbeard/clients/qbittorrent.py",
                  "sickbeard/clients/transmission.py",
                  "sickbeard/clients/deluge.py",
+                 "sickbeard/clients/deluged.py",
                  "sickbeard/clients/rtorrent.py"
                 ]
-                
+
         for file in files:
             file = ek.ek(os.path.join, sickbeard.PROG_DIR, file)
             try:
@@ -193,7 +155,7 @@ class SickRage(object):
 
         if not hasattr(sys, "setdefaultencoding"):
             reload(sys)
-  
+
         if sys.platform == 'win32':
             if sys.getwindowsversion()[0] >= 6 and sys.stdout.encoding == 'cp65001':
                 sickbeard.SYS_ENCODING = 'UTF-8'
@@ -214,7 +176,7 @@ class SickRage(object):
 
         try:
             opts, args = getopt.getopt(sys.argv[1:], "hfqdp::",
-                                       ['help', 'forceupdate', 'quiet', 'nolaunch', 'daemon', 'pidfile=', 'port=',
+                                       ['help', 'quiet', 'nolaunch', 'daemon', 'pidfile=', 'port=',
                                         'datadir=', 'config=', 'noresize'])  # @UnusedVariable
         except getopt.GetoptError:
             sys.exit(self.help_message())
@@ -227,10 +189,6 @@ class SickRage(object):
             # For now we'll just silence the logging
             if o in ('-q', '--quiet'):
                 self.consoleLogging = False
-
-            # Should we update (from indexer) all shows in the DB right away?
-            if o in ('-f', '--forceupdate'):
-                self.forceUpdate = True
 
             # Suppress launching web browser
             # Needed for OSes without default browser assigned
@@ -341,7 +299,7 @@ class SickRage(object):
 
         # Get PID
         sickbeard.PID = os.getpid()
-        
+
         # Fix clients old files
         self.fix_clients_nonsense()
 
@@ -393,7 +351,7 @@ class SickRage(object):
 
         # Fire up all our threads
         sickbeard.start()
-        
+
         # Build internal name cache
         name_cache.buildNameCache()
 
@@ -404,9 +362,8 @@ class SickRage(object):
         if sickbeard.USE_FAILED_DOWNLOADS:
             failed_history.trimHistory()
 
-        # Start an update if we're supposed to
-        if self.forceUpdate or sickbeard.UPDATE_SHOWS_ON_START:
-            sickbeard.showUpdateScheduler.forceRun()
+        # Check for metadata indexer updates for shows (Disabled until we use api)
+        #sickbeard.showUpdateScheduler.forceRun()
 
         # Launch browser
         if sickbeard.LAUNCH_BROWSER and not (self.noLaunch or self.runAsDaemon):
@@ -537,7 +494,7 @@ class SickRage(object):
             if self.runAsDaemon and self.CREATEPID:
                 self.remove_pid_file(self.PIDFILE)
 
-            if type == sickbeard.events.SystemEvent.RESTART:
+            if type == sickbeard.event_queue.Events.SystemEvent.RESTART:
                 install_type = sickbeard.versionCheckScheduler.action.install_type
 
                 popen_list = []
@@ -545,16 +502,7 @@ class SickRage(object):
                 if install_type in ('git', 'source'):
                     popen_list = [sys.executable, sickbeard.MY_FULLNAME]
                 elif install_type == 'win':
-                    if hasattr(sys, 'frozen'):
-                        # c:\dir\to\updater.exe 12345 c:\dir\to\sickbeard.exe
-                        popen_list = [os.path.join(sickbeard.PROG_DIR, 'updater.exe'), str(sickbeard.PID),
-                                      sys.executable]
-                    else:
-                        logger.log(u"Unknown SR launch method, please file a bug report about this", logger.ERROR)
-                        popen_list = [sys.executable, os.path.join(sickbeard.PROG_DIR, 'updater.py'),
-                                      str(sickbeard.PID),
-                                      sys.executable,
-                                      sickbeard.MY_FULLNAME]
+                    logger.log(u"You are using a binary Windows build of SickRage. Please switch to using git.", logger.ERROR)
 
                 if popen_list and not sickbeard.NO_RESTART:
                     popen_list += sickbeard.MY_ARGS
@@ -570,8 +518,5 @@ class SickRage(object):
 
 
 if __name__ == "__main__":
-    if sys.hexversion >= 0x020600F0:
-        freeze_support()
-
     # start sickrage
     SickRage().start()

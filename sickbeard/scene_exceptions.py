@@ -24,11 +24,8 @@ import datetime
 import sickbeard
 import adba
 from sickbeard import helpers
-from sickbeard import name_cache
 from sickbeard import logger
 from sickbeard import db
-from sickbeard import encodingKludge as ek
-import os
 import requests
 
 exception_dict = {}
@@ -294,10 +291,10 @@ def _xem_exceptions_fetcher():
         for indexer in sickbeard.indexerApi().indexers:
             logger.log(u"Checking for XEM scene exception updates for " + sickbeard.indexerApi(indexer).name)
 
-            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickbeard.indexerApi(indexer).config[
+            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1&language=us" % sickbeard.indexerApi(indexer).config[
                 'xem_origin']
 
-            parsedJSON = helpers.getURL(url, session=xem_session, json=True)
+            parsedJSON = helpers.getURL(url, session=xem_session, timeout = 90, json=True)
             if not parsedJSON:
                 logger.log(u"Check scene exceptions update failed for " + sickbeard.indexerApi(
                     indexer).name + ", Unable to get URL: " + url, logger.ERROR)

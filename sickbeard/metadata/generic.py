@@ -371,7 +371,7 @@ class GenericMetadata():
     def _get_episode_thumb_url(self, ep_obj):
         """
         Returns the URL to use for downloading an episode's thumbnail. Uses
-        theTVDB.com and TVRage.com data.
+        theTVDB.com data.
 
         ep_obj: a TVEpisode object for which to grab the thumb URL
         """
@@ -694,7 +694,7 @@ class GenericMetadata():
 
         return self._write_image(banner_data, banner_path)
 
-    def _write_image(self, image_data, image_path):
+    def _write_image(self, image_data, image_path, obj = None):
         """
         Saves the data in image_data to the location image_path. Returns True/False
         to represent success or failure.
@@ -709,9 +709,9 @@ class GenericMetadata():
             return False
 
         image_dir = ek.ek(os.path.dirname, image_path)
-        
+
         if not image_data:
-            logger.log(u"Unable to retrieve image to save in %s, skipping" % ek.ss(image_dir), logger.WARNING)
+            logger.log(u"Unable to retrieve image to save in %s, skipping" % (ek.ss(image_path)), logger.DEBUG)
             return False
 
         try:
@@ -763,7 +763,7 @@ class GenericMetadata():
         except (sickbeard.indexer_error, IOError), e:
             logger.log(u"Unable to look up show on " + sickbeard.indexerApi(
                 show_obj.indexer).name + ", not downloading images: " + ex(e), logger.WARNING)
-            logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)                
+            logger.log(u"Indexer " + sickbeard.indexerApi(show_obj.indexer).name + "maybe experiencing some problems. Try again later", logger.DEBUG)
             return None
 
         if image_type not in ('fanart', 'poster', 'banner', 'poster_thumb', 'banner_thumb'):
@@ -852,7 +852,7 @@ class GenericMetadata():
 
         result[season] = {}
 
-        # find the correct season in the TVDB and TVRAGE object and just copy the dict into our result dict
+        # find the correct season in the TVDB object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
             if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
@@ -907,7 +907,7 @@ class GenericMetadata():
 
         result[season] = {}
 
-        # find the correct season in the TVDB and TVRAGE object and just copy the dict into our result dict
+        # find the correct season in the TVDB object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
             if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID]['language'] == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
@@ -963,7 +963,8 @@ class GenericMetadata():
                     if 'thetvdb.com' in epg_url:
                         indexer = 1
                     elif 'tvrage' in epg_url:
-                        indexer = 2
+                        logger.log(u"Invalid Indexer ID (" + str(indexer_id) + "), not using metadata file because it has TVRage info", logger.WARNING)
+                        return empty_return
 
 
         except Exception, e:
@@ -1003,7 +1004,7 @@ class GenericMetadata():
         except Exception as e:
             pass
 
-        logger.log(u"Could not find any " + type + " images on TMDB for " + show.name, logger.DEBUG)
+        logger.log(u"Could not find any " + type + " images on TMDB for " + show.name, logger.INFO)
 
     def _retrieve_show_images_from_fanart(self, show, type, thumb=False):
         types = {'poster': fanart.TYPE.TV.POSTER,
@@ -1033,4 +1034,4 @@ class GenericMetadata():
         except Exception as e:
             pass
 
-        logger.log(u"Could not find any " + type + " images on Fanart.tv for " + show.name, logger.DEBUG)
+        logger.log(u"Could not find any " + type + " images on Fanart.tv for " + show.name, logger.INFO)

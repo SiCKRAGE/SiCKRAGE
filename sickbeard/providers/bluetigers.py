@@ -20,13 +20,10 @@
 import traceback
 import re
 import datetime
-import time
 from requests.auth import AuthBase
 import sickbeard
 import generic
-import urllib
 import requests
-from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
 from sickbeard.common import Quality
 from sickbeard import logger
@@ -54,14 +51,18 @@ class BLUETIGERSProvider(generic.TorrentProvider):
 
         self.cache = BLUETIGERSCache(self)
 
-        self.urls = {'base_url': 'https://www.bluetigers.ca/',
-                     'search': 'https://www.bluetigers.ca/torrents-search.php?search=%s%s',
-                     'login': 'https://www.bluetigers.ca/account-login.php',
-                     'download': 'https://www.bluetigers.ca/torrents-details.php?id=%s&hit=1',
-        }
+        self.urls = {
+            'base_url': 'https://www.bluetigers.ca/',
+            'search': 'https://www.bluetigers.ca/torrents-search.php',
+            'login': 'https://www.bluetigers.ca/account-login.php',
+            'download': 'https://www.bluetigers.ca/torrents-details.php?id=%s&hit=1',
+            }
+
+        self.search_params = {
+            "c16": 1, "c10": 1, "c130": 1, "c131": 1, "c17": 1, "c18": 1, "c19": 1
+            }
 
         self.url = self.urls['base_url']
-        self.categories = "&c16=1&c10=1&c130=1&c131=1&c17=1&c18=1&c19=1"
 
     def isEnabled(self):
         return self.enabled
@@ -73,33 +74,27 @@ class BLUETIGERSProvider(generic.TorrentProvider):
         quality = Quality.sceneQuality(item[0], anime)
         return quality
 
-    def _doLogin(self):      
-
-
+    def _doLogin(self):
         if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
             return True
 
-      
-        login_params = {'username': self.username,
-                            'password': self.password,
-                            'take_login' : '1'
-        }
-
-        if not self.session:
-            self.session = requests.Session()
+        login_params = {
+            'username': self.username,
+            'password': self.password,
+            'take_login' : '1'
+            }
 
         logger.log('Performing authentication to BLUETIGERS', logger.DEBUG)
-        try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30)
-        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
-            logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
+        response = self.getURL(self.urls['login'],  post_data=login_params, timeout=30)
+        if not response:
+            logger.log(u'Unable to connect to ' + self.name + ' provider.', logger.ERROR)
             return False
 
-        if re.search('/account-logout.php', response.text):
-            logger.log(u'Login to ' + self.name + ' was successful.', logger.DEBUG)
-            return True                
+        if re.search('/account-logout.php', response):
+            logger.log(u'Login to %s was successful.' % self.name, logger.DEBUG)
+            return True
         else:
-            logger.log(u'Login to ' + self.name + ' was unsuccessful.', logger.DEBUG)                
+            logger.log(u'Login to %s was unsuccessful.' % self.name, logger.DEBUG)
             return False
 
         return True
@@ -144,7 +139,7 @@ class BLUETIGERSProvider(generic.TorrentProvider):
                 search_string['Episode'].append(ep_string)
         else:
             for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-                ep_string = show_name_helpers.sanitizeSceneName(show_name) + '.' + \
+                ep_string = sanitizeSceneName(show_name) + '.' + \
                             sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode} + ' %s' % add_string
 
@@ -152,46 +147,36 @@ class BLUETIGERSProvider(generic.TorrentProvider):
 
         return [search_string]
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
-
-        logger.log(u"_doSearch started with ..." + str(search_params), logger.DEBUG)
-
+    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        for mode in search_params.keys():
+        for mode in search_strings.keys():
+            for search_string in search_strings[mode]:
+                logger.log(u"Search string: " + search_string, logger.DEBUG)
+                self.search_params['search'] = search_string
 
-            for search_string in search_params[mode]:
-
-                if isinstance(search_string, unicode):
-                    search_string = unidecode(search_string)
-
-                
-                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
-
-                logger.log(u"Search string: " + searchURL, logger.DEBUG)
-                                
-                data = self.getURL(searchURL)
+                data = self.getURL(self.urls['search'], params=self.search_params)
                 if not data:
                     continue
 
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
                         result_linkz = html.findAll('a',  href=re.compile("torrents-details"))
-        
+
                         if not result_linkz:
                             logger.log(u"The Data returned from " + self.name + " do not contains any torrent",
                                        logger.DEBUG)
                             continue
-                        
+
                         if result_linkz:
-                            for link in result_linkz:                                                                                                                               
+                            for link in result_linkz:
                                 title = link.text
-                                logger.log(u"BLUETIGERS TITLE TEMP: " + title, logger.DEBUG)                   
-                                download_url =   self.urls['base_url']  + "/" + link['href'] 
-                                download_url = download_url.replace("torrents-details","download")             
+                                logger.log(u"BLUETIGERS TITLE TEMP: " + title, logger.DEBUG)
+                                download_url =   self.urls['base_url']  + "/" + link['href']
+                                download_url = download_url.replace("torrents-details","download")
                                 logger.log(u"BLUETIGERS downloadURL: " + download_url, logger.DEBUG)
-        
+
                                 if not title or not download_url:
                                    continue
 
@@ -269,8 +254,8 @@ class BLUETIGERSCache(tvcache.TVCache):
         self.minTime = 10
 
     def _getRSSData(self):
-        search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        search_strings = {'RSS': ['']}
+        return {'entries': self.provider._doSearch(search_strings)}
 
 
 provider = BLUETIGERSProvider()

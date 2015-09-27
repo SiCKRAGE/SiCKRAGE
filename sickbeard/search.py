@@ -40,7 +40,6 @@ from sickbeard import encodingKludge as ek
 from sickbeard import failed_history
 from sickbeard.exceptions import ex
 from sickbeard.providers.generic import GenericProvider
-from sickbeard.blackandwhitelist import BlackAndWhiteList
 from sickbeard import common
 
 def _downloadResult(result):
@@ -181,12 +180,6 @@ def snatchEpisode(result, endStatus=SNATCHED):
         myDB = db.DBConnection()
         myDB.mass_action(sql_l)
 
-    if sickbeard.UPDATE_SHOWS_ON_SNATCH and not sickbeard.showQueueScheduler.action.isBeingUpdated(result.show) and result.show.status == "Continuing":
-        try:
-            sickbeard.showQueueScheduler.action.updateShow(result.show, True)
-        except exceptions.CantUpdateException as e:
-            logger.log("Unable to update show: {0}".format(str(e)),logger.DEBUG)
-
     return True
 
 
@@ -240,19 +233,13 @@ def pickBestResult(results, show):
                 logger.log(cur_result.name + u" has previously failed, rejecting it")
                 continue
 
-        # Only request HEAD instead of downloading content here, and only after all other checks but before bestresult!
-        # Otherwise we are spamming providers even when searching with cache only. We can validate now, and download later
-        if len(cur_result.url) and cur_result.provider:
-            cur_result.url = cur_result.provider.headURL(cur_result)
-            if not len(cur_result.url):
-                logger.log('Skipping %s, URL check failed. Bad result from provider.' % cur_result.name,logger.INFO) 
-                continue
-
-        if cur_result.quality in bestQualities and (not bestResult or bestResult.quality < cur_result.quality or bestResult not in bestQualities):
+        if not bestResult:
             bestResult = cur_result
-        elif cur_result.quality in anyQualities and (not bestResult or bestResult not in bestQualities) and (not bestResult or bestResult.quality < cur_result.quality):
+        elif cur_result.quality in bestQualities and (bestResult.quality < cur_result.quality or bestResult not in bestQualities):
             bestResult = cur_result
-        elif bestResult and bestResult.quality == cur_result.quality:
+        elif cur_result.quality in anyQualities and bestResult not in bestQualities and bestResult.quality < cur_result.quality:
+            bestResult = cur_result
+        elif bestResult.quality == cur_result.quality:
             if "proper" in cur_result.name.lower() or "repack" in cur_result.name.lower():
                 bestResult = cur_result
             elif "internal" in bestResult.name.lower() and "internal" not in cur_result.name.lower():
@@ -346,9 +333,7 @@ def wantedEpisodes(show, fromDate):
             highestBestQuality = 0
 
         # if we need a better one then say yes
-        if (curStatus in (common.DOWNLOADED, common.SNATCHED, common.SNATCHED_PROPER,
-            common.SNATCHED_BEST) and curQuality < highestBestQuality) or curStatus == common.WANTED:
-
+        if (curStatus in (common.DOWNLOADED, common.SNATCHED, common.SNATCHED_PROPER) and curQuality < highestBestQuality) or curStatus == common.WANTED:
             epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
             epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != common.Quality.UNKNOWN)]
             wanted.append(epObj)
@@ -464,8 +449,8 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
         searchCount = 0
         search_mode = curProvider.search_mode
 
-        # Always search for episode when manually searching when in sponly and fallback false
-        if search_mode == 'sponly' and manualSearch == True and curProvider.search_fallback == False:
+        # Always search for episode when manually searching when in sponly
+        if search_mode == 'sponly' and manualSearch == True:
             search_mode = 'eponly'
 
         while(True):
@@ -485,8 +470,6 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                 logger.log(u"Error while searching " + curProvider.name + ", skipping: " + ex(e), logger.ERROR)
                 logger.log(traceback.format_exc(), logger.DEBUG)
                 break
-            finally:
-                threading.currentThread().name = origThreadName
 
             didSearch = True
 
@@ -503,10 +486,10 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                 break
 
             if search_mode == 'sponly':
-                logger.log(u"FALLBACK EPISODE SEARCH INITIATED ...", logger.DEBUG)
+                logger.log(u"Fallback episode search initiated", logger.DEBUG)
                 search_mode = 'eponly'
             else:
-                logger.log(u"FALLBACK SEASON PACK SEARCH INITIATED ...", logger.DEBUG)
+                logger.log(u"Fallback season pack search initiate", logger.DEBUG)
                 search_mode = 'sponly'
 
         # skip to next provider if we have no results to process
@@ -608,11 +591,12 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
         # go through multi-ep results and see if we really want them or not, get rid of the rest
         multiResults = {}
         if MULTI_EP_RESULT in foundResults[curProvider.name]:
-            for multiResult in foundResults[curProvider.name][MULTI_EP_RESULT]:
+            for _multiResult in foundResults[curProvider.name][MULTI_EP_RESULT]:
 
-                logger.log(u"Seeing if we want to bother with multi-episode result " + multiResult.name, logger.DEBUG)
+                logger.log(u"Seeing if we want to bother with multi-episode result " + _multiResult.name, logger.DEBUG)
 
-                multiResult = pickBestResult([multiResult], show)
+		# Filter result by ignore/required/whitelist/blacklist/quality, etc
+                multiResult = pickBestResult(_multiResult, show)
                 if not multiResult:
                     continue
 

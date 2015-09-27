@@ -95,6 +95,33 @@ $(document).ready(function(){
 			});
 	});
 
+    $('#testEMBY').click(function () {
+        var emby_host = $('#emby_host').val();
+        var emby_apikey = $('#emby_apikey').val();
+        if (!emby_host || !emby_apikey) {
+            $('#testEMBY-result').html('Please fill out the necessary fields above.');
+            if (!emby_host) {
+                $('#emby_host').addClass('warning');
+            } else {
+                $('#emby_host').removeClass('warning');
+            }
+            if (!emby_apikey) {
+                $('#emby_apikey').addClass('warning');
+            } else {
+                $('#emby_apikey').removeClass('warning');
+            }
+            return;
+        }
+        $('#emby_host,#emby_apikey').removeClass('warning');
+        $(this).prop('disabled', true);
+        $('#testEMBY-result').html(loading);
+        $.get(sbRoot + '/home/testEMBY', {'host': emby_host, 'emby_apikey': emby_apikey})
+            .done(function (data) {
+                $('#testEMBY-result').html(data);
+                $('#testEMBY').prop('disabled', false);
+            });
+    });
+
     $('#testBoxcar').click(function() {
 		var boxcar_username = $.trim($('#boxcar_username').val());
 		if (!boxcar_username) {
@@ -316,16 +343,16 @@ $(document).ready(function(){
             });
     });
 
-    $('#TraktGetPin').click(function () { 
+    $('#TraktGetPin').click(function () {
         var trakt_pin_url = $('#trakt_pin_url').val();
         var w;
         w = window.open(trakt_pin_url, "popUp", "toolbar=no, scrollbars=no, resizable=no, top=200, left=200, width=650, height=550");
          $('#trakt_pin').removeClass('hide');
-    });  
-    
+    });
+
     $('#trakt_pin').change(function() {
         var trakt_pin = $('#trakt_pin').val();
-        
+
         if (trakt_pin.length !=0) {
             $('#TraktGetPin').addClass('hide');
             $('#authTrakt').removeClass('hide');
@@ -335,10 +362,10 @@ $(document).ready(function(){
             $('#authTrakt').addClass('hide');
         }
     });
-    
+
     $('#trakt_pin').keyup(function () {
         var trakt_pin = $('#trakt_pin').val();
-        
+
         if (trakt_pin.length !=0) {
             $('#TraktGetPin').addClass('hide');
             $('#authTrakt').removeClass('hide');
@@ -348,7 +375,7 @@ $(document).ready(function(){
             $('#authTrakt').addClass('hide');
         }
     });
-    
+
     $('#authTrakt').click(function() {
         var trakt_pin = $('#trakt_pin').val();
         if (trakt_pin.length !=0) {
@@ -356,16 +383,15 @@ $(document).ready(function(){
                 .done(function (data) {
                     $('#testTrakt-result').html(data);
                     $('#authTrakt').addClass('hide');
-                    $('#trakt_pin').addClass('hide');               
-                    $('#TraktGetPin').addClass('hide');                 
-            });              
+                    $('#trakt_pin').addClass('hide');
+                    $('#TraktGetPin').addClass('hide');
+            });
         }
     });
-    
+
     $('#testTrakt').click(function () {
         var trakt_username = $.trim($('#trakt_username').val());
         var trakt_trending_blacklist = $.trim($('#trakt_blacklist_name').val());
-        var trakt_disable_ssl_verify = $('#trakt_disable_ssl_verify').is(':checked');
         if (!trakt_username) {
             $('#testTrakt-result').html('Please fill out the necessary fields above.');
 			if (!trakt_username) {
@@ -385,7 +411,7 @@ $(document).ready(function(){
 	        $('#trakt_blacklist_name').removeClass('warning');
         $(this).prop('disabled', true);
         $('#testTrakt-result').html(loading);
-        $.get(sbRoot + '/home/testTrakt', {'username': trakt_username, 'disable_ssl': trakt_disable_ssl_verify, 'blacklist_name': trakt_trending_blacklist})
+        $.get(sbRoot + '/home/testTrakt', {'username': trakt_username, 'blacklist_name': trakt_trending_blacklist})
             .done(function (data) {
                 $('#testTrakt-result').html(data);
                 $('#testTrakt').prop('disabled', false);
@@ -576,5 +602,5 @@ $(document).ready(function(){
             $('.plexinfo').addClass('hide');
         }
     });
-    
+
 });

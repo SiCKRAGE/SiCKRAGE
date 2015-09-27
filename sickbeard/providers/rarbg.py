@@ -20,28 +20,22 @@
 import traceback
 import re
 import datetime
-import urllib
 import generic
 import datetime
 import json
 import time
 
-import requests
-from requests import exceptions
 
 import sickbeard
 from sickbeard.common import Quality, USER_AGENT
 from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard import show_name_helpers
-from sickbeard.bs4_parser import BS4Parser
 from sickbeard import db
 from sickbeard import helpers
 from sickbeard import classes
 from sickbeard.exceptions import ex
-from sickbeard.helpers import sanitizeSceneName
-from requests.exceptions import RequestException
-from sickbeard.indexers.indexer_config import INDEXER_TVDB,INDEXER_TVRAGE
+from sickbeard.indexers.indexer_config import INDEXER_TVDB
 
 
 class GetOutOfLoop(Exception):
@@ -65,10 +59,9 @@ class RarbgProvider(generic.TorrentProvider):
 
         self.urls = {'url': u'https://rarbg.com',
                      'token': u'http://torrentapi.org/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage',
-                     'listing': u'https://torrentapi.org/pubapi_v2.php?mode=list&app_id=sickrage',
-                     'search': u'https://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_string={search_string}',
-                     'search_tvdb': u'https://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb={tvdb}&search_string={search_string}',
-                     'search_tvrage': u'https://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_tvrage={tvrage}&search_string={search_string}',
+                     'listing': u'http://torrentapi.org/pubapi_v2.php?mode=list&app_id=sickrage',
+                     'search': u'http://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_string={search_string}',
+                     'search_tvdb': u'http://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb={tvdb}&search_string={search_string}',
                      'api_spec': u'https://rarbg.com/pubapi/apidocs.txt',
                      }
 
@@ -83,7 +76,7 @@ class RarbgProvider(generic.TorrentProvider):
                         'ranked': '&ranked={ranked}',
                         'token': '&token={token}',
         }
-        
+
         self.defaultOptions = self.urlOptions['categories'].format(categories='tv') + \
                                 self.urlOptions['limit'].format(limit='100') + \
                                 self.urlOptions['format'].format(format='json')
@@ -91,8 +84,6 @@ class RarbgProvider(generic.TorrentProvider):
         self.next_request = datetime.datetime.now()
 
         self.cache = RarbgCache(self)
-        
-        self.headers = {'User-Agent': USER_AGENT}
 
     def isEnabled(self):
         return self.enabled
@@ -106,26 +97,19 @@ class RarbgProvider(generic.TorrentProvider):
 
         resp_json = None
 
-        try:
-            response = self.session.get(self.urls['token'], timeout=30, headers=self.headers)
-            response.raise_for_status()
-            resp_json = response.json()
-        except (RequestException) as e:
-            logger.log(u'Unable to connect to {name} provider: {error}'.format(name=self.name, error=ex(e)), logger.ERROR)
+        response = self.getURL(self.urls['token'], timeout=30, json=True)
+        if not response:
+            logger.log(u'Unable to connect to %s provider.' % self.name, logger.WARNING)
             return False
 
-        if not resp_json:
-            logger.log(u'{name} provider: empty json response'.format(name=self.name), logger.ERROR)
-            return False
-        else:
-            try:
-                if resp_json['token']:
-                    self.token = resp_json['token']
-                    self.tokenExpireDate = datetime.datetime.now() + datetime.timedelta(minutes=14)
-                    return True
-            except Exception as e:
-                logger.log(u'{name} provider: No token found'.format(name=self.name), logger.ERROR)
-                logger.log(u'{name} provider: No token found: {error}'.format(name=self.name, error=ex(e)), logger.DEBUG)
+        try:
+            if response['token']:
+                self.token = response['token']
+                self.tokenExpireDate = datetime.datetime.now() + datetime.timedelta(minutes=14)
+                return True
+        except Exception as e:
+            logger.log(u'%s provider: No token found' % self.name, logger.WARNING)
+            logger.log(u'%s provider: No token found: %s' % (self.name, ex(e)), logger.DEBUG)
 
         return False
 
@@ -205,15 +189,11 @@ class RarbgProvider(generic.TorrentProvider):
                 elif mode == 'Season':
                     if ep_indexer == INDEXER_TVDB:
                         searchURL = self.urls['search_tvdb'].format(search_string=search_string, tvdb=ep_indexerid) + self.defaultOptions
-                    elif ep_indexer == INDEXER_TVRAGE:
-                        searchURL = self.urls['search_tvrage'].format(search_string=search_string, tvrage=ep_indexerid) + self.defaultOptions
                     else:
                         searchURL = self.urls['search'].format(search_string=search_string) + self.defaultOptions
                 elif mode == 'Episode':
                     if ep_indexer == INDEXER_TVDB:
                         searchURL = self.urls['search_tvdb'].format(search_string=search_string, tvdb=ep_indexerid) + self.defaultOptions
-                    elif ep_indexer == INDEXER_TVRAGE:
-                        searchURL = self.urls['search_tvrage'].format(search_string=search_string, tvrage=ep_indexerid) + self.defaultOptions
                     else:
                         searchURL = self.urls['search'].format(search_string=search_string) + self.defaultOptions
                 else:
@@ -224,7 +204,7 @@ class RarbgProvider(generic.TorrentProvider):
 
                 if self.minseed:
                     searchURL += self.urlOptions['seeders'].format(min_seeders=int(self.minseed))
-                    
+
                 if self.sorting:
                     searchURL += self.urlOptions['sorting'].format(sorting=self.sorting)
 
@@ -264,9 +244,6 @@ class RarbgProvider(generic.TorrentProvider):
                             continue
                         if re.search('Cant find search_tvdb in database. Are you sure this imdb exists?', data):
                             logger.log(u'{name} no results found. Search tvdb id do not exist on server.'.format(name=self.name), logger.DEBUG)
-                            raise GetOutOfLoop
-                        if re.search('Cant find search_tvrage in database. Are you sure this imdb exists?', data):
-                            logger.log(u'{name} no results found. Search tvrage id do not exist on server.'.format(name=self.name), logger.DEBUG)
                             raise GetOutOfLoop
                         if re.search('Invalid token. Use get_token for a new one!', data):
                             logger.log(u'{name} Invalid token, retrieving new token'.format(name=self.name), logger.DEBUG)

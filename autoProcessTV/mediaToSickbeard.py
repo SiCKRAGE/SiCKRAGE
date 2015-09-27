@@ -1,4 +1,10 @@
 #!/usr/bin/env python2
+# DEPRECATION NOTICE: autoProcessTV is deprecated and will be removed
+# from SickRage at 31-10-2015.
+#
+# Please switch to nzbToMedia from Clinton Hall, which is included in
+# the contrib folder
+
 import sys
 import os
 import time
@@ -78,6 +84,19 @@ def deluge():
     
     return (dirName, nzbName)
 
+def deluged() :
+
+    if len(sys.argv) < 4:
+        scriptlogger.error('No folder supplied - is this being called from Deluge?')
+        print "No folder supplied - is this being called from Deluge?"
+        time.sleep(3)
+        sys.exit()
+
+    dirName = sys.argv[3]
+    nzbName = sys.argv[2]
+
+    return (dirName, nzbName)
+
 def blackhole():
 
     if None != os.getenv('TR_TORRENT_DIR'):
@@ -125,6 +144,9 @@ def blackhole():
 
 def main():
     scriptlogger.info(u'Starting external PostProcess script ' + __file__)
+    scriptlogger.info(u'DEPRECATION NOTICE: autoProcessTV is deprecated and will be removed from SickRage at 31-10-2015. ' + __file__)
+    scriptlogger.info(u'Please switch to nzbToMedia from Clinton Hall, which is included in the contrib folder' + __file__)
+
 
     host = config.get("General", "web_host")
     port = config.get("General", "web_port")
@@ -150,7 +172,7 @@ def main():
         time.sleep(3)
         sys.exit()
         
-    if not torrent_method in ['utorrent', 'transmission', 'deluge', 'blackhole']:
+    if not torrent_method in ['utorrent', 'transmission', 'deluge', 'deluged', 'blackhole']:
         scriptlogger.error(u'Unknown Torrent Method. Aborting!')
         print u'Unknown Torrent Method. Aborting!'
         time.sleep(3)

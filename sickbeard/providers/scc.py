@@ -18,11 +18,9 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
-import traceback
 import datetime
 import time
 
-import urlparse
 import sickbeard
 import generic
 import urllib
@@ -34,9 +32,7 @@ from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
 from sickbeard.exceptions import ex
-from sickbeard import clients
 import requests
-from requests import exceptions
 from sickbeard.bs4_parser import BS4Parser
 from unidecode import unidecode
 from sickbeard.helpers import sanitizeSceneName
@@ -91,17 +87,14 @@ class SCCProvider(generic.TorrentProvider):
                         'submit': 'come on in',
         }
 
-        self.session = requests.Session()
 
-        try:
-            response = self.session.post(self.urls['login'], data=login_params, headers=self.headers, timeout=30)
-        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
-            logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
+        response = self.getURL(self.urls['login'],  post_data=login_params, timeout=30)
+        if not response:
+            logger.log(u'Unable to connect to ' + self.name + ' provider.', logger.ERROR)
             return False
 
-        if re.search('Username or password incorrect', response.text) \
-                or re.search('<title>SceneAccess \| Login</title>', response.text) \
-                or response.status_code == 401:
+        if re.search('Username or password incorrect', response) \
+                or re.search('<title>SceneAccess \| Login</title>', response):
             logger.log(u'Invalid username or password for ' + self.name + ' Check your settings', logger.ERROR)
             return False
 
@@ -138,7 +131,7 @@ class SCCProvider(generic.TorrentProvider):
             elif self.show.anime:
                 ep_string = sanitizeSceneName(show_name) + ' %i' % int(ep_obj.scene_absolute_number)
             else:
-                ep_string = show_name_helpers.sanitizeSceneName(show_name) + ' ' + \
+                ep_string = sanitizeSceneName(show_name) + ' ' + \
                         sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                   'episodenumber': ep_obj.scene_episode}
 

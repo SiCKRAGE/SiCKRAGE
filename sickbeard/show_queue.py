@@ -23,14 +23,17 @@ import traceback
 import sickbeard
 
 from imdb import _exceptions as imdb_exceptions
-from sickbeard.common import SKIPPED, WANTED
+from sickbeard.common import WANTED
 from sickbeard.tv import TVShow
-from sickbeard import exceptions, logger, ui, db, notifiers
+from sickbeard import exceptions
+from sickbeard import logger
+from sickbeard import notifiers
+from sickbeard import ui
 from sickbeard import generic_queue
 from sickbeard import name_cache
 from sickbeard.exceptions import ex
-from sickbeard.blackandwhitelist import BlackAndWhiteList, short_group_names
-
+from sickbeard.blackandwhitelist import BlackAndWhiteList
+from libtrakt import TraktAPI
 
 class ShowQueue(generic_queue.GenericQueue):
     def __init__(self):
@@ -38,7 +41,7 @@ class ShowQueue(generic_queue.GenericQueue):
         self.queue_name = "SHOWQUEUE"
 
     def _isInQueue(self, show, actions):
-        return show in [x.show for x in self.queue if x.action_id in actions]
+        return show.indexerid in [x.show.indexerid for x in self.queue if x.action_id in actions]
 
     def _isBeingSomethinged(self, show, actions):
         return self.currentItem != None and show == self.currentItem.show and \
@@ -147,6 +150,19 @@ class ShowQueue(generic_queue.GenericQueue):
 
         return queueItemObj
 
+    def removeShow(self, show, full=False):
+        if self._isInQueue(show, ShowQueueActions.REMOVE):
+            raise sickbeard.exceptions.CantRemoveException("This show is already queued to be removed")
+
+        # remove other queued actions for this show.
+        for x in self.queue:
+            if show.indexerid == x.show.indexerid and x != self.currentItem:
+                self.queue.remove(x)
+
+        queueItemObj = QueueItemRemove(show=show, full=full)
+        self.add_item(queueItemObj)
+
+        return queueItemObj
 
 class ShowQueueActions:
     REFRESH = 1
@@ -155,6 +171,7 @@ class ShowQueueActions:
     FORCEUPDATE = 4
     RENAME = 5
     SUBTITLE = 6
+    REMOVE = 7
 
     names = {REFRESH: 'Refresh',
              ADD: 'Add',
@@ -162,6 +179,7 @@ class ShowQueueActions:
              FORCEUPDATE: 'Force Update',
              RENAME: 'Rename',
              SUBTITLE: 'Subtitle',
+             REMOVE: 'Remove Show'
     }
 
 
@@ -214,9 +232,6 @@ class QueueItemAdd(ShowQueueItem):
         self.blacklist = blacklist
         self.whitelist = whitelist
         self.default_status_after = default_status_after
-
-        if sickbeard.TRAKT_USE_ROLLING_DOWNLOAD and sickbeard.USE_TRAKT:
-            self.paused = sickbeard.TRAKT_ROLLING_ADD_PAUSED
 
         self.show = None
 
@@ -285,12 +300,35 @@ class QueueItemAdd(ShowQueueItem):
                 self._finishEarly()
                 return
         except Exception, e:
-            logger.log(u"Show name with ID %s don't exist in %s anymore. Please change/delete your local .nfo file or remove it from your TRAKT watchlist" %
+            logger.log(u"Show name with ID %s doesn't exist on %s anymore. If you are using trakt, it will be removed from your TRAKT watchlist. If you are adding manually, try removing the nfo and adding again" %
                 (self.indexer_id,sickbeard.indexerApi(self.indexer).name) , logger.ERROR)
+
             ui.notifications.error("Unable to add show",
                                    "Unable to look up the show in " + self.showDir + " on " + str(sickbeard.indexerApi(
                                        self.indexer).name) + " using ID " + str(
                                        self.indexer_id) + ", not using the NFO. Delete .nfo and try adding manually again.")
+
+            if sickbeard.USE_TRAKT:
+
+                trakt_id = sickbeard.indexerApi(self.indexer).config['trakt_id']
+                trakt_api = TraktAPI(sickbeard.SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
+
+                title = self.showDir.split("/")[-1]
+                data = {
+                    'shows': [
+                        {
+                            'title': title,
+                            'ids': {}
+                        }
+                    ]
+                }
+                if trakt_id == 'tvdb_id':
+                    data['shows'][0]['ids']['tvdb'] = self.indexer_id
+                else:
+                    data['shows'][0]['ids']['tvrage'] = self.indexer_id
+
+                trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
+
             self._finishEarly()
             return
 
@@ -319,7 +357,7 @@ class QueueItemAdd(ShowQueueItem):
                     self.show.release_groups.set_black_keywords(self.blacklist)
                 if self.whitelist:
                     self.show.release_groups.set_white_keywords(self.whitelist)
-                    
+
             # be smartish about this
             #if self.show.genre and "talk show" in self.show.genre.lower():
             #    self.show.air_by_date = 1
@@ -390,9 +428,8 @@ class QueueItemAdd(ShowQueueItem):
             logger.log(u"Error searching dir for episodes: " + ex(e), logger.ERROR)
             logger.log(traceback.format_exc(), logger.DEBUG)
 
-        sickbeard.traktRollingScheduler.action.updateWantedList(self.show.indexerid)
-
         # if they set default ep status to WANTED then run the backlog to search for episodes
+        # FIXME: This needs to be a backlog queue item!!!
         if self.show.default_ep_status == WANTED:
             logger.log(u"Launching backlog for this show since its episodes are WANTED")
             sickbeard.backlogSearchScheduler.action.searchBacklog([self.show])
@@ -413,7 +450,7 @@ class QueueItemAdd(ShowQueueItem):
 
             if sickbeard.TRAKT_SYNC_WATCHLIST:
                 logger.log(u"update watchlist")
-                notifiers.trakt_notifier.update_watchlist(self.show)
+                notifiers.trakt_notifier.update_watchlist(show_obj=self.show)
 
         # Load XEM data to DB for show
         sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer, force=True)
@@ -430,7 +467,7 @@ class QueueItemAdd(ShowQueueItem):
 
     def _finishEarly(self):
         if self.show != None:
-            self.show.deleteShow()
+            sickbeard.showQueueScheduler.action.removeShow(self.show)
 
         self.finish()
 
@@ -459,7 +496,7 @@ class QueueItemRefresh(ShowQueueItem):
         # Load XEM data to DB for show
         sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer)
 
-        self.inProgress = False
+        self.finish()
 
 class QueueItemRename(ShowQueueItem):
     def __init__(self, show=None):
@@ -499,8 +536,7 @@ class QueueItemRename(ShowQueueItem):
         for cur_ep_obj in ep_obj_rename_list:
             cur_ep_obj.rename()
 
-        self.inProgress = False
-
+        self.finish()
 
 class QueueItemSubtitle(ShowQueueItem):
     def __init__(self, show=None):
@@ -512,9 +548,7 @@ class QueueItemSubtitle(ShowQueueItem):
         logger.log(u"Downloading subtitles for " + self.show.name)
 
         self.show.downloadSubtitles()
-
-        self.inProgress = False
-
+        self.finish()
 
 class QueueItemUpdate(ShowQueueItem):
     def __init__(self, show=None):
@@ -548,6 +582,7 @@ class QueueItemUpdate(ShowQueueItem):
             logger.log(u"Error loading IMDb info: " + ex(e), logger.ERROR)
             logger.log(traceback.format_exc(), logger.DEBUG)
 
+        # have to save show before reading episodes from db
         try:
             self.show.saveToDB()
         except Exception, e:
@@ -567,7 +602,6 @@ class QueueItemUpdate(ShowQueueItem):
                 self.show.indexer).name + ", the show info will not be refreshed: " + ex(e), logger.ERROR)
             IndexerEpList = None
 
-        foundMissingEps = False
         if IndexerEpList is None:
             logger.log(u"No data returned from " + sickbeard.indexerApi(
                 self.show.indexer).name + ", unable to update this show", logger.ERROR)
@@ -575,15 +609,13 @@ class QueueItemUpdate(ShowQueueItem):
             # for each ep we found on the Indexer delete it from the DB list
             for curSeason in IndexerEpList:
                 for curEpisode in IndexerEpList[curSeason]:
-                    logger.log(u"Removing " + str(curSeason) + "x" + str(curEpisode) + " from the DB list",
-                               logger.DEBUG)
+                    curEp = self.show.getEpisode(curSeason, curEpisode)
+                    curEp.saveToDB()
+
                     if curSeason in DBEpList and curEpisode in DBEpList[curSeason]:
                         del DBEpList[curSeason][curEpisode]
-                    else:
-                        # found missing episodes
-                        foundMissingEps = True
 
-            # for the remaining episodes in the DB list just delete them from the DB
+            # remaining episodes in the DB list are not on the indexer, just delete them from the DB
             for curSeason in DBEpList:
                 for curEpisode in DBEpList[curSeason]:
                     logger.log(u"Permanently deleting episode " + str(curSeason) + "x" + str(
@@ -594,16 +626,40 @@ class QueueItemUpdate(ShowQueueItem):
                     except exceptions.EpisodeDeletedException:
                         pass
 
-        # if they set default ep status to WANTED then run the backlog
-        if foundMissingEps and self.show.default_ep_status == WANTED:
-            logger.log(u"Launching backlog for this show since we found missing episodes")
-            sickbeard.backlogSearchScheduler.action.searchBacklog([self.show])
+        # save show again, in case episodes have changed
+        try:
+            self.show.saveToDB()
+        except Exception, e:
+            logger.log(u"Error saving show info to the database: " + ex(e), logger.ERROR)
+            logger.log(traceback.format_exc(), logger.DEBUG)
 
         logger.log(u"Finished update of " + self.show.name, logger.DEBUG)
 
         sickbeard.showQueueScheduler.action.refreshShow(self.show, self.force)
+        self.finish()
 
 class QueueItemForceUpdate(QueueItemUpdate):
     def __init__(self, show=None):
         ShowQueueItem.__init__(self, ShowQueueActions.FORCEUPDATE, show)
         self.force = True
+
+class QueueItemRemove(ShowQueueItem):
+    def __init__(self, show=None, full=False):
+        ShowQueueItem.__init__(self, ShowQueueActions.REMOVE, show)
+
+        # lets make sure this happens before any other high priority actions
+        self.priority = generic_queue.QueuePriorities.HIGH + generic_queue.QueuePriorities.HIGH
+        self.full = full
+
+    def run(self):
+        ShowQueueItem.run(self)
+        logger.log(u"Removing %s" % self.show.name)
+        self.show.deleteShow(full=self.full)
+
+        if sickbeard.USE_TRAKT:
+            try:
+                sickbeard.traktCheckerScheduler.action.removeShowFromTraktLibrary(self.show)
+            except Exception as e:
+                logger.log(u"Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, ex(e)),logger.WARNING)
+
+        self.finish()
