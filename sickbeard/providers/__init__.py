@@ -56,7 +56,8 @@ __all__ = ['womble',
            'transmitthenet',
            'tvchaosuk',
            'torrentproject',
-           'extratorrent'
+           'extratorrent',
+           'nzbindex'
 ]
 
 import sickbeard
