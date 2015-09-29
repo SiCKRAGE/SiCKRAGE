@@ -444,7 +444,7 @@ class PostProcessor(object):
         myDB = db.DBConnection()
         for curName in names:
             search_name = re.sub("[\.\-\ ]", "_", curName)
-            sql_results = myDB.select("SELECT * FROM history WHERE resource LIKE ?", [search_name])
+            sql_results = myDB.select("SELECT showid, season, quality, version FROM history WHERE resource LIKE ?", [search_name])
 
             if len(sql_results) == 0:
                 continue
