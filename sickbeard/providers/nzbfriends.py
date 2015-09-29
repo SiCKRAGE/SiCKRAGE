@@ -24,7 +24,7 @@ import generic
 
 from sickbeard import classes, show_name_helpers, helpers
 
-from sickbeard import exceptions, logger
+from sickbeard import logger
 from sickbeard.common import *
 from sickbeard import tvcache
 from lib.dateutil.parser import parse as parseDate

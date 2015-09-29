@@ -28,7 +28,7 @@ from sickbeard import tvcache
 from sickbeard import helpers
 from sickbeard import classes
 from sickbeard import logger
-from sickbeard.exceptions import ex, AuthException
+from sickrage.helper.exceptions import ex, AuthException
 from sickbeard import show_name_helpers
 from datetime import datetime
 
@@ -76,7 +76,7 @@ class NzbtoProvider(generic.NZBProvider):
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
         return [x for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
-    
+
     def _get_size(self, item):
         return -1
 
