@@ -123,8 +123,8 @@ class ExtraTorrentProvider(generic.TorrentProvider):
                         info_hash = item['info_hash']
                         url = item['enclosure']['@url']
                         size = int(item['enclosure']['@length'] or item['size'])
-                        seeders = int(item['seeders'])
-                        leechers = int(item['leechers'])
+                        seeders = item['seeders'] or 0
+                        leechers = item['leechers'] or 0
 
                         if not seeders or seeders < self.minseed or leechers < self.minleech:
                             continue
