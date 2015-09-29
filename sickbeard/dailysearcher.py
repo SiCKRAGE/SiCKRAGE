@@ -60,7 +60,7 @@ class DailySearcher():
         curTime = datetime.datetime.now(network_timezones.sb_timezone)
 
         myDB = db.DBConnection()
-        sqlResults = myDB.select("SELECT * FROM tv_episodes WHERE status = ? AND season > 0 AND (airdate <= ? and airdate > 1)",
+        sqlResults = myDB.select("SELECT show_id, airdate, season, episode FROM tv_episodes WHERE status = ? AND season > 0 AND (airdate <= ? and airdate > 1)",
                                  [common.UNAIRED, curDate])
 
         sql_l = []

@@ -31,7 +31,7 @@ class DBBasicTests(test.SickbeardTestDBCase):
         self.db = test.db.DBConnection()
 
     def test_select(self):
-        self.db.select("SELECT * FROM tv_episodes WHERE showid = ? AND location != ''", [0000])
+        self.db.select("SELECT episode_id FROM tv_episodes WHERE showid = ? AND location != ''", [0000])
 
 class DBMultiTests(test.SickbeardTestDBCase):
     def setUp(self):
@@ -39,7 +39,7 @@ class DBMultiTests(test.SickbeardTestDBCase):
         self.db = test.db.DBConnection()
 
     def select(self):
-        self.db.select("SELECT * FROM tv_episodes WHERE showid = ? AND location != ''", [0000])
+        self.db.select("SELECT episode_id FROM tv_episodes WHERE showid = ? AND location != ''", [0000])
 
     def test_threaded(self):
         for i in xrange(4):
