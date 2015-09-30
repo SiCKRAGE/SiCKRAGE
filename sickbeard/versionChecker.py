@@ -83,7 +83,10 @@ class CheckVersion:
         self.amActive = False
 
     def run_backup_if_safe(self):
-        return self.safe_to_update() is True and self._runbackup() is True
+        if self.safe_to_update() is True:
+            if self._runbackup() is True:
+                return True
+        return False
 
     def _runbackup(self):
         # Do a system backup before update
