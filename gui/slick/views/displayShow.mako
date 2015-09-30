@@ -490,7 +490,6 @@
                 % else:
                     Never
                 % endif
-                <span class="sort_data">${date.isoformat('T')}</span>
 
             </td>
             <td>
