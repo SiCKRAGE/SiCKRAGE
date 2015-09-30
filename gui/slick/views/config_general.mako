@@ -75,11 +75,11 @@
                                 <span class="component-title">Initial page</span>
                                 <span class="component-desc">
                                     <select id="default_page" name="default_page" class="form-control input-sm">
-                                        <option value="news" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'news']}>News</option>
-                                        <option value="IRC" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'IRC']}>IRC</option>
-                                        <option value="home" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'home']}>Shows</option>
-                                        <option value="comingEpisodes" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'comingEpisodes']}>Coming Episodes</option>
-                                        <option value="history" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'history']}>History</option>
+                                        <option value="news" ${('', 'selected="selected"')[sbDefaultPage == 'news']}>News</option>
+                                        <option value="IRC" ${('', 'selected="selected"')[sbDefaultPage == 'IRC']}>IRC</option>
+                                        <option value="home" ${('', 'selected="selected"')[sbDefaultPage == 'home']}>Shows</option>
+                                        <option value="comingEpisodes" ${('', 'selected="selected"')[sbDefaultPage == 'comingEpisodes']}>Coming Episodes</option>
+                                        <option value="history" ${('', 'selected="selected"')[sbDefaultPage == 'history']}>History</option>
                                     </select>
                                     <span>when launching SickRage interface</span>
                                 </span>
@@ -249,8 +249,8 @@
                                 <span class="component-title">Display theme:</span>
                                 <span class="component-desc">
                                     <select id="theme_name" name="theme_name" class="form-control input-sm">
-                                        <option value="dark" ${('', 'selected="selected"')[sickbeard.THEME_NAME == 'dark']}>Dark</option>
-                                        <option value="light" ${('', 'selected="selected"')[sickbeard.THEME_NAME == 'light']}>Light</option>
+                                        <option value="dark" ${('', 'selected="selected"')[sbThemeName == 'dark']}>Dark</option>
+                                        <option value="light" ${('', 'selected="selected"')[sbThemeName == 'light']}>Light</option>
                                     </select>
                                     <span class="red-text">for appearance to take effect, save then refresh your browser</span>
                                 </span>
@@ -440,7 +440,7 @@
                             <label for="web_port">
                                 <span class="component-title">HTTP port</span>
                                 <span class="component-desc">
-                                    <input type="text" name="web_port" id="web_port" value="${sickbeard.WEB_PORT}" class="form-control input-sm input100" />
+                                    <input type="text" name="web_port" id="web_port" value="${sbHttpPort}" class="form-control input-sm input100" />
                                     <p>web port to browse and access SickRage (default:8081)</p>
                                 </span>
                             </label>
@@ -460,7 +460,7 @@
                             <label for="enable_https">
                                 <span class="component-title">Enable HTTPS</span>
                                 <span class="component-desc">
-                                    <input type="checkbox" name="enable_https" class="enabler" id="enable_https" ${('', 'checked="checked"')[bool(sickbeard.ENABLE_HTTPS)]}/>
+                                    <input type="checkbox" name="enable_https" class="enabler" id="enable_https" ${('', 'checked="checked"')[bool(sbHttpsEnabled)]}/>
                                     <p>enable access to the web interface using a HTTPS address</p>
                                 </span>
                             </label>
@@ -490,7 +490,7 @@
                             <label for="handle_reverse_proxy">
                                 <span class="component-title">Reverse proxy headers</span>
                                 <span class="component-desc">
-                                    <input type="checkbox" name="handle_reverse_proxy" id="handle_reverse_proxy" ${('', 'checked="checked"')[bool(sickbeard.HANDLE_REVERSE_PROXY)]}/>
+                                    <input type="checkbox" name="handle_reverse_proxy" id="handle_reverse_proxy" ${('', 'checked="checked"')[bool(sbHandleReverseProxy)]}/>
                                     <p>accept the following reverse proxy headers (advanced)...<br />(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)</p>
                                 </span>
                             </label>
