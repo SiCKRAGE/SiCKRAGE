@@ -59,6 +59,7 @@ from sickbeard.common import SNATCHED_PROPER
 from sickbeard.common import UNAIRED
 from sickbeard.common import UNKNOWN
 from sickbeard.common import WANTED
+from sickbeard.common import ARCHIVED
 from sickbeard.common import statusStrings
 import codecs
 
@@ -126,20 +127,17 @@ class ApiHandler(RequestHandler):
             _call_dispatcher = profile(_call_dispatcher, immediate=True)
             del kwargs["profile"]
 
-        # if debug was set call the "_call_dispatcher"
-        if 'debug' in kwargs:
-            outDict = _call_dispatcher(args, kwargs)  # this way we can debug the cherry.py traceback in the browser
-            del kwargs["debug"]
-        else:  # if debug was not set we wrap the "call_dispatcher" in a try block to assure a json output
-            try:
-                outDict = _call_dispatcher(args, kwargs)
-            except Exception, e:  # real internal error oohhh nooo :(
-                logger.log(u"API :: " + ex(e), logger.ERROR)
-                errorData = {"error_msg": ex(e),
-                             "args": args,
-                             "kwargs": kwargs}
-                outDict = _responds(RESULT_FATAL, errorData,
-                                    "SickRage encountered an internal error! Please report to the Devs")
+        try:
+            outDict = _call_dispatcher(args, kwargs)
+        except Exception, e:  # real internal error oohhh nooo :(
+            logger.log(u"API :: " + ex(e), logger.ERROR)
+            errorData = {
+                "error_msg": ex(e),
+                "args": args,
+                "kwargs": kwargs
+            }
+            outDict = _responds(RESULT_FATAL, errorData,
+                                "SickRage encountered an internal error! Please report to the Devs")
 
         if 'outputType' in outDict:
             outputCallback = outputCallbackDict[outDict['outputType']]
@@ -197,9 +195,9 @@ class ApiHandler(RequestHandler):
                 logger.log(u"API :: " + cmd + ": curKwargs " + str(curKwargs), logger.DEBUG)
                 if not (multiCmds and cmd in ('show.getbanner', 'show.getfanart', 'show.getnetworklogo', 'show.getposter')):  # skip these cmd while chaining
                     try:
-                        if cmd in _functionMaper:
+                        if cmd in function_mapper:
                             # map function
-                            func = _functionMaper.get(cmd)
+                            func = function_mapper.get(cmd)
 
                             # add request handler to function
                             func.rh = self
@@ -313,6 +311,7 @@ class ApiCall(ApiHandler):
                     else:
                         self._help[type][paramName]["allowedValues"] = "see desc"
                     self._help[type][paramName]["defaultValue"] = paramDict[paramName]["defaultValue"]
+                    self._help[type][paramName]["type"] = paramDict[paramName]["type"]
 
             elif paramDict:
                 for paramName in paramDict:
@@ -323,7 +322,6 @@ class ApiCall(ApiHandler):
         msg = "No description available"
         if "desc" in self._help:
             msg = self._help["desc"]
-            del self._help["desc"]
         return _responds(RESULT_SUCCESS, self._help, msg)
 
     def return_missing(self):
@@ -366,18 +364,21 @@ class ApiCall(ApiHandler):
             except AttributeError:
                 self._missing = []
                 self._requiredParams = {key: {"allowedValues": allowedValues,
-                                              "defaultValue": orgDefault}}
+                                              "defaultValue": orgDefault,
+                                              "type": type}}
 
             if missing and key not in self._missing:
                 self._missing.append(key)
         else:
             try:
                 self._optionalParams[key] = {"allowedValues": allowedValues,
-                                             "defaultValue": orgDefault}
+                                             "defaultValue": orgDefault,
+                                             "type": type}
             except AttributeError:
                 self._optionalParams = {}
                 self._optionalParams[key] = {"allowedValues": allowedValues,
-                                             "defaultValue": orgDefault}
+                                             "defaultValue": orgDefault,
+                                             "type": type}
 
         if default:
             default = self._check_param_type(default, key, type)
@@ -411,7 +412,7 @@ class ApiCall(ApiHandler):
                 value = True
             elif value in ("false", "False", "FALSE"):
                 value = False
-            else:
+            elif value not in (True, False):
                 error = True
         elif type == "list":
             value = value.split("|")
@@ -420,14 +421,12 @@ class ApiCall(ApiHandler):
         elif type == "ignore":
             pass
         else:
-            logger.log(u"API :: Invalid param type set " + str(type) + " can not check or convert ignoring it",
-                       logger.ERROR)
+            logger.log(u'API :: Invalid param type: "%s" can not be checked. Ignoring it.' % str(type), logger.ERROR)
 
         if error:
             # this is a real ApiError !!
-            raise ApiError(
-                u"param: '" + str(name) + "' with given value: '" + str(value) + "' could not be parsed into '" + str(
-                    type) + "'")
+            raise ApiError(u'param "%s" with given value "%s" could not be parsed into "%s"'
+                           % (str(name), str(value), str(type)))
 
         return value
 
@@ -639,13 +638,13 @@ class CMD_Help(ApiCall):
     def __init__(self, args, kwargs):
         # required
         # optional
-        self.subject, args = self.check_params(args, kwargs, "subject", "help", False, "string", _functionMaper.keys())
+        self.subject, args = self.check_params(args, kwargs, "subject", "help", False, "string", function_mapper.keys())
         ApiCall.__init__(self, args, kwargs)
 
     def run(self):
         """ Get help about a given command """
-        if self.subject in _functionMaper:
-            out = _responds(RESULT_SUCCESS, _functionMaper.get(self.subject)((), {"help": 1}).run())
+        if self.subject in function_mapper:
+            out = _responds(RESULT_SUCCESS, function_mapper.get(self.subject)((), {"help": 1}).run())
         else:
             out = _responds(RESULT_FAILURE, msg="No such cmd")
         return out
@@ -669,7 +668,7 @@ class CMD_ComingEpisodes(ApiCall):
         self.sort, args = self.check_params(args, kwargs, "sort", "date", False, "string", ComingEpisodes.sorts.keys())
         self.type, args = self.check_params(args, kwargs, "type", '|'.join(ComingEpisodes.categories), False, "list",
                                             ComingEpisodes.categories)
-        self.paused, args = self.check_params(args, kwargs, "paused", sickbeard.COMING_EPS_DISPLAY_PAUSED, False,
+        self.paused, args = self.check_params(args, kwargs, "paused", bool(sickbeard.COMING_EPS_DISPLAY_PAUSED), False,
                                               "bool", [])
         # super, missing, help
         ApiCall.__init__(self, args, kwargs)
@@ -723,7 +722,7 @@ class CMD_Episode(ApiCall):
         self.s, args = self.check_params(args, kwargs, "season", None, True, "int", [])
         self.e, args = self.check_params(args, kwargs, "episode", None, True, "int", [])
         # optional
-        self.fullPath, args = self.check_params(args, kwargs, "full_path", 0, False, "bool", [])
+        self.fullPath, args = self.check_params(args, kwargs, "full_path", False, False, "bool", [])
         # super, missing, help
         ApiCall.__init__(self, args, kwargs)
 
@@ -842,7 +841,7 @@ class CMD_EpisodeSetStatus(ApiCall):
                                               ["wanted", "skipped", "ignored", "failed"])
         # optional
         self.e, args = self.check_params(args, kwargs, "episode", None, False, "int", [])
-        self.force, args = self.check_params(args, kwargs, "force", 0, False, "bool", [])
+        self.force, args = self.check_params(args, kwargs, "force", False, False, "bool", [])
         # super, missing, help
         ApiCall.__init__(self, args, kwargs)
 
@@ -1272,12 +1271,12 @@ class CMD_PostProcess(ApiCall):
         # required
         # optional
         self.path, args = self.check_params(args, kwargs, "path", None, False, "string", [])
-        self.force_replace, args = self.check_params(args, kwargs, "force_replace", 0, False, "bool", [])
-        self.return_data, args = self.check_params(args, kwargs, "return_data", 0, False, "bool", [])
+        self.force_replace, args = self.check_params(args, kwargs, "force_replace", False, False, "bool", [])
+        self.return_data, args = self.check_params(args, kwargs, "return_data", False, False, "bool", [])
         self.process_method, args = self.check_params(args, kwargs, "process_method", False, False, "string",
                                                       ["copy", "symlink", "hardlink", "move"])
-        self.is_priority, args = self.check_params(args, kwargs, "is_priority", 0, False, "bool", [])
-        self.failed, args = self.check_params(args, kwargs, "failed", 0, False, "bool", [])
+        self.is_priority, args = self.check_params(args, kwargs, "is_priority", False, False, "bool", [])
+        self.failed, args = self.check_params(args, kwargs, "failed", False, False, "bool", [])
         self.type, args = self.check_params(args, kwargs, "type", "auto", None, "string", ["auto", "manual"])
         # super, missing, help
         ApiCall.__init__(self, args, kwargs)
@@ -1314,7 +1313,7 @@ class CMD_SickBeard(ApiCall):
     def run(self):
         """ dGet miscellaneous information about SickRage """
         data = {"sr_version": sickbeard.BRANCH, "api_version": self.version,
-                "api_commands": sorted(_functionMaper.keys())}
+                "api_commands": sorted(function_mapper.keys())}
         return _responds(RESULT_SUCCESS, data)
 
 
@@ -1333,7 +1332,7 @@ class CMD_SickBeardAddRootDir(ApiCall):
         # required
         self.location, args = self.check_params(args, kwargs, "location", None, True, "string", [])
         # optional
-        self.default, args = self.check_params(args, kwargs, "default", 0, False, "bool", [])
+        self.default, args = self.check_params(args, kwargs, "default", False, False, "bool", [])
         # super, missing, help
         ApiCall.__init__(self, args, kwargs)
 
@@ -1547,7 +1546,7 @@ class CMD_SickBeardPauseBacklog(ApiCall):
     def __init__(self, args, kwargs):
         # required
         # optional
-        self.pause, args = self.check_params(args, kwargs, "pause", 0, False, "bool", [])
+        self.pause, args = self.check_params(args, kwargs, "pause", False, False, "bool", [])
         # super, missing, help
         ApiCall.__init__(self, args, kwargs)
 
@@ -1959,7 +1958,7 @@ class CMD_ShowAddExisting(ApiCall):
                                                ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
                                                 "fullhdwebdl", "hdbluray", "fullhdbluray"])
         self.flatten_folders, args = self.check_params(args, kwargs, "flatten_folders",
-                                                       str(sickbeard.FLATTEN_FOLDERS_DEFAULT), False, "bool", [])
+                                                       bool(sickbeard.FLATTEN_FOLDERS_DEFAULT), False, "bool", [])
         self.subtitles, args = self.check_params(args, kwargs, "subtitles", int(sickbeard.USE_SUBTITLES),
                                                  False, "int", [])
         # super, missing, help
@@ -2056,22 +2055,21 @@ class CMD_ShowAddNew(ApiCall):
                                                ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
                                                 "fullhdwebdl", "hdbluray", "fullhdbluray"])
         self.flatten_folders, args = self.check_params(args, kwargs, "flatten_folders",
-                                                       str(sickbeard.FLATTEN_FOLDERS_DEFAULT), False, "bool", [])
+                                                       bool(sickbeard.FLATTEN_FOLDERS_DEFAULT), False, "bool", [])
         self.status, args = self.check_params(args, kwargs, "status", None, False, "string",
                                               ["wanted", "skipped", "ignored"])
         self.lang, args = self.check_params(args, kwargs, "lang", sickbeard.INDEXER_DEFAULT_LANGUAGE, False, "string",
                                             self.valid_languages.keys())
-        self.subtitles, args = self.check_params(args, kwargs, "subtitles", int(sickbeard.USE_SUBTITLES),
+        self.subtitles, args = self.check_params(args, kwargs, "subtitles", bool(sickbeard.USE_SUBTITLES),
                                                  False, "bool", [])
-        self.anime, args = self.check_params(args, kwargs, "anime", int(sickbeard.ANIME_DEFAULT), False,
+        self.anime, args = self.check_params(args, kwargs, "anime", bool(sickbeard.ANIME_DEFAULT), False,
                                              "bool", [])
-        self.scene, args = self.check_params(args, kwargs, "scene", int(sickbeard.SCENE_DEFAULT), False,
+        self.scene, args = self.check_params(args, kwargs, "scene", bool(sickbeard.SCENE_DEFAULT), False,
                                              "bool", [])
         self.future_status, args = self.check_params(args, kwargs, "future_status", None, False, "string",
                                                      ["wanted", "skipped", "ignored"])
-
         self.archive_firstmatch, args = self.check_params(args, kwargs, "archive_firstmatch",
-                                             int(sickbeard.ARCHIVE_DEFAULT), False, "bool", [])
+                                                          bool(sickbeard.ARCHIVE_DEFAULT), False, "bool", [])
 
         # super, missing, help
         ApiCall.__init__(self, args, kwargs)
@@ -2248,7 +2246,7 @@ class CMD_ShowDelete(ApiCall):
         # required
         self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
         # optional
-        self.removefiles, args = self.check_params(args, kwargs, "removefiles", 0, False, "bool", [])
+        self.removefiles, args = self.check_params(args, kwargs, "removefiles", False, False, "bool", [])
         # super, missing, help
         ApiCall.__init__(self, args, kwargs)
 
@@ -2413,7 +2411,7 @@ class CMD_ShowPause(ApiCall):
         # required
         self.indexerid, args = self.check_params(args, kwargs, "indexerid", None, True, "int", [])
         # optional
-        self.pause, args = self.check_params(args, kwargs, "pause", 0, False, "bool", [])
+        self.pause, args = self.check_params(args, kwargs, "pause", False, False, "bool", [])
         # super, missing, help
         ApiCall.__init__(self, args, kwargs)
 
@@ -2705,7 +2703,7 @@ class CMD_ShowStats(ApiCall):
         # the outgoing container
         episodes_stats = {}
         episodes_stats["downloaded"] = {}
-        # truning codes into strings
+        # turning codes into strings
         for statusCode in episode_qualities_counts_download:
             if statusCode == "total":
                 episodes_stats["downloaded"]["total"] = episode_qualities_counts_download[statusCode]
@@ -2866,7 +2864,7 @@ class CMD_ShowsStats(ApiCall):
 
 # WARNING: never define a param name that contains a "." (dot)
 # this is reserved for cmd namespaces used while cmd chaining
-_functionMaper = {
+function_mapper = {
     "help": CMD_Help,
     "future": CMD_ComingEpisodes,
     "episode": CMD_Episode,
