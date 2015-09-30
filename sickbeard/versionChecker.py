@@ -185,12 +185,29 @@ class CheckVersion:
             else:
                 logger.log(u"We can't proceed with the update. Shows are being updated", logger.DEBUG)
                 return False
+                
+        def showqueue_empty(self):
+            queuelength = sickbeard.searchQueueScheduler.action.queue_length()
+            failed = int(queuelength['failed'])
+            manual = int(queuelength['manual'])
+            daily = int(queuelength['daily'])
+            backlog = int(queuelength['backlog'])
+            action_size = len(sickbeard.showQueueScheduler.action.queue)
+            queue = failed + manual + daily + backlog + action_size
+            if  queue == 0:
+                logger.log(u"We can proceed with the update. Show queue is empty", logger.DEBUG)
+                return True
+            else:
+                logger.log(u"We can't proceed with the update. Show queue is not empty.", logger.DEBUG)
+                return False
+            
 
         db_safe = db_safe(self)
         postprocessor_safe = postprocessor_safe(self)
         showupdate_safe = showupdate_safe(self)
+        showqueue_empty = showqueue_empty(self)
 
-        if db_safe == True and postprocessor_safe == True and showupdate_safe == True:
+        if db_safe == True and postprocessor_safe == True and showupdate_safe == True and showqueue_empty == True:
             logger.log(u"Proceeding with update", logger.DEBUG)
             return True
         else:
