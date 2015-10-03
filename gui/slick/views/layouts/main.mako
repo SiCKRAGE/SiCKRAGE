@@ -134,7 +134,7 @@
                         </li>
 
                         <li id="NAVmanage" class="dropdown${('', ' active')[topmenu == 'manage']}">
-                            <a href="${srRoot}/manage/episodeStatuses/" class="dropdown-toggle disabled" data-toggle="dropdown">Manage <b class="caret"></b></a>
+                            <a href="${srRoot}/manage/" class="dropdown-toggle disabled" data-toggle="dropdown">Manage <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="${srRoot}/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a></li>
                                 <li><a href="${srRoot}/manage/backlogOverview/"><i class="menu-icon-backlog-view"></i>&nbsp;Backlog Overview</a></li>
@@ -162,7 +162,7 @@
                         </li>
 
                         <li id="NAVerrorlogs" class="dropdown${('', ' active')[topmenu == 'errorlogs']}">
-                            <a href="${srRoot}/errorlogs/" class="dropdown-toggle disabled" data-toggle="dropdown">${logPageTitle} <b class="caret"></b></a>
+                            <a href="${srRoot}/errorlogs/viewlogs/" class="dropdown-toggle disabled" data-toggle="dropdown">${logPageTitle} <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="${srRoot}/errorlogs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Log (Errors)</a></li>
                                 <li><a href="${srRoot}/errorlogs/viewlog/"><i class="menu-icon-viewlog"></i>&nbsp;View Log</a></li>
