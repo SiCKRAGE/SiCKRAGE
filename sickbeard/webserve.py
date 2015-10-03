@@ -2138,7 +2138,7 @@ class HomePostProcess(Home):
 
     def index(self):
         t = PageTemplate(rh=self, file="home_postprocess.mako")
-        return t.render(submenu=self.HomeMenu(), title='Post Processing', header='Post Processing')
+        return t.render(submenu=self.HomeMenu(), title='Post Processing', header='Post Processing', topmenu='home')
 
     def processEpisode(self, dir=None, nzbName=None, jobName=None, quiet=None, process_method=None, force=None,
                        is_priority=None, delete_on="0", failed="0", type="auto", *args, **kwargs):
@@ -2182,7 +2182,7 @@ class HomeAddShows(Home):
 
     def index(self):
         t = PageTemplate(rh=self, file="home_addShows.mako")
-        return t.render(submenu=self.HomeMenu(), title='Add Shows', header='Add Shows')
+        return t.render(submenu=self.HomeMenu(), title='Add Shows', header='Add Shows', topmenu='home')
 
     def getIndexerLanguages(self):
         result = sickbeard.indexerApi().config['valid_languages']
@@ -2351,7 +2351,7 @@ class HomeAddShows(Home):
                 use_provided_info=use_provided_info, default_show_name=default_show_name, other_shows=other_shows,
                 provided_show_dir=show_dir, provided_indexer_id=provided_indexer_id, provided_indexer_name=provided_indexer_name,
                 provided_indexer=provided_indexer, indexers=sickbeard.indexerApi().indexers, whitelist=[], blacklist=[], groups=[],
-                title='New Show', header='New Show'
+                title='New Show', header='New Show', topmenu='home'
         )
 
     def recommendedShows(self):
@@ -2472,7 +2472,7 @@ class HomeAddShows(Home):
         except Exception as e:
             popular_shows = None
 
-        return t.render(title="Popular Shows", header="Popular Shows", submenu = self.HomeMenu(), popular_shows=popular_shows, imdb_exception=e)
+        return t.render(title="Popular Shows", header="Popular Shows", submenu = self.HomeMenu(), popular_shows=popular_shows, imdb_exception=e, topmenu="home")
 
 
     def addShowToBlacklist(self, indexer_id):
@@ -3642,7 +3642,7 @@ class ConfigGeneral(Config):
         sickbeard.save_config()
 
     def saveGeneral(self, log_dir=None, log_nr = 5, log_size = 1048576, web_port=None, web_log=None, encryption_version=None, web_ipv6=None,
-                    trash_remove_show=None, trash_rotate_logs=None, update_frequency=None,
+                    trash_remove_show=None, trash_rotate_logs=None, update_frequency=None, skip_removed_files=None,
                     indexerDefaultLang='en', ep_default_deleted_status=None, launch_browser=None, showupdate_hour=3, web_username=None,
                     api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL',
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
@@ -3659,6 +3659,7 @@ class ConfigGeneral(Config):
         sickbeard.DOWNLOAD_URL = download_url
         sickbeard.INDEXER_DEFAULT_LANGUAGE = indexerDefaultLang
         sickbeard.EP_DEFAULT_DELETED_STATUS = ep_default_deleted_status
+        sickbeard.SKIP_REMOVED_FILES = config.checkbox_to_value(skip_removed_files)
         sickbeard.LAUNCH_BROWSER = config.checkbox_to_value(launch_browser)
         config.change_SHOWUPDATE_HOUR(showupdate_hour)
         config.change_VERSION_NOTIFY(config.checkbox_to_value(version_notify))
@@ -3933,7 +3934,7 @@ class ConfigPostProcessing(Config):
                            tv_download_dir=None, naming_custom_abd=None,
                            naming_anime=None,create_missing_show_dirs=None,add_shows_wo_dir=None,
                            naming_abd_pattern=None, naming_strip_year=None, use_failed_downloads=None,
-                           delete_failed=None, extra_scripts=None, skip_removed_files=None,
+                           delete_failed=None, extra_scripts=None,
                            naming_custom_sports=None, naming_sports_pattern=None,
                            naming_custom_anime=None, naming_anime_pattern=None, naming_anime_multi_ep=None,
                            autopostprocesser_frequency=None):
@@ -3972,7 +3973,6 @@ class ConfigPostProcessing(Config):
         sickbeard.NAMING_STRIP_YEAR = config.checkbox_to_value(naming_strip_year)
         sickbeard.USE_FAILED_DOWNLOADS = config.checkbox_to_value(use_failed_downloads)
         sickbeard.DELETE_FAILED = config.checkbox_to_value(delete_failed)
-        sickbeard.SKIP_REMOVED_FILES = config.checkbox_to_value(skip_removed_files)
         sickbeard.NFO_RENAME = config.checkbox_to_value(nfo_rename)
 
         sickbeard.METADATA_KODI = kodi_data
