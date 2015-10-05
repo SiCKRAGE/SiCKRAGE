@@ -149,10 +149,11 @@ class TORRENTPROJECTProvider(generic.TorrentProvider):
             hash = torrents[i]["torrent_hash"]
             size = torrents[i]["torrent_size"]
             trackerUrl = self.urls['api'] + "" + hash + "/trackers_json"
-            logger.log(u'The tracker list is: ' + trackerUrl, logger.DEBUG)
+            #These lines arent normaly needed ,enable only if it fails...
+            #logger.log(u'The tracker list is: ' + trackerUrl, logger.DEBUG)
             jdata = self.getURL(trackerUrl, json=True)
             magnet = "magnet:?xt=urn:btih:" + hash + "&dn=" + name + "".join(["&tr=" + s for s in jdata])
-            logger.log(u'Magnet URL is: ' + magnet, logger.DEBUG)
+            #logger.log(u'Magnet URL is: ' + magnet, logger.DEBUG)
             results.append((name, magnet, size))
 
         logger.log("URL to be parsed: " + searchUrl, logger.DEBUG)
