@@ -154,6 +154,8 @@ class NzbtoProvider(generic.NZBProvider):
                   "sort": "post_date", #max 50
                   "order": "desc", #nospam
                   "amount": 25, #min 100MB
+                  "retention": retention,
+                  "cat": 13
                   }
 
         searchURL = "http://nzb.to/?p=list&" + urllib.urlencode(params)
@@ -240,29 +242,10 @@ class NzbtoProvider(generic.NZBProvider):
     def findPropers(self, search_date=None):
         search_terms = ['.PROPER.', '.REPACK.']
         results = []
-
         for term in search_terms:
             for item in self._doSearch(term, retention=4):
-
-                (title, url) = self._get_title_and_url(curResult)
-
-                pubDate_node = curResult.find('td', attrs={'class':'final'}).span
-                if not pubDate_node:
-                    logger.log(u"Unable to figure out the date for entry "+title+", skipping it")
-                    continue
-                pubDate = pubDate_node['title']
-                #Genaues Datum/Zeit: 09-09-2013 10:41:47
-                dateStr = re.search('.*:\s(\d{2}-\d{2}-\d{4}\s\d{2}:\d{2}:\d{2})', pubDate)
-                if not dateStr:
-                    logger.log(u"Unable to figure out the date for entry "+title+", skipping it")
-                    continue
-                else:
-                    #logger.log(u"Proper date for %s is %s" % (title, dateStr.group(1)))
-                    resultDate = datetime.strptime(dateStr.group(1), "%d-%m-%Y %H:%M:%S")
-
-                if date == None or resultDate > date:
-                    results.append(classes.Proper(title, url, resultDate, self.show))
-
+                    title, url = self._get_title_and_url(item)
+                    results.append(classes.Proper(title, url, datetime.today(), self.show))
         return results
 
 
