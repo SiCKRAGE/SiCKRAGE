@@ -73,47 +73,6 @@ class KATProvider(generic.TorrentProvider):
     def imageName(self):
         return 'kat.png'
 
-    def _get_season_search_strings(self, ep_obj):
-        search_string = {'Season': []}
-
-        for show_name in set(allPossibleShowNames(ep_obj.show)):
-            ep_string = sanitizeSceneName(show_name) + ' '
-            if ep_obj.show.air_by_date or ep_obj.show.sports:
-                ep_string += str(ep_obj.airdate).split('-')[0]
-            elif ep_obj.show.anime:
-                ep_string += "%02d" % ep_obj.scene_absolute_number
-            else:
-                ep_string = '%s S%02d -S%02dE category:tv' % (sanitizeSceneName(show_name), ep_obj.scene_season, ep_obj.scene_season) #1) showName SXX -SXXE
-                search_string['Season'].append(ep_string)
-                ep_string = '%s "Season %d" -Ep* category:tv' % (sanitizeSceneName(show_name), ep_obj.scene_season) # 2) showName "Season X"
-
-            search_string['Season'].append(ep_string)
-
-        return [search_string]
-
-    def _get_episode_search_strings(self, ep_obj, add_string=''):
-        search_string = {'Episode': []}
-
-        for show_name in set(allPossibleShowNames(ep_obj.show)):
-            ep_string = sanitizeSceneName(show_name) + ' '
-            if ep_obj.show.air_by_date:
-                ep_string += str(ep_obj.airdate).replace('-', ' ')
-            elif ep_obj.show.sports:
-                ep_string += str(ep_obj.airdate).replace('-', ' ') + '|' + ep_obj.airdate.strftime('%b')
-            elif ep_obj.show.anime:
-                ep_string += "%02d" % ep_obj.scene_absolute_number
-            else:
-                ep_string += sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                   'episodenumber': ep_obj.scene_episode} + '|' + \
-                             sickbeard.config.naming_ep_type[0] % {'seasonnumber': ep_obj.scene_season,
-                                                                   'episodenumber': ep_obj.scene_episode}
-            if add_string:
-                ep_string += ' ' + add_string
-
-            search_string['Episode'].append(re.sub(r'\s+', ' ', ep_string.strip()))
-
-        return [search_string]
-
     def _get_size(self, item):
         #pylint: disable=W0612
         title, url, info_hash, seeders, leechers, size, pubdate = item

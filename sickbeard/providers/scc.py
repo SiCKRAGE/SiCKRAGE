@@ -99,47 +99,6 @@ class SCCProvider(generic.TorrentProvider):
 
         return True
 
-    def _get_season_search_strings(self, ep_obj):
-
-        search_strings = []
-        for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-            if ep_obj.show.air_by_date or ep_obj.show.sports:
-                sp_string = show_name + ' ' + str(ep_obj.airdate).split('-')[0]
-            elif ep_obj.show.anime:
-                sp_string = show_name + ' %d' % ep_obj.scene_absolute_number
-            else:
-                sp_string = show_name + ' S%02d' % int(ep_obj.scene_season)
-
-            search_strings.append(sp_string)
-
-        return search_strings
-
-    def _get_episode_search_strings(self, ep_obj, add_string=''):
-
-        search_strings = []
-
-        if not ep_obj:
-            return []
-
-        for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
-            if self.show.air_by_date:
-                ep_string = sanitizeSceneName(show_name) + ' ' + str(ep_obj.airdate).replace('-', '.')
-            elif self.show.sports:
-                ep_string = sanitizeSceneName(show_name) + ' ' + str(ep_obj.airdate).replace('-', '.') + '|' + \
-                        ep_obj.airdate.strftime('%b')
-            elif self.show.anime:
-                ep_string = sanitizeSceneName(show_name) + ' %i' % int(ep_obj.scene_absolute_number)
-            else:
-                ep_string = sanitizeSceneName(show_name) + ' ' + \
-                        sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode}
-
-            if len(add_string):
-                ep_string += ' %s' % add_string
-
-            search_strings.append(ep_string)
-
-        return search_strings
 
     def _isSection(self, section, text):
         title = '<title>.+? \| %s</title>' % section
@@ -233,7 +192,7 @@ class SCCProvider(generic.TorrentProvider):
             title = self._clean_title_from_provider(title)
 
         if url:
-            url = str(url).replace('&amp;', '&')
+            url = url.replace('&amp;', '&')
 
         return (title, url)
 

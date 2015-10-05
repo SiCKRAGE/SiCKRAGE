@@ -224,7 +224,7 @@ class TorrentBytesProvider(generic.TorrentProvider):
             title = self._clean_title_from_provider(title)
 
         if url:
-            url = str(url).replace('&amp;', '&')
+            url = url.replace('&amp;', '&')
 
         return (title, url)
 

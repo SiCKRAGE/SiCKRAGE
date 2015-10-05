@@ -59,51 +59,6 @@ class ExtraTorrentProvider(generic.TorrentProvider):
     def isEnabled(self):
         return self.enabled
 
-    def _get_season_search_strings(self, ep_obj):
-
-        search_string = {'Season': []}
-        for show_name in set(show_name_helpers.allPossibleShowNames(ep_obj.show)):
-            if ep_obj.show.air_by_date or ep_obj.show.sports:
-                ep_string = show_name + ' ' + str(ep_obj.airdate).split('-')[0]
-            elif ep_obj.show.anime:
-                ep_string = show_name + ' ' + "%d" % ep_obj.scene_absolute_number
-            else:
-                ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  #1) showName SXX
-
-            search_string['Season'].append(ep_string.strip())
-
-        return [search_string]
-
-    def _get_episode_search_strings(self, ep_obj, add_string=''):
-
-        search_strings = {'Episode': []}
-
-        if not ep_obj:
-            return []
-
-        for show_name in set(show_name_helpers.allPossibleShowNames(ep_obj.show)):
-            if ep_obj.show.air_by_date:
-                ep_string = sanitizeSceneName(show_name) + ' ' + \
-                                str(ep_obj.airdate).replace('-', '|')
-            elif ep_obj.show.sports:
-                ep_string = sanitizeSceneName(show_name) + ' ' + \
-                                str(ep_obj.airdate).replace('-', '|') + '|' + \
-                                ep_obj.airdate.strftime('%b')
-            elif ep_obj.show.anime:
-                ep_string = sanitizeSceneName(show_name) + ' ' + \
-                                "%i" % int(ep_obj.scene_absolute_number)
-            else:
-                ep_string = sanitizeSceneName(show_name) + ' ' + \
-                            sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                  'episodenumber': ep_obj.scene_episode}
-
-            if add_string:
-                ep_string += ' %s' % add_string
-
-            search_strings['Episode'].append(re.sub(r'\s+', ' ', ep_string))
-
-        return [search_strings]
-
 
     def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 

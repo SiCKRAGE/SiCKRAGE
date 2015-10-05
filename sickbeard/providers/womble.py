@@ -72,4 +72,3 @@ class WombleCache(tvcache.TVCache):
         return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None
 
 provider = WombleProvider()
-

@@ -411,7 +411,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
             title = title.replace(' ', '.')
 
         if url:
-            url = str(url).replace('&amp;', '&')
+            url = url.replace('&amp;', '&')
 
         return (title, url)
 
