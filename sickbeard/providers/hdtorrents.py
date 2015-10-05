@@ -53,7 +53,9 @@ class HDTorrentsProvider(generic.TorrentProvider):
         self.urls = {'base_url': 'https://hd-torrents.org',
                      'login': 'https://hd-torrents.org/login.php',
                      'search': 'https://hd-torrents.org/torrents.php?search=%s&active=1&options=0%s',
-                     'home': 'https://hd-torrents.org/%s'
+                     'home': 'https://hd-torrents.org/%s',
+                     'rss': 'https://hd-torrents.org/torrents.php?search=&active=1&order=data&by=DESC&options=0%s',
+                     'rss2': 'https://hd-torrents.org/rss.php'
         }
 
         self.url = self.urls['base_url']
@@ -142,51 +144,56 @@ class HDTorrentsProvider(generic.TorrentProvider):
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
+        items = {'Season': [], 'Episode': [], 'RSS': []}
 
         if not self._doLogin():
             return results
 
-        for search_string in search_params if search_params else '':
-            if isinstance(search_string, unicode):
-                search_string = unidecode(search_string)
+        for mode in search_params.keys():            
+            for search_string in search_params[mode]:
+                if isinstance(search_string, unicode):
+                    search_string = unidecode(search_string)
+    
+                if mode == 'RSS':
+                    logger.log(u"Search mode: RSS", logger.DEBUG)
+                    searchURL = self.urls['rss'] % self.categories
+                else:
+                    logger.log(u"Search string: " + searchURL, logger.DEBUG)
+                    searchURL = self.urls['search'] % (urllib.quote_plus(search_string.replace('.', ' ')), self.categories)
 
-
-            searchURL = self.urls['search'] % (urllib.quote_plus(search_string.replace('.', ' ')), self.categories)
-            logger.log(u"Search string: " + searchURL, logger.DEBUG)
-            data = self.getURL(searchURL)
-            if not data:
-                logger.log(u'No grabs for you', logger.DEBUG)
-                continue
-
-            html = soup(data)
-            if not html:
-                continue
-
-            empty = html.find('No torrents here')
-            if empty:
-                logger.log(u"Could not find any torrents", logger.ERROR)
-                continue
-
-            tables = html.find('table', attrs={'class': 'mainblockcontenttt'})
-            if not tables:
-                logger.log(u"Could not find table of torrents mainblockcontenttt", logger.ERROR)
-                continue
-
-            torrents = tables.findChildren('tr')
-            if not torrents:
-                 continue
-
-            # Skip column headers
-            for result in torrents[1:]:
-                try:
-                    cells = result.findChildren('td', attrs={'class': re.compile(r'(green|yellow|red|mainblockcontent)')})
-                    if not cells:
-                        continue
-
-                    title = url = seeders = leechers = None
-                    size = 0
-                    for cell in cells:
-                        try:
+                data = self.getURL(searchURL)
+                if not data:
+                    logger.log(u'No grabs for you', logger.DEBUG)
+                    continue
+    
+                html = soup(data)
+                if not html:
+                    continue
+    
+                empty = html.find('No torrents here')
+                if empty:
+                    logger.log(u"Could not find any torrents", logger.ERROR)
+                    continue
+    
+                tables = html.find('table', attrs={'class': 'mainblockcontenttt'})
+                if not tables:
+                    logger.log(u"Could not find table of torrents mainblockcontenttt", logger.ERROR)
+                    continue
+    
+                torrents = tables.findChildren('tr')
+                if not torrents:
+                    continue
+    
+                # Skip column headers
+                for result in torrents[1:]:
+                    try:
+                        cells = result.findChildren('td', attrs={'class': re.compile(r'(green|yellow|red|mainblockcontent)')})
+                        if not cells:
+                            continue
+    
+                        title = url = seeders = leechers = None
+                        size = 0
+                        for cell in cells:
                             if None is title and cell.get('title') and cell.get('title') in 'Download':
                                 title = re.search('f=(.*).torrent', cell.a['href']).group(1).replace('+', '.')
                                 url = self.urls['home'] % cell.a['href']
@@ -194,33 +201,39 @@ class HDTorrentsProvider(generic.TorrentProvider):
                                 seeders = int(cell.text)
                             elif None is leechers and cell.get('class')[0] and cell.get('class')[0] in 'green' 'yellow' 'red':
                                 leechers = int(cell.text)
-
-                            # Skip torrents released before the episode aired (fakes)
-                            if re.match('..:..:..  ..:..:....', cells[6].text):
-                                if (datetime.strptime(cells[6].text, '%H:%M:%S  %m/%d/%Y') -
-                                    datetime.combine(epObj.airdate, datetime.min.time())).days < 0:
-                                    continue
-
-                            # Need size for failed downloads handling
-                            if re.match('[0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+', cells[7].text):
-                                size = self._convertSize(cells[7].text)
-
-                            if not title or not url or not seeders or leechers is None or not size or \
-                                    seeders < self.minseed or leechers < self.minleech:
+    
+                        # Skip torrents released before the episode aired (fakes)
+                        if re.match('..:..:..  ..:..:....', cells[6].text):
+                            if (datetime.strptime(cells[6].text, '%H:%M:%S  %m/%d/%Y') -
+                                datetime.combine(epObj.airdate, datetime.min.time())).days < 0:
                                 continue
+    
+                        # Need size for failed downloads handling
+                        if re.match('[0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+', cells[7].text):
+                            size = self._convertSize(cells[7].text)
+    
+                    except (AttributeError, TypeError, KeyError, ValueError):
+                        continue
+    
+                    if not title or not url or not seeders or leechers is None or not size:
+                        continue
+                    if mode != 'RSS' and seeders < self.minseed or leechers < self.minleech:
+                        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                        continue
+    
+                    item = title, url, seeders, leechers, size
+                    logger.log(u"Found result: " + title + " (" + searchURL + ")", logger.DEBUG)
+    
+                    items[mode].append(item)
 
-                            item = title, url, seeders, leechers, size
-                            logger.log(u"Found result: " + title + " (" + searchURL + ")", logger.DEBUG)
+            #For each search mode sort all the items by seeders
+            items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
-                            results.append(item)
+            results += items[mode]
 
-                        except:
-                            raise
+            if len(results) == 0:
+                logger.log(u"No torrents found")
 
-                except (AttributeError, TypeError, KeyError, ValueError):
-                    continue
-
-        results.sort(key=lambda tup: tup[3], reverse=True)
         return results
 
     def _get_title_and_url(self, item):
@@ -298,10 +311,10 @@ class HDTorrentsCache(tvcache.TVCache):
         tvcache.TVCache.__init__(self, provider)
 
         # only poll HDTorrents every 10 minutes max
-        self.minTime = 20
+        self.minTime = 10
 
     def _getRSSData(self):
-        search_params = []
+        search_params = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_params)}
 
 
