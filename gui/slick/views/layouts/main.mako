@@ -26,9 +26,40 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
 
+        <meta data-var="srRoot" data-content="${srRoot}">
+        <meta data-var="themeSpinner" data-content="${('', '-dark')[sickbeard.THEME_NAME == 'dark']}">
+        <meta data-var="anonURL" data-content="${sickbeard.ANON_REDIRECT}">
+
+        <meta data-var="sickbeard.ANIME_SPLIT_HOME" data-content="${sickbeard.ANIME_SPLIT_HOME}">
+        <meta data-var="sickbeard.COMING_EPS_LAYOUT" data-content="${sickbeard.COMING_EPS_LAYOUT}">
+        <meta data-var="sickbeard.COMING_EPS_SORT" data-content="${sickbeard.COMING_EPS_SORT}">
+        <meta data-var="sickbeard.DATE_PRESET" data-content="${sickbeard.DATE_PRESET}">
+        <meta data-var="sickbeard.FILTER_ROW" data-content="${sickbeard.FILTER_ROW}">
+        <meta data-var="sickbeard.FUZZY_DATING" data-content="${sickbeard.FUZZY_DATING}">
+        <meta data-var="sickbeard.HISTORY_LAYOUT" data-content="${sickbeard.HISTORY_LAYOUT}">
+        <meta data-var="sickbeard.HOME_LAYOUT" data-content="${sickbeard.HOME_LAYOUT}">
+        <meta data-var="sickbeard.POSTER_SORTBY" data-content="${sickbeard.POSTER_SORTBY}">
+        <meta data-var="sickbeard.POSTER_SORTDIR" data-content="${sickbeard.POSTER_SORTDIR}">
+        <meta data-var="sickbeard.ROOT_DIRS" data-content="${sickbeard.ROOT_DIRS}">
+        <meta data-var="sickbeard.SORT_ARTICLE" data-content="${sickbeard.SORT_ARTICLE}">
+        <meta data-var="sickbeard.TIME_PRESET" data-content="${sickbeard.TIME_PRESET}">
+        <meta data-var="sickbeard.TRIM_ZERO" data-content="${sickbeard.TRIM_ZERO}">
+        <%block name="metas" />
+
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css">
+
+        <!-- Library CSS -->
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/browser.css?${sbPID}" />
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${sbPID}"/><!-- This will be faded out as we move to core.css -->
         <link rel="stylesheet" href="/css/b4/core.css">
+        <link rel="stylesheet" href="/css/b4/overrides/bootstrap.css">
+        <link rel="stylesheet" href="/css/b4/overrides/browser.css">
+
+        <!-- Theme CSS -->
+        <link rel="stylesheet" href="/css/b4/themes/${sickbeard.THEME_NAME}.css">
     </head>
     <body>
         <nav class="navbar navbar-dark bg-inverse navbar-static-top">
@@ -160,8 +191,28 @@
             <%block name="content" />
         </div><!-- /.container -->
 
-        <!-- jQuery first, then Bootstrap JS. -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-        <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script>
+        <!-- Use Bower for library loading -->
+        <script type="text/javascript" src="${srRoot}/js/_bower.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.cookie.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.cookiejar.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.json-2.2.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.selectboxes.min.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter-2.17.7.min.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter.widgets-2.17.7.min.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter.widget-columnSelector-2.17.7.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.qtip-2.2.1.min.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.ui.touch-punch-0.2.2.min.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/isotope.pkgd.min.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.confirm.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/formwizard.js?${sbPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/pnotify.custom.min.js?${sbPID}"></script><!-- Needs to be removed -->
+        <script type="text/javascript" src="${srRoot}/js/new/parsers.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/new/meta.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/script.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.scrolltopcontrol-1.1.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/browser.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/ajaxNotifications.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/confirmations.js?${sbPID}"></script>
+        <%block name="scripts" />
     </body>
 </html>
