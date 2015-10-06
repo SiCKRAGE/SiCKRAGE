@@ -179,7 +179,7 @@
             </ul>
             % endif
         </nav>
-        <div class="container">
+        <div class="container-fluid">
             % if not submenu is UNDEFINED:
             <div id="SubMenu" class="hidden-print">
                 <span>
@@ -218,7 +218,7 @@
             </div>
             % endif
         </div>
-        <div class="container">
+        <div class="container-fluid">
             <%block name="content" />
         </div><!-- /.container -->
 
