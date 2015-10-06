@@ -47,19 +47,23 @@
         <%block name="metas" />
 
         <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css">
 
         <!-- Library CSS -->
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/browser.css?${sbPID}" />
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery-ui-1.10.4.custom.min.css?${sbPID}" />
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery.qtip-2.2.1.min.css?${sbPID}"/>
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/pnotify.custom.min.css?${sbPID}" />
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/country-flags.css?${sbPID}"/>
 
         <!-- Custom CSS -->
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${sbPID}"/><!-- This will be faded out as we move to core.css -->
-        <link rel="stylesheet" href="/css/b4/core.css">
-        <link rel="stylesheet" href="/css/b4/overrides/bootstrap.css">
-        <link rel="stylesheet" href="/css/b4/overrides/browser.css">
+        <link rel="stylesheet" type="text/css" href="/css/b4/core.css?${sbPID}">
+        <link rel="stylesheet" type="text/css" href="/css/b4/overrides/bootstrap.css?${sbPID}">
+        <link rel="stylesheet" type="text/css" href="/css/b4/overrides/browser.css?${sbPID}">
 
         <!-- Theme CSS -->
-        <link rel="stylesheet" href="/css/b4/themes/${sickbeard.THEME_NAME}.css">
+        <link rel="stylesheet" type="text/css" href="/css/b4/themes/${sickbeard.THEME_NAME}.css">
     </head>
     <body>
         <nav class="navbar navbar-dark bg-inverse navbar-static-top">
@@ -176,6 +180,32 @@
             % endif
         </nav>
         <div class="container">
+            % if not submenu is UNDEFINED:
+            <div id="SubMenu" class="hidden-print">
+                <span>
+                <% first = True %>
+                % for menuItem in submenu:
+                    % if 'requires' not in menuItem or menuItem['requires']:
+                        <% icon_class = '' if 'icon' not in menuItem else ' ' + menuItem['icon'] %>
+                          % if type(menuItem['path']) == dict:
+                              ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
+                              <%
+                                  first = False
+                                  inner_first = True
+                              %>
+                              % for cur_link in menuItem['path']:
+                                  ${("&middot; ", "")[bool(inner_first)]}<a class="inner" href="${srRoot}/${menuItem['path'][cur_link]}">${cur_link}</a>
+                                  <% inner_first = False %>
+                              % endfor
+                          % else:
+                              <a href="${srRoot}/${menuItem['path']}" class="btn${('', (' confirm ' + menuItem.get('class', '')))['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem['title']}</a>
+                              <% first = False %>
+                          % endif
+                    % endif
+                % endfor
+                </span>
+            </div>
+            % endif
             % if sickbeard.BRANCH and sickbeard.BRANCH != 'master' and not sickbeard.DEVELOPER and sbLogin:
             <div class="alert alert-danger upgrade-notification hidden-print" role="alert">
                 <span>You're using the ${sickbeard.BRANCH} branch. Please use 'master' unless specifically asked</span>
@@ -187,7 +217,8 @@
                 <span>${sickbeard.NEWEST_VERSION_STRING}</span>
             </div>
             % endif
-
+        </div>
+        <div class="container">
             <%block name="content" />
         </div><!-- /.container -->
 

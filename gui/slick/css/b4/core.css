@@ -8,3 +8,51 @@ body {
     margin: 20px auto 0 auto;
     text-align: center;
 }
+
+.ui-progressbar {
+    text-align: left;
+}
+
+.ui-progressbar .ui-progressbar-value {
+    margin: -1px 0 0 -1px;
+    height: 18px;
+    display: inline-block;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.progress-100 {
+    background-image: -moz-linear-gradient(#395f07, #2a4705) !important;
+    background-image: linear-gradient(#395f07, #2a4705) !important;
+    background-image: -webkit-linear-gradient(#395f07, #2a4705) !important;
+    background-image: -o-linear-gradient(#395f07, #2a4705) !important;
+}
+
+.progress-80 {
+    background-image: -moz-linear-gradient(#a6cf41, #5b990d) !important;
+    background-image: linear-gradient(#a6cf41, #5b990d) !important;
+    background-image: -webkit-linear-gradient(#a6cf41, #5b990d) !important;
+    background-image: -o-linear-gradient(#a6cf41, #5b990d) !important;
+}
+
+.progress-60 {
+    background-image: -moz-linear-gradient(#fad440, #f2a70d) !important;
+    background-image: linear-gradient(#fad440, #f2a70d) !important;
+    background-image: -webkit-linear-gradient(#fad440, #f2a70d) !important;
+    background-image: -o-linear-gradient(#fad440, #f2a70d) !important;
+}
+
+.progress-40 {
+    background-image: -moz-linear-gradient(#fab543, #f2700d) !important;
+    background-image: linear-gradient(#fab543, #f2700d) !important;
+    background-image: -webkit-linear-gradient(#fab543, #f2700d) !important;
+    background-image: -o-linear-gradient(#fab543, #f2700d) !important;
+}
+
+.progress-20 {
+    background-image: -moz-linear-gradient(#da5945, #b11a10) !important;
+    background-image: linear-gradient(#da5945, #b11a10) !important;
+    background-image: -webkit-linear-gradient(#da5945, #b11a10) !important;
+    background-image: -o-linear-gradient(#da5945, #b11a10) !important;
+}
