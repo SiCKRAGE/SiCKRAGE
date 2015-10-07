@@ -1,0 +1,50 @@
+/*csslint adjoining-classes:false */
+
+body {
+    padding-bottom: 2rem;
+}
+
+.upgrade-notification {
+    width: 650px;
+    margin: 20px auto 0 auto;
+    text-align: center;
+}
+
+pre {
+    padding: 10px;
+    overflow-x: scroll;
+    font-size: 13px;
+}
+
+.ui-progressbar {
+    text-align: left;
+}
+
+.ui-progressbar .ui-progressbar-value {
+    margin: -1px 0 0 -1px;
+    height: 18px;
+    display: inline-block;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.ui-progressbar-value.progress-100 {
+    background: linear-gradient(#395f07, #2a4705);
+}
+
+.ui-progressbar-value.progress-80 {
+    background: linear-gradient(#a6cf41, #5b990d);
+}
+
+.ui-progressbar-value.progress-60 {
+    background: linear-gradient(#fad440, #f2a70d);
+}
+
+.ui-progressbar-value.progress-40 {
+    background: linear-gradient(#fab543, #f2700d);
+}
+
+.ui-progressbar-value.progress-20 {
+    background: linear-gradient(#da5945, #b11a10);
+}
