@@ -279,9 +279,9 @@ class Quality:
             ret = Quality.RAWHDTV
         elif checkName([r"1080p", r"hd.?tv", r"(h|x)26[45]"], all):
             ret = Quality.FULLHDTV
-        elif checkName([r"720p", r"web.?dl|webrip|webhd(rip)?|netflixhd"], all) or checkName([r"720p", r"itunes", r"(x|h).?26[45]"], all):
+        elif checkName([r"720p", r"web.?dl|webrip|webhd(rip)?|netflixhd|ituneshd|amazonhd"], all) or checkName([r"720p", r"itunes", r"(x|h).?26[45]"], all):
             ret = Quality.HDWEBDL
-        elif checkName([r"1080p", r"web.?dl|webrip|webhd(rip)?|netflixhd"], all) or checkName([r"1080p", r"itunes", r"(x|h).?26[45]"], all):
+        elif checkName([r"1080p", r"web.?dl|webrip|webhd(rip)?|netflixhd|ituneshd|amazonhd"], all) or checkName([r"1080p", r"itunes", r"(x|h).?26[45]"], all):
             ret = Quality.FULLHDWEBDL
         elif checkName([r"720p", r"blue?-?ray|hddvd|b[rd]rip", r"(h|x)26[45]"], all):
             ret = Quality.HDBLURAY
