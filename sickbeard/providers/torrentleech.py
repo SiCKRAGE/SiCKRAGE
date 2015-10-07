@@ -63,7 +63,7 @@ class TorrentLeechProvider(generic.TorrentProvider):
 
         self.url = self.urls['base_url']
 
-        self.categories = "2,26,27,32"
+        self.categories = "2,26,27,32,7,34,35"
 
     def isEnabled(self):
         return self.enabled
