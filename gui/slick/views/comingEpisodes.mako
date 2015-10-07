@@ -75,10 +75,12 @@
     <thead>
         <tr>
             <th>Airdate (${('local', 'network')[sickbeard.TIMEZONE_DISPLAY == 'network']})</th>
+            <th>Ends</th>            
             <th>Show</th>
-            <th nowrap="nowrap">Next Ep</th>
+            <th>Next Ep</th>
             <th>Next Ep Name</th>
             <th>Network</th>
+            <th>Run time</th>
             <th>Quality</th>
             <th>Indexers</th>
             <th>Search</th>
@@ -115,6 +117,11 @@
                 <% airDate = sbdatetime.sbdatetime.convert_to_setting(cur_result['localtime']) %>
                 <time datetime="${airDate.isoformat('T')}" class="date">${sbdatetime.sbdatetime.sbfdatetime(airDate)}</time>
             </td>
+            
+            <td align="center">
+                <% ends = sbdatetime.sbdatetime.convert_to_setting(cur_ep_enddate) %>
+                <time datetime="${ends.isoformat('T')}" class="date">${sbdatetime.sbdatetime.sbfdatetime(ends)}</time>
+            </td>
 
             <td class="tvShow" nowrap="nowrap"><a href="${srRoot}/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}</a>
 % if int(cur_result['paused']):
@@ -138,6 +145,10 @@
             <td align="center">
                 ${cur_result['network']}
             </td>
+            
+            <td align="center">
+            ${run_time}min
+            </td>       
 
             <td align="center">
                 ${renderQualityPill(cur_result['quality'], showTitle=True)}
