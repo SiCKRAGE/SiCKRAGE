@@ -267,7 +267,7 @@ class Logger(object):
                     return re.search(r'Loaded module.*not found in sys\.modules', title) is not None
 
                 def is_ascii_error(title):
-                    return re.search(r"'ascii' codec can't encode character .* in position .*: ordinal not in range.*", title) is not None
+                    return re.search(r"'.*' codec can't encode character .* in position .*:", title) is not None
 
                 mako_error = is_mako_error(title_Error)
                 ascii_error = is_ascii_error(title_Error)
@@ -276,7 +276,7 @@ class Logger(object):
                 for report in reports:
                     if title_Error.rsplit(' :: ')[-1] in report.title or \
            	         (mako_error and is_mako_error(report.title)) or \
-                	    (ascii_error and is_ascii_error(report.title)):
+                	        (ascii_error and is_ascii_error(report.title)):
 
                         issue_id = report.number
                         if not report.raw_data['locked']:
