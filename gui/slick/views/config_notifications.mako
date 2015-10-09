@@ -1886,7 +1886,7 @@
                                 </label>
                                 <label>
                                     <span style="font-size: 11px;">Enter the auth key below, and click "Verify Key", if you don't need this then leave it blank<br/><br/></span>
-                                    <input type="text" id="webhook_accesstoken" value="" class="form-control input-sm input350" />
+                                    <input type="text" id="webhook_accesstoken" value="${sickbeard.WEBHOOK_ACCESSTOKEN}" class="form-control input-sm input350" />
                                     <input class="btn btn-inline" type="button" value="Verify Key" id="webhookVerifyKey" />
                                 </label>
                             </div>
