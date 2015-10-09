@@ -433,6 +433,21 @@ $(document).ready(function(){
         }
     });
 
+    $('#testWebhook,#webhookVerifyKey').click(function () {
+        var webhook_accesstoken = $.trim($('#webhook_accesstoken').val());
+        $(this).prop('disabled', true);
+        $('#testWebhook-result').html(loading);
+        $.post('http://localhost:3000/api/notifications', {'accessToken': webhook_accesstoken, 'msg': 'This is a test'}).done(function (data) {
+            if(data.error){
+                $('#testWebhook-result').html(data.error);
+                $('#webhook_accesstoken').addClass('warning');
+            } else {
+                $('#testWebhook-result').html(data.message);
+                $(this).prop('disabled', false);
+            }
+        });
+    });
+
     $('#testNMA').click(function () {
         var nma_api = $.trim($('#nma_api').val());
         var nma_priority = $('#nma_priority').val();

@@ -27,9 +27,10 @@
                     <li><a href="#tabs-1">Home Theater / NAS</a></li>
                     <li><a href="#tabs-2">Devices</a></li>
                     <li><a href="#tabs-3">Social</a></li>
+                    <li><a href="#tabs-4">Other</a></li>
                 </ul>
 
-                <div id="tabs-1">
+            <div id="tabs-1">
                 <div class="component-group">
 
                     <div class="component-group-desc">
@@ -673,7 +674,6 @@
                 </div><!-- /component-group //-->
 
             </div>
-
 
             <div id="tabs-2">
                 <div class="component-group">
@@ -1829,6 +1829,77 @@
                 </div><!-- /email component-group //-->
 
             </div><!-- /config-components //-->
+
+            <div id="tabs-4">
+                <div class="component-group">
+                    <div class="component-group-desc">
+                        <img class="notifier-icon" src="${srRoot}/images/notifiers/twitter.png" alt="" title="Webhook"/>
+                        <h3>Webhook</h3>
+                        <p>A generic webhook.</p>
+                    </div>
+                    <fieldset class="component-group-list">
+                        <div class="field-pair">
+                            <label for="use_webhook">
+                                <span class="component-title">Enable</span>
+                                <span class="component-desc">
+                                    <input type="checkbox" class="enabler" name="use_webhook" id="use_webhook" ${('', 'checked="checked"')[bool(sickbeard.USE_WEBHOOK)]}/>
+                                    <p>should SickRage send a webhook notification?</p>
+                                </span>
+                            </label>
+                            <label>
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc"><b>Note:</b> you must have your own server setup, <a href="#">here</a>'s a sample server.</span>
+                            </label>
+                        </div>
+
+                        <div id="content_use_webhook">
+                            <div class="field-pair">
+                                <label for="webhook_notify_onsnatch">
+                                    <span class="component-title">Notify on snatch</span>
+                                    <span class="component-desc">
+                                        <input type="checkbox" name="webhook_notify_onsnatch" id="webhook_notify_onsnatch" ${('', 'checked="checked"')[bool(sickbeard.WEBHOOK_NOTIFY_ONSNATCH)]}/>
+                                        <p>send a notification when a download starts?</p>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="field-pair">
+                                <label for="webhook_notify_ondownload">
+                                    <span class="component-title">Notify on download</span>
+                                    <span class="component-desc">
+                                        <input type="checkbox" name="webhook_notify_ondownload" id="webhook_notify_ondownload" ${('', 'checked="checked"')[bool(sickbeard.WEBHOOK_NOTIFY_ONDOWNLOAD)]}/>
+                                        <p>send a notification when a download finishes?</p>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="field-pair">
+                                <label for="webhook_notify_onsubtitledownload">
+                                    <span class="component-title">Notify on subtitle download</span>
+                                    <span class="component-desc">
+                                        <input type="checkbox" name="webhook_notify_onsubtitledownload" id="webhook_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickbeard.WEBHOOK_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                        <p>send a notification when subtitles are downloaded?</p>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="field-pair">
+                                <label>
+                                    <span class="component-title">Access token</span>
+                                </label>
+                                <label>
+                                    <span style="font-size: 11px;">Enter the auth key below, and click "Verify Key", if you don't need this then leave it blank<br/><br/></span>
+                                    <input type="text" id="webhook_accesstoken" value="" class="form-control input-sm input350" />
+                                    <input class="btn btn-inline" type="button" value="Verify Key" id="webhookVerifyKey" />
+                                </label>
+                            </div>
+                            <div class="testNotification" id="testWebhook-result">Click below to test.</div>
+                            <input  class="btn" type="button" value="Test Webhook" id="testWebhook" />
+                            <input type="submit" class="config_submitter btn" value="Save Changes" />
+                        </div><!-- /content_use_webhook //-->
+
+                    </fieldset>
+                </div><!-- /webhook component-group //-->
+
+            </div><!-- /config-components //-->
+
         </form>
 
         <br/><input type="submit" class="config_submitter btn" value="Save Changes" /><br/>

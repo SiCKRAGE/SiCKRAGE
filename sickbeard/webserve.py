@@ -4600,7 +4600,9 @@ class ConfigNotifications(Config):
                           use_email=None, email_notify_onsnatch=None, email_notify_ondownload=None,
                           email_notify_onsubtitledownload=None, email_host=None, email_port=25, email_from=None,
                           email_tls=None, email_user=None, email_password=None, email_list=None, email_show_list=None,
-                          email_show=None):
+                          email_show=None,
+                          use_webhook=None, webhook_notify_onsnatch=None, webhook_notify_ondownload=None,
+                          webhook_notify_onsubtitledownload=None, webhook_accesstoken=None):
 
         results = []
 
@@ -4732,6 +4734,12 @@ class ConfigNotifications(Config):
         sickbeard.EMAIL_USER = email_user
         sickbeard.EMAIL_PASSWORD = email_password
         sickbeard.EMAIL_LIST = email_list
+
+        sickbeard.USE_WEBHOOK = config.checkbox_to_value(use_webhook)
+        sickbeard.WEBHOOK_NOTIFY_ONSNATCH = config.checkbox_to_value(webhook_notify_onsnatch)
+        sickbeard.WEBHOOK_NOTIFY_ONDOWNLOAD = config.checkbox_to_value(webhook_notify_ondownload)
+        sickbeard.WEBHOOK_NOTIFY_ONSUBTITLEDOWNLOAD = config.checkbox_to_value(webhook_notify_onsubtitledownload)
+        sickbeard.WEBHOOK_ACCESSTOKEN = webhook_accesstoken
 
         sickbeard.USE_PYTIVO = config.checkbox_to_value(use_pytivo)
         sickbeard.PYTIVO_NOTIFY_ONSNATCH = config.checkbox_to_value(pytivo_notify_onsnatch)
