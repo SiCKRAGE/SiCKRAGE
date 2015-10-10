@@ -209,7 +209,7 @@ def subtitlesLanguages(video_path):
         external_subtitle_languages = scan_subtitle_languages(video_path)
         subtitle_languages = external_subtitle_languages.union(embedded_subtitle_languages)
     else:
-        subtitle_languages = scan_subtitle_languages(video_path)
+        video_path = ek(os.path.join, ek(os.path.dirname, video_path), ek(os.path.basename, video_path))
 
     if (len(subtitle_languages) is 1 and len(wantedLanguages()) is 1) and Language('und') in subtitle_languages:
         subtitle_languages.remove(Language('und'))
