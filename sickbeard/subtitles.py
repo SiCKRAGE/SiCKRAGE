@@ -204,6 +204,10 @@ def subtitlesLanguages(video_path):
     # Search subtitles with the relative path
     elif sickbeard.SUBTITLES_DIR:
         video_path = ek(os.path.join, ek(os.path.dirname, video_path), sickbeard.SUBTITLES_DIR, ek(os.path.basename, video_path))
+        if not video_path:
+            getSubtitlesPath(video_path)
+    else:
+        video_path = ek(os.path.join, ek(os.path.dirname, video_path), ek(os.path.basename, video_path))
 
     if not sickbeard.EMBEDDED_SUBTITLES_ALL and video_path.endswith('.mkv'):
         external_subtitle_languages = scan_subtitle_languages(video_path)
