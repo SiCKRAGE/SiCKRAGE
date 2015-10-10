@@ -62,6 +62,11 @@ class BTNProvider(generic.TorrentProvider):
     def isEnabled(self):
         return self.enabled
 
+    def getQuality(self, item, anime=False):
+        title, url = self._get_title_and_url(item)
+        quality = Quality.sceneQuality(title, anime)
+        return quality
+
     def _checkAuth(self):
         if not self.api_key:
             logger.log(u"Invalid api key. Check your settings", logger.WARNING)
