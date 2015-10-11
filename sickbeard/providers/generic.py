@@ -603,7 +603,13 @@ class TorrentProvider(GenericProvider):
                 ep_string += str(ep_obj.airdate).replace('-', '|') + '|' + \
                         ep_obj.airdate.strftime('%b')
             elif ep_obj.show.anime:
-                ep_string += "%i" % int(ep_obj.scene_absolute_number)
+                scene_number = int(ep_obj.scene_absolute_number)
+                # If the episode number is 1-9 we add a leading zero since the episode number usually starts with a 0
+                # in that case so we search for both variations to maximize our results
+                if scene_number < 10:
+                    ep_string_leading_zero = "%s0%i" % (ep_string, scene_number)
+                    search_string['Episode'].append(ep_string_leading_zero)
+                ep_string += "%i" % scene_number
             else:
                 ep_string += sickbeard.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                               'episodenumber': ep_obj.scene_episode}
