@@ -1,6 +1,6 @@
-diff --git a/or_sublimnal/api.py b/subliminal/api.py
+diff --git a/sublimnal/api.py b/subliminal/api.py
 index 13c614f..6fe3368 100644
---- a/or_sublimnal/api.py
+--- a/sublimnal/api.py
 +++ b/subliminal/api.py
 @@ -7,6 +7,7 @@ import os.path
  import socket
@@ -107,9 +107,9 @@ index 0000000..d73cb1c
 +        if podnapisi not in self.from_podnapisi:
 +            raise LanguageReverseError(podnapisi)
 +        return self.from_podnapisi[podnapisi]
-diff --git a/or_sublimnal/providers/addic7ed.py b/subliminal/providers/addic7ed.py
+diff --git a/sublimnal/providers/addic7ed.py b/subliminal/providers/addic7ed.py
 index edaa728..3edfe35 100644
---- a/or_sublimnal/providers/addic7ed.py
+--- a/sublimnal/providers/addic7ed.py
 +++ b/subliminal/providers/addic7ed.py
 @@ -2,7 +2,7 @@
  import logging
@@ -128,9 +128,9 @@ index edaa728..3edfe35 100644
  
  series_year_re = re.compile('^(?P<series>[ \w]+)(?: \((?P<year>\d{4})\))?$')
  
-diff --git a/or_sublimnal/providers/tvsubtitles.py b/subliminal/providers/tvsubtitles.py
+diff --git a/sublimnal/providers/tvsubtitles.py b/subliminal/providers/tvsubtitles.py
 index e63cd43..06fd878 100644
---- a/or_sublimnal/providers/tvsubtitles.py
+--- a/sublimnal/providers/tvsubtitles.py
 +++ b/subliminal/providers/tvsubtitles.py
 @@ -4,7 +4,7 @@ import logging
  import re
