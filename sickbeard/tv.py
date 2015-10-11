@@ -630,24 +630,24 @@ class TVShow(object):
     def makeEpFromFile(self, file):
 
         if not ek(os.path.isfile, file):
-            logger.log(str(self.indexerid) + u": That isn't even a real file dude... " + file)
+            logger.log(u"%s: That isn't even a real file %s" % (self.indexerid, file))
             return None
 
-        logger.log(str(self.indexerid) + u": Creating episode object from " + file, logger.DEBUG)
+        logger.log(u"%s: Creating episode object from file %s" % (self.indexerid, file), logger.DEBUG)
 
         try:
             myParser = NameParser(showObj=self, tryIndexers=True)
             parse_result = myParser.parse(file)
         except InvalidNameException:
-            logger.log(u"Unable to parse the filename " + file + " into a valid episode", logger.DEBUG)
+            logger.log(u"Unable to parse the filename %s into a valid episode" % file, logger.DEBUG)
             return None
         except InvalidShowException:
-            logger.log(u"Unable to parse the filename " + file + " into a valid show", logger.DEBUG)
+            logger.log(u"Unable to parse the filename %s into a valid show" % show, logger.DEBUG)
             return None
 
         if not len(parse_result.episode_numbers):
             logger.log("parse_result: " + str(parse_result))
-            logger.log(u"No episode number found in " + file + ", ignoring it", logger.WARNING)
+            logger.log(u"No episode number found in %, ignoring it" % file, logger.WARNING)
             return None
 
         # for now lets assume that any episode in the show dir belongs to that show
@@ -672,16 +672,13 @@ class TVShow(object):
                     if not curEp:
                         raise EpisodeNotFoundException
                 except EpisodeNotFoundException:
-                    logger.log(str(self.indexerid) + u": Unable to figure out what this file is, skipping",
-                               logger.ERROR)
+                    logger.log(u"%s: Unable to figure out what this file %s is, skipping" % (self.indexerid, file), logger.ERROR)
                     continue
 
             else:
                 # if there is a new file associated with this ep then re-check the quality
                 if curEp.location and ek(os.path.normpath, curEp.location) != ek(os.path.normpath, file):
-                    logger.log(
-                        u"The old episode had a different file associated with it, I will re-check the quality based on the new filename " + file,
-                        logger.DEBUG)
+                    logger.log(u"%s: The old episode had a different file associated with it. I will re-check the quality based on the new filename %s" % (self.indexerid, file), logger.DEBUG)
                     checkQualityAgain = True
 
                 with curEp.lock:
@@ -710,8 +707,7 @@ class TVShow(object):
             # if they replace a file on me I'll make some attempt at re-checking the quality unless I know it's the same file
             if checkQualityAgain and not same_file:
                 newQuality = Quality.nameQuality(file, self.is_anime)
-                logger.log(u"Since this file has been renamed, I checked " + file + " and found quality " +
-                           Quality.qualityStrings[newQuality], logger.DEBUG)
+                logger.log(u"%s Since this file has been renamed, I checked file %s and found quality %s" % (self.indexerid, file, Quality.qualityStrings[newQuality]), logger.DEBUG)
                 if newQuality != Quality.UNKNOWN:
                     with curEp.lock:
                         curEp.status = Quality.compositeStatus(DOWNLOADED, newQuality)
@@ -727,17 +723,7 @@ class TVShow(object):
                 newStatus = None
 
                 # if it was snatched and now exists then set the status correctly
-                if oldStatus == SNATCHED and oldQuality <= newQuality:
-                    logger.log(u"STATUS: this ep used to be snatched with quality " + Quality.qualityStrings[
-                        oldQuality] + u" but a file exists with quality " + Quality.qualityStrings[
-                                   newQuality] + u" so I'm setting the status to DOWNLOADED", logger.DEBUG)
-                    newStatus = DOWNLOADED
-
-                # if it was snatched proper and we found a higher quality one then allow the status change
-                elif oldStatus == SNATCHED_PROPER and oldQuality < newQuality:
-                    logger.log(u"STATUS: this ep used to be snatched proper with quality " + Quality.qualityStrings[
-                        oldQuality] + u" but a file exists with quality " + Quality.qualityStrings[
-                                   newQuality] + u" so I'm setting the status to DOWNLOADED", logger.DEBUG)
+                if (oldStatus == SNATCHED and oldQuality <= newQuality) or (oldStatus == SNATCHED_PROPER and oldQuality <= newQuality):
                     newStatus = DOWNLOADED
 
                 elif oldStatus not in (SNATCHED, SNATCHED_PROPER):
@@ -745,9 +731,9 @@ class TVShow(object):
 
                 if newStatus is not None:
                     with curEp.lock:
-                        logger.log(u"STATUS: we have an associated file, so setting the status from " + str(
-                            curEp.status) + u" to DOWNLOADED/" + str(Quality.statusFromName(file, anime=self.is_anime)),
-                                   logger.DEBUG)
+                        logger.log(u"Show %s S%02dE%02d used to be %s but a file exists with quality %s so I'm setting the status to %s" %
+                        (self.name, season, episode,statusStrings[curEp.status], Quality.qualityStrings[newQuality], 
+                        statusStrings[Quality.compositeStatus(newStatus, newQuality)]), logger.INFO)
                         curEp.status = Quality.compositeStatus(newStatus, newQuality)
 
             with curEp.lock:
@@ -1974,12 +1960,12 @@ class TVEpisode(object):
         """
 
         if not self.dirty and not forceSave:
-            logger.log(str(self.show.indexerid) + u": Not saving episode to db - record is not dirty", logger.DEBUG)
+            logger.log(u"%s: Not saving episode to db - no data has been changed since the last save" % self.show.indexerid, logger.DEBUG)
             return
 
-        logger.log(str(self.show.indexerid) + u": Saving episode details to database", logger.DEBUG)
+        logger.log(u"%s: Saving episode details to database" % self.show.indexerid, logger.DEBUG)
 
-        logger.log(u"STATUS IS " + str(self.status), logger.DEBUG)
+        logger.log(u"Changing status of show %s S%02dE%02d to %s" % (self.name, self.season, self.episode, statusStrings[self.status]), logger.DEBUG)
 
         newValueDict = {"indexerid": self.indexerid,
                         "indexer": self.indexer,
