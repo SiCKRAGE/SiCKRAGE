@@ -1226,9 +1226,6 @@ def initialize(consoleLogging=True):
                 if hasattr(curTorrentProvider.proxy, 'url'):
                     curTorrentProvider.proxy.url = check_setting_str(CFG, curTorrentProvider.getID().upper(),
                                                                      curTorrentProvider.getID() + '_proxy_url', '')
-            if hasattr(curTorrentProvider, 'ssl_verify'):
-                curTorrentProvider.confirmed = bool(check_setting_int(CFG, curTorrentProvider.getID().upper(),
-                                                                      curTorrentProvider.getID() + '_ssl_verify', 1))
             if hasattr(curTorrentProvider, 'confirmed'):
                 curTorrentProvider.confirmed = bool(check_setting_int(CFG, curTorrentProvider.getID().upper(),
                                                                       curTorrentProvider.getID() + '_confirmed', 1))
@@ -1288,10 +1285,6 @@ def initialize(consoleLogging=True):
                                curProvider.providerType == GenericProvider.NZB]:
             curNzbProvider.enabled = bool(
                 check_setting_int(CFG, curNzbProvider.getID().upper(), curNzbProvider.getID(), 0))
-            if hasattr(curNzbProvider, 'ssl_verify'):
-                curNzbProvider.ssl_verify = bool(check_setting_int(CFG, curNzbProvider.getID().upper(),
-                                                                        curNzbProvider.getID() + '_ssl_verify',
-                                                                        0))
             if hasattr(curNzbProvider, 'api_key'):
                 curNzbProvider.api_key = check_setting_str(CFG, curNzbProvider.getID().upper(),
                                                            curNzbProvider.getID() + '_api_key', '', censor_log=True)
@@ -1791,9 +1784,6 @@ def save_config():
         if hasattr(curTorrentProvider, 'passkey'):
             new_config[curTorrentProvider.getID().upper()][
                 curTorrentProvider.getID() + '_passkey'] = curTorrentProvider.passkey
-        if hasattr(curTorrentProvider, 'ssl_verify'):
-            new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID() + '_ssl_verify'] = int(
-                curTorrentProvider.ssl_verify)
         if hasattr(curTorrentProvider, 'confirmed'):
             new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID() + '_confirmed'] = int(
                 curTorrentProvider.confirmed)
@@ -1856,9 +1846,6 @@ def save_config():
         if hasattr(curNzbProvider, 'username'):
             new_config[curNzbProvider.getID().upper()][
                 curNzbProvider.getID() + '_username'] = curNzbProvider.username
-        if hasattr(curNzbProvider, 'ssl_verify'):
-            new_config[curNzbProvider.getID().upper()][curNzbProvider.getID() + '_ssl_verify'] = int(
-                curNzbProvider.ssl_verify)
         if hasattr(curNzbProvider, 'search_mode'):
             new_config[curNzbProvider.getID().upper()][
                 curNzbProvider.getID() + '_search_mode'] = curNzbProvider.search_mode
