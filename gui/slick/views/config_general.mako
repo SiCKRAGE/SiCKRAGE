@@ -36,12 +36,12 @@
             <div id="config-components">
 
                 <ul>
-                    <li><a href="#core-component-group1">Misc</a></li>
-                    <li><a href="#core-component-group2">Interface</a></li>
-                    <li><a href="#core-component-group3">Advanced Settings</a></li>
+                    <li><a href="#Misc">Misc</a></li>
+                    <li><a href="#Interface">Interface</a></li>
+                    <li><a href="#Advanced-Settings">Advanced Settings</a></li>
                 </ul>
 
-                <div id="core-component-group1">
+                <div id="Misc">
                 <div class="component-group">
 
                     <div class="component-group-desc">
@@ -234,7 +234,7 @@
                 </div><!-- /component-group1 //-->
 
 
-                <div id="core-component-group2">
+                <div id="Interface">
                 <div class="component-group">
 
                     <div class="component-group-desc">
@@ -504,7 +504,7 @@
                 </div>
 
 
-                <div id="core-component-group3" class="component-group">
+                <div id="Advanced-Settings" class="component-group">
 
                 <div class="component-group">
 
