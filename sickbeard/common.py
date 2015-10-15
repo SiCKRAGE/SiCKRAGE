@@ -138,6 +138,18 @@ class Quality:
                       HDBLURAY: "720p BluRay",
                       FULLHDBLURAY: "1080p BluRay"}
 
+    sceneQualityStrings = {NONE: "N/A",
+                      UNKNOWN: "Unknown",
+                      SDTV: "HDTV x264",
+                      SDDVD: "BDRip x264",
+                      HDTV: "720p HDTV x264",
+                      RAWHDTV: "COMPLETE BLURAY",
+                      FULLHDTV: "1080p HDTV x264",
+                      HDWEBDL: "720p WEB-DL x264",
+                      FULLHDWEBDL: "1080p WEB-DL x264",
+                      HDBLURAY: "720p BluRay x264",
+                      FULLHDBLURAY: "1080p BluRay x264"}
+
     combinedQualityStrings = {ANYHDTV: "HDTV",
                               ANYWEBDL: "WEB-DL",
                               ANYBLURAY: "BluRay"}
