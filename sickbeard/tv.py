@@ -2112,6 +2112,26 @@ class TVEpisode(object):
                 name = helpers.remove_non_release_groups(helpers.remove_extension(name))
             return name
 
+        def release_codec(name):
+            codecList = ['xvid', 'x264', 'x265', 'h264', 'x 264', 'x 265', 'h 264', 'x.264', 'x.265', 'h.264']
+            found_codec = None
+            for codec in codecList:
+                if codec in name.lower():
+                    found_codec = codec
+                    if found_codec is codecList[0]:
+                        found_codec = 'XviD'
+                    elif found_codec is codecList[4] or codecList[7]:
+                        found_codec = codecList[1]
+                    elif found_codec is codecList[9]:
+                        found_codec = codecList[2]
+                    elif found_codec is codecList[5] or codecList[8]:
+                        found_codec = codecList[3]
+
+            if found_codec:
+                return found_codec
+            else:
+                return ""
+
         def release_group(show, name):
             if name:
                 name = helpers.remove_non_release_groups(helpers.remove_extension(name))
@@ -2166,6 +2186,15 @@ class TVEpisode(object):
             '%QN': Quality.qualityStrings[epQual],
             '%Q.N': dot(Quality.qualityStrings[epQual]),
             '%Q_N': us(Quality.qualityStrings[epQual]),
+<<<<<<< HEAD
+            '%SQN': Quality.sceneQualityStrings[epQual] + release_codec(self.release_name),
+            '%SQ.N': dot(Quality.sceneQualityStrings[epQual] + release_codec(self.release_name)),
+            '%SQ_N': us(Quality.sceneQualityStrings[epQual] + release_codec(self.release_name)),
+=======
+            '%SQN': Quality.sceneQualityStrings[epQual],
+            '%SQ.N': dot(Quality.sceneQualityStrings[epQual]),
+            '%SQ_N': us(Quality.sceneQualityStrings[epQual]),
+>>>>>>> be9b24036b51a1b97dc35c3d404399c4c13a9159
             '%S': str(self.season),
             '%0S': '%02d' % self.season,
             '%E': str(self.episode),
@@ -2177,7 +2206,7 @@ class TVEpisode(object):
             '%AB': '%(#)03d' % {'#': self.absolute_number},
             '%XAB': '%(#)03d' % {'#': self.scene_absolute_number},
             '%RN': release_name(self.release_name),
-            '%RG': rel_grp[relgrp],
+            '%RG': rel_grp[relgrp].upper(),
             '%AD': str(self.airdate).replace('-', ' '),
             '%A.D': str(self.airdate).replace('-', '.'),
             '%A_D': us(str(self.airdate)),
