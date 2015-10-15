@@ -29,12 +29,12 @@ from sickbeard import db
 from sickbeard import logger
 from sickbeard.common import Quality
 from sickbeard import helpers
-from sickbeard.exceptions import ex
-from sickbeard.exceptions import AuthException
 from sickbeard.rssfeeds import RSSFeeds
 from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
-from sickbeard import encodingKludge as ek
 from sickbeard import show_name_helpers
+from sickrage.helper.encoding import ss
+from sickrage.helper.exceptions import AuthException, ex
+
 
 class CacheDBConnection(db.DBConnection):
     def __init__(self, providerName):
@@ -279,7 +279,7 @@ class TVCache():
             # get quality of release
             quality = parse_result.quality
 
-            name = ek.ss(name)
+            name = ss(name)
 
             # get release group
             release_group = parse_result.release_group

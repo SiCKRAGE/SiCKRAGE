@@ -20,7 +20,7 @@ import os
 import platform
 import subprocess
 import re
-import urllib
+
 import tarfile
 import stat
 import traceback
@@ -31,10 +31,9 @@ import sickbeard
 from sickbeard import notifiers
 from sickbeard import ui
 from sickbeard import logger, helpers
-from sickbeard.exceptions import ex
-from sickbeard import encodingKludge as ek
+from sickrage.helper.encoding import ek
+from sickrage.helper.exceptions import ex
 import requests
-from requests.exceptions import RequestException
 
 import shutil
 import shutil_custom
@@ -42,7 +41,7 @@ import shutil_custom
 shutil.copyfile = shutil_custom.copyfile_custom
 
 
-class CheckVersion():
+class CheckVersion:
     """
     Version check class meant to run as a thread object with the sr scheduler.
     """
@@ -58,8 +57,10 @@ class CheckVersion():
             elif self.install_type == 'source':
                 self.updater = SourceUpdateManager()
 
+        self.session=requests.Session()
+
     def run(self, force=False):
-        
+
         self.amActive = True
 
         if self.updater:
@@ -78,7 +79,7 @@ class CheckVersion():
                         else:
                             logger.log(u"Update failed!")
                             ui.notifications.message('Update failed!')
-                            
+
         self.amActive = False
 
     def run_backup_if_safe(self):
@@ -102,7 +103,7 @@ class CheckVersion():
                 ui.notifications.message('Backup', 'Config backup failed, aborting update')
                 return False
         except Exception as e:
-            logger.log('Update: Config backup failed. Error: {0}'.format(ex(e)),logger.ERROR)
+            logger.log('Update: Config backup failed. Error: %s' % ex(e), logger.ERROR)
             ui.notifications.message('Backup', 'Config backup failed, aborting update')
             return False
 
@@ -163,10 +164,10 @@ class CheckVersion():
                     logger.log(u"We can't proceed with the update. New update has a old DB version. It's not possible to downgrade", logger.ERROR)
                     return False
                 else:
-                    logger.log(u"We can't proceed with the update. Unable to check remote DB version", logger.ERROR)
+                    logger.log(u"We can't proceed with the update. Unable to check remote DB version. Error: %s" % result, logger.ERROR)
                     return False
-            except:
-                logger.log(u"We can't proceed with the update. Unable to compare DB version", logger.ERROR)
+            except Exception as e:
+                logger.log(u"We can't proceed with the update. Unable to compare DB version. Error: %s" % repr(e), logger.ERROR)
                 return False
 
         def postprocessor_safe(self):
@@ -198,9 +199,15 @@ class CheckVersion():
 
     def getDBcompare(self):
         try:
-            response = requests.get("http://cdn.rawgit.com/SICKRAGETV/SickRage/" + str(self.updater.get_newest_commit_hash()) +"/sickbeard/databases/mainDB.py")
-            response.raise_for_status()
-            match = re.search(r"MAX_DB_VERSION\s=\s(?P<version>\d{2,3})",response.text)
+            self.updater.need_update()
+            cur_hash = str(self.updater.get_newest_commit_hash())
+            assert len(cur_hash) is 40, "Commit hash wrong length: %s hash: %s" % (len(cur_hash), cur_hash)
+
+            check_url = "http://cdn.rawgit.com/%s/%s/%s/sickbeard/databases/mainDB.py" % (sickbeard.GIT_ORG, sickbeard.GIT_REPO, cur_hash)
+            response = helpers.getURL(check_url, session=self.session)
+            assert response, "Empty response from %s" % check_url
+
+            match = re.search(r"MAX_DB_VERSION\s=\s(?P<version>\d{2,3})", response)
             branchDestDBversion = int(match.group('version'))
             myDB = db.DBConnection()
             branchCurrDBversion = myDB.checkDBVersion()
@@ -210,10 +217,8 @@ class CheckVersion():
                 return 'equal'
             else:
                 return 'downgrade'
-        except RequestException as e:
-            return 'error'
         except Exception as e:
-            return 'error'
+            return repr(e)
 
     def find_install_type(self):
         """
@@ -228,7 +233,7 @@ class CheckVersion():
         # check if we're a windows build
         if sickbeard.BRANCH.startswith('build '):
             install_type = 'win'
-        elif os.path.isdir(ek.ek(os.path.join, sickbeard.PROG_DIR, u'.git')):
+        elif os.path.isdir(ek(os.path.join, sickbeard.PROG_DIR, u'.git')):
             install_type = 'git'
         else:
             install_type = 'source'
@@ -470,7 +475,7 @@ class GitUpdateManager(UpdateManager):
         output, err, exit_status = self._run_git(self._git_path, 'fetch %s' % sickbeard.GIT_REMOTE)
 
         if not exit_status == 0:
-            logger.log(u"Unable to contact github, can't check for update", logger.ERROR)
+            logger.log(u"Unable to contact github, can't check for update", logger.WARNING)
             return
 
         # get latest commit_hash from remote
@@ -566,7 +571,7 @@ class GitUpdateManager(UpdateManager):
 
         # remove untracked files and performs a hard reset on git branch to avoid update issues
         if sickbeard.GIT_RESET:
-            self.clean()
+            #self.clean() # This is removing user data and backups
             self.reset()
 
         if self.branch == self._find_installed_branch():
@@ -575,13 +580,21 @@ class GitUpdateManager(UpdateManager):
             output, err, exit_status = self._run_git(self._git_path, 'checkout -f ' + self.branch)  # @UnusedVariable
 
         if exit_status == 0:
-            self._find_installed_version()
+            output, err, exit_status = self._run_git(self._git_path, 'submodule update --init --recursive')
 
-            # Notify update successful
-            if sickbeard.NOTIFY_ON_UPDATE:
-                notifiers.notify_git_update(sickbeard.CUR_COMMIT_HASH if sickbeard.CUR_COMMIT_HASH else "")
+            if exit_status == 0:
+                self._find_installed_version()
+                sickbeard.GIT_NEWVER = True
 
-            return True
+                # Notify update successful
+                if sickbeard.NOTIFY_ON_UPDATE:
+                    notifiers.notify_git_update(sickbeard.CUR_COMMIT_HASH if sickbeard.CUR_COMMIT_HASH else "")
+
+                return True
+
+            else:
+                return False
+
         else:
             return False
 
@@ -616,6 +629,8 @@ class GitUpdateManager(UpdateManager):
 
     def update_remote_origin(self):
         self._run_git(self._git_path, 'config remote.%s.url %s' % (sickbeard.GIT_REMOTE, sickbeard.GIT_REMOTE_URL))
+        if sickbeard.GIT_USERNAME:
+            self._run_git(self._git_path, 'config remote.%s.pushurl %s' % (sickbeard.GIT_REMOTE, sickbeard.GIT_REMOTE_URL.replace(sickbeard.GIT_ORG, sickbeard.GIT_USERNAME)))
 
 class SourceUpdateManager(UpdateManager):
     def __init__(self):
@@ -629,6 +644,8 @@ class SourceUpdateManager(UpdateManager):
         self._cur_commit_hash = sickbeard.CUR_COMMIT_HASH
         self._newest_commit_hash = None
         self._num_commits_behind = 0
+
+        self.session=requests.Session()
 
     def _find_installed_branch(self):
         if sickbeard.CUR_COMMIT_BRANCH == "":
@@ -741,7 +758,7 @@ class SourceUpdateManager(UpdateManager):
 
         try:
             # prepare the update dir
-            sr_update_dir = ek.ek(os.path.join, sickbeard.PROG_DIR, u'sr-update')
+            sr_update_dir = ek(os.path.join, sickbeard.PROG_DIR, u'sr-update')
 
             if os.path.isdir(sr_update_dir):
                 logger.log(u"Clearing out update folder " + sr_update_dir + " before extracting")
@@ -753,13 +770,13 @@ class SourceUpdateManager(UpdateManager):
             # retrieve file
             logger.log(u"Downloading update from " + repr(tar_download_url))
             tar_download_path = os.path.join(sr_update_dir, u'sr-update.tar')
-            urllib.urlretrieve(tar_download_url, tar_download_path)
+            helpers.download_file(tar_download_url, tar_download_path, session=self.session)
 
-            if not ek.ek(os.path.isfile, tar_download_path):
+            if not ek(os.path.isfile, tar_download_path):
                 logger.log(u"Unable to retrieve new version from " + tar_download_url + ", can't update", logger.WARNING)
                 return False
 
-            if not ek.ek(tarfile.is_tarfile, tar_download_path):
+            if not ek(tarfile.is_tarfile, tar_download_path):
                 logger.log(u"Retrieved version from " + tar_download_url + " is corrupt, can't update", logger.ERROR)
                 return False
 

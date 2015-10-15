@@ -17,6 +17,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
 import httplib
 import urllib, urllib2
 import time
@@ -24,24 +25,24 @@ import time
 import sickbeard
 from sickbeard import logger
 from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
-from sickbeard.exceptions import ex
+from sickrage.helper.exceptions import ex
 
 API_URL = "https://api.pushover.net/1/messages.json"
 
-
+# pylint: disable=W0232,C1001
 class PushoverNotifier:
     def test_notify(self, userKey=None, apiKey=None):
-        return self._notifyPushover("This is a test notification from SickRage", 'Test', userKey, apiKey, force=True)
+        return self._notifyPushover("This is a test notification from SickRage", 'Test', userKey=userKey, apiKey=apiKey, force=True)
 
     def _sendPushover(self, msg, title, sound=None, userKey=None, apiKey=None):
         """
         Sends a pushover notification to the address provided
-        
+
         msg: The message to send (unicode)
         title: The title of the message
-        userKey: The pushover user id to send the message to (or to subscribe with)
         sound: The notification sound to use
-        
+        userKey: The pushover user id to send the message to (or to subscribe with)
+        apiKey: The pushover api key to use
         returns: True if the message succeeded, False otherwise
         """
 
@@ -62,8 +63,7 @@ class PushoverNotifier:
         # send the request to pushover
         try:
             if sickbeard.PUSHOVER_SOUND != "default":
-                args = {
-                        "token": apiKey,
+                args = {"token": apiKey,
                         "user": userKey,
                         "title": title.encode('utf-8'),
                         "message": msg.encode('utf-8'),
@@ -74,8 +74,7 @@ class PushoverNotifier:
                        }
             else:
                 # sound is default, so don't send it
-                args = {
-                        "token": apiKey,
+                args = {"token": apiKey,
                         "user": userKey,
                         "title": title.encode('utf-8'),
                         "message": msg.encode('utf-8'),
@@ -108,7 +107,7 @@ class PushoverNotifier:
             elif e.code == 401:
 
                 #HTTP status 401 if the user doesn't have the service added
-                subscribeNote = self._sendPushover(msg, title, userKey, apiKey)
+                subscribeNote = self._sendPushover(msg, title, sound=sound, userKey=userKey, apiKey=apiKey)
                 if subscribeNote:
                     logger.log("Subscription sent", logger.DEBUG)
                     return True
@@ -141,21 +140,22 @@ class PushoverNotifier:
     def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyPushover(title, ep_name + ": " + lang)
-            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_PUSHOVER:
-            update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title=notifyStrings[NOTIFY_GIT_UPDATE]
-            self._notifyPushover(title, update_text + new_version) 
+            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
+            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            self._notifyPushover(title, update_text + new_version)
 
     def _notifyPushover(self, title, message, sound=None, userKey=None, apiKey=None, force=False):
         """
-        Sends a pushover notification based on the provided info or SB config
+        Sends a pushover notification based on the provided info or SR config
 
         title: The title of the notification to send
         message: The message string to send
-        userKey: The userKey to send the notification to 
         sound: The notification sound to use
+        userKey: The userKey to send the notification to
+        apiKey: The apiKey to use to send the notification
         force: Enforce sending, for instance for testing
         """
 
@@ -165,7 +165,7 @@ class PushoverNotifier:
 
         logger.log("Sending notification for " + message, logger.DEBUG)
 
-        return self._sendPushover(message, title, userKey, apiKey)
+        return self._sendPushover(message, title, sound=sound, userKey=userKey, apiKey=apiKey)
 
 
 notifier = PushoverNotifier

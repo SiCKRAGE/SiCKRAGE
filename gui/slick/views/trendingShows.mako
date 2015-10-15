@@ -8,64 +8,11 @@
     from sickbeard import sbdatetime
     from sickbeard.helpers import anon_url
 %>
+<%block name="metas">
+<meta data-var="sickbeard.SORT_ARTICLE" data-content="${sickbeard.SORT_ARTICLE}">
+</%block>
 <%block name="scripts">
-<script type="text/javascript">
-$(document).ready(function(){
-    // initialise combos for dirty page refreshes
-    $('#showsort').val('original');
-    $('#showsortdirection').val('asc');
-
-    var $container = [$('#container')];
-    $.each($container, function (j) {
-        this.isotope({
-            itemSelector: '.trakt_show',
-            sortBy: 'original-order',
-            layoutMode: 'fitRows',
-            getSortData: {
-                name: function( itemElem ) {
-                    var name = $( itemElem ).attr('data-name') || '';
-% if not sickbeard.SORT_ARTICLE:
-                    name = name.replace(/^(The|A|An)\s/i, '');
-% endif
-                    return name.toLowerCase();
-                },
-                rating: '[data-rating] parseInt',
-                votes: '[data-votes] parseInt',
-            }
-        });
-    });
-
-    $('#showsort').on( 'change', function() {
-        var sortCriteria;
-        switch (this.value) {
-            case 'original':
-                sortCriteria = 'original-order'
-                break;
-            case 'rating':
-                /* randomise, else the rating_votes can already
-                 * have sorted leaving this with nothing to do.
-                 */
-                $('#container').isotope({sortBy: 'random'});
-                sortCriteria = 'rating';
-                break;
-            case 'rating_votes':
-                sortCriteria = ['rating', 'votes'];
-                break;
-            case 'votes':
-                sortCriteria = 'votes';
-                break;
-            default:
-                sortCriteria = 'name'
-                break;
-        }
-        $('#container').isotope({sortBy: sortCriteria});
-    });
-
-    $('#showsortdirection').on( 'change', function() {
-        $('#container').isotope({sortAscending: ('asc' == this.value)});
-    });
-});
-</script>
+<script type="text/javascript" src="${srRoot}/js/new/trendingShows.js"></script>
 </%block>
 <%block name="content">
 <div id="container">
@@ -88,12 +35,12 @@ $(document).ready(function(){
             </div>
 
         <div class="clearfix">
-            <p>${int(cur_show['show']['rating']*10)}% <img src="${sbRoot}/images/heart.png"></p>
+            <p>${int(cur_show['show']['rating']*10)}% <img src="${srRoot}/images/heart.png"></p>
             <i>${cur_show['show']['votes']} votes</i>
             <div class="traktShowTitleIcons">
-                <a href="${sbRoot}/home/addShows/addTraktShow?indexer_id=${cur_show['show']['ids']['tvdb']}&amp;showName=${cur_show['show']['title']}" class="btn btn-xs">Add Show</a>
+                <a href="${srRoot}/home/addShows/addTraktShow?indexer_id=${cur_show['show']['ids']['tvdb']}&amp;showName=${cur_show['show']['title']}" class="btn btn-xs">Add Show</a>
                 % if blacklist:
-                <a href="${sbRoot}/home/addShows/addShowToBlacklist?indexer_id=${cur_show['show']['ids']['tvdb'] or cur_show['show']['ids']['tvrage']}" class="btn btn-xs">Remove Show</a>
+                <a href="${srRoot}/home/addShows/addShowToBlacklist?indexer_id=${cur_show['show']['ids']['tvdb'] or cur_show['show']['ids']['tvrage']}" class="btn btn-xs">Remove Show</a>
                 % endif
             </div>
         </div>

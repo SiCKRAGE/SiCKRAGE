@@ -5,70 +5,9 @@
     from sickbeard.common import statusStrings
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${sbRoot}/js/lib/bootbox.min.js?${sbPID}"></script>
-<script type="text/javascript" charset="utf-8">
-$.tablesorter.addParser({
-    id: 'showNames',
-    is: function(s) {
-        return false;
-    },
-    format: function(s) {
-        % if not sickbeard.SORT_ARTICLE:
-            return (s || '').replace(/^(The|A|An)\s/i,'');
-        % else:
-            return (s || '');
-        % endif
-    },
-    type: 'text'
-});
-$.tablesorter.addParser({
-    id: 'quality',
-    is: function(s) {
-        return false;
-    },
-    format: function(s) {
-        return s.replace('hd1080p',5).replace('hd720p',4).replace('hd',3).replace('sd',2).replace('any',1).replace('best',0).replace('custom',7);
-    },
-    type: 'numeric'
-});
-
-$(document).ready(function(){
-    $("#massUpdateTable:has(tbody tr)").tablesorter({
-        sortList: [[1,0]],
-        textExtraction: {
-            2: function(node) { return $(node).find("span").text().toLowerCase(); },
-            3: function(node) { return $(node).find("img").attr("alt"); },
-            4: function(node) { return $(node).find("img").attr("alt"); },
-            5: function(node) { return $(node).find("img").attr("alt"); },
-            6: function(node) { return $(node).find("img").attr("alt"); },
-            7: function(node) { return $(node).find("img").attr("alt"); },
-            8: function(node) { return $(node).find("img").attr("alt"); },
-        },
-        widgets: ['zebra'],
-        headers: {
-            0: { sorter: false},
-            1: { sorter: 'showNames'},
-            2: { sorter: 'quality'},
-            3: { sorter: 'sports'},
-            4: { sorter: 'scene'},
-            5: { sorter: 'anime'},
-            6: { sorter: 'flatfold'},
-            7: { sorter: 'paused'},
-            8: { sorter: 'subtitle'},
-            9: { sorter: 'default_ep_status'},
-           10: { sorter: 'status'},
-           11: { sorter: false},
-           12: { sorter: false},
-           13: { sorter: false},
-           14: { sorter: false},
-           15: { sorter: false},
-           16: { sorter: false},
-           17: { sorter: false}
-        }
-    });
-});
-</script>
-<script type="text/javascript" src="${sbRoot}/js/massUpdate.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/lib/bootbox.min.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/new/manage.js"></script>
+<script type="text/javascript" src="${srRoot}/js/massUpdate.js?${sbPID}"></script>
 </%block>
 <%block name="content">
 <%namespace file="/inc_defs.mako" import="renderQualityPill"/>
@@ -162,14 +101,14 @@ $(document).ready(function(){
         <% curRemove = "<input type=\"checkbox\" class=\"removeCheck\" id=\"remove-"+str(curShow.indexerid)+"\" "+curRemove_disabled+"/>" %>
         <tr>
             <td align="center"><input type="checkbox" class="editCheck" id="edit-${curShow.indexerid}" /></td>
-            <td class="tvShow"><a href="${sbRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a></td>
-            <td align="center">${renderQualityPill(curShow.quality)}</td>
-            <td align="center"><img src="${sbRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_sports) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${sbRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_scene) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${sbRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_anime) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${sbRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.flatten_folders) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${sbRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.paused) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${sbRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.subtitles) == 1]} width="16" height="16" /></td>
+            <td class="tvShow"><a href="${srRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a></td>
+            <td align="center">${renderQualityPill(curShow.quality, showTitle=True)}</td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_sports) == 1]} width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_scene) == 1]} width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_anime) == 1]} width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.flatten_folders) == 1]} width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.paused) == 1]} width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.subtitles) == 1]} width="16" height="16" /></td>
             <td align="center">${statusStrings[curShow.default_ep_status]}</td>
             <td align="center">${curShow.status}</td>
             <td align="center">${curUpdate}</td>

@@ -33,7 +33,6 @@ from sickbeard import db
 from sickbeard import helpers
 from sickbeard import classes
 from sickbeard.helpers import sanitizeSceneName
-from sickbeard.exceptions import ex
 
 
 class FNTProvider(generic.TorrentProvider):
@@ -41,6 +40,7 @@ class FNTProvider(generic.TorrentProvider):
         generic.TorrentProvider.__init__(self, "FNT")
 
         self.supportsBacklog = True
+        self.public = False
         self.enabled = False
         self.username = None
         self.password = None
@@ -152,6 +152,10 @@ class FNTProvider(generic.TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
+        # check for auth
+        if not self._doLogin():
+            return results
+
         for mode in search_strings.keys():
             for search_string in search_strings[mode]:
                 logger.log(u"Search string: " + search_string, logger.DEBUG)
@@ -201,6 +205,7 @@ class FNTProvider(generic.TorrentProvider):
 
                                     #Filter unseeded torrent
                                     if not seeders or seeders < self.minseed or leechers < self.minleech:
+                                        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
                                         continue
 
                                     item = title, download_url , id, seeders, leechers

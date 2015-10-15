@@ -1,15 +1,15 @@
 $(document).ready(function(){
-    var loading = '<img src="' + sbRoot + '/images/loading16' + themeSpinner + '.gif" height="16" width="16" />';
+    var loading = '<img src="' + srRoot + '/images/loading16' + themeSpinner + '.gif" height="16" width="16" />';
 
     function toggle_torrent_title(){
-        if ($('#use_torrents').prop('checked'))
+        if ($('#use_torrents').prop('checked')){
             $('#no_torrents').show();
-        else
+        } else {
             $('#no_torrents').hide();
+        }
     }
 
     $.fn.nzb_method_handler = function() {
-
         var selectedProvider = $('#nzb_method :selected').val(),
             blackhole_settings = '#blackhole_settings',
             sabnzbd_settings = '#sabnzbd_settings',
@@ -32,29 +32,29 @@ $(document).ready(function(){
             $(testSABnzbd).show();
             $(testSABnzbd_result).show();
         }
-    }
+    };
 
     $.fn.rtorrent_scgi = function(){
-    	var selectedProvider = $('#torrent_method :selected').val();
-    	
-    	if ('rtorrent' == selectedProvider) {
-    		var hostname = $('#torrent_host').prop('value');
-    		var isMatch = hostname.substr(0, 7) == "scgi://";
-    		
-    		if (isMatch) {
-    			$('#torrent_username_option').hide();
-    			$('#torrent_username').prop('value', '');
-        		$('#torrent_password_option').hide();
-    			$('#torrent_password').prop('value', '');
-    			$('#torrent_auth_type_option').hide();
-    			$("#torrent_auth_type option[value=none]").attr('selected', 'selected');
-    		} else {
-    			$('#torrent_username_option').show();
-        		$('#torrent_password_option').show();
-        		$('#torrent_auth_type_option').show();
-    		}
-    	}
-    }
+        var selectedProvider = $('#torrent_method :selected').val();
+
+        if ('rtorrent' == selectedProvider) {
+            var hostname = $('#torrent_host').prop('value');
+            var isMatch = hostname.substr(0, 7) == "scgi://";
+
+            if (isMatch) {
+                $('#torrent_username_option').hide();
+                $('#torrent_username').prop('value', '');
+                $('#torrent_password_option').hide();
+                $('#torrent_password').prop('value', '');
+                $('#torrent_auth_type_option').hide();
+                $("#torrent_auth_type option[value=none]").attr('selected', 'selected');
+            } else {
+                $('#torrent_username_option').show();
+                $('#torrent_password_option').show();
+                $('#torrent_auth_type_option').show();
+            }
+        }
+    };
 
     $.fn.torrent_method_handler = function() {
 
@@ -69,7 +69,7 @@ $(document).ready(function(){
             directory = ' directory',
             client = '',
             option_panel = '#options_torrent_blackhole';
-            rpcurl = ' RPC URL'
+            rpcurl = ' RPC URL';
 
         if ('blackhole' != selectedProvider) {
             var label_warning_deluge = '#label_warning_deluge',
@@ -103,7 +103,7 @@ $(document).ready(function(){
             $(path_synology).hide();
             $(torrent_paused_option).show();
             $(torrent_rpcurl_option).hide();
-            $(this).rtorrent_scgi
+            $(this).rtorrent_scgi();
 
             if ('utorrent' == selectedProvider) {
                 client = 'uTorrent';
@@ -175,7 +175,7 @@ $(document).ready(function(){
             option_panel = '#options_torrent_clients';
         }
         $(option_panel).show();
-    }
+    };
 
     $('#nzb_method').change($(this).nzb_method_handler);
 
@@ -188,8 +188,10 @@ $(document).ready(function(){
         var sab_password = $('#sab_password').val();
         var sab_apiKey = $('#sab_apikey').val();
 
-        $.get(sbRoot + '/home/testSABnzbd', {'host': sab_host, 'username': sab_username, 'password': sab_password, 'apikey': sab_apiKey},
-        function (data){ $('#testSABnzbd_result').html(data); });
+        $.get(srRoot + '/home/testSABnzbd', {'host': sab_host, 'username': sab_username, 'password': sab_password, 'apikey': sab_apiKey},
+        function(data){
+            $('#testSABnzbd_result').html(data);
+        });
     });
 
 
@@ -208,9 +210,9 @@ $(document).ready(function(){
         var torrent_username = $('#torrent_username').val();
         var torrent_password = $('#torrent_password').val();
 
-        $.get(sbRoot + '/home/testTorrent', {'torrent_method': torrent_method, 'host': torrent_host, 'username': torrent_username, 'password': torrent_password},
-        function (data){ $('#test_torrent_result').html(data); });
+        $.get(srRoot + '/home/testTorrent', {'torrent_method': torrent_method, 'host': torrent_host, 'username': torrent_username, 'password': torrent_password},
+        function(data){ $('#test_torrent_result').html(data); });
     });
-    
+
     $('#torrent_host').change($(this).rtorrent_scgi);
 });

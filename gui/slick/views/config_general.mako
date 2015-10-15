@@ -12,29 +12,10 @@
     from sickbeard.helpers import anon_url
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${sbRoot}/js/config.js?${sbPID}"></script>
-<script type="text/javascript" src="${sbRoot}/js/rootDirs.js?${sbPID}"></script>
-<script type="text/javascript" src="${sbRoot}/js/lib/bootstrap-formhelpers.min-2.3.0.js?${sbPID}"></script>
-<script type="text/javascript" charset="utf-8">
-    $(document).ready(function(){
-        if ($("input[name='proxy_setting']").val().length == 0) {
-            $("input[id='proxy_indexers']").prop('checked', false);
-            $("label[for='proxy_indexers']").hide();
-        }
-
-        $("input[name='proxy_setting']").on('input', function() {
-            if( $(this).val().length === 0 ) {
-                $("input[id='proxy_indexers']").prop('checked', false);
-                $("label[for='proxy_indexers']").hide();
-            } else {
-                $("label[for='proxy_indexers']").show();
-            }
-        });
-    });
-
-    $('#log_dir').fileBrowser({ title: 'Select log file folder location' });
-    $('#config-components').tabs();
-</script>
+<script type="text/javascript" src="${srRoot}/js/config.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/rootDirs.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/lib/bootstrap-formhelpers.min-2.3.0.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/new/config_general.js"></script>
 </%block>
 <%block name="content">
 % if not header is UNDEFINED:
@@ -95,10 +76,10 @@
                                 <span class="component-desc">
                                     <select id="default_page" name="default_page" class="form-control input-sm">
                                         <option value="news" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'news']}>News</option>
-                                        <option value="home" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'home']}>Home</option>
+                                        <option value="IRC" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'IRC']}>IRC</option>
+                                        <option value="home" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'home']}>Shows</option>
                                         <option value="comingEpisodes" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'comingEpisodes']}>Coming Episodes</option>
                                         <option value="history" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'history']}>History</option>
-                                        <option value="IRC" ${('', 'selected="selected"')[sickbeard.DEFAULT_PAGE == 'IRC']}>IRC</option>
                                     </select>
                                     <span>when launching SickRage interface</span>
                                 </span>
@@ -375,7 +356,12 @@
                                 <label for="network">
                                     <input type="radio" name="timezone_display" id="network" value="network" ${('', 'checked="checked"')[sickbeard.TIMEZONE_DISPLAY == "network"]} />Network
                                 </label>
-                                <div class="clear-left"><p>display dates and times in either your timezone or the shows network timezone</p></div>
+                                <div class="clear-left">
+                                <p>display dates and times in either your timezone or the shows network timezone</p>
+                                </div>
+                                <div class="clear-left">
+                                <p> <b>Note:</b> Use local timezone to start searching for episodes minutes after show ends (depends on your dailysearch frequency)</p>
+                                </div>
                             </span>
                         </div>
 
@@ -413,7 +399,10 @@
                                 <span class="component-desc">
                                     <input type="text" name="api_key" id="api_key" value="${sickbeard.API_KEY}" class="form-control input-sm input300" readonly="readonly" />
                                     <input class="btn btn-inline" type="button" id="generate_new_apikey" value="Generate">
-                                    <div class="clear-left"><p>used to give 3rd party programs limited access to SickRage</p></div>
+                                    <div class="clear-left">
+                                        <p>used to give 3rd party programs limited access to SickRage</p>
+                                        <p>you can try all the features of the API <a href="${srRoot}/apibuilder/">here</a></p>
+                                    </div>
                                 </span>
                             </label>
                         </div>
@@ -628,13 +617,13 @@
                                     <span class="component-desc">
 % if not sickbeard.SKIP_REMOVED_FILES:
                                         <select name="ep_default_deleted_status" id="ep_default_deleted_status" class="form-control input-sm">
-                                        % for defStatus in [ARCHIVED, IGNORED]:
+                                        % for defStatus in [SKIPPED, IGNORED]:
                                             <option value="${defStatus}" ${('', 'selected="selected"')[sickbeard.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
                                         % endfor
                                         </select>
 % else:
                                         <select name="ep_default_deleted_status" id="ep_default_deleted_status" class="form-control input-sm" disabled="disabled">
-                                        % for defStatus in [ARCHIVED, IGNORED]:
+                                        % for defStatus in [SKIPPED, IGNORED]:
                                             <option value="${defStatus}" ${('', 'selected="selected"')[sickbeard.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
                                         % endfor
                                         </select>
@@ -729,7 +718,7 @@
                             </label>
                         </div>
 
-                        <div class="field-pair">
+                        <div class="field-pair" hidden>
                             <label for="git_reset">
                                 <span class="component-title">Git reset</span>
                                 <span class="component-desc">

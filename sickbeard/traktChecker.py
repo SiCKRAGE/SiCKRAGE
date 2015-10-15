@@ -21,8 +21,6 @@ import traceback
 import datetime
 
 import sickbeard
-from sickbeard import encodingKludge as ek
-from sickbeard.exceptions import ex
 from sickbeard import logger
 from sickbeard import helpers
 from sickbeard import search_queue
@@ -31,6 +29,8 @@ from sickbeard.common import ARCHIVED
 from sickbeard.common import SKIPPED
 from sickbeard.common import UNKNOWN
 from sickbeard.common import WANTED
+from sickrage.helper.encoding import ek
+from sickrage.helper.exceptions import ex
 from common import Quality
 from libtrakt import *
 from libtrakt.exceptions import traktException
@@ -101,7 +101,7 @@ class TraktChecker():
             library = self.trakt_api.traktRequest("sync/collection/shows") or []
 
             if not library:
-                logger.log(u"Could not connect to trakt service, aborting library check", logger.ERROR)
+                logger.log(u"Could not connect to trakt service, aborting library check", logger.WARNING)
                 return
 
             if not len(library):
@@ -417,7 +417,7 @@ class TraktChecker():
                 location = None
 
             if location:
-                showPath = ek.ek(os.path.join, location, helpers.sanitizeFileName(name))
+                showPath = ek(os.path.join, location, helpers.sanitizeFileName(name))
                 dir_exists = helpers.makeDir(showPath)
                 if not dir_exists:
                     logger.log(u"Unable to create the folder " + showPath + ", can't add the show", logger.ERROR)
@@ -425,10 +425,13 @@ class TraktChecker():
                 else:
                     helpers.chmodAsParent(showPath)
 
-                sickbeard.showQueueScheduler.action.addShow(int(indexer), int(indexer_id), showPath, status,
-                                                            int(sickbeard.QUALITY_DEFAULT),
-                                                            int(sickbeard.FLATTEN_FOLDERS_DEFAULT),
-                                                            paused=sickbeard.TRAKT_START_PAUSED)
+                sickbeard.showQueueScheduler.action.addShow(int(indexer), int(indexer_id), showPath,
+                                                            default_status=status,
+                                                            quality=int(sickbeard.QUALITY_DEFAULT),
+                                                            flatten_folders=int(sickbeard.FLATTEN_FOLDERS_DEFAULT),
+                                                            paused=sickbeard.TRAKT_START_PAUSED,
+                                                            default_status_after=status,
+                                                            archive=sickbeard.ARCHIVE_DEFAULT)
             else:
                 logger.log(u"There was an error creating the show, no root directory setting found", logger.ERROR)
                 return

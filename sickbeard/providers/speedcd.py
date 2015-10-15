@@ -28,8 +28,6 @@ from sickbeard import db
 from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import show_name_helpers
-from sickbeard.exceptions import ex
-import requests
 from sickbeard.helpers import sanitizeSceneName
 
 
@@ -40,6 +38,7 @@ class SpeedCDProvider(generic.TorrentProvider):
         generic.TorrentProvider.__init__(self, "Speedcd")
 
         self.supportsBacklog = True
+        self.public = False
 
         self.enabled = False
         self.username = None
@@ -177,6 +176,7 @@ class SpeedCDProvider(generic.TorrentProvider):
                     leechers = int(torrent['leech'])
 
                     if mode != 'RSS' and (seeders < self.minseed or leechers < self.minleech):
+                        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
                         continue
 
                     if not title or not url:

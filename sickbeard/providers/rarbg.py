@@ -19,7 +19,6 @@
 
 import traceback
 import re
-import datetime
 import generic
 import datetime
 import json
@@ -34,8 +33,8 @@ from sickbeard import show_name_helpers
 from sickbeard import db
 from sickbeard import helpers
 from sickbeard import classes
-from sickbeard.exceptions import ex
 from sickbeard.indexers.indexer_config import INDEXER_TVDB
+from sickrage.helper.exceptions import ex
 
 
 class GetOutOfLoop(Exception):
@@ -49,6 +48,7 @@ class RarbgProvider(generic.TorrentProvider):
 
         self.enabled = False
         self.supportsBacklog = True
+        self.public = True
         self.ratio = None
         self.minseed = None
         self.ranked = None
@@ -82,6 +82,8 @@ class RarbgProvider(generic.TorrentProvider):
                                 self.urlOptions['format'].format(format='json')
 
         self.next_request = datetime.datetime.now()
+
+        self.headers.update({'User-Agent': USER_AGENT})
 
         self.cache = RarbgCache(self)
 

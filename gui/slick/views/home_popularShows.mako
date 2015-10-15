@@ -1,6 +1,8 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     from sickbeard.helpers import anon_url
+    import sickbeard    
+    imdb_tt = [show.imdbid for show in sickbeard.showList if show.imdbid]
 %>
 <%block name="content">
 <h2>Popular Shows</h2>
@@ -16,7 +18,7 @@
     % for cur_result in popular_shows:
         <div class="popularShow">
             <div class="left">
-                <img class="coverImage" src="${sbRoot}/cache/${cur_result['image_path']}" />
+                <img class="coverImage" src="${srRoot}/cache/${cur_result['image_path']}" />
             </div>
             <div class="right">
                 <h3>${cur_result['name']}</h3>
@@ -27,8 +29,12 @@
 
                 <p>${cur_result['outline']}<span class="year"> - Released ${cur_result['year']}<span></p>
                 <span class="imdb_url"><a href="${anon_url(cur_result['imdb_url'])}">View on IMDB</a></span>&nbsp;&nbsp;|&nbsp;&nbsp;
-                <span class="imdb_sickrage_search"><a href="${sbRoot}/home/addShows/newShow/?search_string=${cur_result['name']}">
+                % if cur_result['imdb_tt'] not in imdb_tt:
+                <span class="imdb_sickrage_search"><a href="${srRoot}/home/addShows/newShow/?search_string=${cur_result['name']}">
                     Add Show</a></span>
+                % else:
+                <span> Already added </span>
+                % endif    
 
             </div>
             <br style="clear:both" />

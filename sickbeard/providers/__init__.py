@@ -56,6 +56,11 @@ __all__ = ['womble',
            'xthor',
            'scenetime',
            'btdigg',
+           'strike',
+           'transmitthenet',
+           'tvchaosuk',
+           'torrentproject',
+           'extratorrent'
 ]
 
 import sickbeard

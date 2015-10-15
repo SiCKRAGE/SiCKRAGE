@@ -1,5 +1,6 @@
 # Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://sickrage.tv
+# Git: https://github.com/SiCKRAGETV/SickRage.git
 #
 # This file is part of SickRage.
 #
@@ -28,7 +29,7 @@ import sickbeard
 
 from common import SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, Quality, SEASON_RESULT, MULTI_EP_RESULT
 
-from sickbeard import logger, db, show_name_helpers, exceptions, helpers
+from sickbeard import logger, db, show_name_helpers, helpers
 from sickbeard import sab
 from sickbeard import nzbget
 from sickbeard import clients
@@ -36,19 +37,19 @@ from sickbeard import history
 from sickbeard import notifiers
 from sickbeard import nzbSplitter
 from sickbeard import ui
-from sickbeard import encodingKludge as ek
 from sickbeard import failed_history
-from sickbeard.exceptions import ex
 from sickbeard.providers.generic import GenericProvider
 from sickbeard import common
+from sickrage.helper.encoding import ek
+from sickrage.helper.exceptions import AuthException, ex
+
 
 def _downloadResult(result):
     """
     Downloads a result to the appropriate black hole folder.
 
-    Returns a bool representing success.
-
-    result: SearchResult instance to download.
+    :param result: SearchResult instance to download.
+    :return: boolean, True on success
     """
 
     resProvider = result.provider
@@ -63,7 +64,7 @@ def _downloadResult(result):
     elif result.resultType == "nzbdata":
 
         # get the final file path to the nzb
-        fileName = ek.ek(os.path.join, sickbeard.NZB_DIR, result.name + ".nzb")
+        fileName = ek(os.path.join, sickbeard.NZB_DIR, result.name + ".nzb")
 
         logger.log(u"Saving NZB to " + fileName)
 
@@ -71,7 +72,7 @@ def _downloadResult(result):
 
         # save the data to disk
         try:
-            with ek.ek(open, fileName, 'w') as fileOut:
+            with ek(open, fileName, 'w') as fileOut:
                 fileOut.write(result.extraInfo[0])
 
             helpers.chmodAsParent(fileName)
@@ -92,10 +93,9 @@ def snatchEpisode(result, endStatus=SNATCHED):
     Contains the internal logic necessary to actually "snatch" a result that
     has been found.
 
-    Returns a bool representing success.
-
-    result: SearchResult instance to be snatched.
-    endStatus: the episode status that should be used for the episode object once it's snatched.
+    :param result: SearchResult instance to be snatched.
+    :param endStatus: the episode status that should be used for the episode object once it's snatched.
+    :return: boolean, True on success
     """
 
     if result is None:
@@ -184,6 +184,13 @@ def snatchEpisode(result, endStatus=SNATCHED):
 
 
 def pickBestResult(results, show):
+    """
+    Find the best result out of a list of search results for a show
+
+    :param results: list of result objects
+    :param show: Shows we check for
+    :return: best result object
+    """
     results = results if isinstance(results, list) else [results]
 
     logger.log(u"Picking the best result out of " + str([x.name for x in results]), logger.DEBUG)
@@ -235,9 +242,9 @@ def pickBestResult(results, show):
 
         if not bestResult:
             bestResult = cur_result
-        elif cur_result.quality in bestQualities and (bestResult.quality < cur_result.quality or bestResult not in bestQualities):
+        elif cur_result.quality in bestQualities and (bestResult.quality < cur_result.quality or bestResult.quality not in bestQualities):
             bestResult = cur_result
-        elif cur_result.quality in anyQualities and bestResult not in bestQualities and bestResult.quality < cur_result.quality:
+        elif cur_result.quality in anyQualities and bestResult.quality not in bestQualities and bestResult.quality < cur_result.quality:
             bestResult = cur_result
         elif bestResult.quality == cur_result.quality:
             if "proper" in cur_result.name.lower() or "repack" in cur_result.name.lower():
@@ -262,7 +269,6 @@ def isFinalResult(result):
 
     If the result is the highest quality in both the any/best quality lists then this function
     returns True, if not then it's False
-
     """
 
     logger.log(u"Checking if we should keep searching after we've found " + result.name, logger.DEBUG)
@@ -311,6 +317,12 @@ def isFirstBestMatch(result):
     return False
 
 def wantedEpisodes(show, fromDate):
+    """
+    Get a list of episodes that we want to download
+    :param show: Show these episodes are from
+    :param fromDate: Search from a certain date
+    :return: list of wanted episodes
+    """
 
     anyQualities, bestQualities = common.Quality.splitQuality(show.quality) # @UnusedVariable
     allQualities = list(set(anyQualities + bestQualities))
@@ -341,6 +353,11 @@ def wantedEpisodes(show, fromDate):
     return wanted
 
 def searchForNeededEpisodes():
+    """
+    Check providers for details on wanted episodes
+
+    :return: episodes we have a search hit for
+    """
     foundResults = {}
 
     didSearch = False
@@ -373,7 +390,7 @@ def searchForNeededEpisodes():
         curFoundResults = {}
         try:
             curFoundResults = curProvider.searchRSS(episodes)
-        except exceptions.AuthException, e:
+        except AuthException, e:
             logger.log(u"Authentication error: " + ex(e), logger.ERROR)
             continue
         except Exception, e:
@@ -413,6 +430,15 @@ def searchForNeededEpisodes():
 
 
 def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
+    """
+    Walk providers for information on shows
+
+    :param show: Show we are looking for
+    :param episodes: Episodes we hope to find
+    :param manualSearch: Boolean, is this a manual search?
+    :param downCurQuality: Boolean, should we redownload currently avaialble quality file
+    :return: results for search
+    """
     foundResults = {}
     finalResults = []
 
@@ -463,7 +489,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
 
             try:
                 searchResults = curProvider.findSearchResults(show, episodes, search_mode, manualSearch, downCurQuality)
-            except exceptions.AuthException, e:
+            except AuthException, e:
                 logger.log(u"Authentication error: " + ex(e), logger.ERROR)
                 break
             except Exception, e:
@@ -595,7 +621,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
 
                 logger.log(u"Seeing if we want to bother with multi-episode result " + _multiResult.name, logger.DEBUG)
 
-		# Filter result by ignore/required/whitelist/blacklist/quality, etc
+                # Filter result by ignore/required/whitelist/blacklist/quality, etc
                 multiResult = pickBestResult(_multiResult, show)
                 if not multiResult:
                     continue

@@ -23,13 +23,15 @@ import os.path
 
 from sickbeard import db, common, helpers, logger
 
-from sickbeard import encodingKludge as ek
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
+from sickrage.helper.common import dateTimeFormat
+from sickrage.helper.encoding import ek
 
-from babelfish import language_converters
+from babelfish import language_converters, Language
 
 MIN_DB_VERSION = 9  # oldest db version we support migrating from
 MAX_DB_VERSION = 42
+
 
 class MainSanityCheck(db.DBSanityCheck):
     def check(self):
@@ -237,7 +239,9 @@ class MainSanityCheck(db.DBSanityCheck):
 
         sqlResults = self.connection.select(
             "SELECT subtitles, episode_id FROM tv_episodes WHERE subtitles != '' AND subtitles_lastsearch < ?;",
-                [datetime.datetime(2015, 7, 15, 17, 20, 44, 326380).strftime("%Y-%m-%d %H:%M:%S")])
+                [datetime.datetime(2015, 7, 15, 17, 20, 44, 326380).strftime(dateTimeFormat)])
+
+        validLanguages = [Language.fromopensubtitles(language).opensubtitles for language in language_converters['opensubtitles'].codes if len(language) == 3]
 
         if not sqlResults:
             return
@@ -249,7 +253,7 @@ class MainSanityCheck(db.DBSanityCheck):
                 (sqlResult['episode_id'], sqlResult['subtitles']), logger.DEBUG)
 
             for subcode in sqlResult['subtitles'].split(','):
-                if not len(subcode) is 3 or not subcode in language_converters['opensubtitles'].codes:
+                if not len(subcode) is 3 or not subcode in validLanguages:
                     logger.log("Fixing subtitle codes for episode_id: %s, invalid code: %s" %
                         (sqlResult['episode_id'], subcode), logger.DEBUG)
                     continue
@@ -257,10 +261,11 @@ class MainSanityCheck(db.DBSanityCheck):
                 langs.append(subcode)
 
             self.connection.action("UPDATE tv_episodes SET subtitles = ?, subtitles_lastsearch = ? WHERE episode_id = ?;",
-                [','.join(langs), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), sqlResult['episode_id']])
+                [','.join(langs), datetime.datetime.now().strftime(dateTimeFormat), sqlResult['episode_id']])
 
     def fix_show_nfo_lang(self):
         self.connection.action("UPDATE tv_shows SET lang = '' WHERE lang = 0 or lang = '0'")
+
 
 def backupDatabase(version):
     logger.log(u"Backing up database before upgrade")
@@ -343,8 +348,8 @@ class AddSizeAndSceneNameFields(InitialSchema):
                 continue
 
             # if there is no size yet then populate it for us
-            if (not cur_ep["file_size"] or not int(cur_ep["file_size"])) and ek.ek(os.path.isfile, cur_ep["location"]):
-                cur_size = ek.ek(os.path.getsize, cur_ep["location"])
+            if (not cur_ep["file_size"] or not int(cur_ep["file_size"])) and ek(os.path.isfile, cur_ep["location"]):
+                cur_size = ek(os.path.getsize, cur_ep["location"])
                 self.connection.action("UPDATE tv_episodes SET file_size = ? WHERE episode_id = ?",
                                        [cur_size, int(cur_ep["episode_id"])])
 
@@ -363,7 +368,7 @@ class AddSizeAndSceneNameFields(InitialSchema):
                 continue
 
             nzb_name = cur_result["resource"]
-            file_name = ek.ek(os.path.basename, download_results[0]["resource"])
+            file_name = ek(os.path.basename, download_results[0]["resource"])
 
             # take the extension off the filename, it's not needed
             if '.' in file_name:
@@ -408,7 +413,7 @@ class AddSizeAndSceneNameFields(InitialSchema):
         logger.log(u"Adding release name to all episodes with obvious scene filenames")
         for cur_result in empty_results:
 
-            ep_file_name = ek.ek(os.path.basename, cur_result["location"])
+            ep_file_name = ek(os.path.basename, cur_result["location"])
             ep_file_name = os.path.splitext(ep_file_name)[0]
 
             # only want to find real scene names here so anything with a space in it is out
@@ -970,7 +975,7 @@ class AddAnimeBlacklistWhitelist(AddSceneAbsoluteNumbering):
 
         self.incDBVersion()
 
-class AddSceneAbsoluteNumbering(AddAnimeBlacklistWhitelist):
+class AddSceneAbsoluteNumbering2(AddAnimeBlacklistWhitelist):
     def test(self):
         return self.checkDBVersion() >= 36
 
@@ -982,7 +987,7 @@ class AddSceneAbsoluteNumbering(AddAnimeBlacklistWhitelist):
 
         self.incDBVersion()
 
-class AddXemRefresh(AddSceneAbsoluteNumbering):
+class AddXemRefresh(AddSceneAbsoluteNumbering2):
     def test(self):
         return self.checkDBVersion() >= 37
 

@@ -32,14 +32,13 @@ from hachoir_parser import createParser
 
 import sickbeard
 from sickbeard import helpers, classes, logger, db
-from sickbeard.common import MULTI_EP_RESULT, SEASON_RESULT, USER_AGENT
+from sickbeard.common import MULTI_EP_RESULT, SEASON_RESULT
 from sickbeard import tvcache
-from sickbeard import encodingKludge as ek
-from sickbeard.exceptions import ex
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 from sickbeard.common import Quality
 from sickbeard.common import user_agents
-
+from sickrage.helper.encoding import ek
+from sickrage.helper.exceptions import ex
 
 
 class GenericProvider:
@@ -56,6 +55,7 @@ class GenericProvider:
         self.proxyGlypeProxySSLwarning = None
         self.urls = {}
         self.url = ''
+        self.public = True
 
         self.show = None
 
@@ -78,12 +78,12 @@ class GenericProvider:
         self.headers = {'User-Agent': user_agents[0]}
 
         self.btCacheURLS = [
-                'http://torcache.net/torrent/{torrent_hash}.torrent',
-                'http://thetorrent.org/torrent/{torrent_hash}.torrent',
-                'http://btdig.com/torrent/{torrent_hash}.torrent',
-                #'http://torrage.com/torrent/{torrent_hash}.torrent',
-                #'http://itorrents.org/torrent/{torrent_hash}.torrent',
-            ]
+            'http://torcache.net/torrent/{torrent_hash}.torrent',
+            'http://thetorrent.org/torrent/{torrent_hash}.torrent',
+            'http://btdig.com/torrent/{torrent_hash}.torrent',
+            # 'http://torrage.com/torrent/{torrent_hash}.torrent',
+            # 'http://itorrents.org/torrent/{torrent_hash}.torrent',
+        ]
 
         shuffle(self.btCacheURLS)
 
@@ -92,7 +92,7 @@ class GenericProvider:
 
     @staticmethod
     def makeID(name):
-        return re.sub("[^\w\d_]", "_", name.strip().lower())
+        return re.sub(r"[^\w\d_]", "_", name.strip().lower())
 
     def imageName(self):
         return self.getID() + '.png'
@@ -156,7 +156,7 @@ class GenericProvider:
         filename = u''
         if result.url.startswith('magnet'):
             try:
-                torrent_hash = re.findall('urn:btih:([\w]{32,40})', result.url)[0].upper()
+                torrent_hash = re.findall(r'urn:btih:([\w]{32,40})', result.url)[0].upper()
 
                 try:
                     torrent_name = re.findall('dn=([^&]+)', result.url)[0]
@@ -168,25 +168,24 @@ class GenericProvider:
 
                 if not torrent_hash:
                     logger.log("Unable to extract torrent hash from magnet: " + ex(result.url), logger.ERROR)
-                    return (urls, filename)
+                    return urls, filename
 
                 urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btCacheURLS]
             except:
                 logger.log("Unable to extract torrent hash or name from magnet: " + ex(result.url), logger.ERROR)
-                return (urls, filename)
+                return urls, filename
         else:
             urls = [result.url]
 
         if self.providerType == GenericProvider.TORRENT:
-            filename = ek.ek(os.path.join, sickbeard.TORRENT_DIR,
-                             helpers.sanitizeFileName(result.name) + '.' + self.providerType)
+            filename = ek(os.path.join, sickbeard.TORRENT_DIR,
+                          helpers.sanitizeFileName(result.name) + '.' + self.providerType)
 
         elif self.providerType == GenericProvider.NZB:
-            filename = ek.ek(os.path.join, sickbeard.NZB_DIR,
-                             helpers.sanitizeFileName(result.name) + '.' + self.providerType)
+            filename = ek(os.path.join, sickbeard.NZB_DIR,
+                          helpers.sanitizeFileName(result.name) + '.' + self.providerType)
 
-        return (urls, filename)
-
+        return urls, filename
 
     def downloadResult(self, result):
         """
@@ -207,6 +206,10 @@ class GenericProvider:
         for url in urls:
             if 'NO_DOWNLOAD_NAME' in url:
                 continue
+
+            if not self.proxy.isEnabled() and url.startswith('http'):
+                # Let's just set a referer for every .torrent/.nzb, should work as a cover-all without side-effects
+                self.headers.update({'Referer': '/'.join(url.split('/')[:3]) + '/'})
 
             logger.log(u"Downloading a result from " + self.name + " at " + url)
             if helpers.download_file(self.proxy._buildURL(url), filename, session=self.session, headers=self.headers):

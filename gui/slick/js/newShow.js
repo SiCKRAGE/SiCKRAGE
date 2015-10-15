@@ -3,17 +3,15 @@ $(document).ready(function () {
     var searchRequestXhr = null;
 
     function searchIndexers() {
-        if (!$('#nameToSearch').val().length) {
-            return;
-        }
+        if (!$('#nameToSearch').val().length) return;
 
         if (searchRequestXhr) searchRequestXhr.abort();
 
         var searchingFor = $('#nameToSearch').val().trim() + ' on ' + $('#providedIndexer option:selected').text() + ' in ' + $('#indexerLangSelect').val();
-        $('#searchResults').empty().html('<img id="searchingAnim" src="' + sbRoot + '/images/loading32' + themeSpinner + '.gif" height="32" width="32" /> searching ' + searchingFor + '...');
+        $('#searchResults').empty().html('<img id="searchingAnim" src="' + srRoot + '/images/loading32' + themeSpinner + '.gif" height="32" width="32" /> searching ' + searchingFor + '...');
 
         searchRequestXhr = $.ajax({
-            url: sbRoot + '/home/addShows/searchIndexersForShowName',
+            url: srRoot + '/home/addShows/searchIndexersForShowName',
             data: {'search_term': $('#nameToSearch').val().trim(), 'lang': $('#indexerLangSelect').val(), 'indexer': $('#providedIndexer').val()},
             timeout: parseInt($('#indexer_timeout').val(), 10) * 1000,
             dataType: 'json',
@@ -40,7 +38,7 @@ $(document).ready(function () {
 
 
                         resultStr += '<input type="radio" id="whichSeries" name="whichSeries" value="' + whichSeries.replace(/"/g, "")  + '"' + checked + ' /> ';
-                        if (data.langid && data.langid != "") {
+                        if (data.langid && data.langid !== "") {
                             resultStr += '<a href="' + anonURL + obj[2] + obj[3] + '&lid=' + data.langid + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
                         } else {
                             resultStr += '<a href="' + anonURL + obj[2] + obj[3] + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
@@ -84,7 +82,7 @@ $(document).ready(function () {
             alert('You must choose a show to continue');
             return false;
         }
-        generate_bwlist()
+        generate_bwlist();
         $('#addShowForm').submit();
     });
 
@@ -168,7 +166,7 @@ $(document).ready(function () {
 
         // if we have a show name then sanitize and use it for the dir name
         if (show_name.length) {
-            $.get(sbRoot + '/home/addShows/sanitizeFileName', {name: show_name}, function (data) {
+            $.get(srRoot + '/home/addShows/sanitizeFileName', {name: show_name}, function (data) {
                 $('#displayText').html(sample_text.replace('||', data));
             });
         // if not then it's unknown
@@ -207,8 +205,8 @@ $(document).ready(function () {
         if ($('#anime').prop('checked')) {
             $('#blackwhitelist').show();
             if (show_name) {
-                $.getJSON(sbRoot + '/home/fetch_releasegroups', {'show_name': show_name}, function (data) {
-                if (data['result'] == 'success') {
+                $.getJSON(srRoot + '/home/fetch_releasegroups', {'show_name': show_name}, function (data) {
+                if (data.result == 'success') {
                     $.each(data.groups, function(i, group) {
                         var option = $("<option>");
                         option.attr("value", group.name);
@@ -221,5 +219,5 @@ $(document).ready(function () {
         } else {
             $('#blackwhitelist').hide();
         }
-    };
+    }
 });
