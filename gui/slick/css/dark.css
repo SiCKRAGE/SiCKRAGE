@@ -490,7 +490,7 @@ td.col-checkbox {
 }
 
 /* =======================================================================
-comingEpisodes.mako
+schedule.mako
 ========================================================================== */
 
 h2.day, h2.network {
@@ -702,6 +702,11 @@ body {
 	background: -webkit-gradient(linear, left top, left bottom, from(#297AB8), to(#15528F));
 	background: -moz-linear-gradient(top,  #297AB8,  #15528F);
 	border-color: #3e3f3a;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+	background-color: #124477;
 }
 
 .navbar-default .navbar-nav > .active > a,

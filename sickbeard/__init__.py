@@ -40,7 +40,7 @@ from sickbeard.providers.generic import GenericProvider
 from sickbeard.providers import btn, newznab, womble, thepiratebay, torrentleech, kat, iptorrents, \
     omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, nextgen, speedcd, nyaatorrents, animenzb, bluetigers, cpasbien, fnt, xthor, torrentbytes, \
     frenchtorrentdb, freshontv, titansoftv, libertalia, morethantv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, binsearch, torrentproject, extratorrent, \
-    scenetime, btdigg, strike, transmitthenet, tvchaosuk, nzbto, nzbindex, nzbfriends
+    scenetime, btdigg, strike, transmitthenet, tvchaosuk, bitcannon, nzbto, nzbindex, nzbfriends
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
     naming_ep_type
 from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
@@ -138,6 +138,11 @@ GIT_PATH = None
 GIT_AUTOISSUES = False
 GIT_NEWVER = False
 DEVELOPER = False
+
+NEWS_URL = 'http://sickragetv.github.io/sickrage-news/news.md'
+NEWS_LAST_READ = None
+NEWS_LATEST = None
+NEWS_UNREAD = 0
 
 INIT_LOCK = Lock()
 started = False
@@ -547,6 +552,8 @@ TRAKT_API_URL = 'https://api-v2launch.trakt.tv/'
 
 FANART_API_KEY = '9b3afaf26f6241bdb57d6cc6bd798da7'
 
+SHOWS_RECENT = []
+
 __INITIALIZED__ = False
 
 NEWZNAB_DATA = None
@@ -602,7 +609,7 @@ def initialize(consoleLogging=True):
             AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, DEFAULT_AUTOPOSTPROCESSER_FREQUENCY, MIN_AUTOPOSTPROCESSER_FREQUENCY, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
             ANIME_SPLIT_HOME, SCENE_DEFAULT, ARCHIVE_DEFAULT, DOWNLOAD_URL, BACKLOG_DAYS, GIT_ORG, GIT_REPO, GIT_USERNAME, GIT_PASSWORD, \
-            GIT_AUTOISSUES, DEVELOPER, gh, DISPLAY_ALL_SEASONS, SSL_VERIFY
+            GIT_AUTOISSUES, DEVELOPER, gh, DISPLAY_ALL_SEASONS, SSL_VERIFY, NEWS_URL, NEWS_LAST_READ, NEWS_LATEST, NEWS_UNREAD, SHOWS_RECENT
 
         if __INITIALIZED__:
             return False
@@ -647,6 +654,8 @@ def initialize(consoleLogging=True):
         DEBUG = bool(check_setting_int(CFG, 'General', 'debug', 0))
 
         DEFAULT_PAGE = check_setting_str(CFG, 'General', 'default_page', 'home')
+        if DEFAULT_PAGE not in ('home', 'schedule', 'history', 'news', 'IRC'):
+            DEFAULT_PAGE = 'home'
 
         ACTUAL_LOG_DIR = check_setting_str(CFG, 'General', 'log_dir', 'Logs')
         LOG_DIR = os.path.normpath(os.path.join(DATA_DIR, ACTUAL_LOG_DIR))
@@ -721,13 +730,19 @@ def initialize(consoleLogging=True):
 
                 restoreCache(os.path.join(restoreDir, 'cache'), CACHE_DIR)
         except Exception as e:
-            logger.log(u"Restore: restoring cache failed: {0}".format(str(e)), logger.ERROR)
+            logger.log(u"Restore: restoring cache failed: {0}".format(ex(e)), logger.ERROR)
         finally:
             if os.path.exists(os.path.join(DATA_DIR, 'restore')):
                 try:
                     shutil.rmtree(os.path.join(DATA_DIR, 'restore'))
                 except Exception as e:
-                    logger.log(u"Restore: Unable to remove the restore directory: {0}".format(str(e)), logger.ERROR)
+                    logger.log(u"Restore: Unable to remove the restore directory: {0}".format(ex(e)), logger.ERROR)
+
+                for cleanupDir in ['mako', 'sessions', 'indexers']:
+                    try:
+                        shutil.rmtree(os.path.join(CACHE_DIR, cleanupDir))
+                    except Exception as e:
+                        logger.log(u"Restore: Unable to remove the cache/{0} directory: {1}".format(cleanupDir, ex(e)), logger.WARNING)
 
 
         GUI_NAME = check_setting_str(CFG, 'GUI', 'gui_name', 'slick')
@@ -875,6 +890,9 @@ def initialize(consoleLogging=True):
             SHOWUPDATE_HOUR = 0
 
         BACKLOG_DAYS = check_setting_int(CFG, 'General', 'backlog_days', 7)
+
+        NEWS_LAST_READ = check_setting_str(CFG, 'General', 'news_last_read', '1970-01-01')
+        NEWS_LATEST = NEWS_LAST_READ
 
         NZB_DIR = check_setting_str(CFG, 'Blackhole', 'nzb_dir', '')
         TORRENT_DIR = check_setting_str(CFG, 'Blackhole', 'torrent_dir', '')
@@ -1164,7 +1182,7 @@ def initialize(consoleLogging=True):
         DATE_PRESET = check_setting_str(CFG, 'GUI', 'date_preset', '%x')
         TIME_PRESET_W_SECONDS = check_setting_str(CFG, 'GUI', 'time_preset', '%I:%M:%S %p')
         TIME_PRESET = TIME_PRESET_W_SECONDS.replace(u":%S", u"")
-        TIMEZONE_DISPLAY = check_setting_str(CFG, 'GUI', 'timezone_display', 'network')
+        TIMEZONE_DISPLAY = check_setting_str(CFG, 'GUI', 'timezone_display', 'local')
         POSTER_SORTBY = check_setting_str(CFG, 'GUI', 'poster_sortby', 'name')
         POSTER_SORTDIR = check_setting_int(CFG, 'GUI', 'poster_sortdir', 1)
         FILTER_ROW =  bool(check_setting_int(CFG, 'GUI', 'filter_row', 1))
@@ -1210,10 +1228,15 @@ def initialize(consoleLogging=True):
                                                                      curTorrentProvider.getID() + '_proxy_url', '')
             if hasattr(curTorrentProvider, 'confirmed'):
                 curTorrentProvider.confirmed = bool(check_setting_int(CFG, curTorrentProvider.getID().upper(),
-                                                                      curTorrentProvider.getID() + '_confirmed', 0))
+                                                                      curTorrentProvider.getID() + '_confirmed', 1))
             if hasattr(curTorrentProvider, 'ranked'):
                 curTorrentProvider.ranked = bool(check_setting_int(CFG, curTorrentProvider.getID().upper(),
-                                                                      curTorrentProvider.getID() + '_ranked', 0))
+                                                                      curTorrentProvider.getID() + '_ranked', 1))
+
+            if hasattr(curTorrentProvider, 'engrelease'):
+                curTorrentProvider.engrelease = bool(check_setting_int(CFG, curTorrentProvider.getID().upper(),
+                                                                      curTorrentProvider.getID() + '_engrelease', 0))
+
             if hasattr(curTorrentProvider, 'sorting'):
                 curTorrentProvider.sorting = check_setting_str(CFG, curTorrentProvider.getID().upper(),
                                                                    curTorrentProvider.getID() + '_sorting','seeders')
@@ -1225,7 +1248,7 @@ def initialize(consoleLogging=True):
                                                              curTorrentProvider.getID() + '_ratio', '')
             if hasattr(curTorrentProvider, 'minseed'):
                 curTorrentProvider.minseed = check_setting_int(CFG, curTorrentProvider.getID().upper(),
-                                                               curTorrentProvider.getID() + '_minseed', 0)
+                                                               curTorrentProvider.getID() + '_minseed', 1)
             if hasattr(curTorrentProvider, 'minleech'):
                 curTorrentProvider.minleech = check_setting_int(CFG, curTorrentProvider.getID().upper(),
                                                                 curTorrentProvider.getID() + '_minleech', 0)
@@ -1249,7 +1272,7 @@ def initialize(consoleLogging=True):
             if hasattr(curTorrentProvider, 'enable_backlog'):
                 curTorrentProvider.enable_backlog = bool(check_setting_int(CFG, curTorrentProvider.getID().upper(),
                                                                            curTorrentProvider.getID() + '_enable_backlog',
-                                                                           1))
+                                                                           curTorrentProvider.supportsBacklog))
 
             if hasattr(curTorrentProvider, 'cat'):
                 curTorrentProvider.cat = check_setting_int(CFG, curTorrentProvider.getID().upper(),
@@ -1284,7 +1307,7 @@ def initialize(consoleLogging=True):
             if hasattr(curNzbProvider, 'enable_backlog'):
                 curNzbProvider.enable_backlog = bool(check_setting_int(CFG, curNzbProvider.getID().upper(),
                                                                        curNzbProvider.getID() + '_enable_backlog',
-                                                                       1))
+                                                                       curNzbProvider.supportsBacklog))
 
         if not os.path.isfile(CONFIG_FILE):
             logger.log(u"Unable to find '" + CONFIG_FILE + "', all settings will be default!", logger.DEBUG)
@@ -1732,6 +1755,7 @@ def save_config():
     new_config['General']['no_restart'] = int(NO_RESTART)
     new_config['General']['developer'] = int(DEVELOPER)
     new_config['General']['display_all_seasons'] = int(DISPLAY_ALL_SEASONS)
+    new_config['General']['news_last_read'] = NEWS_LAST_READ
 
     new_config['Blackhole'] = {}
     new_config['Blackhole']['nzb_dir'] = NZB_DIR
@@ -1766,6 +1790,9 @@ def save_config():
         if hasattr(curTorrentProvider, 'ranked'):
             new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID() + '_ranked'] = int(
                 curTorrentProvider.ranked)
+        if hasattr(curTorrentProvider, 'engrelease'):
+            new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID() + '_engrelease'] = int(
+                curTorrentProvider.engrelease)
         if hasattr(curTorrentProvider, 'sorting'):
             new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID() + '_sorting'] = curTorrentProvider.sorting
         if hasattr(curTorrentProvider, 'ratio'):

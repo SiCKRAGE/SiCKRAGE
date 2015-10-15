@@ -86,14 +86,14 @@
                             <input type="checkbox" name="create_missing_show_dirs" id="create_missing_show_dirs" ${('', 'checked="checked"')[bool(sickbeard.CREATE_MISSING_SHOW_DIRS)]}/>
                             <label for="create_missing_show_dirs">
                                 <span class="component-title">Create missing show directories</span>
-                                <span class="component-desc">Create missing show diretories when they get deleted</span>
+                                <span class="component-desc">Create missing show directories when they get deleted</span>
                             </label>
                         </div>
                         <div class="field-pair">
                             <input type="checkbox" name="add_shows_wo_dir" id="add_shows_wo_dir" ${('', 'checked="checked"')[bool(sickbeard.ADD_SHOWS_WO_DIR)]}/>
                             <label for="add_shows_wo_dir">
                                 <span class="component-title">Add shows without directory</span>
-                                <span class="component-desc">Add shows without creating a directory (don't recommended)</span>
+                                <span class="component-desc">Add shows without creating a directory (not recommended)</span>
                             </label>
                         </div>
                         <div class="field-pair">
@@ -101,17 +101,6 @@
                             <label for="del_rar_contents">
                                 <span class="component-title">Delete RAR contents</span>
                                 <span class="component-desc">Delete content of RAR files, even if Process Method not set to move?</span>
-                            </label>
-                        </div>
-                        <div class="field-pair">
-                            <input type="checkbox" name="skip_removed_files" id="skip_removed_files" ${('', 'checked="checked"')[bool(sickbeard.SKIP_REMOVED_FILES)]}/>
-                            <label for="skip_removed_files">
-                                <span class="component-title">Skip Remove Detection</span>
-                                <span class="component-desc">Skip detection of removed files, so they don't get set to ignored/archived?</span>
-                            </label>
-                            <label class="nocheck">
-                                <span class="component-title">&nbsp;</span>
-                                <span class="component-desc"><b>NOTE:</b> This may mean SickRage misses renames as well</span>
                             </label>
                         </div>
                         <div class="field-pair">
@@ -316,7 +305,7 @@
                                 </label>
                                 <label class="nocheck">
                                     <span class="component-title">&nbsp;</span>
-                                    <span class="component-desc"><b>NOTE:</b> Dont' forget to add quality pattern. Otherwise after post-procesing the episode will have UNKNOWN quality</span>
+                                    <span class="component-desc"><b>NOTE:</b> Don't forget to add quality pattern. Otherwise after post-procesing the episode will have UNKNOWN quality</span>
                                  </label>
                             </div>
 
