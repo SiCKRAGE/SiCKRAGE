@@ -2118,19 +2118,19 @@ class TVEpisode(object):
             for codec in codecList:
                 if codec in name.lower():
                     found_codec = codec
-                    if found_codec is codecList[0]:
+                    if found_codec == codecList[0]:
                         found_codec = 'XviD'
-                    elif found_codec is codecList[4] or codecList[7]:
+                    elif found_codec == codecList[4] or found_codec == codecList[7]:
                         found_codec = codecList[1]
-                    elif found_codec is codecList[9]:
-                        found_codec = codecList[2]
-                    elif found_codec is codecList[5] or codecList[8]:
+                    elif found_codec == codecList[6]:
                         found_codec = codecList[3]
+                    elif found_codec == codecList[5] or found_codec == codecList[8]:
+                        found_codec = codecList[2]
 
             if found_codec:
-                return found_codec
+                return " " + found_codec
             else:
-                return ""
+                return " " + codecList[1]
 
         def release_group(show, name):
             if name:
