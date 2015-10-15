@@ -140,15 +140,15 @@ class Quality:
 
     sceneQualityStrings = {NONE: "N/A",
                       UNKNOWN: "Unknown",
-                      SDTV: "HDTV x264",
-                      SDDVD: "BDRip x264",
-                      HDTV: "720p HDTV x264",
+                      SDTV: "HDTV",
+                      SDDVD: "BDRip",
+                      HDTV: "720p HDTV",
                       RAWHDTV: "COMPLETE BLURAY",
-                      FULLHDTV: "1080p HDTV x264",
-                      HDWEBDL: "720p WEB-DL x264",
-                      FULLHDWEBDL: "1080p WEB-DL x264",
-                      HDBLURAY: "720p BluRay x264",
-                      FULLHDBLURAY: "1080p BluRay x264"}
+                      FULLHDTV: "1080p HDTV",
+                      HDWEBDL: "720p WEB-DL",
+                      FULLHDWEBDL: "1080p WEB-DL",
+                      HDBLURAY: "720p BluRay",
+                      FULLHDBLURAY: "1080p BluRay"}
 
     combinedQualityStrings = {ANYHDTV: "HDTV",
                               ANYWEBDL: "WEB-DL",
