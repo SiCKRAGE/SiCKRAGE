@@ -2112,6 +2112,26 @@ class TVEpisode(object):
                 name = helpers.remove_non_release_groups(helpers.remove_extension(name))
             return name
 
+        def release_codec(name):
+            codecList = ['xvid', 'x264', 'x265', 'h264', 'x 264', 'x 265', 'h 264', 'x.264', 'x.265', 'h.264']
+            found_codec = None
+            for codec in codecList:
+                if codec in name.lower():
+                    found_codec = codec
+                    if found_codec == codecList[0]:
+                        found_codec = 'XviD'
+                    elif found_codec == codecList[4] or found_codec == codecList[7]:
+                        found_codec = codecList[1]
+                    elif found_codec == codecList[6]:
+                        found_codec = codecList[3]
+                    elif found_codec == codecList[5] or found_codec == codecList[8]:
+                        found_codec = codecList[2]
+
+            if found_codec:
+                return " " + found_codec
+            else:
+                return " " + codecList[1]
+
         def release_group(show, name):
             if name:
                 name = helpers.remove_non_release_groups(helpers.remove_extension(name))
@@ -2166,6 +2186,9 @@ class TVEpisode(object):
             '%QN': Quality.qualityStrings[epQual],
             '%Q.N': dot(Quality.qualityStrings[epQual]),
             '%Q_N': us(Quality.qualityStrings[epQual]),
+            '%SQN': Quality.sceneQualityStrings[epQual] + release_codec(self.release_name),
+            '%SQ.N': dot(Quality.sceneQualityStrings[epQual] + release_codec(self.release_name)),
+            '%SQ_N': us(Quality.sceneQualityStrings[epQual] + release_codec(self.release_name)),
             '%S': str(self.season),
             '%0S': '%02d' % self.season,
             '%E': str(self.episode),
@@ -2177,7 +2200,7 @@ class TVEpisode(object):
             '%AB': '%(#)03d' % {'#': self.absolute_number},
             '%XAB': '%(#)03d' % {'#': self.scene_absolute_number},
             '%RN': release_name(self.release_name),
-            '%RG': rel_grp[relgrp],
+            '%RG': rel_grp[relgrp].upper(),
             '%AD': str(self.airdate).replace('-', ' '),
             '%A.D': str(self.airdate).replace('-', '.'),
             '%A_D': us(str(self.airdate)),
