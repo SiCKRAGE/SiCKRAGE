@@ -397,6 +397,9 @@ class TNTVillageProvider(generic.TorrentProvider):
                                     new_title = search_show + ep_params
                                     title = new_title
 
+                                if not all([title, download_url]):
+                                    continue
+
                                 if self._is_season_pack(title):
                                     title = re.sub(r'([Ee][\d{1,2}\-?]+)', '', title)
 
