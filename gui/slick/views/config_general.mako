@@ -275,6 +275,15 @@
                             </label>
                         </div>
                         <div class="field-pair">
+                            <label for="count_skipped_episodes">
+                                <span class="component-title">Count skipped episodes</span>
+                                <span class="component-desc">
+                                    <input type="checkbox" name="count_skipped_episodes" id="count_skipped_episodes" ${('', 'checked="checked"')[bool(sickbeard.COUNT_SKIPPED_EPISODES)]}/>
+                                    <p>in show progress bar</p>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="field-pair">
                             <label for="filter_row">
                                 <span class="component-title">Filter Row</span>
                                 <span class="component-desc">
