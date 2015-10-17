@@ -1475,10 +1475,10 @@ class Home(WebRoot):
     def deleteShow(self, show=None, full=0):
         if show:
             error, show = Show.delete(show, full)
-    
+
             if error is not None:
                 return self._genericMessage('Error', error)
-    
+
             ui.notifications.message(
                 '%s has been %s %s' %
                 (
@@ -1487,7 +1487,7 @@ class Home(WebRoot):
                     ('(media untouched)', '(with all related media)')[bool(full)]
                 )
             )
-    
+
             time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
         # Don't redirect to the default page, so the user can confirm that the show was deleted
@@ -3610,7 +3610,7 @@ class ConfigGeneral(Config):
                     indexerDefaultLang='en', ep_default_deleted_status=None, launch_browser=None, showupdate_hour=3, web_username=None,
                     api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL',
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
-                    handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
+                    handle_reverse_proxy=None, sort_article=None, count_skipped_episodes=None, auto_update=None, notify_on_update=None,
                     proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, git_remote=None,
                     calendar_unprotected=None, debug=None, ssl_verify=None, no_restart=None, coming_eps_missed_range=None,
                     filter_row=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
@@ -3638,6 +3638,7 @@ class ConfigGeneral(Config):
         config.change_UPDATE_FREQUENCY(update_frequency)
         sickbeard.LAUNCH_BROWSER = config.checkbox_to_value(launch_browser)
         sickbeard.SORT_ARTICLE = config.checkbox_to_value(sort_article)
+        sickbeard.COUNT_SKIPPED_EPISODES = config.checkbox_to_value(count_skipped_episodes)
         sickbeard.CPU_PRESET = cpu_preset
         sickbeard.ANON_REDIRECT = anon_redirect
         sickbeard.PROXY_SETTING = proxy_setting
@@ -4422,14 +4423,14 @@ class ConfigProviders(Config):
                         kwargs[curTorrentProvider.getID() + '_ranked'])
                 except:
                     curTorrentProvider.ranked = 0
-	
+
             if hasattr(curTorrentProvider, 'engrelease'):
                 try:
                     curTorrentProvider.engrelease = config.checkbox_to_value(
                         kwargs[curTorrentProvider.getID() + '_engrelease'])
                 except:
                     curTorrentProvider.engrelease = 0
-					
+
             if hasattr(curTorrentProvider, 'sorting'):
                 try:
                     curTorrentProvider.sorting = str(kwargs[curTorrentProvider.getID() + '_sorting']).strip()
