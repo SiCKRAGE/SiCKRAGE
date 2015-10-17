@@ -2,7 +2,7 @@
 <%!
     import datetime
     import urllib
-    from os.path import basename
+    import ntpath
     import sickbeard
     from sickbeard import subtitles, sbdatetime, network_timezones
     import sickbeard.helpers
@@ -260,7 +260,7 @@
             <label for="snatched"><span class="snatched"><input type="checkbox" id="snatched"checked="checked" /> Snatched: <b>${epCounts[Overview.SNATCHED]}</b></span></label>
         </div>
 
-        <button id="popover" type="button" class="btn btn-xs">Select Columns</button>
+        <button id="popover" type="button" class="btn btn-xs">Select Columns <b class="caret"></b></button>
         <div class="pull-right" >
             <button class="btn btn-xs seriesCheck">Select Filtered Episodes</button>
             <button class="btn btn-xs clearAll">Clear All</button>
@@ -311,6 +311,8 @@
             dfltEpNumbering = True
 
         epLoc = epResult["location"]
+        if epLoc and show._location and epLoc.lower().startswith(show._location.lower()):
+            epLoc = epLoc[len(show._location)+1:]
         %>
         % if int(epResult["season"]) != curSeason:
             % if curSeason == -1:
@@ -420,8 +422,7 @@
         % endif
         <% curSeason = int(epResult["season"]) %>
         % endif
-        <% epLoc = epResult["location"] %>
-        <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle">
+        <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle" id="${'S' + str(epResult["season"]) + 'E' + str(epResult["episode"])}">
             <td class="col-checkbox">
                 % if int(epResult["status"]) != UNAIRED:
                     <input type="checkbox" class="epCheck" id="${str(epResult["season"])+'x'+str(epResult["episode"])}" name="${str(epResult["season"]) +"x"+str(epResult["episode"])}" />
@@ -431,13 +432,9 @@
             <td align="center"><img src="${srRoot}/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}" alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11" /></td>
             <td align="center">
             <%
-                if epLoc and show._location and epLoc.lower().startswith(show._location.lower()):
-                    epLoc = epLoc[len(show._location)+1:]
-
+                text = str(epResult['episode'])
                 if epLoc != '' and epLoc != None:
-                    text = '<span title="' + epLoc + '" class="addQTip">' + str(epResult['episode']) + "</span>"
-                else:
-                    text = str(epResult['episode'])
+                    text = '<span title="' + epLoc + '" class="addQTip">' + text + "</span>"
             %>
                 ${text}
             </td>
@@ -474,32 +471,21 @@
             % endif
             ${epResult["name"]}
             </td>
-            <td class="col-name]">
-                % if epResult['location']:
-                    <%
-                    filename = epResult['location']
-                    for rootDir in sickbeard.ROOT_DIRS.split('|'):
-                        if not rootDir.startswith('/'):
-                            filename = filename.replace('\\','\\\\')
-                    %>
-                    ${basename(filename)}
-                % endif
-            </td>
+            <td class="col-name">${epLoc}</td>
             <td class="col-ep">
                 % if epResult["file_size"]:
                     <% file_size = sickbeard.helpers.pretty_filesize(epResult["file_size"]) %>
                     ${file_size}
                 % endif
             </td>
-            <% date = sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(epResult['airdate'], show.airs, show.network)) %>
             <td class="col-airdate">
                 % if int(epResult['airdate']) != 1:
-                    <time datetime="${date.isoformat('T')}" class="date">${sbdatetime.sbdatetime.sbfdate(date)}</time>
+                    ## Lets do this exactly like ComingEpisodes and History
+                    <% airDate = sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(epResult['airdate'], show.airs, show.network)) %>
+                    <time datetime="${airDate.isoformat('T')}" class="date">${sbdatetime.sbdatetime.sbfdatetime(airDate)}</time>
                 % else:
                     Never
                 % endif
-                <span class="sort_data">${date.isoformat('T')}</span>
-
             </td>
             <td>
                 % if sickbeard.DOWNLOAD_URL and epResult['location']:
@@ -516,6 +502,9 @@
             <td class="col-subtitles" align="center">
             % for sub_lang in [subtitles.fromietf(x) for x in epResult["subtitles"].split(',') if epResult["subtitles"]]:
                 <% flag = sub_lang.opensubtitles %>
+                % if (not sickbeard.SUBTITLES_MULTI and len(subtitles.wantedLanguages()) is 1) and subtitles.wantedLanguages()[0] in sub_lang.opensubtitles:
+                    <% flag = 'checkbox' %>
+                % endif
                 <img src="${srRoot}/images/subtitles/flags/${flag}.png" width="16" height="11" alt="${sub_lang.name}" onError="this.onerror=null;this.src='${srRoot}/images/flags/unknown.png';" />
             % endfor
             </td>

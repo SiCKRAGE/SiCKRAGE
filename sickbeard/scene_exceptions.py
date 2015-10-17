@@ -197,7 +197,7 @@ def retrieve_exceptions():
 
             if data is None:
                 # When data is None, trouble connecting to github, or reading file failed
-                logger.log(u"Check scene exceptions update failed. Unable to update from: " + loc, logger.WARNING)
+                logger.log(u"Check scene exceptions update failed. Unable to update from: " + loc, logger.DEBUG)
                 continue
 
             setLastRefresh(sickbeard.indexerApi(indexer).name)
@@ -309,13 +309,13 @@ def _xem_exceptions_fetcher():
         for indexer in sickbeard.indexerApi().indexers:
             logger.log(u"Checking for XEM scene exception updates for " + sickbeard.indexerApi(indexer).name)
 
-            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1&language=us" % sickbeard.indexerApi(indexer).config[
+            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickbeard.indexerApi(indexer).config[
                 'xem_origin']
 
             parsedJSON = helpers.getURL(url, session=xem_session, timeout = 90, json=True)
             if not parsedJSON:
                 logger.log(u"Check scene exceptions update failed for " + sickbeard.indexerApi(
-                    indexer).name + ", Unable to get URL: " + url, logger.ERROR)
+                    indexer).name + ", Unable to get URL: " + url, logger.DEBUG)
                 continue
 
             if parsedJSON['result'] == 'failure':

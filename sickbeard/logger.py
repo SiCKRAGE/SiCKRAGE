@@ -27,6 +27,7 @@ import logging.handlers
 import threading
 import platform
 import locale
+import traceback
 
 import sickbeard
 from sickbeard import classes
@@ -141,11 +142,18 @@ class Logger(object):
         meThread = threading.currentThread().getName()
         message = meThread + u" :: " + msg
 
-        # pass exception information if debugging enabled
+        # Change the SSL error to a warning with a link to information about how to fix it.
+        check = re.sub(r'error \[Errno 1\] _ssl.c:\d{3}: error:\d{8}:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error', 'See: http://git.io/vJrkM', message)
+        if check is not message:
+            message = check
+            level = WARNING
 
         if level == ERROR:
             self.logger.exception(message, *args, **kwargs)
             classes.ErrorViewer.add(classes.UIError(message))
+        elif level == WARNING:
+            self.logger.exception(message, *args, **kwargs)
+            classes.WarningViewer.add(classes.UIError(message))
 
             # if sickbeard.GIT_AUTOISSUES:
             #    self.submit_errors()
@@ -161,10 +169,13 @@ class Logger(object):
             sys.exit(1)
 
     def submit_errors(self):
+
+        submitter_result = u''
+        issue_id = None
         # pylint: disable=R0912,R0914,R0915
         if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and sickbeard.DEBUG and len(classes.ErrorViewer.errors) > 0):
-            self.log('Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!')
-            return
+            submitter_result = u'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
+            return submitter_result, issue_id
 
         try:
             from sickbeard.versionChecker import CheckVersion
@@ -172,15 +183,16 @@ class Logger(object):
             checkversion.check_for_new_version()
             commits_behind = checkversion.updater.get_num_commits_behind()
         except Exception:
-            self.log('Could not check if your SickRage is updated, unable to submit issue ticket to GitHub!')
-            return
+            submitter_result = u'Could not check if your SickRage is updated, unable to submit issue ticket to GitHub!'
+            return submitter_result, issue_id
 
         if commits_behind is None or commits_behind > 0:
-            self.log('Please update SickRage, unable to submit issue ticket to GitHub with an outdated version!')
-            return
+            submitter_result = u'Please update SickRage, unable to submit issue ticket to GitHub with an outdated version!'
+            return  submitter_result, issue_id
 
         if self.submitter_running:
-            return 'RUNNING'
+            submitter_result = u'Issue submitter is running, please wait for it to complete'
+            return submitter_result, issue_id
 
         self.submitter_running = True
 
@@ -198,21 +210,20 @@ class Logger(object):
                     log_data = f.readlines()
 
             for i in range(1, int(sickbeard.LOG_NR)):
-                if os.path.isfile(self.logFile + "." + str(i)) and (len(log_data) <= 500):
-                    with ek(codecs.open, *[self.logFile + "." + str(i), 'r', 'utf-8']) as f:
+                if os.path.isfile(self.logFile + ".%i" % i) and (len(log_data) <= 500):
+                    with ek(codecs.open, *[self.logFile + ".%i" % i, 'r', 'utf-8']) as f:
                         log_data += f.readlines()
 
             log_data = [line for line in reversed(log_data)]
 
             # parse and submit errors to issue tracker
             for curError in sorted(classes.ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
-                try:
-                    title_Error = str(curError.title)
-                    if not len(title_Error) or title_Error == 'None':
-                        title_Error = re.match(r"^[A-Z0-9\-\[\] :]+::\s*(.*)$", ss(str(curError.message))).group(1)
 
-                    # if len(title_Error) > (1024 - len(u"[APP SUBMITTED]: ")):
-                    # 1000 just looks better than 1007 and adds some buffer
+                try:
+                    title_Error = ss(str(curError.title))
+                    if not len(title_Error) or title_Error == 'None':
+                        title_Error = re.match(r"^[A-Z0-9\-\[\] :]+::\s*(.*)$", ss(curError.message)).group(1)
+
                     if len(title_Error) > 1000:
                         title_Error = title_Error[0:1000]
                 except Exception as e:
@@ -257,33 +268,52 @@ class Logger(object):
                 title_Error = u"[APP SUBMITTED]: " + title_Error
                 reports = gh.get_organization(gh_org).get_repo(gh_repo).get_issues(state="all")
 
+                def is_mako_error(title):
+                    return re.search(r'Loaded module.*not found in sys\.modules', title) is not None
+
+                def is_ascii_error(title):
+                    return re.search(r"'.*' codec can't encode character .* in position .*:", title) is not None
+
+                mako_error = is_mako_error(title_Error)
+                ascii_error = is_ascii_error(title_Error)
+
                 issue_found = False
-                issue_id = 0
                 for report in reports:
-                    if title_Error == report.title:
-                        comment = report.create_comment(message)
-                        if comment:
-                            issue_id = report.number
-                            self.log('Commented on existing issue #%s successfully!' % issue_id)
-                            issue_found = True
+                    if title_Error.rsplit(' :: ')[-1] in report.title or \
+           	         (mako_error and is_mako_error(report.title)) or \
+                	    (ascii_error and is_ascii_error(report.title)):
+
+                        issue_id = report.number
+                        if not report.raw_data['locked']:
+                            if report.create_comment(message):
+                                submitter_result = u'Commented on existing issue #%s successfully!' % issue_id
+                            else:
+                                submitter_result = u'Failed to comment on found issue #%s!' % issue_id
+                        else:
+                            submitter_result = u'Issue #%s is locked, check github to find info about the error.' % issue_id
+
+                        issue_found = True
                         break
 
                 if not issue_found:
                     issue = gh.get_organization(gh_org).get_repo(gh_repo).create_issue(title_Error, message)
                     if issue:
                         issue_id = issue.number
-                        self.log('Your issue ticket #%s was submitted successfully!' % issue_id)
+                        submitter_result = u'Your issue ticket #%s was submitted successfully!' % issue_id
+                    else:
+                        submitter_result = u'Failed to create a new issue!'
 
-                # clear error from error list
-                classes.ErrorViewer.errors.remove(curError)
+                if issue_id and curError in classes.ErrorViewer.errors:
+                    # clear error from error list
+                    classes.ErrorViewer.errors.remove(curError)
 
-                self.submitter_running = False
-                return issue_id
         except Exception as e:
-            self.log(ex(e), ERROR)
-
-        self.submitter_running = False
-
+            self.log(traceback.format_exc(), ERROR)
+            submitter_result = u'Exception generated in issue submitter, please check the log'
+            issue_id = None
+        finally:
+            self.submitter_running = False
+            return submitter_result, issue_id
 
 # pylint: disable=R0903
 class Wrapper(object):

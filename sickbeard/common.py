@@ -265,27 +265,27 @@ class Quality:
 
             return ret
 
-        if checkName([r"(pdtv|hd.?tv|dsr|tvrip).(xvid|x26[45]|h.?26[45])"], all) and not checkName([r"(720|1080)[pi]"], all) and\
+        if checkName([r"([sp]d.?tv|hd.?tv|dsr|tv(rip|mux)|satrip).(xvid|x26[45]|h.?26[45])"], all) and not checkName([r"(720|1080)[pi]"], all) and\
                 not checkName([r"hr.ws.pdtv.x26[45]"], any):
             ret = Quality.SDTV
-        elif checkName([r"web.?dl|webrip", r"xvid|x26[45]|h.?26[45]"], all) and not checkName([r"(720|1080)[pi]"], all):
+        elif checkName([r"web.?dl|web(rip|mux)", r"xvid|x26[45]|h.?26[45]"], all) and not checkName([r"(720|1080)[pi]"], all):
             ret = Quality.SDTV
-        elif checkName([r"(dvdrip|b[rd]rip|blue?-?ray)(.ws)?.(xvid|divx|x26[45])"], any) and not checkName([r"(720|1080)[pi]"], all):
+        elif checkName([r"(dvd(rip|mux)|b[rd](rip|mux)|blue?-?ray)(.ws)?.(xvid|divx|[xh].?26[45])"], any) and not checkName([r"(720|1080)[pi]"], all):
             ret = Quality.SDDVD
-        elif checkName([r"720p", r"hd.?tv", r"x26[45]"], all) or checkName([r"hr.ws.pdtv.x26[45]"], any) and not checkName(
+        elif checkName([r"720p", r"hd.?tv", r"[xh].?26[45]"], all) or checkName([r"hr.ws.pdtv.[xh].?26[45]"], any) and not checkName(
                 [r"1080[pi]"], all):
             ret = Quality.HDTV
         elif checkName([r"720p|1080i", r"hd.?tv", r"mpeg-?2"], all) or checkName([r"1080[pi].hdtv", r"h.?26[45]"], all):
             ret = Quality.RAWHDTV
-        elif checkName([r"1080p", r"hd.?tv", r"x26[45]"], all):
+        elif checkName([r"1080p", r"hd.?tv", r"[xh].?26[45]"], all):
             ret = Quality.FULLHDTV
-        elif checkName([r"720p", r"web.?dl|webrip"], all) or checkName([r"720p", r"itunes", r"h.?26[45]"], all):
+        elif checkName([r"720p", r"web.?dl|web(rip|mux)"], all) or checkName([r"720p", r"itunes", r"[xh].?26[45]"], all):
             ret = Quality.HDWEBDL
-        elif checkName([r"1080p", r"web.?dl|webrip"], all) or checkName([r"1080p", r"itunes", r"h.?26[45]"], all):
+        elif checkName([r"1080p", r"web.?dl|web(rip|mux)"], all) or checkName([r"1080p", r"itunes", r"[xh].?26[45]"], all):
             ret = Quality.FULLHDWEBDL
-        elif checkName([r"720p", r"blue?-?ray|hddvd|b[rd]rip", r"x26[45]"], all):
+        elif checkName([r"720p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
             ret = Quality.HDBLURAY
-        elif checkName([r"1080p", r"blue?-?ray|hddvd|b[rd]rip", r"x26[45]"], all):
+        elif checkName([r"1080p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
             ret = Quality.FULLHDBLURAY
 
         return ret
@@ -320,6 +320,8 @@ class Quality:
 
         from hachoir_parser import createParser
         from hachoir_metadata import extractMetadata
+        from hachoir_core.log import log
+        log.use_print = False
 
         try:
             parser = createParser(filename)
@@ -422,15 +424,12 @@ Quality.FAILED = [Quality.compositeStatus(FAILED, x) for x in Quality.qualityStr
 Quality.SNATCHED_BEST = [Quality.compositeStatus(SNATCHED_BEST, x) for x in Quality.qualityStrings.keys()]
 Quality.ARCHIVED = [Quality.compositeStatus(ARCHIVED, x) for x in Quality.qualityStrings.keys()]
 
-SD = Quality.combineQualities([Quality.SDTV, Quality.SDDVD], [])
-HD = Quality.combineQualities(
-    [Quality.HDTV, Quality.FULLHDTV, Quality.HDWEBDL, Quality.FULLHDWEBDL, Quality.HDBLURAY, Quality.FULLHDBLURAY],
-    [])  # HD720p + HD1080p
 HD720p = Quality.combineQualities([Quality.HDTV, Quality.HDWEBDL, Quality.HDBLURAY], [])
 HD1080p = Quality.combineQualities([Quality.FULLHDTV, Quality.FULLHDWEBDL, Quality.FULLHDBLURAY], [])
-ANY = Quality.combineQualities(
-    [Quality.SDTV, Quality.SDDVD, Quality.HDTV, Quality.FULLHDTV, Quality.HDWEBDL, Quality.FULLHDWEBDL,
-     Quality.HDBLURAY, Quality.FULLHDBLURAY, Quality.UNKNOWN], [])  # SD + HD
+
+SD = Quality.combineQualities([Quality.SDTV, Quality.SDDVD], [])
+HD = Quality.combineQualities([HD720p, HD1080p], [])
+ANY = Quality.combineQualities([SD, HD], [])
 
 # legacy template, cant remove due to reference in mainDB upgrade?
 BEST = Quality.combineQualities([Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])

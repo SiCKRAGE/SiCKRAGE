@@ -84,33 +84,18 @@ from tornado.ioloop import IOLoop
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
 
-route_locks = {}
-
-mako_path = mako_cache = mako_lookup = None
-
-
-class _setupLookup():
-    def __init__(self, *args, **kwargs):
-        global mako_path
-        global mako_cache
-        global mako_lookup
-
-        if not mako_path:
-            mako_path = os.path.join(sickbeard.PROG_DIR, "gui/" + sickbeard.GUI_NAME + "/views/")
-        if not mako_cache:
-            mako_cache = os.path.join(sickbeard.CACHE_DIR, 'mako')
-        if not mako_lookup:
-            mako_lookup = TemplateLookup(directories=[mako_path], module_directory=mako_cache, format_exceptions=True)
-
-
 class PageTemplate(MakoTemplate):
-    arguments = {}
 
     def __init__(self, rh, file, *args, **kwargs):
-        _setupLookup()
-        kwargs['filename'] = os.path.join(mako_path, file)
-        kwargs['module_directory'] = mako_cache
-        kwargs['lookup'] = mako_lookup
+        self.arguments = {}
+
+        self.mako_path = os.path.join(sickbeard.PROG_DIR, "gui/" + sickbeard.GUI_NAME + "/views/")
+        self.mako_cache = os.path.join(sickbeard.CACHE_DIR, 'mako')
+        self.mako_lookup = TemplateLookup(directories=[self.mako_path], module_directory=self.mako_cache, format_exceptions=True)
+
+        kwargs['filename'] = os.path.join(self.mako_path, file)
+        kwargs['module_directory'] = self.mako_cache
+        kwargs['lookup'] = self.mako_lookup
         kwargs['format_exceptions'] = True
 
         super(PageTemplate, self).__init__(*args, **kwargs)
@@ -138,19 +123,9 @@ class PageTemplate(MakoTemplate):
         if "X-Forwarded-Proto" in rh.request.headers:
             self.arguments['sbHttpsEnabled'] = True if rh.request.headers['X-Forwarded-Proto'] == 'https' else False
 
-        logPageTitle = 'Logs &amp; Errors'
-        if len(classes.ErrorViewer.errors):
-            logPageTitle += ' (' + str(len(classes.ErrorViewer.errors)) + ')'
-        self.arguments['logPageTitle'] = logPageTitle
+        self.arguments['numErrors'] = len(classes.ErrorViewer.errors)
+        self.arguments['numWarnings'] = len(classes.WarningViewer.errors)
         self.arguments['sbPID'] = str(sickbeard.PID)
-        self.arguments['menu'] = [
-            {'title': 'Home', 'key': 'home'},
-            {'title': 'Coming Episodes', 'key': 'comingEpisodes'},
-            {'title': 'History', 'key': 'history'},
-            {'title': 'Manage', 'key': 'manage'},
-            {'title': 'Config', 'key': 'config'},
-            {'title': logPageTitle, 'key': 'errorlogs'},
-        ]
 
         self.arguments['title'] = "FixME"
         self.arguments['header'] = "FixME"
@@ -440,7 +415,7 @@ class WebRoot(WebHandler):
 
         return self.redirect("/home/displayShow?show=" + show)
 
-    def setComingEpsLayout(self, layout):
+    def setScheduleLayout(self, layout):
         if layout not in ('poster', 'banner', 'list', 'calendar'):
             layout = 'banner'
 
@@ -449,15 +424,15 @@ class WebRoot(WebHandler):
 
         sickbeard.COMING_EPS_LAYOUT = layout
 
-        return self.redirect("/comingEpisodes/")
+        return self.redirect("/schedule/")
 
-    def toggleComingEpsDisplayPaused(self):
+    def toggleScheduleDisplayPaused(self):
 
         sickbeard.COMING_EPS_DISPLAY_PAUSED = not sickbeard.COMING_EPS_DISPLAY_PAUSED
 
-        return self.redirect("/comingEpisodes/")
+        return self.redirect("/schedule/")
 
-    def setComingEpsSort(self, sort):
+    def setScheduleSort(self, sort):
         if sort not in ('date', 'network', 'show'):
             sort = 'date'
 
@@ -467,9 +442,9 @@ class WebRoot(WebHandler):
 
         sickbeard.COMING_EPS_SORT = sort
 
-        return self.redirect("/comingEpisodes/")
+        return self.redirect("/schedule/")
 
-    def comingEpisodes(self, layout=None):
+    def schedule(self, layout=None):
         next_week = datetime.date.today() + datetime.timedelta(days=7)
         next_week1 = datetime.datetime.combine(next_week, datetime.time(tzinfo=network_timezones.sb_timezone))
         results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickbeard.COMING_EPS_SORT, False)
@@ -479,26 +454,26 @@ class WebRoot(WebHandler):
             {
                 'title': 'Sort by:',
                 'path': {
-                    'Date': 'setComingEpsSort/?sort=date',
-                    'Show': 'setComingEpsSort/?sort=show',
-                    'Network': 'setComingEpsSort/?sort=network',
+                    'Date': 'setScheduleSort/?sort=date',
+                    'Show': 'setScheduleSort/?sort=show',
+                    'Network': 'setScheduleSort/?sort=network',
                 }
             },
             {
                 'title': 'Layout:',
                 'path': {
-                    'Banner': 'setComingEpsLayout/?layout=banner',
-                    'Poster': 'setComingEpsLayout/?layout=poster',
-                    'List': 'setComingEpsLayout/?layout=list',
-                    'Calendar': 'setComingEpsLayout/?layout=calendar',
+                    'Banner': 'setScheduleLayout/?layout=banner',
+                    'Poster': 'setScheduleLayout/?layout=poster',
+                    'List': 'setScheduleLayout/?layout=list',
+                    'Calendar': 'setScheduleLayout/?layout=calendar',
                 }
             },
             {
                 'title': 'View Paused:',
                 'path': {
-                    'Hide': 'toggleComingEpsDisplayPaused'
+                    'Hide': 'toggleScheduleDisplayPaused'
                 } if sickbeard.COMING_EPS_DISPLAY_PAUSED else {
-                    'Show': 'toggleComingEpsDisplayPaused'
+                    'Show': 'toggleScheduleDisplayPaused'
                 }
             },
         ]
@@ -509,9 +484,9 @@ class WebRoot(WebHandler):
         else:
             layout = sickbeard.COMING_EPS_LAYOUT
 
-        t = PageTemplate(rh=self, file='comingEpisodes.mako')
+        t = PageTemplate(rh=self, file='schedule.mako')
         return t.render(submenu=submenu, next_week=next_week1, today=today, results=results, layout=layout,
-                        title='Coming Episodes', header='Coming Episodes', topmenu='comingEpisodes')
+                        title='Schedule', header='Schedule', topmenu='schedule')
 
 
 class CalendarHandler(BaseHandler):
@@ -641,21 +616,9 @@ class Home(WebRoot):
     def __init__(self, *args, **kwargs):
         super(Home, self).__init__(*args, **kwargs)
 
-    def HomeMenu(self):
-        menu = [
-            {'title': 'Add Shows', 'path': 'home/addShows/', 'icon': 'ui-icon ui-icon-video'},
-            {'title': 'Manual Post-Processing', 'path': 'home/postprocess/', 'icon': 'ui-icon ui-icon-folder-open'},
-            {'title': 'Update KODI', 'path': 'home/updateKODI/', 'requires': self.haveKODI(), 'icon': 'submenu-icon-kodi'},
-            {'title': 'Update Plex', 'path': 'home/updatePLEX/', 'requires': self.havePLEX(), 'icon': 'ui-icon ui-icon-refresh'},
-            {'title': 'Update Emby', 'path': 'home/updateEMBY/', 'requires': self.haveEMBY(), 'icon': 'ui-icon ui-icon-refresh'},
-            {'title': 'Manage Torrents', 'path': 'manage/manageTorrents/', 'requires': self.haveTORRENT(), 'icon': 'submenu-icon-bittorrent'},
-        ]
-
-        return menu
-
     def _genericMessage(self, subject, message):
         t = PageTemplate(rh=self, file="genericMessage.mako")
-        return t.render(message=message, subject=subject, submenu=self.HomeMenu(), topmenu="home", title="")
+        return t.render(message=message, subject=subject, topmenu="home", title="")
 
     def _getEpisode(self, show, season=None, episode=None, absolute=None):
         if show is None:
@@ -692,7 +655,7 @@ class Home(WebRoot):
         else:
             showlists = [["Shows", sickbeard.showList]]
 
-        return t.render(title="Home", header="Show List", topmenu="home", showlists=showlists, submenu=self.HomeMenu())
+        return t.render(title="Home", header="Show List", topmenu="home", showlists=showlists)
 
     def is_alive(self, *args, **kwargs):
         if 'callback' in kwargs and '_' in kwargs:
@@ -1067,7 +1030,7 @@ class Home(WebRoot):
                 rootDir[subject] = helpers.getDiskSpaceUsage(subject)
 
         t = PageTemplate(rh=self, file="status.mako")
-        return t.render(title='Status', header='Status', topmenu='system', submenu=self.HomeMenu(), tvdirFree=tvdirFree, rootDir=rootDir)
+        return t.render(title='Status', header='Status', topmenu='system', tvdirFree=tvdirFree, rootDir=rootDir)
 
     def shutdown(self, pid=None):
         if not Shutdown.stop(pid):
@@ -1084,13 +1047,14 @@ class Home(WebRoot):
 
         t = PageTemplate(rh=self, file="restart.mako")
 
-        return t.render(title="Home", header="Restarting SickRage", topmenu="system", submenu=self.HomeMenu())
+        return t.render(title="Home", header="Restarting SickRage", topmenu="system")
 
     def updateCheck(self, pid=None):
         if str(pid) != str(sickbeard.PID):
             return self.redirect('/home/')
 
         sickbeard.versionCheckScheduler.action.check_for_new_version(force=True)
+        sickbeard.versionCheckScheduler.action.check_for_new_news(force=True)
 
         return self.redirect('/' + sickbeard.DEFAULT_PAGE + '/')
 
@@ -1109,7 +1073,7 @@ class Home(WebRoot):
                 sickbeard.events.put(sickbeard.events.SystemEvent.RESTART)
 
                 t = PageTemplate(rh=self, file="restart.mako")
-                return t.render(title="Home", header="Restarting SickRage", topmenu="home", submenu=self.HomeMenu())
+                return t.render(title="Home", header="Restarting SickRage", topmenu="home")
             else:
                 return self._genericMessage("Update Failed",
                                             "Update wasn't successful, not restarting. Check your log for more information.")
@@ -1254,6 +1218,20 @@ class Home(WebRoot):
         indexerid = int(showObj.indexerid)
         indexer = int(showObj.indexer)
 
+        # Delete any previous occurrances
+        for index, recentShow in enumerate(sickbeard.SHOWS_RECENT):
+            if recentShow['indexerid'] == indexerid:
+                del sickbeard.SHOWS_RECENT[index]
+
+        # Only track 5 most recent shows
+        del sickbeard.SHOWS_RECENT[4:]
+
+        # Insert most recent show
+        sickbeard.SHOWS_RECENT.insert(0, {
+            'indexerid': indexerid,
+            'name': showObj.name,
+        })
+
         return t.render(submenu=submenu, showLoc=showLoc, show_message=show_message,
                 show=showObj, sqlResults=sqlResults, seasonResults=seasonResults,
                 sortedShowLists=sortedShowLists, bwl=bwl, epCounts=epCounts,
@@ -1334,11 +1312,10 @@ class Home(WebRoot):
                 scene_exceptions = sickbeard.scene_exceptions.get_scene_exceptions(showObj.indexerid)
 
             if showObj.is_anime:
-                return t.render(submenu=self.HomeMenu(), show=show, scene_exceptions=scene_exceptions, groups=groups, whitelist=whitelist,
+                return t.render(show=show, scene_exceptions=scene_exceptions, groups=groups, whitelist=whitelist,
                                 blacklist=blacklist, title='Edit Shows', header='Edit Shows')
             else:
-                return t.render(submenu=self.HomeMenu(), show=show, scene_exceptions=scene_exceptions, title='Edit Shows',
-                                header='Edit Shows')
+                return t.render(show=show, scene_exceptions=scene_exceptions, title='Edit Shows', header='Edit Shows')
 
         flatten_folders = config.checkbox_to_value(flatten_folders)
         dvdorder = config.checkbox_to_value(dvdorder)
@@ -1496,21 +1473,22 @@ class Home(WebRoot):
         return self.redirect("/home/displayShow?show=%i" % show.indexerid)
 
     def deleteShow(self, show=None, full=0):
-        error, show = Show.delete(show, full)
-
-        if error is not None:
-            return self._genericMessage('Error', error)
-
-        ui.notifications.message(
-            '%s has been %s %s' %
-            (
-                show.name,
-                ('deleted', 'trashed')[bool(sickbeard.TRASH_REMOVE_SHOW)],
-                ('(media untouched)', '(with all related media)')[bool(full)]
+        if show:
+            error, show = Show.delete(show, full)
+    
+            if error is not None:
+                return self._genericMessage('Error', error)
+    
+            ui.notifications.message(
+                '%s has been %s %s' %
+                (
+                    show.name,
+                    ('deleted', 'trashed')[bool(sickbeard.TRASH_REMOVE_SHOW)],
+                    ('(media untouched)', '(with all related media)')[bool(full)]
+                )
             )
-        )
-
-        time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+    
+            time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
         # Don't redirect to the default page, so the user can confirm that the show was deleted
         return self.redirect('/home/')
@@ -1682,20 +1660,20 @@ class Home(WebRoot):
                 with epObj.lock:
                     # don't let them mess up UNAIRED episodes
                     if epObj.status == UNAIRED:
-                        logger.log(u"Refusing to change status of " + curEp + " because it is UNAIRED", logger.ERROR)
+                        logger.log(u"Refusing to change status of " + curEp + " because it is UNAIRED", logger.WARNING)
                         continue
 
                     if int(status) in Quality.DOWNLOADED and epObj.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.DOWNLOADED + [
                         IGNORED] and not ek(os.path.isfile, epObj.location):
                         logger.log(
                             u"Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED",
-                            logger.ERROR)
+                            logger.WARNING)
                         continue
 
                     if int(status) == FAILED and epObj.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.DOWNLOADED + Quality.ARCHIVED:
                         logger.log(
                             u"Refusing to change status of " + curEp + " to FAILED because it's not SNATCHED/DOWNLOADED",
-                            logger.ERROR)
+                            logger.WARNING)
                         continue
 
                     if epObj.status in Quality.DOWNLOADED + Quality.ARCHIVED and int(status) == WANTED:
@@ -1951,12 +1929,11 @@ class Home(WebRoot):
         # return the correct json value
 
         # Find the quality class for the episode
-        quality_class = Quality.qualityStrings[Quality.UNKNOWN]
         ep_status, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
-        for x in (SD, HD720p, HD1080p):
-            if ep_quality in Quality.splitQuality(x)[0]:
-                quality_class = qualityPresetStrings[x]
-                break
+        if ep_quality in Quality.cssClassStrings:
+            quality_class = Quality.cssClassStrings[ep_quality]
+        else:
+            quality_class = Quality.cssClassStrings[Quality.UNKNOWN]
 
         return quality_class
 
@@ -2094,7 +2071,7 @@ class HomeIRC(Home):
     def index(self):
 
         t = PageTemplate(rh=self, file="IRC.mako")
-        return t.render(topmenu="irc", header="IRC", title="IRC", submenu=self.HomeMenu())
+        return t.render(topmenu="system", header="IRC", title="IRC")
 
 @route('/news(/?.*)')
 class HomeNews(Home):
@@ -2103,15 +2080,19 @@ class HomeNews(Home):
 
     def index(self):
         try:
-            news = helpers.getURL('http://sickragetv.github.io/sickrage-news/news.md', session=requests.Session())
+            news = sickbeard.versionCheckScheduler.action.check_for_new_news(force=True)
         except Exception:
             logger.log(u'Could not load news from repo, giving a link!', logger.DEBUG)
-            news = 'Could not load news from the repo. [Click here for news.md](http://sickragetv.github.io/sickrage-news/news.md)'
+            news = 'Could not load news from the repo. [Click here for news.md]('+sickbeard.NEWS_URL+')'
+
+        sickbeard.NEWS_LAST_READ = sickbeard.NEWS_LATEST
+        sickbeard.NEWS_UNREAD = 0
+        sickbeard.save_config()
 
         t = PageTemplate(rh=self, file="markdown.mako")
         data = markdown2.markdown(news if news else "The was a problem connecting to github, please refresh and try again", extras=['header-ids'])
 
-        return t.render(title="News", header="News", topmenu="news", data=data, submenu=self.HomeMenu())
+        return t.render(title="News", header="News", topmenu="system", data=data)
 
 
 @route('/changes(/?.*)')
@@ -2129,7 +2110,7 @@ class HomeChangeLog(Home):
         t = PageTemplate(rh=self, file="markdown.mako")
         data = markdown2.markdown(changes if changes else "The was a problem connecting to github, please refresh and try again", extras=['header-ids'])
 
-        return t.render(title="Changelog", header="Changelog", topmenu="system", data=data, submenu=self.HomeMenu())
+        return t.render(title="Changelog", header="Changelog", topmenu="system", data=data)
 
 
 @route('/home/postprocess(/?.*)')
@@ -2139,7 +2120,7 @@ class HomePostProcess(Home):
 
     def index(self):
         t = PageTemplate(rh=self, file="home_postprocess.mako")
-        return t.render(submenu=self.HomeMenu(), title='Post Processing', header='Post Processing')
+        return t.render(title='Post Processing', header='Post Processing', topmenu='home')
 
     def processEpisode(self, dir=None, nzbName=None, jobName=None, quiet=None, process_method=None, force=None,
                        is_priority=None, delete_on="0", failed="0", type="auto", *args, **kwargs):
@@ -2183,7 +2164,7 @@ class HomeAddShows(Home):
 
     def index(self):
         t = PageTemplate(rh=self, file="home_addShows.mako")
-        return t.render(submenu=self.HomeMenu(), title='Add Shows', header='Add Shows')
+        return t.render(title='Add Shows', header='Add Shows', topmenu='home')
 
     def getIndexerLanguages(self):
         result = sickbeard.indexerApi().config['valid_languages']
@@ -2307,7 +2288,7 @@ class HomeAddShows(Home):
                     cur_dir['added_already'] = True
 
 
-        return t.render(submenu=self.HomeMenu(), dirList=dir_list)
+        return t.render(dirList=dir_list)
 
 
     def newShow(self, show_to_add=None, other_shows=None, search_string=None):
@@ -2348,11 +2329,11 @@ class HomeAddShows(Home):
 
         provided_indexer = int(indexer or sickbeard.INDEXER_DEFAULT)
 
-        return t.render(submenu=self.HomeMenu(), enable_anime_options=True,
+        return t.render(enable_anime_options=True,
                 use_provided_info=use_provided_info, default_show_name=default_show_name, other_shows=other_shows,
                 provided_show_dir=show_dir, provided_indexer_id=provided_indexer_id, provided_indexer_name=provided_indexer_name,
                 provided_indexer=provided_indexer, indexers=sickbeard.indexerApi().indexers, whitelist=[], blacklist=[], groups=[],
-                title='New Show', header='New Show'
+                title='New Show', header='New Show', topmenu='home'
         )
 
     def recommendedShows(self):
@@ -2361,7 +2342,7 @@ class HomeAddShows(Home):
         posts them to addNewShow
         """
         t = PageTemplate(rh=self, file="home_recommendedShows.mako")
-        return t.render(title="Recommended Shows", header="Recommended Shows", submenu=self.HomeMenu(), enable_anime_options=False)
+        return t.render(title="Recommended Shows", header="Recommended Shows", enable_anime_options=False)
 
     def getRecommendedShows(self):
         t = PageTemplate(rh=self, file="trendingShows.mako")
@@ -2404,7 +2385,7 @@ class HomeAddShows(Home):
         except traktException as e:
             logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
 
-        return t.render(title="Trending Shows", header="Trending Shows", trending_shows=trending_shows, blacklist=blacklist, submenu=self.HomeMenu())
+        return t.render(title="Trending Shows", header="Trending Shows", trending_shows=trending_shows, blacklist=blacklist)
 
     def trendingShows(self):
         """
@@ -2412,7 +2393,7 @@ class HomeAddShows(Home):
         posts them to addNewShow
         """
         t = PageTemplate(rh=self, file="home_trendingShows.mako")
-        return t.render(title="Trending Shows", header="Trending Shows", submenu=self.HomeMenu(), enable_anime_options=False)
+        return t.render(title="Trending Shows", header="Trending Shows", enable_anime_options=False)
 
     def getTrendingShows(self):
         """
@@ -2458,7 +2439,7 @@ class HomeAddShows(Home):
         except traktException as e:
             logger.log(u"Could not connect to Trakt service: %s" % ex(e), logger.WARNING)
 
-        return t.render(submenu = self.HomeMenu(), blacklist=blacklist, trending_shows=trending_shows)
+        return t.render(blacklist=blacklist, trending_shows=trending_shows)
 
 
     def popularShows(self):
@@ -2473,7 +2454,7 @@ class HomeAddShows(Home):
         except Exception as e:
             popular_shows = None
 
-        return t.render(title="Popular Shows", header="Popular Shows", submenu = self.HomeMenu(), popular_shows=popular_shows, imdb_exception=e)
+        return t.render(title="Popular Shows", header="Popular Shows", popular_shows=popular_shows, imdb_exception=e, topmenu="home")
 
 
     def addShowToBlacklist(self, indexer_id):
@@ -2500,7 +2481,7 @@ class HomeAddShows(Home):
         Prints out the page to add existing shows from a root dir
         """
         t = PageTemplate(rh=self, file="home_addExistingShow.mako")
-        return t.render(submenu=self.HomeMenu(), enable_anime_options=False, title='Existing Show', header='Existing Show', topmenu="home")
+        return t.render(enable_anime_options=False, title='Existing Show', header='Existing Show', topmenu="home")
 
     def addTraktShow(self, indexer_id, showName):
         if helpers.findCertainShow(sickbeard.showList, int(indexer_id)):
@@ -2745,28 +2726,10 @@ class Manage(Home, WebRoot):
     def __init__(self, *args, **kwargs):
         super(Manage, self).__init__(*args, **kwargs)
 
-    def ManageMenu(self):
-        menu = [
-            {'title': 'Backlog Overview', 'path': 'manage/backlogOverview/', 'icon': 'ui-icon ui-icon-refresh'},
-            {'title': 'Manage Searches', 'path': 'manage/manageSearches/', 'icon': 'ui-icon ui-icon-search'},
-            {'title': 'Episode Status Management', 'path': 'manage/episodeStatuses/', 'icon': 'ui-icon ui-icon-transferthick-e-w'}, ]
-
-        if sickbeard.USE_TORRENTS and sickbeard.TORRENT_METHOD != 'blackhole' \
-                and (sickbeard.ENABLE_HTTPS and sickbeard.TORRENT_HOST[:5] == 'https'
-                     or not sickbeard.ENABLE_HTTPS and sickbeard.TORRENT_HOST[:5] == 'http:'):
-            menu.append({'title': 'Manage Torrents', 'path': 'manage/manageTorrents/', 'icon': 'submenu-icon-bittorrent'})
-
-        if sickbeard.USE_SUBTITLES:
-            menu.append({'title': 'Missed Subtitle Management', 'path': 'manage/subtitleMissed/', 'icon': 'ui-icon ui-icon-transferthick-e-w'})
-
-        if sickbeard.USE_FAILED_DOWNLOADS:
-            menu.append({'title': 'Failed Downloads', 'path': 'manage/failedDownloads/', 'icon': 'submenu-icon-failed-download'})
-
-        return menu
 
     def index(self):
         t = PageTemplate(rh=self, file="manage.mako")
-        return t.render(submenu=self.ManageMenu(), title='Mass Update', header='Mass Update', topmenu='manage')
+        return t.render(title='Mass Update', header='Mass Update', topmenu='manage')
 
 
     def showEpisodeStatuses(self, indexer_id, whichStatus):
@@ -2805,7 +2768,7 @@ class Manage(Home, WebRoot):
         # if we have no status then this is as far as we need to go
         if not status_list:
             return t.render(title="Episode Overview",  header="Episode Overview",
-                    topmenu="manage", submenu=self.ManageMenu(), whichStatus=whichStatus)
+                    topmenu="manage", whichStatus=whichStatus)
 
         myDB = db.DBConnection()
         status_results = myDB.select(
@@ -2829,8 +2792,8 @@ class Manage(Home, WebRoot):
                 sorted_show_ids.append(cur_indexer_id)
 
         return t.render(title="Episode Overview",  header="Episode Overview",
-                    topmenu='manage', submenu=self.ManageMenu(), whichStatus=whichStatus,
-                    show_names=show_names, ep_counts=ep_counts, sorted_show_ids=sorted_show_ids)
+                        topmenu='manage', whichStatus=whichStatus,
+                        show_names=show_names, ep_counts=ep_counts, sorted_show_ids=sorted_show_ids)
 
 
     def changeEpisodeStatuses(self, oldStatus, newStatus, *args, **kwargs):
@@ -2906,7 +2869,7 @@ class Manage(Home, WebRoot):
         t = PageTemplate(rh=self, file="manage_subtitleMissed.mako")
 
         if not whichSubs:
-            return t.render(submenu=self.ManageMenu(), whichSubs=whichSubs, title='Episode Overview', header='Episode Overview', topmenu='manage')
+            return t.render(whichSubs=whichSubs, title='Episode Overview', header='Episode Overview', topmenu='manage')
 
         myDB = db.DBConnection()
         status_results = myDB.select(
@@ -2935,8 +2898,8 @@ class Manage(Home, WebRoot):
             if cur_indexer_id not in sorted_show_ids:
                 sorted_show_ids.append(cur_indexer_id)
 
-        return t.render(submenu=self.ManageMenu(), whichSubs=whichSubs, show_names=show_names, ep_counts=ep_counts, sorted_show_ids=sorted_show_ids,
-                        title='Episode Overview', header='Episode Overview', topmenu='manage')
+        return t.render(whichSubs=whichSubs, show_names=show_names, ep_counts=ep_counts, sorted_show_ids=sorted_show_ids,
+                        title='Missing Subtitles', header='Missing Subtitles', topmenu='manage')
 
 
     def downloadSubtitleMissed(self, *args, **kwargs):
@@ -3018,7 +2981,7 @@ class Manage(Home, WebRoot):
             showCats[curShow.indexerid] = epCats
             showSQLResults[curShow.indexerid] = sqlResults
 
-        return t.render(submenu=self.ManageMenu(), showCounts=showCounts, showCats=showCats, showSQLResults=showSQLResults,
+        return t.render(showCounts=showCounts, showCats=showCats, showSQLResults=showSQLResults,
                         title='Backlog Overview', header='Backlog Overview', topmenu='manage')
 
 
@@ -3151,7 +3114,7 @@ class Manage(Home, WebRoot):
         air_by_date_value = last_air_by_date if air_by_date_all_same else None
         root_dir_list = root_dir_list
 
-        return t.render(submenu=self.ManageMenu(), showList=toEdit, archive_firstmatch_value=archive_firstmatch_value, default_ep_status_value=default_ep_status_value,
+        return t.render(showList=toEdit, archive_firstmatch_value=archive_firstmatch_value, default_ep_status_value=default_ep_status_value,
                         paused_value=paused_value, anime_value=anime_value, flatten_folders_value=flatten_folders_value,
                         quality_value=quality_value, subtitles_value=subtitles_value, scene_value=scene_value, sports_value=sports_value,
                         air_by_date_value=air_by_date_value, root_dir_list=root_dir_list, title='Mass Edit', header='Mass Edit', topmenu='manage')
@@ -3413,7 +3376,7 @@ class Manage(Home, WebRoot):
         if not sickbeard.TORRENT_PASSWORD == "" and not sickbeard.TORRENT_USERNAME == "":
             webui_url = re.sub('://', '://' + str(sickbeard.TORRENT_USERNAME) + ':' + str(sickbeard.TORRENT_PASSWORD) + '@' ,webui_url)
 
-        return t.render(submenu=self.ManageMenu(), webui_url=webui_url, info_download_station=info_download_station,
+        return t.render(webui_url=webui_url, info_download_station=info_download_station,
                         title='Manage Torrents', header='Manage Torrents', topmenu='manage')
 
 
@@ -3436,7 +3399,7 @@ class Manage(Home, WebRoot):
 
         t = PageTemplate(rh=self, file="manage_failedDownloads.mako")
 
-        return t.render(submenu=self.ManageMenu(), limit=limit, failedResults=sqlResults, title='Failed Downloads', header='Failed Downloads', topmenu='manage')
+        return t.render(limit=limit, failedResults=sqlResults, title='Failed Downloads', header='Failed Downloads', topmenu='manage')
 
 
 @route('/manage/manageSearches(/?.*)')
@@ -3448,7 +3411,7 @@ class ManageSearches(Manage):
         t = PageTemplate(rh=self, file="manage_manageSearches.mako")
         # t.backlogPI = sickbeard.backlogSearchScheduler.action.getProgressIndicator()
 
-        return t.render(submenu=self.ManageMenu(), backlogPaused=sickbeard.searchQueueScheduler.action.is_backlog_paused(),
+        return t.render(backlogPaused=sickbeard.searchQueueScheduler.action.is_backlog_paused(),
                         backlogRunning=sickbeard.searchQueueScheduler.action.is_backlog_in_progress(), dailySearchStatus=sickbeard.dailySearchScheduler.action.amActive,
                         findPropersStatus=sickbeard.properFinderScheduler.action.amActive, queueLength=sickbeard.searchQueueScheduler.action.queue_length(),
                         title='Manage Searches', header='Manage Searches', topmenu='manage')
@@ -3643,7 +3606,7 @@ class ConfigGeneral(Config):
         sickbeard.save_config()
 
     def saveGeneral(self, log_dir=None, log_nr = 5, log_size = 1048576, web_port=None, web_log=None, encryption_version=None, web_ipv6=None,
-                    trash_remove_show=None, trash_rotate_logs=None, update_frequency=None,
+                    trash_remove_show=None, trash_rotate_logs=None, update_frequency=None, skip_removed_files=None,
                     indexerDefaultLang='en', ep_default_deleted_status=None, launch_browser=None, showupdate_hour=3, web_username=None,
                     api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL',
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
@@ -3660,6 +3623,7 @@ class ConfigGeneral(Config):
         sickbeard.DOWNLOAD_URL = download_url
         sickbeard.INDEXER_DEFAULT_LANGUAGE = indexerDefaultLang
         sickbeard.EP_DEFAULT_DELETED_STATUS = ep_default_deleted_status
+        sickbeard.SKIP_REMOVED_FILES = config.checkbox_to_value(skip_removed_files)
         sickbeard.LAUNCH_BROWSER = config.checkbox_to_value(launch_browser)
         config.change_SHOWUPDATE_HOUR(showupdate_hour)
         config.change_VERSION_NOTIFY(config.checkbox_to_value(version_notify))
@@ -3722,7 +3686,10 @@ class ConfigGeneral(Config):
             sickbeard.TIME_PRESET_W_SECONDS = time_preset
             sickbeard.TIME_PRESET = sickbeard.TIME_PRESET_W_SECONDS.replace(u":%S", u"")
 
-        sickbeard.TIMEZONE_DISPLAY = timezone_display
+        #Force all users to use local
+        #sickbeard.TIMEZONE_DISPLAY = timezone_display
+        sickbeard.TIMEZONE_DISPLAY = 'local'
+
 
         if not config.change_LOG_DIR(log_dir, web_log):
             results += ["Unable to create directory " + os.path.normpath(log_dir) + ", log directory not changed."]
@@ -3932,9 +3899,9 @@ class ConfigPostProcessing(Config):
                            no_delete=None, rename_episodes=None, airdate_episodes=None, unpack=None,
                            move_associated_files=None, sync_files=None, postpone_if_sync_files=None, nfo_rename=None,
                            tv_download_dir=None, naming_custom_abd=None,
-                           naming_anime=None,
+                           naming_anime=None,create_missing_show_dirs=None,add_shows_wo_dir=None,
                            naming_abd_pattern=None, naming_strip_year=None, use_failed_downloads=None,
-                           delete_failed=None, extra_scripts=None, skip_removed_files=None,
+                           delete_failed=None, extra_scripts=None,
                            naming_custom_sports=None, naming_sports_pattern=None,
                            naming_custom_anime=None, naming_anime_pattern=None, naming_anime_multi_ep=None,
                            autopostprocesser_frequency=None):
@@ -3957,6 +3924,8 @@ class ConfigPostProcessing(Config):
             sickbeard.UNPACK = config.checkbox_to_value(unpack)
         sickbeard.NO_DELETE = config.checkbox_to_value(no_delete)
         sickbeard.KEEP_PROCESSED_DIR = config.checkbox_to_value(keep_processed_dir)
+        sickbeard.CREATE_MISSING_SHOW_DIRS = config.checkbox_to_value(create_missing_show_dirs)
+        sickbeard.ADD_SHOWS_WO_DIR = config.checkbox_to_value(add_shows_wo_dir)
         sickbeard.PROCESS_METHOD = process_method
         sickbeard.DELRARCONTENTS = config.checkbox_to_value(del_rar_contents)
         sickbeard.EXTRA_SCRIPTS = [x.strip() for x in extra_scripts.split('|') if x.strip()]
@@ -3971,7 +3940,6 @@ class ConfigPostProcessing(Config):
         sickbeard.NAMING_STRIP_YEAR = config.checkbox_to_value(naming_strip_year)
         sickbeard.USE_FAILED_DOWNLOADS = config.checkbox_to_value(use_failed_downloads)
         sickbeard.DELETE_FAILED = config.checkbox_to_value(delete_failed)
-        sickbeard.SKIP_REMOVED_FILES = config.checkbox_to_value(skip_removed_files)
         sickbeard.NFO_RENAME = config.checkbox_to_value(nfo_rename)
 
         sickbeard.METADATA_KODI = kodi_data
@@ -4028,7 +3996,7 @@ class ConfigPostProcessing(Config):
 
         if len(results) > 0:
             for x in results:
-                logger.log(x, logger.ERROR)
+                logger.log(x, logger.WARNING)
             ui.notifications.error('Error(s) Saving Configuration',
                                    '<br />\n'.join(results))
         else:
@@ -4454,7 +4422,14 @@ class ConfigProviders(Config):
                         kwargs[curTorrentProvider.getID() + '_ranked'])
                 except:
                     curTorrentProvider.ranked = 0
-
+	
+            if hasattr(curTorrentProvider, 'engrelease'):
+                try:
+                    curTorrentProvider.engrelease = config.checkbox_to_value(
+                        kwargs[curTorrentProvider.getID() + '_engrelease'])
+                except:
+                    curTorrentProvider.engrelease = 0
+					
             if hasattr(curTorrentProvider, 'sorting'):
                 try:
                     curTorrentProvider.sorting = str(kwargs[curTorrentProvider.getID() + '_sorting']).strip()
@@ -4902,26 +4877,39 @@ class ErrorLogs(WebRoot):
     def __init__(self, *args, **kwargs):
         super(ErrorLogs, self).__init__(*args, **kwargs)
 
-    def ErrorLogsMenu(self):
+    def ErrorLogsMenu(self, level):
         menu = [
-            {'title': 'Clear Errors', 'path': 'errorlogs/clearerrors/', 'icon': 'ui-icon ui-icon-trash'},
-            {'title': 'Submit Errors', 'path': 'errorlogs/submit_errors/', 'requires': self.haveErrors(), 'class':'sumbiterrors', 'confirm': True, 'icon': 'ui-icon ui-icon-arrowreturnthick-1-n'},
+            {'title': 'Clear Errors', 'path': 'errorlogs/clearerrors/', 'requires': self.haveErrors() and level == logger.ERROR, 'icon': 'ui-icon ui-icon-trash'},
+            {'title': 'Clear Warnings', 'path': 'errorlogs/clearerrors/?level='+str(logger.WARNING), 'requires': self.haveWarnings() and level == logger.WARNING, 'icon': 'ui-icon ui-icon-trash'},
+            {'title': 'Submit Errors', 'path': 'errorlogs/submit_errors/', 'requires': self.haveErrors() and level == logger.ERROR, 'class':'sumbiterrors', 'confirm': True, 'icon': 'ui-icon ui-icon-arrowreturnthick-1-n'},
         ]
 
         return menu
 
-    def index(self):
+    def index(self, level=logger.ERROR):
+        try:
+            level = int(level)
+        except:
+            level = logger.ERROR
 
         t = PageTemplate(rh=self, file="errorlogs.mako")
-        return t.render(header="Logs &amp; Errors", title="Logs &amp; Errors", topmenu="errorlogs", submenu=self.ErrorLogsMenu())
+        return t.render(header="Logs &amp; Errors", title="Logs &amp; Errors", topmenu="system", submenu=self.ErrorLogsMenu(level), logLevel=level)
 
     def haveErrors(self):
         if len(classes.ErrorViewer.errors) > 0:
             return True
 
-    def clearerrors(self):
-        classes.ErrorViewer.clear()
-        return self.redirect("/errorlogs/")
+    def haveWarnings(self):
+        if len(classes.WarningViewer.errors) > 0:
+            return True
+
+    def clearerrors(self, level=logger.ERROR):
+        if int(level) == logger.WARNING:
+            classes.WarningViewer.clear()
+        else:
+            classes.ErrorViewer.clear()
+
+        return self.redirect("/errorlogs/viewlog/")
 
     def viewlog(self, minLevel=logger.INFO, logFilter="<NONE>",logSearch=None, maxLines=500):
 
@@ -5007,19 +4995,14 @@ class ErrorLogs(WebRoot):
                 with ek(codecs.open, *[logger.logFile + "." + str(i), 'r', 'utf-8']) as f:
                         data += Get_Data(minLevel, f.readlines(), len(data), regex, logFilter, logSearch, maxLines)
 
-        return t.render(header="Log File", title="Logs", topmenu="errorlogs", submenu=self.ErrorLogsMenu(),
+        return t.render(header="Log File", title="Logs", topmenu="system",
                 logLines="".join(data), minLevel=minLevel, logNameFilters=logNameFilters,
                 logFilter=logFilter, logSearch=logSearch)
 
     def submit_errors(self):
-        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD):
-            ui.notifications.error("Missing information", "Please set your GitHub username and password in the config.")
-            logger.log(u'Please set your GitHub username and password in the config, unable to submit issue ticket to GitHub!')
-        else:
-            issue_id = logger.submit_errors()
-            if issue_id == 'RUNNING':
-                ui.notifications.message('Issue submitter is running, please wait for it to complete')
-            elif issue_id:
-                ui.notifications.message('Your issue ticket #%s was submitted successfully!' % issue_id)
+        submitter_result, issue_id = logger.submit_errors()
+        logger.log(submitter_result, (logger.INFO, logger.WARNING)[issue_id is None])
+        submitter_notification = ui.notifications.error if issue_id is None else ui.notifications.message
+        submitter_notification(submitter_result)
 
         return self.redirect("/errorlogs/")
