@@ -723,7 +723,7 @@ class TVShow(object):
                 newStatus = None
 
                 # if it was snatched and now exists then set the status correctly
-                if (oldStatus == SNATCHED and oldQuality <= newQuality) or (oldStatus == SNATCHED_PROPER and oldQuality <= newQuality):
+                if (oldStatus == SNATCHED and oldQuality <= newQuality) or (oldStatus == SNATCHED_PROPER and oldQuality < newQuality):
                     newStatus = DOWNLOADED
 
                 elif oldStatus not in (SNATCHED, SNATCHED_PROPER):
