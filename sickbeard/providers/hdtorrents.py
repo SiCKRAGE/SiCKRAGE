@@ -129,17 +129,29 @@ class HDTorrentsProvider(generic.TorrentProvider):
                     logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
                     continue
 
-                tables = html.find('table', attrs={'class': 'mainblockcontenttt'})
-                if not tables:
-                    logger.log(u"Could not find table of torrents mainblockcontenttt", logger.ERROR)
-                    continue
+                downloadCells = html.find_all('td', attrs={'title': 'Download'})
+                torrents = []
+                dlTokensFound = 0
+                # Each search result page will contain two headers with 'Dl' text. The first header will be for the top
+                # block with featured torrents. The second header will be at the start of the search result block.
+                # Therefore we go through each cell that contains TD with title 'Download' and after we pass the second
+                # one with text 'Dl' we know that we are in the table that contains search result.
+                # This workaround is necessary because page contains invalid html that prevents us from getting all the
+                # data from the table with search result
+                for cell in downloadCells:
+                    text = unicode(cell.contents[0])
+                    if text == 'Dl':
+                        dlTokensFound += 1
+                        continue
 
-                torrents = tables.findChildren('tr')
+                    if dlTokensFound == 2:
+                        tr = cell.find_parent('tr')
+                        torrents.append(tr)
+
                 if not torrents:
                     continue
 
-                # Skip column headers
-                for result in torrents[1:]:
+                for result in torrents:
                     try:
                         cells = result.findChildren('td', attrs={'class': re.compile(r'(green|yellow|red|mainblockcontent)')})
                         if not cells:
