@@ -1017,7 +1017,7 @@ class Home(WebRoot):
             return "Error sending Pushbullet notification"
 
     def status(self):
-        tvdirFree = helpers.getDiskSpaceUsage(sickbeard.TV_DOWNLOAD_DIR)
+        tvdirFree = "{:,}".format(helpers.getDiskSpaceUsage(sickbeard.TV_DOWNLOAD_DIR))
         rootDir = {}
         if sickbeard.ROOT_DIRS:
             backend_pieces = sickbeard.ROOT_DIRS.split('|')
@@ -1027,7 +1027,7 @@ class Home(WebRoot):
 
         if len(backend_dirs):
             for subject in backend_dirs:
-                rootDir[subject] = helpers.getDiskSpaceUsage(subject)
+                rootDir[subject] = "{:,}".format(helpers.getDiskSpaceUsage(subject))
 
         t = PageTemplate(rh=self, file="status.mako")
         return t.render(title='Status', header='Status', topmenu='system', tvdirFree=tvdirFree, rootDir=rootDir)
