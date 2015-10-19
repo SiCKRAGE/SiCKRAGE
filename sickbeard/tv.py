@@ -726,28 +726,18 @@ class TVShow(object):
 
                 newStatus = None
 
-                # if it was snatched and now exists then set the status correctly
-                if oldStatus == SNATCHED and oldQuality <= newQuality:
-                    logger.log(u"STATUS: this ep used to be snatched with quality " + Quality.qualityStrings[
-                        oldQuality] + u" but a file exists with quality " + Quality.qualityStrings[
-                                   newQuality] + u" so I'm setting the status to DOWNLOADED", logger.DEBUG)
+                # if it was any snatched staus and now a file exists then set the status correctly
+                if oldStatus in (SNATCHED, SNATCHED_PROPER, SNATCHED_BEST) and oldQuality <= newQuality:
                     newStatus = DOWNLOADED
 
-                # if it was snatched proper and we found a higher quality one then allow the status change
-                elif oldStatus == SNATCHED_PROPER and oldQuality < newQuality:
-                    logger.log(u"STATUS: this ep used to be snatched proper with quality " + Quality.qualityStrings[
-                        oldQuality] + u" but a file exists with quality " + Quality.qualityStrings[
-                                   newQuality] + u" so I'm setting the status to DOWNLOADED", logger.DEBUG)
-                    newStatus = DOWNLOADED
-
-                elif oldStatus not in (SNATCHED, SNATCHED_PROPER):
+                elif oldStatus not in (SNATCHED, SNATCHED_PROPER, SNATCHED_BEST):
                     newStatus = DOWNLOADED
 
                 if newStatus is not None:
                     with curEp.lock:
-                        logger.log(u"STATUS: we have an associated file, so setting the status from " + str(
-                            curEp.status) + u" to DOWNLOADED/" + str(Quality.statusFromName(file, anime=self.is_anime)),
-                                   logger.DEBUG)
+                        logger.log(u"Show %s S%02dE%02d used to be %s but a file exists with quality (%s) so I'm setting the status to %s" %
+                        (self.name, season, episode,statusStrings[curEp.status], Quality.qualityStrings[newQuality], 
+                        statusStrings[Quality.compositeStatus(newStatus, newQuality)]), logger.INFO)
                         curEp.status = Quality.compositeStatus(newStatus, newQuality)
 
             with curEp.lock:
@@ -1744,7 +1734,7 @@ class TVEpisode(object):
         # if we have a media file then it's downloaded
         elif sickbeard.helpers.isMediaFile(self.location):
             # leave propers alone, you have to either post-process them or manually change them back
-            if self.status not in Quality.SNATCHED_PROPER + Quality.DOWNLOADED + Quality.SNATCHED + Quality.ARCHIVED:
+            if self.status not in Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + Quality.SNATCHED + Quality.ARCHIVED:
                 logger.log(
                     u"5 Status changes from " + str(self.status) + " to " + str(Quality.statusFromName(self.location)),
                     logger.DEBUG)
@@ -1977,12 +1967,12 @@ class TVEpisode(object):
         """
 
         if not self.dirty and not forceSave:
-            logger.log(str(self.show.indexerid) + u": Not saving episode to db - record is not dirty", logger.DEBUG)
+            logger.log(u"%s: Not saving episode to db - record is not dirty" % self.show.indexerid, logger.DEBUG)
             return
 
-        logger.log(str(self.show.indexerid) + u": Saving episode details to database", logger.DEBUG)
+        logger.log(u"%s: Saving episode details to database" % self.show.indexerid, logger.DEBUG)
 
-        logger.log(u"STATUS IS " + str(self.status), logger.DEBUG)
+        logger.log(u"Changing status of show %s S%02dE%02d to %s" % (self.name, self.season or 0, self.episode or 0, statusStrings[self.status]), logger.DEBUG)
 
         newValueDict = {"indexerid": self.indexerid,
                         "indexer": self.indexer,
