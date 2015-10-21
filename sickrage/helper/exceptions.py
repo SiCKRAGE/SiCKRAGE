@@ -36,7 +36,7 @@ def ex(e):
                 fixed_arg = ss(arg)
             else:
                 try:
-                    fixed_arg = u'error %s' % ss(str(arg))
+                    fixed_arg = u'error %s' % ss(arg)
                 except Exception:
                     fixed_arg = None
 
