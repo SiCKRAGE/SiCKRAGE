@@ -153,11 +153,11 @@ class Show:
         """
 
         if indexer_id is None:
-            return 'Invalid show ID', None
+            return u'Invalid show ID', None
 
         try:
             show = findCertainShow(sickbeard.showList, int(indexer_id))
         except MultipleShowObjectsException:
-            return 'Unable to find the specified show', None
+            return u'Unable to find the specified show', None
 
         return None, show

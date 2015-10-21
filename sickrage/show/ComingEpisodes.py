@@ -34,11 +34,11 @@ class ComingEpisodes:
     Soon:     tomorrow till next week
     Later:    later than next week
     """
-    categories = ['later', 'missed', 'soon', 'today']
+    categories = [u'later', u'missed', u'soon', u'today']
     sorts = {
-        'date': (lambda a, b: cmp(a['localtime'], b['localtime'])),
-        'network': (lambda a, b: cmp((a['network'], a['localtime']), (b['network'], b['localtime']))),
-        'show': (lambda a, b: cmp((a['show_name'], a['localtime']), (b['show_name'], b['localtime']))),
+        'date': (lambda a, b: cmp(a[u'localtime'], b[u'localtime'])),
+        'network': (lambda a, b: cmp((a[u'network'], a[u'localtime']), (b[u'network'], b[u'localtime']))),
+        'show': (lambda a, b: cmp((a[u'show_name'], a[u'localtime']), (b[u'show_name'], b[u'localtime']))),
     }
 
     def __init__(self):
@@ -58,7 +58,7 @@ class ComingEpisodes:
             categories = categories.split('|')
 
         if sort not in ComingEpisodes.sorts.keys():
-            sort = 'date'
+            sort = u'date'
 
         today = date.today().toordinal()
         next_week = (date.today() + timedelta(days=7)).toordinal()
@@ -67,49 +67,49 @@ class ComingEpisodes:
 
         db = DBConnection()
         fields_to_select = ', '.join(
-            ['airdate', 'airs', 'description', 'episode', 'imdb_id', 'e.indexer', 'indexer_id', 'name', 'network',
-             'paused', 'quality', 'runtime', 'season', 'show_name', 'showid', 's.status']
+            [u'airdate', u'airs', u'description', u'episode', u'imdb_id', u'e.indexer', u'indexer_id', u'name',
+             u'network', u'paused', u'quality', u'runtime', u'season', u'show_name', u'showid', u's.status']
         )
         results = db.select(
-            'SELECT %s ' % fields_to_select +
-            'FROM tv_episodes e, tv_shows s '
-            'WHERE season != 0 '
-            'AND airdate >= ? '
-            'AND airdate < ? '
-            'AND s.indexer_id = e.showid '
-            'AND e.status NOT IN (' + ','.join(['?'] * len(qualities_list)) + ')',
+            u'SELECT %s ' % fields_to_select +
+            u'FROM tv_episodes e, tv_shows s '
+            u'WHERE season != 0 '
+            u'AND airdate >= ? '
+            u'AND airdate < ? '
+            u'AND s.indexer_id = e.showid '
+            u'AND e.status NOT IN (' + ','.join([u'?'] * len(qualities_list)) + u')',
             [today, next_week] + qualities_list
         )
 
         done_shows_list = [int(result['showid']) for result in results]
-        placeholder = ','.join(['?'] * len(done_shows_list))
-        placeholder2 = ','.join(['?'] * len(Quality.DOWNLOADED + Quality.SNATCHED))
+        placeholder = ','.join([u'?'] * len(done_shows_list))
+        placeholder2 = ','.join([u'?'] * len(Quality.DOWNLOADED + Quality.SNATCHED))
 
         results += db.select(
-            'SELECT %s ' % fields_to_select +
-            'FROM tv_episodes e, tv_shows s '
-            'WHERE season != 0 '
-            'AND showid NOT IN (' + placeholder + ') '
-                                                  'AND s.indexer_id = e.showid '
-                                                  'AND airdate = (SELECT airdate '
-                                                  'FROM tv_episodes inner_e '
-                                                  'WHERE inner_e.season != 0 '
-                                                  'AND inner_e.showid = e.showid '
-                                                  'AND inner_e.airdate >= ? '
-                                                  'ORDER BY inner_e.airdate ASC LIMIT 1) '
-                                                  'AND e.status NOT IN (' + placeholder2 + ')',
+            u'SELECT %s ' % fields_to_select +
+            u'FROM tv_episodes e, tv_shows s '
+            u'WHERE season != 0 '
+            u'AND showid NOT IN (' + placeholder + u') '
+                                                   u'AND s.indexer_id = e.showid '
+                                                   u'AND airdate = (SELECT airdate '
+                                                   u'FROM tv_episodes inner_e '
+                                                   u'WHERE inner_e.season != 0 '
+                                                   u'AND inner_e.showid = e.showid '
+                                                   u'AND inner_e.airdate >= ? '
+                                                   u'ORDER BY inner_e.airdate ASC LIMIT 1) '
+                                                   u'AND e.status NOT IN (' + placeholder2 + u')',
             done_shows_list + [next_week] + Quality.DOWNLOADED + Quality.SNATCHED
         )
 
         results += db.select(
-            'SELECT %s ' % fields_to_select +
-            'FROM tv_episodes e, tv_shows s '
-            'WHERE season != 0 '
-            'AND s.indexer_id = e.showid '
-            'AND airdate < ? '
-            'AND airdate >= ? '
-            'AND e.status = ? '
-            'AND e.status NOT IN (' + ','.join(['?'] * len(qualities_list)) + ')',
+            u'SELECT %s ' % fields_to_select +
+            u'FROM tv_episodes e, tv_shows s '
+            u'WHERE season != 0 '
+            u'AND s.indexer_id = e.showid '
+            u'AND airdate < ? '
+            u'AND airdate >= ? '
+            u'AND e.status = ? '
+            u'AND e.status NOT IN (' + ','.join([u'?'] * len(qualities_list)) + u')',
             [today, recently, WANTED] + qualities_list
         )
 
@@ -146,7 +146,7 @@ class ComingEpisodes:
                 continue
 
             if not result['network']:
-                result['network'] = ''
+                result['network'] = u''
 
             result['quality'] = get_quality_string(result['quality'])
             result['airs'] = sbdatetime.sbftime(result['localtime'], t_preset=timeFormat).lstrip('0').replace(' 0', ' ')

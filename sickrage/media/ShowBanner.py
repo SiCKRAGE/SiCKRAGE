@@ -26,14 +26,14 @@ class ShowBanner(GenericMedia):
     """
 
     def get_default_media_name(self):
-        return 'banner.png'
+        return u'banner.png'
 
     def get_media_path(self):
         if self.get_show():
-            if self.media_format == 'normal':
+            if self.media_format == u'normal':
                 return ImageCache().banner_path(self.indexer_id)
 
-            if self.media_format == 'thumb':
+            if self.media_format == u'thumb':
                 return ImageCache().banner_thumb_path(self.indexer_id)
 
-        return ''
+        return u''
