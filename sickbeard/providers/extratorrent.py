@@ -66,7 +66,7 @@ class ExtraTorrentProvider(generic.TorrentProvider):
                     logger.log(u"Search string: %s " % search_string, logger.DEBUG)
 
                 try:
-                    self.search_params.update({'type': ('search', 'rss')[mode == 'RSS'], 'search': search_string})
+                    self.search_params.update({'type': ('search', 'rss')[mode == 'RSS'], 'search': search_string.encode('utf-8')})
                     data = self.getURL(self.urls['rss'], params=self.search_params)
                     if not data:
                         logger.log("No data returned from provider", logger.DEBUG)
