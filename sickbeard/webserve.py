@@ -1125,7 +1125,7 @@ class Home(WebRoot):
         )
 
         sqlResults = myDB.select(
-            "SELECT * FROM tv_episodes WHERE showid = ? ORDER BY season DESC, episode DESC",
+            "SELECT status, season, episode FROM tv_episodes WHERE showid = ? ORDER BY season DESC, episode DESC",
             [showObj.indexerid]
         )
 
@@ -2258,7 +2258,7 @@ class HomeAddShows(Home):
                 }
 
                 # see if the folder is in KODI already
-                dirResults = myDB.select("SELECT * FROM tv_shows WHERE location = ?", [cur_path])
+                dirResults = myDB.select("SELECT show_id FROM tv_shows WHERE location = ?", [cur_path])
 
                 if dirResults:
                     cur_dir['added_already'] = True

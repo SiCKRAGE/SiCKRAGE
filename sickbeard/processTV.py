@@ -347,7 +347,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
 
     # make sure the dir isn't inside a show dir
     myDB = db.DBConnection()
-    sqlResults = myDB.select("SELECT * FROM tv_shows")
+    sqlResults = myDB.select("SELECT location FROM tv_shows")
 
     for sqlShow in sqlResults:
         if dirName.lower().startswith(
@@ -493,13 +493,13 @@ def already_postprocessed(dirName, videofile, force, result):
 
     # Avoid processing the same dir again if we use a process method <> move
     myDB = db.DBConnection()
-    sqlResult = myDB.select("SELECT * FROM tv_episodes WHERE release_name = ?", [dirName])
+    sqlResult = myDB.select("SELECT episode_id FROM tv_episodes WHERE release_name = ?", [dirName])
     if sqlResult:
         #result.output += logHelper(u"You're trying to post process a dir that's already been processed, skipping", logger.DEBUG)
         return True
 
     else:
-        sqlResult = myDB.select("SELECT * FROM tv_episodes WHERE release_name = ?", [videofile.rpartition('.')[0]])
+        sqlResult = myDB.select("SELECT episode_id FROM tv_episodes WHERE release_name = ?", [videofile.rpartition('.')[0]])
         if sqlResult:
             #result.output += logHelper(u"You're trying to post process a video that's already been processed, skipping", logger.DEBUG)
             return True

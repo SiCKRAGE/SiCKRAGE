@@ -376,7 +376,7 @@ def searchDBForShow(regShowName, log=False):
     myDB = db.DBConnection()
     for showName in showNames:
 
-        sqlResults = myDB.select("SELECT * FROM tv_shows WHERE show_name LIKE ?",
+        sqlResults = myDB.select("SELECT indexer_id FROM tv_shows WHERE show_name LIKE ?",
                                  [showName])
 
         if len(sqlResults) == 1:
@@ -389,7 +389,7 @@ def searchDBForShow(regShowName, log=False):
                     logger.log(u"Unable to match original name but trying to manually strip and specify show year",
                                logger.DEBUG)
                 sqlResults = myDB.select(
-                    "SELECT * FROM tv_shows WHERE (show_name LIKE ?) AND startyear = ?",
+                    "SELECT indexer_id FROM tv_shows WHERE (show_name LIKE ?) AND startyear = ?",
                     [match.group(1) + '%', match.group(3)])
 
             if len(sqlResults) == 0:
@@ -841,7 +841,7 @@ def get_absolute_number_from_season_and_episode(show, season, episode):
 
     if season and episode:
         myDB = db.DBConnection()
-        sql = "SELECT * FROM tv_episodes WHERE showid = ? and season = ? and episode = ?"
+        sql = "SELECT absolute_number FROM tv_episodes WHERE showid = ? and season = ? and episode = ?"
         sqlResults = myDB.select(sql, [show.indexerid, season, episode])
 
         if len(sqlResults) == 1:
@@ -1421,6 +1421,7 @@ def mapIndexersToShow(showObj):
         mapped[indexer] = showObj.indexerid if int(indexer) == int(showObj.indexer) else 0
 
     myDB = db.DBConnection()
+    # TODO: Update this query to only select needed fields
     sqlResults = myDB.select(
         "SELECT * FROM indexer_mapping WHERE indexer_id = ? AND indexer = ?",
         [showObj.indexerid, showObj.indexer])
