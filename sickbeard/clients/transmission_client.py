@@ -72,7 +72,10 @@ class TransmissionAPI(GenericClient):
         })
         self._request(method='post', data=post_data)
 
-        return self.response.json()['result'] == "success"
+        if self.response.json()['result'] == "success":
+            return (True, self.response.json()['result'])
+        else:
+            return (False, self.response.json()['result'])
 
     def _add_torrent_file(self, result):
 
@@ -84,8 +87,11 @@ class TransmissionAPI(GenericClient):
                                 'method': 'torrent-add',
         })
         self._request(method='post', data=post_data)
-
-        return self.response.json()['result'] == "success"
+        
+        if self.response.json()['result'] == "success":
+            return (True, self.response.json()['result'])
+        else:
+            return (False, self.response.json()['result'])
 
     def _set_torrent_ratio(self, result):
 
@@ -111,7 +117,10 @@ class TransmissionAPI(GenericClient):
         })
         self._request(method='post', data=post_data)
 
-        return self.response.json()['result'] == "success"
+        if self.response.json()['result'] == "success":
+            return (True, self.response.json()['result'])
+        else:
+            return (False, self.response.json()['result'])
 
     def _set_torrent_seed_time(self, result):
 
@@ -127,7 +136,10 @@ class TransmissionAPI(GenericClient):
             })
             self._request(method='post', data=post_data)
 
-            return self.response.json()['result'] == "success"
+            if self.response.json()['result'] == "success":
+                return (True, self.response.json()['result'])
+            else:
+                return (False, self.response.json()['result'])
         else:
             return True
 
@@ -152,7 +164,10 @@ class TransmissionAPI(GenericClient):
         })
         self._request(method='post', data=post_data)
 
-        return self.response.json()['result'] == "success"
+        if self.response.json()['result'] == "success":
+            return (True, self.response.json()['result'])
+        else:
+            return (False, self.response.json()['result'])
 
 
 api = TransmissionAPI()

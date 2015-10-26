@@ -34,11 +34,6 @@ class GenericClient(object):
 
         logger.log(
             self.name + u': Requested a ' + method.upper() + ' connection to url ' + self.url + ' with Params= ' + str(
-                params) + ' Data=' + str(data if data else 'None')[0:99] + (
-            '...' if len(data if data else 'None') > 200 else ''), logger.DEBUG)
-
-        logger.log(
-            self.name + u': Requested a ' + method.upper() + ' connection to url ' + self.url + ' with Params= ' + str(
                 params) + (
                 (' Data=' + str(data)[0:100] + ('...' if len(data) > 100 else '')) if data is not None else ""),
             logger.DEBUG)
@@ -66,17 +61,17 @@ class GenericClient(object):
                        logger.ERROR)
             return False
 
+        if self.response.status_code == 200:
+            logger.log(self.name + u': Response to ' + method.upper() + ' request is ' + self.response.text, logger.DEBUG)
+            return True
+            
         if self.response.status_code == 401:
             logger.log(self.name + u': Invalid Username or Password, check your config', logger.ERROR)
             return False
 
         if self.response.status_code in http_error_code.keys():
-            logger.log(self.name + u': ' + http_error_code[self.response.status_code], logger.DEBUG)
+            logger.log(self.name + u': Error while accesing client: ' + http_error_code[self.response.status_code], logger.DEBUG)
             return False
-
-        logger.log(self.name + u': Response to ' + method.upper() + ' request is ' + self.response.text, logger.DEBUG)
-
-        return True
 
     def _get_auth(self):
         """
@@ -168,13 +163,13 @@ class GenericClient(object):
 
     def sendTORRENT(self, result):
 
-        r_code = False
+        succeeded = False
 
         logger.log(u'Calling ' + self.name + ' Client', logger.DEBUG)
 
         if not self._get_auth():
             logger.log(self.name + u': Authentication Failed', logger.ERROR)
-            return r_code
+            return succeeded
 
         try:
             # Sets per provider seed ratio
@@ -184,38 +179,44 @@ class GenericClient(object):
             result = self._get_torrent_hash(result)
 
             if result.url.startswith('magnet'):
-                r_code = self._add_torrent_uri(result)
+                succeeded, message = self._add_torrent_uri(result)
             else:
-                r_code = self._add_torrent_file(result)
+                succeeded, message = self._add_torrent_file(result)
 
-            if not r_code:
-                logger.log(self.name + u': Unable to send Torrent: Return code undefined', logger.ERROR)
+            if not succeeded or succeeded == False:
+                logger.log(self.name + u': Unable to send Torrent: %s' % (message or 'Unknown message'), logger.WARNING)
                 return False
 
-            if not self._set_torrent_pause(result):
-                logger.log(self.name + u': Unable to set the pause for Torrent', logger.ERROR)
+            succeeded, message = self._set_torrent_pause(result):
+            if not succeeded or succeeded = False:
+                logger.log(self.name + u': Unable to set the pause for Torrent: %s' % (message or 'Unknonw error'), logger.WARNING)
 
-            if not self._set_torrent_label(result):
-                logger.log(self.name + u': Unable to set the label for Torrent', logger.ERROR)
+            succeeded, message = self._set_torrent_label(result)
+            if not succeeded or succeeded = False:
+                logger.log(self.name + u': Unable to set the label for Torrent: %s' % (message or 'Unknonw error'), logger.WARNING)
 
-            if not self._set_torrent_ratio(result):
-                logger.log(self.name + u': Unable to set the ratio for Torrent', logger.ERROR)
+            succeeded, message = self._set_torrent_ratio(result)
+            if not succeeded or succeeded = False:
+                logger.log(self.name + u': Unable to set the ratio for Torrent: %s' % (message or 'Unknonw error'), logger.WARNING)
 
-            if not self._set_torrent_seed_time(result):
-                logger.log(self.name + u': Unable to set the seed time for Torrent', logger.ERROR)
+            succeeded, message = self._set_torrent_seed_time(result)
+            if not succeeded or succeeded = False:
+                logger.log(self.name + u': Unable to set the seed time for Torrent: %s' % (message or 'Unknonw error'), logger.WARNING)
 
-            if not self._set_torrent_path(result):
-                logger.log(self.name + u': Unable to set the path for Torrent', logger.ERROR)
+            succeeded, message = self._set_torrent_path(result)
+            if not succeeded or succeeded = False:
+                logger.log(self.name + u': Unable to set the path for Torrent: %s' % (message or 'Unknonw error'), logger.WARNING)
 
-            if result.priority != 0 and not self._set_torrent_priority(result):
-                logger.log(self.name + u': Unable to set priority for Torrent', logger.ERROR)
+            succeeded, message = self._set_torrent_priority(result)
+            if result.priority != 0 and (not succeeded or succeeded = False:
+                logger.log(self.name + u': Unable to set priority for Torrent: %s' % (message or 'Unknonw error'), logger.WARNING)
 
         except Exception, e:
             logger.log(self.name + u': Failed Sending Torrent', logger.ERROR)
             logger.log(self.name + u': Exception raised when sending torrent: ' + str(result) + u'. Error: ' + str(e), logger.DEBUG)
-            return r_code
+            return succeeded
 
-        return r_code
+        return succeeded
 
     def testAuthentication(self):
 
