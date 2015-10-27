@@ -72,7 +72,7 @@ class rTorrentAPI(GenericClient):
             if result.show.is_anime:
                 label = sickbeard.TORRENT_LABEL_ANIME
             if label:
-                torrent.set_custom(1, label.lower())
+                torrent.set_custom(1, label)
 
             if sickbeard.TORRENT_PATH:
                 torrent.set_directory(sickbeard.TORRENT_PATH)
@@ -111,8 +111,6 @@ class rTorrentAPI(GenericClient):
             label = sickbeard.TORRENT_LABEL
             if result.show.is_anime:
                 label = sickbeard.TORRENT_LABEL_ANIME
-            if label:
-                torrent.set_custom(1, label.lower())
 
             if sickbeard.TORRENT_PATH:
                 torrent.set_directory(sickbeard.TORRENT_PATH)
