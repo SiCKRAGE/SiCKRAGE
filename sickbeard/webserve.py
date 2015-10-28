@@ -4377,6 +4377,12 @@ class ConfigProviders(Config):
                 except:
                     curTorrentProvider.minleech = 0
 
+            if hasattr(curTorrentProvider, 'mincachetime'):
+                try:
+                    curTorrentProvider.mincachetime = int(str(kwargs[curTorrentProvider.getID() + '_mincachetime']).strip())
+                except:
+                    curTorrentProvider.mincachetime = 10
+                    
             if hasattr(curTorrentProvider, 'ratio'):
                 try:
                     curTorrentProvider.ratio = str(kwargs[curTorrentProvider.getID() + '_ratio']).strip()

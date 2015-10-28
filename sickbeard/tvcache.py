@@ -80,8 +80,12 @@ class TVCache():
         self.provider = provider
         self.providerID = self.provider.getID()
         self.providerDB = None
-        self.minTime = 10
-
+        if hasattr(provider, 'mincachetime'):
+            self.minTime = self.provider.mincachetime
+        else:
+            self.minTime = 10
+        logger.log(u"{}: Minimum cache time = {}" . format(self.providerID, self.minTime), logger.DEBUG)
+        
     def _getDB(self):
         # init provider database if not done already
         if not self.providerDB:

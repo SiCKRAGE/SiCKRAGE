@@ -48,7 +48,8 @@ class KATProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = KATCache(self)
-
+        self.mincachetime = None
+        
         self.urls = {
             'base_url': 'https://kat.cr/',
             'search': 'https://kat.cr/usearch/',
@@ -171,9 +172,6 @@ class KATCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll KickAss every 10 minutes max
-        self.minTime = 20
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}

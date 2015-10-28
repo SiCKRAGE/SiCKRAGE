@@ -419,6 +419,23 @@ $('#config-components').tabs();
                         </div>
                         % endif
 
+                        % if hasattr(curTorrentProvider, 'mincachetime'):
+                        <div class="field-pair">
+                            <label for="${curTorrentProvider.getID()}_mincachetime">
+                                <span class="component-title" id="${curTorrentProvider.getID()}_mincachetime_desc">Minimum Cache Time:</span>
+                                <span class="component-desc">
+                                    <input type="number" name="${curTorrentProvider.getID()}_mincachetime" id="${curTorrentProvider.getID()}_mincachetime" value="${curTorrentProvider.mincachetime}" class="form-control input-sm input75" />
+                                </span>
+                            </label>
+                            <label>
+                                <span class="component-title">&nbsp;</span>
+                                <span class="component-desc">
+                                    <p>Minimum time (in minutes) to cache provider search results</p>
+                                </span>
+                            </label>
+                        </div>
+                        % endif
+
                         % if hasattr(curTorrentProvider, 'confirmed'):
                         <div class="field-pair">
                             <label for="${curTorrentProvider.getID()}_confirmed">
