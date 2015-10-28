@@ -36,7 +36,10 @@ class BitCannonProvider(generic.TorrentProvider):
         self.ratio = 0
 
         self.cache = BitCannonCache(self)
-
+        self.mincachetime = None
+        # only poll BitCannon every 20 minutes max
+        self.mincachetimeprovider = 20
+        
         self.url = 'http://127.0.0.1:1337/'
         self.urls = {
             'base_url': self.url,
@@ -106,9 +109,6 @@ class BitCannonCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll KickAss every 10 minutes max
-        self.minTime = 20
 
     def _getRSSData(self):
         return {'entries': []}

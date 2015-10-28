@@ -41,7 +41,10 @@ class ThePirateBayProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = ThePirateBayCache(self)
-
+        self.mincachetime = None
+        # only poll ThePirateBay every 30 minutes max
+        self.mincachetimeprovider = 30
+        
         self.urls = {
             'base_url': 'https://pirateproxy.la/',
             'search': 'https://pirateproxy.la/s/',
@@ -148,9 +151,6 @@ class ThePirateBayCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll ThePirateBay every 30 minutes max
-        self.minTime = 30
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}

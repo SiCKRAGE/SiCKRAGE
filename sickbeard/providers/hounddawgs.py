@@ -39,7 +39,10 @@ class HoundDawgsProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = HoundDawgsCache(self)
-
+        self.mincachetime = None
+        # only poll HoundDawgs every 20 minutes max
+        self.mincachetimeprovider = 20
+        
         self.urls = {'base_url': 'https://hounddawgs.org/',
                      'search': 'https://hounddawgs.org/torrents.php',
                      'login': 'https://hounddawgs.org/login.php'}
@@ -189,12 +192,8 @@ class HoundDawgsCache(tvcache.TVCache):
 
         tvcache.TVCache.__init__(self, provider_obj)
 
-        # only poll HoundDawgs every 20 minutes max
-        self.minTime = 20
-
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_strings)}
-
 
 provider = HoundDawgsProvider()

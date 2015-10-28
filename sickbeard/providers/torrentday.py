@@ -40,7 +40,10 @@ class TorrentDayProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = TorrentDayCache(self)
-
+        self.mincachetime = None
+        # only poll TorrentDay every 10 minutes max
+        self.mincachetimeprovider = 10
+        
         self.urls = {'base_url': 'https://classic.torrentday.com',
                      'login': 'https://classic.torrentday.com/torrents/',
                      'search': 'https://classic.torrentday.com/V3/API/API.php',
@@ -166,9 +169,6 @@ class TorrentDayCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # Only poll IPTorrents every 10 minutes max
-        self.minTime = 10
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}

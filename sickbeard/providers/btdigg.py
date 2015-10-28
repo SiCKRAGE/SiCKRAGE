@@ -37,7 +37,9 @@ class BTDIGGProvider(generic.TorrentProvider):
         self.url = self.urls['url']
 
         self.cache = BTDiggCache(self)
-
+        # set this 0 to suppress log line, since we aren't updating it anyways
+        self.mincachetime = 0
+        
     def isEnabled(self):
         return self.enabled
 
@@ -99,9 +101,6 @@ class BTDiggCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # set this 0 to suppress log line, since we aren't updating it anyways
-        self.minTime = 0
 
     def _getRSSData(self):
         # no rss for btdigg, can't search with empty string

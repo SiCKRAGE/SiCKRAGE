@@ -78,7 +78,10 @@ class RarbgProvider(generic.TorrentProvider):
         self.headers.update({'User-Agent': USER_AGENT})
 
         self.cache = RarbgCache(self)
-
+        self.mincachetime = None
+        # only poll Rarbg every 10 minutes max
+        self.mincachetimeprovider = 10
+        
     def isEnabled(self):
         return self.enabled
 
@@ -260,12 +263,8 @@ class RarbgCache(tvcache.TVCache):
 
         tvcache.TVCache.__init__(self, provider_obj)
 
-        # only poll RARBG every 10 minutes max
-        self.minTime = 10
-
     def _getRSSData(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_params)}
-
 
 provider = RarbgProvider()

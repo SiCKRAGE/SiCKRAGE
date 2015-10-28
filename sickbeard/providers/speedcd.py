@@ -51,7 +51,10 @@ class SpeedCDProvider(generic.TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = SpeedCDCache(self)
-
+        self.mincachetime = None
+        # only poll Speedcd every 20 minutes max
+        self.mincachetimeprovider = 20
+        
     def isEnabled(self):
         return self.enabled
 
@@ -142,9 +145,6 @@ class SpeedCDCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll Speedcd every 20 minutes max
-        self.minTime = 20
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}

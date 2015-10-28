@@ -55,7 +55,10 @@ class GFTrackerProvider(generic.TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = GFTrackerCache(self)
-
+        self.mincachetime = None
+        # only poll GFTracker every 20 minutes max
+        self.mincachetimeprovider = 20
+        
     def isEnabled(self):
         return self.enabled
 
@@ -193,9 +196,6 @@ class GFTrackerCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # Poll delay in minutes
-        self.minTime = 20
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}

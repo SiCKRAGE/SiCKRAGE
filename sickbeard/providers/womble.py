@@ -27,6 +27,9 @@ class WombleProvider(generic.NZBProvider):
         generic.NZBProvider.__init__(self, "Womble's Index")
         self.public = True
         self.cache = WombleCache(self)
+        self.mincachetime = None
+        # only poll Womble's Index every 15 minutes max
+        self.mincachetimeprovider = 15
         self.urls = {'base_url': 'https://newshost.co.za/'}
         self.url = self.urls['base_url']
 
@@ -36,9 +39,8 @@ class WombleProvider(generic.NZBProvider):
 
 class WombleCache(tvcache.TVCache):
     def __init__(self, provider_obj):
+
         tvcache.TVCache.__init__(self, provider_obj)
-        # only poll Womble's Index every 15 minutes max
-        self.minTime = 15
 
     def updateCache(self):
         # check if we should update

@@ -34,7 +34,10 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
         self.username = None
         self.api_key = None
         self.cache = OmgwtfnzbsCache(self)
-
+        self.mincachetime = None
+        # only poll omgwtfnzbs every 20 minutes max
+        self.mincachetimeprovider = 20
+        
         self.urls = {'base_url': 'https://omgwtfnzbs.org/'}
         self.url = self.urls['base_url']
 
@@ -150,8 +153,8 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
 
 class OmgwtfnzbsCache(tvcache.TVCache):
     def __init__(self, provider_obj):
+
         tvcache.TVCache.__init__(self, provider_obj)
-        self.minTime = 20
 
     def _get_title_and_url(self, item):
         """

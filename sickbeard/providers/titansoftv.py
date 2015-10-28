@@ -35,6 +35,10 @@ class TitansOfTVProvider(generic.TorrentProvider):
         self.api_key = None
         self.ratio = None
         self.cache = TitansOfTVCache(self)
+        self.mincachetime = None
+        # only poll TitansOfTV every 10 minutes max
+        self.mincachetimeprovider = 10
+        
         self.url = 'http://titansof.tv/api/torrents'
         self.download_url = 'http://titansof.tv/api/torrents/%s/download?apikey=%s'
 
@@ -147,14 +151,11 @@ class TitansOfTVProvider(generic.TorrentProvider):
 
 class TitansOfTVCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-        tvcache.TVCache.__init__(self, provider_obj)
 
-        # At least 10 minutes between queries
-        self.minTime = 10
+        tvcache.TVCache.__init__(self, provider_obj)
 
     def _getRSSData(self):
         search_params = {'limit': 100}
         return self.provider._doSearch(search_params)
-
 
 provider = TitansOfTVProvider()

@@ -58,6 +58,11 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
         self.minseed = None
         self.minleech = None
 
+        self.cache = FrenchTorrentDBCache(self)
+        self.mincachetime = None
+        # only poll FrenchTorrentDB every 10 minutes max
+        self.mincachetimeprovider = 10
+        
     def isEnabled(self):
         return self.enabled
 
@@ -191,10 +196,8 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
 
 class FrenchTorrentDBCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-        tvcache.TVCache.__init__(self, provider_obj)
 
-        # Only poll FTDB every 10 minutes max
-        self.minTime = 10
+        tvcache.TVCache.__init__(self, provider_obj)
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}

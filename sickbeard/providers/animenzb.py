@@ -41,7 +41,10 @@ class animenzb(generic.NZBProvider):
         self.anime_only = True
 
         self.cache = animenzbCache(self)
-
+        self.mincachetime = None
+        # only poll AnimeNZB every 20 minutes max
+        self.mincachetimeprovider = 20
+        
         self.urls = {'base_url': 'http://animenzb.com//'}
 
         self.url = self.urls['base_url']
@@ -110,9 +113,6 @@ class animenzbCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll animenzb every 20 minutes max
-        self.minTime = 20
 
     def _getRSSData(self):
 

@@ -52,7 +52,9 @@ class HDTorrentsProvider(generic.TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = HDTorrentsCache(self)
-
+        self.mincachetime = None
+        # only poll HDTorrents every 10 minutes max
+        self.mincachetimeprovider = 10
 
     def isEnabled(self):
         return self.enabled
@@ -221,9 +223,6 @@ class HDTorrentsCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll HDTorrents every 10 minutes max
-        self.minTime = 10
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}

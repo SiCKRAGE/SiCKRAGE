@@ -39,7 +39,10 @@ class T411Provider(generic.TorrentProvider):
         self.tokenLastUpdate = None
 
         self.cache = T411Cache(self)
-
+        elf.mincachetime = None
+        # only poll T411 every 10 minutes max
+        self.mincachetimeprovider = 10
+        
         self.urls = {'base_url': 'http://www.t411.in/',
                      'search': 'https://api.t411.in/torrents/search/%s?cid=%s&limit=100',
                      'rss': 'https://api.t411.in/torrents/top/today',
@@ -177,14 +180,11 @@ class T411Auth(AuthBase):
 
 class T411Cache(tvcache.TVCache):
     def __init__(self, provider_obj):
-        tvcache.TVCache.__init__(self, provider_obj)
 
-        # Only poll T411 every 10 minutes max
-        self.minTime = 10
+        tvcache.TVCache.__init__(self, provider_obj)
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_params)}
-
 
 provider = T411Provider()

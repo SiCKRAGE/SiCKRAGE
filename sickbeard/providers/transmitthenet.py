@@ -45,7 +45,10 @@ class TransmitTheNetProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = TransmitTheNetCache(self)
-
+        self.mincachetime = None
+        # only poll TransmitTheNet every 20 minutes max
+        self.mincachetimeprovider = 20
+        
         self.search_params = {
             "page": 'torrents',
             "category": 0,
@@ -162,14 +165,11 @@ class TransmitTheNetProvider(generic.TorrentProvider):
 
 class TransmitTheNetCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-        tvcache.TVCache.__init__(self, provider_obj)
 
-        # Only poll TransmitTheNet every 20 minutes max
-        self.minTime = 20
+        tvcache.TVCache.__init__(self, provider_obj)
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_strings)}
-
 
 provider = TransmitTheNetProvider()

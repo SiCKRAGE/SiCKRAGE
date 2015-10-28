@@ -36,7 +36,10 @@ class TorrentRssProvider(generic.TorrentProvider):
                  enable_backlog=False):
         generic.TorrentProvider.__init__(self, name)
         self.cache = TorrentRssCache(self)
-
+        self.mincachetime = None
+        # only poll TorrentRss providers every 15 minutes max
+        self.mincachetimeprovider = 15
+        
         self.urls = {'base_url': re.sub(r'\/$', '', url)}
 
         self.url = self.urls['base_url']
@@ -154,8 +157,8 @@ class TorrentRssProvider(generic.TorrentProvider):
 
 class TorrentRssCache(tvcache.TVCache):
     def __init__(self, provider_obj):
+
         tvcache.TVCache.__init__(self, provider_obj)
-        self.minTime = 15
 
     def _getRSSData(self):
         logger.log(u"Cache update URL: %s" % self.provider.url, logger.DEBUG)

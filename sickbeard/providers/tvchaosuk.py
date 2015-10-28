@@ -46,7 +46,10 @@ class TVChaosUKProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = TVChaosUKCache(self)
-
+        self.mincachetime = None
+        # only poll TvChaosUK every 20 minutes max
+        self.mincachetimeprovider = 20
+        
         self.search_params = {
             'do': 'search',
             'keywords':  '',
@@ -203,12 +206,8 @@ class TVChaosUKCache(tvcache.TVCache):
 
         tvcache.TVCache.__init__(self, provider_obj)
 
-        # only poll TVChaosUK every 20 minutes max
-        self.minTime = 20
-
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_strings)}
-
 
 provider = TVChaosUKProvider()

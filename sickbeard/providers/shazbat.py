@@ -36,7 +36,10 @@ class ShazbatProvider(generic.TorrentProvider):
         self.options = None
 
         self.cache = ShazbatCache(self)
-
+        self.mincachetime = None
+        # only poll Shazbat.tv every 15 minutes max
+        self.mincachetimeprovider = 15
+        
         self.urls = {'base_url': u'http://www.shazbat.tv/',
                      'website': u'http://www.shazbat.tv/login',}
         self.url = self.urls['website']
@@ -64,10 +67,8 @@ class ShazbatProvider(generic.TorrentProvider):
 
 class ShazbatCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-        tvcache.TVCache.__init__(self, provider_obj)
 
-        # only poll Shazbat feed every 15 minutes max
-        self.minTime = 15
+        tvcache.TVCache.__init__(self, provider_obj)
 
     def _getRSSData(self):
 

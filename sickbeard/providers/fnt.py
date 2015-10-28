@@ -40,7 +40,10 @@ class FNTProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = FNTCache(self)
-
+        self.mincachetime = None
+        # only poll FNT every 10 minutes max
+        self.mincachetimeprovider = 10
+        
         self.urls = {'base_url': 'https://fnt.nu',
                      'search': 'https://www.fnt.nu/torrents/recherche/',
                      'login': 'https://fnt.nu/account-login.php',
@@ -164,14 +167,11 @@ class FNTProvider(generic.TorrentProvider):
 
 class FNTCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-        tvcache.TVCache.__init__(self, provider_obj)
 
-        # Only poll FNT every 10 minutes max
-        self.minTime = 10
+        tvcache.TVCache.__init__(self, provider_obj)
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_strings)}
-
 
 provider = FNTProvider()

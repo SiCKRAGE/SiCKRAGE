@@ -40,7 +40,10 @@ class NextGenProvider(generic.TorrentProvider):
         self.ratio = None
 
         self.cache = NextGenCache(self)
-
+        self.mincachetime = None
+        # only poll NextGen every 10 minutes max
+        self.mincachetimeprovider = 10
+        
         self.urls = {'base_url': 'https://nxtgn.biz/',
                      'search': 'https://nxtgn.biz/browse.php?search=%s&cat=0&incldead=0&modes=%s',
                      'login_page': 'https://nxtgn.biz/login.php'}
@@ -215,9 +218,6 @@ class NextGenCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # Only poll NextGen every 10 minutes max
-        self.minTime = 10
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
