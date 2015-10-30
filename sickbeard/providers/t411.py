@@ -39,7 +39,7 @@ class T411Provider(generic.TorrentProvider):
         self.tokenLastUpdate = None
 
         self.cache = T411Cache(self)
-        elf.mincachetime = None
+        self.mincachetime = None
         # only poll T411 every 10 minutes max
         self.mincachetimeprovider = 10
         
