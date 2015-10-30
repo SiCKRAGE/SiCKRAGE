@@ -39,7 +39,10 @@ class IPTorrentsProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = IPTorrentsCache(self)
-
+        self.mincachetime = None
+        # only poll IPTorrents every 10 minutes max
+        self.mincachetimeprovider = 10
+        
         self.urls = {'base_url': 'https://iptorrents.eu',
                      'login': 'https://iptorrents.eu/torrents/',
                      'search': 'https://iptorrents.eu/t?%s%s&q=%s&qf=#torrents'}
@@ -180,12 +183,8 @@ class IPTorrentsCache(tvcache.TVCache):
 
         tvcache.TVCache.__init__(self, provider_obj)
 
-        # Only poll IPTorrents every 10 minutes max
-        self.minTime = 10
-
     def _getRSSData(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_params)}
-
 
 provider = IPTorrentsProvider()

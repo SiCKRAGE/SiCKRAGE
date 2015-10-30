@@ -38,7 +38,10 @@ class TORRENTPROJECTProvider(generic.TorrentProvider):
         self.minseed = None
         self.minleech = None
         self.cache = TORRENTPROJECTCache(self)
-
+        self.mincachetime = None
+        # only poll TorrentProject every 20 minutes max
+        self.mincachetimeprovider = 20
+        
     def isEnabled(self):
         return self.enabled
 
@@ -121,8 +124,6 @@ class TORRENTPROJECTCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        self.minTime = 20
 
     def _getRSSData(self):
         

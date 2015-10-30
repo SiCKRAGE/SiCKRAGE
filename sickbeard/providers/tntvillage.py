@@ -111,7 +111,9 @@ class TNTVillageProvider(generic.TorrentProvider):
         self.categories = "cat=29"
 
         self.cache = TNTVillageCache(self)
-
+        self.mincachetime = None
+        # only poll TNTVillage every 30 minutes max
+        self.mincachetimeprovider = 30
 
     def isEnabled(self):
         return self.enabled
@@ -410,9 +412,6 @@ class TNTVillageCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll TNTVillage every 30 minutes max
-        self.minTime = 30
 
     def _getRSSData(self):
         search_params = {'RSS': []}

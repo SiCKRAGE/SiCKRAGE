@@ -54,7 +54,10 @@ class TorrentBytesProvider(generic.TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = TorrentBytesCache(self)
-
+        self.mincachetime = None
+        # only poll TorrentBytes every 20 minutes max
+        self.mincachetimeprovider = 20
+        
     def isEnabled(self):
         return self.enabled
 
@@ -193,12 +196,8 @@ class TorrentBytesCache(tvcache.TVCache):
 
         tvcache.TVCache.__init__(self, provider_obj)
 
-        # only poll TorrentBytes every 20 minutes max
-        self.minTime = 20
-
     def _getRSSData(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_params)}
-
 
 provider = TorrentBytesProvider()

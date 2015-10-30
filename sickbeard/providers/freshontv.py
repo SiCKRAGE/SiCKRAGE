@@ -46,7 +46,10 @@ class FreshOnTVProvider(generic.TorrentProvider):
         self.freeleech = False
 
         self.cache = FreshOnTVCache(self)
-
+        self.mincachetime = None
+        # only poll FreshOnTV every 20 minutes max
+        self.mincachetimeprovider = 20
+        
         self.urls = {'base_url': 'https://freshon.tv/',
                      'login': 'https://freshon.tv/login.php?action=makelogin',
                      'detail': 'https://freshon.tv/details.php?id=%s',
@@ -246,9 +249,6 @@ class FreshOnTVCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # poll delay in minutes
-        self.minTime = 20
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}

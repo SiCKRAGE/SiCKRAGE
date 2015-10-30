@@ -44,7 +44,10 @@ class SCCProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = SCCCache(self)
-
+        self.mincachetime = None
+        # only poll SceneAccess every 20 minutes max
+        self.mincachetimeprovider = 20
+        
         self.urls = {'base_url': 'https://sceneaccess.eu',
                      'login': 'https://sceneaccess.eu/login',
                      'detail': 'https://www.sceneaccess.eu/details?id=%s',
@@ -181,9 +184,6 @@ class SCCCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll SCC every 20 minutes max
-        self.minTime = 20
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}

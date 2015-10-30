@@ -47,6 +47,10 @@ class ExtraTorrentProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = ExtraTorrentCache(self)
+        self.mincachetime = None
+        # only poll ExtraTorrent every 30 minutes max
+        self.mincachetimeprovider = 30
+        
         self.headers.update({'User-Agent': USER_AGENT})
         self.search_params = {'cid': 8}
 
@@ -142,8 +146,6 @@ class ExtraTorrentCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        self.minTime = 30
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}

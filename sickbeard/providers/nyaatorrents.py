@@ -40,7 +40,10 @@ class NyaaProvider(generic.TorrentProvider):
         self.ratio = None
 
         self.cache = NyaaCache(self)
-
+        self.mincachetime = None
+        # only poll NyaaTorrents every 15 minutes max
+        self.mincachetimeprovider = 15
+        
         self.urls = {'base_url': 'http://www.nyaa.se/'}
 
         self.url = self.urls['base_url']
@@ -140,12 +143,11 @@ class NyaaProvider(generic.TorrentProvider):
 
 class NyaaCache(tvcache.TVCache):
     def __init__(self, provider_obj):
+
         tvcache.TVCache.__init__(self, provider_obj)
 
-        # only poll NyaaTorrents every 15 minutes max
-        self.minTime = 15
-
     def _getRSSData(self):
+
         search_params = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_params)}
 

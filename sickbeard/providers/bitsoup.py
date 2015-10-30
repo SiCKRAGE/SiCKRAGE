@@ -47,6 +47,9 @@ class BitSoupProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = BitSoupCache(self)
+        self.mincachetime = None
+        # only poll BitSoup every 20 minutes max
+        self.mincachetimeprovider = 20
 
         self.search_params = {
             "c42": 1, "c45": 1, "c49": 1, "c7": 1
@@ -159,9 +162,6 @@ class BitSoupCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll TorrentBytes every 20 minutes max
-        self.minTime = 20
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}

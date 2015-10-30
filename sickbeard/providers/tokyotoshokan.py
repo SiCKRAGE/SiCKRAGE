@@ -38,7 +38,10 @@ class TokyoToshokanProvider(generic.TorrentProvider):
         self.ratio = None
 
         self.cache = TokyoToshokanCache(self)
-
+        self.mincachetime = None
+        # only poll TokyoToshokan every 15 minutes max
+        self.mincachetimeprovider = 15
+        
         self.urls = {'base_url': 'http://tokyotosho.info/'}
         self.url = self.urls['base_url']
 
@@ -115,10 +118,8 @@ class TokyoToshokanProvider(generic.TorrentProvider):
 
 class TokyoToshokanCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-        tvcache.TVCache.__init__(self, provider_obj)
 
-        # only poll NyaaTorrents every 15 minutes max
-        self.minTime = 15
+        tvcache.TVCache.__init__(self, provider_obj)
 
     def _getRSSData(self):
         params = {
@@ -130,6 +131,5 @@ class TokyoToshokanCache(tvcache.TVCache):
         logger.log(u"Cache update URL: %s" % url, logger.DEBUG)
 
         return self.getRSSFeed(url)
-
 
 provider = TokyoToshokanProvider()

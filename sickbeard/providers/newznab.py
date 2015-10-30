@@ -44,7 +44,10 @@ class NewznabProvider(generic.NZBProvider):
         generic.NZBProvider.__init__(self, name)
 
         self.cache = NewznabCache(self)
-
+        self.mincachetime = None
+        # only poll newznab providers every 30 minutes max
+        self.mincachetimeprovider = 30
+        
         self.urls = {'base_url': url}
 
         self.url = self.urls['base_url']
@@ -348,9 +351,6 @@ class NewznabCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll newznab providers every 30 minutes
-        self.minTime = 30
         self.last_search = datetime.datetime.now()
 
     def _getRSSData(self):

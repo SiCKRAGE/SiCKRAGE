@@ -43,6 +43,10 @@ class TORRENTZProvider(generic.TorrentProvider):
         self.minseed = None
         self.minleech = None
         self.cache = TORRENTZCache(self)
+        self.mincachetime = None
+        # only poll Torrentz every 15 minutes max
+        self.mincachetimeprovider = 15
+        
         self.urls = {'verified': 'https://torrentz.eu/feed_verified',
                      'feed': 'https://torrentz.eu/feed',
                      'base': 'https://torrentz.eu/'}
@@ -132,9 +136,6 @@ class TORRENTZCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll every 15 minutes max
-        self.minTime = 15
 
     def _getRSSData(self):
         return {'entries': self.provider._doSearch({'RSS': ['']})}

@@ -51,7 +51,10 @@ class LibertaliaProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = LibertaliaCache(self)
-
+        self.mincachetime = None
+        # only poll Libertalia every 10 minutes max
+        self.mincachetimeprovider = 10
+        
     def isEnabled(self):
         return self.enabled
 
@@ -150,8 +153,6 @@ class LibertaliaCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        self.minTime = 10
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}

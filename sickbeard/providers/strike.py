@@ -30,6 +30,8 @@ class STRIKEProvider(generic.TorrentProvider):
         self.url = 'https://getstrike.net/'
         self.ratio = 0
         self.cache = StrikeCache(self)
+        # set this 0 to suppress log line, since we aren't updating it anyways
+        self.mincachetime = 0
         self.minseed, self.minleech = 2 * [None]
 
     def isEnabled(self):
@@ -94,9 +96,6 @@ class StrikeCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # set this 0 to suppress log line, since we aren't updating it anyways
-        self.minTime = 0
 
     def _getRSSData(self):
         # no rss for getstrike.net afaik, also can't search with empty string

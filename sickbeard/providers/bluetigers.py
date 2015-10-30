@@ -42,6 +42,9 @@ class BLUETIGERSProvider(generic.TorrentProvider):
         self.tokenLastUpdate = None
 
         self.cache = BLUETIGERSCache(self)
+        self.mincachetime = None
+        # only poll BLUETIGERS every 10 minutes max
+        self.mincachetimeprovider = 10
 
         self.urls = {
             'base_url': 'https://www.bluetigers.ca/',
@@ -160,9 +163,6 @@ class BLUETIGERSAuth(AuthBase):
 class BLUETIGERSCache(tvcache.TVCache):
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # Only poll BLUETIGERS every 10 minutes max
-        self.minTime = 10
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}

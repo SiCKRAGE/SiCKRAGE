@@ -39,7 +39,10 @@ class CpasbienProvider(generic.TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = CpasbienCache(self)
-
+        self.mincachetime = None
+        # only poll Cpasbien every 30 minutes max
+        self.mincachetimeprovider = 30
+        
     def isEnabled(self):
         return self.enabled
 
@@ -126,8 +129,6 @@ class CpasbienCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        self.minTime = 30
 
     def _getRSSData(self):
         #search_strings = {'RSS': ['']}

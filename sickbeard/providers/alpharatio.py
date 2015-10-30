@@ -52,7 +52,10 @@ class AlphaRatioProvider(generic.TorrentProvider):
         self.proper_strings = ['PROPER', 'REPACK']
 
         self.cache = AlphaRatioCache(self)
-
+        self.mincachetime = None
+        # only poll AlphaRatio every 20 minutes max
+        self.mincachetimeprovider = 20
+        
     def isEnabled(self):
         return self.enabled
 
@@ -154,9 +157,6 @@ class AlphaRatioCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # only poll AlphaRatio every 20 minutes max
-        self.minTime = 20
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}

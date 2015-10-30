@@ -42,7 +42,10 @@ class SceneTimeProvider(generic.TorrentProvider):
         self.minleech = None
 
         self.cache = SceneTimeCache(self)
-
+        self.mincachetime = None
+        # only poll SceneTime every 20 minutes max
+        self.mincachetimeprovider = 20
+        
         self.urls = {'base_url': 'https://www.scenetime.com',
                      'login': 'https://www.scenetime.com/takelogin.php',
                      'detail': 'https://www.scenetime.com/details.php?id=%s',
@@ -164,12 +167,8 @@ class SceneTimeCache(tvcache.TVCache):
 
         tvcache.TVCache.__init__(self, provider_obj)
 
-        # only poll SceneTime every 20 minutes max
-        self.minTime = 20
-
     def _getRSSData(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_params)}
-
 
 provider = SceneTimeProvider()
