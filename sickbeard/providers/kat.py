@@ -58,12 +58,14 @@ class KATProvider(generic.TorrentProvider):
         self.url = self.urls['base_url']
         self.headers.update({'User-Agent': USER_AGENT})
 
+
+        # for serie add 'category': 'tv'
+        # for anime add 'category': 'anime'
         self.search_params = {
             'q': '',
             'field': 'seeders',
             'sorder': 'desc',
-            'rss': 1,
-            'category': 'tv'
+            'rss': 1
         }
 
     def isEnabled(self):
