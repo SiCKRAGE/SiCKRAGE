@@ -114,9 +114,9 @@ normal_regexes = [
      (?P<season_num>\d{1,2})                     # 1
      (?P<ep_num>\d{2})$                          # 02
      '''),
-                  
+
     ('newpct',
-    # Example: Sobrenatural - Temporada 10 [HDTV][Cap.1023][Espanol Castellano] 
+    # Example: Sobrenatural - Temporada 10 [HDTV][Cap.1023][Espanol Castellano]
      r'''
      (?P<series_name>.+?)                      # Showw_Name: "Sobrenatural"
      (?:.-.+\d{1,2}.\[)                        # Separator and junk: " - Temporada 10 ["
@@ -155,9 +155,9 @@ normal_regexes = [
      r'''
      ^((?P<series_name>.+?)[. _-]+)?             # Show_Name and separator
      (e(p(isode)?)?|part|pt)[. _-]?              # e, ep, episode, or part
-     (?P<ep_num>(\d+|[ivx]+))                    # first ep num
+     (?P<ep_num>(\d+|(?<!e)[ivx]+))                    # first ep num
      ((([. _-]+(and|&|to)[. _-]+)|-)             # and/&/to joiner
-     (?P<extra_ep_num>(?!(1080|720|480)[pi])(\d+|[ivx]+))[. _-])            # second ep num
+     (?P<extra_ep_num>(?!(1080|720|480)[pi])(\d+|(?<!e)[ivx]+))[. _-])            # second ep num
      ([. _-]*(?P<extra_info>.+?)                 # Source_Quality_Etc-
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$              # Group
@@ -171,11 +171,11 @@ normal_regexes = [
      r'''
      ^((?P<series_name>.+?)[. _-]+)?             # Show_Name and separator
      (e(p(isode)?)?|part|pt)[. _-]?              # e, ep, episode, or part
-     (?P<ep_num>(\d+|([ivx]+(?=[. _-]))))                    # first ep num
+     (?P<ep_num>(\d+|((?<!e)[ivx]+(?=[. _-]))))                    # first ep num
      ([. _-]+((and|&|to)[. _-]+)?                # and/&/to joiner
      ((e(p(isode)?)?|part|pt)[. _-]?)           # e, ep, episode, or part
      (?P<extra_ep_num>(?!(1080|720|480)[pi])
-     (\d+|([ivx]+(?=[. _-]))))[. _-])*            # second ep num
+     (\d+|((?<!e)[ivx]+(?=[. _-]))))[. _-])*            # second ep num
      ([. _-]*(?P<extra_info>.+?)                 # Source_Quality_Etc-
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$              # Group

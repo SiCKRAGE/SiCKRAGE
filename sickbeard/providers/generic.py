@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import with_statement
 
 import datetime
 import os
@@ -384,7 +383,7 @@ class GenericProvider:
 
             # parse the file name
             try:
-                myParser = NameParser(showObj=show)
+                myParser = NameParser(False, showObj=show)
                 parse_result = myParser.parse(title)
             except InvalidNameException:
                 logger.log(u"Unable to parse the filename " + title + " into a valid episode", logger.DEBUG)

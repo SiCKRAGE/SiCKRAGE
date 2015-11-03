@@ -593,6 +593,8 @@ class UI(WebRoot):
         return "ok"
 
     def get_messages(self):
+        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
+        self.set_header("Content-Type", "application/json")
         messages = {}
         cur_notification_num = 1
         for cur_notification in ui.notifications.get_notifications(self.request.remote_ip):
@@ -610,10 +612,12 @@ class WebFileBrowser(WebRoot):
         super(WebFileBrowser, self).__init__(*args, **kwargs)
 
     def index(self, path='', includeFiles=False, *args, **kwargs):
+        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header("Content-Type", "application/json")
         return json.dumps(foldersAtPath(path, True, bool(int(includeFiles))))
 
     def complete(self, term, includeFiles=0, *args, **kwargs):
+        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header("Content-Type", "application/json")
         paths = [entry['path'] for entry in foldersAtPath(os.path.dirname(term), includeFiles=bool(int(includeFiles)))
                  if 'path' in entry]
@@ -4468,14 +4472,14 @@ class ConfigProviders(Config):
                         kwargs[curTorrentProvider.getID() + '_engrelease'])
                 except Exception:
                     curTorrentProvider.engrelease = 0
-            
+
             if hasattr(curTorrentProvider, 'onlyspasearch'):
                 try:
                     curTorrentProvider.onlyspasearch = config.checkbox_to_value(
                         kwargs[curTorrentProvider.getID() + '_onlyspasearch'])
                 except:
                     curTorrentProvider.onlyspasearch = 0
-            
+
             if hasattr(curTorrentProvider, 'append_identifier'):
                 try:
                     curTorrentProvider.append_identifier = str(kwargs[curTorrentProvider.getID() + '_append_identifier']).strip()

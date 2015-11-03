@@ -368,7 +368,7 @@ $('#config-components').tabs();
                             </label>
                         </div>
                         % endif
-						
+
                         % if hasattr(curTorrentProvider, 'pin'):
                         <div class="field-pair">
                             <label for="${curTorrentProvider.getID()}_pin">
@@ -466,7 +466,7 @@ $('#config-components').tabs();
                             </label>
                         </div>
                         % endif
-                        
+
                         % if hasattr(curTorrentProvider, 'append_identifier'):
                         <div class="field-pair">
                             <label for="${curTorrentProvider.getID()}_append_identifier">
@@ -478,7 +478,7 @@ $('#config-components').tabs();
                             </label>
                         </div>
                         % endif
-                        
+
                         % if hasattr(curTorrentProvider, 'sorting'):
                         <div class="field-pair">
                             <label for="${curTorrentProvider.getID()}_sorting">
