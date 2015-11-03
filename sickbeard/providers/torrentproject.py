@@ -37,6 +37,7 @@ class TORRENTPROJECTProvider(generic.TorrentProvider):
         self.headers.update({'User-Agent': USER_AGENT})
         self.minseed = None
         self.minleech = None
+        self.append_identifier = None
         self.cache = TORRENTPROJECTCache(self)
 
     def isEnabled(self):
@@ -67,6 +68,7 @@ class TORRENTPROJECTProvider(generic.TorrentProvider):
                 results = []
                 for i in torrents:
                     title = torrents[i]["title"]
+                    title = title + self.append_identifier
                     seeders = helpers.tryInt(torrents[i]["seeds"], 1)
                     leechers = helpers.tryInt(torrents[i]["leechs"], 0)
                     if seeders < self.minseed or leechers < self.minleech:
