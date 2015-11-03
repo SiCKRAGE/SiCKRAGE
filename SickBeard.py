@@ -92,7 +92,6 @@ class SickRage(object):
         self.log_dir = None
         self.consoleLogging = True
 
-
     @staticmethod
     def help_message():
         """
@@ -175,13 +174,14 @@ class SickRage(object):
             reload(sys)
 
         if sys.platform == 'win32':
-            #pylint: disable=E1101
+            # pylint: disable=E1101
             if sys.getwindowsversion()[0] >= 6 and sys.stdout.encoding == 'cp65001':
                 sickbeard.SYS_ENCODING = 'UTF-8'
 
         try:
             # pylint: disable=E1101
-            # On non-unicode builds this will raise an AttributeError, if encoding type is not valid it throws a LookupError
+            # On non-unicode builds this will raise an AttributeError,
+            # if encoding type is not valid it throws a LookupError
             sys.setdefaultencoding(sickbeard.SYS_ENCODING)
         except Exception:
             sys.exit("Sorry, you MUST add the SickRage folder to the PYTHONPATH environment variable\n" +
@@ -388,8 +388,8 @@ class SickRage(object):
         if sickbeard.USE_FAILED_DOWNLOADS:
             failed_history.trimHistory()
 
-        # Check for metadata indexer updates for shows (Disabled until we use api)
-        #sickbeard.showUpdateScheduler.forceRun()
+        # # Check for metadata indexer updates for shows (Disabled until we use api)
+        # sickbeard.showUpdateScheduler.forceRun()
 
         # Launch browser
         if sickbeard.LAUNCH_BROWSER and not (self.noLaunch or self.runAsDaemon):
@@ -421,7 +421,6 @@ class SickRage(object):
         # Previous code simply set the umask to whatever it was because it was ANDing instead of ORring
         # Daemons traditionally run with umask 0 anyways and this should not have repercussions
         os.umask(0)
-
 
         # Make the child a session-leader by detaching from the terminal
         try:
@@ -497,7 +496,8 @@ class SickRage(object):
             for filename in filesList:
                 srcFile = os.path.join(srcDir, filename)
                 dstFile = os.path.join(dstDir, filename)
-                bakFile = os.path.join(dstDir, '{0}.bak-{1}'.format(filename, datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d_%H%M%S')))
+                time_stamp = datetime.datetime.now()
+                bakFile = os.path.join(dstDir, '{0}.bak-{1}'.format(filename, time_stamp.strftime('%Y%m%d_%H%M%S')))
                 if os.path.isfile(dstFile):
                     shutil.move(dstFile, bakFile)
                 shutil.move(srcFile, dstFile)
@@ -534,18 +534,19 @@ class SickRage(object):
                 if install_type in ('git', 'source'):
                     popen_list = [sys.executable, sickbeard.MY_FULLNAME]
                 elif install_type == 'win':
-                    logger.log(u"You are using a binary Windows build of SickRage. Please switch to using git.", logger.ERROR)
+                    logger.log(u"You are using a binary Windows build of SickRage. Please switch to using git.",
+                               logger.ERROR)
 
                 if popen_list and not sickbeard.NO_RESTART:
                     popen_list += sickbeard.MY_ARGS
                     if '--nolaunch' not in popen_list:
                         popen_list += ['--nolaunch']
                     logger.log(u"Restarting SickRage with " + str(popen_list))
-                    logger.shutdown() #shutdown the logger to make sure it's released the logfile BEFORE it restarts SR.
+                    logger.shutdown()  # shutdown logger to make sure the logfile's released BEFORE it restarts SR.
                     subprocess.Popen(popen_list, cwd=os.getcwd())
 
         # system exit
-        logger.shutdown() #Make sure the logger has stopped, just in case
+        logger.shutdown()  # Make sure the logger has stopped, just in case
         # pylint: disable=W0212
         os._exit(0)
 
