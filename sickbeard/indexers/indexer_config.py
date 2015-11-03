@@ -3,7 +3,7 @@ import requests
 
 INDEXER_TVDB = 1
 
-#Must keep
+# Must keep
 INDEXER_TVRAGE = 2
 
 initConfig = {}
@@ -28,7 +28,7 @@ indexerConfig[INDEXER_TVDB] = {
     'api_params': {'apikey': 'F9C450E78D99172E',
                    'language': 'en',
                    'useZip': True,
-                  },
+                   },
     'session': requests.Session()
 }
 
@@ -38,4 +38,5 @@ indexerConfig[INDEXER_TVDB]['xem_origin'] = 'tvdb'
 indexerConfig[INDEXER_TVDB]['icon'] = 'thetvdb16.png'
 indexerConfig[INDEXER_TVDB]['scene_loc'] = 'http://sickragetv.github.io/sb_tvdb_scene_exceptions/exceptions.txt'
 indexerConfig[INDEXER_TVDB]['show_url'] = 'http://thetvdb.com/?tab=series&id='
-indexerConfig[INDEXER_TVDB]['base_url'] = 'http://thetvdb.com/api/%(apikey)s/series/' % indexerConfig[INDEXER_TVDB]['api_params']
+indexerConfig[INDEXER_TVDB]['base_url'] = 'http://thetvdb.com/api/%(apikey)s/series/' % indexerConfig[INDEXER_TVDB][
+    'api_params']
