@@ -107,7 +107,7 @@ Please follow this process; it's the best way to get your work included in the p
 
    ```bash
    # Switch to the develop branch
-   git checkout develop
+   git checkout -b develop origin/develop
    # Pull down any updates
    git pull
    ```
