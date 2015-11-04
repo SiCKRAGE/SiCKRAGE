@@ -558,6 +558,9 @@ class CalendarHandler(BaseHandler):
                 ical += 'DTEND:' + air_date_time_end.strftime(
                     "%Y%m%d") + 'T' + air_date_time_end.strftime(
                         "%H%M%S") + 'Z\r\n'
+                if sickbeard.CALENDAR_ICONS:
+                    ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:https://lh3.googleusercontent.com/-Vp_3ZosvTgg/VjiFu5BzQqI/AAAAAAAA_TY/3ZL_1bC0Pgw/s16-Ic42/SickRage.png\r\n'
+                    ical += 'X-GOOGLE-CALENDAR-CONTENT-DISPLAY:CHIP\r\n'
                 ical += u'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(
                     show['show_name'], episode['season'], episode['episode'], episode['name']
                 )
@@ -670,7 +673,42 @@ class Home(WebRoot):
         else:
             showlists = [["Shows", sickbeard.showList]]
 
-        return t.render(title="Home", header="Show List", topmenu="home", showlists=showlists)
+        stats = self.show_statistics()
+        return t.render(title="Home", header="Show List", topmenu="home", showlists=showlists, show_stat=stats[0], max_download_count=stats[1])
+
+    @staticmethod
+    def show_statistics():
+        myDB = db.DBConnection()
+        today = str(datetime.date.today().toordinal())
+
+        status_quality  = '(' + ','.join([str(x) for x in Quality.SNATCHED + Quality.SNATCHED_PROPER]) + ')'
+        status_download = '(' + ','.join([str(x) for x in Quality.DOWNLOADED + Quality.ARCHIVED]) + ')'
+
+        sql_statement  = 'SELECT showid, '
+
+        sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 AND status IN ' + status_quality + ') AS ep_snatched, '
+        sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 AND status IN ' + status_download + ') AS ep_downloaded, '
+        sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 '
+        sql_statement += ' AND ((airdate <= ' + today + ' AND (status = ' + str(SKIPPED) + ' OR status = ' + str(WANTED) + ' OR status = ' + str(FAILED) + ')) '
+        sql_statement += ' OR (status IN ' + status_quality + ') OR (status IN ' + status_download + '))) AS ep_total, '
+
+        sql_statement += ' (SELECT airdate FROM tv_episodes WHERE showid=tv_eps.showid AND airdate >= ' + today + ' AND (status = ' + str(UNAIRED) + ' OR status = ' + str(WANTED) + ') ORDER BY airdate ASC LIMIT 1) AS ep_airs_next, '
+        sql_statement += ' (SELECT airdate FROM tv_episodes WHERE showid=tv_eps.showid AND airdate > 1 AND status <> ' + str(UNAIRED) + ' ORDER BY airdate DESC LIMIT 1) AS ep_airs_prev '
+        sql_statement += ' FROM tv_episodes tv_eps GROUP BY showid'
+
+        sql_result = myDB.select(sql_statement)
+
+        show_stat = {}
+        max_download_count = 1000
+        for cur_result in sql_result:
+            show_stat[cur_result['showid']] = cur_result
+            if cur_result['ep_total'] > max_download_count:
+                max_download_count = cur_result['ep_total']
+
+        max_download_count *= 100
+
+        return show_stat, max_download_count
+
 
     def is_alive(self, *args, **kwargs):
         if 'callback' in kwargs and '_' in kwargs:
@@ -3638,7 +3676,7 @@ class ConfigGeneral(Config):
                     web_password=None, version_notify=None, enable_https=None, https_cert=None, https_key=None,
                     handle_reverse_proxy=None, sort_article=None, auto_update=None, notify_on_update=None,
                     proxy_setting=None, proxy_indexers=None, anon_redirect=None, git_path=None, git_remote=None,
-                    calendar_unprotected=None, debug=None, ssl_verify=None, no_restart=None, coming_eps_missed_range=None,
+                    calendar_unprotected=None, calendar_icons=None, debug=None, ssl_verify=None, no_restart=None, coming_eps_missed_range=None,
                     filter_row=None, fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None, display_all_seasons=None):
@@ -3677,6 +3715,7 @@ class ConfigGeneral(Config):
         sickbeard.GIT_PATH = git_path
         sickbeard.GIT_REMOTE = git_remote
         sickbeard.CALENDAR_UNPROTECTED = config.checkbox_to_value(calendar_unprotected)
+        sickbeard.CALENDAR_ICONS = config.checkbox_to_value(calendar_icons)
         sickbeard.NO_RESTART = config.checkbox_to_value(no_restart)
         sickbeard.DEBUG = config.checkbox_to_value(debug)
         sickbeard.SSL_VERIFY = config.checkbox_to_value(ssl_verify)
@@ -3712,9 +3751,7 @@ class ConfigGeneral(Config):
             sickbeard.TIME_PRESET_W_SECONDS = time_preset
             sickbeard.TIME_PRESET = sickbeard.TIME_PRESET_W_SECONDS.replace(u":%S", u"")
 
-        #Force all users to use local
-        #sickbeard.TIMEZONE_DISPLAY = timezone_display
-        sickbeard.TIMEZONE_DISPLAY = 'local'
+        sickbeard.TIMEZONE_DISPLAY = timezone_display
 
 
         if not config.change_LOG_DIR(log_dir, web_log):
@@ -3823,8 +3860,8 @@ class ConfigSearch(Config):
         return t.render(submenu=self.ConfigMenu(), title='Config - Episode Search', header='Search Settings', topmenu='config')
 
     def saveSearch(self, use_nzbs=None, use_torrents=None, nzb_dir=None, sab_username=None, sab_password=None,
-                   sab_apikey=None, sab_category=None, sab_category_anime=None, sab_host=None, nzbget_username=None,
-                   nzbget_password=None, nzbget_category=None, nzbget_category_anime=None, nzbget_priority=None,
+                   sab_apikey=None, sab_category=None, sab_category_anime=None, sab_category_backlog=None, sab_category_anime_backlog=None, sab_host=None, nzbget_username=None,
+                   nzbget_password=None, nzbget_category=None, nzbget_category_backlog=None, nzbget_category_anime=None, nzbget_category_anime_backlog=None, nzbget_priority=None,
                    nzbget_host=None, nzbget_use_https=None, backlog_frequency=None,
                    dailysearch_frequency=None, nzb_method=None, torrent_method=None, usenet_retention=None,
                    download_propers=None, check_propers_interval=None, allow_high_priority=None, sab_forced=None,
@@ -3872,14 +3909,18 @@ class ConfigSearch(Config):
         sickbeard.SAB_PASSWORD = sab_password
         sickbeard.SAB_APIKEY = sab_apikey.strip()
         sickbeard.SAB_CATEGORY = sab_category
+        sickbeard.SAB_CATEGORY_BACKLOG = sab_category_backlog
         sickbeard.SAB_CATEGORY_ANIME = sab_category_anime
+        sickbeard.SAB_CATEGORY_ANIME_BACKLOG = sab_category_anime_backlog
         sickbeard.SAB_HOST = config.clean_url(sab_host)
         sickbeard.SAB_FORCED = config.checkbox_to_value(sab_forced)
 
         sickbeard.NZBGET_USERNAME = nzbget_username
         sickbeard.NZBGET_PASSWORD = nzbget_password
         sickbeard.NZBGET_CATEGORY = nzbget_category
+        sickbeard.NZBGET_CATEGORY_BACKLOG = nzbget_category_backlog
         sickbeard.NZBGET_CATEGORY_ANIME = nzbget_category_anime
+        sickbeard.NZBGET_CATEGORY_ANIME_BACKLOG = nzbget_category_anime_backlog
         sickbeard.NZBGET_HOST = config.clean_host(nzbget_host)
         sickbeard.NZBGET_USE_HTTPS = config.checkbox_to_value(nzbget_use_https)
         sickbeard.NZBGET_PRIORITY = config.to_int(nzbget_priority, default=100)
@@ -4479,12 +4520,6 @@ class ConfigProviders(Config):
                         kwargs[curTorrentProvider.getID() + '_onlyspasearch'])
                 except:
                     curTorrentProvider.onlyspasearch = 0
-
-            if hasattr(curTorrentProvider, 'append_identifier'):
-                try:
-                    curTorrentProvider.append_identifier = str(kwargs[curTorrentProvider.getID() + '_append_identifier']).strip()
-                except:
-                    curTorrentProvider.append_identifier = None
 
             if hasattr(curTorrentProvider, 'sorting'):
                 try:
