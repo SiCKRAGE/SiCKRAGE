@@ -31,6 +31,7 @@ class BTDIGGProvider(generic.TorrentProvider):
         self.supportsBacklog = True
         self.public = True
         self.ratio = 0
+        self.mindownloads = None
         self.urls = {'url': u'https://btdigg.org/',
                      'api': u'https://api.btdigg.org/'}
 
@@ -66,11 +67,18 @@ class BTDIGGProvider(generic.TorrentProvider):
                         title = torrent['name']
                         download_url = torrent['magnet']
                         size = torrent['size']
+                        downloads = torrent['reqs']
+
+						
                         # FIXME
                         seeders = 1
                         leechers = 0
 
                         if not all([title, download_url]):
+                            continue
+							
+                        if downloads < self.mindownloads:
+                            logger.log(u"Number of downloads '{0}' doesn't meed minimum number ignoring it..".format(downloads), logger.DEBUG)
                             continue
 
                         # Filter unseeded torrent

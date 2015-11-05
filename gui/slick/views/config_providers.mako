@@ -419,6 +419,17 @@ $('#config-components').tabs();
                         </div>
                         % endif
 
+                        % if hasattr(curTorrentProvider, 'mindownloads'):
+                        <div class="field-pair">
+                            <label for="${curTorrentProvider.getID()}_mindownloads">
+                                <span class="component-title" id="${curTorrentProvider.getID()}_mindownloads_desc">Minimum required downloads:</span>
+                                <span class="component-desc">
+                                    <input type="number" name="${curTorrentProvider.getID()}_mindownloads" id="${curTorrentProvider.getID()}_mindownloads" value="${curTorrentProvider.mindownloads}" class="form-control input-sm input75" />
+                                </span>
+                            </label>
+                        </div>
+                        % endif
+
                         % if hasattr(curTorrentProvider, 'confirmed'):
                         <div class="field-pair">
                             <label for="${curTorrentProvider.getID()}_confirmed">
