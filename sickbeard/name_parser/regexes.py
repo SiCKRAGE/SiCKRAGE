@@ -187,7 +187,7 @@ normal_regexes = [
      # 01 - Ep Name
      # 01 - Ep Name
      r'''
-     ^((?P<series_name>.+?)(?:[. _-]{2,}|[. _]))?    # Show_Name and separator
+     ^((\[(.*?)\])[. _-])?((?P<series_name>.+?)(?:[. _-]{2,}|[. _]))?    # Show_Name and separator
      (?P<ep_num>\d{1,3})                             # 02
      (?:-(?P<extra_ep_num>\d{1,3}))*                 # -03-04-05 etc
      \s?of?\s?\d{1,3}?                               # of joiner (with or without spaces) and series total ep
@@ -239,14 +239,14 @@ anime_regexes = [
      # [ISLAND]One_Piece_679_[VOSTFR]_[8bit]_[720p]_[EB7838FC].mp4
      r'''
      ^\[(?P<release_group>ISLAND?)\]                                          # Release Group
-	 (?P<series_name>.+?)[ ._-]+                                              # Show_Name and separator
-	 (?P<ep_ab_num>\d{1,3})[ ._-]+                                            # Episode number
-	 (\[VOSTFR\])
-	 ([ ._-]+\[[vV](?P<version>[0-9])\])*[ ._-]+                              # Version
-	 (\[(8bit|10bit)\])?[ ._-]+
-	 \[(?P<extra_info>(\d{3,4}[xp]?\d{0,4})?[\.\w\s-]*)\][ ._-]+              # Extra info
-	 (\[(?P<crc>\w{8})\])?                                                    # CRC
-	 .*?
+     (?P<series_name>.+?)[ ._-]+                                              # Show_Name and separator
+     (?P<ep_ab_num>\d{1,3})[ ._-]+                                            # Episode number
+     (\[VOSTFR\])
+     ([ ._-]+\[[vV](?P<version>[0-9])\])*[ ._-]+                              # Version
+     (\[(8bit|10bit)\])?[ ._-]+
+     \[(?P<extra_info>(\d{3,4}[xp]?\d{0,4})?[\.\w\s-]*)\][ ._-]+              # Extra info
+     (\[(?P<crc>\w{8})\])?                                                    # CRC
+     .*?
      '''),
 
     ('anime_Kaerizaki-Fansub',
@@ -426,6 +426,11 @@ anime_regexes = [
      r'''
      ^(?P<ep_ab_num>\d{3,4})(-(?P<extra_ab_ep_num>\d{3,4}))?\.\s+(?P<series_name>.+?)\s-\s.*
      '''),
+     
+    ('anime_MangaOff',
+     # 003. Show Name - Ep Name.ext
+     # 003-004. Show Name - Ep Name.ext
+     ur'(?P<series_name>.+?)[ ._-]+(E(?P<ep_ab_num>\d{1,4})[ ._-]+)(.*)FANSUB[ ._-]+VOSTFR(.*?)([ ._-](\d{1,4}[pi])[ ._-])?(.*)[ ._-](?P<release_group>.*)'),     
 
     ('anime_bare',
      # One Piece - 102
