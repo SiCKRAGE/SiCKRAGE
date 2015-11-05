@@ -6,7 +6,7 @@ $(document).ready(function(){
             if(isMeta('sickbeard.HISTORY_LAYOUT', ['detailed'])){
                 return {
                     0: function(node) { return $(node).find('time').attr('datetime'); },
-                    4: function(node) { return $(node).find("span").text().toLowerCase(); }
+                    6: function(node) { return $(node).find("span").text().toLowerCase(); }
                 };
             } else {
                 return {
@@ -21,7 +21,7 @@ $(document).ready(function(){
             if(isMeta('sickbeard.HISTORY_LAYOUT', ['detailed'])){
                 return {
                     0: { sorter: 'realISODate' },
-                    4: { sorter: 'quality' }
+                    6: { sorter: 'quality' }
                 };
             } else {
                 return {

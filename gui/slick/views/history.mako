@@ -56,6 +56,7 @@
             <tr>
                 <th class="nowrap">Time</th>
                 <th>Episode</th>
+                <th>Release</th>
                 <th>Action</th>
                 <th>Provider</th>
                 <th>Quality</th>
@@ -64,7 +65,7 @@
 
         <tfoot>
             <tr>
-                <th class="nowrap" colspan="5">&nbsp;</th>
+                <th class="nowrap" colspan="6">&nbsp;</th>
             </tr>
         </tfoot>
 
@@ -77,7 +78,10 @@
                     <% isoDate = datetime.datetime.strptime(str(hItem["date"]), History.date_format).isoformat('T') %>
                     <time datetime="${isoDate}" class="date">${airDate}</time>
                 </td>
-                <td class="tvShow" width="35%"><a href="${srRoot}/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">${hItem["show_name"]} - ${"S%02i" % int(hItem["season"])}${"E%02i" % int(hItem["episode"])} ${('', '<span class="quality Proper">Proper</span>')["proper" in hItem["resource"].lower() or "repack" in hItem["resource"].lower()]}</a></td>
+                <td class="tvShow" ><a href="${srRoot}/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">${hItem["show_name"]} - ${"S%02i" % int(hItem["season"])}${"E%02i" % int(hItem["episode"])} ${('', '<span class="quality Proper">Proper</span>')["proper" in hItem["resource"].lower() or "repack" in hItem["resource"].lower()]}</a></td>
+                
+                <td align="center">${os.path.basename(hItem['resource'])}</td>
+                
                 <td align="center" ${('', 'class="subtitles_column"')[curStatus == SUBTITLED]}>
                 % if curStatus == SUBTITLED:
                     <img width="16" height="11" style="vertical-align:middle;" src="${srRoot}/images/subtitles/flags/${hItem['resource']}.png" onError="this.onerror=null;this.src='${srRoot}/images/flags/unknown.png';">
@@ -140,7 +144,7 @@
                     <% isoDate = datetime.datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format).isoformat('T') %>
                     <time datetime="${isoDate}" class="date">${airDate}</time>
                 </td>
-                <td class="tvShow" width="25%">
+                <td class="tvShow" >
                     <span><a href="${srRoot}/home/displayShow?show=${hItem["show_id"]}#season-${hItem["season"]}">${hItem["show_name"]} - ${"S%02i" % int(hItem["season"])}${"E%02i" % int(hItem["episode"])}${('', ' <span class="quality Proper">Proper</span>')['proper' in hItem["resource"].lower() or 'repack' in hItem["resource"].lower()]}</a></span>
                 </td>
                 <td align="center" provider="${str(sorted(hItem["actions"])[0]["provider"])}">
@@ -181,7 +185,7 @@
                     % endfor
                 </td>
                 % endif
-                <td align="center" width="14%" quality="${curQuality}">${renderQualityPill(curQuality)}</td>
+                <td align="center" quality="${curQuality}">${renderQualityPill(curQuality)}</td>
             </tr>
         % endfor
         </tbody>
