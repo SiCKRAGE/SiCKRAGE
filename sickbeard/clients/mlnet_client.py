@@ -1,4 +1,4 @@
-# Author: Mr_Orange <mr_orange@hotmail.it>
+# Author: kounch
 # URL: http://code.google.com/p/sickbeard/
 #
 # This file is part of SickRage.
