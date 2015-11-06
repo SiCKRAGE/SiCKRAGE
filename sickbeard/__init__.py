@@ -1283,6 +1283,9 @@ def initialize(consoleLogging=True):
             if hasattr(curTorrentProvider, 'minleech'):
                 curTorrentProvider.minleech = check_setting_int(CFG, curTorrentProvider.getID().upper(),
                                                                 curTorrentProvider.getID() + '_minleech', 0)
+            if hasattr(curTorrentProvider, 'mindownloads'):
+                curTorrentProvider.mindownloads = check_setting_int(CFG, curTorrentProvider.getID().upper(),
+                                                                curTorrentProvider.getID() + '_mindownloads', 30)
             if hasattr(curTorrentProvider, 'freeleech'):
                 curTorrentProvider.freeleech = bool(check_setting_int(CFG, curTorrentProvider.getID().upper(),
                                                                       curTorrentProvider.getID() + '_freeleech', 0))
@@ -1834,6 +1837,9 @@ def save_config():
         if hasattr(curTorrentProvider, 'minleech'):
             new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID() + '_minleech'] = int(
                 curTorrentProvider.minleech)
+        if hasattr(curTorrentProvider, 'mindownloads'):
+            new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID() + '_mindownloads'] = int(
+                curTorrentProvider.mindownloads)
         if hasattr(curTorrentProvider, 'options'):
             new_config[curTorrentProvider.getID().upper()][
                 curTorrentProvider.getID() + '_options'] = curTorrentProvider.options

@@ -4399,6 +4399,12 @@ class ConfigProviders(Config):
                     curTorrentProvider.minleech = int(str(kwargs[curTorrentProvider.getID() + '_minleech']).strip())
                 except Exception:
                     curTorrentProvider.minleech = 0
+					
+            if hasattr(curTorrentProvider, 'mindownloads'):
+                try:
+                    curTorrentProvider.mindownloads = int(str(kwargs[curTorrentProvider.getID() + '_mindownloads']).strip())
+                except Exception:
+                    curTorrentProvider.mindownloads = 0
 
             if hasattr(curTorrentProvider, 'ratio'):
                 try:
