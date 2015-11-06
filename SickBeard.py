@@ -137,7 +137,8 @@ class SickRage(object):
             "sickbeard/clients/transmission.py",
             "sickbeard/clients/deluge.py",
             "sickbeard/clients/deluged.py",
-            "sickbeard/clients/rtorrent.py"
+            "sickbeard/clients/rtorrent.py",
+            "sickbeard/clients/mlnet.py"
         ]
 
         for filename in filenames:
