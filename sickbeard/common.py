@@ -516,69 +516,92 @@ qualityPresetStrings = {SD: "SD",
 class StatusStrings(UserDict):
     """
     Dictionary containing strings for status codes
-
-    Keys must be convertible to int or a ValueError will be raised.  This is intentional to match old functionality until
-    the old StatusStrings is fully deprecated, then we will raise a KeyError instead, where appropriate.
-
-    Membership checks using __contains__ (i.e. 'x in y') do not raise a ValueError to match expected dict functionality
     """
     # todo: Deprecate StatusStrings().statusStrings and use StatusStrings() directly
     # todo: Deprecate .has_key and switch to 'x in y'
-    # todo: Switch from raising ValueError to a saner KeyError
-    # todo: Raise KeyError when unable to resolve a missing key instead of returning ''
-    # todo: Make key of None match dict() functionality
+    # todo: Make views return Qualities too
 
     @property
     def statusStrings(self):  # for backwards compatibility
         return self.data
 
+    @property
+    def viewkeys(self):
+        return self.data.viewkeys
+
+    @property
+    def viewvalues(self):
+        return self.data.viewvalues
+
+    @property
+    def viewitems(self):
+        return self.data.viewitems
+
     def __setitem__(self, key, value):
-        self.data[int(key)] = value  # make sure all keys being assigned values are ints
+        """
+        If the key is numeric or None
+            x.__setitem__(i, y) <==> x[i]=y
+
+        :param key: A numeric key or None
+        :param value: Value assigned to a key
+        :exception TypeError: Raises TypeError if the key isn't valid
+        """
+        try:
+            key = long(key)  # use long to avoid recursion when the key is larger than an int
+        except (ValueError, TypeError):  # If the key is'nt numeric...
+            if key is not None:  # ...and isn't None...
+                raise TypeError('expected a numeric key: %s', str(key))  # ...then it's invalid, so raise a TypeError
+        self.data[key] = value
 
     def __missing__(self, key):
         """
-        If the key is not found, search for the missing key in qualities
+        If the key is not found and is numeric, try to determine a status from Quality
+        otherwise try to convert it to a number
 
-        Keys must be convertible to int or a ValueError will be raised.  This is intentional to match old functionality until
-        the old StatusStrings is fully deprecated, then we will raise a KeyError instead, where appropriate.
+        :param key: A numeric key or None
+        :exception KeyError: Raises a KeyError if the key is invalid and can't be determined from Quality
         """
-        if isinstance(key, int):  # if the key is already an int...
-            if key in self.keys() + Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED:
+        # the key wasn't found...
+        if isinstance(key, long):  # ...so if the key is already a long...
+            # search for it in Qualities
+            if key in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED:
                 status, quality = Quality.splitCompositeStatus(key)
-                if quality == Quality.NONE:  # If a Quality is not listed... (shouldn't this be 'if not quality:'?)
+                if not quality:  # If a Quality is not listed...
                     return self[status]  # ...return the status...
                 else:
                     return self[status] + " (" + Quality.qualityStrings[quality] + ")"  # ...otherwise append the quality to the status
-            else:
-                return ''  # return '' to match old functionality when the numeric key is not found
-        return self[int(key)]  # Since the key was not an int, let's try int(key) instead
+            else:  # the key wasn't found in qualities
+                raise KeyError(key)  # ... so the key is invalid
+        else:  # the key was not a number
+            try:
+                return self[long(key)]  # ...so let's try converting it to a long...
+            except (ValueError, TypeError):  # ...and if it still fails...
+                raise KeyError('expected a numeric key: %s', str(key))  # ...then it's invalid, so raise a KeyError
 
-    # Keep this until all has_key() checks are converted to 'key in dict'
-    # or else has_keys() won't search __missing__ for keys
     def has_key(self, key):
         """
-        Override has_key() to test membership using an 'x in y' search
+        D.has_key(k) -> True if D has a key k or Quality has a key k, else False
 
-        Keys must be convertible to int or a ValueError will be raised.  This is intentional to match old functionality until
-        the old StatusStrings is fully deprecated, then we will raise a KeyError instead, where appropriate.
+        :param key: A numeric key or None
         """
-        return key in self  # This will raise a ValueError if __missing__ can't convert the key to int
+        return key in self
 
     def __contains__(self, key):
         """
-        Checks for existence of key
+        D.__contains__(k) -> True if D has a key k or Quality has a key k, else False
 
-        Unlike has_key() and __missing__() this will NOT raise a ValueError to match expected functionality
-        when checking for 'key in dict'
+        :param key: A numeric key or None
         """
         try:
-            # This will raise a ValueError if we can't convert the key to int
-            return ((int(key) in self.data) or
-                    (int(key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED))
-        except ValueError:  # The key is not numeric and since we only want numeric keys...
+            if key is not None:
+                key = long(key)
+            return (key in self.data or
+                    key in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED)
+        except (ValueError, TypeError):  # The key is not numeric and since we only want numeric keys or None...
             # ...and we don't want this function to fail...
             pass  # ...suppress the ValueError and do nothing, the key does not exist
 
+# Assign strings to statuses
 statusStrings = StatusStrings(
     {UNKNOWN: "Unknown",
      UNAIRED: "Unaired",
@@ -592,11 +615,11 @@ statusStrings = StatusStrings(
      SUBTITLED: "Subtitled",
      FAILED: "Failed",
      SNATCHED_BEST: "Snatched (Best)"
-     })
+     }
+)
 
 # pylint: disable=R0903
 class Overview(object):
-
     UNAIRED = UNAIRED  # 1
     QUAL = 2
     WANTED = WANTED  # 3
