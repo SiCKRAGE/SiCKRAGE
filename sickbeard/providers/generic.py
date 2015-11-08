@@ -373,7 +373,24 @@ class GenericProvider(object):
                 logger.log(u"Unable to parse the filename " + title + " into a valid show", logger.DEBUG)
                 continue
 
-            showObj = parse_result.show
+                
+            previous_parse = parse_result
+            if(hasattr(previous_parse.show, 'is_anime')):
+                try:
+                    logger.log(u"Let s try to reparse since " + title + " is an anime", logger.DEBUG)       
+                    myParser = NameParser(True, previous_parse.show, True)
+                    parse_result = myParser.parse(title, use_cache=False)
+                except InvalidNameException:
+                    parse_result = previous_parse
+                    logger.log(u"Unable to re-parse as anime the filename " + title + " into a valid episode", logger.DEBUG)
+                    continue
+                except InvalidShowException:
+                    parse_result = previous_parse
+                    logger.log(u"Unable to re-parse as anime the filename " + title + " into a valid show", logger.DEBUG)
+                    continue
+                                    
+                
+            showObj = parse_result.show 
             quality = parse_result.quality
             release_group = parse_result.release_group
             version = parse_result.version

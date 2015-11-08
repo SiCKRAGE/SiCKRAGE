@@ -189,7 +189,7 @@ normal_regexes = [
      # 01 - Ep Name
      # 01 - Ep Name
      r'''
-     ^((?P<series_name>.+?)(?:[. _-]{2,}|[. _]))?    # Show_Name and separator
+     ^((\[(.*?)\])[. _-])?((?P<series_name>.+?)(?:[. _-]{2,}|[. _]))?    # Show_Name and separator
      (?P<ep_num>\d{1,3})                             # 02
      (?:-(?P<extra_ep_num>\d{1,3}))*                 # -03-04-05 etc
      \s?of?\s?\d{1,3}?                               # of joiner (with or without spaces) and series total ep
@@ -428,6 +428,11 @@ anime_regexes = [
      r'''
      ^(?P<ep_ab_num>\d{3,4})(-(?P<extra_ab_ep_num>\d{3,4}))?\.\s+(?P<series_name>.+?)\s-\s.*
      '''),
+     
+    ('anime_MangaOff',
+     # 003. Show Name - Ep Name.ext
+     # 003-004. Show Name - Ep Name.ext
+     ur'(?P<series_name>.+?)[ ._-]+(E(?P<ep_ab_num>\d{1,4})[ ._-]+)(.*)FANSUB[ ._-]+VOSTFR(.*?)([ ._-](\d{1,4}[pi])[ ._-])?(.*)[ ._-](?P<release_group>.*)'),     
 
     ('anime_bare',
      # One Piece - 102

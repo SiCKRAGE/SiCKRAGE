@@ -22,6 +22,10 @@
 import httplib
 import datetime
 
+import zipfile
+import io
+import urllib2
+
 import sickbeard
 
 from base64 import standard_b64encode
@@ -41,6 +45,24 @@ def sendNZB(nzb, proper=False):
     :param nzb: nzb object
     :param proper: True if this is a Proper download, False if not. Defaults to False
     """
+    if nzb.url.lower().endswith(".zip") and nzb.resultType == "nzb":
+        genProvider = GenericProvider("")
+        data = genProvider.getURL(nzb.url)
+        file_like_object = io.BytesIO(data)
+        zObj = zipfile.ZipFile(file_like_object)
+        for name in zObj.namelist():
+            nzb.resultType = "nzbdata"
+            if name.lower().endswith(".nzb"):
+                nzb.extraInfo = []
+                nzb.name = name.rsplit('.', 1)[0]
+                extraInfo = []
+                nzb.url = ""
+                extraInfo.append(zObj.read(name))
+                nzb.extraInfo = extraInfo
+                sendNZB(nzb, proper)
+        return True
+
+
     addToTop = False
     nzbgetprio = 0
     category = sickbeard.NZBGET_CATEGORY

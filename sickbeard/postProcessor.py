@@ -524,6 +524,23 @@ class PostProcessor(object):
 
         # show object
         show = parse_result.show
+        
+        if(hasattr(show, 'is_anime')):
+            previous_np = np    
+            previous_parse = parse_result         
+            try:
+                logger.log(u"Let s try to reparse since " + name + " is an anime", logger.DEBUG)       
+                myParser = NameParser(True, show, True)
+                parse_result = myParser.parse(name, use_cache=False)
+            except InvalidNameException:
+                parse_result = previous_parse
+                np = previous_np
+                logger.log(u"Unable to re-parse as anime the filename " + title + " into a valid episode", logger.DEBUG)
+            except InvalidShowException:
+                np = previous_np
+                parse_result = previous_parse
+                logger.log(u"Unable to re-parse as anime the filename " + title + " into a valid show", logger.DEBUG)                      
+        show = parse_result.show        
 
         if parse_result.is_air_by_date:
             season = -1

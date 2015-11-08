@@ -396,15 +396,16 @@ class NameParser(object):
 
         return number
 
-    def parse(self, name, cache_result=True):
+    def parse(self, name, cache_result=True, use_cache=True):
         name = self._unicodify(name)
 
         if self.naming_pattern:
             cache_result = False
 
-        cached = name_parser_cache.get(name)
-        if cached:
-            return cached
+        if use_cache:
+            cached = name_parser_cache.get(name)
+            if cached:
+                return cached
 
         # break it into parts if there are any (dirname, file name, extension)
         dir_name, file_name = ek(os.path.split, name)
