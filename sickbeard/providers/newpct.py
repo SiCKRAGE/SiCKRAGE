@@ -1,22 +1,22 @@
-#Author: CristianBB
-#Greetings to Mr. Pine-apple
+# Author: CristianBB
+# Greetings to Mr. Pine-apple
 #
-#URL: http://code.google.com/p/sickbeard/
+# URL: http://code.google.com/p/sickbeard/
 #
-#This file is part of SickRage.
+# This file is part of SickRage.
 #
-#SickRage is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#SickRage is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#You should have received a copy of the GNU General Public License
-#along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 import traceback
 import re
@@ -73,9 +73,6 @@ class newpctProvider(generic.TorrentProvider):
         }
 
 
-    def isEnabled(self):
-        return self.enabled
-
     def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
@@ -83,7 +80,7 @@ class newpctProvider(generic.TorrentProvider):
 
         lang_info = '' if not epObj or not epObj.show else epObj.show.lang
 
-        #Only search if user conditions are true
+        # Only search if user conditions are true
         if self.onlyspasearch and lang_info != 'es':
             logger.log(u"Show info is not spanish, skipping provider search", logger.DEBUG)
             return results
@@ -122,7 +119,7 @@ class newpctProvider(generic.TorrentProvider):
                                     title_raw = torrent_row.get('title')
                                     title = self._processTitle(title_raw)
                                     
-                                    #Search results don't return torrent files directly, it returns show sheets so we must parse showSheet to access torrent.
+                                    # Search results don't return torrent files directly, it returns show sheets so we must parse showSheet to access torrent.
                                     data2 = self.getURL(showSheetURL)
                                     download_url = re.search(r'http://tumejorserie.com/descargar/.+\.torrent', data2, re.DOTALL).group()
                                     
@@ -162,10 +159,10 @@ class newpctProvider(generic.TorrentProvider):
     
     def _processTitle(self, title):
 
-        #Remove "Mas informacion sobre " literal from title
+        # Remove "Mas informacion sobre " literal from title
         title = title[22:]
 
-        #Quality
+        # Quality
         title = title.replace('[HDTV]', '[720p HDTV x264]')
         title = title.replace('[HDTV 720p AC3 5.1]', '[720p HDTV x264]')
         title = title.replace('[HDTV 1080p AC3 5.1]', '[1080p HDTV x264]')
