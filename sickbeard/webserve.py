@@ -2189,11 +2189,14 @@ class HomePostProcess(Home):
 
             return argument
 
+        def argToUnicode(argument):
+            return argument if not isinstance(argument, str) else argument.decode('UTF-8')
+
         if not proc_dir:
             return self.redirect("/home/postprocess/")
         else:
             result = processTV.processDir(
-                proc_dir, nzbName, process_method=process_method, force=argToBool(force),
+                argToUnicode(proc_dir), argToUnicode(nzbName), process_method=process_method, force=argToBool(force),
                 is_priority=argToBool(is_priority), delete_on=argToBool(delete_on), failed=argToBool(failed), proc_type=proc_type
             )
 
