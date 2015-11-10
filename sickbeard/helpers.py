@@ -1765,7 +1765,7 @@ if __name__ == '__main__':
 def remove_article(text=''):
     """Remove the english articles from a text string"""
 
-    return re.sub(r'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
+    return re.sub(ur'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
 
 
 def generateCookieSecret():
