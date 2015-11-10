@@ -152,12 +152,9 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     :param proc_type: Type of postprocessing auto or manual
     """
 
-    def argToUnicode(argument):
-        return argument if not isinstance(argument, str) else unicode(argument, 'UTF-8')
-
-    dirName = argToUnicode(dirName)
-    nzbName = argToUnicode(nzbName)
-    sickbeard.TV_DOWNLOAD_DIR = argToUnicode(sickbeard.TV_DOWNLOAD_DIR)
+    dirName = helpers.argToUnicode(dirName)
+    nzbName = helpers.argToUnicode(nzbName)
+    sickbeard.TV_DOWNLOAD_DIR = helpers.argToUnicode(sickbeard.TV_DOWNLOAD_DIR)
 
     result = ProcessResult()
 
@@ -196,7 +193,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
     if not postpone:
         result.output += logHelper(u"PostProcessing Path: %s" % path, logger.INFO)
-        result.output += logHelper(u"PostProcessing Dirs: [%s]" % u", ".join(dirs), logger.DEBUG)
+        result.output += logHelper(u"PostProcessing Dirs: [%s]" % dirs, logger.DEBUG)
 
         rarFiles = [x for x in files if helpers.isRarFile(x)]
         rarContent = unRAR(path, rarFiles, force, result)
@@ -320,8 +317,8 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
 
     IGNORED_FOLDERS = ['.AppleDouble', '.@__thumb', '@eaDir']
 
-    assert isinstance(dirName, unicode)
-    assert isinstance(path, unicode)
+    dirName = helpers.argToUnicode(dirName)
+    path = helpers.argToUnicode(path)
     assert nzbNameOriginal is None or isinstance(nzbNameOriginal, unicode)
 
     folder_name = os.path.basename(dirName)
@@ -590,7 +587,7 @@ def get_path_dir_files(dirName, nzbName, proc_type):
     dirs = []
     files = []
 
-    if dirName == sickbeard.TV_DOWNLOAD_DIR and not nzbName or proc_type == "auto":  # Scheduled Post Processing Active
+    if dirName == sickbeard.TV_DOWNLOAD_DIR and not nzbName or proc_type == "manual":  # Scheduled Post Processing Active
         # Get at first all the subdir in the dirName
         for path, dirs, files in os.walk(dirName):
             break
