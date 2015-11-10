@@ -1765,7 +1765,7 @@ if __name__ == '__main__':
 def remove_article(text=''):
     """Remove the english articles from a text string"""
 
-    return re.sub(r'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
+    return re.sub(ur'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
 
 
 def generateCookieSecret():
@@ -1912,3 +1912,42 @@ def getDiskSpaceUsage(diskPath=None):
             return pretty_filesize(st.f_bavail * st.f_frsize)
     else:
         return False
+
+def argToUnicode(argument):
+    if type(argument) == str: # leave unicode ones alone
+        try:
+            argument = argument.decode('utf8')
+        except:
+            argument = argument.decode('windows-1252')
+
+    return argument
+
+def oswalk(top, topdown=True, onerror=None, followlinks=False):
+    """
+    custom os.walk that handles unicode properly
+    """
+    islink, join, isdir = os.path.islink, os.path.join, os.path.isdir
+
+    try:
+        names = os.listdir(top.encode('utf8'))
+    except os.error, err:
+        if onerror is not None:
+            onerror(err)
+        return
+
+    dirs, nondirs = [], []
+    for name in names:
+        if isdir(join(top.encode('utf8'), name)):
+            dirs.append(argToUnicode(name))
+        else:
+            nondirs.append(argToUnicode(name))
+
+    if topdown:
+        yield top, dirs, nondirs
+    for name in dirs:
+        new_path = join(top, name)
+        if followlinks or not islink(new_path):
+            for x in oswalk(new_path, topdown, onerror, followlinks):
+                yield x
+    if not topdown:
+        yield top, dirs, nondirs
