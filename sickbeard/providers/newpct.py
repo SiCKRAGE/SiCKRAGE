@@ -162,7 +162,7 @@ class newpctProvider(generic.TorrentProvider):
     
     def _processTitle(self, title):
 
-        #Remove "Más información sobre " literal from title
+        #Remove "Mas informacion sobre " literal from title
         title = title[22:]
 
         #Quality
