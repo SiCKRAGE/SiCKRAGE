@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: https://sickrage.tv/
 # Git: https://github.com/SiCKRAGETV/SickRage.git
@@ -152,10 +153,6 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     :param proc_type: Type of postprocessing auto or manual
     """
 
-    dirName = helpers.argToUnicode(dirName)
-    nzbName = helpers.argToUnicode(nzbName)
-    sickbeard.TV_DOWNLOAD_DIR = helpers.argToUnicode(sickbeard.TV_DOWNLOAD_DIR)
-
     result = ProcessResult()
 
     result.output += logHelper(u"Processing folder %s" % dirName, logger.DEBUG)
@@ -240,7 +237,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
         result.result = True
 
-        for processPath, _, fileList in helpers.oswalk(os.path.join(path, curDir), topdown=False):
+        for processPath, _, fileList in os.walk(os.path.join(path, curDir), topdown=False):
 
             if not validateDir(path, processPath, nzbNameOriginal, failed, result):
                 continue
@@ -317,8 +314,6 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
 
     IGNORED_FOLDERS = ['.AppleDouble', '.@__thumb', '@eaDir']
 
-    dirName = helpers.argToUnicode(dirName)
-    path = helpers.argToUnicode(path)
     assert nzbNameOriginal is None or isinstance(nzbNameOriginal, unicode)
 
     folder_name = os.path.basename(dirName)
@@ -364,7 +359,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     # Get the videofile list for the next checks
     allFiles = []
     allDirs = []
-    for _, processdir, fileList in helpers.oswalk(os.path.join(path, dirName), topdown=False):
+    for _, processdir, fileList in os.walk(os.path.join(path, dirName), topdown=False):
         allDirs += processdir
         allFiles += fileList
 
@@ -589,7 +584,7 @@ def get_path_dir_files(dirName, nzbName, proc_type):
 
     if dirName == sickbeard.TV_DOWNLOAD_DIR and not nzbName or proc_type == "manual":  # Scheduled Post Processing Active
         # Get at first all the subdir in the dirName
-        for path, dirs, files in helpers.oswalk(dirName):
+        for path, dirs, files in os.walk(dirName):
             break
     else:
         path, dirs = os.path.split(dirName)  # Script Post Processing
