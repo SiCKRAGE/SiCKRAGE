@@ -240,7 +240,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
         result.result = True
 
-        for processPath, _, fileList in os.walk(os.path.join(path, curDir), topdown=False):
+        for processPath, _, fileList in helpers.oswalk(os.path.join(path, curDir), topdown=False):
 
             if not validateDir(path, processPath, nzbNameOriginal, failed, result):
                 continue
@@ -364,7 +364,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     # Get the videofile list for the next checks
     allFiles = []
     allDirs = []
-    for _, processdir, fileList in os.walk(os.path.join(path, dirName), topdown=False):
+    for _, processdir, fileList in helpers.oswalk(os.path.join(path, dirName), topdown=False):
         allDirs += processdir
         allFiles += fileList
 
@@ -589,7 +589,7 @@ def get_path_dir_files(dirName, nzbName, proc_type):
 
     if dirName == sickbeard.TV_DOWNLOAD_DIR and not nzbName or proc_type == "manual":  # Scheduled Post Processing Active
         # Get at first all the subdir in the dirName
-        for path, dirs, files in os.walk(dirName):
+        for path, dirs, files in helpers.oswalk(dirName):
             break
     else:
         path, dirs = os.path.split(dirName)  # Script Post Processing
