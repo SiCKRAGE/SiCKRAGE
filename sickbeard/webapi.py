@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Author: Dennis Lutter <lad1337@gmail.com>
 # Author: Jonathon Saine <thezoggy@gmail.com>
 # URL: http://code.google.com/p/sickbeard/
@@ -25,6 +26,7 @@ import time
 import urllib
 import datetime
 import traceback
+import sys
 
 import sickbeard
 from sickrage.helper.common import dateFormat, dateTimeFormat, timeFormat
@@ -92,6 +94,11 @@ result_type_map = {
 class ApiHandler(RequestHandler):
     """ api class that returns json results """
     version = 5  # use an int since float-point is unpredictable
+
+    if sys.version_info > (3, 0):
+        __str__ = lambda x: x.__unicode__()
+    else:
+        __str__ = lambda x: unicode(x).encode('utf-8')
 
     def __init__(self, *args, **kwargs):
         super(ApiHandler, self).__init__(*args, **kwargs)

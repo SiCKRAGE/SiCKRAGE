@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -16,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
 import os.path
 import threading
 import sickbeard
@@ -26,6 +28,11 @@ from sickrage.helper.encoding import ek
 
 
 class PostProcesser():
+    if sys.version_info > (3, 0):
+        __str__ = lambda x: x.__unicode__()
+    else:
+        __str__ = lambda x: unicode(x).encode('utf-8')
+
     def __init__(self):
         self.lock = threading.Lock()
         self.amActive = False
