@@ -268,7 +268,7 @@ class Quality:
         if checkName([r"(pdtv|hd.?tv|dsr|tvrip).(xvid|x26[45]|h.?26[45])"], all) and not checkName([r"(720|1080)[pi]"], all) and\
                 not checkName([r"hr.ws.pdtv.x26[45]"], any)or checkName(["videoman"], all) and not checkName(["(720|1080)[pi]"], all):
             ret = Quality.SDTV
-        elif checkName([r"web.?dl|webrip", r"xvid|x26[45]|h.?26[45]"], all) and not checkName([r"(720|1080)[pi]"], all):
+        elif checkName([r"web.?dl|webrip|huluhd", r"xvid|x26[45]|h.?26[45]"], all) and not checkName([r"(720|1080)[pi]"], all):
             ret = Quality.SDTV
         elif checkName([r"(dvd(rip|mux)|b[rd](rip|mux)|blue?-?ray)(.ws)?.(xvid|divx|x26[45])"], any) and not checkName([r"(720|1080)[pi]"], all):
             ret = Quality.SDDVD
