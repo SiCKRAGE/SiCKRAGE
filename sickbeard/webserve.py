@@ -20,6 +20,7 @@
 import io
 import os
 import re
+import sys
 import time
 import urllib
 import datetime
@@ -155,6 +156,11 @@ class PageTemplate(MakoTemplate):
 class BaseHandler(RequestHandler):
     startTime = 0.
 
+    if sys.version_info > (3, 0):
+        __str__ = lambda x: x.__unicode__()
+    else:
+        __str__ = lambda x: unicode(x).encode('utf-8')
+
     def __init__(self, *args, **kwargs):
         self.startTime = time.time()
 
@@ -226,7 +232,6 @@ class BaseHandler(RequestHandler):
             return self.get_secure_cookie('sickrage_user')
         else:
             return True
-
 
 class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
@@ -2189,11 +2194,14 @@ class HomePostProcess(Home):
 
             return argument
 
+        def argToUnicode(argument):
+            return argument if not isinstance(argument, str) else argument.decode('UTF-8')
+
         if not proc_dir:
             return self.redirect("/home/postprocess/")
         else:
             result = processTV.processDir(
-                proc_dir, nzbName, process_method=process_method, force=argToBool(force),
+                argToUnicode(proc_dir), argToUnicode(nzbName), process_method=process_method, force=argToBool(force),
                 is_priority=argToBool(is_priority), delete_on=argToBool(delete_on), failed=argToBool(failed), proc_type=proc_type
             )
 

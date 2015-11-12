@@ -1764,7 +1764,7 @@ if __name__ == '__main__':
 def remove_article(text=''):
     """Remove the english articles from a text string"""
 
-    return re.sub(r'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
+    return re.sub(ur'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
 
 
 def generateCookieSecret():
@@ -1871,8 +1871,7 @@ def isFileLocked(checkfile, writeLockCheck=False):
     :param writeLockCheck: when true will check if the file is locked for writing (prevents move operations)
     """
 
-    checkfile = os.path.abspath(checkfile)
-    assert isinstance(checkfile, unicode)
+    checkfile = os.path.abspath(checkfile.encode('utf8'))
 
     if not os.path.exists(checkfile):
         return True
