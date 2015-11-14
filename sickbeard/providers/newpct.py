@@ -119,16 +119,9 @@ class newpctProvider(generic.TorrentProvider):
                                     title_raw = torrent_row.get('title')
                                     title = self._processTitle(title_raw)
                                     
-                                    # Search results don't return torrent files directly, it returns show sheets so we must parse showSheet to access torrent.
-                                    data2 = self.getURL(showSheetURL)
-                                    download_url = re.search(r'http://tumejorserie.com/descargar/.+\.torrent', data2, re.DOTALL).group()
-                                    
-                                    if download_url:
-                                        item = title, download_url, size
-                                        logger.log(u"Found result: %s " % title, logger.DEBUG)
-                                        items[mode].append(item)
-                                    else:
-                                        logger.log(u"Error parsing showSheetURL: %s" % showSheetURL, logger.DEBUG)
+                                    item = title, showSheetURL, size
+                                    logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                    items[mode].append(item)
                                         
                                     iteration += 1
 
@@ -182,7 +175,46 @@ class newpctProvider(generic.TorrentProvider):
         return title
 
 
+    def downloadResult(self, result):
+        """
+        Save the result to disk.
+        """
 
+        # check for auth
+        if not self._doLogin():
+            return False
+
+        episodeSheets, filename = self._makeURL(result)
+
+        for episodeSheet in episodeSheets:
+            # Search results don't return torrent files directly, it returns show sheets so we must parse showSheet to access torrent.
+            logger.log(u"Parsing Episode Sheet for " + self.name + " from " + episodeSheet)
+            data = self.getURL(episodeSheet)
+            url = re.search(r'http://tumejorserie.com/descargar/.+\.torrent', data, re.DOTALL).group()
+
+            if url.startswith('http'):
+                self.headers.update({'Referer': '/'.join(url.split('/')[:3]) + '/'})
+
+            logger.log(u"Downloading a result from " + self.name + " at " + url)
+
+            # Support for Jackett/TorzNab
+            if url.endswith(GenericProvider.TORRENT) and filename.endswith(GenericProvider.NZB):
+                filename = filename.rsplit('.', 1)[0] + '.' + GenericProvider.TORRENT
+
+            if helpers.download_file(url, filename, session=self.session, headers=self.headers):
+                if self._verify_download(filename):
+                    logger.log(u"Saved result to " + filename, logger.INFO)
+                    return True
+                else:
+                    logger.log(u"Could not download %s" % url, logger.WARNING)
+                    helpers.remove_file_failed(filename)
+
+        if len(urls):
+            logger.log(u"Failed to download any results", logger.WARNING)
+
+        return False
+    
+    
 class newpctCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
