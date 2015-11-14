@@ -22,6 +22,7 @@ import traceback
 import re
 from six.moves import urllib
 
+from sickbeard import helpers
 from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard.providers import generic
@@ -134,6 +135,41 @@ class newpctProvider(generic.TorrentProvider):
             results += items[mode]
 
         return results
+    
+    def downloadResult(self, result):
+        """
+        Save the result to disk.
+        """
+
+        # check for auth
+        if not self._doLogin():
+            return False
+
+        episodeSheets, filename = self._makeURL(result)
+
+        for episodeSheet in episodeSheets:
+            # Search results don't return torrent files directly, it returns show sheets so we must parse showSheet to access torrent.
+            logger.log(u"Parsing Episode Sheet from " + episodeSheet)
+            data = self.getURL(episodeSheet)
+            url = re.search(r'http://tumejorserie.com/descargar/.+\.torrent', data, re.DOTALL).group()
+
+            if url.startswith('http'):
+                self.headers.update({'Referer': '/'.join(url.split('/')[:3]) + '/'})
+
+            logger.log(u"Downloading a result from " + self.name + " at " + url)
+
+            if helpers.download_file(url, filename, session=self.session, headers=self.headers):
+                if self._verify_download(filename):
+                    logger.log(u"Saved result to " + filename, logger.INFO)
+                    return True
+                else:
+                    logger.log(u"Could not download %s" % url, logger.WARNING)
+                    helpers.remove_file_failed(filename)
+
+        if len(urls):
+            logger.log(u"Failed to download any results", logger.WARNING)
+
+        return False
 
     @staticmethod
     def _convertSize(size):
@@ -173,46 +209,6 @@ class newpctProvider(generic.TorrentProvider):
         title = title.replace('[MicroHD 1080p]', '[1080p BlueRay x264]')
 
         return title
-
-
-    def downloadResult(self, result):
-        """
-        Save the result to disk.
-        """
-
-        # check for auth
-        if not self._doLogin():
-            return False
-
-        episodeSheets, filename = self._makeURL(result)
-
-        for episodeSheet in episodeSheets:
-            # Search results don't return torrent files directly, it returns show sheets so we must parse showSheet to access torrent.
-            logger.log(u"Parsing Episode Sheet for " + self.name + " from " + episodeSheet)
-            data = self.getURL(episodeSheet)
-            url = re.search(r'http://tumejorserie.com/descargar/.+\.torrent', data, re.DOTALL).group()
-
-            if url.startswith('http'):
-                self.headers.update({'Referer': '/'.join(url.split('/')[:3]) + '/'})
-
-            logger.log(u"Downloading a result from " + self.name + " at " + url)
-
-            # Support for Jackett/TorzNab
-            if url.endswith(GenericProvider.TORRENT) and filename.endswith(GenericProvider.NZB):
-                filename = filename.rsplit('.', 1)[0] + '.' + GenericProvider.TORRENT
-
-            if helpers.download_file(url, filename, session=self.session, headers=self.headers):
-                if self._verify_download(filename):
-                    logger.log(u"Saved result to " + filename, logger.INFO)
-                    return True
-                else:
-                    logger.log(u"Could not download %s" % url, logger.WARNING)
-                    helpers.remove_file_failed(filename)
-
-        if len(urls):
-            logger.log(u"Failed to download any results", logger.WARNING)
-
-        return False
     
     
 class newpctCache(tvcache.TVCache):
