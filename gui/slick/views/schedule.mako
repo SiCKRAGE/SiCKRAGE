@@ -225,16 +225,16 @@
     % elif sickbeard.COMING_EPS_SORT == 'date':
         % if cur_segment != cur_ep_airdate:
             % if is_episode_missed and cur_ep_airdate != today.date() and not missed_header:
-                <br /><h2 class="day">Missed</h2>
+                <br><h2 class="day">Missed</h2>
                 <% missed_header = True %>
             % elif is_episode_later and not too_late_header:
-                <br /><h2 class="day">Later</h2>
+                <br><h2 class="day">Later</h2>
                 <% too_late_header = True %>
             % elif is_episode_today:
-                <br /><h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickbeard.SYS_ENCODING).capitalize()}<span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
+                <br><h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickbeard.SYS_ENCODING).capitalize()}<span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
                 <% today_header = True %>
             % else:
-                <br /><h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickbeard.SYS_ENCODING).capitalize()}</h2>
+                <br><h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickbeard.SYS_ENCODING).capitalize()}</h2>
             % endif
 
             <% cur_segment = cur_ep_airdate %>
@@ -242,7 +242,7 @@
 
         % if is_episode_today and not today_header:
             <div class="comingepheader">
-            <br /><h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickbeard.SYS_ENCODING).capitalize()} <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
+            <br><h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickbeard.SYS_ENCODING).capitalize()} <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
             <% today_header = True %>
         % endif
 
