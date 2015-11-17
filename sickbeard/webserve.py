@@ -53,7 +53,7 @@ from unrar2 import RarFile
 import adba
 from libtrakt import TraktAPI
 from libtrakt.exceptions import traktException
-from sickrage.helper.encoding import ek, ss
+from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import CantRefreshShowException, CantUpdateShowException, ex
 from sickrage.helper.exceptions import MultipleShowObjectsException, NoNFOException, ShowDirectoryNotFoundException
 from sickrage.media.ShowBanner import ShowBanner
@@ -464,8 +464,6 @@ class WebRoot(WebHandler):
         return self.redirect("/schedule/")
 
     def schedule(self, layout=None):
-        next_week = datetime.date.today() + datetime.timedelta(days=7)
-        next_week1 = datetime.datetime.combine(next_week, datetime.time(tzinfo=network_timezones.sb_timezone))
         results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickbeard.COMING_EPS_SORT, False)
         today = datetime.datetime.now().replace(tzinfo=network_timezones.sb_timezone)
 
@@ -504,8 +502,8 @@ class WebRoot(WebHandler):
             layout = sickbeard.COMING_EPS_LAYOUT
 
         t = PageTemplate(rh=self, filename='schedule.mako')
-        return t.render(submenu=submenu, next_week=next_week1, today=today, results=results, layout=layout,
-                        title='Schedule', header='Schedule', topmenu='schedule')
+        return t.render(submenu=submenu, today=today, results=results, layout=layout, title='Schedule',
+                        header='Schedule', topmenu='schedule')
 
 
 class CalendarHandler(BaseHandler):

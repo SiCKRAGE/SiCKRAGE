@@ -133,11 +133,11 @@ class ComingEpisodes:
             result['airs'] = str(result['airs']).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
             result['airdate'] = result['localtime'].toordinal()
 
-            if result['airdate'] < today:
+            if ComingEpisodes.is_episode_missed(result):
                 category = 'missed'
-            elif result['airdate'] >= next_week:
+            elif ComingEpisodes.is_episode_later(result):
                 category = 'later'
-            elif result['airdate'] == today:
+            elif ComingEpisodes.is_episode_today(result):
                 category = 'today'
             else:
                 category = 'soon'
@@ -158,3 +158,21 @@ class ComingEpisodes:
             grouped_results[category].append(result)
 
         return grouped_results
+
+    @staticmethod
+    def is_episode_later(data):
+        return data['localtime'].toordinal() >= (date.today() + timedelta(days=7)).toordinal()
+
+    @staticmethod
+    def is_episode_missed(data):
+        air_date = data['localtime']
+        runtime = data['runtime']
+
+        if runtime:
+            air_date += timedelta(minutes=runtime)
+
+        return air_date.toordinal() < date.today().toordinal()
+
+    @staticmethod
+    def is_episode_today(data):
+        return (data['localtime'] - date.today()).days == 0
