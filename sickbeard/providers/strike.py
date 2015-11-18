@@ -91,12 +91,11 @@ class StrikeCache(tvcache.TVCache):
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
-
-        # set this 0 to suppress log line, since we aren't updating it anyways
-        self.minTime = 0
+       #Cache results for 10m
+        self.minTime = 10
 
     def _getRSSData(self):
-        # no rss for getstrike.net afaik, also can't search with empty string
-        return {'entries': {}}
+        search_params = {'RSS': ['HDTV']}
+        return {'entries': self.provider._doSearch(search_params)}
 
 provider = STRIKEProvider()
