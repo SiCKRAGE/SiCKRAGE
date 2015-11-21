@@ -207,11 +207,11 @@ class ImageCache:
             return False
 
         # make sure the cache folder exists before we try copying to it
-        if not ek(os.path.isdir, self._cache_dir()):
+        if not os.path.isdir(self._cache_dir()):
             logger.log(u"Image cache dir didn't exist, creating it at " + str(self._cache_dir()))
             ek(os.makedirs, self._cache_dir())
 
-        if not ek(os.path.isdir, self._thumbnails_dir()):
+        if not os.path.isdir(self._thumbnails_dir()):
             logger.log(u"Thumbnails cache dir didn't exist, creating it at " + str(self._thumbnails_dir()))
             ek(os.makedirs, self._thumbnails_dir())
 
@@ -286,7 +286,7 @@ class ImageCache:
                     logger.log(u"Checking if we can use the show image from the " + cur_provider.name + " metadata",
                                logger.DEBUG)
                     if ek(os.path.isfile, cur_provider.get_poster_path(show_obj)):
-                        cur_file_name = os.path.abspath(cur_provider.get_poster_path(show_obj))
+                        cur_file_name = ek(os.path.abspath, cur_provider.get_poster_path(show_obj))
                         cur_file_type = self.which_type(cur_file_name)
 
                         if cur_file_type == None:

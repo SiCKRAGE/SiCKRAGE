@@ -95,11 +95,6 @@ class ApiHandler(RequestHandler):
     """ api class that returns json results """
     version = 5  # use an int since float-point is unpredictable
 
-    if sys.version_info > (3, 0):
-        __str__ = lambda x: x.__unicode__()
-    else:
-        __str__ = lambda x: unicode(x).encode('utf-8')
-
     def __init__(self, *args, **kwargs):
         super(ApiHandler, self).__init__(*args, **kwargs)
 
@@ -1081,8 +1076,8 @@ class CMD_History(ApiCall):
             del row["action"]
 
             _rename_element(row, "show_id", "indexerid")
-            row["resource_path"] = os.path.dirname(row["resource"])
-            row["resource"] = os.path.basename(row["resource"])
+            row["resource_path"] = ek(os.path.dirname, row["resource"])
+            row["resource"] = ek(os.path.basename, row["resource"])
 
             # Add tvdbid for backward compatibility
             row['tvdbid'] = row['indexerid']
@@ -1218,7 +1213,7 @@ class CMD_Logs(ApiCall):
         minLevel = logger.reverseNames[str(self.min_level).upper()]
 
         data = []
-        if os.path.isfile(logger.logFile):
+        if ek(os.path.isfile, logger.logFile):
             with io.open(logger.logFile, 'r', encoding='utf-8') as f:
                 data = f.readlines()
 
@@ -1349,7 +1344,7 @@ class CMD_SickBeardAddRootDir(ApiCall):
         index = 0
 
         # dissallow adding/setting an invalid dir
-        if not ek(os.path.isdir, self.location):
+        if not os.path.isdir(self.location):
             return _responds(RESULT_FAILURE, msg="Location is invalid")
 
         root_dirs = []
@@ -1978,7 +1973,7 @@ class CMD_ShowAddExisting(ApiCall):
         if showObj:
             return _responds(RESULT_FAILURE, msg="An existing indexerid already exists in the database")
 
-        if not ek(os.path.isdir, self.location):
+        if not os.path.isdir(self.location):
             return _responds(RESULT_FAILURE, msg='Not a valid location')
 
         indexerName = None
@@ -2102,7 +2097,7 @@ class CMD_ShowAddNew(ApiCall):
             else:
                 return _responds(RESULT_FAILURE, msg="Root directory is not set, please provide a location")
 
-        if not ek(os.path.isdir, self.location):
+        if not os.path.isdir(self.location):
             return _responds(RESULT_FAILURE, msg="'" + self.location + "' is not a valid location")
 
         quality_map = {'sdtv': Quality.SDTV,

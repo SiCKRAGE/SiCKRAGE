@@ -29,14 +29,13 @@ import platform
 import locale
 import traceback
 
-from github import Github, InputFileContent
-
 import sickbeard
 from sickbeard import classes
 from sickrage.helper.common import dateTimeFormat
 from sickrage.helper.exceptions import ex
-from sickrage.helper.encoding import ss
+from sickrage.helper.encoding import ss, ek
 
+from github import Github, InputFileContent
 
 # log levels
 ERROR = logging.ERROR
@@ -71,11 +70,11 @@ class CensoredFormatter(logging.Formatter, object):
         msg = super(CensoredFormatter, self).format(record)
 
         if not isinstance(msg, unicode):
-            msg = msg.decode(self.encoding, 'replace') # Convert to unicode
+            msg = msg.decode(self.encoding, 'replace')  # Convert to unicode
 
         for _, v in censoredItems.iteritems():
             if not isinstance(v, unicode):
-                v = v.decode(self.encoding, 'replace') # Convert to unicode
+                v = v.decode(self.encoding, 'replace')  # Convert to unicode
             msg = msg.replace(v, len(v) * u'*')
 
         # Needed because Newznab apikey isn't stored as key=value in a section.
@@ -102,7 +101,7 @@ class Logger(object):
         self.submitter_running = False
 
     def initLogging(self, consoleLogging=False, fileLogging=False, debugLogging=False):
-        self.logFile = self.logFile or os.path.join(sickbeard.LOG_DIR, 'sickrage.log')
+        self.logFile = self.logFile or ek(os.path.join, sickbeard.LOG_DIR, 'sickrage.log')
         self.debugLogging = debugLogging
         self.consoleLogging = consoleLogging
         self.fileLogging = fileLogging
@@ -126,16 +125,19 @@ class Logger(object):
         # console log handler
         if self.consoleLogging:
             console = logging.StreamHandler()
-            console.setFormatter(CensoredFormatter(u'%(asctime)s %(levelname)s::%(message)s', '%H:%M:%S', encoding='utf-8'))
+            console.setFormatter(
+                CensoredFormatter(u'%(asctime)s %(levelname)s::%(message)s', '%H:%M:%S', encoding='utf-8'))
             console.setLevel(INFO if not self.debugLogging else DEBUG)
 
             for logger in self.loggers:
                 logger.addHandler(console)
 
         # rotating log file handler
-        if self.fileLogging:
-            rfh = logging.handlers.RotatingFileHandler(self.logFile, maxBytes=sickbeard.LOG_SIZE, backupCount=sickbeard.LOG_NR, encoding='utf-8')
-            rfh.setFormatter(CensoredFormatter(u'%(asctime)s %(levelname)-8s %(message)s', dateTimeFormat, encoding='utf-8'))
+        if self.fileLogging and not consoleLogging:
+            rfh = logging.handlers.RotatingFileHandler(self.logFile, maxBytes=sickbeard.LOG_SIZE,
+                                                       backupCount=sickbeard.LOG_NR, encoding='utf-8')
+            rfh.setFormatter(
+                CensoredFormatter(u'%(asctime)s %(levelname)-8s %(message)s', dateTimeFormat, encoding='utf-8'))
             rfh.setLevel(INFO if not self.debugLogging else DEBUG)
 
             for logger in self.loggers:
@@ -150,7 +152,9 @@ class Logger(object):
         message = meThread + u" :: " + msg
 
         # Change the SSL error to a warning with a link to information about how to fix it.
-        check = re.sub(ur'error \[Errno 1\] _ssl.c:\d{3}: error:\d{8}:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error', 'See: http://git.io/vJrkM', message)
+        check = re.sub(
+            ur'error \[Errno 1\] _ssl.c:\d{3}: error:\d{8}:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error',
+            'See: http://git.io/vJrkM', message)
         if check is not message:
             message = check
             level = WARNING
@@ -164,7 +168,7 @@ class Logger(object):
             classes.WarningViewer.add(classes.UIError(message))
 
             # if sickbeard.GIT_AUTOISSUES:
-            #    self.submit_errors()
+            # self.submit_errors()
         else:
             self.logger.log(level, message, *args, **kwargs)
 
@@ -176,17 +180,19 @@ class Logger(object):
         else:
             sys.exit(1)
 
-    def submit_errors(self): # Too many local variables, too many branches, pylint: disable=R0912,R0914
+    def submit_errors(self):  # Too many local variables, too many branches, pylint: disable=R0912,R0914
 
         submitter_result = u''
         issue_id = None
 
-        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and sickbeard.DEBUG and len(classes.ErrorViewer.errors) > 0):
+        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and sickbeard.DEBUG and len(
+                classes.ErrorViewer.errors) > 0):
             submitter_result = u'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
 
         try:
             from sickbeard.versionChecker import CheckVersion
+
             checkversion = CheckVersion()
             checkversion.check_for_new_version()
             commits_behind = checkversion.updater.get_num_commits_behind()
@@ -196,7 +202,7 @@ class Logger(object):
 
         if commits_behind is None or commits_behind > 0:
             submitter_result = u'Please update SickRage, unable to submit issue ticket to GitHub with an outdated version!'
-            return  submitter_result, issue_id
+            return submitter_result, issue_id
 
         if self.submitter_running:
             submitter_result = u'Issue submitter is running, please wait for it to complete'
@@ -213,12 +219,12 @@ class Logger(object):
             # read log file
             log_data = None
 
-            if os.path.isfile(self.logFile):
+            if ek(os.path.isfile, self.logFile):
                 with io.open(self.logFile, 'r', encoding='utf-8') as f:
                     log_data = f.readlines()
 
             for i in range(1, int(sickbeard.LOG_NR)):
-                if os.path.isfile(self.logFile + ".%i" % i) and (len(log_data) <= 500):
+                if ek(os.path.isfile, self.logFile + ".%i" % i) and (len(log_data) <= 500):
                     with io.open(self.logFile + ".%i" % i, 'r', encoding='utf-8') as f:
                         log_data += f.readlines()
 
@@ -244,7 +250,7 @@ class Logger(object):
                     if match:
                         level = match.group(2)
                         if reverseNames[level] == ERROR:
-                            paste_data = u"".join(log_data[i:i+50])
+                            paste_data = u"".join(log_data[i:i + 50])
                             if paste_data:
                                 gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
                             break
@@ -289,7 +295,7 @@ class Logger(object):
                 issue_found = False
                 for report in reports:
                     if title_Error.rsplit(' :: ')[-1] in report.title or \
-                        (malformed_error and is_malformed_error(report.title)) or \
+                            (malformed_error and is_malformed_error(report.title)) or \
                             (ascii_error and is_ascii_error(report.title)):
 
                         issue_id = report.number
@@ -324,6 +330,7 @@ class Logger(object):
             self.submitter_running = False
 
         return submitter_result, issue_id
+
 
 # pylint: disable=R0903
 class Wrapper(object):

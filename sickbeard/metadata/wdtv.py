@@ -145,7 +145,7 @@ class WDTVMetadata(generic.GenericMetadata):
         """
 
         dir_list = [x for x in ek(os.listdir, show_obj.location) if
-                    ek(os.path.isdir, ek(os.path.join, show_obj.location, x))]
+                    os.path.isdir(ek(os.path.join, show_obj.location, x))]
 
         season_dir_regex = r'^Season\s+(\d+)$'
 

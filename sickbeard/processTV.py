@@ -29,6 +29,7 @@ from sickbeard import logger
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 from sickbeard import common
 from sickbeard import failedProcessor
+from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import EpisodePostProcessingFailedException, ex, FailedPostProcessingFailedException
 
 from unrar2 import RarFile
@@ -74,21 +75,21 @@ def delete_folder(folder, check_empty=True):
 
     # check if it's empty folder when wanted checked
     if check_empty:
-        check_files = os.listdir(folder)
+        check_files = ek(os.listdir, folder)
         if check_files:
             logger.log(u"Not deleting folder " + folder + " found the following files: " + str(check_files), logger.INFO)
             return False
 
         try:
             logger.log(u"Deleting folder (if it's empty): " + folder)
-            os.rmdir(folder)
+            ek(os.rmdir,folder)
         except (OSError, IOError), e:
             logger.log(u"Warning: unable to delete folder: " + folder + ": " + ex(e), logger.WARNING)
             return False
     else:
         try:
             logger.log(u"Deleting folder: " + folder)
-            shutil.rmtree(folder)
+            ek(shutil.rmtree, folder)
         except (OSError, IOError), e:
             logger.log(u"Warning: unable to delete folder: " + folder + ": " + ex(e), logger.WARNING)
             return False
@@ -115,24 +116,24 @@ def delete_files(processPath, notwantedFiles, result, force=False):
     # Delete all file not needed
     for cur_file in notwantedFiles:
         assert isinstance(cur_file, unicode)
-        cur_file_path = os.path.join(processPath, cur_file)
+        cur_file_path = ek(os.path.join, processPath, cur_file)
 
-        if not os.path.isfile(cur_file_path):
+        if not ek(os.path.isfile, cur_file_path):
             continue  # Prevent error when a notwantedfiles is an associated files
 
         result.output += logHelper(u"Deleting file %s" % cur_file, logger.DEBUG)
 
         # check first the read-only attribute
-        file_attribute = os.stat(cur_file_path)[0]
+        file_attribute = ek(os.stat, cur_file_path)[0]
         if not file_attribute & stat.S_IWRITE:
             # File is read-only, so make it writeable
             result.output += logHelper(u"Changing ReadOnly Flag for file %s" % cur_file, logger.DEBUG)
             try:
-                os.chmod(cur_file_path, stat.S_IWRITE)
+                ek(os.chmod, cur_file_path, stat.S_IWRITE)
             except OSError, e:
                 result.output += logHelper(u"Cannot change permissions of %s: %s" % (cur_file, str(e.strerror).decode(sickbeard.SYS_ENCODING)), logger.DEBUG)
         try:
-            os.remove(cur_file_path)
+            ek(os.remove, cur_file_path)
         except OSError, e:
             result.output += logHelper(u"Unable to delete file %s: %s" % (cur_file, str(e.strerror).decode(sickbeard.SYS_ENCODING)), logger.DEBUG)
 
@@ -162,12 +163,12 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
     # if they passed us a real dir then assume it's the one we want
     if os.path.isdir(dirName):
-        dirName = os.path.realpath(dirName)
+        dirName = ek(os.path.realpath, dirName)
 
     # if the client and SickRage are not on the same machine translate the Dir in a network dir
     elif sickbeard.TV_DOWNLOAD_DIR and os.path.isdir(sickbeard.TV_DOWNLOAD_DIR) \
-            and os.path.normpath(dirName) != os.path.normpath(sickbeard.TV_DOWNLOAD_DIR):
-        dirName = os.path.join(sickbeard.TV_DOWNLOAD_DIR, os.path.abspath(dirName).split(os.path.sep)[-1])
+            and ek(os.path.normpath, dirName) != ek(os.path.normpath, sickbeard.TV_DOWNLOAD_DIR):
+        dirName = ek(os.path.join, sickbeard.TV_DOWNLOAD_DIR, ek(os.path.abspath, dirName).split(os.path.sep)[-1])
         result.output += logHelper(u"Trying to use folder " + dirName, logger.DEBUG)
 
     # if we didn't find a real dir then quit
@@ -237,7 +238,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
         result.result = True
 
-        for processPath, _, fileList in os.walk(os.path.join(path, curDir), topdown=False):
+        for processPath, _, fileList in ek(os.walk, ek(os.path.join, path, curDir), topdown=False):
 
             if not validateDir(path, processPath, nzbNameOriginal, failed, result):
                 continue
@@ -282,7 +283,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                     delete_files(processPath, notwantedFiles, result)
 
                     if (not sickbeard.NO_DELETE or proc_type == "manual") and process_method == "move" and \
-                        os.path.normpath(processPath) != os.path.normpath(sickbeard.TV_DOWNLOAD_DIR):
+                        ek(os.path.normpath, processPath) != ek(os.path.normpath, sickbeard.TV_DOWNLOAD_DIR):
                         if delete_folder(processPath, check_empty=True):
                             result.output += logHelper(u"Deleted folder: %s" % processPath, logger.DEBUG)
             else:
@@ -316,7 +317,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
 
     assert nzbNameOriginal is None or isinstance(nzbNameOriginal, unicode)
 
-    folder_name = os.path.basename(dirName)
+    folder_name = ek(os.path.basename, dirName)
     if folder_name in IGNORED_FOLDERS:
         return False
 
@@ -334,11 +335,11 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
         return False
 
     if failed:
-        process_failed(os.path.join(path, dirName), nzbNameOriginal, result)
+        process_failed(ek(os.path.join,path, dirName), nzbNameOriginal, result)
         result.missedfiles.append(dirName + " : Failed download")
         return False
 
-    if helpers.is_hidden_folder(os.path.join(path, dirName)):
+    if helpers.is_hidden_folder(ek(os.path.join, path, dirName)):
         result.output += logHelper(u"Ignoring hidden folder: " + dirName, logger.DEBUG)
         result.missedfiles.append(dirName + " : Hidden folder")
         return False
@@ -348,8 +349,8 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     sqlResults = myDB.select("SELECT * FROM tv_shows")
 
     for sqlShow in sqlResults:
-        if dirName.lower().startswith(os.path.realpath(sqlShow["location"]).lower() + os.sep) or \
-            dirName.lower() == os.path.realpath(sqlShow["location"]).lower():
+        if dirName.lower().startswith(ek(os.path.realpath, sqlShow["location"]).lower() + os.sep) or \
+            dirName.lower() == ek(os.path.realpath, sqlShow["location"]).lower():
 
             result.output += logHelper(
                 u"Cannot process an episode that's already been moved to its show dir, skipping " + dirName,
@@ -359,7 +360,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     # Get the videofile list for the next checks
     allFiles = []
     allDirs = []
-    for _, processdir, fileList in os.walk(os.path.join(path, dirName), topdown=False):
+    for _, processdir, fileList in ek(os.walk, ek(os.path.join,path, dirName), topdown=False):
         allDirs += processdir
         allFiles += fileList
 
@@ -417,11 +418,11 @@ def unRAR(path, rarFiles, force, result):
             result.output += logHelper(u"Unpacking archive: " + archive, logger.DEBUG)
 
             try:
-                rar_handle = RarFile(os.path.join(path, archive))
+                rar_handle = RarFile(ek(os.path.join, path, archive))
 
                 # Skip extraction if any file in archive has previously been extracted
                 skip_file = False
-                for file_in_archive in [os.path.basename(x.filename) for x in rar_handle.infolist() if not x.isdir]:
+                for file_in_archive in [ek(os.path.basename, x.filename) for x in rar_handle.infolist() if not x.isdir]:
                     if already_postprocessed(path, file_in_archive, force, result):
                         result.output += logHelper(
                             u"Archive file already post-processed, extraction skipped: " + file_in_archive,
@@ -435,7 +436,7 @@ def unRAR(path, rarFiles, force, result):
                 rar_handle.extract(path=path, withSubpath=False, overwrite=False)
                 for x in rar_handle.infolist():
                     if not x.isdir:
-                        basename = os.path.basename(x.filename)
+                        basename = ek(os.path.basename, x.filename)
                         if basename not in unpacked_files:
                             unpacked_files.append(basename)
                 del rar_handle
@@ -544,7 +545,7 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
     assert isinstance(processPath, unicode)
     for cur_video_file in videoFiles:
         assert isinstance(cur_video_file, unicode)
-        cur_video_file_path = os.path.join(processPath, cur_video_file)
+        cur_video_file_path = ek(os.path.join, processPath, cur_video_file)
 
         if already_postprocessed(processPath, cur_video_file, force, result):
             result.output += logHelper(u"Already Processed " + cur_video_file_path + " : Skipping", logger.DEBUG)
@@ -584,14 +585,14 @@ def get_path_dir_files(dirName, nzbName, proc_type):
 
     if dirName == sickbeard.TV_DOWNLOAD_DIR and not nzbName or proc_type == "manual":  # Scheduled Post Processing Active
         # Get at first all the subdir in the dirName
-        for path, dirs, files in os.walk(dirName):
+        for path, dirs, files in ek(os.walk, dirName):
             break
     else:
-        path, dirs = os.path.split(dirName)  # Script Post Processing
-        if not nzbName is None and not nzbName.endswith('.nzb') and os.path.isfile(
-                os.path.join(dirName, nzbName)):  # For single torrent file without Dir
+        path, dirs = ek(os.path.split, dirName)  # Script Post Processing
+        if not nzbName is None and not nzbName.endswith('.nzb') and ek(os.path.isfile,
+                ek(os.path.join, dirName, nzbName)):  # For single torrent file without Dir
             dirs = []
-            files = [os.path.join(dirName, nzbName)]
+            files = [ek(os.path.join, dirName, nzbName)]
         else:
             dirs = [dirs]
             files = []

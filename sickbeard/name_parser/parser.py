@@ -355,13 +355,6 @@ class NameParser(object):
             return b
 
     @staticmethod
-    def _unicodify(obj, encoding="utf-8"):
-        if isinstance(obj, basestring):
-            if not isinstance(obj, unicode):
-                obj = unicode(obj, encoding, 'replace')
-        return obj
-
-    @staticmethod
     def _convert_number(org_number):
         """
          Convert org_number into an integer
@@ -397,8 +390,6 @@ class NameParser(object):
         return number
 
     def parse(self, name, cache_result=True):
-        name = self._unicodify(name)
-
         if self.naming_pattern:
             cache_result = False
 
@@ -421,7 +412,7 @@ class NameParser(object):
         file_name_result = self._parse_string(base_file_name)
 
         # use only the direct parent dir
-        dir_name = os.path.basename(dir_name)
+        dir_name = ek(os.path.basename, dir_name)
 
         # parse the dirname for extra info if needed
         dir_name_result = self._parse_string(dir_name)

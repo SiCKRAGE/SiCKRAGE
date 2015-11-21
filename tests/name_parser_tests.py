@@ -1,6 +1,6 @@
 import sys, os.path
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(1, ek(os.path.abspath, ek(os.path.join, ek(os.path.dirname, __file__), '../lib')))
+sys.path.insert(1, ek(os.path.abspath, ek(os.path.join, ek(os.path.dirname, __file__), '..')))
 
 import datetime
 import unittest
@@ -227,7 +227,7 @@ class ComboTests(test.SickbeardTestDBCase):
         for (name, result, which_regexes) in combination_test_cases:
             # Normalise the paths. Converts UNIX-style paths into Windows-style
             # paths when test is run on Windows.
-            self._test_combo(os.path.normpath(name), result, which_regexes)
+            self._test_combo(ek(os.path.normpath, name), result, which_regexes)
 
 class BasicTests(test.SickbeardTestDBCase):
 

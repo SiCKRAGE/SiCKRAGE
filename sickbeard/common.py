@@ -26,6 +26,8 @@ from UserDict import UserDict
 
 from random import shuffle
 
+from sickrage.helper.encoding import ek
+
 SPOOF_USER_AGENT = False
 
 # If some provider has an issue with functionality of SR, other than user agents, it's best to come talk to us rather than block.
@@ -250,7 +252,7 @@ class Quality(object):
         if not name:
             return ret
 
-        name = os.path.basename(name)
+        name = ek(os.path.basename, name)
 
         checkName = lambda list, func: func([re.search(x, name, re.I) for x in list])
 
@@ -373,7 +375,7 @@ class Quality(object):
         if not height:
             return Quality.UNKNOWN
 
-        base_filename = os.path.basename(filename)
+        base_filename = ek(os.path.basename, filename)
         bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
         webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 

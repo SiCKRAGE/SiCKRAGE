@@ -20,10 +20,12 @@
 
 import sys, os.path
 
-tests_dir=os.path.abspath(__file__)[:-len(os.path.basename(__file__))]
+from sickrage.helper.encoding import ek
 
-sys.path.insert(1, os.path.join(tests_dir, '../lib'))
-sys.path.insert(1, os.path.join(tests_dir, '..'))
+tests_dir=ek(os.path.abspath, __file__)[:-len(ek(os.path.basename, __file__))]
+
+sys.path.insert(1, ek(os.path.join, tests_dir, '../lib'))
+sys.path.insert(1, ek(os.path.join, tests_dir, '..'))
 
 import glob
 import unittest

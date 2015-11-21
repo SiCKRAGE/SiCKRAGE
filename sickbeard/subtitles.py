@@ -21,6 +21,9 @@ import os
 import re
 import datetime
 import traceback
+
+import sickbeard
+
 import subliminal
 import subprocess
 import pkg_resources
@@ -28,7 +31,6 @@ from enzyme import MKV, MalformedMKVError
 from subliminal.api import provider_manager
 from babelfish import Error as BabelfishError, Language, language_converters
 
-import sickbeard
 from sickbeard import logger
 from sickbeard import history
 from sickbeard import db
@@ -36,7 +38,7 @@ from sickrage.helper.common import dateTimeFormat
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 
-distribution = pkg_resources.Distribution(location=os.path.dirname(os.path.dirname(__file__)),
+distribution = pkg_resources.Distribution(location=ek(os.path.dirname, ek(os.path.dirname, __file__)),
                                           project_name='fake_entry_points', version='1.0.0')
 
 entry_points = {
@@ -187,7 +189,7 @@ def save_subtitles(video, subtitles, single=False, directory=None):
         # create subtitle path
         subtitle_path = subliminal.subtitle.get_subtitle_path(video.name, None if single else subtitle.language)
         if directory is not None:
-            subtitle_path = os.path.join(directory, os.path.split(subtitle_path)[1])
+            subtitle_path = ek(os.path.join, directory, ek(os.path.split, subtitle_path)[1])
 
         # save content as is or in the specified encoding
         logger.log(u"Saving subtitle for %s to %s" % (video.name, subtitle_path), logger.DEBUG)
@@ -321,15 +323,15 @@ def getEmbeddedLanguages(video_path):
 
 def scan_subtitle_languages(path):
     language_extensions = tuple('.' + c for c in language_converters['opensubtitles'].codes)
-    dirpath, filename = os.path.split(path)
+    dirpath, filename = ek(os.path.split, path)
     subtitles = set()
-    for p in os.listdir(dirpath):
-        if not isinstance(p, bytes) and p.startswith(os.path.splitext(filename)[0]) and p.endswith(subliminal.video.SUBTITLE_EXTENSIONS):
-            if os.path.splitext(p)[0].endswith(language_extensions) and len(os.path.splitext(p)[0].rsplit('.', 1)[1]) is 2:
-                subtitles.add(Language.fromopensubtitles(os.path.splitext(p)[0][-2:]))
-            elif os.path.splitext(p)[0].endswith(language_extensions) and len(os.path.splitext(p)[0].rsplit('.', 1)[1]) is 3:
-                subtitles.add(Language.fromopensubtitles(os.path.splitext(p)[0][-3:]))
-            elif os.path.splitext(p)[0].endswith('pt-BR') and len(os.path.splitext(p)[0].rsplit('.', 1)[1]) is 5:
+    for p in ek(os.listdir, dirpath):
+        if not isinstance(p, bytes) and p.startswith(ek(os.path.splitext, filename)[0]) and p.endswith(subliminal.video.SUBTITLE_EXTENSIONS):
+            if ek(os.path.splitext, p)[0].endswith(language_extensions) and len(ek(os.path.splitext, p)[0].rsplit('.', 1)[1]) is 2:
+                subtitles.add(Language.fromopensubtitles(ek(os.path.splitext, p)[0][-2:]))
+            elif ek(os.path.splitext, p)[0].endswith(language_extensions) and len(ek(os.path.splitext, p)[0].rsplit('.', 1)[1]) is 3:
+                subtitles.add(Language.fromopensubtitles(ek(os.path.splitext, p)[0][-3:]))
+            elif ek(os.path.splitext, p)[0].endswith('pt-BR') and len(ek(os.path.splitext, p)[0].rsplit('.', 1)[1]) is 5:
                 subtitles.add(Language.fromopensubtitles('pob'))
             else:
                 subtitles.add(Language('und'))

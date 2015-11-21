@@ -1,17 +1,20 @@
 import os
-import platform
 import stat
+import shutil
+
+from shutil import _samefile
+
 try:
     from shutil import SpecialFileError, Error
 except:
     from shutil import Error
-from shutil import _samefile
-
 
 def copyfile_custom(src, dst):
     """Copy data from src to dst"""
     if _samefile(src, dst):
         raise Error("`%s` and `%s` are the same file" % (src, dst))
+    elif not os.path.isdir(src):
+        return
 
     for fn in [src, dst]:
         try:
@@ -42,7 +45,7 @@ def copyfile_custom(src, dst):
         fout = os.open(dst, WRITE_FLAGS)
         for x in iter(lambda: os.read(fin, BUFFER_SIZE), ""):
             os.write(fout, x)
-    except Exception as e:
+    except Exception:
         raise
     finally:
         try:
@@ -50,3 +53,5 @@ def copyfile_custom(src, dst):
             os.close(fout)
         except:
             pass
+
+shutil.copyfile = copyfile_custom

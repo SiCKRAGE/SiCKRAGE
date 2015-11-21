@@ -2,17 +2,15 @@
 
 import sys, os.path
 
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(1, ek(os.path.abspath, ek(os.path.join, ek(os.path.dirname, __file__), '../lib')))
+sys.path.insert(1, ek(os.path.abspath, ek(os.path.join, ek(os.path.dirname, __file__), '..')))
 
 import locale
 import unittest
 
 import sickbeard
 from sickbeard.helpers import sanitizeFileName
-from sickrage.helper.encoding import ek
-from sickrage.helper.exceptions import ex
-
+from sickrage.helper.encoding import ek, ss, uu
 
 class EncodingTests(unittest.TestCase):
     def test_encoding(self):
@@ -32,11 +30,9 @@ class EncodingTests(unittest.TestCase):
             sickbeard.SYS_ENCODING = 'UTF-8'
 
         for s in strings:
-            try:
-                show_dir = ek(os.path.join, rootDir, sanitizeFileName(s))
-                self.assertTrue(isinstance(show_dir, unicode))
-            except Exception, e:
-                ex(e)
+            show_dir = ek(os.path.join, rootDir, sanitizeFileName(s))
+            self.assertIsInstance(show_dir, unicode)
+            print ss(show_dir)
 
 if __name__ == "__main__":
     print "=================="

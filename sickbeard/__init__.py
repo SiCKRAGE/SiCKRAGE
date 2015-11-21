@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+# coding=UTF-8
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -23,13 +25,12 @@ import socket
 import os
 import re
 import os.path
-import shutil
-import shutil_custom
-
-shutil.copyfile = shutil_custom.copyfile_custom
 
 from threading import Lock
 import sys
+
+from shutil_custom import shutil
+from sickrage.helper.encoding import ek
 
 from github import Github
 
@@ -669,7 +670,7 @@ def initialize(consoleLogging=True):
             DEFAULT_PAGE = 'home'
 
         ACTUAL_LOG_DIR = check_setting_str(CFG, 'General', 'log_dir', 'Logs')
-        LOG_DIR = os.path.normpath(os.path.join(DATA_DIR, ACTUAL_LOG_DIR))
+        LOG_DIR = ek(os.path.normpath, ek(os.path.join, DATA_DIR, ACTUAL_LOG_DIR))
         LOG_NR = check_setting_int(CFG, 'General', 'log_nr', 5)  # Default to 5 backup file (sickrage.log.x)
         LOG_SIZE = check_setting_int(CFG, 'General', 'log_size', 1048576)  # Default to max 1MB per logfile
         fileLogging = True
@@ -712,7 +713,7 @@ def initialize(consoleLogging=True):
 
         # unless they specify, put the cache dir inside the data dir
         if not os.path.isabs(ACTUAL_CACHE_DIR):
-            CACHE_DIR = os.path.join(DATA_DIR, ACTUAL_CACHE_DIR)
+            CACHE_DIR = ek(os.path.join, DATA_DIR, ACTUAL_CACHE_DIR)
         else:
             CACHE_DIR = ACTUAL_CACHE_DIR
 
@@ -722,36 +723,36 @@ def initialize(consoleLogging=True):
 
         # Check if we need to perform a restore of the cache folder
         try:
-            restoreDir = os.path.join(DATA_DIR, 'restore')
-            if os.path.exists(restoreDir) and os.path.exists(os.path.join(restoreDir, 'cache')):
+            restoreDir = ek(os.path.join, DATA_DIR, 'restore')
+            if os.path.exists(restoreDir) and os.path.exists(ek(os.path.join, restoreDir, 'cache')):
                 def restoreCache(srcDir, dstDir):
                     def path_leaf(path):
-                        head, tail = os.path.split(path)
-                        return tail or os.path.basename(head)
+                        head, tail = ek(os.path.split, path)
+                        return tail or ek(os.path.basename, head)
 
                     try:
                         if os.path.isdir(dstDir):
                             bakFilename = '{0}-{1}'.format(path_leaf(dstDir), datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d_%H%M%S'))
-                            shutil.move(dstDir, os.path.join(os.path.dirname(dstDir), bakFilename))
+                            ek(shutil.move, dstDir, ek(os.path.join, ek(os.path.dirname, dstDir), bakFilename))
 
-                        shutil.move(srcDir, dstDir)
+                        ek(shutil.move, srcDir, dstDir)
                         logger.log(u"Restore: restoring cache successful", logger.INFO)
                     except Exception as e:
                         logger.log(u"Restore: restoring cache failed: {0}".format(str(e)), logger.ERROR)
 
-                restoreCache(os.path.join(restoreDir, 'cache'), CACHE_DIR)
+                restoreCache(ek(os.path.join, restoreDir, 'cache'), CACHE_DIR)
         except Exception as e:
             logger.log(u"Restore: restoring cache failed: {0}".format(ex(e)), logger.ERROR)
         finally:
-            if os.path.exists(os.path.join(DATA_DIR, 'restore')):
+            if os.path.exists(ek(os.path.join, DATA_DIR, 'restore')):
                 try:
-                    shutil.rmtree(os.path.join(DATA_DIR, 'restore'))
+                    ek(shutil.rmtree, ek(os.path.join, DATA_DIR, 'restore'))
                 except Exception as e:
                     logger.log(u"Restore: Unable to remove the restore directory: {0}".format(ex(e)), logger.ERROR)
 
                 for cleanupDir in ['mako', 'sessions', 'indexers']:
                     try:
-                        shutil.rmtree(os.path.join(CACHE_DIR, cleanupDir))
+                        ek(shutil.rmtree, ek(os.path.join, CACHE_DIR, cleanupDir))
                     except Exception as e:
                         logger.log(u"Restore: Unable to remove the cache/{0} directory: {1}".format(cleanupDir, ex(e)), logger.WARNING)
 
@@ -1337,7 +1338,7 @@ def initialize(consoleLogging=True):
                                                                        curNzbProvider.getID() + '_enable_backlog',
                                                                        curNzbProvider.supportsBacklog))
 
-        if not os.path.isfile(CONFIG_FILE):
+        if not ek(os.path.isfile, CONFIG_FILE):
             logger.log(u"Unable to find '" + CONFIG_FILE + "', all settings will be default!", logger.DEBUG)
             save_config()
 

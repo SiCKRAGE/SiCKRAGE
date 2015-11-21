@@ -36,11 +36,6 @@ import traceback
 import os
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
 
-import shutil
-import shutil_custom
-
-shutil.copyfile = shutil_custom.copyfile_custom
-
 if sys.version_info < (2, 7):
     print "Sorry, requires Python 2.7.x"
     sys.exit(1)
@@ -56,6 +51,8 @@ import locale
 import datetime
 import threading
 import getopt
+
+from shutil_custom import shutil
 
 # Do this before importing sickbeard, to prevent locked files and incorrect import
 oldtornado = os.path.abspath(os.path.join(os.path.dirname(__file__), 'tornado'))

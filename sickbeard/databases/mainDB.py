@@ -63,7 +63,7 @@ class MainSanityCheck(db.DBSanityCheck):
 
         for archivedEp in sqlResults:
             fixedStatus = common.Quality.compositeStatus(common.ARCHIVED, common.Quality.UNKNOWN)
-            existing = archivedEp['location'] and ek(os.path.exists, archivedEp['location'])
+            existing = archivedEp['location'] and os.path.exists(archivedEp['location'])
             if existing:
                 quality = common.Quality.assumeQuality(archivedEp['location'])
                 fixedStatus = common.Quality.compositeStatus(common.ARCHIVED, quality)
@@ -442,7 +442,7 @@ class AddSizeAndSceneNameFields(InitialSchema):
         for cur_result in empty_results:
 
             ep_file_name = ek(os.path.basename, cur_result["location"])
-            ep_file_name = os.path.splitext(ep_file_name)[0]
+            ep_file_name = ek(os.path.splitext, ep_file_name)[0]
 
             # only want to find real scene names here so anything with a space in it is out
             if ' ' in ep_file_name:

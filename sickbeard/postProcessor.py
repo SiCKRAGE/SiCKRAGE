@@ -158,9 +158,9 @@ class PostProcessor(object):
         """
         def recursive_glob(treeroot, pattern):
             results = []
-            for base, _, files in os.walk(treeroot):
+            for base, _, files in ek(os.walk,treeroot):
                 goodfiles = fnmatch.filter(files, pattern)
-                results.extend(os.path.join(base, f) for f in goodfiles)
+                results.extend(ek(os.path.join,base, f) for f in goodfiles)
             return results
 
         if not file_path:
@@ -298,10 +298,10 @@ class PostProcessor(object):
             cur_extension = cur_file_path[old_base_name_length + 1:]
 
             # check if file have subtitles language
-            if os.path.splitext(cur_extension)[1][1:] in common.subtitleExtensions:
-                cur_lang = os.path.splitext(cur_extension)[0]
+            if ek(os.path.splitext, cur_extension)[1][1:] in common.subtitleExtensions:
+                cur_lang = ek(os.path.splitext, cur_extension)[0]
                 if cur_lang in sickbeard.subtitles.wantedLanguages():
-                    cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
+                    cur_extension = cur_lang + ek(os.path.splitext, cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
             if cur_extension == 'nfo' and sickbeard.NFO_RENAME == True:
@@ -852,11 +852,11 @@ class PostProcessor(object):
 
         self._log(u"Processing " + self.file_path + " (" + str(self.nzb_name) + ")")
 
-        if ek(os.path.isdir, self.file_path):
+        if os.path.isdir(self.file_path):
             self._log(u"File %s seems to be a directory" % self.file_path)
             return False
 
-        if not ek(os.path.exists, self.file_path):
+        if not os.path.exists(self.file_path):
             self._log(u"File %s doesn't exist, did unrar fail?" % self.file_path)
             return False
 
@@ -962,7 +962,7 @@ class PostProcessor(object):
             #    curEp.status = common.Quality.compositeStatus(common.SNATCHED, new_ep_quality)
 
         # if the show directory doesn't exist then make it if allowed
-        if not ek(os.path.isdir, ep_obj.show._location) and sickbeard.CREATE_MISSING_SHOW_DIRS:
+        if not os.path.isdir(ep_obj.show._location) and sickbeard.CREATE_MISSING_SHOW_DIRS:
             self._log(u"Show directory doesn't exist, creating it", logger.DEBUG)
             try:
                 ek(os.mkdir, ep_obj.show._location)
