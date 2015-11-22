@@ -1,6 +1,7 @@
 import sys, os.path
-sys.path.insert(1, ek(os.path.abspath, ek(os.path.join, ek(os.path.dirname, __file__), '../lib')))
-sys.path.insert(1, ek(os.path.abspath, ek(os.path.join, ek(os.path.dirname, __file__), '..')))
+
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import datetime
 import unittest
@@ -10,6 +11,7 @@ from tests import test_lib as test
 import sickbeard
 from sickbeard import tv
 from sickbeard.name_parser import parser
+from sickrage.helper.encoding import ek
 
 sickbeard.SYS_ENCODING = 'UTF-8'
 

@@ -1,8 +1,8 @@
 import sys
 import os.path
 
-sys.path.insert(1, ek(os.path.abspath, ek(os.path.join, ek(os.path.dirname, __file__), '../lib')))
-sys.path.insert(1, ek(os.path.abspath, ek(os.path.join, ek(os.path.dirname, __file__), '..')))
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 

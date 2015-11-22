@@ -20,9 +20,8 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 import six
 import collections
-import sickbeard
-from os import name
 
+from os import name
 
 def ek(function, *args, **kwargs):
     """

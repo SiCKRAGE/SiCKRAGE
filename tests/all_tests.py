@@ -20,15 +20,14 @@
 
 import sys, os.path
 
-from sickrage.helper.encoding import ek
-
-tests_dir=ek(os.path.abspath, __file__)[:-len(ek(os.path.basename, __file__))]
-
-sys.path.insert(1, ek(os.path.join, tests_dir, '../lib'))
-sys.path.insert(1, ek(os.path.join, tests_dir, '..'))
+tests_dir=os.path.abspath(__file__)[:-len(os.path.basename(__file__))]
+sys.path.insert(1, os.path.join(tests_dir, '../lib'))
+sys.path.insert(1, os.path.join(tests_dir, '..'))
 
 import glob
 import unittest
+
+from sickrage.helper.encoding import ek
 
 class AllTests(unittest.TestCase):
     #Block issue_submitter_tests to avoid issue tracker spam on every build
