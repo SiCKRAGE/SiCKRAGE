@@ -54,9 +54,6 @@ class T411Provider(generic.TorrentProvider):
         self.minleech = 0
         self.confirmed = False
 
-    def isEnabled(self):
-        return self.enabled
-
     def _doLogin(self):
 
         if self.token is not None:
@@ -130,7 +127,7 @@ class T411Provider(generic.TorrentProvider):
                                 leechers = int(torrent['leechers'])
                                 verified = bool(torrent['isVerified'])
 
-                                #Filter unseeded torrent
+                                # Filter unseeded torrent
                                 if seeders < self.minseed or leechers < self.minleech:
                                     if mode != 'RSS':
                                         logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
@@ -146,15 +143,15 @@ class T411Provider(generic.TorrentProvider):
 
                                 items[mode].append(item)
 
-                            except Exception as e:
+                            except Exception:
                                 logger.log(u"Invalid torrent data, skipping result: %s" % torrent, logger.DEBUG)
                                 logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.DEBUG)
                                 continue
 
-                    except Exception, e:
+                    except Exception:
                         logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders if available if available
+            # For each search mode sort all the items by seeders if available if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]

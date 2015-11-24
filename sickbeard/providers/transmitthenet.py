@@ -52,9 +52,6 @@ class TransmitTheNetProvider(generic.TorrentProvider):
             "active": 1
         }
 
-    def isEnabled(self):
-        return self.enabled
-
     def _checkAuth(self):
 
         if not self.username or not self.password:
@@ -101,7 +98,7 @@ class TransmitTheNetProvider(generic.TorrentProvider):
                 logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
 
                 if not data:
-                    logger.log("No data returned from provider", logger.DEBUG)
+                    logger.log(u"No data returned from provider", logger.DEBUG)
                     continue
 
                 try:
@@ -128,13 +125,13 @@ class TransmitTheNetProvider(generic.TorrentProvider):
                             seeders = int(torrent_row.findAll('a', {'title': 'Click here to view peers details'})[0].text.strip())
                             leechers = int(torrent_row.findAll('a', {'title': 'Click here to view peers details'})[1].text.strip())
                             download_url = self.urls['base_url'] + download_href
-                            #FIXME
+                            # FIXME
                             size = -1
 
                             if not all([title, download_url]):
                                 continue
 
-                            #Filter unseeded torrent
+                            # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode != 'RSS':
                                     logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)

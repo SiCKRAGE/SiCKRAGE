@@ -57,9 +57,6 @@ class NextGenProvider(generic.TorrentProvider):
         self.minleech = 0
         self.freeleech = True
 
-    def isEnabled(self):
-        return self.enabled
-
     def getLoginParams(self):
         return {
             'username': self.username,
@@ -83,7 +80,7 @@ class NextGenProvider(generic.TorrentProvider):
                     return True
                 else:
                     self.login_opener = None
-            except:
+            except Exception:
                 self.login_opener = None
 
         if self.login_opener:
@@ -105,7 +102,7 @@ class NextGenProvider(generic.TorrentProvider):
                     return True
 
                 error = 'unknown'
-        except:
+        except Exception:
             error = traceback.format_exc()
             self.login_opener = None
 
@@ -148,8 +145,8 @@ class NextGenProvider(generic.TorrentProvider):
 
                         entries = entries_std + entries_sticky
 
-                        #Xirg STANDARD TORRENTS
-                        #Continue only if one Release is found
+                        # Xirg STANDARD TORRENTS
+                        # Continue only if one Release is found
                         if not entries:
                             logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
                             continue
@@ -172,7 +169,7 @@ class NextGenProvider(generic.TorrentProvider):
                             if not all([title, download_url]):
                                 continue
 
-                            #Filter unseeded torrent
+                            # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode != 'RSS':
                                     logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
@@ -187,7 +184,7 @@ class NextGenProvider(generic.TorrentProvider):
                 except Exception, e:
                     logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]

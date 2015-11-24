@@ -5,7 +5,6 @@
 %>
 
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/configAnime.js?${sbPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/config.js?${sbPID}"></script>
 </%block>
 <%block name="content">
@@ -91,7 +90,7 @@
                    </fieldset>
                 </div><!-- /component-group //-->
 
-                <br/><input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
+                <br><input type="submit" class="btn config_submitter" value="Save Changes" /><br>
 
             </div><!-- /config-components //-->
 

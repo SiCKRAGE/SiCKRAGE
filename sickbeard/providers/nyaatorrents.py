@@ -19,13 +19,9 @@
 import urllib
 import re
 
-import generic
-
-from sickbeard import show_name_helpers
 from sickbeard import logger
-from sickbeard.common import Quality
 from sickbeard import tvcache
-from sickbeard import show_name_helpers
+from sickbeard.providers import generic
 
 
 class NyaaProvider(generic.TorrentProvider):
@@ -48,9 +44,6 @@ class NyaaProvider(generic.TorrentProvider):
         self.minseed = 0
         self.minleech = 0
         self.confirmed = False
-
-    def isEnabled(self):
-        return self.enabled
 
     def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         if self.show and not self.show.is_anime:
@@ -81,7 +74,7 @@ class NyaaProvider(generic.TorrentProvider):
                 s = re.compile(summary_regex, re.DOTALL)
 
                 results = []
-                for curItem in self.cache.getRSSFeed(searchURL, items=['entries'])['entries'] or []:
+                for curItem in self.cache.getRSSFeed(searchURL)['entries'] or []:
                     title = curItem['title']
                     download_url = curItem['link']
                     if not all([title, download_url]):
@@ -113,15 +106,8 @@ class NyaaProvider(generic.TorrentProvider):
 
         return results
 
-    def _extract_name_from_filename(self, filename):
-        name_regex = '(.*?)\.?(\[.*]|\d+\.TPB)\.torrent$'
-        logger.log(u"Comparing %s against %s" % (name_regex, filename), logger.DEBUG)
-        match = re.match(name_regex, filename, re.I)
-        if match:
-            return match.group(1)
-        return None
-
-    def _convertSize(self, size):
+    @staticmethod
+    def _convertSize(size):
         size, modifier = size.split(' ')
         size = float(size)
         if modifier in 'KiB':
@@ -132,7 +118,7 @@ class NyaaProvider(generic.TorrentProvider):
             size = size * 1024**3
         elif modifier in 'TiB':
             size = size * 1024**4
-        return size
+        return int(size)
 
     def seedRatio(self):
         return self.ratio

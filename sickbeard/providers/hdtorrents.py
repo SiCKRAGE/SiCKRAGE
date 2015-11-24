@@ -53,10 +53,6 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
         self.cache = HDTorrentsCache(self)
 
-
-    def isEnabled(self):
-        return self.enabled
-
     def _checkAuth(self):
 
         if not self.username or not self.password:
@@ -107,7 +103,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
                 data = self.getURL(searchURL)
                 if not data or 'please try later' in data:
-                    logger.log("No data returned from provider", logger.DEBUG)
+                    logger.log(u"No data returned from provider", logger.DEBUG)
                     continue
 
                 # Search result page contains some invalid html that prevents html parser from returning all data.
@@ -123,7 +119,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
                 with BS4Parser(data, features=["html5lib", "permissive"]) as html:
                     if not html:
-                        logger.log("No html data parsed from provider", logger.DEBUG)
+                        logger.log(u"No html data parsed from provider", logger.DEBUG)
                         continue
 
                     empty = html.find('No torrents here')
@@ -179,7 +175,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
                             if not all([title, download_url]):
                                 continue
 
-                            #Filter unseeded torrent
+                            # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode != 'RSS':
                                     logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
@@ -194,7 +190,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
                         except (AttributeError, TypeError, KeyError, ValueError):
                             continue
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]

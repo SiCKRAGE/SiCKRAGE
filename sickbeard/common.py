@@ -22,6 +22,7 @@ import operator
 import platform
 import re
 import uuid
+from UserDict import UserDict
 
 from random import shuffle
 
@@ -89,7 +90,7 @@ ARCHIVED = 6  # episodes that you don't have locally (counts toward download com
 IGNORED = 7  # episodes that you don't want included in your download stats
 SNATCHED_PROPER = 9  # qualified with quality
 SUBTITLED = 10  # qualified with quality
-FAILED = 11  #episode downloaded or snatched we don't want
+FAILED = 11  # episode downloaded or snatched we don't want
 SNATCHED_BEST = 12  # episode redownloaded using best quality
 
 NAMING_REPEAT = 1
@@ -107,8 +108,8 @@ multiEpStrings[NAMING_EXTEND] = "Extend"
 multiEpStrings[NAMING_LIMITED_EXTEND] = "Extend (Limited)"
 multiEpStrings[NAMING_LIMITED_EXTEND_E_PREFIXED] = "Extend (Limited, E-prefixed)"
 
-# pylint: disable=W0232,C1001
-class Quality:
+# pylint: disable=W0232
+class Quality(object):
     NONE = 0  # 0
     SDTV = 1  # 1
     SDDVD = 1 << 1  # 2
@@ -221,7 +222,7 @@ class Quality:
         :return: Quality prefix
         """
 
-        #Try Scene names first
+        # Try Scene names first
         quality = Quality.sceneQuality(name, anime)
         if quality != Quality.UNKNOWN:
             return quality
@@ -435,9 +436,9 @@ class Quality:
 
         # 2 corresponds to SDDVD quality
         if quality == 2:
-            if re.search(r"b[rd](|.|-| )(rip|mux)", name.lower()):
+            if re.search(r"b(r|d|rd)?(-| |\.)?(rip|mux)", name.lower()):
                 rip_type = " BDRip"
-            elif re.search(r"dvd(|.|-| )(rip|mux)", name.lower()):
+            elif re.search(r"(dvd)(-| |\.)?(rip|mux)?", name.lower()):
                 rip_type = " DVDRip"
             else:
                 rip_type = ""
@@ -512,45 +513,89 @@ qualityPresetStrings = {SD: "SD",
                         ANY: "Any"}
 
 
-# pylint: disable=R0903,C1001
-class StatusStrings:
-    def __init__(self):
-        self.statusStrings = {UNKNOWN: "Unknown",
-                              UNAIRED: "Unaired",
-                              SNATCHED: "Snatched",
-                              DOWNLOADED: "Downloaded",
-                              SKIPPED: "Skipped",
-                              SNATCHED_PROPER: "Snatched (Proper)",
-                              WANTED: "Wanted",
-                              ARCHIVED: "Archived",
-                              IGNORED: "Ignored",
-                              SUBTITLED: "Subtitled",
-                              FAILED: "Failed",
-                              SNATCHED_BEST: "Snatched (Best)"}
+class StatusStrings(UserDict):
+    """
+    Dictionary containing strings for status codes
 
-    def __getitem__(self, key):
-        key = int(key)
-        if key in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED:
-            status, quality = Quality.splitCompositeStatus(key)
-            if quality == Quality.NONE:
-                return self.statusStrings[status]
+    Keys must be convertible to int or a ValueError will be raised.  This is intentional to match old functionality until
+    the old StatusStrings is fully deprecated, then we will raise a KeyError instead, where appropriate.
+
+    Membership checks using __contains__ (i.e. 'x in y') do not raise a ValueError to match expected dict functionality
+    """
+    # todo: Deprecate StatusStrings().statusStrings and use StatusStrings() directly
+    # todo: Deprecate .has_key and switch to 'x in y'
+    # todo: Switch from raising ValueError to a saner KeyError
+    # todo: Raise KeyError when unable to resolve a missing key instead of returning ''
+    # todo: Make key of None match dict() functionality
+
+    @property
+    def statusStrings(self):  # for backwards compatibility
+        return self.data
+
+    def __setitem__(self, key, value):
+        self.data[int(key)] = value  # make sure all keys being assigned values are ints
+
+    def __missing__(self, key):
+        """
+        If the key is not found, search for the missing key in qualities
+
+        Keys must be convertible to int or a ValueError will be raised.  This is intentional to match old functionality until
+        the old StatusStrings is fully deprecated, then we will raise a KeyError instead, where appropriate.
+        """
+        if isinstance(key, int):  # if the key is already an int...
+            if key in self.keys() + Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED:
+                status, quality = Quality.splitCompositeStatus(key)
+                if quality == Quality.NONE:  # If a Quality is not listed... (shouldn't this be 'if not quality:'?)
+                    return self[status]  # ...return the status...
+                else:
+                    return self[status] + " (" + Quality.qualityStrings[quality] + ")"  # ...otherwise append the quality to the status
             else:
-                return self.statusStrings[status] + " (" + Quality.qualityStrings[quality] + ")"
-        else:
-            return self.statusStrings[key] if self.statusStrings.has_key(key) else ''
+                return ''  # return '' to match old functionality when the numeric key is not found
+        return self[int(key)]  # Since the key was not an int, let's try int(key) instead
 
+    # Keep this until all has_key() checks are converted to 'key in dict'
+    # or else has_keys() won't search __missing__ for keys
     def has_key(self, key):
-        key = int(key)
-        return key in self.statusStrings or key in Quality.DOWNLOADED + Quality.ARCHIVED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
+        """
+        Override has_key() to test membership using an 'x in y' search
+
+        Keys must be convertible to int or a ValueError will be raised.  This is intentional to match old functionality until
+        the old StatusStrings is fully deprecated, then we will raise a KeyError instead, where appropriate.
+        """
+        return key in self  # This will raise a ValueError if __missing__ can't convert the key to int
 
     def __contains__(self, key):
-        return self.has_key(key)
+        """
+        Checks for existence of key
 
-statusStrings = StatusStrings()
+        Unlike has_key() and __missing__() this will NOT raise a ValueError to match expected functionality
+        when checking for 'key in dict'
+        """
+        try:
+            # This will raise a ValueError if we can't convert the key to int
+            return ((int(key) in self.data) or
+                    (int(key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED))
+        except ValueError:  # The key is not numeric and since we only want numeric keys...
+            # ...and we don't want this function to fail...
+            pass  # ...suppress the ValueError and do nothing, the key does not exist
 
+statusStrings = StatusStrings(
+    {UNKNOWN: "Unknown",
+     UNAIRED: "Unaired",
+     SNATCHED: "Snatched",
+     DOWNLOADED: "Downloaded",
+     SKIPPED: "Skipped",
+     SNATCHED_PROPER: "Snatched (Proper)",
+     WANTED: "Wanted",
+     ARCHIVED: "Archived",
+     IGNORED: "Ignored",
+     SUBTITLED: "Subtitled",
+     FAILED: "Failed",
+     SNATCHED_BEST: "Snatched (Best)"
+     })
 
-# pylint: disable=R0903,C1001
-class Overview:
+# pylint: disable=R0903
+class Overview(object):
 
     UNAIRED = UNAIRED  # 1
     QUAL = 2

@@ -1,7 +1,7 @@
 # Author: Jodi Jones <venom@gen-x.co.nz>
 # URL: http://code.google.com/p/sickbeard/
 #
-#Ported to sickrage by: matigonkas
+# Ported to sickrage by: matigonkas
 #
 # This file is part of SickRage.
 #
@@ -38,9 +38,6 @@ class BTDIGGProvider(generic.TorrentProvider):
 
         self.cache = BTDiggCache(self)
 
-    def isEnabled(self):
-        return self.enabled
-
     def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
@@ -58,7 +55,7 @@ class BTDIGGProvider(generic.TorrentProvider):
 
                 jdata = self.getURL(searchURL, json=True)
                 if not jdata:
-                    logger.log("No data returned to be parsed!!!")
+                    logger.log(u"No data returned to be parsed!!!")
                     return []
 
                 for torrent in jdata:
@@ -66,15 +63,15 @@ class BTDIGGProvider(generic.TorrentProvider):
                         title = torrent['name']
                         download_url = torrent['magnet']
                         size = torrent['size']
-                        #FIXME
+                        # FIXME
                         seeders = 1
                         leechers = 0
 
                         if not all([title, download_url]):
                             continue
 
-                        #Filter unseeded torrent
-                        #if seeders < self.minseed or leechers < self.minleech:
+                        # Filter unseeded torrent
+                        # if seeders < self.minseed or leechers < self.minleech:
                         #    if mode != 'RSS':
                         #        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
                         #    continue
@@ -85,7 +82,7 @@ class BTDIGGProvider(generic.TorrentProvider):
 
                         items[mode].append(item)
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -100,12 +97,13 @@ class BTDiggCache(tvcache.TVCache):
 
         tvcache.TVCache.__init__(self, provider_obj)
 
-        # set this 0 to suppress log line, since we aren't updating it anyways
-        self.minTime = 0
+        # Cache results for a hour ,since BTDigg takes some time to crawl
+        self.minTime = 60
 
     def _getRSSData(self):
-        # no rss for btdigg, can't search with empty string
-        # newest results are always > 1 day since added anyways
-        return {'entries': {}}
+
+        # Use x264 for RSS search since most results will use that codec and since the site doesnt have latest results search
+        search_params = {'RSS': ['x264']}
+        return {'entries': self.provider._doSearch(search_params)}
 
 provider = BTDIGGProvider()
