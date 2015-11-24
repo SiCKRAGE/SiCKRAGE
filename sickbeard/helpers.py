@@ -49,6 +49,7 @@ import certifi
 from contextlib import closing
 from socket import timeout as SocketTimeout
 
+
 from sickbeard import logger, classes
 from sickbeard.common import USER_AGENT
 from sickbeard.common import mediaExtensions
