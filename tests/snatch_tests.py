@@ -64,7 +64,7 @@ class SearchTest(test.SickbeardTestDBCase):
             #provider.isActive = self._fake_isActive
 
         super(SearchTest, self).__init__(something)
-
+        super(SearchTest, self).setUp()
 
 def test_generator(tvdbdid, show_name, curData, forceSearch):
 

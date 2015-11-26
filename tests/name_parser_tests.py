@@ -1,4 +1,5 @@
 import sys, os.path
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -10,6 +11,7 @@ from tests import test_lib as test
 import sickbeard
 from sickbeard import tv
 from sickbeard.name_parser import parser
+from sickrage.helper.encoding import ek
 
 sickbeard.SYS_ENCODING = 'UTF-8'
 
@@ -227,7 +229,7 @@ class ComboTests(test.SickbeardTestDBCase):
         for (name, result, which_regexes) in combination_test_cases:
             # Normalise the paths. Converts UNIX-style paths into Windows-style
             # paths when test is run on Windows.
-            self._test_combo(os.path.normpath(name), result, which_regexes)
+            self._test_combo(ek(os.path.normpath, name), result, which_regexes)
 
 class BasicTests(test.SickbeardTestDBCase):
 
@@ -237,7 +239,6 @@ class BasicTests(test.SickbeardTestDBCase):
         self.show = tv.TVShow(1, 1, 'en')
 
     def _test_names(self, np, section, transform=None, verbose=False):
-
         if VERBOSE or verbose:
             print
             print 'Running', section, 'tests'
@@ -366,7 +367,7 @@ if __name__ == '__main__':
         unittest.TextTestRunner(verbosity=2).run(suite)
     else:
         suite = unittest.TestLoader().loadTestsFromTestCase(BasicTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+        unittest.TextTestRunner(verbosity=2).run(suite)
 
     suite = unittest.TestLoader().loadTestsFromTestCase(ComboTests)
     unittest.TextTestRunner(verbosity=2).run(suite)

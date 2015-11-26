@@ -23,8 +23,11 @@ import platform
 import re
 import uuid
 from UserDict import UserDict
-
+from itertools import chain
 from random import shuffle
+
+from sickrage.helper.encoding import ek
+from shutil_custom import shutil
 
 SPOOF_USER_AGENT = False
 
@@ -176,6 +179,7 @@ class Quality(object):
                       FAILED: "Failed",
                       SNATCHED_BEST: "Snatched (Best)",
                       ARCHIVED: "Archived"}
+
     @staticmethod
     def _getStatusStrings(status):
         """
@@ -250,7 +254,7 @@ class Quality(object):
         if not name:
             return ret
 
-        name = os.path.basename(name)
+        name = ek(os.path.basename, name)
 
         checkName = lambda list, func: func([re.search(x, name, re.I) for x in list])
 
@@ -300,6 +304,7 @@ class Quality(object):
         elif checkName([r"1080p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
             ret = Quality.FULLHDBLURAY
 
+        del checkName
         return ret
 
     @staticmethod
@@ -310,25 +315,23 @@ class Quality(object):
         :param name: File name of episode to analyse
         :return: Quality prefix
         """
+
         quality = Quality.qualityFromFileMeta(name)
         if quality != Quality.UNKNOWN:
             return quality
-
-        if name.lower().endswith(".ts"):
+        elif name.lower().endswith(".ts"):
             return Quality.RAWHDTV
-        else:
-            return Quality.UNKNOWN
+
+        return Quality.UNKNOWN
 
     @staticmethod
     def qualityFromFileMeta(filename):
         """
-        Get quality file file metadata
+        Get quality from file metadata
 
         :param filename: Filename to analyse
         :return: Quality prefix
         """
-
-        # pylint: disable=R0912
 
         from hachoir_parser import createParser
         from hachoir_metadata import extractMetadata
@@ -336,56 +339,36 @@ class Quality(object):
         log.use_print = False
 
         try:
-            parser = createParser(filename)
-        # pylint: disable=W0703
-        except Exception:
-            parser = None
-
-        if not parser:
-            return Quality.UNKNOWN
-
-        try:
-            metadata = extractMetadata(parser)
-        # pylint: disable=W0703
-        except Exception:
-            metadata = None
-
-        try:
-            # pylint: disable=W0212
+            tmpFile = filename + ".tmp"
+            shutil.copyfile(filename, tmpFile)
+            parser = createParser(tmpFile)
+            file_metadata = extractMetadata(parser)
             parser.stream._input.close()
-        # pylint: disable=W0703
+            os.remove(tmpFile)
+
+            if not file_metadata:
+                raise
+
+            height = 0
+            for metadata in chain([file_metadata], file_metadata.iterGroups()):
+                height = metadata.get('height')
+                if height:
+                    break
         except Exception:
-            pass
-
-        if not metadata:
             return Quality.UNKNOWN
 
-        height = 0
-        if metadata.has('height'):
-            height = int(metadata.get('height') or 0)
-        else:
-            test = getattr(metadata, "iterGroups", None)
-            if callable(test):
-                for metagroup in metadata.iterGroups():
-                    if metagroup.has('height'):
-                        height = int(metagroup.get('height') or 0)
-
-        if not height:
-            return Quality.UNKNOWN
-
-        base_filename = os.path.basename(filename)
+        base_filename = ek(os.path.basename, filename)
         bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
         webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
-        ret = Quality.UNKNOWN
         if height > 1000:
-            ret = ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
+            return ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
         elif height > 680 and height < 800:
-            ret = ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
+            return ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
         elif height < 680:
-            ret = (Quality.SDTV, Quality.SDDVD)[re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+            return (Quality.SDTV, Quality.SDDVD)[re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
 
-        return ret
+        return Quality.UNKNOWN
 
     @staticmethod
     def compositeStatus(status, quality):

@@ -61,11 +61,7 @@ from sickbeard.common import DOWNLOADED, SNATCHED, SNATCHED_PROPER, SNATCHED_BES
 from sickbeard.common import NAMING_DUPLICATE, NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_SEPARATED_REPEAT, \
     NAMING_LIMITED_EXTEND_E_PREFIXED
 
-import shutil
-import shutil_custom
-
-
-shutil.copyfile = shutil_custom.copyfile_custom
+from shutil_custom import shutil
 
 
 def dirty_setter(attr_name):
@@ -179,7 +175,7 @@ class TVShow(object):
         if sickbeard.CREATE_MISSING_SHOW_DIRS:
             return self._location
 
-        if ek(os.path.isdir, self._location):
+        if os.path.isdir(self._location):
             return self._location
         else:
             raise ShowDirectoryNotFoundException("Show folder doesn't exist, you shouldn't be using it")
@@ -187,7 +183,7 @@ class TVShow(object):
     def _setLocation(self, newLocation):
         logger.log(u"Setter sets location to " + newLocation, logger.DEBUG)
         # Don't validate dir if user wants to add shows without creating a dir
-        if sickbeard.ADD_SHOWS_WO_DIR or ek(os.path.isdir, newLocation):
+        if sickbeard.ADD_SHOWS_WO_DIR or os.path.isdir(newLocation):
             dirty_setter("_location")(self, newLocation)
         else:
             raise NoNFOException("Invalid folder for the show!")
@@ -333,7 +329,7 @@ class TVShow(object):
 
         result = False
 
-        if not ek(os.path.isdir, self._location):
+        if not os.path.isdir(self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
             return False
 
@@ -345,7 +341,7 @@ class TVShow(object):
 
     def writeMetadata(self, show_only=False):
 
-        if not ek(os.path.isdir, self._location):
+        if not os.path.isdir(self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
             return
 
@@ -358,7 +354,7 @@ class TVShow(object):
 
     def writeEpisodeNFOs(self):
 
-        if not ek(os.path.isdir, self._location):
+        if not os.path.isdir(self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
             return
 
@@ -377,7 +373,7 @@ class TVShow(object):
 
     def updateMetadata(self):
 
-        if not ek(os.path.isdir, self._location):
+        if not os.path.isdir(self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
             return
 
@@ -387,7 +383,7 @@ class TVShow(object):
 
         result = False
 
-        if not ek(os.path.isdir, self._location):
+        if not os.path.isdir(self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
             return False
 
@@ -400,7 +396,7 @@ class TVShow(object):
     # find all media files in the show folder and create episodes for as many as possible
     def loadEpisodesFromDir(self):
 
-        if not ek(os.path.isdir, self._location):
+        if not os.path.isdir(self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, not loading episodes from disk", logger.DEBUG)
             return
 
@@ -622,7 +618,7 @@ class TVShow(object):
     # make a TVEpisode object from a media file
     def makeEpFromFile(self, file):
 
-        if not ek(os.path.isfile, file):
+        if not os.path.isfile(file):
             logger.log(str(self.indexerid) + u": That isn't even a real file dude... " + file)
             return None
 
@@ -1007,7 +1003,7 @@ class TVShow(object):
                 if sickbeard.TRASH_REMOVE_SHOW:
                     send2trash(cache_file)
                 else:
-                    os.remove(cache_file)
+                    ek(os.remove, cache_file)
 
             except OSError, e:
                 logger.log(u'Unable to %s %s: %s / %s' % (action, cache_file, repr(e), str(e)), logger.WARNING)
@@ -1017,7 +1013,7 @@ class TVShow(object):
             try:
                 logger.log(u'Attempt to %s show folder %s' % (action, self._location))
                 # check first the read-only attribute
-                file_attribute = ek(os.stat, self.location)[0]
+                file_attribute = os.stat(self.location)[0]
                 if not file_attribute & stat.S_IWRITE:
                     # File is read-only, so make it writeable
                     logger.log(u'Attempting to make writeable the read only folder %s' % self._location, logger.DEBUG)
@@ -1053,7 +1049,7 @@ class TVShow(object):
     def refreshDir(self):
 
         # make sure the show dir is where we think it is unless dirs are created on the fly
-        if not ek(os.path.isdir, self._location) and not sickbeard.CREATE_MISSING_SHOW_DIRS:
+        if not os.path.isdir(self._location) and not sickbeard.CREATE_MISSING_SHOW_DIRS:
             return False
 
         # load from dir
@@ -1067,7 +1063,7 @@ class TVShow(object):
 
         sql_l = []
         for ep in sqlResults:
-            curLoc = os.path.normpath(ep["location"])
+            curLoc = ek(os.path.normpath, ep["location"])
             season = int(ep["season"])
             episode = int(ep["episode"])
 
@@ -1081,8 +1077,8 @@ class TVShow(object):
                 continue
 
             # if the path doesn't exist or if it's not in our show dir
-            if not ek(os.path.isfile, curLoc) or not os.path.normpath(curLoc).startswith(
-                    os.path.normpath(self.location)):
+            if not os.path.isfile(curLoc) or not ek(os.path.normpath, curLoc).startswith(
+                    ek(os.path.normpath, self.location)):
 
                 # check if downloaded files still exist, update our data if this has changed
                 if not sickbeard.SKIP_REMOVED_FILES:
@@ -1120,7 +1116,7 @@ class TVShow(object):
 
     def downloadSubtitles(self, force=False):
         # TODO: Add support for force option
-        if not ek(os.path.isdir, self._location):
+        if not os.path.isdir(self._location):
             logger.log(str(self.indexerid) + ": Show dir doesn't exist, can't download subtitles", logger.DEBUG)
             return
 
@@ -1413,7 +1409,7 @@ class TVEpisode(object):
         # self._location = newLocation
         dirty_setter("_location")(self, new_location)
 
-        if new_location and ek(os.path.isfile, new_location):
+        if new_location and os.path.isfile(new_location):
             self.file_size = ek(os.path.getsize, new_location)
         else:
             self.file_size = 0
@@ -1427,7 +1423,7 @@ class TVEpisode(object):
             self.saveToDB()
 
     def downloadSubtitles(self, force=False):
-        if not ek(os.path.isfile, self.location):
+        if not os.path.isfile(self.location):
             logger.log(u"%s: Episode file doesn't exist, can't download subtitles for S%02dE%02d" %
                        (self.show.indexerid, self.season or 0, self.episode or 0), logger.DEBUG)
             return
@@ -1467,7 +1463,7 @@ class TVEpisode(object):
         cur_tbn = False
 
         # check for nfo and tbn
-        if ek(os.path.isfile, self.location):
+        if os.path.isfile(self.location):
             for cur_provider in sickbeard.metadata_provider_dict.values():
                 if cur_provider.episode_metadata:
                     new_result = cur_provider._has_episode_metadata(self)
@@ -1493,7 +1489,7 @@ class TVEpisode(object):
 
         if not sqlResult:
             # only load from NFO if we didn't load from DB
-            if ek(os.path.isfile, self.location):
+            if os.path.isfile(self.location):
                 try:
                     self.loadFromNFO(self.location)
                 except NoNFOException:
@@ -1543,7 +1539,7 @@ class TVEpisode(object):
 
             # don't overwrite my location
             if sqlResults[0]["location"] and sqlResults[0]["location"]:
-                self.location = os.path.normpath(sqlResults[0]["location"])
+                self.location = ek(os.path.normpath, sqlResults[0]["location"])
             if sqlResults[0]["file_size"]:
                 self.file_size = int(sqlResults[0]["file_size"])
             else:
@@ -1697,7 +1693,7 @@ class TVEpisode(object):
             return False
 
         # don't update show status if show dir is missing, unless it's missing on purpose
-        if not ek(os.path.isdir, self.show._location) and not sickbeard.CREATE_MISSING_SHOW_DIRS and not sickbeard.ADD_SHOWS_WO_DIR:
+        if not os.path.isdir(self.show._location) and not sickbeard.CREATE_MISSING_SHOW_DIRS and not sickbeard.ADD_SHOWS_WO_DIR:
             logger.log(u"The show dir %s is missing, not bothering to change the episode statuses since it'd probably be invalid" % self.show._location)
             return
 
@@ -1705,7 +1701,7 @@ class TVEpisode(object):
             logger.log(u"%s: Setting status for S%02dE%02d based on status %s and location %s" %
                        (self.show.indexerid, season or 0, episode or 0, statusStrings[self.status], self.location), logger.DEBUG)
 
-        if not ek(os.path.isfile, self.location):
+        if not os.path.isfile(self.location):
             if self.airdate >= datetime.date.today() or self.airdate == datetime.date.fromordinal(1):
                 logger.log(u"Episode airs in the future or has no airdate, marking it %s" % statusStrings[UNAIRED], logger.DEBUG)
                 self.status = UNAIRED
@@ -1732,7 +1728,7 @@ class TVEpisode(object):
 
     def loadFromNFO(self, location):
 
-        if not ek(os.path.isdir, self.show._location):
+        if not os.path.isdir(self.show._location):
             logger.log(
                 str(self.show.indexerid) + u": The show dir is missing, not bothering to try loading the episode NFO")
             return
@@ -1754,7 +1750,7 @@ class TVEpisode(object):
             nfoFile = sickbeard.helpers.replaceExtension(self.location, "nfo")
             logger.log(str(self.show.indexerid) + u": Using NFO name " + nfoFile, logger.DEBUG)
 
-            if ek(os.path.isfile, nfoFile):
+            if os.path.isfile(nfoFile):
                 try:
                     showXML = etree.ElementTree(file=nfoFile)
                 except (SyntaxError, ValueError), e:
@@ -1808,7 +1804,7 @@ class TVEpisode(object):
             else:
                 self.hasnfo = False
 
-            if ek(os.path.isfile, sickbeard.helpers.replaceExtension(nfoFile, "tbn")):
+            if os.path.isfile(sickbeard.helpers.replaceExtension(nfoFile, "tbn")):
                 self.hastbn = True
             else:
                 self.hastbn = False
@@ -1830,7 +1826,7 @@ class TVEpisode(object):
 
     def createMetaFiles(self):
 
-        if not ek(os.path.isdir, self.show._location):
+        if not os.path.isdir(self.show._location):
             logger.log(str(self.show.indexerid) + u": The show dir is missing, not bothering to try to create metadata")
             return
 
@@ -2399,7 +2395,7 @@ class TVEpisode(object):
         if len(name_groups) == 1:
             return ''
         else:
-            return self._format_pattern(os.sep.join(name_groups[:-1]), multi)
+            return self._format_pattern(ek(os.sep.join, name_groups[:-1]), multi)
 
     def formatted_filename(self, pattern=None, multi=None, anime_type=None):
         """
@@ -2428,7 +2424,7 @@ class TVEpisode(object):
         in the naming settings.
         """
 
-        if not ek(os.path.isfile, self.location):
+        if not os.path.isfile(self.location):
             logger.log(u"Can't perform rename on " + self.location + " when it doesn't exist, skipping", logger.WARNING)
             return
 
@@ -2530,7 +2526,7 @@ class TVEpisode(object):
         if sickbeard.FILE_TIMESTAMP_TIMEZONE == 'local':
             airdatetime = airdatetime.astimezone(network_timezones.sb_timezone)
 
-        filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location)).replace(tzinfo=network_timezones.sb_timezone)
+        filemtime = datetime.datetime.fromtimestamp(ek(os.path.getmtime, self.location)).replace(tzinfo=network_timezones.sb_timezone)
 
         if filemtime != airdatetime:
             import time
@@ -2540,13 +2536,13 @@ class TVEpisode(object):
                        "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime), logger.DEBUG)
             try:
                 if helpers.touchFile(self.location, time.mktime(airdatetime)):
-                    logger.log(str(self.show.indexerid) + u": Changed modify date of " + os.path.basename(self.location)
+                    logger.log(str(self.show.indexerid) + u": Changed modify date of " + ek(os.path.basename, self.location)
                                + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
                 else:
-                    logger.log(str(self.show.indexerid) + u": Unable to modify date of " + os.path.basename(self.location)
+                    logger.log(str(self.show.indexerid) + u": Unable to modify date of " + ek(os.path.basename, self.location)
                                + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime), logger.ERROR)
             except Exception:
-                logger.log(str(self.show.indexerid) + u": Failed to modify date of '" + os.path.basename(self.location)
+                logger.log(str(self.show.indexerid) + u": Failed to modify date of '" + ek(os.path.basename, self.location)
                            + "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime), logger.ERROR)
 
     def __getstate__(self):

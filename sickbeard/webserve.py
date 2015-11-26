@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -97,9 +97,9 @@ def get_lookup():
     global mako_path  # pylint: disable=W0603
 
     if mako_path is None:
-        mako_path = os.path.join(sickbeard.PROG_DIR, "gui/" + sickbeard.GUI_NAME + "/views/")
+        mako_path = ek(os.path.join, sickbeard.PROG_DIR, "gui/" + sickbeard.GUI_NAME + "/views/")
     if mako_cache is None:
-        mako_cache = os.path.join(sickbeard.CACHE_DIR, 'mako')
+        mako_cache = ek(os.path.join, sickbeard.CACHE_DIR, 'mako')
     if mako_lookup is None:
         mako_lookup = TemplateLookup(directories=[mako_path], module_directory=mako_cache, format_exceptions=True)
     return mako_lookup
@@ -155,11 +155,6 @@ class PageTemplate(MakoTemplate):
 
 class BaseHandler(RequestHandler):
     startTime = 0.
-
-    if sys.version_info > (3, 0):
-        __str__ = lambda x: x.__unicode__()
-    else:
-        __str__ = lambda x: unicode(x).encode('utf-8')
 
     def __init__(self, *args, **kwargs):
         self.startTime = time.time()
@@ -631,7 +626,7 @@ class WebFileBrowser(WebRoot):
     def complete(self, term, includeFiles=0, *args, **kwargs):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header("Content-Type", "application/json")
-        paths = [entry['path'] for entry in foldersAtPath(os.path.dirname(term), includeFiles=bool(int(includeFiles)))
+        paths = [entry['path'] for entry in foldersAtPath(ek(os.path.dirname, term), includeFiles=bool(int(includeFiles)))
                  if 'path' in entry]
 
         return json.dumps(paths)
@@ -1461,9 +1456,9 @@ class Home(WebRoot):
                 showObj.rls_require_words = rls_require_words.strip()
 
             # if we change location clear the db of episodes, change it, write to db, and rescan
-            if os.path.normpath(showObj._location) != os.path.normpath(location):
-                logger.log(os.path.normpath(showObj._location) + " != " + os.path.normpath(location), logger.DEBUG)
-                if not ek(os.path.isdir, location) and not sickbeard.CREATE_MISSING_SHOW_DIRS:
+            if ek(os.path.normpath, showObj._location) != ek(os.path.normpath, location):
+                logger.log(ek(os.path.normpath, showObj._location) + " != " + ek(os.path.normpath, location), logger.DEBUG)
+                if not os.path.isdir(location) and not sickbeard.CREATE_MISSING_SHOW_DIRS:
                     errors.append("New location <tt>%s</tt> does not exist" % location)
 
                 # don't bother if we're going to update anyway
@@ -1715,7 +1710,7 @@ class Home(WebRoot):
                         continue
 
                     if int(status) in Quality.DOWNLOADED and epObj.status not in Quality.SNATCHED + \
-                            Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [IGNORED] and not ek(os.path.isfile, epObj.location):
+                            Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [IGNORED] and not os.path.isfile(epObj.location):
                         logger.log(u"Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED", logger.WARNING)
                         continue
 
@@ -2303,14 +2298,14 @@ class HomeAddShows(Home):
 
                 try:
                     cur_path = ek(os.path.normpath, ek(os.path.join, root_dir, cur_file))
-                    if not ek(os.path.isdir, cur_path):
+                    if not os.path.isdir(cur_path):
                         continue
                 except Exception:
                     continue
 
                 cur_dir = {
                     'dir': cur_path,
-                    'display_dir': '<b>' + ek(os.path.dirname, cur_path) + os.sep + '</b>' + ek(
+                    'display_dir': '<b>' + ek(os.path.dirname, cur_path) + ek(os.sep + '</b>' + ek,
                         os.path.basename,
                         cur_path),
                 }
@@ -2625,7 +2620,7 @@ class HomeAddShows(Home):
 
             indexer = int(providedIndexer)
             indexer_id = int(whichSeries)
-            show_name = os.path.basename(os.path.normpath(fullShowPath))
+            show_name = ek(os.path.basename, ek(os.path.normpath, fullShowPath))
 
         # use the whole path if it's given, or else append the show name to the root dir to get the full show path
         if fullShowPath:
@@ -2634,7 +2629,7 @@ class HomeAddShows(Home):
             show_dir = ek(os.path.join, rootDir, helpers.sanitizeFileName(show_name))
 
         # blanket policy - if the dir exists you should have used "add existing show" numbnuts
-        if ek(os.path.isdir, show_dir) and not fullShowPath:
+        if os.path.isdir(show_dir) and not fullShowPath:
             ui.notifications.error("Unable to add show", "Folder " + show_dir + " exists already")
             return self.redirect('/home/addShows/existingShows/')
 
@@ -3719,7 +3714,7 @@ class ConfigGeneral(Config):
         sickbeard.TIMEZONE_DISPLAY = timezone_display
 
         if not config.change_LOG_DIR(log_dir, web_log):
-            results += ["Unable to create directory " + os.path.normpath(log_dir) + ", log directory not changed."]
+            results += ["Unable to create directory " + ek(os.path.normpath, log_dir) + ", log directory not changed."]
 
         sickbeard.API_KEY = api_key
 
@@ -3727,11 +3722,11 @@ class ConfigGeneral(Config):
 
         if not config.change_HTTPS_CERT(https_cert):
             results += [
-                "Unable to create directory " + os.path.normpath(https_cert) + ", https cert directory not changed."]
+                "Unable to create directory " + ek(os.path.normpath, https_cert) + ", https cert directory not changed."]
 
         if not config.change_HTTPS_KEY(https_key):
             results += [
-                "Unable to create directory " + os.path.normpath(https_key) + ", https key directory not changed."]
+                "Unable to create directory " + ek(os.path.normpath, https_key) + ", https key directory not changed."]
 
         sickbeard.HANDLE_REVERSE_PROXY = config.checkbox_to_value(handle_reverse_proxy)
 
@@ -3768,17 +3763,17 @@ class ConfigBackupRestore(Config):
         finalResult = ''
 
         if backupDir:
-            source = [os.path.join(sickbeard.DATA_DIR, 'sickbeard.db'), sickbeard.CONFIG_FILE,
-                      os.path.join(sickbeard.DATA_DIR, 'failed.db'),
-                      os.path.join(sickbeard.DATA_DIR, 'cache.db')]
-            target = os.path.join(backupDir, 'sickrage-' + time.strftime('%Y%m%d%H%M%S') + '.zip')
+            source = [ek(os.path.join, sickbeard.DATA_DIR, 'sickbeard.db'), sickbeard.CONFIG_FILE,
+                      ek(os.path.join, sickbeard.DATA_DIR, 'failed.db'),
+                      ek(os.path.join, sickbeard.DATA_DIR, 'cache.db')]
+            target = ek(os.path.join, backupDir, 'sickrage-' + time.strftime('%Y%m%d%H%M%S') + '.zip')
 
-            for (path, dirs, files) in os.walk(sickbeard.CACHE_DIR, topdown=True):
+            for (path, dirs, files) in ek(os.walk, sickbeard.CACHE_DIR, topdown=True):
                 for dirname in dirs:
                     if path == sickbeard.CACHE_DIR and dirname not in ['images']:
                         dirs.remove(dirname)
                 for filename in files:
-                    source.append(os.path.join(path, filename))
+                    source.append(ek(os.path.join, path, filename))
 
             if helpers.backupConfigZip(source, target, sickbeard.DATA_DIR):
                 finalResult += "Successful backup to " + target
@@ -3798,7 +3793,7 @@ class ConfigBackupRestore(Config):
 
         if backupFile:
             source = backupFile
-            target_dir = os.path.join(sickbeard.DATA_DIR, 'restore')
+            target_dir = ek(os.path.join, sickbeard.DATA_DIR, 'restore')
 
             if helpers.restoreConfigZip(source, target_dir):
                 finalResult += "Successfully extracted restore files to " + target_dir
@@ -3838,10 +3833,10 @@ class ConfigSearch(Config):
         results = []
 
         if not config.change_NZB_DIR(nzb_dir):
-            results += ["Unable to create directory " + os.path.normpath(nzb_dir) + ", dir not changed."]
+            results += ["Unable to create directory " + ek(os.path.normpath, nzb_dir) + ", dir not changed."]
 
         if not config.change_TORRENT_DIR(torrent_dir):
-            results += ["Unable to create directory " + os.path.normpath(torrent_dir) + ", dir not changed."]
+            results += ["Unable to create directory " + ek(os.path.normpath, torrent_dir) + ", dir not changed."]
 
         config.change_DAILYSEARCH_FREQUENCY(dailysearch_frequency)
 
@@ -3945,7 +3940,7 @@ class ConfigPostProcessing(Config):
         results = []
 
         if not config.change_TV_DOWNLOAD_DIR(tv_download_dir):
-            results += ["Unable to create directory " + os.path.normpath(tv_download_dir) + ", dir not changed."]
+            results += ["Unable to create directory " + ek(os.path.normpath, tv_download_dir) + ", dir not changed."]
 
         config.change_AUTOPOSTPROCESSER_FREQUENCY(autopostprocesser_frequency)
         config.change_PROCESS_AUTOMATICALLY(process_automatically)
@@ -4099,7 +4094,7 @@ class ConfigPostProcessing(Config):
         """
 
         try:
-            rar_path = os.path.join(sickbeard.PROG_DIR, 'lib', 'unrar2', 'test.rar')
+            rar_path = ek(os.path.join, sickbeard.PROG_DIR, 'lib', 'unrar2', 'test.rar')
             testing = RarFile(rar_path).read_files('*test.txt')
             if testing[0][1] == 'This is only a test.':
                 return 'supported'

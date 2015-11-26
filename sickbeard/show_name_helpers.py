@@ -352,7 +352,7 @@ def determineReleaseName(dir_name=None, nzb_name=None):
 
         reg_expr = re.compile(fnmatch.translate(search), re.IGNORECASE)
         files = [file_name for file_name in ek(os.listdir, dir_name) if
-                 ek(os.path.isfile, ek(os.path.join, dir_name, file_name))]
+                 os.path.isfile(ek(os.path.join, dir_name, file_name))]
         results = filter(reg_expr.search, files)
 
         if len(results) == 1:

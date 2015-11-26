@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: https://sickrage.tv
 # Git: https://github.com/SiCKRAGETV/SickRage.git
@@ -16,12 +18,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+import six
+import collections
 
-import sickbeard
-
-from chardet import detect
 from os import name
-
 
 def ek(function, *args, **kwargs):
     """
@@ -36,80 +36,48 @@ def ek(function, *args, **kwargs):
     if name == 'nt':
         result = function(*args, **kwargs)
     else:
-        result = function(*[ss(x) if isinstance(x, (str, unicode)) else x for x in args], **kwargs)
+        result = function(*[ss(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in args], **kwargs)
 
-    if isinstance(result, (list, tuple)):
-        return _fix_list_encoding(result)
-
-    if isinstance(result, str):
-        return _to_unicode(result)
-
-    return result
+    return type(result)(map(uu,result)) if isinstance(result, collections.Iterable) and not isinstance(result, six.string_types) else uu(result)
 
 
-def ss(var):
-    """
-    Converts string to Unicode, fallback encoding is forced UTF-8
-
-    :param var: String to convert
-    :return: Converted string
+def uu(s):
+    """ Convert, at all consts, 'text' to a `unicode` object.
     """
 
-    var = _to_unicode(var)
+    if isinstance(s, six.text_type):
+        return s
 
-    try:
-        var = var.encode(sickbeard.SYS_ENCODING)
-    except Exception:
+    if not isinstance(s, six.string_types):
+        if hasattr(s, '__unicode__'):
+            s = s.__unicode__()
+        else:
+            if six.PY3:
+                if isinstance(s, six.binary_type):
+                    s = six.text_type(s, 'utf-8', 'strict')
+                else:
+                    s = six.text_type(s)
+            else:
+                s = six.text_type(six.binary_type(s), 'utf-8', 'strict')
+    else:
+        s = s.decode('utf-8', 'strict')
+
+    return s
+
+def ss(s):
+    """ Convert 'text' to a `str` object.
+    """
+
+    if isinstance(s, six.binary_type):
+        return s
+
+    if not isinstance(s, six.string_types):
         try:
-            var = var.encode('utf-8')
-        except Exception:
-            try:
-                var = var.encode(sickbeard.SYS_ENCODING, 'replace')
-            except Exception:
-                var = var.encode('utf-8', 'ignore')
-
-    return var
-
-
-def _fix_list_encoding(var):
-    """
-    Converts each item in a list to Unicode
-
-    :param var: List or tuple to convert to Unicode
-    :return: Unicode converted input
-    """
-
-    if isinstance(var, (list, tuple)):
-        return filter(lambda x: x is not None, map(_to_unicode, var))
-
-    return var
-
-
-def _to_unicode(var):
-    """
-    Converts string to Unicode, using in order: UTF-8, Latin-1, System encoding or finally what chardet wants
-
-    :param var: String to convert
-    :return: Converted string as unicode, fallback is System encoding
-    """
-
-    if isinstance(var, str):
-        try:
-            var = unicode(var)
-        except Exception:
-            try:
-                var = unicode(var, 'utf-8')
-            except Exception:
-                try:
-                    var = unicode(var, 'latin-1')
-                except Exception:
-                    try:
-                        var = unicode(var, sickbeard.SYS_ENCODING)
-                    except Exception:
-                        try:
-                            # Chardet can be wrong, so try it last
-                            var = unicode(var, detect(var).get('encoding'))
-                        except Exception:
-                            var = unicode(var, sickbeard.SYS_ENCODING, 'replace')
-
-    return var
+            if six.PY3:
+                return six.text_type(s).encode('utf-8')
+            else:
+                return six.binary_type(s)
+        except UnicodeEncodeError:
+            return six.text_type(s).encode('utf-8', 'strict')
+    else:
+        return s.encode('utf-8', 'strict')

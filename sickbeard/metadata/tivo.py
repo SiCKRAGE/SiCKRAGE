@@ -137,7 +137,7 @@ class TIVOMetadata(generic.GenericMetadata):
 
         ep_obj: a TVEpisode object to get the path for
         """
-        if ek(os.path.isfile, ep_obj.location):
+        if os.path.isfile(ep_obj.location):
             metadata_file_name = ek(os.path.basename, ep_obj.location) + "." + self._ep_nfo_extension
             metadata_dir_name = ek(os.path.join, ek(os.path.dirname, ep_obj.location), '.meta')
             metadata_file_path = ek(os.path.join, metadata_dir_name, metadata_file_name)
@@ -314,7 +314,7 @@ class TIVOMetadata(generic.GenericMetadata):
         nfo_file_dir = ek(os.path.dirname, nfo_file_path)
 
         try:
-            if not ek(os.path.isdir, nfo_file_dir):
+            if not os.path.isdir(nfo_file_dir):
                 logger.log(u"Metadata dir didn't exist, creating it at " + nfo_file_dir, logger.DEBUG)
                 ek(os.makedirs, nfo_file_dir)
                 helpers.chmodAsParent(nfo_file_dir)

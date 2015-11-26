@@ -27,7 +27,7 @@ import regexes
 import sickbeard
 
 from sickbeard import logger, helpers, scene_numbering, common, scene_exceptions, db
-from sickrage.helper.encoding import ek
+from sickrage.helper.encoding import ek, ss, uu
 from sickrage.helper.exceptions import ex
 from dateutil import parser
 
@@ -355,13 +355,6 @@ class NameParser(object):
             return b
 
     @staticmethod
-    def _unicodify(obj, encoding="utf-8"):
-        if isinstance(obj, basestring):
-            if not isinstance(obj, unicode):
-                obj = unicode(obj, encoding, 'replace')
-        return obj
-
-    @staticmethod
     def _convert_number(org_number):
         """
          Convert org_number into an integer
@@ -397,8 +390,6 @@ class NameParser(object):
         return number
 
     def parse(self, name, cache_result=True):
-        name = self._unicodify(name)
-
         if self.naming_pattern:
             cache_result = False
 
@@ -421,7 +412,7 @@ class NameParser(object):
         file_name_result = self._parse_string(base_file_name)
 
         # use only the direct parent dir
-        dir_name = os.path.basename(dir_name)
+        dir_name = ek(os.path.basename, dir_name)
 
         # parse the dirname for extra info if needed
         dir_name_result = self._parse_string(dir_name)
@@ -467,7 +458,7 @@ class NameParser(object):
         if cache_result:
             name_parser_cache.add(name, final_result)
 
-        logger.log(u"Parsed " + name + " into " + str(final_result).decode('utf-8', 'xmlcharrefreplace'), logger.DEBUG)
+        logger.log("Parsed " + name + " into " + ss(final_result), logger.DEBUG)
         return final_result
 
 
@@ -547,10 +538,9 @@ class ParseResult(object):
         return True
 
     def __str__(self):
+        to_return = ""
         if self.series_name is not None:
-            to_return = self.series_name + u' - '
-        else:
-            to_return = u''
+            to_return += self.series_name
         if self.season_number is not None:
             to_return += 'S' + str(self.season_number).zfill(2)
         if self.episode_numbers and len(self.episode_numbers):
@@ -571,7 +561,7 @@ class ParseResult(object):
         to_return += ' [ANIME: ' + str(self.is_anime) + ']'
         to_return += ' [whichReg: ' + str(self.which_regex) + ']'
 
-        return to_return.encode('utf-8')
+        return to_return
 
     @property
     def is_air_by_date(self):

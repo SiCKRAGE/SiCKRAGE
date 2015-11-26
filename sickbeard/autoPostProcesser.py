@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -16,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
 import os.path
 import threading
 import sickbeard
@@ -26,6 +28,7 @@ from sickrage.helper.encoding import ek
 
 
 class PostProcesser():
+
     def __init__(self):
         self.lock = threading.Lock()
         self.amActive = False
@@ -39,13 +42,13 @@ class PostProcesser():
         """
         self.amActive = True
 
-        if not ek(os.path.isdir, sickbeard.TV_DOWNLOAD_DIR):
+        if not os.path.isdir(sickbeard.TV_DOWNLOAD_DIR):
             logger.log(u"Automatic post-processing attempted but dir " + sickbeard.TV_DOWNLOAD_DIR + " doesn't exist",
                        logger.ERROR)
             self.amActive = False
             return
 
-        if not ek(os.path.isabs, sickbeard.TV_DOWNLOAD_DIR):
+        if not os.path.isabs(sickbeard.TV_DOWNLOAD_DIR):
             logger.log(
                 u"Automatic post-processing attempted but dir " + sickbeard.TV_DOWNLOAD_DIR + " is relative (and probably not what you really want to process)",
                 logger.ERROR)
