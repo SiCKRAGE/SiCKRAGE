@@ -61,11 +61,7 @@ from sickbeard.common import DOWNLOADED, SNATCHED, SNATCHED_PROPER, SNATCHED_BES
 from sickbeard.common import NAMING_DUPLICATE, NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_SEPARATED_REPEAT, \
     NAMING_LIMITED_EXTEND_E_PREFIXED
 
-import shutil
-import shutil_custom
-
-
-shutil.copyfile = shutil_custom.copyfile_custom
+from shutil_custom import shutil
 
 
 def dirty_setter(attr_name):
@@ -622,7 +618,7 @@ class TVShow(object):
     # make a TVEpisode object from a media file
     def makeEpFromFile(self, file):
 
-        if not ek(os.path.isfile, file):
+        if not os.path.isfile(file):
             logger.log(str(self.indexerid) + u": That isn't even a real file dude... " + file)
             return None
 
@@ -1081,7 +1077,7 @@ class TVShow(object):
                 continue
 
             # if the path doesn't exist or if it's not in our show dir
-            if not ek(os.path.isfile, curLoc) or not ek(os.path.normpath, curLoc).startswith(
+            if not os.path.isfile(curLoc) or not ek(os.path.normpath, curLoc).startswith(
                     ek(os.path.normpath, self.location)):
 
                 # check if downloaded files still exist, update our data if this has changed
@@ -1413,7 +1409,7 @@ class TVEpisode(object):
         # self._location = newLocation
         dirty_setter("_location")(self, new_location)
 
-        if new_location and ek(os.path.isfile, new_location):
+        if new_location and os.path.isfile(new_location):
             self.file_size = ek(os.path.getsize, new_location)
         else:
             self.file_size = 0
@@ -1427,7 +1423,7 @@ class TVEpisode(object):
             self.saveToDB()
 
     def downloadSubtitles(self, force=False):
-        if not ek(os.path.isfile, self.location):
+        if not os.path.isfile(self.location):
             logger.log(u"%s: Episode file doesn't exist, can't download subtitles for S%02dE%02d" %
                        (self.show.indexerid, self.season or 0, self.episode or 0), logger.DEBUG)
             return
@@ -1467,7 +1463,7 @@ class TVEpisode(object):
         cur_tbn = False
 
         # check for nfo and tbn
-        if ek(os.path.isfile, self.location):
+        if os.path.isfile(self.location):
             for cur_provider in sickbeard.metadata_provider_dict.values():
                 if cur_provider.episode_metadata:
                     new_result = cur_provider._has_episode_metadata(self)
@@ -1493,7 +1489,7 @@ class TVEpisode(object):
 
         if not sqlResult:
             # only load from NFO if we didn't load from DB
-            if ek(os.path.isfile, self.location):
+            if os.path.isfile(self.location):
                 try:
                     self.loadFromNFO(self.location)
                 except NoNFOException:
@@ -1705,7 +1701,7 @@ class TVEpisode(object):
             logger.log(u"%s: Setting status for S%02dE%02d based on status %s and location %s" %
                        (self.show.indexerid, season or 0, episode or 0, statusStrings[self.status], self.location), logger.DEBUG)
 
-        if not ek(os.path.isfile, self.location):
+        if not os.path.isfile(self.location):
             if self.airdate >= datetime.date.today() or self.airdate == datetime.date.fromordinal(1):
                 logger.log(u"Episode airs in the future or has no airdate, marking it %s" % statusStrings[UNAIRED], logger.DEBUG)
                 self.status = UNAIRED
@@ -1754,7 +1750,7 @@ class TVEpisode(object):
             nfoFile = sickbeard.helpers.replaceExtension(self.location, "nfo")
             logger.log(str(self.show.indexerid) + u": Using NFO name " + nfoFile, logger.DEBUG)
 
-            if ek(os.path.isfile, nfoFile):
+            if os.path.isfile(nfoFile):
                 try:
                     showXML = etree.ElementTree(file=nfoFile)
                 except (SyntaxError, ValueError), e:
@@ -1808,7 +1804,7 @@ class TVEpisode(object):
             else:
                 self.hasnfo = False
 
-            if ek(os.path.isfile, sickbeard.helpers.replaceExtension(nfoFile, "tbn")):
+            if os.path.isfile(sickbeard.helpers.replaceExtension(nfoFile, "tbn")):
                 self.hastbn = True
             else:
                 self.hastbn = False
@@ -2428,7 +2424,7 @@ class TVEpisode(object):
         in the naming settings.
         """
 
-        if not ek(os.path.isfile, self.location):
+        if not os.path.isfile(self.location):
             logger.log(u"Can't perform rename on " + self.location + " when it doesn't exist, skipping", logger.WARNING)
             return
 

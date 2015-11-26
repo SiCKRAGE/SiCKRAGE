@@ -1341,7 +1341,7 @@ def initialize(consoleLogging=True):
                                                                        curNzbProvider.getID() + '_enable_backlog',
                                                                        curNzbProvider.supportsBacklog))
 
-        if not ek(os.path.isfile, CONFIG_FILE):
+        if not os.path.isfile(CONFIG_FILE):
             logger.log(u"Unable to find '" + CONFIG_FILE + "', all settings will be default!", logger.DEBUG)
             save_config()
 

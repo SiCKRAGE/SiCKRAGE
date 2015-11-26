@@ -239,7 +239,6 @@ class BasicTests(test.SickbeardTestDBCase):
         self.show = tv.TVShow(1, 1, 'en')
 
     def _test_names(self, np, section, transform=None, verbose=False):
-
         if VERBOSE or verbose:
             print
             print 'Running', section, 'tests'
@@ -368,7 +367,7 @@ if __name__ == '__main__':
         unittest.TextTestRunner(verbosity=2).run(suite)
     else:
         suite = unittest.TestLoader().loadTestsFromTestCase(BasicTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+        unittest.TextTestRunner(verbosity=2).run(suite)
 
     suite = unittest.TestLoader().loadTestsFromTestCase(ComboTests)
     unittest.TextTestRunner(verbosity=2).run(suite)

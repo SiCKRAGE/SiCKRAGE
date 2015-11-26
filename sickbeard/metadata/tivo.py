@@ -137,7 +137,7 @@ class TIVOMetadata(generic.GenericMetadata):
 
         ep_obj: a TVEpisode object to get the path for
         """
-        if ek(os.path.isfile, ep_obj.location):
+        if os.path.isfile(ep_obj.location):
             metadata_file_name = ek(os.path.basename, ep_obj.location) + "." + self._ep_nfo_extension
             metadata_dir_name = ek(os.path.join, ek(os.path.dirname, ep_obj.location), '.meta')
             metadata_file_path = ek(os.path.join, metadata_dir_name, metadata_file_name)

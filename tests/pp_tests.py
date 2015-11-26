@@ -21,20 +21,19 @@ import sys, os.path
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import random
 import unittest
 
 import test_lib as test
 
-from sickbeard.postProcessor import PostProcessor
 import sickbeard
 from sickbeard.tv import TVEpisode, TVShow
 from sickbeard.name_cache import addNameToCache
-
+from sickbeard.postProcessor import PostProcessor
 
 class PPInitTests(unittest.TestCase):
 
     def setUp(self):
+        super(PPInitTests, self).setUp()
         self.pp = PostProcessor(test.FILEPATH)
 
     def test_init_file_name(self):
@@ -43,7 +42,15 @@ class PPInitTests(unittest.TestCase):
     def test_init_folder_name(self):
         self.assertEqual(self.pp.folder_name, test.SHOWNAME)
 
+    def tearDown(self):
+        super(PPInitTests, self).tearDown()
+        self.pp = None
+
 class PPBasicTests(test.SickbeardTestDBCase):
+
+    def setUp(self):
+        super(PPBasicTests, self).setUp()
+        self.pp = PostProcessor(test.FILEPATH)
 
     def test_process(self):
         show = TVShow(1,3)
@@ -57,11 +64,12 @@ class PPBasicTests(test.SickbeardTestDBCase):
         ep.saveToDB()
 
         addNameToCache('show name', 3)
-        sickbeard.PROCESS_METHOD = 'move'
+        self.pp = PostProcessor(test.FILEPATH, process_method='move')
+        self.assertTrue(self.pp.process())
 
-        pp = PostProcessor(test.FILEPATH)
-        self.assertTrue(pp.process())
-
+    def tearDown(self):
+        super(PPBasicTests, self).tearDown()
+        self.pp = None
 
 if __name__ == '__main__':
     print "=================="

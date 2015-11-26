@@ -27,7 +27,7 @@ import regexes
 import sickbeard
 
 from sickbeard import logger, helpers, scene_numbering, common, scene_exceptions, db
-from sickrage.helper.encoding import ek
+from sickrage.helper.encoding import ek, ss, uu
 from sickrage.helper.exceptions import ex
 from dateutil import parser
 
@@ -458,7 +458,7 @@ class NameParser(object):
         if cache_result:
             name_parser_cache.add(name, final_result)
 
-        logger.log(u"Parsed " + name + " into " + str(final_result).decode('utf-8', 'xmlcharrefreplace'), logger.DEBUG)
+        logger.log("Parsed " + name + " into " + ss(final_result), logger.DEBUG)
         return final_result
 
 
@@ -538,10 +538,9 @@ class ParseResult(object):
         return True
 
     def __str__(self):
+        to_return = ""
         if self.series_name is not None:
-            to_return = self.series_name + u' - '
-        else:
-            to_return = u''
+            to_return += self.series_name
         if self.season_number is not None:
             to_return += 'S' + str(self.season_number).zfill(2)
         if self.episode_numbers and len(self.episode_numbers):
@@ -562,7 +561,7 @@ class ParseResult(object):
         to_return += ' [ANIME: ' + str(self.is_anime) + ']'
         to_return += ' [whichReg: ' + str(self.which_regex) + ']'
 
-        return to_return.encode('utf-8')
+        return to_return
 
     @property
     def is_air_by_date(self):

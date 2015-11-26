@@ -45,7 +45,7 @@ class SNI_Tests(unittest.TestCase):
                     print 'SSLError on %s: %s' % (provider.name, ex(error.message))
                     raise
                 else:
-                    print  'Cannot verify certificate for %s' % provider.name
+                    print 'Cannot verify certificate for %s' % provider.name
             except Exception:
                 pass
 

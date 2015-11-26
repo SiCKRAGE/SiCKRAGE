@@ -33,7 +33,7 @@ import sickbeard
 from sickbeard import classes
 from sickrage.helper.common import dateTimeFormat
 from sickrage.helper.exceptions import ex
-from sickrage.helper.encoding import ss, ek
+from sickrage.helper.encoding import ss, ek, uu
 
 from github import Github, InputFileContent
 
@@ -61,26 +61,17 @@ class NullHandler(logging.Handler):
 
 
 class CensoredFormatter(logging.Formatter, object):
-    def __init__(self, fmt=None, datefmt=None, encoding='utf-8'):
-        super(CensoredFormatter, self).__init__(fmt, datefmt)
-        self.encoding = encoding
-
     def format(self, record):
         """Strips censored items from string"""
-        msg = super(CensoredFormatter, self).format(record)
-
-        if not isinstance(msg, unicode):
-            msg = msg.decode(self.encoding, 'replace')  # Convert to unicode
+        msg = uu(super(CensoredFormatter, self).format(record))
 
         for _, v in censoredItems.iteritems():
-            if not isinstance(v, unicode):
-                v = v.decode(self.encoding, 'replace')  # Convert to unicode
             msg = msg.replace(v, len(v) * u'*')
 
         # Needed because Newznab apikey isn't stored as key=value in a section.
         msg = re.sub(ur'([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)', ur'\1=**********\2', msg)
-        return msg
 
+        return msg
 
 class Logger(object):
     def __init__(self):
@@ -126,7 +117,7 @@ class Logger(object):
         if self.consoleLogging:
             console = logging.StreamHandler()
             console.setFormatter(
-                CensoredFormatter(u'%(asctime)s %(levelname)s::%(message)s', '%H:%M:%S', encoding='utf-8'))
+                CensoredFormatter(u'%(asctime)s %(levelname)s::%(message)s', '%H:%M:%S'))
             console.setLevel(INFO if not self.debugLogging else DEBUG)
 
             for logger in self.loggers:
@@ -137,7 +128,7 @@ class Logger(object):
             rfh = logging.handlers.RotatingFileHandler(self.logFile, maxBytes=sickbeard.LOG_SIZE,
                                                        backupCount=sickbeard.LOG_NR, encoding='utf-8')
             rfh.setFormatter(
-                CensoredFormatter(u'%(asctime)s %(levelname)-8s %(message)s', dateTimeFormat, encoding='utf-8'))
+                CensoredFormatter(u'%(asctime)s %(levelname)-8s %(message)s', dateTimeFormat))
             rfh.setLevel(INFO if not self.debugLogging else DEBUG)
 
             for logger in self.loggers:
@@ -149,15 +140,7 @@ class Logger(object):
 
     def log(self, msg, level=INFO, *args, **kwargs):
         meThread = threading.currentThread().getName()
-        message = meThread + u" :: " + msg
-
-        # Change the SSL error to a warning with a link to information about how to fix it.
-        check = re.sub(
-            ur'error \[Errno 1\] _ssl.c:\d{3}: error:\d{8}:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error',
-            'See: http://git.io/vJrkM', message)
-        if check is not message:
-            message = check
-            level = WARNING
+        message = meThread + "::" + msg
 
         if level in (ERROR, WARNING):
             self.logger.exception(message, *args, **kwargs)
@@ -176,7 +159,7 @@ class Logger(object):
         self.log(error_msg, ERROR, *args, **kwargs)
 
         if not self.consoleLogging:
-            sys.exit(error_msg.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace'))
+            ek(sys,exit(error_msg))
         else:
             sys.exit(1)
 

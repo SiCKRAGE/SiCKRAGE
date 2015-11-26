@@ -116,7 +116,7 @@ class imdbPopular(object):
 
         full_path = ek(os.path.join, path, ek(os.path.basename, image_url))
 
-        if not ek(os.path.isfile, full_path):
+        if not os.path.isfile(full_path):
             helpers.download_file(image_url, full_path, session=self.session)
 
 imdb_popular = imdbPopular()

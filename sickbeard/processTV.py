@@ -39,11 +39,7 @@ from unrar2.rar_exceptions import InvalidRARArchive
 from unrar2.rar_exceptions import InvalidRARArchiveUsage
 from unrar2.rar_exceptions import IncorrectRARPassword
 
-import shutil
-import shutil_custom
-
-shutil.copyfile = shutil_custom.copyfile_custom
-
+from shutil_custom import shutil
 
 class ProcessResult(object):
     def __init__(self):
@@ -118,7 +114,7 @@ def delete_files(processPath, notwantedFiles, result, force=False):
         assert isinstance(cur_file, unicode)
         cur_file_path = ek(os.path.join, processPath, cur_file)
 
-        if not ek(os.path.isfile, cur_file_path):
+        if not os.path.isfile(cur_file_path):
             continue  # Prevent error when a notwantedfiles is an associated files
 
         result.output += logHelper(u"Deleting file %s" % cur_file, logger.DEBUG)
@@ -589,8 +585,7 @@ def get_path_dir_files(dirName, nzbName, proc_type):
             break
     else:
         path, dirs = ek(os.path.split, dirName)  # Script Post Processing
-        if not nzbName is None and not nzbName.endswith('.nzb') and ek(os.path.isfile,
-                ek(os.path.join, dirName, nzbName)):  # For single torrent file without Dir
+        if not nzbName is None and not nzbName.endswith('.nzb') and os.path.isfile(                ek(os.path.join, dirName, nzbName)):  # For single torrent file without Dir
             dirs = []
             files = [ek(os.path.join, dirName, nzbName)]
         else:

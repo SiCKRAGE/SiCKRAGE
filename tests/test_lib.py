@@ -20,25 +20,20 @@
 
 import sys, os.path
 
-from sickrage.helper.encoding import ek
-
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 
 from configobj import ConfigObj
-import sickbeard
 
-from sickbeard import db, providers
+import sickbeard
+from sickbeard import db, providers, tvcache, logger
 from sickbeard.databases import mainDB
 from sickbeard.databases import cache_db, failed_db
 from sickbeard.tv import TVEpisode
-
-import shutil
-import shutil_custom
-
-shutil.copyfile = shutil_custom.copyfile_custom
+from shutil_custom import shutil
+from sickrage.helper.encoding import ek
 
 #=================
 # test globals
@@ -93,18 +88,17 @@ sickbeard.DATA_DIR = TESTDIR
 sickbeard.CONFIG_FILE = ek(os.path.join, sickbeard.DATA_DIR, "config.ini")
 sickbeard.CFG = ConfigObj(sickbeard.CONFIG_FILE)
 
-sickbeard.BRANCG = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'branch', '')
+sickbeard.BRANCH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'branch', '')
 sickbeard.CUR_COMMIT_HASH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'cur_commit_hash', '')
 sickbeard.GIT_USERNAME = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'git_username', '')
 sickbeard.GIT_PASSWORD = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'git_password', '', censor_log=True)
 
-sickbeard.LOG_DIR = ek(os.path.join, TESTDIR, 'Logs')
-sickbeard.logger.logFile = ek(os.path.join, sickbeard.LOG_DIR, 'test_sickbeard.log')
-createTestLogFolder()
-
 sickbeard.CACHE_DIR = ek(os.path.join, TESTDIR, 'cache')
 createTestCacheFolder()
 
+sickbeard.LOG_DIR = ek(os.path.join, TESTDIR, 'Logs')
+sickbeard.logger.logFile = ek(os.path.join, sickbeard.LOG_DIR, 'test_sickbeard.log')
+createTestLogFolder()
 sickbeard.logger.initLogging(False, True)
 
 #=================
@@ -114,9 +108,7 @@ def _dummy_saveConfig():
     return True
 
 # this overrides the sickbeard save_config which gets called during a db upgrade
-# this might be considered a hack
 mainDB.sickbeard.save_config = _dummy_saveConfig
-
 
 # the real one tries to contact tvdb just stop it from getting more info on the ep
 def _fake_specifyEP(self, season, episode):
@@ -141,10 +133,8 @@ class SickbeardTestDBCase(unittest.TestCase):
         tearDown_test_show_dir()
 
 class TestDBConnection(db.DBConnection, object):
-
-    def __init__(self, dbFileName=TESTDBNAME):
-        dbFileName = ek(os.path.join, TESTDIR, dbFileName)
-        super(TestDBConnection, self).__init__(dbFileName)
+    def __init__(self, filename=TESTDBNAME):
+        super(TestDBConnection, self).__init__(ek(os.path.join, TESTDIR, filename))
 
 class TestCacheDBConnection(TestDBConnection, object):
     def __init__(self, providerName):
@@ -153,22 +143,33 @@ class TestCacheDBConnection(TestDBConnection, object):
         # Create the table if it's not already there
         try:
             if not self.hasTable(providerName):
-                sql = "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)"
-                self.connection.execute(sql)
-                self.connection.commit()
-        except Exception, e:
-            if str(e) != "table [" + providerName + "] already exists":
-                raise
+                self.action(
+                    "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
+            else:
+                sqlResults = self.select("SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
+
+                for cur_dupe in sqlResults:
+                    self.action("DELETE FROM [" + providerName + "] WHERE url = ?", [cur_dupe["url"]])
+
+            # add unique index to prevent further dupes from happening if one does not exist
+            self.action("CREATE UNIQUE INDEX IF NOT EXISTS idx_url ON [" + providerName + "] (url)")
+
+            # add release_group column to table if missing
+            if not self.hasColumn(providerName, 'release_group'):
+                self.addColumn(providerName, 'release_group', "TEXT", "")
 
             # add version column to table if missing
             if not self.hasColumn(providerName, 'version'):
                 self.addColumn(providerName, 'version', "NUMERIC", "-1")
 
+        except Exception, e:
+            if str(e) != "table [" + providerName + "] already exists":
+                raise
+
         # Create the table if it's not already there
         try:
-            sql = "CREATE TABLE lastUpdate (provider TEXT, time NUMERIC);"
-            self.connection.execute(sql)
-            self.connection.commit()
+            if not self.hasTable('lastUpdate'):
+                self.action("CREATE TABLE lastUpdate (provider TEXT, time NUMERIC)")
         except Exception, e:
             if str(e) != "table lastUpdate already exists":
                 raise
@@ -197,20 +198,14 @@ def setUp_test_db():
 
 
 def tearDown_test_db():
-    from sickbeard.db import db_cons
-    for connection in db_cons:
-        db_cons[connection].commit()
-#        db_cons[connection].close()
-
-#    for current_db in [ TESTDBNAME, TESTCACHEDBNAME, TESTFAILEDDBNAME ]:
-#        file_name = ek(os.path.join, TESTDIR, current_db)
-#        if os.path.exists(file_name):
-#            try:
-#                ek(os.remove, file_name)
-#            except Exception as e:
-#                print 'ERROR: Failed to remove ' + file_name
-#                print exception(e)
-
+    for current_db in [ TESTDBNAME, TESTFAILEDDBNAME ]:
+        file_name = ek(os.path.join, TESTDIR, current_db)
+        if os.path.exists(file_name):
+            try:
+                ek(os.remove, file_name)
+            except Exception as e:
+                print sickbeard.ex(e)
+                continue
 
 def setUp_test_episode_file():
     if not os.path.exists(FILEDIR):

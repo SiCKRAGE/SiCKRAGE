@@ -42,6 +42,7 @@ import errno
 import ast
 import operator
 import platform
+
 import sickbeard
 import adba
 import requests
@@ -747,7 +748,7 @@ def chmodAsParent(childPath):
     childPathStat = ek(os.stat, childPath)
     childPath_mode = stat.S_IMODE(childPathStat[stat.ST_MODE])
 
-    if ek(os.path.isfile, childPath):
+    if os.path.isfile(childPath):
         childMode = fileBitFilter(parentMode)
     else:
         childMode = parentMode
@@ -990,16 +991,16 @@ def backupVersionedFile(old_file, version):
 
     numTries = 0
 
-    new_file = old_file + '.' + 'v' + str(version)
+    new_file = unicode(old_file + '.' + 'v' + str(version))
 
-    while not ek(os.path.isfile, new_file):
-        if not ek(os.path.isfile, old_file):
+    while not os.path.isfile(new_file):
+        if not os.path.isfile(old_file):
             logger.log(u"Not creating backup, %s doesn't exist" % old_file, logger.DEBUG)
             break
 
         try:
             logger.log(u"Trying to back up %s to %s" % (old_file, new_file), logger.DEBUG)
-            ek(shutil.copy, old_file, new_file)
+            ek(shutil.copyfile, old_file, new_file)
             logger.log(u"Backup done", logger.DEBUG)
             break
         except Exception as e:
@@ -1029,7 +1030,7 @@ def restoreVersionedFile(backup_file, version):
     new_file, _ = ek(os.path.splitext, backup_file)
     restore_file = new_file + '.' + 'v' + str(version)
 
-    if not ek(os.path.isfile, new_file):
+    if not os.path.isfile(new_file):
         logger.log(u"Not restoring, %s doesn't exist" % new_file, logger.DEBUG)
         return False
 
@@ -1043,8 +1044,8 @@ def restoreVersionedFile(backup_file, version):
                    % (restore_file, ex(e)), logger.WARNING)
         return False
 
-    while not ek(os.path.isfile, new_file):
-        if not ek(os.path.isfile, restore_file):
+    while not os.path.isfile(new_file):
+        if not os.path.isfile(restore_file):
             logger.log(u"Not restoring, %s doesn't exist" % restore_file, logger.DEBUG)
             break
 
@@ -1809,7 +1810,7 @@ def verify_freespace(src, dest, oldfile=None):
         logger.log(u"Unable to determine free space on your OS")
         return True
 
-    if not ek(os.path.isfile, src):
+    if not os.path.isfile(src):
         logger.log(u"A path to a file is required for the source. " + src + " is not a file.", logger.WARNING)
         return True
 
@@ -1819,11 +1820,11 @@ def verify_freespace(src, dest, oldfile=None):
         logger.log(u"Unable to determine free space, so I will assume there is enough.", logger.WARNING)
         return True
 
-    neededspace = ek(os.path.getsize, src)
+    neededspace = int(ek(os.path.getsize, src))
 
     if oldfile:
         for f in oldfile:
-            if ek(os.path.isfile, f.location):
+            if os.path.isfile(f.location):
                 diskfree += ek(os.path.getsize, f.location)
 
     if diskfree > neededspace:
@@ -1868,13 +1869,13 @@ def isFileLocked(checkfile, writeLockCheck=False):
     :param writeLockCheck: when true will check if the file is locked for writing (prevents move operations)
     """
 
-    checkfile = ek(os.path.abspath, checkfile.encode('utf8'))
+    checkfile = ek(os.path.abspath, checkfile)
 
     if not os.path.exists(checkfile):
         return True
     try:
-        f = io.open(checkfile, 'rb')
-        f.close()
+        with io.open(checkfile, 'rb'):
+            pass
     except IOError:
         return True
 
@@ -1886,7 +1887,7 @@ def isFileLocked(checkfile, writeLockCheck=False):
             ek(os.rename, checkfile, lockFile)
             time.sleep(1)
             ek(os.rename, lockFile, checkfile)
-        except (OSError, IOError):
+        except (Exception, OSError, IOError) as e:
             return True
 
     return False

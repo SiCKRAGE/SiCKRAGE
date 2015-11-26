@@ -27,10 +27,6 @@ import traceback
 import time
 import datetime
 import requests
-import shutil
-import shutil_custom
-
-shutil.copyfile = shutil_custom.copyfile_custom
 
 import sickbeard
 from sickbeard import db
@@ -40,6 +36,7 @@ from sickbeard import logger, helpers
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 
+from shutil_custom import shutil
 
 class CheckVersion(object):
     """
@@ -817,7 +814,7 @@ class SourceUpdateManager(UpdateManager):
             tar_download_path = ek(os.path.join, sr_update_dir, u'sr-update.tar')
             helpers.download_file(tar_download_url, tar_download_path, session=self.session)
 
-            if not ek(os.path.isfile, tar_download_path):
+            if not os.path.isfile(tar_download_path):
                 logger.log(u"Unable to retrieve new version from " + tar_download_url + ", can't update", logger.WARNING)
                 return False
 
@@ -864,7 +861,7 @@ class SourceUpdateManager(UpdateManager):
                             ek(os.remove, old_path)  # Trash the updated file without moving in new path
                         continue
 
-                    if ek(os.path.isfile, new_path):
+                    if os.path.isfile(new_path):
                         ek(os.remove, new_path)
                     ek(os.renames, old_path, new_path)
 

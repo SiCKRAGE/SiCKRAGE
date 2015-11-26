@@ -126,7 +126,7 @@ class PostProcessor(object):
             return PostProcessor.DOESNT_EXIST
 
         # if the new file exists, return the appropriate code depending on the size
-        if ek(os.path.isfile, existing_file):
+        if os.path.isfile(existing_file):
 
             # see if it's bigger than our old file
             if ek(os.path.getsize, existing_file) > ek(os.path.getsize, self.file_path):
@@ -208,7 +208,7 @@ class PostProcessor(object):
             if re.search(r'(^.+\.(rar|r\d+)$)', associated_file_path):
                 continue
 
-            if ek(os.path.isfile, associated_file_path):
+            if os.path.isfile(associated_file_path):
                 file_path_list.append(associated_file_path)
 
         if file_path_list:
@@ -240,7 +240,7 @@ class PostProcessor(object):
 
         # delete the file and any other files which we want to delete
         for cur_file in file_list:
-            if ek(os.path.isfile, cur_file):
+            if os.path.isfile(cur_file):
                 self._log(u"Deleting file " + cur_file, logger.DEBUG)
                 # check first the read-only attribute
                 file_attribute = ek(os.stat, cur_file)[0]
@@ -761,10 +761,10 @@ class PostProcessor(object):
         self._log(
             u"Guessing quality for name " + self.file_name + u", got " + common.Quality.qualityStrings[ep_quality],
             logger.DEBUG)
+
         if ep_quality != common.Quality.UNKNOWN:
             logger.log(self.file_name + u" looks like it has quality " + common.Quality.qualityStrings[
                 ep_quality] + ", using that", logger.DEBUG)
-            return ep_quality
 
         return ep_quality
 
@@ -1070,7 +1070,7 @@ class PostProcessor(object):
             else:
                 logger.log(u"Unknown process method: " + str(self.process_method), logger.ERROR)
                 raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
-        except (OSError, IOError):
+        except (OSError, IOError) as e:
             raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
 
         # download subtitles

@@ -23,22 +23,20 @@
 # pylint: disable=W0703
 # Catching too general exception
 
-import codecs
-
-codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
-
-import time
-import signal
-import sys
-import subprocess
-import traceback
-
-import os
+import sys, os
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
 
 if sys.version_info < (2, 7):
     print "Sorry, requires Python 2.7.x"
     sys.exit(1)
+
+import codecs
+codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+
+import time
+import signal
+import subprocess
+import traceback
 
 # https://mail.python.org/pipermail/python-dev/2014-September/136300.html
 if sys.version_info >= (2, 7, 9):
@@ -52,6 +50,8 @@ import datetime
 import threading
 import getopt
 
+import sickbeard
+
 from shutil_custom import shutil
 
 # Do this before importing sickbeard, to prevent locked files and incorrect import
@@ -60,7 +60,6 @@ if os.path.isdir(oldtornado):
     shutil.move(oldtornado, oldtornado + '_kill')
     shutil.rmtree(oldtornado + '_kill')
 
-import sickbeard
 from sickbeard import db, logger, network_timezones, failed_history, name_cache
 from sickbeard.tv import TVShow
 from sickbeard.webserveInit import SRWebServer

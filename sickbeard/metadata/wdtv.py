@@ -129,7 +129,7 @@ class WDTVMetadata(generic.GenericMetadata):
 
         ep_obj: a TVEpisode instance for which to create the thumbnail
         """
-        if ek(os.path.isfile, ep_obj.location):
+        if os.path.isfile(ep_obj.location):
             tbn_filename = helpers.replaceExtension(ep_obj.location, 'metathumb')
         else:
             return None

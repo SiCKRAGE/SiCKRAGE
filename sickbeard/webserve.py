@@ -1710,7 +1710,7 @@ class Home(WebRoot):
                         continue
 
                     if int(status) in Quality.DOWNLOADED and epObj.status not in Quality.SNATCHED + \
-                            Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [IGNORED] and not ek(os.path.isfile, epObj.location):
+                            Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [IGNORED] and not os.path.isfile(epObj.location):
                         logger.log(u"Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED", logger.WARNING)
                         continue
 
@@ -5030,12 +5030,12 @@ class ErrorLogs(WebRoot):
 
         data = []
 
-        if ek(os.path.isfile, logger.logFile):
+        if os.path.isfile(logger.logFile):
             with io.open(logger.logFile, 'r', encoding='utf-8') as f:
                 data = Get_Data(minLevel, f.readlines(), 0, regex, logFilter, logSearch, maxLines)
 
         for i in range(1, int(sickbeard.LOG_NR)):
-            if ek(os.path.isfile, logger.logFile + "." + str(i)) and (len(data) <= maxLines):
+            if os.path.isfile(logger.logFile + "." + str(i)) and (len(data) <= maxLines):
                 with io.open(logger.logFile + "." + str(i), 'r', encoding='utf-8') as f:
                     data += Get_Data(minLevel, f.readlines(), len(data), regex, logFilter, logSearch, maxLines)
 

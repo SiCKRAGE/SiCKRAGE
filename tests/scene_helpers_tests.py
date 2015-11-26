@@ -1,15 +1,14 @@
 import sys, os.path
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 
 import test_lib as test
-from sickbeard import show_name_helpers, scene_exceptions, common, name_cache
 
-import sickbeard
+from sickbeard import show_name_helpers, scene_exceptions, common, name_cache
 from sickbeard import db
-from sickbeard.databases import cache_db
 from sickbeard.tv import TVShow as Show
 
 
@@ -84,7 +83,6 @@ class SceneTests(test.SickbeardTestDBCase):
         self._test_filterBadReleases('Show.S02.German.Stuff-Grp', False)
         self._test_filterBadReleases('Show.S02.Some.Stuff-Core2HD', False)
         self._test_filterBadReleases('Show.S02.Some.German.Stuff-Grp', False)
-        #self._test_filterBadReleases('German.Show.S02.Some.Stuff-Grp', True)
         self._test_filterBadReleases('Show.S02.This.Is.German', False)
 
 

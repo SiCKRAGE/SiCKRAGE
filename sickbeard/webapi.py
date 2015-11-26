@@ -1213,7 +1213,7 @@ class CMD_Logs(ApiCall):
         minLevel = logger.reverseNames[str(self.min_level).upper()]
 
         data = []
-        if ek(os.path.isfile, logger.logFile):
+        if os.path.isfile(logger.logFile):
             with io.open(logger.logFile, 'r', encoding='utf-8') as f:
                 data = f.readlines()
 
@@ -2231,9 +2231,9 @@ class CMD_ShowCache(ApiCall):
         has_poster = 0
         has_banner = 0
 
-        if ek(os.path.isfile, cache_obj.poster_path(showObj.indexerid)):
+        if os.path.isfile(cache_obj.poster_path(showObj.indexerid)):
             has_poster = 1
-        if ek(os.path.isfile, cache_obj.banner_path(showObj.indexerid)):
+        if os.path.isfile(cache_obj.banner_path(showObj.indexerid)):
             has_banner = 1
 
         return _responds(RESULT_SUCCESS, {"poster": has_poster, "banner": has_banner})
