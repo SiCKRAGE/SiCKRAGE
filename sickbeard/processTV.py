@@ -120,7 +120,7 @@ def delete_files(processPath, notwantedFiles, result, force=False):
         result.output += logHelper(u"Deleting file %s" % cur_file, logger.DEBUG)
 
         # check first the read-only attribute
-        file_attribute = ek(os.stat, cur_file_path)[0]
+        file_attribute = os.stat(cur_file_path)[0]
         if not file_attribute & stat.S_IWRITE:
             # File is read-only, so make it writeable
             result.output += logHelper(u"Changing ReadOnly Flag for file %s" % cur_file, logger.DEBUG)

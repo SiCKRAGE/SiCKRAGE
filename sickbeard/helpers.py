@@ -742,10 +742,10 @@ def chmodAsParent(childPath):
 
     childPath = ek(os.path.join, parentPath, ek(os.path.basename, childPath))
 
-    parentPathStat = ek(os.stat, parentPath)
+    parentPathStat = os.stat(parentPath)
     parentMode = stat.S_IMODE(parentPathStat[stat.ST_MODE])
 
-    childPathStat = ek(os.stat, childPath)
+    childPathStat = os.stat(childPath)
     childPath_mode = stat.S_IMODE(childPathStat[stat.ST_MODE])
 
     if os.path.isfile(childPath):
@@ -783,14 +783,14 @@ def fixSetGroupID(childPath):
         return
 
     parentPath = ek(os.path.dirname, childPath)
-    parentStat = ek(os.stat, parentPath)
+    parentStat = os.stat(parentPath)
     parentMode = stat.S_IMODE(parentStat[stat.ST_MODE])
 
     childPath = ek(os.path.join, parentPath, ek(os.path.basename, childPath))
 
     if parentMode & stat.S_ISGID:
         parentGID = parentStat[stat.ST_GID]
-        childStat = ek(os.stat, childPath)
+        childStat = os.stat(childPath)
         childGID = childStat[stat.ST_GID]
 
         if childGID == parentGID:
