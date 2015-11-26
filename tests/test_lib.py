@@ -32,7 +32,7 @@ from sickbeard import db, providers, tvcache, logger
 from sickbeard.databases import mainDB
 from sickbeard.databases import cache_db, failed_db
 from sickbeard.tv import TVEpisode
-from shutil_custom import shutil
+import shutil_custom as shutil
 from sickrage.helper.encoding import ek
 
 #=================

@@ -29,11 +29,7 @@ import os.path
 from threading import Lock
 import sys
 
-from shutil_custom import shutil
 from sickrage.helper.encoding import ek
-
-from github import Github
-
 from sickbeard import metadata
 from sickbeard import providers
 from sickbeard.providers.generic import GenericProvider
@@ -58,8 +54,9 @@ from sickbeard.common import WANTED
 from sickbeard.databases import mainDB, cache_db, failed_db
 from sickrage.helper.exceptions import ex
 from sickrage.system.Shutdown import Shutdown
-
 from configobj import ConfigObj
+from github import Github
+import shutil_custom as shutil
 
 import requests
 requests.packages.urllib3.disable_warnings()

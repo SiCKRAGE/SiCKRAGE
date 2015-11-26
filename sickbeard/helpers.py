@@ -47,7 +47,7 @@ import sickbeard
 import adba
 import requests
 import certifi
-
+import shutil_custom as shutil
 from contextlib import closing
 from socket import timeout as SocketTimeout
 
@@ -62,7 +62,6 @@ from sickbeard.subtitles import isValidLanguage
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex, MultipleShowObjectsException
 from cachecontrol import CacheControl, caches
-from shutil_custom import shutil
 
 from itertools import izip, cycle
 

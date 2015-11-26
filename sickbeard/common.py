@@ -26,8 +26,8 @@ from UserDict import UserDict
 from itertools import chain
 from random import shuffle
 
+import shutil_custom as shutil
 from sickrage.helper.encoding import ek
-from shutil_custom import shutil
 
 SPOOF_USER_AGENT = False
 
