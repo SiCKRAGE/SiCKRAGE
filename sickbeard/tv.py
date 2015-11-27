@@ -61,8 +61,7 @@ from sickbeard.common import DOWNLOADED, SNATCHED, SNATCHED_PROPER, SNATCHED_BES
 from sickbeard.common import NAMING_DUPLICATE, NAMING_EXTEND, NAMING_LIMITED_EXTEND, NAMING_SEPARATED_REPEAT, \
     NAMING_LIMITED_EXTEND_E_PREFIXED
 
-import shutil_custom as shutil
-
+import shutil
 
 def dirty_setter(attr_name):
     def wrapper(self, val):

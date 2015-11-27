@@ -18,47 +18,46 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-
-import webbrowser
 import datetime
-import socket
 import os
-import re
 import os.path
-
-from threading import Lock
+import re
+import shutil
+import socket
 import sys
+import webbrowser
+from threading import Lock
 
-from sickrage.helper.encoding import ek
-from sickbeard import metadata
-from sickbeard import providers
-from sickbeard.providers.generic import GenericProvider
-from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
-    naming_ep_type
-from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
-    subtitles, traktChecker
+import requests
+from configobj import ConfigObj
+from github import Github
+
+from sickbeard import dailysearcher
 from sickbeard import db
 from sickbeard import helpers
+from sickbeard import logger
+from sickbeard import metadata
+from sickbeard import naming
+from sickbeard import providers
 from sickbeard import scheduler
+from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
+    subtitles, traktChecker
 from sickbeard import search_queue
 from sickbeard import show_queue
-from sickbeard import logger
-from sickbeard import naming
-from sickbeard import dailysearcher
-from sickbeard.indexers import indexer_api
-from sickbeard.indexers.indexer_exceptions import indexer_shownotfound, indexer_showincomplete, indexer_exception, indexer_error, \
-    indexer_episodenotfound, indexer_attributenotfound, indexer_seasonnotfound, indexer_userabort, indexerExcepts
 from sickbeard.common import SD
 from sickbeard.common import SKIPPED
 from sickbeard.common import WANTED
+from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
+    naming_ep_type
 from sickbeard.databases import mainDB, cache_db, failed_db
+from sickbeard.indexers import indexer_api
+from sickbeard.indexers.indexer_exceptions import indexer_shownotfound, indexer_showincomplete, indexer_exception, indexer_error, \
+    indexer_episodenotfound, indexer_attributenotfound, indexer_seasonnotfound, indexer_userabort, indexerExcepts
+from sickbeard.providers.generic import GenericProvider
+from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 from sickrage.system.Shutdown import Shutdown
-from configobj import ConfigObj
-from github import Github
-import shutil_custom as shutil
 
-import requests
 requests.packages.urllib3.disable_warnings()
 
 indexerApi = indexer_api.indexerApi
@@ -569,7 +568,6 @@ NEWZNAB_DATA = None
 def get_backlog_cycle_time():
     cycletime = DAILYSEARCH_FREQUENCY * 2 + 7
     return max([cycletime, 720])
-
 
 def initialize(consoleLogging=True):
     with INIT_LOCK:

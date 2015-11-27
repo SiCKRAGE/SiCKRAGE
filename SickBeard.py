@@ -49,10 +49,9 @@ import locale
 import datetime
 import threading
 import getopt
+import shutil
 
 import sickbeard
-
-import shutil_custom as shutil
 
 # Do this before importing sickbeard, to prevent locked files and incorrect import
 oldtornado = os.path.abspath(os.path.join(os.path.dirname(__file__), 'tornado'))

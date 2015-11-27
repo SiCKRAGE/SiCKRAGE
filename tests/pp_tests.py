@@ -18,6 +18,7 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys, os.path
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 

@@ -39,7 +39,7 @@ from unrar2.rar_exceptions import InvalidRARArchive
 from unrar2.rar_exceptions import InvalidRARArchiveUsage
 from unrar2.rar_exceptions import IncorrectRARPassword
 
-import shutil_custom as shutil
+import shutil
 
 class ProcessResult(object):
     def __init__(self):

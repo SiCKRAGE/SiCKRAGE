@@ -47,7 +47,7 @@ import sickbeard
 import adba
 import requests
 import certifi
-import shutil_custom as shutil
+import shutil
 from contextlib import closing
 from socket import timeout as SocketTimeout
 

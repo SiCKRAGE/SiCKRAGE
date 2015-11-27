@@ -23,16 +23,18 @@ import sys, os.path
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+
 import unittest
 
 from configobj import ConfigObj
+
+import shutil
 
 import sickbeard
 from sickbeard import db, providers, tvcache, logger
 from sickbeard.databases import mainDB
 from sickbeard.databases import cache_db, failed_db
 from sickbeard.tv import TVEpisode
-import shutil_custom as shutil
 from sickrage.helper.encoding import ek
 
 #=================

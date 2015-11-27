@@ -36,7 +36,7 @@ from sickbeard import logger, helpers
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 
-import shutil_custom as shutil
+import shutil
 
 class CheckVersion(object):
     """
