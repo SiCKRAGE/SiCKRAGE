@@ -104,7 +104,7 @@
                             <label>
                                 <span class="component-title">Ignore words</span>
                                 <span class="component-desc">
-                                    <input type="text" name="ignore_words" value="${sickbeard.IGNORE_WORDS}" class="form-control input-sm input350" />
+                                    <input type="text" name="ignore_words" value="${sickbeard.IGNORE_WORDS}" class="form-control input-sm input350" autocapitalize="off" />
                                     <div class="clear-left">results with one or more word from this list will be ignored<br />
                                     separate words with a comma, e.g. "word1,word2,word3"
                                     </div>
@@ -116,7 +116,7 @@
                             <label>
                                 <span class="component-title">Require words</span>
                                 <span class="component-desc">
-                                    <input type="text" name="require_words" value="${sickbeard.REQUIRE_WORDS}" class="form-control input-sm input350" />
+                                    <input type="text" name="require_words" value="${sickbeard.REQUIRE_WORDS}" class="form-control input-sm input350" autocapitalize="off" />
                                     <div class="clear-left">results with no word from this list will be ignored<br />
                                     separate words with a comma, e.g. "word1,word2,word3"
                                     </div>
@@ -128,7 +128,7 @@
                             <label>
                                 <span class="component-title">Ignore language names in subbed results</span>
                                 <span class="component-desc">
-                                    <input type="text" name="ignored_subs_list" value="${sickbeard.IGNORED_SUBS_LIST}" class="form-control input-sm input350" />
+                                    <input type="text" name="ignored_subs_list" value="${sickbeard.IGNORED_SUBS_LIST}" class="form-control input-sm input350" autocapitalize="off" />
                                     <div class="clear-left">Ignore subbed releases based on language names <br />
                                     Example: "dk" will ignore words: dksub, dksubs, dksubbed, dksubed <br />
                                     separate languages with a comma, e.g. "lang1,lang2,lang3
@@ -216,7 +216,7 @@
                                 <label>
                                     <span class="component-title">Black hole folder location</span>
                                     <span class="component-desc">
-                                        <input type="text" name="nzb_dir" id="nzb_dir" value="${sickbeard.NZB_DIR}" class="form-control input-sm input350" />
+                                        <input type="text" name="nzb_dir" id="nzb_dir" value="${sickbeard.NZB_DIR}" class="form-control input-sm input350" autocapitalize="off" />
                                         <div class="clear-left"><p><b>.nzb</b> files are stored at this location for external software to find and use</p></div>
                                     </span>
                                 </label>
@@ -228,7 +228,7 @@
                                 <label>
                                     <span class="component-title">SABnzbd server URL</span>
                                     <span class="component-desc">
-                                        <input type="text" id="sab_host" name="sab_host" value="${sickbeard.SAB_HOST}" class="form-control input-sm input350" />
+                                        <input type="text" id="sab_host" name="sab_host" value="${sickbeard.SAB_HOST}" class="form-control input-sm input350" autocapitalize="off" />
                                         <div class="clear-left"><p>URL to your SABnzbd server (e.g. http://localhost:8080/)</p></div>
                                     </span>
                                 </label>
@@ -238,7 +238,7 @@
                                 <label>
                                     <span class="component-title">SABnzbd username</span>
                                     <span class="component-desc">
-                                        <input type="text" name="sab_username" id="sab_username" value="${sickbeard.SAB_USERNAME}" class="form-control input-sm input200" />
+                                        <input type="text" name="sab_username" id="sab_username" value="${sickbeard.SAB_USERNAME}" class="form-control input-sm input200" autocapitalize="off" />
                                         <p>(blank for none)</p>
                                     </span>
                                 </label>
@@ -248,7 +248,7 @@
                                 <label>
                                     <span class="component-title">SABnzbd password</span>
                                     <span class="component-desc">
-                                        <input type="password" name="sab_password" id="sab_password" value="${sickbeard.SAB_PASSWORD}" class="form-control input-sm input200" />
+                                        <input type="password" name="sab_password" id="sab_password" value="${sickbeard.SAB_PASSWORD}" class="form-control input-sm input200" autocapitalize="off" />
                                         <p>(blank for none)</p>
                                     </span>
                                 </label>
@@ -258,7 +258,7 @@
                                 <label>
                                     <span class="component-title">SABnzbd API key</span>
                                     <span class="component-desc">
-                                        <input type="text" name="sab_apikey" id="sab_apikey" value="${sickbeard.SAB_APIKEY}" class="form-control input-sm input350" />
+                                        <input type="text" name="sab_apikey" id="sab_apikey" value="${sickbeard.SAB_APIKEY}" class="form-control input-sm input350" autocapitalize="off" />
                                         <div class="clear-left"><p>locate at... SABnzbd Config -> General -> API Key</p></div>
                                     </span>
                                 </label>
@@ -333,7 +333,7 @@
                                 <label>
                                     <span class="component-title">NZBget host:port</span>
                                     <span class="component-desc">
-                                        <input type="text" name="nzbget_host" id="nzbget_host" value="${sickbeard.NZBGET_HOST}" class="form-control input-sm input350" />
+                                        <input type="text" name="nzbget_host" id="nzbget_host" value="${sickbeard.NZBGET_HOST}" class="form-control input-sm input350" autocapitalize="off" />
                                         <p>(e.g. localhost:6789)</p>
                                         <div class="clear-left"><p>NZBget RPC host name and port number (not NZBgetweb!)</p></div>
                                     </span>
@@ -344,7 +344,7 @@
                                 <label>
                                     <span class="component-title">NZBget username</span>
                                     <span class="component-desc">
-                                        <input type="text" name="nzbget_username" value="${sickbeard.NZBGET_USERNAME}" class="form-control input-sm input200" />
+                                        <input type="text" name="nzbget_username" value="${sickbeard.NZBGET_USERNAME}" class="form-control input-sm input200" autocapitalize="off"/>
                                         <p>locate in nzbget.conf (default:nzbget)</p>
                                     </span>
                                 </label>
