@@ -585,7 +585,7 @@ def get_path_dir_files(dirName, nzbName, proc_type):
             break
     else:
         path, dirs = ek(os.path.split, dirName)  # Script Post Processing
-        if not nzbName is None and not nzbName.endswith('.nzb') and os.path.isfile(                ek(os.path.join, dirName, nzbName)):  # For single torrent file without Dir
+        if not nzbName is None and not nzbName.endswith('.nzb') and os.path.isfile(ek(os.path.join, dirName, nzbName)):  # For single torrent file without Dir
             dirs = []
             files = [ek(os.path.join, dirName, nzbName)]
         else:

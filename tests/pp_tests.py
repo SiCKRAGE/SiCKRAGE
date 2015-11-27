@@ -30,6 +30,7 @@ import sickbeard
 from sickbeard.tv import TVEpisode, TVShow
 from sickbeard.name_cache import addNameToCache
 from sickbeard.postProcessor import PostProcessor
+from sickbeard.processTV import processDir
 
 class PPInitTests(unittest.TestCase):
 
@@ -67,6 +68,20 @@ class PPBasicTests(test.SickbeardTestDBCase):
         addNameToCache('show name', 3)
         self.pp = PostProcessor(test.FILEPATH, process_method='move')
         self.assertTrue(self.pp.process())
+
+    def test_manual_process(self):
+        show = TVShow(1,3)
+        show.name = test.SHOWNAME
+        show.location = test.SHOWDIR
+        show.saveToDB()
+
+        sickbeard.showList = [show]
+        ep = TVEpisode(show, test.SEASON, test.EPISODE)
+        ep.name = "some ep name"
+        ep.saveToDB()
+
+        addNameToCache('show name', 3)
+        self.assertTrue(processDir(test.FILEDIR, test.FILENAME, process_method="move"))
 
     def tearDown(self):
         super(PPBasicTests, self).tearDown()

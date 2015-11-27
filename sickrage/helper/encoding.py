@@ -19,6 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 import six
+import types
 import collections
 
 from os import name
@@ -36,10 +37,12 @@ def ek(function, *args, **kwargs):
     if name == 'nt':
         result = function(*args, **kwargs)
     else:
-        result = function(*[ss(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in args], **kwargs)
+        result = function(*[ss(x) if isinstance(x, (six.text_type, six.binary_type)) and not isinstance(x, types.GeneratorType) else x for x in args], **kwargs)
 
-    return type(result)(map(uu,result)) if isinstance(result, collections.Iterable) and not isinstance(result, six.string_types) else uu(result)
-
+    try:
+        return type(result)(map(uu,result)) if isinstance(result, collections.Iterable) and not isinstance(result, six.string_types) else uu(result)
+    except:
+        return result
 
 def uu(s):
     """ Convert, at all consts, 'text' to a `unicode` object.
