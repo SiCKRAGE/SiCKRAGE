@@ -22,7 +22,7 @@
                 <b>Enter the folder containing the episode:</b>
             </td>
             <td>
-                <input type="text" name="proc_dir" id="episodeDir" class="form-control form-control-inline input-sm input350" />
+                <input type="text" name="proc_dir" id="episodeDir" class="form-control form-control-inline input-sm input350" autocapitalize="off" />
             </td>
         </tr>
         <tr>
