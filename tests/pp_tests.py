@@ -81,7 +81,7 @@ class PPBasicTests(test.SickbeardTestDBCase):
         ep.saveToDB()
 
         addNameToCache('show name', 3)
-        self.assertTrue(processDir(test.FILEDIR, test.FILENAME, process_method="move"))
+        self.assertTrue(processDir(test.FILEDIR, process_method="move"))
 
     def tearDown(self):
         super(PPBasicTests, self).tearDown()

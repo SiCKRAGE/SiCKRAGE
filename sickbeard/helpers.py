@@ -491,11 +491,11 @@ def copyFile(srcFile, destFile):
     :param destFile: Path of destination file
     """
 
-    ek(shutil.copyfile, srcFile, destFile)
     try:
+        ek(shutil.copyfile, srcFile, destFile)
         ek(shutil.copymode, srcFile, destFile)
     except OSError:
-        pass
+        raise
 
 
 def moveFile(srcFile, destFile):
@@ -509,10 +509,13 @@ def moveFile(srcFile, destFile):
     try:
         ek(shutil.move, srcFile, destFile)
         fixSetGroupID(destFile)
-    except OSError:
-        copyFile(srcFile, destFile)
-        ek(os.unlink, srcFile)
+    except OSError as e:
+        try:
+            copyFile(srcFile, destFile)
+        except Exception as e:
+            raise
 
+    ek(os.unlink, srcFile)
 
 def link(src, dst):
     """
