@@ -1718,7 +1718,7 @@ def get_size(start_path='.'):
         for f in filenames:
             fp = ek(os.path.join, dirpath, f)
             try:
-                total_size += ek(os.path.getsize, fp)
+                total_size += os.path.getsize(fp)
             except OSError as e:
                 logger.log(u"Unable to get size for file %s Error: %r" % (fp, ex(e)), logger.ERROR)
                 logger.log(traceback.format_exc(), logger.DEBUG)
@@ -1821,12 +1821,12 @@ def verify_freespace(src, dest, oldfile=None):
         logger.log(u"Unable to determine free space, so I will assume there is enough.", logger.WARNING)
         return True
 
-    neededspace = int(ek(os.path.getsize, src))
+    neededspace = int(os.path.getsize(src))
 
     if oldfile:
         for f in oldfile:
             if os.path.isfile(f.location):
-                diskfree += ek(os.path.getsize, f.location)
+                diskfree += os.path.getsize(f.location)
 
     if diskfree > neededspace:
         return True

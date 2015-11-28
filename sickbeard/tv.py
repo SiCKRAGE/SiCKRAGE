@@ -1409,7 +1409,7 @@ class TVEpisode(object):
         dirty_setter("_location")(self, new_location)
 
         if new_location and os.path.isfile(new_location):
-            self.file_size = ek(os.path.getsize, new_location)
+            self.file_size = os.path.getsize(new_location)
         else:
             self.file_size = 0
 

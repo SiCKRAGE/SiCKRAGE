@@ -129,11 +129,11 @@ class PostProcessor(object):
         if os.path.isfile(existing_file):
 
             # see if it's bigger than our old file
-            if ek(os.path.getsize, existing_file) > ek(os.path.getsize, self.file_path):
+            if os.path.getsize(existing_file) > os.path.getsize(self.file_path):
                 self._log(u"File " + existing_file + " is larger than " + self.file_path, logger.DEBUG)
                 return PostProcessor.EXISTS_LARGER
 
-            elif ek(os.path.getsize, existing_file) == ek(os.path.getsize, self.file_path):
+            elif os.path.getsize(existing_file) == os.path.getsize(self.file_path):
                 self._log(u"File " + existing_file + " is the same size as " + self.file_path, logger.DEBUG)
                 return PostProcessor.EXISTS_SAME
 
