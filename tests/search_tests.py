@@ -27,10 +27,10 @@ import unittest
 
 import test_lib as test
 
-import sickbeard.search as search
 import sickbeard
-from sickbeard.tv import TVEpisode, TVShow
 import sickbeard.common as c
+import sickbeard.search as search
+from sickbeard.tv import TVEpisode, TVShow
 
 from sickbeard.providers.generic import GenericProvider
 
@@ -39,7 +39,7 @@ tests = {"Game of Thrones":
                 "s_strings": [{"Season": [u"Game of Thrones S05"]}],
                 "e_strings": [{"Episode": [u"Game of Thrones S05E10"]}]}}
 
-class SearchTest(test.SickbeardTestDBCase):
+class SearchTest(test.SiCKRAGETestDBCase):
 
     def __init__(self, something):
         super(SearchTest, self).__init__(something)
@@ -121,7 +121,7 @@ def test_generator(curData, name, provider, forceSearch):
 
 if __name__ == '__main__':
     print "=================="
-    print "STARTING - Search TESTS"
+    print "STARTING - SEARCH TESTS"
     print "=================="
     print "######################################################################"
     # create the test methods

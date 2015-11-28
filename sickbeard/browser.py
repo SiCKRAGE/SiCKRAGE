@@ -51,7 +51,7 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
     """
 
     # walk up the tree until we find a valid path
-    while path and not os.path.isdir(path):
+    while path and not ek(os.path.isdir,path):
         if path == ek(os.path.dirname, path):
             path = ''
             break
@@ -83,7 +83,7 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
         fileList = [{'name': filename, 'path': ek(os.path.join, parentPath, filename)} for filename in ek(os.listdir, parentPath)]
 
     if not includeFiles:
-        fileList = [x for x in fileList if os.path.isdir(x['path'])]
+        fileList = [x for x in fileList if ek(os.path.isdir,x['path'])]
 
     # prune out directories to protect the user from doing stupid things (already lower case the dir to reduce calls)
     hideList = ["boot", "bootmgr", "cache", "msocache", "recovery", "$recycle.bin", "recycler",

@@ -90,7 +90,7 @@ class CheckVersion(object):
         ui.notifications.message('Backup', 'Config backup in progress...')
         try:
             backupDir = ek(os.path.join, sickbeard.DATA_DIR, 'backup')
-            if not os.path.isdir(backupDir):
+            if not ek(os.path.isdir,backupDir):
                 ek(os.mkdir, backupDir)
 
             if self._keeplatestbackup(backupDir) == True and self._backup(backupDir) == True:
@@ -234,7 +234,7 @@ class CheckVersion(object):
         # check if we're a windows build
         if sickbeard.BRANCH.startswith('build '):
             install_type = 'win'
-        elif os.path.isdir(ek(os.path.join, sickbeard.PROG_DIR, u'.git')):
+        elif ek(os.path.isdir,ek(os.path.join, sickbeard.PROG_DIR, u'.git')):
             install_type = 'git'
         else:
             install_type = 'source'
@@ -802,7 +802,7 @@ class SourceUpdateManager(UpdateManager):
             # prepare the update dir
             sr_update_dir = ek(os.path.join, sickbeard.PROG_DIR, u'sr-update')
 
-            if os.path.isdir(sr_update_dir):
+            if ek(os.path.isdir,sr_update_dir):
                 logger.log(u"Clearing out update folder " + sr_update_dir + " before extracting")
                 shutil.rmtree(sr_update_dir)
 
@@ -814,7 +814,7 @@ class SourceUpdateManager(UpdateManager):
             tar_download_path = ek(os.path.join, sr_update_dir, u'sr-update.tar')
             helpers.download_file(tar_download_url, tar_download_path, session=self.session)
 
-            if not os.path.isfile(tar_download_path):
+            if not ek(os.path.isfile,tar_download_path):
                 logger.log(u"Unable to retrieve new version from " + tar_download_url + ", can't update", logger.WARNING)
                 return False
 
@@ -834,7 +834,7 @@ class SourceUpdateManager(UpdateManager):
 
             # find update dir name
             update_dir_contents = [x for x in ek(os.listdir, sr_update_dir) if
-                                   os.path.isdir(ek(os.path.join, sr_update_dir, x))]
+                                   ek(os.path.isdir,ek(os.path.join, sr_update_dir, x))]
             if len(update_dir_contents) != 1:
                 logger.log(u"Invalid update data, update failed: " + str(update_dir_contents), logger.ERROR)
                 return False
@@ -861,7 +861,7 @@ class SourceUpdateManager(UpdateManager):
                             ek(os.remove, old_path)  # Trash the updated file without moving in new path
                         continue
 
-                    if os.path.isfile(new_path):
+                    if ek(os.path.isfile,new_path):
                         ek(os.remove, new_path)
                     ek(os.renames, old_path, new_path)
 

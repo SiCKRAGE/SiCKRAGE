@@ -30,13 +30,14 @@ import sickbeard
 from sickbeard.tv import TVEpisode, TVShow
 from sickbeard.name_cache import addNameToCache
 from sickbeard.postProcessor import PostProcessor
-from sickbeard.processTV import processDir
 
-class PPInitTests(unittest.TestCase):
-
+class PPInitTests(test.SiCKRAGETestCase):
     def setUp(self):
         super(PPInitTests, self).setUp()
         self.pp = PostProcessor(test.FILEPATH)
+
+    def tearDown(self):
+        super(PPInitTests, self).tearDown()
 
     def test_init_file_name(self):
         self.assertEqual(self.pp.file_name, test.FILENAME)
@@ -44,15 +45,12 @@ class PPInitTests(unittest.TestCase):
     def test_init_folder_name(self):
         self.assertEqual(self.pp.folder_name, test.SHOWNAME)
 
-    def tearDown(self):
-        super(PPInitTests, self).tearDown()
-        self.pp = None
-
-class PPBasicTests(test.SickbeardTestDBCase):
-
+class PPBasicTests(test.SiCKRAGETestDBCase):
     def setUp(self):
         super(PPBasicTests, self).setUp()
-        self.pp = PostProcessor(test.FILEPATH)
+
+    def tearDown(self):
+        super(PPBasicTests, self).tearDown()
 
     def test_process(self):
         show = TVShow(1,3)
@@ -69,27 +67,9 @@ class PPBasicTests(test.SickbeardTestDBCase):
         self.pp = PostProcessor(test.FILEPATH, process_method='move')
         self.assertTrue(self.pp.process())
 
-    def test_manual_process(self):
-        show = TVShow(1,3)
-        show.name = test.SHOWNAME
-        show.location = test.SHOWDIR
-        show.saveToDB()
-
-        sickbeard.showList = [show]
-        ep = TVEpisode(show, test.SEASON, test.EPISODE)
-        ep.name = "some ep name"
-        ep.saveToDB()
-
-        addNameToCache('show name', 3)
-        self.assertTrue(processDir(test.FILEDIR, process_method="move"))
-
-    def tearDown(self):
-        super(PPBasicTests, self).tearDown()
-        self.pp = None
-
 if __name__ == '__main__':
     print "=================="
-    print "STARTING - PostProcessor TESTS"
+    print "STARTING - POSTPROCESSOR TESTS"
     print "=================="
     print "######################################################################"
     suite = unittest.TestLoader().loadTestsFromTestCase(PPInitTests)

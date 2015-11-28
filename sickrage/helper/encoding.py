@@ -19,10 +19,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 import six
+import types
 from os import name
-
-import sickbeard.logger
-import sickrage.helper.exceptions
 
 def ek(function, *args, **kwargs):
     """
@@ -34,8 +32,6 @@ def ek(function, *args, **kwargs):
     :return: Unicode-converted function output (string, list or tuple, depends on input)
     """
 
-    result = None
-
     try:
         if name == 'nt':
             result = function(*args, **kwargs)
@@ -46,11 +42,12 @@ def ek(function, *args, **kwargs):
             if hasattr(result, '__iter__') and hasattr(result,'__len__'):
                 return type(result)(filter(lambda x: x is not None, map(uu,result)))
             elif hasattr(result,'__iter__') and not hasattr(result,'__len__'):
-                return ((uu(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in i) for i in result)
-        return uu(result)
-    except Exception as e:
-        sickbeard.logger.log(sickrage.helper.exceptions.ex(e), sickbeard.logger.ERROR)
-        return result if result else function(*args, **kwargs)
+                return ((uu(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in i if x is not None) for i in result)
+        elif isinstance(result, six.string_types):
+            return uu(result)
+    except:pass
+
+    return result
 
 def uu(s):
     """ Convert, at all consts, 'text' to a `unicode` object.

@@ -6,9 +6,11 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 
+import test_lib as test
+
 from sickbeard import common
 
-class QualityTests(unittest.TestCase):
+class QualityTests(test.SiCKRAGETestCase):
 
     # TODO: repack / proper ? air-by-date ? season rip? multi-ep?
 
@@ -100,5 +102,9 @@ class QualityTests(unittest.TestCase):
 #        self.assertEqual(common.Quality.UNKNOWN, common.Quality.nameQuality("Test Show - S01E02 - Unknown - SiCKBEARD"))
 
 if __name__ == '__main__':
+    print "=================="
+    print "STARTING - COMMON TESTS"
+    print "=================="
+    print "######################################################################"
     suite = unittest.TestLoader().loadTestsFromTestCase(QualityTests)
     unittest.TextTestRunner(verbosity=2).run(suite)

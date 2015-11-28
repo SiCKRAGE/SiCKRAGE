@@ -63,7 +63,7 @@ class MainSanityCheck(db.DBSanityCheck):
 
         for archivedEp in sqlResults:
             fixedStatus = common.Quality.compositeStatus(common.ARCHIVED, common.Quality.UNKNOWN)
-            existing = archivedEp['location'] and os.path.exists(archivedEp['location'])
+            existing = archivedEp['location'] and ek(os.path.exists,archivedEp['location'])
             if existing:
                 quality = common.Quality.assumeQuality(archivedEp['location'])
                 fixedStatus = common.Quality.compositeStatus(common.ARCHIVED, quality)
@@ -376,7 +376,7 @@ class AddSizeAndSceneNameFields(InitialSchema):
                 continue
 
             # if there is no size yet then populate it for us
-            if (not cur_ep["file_size"] or not int(cur_ep["file_size"])) and os.path.isfile(cur_ep["location"]):
+            if (not cur_ep["file_size"] or not int(cur_ep["file_size"])) and ek(os.path.isfile,cur_ep["location"]):
                 cur_size = os.path.getsize(cur_ep["location"])
                 self.connection.action("UPDATE tv_episodes SET file_size = ? WHERE episode_id = ?",
                                        [cur_size, int(cur_ep["episode_id"])])

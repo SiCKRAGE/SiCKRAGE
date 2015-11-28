@@ -111,12 +111,12 @@ class imdbPopular(object):
         """
         path = ek(os.path.abspath, ek(os.path.join, sickbeard.CACHE_DIR, 'images', 'imdb_popular'))
 
-        if not os.path.exists(path):
+        if not ek(os.path.exists,path):
             ek(os.makedirs, path)
 
         full_path = ek(os.path.join, path, ek(os.path.basename, image_url))
 
-        if not os.path.isfile(full_path):
+        if not ek(os.path.isfile,full_path):
             helpers.download_file(image_url, full_path, session=self.session)
 
 imdb_popular = imdbPopular()

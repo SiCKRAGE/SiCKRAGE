@@ -32,7 +32,7 @@ def shutil_copyfile(src, dst):
     """Copy data from src to dst"""
     if shutil._samefile(src, dst):
         raise shutil.Error("`%s` and `%s` are the same file" % (src, dst))
-    elif not os.path.exists(src) or os.path.isdir(src):
+    elif not ek(os.path.exists,src) or os.path.isdir(src):
         return
 
     for fn in [src, dst]:

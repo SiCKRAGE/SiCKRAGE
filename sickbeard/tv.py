@@ -174,7 +174,7 @@ class TVShow(object):
         if sickbeard.CREATE_MISSING_SHOW_DIRS:
             return self._location
 
-        if os.path.isdir(self._location):
+        if ek(os.path.isdir,self._location):
             return self._location
         else:
             raise ShowDirectoryNotFoundException("Show folder doesn't exist, you shouldn't be using it")
@@ -182,7 +182,7 @@ class TVShow(object):
     def _setLocation(self, newLocation):
         logger.log(u"Setter sets location to " + newLocation, logger.DEBUG)
         # Don't validate dir if user wants to add shows without creating a dir
-        if sickbeard.ADD_SHOWS_WO_DIR or os.path.isdir(newLocation):
+        if sickbeard.ADD_SHOWS_WO_DIR or ek(os.path.isdir,newLocation):
             dirty_setter("_location")(self, newLocation)
         else:
             raise NoNFOException("Invalid folder for the show!")
@@ -328,7 +328,7 @@ class TVShow(object):
 
         result = False
 
-        if not os.path.isdir(self._location):
+        if not ek(os.path.isdir,self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
             return False
 
@@ -340,7 +340,7 @@ class TVShow(object):
 
     def writeMetadata(self, show_only=False):
 
-        if not os.path.isdir(self._location):
+        if not ek(os.path.isdir,self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
             return
 
@@ -353,7 +353,7 @@ class TVShow(object):
 
     def writeEpisodeNFOs(self):
 
-        if not os.path.isdir(self._location):
+        if not ek(os.path.isdir,self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
             return
 
@@ -372,7 +372,7 @@ class TVShow(object):
 
     def updateMetadata(self):
 
-        if not os.path.isdir(self._location):
+        if not ek(os.path.isdir,self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
             return
 
@@ -382,7 +382,7 @@ class TVShow(object):
 
         result = False
 
-        if not os.path.isdir(self._location):
+        if not ek(os.path.isdir,self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, skipping NFO generation")
             return False
 
@@ -395,7 +395,7 @@ class TVShow(object):
     # find all media files in the show folder and create episodes for as many as possible
     def loadEpisodesFromDir(self):
 
-        if not os.path.isdir(self._location):
+        if not ek(os.path.isdir,self._location):
             logger.log(str(self.indexerid) + u": Show dir doesn't exist, not loading episodes from disk", logger.DEBUG)
             return
 
@@ -617,7 +617,7 @@ class TVShow(object):
     # make a TVEpisode object from a media file
     def makeEpFromFile(self, file):
 
-        if not os.path.isfile(file):
+        if not ek(os.path.isfile,file):
             logger.log(str(self.indexerid) + u": That isn't even a real file dude... " + file)
             return None
 
@@ -1048,7 +1048,7 @@ class TVShow(object):
     def refreshDir(self):
 
         # make sure the show dir is where we think it is unless dirs are created on the fly
-        if not os.path.isdir(self._location) and not sickbeard.CREATE_MISSING_SHOW_DIRS:
+        if not ek(os.path.isdir,self._location) and not sickbeard.CREATE_MISSING_SHOW_DIRS:
             return False
 
         # load from dir
@@ -1076,7 +1076,7 @@ class TVShow(object):
                 continue
 
             # if the path doesn't exist or if it's not in our show dir
-            if not os.path.isfile(curLoc) or not ek(os.path.normpath, curLoc).startswith(
+            if not ek(os.path.isfile,curLoc) or not ek(os.path.normpath, curLoc).startswith(
                     ek(os.path.normpath, self.location)):
 
                 # check if downloaded files still exist, update our data if this has changed
@@ -1115,7 +1115,7 @@ class TVShow(object):
 
     def downloadSubtitles(self, force=False):
         # TODO: Add support for force option
-        if not os.path.isdir(self._location):
+        if not ek(os.path.isdir,self._location):
             logger.log(str(self.indexerid) + ": Show dir doesn't exist, can't download subtitles", logger.DEBUG)
             return
 
@@ -1408,7 +1408,7 @@ class TVEpisode(object):
         # self._location = newLocation
         dirty_setter("_location")(self, new_location)
 
-        if new_location and os.path.isfile(new_location):
+        if new_location and ek(os.path.isfile,new_location):
             self.file_size = os.path.getsize(new_location)
         else:
             self.file_size = 0
@@ -1422,7 +1422,7 @@ class TVEpisode(object):
             self.saveToDB()
 
     def downloadSubtitles(self, force=False):
-        if not os.path.isfile(self.location):
+        if not ek(os.path.isfile,self.location):
             logger.log(u"%s: Episode file doesn't exist, can't download subtitles for S%02dE%02d" %
                        (self.show.indexerid, self.season or 0, self.episode or 0), logger.DEBUG)
             return
@@ -1462,7 +1462,7 @@ class TVEpisode(object):
         cur_tbn = False
 
         # check for nfo and tbn
-        if os.path.isfile(self.location):
+        if ek(os.path.isfile,self.location):
             for cur_provider in sickbeard.metadata_provider_dict.values():
                 if cur_provider.episode_metadata:
                     new_result = cur_provider._has_episode_metadata(self)
@@ -1488,7 +1488,7 @@ class TVEpisode(object):
 
         if not sqlResult:
             # only load from NFO if we didn't load from DB
-            if os.path.isfile(self.location):
+            if ek(os.path.isfile,self.location):
                 try:
                     self.loadFromNFO(self.location)
                 except NoNFOException:
@@ -1692,7 +1692,7 @@ class TVEpisode(object):
             return False
 
         # don't update show status if show dir is missing, unless it's missing on purpose
-        if not os.path.isdir(self.show._location) and not sickbeard.CREATE_MISSING_SHOW_DIRS and not sickbeard.ADD_SHOWS_WO_DIR:
+        if not ek(os.path.isdir,self.show._location) and not sickbeard.CREATE_MISSING_SHOW_DIRS and not sickbeard.ADD_SHOWS_WO_DIR:
             logger.log(u"The show dir %s is missing, not bothering to change the episode statuses since it'd probably be invalid" % self.show._location)
             return
 
@@ -1700,7 +1700,7 @@ class TVEpisode(object):
             logger.log(u"%s: Setting status for S%02dE%02d based on status %s and location %s" %
                        (self.show.indexerid, season or 0, episode or 0, statusStrings[self.status], self.location), logger.DEBUG)
 
-        if not os.path.isfile(self.location):
+        if not ek(os.path.isfile,self.location):
             if self.airdate >= datetime.date.today() or self.airdate == datetime.date.fromordinal(1):
                 logger.log(u"Episode airs in the future or has no airdate, marking it %s" % statusStrings[UNAIRED], logger.DEBUG)
                 self.status = UNAIRED
@@ -1727,7 +1727,7 @@ class TVEpisode(object):
 
     def loadFromNFO(self, location):
 
-        if not os.path.isdir(self.show._location):
+        if not ek(os.path.isdir,self.show._location):
             logger.log(
                 str(self.show.indexerid) + u": The show dir is missing, not bothering to try loading the episode NFO")
             return
@@ -1749,7 +1749,7 @@ class TVEpisode(object):
             nfoFile = sickbeard.helpers.replaceExtension(self.location, "nfo")
             logger.log(str(self.show.indexerid) + u": Using NFO name " + nfoFile, logger.DEBUG)
 
-            if os.path.isfile(nfoFile):
+            if ek(os.path.isfile,nfoFile):
                 try:
                     showXML = etree.ElementTree(file=nfoFile)
                 except (SyntaxError, ValueError), e:
@@ -1803,7 +1803,7 @@ class TVEpisode(object):
             else:
                 self.hasnfo = False
 
-            if os.path.isfile(sickbeard.helpers.replaceExtension(nfoFile, "tbn")):
+            if ek(os.path.isfile,sickbeard.helpers.replaceExtension(nfoFile, "tbn")):
                 self.hastbn = True
             else:
                 self.hastbn = False
@@ -1825,7 +1825,7 @@ class TVEpisode(object):
 
     def createMetaFiles(self):
 
-        if not os.path.isdir(self.show._location):
+        if not ek(os.path.isdir,self.show._location):
             logger.log(str(self.show.indexerid) + u": The show dir is missing, not bothering to try to create metadata")
             return
 
@@ -2423,7 +2423,7 @@ class TVEpisode(object):
         in the naming settings.
         """
 
-        if not os.path.isfile(self.location):
+        if not ek(os.path.isfile,self.location):
             logger.log(u"Can't perform rename on " + self.location + " when it doesn't exist, skipping", logger.WARNING)
             return
 

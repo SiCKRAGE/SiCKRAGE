@@ -349,7 +349,7 @@ def makeDir(path):
     :return: True if success, False if failure
     """
 
-    if not os.path.isdir(path):
+    if not ek(os.path.isdir,path):
         try:
             ek(os.makedirs, path)
             # do the library update for synoindex
@@ -466,7 +466,7 @@ def listMediaFiles(path):
     :return: list of files
     """
 
-    if not dir or not os.path.isdir(path):
+    if not dir or not ek(os.path.isdir,path):
         return []
 
     files = []
@@ -474,7 +474,7 @@ def listMediaFiles(path):
         fullCurFile = ek(os.path.join, path, curFile)
 
         # if it's a folder do it recursively
-        if os.path.isdir(fullCurFile) and not curFile.startswith('.') and not curFile == 'Extras':
+        if ek(os.path.isdir,fullCurFile) and not curFile.startswith('.') and not curFile == 'Extras':
             files += listMediaFiles(fullCurFile)
 
         elif isMediaFile(curFile):
@@ -558,7 +558,7 @@ def symlink(src, dst):
     """
 
     if os.name == 'nt':
-        if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src), 1 if os.path.isdir(src) else 0) in [0, 1280]:
+        if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src), 1 if ek(os.path.isdir,src) else 0) in [0, 1280]:
             raise ctypes.WinError()
     else:
         ek(os.symlink, src, dst)
@@ -591,7 +591,7 @@ def make_dirs(path):
 
     logger.log(u"Checking if the path %s already exists" % path, logger.DEBUG)
 
-    if not os.path.isdir(path):
+    if not ek(os.path.isdir,path):
         # Windows, create all missing folders
         if os.name == 'nt' or os.name == 'ce':
             try:
@@ -611,7 +611,7 @@ def make_dirs(path):
                 sofar += cur_folder + os.path.sep
 
                 # if it exists then just keep walking down the line
-                if os.path.isdir(sofar):
+                if ek(os.path.isdir,sofar):
                     continue
 
                 try:
@@ -689,7 +689,7 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
     logger.log(u"Trying to clean any empty folders under " + check_empty_dir)
 
     # as long as the folder exists and doesn't contain any files, delete it
-    while os.path.isdir(check_empty_dir) and check_empty_dir != keep_dir:
+    while ek(os.path.isdir,check_empty_dir) and check_empty_dir != keep_dir:
         check_files = ek(os.listdir, check_empty_dir)
 
         if not check_files or (len(check_files) <= len(ignore_items) and all(
@@ -749,7 +749,7 @@ def chmodAsParent(childPath):
     childPathStat = os.stat(childPath)
     childPath_mode = stat.S_IMODE(childPathStat[stat.ST_MODE])
 
-    if os.path.isfile(childPath):
+    if ek(os.path.isfile,childPath):
         childMode = fileBitFilter(parentMode)
     else:
         childMode = parentMode
@@ -994,8 +994,8 @@ def backupVersionedFile(old_file, version):
 
     new_file = unicode(old_file + '.' + 'v' + str(version))
 
-    while not os.path.isfile(new_file):
-        if not os.path.isfile(old_file):
+    while not ek(os.path.isfile,new_file):
+        if not ek(os.path.isfile,old_file):
             logger.log(u"Not creating backup, %s doesn't exist" % old_file, logger.DEBUG)
             break
 
@@ -1031,7 +1031,7 @@ def restoreVersionedFile(backup_file, version):
     new_file, _ = ek(os.path.splitext, backup_file)
     restore_file = new_file + '.' + 'v' + str(version)
 
-    if not os.path.isfile(new_file):
+    if not ek(os.path.isfile,new_file):
         logger.log(u"Not restoring, %s doesn't exist" % new_file, logger.DEBUG)
         return False
 
@@ -1045,8 +1045,8 @@ def restoreVersionedFile(backup_file, version):
                    % (restore_file, ex(e)), logger.WARNING)
         return False
 
-    while not os.path.isfile(new_file):
-        if not os.path.isfile(restore_file):
+    while not ek(os.path.isfile,new_file):
+        if not ek(os.path.isfile,restore_file):
             logger.log(u"Not restoring, %s doesn't exist" % restore_file, logger.DEBUG)
             break
 
@@ -1261,7 +1261,7 @@ def is_hidden_folder(folder):
             result = False
         return result
 
-    if os.path.isdir(folder):
+    if ek(os.path.isdir,folder):
         if is_hidden(folder):
             return True
 
@@ -1357,7 +1357,7 @@ def extractZip(archive, targetDir):
     """
 
     try:
-        if not os.path.exists(targetDir):
+        if not ek(os.path.exists,targetDir):
             ek(os.mkdir, targetDir)
 
         zip_file = zipfile.ZipFile(archive, 'r', allowZip64=True)
@@ -1411,7 +1411,7 @@ def restoreConfigZip(archive, targetDir):
     """
 
     try:
-        if not os.path.exists(targetDir):
+        if not ek(os.path.exists,targetDir):
             ek(os.mkdir, targetDir)
         else:
             def path_leaf(path):
@@ -1710,7 +1710,7 @@ def get_size(start_path='.'):
     :return: total filesize
     """
 
-    if not os.path.isdir(start_path):
+    if not ek(os.path.isdir,start_path):
         return -1
 
     total_size = 0
@@ -1811,7 +1811,7 @@ def verify_freespace(src, dest, oldfile=None):
         logger.log(u"Unable to determine free space on your OS")
         return True
 
-    if not os.path.isfile(src):
+    if not ek(os.path.isfile,src):
         logger.log(u"A path to a file is required for the source. " + src + " is not a file.", logger.WARNING)
         return True
 
@@ -1825,7 +1825,7 @@ def verify_freespace(src, dest, oldfile=None):
 
     if oldfile:
         for f in oldfile:
-            if os.path.isfile(f.location):
+            if ek(os.path.isfile,f.location):
                 diskfree += os.path.getsize(f.location)
 
     if diskfree > neededspace:
@@ -1872,7 +1872,7 @@ def isFileLocked(checkfile, writeLockCheck=False):
 
     checkfile = ek(os.path.abspath, checkfile)
 
-    if not os.path.exists(checkfile):
+    if not ek(os.path.exists,checkfile):
         return True
     try:
         with io.open(checkfile, 'rb'):
@@ -1882,7 +1882,7 @@ def isFileLocked(checkfile, writeLockCheck=False):
 
     if writeLockCheck:
         lockFile = checkfile + ".lckchk"
-        if os.path.exists(lockFile):
+        if ek(os.path.exists,lockFile):
             ek(os.remove, lockFile)
         try:
             ek(os.rename, checkfile, lockFile)
@@ -1899,7 +1899,7 @@ def getDiskSpaceUsage(diskPath=None):
     returns the free space in human readable bytes for a given path or False if no path given
     :param diskPath: the filesystem path being checked
     """
-    if diskPath and os.path.exists(diskPath):
+    if diskPath and ek(os.path.exists,diskPath):
         if platform.system() == 'Windows':
             free_bytes = ctypes.c_ulonglong(0)
             ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(diskPath), None, None, ctypes.pointer(free_bytes))

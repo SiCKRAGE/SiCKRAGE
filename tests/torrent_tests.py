@@ -24,13 +24,14 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 
-import urlparse
 import test_lib as test
+
+import urlparse
+import requests
 from bs4 import BeautifulSoup
 from sickbeard.helpers import getURL
-import requests
 
-class TorrentBasicTests(test.SickbeardTestDBCase):
+class TorrentBasicTests(test.SiCKRAGETestDBCase):
 
     def test_search(self):
         self.url = 'http://kickass.to/'
@@ -72,7 +73,7 @@ class TorrentBasicTests(test.SickbeardTestDBCase):
 
 if __name__ == "__main__":
     print "=================="
-    print "STARTING - Torrent Basic TESTS"
+    print "STARTING - TORRENT TESTS"
     print "=================="
     print "######################################################################"
     suite = unittest.TestLoader().loadTestsFromTestCase(TorrentBasicTests)

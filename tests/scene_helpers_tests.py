@@ -12,7 +12,7 @@ from sickbeard import db
 from sickbeard.tv import TVShow as Show
 
 
-class SceneTests(test.SickbeardTestDBCase):
+class SceneTests(test.SiCKRAGETestDBCase):
 
     def _test_sceneToNormalShowNames(self, name, expected):
         result = show_name_helpers.sceneToNormalShowNames(name)
@@ -51,6 +51,7 @@ class SceneTests(test.SickbeardTestDBCase):
             s = Show(1, 0)
             s.name = show_name
             self._test_isGoodName(scene_name, s)
+            del s
 
     def test_sceneToNormalShowNames(self):
         self._test_sceneToNormalShowNames('Show Name 2010', ['Show Name 2010', 'Show Name (2010)'])
@@ -86,11 +87,14 @@ class SceneTests(test.SickbeardTestDBCase):
         self._test_filterBadReleases('Show.S02.This.Is.German', False)
 
 
-class SceneExceptionTestCase(test.SickbeardTestDBCase):
+class SceneExceptionTestCase(test.SiCKRAGETestDBCase):
 
     def setUp(self):
         super(SceneExceptionTestCase, self).setUp()
         scene_exceptions.retrieve_exceptions()
+
+    def tearDown(self):
+        super(SceneExceptionTestCase, self).tearDown()
 
     def test_sceneExceptionsEmpty(self):
         self.assertEqual(scene_exceptions.get_scene_exceptions(0), [])
@@ -120,11 +124,16 @@ class SceneExceptionTestCase(test.SickbeardTestDBCase):
 
 
 if __name__ == '__main__':
+    print "=================="
+    print "STARTING - SCENE HELPER TESTS"
+    print "=================="
+    print "######################################################################"
     if len(sys.argv) > 1:
         suite = unittest.TestLoader().loadTestsFromName('scene_helpers_tests.SceneExceptionTestCase.test_' + sys.argv[1])
         unittest.TextTestRunner(verbosity=2).run(suite)
     else:
         suite = unittest.TestLoader().loadTestsFromTestCase(SceneTests)
         unittest.TextTestRunner(verbosity=2).run(suite)
+        print "######################################################################"
         suite = unittest.TestLoader().loadTestsFromTestCase(SceneExceptionTestCase)
         unittest.TextTestRunner(verbosity=2).run(suite)

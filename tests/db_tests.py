@@ -24,7 +24,7 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 import unittest
 import test_lib as test
 
-class DBBasicTests(test.SickbeardTestDBCase):
+class DBBasicTests(test.SiCKRAGETestDBCase):
     def setUp(self):
         super(DBBasicTests, self).setUp()
         self.db = test.db.DBConnection()

@@ -23,6 +23,8 @@ import sickbeard
 
 from sickbeard import logger
 from sickbeard import processTV
+from sickrage.helper.encoding import ek
+
 
 class PostProcesser():
 
@@ -39,7 +41,7 @@ class PostProcesser():
         """
         self.amActive = True
 
-        if not os.path.isdir(sickbeard.TV_DOWNLOAD_DIR):
+        if not ek(os.path.isdir,sickbeard.TV_DOWNLOAD_DIR):
             logger.log(u"Automatic post-processing attempted but dir " + sickbeard.TV_DOWNLOAD_DIR + " doesn't exist",
                        logger.ERROR)
             self.amActive = False

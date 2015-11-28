@@ -372,7 +372,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         nfo_file_dir = ek(os.path.dirname, nfo_file_path)
 
         try:
-            if not os.path.isdir(nfo_file_dir):
+            if not ek(os.path.isdir,nfo_file_dir):
                 logger.log(u"Metadata dir didn't exist, creating it at " + nfo_file_dir, logger.DEBUG)
                 ek(os.makedirs, nfo_file_dir)
                 helpers.chmodAsParent(nfo_file_dir)
@@ -417,7 +417,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         nfo_file_dir = ek(os.path.dirname, nfo_file_path)
 
         try:
-            if not os.path.isdir(nfo_file_dir):
+            if not ek(os.path.isdir,nfo_file_dir):
                 logger.log(u"Metadata dir didn't exist, creating it at " + nfo_file_dir, logger.DEBUG)
                 ek(os.makedirs, nfo_file_dir)
                 helpers.chmodAsParent(nfo_file_dir)

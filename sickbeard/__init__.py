@@ -722,14 +722,14 @@ def initialize(consoleLogging=True):
         # Check if we need to perform a restore of the cache folder
         try:
             restoreDir = ek(os.path.join, DATA_DIR, 'restore')
-            if os.path.exists(restoreDir) and os.path.exists(ek(os.path.join, restoreDir, 'cache')):
+            if ek(os.path.exists,restoreDir) and ek(os.path.exists,ek(os.path.join, restoreDir, 'cache')):
                 def restoreCache(srcDir, dstDir):
                     def path_leaf(path):
                         head, tail = ek(os.path.split, path)
                         return tail or ek(os.path.basename, head)
 
                     try:
-                        if os.path.isdir(dstDir):
+                        if ek(os.path.isdir,dstDir):
                             bakFilename = '{0}-{1}'.format(path_leaf(dstDir), datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d_%H%M%S'))
                             shutil.move(dstDir, ek(os.path.join, ek(os.path.dirname, dstDir), bakFilename))
 
@@ -742,7 +742,7 @@ def initialize(consoleLogging=True):
         except Exception as e:
             logger.log(u"Restore: restoring cache failed: {0}".format(ex(e)), logger.ERROR)
         finally:
-            if os.path.exists(ek(os.path.join, DATA_DIR, 'restore')):
+            if ek(os.path.exists,ek(os.path.join, DATA_DIR, 'restore')):
                 try:
                     shutil.rmtree(ek(os.path.join, DATA_DIR, 'restore'))
                 except Exception as e:
@@ -1336,7 +1336,7 @@ def initialize(consoleLogging=True):
                                                                        curNzbProvider.getID() + '_enable_backlog',
                                                                        curNzbProvider.supportsBacklog))
 
-        if not os.path.isfile(CONFIG_FILE):
+        if not ek(os.path.isfile,CONFIG_FILE):
             logger.log(u"Unable to find '" + CONFIG_FILE + "', all settings will be default!", logger.DEBUG)
             save_config()
 

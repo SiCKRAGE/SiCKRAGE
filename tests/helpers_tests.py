@@ -27,6 +27,8 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 
+import test_lib as test
+
 from sickbeard.helpers import remove_non_release_groups
 
 test_result = 'Show.Name.S01E01.HDTV.x264-RLSGROUP'
@@ -71,7 +73,7 @@ test_cases = {
     ]
 }
 
-class HelpersTests(unittest.TestCase):
+class HelpersTests(test.SiCKRAGETestCase):
     def __init__(self, *args, **kwargs):
         super(HelpersTests, self).__init__(*args, **kwargs)
 

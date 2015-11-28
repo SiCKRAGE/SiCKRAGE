@@ -23,7 +23,6 @@ import sys, os.path
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-
 import unittest
 
 from configobj import ConfigObj
@@ -31,6 +30,7 @@ from configobj import ConfigObj
 import shutil
 
 import sickbeard
+
 from sickbeard import db, providers, tvcache, logger
 from sickbeard.databases import mainDB
 from sickbeard.databases import cache_db, failed_db
@@ -40,6 +40,7 @@ from sickrage.helper.encoding import ek
 #=================
 # test globals
 #=================
+TESTSKIPPED = ['issue_submitter_tests']
 TESTDIR = ek(os.path.abspath, ek(os.path.dirname, __file__))
 TESTDBNAME = "sickbeard.db"
 TESTCACHEDBNAME = "cache.db"
@@ -57,11 +58,11 @@ SHOWDIR = ek(os.path.join, TESTDIR, SHOWNAME + " final")
 # prepare env functions
 #=================
 def createTestLogFolder():
-    if not os.path.isdir(sickbeard.LOG_DIR):
+    if not ek(os.path.isdir,sickbeard.LOG_DIR):
         ek(os.mkdir, sickbeard.LOG_DIR)
 
 def createTestCacheFolder():
-    if not os.path.isdir(sickbeard.CACHE_DIR):
+    if not ek(os.path.isdir,sickbeard.CACHE_DIR):
         ek(os.mkdir, sickbeard.CACHE_DIR)
 
 # call env functions at appropriate time during sickbeard var setup
@@ -89,6 +90,7 @@ sickbeard.PROG_DIR = ek(os.path.abspath, ek(os.path.join, TESTDIR, '..'))
 sickbeard.DATA_DIR = TESTDIR
 sickbeard.CONFIG_FILE = ek(os.path.join, sickbeard.DATA_DIR, "config.ini")
 sickbeard.CFG = ConfigObj(sickbeard.CONFIG_FILE)
+sickbeard.TV_DOWNLOAD_DIR = FILEDIR
 
 sickbeard.BRANCH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'branch', '')
 sickbeard.CUR_COMMIT_HASH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'cur_commit_hash', '')
@@ -101,6 +103,7 @@ createTestCacheFolder()
 sickbeard.LOG_DIR = ek(os.path.join, TESTDIR, 'Logs')
 sickbeard.logger.logFile = ek(os.path.join, sickbeard.LOG_DIR, 'test_sickbeard.log')
 createTestLogFolder()
+
 sickbeard.logger.initLogging(False, True)
 
 #=================
@@ -121,7 +124,12 @@ TVEpisode.specifyEpisode = _fake_specifyEP
 #=================
 # test classes
 #=================
-class SickbeardTestDBCase(unittest.TestCase):
+class SiCKRAGETestCase(unittest.TestCase):
+    def setUp(self):
+        if self.__module__ in TESTSKIPPED:
+            raise unittest.SkipTest()
+
+class SiCKRAGETestDBCase(SiCKRAGETestCase):
     def setUp(self):
         sickbeard.showList = []
         setUp_test_db()
@@ -202,7 +210,7 @@ def setUp_test_db():
 def tearDown_test_db():
     for current_db in [ TESTDBNAME, TESTFAILEDDBNAME ]:
         file_name = ek(os.path.join, TESTDIR, current_db)
-        if os.path.exists(file_name):
+        if ek(os.path.exists,file_name):
             try:
                 ek(os.remove, file_name)
             except Exception as e:
@@ -210,7 +218,7 @@ def tearDown_test_db():
                 continue
 
 def setUp_test_episode_file():
-    if not os.path.exists(FILEDIR):
+    if not ek(os.path.exists,FILEDIR):
         ek(os.makedirs, FILEDIR)
 
     try:
@@ -223,17 +231,16 @@ def setUp_test_episode_file():
 
 
 def tearDown_test_episode_file():
-    if os.path.exists(FILEDIR):
+    if ek(os.path.exists,FILEDIR):
         shutil.rmtree(FILEDIR)
 
-
 def setUp_test_show_dir():
-    if not os.path.exists(SHOWDIR):
+    if not ek(os.path.exists,SHOWDIR):
         ek(os.makedirs, SHOWDIR)
 
 
 def tearDown_test_show_dir():
-    if os.path.exists(SHOWDIR):
+    if ek(os.path.exists,SHOWDIR):
         shutil.rmtree(SHOWDIR)
 
 

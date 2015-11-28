@@ -5,9 +5,11 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 
+import test_lib as test
+
 from sickbeard.providers.womble import provider as womble
 
-class FeedParserTests(unittest.TestCase):
+class FeedParserTests(test.SiCKRAGETestCase):
     # pylint: disable=W0212
     def test_womble(self):
         result = womble.cache.getRSSFeed('http://newshost.co.za/rss/?sec=tv-sd&fr=false')

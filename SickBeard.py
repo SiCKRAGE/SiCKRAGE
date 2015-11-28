@@ -24,6 +24,9 @@
 # Catching too general exception
 
 import sys, os
+
+from sickrage.helper.encoding import ek
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
 
 if sys.version_info < (2, 7):
@@ -202,7 +205,7 @@ class SickRage(object):
                 self.PIDFILE = str(a)
 
                 # If the pidfile already exists, sickbeard may still be running, so exit
-                if os.path.exists(self.PIDFILE):
+                if ek(os.path.exists,self.PIDFILE):
                     sys.exit("PID file: " + self.PIDFILE + " already exists. Exiting.")
 
             # Specify folder to load the config file from
@@ -249,7 +252,7 @@ class SickRage(object):
 
         # Make sure we can write to the config file
         if not os.access(sickbeard.CONFIG_FILE, os.W_OK):
-            if os.path.isfile(sickbeard.CONFIG_FILE):
+            if ek(os.path.isfile,sickbeard.CONFIG_FILE):
                 raise SystemExit("Config file '" + sickbeard.CONFIG_FILE + "' must be writeable.")
             elif not os.access(os.path.dirname(sickbeard.CONFIG_FILE), os.W_OK):
                 raise SystemExit(
@@ -259,13 +262,13 @@ class SickRage(object):
 
         # Check if we need to perform a restore first
         restoreDir = os.path.join(sickbeard.DATA_DIR, 'restore')
-        if os.path.exists(restoreDir):
+        if ek(os.path.exists,restoreDir):
             success = self.restoreDB(restoreDir, sickbeard.DATA_DIR)
             if self.consoleLogging:
                 sys.stdout.write(u"Restore: restoring DB and config.ini %s!\n" % ("FAILED", "SUCCESSFUL")[success])
 
         # Load the config and publish it to the sickbeard package
-        if self.consoleLogging and not os.path.isfile(sickbeard.CONFIG_FILE):
+        if self.consoleLogging and not ek(os.path.isfile,sickbeard.CONFIG_FILE):
             sys.stdout.write(u"Unable to find '" + sickbeard.CONFIG_FILE + "' , all settings will be default!" + "\n")
 
         sickbeard.CFG = ConfigObj(sickbeard.CONFIG_FILE)
@@ -421,7 +424,7 @@ class SickRage(object):
     @staticmethod
     def remove_pid_file(PIDFILE):
         try:
-            if os.path.exists(PIDFILE):
+            if ek(os.path.exists,PIDFILE):
                 os.remove(PIDFILE)
         except (IOError, OSError):
             return False
@@ -459,7 +462,7 @@ class SickRage(object):
                 srcFile = os.path.join(srcDir, filename)
                 dstFile = os.path.join(dstDir, filename)
                 bakFile = os.path.join(dstDir, '{0}.bak-{1}'.format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
-                if os.path.isfile(dstFile):
+                if ek(os.path.isfile,dstFile):
                     shutil.move(dstFile, bakFile)
                 shutil.move(srcFile, dstFile)
             return True

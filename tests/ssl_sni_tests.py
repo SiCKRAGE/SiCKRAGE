@@ -22,14 +22,16 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../l
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
-import requests
 
-import sickbeard.providers as providers
+import test_lib as test
+
 import certifi
+import requests
+import sickbeard.providers as providers
 from sickrage.helper.exceptions import ex
 
 
-class SNI_Tests(unittest.TestCase):
+class SNI_Tests(test.SiCKRAGETestCase):
     self_signed_cert_providers = ["Womble's Index", "Libertalia"]
     def test_SNI_URLS(self):
         print ''
@@ -50,5 +52,9 @@ class SNI_Tests(unittest.TestCase):
                 pass
 
 if __name__ == "__main__":
+    print "=================="
+    print "STARTING - SSL TESTS"
+    print "=================="
+    print "######################################################################"
     suite = unittest.TestLoader().loadTestsFromTestCase(SNI_Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)

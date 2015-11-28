@@ -126,7 +126,7 @@ class PostProcessor(object):
             return PostProcessor.DOESNT_EXIST
 
         # if the new file exists, return the appropriate code depending on the size
-        if os.path.isfile(existing_file):
+        if ek(os.path.isfile,existing_file):
 
             # see if it's bigger than our old file
             if os.path.getsize(existing_file) > os.path.getsize(self.file_path):
@@ -208,7 +208,7 @@ class PostProcessor(object):
             if re.search(r'(^.+\.(rar|r\d+)$)', associated_file_path):
                 continue
 
-            if os.path.isfile(associated_file_path):
+            if ek(os.path.isfile,associated_file_path):
                 file_path_list.append(associated_file_path)
 
         if file_path_list:
@@ -240,7 +240,7 @@ class PostProcessor(object):
 
         # delete the file and any other files which we want to delete
         for cur_file in file_list:
-            if os.path.isfile(cur_file):
+            if ek(os.path.isfile,cur_file):
                 self._log(u"Deleting file " + cur_file, logger.DEBUG)
                 # check first the read-only attribute
                 file_attribute = os.stat(cur_file)[0]
@@ -852,11 +852,11 @@ class PostProcessor(object):
 
         self._log(u"Processing " + self.file_path + " (" + str(self.nzb_name) + ")")
 
-        if os.path.isdir(self.file_path):
+        if ek(os.path.isdir,self.file_path):
             self._log(u"File %s seems to be a directory" % self.file_path)
             return False
 
-        if not os.path.exists(self.file_path):
+        if not ek(os.path.exists,self.file_path):
             self._log(u"File %s doesn't exist, did unrar fail?" % self.file_path)
             return False
 
@@ -962,7 +962,7 @@ class PostProcessor(object):
             #    curEp.status = common.Quality.compositeStatus(common.SNATCHED, new_ep_quality)
 
         # if the show directory doesn't exist then make it if allowed
-        if not os.path.isdir(ep_obj.show._location) and sickbeard.CREATE_MISSING_SHOW_DIRS:
+        if not ek(os.path.isdir,ep_obj.show._location) and sickbeard.CREATE_MISSING_SHOW_DIRS:
             self._log(u"Show directory doesn't exist, creating it", logger.DEBUG)
             try:
                 ek(os.mkdir, ep_obj.show._location)

@@ -1458,7 +1458,7 @@ class Home(WebRoot):
             # if we change location clear the db of episodes, change it, write to db, and rescan
             if ek(os.path.normpath, showObj._location) != ek(os.path.normpath, location):
                 logger.log(ek(os.path.normpath, showObj._location) + " != " + ek(os.path.normpath, location), logger.DEBUG)
-                if not os.path.isdir(location) and not sickbeard.CREATE_MISSING_SHOW_DIRS:
+                if not ek(os.path.isdir,location) and not sickbeard.CREATE_MISSING_SHOW_DIRS:
                     errors.append("New location <tt>%s</tt> does not exist" % location)
 
                 # don't bother if we're going to update anyway
@@ -1710,7 +1710,7 @@ class Home(WebRoot):
                         continue
 
                     if int(status) in Quality.DOWNLOADED and epObj.status not in Quality.SNATCHED + \
-                            Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [IGNORED] and not os.path.isfile(epObj.location):
+                            Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [IGNORED] and not ek(os.path.isfile,epObj.location):
                         logger.log(u"Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED", logger.WARNING)
                         continue
 
@@ -2298,7 +2298,7 @@ class HomeAddShows(Home):
 
                 try:
                     cur_path = ek(os.path.normpath, ek(os.path.join, root_dir, cur_file))
-                    if not os.path.isdir(cur_path):
+                    if not ek(os.path.isdir,cur_path):
                         continue
                 except Exception:
                     continue
@@ -2629,7 +2629,7 @@ class HomeAddShows(Home):
             show_dir = ek(os.path.join, rootDir, helpers.sanitizeFileName(show_name))
 
         # blanket policy - if the dir exists you should have used "add existing show" numbnuts
-        if os.path.isdir(show_dir) and not fullShowPath:
+        if ek(os.path.isdir,show_dir) and not fullShowPath:
             ui.notifications.error("Unable to add show", "Folder " + show_dir + " exists already")
             return self.redirect('/home/addShows/existingShows/')
 
@@ -5030,12 +5030,12 @@ class ErrorLogs(WebRoot):
 
         data = []
 
-        if os.path.isfile(logger.logFile):
+        if ek(os.path.isfile,logger.logFile):
             with io.open(logger.logFile, 'r', encoding='utf-8') as f:
                 data = Get_Data(minLevel, f.readlines(), 0, regex, logFilter, logSearch, maxLines)
 
         for i in range(1, int(sickbeard.LOG_NR)):
-            if os.path.isfile(logger.logFile + "." + str(i)) and (len(data) <= maxLines):
+            if ek(os.path.isfile,logger.logFile + "." + str(i)) and (len(data) <= maxLines):
                 with io.open(logger.logFile + "." + str(i), 'r', encoding='utf-8') as f:
                     data += Get_Data(minLevel, f.readlines(), len(data), regex, logFilter, logSearch, maxLines)
 

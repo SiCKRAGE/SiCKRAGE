@@ -254,7 +254,7 @@ def subtitlesLanguages(video_path):
     # Search subtitles with the relative path
     elif sickbeard.SUBTITLES_DIR:
         check_subtitles_path = ek(os.path.join, ek(os.path.dirname, video_path), sickbeard.SUBTITLES_DIR)
-        if not os.path.exists(check_subtitles_path):
+        if not ek(os.path.exists,check_subtitles_path):
             getSubtitlesPath(video_path)
         video_path = ek(os.path.join, ek(os.path.dirname, video_path), sickbeard.SUBTITLES_DIR, ek(os.path.basename, video_path))
     else:
@@ -393,7 +393,7 @@ class SubtitlesFinder(object):
         now = datetime.datetime.now()
         for epToSub in sqlResults:
 
-            if not os.path.isfile(epToSub['location']):
+            if not ek(os.path.isfile,epToSub['location']):
                 logger.log(u'Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' % (epToSub['season'], epToSub['episode'], epToSub['show_name']), logger.DEBUG)
                 continue
 

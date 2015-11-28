@@ -1213,7 +1213,7 @@ class CMD_Logs(ApiCall):
         minLevel = logger.reverseNames[str(self.min_level).upper()]
 
         data = []
-        if os.path.isfile(logger.logFile):
+        if ek(os.path.isfile,logger.logFile):
             with io.open(logger.logFile, 'r', encoding='utf-8') as f:
                 data = f.readlines()
 
@@ -1344,7 +1344,7 @@ class CMD_SickBeardAddRootDir(ApiCall):
         index = 0
 
         # dissallow adding/setting an invalid dir
-        if not os.path.isdir(self.location):
+        if not ek(os.path.isdir,self.location):
             return _responds(RESULT_FAILURE, msg="Location is invalid")
 
         root_dirs = []
@@ -1973,7 +1973,7 @@ class CMD_ShowAddExisting(ApiCall):
         if showObj:
             return _responds(RESULT_FAILURE, msg="An existing indexerid already exists in the database")
 
-        if not os.path.isdir(self.location):
+        if not ek(os.path.isdir,self.location):
             return _responds(RESULT_FAILURE, msg='Not a valid location')
 
         indexerName = None
@@ -2097,7 +2097,7 @@ class CMD_ShowAddNew(ApiCall):
             else:
                 return _responds(RESULT_FAILURE, msg="Root directory is not set, please provide a location")
 
-        if not os.path.isdir(self.location):
+        if not ek(os.path.isdir,self.location):
             return _responds(RESULT_FAILURE, msg="'" + self.location + "' is not a valid location")
 
         quality_map = {'sdtv': Quality.SDTV,
@@ -2231,9 +2231,9 @@ class CMD_ShowCache(ApiCall):
         has_poster = 0
         has_banner = 0
 
-        if os.path.isfile(cache_obj.poster_path(showObj.indexerid)):
+        if ek(os.path.isfile,cache_obj.poster_path(showObj.indexerid)):
             has_poster = 1
-        if os.path.isfile(cache_obj.banner_path(showObj.indexerid)):
+        if ek(os.path.isfile,cache_obj.banner_path(showObj.indexerid)):
             has_banner = 1
 
         return _responds(RESULT_SUCCESS, {"poster": has_poster, "banner": has_banner})

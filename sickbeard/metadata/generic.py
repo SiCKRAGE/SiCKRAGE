@@ -120,7 +120,7 @@ class GenericMetadata(object):
     def _check_exists(location):
         if location:
             assert isinstance(location, unicode)
-            result = os.path.isfile(location)
+            result = ek(os.path.isfile,location)
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
             return result
         return False
@@ -177,7 +177,7 @@ class GenericMetadata(object):
         ep_obj: a TVEpisode instance for which to create the thumbnail
         """
         assert isinstance(ep_obj.location, unicode)
-        if os.path.isfile(ep_obj.location):
+        if ek(os.path.isfile,ep_obj.location):
 
             tbn_filename = ep_obj.location.rpartition(".")
 
@@ -405,7 +405,7 @@ class GenericMetadata(object):
         nfo_file_dir = ek(os.path.dirname, nfo_file_path)
 
         try:
-            if not os.path.isdir(nfo_file_dir):
+            if not ek(os.path.isdir,nfo_file_dir):
                 logger.log(u"Metadata dir didn't exist, creating it at " + nfo_file_dir, logger.DEBUG)
                 ek(os.makedirs, nfo_file_dir)
                 helpers.chmodAsParent(nfo_file_dir)
@@ -450,7 +450,7 @@ class GenericMetadata(object):
         nfo_file_dir = ek(os.path.dirname, nfo_file_path)
 
         try:
-            if not os.path.isdir(nfo_file_dir):
+            if not ek(os.path.isdir,nfo_file_dir):
                 logger.log(u"Metadata dir didn't exist, creating it at " + nfo_file_dir, logger.DEBUG)
                 ek(os.makedirs, nfo_file_dir)
                 helpers.chmodAsParent(nfo_file_dir)
@@ -688,7 +688,7 @@ class GenericMetadata(object):
         assert isinstance(image_path, unicode)
 
         # don't bother overwriting it
-        if os.path.isfile(image_path):
+        if ek(os.path.isfile,image_path):
             logger.log(u"Image already exists, not downloading", logger.DEBUG)
             return False
 
@@ -699,7 +699,7 @@ class GenericMetadata(object):
             return False
 
         try:
-            if not os.path.isdir(image_dir):
+            if not ek(os.path.isdir,image_dir):
                 logger.log(u"Metadata dir didn't exist, creating it at " + image_dir, logger.DEBUG)
                 ek(os.makedirs, image_dir)
                 helpers.chmodAsParent(image_dir)
@@ -909,7 +909,7 @@ class GenericMetadata(object):
 
         metadata_path = ek(os.path.join, folder, self._show_metadata_filename)
 
-        if not os.path.isdir(folder) or not os.path.isfile(metadata_path):
+        if not ek(os.path.isdir,folder) or not ek(os.path.isfile,metadata_path):
             logger.log(u"Can't load the metadata file from " + metadata_path + ", it doesn't exist", logger.DEBUG)
             return empty_return
 

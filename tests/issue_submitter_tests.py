@@ -25,6 +25,8 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 
+import test_lib as test
+
 from sickbeard import logger
 from sickrage.helper.exceptions import ex
 
@@ -36,8 +38,7 @@ def error():
         logger.submit_errors()
         raise
 
-
-class IssueSubmitterBasicTests(unittest.TestCase):
+class IssueSubmitterBasicTests(test.SiCKRAGETestCase):
     def test_submitter(self):
         self.assertRaises(Exception, error)
 

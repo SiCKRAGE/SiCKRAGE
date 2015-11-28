@@ -59,7 +59,7 @@ def delete_folder(folder, check_empty=True):
     """
 
     # check if it's a folder
-    if not os.path.isdir(folder):
+    if not ek(os.path.isdir,folder):
         return False
 
     # check if it isn't TV_DOWNLOAD_DIR
@@ -110,7 +110,7 @@ def delete_files(processPath, notwantedFiles, result, force=False):
     for cur_file in notwantedFiles:
         cur_file_path = ek(os.path.join, processPath, cur_file)
 
-        if not os.path.isfile(cur_file_path):
+        if not ek(os.path.isfile,cur_file_path):
             continue  # Prevent error when a notwantedfiles is an associated files
 
         result.output += logHelper(u"Deleting file %s" % cur_file, logger.DEBUG)
@@ -154,17 +154,17 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     postpone = False
 
     # if they passed us a real dir then assume it's the one we want
-    if os.path.isdir(dirName):
+    if ek(os.path.isdir,dirName):
         dirName = ek(os.path.realpath, dirName)
 
     # if the client and SickRage are not on the same machine translate the Dir in a network dir
-    elif sickbeard.TV_DOWNLOAD_DIR and os.path.isdir(sickbeard.TV_DOWNLOAD_DIR) \
+    elif sickbeard.TV_DOWNLOAD_DIR and ek(os.path.isdir,sickbeard.TV_DOWNLOAD_DIR) \
             and ek(os.path.normpath, dirName) != ek(os.path.normpath, sickbeard.TV_DOWNLOAD_DIR):
         dirName = ek(os.path.join, sickbeard.TV_DOWNLOAD_DIR, ek(os.path.abspath, dirName).split(os.path.sep)[-1])
         result.output += logHelper(u"Trying to use folder " + dirName, logger.DEBUG)
 
     # if we didn't find a real dir then quit
-    if not os.path.isdir(dirName):
+    if not ek(os.path.isdir,dirName):
         result.output += logHelper(
             u"Unable to figure out what folder to process. If your downloader and SickRage aren't on the same PC make sure you fill out your TV download dir in the config.",
             logger.DEBUG)
@@ -579,7 +579,7 @@ def get_path_dir_files(dirName, nzbName, proc_type):
             break
     else:
         path, dirs = ek(os.path.split, dirName)  # Script Post Processing
-        if not nzbName is None and not nzbName.endswith('.nzb') and os.path.isfile(ek(os.path.join, dirName, nzbName)):  # For single torrent file without Dir
+        if not nzbName is None and not nzbName.endswith('.nzb') and ek(os.path.isfile,ek(os.path.join, dirName, nzbName)):  # For single torrent file without Dir
             dirs = []
             files = [ek(os.path.join, dirName, nzbName)]
         else:

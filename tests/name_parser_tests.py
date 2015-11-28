@@ -161,7 +161,7 @@ unicode_test_cases = [
 failure_cases = ['7sins-jfcs01e09-720p-bluray-x264']
 
 
-class UnicodeTests(test.SickbeardTestDBCase):
+class UnicodeTests(test.SiCKRAGETestDBCase):
 
     def __init__(self, something):
         super(UnicodeTests, self).__init__(something)
@@ -181,7 +181,7 @@ class UnicodeTests(test.SickbeardTestDBCase):
         for (name, result) in unicode_test_cases:
             self._test_unicode(name, result)
 
-class FailureCaseTests(test.SickbeardTestDBCase):
+class FailureCaseTests(test.SiCKRAGETestDBCase):
 
     @staticmethod
     def _test_name(name):
@@ -199,7 +199,7 @@ class FailureCaseTests(test.SickbeardTestDBCase):
         for name in failure_cases:
             self.assertTrue(self._test_name(name))
 
-class ComboTests(test.SickbeardTestDBCase):
+class ComboTests(test.SiCKRAGETestDBCase):
 
     def _test_combo(self, name, result, which_regexes):
 
@@ -231,7 +231,7 @@ class ComboTests(test.SickbeardTestDBCase):
             # paths when test is run on Windows.
             self._test_combo(ek(os.path.normpath, name), result, which_regexes)
 
-class BasicTests(test.SickbeardTestDBCase):
+class BasicTests(test.SiCKRAGETestDBCase):
 
     def __init__(self, something):
         super(BasicTests, self).__init__(something)
@@ -362,18 +362,22 @@ class BasicTests(test.SickbeardTestDBCase):
         pass
 
 if __name__ == '__main__':
+    print "=================="
+    print "STARTING - NAME PARSER TESTS"
+    print "=================="
+    print "######################################################################"
     if len(sys.argv) > 1:
         suite = unittest.TestLoader().loadTestsFromName('name_parser_tests.BasicTests.test_'+sys.argv[1])
         unittest.TextTestRunner(verbosity=2).run(suite)
     else:
         suite = unittest.TestLoader().loadTestsFromTestCase(BasicTests)
         unittest.TextTestRunner(verbosity=2).run(suite)
-
+    print "######################################################################"
     suite = unittest.TestLoader().loadTestsFromTestCase(ComboTests)
     unittest.TextTestRunner(verbosity=2).run(suite)
-
+    print "######################################################################"
     suite = unittest.TestLoader().loadTestsFromTestCase(UnicodeTests)
     unittest.TextTestRunner(verbosity=2).run(suite)
-
+    print "######################################################################"
     suite = unittest.TestLoader().loadTestsFromTestCase(FailureCaseTests)
     unittest.TextTestRunner(verbosity=2).run(suite)
