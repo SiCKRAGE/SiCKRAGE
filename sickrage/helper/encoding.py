@@ -34,12 +34,14 @@ def ek(function, *args, **kwargs):
     :return: Unicode-converted function output (string, list or tuple, depends on input)
     """
 
-    if name == 'nt':
-        result = function(*args, **kwargs)
-    else:
-        result = function(*[ss(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in args], **kwargs)
+    result = None
 
     try:
+        if name == 'nt':
+            result = function(*args, **kwargs)
+        else:
+            result = function(*[ss(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in args], **kwargs)
+
         if not isinstance(result, six.string_types):
             if hasattr(result, '__iter__') and hasattr(result,'__len__'):
                 return type(result)(filter(lambda x: x is not None, map(uu,result)))
@@ -48,7 +50,7 @@ def ek(function, *args, **kwargs):
         return uu(result)
     except Exception as e:
         sickbeard.logger.log(sickrage.helper.exceptions.ex(e), sickbeard.logger.ERROR)
-        return result
+        return result if result else function(*args, **kwargs)
 
 def uu(s):
     """ Convert, at all consts, 'text' to a `unicode` object.

@@ -804,7 +804,7 @@ class SourceUpdateManager(UpdateManager):
 
             if os.path.isdir(sr_update_dir):
                 logger.log(u"Clearing out update folder " + sr_update_dir + " before extracting")
-                ek(shutil.rmtree, sr_update_dir)
+                shutil.rmtree(sr_update_dir)
 
             logger.log(u"Creating update folder " + sr_update_dir + " before extracting")
             ek(os.makedirs, sr_update_dir)

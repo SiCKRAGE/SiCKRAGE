@@ -83,7 +83,7 @@ def delete_folder(folder, check_empty=True):
     else:
         try:
             logger.log(u"Deleting folder: " + folder)
-            ek(shutil.rmtree, folder)
+            shutil.rmtree(folder)
         except (OSError, IOError), e:
             logger.log(u"Warning: unable to delete folder: " + folder + ": " + ex(e), logger.WARNING)
             return False

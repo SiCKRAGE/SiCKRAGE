@@ -224,7 +224,7 @@ def setUp_test_episode_file():
 
 def tearDown_test_episode_file():
     if os.path.exists(FILEDIR):
-        ek(shutil.rmtree, FILEDIR)
+        shutil.rmtree(FILEDIR)
 
 
 def setUp_test_show_dir():
@@ -234,7 +234,7 @@ def setUp_test_show_dir():
 
 def tearDown_test_show_dir():
     if os.path.exists(SHOWDIR):
-        ek(shutil.rmtree, SHOWDIR)
+        shutil.rmtree(SHOWDIR)
 
 
 if __name__ == '__main__':

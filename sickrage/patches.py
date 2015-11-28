@@ -32,7 +32,7 @@ def shutil_copyfile(src, dst):
     """Copy data from src to dst"""
     if shutil._samefile(src, dst):
         raise shutil.Error("`%s` and `%s` are the same file" % (src, dst))
-    elif not os.path.isdir(src):
+    elif not os.path.exists(src):
         return
 
     for fn in [src, dst]:
@@ -49,21 +49,12 @@ def shutil_copyfile(src, dst):
                 except NameError:
                     raise shutil.Error("`%s` is a named pipe" % fn)
 
-    try:
-        # Windows
-        O_BINARY = os.O_BINARY
-    except:
-        O_BINARY = 0
-
-    READ_FLAGS = os.O_RDONLY | O_BINARY
-    WRITE_FLAGS = os.O_WRONLY | os.O_CREAT | os.O_TRUNC | O_BINARY
     BUFFER_SIZE = 128*1024
-
     try:
-        with os.open(src, READ_FLAGS) as fin, os.open(dst, WRITE_FLAGS) as fout:
-            for x in iter(lambda: os.read(fin, BUFFER_SIZE), ""):
-                os.write(fout, x)
-    except Exception:
+        with open(src, "rb") as fin, open(dst, "wb") as fout:
+            for x in iter(lambda: fin.read(BUFFER_SIZE), ""):
+                fout.write(x)
+    except Exception as e:
         raise
 
 # auto_apply patches

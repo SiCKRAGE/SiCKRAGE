@@ -492,9 +492,9 @@ def copyFile(srcFile, destFile):
     """
 
     try:
-        ek(shutil.copyfile, srcFile, destFile)
-        ek(shutil.copymode, srcFile, destFile)
-    except OSError:
+        shutil.copyfile(srcFile, destFile)
+        shutil.copymode(srcFile, destFile)
+    except OSError as e:
         raise
 
 
@@ -507,15 +507,14 @@ def moveFile(srcFile, destFile):
     """
 
     try:
-        ek(shutil.move, srcFile, destFile)
+        shutil.move(srcFile, destFile)
         fixSetGroupID(destFile)
     except OSError as e:
         try:
             copyFile(srcFile, destFile)
+            ek(os.unlink, srcFile)
         except Exception as e:
             raise
-
-    ek(os.unlink, srcFile)
 
 def link(src, dst):
     """
@@ -575,7 +574,7 @@ def moveAndSymlinkFile(srcFile, destFile):
     """
 
     try:
-        ek(shutil.move, srcFile, destFile)
+        shutil.move(srcFile, destFile)
         fixSetGroupID(destFile)
         ek(symlink, destFile, srcFile)
     except Exception as e:
@@ -665,7 +664,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
     # move the file
     try:
         logger.log(u"Renaming file from %s to %s" % (cur_path, new_path))
-        ek(shutil.move, cur_path, new_path)
+        shutil.move(cur_path, new_path)
     except (OSError, IOError) as e:
         logger.log(u"Failed renaming %s to %s : %r" % (cur_path, new_path, ex(e)), logger.ERROR)
         return False
@@ -1002,7 +1001,7 @@ def backupVersionedFile(old_file, version):
 
         try:
             logger.log(u"Trying to back up %s to %s" % (old_file, new_file), logger.DEBUG)
-            ek(shutil.copyfile, old_file, new_file)
+            shutil.copyfile(old_file, new_file)
             logger.log(u"Backup done", logger.DEBUG)
             break
         except Exception as e:
@@ -1040,7 +1039,7 @@ def restoreVersionedFile(backup_file, version):
         logger.log(u"Trying to backup %s to %s.r%s before restoring backup"
                    % (new_file, new_file, version), logger.DEBUG)
 
-        ek(shutil.move, new_file, new_file + '.' + 'r' + str(version))
+        shutil.move(new_file, new_file + '.' + 'r' + str(version))
     except Exception as e:
         logger.log(u"Error while trying to backup DB file %s before proceeding with restore: %r"
                    % (restore_file, ex(e)), logger.WARNING)
@@ -1053,7 +1052,7 @@ def restoreVersionedFile(backup_file, version):
 
         try:
             logger.log(u"Trying to restore file %s to %s" % (restore_file, new_file), logger.DEBUG)
-            ek(shutil.copy, restore_file, new_file)
+            shutil.copy(restore_file, new_file)
             logger.log(u"Restore done", logger.DEBUG)
             break
         except Exception as e:
@@ -1371,7 +1370,7 @@ def extractZip(archive, targetDir):
             # copy file (taken from zipfile's extract)
             source = zip_file.open(member)
             target = file(ek(os.path.join, targetDir, filename), "wb")
-            ek(shutil.copyfileobj, source, target)
+            shutil.copyfileobj(source, target)
             source.close()
             target.close()
         zip_file.close()
@@ -1419,7 +1418,7 @@ def restoreConfigZip(archive, targetDir):
                 head, tail = ek(os.path.split, path)
                 return tail or ek(os.path.basename, head)
             bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
-            ek(shutil.move, targetDir, ek(os.path.join, ek(os.path.dirname, targetDir), bakFilename))
+            shutil.move(targetDir, ek(os.path.join, ek(os.path.dirname, targetDir), bakFilename))
 
         zip_file = zipfile.ZipFile(archive, 'r', allowZip64=True)
         for member in zip_file.namelist():
@@ -1428,7 +1427,7 @@ def restoreConfigZip(archive, targetDir):
         return True
     except Exception as e:
         logger.log(u"Zip extraction error: %r" % ex(e), logger.ERROR)
-        ek(shutil.rmtree, targetDir)
+        shutil.rmtree(targetDir)
         return False
 
 
@@ -1790,7 +1789,7 @@ def verify_freespace(src, dest, oldfile=None):
 
     if hasattr(os, 'statvfs'):  # POSIX
         def disk_usage(path):
-            st = ek(os.statvfs, path)
+            st = os.statvfs(path)
             free = st.f_bavail * st.f_frsize
             return free
 
@@ -1906,7 +1905,7 @@ def getDiskSpaceUsage(diskPath=None):
             ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(diskPath), None, None, ctypes.pointer(free_bytes))
             return pretty_filesize(free_bytes.value)
         else:
-            st = ek(os.statvfs, diskPath)
+            st = os.statvfs(diskPath)
             return pretty_filesize(st.f_bavail * st.f_frsize)
     else:
         return False

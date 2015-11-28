@@ -1024,7 +1024,7 @@ class TVShow(object):
                 if sickbeard.TRASH_REMOVE_SHOW:
                     send2trash(self.location)
                 else:
-                    ek(shutil.rmtree, self.location)
+                    shutil.rmtree(self.location)
 
                 logger.log(u'%s show folder %s' %
                            (('Deleted', 'Trashed')[sickbeard.TRASH_REMOVE_SHOW],

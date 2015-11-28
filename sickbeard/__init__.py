@@ -731,9 +731,9 @@ def initialize(consoleLogging=True):
                     try:
                         if os.path.isdir(dstDir):
                             bakFilename = '{0}-{1}'.format(path_leaf(dstDir), datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d_%H%M%S'))
-                            ek(shutil.move, dstDir, ek(os.path.join, ek(os.path.dirname, dstDir), bakFilename))
+                            shutil.move(dstDir, ek(os.path.join, ek(os.path.dirname, dstDir), bakFilename))
 
-                        ek(shutil.move, srcDir, dstDir)
+                        shutil.move(srcDir, dstDir)
                         logger.log(u"Restore: restoring cache successful", logger.INFO)
                     except Exception as e:
                         logger.log(u"Restore: restoring cache failed: {0}".format(str(e)), logger.ERROR)
@@ -744,13 +744,13 @@ def initialize(consoleLogging=True):
         finally:
             if os.path.exists(ek(os.path.join, DATA_DIR, 'restore')):
                 try:
-                    ek(shutil.rmtree, ek(os.path.join, DATA_DIR, 'restore'))
+                    shutil.rmtree(ek(os.path.join, DATA_DIR, 'restore'))
                 except Exception as e:
                     logger.log(u"Restore: Unable to remove the restore directory: {0}".format(ex(e)), logger.ERROR)
 
                 for cleanupDir in ['mako', 'sessions', 'indexers']:
                     try:
-                        ek(shutil.rmtree, ek(os.path.join, CACHE_DIR, cleanupDir))
+                        shutil.rmtree(ek(os.path.join, CACHE_DIR, cleanupDir))
                     except Exception as e:
                         logger.log(u"Restore: Unable to remove the cache/{0} directory: {1}".format(cleanupDir, ex(e)), logger.WARNING)
 
