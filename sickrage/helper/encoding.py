@@ -42,14 +42,12 @@ def ek(function, *args, **kwargs):
     try:
         if not isinstance(result, six.string_types):
             if hasattr(result, '__iter__') and hasattr(result,'__len__'):
-                result = type(result)(filter(lambda x: x is not None, map(uu,result)))
+                return type(result)(filter(lambda x: x is not None, map(uu,result)))
             elif hasattr(result,'__iter__') and not hasattr(result,'__len__'):
-                result = ((uu(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in i) for i in result)
-        else:
-            result = uu(result)
+                return ((uu(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in i) for i in result)
+        return uu(result)
     except Exception as e:
         sickbeard.logger.log(sickrage.helper.exceptions.ex(e), sickbeard.logger.ERROR)
-    finally:
         return result
 
 def uu(s):
