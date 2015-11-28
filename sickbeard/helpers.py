@@ -58,9 +58,9 @@ from sickbeard.common import subtitleExtensions
 from sickbeard import db
 from sickbeard.notifiers.synoindex import notifier as synoindex_notifier
 from sickbeard import clients
-from sickbeard.subtitles import isValidLanguage
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex, MultipleShowObjectsException
+from sickbeard.subtitles import isValidLanguage
 from cachecontrol import CacheControl, caches
 
 from itertools import izip, cycle
