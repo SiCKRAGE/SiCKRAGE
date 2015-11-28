@@ -1,10 +1,10 @@
 import re
 import os
 import requests
-from bs4 import BeautifulSoup
-from datetime import date
-
 import sickbeard
+
+from datetime import date
+from bs4 import BeautifulSoup
 from sickbeard import helpers
 from sickrage.helper.encoding import ek
 

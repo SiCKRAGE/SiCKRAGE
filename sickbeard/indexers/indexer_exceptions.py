@@ -7,7 +7,7 @@
 # license:unlicense (http://unlicense.org/)
 
 """Custom exceptions used or raised by indexer_api"""
-
+import sickbeard
 from tvdb_api.tvdb_exceptions import (tvdb_exception, tvdb_error, tvdb_userabort, tvdb_shownotfound, tvdb_showincomplete,
                                       tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound)
 

@@ -1,7 +1,8 @@
 # coding=utf-8
 
-from tvdb_api.tvdb_api import Tvdb
 import requests
+import sickbeard
+from tvdb_api.tvdb_api import Tvdb
 
 initConfig = {
     'valid_languages': ["da", "fi", "nl", "de", "it", "es", "fr", "pl", "hu", "el", "tr",

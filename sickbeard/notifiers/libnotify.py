@@ -21,6 +21,7 @@ import cgi
 import sickbeard
 
 from sickbeard import logger, common
+from sickrage.helper.encoding import ek
 
 
 def diagnose():

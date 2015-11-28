@@ -23,6 +23,8 @@ import os
 import io
 import re
 
+from sickrage.helper.encoding import ek
+
 try:
     import xml.etree.cElementTree as etree
 except ImportError:
