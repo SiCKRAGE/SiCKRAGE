@@ -44,7 +44,7 @@ def ek(function, *args, **kwargs):
             if hasattr(result, '__iter__') and hasattr(result,'__len__'):
                 result = type(result)(filter(lambda x: x is not None, map(uu,result)))
             elif hasattr(result,'__iter__') and not hasattr(result,'__len__'):
-                result = ((uu(x) for x in i) for i in result)
+                result = ((uu(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in i) for i in result)
         else:
             result = uu(result)
     except Exception as e:

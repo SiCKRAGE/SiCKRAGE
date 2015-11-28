@@ -58,8 +58,6 @@ def delete_folder(folder, check_empty=True):
     :return: True on success, False on failure
     """
 
-    assert isinstance(folder, unicode)
-
     # check if it's a folder
     if not os.path.isdir(folder):
         return False
@@ -108,10 +106,8 @@ def delete_files(processPath, notwantedFiles, result, force=False):
     elif not result.result:
         return
 
-    assert isinstance(processPath, unicode)
     # Delete all file not needed
     for cur_file in notwantedFiles:
-        assert isinstance(cur_file, unicode)
         cur_file_path = ek(os.path.join, processPath, cur_file)
 
         if not os.path.isfile(cur_file_path):
@@ -538,9 +534,7 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
     """
 
     processor = None
-    assert isinstance(processPath, unicode)
     for cur_video_file in videoFiles:
-        assert isinstance(cur_video_file, unicode)
         cur_video_file_path = ek(os.path.join, processPath, cur_video_file)
 
         if already_postprocessed(processPath, cur_video_file, force, result):
