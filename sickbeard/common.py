@@ -340,7 +340,7 @@ class Quality(object):
 
         try:
             tmpFile = filename + ".tmp"
-            shutil.copyfile(filename, tmpFile)
+            ek(shutil.copyfile, filename, tmpFile)
             parser = createParser(tmpFile)
             file_metadata = extractMetadata(parser)
             parser.stream._input.close()

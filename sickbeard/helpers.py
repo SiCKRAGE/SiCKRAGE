@@ -492,8 +492,8 @@ def copyFile(srcFile, destFile):
     """
 
     try:
-        shutil.copyfile(srcFile, destFile)
-        shutil.copymode(srcFile, destFile)
+        ek(shutil.copyfile,srcFile, destFile)
+        ek(shutil.copymode,srcFile, destFile)
     except OSError as e:
         raise
 
@@ -507,7 +507,7 @@ def moveFile(srcFile, destFile):
     """
 
     try:
-        shutil.move(srcFile, destFile)
+        ek(shutil.move,srcFile, destFile)
         fixSetGroupID(destFile)
     except OSError as e:
         try:
@@ -574,7 +574,7 @@ def moveAndSymlinkFile(srcFile, destFile):
     """
 
     try:
-        shutil.move(srcFile, destFile)
+        ek(shutil.move,srcFile, destFile)
         fixSetGroupID(destFile)
         ek(symlink, destFile, srcFile)
     except Exception as e:
@@ -664,7 +664,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
     # move the file
     try:
         logger.log(u"Renaming file from %s to %s" % (cur_path, new_path))
-        shutil.move(cur_path, new_path)
+        ek(shutil.move,cur_path, new_path)
     except (OSError, IOError) as e:
         logger.log(u"Failed renaming %s to %s : %r" % (cur_path, new_path, ex(e)), logger.ERROR)
         return False
@@ -1001,7 +1001,7 @@ def backupVersionedFile(old_file, version):
 
         try:
             logger.log(u"Trying to back up %s to %s" % (old_file, new_file), logger.DEBUG)
-            shutil.copyfile(old_file, new_file)
+            ek(shutil.copyfile,old_file, new_file)
             logger.log(u"Backup done", logger.DEBUG)
             break
         except Exception as e:
@@ -1039,7 +1039,7 @@ def restoreVersionedFile(backup_file, version):
         logger.log(u"Trying to backup %s to %s.r%s before restoring backup"
                    % (new_file, new_file, version), logger.DEBUG)
 
-        shutil.move(new_file, new_file + '.' + 'r' + str(version))
+        ek(shutil.move,new_file, new_file + '.' + 'r' + str(version))
     except Exception as e:
         logger.log(u"Error while trying to backup DB file %s before proceeding with restore: %r"
                    % (restore_file, ex(e)), logger.WARNING)
@@ -1052,7 +1052,7 @@ def restoreVersionedFile(backup_file, version):
 
         try:
             logger.log(u"Trying to restore file %s to %s" % (restore_file, new_file), logger.DEBUG)
-            shutil.copy(restore_file, new_file)
+            ek(shutil.copy,restore_file, new_file)
             logger.log(u"Restore done", logger.DEBUG)
             break
         except Exception as e:
@@ -1370,7 +1370,7 @@ def extractZip(archive, targetDir):
             # copy file (taken from zipfile's extract)
             source = zip_file.open(member)
             target = file(ek(os.path.join, targetDir, filename), "wb")
-            shutil.copyfileobj(source, target)
+            ek(shutil.copyfileobj,source, target)
             source.close()
             target.close()
         zip_file.close()
@@ -1418,7 +1418,7 @@ def restoreConfigZip(archive, targetDir):
                 head, tail = ek(os.path.split, path)
                 return tail or ek(os.path.basename, head)
             bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
-            shutil.move(targetDir, ek(os.path.join, ek(os.path.dirname, targetDir), bakFilename))
+            ek(shutil.move, targetDir, ek(os.path.join, ek(os.path.dirname, targetDir), bakFilename))
 
         zip_file = zipfile.ZipFile(archive, 'r', allowZip64=True)
         for member in zip_file.namelist():

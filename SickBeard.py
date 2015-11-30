@@ -59,8 +59,8 @@ import sickbeard
 # Do this before importing sickbeard, to prevent locked files and incorrect import
 oldtornado = os.path.abspath(os.path.join(os.path.dirname(__file__), 'tornado'))
 if os.path.isdir(oldtornado):
-    shutil.move(oldtornado, oldtornado + '_kill')
-    shutil.rmtree(oldtornado + '_kill')
+    ek(shutil.move, oldtornado, oldtornado + '_kill')
+    ek(shutil.rmtree, oldtornado + '_kill')
 
 from sickbeard import db, logger, network_timezones, failed_history, name_cache
 from sickbeard.tv import TVShow
@@ -463,8 +463,8 @@ class SickRage(object):
                 dstFile = os.path.join(dstDir, filename)
                 bakFile = os.path.join(dstDir, '{0}.bak-{1}'.format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
                 if ek(os.path.isfile,dstFile):
-                    shutil.move(dstFile, bakFile)
-                shutil.move(srcFile, dstFile)
+                    ek(shutil.move, dstFile, bakFile)
+                ek(shutil.move, srcFile, dstFile)
             return True
         except Exception:
             return False
