@@ -62,7 +62,7 @@ class TORRENTZProvider(generic.TorrentProvider):
         for mode in search_strings:
             for search_string in search_strings[mode]:
                 search_url = self.urls['verified'] if self.confirmed else self.urls['feed']
-                if mode is not 'RSS':
+                if mode != 'RSS':
                     search_url += '?q=' + urllib.parse.quote_plus(search_string)
 
                 logger.log(search_url)
@@ -80,7 +80,7 @@ class TORRENTZProvider(generic.TorrentProvider):
                     continue
 
                 try:
-                    data = xmltodict.parse(data)
+                    data = xmltodict.parse(HTMLParser.HTMLParser().unescape(data.encode('utf-8')).decode('utf-8').replace('&', '&amp;'))
                 except ExpatError:
                     logger.log(u"Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data), logger.ERROR)
                     continue
@@ -111,7 +111,7 @@ class TORRENTZProvider(generic.TorrentProvider):
 
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
-                        if mode is not 'RSS':
+                        if mode != 'RSS':
                             logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
                         continue
 
