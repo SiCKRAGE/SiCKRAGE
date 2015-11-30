@@ -243,7 +243,7 @@ class PostProcessor(object):
             if ek(os.path.isfile,cur_file):
                 self._log(u"Deleting file " + cur_file, logger.DEBUG)
                 # check first the read-only attribute
-                file_attribute = os.stat(cur_file)[0]
+                file_attribute =ek(os.stat,cur_file)[0]
                 if not file_attribute & stat.S_IWRITE:
                     # File is read-only, so make it writeable
                     self._log('Read only mode on file ' + cur_file + ' Will try to make it writeable', logger.DEBUG)

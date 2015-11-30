@@ -743,10 +743,10 @@ def chmodAsParent(childPath):
 
     childPath = ek(os.path.join, parentPath, ek(os.path.basename, childPath))
 
-    parentPathStat = os.stat(parentPath)
+    parentPathStat =ek(os.stat,parentPath)
     parentMode = stat.S_IMODE(parentPathStat[stat.ST_MODE])
 
-    childPathStat = os.stat(childPath)
+    childPathStat =ek(os.stat,childPath)
     childPath_mode = stat.S_IMODE(childPathStat[stat.ST_MODE])
 
     if ek(os.path.isfile,childPath):
@@ -758,7 +758,7 @@ def chmodAsParent(childPath):
         return
 
     childPath_owner = childPathStat.st_uid
-    user_id = ek(os.geteuid, )  # @UndefinedVariable - only available on UNIX
+    user_id = os.geteuid()  # @UndefinedVariable - only available on UNIX
 
     if user_id != 0 and user_id != childPath_owner:
         logger.log(u"Not running as root or owner of " + childPath + ", not trying to set permissions", logger.DEBUG)
@@ -784,21 +784,21 @@ def fixSetGroupID(childPath):
         return
 
     parentPath = ek(os.path.dirname, childPath)
-    parentStat = os.stat(parentPath)
+    parentStat =ek(os.stat,parentPath)
     parentMode = stat.S_IMODE(parentStat[stat.ST_MODE])
 
     childPath = ek(os.path.join, parentPath, ek(os.path.basename, childPath))
 
     if parentMode & stat.S_ISGID:
         parentGID = parentStat[stat.ST_GID]
-        childStat = os.stat(childPath)
+        childStat =ek(os.stat,childPath)
         childGID = childStat[stat.ST_GID]
 
         if childGID == parentGID:
             return
 
         childPath_owner = childStat.st_uid
-        user_id = ek(os.geteuid, )  # @UndefinedVariable - only available on UNIX
+        user_id = os.geteuid()  # @UndefinedVariable - only available on UNIX
 
         if user_id != 0 and user_id != childPath_owner:
             logger.log(u"Not running as root or owner of " + childPath + ", not trying to set the set-group-ID",
@@ -1522,7 +1522,7 @@ def _getTempDir():
     import getpass
 
     if hasattr(os, 'getuid'):
-        uid = "u%d" % (ek(os.getuid, ))
+        uid = "u%d" % (os.getuid())
     else:
         # For Windows
         try:

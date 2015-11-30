@@ -1012,7 +1012,7 @@ class TVShow(object):
             try:
                 logger.log(u'Attempt to %s show folder %s' % (action, self._location))
                 # check first the read-only attribute
-                file_attribute = os.stat(self.location)[0]
+                file_attribute =ek(os.stat,self.location)[0]
                 if not file_attribute & stat.S_IWRITE:
                     # File is read-only, so make it writeable
                     logger.log(u'Attempting to make writeable the read only folder %s' % self._location, logger.DEBUG)
