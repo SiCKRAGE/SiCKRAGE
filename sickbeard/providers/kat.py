@@ -111,7 +111,6 @@ class KATProvider(generic.TorrentProvider):
                     for item in entries:
                         try:
                             title = item['title']
-                            assert isinstance(title, unicode)
                             # Use the torcache link kat provides,
                             # unless it is not torcache or we are not using blackhole
                             # because we want to use magnets if connecting direct to client

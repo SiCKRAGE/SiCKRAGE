@@ -1214,7 +1214,7 @@ class CMD_Logs(ApiCall):
 
         data = []
         if ek(os.path.isfile,logger.logFile):
-            with io.open(logger.logFile, 'r', encoding='utf-8') as f:
+            with ek(io.open,logger.logFile, 'r', encoding='utf-8') as f:
                 data = f.readlines()
 
         regex = r"^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d):(\d\d)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$"

@@ -119,7 +119,6 @@ class GenericMetadata(object):
     @staticmethod
     def _check_exists(location):
         if location:
-            assert isinstance(location, unicode)
             result = ek(os.path.isfile,location)
             logger.log(u"Checking if " + location + " exists: " + str(result), logger.DEBUG)
             return result
@@ -176,7 +175,6 @@ class GenericMetadata(object):
         Returns the path where the episode thumbnail should be stored.
         ep_obj: a TVEpisode instance for which to create the thumbnail
         """
-        assert isinstance(ep_obj.location, unicode)
         if ek(os.path.isfile,ep_obj.location):
 
             tbn_filename = ep_obj.location.rpartition(".")
@@ -268,10 +266,9 @@ class GenericMetadata(object):
                 logger.DEBUG)
 
             nfo_file_path = self.get_show_file_path(show_obj)
-            assert isinstance(nfo_file_path, unicode)
 
             try:
-                with io.open(nfo_file_path, 'rb') as xmlFileObj:
+                with ek(io.open,nfo_file_path, 'rb') as xmlFileObj:
                     showXML = etree.ElementTree(file=xmlFileObj)
 
                 indexerid = showXML.find('id')
@@ -400,8 +397,6 @@ class GenericMetadata(object):
             return False
 
         nfo_file_path = self.get_show_file_path(show_obj)
-        assert isinstance(nfo_file_path, unicode)
-
         nfo_file_dir = ek(os.path.dirname, nfo_file_path)
 
         try:
@@ -412,7 +407,7 @@ class GenericMetadata(object):
 
             logger.log(u"Writing show nfo file to " + nfo_file_path, logger.DEBUG)
 
-            nfo_file = io.open(nfo_file_path, 'wb')
+            nfo_file = ek(io.open,nfo_file_path, 'wb')
             data.write(nfo_file, encoding='UTF-8')
             nfo_file.close()
             helpers.chmodAsParent(nfo_file_path)
@@ -446,7 +441,6 @@ class GenericMetadata(object):
             return False
 
         nfo_file_path = self.get_episode_file_path(ep_obj)
-        assert isinstance(nfo_file_path, unicode)
         nfo_file_dir = ek(os.path.dirname, nfo_file_path)
 
         try:
@@ -456,7 +450,7 @@ class GenericMetadata(object):
                 helpers.chmodAsParent(nfo_file_dir)
 
             logger.log(u"Writing episode nfo file to " + nfo_file_path, logger.DEBUG)
-            nfo_file = io.open(nfo_file_path, 'wb')
+            nfo_file = ek(io.open,nfo_file_path, 'wb')
             data.write(nfo_file, encoding='UTF-8')
             nfo_file.close()
             helpers.chmodAsParent(nfo_file_path)
@@ -685,8 +679,6 @@ class GenericMetadata(object):
         image_path: file location to save the image to
         """
 
-        assert isinstance(image_path, unicode)
-
         # don't bother overwriting it
         if ek(os.path.isfile,image_path):
             logger.log(u"Image already exists, not downloading", logger.DEBUG)
@@ -704,7 +696,7 @@ class GenericMetadata(object):
                 ek(os.makedirs, image_dir)
                 helpers.chmodAsParent(image_dir)
 
-            outFile = io.open(image_path, 'wb')
+            outFile = ek(io.open,image_path, 'wb')
             outFile.write(image_data)
             outFile.close()
             helpers.chmodAsParent(image_path)
@@ -905,8 +897,6 @@ class GenericMetadata(object):
 
         empty_return = (None, None, None)
 
-        assert isinstance(folder, unicode)
-
         metadata_path = ek(os.path.join, folder, self._show_metadata_filename)
 
         if not ek(os.path.isdir,folder) or not ek(os.path.isfile,metadata_path):
@@ -916,7 +906,7 @@ class GenericMetadata(object):
         logger.log(u"Loading show info from metadata file in " + folder, logger.DEBUG)
 
         try:
-            with io.open(metadata_path, 'rb') as xmlFileObj:
+            with ek(io.open,metadata_path, 'rb') as xmlFileObj:
                 showXML = etree.ElementTree(file=xmlFileObj)
 
             if showXML.findtext('title') is None or (showXML.findtext('tvdbid') is None and showXML.findtext('id') is None):

@@ -203,12 +203,12 @@ class Logger(object):
             log_data = None
 
             if ek(os.path.isfile, self.logFile):
-                with io.open(self.logFile, 'r', encoding='utf-8') as f:
+                with ek(io.open,self.logFile, 'r', encoding='utf-8') as f:
                     log_data = f.readlines()
 
             for i in range(1, int(sickbeard.LOG_NR)):
                 if ek(os.path.isfile, self.logFile + ".%i" % i) and (len(log_data) <= 500):
-                    with io.open(self.logFile + ".%i" % i, 'r', encoding='utf-8') as f:
+                    with ek(io.open,self.logFile + ".%i" % i, 'r', encoding='utf-8') as f:
                         log_data += f.readlines()
 
             log_data = [line for line in reversed(log_data)]
@@ -314,8 +314,6 @@ class Logger(object):
 
         return submitter_result, issue_id
 
-
-# pylint: disable=R0903
 class Wrapper(object):
     instance = Logger()
 

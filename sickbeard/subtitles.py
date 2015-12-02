@@ -38,7 +38,7 @@ from sickrage.helper.common import dateTimeFormat
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 
-distribution = pkg_resources.Distribution(location=ek(os.path.dirname, ek(os.path.dirname, __file__)),
+distribution = pkg_resources.Distribution(location=os.path.dirname(os.path.dirname(__file__)),
                                           project_name='fake_entry_points', version='1.0.0')
 
 entry_points = {
@@ -194,10 +194,10 @@ def save_subtitles(video, subtitles, single=False, directory=None):
         # save content as is or in the specified encoding
         logger.log(u"Saving subtitle for %s to %s" % (video.name, subtitle_path), logger.DEBUG)
         if subtitle.encoding:
-            with io.open(subtitle_path, 'w', encoding=subtitle.encoding) as f:
+            with ek(io.open,subtitle_path, 'w', encoding=subtitle.encoding) as f:
                 f.write(subtitle.text)
         else:
-            with io.open(subtitle_path, 'wb') as f:
+            with ek(io.open,subtitle_path, 'wb') as f:
                 f.write(subtitle.content)
 
         # chmod and set group for the saved subtitle
@@ -296,7 +296,7 @@ def subtitlesLanguages(video_path):
 def getEmbeddedLanguages(video_path):
     embedded_subtitle_languages = set()
     try:
-        with io.open(video_path, 'rb') as f:
+        with ek(io.open,video_path, 'rb') as f:
             mkv = MKV(f)
             if mkv.subtitle_tracks:
                 for st in mkv.subtitle_tracks:

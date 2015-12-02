@@ -29,6 +29,7 @@ from sickbeard import logger
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 from sickbeard import common
 from sickbeard import failedProcessor
+from sickbeard.helpers import removetree
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import EpisodePostProcessingFailedException, ex, FailedPostProcessingFailedException
 
@@ -83,7 +84,7 @@ def delete_folder(folder, check_empty=True):
     else:
         try:
             logger.log(u"Deleting folder: " + folder)
-            shutil.rmtree(folder)
+            ek(removetree, folder)
         except (OSError, IOError), e:
             logger.log(u"Warning: unable to delete folder: " + folder + ": " + ex(e), logger.WARNING)
             return False
@@ -306,8 +307,6 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     """
 
     IGNORED_FOLDERS = ['.AppleDouble', '.@__thumb', '@eaDir']
-
-    assert nzbNameOriginal is None or isinstance(nzbNameOriginal, unicode)
 
     folder_name = ek(os.path.basename, dirName)
     if folder_name in IGNORED_FOLDERS:

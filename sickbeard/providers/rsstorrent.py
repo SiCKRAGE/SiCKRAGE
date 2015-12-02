@@ -138,7 +138,7 @@ class TorrentRssProvider(generic.TorrentProvider):
         dumpName = ek(os.path.join, sickbeard.CACHE_DIR, 'custom_torrent.html')
 
         try:
-            fileOut = io.open(dumpName, 'wb')
+            fileOut = ek(io.open,dumpName, 'wb')
             fileOut.write(data)
             fileOut.close()
             helpers.chmodAsParent(dumpName)

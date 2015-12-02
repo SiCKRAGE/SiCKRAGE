@@ -232,7 +232,8 @@ def setUp_test_episode_file():
 
 def tearDown_test_episode_file():
     if ek(os.path.exists,FILEDIR):
-        shutil.rmtree(FILEDIR)
+        ek(sickbeard.helpers.removetree,FILEDIR)
+
 
 def setUp_test_show_dir():
     if not ek(os.path.exists,SHOWDIR):
@@ -241,7 +242,7 @@ def setUp_test_show_dir():
 
 def tearDown_test_show_dir():
     if ek(os.path.exists,SHOWDIR):
-        shutil.rmtree(SHOWDIR)
+        ek(sickbeard.helpers.removetree,SHOWDIR)
 
 
 if __name__ == '__main__':

@@ -54,7 +54,7 @@ from sickrage.helper.exceptions import EpisodeDeletedException, EpisodeNotFoundE
 from sickrage.helper.exceptions import MultipleEpisodesInDatabaseException, MultipleShowsInDatabaseException
 from sickrage.helper.exceptions import MultipleShowObjectsException, NoNFOException, ShowDirectoryNotFoundException
 from sickrage.helper.exceptions import ShowNotFoundException
-
+from sickbeard.helpers import removetree
 from sickbeard.common import Quality, Overview, statusStrings
 from sickbeard.common import DOWNLOADED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, ARCHIVED, IGNORED, UNAIRED, WANTED, SKIPPED, \
     UNKNOWN, FAILED
@@ -1024,7 +1024,7 @@ class TVShow(object):
                 if sickbeard.TRASH_REMOVE_SHOW:
                     send2trash(self.location)
                 else:
-                    shutil.rmtree(self.location)
+                    ek(removetree, self.location)
 
                 logger.log(u'%s show folder %s' %
                            (('Deleted', 'Trashed')[sickbeard.TRASH_REMOVE_SHOW],

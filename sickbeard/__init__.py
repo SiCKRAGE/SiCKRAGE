@@ -54,6 +54,7 @@ from sickbeard.indexers import indexer_api
 from sickbeard.indexers.indexer_exceptions import indexer_shownotfound, indexer_showincomplete, indexer_exception, indexer_error, \
     indexer_episodenotfound, indexer_attributenotfound, indexer_seasonnotfound, indexer_userabort, indexerExcepts
 from sickbeard.providers.generic import GenericProvider
+from sickbeard.helpers import removetree
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 from sickrage.system.Shutdown import Shutdown
@@ -683,8 +684,8 @@ def initialize(consoleLogging=True):
             else:
                 gh = Github(login_or_token=GIT_USERNAME, password=GIT_PASSWORD, user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
         except Exception as e:
-            gh = None
             logger.log(u'Unable to setup GitHub properly. GitHub will not be available. Error: %s' % ex(e), logger.WARNING)
+            gh = None
 
         # git reset on update
         GIT_RESET = bool(check_setting_int(CFG, 'General', 'git_reset', 1))
@@ -744,13 +745,13 @@ def initialize(consoleLogging=True):
         finally:
             if ek(os.path.exists,ek(os.path.join, DATA_DIR, 'restore')):
                 try:
-                    ek(shutil.rmtree, ek(os.path.join, DATA_DIR, 'restore'))
+                    ek(removetree, ek(os.path.join, DATA_DIR, 'restore'))
                 except Exception as e:
                     logger.log(u"Restore: Unable to remove the restore directory: {0}".format(ex(e)), logger.ERROR)
 
                 for cleanupDir in ['mako', 'sessions', 'indexers']:
                     try:
-                        ek(shutil.rmtree, ek(os.path.join, CACHE_DIR, cleanupDir))
+                        ek(removetree, ek(os.path.join, CACHE_DIR, cleanupDir))
                     except Exception as e:
                         logger.log(u"Restore: Unable to remove the cache/{0} directory: {1}".format(cleanupDir, ex(e)), logger.WARNING)
 

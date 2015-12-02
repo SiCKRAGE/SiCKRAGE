@@ -947,9 +947,6 @@ def create_https_certificates(ssl_cert, ssl_key):
     :return: True on success, False on failure
     """
 
-    assert isinstance(ssl_key, unicode)
-    assert isinstance(ssl_cert, unicode)
-
     try:
         from OpenSSL import crypto  # @UnresolvedImport
         from certgen import createKeyPair, createCertRequest, createCertificate, TYPE_RSA, \
@@ -972,8 +969,8 @@ def create_https_certificates(ssl_cert, ssl_key):
     try:
         # pylint: disable=E1101
         # Module has no member
-        io.open(ssl_key, 'w').write(crypto.dump_privatekey(crypto.FILETYPE_PEM, pkey))
-        io.open(ssl_cert, 'w').write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
+        ek(io.open,ssl_key, 'w').write(crypto.dump_privatekey(crypto.FILETYPE_PEM, pkey))
+        ek(io.open,ssl_cert, 'w').write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
     except Exception:
         logger.log(u"Error creating SSL key and certificate", logger.ERROR)
         return False
@@ -1093,10 +1090,8 @@ def md5_for_file(filename, block_size=2 ** 16):
     :return MD5 hexdigest on success, or None on failure
     """
 
-    assert isinstance(filename, unicode)
-
     try:
-        with io.open(filename, 'rb') as f:
+        with ek(io.open,filename, 'rb') as f:
             md5 = hashlib.md5()
             while True:
                 data = f.read(block_size)
@@ -1427,7 +1422,7 @@ def restoreConfigZip(archive, targetDir):
         return True
     except Exception as e:
         logger.log(u"Zip extraction error: %r" % ex(e), logger.ERROR)
-        shutil.rmtree(targetDir)
+        ek(removetree, targetDir)
         return False
 
 
@@ -1664,7 +1659,7 @@ def download_file(url, filename, session=None, headers=None):
                 return False
 
             try:
-                with io.open(filename, 'wb') as fp:
+                with ek(io.open,filename, 'wb') as fp:
                     for chunk in resp.iter_content(chunk_size=1024):
                         if chunk:
                             fp.write(chunk)
@@ -1821,7 +1816,7 @@ def verify_freespace(src, dest, oldfile=None):
         logger.log(u"Unable to determine free space, so I will assume there is enough.", logger.WARNING)
         return True
 
-    neededspace = int(os.path.getsize(src))
+    neededspace = int(ek(os.path.getsize,src))
 
     if oldfile:
         for f in oldfile:
@@ -1875,7 +1870,7 @@ def isFileLocked(checkfile, writeLockCheck=False):
     if not ek(os.path.exists,checkfile):
         return True
     try:
-        with io.open(checkfile, 'rb'):
+        with ek(io.open,checkfile, 'rb'):
             pass
     except IOError:
         return True
@@ -1909,3 +1904,34 @@ def getDiskSpaceUsage(diskPath=None):
             return pretty_filesize(st.f_bavail * st.f_frsize)
     else:
         return False
+
+def removetree(tgt):
+    def error_handler(func, path, execinfo):
+        # figure out recovery based on error...
+        e = execinfo[1]
+        if e.errno == errno.ENOENT or not ek(os.path.exists,path):
+            return              # path does not exist
+        if func in (os.rmdir, os.remove) and e.errno == errno.EACCES:
+            ek(os.chmod,path, stat.S_IRWXU| stat.S_IRWXG| stat.S_IRWXO) # 0777
+            ek(func,path)          # read-only file; make writable and retry
+        raise e
+    # Rename target directory to temporary value, then remove it
+    count = 0
+    while count < 10:           # prevents indefinite loop
+        count += 1
+        tmp = ek(os.path.join, ek(os.path.dirname, tgt),"_removetree_tmp_%d"%(count))
+        try:
+            ek(os.rename,tgt, tmp)
+            ek(shutil.rmtree, tmp, onerror=error_handler)
+            break
+        except OSError as e:
+            time.sleep(1)       # Give file system some time to catch up
+            if e.errno in [errno.EACCES, errno.ENOTEMPTY]:
+                continue        # Try another temp name
+            if e.errno == errno.EEXIST:
+                ek(shutil.rmtree, tmp, ignore_errors=True)  # Try to clean up old files
+                continue        # Try another temp name
+            if e.errno == errno.ENOENT:
+                break           # 'src' does not exist(?)
+            raise               # Other error - propagate
+    return

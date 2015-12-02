@@ -5031,12 +5031,12 @@ class ErrorLogs(WebRoot):
         data = []
 
         if ek(os.path.isfile,logger.logFile):
-            with io.open(logger.logFile, 'r', encoding='utf-8') as f:
+            with ek(io.open,logger.logFile, 'r', encoding='utf-8') as f:
                 data = Get_Data(minLevel, f.readlines(), 0, regex, logFilter, logSearch, maxLines)
 
         for i in range(1, int(sickbeard.LOG_NR)):
             if ek(os.path.isfile,logger.logFile + "." + str(i)) and (len(data) <= maxLines):
-                with io.open(logger.logFile + "." + str(i), 'r', encoding='utf-8') as f:
+                with ek(io.open,logger.logFile + "." + str(i), 'r', encoding='utf-8') as f:
                     data += Get_Data(minLevel, f.readlines(), len(data), regex, logFilter, logSearch, maxLines)
 
         return t.render(

@@ -35,8 +35,7 @@ from sickbeard import notifiers
 from sickbeard import logger, helpers
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
-
-import shutil
+from sickbeard.helpers import removetree
 
 class CheckVersion(object):
     """
@@ -804,7 +803,7 @@ class SourceUpdateManager(UpdateManager):
 
             if ek(os.path.isdir,sr_update_dir):
                 logger.log(u"Clearing out update folder " + sr_update_dir + " before extracting")
-                shutil.rmtree(sr_update_dir)
+                ek(removetree,sr_update_dir)
 
             logger.log(u"Creating update folder " + sr_update_dir + " before extracting")
             ek(os.makedirs, sr_update_dir)

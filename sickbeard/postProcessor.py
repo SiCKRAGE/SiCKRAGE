@@ -497,7 +497,7 @@ class PostProcessor(object):
             logger.log(u"Parse result(series_name): " + str(parse_result.series_name), logger.DEBUG)
             logger.log(u"Parse result(season_number): " + str(parse_result.season_number), logger.DEBUG)
             logger.log(u"Parse result(episode_numbers): " + str(parse_result.episode_numbers), logger.DEBUG)
-            logger.log(u" or Parse result(air_date): " + str(parse_result.air_date), logger.DEBUG)
+            logger.log(u"Parse result(air_date): " + str(parse_result.air_date), logger.DEBUG)
             logger.log(u"Parse result(release_group): " + str(parse_result.release_group), logger.DEBUG)
 
     def _analyze_name(self, name):

@@ -22,6 +22,7 @@ import operator
 import platform
 import re
 import uuid
+
 from UserDict import UserDict
 from itertools import chain
 from random import shuffle

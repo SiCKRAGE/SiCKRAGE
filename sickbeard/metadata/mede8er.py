@@ -379,7 +379,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
             logger.log(u"Writing show nfo file to " + nfo_file_path, logger.DEBUG)
 
-            nfo_file = io.open(nfo_file_path, 'wb')
+            nfo_file = ek(io.open,nfo_file_path, 'wb')
 
             data.write(nfo_file)
             nfo_file.close()
@@ -424,7 +424,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
             logger.log(u"Writing episode nfo file to " + nfo_file_path, logger.DEBUG)
 
-            nfo_file = io.open(nfo_file_path, 'wb')
+            nfo_file = ek(io.open,nfo_file_path, 'wb')
 
             data.write(nfo_file)
             nfo_file.close()

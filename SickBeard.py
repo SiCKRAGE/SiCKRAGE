@@ -23,59 +23,56 @@
 # pylint: disable=W0703
 # Catching too general exception
 
-import sys, os
-
-from sickrage.helper.encoding import ek
+import os
+import sys
+import time
+import codecs
+import signal
+import locale
+import getopt
+import shutil
+import datetime
+import threading
+import traceback
+import subprocess
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
-
 if sys.version_info < (2, 7):
     print "Sorry, requires Python 2.7.x"
     sys.exit(1)
 
-import codecs
-codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
-
-import time
-import signal
-import subprocess
-import traceback
-
-# https://mail.python.org/pipermail/python-dev/2014-September/136300.html
-if sys.version_info >= (2, 7, 9):
-    import ssl
-    # pylint: disable=W0212
-    # Access to a protected member of a client class
-    ssl._create_default_https_context = ssl._create_unverified_context
-
-import locale
-import datetime
-import threading
-import getopt
-import shutil
-
 import sickbeard
-
-# Do this before importing sickbeard, to prevent locked files and incorrect import
-oldtornado = os.path.abspath(os.path.join(os.path.dirname(__file__), 'tornado'))
-if os.path.isdir(oldtornado):
-    ek(shutil.move, oldtornado, oldtornado + '_kill')
-    ek(shutil.rmtree, oldtornado + '_kill')
-
 from sickbeard import db, logger, network_timezones, failed_history, name_cache
 from sickbeard.tv import TVShow
 from sickbeard.webserveInit import SRWebServer
 from sickbeard.event_queue import Events
+from sickbeard.helpers import removetree
 from configobj import ConfigObj
-
-# http://bugs.python.org/issue7980#msg221094
-throwaway = datetime.datetime.strptime('20110101', '%Y%m%d')
-
-signal.signal(signal.SIGINT, sickbeard.sig_handler)
-signal.signal(signal.SIGTERM, sickbeard.sig_handler)
-
+from sickrage.helper.encoding import ek
 
 class SickRage(object):
+
+    # http://bugs.python.org/issue7980#msg221094
+    throwaway = datetime.datetime.strptime('20110101', '%Y%m%d')
+
+    signal.signal(signal.SIGINT, sickbeard.sig_handler)
+    signal.signal(signal.SIGTERM, sickbeard.sig_handler)
+
+    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+
+    # https://mail.python.org/pipermail/python-dev/2014-September/136300.html
+    if sys.version_info >= (2, 7, 9):
+        import ssl
+        # pylint: disable=W0212
+        # Access to a protected member of a client class
+        ssl._create_default_https_context = ssl._create_unverified_context
+
+    # Do this before importing sickbeard, to prevent locked files and incorrect import
+    oldtornado = os.path.abspath(os.path.join(os.path.dirname(__file__), 'tornado'))
+    if os.path.isdir(oldtornado):
+        shutil.move(oldtornado, oldtornado + '_kill')
+        removetree(oldtornado + '_kill')
+
     # pylint: disable=R0902
     # Too many instance attributes
     def __init__(self):
@@ -144,7 +141,8 @@ class SickRage(object):
 
         try:
             locale.setlocale(locale.LC_ALL, "")
-            sickbeard.SYS_ENCODING = locale.getpreferredencoding()
+            sickbeard.SYS_ENCODING = locale.getdefaultlocale()[1] or 'UTF-8'
+            codecs.lookup(sickbeard.SYS_ENCODING)
         except (locale.Error, IOError):
             sickbeard.SYS_ENCODING = 'UTF-8'
 

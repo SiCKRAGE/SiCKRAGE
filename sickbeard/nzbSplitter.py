@@ -106,7 +106,7 @@ def saveNZB(nzbName, nzbString):
     :param nzbString: Content to write in file
     """
     try:
-        with ek(open, nzbName + ".nzb", 'w') as nzb_fh:
+        with ek(io.open, nzbName + ".nzb", 'w') as nzb_fh:
             nzb_fh.write(nzbString)
 
     except EnvironmentError, e:
