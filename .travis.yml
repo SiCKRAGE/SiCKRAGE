@@ -6,7 +6,7 @@ sudo: false
 
 branches:
   only:
-    - master
+    - develop
 
 install: echo "Nothing required!"
 
