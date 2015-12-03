@@ -84,6 +84,8 @@ class TVShow(object):
         self._runtime = 0
         self._imdb_info = {}
         self._quality = int(sickbeard.QUALITY_DEFAULT)
+        self._min_file_size = 0
+        self._max_file_size = 0
         self._flatten_folders = int(sickbeard.FLATTEN_FOLDERS_DEFAULT)
         self._status = "Unknown"
         self._airs = ""
@@ -126,6 +128,8 @@ class TVShow(object):
     runtime = property(lambda self: self._runtime, dirty_setter("_runtime"))
     imdb_info = property(lambda self: self._imdb_info, dirty_setter("_imdb_info"))
     quality = property(lambda self: self._quality, dirty_setter("_quality"))
+    min_file_size = property(lambda self: self._min_file_size, dirty_setter("_min_file_size"))
+    max_file_size = property(lambda self: self._max_file_size, dirty_setter("_max_file_size"))
     flatten_folders = property(lambda self: self._flatten_folders, dirty_setter("_flatten_folders"))
     status = property(lambda self: self._status, dirty_setter("_status"))
     airs = property(lambda self: self._airs, dirty_setter("_airs"))
@@ -796,6 +800,8 @@ class TVShow(object):
             self.dvdorder = int(sqlResults[0]["dvdorder"] or 0)
             self.archive_firstmatch = int(sqlResults[0]["archive_firstmatch"] or 0)
             self.quality = int(sqlResults[0]["quality"] or UNKNOWN)
+            self.min_file_size = int(sqlResults[0]["min_file_size"] or 0)
+            self.max_file_size = int(sqlResults[0]["max_file_size"] or 0)
             self.flatten_folders = int(sqlResults[0]["flatten_folders"] or 0)
             self.paused = int(sqlResults[0]["paused"] or 0)
 
@@ -1151,6 +1157,8 @@ class TVShow(object):
                         "classification": self.classification,
                         "runtime": self.runtime,
                         "quality": self.quality,
+                        "min_file_size": self.min_file_size,
+                        "max_file_size": self.max_file_size,
                         "airs": self.airs,
                         "status": self.status,
                         "flatten_folders": self.flatten_folders,
@@ -1199,6 +1207,7 @@ class TVShow(object):
         toReturn += "classification: " + self.classification + "\n"
         toReturn += "runtime: " + str(self.runtime) + "\n"
         toReturn += "quality: " + str(self.quality) + "\n"
+        toReturn += "file size limits: " + str(self.min_file_size) + "-" + str(self.max_file_size) + "\n"
         toReturn += "scene: " + str(self.is_scene) + "\n"
         toReturn += "sports: " + str(self.is_sports) + "\n"
         toReturn += "anime: " + str(self.is_anime) + "\n"
