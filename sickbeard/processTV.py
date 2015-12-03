@@ -346,7 +346,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
 
     # make sure the dir isn't inside a show dir
     myDB = db.DBConnection()
-    sqlResults = myDB.select("SELECT * FROM tv_shows")
+    sqlResults = myDB.select("SELECT location FROM tv_shows")
 
     for sqlShow in sqlResults:
         if dirName.lower().startswith(
