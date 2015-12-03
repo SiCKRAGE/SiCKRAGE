@@ -691,9 +691,9 @@ def initialize(consoleLogging=True):
                 gh = None
         finally:
             if gh:
-                logger.log(u'SICKRAGE GITHUB ACCESS ENABLED')
+                logger.log(u'SickRage GitHub API access enabled')
             else:
-                logger.log(u'SICKRAGE GITHUB ACCESS DISABLED', logger.WARNING)
+                logger.log(u'SickRage GitHub API access disabled', logger.WARNING)
 
 # git reset on update
         GIT_RESET = bool(check_setting_int(CFG, 'General', 'git_reset', 1))

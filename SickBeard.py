@@ -37,9 +37,6 @@ import traceback
 import subprocess
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
-if sys.version_info < (2, 7):
-    print "Sorry, requires Python 2.7.x"
-    sys.exit(1)
 
 import sickbeard
 from sickbeard import db, logger, network_timezones, failed_history, name_cache
@@ -47,36 +44,12 @@ from sickbeard.tv import TVShow
 from sickbeard.webserveInit import SRWebServer
 from sickbeard.event_queue import Events
 from sickbeard.helpers import removetree
-from configobj import ConfigObj
 from sickrage.helper.encoding import ek
+from configobj import ConfigObj
+
 
 class SickRage(object):
-
-    # http://bugs.python.org/issue7980#msg221094
-    throwaway = datetime.datetime.strptime('20110101', '%Y%m%d')
-
-    signal.signal(signal.SIGINT, sickbeard.sig_handler)
-    signal.signal(signal.SIGTERM, sickbeard.sig_handler)
-
-    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
-
-    # https://mail.python.org/pipermail/python-dev/2014-September/136300.html
-    if sys.version_info >= (2, 7, 9):
-        import ssl
-        # pylint: disable=W0212
-        # Access to a protected member of a client class
-        ssl._create_default_https_context = ssl._create_unverified_context
-
-    # Do this before importing sickbeard, to prevent locked files and incorrect import
-    oldtornado = os.path.abspath(os.path.join(os.path.dirname(__file__), 'tornado'))
-    if os.path.isdir(oldtornado):
-        shutil.move(oldtornado, oldtornado + '_kill')
-        removetree(oldtornado + '_kill')
-
-    # pylint: disable=R0902
-    # Too many instance attributes
     def __init__(self):
-        # system event callback for shutdown/restart
         sickbeard.events = Events(self.shutdown)
 
         # daemon constants
@@ -128,10 +101,22 @@ class SickRage(object):
 
         return help_msg
 
-    # pylint: disable=R0912,R0915
-    # Too many branches
-    # Too many statements
     def start(self):
+        # map the following codecs to utf-8
+        codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+        codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp1252' else None)
+
+        # get locale encoding
+        try:
+            locale.setlocale(locale.LC_ALL, "")
+            sickbeard.SYS_ENCODING = locale.getpreferredencoding()
+        except (locale.Error, IOError):
+            sickbeard.SYS_ENCODING = None
+
+        # enforce UTF-8
+        if not sickbeard.SYS_ENCODING or codecs.lookup(sickbeard.SYS_ENCODING).name == 'ascii':
+            sickbeard.SYS_ENCODING = 'UTF-8'
+
         # do some preliminary stuff
         sickbeard.MY_FULLNAME = os.path.normpath(os.path.abspath(__file__))
         sickbeard.MY_NAME = os.path.basename(sickbeard.MY_FULLNAME)
@@ -139,28 +124,27 @@ class SickRage(object):
         sickbeard.DATA_DIR = sickbeard.PROG_DIR
         sickbeard.MY_ARGS = sys.argv[1:]
 
-        try:
-            locale.setlocale(locale.LC_ALL, "")
-            sickbeard.SYS_ENCODING = locale.getdefaultlocale()[1] or 'UTF-8'
-            codecs.lookup(sickbeard.SYS_ENCODING)
-        except (locale.Error, IOError):
-            sickbeard.SYS_ENCODING = 'UTF-8'
-
-        # pylint: disable=E1101
-        if not sickbeard.SYS_ENCODING or sickbeard.SYS_ENCODING.lower() in ('ansi_x3.4-1968', 'us-ascii', 'ascii', 'charmap') or \
-            (sys.platform.startswith('win') and sys.getwindowsversion()[0] >= 6 and getattr(sys.stdout, 'device', sys.stdout).encoding.lower() in ('cp65001', 'charmap')):
-            sickbeard.SYS_ENCODING = 'UTF-8'
-
         # Need console logging for SickBeard.py and SickBeard-console.exe
         self.consoleLogging = (not hasattr(sys, "frozen")) or (sickbeard.MY_NAME.lower().find('-console') > 0)
 
         # Rename the main thread
         threading.currentThread().name = u"MAIN"
 
+        # https://mail.python.org/pipermail/python-dev/2014-September/136300.html
+        if sys.version_info >= (2, 7, 9):
+            import ssl
+            ssl._create_default_https_context = ssl._create_unverified_context
+
+        # Do this before importing sickbeard, to prevent locked files and incorrect import
+        oldtornado = ek(os.path.abspath, ek(os.path.join, ek(os.path.dirname, __file__), 'tornado'))
+        if ek(os.path.isdir, oldtornado):
+            ek(shutil.move, oldtornado, oldtornado + '_kill')
+            ek(removetree, oldtornado + '_kill')
+
         try:
             opts, _ = getopt.getopt(
-                sys.argv[1:], "hqdp::",
-                ['help', 'quiet', 'nolaunch', 'daemon', 'pidfile=', 'port=', 'datadir=', 'config=', 'noresize']
+                    sys.argv[1:], "hqdp::",
+                    ['help', 'quiet', 'nolaunch', 'daemon', 'pidfile=', 'port=', 'datadir=', 'config=', 'noresize']
             )
         except getopt.GetoptError:
             sys.exit(self.help_message())
@@ -203,7 +187,7 @@ class SickRage(object):
                 self.PIDFILE = str(a)
 
                 # If the pidfile already exists, sickbeard may still be running, so exit
-                if ek(os.path.exists,self.PIDFILE):
+                if ek(os.path.exists, self.PIDFILE):
                     sys.exit("PID file: " + self.PIDFILE + " already exists. Exiting.")
 
             # Specify folder to load the config file from
@@ -250,23 +234,23 @@ class SickRage(object):
 
         # Make sure we can write to the config file
         if not os.access(sickbeard.CONFIG_FILE, os.W_OK):
-            if ek(os.path.isfile,sickbeard.CONFIG_FILE):
+            if ek(os.path.isfile, sickbeard.CONFIG_FILE):
                 raise SystemExit("Config file '" + sickbeard.CONFIG_FILE + "' must be writeable.")
             elif not os.access(os.path.dirname(sickbeard.CONFIG_FILE), os.W_OK):
                 raise SystemExit(
-                    "Config file root dir '" + os.path.dirname(sickbeard.CONFIG_FILE) + "' must be writeable.")
+                        "Config file root dir '" + os.path.dirname(sickbeard.CONFIG_FILE) + "' must be writeable.")
 
         os.chdir(sickbeard.DATA_DIR)
 
         # Check if we need to perform a restore first
         restoreDir = os.path.join(sickbeard.DATA_DIR, 'restore')
-        if ek(os.path.exists,restoreDir):
+        if ek(os.path.exists, restoreDir):
             success = self.restoreDB(restoreDir, sickbeard.DATA_DIR)
             if self.consoleLogging:
                 sys.stdout.write(u"Restore: restoring DB and config.ini %s!\n" % ("FAILED", "SUCCESSFUL")[success])
 
         # Load the config and publish it to the sickbeard package
-        if self.consoleLogging and not ek(os.path.isfile,sickbeard.CONFIG_FILE):
+        if self.consoleLogging and not ek(os.path.isfile, sickbeard.CONFIG_FILE):
             sys.stdout.write(u"Unable to find '" + sickbeard.CONFIG_FILE + "' , all settings will be default!" + "\n")
 
         sickbeard.CFG = ConfigObj(sickbeard.CONFIG_FILE)
@@ -403,8 +387,8 @@ class SickRage(object):
                 file(self.PIDFILE, 'w').write("%s\n" % pid)
             except IOError, e:
                 logger.log_error_and_exit(
-                    u"Unable to write PID file: " + self.PIDFILE + " Error: " + str(e.strerror) + " [" + str(
-                        e.errno) + "]")
+                        u"Unable to write PID file: " + self.PIDFILE + " Error: " + str(e.strerror) + " [" + str(
+                                e.errno) + "]")
 
         # Redirect all output
         sys.stdout.flush()
@@ -422,7 +406,7 @@ class SickRage(object):
     @staticmethod
     def remove_pid_file(PIDFILE):
         try:
-            if ek(os.path.exists,PIDFILE):
+            if ek(os.path.exists, PIDFILE):
                 os.remove(PIDFILE)
         except (IOError, OSError):
             return False
@@ -447,8 +431,9 @@ class SickRage(object):
                 sickbeard.showList.append(curShow)
             except Exception, e:
                 logger.log(
-                    u"There was an error creating the show in " + sqlShow["location"] + ": " + str(e).decode('utf-8'),
-                    logger.ERROR)
+                        u"There was an error creating the show in " + sqlShow["location"] + ": " + str(e).decode(
+                            'utf-8'),
+                        logger.ERROR)
                 logger.log(traceback.format_exc(), logger.DEBUG)
 
     @staticmethod
@@ -459,8 +444,9 @@ class SickRage(object):
             for filename in filesList:
                 srcFile = os.path.join(srcDir, filename)
                 dstFile = os.path.join(dstDir, filename)
-                bakFile = os.path.join(dstDir, '{0}.bak-{1}'.format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
-                if ek(os.path.isfile,dstFile):
+                bakFile = os.path.join(dstDir, '{0}.bak-{1}'.format(filename,
+                                                                    datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
+                if ek(os.path.isfile, dstFile):
                     ek(shutil.move, dstFile, bakFile)
                 ek(shutil.move, srcFile, dstFile)
             return True
@@ -497,7 +483,8 @@ class SickRage(object):
                 if install_type in ('git', 'source'):
                     popen_list = [sys.executable, sickbeard.MY_FULLNAME]
                 elif install_type == 'win':
-                    logger.log(u"You are using a binary Windows build of SickRage. Please switch to using git.", logger.ERROR)
+                    logger.log(u"You are using a binary Windows build of SickRage. Please switch to using git.",
+                               logger.ERROR)
 
                 if popen_list and not sickbeard.NO_RESTART:
                     popen_list += sickbeard.MY_ARGS
@@ -515,5 +502,18 @@ class SickRage(object):
 
 
 if __name__ == "__main__":
+    if sys.version_info < (2, 7):
+        print "Sorry, SickRage requires Python 2.7+"
+        sys.exit(1)
+
+    # correct _strptime import bug
+    from time import strptime
+
+    strptime("2012", "%Y")
+
+    # signal handlers
+    signal.signal(signal.SIGINT, sickbeard.sig_handler)
+    signal.signal(signal.SIGTERM, sickbeard.sig_handler)
+
     # start sickrage
     SickRage().start()
