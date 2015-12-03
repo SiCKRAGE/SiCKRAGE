@@ -1,9 +1,9 @@
-#### !!! IMPORTANT MEMBER ALERT !!!
+####!!! IMPORTANT MEMBER ALERT !!!
 Currently there have been several reports of attempts to trick our members into switching to a new sickrage repo being told that the current one is no longer operational, DO NOT BE FOOLED this is a poor attempt by several EX-team members to decieve you into switching to their UNOFFICIAL CLONED SickRage application/site/repo.
 Please note that if SiCKRAGE ever needed to move to a new site or change its address there is already code in place to do this automatically and securely by me, if you do manually change this information SiCKRAGE accepts no liability or consequences of anything afterwards.
 If you receive any such attempts/requests please please email sickrage.tv@gmail.com promptly so that we can deal with it accordingly!
 
-SickRage [![Build Status](https://travis-ci.org/SiCKRAGETV/SickRage.svg?branch=master)](https://travis-ci.org/SiCKRAGETV/SickRage) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/sickragetv/sickrage-issues.svg)](http://isitmaintained.com/project/sickragetv/sickrage-issues "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/sickragetv/sickrage-issues.svg)](http://isitmaintained.com/project/sickragetv/sickrage-issues "Percentage of issues still open")
+SickRage [![Build Status](https://travis-ci.org/SiCKRAGETV/SickRage.svg?branch=develop)](https://travis-ci.org/SiCKRAGETV/SickRage) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/sickragetv/sickrage-issues.svg)](http://isitmaintained.com/project/sickragetv/sickrage-issues "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/sickragetv/sickrage-issues.svg)](http://isitmaintained.com/project/sickragetv/sickrage-issues "Percentage of issues still open")
 =====
 Automatic Video Library Manager for TV Shows. It watches for new episodes of your favorite shows, and when they are posted it does its magic.
 
@@ -46,7 +46,7 @@ Automatic Video Library Manager for TV Shows. It watches for new episodes of you
 ##### [Wiki](https://github.com/SiCKRAGETV/SickRage/wiki)
 
 #### Important
-Before using this with your existing database (sickbeard.db) please make a backup copy of it and delete any other database files such as cache.db and failed.db if present<br/>
+Before using this with your existing database (sickbeard.db) please make a backup copy of it and delete any other database files such as cache.db and failed.db if present<br>
 We HIGHLY recommend starting out with no database files at all to make this a fresh start but the choice is at your own risk
 
 #### Supported providers
