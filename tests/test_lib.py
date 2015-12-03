@@ -208,7 +208,7 @@ def setUp_test_db():
 
 
 def tearDown_test_db():
-    for current_db in [ TESTDBNAME, TESTFAILEDDBNAME ]:
+    for current_db in [ TESTDBNAME, TESTCACHEDBNAME, TESTFAILEDDBNAME ]:
         file_name = ek(os.path.join, TESTDIR, current_db)
         if ek(os.path.exists,file_name):
             try:
