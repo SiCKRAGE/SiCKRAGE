@@ -71,6 +71,19 @@
                         </div>
 
                         <div class="field-pair">
+                            <label for="fileSizeLimits">
+                                <span class="component-title">File Size Limits</span>
+                                <span class="component-desc">
+                                    <span class="inline-txt">Limit file size between</span>
+                                    <input type="number" name="min_file_size" id="min_file_size" value="${show.min_file_size}" class="form-control form-control-inline input-sm input75" />
+                                    <span class="inline-txt">and</span>
+                                    <input type="number" name="max_file_size" id="max_file_size" value="${show.max_file_size}" class="form-control form-control-inline input-sm input75" />
+                                    <span class="inline-txt">(0 is unlimited)</span>
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="field-pair">
                             <label for="">
                                 <span class="component-title">Archive on first match</span>
                                 <span class="component-desc">

@@ -32,7 +32,7 @@ from sickrage.helper.encoding import ek
 from babelfish import language_converters, Language
 
 MIN_DB_VERSION = 9  # oldest db version we support migrating from
-MAX_DB_VERSION = 42
+MAX_DB_VERSION = 43
 
 
 class MainSanityCheck(db.DBSanityCheck):
@@ -1107,5 +1107,20 @@ class AlterTVShowsFieldTypes(AddDefaultEpStatusToTvShows):
         self.connection.action("CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC)")
         self.connection.action("INSERT INTO tv_shows SELECT * FROM tmp_tv_shows")
         self.connection.action("DROP TABLE tmp_tv_shows")
+
+        self.incDBVersion()
+
+class AddFileSizeLimitFileds(AlterTVShowsFieldTypes):
+    def test(self):
+        return self.checkDBVersion() >= 43
+
+    def execute(self):
+        backupDatabase(43)
+
+        logger.log(u"Adding column min_file_size to tv_shows")
+        self.addColumn("tv_shows", "min_file_size", "NUMERIC", "0")
+
+        logger.log(u"Adding column max_file_size to tv_shows")
+        self.addColumn("tv_shows", "max_file_size", "NUMERIC", "0")
 
         self.incDBVersion()

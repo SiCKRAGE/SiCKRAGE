@@ -1315,7 +1315,7 @@ class Home(WebRoot):
                  flatten_folders=None, paused=None, directCall=False, air_by_date=None, sports=None, dvdorder=None,
                  indexerLang=None, subtitles=None, archive_firstmatch=None, rls_ignore_words=None,
                  rls_require_words=None, anime=None, blacklist=None, whitelist=None,
-                 scene=None, defaultEpStatus=None, quality_preset=None):
+                 scene=None, defaultEpStatus=None, quality_preset=None, min_file_size=0, max_file_size=0):
 
         anidb_failed = False
         if show is None:
@@ -1431,6 +1431,8 @@ class Home(WebRoot):
         with showObj.lock:
             newQuality = Quality.combineQualities([int(q) for q in anyQualities], [int(q) for q in bestQualities])
             showObj.quality = newQuality
+            showObj.min_file_size = helpers.tryInt(min_file_size, 0)
+            showObj.max_file_size = helpers.tryInt(max_file_size, 0)
             showObj.archive_firstmatch = archive_firstmatch
 
             # reversed for now

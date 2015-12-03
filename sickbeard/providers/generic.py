@@ -377,6 +377,7 @@ class GenericProvider(object):
             quality = parse_result.quality
             release_group = parse_result.release_group
             version = parse_result.version
+            size = self._get_size(item)
 
             addCacheEntry = False
             if not (showObj.air_by_date or showObj.sports):
@@ -444,6 +445,15 @@ class GenericProvider(object):
                     cl.append(ci)
                 continue
 
+            # check that the (average) episode size is in the wanted range
+            if actual_episodes:
+                nbEpisodes = len(actual_episodes)
+            else:
+                myDB = db.DBConnection()
+                nbEpisodes = len(myDB.select("SELECT episode FROM tv_episodes WHERE showid = ? AND season = ?", [show.indexerid, parse_result.season_number]))
+            if not self.isTorrentInSizeLimits(size / 1024 / 1024, nbEpisodes, show):
+                continue
+
             # make sure we want the episode
             wantEp = True
             for epNo in actual_episodes:
@@ -500,6 +510,22 @@ class GenericProvider(object):
             myDB.mass_action(cl)
 
         return results
+
+    def isTorrentInSizeLimits(self, sizeInMb, nbEpisodes, show):
+        if sizeInMb <= 0:
+            logger.log(u"Size not known, not making a size check", logger.DEBUG)
+            return True
+        
+        averageEpSize = sizeInMb / nbEpisodes
+        logger.log(u"Average Episode Size: %d" % (averageEpSize), logger.DEBUG)
+        if averageEpSize > show.max_file_size > 0:
+            logger.log(u"Don't want this torrent, average episode size is too big (%d > %d)" % (averageEpSize, show.max_file_size), logger.DEBUG)
+            return False
+        if 0 < averageEpSize < show.min_file_size:
+            logger.log(u"Don't want this torrent, average episode size is too small (%d < %d)" % (averageEpSize, show.min_file_size), logger.DEBUG)
+            return False
+
+        return True
 
     def findPropers(self, search_date=None):
 
