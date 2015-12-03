@@ -16,8 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from sickrage.helper.encoding import ss
-
+import sickrage.helper.encoding
 
 def ex(e):
     """
@@ -33,10 +32,10 @@ def ex(e):
     for arg in e.args:
         if arg is not None:
             if isinstance(arg, (str, unicode)):
-                fixed_arg = ss(arg)
+                fixed_arg = sickrage.helper.encoding.ss(arg)
             else:
                 try:
-                    fixed_arg = u'error %s' % ss(str(arg))
+                    fixed_arg = u'error %s' % sickrage.helper.encoding.ss(str(arg))
                 except Exception:
                     fixed_arg = None
 

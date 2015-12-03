@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import with_statement
 
 import sys, os.path
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
@@ -25,13 +24,14 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 
-import urlparse
 import test_lib as test
+
+import urlparse
+import requests
 from bs4 import BeautifulSoup
 from sickbeard.helpers import getURL
-import requests
 
-class TorrentBasicTests(test.SickbeardTestDBCase):
+class TorrentBasicTests(test.SiCKRAGETestDBCase):
 
     def test_search(self):
         self.url = 'http://kickass.to/'
@@ -73,7 +73,7 @@ class TorrentBasicTests(test.SickbeardTestDBCase):
 
 if __name__ == "__main__":
     print "=================="
-    print "STARTING - Torrent Basic TESTS"
+    print "STARTING - TORRENT TESTS"
     print "=================="
     print "######################################################################"
     suite = unittest.TestLoader().loadTestsFromTestCase(TorrentBasicTests)

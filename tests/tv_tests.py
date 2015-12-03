@@ -28,7 +28,7 @@ import test_lib as test
 import sickbeard
 from sickbeard.tv import TVEpisode, TVShow
 
-class TVShowTests(test.SickbeardTestDBCase):
+class TVShowTests(test.SiCKRAGETestDBCase):
 
     def setUp(self):
         super(TVShowTests, self).setUp()
@@ -66,7 +66,7 @@ class TVShowTests(test.SickbeardTestDBCase):
         self.assertEqual(show.name, "newName")
 
 
-class TVEpisodeTests(test.SickbeardTestDBCase):
+class TVEpisodeTests(test.SiCKRAGETestDBCase):
 
     def setUp(self):
         super(TVEpisodeTests, self).setUp()
@@ -81,7 +81,7 @@ class TVEpisodeTests(test.SickbeardTestDBCase):
         self.assertEqual(ep.name, "asdasdasdajkaj")
 
 
-class TVTests(test.SickbeardTestDBCase):
+class TVTests(test.SiCKRAGETestDBCase):
 
     def setUp(self):
         super(TVTests, self).setUp()

@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -25,7 +27,7 @@ import regexes
 import sickbeard
 
 from sickbeard import logger, helpers, scene_numbering, common, scene_exceptions, db
-from sickrage.helper.encoding import ek
+from sickrage.helper.encoding import ek, ss, uu
 from sickrage.helper.exceptions import ex
 from dateutil import parser
 
@@ -78,7 +80,7 @@ class NameParser(object):
     def _compile_regexes(self, regexMode):
         if regexMode == self.ANIME_REGEX:
             dbg_str = u"ANIME"
-            uncompiled_regex = [regexes.anime_regexes, regexes.normal_regexes]
+            uncompiled_regex = [regexes.anime_regexes]
         elif regexMode == self.NORMAL_REGEX:
             dbg_str = u"NORMAL"
             uncompiled_regex = [regexes.normal_regexes]
@@ -346,18 +348,11 @@ class NameParser(object):
         b = getattr(second, attr)
 
         # if a is good use it
-        if a != None or (isinstance(a, list) and a):
+        if a is not None or (isinstance(a, list) and a):
             return a
         # if not use b (if b isn't set it'll just be default)
         else:
             return b
-
-    @staticmethod
-    def _unicodify(obj, encoding="utf-8"):
-        if isinstance(obj, basestring):
-            if not isinstance(obj, unicode):
-                obj = unicode(obj, encoding, 'replace')
-        return obj
 
     @staticmethod
     def _convert_number(org_number):
@@ -395,8 +390,6 @@ class NameParser(object):
         return number
 
     def parse(self, name, cache_result=True):
-        name = self._unicodify(name)
-
         if self.naming_pattern:
             cache_result = False
 
@@ -419,7 +412,7 @@ class NameParser(object):
         file_name_result = self._parse_string(base_file_name)
 
         # use only the direct parent dir
-        dir_name = os.path.basename(dir_name)
+        dir_name = ek(os.path.basename, dir_name)
 
         # parse the dirname for extra info if needed
         dir_name_result = self._parse_string(dir_name)
@@ -459,13 +452,13 @@ class NameParser(object):
                 "Unable to parse " + name.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace'))
 
         # if there's no useful info in it then raise an exception
-        if final_result.season_number == None and not final_result.episode_numbers and final_result.air_date == None and not final_result.ab_episode_numbers and not final_result.series_name:
+        if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
             raise InvalidNameException("Unable to parse " + name.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace'))
 
         if cache_result:
             name_parser_cache.add(name, final_result)
 
-        logger.log(u"Parsed " + name + " into " + str(final_result).decode('utf-8', 'xmlcharrefreplace'), logger.DEBUG)
+        logger.log("Parsed " + name + " into " + ss(final_result), logger.DEBUG)
         return final_result
 
 
@@ -483,7 +476,7 @@ class ParseResult(object):
                  score=None,
                  quality=None,
                  version=None
-                ):
+                 ):
 
         self.original_name = original_name
 
@@ -545,11 +538,10 @@ class ParseResult(object):
         return True
 
     def __str__(self):
-        if self.series_name != None:
-            to_return = self.series_name + u' - '
-        else:
-            to_return = u''
-        if self.season_number != None:
+        to_return = ""
+        if self.series_name is not None:
+            to_return += self.series_name
+        if self.season_number is not None:
             to_return += 'S' + str(self.season_number).zfill(2)
         if self.episode_numbers and len(self.episode_numbers):
             for e in self.episode_numbers:
@@ -569,7 +561,7 @@ class ParseResult(object):
         to_return += ' [ANIME: ' + str(self.is_anime) + ']'
         to_return += ' [whichReg: ' + str(self.which_regex) + ']'
 
-        return to_return.encode('utf-8')
+        return to_return
 
     @property
     def is_air_by_date(self):
@@ -595,7 +587,7 @@ class NameParserCache(object):
 
     def get(self, name):
         if name in self._previous_parsed:
-            logger.log("Using cached parse result for: " + name, logger.DEBUG)
+            logger.log(u"Using cached parse result for: " + name, logger.DEBUG)
             return self._previous_parsed[name]
 
 

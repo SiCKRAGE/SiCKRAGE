@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: https://sickrage.tv
 # Git: https://github.com/SiCKRAGETV/SickRage.git
@@ -125,14 +126,14 @@ class PostProcessor(object):
             return PostProcessor.DOESNT_EXIST
 
         # if the new file exists, return the appropriate code depending on the size
-        if ek(os.path.isfile, existing_file):
+        if ek(os.path.isfile,existing_file):
 
             # see if it's bigger than our old file
-            if ek(os.path.getsize, existing_file) > ek(os.path.getsize, self.file_path):
+            if ek(os.path.getsize,existing_file) > ek(os.path.getsize,self.file_path):
                 self._log(u"File " + existing_file + " is larger than " + self.file_path, logger.DEBUG)
                 return PostProcessor.EXISTS_LARGER
 
-            elif ek(os.path.getsize, existing_file) == ek(os.path.getsize, self.file_path):
+            elif ek(os.path.getsize,existing_file) == ek(os.path.getsize,self.file_path):
                 self._log(u"File " + existing_file + " is the same size as " + self.file_path, logger.DEBUG)
                 return PostProcessor.EXISTS_SAME
 
@@ -157,9 +158,9 @@ class PostProcessor(object):
         """
         def recursive_glob(treeroot, pattern):
             results = []
-            for base, _, files in os.walk(treeroot):
+            for base, _, files in ek(os.walk,treeroot):
                 goodfiles = fnmatch.filter(files, pattern)
-                results.extend(os.path.join(base, f) for f in goodfiles)
+                results.extend(ek(os.path.join,base, f) for f in goodfiles)
             return results
 
         if not file_path:
@@ -207,7 +208,7 @@ class PostProcessor(object):
             if re.search(r'(^.+\.(rar|r\d+)$)', associated_file_path):
                 continue
 
-            if ek(os.path.isfile, associated_file_path):
+            if ek(os.path.isfile,associated_file_path):
                 file_path_list.append(associated_file_path)
 
         if file_path_list:
@@ -239,10 +240,10 @@ class PostProcessor(object):
 
         # delete the file and any other files which we want to delete
         for cur_file in file_list:
-            if ek(os.path.isfile, cur_file):
+            if ek(os.path.isfile,cur_file):
                 self._log(u"Deleting file " + cur_file, logger.DEBUG)
                 # check first the read-only attribute
-                file_attribute = ek(os.stat, cur_file)[0]
+                file_attribute =ek(os.stat,cur_file)[0]
                 if not file_attribute & stat.S_IWRITE:
                     # File is read-only, so make it writeable
                     self._log('Read only mode on file ' + cur_file + ' Will try to make it writeable', logger.DEBUG)
@@ -297,10 +298,10 @@ class PostProcessor(object):
             cur_extension = cur_file_path[old_base_name_length + 1:]
 
             # check if file have subtitles language
-            if os.path.splitext(cur_extension)[1][1:] in common.subtitleExtensions:
-                cur_lang = os.path.splitext(cur_extension)[0]
+            if ek(os.path.splitext, cur_extension)[1][1:] in common.subtitleExtensions:
+                cur_lang = ek(os.path.splitext, cur_extension)[0]
                 if cur_lang in sickbeard.subtitles.wantedLanguages():
-                    cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
+                    cur_extension = cur_lang + ek(os.path.splitext, cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
             if cur_extension == 'nfo' and sickbeard.NFO_RENAME == True:
@@ -366,7 +367,7 @@ class PostProcessor(object):
                 helpers.copyFile(cur_file_path, new_file_path)
                 helpers.chmodAsParent(new_file_path)
             except (IOError, OSError), e:
-                logger.log("Unable to copy file " + cur_file_path + " to " + new_file_path + ": " + ex(e), logger.ERROR)
+                logger.log(u"Unable to copy file " + cur_file_path + " to " + new_file_path + ": " + ex(e), logger.ERROR)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_copy,
@@ -496,7 +497,7 @@ class PostProcessor(object):
             logger.log(u"Parse result(series_name): " + str(parse_result.series_name), logger.DEBUG)
             logger.log(u"Parse result(season_number): " + str(parse_result.season_number), logger.DEBUG)
             logger.log(u"Parse result(episode_numbers): " + str(parse_result.episode_numbers), logger.DEBUG)
-            logger.log(u" or Parse result(air_date): " + str(parse_result.air_date), logger.DEBUG)
+            logger.log(u"Parse result(air_date): " + str(parse_result.air_date), logger.DEBUG)
             logger.log(u"Parse result(release_group): " + str(parse_result.release_group), logger.DEBUG)
 
     def _analyze_name(self, name):
@@ -760,10 +761,10 @@ class PostProcessor(object):
         self._log(
             u"Guessing quality for name " + self.file_name + u", got " + common.Quality.qualityStrings[ep_quality],
             logger.DEBUG)
+
         if ep_quality != common.Quality.UNKNOWN:
             logger.log(self.file_name + u" looks like it has quality " + common.Quality.qualityStrings[
                 ep_quality] + ", using that", logger.DEBUG)
-            return ep_quality
 
         return ep_quality
 
@@ -851,11 +852,11 @@ class PostProcessor(object):
 
         self._log(u"Processing " + self.file_path + " (" + str(self.nzb_name) + ")")
 
-        if ek(os.path.isdir, self.file_path):
+        if ek(os.path.isdir,self.file_path):
             self._log(u"File %s seems to be a directory" % self.file_path)
             return False
 
-        if not ek(os.path.exists, self.file_path):
+        if not ek(os.path.exists,self.file_path):
             self._log(u"File %s doesn't exist, did unrar fail?" % self.file_path)
             return False
 
@@ -961,7 +962,7 @@ class PostProcessor(object):
             #    curEp.status = common.Quality.compositeStatus(common.SNATCHED, new_ep_quality)
 
         # if the show directory doesn't exist then make it if allowed
-        if not ek(os.path.isdir, ep_obj.show._location) and sickbeard.CREATE_MISSING_SHOW_DIRS:
+        if not ek(os.path.isdir,ep_obj.show._location) and sickbeard.CREATE_MISSING_SHOW_DIRS:
             self._log(u"Show directory doesn't exist, creating it", logger.DEBUG)
             try:
                 ek(os.mkdir, ep_obj.show._location)
@@ -1069,7 +1070,7 @@ class PostProcessor(object):
             else:
                 logger.log(u"Unknown process method: " + str(self.process_method), logger.ERROR)
                 raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
-        except (OSError, IOError):
+        except (OSError, IOError) as e:
             raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
 
         # download subtitles
@@ -1108,7 +1109,7 @@ class PostProcessor(object):
         # log it to history
         history.logDownload(ep_obj, self.file_path, new_ep_quality, self.release_group, new_ep_version)
 
-        #If any notification fails, don't stop postProcessor
+        # If any notification fails, don't stop postProcessor
         try:
             # send notifications
             notifiers.notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))

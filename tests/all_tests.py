@@ -28,25 +28,24 @@ sys.path.insert(1, os.path.join(tests_dir, '..'))
 import glob
 import unittest
 
-class AllTests(unittest.TestCase):
-    #Block issue_submitter_tests to avoid issue tracker spam on every build
-    blacklist = [tests_dir + 'all_tests.py', tests_dir + 'issue_submitter_tests.py', tests_dir + 'search_tests.py']
-    def setUp(self):
-        self.test_file_strings = [ x for x in glob.glob(tests_dir + '*_tests.py') if not x in self.blacklist ]
-        self.module_strings = [file_string[len(tests_dir):len(file_string) - 3] for file_string in self.test_file_strings]
-        self.suites = [unittest.defaultTestLoader.loadTestsFromName(file_string) for file_string in self.module_strings]
-        self.testSuite = unittest.TestSuite(self.suites)
+def suite():
+    alltests = unittest.TestSuite()
+    for suites in unittest.defaultTestLoader.discover(tests_dir, pattern='*_tests.py'):
+        for tests in suites:
+            try:
+                alltests.addTests(tests)
+            except:
+                continue
+    return alltests
 
-    def testAll(self):
-        print "=================="
-        print "STARTING - ALL TESTS"
-        print "=================="
-        for includedfiles in self.test_file_strings:
-            print "- " + includedfiles[len(tests_dir):-3]
-
-        text_runner = unittest.TextTestRunner().run(self.testSuite)
-        if not text_runner.wasSuccessful():
-            sys.exit(-1)
+def testAll():
+    print "######################################################################"
+    print "=================="
+    print "STARTING - ALL TESTS"
+    print "=================="
+    print "######################################################################"
+    if not unittest.TextTestRunner(verbosity=2).run(suite()).wasSuccessful():
+        sys.exit(1)
 
 if __name__ == "__main__":
-    unittest.main()
+    testAll()

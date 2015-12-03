@@ -5,7 +5,6 @@
 %>
 
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/configAnime.js?${sbPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/config.js?${sbPID}"></script>
 </%block>
 <%block name="content">
@@ -43,7 +42,7 @@
                             <div class="field-pair">
                                 <label class="nocheck">
                                     <span class="component-title">AniDB Username</span>
-                                    <input type="text" name="anidb_username" id="anidb_username" value="${sickbeard.ANIDB_USERNAME}" class="form-control input-sm input350" />
+                                    <input type="text" name="anidb_username" id="anidb_username" value="${sickbeard.ANIDB_USERNAME}" class="form-control input-sm input350" autocapitalize="off" />
                                 </label>
                                 <label class="nocheck">
                                     <span class="component-title">&nbsp;</span>
@@ -54,7 +53,7 @@
                             <div class="field-pair">
                                 <label class="nocheck">
                                     <span class="component-title">AniDB Password</span>
-                                    <input type="password" name="anidb_password" id="anidb_password" value="${sickbeard.ANIDB_PASSWORD}" class="form-control input-sm input350" />
+                                    <input type="password" name="anidb_password" id="anidb_password" value="${sickbeard.ANIDB_PASSWORD}" class="form-control input-sm input350" autocapitalize="off" />
                                 </label>
                                 <label class="nocheck">
                                     <span class="component-title">&nbsp;</span>
@@ -91,7 +90,7 @@
                    </fieldset>
                 </div><!-- /component-group //-->
 
-                <br/><input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
+                <br><input type="submit" class="btn config_submitter" value="Save Changes" /><br>
 
             </div><!-- /config-components //-->
 

@@ -104,8 +104,8 @@
                             <label>
                                 <span class="component-title">Ignore words</span>
                                 <span class="component-desc">
-                                    <input type="text" name="ignore_words" value="${sickbeard.IGNORE_WORDS}" class="form-control input-sm input350" />
-                                    <div class="clear-left">results with one or more word from this list will be ignored<br />
+                                    <input type="text" name="ignore_words" value="${sickbeard.IGNORE_WORDS}" class="form-control input-sm input350" autocapitalize="off" />
+                                    <div class="clear-left">results with one or more word from this list will be ignored<br>
                                     separate words with a comma, e.g. "word1,word2,word3"
                                     </div>
                                 </span>
@@ -116,8 +116,8 @@
                             <label>
                                 <span class="component-title">Require words</span>
                                 <span class="component-desc">
-                                    <input type="text" name="require_words" value="${sickbeard.REQUIRE_WORDS}" class="form-control input-sm input350" />
-                                    <div class="clear-left">results with no word from this list will be ignored<br />
+                                    <input type="text" name="require_words" value="${sickbeard.REQUIRE_WORDS}" class="form-control input-sm input350" autocapitalize="off" />
+                                    <div class="clear-left">results with no word from this list will be ignored<br>
                                     separate words with a comma, e.g. "word1,word2,word3"
                                     </div>
                                 </span>
@@ -128,9 +128,9 @@
                             <label>
                                 <span class="component-title">Ignore language names in subbed results</span>
                                 <span class="component-desc">
-                                    <input type="text" name="ignored_subs_list" value="${sickbeard.IGNORED_SUBS_LIST}" class="form-control input-sm input350" />
-                                    <div class="clear-left">Ignore subbed releases based on language names <br />
-                                    Example: "dk" will ignore words: dksub, dksubs, dksubbed, dksubed <br />
+                                    <input type="text" name="ignored_subs_list" value="${sickbeard.IGNORED_SUBS_LIST}" class="form-control input-sm input350" autocapitalize="off" />
+                                    <div class="clear-left">Ignore subbed releases based on language names <br>
+                                    Example: "dk" will ignore words: dksub, dksubs, dksubbed, dksubed <br>
                                     separate languages with a comma, e.g. "lang1,lang2,lang3
                                     </div>
                                 </span>
@@ -216,7 +216,7 @@
                                 <label>
                                     <span class="component-title">Black hole folder location</span>
                                     <span class="component-desc">
-                                        <input type="text" name="nzb_dir" id="nzb_dir" value="${sickbeard.NZB_DIR}" class="form-control input-sm input350" />
+                                        <input type="text" name="nzb_dir" id="nzb_dir" value="${sickbeard.NZB_DIR}" class="form-control input-sm input350" autocapitalize="off" />
                                         <div class="clear-left"><p><b>.nzb</b> files are stored at this location for external software to find and use</p></div>
                                     </span>
                                 </label>
@@ -228,7 +228,7 @@
                                 <label>
                                     <span class="component-title">SABnzbd server URL</span>
                                     <span class="component-desc">
-                                        <input type="text" id="sab_host" name="sab_host" value="${sickbeard.SAB_HOST}" class="form-control input-sm input350" />
+                                        <input type="text" id="sab_host" name="sab_host" value="${sickbeard.SAB_HOST}" class="form-control input-sm input350" autocapitalize="off" />
                                         <div class="clear-left"><p>URL to your SABnzbd server (e.g. http://localhost:8080/)</p></div>
                                     </span>
                                 </label>
@@ -238,7 +238,7 @@
                                 <label>
                                     <span class="component-title">SABnzbd username</span>
                                     <span class="component-desc">
-                                        <input type="text" name="sab_username" id="sab_username" value="${sickbeard.SAB_USERNAME}" class="form-control input-sm input200" />
+                                        <input type="text" name="sab_username" id="sab_username" value="${sickbeard.SAB_USERNAME}" class="form-control input-sm input200" autocapitalize="off" />
                                         <p>(blank for none)</p>
                                     </span>
                                 </label>
@@ -248,7 +248,7 @@
                                 <label>
                                     <span class="component-title">SABnzbd password</span>
                                     <span class="component-desc">
-                                        <input type="password" name="sab_password" id="sab_password" value="${sickbeard.SAB_PASSWORD}" class="form-control input-sm input200" />
+                                        <input type="password" name="sab_password" id="sab_password" value="${sickbeard.SAB_PASSWORD}" class="form-control input-sm input200" autocapitalize="off" />
                                         <p>(blank for none)</p>
                                     </span>
                                 </label>
@@ -258,7 +258,7 @@
                                 <label>
                                     <span class="component-title">SABnzbd API key</span>
                                     <span class="component-desc">
-                                        <input type="text" name="sab_apikey" id="sab_apikey" value="${sickbeard.SAB_APIKEY}" class="form-control input-sm input350" />
+                                        <input type="text" name="sab_apikey" id="sab_apikey" value="${sickbeard.SAB_APIKEY}" class="form-control input-sm input350" autocapitalize="off"/>
                                         <div class="clear-left"><p>locate at... SABnzbd Config -> General -> API Key</p></div>
                                     </span>
                                 </label>
@@ -333,7 +333,7 @@
                                 <label>
                                     <span class="component-title">NZBget host:port</span>
                                     <span class="component-desc">
-                                        <input type="text" name="nzbget_host" id="nzbget_host" value="${sickbeard.NZBGET_HOST}" class="form-control input-sm input350" />
+                                        <input type="text" name="nzbget_host" id="nzbget_host" value="${sickbeard.NZBGET_HOST}" class="form-control input-sm input350" autocapitalize="off" />
                                         <p>(e.g. localhost:6789)</p>
                                         <div class="clear-left"><p>NZBget RPC host name and port number (not NZBgetweb!)</p></div>
                                     </span>
@@ -344,7 +344,7 @@
                                 <label>
                                     <span class="component-title">NZBget username</span>
                                     <span class="component-desc">
-                                        <input type="text" name="nzbget_username" value="${sickbeard.NZBGET_USERNAME}" class="form-control input-sm input200" />
+                                        <input type="text" name="nzbget_username" value="${sickbeard.NZBGET_USERNAME}" class="form-control input-sm input200" autocapitalize="off" />
                                         <p>locate in nzbget.conf (default:nzbget)</p>
                                     </span>
                                 </label>
@@ -354,7 +354,7 @@
                                 <label>
                                     <span class="component-title">NZBget password</span>
                                     <span class="component-desc">
-                                        <input type="password" name="nzbget_password" id="nzbget_password" value="${sickbeard.NZBGET_PASSWORD}" class="form-control input-sm input200" />
+                                        <input type="password" name="nzbget_password" id="nzbget_password" value="${sickbeard.NZBGET_PASSWORD}" class="form-control input-sm input200" autocapitalize="off" />
                                         <p>locate in nzbget.conf (default:tegbzn6789)</p>
                                     </span>
                                 </label>
@@ -420,7 +420,7 @@
 
                         <div class="testNotification" id="testSABnzbd_result">Click below to test</div>
                         <input class="btn" type="button" value="Test SABnzbd" id="testSABnzbd" class="btn test-button"/>
-                        <input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
+                        <input type="submit" class="btn config_submitter" value="Save Changes" /><br>
 
                         </div><!-- /content_use_nzbs //-->
 
@@ -453,8 +453,8 @@
                                 <span class="component-title">Send .torrent files to:</span>
                                 <span class="component-desc">
                                 <select name="torrent_method" id="torrent_method" class="form-control input-sm">
-<% torrent_method_text = {'blackhole': "Black hole", 'utorrent': "uTorrent", 'transmission': "Transmission", 'deluge': "Deluge (via WebUI)", 'deluged': "Deluge (via Daemon)", 'download_station': "Synology DS", 'rtorrent': "rTorrent", 'qbittorrent': "qbittorrent"} %>
-% for curAction in ('blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent', 'qbittorrent'):
+<% torrent_method_text = {'blackhole': "Black hole", 'utorrent': "uTorrent", 'transmission': "Transmission", 'deluge': "Deluge (via WebUI)", 'deluged': "Deluge (via Daemon)", 'download_station': "Synology DS", 'rtorrent': "rTorrent", 'qbittorrent': "qbittorrent", 'mlnet': "MLDonkey"} %>
+% for curAction in ('blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent', 'qbittorrent', 'mlnet'):
                                 <option value="${curAction}" ${('', 'selected="selected"')[sickbeard.TORRENT_METHOD == curAction]}>${torrent_method_text[curAction]}</option>
 % endfor
                                 </select>
@@ -465,14 +465,14 @@
                                 <label>
                                     <span class="component-title">Black hole folder location</span>
                                     <span class="component-desc">
-                                        <input type="text" name="torrent_dir" id="torrent_dir" value="${sickbeard.TORRENT_DIR}" class="form-control input-sm input350" />
+                                        <input type="text" name="torrent_dir" id="torrent_dir" value="${sickbeard.TORRENT_DIR}" class="form-control input-sm input350" autocapitalize="off" />
                                         <div class="clear-left"><p><b>.torrent</b> files are stored at this location for external software to find and use</p></div>
                                     </span>
                                 </label>
                             </div>
 
                             <div></div>
-                            <input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
+                            <input type="submit" class="btn config_submitter" value="Save Changes" /><br>
                             </div>
                         </div>
 
@@ -481,7 +481,7 @@
                                 <label>
                                     <span class="component-title" id="host_title">Torrent host:port</span>
                                     <span class="component-desc">
-                                        <input type="text" name="torrent_host" id="torrent_host" value="${sickbeard.TORRENT_HOST}" class="form-control input-sm input350" />
+                                        <input type="text" name="torrent_host" id="torrent_host" value="${sickbeard.TORRENT_HOST}" class="form-control input-sm input350" autocapitalize="off" />
                                         <div class="clear-left">
                                             <p id="host_desc_torrent">URL to your torrent client (e.g. http://localhost:8000/)</p>
                                         </div>
@@ -493,7 +493,7 @@
                                 <label>
                                     <span class="component-title" id="rpcurl_title">Torrent RPC URL</span>
                                     <span class="component-desc">
-                                        <input type="text" name="torrent_rpcurl" id="torrent_rpcurl" value="${sickbeard.TORRENT_RPCURL}" class="form-control input-sm input350"/>
+                                        <input type="text" name="torrent_rpcurl" id="torrent_rpcurl" value="${sickbeard.TORRENT_RPCURL}" class="form-control input-sm input350" autocapitalize="off"/>
                                         <div class="clear-left">
                                             <p id="rpcurl_desc_">The path without leading and trailing slashes (e.g. transmission)</p>
                                         </div>
@@ -531,7 +531,7 @@
                                 <label>
                                     <span class="component-title" id="username_title">Client username</span>
                                     <span class="component-desc">
-                                        <input type="text" name="torrent_username" id="torrent_username" value="${sickbeard.TORRENT_USERNAME}" class="form-control input-sm input200" />
+                                        <input type="text" name="torrent_username" id="torrent_username" value="${sickbeard.TORRENT_USERNAME}" class="form-control input-sm input200" autocapitalize="off" />
                                         <p>(blank for none)</p>
                                     </span>
                                 </label>
@@ -541,7 +541,7 @@
                                 <label>
                                     <span class="component-title" id="password_title">Client password</span>
                                     <span class="component-desc">
-                                        <input type="password" name="torrent_password" id="torrent_password" value="${sickbeard.TORRENT_PASSWORD}" class="form-control input-sm input200" />
+                                        <input type="password" name="torrent_password" id="torrent_password" value="${sickbeard.TORRENT_PASSWORD}" class="form-control input-sm input200" autocapitalize="off" />
                                         <p>(blank for none)</p>
                                     </span>
                                 </label>
@@ -575,7 +575,7 @@
                                 <label>
                                     <span class="component-title" id="directory_title">Downloaded files location</span>
                                     <span class="component-desc">
-                                        <input type="text" name="torrent_path" id="torrent_path" value="${sickbeard.TORRENT_PATH}" class="form-control input-sm input350" />
+                                        <input type="text" name="torrent_path" id="torrent_path" value="${sickbeard.TORRENT_PATH}" class="form-control input-sm input350" autocapitalize="off" />
                                         <div class="clear-left"><p>where <span id="torrent_client">the torrent client</span> will save downloaded files (blank for client default)
                                             <span id="path_synology"> <b>note:</b> the destination has to be a shared folder for Synology DS</span></p>
                                         </div>
@@ -613,13 +613,13 @@
 
                             <div class="testNotification" id="test_torrent_result">Click below to test</div>
                             <input class="btn" type="button" value="Test Connection" id="test_torrent" class="btn test-button"/>
-                            <input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
+                            <input type="submit" class="btn config_submitter" value="Save Changes" /><br>
                             </div>
                     </div><!-- /content_use_torrents //-->
                     </fieldset>
                 </div><!-- /component-group3 //-->
 
-                <br/>
+                <br>
                 <h6 class="pull-right"><b>All non-absolute folder locations are relative to <span class="path">${sickbeard.DATA_DIR}</span></b> </h6>
                 <input type="submit" class="btn pull-left config_submitter button" value="Save Changes" />
 

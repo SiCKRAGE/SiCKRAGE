@@ -82,14 +82,10 @@ class NewznabProvider(generic.NZBProvider):
                 int(self.enable_daily)) + '|' + str(int(self.enable_backlog))
 
     def imageName(self):
-        if ek(os.path.isfile,
-              ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME, 'images', 'providers',
+        if ek(os.path.isfile,              ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME, 'images', 'providers',
                  self.getID() + '.png')):
             return self.getID() + '.png'
         return 'newznab.png'
-
-    def isEnabled(self):
-        return self.enabled
 
     def _getURL(self, url, post_data=None, params=None, timeout=30, json=False):
         return self.getURL(url, post_data=post_data, params=params, timeout=timeout, json=json)
@@ -200,7 +196,7 @@ class NewznabProvider(generic.NZBProvider):
 
         if self.needs_auth and not self.key:
             logger.log(u"Invalid api key. Check your settings", logger.WARNING)
-            #raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
+            # raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
 
         return True
 
@@ -300,7 +296,7 @@ class NewznabProvider(generic.NZBProvider):
                 break
 
             if offset != params['offset']:
-                logger.log("Tell your newznab provider to fix their bloody newznab responses")
+                logger.log(u"Tell your newznab provider to fix their bloody newznab responses")
                 break
 
             params['offset'] += params['limit']
@@ -371,7 +367,7 @@ class NewznabCache(tvcache.TVCache):
         while (datetime.datetime.now() - self.last_search).seconds < 5:
             time.sleep(1)
 
-        logger.log("Cache update URL: %s " % rss_url, logger.DEBUG)
+        logger.log(u"Cache update URL: %s " % rss_url, logger.DEBUG)
         data = self.getRSSFeed(rss_url)
 
         self.last_search = datetime.datetime.now()

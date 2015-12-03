@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -16,14 +18,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+import io
+import os
 import datetime
-import os.path
 
 import sickbeard
-
+from sickbeard import logger, helpers
 from sickbeard.metadata import mediabrowser
 
-from sickbeard import logger, helpers
 from sickrage.helper.common import dateFormat
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex, ShowNotFoundException
@@ -316,7 +318,7 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                 if getattr(myShow, '_actors', None) or getattr(myEp, 'gueststars', None):
                     cast = etree.SubElement(episode, "cast")
                     if getattr(myEp, 'gueststars', None) and isinstance(myEp['gueststars'], basestring):
-                        for actor in (x.strip() for x in  myEp['gueststars'].split('|') if x.strip()):
+                        for actor in (x.strip() for x in myEp['gueststars'].split('|') if x.strip()):
                             cur_actor = etree.SubElement(cast, "actor")
                             cur_actor.text = actor
 
@@ -370,16 +372,16 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         nfo_file_dir = ek(os.path.dirname, nfo_file_path)
 
         try:
-            if not ek(os.path.isdir, nfo_file_dir):
+            if not ek(os.path.isdir,nfo_file_dir):
                 logger.log(u"Metadata dir didn't exist, creating it at " + nfo_file_dir, logger.DEBUG)
                 ek(os.makedirs, nfo_file_dir)
                 helpers.chmodAsParent(nfo_file_dir)
 
             logger.log(u"Writing show nfo file to " + nfo_file_path, logger.DEBUG)
 
-            nfo_file = open(nfo_file_path, 'w')
+            nfo_file = ek(io.open,nfo_file_path, 'wb')
 
-            data.write(nfo_file, encoding="UTF-8")
+            data.write(nfo_file)
             nfo_file.close()
             helpers.chmodAsParent(nfo_file_path)
         except IOError, e:
@@ -415,16 +417,16 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         nfo_file_dir = ek(os.path.dirname, nfo_file_path)
 
         try:
-            if not ek(os.path.isdir, nfo_file_dir):
+            if not ek(os.path.isdir,nfo_file_dir):
                 logger.log(u"Metadata dir didn't exist, creating it at " + nfo_file_dir, logger.DEBUG)
                 ek(os.makedirs, nfo_file_dir)
                 helpers.chmodAsParent(nfo_file_dir)
 
             logger.log(u"Writing episode nfo file to " + nfo_file_path, logger.DEBUG)
 
-            nfo_file = open(nfo_file_path, 'w')
+            nfo_file = ek(io.open,nfo_file_path, 'wb')
 
-            data.write(nfo_file, encoding="UTF-8")
+            data.write(nfo_file)
             nfo_file.close()
             helpers.chmodAsParent(nfo_file_path)
         except IOError, e:
