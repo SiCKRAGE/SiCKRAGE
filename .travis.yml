@@ -19,7 +19,7 @@ script:
   - ./tests/all_tests.py
 
 after_failure:
-  - cat ./Logs/sickrage.log
+  - cat ./tests/Logs/sickrage.log
 
 notifications:
   irc: "irc.freenode.net#sickrage-updates"
