@@ -5,7 +5,7 @@ python:
 sudo: false
 
 branches:
-  except:
+  only:
     - master
 
 install: echo "Nothing required!"
