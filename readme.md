@@ -1,7 +1,7 @@
 ####!!! IMPORTANT MEMBER ALERT !!!
 IT HAS BEEN BROUGHT TO MY ATTENTION FORMER EX-TEAM MEMBERS OF SICKRAGE ARE SOLICIATING USERS TO SWITCH TO A NEW GITHUB REPO ADDRESS THAT IS IN NO WAY OFFICIAL OR OWNED BY ME, DOING SO COULD ALLOW THEM TO INFECT YOUR COMPUTER SYSTEMS WITH MALICAIOUS CODE THAT COULD WIPE YOUR ENTIRE SYSTEM OUT DATA AND ALL SO PLEASE REPORT ANY FURTHER ABUSE TO SICKRAGE.TV@GMAIL.COM
 
-SickRage [![Build Status](https://travis-ci.org/SiCKRAGETV/SickRage.svg?branch=develop)](https://travis-ci.org/SiCKRAGETV/SickRage) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/sickragetv/sickrage-issues.svg)](http://isitmaintained.com/project/sickragetv/sickrage-issues "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/sickragetv/sickrage-issues.svg)](http://isitmaintained.com/project/sickragetv/sickrage-issues "Percentage of issues still open")
+SickRage [![Build Status](https://travis-ci.org/SiCKRAGETV/SickRage.svg?branch=master)](https://travis-ci.org/SiCKRAGETV/SickRage) [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/sickragetv/sickrage-issues.svg)](http://isitmaintained.com/project/sickragetv/sickrage-issues "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/sickragetv/sickrage-issues.svg)](http://isitmaintained.com/project/sickragetv/sickrage-issues "Percentage of issues still open")
 =====
 Automatic Video Library Manager for TV Shows. It watches for new episodes of your favorite shows, and when they are posted it does its magic.
 
