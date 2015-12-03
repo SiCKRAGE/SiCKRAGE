@@ -5,8 +5,8 @@ python:
 sudo: false
 
 branches:
-  except:
-    - master
+  only:
+    - develop
 
 install: echo "Nothing required!"
 
