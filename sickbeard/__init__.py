@@ -679,13 +679,16 @@ def initialize(consoleLogging=True):
 
         # github api
         try:
-            if not (GIT_USERNAME and GIT_PASSWORD):
-                gh = Github(user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
-            else:
-                gh = Github(login_or_token=GIT_USERNAME, password=GIT_PASSWORD, user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
+            gh = Github(login_or_token=GIT_USERNAME, password=GIT_PASSWORD, user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
         except Exception as e:
-            logger.log(u'Unable to setup GitHub properly. GitHub will not be available. Error: %s' % ex(e), logger.WARNING)
-            gh = None
+            if (GIT_USERNAME and GIT_PASSWORD):
+                logger.log(u'GITHUB ERROR: %s' % ex(e))
+                logger.log(u'Failed to login to GitHub API with settings from config, retrying without login credentials.', logger.WARNING)
+            try:
+                gh = Github(user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
+            except:
+                logger.log(u'Failed to login to GitHub API using no without credentials, GitHub API access has been disabled!')
+                gh = None
 
         # git reset on update
         GIT_RESET = bool(check_setting_int(CFG, 'General', 'git_reset', 1))
