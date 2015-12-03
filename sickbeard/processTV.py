@@ -492,17 +492,12 @@ def already_postprocessed(dirName, videofile, force, result):
 
     # Avoid processing the same dir again if we use a process method <> move
     myDB = db.DBConnection()
-    sqlResult = myDB.select("SELECT * FROM tv_episodes WHERE release_name = ?", [dirName])
+    sqlResult = myDB.select("SELECT * FROM tv_episodes WHERE release_name = ? OR release_name = ?", [dirName, videofile.rpartition('.')[0]])
     if sqlResult:
         #result.output += logHelper(u"You're trying to post process a dir that's already been processed, skipping", logger.DEBUG)
         return True
 
     else:
-        sqlResult = myDB.select("SELECT * FROM tv_episodes WHERE release_name = ?", [videofile.rpartition('.')[0]])
-        if sqlResult:
-            #result.output += logHelper(u"You're trying to post process a video that's already been processed, skipping", logger.DEBUG)
-            return True
-
         #Needed if we have downloaded the same episode @ different quality
         #But we need to make sure we check the history of the episode we're going to PP, and not others
         np = NameParser(dirName, tryIndexers=True)
