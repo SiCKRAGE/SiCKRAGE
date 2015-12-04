@@ -124,7 +124,7 @@ class Logger(object):
                 logger.addHandler(console)
 
         # rotating log file handler
-        if self.fileLogging and not consoleLogging:
+        if self.fileLogging:
             rfh = logging.handlers.RotatingFileHandler(self.logFile, maxBytes=sickbeard.LOG_SIZE,
                                                        backupCount=sickbeard.LOG_NR, encoding='utf-8')
             rfh.setFormatter(
@@ -159,7 +159,7 @@ class Logger(object):
         self.log(error_msg, ERROR, *args, **kwargs)
 
         if not self.consoleLogging:
-            ek(sys,exit(error_msg))
+            ek(sys.exit, error_msg)
         else:
             sys.exit(1)
 
