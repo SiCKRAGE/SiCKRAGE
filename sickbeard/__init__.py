@@ -679,23 +679,20 @@ def initialize(consoleLogging=True):
 
         # github api
         try:
-            gh = Github(login_or_token=GIT_USERNAME, password=GIT_PASSWORD, user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
-        except Exception as e:
             try:
-                if (GIT_USERNAME or GIT_PASSWORD):
-                    logger.log(u'GITHUB ERROR: %s' % ex(e), logger.DEBUG)
-                    logger.log(u'Failed to login to SiCKRAGE GitHub repo using credentials from config, retrying without login credentials.', logger.WARNING)
-                gh = Github(user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
+                gh = Github(login_or_token=GIT_USERNAME, password=GIT_PASSWORD, user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
             except:
-                logger.log(u'Failed to login to GitHub API using no without credentials, GitHub API access has been disabled!', logger.WARNING)
-                gh = None
+                gh = Github(user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
+        except Exception as e:
+            logger.log(u'Unable to access the SickRage GitHub API', logger.WARNING)
+            logger.log(ex(e), logger.DEBUG)
         finally:
             if gh:
                 logger.log(u'SickRage GitHub API access enabled')
             else:
                 logger.log(u'SickRage GitHub API access disabled', logger.WARNING)
 
-# git reset on update
+        # git reset on update
         GIT_RESET = bool(check_setting_int(CFG, 'General', 'git_reset', 1))
 
         # current git branch

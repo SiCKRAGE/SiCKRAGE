@@ -1140,18 +1140,21 @@ class Home(WebRoot):
         checkversion = CheckVersion()
         db_status = checkversion.getDBcompare()
 
-        if db_status == 'upgrade':
-            logger.log(u"Checkout branch has a new DB version - Upgrade", logger.DEBUG)
-            return json.dumps({"status": "success", 'message': 'upgrade'})
-        elif db_status == 'equal':
-            logger.log(u"Checkout branch has the same DB version - Equal", logger.DEBUG)
-            return json.dumps({"status": "success", 'message': 'equal'})
-        elif db_status == 'downgrade':
-            logger.log(u"Checkout branch has an old DB version - Downgrade", logger.DEBUG)
-            return json.dumps({"status": "success", 'message': 'downgrade'})
-        else:
-            logger.log(u"Checkout branch couldn't compare DB version.", logger.ERROR)
-            return json.dumps({"status": "error", 'message': 'General exception'})
+        try:
+            if db_status == 'upgrade':
+                logger.log(u"Checkout branch has a new DB version - Upgrade", logger.DEBUG)
+                return json.dumps({"status": "success", 'message': 'upgrade'})
+            elif db_status == 'equal':
+                logger.log(u"Checkout branch has the same DB version - Equal", logger.DEBUG)
+                return json.dumps({"status": "success", 'message': 'equal'})
+            elif db_status == 'downgrade':
+                logger.log(u"Checkout branch has an old DB version - Downgrade", logger.DEBUG)
+                return json.dumps({"status": "success", 'message': 'downgrade'})
+        except:
+            pass
+
+        logger.log(u"Checkout branch couldn't compare DB version.", logger.ERROR)
+        return json.dumps({"status": "error", 'message': 'General exception'})
 
     def displayShow(self, show=None):
 
@@ -1457,7 +1460,7 @@ class Home(WebRoot):
 
             # if we change location clear the db of episodes, change it, write to db, and rescan
             if ek(os.path.normpath, showObj._location) != ek(os.path.normpath, location):
-                logger.log(ek(os.path.normpath, showObj._location) + " != " + ek(os.path.normpath, location), logger.DEBUG)
+                logger.log(ek(os.path.normpath, showObj._location) + u" != " + ek(os.path.normpath, location), logger.DEBUG)
                 if not ek(os.path.isdir,location) and not sickbeard.CREATE_MISSING_SHOW_DIRS:
                     errors.append("New location <tt>%s</tt> does not exist" % location)
 
@@ -2305,9 +2308,7 @@ class HomeAddShows(Home):
 
                 cur_dir = {
                     'dir': cur_path,
-                    'display_dir': '<b>' + ek(os.path.dirname, cur_path) + ek(os.sep + '</b>' + ek,
-                        os.path.basename,
-                        cur_path),
+                    'display_dir': u'<b>' + ek(os.path.dirname, cur_path) + os.sep + u'</b>' + ek(os.path.basename, cur_path),
                 }
 
                 # see if the folder is in KODI already
@@ -3714,7 +3715,7 @@ class ConfigGeneral(Config):
         sickbeard.TIMEZONE_DISPLAY = timezone_display
 
         if not config.change_LOG_DIR(log_dir, web_log):
-            results += ["Unable to create directory " + ek(os.path.normpath, log_dir) + ", log directory not changed."]
+            results += [u"Unable to create directory " + ek(os.path.normpath, log_dir) + u", log directory not changed."]
 
         sickbeard.API_KEY = api_key
 
@@ -3722,11 +3723,11 @@ class ConfigGeneral(Config):
 
         if not config.change_HTTPS_CERT(https_cert):
             results += [
-                "Unable to create directory " + ek(os.path.normpath, https_cert) + ", https cert directory not changed."]
+                u"Unable to create directory " + ek(os.path.normpath, https_cert) + u", https cert directory not changed."]
 
         if not config.change_HTTPS_KEY(https_key):
             results += [
-                "Unable to create directory " + ek(os.path.normpath, https_key) + ", https key directory not changed."]
+                u"Unable to create directory " + ek(os.path.normpath, https_key) + u", https key directory not changed."]
 
         sickbeard.HANDLE_REVERSE_PROXY = config.checkbox_to_value(handle_reverse_proxy)
 
@@ -3833,10 +3834,10 @@ class ConfigSearch(Config):
         results = []
 
         if not config.change_NZB_DIR(nzb_dir):
-            results += ["Unable to create directory " + ek(os.path.normpath, nzb_dir) + ", dir not changed."]
+            results += [u"Unable to create directory " + ek(os.path.normpath, nzb_dir) + u", dir not changed."]
 
         if not config.change_TORRENT_DIR(torrent_dir):
-            results += ["Unable to create directory " + ek(os.path.normpath, torrent_dir) + ", dir not changed."]
+            results += [u"Unable to create directory " + ek(os.path.normpath, torrent_dir) + u", dir not changed."]
 
         config.change_DAILYSEARCH_FREQUENCY(dailysearch_frequency)
 
@@ -3940,7 +3941,7 @@ class ConfigPostProcessing(Config):
         results = []
 
         if not config.change_TV_DOWNLOAD_DIR(tv_download_dir):
-            results += ["Unable to create directory " + ek(os.path.normpath, tv_download_dir) + ", dir not changed."]
+            results += [u"Unable to create directory " + ek(os.path.normpath, tv_download_dir) + u", dir not changed."]
 
         config.change_AUTOPOSTPROCESSER_FREQUENCY(autopostprocesser_frequency)
         config.change_PROCESS_AUTOMATICALLY(process_automatically)
