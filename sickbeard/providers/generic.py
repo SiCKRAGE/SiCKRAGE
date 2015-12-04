@@ -597,6 +597,11 @@ class TorrentProvider(GenericProvider):
                 ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName.SXX
 
             search_string['Season'].append(ep_string.encode('utf-8').strip())
+            
+            if '\'' in ep_string:
+                search_string['Season'].append(ep_string.replace('\'', '').encode('utf-8').strip())
+                if '\'s' in ep_string:
+                    search_string['Season'].append(ep_string.replace('\'s', '').encode('utf-8').strip())
 
         return [search_string]
 
@@ -622,6 +627,11 @@ class TorrentProvider(GenericProvider):
                 ep_string = ep_string + ' %s' % add_string
 
             search_string['Episode'].append(ep_string.encode('utf-8').strip())
+
+            if '\'' in ep_string:
+                search_string['Episode'].append(ep_string.replace('\'', '').encode('utf-8').strip())
+                if '\'s' in ep_string:
+                    search_string['Episode'].append(ep_string.replace('\'s', '').encode('utf-8').strip())
 
         return [search_string]
 
