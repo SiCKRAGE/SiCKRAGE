@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import with_statement
 
 import sys, os.path
 
@@ -26,6 +25,8 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 
+import test_lib as test
+
 from sickbeard import logger
 from sickrage.helper.exceptions import ex
 
@@ -33,12 +34,11 @@ def error():
     try:
         raise Exception('FAKE EXCEPTION')
     except Exception as e:
-        logger.log("FAKE ERROR: " + ex(e), logger.ERROR)
+        logger.log(u"FAKE ERROR: " + ex(e), logger.ERROR)
         logger.submit_errors()
         raise
 
-
-class IssueSubmitterBasicTests(unittest.TestCase):
+class IssueSubmitterBasicTests(test.SiCKRAGETestCase):
     def test_submitter(self):
         self.assertRaises(Exception, error)
 

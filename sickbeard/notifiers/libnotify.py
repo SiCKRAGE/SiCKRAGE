@@ -21,6 +21,7 @@ import cgi
 import sickbeard
 
 from sickbeard import logger, common
+from sickrage.helper.encoding import ek
 
 
 def diagnose():
@@ -29,7 +30,7 @@ def diagnose():
     user-readable message indicating possible issues.
     '''
     try:
-        from gi.repository import Notify #@UnusedImport
+        from gi.repository import Notify  # @UnusedImport
     except ImportError:
         return (u"<p>Error: gir-notify isn't installed. On Ubuntu/Debian, install the "
                 u"<a href=\"apt:gir1.2-notify-0.7\">gir1.2-notify-0.7</a> or "
@@ -111,7 +112,7 @@ class LibnotifyNotifier:
 
         # Can't make this a global constant because PROG_DIR isn't available
         # when the module is imported.
-        icon_path = os.path.join(sickbeard.PROG_DIR, 'gui', 'slick', 'images', 'ico', 'favicon-120.png')
+        icon_path = ek(os.path.join, sickbeard.PROG_DIR, 'gui', 'slick', 'images', 'ico', 'favicon-120.png')
 
         # If the session bus can't be acquired here a bunch of warning messages
         # will be printed but the call to show() will still return True.

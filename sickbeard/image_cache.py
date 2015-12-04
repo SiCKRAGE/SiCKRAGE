@@ -106,7 +106,7 @@ class ImageCache:
         """
         poster_path = self.poster_path(indexer_id)
         logger.log(u"Checking if file " + str(poster_path) + " exists", logger.DEBUG)
-        return ek(os.path.isfile, poster_path)
+        return ek(os.path.isfile,poster_path)
 
     def has_banner(self, indexer_id):
         """
@@ -114,7 +114,7 @@ class ImageCache:
         """
         banner_path = self.banner_path(indexer_id)
         logger.log(u"Checking if file " + str(banner_path) + " exists", logger.DEBUG)
-        return ek(os.path.isfile, banner_path)
+        return ek(os.path.isfile,banner_path)
 
     def has_fanart(self, indexer_id):
         """
@@ -122,7 +122,7 @@ class ImageCache:
         """
         fanart_path = self.fanart_path(indexer_id)
         logger.log(u"Checking if file " + str(fanart_path) + " exists", logger.DEBUG)
-        return ek(os.path.isfile, fanart_path)
+        return ek(os.path.isfile,fanart_path)
 
     def has_poster_thumbnail(self, indexer_id):
         """
@@ -130,7 +130,7 @@ class ImageCache:
         """
         poster_thumb_path = self.poster_thumb_path(indexer_id)
         logger.log(u"Checking if file " + str(poster_thumb_path) + " exists", logger.DEBUG)
-        return ek(os.path.isfile, poster_thumb_path)
+        return ek(os.path.isfile,poster_thumb_path)
 
     def has_banner_thumbnail(self, indexer_id):
         """
@@ -138,7 +138,7 @@ class ImageCache:
         """
         banner_thumb_path = self.banner_thumb_path(indexer_id)
         logger.log(u"Checking if file " + str(banner_thumb_path) + " exists", logger.DEBUG)
-        return ek(os.path.isfile, banner_thumb_path)
+        return ek(os.path.isfile,banner_thumb_path)
 
     BANNER = 1
     POSTER = 2
@@ -154,7 +154,7 @@ class ImageCache:
         :return: BANNER, POSTER if it concluded one or the other, or None if the image was neither (or didn't exist)
         """
 
-        if not ek(os.path.isfile, path):
+        if not ek(os.path.isfile,path):
             logger.log(u"Couldn't check the type of " + str(path) + " cause it doesn't exist", logger.WARNING)
             return None
 
@@ -207,11 +207,11 @@ class ImageCache:
             return False
 
         # make sure the cache folder exists before we try copying to it
-        if not ek(os.path.isdir, self._cache_dir()):
+        if not ek(os.path.isdir,self._cache_dir()):
             logger.log(u"Image cache dir didn't exist, creating it at " + str(self._cache_dir()))
             ek(os.makedirs, self._cache_dir())
 
-        if not ek(os.path.isdir, self._thumbnails_dir()):
+        if not ek(os.path.isdir,self._thumbnails_dir()):
             logger.log(u"Thumbnails cache dir didn't exist, creating it at " + str(self._thumbnails_dir()))
             ek(os.makedirs, self._thumbnails_dir())
 
@@ -250,7 +250,7 @@ class ImageCache:
             return False
 
         # retrieve the image from indexer using the generic metadata class
-        #TODO: refactor
+        # TODO: refactor
         metadata_generator = GenericMetadata()
         img_data = metadata_generator._retrieve_show_image(img_type_name, show_obj)
         result = metadata_generator._write_image(img_data, dest_path)
@@ -285,8 +285,8 @@ class ImageCache:
                 for cur_provider in sickbeard.metadata_provider_dict.values():
                     logger.log(u"Checking if we can use the show image from the " + cur_provider.name + " metadata",
                                logger.DEBUG)
-                    if ek(os.path.isfile, cur_provider.get_poster_path(show_obj)):
-                        cur_file_name = os.path.abspath(cur_provider.get_poster_path(show_obj))
+                    if ek(os.path.isfile,cur_provider.get_poster_path(show_obj)):
+                        cur_file_name = ek(os.path.abspath, cur_provider.get_poster_path(show_obj))
                         cur_file_type = self.which_type(cur_file_name)
 
                         if cur_file_type == None:

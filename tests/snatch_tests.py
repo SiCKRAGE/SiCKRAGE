@@ -49,7 +49,7 @@ def _create_fake_xml(items):
 searchItems = []
 
 
-class SearchTest(test.SickbeardTestDBCase):
+class SearchTest(test.SiCKRAGETestDBCase):
 
     def _fake_getURL(self, url, headers=None):
         global searchItems
@@ -64,7 +64,7 @@ class SearchTest(test.SickbeardTestDBCase):
             #provider.isActive = self._fake_isActive
 
         super(SearchTest, self).__init__(something)
-
+        super(SearchTest, self).setUp()
 
 def test_generator(tvdbdid, show_name, curData, forceSearch):
 
@@ -91,7 +91,7 @@ def test_generator(tvdbdid, show_name, curData, forceSearch):
 
 if __name__ == '__main__':
     print "=================="
-    print "STARTING - Snatch TESTS"
+    print "STARTING - SNATCH TESTS"
     print "=================="
     print "######################################################################"
     # create the test methods

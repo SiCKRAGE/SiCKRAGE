@@ -7,14 +7,12 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import locale
 import unittest
-
+import test_lib as test
 import sickbeard
 from sickbeard.helpers import sanitizeFileName
-from sickrage.helper.encoding import ek
-from sickrage.helper.exceptions import ex
+from sickrage.helper.encoding import ek, ss, uu
 
-
-class EncodingTests(unittest.TestCase):
+class EncodingTests(test.SiCKRAGETestCase):
     def test_encoding(self):
         rootDir = 'C:\\Temp\\TV'
         strings = [u'Les Enfants De La T\xe9l\xe9', u'RT� One']
@@ -32,11 +30,8 @@ class EncodingTests(unittest.TestCase):
             sickbeard.SYS_ENCODING = 'UTF-8'
 
         for s in strings:
-            try:
-                show_dir = ek(os.path.join, rootDir, sanitizeFileName(s))
-                self.assertTrue(isinstance(show_dir, unicode))
-            except Exception, e:
-                ex(e)
+            show_dir = ek(os.path.join, rootDir, sanitizeFileName(s))
+            self.assertIsInstance(show_dir, unicode)
 
 if __name__ == "__main__":
     print "=================="

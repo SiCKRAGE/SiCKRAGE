@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -77,7 +79,7 @@ class PS3Metadata(generic.GenericMetadata):
     # Override with empty methods for unsupported features
     def retrieveShowMetadata(self, folder):
         # no show metadata generated, we abort this lookup function
-        return (None, None, None)
+        return None, None, None
 
     def create_show_metadata(self, show_obj):
         pass
@@ -117,7 +119,7 @@ class PS3Metadata(generic.GenericMetadata):
 
         ep_obj: a TVEpisode instance for which to create the thumbnail
         """
-        if ek(os.path.isfile, ep_obj.location):
+        if ek(os.path.isfile,ep_obj.location):
             tbn_filename = ep_obj.location + ".cover.jpg"
         else:
             return None

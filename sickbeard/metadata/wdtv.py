@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -93,7 +95,7 @@ class WDTVMetadata(generic.GenericMetadata):
     # Override with empty methods for unsupported features
     def retrieveShowMetadata(self, folder):
         # no show metadata generated, we abort this lookup function
-        return (None, None, None)
+        return None, None, None
 
     def create_show_metadata(self, show_obj):
         pass
@@ -127,7 +129,7 @@ class WDTVMetadata(generic.GenericMetadata):
 
         ep_obj: a TVEpisode instance for which to create the thumbnail
         """
-        if ek(os.path.isfile, ep_obj.location):
+        if ek(os.path.isfile,ep_obj.location):
             tbn_filename = helpers.replaceExtension(ep_obj.location, 'metathumb')
         else:
             return None
@@ -143,7 +145,7 @@ class WDTVMetadata(generic.GenericMetadata):
         """
 
         dir_list = [x for x in ek(os.listdir, show_obj.location) if
-                    ek(os.path.isdir, ek(os.path.join, show_obj.location, x))]
+                    ek(os.path.isdir,ek(os.path.join, show_obj.location, x))]
 
         season_dir_regex = r'^Season\s+(\d+)$'
 

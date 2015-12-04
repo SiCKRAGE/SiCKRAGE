@@ -17,31 +17,31 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import with_statement
 
 import sys, os.path
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 
 from configobj import ConfigObj
+
+import shutil
+
 import sickbeard
 
-from sickbeard import db, providers
+from sickbeard import db, providers, tvcache, logger
 from sickbeard.databases import mainDB
 from sickbeard.databases import cache_db, failed_db
 from sickbeard.tv import TVEpisode
-
-import shutil
-import shutil_custom
-
-shutil.copyfile = shutil_custom.copyfile_custom
+from sickrage.helper.encoding import ek
 
 #=================
 # test globals
 #=================
-TESTDIR = os.path.abspath(os.path.dirname(__file__))
+TESTSKIPPED = ['issue_submitter_tests']
+TESTDIR = ek(os.path.abspath, ek(os.path.dirname, __file__))
 TESTDBNAME = "sickbeard.db"
 TESTCACHEDBNAME = "cache.db"
 TESTFAILEDDBNAME = "failed.db"
@@ -50,20 +50,20 @@ SHOWNAME = u"show name"
 SEASON = 4
 EPISODE = 2
 FILENAME = u"show name - s0" + str(SEASON) + "e0" + str(EPISODE) + ".mkv"
-FILEDIR = os.path.join(TESTDIR, SHOWNAME)
-FILEPATH = os.path.join(FILEDIR, FILENAME)
-SHOWDIR = os.path.join(TESTDIR, SHOWNAME + " final")
+FILEDIR = ek(os.path.join, TESTDIR, SHOWNAME)
+FILEPATH = ek(os.path.join, FILEDIR, FILENAME)
+SHOWDIR = ek(os.path.join, TESTDIR, SHOWNAME + " final")
 
 #=================
 # prepare env functions
 #=================
 def createTestLogFolder():
-    if not os.path.isdir(sickbeard.LOG_DIR):
-        os.mkdir(sickbeard.LOG_DIR)
+    if not ek(os.path.isdir,sickbeard.LOG_DIR):
+        ek(os.mkdir, sickbeard.LOG_DIR)
 
 def createTestCacheFolder():
-    if not os.path.isdir(sickbeard.CACHE_DIR):
-        os.mkdir(sickbeard.CACHE_DIR)
+    if not ek(os.path.isdir,sickbeard.CACHE_DIR):
+        ek(os.mkdir, sickbeard.CACHE_DIR)
 
 # call env functions at appropriate time during sickbeard var setup
 
@@ -86,22 +86,23 @@ sickbeard.PROVIDER_ORDER = ["sick_beard_index"]
 sickbeard.newznabProviderList = providers.getNewznabProviderList("'Sick Beard Index|http://lolo.sickbeard.com/|0|5030,5040|0|eponly|0|0|0!!!NZBs.org|https://nzbs.org/||5030,5040,5060,5070,5090|0|eponly|0|0|0!!!Usenet-Crawler|https://www.usenet-crawler.com/||5030,5040,5060|0|eponly|0|0|0'")
 sickbeard.providerList = providers.makeProviderList()
 
-sickbeard.PROG_DIR = os.path.abspath(os.path.join(TESTDIR, '..'))
+sickbeard.PROG_DIR = ek(os.path.abspath, ek(os.path.join, TESTDIR, '..'))
 sickbeard.DATA_DIR = TESTDIR
-sickbeard.CONFIG_FILE = os.path.join(sickbeard.DATA_DIR, "config.ini")
+sickbeard.CONFIG_FILE = ek(os.path.join, sickbeard.DATA_DIR, "config.ini")
 sickbeard.CFG = ConfigObj(sickbeard.CONFIG_FILE)
+sickbeard.TV_DOWNLOAD_DIR = FILEDIR
 
-sickbeard.BRANCG = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'branch', '')
+sickbeard.BRANCH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'branch', '')
 sickbeard.CUR_COMMIT_HASH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'cur_commit_hash', '')
 sickbeard.GIT_USERNAME = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'git_username', '')
 sickbeard.GIT_PASSWORD = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'git_password', '', censor_log=True)
 
-sickbeard.LOG_DIR = os.path.join(TESTDIR, 'Logs')
-sickbeard.logger.logFile = os.path.join(sickbeard.LOG_DIR, 'test_sickbeard.log')
-createTestLogFolder()
-
-sickbeard.CACHE_DIR = os.path.join(TESTDIR, 'cache')
+sickbeard.CACHE_DIR = ek(os.path.join, TESTDIR, 'cache')
 createTestCacheFolder()
+
+sickbeard.LOG_DIR = ek(os.path.join, TESTDIR, 'Logs')
+sickbeard.logger.logFile = ek(os.path.join, sickbeard.LOG_DIR, 'test_sickbeard.log')
+createTestLogFolder()
 
 sickbeard.logger.initLogging(False, True)
 
@@ -112,9 +113,7 @@ def _dummy_saveConfig():
     return True
 
 # this overrides the sickbeard save_config which gets called during a db upgrade
-# this might be considered a hack
 mainDB.sickbeard.save_config = _dummy_saveConfig
-
 
 # the real one tries to contact tvdb just stop it from getting more info on the ep
 def _fake_specifyEP(self, season, episode):
@@ -125,7 +124,12 @@ TVEpisode.specifyEpisode = _fake_specifyEP
 #=================
 # test classes
 #=================
-class SickbeardTestDBCase(unittest.TestCase):
+class SiCKRAGETestCase(unittest.TestCase):
+    def setUp(self):
+        if self.__module__ in TESTSKIPPED:
+            raise unittest.SkipTest()
+
+class SiCKRAGETestDBCase(SiCKRAGETestCase):
     def setUp(self):
         sickbeard.showList = []
         setUp_test_db()
@@ -139,34 +143,43 @@ class SickbeardTestDBCase(unittest.TestCase):
         tearDown_test_show_dir()
 
 class TestDBConnection(db.DBConnection, object):
-
-    def __init__(self, dbFileName=TESTDBNAME):
-        dbFileName = os.path.join(TESTDIR, dbFileName)
-        super(TestDBConnection, self).__init__(dbFileName)
+    def __init__(self, filename=TESTDBNAME):
+        super(TestDBConnection, self).__init__(ek(os.path.join, TESTDIR, filename))
 
 class TestCacheDBConnection(TestDBConnection, object):
     def __init__(self, providerName):
-        db.DBConnection.__init__(self, os.path.join(TESTDIR, TESTCACHEDBNAME))
+        db.DBConnection.__init__(self, ek(os.path.join, TESTDIR, TESTCACHEDBNAME))
 
         # Create the table if it's not already there
         try:
             if not self.hasTable(providerName):
-                sql = "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)"
-                self.connection.execute(sql)
-                self.connection.commit()
-        except Exception, e:
-            if str(e) != "table [" + providerName + "] already exists":
-                raise
+                self.action(
+                    "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
+            else:
+                sqlResults = self.select("SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
+
+                for cur_dupe in sqlResults:
+                    self.action("DELETE FROM [" + providerName + "] WHERE url = ?", [cur_dupe["url"]])
+
+            # add unique index to prevent further dupes from happening if one does not exist
+            self.action("CREATE UNIQUE INDEX IF NOT EXISTS idx_url ON [" + providerName + "] (url)")
+
+            # add release_group column to table if missing
+            if not self.hasColumn(providerName, 'release_group'):
+                self.addColumn(providerName, 'release_group', "TEXT", "")
 
             # add version column to table if missing
             if not self.hasColumn(providerName, 'version'):
                 self.addColumn(providerName, 'version', "NUMERIC", "-1")
 
+        except Exception, e:
+            if str(e) != "table [" + providerName + "] already exists":
+                raise
+
         # Create the table if it's not already there
         try:
-            sql = "CREATE TABLE lastUpdate (provider TEXT, time NUMERIC);"
-            self.connection.execute(sql)
-            self.connection.commit()
+            if not self.hasTable('lastUpdate'):
+                self.action("CREATE TABLE lastUpdate (provider TEXT, time NUMERIC)")
         except Exception, e:
             if str(e) != "table lastUpdate already exists":
                 raise
@@ -195,24 +208,18 @@ def setUp_test_db():
 
 
 def tearDown_test_db():
-    from sickbeard.db import db_cons
-    for connection in db_cons:
-        db_cons[connection].commit()
-#        db_cons[connection].close()
-
-#    for current_db in [ TESTDBNAME, TESTCACHEDBNAME, TESTFAILEDDBNAME ]:
-#        file_name = os.path.join(TESTDIR, current_db)
-#        if os.path.exists(file_name):
-#            try:
-#                os.remove(file_name)
-#            except Exception as e:
-#                print 'ERROR: Failed to remove ' + file_name
-#                print exception(e)
-
+    for current_db in [ TESTDBNAME, TESTFAILEDDBNAME ]:
+        file_name = ek(os.path.join, TESTDIR, current_db)
+        if ek(os.path.exists,file_name):
+            try:
+                ek(os.remove, file_name)
+            except Exception as e:
+                print sickbeard.ex(e)
+                continue
 
 def setUp_test_episode_file():
-    if not os.path.exists(FILEDIR):
-        os.makedirs(FILEDIR)
+    if not ek(os.path.exists,FILEDIR):
+        ek(os.makedirs, FILEDIR)
 
     try:
         with open(FILEPATH, 'wb') as f:
@@ -224,18 +231,18 @@ def setUp_test_episode_file():
 
 
 def tearDown_test_episode_file():
-    if os.path.exists(FILEDIR):
-        shutil.rmtree(FILEDIR)
+    if ek(os.path.exists,FILEDIR):
+        ek(sickbeard.helpers.removetree,FILEDIR)
 
 
 def setUp_test_show_dir():
-    if not os.path.exists(SHOWDIR):
-        os.makedirs(SHOWDIR)
+    if not ek(os.path.exists,SHOWDIR):
+        ek(os.makedirs, SHOWDIR)
 
 
 def tearDown_test_show_dir():
-    if os.path.exists(SHOWDIR):
-        shutil.rmtree(SHOWDIR)
+    if ek(os.path.exists,SHOWDIR):
+        ek(sickbeard.helpers.removetree,SHOWDIR)
 
 
 if __name__ == '__main__':
@@ -244,7 +251,7 @@ if __name__ == '__main__':
     print "=================="
     print "you might want to call"
 
-    dirList = os.listdir(TESTDIR)
+    dirList = ek(os.listdir, TESTDIR)
     for fname in dirList:
         if (fname.find("_test") > 0) and (fname.find("pyc") < 0):
             print "- " + fname

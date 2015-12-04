@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import with_statement
 
 import sys, os.path
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
@@ -33,7 +32,7 @@ from sickbeard.helpers import sanitizeSceneName
 from sickbeard.name_parser.parser import NameParser
 from sickbeard.tv import TVShow
 
-class XEMBasicTests(test.SickbeardTestDBCase):
+class XEMBasicTests(test.SiCKRAGETestDBCase):
     def loadShowsFromDB(self):
         """
         Populates the showList with shows from the database
@@ -81,7 +80,7 @@ class XEMBasicTests(test.SickbeardTestDBCase):
 
 if __name__ == "__main__":
     print "=================="
-    print "STARTING - XEM Scene Numbering TESTS"
+    print "STARTING - XEM SCENE NUMBERING TESTS"
     print "=================="
     print "######################################################################"
     suite = unittest.TestLoader().loadTestsFromTestCase(XEMBasicTests)
