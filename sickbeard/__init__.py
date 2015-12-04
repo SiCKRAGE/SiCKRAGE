@@ -683,14 +683,13 @@ def initialize(consoleLogging=True):
                 gh = Github(login_or_token=GIT_USERNAME, password=GIT_PASSWORD, user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
             except:
                 gh = Github(user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
-        except Exception as e:
-            logger.log(u'Unable to access the SickRage GitHub API', logger.WARNING)
-            logger.log(ex(e), logger.DEBUG)
+        except:
+            logger.log(u'Unable to access the SickRage GitHub API', logger.DEBUG)
         finally:
             if gh:
                 logger.log(u'SickRage GitHub API access enabled')
             else:
-                logger.log(u'SickRage GitHub API access disabled', logger.WARNING)
+                logger.log(u'SickRage GitHub API access disabled')
 
         # git reset on update
         GIT_RESET = bool(check_setting_int(CFG, 'General', 'git_reset', 1))

@@ -1539,7 +1539,7 @@ def codeDescription(status_code):
         return 'unknown'
 
 
-def _setUpSession(session, headers):
+def _setUpSession(session, headers, params=None):
     """
     Returns a session initialized with default cache and parameter settings
 
@@ -1578,6 +1578,11 @@ def _setUpSession(session, headers):
     if 'Content-Type' in session.headers:
         session.headers.pop('Content-Type')
 
+    if params and isinstance(params, (list, dict)):
+        for param in params:
+            if isinstance(params[param], unicode):
+                params[param] = params[param].encode('utf-8')
+        session.params = params
     return session
 
 
@@ -1586,14 +1591,7 @@ def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=N
     Returns a byte-string retrieved from the url provider.
     """
 
-    session = _setUpSession(session, headers)
-
-    if params and isinstance(params, (list, dict)):
-        for param in params:
-            if isinstance(params[param], unicode):
-                params[param] = params[param].encode('utf-8')
-
-    session.params = params
+    session = _setUpSession(session, headers, params)
 
     try:
         # decide if we get or post data to server
@@ -1617,10 +1615,10 @@ def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=N
         logger.log(u"Connection timed out (sockets) accessing getURL %s Error: %r" % (url, ex(e)), logger.WARNING)
         return None
     except requests.exceptions.HTTPError as e:
-        logger.log(u"HTTP error in getURL %s Error: %r" % (url, ex(e)), logger.WARNING)
+        logger.log(u"HTTP error in getURL %s Error: %r" % (url, ex(e)), logger.DEBUG)
         return None
     except requests.exceptions.ConnectionError as e:
-        logger.log(u"Connection error to getURL %s Error: %r" % (url, ex(e)), logger.WARNING)
+        logger.log(u"Connection error to getURL %s Error: %r" % (url, ex(e)), logger.DEBUG)
         return None
     except requests.exceptions.Timeout as e:
         logger.log(u"Connection timed out accessing getURL %s Error: %r" % (url, ex(e)), logger.WARNING)
@@ -1630,8 +1628,8 @@ def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=N
         logger.log(traceback.format_exc(), logger.DEBUG)
         return None
     except Exception as e:
-        logger.log(u"Unknown exception in getURL %s Error: %r" % (url, ex(e)), logger.WARNING)
-        logger.log(traceback.format_exc(), logger.WARNING)
+        logger.log(u"Unknown exception in getURL %s Error: %r" % (url, ex(e)), logger.DEBUG)
+        logger.log(traceback.format_exc(), logger.DEBUG)
         return None
 
     return (resp.text, resp.content)[needBytes] if not json else resp.json()

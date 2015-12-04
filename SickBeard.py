@@ -47,9 +47,11 @@ from sickbeard.helpers import removetree
 from sickrage.helper.encoding import ek
 from configobj import ConfigObj
 
-
 class SickRage(object):
     def __init__(self):
+        # signal and event handlers
+        signal.signal(signal.SIGINT, sickbeard.sig_handler)
+        signal.signal(signal.SIGTERM, sickbeard.sig_handler)
         sickbeard.events = Events(self.shutdown)
 
         # daemon constants
@@ -102,6 +104,10 @@ class SickRage(object):
         return help_msg
 
     def start(self):
+        if sys.version_info < (2, 7):
+            print "Sorry, SickRage requires Python 2.7+"
+            sys.exit(1)
+
         # map the following codecs to utf-8
         codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
         codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp1252' else None)
@@ -502,18 +508,9 @@ class SickRage(object):
 
 
 if __name__ == "__main__":
-    if sys.version_info < (2, 7):
-        print "Sorry, SickRage requires Python 2.7+"
-        sys.exit(1)
-
     # correct _strptime import bug
     from time import strptime
-
     strptime("2012", "%Y")
-
-    # signal handlers
-    signal.signal(signal.SIGINT, sickbeard.sig_handler)
-    signal.signal(signal.SIGTERM, sickbeard.sig_handler)
 
     # start sickrage
     SickRage().start()
