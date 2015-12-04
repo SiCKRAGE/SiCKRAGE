@@ -101,12 +101,13 @@ class DBConnection(object):
 
     def execute(self, query, args=None, fetchall=False, fetchone=False):
         self.open()
-        return self.cursor.execute(query, args, fetchall=fetchall, fetchone=fetchone)
+        try:return self.cursor.execute(query, args, fetchall=fetchall, fetchone=fetchone)
+        except:self.commit()
 
     def commit(self):
         if self.connection:
-            self.connection.commit()
-            self.connection.close()
+            try:self.connection.commit()
+            except:self.connection.close()
             self.connection = None
 
     def checkDBVersion(self):

@@ -318,12 +318,12 @@ class SickRage(object):
 
         # Clean up after update
         if sickbeard.GIT_NEWVER:
-            toclean = os.path.join(sickbeard.CACHE_DIR, 'mako')
-            for root, dirs, files in os.walk(toclean, topdown=False):
+            toclean = ek(os.path.join, sickbeard.CACHE_DIR, 'mako')
+            for root, dirs, files in ek(os.walk, toclean, topdown=False):
                 for name in files:
-                    os.remove(os.path.join(root, name))
+                    ek(os.remove, ek(os.path.join, root, name))
                 for name in dirs:
-                    os.rmdir(os.path.join(root, name))
+                    ek(os.rmdir, ek(os.path.join,root, name))
             sickbeard.GIT_NEWVER = False
 
         # Fire up all our threads
