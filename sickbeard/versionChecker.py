@@ -92,7 +92,7 @@ class CheckVersion(object):
             if not ek(os.path.isdir,backupDir):
                 ek(os.mkdir, backupDir)
 
-            if self._keeplatestbackup(backupDir) == True and self._backup(backupDir) == True:
+            if self._keeplatestbackup(backupDir) and self._backup(backupDir):
                 logger.log(u"Config backup successful, updating...")
                 ui.notifications.message('Backup', 'Config backup successful, updating...')
                 return True
@@ -148,54 +148,6 @@ class CheckVersion(object):
 
         return helpers.backupConfigZip(source, target, sickbeard.DATA_DIR)
 
-    def safe_to_update(self):
-
-        def db_safe(self):
-            try:
-                result = self.getDBcompare()
-                if result == 'equal':
-                    logger.log(u"We can proceed with the update. New update has same DB version", logger.DEBUG)
-                    return True
-                elif result == 'upgrade':
-                    logger.log(u"We can't proceed with the update. New update has a new DB version. Please manually update", logger.WARNING)
-                    return False
-                elif result == 'downgrade':
-                    logger.log(u"We can't proceed with the update. New update has a old DB version. It's not possible to downgrade", logger.ERROR)
-                    return False
-                else:
-                    logger.log(u"We can't proceed with the update. Unable to check remote DB version. Error: %s" % result, logger.ERROR)
-                    return False
-            except Exception as e:
-                logger.log(u"We can't proceed with the update. Unable to compare DB version. Error: %s" % repr(e), logger.ERROR)
-                return False
-
-        def postprocessor_safe():
-            if not sickbeard.autoPostProcesserScheduler.action.amActive:
-                logger.log(u"We can proceed with the update. Post-Processor is not running", logger.DEBUG)
-                return True
-            else:
-                logger.log(u"We can't proceed with the update. Post-Processor is running", logger.DEBUG)
-                return False
-
-        def showupdate_safe():
-            if not sickbeard.showUpdateScheduler.action.amActive:
-                logger.log(u"We can proceed with the update. Shows are not being updated", logger.DEBUG)
-                return True
-            else:
-                logger.log(u"We can't proceed with the update. Shows are being updated", logger.DEBUG)
-                return False
-
-        db_safe = db_safe(self)
-        postprocessor_safe = postprocessor_safe()
-        showupdate_safe = showupdate_safe()
-
-        if db_safe == True and postprocessor_safe == True and showupdate_safe == True:
-            logger.log(u"Proceeding with auto update", logger.DEBUG)
-            return True
-        else:
-            logger.log(u"Auto update aborted", logger.DEBUG)
-            return False
-
     def getDBcompare(self):
         try:
             self.updater.need_update()
@@ -217,7 +169,52 @@ class CheckVersion(object):
             else:
                 return 'downgrade'
         except Exception as e:
-            return repr(e)
+            raise
+
+    def safe_to_update(self):
+        def db_safe():
+            try:
+                result = self.getDBcompare()
+
+                if result == 'equal':
+                    logger.log(u"We can proceed with the update. New update has same DB version", logger.DEBUG)
+                    return True
+                elif result == 'upgrade':
+                    logger.log(
+                        u"We can't proceed with the update. New update has a new DB version. Please manually update",
+                        logger.WARNING)
+                    return False
+                elif result == 'downgrade':
+                    logger.log(
+                        u"We can't proceed with the update. New update has a old DB version. It's not possible to downgrade",
+                        logger.ERROR)
+                    return False
+            except Exception as e:
+                logger.log(u"We can't proceed with the update. Unable to compare DB version. Error: %s" % repr(e),
+                           logger.ERROR)
+
+        def postprocessor_safe():
+            if not sickbeard.autoPostProcesserScheduler.action.amActive:
+                logger.log(u"We can proceed with the update. Post-Processor is not running", logger.DEBUG)
+                return True
+            else:
+                logger.log(u"We can't proceed with the update. Post-Processor is running", logger.DEBUG)
+                return False
+
+        def showupdate_safe():
+            if not sickbeard.showUpdateScheduler.action.amActive:
+                logger.log(u"We can proceed with the update. Shows are not being updated", logger.DEBUG)
+                return True
+            else:
+                logger.log(u"We can't proceed with the update. Shows are being updated", logger.DEBUG)
+                return False
+
+        if (db_safe(), postprocessor_safe(), showupdate_safe()):
+            logger.log(u"Proceeding with auto update", logger.DEBUG)
+            return True
+        else:
+            logger.log(u"Auto update aborted", logger.DEBUG)
+            return False
 
     @staticmethod
     def find_install_type():
