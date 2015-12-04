@@ -349,7 +349,7 @@ def makeDir(path):
     :return: True if success, False if failure
     """
 
-    if not ek(os.path.isdir,path):
+    if not ek(os.path.isdir, path):
         try:
             ek(os.makedirs, path)
             # do the library update for synoindex
