@@ -2178,16 +2178,16 @@ class HomePostProcess(Home):
 
     def processEpisode(self, *args, **kwargs):
 
-        proc_dir = getattr(kwargs, "proc_dir", getattr(kwargs, "dir", None))
-        nzbName = getattr(kwargs, "nzbName", None)
-        jobName = getattr(kwargs, "jobName", None)
-        quiet = getattr(kwargs, "quite", None)
-        process_method = getattr(kwargs, "process_method", None)
-        force = True if getattr(kwargs, "force", "0").lower() in ['1', 'on', 'true', True] else False
-        is_priority = True if getattr(kwargs, "is_priority", "0").lower() in ['1', 'on', 'true', True] else False
-        delete_on = True if getattr(kwargs, "delete_on", "0").lower() in ['1', 'on', 'true', True] else False
-        failed = True if getattr(kwargs, "failed", "0").lower() in ['1', 'on', 'true', True] else False
-        proc_type = getattr(kwargs, "proc_type", "auto")
+        proc_dir = kwargs.get("proc_dir", kwargs.get("dir", None))
+        nzbName = kwargs.get("nzbName", None)
+        jobName = kwargs.get("jobName", None)
+        quiet = kwargs.get("quite", None)
+        process_method = kwargs.get("process_method", None)
+        force = True if kwargs.get("force", "0").lower() in ['1', 'on', 'true', True] else False
+        is_priority = True if kwargs.get("is_priority", "0").lower() in ['1', 'on', 'true', True] else False
+        delete_on = True if kwargs.get("delete_on", "0").lower() in ['1', 'on', 'true', True] else False
+        failed = True if kwargs.get("failed", "0").lower() in ['1', 'on', 'true', True] else False
+        proc_type = kwargs.get("proc_type", "auto")
 
         if not proc_dir:
             return self.redirect("/home/postprocess/")
