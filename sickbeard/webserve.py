@@ -2176,31 +2176,24 @@ class HomePostProcess(Home):
         t = PageTemplate(rh=self, filename="home_postprocess.mako")
         return t.render(title='Post Processing', header='Post Processing', topmenu='home')
 
-    def processEpisode(self, proc_dir=None, nzbName=None, jobName=None, quiet=None, process_method=None, force=None,
-                       is_priority=None, delete_on="0", failed="0", proc_type="auto", *args, **kwargs):
+    def processEpisode(self, *args, **kwargs):
 
-        def argToBool(argument):
-            if isinstance(argument, basestring):
-                _arg = argument.strip().lower()
-            else:
-                _arg = argument
-
-            if _arg in ['1', 'on', 'true', True]:
-                return True
-            elif _arg in ['0', 'off', 'false', False]:
-                return False
-
-            return argument
-
-        def argToUnicode(argument):
-            return argument if not isinstance(argument, str) else argument.decode('UTF-8')
+        proc_dir = getattr(kwargs, "proc_dir", getattr(kwargs, "dir", None))
+        nzbName = getattr(kwargs, "nzbName", None)
+        jobName = getattr(kwargs, "jobName", None)
+        quiet = getattr(kwargs, "quite", None)
+        process_method = getattr(kwargs, "process_method", None)
+        force = True if getattr(kwargs, "force", "0").lower() in ['1', 'on', 'true', True] else False
+        is_priority = True if getattr(kwargs, "is_priority", "0").lower() in ['1', 'on', 'true', True] else False
+        delete_on = True if getattr(kwargs, "delete_on", "0").lower() in ['1', 'on', 'true', True] else False
+        failed = True if getattr(kwargs, "failed", "0").lower() in ['1', 'on', 'true', True] else False
+        proc_type = getattr(kwargs, "proc_type", "auto")
 
         if not proc_dir:
             return self.redirect("/home/postprocess/")
         else:
-            result = processTV.processDir(
-                argToUnicode(proc_dir), argToUnicode(nzbName), process_method=process_method, force=argToBool(force),
-                is_priority=argToBool(is_priority), delete_on=argToBool(delete_on), failed=argToBool(failed), proc_type=proc_type
+            result = processTV.processDir(proc_dir, nzbName, process_method=process_method, force=force,
+                is_priority=is_priority, delete_on=delete_on, failed=failed, proc_type=proc_type
             )
 
             if quiet is not None and int(quiet) == 1:
