@@ -17,7 +17,7 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 from sickbeard.providers import btn, newznab, womble, thepiratebay, torrentleech, kat, iptorrents, torrentz, \
-    omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, nextgen, speedcd, nyaatorrents, animenzb, bluetigers, cpasbien, fnt, xthor, torrentbytes, \
+    omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, speedcd, nyaatorrents, animenzb, bluetigers, cpasbien, fnt, xthor, torrentbytes, \
     freshontv, titansoftv, libertalia, morethantv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, binsearch, torrentproject, extratorrent, \
     scenetime, btdigg, strike, transmitthenet, tvchaosuk, bitcannon, pretome, gftracker, hdspace, newpct
 
@@ -33,7 +33,6 @@ __all__ = ['womble',
            'hounddawgs',
            'iptorrents',
            'omgwtfnzbs',
-           'nextgen',
            'speedcd',
            'nyaatorrents',
            'animenzb',

@@ -24,6 +24,8 @@
 # Catching too general exception
 
 # correct _strptime import bug
+from __future__ import print_function
+from __future__ import print_function
 from time import strptime
 strptime("2012", "%Y")
 
@@ -314,7 +316,7 @@ class SickRage(object):
         self.webserver.start()
 
         if self.consoleLogging:
-            print "Starting up SickRage " + sickbeard.BRANCH + " from " + sickbeard.CONFIG_FILE
+            print("Starting up SickRage " + sickbeard.BRANCH + " from " + sickbeard.CONFIG_FILE)
 
         # Clean up after update
         if sickbeard.GIT_NEWVER:
@@ -509,7 +511,7 @@ class SickRage(object):
 
 if __name__ == "__main__":
     if sys.version_info < (2, 7):
-        print "Sorry, SickRage requires Python 2.7+"
+        print("Sorry, SickRage requires Python 2.7+")
         sys.exit(1)
 
     # start sickrage

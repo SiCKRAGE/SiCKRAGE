@@ -17,6 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
 import sys, os.path
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -34,27 +42,27 @@ from sickrage.helper.exceptions import ex
 class SNI_Tests(test.SiCKRAGETestCase):
     self_signed_cert_providers = ["Womble's Index", "Libertalia"]
     def test_SNI_URLS(self):
-        print ''
+        print('')
         #Just checking all providers - we should make this error on non-existent urls.
         for provider in [provider for provider in providers.makeProviderList() if provider.name not in self.self_signed_cert_providers]:
-            print 'Checking %s' % provider.name
+            print('Checking %s' % provider.name)
             try:
                 requests.head(provider.url, verify=certifi.where(), timeout=5)
             except requests.exceptions.Timeout:
                 pass
             except requests.exceptions.SSLError as error:
                 if u'SSL3_GET_SERVER_CERTIFICATE' not in ex(error):
-                    print 'SSLError on %s: %s' % (provider.name, ex(error.message))
+                    print('SSLError on %s: %s' % (provider.name, ex(error.message)))
                     raise
                 else:
-                    print 'Cannot verify certificate for %s' % provider.name
+                    print('Cannot verify certificate for %s' % provider.name)
             except Exception:
                 pass
 
 if __name__ == "__main__":
-    print "=================="
-    print "STARTING - SSL TESTS"
-    print "=================="
-    print "######################################################################"
+    print("==================")
+    print("STARTING - SSL TESTS")
+    print("==================")
+    print("######################################################################")
     suite = unittest.TestLoader().loadTestsFromTestCase(SNI_Tests)
     unittest.TextTestRunner(verbosity=2).run(suite)
