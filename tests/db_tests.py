@@ -17,6 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
 import sys, os.path
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -33,9 +37,9 @@ class DBBasicTests(test.SiCKRAGETestDBCase):
         self.db.select("SELECT * FROM tv_episodes WHERE showid = ? AND location != ''", [0000])
 
 if __name__ == '__main__':
-    print "=================="
-    print "STARTING - DB TESTS"
-    print "=================="
-    print "######################################################################"
+    print("==================")
+    print("STARTING - DB TESTS")
+    print("==================")
+    print("######################################################################")
     suite = unittest.TestLoader().loadTestsFromTestCase(DBBasicTests)
     unittest.TextTestRunner(verbosity=2).run(suite)

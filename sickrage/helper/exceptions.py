@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import sickrage.helper.encoding
+from encoding import uu, ek
 
 def ex(e):
     """
@@ -24,28 +24,7 @@ def ex(e):
     :return: A unicode string from the exception text if it exists
     """
 
-    message = u''
-
-    if not e or not e.args:
-        return message
-
-    for arg in e.args:
-        if arg is not None:
-            if isinstance(arg, (str, unicode)):
-                fixed_arg = sickrage.helper.encoding.ss(arg)
-            else:
-                try:
-                    fixed_arg = u'error %s' % sickrage.helper.encoding.ss(str(arg))
-                except Exception:
-                    fixed_arg = None
-
-            if fixed_arg:
-                if not message:
-                    message = fixed_arg
-                else:
-                    message = '%s : %s' % (message, fixed_arg)
-
-    return message
+    return uu(e)
 
 
 class SickRageException(Exception):

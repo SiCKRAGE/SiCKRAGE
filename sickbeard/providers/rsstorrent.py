@@ -124,13 +124,13 @@ class TorrentRssProvider(generic.TorrentProvider):
                 torrent_file = self.getURL(url)
                 try:
                     bdecode(torrent_file)
-                except Exception, e:
+                except Exception as e:
                     self.dumpHTML(torrent_file)
                     return (False, 'Torrent link is not a valid torrent file: ' + ex(e))
 
             return (True, 'RSS feed Parsed correctly')
 
-        except Exception, e:
+        except Exception as e:
             return (False, 'Error when trying to load RSS: ' + ex(e))
 
     @staticmethod
@@ -142,7 +142,7 @@ class TorrentRssProvider(generic.TorrentProvider):
             fileOut.write(data)
             fileOut.close()
             helpers.chmodAsParent(dumpName)
-        except IOError, e:
+        except IOError as e:
             logger.log(u"Unable to save the file: %s " % repr(e), logger.ERROR)
             return False
         logger.log(u"Saved custom_torrent html dump %s " % dumpName, logger.INFO)

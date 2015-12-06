@@ -109,8 +109,8 @@ def saveNZB(nzbName, nzbString):
         with ek(io.open, nzbName + ".nzb", 'w') as nzb_fh:
             nzb_fh.write(nzbString)
 
-    except EnvironmentError, e:
-        logger.log(u"Unable to save NZB: " + ex(e), logger.ERROR)
+    except EnvironmentError as e:
+        logger.log(u"Unable to save NZB: {}".format(ex(e)), logger.ERROR)
 
 
 def stripNS(element, ns):

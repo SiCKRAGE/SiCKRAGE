@@ -78,7 +78,7 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
 
     try:
         fileList = [{'name': filename, 'path': ek(os.path.join, path, filename)} for filename in ek(os.listdir, path)]
-    except OSError, e:
+    except OSError as e:
         logger.log(u"Unable to open " + path + ": " + repr(e) + " / " + str(e), logger.WARNING)
         fileList = [{'name': filename, 'path': ek(os.path.join, parentPath, filename)} for filename in ek(os.listdir, parentPath)]
 

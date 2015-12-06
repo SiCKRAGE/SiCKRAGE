@@ -87,7 +87,7 @@ class PLEXNotifier:
             # could return result response = re.compile('<html><li>(.+\w)</html>').findall(result)
             return 'OK'
 
-        except (urllib2.URLError, IOError), e:
+        except (urllib2.URLError, IOError) as e:
             logger.log(u'PLEX: Warning: Couldn\'t contact Plex at ' + url + ' ' + ex(e), logger.WARNING)
             return False
 
@@ -223,7 +223,7 @@ class PLEXNotifier:
                 try:
                     xml_tree = etree.parse(urllib.urlopen(url))
                     media_container = xml_tree.getroot()
-                except IOError, e:
+                except IOError as e:
                     logger.log(u'PLEX: Error while trying to contact Plex Media Server: ' + ex(e), logger.WARNING)
                     hosts_failed.append(cur_host)
                     continue
@@ -265,7 +265,7 @@ class PLEXNotifier:
                 try:
                     force and urllib.urlopen(url)
                     host_list.append(cur_host)
-                except Exception, e:
+                except Exception as e:
                     logger.log(u'PLEX: Error updating library section for Plex Media Server: ' + ex(e), logger.WARNING)
                     hosts_failed.append(cur_host)
 

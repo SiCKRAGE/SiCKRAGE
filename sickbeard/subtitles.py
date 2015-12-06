@@ -463,4 +463,4 @@ def run_subs_extra_scripts(epObj, found_subtitles, video, single=False):
                 logger.log(u"Script result: %s" % out, logger.DEBUG)
 
             except Exception as e:
-                logger.log(u"Unable to run subs_extra_script: " + ex(e))
+                logger.log(u"Unable to run subs_extra_script: {}".format(ex(e)))

@@ -140,7 +140,7 @@ class Logger(object):
 
     def log(self, msg, level=INFO, *args, **kwargs):
         meThread = threading.currentThread().getName()
-        message = meThread + "::" + msg
+        message = uu(meThread + "::" + msg)
 
         if level in (ERROR, WARNING):
             self.logger.exception(message, *args, **kwargs)
@@ -224,7 +224,7 @@ class Logger(object):
                     if len(title_Error) > 1000:
                         title_Error = title_Error[0:1000]
                 except Exception as e:
-                    self.log("Unable to get error title : " + ex(e), ERROR)
+                    self.log("Unable to get error title : {}".format(ex(e)), ERROR)
 
                 gist = None
                 regex = ur"^(%s)\s+([A-Z]+)\s+([0-9A-Z\-]+)\s*(.*)$" % curError.time

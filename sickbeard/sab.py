@@ -111,12 +111,12 @@ def sendNZB(nzb):
 
             f = opener.open(req)
 
-    except (EOFError, IOError), e:
-        logger.log(u"Unable to connect to SAB: " + ex(e), logger.ERROR)
+    except (EOFError, IOError) as e:
+        logger.log(u"Unable to connect to SAB: {}".format(ex(e)), logger.ERROR)
         return False
 
-    except httplib.InvalidURL, e:
-        logger.log(u"Invalid SAB host, check your config: " + ex(e), logger.ERROR)
+    except httplib.InvalidURL as e:
+        logger.log(u"Invalid SAB host, check your config: {}".format(ex(e)), logger.ERROR)
         return False
 
     # this means we couldn't open the connection or something just as bad
@@ -127,8 +127,8 @@ def sendNZB(nzb):
     # if we opened the URL connection then read the result from SAB
     try:
         result = f.readlines()
-    except Exception, e:
-        logger.log(u"Error trying to get result from SAB, NZB not sent: " + ex(e), logger.ERROR)
+    except Exception as e:
+        logger.log(u"Error trying to get result from SAB, NZB not sent: {}".format(ex(e)), logger.ERROR)
         return False
 
     # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and didn't recieve the NZB
@@ -162,8 +162,8 @@ def _checkSabResponse(f):
     """
     try:
         result = f.readlines()
-    except Exception, e:
-        logger.log(u"Error trying to get result from SAB" + ex(e), logger.ERROR)
+    except Exception as e:
+        logger.log(u"Error trying to get result from SAB{}".format(ex(e)), logger.ERROR)
         return False, "Error from SAB"
 
     if len(result) == 0:
@@ -174,7 +174,7 @@ def _checkSabResponse(f):
     sabJson = {}
     try:
         sabJson = json.loads(sabText)
-    except ValueError, e:
+    except ValueError as e:
         pass
 
     if sabText == "Missing authentication":
@@ -196,11 +196,11 @@ def _sabURLOpenSimple(url):
     """
     try:
         f = urllib.urlopen(url)
-    except (EOFError, IOError), e:
-        logger.log(u"Unable to connect to SAB: " + ex(e), logger.ERROR)
+    except (EOFError, IOError) as e:
+        logger.log(u"Unable to connect to SAB: {}".format(ex(e)), logger.ERROR)
         return False, "Unable to connect"
-    except httplib.InvalidURL, e:
-        logger.log(u"Invalid SAB host, check your config: " + ex(e), logger.ERROR)
+    except httplib.InvalidURL as e:
+        logger.log(u"Invalid SAB host, check your config: {}".format(ex(e)), logger.ERROR)
         return False, "Invalid SAB host"
     if f == None:
         logger.log(u"No data returned from SABnzbd", logger.ERROR)

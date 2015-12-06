@@ -82,8 +82,8 @@ class ShowUpdater:
                         logger.DEBUG)
                     piList.append(sickbeard.showQueueScheduler.action.refreshShow(curShow, True))  # @UndefinedVariable
 
-            except (CantUpdateShowException, CantRefreshShowException), e:
-                logger.log(u"Automatic update failed: " + ex(e), logger.ERROR)
+            except (CantUpdateShowException, CantRefreshShowException) as e:
+                logger.log(u"Automatic update failed: {}".format(ex(e)), logger.ERROR)
 
         ui.ProgressIndicators.setIndicator('dailyUpdate', ui.QueueProgressIndicator("Daily Update", piList))
 
