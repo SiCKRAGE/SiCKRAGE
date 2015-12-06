@@ -21,9 +21,9 @@ import os.path
 import datetime
 import re
 import urlparse
-import sickbeard
-import logging
 
+import sickbeard
+from sickbeard import logger
 from sickbeard import helpers
 from sickbeard import naming
 from sickbeard import db
@@ -70,7 +70,7 @@ def change_HTTPS_CERT(https_cert):
     if ek(os.path.normpath, sickbeard.HTTPS_CERT) != ek(os.path.normpath, https_cert):
         if helpers.makeDir(ek(os.path.dirname, ek(os.path.abspath, https_cert))):
             sickbeard.HTTPS_CERT = ek(os.path.normpath, https_cert)
-            logging.log(u"Changed https cert path to " + https_cert)
+            logger.log(u"Changed https cert path to " + https_cert)
         else:
             return False
 
@@ -91,7 +91,7 @@ def change_HTTPS_KEY(https_key):
     if ek(os.path.normpath, sickbeard.HTTPS_KEY) != ek(os.path.normpath, https_key):
         if helpers.makeDir(ek(os.path.dirname, ek(os.path.abspath, https_key))):
             sickbeard.HTTPS_KEY = ek(os.path.normpath, https_key)
-            logging.log(u"Changed https key path to " + https_key)
+            logger.log(u"Changed https key path to " + https_key)
         else:
             return False
 
@@ -100,10 +100,10 @@ def change_HTTPS_KEY(https_key):
 
 def change_LOG_DIR(log_dir, web_log):
     """
-    Change logging directory for application and webserver
+    Change logger directory for application and webserver
 
-    :param log_dir: Path to new logging directory
-    :param web_log: Enable/disable web logging
+    :param log_dir: Path to new logger directory
+    :param web_log: Enable/disable web logger
     :return: True on success, False on failure
     """
     log_dir_changed = False
@@ -115,8 +115,8 @@ def change_LOG_DIR(log_dir, web_log):
             sickbeard.ACTUAL_LOG_DIR = ek(os.path.normpath, log_dir)
             sickbeard.LOG_DIR = abs_log_dir
 
-            logging.initLogging()
-            logging.log(u"Initialized new log file in " + sickbeard.LOG_DIR)
+            logger.initlogger()
+            logger.log(u"Initialized new log file in " + sickbeard.LOG_DIR)
             log_dir_changed = True
 
         else:
@@ -142,7 +142,7 @@ def change_NZB_DIR(nzb_dir):
     if ek(os.path.normpath, sickbeard.NZB_DIR) != ek(os.path.normpath, nzb_dir):
         if helpers.makeDir(nzb_dir):
             sickbeard.NZB_DIR = ek(os.path.normpath, nzb_dir)
-            logging.log(u"Changed NZB folder to " + nzb_dir)
+            logger.log(u"Changed NZB folder to " + nzb_dir)
         else:
             return False
 
@@ -163,7 +163,7 @@ def change_TORRENT_DIR(torrent_dir):
     if ek(os.path.normpath, sickbeard.TORRENT_DIR) != ek(os.path.normpath, torrent_dir):
         if helpers.makeDir(torrent_dir):
             sickbeard.TORRENT_DIR = ek(os.path.normpath, torrent_dir)
-            logging.log(u"Changed torrent folder to " + torrent_dir)
+            lo.log(u"Changed torrent folder to " + torrent_dir)
         else:
             return False
 
@@ -184,7 +184,7 @@ def change_TV_DOWNLOAD_DIR(tv_download_dir):
     if ek(os.path.normpath, sickbeard.TV_DOWNLOAD_DIR) != ek(os.path.normpath, tv_download_dir):
         if helpers.makeDir(tv_download_dir):
             sickbeard.TV_DOWNLOAD_DIR = ek(os.path.normpath, tv_download_dir)
-            logging.log(u"Changed TV download folder to " + tv_download_dir)
+            logger.log(u"Changed TV download folder to " + tv_download_dir)
         else:
             return False
 
@@ -302,15 +302,15 @@ def change_DOWNLOAD_PROPERS(download_propers):
     sickbeard.DOWNLOAD_PROPERS = download_propers
     if sickbeard.DOWNLOAD_PROPERS:
         if not sickbeard.properFinderScheduler.enable:
-            logging.log(u"Starting PROPERFINDER thread", logging.INFO)
+            logger.log(u"Starting PROPERFINDER thread", logger.INFO)
             sickbeard.properFinderScheduler.silent = False
             sickbeard.properFinderScheduler.enable = True
         else:
-            logging.log(u"Unable to start PROPERFINDER thread. Already running", logging.INFO)
+            logger.log(u"Unable to start PROPERFINDER thread. Already running", logger.INFO)
     else:
         sickbeard.properFinderScheduler.enable = False
         sickbeard.traktCheckerScheduler.silent = True
-        logging.log(u"Stopping PROPERFINDER thread", logging.INFO)
+        logger.log(u"Stopping PROPERFINDER thread", logger.INFO)
 
 def change_USE_TRAKT(use_trakt):
     """
@@ -327,15 +327,15 @@ def change_USE_TRAKT(use_trakt):
     sickbeard.USE_TRAKT = use_trakt
     if sickbeard.USE_TRAKT:
         if not sickbeard.traktCheckerScheduler.enable:
-            logging.log(u"Starting TRAKTCHECKER thread", logging.INFO)
+            logger.log(u"Starting TRAKTCHECKER thread", logger.INFO)
             sickbeard.traktCheckerScheduler.silent = False
             sickbeard.traktCheckerScheduler.enable = True
         else:
-            logging.log(u"Unable to start TRAKTCHECKER thread. Already running", logging.INFO)
+            logger.log(u"Unable to start TRAKTCHECKER thread. Already running", logger.INFO)
     else:
         sickbeard.traktCheckerScheduler.enable = False
         sickbeard.traktCheckerScheduler.silent = True
-        logging.log(u"Stopping TRAKTCHECKER thread", logging.INFO)
+        logger.log(u"Stopping TRAKTCHECKER thread", logger.INFO)
 
 
 def change_USE_SUBTITLES(use_subtitles):
@@ -353,15 +353,15 @@ def change_USE_SUBTITLES(use_subtitles):
     sickbeard.USE_SUBTITLES = use_subtitles
     if sickbeard.USE_SUBTITLES:
         if not sickbeard.subtitlesFinderScheduler.enable:
-            logging.log(u"Starting SUBTITLESFINDER thread", logging.INFO)
+            logger.log(u"Starting SUBTITLESFINDER thread", logger.INFO)
             sickbeard.subtitlesFinderScheduler.silent = False
             sickbeard.subtitlesFinderScheduler.enable = True
         else:
-            logging.log(u"Unable to start SUBTITLESFINDER thread. Already running", logging.INFO)
+            logger.log(u"Unable to start SUBTITLESFINDER thread. Already running", logger.INFO)
     else:
         sickbeard.subtitlesFinderScheduler.enable = False
         sickbeard.subtitlesFinderScheduler.silent = True
-        logging.log(u"Stopping SUBTITLESFINDER thread", logging.INFO)
+        logger.log(u"Stopping SUBTITLESFINDER thread", logger.INFO)
 
 def change_PROCESS_AUTOMATICALLY(process_automatically):
     """
@@ -378,13 +378,13 @@ def change_PROCESS_AUTOMATICALLY(process_automatically):
     sickbeard.PROCESS_AUTOMATICALLY = process_automatically
     if sickbeard.PROCESS_AUTOMATICALLY:
         if not sickbeard.autoPostProcesserScheduler.enable:
-            logging.log(u"Starting POSTPROCESSER thread", logging.INFO)
+            logger.log(u"Starting POSTPROCESSER thread", logger.INFO)
             sickbeard.autoPostProcesserScheduler.silent = False
             sickbeard.autoPostProcesserScheduler.enable = True
         else:
-            logging.log(u"Unable to start POSTPROCESSER thread. Already running", logging.INFO)
+            logger.log(u"Unable to start POSTPROCESSER thread. Already running", logger.INFO)
     else:
-        logging.log(u"Stopping POSTPROCESSER thread", logging.INFO)
+        logger.log(u"Stopping POSTPROCESSER thread", logger.INFO)
         sickbeard.autoPostProcesserScheduler.enable = False
         sickbeard.autoPostProcesserScheduler.silent = True
 
@@ -547,7 +547,7 @@ def check_setting_int(config, cfg_name, item_name, def_val, silent=True):
             config[cfg_name][item_name] = my_val
 
     if not silent:
-        logging.log(item_name + " -> " + str(my_val), logging.DEBUG)
+        logger.log(item_name + " -> " + str(my_val), logger.DEBUG)
 
     return my_val
 
@@ -569,7 +569,7 @@ def check_setting_float(config, cfg_name, item_name, def_val, silent=True):
             config[cfg_name][item_name] = my_val
 
     if not silent:
-        logging.log(item_name + " -> " + str(my_val), logging.DEBUG)
+        logger.log(item_name + " -> " + str(my_val), logger.DEBUG)
 
     return my_val
 
@@ -600,7 +600,7 @@ def check_setting_str(config, cfg_name, item_name, def_val, silent=True, censor_
         sickbeard.logger.censoredItems[cfg_name, item_name] = my_val
 
     if not silent:
-        logging.log(item_name + " -> " + my_val, logging.DEBUG)
+        logger.log(item_name + " -> " + my_val, logger.DEBUG)
 
     return my_val
 
@@ -632,7 +632,7 @@ class ConfigMigrator():
         """
 
         if self.config_version > self.expected_config_version:
-            logging.log_error_and_exit(
+            logger.log_error_and_exit(
                 u"""Your config version (%i) has been incremented past what this version of SickRage supports (%i).
                 If you have used other forks or a newer version of SickRage, your config file may be unusable due to their modifications.""" %
                 (self.config_version, self.expected_config_version)
@@ -648,20 +648,20 @@ class ConfigMigrator():
             else:
                 migration_name = ''
 
-            logging.log(u"Backing up config before upgrade")
+            logger.log(u"Backing up config before upgrade")
             if not helpers.backupVersionedFile(sickbeard.CONFIG_FILE, self.config_version):
-                logging.log_error_and_exit(u"Config backup failed, abort upgrading config")
+                logger.log_error_and_exit(u"Config backup failed, abort upgrading config")
             else:
-                logging.log(u"Proceeding with upgrade")
+                logger.log(u"Proceeding with upgrade")
 
             # do the migration, expect a method named _migrate_v<num>
-            logging.log(u"Migrating config up to version " + str(next_version) + migration_name)
+            logger.log(u"Migrating config up to version " + str(next_version) + migration_name)
             getattr(self, '_migrate_v' + str(next_version))()
             self.config_version = next_version
 
             # save new config after migration
             sickbeard.CONFIG_VERSION = self.config_version
-            logging.log(u"Saving config file to disk")
+            logger.log(u"Saving config file to disk")
             sickbeard.save_config()
 
     # Migration v1: Custom naming
@@ -671,13 +671,13 @@ class ConfigMigrator():
         """
 
         sickbeard.NAMING_PATTERN = self._name_to_pattern()
-        logging.log(u"Based on your old settings I'm setting your new naming pattern to: " + sickbeard.NAMING_PATTERN)
+        logger.log(u"Based on your old settings I'm setting your new naming pattern to: " + sickbeard.NAMING_PATTERN)
 
         sickbeard.NAMING_CUSTOM_ABD = bool(check_setting_int(self.config_obj, 'General', 'naming_dates', 0))
 
         if sickbeard.NAMING_CUSTOM_ABD:
             sickbeard.NAMING_ABD_PATTERN = self._name_to_pattern(True)
-            logging.log(u"Adding a custom air-by-date naming pattern to your config: " + sickbeard.NAMING_ABD_PATTERN)
+            logger.log(u"Adding a custom air-by-date naming pattern to your config: " + sickbeard.NAMING_ABD_PATTERN)
         else:
             sickbeard.NAMING_ABD_PATTERN = naming.name_abd_presets[0]
 
@@ -698,17 +698,17 @@ class ConfigMigrator():
                     new_season_format = str(new_season_format).replace('09', '%0S')
                     new_season_format = new_season_format.replace('9', '%S')
 
-                    logging.log(
+                    logger.log(
                         u"Changed season folder format from " + old_season_format + " to " + new_season_format + ", prepending it to your naming config")
                     sickbeard.NAMING_PATTERN = new_season_format + os.sep + sickbeard.NAMING_PATTERN
 
                 except (TypeError, ValueError):
-                    logging.log(u"Can't change " + old_season_format + " to new season format", logging.ERROR)
+                    logger.log(u"Can't change " + old_season_format + " to new season format", logger.ERROR)
 
         # if no shows had it on then don't flatten any shows and don't put season folders in the config
         else:
 
-            logging.log(u"No shows were using season folders before so I'm disabling flattening on all shows")
+            logger.log(u"No shows were using season folders before so I'm disabling flattening on all shows")
 
             # don't flatten any shows at all
             myDB.action("UPDATE tv_shows SET flatten_folders = 0")
@@ -799,8 +799,8 @@ class ConfigMigrator():
                 try:
                     name, url, key, enabled = cur_provider_data.split("|")
                 except ValueError:
-                    logging.log(u"Skipping Newznab provider string: '" + cur_provider_data + "', incorrect format",
-                               logging.ERROR)
+                    logger.log(u"Skipping Newznab provider string: '" + cur_provider_data + "', incorrect format",
+                               logger.ERROR)
                     continue
 
                 if name == 'Sick Beard Index':
@@ -857,7 +857,7 @@ class ConfigMigrator():
             cur_metadata = metadata.split('|')
             # if target has the old number of values, do upgrade
             if len(cur_metadata) == 6:
-                logging.log(u"Upgrading " + metadata_name + " metadata, old value: " + metadata)
+                logger.log(u"Upgrading " + metadata_name + " metadata, old value: " + metadata)
                 cur_metadata.insert(4, '0')
                 cur_metadata.append('0')
                 cur_metadata.append('0')
@@ -869,18 +869,18 @@ class ConfigMigrator():
                     cur_metadata[4], cur_metadata[3] = cur_metadata[3], '0'
                 # write new format
                 metadata = '|'.join(cur_metadata)
-                logging.log(u"Upgrading " + metadata_name + " metadata, new value: " + metadata)
+                logger.log(u"Upgrading " + metadata_name + " metadata, new value: " + metadata)
 
             elif len(cur_metadata) == 10:
 
                 metadata = '|'.join(cur_metadata)
-                logging.log(u"Keeping " + metadata_name + " metadata, value: " + metadata)
+                logger.log(u"Keeping " + metadata_name + " metadata, value: " + metadata)
 
             else:
-                logging.log(u"Skipping " + metadata_name + " metadata: '" + metadata + "', incorrect format",
-                           logging.ERROR)
+                logger.log(u"Skipping " + metadata_name + " metadata: '" + metadata + "', incorrect format",
+                           logger.ERROR)
                 metadata = '0|0|0|0|0|0|0|0|0|0'
-                logging.log(u"Setting " + metadata_name + " metadata, new value: " + metadata)
+                logger.log(u"Setting " + metadata_name + " metadata, new value: " + metadata)
 
             return metadata
 

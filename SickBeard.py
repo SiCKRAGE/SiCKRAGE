@@ -232,7 +232,7 @@ class SickRage(object):
         # Make sure that we can create the data dir
         if not ek(os.access, sickbeard.DATA_DIR, os.F_OK):
             try:
-                ek(os.makedirs, sickbeard.DATA_DIR, 0744)
+                ek(os.makedirs, sickbeard.DATA_DIR, 0o744)
             except os.error:
                 raise SystemExit("Unable to create datadir '" + sickbeard.DATA_DIR + "'")
 
