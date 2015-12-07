@@ -18,6 +18,13 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
 import sys, os.path
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
@@ -172,7 +179,7 @@ class TestCacheDBConnection(TestDBConnection, object):
             if not self.hasColumn(providerName, 'version'):
                 self.addColumn(providerName, 'version', "NUMERIC", "-1")
 
-        except Exception, e:
+        except Exception as e:
             if str(e) != "table [" + providerName + "] already exists":
                 raise
 
@@ -180,7 +187,7 @@ class TestCacheDBConnection(TestDBConnection, object):
         try:
             if not self.hasTable('lastUpdate'):
                 self.action("CREATE TABLE lastUpdate (provider TEXT, time NUMERIC)")
-        except Exception, e:
+        except Exception as e:
             if str(e) != "table lastUpdate already exists":
                 raise
 
@@ -214,7 +221,7 @@ def tearDown_test_db():
             try:
                 ek(os.remove, file_name)
             except Exception as e:
-                print sickbeard.ex(e)
+                print(sickbeard.ex(e))
                 continue
 
 def setUp_test_episode_file():
@@ -226,7 +233,7 @@ def setUp_test_episode_file():
             f.write("foo bar")
             f.flush()
     except Exception:
-        print "Unable to set up test episode"
+        print("Unable to set up test episode")
         raise
 
 
@@ -246,15 +253,15 @@ def tearDown_test_show_dir():
 
 
 if __name__ == '__main__':
-    print "=================="
-    print "Dont call this directly"
-    print "=================="
-    print "you might want to call"
+    print("==================")
+    print("Dont call this directly")
+    print("==================")
+    print("you might want to call")
 
     dirList = ek(os.listdir, TESTDIR)
     for fname in dirList:
         if (fname.find("_test") > 0) and (fname.find("pyc") < 0):
-            print "- " + fname
+            print("- " + fname)
 
-    print "=================="
-    print "or just call all_tests.py"
+    print("==================")
+    print("or just call all_tests.py")

@@ -48,8 +48,6 @@ import adba
 import requests
 import certifi
 import shutil
-from contextlib import closing
-from socket import timeout as SocketTimeout
 
 from sickbeard import logger, classes
 from sickbeard.common import USER_AGENT
@@ -58,11 +56,12 @@ from sickbeard.common import subtitleExtensions
 from sickbeard import db
 from sickbeard.notifiers.synoindex import notifier as synoindex_notifier
 from sickbeard import clients
-from sickrage.helper.encoding import ek
+from sickrage.helper.encoding import ek, uu
 from sickrage.helper.exceptions import ex, MultipleShowObjectsException
 from sickbeard.subtitles import isValidLanguage
 from cachecontrol import CacheControl, caches
-
+from contextlib import closing
+from socket import timeout as SocketTimeout
 from itertools import izip, cycle
 
 # pylint: disable=W0212
@@ -1135,7 +1134,7 @@ def anon_url(*url):
     """
     Return a URL string consisting of the Anonymous redirect URL and an arbitrary number of values appended.
     """
-    return '' if None in url else '%s%s' % (sickbeard.ANON_REDIRECT, ''.join(str(s) for s in url))
+    return '{}{}'.format(sickbeard.ANON_REDIRECT, uu(url[1:]))
 
 
 """

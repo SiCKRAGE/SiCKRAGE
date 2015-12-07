@@ -121,14 +121,14 @@ class NMJNotifier:
                 req = urllib2.Request(mount)
                 logger.log(u"Try to mount network drive via url: %s" % (mount), logger.DEBUG)
                 handle = urllib2.urlopen(req)
-            except IOError, e:
+            except IOError as e:
                 if hasattr(e, 'reason'):
                     logger.log(u"NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason), logger.WARNING)
                 elif hasattr(e, 'code'):
                     logger.log(u"NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code), logger.WARNING)
                 return False
-            except Exception, e:
-                logger.log(u"NMJ: Unknown exception: " + ex(e), logger.ERROR)
+            except Exception as e:
+                logger.log(u"NMJ: Unknown exception: {}".format(ex(e)), logger.ERROR)
                 return False
 
         # build up the request URL and parameters
@@ -148,21 +148,21 @@ class NMJNotifier:
             logger.log(u"Sending NMJ scan update command via url: %s" % (updateUrl), logger.DEBUG)
             handle = urllib2.urlopen(req)
             response = handle.read()
-        except IOError, e:
+        except IOError as e:
             if hasattr(e, 'reason'):
                 logger.log(u"NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason), logger.WARNING)
             elif hasattr(e, 'code'):
                 logger.log(u"NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code), logger.WARNING)
             return False
-        except Exception, e:
-            logger.log(u"NMJ: Unknown exception: " + ex(e), logger.ERROR)
+        except Exception as e:
+            logger.log(u"NMJ: Unknown exception: {}".format(ex(e)), logger.ERROR)
             return False
 
         # try to parse the resulting XML
         try:
             et = etree.fromstring(response)
             result = et.findtext("returnValue")
-        except SyntaxError, e:
+        except SyntaxError as e:
             logger.log(u"Unable to parse XML returned from the Popcorn Hour: %s" % (e), logger.ERROR)
             return False
 

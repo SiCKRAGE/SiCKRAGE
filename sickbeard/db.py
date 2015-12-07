@@ -84,7 +84,7 @@ class DBConnection(object):
         try:
             self.open()
         except Exception as e:
-            logger.log(u"DB error: " + ex(e), logger.ERROR)
+            logger.log(u"DB error: {}".format(ex(e)), logger.ERROR)
 
     def open(self):
         try:
@@ -106,9 +106,11 @@ class DBConnection(object):
 
     def commit(self):
         if self.connection:
-            try:self.connection.commit()
-            except:self.connection.close()
-            self.connection = None
+            try:
+                self.connection.commit()
+            finally:
+                self.connection.close()
+                self.connection = None
 
     def checkDBVersion(self):
         """
@@ -155,22 +157,22 @@ class DBConnection(object):
                             sqlResult.append(self.execute(qu[0], qu[1], fetchall=fetchall))
 
                     logger.log(u"Transaction with " + str(len(querylist)) + u" queries executed", logger.DEBUG)
-                except sqlite3.OperationalError, e:
+                except sqlite3.OperationalError as e:
                     sqlResult = []
                     if self.connection:
                         self.connection.rollback()
                     if "unable to open database file" in e.args[0] or "database is locked" in e.args[0]:
-                        logger.log(u"DB error: " + ex(e), logger.WARNING)
+                        logger.log(u"DB error: {}".format(ex(e)), logger.WARNING)
                         attempt += 1
                         time.sleep(1)
                     else:
-                        logger.log(u"DB error: " + ex(e), logger.ERROR)
+                        logger.log(u"DB error: {}".format(ex(e)), logger.ERROR)
                         raise
-                except sqlite3.DatabaseError, e:
+                except sqlite3.DatabaseError as e:
                     sqlResult = []
                     if self.connection:
                         self.connection.rollback()
-                    logger.log(u"Fatal error executing query: " + ex(e), logger.ERROR)
+                    logger.log(u"Fatal error executing query: {}".format(ex(e)), logger.ERROR)
                     raise
                 finally:
                     self.commit()
@@ -204,16 +206,16 @@ class DBConnection(object):
                         logger.log(self.filename + ": " + query + " with args " + str(args), logger.DB)
 
                     sqlResult = self.execute(query, args, fetchall=fetchall, fetchone=fetchone)
-                except sqlite3.OperationalError, e:
+                except sqlite3.OperationalError as e:
                     if "unable to open database file" in e.args[0] or "database is locked" in e.args[0]:
-                        logger.log(u"DB error: " + ex(e), logger.WARNING)
+                        logger.log(u"DB error: {}".format(ex(e)), logger.WARNING)
                         attempt += 1
                         time.sleep(1)
                     else:
-                        logger.log(u"DB error: " + ex(e), logger.ERROR)
+                        logger.log(u"DB error: {}".format(ex(e)), logger.ERROR)
                         raise
-                except sqlite3.DatabaseError, e:
-                    logger.log(u"Fatal error executing query: " + ex(e), logger.ERROR)
+                except sqlite3.DatabaseError as e:
+                    logger.log(u"Fatal error executing query: {}".format(ex(e)), logger.ERROR)
                     raise
                 finally:
                     self.commit()

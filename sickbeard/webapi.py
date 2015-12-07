@@ -130,8 +130,8 @@ class ApiHandler(RequestHandler):
 
         try:
             outDict = _call_dispatcher(args, kwargs)
-        except Exception, e:  # real internal error oohhh nooo :(
-            logger.log(u"API :: " + ex(e), logger.ERROR)
+        except Exception as e:  # real internal error oohhh nooo :(
+            logger.log(u"API :: {}".format(ex(e)), logger.ERROR)
             errorData = {
                 "error_msg": ex(e),
                 "args": args,
@@ -161,7 +161,7 @@ class ApiHandler(RequestHandler):
             callback = self.get_query_argument('callback', None) or self.get_query_argument('jsonp', None)
             if callback is not None:
                 out = callback + '(' + out + ');'  # wrap with JSONP call if requested
-        except Exception, e:  # if we fail to generate the output fake an error
+        except Exception as e:  # if we fail to generate the output fake an error
             logger.log(u"API :: " + traceback.format_exc(), logger.DEBUG)
             out = '{"result": "%s", "message": "error while composing output: %s"}' % \
                   (result_type_map[RESULT_ERROR], ex(e))
@@ -211,7 +211,7 @@ class ApiHandler(RequestHandler):
                             curOutDict = TVDBShorthandWrapper(curArgs, curKwargs, cmd).run()
                         else:
                             curOutDict = _responds(RESULT_ERROR, "No such cmd: '" + cmd + "'")
-                    except ApiError, e:  # Api errors that we raised, they are harmless
+                    except ApiError as e:  # Api errors that we raised, they are harmless
                         curOutDict = _responds(RESULT_ERROR, msg=ex(e))
                 else:  # if someone chained one of the forbiden cmds they will get an error for this one cmd
                     curOutDict = _responds(RESULT_ERROR, msg="The cmd '" + cmd + "' is not supported while chaining")

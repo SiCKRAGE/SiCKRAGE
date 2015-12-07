@@ -11,7 +11,8 @@
 %>
 
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/configPostProcessing.js?${sbPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/new/config_postProcessing.js"></script>
+    <script type="text/javascript" src="${srRoot}/js/configPostProcessing.js?${sbPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/config.js?${sbPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/new/home.js"></script>
 </%block>

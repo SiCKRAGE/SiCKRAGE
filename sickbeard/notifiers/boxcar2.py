@@ -65,7 +65,7 @@ class Boxcar2Notifier:
         except Exception as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
             if not hasattr(e, 'code'):
-                logger.log(u"Boxcar2 notification failed." + ex(e), logger.ERROR)
+                logger.log(u"Boxcar2 notification failed.{}".format(ex(e)), logger.ERROR)
                 return False
             else:
                 logger.log(u"Boxcar2 notification failed. Error code: " + str(e.code), logger.WARNING)

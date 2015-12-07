@@ -76,8 +76,8 @@ def _downloadResult(result):
 
             helpers.chmodAsParent(fileName)
 
-        except EnvironmentError, e:
-            logger.log(u"Error trying to save NZB to black hole: " + ex(e), logger.ERROR)
+        except EnvironmentError as e:
+            logger.log(u"Error trying to save NZB to black hole: {}".format(ex(e)), logger.ERROR)
             newResult = False
     elif resProvider.providerType == "torrent":
         newResult = resProvider.downloadResult(result)
@@ -394,11 +394,11 @@ def searchForNeededEpisodes():
         curFoundResults = {}
         try:
             curFoundResults = curProvider.searchRSS(episodes)
-        except AuthException, e:
-            logger.log(u"Authentication error: " + ex(e), logger.ERROR)
+        except AuthException as e:
+            logger.log(u"Authentication error: {}".format(ex(e)), logger.ERROR)
             continue
-        except Exception, e:
-            logger.log(u"Error while searching " + curProvider.name + ", skipping: " + ex(e), logger.ERROR)
+        except Exception as e:
+            logger.log(u"Error while searching " + curProvider.name + ", skipping: {}".format(ex(e)), logger.ERROR)
             logger.log(traceback.format_exc(), logger.DEBUG)
             continue
 
@@ -493,11 +493,11 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
 
             try:
                 searchResults = curProvider.findSearchResults(show, episodes, search_mode, manualSearch, downCurQuality)
-            except AuthException, e:
-                logger.log(u"Authentication error: " + ex(e), logger.ERROR)
+            except AuthException as e:
+                logger.log(u"Authentication error: {}".format(ex(e)), logger.ERROR)
                 break
-            except Exception, e:
-                logger.log(u"Error while searching " + curProvider.name + ", skipping: " + ex(e), logger.ERROR)
+            except Exception as e:
+                logger.log(u"Error while searching " + curProvider.name + ", skipping: {}".format(ex(e)), logger.ERROR)
                 logger.log(traceback.format_exc(), logger.DEBUG)
                 break
 

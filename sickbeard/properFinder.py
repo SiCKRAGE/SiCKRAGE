@@ -87,11 +87,11 @@ class ProperFinder:
 
             try:
                 curPropers = curProvider.findPropers(search_date)
-            except AuthException, e:
-                logger.log(u"Authentication error: " + ex(e), logger.DEBUG)
+            except AuthException as e:
+                logger.log(u"Authentication error: {}".format(ex(e)), logger.DEBUG)
                 continue
-            except Exception, e:
-                logger.log(u"Error while searching " + curProvider.name + ", skipping: " + ex(e), logger.DEBUG)
+            except Exception as e:
+                logger.log(u"Error while searching " + curProvider.name + ", skipping: {}".format(ex(e)), logger.DEBUG)
                 logger.log(traceback.format_exc(), logger.DEBUG)
                 continue
 

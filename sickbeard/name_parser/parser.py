@@ -245,8 +245,8 @@ class NameParser(object):
                     except sickbeard.indexer_episodenotfound:
                         logger.log(u"Unable to find episode with date " + str(bestResult.air_date) + " for show " + bestResult.show.name + ", skipping", logger.WARNING)
                         episode_numbers = []
-                    except sickbeard.indexer_error, e:
-                        logger.log(u"Unable to contact " + sickbeard.indexerApi(bestResult.show.indexer).name + ": " + ex(e), logger.WARNING)
+                    except sickbeard.indexer_error as e:
+                        logger.log(u"Unable to contact " + sickbeard.indexerApi(bestResult.show.indexer).name + ": {}".format(ex(e)), logger.WARNING)
                         episode_numbers = []
 
                 for epNo in episode_numbers:

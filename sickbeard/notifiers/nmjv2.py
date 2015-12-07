@@ -88,7 +88,7 @@ class NMJv2Notifier:
                         sickbeard.NMJv2_DATABASE = DB_path
                         return True
 
-        except IOError, e:
+        except IOError as e:
             logger.log(u"Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e), logger.WARNING)
             return False
         return False
@@ -117,19 +117,19 @@ class NMJv2Notifier:
             time.sleep(300.0 / 1000.0)
             handle2 = urllib2.urlopen(req)
             response2 = handle2.read()
-        except IOError, e:
+        except IOError as e:
             logger.log(u"Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e), logger.WARNING)
             return False
         try:
             et = etree.fromstring(response1)
             result1 = et.findtext("returnValue")
-        except SyntaxError, e:
+        except SyntaxError as e:
             logger.log(u"Unable to parse XML returned from the Popcorn Hour: update_scandir, %s" % (e), logger.ERROR)
             return False
         try:
             et = etree.fromstring(response2)
             result2 = et.findtext("returnValue")
-        except SyntaxError, e:
+        except SyntaxError as e:
             logger.log(u"Unable to parse XML returned from the Popcorn Hour: scanner_start, %s" % (e), logger.ERROR)
             return False
 
