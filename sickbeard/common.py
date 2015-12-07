@@ -350,13 +350,13 @@ class Quality(object):
         from hachoir_core.log import log
         log.use_print = False
 
-        if os.path.isfile(filename):
+        if ek(os.path.isfile, filename):
             base_filename = ek(os.path.basename, filename)
             bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
             webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
             try:
-                with io.open(filename, "rb") as file:
+                with ek(io.open, filename, "rb") as file:
                     file_metadata = extractMetadata(guessParser(StringInputStream(file.read())))
                     if file_metadata:
                         for metadata in chain([file_metadata], file_metadata.iterGroups()):
