@@ -1012,7 +1012,7 @@ class TVShow(object):
             try:
                 logger.log(u'Attempt to %s show folder %s' % (action, self._location))
                 # check first the read-only attribute
-                file_attribute =ek(os.stat,self.location)[0]
+                file_attribute = ek(os.stat,self.location)[0]
                 if not file_attribute & stat.S_IWRITE:
                     # File is read-only, so make it writeable
                     logger.log(u'Attempting to make writeable the read only folder %s' % self._location, logger.DEBUG)
@@ -1853,7 +1853,7 @@ class TVEpisode(object):
 
         return result
 
-    def deleteEpisode(self):
+    def deleteEpisode(self, full=False):
 
         logger.log(u"Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0), logger.DEBUG)
 
@@ -1868,6 +1868,18 @@ class TVEpisode(object):
         sql = "DELETE FROM tv_episodes WHERE showid=" + str(self.show.indexerid) + " AND season=" + str(
             self.season) + " AND episode=" + str(self.episode)
         myDB.action(sql)
+
+        data = notifiers.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
+        if sickbeard.USE_TRAKT and sickbeard.TRAKT_SYNC_WATCHLIST and data:
+            logger.log(u"Deleting myself from Trakt", logger.DEBUG)
+            notifiers.trakt_notifier.update_watchlist(showObj, data_episode=data, update="remove")
+
+        if full:
+            logger.log(u'Attempt to delete episode file %s' % self._location)
+            try:
+                os.remove(self._location)
+            except OSError as e:
+                logger.log(u'Unable to delete %s: %s / %s' % (self._location, repr(e), str(e)), logger.WARNING)
 
         raise EpisodeDeletedException()
 

@@ -243,6 +243,7 @@
         <input type="hidden" id="showID" value="${show.indexerid}" />
         <input type="hidden" id="indexer" value="${show.indexer}" />
         <input class="btn btn-inline" type="button" id="changeStatus" value="Go" />
+        <input class="btn btn-inline" type="button" id="deleteEpisode" value="Delete Episodes"/>
     </div>
 
     </br>

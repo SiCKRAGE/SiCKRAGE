@@ -45,7 +45,7 @@ from sickbeard.scene_numbering import get_scene_numbering, set_scene_numbering, 
     get_xem_numbering_for_show, get_scene_absolute_numbering_for_show, get_xem_absolute_numbering_for_show, \
     get_scene_absolute_numbering
 from sickbeard.webapi import function_mapper
-
+from sickbeard.tv import EpisodeDeletedException
 from sickbeard.imdbPopular import imdb_popular
 
 from dateutil import tz
@@ -53,7 +53,7 @@ from unrar2 import RarFile
 import adba
 from libtrakt import TraktAPI
 from libtrakt.exceptions import traktException
-from sickrage.helper.encoding import ek, ss
+from sickrage.helper.encoding import ek, ss, uu
 from sickrage.helper.exceptions import CantRefreshShowException, CantUpdateShowException, ex
 from sickrage.helper.exceptions import MultipleShowObjectsException, NoNFOException, ShowDirectoryNotFoundException
 from sickrage.media.ShowBanner import ShowBanner
@@ -1647,6 +1647,53 @@ class Home(WebRoot):
         else:
             return self.redirect('/home/')
 
+    def deleteEpisode(self, show=None, eps=None, direct=False):
+        if not all([show, eps]):
+            errMsg = "You must specify a show and at least one episode"
+            if direct:
+                ui.notifications.error('Error', errMsg)
+                return json.dumps({'result': 'error'})
+            else:
+                return self._genericMessage("Error", errMsg)
+
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(show))
+        if not showObj:
+            errMsg = "Error", "Show not in show list"
+            if direct:
+                ui.notifications.error('Error', errMsg)
+                return json.dumps({'result': 'error'})
+            else:
+                return self._genericMessage("Error", errMsg)
+
+        if eps:
+            for curEp in eps.split('|'):
+                if not curEp:
+                    logger.log(u"curEp was empty when trying to deleteEpisode", logger.DEBUG)
+
+                logger.log(u"Attempting to delete episode " + curEp, logger.DEBUG)
+
+                epInfo = curEp.split('x')
+
+                if not all(epInfo):
+                    logger.log(u"Something went wrong when trying to deleteEpisode, epInfo[0]: %s, epInfo[1]: %s" % (
+                    epInfo[0], epInfo[1]), logger.DEBUG)
+                    continue
+
+                epObj = showObj.getEpisode(int(epInfo[0]), int(epInfo[1]))
+                if not epObj:
+                    return self._genericMessage("Error", "Episode couldn't be retrieved")
+
+                with epObj.lock:
+                    try:
+                        epObj.deleteEpisode(full=True)
+                    except EpisodeDeletedException:
+                        pass
+
+        if direct:
+            return json.dumps({'result': 'success'})
+        else:
+            return self.redirect("/home/displayShow?show=" + show)
+
     def setStatus(self, show=None, eps=None, status=None, direct=False):
 
         if not all([show, eps, status]):
@@ -2247,7 +2294,7 @@ class HomeAddShows(Home):
             except Exception:
                 continue
 
-        for i, shows in results.iteritems():
+        for i, shows in results.items():
             final_results.extend([[sickbeard.indexerApi(i).name, i, sickbeard.indexerApi(i).config["show_url"], int(show['id']),
                                    show['seriesname'], show['firstaired']] for show in shows])
 
@@ -2301,7 +2348,7 @@ class HomeAddShows(Home):
 
                 cur_dir = {
                     'dir': cur_path,
-                    'display_dir': u'<b>' + ek(os.path.dirname, cur_path) + os.sep + u'</b>' + ek(os.path.basename, cur_path),
+                    'display_dir': u'<b>' + ek(os.path.dirname, cur_path) + os.sep + '</b>' + ek(os.path.basename, cur_path),
                 }
 
                 # see if the folder is in KODI already
@@ -2334,6 +2381,7 @@ class HomeAddShows(Home):
 
                 if indexer_id and helpers.findCertainShow(sickbeard.showList, indexer_id):
                     cur_dir['added_already'] = True
+
         return t.render(dirList=dir_list)
 
     def newShow(self, show_to_add=None, other_shows=None, search_string=None):
