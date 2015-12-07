@@ -1538,7 +1538,7 @@ def codeDescription(status_code):
         return 'unknown'
 
 
-def _setUpSession(session, headers, params=None):
+def _setUpSession(session, headers={}, params=None):
     """
     Returns a session initialized with default cache and parameter settings
 
@@ -1551,14 +1551,13 @@ def _setUpSession(session, headers, params=None):
     cache_dir = sickbeard.CACHE_DIR or _getTempDir()
     session = CacheControl(sess=session, cache=caches.FileCache(ek(os.path.join, cache_dir, 'sessions'), use_dir_lock=True), cache_etags=False)
 
-    # request session clear residual referer
-    if 'Referer' in session.headers and 'Referer' not in headers or {}:
-        session.headers.pop('Referer')
-
     # request session headers
     session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
-    if headers:
-        session.headers.update(headers)
+    session.headers.update(headers)
+
+    # request session clear residual referer
+    if 'Referer' in session.headers and 'Referer' not in headers:
+        session.headers.pop('Referer')
 
     # request session ssl verify
     session.verify = certifi.where() if sickbeard.SSL_VERIFY else False
@@ -1585,7 +1584,7 @@ def _setUpSession(session, headers, params=None):
     return session
 
 
-def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=None, json=False, needBytes=False):
+def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=None, json=False, needBytes=False):
     """
     Returns a byte-string retrieved from the url provider.
     """
@@ -1634,7 +1633,7 @@ def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=N
     return (resp.text, resp.content)[needBytes] if not json else resp.json()
 
 
-def download_file(url, filename, session=None, headers=None):
+def download_file(url, filename, session=None, headers={}):
     """
     Downloads a file specified
 

@@ -94,7 +94,7 @@
     <body>
         <nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">
             <div class="container-fluid">
-                <div class="navbar-header">
+                <span class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
@@ -102,8 +102,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="${srRoot}/home/" title="SickRage"><img alt="SickRage" src="${srRoot}/images/sickrage.png" style="height: 50px;" class="img-responsive pull-left" /></a>
-                </div>
-
+                </span>
             % if srLogin:
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
@@ -260,18 +259,6 @@
                 % endif
             % endfor
             </span>
-        </div>
-        % endif
-
-        % if sickbeard.BRANCH and sickbeard.BRANCH != 'master' and not sickbeard.DEVELOPER and srLogin:
-        <div class="alert alert-danger upgrade-notification hidden-print" role="alert">
-            <span>You're using the ${sickbeard.BRANCH} branch. Please use 'master' unless specifically asked</span>
-        </div>
-        % endif
-
-        % if sickbeard.NEWEST_VERSION_STRING and srLogin:
-        <div class="alert alert-success upgrade-notification hidden-print" role="alert">
-            <span>${sickbeard.NEWEST_VERSION_STRING}</span>
         </div>
         % endif
 
