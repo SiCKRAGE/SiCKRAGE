@@ -2228,7 +2228,7 @@ class HomePostProcess(Home):
         proc_dir = kwargs.get("proc_dir", kwargs.get("dir", None))
         nzbName = kwargs.get("nzbName", None)
         jobName = kwargs.get("jobName", None)
-        quiet = kwargs.get("quite", None)
+        quiet = kwargs.get("quiet", None)
         process_method = kwargs.get("process_method", None)
         force = True if kwargs.get("force", "0").lower() in ['1', 'on', 'true', True] else False
         is_priority = True if kwargs.get("is_priority", "0").lower() in ['1', 'on', 'true', True] else False
