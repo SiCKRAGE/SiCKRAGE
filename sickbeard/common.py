@@ -17,18 +17,28 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
+import io
+import re
+import uuid
+import shutil
 import os.path
 import operator
 import platform
-import re
-import uuid
 
-from UserDict import UserDict
+import sickbeard
+from sickrage.helper.exceptions import ex
+from sickrage.helper.encoding import ek
+
+from six import PY3
 from itertools import chain
 from random import shuffle
 
-import shutil
-from sickrage.helper.encoding import ek
+if PY3:
+    from collections import UserDict
+else:
+    from UserDict import UserDict
 
 SPOOF_USER_AGENT = False
 
@@ -334,40 +344,31 @@ class Quality(object):
         :return: Quality prefix
         """
 
-        from hachoir_parser import createParser
+        from hachoir_core.stream import StringInputStream
+        from hachoir_parser import guessParser
         from hachoir_metadata import extractMetadata
         from hachoir_core.log import log
         log.use_print = False
 
-        try:
-            tmpFile = filename + ".tmp"
-            ek(shutil.copyfile, filename, tmpFile)
-            parser = createParser(tmpFile)
-            file_metadata = extractMetadata(parser)
-            parser.stream._input.close()
-            os.remove(tmpFile)
+        if os.path.isfile(filename):
+            base_filename = ek(os.path.basename, filename)
+            bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
+            webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
-            if not file_metadata:
-                raise
-
-            height = 0
-            for metadata in chain([file_metadata], file_metadata.iterGroups()):
-                height = metadata.get('height')
-                if height:
-                    break
-        except Exception:
-            return Quality.UNKNOWN
-
-        base_filename = ek(os.path.basename, filename)
-        bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
-        webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
-
-        if height > 1000:
-            return ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
-        elif height > 680 and height < 800:
-            return ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
-        elif height < 680:
-            return (Quality.SDTV, Quality.SDDVD)[re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+            try:
+                with io.open(filename, "rb") as file:
+                    file_metadata = extractMetadata(guessParser(StringInputStream(file.read())))
+                    if file_metadata:
+                        for metadata in chain([file_metadata], file_metadata.iterGroups()):
+                            height = metadata.get('height', None)
+                            if height and height > 1000:
+                                return ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
+                            elif height and height > 680 and height < 800:
+                                return ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
+                            elif height and height < 680:
+                                return (Quality.SDTV, Quality.SDDVD)[re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+            except Exception as e:
+                sickbeard.logger.log(ex(e))
 
         return Quality.UNKNOWN
 
