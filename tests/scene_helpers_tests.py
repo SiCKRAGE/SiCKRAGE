@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import sys, os.path
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
@@ -124,16 +126,16 @@ class SceneExceptionTestCase(test.SiCKRAGETestDBCase):
 
 
 if __name__ == '__main__':
-    print "=================="
-    print "STARTING - SCENE HELPER TESTS"
-    print "=================="
-    print "######################################################################"
+    print("==================")
+    print("STARTING - SCENE HELPER TESTS")
+    print("==================")
+    print("######################################################################")
     if len(sys.argv) > 1:
         suite = unittest.TestLoader().loadTestsFromName('scene_helpers_tests.SceneExceptionTestCase.test_' + sys.argv[1])
         unittest.TextTestRunner(verbosity=2).run(suite)
     else:
         suite = unittest.TestLoader().loadTestsFromTestCase(SceneTests)
         unittest.TextTestRunner(verbosity=2).run(suite)
-        print "######################################################################"
+        print("######################################################################")
         suite = unittest.TestLoader().loadTestsFromTestCase(SceneExceptionTestCase)
         unittest.TextTestRunner(verbosity=2).run(suite)

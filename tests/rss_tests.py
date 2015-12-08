@@ -1,6 +1,7 @@
+#!/usr/bin/env python2.7
 # coding=UTF-8
-# Author: Dustyn Gibson <miigotu@gmail.com>
-# URL: http://github.come/SiCKRAGETV/SickRage
+# Author: Dennis Lutter <lad1337@gmail.com>
+# URL: http://code.google.com/p/sickbeard/
 #
 # This file is part of SickRage.
 #
@@ -28,35 +29,32 @@ import unittest
 
 import test_lib as test
 
-import certifi
-import requests
-import sickbeard.providers as providers
+import sickbeard
 from sickrage.helper.exceptions import ex
 
+class RSSTest(test.SiCKRAGETestCase): pass
 
-class SNI_Tests(test.SiCKRAGETestCase): pass
+def test_get_rss(self, provider):
+        result = provider.cache.getRSSFeed(provider.url)
+        self.assertIsNot(result, None, "Failed to get RSS feed for %s" % provider.name)
+        self.assertTrue(isinstance(result['feed'], dict))
+        self.assertTrue(isinstance(result['entries'], list))
+        for item in result['entries']:
+            title, url = provider._get_title_and_url(item)
+            self.assertTrue(title and url, "Failed to get title and url from RSS feed for %s" % provider.name)
 
-def test_sni(self, provider):
-    self_signed_cert_providers = ["Womble's Index", "Libertalia"]
-    for provider in [provider for provider in providers.makeProviderList() if provider.name not in self.self_signed_cert_providers]:
-        try:
-            requests.head(provider.url, verify=certifi.where(), timeout=5)
-        except requests.exceptions.Timeout:
-            pass
-        except requests.exceptions.SSLError as error:
-            if u'SSL3_GET_SERVER_CERTIFICATE' not in ex(error):
-                raise
-        except Exception:
-            pass
+def test_update_cache(self, provider):
+    provider.cache.updateCache()
 
 for provider in sickbeard.providers.sortedProviderList():
-    setattr(SNI_Tests, 'test_%s' % provider.name, lambda self,x=provider: test_sni(self, x))
+    setattr(RSSTest, 'test_get_rss_%s' % provider.name, lambda self,x=provider: test_get_rss(self, x))
+    setattr(RSSTest, 'test_update_cache_%s' % provider.name, lambda self,x=provider: test_update_cache(self, x))
 
 if __name__ == "__main__":
     print("==================")
-    print("STARTING - SSL TESTS")
+    print("STARTING - RSS TESTS")
     print("==================")
     print("######################################################################")
 
-    suite = unittest.TestLoader().loadTestsFromTestCase(SNI_Tests)
+    suite = unittest.TestLoader().loadTestsFromTestCase(RSSTest)
     unittest.TextTestRunner(verbosity=2).run(suite)

@@ -69,6 +69,19 @@ from itertools import izip, cycle
 # Access to a protected member of a client class
 urllib._urlopener = classes.SickBeardURLopener()
 
+def normalize_url(url):
+    url = str(url)
+    segments = url.split('/')
+    correct_segments = []
+    for segment in segments:
+        if segment != '':
+            correct_segments.append(segment)
+    first_segment = str(correct_segments[0])
+    if first_segment.find('http') == -1:
+        correct_segments = ['http:'] + correct_segments
+    correct_segments[0] = correct_segments[0] + '/'
+    normalized_url = '/'.join(correct_segments)
+    return normalized_url
 
 def argToBool(x) :
     """
@@ -1146,7 +1159,7 @@ def anon_url(*url):
     """
     Return a URL string consisting of the Anonymous redirect URL and an arbitrary number of values appended.
     """
-    return '{}{}'.format(sickbeard.ANON_REDIRECT, uu(url[1:]))
+    return u'{}{}'.format(sickbeard.ANON_REDIRECT, url[1:])
 
 
 """
@@ -1601,6 +1614,7 @@ def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=Non
     Returns a byte-string retrieved from the url provider.
     """
 
+    url = normalize_url(url)
     session = _setUpSession(session, headers, params)
 
     try:
@@ -1656,6 +1670,7 @@ def download_file(url, filename, session=None, headers={}):
     :return: True on success, False on failure
     """
 
+    url = normalize_url(url)
     session = _setUpSession(session, headers)
     session.stream = True
 

@@ -60,7 +60,7 @@ def delete_folder(folder, check_empty=True):
     """
 
     # check if it's a folder
-    if not ek(os.path.isdir,folder):
+    if not ek(os.path.isdir, folder):
         return False
 
     # check if it isn't TV_DOWNLOAD_DIR
@@ -69,25 +69,21 @@ def delete_folder(folder, check_empty=True):
             return False
 
     # check if it's empty folder when wanted checked
-    if check_empty:
-        check_files = ek(os.listdir, folder)
-        if check_files:
-            logger.log(u"Not deleting folder " + folder + " found the following files: " + str(check_files), logger.INFO)
-            return False
+    try:
+        if check_empty:
+            check_files = ek(os.listdir, folder)
+            if check_files:
+                logger.log(u"Not deleting folder {} found the following files: {}".format(folder, check_files), logger.INFO)
+                return False
 
-        try:
             logger.log(u"Deleting folder (if it's empty): " + folder)
-            ek(os.rmdir,folder)
-        except (OSError, IOError) as e:
-            logger.log(u"Warning: unable to delete folder: " + folder + ": {}".format(ex(e)), logger.WARNING)
-            return False
-    else:
-        try:
+            ek(os.rmdir, folder)
+        else:
             logger.log(u"Deleting folder: " + folder)
             ek(removetree, folder)
-        except (OSError, IOError) as e:
-            logger.log(u"Warning: unable to delete folder: " + folder + ": {}".format(ex(e)), logger.WARNING)
-            return False
+    except (OSError, IOError) as e:
+        logger.log(u"Warning: unable to delete folder: {}: {}".format(folder, ex(e)), logger.WARNING)
+        return False
 
     return True
 

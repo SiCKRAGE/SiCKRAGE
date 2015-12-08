@@ -193,39 +193,43 @@ class NewznabProvider(generic.NZBProvider):
         return self._doSearch({'q': search_string})
 
     def _checkAuth(self):
-
         if self.needs_auth and not self.key:
-            logger.log(u"Invalid api key. Check your settings", logger.WARNING)
-            # raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
-
+            logger.log("Your authentication credentials for " + self.name + " are missing, check your config.", logger.WARNING)
+            return False
         return True
 
     def _checkAuthFromData(self, data):
 
-        if 'feed' not in data or 'entries' not in data:
+        try:
+            data['feed']
+            data['entries']
+        except AttributeError:
             return self._checkAuth()
 
         try:
-            bozo = int(data['bozo'])
+            bozo = data['bozo']
             bozo_exception = data['bozo_exception']
-            err_code = int(data['feed']['error']['code'])
-            err_desc = data['feed']['error']['description']
-            if not err_code or err_desc:
-                raise
-        except Exception:
-            return True
+            if int(bozo) == 1:
+                raise Exception(bozo_exception)
+        except AttributeError:
+            pass
 
-        if err_code == 100:
-            raise AuthException("Your API key for " + self.name + " is incorrect, check your config.")
-        elif err_code == 101:
-            raise AuthException("Your account on " + self.name + " has been suspended, contact the administrator.")
-        elif err_code == 102:
-            raise AuthException(
-                "Your account isn't allowed to use the API on " + self.name + ", contact the administrator")
-        elif bozo == 1:
-            raise Exception(bozo_exception)
-        else:
-            logger.log(u"Unknown error: %s" % err_desc, logger.ERROR)
+        try:
+            err_code = data['feed']['error']['code']
+            err_desc = data['feed']['error']['description']
+
+            if int(err_code) == 100:
+                raise AuthException("Your API key for " + self.name + " is incorrect, check your config.")
+            elif int(err_code) == 101:
+                raise AuthException("Your account on " + self.name + " has been suspended, contact the administrator.")
+            elif int(err_code) == 102:
+                raise AuthException(
+                    "Your account isn't allowed to use the API on " + self.name + ", contact the administrator")
+            raise Exception(u"Unknown error: %s" % err_desc)
+        except AttributeError:
+            pass
+
+        return True
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
@@ -276,7 +280,7 @@ class NewznabProvider(generic.NZBProvider):
             if not self._checkAuthFromData(data):
                 break
 
-            for item in data['entries'] or []:
+            for item in data['entries']:
 
                 (title, url) = self._get_title_and_url(item)
 
@@ -375,7 +379,6 @@ class NewznabCache(tvcache.TVCache):
         return data
 
     def _checkAuth(self, data):
-        # pylint: disable=W0212
         return self.provider._checkAuthFromData(data)
 
     def _parseItem(self, item):

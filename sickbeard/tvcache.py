@@ -106,12 +106,12 @@ class TVCache(object):
 
     def updateCache(self):
         # check if we should update
-        if not self.shouldUpdate():
-            return
+        if self.shouldUpdate():
+            try:
+                data = self._getRSSData()
+                if not self._checkAuth(data):
+                    return False
 
-        try:
-            data = self._getRSSData()
-            if self._checkAuth(data):
                 # clear cache
                 self._clearCache()
 
@@ -119,7 +119,7 @@ class TVCache(object):
                 self.setLastUpdate()
 
                 cl = []
-                for item in data['entries'] or []:
+                for item in data['entries']:
                     ci = self._parseItem(item)
                     if ci is not None:
                         cl.append(ci)
@@ -127,11 +127,14 @@ class TVCache(object):
                 if len(cl) > 0:
                     myDB = self._getDB()
                     myDB.mass_action(cl)
+            except AuthException as e:
+                logger.log(u"Authentication error: {}".format(ex(e)), logger.ERROR)
+                return False
+            except Exception as e:
+                logger.log(u"Error while searching {}, skipping: {}".format(self.provider.name, repr(e)), logger.DEBUG)
+                return False
 
-        except AuthException as e:
-            logger.log(u"Authentication error: {}".format(ex(e)), logger.ERROR)
-        except Exception as e:
-            logger.log(u"Error while searching " + self.provider.name + ", skipping: " + repr(e), logger.DEBUG)
+        return True
 
     def getRSSFeed(self, url):
         handlers = []
@@ -145,10 +148,7 @@ class TVCache(object):
         elif 'Referer' in self.provider.headers:
             self.provider.headers.pop('Referer')
 
-        return getFeed(
-            url,
-            request_headers=self.provider.headers,
-            handlers=handlers)
+        return getFeed(url, request_headers=self.provider.headers, handlers=handlers)
 
     def _translateTitle(self, title):
         return u'' + title.replace(' ', '.')

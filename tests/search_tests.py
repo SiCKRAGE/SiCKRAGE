@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
 import sys, os.path
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -71,8 +73,8 @@ def test_generator(curData, name, provider, forceSearch):
             fail = False
             for cur_string in season_strings, episode_strings:
                 if not all([isinstance(cur_string, list), isinstance(cur_string[0], dict)]):
-                    print " %s is using a wrong string format!" % provider.name
-                    print cur_string
+                    print(" %s is using a wrong string format!" % provider.name)
+                    print(cur_string)
                     fail = True
                     continue
 
@@ -83,8 +85,8 @@ def test_generator(curData, name, provider, forceSearch):
                 assert(season_strings == curData["s_strings"])
                 assert(episode_strings == curData["e_strings"])
             except AssertionError:
-                print " %s is using a wrong string format!" % provider.name
-                print cur_string
+                print(" %s is using a wrong string format!" % provider.name)
+                print(cur_string)
                 continue
 
             search_strings = episode_strings[0]
@@ -98,32 +100,27 @@ def test_generator(curData, name, provider, forceSearch):
 
             items = provider._doSearch(search_strings)
             if not items:
-                print "No results from provider?"
+                print("No results from provider?")
                 continue
 
             title, url = provider._get_title_and_url(items[0])
             for word in show.name.split(" "):
                 if not word.lower() in title.lower():
-                    print "Show name not in title: %s. URL: %s" % (title, url)
+                    print("Show name not in title: %s. URL: %s" % (title, url))
                     continue
 
             if not url:
-                print "url is empty"
+                print("url is empty")
                 continue
 
             quality = provider.getQuality(items[0])
             size = provider._get_size(items[0])
             if not show.quality & quality:
-                print "Quality not in common.ANY, %r" % quality
+                print("Quality not in common.ANY, %r" % quality)
                 continue
 
     return test
 
-if __name__ == '__main__':
-    print "=================="
-    print "STARTING - SEARCH TESTS"
-    print "=================="
-    print "######################################################################"
     # create the test methods
     for forceSearch in (True, False):
         for name, curData in tests.items():
@@ -137,6 +134,12 @@ if __name__ == '__main__':
                         test_name = 'test_%s_%s_%s' % (fname, curData["tvdbid"], provider.name)
                     test = test_generator(curData, name, provider, forceSearch)
                     setattr(SearchTest, test_name, test)
+
+if __name__ == '__main__':
+    print("==================")
+    print("STARTING - SEARCH TESTS")
+    print("==================")
+    print("######################################################################")
 
     suite = unittest.TestLoader().loadTestsFromTestCase(SearchTest)
     unittest.TextTestRunner(verbosity=2).run(suite)

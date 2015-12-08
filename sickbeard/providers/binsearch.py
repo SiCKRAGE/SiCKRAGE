@@ -82,32 +82,32 @@ class BinSearchCache(tvcache.TVCache):
 
     def updateCache(self):
         # check if we should update
-        if not self.shouldUpdate():
-            return
+        if self.shouldUpdate():
+            # clear cache
+            self._clearCache()
 
-        # clear cache
-        self._clearCache()
+            # set updated
+            self.setLastUpdate()
 
-        # set updated
-        self.setLastUpdate()
+            cl = []
+            for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries', 'alt.binaries.teevee']:
+                url = self.provider.url + 'rss.php?'
+                urlArgs = {'max': 1000, 'g': group}
 
-        cl = []
-        for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries', 'alt.binaries.teevee']:
-            url = self.provider.url + 'rss.php?'
-            urlArgs = {'max': 1000, 'g': group}
+                url += urllib.urlencode(urlArgs)
 
-            url += urllib.urlencode(urlArgs)
+                logger.log(u"Cache update URL: %s " % url, logger.DEBUG)
 
-            logger.log(u"Cache update URL: %s " % url, logger.DEBUG)
+                for item in self.getRSSFeed(url)['entries'] or []:
+                    ci = self._parseItem(item)
+                    if ci is not None:
+                        cl.append(ci)
 
-            for item in self.getRSSFeed(url)['entries'] or []:
-                ci = self._parseItem(item)
-                if ci is not None:
-                    cl.append(ci)
+            if len(cl) > 0:
+                myDB = self._getDB()
+                myDB.mass_action(cl)
 
-        if len(cl) > 0:
-            myDB = self._getDB()
-            myDB.mass_action(cl)
+        return True
 
     def _checkAuth(self, data):
         return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None
