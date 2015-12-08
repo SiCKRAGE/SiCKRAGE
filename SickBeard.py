@@ -296,8 +296,8 @@ class SickRage(object):
             else:
                 self.webhost = '0.0.0.0'
 
-        # web server options
-        self.web_options = {
+        # start tornado web server
+        self.webserver = SRWebServer({
             'port': int(self.startPort),
             'host': self.webhost,
             'data_root': ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME),
@@ -309,11 +309,7 @@ class SickRage(object):
             'handle_reverse_proxy': sickbeard.HANDLE_REVERSE_PROXY,
             'https_cert': ek(os.path.join, sickbeard.PROG_DIR, sickbeard.HTTPS_CERT),
             'https_key': ek(os.path.join, sickbeard.PROG_DIR, sickbeard.HTTPS_KEY),
-        }
-
-        # start web server
-        self.webserver = SRWebServer(self.web_options)
-        self.webserver.start()
+        }).start()
 
         if self.consoleLogging:
             print("Starting up SickRage " + sickbeard.BRANCH + " from " + sickbeard.CONFIG_FILE)

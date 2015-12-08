@@ -254,7 +254,7 @@ class WebHandler(BaseHandler):
     def async_call(self, function):
         try:
             kwargs = self.request.arguments
-            for arg, value in kwargs.iteritems():
+            for arg, value in kwargs.items():
                 if len(value) == 1:
                     kwargs[arg] = value[0]
 
@@ -2224,31 +2224,20 @@ class HomePostProcess(Home):
         return t.render(title='Post Processing', header='Post Processing', topmenu='home')
 
     def processEpisode(self, *args, **kwargs):
+        pp_options = dict(
+                ("proc_dir" if k.lower() == "dir" else k,
+                 helpers.argToBool(v)
+                 if k.lower() not in ['proc_dir', 'dir', 'nzbname', 'process_method', 'proc_type'] else v
+                 ) for k, v in kwargs.items())
 
-        proc_dir = kwargs.get("proc_dir", kwargs.get("dir", None))
-        nzbName = kwargs.get("nzbName", None)
-        jobName = kwargs.get("jobName", None)
-        quiet = kwargs.get("quiet", None)
-        process_method = kwargs.get("process_method", None)
-        force = True if kwargs.get("force", "0").lower() in ['1', 'on', 'true', True] else False
-        is_priority = True if kwargs.get("is_priority", "0").lower() in ['1', 'on', 'true', True] else False
-        delete_on = True if kwargs.get("delete_on", "0").lower() in ['1', 'on', 'true', True] else False
-        failed = True if kwargs.get("failed", "0").lower() in ['1', 'on', 'true', True] else False
-        proc_type = kwargs.get("proc_type", "auto")
-
-        if not proc_dir:
+        if not pp_options["proc_dir"]:
             return self.redirect("/home/postprocess/")
-        else:
-            result = processTV.processDir(proc_dir, nzbName, process_method=process_method, force=force,
-                is_priority=is_priority, delete_on=delete_on, failed=failed, proc_type=proc_type
-            )
 
-            if quiet is not None and int(quiet) == 1:
-                return result
+        result = processTV.processDir(pp_options["proc_dir"], **pp_options)
+        if pp_options.get("quiet", None):
+            return result
 
-            result = result.replace("\n", "<br>\n")
-            return self._genericMessage("Postprocessing results", result)
-
+        return self._genericMessage("Postprocessing results", result.replace("\n", "<br>\n"))
 
 @route('/home/addShows(/?.*)')
 class HomeAddShows(Home):

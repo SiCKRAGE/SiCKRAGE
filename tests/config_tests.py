@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import os.path
 
@@ -20,9 +21,9 @@ class QualityTests(test.SiCKRAGETestCase):
         self.assertEqual(config.clean_url("scgi:///home/user/.config/path/socket"), "scgi:///home/user/.config/path/socket")
 
 if __name__ == '__main__':
-    print "=================="
-    print "STARTING - CONFIG TESTS"
-    print "=================="
-    print "######################################################################"
+    print("==================")
+    print("STARTING - CONFIG TESTS")
+    print("==================")
+    print("######################################################################")
     suite = unittest.TestLoader().loadTestsFromTestCase(QualityTests)
     unittest.TextTestRunner(verbosity=2).run(suite)

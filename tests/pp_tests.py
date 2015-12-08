@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
 import sys, os.path
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
@@ -26,10 +28,12 @@ import unittest
 
 import test_lib as test
 
+import requests
 import sickbeard
 from sickbeard.tv import TVEpisode, TVShow
 from sickbeard.name_cache import addNameToCache
 from sickbeard.postProcessor import PostProcessor
+from sickbeard.webserve import HomePostProcess
 
 class PPInitTests(test.SiCKRAGETestCase):
     def setUp(self):
@@ -67,13 +71,59 @@ class PPBasicTests(test.SiCKRAGETestDBCase):
         self.pp = PostProcessor(test.FILEPATH, process_method='move')
         self.assertTrue(self.pp.process())
 
+class PPWebServerTests(test.SiCKRAGETestDBCase):
+    def setUp(self):
+        super(PPWebServerTests, self).setUp(True)
+
+    def tearDown(self):
+        super(PPWebServerTests, self).tearDown(True)
+
+    def test_process(self):
+        s = requests.Session()
+
+        params = {
+            "proc_dir": test.FILEDIR,
+            "nzbName": test.FILEPATH,
+            "failed": 0,
+            "process_method": "move",
+            "force": 0,
+            "quiet": 1
+        }
+
+        login_params = {
+            'username': sickbeard.WEB_USERNAME,
+            'password': sickbeard.WEB_PASSWORD
+        }
+
+        s.post(
+                "http://localhost:8081/login",
+                data=login_params,
+                stream=True,
+                verify=False,
+                timeout=(30, 60)
+        )
+
+        r = s.get(
+                "http://localhost:8081/home/postprocess/processEpisode",
+                auth=(sickbeard.WEB_USERNAME, sickbeard.WEB_PASSWORD),
+                params=params,
+                stream=True,
+                verify=False,
+                timeout=(30, 1800)
+        )
+
+        self.assertTrue(line for line in r.iter_lines() if line.lower() in ["processing succeeded", "successfully processed"])
+
 if __name__ == '__main__':
-    print "=================="
-    print "STARTING - POSTPROCESSOR TESTS"
-    print "=================="
-    print "######################################################################"
+    print("==================")
+    print("STARTING - POSTPROCESSOR TESTS")
+    print("==================")
+    print("######################################################################")
     suite = unittest.TestLoader().loadTestsFromTestCase(PPInitTests)
     unittest.TextTestRunner(verbosity=2).run(suite)
-    print "######################################################################"
+    print("######################################################################")
     suite = unittest.TestLoader().loadTestsFromTestCase(PPBasicTests)
+    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("######################################################################")
+    suite = unittest.TestLoader().loadTestsFromTestCase(PPWebServerTests)
     unittest.TextTestRunner(verbosity=2).run(suite)

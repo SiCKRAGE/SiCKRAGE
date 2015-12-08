@@ -19,12 +19,7 @@
 
 
 from __future__ import print_function
-from __future__ import print_function
-from __future__ import print_function
-from __future__ import print_function
-from __future__ import print_function
-from __future__ import print_function
-from __future__ import print_function
+
 import sys, os.path
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
@@ -43,6 +38,7 @@ from sickbeard.databases import mainDB
 from sickbeard.databases import cache_db, failed_db
 from sickbeard.tv import TVEpisode
 from sickrage.helper.encoding import ek
+from sickbeard.webserveInit import SRWebServer
 
 #=================
 # test globals
@@ -60,6 +56,8 @@ FILENAME = u"show name - s0" + str(SEASON) + "e0" + str(EPISODE) + ".mkv"
 FILEDIR = ek(os.path.join, TESTDIR, SHOWNAME)
 FILEPATH = ek(os.path.join, FILEDIR, FILENAME)
 SHOWDIR = ek(os.path.join, TESTDIR, SHOWNAME + " final")
+
+TESTWEBSERVER = None
 
 #=================
 # prepare env functions
@@ -98,6 +96,14 @@ sickbeard.DATA_DIR = TESTDIR
 sickbeard.CONFIG_FILE = ek(os.path.join, sickbeard.DATA_DIR, "config.ini")
 sickbeard.CFG = ConfigObj(sickbeard.CONFIG_FILE)
 sickbeard.TV_DOWNLOAD_DIR = FILEDIR
+sickbeard.GUI_NAME = "slick"
+sickbeard.HTTPS_CERT = "server.crt"
+sickbeard.HTTPS_KEY = "server.key"
+sickbeard.WEB_USERNAME = "sickrage"
+sickbeard.WEB_PASSWORD = "sickrage"
+sickbeard.WEB_COOKIE_SECRET = "sickrage"
+sickbeard.WEB_ROOT = ""
+sickbeard.WEB_SERVER = None
 
 sickbeard.BRANCH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'branch', '')
 sickbeard.CUR_COMMIT_HASH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'cur_commit_hash', '')
@@ -132,22 +138,26 @@ TVEpisode.specifyEpisode = _fake_specifyEP
 # test classes
 #=================
 class SiCKRAGETestCase(unittest.TestCase):
-    def setUp(self):
+    def setUp(self, **kwargs):
         if self.__module__ in TESTSKIPPED:
             raise unittest.SkipTest()
 
 class SiCKRAGETestDBCase(SiCKRAGETestCase):
-    def setUp(self):
+    def setUp(self, web=False):
         sickbeard.showList = []
         setUp_test_db()
         setUp_test_episode_file()
         setUp_test_show_dir()
+        if web:
+            setUp_test_web_server()
 
-    def tearDown(self):
+    def tearDown(self, web=False):
         sickbeard.showList = []
         tearDown_test_db()
         tearDown_test_episode_file()
         tearDown_test_show_dir()
+        if web:
+            tearDown_test_web_server()
 
 class TestDBConnection(db.DBConnection, object):
     def __init__(self, filename=TESTDBNAME):
@@ -251,6 +261,29 @@ def tearDown_test_show_dir():
     if ek(os.path.exists,SHOWDIR):
         ek(sickbeard.helpers.removetree,SHOWDIR)
 
+def setUp_test_web_server():
+    sickbeard.WEB_SERVER = SRWebServer({
+        'port': 8081,
+        'host': '0.0.0.0',
+        'data_root': ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME),
+        'web_root': "",
+        'log_dir': sickbeard.LOG_DIR,
+        'username': sickbeard.WEB_USERNAME,
+        'password': sickbeard.WEB_PASSWORD,
+        'enable_https': 0,
+        'handle_reverse_proxy': 0,
+        'https_cert': ek(os.path.join, sickbeard.PROG_DIR, sickbeard.HTTPS_CERT),
+        'https_key': ek(os.path.join, sickbeard.PROG_DIR, sickbeard.HTTPS_KEY),
+    }).start()
+
+def tearDown_test_web_server():
+    if sickbeard.WEB_SERVER:
+        sickbeard.WEB_SERVER.shutDown()
+
+        try:sickbeard.WEB_SERVER.join(10)
+        except:pass
+
+        sickbeard.WEB_SERVER = None
 
 if __name__ == '__main__':
     print("==================")

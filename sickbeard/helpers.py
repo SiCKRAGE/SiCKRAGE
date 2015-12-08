@@ -42,6 +42,7 @@ import errno
 import ast
 import operator
 import platform
+import six
 
 import sickbeard
 import adba
@@ -68,6 +69,17 @@ from itertools import izip, cycle
 # Access to a protected member of a client class
 urllib._urlopener = classes.SickBeardURLopener()
 
+
+def argToBool(x) :
+    """
+    convert argument of unknown type to a bool:
+    """
+    class FalseStrings :
+        val = ("", "0", "false", "f", "no", "n", "off")
+
+    if isinstance(x, six.string_types) :
+        return (x.lower() not in FalseStrings.val)
+    return bool(x)
 
 def fixGlob(path):
     path = re.sub(r'\[', '[[]', path)
