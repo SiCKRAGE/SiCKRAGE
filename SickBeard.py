@@ -261,7 +261,7 @@ class SickRage(object):
         if self.consoleLogging and not ek(os.path.isfile, sickbeard.CONFIG_FILE):
             sys.stdout.write(u"Unable to find '" + sickbeard.CONFIG_FILE + "' , all settings will be default!" + "\n")
 
-        sickbeard.CFG = ek(ConfigObj, sickbeard.CONFIG_FILE)
+        sickbeard.CFG = ConfigObj(sickbeard.CONFIG_FILE)
 
         # Initialize the config and our threads
         sickbeard.initialize(consoleLogging=self.consoleLogging)
