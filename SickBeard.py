@@ -25,7 +25,6 @@
 
 # correct _strptime import bug
 from __future__ import print_function
-from __future__ import print_function
 from time import strptime
 strptime("2012", "%Y")
 
@@ -55,7 +54,7 @@ from sickbeard.tv import TVShow
 from sickbeard.webserveInit import SRWebServer
 from sickbeard.event_queue import Events
 from sickbeard.helpers import removetree
-from sickrage.helper.encoding import ek
+from sickrage.helper.encoding import ek, encodingInit
 from configobj import ConfigObj
 
 class SickRage(object):
@@ -115,20 +114,8 @@ class SickRage(object):
         return help_msg
 
     def start(self):
-        # map the following codecs to utf-8
-        codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
-        codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp1252' else None)
-
-        # get locale encoding
-        try:
-            locale.setlocale(locale.LC_ALL, "")
-            sickbeard.SYS_ENCODING = locale.getpreferredencoding()
-        except (locale.Error, IOError):
-            sickbeard.SYS_ENCODING = None
-
-        # enforce UTF-8
-        if not sickbeard.SYS_ENCODING or codecs.lookup(sickbeard.SYS_ENCODING).name == 'ascii':
-            sickbeard.SYS_ENCODING = 'UTF-8'
+        # initalize encoding defaults
+        encodingInit()
 
         # do some preliminary stuff
         sickbeard.MY_FULLNAME = ek(os.path.normpath, ek(os.path.abspath,__file__))

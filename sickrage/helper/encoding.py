@@ -26,6 +26,26 @@ import functools
 import collections
 from os import name
 
+def encodingInit():
+    # map the following codecs to utf-8
+    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp1252' else None)
+
+    # get locale encoding
+    try:
+        locale.setlocale(locale.LC_ALL, "")
+        sickbeard.SYS_ENCODING = locale.getpreferredencoding()
+    except (locale.Error, IOError):
+        sickbeard.SYS_ENCODING = None
+
+    # enforce UTF-8
+    if not sickbeard.SYS_ENCODING or codecs.lookup(sickbeard.SYS_ENCODING).name == 'ascii':
+        sickbeard.SYS_ENCODING = 'UTF-8'
+
+    # wrap i/o in unicode
+    sys.stdout = codecs.getwriter(sickbeard.SYS_ENCODING)(sys.stdout)
+    sys.stdin = codecs.getreader(sickbeard.SYS_ENCODING)(sys.stdin)
+
 def ek(f, *args, **kwargs):
     """
     Encoding Kludge: Call function with arguments and unicode-encode output
