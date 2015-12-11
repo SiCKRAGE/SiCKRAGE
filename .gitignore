@@ -65,3 +65,6 @@ lib/unrar2/UnRAR.exe
 bower_components
 node_modules
 gui/**/_bower.js
+
+# Python venv
+venv

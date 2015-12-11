@@ -1,16 +1,10 @@
 language: python
+
 python:
-  - 2.7.10
+  - 2.7
 
-sudo: false
-
-branches:
-  only:
-    - master
-
-install: echo "Nothing required!"
-
-cache: pip
+install:
+  - pip install -r requirements.txt
 
 before_script:
  - chmod +x ./tests/all_tests.py
@@ -20,10 +14,3 @@ script:
 
 after_failure:
   - cat ./tests/Logs/sickrage.log
-
-notifications:
-  irc: "irc.freenode.net#sickrage-updates"
-
-  email:
-    on_success: change
-    on_failure: change
