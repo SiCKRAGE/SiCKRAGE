@@ -34,7 +34,8 @@ def suite():
         for tests in suites:
             try:
                 alltests.addTests(tests)
-            except:
+            except Exception as e:
+                print(e)
                 continue
     return alltests
 

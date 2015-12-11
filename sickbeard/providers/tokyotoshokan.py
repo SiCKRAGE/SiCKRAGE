@@ -103,7 +103,7 @@ class TokyoToshokanProvider(generic.TorrentProvider):
 
                         results.append(item)
 
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
 
         # FIXME SORTING

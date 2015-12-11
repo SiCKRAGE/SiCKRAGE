@@ -1,3 +1,7 @@
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
 import sys
 import os.path
 
@@ -102,9 +106,9 @@ class QualityTests(test.SiCKRAGETestCase):
 #        self.assertEqual(common.Quality.UNKNOWN, common.Quality.nameQuality("Test Show - S01E02 - Unknown - SiCKBEARD"))
 
 if __name__ == '__main__':
-    print "=================="
-    print "STARTING - COMMON TESTS"
-    print "=================="
-    print "######################################################################"
+    print("==================")
+    print("STARTING - COMMON TESTS")
+    print("==================")
+    print("######################################################################")
     suite = unittest.TestLoader().loadTestsFromTestCase(QualityTests)
     unittest.TextTestRunner(verbosity=2).run(suite)

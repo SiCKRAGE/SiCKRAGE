@@ -229,7 +229,7 @@ class GenericProvider(object):
                     if mime_type == 'application/x-bittorrent':
                         return True
             except Exception as e:
-                logger.log(u"Failed to validate torrent file: " + ex(e), logger.DEBUG)
+                logger.log(u"Failed to validate torrent file: {}".format(ex(e)), logger.DEBUG)
 
             logger.log(u"Result is not a valid torrent file", logger.DEBUG)
             return False

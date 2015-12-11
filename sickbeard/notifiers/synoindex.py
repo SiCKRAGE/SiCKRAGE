@@ -56,8 +56,8 @@ class synoIndexNotifier:
                                      cwd=sickbeard.PROG_DIR)
                 out, err = p.communicate()  # @UnusedVariable
                 logger.log(u"Script result: " + str(out), logger.DEBUG)
-            except OSError, e:
-                logger.log(u"Unable to run synoindex: " + ex(e), logger.ERROR)
+            except OSError as e:
+                logger.log(u"Unable to run synoindex: {}".format(ex(e)), logger.ERROR)
 
     def deleteFolder(self, cur_path):
         self.makeObject('-D', cur_path)
@@ -81,8 +81,8 @@ class synoIndexNotifier:
                                      cwd=sickbeard.PROG_DIR)
                 out, err = p.communicate()  # @UnusedVariable
                 logger.log(u"Script result: " + str(out), logger.DEBUG)
-            except OSError, e:
-                logger.log(u"Unable to run synoindex: " + ex(e), logger.ERROR)
+            except OSError as e:
+                logger.log(u"Unable to run synoindex: {}".format(ex(e)), logger.ERROR)
 
 
 notifier = synoIndexNotifier

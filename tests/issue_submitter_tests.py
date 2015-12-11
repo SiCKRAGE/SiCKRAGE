@@ -34,7 +34,7 @@ def error():
     try:
         raise Exception('FAKE EXCEPTION')
     except Exception as e:
-        logger.log(u"FAKE ERROR: " + ex(e), logger.ERROR)
+        logger.log(u"FAKE ERROR: {}".format(ex(e)), logger.ERROR)
         logger.submit_errors()
         raise
 

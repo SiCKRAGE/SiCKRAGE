@@ -741,7 +741,7 @@ def initialize(consoleLogging=True):
                         ek(shutil.move, srcDir, dstDir)
                         logger.log(u"Restore: restoring cache successful", logger.INFO)
                     except Exception as e:
-                        logger.log(u"Restore: restoring cache failed: {0}".format(str(e)), logger.ERROR)
+                        logger.log(u"Restore: restoring cache failed: {0}".format(ex(e)), logger.ERROR)
 
                 restoreCache(ek(os.path.join, restoreDir, 'cache'), CACHE_DIR)
         except Exception as e:

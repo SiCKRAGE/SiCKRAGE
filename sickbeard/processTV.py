@@ -78,15 +78,15 @@ def delete_folder(folder, check_empty=True):
         try:
             logger.log(u"Deleting folder (if it's empty): " + folder)
             ek(os.rmdir,folder)
-        except (OSError, IOError), e:
-            logger.log(u"Warning: unable to delete folder: " + folder + ": " + ex(e), logger.WARNING)
+        except (OSError, IOError) as e:
+            logger.log(u"Warning: unable to delete folder: " + folder + ": {}".format(ex(e)), logger.WARNING)
             return False
     else:
         try:
             logger.log(u"Deleting folder: " + folder)
             ek(removetree, folder)
-        except (OSError, IOError), e:
-            logger.log(u"Warning: unable to delete folder: " + folder + ": " + ex(e), logger.WARNING)
+        except (OSError, IOError) as e:
+            logger.log(u"Warning: unable to delete folder: " + folder + ": {}".format(ex(e)), logger.WARNING)
             return False
 
     return True
@@ -123,11 +123,11 @@ def delete_files(processPath, notwantedFiles, result, force=False):
             result.output += logHelper(u"Changing ReadOnly Flag for file %s" % cur_file, logger.DEBUG)
             try:
                 ek(os.chmod, cur_file_path, stat.S_IWRITE)
-            except OSError, e:
+            except OSError as e:
                 result.output += logHelper(u"Cannot change permissions of %s: %s" % (cur_file, str(e.strerror).decode(sickbeard.SYS_ENCODING)), logger.DEBUG)
         try:
             ek(os.remove, cur_file_path)
-        except OSError, e:
+        except OSError as e:
             result.output += logHelper(u"Unable to delete file %s: %s" % (cur_file, str(e.strerror).decode(sickbeard.SYS_ENCODING)), logger.DEBUG)
 
 
@@ -162,7 +162,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     elif sickbeard.TV_DOWNLOAD_DIR and ek(os.path.isdir,sickbeard.TV_DOWNLOAD_DIR) \
             and ek(os.path.normpath, dirName) != ek(os.path.normpath, sickbeard.TV_DOWNLOAD_DIR):
         dirName = ek(os.path.join, sickbeard.TV_DOWNLOAD_DIR, ek(os.path.abspath, dirName).split(os.path.sep)[-1])
-        result.output += logHelper(u"Trying to use folder " + dirName, logger.DEBUG)
+        result.output += logHelper(u"Trying to use folder %s" % dirName, logger.DEBUG)
 
     # if we didn't find a real dir then quit
     if not ek(os.path.isdir,dirName):
@@ -457,7 +457,7 @@ def unRAR(path, rarFiles, force, result):
                 result.result = False
                 result.missedfiles.append(archive + " : Unpacking Failed with an Invalid Rar Archive Error")
                 continue
-            except Exception, e:
+            except Exception as e:
                 result.output += logHelper(u"Failed Unrar archive " + archive + ': ' + ex(e), logger.ERROR)
                 result.result = False
                 result.missedfiles.append(archive + " : Unpacking failed for an unknown reason")
@@ -544,7 +544,7 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
             processor = postProcessor.PostProcessor(cur_video_file_path, nzbName, process_method, is_priority)
             result.result = processor.process()
             process_fail_message = ""
-        except EpisodePostProcessingFailedException, e:
+        except EpisodePostProcessingFailedException as e:
             result.result = False
             process_fail_message = ex(e)
 
@@ -598,7 +598,7 @@ def process_failed(dirName, nzbName, result):
             processor = failedProcessor.FailedProcessor(dirName, nzbName)
             result.result = processor.process()
             process_fail_message = ""
-        except FailedPostProcessingFailedException, e:
+        except FailedPostProcessingFailedException as e:
             result.result = False
             process_fail_message = ex(e)
 

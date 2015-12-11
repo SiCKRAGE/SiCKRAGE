@@ -45,7 +45,7 @@ from sickbeard.scene_numbering import get_scene_numbering, set_scene_numbering, 
     get_xem_numbering_for_show, get_scene_absolute_numbering_for_show, get_xem_absolute_numbering_for_show, \
     get_scene_absolute_numbering
 from sickbeard.webapi import function_mapper
-
+from sickbeard.tv import EpisodeDeletedException
 from sickbeard.imdbPopular import imdb_popular
 
 from dateutil import tz
@@ -53,7 +53,7 @@ from unrar2 import RarFile
 import adba
 from libtrakt import TraktAPI
 from libtrakt.exceptions import traktException
-from sickrage.helper.encoding import ek, ss
+from sickrage.helper.encoding import ek, ss, uu
 from sickrage.helper.exceptions import CantRefreshShowException, CantUpdateShowException, ex
 from sickrage.helper.exceptions import MultipleShowObjectsException, NoNFOException, ShowDirectoryNotFoundException
 from sickrage.media.ShowBanner import ShowBanner
@@ -1441,8 +1441,8 @@ class Home(WebRoot):
                 showObj.flatten_folders = flatten_folders
                 try:
                     sickbeard.showQueueScheduler.action.refreshShow(showObj)
-                except CantRefreshShowException, e:
-                    errors.append("Unable to refresh this show: " + ex(e))
+                except CantRefreshShowException as e:
+                    errors.append("Unable to refresh this show: {}".format(ex(e)))
 
             showObj.paused = paused
             showObj.scene = scene
@@ -1471,8 +1471,8 @@ class Home(WebRoot):
                         showObj.location = location
                         try:
                             sickbeard.showQueueScheduler.action.refreshShow(showObj)
-                        except CantRefreshShowException, e:
-                            errors.append("Unable to refresh this show:" + ex(e))
+                        except CantRefreshShowException as e:
+                            errors.append("Unable to refresh this show:{}".format(ex(e)))
                             # grab updated info from TVDB
                             # showObj.loadEpisodesFromIndexer()
                             # rescan the episodes in the new folder
@@ -1495,14 +1495,14 @@ class Home(WebRoot):
             try:
                 sickbeard.scene_exceptions.update_scene_exceptions(showObj.indexerid, exceptions_list)  # @UndefinedVdexerid)
                 time.sleep(cpu_presets[sickbeard.CPU_PRESET])
-            except CantUpdateShowException, e:
+            except CantUpdateShowException as e:
                 errors.append("Unable to force an update on scene exceptions of the show.")
 
         if do_update_scene_numbering:
             try:
                 sickbeard.scene_numbering.xem_refresh(showObj.indexerid, showObj.indexer)
                 time.sleep(cpu_presets[sickbeard.CPU_PRESET])
-            except CantUpdateShowException, e:
+            except CantUpdateShowException as e:
                 errors.append("Unable to force an update on scene numbering of the show.")
 
         if directCall:
@@ -1573,7 +1573,7 @@ class Home(WebRoot):
         # force the update
         try:
             sickbeard.showQueueScheduler.action.updateShow(showObj, bool(force))
-        except CantUpdateShowException, e:
+        except CantUpdateShowException as e:
             ui.notifications.error("Unable to update this show.", ex(e))
 
         # just give it some time
@@ -1646,6 +1646,53 @@ class Home(WebRoot):
             return self.redirect('/home/displayShow?show=' + str(showObj.indexerid))
         else:
             return self.redirect('/home/')
+
+    def deleteEpisode(self, show=None, eps=None, direct=False):
+        if not all([show, eps]):
+            errMsg = "You must specify a show and at least one episode"
+            if direct:
+                ui.notifications.error('Error', errMsg)
+                return json.dumps({'result': 'error'})
+            else:
+                return self._genericMessage("Error", errMsg)
+
+        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(show))
+        if not showObj:
+            errMsg = "Error", "Show not in show list"
+            if direct:
+                ui.notifications.error('Error', errMsg)
+                return json.dumps({'result': 'error'})
+            else:
+                return self._genericMessage("Error", errMsg)
+
+        if eps:
+            for curEp in eps.split('|'):
+                if not curEp:
+                    logger.log(u"curEp was empty when trying to deleteEpisode", logger.DEBUG)
+
+                logger.log(u"Attempting to delete episode " + curEp, logger.DEBUG)
+
+                epInfo = curEp.split('x')
+
+                if not all(epInfo):
+                    logger.log(u"Something went wrong when trying to deleteEpisode, epInfo[0]: %s, epInfo[1]: %s" % (
+                    epInfo[0], epInfo[1]), logger.DEBUG)
+                    continue
+
+                epObj = showObj.getEpisode(int(epInfo[0]), int(epInfo[1]))
+                if not epObj:
+                    return self._genericMessage("Error", "Episode couldn't be retrieved")
+
+                with epObj.lock:
+                    try:
+                        epObj.deleteEpisode(full=True)
+                    except EpisodeDeletedException:
+                        pass
+
+        if direct:
+            return json.dumps({'result': 'success'})
+        else:
+            return self.redirect("/home/displayShow?show=" + show)
 
     def setStatus(self, show=None, eps=None, status=None, direct=False):
 
@@ -2176,31 +2223,24 @@ class HomePostProcess(Home):
         t = PageTemplate(rh=self, filename="home_postprocess.mako")
         return t.render(title='Post Processing', header='Post Processing', topmenu='home')
 
-    def processEpisode(self, proc_dir=None, nzbName=None, jobName=None, quiet=None, process_method=None, force=None,
-                       is_priority=None, delete_on="0", failed="0", proc_type="auto", *args, **kwargs):
+    def processEpisode(self, *args, **kwargs):
 
-        def argToBool(argument):
-            if isinstance(argument, basestring):
-                _arg = argument.strip().lower()
-            else:
-                _arg = argument
-
-            if _arg in ['1', 'on', 'true', True]:
-                return True
-            elif _arg in ['0', 'off', 'false', False]:
-                return False
-
-            return argument
-
-        def argToUnicode(argument):
-            return argument if not isinstance(argument, str) else argument.decode('UTF-8')
+        proc_dir = kwargs.get("proc_dir", kwargs.get("dir", None))
+        nzbName = kwargs.get("nzbName", None)
+        jobName = kwargs.get("jobName", None)
+        quiet = kwargs.get("quiet", None)
+        process_method = kwargs.get("process_method", None)
+        force = True if kwargs.get("force", "0").lower() in ['1', 'on', 'true', True] else False
+        is_priority = True if kwargs.get("is_priority", "0").lower() in ['1', 'on', 'true', True] else False
+        delete_on = True if kwargs.get("delete_on", "0").lower() in ['1', 'on', 'true', True] else False
+        failed = True if kwargs.get("failed", "0").lower() in ['1', 'on', 'true', True] else False
+        proc_type = kwargs.get("proc_type", "auto")
 
         if not proc_dir:
             return self.redirect("/home/postprocess/")
         else:
-            result = processTV.processDir(
-                argToUnicode(proc_dir), argToUnicode(nzbName), process_method=process_method, force=argToBool(force),
-                is_priority=argToBool(is_priority), delete_on=argToBool(delete_on), failed=argToBool(failed), proc_type=proc_type
+            result = processTV.processDir(proc_dir, nzbName, process_method=process_method, force=force,
+                is_priority=is_priority, delete_on=delete_on, failed=failed, proc_type=proc_type
             )
 
             if quiet is not None and int(quiet) == 1:
@@ -2254,7 +2294,7 @@ class HomeAddShows(Home):
             except Exception:
                 continue
 
-        for i, shows in results.iteritems():
+        for i, shows in results.items():
             final_results.extend([[sickbeard.indexerApi(i).name, i, sickbeard.indexerApi(i).config["show_url"], int(show['id']),
                                    show['seriesname'], show['firstaired']] for show in shows])
 
@@ -2308,7 +2348,7 @@ class HomeAddShows(Home):
 
                 cur_dir = {
                     'dir': cur_path,
-                    'display_dir': u'<b>' + ek(os.path.dirname, cur_path) + os.sep + u'</b>' + ek(os.path.basename, cur_path),
+                    'display_dir': u'<b>' + ek(os.path.dirname, cur_path) + os.sep + '</b>' + ek(os.path.basename, cur_path),
                 }
 
                 # see if the folder is in KODI already
@@ -2341,6 +2381,7 @@ class HomeAddShows(Home):
 
                 if indexer_id and helpers.findCertainShow(sickbeard.showList, indexer_id):
                     cur_dir['added_already'] = True
+
         return t.render(dirList=dir_list)
 
     def newShow(self, show_to_add=None, other_shows=None, search_string=None):
@@ -3327,7 +3368,7 @@ class Manage(Home, WebRoot):
                 try:
                     sickbeard.showQueueScheduler.action.updateShow(showObj, True)
                     updates.append(showObj.name)
-                except CantUpdateShowException, e:
+                except CantUpdateShowException as e:
                     errors.append("Unable to update show: {0}".format(str(e)))
 
             # don't bother refreshing shows that were updated anyway
@@ -3335,8 +3376,8 @@ class Manage(Home, WebRoot):
                 try:
                     sickbeard.showQueueScheduler.action.refreshShow(showObj)
                     refreshes.append(showObj.name)
-                except CantRefreshShowException, e:
-                    errors.append("Unable to refresh show " + showObj.name + ": " + ex(e))
+                except CantRefreshShowException as e:
+                    errors.append("Unable to refresh show " + showObj.name + ": {}".format(ex(e)))
 
             if curShowID in toRename:
                 sickbeard.showQueueScheduler.action.renameShowEpisodes(showObj)
@@ -4101,7 +4142,7 @@ class ConfigPostProcessing(Config):
                 return 'supported'
             logger.log(u'Rar Not Supported: Can not read the content of test file', logger.ERROR)
             return 'not supported'
-        except Exception, e:
+        except Exception as e:
             logger.log(u'Rar Not Supported: ' + ex(e), logger.ERROR)
             return 'not supported'
 

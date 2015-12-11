@@ -24,6 +24,8 @@
 # Catching too general exception
 
 # correct _strptime import bug
+from __future__ import print_function
+from __future__ import print_function
 from time import strptime
 strptime("2012", "%Y")
 
@@ -230,7 +232,7 @@ class SickRage(object):
         # Make sure that we can create the data dir
         if not ek(os.access, sickbeard.DATA_DIR, os.F_OK):
             try:
-                ek(os.makedirs, sickbeard.DATA_DIR, 0744)
+                ek(os.makedirs, sickbeard.DATA_DIR, 0o744)
             except os.error:
                 raise SystemExit("Unable to create datadir '" + sickbeard.DATA_DIR + "'")
 
@@ -314,7 +316,7 @@ class SickRage(object):
         self.webserver.start()
 
         if self.consoleLogging:
-            print "Starting up SickRage " + sickbeard.BRANCH + " from " + sickbeard.CONFIG_FILE
+            print("Starting up SickRage " + sickbeard.BRANCH + " from " + sickbeard.CONFIG_FILE)
 
         # Clean up after update
         if sickbeard.GIT_NEWVER:
@@ -362,7 +364,7 @@ class SickRage(object):
             pid = os.fork()  # @UndefinedVariable - only available in UNIX
             if pid != 0:
                 os._exit(0)
-        except OSError, e:
+        except OSError as e:
             sys.stderr.write(u"fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
 
@@ -380,7 +382,7 @@ class SickRage(object):
             pid = os.fork()  # @UndefinedVariable - only available in UNIX
             if pid != 0:
                 os._exit(0)
-        except OSError, e:
+        except OSError as e:
             sys.stderr.write(u"fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
 
@@ -391,7 +393,7 @@ class SickRage(object):
 
             try:
                 file(self.PIDFILE, 'w').write("%s\n" % pid)
-            except IOError, e:
+            except IOError as e:
                 logger.log_error_and_exit(
                         u"Unable to write PID file: " + self.PIDFILE + " Error: " + str(e.strerror) + " [" + str(
                                 e.errno) + "]")
@@ -435,7 +437,7 @@ class SickRage(object):
                 curShow = TVShow(int(sqlShow["indexer"]), int(sqlShow["indexer_id"]))
                 curShow.nextEpisode()
                 sickbeard.showList.append(curShow)
-            except Exception, e:
+            except Exception as e:
                 logger.log(
                         u"There was an error creating the show in " + sqlShow["location"] + ": " + str(e).decode(
                             'utf-8'),
@@ -509,7 +511,7 @@ class SickRage(object):
 
 if __name__ == "__main__":
     if sys.version_info < (2, 7):
-        print "Sorry, SickRage requires Python 2.7+"
+        print("Sorry, SickRage requires Python 2.7+")
         sys.exit(1)
 
     # start sickrage

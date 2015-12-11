@@ -243,6 +243,7 @@
         <input type="hidden" id="showID" value="${show.indexerid}" />
         <input type="hidden" id="indexer" value="${show.indexer}" />
         <input class="btn btn-inline" type="button" id="changeStatus" value="Go" />
+        <input class="btn btn-inline" type="button" id="deleteEpisode" value="Delete Episodes"/>
     </div>
 
     </br>
@@ -269,47 +270,48 @@
 <table id="${("showTable", "animeTable")[bool(show.is_anime)]}" class="displayShowTable display_show" cellspacing="0" border="0" cellpadding="0">
     <% curSeason = -1 %>
     <% odd = 0 %>
-    % for epResult in sqlResults:
+    %  for epResult in sqlResults:
         <%
-        epStr = str(epResult["season"]) + "x" + str(epResult["episode"])
-        if not epStr in epCats:
-            continue
+            epStr = str(epResult["season"]) + "x" + str(epResult["episode"])
+            if not epStr in epCats:
+                continue
 
-        if not sickbeard.DISPLAY_SHOW_SPECIALS and int(epResult["season"]) == 0:
-            continue
+            if not sickbeard.DISPLAY_SHOW_SPECIALS and int(epResult["season"]) == 0:
+                continue
 
-        scene = False
-        scene_anime = False
-        if not show.air_by_date and not show.is_sports and not show.is_anime and show.is_scene:
-            scene = True
-        elif not show.air_by_date and not show.is_sports and show.is_anime and show.is_scene:
-            scene_anime = True
+            scene = False
+            scene_anime = False
+            if not show.air_by_date and not show.is_sports and not show.is_anime and show.is_scene:
+                scene = True
+            elif not show.air_by_date and not show.is_sports and show.is_anime and show.is_scene:
+                scene_anime = True
 
-        (dfltSeas, dfltEpis, dfltAbsolute) = (0, 0, 0)
-        if (epResult["season"], epResult["episode"]) in xem_numbering:
-            (dfltSeas, dfltEpis) = xem_numbering[(epResult["season"], epResult["episode"])]
+            (dfltSeas, dfltEpis, dfltAbsolute) = (0, 0, 0)
+            if (epResult["season"], epResult["episode"]) in xem_numbering:
+                (dfltSeas, dfltEpis) = xem_numbering[(epResult["season"], epResult["episode"])]
 
-        if epResult["absolute_number"] in xem_absolute_numbering:
-            dfltAbsolute = xem_absolute_numbering[epResult["absolute_number"]]
+            if epResult["absolute_number"] in xem_absolute_numbering:
+                dfltAbsolute = xem_absolute_numbering[epResult["absolute_number"]]
 
-        if epResult["absolute_number"] in scene_absolute_numbering:
-            scAbsolute = scene_absolute_numbering[epResult["absolute_number"]]
-            dfltAbsNumbering = False
-        else:
-            scAbsolute = dfltAbsolute
-            dfltAbsNumbering = True
+            if epResult["absolute_number"] in scene_absolute_numbering:
+                scAbsolute = scene_absolute_numbering[epResult["absolute_number"]]
+                dfltAbsNumbering = False
+            else:
+                scAbsolute = dfltAbsolute
+                dfltAbsNumbering = True
 
-        if (epResult["season"], epResult["episode"]) in scene_numbering:
-            (scSeas, scEpis) = scene_numbering[(epResult["season"], epResult["episode"])]
-            dfltEpNumbering = False
-        else:
-            (scSeas, scEpis) = (dfltSeas, dfltEpis)
-            dfltEpNumbering = True
+            if (epResult["season"], epResult["episode"]) in scene_numbering:
+                (scSeas, scEpis) = scene_numbering[(epResult["season"], epResult["episode"])]
+                dfltEpNumbering = False
+            else:
+                (scSeas, scEpis) = (dfltSeas, dfltEpis)
+                dfltEpNumbering = True
 
-        epLoc = epResult["location"]
-        if epLoc and show._location and epLoc.lower().startswith(show._location.lower()):
-            epLoc = epLoc[len(show._location)+1:]
+            epLoc = epResult["location"]
+            if epLoc and show._location and epLoc.lower().startswith(show._location.lower()):
+                epLoc = epLoc[len(show._location)+1:]
         %>
+
         % if int(epResult["season"]) != curSeason:
             % if curSeason == -1:
     <thead>

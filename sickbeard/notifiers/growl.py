@@ -141,8 +141,8 @@ class GrowlNotifier:
                         return self._send_growl(opts, message)
                     else:
                         return False
-            except Exception, e:
-                logger.log(u"GROWL: Unable to send growl to " + opts['host'] + ":" + str(opts['port']) + " - " + ex(e), logger.WARNING)
+            except Exception as e:
+                logger.log(u"GROWL: Unable to send growl to " + opts['host'] + ":" + str(opts['port']) + " - {}".format(ex(e)), logger.WARNING)
                 return False
 
     def _sendRegistration(self, host=None, password=None, name='SickRage Notification'):
@@ -184,8 +184,8 @@ class GrowlNotifier:
 
         try:
             return self._send(opts['host'], opts['port'], register.encode(), opts['debug'])
-        except Exception, e:
-            logger.log(u"GROWL: Unable to send growl to " + opts['host'] + ":" + str(opts['port']) + " - " + ex(e), logger.WARNING)
+        except Exception as e:
+            logger.log(u"GROWL: Unable to send growl to " + opts['host'] + ":" + str(opts['port']) + " - {}".format(ex(e)), logger.WARNING)
             return False
 
 

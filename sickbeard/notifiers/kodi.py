@@ -304,8 +304,8 @@ class KODINotifier:
             encSqlXML = urllib.quote(sqlXML, ':\\/<>')
             try:
                 et = etree.fromstring(encSqlXML)
-            except SyntaxError, e:
-                logger.log(u"Unable to parse XML returned from KODI: " + ex(e), logger.ERROR)
+            except SyntaxError as e:
+                logger.log(u"Unable to parse XML returned from KODI: {}".format(ex(e)), logger.ERROR)
                 return False
 
             paths = et.findall('.//field')
@@ -384,9 +384,9 @@ class KODINotifier:
 
             try:
                 response = urllib2.urlopen(req)
-            except (httplib.BadStatusLine, urllib2.URLError), e:
+            except (httplib.BadStatusLine, urllib2.URLError) as e:
                 if sickbeard.KODI_ALWAYS_ON:
-                    logger.log(u"Error while trying to retrieve KODI API version for " + host + ": " + ex(e), logger.WARNING)
+                    logger.log(u"Error while trying to retrieve KODI API version for " + host + ": {}".format(ex(e)), logger.WARNING)
                 return False
 
             # parse the json result
@@ -395,13 +395,13 @@ class KODINotifier:
                 response.close()
                 logger.log(u"KODI JSON response: " + str(result), logger.DEBUG)
                 return result  # need to return response for parsing
-            except ValueError, e:
+            except ValueError as e:
                 logger.log(u"Unable to decode JSON: " +  str(response.read()), logger.WARNING)
                 return False
 
-        except IOError, e:
+        except IOError as e:
             if sickbeard.KODI_ALWAYS_ON:
-                logger.log(u"Warning: Couldn't contact KODI JSON API at " + ss(url) + " " + ex(e), logger.WARNING)
+                logger.log(u"Warning: Couldn't contact KODI JSON API at " + ss(url) + " {}".format(ex(e)), logger.WARNING)
             return False
 
     def _update_library_json(self, host=None, showName=None):

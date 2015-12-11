@@ -594,7 +594,7 @@ class GitUpdateManager(UpdateManager):
         else:
             try:
                 self._check_github_for_update()
-            except Exception, e:
+            except Exception as e:
                 logger.log(u"Unable to contact github, can't check for update: " + repr(e), logger.WARNING)
                 return False
 
@@ -715,7 +715,7 @@ class SourceUpdateManager(UpdateManager):
         # need this to run first to set self._newest_commit_hash
         try:
             self._check_github_for_update()
-        except Exception, e:
+        except Exception as e:
             logger.log(u"Unable to contact github, can't check for update: " + repr(e), logger.WARNING)
             return False
 
@@ -852,7 +852,7 @@ class SourceUpdateManager(UpdateManager):
                             ek(os.chmod, new_path, stat.S_IWRITE)
                             ek(os.remove, new_path)
                             ek(os.renames, old_path, new_path)
-                        except Exception, e:
+                        except Exception as e:
                             logger.log(u"Unable to update " + new_path + ': ' + ex(e), logger.DEBUG)
                             ek(os.remove, old_path)  # Trash the updated file without moving in new path
                         continue
@@ -864,8 +864,8 @@ class SourceUpdateManager(UpdateManager):
             sickbeard.CUR_COMMIT_HASH = self._newest_commit_hash
             sickbeard.CUR_COMMIT_BRANCH = self.branch
 
-        except Exception, e:
-            logger.log(u"Error while trying to update: " + ex(e), logger.ERROR)
+        except Exception as e:
+            logger.log(u"Error while trying to update: {}".format(ex(e)), logger.ERROR)
             logger.log(u"Traceback: " + traceback.format_exc(), logger.DEBUG)
             return False
 
