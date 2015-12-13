@@ -1,6 +1,7 @@
-# coding=UTF-8
-# Author: Dennis Lutter <lad1337@gmail.com>
-# URL: http://code.google.com/p/sickbeard/
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -17,24 +18,31 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os.path
+from __future__ import unicode_literals
+
+import os.path
+import sys
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import random
 import unittest
 
-import test_lib as test
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 
 import sickbeard.search as search
 import sickbeard
 from sickbeard.tv import TVEpisode, TVShow
 import sickbeard.common as c
 
-tests = {"Dexter": {"a": 1, "q": c.HD, "s": 5, "e": [7], "b": 'Dexter.S05E07.720p.BluRay.X264-REWARD', "i": ['Dexter.S05E07.720p.BluRay.X264-REWARD', 'Dexter.S05E07.720p.X264-REWARD']},
-         "House": {"a": 1, "q": c.HD, "s": 4, "e": [5], "b": 'House.4x5.720p.BluRay.X264-REWARD', "i": ['Dexter.S05E04.720p.X264-REWARD', 'House.4x5.720p.BluRay.X264-REWARD']},
-         "Hells Kitchen": {"a": 1, "q": c.SD, "s": 6, "e": [14, 15], "b": 'Hells.Kitchen.s6e14e15.HDTV.XviD-ASAP', "i": ['Hells.Kitchen.S06E14.HDTV.XviD-ASAP', 'Hells.Kitchen.6x14.HDTV.XviD-ASAP', 'Hells.Kitchen.s6e14e15.HDTV.XviD-ASAP']}
-       }
+tests = {"Dexter": {"a": 1, "q": c.HD, "s": 5, "e": [7], "b": 'Dexter.S05E07.720p.BluRay.X264-REWARD',
+                    "i": ['Dexter.S05E07.720p.BluRay.X264-REWARD', 'Dexter.S05E07.720p.X264-REWARD']},
+         "House": {"a": 1, "q": c.HD, "s": 4, "e": [5], "b": 'House.4x5.720p.BluRay.X264-REWARD',
+                   "i": ['Dexter.S05E04.720p.X264-REWARD', 'House.4x5.720p.BluRay.X264-REWARD']},
+         "Hells Kitchen": {"a": 1, "q": c.SD, "s": 6, "e": [14, 15], "b": 'Hells.Kitchen.s6e14e15.HDTV.XviD-ASAP',
+                           "i": ['Hells.Kitchen.S06E14.HDTV.XviD-ASAP', 'Hells.Kitchen.6x14.HDTV.XviD-ASAP',
+                                 'Hells.Kitchen.s6e14e15.HDTV.XviD-ASAP']}
+         }
 
 
 def _create_fake_xml(items):
@@ -49,8 +57,7 @@ def _create_fake_xml(items):
 searchItems = []
 
 
-class SearchTest(test.SiCKRAGETestDBCase):
-
+class SearchTest(SiCKRAGETestDBCase):
     def _fake_getURL(self, url, headers=None):
         global searchItems
         return _create_fake_xml(searchItems)
@@ -61,33 +68,35 @@ class SearchTest(test.SiCKRAGETestDBCase):
     def __init__(self, something):
         for provider in sickbeard.providers.sortedProviderList():
             provider.getURL = self._fake_getURL
-            #provider.isActive = self._fake_isActive
+            # provider.isActive = self._fake_isActive
 
         super(SearchTest, self).__init__(something)
         super(SearchTest, self).setUp()
 
-def test_generator(tvdbdid, show_name, curData, forceSearch):
 
+def test_generator(tvdbdid, show_name, curData, forceSearch):
     def test(self):
         global searchItems
-        searchItems = curData["i"]
+        searchItems = curData[b"i"]
         show = TVShow(1, tvdbdid)
         show.name = show_name
-        show.quality = curData["q"]
+        show.quality = curData[b"q"]
         show.saveToDB()
         sickbeard.showList.append(show)
         episode = None
 
-        for epNumber in curData["e"]:
-            episode = TVEpisode(show, curData["s"], epNumber)
+        for epNumber in curData[b"e"]:
+            episode = TVEpisode(show, curData[b"s"], epNumber)
             episode.status = c.WANTED
             episode.saveToDB()
 
         bestResult = search.searchProviders(show, episode.episode, forceSearch)
         if not bestResult:
-            self.assertEqual(curData["b"], bestResult)
-        self.assertEqual(curData["b"], bestResult.name) #first is expected, second is choosen one
+            self.assertEqual(curData[b"b"], bestResult)
+        self.assertEqual(curData[b"b"], bestResult.name)  # first is expected, second is choosen one
+
     return test
+
 
 if __name__ == '__main__':
     print "=================="
@@ -98,7 +107,7 @@ if __name__ == '__main__':
     tvdbdid = 1
     for forceSearch in (True, False):
         for name, curData in tests.items():
-            if not curData["a"]:
+            if not curData[b"a"]:
                 continue
             fname = name.replace(' ', '_')
             if forceSearch:
@@ -110,5 +119,4 @@ if __name__ == '__main__':
             setattr(SearchTest, test_name, test)
             tvdbdid += 1
 
-    suite = unittest.TestLoader().loadTestsFromTestCase(SearchTest)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.main()

@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import datetime
 import locale
 import functools
@@ -88,6 +90,7 @@ date_presets = (
 )
 
 time_presets = ('%I:%M:%S %p', '%H:%M:%S')
+
 
 # helper class
 class static_or_instance(object):

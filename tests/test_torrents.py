@@ -1,6 +1,7 @@
-# coding=UTF-8
-# Author: Dennis Lutter <lad1337@gmail.com>
-# URL: http://code.google.com/p/sickbeard/
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -17,22 +18,25 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
 
-import sys, os.path
+import os.path
+import sys
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 
-import test_lib as test
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 
 import urlparse
 import requests
 from bs4 import BeautifulSoup
 from sickbeard.helpers import getURL
 
-class TorrentBasicTests(test.SiCKRAGETestDBCase):
 
+class TorrentBasicTests(SiCKRAGETestDBCase):
     def test_search(self):
         self.url = 'http://kickass.to/'
         searchURL = 'http://kickass.to/usearch/American%20Dad%21%20S08%20-S08E%20category%3Atv/?field=seeders&sorder=desc'
@@ -49,9 +53,9 @@ class TorrentBasicTests(test.SiCKRAGETestDBCase):
         # cleanup memory
         soup.clear(True)
 
-        #Continue only if one Release is found
+        # Continue only if one Release is found
         if len(torrent_rows) < 2:
-            print(u"The data returned does not contain any torrents")
+            print("The data returned does not contain any torrents")
             return
 
         for tr in torrent_rows[1:]:
@@ -60,7 +64,7 @@ class TorrentBasicTests(test.SiCKRAGETestDBCase):
                 link = urlparse.urljoin(self.url, (tr.find('div', {'class': 'torrentname'}).find_all('a')[1])['href'])
                 id = tr.get('id')[-7:]
                 title = (tr.find('div', {'class': 'torrentname'}).find_all('a')[1]).text \
-                    or (tr.find('div', {'class': 'torrentname'}).find_all('a')[2]).text
+                        or (tr.find('div', {'class': 'torrentname'}).find_all('a')[2]).text
                 url = tr.find('a', 'imagnet')['href']
                 verified = True if tr.find('a', 'iverify') else False
                 trusted = True if tr.find('img', {'alt': 'verified'}) else False
@@ -71,10 +75,10 @@ class TorrentBasicTests(test.SiCKRAGETestDBCase):
 
             print title
 
+
 if __name__ == "__main__":
     print "=================="
     print "STARTING - TORRENT TESTS"
     print "=================="
     print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(TorrentBasicTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.main()

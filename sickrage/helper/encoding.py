@@ -1,8 +1,7 @@
-# coding=utf-8
-
-# Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: https://sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -18,13 +17,22 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
+
+import codecs
+import collections
+import functools
+import locale
+import sys
+import types
 from itertools import imap
+from os import name
 
 import six
-import types
-import functools
-import collections
-from os import name
+
+import sickbeard
+
 
 def encodingInit():
     # map the following codecs to utf-8
@@ -46,6 +54,7 @@ def encodingInit():
     sys.stdout = codecs.getwriter(sickbeard.SYS_ENCODING)(sys.stdout)
     sys.stdin = codecs.getreader(sickbeard.SYS_ENCODING)(sys.stdin)
 
+
 def ek(f, *args, **kwargs):
     """
     Encoding Kludge: Call function with arguments and unicode-encode output
@@ -55,6 +64,7 @@ def ek(f, *args, **kwargs):
     :param kwargs:  Arguments for function
     :return: Unicode-converted function output (string, list or tuple, depends on input)
     """
+
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
         if name == 'nt':
@@ -69,15 +79,18 @@ def ek(f, *args, **kwargs):
                 elif isinstance(result, collections.Mapping):
                     return dict(imap(_wrapper, result.items()))
                 elif isinstance(result, collections.Iterable) and isinstance(result, types.GeneratorType):
-                    return filter(lambda x: x is not None, imap(_wrapper,result))
+                    return filter(lambda x: x is not None, imap(_wrapper, result))
                 elif isinstance(result, collections.Iterable) and isinstance(result, (types.TupleType, types.ListType)):
-                    return type(result)(filter(lambda x: x is not None, imap(_wrapper,result)))
+                    return type(result)(filter(lambda x: x is not None, imap(_wrapper, result)))
             except:
                 pass
 
             return result
+
         return _wrapper(result, *args, **kwargs)
+
     return wrapper(*args, **kwargs)
+
 
 def uu(s, encoding="utf-8", errors="strict"):
     """ Convert, at all consts, 'text' to a `unicode` object.
@@ -103,6 +116,7 @@ def uu(s, encoding="utf-8", errors="strict"):
         pass
 
     return s
+
 
 def ss(s, encoding="utf-8", errors="strict"):
     """ Convert 'text' to a `str` object.

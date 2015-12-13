@@ -19,18 +19,16 @@
 import urllib
 import datetime
 
-
 from sickbeard import classes
 from sickbeard import show_name_helpers
 
-from sickbeard import logger
+import logging
 
 from sickbeard import tvcache
 from sickbeard.providers import generic
 
 
 class animenzb(generic.NZBProvider):
-
     def __init__(self):
 
         generic.NZBProvider.__init__(self, "AnimeNZB")
@@ -44,7 +42,7 @@ class animenzb(generic.NZBProvider):
 
         self.urls = {'base_url': 'http://animenzb.com//'}
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
     def _get_season_search_strings(self, ep_obj):
         return [x for x in show_name_helpers.makeSceneSeasonSearchString(self.show, ep_obj)]
@@ -54,7 +52,7 @@ class animenzb(generic.NZBProvider):
 
     def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
 
-        logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+        logging.debug("Search string: %s " % search_string)
 
         if self.show and not self.show.is_anime:
             return []
@@ -66,14 +64,14 @@ class animenzb(generic.NZBProvider):
         }
 
         searchURL = self.url + "rss?" + urllib.urlencode(params)
-        logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+        logging.debug("Search URL: %s" % searchURL)
         results = []
         for curItem in self.cache.getRSSFeed(searchURL)['entries'] or []:
             (title, url) = self._get_title_and_url(curItem)
 
             if title and url:
                 results.append(curItem)
-                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                logging.debug("Found result: %s " % title)
 
         # For each search mode sort all the items by seeders if available if available
         results.sort(key=lambda tup: tup[0], reverse=True)
@@ -88,7 +86,7 @@ class animenzb(generic.NZBProvider):
 
             (title, url) = self._get_title_and_url(item)
 
-            if item.has_key('published_parsed') and item['published_parsed']:
+            if item.has_key('published_parsed') and item[b'published_parsed']:
                 result_date = item.published_parsed
                 if result_date:
                     result_date = datetime.datetime(*result_date[0:6])
@@ -103,16 +101,13 @@ class animenzb(generic.NZBProvider):
 
 
 class animenzbCache(tvcache.TVCache):
-
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         # only poll animenzb every 20 minutes max
         self.minTime = 20
 
     def _getRSSData(self):
-
         params = {
             "cat": "anime".encode('utf-8'),
             "max": "100".encode('utf-8')
@@ -121,5 +116,6 @@ class animenzbCache(tvcache.TVCache):
         rss_url = self.provider.url + 'rss?' + urllib.urlencode(params)
 
         return self.getRSSFeed(rss_url)
+
 
 provider = animenzb()

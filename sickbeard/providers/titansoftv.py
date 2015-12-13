@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 # URL: http://code.google.com/p/sickbeard
 # Originally written for SickGear
 #
@@ -17,10 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import urllib
 
 from sickbeard.providers import generic
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.helpers import mapIndexersToShow
 from sickrage.helper.exceptions import AuthException
@@ -50,7 +52,7 @@ class TitansOfTVProvider(generic.TorrentProvider):
     def _checkAuthFromData(self, data):
 
         if 'error' in data:
-            logger.log(u"Invalid api key. Check your settings", logger.WARNING)
+            logging.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -65,19 +67,19 @@ class TitansOfTVProvider(generic.TorrentProvider):
             params.update(search_params)
 
         searchURL = self.url + '?' + urllib.urlencode(params)
-        logger.log(u"Search string: %s " % search_params, logger.DEBUG)
-        logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+        logging.debug("Search string: %s " % search_params)
+        logging.debug("Search URL: %s" % searchURL)
 
         parsedJSON = self.getURL(searchURL, json=True)  # do search
 
         if not parsedJSON:
-            logger.log(u"No data returned from provider", logger.DEBUG)
+            logging.debug("No data returned from provider")
             return results
 
         if self._checkAuthFromData(parsedJSON):
 
             try:
-                found_torrents = parsedJSON['results']
+                found_torrents = parsedJSON[b'results']
             except Exception:
                 found_torrents = {}
 
@@ -96,12 +98,12 @@ class TitansOfTVProvider(generic.TorrentProvider):
                 # Filter unseeded torrent
                 # if seeders < self.minseed or leechers < self.minleech:
                 #    if mode is not 'RSS':
-                #        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                #        logging.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                 #    continue
 
                 item = title, download_url, size, seeders, leechers
 
-                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                logging.debug("Found result: %s " % title)
                 results.append(item)
 
         # FIXME SORTING
@@ -111,14 +113,14 @@ class TitansOfTVProvider(generic.TorrentProvider):
     def _get_season_search_strings(self, ep_obj):
         search_params = {'limit': 100}
 
-        search_params['season'] = 'Season %02d' % ep_obj.scene_season
+        search_params[b'season'] = 'Season %02d' % ep_obj.scene_season
 
         if ep_obj.show.indexer == 1:
-            search_params['series_id'] = ep_obj.show.indexerid
+            search_params[b'series_id'] = ep_obj.show.indexerid
         elif ep_obj.show.indexer == 2:
             tvdbid = mapIndexersToShow(ep_obj.show)[1]
             if tvdbid:
-                search_params['series_id'] = tvdbid
+                search_params[b'series_id'] = tvdbid
 
         return [search_params]
 
@@ -130,14 +132,14 @@ class TitansOfTVProvider(generic.TorrentProvider):
         search_params = {'limit': 100}
 
         # Do a general name search for the episode, formatted like SXXEYY
-        search_params['episode'] = 'S%02dE%02d' % (ep_obj.scene_season, ep_obj.scene_episode)
+        search_params[b'episode'] = 'S%02dE%02d' % (ep_obj.scene_season, ep_obj.scene_episode)
 
         if ep_obj.show.indexer == 1:
-            search_params['series_id'] = ep_obj.show.indexerid
+            search_params[b'series_id'] = ep_obj.show.indexerid
         elif ep_obj.show.indexer == 2:
             tvdbid = mapIndexersToShow(ep_obj.show)[1]
             if tvdbid:
-                search_params['series_id'] = tvdbid
+                search_params[b'series_id'] = tvdbid
 
         return [search_params]
 

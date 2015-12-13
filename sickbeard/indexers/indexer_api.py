@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
@@ -17,6 +17,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
+
 import os
 import sickbeard
 
@@ -33,7 +36,7 @@ class indexerApi(object):
 
     def indexer(self, *args, **kwargs):
         if self.indexerID:
-            return indexerConfig[self.indexerID]['module'](*args, **kwargs)
+            return indexerConfig[self.indexerID][b'module'](*args, **kwargs)
 
     @property
     def config(self):
@@ -41,36 +44,37 @@ class indexerApi(object):
             return indexerConfig[self.indexerID]
         _ = initConfig
         if sickbeard.INDEXER_DEFAULT_LANGUAGE in _:
-            del _[_['valid_languages'].index(sickbeard.INDEXER_DEFAULT_LANGUAGE)]
-        _['valid_languages'].sort()
-        _['valid_languages'].insert(0, sickbeard.INDEXER_DEFAULT_LANGUAGE)
+            del _[_[b'valid_languages'].index(sickbeard.INDEXER_DEFAULT_LANGUAGE)]
+        _[b'valid_languages'].sort()
+        _[b'valid_languages'].insert(0, sickbeard.INDEXER_DEFAULT_LANGUAGE)
         return _
 
     @property
     def name(self):
         if self.indexerID:
-            return indexerConfig[self.indexerID]['name']
+            return indexerConfig[self.indexerID][b'name']
 
     @property
     def api_params(self):
         if self.indexerID:
             if sickbeard.CACHE_DIR:
-                indexerConfig[self.indexerID]['api_params']['cache'] = ek(os.path.join, sickbeard.CACHE_DIR, 'indexers', self.name)
+                indexerConfig[self.indexerID][b'api_params'][b'cache'] = ek(os.path.join, sickbeard.CACHE_DIR, 'indexers',
+                                                                          self.name)
             if sickbeard.PROXY_SETTING and sickbeard.PROXY_INDEXERS:
-                indexerConfig[self.indexerID]['api_params']['proxy'] = sickbeard.PROXY_SETTING
+                indexerConfig[self.indexerID][b'api_params'][b'proxy'] = sickbeard.PROXY_SETTING
 
-            return indexerConfig[self.indexerID]['api_params']
+            return indexerConfig[self.indexerID][b'api_params']
 
     @property
     def cache(self):
         if sickbeard.CACHE_DIR:
-            return self.api_params['cache']
+            return self.api_params[b'cache']
 
     @property
     def indexers(self):
-        return dict((int(x['id']), x['name']) for x in indexerConfig.values())
+        return dict((int(x[b'id']), x[b'name']) for x in indexerConfig.values())
 
     @property
     def session(self):
         if self.indexerID:
-            return indexerConfig[self.indexerID]['session']
+            return indexerConfig[self.indexerID][b'session']

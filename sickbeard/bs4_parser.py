@@ -17,7 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 from bs4 import BeautifulSoup
+
 
 class BS4Parser:
     def __init__(self, *args, **kwargs):

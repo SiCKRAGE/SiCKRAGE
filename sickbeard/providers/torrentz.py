@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
 
 import re
 import time
@@ -25,13 +26,13 @@ from six.moves import urllib
 from xml.parsers.expat import ExpatError
 
 import sickbeard
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard.common import cpu_presets
 
-class TORRENTZProvider(generic.TorrentProvider):
 
+class TORRENTZProvider(generic.TorrentProvider):
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Torrentz")
@@ -45,7 +46,7 @@ class TORRENTZProvider(generic.TorrentProvider):
         self.urls = {'verified': 'https://torrentz.eu/feed_verified',
                      'feed': 'https://torrentz.eu/feed',
                      'base': 'https://torrentz.eu/'}
-        self.url = self.urls['base']
+        self.url = self.urls[b'base']
 
     def seedRatio(self):
         return self.ratio
@@ -53,7 +54,7 @@ class TORRENTZProvider(generic.TorrentProvider):
     @staticmethod
     def _split_description(description):
         match = re.findall(r'[0-9]+', description)
-        return (int(match[0]) * 1024**2, int(match[1]), int(match[2]))
+        return (int(match[0]) * 1024 ** 2, int(match[1]), int(match[2]))
 
     def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
@@ -61,43 +62,45 @@ class TORRENTZProvider(generic.TorrentProvider):
 
         for mode in search_strings:
             for search_string in search_strings[mode]:
-                search_url = self.urls['verified'] if self.confirmed else self.urls['feed']
+                search_url = self.urls[b'verified'] if self.confirmed else self.urls[b'feed']
                 if mode is not 'RSS':
                     search_url += '?q=' + urllib.parse.quote_plus(search_string)
 
-                logger.log(search_url)
+                logging.info(search_url)
                 data = self.getURL(search_url)
                 if not data:
-                    logger.log(u'Seems to be down right now!')
+                    logging.info('Seems to be down right now!')
                     continue
 
                 if not data.startswith("<?xml"):
-                    logger.log(u'Wrong data returned from: ' + search_url, logger.DEBUG)
+                    logging.debug('Wrong data returned from: ' + search_url)
                     continue
 
                 if not data.startswith('<?xml'):
-                    logger.log(u'Expected xml but got something else, is your mirror failing?', logger.INFO)
+                    logging.info('Expected xml but got something else, is your mirror failing?')
                     continue
 
                 try:
                     data = xmltodict.parse(data)
                 except ExpatError:
-                    logger.log(u"Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data), logger.ERROR)
+                    logging.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                     continue
 
-                if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
-                    logger.log(u"Malformed rss returned or no results, skipping", logger.DEBUG)
+                if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
+                    logging.debug("Malformed rss returned or no results, skipping")
                     continue
 
                 time.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
                 # https://github.com/martinblech/xmltodict/issues/111
-                entries = data['rss']['channel']['item']
+                entries = data[b'rss'][b'channel'][b'item']
                 entries = entries if isinstance(entries, list) else [entries]
 
                 for item in entries:
-                    if 'tv' not in item.get('category', ''):
-                        continue
+                    try:
+                        if 'tv' not in item[b'category']:
+                            continue
+                    except:continue
 
                     title = item.get('title', '').rsplit(' ', 1)[0].replace(' ', '.')
                     t_hash = item.get('guid', '').rsplit('/', 1)[-1]
@@ -112,7 +115,9 @@ class TORRENTZProvider(generic.TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                            logging.debug(
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers))
                         continue
 
                     items[mode].append((title, download_url, size, seeders, leechers))
@@ -123,10 +128,9 @@ class TORRENTZProvider(generic.TorrentProvider):
 
         return results
 
+
 class TORRENTZCache(tvcache.TVCache):
-
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         # only poll every 15 minutes max
@@ -134,5 +138,6 @@ class TORRENTZCache(tvcache.TVCache):
 
     def _getRSSData(self):
         return {'entries': self.provider._doSearch({'RSS': ['']})}
+
 
 provider = TORRENTZProvider()

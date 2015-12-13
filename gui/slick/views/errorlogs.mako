@@ -2,7 +2,7 @@
 <%!
     import sickbeard
     from sickbeard import classes
-    from sickbeard.logger import reverseNames
+    from sickbeard.logger import logLevels
 %>
 <%block name="css">
 <style>
@@ -18,7 +18,7 @@ pre {
 </%block>
 <%block name="content">
 <%
-    if logLevel == sickbeard.logger.WARNING:
+    if logLevel == logLevels['WARNING']:
         errors = classes.WarningViewer.errors
         title = 'WARNING logs'
     else:

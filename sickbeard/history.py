@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import db
 import datetime
 
@@ -43,8 +45,8 @@ def _logHistoryItem(action, showid, season, episode, quality, resource, provider
 
     myDB = db.DBConnection()
     myDB.action(
-        "INSERT INTO history (action, date, showid, season, episode, quality, resource, provider, version) VALUES (?,?,?,?,?,?,?,?,?)",
-        [action, logDate, showid, season, episode, quality, resource, provider, version])
+            "INSERT INTO history (action, date, showid, season, episode, quality, resource, provider, version) VALUES (?,?,?,?,?,?,?,?,?)",
+            [action, logDate, showid, season, episode, quality, resource, provider, version])
 
 
 def logSnatch(searchResult):

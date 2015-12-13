@@ -1,6 +1,7 @@
-# coding=UTF-8
-# Author: Dennis Lutter <lad1337@gmail.com>
-# URL: http://code.google.com/p/sickbeard/
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -17,20 +18,24 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os.path
+from __future__ import unicode_literals
+
+import os.path
+import sys
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 
-import test_lib as test
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 
 import sickbeard
 from sickbeard.tv import TVEpisode, TVShow
 
-class TVShowTests(test.SiCKRAGETestDBCase):
 
-    def setUp(self):
+class TVShowTests(SiCKRAGETestDBCase):
+    def setUp(self, **kwargs):
         super(TVShowTests, self).setUp()
         sickbeard.showList = []
 
@@ -66,9 +71,8 @@ class TVShowTests(test.SiCKRAGETestDBCase):
         self.assertEqual(show.name, "newName")
 
 
-class TVEpisodeTests(test.SiCKRAGETestDBCase):
-
-    def setUp(self):
+class TVEpisodeTests(SiCKRAGETestDBCase):
+    def setUp(self, **kwargs):
         super(TVEpisodeTests, self).setUp()
         sickbeard.showList = []
 
@@ -81,9 +85,8 @@ class TVEpisodeTests(test.SiCKRAGETestDBCase):
         self.assertEqual(ep.name, "asdasdasdajkaj")
 
 
-class TVTests(test.SiCKRAGETestDBCase):
-
-    def setUp(self):
+class TVTests(SiCKRAGETestDBCase):
+    def setUp(self, **kwargs):
         super(TVTests, self).setUp()
         sickbeard.showList = []
 
@@ -99,7 +102,7 @@ class TVTests(test.SiCKRAGETestDBCase):
         show.startyear = 1987
         show.saveToDB()
         sickbeard.showList = [show]
-        #TODO: implement
+        # TODO: implement
 
 
 if __name__ == '__main__':
@@ -107,11 +110,4 @@ if __name__ == '__main__':
     print "STARTING - TV TESTS"
     print "=================="
     print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(TVShowTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
-    print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(TVEpisodeTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
-    print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(TVTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.main()

@@ -23,7 +23,7 @@ import requests
 import traceback
 
 import sickbeard
-from sickbeard import logger
+import logging
 from sickbeard.common import notifyStrings
 from sickbeard.common import NOTIFY_SNATCH
 from sickbeard.common import NOTIFY_DOWNLOAD
@@ -40,28 +40,34 @@ class PushbulletNotifier(object):
         pass
 
     def test_notify(self, pushbullet_api):
-        logger.log(u"Sending a test Pushbullet notification.", logger.DEBUG)
-        return self._sendPushbullet(pushbullet_api, event=self.TEST_EVENT, message="Testing Pushbullet settings from SickRage")
+        logging.debug("Sending a test Pushbullet notification.")
+        return self._sendPushbullet(pushbullet_api, event=self.TEST_EVENT,
+                                    message="Testing Pushbullet settings from SiCKRAGE")
 
     def get_devices(self, pushbullet_api):
-        logger.log(u"Testing Pushbullet authentication and retrieving the device list.", logger.DEBUG)
+        logging.debug("Testing Pushbullet authentication and retrieving the device list.")
         return self._sendPushbullet(pushbullet_api)
 
     def notify_snatch(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONSNATCH:
-            self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_SNATCH] + " : " + ep_name, message=ep_name)
+            self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_SNATCH] + " : " + ep_name,
+                                 message=ep_name)
 
     def notify_download(self, ep_name):
         if sickbeard.PUSHBULLET_NOTIFY_ONDOWNLOAD:
-            self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_DOWNLOAD] + " : " + ep_name, message=ep_name)
+            self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_DOWNLOAD] + " : " + ep_name,
+                                 message=ep_name)
 
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang, message=ep_name + ": " + lang)
+            self._sendPushbullet(pushbullet_api=None,
+                                 event=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
+                                 message=ep_name + ": " + lang)
 
     def notify_git_update(self, new_version="??"):
         if sickbeard.USE_PUSHBULLET:
-            self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_GIT_UPDATE], message=notifyStrings[NOTIFY_GIT_UPDATE_TEXT] + new_version)
+            self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_GIT_UPDATE],
+                                 message=notifyStrings[NOTIFY_GIT_UPDATE_TEXT] + new_version)
 
     def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None):
 
@@ -71,11 +77,11 @@ class PushbulletNotifier(object):
         pushbullet_api = pushbullet_api or sickbeard.PUSHBULLET_API
         pushbullet_device = pushbullet_device or sickbeard.PUSHBULLET_DEVICE
 
-        logger.log(u"Pushbullet event: %r" % event, logger.DEBUG)
-        logger.log(u"Pushbullet message: %r" % message, logger.DEBUG)
-        logger.log(u"Pushbullet api: %r" % pushbullet_api, logger.DEBUG)
-        logger.log(u"Pushbullet devices: %r" % pushbullet_device, logger.DEBUG)
-        logger.log(u"Pushbullet notification type: %r" % 'note' if event else 'None', logger.DEBUG)
+        logging.debug("Pushbullet event: %r" % event)
+        logging.debug("Pushbullet message: %r" % message)
+        logging.debug("Pushbullet api: %r" % pushbullet_api)
+        logging.debug("Pushbullet devices: %r" % pushbullet_device)
+        logging.debug("Pushbullet notification type: %r" % 'note' if event else 'None')
 
         url = 'https://api.pushbullet.com/v2/%s' % ('devices', 'pushes')[event is not None]
 
@@ -92,24 +98,24 @@ class PushbulletNotifier(object):
         try:
             response = self.session.request(method, url, data=data, headers=headers)
         except Exception:
-            logger.log(u'Pushbullet authorization failed with exception: %r' % traceback.format_exc(), logger.DEBUG)
+            logging.debug('Pushbullet authorization failed with exception: %r' % traceback.format_exc())
             return False
 
         if response.status_code == 410:
-            logger.log(u'Pushbullet authorization failed', logger.DEBUG)
+            logging.debug('Pushbullet authorization failed')
             return False
 
         if response.status_code != 200:
-            logger.log(u'Pushbullet call failed with error code %r' % response.status_code, logger.DEBUG)
+            logging.debug('Pushbullet call failed with error code %r' % response.status_code)
             return False
 
-        logger.log(u"Pushbullet response: %r" % response.text, logger.DEBUG)
+        logging.debug("Pushbullet response: %r" % response.text)
 
         if not response.text:
-            logger.log(u"Pushbullet notification failed.", logger.ERROR)
+            logging.error("Pushbullet notification failed.")
             return False
 
-        logger.log(u"Pushbullet notifications sent.", logger.DEBUG)
+        logging.debug("Pushbullet notifications sent.")
         return (True, response.text)[event is self.TEST_EVENT or event is None]
 
 

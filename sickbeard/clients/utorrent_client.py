@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 # Authors: Mr_Orange <mr_orange@hotmail.it>, EchelonFour
 # URL: http://code.google.com/p/sickbeard/
@@ -17,6 +17,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
 
 import re
 
