@@ -309,9 +309,8 @@ class QueueItemAdd(ShowQueueItem):
                 return
             # if the show has no episodes/seasons
             if not s:
-                logging.info("Show " + str(s[b'seriesname']) + " is on " + str(
-                        sickbeard.indexerApi(self.indexer).name) + " but contains no season/episode data.",
-                            logging.ERROR)
+                logging.error("Show " + str(s[b'seriesname']) + " is on " + str(
+                        sickbeard.indexerApi(self.indexer).name) + " but contains no season/episode data.")
                 ui.notifications.error("Unable to add show",
                                        "Show " + str(s[b'seriesname']) + " is on " + str(sickbeard.indexerApi(
                                                self.indexer).name) + " but contains no season/episode data.")
@@ -642,7 +641,7 @@ class QueueItemUpdate(ShowQueueItem):
             for curSeason in DBEpList:
                 for curEpisode in DBEpList[curSeason]:
                     logging.info("Permanently deleting episode " + str(curSeason) + "x" + str(
-                            curEpisode) + " from the database", logging.INFO)
+                            curEpisode) + " from the database")
                     curEp = self.show.getEpisode(curSeason, curEpisode)
                     try:
                         curEp.deleteEpisode()

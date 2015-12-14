@@ -31,7 +31,7 @@ import io
 import sickbeard
 
 from sickbeard.common import SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, Quality, SEASON_RESULT, MULTI_EP_RESULT
-
+from sickbeard import name_cache
 from sickbeard import db, show_name_helpers, helpers
 from sickbeard import sab
 from sickbeard import nzbget
@@ -185,8 +185,8 @@ def snatchEpisode(result, endStatus=SNATCHED):
     data = notifiers.trakt_notifier.trakt_episode_data_generate(trakt_data)
 
     if sickbeard.USE_TRAKT and sickbeard.TRAKT_SYNC_WATCHLIST:
-        logging.info("Add episodes, showid: indexerid " + str(result.show.indexerid) + ", Title " + str(
-            result.show.name) + " to Traktv Watchlist", logging.DEBUG)
+        logging.debug("Add episodes, showid: indexerid " + str(result.show.indexerid) + ", Title " + str(
+            result.show.name) + " to Traktv Watchlist")
         if data:
             notifiers.trakt_notifier.update_watchlist(result.show, data_episode=data, update="add")
 
@@ -460,7 +460,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
     threads = []
 
     # build name cache for show
-    sickbeard.name_cache.buildNameCache(show)
+    name_cache.buildNameCache(show)
 
     origThreadName = threading.currentThread().name
 

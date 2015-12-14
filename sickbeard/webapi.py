@@ -273,10 +273,10 @@ class ApiHandler(RequestHandler):
 
 
 class ApiCall(ApiHandler):
-    _help = {"desc": "This command is not documented. Please report this to the developers."}
-
     def __init__(self, args, kwargs):
-        # missing
+        super(ApiCall, self).__init__(args, kwargs)
+        self._help = {"desc": "This command is not documented. Please report this to the developers."}
+
         try:
             if self._missing:
                 self.run = self.return_missing
@@ -309,18 +309,17 @@ class ApiCall(ApiHandler):
             if paramType in self._help:
                 for paramName in paramDict:
                     if not paramName in self._help[paramType]:
-                        self._help[paramType][paramName] = {}
+                        self._help.setdefault(paramType, {})[paramName] = {}
                     if paramDict[paramName][b"allowedValues"]:
-                        self._help[paramType][paramName][b"allowedValues"] = paramDict[paramName][b"allowedValues"]
+                        self._help.setdefault(paramType, {})[paramName][b"allowedValues"] = paramDict[paramName][b"allowedValues"]
                     else:
-                        self._help[paramType][paramName][b"allowedValues"] = "see desc"
-                    self._help[paramType][paramName][b"defaultValue"] = paramDict[paramName][b"defaultValue"]
-                    self._help[paramType][paramName][b"type"] = paramDict[paramName][b"type"]
+                        self._help.setdefault(paramType, {})[paramName][b"allowedValues"] = "see desc"
+                    self._help.setdefault(paramType, {})[paramName][b"defaultValue"] = paramDict[paramName][b"defaultValue"]
+                    self._help.setdefault(paramType, {})[paramName][b"type"] = paramDict[paramName][b"type"]
 
             elif paramDict:
                 for paramName in paramDict:
-                    self._help[paramType] = {}
-                    self._help[paramType][paramName] = paramDict[paramName]
+                    self._help.setdefault(paramType, {})[paramName] = paramDict[paramName]
             else:
                 self._help[paramType] = {}
         msg = "No description available"

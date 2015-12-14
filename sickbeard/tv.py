@@ -372,8 +372,8 @@ class TVShow(object):
         sqlResults = myDB.select("SELECT * FROM tv_episodes WHERE showid = ? AND location != ''", [self.indexerid])
 
         for epResult in sqlResults:
-            logging.info(str(self.indexerid) + ": Retrieving/creating episode S%02dE%02d" % (
-            epResult[b"season"] or 0, epResult[b"episode"] or 0), logging.DEBUG)
+            logging.debug(str(self.indexerid) + ": Retrieving/creating episode S%02dE%02d" % (
+            epResult[b"season"] or 0, epResult[b"episode"] or 0))
             curEp = self.getEpisode(epResult[b"season"], epResult[b"episode"])
             if not curEp:
                 continue
@@ -551,9 +551,9 @@ class TVShow(object):
             t = sickbeard.indexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
             showObj = t[self.indexerid]
         except sickbeard.indexer_error:
-            logging.info("" + sickbeard.indexerApi(self.indexer).name +
+            logging.warning("" + sickbeard.indexerApi(self.indexer).name +
                         " timed out, unable to update episodes from " +
-                        sickbeard.indexerApi(self.indexer).name, logging.WARNING)
+                        sickbeard.indexerApi(self.indexer).name)
             return None
 
         logging.debug(
@@ -889,8 +889,8 @@ class TVShow(object):
 
             self.status = getattr(myEp, 'status', 'Unknown')
         else:
-            logging.info(str(self.indexerid) + ": NOT loading info from " + sickbeard.indexerApi(
-                self.indexer).name + " as it is temporarily disabled.", logging.WARNING)
+            logging.warning(str(self.indexerid) + ": NOT loading info from " + sickbeard.indexerApi(
+                self.indexer).name + " as it is temporarily disabled.")
 
     def loadIMDbInfo(self, imdbapi=None):
 
@@ -1689,9 +1689,8 @@ class TVEpisode(object):
         try:
             self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError):
-            logging.info("Malformed air date of %s retrieved from %s for (%s - S%02dE%02d)" % (
-            firstaired, sickbeard.indexerApi(self.indexer).name, self.show.name, season or 0, episode or 0),
-                        logging.WARNING)
+            logging.warning("Malformed air date of %s retrieved from %s for (%s - S%02dE%02d)" % (
+            firstaired, sickbeard.indexerApi(self.indexer).name, self.show.name, season or 0, episode or 0))
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
             if self.indexerid != -1:
                 self.deleteEpisode()
@@ -1759,8 +1758,8 @@ class TVEpisode(object):
 
             if self.status == UNKNOWN:
                 if sickbeard.helpers.isMediaFile(self.location):
-                    logging.info("7 Status changes from " + str(self.status) + " to " + str(
-                            Quality.statusFromName(self.location, anime=self.show.is_anime)), logging.DEBUG)
+                    logging.debug("7 Status changes from " + str(self.status) + " to " + str(
+                            Quality.statusFromName(self.location, anime=self.show.is_anime)))
                     self.status = Quality.statusFromName(self.location, anime=self.show.is_anime)
 
             nfoFile = sickbeard.helpers.replaceExtension(self.location, "nfo")
@@ -2565,8 +2564,8 @@ class TVEpisode(object):
             import time
 
             airdatetime = airdatetime.timetuple()
-            logging.info(str(self.show.indexerid) + ": About to modify date of '" + self.location +
-                        "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime), logging.DEBUG)
+            logging.debug(str(self.show.indexerid) + ": About to modify date of '" + self.location +
+                        "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
             try:
                 if helpers.touchFile(self.location, time.mktime(airdatetime)):
                     logging.info(

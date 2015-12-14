@@ -35,6 +35,7 @@ from sickrage.helper.encoding import ek
 from six import PY3
 from itertools import chain
 from random import shuffle
+from functools import partial
 
 if PY3:
     from collections import UserDict
@@ -351,8 +352,8 @@ class Quality(object):
         from hachoir_core.stream import StringInputStream
         from hachoir_parser import guessParser
         from hachoir_metadata import extractMetadata
-        from hachoir_core.log import log
-        log.use_print = False
+        from hachoir_core import config as hachoir_config
+        hachoir_config.quiet = True
 
         if ek(os.path.isfile, filename):
             base_filename = ek(os.path.basename, filename)
@@ -360,9 +361,13 @@ class Quality(object):
             webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
             try:
+                bufsize = (1 << 15)
                 with ek(io.open, filename, "rb") as file:
-                    file_metadata = extractMetadata(guessParser(StringInputStream(file.read())))
-                    if file_metadata:
+                    for byte in iter(partial(file.read, bufsize), b''):
+                        file_metadata = extractMetadata(guessParser(StringInputStream(byte)))
+                        if not file_metadata:
+                            continue
+
                         for metadata in chain([file_metadata], file_metadata.iterGroups()):
                             height = metadata.get('height', None)
                             if height and height > 1000:
@@ -372,6 +377,7 @@ class Quality(object):
                             elif height and height < 680:
                                 return (Quality.SDTV, Quality.SDDVD)[
                                     re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+
             except Exception as e:
                 logging.info(e)
 

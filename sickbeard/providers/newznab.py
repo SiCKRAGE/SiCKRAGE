@@ -310,8 +310,8 @@ class NewznabProvider(generic.NZBProvider):
             if (total > int(params[b'offset'])) and (offset < 500):
                 offset = int(params[b'offset'])
                 # if there are more items available then the amount given in one call, grab some more
-                logging.info('%d' % (total - offset) + ' more items to be fetched from provider.' +
-                            'Fetching another %d' % int(params[b'limit']) + ' items.', logging.DEBUG)
+                logging.debug('%d' % (total - offset) + ' more items to be fetched from provider.' +
+                            'Fetching another %d' % int(params[b'limit']) + ' items.')
             else:
                 logging.debug('No more searches needed')
                 break

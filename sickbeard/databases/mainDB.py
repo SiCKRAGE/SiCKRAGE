@@ -149,8 +149,8 @@ class MainSanityCheck(db.DBSanityCheck):
 
         for cur_duplicate in sqlResults:
 
-            logging.info("Duplicate show detected! " + column + ": " + str(cur_duplicate[column]) + " count: " + str(
-                    cur_duplicate[b"count"]), logging.DEBUG)
+            logging.debug("Duplicate show detected! " + column + ": " + str(cur_duplicate[column]) + " count: " + str(
+                    cur_duplicate[b"count"]))
 
             cur_dupe_results = self.connection.select(
                     "SELECT show_id, " + column + " FROM tv_shows WHERE " + column + " = ? LIMIT ?",
@@ -170,9 +170,9 @@ class MainSanityCheck(db.DBSanityCheck):
 
         for cur_duplicate in sqlResults:
 
-            logging.info("Duplicate episode detected! showid: " + str(cur_duplicate[b"showid"]) + " season: " + str(
+            logging.debug("Duplicate episode detected! showid: " + str(cur_duplicate[b"showid"]) + " season: " + str(
                     cur_duplicate[b"season"]) + " episode: " + str(cur_duplicate[b"episode"]) + " count: " + str(
-                    cur_duplicate[b"count"]), logging.DEBUG)
+                    cur_duplicate[b"count"]))
 
             cur_dupe_results = self.connection.select(
                     "SELECT episode_id FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ? ORDER BY episode_id DESC LIMIT ?",
@@ -190,8 +190,8 @@ class MainSanityCheck(db.DBSanityCheck):
                 "SELECT episode_id, showid, tv_shows.indexer_id FROM tv_episodes LEFT JOIN tv_shows ON tv_episodes.showid=tv_shows.indexer_id WHERE tv_shows.indexer_id IS NULL")
 
         for cur_orphan in sqlResults:
-            logging.info("Orphan episode detected! episode_id: " + str(cur_orphan[b"episode_id"]) + " showid: " + str(
-                    cur_orphan[b"showid"]), logging.DEBUG)
+            logging.debug("Orphan episode detected! episode_id: " + str(cur_orphan[b"episode_id"]) + " showid: " + str(
+                    cur_orphan[b"showid"]))
             logging.info("Deleting orphan episode with episode_id: " + str(cur_orphan[b"episode_id"]))
             self.connection.action("DELETE FROM tv_episodes WHERE episode_id = ?", [cur_orphan[b"episode_id"]])
 

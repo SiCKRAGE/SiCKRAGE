@@ -311,8 +311,8 @@ class ImageCache:
 
         # download from indexer for missing ones
         for cur_image_type in [self.POSTER, self.BANNER, self.POSTER_THUMB, self.BANNER_THUMB, self.FANART]:
-            logging.info("Seeing if we still need an image of type " + str(cur_image_type) + ": " + str(
-                    need_images[cur_image_type]), logging.DEBUG)
+            logging.debug("Seeing if we still need an image of type " + str(cur_image_type) + ": " + str(
+                    need_images[cur_image_type]))
             if cur_image_type in need_images and need_images[cur_image_type]:
                 self._cache_image_from_indexer(show_obj, cur_image_type)
 

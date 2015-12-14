@@ -79,5 +79,5 @@ class FailedProcessor(object):
 
     def _log(self, message, level=logging.INFO):
         """Log to regular logfile and save for return for PP script log"""
-        logging.info(message, level)
+        logging.log(level, message)
         self.log += message + "\n"

@@ -53,12 +53,13 @@ import requests
 import certifi
 import shutil
 
+from sickbeard import db
 from sickbeard import classes
+from sickbeard import name_cache
 from sickbeard.scene_exceptions import get_scene_exceptions
 from sickbeard.common import USER_AGENT
 from sickbeard.common import mediaExtensions
 from sickbeard.common import subtitleExtensions
-from sickbeard import db
 from sickbeard.notifiers.synoindex import notifier as synoindex_notifier
 from sickbeard import clients
 from sickrage.helper.encoding import ek
@@ -978,7 +979,7 @@ def create_https_certificates(ssl_cert, ssl_key):
     """
 
     try:
-        import OpenSSL.crypto  # @UnresolvedImport
+        import OpenSSL.crypto
         from certgen import createKeyPair, createCertRequest, createCertificate, TYPE_RSA, \
             serial  # @UnresolvedImport
     except Exception:
@@ -1243,7 +1244,7 @@ def get_show(name, tryIndexers=False):
 
     try:
         # check cache for show
-        cache = sickbeard.name_cache.retrieveNameFromCache(name)
+        cache = name_cache.retrieveNameFromCache(name)
         if cache:
             fromCache = True
             showObj = findCertainShow(sickbeard.showList, int(cache))
@@ -1261,7 +1262,7 @@ def get_show(name, tryIndexers=False):
 
         # add show to cache
         if showObj and not fromCache:
-            sickbeard.name_cache.addNameToCache(name, showObj.indexerid)
+            name_cache.addNameToCache(name, showObj.indexerid)
     except Exception as e:
         logging.debug("Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
 
@@ -1493,13 +1494,13 @@ def mapIndexersToShow(showObj):
             try:
                 mapped_show = t[showObj.name]
             except Exception:
-                logging.info("Unable to map " + sickbeard.indexerApi(showObj.indexer).name + "->" + sickbeard.indexerApi(
-                        indexer).name + " for show: " + showObj.name + ", skipping it", logging.DEBUG)
+                logging.debug("Unable to map " + sickbeard.indexerApi(showObj.indexer).name + "->" + sickbeard.indexerApi(
+                        indexer).name + " for show: " + showObj.name + ", skipping it")
                 continue
 
             if mapped_show and len(mapped_show) == 1:
-                logging.info("Mapping " + sickbeard.indexerApi(showObj.indexer).name + "->" + sickbeard.indexerApi(
-                        indexer).name + " for show: " + showObj.name, logging.DEBUG)
+                logging.debug("Mapping " + sickbeard.indexerApi(showObj.indexer).name + "->" + sickbeard.indexerApi(
+                        indexer).name + " for show: " + showObj.name)
 
                 mapped[indexer] = int(mapped_show[0][b'id'])
 
@@ -1862,8 +1863,8 @@ def verify_freespace(src, dest, oldfile=None):
     if diskfree > neededspace:
         return True
     else:
-        logging.info("Not enough free space: Needed: %s bytes ( %s ), found: %s bytes ( %s )"
-                    % (neededspace, pretty_filesize(neededspace), diskfree, pretty_filesize(diskfree)), logging.WARNING)
+        logging.warning("Not enough free space: Needed: %s bytes ( %s ), found: %s bytes ( %s )"
+                    % (neededspace, pretty_filesize(neededspace), diskfree, pretty_filesize(diskfree)))
         return False
 
 
@@ -1897,7 +1898,7 @@ def isFileLocked(checkfile, writeLockCheck=False):
         3. If the readLockCheck parameter is True, attempts to rename the file. If this fails the
             file is open by some other process for reading. The file can be read, but not written to
             or deleted.
-    :param file: the file being checked
+    :param checkfile: the file being checked
     :param writeLockCheck: when true will check if the file is locked for writing (prevents move operations)
     """
 

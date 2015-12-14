@@ -739,8 +739,8 @@ class GenericMetadata(object):
             return None
 
         if image_type not in ('fanart', 'poster', 'banner', 'poster_thumb', 'banner_thumb'):
-            logging.info("Invalid image type " + str(image_type) + ", couldn't find it in the " + sickbeard.indexerApi(
-                    show_obj.indexer).name + " object", logging.ERROR)
+            logging.error("Invalid image type " + str(image_type) + ", couldn't find it in the " + sickbeard.indexerApi(
+                    show_obj.indexer).name + " object")
             return None
 
         if image_type == 'poster_thumb':

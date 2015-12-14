@@ -257,8 +257,8 @@ class MediaBrowserMetadata(generic.GenericMetadata):
         try:
             myShow = t[int(show_obj.indexerid)]
         except sickbeard.indexer_shownotfound:
-            logging.info("Unable to find show with id " + str(show_obj.indexerid) + " on " + sickbeard.indexerApi(
-                    show_obj.indexer).name + ", skipping it", logging.ERROR)
+            logging.error("Unable to find show with id " + str(show_obj.indexerid) + " on " + sickbeard.indexerApi(
+                    show_obj.indexer).name + ", skipping it")
             raise
 
         except sickbeard.indexer_error:

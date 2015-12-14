@@ -19,9 +19,9 @@
 
 from __future__ import unicode_literals
 
+import re
 import os.path
 import datetime
-import re
 import urlparse
 import logging
 
@@ -29,7 +29,7 @@ import sickbeard
 from sickbeard import helpers
 from sickbeard import naming
 from sickbeard import db
-
+from sickbeard.logger import SRLogger
 # Address poor support for scgi over unix domain sockets
 # this is not nicely handled by python currently
 # http://bugs.python.org/issue23636
@@ -58,7 +58,6 @@ naming_sep_type = (" - ", " ")
 naming_sep_type_text = (" - ", "space")
 
 censoredItems = {}
-
 
 def change_HTTPS_CERT(https_cert):
     """
@@ -119,7 +118,17 @@ def change_LOG_DIR(log_dir, web_log):
             sickbeard.ACTUAL_LOG_DIR = ek(os.path.normpath, log_dir)
             sickbeard.LOG_DIR = abs_log_dir
 
-            logging.initlogger()
+            # initalize logger
+            SRLogger(
+                    logFile=sickbeard.LOG_FILE,
+                    consoleLogging=True,
+                    fileLogging=True,
+                    debugLogging=sickbeard.DEBUG,
+                    logSize=sickbeard.LOG_SIZE,
+                    logNr=sickbeard.LOG_NR,
+                    censoredItems=censoredItems
+            )
+
             logging.info("Initialized new log file in " + sickbeard.LOG_DIR)
             log_dir_changed = True
 

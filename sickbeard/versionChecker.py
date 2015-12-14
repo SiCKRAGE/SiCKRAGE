@@ -764,8 +764,8 @@ class SourceUpdateManager(UpdateManager):
                 # when _cur_commit_hash doesn't match anything _num_commits_behind == 100
                 self._num_commits_behind += 1
 
-        logging.info("cur_commit = " + str(self._cur_commit_hash) + ", newest_commit = " + str(self._newest_commit_hash)
-                    + ", num_commits_behind = " + str(self._num_commits_behind), logging.DEBUG)
+        logging.debug("cur_commit = " + str(self._cur_commit_hash) + ", newest_commit = " + str(self._newest_commit_hash)
+                    + ", num_commits_behind = " + str(self._num_commits_behind))
 
     def set_newest_text(self):
 
