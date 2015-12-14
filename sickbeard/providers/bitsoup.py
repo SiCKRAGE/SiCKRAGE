@@ -16,13 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import re
 import traceback
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard.bs4_parser import BS4Parser
+
 
 class BitSoupProvider(generic.TorrentProvider):
     def __init__(self):
@@ -34,9 +37,9 @@ class BitSoupProvider(generic.TorrentProvider):
             'detail': 'https://www.bitsoup.me/details.php?id=%s',
             'search': 'https://www.bitsoup.me/browse.php',
             'download': 'https://bitsoup.me/%s',
-            }
+        }
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
         self.supportsBacklog = True
 
@@ -54,7 +57,7 @@ class BitSoupProvider(generic.TorrentProvider):
 
     def _checkAuth(self):
         if not self.username or not self.password:
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logging.warning("Invalid username or password. Check your settings")
 
         return True
 
@@ -64,15 +67,15 @@ class BitSoupProvider(generic.TorrentProvider):
             'username': self.username,
             'password': self.password,
             'ssl': 'yes'
-            }
+        }
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
         if not response:
-            logger.log(u"Unable to connect to provider", logger.WARNING)
+            logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Username or password incorrect', response):
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logging.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -86,15 +89,15 @@ class BitSoupProvider(generic.TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logging.debug("Search string: %s " % search_string)
 
-                self.search_params['search'] = search_string
+                self.search_params[b'search'] = search_string
 
-                data = self.getURL(self.urls['search'], params=self.search_params)
+                data = self.getURL(self.urls[b'search'], params=self.search_params)
                 if not data:
                     continue
 
@@ -105,14 +108,14 @@ class BitSoupProvider(generic.TorrentProvider):
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                            logging.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for result in torrent_rows[1:]:
                             cells = result.find_all('td')
 
                             link = cells[1].find('a')
-                            download_url = self.urls['download'] % cells[2].find('a')['href']
+                            download_url = self.urls[b'download'] % cells[2].find('a')['href']
 
                             try:
                                 title = link.getText()
@@ -129,17 +132,19 @@ class BitSoupProvider(generic.TorrentProvider):
                                 # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
-                                    logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                    logging.debug(
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                logging.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.WARNING)
+                    logging.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -154,7 +159,6 @@ class BitSoupProvider(generic.TorrentProvider):
 
 class BitSoupCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         # only poll TorrentBytes every 20 minutes max

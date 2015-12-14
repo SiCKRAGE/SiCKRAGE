@@ -19,14 +19,13 @@
 import re
 import traceback
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard.bs4_parser import BS4Parser
 
 
 class AlphaRatioProvider(generic.TorrentProvider):
-
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "AlphaRatio")
@@ -45,7 +44,7 @@ class AlphaRatioProvider(generic.TorrentProvider):
                      'search': 'http://alpharatio.cc/torrents.php?searchstr=%s%s',
                      'download': 'http://alpharatio.cc/%s'}
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
         self.catagories = "&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1"
 
@@ -59,14 +58,14 @@ class AlphaRatioProvider(generic.TorrentProvider):
                         'remember_me': 'on',
                         'login': 'submit'}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
         if not response:
-            logger.log(u"Unable to connect to provider", logger.WARNING)
+            logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Invalid Username/password', response) \
                 or re.search('<title>Login :: AlphaRatio.cc</title>', response):
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logging.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -80,14 +79,14 @@ class AlphaRatioProvider(generic.TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls['search'] % (search_string, self.catagories)
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                searchURL = self.urls[b'search'] % (search_string, self.catagories)
+                logging.debug("Search URL: %s" % searchURL)
 
                 data = self.getURL(searchURL)
                 if not data:
@@ -100,7 +99,7 @@ class AlphaRatioProvider(generic.TorrentProvider):
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                            logging.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for result in torrent_rows[1:]:
@@ -110,9 +109,9 @@ class AlphaRatioProvider(generic.TorrentProvider):
 
                             try:
                                 title = link.contents[0]
-                                download_url = self.urls['download'] % (url['href'])
-                                seeders = cells[len(cells)-2].contents[0]
-                                leechers = cells[len(cells)-1].contents[0]
+                                download_url = self.urls[b'download'] % (url[b'href'])
+                                seeders = cells[len(cells) - 2].contents[0]
+                                leechers = cells[len(cells) - 1].contents[0]
                                 # FIXME
                                 size = -1
                             except (AttributeError, TypeError):
@@ -124,17 +123,19 @@ class AlphaRatioProvider(generic.TorrentProvider):
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
-                                    logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                    logging.debug(
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                logging.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.WARNING)
+                    logging.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -146,10 +147,9 @@ class AlphaRatioProvider(generic.TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
+
 class AlphaRatioCache(tvcache.TVCache):
-
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         # only poll AlphaRatio every 20 minutes max
@@ -158,5 +158,6 @@ class AlphaRatioCache(tvcache.TVCache):
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_strings)}
+
 
 provider = AlphaRatioProvider()

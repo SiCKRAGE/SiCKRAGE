@@ -1,6 +1,7 @@
-# coding=UTF-8
-# Author: Dennis Lutter <lad1337@gmail.com>
-# URL: http://code.google.com/p/sickbeard/
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -17,28 +18,32 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
 
-import sys, os.path
+import os.path
+import sys
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 
-import test_lib as test
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 
-from sickbeard import logger
+import logging
 from sickrage.helper.exceptions import ex
+
 
 def error():
     try:
         raise Exception('FAKE EXCEPTION')
     except Exception as e:
-        logger.log(u"FAKE ERROR: {}".format(ex(e)), logger.ERROR)
-        logger.submit_errors()
+        logging.error("FAKE ERROR: {}".format(ex(e)))
+        logging.submit_errors()
         raise
 
-class IssueSubmitterBasicTests(test.SiCKRAGETestCase):
+
+class IssueSubmitterBasicTests(SiCKRAGETestCase):
     def test_submitter(self):
         self.assertRaises(Exception, error)
 
@@ -48,5 +53,4 @@ if __name__ == "__main__":
     print "STARTING - ISSUE SUBMITTER TESTS"
     print "=================="
     print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(IssueSubmitterBasicTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.main()

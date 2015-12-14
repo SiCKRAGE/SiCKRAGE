@@ -17,11 +17,11 @@
 import urllib
 import re
 
-
 from sickbeard.providers import generic
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
+
 
 class BinSearchProvider(generic.NZBProvider):
     def __init__(self):
@@ -30,7 +30,7 @@ class BinSearchProvider(generic.NZBProvider):
         self.public = True
         self.cache = BinSearchCache(self)
         self.urls = {'base_url': 'https://www.binsearch.info/'}
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
 
 class BinSearchCache(tvcache.TVCache):
@@ -62,7 +62,7 @@ class BinSearchCache(tvcache.TVCache):
 
         title = item.get('description')
         if title:
-            title = u'' + title
+            title = '' + title
             if self.descTitleStart.match(title):
                 title = self.descTitleStart.sub('', title)
                 title = self.descTitleEnd.sub('', title)
@@ -82,34 +82,36 @@ class BinSearchCache(tvcache.TVCache):
 
     def updateCache(self):
         # check if we should update
-        if not self.shouldUpdate():
-            return
+        if self.shouldUpdate():
+            # clear cache
+            self._clearCache()
 
-        # clear cache
-        self._clearCache()
+            # set updated
+            self.setLastUpdate()
 
-        # set updated
-        self.setLastUpdate()
+            cl = []
+            for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries',
+                          'alt.binaries.teevee']:
+                url = self.provider.url + 'rss.php?'
+                urlArgs = {'max': 1000, 'g': group}
 
-        cl = []
-        for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries', 'alt.binaries.teevee']:
-            url = self.provider.url + 'rss.php?'
-            urlArgs = {'max': 1000, 'g': group}
+                url += urllib.urlencode(urlArgs)
 
-            url += urllib.urlencode(urlArgs)
+                logging.debug("Cache update URL: %s " % url)
 
-            logger.log(u"Cache update URL: %s " % url, logger.DEBUG)
+                for item in self.getRSSFeed(url)['entries'] or []:
+                    ci = self._parseItem(item)
+                    if ci is not None:
+                        cl.append(ci)
 
-            for item in self.getRSSFeed(url)['entries'] or []:
-                ci = self._parseItem(item)
-                if ci is not None:
-                    cl.append(ci)
+            if len(cl) > 0:
+                myDB = self._getDB()
+                myDB.mass_action(cl)
 
-        if len(cl) > 0:
-            myDB = self._getDB()
-            myDB.mass_action(cl)
+        return True
 
     def _checkAuth(self, data):
-        return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None
+        return data if data[b'feed'] and data[b'feed'][b'title'] != 'Invalid Link' else None
+
 
 provider = BinSearchProvider()

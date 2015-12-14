@@ -20,21 +20,21 @@
 
 from sickbeard.providers import generic
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 
-class BTDIGGProvider(generic.TorrentProvider):
 
+class BTDIGGProvider(generic.TorrentProvider):
     def __init__(self):
         generic.TorrentProvider.__init__(self, "BTDigg")
 
         self.supportsBacklog = True
         self.public = True
         self.ratio = 0
-        self.urls = {'url': u'https://btdigg.org/',
-                     'api': u'https://api.btdigg.org/'}
+        self.urls = {'url': 'https://btdigg.org/',
+                     'api': 'https://api.btdigg.org/'}
 
-        self.url = self.urls['url']
+        self.url = self.urls[b'url']
 
         self.cache = BTDiggCache(self)
 
@@ -44,25 +44,25 @@ class BTDIGGProvider(generic.TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    logger.log(u"Search string: %s" % search_string, logger.DEBUG)
+                    logging.debug("Search string: %s" % search_string)
 
-                searchURL = self.urls['api'] + "api/private-341ada3245790954/s02?q=" + search_string + "&p=0&order=1"
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                searchURL = self.urls[b'api'] + "api/private-341ada3245790954/s02?q=" + search_string + "&p=0&order=1"
+                logging.debug("Search URL: %s" % searchURL)
 
                 jdata = self.getURL(searchURL, json=True)
                 if not jdata:
-                    logger.log(u"No data returned to be parsed!!!")
+                    logging.info("No data returned to be parsed!!!")
                     return []
 
                 for torrent in jdata:
-                    if not torrent['ff']:
-                        title = torrent['name']
-                        download_url = torrent['magnet']
-                        size = torrent['size']
+                    if not torrent[b'ff']:
+                        title = torrent[b'name']
+                        download_url = torrent[b'magnet']
+                        size = torrent[b'size']
                         # FIXME
                         seeders = 1
                         leechers = 0
@@ -73,12 +73,12 @@ class BTDIGGProvider(generic.TorrentProvider):
                         # Filter unseeded torrent
                         # if seeders < self.minseed or leechers < self.minleech:
                         #    if mode is not 'RSS':
-                        #        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                        #        logging.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                         #    continue
 
                         item = title, download_url, size, seeders, leechers
                         if mode is not 'RSS':
-                            logger.log(u"Found result: %s" % title, logger.DEBUG)
+                            logging.debug("Found result: %s" % title)
 
                         items[mode].append(item)
 
@@ -92,18 +92,18 @@ class BTDIGGProvider(generic.TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
+
 class BTDiggCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         # Cache results for a hour ,since BTDigg takes some time to crawl
         self.minTime = 60
 
     def _getRSSData(self):
-
         # Use x264 for RSS search since most results will use that codec and since the site doesnt have latest results search
         search_params = {'RSS': ['x264']}
         return {'entries': self.provider._doSearch(search_params)}
+
 
 provider = BTDIGGProvider()

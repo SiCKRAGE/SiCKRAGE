@@ -1,12 +1,14 @@
+import logging
+
 import sickbeard
 
-from sickbeard import logger, common
+from sickbeard import common
 from pynma import pynma
 
 
 class NMA_Notifier:
     def test_notify(self, nma_api, nma_priority):
-        return self._sendNMA(nma_api, nma_priority, event="Test", message="Testing NMA settings from SickRage",
+        return self._sendNMA(nma_api, nma_priority, event="Test", message="Testing NMA settings from SiCKRAGE",
                              force=True)
 
     def notify_snatch(self, ep_name):
@@ -24,15 +26,15 @@ class NMA_Notifier:
             self._sendNMA(nma_api=None, nma_priority=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD],
                           message=ep_name + ": " + lang)
 
-    def notify_git_update(self, new_version = "??"):
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_NMA:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._sendNMA(nma_api=None, nma_priority=None, event=title, message=update_text + new_version)
 
     def _sendNMA(self, nma_api=None, nma_priority=None, event=None, message=None, force=False):
 
-        title = 'SickRage'
+        title = 'SiCKRAGE'
 
         if not sickbeard.USE_NMA and not force:
             return False
@@ -51,14 +53,15 @@ class NMA_Notifier:
 
         if len(keys) > 1: batch = True
 
-        logger.log(u"NMA: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, batch=%s" % (event, message, nma_priority, batch), logger.DEBUG)
+        logging.debug("NMA: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, batch=%s" % (
+        event, message, nma_priority, batch))
         response = p.push(application=title, event=event, description=message, priority=nma_priority, batch_mode=batch)
 
-        if not response[nma_api][u'code'] == u'200':
-            logger.log(u'Could not send notification to NotifyMyAndroid', logger.ERROR)
+        if not response[nma_api][b'code'] == '200':
+            logging.error('Could not send notification to NotifyMyAndroid')
             return False
         else:
-            logger.log(u"NMA: Notification sent to NotifyMyAndroid", logger.INFO)
+            logging.info("NMA: Notification sent to NotifyMyAndroid")
             return True
 
 

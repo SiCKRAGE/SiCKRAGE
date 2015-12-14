@@ -9,10 +9,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SiCKRAGETV/SickRage.git"
+    "url": "git+https://github.com/SiCKRAGETV/SiCKRAGE.git"
   },
   "bugs": {
-    "url": "https://github.com/SiCKRAGETV/SickRage/issues"
+    "url": "https://github.com/SiCKRAGETV/SiCKRAGE/issues"
   },
-  "homepage": "https://github.com/SiCKRAGETV/SickRage#readme"
+  "homepage": "https://github.com/SiCKRAGETV/SiCKRAGE#readme"
 }

@@ -4,7 +4,7 @@ $(document).ready(function () {
         var target = $(this).attr('href');
         $.confirm({
             'title'		: 'Shutdown',
-            'message'	: 'Are you sure you want to shutdown SickRage ?',
+            'message'	: 'Are you sure you want to shutdown SiCKRAGE ?',
             'buttons'	: {
                 'Yes'	: {
                     'class'	: 'green',
@@ -25,7 +25,7 @@ $(document).ready(function () {
         var target = $(this).attr('href');
         $.confirm({
             'title'		: 'Restart',
-            'message'	: 'Are you sure you want to restart SickRage ?',
+            'message'	: 'Are you sure you want to restart SiCKRAGE ?',
             'buttons'	: {
                 'Yes'	: {
                     'class'	: 'green',
@@ -111,7 +111,7 @@ $(document).ready(function () {
         var target = $(this).attr('href');
         $.confirm({
             'title'		: 'Submit Errors',
-            'message'	: 'Are you sure you want to submit these errors ?<br><br><span class="red-text">Make sure SickRage is updated and trigger<br> this error with debug enabled before submitting</span>',
+            'message'	: 'Are you sure you want to submit these errors ?<br><br><span class="red-text">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>',
             'buttons'	: {
                 'Yes'	: {
                     'class' : 'green',

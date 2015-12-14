@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
@@ -18,7 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import datetime
+import logging
 
 import sickbeard
 import os.path
@@ -52,158 +55,169 @@ class MainSanityCheck(db.DBSanityCheck):
 
     # todo: fix spelling to compound
     def convert_archived_to_compund(self):
-        logger.log(u'Checking for archived episodes not qualified', logger.DEBUG)
+        logging.debug('Checking for archived episodes not qualified')
 
         query = "SELECT episode_id, showid, status, location, season, episode " + \
                 "FROM tv_episodes WHERE status = %s" % common.ARCHIVED
 
         sqlResults = self.connection.select(query)
         if sqlResults:
-            logger.log(u"Found %i shows with bare archived status, attempting automatic conversion..." % len(sqlResults), logger.WARNING)
+            logging.warning(
+                "Found %i shows with bare archived status, attempting automatic conversion..." % len(sqlResults))
 
         for archivedEp in sqlResults:
             fixedStatus = common.Quality.compositeStatus(common.ARCHIVED, common.Quality.UNKNOWN)
-            existing = archivedEp['location'] and ek(os.path.exists,archivedEp['location'])
+            existing = archivedEp[b'location'] and ek(os.path.exists, archivedEp[b'location'])
             if existing:
-                quality = common.Quality.assumeQuality(archivedEp['location'])
+                quality = common.Quality.assumeQuality(archivedEp[b'location'])
                 fixedStatus = common.Quality.compositeStatus(common.ARCHIVED, quality)
 
-            logger.log(u'Changing status from %s to %s for %s: S%02dE%02d at %s (File %s)' %
-                       (common.statusStrings[common.ARCHIVED], common.statusStrings[fixedStatus],
-                        archivedEp['showid'], archivedEp['season'], archivedEp['episode'],
-                        archivedEp['location'] if archivedEp['location'] else 'unknown location', ('NOT FOUND', 'EXISTS')[bool(existing)]))
+            logging.info('Changing status from %s to %s for %s: S%02dE%02d at %s (File %s)' %
+                        (common.statusStrings[common.ARCHIVED], common.statusStrings[fixedStatus],
+                         archivedEp[b'showid'], archivedEp[b'season'], archivedEp[b'episode'],
+                         archivedEp[b'location'] if archivedEp[b'location'] else 'unknown location',
+                         ('NOT FOUND', 'EXISTS')[bool(existing)]))
 
-            self.connection.action("UPDATE tv_episodes SET status = %i WHERE episode_id = %i" % (fixedStatus, archivedEp['episode_id']))
+            self.connection.action(
+                "UPDATE tv_episodes SET status = %i WHERE episode_id = %i" % (fixedStatus, archivedEp[b'episode_id']))
 
     def convert_tvrage_to_tvdb(self):
-        logger.log(u"Checking for shows with tvrage id's, since tvrage is gone", logger.DEBUG)
+        logging.debug("Checking for shows with tvrage id's, since tvrage is gone")
         from sickbeard.indexers.indexer_config import INDEXER_TVRAGE
         from sickbeard.indexers.indexer_config import INDEXER_TVDB
 
-        sqlResults = self.connection.select("SELECT indexer_id, show_name, location FROM tv_shows WHERE indexer = %i" % INDEXER_TVRAGE)
+        sqlResults = self.connection.select(
+            "SELECT indexer_id, show_name, location FROM tv_shows WHERE indexer = %i" % INDEXER_TVRAGE)
 
         if sqlResults:
-            logger.log(u"Found %i shows with TVRage ID's, attempting automatic conversion..." % len(sqlResults), logger.WARNING)
+            logging.warning("Found %i shows with TVRage ID's, attempting automatic conversion..." % len(sqlResults))
 
         for tvrage_show in sqlResults:
-            logger.log(u"Processing %s at %s" % (tvrage_show['show_name'], tvrage_show['location']))
-            mapping = self.connection.select("SELECT mindexer_id FROM indexer_mapping WHERE indexer_id=%i AND indexer=%i AND mindexer=%i" %
-                                             (tvrage_show['indexer_id'], INDEXER_TVRAGE, INDEXER_TVDB))
+            logging.info("Processing %s at %s" % (tvrage_show[b'show_name'], tvrage_show[b'location']))
+            mapping = self.connection.select(
+                "SELECT mindexer_id FROM indexer_mapping WHERE indexer_id=%i AND indexer=%i AND mindexer=%i" %
+                (tvrage_show[b'indexer_id'], INDEXER_TVRAGE, INDEXER_TVDB))
 
             if len(mapping) != 1:
-                logger.log(u"Error mapping show from tvrage to tvdb for %s (%s), found %i mapping results. Cannot convert automatically!" %
-                           (tvrage_show['show_name'], tvrage_show['location'], len(mapping)), logger.WARNING)
-                logger.log(u"Removing the TVRage show and it's episodes from the DB, use 'addExistingShow'", logger.WARNING)
-                self.connection.action("DELETE FROM tv_shows WHERE indexer_id = %i AND indexer = %i" % (tvrage_show['indexer_id'], INDEXER_TVRAGE))
-                self.connection.action("DELETE FROM tv_episodes WHERE showid = %i" % tvrage_show['indexer_id'])
+                logging.warning(
+                    "Error mapping show from tvrage to tvdb for %s (%s), found %i mapping results. Cannot convert automatically!" %
+                    (tvrage_show[b'show_name'], tvrage_show[b'location'], len(mapping)))
+                logging.warning("Removing the TVRage show and it's episodes from the DB, use 'addExistingShow'")
+                self.connection.action("DELETE FROM tv_shows WHERE indexer_id = %i AND indexer = %i" % (
+                tvrage_show[b'indexer_id'], INDEXER_TVRAGE))
+                self.connection.action("DELETE FROM tv_episodes WHERE showid = %i" % tvrage_show[b'indexer_id'])
                 continue
 
-            logger.log(u'Checking if there is already a show with id:%i in the show list')
-            duplicate = self.connection.select("SELECT * FROM tv_shows WHERE indexer_id = %i AND indexer = %i" % (mapping[0]['mindexer_id'], INDEXER_TVDB))
+            logging.info('Checking if there is already a show with id:%i in the show list')
+            duplicate = self.connection.select("SELECT * FROM tv_shows WHERE indexer_id = %i AND indexer = %i" % (
+            mapping[0][b'mindexer_id'], INDEXER_TVDB))
             if duplicate:
-                logger.log(u'Found %s which has the same id as %s, cannot convert automatically so I am pausing %s' %
-                           (duplicate[0]['show_name'], tvrage_show['show_name'], duplicate[0]['show_name']), logger.WARNING)
+                logging.warning('Found %s which has the same id as %s, cannot convert automatically so I am pausing %s' %
+                            (duplicate[0][b'show_name'], tvrage_show[b'show_name'], duplicate[0][b'show_name']))
                 self.connection.action("UPDATE tv_shows SET paused=1 WHERE indexer=%i AND indexer_id=%i" %
-                                       (INDEXER_TVDB, duplicate[0]['indexer_id']))
+                                       (INDEXER_TVDB, duplicate[0][b'indexer_id']))
 
-                logger.log(u"Removing %s and it's episodes from the DB" % tvrage_show['show_name'], logger.WARNING)
-                self.connection.action("DELETE FROM tv_shows WHERE indexer_id = %i AND indexer = %i" % (tvrage_show['indexer_id'], INDEXER_TVRAGE))
-                self.connection.action("DELETE FROM tv_episodes WHERE showid = %i" % tvrage_show['indexer_id'])
-                logger.log(u'Manually move the season folders from %s into %s, and delete %s before rescanning %s and unpausing it' %
-                           (tvrage_show['location'], duplicate[0]['location'], tvrage_show['location'], duplicate[0]['show_name']), logger.WARNING)
+                logging.warning("Removing %s and it's episodes from the DB" % tvrage_show[b'show_name'])
+                self.connection.action("DELETE FROM tv_shows WHERE indexer_id = %i AND indexer = %i" % (
+                tvrage_show[b'indexer_id'], INDEXER_TVRAGE))
+                self.connection.action("DELETE FROM tv_episodes WHERE showid = %i" % tvrage_show[b'indexer_id'])
+                logging.warning(
+                    'Manually move the season folders from %s into %s, and delete %s before rescanning %s and unpausing it' %
+                    (tvrage_show[b'location'], duplicate[0][b'location'], tvrage_show[b'location'],
+                     duplicate[0][b'show_name']))
                 continue
 
-            logger.log(u'Mapping %s to tvdb id %i' % (tvrage_show['show_name'], mapping[0]['mindexer_id']))
+            logging.info('Mapping %s to tvdb id %i' % (tvrage_show[b'show_name'], mapping[0][b'mindexer_id']))
 
             self.connection.action(
-                "UPDATE tv_shows SET indexer=%i, indexer_id=%i WHERE indexer_id=%i" %
-                (INDEXER_TVDB, mapping[0]['mindexer_id'], tvrage_show['indexer_id'])
+                    "UPDATE tv_shows SET indexer=%i, indexer_id=%i WHERE indexer_id=%i" %
+                    (INDEXER_TVDB, mapping[0][b'mindexer_id'], tvrage_show[b'indexer_id'])
             )
 
-            logger.log(u'Relinking episodes to show')
+            logging.info('Relinking episodes to show')
             self.connection.action(
-                "UPDATE tv_episodes SET indexer=%i, showid=%i, indexerid=0 WHERE showid=%i" %
-                (INDEXER_TVDB, mapping[0]['mindexer_id'], tvrage_show['indexer_id'])
+                    "UPDATE tv_episodes SET indexer=%i, showid=%i, indexerid=0 WHERE showid=%i" %
+                    (INDEXER_TVDB, mapping[0][b'mindexer_id'], tvrage_show[b'indexer_id'])
             )
 
-            logger.log(u'Please perform a full update on %s' % tvrage_show['show_name'], logger.WARNING)
+            logging.warning('Please perform a full update on %s' % tvrage_show[b'show_name'])
 
     def fix_duplicate_shows(self, column='indexer_id'):
 
         sqlResults = self.connection.select(
-            "SELECT show_id, " + column + ", COUNT(" + column + ") as count FROM tv_shows GROUP BY " + column + " HAVING count > 1")
+                "SELECT show_id, " + column + ", COUNT(" + column + ") as count FROM tv_shows GROUP BY " + column + " HAVING count > 1")
 
         for cur_duplicate in sqlResults:
 
-            logger.log(u"Duplicate show detected! " + column + ": " + str(cur_duplicate[column]) + u" count: " + str(
-                cur_duplicate["count"]), logger.DEBUG)
+            logging.debug("Duplicate show detected! " + column + ": " + str(cur_duplicate[column]) + " count: " + str(
+                    cur_duplicate[b"count"]))
 
             cur_dupe_results = self.connection.select(
-                "SELECT show_id, " + column + " FROM tv_shows WHERE " + column + " = ? LIMIT ?",
-                [cur_duplicate[column], int(cur_duplicate["count"]) - 1]
+                    "SELECT show_id, " + column + " FROM tv_shows WHERE " + column + " = ? LIMIT ?",
+                    [cur_duplicate[column], int(cur_duplicate[b"count"]) - 1]
             )
 
             for cur_dupe_id in cur_dupe_results:
-                logger.log(
-                    u"Deleting duplicate show with " + column + ": " + str(cur_dupe_id[column]) + u" show_id: " + str(
-                        cur_dupe_id["show_id"]))
-                self.connection.action("DELETE FROM tv_shows WHERE show_id = ?", [cur_dupe_id["show_id"]])
+                logging.info(
+                        "Deleting duplicate show with " + column + ": " + str(cur_dupe_id[column]) + " show_id: " + str(
+                                cur_dupe_id[b"show_id"]))
+                self.connection.action("DELETE FROM tv_shows WHERE show_id = ?", [cur_dupe_id[b"show_id"]])
 
     def fix_duplicate_episodes(self):
 
         sqlResults = self.connection.select(
-            "SELECT showid, season, episode, COUNT(showid) as count FROM tv_episodes GROUP BY showid, season, episode HAVING count > 1")
+                "SELECT showid, season, episode, COUNT(showid) AS count FROM tv_episodes GROUP BY showid, season, episode HAVING count > 1")
 
         for cur_duplicate in sqlResults:
 
-            logger.log(u"Duplicate episode detected! showid: " + str(cur_duplicate["showid"]) + u" season: " + str(
-                cur_duplicate["season"]) + u" episode: " + str(cur_duplicate["episode"]) + u" count: " + str(
-                cur_duplicate["count"]), logger.DEBUG)
+            logging.debug("Duplicate episode detected! showid: " + str(cur_duplicate[b"showid"]) + " season: " + str(
+                    cur_duplicate[b"season"]) + " episode: " + str(cur_duplicate[b"episode"]) + " count: " + str(
+                    cur_duplicate[b"count"]))
 
             cur_dupe_results = self.connection.select(
-                "SELECT episode_id FROM tv_episodes WHERE showid = ? AND season = ? and episode = ? ORDER BY episode_id DESC LIMIT ?",
-                [cur_duplicate["showid"], cur_duplicate["season"], cur_duplicate["episode"],
-                 int(cur_duplicate["count"]) - 1]
+                    "SELECT episode_id FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ? ORDER BY episode_id DESC LIMIT ?",
+                    [cur_duplicate[b"showid"], cur_duplicate[b"season"], cur_duplicate[b"episode"],
+                     int(cur_duplicate[b"count"]) - 1]
             )
 
             for cur_dupe_id in cur_dupe_results:
-                logger.log(u"Deleting duplicate episode with episode_id: " + str(cur_dupe_id["episode_id"]))
-                self.connection.action("DELETE FROM tv_episodes WHERE episode_id = ?", [cur_dupe_id["episode_id"]])
+                logging.info("Deleting duplicate episode with episode_id: " + str(cur_dupe_id[b"episode_id"]))
+                self.connection.action("DELETE FROM tv_episodes WHERE episode_id = ?", [cur_dupe_id[b"episode_id"]])
 
     def fix_orphan_episodes(self):
 
         sqlResults = self.connection.select(
-            "SELECT episode_id, showid, tv_shows.indexer_id FROM tv_episodes LEFT JOIN tv_shows ON tv_episodes.showid=tv_shows.indexer_id WHERE tv_shows.indexer_id is NULL")
+                "SELECT episode_id, showid, tv_shows.indexer_id FROM tv_episodes LEFT JOIN tv_shows ON tv_episodes.showid=tv_shows.indexer_id WHERE tv_shows.indexer_id IS NULL")
 
         for cur_orphan in sqlResults:
-            logger.log(u"Orphan episode detected! episode_id: " + str(cur_orphan["episode_id"]) + " showid: " + str(
-                cur_orphan["showid"]), logger.DEBUG)
-            logger.log(u"Deleting orphan episode with episode_id: " + str(cur_orphan["episode_id"]))
-            self.connection.action("DELETE FROM tv_episodes WHERE episode_id = ?", [cur_orphan["episode_id"]])
+            logging.debug("Orphan episode detected! episode_id: " + str(cur_orphan[b"episode_id"]) + " showid: " + str(
+                    cur_orphan[b"showid"]))
+            logging.info("Deleting orphan episode with episode_id: " + str(cur_orphan[b"episode_id"]))
+            self.connection.action("DELETE FROM tv_episodes WHERE episode_id = ?", [cur_orphan[b"episode_id"]])
 
     def fix_missing_table_indexes(self):
         if not self.connection.select("PRAGMA index_info('idx_indexer_id')"):
-            logger.log(u"Missing idx_indexer_id for TV Shows table detected!, fixing...")
+            logging.info("Missing idx_indexer_id for TV Shows table detected!, fixing...")
             self.connection.action("CREATE UNIQUE INDEX idx_indexer_id ON tv_shows(indexer_id);")
 
         if not self.connection.select("PRAGMA index_info('idx_tv_episodes_showid_airdate')"):
-            logger.log(u"Missing idx_tv_episodes_showid_airdate for TV Episodes table detected!, fixing...")
+            logging.info("Missing idx_tv_episodes_showid_airdate for TV Episodes table detected!, fixing...")
             self.connection.action("CREATE INDEX idx_tv_episodes_showid_airdate ON tv_episodes(showid, airdate);")
 
         if not self.connection.select("PRAGMA index_info('idx_showid')"):
-            logger.log(u"Missing idx_showid for TV Episodes table detected!, fixing...")
+            logging.info("Missing idx_showid for TV Episodes table detected!, fixing...")
             self.connection.action("CREATE INDEX idx_showid ON tv_episodes (showid);")
 
         if not self.connection.select("PRAGMA index_info('idx_status')"):
-            logger.log(u"Missing idx_status for TV Episodes table detected!, fixing...")
+            logging.info("Missing idx_status for TV Episodes table detected!, fixing...")
             self.connection.action("CREATE INDEX idx_status ON tv_episodes (status, season, episode, airdate)")
 
         if not self.connection.select("PRAGMA index_info('idx_sta_epi_air')"):
-            logger.log(u"Missing idx_sta_epi_air for TV Episodes table detected!, fixing...")
+            logging.info("Missing idx_sta_epi_air for TV Episodes table detected!, fixing...")
             self.connection.action("CREATE INDEX idx_sta_epi_air ON tv_episodes (status, episode, airdate)")
 
         if not self.connection.select("PRAGMA index_info('idx_sta_epi_sta_air')"):
-            logger.log(u"Missing idx_sta_epi_sta_air for TV Episodes table detected!, fixing...")
+            logging.info("Missing idx_sta_epi_sta_air for TV Episodes table detected!, fixing...")
             self.connection.action("CREATE INDEX idx_sta_epi_sta_air ON tv_episodes (season, episode, status, airdate)")
 
     def fix_unaired_episodes(self):
@@ -211,13 +225,13 @@ class MainSanityCheck(db.DBSanityCheck):
         curDate = datetime.date.today()
 
         sqlResults = self.connection.select(
-            "SELECT episode_id FROM tv_episodes WHERE (airdate > ? or airdate = 1) AND status in (?,?) AND season > 0",
-            [curDate.toordinal(), common.SKIPPED, common.WANTED])
+                "SELECT episode_id FROM tv_episodes WHERE (airdate > ? OR airdate = 1) AND status IN (?,?) AND season > 0",
+                [curDate.toordinal(), common.SKIPPED, common.WANTED])
 
         for cur_unaired in sqlResults:
-            logger.log(u"Fixing unaired episode status for episode_id: %s" % cur_unaired["episode_id"])
+            logging.info("Fixing unaired episode status for episode_id: %s" % cur_unaired[b"episode_id"])
             self.connection.action("UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
-                                   [common.UNAIRED, cur_unaired["episode_id"]])
+                                   [common.UNAIRED, cur_unaired[b"episode_id"]])
 
     def fix_tvrage_show_statues(self):
         status_map = {
@@ -243,32 +257,36 @@ class MainSanityCheck(db.DBSanityCheck):
         sqlResults = self.connection.select("SELECT episode_id, showid FROM tv_episodes WHERE status IS NULL")
 
         for cur_ep in sqlResults:
-            logger.log(u"MALFORMED episode status detected! episode_id: " + str(cur_ep["episode_id"]) + " showid: " + str(
-                cur_ep["showid"]), logger.DEBUG)
-            logger.log(u"Fixing malformed episode status with episode_id: " + str(cur_ep["episode_id"]))
+            logging.debug(
+                "MALFORMED episode status detected! episode_id: " + str(cur_ep[b"episode_id"]) + " showid: " + str(
+                        cur_ep[b"showid"]))
+            logging.info("Fixing malformed episode status with episode_id: " + str(cur_ep[b"episode_id"]))
             self.connection.action("UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
-                                   [common.UNKNOWN, cur_ep["episode_id"]])
+                                   [common.UNKNOWN, cur_ep[b"episode_id"]])
 
     def fix_invalid_airdates(self):
 
         sqlResults = self.connection.select(
-            "SELECT episode_id, showid FROM tv_episodes WHERE airdate >= ? OR airdate < 1",
-            [datetime.date.max.toordinal()])
+                "SELECT episode_id, showid FROM tv_episodes WHERE airdate >= ? OR airdate < 1",
+                [datetime.date.max.toordinal()])
 
         for bad_airdate in sqlResults:
-            logger.log(u"Bad episode airdate detected! episode_id: " + str(bad_airdate["episode_id"]) + " showid: " + str(
-                bad_airdate["showid"]), logger.DEBUG)
-            logger.log(u"Fixing bad episode airdate for episode_id: " + str(bad_airdate["episode_id"]))
-            self.connection.action("UPDATE tv_episodes SET airdate = '1' WHERE episode_id = ?", [bad_airdate["episode_id"]])
+            logging.debug(
+                "Bad episode airdate detected! episode_id: " + str(bad_airdate[b"episode_id"]) + " showid: " + str(
+                        bad_airdate[b"showid"]))
+            logging.info("Fixing bad episode airdate for episode_id: " + str(bad_airdate[b"episode_id"]))
+            self.connection.action("UPDATE tv_episodes SET airdate = '1' WHERE episode_id = ?",
+                                   [bad_airdate[b"episode_id"]])
 
     def fix_subtitles_codes(self):
 
         sqlResults = self.connection.select(
-            "SELECT subtitles, episode_id FROM tv_episodes WHERE subtitles != '' AND subtitles_lastsearch < ?;",
-            [datetime.datetime(2015, 7, 15, 17, 20, 44, 326380).strftime(dateTimeFormat)]
+                "SELECT subtitles, episode_id FROM tv_episodes WHERE subtitles != '' AND subtitles_lastsearch < ?;",
+                [datetime.datetime(2015, 7, 15, 17, 20, 44, 326380).strftime(dateTimeFormat)]
         )
 
-        validLanguages = [Language.fromopensubtitles(language).opensubtitles for language in language_converters['opensubtitles'].codes if len(language) == 3]
+        validLanguages = [Language.fromopensubtitles(language).opensubtitles for language in
+                          language_converters[b'opensubtitles'].codes if len(language) == 3]
 
         if not sqlResults:
             return
@@ -276,30 +294,31 @@ class MainSanityCheck(db.DBSanityCheck):
         for sqlResult in sqlResults:
             langs = []
 
-            logger.log(u"Checking subtitle codes for episode_id: %s, codes: %s" %
-                       (sqlResult['episode_id'], sqlResult['subtitles']), logger.DEBUG)
+            logging.debug("Checking subtitle codes for episode_id: %s, codes: %s" %
+                        (sqlResult[b'episode_id'], sqlResult[b'subtitles']))
 
-            for subcode in sqlResult['subtitles'].split(','):
+            for subcode in sqlResult[b'subtitles'].split(','):
                 if not len(subcode) is 3 or subcode not in validLanguages:
-                    logger.log(u"Fixing subtitle codes for episode_id: %s, invalid code: %s" %
-                               (sqlResult['episode_id'], subcode), logger.DEBUG)
+                    logging.debug("Fixing subtitle codes for episode_id: %s, invalid code: %s" %
+                                (sqlResult[b'episode_id'], subcode))
                     continue
 
                 langs.append(subcode)
 
-            self.connection.action("UPDATE tv_episodes SET subtitles = ?, subtitles_lastsearch = ? WHERE episode_id = ?;",
-                                   [','.join(langs), datetime.datetime.now().strftime(dateTimeFormat), sqlResult['episode_id']])
+            self.connection.action(
+                "UPDATE tv_episodes SET subtitles = ?, subtitles_lastsearch = ? WHERE episode_id = ?;",
+                [','.join(langs), datetime.datetime.now().strftime(dateTimeFormat), sqlResult[b'episode_id']])
 
     def fix_show_nfo_lang(self):
-        self.connection.action("UPDATE tv_shows SET lang = '' WHERE lang = 0 or lang = '0'")
+        self.connection.action("UPDATE tv_shows SET lang = '' WHERE lang = 0 OR lang = '0'")
 
 
 def backupDatabase(version):
-    logger.log(u"Backing up database before upgrade")
+    logging.info("Backing up database before upgrade")
     if not helpers.backupVersionedFile(db.dbFilename(), version):
-        logger.log_error_and_exit(u"Database backup failed, abort upgrading database")
+        logging.log_error_and_exit("Database backup failed, abort upgrading database")
     else:
-        logger.log(u"Proceeding with upgrade")
+        logging.info("Proceeding with upgrade")
 
 
 # ======================
@@ -340,18 +359,20 @@ class InitialSchema(db.SchemaUpgrade):
             cur_db_version = self.checkDBVersion()
 
             if cur_db_version < MIN_DB_VERSION:
-                logger.log_error_and_exit(u"Your database version (" +
-                                          str(cur_db_version) + ") is too old to migrate from what this version of SickRage supports (" +
-                                          str(MIN_DB_VERSION) + ").\n" +
-                                          "Upgrade using a previous version (tag) build 496 to build 501 of SickRage first or remove database file to begin fresh."
-                                          )
+                logging.log_error_and_exit("Your database version (" +
+                                           str(
+                                               cur_db_version) + ") is too old to migrate from what this version of SiCKRAGE supports (" +
+                                           str(MIN_DB_VERSION) + ").\n" +
+                                           "Upgrade using a previous version (tag) build 496 to build 501 of SiCKRAGE first or remove database file to begin fresh."
+                                           )
 
             if cur_db_version > MAX_DB_VERSION:
-                logger.log_error_and_exit(u"Your database version (" +
-                                          str(cur_db_version) + ") has been incremented past what this version of SickRage supports (" +
-                                          str(MAX_DB_VERSION) + ").\n" +
-                                          "If you have used other forks of SickRage, your database may be unusable due to their modifications."
-                                          )
+                logging.log_error_and_exit("Your database version (" +
+                                           str(
+                                               cur_db_version) + ") has been incremented past what this version of SiCKRAGE supports (" +
+                                           str(MAX_DB_VERSION) + ").\n" +
+                                           "If you have used other forks of SiCKRAGE, your database may be unusable due to their modifications."
+                                           )
 
 
 class AddSizeAndSceneNameFields(InitialSchema):
@@ -370,33 +391,33 @@ class AddSizeAndSceneNameFields(InitialSchema):
 
         ep_results = self.connection.select("SELECT episode_id, location, file_size FROM tv_episodes")
 
-        logger.log(u"Adding file size to all episodes in DB, please be patient")
+        logging.info("Adding file size to all episodes in DB, please be patient")
         for cur_ep in ep_results:
-            if not cur_ep["location"]:
+            if not cur_ep[b"location"]:
                 continue
 
             # if there is no size yet then populate it for us
-            if (not cur_ep["file_size"] or not int(cur_ep["file_size"])) and ek(os.path.isfile,cur_ep["location"]):
-                cur_size = ek(os.path.getsize,cur_ep["location"])
+            if (not cur_ep[b"file_size"] or not int(cur_ep[b"file_size"])) and ek(os.path.isfile, cur_ep[b"location"]):
+                cur_size = ek(os.path.getsize, cur_ep[b"location"])
                 self.connection.action("UPDATE tv_episodes SET file_size = ? WHERE episode_id = ?",
-                                       [cur_size, int(cur_ep["episode_id"])])
+                                       [cur_size, int(cur_ep[b"episode_id"])])
 
         # check each snatch to see if we can use it to get a release name from
         history_results = self.connection.select("SELECT * FROM history WHERE provider != -1 ORDER BY date ASC")
 
-        logger.log(u"Adding release name to all episodes still in history")
+        logging.info("Adding release name to all episodes still in history")
         for cur_result in history_results:
             # find the associated download, if there isn't one then ignore it
             download_results = self.connection.select(
-                "SELECT resource FROM history WHERE provider = -1 AND showid = ? AND season = ? AND episode = ? AND date > ?",
-                [cur_result["showid"], cur_result["season"], cur_result["episode"], cur_result["date"]])
+                    "SELECT resource FROM history WHERE provider = -1 AND showid = ? AND season = ? AND episode = ? AND date > ?",
+                    [cur_result[b"showid"], cur_result[b"season"], cur_result[b"episode"], cur_result[b"date"]])
             if not download_results:
-                logger.log(u"Found a snatch in the history for " + cur_result[
-                    "resource"] + " but couldn't find the associated download, skipping it", logger.DEBUG)
+                logging.debug("Found a snatch in the history for " + cur_result[
+                    "resource"] + " but couldn't find the associated download, skipping it")
                 continue
 
-            nzb_name = cur_result["resource"]
-            file_name = ek(os.path.basename, download_results[0]["resource"])
+            nzb_name = cur_result[b"resource"]
+            file_name = ek(os.path.basename, download_results[0][b"resource"])
 
             # take the extension off the filename, it's not needed
             if '.' in file_name:
@@ -404,25 +425,24 @@ class AddSizeAndSceneNameFields(InitialSchema):
 
             # find the associated episode on disk
             ep_results = self.connection.select(
-                "SELECT episode_id, status FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ? AND location != ''",
-                [cur_result["showid"], cur_result["season"], cur_result["episode"]])
+                    "SELECT episode_id, status FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ? AND location != ''",
+                    [cur_result[b"showid"], cur_result[b"season"], cur_result[b"episode"]])
             if not ep_results:
-                logger.log(
-                    u"The episode " + nzb_name + " was found in history but doesn't exist on disk anymore, skipping",
-                    logger.DEBUG)
+                logging.debug(
+                        "The episode " + nzb_name + " was found in history but doesn't exist on disk anymore, skipping")
                 continue
 
             # get the status/quality of the existing ep and make sure it's what we expect
-            ep_status, ep_quality = common.Quality.splitCompositeStatus(int(ep_results[0]["status"]))
+            ep_status, ep_quality = common.Quality.splitCompositeStatus(int(ep_results[0][b"status"]))
             if ep_status != common.DOWNLOADED:
                 continue
 
-            if ep_quality != int(cur_result["quality"]):
+            if ep_quality != int(cur_result[b"quality"]):
                 continue
 
             # make sure this is actually a real release name and not a season pack or something
             for cur_name in (nzb_name, file_name):
-                logger.log(u"Checking if " + cur_name + " is actually a good release name", logger.DEBUG)
+                logging.debug("Checking if " + cur_name + " is actually a good release name")
                 try:
                     np = NameParser(False)
                     parse_result = np.parse(cur_name)
@@ -432,16 +452,16 @@ class AddSizeAndSceneNameFields(InitialSchema):
                 if parse_result.series_name and parse_result.season_number is not None and parse_result.episode_numbers and parse_result.release_group:
                     # if all is well by this point we'll just put the release name into the database
                     self.connection.action("UPDATE tv_episodes SET release_name = ? WHERE episode_id = ?",
-                                           [cur_name, ep_results[0]["episode_id"]])
+                                           [cur_name, ep_results[0][b"episode_id"]])
                     break
 
         # check each snatch to see if we can use it to get a release name from
         empty_results = self.connection.select("SELECT episode_id, location FROM tv_episodes WHERE release_name = ''")
 
-        logger.log(u"Adding release name to all episodes with obvious scene filenames")
+        logging.info("Adding release name to all episodes with obvious scene filenames")
         for cur_result in empty_results:
 
-            ep_file_name = ek(os.path.basename, cur_result["location"])
+            ep_file_name = ek(os.path.basename, cur_result[b"location"])
             ep_file_name = ek(os.path.splitext, ep_file_name)[0]
 
             # only want to find real scene names here so anything with a space in it is out
@@ -457,11 +477,10 @@ class AddSizeAndSceneNameFields(InitialSchema):
             if not parse_result.release_group:
                 continue
 
-            logger.log(
-                u"Name " + ep_file_name + " gave release group of " + parse_result.release_group + ", seems valid",
-                logger.DEBUG)
+            logging.debug(
+                    "Name " + ep_file_name + " gave release group of " + parse_result.release_group + ", seems valid")
             self.connection.action("UPDATE tv_episodes SET release_name = ? WHERE episode_id = ?",
-                                   [ep_file_name, cur_result["episode_id"]])
+                                   [ep_file_name, cur_result[b"episode_id"]])
 
         self.incDBVersion()
 
@@ -474,7 +493,7 @@ class RenameSeasonFolders(AddSizeAndSceneNameFields):
         # rename the column
         self.connection.action("ALTER TABLE tv_shows RENAME TO tmp_tv_shows")
         self.connection.action(
-            "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, location TEXT, show_name TEXT, tvdb_id NUMERIC, network TEXT, genre TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, tvr_id NUMERIC, tvr_name TEXT, air_by_date NUMERIC, lang TEXT)")
+                "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, location TEXT, show_name TEXT, tvdb_id NUMERIC, network TEXT, genre TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, tvr_id NUMERIC, tvr_name TEXT, air_by_date NUMERIC, lang TEXT)")
         sql = "INSERT INTO tv_shows SELECT * FROM tmp_tv_shows"
         self.connection.action(sql)
 
@@ -559,66 +578,67 @@ class Add1080pAndRawHDQualities(RenameSeasonFolders):
 
         # upgrade previous HD to HD720p -- shift previous qualities to new placevalues
         old_hd = common.Quality.combineQualities(
-            [common.Quality.HDTV, common.Quality.HDWEBDL >> 2, common.Quality.HDBLURAY >> 3], [])
+                [common.Quality.HDTV, common.Quality.HDWEBDL >> 2, common.Quality.HDBLURAY >> 3], [])
         new_hd = common.Quality.combineQualities([common.Quality.HDTV, common.Quality.HDWEBDL, common.Quality.HDBLURAY],
                                                  [])
 
         # update ANY -- shift existing qualities and add new 1080p qualities, note that rawHD was not added to the ANY template
         old_any = common.Quality.combineQualities(
-            [common.Quality.SDTV, common.Quality.SDDVD, common.Quality.HDTV, common.Quality.HDWEBDL >> 2,
-             common.Quality.HDBLURAY >> 3, common.Quality.UNKNOWN], [])
+                [common.Quality.SDTV, common.Quality.SDDVD, common.Quality.HDTV, common.Quality.HDWEBDL >> 2,
+                 common.Quality.HDBLURAY >> 3, common.Quality.UNKNOWN], [])
         new_any = common.Quality.combineQualities(
-            [common.Quality.SDTV, common.Quality.SDDVD, common.Quality.HDTV, common.Quality.FULLHDTV,
-             common.Quality.HDWEBDL, common.Quality.FULLHDWEBDL, common.Quality.HDBLURAY, common.Quality.FULLHDBLURAY,
-             common.Quality.UNKNOWN], [])
+                [common.Quality.SDTV, common.Quality.SDDVD, common.Quality.HDTV, common.Quality.FULLHDTV,
+                 common.Quality.HDWEBDL, common.Quality.FULLHDWEBDL, common.Quality.HDBLURAY,
+                 common.Quality.FULLHDBLURAY,
+                 common.Quality.UNKNOWN], [])
 
         # update qualities (including templates)
-        logger.log(u"[1/4] Updating pre-defined templates and the quality for each show...", logger.INFO)
+        logging.info("[1/4] Updating pre-defined templates and the quality for each show...")
         cl = []
         shows = self.connection.select("SELECT * FROM tv_shows")
         for cur_show in shows:
-            if cur_show["quality"] == old_hd:
+            if cur_show[b"quality"] == old_hd:
                 new_quality = new_hd
-            elif cur_show["quality"] == old_any:
+            elif cur_show[b"quality"] == old_any:
                 new_quality = new_any
             else:
-                new_quality = self._update_composite_qualities(cur_show["quality"])
-            cl.append(["UPDATE tv_shows SET quality = ? WHERE show_id = ?", [new_quality, cur_show["show_id"]]])
+                new_quality = self._update_composite_qualities(cur_show[b"quality"])
+            cl.append(["UPDATE tv_shows SET quality = ? WHERE show_id = ?", [new_quality, cur_show[b"show_id"]]])
         self.connection.mass_action(cl)
 
         # update status that are are within the old hdwebdl (1<<3 which is 8) and better -- exclude unknown (1<<15 which is 32768)
-        logger.log(u"[2/4] Updating the status for the episodes within each show...", logger.INFO)
+        logging.info("[2/4] Updating the status for the episodes within each show...")
         cl = []
         episodes = self.connection.select("SELECT * FROM tv_episodes WHERE status < 3276800 AND status >= 800")
         for cur_episode in episodes:
             cl.append(["UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
-                       [self._update_status(cur_episode["status"]), cur_episode["episode_id"]]])
+                       [self._update_status(cur_episode[b"status"]), cur_episode[b"episode_id"]]])
         self.connection.mass_action(cl)
 
         # make two seperate passes through the history since snatched and downloaded (action & quality) may not always coordinate together
 
         # update previous history so it shows the correct action
-        logger.log(u"[3/4] Updating history to reflect the correct action...", logger.INFO)
+        logging.info("[3/4] Updating history to reflect the correct action...")
         cl = []
         historyAction = self.connection.select("SELECT * FROM history WHERE action < 3276800 AND action >= 800")
         for cur_entry in historyAction:
             cl.append(["UPDATE history SET action = ? WHERE showid = ? AND date = ?",
-                       [self._update_status(cur_entry["action"]), cur_entry["showid"], cur_entry["date"]]])
+                       [self._update_status(cur_entry[b"action"]), cur_entry[b"showid"], cur_entry[b"date"]]])
         self.connection.mass_action(cl)
 
         # update previous history so it shows the correct quality
-        logger.log(u"[4/4] Updating history to reflect the correct quality...", logger.INFO)
+        logging.info("[4/4] Updating history to reflect the correct quality...")
         cl = []
         historyQuality = self.connection.select("SELECT * FROM history WHERE quality < 32768 AND quality >= 8")
         for cur_entry in historyQuality:
             cl.append(["UPDATE history SET quality = ? WHERE showid = ? AND date = ?",
-                       [self._update_quality(cur_entry["quality"]), cur_entry["showid"], cur_entry["date"]]])
+                       [self._update_quality(cur_entry[b"quality"]), cur_entry[b"showid"], cur_entry[b"date"]]])
         self.connection.mass_action(cl)
 
         self.incDBVersion()
 
         # cleanup and reduce db if any previous data was removed
-        logger.log(u"Performing a vacuum on the database.", logger.DEBUG)
+        logging.debug("Performing a vacuum on the database.")
         self.connection.action("VACUUM")
 
 
@@ -631,10 +651,10 @@ class AddShowidTvdbidIndex(Add1080pAndRawHDQualities):
     def execute(self):
         backupDatabase(13)
 
-        logger.log(u"Check for duplicate shows before adding unique index.")
+        logging.info("Check for duplicate shows before adding unique index.")
         MainSanityCheck(self.connection).fix_duplicate_shows('tvdb_id')
 
-        logger.log(u"Adding index on tvdb_id (tv_shows) and showid (tv_episodes) to speed up searches/queries.")
+        logging.info("Adding index on tvdb_id (tv_shows) and showid (tv_episodes) to speed up searches/queries.")
         if not self.hasTable("idx_showid"):
             self.connection.action("CREATE INDEX idx_showid ON tv_episodes (showid);")
         if not self.hasTable("idx_tvdb_id"):
@@ -652,7 +672,7 @@ class AddLastUpdateTVDB(AddShowidTvdbidIndex):
     def execute(self):
         backupDatabase(14)
 
-        logger.log(u"Adding column last_update_tvdb to tvshows")
+        logging.info("Adding column last_update_tvdb to tvshows")
         if not self.hasColumn("tv_shows", "last_update_tvdb"):
             self.addColumn("tv_shows", "last_update_tvdb", default=1)
 
@@ -673,7 +693,7 @@ class AddIMDbInfo(AddDBIncreaseTo15):
 
     def execute(self):
         self.connection.action(
-            "CREATE TABLE imdb_info (tvdb_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC)")
+                "CREATE TABLE imdb_info (tvdb_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC)")
 
         if not self.hasColumn("tv_shows", "imdb_id"):
             self.addColumn("tv_shows", "imdb_id")
@@ -706,7 +726,7 @@ class AddProperSearch(AddEmailSubscriptionTable):
     def execute(self):
         backupDatabase(19)
 
-        logger.log(u"Adding column last_proper_search to info")
+        logging.info("Adding column last_proper_search to info")
         if not self.hasColumn("info", "last_proper_search"):
             self.addColumn("info", "last_proper_search", default=1)
 
@@ -718,7 +738,7 @@ class AddDvdOrderOption(AddProperSearch):
         return self.checkDBVersion() >= 20
 
     def execute(self):
-        logger.log(u"Adding column dvdorder to tvshows")
+        logging.info("Adding column dvdorder to tvshows")
         if not self.hasColumn("tv_shows", "dvdorder"):
             self.addColumn("tv_shows", "dvdorder", "NUMERIC", "0")
 
@@ -745,14 +765,15 @@ class ConvertTVShowsToIndexerScheme(AddSubtitlesSupport):
     def execute(self):
         backupDatabase(22)
 
-        logger.log(u"Converting TV Shows table to Indexer Scheme...")
+        logging.info("Converting TV Shows table to Indexer Scheme...")
 
         if self.hasTable("tmp_tv_shows"):
-            logger.log(u"Removing temp tv show tables left behind from previous updates...")
+            logging.info("Removing temp tv show tables left behind from previous updates...")
             self.connection.action("DROP TABLE tmp_tv_shows")
 
         self.connection.action("ALTER TABLE tv_shows RENAME TO tmp_tv_shows")
-        self.connection.action("CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC)")
+        self.connection.action(
+            "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC)")
         self.connection.action("INSERT INTO tv_shows SELECT * FROM tmp_tv_shows")
         self.connection.action("DROP TABLE tmp_tv_shows")
 
@@ -771,17 +792,17 @@ class ConvertTVEpisodesToIndexerScheme(ConvertTVShowsToIndexerScheme):
     def execute(self):
         backupDatabase(23)
 
-        logger.log(u"Converting TV Episodes table to Indexer Scheme...")
+        logging.info("Converting TV Episodes table to Indexer Scheme...")
 
         if self.hasTable("tmp_tv_episodes"):
-            logger.log(u"Removing temp tv episode tables left behind from previous updates...")
+            logging.info("Removing temp tv episode tables left behind from previous updates...")
             self.connection.action("DROP TABLE tmp_tv_episodes")
 
         self.connection.action("ALTER TABLE tv_episodes RENAME TO tmp_tv_episodes")
         self.connection.action(
-            "CREATE TABLE tv_episodes (episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexerid NUMERIC, indexer NUMERIC, name TEXT, season NUMERIC, episode NUMERIC, description TEXT, airdate NUMERIC, hasnfo NUMERIC, hastbn NUMERIC, status NUMERIC, location TEXT, file_size NUMERIC, release_name TEXT, subtitles TEXT, subtitles_searchcount NUMERIC, subtitles_lastsearch TIMESTAMP, is_proper NUMERIC)")
+                "CREATE TABLE tv_episodes (episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexerid NUMERIC, indexer NUMERIC, name TEXT, season NUMERIC, episode NUMERIC, description TEXT, airdate NUMERIC, hasnfo NUMERIC, hastbn NUMERIC, status NUMERIC, location TEXT, file_size NUMERIC, release_name TEXT, subtitles TEXT, subtitles_searchcount NUMERIC, subtitles_lastsearch TIMESTAMP, is_proper NUMERIC)")
         self.connection.action(
-            "INSERT INTO tv_episodes SELECT * FROM tmp_tv_episodes")
+                "INSERT INTO tv_episodes SELECT * FROM tmp_tv_episodes")
         self.connection.action("DROP TABLE tmp_tv_episodes")
 
         self.connection.action("CREATE INDEX idx_tv_episodes_showid_airdate ON tv_episodes(showid,airdate);")
@@ -802,17 +823,17 @@ class ConvertIMDBInfoToIndexerScheme(ConvertTVEpisodesToIndexerScheme):
     def execute(self):
         backupDatabase(24)
 
-        logger.log(u"Converting IMDB Info table to Indexer Scheme...")
+        logging.info("Converting IMDB Info table to Indexer Scheme...")
 
         if self.hasTable("tmp_imdb_info"):
-            logger.log(u"Removing temp imdb info tables left behind from previous updates...")
+            logging.info("Removing temp imdb info tables left behind from previous updates...")
             self.connection.action("DROP TABLE tmp_imdb_info")
 
         self.connection.action("ALTER TABLE imdb_info RENAME TO tmp_imdb_info")
         self.connection.action(
-            "CREATE TABLE imdb_info (indexer_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC)")
+                "CREATE TABLE imdb_info (indexer_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC)")
         self.connection.action(
-            "INSERT INTO imdb_info SELECT * FROM tmp_imdb_info")
+                "INSERT INTO imdb_info SELECT * FROM tmp_imdb_info")
         self.connection.action("DROP TABLE tmp_imdb_info")
 
         self.incDBVersion()
@@ -825,17 +846,17 @@ class ConvertInfoToIndexerScheme(ConvertIMDBInfoToIndexerScheme):
     def execute(self):
         backupDatabase(25)
 
-        logger.log(u"Converting Info table to Indexer Scheme...")
+        logging.info("Converting Info table to Indexer Scheme...")
 
         if self.hasTable("tmp_info"):
-            logger.log(u"Removing temp info tables left behind from previous updates...")
+            logging.info("Removing temp info tables left behind from previous updates...")
             self.connection.action("DROP TABLE tmp_info")
 
         self.connection.action("ALTER TABLE info RENAME TO tmp_info")
         self.connection.action(
-            "CREATE TABLE info (last_backlog NUMERIC, last_indexer NUMERIC, last_proper_search NUMERIC)")
+                "CREATE TABLE info (last_backlog NUMERIC, last_indexer NUMERIC, last_proper_search NUMERIC)")
         self.connection.action(
-            "INSERT INTO info SELECT * FROM tmp_info")
+                "INSERT INTO info SELECT * FROM tmp_info")
         self.connection.action("DROP TABLE tmp_info")
 
         self.incDBVersion()
@@ -848,7 +869,7 @@ class AddArchiveFirstMatchOption(ConvertInfoToIndexerScheme):
     def execute(self):
         backupDatabase(26)
 
-        logger.log(u"Adding column archive_firstmatch to tvshows")
+        logging.info("Adding column archive_firstmatch to tvshows")
         if not self.hasColumn("tv_shows", "archive_firstmatch"):
             self.addColumn("tv_shows", "archive_firstmatch", "NUMERIC", "0")
 
@@ -866,7 +887,7 @@ class AddSceneNumbering(AddArchiveFirstMatchOption):
             self.connection.action("DROP TABLE scene_numbering")
 
         self.connection.action(
-            "CREATE TABLE scene_numbering (indexer TEXT, indexer_id INTEGER, season INTEGER, episode INTEGER, scene_season INTEGER, scene_episode INTEGER, PRIMARY KEY (indexer_id, season, episode, scene_season, scene_episode))")
+                "CREATE TABLE scene_numbering (indexer TEXT, indexer_id INTEGER, season INTEGER, episode INTEGER, scene_season INTEGER, scene_episode INTEGER, PRIMARY KEY (indexer_id, season, episode, scene_season, scene_episode))")
 
         self.incDBVersion()
 
@@ -879,7 +900,7 @@ class ConvertIndexerToInteger(AddSceneNumbering):
         backupDatabase(28)
 
         cl = []
-        logger.log(u"Converting Indexer to Integer ...", logger.INFO)
+        logging.info("Converting Indexer to Integer ...")
         cl.append(["UPDATE tv_shows SET indexer = ? WHERE LOWER(indexer) = ?", ["1", "tvdb"]])
         cl.append(["UPDATE tv_shows SET indexer = ? WHERE LOWER(indexer) = ?", ["2", "tvrage"]])
         cl.append(["UPDATE tv_episodes SET indexer = ? WHERE LOWER(indexer) = ?", ["1", "tvdb"]])
@@ -901,11 +922,11 @@ class AddRequireAndIgnoreWords(ConvertIndexerToInteger):
     def execute(self):
         backupDatabase(29)
 
-        logger.log(u"Adding column rls_require_words to tvshows")
+        logging.info("Adding column rls_require_words to tvshows")
         if not self.hasColumn("tv_shows", "rls_require_words"):
             self.addColumn("tv_shows", "rls_require_words", "TEXT", "")
 
-        logger.log(u"Adding column rls_ignore_words to tvshows")
+        logging.info("Adding column rls_ignore_words to tvshows")
         if not self.hasColumn("tv_shows", "rls_ignore_words"):
             self.addColumn("tv_shows", "rls_ignore_words", "TEXT", "")
 
@@ -919,20 +940,20 @@ class AddSportsOption(AddRequireAndIgnoreWords):
     def execute(self):
         backupDatabase(30)
 
-        logger.log(u"Adding column sports to tvshows")
+        logging.info("Adding column sports to tvshows")
         if not self.hasColumn("tv_shows", "sports"):
             self.addColumn("tv_shows", "sports", "NUMERIC", "0")
 
         if self.hasColumn("tv_shows", "air_by_date") and self.hasColumn("tv_shows", "sports"):
             # update sports column
-            logger.log(u"[4/4] Updating tv_shows to reflect the correct sports value...", logger.INFO)
+            logging.info("[4/4] Updating tv_shows to reflect the correct sports value...")
             cl = []
             historyQuality = self.connection.select(
-                "SELECT * FROM tv_shows WHERE LOWER(classification) = 'sports' AND air_by_date = 1 AND sports = 0")
+                    "SELECT * FROM tv_shows WHERE LOWER(classification) = 'sports' AND air_by_date = 1 AND sports = 0")
             for cur_entry in historyQuality:
                 cl.append(["UPDATE tv_shows SET sports = ? WHERE show_id = ?",
-                           [cur_entry["air_by_date"], cur_entry["show_id"]]])
-                cl.append(["UPDATE tv_shows SET air_by_date = 0 WHERE show_id = ?", [cur_entry["show_id"]]])
+                           [cur_entry[b"air_by_date"], cur_entry[b"show_id"]]])
+                cl.append(["UPDATE tv_shows SET air_by_date = 0 WHERE show_id = ?", [cur_entry[b"show_id"]]])
             self.connection.mass_action(cl)
 
         self.incDBVersion()
@@ -945,7 +966,7 @@ class AddSceneNumberingToTvEpisodes(AddSportsOption):
     def execute(self):
         backupDatabase(31)
 
-        logger.log(u"Adding column scene_season and scene_episode to tvepisodes")
+        logging.info("Adding column scene_season and scene_episode to tvepisodes")
         self.addColumn("tv_episodes", "scene_season", "NUMERIC", "NULL")
         self.addColumn("tv_episodes", "scene_episode", "NUMERIC", "NULL")
 
@@ -959,7 +980,7 @@ class AddAnimeTVShow(AddSceneNumberingToTvEpisodes):
     def execute(self):
         backupDatabase(32)
 
-        logger.log(u"Adding column anime to tv_episodes")
+        logging.info("Adding column anime to tv_episodes")
         self.addColumn("tv_shows", "anime", "NUMERIC", "0")
 
         self.incDBVersion()
@@ -972,7 +993,7 @@ class AddAbsoluteNumbering(AddAnimeTVShow):
     def execute(self):
         backupDatabase(33)
 
-        logger.log(u"Adding column absolute_number to tv_episodes")
+        logging.info("Adding column absolute_number to tv_episodes")
         self.addColumn("tv_episodes", "absolute_number", "NUMERIC", "0")
 
         self.incDBVersion()
@@ -985,7 +1006,7 @@ class AddSceneAbsoluteNumbering(AddAbsoluteNumbering):
     def execute(self):
         backupDatabase(34)
 
-        logger.log(u"Adding column absolute_number and scene_absolute_number to scene_numbering")
+        logging.info("Adding column absolute_number and scene_absolute_number to scene_numbering")
         self.addColumn("scene_numbering", "absolute_number", "NUMERIC", "0")
         self.addColumn("scene_numbering", "scene_absolute_number", "NUMERIC", "0")
 
@@ -993,7 +1014,6 @@ class AddSceneAbsoluteNumbering(AddAbsoluteNumbering):
 
 
 class AddAnimeBlacklistWhitelist(AddSceneAbsoluteNumbering):
-
     def test(self):
         return self.checkDBVersion() >= 35
 
@@ -1017,7 +1037,7 @@ class AddSceneAbsoluteNumbering2(AddAnimeBlacklistWhitelist):
     def execute(self):
         backupDatabase(36)
 
-        logger.log(u"Adding column scene_absolute_number to tv_episodes")
+        logging.info("Adding column scene_absolute_number to tv_episodes")
         self.addColumn("tv_episodes", "scene_absolute_number", "NUMERIC", "0")
 
         self.incDBVersion()
@@ -1030,9 +1050,9 @@ class AddXemRefresh(AddSceneAbsoluteNumbering2):
     def execute(self):
         backupDatabase(37)
 
-        logger.log(u"Creating table xem_refresh")
+        logging.info("Creating table xem_refresh")
         self.connection.action(
-            "CREATE TABLE xem_refresh (indexer TEXT, indexer_id INTEGER PRIMARY KEY, last_refreshed INTEGER)")
+                "CREATE TABLE xem_refresh (indexer TEXT, indexer_id INTEGER PRIMARY KEY, last_refreshed INTEGER)")
 
         self.incDBVersion()
 
@@ -1044,7 +1064,7 @@ class AddSceneToTvShows(AddXemRefresh):
     def execute(self):
         backupDatabase(38)
 
-        logger.log(u"Adding column scene to tv_shows")
+        logging.info("Adding column scene to tv_shows")
         self.addColumn("tv_shows", "scene", "NUMERIC", "0")
 
         self.incDBVersion()
@@ -1060,9 +1080,9 @@ class AddIndexerMapping(AddSceneToTvShows):
         if self.hasTable("indexer_mapping"):
             self.connection.action("DROP TABLE indexer_mapping")
 
-        logger.log(u"Adding table indexer_mapping")
+        logging.info("Adding table indexer_mapping")
         self.connection.action(
-            "CREATE TABLE indexer_mapping (indexer_id INTEGER, indexer NUMERIC, mindexer_id INTEGER, mindexer NUMERIC, PRIMARY KEY (indexer_id, indexer))")
+                "CREATE TABLE indexer_mapping (indexer_id INTEGER, indexer NUMERIC, mindexer_id INTEGER, mindexer NUMERIC, PRIMARY KEY (indexer_id, indexer))")
 
         self.incDBVersion()
 
@@ -1074,7 +1094,7 @@ class AddVersionToTvEpisodes(AddIndexerMapping):
     def execute(self):
         backupDatabase(40)
 
-        logger.log(u"Adding column version to tv_episodes and history")
+        logging.info("Adding column version to tv_episodes and history")
         self.addColumn("tv_episodes", "version", "NUMERIC", "-1")
         self.addColumn("tv_episodes", "release_group", "TEXT", "")
         self.addColumn("history", "version", "NUMERIC", "-1")
@@ -1089,7 +1109,7 @@ class AddDefaultEpStatusToTvShows(AddVersionToTvEpisodes):
     def execute(self):
         backupDatabase(41)
 
-        logger.log(u"Adding column default_ep_status to tv_shows")
+        logging.info("Adding column default_ep_status to tv_shows")
         self.addColumn("tv_shows", "default_ep_status", "NUMERIC", "-1")
 
         self.incDBVersion()
@@ -1102,9 +1122,10 @@ class AlterTVShowsFieldTypes(AddDefaultEpStatusToTvShows):
     def execute(self):
         backupDatabase(42)
 
-        logger.log(u"Converting column indexer and default_ep_status field types to numeric")
+        logging.info("Converting column indexer and default_ep_status field types to numeric")
         self.connection.action("ALTER TABLE tv_shows RENAME TO tmp_tv_shows")
-        self.connection.action("CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC)")
+        self.connection.action(
+            "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC)")
         self.connection.action("INSERT INTO tv_shows SELECT * FROM tmp_tv_shows")
         self.connection.action("DROP TABLE tmp_tv_shows")
 

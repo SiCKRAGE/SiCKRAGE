@@ -16,9 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 from sickbeard.providers import generic
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 
 
@@ -28,7 +30,7 @@ class WombleProvider(generic.NZBProvider):
         self.public = True
         self.cache = WombleCache(self)
         self.urls = {'base_url': 'http://newshost.co.za/'}
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
 
 class WombleCache(tvcache.TVCache):
@@ -39,32 +41,33 @@ class WombleCache(tvcache.TVCache):
 
     def updateCache(self):
         # check if we should update
-        if not self.shouldUpdate():
-            return
+        if self.shouldUpdate():
+            # clear cache
+            self._clearCache()
 
-        # clear cache
-        self._clearCache()
+            # set updated
+            self.setLastUpdate()
 
-        # set updated
-        self.setLastUpdate()
+            cl = []
+            for url in [self.provider.url + 'rss/?sec=tv-x264&fr=false',
+                        self.provider.url + 'rss/?sec=tv-sd&fr=false',
+                        self.provider.url + 'rss/?sec=tv-dvd&fr=false',
+                        self.provider.url + 'rss/?sec=tv-hd&fr=false']:
+                logging.debug("Cache update URL: %s" % url)
 
-        cl = []
-        for url in [self.provider.url + 'rss/?sec=tv-x264&fr=false',
-                    self.provider.url + 'rss/?sec=tv-sd&fr=false',
-                    self.provider.url + 'rss/?sec=tv-dvd&fr=false',
-                    self.provider.url + 'rss/?sec=tv-hd&fr=false']:
-            logger.log(u"Cache update URL: %s" % url, logger.DEBUG)
+                for item in self.getRSSFeed(url)['entries'] or []:
+                    ci = self._parseItem(item)
+                    if ci is not None:
+                        cl.append(ci)
 
-            for item in self.getRSSFeed(url)['entries'] or []:
-                ci = self._parseItem(item)
-                if ci is not None:
-                    cl.append(ci)
+            if len(cl) > 0:
+                myDB = self._getDB()
+                myDB.mass_action(cl)
 
-        if len(cl) > 0:
-            myDB = self._getDB()
-            myDB.mass_action(cl)
+        return True
 
     def _checkAuth(self, data):
-        return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None
+        return data if data[b'feed'] and data[b'feed'][b'title'] != 'Invalid Link' else None
+
 
 provider = WombleProvider()
