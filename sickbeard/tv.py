@@ -877,6 +877,9 @@ class TVShow(object):
             self.runtime = getattr(myEp, 'runtime', '')
 
             self.imdbid = getattr(myEp, 'imdb_id', '')
+            # Make sure we're dealing with a valid IMDB ID
+            if re.match('tt[0-9]{7}', self.imdbid) is None:
+                self.imdbid = ''
 
             if getattr(myEp, 'airs_dayofweek', None) is not None and getattr(myEp, 'airs_time', None) is not None:
                 self.airs = myEp[b"airs_dayofweek"] + " " + myEp[b"airs_time"]
