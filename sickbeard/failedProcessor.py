@@ -18,7 +18,7 @@
 
 
 import sickbeard
-from sickbeard import logger
+import logging
 from sickbeard import show_name_helpers
 from sickbeard import search_queue
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
@@ -44,30 +44,30 @@ class FailedProcessor(object):
 
         :return: True
         """
-        self._log(u"Failed download detected: (" + str(self.nzb_name) + ", " + str(self.dir_name) + ")")
+        self._log("Failed download detected: (" + str(self.nzb_name) + ", " + str(self.dir_name) + ")")
 
         releaseName = show_name_helpers.determineReleaseName(self.dir_name, self.nzb_name)
         if releaseName is None:
-            self._log(u"Warning: unable to find a valid release name.", logger.WARNING)
+            self._log("Warning: unable to find a valid release name.", logging.WARNING)
             raise FailedPostProcessingFailedException()
 
         try:
             parser = NameParser(False)
             parsed = parser.parse(releaseName)
         except InvalidNameException:
-            self._log(u"Error: release name is invalid: " + releaseName, logger.DEBUG)
+            self._log("Error: release name is invalid: " + releaseName, logging.DEBUG)
             raise FailedPostProcessingFailedException()
         except InvalidShowException:
-            self._log(u"Error: unable to parse release name " + releaseName + " into a valid show", logger.DEBUG)
+            self._log("Error: unable to parse release name " + releaseName + " into a valid show", logging.DEBUG)
             raise FailedPostProcessingFailedException()
 
-        logger.log(u"name_parser info: ", logger.DEBUG)
-        logger.log(u" - " + str(parsed.series_name), logger.DEBUG)
-        logger.log(u" - " + str(parsed.season_number), logger.DEBUG)
-        logger.log(u" - " + str(parsed.episode_numbers), logger.DEBUG)
-        logger.log(u" - " + str(parsed.extra_info), logger.DEBUG)
-        logger.log(u" - " + str(parsed.release_group), logger.DEBUG)
-        logger.log(u" - " + str(parsed.air_date), logger.DEBUG)
+        logging.debug("name_parser info: ")
+        logging.debug(" - " + str(parsed.series_name))
+        logging.debug(" - " + str(parsed.season_number))
+        logging.debug(" - " + str(parsed.episode_numbers))
+        logging.debug(" - " + str(parsed.extra_info))
+        logging.debug(" - " + str(parsed.release_group))
+        logging.debug(" - " + str(parsed.air_date))
 
         for episode in parsed.episode_numbers:
             segment = parsed.show.getEpisode(parsed.season_number, episode)
@@ -77,7 +77,7 @@ class FailedProcessor(object):
 
         return True
 
-    def _log(self, message, level=logger.INFO):
+    def _log(self, message, level=logging.INFO):
         """Log to regular logfile and save for return for PP script log"""
-        logger.log(message, level)
+        logging.log(level, message)
         self.log += message + "\n"

@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 # Authors:
 # Pedro Jose Pereira Vieito <pvieito@gmail.com> (Twitter: @pvieito)
 #
@@ -26,7 +26,6 @@ from sickbeard.clients.generic import GenericClient
 
 
 class DownloadStationAPI(GenericClient):
-
     def __init__(self, host=None, username=None, password=None):
 
         super(DownloadStationAPI, self).__init__('DownloadStation', host, username, password)
@@ -39,7 +38,7 @@ class DownloadStationAPI(GenericClient):
 
         try:
             self.response = self.session.get(auth_url, verify=False)
-            self.auth = self.response.json()['data']['sid']
+            self.auth = self.response.json()['data'][b'sid']
         except Exception:
             return None
 
@@ -57,7 +56,7 @@ class DownloadStationAPI(GenericClient):
         }
 
         if sickbeard.TORRENT_PATH:
-            data['destination'] = sickbeard.TORRENT_PATH
+            data[b'destination'] = sickbeard.TORRENT_PATH
         self._request(method='post', data=data)
 
         return self.response.json()['success']
@@ -73,10 +72,11 @@ class DownloadStationAPI(GenericClient):
         }
 
         if sickbeard.TORRENT_PATH:
-            data['destination'] = sickbeard.TORRENT_PATH
+            data[b'destination'] = sickbeard.TORRENT_PATH
         files = {'file': (result.name + '.torrent', result.content)}
         self._request(method='post', data=data, files=files)
 
         return self.response.json()['success']
+
 
 api = DownloadStationAPI()

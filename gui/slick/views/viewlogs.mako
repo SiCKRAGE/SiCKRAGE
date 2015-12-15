@@ -2,7 +2,7 @@
 <%!
     import sickbeard
     from sickbeard import classes
-    from sickbeard.logger import reverseNames
+    from sickbeard.logger import logLevels
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/viewlogs.js"></script>
@@ -15,13 +15,12 @@
 % endif
 
 <div class="h2footer pull-right">Minimum logging level to display: <select name="minLevel" id="minLevel" class="form-control form-control-inline input-sm">
-<% levels = reverseNames.keys() %>
-<% levels.sort(lambda x,y: cmp(reverseNames[x], reverseNames[y])) %>
+<% levels = logLevels.keys() %>
+<% levels.sort(lambda x,y: cmp(logLevels[x], logLevels[y])) %>
 % for level in levels:
-    % if not sickbeard.DEBUG and (level == 'DEBUG' or level == 'DB'):
-       <% continue %>
+    % if sickbeard.DEBUG and (level == 'DEBUG' or level == 'DB'):
+        <option value="${logLevels[level]}" ${('', 'selected="selected"')[minLevel == logLevels[level]]}>${level.title()}</option>
     % endif
-<option value="${reverseNames[level]}" ${('', 'selected="selected"')[minLevel == reverseNames[level]]}>${level.title()}</option>
 % endfor
 </select>
 

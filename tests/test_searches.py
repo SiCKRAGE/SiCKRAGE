@@ -1,7 +1,7 @@
-#!/usr/bin/env python2.7
-# coding=UTF-8
-# Author: Dennis Lutter <lad1337@gmail.com>
-# URL: http://code.google.com/p/sickbeard/
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -18,48 +18,50 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os.path
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import os.path
+import sys
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import random
 import unittest
 
-import test_lib as test
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 
 import sickbeard
 import sickbeard.common as c
-import sickbeard.search as search
 from sickbeard.tv import TVEpisode, TVShow
 
 from sickbeard.providers.generic import GenericProvider
 
 tests = {"Game of Thrones":
-               {"tvdbid": 121361, "s": 5, "e": [10],
-                "s_strings": [{"Season": [u"Game of Thrones S05"]}],
-                "e_strings": [{"Episode": [u"Game of Thrones S05E10"]}]}}
+             {"tvdbid": 121361, "s": 5, "e": [10],
+              "s_strings": [{"Season": ["Game of Thrones S05"]}],
+              "e_strings": [{"Episode": ["Game of Thrones S05E10"]}]}}
 
-class SearchTest(test.SiCKRAGETestDBCase):
 
+class SearchTest(SiCKRAGETestDBCase):
     def __init__(self, something):
         super(SearchTest, self).__init__(something)
 
 
 def test_generator(curData, name, provider, forceSearch):
-
     def test(self):
-        show = TVShow(1, int(curData["tvdbid"]))
+        show = TVShow(1, int(curData[b"tvdbid"]))
         show.name = name
         show.quality = c.ANY | c.Quality.UNKNOWN | c.Quality.RAWHDTV
         show.saveToDB()
         sickbeard.showList.append(show)
 
-        for epNumber in curData["e"]:
-            episode = TVEpisode(show, curData["s"], epNumber)
+        for epNumber in curData[b"e"]:
+            episode = TVEpisode(show, curData[b"s"], epNumber)
             episode.status = c.WANTED
 
             # We arent updating scene numbers, so fake it here
-            episode.scene_season = curData["s"]
+            episode.scene_season = curData[b"s"]
             episode.scene_episode = epNumber
 
             episode.saveToDB()
@@ -71,8 +73,8 @@ def test_generator(curData, name, provider, forceSearch):
             fail = False
             for cur_string in season_strings, episode_strings:
                 if not all([isinstance(cur_string, list), isinstance(cur_string[0], dict)]):
-                    print " %s is using a wrong string format!" % provider.name
-                    print cur_string
+                    print(" %s is using a wrong string format!" % provider.name)
+                    print(cur_string)
                     fail = True
                     continue
 
@@ -80,63 +82,61 @@ def test_generator(curData, name, provider, forceSearch):
                 continue
 
             try:
-                assert(season_strings == curData["s_strings"])
-                assert(episode_strings == curData["e_strings"])
+                assert (season_strings == curData[b"s_strings"])
+                assert (episode_strings == curData[b"e_strings"])
             except AssertionError:
-                print " %s is using a wrong string format!" % provider.name
-                print cur_string
                 continue
 
             search_strings = episode_strings[0]
-            #search_strings.update(season_strings[0])
-            #search_strings.update({"RSS":['']})
+            # search_strings.update(season_strings[0])
+            # search_strings.update({"RSS":['']})
 
-            #print search_strings
+            # print search_strings
 
             if not provider.public:
                 continue
 
             items = provider._doSearch(search_strings)
             if not items:
-                print "No results from provider?"
+                print("No results from provider?")
                 continue
 
             title, url = provider._get_title_and_url(items[0])
             for word in show.name.split(" "):
                 if not word.lower() in title.lower():
-                    print "Show name not in title: %s. URL: %s" % (title, url)
+                    print("Show name not in title: %s. URL: %s" % (title, url))
                     continue
 
             if not url:
-                print "url is empty"
+                print("url is empty")
                 continue
 
             quality = provider.getQuality(items[0])
             size = provider._get_size(items[0])
             if not show.quality & quality:
-                print "Quality not in common.ANY, %r" % quality
+                print("Quality not in common.ANY, %r" % quality)
                 continue
 
     return test
 
+# create the test methods
+for forceSearch in (True, False):
+    for name, curData in tests.items():
+        fname = name.replace(' ', '_')
+
+        for provider in sickbeard.providers.sortedProviderList():
+            if provider.providerType == GenericProvider.TORRENT:
+                if forceSearch:
+                    test_name = 'test_manual_%s_%s_%s' % (fname, curData[b"tvdbid"], provider.name)
+                else:
+                    test_name = 'test_%s_%s_%s' % (fname, curData[b"tvdbid"], provider.name)
+                test = test_generator(curData, name, provider, forceSearch)
+                setattr(SearchTest, test_name, test)
+
+
 if __name__ == '__main__':
-    print "=================="
-    print "STARTING - SEARCH TESTS"
-    print "=================="
-    print "######################################################################"
-    # create the test methods
-    for forceSearch in (True, False):
-        for name, curData in tests.items():
-            fname = name.replace(' ', '_')
-
-            for provider in sickbeard.providers.sortedProviderList():
-                if provider.providerType == GenericProvider.TORRENT:
-                    if forceSearch:
-                        test_name = 'test_manual_%s_%s_%s' % (fname, curData["tvdbid"], provider.name)
-                    else:
-                        test_name = 'test_%s_%s_%s' % (fname, curData["tvdbid"], provider.name)
-                    test = test_generator(curData, name, provider, forceSearch)
-                    setattr(SearchTest, test_name, test)
-
-    suite = unittest.TestLoader().loadTestsFromTestCase(SearchTest)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("==================")
+    print("STARTING - SEARCH TESTS")
+    print("==================")
+    print("######################################################################")
+    unittest.main()

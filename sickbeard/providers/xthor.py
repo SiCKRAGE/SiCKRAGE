@@ -17,18 +17,19 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import re
 import cookielib
 import urllib
 import requests
 
-from sickbeard import logger
+import logging
 from sickbeard.providers import generic
 from sickbeard.bs4_parser import BS4Parser
 
 
 class XthorProvider(generic.TorrentProvider):
-
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Xthor")
@@ -56,13 +57,13 @@ class XthorProvider(generic.TorrentProvider):
 
         response = self.getURL(self.url + '/takelogin.php', post_data=login_params, timeout=30)
         if not response:
-            logger.log(u"Unable to connect to provider", logger.WARNING)
+            logging.warning("Unable to connect to provider")
             return False
 
         if re.search('donate.php', response):
             return True
         else:
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logging.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -77,21 +78,21 @@ class XthorProvider(generic.TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logging.debug("Search string: %s " % search_string)
 
                 searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                logging.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
 
                 if not data:
                     continue
 
                 with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                    resultsTable = html.find("table", {"class" : "table2 table-bordered2"})
+                    resultsTable = html.find("table", {"class": "table2 table-bordered2"})
                     if resultsTable:
                         rows = resultsTable.findAll("tr")
                         for row in rows:
@@ -110,12 +111,12 @@ class XthorProvider(generic.TorrentProvider):
                                 # Filter unseeded torrent
                                 # if seeders < self.minseed or leechers < self.minleech:
                                 #    if mode is not 'RSS':
-                                #        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                #        logging.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                                 #    continue
 
                                 item = title, download_url, size, seeders, leechers
                                 if mode is not 'RSS':
-                                    logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                    logging.debug("Found result: %s " % title)
 
                                 items[mode].append(item)
 
@@ -128,5 +129,6 @@ class XthorProvider(generic.TorrentProvider):
 
     def seedRatio(self):
         return self.ratio
+
 
 provider = XthorProvider()

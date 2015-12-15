@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 # Author: Mr_Orange <mr_orange@hotmail.it>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -17,11 +17,13 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import json
 from base64 import b64encode
 
 import sickbeard
-from sickbeard import logger
+import logging
 from sickbeard.clients.generic import GenericClient
 
 
@@ -39,7 +41,8 @@ class DelugeAPI(GenericClient):
                                 "id": 1})
 
         try:
-            self.response = self.session.post(self.url, data=post_data.encode('utf-8'), verify=sickbeard.TORRENT_VERIFY_CERT)
+            self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                                              verify=sickbeard.TORRENT_VERIFY_CERT)
         except Exception:
             return None
 
@@ -50,7 +53,8 @@ class DelugeAPI(GenericClient):
                                 "id": 10})
 
         try:
-            self.response = self.session.post(self.url, data=post_data.encode('utf-8'), verify=sickbeard.TORRENT_VERIFY_CERT)
+            self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                                              verify=sickbeard.TORRENT_VERIFY_CERT)
         except Exception:
             return None
 
@@ -61,13 +65,14 @@ class DelugeAPI(GenericClient):
                                     "params": [],
                                     "id": 11})
             try:
-                self.response = self.session.post(self.url, data=post_data.encode('utf-8'), verify=sickbeard.TORRENT_VERIFY_CERT)
+                self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                                                  verify=sickbeard.TORRENT_VERIFY_CERT)
             except Exception:
                 return None
 
             hosts = self.response.json()['result']
             if len(hosts) == 0:
-                logger.log(self.name + u': WebUI does not contain daemons', logger.ERROR)
+                logging.error(self.name + ': WebUI does not contain daemons')
                 return None
 
             post_data = json.dumps({"method": "web.connect",
@@ -75,7 +80,8 @@ class DelugeAPI(GenericClient):
                                     "id": 11})
 
             try:
-                self.response = self.session.post(self.url, data=post_data.encode('utf-8'), verify=sickbeard.TORRENT_VERIFY_CERT)
+                self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                                                  verify=sickbeard.TORRENT_VERIFY_CERT)
             except Exception:
                 return None
 
@@ -84,13 +90,14 @@ class DelugeAPI(GenericClient):
                                     "id": 10})
 
             try:
-                self.response = self.session.post(self.url, data=post_data.encode('utf-8'), verify=sickbeard.TORRENT_VERIFY_CERT)
+                self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                                                  verify=sickbeard.TORRENT_VERIFY_CERT)
             except Exception:
                 return None
 
             connected = self.response.json()['result']
             if not connected:
-                logger.log(self.name + u': WebUI could not connect to daemon', logger.ERROR)
+                logging.error(self.name + ': WebUI could not connect to daemon')
                 return None
 
         return self.auth
@@ -125,7 +132,7 @@ class DelugeAPI(GenericClient):
         if result.show.is_anime:
             label = sickbeard.TORRENT_LABEL_ANIME
         if ' ' in label:
-            logger.log(self.name + u': Invalid label. Label must not contain a space', logger.ERROR)
+            logging.error(self.name + ': Invalid label. Label must not contain a space')
             return False
 
         if label:
@@ -139,14 +146,13 @@ class DelugeAPI(GenericClient):
 
             if labels is not None:
                 if label not in labels:
-                    logger.log(self.name + ': ' + label + u" label does not exist in Deluge we must add it",
-                               logger.DEBUG)
+                    logging.debug(self.name + ': ' + label + " label does not exist in Deluge we must add it")
                     post_data = json.dumps({"method": 'label.add',
                                             "params": [label],
                                             "id": 4})
 
                     self._request(method='post', data=post_data)
-                    logger.log(self.name + ': ' + label + u" label added to Deluge", logger.DEBUG)
+                    logging.debug(self.name + ': ' + label + " label added to Deluge")
 
                 # add label to torrent
                 post_data = json.dumps({"method": 'label.set_torrent',
@@ -154,9 +160,9 @@ class DelugeAPI(GenericClient):
                                         "id": 5})
 
                 self._request(method='post', data=post_data)
-                logger.log(self.name + ': ' + label + u" label added to torrent", logger.DEBUG)
+                logging.debug(self.name + ': ' + label + " label added to torrent")
             else:
-                logger.log(self.name + ': ' + u"label plugin not detected", logger.DEBUG)
+                logging.debug(self.name + ': ' + "label plugin not detected")
                 return False
 
         return not self.response.json()['error']

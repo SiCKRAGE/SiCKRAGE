@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
@@ -18,8 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 from sickbeard import helpers
-from sickbeard import logger
+import logging
 import requests
 
 meta_session = requests.Session()
@@ -35,11 +37,11 @@ def getShowImage(url, imgNum=None):
     else:
         tempURL = url
 
-    logger.log(u"Fetching image from " + tempURL, logger.DEBUG)
+    logging.debug("Fetching image from " + tempURL)
 
     image_data = helpers.getURL(tempURL, session=meta_session, needBytes=True)
     if image_data is None:
-        logger.log(u"There was an error trying to retrieve the image, aborting", logger.WARNING)
+        logging.warning("There was an error trying to retrieve the image, aborting")
         return
 
     return image_data

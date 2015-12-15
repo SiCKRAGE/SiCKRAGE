@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 import requests
 import sickbeard
@@ -37,4 +37,4 @@ indexerConfig = {
     }
 }
 
-indexerConfig[INDEXER_TVDB]['base_url'] %= indexerConfig[INDEXER_TVDB]['api_params']  # insert API key into base url
+indexerConfig[INDEXER_TVDB][b'base_url'] %= indexerConfig[INDEXER_TVDB][b'api_params']  # insert API key into base url

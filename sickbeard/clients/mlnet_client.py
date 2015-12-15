@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 # Author: kounch
 # URL: http://code.google.com/p/sickbeard/
@@ -17,6 +17,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
 
 from sickbeard.clients.generic import GenericClient
 
@@ -50,5 +52,6 @@ class mlnetAPI(GenericClient):
         self.url = self.host + 'submit'
         params = {'q': 'dllink ' + result.url}
         return self._request(method='get', params=params)
+
 
 api = mlnetAPI()

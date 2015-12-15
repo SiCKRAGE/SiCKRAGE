@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import io
 import os
 import re
@@ -24,7 +26,7 @@ from bencode import bdecode
 import sickbeard
 from sickbeard.providers import generic
 from sickbeard import helpers
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 
 from sickrage.helper.encoding import ek
@@ -32,14 +34,15 @@ from sickrage.helper.exceptions import ex
 
 
 class TorrentRssProvider(generic.TorrentProvider):
-    def __init__(self, name, url, cookies='', titleTAG='title', search_mode='eponly', search_fallback=False, enable_daily=False,
+    def __init__(self, name, url, cookies='', titleTAG='title', search_mode='eponly', search_fallback=False,
+                 enable_daily=False,
                  enable_backlog=False):
         generic.TorrentProvider.__init__(self, name)
         self.cache = TorrentRssCache(self)
 
         self.urls = {'base_url': re.sub(r'\/$', '', url)}
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
         self.ratio = None
         self.supportsBacklog = False
@@ -65,7 +68,8 @@ class TorrentRssProvider(generic.TorrentProvider):
         )
 
     def imageName(self):
-        if ek(os.path.isfile,ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME, 'images', 'providers', self.getID() + '.png')):
+        if ek(os.path.isfile, ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME, 'images', 'providers',
+                                 self.getID() + '.png')):
             return self.getID() + '.png'
         return 'torrentrss.png'
 
@@ -138,14 +142,14 @@ class TorrentRssProvider(generic.TorrentProvider):
         dumpName = ek(os.path.join, sickbeard.CACHE_DIR, 'custom_torrent.html')
 
         try:
-            fileOut = ek(io.open,dumpName, 'wb')
+            fileOut = ek(io.open, dumpName, 'wb')
             fileOut.write(data)
             fileOut.close()
             helpers.chmodAsParent(dumpName)
         except IOError as e:
-            logger.log(u"Unable to save the file: %s " % repr(e), logger.ERROR)
+            logging.error("Unable to save the file: %s " % repr(e))
             return False
-        logger.log(u"Saved custom_torrent html dump %s " % dumpName, logger.INFO)
+        logging.info("Saved custom_torrent html dump %s " % dumpName)
         return True
 
     def seedRatio(self):
@@ -158,7 +162,7 @@ class TorrentRssCache(tvcache.TVCache):
         self.minTime = 15
 
     def _getRSSData(self):
-        logger.log(u"Cache update URL: %s" % self.provider.url, logger.DEBUG)
+        logging.debug("Cache update URL: %s" % self.provider.url)
 
         if self.provider.cookies:
             self.provider.headers.update({'Cookie': self.provider.cookies})

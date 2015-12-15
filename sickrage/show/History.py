@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 from datetime import datetime
 from datetime import timedelta
 from sickbeard.common import Quality
@@ -33,9 +35,9 @@ class History:
         Clear all the history
         """
         self.db.action(
-            'DELETE '
-            'FROM history '
-            'WHERE 1 = 1'
+                'DELETE '
+                'FROM history '
+                'WHERE 1 = 1'
         )
 
     def get(self, limit=100, action=None):
@@ -76,15 +78,15 @@ class History:
         data = []
         for result in results:
             data.append({
-                'action': result['action'],
-                'date': result['date'],
-                'episode': result['episode'],
-                'provider': result['provider'],
-                'quality': result['quality'],
-                'resource': result['resource'],
-                'season': result['season'],
-                'show_id': result['showid'],
-                'show_name': result['show_name']
+                'action': result[b'action'],
+                'date': result[b'date'],
+                'episode': result[b'episode'],
+                'provider': result[b'provider'],
+                'quality': result[b'quality'],
+                'resource': result[b'resource'],
+                'season': result[b'season'],
+                'show_id': result[b'showid'],
+                'show_name': result[b'show_name']
             })
 
         return data
@@ -95,8 +97,8 @@ class History:
         """
 
         self.db.action(
-            'DELETE '
-            'FROM history '
-            'WHERE date < ?',
-            [(datetime.today() - timedelta(days=30)).strftime(History.date_format)]
+                'DELETE '
+                'FROM history '
+                'WHERE date < ?',
+                [(datetime.today() - timedelta(days=30)).strftime(History.date_format)]
         )

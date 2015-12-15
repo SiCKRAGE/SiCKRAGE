@@ -1563,7 +1563,7 @@
                                     <span class="component-desc">PIN code to authorize SickRage to access Trakt on your behalf.</span>
                                 </p>
                             </div>
-                            <input type="button" class="btn hide" value="Authorize SickRage" id="authTrakt" />
+                            <input type="button" class="btn hide" value="Authorize SiCKRAGE" id="authTrakt" />
                             <div class="field-pair">
                                 <label for="trakt_timeout">
                                     <span class="component-title">API Timeout</span>

@@ -1,6 +1,7 @@
-# coding=UTF-8
-# Author: Dennis Lutter <lad1337@gmail.com>
-# URL: http://code.google.com/p/sickbeard/
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -18,28 +19,41 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
-from __future__ import print_function
-from __future__ import print_function
-from __future__ import print_function
-import sys, os.path
+from __future__ import unicode_literals
+
+import os.path
+import sys
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
-import test_lib as test
 
-class DBBasicTests(test.SiCKRAGETestDBCase):
-    def setUp(self):
-        super(DBBasicTests, self).setUp()
-        self.db = test.db.DBConnection()
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 
-    def test_select(self):
-        self.db.select("SELECT * FROM tv_episodes WHERE showid = ? AND location != ''", [0000])
+import sickbeard
 
-if __name__ == '__main__':
+
+class RSSTest(SiCKRAGETestCase): pass
+
+
+def test_get_rss(self, provider):
+    result = provider.cache.getRSSFeed(provider.url)
+    if result:
+        self.assertTrue(isinstance(result[b'feed'], dict))
+        self.assertTrue(isinstance(result[b'entries'], list))
+        for item in result[b'entries']:
+            title, url = provider._get_title_and_url(item)
+            self.assertTrue(title and url, "Failed to get title and url from RSS feed for %s" % provider.name)
+
+
+
+for provider in sickbeard.providers.sortedProviderList():
+    setattr(RSSTest, 'test_rss_%s' % provider.name, lambda self, x=provider: test_get_rss(self, x))
+
+if __name__ == "__main__":
     print("==================")
-    print("STARTING - DB TESTS")
+    print("STARTING - RSS TESTS")
     print("==================")
     print("######################################################################")
-    suite = unittest.TestLoader().loadTestsFromTestCase(DBBasicTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.main()
