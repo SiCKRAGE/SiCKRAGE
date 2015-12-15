@@ -19,7 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals,print_function
+from __future__ import unicode_literals, print_function
 
 import io
 import re
@@ -364,22 +364,19 @@ class Quality(object):
                 bufsize = (1 << 15)
                 with ek(io.open, filename, "rb") as file:
                     for byte in iter(partial(file.read, bufsize), b''):
-                        file_metadata = extractMetadata(guessParser(StringInputStream(byte)))
-                        if not file_metadata:
-                            continue
-
-                        for metadata in chain([file_metadata], file_metadata.iterGroups()):
-                            height = metadata.get('height', None)
-                            if height and height > 1000:
-                                return ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
-                            elif height and height > 680 and height < 800:
-                                return ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
-                            elif height and height < 680:
-                                return (Quality.SDTV, Quality.SDDVD)[
-                                    re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
-
+                        try:
+                            file_metadata = extractMetadata(guessParser(StringInputStream(byte)))
+                            for metadata in chain([file_metadata], file_metadata.iterGroups()):
+                                height = metadata.get('height', 0)
+                                if height > 1000:
+                                    return ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
+                                elif height > 680 and height < 800:
+                                    return ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
+                                elif height < 680:
+                                    return (Quality.SDTV, Quality.SDDVD)[re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+                        except:continue
             except Exception as e:
-                logging.info(e)
+                logging.debug(e)
 
         return Quality.UNKNOWN
 
@@ -574,7 +571,7 @@ class StatusStrings(UserDict):
             # This will raise a ValueError if we can't convert the key to int
             return ((int(key) in self.data) or
                     (int(
-                        key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED))
+                            key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED))
         except ValueError:  # The key is not numeric and since we only want numeric keys...
             # ...and we don't want this function to fail...
             pass  # ...suppress the ValueError and do nothing, the key does not exist
