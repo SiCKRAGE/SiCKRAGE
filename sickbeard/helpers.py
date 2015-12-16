@@ -44,6 +44,8 @@ import errno
 import ast
 import operator
 import platform
+from functools import partial
+
 import six
 import logging
 
@@ -74,6 +76,25 @@ from itertools import izip, cycle
 # Access to a protected member of a client class
 urllib._urlopener = classes.SickBeardURLopener()
 
+def readFileBuffered(filename):
+    blocksize = (1 << 15)
+    file_size = ek(os.stat, filename).st_size
+    num_of_chunks = int(file_size / blocksize)
+    if file_size % blocksize:
+        num_of_chunks += 1
+
+    chunk_size = blocksize
+    total_bytes = 0
+
+    with ek(io.open, filename, 'rb') as fp:
+        for x in xrange(1, num_of_chunks+1):
+            if x == num_of_chunks:
+                chunk_size = file_size - total_bytes
+            data = bytearray(chunk_size)
+            fp.readinto(data)
+            total_bytes += len(data)
+            yield data
+            del data
 
 def normalize_url(url):
     url = str(url)
@@ -1113,24 +1134,18 @@ def tryInt(s, s_default=0):
 
 
 # generates a md5 hash of a file
-def md5_for_file(filename, block_size=2 ** 16):
+def md5_for_file(filename):
     """
     Generate an md5 hash for a file
     :param filename: File to generate md5 hash for
-    :param block_size: Block size to use (defaults to 2^16)
     :return MD5 hexdigest on success, or None on failure
     """
 
     try:
-        with ek(io.open, filename, 'rb') as f:
-            md5 = hashlib.md5()
-            while True:
-                data = f.read(block_size)
-                if not data:
-                    break
-                md5.update(data)
-            f.close()
-            return md5.hexdigest()
+        md5 = hashlib.md5()
+        for byte in ek(readFileBuffered,filename):
+            md5.update(byte)
+        return md5.hexdigest()
     except Exception:
         return None
 

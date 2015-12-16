@@ -21,23 +21,19 @@
 
 from __future__ import unicode_literals, print_function
 
-import io
 import re
+import six
 import uuid
-import logging
 import os.path
 import operator
 import platform
 
 import sickbeard
 from sickrage.helper.encoding import ek
-
-from six import PY3
 from itertools import chain
 from random import shuffle
-from functools import partial
 
-if PY3:
+if six.PY3:
     from collections import UserDict
 else:
     from UserDict import UserDict
@@ -360,23 +356,18 @@ class Quality(object):
             bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
             webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
-            try:
-                bufsize = (1 << 15)
-                with ek(io.open, filename, "rb") as file:
-                    for byte in iter(partial(file.read, bufsize), b''):
-                        try:
-                            file_metadata = extractMetadata(guessParser(StringInputStream(byte)))
-                            for metadata in chain([file_metadata], file_metadata.iterGroups()):
-                                height = metadata.get('height', 0)
-                                if height > 1000:
-                                    return ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
-                                elif height > 680 and height < 800:
-                                    return ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
-                                elif height < 680:
-                                    return (Quality.SDTV, Quality.SDDVD)[re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
-                        except:continue
-            except Exception as e:
-                logging.debug(e)
+            for byte in sickbeard.helpers.readFileBuffered(filename):
+                try:
+                    file_metadata = extractMetadata(guessParser(StringInputStream(byte)))
+                    for metadata in chain([file_metadata], file_metadata.iterGroups()):
+                        height = metadata.get('height', 0)
+                        if height > 1000:
+                            return ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
+                        elif height > 680 and height < 800:
+                            return ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
+                        elif height < 680:
+                            return (Quality.SDTV, Quality.SDDVD)[re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+                except:continue
 
         return Quality.UNKNOWN
 
@@ -418,6 +409,7 @@ class Quality(object):
 
         found_codecs = {}
         found_codec = None
+        rip_type = ""
 
         for codec in codecList:
             if codec in name.lower():
