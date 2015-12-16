@@ -33,7 +33,7 @@ import requests
 from threading import Lock
 from configobj import ConfigObj
 from github import Github
-from sickbeard.logger import SRLogger
+from sickbeard import logger
 from sickbeard import dailysearcher
 from sickbeard import db
 from sickbeard import helpers
@@ -49,7 +49,7 @@ from sickbeard.common import SD
 from sickbeard.common import SKIPPED
 from sickbeard.common import WANTED
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
-    naming_ep_type, censoredItems
+    naming_ep_type
 from sickbeard.databases import mainDB, cache_db, failed_db
 from sickbeard.indexers import indexer_api
 from sickbeard.indexers.indexer_exceptions import indexer_shownotfound, indexer_showincomplete, indexer_exception, \
@@ -144,12 +144,13 @@ NEWS_UNREAD = 0
 INIT_LOCK = Lock()
 started = False
 
-LOGGER = None
+SRLOGGER = None
 ACTUAL_LOG_DIR = None
 LOG_DIR = None
 LOG_NR = 5
 LOG_SIZE = 1048576
 LOG_FILE = None
+CENSOREDITEMS = {}
 
 SOCKET_TIMEOUT = None
 
@@ -620,7 +621,7 @@ def initialize(consoleLogging=True):
             USE_SUBTITLES, SUBTITLES_LANGUAGES, SUBTITLES_DIR, SUBTITLES_SERVICES_LIST, SUBTITLES_SERVICES_ENABLED, SUBTITLES_HISTORY, SUBTITLES_FINDER_FREQUENCY, SUBTITLES_MULTI, EMBEDDED_SUBTITLES_ALL, SUBTITLES_EXTRA_SCRIPTS, subtitlesFinderScheduler, \
             SUBTITLES_HEARING_IMPAIRED, ADDIC7ED_USER, ADDIC7ED_PASS, LEGENDASTV_USER, LEGENDASTV_PASS, OPENSUBTITLES_USER, OPENSUBTITLES_PASS, \
             USE_FAILED_DOWNLOADS, DELETE_FAILED, ANON_REDIRECT, LOCALHOST_IP, DEBUG, DEFAULT_PAGE, PROXY_SETTING, PROXY_INDEXERS, \
-            AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, LOG_FILE, LOGGER, censoredItems, \
+            AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, LOG_FILE, SRLOGGER, CENSOREDITEMS, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
             ANIME_SPLIT_HOME, SCENE_DEFAULT, ARCHIVE_DEFAULT, DOWNLOAD_URL, BACKLOG_DAYS, GIT_USERNAME, GIT_PASSWORD, \
             GIT_AUTOISSUES, DEVELOPER, gh, DISPLAY_ALL_SEASONS, SSL_VERIFY, NEWS_LAST_READ, NEWS_LATEST, SOCKET_TIMEOUT
@@ -665,14 +666,14 @@ def initialize(consoleLogging=True):
             fileLogging = False
 
         # initalize logger
-        SRLogger(
+        SRLOGGER = logger.SRLogger(
                 logFile=LOG_FILE,
                 consoleLogging=consoleLogging,
                 fileLogging=fileLogging,
                 debugLogging=DEBUG,
                 logSize=LOG_SIZE,
                 logNr=LOG_NR,
-                censoredItems=censoredItems
+                censoredItems=CENSOREDITEMS
         )
 
         # Need to be before any passwords

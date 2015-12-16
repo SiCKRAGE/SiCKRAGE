@@ -29,10 +29,7 @@ import sickbeard
 from sickbeard import helpers
 from sickbeard import naming
 from sickbeard import db
-from sickbeard.logger import SRLogger
-# Address poor support for scgi over unix domain sockets
-# this is not nicely handled by python currently
-# http://bugs.python.org/issue23636
+from sickbeard import logger
 from sickrage.helper.encoding import ek
 
 urlparse.uses_netloc.append('scgi')
@@ -119,14 +116,14 @@ def change_LOG_DIR(log_dir, web_log):
             sickbeard.LOG_DIR = abs_log_dir
 
             # initalize logger
-            SRLogger(
+            sickbeard.SRLOGGER = logger.SRLogger(
                     logFile=sickbeard.LOG_FILE,
-                    consoleLogging=True,
-                    fileLogging=True,
-                    debugLogging=sickbeard.DEBUG,
+                    consoleLogging=sickbeard.SRLOGGER.consoleLogging,
+                    fileLogging=sickbeard.SRLOGGER.fileLogging,
+                    debugLogging=sickbeard.SRLOGGER.debugLogging,
                     logSize=sickbeard.LOG_SIZE,
                     logNr=sickbeard.LOG_NR,
-                    censoredItems=censoredItems
+                    censoredItems=sickbeard.CENSOREDITEMS
             )
 
             logging.info("Initialized new log file in " + sickbeard.LOG_DIR)
@@ -619,8 +616,8 @@ def check_setting_str(config, cfg_name, item_name, def_val, silent=True, censor_
             config[cfg_name] = {}
             config[cfg_name][item_name] = helpers.encrypt(my_val, encryption_version)
 
-    if censor_log or (cfg_name, item_name) in censoredItems.items():
-        censoredItems[cfg_name, item_name] = my_val
+    if censor_log or (cfg_name, item_name) in sickbeard.CENSOREDITEMS.items():
+        sickbeard.CENSOREDITEMS[cfg_name, item_name] = my_val
 
     if not silent:
         logging.debug(item_name + " -> " + my_val)

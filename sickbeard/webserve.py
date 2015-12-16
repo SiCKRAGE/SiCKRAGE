@@ -239,7 +239,8 @@ class WebHandler(BaseHandler):
             raise
 
     # post uses get method
-    post = get
+    def post(self, *args, **kwargs):
+        super(WebHandler, self).get(*args, **kwargs)
 
 
 class LoginHandler(BaseHandler):
@@ -248,10 +249,10 @@ class LoginHandler(BaseHandler):
         if self.get_current_user():
             self.redirect('/' + sickbeard.DEFAULT_PAGE + '/')
         else:
-            self.render(filename="login.mako",
+            self.finish(self.render(filename="login.mako",
                         title="Login",
                         header="Login",
-                        topmenu="login")
+                        topmenu="login"))
 
     def post(self, *args, **kwargs):
 

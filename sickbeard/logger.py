@@ -276,7 +276,7 @@ class SRLogger(object):
 
         # console log handler
         if self.consoleLogging:
-            console = logging.StreamHandler(sys.stdout)
+            console = logging.StreamHandler()
             console.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(message)s', '%H:%M:%S'))
             console.setLevel(logLevels[b'INFO'] if not self.debugLogging else logLevels[b'DEBUG'])
             logging.getLogger().addHandler(console)
