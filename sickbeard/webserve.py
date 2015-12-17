@@ -5133,13 +5133,12 @@ class ErrorLogs(WebRoot):
 
         return self.redirect("/errorlogs/viewlog/")
 
-    def viewlog(self, minLevel=logging.INFO, logFilter=None, logSearch=None, maxLines=500):
-        levelsFiltered = '|'.join([x for x in SRLogger.logLevels.keys() if any([sickbeard.DEBUG and x in ['DEBUG','DB'], SRLogger.logLevels[x] >= int(minLevel)])])
-        logRegex = re.compile(r"^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d)\:(\d\d)\s*({})\:\:({})\:\:(.*?)$".format(levelsFiltered, logFilter or ".*"), re.S + re.M + re.I)
-
+    def viewlog(self, minLevel=logging.INFO, logFilter='', logSearch='', maxLines=500):
         data = []
         numLines = 0
 
+        levelsFiltered = '|'.join([x for x in SRLogger.logLevels.keys() if any([sickbeard.DEBUG and x in ['DEBUG','DB'], SRLogger.logLevels[x] >= int(minLevel)])])
+        logRegex = re.compile(r"^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d)\:(\d\d)\s*({})\:\:({})\:\:(.*?)$".format(levelsFiltered, logFilter or ".*"), re.S + re.M + re.I)
         try:
             for logFile in [sickbeard.LOG_FILE] + ["{}.{}".format(sickbeard.LOG_FILE, x) for x in xrange(int(sickbeard.LOG_NR))]:
                 if ek(os.path.isfile, logFile) and (numLines < maxLines):
