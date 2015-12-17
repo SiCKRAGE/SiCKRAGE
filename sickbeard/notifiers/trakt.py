@@ -22,9 +22,7 @@ import sickbeard
 import logging
 from sickrage.helper.exceptions import ex
 
-from libtrakt import TraktAPI
-from libtrakt.exceptions import traktException, traktServerBusy, traktAuthException
-
+from sickbeard.trakt import TraktAPI, traktException, traktServerBusy, traktAuthException
 
 class TraktNotifier:
     """

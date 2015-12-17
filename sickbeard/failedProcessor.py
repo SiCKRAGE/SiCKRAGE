@@ -1,6 +1,7 @@
-# Author: Tyler Fenby <tylerfenby@gmail.com>
-# URL: https://sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -15,10 +16,13 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function, unicode_literals
+
+import logging
 
 import sickbeard
-import logging
 from sickbeard import show_name_helpers
 from sickbeard import search_queue
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException

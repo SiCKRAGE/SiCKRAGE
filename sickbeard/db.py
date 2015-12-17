@@ -181,6 +181,8 @@ class DBConnection(object):
                         self.connection.rollback()
                     logging.error("Fatal error executing query: {}".format(ex(e)))
                     raise
+                except Exception as e:
+                    pass
                 finally:
                     self.commit()
                     break
@@ -224,6 +226,8 @@ class DBConnection(object):
                 except sqlite3.DatabaseError as e:
                     logging.error("Fatal error executing query: {}".format(ex(e)))
                     raise
+                except Exception as e:
+                    pass
                 finally:
                     self.commit()
                     break

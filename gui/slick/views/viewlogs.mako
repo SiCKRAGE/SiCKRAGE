@@ -1,8 +1,8 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickbeard
+    from sickbeard.logger import SRLogger
     from sickbeard import classes
-    from sickbeard.logger import logLevels
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/viewlogs.js"></script>
@@ -15,12 +15,10 @@
 % endif
 
 <div class="h2footer pull-right">Minimum logging level to display: <select name="minLevel" id="minLevel" class="form-control form-control-inline input-sm">
-<% levels = logLevels.keys() %>
-<% levels.sort(lambda x,y: cmp(logLevels[x], logLevels[y])) %>
+<% levels = [x for x in SRLogger.logLevels.keys() if any([sickbeard.DEBUG and x in ['DEBUG','DB'], x not in ['DEBUG','DB']])]%>
+<% levels.sort(lambda x,y: cmp(SRLogger.logLevels[x], SRLogger.logLevels[y])) %>
 % for level in levels:
-    % if sickbeard.DEBUG and (level == 'DEBUG' or level == 'DB'):
-        <option value="${logLevels[level]}" ${('', 'selected="selected"')[minLevel == logLevels[level]]}>${level.title()}</option>
-    % endif
+    <option value="${SRLogger.logLevels[level]}" ${('', 'selected="selected"')[minLevel == SRLogger.logLevels[level]]}>${level.title()}</option>
 % endfor
 </select>
 

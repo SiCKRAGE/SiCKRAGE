@@ -28,13 +28,8 @@ import time
 import urllib
 import datetime
 import traceback
-import copy
-import functools
-
-from tornado.ioloop import IOLoop
 
 import sickbeard
-from concurrent.futures import ThreadPoolExecutor
 from sickrage.helper.common import dateFormat, dateTimeFormat, timeFormat
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import CantUpdateShowException, ex, ShowDirectoryNotFoundException
@@ -49,7 +44,7 @@ from sickrage.show.Show import Show
 from sickrage.system.Restart import Restart
 from sickrage.system.Shutdown import Shutdown
 from sickbeard.versionChecker import CheckVersion
-from sickbeard import db, logger, ui, helpers
+from sickbeard import db, ui, helpers
 from sickbeard import search_queue
 from sickbeard import image_cache
 from sickbeard import classes
@@ -68,13 +63,14 @@ from sickbeard.common import UNKNOWN
 from sickbeard.common import WANTED
 from sickbeard.common import ARCHIVED
 from sickbeard.common import statusStrings
+from sickbeard.logger import SRLogger
 
 from tornado.web import RequestHandler
 from tornado.escape import json_encode
-
+from tornado.ioloop import IOLoop
 from tornado.gen import coroutine
-
 from tornado.concurrent import run_on_executor
+from concurrent.futures import ThreadPoolExecutor
 
 indexer_ids = ["indexerid", "tvdbid"]
 
@@ -105,11 +101,9 @@ class ApiHandler(RequestHandler):
         self.io_loop = IOLoop.current()
 
     @coroutine
-    def get(self, *args, **kwargs):
+    def prepare(self, *args, **kwargs):
+        kwargs = {k: self.request.arguments[k][0] for k in self.request.arguments if len(self.request.arguments[k])}
         args = args[1:]
-        for arg, value in self.request.arguments.items():
-            if len(value) == 1:
-                kwargs[arg] = value[0]
 
         # set the output callback
         # default json
@@ -139,7 +133,7 @@ class ApiHandler(RequestHandler):
                 "args": args,
                 "kwargs": kwargs
             }
-            outDict = yield _responds(RESULT_FATAL, errorData,
+            outDict = _responds(RESULT_FATAL, errorData,
                                 "SiCKRAGE encountered an internal error! Please report to the Devs")
 
         if 'outputType' in outDict:
@@ -1267,7 +1261,7 @@ class CMD_Logs(ApiCall):
     def run(self):
         """ Get the logs """
         # 10 = Debug / 20 = Info / 30 = Warning / 40 = Error
-        minLevel = logger.logLevels[str(self.min_level).upper()]
+        minLevel = SRLogger.logLevels[str(self.min_level).upper()]
 
         data = []
         if ek(os.path.isfile, sickbeard.LOG_FILE):
@@ -1288,11 +1282,11 @@ class CMD_Logs(ApiCall):
 
             if match:
                 level = match.group(7)
-                if level not in logger.logLevels:
+                if level not in SRLogger.logLevels:
                     lastLine = False
                     continue
 
-                if logger.logLevels[level] >= minLevel:
+                if SRLogger.logLevels[level] >= minLevel:
                     lastLine = True
                     finalData.append(x.rstrip("\n"))
                 else:

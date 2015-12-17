@@ -19,16 +19,12 @@
 
 from __future__ import unicode_literals
 
-from __future__ import unicode_literals
-
 import os
 import traceback
 import datetime
-from libtrakt.exceptions import traktException
-from libtrakt import TraktAPI
 
-import sickbeard
 import logging
+import sickbeard
 from sickbeard import helpers
 from sickbeard import search_queue
 from sickbeard import db
@@ -39,6 +35,7 @@ from sickbeard.common import WANTED
 from sickbeard.common import Quality
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
+from sickbeard.trakt import TraktAPI, traktException
 
 
 def setEpisodeToWanted(show, s, e):
