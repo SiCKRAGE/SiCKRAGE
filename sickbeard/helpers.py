@@ -71,30 +71,32 @@ from cachecontrol import CacheControl, caches
 from contextlib import closing
 from socket import timeout as SocketTimeout
 from itertools import izip, cycle
+from functools import partial
+from collections import deque
 
 # pylint: disable=W0212
 # Access to a protected member of a client class
 urllib._urlopener = classes.SickBeardURLopener()
 
-def readFileBuffered(filename):
-    blocksize = (1 << 15)
-    file_size = ek(os.stat, filename).st_size
-    num_of_chunks = int(file_size / blocksize)
-    if file_size % blocksize:
-        num_of_chunks += 1
+def readFileBuffered(filename, reverse=False):
+    blocksize = (1<<15)
+    with ek(io.open, filename, 'rb') as fh:
+        if reverse:
+            fh.seek(0, os.SEEK_END)
+        pos = fh.tell()
+        while True:
+            chunksize = min(blocksize, pos)
 
-    chunk_size = blocksize
-    total_bytes = 0
+            if reverse:
+                pos -= chunksize
+            else:
+                pos += chunksize
 
-    with ek(io.open, filename, 'rb') as fp:
-        for x in xrange(1, num_of_chunks+1):
-            if x == num_of_chunks:
-                chunk_size = file_size - total_bytes
-            data = bytearray(chunk_size)
-            fp.readinto(data)
-            total_bytes += len(data)
+            fh.seek(pos, os.SEEK_SET)
+            data = fh.read(chunksize)
+            if not data:
+                break
             yield data
-            del data
 
 def normalize_url(url):
     url = str(url)

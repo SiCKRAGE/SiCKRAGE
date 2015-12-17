@@ -44,7 +44,7 @@ from sickrage.show.Show import Show
 from sickrage.system.Restart import Restart
 from sickrage.system.Shutdown import Shutdown
 from sickbeard.versionChecker import CheckVersion
-from sickbeard import db, logger, ui, helpers
+from sickbeard import db, ui, helpers
 from sickbeard import search_queue
 from sickbeard import image_cache
 from sickbeard import classes
@@ -63,6 +63,7 @@ from sickbeard.common import UNKNOWN
 from sickbeard.common import WANTED
 from sickbeard.common import ARCHIVED
 from sickbeard.common import statusStrings
+from sickbeard.logger import SRLogger
 
 from tornado.web import RequestHandler
 from tornado.escape import json_encode
@@ -1260,7 +1261,7 @@ class CMD_Logs(ApiCall):
     def run(self):
         """ Get the logs """
         # 10 = Debug / 20 = Info / 30 = Warning / 40 = Error
-        minLevel = sickbeard.SRLOGGER.logLevels[str(self.min_level).upper()]
+        minLevel = SRLogger.logLevels[str(self.min_level).upper()]
 
         data = []
         if ek(os.path.isfile, sickbeard.LOG_FILE):
@@ -1281,11 +1282,11 @@ class CMD_Logs(ApiCall):
 
             if match:
                 level = match.group(7)
-                if level not in sickbeard.SRLOGGER.logLevels:
+                if level not in SRLogger.logLevels:
                     lastLine = False
                     continue
 
-                if sickbeard.SRLOGGER.logLevels[level] >= minLevel:
+                if SRLogger.logLevels[level] >= minLevel:
                     lastLine = True
                     finalData.append(x.rstrip("\n"))
                 else:

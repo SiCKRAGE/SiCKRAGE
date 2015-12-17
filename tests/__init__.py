@@ -33,12 +33,13 @@ from configobj import ConfigObj
 
 import sickbeard
 
-from sickbeard import db, providers, tvcache, logger
+from sickbeard import db, providers, tvcache
 from sickbeard.databases import mainDB
 from sickbeard.databases import cache_db, failed_db
 from sickbeard.tv import TVEpisode
 from sickrage.helper.encoding import ek, encodingInit
 from sickbeard.webserveInit import SRWebServer
+from sickbeard.logger import SRLogger
 
 # =================
 # test globals
@@ -124,14 +125,13 @@ sickbeard.LOG_SIZE = 1048576
 
 createTestLogFolder()
 
-logger.SRLogger(
-        logFile=sickbeard.LOG_FILE,
-        consoleLogging=False,
-        fileLogging=True,
-        debugLogging=True,
-        logSize=sickbeard.LOG_SIZE,
-        logNr=sickbeard.LOG_NR
-)
+SRLogger.consoleLogging=False
+SRLogger.fileLogging=True
+SRLogger.debugLogging=True
+SRLogger.logFile=sickbeard.LOG_FILE
+SRLogger.logSize=sickbeard.LOG_SIZE
+SRLogger.logNr=sickbeard.LOG_NR
+SRLogger.initalize()
 
 
 # =================

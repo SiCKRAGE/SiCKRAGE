@@ -21,13 +21,13 @@
 from __future__ import unicode_literals
 
 import io
+import os
+import re
+import sys
 import locale
 import logging
 import logging.handlers
-import os
 import platform
-import re
-import sys
 import threading
 import traceback
 
@@ -41,10 +41,19 @@ from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 
 class SRLogger(logging.Logger):
-    def __init__(self, *args, **kwargs):
-        super(SRLogger, self).__init__(*args, **kwargs)
+    def __init__(self, name='root', *args, **kwargs):
         logging.setLoggerClass(CustomLogger)
+        logging.Logger.__init__(self, name, *args, **kwargs)
+        self.logFile = None
+        self.consoleLogging = True
+        self.fileLogging = False
+        self.debugLogging = False
+        self.logSize = 1048576
+        self.logNr = 5
+        self.censoredItems = {}
+
         self.submitter_running = False
+
         self.logLevels = {
             'ERROR': ERROR,
             'WARNING': WARNING,
@@ -53,37 +62,36 @@ class SRLogger(logging.Logger):
             'DB': 5
         }
 
-    def initalize(self, logFile=None, consoleLogging=True, fileLogging=False, debugLogging=False, logSize=1048576, logNr=5, censoredItems={}):
-        self.logFile = logFile
-        self.consoleLogging = consoleLogging
-        self.fileLogging = fileLogging
-        self.debugLogging = debugLogging
-        self.logSize = logSize
-        self.logNr = logNr
-        self.censoredItems = censoredItems
+        self.logNameFilters = {
+            '': 'No Filter',
+            'DAILYSEARCHER': 'Daily Searcher',
+            'BACKLOG': 'Backlog',
+            'SHOWUPDATER': 'Show Updater',
+            'CHECKVERSION': 'Check Version',
+            'SHOWQUEUE': 'Show Queue',
+            'SEARCHQUEUE': 'Search Queue',
+            'FINDPROPERS': 'Find Propers',
+            'POSTPROCESSER': 'Postprocesser',
+            'FINDSUBTITLES': 'Find Subtitles',
+            'TRAKTCHECKER': 'Trakt Checker',
+            'EVENT': 'Event',
+            'ERROR': 'Error',
+            'TORNADO': 'Tornado',
+            'Thread': 'Thread',
+            'MAIN': 'Main',
+        }
 
-        # set list of allowed loggers
-        self.allowedLoggers = ['tornado.general', 'tornado.application']
-
-        # set allowed loggers
-        for x in [logging.getLogger(logger) for logger in logging.Logger.manager.loggerDict.keys()]:
-            if x.name not in self.allowedLoggers:
-                x.addHandler(NullHandler())
-                x.propagate = 0
-
-
-        # set custom root and parant loggers
+    def initalize(self):
+        # set custom level for database logging
         logging.addLevelName(self.logLevels[b'DB'], 'DB')
         logging.getLogger().setLevel(self.logLevels[b'DB'])
-
-        # attach data censor log adapter
-        CensorLogAdapter(logging.getLogger(), self.censoredItems)
 
         # console log handler
         if self.consoleLogging:
             console = logging.StreamHandler()
-            console.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(message)s', '%H:%M:%S'))
+            console.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S'))
             console.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
+            console.addFilter(CustomFilter(self.censoredItems))
             logging.getLogger().addHandler(console)
 
         # rotating log file handler
@@ -93,20 +101,25 @@ class SRLogger(logging.Logger):
                     maxBytes=self.logSize,
                     backupCount=self.logNr
             )
-            rfh.setFormatter(logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', dateTimeFormat))
+            rfh.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', dateTimeFormat))
             rfh.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
+            rfh.addFilter(CustomFilter(self.censoredItems))
             logging.getLogger().addHandler(rfh)
 
-class CensorLogAdapter(logging.LoggerAdapter):
-    def process(self, msg, kwargs):
-        """Strips censored items from string"""
-        for _, v in kwargs.items():
-            msg = msg.replace(v, len(v) * '*')
+class CustomFilter(logging.Filter):
+    def filter(self, record):
+        self.allowedLoggers = ['root', 'tornado.general', 'tornado.application']
+        if record.name in self.allowedLoggers:
+            for _, v in self.name.items():
+                record.msg.replace(v, len(v) * '*')
 
-        # Needed because Newznab apikey isn't stored as key=value in a section.
-        msg = re.sub(r'([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)', r'\1=**********\2', msg)
+            # needed because Newznab apikey isn't stored as key=value in a section.
+            record.msg = re.sub(r'([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)', r'\1=**********\2', record.msg)
 
-        return super(CensorLogAdapter, self).process(msg, kwargs)
+            # append thread name to record msg
+            #record.msg = "{}::{}".format(threading.currentThread().getName(), record.msg)
+
+            return super(CustomFilter, self).filter(record)
 
 class CustomLogger(SRLogger):
     def __init__(self, *args, **kwargs):
@@ -114,10 +127,6 @@ class CustomLogger(SRLogger):
         setattr(logging, 'db', self.db)
         setattr(logging, 'log_error_and_exit', self.log_error_and_exit)
         setattr(logging, 'submit_errors', self.submit_errors)
-
-    def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
-        msg = "{}::{}".format(threading.currentThread().getName(), msg)
-        return super(CustomLogger, self).makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra)
 
     def debug(self, msg, *args, **kwargs):
         super(CustomLogger, self).debug(msg, *args, **kwargs)
@@ -291,3 +300,6 @@ class CustomLogger(SRLogger):
             self.submitter_running = False
 
         return submitter_result, issue_id
+
+# logger instance
+SRLogger = SRLogger()

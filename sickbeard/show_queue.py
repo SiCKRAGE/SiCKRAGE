@@ -34,11 +34,12 @@ from sickbeard import notifiers
 from sickbeard import ui
 from sickbeard import generic_queue
 from sickbeard import name_cache
+from sickbeard import scene_numbering
 from sickbeard.blackandwhitelist import BlackAndWhiteList
 from sickrage.helper.exceptions import CantRefreshShowException, CantRemoveShowException, CantUpdateShowException
 from sickrage.helper.exceptions import EpisodeDeletedException, ex, MultipleShowObjectsException
 from sickrage.helper.exceptions import ShowDirectoryNotFoundException
-from libtrakt import TraktAPI
+from sickbeard.trakt import TraktAPI
 
 
 class ShowQueue(generic_queue.GenericQueue):
@@ -472,10 +473,10 @@ class QueueItemAdd(ShowQueueItem):
                 notifiers.trakt_notifier.update_watchlist(show_obj=self.show)
 
         # Load XEM data to DB for show
-        sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer, force=True)
+        scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer, force=True)
 
         # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer numbering.
-        if not self.scene and sickbeard.scene_numbering.get_xem_numbering_for_show(self.show.indexerid,
+        if not self.scene and scene_numbering.get_xem_numbering_for_show(self.show.indexerid,
                                                                                    self.show.indexer):
             self.show.scene = 1
 

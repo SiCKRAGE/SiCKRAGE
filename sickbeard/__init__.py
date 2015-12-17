@@ -33,7 +33,7 @@ import requests
 from threading import Lock
 from configobj import ConfigObj
 from github import Github
-from sickbeard import logger
+from sickbeard.logger import SRLogger
 from sickbeard import dailysearcher
 from sickbeard import db
 from sickbeard import helpers
@@ -144,13 +144,11 @@ NEWS_UNREAD = 0
 INIT_LOCK = Lock()
 started = False
 
-SRLOGGER = logger.SRLogger(__name__)
 ACTUAL_LOG_DIR = None
 LOG_DIR = None
-LOG_NR = 5
-LOG_SIZE = 1048576
-LOG_FILE = None
-CENSOREDITEMS = {}
+SRLogger.logNr = LOG_NR = 5
+SRLogger.logSize = LOG_SIZE = 1048576
+SRLogger.logFile = LOG_FILE = None
 
 SOCKET_TIMEOUT = None
 
@@ -621,7 +619,7 @@ def initialize(consoleLogging=True):
             USE_SUBTITLES, SUBTITLES_LANGUAGES, SUBTITLES_DIR, SUBTITLES_SERVICES_LIST, SUBTITLES_SERVICES_ENABLED, SUBTITLES_HISTORY, SUBTITLES_FINDER_FREQUENCY, SUBTITLES_MULTI, EMBEDDED_SUBTITLES_ALL, SUBTITLES_EXTRA_SCRIPTS, subtitlesFinderScheduler, \
             SUBTITLES_HEARING_IMPAIRED, ADDIC7ED_USER, ADDIC7ED_PASS, LEGENDASTV_USER, LEGENDASTV_PASS, OPENSUBTITLES_USER, OPENSUBTITLES_PASS, \
             USE_FAILED_DOWNLOADS, DELETE_FAILED, ANON_REDIRECT, LOCALHOST_IP, DEBUG, DEFAULT_PAGE, PROXY_SETTING, PROXY_INDEXERS, \
-            AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, LOG_FILE, SRLOGGER, CENSOREDITEMS, \
+            AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, LOG_FILE, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
             ANIME_SPLIT_HOME, SCENE_DEFAULT, ARCHIVE_DEFAULT, DOWNLOAD_URL, BACKLOG_DAYS, GIT_USERNAME, GIT_PASSWORD, \
             GIT_AUTOISSUES, DEVELOPER, gh, DISPLAY_ALL_SEASONS, SSL_VERIFY, NEWS_LAST_READ, NEWS_LATEST, SOCKET_TIMEOUT
@@ -653,28 +651,20 @@ def initialize(consoleLogging=True):
         CheckSection(CFG, 'Subtitles')
         CheckSection(CFG, 'pyTivo')
 
-        # debugging
-        DEBUG = bool(check_setting_int(CFG, 'General', 'debug', 0))
         ACTUAL_LOG_DIR = check_setting_str(CFG, 'General', 'log_dir', 'Logs')
         LOG_DIR = ek(os.path.normpath, ek(os.path.join, DATA_DIR, ACTUAL_LOG_DIR))
-        LOG_NR = check_setting_int(CFG, 'General', 'log_nr', 5)  # Default to 5 backup file (sickrage.log.x)
-        LOG_SIZE = check_setting_int(CFG, 'General', 'log_size', 1048576)  # Default to max 1MB per logfile
-        LOG_FILE = check_setting_str(CFG, 'General', 'log_file', ek(os.path.join, LOG_DIR, 'sickrage.log'))
-        fileLogging = True
+        SRLogger.logNr = LOG_NR = check_setting_int(CFG, 'General', 'log_nr', 5)  # Default to 5 backup file (sickrage.log.x)
+        SRLogger.logSize = LOG_SIZE = check_setting_int(CFG, 'General', 'log_size', 1048576)  # Default to max 1MB per logfile
+        SRLogger.logFile = LOG_FILE = check_setting_str(CFG, 'General', 'log_file', ek(os.path.join, LOG_DIR, 'sickrage.log'))
+        SRLogger.debugLogging = DEBUG = bool(check_setting_int(CFG, 'General', 'debug', 0))
+        SRLogger.consoleLogging = consoleLogging
+        SRLogger.fileLogging = True
         if not helpers.makeDir(LOG_DIR):
             sys.stderr.write("!!! No log folder, logging to screen only!\n")
-            fileLogging = False
+            SRLogger.fileLogging = False
 
-        # initalize logger
-        SRLOGGER.initalize(
-                logFile=LOG_FILE,
-                consoleLogging=consoleLogging,
-                fileLogging=fileLogging,
-                debugLogging=DEBUG,
-                logSize=LOG_SIZE,
-                logNr=LOG_NR,
-                censoredItems=CENSOREDITEMS
-        )
+        # initalize logging settings
+        SRLogger.initalize()
 
         # Need to be before any passwords
         ENCRYPTION_VERSION = check_setting_int(CFG, 'General', 'encryption_version', 0)

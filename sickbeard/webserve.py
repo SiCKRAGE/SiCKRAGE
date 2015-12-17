@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 
 import os
 import re
-import six
 import time
 import urllib
 import logging
@@ -29,6 +28,7 @@ import datetime
 import traceback
 
 import sickbeard
+from sickbeard.logger import SRLogger
 from sickbeard import scene_exceptions
 from sickbeard.scene_exceptions import get_scene_exceptions
 from sickbeard import config, sab
@@ -55,8 +55,7 @@ from sickbeard.imdbPopular import imdb_popular
 import adba
 from dateutil import tz
 from unrar2 import RarFile
-from libtrakt import TraktAPI
-from libtrakt.exceptions import traktException
+from sickbeard.trakt import TraktAPI, traktException
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import CantRefreshShowException, CantUpdateShowException, ex
 from sickrage.helper.exceptions import MultipleShowObjectsException, NoNFOException, ShowDirectoryNotFoundException
@@ -82,7 +81,7 @@ from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
-from tornado.escape import json_encode, json_decode
+from tornado.escape import json_encode
 
 class BaseHandler(RequestHandler):
     startTime = 0.
@@ -2489,22 +2488,22 @@ class HomeAddShows(Home):
                 logging.debug("trending blacklist name is empty")
 
             shows = trakt_api.traktRequest("recommendations/shows?extended=full,images") or []
-
-            library_shows = trakt_api.traktRequest("sync/collection/shows?extended=full") or []
-
             for show_detail in shows:
-                show = {'show': show_detail}
-                try:
-                    if not helpers.findCertainShow(sickbeard.showList, [int(show[b'show'][b'ids'][b'tvdb'])]):
-                        if show[b'show'][b'ids'][b'tvdb'] not in (lshow[b'show'][b'ids'][b'tvdb'] for lshow in
-                                                                  library_shows):
-                            if not_liked_show:
-                                if show[b'show'][b'ids'][b'tvdb'] not in (show[b'show'][b'ids'][b'tvdb'] for show in
-                                                                          not_liked_show if show[b'type'] == 'show'):
-                                    trending_shows += [show]
-                            else:
-                                trending_shows += [show]
 
+                show = {'show': show_detail}
+                show_id = int(show[b'show'][b'ids'][b'tvdb'])
+
+                try:
+                    if not helpers.findCertainShow(sickbeard.showList, [show_id]):
+                        library_shows = trakt_api.traktRequest("sync/collection/shows?extended=full") or []
+                        if show_id in (lshow[b'show'][b'ids'][b'tvdb'] for lshow in library_shows):
+                            continue
+
+                        if not not_liked_show and show_id in (show[b'show'][b'ids'][b'tvdb'] for show in not_liked_show
+                                if show[b'type'] == 'show'):
+                                    continue
+
+                        trending_shows += [show]
                 except MultipleShowObjectsException:
                     continue
 
@@ -5134,58 +5133,35 @@ class ErrorLogs(WebRoot):
 
         return self.redirect("/errorlogs/viewlog/")
 
-    def viewlog(self, minLevel=logging.INFO, logFilter='', logSearch='', maxLines=500):
-        logNameFilters = {
-            '': 'No Filter',
-            'DAILYSEARCHER': 'Daily Searcher',
-            'BACKLOG': 'Backlog',
-            'SHOWUPDATER': 'Show Updater',
-            'CHECKVERSION': 'Check Version',
-            'SHOWQUEUE': 'Show Queue',
-            'SEARCHQUEUE': 'Search Queue',
-            'FINDPROPERS': 'Find Propers',
-            'POSTPROCESSER': 'Postprocesser',
-            'FINDSUBTITLES': 'Find Subtitles',
-            'TRAKTCHECKER': 'Trakt Checker',
-            'EVENT': 'Event',
-            'ERROR': 'Error',
-            'TORNADO': 'Tornado',
-            'Thread': 'Thread',
-            'MAIN': 'Main',
-        }
+    def viewlog(self, minLevel=logging.INFO, logFilter=None, logSearch=None, maxLines=500):
+        levelsFiltered = '|'.join([x for x in SRLogger.logLevels.keys() if any([sickbeard.DEBUG and x in ['DEBUG','DB'], SRLogger.logLevels[x] >= int(minLevel)])])
+        logRegex = re.compile(r"^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d)\:(\d\d)\s*({})\:\:({})\:\:(.*?)$".format(levelsFiltered, logFilter or ".*"), re.S + re.M + re.I)
 
-        def getLogData():
-            data = []
-            numLines = 0
-            logRegex = re.compile(r"^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d):(\d\d)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$", re.S)
+        data = []
+        numLines = 0
+
+        try:
             for logFile in [sickbeard.LOG_FILE] + ["{}.{}".format(sickbeard.LOG_FILE, x) for x in xrange(int(sickbeard.LOG_NR))]:
-                if ek(os.path.isfile, logFile) and (len(data) <= maxLines):
-                    for x in ek(sickbeard.helpers.readFileBuffered, logFile):
-                        for match in logRegex.finditer(str(x)):
+                if ek(os.path.isfile, logFile) and (numLines < maxLines):
+                    for line in next(sickbeard.helpers.readFileBuffered(logFile, reverse=True)).splitlines(True)[::-1]:
+                        for match in logRegex.finditer(line):
                             if numLines > maxLines:
-                                return data
+                                raise StopIteration
 
-                            level = match.group(7)
-                            logName = match.group(8)
+                            data += [re.search(logSearch, match.string).string]
+                            numLines +=1
 
-                            if level in sickbeard.SRLOGGER.logLevels:
-                                if not (sickbeard.DEBUG,level in ['DEBUG','DB']):
-                                    continue
-                                if not logSearch.lower() in match.string.lower():
-                                    continue
-                                if (sickbeard.SRLOGGER.logLevels[level] >= int(minLevel), logName.startswith(logFilter)):
-                                    data += [match.string]
-                                    numLines += 1
 
-            return "".join(reversed(data))
+        except StopIteration: pass
+        except Exception as e:pass
 
         return self.render(filename="viewlogs.mako",
                            header="Log File",
                            title="Logs",
                            topmenu="system",
-                           logLines=getLogData(),
+                           logLines="".join(data),
                            minLevel=int(minLevel),
-                           logNameFilters=logNameFilters,
+                           logNameFilters=SRLogger.logNameFilters,
                            logFilter=logFilter,
                            logSearch=logSearch)
 
