@@ -207,7 +207,7 @@ class WebHandler(BaseHandler):
     def prepare(self, *args, **kwargs):
         try:
             # route -> method obj
-            route = self.request.uri.lstrip('/').split('/')[-2:][0].replace('.', '_') or 'index'
+            route = self.request.path.strip('/').split('/')[::-1][0].replace('.', '_') or 'index'
             method = getattr(self, route, getattr(self, 'index'))
             result = yield self.async_call(method)
             self.finish(result)
