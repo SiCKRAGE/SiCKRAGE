@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -18,19 +19,17 @@
 
 from __future__ import unicode_literals
 
-# pylint: disable=W0703
-
 import urllib
 import time
 import datetime
 import os
 import re
+import logging
 
 import sickbeard
 from sickbeard import classes
 from sickbeard import helpers
 from sickbeard import scene_exceptions
-import logging
 from sickbeard import tvcache
 from sickbeard import db
 from sickbeard.common import Quality
@@ -206,16 +205,12 @@ class NewznabProvider(generic.NZBProvider):
         try:
             data[b'feed']
             data[b'entries']
-        except AttributeError:
-            return self._checkAuth()
+        except (AttributeError,KeyError):return self._checkAuth()
 
         try:
-            bozo = data[b'bozo']
-            bozo_exception = data[b'bozo_exception']
-            if int(bozo) == 1:
-                raise Exception(bozo_exception)
-        except AttributeError:
-            pass
+            if int(data[b'bozo']) == 1:
+                raise Exception(data[b'bozo_exception'])
+        except (AttributeError,KeyError):pass
 
         try:
             err_code = data[b'feed'][b'error'][b'code']
@@ -229,8 +224,7 @@ class NewznabProvider(generic.NZBProvider):
                 raise AuthException(
                         "Your account isn't allowed to use the API on " + self.name + ", contact the administrator")
             raise Exception("Unknown error: %s" % err_desc)
-        except AttributeError:
-            pass
+        except (AttributeError,KeyError):pass
 
         return True
 

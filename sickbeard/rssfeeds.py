@@ -20,11 +20,9 @@
 from __future__ import unicode_literals
 
 import logging
-
 import sickbeard
 from sickbeard.helpers import normalize_url
 from feedparser.api import parse
-
 
 def getFeed(url, request_headers=None, handlers=None):
     url = normalize_url(url)
@@ -35,8 +33,7 @@ def getFeed(url, request_headers=None, handlers=None):
             feed[b'entries']
             return feed
         except AttributeError:
-            err_code = feed.feed[b'error'][b'code']
-            err_desc = feed.feed[b'error'][b'description']
-            logging.debug('RSS ERROR:[{}] CODE:[{}]'.format(err_desc, err_code))
-    except:
-        pass
+            logging.debug('RSS ERROR:[{}] CODE:[{}]'.format(
+                    feed.feed[b'error'][b'description'],
+                    feed.feed[b'error'][b'code']))
+    except:pass

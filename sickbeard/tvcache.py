@@ -20,16 +20,14 @@
 
 from __future__ import unicode_literals
 
-from __future__ import unicode_literals
-
 import time
 import datetime
 import itertools
 import urllib2
+import logging
 
 import sickbeard
 from sickbeard import db
-import logging
 from sickbeard import helpers
 from sickbeard.common import Quality
 from sickbeard.rssfeeds import getFeed
@@ -96,7 +94,7 @@ class TVCache(object):
     def _clearCache(self):
         if self.shouldClearCache():
             myDB = self._getDB()
-            myDB.action("DELETE FROM [" + self.providerID + "] WHERE 1")
+            myDB.action("DELETE FROM [{}] WHERE 1".format(self.providerID))
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
