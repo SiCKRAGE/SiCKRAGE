@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Author: Mr_Orange <mr_orange@hotmail.it>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -16,9 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import sickbeard
-from .generic import GenericClient
+from sickbeard.clients.generic import GenericClient
 from requests.auth import HTTPDigestAuth
+
 
 class qbittorrentAPI(GenericClient):
     def __init__(self, host=None, username=None, password=None):
@@ -26,46 +31,47 @@ class qbittorrentAPI(GenericClient):
         super(qbittorrentAPI, self).__init__('qbittorrent', host, username, password)
 
         self.url = self.host
-        self.session.auth = HTTPDigestAuth(self.username, self.password);
+        self.session.auth = HTTPDigestAuth(self.username, self.password)
 
     def _get_auth(self):
 
         try:
             self.response = self.session.get(self.host, verify=False)
             self.auth = self.response.content
-        except:
+        except Exception:
             return None
 
         return self.auth if not self.response.status_code == 404 else None
 
     def _add_torrent_uri(self, result):
 
-        self.url = self.host+'command/download'
+        self.url = self.host + 'command/download'
         data = {'urls': result.url}
         return self._request(method='post', data=data)
 
     def _add_torrent_file(self, result):
 
-        self.url = self.host+'command/upload'
+        self.url = self.host + 'command/upload'
         files = {'torrents': (result.name + '.torrent', result.content)}
         return self._request(method='post', files=files)
 
     def _set_torrent_priority(self, result):
 
-        self.url = self.host+'command/decreasePrio '
+        self.url = self.host + 'command/decreasePrio '
         if result.priority == 1:
-            self.url = self.host+'command/increasePrio'
+            self.url = self.host + 'command/increasePrio'
 
         data = {'hashes': result.hash}
         return self._request(method='post', data=data)
 
     def _set_torrent_pause(self, result):
-        
-        self.url = self.host+'command/resume'
+
+        self.url = self.host + 'command/resume'
         if sickbeard.TORRENT_PAUSED:
-            self.url = self.host+'command/pause'
+            self.url = self.host + 'command/pause'
 
         data = {'hash': result.hash}
         return self._request(method='post', data=data)
+
 
 api = qbittorrentAPI()

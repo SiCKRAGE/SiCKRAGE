@@ -1,6 +1,7 @@
-# Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: https://sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -17,13 +18,44 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import sickbeard
+from __future__ import unicode_literals
 
-from chardet import detect
+import codecs
+import collections
+import functools
+import locale
+import sys
+import types
+from itertools import imap
 from os import name
 
+import six
 
-def ek(function, *args, **kwargs):
+import sickbeard
+
+
+def encodingInit():
+    # map the following codecs to utf-8
+    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp1252' else None)
+
+    # get locale encoding
+    try:
+        locale.setlocale(locale.LC_ALL, "")
+        sickbeard.SYS_ENCODING = locale.getpreferredencoding()
+    except (locale.Error, IOError):
+        sickbeard.SYS_ENCODING = None
+
+    # enforce UTF-8
+    if not sickbeard.SYS_ENCODING or codecs.lookup(sickbeard.SYS_ENCODING).name == 'ascii':
+        sickbeard.SYS_ENCODING = 'UTF-8'
+
+    # wrap i/o in unicode
+    sys.stdout = codecs.getwriter(sickbeard.SYS_ENCODING)(sys.stdout)
+    sys.stdin = codecs.getreader(sickbeard.SYS_ENCODING)(sys.stdin)
+
+
+def ek(f, *args, **kwargs):
     """
     Encoding Kludge: Call function with arguments and unicode-encode output
 
@@ -33,83 +65,76 @@ def ek(function, *args, **kwargs):
     :return: Unicode-converted function output (string, list or tuple, depends on input)
     """
 
-    if name == 'nt':
-        result = function(*args, **kwargs)
-    else:
-        result = function(*[ss(x) if isinstance(x, (str, unicode)) else x for x in args], **kwargs)
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        if name == 'nt':
+            result = f(*args, **kwargs)
+        else:
+            result = f(*[ss(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in args], **kwargs)
 
-    if isinstance(result, (list, tuple)):
-        return _fix_list_encoding(result)
+        def _wrapper(result, *args, **kwargs):
+            try:
+                if isinstance(result, six.string_types):
+                    return uu(result)
+                elif isinstance(result, collections.Mapping):
+                    return dict(imap(_wrapper, result.items()))
+                elif isinstance(result, collections.Iterable) and isinstance(result, types.GeneratorType):
+                    return filter(lambda x: x is not None, imap(_wrapper, result))
+                elif isinstance(result, collections.Iterable) and isinstance(result, (types.TupleType, types.ListType)):
+                    return type(result)(filter(lambda x: x is not None, imap(_wrapper, result)))
+            except:
+                pass
 
-    if isinstance(result, str):
-        return _to_unicode(result)
+            return result
 
-    return result
+        return _wrapper(result, *args, **kwargs)
+
+    return wrapper(*args, **kwargs)
 
 
-def ss(var):
+def uu(s, encoding="utf-8", errors="strict"):
+    """ Convert, at all consts, 'text' to a `unicode` object.
     """
-    Converts string to Unicode, fallback encoding is forced UTF-8
 
-    :param var: String to convert
-    :return: Converted string
-    """
-
-    var = _to_unicode(var)
+    if isinstance(s, six.text_type):
+        return s
 
     try:
-        var = var.encode(sickbeard.SYS_ENCODING)
-    except Exception:
+        if not isinstance(s, six.string_types):
+            if six.PY3:
+                if isinstance(s, six.binary_type):
+                    s = six.text_type(s, encoding, errors)
+                else:
+                    s = six.text_type(s)
+            elif hasattr(s, '__unicode__'):
+                s = six.text_type(s)
+            else:
+                s = six.text_type(six.binary_type(s), encoding, errors)
+        else:
+            s = s.decode(encoding, errors)
+    except UnicodeDecodeError as e:
+        pass
+
+    return s
+
+
+def ss(s, encoding="utf-8", errors="strict"):
+    """ Convert 'text' to a `str` object.
+    """
+
+    if isinstance(s, six.binary_type):
+        if encoding == "utf-8":
+            return s
+        else:
+            return s.decode('utf-8', errors).encode(encoding, errors)
+
+    if not isinstance(s, six.string_types):
         try:
-            var = var.encode('utf-8')
-        except Exception:
-            try:
-                var = var.encode(sickbeard.SYS_ENCODING, 'replace')
-            except Exception:
-                var = var.encode('utf-8', 'ignore')
-
-    return var
-
-
-def _fix_list_encoding(var):
-    """
-    Converts each item in a list to Unicode
-
-    :param var: List or tuple to convert to Unicode
-    :return: Unicode converted input
-    """
-
-    if isinstance(var, (list, tuple)):
-        return filter(lambda x: x is not None, map(_to_unicode, var))
-
-    return var
-
-
-def _to_unicode(var):
-    """
-    Converts string to Unicode, using in order: UTF-8, Latin-1, System encoding or finally what chardet wants
-
-    :param var: String to convert
-    :return: Converted string as unicode, fallback is System encoding
-    """
-
-    if isinstance(var, str):
-        try:
-            var = unicode(var)
-        except Exception:
-            try:
-                var = unicode(var, 'utf-8')
-            except Exception:
-                try:
-                    var = unicode(var, 'latin-1')
-                except Exception:
-                    try:
-                        var = unicode(var, sickbeard.SYS_ENCODING)
-                    except Exception:
-                        try:
-                            # Chardet can be wrong, so try it last
-                            var = unicode(var, detect(var).get('encoding'))
-                        except Exception:
-                            var = unicode(var, sickbeard.SYS_ENCODING, 'replace')
-
-    return var
+            if six.PY3:
+                return six.text_type(s).encode(encoding)
+            else:
+                return six.binary_type(s)
+        except UnicodeEncodeError:
+            return six.text_type(s).encode(encoding, errors)
+    else:
+        return s.encode(encoding, errors)

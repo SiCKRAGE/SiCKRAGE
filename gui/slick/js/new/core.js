@@ -9,9 +9,9 @@ $(document).ready(function () {
             var lastOpenedPanel = $(this).data("lastOpenedPanel"),
                 selected = $(this).tabs('option', 'selected');
 
-            if (!lastOpenedPanel) lastOpenedPanel = $(ui.oldPanel);
+            if (!lastOpenedPanel) { lastOpenedPanel = $(ui.oldPanel); }
 
-            if (!$(this).data("topPositionTab")) $(this).data("topPositionTab", $(ui.newPanel).position().top);
+            if (!$(this).data("topPositionTab")) { $(this).data("topPositionTab", $(ui.newPanel).position().top); }
 
             //Dont use the builtin fx effects. This will fade in/out both tabs, we dont want that
             //Fadein the new tab yourself
@@ -37,7 +37,16 @@ $(document).ready(function () {
         }
     });
 
-    $('.dropdown-toggle').dropdownHover();
+    // hack alert: if we don't have a touchscreen, and we are already hovering the mouse, then click should link instead of toggle
+    if ((navigator.maxTouchPoints || 0) < 2) {
+        $('.dropdown-toggle').on('click', function(e) {
+            var $this = $(this);
+            if ($this.attr('aria-expanded') === 'true') {
+                window.location.href = $this.attr('href');
+            }
+        });
+    }
+
     if(metaToBool('sickbeard.FUZZY_DATING')){
         $.timeago.settings.allowFuture = true;
         $.timeago.settings.strings = {

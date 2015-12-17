@@ -16,13 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import re
 import traceback
 import xmltodict
-import HTMLParser
 from xml.parsers.expat import ExpatError
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard import helpers
 from sickbeard.common import USER_AGENT
@@ -36,9 +37,9 @@ class ExtraTorrentProvider(generic.TorrentProvider):
         self.urls = {
             'index': 'http://extratorrent.cc',
             'rss': 'http://extratorrent.cc/rss.xml',
-            }
+        }
 
-        self.url = self.urls['index']
+        self.url = self.urls[b'index']
 
         self.supportsBacklog = True
         self.public = True
@@ -50,69 +51,73 @@ class ExtraTorrentProvider(generic.TorrentProvider):
         self.headers.update({'User-Agent': USER_AGENT})
         self.search_params = {'cid': 8}
 
-    def isEnabled(self):
-        return self.enabled
-
     def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                if mode != 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                if mode is not 'RSS':
+                    logging.debug("Search string: %s " % search_string)
 
                 try:
-                    self.search_params.update({'type': ('search', 'rss')[mode == 'RSS'], 'search': search_string})
-                    data = self.getURL(self.urls['rss'], params=self.search_params)
+                    self.search_params.update({'type': ('search', 'rss')[mode is 'RSS'], 'search': search_string})
+                    data = self.getURL(self.urls[b'rss'], params=self.search_params)
                     if not data:
-                        logger.log("No data returned from provider", logger.DEBUG)
+                        logging.debug("No data returned from provider")
+                        continue
+
+                    if not data.startswith('<?xml'):
+                        logging.info('Expected xml but got something else, is your mirror failing?')
                         continue
 
                     try:
-                        data = xmltodict.parse(HTMLParser.HTMLParser().unescape(data.encode('utf-8')).replace('&', '&amp;'))
-                    except ExpatError as e:
-                        logger.log(u"Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data), logger.ERROR)
+                        data = xmltodict.parse(data)
+                    except ExpatError:
+                        logging.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                         continue
 
-                    if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
-                        logger.log(u"Malformed rss returned, skipping", logger.DEBUG)
+                    if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
+                        logging.debug("Malformed rss returned, skipping")
                         continue
 
                     # https://github.com/martinblech/xmltodict/issues/111
-                    entries = data['rss']['channel']['item']
+                    entries = data[b'rss'][b'channel'][b'item']
                     entries = entries if isinstance(entries, list) else [entries]
 
                     for item in entries:
-                        title = item['title'].decode('utf-8')
-                       # info_hash = item['info_hash']
-                        size = int(item['size'])
-                        seeders = helpers.tryInt(item['seeders'], 0)
-                        leechers = helpers.tryInt(item['leechers'], 0)
-                        download_url = item['enclosure']['@url'] if 'enclosure' in item else self._magnet_from_details(item['link'])
+                        title = item[b'title'].decode('utf-8')
+                        # info_hash = item[b'info_hash']
+                        size = int(item[b'size'])
+                        seeders = helpers.tryInt(item[b'seeders'], 0)
+                        leechers = helpers.tryInt(item[b'leechers'], 0)
+                        download_url = item[b'enclosure']['@url'] if 'enclosure' in item else self._magnet_from_details(
+                                item[b'link'])
 
                         if not all([title, download_url]):
                             continue
 
-                            #Filter unseeded torrent
+                            # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
-                            if mode != 'RSS':
-                                logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                            if mode is not 'RSS':
+                                logging.debug(
+                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                        title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers
-                        if mode != 'RSS':
-                            logger.log(u"Found result: %s " % title, logger.DEBUG)
+                        if mode is not 'RSS':
+                            logging.debug("Found result: %s " % title)
 
                         items[mode].append(item)
 
                 except (AttributeError, TypeError, KeyError, ValueError):
-                    logger.log(u"Failed parsing provider. Traceback: %r" % traceback.format_exc(), logger.ERROR)
+                    logging.error("Failed parsing provider. Traceback: %r" % traceback.format_exc())
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -136,7 +141,6 @@ class ExtraTorrentProvider(generic.TorrentProvider):
 
 class ExtraTorrentCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         self.minTime = 30

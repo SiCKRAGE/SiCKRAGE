@@ -16,10 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import urllib
 import traceback
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard import show_name_helpers
@@ -40,10 +42,7 @@ class TokyoToshokanProvider(generic.TorrentProvider):
         self.cache = TokyoToshokanCache(self)
 
         self.urls = {'base_url': 'http://tokyotosho.info/'}
-        self.url = self.urls['base_url']
-
-    def isEnabled(self):
-        return self.enabled
+        self.url = self.urls[b'base_url']
 
     def seedRatio(self):
         return self.ratio
@@ -55,19 +54,19 @@ class TokyoToshokanProvider(generic.TorrentProvider):
         return [x.replace('.', ' ') for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
 
     def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
-        #FIXME ADD MODE
+        # FIXME ADD MODE
         if self.show and not self.show.is_anime:
             return []
 
-        logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+        logging.debug("Search string: %s " % search_string)
 
         params = {
             "terms": search_string.encode('utf-8'),
-            "type": 1, # get anime types
+            "type": 1,  # get anime types
         }
 
         searchURL = self.url + 'search.php?' + urllib.urlencode(params)
-        logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+        logging.debug("Search URL: %s" % searchURL)
         data = self.getURL(searchURL)
 
         if not data:
@@ -88,7 +87,7 @@ class TokyoToshokanProvider(generic.TorrentProvider):
                         title = top.find('td', attrs={'class': 'desc-top'}).text
                         title.lstrip()
                         download_url = top.find('td', attrs={'class': 'desc-top'}).find('a')['href']
-                        #FIXME
+                        # FIXME
                         size = -1
                         seeders = 1
                         leechers = 0
@@ -96,20 +95,20 @@ class TokyoToshokanProvider(generic.TorrentProvider):
                         if not all([title, download_url]):
                             continue
 
-                        #Filter unseeded torrent
-                        #if seeders < self.minseed or leechers < self.minleech:
-                        #    if mode != 'RSS':
-                        #        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                        # Filter unseeded torrent
+                        # if seeders < self.minseed or leechers < self.minleech:
+                        #    if mode is not 'RSS':
+                        #        logging.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                         #    continue
 
                         item = title, download_url, size, seeders, leechers
 
                         results.append(item)
 
-        except Exception, e:
-            logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+        except Exception as e:
+            logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
-        #FIXME SORTING
+        # FIXME SORTING
         return results
 
 
@@ -127,7 +126,7 @@ class TokyoToshokanCache(tvcache.TVCache):
 
         url = self.provider.url + 'rss.php?' + urllib.urlencode(params)
 
-        logger.log(u"Cache update URL: %s" % url, logger.DEBUG)
+        logging.debug("Cache update URL: %s" % url)
 
         return self.getRSSFeed(url)
 

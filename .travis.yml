@@ -5,21 +5,21 @@ python:
 sudo: false
 
 branches:
-  except:
+  only:
     - master
 
-install: pip install -U pyOpenSSL
+install: echo "Nothing required!"
 
 cache: pip
 
 before_script:
- - chmod +x ./tests/all_tests.py
+ - chmod +x ./tests/*.py
 
 script:
-  - ./tests/all_tests.py
+  - python -m unittest discover tests
 
 after_failure:
-  - cat ./Logs/sickrage.log
+  - cat ./tests/Logs/sickrage.log
 
 notifications:
   irc: "irc.freenode.net#sickrage-updates"

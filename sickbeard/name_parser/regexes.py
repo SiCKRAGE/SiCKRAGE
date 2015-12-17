@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -15,6 +17,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
 
 # all regexes are case insensitive
 
@@ -115,6 +119,17 @@ normal_regexes = [
      (?P<ep_num>\d{2})$                          # 02
      '''),
 
+    ('newpct',
+     # Example: Sobrenatural - Temporada 10 [HDTV][Cap.1023][Espanol Castellano]
+     r'''
+     (?P<series_name>.+?)                      # Showw_Name: "Sobrenatural"
+     (?:.-.+\d{1,2}.\[)                        # Separator and junk: " - Temporada 10 ["
+     (?P<extra_info>.+)                        # Quality: "HDTV"
+     (?:\]\[.+\.)                              # junk: "][Cap."
+     (?P<season_num>\d{1,2})                   # Season number: "10"
+     (?P<ep_num>\d{2})(?:])                    # Episode number: "23"
+     '''),
+
     ('verbose',
      # Show Name Season 1 Episode 2 Ep Name
      r'''
@@ -136,7 +151,7 @@ normal_regexes = [
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$              # Group
      '''
-    ),
+     ),
 
     ('no_season_multi_ep',
      # Show.Name.E02-03
@@ -144,14 +159,14 @@ normal_regexes = [
      r'''
      ^((?P<series_name>.+?)[. _-]+)?             # Show_Name and separator
      (e(p(isode)?)?|part|pt)[. _-]?              # e, ep, episode, or part
-     (?P<ep_num>(\d+|[ivx]+))                    # first ep num
+     (?P<ep_num>(\d+|(?<!e)[ivx]+))                    # first ep num
      ((([. _-]+(and|&|to)[. _-]+)|-)             # and/&/to joiner
-     (?P<extra_ep_num>(?!(1080|720|480)[pi])(\d+|[ivx]+))[. _-])            # second ep num
+     (?P<extra_ep_num>(?!(1080|720|480)[pi])(\d+|(?<!e)[ivx]+))[. _-])            # second ep num
      ([. _-]*(?P<extra_info>.+?)                 # Source_Quality_Etc-
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$              # Group
      '''
-    ),
+     ),
 
     ('no_season_general',
      # Show.Name.E23.Test
@@ -160,16 +175,16 @@ normal_regexes = [
      r'''
      ^((?P<series_name>.+?)[. _-]+)?             # Show_Name and separator
      (e(p(isode)?)?|part|pt)[. _-]?              # e, ep, episode, or part
-     (?P<ep_num>(\d+|([ivx]+(?=[. _-]))))                    # first ep num
+     (?P<ep_num>(\d+|((?<!e)[ivx]+(?=[. _-]))))                    # first ep num
      ([. _-]+((and|&|to)[. _-]+)?                # and/&/to joiner
      ((e(p(isode)?)?|part|pt)[. _-]?)           # e, ep, episode, or part
      (?P<extra_ep_num>(?!(1080|720|480)[pi])
-     (\d+|([ivx]+(?=[. _-]))))[. _-])*            # second ep num
+     (\d+|((?<!e)[ivx]+(?=[. _-]))))[. _-])*            # second ep num
      ([. _-]*(?P<extra_info>.+?)                 # Source_Quality_Etc-
      ((?<![. _-])(?<!WEB)                        # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$              # Group
      '''
-    ),
+     ),
 
     ('no_season',
      # Show Name - 01 - Ep Name
@@ -184,7 +199,7 @@ normal_regexes = [
      ((?<![. _-])(?<!WEB)                            # Make sure this is really the release group
      -(?P<release_group>[^- ]+([. _-]\[.*\])?))?)?$  # Group
      '''
-    ),
+     ),
 
     ('bare',
      # Show.Name.102.Source.Quality.Etc-Group
@@ -228,14 +243,14 @@ anime_regexes = [
      # [ISLAND]One_Piece_679_[VOSTFR]_[8bit]_[720p]_[EB7838FC].mp4
      r'''
      ^\[(?P<release_group>ISLAND?)\]                                          # Release Group
-	 (?P<series_name>.+?)[ ._-]+                                              # Show_Name and separator
-	 (?P<ep_ab_num>\d{1,3})[ ._-]+                                            # Episode number
-	 (\[VOSTFR\])
-	 ([ ._-]+\[[vV](?P<version>[0-9])\])*[ ._-]+                              # Version
-	 (\[(8bit|10bit)\])?[ ._-]+
-	 \[(?P<extra_info>(\d{3,4}[xp]?\d{0,4})?[\.\w\s-]*)\][ ._-]+              # Extra info
-	 (\[(?P<crc>\w{8})\])?                                                    # CRC
-	 .*?
+     (?P<series_name>.+?)[ ._-]+                                              # Show_Name and separator
+     (?P<ep_ab_num>\d{1,3})[ ._-]+                                            # Episode number
+     (\[VOSTFR\])
+     ([ ._-]+\[[vV](?P<version>[0-9])\])*[ ._-]+                              # Version
+     (\[(8bit|10bit)\])?[ ._-]+
+     \[(?P<extra_info>(\d{3,4}[xp]?\d{0,4})?[\.\w\s-]*)\][ ._-]+              # Extra info
+     (\[(?P<crc>\w{8})\])?                                                    # CRC
+     .*?
      '''),
 
     ('anime_Kaerizaki-Fansub',
@@ -343,7 +358,7 @@ anime_regexes = [
      .*?
      '''
 
-    ),
+     ),
 
     ('anime_and_normal_x',
      # Bleach - s16e03-04 - 313-314
@@ -362,7 +377,7 @@ anime_regexes = [
      .*?
      '''
 
-    ),
+     ),
 
     ('anime_and_normal_reverse',
      # Bleach - 313-314 - s16e03-04
@@ -378,7 +393,7 @@ anime_regexes = [
      (?P<extra_ep_num>\d+))*                      # additional E03/etc
      .*?
      '''
-    ),
+     ),
 
     ('anime_and_normal_front',
      # 165.Naruto Shippuuden.s08e014
@@ -393,7 +408,7 @@ anime_regexes = [
      (?P<extra_ep_num>\d+))*                      # additional E03/etc
      .*?
      '''
-    ),
+     ),
 
     ('anime_ep_name',
      r'''
@@ -407,7 +422,7 @@ anime_regexes = [
     (?:\[(?P<crc>\w{8})\])?
     .*?
      '''
-    ),
+     ),
 
     ('anime_WarB3asT',
      # 003. Show Name - Ep Name.ext

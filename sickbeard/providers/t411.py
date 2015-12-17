@@ -21,7 +21,7 @@ import time
 import traceback
 from requests.auth import AuthBase
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 
@@ -46,16 +46,13 @@ class T411Provider(generic.TorrentProvider):
                      'login_page': 'https://api.t411.in/auth',
                      'download': 'https://api.t411.in/torrents/download/%s'}
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
         self.subcategories = [433, 637, 455, 639]
 
         self.minseed = 0
         self.minleech = 0
         self.confirmed = False
-
-    def isEnabled(self):
-        return self.enabled
 
     def _doLogin(self):
 
@@ -66,19 +63,19 @@ class T411Provider(generic.TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls['login_page'], post_data=login_params, timeout=30, json=True)
+        response = self.getURL(self.urls[b'login_page'], post_data=login_params, timeout=30, json=True)
         if not response:
-            logger.log(u"Unable to connect to provider", logger.WARNING)
+            logging.warning("Unable to connect to provider")
             return False
 
         if response and 'token' in response:
-            self.token = response['token']
+            self.token = response[b'token']
             self.tokenLastUpdate = time.time()
-            self.uid = response['uid'].encode('ascii', 'ignore')
+            self.uid = response[b'uid'].encode('ascii', 'ignore')
             self.session.auth = T411Auth(self.token)
             return True
         else:
-            logger.log(u"Token not found in authentication response", logger.WARNING)
+            logging.warning("Token not found in authentication response")
             return False
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
@@ -90,71 +87,76 @@ class T411Provider(generic.TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode != 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                if mode is not 'RSS':
+                    logging.debug("Search string: %s " % search_string)
 
-                searchURLS = ([self.urls['search'] % (search_string, u) for u in self.subcategories], [self.urls['rss']])[mode == 'RSS']
+                searchURLS = \
+                ([self.urls[b'search'] % (search_string, u) for u in self.subcategories], [self.urls[b'rss']])[
+                    mode is 'RSS']
                 for searchURL in searchURLS:
-                    logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                    logging.debug("Search URL: %s" % searchURL)
                     data = self.getURL(searchURL, json=True)
                     if not data:
                         continue
 
                     try:
-                        if 'torrents' not in data and mode != 'RSS':
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                        if 'torrents' not in data and mode is not 'RSS':
+                            logging.debug("Data returned from provider does not contain any torrents")
                             continue
 
-                        torrents = data['torrents'] if mode != 'RSS' else data
+                        torrents = data[b'torrents'] if mode is not 'RSS' else data
 
                         if not torrents:
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                            logging.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for torrent in torrents:
-                            if mode == 'RSS' and int(torrent['category']) not in self.subcategories:
+                            if mode is 'RSS' and int(torrent[b'category']) not in self.subcategories:
                                 continue
 
                             try:
-                                title = torrent['name']
-                                torrent_id = torrent['id']
-                                download_url = (self.urls['download'] % torrent_id).encode('utf8')
+                                title = torrent[b'name']
+                                torrent_id = torrent[b'id']
+                                download_url = (self.urls[b'download'] % torrent_id).encode('utf8')
                                 if not all([title, download_url]):
                                     continue
 
-                                size = int(torrent['size'])
-                                seeders = int(torrent['seeders'])
-                                leechers = int(torrent['leechers'])
-                                verified = bool(torrent['isVerified'])
+                                size = int(torrent[b'size'])
+                                seeders = int(torrent[b'seeders'])
+                                leechers = int(torrent[b'leechers'])
+                                verified = bool(torrent[b'isVerified'])
 
-                                #Filter unseeded torrent
+                                # Filter unseeded torrent
                                 if seeders < self.minseed or leechers < self.minleech:
-                                    if mode != 'RSS':
-                                        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                    if mode is not 'RSS':
+                                        logging.debug(
+                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                                title, seeders, leechers))
                                     continue
 
-                                if self.confirmed and not verified and mode != 'RSS':
-                                    logger.log(u"Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it", logger.DEBUG)
+                                if self.confirmed and not verified and mode is not 'RSS':
+                                    logging.debug(
+                                        "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
                                     continue
 
                                 item = title, download_url, size, seeders, leechers
-                                if mode != 'RSS':
-                                    logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                if mode is not 'RSS':
+                                    logging.debug("Found result: %s " % title)
 
                                 items[mode].append(item)
 
-                            except Exception as e:
-                                logger.log(u"Invalid torrent data, skipping result: %s" % torrent, logger.DEBUG)
-                                logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.DEBUG)
+                            except Exception:
+                                logging.debug("Invalid torrent data, skipping result: %s" % torrent)
+                                logging.debug("Failed parsing provider. Traceback: %s" % traceback.format_exc())
                                 continue
 
-                    except Exception, e:
-                        logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+                    except Exception:
+                        logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
-            #For each search mode sort all the items by seeders if available if available
+            # For each search mode sort all the items by seeders if available if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -167,11 +169,12 @@ class T411Provider(generic.TorrentProvider):
 
 class T411Auth(AuthBase):
     """Attaches HTTP Authentication to the given Request object."""
+
     def __init__(self, token):
         self.token = token
 
     def __call__(self, r):
-        r.headers['Authorization'] = self.token
+        r.headers[b'Authorization'] = self.token
         return r
 
 

@@ -16,6 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
+from sickbeard.providers import btn, newznab, womble, thepiratebay, torrentleech, kat, iptorrents, torrentz, \
+    omgwtfnzbs, scc, hdtorrents, torrentday, hdbits, hounddawgs, speedcd, nyaatorrents, animenzb, bluetigers, cpasbien, \
+    fnt, xthor, torrentbytes, \
+    freshontv, titansoftv, libertalia, morethantv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, \
+    binsearch, torrentproject, extratorrent, \
+    scenetime, btdigg, strike, transmitthenet, tvchaosuk, bitcannon, pretome, gftracker, hdspace, newpct
+
 __all__ = ['womble',
            'btn',
            'thepiratebay',
@@ -28,12 +37,10 @@ __all__ = ['womble',
            'hounddawgs',
            'iptorrents',
            'omgwtfnzbs',
-           'nextgen',
            'speedcd',
            'nyaatorrents',
            'animenzb',
            'torrentbytes',
-           'frenchtorrentdb',
            'freshontv',
            'titansoftv',
            'libertalia',
@@ -57,14 +64,20 @@ __all__ = ['womble',
            'tvchaosuk',
            'torrentproject',
            'extratorrent',
-           'bitcannon'
-]
+           'bitcannon',
+           'torrentz',
+           'pretome',
+           'gftracker',
+           'hdspace',
+           'newpct'
+           ]
 
 import sickbeard
 
-from sickbeard import logger
+import logging
 from os import sys
 from random import shuffle
+
 
 def sortedProviderList(randomize=False):
     initialList = sickbeard.providerList + sickbeard.newznabProviderList + sickbeard.torrentRssProviderList
@@ -152,7 +165,7 @@ def makeNewznabProvider(configString):
             catIDs = values[3]
             enabled = values[4]
     except ValueError:
-        logger.log(u"Skipping Newznab provider string: '" + configString + "', incorrect format", logger.ERROR)
+        logging.error("Skipping Newznab provider string: '" + configString + "', incorrect format")
         return None
 
     newznab = sys.modules['sickbeard.providers.newznab']
@@ -201,16 +214,16 @@ def makeTorrentRssProvider(configString):
             url = values[1]
             enabled = values[4]
     except ValueError:
-        logger.log(u"Skipping RSS Torrent provider string: '" + configString + "', incorrect format",
-                   logger.ERROR)
+        logging.error("Skipping RSS Torrent provider string: '" + configString + "', incorrect format")
         return None
 
     try:
         torrentRss = sys.modules['sickbeard.providers.rsstorrent']
-    except:
+    except Exception:
         return
 
-    newProvider = torrentRss.TorrentRssProvider(name, url, cookies, titleTAG, search_mode, search_fallback, enable_daily,
+    newProvider = torrentRss.TorrentRssProvider(name, url, cookies, titleTAG, search_mode, search_fallback,
+                                                enable_daily,
                                                 enable_backlog)
     newProvider.enabled = enabled == '1'
 
@@ -218,11 +231,12 @@ def makeTorrentRssProvider(configString):
 
 
 def getDefaultNewznabProviders():
-    #name|url|key|catIDs|enabled|search_mode|search_fallback|enable_daily|enable_backlog
+    # name|url|key|catIDs|enabled|search_mode|search_fallback|enable_daily|enable_backlog
     return 'NZB.Cat|https://nzb.cat/||5030,5040,5010|0|eponly|1|1|1!!!' + \
            'NZBGeek|https://api.nzbgeek.info/||5030,5040|0|eponly|0|0|0!!!' + \
            'NZBs.org|https://nzbs.org/||5030,5040|0|eponly|0|0|0!!!' + \
            'Usenet-Crawler|https://www.usenet-crawler.com/||5030,5040|0|eponly|0|0|0'
+
 
 def getProviderModule(name):
     name = name.lower()
@@ -233,10 +247,10 @@ def getProviderModule(name):
         raise Exception("Can't find " + prefix + name + " in " + "Providers")
 
 
-def getProviderClass(id):
+def getProviderClass(provider_id):
     providerMatch = [x for x in
                      sickbeard.providerList + sickbeard.newznabProviderList + sickbeard.torrentRssProviderList if
-                     x.getID() == id]
+                     x.getID() == provider_id]
 
     if len(providerMatch) != 1:
         return None

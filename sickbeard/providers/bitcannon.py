@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 # Author: miigotu <miigotu@gmail.com>
 # URL: http://github.com/SiCKRAGETV/SickRage
 #
@@ -17,11 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 from urllib import quote_plus
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
+
 
 class BitCannonProvider(generic.TorrentProvider):
     def __init__(self):
@@ -44,54 +47,56 @@ class BitCannonProvider(generic.TorrentProvider):
             'trackers': self.url + 'stats',
         }
 
-    def isEnabled(self):
-        return self.enabled
-
     def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        trackers = (self.getURL(self.urls['trackers'], json=True) or {}).get(u'Trackers', [])
+        trackers = (self.getURL(self.urls[b'trackers'], json=True) or {}).get('Trackers', [])
         if not trackers:
-            logger.log(u'Could not get tracker list from BitCannon, aborting search')
+            logging.info('Could not get tracker list from BitCannon, aborting search')
             return results
 
         for mode in search_strings.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
-                searchURL = self.urls['search'] + search_string
-                logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
+                searchURL = self.urls[b'search'] + search_string
+                logging.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL, json=True)
                 for item in data or []:
-                    if 'tv' not in (item.get('Category') or u'').lower():
+                    if 'tv' not in (item.get('Category') or '').lower():
                         continue
 
-                    title = item.get(u'Title', u'')
-                    info_hash = item.get(u'Btih', u'')
+                    title = item.get('Title', '')
+                    info_hash = item.get('Btih', '')
                     if not all([title, info_hash]):
                         continue
 
-                    swarm = item.get(u'Swarm', {})
-                    seeders = swarm.get(u'Seeders', 0)
-                    leechers = swarm.get(u'Leechers', 0)
-                    size = item.get(u'Size', -1)
+                    swarm = item.get('Swarm', {})
+                    seeders = swarm.get('Seeders', 0)
+                    leechers = swarm.get('Leechers', 0)
+                    size = item.get('Size', -1)
 
-                    #Filter unseeded torrent
+                    # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
-                        if mode != 'RSS':
-                            logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                        if mode is not 'RSS':
+                            logging.debug(
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers))
                         continue
 
                     # Only build the url if we selected it
-                    download_url = 'magnet:?xt=urn:btih:%s&dn=%s&tr=%s' % (info_hash, quote_plus(title.encode('utf-8')), u'&tr='.join([quote_plus(x.encode('utf-8')) for x in trackers]))
+                    download_url = 'magnet:?xt=urn:btih:%s&dn=%s&tr=%s' % (info_hash, quote_plus(title.encode('utf-8')),
+                                                                           '&tr='.join(
+                                                                                   [quote_plus(x.encode('utf-8')) for x
+                                                                                    in trackers]))
 
                     item = title, download_url, size, seeders, leechers
-                    if mode != 'RSS':
-                        logger.log(u"Found result: %s " % title, logger.DEBUG)
+                    if mode is not 'RSS':
+                        logging.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -104,7 +109,6 @@ class BitCannonProvider(generic.TorrentProvider):
 
 class BitCannonCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         # only poll KickAss every 10 minutes max
@@ -112,7 +116,8 @@ class BitCannonCache(tvcache.TVCache):
 
     def _getRSSData(self):
         return {'entries': []}
-        #search_strings = {'RSS': ['']}
-        #return {'entries': self.provider._doSearch(search_strings)}
+        # search_strings = {'RSS': ['']}
+        # return {'entries': self.provider._doSearch(search_strings)}
+
 
 provider = BitCannonProvider()

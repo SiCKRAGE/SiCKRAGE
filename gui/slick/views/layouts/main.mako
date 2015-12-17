@@ -85,32 +85,31 @@
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${sbPID}"/>
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/${sickbeard.THEME_NAME}.css?${sbPID}" />
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/print.css?${sbPID}" />
-        % if sbLogin:
+        % if srLogin:
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/pnotify.custom.min.css?${sbPID}" />
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/country-flags.css?${sbPID}"/>
         % endif
         <%block name="css" />
     </head>
-
     <body>
         <nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">
             <div class="container-fluid">
-                <div class="navbar-header">
+                <span class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="${srRoot}/home/" title="SickRage"><img alt="SickRage" src="${srRoot}/images/sickrage.png" style="height: 50px;" class="img-responsive pull-left" /></a>
-                </div>
-
-            % if sbLogin:
+                    <a class="navbar-brand" href="${srRoot}/home/" title="SiCKRAGE"><img alt="SiCKRAGE" src="${srRoot}/images/sickrage.png" style="height: 50px;" class="img-responsive pull-left" /></a>
+                </span>
+            % if srLogin:
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
                         <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
-                            <a href="${srRoot}/home/" class="dropdown-toggle">Shows</a>
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b class="caret"></b></a>
+                            <a href="${srRoot}/home/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown" data-hover="dropdown"><span>Shows</span>
+                            <b class="caret"></b>
+                            </a>
                             <ul class="dropdown-menu">
                                 <li><a href="${srRoot}/home/"><i class="menu-icon-home"></i>&nbsp;Show List</a></li>
                                 <li><a href="${srRoot}/home/addShows/"><i class="menu-icon-addshow"></i>&nbsp;Add Shows</a></li>
@@ -134,8 +133,9 @@
                         </li>
 
                         <li id="NAVmanage" class="navbar-split dropdown${('', ' active')[topmenu == 'manage']}">
-                            <a href="${srRoot}/manage/episodeStatuses/" class="dropdown-toggle">Manage</a>
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b class="caret"></b></a>
+                            <a href="${srRoot}/manage/episodeStatuses/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown" data-hover="dropdown"><span>Manage</span>
+                            <b class="caret"></b>
+                            </a>
                             <ul class="dropdown-menu">
                                 <li><a href="${srRoot}/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a></li>
                                 <li><a href="${srRoot}/manage/backlogOverview/"><i class="menu-icon-backlog-view"></i>&nbsp;Backlog Overview</a></li>
@@ -164,8 +164,9 @@
                         </li>
 
                         <li id="NAVconfig" class="navbar-split dropdown${('', ' active')[topmenu == 'config']}">
-                            <a href="${srRoot}/config/" class="dropdown-toggle"><span class="visible-xs">Config</span><img src="${srRoot}/images/menu/system18.png" class="navbaricon hidden-xs" /></a>
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b class="caret"></b></a>
+                            <a href="${srRoot}/config/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown" data-hover="dropdown"><span class="visible-xs-inline">Config</span><img src="${srRoot}/images/menu/system18.png" class="navbaricon hidden-xs" />
+                            <b class="caret"></b>
+                            </a>
                             <ul class="dropdown-menu">
                                 <li><a href="${srRoot}/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp; Info</a></li>
                                 <li><a href="${srRoot}/config/general/"><i class="menu-icon-config"></i>&nbsp;General</a></li>
@@ -200,13 +201,14 @@
                                 toolsBadge = ''
                         %>
                         <li id="NAVsystem" class="navbar-split dropdown${('', ' active')[topmenu == 'system']}">
-                            <a href="${srRoot}/home/status/" class="dropdown-toggle"><span class="visible-xs">Tools</span><img src="${srRoot}/images/menu/system18-2.png" class="navbaricon hidden-xs" />${toolsBadge}</a>
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b class="caret"></b></a>
+                            <a href="${srRoot}/home/status/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown" data-hover="dropdown"><span class="visible-xs-inline">Tools</span><img src="${srRoot}/images/menu/system18-2.png" class="navbaricon hidden-xs" />${toolsBadge}
+                            <b class="caret"></b>
+                            </a>
                             <ul class="dropdown-menu">
                                 <li><a href="${srRoot}/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
                                 <li><a href="${srRoot}/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
                                 <li><a href="${srRoot}/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
-                                <li><a href="https://github.com/SiCKRAGETV/SickRage/wiki/Donations" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><i class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
+                                <li><a href="https://github.com/SiCKRAGETV/SiCKRAGE/wiki/Donations" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><i class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
                                 <li role="separator" class="divider"></li>
                                 %if numErrors:
                                     <li><a href="${srRoot}/errorlogs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors <span class="badge btn-danger">${numErrors}</span></a></li>
@@ -219,7 +221,7 @@
                                 <li><a href="${srRoot}/home/updateCheck?pid=${sbPID}"><i class="menu-icon-update"></i>&nbsp;Check For Updates</a></li>
                                 <li><a href="${srRoot}/home/restart/?pid=${sbPID}" class="confirm restart"><i class="menu-icon-restart"></i>&nbsp;Restart</a></li>
                                 <li><a href="${srRoot}/home/shutdown/?pid=${sbPID}" class="confirm shutdown"><i class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
-                                % if sbLogin != True:
+                                % if srLogin != True:
                                     <li><a href="${srRoot}/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a></li>
                                 % endif
                                 <li role="separator" class="divider"></li>
@@ -260,24 +262,12 @@
         </div>
         % endif
 
-        % if sickbeard.BRANCH and sickbeard.BRANCH != 'master' and not sickbeard.DEVELOPER and sbLogin:
-        <div class="alert alert-danger upgrade-notification hidden-print" role="alert">
-            <span>You're using the ${sickbeard.BRANCH} branch. Please use 'master' unless specifically asked</span>
-        </div>
-        % endif
-
-        % if sickbeard.NEWEST_VERSION_STRING and sbLogin:
-        <div class="alert alert-success upgrade-notification hidden-print" role="alert">
-            <span>${sickbeard.NEWEST_VERSION_STRING}</span>
-        </div>
-        % endif
-
         <div id="contentWrapper">
             <div id="content">
                 <%block name="content" />
             </div> <!-- /content -->
         </div> <!-- /contentWrapper -->
-    % if sbLogin:
+    % if srLogin:
         <footer>
             <div class="footer clearfix">
             <%

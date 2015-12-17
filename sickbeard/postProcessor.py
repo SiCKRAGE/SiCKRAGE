@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: https://sickrage.tv
 # Git: https://github.com/SiCKRAGETV/SickRage.git
@@ -17,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import with_statement
+from __future__ import unicode_literals
 
 import glob
 import fnmatch
@@ -25,14 +26,13 @@ import os
 import re
 import subprocess
 import stat
+import logging
 
 import sickbeard
-
 from sickbeard import db
 from sickbeard import common
 from sickbeard import helpers
 from sickbeard import history
-from sickbeard import logger
 from sickbeard import notifiers
 from sickbeard import show_name_helpers
 from sickbeard import failed_history
@@ -95,14 +95,16 @@ class PostProcessor(object):
 
         self.version = None
 
-    def _log(self, message, level=logger.INFO):
+        self.anidbEpisode = None
+
+    def _log(self, message, level=logging.INFO):
         """
         A wrapper for the internal logger which also keeps track of messages and saves them to a string for later.
 
         :param message: The string to log (unicode)
         :param level: The log level to use (optional)
         """
-        logger.log(message, level)
+        logging.log(level, message)
         self.log += message + '\n'
 
     def _checkForExistingFile(self, existing_file):
@@ -120,7 +122,7 @@ class PostProcessor(object):
         """
 
         if not existing_file:
-            self._log(u"There is no existing file so there's no worries about replacing it", logger.DEBUG)
+            self._log("There is no existing file so there's no worries about replacing it", logging.DEBUG)
             return PostProcessor.DOESNT_EXIST
 
         # if the new file exists, return the appropriate code depending on the size
@@ -128,20 +130,20 @@ class PostProcessor(object):
 
             # see if it's bigger than our old file
             if ek(os.path.getsize, existing_file) > ek(os.path.getsize, self.file_path):
-                self._log(u"File " + existing_file + " is larger than " + self.file_path, logger.DEBUG)
+                self._log("File " + existing_file + " is larger than " + self.file_path, logging.DEBUG)
                 return PostProcessor.EXISTS_LARGER
 
             elif ek(os.path.getsize, existing_file) == ek(os.path.getsize, self.file_path):
-                self._log(u"File " + existing_file + " is the same size as " + self.file_path, logger.DEBUG)
+                self._log("File " + existing_file + " is the same size as " + self.file_path, logging.DEBUG)
                 return PostProcessor.EXISTS_SAME
 
             else:
-                self._log(u"File " + existing_file + " is smaller than " + self.file_path, logger.DEBUG)
+                self._log("File " + existing_file + " is smaller than " + self.file_path, logging.DEBUG)
                 return PostProcessor.EXISTS_SMALLER
 
         else:
-            self._log(u"File " + existing_file + " doesn't exist so there's no worries about replacing it",
-                      logger.DEBUG)
+            self._log("File " + existing_file + " doesn't exist so there's no worries about replacing it",
+                      logging.DEBUG)
             return PostProcessor.DOESNT_EXIST
 
     def list_associated_files(self, file_path, base_name_only=False, subtitles_only=False, subfolders=False):
@@ -154,22 +156,26 @@ class PostProcessor(object):
 
         :return: A list containing all files which are associated to the given file
         """
+
         def recursive_glob(treeroot, pattern):
             results = []
-            for base, dirs, files in os.walk(treeroot):
+            for base, _, files in ek(os.walk, treeroot):
                 goodfiles = fnmatch.filter(files, pattern)
-                results.extend(os.path.join(base, f) for f in goodfiles)
+                results.extend(ek(os.path.join, base, f) for f in goodfiles)
             return results
 
         if not file_path:
             return []
 
+        # don't confuse glob with chars we didn't mean to use
+        globbable_file_path = ek(helpers.fixGlob, file_path)
+
         file_path_list = []
 
         if subfolders:
-            base_name = ek(os.path.basename, file_path).rpartition('.')[0]
+            base_name = ek(os.path.basename, globbable_file_path).rpartition('.')[0]
         else:
-            base_name = file_path.rpartition('.')[0]
+            base_name = globbable_file_path.rpartition('.')[0]
 
         if not base_name_only:
             base_name = base_name + '.'
@@ -178,20 +184,20 @@ class PostProcessor(object):
         if not base_name:
             return []
 
-        # don't confuse glob with chars we didn't mean to use
-        base_name = re.sub(r'[\[\]\*\?]', r'[\g<0>]', base_name)
-
-        if subfolders: # subfolders are only checked in show folder, so names will always be exactly alike
-            filelist = ek(recursive_glob, ek(os.path.dirname, file_path), base_name + '*') # just create the list of all files starting with the basename
-        else: # this is called when PP, so we need to do the filename check case-insensitive
+        if subfolders:  # subfolders are only checked in show folder, so names will always be exactly alike
+            filelist = recursive_glob(ek(os.path.dirname, globbable_file_path),
+                                      base_name + '*')  # just create the list of all files starting with the basename
+        else:  # this is called when PP, so we need to do the filename check case-insensitive
             filelist = []
 
-            checklist = ek(glob.glob, helpers.fixGlob(ek(os.path.join, ek(os.path.dirname, file_path), '*'))) # get a list of all the files in the folder
-            for filefound in checklist: # loop through all the files in the folder, and check if they are the same name even when the cases don't match
+            checklist = glob.glob(ek(os.path.join, ek(os.path.dirname, globbable_file_path),
+                                     '*'))  # get a list of all the files in the folder
+            for filefound in checklist:  # loop through all the files in the folder, and check if they are the same name even when the cases don't match
                 file_name = filefound.rpartition('.')[0]
                 if not base_name_only:
                     file_name = file_name + '.'
-                if file_name.lower() == base_name.lower(): # if there's no difference in the filename add it to the filelist
+                if file_name.lower() == base_name.lower().replace('[[]', '[').replace('[]]',
+                                                                                      ']'):  # if there's no difference in the filename add it to the filelist
                     filelist.append(filefound)
 
         for associated_file_path in filelist:
@@ -210,9 +216,9 @@ class PostProcessor(object):
                 file_path_list.append(associated_file_path)
 
         if file_path_list:
-            self._log(u"Found the following associated files: " + str(file_path_list), logger.DEBUG)
+            self._log("Found the following associated files: " + str(file_path_list), logging.DEBUG)
         else:
-            self._log(u"No associated files were during this pass", logger.DEBUG)
+            self._log("No associated files were during this pass", logging.DEBUG)
 
         return file_path_list
 
@@ -233,22 +239,22 @@ class PostProcessor(object):
             file_list = file_list + self.list_associated_files(file_path, base_name_only=True, subfolders=True)
 
         if not file_list:
-            self._log(u"There were no files associated with " + file_path + ", not deleting anything", logger.DEBUG)
+            self._log("There were no files associated with " + file_path + ", not deleting anything", logging.DEBUG)
             return
 
         # delete the file and any other files which we want to delete
         for cur_file in file_list:
             if ek(os.path.isfile, cur_file):
-                self._log(u"Deleting file " + cur_file, logger.DEBUG)
+                self._log("Deleting file " + cur_file, logging.DEBUG)
                 # check first the read-only attribute
                 file_attribute = ek(os.stat, cur_file)[0]
                 if not file_attribute & stat.S_IWRITE:
                     # File is read-only, so make it writeable
-                    self._log('Read only mode on file ' + cur_file + ' Will try to make it writeable', logger.DEBUG)
+                    self._log('Read only mode on file ' + cur_file + ' Will try to make it writeable', logging.DEBUG)
                     try:
                         ek(os.chmod, cur_file, stat.S_IWRITE)
-                    except:
-                        self._log(u'Cannot change permissions of ' + cur_file, logger.WARNING)
+                    except Exception:
+                        self._log('Cannot change permissions of ' + cur_file, logging.WARNING)
 
                 ek(os.remove, cur_file)
 
@@ -270,7 +276,7 @@ class PostProcessor(object):
         """
 
         if not action:
-            self._log(u"Must provide an action for the combined file operation", logger.ERROR)
+            self._log("Must provide an action for the combined file operation", logging.ERROR)
             return
 
         file_list = [file_path]
@@ -280,7 +286,7 @@ class PostProcessor(object):
             file_list = file_list + self.list_associated_files(file_path, subtitles_only=True)
 
         if not file_list:
-            self._log(u"There were no files associated with " + file_path + ", not moving anything", logger.DEBUG)
+            self._log("There were no files associated with " + file_path + ", not moving anything", logging.DEBUG)
             return
 
         # create base name with file_path (media_file without .extension)
@@ -296,10 +302,10 @@ class PostProcessor(object):
             cur_extension = cur_file_path[old_base_name_length + 1:]
 
             # check if file have subtitles language
-            if os.path.splitext(cur_extension)[1][1:] in common.subtitleExtensions:
-                cur_lang = os.path.splitext(cur_extension)[0]
-                if cur_lang in subtitles.wantedLanguages():
-                    cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
+            if ek(os.path.splitext, cur_extension)[1][1:] in common.subtitleExtensions:
+                cur_lang = ek(os.path.splitext, cur_extension)[0]
+                if cur_lang in sickbeard.subtitles.wantedLanguages():
+                    cur_extension = cur_lang + ek(os.path.splitext, cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
             if cur_extension == 'nfo' and sickbeard.NFO_RENAME == True:
@@ -316,7 +322,7 @@ class PostProcessor(object):
                 subs_new_path = ek(os.path.join, new_path, sickbeard.SUBTITLES_DIR)
                 dir_exists = helpers.makeDir(subs_new_path)
                 if not dir_exists:
-                    logger.log(u"Unable to create subtitles folder " + subs_new_path, logger.ERROR)
+                    logging.error("Unable to create subtitles folder " + subs_new_path)
                 else:
                     helpers.chmodAsParent(subs_new_path)
                 new_file_path = ek(os.path.join, subs_new_path, new_file_name)
@@ -337,12 +343,13 @@ class PostProcessor(object):
 
         def _int_move(cur_file_path, new_file_path):
 
-            self._log(u"Moving file from " + cur_file_path + " to " + new_file_path, logger.DEBUG)
+            self._log("Moving file from " + cur_file_path + " to " + new_file_path, logging.DEBUG)
             try:
                 helpers.moveFile(cur_file_path, new_file_path)
                 helpers.chmodAsParent(new_file_path)
-            except (IOError, OSError), e:
-                self._log("Unable to move file " + cur_file_path + " to " + new_file_path + ": " + ex(e), logger.ERROR)
+            except (IOError, OSError) as e:
+                self._log("Unable to move file " + cur_file_path + " to " + new_file_path + ": {}".format(ex(e)),
+                          logging.ERROR)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_move,
@@ -360,17 +367,16 @@ class PostProcessor(object):
 
         def _int_copy(cur_file_path, new_file_path):
 
-            self._log(u"Copying file from " + cur_file_path + " to " + new_file_path, logger.DEBUG)
+            self._log("Copying file from " + cur_file_path + " to " + new_file_path, logging.DEBUG)
             try:
                 helpers.copyFile(cur_file_path, new_file_path)
                 helpers.chmodAsParent(new_file_path)
-            except (IOError, OSError), e:
-                logger.log("Unable to copy file " + cur_file_path + " to " + new_file_path + ": " + ex(e), logger.ERROR)
+            except (IOError, OSError) as e:
+                logging.error("Unable to copy file " + cur_file_path + " to " + new_file_path + ": {}".format(ex(e)))
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_copy,
                                       subtitles=subtitles)
-
 
     def _hardlink(self, file_path, new_path, new_base_name, associated_files=False, subtitles=False):
         """
@@ -384,15 +390,16 @@ class PostProcessor(object):
 
         def _int_hard_link(cur_file_path, new_file_path):
 
-            self._log(u"Hard linking file from " + cur_file_path + " to " + new_file_path, logger.DEBUG)
+            self._log("Hard linking file from " + cur_file_path + " to " + new_file_path, logging.DEBUG)
             try:
                 helpers.hardlinkFile(cur_file_path, new_file_path)
                 helpers.chmodAsParent(new_file_path)
-            except (IOError, OSError), e:
-                self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": " + ex(e), logger.ERROR)
+            except (IOError, OSError) as e:
+                self._log("Unable to link file {} to {}: {}".format(cur_file_path, new_file_path, ex(e)), logging.ERROR)
                 raise
 
-        self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_hard_link)
+        self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_hard_link,
+                                      subtitles=subtitles)
 
     def _moveAndSymlink(self, file_path, new_path, new_base_name, associated_files=False, subtitles=False):
         """
@@ -406,16 +413,17 @@ class PostProcessor(object):
 
         def _int_move_and_sym_link(cur_file_path, new_file_path):
 
-            self._log(u"Moving then symbolic linking file from " + cur_file_path + " to " + new_file_path, logger.DEBUG)
+            self._log("Moving then symbolic linking file from " + cur_file_path + " to " + new_file_path, logging.DEBUG)
             try:
                 helpers.moveAndSymlinkFile(cur_file_path, new_file_path)
                 helpers.chmodAsParent(new_file_path)
-            except (IOError, OSError), e:
-                self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": " + ex(e), logger.ERROR)
+            except (IOError, OSError) as e:
+                self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": {}".format(ex(e)),
+                          logging.ERROR)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files,
-                                      action=_int_move_and_sym_link)
+                                      action=_int_move_and_sym_link, subtitles=subtitles)
 
     def _history_lookup(self):
         """
@@ -449,10 +457,10 @@ class PostProcessor(object):
             if len(sql_results) == 0:
                 continue
 
-            indexer_id = int(sql_results[0]["showid"])
-            season = int(sql_results[0]["season"])
-            quality = int(sql_results[0]["quality"])
-            version = int(sql_results[0]["version"])
+            indexer_id = int(sql_results[0][b"showid"])
+            season = int(sql_results[0][b"season"])
+            quality = int(sql_results[0][b"quality"])
+            version = int(sql_results[0][b"version"])
 
             if quality == common.Quality.UNKNOWN:
                 quality = None
@@ -462,7 +470,7 @@ class PostProcessor(object):
             self.in_history = True
             self.version = version
             to_return = (show, season, [], quality, version)
-            self._log("Found result in history: " + str(to_return), logger.DEBUG)
+            self._log("Found result in history: " + str(to_return), logging.DEBUG)
 
             return to_return
 
@@ -487,18 +495,18 @@ class PostProcessor(object):
                                          or parse_result.air_date) and parse_result.release_group:
 
             if not self.release_name:
-                self.release_name = helpers.remove_non_release_groups(helpers.remove_extension(ek(os.path.basename, parse_result.original_name)))
+                self.release_name = helpers.remove_non_release_groups(
+                    helpers.remove_extension(ek(os.path.basename, parse_result.original_name)))
 
         else:
-            logger.log(u"Parse result not sufficient (all following have to be set). will not save release name",
-                       logger.DEBUG)
-            logger.log(u"Parse result(series_name): " + str(parse_result.series_name), logger.DEBUG)
-            logger.log(u"Parse result(season_number): " + str(parse_result.season_number), logger.DEBUG)
-            logger.log(u"Parse result(episode_numbers): " + str(parse_result.episode_numbers), logger.DEBUG)
-            logger.log(u" or Parse result(air_date): " + str(parse_result.air_date), logger.DEBUG)
-            logger.log(u"Parse result(release_group): " + str(parse_result.release_group), logger.DEBUG)
+            logging.debug("Parse result not sufficient (all following have to be set). will not save release name")
+            logging.debug("Parse result(series_name): " + str(parse_result.series_name))
+            logging.debug("Parse result(season_number): " + str(parse_result.season_number))
+            logging.debug("Parse result(episode_numbers): " + str(parse_result.episode_numbers))
+            logging.debug("Parse result(air_date): " + str(parse_result.air_date))
+            logging.debug("Parse result(release_group): " + str(parse_result.release_group))
 
-    def _analyze_name(self, name, file=True):
+    def _analyze_name(self, name):
         """
         Takes a name and tries to figure out a show, season, and episode from it.
 
@@ -513,12 +521,12 @@ class PostProcessor(object):
         if not name:
             return to_return
 
-        logger.log(u"Analyzing name " + repr(name), logger.DEBUG)
+        logging.debug("Analyzing name " + repr(name))
 
         name = helpers.remove_non_release_groups(helpers.remove_extension(name))
 
         # parse the name to break it into show name, season, and episode
-        np = NameParser(file, tryIndexers=True, trySceneExceptions=True)
+        np = NameParser(True, tryIndexers=True)
         parse_result = np.parse(name)
 
         # show object
@@ -560,11 +568,11 @@ class PostProcessor(object):
             if not self.anidbEpisode:  # seems like we could parse the name before, now lets build the anidb object
                 self.anidbEpisode = self._build_anidb_episode(sickbeard.ADBA_CONNECTION, filePath)
 
-            self._log(u"Adding the file to the anidb mylist", logger.DEBUG)
+            self._log("Adding the file to the anidb mylist", logging.DEBUG)
             try:
                 self.anidbEpisode.add_to_mylist(status=1)  # status = 1 sets the status of the file to "internal HDD"
-            except Exception, e:
-                self._log(u"exception msg: " + str(e))
+            except Exception as e:
+                self._log("exception msg: " + str(e))
 
     def _find_info(self):
         """
@@ -577,22 +585,23 @@ class PostProcessor(object):
         episodes = []
 
         # try to look up the nzb in history
-        attempt_list = [self._history_lookup,
+        attempt_list = [
+            self._history_lookup,
 
-                        # try to analyze the nzb name
-                        lambda: self._analyze_name(self.nzb_name),
+            # try to analyze the nzb name
+            lambda: self._analyze_name(self.nzb_name),
 
-                        # try to analyze the file name
-                        lambda: self._analyze_name(self.file_name),
+            # try to analyze the file name
+            lambda: self._analyze_name(self.file_name),
 
-                        # try to analyze the dir name
-                        lambda: self._analyze_name(self.folder_name),
+            # try to analyze the dir name
+            lambda: self._analyze_name(self.folder_name),
 
-                        # try to analyze the file + dir names together
-                        lambda: self._analyze_name(self.file_path),
+            # try to analyze the file + dir names together
+            lambda: self._analyze_name(self.file_path),
 
-                        # try to analyze the dir + file name together as one name
-                        lambda: self._analyze_name(self.folder_name + u' ' + self.file_name)
+            # try to analyze the dir + file name together as one name
+            lambda: self._analyze_name(self.folder_name + ' ' + self.file_name)
         ]
 
         # attempt every possible method to get our info
@@ -600,8 +609,8 @@ class PostProcessor(object):
 
             try:
                 (cur_show, cur_season, cur_episodes, cur_quality, cur_version) = cur_attempt()
-            except (InvalidNameException, InvalidShowException), e:
-                logger.log(u"Unable to parse, skipping: " + ex(e), logger.DEBUG)
+            except (InvalidNameException, InvalidShowException) as e:
+                logging.debug("Unable to parse, skipping: {}".format(ex(e)))
                 continue
 
             if not cur_show:
@@ -624,14 +633,14 @@ class PostProcessor(object):
             # for air-by-date shows we need to look up the season/episode from database
             if season == -1 and show and episodes:
                 self._log(
-                    u"Looks like this is an air-by-date or sports show, attempting to convert the date to season/episode",
-                    logger.DEBUG)
+                        "Looks like this is an air-by-date or sports show, attempting to convert the date to season/episode",
+                        logging.DEBUG)
                 airdate = episodes[0].toordinal()
                 myDB = db.DBConnection()
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode, same air date)
                 sql_result = myDB.select(
-                    "SELECT season, episode FROM tv_episodes WHERE showid = ? and indexer = ? and airdate = ? and season != 0",
-                    [show.indexerid, show.indexer, airdate])
+                        "SELECT season, episode FROM tv_episodes WHERE showid = ? and indexer = ? and airdate = ? and season != 0",
+                        [show.indexerid, show.indexer, airdate])
 
                 if sql_result:
                     season = int(sql_result[0][0])
@@ -639,14 +648,15 @@ class PostProcessor(object):
                 else:
                     # Found no result, try with season 0
                     sql_result = myDB.select(
-                        "SELECT season, episode FROM tv_episodes WHERE showid = ? and indexer = ? and airdate = ?",
-                        [show.indexerid, show.indexer, airdate])
+                            "SELECT season, episode FROM tv_episodes WHERE showid = ? and indexer = ? and airdate = ?",
+                            [show.indexerid, show.indexer, airdate])
                     if sql_result:
                         season = int(sql_result[0][0])
                         episodes = [int(sql_result[0][1])]
                     else:
-                        self._log(u"Unable to find episode with date " + str(episodes[0]) + u" for show " + str(
-                        show.indexerid) + u", skipping", logger.DEBUG)
+                        self._log(
+                                "Unable to find episode with date " +
+                                str(episodes[0]) + " for show " + str(show.indexerid) + ", skipping", logging.DEBUG)
                         # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
                         episodes = []
                         continue
@@ -655,12 +665,12 @@ class PostProcessor(object):
             elif season == None and show:
                 myDB = db.DBConnection()
                 numseasonsSQlResult = myDB.select(
-                    "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and indexer = ? and season != 0",
-                    [show.indexerid, show.indexer])
+                        "SELECT COUNT(DISTINCT season) as numseasons FROM tv_episodes WHERE showid = ? and indexer = ? and season != 0",
+                        [show.indexerid, show.indexer])
                 if int(numseasonsSQlResult[0][0]) == 1 and season == None:
                     self._log(
-                        u"Don't have a season number, but this show appears to only have 1 season, setting season number to 1...",
-                        logger.DEBUG)
+                            "Don't have a season number, but this show appears to only have 1 season, setting season number to 1...",
+                            logging.DEBUG)
                     season = 1
 
             if show and season and episodes:
@@ -682,15 +692,15 @@ class PostProcessor(object):
 
         root_ep = None
         for cur_episode in episodes:
-            self._log(u"Retrieving episode object for " + str(season) + "x" + str(cur_episode), logger.DEBUG)
+            self._log("Retrieving episode object for " + str(season) + "x" + str(cur_episode), logging.DEBUG)
 
             # now that we've figured out which episode this file is just load it manually
             try:
                 curEp = show.getEpisode(season, cur_episode)
                 if not curEp:
                     raise EpisodeNotFoundException()
-            except EpisodeNotFoundException, e:
-                self._log(u"Unable to create episode: " + ex(e), logger.DEBUG)
+            except EpisodeNotFoundException as e:
+                self._log("Unable to create episode: {}".format(ex(e)), logging.DEBUG)
                 raise EpisodePostProcessingFailedException()
 
             # associate all the episodes together under a single root episode
@@ -715,11 +725,11 @@ class PostProcessor(object):
 
         # if there is a quality available in the status then we don't need to bother guessing from the filename
         if ep_obj.status in common.Quality.SNATCHED + common.Quality.SNATCHED_PROPER + common.Quality.SNATCHED_BEST:
-            oldStatus, ep_quality = common.Quality.splitCompositeStatus(ep_obj.status)  # @UnusedVariable
+            _, ep_quality = common.Quality.splitCompositeStatus(ep_obj.status)  # @UnusedVariable
             if ep_quality != common.Quality.UNKNOWN:
                 self._log(
-                    u"The old status had a quality in it, using that: " + common.Quality.qualityStrings[ep_quality],
-                    logger.DEBUG)
+                        "The old status had a quality in it, using that: " + common.Quality.qualityStrings[ep_quality],
+                        logging.DEBUG)
                 return ep_quality
 
         # nzb name is the most reliable if it exists, followed by folder name and lastly file name
@@ -734,35 +744,34 @@ class PostProcessor(object):
 
             ep_quality = common.Quality.nameQuality(cur_name, ep_obj.show.is_anime)
             self._log(
-                u"Looking up quality for name " + cur_name + u", got " + common.Quality.qualityStrings[ep_quality],
-                logger.DEBUG)
+                    "Looking up quality for name " + cur_name + ", got " + common.Quality.qualityStrings[ep_quality],
+                    logging.DEBUG)
 
             # if we find a good one then use it
             if ep_quality != common.Quality.UNKNOWN:
-                logger.log(cur_name + u" looks like it has quality " + common.Quality.qualityStrings[
-                    ep_quality] + ", using that", logger.DEBUG)
+                logging.debug(cur_name + " looks like it has quality " + common.Quality.qualityStrings[
+                    ep_quality] + ", using that")
                 return ep_quality
 
         # Try getting quality from the episode (snatched) status
-        if ep_obj.status in common.Quality.SNATCHED + common.Quality.SNATCHED_PROPER  + common.Quality.SNATCHED_BEST:
-            oldStatus, ep_quality = common.Quality.splitCompositeStatus(ep_obj.status)  # @UnusedVariable
+        if ep_obj.status in common.Quality.SNATCHED + common.Quality.SNATCHED_PROPER + common.Quality.SNATCHED_BEST:
+            _, ep_quality = common.Quality.splitCompositeStatus(ep_obj.status)  # @UnusedVariable
             if ep_quality != common.Quality.UNKNOWN:
                 self._log(
-                    u"The old status had a quality in it, using that: " + common.Quality.qualityStrings[ep_quality],
-                    logger.DEBUG)
+                        "The old status had a quality in it, using that: " + common.Quality.qualityStrings[ep_quality],
+                        logging.DEBUG)
                 return ep_quality
 
         # Try guessing quality from the file name
         ep_quality = common.Quality.assumeQuality(self.file_path)
         self._log(
-            u"Guessing quality for name " + self.file_name + u", got " + common.Quality.qualityStrings[ep_quality],
-            logger.DEBUG)
-        if ep_quality != common.Quality.UNKNOWN:
-            logger.log(self.file_name + u" looks like it has quality " + common.Quality.qualityStrings[
-                ep_quality] + ", using that", logger.DEBUG)
-            return ep_quality
+                "Guessing quality for name " + self.file_name + ", got " + common.Quality.qualityStrings[ep_quality],
+                logging.DEBUG)
 
-        test = str(ep_quality)
+        if ep_quality != common.Quality.UNKNOWN:
+            logging.debug(self.file_name + " looks like it has quality " + common.Quality.qualityStrings[
+                ep_quality] + ", using that")
+
         return ep_quality
 
     def _run_extra_scripts(self, ep_obj):
@@ -776,24 +785,24 @@ class PostProcessor(object):
             # generate a safe command line string to execute the script and provide all the parameters
             script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
             script_cmd[0] = ek(os.path.abspath, script_cmd[0])
-            self._log(u"Absolute path to script: " + script_cmd[0], logger.DEBUG)
+            self._log("Absolute path to script: " + script_cmd[0], logging.DEBUG)
 
             script_cmd = script_cmd + [ep_obj.location, self.file_path, str(ep_obj.show.indexerid), str(ep_obj.season),
                                        str(ep_obj.episode), str(ep_obj.airdate)]
 
             # use subprocess to run the command and capture output
-            self._log(u"Executing command " + str(script_cmd))
+            self._log("Executing command " + str(script_cmd))
             try:
                 p = subprocess.Popen(script_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT, cwd=sickbeard.PROG_DIR)
-                out, err = p.communicate()  # @UnusedVariable
-                self._log(u"Script result: " + str(out), logger.DEBUG)
+                out, _ = p.communicate()  # @UnusedVariable
+                self._log("Script result: " + str(out), logging.DEBUG)
 
-            except OSError, e:
-                self._log(u"Unable to run extra_script: " + ex(e))
+            except OSError as e:
+                self._log("Unable to run extra_script: {}".format(ex(e)))
 
-            except Exception, e:
-                self._log(u"Unable to run extra_script: " + ex(e))
+            except Exception as e:
+                self._log("Unable to run extra_script: {}".format(ex(e)))
 
     def _is_priority(self, ep_obj, new_ep_quality):
         """
@@ -808,34 +817,40 @@ class PostProcessor(object):
         if self.is_priority:
             return True
 
-        old_ep_status, old_ep_quality = common.Quality.splitCompositeStatus(ep_obj.status)
+        _, old_ep_quality = common.Quality.splitCompositeStatus(ep_obj.status)
 
         # if SR downloaded this on purpose we likely have a priority download
         if self.in_history or ep_obj.status in common.Quality.SNATCHED + common.Quality.SNATCHED_PROPER + common.Quality.SNATCHED_BEST:
             # if the episode is still in a snatched status, then we can assume we want this
-            if ep_obj.status in common.Quality.SNATCHED + common.Quality.SNATCHED_PROPER + common.Quality.SNATCHED_BEST:
-                self._log(u"SR snatched this episode and it is not processed before", logger.DEBUG)
+            if not self.in_history:
+                self._log("SR snatched this episode and it is not processed before", logging.DEBUG)
                 return True
-            # if it's not snatched, we only want it if the new quality is higher or if it's a proper of equal or higher quality
+
+            # if it's in history, we only want it if the new quality is higher or if it's a proper of equal or higher quality
             if new_ep_quality > old_ep_quality and new_ep_quality != common.Quality.UNKNOWN:
-                self._log(u"SR snatched this episode and it is a higher quality so I'm marking it as priority", logger.DEBUG)
+                self._log("SR snatched this episode and it is a higher quality so I'm marking it as priority",
+                          logging.DEBUG)
                 return True
+
             if self.is_proper and new_ep_quality >= old_ep_quality and new_ep_quality != common.Quality.UNKNOWN:
-                self._log(u"SR snatched this episode and it is a proper of equal or higher quality so I'm marking it as priority", logger.DEBUG)
+                self._log(
+                    "SR snatched this episode and it is a proper of equal or higher quality so I'm marking it as priority",
+                    logging.DEBUG)
                 return True
+
             return False
 
         # if the user downloaded it manually and it's higher quality than the existing episode then it's priority
         if new_ep_quality > old_ep_quality and new_ep_quality != common.Quality.UNKNOWN:
             self._log(
-                u"This was manually downloaded but it appears to be better quality than what we have so I'm marking it as priority",
-                logger.DEBUG)
+                "This was manually downloaded but it appears to be better quality than what we have so I'm marking it as priority",
+                logging.DEBUG)
             return True
 
         # if the user downloaded it manually and it appears to be a PROPER/REPACK then it's priority
         if self.is_proper and new_ep_quality >= old_ep_quality and new_ep_quality != common.Quality.UNKNOWN:
-            self._log(u"This was manually downloaded but it appears to be a proper so I'm marking it as priority",
-                      logger.DEBUG)
+            self._log("This was manually downloaded but it appears to be a proper so I'm marking it as priority",
+                      logging.DEBUG)
             return True
 
         return False
@@ -847,19 +862,19 @@ class PostProcessor(object):
         :return: True on success, False on failure
         """
 
-        self._log(u"Processing " + self.file_path + " (" + str(self.nzb_name) + ")")
+        self._log("Processing " + self.file_path + " (" + str(self.nzb_name) + ")")
 
         if ek(os.path.isdir, self.file_path):
-            self._log(u"File %s seems to be a directory" % self.file_path)
+            self._log("File %s seems to be a directory" % self.file_path)
             return False
 
         if not ek(os.path.exists, self.file_path):
-            self._log(u"File %s doesn't exist, did unrar fail?" % self.file_path)
+            self._log("File %s doesn't exist, did unrar fail?" % self.file_path)
             return False
 
         for ignore_file in self.IGNORED_FILESTRINGS:
             if ignore_file in self.file_path:
-                self._log(u"File %s is ignored type, skipping" % self.file_path)
+                self._log("File %s is ignored type, skipping" % self.file_path)
                 return False
 
         # reset per-file stuff
@@ -871,34 +886,34 @@ class PostProcessor(object):
         # try to find the file info
         (show, season, episodes, quality, version) = self._find_info()
         if not show:
-            self._log(u"This show isn't in your list, you need to add it to SR before post-processing an episode")
+            self._log("This show isn't in your list, you need to add it to SR before post-processing an episode")
             raise EpisodePostProcessingFailedException()
         elif season == None or not episodes:
-            self._log(u"Not enough information to determine what episode this is. Quitting post-processing")
+            self._log("Not enough information to determine what episode this is. Quitting post-processing")
             return False
 
         # retrieve/create the corresponding TVEpisode objects
         ep_obj = self._get_ep_obj(show, season, episodes)
-        old_ep_status, old_ep_quality = common.Quality.splitCompositeStatus(ep_obj.status)
+        _, old_ep_quality = common.Quality.splitCompositeStatus(ep_obj.status)
 
         # get the quality of the episode we're processing
         if quality and not common.Quality.qualityStrings[quality] == 'Unknown':
-            self._log(u"Snatch history had a quality in it, using that: " + common.Quality.qualityStrings[quality],
-                      logger.DEBUG)
+            self._log("Snatch history had a quality in it, using that: " + common.Quality.qualityStrings[quality],
+                      logging.DEBUG)
             new_ep_quality = quality
         else:
             new_ep_quality = self._get_quality(ep_obj)
 
-        logger.log(u"Quality of the episode we're processing: %s" % new_ep_quality, logger.DEBUG)
+        logging.debug("Quality of the episode we're processing: %s" % new_ep_quality)
 
         # see if this is a priority download (is it snatched, in history, PROPER, or BEST)
         priority_download = self._is_priority(ep_obj, new_ep_quality)
-        self._log(u"Is ep a priority download: " + str(priority_download), logger.DEBUG)
+        self._log("Is ep a priority download: " + str(priority_download), logging.DEBUG)
 
         # get the version of the episode we're processing
         if version:
-            self._log(u"Snatch history had a version in it, using that: v" + str(version),
-                      logger.DEBUG)
+            self._log("Snatch history had a version in it, using that: v" + str(version),
+                      logging.DEBUG)
             new_ep_version = version
         else:
             new_ep_version = -1
@@ -910,38 +925,38 @@ class PostProcessor(object):
         if not priority_download:
 
             # Not a priority and the quality is lower than what we already have
-            if (new_ep_quality < old_ep_quality and new_ep_quality != common.Quality.UNKNOWN) and not existing_file_status == PostProcessor.DOESNT_EXIST:
-                self._log(u"File exists and new file quality is lower than existing, marking it unsafe to replace")
+            if (
+                    new_ep_quality < old_ep_quality and old_ep_quality != common.Quality.UNKNOWN) and not existing_file_status == PostProcessor.DOESNT_EXIST:
+                self._log("File exists and new file quality is lower than existing, marking it unsafe to replace")
                 return False
 
             # if there's an existing file that we don't want to replace stop here
             if existing_file_status == PostProcessor.EXISTS_LARGER:
                 if self.is_proper:
                     self._log(
-                        u"File exists and new file is smaller, new file is a proper/repack, marking it safe to replace")
+                            "File exists and new file is smaller, new file is a proper/repack, marking it safe to replace")
                     return True
 
                 else:
-                    self._log(u"File exists and new file is smaller, marking it unsafe to replace")
+                    self._log("File exists and new file is smaller, marking it unsafe to replace")
                     return False
 
             elif existing_file_status == PostProcessor.EXISTS_SAME:
-                self._log(u"File exists and new file is same size, marking it unsafe to replace")
+                self._log("File exists and new file is same size, marking it unsafe to replace")
                 return False
 
         # if the file is priority then we're going to replace it even if it exists
         else:
             self._log(
-                u"This download is marked a priority download so I'm going to replace an existing file if I find one")
+                    "This download is marked a priority download so I'm going to replace an existing file if I find one")
 
         # try to find out if we have enough space to perform the copy or move action.
         if not helpers.isFileLocked(self.file_path, False):
             if not verify_freespace(self.file_path, ep_obj.show._location, [ep_obj] + ep_obj.relatedEps):
-                self._log("Not enough space to continue PP, exiting", logger.WARNING)
+                self._log("Not enough space to continue PP, exiting", logging.WARNING)
                 return False
         else:
             self._log("Unable to determine needed filespace as the source file is locked for access")
-
 
         # delete the existing file (and company)
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
@@ -954,13 +969,13 @@ class PostProcessor(object):
             except (OSError, IOError):
                 raise EpisodePostProcessingFailedException("Unable to delete the existing files")
 
-            # set the status of the episodes
-            # for curEp in [ep_obj] + ep_obj.relatedEps:
-            #    curEp.status = common.Quality.compositeStatus(common.SNATCHED, new_ep_quality)
+                # set the status of the episodes
+                # for curEp in [ep_obj] + ep_obj.relatedEps:
+                #    curEp.status = common.Quality.compositeStatus(common.SNATCHED, new_ep_quality)
 
         # if the show directory doesn't exist then make it if allowed
         if not ek(os.path.isdir, ep_obj.show._location) and sickbeard.CREATE_MISSING_SHOW_DIRS:
-            self._log(u"Show directory doesn't exist, creating it", logger.DEBUG)
+            self._log("Show directory doesn't exist, creating it", logging.DEBUG)
             try:
                 ek(os.mkdir, ep_obj.show._location)
                 helpers.chmodAsParent(ep_obj.show._location)
@@ -968,7 +983,8 @@ class PostProcessor(object):
                 # do the library update for synoindex
                 notifiers.synoindex_notifier.addFolder(ep_obj.show._location)
             except (OSError, IOError):
-                raise EpisodePostProcessingFailedException("Unable to create the show directory: " + ep_obj.show._location)
+                raise EpisodePostProcessingFailedException(
+                    "Unable to create the show directory: " + ep_obj.show._location)
 
             # get metadata for the show (but not episode because it hasn't been fully processed)
             ep_obj.show.writeMetadata(True)
@@ -980,7 +996,7 @@ class PostProcessor(object):
             with cur_ep.lock:
 
                 if self.release_name:
-                    self._log("Found release name " + self.release_name, logger.DEBUG)
+                    self._log("Found release name " + self.release_name, logging.DEBUG)
                     cur_ep.release_name = self.release_name
                 else:
                     cur_ep.release_name = ""
@@ -990,7 +1006,7 @@ class PostProcessor(object):
                 else:
                     cur_ep.status = common.Quality.compositeStatus(common.DOWNLOADED, new_ep_quality)
 
-                cur_ep.subtitles = u''
+                cur_ep.subtitles = ''
 
                 cur_ep.subtitles_searchcount = 0
 
@@ -1012,7 +1028,7 @@ class PostProcessor(object):
         if releaseName is not None:
             failed_history.logSuccess(releaseName)
         else:
-            self._log(u"Couldn't find release in snatch history", logger.WARNING)
+            self._log("Couldn't find release in snatch history", logging.WARNING)
 
         # find the destination folder
         try:
@@ -1022,9 +1038,9 @@ class PostProcessor(object):
             dest_path = ek(os.path.dirname, proper_absolute_path)
         except ShowDirectoryNotFoundException:
             raise EpisodePostProcessingFailedException(
-                u"Unable to post-process an episode if the show dir doesn't exist, quitting")
+                    "Unable to post-process an episode if the show dir doesn't exist, quitting")
 
-        self._log(u"Destination folder for this episode: " + dest_path, logger.DEBUG)
+        self._log("Destination folder for this episode: " + dest_path, logging.DEBUG)
 
         # create any folders we need
         helpers.make_dirs(dest_path)
@@ -1065,9 +1081,9 @@ class PostProcessor(object):
                 self._moveAndSymlink(self.file_path, dest_path, new_base_name, sickbeard.MOVE_ASSOCIATED_FILES,
                                      sickbeard.USE_SUBTITLES and ep_obj.show.subtitles)
             else:
-                logger.log(u"Unknown process method: " + str(self.process_method), logger.ERROR)
+                logging.error("Unknown process method: " + str(self.process_method))
                 raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
-        except (OSError, IOError):
+        except (OSError, IOError) as e:
             raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
 
         # download subtitles
@@ -1106,7 +1122,7 @@ class PostProcessor(object):
         # log it to history
         history.logDownload(ep_obj, self.file_path, new_ep_quality, self.release_group, new_ep_version)
 
-        #If any notification fails, don't stop postProcessor
+        # If any notification fails, don't stop postProcessor
         try:
             # send notifications
             notifiers.notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))
@@ -1131,8 +1147,8 @@ class PostProcessor(object):
 
             # do the library update for Trakt
             notifiers.trakt_notifier.update_library(ep_obj)
-        except:
-            logger.log(u"Some notifications could not be sent. Continuing with postProcessing...")
+        except Exception:
+            logging.info("Some notifications could not be sent. Continuing with postProcessing...")
 
         self._run_extra_scripts(ep_obj)
 

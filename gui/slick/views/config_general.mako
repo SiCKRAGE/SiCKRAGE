@@ -114,7 +114,7 @@
                             <label for="log_dir">
                                 <span class="component-title">Log file folder location</span>
                                 <span class="component-desc">
-                                    <input type="text" name="log_dir" id="log_dir" value="${sickbeard.ACTUAL_LOG_DIR}" class="form-control input-sm input350" />
+                                    <input type="text" name="log_dir" id="log_dir" value="${sickbeard.ACTUAL_LOG_DIR}" class="form-control input-sm input350" autocapitalize="off" />
                                 </span>
                             </label>
                         </div>
@@ -368,7 +368,7 @@
                         <div class="field-pair">
                             <label for="download_url">
                                 <span class="component-title">Download url</span>
-                                <input type="text" name="download_url" id="download_url" value="${sickbeard.DOWNLOAD_URL}" size="35" />
+                                <input type="text" name="download_url" id="download_url" value="${sickbeard.DOWNLOAD_URL}" size="35" autocapitalize="off" />
                             </label>
                             <label>
                                 <span class="component-title">&nbsp;</span>
@@ -421,7 +421,7 @@
                             <label for="web_username">
                                 <span class="component-title">HTTP username</span>
                                 <span class="component-desc">
-                                    <input type="text" name="web_username" id="web_username" value="${sickbeard.WEB_USERNAME}" class="form-control input-sm input300" />
+                                    <input type="text" name="web_username" id="web_username" value="${sickbeard.WEB_USERNAME}" class="form-control input-sm input300" autocapitalize="off" />
                                     <p>set blank for no login</p>
                                 </span>
                             </label>
@@ -431,7 +431,7 @@
                             <label for="web_password">
                                 <span class="component-title">HTTP password</span>
                                 <span class="component-desc">
-                                    <input type="password" name="web_password" id="web_password" value="${sickbeard.WEB_PASSWORD}" class="form-control input-sm input300" />
+                                    <input type="password" name="web_password" id="web_password" value="${sickbeard.WEB_PASSWORD}" class="form-control input-sm input300" autocapitalize="off" />
                                     <p>blank = no authentication</span>
                             </label>
                         </div>
@@ -470,7 +470,7 @@
                                 <label for="https_cert">
                                     <span class="component-title">HTTPS certificate</span>
                                     <span class="component-desc">
-                                        <input type="text" name="https_cert" id="https_cert" value="${sickbeard.HTTPS_CERT}" class="form-control input-sm input300" />
+                                        <input type="text" name="https_cert" id="https_cert" value="${sickbeard.HTTPS_CERT}" class="form-control input-sm input300" autocapitalize="off" />
                                         <div class="clear-left"><p>file name or path to HTTPS certificate</p></div>
                                     </span>
                                 </label>
@@ -479,7 +479,7 @@
                                 <label for="https_key">
                                     <span class="component-title">HTTPS key</span>
                                     <span class="component-desc">
-                                        <input type="text" name="https_key" id="https_key" value="${sickbeard.HTTPS_KEY}" class="form-control input-sm input300" />
+                                        <input type="text" name="https_key" id="https_key" value="${sickbeard.HTTPS_KEY}" class="form-control input-sm input300" autocapitalize="off" />
                                         <div class="clear-left"><p>file name or path to HTTPS key</p></div>
                                     </span>
                                 </label>
@@ -491,7 +491,7 @@
                                 <span class="component-title">Reverse proxy headers</span>
                                 <span class="component-desc">
                                     <input type="checkbox" name="handle_reverse_proxy" id="handle_reverse_proxy" ${('', 'checked="checked"')[bool(sickbeard.HANDLE_REVERSE_PROXY)]}/>
-                                    <p>accept the following reverse proxy headers (advanced)...<br />(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)</p>
+                                    <p>accept the following reverse proxy headers (advanced)...<br>(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)</p>
                                 </span>
                             </label>
                         </div>
@@ -532,7 +532,7 @@
                             <label>
                                 <span class="component-title">Anonymous redirect</span>
                                 <span class="component-desc">
-                                    <input type="text" name="anon_redirect" value="${sickbeard.ANON_REDIRECT}" class="form-control input-sm input300" />
+                                    <input type="text" name="anon_redirect" value="${sickbeard.ANON_REDIRECT}" class="form-control input-sm input300" autocapitalize="off" />
                                     <div class="clear-left"><p>backlink protection via anonymizer service, must end in "?"</p></div>
                                 </span>
                             </label>
@@ -594,10 +594,21 @@
                         </div>
 
                         <div class="field-pair">
+                            <label for="calendar_icons">
+                                <span class="component-title">Google Calendar Icons</span>
+                                <span class="component-desc">
+                                    <input type="checkbox" name="calendar_icons" id="calendar_icons" ${('', 'checked="checked"')[bool(sickbeard.CALENDAR_ICONS)]}/>
+                                    <p>show an icon next to exported calendar events in Google Calendar.</p>
+                                </span>
+
+                            </label>
+                        </div>
+
+                        <div class="field-pair">
                             <label>
                                 <span class="component-title">Proxy host</span>
                                 <span class="component-desc">
-                                    <input type="text" name="proxy_setting" value="${sickbeard.PROXY_SETTING}" class="form-control input-sm input300" />
+                                    <input type="text" name="proxy_setting" value="${sickbeard.PROXY_SETTING}" class="form-control input-sm input300" autocapitalize="off" />
                                     <div class="clear-left"><p>blank to disable or proxy to use when connecting to providers</p></div>
                             </label>
                         </div>
@@ -699,7 +710,7 @@
                             <label for="git_username">
                                 <span class="component-title">GitHub username</span>
                                 <span class="component-desc">
-                                    <input type="text" name="git_username" id="git_username" value="${sickbeard.GIT_USERNAME}" class="form-control input-sm input300" />
+                                    <input type="text" name="git_username" id="git_username" value="${sickbeard.GIT_USERNAME}" class="form-control input-sm input300" autocapitalize="off" />
                                     <div class="clear-left"><p>*** (REQUIRED FOR SUBMITTING ISSUES) ***</p></div>
                                 </span>
                             </label>
@@ -709,7 +720,7 @@
                             <label for="git_password">
                                 <span class="component-title">GitHub password</span>
                                 <span class="component-desc">
-                                    <input type="password" name="git_password" id="git_password" value="${sickbeard.GIT_PASSWORD}" class="form-control input-sm input300" />
+                                    <input type="password" name="git_password" id="git_password" value="${sickbeard.GIT_PASSWORD}" class="form-control input-sm input300" autocapitalize="off" />
                                     <div class="clear-left"><p>*** (REQUIRED FOR SUBMITTING ISSUES) ***</p></div>
                                 </span>
                             </label>
@@ -719,7 +730,7 @@
                             <label for="git_remote">
                                 <span class="component-title">GitHub remote for branch</span>
                                 <span class="component-desc">
-                                    <input type="text" name="git_remote" id="git_remote" value="${sickbeard.GIT_REMOTE}" class="form-control input-sm input300" />
+                                    <input type="text" name="git_remote" id="git_remote" value="${sickbeard.GIT_REMOTE}" class="form-control input-sm input300" autocapitalize="off" />
                                     <div class="clear-left"><p>default:origin. Access repo configured remotes (save then refresh browser)</p></div>
                                 </span>
                             </label>
@@ -729,7 +740,7 @@
                             <label>
                                 <span class="component-title">Git executable path</span>
                                 <span class="component-desc">
-                                    <input type="text" name="git_path" value="${sickbeard.GIT_PATH}" class="form-control input-sm input300" />
+                                    <input type="text" name="git_path" value="${sickbeard.GIT_PATH}" class="form-control input-sm input300" autocapitalize="off" />
                                     <div class="clear-left"><p>only needed if OS is unable to locate git from env</p></div>
                                 </span>
                             </label>
@@ -762,7 +773,7 @@
 
                 </div><!-- /component-group3 //-->
 
-                <br/>
+                <br>
                 <h6 class="pull-right"><b>All non-absolute folder locations are relative to <span class="path">${sickbeard.DATA_DIR}</span></b> </h6>
                 <input type="submit" class="btn pull-left config_submitter button" value="Save Changes" />
 

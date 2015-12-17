@@ -1,6 +1,7 @@
-# Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: https://sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -16,182 +17,116 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-# pylint: disable=W0703
 
-from __future__ import with_statement
-import os
-import re
-import sys
+from __future__ import unicode_literals
+
+import io
+import locale
 import logging
 import logging.handlers
-import threading
+import os
 import platform
-import locale
+import re
+import sys
+import threading
 import traceback
 
+from logging import INFO, WARNING, ERROR, DEBUG, NOTSET, NullHandler
+
 import sickbeard
+from github import Github, InputFileContent
 from sickbeard import classes
 from sickrage.helper.common import dateTimeFormat
-from sickrage.helper.encoding import ek, ss
+from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
-from github import Github, InputFileContent
-import codecs
 
 # log levels
-ERROR = logging.ERROR
-WARNING = logging.WARNING
-INFO = logging.INFO
-DEBUG = logging.DEBUG
-DB = 5
-
-reverseNames = {
-    u'ERROR': ERROR,
-    u'WARNING': WARNING,
-    u'INFO': INFO,
-    u'DEBUG': DEBUG,
-    u'DB': DB
+logLevels = {
+    'ERROR': ERROR,
+    'WARNING': WARNING,
+    'INFO': INFO,
+    'DEBUG': DEBUG,
+    'DB': 5
 }
 
-censoredItems = {}
-
-
-class NullHandler(logging.Handler):
-    def emit(self, record):
-        pass
-
-
-class CensoredFormatter(logging.Formatter, object):
-    def __init__(self, *args, **kwargs):
-        super(CensoredFormatter, self).__init__(*args, **kwargs)
-
-    def format(self, record):
+class CensorLogAdapter(logging.LoggerAdapter):
+    def process(self, msg, kwargs):
         """Strips censored items from string"""
-        msg = super(CensoredFormatter, self).format(record)
-        # pylint: disable=W0612
-        for k, v in censoredItems.iteritems():
-            if v and len(v) > 0 and v in msg:
-                msg = msg.replace(v, len(v) * '*')
+        for _, v in kwargs.items():
+            msg = msg.replace(v, len(v) * '*')
+
         # Needed because Newznab apikey isn't stored as key=value in a section.
         msg = re.sub(r'([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)', r'\1=**********\2', msg)
-        return msg
+
+        return super(CensorLogAdapter, self).process(msg, kwargs)
 
 
-class Logger(object):
-    def __init__(self):
-        self.logger = logging.getLogger('sickrage')
+class CustomLogger(logging.Logger):
 
-        self.loggers = [
-            logging.getLogger('sickrage'),
-            logging.getLogger('tornado.general'),
-            logging.getLogger('tornado.application'),
-            # logging.getLogger('tornado.access'),
-        ]
-
-        self.consoleLogging = False
-        self.fileLogging = False
-        self.debugLogging = False
-        self.logFile = None
-
+    def __init__(self, name, level=NOTSET):
+        super(CustomLogger, self).__init__(name, level)
         self.submitter_running = False
+        setattr(logging, 'db', self.db)
+        setattr(logging, 'log_error_and_exit', self.log_error_and_exit)
+        setattr(logging, 'submit_errors', self.submit_errors)
 
-    def initLogging(self, consoleLogging=False, fileLogging=False, debugLogging=False):
-        self.logFile = self.logFile or os.path.join(sickbeard.LOG_DIR, 'sickrage.log')
-        self.debugLogging = debugLogging
-        self.consoleLogging = consoleLogging
-        self.fileLogging = fileLogging
+    def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
+        msg = "{}::{}".format(threading.currentThread().getName(), msg)
+        return super(CustomLogger, self).makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra)
 
-        # add a new logging level DB
-        logging.addLevelName(DB, 'DB')
+    def debug(self, msg, *args, **kwargs):
+        super(CustomLogger, self).debug(msg, *args, **kwargs)
 
-        # nullify root logger
-        logging.getLogger().addHandler(NullHandler())
+    def log(self, level, msg, *args, **kwargs):
+        super(CustomLogger, self).log(level, msg, *args, **kwargs)
 
-        # set custom root logger
-        for logger in self.loggers:
-            if logger is not self.logger:
-                logger.root = self.logger
-                logger.parent = self.logger
+    def info(self, msg, *args, **kwargs):
+        super(CustomLogger, self).info(msg, *args, **kwargs)
 
-        # set minimum logging level allowed for loggers
-        for logger in self.loggers:
-            logger.setLevel(DB)
+    def error(self, msg, *args, **kwargs):
+        super(CustomLogger, self).exception(msg, *args, **kwargs)
+        classes.ErrorViewer.add(classes.UIError(msg))
 
-        # console log handler
-        if self.consoleLogging:
-            console = logging.StreamHandler()
-            console.setFormatter(CensoredFormatter(u'%(asctime)s %(levelname)s::%(message)s', '%H:%M:%S'))
-            console.setLevel(INFO if not self.debugLogging else DEBUG)
+    def warning(self, msg, *args, **kwargs):
+        super(CustomLogger, self).exception(msg, *args, **kwargs)
+        classes.WarningViewer.add(classes.UIError(msg))
 
-            for logger in self.loggers:
-                logger.addHandler(console)
+    def db(self, msg, *args, **kwargs):
+        super(CustomLogger, self).log(logLevels[b'DB'], msg, *args, **kwargs)
 
-        # rotating log file handler
-        if self.fileLogging:
-            rfh = logging.handlers.RotatingFileHandler(self.logFile, maxBytes=sickbeard.LOG_SIZE, backupCount=sickbeard.LOG_NR, encoding='utf-8')
-            rfh.setFormatter(CensoredFormatter(u'%(asctime)s %(levelname)-8s %(message)s', dateTimeFormat))
-            rfh.setLevel(DEBUG)
+    def log_error_and_exit(self, msg, *args, **kwargs):
+        super(CustomLogger, self).error(msg, *args, **kwargs)
 
-            for logger in self.loggers:
-                logger.addHandler(rfh)
-
-    @staticmethod
-    def shutdown():
-        logging.shutdown()
-
-    def log(self, msg, level=INFO, *args, **kwargs):
-        meThread = threading.currentThread().getName()
-        message = meThread + u" :: " + msg
-
-        # Change the SSL error to a warning with a link to information about how to fix it.
-        check = re.sub(r'error \[Errno 1\] _ssl.c:\d{3}: error:\d{8}:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error', 'See: http://git.io/vJrkM', message)
-        if check is not message:
-            message = check
-            level = WARNING
-
-        if level == ERROR:
-            self.logger.exception(message, *args, **kwargs)
-            classes.ErrorViewer.add(classes.UIError(message))
-        elif level == WARNING:
-            self.logger.exception(message, *args, **kwargs)
-            classes.WarningViewer.add(classes.UIError(message))
-
-            # if sickbeard.GIT_AUTOISSUES:
-            #    self.submit_errors()
-        else:
-            self.logger.log(level, message, *args, **kwargs)
-
-    def log_error_and_exit(self, error_msg, *args, **kwargs):
-        self.log(error_msg, ERROR, *args, **kwargs)
-
-        if not self.consoleLogging:
-            sys.exit(error_msg.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace'))
+        if not sickbeard:
+            sys.exit(msg)
         else:
             sys.exit(1)
 
-    def submit_errors(self):
-
-        submitter_result = u''
+    def submit_errors(self):  # Too many local variables, too many branches, pylint: disable=R0912,R0914
+        submitter_result = None
         issue_id = None
-        # pylint: disable=R0912,R0914,R0915
-        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and sickbeard.DEBUG and len(classes.ErrorViewer.errors) > 0):
-            submitter_result = u'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
+
+        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and sickbeard.DEBUG and len(
+                classes.ErrorViewer.errors) > 0):
+            submitter_result = 'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
 
         try:
             from sickbeard.versionChecker import CheckVersion
+
             checkversion = CheckVersion()
             checkversion.check_for_new_version()
             commits_behind = checkversion.updater.get_num_commits_behind()
         except Exception:
-            submitter_result = u'Could not check if your SickRage is updated, unable to submit issue ticket to GitHub!'
+            submitter_result = 'Could not check if your SiCKRAGE is updated, unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
 
         if commits_behind is None or commits_behind > 0:
-            submitter_result = u'Please update SickRage, unable to submit issue ticket to GitHub with an outdated version!'
-            return  submitter_result, issue_id
+            submitter_result = 'Please update SiCKRAGE, unable to submit issue ticket to GitHub with an outdated version!'
+            return submitter_result, issue_id
 
         if self.submitter_running:
-            submitter_result = u'Issue submitter is running, please wait for it to complete'
+            submitter_result = 'Issue submitter is running, please wait for it to complete'
             return submitter_result, issue_id
 
         self.submitter_running = True
@@ -205,13 +140,13 @@ class Logger(object):
             # read log file
             log_data = None
 
-            if os.path.isfile(self.logFile):
-                with ek(codecs.open, *[self.logFile, 'r', 'utf-8']) as f:
+            if ek(os.path.isfile, self.logFile):
+                with ek(io.open, self.logFile, 'r') as f:
                     log_data = f.readlines()
 
             for i in range(1, int(sickbeard.LOG_NR)):
-                if os.path.isfile(self.logFile + ".%i" % i) and (len(log_data) <= 500):
-                    with ek(codecs.open, *[self.logFile + ".%i" % i, 'r', 'utf-8']) as f:
+                if ek(os.path.isfile, self.logFile + ".%i" % i) and (len(log_data) <= 500):
+                    with ek(io.open, self.logFile + ".%i" % i, 'r') as f:
                         log_data += f.readlines()
 
             log_data = [line for line in reversed(log_data)]
@@ -220,77 +155,74 @@ class Logger(object):
             for curError in sorted(classes.ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
 
                 try:
-                    title_Error = ss(str(curError.title))
+                    title_Error = "[APP SUBMITTED]: {}".format(curError.title)
                     if not len(title_Error) or title_Error == 'None':
-                        title_Error = re.match(r"^[A-Z0-9\-\[\] :]+::\s*(.*)$", ss(curError.message)).group(1)
+                        title_Error = re.match(r"^[A-Z0-9\-\[\] :]+::\s*(.*)$", curError.message).group(1)
 
                     if len(title_Error) > 1000:
                         title_Error = title_Error[0:1000]
                 except Exception as e:
-                    self.log("Unable to get error title : " + ex(e), ERROR)
+                    super(CustomLogger, self).error("Unable to get error title : {}".format(ex(e)))
 
                 gist = None
-                regex = r"^(%s)\s+([A-Z]+)\s+([0-9A-Z\-]+)\s*(.*)$" % curError.time
+                regex = r"^({})\s+([A-Z]+)\s+([0-9A-Z\-]+)\s*(.*)$".format(curError.time)
                 for i, x in enumerate(log_data):
-                    x = ss(x)
                     match = re.match(regex, x)
                     if match:
                         level = match.group(2)
-                        if reverseNames[level] == ERROR:
-                            paste_data = "".join(log_data[i:i+50])
+                        if level == logging.ERROR:
+                            paste_data = "".join(log_data[i:i + 50])
                             if paste_data:
                                 gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
                             break
                     else:
                         gist = 'No ERROR found'
 
-                message = u"### INFO\n"
-                message += u"Python Version: **" + sys.version[:120].replace('\n', '') + "**\n"
-                message += u"Operating System: **" + platform.platform() + "**\n"
-                if not 'Windows' in platform.platform():
-                    try:
-                        message += u"Locale: " + locale.getdefaultlocale()[1] + "\n"
-                    except Exception:
-                        message += u"Locale: unknown" + "\n"
-                message += u"Branch: **" + sickbeard.BRANCH + "**\n"
-                message += u"Commit: SiCKRAGETV/SickRage@" + sickbeard.CUR_COMMIT_HASH + "\n"
+                message = "### INFO\n"
+                message += "Python Version: **" + sys.version[:120].replace('\n', '') + "**\n"
+                message += "Operating System: **" + platform.platform() + "**\n"
+                try:
+                    message += "Locale: " + locale.getdefaultlocale()[1] + "\n"
+                except Exception:
+                    message += "Locale: unknown" + "\n"
+                message += "Branch: **" + sickbeard.BRANCH + "**\n"
+                message += "Commit: SiCKRAGETV/SiCKRAGE@" + sickbeard.CUR_COMMIT_HASH + "\n"
                 if gist and gist != 'No ERROR found':
-                    message += u"Link to Log: " + gist.html_url + "\n"
+                    message += "Link to Log: " + gist.html_url + "\n"
                 else:
-                    message += u"No Log available with ERRORS: " + "\n"
-                message += u"### ERROR\n"
-                message += u"```\n"
+                    message += "No Log available with ERRORS: " + "\n"
+                message += "### ERROR\n"
+                message += "```\n"
                 message += curError.message + "\n"
-                message += u"```\n"
-                message += u"---\n"
-                message += u"_STAFF NOTIFIED_: @SiCKRAGETV/owners @SiCKRAGETV/moderators"
+                message += "```\n"
+                message += "---\n"
+                message += "_STAFF NOTIFIED_: @SiCKRAGETV/owners @SiCKRAGETV/moderators"
 
-                title_Error = u"[APP SUBMITTED]: " + title_Error
                 reports = gh.get_organization(gh_org).get_repo(gh_repo).get_issues(state="all")
 
-                def is_mako_error(title):
-                    return re.search(r'Loaded module.*not found in sys\.modules', title) is not None
-
                 def is_ascii_error(title):
-                    return re.search(r"'.*' codec can't encode character .* in position .*:", title) is not None
+                    return re.search(r".* codec can't .*code .* in position .*:", title) is not None
 
-                mako_error = is_mako_error(title_Error)
+                def is_malformed_error(title):
+                    return re.search(r".* not well-formed \(invalid token\): line .* column .*", title) is not None
+
                 ascii_error = is_ascii_error(title_Error)
+                malformed_error = is_malformed_error(title_Error)
 
                 issue_found = False
                 for report in reports:
                     if title_Error.rsplit(' :: ')[-1] in report.title or \
-           	         (mako_error and is_mako_error(report.title)) or \
-                	    (ascii_error and is_ascii_error(report.title)):
+                            (malformed_error and is_malformed_error(report.title)) or \
+                            (ascii_error and is_ascii_error(report.title)):
 
                         issue_id = report.number
-                        if not report.raw_data['locked']:
+                        if not report.raw_data[b'locked']:
                             if report.create_comment(message):
-                                submitter_result = u'Commented on existing issue #%s successfully!' % issue_id
+                                submitter_result = 'Commented on existing issue #%s successfully!' % issue_id
                             else:
-                                submitter_result = u'Failed to comment on found issue #%s!' % issue_id
+                                submitter_result = 'Failed to comment on found issue #%s!' % issue_id
                         else:
-                            submitter_result = u'Issue #%s is locked, check github to find info about the error.' % issue_id
+                            submitter_result = 'Issue #%s is locked, check github to find info about the error.' % issue_id
 
                         issue_found = True
                         break
@@ -299,34 +231,63 @@ class Logger(object):
                     issue = gh.get_organization(gh_org).get_repo(gh_repo).create_issue(title_Error, message)
                     if issue:
                         issue_id = issue.number
-                        submitter_result = u'Your issue ticket #%s was submitted successfully!' % issue_id
+                        submitter_result = 'Your issue ticket #%s was submitted successfully!' % issue_id
                     else:
-                        submitter_result = u'Failed to create a new issue!'
+                        submitter_result = 'Failed to create a new issue!'
 
                 if issue_id and curError in classes.ErrorViewer.errors:
                     # clear error from error list
                     classes.ErrorViewer.errors.remove(curError)
 
         except Exception as e:
-            self.log(traceback.format_exc(), ERROR)
-            submitter_result = u'Exception generated in issue submitter, please check the log'
-            issue_id = None
+            super(CustomLogger, self).error(traceback.format_exc())
+            submitter_result = 'Exception generated in issue submitter, please check the log'
         finally:
             self.submitter_running = False
-            return submitter_result, issue_id
 
-# pylint: disable=R0903
-class Wrapper(object):
-    instance = Logger()
-
-    def __init__(self, wrapped):
-        self.wrapped = wrapped
-
-    def __getattr__(self, name):
-        try:
-            return getattr(self.wrapped, name)
-        except AttributeError:
-            return getattr(self.instance, name)
+        return submitter_result, issue_id
 
 
-_globals = sys.modules[__name__] = Wrapper(sys.modules[__name__])
+class SRLogger(object):
+    def __init__(self, logFile=None, consoleLogging=True, fileLogging=False, debugLogging=False, logSize=None,
+                 logNr=None, censoredItems=None):
+        logging.setLoggerClass(CustomLogger)
+        self.logFile = logFile
+        self.consoleLogging = consoleLogging
+        self.fileLogging = fileLogging
+        self.debugLogging = debugLogging
+        self.logSize = logSize
+        self.logNr = logNr
+        self.censoredItems = censoredItems
+        self.allowedLoggers = ['tornado.general', 'tornado.application']
+
+        # set allowed loggers
+        for x in [logging.getLogger(logger) for logger in logging.Logger.manager.loggerDict.keys()]:
+            if x.name not in self.allowedLoggers:
+                x.addHandler(NullHandler())
+                x.propagate = 0
+
+        # set custom root and parant loggers
+        logging.addLevelName(logLevels[b'DB'], 'DB')
+        logging.getLogger().setLevel(logLevels[b'DB'])
+
+        # attach data censor log adapter
+        CensorLogAdapter(logging.getLogger(), self.censoredItems)
+
+        # console log handler
+        if self.consoleLogging:
+            console = logging.StreamHandler()
+            console.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(message)s', '%H:%M:%S'))
+            console.setLevel(logLevels[b'INFO'] if not self.debugLogging else logLevels[b'DEBUG'])
+            logging.getLogger().addHandler(console)
+
+        # rotating log file handler
+        if self.fileLogging and self.logFile:
+            rfh = logging.handlers.RotatingFileHandler(
+                    self.logFile,
+                    maxBytes=self.logSize or 1048576,
+                    backupCount=self.logNr or 5
+            )
+            rfh.setFormatter(logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', dateTimeFormat))
+            rfh.setLevel(logLevels[b'INFO'] if not self.debugLogging else logLevels[b'DEBUG'])
+            logging.getLogger().addHandler(rfh)

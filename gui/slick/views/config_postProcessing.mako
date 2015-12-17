@@ -11,7 +11,8 @@
 %>
 
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/configPostProcessing.js?${sbPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/new/config_postProcessing.js"></script>
+    <script type="text/javascript" src="${srRoot}/js/configPostProcessing.js?${sbPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/config.js?${sbPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/new/home.js"></script>
 </%block>
@@ -23,10 +24,8 @@
     <h1 class="title">${title}</h1>
 % endif
 <div id="config">
-<div id="config-content">
-
-<form id="configForm" action="savePostProcessing" method="post">
-
+    <div id="config-content">
+        <form id="configForm" action="savePostProcessing" method="post">
             <div id="config-components">
                 <ul>
                     <li><a href="#core-component-group1">Post-Processing</a></li>
@@ -47,13 +46,13 @@
                             </label>
                             <label class="nocheck" for="process_automatically">
                                 <span class="component-title">&nbsp;</span>
-                                <span class="component-desc"><b>NOTE:</b> Do not use if you use an external PostProcesing script</span>
+                                <span class="component-desc"><b>NOTE:</b> Do not use if you use an external PostProcessing script</span>
                             </label>
                         </div>
                         <div class="field-pair">
                             <label class="nocheck" for="tv_download_dir">
                                 <span class="component-title">Post Processing Dir</span>
-                                <input type="text" name="tv_download_dir" id="tv_download_dir" value="${sickbeard.TV_DOWNLOAD_DIR}" class="form-control input-sm input350" />
+                                <input type="text" name="tv_download_dir" id="tv_download_dir" value="${sickbeard.TV_DOWNLOAD_DIR}" class="form-control input-sm input350" autocapitalize="off" />
                             </label>
                             <label class="nocheck">
                                 <span class="component-title">&nbsp;</span>
@@ -105,7 +104,7 @@
                         <div class="field-pair">
                             <label class="nocheck">
                                 <span class="component-title">Sync File Extensions</span>
-                                <input type="text" name="sync_files" id="sync_files" value="${sickbeard.SYNC_FILES}" class="form-control input-sm input350" />
+                                <input type="text" name="sync_files" id="sync_files" value="${sickbeard.SYNC_FILES}" class="form-control input-sm input350" autocapitalize="off"/>
                             </label>
                             <label class="nocheck">
                                 <span class="component-title">&nbsp;</span>
@@ -229,14 +228,14 @@
                         <div class="field-pair">
                             <label class="nocheck">
                                 <span class="component-title">Extra Scripts</span>
-                                <input type="text" name="extra_scripts" value="${'|'.join(sickbeard.EXTRA_SCRIPTS)}" class="form-control input-sm input350" />
+                                <input type="text" name="extra_scripts" value="${'|'.join(sickbeard.EXTRA_SCRIPTS)}" class="form-control input-sm input350" autocapitalize="off" />
                             </label>
                             <label class="nocheck">
                                 <span class="component-title">&nbsp;</span>
                                 <span class="component-desc">See <a href="https://github.com/SiCKRAGETV/sickrage-issues/wiki/Post-Processing#extra-scripts"><font color='red'><b>Wiki</b></font></a> for script arguments description and usage.</span>
                             </label>
                         </div>
-                        <input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
+                        <input type="submit" class="btn config_submitter" value="Save Changes" /><br>
                     </fieldset>
                 </div><!-- /component-group1 //-->
                 <div id="core-component-group2" class="component-group">
@@ -247,7 +246,6 @@
                     </div>
 
                     <fieldset class="component-group-list">
-
                         <div class="field-pair">
                             <label class="nocheck" for="name_presets">
                                 <span class="component-title">Name Pattern:</span>
@@ -280,7 +278,7 @@
                                 </label>
                                 <label class="nocheck">
                                     <span class="component-title">&nbsp;</span>
-                                    <span class="component-desc"><b>NOTE:</b> Don't forget to add quality pattern. Otherwise after post-procesing the episode will have UNKNOWN quality</span>
+                                    <span class="component-desc"><b>NOTE:</b> Don't forget to add quality pattern. Otherwise after post-processing the episode will have UNKNOWN quality</span>
                                  </label>
                             </div>
 
@@ -416,7 +414,7 @@
                                         </tr>
                                     </tbody>
                                   </table>
-                                  <br/>
+                                  <br>
                             </div>
                         </div>
 
@@ -438,7 +436,7 @@
                             <div class="example">
                                 <span class="jumbo" id="naming_example">&nbsp;</span>
                             </div>
-                            <br/>
+                            <br>
                         </div>
 
                         <div id="naming_example_multi_div">
@@ -446,7 +444,7 @@
                             <div class="example">
                                 <span class="jumbo" id="naming_example_multi">&nbsp;</span>
                             </div>
-                            <br/>
+                            <br>
                         </div>
 
                         <div class="field-pair">
@@ -624,7 +622,7 @@
                                             </tr>
                                         </tbody>
                                       </table>
-                                      <br/>
+                                      <br>
                                 </div>
                             </div><!-- /naming_abd_custom -->
 
@@ -633,7 +631,7 @@
                                 <div class="example">
                                     <span class="jumbo" id="naming_abd_example">&nbsp;</span>
                                 </div>
-                                <br/>
+                                <br>
                             </div>
 
                         </div><!-- /naming_abd_different -->
@@ -801,7 +799,7 @@
                                             </tr>
                                         </tbody>
                                       </table>
-                                      <br/>
+                                      <br>
                                 </div>
                             </div><!-- /naming_sports_custom -->
 
@@ -810,7 +808,7 @@
                                 <div class="example">
                                     <span class="jumbo" id="naming_sports_example">&nbsp;</span>
                                 </div>
-                                <br/>
+                                <br>
                             </div>
 
                         </div><!-- /naming_sports_different -->
@@ -974,7 +972,7 @@
                                             </tr>
                                         </tbody>
                                       </table>
-                                      <br/>
+                                      <br>
                                 </div>
                             </div><!-- /naming_anime_custom -->
 
@@ -996,7 +994,7 @@
                                 <div class="example">
                                     <span class="jumbo" id="naming_example_anime">&nbsp;</span>
                                 </div>
-                                <br/>
+                                <br>
                             </div>
 
                             <div id="naming_example_multi_anime_div">
@@ -1004,7 +1002,7 @@
                                 <div class="example">
                                     <span class="jumbo" id="naming_example_multi_anime">&nbsp;</span>
                                 </div>
-                                <br/>
+                                <br>
                             </div>
 
                             <div class="field-pair">
@@ -1046,7 +1044,7 @@
                         </div><!-- /naming_anime_different -->
 
                         <div></div>
-                        <input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
+                        <input type="submit" class="btn config_submitter" value="Save Changes" /><br>
 
                     </fieldset>
                 </div><!-- /component-group2 //-->
@@ -1112,19 +1110,17 @@
                         </div>
                         % endfor
 
-                        <div class="clearfix"></div><br/>
+                        <div class="clearfix"></div><br>
 
-                        <input type="submit" class="btn config_submitter" value="Save Changes" /><br/>
+                        <input type="submit" class="btn config_submitter" value="Save Changes" /><br>
                     </fieldset>
                 </div><!-- /component-group3 //-->
 
-                <br/>
+                <br>
                 <h6 class="pull-right"><b>All non-absolute folder locations are relative to <span class="path">${sickbeard.DATA_DIR}</span></b> </h6>
                 <input type="submit" class="btn pull-left config_submitter button" value="Save Changes" />
-
         </form>
     </div>
 </div>
-
 <div class="clearfix"></div>
 </%block>

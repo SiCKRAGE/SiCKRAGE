@@ -21,27 +21,27 @@
 <table id="massUpdateTable" class="sickbeardTable tablesorter" cellspacing="1" border="0" cellpadding="0">
     <thead>
         <tr>
-            <th class="col-checkbox">Edit<br/><input type="checkbox" class="bulkCheck" id="editCheck" /></th>
+            <th class="col-checkbox">Edit<br><input type="checkbox" class="bulkCheck" id="editCheck" /></th>
             <th class="nowrap" style="text-align: left;">Show Name</th>
             <th class="col-quality">Quality</th>
             <th class="col-legend">Sports</th>
             <th class="col-legend">Scene</th>
             <th class="col-legend">Anime</th>
-            <th class="col-legend">Flat Folders</th>
+            <th class="col-legend">Season folders</th>
             <th class="col-legend">Archive first match</th>
             <th class="col-legend">Paused</th>
             <th class="col-legend">Subtitle</th>
             <th class="col-legend">Default Ep<br>Status</th>
             <th class="col-legend">Status</th>
-            <th width="1%">Update<br/><input type="checkbox" class="bulkCheck" id="updateCheck" /></th>
-            <th width="1%">Rescan<br/><input type="checkbox" class="bulkCheck" id="refreshCheck" /></th>
-            <th width="1%">Rename<br/><input type="checkbox" class="bulkCheck" id="renameCheck" /></th>
+            <th width="1%">Update<br><input type="checkbox" class="bulkCheck" id="updateCheck" /></th>
+            <th width="1%">Rescan<br><input type="checkbox" class="bulkCheck" id="refreshCheck" /></th>
+            <th width="1%">Rename<br><input type="checkbox" class="bulkCheck" id="renameCheck" /></th>
         % if sickbeard.USE_SUBTITLES:
-            <th width="1%">Search Subtitle<br/><input type="checkbox" class="bulkCheck" id="subtitleCheck" /></th>
+            <th width="1%">Search Subtitle<br><input type="checkbox" class="bulkCheck" id="subtitleCheck" /></th>
         % endif
             <!-- <th>Force Metadata Regen <input type="checkbox" class="bulkCheck" id="metadataCheck" /></th>//-->
-            <th width="1%">Delete<br/><input type="checkbox" class="bulkCheck" id="deleteCheck" /></th>
-            <th width="1%">Remove<br/><input type="checkbox" class="bulkCheck" id="removeCheck" /></th>
+            <th width="1%">Delete<br><input type="checkbox" class="bulkCheck" id="deleteCheck" /></th>
+            <th width="1%">Remove<br><input type="checkbox" class="bulkCheck" id="removeCheck" /></th>
         </tr>
     </thead>
 
@@ -107,7 +107,7 @@
             <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_sports) == 1]} width="16" height="16" /></td>
             <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_scene) == 1]} width="16" height="16" /></td>
             <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_anime) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.flatten_folders) == 1]} width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[not int(curShow.flatten_folders) == 1]} width="16" height="16" /></td>
             <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.archive_firstmatch) == 1]} width="16" height="16" /></td>
             <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.paused) == 1]} width="16" height="16" /></td>
             <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.subtitles) == 1]} width="16" height="16" /></td>

@@ -17,21 +17,18 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-
+from __future__ import unicode_literals
 
 import httplib
 import datetime
-
-import sickbeard
-
+import logging
 from base64 import standard_b64encode
 import xmlrpclib
 
+import sickbeard
 from sickbeard.providers.generic import GenericProvider
-
-from sickbeard import logger, helpers
-
-from common import Quality
+from sickbeard import helpers
+from sickbeard.common import Quality
 
 
 def sendNZB(nzb, proper=False):
@@ -46,14 +43,14 @@ def sendNZB(nzb, proper=False):
     category = sickbeard.NZBGET_CATEGORY
     if nzb.show.is_anime:
         category = sickbeard.NZBGET_CATEGORY_ANIME
-    
+
     if sickbeard.NZBGET_USE_HTTPS:
         nzbgetXMLrpc = "https://%(username)s:%(password)s@%(host)s/xmlrpc"
     else:
         nzbgetXMLrpc = "http://%(username)s:%(password)s@%(host)s/xmlrpc"
 
     if sickbeard.NZBGET_HOST == None:
-        logger.log(u"No NZBget host found in configuration. Please configure it.", logger.ERROR)
+        logging.error("No NZBget host found in configuration. Please configure it.")
         return False
 
     url = nzbgetXMLrpc % {"host": sickbeard.NZBGET_HOST, "username": sickbeard.NZBGET_USERNAME,
@@ -61,22 +58,21 @@ def sendNZB(nzb, proper=False):
 
     nzbGetRPC = xmlrpclib.ServerProxy(url)
     try:
-        if nzbGetRPC.writelog("INFO", "SickRage connected to drop of %s any moment now." % (nzb.name + ".nzb")):
-            logger.log(u"Successful connected to NZBget", logger.DEBUG)
+        if nzbGetRPC.writelog("INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
+            logging.debug("Successful connected to NZBget")
         else:
-            logger.log(u"Successful connected to NZBget, but unable to send a message", logger.ERROR)
+            logging.error("Successful connected to NZBget, but unable to send a message")
 
     except httplib.socket.error:
-        logger.log(
-            u"Please check your NZBget host and port (if it is running). NZBget is not responding to this combination",
-            logger.ERROR)
+        logging.error(
+                "Please check your NZBget host and port (if it is running). NZBget is not responding to this combination")
         return False
 
-    except xmlrpclib.ProtocolError, e:
-        if (e.errmsg == "Unauthorized"):
-            logger.log(u"NZBget username or password is incorrect.", logger.ERROR)
+    except xmlrpclib.ProtocolError as e:
+        if e.errmsg == "Unauthorized":
+            logging.error("NZBget username or password is incorrect.")
         else:
-            logger.log(u"Protocol Error: " + e.errmsg, logger.ERROR)
+            logging.error("Protocol Error: " + e.errmsg)
         return False
 
     dupekey = ""
@@ -85,13 +81,17 @@ def sendNZB(nzb, proper=False):
     for curEp in nzb.episodes:
         if dupekey == "":
             if curEp.show.indexer == 1:
-                dupekey = "SickRage-" + str(curEp.show.indexerid)
+                dupekey = "SiCKRAGE-" + str(curEp.show.indexerid)
             elif curEp.show.indexer == 2:
-                dupekey = "SickRage-tvr" + str(curEp.show.indexerid)
+                dupekey = "SiCKRAGE-tvr" + str(curEp.show.indexerid)
         dupekey += "-" + str(curEp.season) + "." + str(curEp.episode)
         if datetime.date.today() - curEp.airdate <= datetime.timedelta(days=7):
             addToTop = True
             nzbgetprio = sickbeard.NZBGET_PRIORITY
+        else:
+            category = sickbeard.NZBGET_CATEGORY_BACKLOG
+            if nzb.show.is_anime:
+                category = sickbeard.NZBGET_CATEGORY_ANIME_BACKLOG
 
     if nzb.quality != Quality.UNKNOWN:
         dupescore = nzb.quality * 100
@@ -103,8 +103,8 @@ def sendNZB(nzb, proper=False):
         data = nzb.extraInfo[0]
         nzbcontent64 = standard_b64encode(data)
 
-    logger.log(u"Sending NZB to NZBget")
-    logger.log(u"URL: " + url, logger.DEBUG)
+    logging.info("Sending NZB to NZBget")
+    logging.debug("URL: " + url)
 
     try:
         # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old command
@@ -117,7 +117,7 @@ def sendNZB(nzb, proper=False):
                 if nzb.resultType == "nzb":
                     genProvider = GenericProvider("")
                     data = genProvider.getURL(nzb.url)
-                    if (data == None):
+                    if data == None:
                         return False
                     nzbcontent64 = standard_b64encode(data)
                 nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
@@ -129,10 +129,11 @@ def sendNZB(nzb, proper=False):
                 nzbget_result = nzbGetRPC.appendurl(nzb.name + ".nzb", category, nzbgetprio, False,
                                                     nzb.url, False, dupekey, dupescore, "score")
         # v13+ has a new combined append method that accepts both (url and content)
-        # also the return value has changed from boolean to integer 
+        # also the return value has changed from boolean to integer
         # (Positive number representing NZBID of the queue item. 0 and negative numbers represent error codes.)
         elif nzbget_version >= 13:
-            nzbget_result = True if nzbGetRPC.append(nzb.name + ".nzb", nzbcontent64 if nzbcontent64 is not None else nzb.url,
+            nzbget_result = True if nzbGetRPC.append(nzb.name + ".nzb",
+                                                     nzbcontent64 if nzbcontent64 is not None else nzb.url,
                                                      category, nzbgetprio, False, False, dupekey, dupescore,
                                                      "score") > 0 else False
         else:
@@ -144,11 +145,11 @@ def sendNZB(nzb, proper=False):
                                                     nzb.url)
 
         if nzbget_result:
-            logger.log(u"NZB sent to NZBget successfully", logger.DEBUG)
+            logging.debug("NZB sent to NZBget successfully")
             return True
         else:
-            logger.log(u"NZBget could not add %s to the queue" % (nzb.name + ".nzb"), logger.ERROR)
+            logging.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
             return False
-    except:
-        logger.log(u"Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"), logger.ERROR)
+    except Exception:
+        logging.error("Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
         return False

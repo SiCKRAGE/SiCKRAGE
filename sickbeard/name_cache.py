@@ -16,13 +16,17 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
+
+import logging
 import threading
 import sickbeard
-from sickbeard import db
-from sickbeard import logger
+from sickbeard import db, scene_exceptions
 
 nameCache = {}
 nameCacheLock = threading.Lock()
+
 
 def addNameToCache(name, indexer_id=0):
     """
@@ -31,9 +35,6 @@ def addNameToCache(name, indexer_id=0):
     :param name: The show name to cache
     :param indexer_id: the TVDB id that this show should be cached with (can be None/0 for unknown)
     """
-
-    global nameCache
-
     cacheDB = db.DBConnection('cache.db')
 
     # standardize the name we're using to account for small differences in providers
@@ -50,22 +51,15 @@ def retrieveNameFromCache(name):
     :param name: The show name to look up.
     :return: the TVDB id that resulted from the cache lookup or None if the show wasn't found in the cache
     """
-    global nameCache
-
     name = sickbeard.helpers.full_sanitizeSceneName(name)
     if name in nameCache:
         return int(nameCache[name])
+
 
 def clearCache(indexerid=0):
     """
     Deletes all "unknown" entries from the cache (names with indexer_id of 0).
     """
-    global nameCache
-
-    # init name cache
-    if not nameCache:
-        nameCache = {}
-
     cacheDB = db.DBConnection('cache.db')
     cacheDB.action("DELETE FROM scene_names WHERE indexer_id = ? OR indexer_id = ?", (indexerid, 0))
 
@@ -78,7 +72,7 @@ def saveNameCacheToDb():
     """Commit cache to database file"""
     cacheDB = db.DBConnection('cache.db')
 
-    for name, indexer_id in nameCache.iteritems():
+    for name, indexer_id in nameCache.items():
         cacheDB.action("INSERT OR REPLACE INTO scene_names (indexer_id, name) VALUES (?, ?)", [indexer_id, name])
 
 
@@ -87,22 +81,24 @@ def buildNameCache(show=None):
 
     :param show: Specify show to build name cache for, if None, just do all shows
     """
-    global nameCache
     with nameCacheLock:
-        sickbeard.scene_exceptions.retrieve_exceptions()
+        scene_exceptions.retrieve_exceptions()
 
     if not show:
-        logger.log(u"Building internal name cache for all shows", logger.INFO)
+        logging.info("Building internal name cache for all shows")
         for show in sickbeard.showList:
             buildNameCache(show)
     else:
-        logger.log(u"Building internal name cache for " + show.name, logger.DEBUG)
+        logging.debug("Building internal name cache for [{}]".format(show.name))
         clearCache(show.indexerid)
-        for curSeason in [-1] + sickbeard.scene_exceptions.get_scene_seasons(show.indexerid):
-            for name in list(set(sickbeard.scene_exceptions.get_scene_exceptions(show.indexerid, season=curSeason) + [show.name])):
+        for curSeason in [-1] + scene_exceptions.get_scene_seasons(show.indexerid):
+            for name in list(set(scene_exceptions.get_scene_exceptions(show.indexerid, season=curSeason) + [
+                show.name])):
                 name = sickbeard.helpers.full_sanitizeSceneName(name)
                 if name in nameCache:
                     continue
 
                 nameCache[name] = int(show.indexerid)
-        logger.log(u"Internal name cache for " + show.name + " set to: [ " + u', '.join([key for key, value in nameCache.iteritems() if value == show.indexerid]) +" ]" , logger.DEBUG)
+        logging.debug("Internal name cache for {} set to: [{}]".format(show.name,
+                                                                     [key for key, value in nameCache.items() if
+                                                                      value == show.indexerid]))

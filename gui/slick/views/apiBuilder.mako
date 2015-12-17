@@ -77,8 +77,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="${srRoot}/apibuilder/" title="SickRage">
-                <img alt="SickRage" src="${srRoot}/images/sickrage.png" style="height: 50px;" class="img-responsive pull-left" />
+            <a class="navbar-brand" href="${srRoot}/apibuilder/" title="SiCKRAGE">
+                <img alt="SiCKRAGE" src="${srRoot}/images/sickrage.png" style="height: 50px;" class="img-responsive pull-left" />
                 <p class="navbar-text hidden-xs">${title}</p>
             </a>
         </div>
@@ -96,7 +96,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="${srRoot}/home/">Back to SickRage</a></li>
                 <li class="hidden-xs">
-                    <a href="https://github.com/SiCKRAGETV/SickRage/wiki/Donations" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;">
+                    <a href="https://github.com/SiCKRAGETV/SiCKRAGE/wiki/Donations" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;">
                         <img src="${srRoot}/images/donate.jpg" alt="[donate]" class="navbaricon" />
                     </a>
                 </li>
@@ -149,22 +149,22 @@
 
                     <h4>Playground</h4>
 
-                    URL: <kbd id="command-${command_id}-base-url">/api/${apikey}/?cmd=${command}</kbd><br />
+                    URL: <kbd id="command-${command_id}-base-url">/api/${apikey}/?cmd=${command}</kbd><br>
 
                     % if help['data']['requiredParameters']:
-                        Required parameters: ${display_parameters_playground(help['data']['requiredParameters'], True, command_id)}<br />
+                        Required parameters: ${display_parameters_playground(help['data']['requiredParameters'], True, command_id)}<br>
                     % endif
 
                     % if help['data']['optionalParameters']:
-                        Optional parameters: ${display_parameters_playground(help['data']['optionalParameters'], False, command_id)}<br />
+                        Optional parameters: ${display_parameters_playground(help['data']['optionalParameters'], False, command_id)}<br>
                     % endif
 
-                    <button class="btn btn-primary" data-action="api-call" data-command-name="${command_id}" data-base-url="command-${command_id}-base-url" data-target="#command-${command_id}-response" data-time="#command-${command_id}-time" data-url="#command-${command_id}-url">Call API</button><br />
+                    <button class="btn btn-primary" data-action="api-call" data-command-name="${command_id}" data-base-url="command-${command_id}-base-url" data-target="#command-${command_id}-response" data-time="#command-${command_id}-time" data-url="#command-${command_id}-url">Call API</button><br>
 
                     <div class="result-wrapper hidden">
                         <div class="clearfix">
                             <span class="pull-left">
-                                Response: <strong id="command-${command_id}-time"></strong><br />
+                                Response: <strong id="command-${command_id}-time"></strong><br>
                                 URL: <kbd id="command-${command_id}-url"></kbd>
                             </span>
                             <span class="pull-right">

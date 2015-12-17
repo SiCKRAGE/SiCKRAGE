@@ -2,42 +2,9 @@
 <%!
     import sickbeard
     import calendar
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import Quality, qualityPresets, qualityPresetStrings
-    from sickbeard import db, sbdatetime, network_timezones
-    import datetime
+    from sickbeard import sbdatetime
+    from sickbeard import network_timezones
     import re
-
-    myDB = db.DBConnection()
-    today = str(datetime.date.today().toordinal())
-    layout = sickbeard.HOME_LAYOUT
-
-    status_quality  = '(' + ','.join([str(x) for x in Quality.SNATCHED + Quality.SNATCHED_PROPER]) + ')'
-    status_download = '(' + ','.join([str(x) for x in Quality.DOWNLOADED + Quality.ARCHIVED]) + ')'
-
-    sql_statement  = 'SELECT showid, '
-
-    sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 AND status IN ' + status_quality + ') AS ep_snatched, '
-    sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 AND status IN ' + status_download + ') AS ep_downloaded, '
-    sql_statement += '(SELECT COUNT(*) FROM tv_episodes WHERE showid=tv_eps.showid AND season > 0 AND episode > 0 AND airdate > 1 '
-    sql_statement += ' AND ((airdate <= ' + today + ' AND (status = ' + str(SKIPPED) + ' OR status = ' + str(WANTED) + ' OR status = ' + str(FAILED) + ')) '
-    sql_statement += ' OR (status IN ' + status_quality + ') OR (status IN ' + status_download + '))) AS ep_total, '
-
-    sql_statement += ' (SELECT airdate FROM tv_episodes WHERE showid=tv_eps.showid AND airdate >= ' + today + ' AND (status = ' + str(UNAIRED) + ' OR status = ' + str(WANTED) + ') ORDER BY airdate ASC LIMIT 1) AS ep_airs_next, '
-    sql_statement += ' (SELECT airdate FROM tv_episodes WHERE showid=tv_eps.showid AND airdate > 1 AND status <> ' + str(UNAIRED) + ' ORDER BY airdate DESC LIMIT 1) AS ep_airs_prev '
-    sql_statement += ' FROM tv_episodes tv_eps GROUP BY showid'
-
-    sql_result = myDB.select(sql_statement)
-
-    show_stat = {}
-    max_download_count = 1000
-
-    for cur_result in sql_result:
-        show_stat[cur_result['showid']] = cur_result
-        if cur_result['ep_total'] > max_download_count:
-            max_download_count = cur_result['ep_total']
-
-    max_download_count = max_download_count * 100
 %>
 <%block name="metas">
 <meta data-var="max_download_count" data-content="${max_download_count}">
@@ -54,24 +21,24 @@
 % endif
 
 <div id="HomeLayout" class="pull-right hidden-print" style="margin-top: -40px;">
-    % if layout != 'poster':
+    % if sickbeard.HOME_LAYOUT != 'poster':
         <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>
     % endif
     <span> Layout:
         <select name="layout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
-            <option value="${srRoot}/setHomeLayout/?layout=poster" ${('', 'selected="selected"')[layout == 'poster']}>Poster</option>
-            <option value="${srRoot}/setHomeLayout/?layout=small" ${('', 'selected="selected"')[layout == 'small']}>Small Poster</option>
-            <option value="${srRoot}/setHomeLayout/?layout=banner" ${('', 'selected="selected"')[layout == 'banner']}>Banner</option>
-            <option value="${srRoot}/setHomeLayout/?layout=simple" ${('', 'selected="selected"')[layout == 'simple']}>Simple</option>
+            <option value="${srRoot}/setHomeLayout/?layout=poster" ${('', 'selected="selected"')[sickbeard.HOME_LAYOUT == 'poster']}>Poster</option>
+            <option value="${srRoot}/setHomeLayout/?layout=small" ${('', 'selected="selected"')[sickbeard.HOME_LAYOUT == 'small']}>Small Poster</option>
+            <option value="${srRoot}/setHomeLayout/?layout=banner" ${('', 'selected="selected"')[sickbeard.HOME_LAYOUT == 'banner']}>Banner</option>
+            <option value="${srRoot}/setHomeLayout/?layout=simple" ${('', 'selected="selected"')[sickbeard.HOME_LAYOUT == 'simple']}>Simple</option>
         </select>
-        % if layout != 'poster':
+        % if sickbeard.HOME_LAYOUT != 'poster':
         Search:
             <input class="search form-control form-control-inline input-sm input200" type="search" data-column="2" placeholder="Search Show Name">
             <button type="button" class="resetsorting btn btn-inline">Reset Search</button>
         % endif
     </span>
 
-    % if layout == 'poster':
+    % if sickbeard.HOME_LAYOUT == 'poster':
     &nbsp;
     <span> Sort By:
         <select id="postersort" class="form-control form-control-inline input-sm">
@@ -99,8 +66,8 @@
     % if curListType == "Anime":
         <h1 class="header">Anime List</h1>
     % endif
-% if layout == 'poster':
-<div id="${('container', 'container-anime')[curListType == 'Anime' and layout == 'poster']}" class="clearfix">
+% if sickbeard.HOME_LAYOUT == 'poster':
+<div id="${('container', 'container-anime')[curListType == 'Anime' and sickbeard.HOME_LAYOUT == 'poster']}" class="clearfix">
 <div class="posterview">
 % for curLoadingShow in sickbeard.showQueueScheduler.action.loadingShowList:
     % if curLoadingShow.show == None:
@@ -220,7 +187,7 @@
                 </td>
 
                 <td class="show-table">
-                    % if layout != 'simple':
+                    % if sickbeard.HOME_LAYOUT != 'simple':
                         % if curShow.network:
                             <span title="${curShow.network}"><img class="show-network-image" src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=network" alt="${curShow.network}" title="${curShow.network}" /></span>
                         % else:
@@ -377,28 +344,28 @@
         <td align="center" class="nowrap"></td>
     % endif
 
-    % if layout == 'small':
+    % if sickbeard.HOME_LAYOUT == 'small':
         <td class="tvShow">
-            <div class="imgsmallposter ${layout}">
+            <div class="imgsmallposter ${sickbeard.HOME_LAYOUT}">
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}" title="${curShow.name}">
-                    <img src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=poster_thumb" class="${layout}" alt="${curShow.indexerid}"/>
+                    <img src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=poster_thumb" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}"/>
                 </a>
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}" style="vertical-align: middle;">${curShow.name}</a>
             </div>
         </td>
-    % elif layout == 'banner':
+    % elif sickbeard.HOME_LAYOUT == 'banner':
         <td>
             <span style="display: none;">${curShow.name}</span>
-            <div class="imgbanner ${layout}">
+            <div class="imgbanner ${sickbeard.HOME_LAYOUT}">
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}">
-                <img src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=banner" class="${layout}" alt="${curShow.indexerid}" title="${curShow.name}"/>
+                <img src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=banner" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}" title="${curShow.name}"/>
             </div>
         </td>
-    % elif layout == 'simple':
+    % elif sickbeard.HOME_LAYOUT == 'simple':
         <td class="tvShow"><a href="${srRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a></td>
     % endif
 
-    % if layout != 'simple':
+    % if sickbeard.HOME_LAYOUT != 'simple':
         <td align="center">
         % if curShow.network:
             <span title="${curShow.network}" class="hidden-print"><img id="network" width="54" height="27" src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=network" alt="${curShow.network}" title="${curShow.network}" /></span>
@@ -435,7 +402,7 @@
         <%
             display_status = curShow.status
             if None is not display_status:
-                if re.search('(?i)(?:new|returning)\s*series', curShow.status):
+                if re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
                     display_status = 'Continuing'
                 elif re.search('(?i)(?:nded)', curShow.status):
                     display_status = 'Ended'

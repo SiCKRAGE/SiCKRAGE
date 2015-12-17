@@ -16,15 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import re
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 
 
 class SpeedCDProvider(generic.TorrentProvider):
-
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Speedcd")
@@ -44,7 +45,7 @@ class SpeedCDProvider(generic.TorrentProvider):
                      'search': 'http://speed.cd/V3/API/API.php',
                      'download': 'http://speed.cd/download.php?torrent=%s'}
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
         self.categories = {'Season': {'c14': 1}, 'Episode': {'c2': 1, 'c49': 1}, 'RSS': {'c14': 1, 'c2': 1, 'c49': 1}}
 
@@ -52,21 +53,18 @@ class SpeedCDProvider(generic.TorrentProvider):
 
         self.cache = SpeedCDCache(self)
 
-    def isEnabled(self):
-        return self.enabled
-
     def _doLogin(self):
 
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
         if not response:
-            logger.log(u"Unable to connect to provider", logger.WARNING)
+            logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Incorrect username or Password. Please try again.', response):
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logging.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -80,18 +78,18 @@ class SpeedCDProvider(generic.TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
-                if mode != 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                if mode is not 'RSS':
+                    logging.debug("Search string: %s " % search_string)
 
                 search_string = '+'.join(search_string.split())
 
                 post_data = dict({'/browse.php?': None, 'cata': 'yes', 'jxt': 4, 'jxw': 'b', 'search': search_string},
                                  **self.categories[mode])
 
-                parsedJSON = self.getURL(self.urls['search'], post_data=post_data, json=True)
+                parsedJSON = self.getURL(self.urls[b'search'], post_data=post_data, json=True)
                 if not parsedJSON:
                     continue
 
@@ -102,32 +100,34 @@ class SpeedCDProvider(generic.TorrentProvider):
 
                 for torrent in torrents:
 
-                    if self.freeleech and not torrent['free']:
+                    if self.freeleech and not torrent[b'free']:
                         continue
 
-                    title = re.sub('<[^>]*>', '', torrent['name'])
-                    download_url = self.urls['download'] % (torrent['id'])
-                    seeders = int(torrent['seed'])
-                    leechers = int(torrent['leech'])
-                    #FIXME
+                    title = re.sub('<[^>]*>', '', torrent[b'name'])
+                    download_url = self.urls[b'download'] % (torrent[b'id'])
+                    seeders = int(torrent[b'seed'])
+                    leechers = int(torrent[b'leech'])
+                    # FIXME
                     size = -1
 
                     if not all([title, download_url]):
                         continue
 
-                    #Filter unseeded torrent
+                    # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
-                        if mode != 'RSS':
-                            logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                        if mode is not 'RSS':
+                            logging.debug(
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers))
                         continue
 
                     item = title, download_url, size, seeders, leechers
-                    if mode != 'RSS':
-                        logger.log(u"Found result: %s " % title, logger.DEBUG)
+                    if mode is not 'RSS':
+                        logging.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -140,7 +140,6 @@ class SpeedCDProvider(generic.TorrentProvider):
 
 class SpeedCDCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         # only poll Speedcd every 20 minutes max
@@ -149,5 +148,6 @@ class SpeedCDCache(tvcache.TVCache):
     def _getRSSData(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_params)}
+
 
 provider = SpeedCDProvider()

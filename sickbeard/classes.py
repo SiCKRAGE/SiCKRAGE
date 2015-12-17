@@ -16,16 +16,18 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
+
+import datetime
 import re
 import sys
-
-import sickbeard
-
 import urllib
-import datetime
+
 from dateutil import parser
 
-from common import USER_AGENT, Quality
+import sickbeard
+from sickbeard.common import USER_AGENT, Quality
 from sickrage.helper.common import dateFormat, dateTimeFormat
 
 
@@ -73,13 +75,13 @@ class AuthURLOpener(SickBeardURLopener):
         return SickBeardURLopener.open(self, url)
 
 
-class SearchResult:
+class SearchResult(object):
     """
     Represents a search result from an indexer.
     """
 
     def __init__(self, episodes):
-        self.provider = -1
+        self.provider = None
 
         # release show object
         self.show = None
@@ -114,6 +116,8 @@ class SearchResult:
         # content
         self.content = None
 
+        self.resultType = ''
+
     def __str__(self):
 
         if self.provider is None:
@@ -124,7 +128,10 @@ class SearchResult:
         for extra in self.extraInfo:
             myString += "  " + extra + "\n"
 
-        myString += "Episode: " + str(self.episodes) + "\n"
+        myString += "Episodes:\n"
+        for ep in self.episodes:
+            myString += "  " + str(ep) + "\n"
+
         myString += "Quality: " + Quality.qualityStrings[self.quality] + "\n"
         myString += "Name: " + self.name + "\n"
         myString += "Size: " + str(self.size) + "\n"
@@ -140,24 +147,33 @@ class NZBSearchResult(SearchResult):
     """
     Regular NZB result with an URL to the NZB
     """
-    resultType = "nzb"
+
+    def __init__(self, episodes):
+        super(NZBSearchResult, self).__init__(episodes)
+        self.resultType = "nzb"
 
 
 class NZBDataSearchResult(SearchResult):
     """
     NZB result where the actual NZB XML data is stored in the extraInfo
     """
-    resultType = "nzbdata"
+
+    def __init__(self, episodes):
+        super(NZBDataSearchResult, self).__init__(episodes)
+        self.resultType = "nzbdata"
 
 
 class TorrentSearchResult(SearchResult):
     """
     Torrent result with an URL to the torrent
     """
-    resultType = "torrent"
+
+    def __init__(self, episodes):
+        super(TorrentSearchResult, self).__init__(episodes)
+        self.resultType = "torrent"
 
 
-class AllShowsListUI:
+class AllShowsListUI(object):
     """
     This class is for indexer api. Instead of prompting with a UI to pick the
     desired result out of a list of shows it tries to be smart about it
@@ -175,24 +191,24 @@ class AllShowsListUI:
         # get all available shows
         if allSeries:
             if 'searchterm' in self.config:
-                searchterm = self.config['searchterm']
+                searchterm = self.config[b'searchterm']
                 # try to pick a show that's in my show list
                 for curShow in allSeries:
                     if curShow in searchResults:
                         continue
 
                     if 'seriesname' in curShow:
-                        seriesnames.append(curShow['seriesname'])
+                        seriesnames.append(curShow[b'seriesname'])
                     if 'aliasnames' in curShow:
-                        seriesnames.extend(curShow['aliasnames'].split('|'))
+                        seriesnames.extend(curShow[b'aliasnames'].split('|'))
 
                     for name in seriesnames:
                         if searchterm.lower() in name.lower():
                             if 'firstaired' not in curShow:
-                                curShow['firstaired'] = str(datetime.date.fromordinal(1))
-                                curShow['firstaired'] = re.sub("([-]0{2})+", "", curShow['firstaired'])
-                                fixDate = parser.parse(curShow['firstaired'], fuzzy=True).date()
-                                curShow['firstaired'] = fixDate.strftime(dateFormat)
+                                curShow[b'firstaired'] = str(datetime.date.fromordinal(1))
+                                curShow[b'firstaired'] = re.sub("([-]0{2})+", "", curShow[b'firstaired'])
+                                fixDate = parser.parse(curShow[b'firstaired'], fuzzy=True).date()
+                                curShow[b'firstaired'] = fixDate.strftime(dateFormat)
 
                             if curShow not in searchResults:
                                 searchResults += [curShow]
@@ -200,11 +216,11 @@ class AllShowsListUI:
         return searchResults
 
 
-class ShowListUI:
+class ShowListUI(object):
     """
     This class is for tvdb-api. Instead of prompting with a UI to pick the
     desired result out of a list of shows it tries to be smart about it
-    based on what shows are in SickRage.
+    based on what shows are in SiCKRAGE.
     """
 
     def __init__(self, config, log=None):
@@ -214,17 +230,18 @@ class ShowListUI:
     def selectSeries(self, allSeries):
         try:
             # try to pick a show that's in my show list
+            showIDList = [int(x.indexerid) for x in sickbeard.showList]
             for curShow in allSeries:
-                if filter(lambda x: int(x.indexerid) == int(curShow['id']), sickbeard.showList):
+                if int(curShow[b'id']) in showIDList:
                     return curShow
-        except:
+        except Exception:
             pass
 
         # if nothing matches then return first result
         return allSeries[0]
 
 
-class Proper:
+class Proper(object):
     def __init__(self, name, url, date, show):
         self.name = name
         self.url = url
@@ -244,10 +261,10 @@ class Proper:
 
     def __str__(self):
         return str(self.date) + " " + self.name + " " + str(self.season) + "x" + str(self.episode) + " of " + str(
-            self.indexerid) + " from " + str(sickbeard.indexerApi(self.indexer).name)
+                self.indexerid) + " from " + str(sickbeard.indexerApi(self.indexer).name)
 
 
-class ErrorViewer:
+class ErrorViewer(object):
     """
     Keeps a static list of UIErrors to be displayed on the UI and allows
     the list to be cleared.
@@ -271,7 +288,7 @@ class ErrorViewer:
         return ErrorViewer.errors
 
 
-class WarningViewer:
+class WarningViewer(object):
     """
     Keeps a static list of (warning) UIErrors to be displayed on the UI and allows
     the list to be cleared.
@@ -295,7 +312,7 @@ class WarningViewer:
         return WarningViewer.errors
 
 
-class UIError:
+class UIError(object):
     """
     Represents an error to be displayed in the web UI.
     """

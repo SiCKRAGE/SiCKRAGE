@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import re
 import datetime
 import requests
@@ -24,7 +26,7 @@ from dateutil import tz
 
 from sickbeard import db
 from sickbeard import helpers
-from sickbeard import logger
+import logging
 
 # regex to parse time (12/24 hour format)
 time_regex = re.compile(r'(\d{1,2})(([:.](\d{2,2}))? ?([PA][. ]? ?M)|[:.](\d{2,2}))\b', flags=re.IGNORECASE)
@@ -32,8 +34,8 @@ am_regex = re.compile(r'(A[. ]? ?M)', flags=re.IGNORECASE)
 pm_regex = re.compile(r'(P[. ]? ?M)', flags=re.IGNORECASE)
 
 network_dict = None
+sb_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
 
-sb_timezone = tz.tzlocal()
 
 # update the network timezone table
 def update_network_dict():
@@ -42,14 +44,14 @@ def update_network_dict():
     url = 'http://sickragetv.github.io/sb_network_timezones/network_timezones.txt'
     url_data = helpers.getURL(url, session=requests.Session())
     if not url_data:
-        logger.log(u'Updating network timezones failed, this can happen from time to time. URL: %s' % url, logger.WARNING)
+        logging.warning('Updating network timezones failed, this can happen from time to time. URL: %s' % url)
         load_network_dict()
         return
 
     d = {}
     try:
         for line in url_data.splitlines():
-            (key, val) = line.decode('utf-8').strip().rsplit(u':', 1)
+            (key, val) = line.strip().rsplit(':', 1)
             if key is None or val is None:
                 continue
             d[key] = val
@@ -66,14 +68,16 @@ def update_network_dict():
         if not existing:
             queries.append(['INSERT OR IGNORE INTO network_timezones VALUES (?,?);', [network, timezone]])
         elif network_list[network] is not timezone:
-            queries.append(['UPDATE OR IGNORE network_timezones SET timezone = ? WHERE network_name = ?;', [timezone, network]])
+            queries.append(['UPDATE OR IGNORE network_timezones SET timezone = ? WHERE network_name = ?;',
+                            [timezone, network]])
 
         if existing:
             del network_list[network]
 
     if network_list:
-        purged = list(x for x in network_list)
-        queries.append(['DELETE FROM network_timezones WHERE network_name IN (%s);' % ','.join(['?'] * len(purged)), purged])
+        purged = [x for x in network_list]
+        queries.append(
+                ['DELETE FROM network_timezones WHERE network_name IN (%s);' % ','.join(['?'] * len(purged)), purged])
 
     if queries:
         my_db.mass_action(queries)
@@ -88,7 +92,7 @@ def load_network_dict():
     try:
         my_db = db.DBConnection('cache.db')
         cur_network_list = my_db.select('SELECT * FROM network_timezones;')
-        if cur_network_list is None or len(cur_network_list) < 1:
+        if not cur_network_list:
             update_network_dict()
             cur_network_list = my_db.select('SELECT * FROM network_timezones;')
         d = dict(cur_network_list)
@@ -163,11 +167,10 @@ def parse_date_time(d, t, network):
         hr = 0
         m = 0
 
-    te = datetime.datetime.fromordinal(helpers.tryInt(d))
+    te = datetime.datetime.fromordinal(helpers.tryInt(d) or 1)
     try:
         foreign_timezone = get_network_timezone(network, network_dict)
-        foreign_naive = datetime.datetime(te.year, te.month, te.day, hr, m, tzinfo=foreign_timezone)
-        return foreign_naive
+        return datetime.datetime(te.year, te.month, te.day, hr, m, tzinfo=foreign_timezone)
     except Exception:
         return datetime.datetime(te.year, te.month, te.day, hr, m, tzinfo=sb_timezone)
 
