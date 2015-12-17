@@ -206,15 +206,14 @@ class WebHandler(BaseHandler):
     @authenticated
     @coroutine
     def prepare(self, *args, **kwargs):
-        route = self.request.uri.lstrip('/').split('/')[-2:][0].replace('.', '_') or 'index'
-
         try:
             # route -> method obj
-            method = getattr(self, route)
+            route = self.request.uri.lstrip('/').split('/')[-2:][0].replace('.', '_') or 'index'
+            method = getattr(self, route, getattr(self, 'index'))
             result = yield self.async_call(method)
             self.finish(result)
         except Exception:
-            logging.debug('Failed doing webui request [{}]: {}'.format(route, traceback.format_exc()))
+            logging.debug('Failed doing webui request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             raise HTTPError(404)
 
     @run_on_executor
