@@ -40,14 +40,62 @@ from sickrage.helper.common import dateTimeFormat
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 
-# log levels
-logLevels = {
-    'ERROR': ERROR,
-    'WARNING': WARNING,
-    'INFO': INFO,
-    'DEBUG': DEBUG,
-    'DB': 5
-}
+class SRLogger(logging.Logger):
+    def __init__(self, *args, **kwargs):
+        super(SRLogger, self).__init__(*args, **kwargs)
+        logging.setLoggerClass(CustomLogger)
+        self.submitter_running = False
+        self.logLevels = {
+            'ERROR': ERROR,
+            'WARNING': WARNING,
+            'INFO': INFO,
+            'DEBUG': DEBUG,
+            'DB': 5
+        }
+
+    def initalize(self, logFile=None, consoleLogging=True, fileLogging=False, debugLogging=False, logSize=1048576, logNr=5, censoredItems={}):
+        self.logFile = logFile
+        self.consoleLogging = consoleLogging
+        self.fileLogging = fileLogging
+        self.debugLogging = debugLogging
+        self.logSize = logSize
+        self.logNr = logNr
+        self.censoredItems = censoredItems
+
+        # set list of allowed loggers
+        self.allowedLoggers = ['tornado.general', 'tornado.application']
+
+        # set allowed loggers
+        for x in [logging.getLogger(logger) for logger in logging.Logger.manager.loggerDict.keys()]:
+            if x.name not in self.allowedLoggers:
+                x.addHandler(NullHandler())
+                x.propagate = 0
+
+
+        # set custom root and parant loggers
+        logging.addLevelName(self.logLevels[b'DB'], 'DB')
+        logging.getLogger().setLevel(self.logLevels[b'DB'])
+
+        # attach data censor log adapter
+        CensorLogAdapter(logging.getLogger(), self.censoredItems)
+
+        # console log handler
+        if self.consoleLogging:
+            console = logging.StreamHandler()
+            console.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(message)s', '%H:%M:%S'))
+            console.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
+            logging.getLogger().addHandler(console)
+
+        # rotating log file handler
+        if self.fileLogging and self.logFile:
+            rfh = logging.handlers.RotatingFileHandler(
+                    filename=self.logFile,
+                    maxBytes=self.logSize,
+                    backupCount=self.logNr
+            )
+            rfh.setFormatter(logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', dateTimeFormat))
+            rfh.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
+            logging.getLogger().addHandler(rfh)
 
 class CensorLogAdapter(logging.LoggerAdapter):
     def process(self, msg, kwargs):
@@ -60,12 +108,9 @@ class CensorLogAdapter(logging.LoggerAdapter):
 
         return super(CensorLogAdapter, self).process(msg, kwargs)
 
-
-class CustomLogger(logging.Logger):
-
-    def __init__(self, name, level=NOTSET):
-        super(CustomLogger, self).__init__(name, level)
-        self.submitter_running = False
+class CustomLogger(SRLogger):
+    def __init__(self, *args, **kwargs):
+        super(CustomLogger, self).__init__(*args, **kwargs)
         setattr(logging, 'db', self.db)
         setattr(logging, 'log_error_and_exit', self.log_error_and_exit)
         setattr(logging, 'submit_errors', self.submit_errors)
@@ -92,7 +137,7 @@ class CustomLogger(logging.Logger):
         classes.WarningViewer.add(classes.UIError(msg))
 
     def db(self, msg, *args, **kwargs):
-        super(CustomLogger, self).log(logLevels[b'DB'], msg, *args, **kwargs)
+        super(CustomLogger, self).log(self.logLevels[b'DB'], msg, *args, **kwargs)
 
     def log_error_and_exit(self, msg, *args, **kwargs):
         super(CustomLogger, self).error(msg, *args, **kwargs)
@@ -246,48 +291,3 @@ class CustomLogger(logging.Logger):
             self.submitter_running = False
 
         return submitter_result, issue_id
-
-
-class SRLogger(object):
-    def __init__(self, logFile=None, consoleLogging=True, fileLogging=False, debugLogging=False, logSize=None,
-                 logNr=None, censoredItems=None):
-        logging.setLoggerClass(CustomLogger)
-        self.logFile = logFile
-        self.consoleLogging = consoleLogging
-        self.fileLogging = fileLogging
-        self.debugLogging = debugLogging
-        self.logSize = logSize
-        self.logNr = logNr
-        self.censoredItems = censoredItems
-        self.allowedLoggers = ['tornado.general', 'tornado.application']
-
-        # set allowed loggers
-        for x in [logging.getLogger(logger) for logger in logging.Logger.manager.loggerDict.keys()]:
-            if x.name not in self.allowedLoggers:
-                x.addHandler(NullHandler())
-                x.propagate = 0
-
-        # set custom root and parant loggers
-        logging.addLevelName(logLevels[b'DB'], 'DB')
-        logging.getLogger().setLevel(logLevels[b'DB'])
-
-        # attach data censor log adapter
-        CensorLogAdapter(logging.getLogger(), self.censoredItems)
-
-        # console log handler
-        if self.consoleLogging:
-            console = logging.StreamHandler()
-            console.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(message)s', '%H:%M:%S'))
-            console.setLevel(logLevels[b'INFO'] if not self.debugLogging else logLevels[b'DEBUG'])
-            logging.getLogger().addHandler(console)
-
-        # rotating log file handler
-        if self.fileLogging and self.logFile:
-            rfh = logging.handlers.RotatingFileHandler(
-                    self.logFile,
-                    maxBytes=self.logSize or 1048576,
-                    backupCount=self.logNr or 5
-            )
-            rfh.setFormatter(logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', dateTimeFormat))
-            rfh.setLevel(logLevels[b'INFO'] if not self.debugLogging else logLevels[b'DEBUG'])
-            logging.getLogger().addHandler(rfh)

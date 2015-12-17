@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
@@ -144,7 +144,7 @@ NEWS_UNREAD = 0
 INIT_LOCK = Lock()
 started = False
 
-SRLOGGER = None
+SRLOGGER = logger.SRLogger(__name__)
 ACTUAL_LOG_DIR = None
 LOG_DIR = None
 LOG_NR = 5
@@ -666,7 +666,7 @@ def initialize(consoleLogging=True):
             fileLogging = False
 
         # initalize logger
-        SRLOGGER = logger.SRLogger(
+        SRLOGGER.initalize(
                 logFile=LOG_FILE,
                 consoleLogging=consoleLogging,
                 fileLogging=fileLogging,

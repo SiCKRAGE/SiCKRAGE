@@ -2,7 +2,6 @@
 <%!
     import sickbeard
     from sickbeard import classes
-    from sickbeard.logger import logLevels
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/viewlogs.js"></script>
@@ -15,12 +14,10 @@
 % endif
 
 <div class="h2footer pull-right">Minimum logging level to display: <select name="minLevel" id="minLevel" class="form-control form-control-inline input-sm">
-<% levels = logLevels.keys() %>
-<% levels.sort(lambda x,y: cmp(logLevels[x], logLevels[y])) %>
+<% levels = [x for x in sickbeard.SRLOGGER.logLevels.keys() if (sickbeard.DEBUG,x in ['DEBUG','DB'])]%>
+<% levels.sort(lambda x,y: cmp(sickbeard.SRLOGGER.logLevels[x], sickbeard.SRLOGGER.logLevels[y])) %>
 % for level in levels:
-    % if sickbeard.DEBUG and (level == 'DEBUG' or level == 'DB'):
-        <option value="${logLevels[level]}" ${('', 'selected="selected"')[minLevel == logLevels[level]]}>${level.title()}</option>
-    % endif
+    <option value="${sickbeard.SRLOGGER.logLevels[level]}" ${('', 'selected="selected"')[minLevel == sickbeard.SRLOGGER.logLevels[level]]}>${level.title()}</option>
 % endfor
 </select>
 

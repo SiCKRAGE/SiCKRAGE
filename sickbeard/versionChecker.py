@@ -212,12 +212,11 @@ class CheckVersion(object):
                 logging.debug("We can't proceed with the update. Shows are being updated")
                 return False
 
-        if (db_safe(), postprocessor_safe(), showupdate_safe()):
-            logging.debug("Proceeding with auto update")
+        if (postprocessor_safe(), showupdate_safe()):
+            logging.debug("Safely proceeding with auto update")
             return True
-        else:
-            logging.debug("Auto update aborted")
-            return False
+
+        logging.debug("Unsafe to auto update currently, aborted")
 
     @staticmethod
     def find_install_type():
@@ -254,22 +253,18 @@ class CheckVersion(object):
             return False
 
         # checking for updates
-        if not sickbeard.AUTO_UPDATE:
+        if force or not sickbeard.AUTO_UPDATE:
             logging.info("Checking for updates using " + self.install_type.upper())
 
-        if not self.updater.need_update():
-            sickbeard.NEWEST_VERSION_STRING = None
+        if self.updater.need_update():
+            # proceed with update
+            self.updater.set_newest_text()
+            return True
 
-            if force:
-                ui.notifications.message('No update needed')
-                logging.info("No update needed")
-
-            # no updates needed
-            return False
-
-        # found updates
-        self.updater.set_newest_text()
-        return True
+        # no updates needed if we made it here
+        if force:
+            ui.notifications.message('No update needed')
+            logging.info("No update needed")
 
     def check_for_new_news(self, force=False):
         """
@@ -733,8 +728,6 @@ class SourceUpdateManager(UpdateManager):
 
         if not self._cur_commit_hash or self._num_commits_behind > 0:
             return True
-
-        return False
 
     def _check_github_for_update(self):
         """

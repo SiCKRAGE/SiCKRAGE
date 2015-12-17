@@ -116,7 +116,7 @@ def change_LOG_DIR(log_dir, web_log):
             sickbeard.LOG_DIR = abs_log_dir
 
             # initalize logger
-            sickbeard.SRLOGGER = logger.SRLogger(
+            sickbeard.SRLOGGER.initalize(
                     logFile=sickbeard.LOG_FILE,
                     consoleLogging=sickbeard.SRLOGGER.consoleLogging,
                     fileLogging=sickbeard.SRLOGGER.fileLogging,

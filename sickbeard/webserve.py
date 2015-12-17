@@ -19,12 +19,12 @@
 
 from __future__ import unicode_literals
 
-import io
-import logging
 import os
 import re
+import six
 import time
 import urllib
+import logging
 import datetime
 import traceback
 
@@ -51,7 +51,6 @@ from sickbeard.scene_numbering import get_scene_numbering, set_scene_numbering, 
 from sickbeard.webapi import ApiHandler
 from sickbeard.tv import EpisodeDeletedException, TVEpisode
 from sickbeard.imdbPopular import imdb_popular
-from sickbeard import logger
 
 import adba
 from dateutil import tz
@@ -70,16 +69,10 @@ from sickrage.show.History import History as HistoryTool
 from sickrage.show.Show import Show
 from sickrage.system.Restart import Restart
 from sickrage.system.Shutdown import Shutdown
-
 from sickbeard.versionChecker import CheckVersion
 
 import requests
 import markdown2
-
-try:
-    import json
-except ImportError:
-    import simplejson as json
 
 from mako.lookup import TemplateLookup
 
@@ -89,7 +82,7 @@ from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
-
+from tornado.escape import json_encode, json_decode
 
 class BaseHandler(RequestHandler):
     startTime = 0.
@@ -212,72 +205,56 @@ class WebHandler(BaseHandler):
 
     @authenticated
     @coroutine
-    def get(self, route, *args, **kwargs):
+    def prepare(self, *args, **kwargs):
+        route = self.request.uri.lstrip('/').split('/')[-2:][0].replace('.', '_') or 'index'
+
         try:
             # route -> method obj
-            route = route.strip('/').replace('.', '_') or 'index'
             method = getattr(self, route)
-
-            results = yield self.async_call(method)
-            self.finish(results)
-
+            result = yield self.async_call(method)
+            self.finish(result)
         except Exception:
-            logging.debug('Failed doing webui request "%s": %s' % (route, traceback.format_exc()))
+            logging.debug('Failed doing webui request [{}]: {}'.format(route, traceback.format_exc()))
             raise HTTPError(404)
 
     @run_on_executor
     def async_call(self, function):
         try:
-            kwargs = self.request.arguments
-            for arg, value in kwargs.items():
-                if len(value) == 1:
-                    kwargs[arg] = value[0]
-
-            return function(**kwargs)
+            if callable(function):
+                kwargs = {k: self.request.arguments[k][0] for k in self.request.arguments if len(self.request.arguments[k])}
+                return function(**kwargs)
         except Exception:
             logging.error('Failed doing webui callback: {}'.format(traceback.format_exc()))
             raise
 
-    # post uses get method
-    def post(self, *args, **kwargs):
-        super(WebHandler, self).get(*args, **kwargs)
-
-
 class LoginHandler(BaseHandler):
-    def get(self, *args, **kwargs):
-
-        if self.get_current_user():
-            self.redirect('/' + sickbeard.DEFAULT_PAGE + '/')
-        else:
-            self.finish(self.render(filename="login.mako",
-                        title="Login",
-                        header="Login",
-                        topmenu="login"))
-
-    def post(self, *args, **kwargs):
-
+    def prepare(self, *args, **kwargs):
         api_key = None
-
         username = sickbeard.WEB_USERNAME
         password = sickbeard.WEB_PASSWORD
 
-        if (self.get_argument('username') == username or not username) \
-                and (self.get_argument('password') == password or not password):
-            api_key = sickbeard.API_KEY
+        if not self.get_current_user():
+            if (self.get_argument('username') == username or not username) \
+                    and (self.get_argument('password') == password or not password):
+                api_key = sickbeard.API_KEY
 
-        if api_key:
-            remember_me = int(self.get_argument('remember_me', default=0) or 0)
-            self.set_secure_cookie('sickrage_user', api_key, expires_days=30 if remember_me > 0 else None)
-            logging.info('User logged into the SiCKRAGE web interface')
-        else:
-            logging.warning(
-                    'User attempted a failed login to the SiCKRAGE web interface from IP: ' + self.request.remote_ip)
+            if api_key:
+                remember_me = int(self.get_argument('remember_me', default=0) or 0)
+                self.set_secure_cookie('sickrage_user', api_key, expires_days=30 if remember_me > 0 else None)
+                logging.info('User logged into the SiCKRAGE web interface')
+            else:
+                logging.warning(
+                        'User attempted a failed login to the SiCKRAGE web interface from IP: ' + self.request.remote_ip)
 
-        self.redirect('/' + sickbeard.DEFAULT_PAGE + '/')
+            self.redirect('/' + sickbeard.DEFAULT_PAGE + '/')
 
+        self.finish(self.render(filename="login.mako",
+                    title="Login",
+                    header="Login",
+                    topmenu="login"))
 
 class LogoutHandler(BaseHandler):
-    def get(self, *args, **kwargs):
+    def prepare(self, *args, **kwargs):
         self.clear_cookie("sickrage_user")
         self.redirect('/login/')
 
@@ -286,7 +263,7 @@ class KeyHandler(RequestHandler):
     def __init__(self, *args, **kwargs):
         super(KeyHandler, self).__init__(*args, **kwargs)
 
-    def get(self, *args, **kwargs):
+    def prepare(self, *args, **kwargs):
         api_key = None
 
         try:
@@ -492,7 +469,7 @@ class WebRoot(WebHandler):
 
 
 class CalendarHandler(BaseHandler):
-    def get(self, *args, **kwargs):
+    def prepare(self, *args, **kwargs):
         if sickbeard.CALENDAR_UNPROTECTED:
             self.write(self.calendar())
         else:
@@ -598,7 +575,7 @@ class UI(WebRoot):
                                                                      'type': cur_notification.type}
             cur_notification_num += 1
 
-        return json.dumps(messages)
+        return json_encode(messages)
 
 
 @route('/browser(/?.*)')
@@ -609,16 +586,14 @@ class WebFileBrowser(WebRoot):
     def index(self, path='', includeFiles=False, *args, **kwargs):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header("Content-Type", "application/json")
-        return json.dumps(foldersAtPath(path, True, bool(int(includeFiles))))
+        return json_encode(foldersAtPath(path, True, bool(int(includeFiles))))
 
     def complete(self, term, includeFiles=0, *args, **kwargs):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header("Content-Type", "application/json")
-        paths = [entry[b'path'] for entry in
-                 foldersAtPath(ek(os.path.dirname, term), includeFiles=bool(int(includeFiles)))
-                 if 'path' in entry]
+        paths = [entry[b'path'] for entry in foldersAtPath(ek(os.path.dirname, term), includeFiles=bool(int(includeFiles)))if 'path' in entry]
 
-        return json.dumps(paths)
+        return json_encode(paths)
 
 
 @route('/home(/?.*)')
@@ -725,10 +700,10 @@ class Home(WebRoot):
         self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
 
         if sickbeard.started:
-            return callback + '(' + json.dumps(
+            return callback + '(' + json_encode(
                     {"msg": str(sickbeard.PID)}) + ');'
         else:
-            return callback + '(' + json.dumps({"msg": "nope"}) + ');'
+            return callback + '(' + json_encode({"msg": "nope"}) + ');'
 
     @staticmethod
     def haveKODI():
@@ -1006,7 +981,7 @@ class Home(WebRoot):
             data[r[b'show_id']] = {'id': r[b'show_id'], 'name': r[b'show_name'], 'list': r[b'notify_list']}
             size += 1
         data[b'_size'] = size
-        return json.dumps(data)
+        return json_encode(data)
 
     @staticmethod
     def saveShowNotifyList(show=None, emails=None):
@@ -1145,25 +1120,23 @@ class Home(WebRoot):
 
     @staticmethod
     def getDBcompare():
-
-        checkversion = CheckVersion()
-        db_status = checkversion.getDBcompare()
+        db_status = CheckVersion().getDBcompare()
 
         try:
             if db_status == 'upgrade':
                 logging.debug("Checkout branch has a new DB version - Upgrade")
-                return json.dumps({"status": "success", 'message': 'upgrade'})
+                return json_encode({"status": "success", 'message': 'upgrade'})
             elif db_status == 'equal':
                 logging.debug("Checkout branch has the same DB version - Equal")
-                return json.dumps({"status": "success", 'message': 'equal'})
+                return json_encode({"status": "success", 'message': 'equal'})
             elif db_status == 'downgrade':
                 logging.debug("Checkout branch has an old DB version - Downgrade")
-                return json.dumps({"status": "success", 'message': 'downgrade'})
+                return json_encode({"status": "success", 'message': 'downgrade'})
         except:
             pass
 
         logging.error("Checkout branch couldn't compare DB version.")
-        return json.dumps({"status": "error", 'message': 'General exception'})
+        return json_encode({"status": "error", 'message': 'General exception'})
 
     def displayShow(self, show=None):
 
@@ -1688,7 +1661,7 @@ class Home(WebRoot):
             errMsg = "You must specify a show and at least one episode"
             if direct:
                 ui.notifications.error('Error', errMsg)
-                return json.dumps({'result': 'error'})
+                return json_encode({'result': 'error'})
             else:
                 return self._genericMessage("Error", errMsg)
 
@@ -1697,7 +1670,7 @@ class Home(WebRoot):
             errMsg = "Error", "Show not in show list"
             if direct:
                 ui.notifications.error('Error', errMsg)
-                return json.dumps({'result': 'error'})
+                return json_encode({'result': 'error'})
             else:
                 return self._genericMessage("Error", errMsg)
 
@@ -1726,7 +1699,7 @@ class Home(WebRoot):
                         pass
 
         if direct:
-            return json.dumps({'result': 'success'})
+            return json_encode({'result': 'success'})
         else:
             return self.redirect("/home/displayShow?show=" + show)
 
@@ -1736,7 +1709,7 @@ class Home(WebRoot):
             errMsg = "You must specify a show and at least one episode"
             if direct:
                 ui.notifications.error('Error', errMsg)
-                return json.dumps({'result': 'error'})
+                return json_encode({'result': 'error'})
             else:
                 return self._genericMessage("Error", errMsg)
 
@@ -1745,7 +1718,7 @@ class Home(WebRoot):
             errMsg = "Invalid status"
             if direct:
                 ui.notifications.error('Error', errMsg)
-                return json.dumps({'result': 'error'})
+                return json_encode({'result': 'error'})
             else:
                 return self._genericMessage("Error", errMsg)
 
@@ -1755,7 +1728,7 @@ class Home(WebRoot):
             errMsg = "Error", "Show not in show list"
             if direct:
                 ui.notifications.error('Error', errMsg)
-                return json.dumps({'result': 'error'})
+                return json_encode({'result': 'error'})
             else:
                 return self._genericMessage("Error", errMsg)
 
@@ -1874,7 +1847,7 @@ class Home(WebRoot):
                 ui.notifications.message("Retry Search started", msg)
 
         if direct:
-            return json.dumps({'result': 'success'})
+            return json_encode({'result': 'success'})
         else:
             return self.redirect("/home/displayShow?show=" + show)
 
@@ -1983,15 +1956,15 @@ class Home(WebRoot):
             sickbeard.searchQueueScheduler.action.add_item(ep_queue_item)
 
             if not ep_queue_item.started and ep_queue_item.success is None:
-                return json.dumps(
+                return json_encode(
                         {
                             'result': 'success'})  # I Actually want to call it queued, because the search hasnt been started yet!
             if ep_queue_item.started and ep_queue_item.success is None:
-                return json.dumps({'result': 'success'})
+                return json_encode({'result': 'success'})
             else:
-                return json.dumps({'result': 'failure'})
+                return json_encode({'result': 'failure'})
 
-        return json.dumps({'result': 'failure'})
+        return json_encode({'result': 'failure'})
 
     ### Returns the current ep_queue_item status for the current viewed show.
     # Possible status: Downloaded, Snatched, etc...
@@ -2060,7 +2033,7 @@ class Home(WebRoot):
                 if not [i for i, j in zip(searchThread.segment, episodes) if i.indexerid == j[b'episodeindexid']]:
                     episodes += getEpisodes(searchThread, searchstatus)
 
-        return json.dumps({'episodes': episodes})
+        return json_encode({'episodes': episodes})
 
     @staticmethod
     def getQualityClass(ep_obj):
@@ -2084,7 +2057,7 @@ class Home(WebRoot):
             try:
                 ep_obj.downloadSubtitles()
             except Exception:
-                return json.dumps({'result': 'failure'})
+                return json_encode({'result': 'failure'})
 
             # return the correct json value
             newSubtitles = frozenset(ep_obj.subtitles).difference(previous_subtitles)
@@ -2094,9 +2067,9 @@ class Home(WebRoot):
             else:
                 status = 'No subtitles downloaded'
             ui.notifications.message(ep_obj.show.name, status)
-            return json.dumps({'result': status, 'subtitles': ','.join(ep_obj.subtitles)})
+            return json_encode({'result': status, 'subtitles': ','.join(ep_obj.subtitles)})
 
-        return json.dumps({'result': 'failure'})
+        return json_encode({'result': 'failure'})
 
     def setSceneNumbering(self, show, indexer, forSeason=None, forEpisode=None, forAbsolute=None, sceneSeason=None,
                           sceneEpisode=None, sceneAbsolute=None):
@@ -2178,7 +2151,7 @@ class Home(WebRoot):
             else:
                 (result[b'sceneSeason'], result[b'sceneEpisode']) = (None, None)
 
-        return json.dumps(result)
+        return json_encode(result)
 
     def retryEpisode(self, show, season, episode, downCurQuality):
         # retrieve the episode object and fail if we can't get one
@@ -2189,15 +2162,15 @@ class Home(WebRoot):
             sickbeard.searchQueueScheduler.action.add_item(ep_queue_item)
 
             if not ep_queue_item.started and ep_queue_item.success is None:
-                return json.dumps(
+                return json_encode(
                         {
                             'result': 'success'})  # I Actually want to call it queued, because the search hasnt been started yet!
             if ep_queue_item.started and ep_queue_item.success is None:
-                return json.dumps({'result': 'success'})
+                return json_encode({'result': 'success'})
             else:
-                return json.dumps({'result': 'failure'})
+                return json_encode({'result': 'failure'})
 
-        return json.dumps({'result': 'failure'})
+        return json_encode({'result': 'failure'})
 
     @staticmethod
     def fetch_releasegroups(show_name):
@@ -2206,9 +2179,9 @@ class Home(WebRoot):
             anime = adba.Anime(sickbeard.ADBA_CONNECTION, name=show_name)
             groups = anime.get_groups()
             logging.info('ReleaseGroups: %s' % groups)
-            return json.dumps({'result': 'success', 'groups': groups})
+            return json_encode({'result': 'success', 'groups': groups})
 
-        return json.dumps({'result': 'failure'})
+        return json_encode({'result': 'failure'})
 
 
 @route('/IRC(/?.*)')
@@ -2316,7 +2289,7 @@ class HomeAddShows(Home):
     def getIndexerLanguages():
         result = sickbeard.indexerApi().config[b'valid_languages']
 
-        return json.dumps({'results': result})
+        return json_encode({'results': result})
 
     @staticmethod
     def sanitizeFileName(name):
@@ -2357,7 +2330,7 @@ class HomeAddShows(Home):
         #               show[b'seriesname'], show[b'firstaired']] for show in shows] for id, shows in results.iteritems()))
 
         lang_id = sickbeard.indexerApi().config[b'langabbv_to_id'][lang]
-        return json.dumps({'results': final_results, 'langid': lang_id})
+        return json_encode({'results': final_results, 'langid': lang_id})
 
     def massAddTable(self, rootDir=None):
         if not rootDir:
@@ -2914,7 +2887,7 @@ class Manage(Home, WebRoot):
 
             result[cur_season][cur_episode] = cur_result[b"name"]
 
-        return json.dumps(result)
+        return json_encode(result)
 
     def episodeStatuses(self, whichStatus=None):
         if whichStatus:
@@ -3026,7 +2999,7 @@ class Manage(Home, WebRoot):
 
             result[cur_season][cur_episode][b"subtitles"] = cur_result[b"subtitles"]
 
-        return json.dumps(result)
+        return json_encode(result)
 
     def subtitleMissed(self, whichSubs=None):
         if not whichSubs:
@@ -4307,16 +4280,16 @@ class ConfigProviders(Config):
     def canAddNewznabProvider(name):
 
         if not name:
-            return json.dumps({'error': 'No Provider Name specified'})
+            return json_encode({'error': 'No Provider Name specified'})
 
         providerDict = dict(zip([x.getID() for x in sickbeard.newznabProviderList], sickbeard.newznabProviderList))
 
         tempProvider = newznab.NewznabProvider(name, '')
 
         if tempProvider.getID() in providerDict:
-            return json.dumps({'error': 'Provider Name already exists as ' + providerDict[tempProvider.getID()].name})
+            return json_encode({'error': 'Provider Name already exists as ' + providerDict[tempProvider.getID()].name})
         else:
-            return json.dumps({'success': tempProvider.getID()})
+            return json_encode({'success': tempProvider.getID()})
 
     @staticmethod
     def saveNewznabProvider(name, url, key=''):
@@ -4363,7 +4336,7 @@ class ConfigProviders(Config):
             error += "\nNo Provider Api key specified"
 
         if error != "":
-            return json.dumps({'success': False, 'error': error})
+            return json_encode({'success': False, 'error': error})
 
         # Get list with Newznabproviders
         # providerDict = dict(zip([x.getID() for x in sickbeard.newznabProviderList], sickbeard.newznabProviderList))
@@ -4373,7 +4346,7 @@ class ConfigProviders(Config):
 
         success, tv_categories, error = tempProvider.get_newznab_categories()
 
-        return json.dumps({'success': success, 'tv_categories': tv_categories, 'error': error})
+        return json_encode({'success': success, 'tv_categories': tv_categories, 'error': error})
 
     @staticmethod
     def deleteNewznabProvider(nnid):
@@ -4395,7 +4368,7 @@ class ConfigProviders(Config):
     def canAddTorrentRssProvider(name, url, cookies, titleTAG):
 
         if not name:
-            return json.dumps({'error': 'Invalid name specified'})
+            return json_encode({'error': 'Invalid name specified'})
 
         providerDict = dict(
                 zip([x.getID() for x in sickbeard.torrentRssProviderList], sickbeard.torrentRssProviderList))
@@ -4403,13 +4376,13 @@ class ConfigProviders(Config):
         tempProvider = rsstorrent.TorrentRssProvider(name, url, cookies, titleTAG)
 
         if tempProvider.getID() in providerDict:
-            return json.dumps({'error': 'Exists as ' + providerDict[tempProvider.getID()].name})
+            return json_encode({'error': 'Exists as ' + providerDict[tempProvider.getID()].name})
         else:
             (succ, errMsg) = tempProvider.validateRSS()
             if succ:
-                return json.dumps({'success': tempProvider.getID()})
+                return json_encode({'success': tempProvider.getID()})
             else:
-                return json.dumps({'error': errMsg})
+                return json_encode({'error': errMsg})
 
     @staticmethod
     def saveTorrentRssProvider(name, url, cookies, titleTAG):
@@ -5127,9 +5100,6 @@ class ErrorLogs(WebRoot):
              'requires': self.haveErrors() and level == logging.ERROR, 'icon': 'ui-icon ui-icon-trash'},
             {'title': 'Clear Warnings', 'path': 'errorlogs/clearerrors/?level=' + str(logging.WARNING),
              'requires': self.haveWarnings() and level == logging.WARNING, 'icon': 'ui-icon ui-icon-trash'},
-            {'title': 'Submit Errors', 'path': 'errorlogs/submit_errors/',
-             'requires': self.haveErrors() and level == logging.ERROR, 'class': 'sumbiterrors', 'confirm': True,
-             'icon': 'ui-icon ui-icon-arrowreturnthick-1-n'},
         ]
 
         return menu
@@ -5165,55 +5135,9 @@ class ErrorLogs(WebRoot):
 
         return self.redirect("/errorlogs/viewlog/")
 
-    def viewlog(self, minLevel=logging.INFO, logFilter="<NONE>", logSearch=None, maxLines=500):
-
-        def Get_Data(Levelmin, data_in, lines_in, regex, Filter, Search, mlines):
-
-            lastLine = False
-            numLines = lines_in
-            numToShow = min(maxLines, numLines + len(data_in))
-
-            finalData = []
-
-            for x in reversed(data_in):
-                match = re.match(regex, x)
-
-                if match:
-                    level = match.group(7)
-                    logName = match.group(8)
-                    if not sickbeard.DEBUG and (level == 'DEBUG' or level == 'DB'):
-                        continue
-                    if level not in logger.logLevels:
-                        lastLine = False
-                        continue
-
-                    if logSearch and logSearch.lower() in x.lower():
-                        lastLine = True
-                        finalData.append(x)
-                        numLines += 1
-                    elif not logSearch and logger.logLevels[level] >= minLevel and (
-                                    logFilter == '<NONE>' or logName.startswith(logFilter)):
-                        lastLine = True
-                        finalData.append(x)
-                        numLines += 1
-                    else:
-                        lastLine = False
-                        continue
-
-                elif lastLine:
-                    lastLine = False
-                    finalData.append("AA" + x)
-                    numLines += 1
-
-                if numLines >= numToShow:
-                    return finalData
-
-            return finalData
-
-        minLevel = int(minLevel)
-
+    def viewlog(self, minLevel=logging.INFO, logFilter='', logSearch='', maxLines=500):
         logNameFilters = {
-            '<NONE>': '&lt;No Filter&gt;',
+            '': 'No Filter',
             'DAILYSEARCHER': 'Daily Searcher',
             'BACKLOG': 'Backlog',
             'SHOWUPDATER': 'Show Updater',
@@ -5231,28 +5155,37 @@ class ErrorLogs(WebRoot):
             'MAIN': 'Main',
         }
 
-        if logFilter not in logNameFilters:
-            logFilter = '<NONE>'
+        def getLogData():
+            data = []
+            numLines = 0
+            logRegex = re.compile(r"^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d):(\d\d)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$", re.S)
+            for logFile in [sickbeard.LOG_FILE] + ["{}.{}".format(sickbeard.LOG_FILE, x) for x in xrange(int(sickbeard.LOG_NR))]:
+                if ek(os.path.isfile, logFile) and (len(data) <= maxLines):
+                    for x in ek(sickbeard.helpers.readFileBuffered, logFile):
+                        for match in logRegex.finditer(str(x)):
+                            if numLines > maxLines:
+                                return data
 
-        regex = r"^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d):(\d\d)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$"
+                            level = match.group(7)
+                            logName = match.group(8)
 
-        data = []
+                            if level in sickbeard.SRLOGGER.logLevels:
+                                if not (sickbeard.DEBUG,level in ['DEBUG','DB']):
+                                    continue
+                                if not logSearch.lower() in match.string.lower():
+                                    continue
+                                if (sickbeard.SRLOGGER.logLevels[level] >= int(minLevel), logName.startswith(logFilter)):
+                                    data += [match.string]
+                                    numLines += 1
 
-        if ek(os.path.isfile, sickbeard.LOG_FILE):
-            with ek(io.open, sickbeard.LOG_FILE, 'r', encoding='utf-8') as f:
-                data = Get_Data(minLevel, f.readlines(), 0, regex, logFilter, logSearch, maxLines)
-
-        for i in range(1, int(sickbeard.LOG_NR)):
-            if ek(os.path.isfile, sickbeard.LOG_FILE + "." + str(i)) and (len(data) <= maxLines):
-                with ek(io.open, sickbeard.LOG_FILE + "." + str(i), 'r', encoding='utf-8') as f:
-                    data += Get_Data(minLevel, f.readlines(), len(data), regex, logFilter, logSearch, maxLines)
+            return "".join(reversed(data))
 
         return self.render(filename="viewlogs.mako",
                            header="Log File",
                            title="Logs",
                            topmenu="system",
-                           logLines="".join(data),
-                           minLevel=minLevel,
+                           logLines=getLogData(),
+                           minLevel=int(minLevel),
                            logNameFilters=logNameFilters,
                            logFilter=logFilter,
                            logSearch=logSearch)
