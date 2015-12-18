@@ -25,12 +25,12 @@ import os
 import re
 import sys
 import locale
-import logging
-import logging.handlers
 import platform
 import threading
 import traceback
 
+import logging
+import logging.handlers
 from logging import INFO, WARNING, ERROR, DEBUG, NOTSET, NullHandler
 
 import sickbeard
@@ -110,16 +110,16 @@ class CustomFilter(logging.Filter):
     def filter(self, record):
         self.allowedLoggers = ['root', 'tornado.general', 'tornado.application']
         if record.name in self.allowedLoggers:
-            for _, v in self.name.items():
-                record.msg.replace(v, len(v) * '*')
+            try:
+                # mask sensitive info
+                record.msg = re.sub(r"(.*)\b({})\b(.*)".format('|'.join([x for x in self.name.values() if len(x)])), r"\1\3", record.msg)
 
-            # needed because Newznab apikey isn't stored as key=value in a section.
-            record.msg = re.sub(r'([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)', r'\1=**********\2', record.msg)
+                # needed because Newznab apikey isn't stored as key=value in a section.
+                record.msg = re.sub(r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)", r"\1=**********\2", record.msg)
 
-            # append thread name to record msg
-            #record.msg = "{}::{}".format(threading.currentThread().getName(), record.msg)
-
-            return super(CustomFilter, self).filter(record)
+                return record
+            except Exception as e:
+                pass
 
 class CustomLogger(SRLogger):
     def __init__(self, *args, **kwargs):

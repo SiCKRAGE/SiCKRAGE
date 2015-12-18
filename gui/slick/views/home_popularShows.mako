@@ -18,19 +18,19 @@
     % for cur_result in popular_shows:
         <div class="popularShow">
             <div class="left">
-                <img class="coverImage" src="${srRoot}/cache/${cur_result['image_path']}" />
+                <img class="coverImage" src="${srRoot}/cache/${cur_result[b'image_path']}" />
             </div>
             <div class="right">
-                <h3>${cur_result['name']}</h3>
+                <h3>${cur_result[b'name']}</h3>
 
-                % if 'rating' in cur_result and cur_result['rating']:
-                    <span class="rating">${cur_result['rating']}/10 (${cur_result['votes']})</span>
+                % if 'rating' in cur_result and cur_result[b'rating']:
+                    <span class="rating">${cur_result[b'rating']}/10 (${cur_result[b'votes']})</span>
                 % endif
 
-                <p>${cur_result['outline']}<span class="year"> - Released ${cur_result['year']}<span></p>
-                <span class="imdb_url"><a href="${anon_url(cur_result['imdb_url'])}">View on IMDB</a></span>&nbsp;&nbsp;|&nbsp;&nbsp;
-                % if cur_result['imdb_tt'] not in imdb_tt:
-                <span class="imdb_sickrage_search"><a href="${srRoot}/home/addShows/newShow/?search_string=${cur_result['name']}">
+                <p>${cur_result[b'outline']}<span class="year"> - Released ${cur_result[b'year']}<span></p>
+                <span class="imdb_url"><a href="${anon_url(cur_result[b'imdb_url'])}">View on IMDB</a></span>&nbsp;&nbsp;|&nbsp;&nbsp;
+                % if cur_result[b'imdb_tt'] not in imdb_tt:
+                <span class="imdb_sickrage_search"><a href="${srRoot}/home/addShows/newShow/?search_string=${cur_result[b'name']}">
                     Add Show</a></span>
                 % else:
                 <span> Already added </span>

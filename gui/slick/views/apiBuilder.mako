@@ -126,9 +126,9 @@
             </div>
             <div class="panel-collapse collapse" id="command-${command_id}">
                 <div class="panel-body">
-                    <blockquote>${help['message']}</blockquote>
+                    <blockquote>${help[b'message']}</blockquote>
 
-                    % if help['data']['optionalParameters'] or help['data']['requiredParameters']:
+                    % if help[b'data'][b'optionalParameters'] or help[b'data'][b'requiredParameters']:
                     <h4>Parameters</h4>
 
                     <table class="tablesorter">
@@ -142,8 +142,8 @@
                             <th>Allowed values</th>
                         </tr>
                     </thead>
-                    ${display_parameters_doc(help['data']['requiredParameters'], True)}
-                    ${display_parameters_doc(help['data']['optionalParameters'], False)}
+                    ${display_parameters_doc(help[b'data'][b'requiredParameters'], True)}
+                    ${display_parameters_doc(help[b'data'][b'optionalParameters'], False)}
                     </table>
                     % endif
 
@@ -151,12 +151,12 @@
 
                     URL: <kbd id="command-${command_id}-base-url">/api/${apikey}/?cmd=${command}</kbd><br>
 
-                    % if help['data']['requiredParameters']:
-                        Required parameters: ${display_parameters_playground(help['data']['requiredParameters'], True, command_id)}<br>
+                    % if help[b'data'][b'requiredParameters']:
+                        Required parameters: ${display_parameters_playground(help[b'data'][b'requiredParameters'], True, command_id)}<br>
                     % endif
 
-                    % if help['data']['optionalParameters']:
-                        Optional parameters: ${display_parameters_playground(help['data']['optionalParameters'], False, command_id)}<br>
+                    % if help[b'data'][b'optionalParameters']:
+                        Optional parameters: ${display_parameters_playground(help[b'data'][b'optionalParameters'], False, command_id)}<br>
                     % endif
 
                     <button class="btn btn-primary" data-action="api-call" data-command-name="${command_id}" data-base-url="command-${command_id}-base-url" data-target="#command-${command_id}-response" data-time="#command-${command_id}-time" data-url="#command-${command_id}-url">Call API</button><br>
@@ -211,10 +211,10 @@ var episodes = ${episodes};
                 <span class="glyphicon glyphicon-remove text-muted" title="No"></span>
             % endif
         </td>
-        <td>${parameter_help['desc'] if 'desc' in parameter_help else ''}</td>
-        <td>${parameter_help['type'] if 'type' in parameter_help else ''}</td>
-        <td>${parameter_help['defaultValue'] if 'defaultValue' in parameter_help else ''}</td>
-        <td>${parameter_help['allowedValues'] if 'allowedValues' in parameter_help else ''}</td>
+        <td>${parameter_help[b'desc'] if 'desc' in parameter_help else ''}</td>
+        <td>${parameter_help[b'type'] if 'type' in parameter_help else ''}</td>
+        <td>${parameter_help[b'defaultValue'] if 'defaultValue' in parameter_help else ''}</td>
+        <td>${parameter_help[b'allowedValues'] if 'allowedValues' in parameter_help else ''}</td>
     </tr>
 % endfor
 </tbody>
@@ -225,8 +225,8 @@ var episodes = ${episodes};
     % for parameter in parameters:
     <%
         parameter_help = parameters[parameter]
-        allowed_values = parameter_help['allowedValues'] if 'allowedValues' in parameter_help else ''
-        type = parameter_help['type'] if 'type' in parameter_help else ''
+        allowed_values = parameter_help[b'allowedValues'] if 'allowedValues' in parameter_help else ''
+        type = parameter_help[b'type'] if 'type' in parameter_help else ''
     %>
 
     % if isinstance(allowed_values, list):

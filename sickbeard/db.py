@@ -364,10 +364,10 @@ def upgradeDatabase(connection, schema):
     """
 
     def _processUpgrade(connection, upgradeClass):
-        while (True):
+        while(True):
             version = connection.checkDBVersion()
 
-            logging.debug("Checking database structure..." + connection.filename)
+            logging.debug("Checking database structure... {}".format(connection.filename))
 
             try:
                 instance = upgradeClass(connection)

@@ -89,6 +89,25 @@ result_type_map = {
     RESULT_DENIED: "denied",
 }
 
+class KeyHandler(RequestHandler):
+    def __init__(self, *args, **kwargs):
+        super(KeyHandler, self).__init__(*args, **kwargs)
+
+    def prepare(self, *args, **kwargs):
+        api_key = None
+
+        try:
+            username = sickbeard.WEB_USERNAME
+            password = sickbeard.WEB_PASSWORD
+
+            if (self.get_argument('u', None) == username or not username) and \
+                    (self.get_argument('p', None) == password or not password):
+                api_key = sickbeard.API_KEY
+
+            self.finish({'success': api_key is not None, 'api_key': api_key})
+        except Exception:
+            logging.error('Failed doing key request: %s' % (traceback.format_exc()))
+            self.finish({'success': False, 'error': 'Failed returning results'})
 
 # basically everything except RESULT_SUCCESS / success is bad
 class ApiHandler(RequestHandler):

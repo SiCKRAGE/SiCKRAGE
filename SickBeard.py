@@ -67,7 +67,6 @@ class SickRage(object):
         self.PIDFILE = ''
 
         # webserver constants
-        self.webserver = None
         self.forcedPort = None
         self.noLaunch = False
 
@@ -281,7 +280,7 @@ class SickRage(object):
                 self.webhost = '0.0.0.0'
 
         # start tornado web server
-        self.webserver = SRWebServer({
+        sickbeard.WEB_SERVER = SRWebServer({
             'port': int(self.startPort),
             'host': self.webhost,
             'data_root': ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME),
@@ -448,12 +447,12 @@ class SickRage(object):
             sickbeard.saveAll()
 
             # shutdown web server
-            if self.webserver:
+            if sickbeard.WEB_SERVER:
                 logging.info("Shutting down Tornado")
-                self.webserver.shutDown()
+                sickbeard.WEB_SERVER.shutDown()
 
                 try:
-                    self.webserver.join(10)
+                    sickbeard.WEB_SERVER.join(10)
                 except Exception:
                     pass
 

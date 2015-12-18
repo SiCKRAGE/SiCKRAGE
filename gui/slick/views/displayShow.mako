@@ -53,7 +53,7 @@
 
     % if seasonResults:
         ##There is a special/season_0?##
-        % if int(seasonResults[-1]["season"]) == 0:
+        % if int(seasonResults[-1][b"season"]) == 0:
             <% season_special = 1 %>
         % else:
             <% season_special = 0 %>
@@ -74,16 +74,16 @@
                 <select id="seasonJump" class="form-control input-sm" style="position: relative; top: -4px;">
                     <option value="jump">Jump to Season</option>
                 % for seasonNum in seasonResults:
-                    <option value="#season-${seasonNum["season"]}" data-season="${seasonNum["season"]}">${('Specials', 'Season ' + str(seasonNum["season"]))[int(seasonNum["season"]) > 0]}</option>
+                    <option value="#season-${seasonNum[b"season"]}" data-season="${seasonNum[b"season"]}">${('Specials', 'Season ' + str(seasonNum[b"season"]))[int(seasonNum[b"season"]) > 0]}</option>
                 % endfor
                 </select>
             % else:
                 Season:
                 % for seasonNum in seasonResults:
-                    % if int(seasonNum["season"]) == 0:
-                        <a href="#season-${seasonNum["season"]}">Specials</a>
+                    % if int(seasonNum[b"season"]) == 0:
+                        <a href="#season-${seasonNum[b"season"]}">Specials</a>
                     % else:
-                        <a href="#season-${seasonNum["season"]}">${str(seasonNum["season"])}</a>
+                        <a href="#season-${seasonNum[b"season"]}">${str(seasonNum[b"season"])}</a>
                     % endif
                     % if seasonNum != seasonResults[-1]:
                         <span class="separator">|</span>
@@ -113,8 +113,8 @@
 
             <div id="showinfo">
 % if 'rating' in show.imdb_info:
-    <% rating_tip = str(show.imdb_info['rating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['votes']) + " Votes" %>
-    <span class="imdbstars" qtip-content="${rating_tip}">${show.imdb_info['rating']}</span>
+    <% rating_tip = str(show.imdb_info[b'rating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info[b'votes']) + " Votes" %>
+    <span class="imdbstars" qtip-content="${rating_tip}">${show.imdb_info[b'rating']}</span>
 % endif
 
 <% _show = show %>
@@ -122,16 +122,16 @@
     <span>(${show.startyear}) - ${show.runtime} minutes - </span>
 % else:
     % if 'country_codes' in show.imdb_info:
-        % for country in show.imdb_info['country_codes'].split('|'):
+        % for country in show.imdb_info[b'country_codes'].split('|'):
                 <img src="${srRoot}/images/blank.png" class="country-flag flag-${country}" width="16" height="11" style="margin-left: 3px; vertical-align:middle;" />
         % endfor
     % endif
     % if 'year' in show.imdb_info:
-                <span>(${show.imdb_info['year']}) - ${show.imdb_info['runtimes']} minutes - </span>
+                <span>(${show.imdb_info[b'year']}) - ${show.imdb_info[b'runtimes']} minutes - </span>
     % endif
                 <a href="${anon_url('http://www.imdb.com/title/', _show.imdbid)}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;" title="http://www.imdb.com/title/${show.imdbid}"><img alt="[imdb]" height="16" width="16" src="${srRoot}/images/imdb.png" style="margin-top: -1px; vertical-align:middle;"/></a>
 % endif
-                <a href="${anon_url(sickbeard.indexerApi(_show.indexer).config['show_url'], _show.indexerid)}" onclick="window.open(this.href, '_blank'); return false;" title="${sickbeard.indexerApi(show.indexer).config["show_url"] + str(show.indexerid)}"><img alt="${sickbeard.indexerApi(show.indexer).name}" height="16" width="16" src="${srRoot}/images/${sickbeard.indexerApi(show.indexer).config["icon"]}" style="margin-top: -1px; vertical-align:middle;"/></a>
+                <a href="${anon_url(sickbeard.indexerApi(_show.indexer).config[b'show_url'], _show.indexerid)}" onclick="window.open(this.href, '_blank'); return false;" title="${sickbeard.indexerApi(show.indexer).config[b"show_url"] + str(show.indexerid)}"><img alt="${sickbeard.indexerApi(show.indexer).name}" height="16" width="16" src="${srRoot}/images/${sickbeard.indexerApi(show.indexer).config[b"icon"]}" style="margin-top: -1px; vertical-align:middle;"/></a>
 % if xem_numbering or xem_absolute_numbering:
                 <a href="${anon_url('http://thexem.de/search?q=', _show.name)}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;" title="http://thexem.de/search?q-${show.name}"><img alt="[xem]" height="16" width="16" src="${srRoot}/images/xem.png" style="margin-top: -1px; vertical-align:middle;"/></a>
 % endif
@@ -145,7 +145,7 @@
                         % endfor
                     % endif
                     % if 'year' in show.imdb_info:
-                        % for imdbgenre in show.imdb_info['genres'].replace('Sci-Fi','Science-Fiction').split('|'):
+                        % for imdbgenre in show.imdb_info[b'genres'].replace('Sci-Fi','Science-Fiction').split('|'):
                             <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}" target="_blank" title="View other popular ${imdbgenre} shows on trakt.tv."><li>${imdbgenre}</li></a>
                         % endfor
                     % endif
@@ -272,11 +272,11 @@
     <% odd = 0 %>
     %  for epResult in sqlResults:
         <%
-            epStr = str(epResult["season"]) + "x" + str(epResult["episode"])
+            epStr = str(epResult[b"season"]) + "x" + str(epResult[b"episode"])
             if not epStr in epCats:
                 continue
 
-            if not sickbeard.DISPLAY_SHOW_SPECIALS and int(epResult["season"]) == 0:
+            if not sickbeard.DISPLAY_SHOW_SPECIALS and int(epResult[b"season"]) == 0:
                 continue
 
             scene = False
@@ -287,14 +287,14 @@
                 scene_anime = True
 
             (dfltSeas, dfltEpis, dfltAbsolute) = (0, 0, 0)
-            if (epResult["season"], epResult["episode"]) in xem_numbering:
-                (dfltSeas, dfltEpis) = xem_numbering[(epResult["season"], epResult["episode"])]
+            if (epResult[b"season"], epResult[b"episode"]) in xem_numbering:
+                (dfltSeas, dfltEpis) = xem_numbering[(epResult[b"season"], epResult[b"episode"])]
 
-            if epResult["absolute_number"] in xem_absolute_numbering:
-                dfltAbsolute = xem_absolute_numbering[epResult["absolute_number"]]
+            if epResult[b"absolute_number"] in xem_absolute_numbering:
+                dfltAbsolute = xem_absolute_numbering[epResult[b"absolute_number"]]
 
-            if epResult["absolute_number"] in scene_absolute_numbering:
-                scAbsolute = scene_absolute_numbering[epResult["absolute_number"]]
+            if epResult[b"absolute_number"] in scene_absolute_numbering:
+                scAbsolute = scene_absolute_numbering[epResult[b"absolute_number"]]
                 dfltAbsNumbering = False
             else:
                 scAbsolute = dfltAbsolute
@@ -338,14 +338,14 @@
             <th class="row-seasonheader displayShowTable" colspan="13" style="vertical-align: bottom; width: auto;">
                 <h3 style="display: inline;"><a name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[int(epResult["season"]) > 0]}</h3>
                 % if sickbeard.DISPLAY_ALL_SEASONS == False:
-                    <button id="showseason-${epResult['season']}" type="button" class="btn btn-xs pull-right" data-toggle="collapse" data-target="#collapseSeason-${epResult['season']}">Show Episodes</button>
+                    <button id="showseason-${epResult[b'season']}" type="button" class="btn btn-xs pull-right" data-toggle="collapse" data-target="#collapseSeason-${epResult[b'season']}">Show Episodes</button>
                     <script type="text/javascript">
                         $(function() {
-                            $('#collapseSeason-${epResult['season']}').on('hide.bs.collapse', function () {
-                                $('#showseason-${epResult['season']}').text('Show Episodes');
+                            $('#collapseSeason-${epResult[b'season']}').on('hide.bs.collapse', function () {
+                                $('#showseason-${epResult[b'season']}').text('Show Episodes');
                             })
-                            $('#collapseSeason-${epResult['season']}').on('show.bs.collapse', function () {
-                                $('#showseason-${epResult['season']}').text('Hide Episodes');
+                            $('#collapseSeason-${epResult[b'season']}').on('show.bs.collapse', function () {
+                                $('#showseason-${epResult[b'season']}').text('Hide Episodes');
                             })
                         });
                     </script>
@@ -378,14 +378,14 @@
             <th class="row-seasonheader displayShowTable" colspan="13" style="vertical-align: bottom; width: auto;">
                 <h3 style="display: inline;"><a name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[bool(int(epResult["season"]))]}</h3>
                 % if sickbeard.DISPLAY_ALL_SEASONS == False:
-                    <button id="showseason-${epResult['season']}" type="button" class="btn btn-xs pull-right" data-toggle="collapse" data-target="#collapseSeason-${epResult['season']}">Show Episodes</button>
+                    <button id="showseason-${epResult[b'season']}" type="button" class="btn btn-xs pull-right" data-toggle="collapse" data-target="#collapseSeason-${epResult[b'season']}">Show Episodes</button>
                     <script type="text/javascript">
                         $(function() {
-                            $('#collapseSeason-${epResult['season']}').on('hide.bs.collapse', function () {
-                                $('#showseason-${epResult['season']}').text('Show Episodes');
+                            $('#collapseSeason-${epResult[b'season']}').on('hide.bs.collapse', function () {
+                                $('#showseason-${epResult[b'season']}').text('Show Episodes');
                             })
-                            $('#collapseSeason-${epResult['season']}').on('show.bs.collapse', function () {
-                                $('#showseason-${epResult['season']}').text('Hide Episodes');
+                            $('#collapseSeason-${epResult[b'season']}').on('show.bs.collapse', function () {
+                                $('#showseason-${epResult[b'season']}').text('Hide Episodes');
                             })
                         });
                     </script>
@@ -414,7 +414,7 @@
             % endif
     </tbody>
         % if sickbeard.DISPLAY_ALL_SEASONS == False:
-        <tbody class="collapse${("", " in")[curSeason == -1]}" id="collapseSeason-${epResult['season']}">
+        <tbody class="collapse${("", " in")[curSeason == -1]}" id="collapseSeason-${epResult[b'season']}">
         % else:
         <tbody>
         % endif
@@ -430,7 +430,7 @@
             <td align="center"><img src="${srRoot}/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}" alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11" /></td>
             <td align="center">
             <%
-                text = str(epResult['episode'])
+                text = str(epResult[b'episode'])
                 if epLoc != '' and epLoc != None:
                     text = '<span title="' + epLoc + '" class="addQTip">' + text + "</span>"
             %>
@@ -477,22 +477,22 @@
                 % endif
             </td>
             <td class="col-airdate">
-                % if int(epResult['airdate']) != 1:
+                % if int(epResult[b'airdate']) != 1:
                     ## Lets do this exactly like ComingEpisodes and History
                     ## Avoid issues with dateutil's _isdst on Windows but still provide air dates
-                    <% airDate = datetime.datetime.fromordinal(epResult['airdate']) %>
+                    <% airDate = datetime.datetime.fromordinal(epResult[b'airdate']) %>
                     % if airDate.year >= 1970 or show.network:
-                        <% airDate = sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(epResult['airdate'], show.airs, show.network)) %>
+                        <% airDate = sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(epResult[b'airdate'], show.airs, show.network)) %>
                     % endif
-                    <time datetime="${airDate.isoformat('T')}" class="date">${sbdatetime.sbdatetime.sbfdatetime(airDate)}</time>
+                    <time datetime="${airDate.isoformat()}" class="date">${sbdatetime.sbdatetime.sbfdatetime(airDate)}</time>
                 % else:
                     Never
                 % endif
             </td>
             <td>
-                % if sickbeard.DOWNLOAD_URL and epResult['location']:
+                % if sickbeard.DOWNLOAD_URL and epResult[b'location']:
                     <%
-                        filename = epResult['location']
+                        filename = epResult[b'location']
                         for rootDir in sickbeard.ROOT_DIRS.split('|'):
                             if rootDir.startswith('/'):
                                 filename = filename.replace(rootDir, "")

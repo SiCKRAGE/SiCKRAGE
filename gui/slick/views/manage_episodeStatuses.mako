@@ -5,8 +5,8 @@
 %>
 <%block name="scripts">
 % if whichStatus or (whichStatus and ep_counts):
-<script type="text/javascript" src="${srRoot}/js/manageEpisodeStatuses.js?${sbPID}"></script>
-% endif:
+    <script type="text/javascript" src="${srRoot}/js/manageEpisodeStatuses.js?${sbPID}"></script>
+% endif
 </%block>
 <%block name="content">
 <div id="content960">
@@ -26,7 +26,7 @@
 <form action="${srRoot}/manage/episodeStatuses" method="get">
 Manage episodes with status <select name="whichStatus" class="form-control form-control-inline input-sm">
 % for curStatus in [common.SKIPPED, common.SNATCHED, common.WANTED, common.IGNORED] + common.Quality.DOWNLOADED + common.Quality.ARCHIVED:
-    %if surStatus not in [common.ARCHIVED, common.DOWNLOADED]:
+    %if curStatus not in [common.ARCHIVED, common.DOWNLOADED]:
         <option value="${curStatus}">${common.statusStrings[curStatus]}</option>
     %endif
 % endfor
@@ -74,8 +74,8 @@ Set checked shows/episodes to <select name="newStatus" class="form-control form-
 <input class="btn btn-inline" type="submit" value="Go" />
 
 <div>
-    <button type="button" class="btn btn-xs selectAllShows">Select all</a></button>
-    <button type="button" class="btn btn-xs unselectAllShows">Clear all</a></button>
+    <button class="btn btn-xs selectAllShows">Select All</button>
+    <button class="btn btn-xs unselectAllShows">Clear All</button>
 </div>
 <br>
 

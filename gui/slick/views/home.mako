@@ -99,17 +99,17 @@
             display_status = 'Ended'
 
     if curShow.indexerid in show_stat:
-        cur_airs_next = show_stat[curShow.indexerid]['ep_airs_next']
+        cur_airs_next = show_stat[curShow.indexerid][b'ep_airs_next']
 
-        cur_snatched = show_stat[curShow.indexerid]['ep_snatched']
+        cur_snatched = show_stat[curShow.indexerid][b'ep_snatched']
         if not cur_snatched:
             cur_snatched = 0
 
-        cur_downloaded = show_stat[curShow.indexerid]['ep_downloaded']
+        cur_downloaded = show_stat[curShow.indexerid][b'ep_downloaded']
         if not cur_downloaded:
             cur_downloaded = 0
 
-        cur_total = show_stat[curShow.indexerid]['ep_total']
+        cur_total = show_stat[curShow.indexerid][b'ep_total']
         if not cur_total:
             cur_total = 0
 
@@ -282,18 +282,18 @@
     download_stat_tip = ''
 
     if curShow.indexerid in show_stat:
-        cur_airs_next = show_stat[curShow.indexerid]['ep_airs_next']
-        cur_airs_prev = show_stat[curShow.indexerid]['ep_airs_prev']
+        cur_airs_next = show_stat[curShow.indexerid][b'ep_airs_next']
+        cur_airs_prev = show_stat[curShow.indexerid][b'ep_airs_prev']
 
-        cur_snatched = show_stat[curShow.indexerid]['ep_snatched']
+        cur_snatched = show_stat[curShow.indexerid][b'ep_snatched']
         if not cur_snatched:
             cur_snatched = 0
 
-        cur_downloaded = show_stat[curShow.indexerid]['ep_downloaded']
+        cur_downloaded = show_stat[curShow.indexerid][b'ep_downloaded']
         if not cur_downloaded:
             cur_downloaded = 0
 
-        cur_total = show_stat[curShow.indexerid]['ep_total']
+        cur_total = show_stat[curShow.indexerid][b'ep_total']
         if not cur_total:
             cur_total = 0
 
@@ -322,7 +322,7 @@
         <% airDate = sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(cur_airs_next, curShow.airs, curShow.network)) %>
         % try:
             <td align="center" class="nowrap">
-                <time datetime="${airDate.isoformat('T')}" class="date">${sbdatetime.sbdatetime.sbfdate(airDate)}</time>
+                <time datetime="${airDate.isoformat()}" class="date">${sbdatetime.sbdatetime.sbfdate(airDate)}</time>
             </td>
         % except ValueError:
             <td align="center" class="nowrap"></td>
@@ -335,7 +335,7 @@
         <% airDate = sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(cur_airs_prev, curShow.airs, curShow.network)) %>
         % try:
             <td align="center" class="nowrap">
-                <time datetime="${airDate.isoformat('T')}" class="date">${sbdatetime.sbdatetime.sbfdate(airDate)}</time>
+                <time datetime="${airDate.isoformat()}" class="date">${sbdatetime.sbdatetime.sbfdate(airDate)}</time>
             </td>
         % except ValueError:
             <td align="center" class="nowrap"></td>

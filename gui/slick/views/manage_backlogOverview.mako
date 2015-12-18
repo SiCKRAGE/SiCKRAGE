@@ -7,18 +7,16 @@
     from sickbeard import sbdatetime, network_timezones
 %>
 <%block name="scripts">
-<script type="text/javascript">
-</script>
+<script type="text/javascript" src="${srRoot}/js/new/manage_backlogOverview.js"></script>
 </%block>
 <%block name="content">
-<div id="content960">
-
 % if not header is UNDEFINED:
     <h1 class="header">${header}</h1>
 % else:
     <h1 class="title">${title}</h1>
 % endif
 
+<div id="content960">
 <% totalWanted = 0 %>
 <% totalQual = 0 %>
 
@@ -63,7 +61,7 @@ Jump to Show
     <tr class="seasoncols"><th>Episode</th><th>Name</th><th class="nowrap">Airdate</th></tr>
 
     % for curResult in showSQLResults[curShow.indexerid]:
-        <% whichStr = str(curResult['season']) + 'x' + str(curResult['episode']) %>
+        <% whichStr = str(curResult[b'season']) + 'x' + str(curResult[b'episode']) %>
         % try:
             <% overview = showCats[curShow.indexerid][whichStr] %>
         % except Exception:
@@ -77,12 +75,12 @@ Jump to Show
         <tr class="seasonstyle ${Overview.overviewStrings[showCats[curShow.indexerid][whichStr]]}">
             <td class="tableleft" align="center">${whichStr}</td>
             <td class="tableright" align="center" class="nowrap">
-                ${curResult["name"]}
+                ${curResult[b"name"]}
             </td>
             <td>
-            <% airDate = sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(curResult['airdate'], curShow.airs, curShow.network)) %>
-            % if int(curResult['airdate']) != 1:
-                <time datetime="${airDate.isoformat('T')}" class="date">${sbdatetime.sbdatetime.sbfdatetime(airDate)}</time>
+            <% airDate = sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(curResult[b'airdate'], curShow.airs, curShow.network)) %>
+            % if int(curResult[b'airdate']) != 1:
+                <time datetime="${airDate.isoformat()}" class="date">${sbdatetime.sbdatetime.sbfdatetime(airDate)}</time>
             % else:
                 Never
             % endif

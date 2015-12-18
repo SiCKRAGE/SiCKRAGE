@@ -119,7 +119,7 @@ sickbeard.CACHE_DIR = ek(os.path.join, TESTDIR, 'cache')
 createTestCacheFolder()
 
 sickbeard.LOG_DIR = ek(os.path.join, TESTDIR, 'Logs')
-sickbeard.LOG_FILE = ek(os.path.join, sickbeard.LOG_DIR, 'test_sickbeard.log')
+sickbeard.LOG_FILE = ek(os.path.join, sickbeard.LOG_DIR, 'test_sickrage.log')
 sickbeard.LOG_NR = 5
 sickbeard.LOG_SIZE = 1048576
 

@@ -123,7 +123,7 @@ $('#subtitles_dir').fileBrowser({ title: 'Select Subtitles Download Directory' }
                                 <div class="field-pair">
                                     <label class="nocheck">
                                         <span class="component-title">Extra Scripts</span>
-                                           <input type="text" name="subtitles_extra_scripts" value="<%'|'.join(sickbeard.SUBTITLES_EXTRA_SCRIPTS)%>" class="form-control input-sm input350" autocapitalize="off" />
+                                           <input type="text" name="subtitles_extra_scripts" value="%'|'.join(sickbeard.SUBTITLES_EXTRA_SCRIPTS)%>" class="form-control input-sm input350" autocapitalize="off" />
                                     </label>
                                     <label class="nocheck">
                                         <span class="component-title">&nbsp;</span>
@@ -163,17 +163,17 @@ $('#subtitles_dir').fileBrowser({ title: 'Select Subtitles Download Directory' }
                     <fieldset class="component-group-list" style="margin-left: 50px; margin-top:36px">
                         <ul id="service_order_list">
                         % for curService in sickbeard.subtitles.sortedServiceList():
-                            <li class="ui-state-default" id="${curService['name']}">
-                                <input type="checkbox" id="enable_${curService['name']}" class="service_enabler" ${('', 'checked="checked"')[curService['enabled'] == True]}/>
-                                <a href="${anon_url(curService['url'])}" class="imgLink" target="_new">
-                                    <img src="${srRoot}/images/subtitles/${curService['image']}" alt="${curService['url']}" title="${curService['url']}" width="16" height="16" style="vertical-align:middle;"/>
+                            <li class="ui-state-default" id="${curService[b'name']}">
+                                <input type="checkbox" id="enable_${curService[b'name']}" class="service_enabler" ${('', 'checked="checked"')[curService[b'enabled'] == True]}/>
+                                <a href="${anon_url(curService[b'url'])}" class="imgLink" target="_new">
+                                    <img src="${srRoot}/images/subtitles/${curService[b'image']}" alt="${curService[b'url']}" title="${curService[b'url']}" width="16" height="16" style="vertical-align:middle;"/>
                                 </a>
-                            <span style="vertical-align:middle;">${curService['name'].capitalize()}</span>
+                            <span style="vertical-align:middle;">${curService[b'name'].capitalize()}</span>
                             <span class="ui-icon ui-icon-arrowthick-2-n-s pull-right" style="vertical-align:middle;"></span>
                           </li>
                         % endfor
                         </ul>
-                        <input type="hidden" name="service_order" id="service_order" value="<%" ".join(['%s:%d' % (x['name'], x['enabled']) for x in sickbeard.subtitles.sortedServiceList()])%>"/>
+                        <input type="hidden" name="service_order" id="service_order" value="<% ''.join(['%s:%d' % (x[b'name'], x[b'enabled']) for x in sickbeard.subtitles.sortedServiceList()])%>"/>
 
                         <br><input type="submit" class="btn config_submitter" value="Save Changes" /><br>
                     </fieldset>
@@ -192,21 +192,23 @@ $('#subtitles_dir').fileBrowser({ title: 'Select Subtitles Download Directory' }
                                 'opensubtitles': {'user': sickbeard.OPENSUBTITLES_USER, 'pass': sickbeard.OPENSUBTITLES_PASS}}
                         %>
                         % for curService in sickbeard.subtitles.sortedServiceList():
-                            % if curService['name'] not in providerLoginDict.keys():
-                                <% continue %>
-                            % endif
-                            ##<div class="field-pair${(' hidden', '')[curService['enabled']]}"> ## Need js to show/hide on save
+                        <%
+                            if curService[b'name'] not in providerLoginDict.keys():
+                                continue
+                        %>
+
+                            ##<div class="field-pair${(' hidden', '')[curService[b'enabled']}"> ## Need js to show/hide on save
                             <div class="field-pair">
-                                <label class="nocheck" for="${curService['name']}_user">
-                                    <span class="component-title">${curService['name'].capitalize()} User Name</span>
+                                <label class="nocheck" for="${curService[b'name']}_user">
+                                    <span class="component-title">${curService[b'name'].capitalize()} User Name</span>
                                     <span class="component-desc">
-                                        <input type="text" name="${curService['name']}_user" id="${curService['name']}_user" value="${providerLoginDict[curService['name']]['user']}" class="form-control input-sm input300" autocapitalize="off" />
+                                        <input type="text" name="${curService[b'name']}_user" id="${curService[b'name']}_user" value="${providerLoginDict[curService[b'name']][b'user']}" class="form-control input-sm input300" autocapitalize="off" />
                                     </span>
                                 </label>
-                                <label class="nocheck" for="${curService['name']}_pass">
-                                    <span class="component-title">${curService['name'].capitalize()} Password</span>
+                                <label class="nocheck" for="${curService[b'name']}_pass">
+                                    <span class="component-title">${curService[b'name'].capitalize()} Password</span>
                                     <span class="component-desc">
-                                        <input type="password" name="${curService['name']}_pass" id="${curService['name']}_pass" value="${providerLoginDict[curService['name']]['pass']}" class="form-control input-sm input300" autocapitalize="off" />
+                                        <input type="password" name="${curService[b'name']}_pass" id="${curService[b'name']}_pass" value="${providerLoginDict[curService[b'name']][b'pass']}" class="form-control input-sm input300" autocapitalize="off" />
                                     </span>
                                 </label>
                             </div>

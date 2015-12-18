@@ -117,7 +117,7 @@
                                 % if sickbeard.SHOWS_RECENT:
                                     <li role="separator" class="divider"></li>
                                     % for recentShow in sickbeard.SHOWS_RECENT:
-                                        <li><a href="${srRoot}/home/displayShow/?show=${recentShow['indexerid']}"><i class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}</a></li>
+                                        <li><a href="${srRoot}/home/displayShow/?show=${recentShow[b'indexerid']}"><i class="menu-icon-addshow"></i>&nbsp;${recentShow[b'name']|trim,h}</a></li>
                                     % endfor
                                 % endif
                             </ul>
@@ -208,7 +208,7 @@
                                 <li><a href="${srRoot}/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
                                 <li><a href="${srRoot}/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
                                 <li><a href="${srRoot}/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
-                                <li><a href="https://github.com/SiCKRAGETV/SiCKRAGE/wiki/Donations" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><i class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
+                                <li><a href="http://sickragetv.herokuapp.com/donate" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><i class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
                                 <li role="separator" class="divider"></li>
                                 %if numErrors:
                                     <li><a href="${srRoot}/errorlogs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors <span class="badge btn-danger">${numErrors}</span></a></li>
@@ -240,20 +240,20 @@
             <span>
             <% first = True %>
             % for menuItem in submenu:
-                % if 'requires' not in menuItem or menuItem['requires']:
-                    <% icon_class = '' if 'icon' not in menuItem else ' ' + menuItem['icon'] %>
-                      % if type(menuItem['path']) == dict:
-                          ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
+                % if 'requires' not in menuItem or menuItem[b'requires']:
+                    <% icon_class = '' if 'icon' not in menuItem else ' ' + menuItem[b'icon'] %>
+                      % if type(menuItem[b'path']) == dict:
+                          ${("</span><span>", "")[bool(first)]}<b>${menuItem[b'title']}</b>
                           <%
                               first = False
                               inner_first = True
                           %>
-                          % for cur_link in menuItem['path']:
-                              ${("&middot; ", "")[bool(inner_first)]}<a class="inner" href="${srRoot}/${menuItem['path'][cur_link]}">${cur_link}</a>
+                          % for cur_link in menuItem[b'path']:
+                              ${("&middot; ", "")[bool(inner_first)]}<a class="inner" href="${srRoot}/${menuItem[b'path'][cur_link]}">${cur_link}</a>
                               <% inner_first = False %>
                           % endfor
                       % else:
-                          <a href="${srRoot}/${menuItem['path']}" class="btn${('', (' confirm ' + menuItem.get('class', '')))['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem['title']}</a>
+                          <a href="${srRoot}/${menuItem[b'path']}" class="btn${('', (' confirm ' + menuItem.get('class', '')))['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem[b'title']}</a>
                           <% first = False %>
                       % endif
                 % endif
@@ -278,12 +278,12 @@
             <div class="footer clearfix">
             <%
                 stats = Show.overall_stats()
-                ep_downloaded = stats['episodes']['downloaded']
-                ep_snatched = stats['episodes']['snatched']
-                ep_total = stats['episodes']['total']
+                ep_downloaded = stats[b'episodes'][b'downloaded']
+                ep_snatched = stats[b'episodes'][b'snatched']
+                ep_total = stats[b'episodes'][b'total']
                 ep_percentage = '' if ep_total == 0 else '(<span class="footerhighlight">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
             %>
-                <span class="footerhighlight">${stats['shows']['total']}</span> Shows (<span class="footerhighlight">${stats['shows']['active']}</span> Active)
+                <span class="footerhighlight">${stats[b'shows'][b'total']}</span> Shows (<span class="footerhighlight">${stats[b'shows'][b'active']}</span> Active)
                 | <span class="footerhighlight">${ep_downloaded}</span>
 
                 % if ep_snatched:

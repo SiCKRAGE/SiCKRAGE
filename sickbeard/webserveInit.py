@@ -4,8 +4,8 @@ import os
 import threading
 import sickbeard
 
-from sickbeard.webserve import LoginHandler, LogoutHandler, KeyHandler, CalendarHandler
-from sickbeard.webapi import ApiHandler
+from sickbeard.webserve import LoginHandler, LogoutHandler, CalendarHandler
+from sickbeard.webapi import ApiHandler, KeyHandler
 import logging
 from sickbeard.helpers import create_https_certificates, generateApiKey
 from tornado.web import Application, StaticFileHandler, RedirectHandler
@@ -71,7 +71,7 @@ class SRWebServer(threading.Thread):
 
         # Load the app
         self.app = Application([],
-                               debug=True,
+                               debug=sickbeard.DEBUG,
                                autoreload=False,
                                gzip=sickbeard.WEB_USE_GZIP,
                                xheaders=sickbeard.HANDLE_REVERSE_PROXY,

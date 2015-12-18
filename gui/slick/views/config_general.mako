@@ -56,7 +56,7 @@
                             <label for="indexerDefaultLang">
                                 <span class="component-title">Default Indexer Language</span>
                                 <span class="component-desc">
-                                    <select name="indexerDefaultLang" id="indexerDefaultLang" class="form-control form-control-inline input-sm bfh-languages" data-language=${sickbeard.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(sickbeard.indexerApi().config['valid_languages'])}"></select>
+                                    <select name="indexerDefaultLang" id="indexerDefaultLang" class="form-control form-control-inline input-sm bfh-languages" data-language=${sickbeard.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(sickbeard.indexerApi().config[b'valid_languages'])}"></select>
                                     <span>for adding shows and metadata providers</span>
                                 </span>
                             </label>

@@ -1,7 +1,8 @@
-# This file is part of SickRage.
+# -*- coding: utf-8 -*-
+# Author: Nic Wolfe <nic@wolfeden.ca>
+# URL: http://code.google.com/p/sickbeard/
 #
-# URL: https://www.sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# This file is part of SickRage.
 #
 # SickRage is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,21 +21,21 @@ from __future__ import unicode_literals
 
 from datetime import datetime
 from datetime import timedelta
-from sickbeard.common import Quality
-from sickbeard.db import DBConnection
 
+import sickbeard
+from sickbeard.common import Quality
 
 class History:
     date_format = '%Y%m%d%H%M%S'
 
     def __init__(self):
-        self.db = DBConnection()
-
+        self.myDB = sickbeard.db.DBConnection()
+        
     def clear(self):
         """
         Clear all the history
         """
-        self.db.action(
+        self.myDB.action(
                 'DELETE '
                 'FROM history '
                 'WHERE 1 = 1'
@@ -66,14 +67,14 @@ class History:
 
         if limit == 0:
             if len(actions) > 0:
-                results = self.db.select(common_sql + filter_sql + order_sql, actions)
+                results = self.myDB.select(common_sql + filter_sql + order_sql, actions)
             else:
-                results = self.db.select(common_sql + order_sql)
+                results = self.myDB.select(common_sql + order_sql)
         else:
             if len(actions) > 0:
-                results = self.db.select(common_sql + filter_sql + order_sql + 'LIMIT ?', actions + [limit])
+                results = self.myDB.select(common_sql + filter_sql + order_sql + 'LIMIT ?', actions + [limit])
             else:
-                results = self.db.select(common_sql + order_sql + 'LIMIT ?', [limit])
+                results = self.myDB.select(common_sql + order_sql + 'LIMIT ?', [limit])
 
         data = []
         for result in results:
@@ -96,7 +97,7 @@ class History:
         Remove all elements older than 30 days from the history
         """
 
-        self.db.action(
+        self.myDB.action(
                 'DELETE '
                 'FROM history '
                 'WHERE date < ?',
