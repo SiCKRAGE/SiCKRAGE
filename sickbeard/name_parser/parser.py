@@ -460,7 +460,7 @@ class NameParser(object):
         if cache_result:
             name_parser_cache.add(name, final_result)
 
-        logging.debug("Parsed " + name + " into " + ss(final_result))
+        logging.debug("Parsed {} into {}".format(name, final_result))
         return final_result
 
 
@@ -589,7 +589,7 @@ class NameParserCache(object):
 
     def get(self, name):
         if name in self._previous_parsed:
-            logging.debug("Using cached parse result for: " + name)
+            logging.debug("Using cached parse result for: {}".format(name))
             return self._previous_parsed[name]
 
 
