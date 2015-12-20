@@ -3,9 +3,9 @@
     import re
     import calendar
     import sickbeard
+    import sbdatetime
+    import network_timezones
     from sickrage.media import showImage
-    from sickbeard import sbdatetime
-    from sickbeard import network_timezones
 %>
 <%block name="metas">
 <meta data-var="max_download_count" data-content="${max_download_count}">
@@ -70,17 +70,18 @@
 % if sickbeard.HOME_LAYOUT == 'poster':
 <div id="${('container', 'container-anime')[curListType == 'Anime' and sickbeard.HOME_LAYOUT == 'poster']}" class="clearfix">
 <div class="posterview">
-% for curLoadingShow in sickbeard.showQueueScheduler.action.loadingShowList:
-    % if curLoadingShow.show == None:
-        <div class="show" data-name="0" data-date="010101" data-network="0" data-progress="101">
-            <img alt="" title="${curLoadingShow.show_name}" class="show-image" style="border-bottom: 1px solid #111;" src="${srRoot}/images/poster.png" />
-            <div class="show-details">
-                <div class="show-add">Loading... (${curLoadingShow.show_name})</div>
+    % for curLoadingShow in sickbeard.showQueue.loadingShowList:
+        % if curLoadingShow.show == None:
+            <div class="show" data-name="0" data-date="010101" data-network="0" data-progress="101">
+                <img alt="" title="${curLoadingShow.show_name}" class="show-image"
+                     style="border-bottom: 1px solid #111;" src="${srRoot}/images/poster.png"/>
+                <div class="show-details">
+                    <div class="show-add">Loading... (${curLoadingShow.show_name})</div>
+                </div>
             </div>
-        </div>
 
-    % endif
-% endfor
+        % endif
+    % endfor
 
 <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
 % for curShow in myShowList:
@@ -244,9 +245,9 @@
     </tfoot>
 
 
-% if sickbeard.showQueueScheduler.action.loadingShowList:
+    % if sickbeard.showQueue.loadingShowList:
     <tbody class="tablesorter-infoOnly">
-% for curLoadingShow in sickbeard.showQueueScheduler.action.loadingShowList:
+        % for curLoadingShow in sickbeard.showQueue.loadingShowList:
 
     % if curLoadingShow.show != None and curLoadingShow.show in sickbeard.showList:
          continue
@@ -392,8 +393,8 @@
             <span class="visible-print-inline">${download_stat}</span>
         </td>
 
-        ## <% show_size = sickbeard.helpers.get_size(curShow._location) %>
-        ## <td align="center" data-show-size="${show_size}">${sickbeard.helpers.pretty_filesize(show_size)}</td>
+        ## <% show_size = helpers.get_size(curShow._location) %>
+        ## <td align="center" data-show-size="${show_size}">${helpers.pretty_filesize(show_size)}</td>
 
         <td align="center">
             <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>

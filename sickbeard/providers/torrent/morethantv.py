@@ -28,16 +28,15 @@ import traceback
 
 import logging
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
+from sickbeard.exceptions import AuthException
 from sickbeard.bs4_parser import BS4Parser
-from sickrage.helper.exceptions import AuthException
 
 
-class MoreThanTVProvider(TorrentProvider):
+class MoreThanTVProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "MoreThanTV")
+        super(MoreThanTVProvider, self).__init__("MoreThanTV")
 
         self.supportsBacklog = True
 
@@ -56,7 +55,7 @@ class MoreThanTVProvider(TorrentProvider):
                      'search': 'https://www.morethan.tv/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s',
                      'download': 'https://www.morethan.tv/torrents.php?action=download&id=%s'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.cookies = None
 
@@ -83,7 +82,7 @@ class MoreThanTVProvider(TorrentProvider):
                             'login': 'Log in',
                             'keeplogged': '1'}
 
-            response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+            response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
             if not response:
                 logging.warning("Unable to connect to provider")
                 return False
@@ -111,7 +110,7 @@ class MoreThanTVProvider(TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (search_string.replace('(', '').replace(')', ''))
+                searchURL = self.urls['search'] % (search_string.replace('(', '').replace(')', ''))
                 logging.debug("Search URL: %s" % searchURL)
 
                 # returns top 15 results by default, expandable in user profile to 100
@@ -145,7 +144,7 @@ class MoreThanTVProvider(TorrentProvider):
                                     title = cells[1].find('a', {'title': 'View torrent'}).contents[0].strip()
                                 else:
                                     title = link.contents[0]
-                                download_url = self.urls[b'download'] % torrent_id_long
+                                download_url = self.urls['download'] % torrent_id_long
 
                                 seeders = cells[6].contents[0]
 

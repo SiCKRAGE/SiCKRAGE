@@ -25,21 +25,21 @@ from xml.parsers.expat import ExpatError
 
 import xmltodict
 
-from providers.torrent import TorrentProvider
-from sickbeard import helpers
+import helpers
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class ExtraTorrentProvider(TorrentProvider):
+class ExtraTorrentProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, "ExtraTorrent")
+        super(ExtraTorrentProvider, self).__init__("ExtraTorrent")
 
         self.urls = {
             'index': 'http://extratorrent.cc',
             'rss': 'http://extratorrent.cc/rss.xml',
         }
 
-        self.url = self.urls[b'index']
+        self.url = self.urls['index']
 
         self.supportsBacklog = True
         self.public = True
@@ -65,7 +65,7 @@ class ExtraTorrentProvider(TorrentProvider):
 
                 try:
                     self.search_params.update({'type': ('search', 'rss')[mode is 'RSS'], 'search': search_string})
-                    data = self.getURL(self.urls[b'rss'], params=self.search_params)
+                    data = self.getURL(self.urls['rss'], params=self.search_params)
                     if not data:
                         logging.debug("No data returned from provider")
                         continue

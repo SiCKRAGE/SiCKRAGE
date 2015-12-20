@@ -22,14 +22,13 @@ import logging
 import re
 import urllib
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class NyaaProvider(TorrentProvider):
+class NyaaProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "NyaaTorrents")
+        super(NyaaProvider, self).__init__("NyaaTorrents")
 
         self.supportsBacklog = True
         self.public = True
@@ -41,7 +40,7 @@ class NyaaProvider(TorrentProvider):
 
         self.urls = {'base_url': 'http://www.nyaa.se/'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.minseed = 0
         self.minleech = 0

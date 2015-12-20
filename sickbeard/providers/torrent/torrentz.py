@@ -28,15 +28,15 @@ from xml.parsers.expat import ExpatError
 import xmltodict
 
 import sickbeard
-from providers.torrent import TorrentProvider
+from common import cpu_presets
+from sickbeard import providers
 from sickbeard import tvcache
-from sickbeard.common import cpu_presets
 
 
-class TORRENTZProvider(TorrentProvider):
+class TORRENTZProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "Torrentz")
+        super(TORRENTZProvider, self).__init__("Torrentz")
         self.public = True
         self.supportsBacklog = True
         self.confirmed = True
@@ -47,7 +47,7 @@ class TORRENTZProvider(TorrentProvider):
         self.urls = {'verified': 'https://torrentz.eu/feed_verified',
                      'feed': 'https://torrentz.eu/feed',
                      'base': 'https://torrentz.eu/'}
-        self.url = self.urls[b'base']
+        self.url = self.urls['base']
 
     def seedRatio(self):
         return self.ratio
@@ -63,7 +63,7 @@ class TORRENTZProvider(TorrentProvider):
 
         for mode in search_strings:
             for search_string in search_strings[mode]:
-                search_url = self.urls[b'verified'] if self.confirmed else self.urls[b'feed']
+                search_url = self.urls['verified'] if self.confirmed else self.urls['feed']
                 if mode is not 'RSS':
                     search_url += '?q=' + quote_plus(search_string)
 

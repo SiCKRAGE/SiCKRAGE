@@ -23,15 +23,14 @@ import re
 import traceback
 import urllib
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class PretomeProvider(TorrentProvider):
+class PretomeProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "Pretome")
+        super(PretomeProvider, self).__init__("Pretome")
 
         self.supportsBacklog = True
 
@@ -48,7 +47,7 @@ class PretomeProvider(TorrentProvider):
                      'search': 'https://pretome.info/browse.php?search=%s%s',
                      'download': 'https://pretome.info/download.php/%s/%s.torrent'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.categories = "&st=1&cat%5B%5D=7"
 
@@ -69,7 +68,7 @@ class PretomeProvider(TorrentProvider):
                         'password': self.password,
                         'login_pin': self.pin}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -95,7 +94,7 @@ class PretomeProvider(TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
+                searchURL = self.urls['search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
                 logging.debug("Search URL: %s" % searchURL)
 
                 data = self.getURL(searchURL)
@@ -130,7 +129,7 @@ class PretomeProvider(TorrentProvider):
                                 else:
                                     title = link.contents[0]
 
-                                download_url = self.urls[b'download'] % (torrent_id, link.contents[0])
+                                download_url = self.urls['download'] % (torrent_id, link.contents[0])
                                 seeders = int(cells[9].contents[0])
                                 leechers = int(cells[10].contents[0])
 

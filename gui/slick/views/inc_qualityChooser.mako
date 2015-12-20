@@ -1,6 +1,6 @@
 <%!
     import sickbeard
-    from sickbeard.common import Quality, qualityPresets, qualityPresetStrings
+    from common import Quality, qualityPresets, qualityPresetStrings
 
     try:__quality = int(show.quality)
     except NameError:__quality = int(sickbeard.QUALITY_DEFAULT)

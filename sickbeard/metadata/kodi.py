@@ -22,13 +22,11 @@ from __future__ import unicode_literals
 
 import os
 
-from sickbeard.metadata import generic
-from sickbeard.metadata import kodi_12plus
-from sickbeard import helpers
-from sickrage.helper.encoding import ek
+import helpers
+from metadata.kodi_12plus import KODI_12PlusMetadata
 
 
-class KODIMetadata(kodi_12plus.KODI_12PlusMetadata):
+class KODIMetadata(KODI_12PlusMetadata):
     """
     Metadata generation class for KODI (legacy).
 
@@ -57,17 +55,17 @@ class KODIMetadata(kodi_12plus.KODI_12PlusMetadata):
                  season_all_poster=False,
                  season_all_banner=False):
 
-        generic.GenericMetadata.__init__(self,
-                                         show_metadata,
-                                         episode_metadata,
-                                         fanart,
-                                         poster,
-                                         banner,
-                                         episode_thumbnails,
-                                         season_posters,
-                                         season_banners,
-                                         season_all_poster,
-                                         season_all_banner)
+        KODI_12PlusMetadata.__init__(self,
+                                     show_metadata,
+                                     episode_metadata,
+                                     fanart,
+                                     poster,
+                                     banner,
+                                     episode_thumbnails,
+                                     season_posters,
+                                     season_banners,
+                                     season_all_poster,
+                                     season_all_banner)
 
         self.name = 'KODI'
 
@@ -101,7 +99,7 @@ class KODIMetadata(kodi_12plus.KODI_12PlusMetadata):
 
         ep_obj: a TVEpisode instance for which to create the thumbnail
         """
-        if ek(os.path.isfile, ep_obj.location):
+        if os.path.isfile(ep_obj.location):
             tbn_filename = helpers.replaceExtension(ep_obj.location, 'tbn')
         else:
             return None
@@ -124,7 +122,7 @@ class KODIMetadata(kodi_12plus.KODI_12PlusMetadata):
         else:
             season_poster_filename = 'season' + str(season).zfill(2)
 
-        return ek(os.path.join, show_obj.location, season_poster_filename + '.tbn')
+        return os.path.join(show_obj.location, season_poster_filename + '.tbn')
 
 
 # present a standard "interface" from the module

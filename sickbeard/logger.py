@@ -21,25 +21,21 @@
 from __future__ import unicode_literals
 
 import io
-import os
-import re
-import abc
-import sys
 import locale
-import github
-import platform
-import threading
-import traceback
-
 import logging
 import logging.handlers
-from logging import INFO, WARNING, ERROR, DEBUG, NOTSET, NullHandler
+import os
+import platform
+import re
+import sys
+import traceback
+from logging import INFO, WARNING, ERROR, DEBUG
 
+import github
+
+import classes
+import common
 import sickbeard
-from sickbeard import classes
-from sickrage.helper.common import dateTimeFormat
-from sickrage.helper.encoding import ek
-from sickrage.helper.exceptions import ex
 
 class SRLogger(logging.Logger):
 
@@ -70,13 +66,13 @@ class SRLogger(logging.Logger):
             'DAILYSEARCHER': 'Daily Searcher',
             'BACKLOG': 'Backlog',
             'SHOWUPDATER': 'Show Updater',
-            'CHECKVERSION': 'Check Version',
+            'UPDATER': 'Check Version',
             'SHOWQUEUE': 'Show Queue',
             'SEARCHQUEUE': 'Search Queue',
             'FINDPROPERS': 'Find Propers',
-            'POSTPROCESSER': 'Postprocesser',
-            'FINDSUBTITLES': 'Find Subtitles',
-            'TRAKTCHECKER': 'Trakt Checker',
+            'POSTPROCESSOR': 'Postprocesser',
+            'SUBTITLESEARCHER': 'Find Subtitles',
+            'TRAKTSEARCHER': 'Trakt Checker',
             'EVENT': 'Event',
             'ERROR': 'Error',
             'TORNADO': 'Tornado',
@@ -87,7 +83,12 @@ class SRLogger(logging.Logger):
         # list of allowed loggers
         self.allowedLoggers = ['root', 'tornado.general', 'tornado.application']
 
-    def initalize(self):
+    def initialize(self):
+        # disable loggers not present in allowed loggers list
+        for logger in self.manager.loggerDict.values():
+            if hasattr(logger, "handlers") and hasattr(logger, "name"):
+                logger.disabled = (False, True)[logger.name not in self.allowedLoggers]
+
         # set custom level for database logging
         logging.addLevelName(self.logLevels[b'DB'], 'DB')
         logging.getLogger().setLevel(self.logLevels[b'DB'])
@@ -106,41 +107,43 @@ class SRLogger(logging.Logger):
                     maxBytes=self.logSize,
                     backupCount=self.logNr
             )
-            rfh.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', dateTimeFormat))
+            rfh.setFormatter(
+                logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', common.dateTimeFormat))
             rfh.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
             logging.getLogger().addHandler(rfh)
 
 class CustomLogger(SRLogger):
     def __init__(self, *args, **kwargs):
         super(CustomLogger, self).__init__(*args, **kwargs)
+        self.disabled = (False, True)[self.name not in self.allowedLoggers]
         logging.log_error_and_exit = self.log_error_and_exit
         logging.submit_errors = self.submit_errors
         logging.db = self.db
 
     def handle(self, record):
-        if not record.name in self.allowedLoggers:
-            self.disabled = 1
+        if self.disabled:
+            return
 
-        if not self.disabled:
-            try:
-                record.msg = re.sub(r"(.*)\b({})\b(.*)"
-                                    .format('|'
-                                            .join([x for x in self.censoredItems.values() if len(x)])), r"\1\3",
-                                    record.msg)
+        try:
+            record.msg = re.sub(r"(.*)\b({})\b(.*)"
+                                .format('|'
+                                        .join([x for x in self.censoredItems.values() if len(x)])), r"\1\3",
+                                record.msg)
 
-                # needed because Newznab apikey isn't stored as key=value in a section.
-                record.msg = re.sub(r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)", r"\1=**********\2", record.msg)
-            except:pass
+            # needed because Newznab apikey isn't stored as key=value in a section.
+            record.msg = re.sub(r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)", r"\1=**********\2", record.msg)
+        except:
+            pass
 
-            # sending record to UI
-            if record.levelno in [WARNING, ERROR]:
-                (classes.WarningViewer().add(record.msg, True), classes.ErrorViewer().add(record.msg, True))[int(level) == ERROR]
+        # sending record to UI
+        if record.levelno in [WARNING, ERROR]:
+            (classes.WarningViewer(), classes.ErrorViewer())[record.levelno == ERROR].add(record.msg, True)
 
-            super(CustomLogger, self).handle(record)
-            if 'exit' in record.args:
-                if self.consoleLogging:
-                    sys.exit(record.msg)
-                sys.exit(1)
+        super(CustomLogger, self).handle(record)
+        if 'exit' in record.args:
+            if self.consoleLogging:
+                sys.exit(record.msg)
+            sys.exit(1)
 
     def error(self, msg, *args, **kwargs):
         super(CustomLogger, self).error(msg, exc_info=1, *args, **kwargs)
@@ -164,11 +167,11 @@ class CustomLogger(SRLogger):
             return submitter_result, issue_id
 
         try:
-            from sickbeard.versionChecker import CheckVersion
+            from sickbeard.updater import Updater
 
-            checkversion = CheckVersion()
+            checkversion = Updater()
             checkversion.check_for_new_version()
-            commits_behind = checkversion.updater.get_num_commits_behind()
+            commits_behind = checkversion.updater.get_num_commits_behind
         except Exception:
             submitter_result = 'Could not check if your SiCKRAGE is updated, unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
@@ -186,19 +189,20 @@ class CustomLogger(SRLogger):
         gh_org = sickbeard.GIT_ORG or 'SiCKRAGETV'
         gh_repo = 'sickrage-issues'
 
-        gh = Github(login_or_token=sickbeard.GIT_USERNAME, password=sickbeard.GIT_PASSWORD, user_agent="SiCKRAGE")
+        gh = github.Github(login_or_token=sickbeard.GIT_USERNAME, password=sickbeard.GIT_PASSWORD,
+                           user_agent="SiCKRAGE")
 
         try:
             # read log file
             log_data = None
 
-            if ek(os.path.isfile, self.logFile):
-                with ek(io.open, self.logFile, 'r') as f:
+            if os.path.isfile(self.logFile):
+                with io.open(self.logFile, 'r') as f:
                     log_data = f.readlines()
 
             for i in range(1, int(sickbeard.LOG_NR)):
-                if ek(os.path.isfile, self.logFile + ".%i" % i) and (len(log_data) <= 500):
-                    with ek(io.open, self.logFile + ".%i" % i, 'r') as f:
+                if os.path.isfile(self.logFile + ".%i" % i) and (len(log_data) <= 500):
+                    with io.open(self.logFile + ".%i" % i, 'r') as f:
                         log_data += f.readlines()
 
             log_data = [line for line in reversed(log_data)]
@@ -214,7 +218,7 @@ class CustomLogger(SRLogger):
                     if len(title_Error) > 1000:
                         title_Error = title_Error[0:1000]
                 except Exception as e:
-                    super(CustomLogger, self).error("Unable to get error title : {}".format(ex(e)))
+                    super(CustomLogger, self).error("Unable to get error title : {}".format(e))
 
                 gist = None
                 regex = r"^({})\s+([A-Z]+)\s+([0-9A-Z\-]+)\s*(.*)$".format(curError.time)
@@ -222,11 +226,11 @@ class CustomLogger(SRLogger):
                     match = re.match(regex, x)
                     if match:
                         level = match.group(2)
-                        if level == logging.ERROR:
-                            paste_data = "".join(log_data[i:i + 50])
-                            if paste_data:
-                                gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
-                            break
+                        # if level == logging.ERROR:
+                        # paste_data = "".join(log_data[i:i + 50])
+                        # if paste_data:
+                        #    gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
+                        # break
                     else:
                         gist = 'No ERROR found'
 
@@ -237,7 +241,7 @@ class CustomLogger(SRLogger):
                     message += "Locale: " + locale.getdefaultlocale()[1] + "\n"
                 except Exception:
                     message += "Locale: unknown" + "\n"
-                message += "Branch: **" + sickbeard.BRANCH + "**\n"
+                message += "Branch: **" + sickbeard.GIT_BRANCH + "**\n"
                 message += "Commit: SiCKRAGETV/SiCKRAGE@" + sickbeard.CUR_COMMIT_HASH + "\n"
                 if gist and gist != 'No ERROR found':
                     message += "Link to Log: " + gist.html_url + "\n"

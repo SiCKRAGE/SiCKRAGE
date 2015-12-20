@@ -23,15 +23,15 @@ import re
 import traceback
 import urllib
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class SceneTimeProvider(TorrentProvider):
+class SceneTimeProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "SceneTime")
+        super(SceneTimeProvider, self).__init__("SceneTime")
 
         self.supportsBacklog = True
 
@@ -49,7 +49,7 @@ class SceneTimeProvider(TorrentProvider):
                      'search': 'https://www.scenetime.com/browse.php?search=%s%s',
                      'download': 'https://www.scenetime.com/download.php/%s/%s'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.categories = "&c2=1&c43=13&c9=1&c63=1&c77=1&c79=1&c100=1&c101=1"
 
@@ -58,7 +58,7 @@ class SceneTimeProvider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -84,7 +84,7 @@ class SceneTimeProvider(TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (urllib.quote(search_string), self.categories)
+                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
                 logging.debug("Search URL: %s" % searchURL)
 
                 data = self.getURL(searchURL)
@@ -117,8 +117,9 @@ class SceneTimeProvider(TorrentProvider):
                             try:
                                 title = link.contents[0].get_text()
                                 filename = "%s.torrent" % title.replace(" ", ".")
-                                download_url = self.urls[b'download'] % (torrent_id, filename)
+                                download_url = self.urls['download'] % (torrent_id, filename)
 
+                                int(cells[labels.index('Seeders')].get_text())
                                 seeders = int(cells[labels.index('Seeders')].get_text())
                                 leechers = int(cells[labels.index('Leechers')].get_text())
                                 # FIXME
@@ -144,8 +145,8 @@ class SceneTimeProvider(TorrentProvider):
 
                             items[mode].append(item)
 
-                except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                except Exception:
+                    logging.error("Failed parsing provider. Traceback: {}".format(traceback.format_exc()))
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

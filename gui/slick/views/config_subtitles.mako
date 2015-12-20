@@ -1,19 +1,19 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    from sickbeard import subtitles
     import sickbeard
-    from sickbeard.helpers import anon_url
+    import helpers
+    from sickbeard import subtitle_searcher
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/configSubtitles.js?${sbPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/config.js"></script>
 <script>
 $(document).ready(function() {
-    $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtitles + "\", name: \"" + lang.name + "\"}" for lang in subtitles.subtitleLanguageFilter())}], {
+    $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtitles + "\", name: \"" + lang.name + "\"}" for lang in subtitle_searcher.subtitleLanguageFilter())}], {
         method: "POST",
         hintText: "Write to search a language and select it",
         preventDuplicates: true,
-        prePopulate: [${','.join("{\"id\": \"" + subtitles.fromietf(lang).opensubtitles + "\", name: \"" + subtitles.fromietf(lang).name + "\"}" for lang in subtitles.wantedLanguages()) if subtitles.wantedLanguages() else ''}]
+        prePopulate: [${','.join("{\"id\": \"" + subtitle_searcher.fromietf(lang).opensubtitles + "\", name: \"" + subtitle_searcher.fromietf(lang).name + "\"}" for lang in subtitle_searcher.wantedLanguages()) if subtitle_searcher.wantedLanguages() else ''}]
     });
 });
 $('#config-components').tabs();
@@ -79,7 +79,9 @@ $('#subtitles_dir').fileBrowser({ title: 'Select Subtitles Download Directory' }
                                 <div class="field-pair">
                                     <label>
                                         <span class="component-title">Subtitle Find Frequency</span>
-                                        <input type="number" name="subtitles_finder_frequency" value="${sickbeard.SUBTITLES_FINDER_FREQUENCY}" hours="1" class="form-control input-sm input75" />
+                                        <input type="number" name="subtitles_finder_frequency"
+                                               value="${sickbeard.SUBTITLE_SEARCHER_FREQ}" hours="1"
+                                               class="form-control input-sm input75"/>
                                         <span class="component-desc">time in hours between scans (default: 1)</span>
                                     </label>
                                 </div>
@@ -123,7 +125,9 @@ $('#subtitles_dir').fileBrowser({ title: 'Select Subtitles Download Directory' }
                                 <div class="field-pair">
                                     <label class="nocheck">
                                         <span class="component-title">Extra Scripts</span>
-                                           <input type="text" name="subtitles_extra_scripts" value="%'|'.join(sickbeard.SUBTITLES_EXTRA_SCRIPTS)%>" class="form-control input-sm input350" autocapitalize="off" />
+                                        <input type="text" name="subtitles_extra_scripts"
+                                               value="<% '|'.join(sickbeard.SUBTITLES_EXTRA_SCRIPTS) %>"
+                                               class="form-control input-sm input350" autocapitalize="off"/>
                                     </label>
                                     <label class="nocheck">
                                         <span class="component-title">&nbsp;</span>
@@ -162,10 +166,10 @@ $('#subtitles_dir').fileBrowser({ title: 'Select Subtitles Download Directory' }
 
                     <fieldset class="component-group-list" style="margin-left: 50px; margin-top:36px">
                         <ul id="service_order_list">
-                        % for curService in sickbeard.subtitles.sortedServiceList():
+                            % for curService in subtitle_searcher.sortedServiceList():
                             <li class="ui-state-default" id="${curService[b'name']}">
                                 <input type="checkbox" id="enable_${curService[b'name']}" class="service_enabler" ${('', 'checked="checked"')[curService[b'enabled'] == True]}/>
-                                <a href="${anon_url(curService[b'url'])}" class="imgLink" target="_new">
+                                <a href="${helpers.anon_url(curService[b'url'])}" class="imgLink" target="_new">
                                     <img src="${srRoot}/images/subtitles/${curService[b'image']}" alt="${curService[b'url']}" title="${curService[b'url']}" width="16" height="16" style="vertical-align:middle;"/>
                                 </a>
                             <span style="vertical-align:middle;">${curService[b'name'].capitalize()}</span>
@@ -173,7 +177,8 @@ $('#subtitles_dir').fileBrowser({ title: 'Select Subtitles Download Directory' }
                           </li>
                         % endfor
                         </ul>
-                        <input type="hidden" name="service_order" id="service_order" value="<% ''.join(['%s:%d' % (x[b'name'], x[b'enabled']) for x in sickbeard.subtitles.sortedServiceList()])%>"/>
+                        <input type="hidden" name="service_order" id="service_order"
+                               value="<% ''.join(['%s:%d' % (x[b'name'], x[b'enabled']) for x in subtitle_searcher.sortedServiceList()])%>"/>
 
                         <br><input type="submit" class="btn config_submitter" value="Save Changes" /><br>
                     </fieldset>
@@ -191,12 +196,11 @@ $('#subtitles_dir').fileBrowser({ title: 'Select Subtitles Download Directory' }
                                 'addic7ed': {'user': sickbeard.ADDIC7ED_USER, 'pass': sickbeard.ADDIC7ED_PASS},
                                 'opensubtitles': {'user': sickbeard.OPENSUBTITLES_USER, 'pass': sickbeard.OPENSUBTITLES_PASS}}
                         %>
-                        % for curService in sickbeard.subtitles.sortedServiceList():
+                        % for curService in subtitle_searcher.sortedServiceList():
                         <%
                             if curService[b'name'] not in providerLoginDict.keys():
-                                continue
+                                    continue
                         %>
-
                             ##<div class="field-pair${(' hidden', '')[curService[b'enabled']}"> ## Need js to show/hide on save
                             <div class="field-pair">
                                 <label class="nocheck" for="${curService[b'name']}_user">

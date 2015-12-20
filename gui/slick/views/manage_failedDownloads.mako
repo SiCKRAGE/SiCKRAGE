@@ -1,12 +1,12 @@
-import providers<%inherit file="/layouts/main.mako"/>
+from sickbeard import providers<%inherit file="/layouts/main.mako"/>
 <%!
     import sickbeard
     import os.path
     import datetime
     import re
     from sickbeard import providers
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, Overview
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from common import Quality, qualityPresets, qualityPresetStrings, statusStrings, Overview
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/manage_failedDownloads.js"></script>
@@ -57,9 +57,10 @@ import providers<%inherit file="/layouts/main.mako"/>
     % endif
     </td>
     <td align="center">
-        <% provider = providers.getProviderClass(providers.GenericProvider.makeID(hItem["provider"])) %>
+        <% provider = providers.getProvider(providers.GenericProvider._makeID) %>
     % if provider != None:
-        <img src="${srRoot}/images/providers/${provider.imageName()}" width="16" height="16" alt="${provider.name}" title="${provider.name}"/>
+        <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16" alt="${provider.name}"
+             title="${provider.name}"/>
     % else:
         <img src="${srRoot}/images/providers/missing.png" width="16" height="16" alt="missing provider" title="missing provider"/>
     % endif

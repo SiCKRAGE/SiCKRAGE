@@ -30,9 +30,6 @@ from itertools import chain
 
 import six
 
-import sickbeard
-from sickrage.helper.encoding import ek
-
 if six.PY3:
     from collections import UserDict
 else:
@@ -298,7 +295,7 @@ class Quality(object):
         if not name:
             return ret
 
-        name = ek(os.path.basename, name)
+        name = os.path.basename(name)
 
         checkName = lambda list, func: func([re.search(x, name, re.I) for x in list])
 
@@ -386,12 +383,12 @@ class Quality(object):
         from hachoir_core import config as hachoir_config
         hachoir_config.quiet = True
 
-        if ek(os.path.isfile, filename):
-            base_filename = ek(os.path.basename, filename)
+        if os.path.isfile(filename):
+            base_filename = os.path.basename(filename)
             bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
             webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
-            for byte in sickbeard.helpers.readFileBuffered(filename):
+            for byte in helpers.readFileBuffered(filename):
                 try:
                     file_metadata = extractMetadata(guessParser(StringInputStream(byte)))
                     for metadata in chain([file_metadata], file_metadata.iterGroups()):
@@ -620,7 +617,6 @@ statusStrings = StatusStrings(
          })
 
 
-# pylint: disable=R0903
 class Overview(object):
     UNAIRED = UNAIRED  # 1
     QUAL = 2
@@ -647,3 +643,6 @@ countryList = {'Australia': 'AU',
                'Canada': 'CA',
                'USA': 'US'
                }
+dateFormat = '%Y-%m-%d'
+dateTimeFormat = '%Y-%m-%d %H:%M:%S'
+timeFormat = '%A %I:%M %p'

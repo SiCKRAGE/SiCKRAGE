@@ -28,8 +28,6 @@ import re
 import stat
 import subprocess
 
-import adba
-
 import common
 import db
 import failed_history
@@ -37,16 +35,14 @@ import helpers
 import history
 import notifiers
 import show_name_helpers
-import subtitles
-from helper.exceptions import EpisodeNotFoundException, ShowDirectoryNotFoundException
-from helper.exceptions import EpisodePostProcessingFailedException
+import sickbeard
+from indexers import adba
 from name_parser.parser import InvalidNameException
 from name_parser.parser import InvalidShowException
 from name_parser.parser import NameParser
-from sickbeard import NFO_RENAME, SUBTITLES_DIR, showList, ADBA_CONNECTION, EXTRA_SCRIPTS, PROG_DIR, \
-    CREATE_MISSING_SHOW_DIRS, RENAME_EPISODES, ANIDB_USE_MYLIST, MOVE_ASSOCIATED_FILES, USE_SUBTITLES, PROCESS_METHOD, \
-    AIRDATE_EPISODES
-
+from sickbeard import subtitle_searcher
+from sickbeard.exceptions import EpisodeNotFoundException, ShowDirectoryNotFoundException
+from sickbeard.exceptions import EpisodePostProcessingFailedException
 
 class PostProcessor(object):
     """
@@ -82,7 +78,7 @@ class PostProcessor(object):
         # name of the NZB that resulted in this folder
         self.nzb_name = nzb_name
 
-        self.process_method = process_method if process_method else PROCESS_METHOD
+        self.process_method = process_method if process_method else sickbeard.PROCESS_METHOD
 
         self.in_history = False
 
@@ -309,11 +305,11 @@ class PostProcessor(object):
             # check if file have subtitles language
             if os.path.splitext(cur_extension)[1][1:] in common.subtitleExtensions:
                 cur_lang = os.path.splitext(cur_extension)[0]
-                if cur_lang in subtitles.wantedLanguages():
+                if cur_lang in subtitle_searcher.wantedLanguages():
                     cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
-            if cur_extension == 'nfo' and NFO_RENAME == True:
+            if cur_extension == 'nfo' and sickbeard.NFO_RENAME == True:
                 cur_extension = 'nfo-orig'
 
             # If new base name then convert name
@@ -323,8 +319,8 @@ class PostProcessor(object):
             else:
                 new_file_name = helpers.replaceExtension(cur_file_name, cur_extension)
 
-            if SUBTITLES_DIR and cur_extension in common.subtitleExtensions:
-                subs_new_path = os.path.join(new_path, SUBTITLES_DIR)
+            if sickbeard.SUBTITLES_DIR and cur_extension in common.subtitleExtensions:
+                subs_new_path = os.path.join(new_path, sickbeard.SUBTITLES_DIR)
                 dir_exists = helpers.makeDir(subs_new_path)
                 if not dir_exists:
                     logging.error("Unable to create subtitles folder " + subs_new_path)
@@ -470,7 +466,7 @@ class PostProcessor(object):
             if quality == common.Quality.UNKNOWN:
                 quality = None
 
-            show = helpers.findCertainShow(showList, indexer_id)
+            show = helpers.findCertainShow(sickbeard.showList, indexer_id)
 
             self.in_history = True
             self.version = version
@@ -497,8 +493,8 @@ class PostProcessor(object):
 
         # if the result is complete then remember that for later
         # if the result is complete then set release name
-        if parse_result.series_name and ((parse_result.season_number is not None and parse_result.episode_numbers) or
-                                             parse_result.air_date) and parse_result.release_group:
+        if parse_result.series_name and (not (not (
+                        parse_result.season_number is not None and parse_result.episode_numbers) and not parse_result.air_date)) and parse_result.release_group:
 
             if not self.release_name:
                 self.release_name = helpers.remove_non_release_groups(
@@ -573,7 +569,7 @@ class PostProcessor(object):
         """
         if helpers.set_up_anidb_connection():
             if not self.anidbEpisode:  # seems like we could parse the name before, now lets build the anidb object
-                self.anidbEpisode = self._build_anidb_episode(ADBA_CONNECTION, filePath)
+                self.anidbEpisode = self._build_anidb_episode(sickbeard.ADBA_CONNECTION, filePath)
 
             self._log("Adding the file to the anidb mylist", logging.DEBUG)
             try:
@@ -785,7 +781,7 @@ class PostProcessor(object):
 
         :param ep_obj: The object to use when calling the extra script
         """
-        for curScriptName in EXTRA_SCRIPTS:
+        for curScriptName in sickbeard.EXTRA_SCRIPTS:
 
             # generate a safe command line string to execute the script and provide all the parameters
             script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
@@ -799,7 +795,7 @@ class PostProcessor(object):
             self._log("Executing command " + str(script_cmd))
             try:
                 p = subprocess.Popen(script_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT, cwd=PROG_DIR)
+                                     stderr=subprocess.STDOUT, cwd=sickbeard.PROG_DIR)
                 out, _ = p.communicate()  # @UnusedVariable
                 self._log("Script result: " + str(out), logging.DEBUG)
 
@@ -860,6 +856,7 @@ class PostProcessor(object):
 
         return False
 
+    @property
     def process(self):
         """
         Post-process a given file
@@ -930,7 +927,7 @@ class PostProcessor(object):
         if not priority_download:
 
             # Not a priority and the quality is lower than what we already have
-            if (new_ep_quality < old_ep_quality and old_ep_quality != common.Quality.UNKNOWN) \
+            if (new_ep_quality < old_ep_quality != common.Quality.UNKNOWN) \
                     and not existing_file_status == PostProcessor.DOESNT_EXIST:
                 self._log("File exists and new file quality is lower than existing, marking it unsafe to replace")
                 return False
@@ -979,7 +976,7 @@ class PostProcessor(object):
                 #    curEp.status = common.Quality.compositeStatus(common.SNATCHED, new_ep_quality)
 
         # if the show directory doesn't exist then make it if allowed
-        if not os.path.isdir(ep_obj.show._location) and CREATE_MISSING_SHOW_DIRS:
+        if not os.path.isdir(ep_obj.show._location) and sickbeard.CREATE_MISSING_SHOW_DIRS:
             self._log("Show directory doesn't exist, creating it", logging.DEBUG)
             try:
                 os.mkdir(ep_obj.show._location)
@@ -1051,7 +1048,7 @@ class PostProcessor(object):
         helpers.make_dirs(dest_path)
 
         # figure out the base name of the resulting episode file
-        if RENAME_EPISODES:
+        if sickbeard.RENAME_EPISODES:
             orig_extension = self.file_name.rpartition('.')[-1]
             new_base_name = os.path.basename(proper_path)
             new_file_name = new_base_name + '.' + orig_extension
@@ -1062,7 +1059,7 @@ class PostProcessor(object):
             new_file_name = self.file_name
 
         # add to anidb
-        if ep_obj.show.is_anime and ANIDB_USE_MYLIST:
+        if ep_obj.show.is_anime and sickbeard.ANIDB_USE_MYLIST:
             self._add_to_anidb_mylist(self.file_path)
 
         try:
@@ -1070,21 +1067,21 @@ class PostProcessor(object):
             if self.process_method == "copy":
                 if helpers.isFileLocked(self.file_path, False):
                     raise EpisodePostProcessingFailedException("File is locked for reading")
-                self._copy(self.file_path, dest_path, new_base_name, MOVE_ASSOCIATED_FILES,
-                           USE_SUBTITLES and ep_obj.show.subtitles)
+                self._copy(self.file_path, dest_path, new_base_name, sickbeard.MOVE_ASSOCIATED_FILES,
+                           sickbeard.USE_SUBTITLES and ep_obj.show.subtitles)
             elif self.process_method == "move":
                 if helpers.isFileLocked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
-                self._move(self.file_path, dest_path, new_base_name, MOVE_ASSOCIATED_FILES,
-                           USE_SUBTITLES and ep_obj.show.subtitles)
+                self._move(self.file_path, dest_path, new_base_name, sickbeard.MOVE_ASSOCIATED_FILES,
+                           sickbeard.USE_SUBTITLES and ep_obj.show.subtitles)
             elif self.process_method == "hardlink":
-                self._hardlink(self.file_path, dest_path, new_base_name, MOVE_ASSOCIATED_FILES,
-                               USE_SUBTITLES and ep_obj.show.subtitles)
+                self._hardlink(self.file_path, dest_path, new_base_name, sickbeard.MOVE_ASSOCIATED_FILES,
+                               sickbeard.USE_SUBTITLES and ep_obj.show.subtitles)
             elif self.process_method == "symlink":
                 if helpers.isFileLocked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
-                self._moveAndSymlink(self.file_path, dest_path, new_base_name, MOVE_ASSOCIATED_FILES,
-                                     USE_SUBTITLES and ep_obj.show.subtitles)
+                self._moveAndSymlink(self.file_path, dest_path, new_base_name, sickbeard.MOVE_ASSOCIATED_FILES,
+                                     sickbeard.USE_SUBTITLES and ep_obj.show.subtitles)
             else:
                 logging.error("Unknown process method: " + str(self.process_method))
                 raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
@@ -1092,7 +1089,7 @@ class PostProcessor(object):
             raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
 
         # download subtitles
-        if USE_SUBTITLES and ep_obj.show.subtitles:
+        if sickbeard.USE_SUBTITLES and ep_obj.show.subtitles:
             for cur_ep in [ep_obj] + ep_obj.relatedEps:
                 with cur_ep.lock:
                     cur_ep.location = os.path.join(dest_path, new_file_name)
@@ -1116,7 +1113,7 @@ class PostProcessor(object):
             myDB.mass_action(sql_l)
 
         # set file modify stamp to show airdate
-        if AIRDATE_EPISODES:
+        if sickbeard.AIRDATE_EPISODES:
             for cur_ep in [ep_obj] + ep_obj.relatedEps:
                 with cur_ep.lock:
                     cur_ep.airdateModifyStamp()

@@ -23,15 +23,14 @@ from __future__ import unicode_literals
 import logging
 import traceback
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class CpasbienProvider(TorrentProvider):
+class CpasbienProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "Cpasbien")
+        super(CpasbienProvider, self).__init__("Cpasbien")
 
         self.supportsBacklog = True
         self.public = True

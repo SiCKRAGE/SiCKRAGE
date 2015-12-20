@@ -20,23 +20,23 @@ import re
 import traceback
 from urllib import urlencode
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
-from sickrage.helper.exceptions import AuthException
+from sickbeard.exceptions import AuthException
 
 
-class TransmitTheNetProvider(TorrentProvider):
+class TransmitTheNetProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "TransmitTheNet")
+        super(TransmitTheNetProvider, self).__init__("TransmitTheNet")
 
         self.urls = {
             'base_url': 'https://transmithe.net/',
             'index': 'https://transmithe.net/index.php',
         }
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.supportsBacklog = True
 
@@ -70,7 +70,7 @@ class TransmitTheNetProvider(TorrentProvider):
             'login': 'submit'
         }
 
-        response = self.getURL(self.urls[b'index'], params={'page': 'login'}, post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['index'], params={'page': 'login'}, post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -95,8 +95,8 @@ class TransmitTheNetProvider(TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                data = self.getURL(self.urls[b'index'], params=self.search_params)
-                searchURL = self.urls[b'index'] + "?" + urlencode(self.search_params)
+                data = self.getURL(self.urls['index'], params=self.search_params)
+                searchURL = self.urls['index'] + "?" + urlencode(self.search_params)
                 logging.debug("Search URL: %s" % searchURL)
 
                 if not data:
@@ -130,7 +130,7 @@ class TransmitTheNetProvider(TorrentProvider):
                             leechers = int(
                                     torrent_row.findAll('a', {'title': 'Click here to view peers details'})[
                                         1].text.strip())
-                            download_url = self.urls[b'base_url'] + download_href
+                            download_url = self.urls['base_url'] + download_href
                             # FIXME
                             size = -1
 
@@ -152,7 +152,7 @@ class TransmitTheNetProvider(TorrentProvider):
                             items[mode].append(item)
 
                 except Exception:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error("Failed parsing provider. Traceback: {}".format(traceback.format_exc()))
 
             # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

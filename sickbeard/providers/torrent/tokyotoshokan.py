@@ -22,16 +22,16 @@ import logging
 import traceback
 import urllib
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import show_name_helpers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class TokyoToshokanProvider(TorrentProvider):
+class TokyoToshokanProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "TokyoToshokan")
+        super(TokyoToshokanProvider, self).__init__("TokyoToshokan")
 
         self.supportsBacklog = True
         self.public = True
@@ -42,7 +42,7 @@ class TokyoToshokanProvider(TorrentProvider):
         self.cache = TokyoToshokanCache(self)
 
         self.urls = {'base_url': 'http://tokyotosho.info/'}
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
     def seedRatio(self):
         return self.ratio

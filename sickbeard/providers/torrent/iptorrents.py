@@ -21,16 +21,15 @@ from __future__ import unicode_literals
 import logging
 import re
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
-from sickrage.helper.exceptions import AuthException, ex
+from sickbeard.exceptions import AuthException
 
 
-class IPTorrentsProvider(TorrentProvider):
+class IPTorrentsProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "IPTorrents")
+        super(IPTorrentsProvider, self).__init__("IPTorrents")
 
         self.supportsBacklog = True
 
@@ -47,7 +46,7 @@ class IPTorrentsProvider(TorrentProvider):
                      'login': 'https://iptorrents.eu/torrents/',
                      'search': 'https://iptorrents.eu/t?%s%s&q=%s&qf=#torrents'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.categories = '73=&60='
 
@@ -64,8 +63,8 @@ class IPTorrentsProvider(TorrentProvider):
                         'password': self.password,
                         'login': 'submit'}
 
-        self.getURL(self.urls[b'login'], timeout=30)
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        self.getURL(self.urls['login'], timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -98,7 +97,7 @@ class IPTorrentsProvider(TorrentProvider):
                     logging.debug("Search string: %s " % search_string)
 
                 # URL with 50 tv-show results, or max 150 if adjusted in IPTorrents profile
-                searchURL = self.urls[b'search'] % (self.categories, freeleech, search_string)
+                searchURL = self.urls['search'] % (self.categories, freeleech, search_string)
                 searchURL += ';o=seeders' if mode is not 'RSS' else ''
                 logging.debug("Search URL: %s" % searchURL)
 
@@ -128,7 +127,7 @@ class IPTorrentsProvider(TorrentProvider):
                         for result in torrents[1:]:
                             try:
                                 title = result.find_all('td')[1].find('a').text
-                                download_url = self.urls[b'base_url'] + result.find_all('td')[3].find('a')['href']
+                                download_url = self.urls['base_url'] + result.find_all('td')[3].find('a')['href']
                                 size = self._convertSize(result.find_all('td')[5].text)
                                 seeders = int(result.find('td', attrs={'class': 'ac t_seeders'}).text)
                                 leechers = int(result.find('td', attrs={'class': 'ac t_leechers'}).text)
@@ -153,7 +152,7 @@ class IPTorrentsProvider(TorrentProvider):
                             items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Error: %r" % ex(e))
+                    logging.error("Failed parsing provider. Error: %r" % e)
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

@@ -92,7 +92,7 @@ class EmailNotifier:
         """
         ep_name = ep_name
 
-        if EMAIL_NOTIFY_ONDOWNLOAD:
+        if sickbeard.EMAIL_NOTIFY_ONDOWNLOAD:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
@@ -131,7 +131,7 @@ class EmailNotifier:
         """
         ep_name = ep_name
 
-        if EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickbeard.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
@@ -167,7 +167,7 @@ class EmailNotifier:
         addrs = []
 
         # Grab the global recipients
-        for addr in EMAIL_LIST.split(','):
+        for addr in sickbeard.EMAIL_LIST.split(','):
             if (len(addr.strip()) > 0):
                 addrs.append(addr)
 

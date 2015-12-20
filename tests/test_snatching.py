@@ -20,26 +20,20 @@
 
 from __future__ import unicode_literals
 
-import os.path
-import sys
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import unittest
 
-from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
-
-import sickbeard.search as search
+import search
 import sickbeard
-from sickbeard.tv import TVEpisode, TVShow
-import sickbeard.common as c
+from common import HD, SD, WANTED
+from sickbeard import providers
+from tests import SiCKRAGETestDBCase
+from tv import TVEpisode, TVShow
 
-tests = {"Dexter": {"a": 1, "q": c.HD, "s": 5, "e": [7], "b": 'Dexter.S05E07.720p.BluRay.X264-REWARD',
+tests = {"Dexter": {"a": 1, "q": HD, "s": 5, "e": [7], "b": 'Dexter.S05E07.720p.BluRay.X264-REWARD',
                     "i": ['Dexter.S05E07.720p.BluRay.X264-REWARD', 'Dexter.S05E07.720p.X264-REWARD']},
-         "House": {"a": 1, "q": c.HD, "s": 4, "e": [5], "b": 'House.4x5.720p.BluRay.X264-REWARD',
+         "House": {"a": 1, "q": HD, "s": 4, "e": [5], "b": 'House.4x5.720p.BluRay.X264-REWARD',
                    "i": ['Dexter.S05E04.720p.X264-REWARD', 'House.4x5.720p.BluRay.X264-REWARD']},
-         "Hells Kitchen": {"a": 1, "q": c.SD, "s": 6, "e": [14, 15], "b": 'Hells.Kitchen.s6e14e15.HDTV.XviD-ASAP',
+         "Hells Kitchen": {"a": 1, "q": SD, "s": 6, "e": [14, 15], "b": 'Hells.Kitchen.s6e14e15.HDTV.XviD-ASAP',
                            "i": ['Hells.Kitchen.S06E14.HDTV.XviD-ASAP', 'Hells.Kitchen.6x14.HDTV.XviD-ASAP',
                                  'Hells.Kitchen.s6e14e15.HDTV.XviD-ASAP']}
          }
@@ -66,7 +60,7 @@ class SearchTest(SiCKRAGETestDBCase):
         return True
 
     def __init__(self, something):
-        for provider in sickbeard.providers.sortedProviderList():
+        for provider in providers.sortedProviderDict().values():
             provider.getURL = self._fake_getURL
             # provider.isActive = self._fake_isActive
 
@@ -87,7 +81,7 @@ def test_generator(tvdbdid, show_name, curData, forceSearch):
 
         for epNumber in curData[b"e"]:
             episode = TVEpisode(show, curData[b"s"], epNumber)
-            episode.status = c.WANTED
+            episode.status = WANTED
             episode.saveToDB()
 
         bestResult = search.searchProviders(show, episode.episode, forceSearch)

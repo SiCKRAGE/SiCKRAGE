@@ -20,17 +20,17 @@ from __future__ import unicode_literals
 
 import logging
 
-from providers.nzb import NZBProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class WombleProvider(NZBProvider):
+class WombleProvider(providers.NZBProvider):
     def __init__(self):
         super(WombleProvider, self).__init__("Womble's Index")
         self.public = True
         self.cache = WombleCache(self)
         self.urls = {'base_url': 'http://newshost.co.za/'}
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
 
 class WombleCache(tvcache.TVCache):

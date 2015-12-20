@@ -2,8 +2,8 @@
 <%!
     import os.path
     import sickbeard
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
     from sickbeard import config
     from sickbeard import metadata
     from sickbeard.metadata.generic import GenericMetadata
@@ -87,7 +87,9 @@
                         <div class="field-pair">
                             <label class="nocheck">
                                 <span class="component-title">Auto Post-Processing Frequency</span>
-                                <input type="number" min="10" name="autopostprocesser_frequency" id="autopostprocesser_frequency" value="${sickbeard.AUTOPOSTPROCESSER_FREQUENCY}" class="form-control input-sm input75" />
+                                <input type="number" min="10" name="autopostprocesser_frequency"
+                                       id="autopostprocesser_frequency" value="${sickbeard.AUTOPOSTPROCESSOR_FREQ}"
+                                       class="form-control input-sm input75"/>
                             </label>
                             <label class="nocheck">
                                 <span class="component-title">&nbsp;</span>
@@ -1073,7 +1075,7 @@
                         </div>
 
                         % for (cur_name, cur_generator) in m_dict.iteritems():
-                        <% cur_metadata_inst = sickbeard.metadata_provider_dict[cur_generator.name] %>
+                        <% cur_metadata_inst = sickbeard.metadataProvideDict[cur_generator.name] %>
                         <% cur_id = cur_generator.get_id() %>
                         <div class="metadataDiv" id="${cur_id}">
                             <div class="metadata_options_wrapper">

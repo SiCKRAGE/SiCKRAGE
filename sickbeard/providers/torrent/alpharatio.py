@@ -24,18 +24,15 @@ import logging
 import re
 import traceback
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class AlphaRatioProvider(TorrentProvider):
+class AlphaRatioProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "AlphaRatio")
-
+        super(AlphaRatioProvider, self).__init__("AlphaRatio")
         self.supportsBacklog = True
-
         self.username = None
         self.password = None
         self.ratio = None
@@ -48,7 +45,7 @@ class AlphaRatioProvider(TorrentProvider):
                      'search': 'http://alpharatio.cc/torrents.php?searchstr=%s%s',
                      'download': 'http://alpharatio.cc/%s'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.catagories = "&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1"
 
@@ -62,7 +59,7 @@ class AlphaRatioProvider(TorrentProvider):
                         'remember_me': 'on',
                         'login': 'submit'}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -89,7 +86,7 @@ class AlphaRatioProvider(TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (search_string, self.catagories)
+                searchURL = self.urls['search'] % (search_string, self.catagories)
                 logging.debug("Search URL: %s" % searchURL)
 
                 data = self.getURL(searchURL)
@@ -113,7 +110,7 @@ class AlphaRatioProvider(TorrentProvider):
 
                             try:
                                 title = link.contents[0]
-                                download_url = self.urls[b'download'] % (url[b'href'])
+                                download_url = self.urls['download'] % (url[b'href'])
                                 seeders = cells[len(cells) - 2].contents[0]
                                 leechers = cells[len(cells) - 1].contents[0]
                                 # FIXME

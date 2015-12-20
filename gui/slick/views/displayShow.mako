@@ -4,12 +4,12 @@
     import urllib
     import ntpath
     import sickbeard
-    import sickbeard.helpers
+    import helpers
 
-    from sickbeard import subtitles, sbdatetime, network_timezones
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
-    from sickbeard.common import Quality, qualityPresets, statusStrings, Overview
-    from sickbeard.helpers import anon_url
+    import subtitle_searcher, sbdatetime, network_timezones
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
+    from common import Quality, qualityPresets, statusStrings, Overview
+    from helpers import anon_url
     from sickrage.media import showImage
 
 %>
@@ -204,12 +204,15 @@
                     </tr>
                 % endif
 
-                <tr><td class="showLegend">Size:</td><td>${sickbeard.helpers.pretty_filesize(sickbeard.helpers.get_size(showLoc[0]))}</td></tr>
+                    <tr>
+                        <td class="showLegend">Size:</td>
+                        <td>${helpers.pretty_filesize(helpers.get_size(showLoc[0]))}</td>
+                    </tr>
 
                 </table>
 
                 <table style="width:180px; float: right; vertical-align: middle; height: 100%;">
-                    <% info_flag = subtitles.fromietf(show.lang).opensubtitles if show.lang else '' %>
+                    <% info_flag = subtitle_searcher.fromietf(show.lang).opensubtitles if show.lang else '' %>
                     <tr><td class="showLegend">Info Language:</td><td><img src="${srRoot}/images/subtitles/flags/${info_flag}.png" width="16" height="11" alt="${show.lang}" title="${show.lang}" onError="this.onerror=null;this.src='${srRoot}/images/flags/unknown.png';"/></td></tr>
                     % if sickbeard.USE_SUBTITLES:
                     <tr><td class="showLegend">Subtitles: </td><td><img src="${srRoot}/images/${("no16.png", "yes16.png")[bool(show.subtitles)]}" alt="${("N", "Y")[bool(show.subtitles)]}" width="16" height="16" /></td></tr>
@@ -230,22 +233,27 @@
     <div class="clearfix"></div>
 
     <div class="pull-left" >
-        Change selected episodes to:</br>
-        <select id="statusSelect" class="form-control form-control-inline input-sm">
-        <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
-        % if not sickbeard.USE_FAILED_DOWNLOADS:
-        <% availableStatus.remove(FAILED) %>
-        % endif
-        % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
-            % if curStatus not in [DOWNLOADED, ARCHIVED]:
-            <option value="${curStatus}">${statusStrings[curStatus]}</option>
+        <div style="padding-bottom: 5px;">
+            Change selected episodes to:</br>
+            <select id="statusSelect" class="form-control form-control-inline input-sm">
+                <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
+                % if not sickbeard.USE_FAILED_DOWNLOADS:
+                    <% availableStatus.remove(FAILED) %>
             % endif
-        % endfor
-        </select>
-        <input type="hidden" id="showID" value="${show.indexerid}" />
-        <input type="hidden" id="indexer" value="${show.indexer}" />
-        <input class="btn btn-inline" type="button" id="changeStatus" value="Go" />
-        <input class="btn btn-inline" type="button" id="deleteEpisode" value="Delete Episodes"/>
+                % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
+                    % if curStatus not in [DOWNLOADED, ARCHIVED]:
+                        <option value="${curStatus}">${statusStrings[curStatus]}</option>
+                    % endif
+                % endfor
+            </select>
+            <input type="hidden" id="showID" value="${show.indexerid}"/>
+            <input type="hidden" id="indexer" value="${show.indexer}"/>
+        </div>
+
+        <div class="pull-left">
+            <input class="btn btn-inline" type="button" id="changeStatus" value="Go"/>
+            <input class="btn btn-inline" type="button" id="deleteEpisode" value="Delete Episodes"/>
+        </div>
     </div>
 
     </br>
@@ -345,7 +353,7 @@
                         $(function() {
                             $('#collapseSeason-${epResult[b'season']}').on('hide.bs.collapse', function () {
                                 $('#showseason-${epResult[b'season']}').text('Show Episodes');
-                            })
+                            });
                             $('#collapseSeason-${epResult[b'season']}').on('show.bs.collapse', function () {
                                 $('#showseason-${epResult[b'season']}').text('Hide Episodes');
                             })
@@ -385,7 +393,7 @@
                         $(function() {
                             $('#collapseSeason-${epResult[b'season']}').on('hide.bs.collapse', function () {
                                 $('#showseason-${epResult[b'season']}').text('Show Episodes');
-                            })
+                            });
                             $('#collapseSeason-${epResult[b'season']}').on('show.bs.collapse', function () {
                                 $('#showseason-${epResult[b'season']}').text('Hide Episodes');
                             })
@@ -474,7 +482,7 @@
             <td class="col-name">${epLoc}</td>
             <td class="col-ep">
                 % if epResult[b"file_size"]:
-                    <% file_size = sickbeard.helpers.pretty_filesize(epResult[b"file_size"]) %>
+                    <% file_size = helpers.pretty_filesize(epResult[b"file_size"]) %>
                     ${file_size}
                 % endif
             </td>
@@ -504,9 +512,9 @@
                 % endif
             </td>
             <td class="col-subtitles" align="center">
-            % for sub_lang in [subtitles.fromietf(x) for x in epResult[b"subtitles"].split(',') if epResult[b"subtitles"]]:
+                % for sub_lang in [subtitle_searcher.fromietf(x) for x in epResult[b"subtitles"].split(',') if epResult[b"subtitles"]]:
                 <% flag = sub_lang.opensubtitles %>
-                % if (not sickbeard.SUBTITLES_MULTI and len(subtitles.wantedLanguages()) is 1) and subtitles.wantedLanguages()[0] in sub_lang.opensubtitles:
+                % if (not sickbeard.SUBTITLES_MULTI and len(subtitle_searcher.wantedLanguages()) is 1) and subtitle_searcher.wantedLanguages()[0] in sub_lang.opensubtitles:
                     <% flag = 'checkbox' %>
                 % endif
                 <img src="${srRoot}/images/subtitles/flags/${flag}.png" width="16" height="11" alt="${sub_lang.name}" onError="this.onerror=null;this.src='${srRoot}/images/flags/unknown.png';" />
@@ -526,7 +534,7 @@
                         <a class="epSearch" id="${str(show.indexerid)}x${str(epResult[b"season"])}x${str(epResult[b"episode"])}" name="${str(show.indexerid)}x${str(epResult[b"season"])}x${str(epResult[b"episode"])}" href="searchEpisode?show=${show.indexerid}&amp;season=${epResult[b"season"]}&amp;episode=${epResult[b"episode"]}"><img src="${srRoot}/images/search16.png" width="16" height="16" alt="search" title="Manual Search" /></a>
                     % endif
                 % endif
-                % if sickbeard.USE_SUBTITLES and show.subtitles and epResult[b"location"] and frozenset(subtitles.wantedLanguages()).difference(epResult[b"subtitles"].split(',')):
+                % if sickbeard.USE_SUBTITLES and show.subtitles and epResult[b"location"] and frozenset(subtitle_searcher.wantedLanguages()).difference(epResult[b"subtitles"].split(',')):
                     <a class="epSubtitlesSearch" href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult[b"season"]}&amp;episode=${epResult[b"episode"]}"><img src="${srRoot}/images/closed_captioning.png" height="16" alt="search subtitles" title="Search Subtitles" /></a>
                 % endif
             </td>

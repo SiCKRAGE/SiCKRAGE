@@ -2,9 +2,9 @@
 <%!
     import sickbeard
     import calendar
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import Quality, qualityPresets, qualityPresetStrings
-    from sickbeard import db, sbdatetime, network_timezones
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from common import Quality, qualityPresets, qualityPresetStrings
+    import db, sbdatetime, network_timezones
     import datetime
     import re
 %>

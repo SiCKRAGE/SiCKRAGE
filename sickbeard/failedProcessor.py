@@ -22,11 +22,11 @@ from __future__ import print_function, unicode_literals
 
 import logging
 
+import search_queue
 import sickbeard
 from sickbeard import show_name_helpers
-from sickbeard import search_queue
+from sickbeard.exceptions import FailedPostProcessingFailedException
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
-from sickrage.helper.exceptions import FailedPostProcessingFailedException
 
 
 class FailedProcessor(object):
@@ -77,7 +77,7 @@ class FailedProcessor(object):
             segment = parsed.show.getEpisode(parsed.season_number, episode)
 
             cur_failed_queue_item = search_queue.FailedQueueItem(parsed.show, [segment])
-            sickbeard.searchQueueScheduler.action.add_item(cur_failed_queue_item)
+            sickbeard.searchQueue.add_item(cur_failed_queue_item)
 
         return True
 

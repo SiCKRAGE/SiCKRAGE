@@ -27,13 +27,13 @@ import urllib
 import requests
 from bs4 import BeautifulSoup
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class HDSpaceProvider(TorrentProvider):
+class HDSpaceProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, "HDSpace")
+        super(HDSpaceProvider, self).__init__("HDSpace")
 
         self.supportsBacklog = True
 
@@ -51,13 +51,13 @@ class HDSpaceProvider(TorrentProvider):
                      'rss': 'https://hd-space.org/rss_torrents.php?feed=dl'}
 
         self.categories = [15, 21, 22, 24, 25, 40]  # HDTV/DOC 1080/720, bluray, remux
-        self.urls[b'search'] += '&category='
+        self.urls['search'] += '&category='
         for cat in self.categories:
-            self.urls[b'search'] += str(cat) + '%%3B'
-            self.urls[b'rss'] += '&cat[]=' + str(cat)
-        self.urls[b'search'] = self.urls[b'search'][:-4]  # remove extra %%3B
+            self.urls['search'] += str(cat) + '%%3B'
+            self.urls['rss'] += '&cat[]=' + str(cat)
+        self.urls['search'] = self.urls['search'][:-4]  # remove extra %%3B
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
     def _checkAuth(self):
 
@@ -74,7 +74,7 @@ class HDSpaceProvider(TorrentProvider):
         login_params = {'uid': self.username,
                         'pwd': self.password}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -98,9 +98,9 @@ class HDSpaceProvider(TorrentProvider):
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    searchURL = self.urls[b'search'] % (urllib.quote_plus(search_string.replace('.', ' ')),)
+                    searchURL = self.urls['search'] % (urllib.quote_plus(search_string.replace('.', ' ')),)
                 else:
-                    searchURL = self.urls[b'search'] % ''
+                    searchURL = self.urls['search'] % ''
 
                 logging.debug("Search URL: %s" % searchURL)
                 if mode is not 'RSS':
@@ -116,7 +116,8 @@ class HDSpaceProvider(TorrentProvider):
                 # the invalid html portions
                 try:
                     data = data.split('<div id="information"></div>')[1]
-                    index = data.index('<table')
+                    index = data.ind
+                    '<table'
                 except ValueError:
                     logging.error("Could not find main torrent table")
                     continue
@@ -139,7 +140,7 @@ class HDSpaceProvider(TorrentProvider):
                     try:
                         dl_href = result.find('a', attrs={'href': re.compile(r'download.php.*')})['href']
                         title = re.search('f=(.*).torrent', dl_href).group(1).replace('+', '.')
-                        download_url = self.urls[b'base_url'] + dl_href
+                        download_url = self.urls['base_url'] + dl_href
                         seeders = int(result.find('span', attrs={'class': 'seedy'}).find('a').text)
                         leechers = int(result.find('span', attrs={'class': 'leechy'}).find('a').text)
                         size = re.match(r'.*?([0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+).*', str(result), re.DOTALL).group(1)

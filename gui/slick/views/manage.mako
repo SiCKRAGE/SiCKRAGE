@@ -1,8 +1,8 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickbeard
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import statusStrings
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from common import statusStrings
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/lib/bootbox.min.js?${sbPID}"></script>
@@ -65,37 +65,37 @@
         <% curDelete_disabled = "" %>
         <% curRemove_disabled = "" %>
 
-        % if sickbeard.showQueueScheduler.action.isBeingUpdated(curShow) or sickbeard.showQueueScheduler.action.isInUpdateQueue(curShow):
+        % if sickbeard.showQueue.isBeingUpdated(curShow) or sickbeard.showQueue.isInUpdateQueue(curShow):
             <% curUpdate_disabled = "disabled=\"disabled\" " %>
         % endif
 
         <% curUpdate = "<input type=\"checkbox\" class=\"updateCheck\" id=\"update-"+str(curShow.indexerid)+"\" "+curUpdate_disabled+"/>" %>
 
-        % if sickbeard.showQueueScheduler.action.isBeingRefreshed(curShow) or sickbeard.showQueueScheduler.action.isInRefreshQueue(curShow):
+        % if sickbeard.showQueue.isBeingRefreshed(curShow) or sickbeard.showQueue.isInRefreshQueue(curShow):
             <% curRefresh_disabled = "disabled=\"disabled\" " %>
         % endif
 
         <% curRefresh = "<input type=\"checkbox\" class=\"refreshCheck\" id=\"refresh-"+str(curShow.indexerid)+"\" "+curRefresh_disabled+"/>" %>
 
-        % if sickbeard.showQueueScheduler.action.isBeingRenamed(curShow) or sickbeard.showQueueScheduler.action.isInRenameQueue(curShow):
+        % if sickbeard.showQueue.isBeingRenamed(curShow) or sickbeard.showQueue.isInRenameQueue(curShow):
             <% curRename = "disabled=\"disabled\" " %>
         % endif
 
         <% curRename = "<input type=\"checkbox\" class=\"renameCheck\" id=\"rename-"+str(curShow.indexerid)+"\" "+curRename_disabled+"/>" %>
 
-        % if not curShow.subtitles or sickbeard.showQueueScheduler.action.isBeingSubtitled(curShow) or sickbeard.showQueueScheduler.action.isInSubtitleQueue(curShow):
+        % if not curShow.subtitles or sickbeard.showQueue.isBeingSubtitled(curShow) or sickbeard.showQueue.isInSubtitleQueue(curShow):
             <% curSubtitle_disabled = "disabled=\"disabled\" " %>
         % endif
 
         <% curSubtitle = "<input type=\"checkbox\" class=\"subtitleCheck\" id=\"subtitle-"+str(curShow.indexerid)+"\" "+curSubtitle_disabled+"/>" %>
 
-        % if sickbeard.showQueueScheduler.action.isBeingRenamed(curShow) or sickbeard.showQueueScheduler.action.isInRenameQueue(curShow) or sickbeard.showQueueScheduler.action.isInRefreshQueue(curShow):
+        % if sickbeard.showQueue.isBeingRenamed(curShow) or sickbeard.showQueue.isInRenameQueue(curShow) or sickbeard.showQueue.isInRefreshQueue(curShow):
             <% curDelete = "disabled=\"disabled\" " %>
         % endif
 
         <% curDelete = "<input type=\"checkbox\" class=\"deleteCheck\" id=\"delete-"+str(curShow.indexerid)+"\" "+curDelete_disabled+"/>" %>
 
-        % if sickbeard.showQueueScheduler.action.isBeingRenamed(curShow) or sickbeard.showQueueScheduler.action.isInRenameQueue(curShow) or sickbeard.showQueueScheduler.action.isInRefreshQueue(curShow):
+        % if sickbeard.showQueue.isBeingRenamed(curShow) or sickbeard.showQueue.isInRenameQueue(curShow) or sickbeard.showQueue.isInRefreshQueue(curShow):
             <% curRemove = "disabled=\"disabled\" " %>
         % endif
 

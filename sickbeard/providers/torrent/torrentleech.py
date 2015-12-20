@@ -23,15 +23,15 @@ import re
 import traceback
 import urllib
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class TorrentLeechProvider(TorrentProvider):
+class TorrentLeechProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "TorrentLeech")
+        super(TorrentLeechProvider, self).__init__("TorrentLeech")
 
         self.supportsBacklog = True
 
@@ -48,7 +48,7 @@ class TorrentLeechProvider(TorrentProvider):
                      'download': 'https://torrentleech.org%s',
                      'index': 'https://torrentleech.org/torrents/browse/index/categories/%s'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.categories = "2,7,26,27,32,34,35"
 
@@ -63,7 +63,7 @@ class TorrentLeechProvider(TorrentProvider):
                         'remember_me': 'on',
                         'login': 'submit'}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -88,9 +88,9 @@ class TorrentLeechProvider(TorrentProvider):
             for search_string in search_params[mode]:
 
                 if mode is 'RSS':
-                    searchURL = self.urls[b'index'] % self.categories
+                    searchURL = self.urls['index'] % self.categories
                 else:
-                    searchURL = self.urls[b'search'] % (
+                    searchURL = self.urls['search'] % (
                         urllib.quote_plus(search_string.encode('utf-8')), self.categories)
                     logging.debug("Search string: %s " % search_string)
 
@@ -115,7 +115,7 @@ class TorrentLeechProvider(TorrentProvider):
                                 link = result.find('td', attrs={'class': 'name'}).find('a')
                                 url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
                                 title = link.string
-                                download_url = self.urls[b'download'] % url[b'href']
+                                download_url = self.urls['download'] % url[b'href']
                                 seeders = int(result.find('td', attrs={'class': 'seeders'}).string)
                                 leechers = int(result.find('td', attrs={'class': 'leechers'}).string)
                                 # FIXME
@@ -140,8 +140,8 @@ class TorrentLeechProvider(TorrentProvider):
 
                             items[mode].append(item)
 
-                except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                except Exception:
+                    logging.error("Failed parsing provider. Traceback: {}".format(traceback.format_exc()))
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

@@ -24,6 +24,11 @@ from __future__ import unicode_literals
 import os.path
 import sys
 
+from helper import encodingInit
+
+import core
+import helpers
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -33,12 +38,12 @@ from configobj import ConfigObj
 
 import sickbeard
 
-from sickbeard import db, providers, tvcache
-from sickbeard.databases import mainDB
-from sickbeard.databases import cache_db, failed_db
+import db
+from sickbeard import tvcache
+from sickbeard import providers
+from sickbeard.databases import mainDB, cache_db, failed_db
 from sickbeard.tv import TVEpisode
-from sickrage.helper.encoding import ek, encodingInit
-from sickbeard.webserveInit import SRWebServer
+from sickbeard.webserver import SRWebServer
 from sickbeard.logger import SRLogger
 
 # =================
@@ -46,8 +51,8 @@ from sickbeard.logger import SRLogger
 # =================
 TESTALL = False
 TESTSKIPPED = ['test_issue_submitter', 'test_ssl_sni']
-TESTDIR = ek(os.path.abspath, ek(os.path.dirname, __file__))
-TESTDBNAME = "sickbeard.db"
+TESTDIR = os.path.abspath(os.path.dirname(__file__))
+TESTDBNAME = "sickrage.db"
 TESTCACHEDBNAME = "cache.db"
 TESTFAILEDDBNAME = "failed.db"
 
@@ -55,21 +60,21 @@ SHOWNAME = "show name"
 SEASON = 4
 EPISODE = 2
 FILENAME = "show name - s0" + str(SEASON) + "e0" + str(EPISODE) + ".mkv"
-FILEDIR = ek(os.path.join, TESTDIR, SHOWNAME)
-FILEPATH = ek(os.path.join, FILEDIR, FILENAME)
-SHOWDIR = ek(os.path.join, TESTDIR, SHOWNAME + " final")
+FILEDIR = os.path.join(TESTDIR, SHOWNAME)
+FILEPATH = os.path.join(FILEDIR, FILENAME)
+SHOWDIR = os.path.join(TESTDIR, SHOWNAME + " final")
 
 # =================
 # prepare env functions
 # =================
 def createTestLogFolder():
-    if not ek(os.path.isdir, sickbeard.LOG_DIR):
-        ek(os.mkdir, sickbeard.LOG_DIR)
+    if not os.path.isdir(sickbeard.LOG_DIR):
+        os.mkdir(sickbeard.LOG_DIR)
 
 
 def createTestCacheFolder():
-    if not ek(os.path.isdir, sickbeard.CACHE_DIR):
-        ek(os.mkdir, sickbeard.CACHE_DIR)
+    if not os.path.isdir(sickbeard.CACHE_DIR):
+        os.mkdir(sickbeard.CACHE_DIR)
 
 
 # call env functions at appropriate time during sickbeard var setup
@@ -90,13 +95,12 @@ sickbeard.NAMING_SPORTS_PATTERN = ''
 sickbeard.NAMING_MULTI_EP = 1
 
 sickbeard.PROVIDER_ORDER = ["sick_beard_index"]
-sickbeard.newznabProviderList = providers.getNewznabProviderList(
-    "'Sick Beard Index|http://lolo.sickbeard.com/|0|5030,5040|0|eponly|0|0|0!!!NZBs.org|https://nzbs.org/||5030,5040,5060,5070,5090|0|eponly|0|0|0!!!Usenet-Crawler|https://www.usenet-crawler.com/||5030,5040,5060|0|eponly|0|0|0'")
-sickbeard.providerList = providers.makeProviderList()
+sickbeard.newznabProviderList = providers.NewznabProvider.getProviderList(
+        providers.NewznabProvider.getDefaultProviders())
 
-sickbeard.PROG_DIR = ek(os.path.abspath, ek(os.path.join, TESTDIR, '..'))
+sickbeard.PROG_DIR = os.path.abspath(os.path.join(TESTDIR, '..'))
 sickbeard.DATA_DIR = TESTDIR
-sickbeard.CONFIG_FILE = ek(os.path.join, sickbeard.DATA_DIR, "config.ini")
+sickbeard.CONFIG_FILE = os.path.join(sickbeard.DATA_DIR, "config.ini")
 sickbeard.CFG = ConfigObj(sickbeard.CONFIG_FILE)
 sickbeard.TV_DOWNLOAD_DIR = FILEDIR
 sickbeard.GUI_NAME = "slick"
@@ -109,17 +113,17 @@ sickbeard.WEB_ROOT = ""
 sickbeard.WEB_SERVER = None
 sickbeard.CPU_PRESET = "NORMAL"
 
-sickbeard.BRANCH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'branch', '')
+sickbeard.GIT_BRANCH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'branch', '')
 sickbeard.CUR_COMMIT_HASH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'cur_commit_hash', '')
 sickbeard.GIT_USERNAME = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'git_username', '')
 sickbeard.GIT_PASSWORD = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'git_password', '',
                                                             censor_log=True)
 
-sickbeard.CACHE_DIR = ek(os.path.join, TESTDIR, 'cache')
+sickbeard.CACHE_DIR = os.path.join(TESTDIR, 'cache')
 createTestCacheFolder()
 
-sickbeard.LOG_DIR = ek(os.path.join, TESTDIR, 'Logs')
-sickbeard.LOG_FILE = ek(os.path.join, sickbeard.LOG_DIR, 'sickrage.log')
+sickbeard.LOG_DIR = os.path.join(TESTDIR, 'Logs')
+sickbeard.LOG_FILE = os.path.join(sickbeard.LOG_DIR, 'sickrage.log')
 sickbeard.LOG_NR = 5
 sickbeard.LOG_SIZE = 1048576
 
@@ -131,7 +135,7 @@ SRLogger.debugLogging=True
 SRLogger.logFile=sickbeard.LOG_FILE
 SRLogger.logSize=sickbeard.LOG_SIZE
 SRLogger.logNr=sickbeard.LOG_NR
-SRLogger.initalize()
+SRLogger.initialize()
 
 
 # =================
@@ -142,7 +146,7 @@ def _dummy_saveConfig():
 
 
 # this overrides the sickbeard save_config which gets called during a db upgrade
-mainDB.sickbeard.save_config = _dummy_saveConfig
+core.save_config = _dummy_saveConfig
 
 
 # the real one tries to contact tvdb just stop it from getting more info on the ep
@@ -182,12 +186,12 @@ class SiCKRAGETestDBCase(SiCKRAGETestCase):
 
 class TestDBConnection(db.DBConnection, object):
     def __init__(self, filename=TESTDBNAME):
-        super(TestDBConnection, self).__init__(ek(os.path.join, TESTDIR, filename))
+        super(TestDBConnection, self).__init__(os.path.join(TESTDIR, filename))
 
 
 class TestCacheDBConnection(TestDBConnection, object):
     def __init__(self, providerName):
-        db.DBConnection.__init__(self, ek(os.path.join, TESTDIR, TESTCACHEDBNAME))
+        db.DBConnection.__init__(self, os.path.join(TESTDIR, TESTCACHEDBNAME))
 
         # Create the table if it's not already there
         try:
@@ -226,8 +230,8 @@ class TestCacheDBConnection(TestDBConnection, object):
 
 
 # this will override the normal db connection
-sickbeard.db.DBConnection = TestDBConnection
-sickbeard.tvcache.CacheDBConnection = TestCacheDBConnection
+db.DBConnection = TestDBConnection
+tvcache.CacheDBConnection = TestCacheDBConnection
 
 
 # =================
@@ -251,18 +255,18 @@ def setUp_test_db():
 
 def tearDown_test_db():
     for current_db in [TESTDBNAME, TESTCACHEDBNAME, TESTFAILEDDBNAME]:
-        file_name = ek(os.path.join, TESTDIR, current_db)
-        if ek(os.path.exists, file_name):
+        file_name = os.path.join(TESTDIR, current_db)
+        if os.path.exists(file_name):
             try:
-                ek(os.remove, file_name)
+                os.remove(file_name)
             except Exception as e:
-                print(sickbeard.ex(e))
+                print(e.message)
                 continue
 
 
 def setUp_test_episode_file():
-    if not ek(os.path.exists, FILEDIR):
-        ek(os.makedirs, FILEDIR)
+    if not os.path.exists(FILEDIR):
+        os.makedirs(FILEDIR)
 
     try:
         with open(FILEPATH, 'wb') as f:
@@ -274,34 +278,40 @@ def setUp_test_episode_file():
 
 
 def tearDown_test_episode_file():
-    if ek(os.path.exists, FILEDIR):
-        ek(sickbeard.helpers.removetree, FILEDIR)
+    if os.path.exists(FILEDIR):
+        helpers.removetree(FILEDIR)
 
 
 def setUp_test_show_dir():
-    if not ek(os.path.exists, SHOWDIR):
-        ek(os.makedirs, SHOWDIR)
+    if not os.path.exists(SHOWDIR):
+        os.makedirs(SHOWDIR)
 
 
 def tearDown_test_show_dir():
-    if ek(os.path.exists, SHOWDIR):
-        ek(sickbeard.helpers.removetree, SHOWDIR)
+    if os.path.exists(SHOWDIR):
+        helpers.removetree(SHOWDIR)
 
 
 def setUp_test_web_server():
-    sickbeard.WEB_SERVER = SRWebServer({
-        'port': 8081,
-        'host': '0.0.0.0',
-        'data_root': ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME),
-        'web_root': "",
-        'log_dir': sickbeard.LOG_DIR,
+    sickbeard.WEB_SERVER = SRWebServer(**{
+        'port': int(sickbeard.WEB_PORT),
+        'host': sickbeard.WEB_HOST,
+        'data_root': sickbeard.DATA_DIR,
+        'gui_root': sickbeard.GUI_DIR,
+        'web_root': sickbeard.WEB_ROOT,
+        'log_dir': sickbeard.WEB_LOG or sickbeard.LOG_DIR,
         'username': sickbeard.WEB_USERNAME,
         'password': sickbeard.WEB_PASSWORD,
-        'enable_https': 0,
-        'handle_reverse_proxy': 0,
-        'https_cert': ek(os.path.join, sickbeard.PROG_DIR, sickbeard.HTTPS_CERT),
-        'https_key': ek(os.path.join, sickbeard.PROG_DIR, sickbeard.HTTPS_KEY),
-    }).start()
+        'enable_https': sickbeard.ENABLE_HTTPS,
+        'handle_reverse_proxy': sickbeard.HANDLE_REVERSE_PROXY,
+        'https_cert': os.path.join(sickbeard.PROG_DIR, sickbeard.HTTPS_CERT),
+        'https_key': os.path.join(sickbeard.PROG_DIR, sickbeard.HTTPS_KEY),
+        'daemonize': sickbeard.DAEMONIZE,
+        'pidfile': sickbeard.PIDFILE,
+        'stop_timeout': 3,
+        'nolaunch': sickbeard.WEB_NOLAUNCH
+    }
+                                       ).start()
 
 
 def tearDown_test_web_server():

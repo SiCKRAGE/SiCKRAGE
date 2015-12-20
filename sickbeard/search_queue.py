@@ -17,18 +17,19 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
-
 from __future__ import unicode_literals
 
+import logging
+import threading
 import time
 import traceback
-import threading
 
+import common
+import failed_history
+import history
+import search
 import sickbeard
-from sickbeard import common
-import logging
 from sickbeard import generic_queue
-from sickbeard import search, failed_history, history
 from sickbeard import ui
 
 search_queue_lock = threading.Lock()
@@ -43,9 +44,12 @@ MANUAL_SEARCH_HISTORY_SIZE = 100
 
 
 class SearchQueue(generic_queue.GenericQueue):
-    def __init__(self):
-        generic_queue.GenericQueue.__init__(self)
+    def __init__(self, *args, **kwargs):
+        super(SearchQueue, self).__init__()
         self.queue_name = "SEARCHQUEUE"
+
+    def run(self, force=False):
+        super(SearchQueue, self).run(force)
 
     def is_in_queue(self, show, segment):
         for cur_item in self.queue:
@@ -74,16 +78,18 @@ class SearchQueue(generic_queue.GenericQueue):
 
     def pause_backlog(self):
         self.min_priority = generic_queue.QueuePriorities.HIGH
+        sickbeard.SCHEDULER.pause_job('BACKLOG')
 
     def unpause_backlog(self):
         self.min_priority = 0
+        sickbeard.SCHEDULER.resume_job('BACKLOG')
 
     def is_backlog_paused(self):
         # backlog priorities are NORMAL, this should be done properly somewhere
         return self.min_priority >= generic_queue.QueuePriorities.NORMAL
 
     def is_manualsearch_in_progress(self):
-        # Only referenced in webserve.py, only current running manualsearch or failedsearch is needed!!
+        # Only referenced in webviews.py, only current running manualsearch or failedsearch is needed!!
         if isinstance(self.currentItem, (ManualSearchQueueItem, FailedQueueItem)):
             return True
         return False

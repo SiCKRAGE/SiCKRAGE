@@ -24,15 +24,14 @@ import logging
 import traceback
 from urllib import urlencode
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class newpctProvider(TorrentProvider):
+class newpctProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "Newpct")
+        super(newpctProvider, self).__init__("Newpct")
 
         self.supportsBacklog = True
         self.onlyspasearch = None
@@ -43,7 +42,7 @@ class newpctProvider(TorrentProvider):
             'search': 'http://www.newpct.com/buscar-descargas/'
         }
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         """
         Search query:
@@ -90,8 +89,8 @@ class newpctProvider(TorrentProvider):
                 self.search_params.update({'q': search_string.strip()})
 
                 logging.debug(
-                        "Search URL: %s" % self.urls[b'search'] + '?' + urlencode(self.search_params))
-                data = self.getURL(self.urls[b'search'], post_data=self.search_params, timeout=30)
+                        "Search URL: %s" % self.urls['search'] + '?' + urlencode(self.search_params))
+                data = self.getURL(self.urls['search'], post_data=self.search_params, timeout=30)
                 if not data:
                     continue
 

@@ -3,8 +3,8 @@
     import re
     import sickbeard
     from sickbeard.helpers import anon_url
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
 %>
 
 <%block name="scripts">

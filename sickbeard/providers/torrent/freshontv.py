@@ -25,16 +25,15 @@ import traceback
 
 import requests
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 from sickbeard.helpers import tryInt
 
 
-class FreshOnTVProvider(TorrentProvider):
+class FreshOnTVProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "FreshOnTV")
+        super(FreshOnTVProvider, self).__init__("FreshOnTV")
 
         self.supportsBacklog = True
 
@@ -55,7 +54,7 @@ class FreshOnTVProvider(TorrentProvider):
                      'search': 'https://freshon.tv/browse.php?incldead=%s&words=0&cat=0&search=%s',
                      'download': 'https://freshon.tv/download.php?id=%s&type=torrent'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.cookies = None
 
@@ -77,7 +76,7 @@ class FreshOnTVProvider(TorrentProvider):
                             'password': self.password,
                             'login': 'submit'}
 
-            response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+            response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
             if not response:
                 logging.warning("Unable to connect to provider")
                 return False
@@ -123,7 +122,7 @@ class FreshOnTVProvider(TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (freeleech, search_string)
+                searchURL = self.urls['search'] % (freeleech, search_string)
                 logging.debug("Search URL: %s" % searchURL)
                 init_html = self.getURL(searchURL)
                 max_page_number = 0
@@ -205,7 +204,7 @@ class FreshOnTVProvider(TorrentProvider):
                                 try:
                                     details_url = individual_torrent.find('a', {'class': 'torrent_name_link'})['href']
                                     torrent_id = int((re.match('.*?([0-9]+)$', details_url).group(1)).strip())
-                                    download_url = self.urls[b'download'] % (str(torrent_id))
+                                    download_url = self.urls['download'] % (str(torrent_id))
                                     seeders = tryInt(individual_torrent.find('td', {'class': 'table_seeders'}).find(
                                             'span').text.strip(), 1)
                                     leechers = tryInt(individual_torrent.find('td', {'class': 'table_leechers'}).find(

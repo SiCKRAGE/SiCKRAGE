@@ -27,19 +27,18 @@ from datetime import datetime
 
 import jsonrpclib
 
+import classes
+import scene_exceptions
 import sickbeard
-from providers.torrent import TorrentProvider
-from sickbeard import classes
-from sickbeard import scene_exceptions
+from common import cpu_presets
+from sickbeard import providers
 from sickbeard import tvcache
-from sickbeard.common import cpu_presets
 from sickbeard.helpers import sanitizeSceneName
-from sickrage.helper.exceptions import AuthException, ex
 
 
-class BTNProvider(TorrentProvider):
+class BTNProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, "BTN")
+        super(BTNProvider, self).__init__("BTN")
 
         self.supportsBacklog = True
 
@@ -53,7 +52,7 @@ class BTNProvider(TorrentProvider):
         self.urls = {'base_url': 'http://api.btnapps.net',
                      'website': 'http://broadcasthe.net/',}
 
-        self.url = self.urls[b'website']
+        self.url = self.urls['website']
 
     def _checkAuth(self):
         if not self.api_key:
@@ -133,7 +132,7 @@ class BTNProvider(TorrentProvider):
 
     def _api_call(self, apikey, params={}, results_per_page=1000, offset=0):
 
-        server = jsonrpclib.Server(self.urls[b'base_url'])
+        server = jsonrpclib.Server(self.urls['base_url'])
         parsedJSON = {}
 
         try:
@@ -146,7 +145,7 @@ class BTNProvider(TorrentProvider):
                         "You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account")
             else:
                 logging.error("JSON-RPC protocol error while accessing provicer. Error: %s " % repr(error))
-            parsedJSON = {'api-error': ex(error)}
+            parsedJSON = {'api-error': error}
             return parsedJSON
 
         except socket.timeout:

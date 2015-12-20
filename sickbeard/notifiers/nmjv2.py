@@ -19,18 +19,13 @@
 
 from __future__ import unicode_literals
 
+import logging
+import time
 import urllib2
 from xml.dom.minidom import parseString
+from xml.etree.ElementTree import fromstring
+
 import sickbeard
-import time
-
-import logging
-
-try:
-    import xml.etree.cElementTree as etree
-except ImportError:
-    import xml.etree.ElementTree as etree
-
 
 class NMJv2Notifier:
     def notify_snatch(self, ep_name):
@@ -68,7 +63,7 @@ class NMJv2Notifier:
             xml = parseString(response1)
             time.sleep(300.0 / 1000.0)
             for node in xml.getElementsByTagName('path'):
-                xmlTag = node.toxml();
+                xmlTag = node.toxml()
                 xmlData = xmlTag.replace('<path>', '').replace('</path>', '').replace('[=]', '')
                 url_db = "http://" + host + ":8008/metadata_database?arg0=check_database&arg1=" + xmlData
                 reqdb = urllib2.Request(url_db)
@@ -123,13 +118,13 @@ class NMJv2Notifier:
             logging.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
         try:
-            et = etree.fromstring(response1)
+            et = fromstring(response1)
             result1 = et.findtext("returnValue")
         except SyntaxError as e:
             logging.error("Unable to parse XML returned from the Popcorn Hour: update_scandir, %s" % (e))
             return False
         try:
-            et = etree.fromstring(response2)
+            et = fromstring(response2)
             result2 = et.findtext("returnValue")
         except SyntaxError as e:
             logging.error("Unable to parse XML returned from the Popcorn Hour: scanner_start, %s" % (e))

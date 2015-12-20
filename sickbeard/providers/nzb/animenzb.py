@@ -24,15 +24,15 @@ import datetime
 import logging
 import urllib
 
-from providers.nzb import NZBProvider
 from sickbeard import classes
+from sickbeard import providers
 from sickbeard import show_name_helpers
 from sickbeard import tvcache
 
 
-class animenzb(NZBProvider):
+class AnimeNZBProvider(providers.NZBProvider):
     def __init__(self):
-        super(animenzb, self).__init__("AnimeNZB")
+        super(AnimeNZBProvider, self).__init__("AnimeNZB")
 
         self.supportsBacklog = False
         self.public = True
@@ -43,7 +43,7 @@ class animenzb(NZBProvider):
 
         self.urls = {'base_url': 'http://animenzb.com//'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
     def _get_season_search_strings(self, ep_obj):
         return [x for x in show_name_helpers.makeSceneSeasonSearchString(self.show, ep_obj)]

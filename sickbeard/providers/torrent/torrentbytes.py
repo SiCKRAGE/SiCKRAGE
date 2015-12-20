@@ -24,15 +24,15 @@ import re
 import traceback
 import urllib
 
-from providers.torrent import TorrentProvider
+from sickbeard import bs4_parser
+from sickbeard import providers
 from sickbeard import tvcache
-from sickbeard.bs4_parser import BS4Parser
 
 
-class TorrentBytesProvider(TorrentProvider):
+class TorrentBytesProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "TorrentBytes")
+        super(TorrentBytesProvider, self).__init__("TorrentBytes")
 
         self.supportsBacklog = True
 
@@ -49,7 +49,7 @@ class TorrentBytesProvider(TorrentProvider):
                      'search': 'https://www.torrentbytes.net/browse.php?search=%s%s',
                      'download': 'https://www.torrentbytes.net/download.php?id=%s&name=%s'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.categories = "&c41=1&c33=1&c38=1&c32=1&c37=1"
 
@@ -63,7 +63,7 @@ class TorrentBytesProvider(TorrentProvider):
                         'password': self.password,
                         'login': 'Log in!'}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -89,7 +89,7 @@ class TorrentBytesProvider(TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
+                searchURL = self.urls['search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
                 logging.debug("Search URL: %s" % searchURL)
 
                 data = self.getURL(searchURL)
@@ -97,7 +97,7 @@ class TorrentBytesProvider(TorrentProvider):
                     continue
 
                 try:
-                    with BS4Parser(data, features=["html5lib", "permissive"]) as html:
+                    with bs4_parser.BS4Parser(data, features=["html5lib", "permissive"]) as html:
                         # Continue only if one Release is found
                         empty = html.find('Nothing found!')
                         if empty:
@@ -130,7 +130,7 @@ class TorrentBytesProvider(TorrentProvider):
                                     title = cells[1].find('a', {'class': 'index'})['title']
                                 else:
                                     title = link.contents[0]
-                                download_url = self.urls[b'download'] % (torrent_id, link.contents[0])
+                                download_url = self.urls['download'] % (torrent_id, link.contents[0])
                                 seeders = int(cells[8].find('span').contents[0])
                                 leechers = int(cells[9].find('span').contents[0])
 

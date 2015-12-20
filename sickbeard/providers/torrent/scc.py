@@ -25,16 +25,16 @@ import time
 import urllib
 
 import sickbeard
-from providers.torrent import TorrentProvider
+from common import cpu_presets
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
-from sickbeard.common import cpu_presets
 
 
-class SCCProvider(TorrentProvider):
+class SCCProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "SceneAccess")
+        super(SCCProvider, self).__init__("SceneAccess")
 
         self.supportsBacklog = True
 
@@ -52,7 +52,7 @@ class SCCProvider(TorrentProvider):
                      'search': 'https://sceneaccess.eu/all?search=%s&method=1&%s',
                      'download': 'https://www.sceneaccess.eu/%s'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.categories = {'sponly': 'c26=26&c44=44&c45=45',
                            # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
@@ -64,7 +64,7 @@ class SCCProvider(TorrentProvider):
                         'password': self.password,
                         'submit': 'come on in'}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -97,7 +97,7 @@ class SCCProvider(TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (urllib.quote(search_string), self.categories[search_mode])
+                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories[search_mode])
 
                 try:
                     logging.debug("Search URL: %s" % searchURL)
@@ -130,7 +130,7 @@ class SCCProvider(TorrentProvider):
                                 if data:
                                     with BS4Parser(data) as details_html:
                                         title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
-                            download_url = self.urls[b'download'] % url[b'href']
+                            download_url = self.urls['download'] % url[b'href']
                             seeders = int(result.find('td', attrs={'class': 'ttr_seeders'}).string)
                             leechers = int(result.find('td', attrs={'class': 'ttr_leechers'}).string)
                             size = self._convertSize(result.find('td', attrs={'class': 'ttr_size'}).contents[0])

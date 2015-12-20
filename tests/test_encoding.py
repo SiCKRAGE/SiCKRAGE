@@ -31,7 +31,7 @@ import unittest
 from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 import sickbeard
 from sickbeard.helpers import sanitizeFileName
-from sickrage.helper.encoding import ek
+
 
 
 class EncodingTests(SiCKRAGETestCase):
@@ -52,7 +52,7 @@ class EncodingTests(SiCKRAGETestCase):
             sickbeard.SYS_ENCODING = 'UTF-8'
 
         for s in strings:
-            show_dir = ek(os.path.join, rootDir, sanitizeFileName(s))
+            show_dir = os.path.join(rootDir, sanitizeFileName(s))
             self.assertIsInstance(show_dir, unicode)
 
 

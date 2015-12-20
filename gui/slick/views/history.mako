@@ -1,4 +1,4 @@
-import providers<%inherit file="/layouts/main.mako"/>
+from sickbeard import providers<%inherit file="/layouts/main.mako"/>
 <%!
     import sickbeard
     import os.path
@@ -7,11 +7,11 @@ import providers<%inherit file="/layouts/main.mako"/>
     import time
 
     from sickbeard import providers
-    from sickbeard import sbdatetime
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
-    from sickbeard.common import Quality, statusStrings, Overview
+    import sbdatetime
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
+    from common import Quality, statusStrings, Overview
 
-    from sickrage.show.History import History
+    from show import History
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/history.js"></script>
@@ -85,11 +85,13 @@ import providers<%inherit file="/layouts/main.mako"/>
                         <span style="vertical-align:middle;"><i>${hItem["provider"]}</i></span>
                     % endif
                 % else:
-                    % if hItem["provider"] > 0:
+                    % if hItem[b"provider"] > 0:
                         % if curStatus in [SNATCHED, FAILED]:
-                            <% provider = providers.getProviderClass(providers.GenericProvider.makeID(hItem["provider"])) %>
+                            <% provider = providers.getProvider(hItem[b"provider"]) %>
                             % if provider != None:
-                                <img src="${srRoot}/images/providers/${provider.imageName()}" width="16" height="16" style="vertical-align:middle;" /> <span style="vertical-align:middle;">${provider.name}</span>
+                                <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16"
+                                     style="vertical-align:middle;"/> <span
+                                    style="vertical-align:middle;">${provider.name}</span>
                             % else:
                                 <img src="${srRoot}/images/providers/missing.png" width="16" height="16" style="vertical-align:middle;" title="missing provider"/> <span style="vertical-align:middle;">Missing Provider</span>
                             % endif
@@ -142,9 +144,11 @@ import providers<%inherit file="/layouts/main.mako"/>
                     % for action in sorted(hItem["actions"]):
                         <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
                         % if curStatus in [SNATCHED, FAILED]:
-                            <% provider = providers.getProviderClass(providers.GenericProvider.makeID(action["provider"])) %>
+                            <% provider = providers.getProvider(action["action"]) %>
                             % if provider != None:
-                                <img src="${srRoot}/images/providers/${provider.imageName()}" width="16" height="16" style="vertical-align:middle;" alt="${provider.name}" style="cursor: help;" title="${provider.name}: ${os.path.basename(action["resource"])}"/>
+                                <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16"
+                                     style="vertical-align:middle;" alt="${provider.name}" style="cursor: help;"
+                                     title="${provider.name}: ${os.path.basename(action["resource"])}"/>
                             % else:
                                 <img src="${srRoot}/images/providers/missing.png" width="16" height="16" style="vertical-align:middle;" alt="missing provider" title="missing provider"/>
                             % endif

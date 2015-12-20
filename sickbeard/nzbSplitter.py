@@ -19,22 +19,17 @@
 
 from __future__ import unicode_literals
 
-import logging
-
 import io
-import requests
+import logging
 import re
+import xml
+from xml.etree.ElementTree import ElementTree, XML, Element
 
-try:
-    import xml.etree.cElementTree as etree
-except ImportError:
-    import xml.etree.ElementTree as etree
+import requests
 
-from sickbeard import classes, helpers
-from sickbeard.common import Quality
-from sickrage.helper.encoding import ek, ss
-from sickrage.helper.exceptions import ex
-
+import classes
+import common
+import helpers
 from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 
 
@@ -48,10 +43,10 @@ def getSeasonNZBs(name, urlData, season):
     :return: dict of (episode files, xml matches)
     """
     try:
-        showXML = etree.ElementTree(etree.XML(urlData))
+        showXML = ElementTree(XML(urlData))
     except SyntaxError:
         logging.error("Unable to parse the XML of " + name + ", not splitting it")
-        return ({}, '')
+        return {}, ''
 
     filename = name.replace(".nzb", "")
 
@@ -64,7 +59,7 @@ def getSeasonNZBs(name, urlData, season):
         showName, qualitySection, groupName = sceneNameMatch.groups()  # @UnusedVariable
     else:
         logging.error("Unable to parse " + name + " into a scene name. If it's a valid one log a bug.")
-        return ({}, '')
+        return {}, ''
 
     regex = '(' + re.escape(showName) + '\.S%02d(?:[E0-9]+)\.[\w\._]+\-\w+' % season + ')'
     regex = regex.replace(' ', '.')
@@ -73,7 +68,7 @@ def getSeasonNZBs(name, urlData, season):
     xmlns = None
 
     for curFile in nzbElement.getchildren():
-        xmlnsMatch = re.match("\{(http:\/\/[A-Za-z0-9_\.\/]+\/nzb)\}file", curFile.tag)
+        xmlnsMatch = re.match("\{(http://[A-Za-z0-9_\./]+/nzb)\}file", curFile.tag)
         if not xmlnsMatch:
             continue
         else:
@@ -88,18 +83,18 @@ def getSeasonNZBs(name, urlData, season):
         else:
             epFiles[curEp].append(curFile)
 
-    return (epFiles, xmlns)
+    return epFiles, xmlns
 
 
 def createNZBString(fileElements, xmlns):
-    rootElement = etree.Element("nzb")
+    rootElement = Element("nzb")
     if xmlns:
         rootElement.set("xmlns", xmlns)
 
     for curFile in fileElements:
         rootElement.append(stripNS(curFile, xmlns))
 
-    return etree.tostring(ss(rootElement))
+    return xml.etree.tostring(rootElement)
 
 
 def saveNZB(nzbName, nzbString):
@@ -110,11 +105,11 @@ def saveNZB(nzbName, nzbString):
     :param nzbString: Content to write in file
     """
     try:
-        with ek(io.open, nzbName + ".nzb", 'w') as nzb_fh:
+        with io.open(nzbName + ".nzb", 'w') as nzb_fh:
             nzb_fh.write(nzbString)
 
     except EnvironmentError as e:
-        logging.error("Unable to save NZB: {}".format(ex(e)))
+        logging.error("Unable to save NZB: {}".format(e))
 
 
 def stripNS(element, ns):
@@ -149,7 +144,7 @@ def splitResult(result):
         return False
 
     # bust it up
-    season = parse_result.season_number if parse_result.season_number != None else 1
+    season = parse_result.season_number if parse_result.season_number is not None else 1
 
     separateNZBs, xmlns = getSeasonNZBs(result.name, urlData, season)
 
@@ -171,8 +166,8 @@ def splitResult(result):
             return False
 
         # make sure the result is sane
-        if (parse_result.season_number != None and parse_result.season_number != season) or (
-                        parse_result.season_number == None and season != 1):
+        if (parse_result.season_number is not None and parse_result.season_number != season) or (
+                        parse_result.season_number is None and season != 1):
             logging.warning(
                     "Found " + newNZB + " inside " + result.name + " but it doesn't seem to belong to the same season, ignoring it")
             continue
@@ -185,7 +180,7 @@ def splitResult(result):
         for epNo in parse_result.episode_numbers:
             if not result.extraInfo[0].wantEpisode(season, epNo, result.quality):
                 logging.info("Ignoring result " + newNZB + " because we don't want an episode that is " +
-                            Quality.qualityStrings[result.quality])
+                             common.Quality.qualityStrings[result.quality])
                 wantEp = False
                 break
         if not wantEp:

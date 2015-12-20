@@ -27,14 +27,14 @@ import traceback
 import requests
 from requests.auth import AuthBase
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class BLUETIGERSProvider(TorrentProvider):
+class BLUETIGERSProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, "BLUETIGERS")
+        super(BLUETIGERSProvider, self).__init__("BLUETIGERS")
 
         self.supportsBacklog = True
 
@@ -57,7 +57,7 @@ class BLUETIGERSProvider(TorrentProvider):
             "c16": 1, "c10": 1, "c130": 1, "c131": 1, "c17": 1, "c18": 1, "c19": 1
         }
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
     def _doLogin(self):
         if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
@@ -69,7 +69,7 @@ class BLUETIGERSProvider(TorrentProvider):
             'take_login': '1'
         }
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -98,7 +98,7 @@ class BLUETIGERSProvider(TorrentProvider):
 
                 self.search_params[b'search'] = search_string
 
-                data = self.getURL(self.urls[b'search'], params=self.search_params)
+                data = self.getURL(self.urls['search'], params=self.search_params)
                 if not data:
                     continue
 
@@ -113,7 +113,7 @@ class BLUETIGERSProvider(TorrentProvider):
                         if result_linkz:
                             for link in result_linkz:
                                 title = link.text
-                                download_url = self.urls[b'base_url'] + "/" + link[b'href']
+                                download_url = self.urls['base_url'] + "/" + link[b'href']
                                 download_url = download_url.replace("torrents-details", "download")
                                 # FIXME
                                 size = -1

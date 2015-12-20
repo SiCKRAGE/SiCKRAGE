@@ -3,8 +3,8 @@
     import sickbeard
     import datetime
     import re
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import Quality, qualityPresets, qualityPresetStrings
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from common import Quality, qualityPresets, qualityPresetStrings
     from sickbeard import sbdatetime
     from sickbeard.helpers import anon_url
 %>

@@ -20,32 +20,35 @@
 
 from __future__ import unicode_literals
 
-from __future__ import unicode_literals
-
+import logging
 import traceback
 
+import common
+import generic_queue
+import notifiers
+import scene_numbering
 import sickbeard
-
-from imdb import _exceptions as imdb_exceptions
-from sickbeard.common import WANTED
-from sickbeard.tv import TVShow
-import logging
-from sickbeard import notifiers
-from sickbeard import ui
-from sickbeard import generic_queue
-from sickbeard import name_cache
-from sickbeard import scene_numbering
+import tv
+import ui
+from indexers.indexer_api import indexerApi
+from indexers.indexer_exceptions import indexer_error, indexer_attributenotfound, indexer_exception
 from sickbeard.blackandwhitelist import BlackAndWhiteList
-from sickrage.helper.exceptions import CantRefreshShowException, CantRemoveShowException, CantUpdateShowException
-from sickrage.helper.exceptions import EpisodeDeletedException, ex, MultipleShowObjectsException
-from sickrage.helper.exceptions import ShowDirectoryNotFoundException
+from sickbeard.exceptions import CantRefreshShowException, CantRemoveShowException, CantUpdateShowException, \
+    EpisodeDeletedException, MultipleShowObjectsException, ShowDirectoryNotFoundException
 from sickbeard.trakt import TraktAPI
 
 
 class ShowQueue(generic_queue.GenericQueue):
-    def __init__(self):
-        generic_queue.GenericQueue.__init__(self)
+    def __init__(self, *args, **kwargs):
+        super(ShowQueue, self).__init__()
         self.queue_name = "SHOWQUEUE"
+
+    def run(self, force=False):
+        super(ShowQueue, self).run(force)
+
+    @property
+    def loadingShowList(self):
+        return self._getLoadingShowList()
 
     def _isInQueue(self, show, actions):
         if not show:
@@ -54,7 +57,7 @@ class ShowQueue(generic_queue.GenericQueue):
         return show.indexerid in [x.show.indexerid if x.show else 0 for x in self.queue if x.action_id in actions]
 
     def _isBeingSomethinged(self, show, actions):
-        return self.currentItem != None and show == self.currentItem.show and \
+        return not (not (self.currentItem != None) or not (show == self.currentItem.show)) and \
                self.currentItem.action_id in actions
 
     def isInUpdateQueue(self, show):
@@ -85,9 +88,7 @@ class ShowQueue(generic_queue.GenericQueue):
         return self._isBeingSomethinged(show, (ShowQueueActions.SUBTITLE,))
 
     def _getLoadingShowList(self):
-        return [x for x in self.queue + [self.currentItem] if x != None and x.isLoading]
-
-    loadingShowList = property(_getLoadingShowList)
+        return [x for x in self.queue + [self.currentItem] if not (not x or not x.isLoading)]
 
     def updateShow(self, show, force=False):
 
@@ -98,12 +99,12 @@ class ShowQueue(generic_queue.GenericQueue):
         if self.isBeingUpdated(show):
             raise CantUpdateShowException(
                     str(
-                        show.name) + " is already being updated by Post-processor or manually started, can't update again until it's done.")
+                            show.name) + " is already being updated by Post-processor or manually started, can't update again until it's done.")
 
         if self.isInUpdateQueue(show):
             raise CantUpdateShowException(
                     str(
-                        show.name) + " is in process of being updated by Post-processor or manually started, can't update again until it's done.")
+                            show.name) + " is in process of being updated by Post-processor or manually started, can't update again until it's done.")
 
         if not force:
             queueItemObj = QueueItemUpdate(show)
@@ -218,8 +219,8 @@ class ShowQueueItem(generic_queue.QueueItem):
         self.show = show
 
     def isInQueue(self):
-        return self in sickbeard.showQueueScheduler.action.queue + [
-            sickbeard.showQueueScheduler.action.currentItem]  # @UndefinedVariable
+        return self in sickbeard.showQueue.queue + [
+            sickbeard.showQueue.currentItem]  # @UndefinedVariable
 
     def _getName(self):
         return str(self.show.indexerid)
@@ -290,46 +291,46 @@ class QueueItemAdd(ShowQueueItem):
         # make sure the Indexer IDs are valid
         try:
 
-            lINDEXER_API_PARMS = sickbeard.indexerApi(self.indexer).api_params.copy()
+            lINDEXER_API_PARMS = indexerApi(self.indexer).api_params.copy()
             if self.lang:
                 lINDEXER_API_PARMS[b'language'] = self.lang
 
-            logging.info("" + str(sickbeard.indexerApi(self.indexer).name) + ": " + repr(lINDEXER_API_PARMS))
+            logging.info("" + str(indexerApi(self.indexer).name) + ": " + repr(lINDEXER_API_PARMS))
 
-            t = sickbeard.indexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+            t = indexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
             s = t[self.indexer_id]
 
             # this usually only happens if they have an NFO in their show dir which gave us a Indexer ID that has no proper english version of the show
             if getattr(s, 'seriesname', None) is None:
                 logging.error("Show in " + self.showDir + " has no name on " + str(
-                        sickbeard.indexerApi(self.indexer).name) + ", probably the wrong language used to search with.")
+                        indexerApi(self.indexer).name) + ", probably the wrong language used to search with.")
                 ui.notifications.error("Unable to add show",
-                                       "Show in " + self.showDir + " has no name on " + str(sickbeard.indexerApi(
+                                       "Show in " + self.showDir + " has no name on " + str(indexerApi(
                                                self.indexer).name) + ", probably the wrong language. Delete .nfo and add manually in the correct language.")
                 self._finishEarly()
                 return
             # if the show has no episodes/seasons
             if not s:
                 logging.error("Show " + str(s[b'seriesname']) + " is on " + str(
-                        sickbeard.indexerApi(self.indexer).name) + " but contains no season/episode data.")
+                        indexerApi(self.indexer).name) + " but contains no season/episode data.")
                 ui.notifications.error("Unable to add show",
-                                       "Show " + str(s[b'seriesname']) + " is on " + str(sickbeard.indexerApi(
+                                       "Show " + str(s[b'seriesname']) + " is on " + str(indexerApi(
                                                self.indexer).name) + " but contains no season/episode data.")
                 self._finishEarly()
                 return
         except Exception as e:
             logging.error("%s Error while loading information from indexer %s. Error: %r" % (
-            self.indexer_id, sickbeard.indexerApi(self.indexer).name, ex(e)))
+                self.indexer_id, indexerApi(self.indexer).name, e))
 
             ui.notifications.error(
                     "Unable to add show",
                     "Unable to look up the show in %s on %s using ID %s, not using the NFO. Delete .nfo and try adding manually again." %
-                    (self.showDir, sickbeard.indexerApi(self.indexer).name, self.indexer_id)
+                    (self.showDir, indexerApi(self.indexer).name, self.indexer_id)
             )
 
             if sickbeard.USE_TRAKT:
 
-                trakt_id = sickbeard.indexerApi(self.indexer).config[b'trakt_id']
+                trakt_id = indexerApi(self.indexer).config[b'trakt_id']
                 trakt_api = TraktAPI(sickbeard.SSL_VERIFY, sickbeard.TRAKT_TIMEOUT)
 
                 title = self.showDir.split("/")[-1]
@@ -352,7 +353,7 @@ class QueueItemAdd(ShowQueueItem):
             return
 
         try:
-            newShow = TVShow(self.indexer, self.indexer_id, self.lang)
+            newShow = tv.TVShow(self.indexer, self.indexer_id, self.lang)
             newShow.loadFromIndexer()
 
             self.show = newShow
@@ -386,17 +387,17 @@ class QueueItemAdd(ShowQueueItem):
                     # if self.show.classification and "sports" in self.show.classification.lower():
                     #     self.show.sports = 1
 
-        except sickbeard.indexer_exception as e:
+        except indexer_exception as e:
             logging.error(
-                    "Unable to add show due to an error with " + sickbeard.indexerApi(
-                        self.indexer).name + ": {}".format(ex(e)))
+                    "Unable to add show due to an error with " + indexerApi(
+                            self.indexer).name + ": {}".format(e))
             if self.show:
                 ui.notifications.error(
-                        "Unable to add " + str(self.show.name) + " due to an error with " + sickbeard.indexerApi(
+                        "Unable to add " + str(self.show.name) + " due to an error with " + indexerApi(
                                 self.indexer).name + "")
             else:
                 ui.notifications.error(
-                        "Unable to add show due to an error with " + sickbeard.indexerApi(self.indexer).name + "")
+                        "Unable to add show due to an error with " + indexerApi(self.indexer).name + "")
             self._finishEarly()
             return
 
@@ -407,23 +408,26 @@ class QueueItemAdd(ShowQueueItem):
             return
 
         except Exception as e:
-            logging.error("Error trying to add show: {}".format(ex(e)))
+            logging.error("Error trying to add show: {}".format(e))
             logging.debug(traceback.format_exc())
             self._finishEarly()
             raise
 
-        logging.debug("Retrieving show info from IMDb")
+        logging.debug("Retrieving show info from TMDb")
         try:
-            self.show.loadIMDbInfo()
-        except imdb_exceptions.IMDbError as e:
-            logging.warning(" Something wrong on IMDb api: {}".format(ex(e)))
+            self.show.loadTMDbInfo()
         except Exception as e:
-            logging.error("Error loading IMDb info: {}".format(ex(e)))
+            logging.error("Error loading TMDb info: {}".format(e))
+            try:
+                logging.debug("Attempting to retrieve show info from IMDb")
+                self.show.loadIMDbInfo()
+            except Exception as e:
+                logging.error("Error loading IMDb info: {}".format(e))
 
         try:
             self.show.saveToDB()
         except Exception as e:
-            logging.error("Error saving the show to the database: {}".format(ex(e)))
+            logging.error("Error saving the show to the database: {}".format(e))
             logging.debug(traceback.format_exc())
             self._finishEarly()
             raise
@@ -435,24 +439,24 @@ class QueueItemAdd(ShowQueueItem):
             self.show.loadEpisodesFromIndexer()
         except Exception as e:
             logging.error(
-                    "Error with " + sickbeard.indexerApi(
-                        self.show.indexer).name + ", not creating episode list: {}".format(ex(e)))
+                    "Error with " + indexerApi(
+                            self.show.indexer).name + ", not creating episode list: {}".format(e))
             logging.debug(traceback.format_exc())
 
         # update internal name cache
-        name_cache.buildNameCache()
+        sickbeard.nameCache.buildNameCache()
 
         try:
             self.show.loadEpisodesFromDir()
         except Exception as e:
-            logging.error("Error searching dir for episodes: {}".format(ex(e)))
+            logging.error("Error searching dir for episodes: {}".format(e))
             logging.debug(traceback.format_exc())
 
         # if they set default ep status to WANTED then run the backlog to search for episodes
         # FIXME: This needs to be a backlog queue item!!!
-        if self.show.default_ep_status == WANTED:
+        if self.show.default_ep_status == common.WANTED:
             logging.info("Launching backlog for this show since its episodes are WANTED")
-            sickbeard.backlogSearchScheduler.action.searchBacklog([self.show])
+            sickbeard.backlogSearcher.searchBacklog([self.show])
 
         self.show.writeMetadata()
         self.show.updateMetadata()
@@ -462,11 +466,11 @@ class QueueItemAdd(ShowQueueItem):
 
         if sickbeard.USE_TRAKT:
             # if there are specific episodes that need to be added by trakt
-            sickbeard.traktCheckerScheduler.action.manageNewShow(self.show)
+            sickbeard.traktCheckerScheduler.callback.manageNewShow(self.show)
 
             # add show to trakt.tv library
             if sickbeard.TRAKT_SYNC:
-                sickbeard.traktCheckerScheduler.action.addShowToTraktLibrary(self.show)
+                sickbeard.traktCheckerScheduler.callback.addShowToTraktLibrary(self.show)
 
             if sickbeard.TRAKT_SYNC_WATCHLIST:
                 logging.info("update watchlist")
@@ -477,7 +481,7 @@ class QueueItemAdd(ShowQueueItem):
 
         # check if show has XEM mapping so we can determin if searches should go by scene numbering or indexer numbering.
         if not self.scene and scene_numbering.get_xem_numbering_for_show(self.show.indexerid,
-                                                                                   self.show.indexer):
+                                                                         self.show.indexer):
             self.show.scene = 1
 
         # After initial add, set to default_status_after.
@@ -487,7 +491,7 @@ class QueueItemAdd(ShowQueueItem):
 
     def _finishEarly(self):
         if self.show != None:
-            sickbeard.showQueueScheduler.action.removeShow(self.show)
+            sickbeard.showQueue.removeShow(self.show)
 
         self.finish()
 
@@ -514,7 +518,7 @@ class QueueItemRefresh(ShowQueueItem):
         self.show.populateCache()
 
         # Load XEM data to DB for show
-        sickbeard.scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer)
+        scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer)
 
         self.finish()
 
@@ -584,32 +588,37 @@ class QueueItemUpdate(ShowQueueItem):
 
         logging.debug("Beginning update of " + self.show.name)
 
-        logging.debug("Retrieving show info from " + sickbeard.indexerApi(self.show.indexer).name + "")
+        logging.debug("Retrieving show info from " + indexerApi(self.show.indexer).name + "")
         try:
             self.show.loadFromIndexer(cache=not self.force)
-        except sickbeard.indexer_error as e:
+        except indexer_error as e:
             logging.warning(
-                "Unable to contact " + sickbeard.indexerApi(self.show.indexer).name + ", aborting: {}".format(ex(e)))
+                    "Unable to contact " + indexerApi(self.show.indexer).name + ", aborting: {}".format(
+                            e))
             return
-        except sickbeard.indexer_attributenotfound as e:
-            logging.error("Data retrieved from " + sickbeard.indexerApi(
-                    self.show.indexer).name + " was incomplete, aborting: {}".format(ex(e)))
+        except indexer_attributenotfound as e:
+            logging.error("Data retrieved from " + indexerApi(
+                    self.show.indexer).name + " was incomplete, aborting: {}".format(e))
             return
 
-        logging.debug("Retrieving show info from IMDb")
+        logging.debug("Retrieving show info from TMDb")
         try:
-            self.show.loadIMDbInfo()
-        except imdb_exceptions.IMDbError as e:
-            logging.warning(" Something wrong on IMDb api: {}".format(ex(e)))
+            self.show.loadTMDbInfo()
         except Exception as e:
-            logging.error("Error loading IMDb info: {}".format(ex(e)))
+            logging.error("Error loading TMDb info: {}".format(e))
             logging.debug(traceback.format_exc())
+            try:
+                logging.debug("Attempting to retrieve show info from IMDb")
+                self.show.loadIMDbInfo()
+            except Exception as e:
+                logging.error("Error loading IMDb info: {}".format(e))
+                logging.debug(traceback.format_exc())
 
         # have to save show before reading episodes from db
         try:
             self.show.saveToDB()
         except Exception as e:
-            logging.error("Error saving show info to the database: {}".format(ex(e)))
+            logging.error("Error saving show info to the database: {}".format(e))
             logging.debug(traceback.format_exc())
 
         # get episode list from DB
@@ -617,16 +626,16 @@ class QueueItemUpdate(ShowQueueItem):
         DBEpList = self.show.loadEpisodesFromDB()
 
         # get episode list from TVDB
-        logging.debug("Loading all episodes from " + sickbeard.indexerApi(self.show.indexer).name + "")
+        logging.debug("Loading all episodes from " + indexerApi(self.show.indexer).name + "")
         try:
             IndexerEpList = self.show.loadEpisodesFromIndexer(cache=not self.force)
-        except sickbeard.indexer_exception as e:
-            logging.error("Unable to get info from " + sickbeard.indexerApi(
-                    self.show.indexer).name + ", the show info will not be refreshed: {}".format(ex(e)))
+        except indexer_exception as e:
+            logging.error("Unable to get info from " + indexerApi(
+                    self.show.indexer).name + ", the show info will not be refreshed: {}".format(e))
             IndexerEpList = None
 
         if IndexerEpList is None:
-            logging.error("No data returned from " + sickbeard.indexerApi(
+            logging.error("No data returned from " + indexerApi(
                     self.show.indexer).name + ", unable to update this show")
         else:
             # for each ep we found on the Indexer delete it from the DB list
@@ -653,12 +662,12 @@ class QueueItemUpdate(ShowQueueItem):
         try:
             self.show.saveToDB()
         except Exception as e:
-            logging.error("Error saving show info to the database: {}".format(ex(e)))
+            logging.error("Error saving show info to the database: {}".format(e))
             logging.debug(traceback.format_exc())
 
         logging.debug("Finished update of " + self.show.name)
 
-        sickbeard.showQueueScheduler.action.refreshShow(self.show, self.force)
+        sickbeard.showQueue.refreshShow(self.show, self.force)
         self.finish()
 
 
@@ -683,8 +692,8 @@ class QueueItemRemove(ShowQueueItem):
 
         if sickbeard.USE_TRAKT:
             try:
-                sickbeard.traktCheckerScheduler.action.removeShowFromTraktLibrary(self.show)
+                sickbeard.traktCheckerScheduler.callback.removeShowFromTraktLibrary(self.show)
             except Exception as e:
-                logging.warning("Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, ex(e)))
+                logging.warning("Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, e))
 
         self.finish()

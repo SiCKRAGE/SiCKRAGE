@@ -20,13 +20,13 @@ from __future__ import unicode_literals
 
 import logging
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class STRIKEProvider(TorrentProvider):
+class STRIKEProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, "Strike")
+        super(STRIKEProvider, self).__init__("Strike")
 
         self.supportsBacklog = True
         self.public = True

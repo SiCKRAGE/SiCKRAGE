@@ -18,18 +18,14 @@
 
 from __future__ import unicode_literals
 
-import urllib, urllib2
-import sickbeard
-import telnetlib
-import re
-
 import logging
-from sickrage.helper.exceptions import ex
+import re
+import telnetlib
+import urllib
+import urllib2
+from xml.etree.ElementTree import fromstring
 
-try:
-    import xml.etree.cElementTree as etree
-except ImportError:
-    import xml.etree.ElementTree as etree
+import sickbeard
 
 
 class NMJNotifier:
@@ -129,7 +125,7 @@ class NMJNotifier:
                     logging.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
                 return False
             except Exception as e:
-                logging.error("NMJ: Unknown exception: {}".format(ex(e)))
+                logging.error("NMJ: Unknown exception: {}".format(e))
                 return False
 
         # build up the request URL and parameters
@@ -156,12 +152,12 @@ class NMJNotifier:
                 logging.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
             return False
         except Exception as e:
-            logging.error("NMJ: Unknown exception: {}".format(ex(e)))
+            logging.error("NMJ: Unknown exception: {}".format(e))
             return False
 
         # try to parse the resulting XML
         try:
-            et = etree.fromstring(response)
+            et = fromstring(response)
             result = et.findtext("returnValue")
         except SyntaxError as e:
             logging.error("Unable to parse XML returned from the Popcorn Hour: %s" % (e))

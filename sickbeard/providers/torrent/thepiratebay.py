@@ -22,14 +22,14 @@ import logging
 import re
 from urllib import urlencode
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class ThePirateBayProvider(TorrentProvider):
+class ThePirateBayProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "ThePirateBay")
+        super(ThePirateBayProvider, self).__init__("ThePirateBay")
 
         self.supportsBacklog = True
         self.public = True
@@ -47,7 +47,7 @@ class ThePirateBayProvider(TorrentProvider):
             'rss': 'https://pirateproxy.la/tv/latest'
         }
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         """
         205 = SD, 208 = HD, 200 = All Videos
@@ -129,13 +129,13 @@ class ThePirateBayProvider(TorrentProvider):
         size, modifier = size.split('&nbsp;')
         size = float(size)
         if modifier in 'KiB':
-            size = size * 1024
+            size *= 1024
         elif modifier in 'MiB':
-            size = size * 1024 ** 2
+            size *= 1024 ** 2
         elif modifier in 'GiB':
-            size = size * 1024 ** 3
+            size *= 1024 ** 3
         elif modifier in 'TiB':
-            size = size * 1024 ** 4
+            size *= 1024 ** 4
         return size
 
     def seedRatio(self):

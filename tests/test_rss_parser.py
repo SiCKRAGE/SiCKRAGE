@@ -18,24 +18,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
-from __future__ import unicode_literals
-
-import os.path
-import sys
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from __future__ import print_function, unicode_literals
 
 import unittest
 
-from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
-
-import sickbeard
-
+from sickbeard.providers import sortedProviderDict
+from tests import SiCKRAGETestCase
 
 class RSSTest(SiCKRAGETestCase): pass
-
 
 def test_get_rss(self, provider):
     result = provider.cache.getRSSFeed(provider.url)
@@ -47,8 +37,7 @@ def test_get_rss(self, provider):
             self.assertTrue(title and url, "Failed to get title and url from RSS feed for %s" % provider.name)
 
 
-
-for provider in sickbeard.providers.sortedProviderList():
+for provider in sortedProviderDict().values():
     setattr(RSSTest, 'test_rss_%s' % provider.name, lambda self, x=provider: test_get_rss(self, x))
 
 if __name__ == "__main__":

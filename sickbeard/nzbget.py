@@ -25,10 +25,10 @@ import logging
 import xmlrpclib
 from base64 import standard_b64encode
 
+import helpers
 import sickbeard
-from providers import GenericProvider
-from sickbeard import helpers
-from sickbeard.common import Quality
+from common import Quality
+from sickbeard.providers import GenericProvider
 
 
 def sendNZB(nzb, proper=False):

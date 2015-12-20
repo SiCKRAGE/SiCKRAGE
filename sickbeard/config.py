@@ -19,18 +19,20 @@
 
 from __future__ import unicode_literals
 
-import re
-import os.path
 import datetime
-import urlparse
 import logging
+import os.path
+import re
+import urlparse
 
+import backlog_searcher
+import db
+import helpers
+import naming
+import scheduler
 import sickbeard
-from sickbeard import helpers
-from sickbeard import naming
-from sickbeard import db
-from sickbeard.logger import SRLogger
-from sickrage.helper.encoding import ek
+from logger import SRLogger
+
 
 urlparse.uses_netloc.append('scgi')
 
@@ -67,9 +69,9 @@ def change_HTTPS_CERT(https_cert):
         sickbeard.HTTPS_CERT = ''
         return True
 
-    if ek(os.path.normpath, sickbeard.HTTPS_CERT) != ek(os.path.normpath, https_cert):
-        if helpers.makeDir(ek(os.path.dirname, ek(os.path.abspath, https_cert))):
-            sickbeard.HTTPS_CERT = ek(os.path.normpath, https_cert)
+    if os.path.normpath(sickbeard.HTTPS_CERT) != os.path.normpath(https_cert):
+        if helpers.makeDir(os.path.dirname(os.path.abspath(https_cert))):
+            sickbeard.HTTPS_CERT = os.path.normpath(https_cert)
             logging.info("Changed https cert path to " + https_cert)
         else:
             return False
@@ -88,9 +90,9 @@ def change_HTTPS_KEY(https_key):
         sickbeard.HTTPS_KEY = ''
         return True
 
-    if ek(os.path.normpath, sickbeard.HTTPS_KEY) != ek(os.path.normpath, https_key):
-        if helpers.makeDir(ek(os.path.dirname, ek(os.path.abspath, https_key))):
-            sickbeard.HTTPS_KEY = ek(os.path.normpath, https_key)
+    if os.path.normpath(sickbeard.HTTPS_KEY) != os.path.normpath(https_key):
+        if helpers.makeDir(os.path.dirname(os.path.abspath(https_key))):
+            sickbeard.HTTPS_KEY = os.path.normpath(https_key)
             logging.info("Changed https key path to " + https_key)
         else:
             return False
@@ -98,7 +100,7 @@ def change_HTTPS_KEY(https_key):
     return True
 
 
-def change_LOG_DIR(log_dir, web_log):
+def change_LOG_DIR(new_log_dir, new_web_log):
     """
     Change logger directory for application and webserver
 
@@ -107,15 +109,14 @@ def change_LOG_DIR(log_dir, web_log):
     :return: True on success, False on failure
     """
     log_dir_changed = False
-    abs_log_dir = ek(os.path.normpath, ek(os.path.join, sickbeard.DATA_DIR, log_dir))
-    web_log_value = checkbox_to_value(web_log)
+    log_dir = os.path.normpath(os.path.join(sickbeard.DATA_DIR, new_log_dir))
+    web_log = checkbox_to_value(new_web_log)
 
-    if ek(os.path.normpath, sickbeard.LOG_DIR) != abs_log_dir:
-        if helpers.makeDir(abs_log_dir):
-            sickbeard.ACTUAL_LOG_DIR = ek(os.path.normpath, log_dir)
-            sickbeard.LOG_DIR = abs_log_dir
-            SRLogger.logFile = sickbeard.LOG_FILE = ek(os.path.join, sickbeard.LOG_DIR, 'sickrage.log')
-            SRLogger.initalize()
+    if os.path.normpath(sickbeard.LOG_DIR) != log_dir:
+        if helpers.makeDir(log_dir):
+            sickbeard.LOG_DIR = log_dir
+            SRLogger.logFile = sickbeard.LOG_FILE = os.path.join(sickbeard.LOG_DIR, 'sickrage.log')
+            SRLogger.initialize()
 
             logging.info("Initialized new log file in " + sickbeard.LOG_DIR)
             log_dir_changed = True
@@ -123,8 +124,8 @@ def change_LOG_DIR(log_dir, web_log):
         else:
             return False
 
-    if sickbeard.WEB_LOG != web_log_value or log_dir_changed == True:
-        sickbeard.WEB_LOG = web_log_value
+    if sickbeard.WEB_LOG != web_log or log_dir_changed == True:
+        sickbeard.WEB_LOG = web_log
 
     return True
 
@@ -140,9 +141,9 @@ def change_NZB_DIR(nzb_dir):
         sickbeard.NZB_DIR = ''
         return True
 
-    if ek(os.path.normpath, sickbeard.NZB_DIR) != ek(os.path.normpath, nzb_dir):
+    if os.path.normpath(sickbeard.NZB_DIR) != os.path.normpath(nzb_dir):
         if helpers.makeDir(nzb_dir):
-            sickbeard.NZB_DIR = ek(os.path.normpath, nzb_dir)
+            sickbeard.NZB_DIR = os.path.normpath(nzb_dir)
             logging.info("Changed NZB folder to " + nzb_dir)
         else:
             return False
@@ -161,9 +162,9 @@ def change_TORRENT_DIR(torrent_dir):
         sickbeard.TORRENT_DIR = ''
         return True
 
-    if ek(os.path.normpath, sickbeard.TORRENT_DIR) != ek(os.path.normpath, torrent_dir):
+    if os.path.normpath(sickbeard.TORRENT_DIR) != os.path.normpath(torrent_dir):
         if helpers.makeDir(torrent_dir):
-            sickbeard.TORRENT_DIR = ek(os.path.normpath, torrent_dir)
+            sickbeard.TORRENT_DIR = os.path.normpath(torrent_dir)
             logging.info("Changed torrent folder to " + torrent_dir)
         else:
             return False
@@ -182,9 +183,9 @@ def change_TV_DOWNLOAD_DIR(tv_download_dir):
         sickbeard.TV_DOWNLOAD_DIR = ''
         return True
 
-    if ek(os.path.normpath, sickbeard.TV_DOWNLOAD_DIR) != ek(os.path.normpath, tv_download_dir):
+    if os.path.normpath(sickbeard.TV_DOWNLOAD_DIR) != os.path.normpath(tv_download_dir):
         if helpers.makeDir(tv_download_dir):
-            sickbeard.TV_DOWNLOAD_DIR = ek(os.path.normpath, tv_download_dir)
+            sickbeard.TV_DOWNLOAD_DIR = os.path.normpath(tv_download_dir)
             logging.info("Changed TV download folder to " + tv_download_dir)
         else:
             return False
@@ -192,62 +193,62 @@ def change_TV_DOWNLOAD_DIR(tv_download_dir):
     return True
 
 
-def change_AUTOPOSTPROCESSER_FREQUENCY(freq):
+def change_AUTOPOSTPROCESSOR_FREQ(freq):
     """
     Change frequency of automatic postprocessing thread
     TODO: Make all thread frequency changers in config.py return True/False status
 
     :param freq: New frequency
     """
-    sickbeard.AUTOPOSTPROCESSER_FREQUENCY = to_int(freq, default=sickbeard.DEFAULT_AUTOPOSTPROCESSER_FREQUENCY)
+    sickbeard.AUTOPOSTPROCESSOR_FREQ = to_int(freq, default=sickbeard.DEFAULT_AUTOPOSTPROCESSOR_FREQ)
 
-    if sickbeard.AUTOPOSTPROCESSER_FREQUENCY < sickbeard.MIN_AUTOPOSTPROCESSER_FREQUENCY:
-        sickbeard.AUTOPOSTPROCESSER_FREQUENCY = sickbeard.MIN_AUTOPOSTPROCESSER_FREQUENCY
+    if sickbeard.AUTOPOSTPROCESSOR_FREQ < sickbeard.MIN_AUTOPOSTPROCESSOR_FREQ:
+        sickbeard.AUTOPOSTPROCESSOR_FREQ = sickbeard.MIN_AUTOPOSTPROCESSOR_FREQ
 
-    sickbeard.autoPostProcesserScheduler.cycleTime = datetime.timedelta(minutes=sickbeard.AUTOPOSTPROCESSER_FREQUENCY)
+    sickbeard.SCHEDULER.modify_job('POSTPROCESSOR',
+                                   trigger=scheduler.SRIntervalTrigger(
+                                           **{'minutes': sickbeard.AUTOPOSTPROCESSOR_FREQ,
+                                              'min': sickbeard.MIN_AUTOPOSTPROCESSOR_FREQ}))
 
 
-def change_DAILYSEARCH_FREQUENCY(freq):
+def change_DAILY_SEARCHER_FREQ(freq):
     """
     Change frequency of daily search thread
 
     :param freq: New frequency
     """
-    sickbeard.DAILYSEARCH_FREQUENCY = to_int(freq, default=sickbeard.DEFAULT_DAILYSEARCH_FREQUENCY)
+    sickbeard.DAILY_SEARCHER_FREQ = to_int(freq, default=sickbeard.DEFAULT_DAILY_SEARCHER_FREQ)
+    sickbeard.SCHEDULER.modify_job('DAILYSEARCHER',
+                                   trigger=scheduler.SRIntervalTrigger(
+                                           **{'minutes': sickbeard.DAILY_SEARCHER_FREQ,
+                                              'min': sickbeard.MIN_DAILY_SEARCHER_FREQ}))
 
-    if sickbeard.DAILYSEARCH_FREQUENCY < sickbeard.MIN_DAILYSEARCH_FREQUENCY:
-        sickbeard.DAILYSEARCH_FREQUENCY = sickbeard.MIN_DAILYSEARCH_FREQUENCY
 
-    sickbeard.dailySearchScheduler.cycleTime = datetime.timedelta(minutes=sickbeard.DAILYSEARCH_FREQUENCY)
-
-
-def change_BACKLOG_FREQUENCY(freq):
+def change_BACKLOG_SEARCHER_FREQ(freq):
     """
     Change frequency of backlog thread
 
     :param freq: New frequency
     """
-    sickbeard.BACKLOG_FREQUENCY = to_int(freq, default=sickbeard.DEFAULT_BACKLOG_FREQUENCY)
+    sickbeard.BACKLOG_SEARCHER_FREQ = to_int(freq, default=sickbeard.DEFAULT_BACKLOG_SEARCHER_FREQ)
+    sickbeard.MIN_BACKLOG_SEARCHER_FREQ = backlog_searcher.get_backlog_cycle_time()
+    sickbeard.SCHEDULER.modify_job('BACKLOG',
+                                   trigger=scheduler.SRIntervalTrigger(
+                                           **{'minutes': sickbeard.BACKLOG_SEARCHER_FREQ,
+                                              'min': sickbeard.MIN_BACKLOG_SEARCHER_FREQ}))
 
-    sickbeard.MIN_BACKLOG_FREQUENCY = sickbeard.get_backlog_cycle_time()
-    if sickbeard.BACKLOG_FREQUENCY < sickbeard.MIN_BACKLOG_FREQUENCY:
-        sickbeard.BACKLOG_FREQUENCY = sickbeard.MIN_BACKLOG_FREQUENCY
 
-    sickbeard.backlogSearchScheduler.cycleTime = datetime.timedelta(minutes=sickbeard.BACKLOG_FREQUENCY)
-
-
-def change_UPDATE_FREQUENCY(freq):
+def change_UPDATER_FREQ(freq):
     """
     Change frequency of daily updater thread
 
     :param freq: New frequency
     """
-    sickbeard.UPDATE_FREQUENCY = to_int(freq, default=sickbeard.DEFAULT_UPDATE_FREQUENCY)
-
-    if sickbeard.UPDATE_FREQUENCY < sickbeard.MIN_UPDATE_FREQUENCY:
-        sickbeard.UPDATE_FREQUENCY = sickbeard.MIN_UPDATE_FREQUENCY
-
-    sickbeard.versionCheckScheduler.cycleTime = datetime.timedelta(hours=sickbeard.UPDATE_FREQUENCY)
+    sickbeard.UPDATER_FREQ = to_int(freq, default=sickbeard.DEFAULT_UPDATE_FREQ)
+    sickbeard.SCHEDULER.modify_job('UPDATER',
+                                   trigger=scheduler.SRIntervalTrigger(
+                                           **{'hours': sickbeard.UPDATER_FREQ,
+                                              'min': sickbeard.MIN_UPDATER_FREQ}))
 
 
 def change_SHOWUPDATE_HOUR(freq):
@@ -257,26 +258,27 @@ def change_SHOWUPDATE_HOUR(freq):
     :param freq: New frequency
     """
     sickbeard.SHOWUPDATE_HOUR = to_int(freq, default=sickbeard.DEFAULT_SHOWUPDATE_HOUR)
-
-    if sickbeard.SHOWUPDATE_HOUR > 23:
-        sickbeard.SHOWUPDATE_HOUR = 0
-    elif sickbeard.SHOWUPDATE_HOUR < 0:
+    if sickbeard.SHOWUPDATE_HOUR < 0 or sickbeard.SHOWUPDATE_HOUR > 23:
         sickbeard.SHOWUPDATE_HOUR = 0
 
-    sickbeard.showUpdateScheduler.start_time = datetime.time(hour=sickbeard.SHOWUPDATE_HOUR)
+    sickbeard.SCHEDULER.modify_job('SHOWUPDATER',
+                                   trigger=scheduler.SRIntervalTrigger(
+                                           **{'hours': 1,
+                                              'start_date': datetime.datetime.now().replace(
+                                                  hour=sickbeard.SHOWUPDATE_HOUR)}))
 
 
-def change_SUBTITLES_FINDER_FREQUENCY(subtitles_finder_frequency):
+def change_SUBTITLE_SEARCHER_FREQ(freq):
     """
     Change frequency of subtitle thread
 
-    :param subtitles_finder_frequency: New frequency
+    :param freq: New frequency
     """
-    if subtitles_finder_frequency == '' or subtitles_finder_frequency is None:
-        subtitles_finder_frequency = 1
-
-    sickbeard.SUBTITLES_FINDER_FREQUENCY = to_int(subtitles_finder_frequency, 1)
-
+    sickbeard.SUBTITLE_SEARCHER_FREQ = to_int(freq, default=sickbeard.DEFAULT_SUBTITLE_SEARCHER_FREQ)
+    sickbeard.SCHEDULER.modify_job('SUBTITLESEARCHER',
+                                   trigger=scheduler.SRIntervalTrigger(
+                                           **{'hours': sickbeard.SUBTITLE_SEARCHER_FREQ,
+                                              'min': sickbeard.MIN_SUBTITLE_SEARCHER_FREQ}))
 
 def change_VERSION_NOTIFY(version_notify):
     """
@@ -284,16 +286,9 @@ def change_VERSION_NOTIFY(version_notify):
 
     :param version_notify: New frequency
     """
-    oldSetting = sickbeard.VERSION_NOTIFY
-
-    sickbeard.VERSION_NOTIFY = version_notify
-
-    if not version_notify:
+    sickbeard.VERSION_NOTIFY = checkbox_to_value(version_notify)
+    if not sickbeard.VERSION_NOTIFY:
         sickbeard.NEWEST_VERSION_STRING = None
-
-    if oldSetting == False and version_notify == True:
-        sickbeard.versionCheckScheduler.forceRun()
-
 
 def change_DOWNLOAD_PROPERS(download_propers):
     """
@@ -302,24 +297,9 @@ def change_DOWNLOAD_PROPERS(download_propers):
 
     :param download_propers: New desired state
     """
-    download_propers = checkbox_to_value(download_propers)
-
-    if sickbeard.DOWNLOAD_PROPERS == download_propers:
-        return
-
-    sickbeard.DOWNLOAD_PROPERS = download_propers
-    if sickbeard.DOWNLOAD_PROPERS:
-        if not sickbeard.properFinderScheduler.enable:
-            logging.info("Starting PROPERFINDER thread")
-            sickbeard.properFinderScheduler.silent = False
-            sickbeard.properFinderScheduler.enable = True
-        else:
-            logging.info("Unable to start PROPERFINDER thread. Already running")
-    else:
-        sickbeard.properFinderScheduler.enable = False
-        sickbeard.traktCheckerScheduler.silent = True
-        logging.info("Stopping PROPERFINDER thread")
-
+    sickbeard.DOWNLOAD_PROPERS = checkbox_to_value(download_propers)
+    job = sickbeard.SCHEDULER.get_job('PROPERSEARCHER')
+    (job.pause, job.resume)[sickbeard.DOWNLOAD_PROPERS]()
 
 def change_USE_TRAKT(use_trakt):
     """
@@ -328,24 +308,9 @@ def change_USE_TRAKT(use_trakt):
 
     :param use_trakt: New desired state
     """
-    use_trakt = checkbox_to_value(use_trakt)
-
-    if sickbeard.USE_TRAKT == use_trakt:
-        return
-
-    sickbeard.USE_TRAKT = use_trakt
-    if sickbeard.USE_TRAKT:
-        if not sickbeard.traktCheckerScheduler.enable:
-            logging.info("Starting TRAKTCHECKER thread")
-            sickbeard.traktCheckerScheduler.silent = False
-            sickbeard.traktCheckerScheduler.enable = True
-        else:
-            logging.info("Unable to start TRAKTCHECKER thread. Already running")
-    else:
-        sickbeard.traktCheckerScheduler.enable = False
-        sickbeard.traktCheckerScheduler.silent = True
-        logging.info("Stopping TRAKTCHECKER thread")
-
+    sickbeard.USE_TRAKT = checkbox_to_value(use_trakt)
+    job = sickbeard.SCHEDULER.get_job('TRAKTSEARCHER')
+    (job.pause, job.resume)[sickbeard.USE_TRAKT]()
 
 def change_USE_SUBTITLES(use_subtitles):
     """
@@ -354,24 +319,9 @@ def change_USE_SUBTITLES(use_subtitles):
 
     :param use_subtitles: New desired state
     """
-    use_subtitles = checkbox_to_value(use_subtitles)
-
-    if sickbeard.USE_SUBTITLES == use_subtitles:
-        return
-
-    sickbeard.USE_SUBTITLES = use_subtitles
-    if sickbeard.USE_SUBTITLES:
-        if not sickbeard.subtitlesFinderScheduler.enable:
-            logging.info("Starting SUBTITLESFINDER thread")
-            sickbeard.subtitlesFinderScheduler.silent = False
-            sickbeard.subtitlesFinderScheduler.enable = True
-        else:
-            logging.info("Unable to start SUBTITLESFINDER thread. Already running")
-    else:
-        sickbeard.subtitlesFinderScheduler.enable = False
-        sickbeard.subtitlesFinderScheduler.silent = True
-        logging.info("Stopping SUBTITLESFINDER thread")
-
+    sickbeard.USE_SUBTITLES = checkbox_to_value(use_subtitles)
+    job = sickbeard.SCHEDULER.get_job('SUBTITLESEARCHER')
+    (job.pause, job.resume)[sickbeard.USE_SUBTITLES]()
 
 def change_PROCESS_AUTOMATICALLY(process_automatically):
     """
@@ -380,23 +330,9 @@ def change_PROCESS_AUTOMATICALLY(process_automatically):
 
     :param process_automatically: New desired state
     """
-    process_automatically = checkbox_to_value(process_automatically)
-
-    if sickbeard.PROCESS_AUTOMATICALLY == process_automatically:
-        return
-
-    sickbeard.PROCESS_AUTOMATICALLY = process_automatically
-    if sickbeard.PROCESS_AUTOMATICALLY:
-        if not sickbeard.autoPostProcesserScheduler.enable:
-            logging.info("Starting POSTPROCESSER thread")
-            sickbeard.autoPostProcesserScheduler.silent = False
-            sickbeard.autoPostProcesserScheduler.enable = True
-        else:
-            logging.info("Unable to start POSTPROCESSER thread. Already running")
-    else:
-        logging.info("Stopping POSTPROCESSER thread")
-        sickbeard.autoPostProcesserScheduler.enable = False
-        sickbeard.autoPostProcesserScheduler.silent = True
+    sickbeard.PROCESS_AUTOMATICALLY = checkbox_to_value(process_automatically)
+    job = sickbeard.SCHEDULER.get_job('POSTPROCESSOR')
+    (job.pause, job.resume)[sickbeard.PROCESS_AUTOMATICALLY]()
 
 
 def CheckSection(CFG, sec):
@@ -673,8 +609,8 @@ class ConfigMigrator():
 
             # save new config after migration
             sickbeard.CONFIG_VERSION = self.config_version
-            logging.info("Saving config file to disk")
-            sickbeard.save_config()
+
+        return self.config_obj
 
     # Migration v1: Custom naming
     def _migrate_v1(self):

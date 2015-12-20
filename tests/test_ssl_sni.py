@@ -34,7 +34,7 @@ from tests import SiCKRAGETestCase
 import certifi
 import requests
 import sickbeard.providers as providers
-from sickrage.helper.exceptions import ex
+
 
 class SNI_Tests(SiCKRAGETestCase): pass
 
@@ -44,12 +44,13 @@ def test_sni(self, provider):
     except requests.exceptions.Timeout:
         pass
     except requests.exceptions.SSLError as error:
-        if 'SSL3_GET_SERVER_CERTIFICATE' not in ex(error):
+        if 'SSL3_GET_SERVER_CERTIFICATE' not in error:
             print(error)
     except Exception:
         pass
 
-for provider in providers.sortedProviderList():
+
+for provider in providers.sortedProviderDict().values():
     setattr(SNI_Tests, 'test_%s' % provider.name, lambda self, x=provider: test_sni(self, x))
 
 if __name__ == "__main__":

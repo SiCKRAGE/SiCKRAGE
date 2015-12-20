@@ -3,9 +3,9 @@
     import datetime
     import locale
     import sickbeard
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
-    from sickbeard.sbdatetime import sbdatetime, date_presets, time_presets
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
+    from sbdatetime import sbdatetime, date_presets, time_presets
     from sickbeard import config
     from sickbeard import metadata
     from sickbeard.metadata.generic import GenericMetadata
@@ -114,7 +114,8 @@
                             <label for="log_dir">
                                 <span class="component-title">Log file folder location</span>
                                 <span class="component-desc">
-                                    <input type="text" name="log_dir" id="log_dir" value="${sickbeard.ACTUAL_LOG_DIR}" class="form-control input-sm input350" autocapitalize="off" />
+                                    <input type="text" name="log_dir" id="log_dir" value="${sickbeard.LOG_DIR}"
+                                           class="form-control input-sm input350" autocapitalize="off"/>
                                 </span>
                             </label>
                         </div>
@@ -211,7 +212,8 @@
                             <label>
                                 <span class="component-title">Check the server every*</span>
                                 <span class="component-desc">
-                                    <input type="text" name="update_frequency" id="update_frequency" value="${sickbeard.UPDATE_FREQUENCY}" class="form-control input-sm input75" />
+                                    <input type="text" name="update_frequency" id="update_frequency"
+                                           value="${sickbeard.UPDATER_FREQ}" class="form-control input-sm input75"/>
                                     <p>hours for software updates (default:12)</p>
                                 </span>
                             </label>
@@ -610,6 +612,7 @@
                                 <span class="component-desc">
                                     <input type="text" name="proxy_setting" value="${sickbeard.PROXY_SETTING}" class="form-control input-sm input300" autocapitalize="off" />
                                     <div class="clear-left"><p>blank to disable or proxy to use when connecting to providers</p></div>
+                                </span>
                             </label>
                         </div>
 
@@ -627,12 +630,15 @@
                             <label for="skip_removed_files">
                                 <span class="component-title">Skip Remove Detection</span>
                                 <span class="component-desc">
-                                <input type="checkbox" name="skip_removed_files" id="skip_removed_files" ${('', 'checked="checked"')[bool(sickbeard.SKIP_REMOVED_FILES)]}/>
-                                <p>Skip detection of removed files. If disable it will set default deleted status</p>
+                                    <input type="checkbox" name="skip_removed_files"
+                                           id="skip_removed_files" ${('', 'checked="checked"')[bool(sickbeard.SKIP_REMOVED_FILES)]}/>
+                                    <p>Skip detection of removed files. If disable it will set default deleted
+                                        status</p>
                                  </span>
                                 <div class="clear-left">
-                                <span class="component-desc"><b>NOTE:</b> This may mean SickRage misses renames as well</span>
+                                    <span class="component-desc"><b>NOTE:</b> This may mean SickRage misses renames as well</span>
                                 </div>
+                            </label>
                         </div>
 
                         <div class="field-pair">
@@ -679,18 +685,18 @@
                                 <span class="component-title">Branch version:</span>
                                 <span class="component-desc">
                                     <select id="branchVersion" class="form-control form-control-inline input-sm pull-left">
-                                    <% gh_branch = sickbeard.versionCheckScheduler.action.list_remote_branches() %>
-                                    % if gh_branch:
-                                        % for cur_branch in gh_branch:
-                                            % if sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and sickbeard.DEVELOPER == 1:
-                                                <option value="${cur_branch}" ${('', 'selected="selected"')[sickbeard.BRANCH == cur_branch]}>${cur_branch}</option>
-                                            % elif sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and cur_branch in ['master', 'develop']:
-                                                <option value="${cur_branch}" ${('', 'selected="selected"')[sickbeard.BRANCH == cur_branch]}>${cur_branch}</option>
-                                            % elif cur_branch == 'master':
-                                                <option value="${cur_branch}" ${('', 'selected="selected"')[sickbeard.BRANCH == cur_branch]}>${cur_branch}</option>
-                                            % endif
-                                        % endfor
-                                    % endif
+                                        <% gh_branch = sickbeard.UPDATER.list_remote_branches %>
+                                        % if gh_branch:
+                                            % for cur_branch in gh_branch:
+                                                % if sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and sickbeard.DEVELOPER == 1:
+                                                    <option value="${cur_branch}" ${('', 'selected="selected"')[sickbeard.GIT_BRANCH == cur_branch]}>${cur_branch}</option>
+                                                % elif sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and cur_branch in ['master', 'develop']:
+                                                    <option value="${cur_branch}" ${('', 'selected="selected"')[sickbeard.GIT_BRANCH == cur_branch]}>${cur_branch}</option>
+                                                % elif cur_branch == 'master':
+                                                    <option value="${cur_branch}" ${('', 'selected="selected"')[sickbeard.GIT_BRANCH == cur_branch]}>${cur_branch}</option>
+                                                % endif
+                                            % endfor
+                                        % endif
                                     </select>
                                     % if not gh_branch:
                                        <input class="btn btn-inline" style="margin-left: 6px;" type="button" id="branchCheckout" value="Checkout Branch" disabled>

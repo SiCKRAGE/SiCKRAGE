@@ -24,7 +24,7 @@ import os
 import string
 
 import logging
-from sickrage.helper.encoding import ek
+
 
 
 # adapted from http://stackoverflow.com/questions/827371/is-there-a-way-to-list-all-the-available-drive-letters-in-python/827490
@@ -54,12 +54,12 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
     """
 
     # walk up the tree until we find a valid path
-    while path and not ek(os.path.isdir, path):
-        if path == ek(os.path.dirname, path):
+    while path and not os.path.isdir(path):
+        if path == os.path.dirname(path):
             path = ''
             break
         else:
-            path = ek(os.path.dirname, path)
+            path = os.path.dirname(path)
 
     if path == "":
         if os.name == 'nt':
@@ -72,22 +72,22 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
             path = '/'
 
     # fix up the path and find the parent
-    path = ek(os.path.abspath, ek(os.path.normpath, path))
-    parentPath = ek(os.path.dirname, path)
+    path = os.path.abspath(os.path.normpath(path))
+    parentPath = os.path.dirname(path)
 
     # if we're at the root then the next step is the meta-node showing our drive letters
     if path == parentPath and os.name == 'nt':
         parentPath = ""
 
     try:
-        fileList = [{'name': filename, 'path': ek(os.path.join, path, filename)} for filename in ek(os.listdir, path)]
+        fileList = [{'name': filename, 'path': os.path.join(path, filename)} for filename in os.listdir(path)]
     except OSError as e:
         logging.warning("Unable to open " + path + ": " + repr(e) + " / " + str(e))
-        fileList = [{'name': filename, 'path': ek(os.path.join, parentPath, filename)} for filename in
-                    ek(os.listdir, parentPath)]
+        fileList = [{'name': filename, 'path': os.path.join(parentPath, filename)} for filename in
+                    os.listdir(parentPath)]
 
     if not includeFiles:
-        fileList = [x for x in fileList if ek(os.path.isdir, x['path'])]
+        fileList = [x for x in fileList if os.path.isdir(x['path'])]
 
     # prune out directories to protect the user from doing stupid things (already lower case the dir to reduce calls)
     hideList = ["boot", "bootmgr", "cache", "msocache", "recovery", "$recycle.bin", "recycler",
@@ -97,8 +97,8 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
     fileList = [x for x in fileList if x['name'].lower() not in hideList]
 
     fileList = sorted(fileList,
-                      lambda x, y: cmp(ek(os.path.basename, x['name']).lower(),
-                                       ek(os.path.basename, y['path']).lower()))
+                      lambda x, y: cmp(os.path.basename(x['name']).lower(),
+                                       os.path.basename(y['path']).lower()))
 
     entries = [{'current_path': path}]
     if includeParent and parentPath != path:

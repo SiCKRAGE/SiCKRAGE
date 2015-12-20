@@ -18,13 +18,12 @@
 
 from __future__ import unicode_literals
 
+import logging
 import urllib
 import urllib2
 
 import sickbeard
 
-import logging
-from sickrage.helper.exceptions import ex
 
 try:
     import json
@@ -64,7 +63,7 @@ class EMBYNotifier:
             return True
 
         except (urllib2.URLError, IOError) as e:
-            logging.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + ex(e))
+            logging.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
             return False
 
 
@@ -117,7 +116,7 @@ class EMBYNotifier:
                 return True
 
             except (urllib2.URLError, IOError) as e:
-                logging.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + ex(e))
+                logging.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
                 return False
 
 

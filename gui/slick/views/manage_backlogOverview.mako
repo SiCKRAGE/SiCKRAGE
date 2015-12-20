@@ -2,8 +2,8 @@
 <%!
     import sickbeard
     import datetime
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import Overview, Quality, qualityPresets, qualityPresetStrings
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from common import Overview, Quality, qualityPresets, qualityPresetStrings
     from sickbeard import sbdatetime, network_timezones
 %>
 <%block name="scripts">

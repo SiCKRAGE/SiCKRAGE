@@ -26,15 +26,14 @@ import urllib
 
 import requests
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class HDTorrentsProvider(TorrentProvider):
+class HDTorrentsProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "HDTorrents")
+        super(HDTorrentsProvider, self).__init__("HDTorrents")
 
         self.supportsBacklog = True
 
@@ -50,7 +49,7 @@ class HDTorrentsProvider(TorrentProvider):
                      'rss': 'https://hd-torrents.org/torrents.php?search=&active=1&options=0%s',
                      'home': 'https://hd-torrents.org/%s'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.categories = "&category[]=59&category[]=60&category[]=30&category[]=38"
         self.proper_strings = ['PROPER', 'REPACK']
@@ -73,7 +72,7 @@ class HDTorrentsProvider(TorrentProvider):
                         'pwd': self.password,
                         'submit': 'Confirm'}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -97,9 +96,9 @@ class HDTorrentsProvider(TorrentProvider):
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    searchURL = self.urls[b'search'] % (urllib.quote_plus(search_string), self.categories)
+                    searchURL = self.urls['search'] % (urllib.quote_plus(search_string), self.categories)
                 else:
-                    searchURL = self.urls[b'rss'] % self.categories
+                    searchURL = self.urls['rss'] % self.categories
 
                 logging.debug("Search URL: %s" % searchURL)
                 if mode is not 'RSS':
@@ -114,7 +113,8 @@ class HDTorrentsProvider(TorrentProvider):
                 # We cut everything before the table that contains the data we are interested in thus eliminating
                 # the invalid html portions
                 try:
-                    index = data.lower().index('<table class="mainblockcontenttt"')
+                    index = data.lower().ind
+                    '<table class="mainblockcontenttt"'
                 except ValueError:
                     logging.error("Could not find table of torrents mainblockcontenttt")
                     continue
@@ -154,7 +154,7 @@ class HDTorrentsProvider(TorrentProvider):
                                     if None is title and cell.get('title') and cell.get('title') in 'Download':
                                         title = re.search('f=(.*).torrent', cell.a[b'href']).group(1).replace('+', '.')
                                         title = title.decode('utf-8')
-                                        download_url = self.urls[b'home'] % cell.a[b'href']
+                                        download_url = self.urls['home'] % cell.a[b'href']
                                         continue
                                     if None is seeders and cell.get('class')[0] and cell.get('class')[
                                         0] in 'green' 'yellow' 'red':

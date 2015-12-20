@@ -1,8 +1,8 @@
 <%
     import sickbeard
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
-    from sickbeard import subtitles
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from common import Quality, qualityPresets, qualityPresetStrings, statusStrings
+    from sickbeard import subtitle_searcher
 %>
         % if sickbeard.USE_SUBTITLES:
         <br><div class="field-pair">

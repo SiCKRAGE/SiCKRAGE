@@ -22,14 +22,14 @@ import re
 
 import requests
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class TorrentDayProvider(TorrentProvider):
+class TorrentDayProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "TorrentDay")
+        super(TorrentDayProvider, self).__init__("TorrentDay")
 
         self.supportsBacklog = True
 
@@ -49,7 +49,7 @@ class TorrentDayProvider(TorrentProvider):
                      'search': 'https://classic.torrentday.com/V3/API/API.php',
                      'download': 'https://classic.torrentday.com/download.php/%s/%s'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.cookies = None
 
@@ -70,7 +70,7 @@ class TorrentDayProvider(TorrentProvider):
                             'submit.x': 0,
                             'submit.y': 0}
 
-            response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+            response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
             if not response:
                 logging.warning("Unable to connect to provider")
                 return False
@@ -88,7 +88,7 @@ class TorrentDayProvider(TorrentProvider):
                     self.cookies = {'uid': self._uid,
                                     'pass': self._hash}
                     return True
-            except Exception:
+            except:
                 pass
 
             logging.warning("Unable to obtain cookie")
@@ -117,7 +117,7 @@ class TorrentDayProvider(TorrentProvider):
                 if self.freeleech:
                     post_data.update({'free': 'on'})
 
-                parsedJSON = self.getURL(self.urls[b'search'], post_data=post_data, json=True)
+                parsedJSON = self.getURL(self.urls['search'], post_data=post_data, json=True)
                 if not parsedJSON:
                     logging.debug("No data returned from provider")
                     continue
@@ -131,7 +131,7 @@ class TorrentDayProvider(TorrentProvider):
                 for torrent in torrents:
 
                     title = re.sub(r"\[.*=.*\].*\[/.*\]", "", torrent[b'name'])
-                    download_url = self.urls[b'download'] % (torrent[b'id'], torrent[b'fname'])
+                    download_url = self.urls['download'] % (torrent[b'id'], torrent[b'fname'])
                     seeders = int(torrent[b'seed'])
                     leechers = int(torrent[b'leech'])
                     # FIXME

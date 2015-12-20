@@ -20,16 +20,22 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import logging
+import os
 import os.path
 import re
+import shutil
 import sqlite3
 import threading
 import time
+from contextlib import contextmanager
 
-import helpers
+import sickbeard
+from helpers import moveFile
 
-def dbFilename(filename="sickbeard.db", suffix=None):
+
+def dbFilename(filename="sickrage.db", suffix=""):
     """
     @param filename: The sqlite database filename to use. If not specified,
                      will be made to be sickbeard.db
@@ -37,89 +43,73 @@ def dbFilename(filename="sickbeard.db", suffix=None):
                    automatically, i.e. suffix='v0' will make dbfile.db.v0
     @return: the correct location of the database file.
     """
+    sbfilename = "sickbeard.db"
+
     if suffix:
-        filename = "%s.%s" % (filename, suffix)
-    return os.path.join(DATA_DIR, filename)
+        filename = filename + ".{}".format(suffix)
+        sbfilename = sbfilename + ".{}".format(suffix)
 
+    filename = os.path.join(sickbeard.DATA_DIR, filename)
+    sbfilename = os.path.join(sickbeard.DATA_DIR, sbfilename)
 
-class Cursor:
-    def __init__(self, cursor):
-        self.cursor = cursor
-        self.lock = threading.Lock()
+    # migrate old sb database filenames
+    if not os.path.exists(filename) and os.path.exists(sbfilename):
+        moveFile(sbfilename, filename)
 
-    def execute(self, query, *args, **kwargs):
-        with self.lock:
-            try:
-                args = reduce(lambda l, i: l + type(l)(i) if isinstance(i, (list,tuple)) else l + [i], args, []),
-                if kwargs.get('fetchall'):
-                    return self.cursor.execute(query, *args).fetchall()
-                elif kwargs.get('fetchone'):
-                    return self.cursor.execute(query, *args).fetchone()
-                return self.cursor.execute(query, *args)
-            except Exception as e:
-                raise
-
-    def executemany(self, query, *args, **kwargs):
-        with self.lock:
-            try:
-                args = (args, [args])[len(args[0:]) > 1]
-                if kwargs.get('fetchall'):
-                    return self.cursor.executemany(query, *args).fetchall()
-                elif kwargs.get('fetchone'):
-                    return self.cursor.executemany(query, *args).fetchone()
-                return self.cursor.executemany(query, *args)
-            except Exception as e:
-                raise
-
-    @property
-    def rowcount(self):
-        with self.lock:
-            return self.cursor.rowcount
-
+    return filename
 
 class DBConnection(object):
-    def __init__(self, filename="sickbeard.db", suffix=None, row_type=None, *args, **kwargs):
-        self.filename = filename
-        self.suffix = suffix
+    def __init__(self, filename="sickrage.db", suffix="", row_type=sqlite3.Row):
+        self.filename = dbFilename(filename, suffix)
         self.row_type = row_type
-        self.connection = None
-        self.cursor = None
         self.lock = threading.Lock()
 
+    @contextmanager
+    def connection(self):
+        _connection = sqlite3.connect(self.filename, timeout=20, check_same_thread=False, isolation_level=None)
+        _connection.row_factory = (self._dict_factory, self.row_type)[self.row_type is not self._dict_factory]
         try:
-            self.open()
-        except Exception as e:
-            logging.error("DB error: {}".format(e))
+            yield _connection
+        finally:
+            _connection.commit()
+            _connection.close()
 
-    def open(self):
-        try:
-            if not self.connection:
-                self.connection = sqlite3.connect(dbFilename(self.filename, self.suffix), timeout=20,
-                                                  check_same_thread=False, isolation_level=None)
-                self.connection.row_factory = self._dict_factory if self.row_type == "dict" else sqlite3.Row
-                self.cursor = Cursor(self.connection.cursor())
-        except:raise
-
-    def close(self):
-        self.commit()
+    @contextmanager
+    def cursor(self):
+        with self.connection() as _connection:
+            _cursor = _connection.cursor()
+            try:
+                yield _cursor
+            finally:
+                _cursor.close()
 
     def execute(self, query, *args, **kwargs):
-        self.open()
-        try:return self.cursor.execute(query, *args, **kwargs)
-        except:self.commit()
+        with self.lock, self.cursor() as cursor:
+            args = reduce(lambda l, i: l + type(l)(i) if isinstance(i, (list, tuple)) else l + [i], args, []),
+            attempt = 0
+            while attempt < 5:
+                try:
+                    if isinstance(query, list):
+                        result = [cursor.execute((x[0]), (x[0], x[1])[len(x) > 1], **kwargs) for x in query if x]
+                    else:
+                        result = cursor.execute(query, *args)
 
-    def executemany(self, query, *args, **kwargs):
-        self.open()
-        try:return self.cursor.executemany(query, *args, **kwargs)
-        except:self.commit()
+                    if result and kwargs.has_key('fetchall'):
+                        return result.fetchall()
+                    elif result and kwargs.has_key('fetchone'):
+                        return result.fetchone()
+                    return result
+                except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
+                    logging.error("DB error: {}".format(e))
+                    time.sleep(1)
+                    attempt += 1
 
-    def commit(self):
-        if self.connection:
-            try:
-                self.connection.commit()
-            finally:
-                self.connection.close()
-                self.connection = None
+                    try:
+                        cursor.connection.rollback()
+                    except:
+                        pass
+                except Exception as e:
+                    logging.error("DB error: {}".format(e))
 
     def checkDBVersion(self):
         """
@@ -127,11 +117,9 @@ class DBConnection(object):
 
         :return: Integer inidicating current DB version
         """
-        result = None
-
         try:
             if self.hasTable('db_version'):
-                return self.select("SELECT db_version FROM db_version")
+                return self.selectOne("SELECT db_version FROM db_version")[0]
         except:
             pass
 
@@ -145,30 +133,10 @@ class DBConnection(object):
         :return: list of results
         """
 
-        with self.lock:
-            sqlResult = []
-            attempt = 0
+        sqlResult = self.execute(querylist, *args, **kwargs)
+        logging.db("Transaction {} of {} queries executed of ".format(len(sqlResult), len(querylist)))
 
-            try:
-                while attempt < 5:
-                    try:
-                        sqlResult += [
-                            self.execute(x[0], *x[1] if len(x) > 1 else self.execute(x[0], **kwargs), **kwargs)
-                            for x in filter(lambda q: q is not None, querylist)
-                            ]
-
-                        logging.db("Transaction {} of {} queries executed of ".format(len(sqlResult), len(querylist)))
-                        raise StopIteration
-                    except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
-                        logging.error("DB error: {}".format(e))
-                        attempt += 1
-                        sqlResult = []
-                        time.sleep(1)
-                        self.connection.rollback()
-            except StopIteration:pass
-            finally:self.commit()
-
-            return sqlResult
+        return sqlResult
 
     def action(self, query, *args, **kwargs):
         """
@@ -178,27 +146,8 @@ class DBConnection(object):
         :param query: Query string
         """
 
-        with self.lock:
-            if not query:
-                return
-
-            sqlResult = None
-            attempt = 0
-
-            try:
-                while attempt < 5:
-                    try:
-                        logging.db("{}: {} with args {} and kwargs {}".format(self.filename, query, args, kwargs))
-                        sqlResult = self.execute(query, *args, **kwargs)
-                        raise StopIteration
-                    except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
-                        logging.error("DB error: {}".format(e))
-                        attempt += 1
-                        time.sleep(1)
-            except StopIteration:pass
-            finally:self.commit()
-
-            return sqlResult
+        logging.db("{}: {} with args {} and kwargs {}".format(self.filename, query, args, kwargs))
+        return self.execute(query, *args, **kwargs)
 
     def select(self, query, *args, **kwargs):
         """
@@ -209,12 +158,7 @@ class DBConnection(object):
         :return: query results
         """
 
-        sqlResults = self.action(query, fetchall=True, *args, **kwargs)
-
-        if sqlResults == None:
-            return []
-
-        return sqlResults
+        return self.action(query, fetchall=True, *args, **kwargs)
 
     def selectOne(self, query, *args, **kwargs):
         """
@@ -224,12 +168,8 @@ class DBConnection(object):
         :param args: arguments to query string
         :return: query results
         """
-        sqlResults = self.action(query, fetchone=True, *args, **kwargs)
 
-        if sqlResults == None:
-            return []
-
-        return sqlResults
+        return self.action(query, fetchone=True, *args, **kwargs)
 
     def upsert(self, tableName, valueDict, keyDict):
         """
@@ -246,9 +186,7 @@ class DBConnection(object):
         query = "UPDATE [" + tableName + "] SET " + ", ".join(genParams(valueDict)) + " WHERE " + " AND ".join(
                 genParams(keyDict))
 
-        self.action(query, valueDict.values() + keyDict.values())
-
-        if not self.cursor.rowcount > 0:
+        if not self.action(query, valueDict.values() + keyDict.values()).rowcount > 0:
             query = "INSERT INTO [" + tableName + "] (" + ", ".join(valueDict.keys() + keyDict.keys()) + ")" + \
                     " VALUES (" + ", ".join(["?"] * len(valueDict.keys() + keyDict.keys())) + ")"
             self.action(query, valueDict.values() + keyDict.values())
@@ -260,10 +198,13 @@ class DBConnection(object):
         :param tableName: name of table
         :return: array of name/type info
         """
-        sqlResult = self.select("PRAGMA table_info(`%s`)" % tableName)
         columns = {}
+
+        sqlResult = self.select("PRAGMA table_info(`%s`)" % tableName)
+
         for column in sqlResult:
             columns[column[b'name']] = {'type': column[b'type']}
+
         return columns
 
     def _dict_factory(self, cursor, row):
@@ -304,7 +245,6 @@ class DBConnection(object):
         self.action("ALTER TABLE [%s] ADD %s %s" % (table, column, type))
         self.action("UPDATE [%s] SET %s = ?" % (table, column), default)
 
-
 def sanityCheckDatabase(connection, sanity_check):
     sanity_check(connection).check()
 
@@ -329,37 +269,37 @@ def upgradeDatabase(connection, schema):
     :param schema: New schema to upgrade to
     """
 
-    def _processUpgrade(connection, upgradeClass):
-        while(True):
-            version = connection.checkDBVersion()
+    def _processUpgrade(connection, upgradeClass, version):
+        name = prettyName(upgradeClass.__name__)
 
-            logging.debug("Checking database structure... {}".format(connection.filename))
+        while(True):
+            logging.debug("Checking {} database structure: {}".format(connection.filename, name))
 
             try:
                 instance = upgradeClass(connection)
 
                 if not instance.test():
-                    logging.debug("Database upgrade required: " + prettyName(upgradeClass.__name__))
+                    logging.debug("Database upgrade required: {}".format(name))
                     instance.execute()
-                    logging.debug(upgradeClass.__name__ + " upgrade completed")
+                    logging.debug("{} upgrade completed".format(name))
                 else:
-                    logging.debug(upgradeClass.__name__ + " upgrade not required")
+                    logging.debug("{} upgrade not required".format(name))
 
                 return True
-            except sqlite3.DatabaseError, e:
-                if not restoreDatabase(version):
+            except sqlite3.DatabaseError:
+                if not restoreDBVer(version):
                     break
 
-    if _processUpgrade(connection, schema):
-        for upgradeSubClass in schema.__subclasses__():
-            _processUpgrade(connection, upgradeSubClass)
+    if _processUpgrade(connection, schema, connection.checkDBVersion()):
+        for upgradeSubClass in schema.get_subclasses():
+            _processUpgrade(connection, upgradeSubClass, connection.checkDBVersion())
 
 
 def prettyName(class_name):
     return ' '.join([x.group() for x in re.finditer("([A-Z])([a-z0-9]+)", class_name)])
 
 
-def restoreDatabase(version):
+def restoreDBVer(version):
     """
     Restores a database to a previous version (backup file of version must still exist)
 
@@ -367,11 +307,29 @@ def restoreDatabase(version):
     :return: True if restore succeeds, False if it fails
     """
     logging.info("Restoring database before trying upgrade again")
-    if not helpers.restoreVersionedFile(dbFilename(suffix='v' + str(version)), version):
+    if not restoreVersionedFile(dbFilename(suffix='v' + str(version)), version):
         logging.info("Database restore failed, abort upgrading database")
         return False
     return True
 
+def restoreDB(srcDir, dstDir):
+    try:
+        filesList = ['sickbeard.db', 'sickrage.db', 'config.ini', 'failed.db', 'cache.db', sickbeard.CONFIG_FILE]
+
+        for filename in filesList:
+            srcFile = os.path.join(srcDir, filename)
+            dstFile = os.path.join(dstDir, filename)
+            bakFile = os.path.join(dstDir, '{0}.bak-{1}'
+                                   .format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
+
+            if os.path.exists(srcFile):
+                if os.path.isfile(dstFile):
+                    shutil.move(dstFile, bakFile)
+                shutil.move(srcFile, dstFile)
+
+        return True
+    except Exception:
+        return False
 
 # Base migration class. All future DB changes should be subclassed from this class
 class SchemaUpgrade(object):
@@ -379,7 +337,7 @@ class SchemaUpgrade(object):
         self.connection = connection
 
     def hasTable(self, tableName):
-        return len(self.connection.select("SELECT 1 FROM sqlite_master WHERE name = ?;", tableName)) > 0
+        return len(self.connection.select("SELECT 1 FROM sqlite_master WHERE name = ?;", (tableName,))) > 0
 
     def hasColumn(self, tableName, column):
         return column in self.connection.tableInfo(tableName)
@@ -395,3 +353,62 @@ class SchemaUpgrade(object):
         new_version = self.checkDBVersion() + 1
         self.connection.action("UPDATE db_version SET db_version = ?", [new_version])
         return new_version
+
+    @classmethod
+    def get_subclasses(cls):
+        yield cls
+        if cls.__subclasses__():
+            for sub in cls.__subclasses__():
+                for s in sub.get_subclasses():
+                    yield s
+
+
+def restoreVersionedFile(backup_file, version):
+    """
+    Restore a file version to original state
+
+    :param backup_file: File to restore
+    :param version: Version of file to restore
+    :return: True on success, False on failure
+    """
+
+    numTries = 0
+
+    new_file, _ = os.path.splitext(backup_file)
+    restore_file = '{}.v{}'.format(new_file, version)
+
+    if not os.path.isfile(new_file):
+        logging.debug("Not restoring, %s doesn't exist" % new_file)
+        return False
+
+    try:
+        logging.debug("Trying to backup %s to %s.r%s before restoring backup"
+                      % (new_file, new_file, version))
+
+        shutil.move(new_file, new_file + '.' + 'r' + str(version))
+    except Exception as e:
+        logging.warning("Error while trying to backup DB file %s before proceeding with restore: %r"
+                        % (restore_file, e))
+        return False
+
+    while not os.path.isfile(new_file):
+        if not os.path.isfile(restore_file):
+            logging.debug("Not restoring, %s doesn't exist" % restore_file)
+            break
+
+        try:
+            logging.debug("Trying to restore file %s to %s" % (restore_file, new_file))
+            shutil.copy(restore_file, new_file)
+            logging.debug("Restore done")
+            break
+        except Exception as e:
+            logging.warning("Error while trying to restore file %s. Error: %r" % (restore_file, e))
+            numTries += 1
+            time.sleep(1)
+            logging.debug("Trying again. Attempt #: %s" % numTries)
+
+        if numTries >= 10:
+            logging.warning("Unable to restore file %s to %s" % (restore_file, new_file))
+            return False
+
+    return True

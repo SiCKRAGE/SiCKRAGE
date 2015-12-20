@@ -20,15 +20,15 @@ from __future__ import unicode_literals
 
 import logging
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
-from sickrage.helper.exceptions import AuthException
+from sickbeard.exceptions import AuthException
 
 
-class ShazbatProvider(TorrentProvider):
+class ShazbatProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "Shazbat.tv")
+        super(ShazbatProvider, self).__init__("Shazbat.tv")
 
         self.supportsBacklog = False
 
@@ -40,7 +40,7 @@ class ShazbatProvider(TorrentProvider):
 
         self.urls = {'base_url': 'http://www.shazbat.tv/',
                      'website': 'http://www.shazbat.tv/login',}
-        self.url = self.urls[b'website']
+        self.url = self.urls['website']
 
     def _checkAuth(self):
         if not self.passkey:

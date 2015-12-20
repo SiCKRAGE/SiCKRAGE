@@ -31,9 +31,9 @@ import traceback
 
 import sickbeard
 import logging
-from sickbeard import db
-from sickbeard import helpers
-from sickrage.helper.exceptions import ex
+import db
+import helpers
+
 
 
 def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=True):
@@ -50,11 +50,11 @@ def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=Tr
     :return: (int, int) a tuple with (season, episode)
     """
     if indexer_id is None or season is None or episode is None:
-        return (season, episode)
+        return season, episode
 
-    showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(indexer_id))
+    showObj = helpers.findCertainShow(sickbeard.showList, int(indexer_id))
     if showObj and not showObj.is_scene:
-        return (season, episode)
+        return season, episode
 
     result = find_scene_numbering(int(indexer_id), int(indexer), season, episode)
     if result:
@@ -64,7 +64,7 @@ def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=Tr
             xem_result = find_xem_numbering(int(indexer_id), int(indexer), season, episode)
             if xem_result:
                 return xem_result
-        return (season, episode)
+        return season, episode
 
 
 def find_scene_numbering(indexer_id, indexer, season, episode):
@@ -72,7 +72,7 @@ def find_scene_numbering(indexer_id, indexer, season, episode):
     Same as get_scene_numbering(), but returns None if scene numbering is not set
     """
     if indexer_id is None or season is None or episode is None:
-        return (season, episode)
+        return season, episode
 
     indexer_id = int(indexer_id)
     indexer = int(indexer)
@@ -83,7 +83,7 @@ def find_scene_numbering(indexer_id, indexer, season, episode):
             [indexer, indexer_id, season, episode])
 
     if rows:
-        return (int(rows[0][b"scene_season"]), int(rows[0][b"scene_episode"]))
+        return int(rows[0][b"scene_season"]), int(rows[0][b"scene_episode"])
 
 
 def get_scene_absolute_numbering(indexer_id, indexer, absolute_number, fallback_to_xem=True):
@@ -104,7 +104,7 @@ def get_scene_absolute_numbering(indexer_id, indexer, absolute_number, fallback_
     indexer_id = int(indexer_id)
     indexer = int(indexer)
 
-    showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, indexer_id)
+    showObj = helpers.findCertainShow(sickbeard.showList, indexer_id)
     if showObj and not showObj.is_scene:
         return absolute_number
 
@@ -144,7 +144,7 @@ def get_indexer_numbering(indexer_id, indexer, sceneSeason, sceneEpisode, fallba
     (this works like the reverse of get_scene_numbering)
     """
     if indexer_id is None or sceneSeason is None or sceneEpisode is None:
-        return (sceneSeason, sceneEpisode)
+        return sceneSeason, sceneEpisode
 
     indexer_id = int(indexer_id)
     indexer = int(indexer)
@@ -155,11 +155,11 @@ def get_indexer_numbering(indexer_id, indexer, sceneSeason, sceneEpisode, fallba
             [indexer, indexer_id, sceneSeason, sceneEpisode])
 
     if rows:
-        return (int(rows[0][b"season"]), int(rows[0][b"episode"]))
+        return int(rows[0][b"season"]), int(rows[0][b"episode"])
     else:
         if fallback_to_xem:
             return get_indexer_numbering_for_xem(indexer_id, indexer, sceneSeason, sceneEpisode)
-        return (sceneSeason, sceneEpisode)
+        return sceneSeason, sceneEpisode
 
 
 def get_indexer_absolute_numbering(indexer_id, indexer, sceneAbsoluteNumber, fallback_to_xem=True, scene_season=None):
@@ -237,7 +237,7 @@ def find_xem_numbering(indexer_id, indexer, season, episode):
     :return: (int, int) a tuple of scene_season, scene_episode, or None if there is no special mapping.
     """
     if indexer_id is None or season is None or episode is None:
-        return (season, episode)
+        return season, episode
 
     indexer_id = int(indexer_id)
     indexer = int(indexer)
@@ -250,7 +250,7 @@ def find_xem_numbering(indexer_id, indexer, season, episode):
             [indexer, indexer_id, season, episode])
 
     if rows:
-        return (int(rows[0][b"scene_season"]), int(rows[0][b"scene_episode"]))
+        return int(rows[0][b"scene_season"]), int(rows[0][b"scene_episode"])
 
 
 def find_xem_absolute_numbering(indexer_id, indexer, absolute_number):
@@ -289,7 +289,7 @@ def get_indexer_numbering_for_xem(indexer_id, indexer, sceneSeason, sceneEpisode
     :return: (int, int) a tuple of (season, episode)
     """
     if indexer_id is None or sceneSeason is None or sceneEpisode is None:
-        return (sceneSeason, sceneEpisode)
+        return sceneSeason, sceneEpisode
 
     indexer_id = int(indexer_id)
     indexer = int(indexer)
@@ -302,9 +302,9 @@ def get_indexer_numbering_for_xem(indexer_id, indexer, sceneSeason, sceneEpisode
             [indexer, indexer_id, sceneSeason, sceneEpisode])
 
     if rows:
-        return (int(rows[0][b"season"]), int(rows[0][b"episode"]))
+        return int(rows[0][b"season"]), int(rows[0][b"episode"])
 
-    return (sceneSeason, sceneEpisode)
+    return sceneSeason, sceneEpisode
 
 
 def get_indexer_absolute_numbering_for_xem(indexer_id, indexer, sceneAbsoluteNumber, scene_season=None):
@@ -493,17 +493,17 @@ def xem_refresh(indexer_id, indexer, force=False):
 
             # XEM MAP URL
             url = "http://thexem.de/map/havemap?origin=%s" % sickbeard.indexerApi(indexer).config[b'xem_origin']
-            parsedJSON = sickbeard.helpers.getURL(url, session=xem_session, json=True)
+            parsedJSON = helpers.getURL(url, session=xem_session, json=True)
             if not parsedJSON or 'result' not in parsedJSON or 'success' not in parsedJSON[
-                'result'] or 'data' not in parsedJSON or str(indexer_id) not in parsedJSON[b'data']:
+                b'result'] or 'data' not in parsedJSON or str(indexer_id) not in parsedJSON[b'data']:
                 return
 
             # XEM API URL
-            url = "http://thexem.de/map/all?id=%s&origin=%s&destination=scene" % (
-            indexer_id, sickbeard.indexerApi(indexer).config[b'xem_origin'])
+            url = "http://thexem.de/map/all?id={}&origin={}&destination=scene".format(
+                    indexer_id, sickbeard.indexerApi(indexer).config[b'xem_origin'])
 
-            parsedJSON = sickbeard.helpers.getURL(url, session=xem_session, json=True)
-            if not parsedJSON or not 'result' in parsedJSON or not 'success' in parsedJSON[b'result']:
+            parsedJSON = helpers.getURL(url, session=xem_session, json=True)
+            if not ((parsedJSON and 'result' in parsedJSON) and 'success' in parsedJSON[b'result']):
                 logging.info('No XEM data for show "%s on %s"' % (indexer_id, sickbeard.indexerApi(indexer).name,))
                 return
 
@@ -537,7 +537,7 @@ def xem_refresh(indexer_id, indexer, force=False):
         except Exception as e:
             logging.warning(
                     "Exception while refreshing XEM data for show " + str(indexer_id) + " on " + sickbeard.indexerApi(
-                            indexer).name + ": {}".format(ex(e)))
+                            indexer).name + ": {}".format(e))
             logging.debug(traceback.format_exc())
 
 

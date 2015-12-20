@@ -21,17 +21,18 @@
 from __future__ import unicode_literals
 
 import json
-import requests
+import logging
 import traceback
 
+import requests
+
 import sickbeard
-import logging
-from sickbeard.common import notifyStrings
-from sickbeard.common import NOTIFY_SNATCH
-from sickbeard.common import NOTIFY_DOWNLOAD
-from sickbeard.common import NOTIFY_GIT_UPDATE
-from sickbeard.common import NOTIFY_GIT_UPDATE_TEXT
-from sickbeard.common import NOTIFY_SUBTITLE_DOWNLOAD
+from common import NOTIFY_DOWNLOAD
+from common import NOTIFY_GIT_UPDATE
+from common import NOTIFY_GIT_UPDATE_TEXT
+from common import NOTIFY_SNATCH
+from common import NOTIFY_SUBTITLE_DOWNLOAD
+from common import notifyStrings
 
 
 class PushbulletNotifier(object):

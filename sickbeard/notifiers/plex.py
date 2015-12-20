@@ -18,22 +18,15 @@
 
 from __future__ import unicode_literals
 
+import base64
+import logging
+import re
 import urllib
 import urllib2
-import base64
-import re
+import xml
 
+import common
 import sickbeard
-
-import logging
-from sickbeard import common
-from sickrage.helper.exceptions import ex
-
-try:
-    import xml.etree.cElementTree as etree
-except ImportError:
-    import xml.etree.ElementTree as etree
-
 
 class PLEXNotifier:
     def _send_to_plex(self, command, host, username=None, password=None):
@@ -89,7 +82,7 @@ class PLEXNotifier:
             return 'OK'
 
         except (urllib2.URLError, IOError) as e:
-            logging.warning('PLEX: Warning: Couldn\'t contact Plex at ' + url + ' ' + ex(e))
+            logging.warning('PLEX: Warning: Couldn\'t contact Plex at ' + url + ' ' + e)
             return False
 
     def _notify_pmc(self, message, title='SiCKRAGE', host=None, username=None, password=None, force=False):
@@ -206,16 +199,16 @@ class PLEXNotifier:
 
                 try:
                     response = urllib2.urlopen(req)
-                    auth_tree = etree.parse(response)
+                    auth_tree = xml.etree.parse(response)
                     token = auth_tree.findall('.//authentication-token')[0].text
                     token_arg = '?X-Plex-Token=' + token
 
                 except urllib2.URLError as e:
                     logging.debug(
-                        'PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, ex(e)))
+                            'PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, e))
 
                 except (ValueError, IndexError) as e:
-                    logging.debug('PLEX: Error parsing plex.tv response: ' + ex(e))
+                    logging.debug('PLEX: Error parsing plex.tv response: ' + e)
 
             file_location = '' if None is ep_obj else ep_obj.location
             host_list = [x.strip() for x in host.split(',')]
@@ -226,17 +219,17 @@ class PLEXNotifier:
 
                 url = 'http://%s/library/sections%s' % (cur_host, token_arg)
                 try:
-                    xml_tree = etree.parse(urllib.urlopen(url))
+                    xml_tree = xml.etree.parse(urllib.urlopen(url))
                     media_container = xml_tree.getroot()
                 except IOError as e:
-                    logging.warning('PLEX: Error while trying to contact Plex Media Server: ' + ex(e))
+                    logging.warning('PLEX: Error while trying to contact Plex Media Server: ' + e)
                     hosts_failed.append(cur_host)
                     continue
                 except Exception as e:
                     if 'invalid token' in str(e):
                         logging.error('PLEX: Please set TOKEN in Plex settings: ')
                     else:
-                        logging.error('PLEX: Error while trying to contact Plex Media Server: ' + ex(e))
+                        logging.error('PLEX: Error while trying to contact Plex Media Server: ' + e)
                     continue
 
                 sections = media_container.findall('.//Directory')
@@ -271,7 +264,7 @@ class PLEXNotifier:
                     force and urllib.urlopen(url)
                     host_list.append(cur_host)
                 except Exception as e:
-                    logging.warning('PLEX: Error updating library section for Plex Media Server: ' + ex(e))
+                    logging.warning('PLEX: Error updating library section for Plex Media Server: ' + e)
                     hosts_failed.append(cur_host)
 
             if hosts_match:

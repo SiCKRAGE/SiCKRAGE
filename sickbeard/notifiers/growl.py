@@ -18,13 +18,13 @@
 
 from __future__ import unicode_literals
 
+import logging
 import socket
 
-import sickbeard
-from sickbeard import common
-from sickrage.helper.exceptions import ex
-from libgrowl import gntp
+import gntp as gntp
 
+import common
+import sickbeard
 
 class GrowlNotifier:
     sr_logo_url = 'https://raw.githubusercontent.com/SiCKRAGETV/SiCKRAGE/master/gui/slick/images/sickrage-shark-mascot.png'
@@ -145,7 +145,8 @@ class GrowlNotifier:
                         return False
             except Exception as e:
                 logging.warning(
-                    "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(ex(e)))
+                        "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(
+                            e))
                 return False
 
     def _sendRegistration(self, host=None, password=None, name='SiCKRAGE Notification'):
@@ -189,7 +190,7 @@ class GrowlNotifier:
             return self._send(opts[b'host'], opts[b'port'], register.encode(), opts[b'debug'])
         except Exception as e:
             logging.warning(
-                "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(ex(e)))
+                    "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(e))
             return False
 
 

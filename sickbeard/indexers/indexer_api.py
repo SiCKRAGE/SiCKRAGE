@@ -42,7 +42,7 @@ class indexerApi(object):
             return indexerConfig[self.indexerID]
         _ = initConfig
         if sickbeard.INDEXER_DEFAULT_LANGUAGE in _:
-            del _[_[b'valid_languages'].index(sickbeard.INDEXER_DEFAULT_LANGUAGE)]
+            del _[_[b'valid_languages'].indsickbeard.INDEXER_DEFAULT_LANGUAGE]
         _[b'valid_languages'].sort()
         _[b'valid_languages'].insert(0, sickbeard.INDEXER_DEFAULT_LANGUAGE)
         return _

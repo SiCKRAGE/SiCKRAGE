@@ -19,20 +19,13 @@
 from __future__ import unicode_literals
 
 import logging
+from urlparse import parse_qsl
 
+import oauth2
+import twitter
+
+import common
 import sickbeard
-
-from sickbeard import common
-from sickrage.helper.exceptions import ex
-
-# parse_qsl moved to urlparse module in v2.6
-try:
-    from urlparse import parse_qsl  # @UnusedImport
-except ImportError:
-    from cgi import parse_qsl  # @Reimport
-
-import oauth2 as oauth
-import pythontwitter as twitter
 
 
 class TwitterNotifier:
@@ -67,9 +60,9 @@ class TwitterNotifier:
 
     def _get_authorization(self):
 
-        signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()  # @UnusedVariable
-        oauth_consumer = oauth.Consumer(key=self.consumer_key, secret=self.consumer_secret)
-        oauth_client = oauth.Client(oauth_consumer)
+        signature_method_hmac_sha1 = oauth2.SignatureMethod_HMAC_SHA1()  # @UnusedVariable
+        oauth_consumer = oauth2.Consumer(key=self.consumer_key, secret=self.consumer_secret)
+        oauth_client = oauth2.Client(oauth_consumer)
 
         logging.debug('Requesting temp token from Twitter')
 
@@ -92,15 +85,15 @@ class TwitterNotifier:
         request_token[b'oauth_token_secret'] = sickbeard.TWITTER_PASSWORD
         request_token[b'oauth_callback_confirmed'] = 'true'
 
-        token = oauth.Token(request_token[b'oauth_token'], request_token[b'oauth_token_secret'])
+        token = oauth2.Token(request_token[b'oauth_token'], request_token[b'oauth_token_secret'])
         token.set_verifier(key)
 
         logging.debug('Generating and signing request for an access token using key ' + key)
 
-        signature_method_hmac_sha1 = oauth.SignatureMethod_HMAC_SHA1()  # @UnusedVariable
-        oauth_consumer = oauth.Consumer(key=self.consumer_key, secret=self.consumer_secret)
+        signature_method_hmac_sha1 = oauth2.SignatureMethod_HMAC_SHA1()  # @UnusedVariable
+        oauth_consumer = oauth2.Consumer(key=self.consumer_key, secret=self.consumer_secret)
         logging.debug('oauth_consumer: ' + str(oauth_consumer))
-        oauth_client = oauth.Client(oauth_consumer, token)
+        oauth_client = oauth2.Client(oauth_consumer, token)
         logging.debug('oauth_client: ' + str(oauth_client))
         resp, content = oauth_client.request(self.ACCESS_TOKEN_URL, method='POST', body='oauth_verifier=%s' % key)
         logging.debug('resp, content: ' + str(resp) + ',' + str(content))
@@ -128,12 +121,12 @@ class TwitterNotifier:
 
         logging.debug("Sending tweet: " + message)
 
-        api = twitter.Api(username, password, access_token_key, access_token_secret)
+        api = twitter.Twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
             api.PostUpdate(message.encode('utf8')[:139])
         except Exception as e:
-            logging.error("Error Sending Tweet: {}".format(ex(e)))
+            logging.error("Error Sending Tweet: {}".format(e))
             return False
 
         return True
@@ -148,12 +141,12 @@ class TwitterNotifier:
 
         logging.debug("Sending DM: " + dmdest + " " + message)
 
-        api = twitter.Api(username, password, access_token_key, access_token_secret)
+        api = twitter.Twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
             api.PostDirectMessage(dmdest, message.encode('utf8')[:139])
         except Exception as e:
-            logging.error("Error Sending Tweet (DM): {}".format(ex(e)))
+            logging.error("Error Sending Tweet (DM): {}".format(e))
             return False
 
         return True

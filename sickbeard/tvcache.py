@@ -20,21 +20,20 @@
 
 from __future__ import unicode_literals
 
-import time
 import datetime
 import itertools
-import urllib2
 import logging
+import time
+import urllib2
 
+import db
+import helpers
+import show_name_helpers
 import sickbeard
-from sickbeard import db
-from sickbeard import helpers
-from sickbeard.common import Quality
-from sickbeard.rssfeeds import getFeed
-from sickbeard import show_name_helpers
-from sickrage.helper.encoding import ss
-from sickrage.helper.exceptions import AuthException, ex
-from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
+from common import Quality
+from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
+from rssfeeds import getFeed
+from sickbeard.exceptions import AuthException
 
 
 class CacheDBConnection(db.DBConnection):
@@ -80,7 +79,7 @@ class CacheDBConnection(db.DBConnection):
 class TVCache(object):
     def __init__(self, provider):
         self.provider = provider
-        self.providerID = self.provider.getID()
+        self.providerID = self.provider.id
         self.providerDB = None
         self.minTime = 10
 
@@ -132,7 +131,7 @@ class TVCache(object):
                     myDB = self._getDB()
                     myDB.mass_action(cl)
             except AuthException as e:
-                logging.error("Authentication error: {}".format(ex(e)))
+                logging.error("Authentication error: {}".format(e))
                 return False
             except Exception as e:
                 logging.debug("Error while searching {}, skipping: {}".format(self.provider.name, repr(e)))
@@ -229,7 +228,7 @@ class TVCache(object):
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
             logging.debug(
-                "Last update was too soon, using old cache: " + str(self.lastUpdate) + ". Updated less then " + str(
+                "Last update was too soon, using old tv cache: " + str(self.lastUpdate) + ". Updated less then " + str(
                     self.minTime) + " minutes ago")
             return False
 
@@ -279,8 +278,6 @@ class TVCache(object):
             # get quality of release
             quality = parse_result.quality
 
-            name = ss(name)
-
             # get release group
             release_group = parse_result.release_group
 
@@ -326,7 +323,7 @@ class TVCache(object):
                             [str(x) for x in epObj.wantedQuality]) + ")",
                     [epObj.show.indexerid, epObj.season, "%|" + str(epObj.episode) + "|%"]])
 
-            sqlResults = myDB.mass_action(cl, fetchall=True)
+            sqlResults = myDB.mass_action(cl).fetchall()
             sqlResults = list(itertools.chain(*sqlResults))
 
         # for each cache entry

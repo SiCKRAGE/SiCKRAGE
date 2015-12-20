@@ -36,7 +36,7 @@ import requests
 import sickbeard
 from sickbeard.tv import TVEpisode, TVShow
 from sickbeard.name_cache import addNameToCache
-from sickbeard.postProcessor import PostProcessor
+from sickbeard.postprocessor import PostProcessor
 
 
 class PPInitTests(SiCKRAGETestCase):
@@ -74,7 +74,7 @@ class PPBasicTests(SiCKRAGETestDBCase):
 
         addNameToCache('show name', 3)
         self.pp = PostProcessor(FILEPATH, process_method='move')
-        self.assertTrue(self.pp.process())
+        self.assertTrue(self.pp.process)
 
 
 class PPWebServerTests(SiCKRAGETestDBCase):

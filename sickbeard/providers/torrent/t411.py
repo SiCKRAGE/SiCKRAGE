@@ -26,13 +26,13 @@ import traceback
 
 from requests.auth import AuthBase
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class T411Provider(TorrentProvider):
+class T411Provider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, "T411")
+        super(T411Provider, self).__init__("T411")
 
         self.supportsBacklog = True
 
@@ -50,7 +50,7 @@ class T411Provider(TorrentProvider):
                      'login_page': 'https://api.t411.in/auth',
                      'download': 'https://api.t411.in/torrents/download/%s'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.subcategories = [433, 637, 455, 639]
 
@@ -67,7 +67,7 @@ class T411Provider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls[b'login_page'], post_data=login_params, timeout=30, json=True)
+        response = self.getURL(self.urls['login_page'], post_data=login_params, timeout=30, json=True)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -98,7 +98,7 @@ class T411Provider(TorrentProvider):
                     logging.debug("Search string: %s " % search_string)
 
                 searchURLS = \
-                    ([self.urls[b'search'] % (search_string, u) for u in self.subcategories], [self.urls[b'rss']])[
+                    ([self.urls['search'] % (search_string, u) for u in self.subcategories], [self.urls['rss']])[
                         mode is 'RSS']
                 for searchURL in searchURLS:
                     logging.debug("Search URL: %s" % searchURL)
@@ -124,7 +124,7 @@ class T411Provider(TorrentProvider):
                             try:
                                 title = torrent[b'name']
                                 torrent_id = torrent[b'id']
-                                download_url = (self.urls[b'download'] % torrent_id).encode('utf8')
+                                download_url = (self.urls['download'] % torrent_id).encode('utf8')
                                 if not all([title, download_url]):
                                     continue
 

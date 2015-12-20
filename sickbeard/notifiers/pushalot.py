@@ -22,11 +22,11 @@ from __future__ import unicode_literals
 import logging
 import socket
 from httplib import HTTPSConnection, HTTPException
-from urllib import urlencode
 from ssl import SSLError
+from urllib import urlencode
 
+import common
 import sickbeard
-from sickbeard import common
 
 
 class PushalotNotifier:

@@ -19,11 +19,10 @@
 
 from __future__ import unicode_literals
 
-import db
 import datetime
 
-from sickbeard.common import SNATCHED, SUBTITLED, FAILED, Quality
-from sickrage.helper.encoding import ss
+import db
+from common import SNATCHED, SUBTITLED, FAILED, Quality
 from sickrage.show.History import History
 
 
@@ -41,10 +40,9 @@ def _logHistoryItem(action, showid, season, episode, quality, resource, provider
     :param version: tracked version of file (defaults to -1)
     """
     logDate = datetime.datetime.today().strftime(History.date_format)
-    resource = ss(resource)
+    resource = resource
 
-    myDB = db.DBConnection()
-    myDB.action(
+    db.DBConnection().action(
             "INSERT INTO history (action, date, showid, season, episode, quality, resource, provider, version) VALUES (?,?,?,?,?,?,?,?,?)",
             [action, logDate, showid, season, episode, quality, resource, provider, version])
 

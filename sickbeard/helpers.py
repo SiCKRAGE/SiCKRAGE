@@ -50,24 +50,24 @@ from contextlib import closing
 from itertools import izip, cycle
 from socket import timeout as SocketTimeout
 
-import adba
+import cachecontrol
 import certifi
 import requests
 import six
-from cachecontrol import CacheControl, caches
+from cachecontrol.caches.file_cache import FileCache
 
-# Access to a protected member of a client class
-import classes
-import clients
 import db
-import name_cache
-import scene_exceptions
 import sickbeard
 from common import mediaExtensions, subtitleExtensions, USER_AGENTS
-from helper.exceptions import MultipleShowObjectsException
+from indexers import adba
+from indexers.indexer_api import indexerApi
 from indexers.indexer_exceptions import indexer_episodenotfound, indexer_seasonnotfound
 from notifiers import synoindex_notifier
 from scene_exceptions import get_scene_exceptions
+from sickbeard import classes
+from sickbeard import clients
+from sickbeard import scene_exceptions
+from sickbeard.exceptions import MultipleShowObjectsException
 
 urllib._urlopener = classes.SickBeardURLopener()
 
@@ -75,17 +75,18 @@ def readFileBuffered(filename, reverse=False):
     blocksize = (1<<15)
     with io.open(filename, 'rb') as fh:
         if reverse:
-            fh.se0(os.SEEK_END)
+            fh.seek(0, os.SEEK_END)
         pos = fh.tell()
         while True:
-            chunksize = min(blocksize, pos)
 
             if reverse:
+                chunksize = min(blocksize, pos)
                 pos -= chunksize
             else:
+                chunksize = max(blocksize, pos)
                 pos += chunksize
 
-            fh.sepos(os.SEEK_SET)
+            fh.seek(pos, os.SEEK_SET)
             data = fh.read(chunksize)
             if not data:
                 break
@@ -463,15 +464,15 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
     showNames = [re.sub('[. -]', ' ', regShowName)]
 
     # Query Indexers for each search term and build the list of results
-    for i in sickbeard.indexerApi().indexers if not indexer else int(indexer or []):
+    for i in indexerApi().indexers if not indexer else int(indexer or []):
         # Query Indexers for each search term and build the list of results
-        lINDEXER_API_PARMS = sickbeard.indexerApi(i).api_params.copy()
+        lINDEXER_API_PARMS = indexerApi(i).api_params.copy()
         if ui is not None:
             lINDEXER_API_PARMS[b'custom_ui'] = ui
-        t = sickbeard.indexerApi(i).indexer(**lINDEXER_API_PARMS)
+        t = indexerApi(i).indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
-            logging.debug("Trying to find " + name + " on " + sickbeard.indexerApi(i).name)
+            logging.debug("Trying to find " + name + " on " + indexerApi(i).name)
 
             try:
                 search = t[indexer_id] if indexer_id else t[name]
@@ -700,7 +701,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
         sublang = os.path.splitext(cur_file_name)[1][1:]
 
         # Check if the language extracted from filename is a valid language
-        if isValidLanguage(sublang):
+        if sickbeard.subtitleSearcher.isValidLanguage(sublang):
             cur_file_ext = '.' + sublang + cur_file_ext
 
     # put the extension on the incoming file
@@ -983,45 +984,64 @@ def arithmeticEval(s):
 
     return _eval(node.body)
 
-
 def create_https_certificates(ssl_cert, ssl_key):
-    """
-    Create self-signed HTTPS certificares and store in paths 'ssl_cert' and 'ssl_key'
-
-    :param ssl_cert: Path of SSL certificate file to write
-    :param ssl_key: Path of SSL keyfile to write
-    :return: True on success, False on failure
-    """
+    """This function takes a domain name as a parameter and then creates a certificate and key with the
+    domain name(replacing dots by underscores), finally signing the certificate using specified CA and
+    returns the path of key and cert files. If you are yet to generate a CA then check the top comments"""
 
     try:
-        import PyOpenSSL.crypto
-        from certgen import createKeyPair, createCertRequest, createCertificate, TYPE_RSA, serial
+        import pyOpenSSL.crypto
     except Exception:
         logging.warning("pyopenssl module missing, please install for https access")
         return False
 
-    # Create the CA Certificate
-    cakey = createKeyPair(TYPE_RSA, 1024)
-    careq = createCertRequest(cakey, CN='Certificate Authority')
-    cacert = createCertificate(careq, (careq, cakey), serial, (0, 60 * 60 * 24 * 365 * 10))  # ten years
+    # Check happens if the certificate and key pair already exists for a domain
+    if not os.path.exists(ssl_key) and os.path.exists(ssl_cert):
+        # Serial Generation - Serial number must be unique for each certificate,
+        serial = int(time.time())
 
-    cname = 'SiCKRAGE'
-    pkey = createKeyPair(TYPE_RSA, 1024)
-    req = createCertRequest(pkey, CN=cname)
-    cert = createCertificate(req, (cacert, cakey), serial, (0, 60 * 60 * 24 * 365 * 10))  # ten years
+        # Create the CA Certificate
+        cakey = pyOpenSSL.crypto.PKey().generate_key(pyOpenSSL.crypto.TYPE_RSA, 2048)
+        careq = pyOpenSSL.crypto.X509()
+        careq.get_subject().CN = "Certificate Authority"
+        careq.set_pubkey(cakey)
+        careq.sign(cakey, "sha1")
 
-    # Save the key and certificate to disk
-    try:
-        # pylint: disable=E1101
-        # Module has no member
-        io.open(ssl_key, 'w').write(PyOpenSSL.crypto.dump_privatekey(PyOpenSSL.crypto.FILETYPE_PEM, pkey))
-        io.open(ssl_cert, 'w').write(PyOpenSSL.crypto.dump_certificate(PyOpenSSL.crypto.FILETYPE_PEM, cert))
-    except Exception:
-        logging.error("Error creating SSL key and certificate")
-        return False
+        # Sign the CA Certificate
+        cacert = pyOpenSSL.crypto.X509()
+        cacert.set_serial_number(serial)
+        cacert.gmtime_adj_notBefore(0)
+        cacert.gmtime_adj_notAfter(365 * 24 * 60 * 60)
+        cacert.set_issuer(careq.get_subject())
+        cacert.set_subject(careq.get_subject())
+        cacert.set_pubkey(careq.get_pubkey())
+        cacert.sign(cakey, "sha1")
+
+        # Generate self-signed certificate
+        key = pyOpenSSL.crypto.PKey()
+        key.generate_key(pyOpenSSL.crypto.TYPE_RSA, 2048)
+        cert = pyOpenSSL.crypto.X509()
+        cert.get_subject().CN = "SiCKRAGE"
+        cert.gmtime_adj_notBefore(0)
+        cert.gmtime_adj_notAfter(365 * 24 * 60 * 60)
+        cert.set_serial_number(serial)
+        cert.set_issuer(cacert.get_subject())
+        cert.set_pubkey(key)
+        cert.sign(cakey, "sha1")
+
+        # Save the key and certificate to disk
+        try:
+            # pylint: disable=E1101
+            # Module has no member
+            with io.open(ssl_key, 'w') as keyout:
+                keyout.write(pyOpenSSL.crypto.dump_privatekey(pyOpenSSL.crypto.FILETYPE_PEM, key))
+            with io.open(ssl_cert, 'w') as certout:
+                certout.write(pyOpenSSL.crypto.dump_certificate(pyOpenSSL.crypto.FILETYPE_PEM, cert))
+        except Exception:
+            logging.error("Error creating SSL key and certificate")
+            return False
 
     return True
-
 
 def backupVersionedFile(old_file, version):
     """
@@ -1034,7 +1054,7 @@ def backupVersionedFile(old_file, version):
 
     numTries = 0
 
-    new_file = unicode(old_file + '.' + 'v' + str(version))
+    new_file = '{}.v{}'.format(old_file, version)
 
     while not os.path.isfile(new_file):
         if not os.path.isfile(old_file):
@@ -1054,57 +1074,6 @@ def backupVersionedFile(old_file, version):
 
         if numTries >= 10:
             logging.error("Unable to back up %s to %s please do it manually." % (old_file, new_file))
-            return False
-
-    return True
-
-
-def restoreVersionedFile(backup_file, version):
-    """
-    Restore a file version to original state
-
-    :param backup_file: File to restore
-    :param version: Version of file to restore
-    :return: True on success, False on failure
-    """
-
-    numTries = 0
-
-    new_file, _ = os.path.splitext(backup_file)
-    restore_file = new_file + '.' + 'v' + str(version)
-
-    if not os.path.isfile(new_file):
-        logging.debug("Not restoring, %s doesn't exist" % new_file)
-        return False
-
-    try:
-        logging.debug("Trying to backup %s to %s.r%s before restoring backup"
-                    % (new_file, new_file, version))
-
-        shutil.move(new_file, new_file + '.' + 'r' + str(version))
-    except Exception as e:
-        logging.warning("Error while trying to backup DB file %s before proceeding with restore: %r"
-                        % (restore_file, e))
-        return False
-
-    while not os.path.isfile(new_file):
-        if not os.path.isfile(restore_file):
-            logging.debug("Not restoring, %s doesn't exist" % restore_file)
-            break
-
-        try:
-            logging.debug("Trying to restore file %s to %s" % (restore_file, new_file))
-            shutil.copy(restore_file, new_file)
-            logging.debug("Restore done")
-            break
-        except Exception as e:
-            logging.warning("Error while trying to restore file %s. Error: %r" % (restore_file, e))
-            numTries += 1
-            time.sleep(1)
-            logging.debug("Trying again. Attempt #: %s" % numTries)
-
-        if numTries >= 10:
-            logging.warning("Unable to restore file %s to %s" % (restore_file, new_file))
             return False
 
     return True
@@ -1147,8 +1116,12 @@ def get_lan_ip():
     """Returns IP of system"""
 
     try:
-        return [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][0]
-    except Exception:
+        return [l for l in (
+            [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1],
+            [[(s.connect(('8.8.8.8', 80)), s.getsockname()[0], s.close()) for s in
+              [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]
+        ) if l][0][0]
+    except:
         return socket.gethostname()
 
 
@@ -1187,7 +1160,7 @@ By Pedro Jose Pereira Vieito <pvieito@gmail.com> (@pvieito)
 
 To add a new encryption_version:
   1) Code your new encryption_version
-  2) Update the last encryption_version available in webserve.py
+  2) Update the last encryption_version available in webviews.py
   3) Remember to maintain old encryption versions and key generators for retrocompatibility
 """
 
@@ -1256,7 +1229,7 @@ def get_show(name, tryIndexers=False):
 
     try:
         # check cache for show
-        cache = name_cache.retrieveNameFromCache(name)
+        cache = sickbeard.nameCache.retrieveNameFromCache(name)
         if cache:
             fromCache = True
             showObj = findCertainShow(sickbeard.showList, int(cache))
@@ -1274,7 +1247,7 @@ def get_show(name, tryIndexers=False):
 
         # add show to cache
         if showObj and not fromCache:
-            name_cache.addNameToCache(name, showObj.indexerid)
+            sickbeard.nameCache.addNameToCache(name, showObj.indexerid)
     except Exception as e:
         logging.debug("Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
 
@@ -1319,7 +1292,7 @@ def validateShow(show, season=None, episode=None):
     indexer_lang = show.lang
 
     try:
-        lINDEXER_API_PARMS = sickbeard.indexerApi(show.indexer).api_params.copy()
+        lINDEXER_API_PARMS = indexerApi(show.indexer).api_params.copy()
 
         if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS[b'language'] = indexer_lang
@@ -1327,7 +1300,7 @@ def validateShow(show, season=None, episode=None):
         if show.dvdorder != 0:
             lINDEXER_API_PARMS[b'dvdorder'] = True
 
-        t = sickbeard.indexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
+        t = indexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
         if season is None and episode is None:
             return t
 
@@ -1430,13 +1403,12 @@ def backupConfigZip(fileList, archive, arcname=None):
     """
 
     try:
-        a = zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
-        for f in fileList:
-            a.write(f, os.path.relpath(f, arcname))
-        a.close()
+        with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, allowZip64=True) as z:
+            for f in list(set(fileList)):
+                z.write(f, os.path.relpath(f, arcname))
         return True
     except Exception as e:
-        logging.error("Zip creation error: %r " % repr(e))
+        logging.error("Zip creation error: {} ".format(e.message))
         return False
 
 
@@ -1460,22 +1432,39 @@ def restoreConfigZip(archive, targetDir):
             bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
             shutil.move(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
 
-        zip_file = zipfile.ZipFile(archive, 'r', allowZip64=True)
-        for member in zip_file.namelist():
-            zip_file.extract(member, targetDir)
-        zip_file.close()
+        with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
+            for member in zip_file.namelist():
+                zip_file.extract(member, targetDir)
+
         return True
     except Exception as e:
-        logging.error("Zip extraction error: %r" % e)
+        logging.error("Zip extraction error: {}".format(e.message))
         removetree(targetDir)
-        return False
 
+def backupAll(backupDir):
+    source = []
+
+    filesList = ['sickbeard.db', 'sickrage.db', 'config.ini', 'failed.db', 'cache.db', sickbeard.CONFIG_FILE]
+    for f in filesList:
+        fp = os.path.join(sickbeard.DATA_DIR, f)
+        if os.path.exists(fp):
+            source += [fp]
+
+    for (path, dirs, files) in os.walk(sickbeard.CACHE_DIR, topdown=True):
+        for dirname in dirs:
+            if path == sickbeard.CACHE_DIR and dirname not in ['images']:
+                dirs.remove(dirname)
+        for filename in files:
+            source += [os.path.join(path, filename)]
+
+    target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S')))
+    return backupConfigZip(source, target, sickbeard.DATA_DIR)
 
 def mapIndexersToShow(showObj):
     mapped = {}
 
     # init mapped indexers object
-    for indexer in sickbeard.indexerApi().indexers:
+    for indexer in indexerApi().indexers:
         mapped[indexer] = showObj.indexerid if int(indexer) == int(showObj.indexer) else 0
 
     myDB = db.DBConnection()
@@ -1493,24 +1482,24 @@ def mapIndexersToShow(showObj):
             return mapped
     else:
         sql_l = []
-        for indexer in sickbeard.indexerApi().indexers:
+        for indexer in indexerApi().indexers:
             if indexer == showObj.indexer:
                 mapped[indexer] = showObj.indexerid
                 continue
 
-            lINDEXER_API_PARMS = sickbeard.indexerApi(indexer).api_params.copy()
+            lINDEXER_API_PARMS = indexerApi(indexer).api_params.copy()
             lINDEXER_API_PARMS[b'custom_ui'] = classes.ShowListUI
-            t = sickbeard.indexerApi(indexer).indexer(**lINDEXER_API_PARMS)
+            t = indexerApi(indexer).indexer(**lINDEXER_API_PARMS)
 
             try:
                 mapped_show = t[showObj.name]
             except Exception:
-                logging.debug("Unable to map " + sickbeard.indexerApi(showObj.indexer).name + "->" + sickbeard.indexerApi(
+                logging.debug("Unable to map " + indexerApi(showObj.indexer).name + "->" + indexerApi(
                         indexer).name + " for show: " + showObj.name + ", skipping it")
                 continue
 
             if mapped_show and len(mapped_show) == 1:
-                logging.debug("Mapping " + sickbeard.indexerApi(showObj.indexer).name + "->" + sickbeard.indexerApi(
+                logging.debug("Mapping " + indexerApi(showObj.indexer).name + "->" + indexerApi(
                         indexer).name + " for show: " + showObj.name)
 
                 mapped[indexer] = int(mapped_show[0][b'id'])
@@ -1542,7 +1531,7 @@ def touchFile(fname, atime=None):
             with file(fname, 'a'):
                 os.utime(fname, (atime, atime))
                 return True
-        except Exception as e:
+        except OSError as e:
             if e.errno == errno.ENOSYS:
                 logging.debug("File air date stamping not available on your OS. Please disable setting")
             elif e.errno == errno.EACCES:
@@ -1584,7 +1573,7 @@ def codeDescription(status_code):
         return 'unknown'
 
 
-def _setUpSession(session=None, headers={}, params=None):
+def _setUpSession(session=None, headers=None, params=None):
     """
     Returns a session initialized with default cache and parameter settings
 
@@ -1594,12 +1583,11 @@ def _setUpSession(session=None, headers={}, params=None):
     """
 
     # request session
+    if headers is None:
+        headers = {}
     session = session or requests.Session()
-    session = CacheControl(sess=session,
-                           cache=caches.FileCache(os.path.join(sickbeard.CACHE_DIR or _getTempDir(), 'sessions'),
-                                                  use_dir_lock=True),
-                           cache_etags=False
-                           )
+    sessionCache = FileCache(os.path.join(sickbeard.CACHE_DIR or _getTempDir(), 'sessions'), use_dir_lock=True)
+    session = cachecontrol.CacheControl(sess=session, cache=sessionCache, cache_etags=False)
 
     # request session headers
     session.headers.update(headers)
@@ -1635,16 +1623,19 @@ def _setUpSession(session=None, headers={}, params=None):
 
     return session
 
-def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=None, json=False, needBytes=False):
+
+def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=None, json=False, needBytes=False):
     """
     Returns a byte-string retrieved from the url provider.
     """
 
-    if requests.__version__ < (2, 8):
+    if headers is None:
+        headers = {}
+    if not requests.__version__ < (2, 8):
         logging.debug("Requests version 2.8+ needed to avoid SSL cert verify issues, please upgrade your copy")
 
     url = normalize_url(url)
-    session = _setUpSession(session, headers, params)
+    session = _setUpSession(session or requests.Session(), headers, params)
 
     try:
         # decide if we get or post data to server
@@ -1688,7 +1679,7 @@ def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=Non
     return (resp.text, resp.content)[needBytes] if not json else resp.json()
 
 
-def download_file(url, filename, session=None, headers={}):
+def download_file(url, filename, session=None, headers=None):
     """
     Downloads a file specified
 
@@ -1699,6 +1690,8 @@ def download_file(url, filename, session=None, headers={}):
     :return: True on success, False on failure
     """
 
+    if headers is None:
+        headers = {}
     url = normalize_url(url)
     session = _setUpSession(session, headers)
     session.stream = True

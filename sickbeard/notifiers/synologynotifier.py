@@ -17,15 +17,12 @@
 
 from __future__ import unicode_literals
 
+import logging
 import os
 import subprocess
 
+import common
 import sickbeard
-
-import logging
-from sickbeard import common
-from sickrage.helper.encoding import ek
-from sickrage.helper.exceptions import ex
 
 
 class synologyNotifier:
@@ -50,14 +47,14 @@ class synologyNotifier:
     def _send_synologyNotifier(self, message, title):
         synodsmnotify_cmd = ["/usr/syno/bin/synodsmnotify", "@administrators", title, message]
         logging.info("Executing command " + str(synodsmnotify_cmd))
-        logging.debug("Absolute path to command: " + ek(os.path.abspath, synodsmnotify_cmd[0]))
+        logging.debug("Absolute path to command: " + os.path.abspath(synodsmnotify_cmd[0]))
         try:
             p = subprocess.Popen(synodsmnotify_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  cwd=sickbeard.PROG_DIR)
             out, err = p.communicate()  # @UnusedVariable
             logging.debug("Script result: " + str(out))
         except OSError as e:
-            logging.info("Unable to run synodsmnotify: {}".format(ex(e)))
+            logging.info("Unable to run synodsmnotify: {}".format(e))
 
 
 notifier = synologyNotifier

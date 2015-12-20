@@ -17,28 +17,27 @@ from __future__ import unicode_literals
 
 import re
 # from urllib import urlencode
-
+import show_name_helpers
 import sickbeard
 import logging
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
-from sickbeard import show_name_helpers
+from sickbeard.exceptions import AuthException
 from sickbeard.helpers import sanitizeSceneName
 from sickbeard.bs4_parser import BS4Parser
-from sickrage.helper.exceptions import AuthException
 
 
-class TVChaosUKProvider(TorrentProvider):
+class TVChaosUKProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, 'TvChaosUK')
+        super(TVChaosUKProvider, self).__init__('TvChaosUK')
 
         self.urls = {'base_url': 'https://tvchaosuk.com/',
                      'login': 'https://tvchaosuk.com/takelogin.php',
                      'index': 'https://tvchaosuk.com/index.php',
                      'search': 'https://tvchaosuk.com/browse.php'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.supportsBacklog = True
 
@@ -78,7 +77,7 @@ class TVChaosUKProvider(TorrentProvider):
                 else:
                     season_string += '%d' % int(ep_obj.scene_season)
 
-                search_string[b'Season'].append(re.sub(r'\s+', ' ', season_string.replace('.', ' ').strip()))
+                search_string['Season'].append(re.sub(r'\s+', ' ', season_string.replace('.', ' ').strip()))
 
         return [search_string]
 
@@ -105,14 +104,14 @@ class TVChaosUKProvider(TorrentProvider):
                 if add_string:
                     ep_string += ' %s' % add_string
 
-                search_string[b'Episode'].append(re.sub(r'\s+', ' ', ep_string.replace('.', ' ').strip()))
+                search_string['Episode'].append(re.sub(r'\s+', ' ', ep_string.replace('.', ' ').strip()))
 
         return [search_string]
 
     def _doLogin(self):
 
         login_params = {'username': self.username, 'password': self.password}
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -139,8 +138,8 @@ class TVChaosUKProvider(TorrentProvider):
                     logging.debug("Search string: %s " % search_string)
 
                 self.search_params[b'keywords'] = search_string.strip()
-                data = self.getURL(self.urls[b'search'], params=self.search_params)
-                # url_searched = self.urls[b'search'] + '?' + urlencode(self.search_params)
+                data = self.getURL(self.urls['search'], params=self.search_params)
+                # url_searched = self.urls['search'] + '?' + urlencode(self.search_params)
 
                 if not data:
                     logging.debug("No data returned from provider")
@@ -187,7 +186,7 @@ class TVChaosUKProvider(TorrentProvider):
 
                             items[mode].append(item)
 
-                        except Exception:
+                        except:
                             continue
 
             # For each search mode sort all the items by seeders if available

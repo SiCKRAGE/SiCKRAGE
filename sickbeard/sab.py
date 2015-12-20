@@ -19,23 +19,18 @@
 
 from __future__ import unicode_literals
 
-import urllib, httplib
-
-import sickbeard
+import cookielib
 import datetime
+import httplib
+import json
+import logging
+import urllib
+import urllib2
 
 import MultipartPostHandler
-import urllib2, cookielib
 
-try:
-    import json
-except ImportError:
-    import simplejson as json
-
-from sickbeard.common import USER_AGENT
-import logging
-from sickrage.helper.exceptions import ex
-
+import common
+import sickbeard
 
 def sendNZB(nzb):
     """
@@ -76,7 +71,7 @@ def sendNZB(nzb):
     # if it's a normal result we just pass SAB the URL
     if nzb.resultType == "nzb":
         # for newzbin results send the ID to sab specifically
-        if nzb.provider.getID() == 'newzbin':
+        if nzb.provider.id == 'newzbin':
             id = nzb.provider.getIDFromURL(nzb.url)
             if not id:
                 logging.error("Unable to send NZB to sab, can't find ID in URL " + str(nzb.url))
@@ -109,16 +104,16 @@ def sendNZB(nzb):
                                           MultipartPostHandler.MultipartPostHandler)
             req = urllib2.Request(url,
                                   multiPartParams,
-                                  headers={'User-Agent': USER_AGENT})
+                                  headers={'User-Agent': common.USER_AGENT})
 
             f = opener.open(req)
 
     except (EOFError, IOError) as e:
-        logging.error("Unable to connect to SAB: {}".format(ex(e)))
+        logging.error("Unable to connect to SAB: {}".format(e))
         return False
 
     except httplib.InvalidURL as e:
-        logging.error("Invalid SAB host, check your config: {}".format(ex(e)))
+        logging.error("Invalid SAB host, check your config: {}".format(e))
         return False
 
     # this means we couldn't open the connection or something just as bad
@@ -130,7 +125,7 @@ def sendNZB(nzb):
     try:
         result = f.readlines()
     except Exception as e:
-        logging.error("Error trying to get result from SAB, NZB not sent: {}".format(ex(e)))
+        logging.error("Error trying to get result from SAB, NZB not sent: {}".format(e))
         return False
 
     # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and didn't recieve the NZB
@@ -165,7 +160,7 @@ def _checkSabResponse(f):
     try:
         result = f.readlines()
     except Exception as e:
-        logging.error("Error trying to get result from SAB{}".format(ex(e)))
+        logging.error("Error trying to get result from SAB{}".format(e))
         return False, "Error from SAB"
 
     if len(result) == 0:
@@ -199,10 +194,10 @@ def _sabURLOpenSimple(url):
     try:
         f = urllib.urlopen(url)
     except (EOFError, IOError) as e:
-        logging.error("Unable to connect to SAB: {}".format(ex(e)))
+        logging.error("Unable to connect to SAB: {}".format(e))
         return False, "Unable to connect"
     except httplib.InvalidURL as e:
-        logging.error("Invalid SAB host, check your config: {}".format(ex(e)))
+        logging.error("Invalid SAB host, check your config: {}".format(e))
         return False, "Invalid SAB host"
     if f == None:
         logging.error("No data returned from SABnzbd")

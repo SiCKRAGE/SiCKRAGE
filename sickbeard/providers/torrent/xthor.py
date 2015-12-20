@@ -26,14 +26,14 @@ import urllib
 
 import requests
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard.bs4_parser import BS4Parser
 
 
-class XthorProvider(TorrentProvider):
+class XthorProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "Xthor")
+        super(XthorProvider, self).__init__("Xthor")
 
         self.supportsBacklog = True
 

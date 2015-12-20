@@ -29,10 +29,10 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 
-from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
+from tests import SiCKRAGETestDBCase
 
 from sickbeard import show_name_helpers, scene_exceptions, common, name_cache
-from sickbeard import db
+import db
 from sickbeard.tv import TVShow as Show
 
 

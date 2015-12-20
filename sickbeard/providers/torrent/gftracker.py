@@ -22,16 +22,15 @@ import logging
 import re
 import traceback
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
-from sickrage.helper.exceptions import AuthException
+from sickbeard.exceptions import AuthException
 
 
-class GFTrackerProvider(TorrentProvider):
+class GFTrackerProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "GFTracker")
+        super(GFTrackerProvider, self).__init__("GFTracker")
 
         self.supportsBacklog = True
 
@@ -47,7 +46,7 @@ class GFTrackerProvider(TorrentProvider):
                      'download': 'https://www.thegft.org/%s',
                      }
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.cookies = None
 
@@ -69,7 +68,7 @@ class GFTrackerProvider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         # Save cookies from response
         self.cookies = self.headers.get('Set-Cookie')
 
@@ -98,7 +97,7 @@ class GFTrackerProvider(TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (self.categories, search_string)
+                searchURL = self.urls['search'] % (self.categories, search_string)
                 logging.debug("Search URL: %s" % searchURL)
 
                 # Set cookies from response
@@ -131,7 +130,7 @@ class GFTrackerProvider(TorrentProvider):
                                 else:
                                     title = cells[1].find("a")['title']
 
-                                download_url = self.urls[b'download'] % (link[b'href'])
+                                download_url = self.urls['download'] % (link[b'href'])
                                 seeders = int(shares[0])
                                 leechers = int(shares[1])
 

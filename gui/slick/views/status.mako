@@ -1,9 +1,9 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickbeard
-    from sickbeard import helpers
+    import helpers
     from sickbeard.show_queue import ShowQueueActions
-    from sickrage.helper.common import dateTimeFormat
+    from common import dateTimeFormat
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/status.js"></script>
@@ -57,7 +57,7 @@
                % endif
                % if scheduler == 'backlogSearchScheduler':
                    <% searchQueue = getattr(sickbeard, 'searchQueueScheduler') %>
-                   <% BLSpaused = searchQueue.action.is_backlog_paused() %>
+                   <% BLSpaused = searchQueue.callback.is_backlog_paused() %>
                    <% del searchQueue %>
                    % if BLSpaused:
                <td>Paused</td>
@@ -69,13 +69,13 @@
                % endif
                % if scheduler == 'backlogSearchScheduler':
                    <% searchQueue = getattr(sickbeard, 'searchQueueScheduler') %>
-                   <% BLSinProgress = searchQueue.action.is_backlog_in_progress() %>
+                   <% BLSinProgress = searchQueue.callback.is_backlog_in_progress() %>
                    <% del searchQueue %>
                    % if BLSinProgress:
                <td>True</td>
                    % else:
                        % try:
-                       <% amActive = service.action.amActive %>
+                       <% amActive = service.callback.amActive %>
                <td>${amActive}</td>
                        % except Exception:
                <td>N/A</td>
@@ -83,7 +83,7 @@
                    % endif
                % else:
                    % try:
-                   <% amActive = service.action.amActive %>
+                   <% amActive = service.callback.amActive %>
                <td>${amActive}</td>
                    % except Exception:
                <td>N/A</td>
@@ -122,39 +122,39 @@
             </tr>
         </thead>
         <tbody>
-            % if sickbeard.showQueueScheduler.action.currentItem is not None:
+            % if sickbeard.showQueue.currentItem is not None:
                 <tr>
                     % try:
-                        <% showindexerid = sickbeard.showQueueScheduler.action.currentItem.show.indexerid %>
+                        <% showindexerid = sickbeard.showQueue.currentItem.show.indexerid %>
                         <td>${showindexerid}</td>
                     % except Exception:
                         <td></td>
                     % endtry
                     % try:
-                        <% showname = sickbeard.showQueueScheduler.action.currentItem.show.name %>
+                        <% showname = sickbeard.showQueue.currentItem.show.name %>
                         <td>${showname}</td>
                     % except Exception:
-                        % if sickbeard.showQueueScheduler.action.currentItem.action_id == ShowQueueActions.ADD:
-                            <td>${sickbeard.showQueueScheduler.action.currentItem.showDir}</td>
+                        % if sickbeard.showQueue.currentItem.action_id == ShowQueueActions.ADD:
+                            <td>${sickbeard.showQueue.currentItem.showDir}</td>
                         % else:
                             <td></td>
                         % endif
                     % endtry
-                    <td>${sickbeard.showQueueScheduler.action.currentItem.inProgress}</td>
-                    % if sickbeard.showQueueScheduler.action.currentItem.priority == 10:
+                        <td>${sickbeard.showQueue.currentItem.inProgress}</td>
+                        % if sickbeard.showQueue.currentItem.priority == 10:
                         <td>LOW</td>
-                    % elif sickbeard.showQueueScheduler.action.currentItem.priority == 20:
+                        % elif sickbeard.showQueue.currentItem.priority == 20:
                         <td>NORMAL</td>
-                    % elif sickbeard.showQueueScheduler.action.currentItem.priority == 30:
+                        % elif sickbeard.showQueue.currentItem.priority == 30:
                         <td>HIGH</td>
                     % else:
-                        <td>sickbeard.showQueueScheduler.action.currentItem.priority</td>
+                            <td>sickbeard.showQueue.currentItem.priority</td>
                     % endif
-                    <td>${sickbeard.showQueueScheduler.action.currentItem.added.strftime(dateTimeFormat)}</td>
-                    <td>${ShowQueueActions.names[sickbeard.showQueueScheduler.action.currentItem.action_id]}</td>
+                        <td>${sickbeard.showQueue.currentItem.added.strftime(dateTimeFormat)}</td>
+                        <td>${ShowQueueActions.names[sickbeard.showQueue.currentItem.action_id]}</td>
                 </tr>
             % endif
-            % for item in sickbeard.showQueueScheduler.action.queue:
+            % for item in sickbeard.showQueue.queue:
                 <tr>
                     % try:
                         <% showindexerid = item.show.indexerid %>

@@ -22,14 +22,13 @@ from __future__ import unicode_literals
 import logging
 from urllib import quote_plus
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class BitCannonProvider(TorrentProvider):
+class BitCannonProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "BitCannon")
+        super(BitCannonProvider, self).__init__("BitCannon")
 
         self.supportsBacklog = True
         self.public = True
@@ -51,7 +50,7 @@ class BitCannonProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        trackers = (self.getURL(self.urls[b'trackers'], json=True) or {}).get('Trackers', [])
+        trackers = (self.getURL(self.urls['trackers'], json=True) or {}).get('Trackers', [])
         if not trackers:
             logging.info('Could not get tracker list from BitCannon, aborting search')
             return results
@@ -59,7 +58,7 @@ class BitCannonProvider(TorrentProvider):
         for mode in search_strings.keys():
             logging.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
-                searchURL = self.urls[b'search'] + search_string
+                searchURL = self.urls['search'] + search_string
                 logging.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL, json=True)
                 for item in data or []:

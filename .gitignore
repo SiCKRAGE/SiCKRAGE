@@ -1,30 +1,33 @@
 # SR Travis-CI Files #
 ######################
 /.travis.yml
+
 # SR Markdown Files  #
 ######################
 /contributing.md
-/readme.md
+/README.md
+
 #  SR User Related   #
 ######################
 /cache/
 /Logs/
 /data/
-restore/
-backup*/
-cache.db*
-config.ini*
-sickbeard.db*
-failed.db*
-autoProcessTV.cfg
-server.crt
-server.key
+/restore/
+/backup*/
+/cache.db*
+/config.ini*
+/sickbeard.db*
+/sickrage.db*
+/failed.db*
+/autoProcessTV.cfg
+/server.crt
+/server.key
 
 #  SR Test Related   #
 ######################
 /tests/Logs/
 /tests/cache/
-/tests/sickbeard.db*
+/tests/sickrage.db*
 /tests/cache.db*
 /tests/failed.db
 /tests/data/
@@ -46,7 +49,6 @@ server.key
 *.sw?
 Session.vim
 .ropeproject/*
-*.iml
 .idea
 *.ipr
 .settings/*
@@ -62,10 +64,6 @@ Thumbs.db
 .directory
 *~
 *.torrent
-
-# Unrar Executable   #
-######################
-lib/unrar2/UnRAR.exe
 
 # Bower #
 ######################

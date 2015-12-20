@@ -24,18 +24,17 @@ import logging
 import re
 import urllib
 
-from providers.nzb import NZBProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
-
-class BinSearchProvider(NZBProvider):
+class BinSearchProvider(providers.NZBProvider):
     def __init__(self):
-        NZBProvider.__init__(self, "BinSearch")
+        super(BinSearchProvider, self).__init__("BinSearch")
 
         self.public = True
         self.cache = BinSearchCache(self)
         self.urls = {'base_url': 'https://www.binsearch.info/'}
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
 
 class BinSearchCache(tvcache.TVCache):

@@ -19,21 +19,15 @@ import datetime
 import logging
 import urllib
 
-from providers.torrent import TorrentProvider
-from sickbeard import classes
+import classes
+from sickbeard import providers
 from sickbeard import tvcache
-from sickrage.helper.exceptions import AuthException
-
-try:
-    import json
-except ImportError:
-    import simplejson as json
+from sickbeard.exceptions import AuthException
 
 
-class HDBitsProvider(TorrentProvider):
+class HDBitsProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "HDBits")
+        super(HDBitsProvider, self).__init__("HDBits")
 
         self.supportsBacklog = True
 
@@ -48,7 +42,7 @@ class HDBitsProvider(TorrentProvider):
                      'rss': 'https://hdbits.org/api/torrents',
                      'download': 'https://hdbits.org/download.php?'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
     def _checkAuth(self):
 
@@ -80,7 +74,7 @@ class HDBitsProvider(TorrentProvider):
         if title:
             title = self._clean_title_from_provider(title)
 
-        url = self.urls[b'download'] + urllib.urlencode({'id': item[b'id'], 'passkey': self.passkey})
+        url = self.urls['download'] + urllib.urlencode({'id': item[b'id'], 'passkey': self.passkey})
 
         return title, url
 
@@ -93,7 +87,7 @@ class HDBitsProvider(TorrentProvider):
 
         self._checkAuth()
 
-        parsedJSON = self.getURL(self.urls[b'search'], post_data=search_params, json=True)
+        parsedJSON = self.getURL(self.urls['search'], post_data=search_params, json=True)
         if not parsedJSON:
             return []
 

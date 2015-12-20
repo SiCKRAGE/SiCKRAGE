@@ -21,20 +21,20 @@ from __future__ import unicode_literals
 import logging
 from urllib import quote_plus
 
-from providers.torrent import TorrentProvider
-from sickbeard import helpers
+import helpers
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class TORRENTPROJECTProvider(TorrentProvider):
+class TORRENTPROJECTProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, "TorrentProject")
+        super(TORRENTPROJECTProvider, self).__init__("TorrentProject")
 
         self.supportsBacklog = True
         self.public = True
         self.ratio = 0
-        self.urls = {'api': 'https://torrentproject.se/',}
-        self.url = self.urls[b'api']
+        self.urls = {'api': 'https://torrentproject.se/'}
+        self.url = self.urls['api']
 
         self.minseed = None
         self.minleech = None
@@ -51,7 +51,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'api'] + "?s=%s&out=json&filter=2101&num=150" % quote_plus(
+                searchURL = self.urls['api'] + "?s=%s&out=json&filter=2101&num=150" % quote_plus(
                         search_string.encode('utf-8'))
 
                 logging.debug("Search URL: %s" % searchURL)
@@ -79,7 +79,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
                         assert seeders < 10
                         assert mode is not 'RSS'
                         logging.debug("Torrent has less than 10 seeds getting dyn trackers: " + title)
-                        trackerUrl = self.urls[b'api'] + "" + t_hash + "/trackers_json"
+                        trackerUrl = self.urls['api'] + "" + t_hash + "/trackers_json"
                         jdata = self.getURL(trackerUrl, json=True)
                         assert jdata is not "maintenance"
                         download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "".join(

@@ -24,14 +24,14 @@ from __future__ import unicode_literals
 import os.path
 import sys
 
-from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
+from tests import SiCKRAGETestCase
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 
-from sickbeard import common
+import common
 
 
 class QualityTests(SiCKRAGETestCase):

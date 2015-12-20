@@ -27,8 +27,8 @@ import urllib
 from dateutil import parser
 
 import sickbeard
-from sickbeard.common import USER_AGENT, Quality
-from sickrage.helper.common import dateFormat, dateTimeFormat
+from common import USER_AGENT, Quality
+from common import dateFormat, dateTimeFormat
 
 
 class SickBeardURLopener(urllib.FancyURLopener):
@@ -151,7 +151,7 @@ class NZBSearchResult(SearchResult):
     def __init__(self, episodes):
         super(NZBSearchResult, self).__init__(episodes)
         self.resultType = "nzb"
-
+        self.provider = self
 
 class NZBDataSearchResult(SearchResult):
     """
@@ -161,7 +161,7 @@ class NZBDataSearchResult(SearchResult):
     def __init__(self, episodes):
         super(NZBDataSearchResult, self).__init__(episodes)
         self.resultType = "nzbdata"
-
+        self.provider = self
 
 class TorrentSearchResult(SearchResult):
     """
@@ -171,7 +171,7 @@ class TorrentSearchResult(SearchResult):
     def __init__(self, episodes):
         super(TorrentSearchResult, self).__init__(episodes)
         self.resultType = "torrent"
-
+        self.provider = self
 
 class AllShowsListUI(object):
     """
@@ -295,8 +295,9 @@ class ErrorViewer(object):
     def add(self, error, ui=False):
         self.errors +=[(error, UIError(error))[ui]]
 
-    def clear(self):
-        self.errors = []
+    @classmethod
+    def clear(cls):
+        cls.errors = []
 
     def get(self):
         return self.errors
@@ -311,8 +312,9 @@ class WarningViewer(object):
     def add(self, error, ui=False):
         self.errors +=[(error, UIWarning(error))[ui]]
 
-    def clear(self):
-        self.errors = []
+    @classmethod
+    def clear(cls):
+        cls.errors = []
 
     def get(self):
         return self.errors

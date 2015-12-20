@@ -18,28 +18,19 @@
 
 from __future__ import unicode_literals
 
+import base64
 import httplib
+import json
+import logging
+import socket
+import time
 import urllib
 import urllib2
-import socket
-import base64
-import time
+import xml
 
 import sickbeard
-import logging
-from sickbeard import common
-from sickrage.helper.exceptions import ex
-from sickrage.helper.encoding import ss
-
-try:
-    import xml.etree.cElementTree as etree
-except ImportError:
-    import xml.etree.ElementTree as etree
-
-try:
-    import json
-except ImportError:
-    import simplejson as json
+from common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
+    NOTIFY_GIT_UPDATE
 
 
 class KODINotifier:
@@ -82,9 +73,7 @@ class KODINotifier:
         # revert back to default socket timeout
         socket.setdefaulttimeout(sickbeard.SOCKET_TIMEOUT)
 
-        if result:
-            return result[b"result"][b"version"]
-        else:
+        if not result:
             # fallback to legacy HTTPAPI method
             testCommand = {'command': 'Help'}
             request = self._send_to_kodi(testCommand, host, username, password)
@@ -94,6 +83,7 @@ class KODINotifier:
             else:
                 return False
 
+        return result[b"result"][b"version"]
     def _notify_kodi(self, message, title="SiCKRAGE", host=None, username=None, password=None, force=False):
         """Internal wrapper for the notify_snatch and notify_download functions
 
@@ -235,14 +225,14 @@ class KODINotifier:
                 base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
                 authheader = "Basic %s" % base64string
                 req.add_header("Authorization", authheader)
-                logging.debug("Contacting KODI (with auth header) via url: " + ss(url))
+                logging.debug("Contacting KODI (with auth header) via url: " + url)
             else:
-                logging.debug("Contacting KODI via url: " + ss(url))
+                logging.debug("Contacting KODI via url: " + url)
 
             try:
                 response = urllib2.urlopen(req)
             except (httplib.BadStatusLine, urllib2.URLError) as e:
-                logging.debug("Couldn't contact KODI HTTP at %r : %r" % (url, ex(e)))
+                logging.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
                 return False
 
             result = response.read().decode(sickbeard.SYS_ENCODING)
@@ -252,7 +242,7 @@ class KODINotifier:
             return result
 
         except Exception as e:
-            logging.debug("Couldn't contact KODI HTTP at %r : %r" % (url, ex(e)))
+            logging.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
             return False
 
     def _update_library(self, host=None, showName=None):
@@ -280,9 +270,9 @@ class KODINotifier:
         if showName:
             logging.debug("Updating library in KODI via HTTP method for show " + showName)
 
-            pathSql = 'select path.strPath from path, tvshow, tvshowlinkpath where ' \
-                      'tvshow.c00 = "%s" and tvshowlinkpath.idShow = tvshow.idShow ' \
-                      'and tvshowlinkpath.idPath = path.idPath' % (showName)
+            pathSql = u'select path.strPath from path, tvshow, tvshowlinkpath where ' \
+                      u'tvshow.c00 = "{0:s}" and tvshowlinkpath.idShow = tvshow.idShow ' \
+                      u'and tvshowlinkpath.idPath = path.idPath'.format(showName)
 
             # use this to get xml back for the path lookups
             xmlCommand = {
@@ -306,9 +296,9 @@ class KODINotifier:
 
             encSqlXML = urllib.quote(sqlXML, ':\\/<>')
             try:
-                et = etree.fromstring(encSqlXML)
+                et = xml.etree.fromstring(encSqlXML)
             except SyntaxError as e:
-                logging.error("Unable to parse XML returned from KODI: {}".format(ex(e)))
+                logging.error("Unable to parse XML returned from KODI: {}".format(e))
                 return False
 
             paths = et.findall('.//field')
@@ -381,15 +371,15 @@ class KODINotifier:
                 base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
                 authheader = "Basic %s" % base64string
                 req.add_header("Authorization", authheader)
-                logging.debug("Contacting KODI (with auth header) via url: " + ss(url))
+                logging.debug("Contacting KODI (with auth header) via url: " + url)
             else:
-                logging.debug("Contacting KODI via url: " + ss(url))
+                logging.debug("Contacting KODI via url: " + url)
 
             try:
                 response = urllib2.urlopen(req)
             except (httplib.BadStatusLine, urllib2.URLError) as e:
                 if sickbeard.KODI_ALWAYS_ON:
-                    logging.warning("Error while trying to retrieve KODI API version for " + host + ": {}".format(ex(e)))
+                    logging.warning("Error while trying to retrieve KODI API version for " + host + ": {}".format(e))
                 return False
 
             # parse the json result
@@ -404,7 +394,7 @@ class KODINotifier:
 
         except IOError as e:
             if sickbeard.KODI_ALWAYS_ON:
-                logging.warning("Warning: Couldn't contact KODI JSON API at " + ss(url) + " {}".format(ex(e)))
+                logging.warning("Warning: Couldn't contact KODI JSON API at " + url + " {}".format(e))
             return False
 
     def _update_library_json(self, host=None, showName=None):
@@ -519,20 +509,20 @@ class KODINotifier:
 
     def notify_snatch(self, ep_name):
         if sickbeard.KODI_NOTIFY_ONSNATCH:
-            self._notify_kodi(ep_name, common.notifyStrings[common.NOTIFY_SNATCH])
+            self._notify_kodi(ep_name, notifyStrings[NOTIFY_SNATCH])
 
     def notify_download(self, ep_name):
         if sickbeard.KODI_NOTIFY_ONDOWNLOAD:
-            self._notify_kodi(ep_name, common.notifyStrings[common.NOTIFY_DOWNLOAD])
+            self._notify_kodi(ep_name, notifyStrings[NOTIFY_DOWNLOAD])
 
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.KODI_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._notify_kodi(ep_name + ": " + lang, common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD])
+            self._notify_kodi(ep_name + ": " + lang, notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD])
 
     def notify_git_update(self, new_version="??"):
         if sickbeard.USE_KODI:
-            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
+            title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notify_kodi(update_text + new_version, title)
 
     def test_notify(self, host, username, password):

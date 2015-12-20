@@ -33,7 +33,7 @@ except ImportError:
 
 import sickbeard
 
-from sickbeard import common
+import common
 
 
 class ProwlNotifier:

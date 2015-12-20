@@ -28,15 +28,14 @@ import urllib
 
 import requests
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class LibertaliaProvider(TorrentProvider):
+class LibertaliaProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "Libertalia")
+        super(LibertaliaProvider, self).__init__("Libertalia")
 
         self.supportsBacklog = True
 

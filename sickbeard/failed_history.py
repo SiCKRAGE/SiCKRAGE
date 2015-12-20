@@ -24,11 +24,9 @@ import logging
 import re
 import urllib
 
+import common
 import db
-from sickbeard.common import Quality
-from sickbeard.common import WANTED, FAILED
-from sickrage.helper.encoding import ss
-from sickrage.helper.exceptions import EpisodeNotFoundException, ex
+from sickbeard.exceptions import EpisodeNotFoundException
 from sickrage.show.History import History
 
 
@@ -40,7 +38,7 @@ def prepareFailedName(release):
         fixed = fixed.rpartition(".")[0]
 
     fixed = re.sub("[\.\-\+\ ]", "_", fixed)
-    fixed = ss(fixed)
+    fixed = fixed
 
     return fixed
 
@@ -53,7 +51,7 @@ def logFailed(release):
     release = prepareFailedName(release)
 
     myDB = db.DBConnection('failed.db')
-    sql_results = myDB.select("SELECT * FROM history WHERE RELEASE=?", [release])
+    sql_results = myDB.select("SELECT * FROM history WHERE release=?", [release])
 
     if len(sql_results) == 0:
         logging.warning(
@@ -91,7 +89,7 @@ def logSuccess(release):
     release = prepareFailedName(release)
 
     myDB = db.DBConnection('failed.db')
-    myDB.action("DELETE FROM history WHERE RELEASE=?", [release])
+    myDB.action("DELETE FROM history WHERE release=?", [release])
 
 
 def hasFailed(release, size, provider="%"):
@@ -112,8 +110,7 @@ def hasFailed(release, size, provider="%"):
 
     myDB = db.DBConnection('failed.db')
     sql_results = myDB.select(
-            "SELECT * FROM failed WHERE RELEASE=? AND size=? AND provider LIKE ?",
-            [release, size, provider])
+            "SELECT * FROM failed WHERE release=? AND size=? AND provider LIKE ?", [release, size, provider])
 
     return (len(sql_results) > 0)
 
@@ -134,11 +131,11 @@ def revertEpisode(epObj):
                 epObj.status = history_eps[epObj.episode][b'old_status']
             else:
                 logging.warning("WARNING: Episode not found in history. Setting it back to WANTED")
-                epObj.status = WANTED
+                epObj.status = common.WANTED
                 epObj.saveToDB()
 
     except EpisodeNotFoundException as e:
-        logging.warning("Unable to create episode, please set its status manually: {}".format(ex(e)))
+        logging.warning("Unable to create episode, please set its status manually: {}".format(e))
 
 
 def markFailed(epObj):
@@ -152,12 +149,12 @@ def markFailed(epObj):
 
     try:
         with epObj.lock:
-            quality = Quality.splitCompositeStatus(epObj.status)[1]
-            epObj.status = Quality.compositeStatus(FAILED, quality)
+            quality = common.Quality.splitCompositeStatus(epObj.status)[1]
+            epObj.status = common.Quality.compositeStatus(common.FAILED, quality)
             epObj.saveToDB()
 
     except EpisodeNotFoundException as e:
-        logging.warning("Unable to get episode, please set its status manually: {}".format(ex(e)))
+        logging.warning("Unable to get episode, please set its status manually: {}".format(e))
 
     return log_str
 
@@ -199,7 +196,7 @@ def deleteLoggedSnatch(release, size, provider):
     release = prepareFailedName(release)
 
     myDB = db.DBConnection('failed.db')
-    myDB.action("DELETE FROM history WHERE RELEASE=? AND size=? AND provider=?",
+    myDB.action("DELETE FROM history WHERE release=? AND size=? AND provider=?",
                 [release, size, provider])
 
 
@@ -227,7 +224,7 @@ def findRelease(epObj):
             epObj.show.indexerid) + " AND season=" + str(epObj.season) + " AND episode=" + str(epObj.episode) + ")")
 
     # Search for release in snatch history
-    results = myDB.select("SELECT RELEASE, provider, DATE FROM history WHERE showid=? AND season=? AND episode=?",
+    results = myDB.select("SELECT release, provider, DATE FROM history WHERE showid=? AND season=? AND episode=?",
                           [epObj.show.indexerid, epObj.season, epObj.episode])
 
     for result in results:
@@ -236,7 +233,7 @@ def findRelease(epObj):
         date = result[b"date"]
 
         # Clear any incomplete snatch records for this release if any exist
-        myDB.action("DELETE FROM history WHERE RELEASE=? AND DATE!=?", [release, date])
+        myDB.action("DELETE FROM history WHERE release=? AND DATE!=?", [release, date])
 
         # Found a previously failed release
         logging.debug("Failed release found for season (%s): (%s)" % (epObj.season, result[b"release"]))

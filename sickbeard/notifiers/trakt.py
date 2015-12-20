@@ -18,9 +18,9 @@
 
 from __future__ import unicode_literals
 
-import sickbeard
 import logging
-from sickrage.helper.exceptions import ex
+
+import sickbeard
 
 from sickbeard.trakt import TraktAPI, traktException, traktServerBusy, traktAuthException
 
@@ -87,7 +87,7 @@ class TraktNotifier:
                 trakt_api.traktRequest("sync/collection", data, method='POST')
 
             except (traktException, traktAuthException, traktServerBusy) as e:
-                logging.warning("Could not connect to Trakt service: %s" % ex(e))
+                logging.warning("Could not connect to Trakt service: %s" % e)
 
     def update_watchlist(self, show_obj=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
 
@@ -166,7 +166,7 @@ class TraktNotifier:
                 trakt_api.traktRequest(trakt_url, data, method='POST')
 
             except (traktException, traktAuthException, traktServerBusy) as e:
-                logging.warning("Could not connect to Trakt service: %s" % ex(e))
+                logging.warning("Could not connect to Trakt service: %s" % e)
                 return False
 
         return True
@@ -233,8 +233,8 @@ class TraktNotifier:
             else:
                 return "Test notice sent successfully to Trakt"
         except (traktException, traktAuthException, traktServerBusy) as e:
-            logging.warning("Could not connect to Trakt service: %s" % ex(e))
-            return "Test notice failed to Trakt: %s" % ex(e)
+            logging.warning("Could not connect to Trakt service: %s" % e)
+            return "Test notice failed to Trakt: %s" % e
 
 
 notifier = TraktNotifier

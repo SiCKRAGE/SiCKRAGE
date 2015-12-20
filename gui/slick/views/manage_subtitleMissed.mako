@@ -1,9 +1,9 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    from sickbeard import subtitles
+    from sickbeard import subtitle_searcher
     import datetime
     import sickbeard
-    from sickbeard import common
+    import common
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/manageSubtitleMissed.js?${sbPID}"></script>
@@ -16,7 +16,7 @@
     <h1 class="title">${title}</h1>
 % endif
 % if whichSubs:
-<% subsLanguage = subtitles.fromietf(whichSubs).name if not whichSubs == 'all' else 'All' %>
+    <% subsLanguage = subtitle_searcher.fromietf(whichSubs).name if not whichSubs == 'all' else 'All' %>
 % endif
 % if not whichSubs or (whichSubs and not ep_counts):
 
@@ -28,7 +28,7 @@
 <form action="${srRoot}/manage/subtitleMissed" method="get">
 Manage episodes without <select name="whichSubs" class="form-control form-control-inline input-sm">
 <option value="all">All</option>
-<% sub_langs = [subtitles.fromietf(x) for x in subtitles.wantedLanguages()] %>
+    <% sub_langs = [subtitle_searcher.fromietf(x) for x in subtitle_searcher.wantedLanguages()] %>
 % for sub_lang in sub_langs:
 <option value="${sub_lang.opensubtitles}">${sub_lang.name}</option>
 % endfor
@@ -45,8 +45,8 @@ subtitles
 <br>
 Download missed subtitles for selected episodes <input class="btn btn-inline" type="submit" value="Go" />
 <div>
-    <button type="button" class="btn btn-xs selectAllShows">Select all</a></button>
-    <button type="button" class="btn btn-xs unselectAllShows">Clear all</a></button>
+    <button type="button" class="btn btn-xs selectAllShows"><a>Select all</a></button>
+    <button type="button" class="btn btn-xs unselectAllShows"><a>Clear all</a></button>
 </div>
 <br>
 <table class="sickbeardTable manageTable" cellspacing="1" border="0" cellpadding="0">

@@ -18,15 +18,13 @@
 
 from __future__ import unicode_literals
 
+import logging
 import os
-import sickbeard
-
 from urllib import urlencode
 from urllib2 import Request, urlopen, HTTPError
 
-import logging
-from sickrage.helper.encoding import ek
-from sickrage.helper.exceptions import ex
+import sickbeard
+
 
 
 class pyTivoNotifier:
@@ -70,7 +68,7 @@ class pyTivoNotifier:
 
         showPath = ep_obj.show.location
         showName = ep_obj.show.name
-        rootShowAndSeason = ek(os.path.dirname, ep_obj.location)
+        rootShowAndSeason = os.path.dirname(ep_obj.location)
         absPath = ep_obj.location
 
         # Some show names have colons in them which are illegal in a path location, so strip them out.
@@ -101,7 +99,7 @@ class pyTivoNotifier:
                 logging.error("pyTivo notification: Error, the server couldn't fulfill the request - " + e.code)
             return False
         except Exception as e:
-            logging.error("PYTIVO: Unknown exception: {}".format(ex(e)))
+            logging.error("PYTIVO: Unknown exception: {}".format(e))
             return False
         else:
             logging.info("pyTivo notification: Successfully requested transfer of file")

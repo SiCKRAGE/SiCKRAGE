@@ -24,11 +24,11 @@ import logging
 import urllib
 from datetime import datetime
 
-import sickbeard
-from providers.nzb import NZBProvider
-from sickbeard import classes
-from sickbeard import show_name_helpers
-from sickbeard import tvcache
+from classes import Proper
+from show_name_helpers import makeSceneSeasonSearchString, makeSceneSearchString
+from sickbeard import USENET_RETENTION
+from sickbeard.providers import NZBProvider
+from tvcache import TVCache
 
 
 class OmgwtfnzbsProvider(NZBProvider):
@@ -40,7 +40,7 @@ class OmgwtfnzbsProvider(NZBProvider):
         self.cache = OmgwtfnzbsCache(self)
 
         self.urls = {'base_url': 'https://omgwtfnzbs.org/'}
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.supportsBacklog = True
 
@@ -78,10 +78,10 @@ class OmgwtfnzbsProvider(NZBProvider):
             return True
 
     def _get_season_search_strings(self, ep_obj):
-        return [x for x in show_name_helpers.makeSceneSeasonSearchString(self.show, ep_obj)]
+        return [x for x in makeSceneSeasonSearchString(self.show, ep_obj)]
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
-        return [x for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
+        return [x for x in makeSceneSearchString(self.show, ep_obj)]
 
     def _get_title_and_url(self, item):
         return (item[b'release'], item[b'getnzb'])
@@ -102,7 +102,7 @@ class OmgwtfnzbsProvider(NZBProvider):
                   'api': self.api_key,
                   'eng': 1,
                   'catid': '19,20',  # SD,HD
-                  'retention': sickbeard.USENET_RETENTION,
+                  'retention': USENET_RETENTION,
                   'search': search}
 
         if retention or not params[b'retention']:
@@ -143,14 +143,14 @@ class OmgwtfnzbsProvider(NZBProvider):
                         result_date = None
 
                     if result_date:
-                        results.append(classes.Proper(title, url, result_date, self.show))
+                        results.append(Proper(title, url, result_date, self.show))
 
         return results
 
 
-class OmgwtfnzbsCache(tvcache.TVCache):
+class OmgwtfnzbsCache(TVCache):
     def __init__(self, provider_obj):
-        tvcache.TVCache.__init__(self, provider_obj)
+        TVCache.__init__(self, provider_obj)
         self.minTime = 20
 
     def _get_title_and_url(self, item):

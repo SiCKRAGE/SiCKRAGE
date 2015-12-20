@@ -34,7 +34,7 @@ from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 import sickbeard
 from sickbeard import tv
 from sickbeard.name_parser import parser
-from sickrage.helper.encoding import ek
+
 
 sickbeard.SYS_ENCODING = 'UTF-8'
 
@@ -221,7 +221,7 @@ class UnicodeTests(SiCKRAGETestDBCase):
 
     def _test_unicode(self, name, result):
         np = parser.NameParser(True, showObj=self.show)
-        parse_result = ek(np.parse, name)
+        parse_result = np.parse(name)
 
         # this shouldn't raise an exception
         repr(str(parse_result))
@@ -278,7 +278,7 @@ class ComboTests(SiCKRAGETestDBCase):
         for (name, result, which_regexes) in combination_test_cases:
             # Normalise the paths. Converts UNIX-style paths into Windows-style
             # paths when test is run on Windows.
-            self._test_combo(ek(os.path.normpath, name), result, which_regexes)
+            self._test_combo(os.path.normpath(name), result, which_regexes)
 
 
 class BasicTests(SiCKRAGETestDBCase):

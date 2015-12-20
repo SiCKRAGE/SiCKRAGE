@@ -22,15 +22,15 @@ from __future__ import unicode_literals
 import logging
 import urllib
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
+from sickbeard.exceptions import AuthException
 from sickbeard.helpers import mapIndexersToShow
-from sickrage.helper.exceptions import AuthException
 
 
-class TitansOfTVProvider(TorrentProvider):
+class TitansOfTVProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, 'TitansOfTV')
+        super(TitansOfTVProvider, self).__init__('TitansOfTV')
         self.supportsBacklog = True
 
         self.supportsAbsoluteNumbering = True
@@ -111,8 +111,7 @@ class TitansOfTVProvider(TorrentProvider):
 
         return results
 
-    @staticmethod
-    def _get_season_search_strings(ep_obj):
+    def _get_season_search_strings(self, ep_obj):
         search_params = {'limit': 100, b'season': 'Season %02d' % ep_obj.scene_season}
 
         if ep_obj.show.indexer == 1:
@@ -124,8 +123,7 @@ class TitansOfTVProvider(TorrentProvider):
 
         return [search_params]
 
-    @staticmethod
-    def _get_episode_search_strings(ep_obj, add_string=''):
+    def _get_episode_search_strings(self, ep_obj, add_string='', **kwargs):
 
         if not ep_obj:
             return [{}]

@@ -20,16 +20,14 @@
 from __future__ import unicode_literals
 
 import datetime
+import logging
 import os
 
+import common
 import sickbeard
-from sickbeard import tv
-from sickbeard import common
-import logging
+import tv
+from common import Quality, DOWNLOADED
 from sickbeard.name_parser.parser import NameParser
-from sickbeard.common import Quality, DOWNLOADED
-
-from sickrage.helper.encoding import ek
 
 name_presets = (
     '%SN - %Sx%0E - %EN',
@@ -131,7 +129,7 @@ def check_force_season_folders(pattern=None, multi=None, anime_type=None):
     if anime_type == None:
         anime_type = sickbeard.NAMING_ANIME
 
-    valid = not validate_name(pattern, None, anime_type, file_only=True)
+    valid = not validate_name(pattern=pattern, anime_type=anime_type, file_only=True)
 
     if multi != None:
         valid = valid or not validate_name(pattern, multi, anime_type, file_only=True)
@@ -152,7 +150,7 @@ def check_valid_naming(pattern=None, multi=None, anime_type=None):
         anime_type = sickbeard.NAMING_ANIME
 
     logging.debug("Checking whether the pattern " + pattern + " is valid for a single episode")
-    valid = validate_name(pattern, None, anime_type)
+    valid = validate_name(pattern=pattern, anime_type=anime_type)
 
     if multi != None:
         logging.debug("Checking whether the pattern " + pattern + " is valid for a multi episode")
@@ -208,7 +206,7 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
     new_name = ep.formatted_filename(pattern, multi, anime_type) + '.ext'
     new_path = ep.formatted_dir(pattern, multi)
     if not file_only:
-        new_name = ek(os.path.join, new_path, new_name)
+        new_name = os.path.join(new_path, new_name)
 
     if not new_name:
         logging.debug("Unable to create a name out of " + pattern)
@@ -224,7 +222,7 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
         logging.debug("Unable to parse " + new_name + ", not valid")
         return False
 
-    logging.debug("The name " + new_name + " parsed into " + str(result))
+    logging.debug("Parsed " + new_name + " into " + str(result))
 
     if abd or sports:
         if result.air_date != ep.airdate:

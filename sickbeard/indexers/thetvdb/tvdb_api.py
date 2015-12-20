@@ -19,33 +19,25 @@
 
 from __future__ import unicode_literals
 
-import StringIO
-import datetime as dt
 import functools
 import getpass
 import json
 import logging
 import os
-import re
 import tempfile
 import time
-import warnings
 import zipfile
+
 import requests
 import xmltodict
-
-try:
-    import xml.etree.cElementTree as ElementTree
-except ImportError:
-    import xml.etree.ElementTree as ElementTree
 
 try:
     import gzip
 except ImportError:
     gzip = None
 
-from dateutil.parser import parse
-from cachecontrol import CacheControl, caches
+import cachecontrol
+import cachecontrol.caches
 
 from tvdb_ui import BaseUI, ConsoleUI
 from tvdb_exceptions import (tvdb_error, tvdb_shownotfound, tvdb_showincomplete,
@@ -327,7 +319,7 @@ class Tvdb:
                  useZip=False,
                  dvdorder=False,
                  proxy=None,
-                 headers={},
+                 headers=None,
                  apitoken=None,
                  apiver=2):
 
@@ -403,6 +395,9 @@ class Tvdb:
             And only the main language xml is used, the actor and banner xml are lost.
         """
 
+        if headers is None:
+            headers = {}
+
         self.shows = ShowContainer()  # Holds all Show classes
         self.corrections = {}  # Holds show-name to show_id mapping
 
@@ -431,7 +426,7 @@ class Tvdb:
         self.config[b'apitoken'] = apitoken
 
         self.config[b'apiver'] = apiver
-        self.config[b'api'] = {apiver:{}}
+        self.config[b'api'] = {1: {}, 2: {}}
 
         if cache is True:
             self.config[b'cache_enabled'] = True
@@ -465,32 +460,64 @@ class Tvdb:
         if language not in self.config[b'valid_languages']:
             self.config[b'language'] = 'all'
 
-        # api-v2 urls
+        # api base urls
+        self.config[b'api'][1][b'base'] = "http://thetvdb.com"
         self.config[b'api'][2][b'base'] = "https://api-beta.thetvdb.com"
-        self.config[b'api'][2][b'login'] = '{base_url}/login'
-        self.config[b'api'][2][b'refresh'] = '{base_url}/refresh_token'
-        self.config[b'api'][2][b'getSeries'] = "{base_url}/search/series?name={name}"
 
         # api-v1 urls
-        self.config[b'api'][1][b'base'] = "http://thetvdb.com"
-        self.config[b'api'][1][b'getSeries'] = "{base_url}/api/GetSeries.php?seriesname={name}"
-        self.config[b'api'][1][b'epInfo'] = "{base_url}/api/{apikey}/series/{id}/all/{language}.xml"
-        self.config[b'api'][1][b'epInfo_zip'] = "{base_url}/api/{apikey}/series/{id}/all/{language}.zip"
-        self.config[b'api'][1][b'seriesInfo'] = "{base_url}/api/{apikey}/series/{id}/{language}.xml"
-        self.config[b'api'][1][b'actorsInfo'] = "{base_url}/api/{apikey}/series/{id}/actors.xml"
-        self.config[b'api'][1][b'seriesBanner'] = "{base_url}/api/{apikey}/series/{id}/banners.xml"
-        self.config[b'api'][1][b'artworkPrefix'] = "{base_url}/banners/{{}}"
-        self.config[b'api'][1][b'updates_all'] = "{base_url}/api/{apikey}/updates_all.zip"
-        self.config[b'api'][1][b'updates_month'] = "{base_url}/api/{apikey}/updates_month.zip"
-        self.config[b'api'][1][b'updates_week'] = "{base_url}/api/{apikey}/updates_week.zip"
-        self.config[b'api'][1][b'updates_day'] = "{base_url}/api/{apikey}/updates_day.zip"
+        self.config[b'api'][1][b'getSeries'] = "{base}/api/GetSeries.php?seriesname={{}}".format(
+            base=self.config[b'api'][1][b'base'])
+        self.config[b'api'][1][b'epInfo'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.xml".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][1][b'epInfo_zip'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.zip".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][1][b'seriesInfo'] = "{base}/api/{apikey}/series/{{}}/{{}}.xml".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][1][b'actorsInfo'] = "{base}/api/{apikey}/series/{{}}/actors.xml".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][1][b'seriesBanner'] = "{base}/api/{apikey}/series/{{}}/banners.xml".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][1][b'artworkPrefix'] = "{base}/banners/{{}}".format(base=self.config[b'api'][1][b'base'])
+        self.config[b'api'][1][b'updates_all'] = "{base}/api/{apikey}/updates_all.zip".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][1][b'updates_month'] = "{base}/api/{apikey}/updates_month.zip".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][1][b'updates_week'] = "{base}/api/{apikey}/updates_week.zip".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][1][b'updates_day'] = "{base}/api/{apikey}/updates_day.zip".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+
+        # api-v2 urls
+        self.config[b'api'][2][b'login'] = '{base}/login'.format(base=self.config[b'api'][2][b'base'])
+        self.config[b'api'][2][b'refresh'] = '{base}/refresh_token'.format(base=self.config[b'api'][2][b'base'])
+        self.config[b'api'][2][b'getSeries'] = "{base}/search/series?name={{}}".format(
+            base=self.config[b'api'][2][b'base'])
+        self.config[b'api'][2][b'epInfo'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.xml".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][2][b'epInfo_zip'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.zip".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][2][b'seriesInfo'] = "{base}/api/{apikey}/series/{{}}/{{}}.xml".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][2][b'actorsInfo'] = "{base}/api/{apikey}/series/{{}}/actors.xml".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][2][b'seriesBanner'] = "{base}/api/{apikey}/series/{{}}/banners.xml".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][2][b'artworkPrefix'] = "{base}/banners/{{}}".format(base=self.config[b'api'][1][b'base'])
+        self.config[b'api'][2][b'updates_all'] = "{base}/api/{apikey}/updates_all.zip".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][2][b'updates_month'] = "{base}/api/{apikey}/updates_month.zip".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][2][b'updates_week'] = "{base}/api/{apikey}/updates_week.zip".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config[b'api'][2][b'updates_day'] = "{base}/api/{apikey}/updates_day.zip".format(
+            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
 
     def _getTempDir(self):
         """Returns the [system temp dir]/thetvdb-u501 (or
         thetvdb-myuser)
         """
         if hasattr(os, 'getuid'):
-            uid = "u{}".format(os.getuid())
+            uid = os.getuid()
         else:
             # For Windows
             try:
@@ -504,14 +531,14 @@ class Tvdb:
         jwtResp = {'token': ''}
 
         if refresh and self.config[b'apitoken']:
-            jwtResp.update(**requests.post(self.config[b'url_refresh'],
-                                  headers={'Content-type': 'application/json'}
-                                  ).json())
+            jwtResp.update(**requests.post(self.config[b'api'][self.config[b'apiver']][b'refresh'],
+                                           headers={'Content-type': 'application/json'}
+                                           ).json())
         elif not self.config[b'apitoken']:
-            jwtResp.update(**requests.post(self.config[b'url_login'],
-                                  data=json.dumps(dict(apikey=self.config[b'apikey'])),
-                                  headers={'Content-type': 'application/json'}
-                                  ).json())
+            jwtResp.update(**requests.post(self.config[b'api'][self.config[b'apiver']][b'login'],
+                                           data=json.dumps(dict(apikey=self.config[b'apikey'])),
+                                           headers={'Content-type': 'application/json'}
+                                           ).json())
 
         if jwtResp.get('token'):
             self.config[b'apitoken'] = jwtResp[b'token']
@@ -535,9 +562,9 @@ class Tvdb:
             # get response from TVDB
             if self.config[b'cache_enabled']:
 
-                session = CacheControl(sess=self.config[b'session'],
-                                       cache=caches.FileCache(self.config[b'cache_location'], use_dir_lock=True),
-                                       cache_etags=False)
+                session = cachecontrol.CacheControl(sess=self.config[b'session'], cache=cachecontrol.caches.FileCache(
+                        self.config[b'cache_location'], use_dir_lock=True), cache_etags=False)
+
                 if self.config[b'proxy']:
                     log().debug("Using proxy for URL: {}".format(url))
                     session.proxies = {
@@ -565,22 +592,36 @@ class Tvdb:
         try:
             if 'application/zip' in resp.headers.get("Content-Type", ''):
                 try:
-                    log().debug("We recived a zip file unpacking now ...")
-                    return json.loads(json.dumps(xmltodict.parse(zipfile.ZipFile(resp.content))))
+                    from StringIO import StringIO
+                    log().debug("We received a zip file unpacking now ...")
+                    return json.loads(json.dumps(xmltodict.parse(
+                            zipfile.ZipFile(StringIO(resp.content)).read("{}.xml".format(language))))
+                    )
                 except zipfile.BadZipfile:
-                    raise tvdb_error("Bad zip file received from thetvdb.com, could not read it")
+                    raise tvdb_error("Bad zip file received from theTVDB.com, could not read it")
 
-            if self.config[b'apiver'] == 2:
+            try:
                 return resp.json()
-            return json.loads(json.dumps(xmltodict.parse(resp.content)))
+            except:
+                return json.loads(json.dumps(xmltodict.parse(resp.content)))
         except:pass
 
     def _getetsrc(self, url, params=None, language=None):
         """Loads a URL using caching, returns an ElementTree of the source
         """
+
+        def keys2lower(in_dict):
+            if type(in_dict) is dict:
+                out_dict = {}
+                for key, item in in_dict.items():
+                    out_dict[key.lower()] = keys2lower(item)
+                return out_dict
+            elif type(in_dict) is list:
+                return [keys2lower(obj) for obj in in_dict]
+            else:
+                return in_dict
         try:
-            result = self._loadUrl(url, params=params, language=language)
-            return map(lambda x:dict((k.lower(), v) for k, v in x.iteritems()), *result.values())
+            return keys2lower(self._loadUrl(url, params=params, language=language)).values()[0]
         except Exception, e:
             raise tvdb_error(e)
 
@@ -630,7 +671,7 @@ class Tvdb:
         """
         # series = series.encode("utf-8")
         log().debug("Searching for show {}".format(series))
-        return self._getetsrc(self.config[b'url_getSeries'].format(series))
+        return self._getetsrc(self.config[b'api'][self.config[b'apiver']][b'getSeries'].format(series))
 
     def _getSeries(self, series):
         """This searches TheTVDB.com for the series name,
@@ -676,7 +717,7 @@ class Tvdb:
         This interface will be improved in future versions.
         """
         log().debug('Getting season banners for {}'.format(sid))
-        bannersEt = self._getetsrc(self.config[b'url_seriesBanner'].format(sid))
+        bannersEt = self._getetsrc(self.config[b'api'][self.config[b'apiver']][b'seriesBanner'].format(sid))
 
         if not bannersEt:
             log().debug('Banners result returned zero')
@@ -707,7 +748,7 @@ class Tvdb:
                 if k.endswith("path"):
                     new_key = "_{}".format(k)
                     log().debug("Transforming {} to {}".format(k, new_key))
-                    new_url = self.config[b'url_artworkPrefix'].format(v)
+                    new_url = self.config[b'api'][self.config[b'apiver']][b'artworkPrefix'].format(v)
                     banners[btype][btype2][bid][new_key] = new_url
 
         self._setShowData(sid, "_banners", banners)
@@ -737,7 +778,7 @@ class Tvdb:
         data from the XML)
         """
         log().debug("Getting actors for {}".format(sid))
-        actorsEt = self._getetsrc(self.config[b'url_actorsInfo'].format(sid))
+        actorsEt = self._getetsrc(self.config[b'api'][self.config[b'apiver']][b'actorsInfo'].format(sid))
 
         if not actorsEt:
             log().debug('Actors result returned zero')
@@ -752,7 +793,7 @@ class Tvdb:
 
                 k = k.lower()
                 if k == "image":
-                    v = self.config[b'url_artworkPrefix'].format(v)
+                    v = self.config[b'api'][self.config[b'apiver']][b'artworkPrefix'].format(v)
                 else:
                     v = self._cleanData(v)
 
@@ -783,7 +824,7 @@ class Tvdb:
         # Parse show information
         log().debug('Getting all series data for {}'.format(sid))
         seriesInfoEt = self._getetsrc(
-                self.config[b'url_seriesInfo'].format(sid, getShowInLanguage)
+                self.config[b'api'][self.config[b'apiver']][b'seriesInfo'].format(sid, getShowInLanguage)
         )
 
         if not seriesInfoEt:
@@ -793,8 +834,8 @@ class Tvdb:
         # get series data
         for k, v in seriesInfoEt[b'series'].items():
             if v is not None:
-                if k in [b'banner', 'fanart', 'poster']:
-                    v = self.config[b'url_artworkPrefix'].format(v)
+                if k in ['banner', 'fanart', 'poster']:
+                    v = self.config[b'api'][self.config[b'apiver']][b'artworkPrefix'].format(v)
                 else:
                     v = self._cleanData(v)
 
@@ -813,9 +854,9 @@ class Tvdb:
             # Parse episode data
             log().debug('Getting all episodes of {}'.format(sid))
             if self.config[b'useZip']:
-                url = self.config[b'url_epInfo_zip'].format(sid, language)
+                url = self.config[b'api'][self.config[b'apiver']][b'epInfo_zip'].format(sid, language)
             else:
-                url = self.config[b'url_epInfo'].format(sid, language)
+                url = self.config[b'api'][self.config[b'apiver']][b'epInfo'].format(sid, language)
             epsEt = self._getetsrc(url, language=language)
 
             if not epsEt:
@@ -855,7 +896,7 @@ class Tvdb:
 
                     if v is not None:
                         if k == 'filename':
-                            v = self.config[b'url_artworkPrefix'].format(v)
+                            v = self.config[b'api'][self.config[b'apiver']][b'artworkPrefix'].format(v)
                         else:
                             v = self._cleanData(v)
 

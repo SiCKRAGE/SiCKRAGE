@@ -2,9 +2,10 @@
     import datetime
     import re
     import sickbeard
-    from sickbeard import network_timezones
-    from sickrage.show.Show import Show
+    import helpers
+    import network_timezones
     from time import time
+    from sickrage.show.Show import Show
 
     # resource module is unix only
     has_resource_module = True
@@ -31,7 +32,7 @@
         <meta name="theme-color" content="#333333">
         % endif
 
-        <title>SickRage - BRANCH:[${sickbeard.BRANCH}] - ${title}</title>
+        <title>SickRage - BRANCH:[${sickbeard.GIT_BRANCH}] - ${title}</title>
 
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -291,15 +292,19 @@
                 % endif
 
                 &nbsp;/&nbsp;<span class="footerhighlight">${ep_total}</span> Episodes Downloaded ${ep_percentage}
-                | Daily Search: <span class="footerhighlight">${str(sickbeard.dailySearchScheduler.timeLeft()).split('.')[0]}</span>
-                | Backlog Search: <span class="footerhighlight">${str(sickbeard.backlogSearchScheduler.timeLeft()).split('.')[0]}</span>
+                | Daily Search: <span
+                    class="footerhighlight">${str(sickbeard.SCHEDULER.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
+                | Backlog Search: <span
+                    class="footerhighlight">${str(sickbeard.SCHEDULER.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
 
                 <div>
                     % if has_resource_module:
-                    Memory used: <span class="footerhighlight">${sickbeard.helpers.pretty_filesize(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)}</span> |
+                        Memory used: <span
+                            class="footerhighlight">${helpers.pretty_filesize(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)}</span>
+                        |
                     % endif
                     Load time: <span class="footerhighlight">${"%.4f" % (time() - sbStartTime)}s</span> / Mako: <span class="footerhighlight">${"%.4f" % (time() - makoStartTime)}s</span> |
-                    Branch: <span class="footerhighlight">${sickbeard.BRANCH}</span> |
+                    Branch: <span class="footerhighlight">${sickbeard.GIT_BRANCH}</span> |
                     Now: <span class="footerhighlight">${datetime.datetime.now(network_timezones.sb_timezone)}</span>
                 </div>
             </div>

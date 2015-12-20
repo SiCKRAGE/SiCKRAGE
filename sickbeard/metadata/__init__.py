@@ -21,9 +21,9 @@
 from __future__ import unicode_literals
 
 import sys
-from sickbeard.metadata import kodi, kodi_12plus, mediabrowser, ps3, wdtv, tivo, mede8er, generic, helpers
+import kodi, kodi_12plus, mediabrowser, ps3, wdtv, tivo, mede8er, generic, metadata_helpers
 
-__all__ = ['generic', 'helpers', 'kodi', 'kodi_12plus', 'mediabrowser', 'ps3', 'wdtv', 'tivo', 'mede8er']
+__all__ = ['generic', 'metadata_helpers.py', 'kodi', 'kodi_12plus', 'mediabrowser', 'ps3', 'wdtv', 'tivo', 'mede8er']
 
 
 def available_generators():
@@ -41,10 +41,8 @@ def _getMetadataModule(name):
 
 def _getMetadataClass(name):
     module = _getMetadataModule(name)
-
     if not module:
         return None
-
     return module.metadata_class()
 
 
@@ -55,5 +53,4 @@ def get_metadata_generator_dict():
         if not cur_generator:
             continue
         result[cur_generator.name] = cur_generator
-
     return result

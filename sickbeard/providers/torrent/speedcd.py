@@ -21,14 +21,14 @@ from __future__ import unicode_literals
 import logging
 import re
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class SpeedCDProvider(TorrentProvider):
+class SpeedCDProvider(providers.TorrentProvider):
     def __init__(self):
 
-        TorrentProvider.__init__(self, "Speedcd")
+        super(SpeedCDProvider, self).__init__("Speedcd")
 
         self.supportsBacklog = True
 
@@ -45,7 +45,7 @@ class SpeedCDProvider(TorrentProvider):
                      'search': 'http://speed.cd/V3/API/API.php',
                      'download': 'http://speed.cd/download.php?torrent=%s'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.categories = {'Season': {'c14': 1}, 'Episode': {'c2': 1, 'c49': 1}, 'RSS': {'c14': 1, 'c2': 1, 'c49': 1}}
 
@@ -58,7 +58,7 @@ class SpeedCDProvider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -89,7 +89,7 @@ class SpeedCDProvider(TorrentProvider):
                 post_data = dict({'/browse.php?': None, 'cata': 'yes', 'jxt': 4, 'jxw': 'b', 'search': search_string},
                                  **self.categories[mode])
 
-                parsedJSON = self.getURL(self.urls[b'search'], post_data=post_data, json=True)
+                parsedJSON = self.getURL(self.urls['search'], post_data=post_data, json=True)
                 if not parsedJSON:
                     continue
 
@@ -104,7 +104,7 @@ class SpeedCDProvider(TorrentProvider):
                         continue
 
                     title = re.sub('<[^>]*>', '', torrent[b'name'])
-                    download_url = self.urls[b'download'] % (torrent[b'id'])
+                    download_url = self.urls['download'] % (torrent[b'id'])
                     seeders = int(torrent[b'seed'])
                     leechers = int(torrent[b'leech'])
                     # FIXME

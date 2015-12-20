@@ -23,14 +23,14 @@ import traceback
 
 import requests
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class FNTProvider(TorrentProvider):
+class FNTProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, "FNT")
+        super(FNTProvider, self).__init__("FNT")
 
         self.supportsBacklog = True
 
@@ -47,7 +47,7 @@ class FNTProvider(TorrentProvider):
                      'login': 'https://fnt.nu/account-login.php',
                      }
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
         self.search_params = {
             "afficher": 1, "c118": 1, "c129": 1, "c119": 1, "c120": 1, "c121": 1, "c126": 1,
             "c137": 1, "c138": 1, "c146": 1, "c122": 1, "c110": 1, "c109": 1, "c135": 1, "c148": 1,
@@ -65,7 +65,7 @@ class FNTProvider(TorrentProvider):
                         'submit': 'Se loguer'
                         }
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -94,7 +94,7 @@ class FNTProvider(TorrentProvider):
 
                 self.search_params[b'recherche'] = search_string
 
-                data = self.getURL(self.urls[b'search'], params=self.search_params)
+                data = self.getURL(self.urls['search'], params=self.search_params)
                 if not data:
                     continue
 
@@ -115,7 +115,7 @@ class FNTProvider(TorrentProvider):
                                 if link:
                                     try:
                                         title = link.text
-                                        download_url = self.urls[b'base_url'] + "/" + \
+                                        download_url = self.urls['base_url'] + "/" + \
                                                        row.find("a", href=re.compile(r"download\.php"))['href']
                                     except (AttributeError, TypeError):
                                         continue

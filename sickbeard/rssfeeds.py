@@ -20,16 +20,17 @@
 from __future__ import unicode_literals
 
 import logging
-import sickbeard
-from sickbeard.helpers import normalize_url
-from feedparser.api import parse
+
+import feedparser
+
+import helpers
 
 def getFeed(url, request_headers=None, handlers=None):
-    url = normalize_url(url)
+    url = helpers.normalize_url(url)
 
     try:
         try:
-            feed = parse(url, False, False, request_headers, handlers=handlers)
+            feed = feedparser.parse(url, False, False, request_headers, handlers=handlers)
             feed[b'entries']
             return feed
         except AttributeError:

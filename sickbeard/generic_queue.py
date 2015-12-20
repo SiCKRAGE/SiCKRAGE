@@ -32,17 +32,17 @@ class QueuePriorities:
 
 
 class GenericQueue(object):
-    def __init__(self):
-
+    def __init__(self, *args, **kwargs):
+        self.queue_name = "QUEUE"
+        self.lock = threading.Lock()
         self.currentItem = None
-
+        self.min_priority = 0
+        self.amActive = False
         self.queue = []
 
-        self.queue_name = "QUEUE"
-
-        self.min_priority = 0
-
-        self.lock = threading.Lock()
+    @property
+    def name(self):
+        return self.queue_name
 
     def pause(self):
         """Pauses this queue"""
@@ -73,6 +73,10 @@ class GenericQueue(object):
 
         :param force: Force queue processing (currently not implemented)
         """
+
+        if self.amActive:
+            return
+
         with self.lock:
             # only start a new task if one isn't already going
             if self.currentItem is None or not self.currentItem.isAlive():

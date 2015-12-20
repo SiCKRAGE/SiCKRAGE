@@ -22,9 +22,10 @@ from __future__ import unicode_literals
 
 import logging
 
+import db
+import helpers
 import sickbeard
-from sickbeard import db, helpers
-from adba.aniDBerrors import AniDBCommandTimeoutError
+from indexers.adba import AniDBCommandTimeoutError
 
 
 class BlackAndWhiteList(object):

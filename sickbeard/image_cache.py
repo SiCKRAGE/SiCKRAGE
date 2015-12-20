@@ -19,26 +19,23 @@
 
 from __future__ import unicode_literals
 
+import io
 import logging
 import os.path
 
-import sickbeard
-
-from sickbeard import helpers, logger
-from sickbeard.metadata.generic import GenericMetadata
-from sickrage.helper.encoding import ek
-from sickrage.helper.exceptions import ShowDirectoryNotFoundException
-
-from hachoir_parser import createParser
+from hachoir_core import config as hachoir_config
+from hachoir_core.stream import StringInputStream
 from hachoir_metadata import extractMetadata
-from hachoir_core.log import log
+from hachoir_parser import guessParser
 
-log.use_print = False
-
+import helpers
+import sickbeard
+from sickbeard.exceptions import ShowDirectoryNotFoundException
+from sickbeard.metadata.generic import GenericMetadata
 
 class ImageCache:
     def __init__(self):
-        pass
+        hachoir_config.quiet = True
 
     def __del__(self):
         pass
@@ -47,13 +44,13 @@ class ImageCache:
         """
         Builds up the full path to the image cache directory
         """
-        return ek(os.path.abspath, ek(os.path.join, sickbeard.CACHE_DIR, 'images'))
+        return os.path.abspath(os.path.join(sickbeard.CACHE_DIR, 'images'))
 
     def _thumbnails_dir(self):
         """
         Builds up the full path to the thumbnails image cache directory
         """
-        return ek(os.path.abspath, ek(os.path.join, self._cache_dir(), 'thumbnails'))
+        return os.path.abspath(os.path.join(self._cache_dir(), 'thumbnails'))
 
     def poster_path(self, indexer_id):
         """
@@ -63,7 +60,7 @@ class ImageCache:
         :return: a full path to the cached poster file for the given Indexer ID
         """
         poster_file_name = str(indexer_id) + '.poster.jpg'
-        return ek(os.path.join, self._cache_dir(), poster_file_name)
+        return os.path.join(self._cache_dir(), poster_file_name)
 
     def banner_path(self, indexer_id):
         """
@@ -73,7 +70,7 @@ class ImageCache:
         :return: a full path to the cached banner file for the given Indexer ID
         """
         banner_file_name = str(indexer_id) + '.banner.jpg'
-        return ek(os.path.join, self._cache_dir(), banner_file_name)
+        return os.path.join(self._cache_dir(), banner_file_name)
 
     def fanart_path(self, indexer_id):
         """
@@ -83,7 +80,7 @@ class ImageCache:
         :return: a full path to the cached fanart file for the given Indexer ID
         """
         fanart_file_name = str(indexer_id) + '.fanart.jpg'
-        return ek(os.path.join, self._cache_dir(), fanart_file_name)
+        return os.path.join(self._cache_dir(), fanart_file_name)
 
     def poster_thumb_path(self, indexer_id):
         """
@@ -93,7 +90,7 @@ class ImageCache:
         :return: a full path to the cached poster thumb file for the given Indexer ID
         """
         posterthumb_file_name = str(indexer_id) + '.poster.jpg'
-        return ek(os.path.join, self._thumbnails_dir(), posterthumb_file_name)
+        return os.path.join(self._thumbnails_dir(), posterthumb_file_name)
 
     def banner_thumb_path(self, indexer_id):
         """
@@ -103,7 +100,7 @@ class ImageCache:
         :return: a full path to the cached banner thumb file for the given Indexer ID
         """
         bannerthumb_file_name = str(indexer_id) + '.banner.jpg'
-        return ek(os.path.join, self._thumbnails_dir(), bannerthumb_file_name)
+        return os.path.join(self._thumbnails_dir(), bannerthumb_file_name)
 
     def has_poster(self, indexer_id):
         """
@@ -111,7 +108,7 @@ class ImageCache:
         """
         poster_path = self.poster_path(indexer_id)
         logging.debug("Checking if file " + str(poster_path) + " exists")
-        return ek(os.path.isfile, poster_path)
+        return os.path.isfile(poster_path)
 
     def has_banner(self, indexer_id):
         """
@@ -119,7 +116,7 @@ class ImageCache:
         """
         banner_path = self.banner_path(indexer_id)
         logging.debug("Checking if file " + str(banner_path) + " exists")
-        return ek(os.path.isfile, banner_path)
+        return os.path.isfile(banner_path)
 
     def has_fanart(self, indexer_id):
         """
@@ -127,7 +124,7 @@ class ImageCache:
         """
         fanart_path = self.fanart_path(indexer_id)
         logging.debug("Checking if file " + str(fanart_path) + " exists")
-        return ek(os.path.isfile, fanart_path)
+        return os.path.isfile(fanart_path)
 
     def has_poster_thumbnail(self, indexer_id):
         """
@@ -135,7 +132,7 @@ class ImageCache:
         """
         poster_thumb_path = self.poster_thumb_path(indexer_id)
         logging.debug("Checking if file " + str(poster_thumb_path) + " exists")
-        return ek(os.path.isfile, poster_thumb_path)
+        return os.path.isfile(poster_thumb_path)
 
     def has_banner_thumbnail(self, indexer_id):
         """
@@ -143,7 +140,7 @@ class ImageCache:
         """
         banner_thumb_path = self.banner_thumb_path(indexer_id)
         logging.debug("Checking if file " + str(banner_thumb_path) + " exists")
-        return ek(os.path.isfile, banner_thumb_path)
+        return os.path.isfile(banner_thumb_path)
 
     BANNER = 1
     POSTER = 2
@@ -159,36 +156,31 @@ class ImageCache:
         :return: BANNER, POSTER if it concluded one or the other, or None if the image was neither (or didn't exist)
         """
 
-        if not ek(os.path.isfile, path):
+        if not os.path.isfile(path):
             logging.warning("Couldn't check the type of " + str(path) + " cause it doesn't exist")
             return None
 
-        # use hachoir to parse the image for us
-        img_parser = createParser(path)
-        img_metadata = extractMetadata(img_parser)
+        with io.open(path, 'rb') as fh:
+            img_metadata = extractMetadata(guessParser(StringInputStream(fh.read())))
+            if not img_metadata:
+                logging.debug("Unable to get metadata from " + str(path) + ", not using your existing image")
+                return None
 
-        if not img_metadata:
-            logging.debug("Unable to get metadata from " + str(path) + ", not using your existing image")
-            return None
+            img_ratio = float(img_metadata.get('width', 0)) / float(img_metadata.get('height', 0))
 
-        img_ratio = float(img_metadata.get('width')) / float(img_metadata.get('height'))
+            # most posters are around 0.68 width/height ratio (eg. 680/1000)
+            if 0.55 < img_ratio < 0.8:
+                return self.POSTER
 
-        img_parser.stream._input.close()
+            # most banners are around 5.4 width/height ratio (eg. 758/140)
+            elif 5 < img_ratio < 6:
+                return self.BANNER
 
-        # most posters are around 0.68 width/height ratio (eg. 680/1000)
-        if 0.55 < img_ratio < 0.8:
-            return self.POSTER
-
-        # most banners are around 5.4 width/height ratio (eg. 758/140)
-        elif 5 < img_ratio < 6:
-            return self.BANNER
-
-        # most fanart are around 1.77777 width/height ratio (eg. 1280/720 and 1920/1080)
-        elif 1.7 < img_ratio < 1.8:
-            return self.FANART
-        else:
-            logging.warning("Image has size ratio of " + str(img_ratio) + ", unknown type")
-            return None
+            # most fanart are around 1.77777 width/height ratio (eg. 1280/720 and 1920/1080)
+            elif 1.7 < img_ratio < 1.8:
+                return self.FANART
+            else:
+                logging.warning("Image has size ratio of " + str(img_ratio) + ", unknown type")
 
     def _cache_image_from_file(self, image_path, img_type, indexer_id):
         """
@@ -212,13 +204,13 @@ class ImageCache:
             return False
 
         # make sure the cache folder exists before we try copying to it
-        if not ek(os.path.isdir, self._cache_dir()):
+        if not os.path.isdir(self._cache_dir()):
             logging.info("Image cache dir didn't exist, creating it at " + str(self._cache_dir()))
-            ek(os.makedirs, self._cache_dir())
+            os.makedirs(self._cache_dir())
 
-        if not ek(os.path.isdir, self._thumbnails_dir()):
+        if not os.path.isdir(self._thumbnails_dir()):
             logging.info("Thumbnails cache dir didn't exist, creating it at " + str(self._thumbnails_dir()))
-            ek(os.makedirs, self._thumbnails_dir())
+            os.makedirs(self._thumbnails_dir())
 
         logging.info("Copying from " + image_path + " to " + dest_path)
         helpers.copyFile(image_path, dest_path)
@@ -287,14 +279,16 @@ class ImageCache:
         # check the show dir for poster or banner images and use them
         if need_images[self.POSTER] or need_images[self.BANNER] or need_images[self.FANART]:
             try:
-                for cur_provider in sickbeard.metadata_provider_dict.values():
+                for cur_provider in sickbeard.metadataProvideDict.values():
                     logging.debug("Checking if we can use the show image from the " + cur_provider.name + " metadata")
-                    if ek(os.path.isfile, cur_provider.get_poster_path(show_obj)):
-                        cur_file_name = ek(os.path.abspath, cur_provider.get_poster_path(show_obj))
+                    if os.path.isfile(cur_provider.get_poster_path(show_obj)):
+                        cur_file_name = os.path.abspath(cur_provider.get_poster_path(show_obj))
                         cur_file_type = self.which_type(cur_file_name)
 
-                        if cur_file_type == None:
-                            logging.warning("Unable to retrieve image type, not using the image from " + str(cur_file_name))
+                        if cur_file_type is None:
+                            logging.warning(
+                                "Unable to retrieve image type {}, not using the image from {}".format(cur_file_type,
+                                                                                                       cur_file_name))
                             continue
 
                         logging.debug("Checking if image " + cur_file_name + " (type " + str(

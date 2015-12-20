@@ -21,21 +21,13 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import os.path
-import sys
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import unittest
 
-from tests import SiCKRAGETestDBCase
-
+import common
 import sickbeard
-import sickbeard.common as c
-from sickbeard.tv import TVEpisode, TVShow
-
-from providers import GenericProvider
+from sickbeard import providers
+from tests import SiCKRAGETestDBCase
+from tv import TVEpisode, TVShow
 
 tests = {"Game of Thrones":
              {"tvdbid": 121361, "s": 5, "e": [10],
@@ -52,13 +44,13 @@ def test_generator(curData, name, provider, forceSearch):
     def test(self):
         show = TVShow(1, int(curData[b"tvdbid"]))
         show.name = name
-        show.quality = c.ANY | c.Quality.UNKNOWN | c.Quality.RAWHDTV
+        show.quality = common.ANY | common.Quality.UNKNOWN | common.Quality.RAWHDTV
         show.saveToDB()
         sickbeard.showList.append(show)
 
         for epNumber in curData[b"e"]:
             episode = TVEpisode(show, curData[b"s"], epNumber)
-            episode.status = c.WANTED
+            episode.status = common.WANTED
 
             # We arent updating scene numbers, so fake it here
             episode.scene_season = curData[b"s"]
@@ -124,8 +116,8 @@ for forceSearch in (True, False):
     for name, curData in tests.items():
         fname = name.replace(' ', '_')
 
-        for provider in sickbeard.providers.sortedProviderList():
-            if provider.providerType == GenericProvider.TORRENT:
+        for provider in providers.sortedProviderDict().values():
+            if provider.type == providers.GenericProvider.TORRENT:
                 if forceSearch:
                     test_name = 'test_manual_%s_%s_%s' % (fname, curData[b"tvdbid"], provider.name)
                 else:

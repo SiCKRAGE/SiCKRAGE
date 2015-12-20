@@ -20,14 +20,13 @@
 
 from __future__ import unicode_literals
 
-import urllib, urllib2
+import logging
+import urllib
+import urllib2
 
 import sickbeard
-
-import logging
-from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, \
+from common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, \
     NOTIFY_GIT_UPDATE_TEXT
-from sickrage.helper.exceptions import ex
 
 API_URL = "https://new.boxcar.io/api/notifications"
 
@@ -68,7 +67,7 @@ class Boxcar2Notifier:
         except Exception as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
             if not hasattr(e, 'code'):
-                logging.error("Boxcar2 notification failed.{}".format(ex(e)))
+                logging.error("Boxcar2 notification failed.{}".format(e))
                 return False
             else:
                 logging.warning("Boxcar2 notification failed. Error code: " + str(e.code))

@@ -26,18 +26,18 @@ import re
 import time
 import traceback
 
-from providers.torrent import TorrentProvider
+from indexers.indexer_config import INDEXER_TVDB
+from sickbeard import providers
 from sickbeard import tvcache
-from sickbeard.indexers.indexer_config import INDEXER_TVDB
 
 
 class GetOutOfLoop(Exception):
     pass
 
 
-class RarbgProvider(TorrentProvider):
+class RarbgProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, "Rarbg")
+        super(RarbgProvider, self).__init__("Rarbg")
 
         self.supportsBacklog = True
         self.public = True
@@ -56,7 +56,7 @@ class RarbgProvider(TorrentProvider):
                      'search_tvdb': 'http://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb={tvdb}&search_string={search_string}',
                      'api_spec': 'https://rarbg.com/pubapi/apidocs.txt'}
 
-        self.url = self.urls[b'listing']
+        self.url = self.urls['listing']
 
         self.urlOptions = {'categories': '&category={categories}',
                            'seeders': '&min_seeders={min_seeders}',
@@ -81,7 +81,7 @@ class RarbgProvider(TorrentProvider):
         if self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
             return True
 
-        response = self.getURL(self.urls[b'token'], timeout=30, json=True)
+        response = self.getURL(self.urls['token'], timeout=30, json=True)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -120,19 +120,19 @@ class RarbgProvider(TorrentProvider):
                     logging.debug("Search string: %s " % search_string)
 
                 if mode is 'RSS':
-                    searchURL = self.urls[b'listing'] + self.defaultOptions
+                    searchURL = self.urls['listing'] + self.defaultOptions
                 elif mode == 'Season':
                     if ep_indexer == INDEXER_TVDB:
-                        searchURL = self.urls[b'search_tvdb'].format(search_string=search_string,
-                                                                     tvdb=ep_indexerid) + self.defaultOptions
+                        searchURL = self.urls['search_tvdb'].format(search_string=search_string,
+                                                                    tvdb=ep_indexerid) + self.defaultOptions
                     else:
-                        searchURL = self.urls[b'search'].format(search_string=search_string) + self.defaultOptions
+                        searchURL = self.urls['search'].format(search_string=search_string) + self.defaultOptions
                 elif mode == 'Episode':
                     if ep_indexer == INDEXER_TVDB:
-                        searchURL = self.urls[b'search_tvdb'].format(search_string=search_string,
-                                                                     tvdb=ep_indexerid) + self.defaultOptions
+                        searchURL = self.urls['search_tvdb'].format(search_string=search_string,
+                                                                    tvdb=ep_indexerid) + self.defaultOptions
                     else:
-                        searchURL = self.urls[b'search'].format(search_string=search_string) + self.defaultOptions
+                        searchURL = self.urls['search'].format(search_string=search_string) + self.defaultOptions
                 else:
                     logging.error("Invalid search mode: %s " % mode)
 

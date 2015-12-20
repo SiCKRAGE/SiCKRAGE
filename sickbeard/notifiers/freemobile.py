@@ -20,11 +20,11 @@
 
 from __future__ import unicode_literals
 
+import logging
 import urllib2
 
 import sickbeard
-import logging
-from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, \
+from common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, \
     NOTIFY_GIT_UPDATE_TEXT
 
 

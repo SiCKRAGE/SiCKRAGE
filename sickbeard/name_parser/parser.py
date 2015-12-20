@@ -22,16 +22,20 @@ from __future__ import unicode_literals
 
 import logging
 import os
-import time
-import re
 import os.path
-import regexes
-import sickbeard
+import re
+import time
 
-from sickbeard import helpers, scene_numbering, common, scene_exceptions, db
-from sickrage.helper.encoding import ek, ss, uu
-from sickrage.helper.exceptions import ex
 from dateutil import parser
+
+import common
+import db
+import helpers
+import regexes
+import scene_exceptions
+import scene_numbering
+import sickbeard
+from indexers.indexer_exceptions import indexer_episodenotfound, indexer_error
 
 
 class NameParser(object):
@@ -61,13 +65,6 @@ class NameParser(object):
 
         Is basically equivalent to replacing all _ and . with a
         space, but handles decimal numbers in string, for example:
-
-        >>> cleanRegexedSeriesName("an.example.1.0.test")
-        'an example 1.0 test'
-        >>> cleanRegexedSeriesName("an_example_1.0_test")
-        'an example 1.0 test'
-
-        Stolen from dbr's tvnamer
         """
 
         series_name = re.sub(r"(\D)\.(?!\s)(\D)", "\\1 \\2", series_name)
@@ -245,14 +242,14 @@ class NameParser(object):
 
                         season_number = int(epObj[b"seasonnumber"])
                         episode_numbers = [int(epObj[b"episodenumber"])]
-                    except sickbeard.indexer_episodenotfound:
-                        logging.warning("Unable to find episode with date " + ss(
-                            bestResult.air_date) + " for show " + bestResult.show.name + ", skipping")
+                    except indexer_episodenotfound:
+                        logging.warning(
+                            "Unable to find episode with date " + bestResult.air_date + " for show " + bestResult.show.name + ", skipping")
                         episode_numbers = []
-                    except sickbeard.indexer_error as e:
+                    except indexer_error as e:
                         logging.warning(
                             "Unable to contact " + sickbeard.indexerApi(bestResult.show.indexer).name + ": {}".format(
-                                ex(e)))
+                                    e))
                         episode_numbers = []
 
                 for epNo in episode_numbers:
@@ -309,7 +306,7 @@ class NameParser(object):
                 raise InvalidNameException("Scene numbering results episodes from "
                                            "seasons %s, (i.e. more than one) and "
                                            "sickrage does not support this.  "
-                                           "Sorry." % (ss(new_season_numbers)))
+                                           "Sorry." % (new_season_numbers))
 
             # I guess it's possible that we'd have duplicate episodes too, so lets
             # eliminate them
@@ -381,7 +378,7 @@ class NameParser(object):
                 ('IX', 9), ('V', 5), ('IV', 4), ('I', 1)
             )
 
-            roman_numeral = ss(org_number).upper()
+            roman_numeral = org_number.upper()
             number = 0
             index = 0
 
@@ -401,7 +398,7 @@ class NameParser(object):
             return cached
 
         # break it into parts if there are any (dirname, file name, extension)
-        dir_name, file_name = ek(os.path.split, name)
+        dir_name, file_name = os.path.split(name)
 
         if self.file_name:
             base_file_name = helpers.remove_extension(file_name)
@@ -415,7 +412,7 @@ class NameParser(object):
         file_name_result = self._parse_string(base_file_name)
 
         # use only the direct parent dir
-        dir_name = ek(os.path.basename, dir_name)
+        dir_name = os.path.basename(dir_name)
 
         # parse the dirname for extra info if needed
         dir_name_result = self._parse_string(dir_name)
@@ -542,26 +539,26 @@ class ParseResult(object):
     def __str__(self):
         to_return = ""
         if self.series_name is not None:
-            to_return += ss(self.series_name)
+            to_return += '[SHOW: {}]'.format(self.series_name)
         if self.season_number is not None:
-            to_return += 'S' + ss(self.season_number).zfill(2)
+            to_return += ' [SEASON: {}]'.format(str(self.season_number).zfill(2))
         if self.episode_numbers and len(self.episode_numbers):
-            for e in self.episode_numbers:
-                to_return += 'E' + ss(e).zfill(2)
+            for ep_num in self.episode_numbers:
+                to_return += ' [EPISODE: {}]'.format(str(ep_num).zfill(2))
 
         if self.is_air_by_date:
-            to_return += ss(self.air_date)
+            to_return += self.air_date
         if self.ab_episode_numbers:
-            to_return += ' [ABS: ' + ss(self.ab_episode_numbers) + ']'
+            to_return += ' [ABS: {}]'.format(self.ab_episode_numbers)
         if self.version and self.is_anime is True:
-            to_return += ' [ANIME VER: ' + ss(self.version) + ']'
+            to_return += ' [ANIME VER: {}]'.format(self.version)
 
         if self.release_group:
-            to_return += ' [GROUP: ' + self.release_group + ']'
+            to_return += ' [GROUP: {}]'.format(self.release_group)
 
-        to_return += ' [ABD: ' + ss(self.is_air_by_date) + ']'
-        to_return += ' [ANIME: ' + ss(self.is_anime) + ']'
-        to_return += ' [whichReg: ' + ss(self.which_regex) + ']'
+        to_return += ' [ABD: {}]'.format(self.is_air_by_date)
+        to_return += ' [ANIME: {}]'.format(self.is_anime)
+        to_return += ' [REGEX: {}]'.format(''.join(self.which_regex))
 
         return to_return
 

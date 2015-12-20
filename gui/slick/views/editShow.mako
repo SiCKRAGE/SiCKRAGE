@@ -2,10 +2,10 @@
 <%!
     import sickbeard
     import adba
-    from sickbeard import common
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickbeard.common import statusStrings
-    from sickrage.helper import exceptions
+    import common
+    from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from common import statusStrings
+    import exceptions
     from sickbeard import scene_exceptions
 %>
 

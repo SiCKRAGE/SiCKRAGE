@@ -22,15 +22,14 @@ import logging
 import re
 import traceback
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 
 
-class HoundDawgsProvider(TorrentProvider):
+class HoundDawgsProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "HoundDawgs")
+        super(HoundDawgsProvider, self).__init__("HoundDawgs")
 
         self.supportsBacklog = True
 
@@ -46,7 +45,7 @@ class HoundDawgsProvider(TorrentProvider):
                      'search': 'https://hounddawgs.org/torrents.php',
                      'login': 'https://hounddawgs.org/login.php'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.search_params = {
             "filter_cat[85]": 1,
@@ -71,8 +70,8 @@ class HoundDawgsProvider(TorrentProvider):
                         'keeplogged': 'on',
                         'login': 'Login'}
 
-        self.getURL(self.urls[b'base_url'], timeout=30)
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        self.getURL(self.urls['base_url'], timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -102,7 +101,7 @@ class HoundDawgsProvider(TorrentProvider):
 
                 self.search_params[b'searchstr'] = search_string
 
-                data = self.getURL(self.urls[b'search'], params=self.search_params)
+                data = self.getURL(self.urls['search'], params=self.search_params)
 
                 strTableStart = "<table class=\"torrent_table"
                 startTableIndex = data.find(strTableStart)
@@ -131,7 +130,7 @@ class HoundDawgsProvider(TorrentProvider):
                             allAs = (torrent[1]).find_all('a')
 
                             try:
-                                # link = self.urls[b'base_url'] + allAs[2].attrs[b'href']
+                                # link = self.urls['base_url'] + allAs[2].attrs[b'href']
                                 # url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
                                 title = allAs[2].string
                                 # Trimming title so accepted by scene check(Feature has been rewuestet i forum)
@@ -145,7 +144,7 @@ class HoundDawgsProvider(TorrentProvider):
                                 title = title.replace("SUBS.", "")
                                 title = title.replace("Subs.", "")
 
-                                download_url = self.urls[b'base_url'] + allAs[0].attrs[b'href']
+                                download_url = self.urls['base_url'] + allAs[0].attrs[b'href']
                                 # FIXME
                                 size = -1
                                 seeders = 1

@@ -22,20 +22,20 @@ from __future__ import unicode_literals
 
 import datetime
 import logging
-
-import sickbeard
 import os.path
 
-from sickbeard import db, common, helpers, logger
+import babelfish as babelfish
 
-from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
-from sickrage.helper.common import dateTimeFormat
-from sickrage.helper.encoding import ek
-
-from babelfish import language_converters, Language
+import common
+import core
+import db
+import helpers
+import sickbeard
+from common import dateTimeFormat
+from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 
 MIN_DB_VERSION = 9  # oldest db version we support migrating from
-MAX_DB_VERSION = 42
+MAX_DB_VERSION = 43
 
 
 class MainSanityCheck(db.DBSanityCheck):
@@ -58,7 +58,7 @@ class MainSanityCheck(db.DBSanityCheck):
         logging.debug('Checking for archived episodes not qualified')
 
         query = "SELECT episode_id, showid, status, location, season, episode " + \
-                "FROM tv_episodes WHERE status = %s" % common.ARCHIVED
+                "FROM tv_episodes WHERE status = {}".format(common.ARCHIVED)
 
         sqlResults = self.connection.select(query)
         if sqlResults:
@@ -67,33 +67,34 @@ class MainSanityCheck(db.DBSanityCheck):
 
         for archivedEp in sqlResults:
             fixedStatus = common.Quality.compositeStatus(common.ARCHIVED, common.Quality.UNKNOWN)
-            existing = archivedEp[b'location'] and ek(os.path.exists, archivedEp[b'location'])
+            existing = archivedEp[b'location'] and os.path.exists(archivedEp[b'location'])
             if existing:
                 quality = common.Quality.assumeQuality(archivedEp[b'location'])
                 fixedStatus = common.Quality.compositeStatus(common.ARCHIVED, quality)
 
-            logging.info('Changing status from %s to %s for %s: S%02dE%02d at %s (File %s)' %
-                        (common.statusStrings[common.ARCHIVED], common.statusStrings[fixedStatus],
-                         archivedEp[b'showid'], archivedEp[b'season'], archivedEp[b'episode'],
-                         archivedEp[b'location'] if archivedEp[b'location'] else 'unknown location',
-                         ('NOT FOUND', 'EXISTS')[bool(existing)]))
+            logging.info('Changing status from {} to {} for {}: S{}E{} at {} (File {})'
+                         .format(common.statusStrings[common.ARCHIVED], common.statusStrings[fixedStatus],
+                                 archivedEp[b'showid'], archivedEp[b'season'], archivedEp[b'episode'],
+                                 archivedEp[b'location'] if archivedEp[b'location'] else 'unknown location',
+                                 ('NOT FOUND', 'EXISTS')[bool(existing)]))
 
             self.connection.action(
-                "UPDATE tv_episodes SET status = %i WHERE episode_id = %i" % (fixedStatus, archivedEp[b'episode_id']))
+                    "UPDATE tv_episodes SET status = {0} WHERE episode_id = {}".format(fixedStatus,
+                                                                                       archivedEp[b'episode_id']))
 
     def convert_tvrage_to_tvdb(self):
         logging.debug("Checking for shows with tvrage id's, since tvrage is gone")
-        from sickbeard.indexers.indexer_config import INDEXER_TVRAGE
-        from sickbeard.indexers.indexer_config import INDEXER_TVDB
+        from indexers.indexer_config import INDEXER_TVRAGE, INDEXER_TVDB
 
         sqlResults = self.connection.select(
-            "SELECT indexer_id, show_name, location FROM tv_shows WHERE indexer = %i" % INDEXER_TVRAGE)
+                "SELECT indexer_id, show_name, location FROM tv_shows WHERE indexer = {}".format(INDEXER_TVRAGE))
 
         if sqlResults:
-            logging.warning("Found %i shows with TVRage ID's, attempting automatic conversion..." % len(sqlResults))
+            logging.warning(
+                    "Found {} shows with TVRage ID's, attempting automatic conversion...".format(len(sqlResults)))
 
         for tvrage_show in sqlResults:
-            logging.info("Processing %s at %s" % (tvrage_show[b'show_name'], tvrage_show[b'location']))
+            logging.info("Processing {} at {}".format(tvrage_show[b'show_name'], tvrage_show[b'location']))
             mapping = self.connection.select(
                 "SELECT mindexer_id FROM indexer_mapping WHERE indexer_id=%i AND indexer=%i AND mindexer=%i" %
                 (tvrage_show[b'indexer_id'], INDEXER_TVRAGE, INDEXER_TVDB))
@@ -285,8 +286,8 @@ class MainSanityCheck(db.DBSanityCheck):
                 [datetime.datetime(2015, 7, 15, 17, 20, 44, 326380).strftime(dateTimeFormat)]
         )
 
-        validLanguages = [Language.fromopensubtitles(language).opensubtitles for language in
-                          language_converters[b'opensubtitles'].codes if len(language) == 3]
+        validLanguages = [babelfish.Language.fromopensubtitles(language).opensubtitles for language in
+                          babelfish.language_converters[b'opensubtitles'].codes if len(language) == 3]
 
         if not sqlResults:
             return
@@ -336,21 +337,22 @@ class InitialSchema(db.SchemaUpgrade):
                 "CREATE TABLE db_version(db_version INTEGER);",
                 "CREATE TABLE history(action NUMERIC, date NUMERIC, showid NUMERIC, season NUMERIC, episode NUMERIC, quality NUMERIC, resource TEXT, provider TEXT, version NUMERIC DEFAULT -1);",
                 "CREATE TABLE imdb_info(indexer_id INTEGER PRIMARY KEY, imdb_id TEXT, title TEXT, year NUMERIC, akas TEXT, runtimes NUMERIC, genres TEXT, countries TEXT, country_codes TEXT, certificates TEXT, rating TEXT, votes INTEGER, last_update NUMERIC);",
+                "CREATE TABLE tmdb_info(indexer_id INTEGER PRIMARY KEY, tmdb_id TEXT, name TEXT, first_air_date NUMERIC, akas TEXT, episode_run_time NUMERIC, genres TEXT, origin_country TEXT, languages TEXT, production_companies TEXT, popularity TEXT, vote_count INTEGER, last_air_date NUMERIC);",
                 "CREATE TABLE info(last_backlog NUMERIC, last_indexer NUMERIC, last_proper_search NUMERIC);",
                 "CREATE TABLE scene_numbering(indexer TEXT, indexer_id INTEGER, season INTEGER, episode INTEGER, scene_season INTEGER, scene_episode INTEGER, absolute_number NUMERIC, scene_absolute_number NUMERIC, PRIMARY KEY(indexer_id, season, episode));",
-                "CREATE TABLE tv_shows(show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC DEFAULT -1);",
+                "CREATE TABLE tv_shows(show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, tmdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC DEFAULT -1);",
                 "CREATE TABLE tv_episodes(episode_id INTEGER PRIMARY KEY, showid NUMERIC, indexerid NUMERIC, indexer TEXT, name TEXT, season NUMERIC, episode NUMERIC, description TEXT, airdate NUMERIC, hasnfo NUMERIC, hastbn NUMERIC, status NUMERIC, location TEXT, file_size NUMERIC, release_name TEXT, subtitles TEXT, subtitles_searchcount NUMERIC, subtitles_lastsearch TIMESTAMP, is_proper NUMERIC, scene_season NUMERIC, scene_episode NUMERIC, absolute_number NUMERIC, scene_absolute_number NUMERIC, version NUMERIC DEFAULT -1, release_group TEXT);",
-                "CREATE TABLE blacklist (show_id INTEGER, range TEXT, keyword TEXT);",
-                "CREATE TABLE whitelist (show_id INTEGER, range TEXT, keyword TEXT);",
-                "CREATE TABLE xem_refresh (indexer TEXT, indexer_id INTEGER PRIMARY KEY, last_refreshed INTEGER);",
-                "CREATE TABLE indexer_mapping (indexer_id INTEGER, indexer NUMERIC, mindexer_id INTEGER, mindexer NUMERIC, PRIMARY KEY (indexer_id, indexer));",
+                "CREATE TABLE blacklist(show_id INTEGER, range TEXT, keyword TEXT);",
+                "CREATE TABLE whitelist(show_id INTEGER, range TEXT, keyword TEXT);",
+                "CREATE TABLE xem_refresh(indexer TEXT, indexer_id INTEGER PRIMARY KEY, last_refreshed INTEGER);",
+                "CREATE TABLE indexer_mapping(indexer_id INTEGER, indexer NUMERIC, mindexer_id INTEGER, mindexer NUMERIC, PRIMARY KEY (indexer_id, indexer));",
                 "CREATE UNIQUE INDEX idx_indexer_id ON tv_shows(indexer_id);",
                 "CREATE INDEX idx_showid ON tv_episodes(showid);",
                 "CREATE INDEX idx_sta_epi_air ON tv_episodes(status, episode, airdate);",
                 "CREATE INDEX idx_sta_epi_sta_air ON tv_episodes(season, episode, status, airdate);",
                 "CREATE INDEX idx_status ON tv_episodes(status,season,episode,airdate);",
                 "CREATE INDEX idx_tv_episodes_showid_airdate ON tv_episodes(showid, airdate);",
-                "INSERT INTO db_version(db_version) VALUES (42);"
+                "INSERT INTO db_version(db_version) VALUES (43);"
             ]
             for query in queries:
                 self.connection.action(query)
@@ -397,8 +399,8 @@ class AddSizeAndSceneNameFields(InitialSchema):
                 continue
 
             # if there is no size yet then populate it for us
-            if (not cur_ep[b"file_size"] or not int(cur_ep[b"file_size"])) and ek(os.path.isfile, cur_ep[b"location"]):
-                cur_size = ek(os.path.getsize, cur_ep[b"location"])
+            if (not cur_ep[b"file_size"] or not int(cur_ep[b"file_size"])) and os.path.isfile(cur_ep[b"location"]):
+                cur_size = os.path.getsize(cur_ep[b"location"])
                 self.connection.action("UPDATE tv_episodes SET file_size = ? WHERE episode_id = ?",
                                        [cur_size, int(cur_ep[b"episode_id"])])
 
@@ -416,7 +418,7 @@ class AddSizeAndSceneNameFields(InitialSchema):
                 continue
 
             nzb_name = cur_result[b"resource"]
-            file_name = ek(os.path.basename, download_results[0][b"resource"])
+            file_name = os.path.basename(download_results[0][b"resource"])
 
             # take the extension off the filename, it's not needed
             if '.' in file_name:
@@ -460,8 +462,8 @@ class AddSizeAndSceneNameFields(InitialSchema):
         logging.info("Adding release name to all episodes with obvious scene filenames")
         for cur_result in empty_results:
 
-            ep_file_name = ek(os.path.basename, cur_result[b"location"])
-            ep_file_name = ek(os.path.splitext, ep_file_name)[0]
+            ep_file_name = os.path.basename(cur_result[b"location"])
+            ep_file_name = os.path.splitext(ep_file_name)[0]
 
             # only want to find real scene names here so anything with a space in it is out
             if ' ' in ep_file_name:
@@ -573,7 +575,7 @@ class Add1080pAndRawHDQualities(RenameSeasonFolders):
 
         # update the default quality so we dont grab the wrong qualities after migration
         sickbeard.QUALITY_DEFAULT = self._update_composite_qualities(sickbeard.QUALITY_DEFAULT)
-        sickbeard.save_config()
+        core.save_config(sickbeard.CONFIG_FILE)
 
         # upgrade previous HD to HD720p -- shift previous qualities to new placevalues
         old_hd = common.Quality.combineQualities(
@@ -772,7 +774,7 @@ class ConvertTVShowsToIndexerScheme(AddSubtitlesSupport):
 
         self.connection.action("ALTER TABLE tv_shows RENAME TO tmp_tv_shows")
         self.connection.action(
-            "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC)")
+                "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, tmdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC)")
         self.connection.action("INSERT INTO tv_shows SELECT * FROM tmp_tv_shows")
         self.connection.action("DROP TABLE tmp_tv_shows")
 
@@ -1124,8 +1126,23 @@ class AlterTVShowsFieldTypes(AddDefaultEpStatusToTvShows):
         logging.info("Converting column indexer and default_ep_status field types to numeric")
         self.connection.action("ALTER TABLE tv_shows RENAME TO tmp_tv_shows")
         self.connection.action(
-            "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC)")
+                "CREATE TABLE tv_shows (show_id INTEGER PRIMARY KEY, indexer_id NUMERIC, indexer NUMERIC, show_name TEXT, location TEXT, network TEXT, genre TEXT, classification TEXT, runtime NUMERIC, quality NUMERIC, airs TEXT, status TEXT, flatten_folders NUMERIC, paused NUMERIC, startyear NUMERIC, air_by_date NUMERIC, lang TEXT, subtitles NUMERIC, notify_list TEXT, imdb_id TEXT, tmdb_id TEXT, last_update_indexer NUMERIC, dvdorder NUMERIC, archive_firstmatch NUMERIC, rls_require_words TEXT, rls_ignore_words TEXT, sports NUMERIC, anime NUMERIC, scene NUMERIC, default_ep_status NUMERIC)")
         self.connection.action("INSERT INTO tv_shows SELECT * FROM tmp_tv_shows")
         self.connection.action("DROP TABLE tmp_tv_shows")
+
+        self.incDBVersion()
+
+
+class AddTMDbInfo(AlterTVShowsFieldTypes):
+    def test(self):
+        return self.checkDBVersion() >= 43
+
+    def execute(self):
+        backupDatabase(43)
+        self.connection.action(
+                "CREATE TABLE tmdb_info (indexer_id INTEGER PRIMARY KEY, tmdb_id TEXT, name TEXT, first_air_date NUMERIC, akas TEXT, episode_run_time NUMERIC, genres TEXT, origin_country TEXT, languages TEXT, production_companies TEXT, popularity TEXT, vote_count INTEGER, last_air_date NUMERIC)")
+
+        if not self.hasColumn("tv_shows", "tmdb_id"):
+            self.addColumn("tv_shows", "tmdb_id")
 
         self.incDBVersion()

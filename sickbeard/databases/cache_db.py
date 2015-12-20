@@ -20,7 +20,7 @@
 
 from __future__ import unicode_literals
 
-from sickbeard import db
+import db
 
 
 # Add new migrations at the bottom of the list; subclass the previous migration.

@@ -22,13 +22,13 @@ from __future__ import unicode_literals
 
 import logging
 
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class BTDIGGProvider(TorrentProvider):
+class BTDIGGProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, "BTDigg")
+        super(BTDIGGProvider, self).__init__("BTDigg")
 
         self.supportsBacklog = True
         self.public = True
@@ -36,7 +36,7 @@ class BTDIGGProvider(TorrentProvider):
         self.urls = {'url': 'https://btdigg.org/',
                      'api': 'https://api.btdigg.org/'}
 
-        self.url = self.urls[b'url']
+        self.url = self.urls['url']
 
         self.cache = BTDiggCache(self)
 
@@ -52,7 +52,7 @@ class BTDIGGProvider(TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s" % search_string)
 
-                searchURL = self.urls[b'api'] + "api/private-341ada3245790954/s02?q=" + search_string + "&p=0&order=1"
+                searchURL = self.urls['api'] + "api/private-341ada3245790954/s02?q=" + search_string + "&p=0&order=1"
                 logging.debug("Search URL: %s" % searchURL)
 
                 jdata = self.getURL(searchURL, json=True)

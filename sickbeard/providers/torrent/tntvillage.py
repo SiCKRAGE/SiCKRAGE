@@ -23,13 +23,13 @@ import logging
 import re
 import traceback
 
-from providers.torrent import TorrentProvider
-from sickbeard import db
+import common
+import db
+from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
+from sickbeard import providers
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
-from sickbeard.common import Quality
-from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
-from sickrage.helper.exceptions import AuthException
+from sickbeard.exceptions import AuthException
 
 category_excluded = {'Sport': 22,
                      'Teatro': 23,
@@ -58,9 +58,9 @@ category_excluded = {'Sport': 22,
                      'Mobile': 37}
 
 
-class TNTVillageProvider(TorrentProvider):
+class TNTVillageProvider(providers.TorrentProvider):
     def __init__(self):
-        TorrentProvider.__init__(self, "TNTVillage")
+        super(TNTVillageProvider, self).__init__("TNTVillage")
 
         self.supportsBacklog = True
 
@@ -103,7 +103,7 @@ class TNTVillageProvider(TorrentProvider):
                      'search_page': 'http://forum.tntvillage.scambioetico.org/?act=allreleases&st={0}&{1}',
                      'download': 'http://forum.tntvillage.scambioetico.org/index.php?act=Attach&type=post&id=%s'}
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.cookies = None
 
@@ -129,7 +129,7 @@ class TNTVillageProvider(TorrentProvider):
                         'CookieDate': 0,
                         'submit': 'Connettiti al Forum'}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -146,23 +146,23 @@ class TNTVillageProvider(TorrentProvider):
 
         quality_string = ''
 
-        if quality == Quality.SDTV:
+        if quality == common.Quality.SDTV:
             quality_string = ' HDTV x264'
-        if quality == Quality.SDDVD:
+        if quality == common.Quality.SDDVD:
             quality_string = ' DVDRIP'
-        elif quality == Quality.HDTV:
+        elif quality == common.Quality.HDTV:
             quality_string = ' 720p HDTV x264'
-        elif quality == Quality.FULLHDTV:
+        elif quality == common.Quality.FULLHDTV:
             quality_string = ' 1080p HDTV x264'
-        elif quality == Quality.RAWHDTV:
+        elif quality == common.Quality.RAWHDTV:
             quality_string = ' 1080i HDTV mpeg2'
-        elif quality == Quality.HDWEBDL:
+        elif quality == common.Quality.HDWEBDL:
             quality_string = ' 720p WEB-DL h264'
-        elif quality == Quality.FULLHDWEBDL:
+        elif quality == common.Quality.FULLHDWEBDL:
             quality_string = ' 1080p WEB-DL h264'
-        elif quality == Quality.HDBLURAY:
+        elif quality == common.Quality.HDBLURAY:
             quality_string = ' 720p Bluray x264'
-        elif quality == Quality.FULLHDBLURAY:
+        elif quality == common.Quality.FULLHDBLURAY:
             quality_string = ' 1080p Bluray x264'
 
         return quality_string
@@ -183,7 +183,7 @@ class TNTVillageProvider(TorrentProvider):
                                                                                  "").replace(".gif", "").replace(".png",
                                                                                                                  "")
                 except Exception:
-                    logging.error("Failed parsing quality. Traceback: %s" % traceback.format_exc())
+                    logging.error("Failed parsing quality. Traceback: {}".format(traceback.format_exc()))
 
         else:
             file_quality = (torrent_rows.find_all('td'))[1].get_text()
@@ -206,23 +206,23 @@ class TNTVillageProvider(TorrentProvider):
                 any)
 
         if sdOptions and not dvdOptions and not fullHD and not hdOptions:
-            return Quality.SDTV
+            return common.Quality.SDTV
         elif dvdOptions:
-            return Quality.SDDVD
+            return common.Quality.SDDVD
         elif hdOptions and not bluRayOptions and not fullHD and not webdl:
-            return Quality.HDTV
+            return common.Quality.HDTV
         elif not hdOptions and not bluRayOptions and fullHD and not webdl:
-            return Quality.FULLHDTV
+            return common.Quality.FULLHDTV
         elif hdOptions and not bluRayOptions and not fullHD and webdl:
-            return Quality.HDWEBDL
+            return common.Quality.HDWEBDL
         elif not hdOptions and not bluRayOptions and fullHD and webdl:
-            return Quality.FULLHDWEBDL
+            return common.Quality.FULLHDWEBDL
         elif bluRayOptions and hdOptions and not fullHD:
-            return Quality.HDBLURAY
+            return common.Quality.HDBLURAY
         elif bluRayOptions and fullHD and not hdOptions:
-            return Quality.FULLHDBLURAY
+            return common.Quality.FULLHDBLURAY
         else:
-            return Quality.UNKNOWN
+            return common.Quality.UNKNOWN
 
     def _is_italian(self, torrent_rows):
 
@@ -312,10 +312,10 @@ class TNTVillageProvider(TorrentProvider):
                         break
 
                     if mode is not 'RSS':
-                        searchURL = (self.urls[b'search_page'] + '&filter={2}').format(z, self.categories,
-                                                                                       search_string)
+                        searchURL = (self.urls['search_page'] + '&filter={2}').format(z, self.categories,
+                                                                                      search_string)
                     else:
-                        searchURL = self.urls[b'search_page'].format(z, self.categories)
+                        searchURL = self.urls['search_page'].format(z, self.categories)
 
                     if mode is not 'RSS':
                         logging.debug("Search string: %s " % search_string)
@@ -345,8 +345,8 @@ class TNTVillageProvider(TorrentProvider):
                                 try:
                                     link = result.find('td').find('a')
                                     title = link.string
-                                    download_url = self.urls[b'download'] % result.find_all('td')[8].find('a')['href'][
-                                                                            -8:]
+                                    download_url = self.urls['download'] % result.find_all('td')[8].find('a')['href'][
+                                                                           -8:]
                                     leechers = result.find_all('td')[3].find_all('td')[1].text
                                     leechers = int(leechers.strip('[]'))
                                     seeders = result.find_all('td')[3].find_all('td')[2].text
@@ -363,7 +363,7 @@ class TNTVillageProvider(TorrentProvider):
                                     if title != title1:
                                         break
 
-                                if Quality.nameQuality(title) == Quality.UNKNOWN:
+                                if common.Quality.nameQuality(title) == common.Quality.UNKNOWN:
                                     title += filename_qt
 
                                 if not self._is_italian(result) and not self.subtitle:

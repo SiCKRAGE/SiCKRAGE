@@ -17,24 +17,21 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
-
 from __future__ import unicode_literals
 
-import fnmatch
-import os
-
-import re
 import datetime
+import fnmatch
+import logging
+import os
+import re
 from functools import partial
 
+import common
+import db
 import sickbeard
-from sickbeard import common
-from sickbeard.helpers import sanitizeSceneName
-from sickbeard.scene_exceptions import get_scene_exceptions
-import logging
-from sickbeard import db
-from sickrage.helper.encoding import ek, ss
 from name_parser.parser import NameParser, InvalidNameException, InvalidShowException
+from scene_exceptions import get_scene_exceptions
+from sickbeard.helpers import sanitizeSceneName
 
 resultFilters = [
     "sub(bed|ed|pack|s)",
@@ -56,6 +53,11 @@ def containsAtLeastOneWord(name, words):
     words : string of words separated by a ',' or list of words
 
     Returns: False if the name doesn't contain any word of words list, or the found word from the list.
+    :return:
+    :param name:
+    :param words:
+    :return:
+    :rtype: unicode
     """
     if isinstance(words, basestring):
         words = words.split(',')
@@ -74,6 +76,10 @@ def filterBadReleases(name, parse=True):
     name: the release name to check
 
     Returns: True if the release name is OK, False if it's bad.
+    :return:
+    :param name:
+    :param parse:
+    :return:
     """
 
     try:
@@ -114,6 +120,8 @@ def sceneToNormalShowNames(name):
     name: The show name to convert
 
     Returns: a list of all the possible "normal" names
+    :return:
+    :param name:
     """
 
     if not name:
@@ -142,6 +150,10 @@ def sceneToNormalShowNames(name):
 
 
 def makeSceneShowSearchStrings(show, season=-1, anime=False):
+    """
+
+    :rtype: list[unicode]
+    """
     showNames = allPossibleShowNames(show, season=season)
 
     # scenify the names
@@ -272,7 +284,6 @@ def isGoodResult(name, show, log=True, season=-1):
 
     all_show_names = allPossibleShowNames(show, season=season)
     showNames = map(sanitizeSceneName, all_show_names) + all_show_names
-    showNames += map(ss, all_show_names)
 
     for curName in set(showNames):
         if not show.is_anime:
@@ -307,6 +318,7 @@ def allPossibleShowNames(show, season=-1):
     show: a TVShow object that we should get the names of
 
     Returns: a list of all the possible show names
+    :rtype: list[unicode]
     """
 
     showNames = get_scene_exceptions(show.indexerid, season=season)[:]
@@ -343,7 +355,11 @@ def allPossibleShowNames(show, season=-1):
 
 
 def determineReleaseName(dir_name=None, nzb_name=None):
-    """Determine a release name from an nzb and/or folder name"""
+    """Determine a release name from an nzb and/or folder name
+    :param dir_name:
+    :param nzb_name:
+    :return:
+    """
 
     if nzb_name is not None:
         logging.info("Using nzb_name for release name.")
@@ -358,19 +374,19 @@ def determineReleaseName(dir_name=None, nzb_name=None):
     for search in file_types:
 
         reg_expr = re.compile(fnmatch.translate(search), re.IGNORECASE)
-        files = [file_name for file_name in ek(os.listdir, dir_name) if
-                 ek(os.path.isfile, ek(os.path.join, dir_name, file_name))]
+        files = [file_name for file_name in os.listdir(dir_name) if
+                 os.path.isfile(os.path.join(dir_name, file_name))]
         results = filter(reg_expr.search, files)
 
         if len(results) == 1:
-            found_file = ek(os.path.basename, results[0])
+            found_file = os.path.basename(results[0])
             found_file = found_file.rpartition('.')[0]
             if filterBadReleases(found_file):
                 logging.info("Release name (" + found_file + ") found from file (" + results[0] + ")")
                 return found_file.rpartition('.')[0]
 
     # If that fails, we try the folder
-    folder = ek(os.path.basename, dir_name)
+    folder = os.path.basename(dir_name)
     if filterBadReleases(folder):
         # NOTE: Multiple failed downloads will change the folder name.
         # (e.g., appending #s)

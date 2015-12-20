@@ -27,14 +27,13 @@ from xml.parsers.expat import ExpatError
 import xmltodict
 
 import sickbeard
-from providers.torrent import TorrentProvider
+from sickbeard import providers
 from sickbeard import tvcache
 
 
-class KATProvider(TorrentProvider):
+class KATProvider(providers.TorrentProvider):
     def __init__(self):
-
-        TorrentProvider.__init__(self, "KickAssTorrents")
+        super(KATProvider, self).__init__("KickAssTorrents")
 
         self.supportsBacklog = True
         self.public = True
@@ -51,7 +50,7 @@ class KATProvider(TorrentProvider):
             'search': 'https://kickass.unblocked.la/%s/',
         }
 
-        self.url = self.urls[b'base_url']
+        self.url = self.urls['base_url']
 
         self.search_params = {
             'q': '',
@@ -81,7 +80,7 @@ class KATProvider(TorrentProvider):
 
                 url_fmt_string = 'usearch' if mode is not 'RSS' else search_string
                 try:
-                    searchURL = self.urls[b'search'] % url_fmt_string + '?' + urlencode(self.search_params)
+                    searchURL = self.urls['search'] % url_fmt_string + '?' + urlencode(self.search_params)
                     logging.debug("Search URL: %s" % searchURL)
                     data = self.getURL(searchURL)
                     # data = self.getURL(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)

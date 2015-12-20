@@ -17,10 +17,10 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
-
 from __future__ import unicode_literals
 
 import datetime
+
 import sickbeard
 
 MESSAGE = 'notice'
@@ -167,7 +167,7 @@ class QueueProgressIndicator():
 
     def nextName(self):
         for curItem in [
-            sickbeard.showQueueScheduler.action.currentItem] + sickbeard.showQueueScheduler.action.queue:  # @UndefinedVariable
+            sickbeard.showQueue.currentItem] + sickbeard.showQueue.queue:  # @UndefinedVariable
             if curItem in self.queueItemList:
                 return curItem.name
 
