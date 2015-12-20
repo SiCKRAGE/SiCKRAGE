@@ -135,8 +135,8 @@ def downloadSubtitles(subtitles_info):
     languages = getNeededLanguages(existing_subtitles)
     if not languages:
         logging.debug('%s: No missing subtitles for S%02dE%02d' % (
-        subtitles_info['show.indexerid'], subtitles_info[b'season'], subtitles_info[b'episode']))
-        return (existing_subtitles, None)
+            subtitles_info[b'show.indexerid'], subtitles_info[b'season'], subtitles_info[b'episode']))
+        return existing_subtitles, None
 
     subtitles_path = getSubtitlesPath(subtitles_info[b'location']).encode(sickbeard.SYS_ENCODING)
     video_path = subtitles_info[b'location'].encode(sickbeard.SYS_ENCODING)
@@ -146,8 +146,8 @@ def downloadSubtitles(subtitles_info):
         video = subliminal.scan_video(video_path, subtitles=False, embedded_subtitles=False)
     except Exception:
         logging.debug('%s: Exception caught in subliminal.scan_video for S%02dE%02d' %
-                    (subtitles_info['show.indexerid'], subtitles_info[b'season'], subtitles_info[b'episode']))
-        return (existing_subtitles, None)
+                      (subtitles_info[b'show.indexerid'], subtitles_info[b'season'], subtitles_info[b'episode']))
+        return existing_subtitles, None
 
     provider_configs = {'addic7ed': {'username': sickbeard.ADDIC7ED_USER, 'password': sickbeard.ADDIC7ED_PASS},
                         'legendastv': {'username': sickbeard.LEGENDASTV_USER, 'password': sickbeard.LEGENDASTV_PASS},
@@ -160,8 +160,8 @@ def downloadSubtitles(subtitles_info):
         subtitles_list = pool.list_subtitles(video, languages)
         if not subtitles_list:
             logging.debug('%s: No subtitles found for S%02dE%02d on any provider' % (
-            subtitles_info['show.indexerid'], subtitles_info[b'season'], subtitles_info[b'episode']))
-            return (existing_subtitles, None)
+                subtitles_info[b'show.indexerid'], subtitles_info[b'season'], subtitles_info[b'episode']))
+            return existing_subtitles, None
 
         found_subtitles = pool.download_best_subtitles(subtitles_list, video, languages=languages,
                                                        hearing_impaired=sickbeard.SUBTITLES_HEARING_IMPAIRED,
@@ -179,15 +179,16 @@ def downloadSubtitles(subtitles_info):
     except Exception:
         logging.info("Error occurred when downloading subtitles for: %s" % video_path)
         logging.error(traceback.format_exc())
-        return (existing_subtitles, None)
+        return existing_subtitles, None
 
     if sickbeard.SUBTITLES_HISTORY:
         for subtitle in found_subtitles:
             logging.debug('history.logSubtitle %s, %s' % (subtitle.provider_name, subtitle.language.opensubtitles))
-            history.logSubtitle(subtitles_info['show.indexerid'], subtitles_info[b'season'], subtitles_info[b'episode'],
+            history.logSubtitle(subtitles_info[b'show.indexerid'], subtitles_info[b'season'],
+                                subtitles_info[b'episode'],
                                 subtitles_info[b'status'], subtitle)
 
-    return (current_subtitles, new_subtitles)
+    return current_subtitles, new_subtitles
 
 
 def save_subtitles(video, subtitles, single=False, directory=None):
@@ -265,6 +266,7 @@ def subtitlesLanguages(video_path):
     """Return a list detected subtitles for the given video file"""
     resultList = []
     should_save_subtitles = None
+    embedded_subtitle_languages = set()
 
     if not sickbeard.EMBEDDED_SUBTITLES_ALL and video_path.endswith('.mkv'):
         embedded_subtitle_languages = getEmbeddedLanguages(video_path.encode(sickbeard.SYS_ENCODING))
@@ -315,7 +317,7 @@ def subtitlesLanguages(video_path):
         elif hasattr(language, 'alpha2') and language.alpha2:
             resultList.append(language.alpha2)
 
-    return (sorted(resultList), should_save_subtitles)
+    return sorted(resultList), should_save_subtitles
 
 
 def getEmbeddedLanguages(video_path):
@@ -397,7 +399,8 @@ class SubtitlesFinder(object):
 
         if len(sickbeard.subtitles.getEnabledServiceList()) < 1:
             logging.warning(
-                'Not enough services selected. At least 1 service is required to search subtitles in the background')
+                    'Not enough services selected. At least 1 service is required to search subtitles in the background'
+            )
             return
 
         logging.info('Checking for subtitles')
@@ -432,23 +435,30 @@ class SubtitlesFinder(object):
 
             if not ek(os.path.isfile, epToSub[b'location']):
                 logging.debug('Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' % (
-                epToSub[b'season'], epToSub[b'episode'], epToSub[b'show_name']))
+                    epToSub[b'season'], epToSub[b'episode'], epToSub[b'show_name']))
                 continue
 
             # http://bugs.python.org/issue7980#msg221094
             # I dont think this needs done here, but keeping to be safe
             datetime.datetime.strptime('20110101', '%Y%m%d')
-            if ((epToSub[b'airdate_daydiff'] > 7 and epToSub[b'searchcount'] < 2 and now - datetime.datetime.strptime(
-                    epToSub[b'lastsearch'], dateTimeFormat) > datetime.timedelta(
-                    hours=rules[b'old'][epToSub[b'searchcount']])) or
-                # Recent shows rule
-                    (epToSub[b'airdate_daydiff'] <= 7 and epToSub[
-                        'searchcount'] < 7 and now - datetime.datetime.strptime(epToSub[b'lastsearch'],
-                                                                                dateTimeFormat) > datetime.timedelta(
-                            hours=rules[b'new'][epToSub[b'searchcount']]))):
+            if (
+                        (epToSub[b'airdate_daydiff'] > 7 and epToSub[
+                            b'searchcount'] < 2 and now - datetime.datetime.strptime(
+                                epToSub[b'lastsearch'], dateTimeFormat) > datetime.timedelta(
+                                hours=rules['old'][epToSub[b'searchcount']])) or
+                        (
+                                            epToSub[b'airdate_daydiff'] <= 7 and
+                                            epToSub[b'searchcount'] < 7 and
+                                            now - datetime.datetime.strptime(
+                                                epToSub[b'lastsearch'], dateTimeFormat) > datetime.timedelta
+                                    (
+                                            hours=rules[b'new'][epToSub[b'searchcount']]
+                                    )
+                        )
+            ):
 
                 logging.debug('Downloading subtitles for episode %dx%d of show %s' % (
-                epToSub[b'season'], epToSub[b'episode'], epToSub[b'show_name']))
+                    epToSub[b'season'], epToSub[b'episode'], epToSub[b'show_name']))
 
                 showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(epToSub[b'showid']))
                 if not showObj:
@@ -472,7 +482,7 @@ class SubtitlesFinder(object):
                 newSubtitles = frozenset(epObj.subtitles).difference(existing_subtitles)
                 if newSubtitles:
                     logging.info('Downloaded subtitles for S%02dE%02d in %s' % (
-                    epToSub[b"season"], epToSub[b"episode"], ', '.join(newSubtitles)))
+                        epToSub[b"season"], epToSub[b"episode"], ', '.join(newSubtitles)))
 
         self.amActive = False
 
@@ -495,9 +505,9 @@ def run_subs_extra_scripts(epObj, found_subtitles, video, single=False):
         for subtitle in found_subtitles:
             subtitle_path = subliminal.subtitle.get_subtitle_path(video.name, None if single else subtitle.language)
 
-            inner_cmd = script_cmd + [video.name, subtitle_path, subtitle.language.opensubtitles, epObj['show.name'],
+            inner_cmd = script_cmd + [video.name, subtitle_path, subtitle.language.opensubtitles, epObj[b'show.name'],
                                       str(epObj[b'season']), str(epObj[b'episode']), epObj[b'name'],
-                                      str(epObj['show.indexerid'])]
+                                      str(epObj[b'show.indexerid'])]
 
             # use subprocess to run the command and capture output
             logging.info("Executing command: %s" % inner_cmd)
