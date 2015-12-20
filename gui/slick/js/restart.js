@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    window.console_debug = false; // jshint ignore:line
+    window.console_debug = true; // jshint ignore:line
     window.console_prefix = 'Restart: '; // jshint ignore:line
     window.current_pid = ''; // jshint ignore:line
 
