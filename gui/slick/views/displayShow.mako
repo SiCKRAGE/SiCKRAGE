@@ -7,7 +7,7 @@
     from sickbeard import subtitles, sbdatetime, network_timezones
     import sickbeard.helpers
 
-    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED
+    from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
     from sickbeard.common import Quality, qualityPresets, statusStrings, Overview
     from sickbeard.helpers import anon_url
 %>
@@ -300,19 +300,19 @@
                 scAbsolute = dfltAbsolute
                 dfltAbsNumbering = True
 
-            if (epResult["season"], epResult["episode"]) in scene_numbering:
-                (scSeas, scEpis) = scene_numbering[(epResult["season"], epResult["episode"])]
+            if (epResult[b"season"], epResult[b"episode"]) in scene_numbering:
+                (scSeas, scEpis) = scene_numbering[(epResult[b"season"], epResult[b"episode"])]
                 dfltEpNumbering = False
             else:
                 (scSeas, scEpis) = (dfltSeas, dfltEpis)
                 dfltEpNumbering = True
 
-            epLoc = epResult["location"]
+            epLoc = epResult[b"location"]
             if epLoc and show._location and epLoc.lower().startswith(show._location.lower()):
                 epLoc = epLoc[len(show._location)+1:]
         %>
 
-        % if int(epResult["season"]) != curSeason:
+        % if int(epResult[b"season"]) != curSeason:
             % if curSeason == -1:
     <thead>
         <tr class="seasoncols" style="display:none;">
@@ -336,7 +336,7 @@
     <tbody class="tablesorter-no-sort">
         <tr style="height: 60px;">
             <th class="row-seasonheader displayShowTable" colspan="13" style="vertical-align: bottom; width: auto;">
-                <h3 style="display: inline;"><a name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[int(epResult["season"]) > 0]}</h3>
+                <h3 style="display: inline;"><a name="season-${epResult[b"season"]}"></a>${("Specials", "Season " + str(epResult[b"season"]))[int(epResult[b"season"]) > 0]}</h3>
                 % if sickbeard.DISPLAY_ALL_SEASONS == False:
                     <button id="showseason-${epResult[b'season']}" type="button" class="btn btn-xs pull-right" data-toggle="collapse" data-target="#collapseSeason-${epResult[b'season']}">Show Episodes</button>
                     <script type="text/javascript">
@@ -354,8 +354,8 @@
         </tr>
     </tbody>
     <tbody class="tablesorter-no-sort">
-        <tr id="season-${epResult["season"]}-cols" class="seasoncols">
-            <th class="col-checkbox"><input type="checkbox" class="seasonCheck" id="${epResult["season"]}" /></th>
+        <tr id="season-${epResult[b"season"]}-cols" class="seasoncols">
+            <th class="col-checkbox"><input type="checkbox" class="seasonCheck" id="${epResult[b"season"]}" /></th>
             <th class="col-metadata">NFO</th>
             <th class="col-metadata">TBN</th>
             <th class="col-ep">Episode</th>
@@ -376,7 +376,7 @@
     <tbody class="tablesorter-no-sort">
         <tr style="height: 60px;">
             <th class="row-seasonheader displayShowTable" colspan="13" style="vertical-align: bottom; width: auto;">
-                <h3 style="display: inline;"><a name="season-${epResult["season"]}"></a>${("Specials", "Season " + str(epResult["season"]))[bool(int(epResult["season"]))]}</h3>
+                <h3 style="display: inline;"><a name="season-${epResult[b"season"]}"></a>${("Specials", "Season " + str(epResult[b"season"]))[bool(int(epResult[b"season"]))]}</h3>
                 % if sickbeard.DISPLAY_ALL_SEASONS == False:
                     <button id="showseason-${epResult[b'season']}" type="button" class="btn btn-xs pull-right" data-toggle="collapse" data-target="#collapseSeason-${epResult[b'season']}">Show Episodes</button>
                     <script type="text/javascript">
@@ -394,8 +394,8 @@
         </tr>
     </tbody>
     <tbody class="tablesorter-no-sort">
-        <tr id="season-${epResult["season"]}-cols" class="seasoncols">
-            <th class="col-checkbox"><input type="checkbox" class="seasonCheck" id="${epResult["season"]}" /></th>
+        <tr id="season-${epResult[b"season"]}-cols" class="seasoncols">
+            <th class="col-checkbox"><input type="checkbox" class="seasonCheck" id="${epResult[b"season"]}" /></th>
             <th class="col-metadata">NFO</th>
             <th class="col-metadata">TBN</th>
             <th class="col-ep">Episode</th>
@@ -418,16 +418,16 @@
         % else:
         <tbody>
         % endif
-        <% curSeason = int(epResult["season"]) %>
+        <% curSeason = int(epResult[b"season"]) %>
         % endif
-        <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle" id="${'S' + str(epResult["season"]) + 'E' + str(epResult["episode"])}">
+        <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle" id="${'S' + str(epResult[b"season"]) + 'E' + str(epResult[b"episode"])}">
             <td class="col-checkbox">
-                % if int(epResult["status"]) != UNAIRED:
-                    <input type="checkbox" class="epCheck" id="${str(epResult["season"])+'x'+str(epResult["episode"])}" name="${str(epResult["season"]) +"x"+str(epResult["episode"])}" />
+                % if int(epResult[b"status"]) != UNAIRED:
+                    <input type="checkbox" class="epCheck" id="${str(epResult[b"season"])+'x'+str(epResult[b"episode"])}" name="${str(epResult[b"season"]) +"x"+str(epResult[b"episode"])}" />
                 % endif
             </td>
-            <td align="center"><img src="${srRoot}/images/${("nfo-no.gif", "nfo.gif")[epResult["hasnfo"]]}" alt="${("N", "Y")[epResult["hasnfo"]]}" width="23" height="11" /></td>
-            <td align="center"><img src="${srRoot}/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}" alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11" /></td>
+            <td align="center"><img src="${srRoot}/images/${("nfo-no.gif", "nfo.gif")[epResult[b"hasnfo"]]}" alt="${("N", "Y")[epResult[b"hasnfo"]]}" width="23" height="11" /></td>
+            <td align="center"><img src="${srRoot}/images/${("tbn-no.gif", "tbn.gif")[epResult[b"hastbn"]]}" alt="${("N", "Y")[epResult[b"hastbn"]]}" width="23" height="11" /></td>
             <td align="center">
             <%
                 text = str(epResult[b'episode'])
@@ -436,11 +436,11 @@
             %>
                 ${text}
             </td>
-            <td align="center">${epResult["absolute_number"]}</td>
+            <td align="center">${epResult[b"absolute_number"]}</td>
             <td align="center">
                 <input type="text" placeholder="${str(dfltSeas) + 'x' + str(dfltEpis)}" size="6" maxlength="8"
-                    class="sceneSeasonXEpisode form-control input-scene" data-for-season="${epResult["season"]}" data-for-episode="${epResult["episode"]}"
-                    id="sceneSeasonXEpisode_${show.indexerid}_${str(epResult["season"])}_${str(epResult["episode"])}"
+                    class="sceneSeasonXEpisode form-control input-scene" data-for-season="${epResult[b"season"]}" data-for-episode="${epResult[b"episode"]}"
+                    id="sceneSeasonXEpisode_${show.indexerid}_${str(epResult[b"season"])}_${str(epResult[b"episode"])}"
                     title="Change the value here if scene numbering differs from the indexer episode numbering"
                     % if dfltEpNumbering:
                         value=""
@@ -451,8 +451,8 @@
             </td>
             <td align="center">
                 <input type="text" placeholder="${str(dfltAbsolute)}" size="6" maxlength="8"
-                    class="sceneAbsolute form-control input-scene" data-for-absolute="${epResult["absolute_number"]}"
-                    id="sceneAbsolute_${show.indexerid}${"_"+str(epResult["absolute_number"])}"
+                    class="sceneAbsolute form-control input-scene" data-for-absolute="${epResult[b"absolute_number"]}"
+                    id="sceneAbsolute_${show.indexerid}${"_"+str(epResult[b"absolute_number"])}"
                     title="Change the value here if scene absolute numbering differs from the indexer absolute numbering"
                     % if dfltAbsNumbering:
                         value=""
@@ -462,17 +462,17 @@
                         style="padding: 0; text-align: center; max-width: 60px;" />
             </td>
             <td class="col-name">
-            % if epResult["description"] != "" and epResult["description"] != None:
-                <img src="${srRoot}/images/info32.png" width="16" height="16" class="plotInfo" alt="" id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}" />
+            % if epResult[b"description"] != "" and epResult[b"description"] != None:
+                <img src="${srRoot}/images/info32.png" width="16" height="16" class="plotInfo" alt="" id="plot_info_${str(show.indexerid)}_${str(epResult[b"season"])}_${str(epResult[b"episode"])}" />
             % else:
                 <img src="${srRoot}/images/info32.png" width="16" height="16" class="plotInfoNone" alt="" />
             % endif
-            ${epResult["name"]}
+            ${epResult[b"name"]}
             </td>
             <td class="col-name">${epLoc}</td>
             <td class="col-ep">
-                % if epResult["file_size"]:
-                    <% file_size = sickbeard.helpers.pretty_filesize(epResult["file_size"]) %>
+                % if epResult[b"file_size"]:
+                    <% file_size = sickbeard.helpers.pretty_filesize(epResult[b"file_size"]) %>
                     ${file_size}
                 % endif
             </td>
@@ -502,7 +502,7 @@
                 % endif
             </td>
             <td class="col-subtitles" align="center">
-            % for sub_lang in [subtitles.fromietf(x) for x in epResult["subtitles"].split(',') if epResult["subtitles"]]:
+            % for sub_lang in [subtitles.fromietf(x) for x in epResult[b"subtitles"].split(',') if epResult[b"subtitles"]]:
                 <% flag = sub_lang.opensubtitles %>
                 % if (not sickbeard.SUBTITLES_MULTI and len(subtitles.wantedLanguages()) is 1) and subtitles.wantedLanguages()[0] in sub_lang.opensubtitles:
                     <% flag = 'checkbox' %>
@@ -510,22 +510,22 @@
                 <img src="${srRoot}/images/subtitles/flags/${flag}.png" width="16" height="11" alt="${sub_lang.name}" onError="this.onerror=null;this.src='${srRoot}/images/flags/unknown.png';" />
             % endfor
             </td>
-                <% curStatus, curQuality = Quality.splitCompositeStatus(int(epResult["status"])) %>
+                <% curStatus, curQuality = Quality.splitCompositeStatus(int(epResult[b"status"])) %>
                 % if curQuality != Quality.NONE:
                     <td class="col-status">${statusStrings[curStatus]} ${renderQualityPill(curQuality)}</td>
                 % else:
                     <td class="col-status">${statusStrings[curStatus]}</td>
                 % endif
             <td class="col-search">
-                % if int(epResult["season"]) != 0:
-                    % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickbeard.USE_FAILED_DOWNLOADS:
-                        <a class="epRetry" id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}" name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}" href="retryEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img src="${srRoot}/images/search16.png" height="16" alt="retry" title="Retry Download" /></a>
+                % if int(epResult[b"season"]) != 0:
+                    % if ( int(epResult[b"status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickbeard.USE_FAILED_DOWNLOADS:
+                        <a class="epRetry" id="${str(show.indexerid)}x${str(epResult[b"season"])}x${str(epResult[b"episode"])}" name="${str(show.indexerid)}x${str(epResult[b"season"])}x${str(epResult[b"episode"])}" href="retryEpisode?show=${show.indexerid}&amp;season=${epResult[b"season"]}&amp;episode=${epResult[b"episode"]}"><img src="${srRoot}/images/search16.png" height="16" alt="retry" title="Retry Download" /></a>
                     % else:
-                        <a class="epSearch" id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}" name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}" href="searchEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img src="${srRoot}/images/search16.png" width="16" height="16" alt="search" title="Manual Search" /></a>
+                        <a class="epSearch" id="${str(show.indexerid)}x${str(epResult[b"season"])}x${str(epResult[b"episode"])}" name="${str(show.indexerid)}x${str(epResult[b"season"])}x${str(epResult[b"episode"])}" href="searchEpisode?show=${show.indexerid}&amp;season=${epResult[b"season"]}&amp;episode=${epResult[b"episode"]}"><img src="${srRoot}/images/search16.png" width="16" height="16" alt="search" title="Manual Search" /></a>
                     % endif
                 % endif
-                % if sickbeard.USE_SUBTITLES and show.subtitles and epResult["location"] and frozenset(subtitles.wantedLanguages()).difference(epResult["subtitles"].split(',')):
-                    <a class="epSubtitlesSearch" href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}"><img src="${srRoot}/images/closed_captioning.png" height="16" alt="search subtitles" title="Search Subtitles" /></a>
+                % if sickbeard.USE_SUBTITLES and show.subtitles and epResult[b"location"] and frozenset(subtitles.wantedLanguages()).difference(epResult[b"subtitles"].split(',')):
+                    <a class="epSubtitlesSearch" href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult[b"season"]}&amp;episode=${epResult[b"episode"]}"><img src="${srRoot}/images/closed_captioning.png" height="16" alt="search subtitles" title="Search Subtitles" /></a>
                 % endif
             </td>
         </tr>

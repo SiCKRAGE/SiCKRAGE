@@ -1183,7 +1183,7 @@ def anon_url(*url):
     """
     Return a URL string consisting of the Anonymous redirect URL and an arbitrary number of values appended.
     """
-    return '{}{}'.format(sickbeard.ANON_REDIRECT, url[1:])
+    return '{}{}'.format(sickbeard.ANON_REDIRECT, ''.join(map(str, url)))
 
 
 """
