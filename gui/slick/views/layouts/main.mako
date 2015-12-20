@@ -85,7 +85,7 @@
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${sbPID}"/>
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/${sickbeard.THEME_NAME}.css?${sbPID}" />
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/print.css?${sbPID}" />
-        % if srLogin:
+        % if current_user:
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/pnotify.custom.min.css?${sbPID}" />
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/country-flags.css?${sbPID}"/>
         % endif
@@ -103,7 +103,7 @@
                     </button>
                     <a class="navbar-brand" href="${srRoot}/home/" title="SiCKRAGE"><img alt="SiCKRAGE" src="${srRoot}/images/sickrage.png" style="height: 50px;" class="img-responsive pull-left" /></a>
                 </span>
-            % if srLogin:
+            % if current_user:
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
                         <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
@@ -221,7 +221,7 @@
                                 <li><a href="${srRoot}/home/updateCheck?pid=${sbPID}"><i class="menu-icon-update"></i>&nbsp;Check For Updates</a></li>
                                 <li><a href="${srRoot}/home/restart/?pid=${sbPID}" class="confirm restart"><i class="menu-icon-restart"></i>&nbsp;Restart</a></li>
                                 <li><a href="${srRoot}/home/shutdown/?pid=${sbPID}" class="confirm shutdown"><i class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
-                                % if srLogin != True:
+                                % if current_user != True:
                                     <li><a href="${srRoot}/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a></li>
                                 % endif
                                 <li role="separator" class="divider"></li>
@@ -262,7 +262,7 @@
         </div>
         % endif
 
-        % if sickbeard.NEWEST_VERSION_STRING and srLogin:
+        % if sickbeard.NEWEST_VERSION_STRING and current_user:
         <div class="alert alert-success upgrade-notification hidden-print" role="alert">
             <span>${sickbeard.NEWEST_VERSION_STRING}</span>
         </div>
@@ -273,7 +273,7 @@
                 <%block name="content" />
             </div> <!-- /content -->
         </div> <!-- /contentWrapper -->
-    % if srLogin:
+    % if current_user:
         <footer>
             <div class="footer clearfix">
             <%

@@ -24,6 +24,7 @@ import codecs
 import collections
 import functools
 import locale
+import logging
 import sys
 import types
 from itertools import imap
@@ -54,6 +55,8 @@ def encodingInit():
     sys.stdout = codecs.getwriter(sickbeard.SYS_ENCODING)(sys.stdout)
     sys.stdin = codecs.getreader(sickbeard.SYS_ENCODING)(sys.stdin)
 
+def getEncoding():
+    return sickbeard.SYS_ENCODING or "UTF-8"
 
 def ek(f, *args, **kwargs):
     """
@@ -82,19 +85,22 @@ def ek(f, *args, **kwargs):
                     return filter(lambda x: x is not None, imap(_wrapper, result))
                 elif isinstance(result, collections.Iterable) and isinstance(result, (types.TupleType, types.ListType)):
                     return type(result)(filter(lambda x: x is not None, imap(_wrapper, result)))
-            except:
-                pass
+            except Exception as e:
+                print(e)
 
             return result
 
         return _wrapper(result, *args, **kwargs)
 
-    return wrapper(*args, **kwargs)
+    return f(*args, **kwargs)
+#    return wrapper(*args, **kwargs)
 
 
-def uu(s, encoding="utf-8", errors="strict"):
+def uu(s, encoding=None, errors="strict"):
     """ Convert, at all consts, 'text' to a `unicode` object.
     """
+
+    encoding = encoding or getEncoding()
 
     if isinstance(s, six.text_type):
         return s
@@ -113,28 +119,35 @@ def uu(s, encoding="utf-8", errors="strict"):
         else:
             s = s.decode(encoding, errors)
     except UnicodeDecodeError as e:
-        pass
+        print(e)
 
     return s
 
 
-def ss(s, encoding="utf-8", errors="strict"):
+def ss(s, encoding=None, errors="strict"):
     """ Convert 'text' to a `str` object.
     """
 
-    if isinstance(s, six.binary_type):
-        if encoding == "utf-8":
-            return s
-        else:
-            return s.decode('utf-8', errors).encode(encoding, errors)
+    encoding = encoding or getEncoding()
 
-    if not isinstance(s, six.string_types):
-        try:
-            if six.PY3:
-                return six.text_type(s).encode(encoding)
+    try:
+        if isinstance(s, six.binary_type):
+            if encoding == "utf-8":
+                return s
             else:
-                return six.binary_type(s)
-        except UnicodeEncodeError:
-            return six.text_type(s).encode(encoding, errors)
-    else:
-        return s.encode(encoding, errors)
+                return s.decode('utf-8', errors).encode(encoding, errors)
+
+        if not isinstance(s, six.string_types):
+            try:
+                if six.PY3:
+                    return six.text_type(s).encode(encoding)
+                else:
+                    return six.binary_type(s)
+            except UnicodeEncodeError:
+                return six.text_type(s).encode(encoding, errors)
+        else:
+            return s.encode(encoding, errors)
+    except UnicodeEncodeError as e:
+        print(e)
+
+    return s

@@ -4,12 +4,14 @@
     import urllib
     import ntpath
     import sickbeard
-    from sickbeard import subtitles, sbdatetime, network_timezones
     import sickbeard.helpers
 
+    from sickbeard import subtitles, sbdatetime, network_timezones
     from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
     from sickbeard.common import Quality, qualityPresets, statusStrings, Overview
     from sickbeard.helpers import anon_url
+    from sickrage.media import showImage
+
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/lib/jquery.bookmarkscroll.js?${sbPID}"></script>
@@ -106,7 +108,7 @@
 
     <div id="container">
         <div id="posterCol">
-            <a href="${srRoot}/showPoster/?show=${show.indexerid}&amp;which=poster" rel="dialog" title="View Poster for ${show.name}"><img src="${srRoot}/showPoster/?show=${show.indexerid}&amp;which=poster_thumb" class="tvshowImg" alt=""/></a>
+            <a href="${srRoot}${showImage(show.indexerid, 'poster')}" rel="dialog" title="View Poster for ${show.name}"><img src="${srRoot}${showImage(show.indexerid, 'poster_thumb')}" class="tvshowImg" alt=""/></a>
         </div>
 
         <div id="showCol">

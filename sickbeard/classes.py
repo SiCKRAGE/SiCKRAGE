@@ -264,6 +264,26 @@ class Proper(object):
                 self.indexerid) + " from " + str(sickbeard.indexerApi(self.indexer).name)
 
 
+class UIError(object):
+    """
+    Represents an error to be displayed in the web UI.
+    """
+
+    def __init__(self, message):
+        self.time = datetime.datetime.now().strftime(dateTimeFormat)
+        self.title = sys.exc_info()[-2] or message
+        self.message = message
+
+class UIWarning(object):
+    """
+    Represents an error to be displayed in the web UI.
+    """
+
+    def __init__(self, message):
+        self.time = datetime.datetime.now().strftime(dateTimeFormat)
+        self.title = sys.exc_info()[-2] or message
+        self.message = message
+
 class ErrorViewer(object):
     """
     Keeps a static list of UIErrors to be displayed on the UI and allows
@@ -271,22 +291,14 @@ class ErrorViewer(object):
     """
 
     errors = []
+    def add(self, error, ui=False):
+        self.errors +=[(error, UIError(error))[ui]]
 
-    def __init__(self):
-        ErrorViewer.errors = []
+    def clear(self):
+        self.errors = []
 
-    @staticmethod
-    def add(error):
-        ErrorViewer.errors.append(error)
-
-    @staticmethod
-    def clear():
-        ErrorViewer.errors = []
-
-    @staticmethod
-    def get():
-        return ErrorViewer.errors
-
+    def get(self):
+        return self.errors
 
 class WarningViewer(object):
     """
@@ -295,29 +307,11 @@ class WarningViewer(object):
     """
 
     errors = []
+    def add(self, error, ui=False):
+        self.errors +=[(error, UIWarning(error))[ui]]
 
-    def __init__(self):
-        WarningViewer.errors = []
+    def clear(self):
+        self.errors = []
 
-    @staticmethod
-    def add(error):
-        WarningViewer.errors.append(error)
-
-    @staticmethod
-    def clear():
-        WarningViewer.errors = []
-
-    @staticmethod
-    def get():
-        return WarningViewer.errors
-
-
-class UIError(object):
-    """
-    Represents an error to be displayed in the web UI.
-    """
-
-    def __init__(self, message):
-        self.title = sys.exc_info()[-2] or message
-        self.message = message
-        self.time = datetime.datetime.now().strftime(dateTimeFormat)
+    def get(self):
+        return self.errors

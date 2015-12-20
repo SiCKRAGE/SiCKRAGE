@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: https://sickrage.tv/
 # Git: https://github.com/SiCKRAGETV/SickRage.git
@@ -86,18 +87,18 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
                     ek(os.listdir, parentPath)]
 
     if not includeFiles:
-        fileList = [x for x in fileList if ek(os.path.isdir, x[b'path'])]
+        fileList = [x for x in fileList if ek(os.path.isdir, x['path'])]
 
     # prune out directories to protect the user from doing stupid things (already lower case the dir to reduce calls)
     hideList = ["boot", "bootmgr", "cache", "msocache", "recovery", "$recycle.bin", "recycler",
                 "system volume information", "temporary internet files"]  # windows specific
     hideList += [".fseventd", ".spotlight", ".trashes", ".vol", "cachedmessages", "caches", "trash"]  # osx specific
 
-    fileList = [x for x in fileList if x[b'name'].lower() not in hideList]
+    fileList = [x for x in fileList if x['name'].lower() not in hideList]
 
     fileList = sorted(fileList,
-                      lambda x, y: cmp(ek(os.path.basename, x[b'name']).lower(),
-                                       ek(os.path.basename, y[b'path']).lower()))
+                      lambda x, y: cmp(ek(os.path.basename, x['name']).lower(),
+                                       ek(os.path.basename, y['path']).lower()))
 
     entries = [{'current_path': path}]
     if includeParent and parentPath != path:

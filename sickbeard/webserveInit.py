@@ -15,13 +15,25 @@ from tornado.routes import route
 
 from sickrage.helper.encoding import ek
 
+class StaticImageHandler(StaticFileHandler):
+
+    def initialize(self, path, default_filename=None):
+        super(StaticImageHandler, self).initialize(path, default_filename)
+
+    def get(self, path, include_body=True):
+        # image cache check
+        self.root = (self.root, os.path.join(sickbeard.CACHE_DIR, 'images'))[
+            os.path.exists(os.path.normpath(os.path.join(sickbeard.CACHE_DIR, 'images', path)))
+        ]
+
+        return super(StaticImageHandler, self).get(path, include_body)
 
 class SRWebServer(threading.Thread):
     def __init__(self, options={}, io_loop=None):
         threading.Thread.__init__(self)
-        self.daemon = True
-        self.alive = True
         self.name = "TORNADO"
+        self.alive = True
+
         self.io_loop = io_loop or IOLoop.current()
 
         self.options = options
@@ -32,7 +44,7 @@ class SRWebServer(threading.Thread):
         self.options.setdefault('password', '')
         self.options.setdefault('web_root', '/')
         assert isinstance(self.options[b'port'], int)
-        assert 'data_root' in self.options
+        assert 'gui_root' in self.options
 
         # video root
         if sickbeard.ROOT_DIRS:
@@ -107,35 +119,31 @@ class SRWebServer(threading.Thread):
         self.app.add_handlers(".*$", [
             # favicon
             (r'%s/(favicon\.ico)' % self.options[b'web_root'], StaticFileHandler,
-             {"path": ek(os.path.join, self.options[b'data_root'], 'images/ico/favicon.ico')}),
+             {"path": ek(os.path.join, self.options[b'gui_root'], 'images/ico/favicon.ico')}),
 
             # images
-            (r'%s/images/(.*)' % self.options[b'web_root'], StaticFileHandler,
-             {"path": ek(os.path.join, self.options[b'data_root'], 'images')}),
-
-            # cached images
-            (r'%s/cache/images/(.*)' % self.options[b'web_root'], StaticFileHandler,
-             {"path": ek(os.path.join, sickbeard.CACHE_DIR, 'images')}),
+            (r'%s.*?/images/(.*)' % self.options[b'web_root'], StaticImageHandler,
+             {"path": ek(os.path.join, self.options[b'gui_root'], 'images')}),
 
             # css
             (r'%s/css/(.*)' % self.options[b'web_root'], StaticFileHandler,
-             {"path": ek(os.path.join, self.options[b'data_root'], 'css')}),
+             {"path": ek(os.path.join, self.options[b'gui_root'], 'css')}),
 
             # javascript
             (r'%s/js/(.*)' % self.options[b'web_root'], StaticFileHandler,
-             {"path": ek(os.path.join, self.options[b'data_root'], 'js')}),
+             {"path": ek(os.path.join, self.options[b'gui_root'], 'js')}),
 
             # videos
         ] + [(r'%s/videos/(.*)' % self.options[b'web_root'], StaticFileHandler,
               {"path": self.video_root})])
 
     def run(self):
+        protocol = 'http'
+        self.server = HTTPServer(self.app)
+
         if self.enable_https:
-            protocol = "https"
-            self.server = HTTPServer(self.app, ssl_options={"certfile": self.https_cert, "keyfile": self.https_key})
-        else:
-            protocol = "http"
-            self.server = HTTPServer(self.app)
+            protocol = 'https'
+            self.server.ssl_options={"certfile": self.https_cert, "keyfile": self.https_key}
 
         logging.info("Starting SiCKRAGE web server on [{}://{}:{}/]".format(protocol, self.options[b'host'],
                                                                            self.options[b'port']))
@@ -143,18 +151,16 @@ class SRWebServer(threading.Thread):
         try:
             self.server.listen(self.options[b'port'], self.options[b'host'])
         except:
-            if sickbeard.LAUNCH_BROWSER and not self.daemon:
-                sickbeard.launchBrowser('https' if sickbeard.ENABLE_HTTPS else 'http', self.options[b'port'],
-                                        sickbeard.WEB_ROOT)
-                logging.info("Launching browser and exiting")
             logging.info("Could not start webserver on port %s, already in use!" % self.options[b'port'])
-            ek(os._exit, 1)
+            os._exit(1)
+
+        if sickbeard.LAUNCH_BROWSER and not sickbeard.DAEMONIZE:
+            self.io_loop.add_callback(sickbeard.launchBrowser, protocol, sickbeard.WEB_PORT, sickbeard.WEB_ROOT)
 
         try:
             self.io_loop.start()
             self.io_loop.close(True)
         except (IOError, ValueError):
-            # Ignore errors like "ValueError: I/O operation on closed kqueue fd". These might be thrown during a reload.
             pass
 
     def shutDown(self):

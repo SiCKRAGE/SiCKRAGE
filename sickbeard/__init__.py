@@ -27,12 +27,15 @@ import re
 import shutil
 import socket
 import sys
+import threading
 import webbrowser
 import logging
 import requests
 from threading import Lock
 from configobj import ConfigObj
 from github import Github
+
+import network_timezones
 from sickbeard.logger import SRLogger
 from sickbeard import dailysearcher
 from sickbeard import db
@@ -78,15 +81,17 @@ ENCRYPTION_VERSION = 0
 ENCRYPTION_SECRET = None
 
 PROG_DIR = '.'
+DATA_DIR = ''
+GUI_DIR = ''
 MY_FULLNAME = None
 MY_NAME = None
 MY_ARGS = []
-SYS_ENCODING = ''
-DATA_DIR = ''
+SYS_ENCODING = None
 CREATEPID = False
 PIDFILE = ''
 
 DAEMON = None
+DAEMONIZE = False
 NO_RESIZE = False
 
 # system events
@@ -613,7 +618,7 @@ def initialize(consoleLogging=True):
             USE_EMAIL, EMAIL_HOST, EMAIL_PORT, EMAIL_TLS, EMAIL_USER, EMAIL_PASSWORD, EMAIL_FROM, EMAIL_NOTIFY_ONSNATCH, EMAIL_NOTIFY_ONDOWNLOAD, EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD, EMAIL_LIST, \
             USE_LISTVIEW, METADATA_KODI, METADATA_KODI_12PLUS, METADATA_MEDIABROWSER, METADATA_PS3, metadata_provider_dict, \
             NEWZBIN, NEWZBIN_USERNAME, NEWZBIN_PASSWORD, GIT_PATH, MOVE_ASSOCIATED_FILES, SYNC_FILES, POSTPONE_IF_SYNC_FILES, dailySearchScheduler, NFO_RENAME, \
-            GUI_NAME, HOME_LAYOUT, HISTORY_LAYOUT, DISPLAY_SHOW_SPECIALS, COMING_EPS_LAYOUT, COMING_EPS_SORT, COMING_EPS_DISPLAY_PAUSED, COMING_EPS_MISSED_RANGE, FUZZY_DATING, TRIM_ZERO, DATE_PRESET, TIME_PRESET, TIME_PRESET_W_SECONDS, THEME_NAME, FILTER_ROW, \
+            GUI_NAME, GUI_DIR, HOME_LAYOUT, HISTORY_LAYOUT, DISPLAY_SHOW_SPECIALS, COMING_EPS_LAYOUT, COMING_EPS_SORT, COMING_EPS_DISPLAY_PAUSED, COMING_EPS_MISSED_RANGE, FUZZY_DATING, TRIM_ZERO, DATE_PRESET, TIME_PRESET, TIME_PRESET_W_SECONDS, THEME_NAME, FILTER_ROW, \
             POSTER_SORTBY, POSTER_SORTDIR, HISTORY_LIMIT, CREATE_MISSING_SHOW_DIRS, ADD_SHOWS_WO_DIR, WEB_SERVER, \
             METADATA_WDTV, METADATA_TIVO, METADATA_MEDE8ER, IGNORE_WORDS, IGNORED_SUBS_LIST, REQUIRE_WORDS, CALENDAR_UNPROTECTED, CALENDAR_ICONS, NO_RESTART, \
             USE_SUBTITLES, SUBTITLES_LANGUAGES, SUBTITLES_DIR, SUBTITLES_SERVICES_LIST, SUBTITLES_SERVICES_ENABLED, SUBTITLES_HISTORY, SUBTITLES_FINDER_FREQUENCY, SUBTITLES_MULTI, EMBEDDED_SUBTITLES_ALL, SUBTITLES_EXTRA_SCRIPTS, subtitlesFinderScheduler, \
@@ -769,6 +774,7 @@ def initialize(consoleLogging=True):
                         logging.warning("Restore: Unable to remove the cache/{0} directory: {1}".format(cleanupDir, ex(e)))
 
         GUI_NAME = check_setting_str(CFG, 'GUI', 'gui_name', 'slick')
+        GUI_DIR = ek(os.path.join, PROG_DIR, 'gui', GUI_NAME)
 
         THEME_NAME = check_setting_str(CFG, 'GUI', 'theme_name', 'dark')
 
@@ -1484,6 +1490,10 @@ def start():
         if __INITIALIZED__:
             # start sysetm events queue
             events.start()
+
+            # Prepopulate network timezones, it isn't thread safe
+            networkTimezones = threading.Thread(target=network_timezones.update_network_dict, name="TZUPDATER")
+            networkTimezones.start()
 
             # start the daily search scheduler
             dailySearchScheduler.enable = True

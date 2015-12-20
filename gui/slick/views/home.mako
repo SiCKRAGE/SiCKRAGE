@@ -1,10 +1,11 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    import sickbeard
+    import re
     import calendar
+    import sickbeard
+    from sickrage.media import showImage
     from sickbeard import sbdatetime
     from sickbeard import network_timezones
-    import re
 %>
 <%block name="metas">
 <meta data-var="max_download_count" data-content="${max_download_count}">
@@ -146,7 +147,7 @@
 %>
     <div class="show" id="show${curShow.indexerid}" data-name="${curShow.name}" data-date="${data_date}" data-network="${curShow.network}" data-progress="${progressbar_percent}">
         <div class="show-image">
-            <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=poster_thumb" /></a>
+            <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${srRoot}${showImage(curShow.indexerid, 'poster_thumb')}" /></a>
         </div>
 
         <div class="progressbar hidden-print" style="position:relative;" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}"></div>
@@ -160,7 +161,7 @@
     <% ldatetime = sbdatetime.sbdatetime.convert_to_setting(network_timezones.parse_date_time(cur_airs_next, curShow.airs, curShow.network)) %>
     <%
         try:
-            out = str(sbdatetime.sbdatetime.sbfdate(ldatetime))
+            out = sbdatetime.sbdatetime.sbfdate(ldatetime)
         except ValueError:
             out = 'Invalid date'
             pass
@@ -189,7 +190,7 @@
                 <td class="show-table">
                     % if sickbeard.HOME_LAYOUT != 'simple':
                         % if curShow.network:
-                            <span title="${curShow.network}"><img class="show-network-image" src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=network" alt="${curShow.network}" title="${curShow.network}" /></span>
+                            <span title="${curShow.network}"><img class="show-network-image" src="${srRoot}${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
                         % else:
                             <span title="No Network"><img class="show-network-image" src="${srRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>
                         % endif
@@ -248,16 +249,16 @@
 % for curLoadingShow in sickbeard.showQueueScheduler.action.loadingShowList:
 
     % if curLoadingShow.show != None and curLoadingShow.show in sickbeard.showList:
-         <% continue %>
+         continue
     % endif
   <tr>
     <td align="center">(loading)</td>
     <td></td>
     <td>
     % if curLoadingShow.show == None:
-    <span title="">Loading... (${curLoadingShow.show_name})</span>
+        <span title="">Loading... (${curLoadingShow.show_name})</span>
     % else:
-    <a href="displayShow?show=${curLoadingShow.show.indexerid}">${curLoadingShow.show.name}</a>
+        <a href="displayShow?show=${curLoadingShow.show.indexerid}">${curLoadingShow.show.name}</a>
     % endif
     </td>
     <td></td>
@@ -348,7 +349,7 @@
         <td class="tvShow">
             <div class="imgsmallposter ${sickbeard.HOME_LAYOUT}">
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}" title="${curShow.name}">
-                    <img src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=poster_thumb" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}"/>
+                    <img src="${srRoot}${showImage(curShow.indexerid, 'poster_thumb')}" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}"/>
                 </a>
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}" style="vertical-align: middle;">${curShow.name}</a>
             </div>
@@ -358,7 +359,8 @@
             <span style="display: none;">${curShow.name}</span>
             <div class="imgbanner ${sickbeard.HOME_LAYOUT}">
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}">
-                <img src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=banner" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}" title="${curShow.name}"/>
+                    <img src="${srRoot}${showImage(curShow.indexerid, 'banner')}" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}" title="${curShow.name}"/>
+                </a>
             </div>
         </td>
     % elif sickbeard.HOME_LAYOUT == 'simple':
@@ -368,7 +370,7 @@
     % if sickbeard.HOME_LAYOUT != 'simple':
         <td align="center">
         % if curShow.network:
-            <span title="${curShow.network}" class="hidden-print"><img id="network" width="54" height="27" src="${srRoot}/showPoster/?show=${curShow.indexerid}&amp;which=network" alt="${curShow.network}" title="${curShow.network}" /></span>
+            <span title="${curShow.network}" class="hidden-print"><img id="network" width="54" height="27" src="${srRoot}${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
             <span class="visible-print-inline">${curShow.network}</span>
         % else:
             <span title="No Network" class="hidden-print"><img id="network" width="54" height="27" src="${srRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>

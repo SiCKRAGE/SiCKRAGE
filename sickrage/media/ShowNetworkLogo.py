@@ -18,6 +18,7 @@
 
 from __future__ import unicode_literals
 
+import os
 from os.path import join
 from sickrage.helper.encoding import ek
 from sickrage.media.GenericMedia import GenericMedia
@@ -28,13 +29,20 @@ class ShowNetworkLogo(GenericMedia):
     Get the network logo of a show
     """
 
+    def __init__(self, indexer_id, media_format):
+        super(ShowNetworkLogo, self).__init__(indexer_id, media_format)
+
     def get_default_media_name(self):
         return join('network', 'nonetwork.png')
 
     def get_media_path(self):
+        media_file = None
+
         show = self.get_show()
-
         if show:
-            return ek(join, self.get_media_root(), 'images', 'network', show.network_logo_name + '.png')
+            media_file = ek(join, self.get_media_root(), 'images', 'network', show.network_logo_name + '.png')
 
-        return ''
+        if not all([media_file, ek(os.path.exists, media_file)]):
+            media_file = ek(os.path.join, self.get_media_root(), 'images', self.get_default_media_name())
+
+        return media_file
