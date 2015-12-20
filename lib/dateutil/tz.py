@@ -28,20 +28,18 @@ __all__ = ["tzutc", "tzoffset", "tzlocal", "tzfile", "tzrange",
            "tzstr", "tzical", "tzwin", "tzwinlocal", "gettz"]
 
 
-def tzname_in_python2(namefunc):
+def tzname_in_python2(myfunc):
     """Change unicode output into bytestrings in Python 2
 
     tzname() API changed in Python 3. It used to return bytes, but was changed
     to unicode strings
     """
-    def adjust_encoding(*args, **kwargs):
-        name = namefunc(*args, **kwargs)
-        if name is not None and not PY3:
-            name = name.encode()
-
-        return name
-
-    return adjust_encoding
+    def inner_func(*args, **kwargs):
+        if PY3:
+            return myfunc(*args, **kwargs)
+        else:
+            return myfunc(*args, **kwargs).encode()
+    return inner_func
 
 ZERO = datetime.timedelta(0)
 EPOCHORDINAL = datetime.datetime.utcfromtimestamp(0).toordinal()
@@ -104,12 +102,12 @@ class tzoffset(datetime.tzinfo):
 
 
 class tzlocal(datetime.tzinfo):
-    def __init__(self):
-        self._std_offset = datetime.timedelta(seconds=-time.timezone)
-        if time.daylight:
-            self._dst_offset = datetime.timedelta(seconds=-time.altzone)
-        else:
-            self._dst_offset = self._std_offset
+
+    _std_offset = datetime.timedelta(seconds=-time.timezone)
+    if time.daylight:
+        _dst_offset = datetime.timedelta(seconds=-time.altzone)
+    else:
+        _dst_offset = _std_offset
 
     def utcoffset(self, dt):
         if self._isdst(dt):

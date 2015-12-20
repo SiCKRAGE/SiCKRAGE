@@ -21,27 +21,31 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import os
 import os.path
 import re
 import shutil
 import socket
 import sys
-import threading
+import traceback
 import webbrowser
+import logging
 
+import requests
+
+from threading import Lock
 from configobj import ConfigObj
 from github import Github
 
 import network_timezones
-from providers.nzb import getNewznabProviderList, getNZBProviderList
-from providers.torrent import getTorrentRssProviderList, getTorrentProviderList
+from sickbeard.tv import TVShow
+from sickbeard.logger import SRLogger
 from sickbeard import dailysearcher
 from sickbeard import db
 from sickbeard import helpers
 from sickbeard import metadata
 from sickbeard import naming
+from sickbeard import providers
 from sickbeard import scheduler
 from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
     subtitles, traktChecker
@@ -50,14 +54,21 @@ from sickbeard import show_queue
 from sickbeard.common import SD
 from sickbeard.common import SKIPPED
 from sickbeard.common import WANTED
-from sickbeard.config import CheckSection, check_setting_int, check_setting_str, ConfigMigrator
+from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
+    naming_ep_type
 from sickbeard.databases import mainDB, cache_db, failed_db
+from sickbeard.indexers import indexer_api
+from sickbeard.indexers.indexer_exceptions import indexer_shownotfound, indexer_showincomplete, indexer_exception, \
+    indexer_error, \
+    indexer_episodenotfound, indexer_attributenotfound, indexer_seasonnotfound, indexer_userabort, indexerExcepts
+from sickbeard.providers.generic import GenericProvider
 from sickbeard.helpers import removetree
 from sickbeard.indexers import indexer_api
 from sickbeard.logger import SRLogger
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
-from sickrage.system.Shutdown import Shutdown
+from sickbeard import name_cache
+from webserveInit import SRWebServer
 
 indexerApi = indexer_api.indexerApi
 
@@ -104,9 +115,10 @@ properFinderScheduler = None
 autoPostProcesserScheduler = None
 subtitlesFinderScheduler = None
 traktCheckerScheduler = None
+nameCacheScheduler = None
 
-showList = None
-loadingShowList = None
+showList = []
+loadingShowList = []
 
 providerList = []
 newznabProviderList = []
@@ -140,7 +152,8 @@ NEWS_LATEST = None
 NEWS_UNREAD = 0
 
 INIT_LOCK = threading.Lock()
-started = False
+STARTED = False
+DAEMONIZE = False
 
 ACTUAL_LOG_DIR = None
 LOG_DIR = None
@@ -160,6 +173,7 @@ WEB_IPV6 = None
 WEB_COOKIE_SECRET = None
 WEB_USE_GZIP = True
 WEB_SERVER = None
+WEB_NOLAUNCH = False
 
 DOWNLOAD_URL = None
 
@@ -250,12 +264,14 @@ BACKLOG_FREQUENCY = None
 SHOWUPDATE_HOUR = None
 
 DEFAULT_AUTOPOSTPROCESSER_FREQUENCY = 10
+DEFAULT_NAMECACHE_FREQUENCY = 10
 DEFAULT_DAILYSEARCH_FREQUENCY = 40
 DEFAULT_BACKLOG_FREQUENCY = 21
 DEFAULT_UPDATE_FREQUENCY = 1
 DEFAULT_SHOWUPDATE_HOUR = 3
 
 MIN_AUTOPOSTPROCESSER_FREQUENCY = 1
+MIN_NAMECACHE_FREQUENCY = 1
 MIN_DAILYSEARCH_FREQUENCY = 10
 MIN_BACKLOG_FREQUENCY = 10
 MIN_UPDATE_FREQUENCY = 1
@@ -600,10 +616,10 @@ def initialize(consoleLogging=True):
             USE_PUSHBULLET, PUSHBULLET_NOTIFY_ONSNATCH, PUSHBULLET_NOTIFY_ONDOWNLOAD, PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD, PUSHBULLET_API, PUSHBULLET_DEVICE, \
             versionCheckScheduler, VERSION_NOTIFY, AUTO_UPDATE, NOTIFY_ON_UPDATE, PROCESS_AUTOMATICALLY, NO_DELETE, UNPACK, CPU_PRESET, \
             KEEP_PROCESSED_DIR, PROCESS_METHOD, DELRARCONTENTS, TV_DOWNLOAD_DIR, UPDATE_FREQUENCY, \
-            showQueueScheduler, searchQueueScheduler, ROOT_DIRS, CACHE_DIR, ACTUAL_CACHE_DIR, TIMEZONE_DISPLAY, \
+            showQueueScheduler, searchQueueScheduler, nameCacheScheduler, ROOT_DIRS, CACHE_DIR, ACTUAL_CACHE_DIR, TIMEZONE_DISPLAY, \
             NAMING_PATTERN, NAMING_MULTI_EP, NAMING_ANIME_MULTI_EP, NAMING_FORCE_FOLDERS, NAMING_ABD_PATTERN, NAMING_CUSTOM_ABD, NAMING_SPORTS_PATTERN, NAMING_CUSTOM_SPORTS, NAMING_ANIME_PATTERN, NAMING_CUSTOM_ANIME, NAMING_STRIP_YEAR, \
             RENAME_EPISODES, AIRDATE_EPISODES, FILE_TIMESTAMP_TIMEZONE, properFinderScheduler, PROVIDER_ORDER, autoPostProcesserScheduler, \
-            providerList, newznabProviderList, torrentRssProviderList, \
+            providerList, newznabProviderList, torrentRssProviderList, DAEMONIZE, WEB_NOLAUNCH, \
             EXTRA_SCRIPTS, USE_TWITTER, TWITTER_USERNAME, TWITTER_PASSWORD, TWITTER_PREFIX, DAILYSEARCH_FREQUENCY, TWITTER_DMTO, TWITTER_USEDM, \
             USE_BOXCAR, BOXCAR_USERNAME, BOXCAR_NOTIFY_ONDOWNLOAD, BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD, BOXCAR_NOTIFY_ONSNATCH, \
             USE_BOXCAR2, BOXCAR2_ACCESSTOKEN, BOXCAR2_NOTIFY_ONDOWNLOAD, BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD, BOXCAR2_NOTIFY_ONSNATCH, \
@@ -619,7 +635,7 @@ def initialize(consoleLogging=True):
             USE_SUBTITLES, SUBTITLES_LANGUAGES, SUBTITLES_DIR, SUBTITLES_SERVICES_LIST, SUBTITLES_SERVICES_ENABLED, SUBTITLES_HISTORY, SUBTITLES_FINDER_FREQUENCY, SUBTITLES_MULTI, EMBEDDED_SUBTITLES_ALL, SUBTITLES_EXTRA_SCRIPTS, subtitlesFinderScheduler, \
             SUBTITLES_HEARING_IMPAIRED, ADDIC7ED_USER, ADDIC7ED_PASS, LEGENDASTV_USER, LEGENDASTV_PASS, OPENSUBTITLES_USER, OPENSUBTITLES_PASS, \
             USE_FAILED_DOWNLOADS, DELETE_FAILED, ANON_REDIRECT, LOCALHOST_IP, DEBUG, DEFAULT_PAGE, PROXY_SETTING, PROXY_INDEXERS, \
-            AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, LOG_FILE, THETVDB_APITOKEN, \
+            AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, LOG_FILE, NAMECACHE_FREQUENCY, DEFAULT_NAMECACHE_FREQUENCY, MIN_NAMECACHE_FREQUENCY, THETVDB_APITOKEN, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
             ANIME_SPLIT_HOME, SCENE_DEFAULT, ARCHIVE_DEFAULT, DOWNLOAD_URL, BACKLOG_DAYS, GIT_USERNAME, GIT_PASSWORD, \
             GIT_AUTOISSUES, DEVELOPER, gh, DISPLAY_ALL_SEASONS, SSL_VERIFY, NEWS_LAST_READ, NEWS_LATEST, SOCKET_TIMEOUT
@@ -627,6 +643,22 @@ def initialize(consoleLogging=True):
         if __INITIALIZED__:
             return False
 
+        # Check if we need to perform a restore first
+        ek(os.chdir, DATA_DIR)
+        restoreDir = ek(os.path.join, DATA_DIR, 'restore')
+        if ek(os.path.exists, restoreDir):
+            success = db.restoreDB(restoreDir, DATA_DIR)
+            if consoleLogging:
+                sys.stdout.write("Restore: restoring DB and config.ini %s!\n" % ("FAILED", "SUCCESSFUL")[success])
+
+        # Load the config and publish it to the sickbeard package
+        if consoleLogging and not ek(os.path.isfile, CONFIG_FILE):
+            sys.stdout.write("Unable to find '" + CONFIG_FILE + "' , all settings will be default!" + "\n")
+
+        # init config file
+        CFG = ConfigObj(CONFIG_FILE)
+
+        # config sanity check
         CheckSection(CFG, 'General')
         CheckSection(CFG, 'Blackhole')
         CheckSection(CFG, 'Newzbin')
@@ -655,9 +687,12 @@ def initialize(consoleLogging=True):
 
         ACTUAL_LOG_DIR = check_setting_str(CFG, 'General', 'log_dir', 'Logs')
         LOG_DIR = ek(os.path.normpath, ek(os.path.join, DATA_DIR, ACTUAL_LOG_DIR))
-        SRLogger.logNr = LOG_NR = check_setting_int(CFG, 'General', 'log_nr', 5)  # Default to 5 backup file (sickrage.log.x)
-        SRLogger.logSize = LOG_SIZE = check_setting_int(CFG, 'General', 'log_size', 1048576)  # Default to max 1MB per logfile
-        SRLogger.logFile = LOG_FILE = check_setting_str(CFG, 'General', 'log_file', ek(os.path.join, LOG_DIR, 'sickrage.log'))
+        SRLogger.logNr = LOG_NR = check_setting_int(CFG, 'General', 'log_nr',
+                                                    5)  # Default to 5 backup file (sickrage.log.x)
+        SRLogger.logSize = LOG_SIZE = check_setting_int(CFG, 'General', 'log_size',
+                                                        1048576)  # Default to max 1MB per logfile
+        SRLogger.logFile = LOG_FILE = check_setting_str(CFG, 'General', 'log_file',
+                                                        ek(os.path.join, LOG_DIR, 'sickrage.log'))
         SRLogger.debugLogging = DEBUG = bool(check_setting_int(CFG, 'General', 'debug', 0))
         SRLogger.consoleLogging = consoleLogging
         SRLogger.fileLogging = True
@@ -689,7 +724,7 @@ def initialize(consoleLogging=True):
         try:
             try:
                 gh = Github(login_or_token=GIT_USERNAME, password=GIT_PASSWORD, user_agent="SiCKRAGE").get_organization(
-                    GIT_ORG).get_repo(GIT_REPO)
+                        GIT_ORG).get_repo(GIT_REPO)
             except:
                 gh = Github(user_agent="SiCKRAGE").get_organization(GIT_ORG).get_repo(GIT_REPO)
         except:
@@ -768,7 +803,8 @@ def initialize(consoleLogging=True):
                     try:
                         ek(removetree, ek(os.path.join, CACHE_DIR, cleanupDir))
                     except Exception as e:
-                        logging.warning("Restore: Unable to remove the cache/{0} directory: {1}".format(cleanupDir, ex(e)))
+                        logging.warning(
+                                "Restore: Unable to remove the cache/{0} directory: {1}".format(cleanupDir, ex(e)))
 
         GUI_NAME = check_setting_str(CFG, 'GUI', 'gui_name', 'slick')
         GUI_DIR = ek(os.path.join, PROG_DIR, 'gui', GUI_NAME)
@@ -876,8 +912,9 @@ def initialize(consoleLogging=True):
 
         TORRENT_METHOD = check_setting_str(CFG, 'General', 'torrent_method', 'blackhole')
         if TORRENT_METHOD not in (
-        'blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent', 'qbittorrent',
-        'mlnet'):
+                'blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent',
+                'qbittorrent',
+                'mlnet'):
             TORRENT_METHOD = 'blackhole'
 
         DOWNLOAD_PROPERS = bool(check_setting_int(CFG, 'General', 'download_propers', 1))
@@ -897,6 +934,10 @@ def initialize(consoleLogging=True):
                                                         DEFAULT_AUTOPOSTPROCESSER_FREQUENCY)
         if AUTOPOSTPROCESSER_FREQUENCY < MIN_AUTOPOSTPROCESSER_FREQUENCY:
             AUTOPOSTPROCESSER_FREQUENCY = MIN_AUTOPOSTPROCESSER_FREQUENCY
+
+        NAMECACHE_FREQUENCY = check_setting_int(CFG, 'General', 'namecache_frequency', DEFAULT_NAMECACHE_FREQUENCY)
+        if NAMECACHE_FREQUENCY < MIN_NAMECACHE_FREQUENCY:
+            NAMECACHE_FREQUENCY = MIN_NAMECACHE_FREQUENCY
 
         DAILYSEARCH_FREQUENCY = check_setting_int(CFG, 'General', 'dailysearch_frequency',
                                                   DEFAULT_DAILYSEARCH_FREQUENCY)
@@ -1026,7 +1067,7 @@ def initialize(consoleLogging=True):
         FREEMOBILE_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'FreeMobile', 'freemobile_notify_onsnatch', 0))
         FREEMOBILE_NOTIFY_ONDOWNLOAD = bool(check_setting_int(CFG, 'FreeMobile', 'freemobile_notify_ondownload', 0))
         FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-            check_setting_int(CFG, 'FreeMobile', 'freemobile_notify_onsubtitledownload', 0))
+                check_setting_int(CFG, 'FreeMobile', 'freemobile_notify_onsubtitledownload', 0))
         FREEMOBILE_ID = check_setting_str(CFG, 'FreeMobile', 'freemobile_id', '')
         FREEMOBILE_APIKEY = check_setting_str(CFG, 'FreeMobile', 'freemobile_apikey', '')
 
@@ -1058,14 +1099,14 @@ def initialize(consoleLogging=True):
         BOXCAR2_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'Boxcar2', 'boxcar2_notify_onsnatch', 0))
         BOXCAR2_NOTIFY_ONDOWNLOAD = bool(check_setting_int(CFG, 'Boxcar2', 'boxcar2_notify_ondownload', 0))
         BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-            check_setting_int(CFG, 'Boxcar2', 'boxcar2_notify_onsubtitledownload', 0))
+                check_setting_int(CFG, 'Boxcar2', 'boxcar2_notify_onsubtitledownload', 0))
         BOXCAR2_ACCESSTOKEN = check_setting_str(CFG, 'Boxcar2', 'boxcar2_accesstoken', '', censor_log=True)
 
         USE_PUSHOVER = bool(check_setting_int(CFG, 'Pushover', 'use_pushover', 0))
         PUSHOVER_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'Pushover', 'pushover_notify_onsnatch', 0))
         PUSHOVER_NOTIFY_ONDOWNLOAD = bool(check_setting_int(CFG, 'Pushover', 'pushover_notify_ondownload', 0))
         PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-            check_setting_int(CFG, 'Pushover', 'pushover_notify_onsubtitledownload', 0))
+                check_setting_int(CFG, 'Pushover', 'pushover_notify_onsubtitledownload', 0))
         PUSHOVER_USERKEY = check_setting_str(CFG, 'Pushover', 'pushover_userkey', '', censor_log=True)
         PUSHOVER_APIKEY = check_setting_str(CFG, 'Pushover', 'pushover_apikey', '', censor_log=True)
         PUSHOVER_DEVICE = check_setting_str(CFG, 'Pushover', 'pushover_device', '')
@@ -1075,7 +1116,7 @@ def initialize(consoleLogging=True):
         LIBNOTIFY_NOTIFY_ONSNATCH = bool(check_setting_int(CFG, 'Libnotify', 'libnotify_notify_onsnatch', 0))
         LIBNOTIFY_NOTIFY_ONDOWNLOAD = bool(check_setting_int(CFG, 'Libnotify', 'libnotify_notify_ondownload', 0))
         LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-            check_setting_int(CFG, 'Libnotify', 'libnotify_notify_onsubtitledownload', 0))
+                check_setting_int(CFG, 'Libnotify', 'libnotify_notify_onsubtitledownload', 0))
 
         USE_NMJ = bool(check_setting_int(CFG, 'NMJ', 'use_nmj', 0))
         NMJ_HOST = check_setting_str(CFG, 'NMJ', 'nmj_host', '')
@@ -1404,39 +1445,53 @@ def initialize(consoleLogging=True):
             tmp_provider.set_config(cur_metadata_config)
             metadata_provider_dict[tmp_provider.name] = tmp_provider
 
+        # load data for shows from database
+        loadShowsFromDB()
+
         # initialize schedulers
-        # updaters
-        versionCheckScheduler = scheduler.Scheduler(versionChecker.CheckVersion(),
-                                                    cycleTime=datetime.timedelta(hours=UPDATE_FREQUENCY),
-                                                    threadName="CHECKVERSION",
-                                                    silent=False)
+        versionCheckScheduler = scheduler.Scheduler(
+                versionChecker.CheckVersion,
+                datetime.timedelta(hours=UPDATE_FREQUENCY).total_seconds(),
+                name="CHECKVERSION",
+                silent=False
+        )
 
-        showQueueScheduler = scheduler.Scheduler(show_queue.ShowQueue(),
-                                                 cycleTime=datetime.timedelta(seconds=3),
-                                                 threadName="SHOWQUEUE")
+        nameCacheScheduler = scheduler.Scheduler(
+                name_cache.nameCache,
+                datetime.timedelta(minutes=NAMECACHE_FREQUENCY).total_seconds(),
+                name="NAMECACHE"
+        )
 
-        showUpdateScheduler = scheduler.Scheduler(showUpdater.ShowUpdater(),
-                                                  cycleTime=datetime.timedelta(hours=1),
-                                                  threadName="SHOWUPDATER",
-                                                  start_time=datetime.time(hour=SHOWUPDATE_HOUR))
+        showQueueScheduler = scheduler.Scheduler(
+                show_queue.ShowQueue,
+                datetime.timedelta(seconds=3).total_seconds(),
+                name="SHOWQUEUE",
+        )
 
-        # searchers
-        searchQueueScheduler = scheduler.Scheduler(search_queue.SearchQueue(),
-                                                   cycleTime=datetime.timedelta(seconds=3),
-                                                   threadName="SEARCHQUEUE")
+        showUpdateScheduler = scheduler.Scheduler(
+                showUpdater.ShowUpdater,
+                datetime.timedelta(hours=1).total_seconds(),
+                name="SHOWUPDATER",
+                start_time=datetime.time(hour=SHOWUPDATE_HOUR)
+        )
 
-        # TODO: update_interval should take last daily/backlog times into account!
-        update_interval = datetime.timedelta(minutes=DAILYSEARCH_FREQUENCY)
-        dailySearchScheduler = scheduler.Scheduler(dailysearcher.DailySearcher(),
-                                                   cycleTime=update_interval,
-                                                   threadName="DAILYSEARCHER",
-                                                   run_delay=update_interval)
+        searchQueueScheduler = scheduler.Scheduler(
+                search_queue.SearchQueue,
+                datetime.timedelta(seconds=3).total_seconds(),
+                name="SEARCHQUEUE"
+        )
 
-        update_interval = datetime.timedelta(minutes=BACKLOG_FREQUENCY)
-        backlogSearchScheduler = searchBacklog.BacklogSearchScheduler(searchBacklog.BacklogSearcher(),
-                                                                      cycleTime=update_interval,
-                                                                      threadName="BACKLOG",
-                                                                      run_delay=update_interval)
+        dailySearchScheduler = scheduler.Scheduler(
+                dailysearcher.DailySearcher,
+                datetime.timedelta(minutes=DAILYSEARCH_FREQUENCY).total_seconds(),
+                name="DAILYSEARCHER"
+        )
+
+        backlogSearchScheduler = searchBacklog.BacklogSearchScheduler(
+                searchBacklog.BacklogSearcher,
+                datetime.timedelta(minutes=BACKLOG_FREQUENCY).total_seconds(),
+                name="BACKLOG"
+        )
 
         search_intervals = {'15m': 15, '45m': 45, '90m': 90, '4h': 4 * 60, 'daily': 24 * 60}
         if CHECK_PROPERS_INTERVAL in search_intervals:
@@ -1446,64 +1501,79 @@ def initialize(consoleLogging=True):
             update_interval = datetime.timedelta(hours=1)
             run_at = datetime.time(hour=1)  # 1 AM
 
-        properFinderScheduler = scheduler.Scheduler(properFinder.ProperFinder(),
-                                                    cycleTime=update_interval,
-                                                    threadName="FINDPROPERS",
-                                                    start_time=run_at,
-                                                    run_delay=update_interval)
+        properFinderScheduler = scheduler.Scheduler(
+                properFinder.ProperFinder,
+                update_interval.total_seconds(),
+                name="FINDPROPERS",
+                start_time=run_at,
+                run_delay=update_interval
+        )
 
         # processors
-        autoPostProcesserScheduler = scheduler.Scheduler(autoPostProcesser.PostProcessor(),
-                                                         cycleTime=datetime.timedelta(
-                                                                 minutes=AUTOPOSTPROCESSER_FREQUENCY),
-                                                         threadName="POSTPROCESSER",
-                                                         silent=not PROCESS_AUTOMATICALLY)
+        autoPostProcesserScheduler = scheduler.Scheduler(
+                autoPostProcesser.PostProcessor,
+                datetime.timedelta(minutes=AUTOPOSTPROCESSER_FREQUENCY).total_seconds(),
+                name="POSTPROCESSER",
+                silent=not PROCESS_AUTOMATICALLY
+        )
 
-        traktCheckerScheduler = scheduler.Scheduler(traktChecker.TraktChecker(),
-                                                    cycleTime=datetime.timedelta(hours=1),
-                                                    threadName="TRAKTCHECKER",
-                                                    silent=not USE_TRAKT)
+        traktCheckerScheduler = scheduler.Scheduler(
+                traktChecker.TraktChecker,
+                datetime.timedelta(hours=1).total_seconds(),
+                name="TRAKTCHECKER",
+                silent=not USE_TRAKT
+        )
 
-        subtitlesFinderScheduler = scheduler.Scheduler(subtitles.SubtitlesFinder(),
-                                                       cycleTime=datetime.timedelta(
-                                                               hours=SUBTITLES_FINDER_FREQUENCY),
-                                                       threadName="FINDSUBTITLES",
-                                                       silent=not USE_SUBTITLES)
+        subtitlesFinderScheduler = scheduler.Scheduler(
+                subtitles.SubtitlesFinder,
+                datetime.timedelta(hours=SUBTITLES_FINDER_FREQUENCY).total_seconds(),
+                name="FINDSUBTITLES",
+                silent=not USE_SUBTITLES
+        )
 
-        showList = []
-        loadingShowList = {}
+        # initalize web server
+        WEB_SERVER = SRWebServer(on_stop_request=shutDown,
+                                 **{
+                                     'port': int(WEB_PORT),
+                                     'host': WEB_HOST,
+                                     'data_root': ek(os.path.join, PROG_DIR, 'gui', GUI_NAME),
+                                     'web_root': WEB_ROOT,
+                                     'log_dir': WEB_LOG or LOG_DIR,
+                                     'username': WEB_USERNAME,
+                                     'password': WEB_PASSWORD,
+                                     'enable_https': ENABLE_HTTPS,
+                                     'handle_reverse_proxy': HANDLE_REVERSE_PROXY,
+                                     'https_cert': ek(os.path.join, PROG_DIR, HTTPS_CERT),
+                                     'https_key': ek(os.path.join, PROG_DIR, HTTPS_KEY),
+                                     'daemonize': DAEMONIZE,
+                                     'pidfile': PIDFILE,
+                                     'stop_timeout': 3,
+                                     'nolaunch': WEB_NOLAUNCH}
+                                 )
 
         __INITIALIZED__ = True
         return True
 
 
 def start():
-    global started
+    global STARTED
 
     with INIT_LOCK:
         if __INITIALIZED__:
-            # start sysetm events queue
-            events.start()
-
-            # Prepopulate network timezones, it isn't thread safe
-            networkTimezones = threading.Thread(target=network_timezones.update_network_dict, name="TZUPDATER")
-            networkTimezones.start()
-
-            # start the daily search scheduler
-            dailySearchScheduler.enable = True
-            dailySearchScheduler.start()
-
-            # start the backlog scheduler
-            backlogSearchScheduler.enable = True
-            backlogSearchScheduler.start()
-
-            # start the show updater
-            showUpdateScheduler.enable = True
-            showUpdateScheduler.start()
+            # start network timezones updater
+            network_timezones.networkTimezonesUpdater.start()
 
             # start the version checker
             versionCheckScheduler.enable = True
             versionCheckScheduler.start()
+
+            # start the name cache builder scheduler
+            nameCacheScheduler.enable = True
+            nameCacheScheduler.start()
+
+            # start the show updater
+            showUpdateScheduler.enable = True
+            showUpdateScheduler.start()
 
             # start the queue checker
             showQueueScheduler.enable = True
@@ -1513,147 +1583,108 @@ def start():
             searchQueueScheduler.enable = True
             searchQueueScheduler.start()
 
+            # start the daily search scheduler
+            dailySearchScheduler.enable = True
+            dailySearchScheduler.start()
+
+            # start the backlog scheduler
+            backlogSearchScheduler.enable = True
+            backlogSearchScheduler.start()
+
             # start the proper finder
             if DOWNLOAD_PROPERS:
                 properFinderScheduler.silent = False
                 properFinderScheduler.enable = True
-            else:
-                properFinderScheduler.enable = False
-                properFinderScheduler.silent = True
-            properFinderScheduler.start()
+                properFinderScheduler.start()
 
             # start the post processor
             if PROCESS_AUTOMATICALLY:
                 autoPostProcesserScheduler.silent = False
                 autoPostProcesserScheduler.enable = True
-            else:
-                autoPostProcesserScheduler.enable = False
-                autoPostProcesserScheduler.silent = True
-            autoPostProcesserScheduler.start()
+                autoPostProcesserScheduler.start()
 
             # start the subtitles finder
             if USE_SUBTITLES:
                 subtitlesFinderScheduler.silent = False
                 subtitlesFinderScheduler.enable = True
-            else:
-                subtitlesFinderScheduler.enable = False
-                subtitlesFinderScheduler.silent = True
-            subtitlesFinderScheduler.start()
+                subtitlesFinderScheduler.start()
 
             # start the trakt checker
             if USE_TRAKT:
                 traktCheckerScheduler.silent = False
                 traktCheckerScheduler.enable = True
-            else:
-                traktCheckerScheduler.enable = False
-                traktCheckerScheduler.silent = True
-            traktCheckerScheduler.start()
+                traktCheckerScheduler.start()
 
-            started = True
+            logging.info("Starting SiCKRAGE:[{}] CONFIG:[{}]".format(BRANCH, CONFIG_FILE))
+
+            STARTED = True
+
+
+def loadShowsFromDB():
+    """
+    Populates the showList with shows from the database
+    """
+
+    myDB = db.DBConnection()
+    sqlResults = myDB.select("SELECT * FROM tv_shows")
+
+    showList = []
+    for sqlShow in sqlResults:
+        try:
+            curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
+            logging.debug("Loading data for show: [{}]".format(curShow.name))
+            curShow.nextEpisode()
+            showList += [curShow]
+        except Exception as e:
+            logging.error("There was an error creating the show in {}: {}".format(sqlShow[b"location"], e))
+            logging.debug(traceback.format_exc())
 
 
 def halt():
-    global __INITIALIZED__, started
-
+    global __INITIALIZED__, STARTED
     with INIT_LOCK:
-
-        if __INITIALIZED__:
-
+        if __INITIALIZED__ and STARTED:
             logging.info("Aborting all threads")
-
-            events.stop.set()
-            logging.info("Waiting for the EVENTS thread to exit")
-            try:
-                events.join(10)
-            except Exception:
-                pass
-
-            dailySearchScheduler.stop.set()
-            logging.info("Waiting for the DAILYSEARCH thread to exit")
-            try:
-                dailySearchScheduler.join(10)
-            except Exception:
-                pass
-
-            backlogSearchScheduler.stop.set()
-            logging.info("Waiting for the BACKLOG thread to exit")
-            try:
-                backlogSearchScheduler.join(10)
-            except Exception:
-                pass
-
-            showUpdateScheduler.stop.set()
-            logging.info("Waiting for the SHOWUPDATER thread to exit")
-            try:
-                showUpdateScheduler.join(10)
-            except Exception:
-                pass
 
             versionCheckScheduler.stop.set()
             logging.info("Waiting for the VERSIONCHECKER thread to exit")
-            try:
-                versionCheckScheduler.join(10)
-            except Exception:
-                pass
+
+            nameCacheScheduler.stop().set()
+            logging.info("Waiting for the NAMECACHE thread to exit")
+
+            dailySearchScheduler.stop.set()
+            logging.info("Waiting for the DAILYSEARCH thread to exit")
+
+            backlogSearchScheduler.stop.set()
+            logging.info("Waiting for the BACKLOG thread to exit")
+
+            showUpdateScheduler.stop.set()
+            logging.info("Waiting for the SHOWUPDATER thread to exit")
 
             showQueueScheduler.stop.set()
             logging.info("Waiting for the SHOWQUEUE thread to exit")
-            try:
-                showQueueScheduler.join(10)
-            except Exception:
-                pass
 
             searchQueueScheduler.stop.set()
             logging.info("Waiting for the SEARCHQUEUE thread to exit")
-            try:
-                searchQueueScheduler.join(10)
-            except Exception:
-                pass
 
             autoPostProcesserScheduler.stop.set()
             logging.info("Waiting for the POSTPROCESSER thread to exit")
-            try:
-                autoPostProcesserScheduler.join(10)
-            except Exception:
-                pass
 
             traktCheckerScheduler.stop.set()
             logging.info("Waiting for the TRAKTCHECKER thread to exit")
-            try:
-                traktCheckerScheduler.join(10)
-            except Exception:
-                pass
 
             properFinderScheduler.stop.set()
             logging.info("Waiting for the PROPERFINDER thread to exit")
-            try:
-                properFinderScheduler.join(10)
-            except Exception:
-                pass
 
             subtitlesFinderScheduler.stop.set()
             logging.info("Waiting for the SUBTITLESFINDER thread to exit")
-            try:
-                subtitlesFinderScheduler.join(10)
-            except Exception:
-                pass
 
             if ADBA_CONNECTION:
                 ADBA_CONNECTION.logout()
                 logging.info("Waiting for the ANIDB CONNECTION thread to exit")
-                try:
-                    ADBA_CONNECTION.join(10)
-                except Exception:
-                    pass
 
             __INITIALIZED__ = False
-            started = False
-
-
-def sig_handler(signum=None, frame=None):
-    if not isinstance(signum, type(None)):
-        logging.info("Signal %i caught, saving and exiting..." % int(signum))
-        Shutdown.stop(PID)
+            STARTED = False
 
 
 def saveAll():
@@ -1667,14 +1698,15 @@ def saveAll():
     save_config()
 
 
-def restart(soft=True):
-    if soft:
-        halt()
-        saveAll()
-        logging.info("Re-initializing all data")
-        initialize()
-    else:
-        events.put(events.SystemEvent.RESTART)
+def shutDown():
+    # stop all threads
+    halt()
+
+    # save all config settings
+    saveAll()
+
+    # shutdown logging
+    logging.shutdown()
 
 
 def save_config():

@@ -167,7 +167,7 @@ Here is the behavior of operations with relativedelta:
         else:
             self.years = years
             self.months = months
-            self.days = days + weeks * 7
+            self.days = days+weeks*7
             self.leapdays = leapdays
             self.hours = hours
             self.minutes = minutes
@@ -242,13 +242,6 @@ Here is the behavior of operations with relativedelta:
         else:
             self._has_time = 0
 
-    @property
-    def weeks(self):
-        return self.days // 7
-    @weeks.setter
-    def weeks(self, value):
-        self.days = self.days - (self.weeks * 7) + value*7
-
     def _set_months(self, months):
         self.months = months
         if abs(self.months) > 11:
@@ -261,7 +254,7 @@ Here is the behavior of operations with relativedelta:
 
     def __add__(self, other):
         if isinstance(other, relativedelta):
-            return self.__class__(years=other.years+self.years,
+            return relativedelta(years=other.years+self.years,
                                  months=other.months+self.months,
                                  days=other.days+self.days,
                                  hours=other.hours+self.hours,
@@ -330,7 +323,7 @@ Here is the behavior of operations with relativedelta:
     def __sub__(self, other):
         if not isinstance(other, relativedelta):
             raise TypeError("unsupported type for sub operation")
-        return self.__class__(years=self.years-other.years,
+        return relativedelta(years=self.years-other.years,
                              months=self.months-other.months,
                              days=self.days-other.days,
                              hours=self.hours-other.hours,
@@ -348,7 +341,7 @@ Here is the behavior of operations with relativedelta:
                              microsecond=self.microsecond or other.microsecond)
 
     def __neg__(self):
-        return self.__class__(years=-self.years,
+        return relativedelta(years=-self.years,
                              months=-self.months,
                              days=-self.days,
                              hours=-self.hours,
@@ -387,7 +380,7 @@ Here is the behavior of operations with relativedelta:
 
     def __mul__(self, other):
         f = float(other)
-        return self.__class__(years=int(self.years*f),
+        return relativedelta(years=int(self.years*f),
                              months=int(self.months*f),
                              days=int(self.days*f),
                              hours=int(self.hours*f),
@@ -423,7 +416,6 @@ Here is the behavior of operations with relativedelta:
                 self.hours == other.hours and
                 self.minutes == other.minutes and
                 self.seconds == other.seconds and
-                self.microseconds == other.microseconds and
                 self.leapdays == other.leapdays and
                 self.year == other.year and
                 self.month == other.month and

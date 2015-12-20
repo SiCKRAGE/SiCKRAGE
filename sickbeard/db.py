@@ -367,11 +367,30 @@ def restoreDatabase(version):
     :return: True if restore succeeds, False if it fails
     """
     logging.info("Restoring database before trying upgrade again")
-    if not helpers.restoreVersionedFile(dbFilename(suffix='v' + str(version)), version):
+    if not sickbeard.helpers.restoreVersionedFile(dbFilename(suffix='v' + str(version)), version):
         logging.info("Database restore failed, abort upgrading database")
         return False
     return True
 
+def restoreDB(srcDir, dstDir):
+    try:
+        filesList = ['sickbeard.db', 'config.ini', 'failed.db', 'cache.db']
+
+        for filename in filesList:
+            srcFile = ek(os.path.join, srcDir, filename)
+            dstFile = ek(os.path.join, dstDir, filename)
+            bakFile = ek(os.path.join, dstDir, '{0}.bak-{1}'.format(
+                    filename,
+                    datetime.datetime.now().strftime(
+                    '%Y%m%d_%H%M%S')))
+
+            if ek(os.path.isfile, dstFile):
+                ek(shutil.move, dstFile, bakFile)
+            ek(shutil.move, srcFile, dstFile)
+
+        return True
+    except Exception:
+        return False
 
 # Base migration class. All future DB changes should be subclassed from this class
 class SchemaUpgrade(object):
@@ -379,7 +398,7 @@ class SchemaUpgrade(object):
         self.connection = connection
 
     def hasTable(self, tableName):
-        return len(self.connection.select("SELECT 1 FROM sqlite_master WHERE name = ?;", tableName)) > 0
+        return len(self.connection.select("SELECT 1 FROM sqlite_master WHERE name = ?;", (tableName,))) > 0
 
     def hasColumn(self, tableName, column):
         return column in self.connection.tableInfo(tableName)

@@ -1,42 +1,51 @@
 from __future__ import unicode_literals
 
-import logging
 import os
+import sys
+import time
+import signal
+import logging
 import threading
+import subprocess
 
+import sickbeard
+from sickbeard.webserve import LoginHandler, LogoutHandler, CalendarHandler, tornado
+from sickbeard.webapi import ApiHandler, KeyHandler
+from sickbeard.helpers import create_https_certificates, generateApiKey
+from sickrage.helper.encoding import ek
+
+import tornado.autoreload
+from tornado.web import Application, StaticFileHandler, RedirectHandler
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.routes import route
-from tornado.web import Application, StaticFileHandler, RedirectHandler
 
-import sickbeard
-from sickbeard.helpers import create_https_certificates, generateApiKey
-from sickbeard.webapi import ApiHandler, KeyHandler
-from sickbeard.webserve import LoginHandler, LogoutHandler, CalendarHandler
-from sickrage.helper.encoding import ek
 
-class StaticImageHandler(StaticFileHandler):
+class SRWebServer(object):
+    def __init__(self, on_stop_request=lambda: None, on_ioloop_stop=lambda: None, **kwargs):
+        #threading.Thread.name = self.name = "TORNADO"
+        #self.alive = True
 
-    def initialize(self, path, default_filename=None):
-        super(StaticImageHandler, self).initialize(path, default_filename)
+        self.io_loop = IOLoop.current()
+        self.on_stop_request= on_stop_request
+        self.on_ioloop_stop = on_ioloop_stop
 
-    def get(self, path, include_body=True):
-        # image cache check
-        self.root = (self.root, os.path.join(sickbeard.CACHE_DIR, 'images'))[
-            os.path.exists(os.path.normpath(os.path.join(sickbeard.CACHE_DIR, 'images', path)))
-        ]
+        # signal handlers
+        signal.signal(signal.SIGTERM, self.sigterm_handler)
+        signal.signal(signal.SIGINT, self.sigterm_handler)
 
-        return super(StaticImageHandler, self).get(path, include_body)
+        self.options = {}
+        self.options.setdefault('port', 8081)
+        self.options.setdefault('host', '0.0.0.0')
+        self.options.setdefault('log_dir', None)
+        self.options.setdefault('username', '')
+        self.options.setdefault('password', '')
+        self.options.setdefault('web_root', '/')
+        self.options.setdefault('stop_timeout', 3)
+        self.options.update(kwargs)
 
-class SRWebServer(threading.Thread):
-    def __init__(self, options, io_loop=None):
-        threading.Thread.__init__(self)
-        self.name = "TORNADO"
-        self.alive = True
-
-        self.io_loop = io_loop or IOLoop.current()
-
-        self.options = options
+        assert isinstance(self.options[b'port'], int)
+        assert 'data_root' in self.options
 
         # video root
         if sickbeard.ROOT_DIRS:
@@ -111,50 +120,101 @@ class SRWebServer(threading.Thread):
         self.app.add_handlers(".*$", [
             # favicon
             (r'%s/(favicon\.ico)' % self.options[b'web_root'], StaticFileHandler,
-             {"path": ek(os.path.join, self.options[b'gui_root'], 'images/ico/favicon.ico')}),
+             {"path": ek(os.path.join, self.options[b'data_root'], 'images/ico/favicon.ico')}),
 
             # images
-            (r'%s.*?/images/(.*)' % self.options[b'web_root'], StaticImageHandler,
-             {"path": ek(os.path.join, self.options[b'gui_root'], 'images')}),
+            (r'%s/images/(.*)' % self.options[b'web_root'], StaticFileHandler,
+             {"path": ek(os.path.join, self.options[b'data_root'], 'images')}),
+
+            # cached images
+            (r'%s/cache/images/(.*)' % self.options[b'web_root'], StaticFileHandler,
+             {"path": ek(os.path.join, sickbeard.CACHE_DIR, 'images')}),
 
             # css
             (r'%s/css/(.*)' % self.options[b'web_root'], StaticFileHandler,
-             {"path": ek(os.path.join, self.options[b'gui_root'], 'css')}),
+             {"path": ek(os.path.join, self.options[b'data_root'], 'css')}),
 
             # javascript
             (r'%s/js/(.*)' % self.options[b'web_root'], StaticFileHandler,
-             {"path": ek(os.path.join, self.options[b'gui_root'], 'js')}),
+             {"path": ek(os.path.join, self.options[b'data_root'], 'js')}),
 
             # videos
         ] + [(r'%s/videos/(.*)' % self.options[b'web_root'], StaticFileHandler,
               {"path": self.video_root})])
 
-    def run(self):
-        protocol = 'http'
-        self.server = HTTPServer(self.app)
-
-        if self.enable_https:
-            protocol = 'https'
-            self.server.ssl_options={"certfile": self.https_cert, "keyfile": self.https_key}
-
-        logging.info("Starting SiCKRAGE web server on [{}://{}:{}/]".format(protocol, self.options[b'host'],
-                                                                           self.options[b'port']))
+    def start(self):
+        protocol = 'http' if not sickbeard.ENABLE_HTTPS else 'https'
 
         try:
+            # Clean up after update
+            if sickbeard.GIT_NEWVER:
+                toclean = ek(os.path.join, sickbeard.CACHE_DIR, 'mako')
+                for root, dirs, files in ek(os.walk, toclean, topdown=False):
+                    for name in files:
+                        ek(os.remove, ek(os.path.join, root, name))
+                    for name in dirs:
+                        ek(os.rmdir, ek(os.path.join, root, name))
+                sickbeard.GIT_NEWVER = False
+
+            self.server = HTTPServer(self.app)
+            if protocol == 'https':
+                self.server.ssl_options={"certfile": self.https_cert, "keyfile": self.https_key}
             self.server.listen(self.options[b'port'], self.options[b'host'])
-        except:
-            logging.info("Could not start webserver on port %s, already in use!" % self.options[b'port'])
-            os._exit(1)
 
-        if sickbeard.LAUNCH_BROWSER and not sickbeard.DAEMONIZE:
-            self.io_loop.add_callback(sickbeard.launchBrowser, protocol, sickbeard.WEB_PORT, sickbeard.WEB_ROOT)
+            self.io_loop = IOLoop.instance()
+            tornado.autoreload.start(self.io_loop, 1000)
+            tornado.autoreload.add_reload_hook(self.server_shutdown)
 
-        try:
+            # Launch browser
+            if sickbeard.LAUNCH_BROWSER and not any([self.options[b'nolaunch'],self.options[b'daemonize']]):
+                sickbeard.launchBrowser(protocol, self.options[b'port'], self.options[b'web_root'])
+
+            logging.info(
+                    "Starting SiCKRAGE web server on [{}://{}:{}/]".format(
+                            protocol,self.options[b'host'],self.options[b'port']
+            ))
+
+            # callback to fire sickrage threads
+            self.io_loop.add_callback(sickbeard.start)
+
+            # start IOLoop
             self.io_loop.start()
-            self.io_loop.close(True)
-        except (IOError, ValueError):
-            pass
+        except Exception:
+            logging.info("Tornado failed to start on port %s, already in use!" % self.options[b'port'])
 
-    def shutDown(self):
-        self.alive = False
-        self.io_loop.stop()
+    @staticmethod
+    def ioloop_is_running():
+        return IOLoop.instance()._running
+
+    def remove_pid_file(self):
+        try:
+            if ek(os.path.exists, sickbeard.PIDFILE):
+                ek(os.remove, sickbeard.PIDFILE)
+        except (IOError, OSError):
+            return False
+        return True
+
+    def sigterm_handler(self, signum, frame):
+        logging.info("Signal %i caught, saving and exiting..." % int(signum))
+        self.io_loop.add_callback_from_signal(self.server_shutdown)
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+
+    def server_shutdown(self):
+        self.server.stop()
+        if self.ioloop_is_running():
+            logging.info('Tornado web server shutting down in %s seconds', self.options[b'stop_timeout'])
+
+            def ioloop_stop(self):
+                if self.ioloop_is_running():
+                    IOLoop.instance().stop()
+                    self.on_ioloop_stop()
+
+            IOLoop.instance().add_timeout(time.time() + self.options[b'stop_timeout'], ioloop_stop)
+
+        # if run as daemon delete the pidfile
+        if self.options[b'daemonize'] and self.options[b'pidfile']:
+            self.remove_pid_file()
+
+        sickbeard.halt()
+        sickbeard.saveAll()
+        logging.shutdown()

@@ -458,7 +458,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
     threads = []
 
     # build name cache for show
-    name_cache.buildNameCache(show)
+    sickbeard.nameCacheScheduler.buildNameCache(show)
 
     origThreadName = threading.currentThread().name
 

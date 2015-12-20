@@ -20,8 +20,7 @@
 
 from __future__ import unicode_literals
 
-from __future__ import unicode_literals
-
+import threading
 import traceback
 
 import sickbeard
@@ -45,6 +44,7 @@ from sickbeard.trakt import TraktAPI
 class ShowQueue(generic_queue.GenericQueue):
     def __init__(self):
         generic_queue.GenericQueue.__init__(self)
+        threading.Thread.name = "SHOWQUEUE"
         self.queue_name = "SHOWQUEUE"
 
     def _isInQueue(self, show, actions):
@@ -440,7 +440,7 @@ class QueueItemAdd(ShowQueueItem):
             logging.debug(traceback.format_exc())
 
         # update internal name cache
-        name_cache.buildNameCache()
+        sickbeard.nameCacheScheduler.buildNameCache()
 
         try:
             self.show.loadEpisodesFromDir()

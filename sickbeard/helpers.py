@@ -1644,7 +1644,7 @@ def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=Non
         logging.debug("Requests version 2.8+ needed to avoid SSL cert verify issues, please upgrade your copy")
 
     url = normalize_url(url)
-    session = _setUpSession(session, headers, params)
+    session = _setUpSession(session or requests.Session(), headers, params)
 
     try:
         # decide if we get or post data to server

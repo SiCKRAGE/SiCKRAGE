@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 import datetime
 import threading
 
+import failed_history
 import sickbeard
 import logging
 from sickbeard import db
@@ -46,6 +47,10 @@ class DailySearcher():
             return
 
         self.amActive = True
+
+        # trim failed download history
+        if sickbeard.USE_FAILED_DOWNLOADS:
+            failed_history.trimHistory()
 
         logging.info("Searching for new released episodes ...")
 

@@ -47,7 +47,7 @@ class ComingEpisodes:
         pass
 
     @staticmethod
-    def get_coming_episodes(categories, sort, group, paused=sickbeard.COMING_EPS_DISPLAY_PAUSED):
+    def get_coming_episodes(categories, sort, group, paused=False):
         """
         :param categories: The categories of coming episodes. See ``ComingEpisodes.categories``
         :param sort: The sort to apply to the coming episodes. See ``ComingEpisodes.sorts``
@@ -55,6 +55,8 @@ class ComingEpisodes:
         :param paused: ``True`` to include paused shows, ``False`` otherwise
         :return: The list of coming episodes
         """
+
+        paused = sickbeard.COMING_EPS_DISPLAY_PAUSED or paused
 
         if not isinstance(categories, list):
             categories = categories.split('|')

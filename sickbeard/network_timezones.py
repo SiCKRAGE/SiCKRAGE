@@ -22,11 +22,12 @@ from __future__ import unicode_literals
 import re
 import datetime
 import requests
-from dateutil import tz
+import logging
+import threading
 
+from dateutil import tz
 from sickbeard import db
 from sickbeard import helpers
-import logging
 
 # regex to parse time (12/24 hour format)
 time_regex = re.compile(r'(\d{1,2})(([:.](\d{2,2}))? ?([PA][. ]? ?M)|[:.](\d{2,2}))\b', flags=re.IGNORECASE)
@@ -35,7 +36,6 @@ pm_regex = re.compile(r'(P[. ]? ?M)', flags=re.IGNORECASE)
 
 network_dict = None
 sb_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
-
 
 # update the network timezone table
 def update_network_dict():
@@ -98,10 +98,8 @@ def load_network_dict():
         d = dict(cur_network_list)
     except Exception:
         d = {}
-    # pylint: disable=W0603
-    global network_dict
-    network_dict = d
 
+    return d
 
 # get timezone of a network or return default timezone
 def get_network_timezone(network, _network_dict):
@@ -169,7 +167,7 @@ def parse_date_time(d, t, network):
 
     te = datetime.datetime.fromordinal(helpers.tryInt(d) or 1)
     try:
-        foreign_timezone = get_network_timezone(network, network_dict)
+        foreign_timezone = get_network_timezone(network, load_network_dict())
         return datetime.datetime(te.year, te.month, te.day, hr, m, tzinfo=foreign_timezone)
     except Exception:
         return datetime.datetime(te.year, te.month, te.day, hr, m, tzinfo=sb_timezone)
@@ -181,3 +179,5 @@ def test_timeformat(t):
         return False
     else:
         return True
+
+networkTimezonesUpdater = threading.Thread(target=update_network_dict, name='TZUPDATER', args=())

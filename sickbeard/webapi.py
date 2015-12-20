@@ -29,6 +29,8 @@ import urllib
 import datetime
 import traceback
 
+from tornado.ioloop import IOLoop
+
 import sickbeard
 from sickrage.helper.common import dateFormat, dateTimeFormat, timeFormat
 from sickrage.helper.encoding import ek
@@ -1639,7 +1641,7 @@ class CMD_SickBeardPing(ApiCall):
 
     def run(self):
         """ Ping SiCKRAGE to check if it is running """
-        if sickbeard.started:
+        if sickbeard.STARTED:
             return _responds(RESULT_SUCCESS, {"pid": sickbeard.PID}, "Pong")
         else:
             return _responds(RESULT_SUCCESS, msg="Pong")
