@@ -19,8 +19,6 @@
 from __future__ import unicode_literals
 
 import os
-
-from helper.encoding import ek
 from sickbeard.image_cache import ImageCache
 from sickrage.media.GenericMedia import GenericMedia
 
@@ -45,7 +43,7 @@ class ShowBanner(GenericMedia):
             if self.media_format == 'thumb':
                 media_file = ImageCache().banner_thumb_path(self.indexer_id)
 
-        if not all([media_file, ek(os.path.exists, media_file)]):
-            media_file = ek(os.path.join, self.get_media_root(), 'images', self.get_default_media_name())
+        if not all([media_file, os.path.exists(media_file)]):
+            media_file = os.path.join(self.get_media_root(), 'images', self.get_default_media_name())
 
         return media_file

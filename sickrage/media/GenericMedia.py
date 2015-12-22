@@ -23,7 +23,6 @@ from mimetypes import guess_type
 
 import sickbeard
 from sickbeard.helpers import findCertainShow
-from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import MultipleShowObjectsException
 
 class GenericMedia(object):
@@ -68,7 +67,7 @@ class GenericMedia(object):
         :return: The root folder containing the media
         """
 
-        return ek(os.path.join, sickbeard.GUI_DIR)
+        return os.path.join(sickbeard.GUI_DIR)
 
     def get_media_type(self):
         """
@@ -77,7 +76,7 @@ class GenericMedia(object):
 
         static_media_path = self.get_static_media_path()
 
-        if ek(os.path.isfile, static_media_path):
+        if os.path.isfile(static_media_path):
             return guess_type(static_media_path)[0]
 
         return ''
@@ -97,4 +96,4 @@ class GenericMedia(object):
         :return: The full path to the media
         """
 
-        return ek(os.path.normpath, self.get_media_path())
+        return os.path.normpath(self.get_media_path())
