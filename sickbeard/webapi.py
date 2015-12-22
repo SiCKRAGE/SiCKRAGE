@@ -702,8 +702,8 @@ class CMD_Help(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         # required
         # optional
-        self.subject, args = self.check_params("subject", "help", False, "string", self.function_mapper.keys(), args,
-                                               kwargs)
+        self.subject, args = self.check_params("subject", "help", False, "string", self.function_mapper.keys(), *args,
+                                               **kwargs)
         super(CMD_Help, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
@@ -1814,8 +1814,8 @@ class CMD_SickBeardSetDefaults(ApiCall):
                                                 "fullhdwebdl", "hdbluray", "fullhdbluray"], *args, **kwargs)
         self.future_show_paused, args = self.check_params("future_show_paused", None, False, "bool", [], *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders", None, False, "bool", [], *args, **kwargs)
-        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], args,
-                                              kwargs)
+        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], *args,
+                                              **kwargs)
         # super, missing, help
         super(CMD_SickBeardSetDefaults, self).__init__(application, request, *args, **kwargs)
 
@@ -2031,8 +2031,8 @@ class CMD_ShowAddExisting(ApiCall):
         self.archive_firstmatch, args = self.check_params("archive_firstmatch", None, False, "int", [], *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders", bool(sickbeard.FLATTEN_FOLDERS_DEFAULT),
                                                        False, "bool", [], *args, **kwargs)
-        self.subtitles, args = self.check_params("subtitles", int(sickbeard.USE_SUBTITLES), False, "int", [], args,
-                                                 kwargs)
+        self.subtitles, args = self.check_params("subtitles", int(sickbeard.USE_SUBTITLES), False, "int", [], *args,
+                                                 **kwargs)
         # super, missing, help
         super(CMD_ShowAddExisting, self).__init__(application, request, *args, **kwargs)
 
@@ -2133,12 +2133,12 @@ class CMD_ShowAddNew(ApiCall):
                                                 "fullhdwebdl", "hdbluray", "fullhdbluray"], *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders", bool(sickbeard.FLATTEN_FOLDERS_DEFAULT),
                                                        False, "bool", [], *args, **kwargs)
-        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], args,
-                                              kwargs)
+        self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], *args,
+                                              **kwargs)
         self.lang, args = self.check_params("lang", sickbeard.INDEXER_DEFAULT_LANGUAGE, False, "string",
                                             self.valid_languages.keys(), *args, **kwargs)
-        self.subtitles, args = self.check_params("subtitles", bool(sickbeard.USE_SUBTITLES), False, "bool", [], args,
-                                                 kwargs)
+        self.subtitles, args = self.check_params("subtitles", bool(sickbeard.USE_SUBTITLES), False, "bool", [], *args,
+                                                 **kwargs)
         self.anime, args = self.check_params("anime", bool(sickbeard.ANIME_DEFAULT), False, "bool", [], *args, **kwargs)
         self.scene, args = self.check_params("scene", bool(sickbeard.SCENE_DEFAULT), False, "bool", [], *args, **kwargs)
         self.future_status, args = self.check_params("future_status", None, False, "string",
