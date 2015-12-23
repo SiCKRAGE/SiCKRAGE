@@ -25,6 +25,7 @@ import logging
 import traceback
 from requests.auth import AuthBase
 from sickbeard import tvcache
+from sickbeard.common import USER_AGENT
 from sickbeard.providers import generic
 
 
@@ -49,6 +50,7 @@ class T411Provider(generic.TorrentProvider):
                      'download': 'https://api.t411.in/torrents/download/%s'}
 
         self.url = self.urls[b'base_url']
+        self.headers.update({'User-Agent': USER_AGENT})
 
         self.subcategories = [433, 637, 455, 639]
 
