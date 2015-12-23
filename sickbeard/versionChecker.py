@@ -571,7 +571,7 @@ class GitUpdateManager(UpdateManager):
                 url = base_url + '/commits/'
 
             newest_text = 'There is a <a href="' + url + '" onclick="window.open(this.href); return false;">newer version available</a> '
-            newest_text += " (yo're " + str(self._num_commits_behind) + " commit"
+            newest_text += " (you're " + str(self._num_commits_behind) + " commit"
             if self._num_commits_behind > 1:
                 newest_text += 's'
             newest_text += ' behind)' + "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
@@ -779,7 +779,7 @@ class SourceUpdateManager(UpdateManager):
                 url = base_url + '/commits/'
 
             newest_text = 'There is a <a href="' + url + '" onclick="window.open(this.href); return false;">newer version available</a>'
-            newest_text += " (yo're " + str(self._num_commits_behind) + " commit"
+            newest_text += " (you're " + str(self._num_commits_behind) + " commit"
             if self._num_commits_behind > 1:
                 newest_text += "s"
             newest_text += " behind)" + "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
