@@ -245,18 +245,20 @@ class LoginHandler(BaseHandler):
         threading.currentThread().name = threadName
 
         try:
-            username = tornado.escape.utf8(self.get_argument('username'))
-            password = tornado.escape.utf8(self.get_argument('password'))
+            username = to_unicode(self.get_argument('username', ''))
+            password = to_unicode(self.get_argument('password', ''))
 
             if cmp([username, password], [sickbeard.WEB_USERNAME, sickbeard.WEB_PASSWORD]) == 0:
                 remember_me = int(self.get_argument('remember_me', default=0) or 0)
                 self.set_secure_cookie('sickrage_user', sickbeard.API_KEY, expires_days=30 if remember_me > 0 else None)
                 logging.info('User logged into the SiCKRAGE web interface')
                 return self.redirect('/')
-            else:
-                logging.warning('User attempted a failed login to the SiCKRAGE web interface from IP: {}'
-                                .format(self.request.remote_ip))
-        except MissingArgumentError:
+
+            logging.warning(
+                    'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
+                            self.request.remote_ip)
+            )
+
             return self.render("login.mako", title="Login", header="Login", topmenu="login")
         except Exception:
             logging.debug('Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
