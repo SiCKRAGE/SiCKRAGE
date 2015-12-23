@@ -19,14 +19,14 @@
 
 from __future__ import unicode_literals
 
-import httplib
 import datetime
+import httplib
 import logging
-from base64 import standard_b64encode
 import xmlrpclib
+from base64 import standard_b64encode
 
 import sickbeard
-from sickbeard.providers.generic import GenericProvider
+from providers import GenericProvider
 from sickbeard import helpers
 from sickbeard.common import Quality
 

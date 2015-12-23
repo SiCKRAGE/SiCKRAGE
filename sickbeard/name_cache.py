@@ -21,8 +21,10 @@ from __future__ import unicode_literals
 
 import logging
 import threading
+
+import db
+import scene_exceptions
 import sickbeard
-from sickbeard import db, scene_exceptions
 
 nameCache = {}
 nameCacheLock = threading.Lock()

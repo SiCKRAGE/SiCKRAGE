@@ -253,11 +253,11 @@ class LoginHandler(BaseHandler):
                 self.set_secure_cookie('sickrage_user', sickbeard.API_KEY, expires_days=30 if remember_me > 0 else None)
                 logging.info('User logged into the SiCKRAGE web interface')
                 return self.redirect('/')
-
-            logging.warning(
-                    'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
-                            self.request.remote_ip)
-            )
+            elif username and password:
+                logging.warning(
+                        'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
+                                self.request.remote_ip)
+                )
 
             return self.render("login.mako", title="Login", header="Login", topmenu="login")
         except Exception:

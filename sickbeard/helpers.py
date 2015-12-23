@@ -21,11 +21,21 @@
 
 from __future__ import unicode_literals
 
-import os
-import io
+import ast
+import base64
 import ctypes
+import datetime
+import errno
+import hashlib
+import httplib
+import io
+import logging
+import operator
+import os
+import platform
 import random
 import re
+import shutil
 import socket
 import stat
 import tempfile
@@ -33,56 +43,39 @@ import time
 import traceback
 import urllib
 import urllib2
-import hashlib
-import httplib
 import urlparse
 import uuid
-import base64
 import zipfile
-import datetime
-import errno
-import ast
-import operator
-import platform
-from functools import partial
-
-import six
-import logging
-
-import sickbeard
-import adba
-import requests
-import certifi
-import shutil
-
-from sickbeard import db
-from sickbeard import classes
-from sickbeard import name_cache
-from sickbeard.scene_exceptions import get_scene_exceptions
-from sickbeard.common import USER_AGENT
-from sickbeard.common import mediaExtensions
-from sickbeard.common import subtitleExtensions
-from sickbeard.notifiers.synoindex import notifier as synoindex_notifier
-from sickbeard import clients
-from sickrage.helper.encoding import ek
-from sickrage.helper.exceptions import ex, MultipleShowObjectsException
-from sickbeard.subtitles import isValidLanguage
-from cachecontrol import CacheControl, caches
 from contextlib import closing
-from socket import timeout as SocketTimeout
 from itertools import izip, cycle
-from functools import partial
-from collections import deque
+from socket import timeout as SocketTimeout
 
-# pylint: disable=W0212
+import adba
+import certifi
+import requests
+import six
+from cachecontrol import CacheControl, caches
+
 # Access to a protected member of a client class
+import classes
+import clients
+import db
+import name_cache
+import scene_exceptions
+import sickbeard
+from common import mediaExtensions, subtitleExtensions, USER_AGENTS
+from helper.exceptions import MultipleShowObjectsException
+from indexers.indexer_exceptions import indexer_episodenotfound, indexer_seasonnotfound
+from notifiers import synoindex_notifier
+from scene_exceptions import get_scene_exceptions
+
 urllib._urlopener = classes.SickBeardURLopener()
 
 def readFileBuffered(filename, reverse=False):
     blocksize = (1<<15)
-    with ek(io.open, filename, 'rb') as fh:
+    with io.open(filename, 'rb') as fh:
         if reverse:
-            fh.seek(0, os.SEEK_END)
+            fh.se0(os.SEEK_END)
         pos = fh.tell()
         while True:
             chunksize = min(blocksize, pos)
@@ -92,7 +85,7 @@ def readFileBuffered(filename, reverse=False):
             else:
                 pos += chunksize
 
-            fh.seek(pos, os.SEEK_SET)
+            fh.sepos(os.SEEK_SET)
             data = fh.read(chunksize)
             if not data:
                 break
@@ -327,7 +320,7 @@ def isBeingWritten(filepath):
     """
 
     # Return True if file was modified within 60 seconds. it might still be being written to.
-    ctime = max(ek(os.path.getctime, filepath), ek(os.path.getmtime, filepath))
+    ctime = max(os.path.getctime(filepath), os.path.getmtime(filepath))
     if ctime > time.time() - 60:
         return True
 
@@ -361,11 +354,10 @@ def remove_file_failed(failed_file):
     """
     Remove file from filesystem
 
-    :param file: File to remove
     """
 
     try:
-        ek(os.remove, failed_file)
+        os.remove(failed_file)
     except Exception:
         pass
 
@@ -404,9 +396,9 @@ def makeDir(path):
     :return: True if success, False if failure
     """
 
-    if not ek(os.path.isdir, path):
+    if not os.path.isdir(path):
         try:
-            ek(os.makedirs, path)
+            os.makedirs(path)
             # do the library update for synoindex
             synoindex_notifier().addFolder(path)
         except OSError:
@@ -519,15 +511,15 @@ def listMediaFiles(path):
     :return: list of files
     """
 
-    if not dir or not ek(os.path.isdir, path):
+    if not dir or not os.path.isdir(path):
         return []
 
     files = []
-    for curFile in ek(os.listdir, path):
-        fullCurFile = ek(os.path.join, path, curFile)
+    for curFile in os.listdir(path):
+        fullCurFile = os.path.join(path, curFile)
 
         # if it's a folder do it recursively
-        if ek(os.path.isdir, fullCurFile) and not curFile.startswith('.') and not curFile == 'Extras':
+        if os.path.isdir(fullCurFile) and not curFile.startswith('.') and not curFile == 'Extras':
             files += listMediaFiles(fullCurFile)
 
         elif isMediaFile(curFile):
@@ -545,8 +537,8 @@ def copyFile(srcFile, destFile):
     """
 
     try:
-        ek(shutil.copyfile, srcFile, destFile)
-        ek(shutil.copymode, srcFile, destFile)
+        shutil.copyfile(srcFile, destFile)
+        shutil.copymode(srcFile, destFile)
     except OSError as e:
         raise
 
@@ -560,12 +552,12 @@ def moveFile(srcFile, destFile):
     """
 
     try:
-        ek(shutil.move, srcFile, destFile)
+        shutil.move(srcFile, destFile)
         fixSetGroupID(destFile)
     except OSError as e:
         try:
             copyFile(srcFile, destFile)
-            ek(os.unlink, srcFile)
+            os.unlink(srcFile)
         except Exception as e:
             raise
 
@@ -583,7 +575,7 @@ def link(src, dst):
         if ctypes.windll.kernel32.CreateHardLinkW(unicode(dst), unicode(src), 0) == 0:
             raise ctypes.WinError()
     else:
-        ek(os.link, src, dst)
+        os.link(src, dst)
 
 
 def hardlinkFile(srcFile, destFile):
@@ -595,11 +587,11 @@ def hardlinkFile(srcFile, destFile):
     """
 
     try:
-        ek(link, srcFile, destFile)
+        link(srcFile, destFile)
         fixSetGroupID(destFile)
     except Exception as e:
         logging.warning("Failed to create hardlink of %s at %s. Error: %r. Copying instead"
-                    % (srcFile, destFile, ex(e)))
+                        % (srcFile, destFile, e))
         copyFile(srcFile, destFile)
 
 
@@ -613,10 +605,10 @@ def symlink(src, dst):
 
     if os.name == 'nt':
         if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src),
-                                                      1 if ek(os.path.isdir, src) else 0) in [0, 1280]:
+                                                      1 if os.path.isdir(src) else 0) in [0, 1280]:
             raise ctypes.WinError()
     else:
-        ek(os.symlink, src, dst)
+        os.symlink(src, dst)
 
 
 def moveAndSymlinkFile(srcFile, destFile):
@@ -629,12 +621,12 @@ def moveAndSymlinkFile(srcFile, destFile):
     """
 
     try:
-        ek(shutil.move, srcFile, destFile)
+        shutil.move(srcFile, destFile)
         fixSetGroupID(destFile)
-        ek(symlink, destFile, srcFile)
+        symlink(destFile, srcFile)
     except Exception as e:
         logging.warning("Failed to create symlink of %s at %s. Error: %r. Copying instead"
-                    % (srcFile, destFile, ex(e)))
+                        % (srcFile, destFile, e))
         copyFile(srcFile, destFile)
 
 
@@ -646,14 +638,14 @@ def make_dirs(path):
 
     logging.debug("Checking if the path %s already exists" % path)
 
-    if not ek(os.path.isdir, path):
+    if not os.path.isdir(path):
         # Windows, create all missing folders
         if os.name == 'nt' or os.name == 'ce':
             try:
                 logging.debug("Folder %s didn't exist, creating it" % path)
-                ek(os.makedirs, path)
+                os.makedirs(path)
             except (OSError, IOError) as e:
-                logging.error("Failed creating %s : %r" % (path, ex(e)))
+                logging.error("Failed creating %s : %r" % (path, e))
                 return False
 
         # not Windows, create all missing folders and set permissions
@@ -666,18 +658,18 @@ def make_dirs(path):
                 sofar += cur_folder + os.path.sep
 
                 # if it exists then just keep walking down the line
-                if ek(os.path.isdir, sofar):
+                if os.path.isdir(sofar):
                     continue
 
                 try:
                     logging.debug("Folder %s didn't exist, creating it" % sofar)
-                    ek(os.mkdir, sofar)
+                    os.mkdir(sofar)
                     # use normpath to remove end separator, otherwise checks permissions against itself
-                    chmodAsParent(ek(os.path.normpath, sofar))
+                    chmodAsParent(os.path.normpath(sofar))
                     # do the library update for synoindex
                     synoindex_notifier().addFolder(sofar)
                 except (OSError, IOError) as e:
-                    logging.error("Failed creating %s : %r" % (sofar, ex(e)))
+                    logging.error("Failed creating %s : %r" % (sofar, e))
                     return False
 
     return True
@@ -693,11 +685,11 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
     :param old_path_length: The length of media file path (old name) WITHOUT THE EXTENSION
     """
 
-    # new_dest_dir, new_dest_name = ek(os.path.split, new_path)  # @UnusedVariable
+    # new_dest_dir, new_dest_name = os.path.split(new_path)  # @UnusedVariable
 
     if old_path_length == 0 or old_path_length > len(cur_path):
         # approach from the right
-        cur_file_name, cur_file_ext = ek(os.path.splitext, cur_path)  # @UnusedVariable
+        cur_file_name, cur_file_ext = os.path.splitext(cur_path)  # @UnusedVariable
     else:
         # approach from the left
         cur_file_ext = cur_path[old_path_length:]
@@ -705,7 +697,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
 
     if cur_file_ext[1:] in subtitleExtensions:
         # Extract subtitle language from filename
-        sublang = ek(os.path.splitext, cur_file_name)[1][1:]
+        sublang = os.path.splitext(cur_file_name)[1][1:]
 
         # Check if the language extracted from filename is a valid language
         if isValidLanguage(sublang):
@@ -714,18 +706,18 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
     # put the extension on the incoming file
     new_path += cur_file_ext
 
-    make_dirs(ek(os.path.dirname, new_path))
+    make_dirs(os.path.dirname(new_path))
 
     # move the file
     try:
         logging.info("Renaming file from %s to %s" % (cur_path, new_path))
-        ek(shutil.move, cur_path, new_path)
+        shutil.move(cur_path, new_path)
     except (OSError, IOError) as e:
-        logging.error("Failed renaming %s to %s : %r" % (cur_path, new_path, ex(e)))
+        logging.error("Failed renaming %s to %s : %r" % (cur_path, new_path, e))
         return False
 
     # clean up any old folders that are empty
-    delete_empty_folders(ek(os.path.dirname, cur_path))
+    delete_empty_folders(os.path.dirname(cur_path))
 
     return True
 
@@ -744,8 +736,8 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
     logging.info("Trying to clean any empty folders under " + check_empty_dir)
 
     # as long as the folder exists and doesn't contain any files, delete it
-    while ek(os.path.isdir, check_empty_dir) and check_empty_dir != keep_dir:
-        check_files = ek(os.listdir, check_empty_dir)
+    while os.path.isdir(check_empty_dir) and check_empty_dir != keep_dir:
+        check_files = os.listdir(check_empty_dir)
 
         if not check_files or (len(check_files) <= len(ignore_items) and all(
                 [check_file in ignore_items for check_file in check_files])):
@@ -753,13 +745,13 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
             try:
                 logging.info("Deleting empty folder: " + check_empty_dir)
                 # need shutil.rmtree when ignore_items is really implemented
-                ek(os.rmdir, check_empty_dir)
+                os.rmdir(check_empty_dir)
                 # do the library update for synoindex
                 synoindex_notifier().deleteFolder(check_empty_dir)
             except OSError as e:
                 logging.warning("Unable to delete %s. Error: %r" % (check_empty_dir, repr(e)))
                 break
-            check_empty_dir = ek(os.path.dirname, check_empty_dir)
+            check_empty_dir = os.path.dirname(check_empty_dir)
         else:
             break
 
@@ -790,21 +782,21 @@ def chmodAsParent(childPath):
     if os.name == 'nt' or os.name == 'ce':
         return
 
-    parentPath = ek(os.path.dirname, childPath)
+    parentPath = os.path.dirname(childPath)
 
     if not parentPath:
         logging.debug("No parent path provided in " + childPath + ", unable to get permissions from it")
         return
 
-    childPath = ek(os.path.join, parentPath, ek(os.path.basename, childPath))
+    childPath = os.path.join(parentPath, os.path.basename(childPath))
 
-    parentPathStat = ek(os.stat, parentPath)
+    parentPathStat = os.stat(parentPath)
     parentMode = stat.S_IMODE(parentPathStat[stat.ST_MODE])
 
-    childPathStat = ek(os.stat, childPath)
+    childPathStat = os.stat(childPath)
     childPath_mode = stat.S_IMODE(childPathStat[stat.ST_MODE])
 
-    if ek(os.path.isfile, childPath):
+    if os.path.isfile(childPath):
         childMode = fileBitFilter(parentMode)
     else:
         childMode = parentMode
@@ -820,7 +812,7 @@ def chmodAsParent(childPath):
         return
 
     try:
-        ek(os.chmod, childPath, childMode)
+        os.chmod(childPath, childMode)
         logging.debug("Setting permissions for %s to %o as parent directory has %o" % (childPath, childMode, parentMode))
     except OSError:
         logging.debug("Failed to set permission for %s to %o" % (childPath, childMode))
@@ -837,15 +829,15 @@ def fixSetGroupID(childPath):
     if os.name == 'nt' or os.name == 'ce':
         return
 
-    parentPath = ek(os.path.dirname, childPath)
-    parentStat = ek(os.stat, parentPath)
+    parentPath = os.path.dirname(childPath)
+    parentStat = os.stat(parentPath)
     parentMode = stat.S_IMODE(parentStat[stat.ST_MODE])
 
-    childPath = ek(os.path.join, parentPath, ek(os.path.basename, childPath))
+    childPath = os.path.join(parentPath, os.path.basename(childPath))
 
     if parentMode & stat.S_ISGID:
         parentGID = parentStat[stat.ST_GID]
-        childStat = ek(os.stat, childPath)
+        childStat = os.stat(childPath)
         childGID = childStat[stat.ST_GID]
 
         if childGID == parentGID:
@@ -859,7 +851,7 @@ def fixSetGroupID(childPath):
             return
 
         try:
-            ek(os.chown, childPath, -1, parentGID)  # @UndefinedVariable - only available on UNIX
+            os.chown(childPath, -1, parentGID)  # @UndefinedVariable - only available on UNIX
             logging.debug("Respecting the set-group-ID bit on the parent directory for %s" % childPath)
         except OSError:
             logging.error(
@@ -1002,9 +994,8 @@ def create_https_certificates(ssl_cert, ssl_key):
     """
 
     try:
-        import OpenSSL.crypto
-        from certgen import createKeyPair, createCertRequest, createCertificate, TYPE_RSA, \
-            serial  # @UnresolvedImport
+        import PyOpenSSL.crypto
+        from certgen import createKeyPair, createCertRequest, createCertificate, TYPE_RSA, serial
     except Exception:
         logging.warning("pyopenssl module missing, please install for https access")
         return False
@@ -1023,8 +1014,8 @@ def create_https_certificates(ssl_cert, ssl_key):
     try:
         # pylint: disable=E1101
         # Module has no member
-        ek(io.open, ssl_key, 'w').write(OpenSSL.crypto.dump_privatekey(OpenSSL.crypto.FILETYPE_PEM, pkey))
-        ek(io.open, ssl_cert, 'w').write(OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, cert))
+        io.open(ssl_key, 'w').write(PyOpenSSL.crypto.dump_privatekey(PyOpenSSL.crypto.FILETYPE_PEM, pkey))
+        io.open(ssl_cert, 'w').write(PyOpenSSL.crypto.dump_certificate(PyOpenSSL.crypto.FILETYPE_PEM, cert))
     except Exception:
         logging.error("Error creating SSL key and certificate")
         return False
@@ -1045,18 +1036,18 @@ def backupVersionedFile(old_file, version):
 
     new_file = unicode(old_file + '.' + 'v' + str(version))
 
-    while not ek(os.path.isfile, new_file):
-        if not ek(os.path.isfile, old_file):
+    while not os.path.isfile(new_file):
+        if not os.path.isfile(old_file):
             logging.debug("Not creating backup, %s doesn't exist" % old_file)
             break
 
         try:
             logging.debug("Trying to back up %s to %s" % (old_file, new_file))
-            ek(shutil.copyfile, old_file, new_file)
+            shutil.copyfile(old_file, new_file)
             logging.debug("Backup done")
             break
         except Exception as e:
-            logging.warning("Error while trying to back up %s to %s : %r" % (old_file, new_file, ex(e)))
+            logging.warning("Error while trying to back up %s to %s : %r" % (old_file, new_file, e))
             numTries += 1
             time.sleep(1)
             logging.debug("Trying again.")
@@ -1079,10 +1070,10 @@ def restoreVersionedFile(backup_file, version):
 
     numTries = 0
 
-    new_file, _ = ek(os.path.splitext, backup_file)
+    new_file, _ = os.path.splitext(backup_file)
     restore_file = new_file + '.' + 'v' + str(version)
 
-    if not ek(os.path.isfile, new_file):
+    if not os.path.isfile(new_file):
         logging.debug("Not restoring, %s doesn't exist" % new_file)
         return False
 
@@ -1090,24 +1081,24 @@ def restoreVersionedFile(backup_file, version):
         logging.debug("Trying to backup %s to %s.r%s before restoring backup"
                     % (new_file, new_file, version))
 
-        ek(shutil.move, new_file, new_file + '.' + 'r' + str(version))
+        shutil.move(new_file, new_file + '.' + 'r' + str(version))
     except Exception as e:
         logging.warning("Error while trying to backup DB file %s before proceeding with restore: %r"
-                    % (restore_file, ex(e)))
+                        % (restore_file, e))
         return False
 
-    while not ek(os.path.isfile, new_file):
-        if not ek(os.path.isfile, restore_file):
+    while not os.path.isfile(new_file):
+        if not os.path.isfile(restore_file):
             logging.debug("Not restoring, %s doesn't exist" % restore_file)
             break
 
         try:
             logging.debug("Trying to restore file %s to %s" % (restore_file, new_file))
-            ek(shutil.copy, restore_file, new_file)
+            shutil.copy(restore_file, new_file)
             logging.debug("Restore done")
             break
         except Exception as e:
-            logging.warning("Error while trying to restore file %s. Error: %r" % (restore_file, ex(e)))
+            logging.warning("Error while trying to restore file %s. Error: %r" % (restore_file, e))
             numTries += 1
             time.sleep(1)
             logging.debug("Trying again. Attempt #: %s" % numTries)
@@ -1145,7 +1136,7 @@ def md5_for_file(filename):
 
     try:
         md5 = hashlib.md5()
-        for byte in ek(readFileBuffered,filename):
+        for byte in readFileBuffered(filename):
             md5.update(byte)
         return md5.hexdigest()
     except Exception:
@@ -1207,6 +1198,10 @@ unique_key1 = hex(uuid.getnode() ** 2)  # Used in encryption v1
 # Encryption Functions
 def encrypt(data, encryption_version=0, _decrypt=False):
     # Version 1: Simple XOR encryption (this is not very secure, but works)
+    """
+
+    :rtype: basestring
+    """
     if encryption_version == 1:
         if _decrypt:
             return ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(base64.decodestring(data), cycle(unique_key1)))
@@ -1273,7 +1268,7 @@ def get_show(name, tryIndexers=False):
 
         # try scene exceptions
         if not showObj:
-            ShowID = sickbeard.scene_exceptions.get_scene_exception_by_name(name)[0]
+            ShowID = scene_exceptions.get_scene_exception_by_name(name)[0]
             if ShowID:
                 showObj = findCertainShow(sickbeard.showList, int(ShowID))
 
@@ -1294,7 +1289,7 @@ def is_hidden_folder(folder):
     """
 
     def is_hidden(filepath):
-        name = ek(os.path.basename, ek(os.path.abspath, filepath))
+        name = os.path.basename(os.path.abspath(filepath))
         return name.startswith('.') or has_hidden_attribute(filepath)
 
     def has_hidden_attribute(filepath):
@@ -1306,7 +1301,7 @@ def is_hidden_folder(folder):
             result = False
         return result
 
-    if ek(os.path.isdir, folder):
+    if os.path.isdir(folder):
         if is_hidden(folder):
             return True
 
@@ -1317,7 +1312,7 @@ def real_path(path):
     """
     Returns: the canonicalized absolute pathname. The resulting path will have no symbolic link, '/./' or '/../' components.
     """
-    return ek(os.path.normpath, ek(os.path.normcase, ek(os.path.realpath, path)))
+    return os.path.normpath(os.path.normcase(os.path.realpath(path)))
 
 
 def validateShow(show, season=None, episode=None):
@@ -1337,7 +1332,7 @@ def validateShow(show, season=None, episode=None):
             return t
 
         return t[show.indexerid][season][episode]
-    except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
+    except (indexer_episodenotfound, indexer_seasonnotfound):
         pass
 
 
@@ -1397,25 +1392,24 @@ def extractZip(archive, targetDir):
     """
     Unzip a file to a directory
 
-    :param fileList: A list of file names - full path each name
     :param archive: The file name for the archive with a full path
     """
 
     try:
-        if not ek(os.path.exists, targetDir):
-            ek(os.mkdir, targetDir)
+        if not os.path.exists(targetDir):
+            os.mkdir(targetDir)
 
         zip_file = zipfile.ZipFile(archive, 'r', allowZip64=True)
         for member in zip_file.namelist():
-            filename = ek(os.path.basename, member)
+            filename = os.path.basename(member)
             # skip directories
             if not filename:
                 continue
 
             # copy file (taken from zipfile's extract)
             source = zip_file.open(member)
-            target = file(ek(os.path.join, targetDir, filename), "wb")
-            ek(shutil.copyfileobj, source, target)
+            target = file(os.path.join(targetDir, filename), "wb")
+            shutil.copyfileobj(source, target)
             source.close()
             target.close()
         zip_file.close()
@@ -1438,7 +1432,7 @@ def backupConfigZip(fileList, archive, arcname=None):
     try:
         a = zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
         for f in fileList:
-            a.write(f, ek(os.path.relpath, f, arcname))
+            a.write(f, os.path.relpath(f, arcname))
         a.close()
         return True
     except Exception as e:
@@ -1456,15 +1450,15 @@ def restoreConfigZip(archive, targetDir):
     """
 
     try:
-        if not ek(os.path.exists, targetDir):
-            ek(os.mkdir, targetDir)
+        if not os.path.exists(targetDir):
+            os.mkdir(targetDir)
         else:
             def path_leaf(path):
-                head, tail = ek(os.path.split, path)
-                return tail or ek(os.path.basename, head)
+                head, tail = os.path.split(path)
+                return tail or os.path.basename(head)
 
             bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
-            ek(shutil.move, targetDir, ek(os.path.join, ek(os.path.dirname, targetDir), bakFilename))
+            shutil.move(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
 
         zip_file = zipfile.ZipFile(archive, 'r', allowZip64=True)
         for member in zip_file.namelist():
@@ -1472,8 +1466,8 @@ def restoreConfigZip(archive, targetDir):
         zip_file.close()
         return True
     except Exception as e:
-        logging.error("Zip extraction error: %r" % ex(e))
-        ek(removetree, targetDir)
+        logging.error("Zip extraction error: %r" % e)
+        removetree(targetDir)
         return False
 
 
@@ -1546,7 +1540,7 @@ def touchFile(fname, atime=None):
     if atime is not None:
         try:
             with file(fname, 'a'):
-                ek(os.utime, fname, (atime, atime))
+                os.utime(fname, (atime, atime))
                 return True
         except Exception as e:
             if e.errno == errno.ENOSYS:
@@ -1554,7 +1548,7 @@ def touchFile(fname, atime=None):
             elif e.errno == errno.EACCES:
                 logging.error("File air date stamping failed(Permission denied). Check permissions for file: %s" % fname)
             else:
-                logging.error("File air date stamping failed. The error is: %r" % ex(e))
+                logging.error("File air date stamping failed. The error is: %r" % e)
 
     return False
 
@@ -1574,9 +1568,9 @@ def _getTempDir():
         try:
             uid = getpass.getuser()
         except ImportError:
-            return ek(os.path.join, tempfile.gettempdir(), "sickrage")
+            return os.path.join(tempfile.gettempdir(), "sickrage")
 
-    return ek(os.path.join, tempfile.gettempdir(), "sickrage-%s" % uid)
+    return os.path.join(tempfile.gettempdir(), "sickrage-%s" % uid)
 
 
 def codeDescription(status_code):
@@ -1590,7 +1584,7 @@ def codeDescription(status_code):
         return 'unknown'
 
 
-def _setUpSession(session, headers={}, params=None):
+def _setUpSession(session=None, headers={}, params=None):
     """
     Returns a session initialized with default cache and parameter settings
 
@@ -1600,14 +1594,17 @@ def _setUpSession(session, headers={}, params=None):
     """
 
     # request session
-    cache_dir = sickbeard.CACHE_DIR or _getTempDir()
+    session = session or requests.Session()
     session = CacheControl(sess=session,
-                           cache=caches.FileCache(ek(os.path.join, cache_dir, 'sessions'), use_dir_lock=True),
-                           cache_etags=False)
+                           cache=caches.FileCache(os.path.join(sickbeard.CACHE_DIR or _getTempDir(), 'sessions'),
+                                                  use_dir_lock=True),
+                           cache_etags=False
+                           )
 
     # request session headers
-    session.headers.update({'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip,deflate'})
     session.headers.update(headers)
+    session.headers.update({'Accept-Encoding': 'gzip,deflate'})
+    session.headers.update(random.choice(USER_AGENTS))
 
     # request session clear residual referer
     if 'Referer' in session.headers and 'Referer' not in headers:
@@ -1635,13 +1632,16 @@ def _setUpSession(session, headers={}, params=None):
             if isinstance(params[param], unicode):
                 params[param] = params[param].encode('utf-8')
         session.params = params
-    return session
 
+    return session
 
 def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=None, json=False, needBytes=False):
     """
     Returns a byte-string retrieved from the url provider.
     """
+
+    if requests.__version__ < (2, 8):
+        logging.debug("Requests version 2.8+ needed to avoid SSL cert verify issues, please upgrade your copy")
 
     url = normalize_url(url)
     session = _setUpSession(session, headers, params)
@@ -1665,23 +1665,23 @@ def getURL(url, post_data=None, params=None, headers={}, timeout=30, session=Non
             return None
 
     except (SocketTimeout, TypeError) as e:
-        logging.warning("Connection timed out (sockets) accessing getURL %s Error: %r" % (url, ex(e)))
+        logging.warning("Connection timed out (sockets) accessing getURL %s Error: %r" % (url, e))
         return None
     except requests.exceptions.HTTPError as e:
-        logging.debug("HTTP error in getURL %s Error: %r" % (url, ex(e)))
+        logging.debug("HTTP error in getURL %s Error: %r" % (url, e))
         return None
     except requests.exceptions.ConnectionError as e:
-        logging.debug("Connection error to getURL %s Error: %r" % (url, ex(e)))
+        logging.debug("Connection error to getURL %s Error: %r" % (url, e))
         return None
     except requests.exceptions.Timeout as e:
-        logging.warning("Connection timed out accessing getURL %s Error: %r" % (url, ex(e)))
+        logging.warning("Connection timed out accessing getURL %s Error: %r" % (url, e))
         return None
     except requests.exceptions.ContentDecodingError:
         logging.debug("Content-Encoding was gzip, but content was not compressed. getURL: %s" % url)
         logging.debug(traceback.format_exc())
         return None
     except Exception as e:
-        logging.debug("Unknown exception in getURL %s Error: %r" % (url, ex(e)))
+        logging.debug("Unknown exception in getURL %s Error: %r" % (url, e))
         logging.debug(traceback.format_exc())
         return None
 
@@ -1711,7 +1711,7 @@ def download_file(url, filename, session=None, headers={}):
                 return False
 
             try:
-                with ek(io.open, filename, 'wb') as fp:
+                with io.open(filename, 'wb') as fp:
                     for chunk in resp.iter_content(chunk_size=1024):
                         if chunk:
                             fp.write(chunk)
@@ -1723,23 +1723,23 @@ def download_file(url, filename, session=None, headers={}):
 
     except (SocketTimeout, TypeError) as e:
         remove_file_failed(filename)
-        logging.warning("Connection timed out (sockets) while loading download URL %s Error: %r" % (url, ex(e)))
+        logging.warning("Connection timed out (sockets) while loading download URL %s Error: %r" % (url, e))
         return None
     except requests.exceptions.HTTPError as e:
         remove_file_failed(filename)
-        logging.warning("HTTP error %r while loading download URL %s " % (ex(e), url))
+        logging.warning("HTTP error %r while loading download URL %s " % (e), url)
         return False
     except requests.exceptions.ConnectionError as e:
         remove_file_failed(filename)
-        logging.warning("Connection error %r while loading download URL %s " % (ex(e), url))
+        logging.warning("Connection error %r while loading download URL %s " % (e), url)
         return False
     except requests.exceptions.Timeout as e:
         remove_file_failed(filename)
-        logging.warning("Connection timed out %r while loading download URL %s " % (ex(e), url))
+        logging.warning("Connection timed out %r while loading download URL %s " % (e), url)
         return False
     except EnvironmentError as e:
         remove_file_failed(filename)
-        logging.warning("Unable to save the file: %r " % ex(e))
+        logging.warning("Unable to save the file: %r " % e)
         return False
     except Exception:
         remove_file_failed(filename)
@@ -1757,17 +1757,17 @@ def get_size(start_path='.'):
     :return: total filesize
     """
 
-    if not ek(os.path.isdir, start_path):
+    if not os.path.isdir(start_path):
         return -1
 
     total_size = 0
-    for dirpath, _, filenames in ek(os.walk, start_path):
+    for dirpath, _, filenames in os.walk(start_path):
         for f in filenames:
-            fp = ek(os.path.join, dirpath, f)
+            fp = os.path.join(dirpath, f)
             try:
-                total_size += ek(os.path.getsize, fp)
+                total_size += os.path.getsize(fp)
             except OSError as e:
-                logging.error("Unable to get size for file %s Error: %r" % (fp, ex(e)))
+                logging.error("Unable to get size for file %s Error: %r" % (fp, e))
                 logging.debug(traceback.format_exc())
     return total_size
 
@@ -1860,7 +1860,7 @@ def verify_freespace(src, dest, oldfile=None):
         logging.info("Unable to determine free space on your OS")
         return True
 
-    if not ek(os.path.isfile, src):
+    if not os.path.isfile(src):
         logging.warning("A path to a file is required for the source. " + src + " is not a file.")
         return True
 
@@ -1870,12 +1870,12 @@ def verify_freespace(src, dest, oldfile=None):
         logging.warning("Unable to determine free space, so I will assume there is enough.")
         return True
 
-    neededspace = int(ek(os.path.getsize, src))
+    neededspace = int(os.path.getsize(src))
 
     if oldfile:
         for f in oldfile:
-            if ek(os.path.isfile, f.location):
-                diskfree += ek(os.path.getsize, f.location)
+            if os.path.isfile(f.location):
+                diskfree += os.path.getsize(f.location)
 
     if diskfree > neededspace:
         return True
@@ -1919,24 +1919,24 @@ def isFileLocked(checkfile, writeLockCheck=False):
     :param writeLockCheck: when true will check if the file is locked for writing (prevents move operations)
     """
 
-    checkfile = ek(os.path.abspath, checkfile)
+    checkfile = os.path.abspath(checkfile)
 
-    if not ek(os.path.exists, checkfile):
+    if not os.path.exists(checkfile):
         return True
     try:
-        with ek(io.open, checkfile, 'rb'):
+        with io.open(checkfile, 'rb'):
             pass
     except IOError:
         return True
 
     if writeLockCheck:
         lockFile = checkfile + ".lckchk"
-        if ek(os.path.exists, lockFile):
-            ek(os.remove, lockFile)
+        if os.path.exists(lockFile):
+            os.remove(lockFile)
         try:
-            ek(os.rename, checkfile, lockFile)
+            os.rename(checkfile, lockFile)
             time.sleep(1)
-            ek(os.rename, lockFile, checkfile)
+            os.rename(lockFile, checkfile)
         except (Exception, OSError, IOError) as e:
             return True
 
@@ -1948,7 +1948,7 @@ def getDiskSpaceUsage(diskPath=None):
     returns the free space in human readable bytes for a given path or False if no path given
     :param diskPath: the filesystem path being checked
     """
-    if diskPath and ek(os.path.exists, diskPath):
+    if diskPath and os.path.exists(diskPath):
         if platform.system() == 'Windows':
             free_bytes = ctypes.c_ulonglong(0)
             ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(diskPath), None, None,
@@ -1965,28 +1965,28 @@ def removetree(tgt):
     def error_handler(func, path, execinfo):
         # figure out recovery based on error...
         e = execinfo[1]
-        if e.errno == errno.ENOENT or not ek(os.path.exists, path):
+        if e.errno == errno.ENOENT or not os.path.exists(path):
             return  # path does not exist
         if func in (os.rmdir, os.remove) and e.errno == errno.EACCES:
-            ek(os.chmod, path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
-            ek(func, path)  # read-only file; make writable and retry
+            os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
+            func(path)  # read-only file; make writable and retry
         raise e
 
     # Rename target directory to temporary value, then remove it
     count = 0
     while count < 10:  # prevents indefinite loop
         count += 1
-        tmp = ek(os.path.join, ek(os.path.dirname, tgt), "_removetree_tmp_%d" % (count))
+        tmp = os.path.join(os.path.dirname(tgt), "_removetree_tmp_%d" % (count))
         try:
-            ek(os.rename, tgt, tmp)
-            ek(shutil.rmtree, tmp, onerror=error_handler)
+            os.rename(tgt, tmp)
+            shutil.rmtree(tmp, onerror=error_handler)
             break
         except OSError as e:
             time.sleep(1)  # Give file system some time to catch up
             if e.errno in [errno.EACCES, errno.ENOTEMPTY]:
                 continue  # Try another temp name
             if e.errno == errno.EEXIST:
-                ek(shutil.rmtree, tmp, ignore_errors=True)  # Try to clean up old files
+                shutil.rmtree(tmp, ignore_errors=True)  # Try to clean up old files
                 continue  # Try another temp name
             if e.errno == errno.ENOENT:
                 break  # 'src' does not exist(?)

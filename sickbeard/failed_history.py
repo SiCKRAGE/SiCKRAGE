@@ -19,12 +19,12 @@
 
 from __future__ import unicode_literals
 
+import datetime
+import logging
 import re
 import urllib
-import datetime
 
-from sickbeard import db
-import logging
+import db
 from sickbeard.common import Quality
 from sickbeard.common import WANTED, FAILED
 from sickrage.helper.encoding import ss

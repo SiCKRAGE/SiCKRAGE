@@ -1,8 +1,8 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickbeard
-    from sickbeard.providers.generic import GenericProvider
-    from sickbeard.providers import thepiratebay
+    from providers import GenericProvider
+    from providers.torrent import thepiratebay
     from sickbeard.helpers import anon_url
 %>
 <%block name="scripts">

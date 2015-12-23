@@ -17,30 +17,29 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
-
 from __future__ import unicode_literals
 
+import datetime
 import logging
 import os
 import platform
-import subprocess
 import re
-
-import tarfile
 import stat
-import traceback
+import subprocess
+import tarfile
 import time
-import datetime
+import traceback
+
 import requests
 
 import sickbeard
 from sickbeard import db
-from sickbeard import ui
-from sickbeard import notifiers
 from sickbeard import helpers
+from sickbeard import notifiers
+from sickbeard import ui
+from sickbeard.helpers import removetree
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
-from sickbeard.helpers import removetree
 
 
 class CheckVersion(object):
@@ -77,7 +76,7 @@ class CheckVersion(object):
                         if sickbeard.versionCheckScheduler.action.update():
                             logging.info("Update was successful!")
                             ui.notifications.message('Update was successful')
-                            sickbeard.events.put(sickbeard.events.SystemEvent.RESTART)
+                            sickbeard.srevents.put(sickbeard.srevents.SystemEvent.RESTART)
                         else:
                             logging.info("Update failed!")
                             ui.notifications.message('Update failed!')

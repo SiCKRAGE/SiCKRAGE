@@ -20,7 +20,7 @@
 
 from __future__ import unicode_literals
 
-from indexers.thetvdb.tvdb_exceptions import tvdb_exception, tvdb_error, tvdb_userabort, tvdb_shownotfound,\
+from thetvdb.tvdb_exceptions import tvdb_exception, tvdb_error, tvdb_userabort, tvdb_shownotfound,\
     tvdb_showincomplete,tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound
 
 __author__ = "echel0n"

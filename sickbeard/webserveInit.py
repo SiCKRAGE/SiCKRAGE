@@ -1,18 +1,18 @@
 from __future__ import unicode_literals
 
+import logging
 import os
 import threading
-import sickbeard
 
-from sickbeard.webserve import LoginHandler, LogoutHandler, CalendarHandler
-from sickbeard.webapi import ApiHandler, KeyHandler
-import logging
-from sickbeard.helpers import create_https_certificates, generateApiKey
-from tornado.web import Application, StaticFileHandler, RedirectHandler
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.routes import route
+from tornado.web import Application, StaticFileHandler, RedirectHandler
 
+import sickbeard
+from sickbeard.helpers import create_https_certificates, generateApiKey
+from sickbeard.webapi import ApiHandler, KeyHandler
+from sickbeard.webserve import LoginHandler, LogoutHandler, CalendarHandler
 from sickrage.helper.encoding import ek
 
 class StaticImageHandler(StaticFileHandler):
@@ -29,7 +29,7 @@ class StaticImageHandler(StaticFileHandler):
         return super(StaticImageHandler, self).get(path, include_body)
 
 class SRWebServer(threading.Thread):
-    def __init__(self, options={}, io_loop=None):
+    def __init__(self, options, io_loop=None):
         threading.Thread.__init__(self)
         self.name = "TORNADO"
         self.alive = True
@@ -37,14 +37,6 @@ class SRWebServer(threading.Thread):
         self.io_loop = io_loop or IOLoop.current()
 
         self.options = options
-        self.options.setdefault('port', 8081)
-        self.options.setdefault('host', '0.0.0.0')
-        self.options.setdefault('log_dir', None)
-        self.options.setdefault('username', '')
-        self.options.setdefault('password', '')
-        self.options.setdefault('web_root', '/')
-        assert isinstance(self.options[b'port'], int)
-        assert 'gui_root' in self.options
 
         # video root
         if sickbeard.ROOT_DIRS:

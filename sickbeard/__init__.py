@@ -21,6 +21,7 @@
 from __future__ import unicode_literals
 
 import datetime
+import logging
 import os
 import os.path
 import re
@@ -29,20 +30,18 @@ import socket
 import sys
 import threading
 import webbrowser
-import logging
-import requests
-from threading import Lock
+
 from configobj import ConfigObj
 from github import Github
 
 import network_timezones
-from sickbeard.logger import SRLogger
+from providers.nzb import getNewznabProviderList, getNZBProviderList
+from providers.torrent import getTorrentRssProviderList, getTorrentProviderList
 from sickbeard import dailysearcher
 from sickbeard import db
 from sickbeard import helpers
 from sickbeard import metadata
 from sickbeard import naming
-from sickbeard import providers
 from sickbeard import scheduler
 from sickbeard import searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser, \
     subtitles, traktChecker
@@ -51,20 +50,14 @@ from sickbeard import show_queue
 from sickbeard.common import SD
 from sickbeard.common import SKIPPED
 from sickbeard.common import WANTED
-from sickbeard.config import CheckSection, check_setting_int, check_setting_str, check_setting_float, ConfigMigrator, \
-    naming_ep_type
+from sickbeard.config import CheckSection, check_setting_int, check_setting_str, ConfigMigrator
 from sickbeard.databases import mainDB, cache_db, failed_db
-from sickbeard.indexers import indexer_api
-from sickbeard.indexers.indexer_exceptions import indexer_shownotfound, indexer_showincomplete, indexer_exception, \
-    indexer_error, \
-    indexer_episodenotfound, indexer_attributenotfound, indexer_seasonnotfound, indexer_userabort, indexerExcepts
-from sickbeard.providers.generic import GenericProvider
 from sickbeard.helpers import removetree
+from sickbeard.indexers import indexer_api
+from sickbeard.logger import SRLogger
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 from sickrage.system.Shutdown import Shutdown
-
-requests.packages.urllib3.disable_warnings()
 
 indexerApi = indexer_api.indexerApi
 
@@ -146,7 +139,7 @@ NEWS_LAST_READ = None
 NEWS_LATEST = None
 NEWS_UNREAD = 0
 
-INIT_LOCK = Lock()
+INIT_LOCK = threading.Lock()
 started = False
 
 ACTUAL_LOG_DIR = None
@@ -560,6 +553,8 @@ NO_RESTART = False
 TMDB_API_KEY = 'edc5f123313769de83a71e157758030b'
 # TRAKT_API_KEY = 'd4161a7a106424551add171e5470112e4afdaf2438e6ef2fe0548edc75924868'
 
+THETVDB_APITOKEN = ''
+
 TRAKT_API_KEY = '5c65f55e11d48c35385d9e8670615763a605fad28374c8ae553a7b7a50651ddd'
 TRAKT_API_SECRET = 'b53e32045ac122a445ef163e6d859403301ffe9b17fb8321d428531b69022a82'
 TRAKT_PIN_URL = 'https://trakt.tv/pin/4562'
@@ -624,7 +619,7 @@ def initialize(consoleLogging=True):
             USE_SUBTITLES, SUBTITLES_LANGUAGES, SUBTITLES_DIR, SUBTITLES_SERVICES_LIST, SUBTITLES_SERVICES_ENABLED, SUBTITLES_HISTORY, SUBTITLES_FINDER_FREQUENCY, SUBTITLES_MULTI, EMBEDDED_SUBTITLES_ALL, SUBTITLES_EXTRA_SCRIPTS, subtitlesFinderScheduler, \
             SUBTITLES_HEARING_IMPAIRED, ADDIC7ED_USER, ADDIC7ED_PASS, LEGENDASTV_USER, LEGENDASTV_PASS, OPENSUBTITLES_USER, OPENSUBTITLES_PASS, \
             USE_FAILED_DOWNLOADS, DELETE_FAILED, ANON_REDIRECT, LOCALHOST_IP, DEBUG, DEFAULT_PAGE, PROXY_SETTING, PROXY_INDEXERS, \
-            AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, LOG_FILE, \
+            AUTOPOSTPROCESSER_FREQUENCY, SHOWUPDATE_HOUR, LOG_FILE, THETVDB_APITOKEN, \
             ANIME_DEFAULT, NAMING_ANIME, ANIMESUPPORT, USE_ANIDB, ANIDB_USERNAME, ANIDB_PASSWORD, ANIDB_USE_MYLIST, \
             ANIME_SPLIT_HOME, SCENE_DEFAULT, ARCHIVE_DEFAULT, DOWNLOAD_URL, BACKLOG_DAYS, GIT_USERNAME, GIT_PASSWORD, \
             GIT_AUTOISSUES, DEVELOPER, gh, DISPLAY_ALL_SEASONS, SSL_VERIFY, NEWS_LAST_READ, NEWS_LATEST, SOCKET_TIMEOUT
@@ -655,6 +650,8 @@ def initialize(consoleLogging=True):
         CheckSection(CFG, 'Pushbullet')
         CheckSection(CFG, 'Subtitles')
         CheckSection(CFG, 'pyTivo')
+        CheckSection(CFG, 'theTVDB')
+        CheckSection(CFG, 'Trakt')
 
         ACTUAL_LOG_DIR = check_setting_str(CFG, 'General', 'log_dir', 'Logs')
         LOG_DIR = ek(os.path.normpath, ek(os.path.join, DATA_DIR, ACTUAL_LOG_DIR))
@@ -748,7 +745,7 @@ def initialize(consoleLogging=True):
                     try:
                         if ek(os.path.isdir, dstDir):
                             bakFilename = '{0}-{1}'.format(path_leaf(dstDir),
-                                                           datetime.datetime.strftime(datetime.datetime.now(),
+                                                           datetime.datetime.strftime(datetime.date.now(),
                                                                                       '%Y%m%d_%H%M%S'))
                             ek(shutil.move, dstDir, ek(os.path.join, ek(os.path.dirname, dstDir), bakFilename))
 
@@ -1100,6 +1097,8 @@ def initialize(consoleLogging=True):
         SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
                 check_setting_int(CFG, 'SynologyNotifier', 'synologynotifier_notify_onsubtitledownload', 0))
 
+        THETVDB_APITOKEN = check_setting_str(CFG, 'theTVDB', 'thetvdb_apitoken', '', censor_log=True)
+
         USE_TRAKT = bool(check_setting_int(CFG, 'Trakt', 'use_trakt', 0))
         TRAKT_USERNAME = check_setting_str(CFG, 'Trakt', 'trakt_username', '', censor_log=True)
         TRAKT_ACCESS_TOKEN = check_setting_str(CFG, 'Trakt', 'trakt_access_token', '', censor_log=True)
@@ -1244,18 +1243,14 @@ def initialize(consoleLogging=True):
         FILTER_ROW = bool(check_setting_int(CFG, 'GUI', 'filter_row', 1))
         DISPLAY_ALL_SEASONS = bool(check_setting_int(CFG, 'General', 'display_all_seasons', 1))
 
-        # initialize NZB and TORRENT providers
-        providerList = providers.makeProviderList()
-
         NEWZNAB_DATA = check_setting_str(CFG, 'Newznab', 'newznab_data', '')
-        newznabProviderList = providers.getNewznabProviderList(NEWZNAB_DATA)
+        newznabProviderList = getNewznabProviderList(NEWZNAB_DATA)
 
         TORRENTRSS_DATA = check_setting_str(CFG, 'TorrentRss', 'torrentrss_data', '')
-        torrentRssProviderList = providers.getTorrentRssProviderList(TORRENTRSS_DATA)
+        torrentRssProviderList = getTorrentRssProviderList(TORRENTRSS_DATA)
 
         # dynamically load provider settings
-        for curTorrentProvider in [curProvider for curProvider in providers.sortedProviderList() if
-                                   curProvider.providerType == GenericProvider.TORRENT]:
+        for curTorrentProvider in getTorrentProviderList():
             curTorrentProvider.enabled = bool(check_setting_int(CFG, curTorrentProvider.getID().upper(),
                                                                 curTorrentProvider.getID(), 0))
             if hasattr(curTorrentProvider, 'api_key'):
@@ -1344,8 +1339,7 @@ def initialize(consoleLogging=True):
                 curTorrentProvider.subtitle = bool(check_setting_int(CFG, curTorrentProvider.getID().upper(),
                                                                      curTorrentProvider.getID() + '_subtitle', 0))
 
-        for curNzbProvider in [curProvider for curProvider in providers.sortedProviderList() if
-                               curProvider.providerType == GenericProvider.NZB]:
+        for curNzbProvider in getNZBProviderList():
             curNzbProvider.enabled = bool(
                     check_setting_int(CFG, curNzbProvider.getID().upper(), curNzbProvider.getID(), 0))
             if hasattr(curNzbProvider, 'api_key'):
@@ -1822,8 +1816,7 @@ def save_config():
     new_config[b'Blackhole'][b'torrent_dir'] = TORRENT_DIR
 
     # dynamically save provider settings
-    for curTorrentProvider in [curProvider for curProvider in providers.sortedProviderList() if
-                               curProvider.providerType == GenericProvider.TORRENT]:
+    for curTorrentProvider in getTorrentProviderList():
         new_config[curTorrentProvider.getID().upper()] = {}
         new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID()] = int(curTorrentProvider.enabled)
         if hasattr(curTorrentProvider, 'digest'):
@@ -1896,8 +1889,7 @@ def save_config():
             new_config[curTorrentProvider.getID().upper()][curTorrentProvider.getID() + '_subtitle'] = int(
                     curTorrentProvider.subtitle)
 
-    for curNzbProvider in [curProvider for curProvider in providers.sortedProviderList() if
-                           curProvider.providerType == GenericProvider.NZB]:
+    for curNzbProvider in getNZBProviderList():
         new_config[curNzbProvider.getID().upper()] = {}
         new_config[curNzbProvider.getID().upper()][curNzbProvider.getID()] = int(curNzbProvider.enabled)
 
@@ -2083,6 +2075,9 @@ def save_config():
     new_config[b'SynologyNotifier'][b'synologynotifier_notify_ondownload'] = int(SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD)
     new_config[b'SynologyNotifier'][b'synologynotifier_notify_onsubtitledownload'] = int(
             SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD)
+
+    new_config[b'theTVDB'] = {}
+    new_config[b'theTVDB'][b'thetvdb_apitoken'] = THETVDB_APITOKEN
 
     new_config[b'Trakt'] = {}
     new_config[b'Trakt'][b'use_trakt'] = int(USE_TRAKT)

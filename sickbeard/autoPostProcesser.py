@@ -19,14 +19,12 @@
 
 from __future__ import unicode_literals
 
+import logging
 import os.path
 import threading
+
+import processTV
 import sickbeard
-
-import logging
-from sickbeard import processTV
-from sickrage.helper.encoding import ek
-
 
 class PostProcessor():
     def __init__(self):
@@ -41,7 +39,7 @@ class PostProcessor():
         """
         self.amActive = True
 
-        if not ek(os.path.isdir, sickbeard.TV_DOWNLOAD_DIR):
+        if not os.path.isdir(sickbeard.TV_DOWNLOAD_DIR):
             logging.error("Automatic post-processing attempted but dir " + sickbeard.TV_DOWNLOAD_DIR + " doesn't exist")
             self.amActive = False
             return

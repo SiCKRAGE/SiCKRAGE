@@ -21,20 +21,16 @@
 
 from __future__ import unicode_literals
 
+import logging
+import re
 import smtplib
 import traceback
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formatdate
 
-import re
-
+import db
 import sickbeard
-
-import logging
-from sickbeard import db
-from sickrage.helper.encoding import ss
-
 
 class EmailNotifier:
     def __init__(self):
@@ -55,7 +51,7 @@ class EmailNotifier:
         ep_name: The name of the episode that was snatched
         title: The title of the notification (optional)
         """
-        ep_name = ss(ep_name)
+        ep_name = ep_name
 
         if sickbeard.EMAIL_NOTIFY_ONSNATCH:
             show = self._parseEp(ep_name)
@@ -94,9 +90,9 @@ class EmailNotifier:
         ep_name: The name of the episode that was downloaded
         title: The title of the notification (optional)
         """
-        ep_name = ss(ep_name)
+        ep_name = ep_name
 
-        if sickbeard.EMAIL_NOTIFY_ONDOWNLOAD:
+        if EMAIL_NOTIFY_ONDOWNLOAD:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
@@ -133,9 +129,9 @@ class EmailNotifier:
         ep_name: The name of the episode that was downloaded
         lang: Subtitle language wanted
         """
-        ep_name = ss(ep_name)
+        ep_name = ep_name
 
-        if sickbeard.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
@@ -171,7 +167,7 @@ class EmailNotifier:
         addrs = []
 
         # Grab the global recipients
-        for addr in sickbeard.EMAIL_LIST.split(','):
+        for addr in EMAIL_LIST.split(','):
             if (len(addr.strip()) > 0):
                 addrs.append(addr)
 
@@ -218,7 +214,7 @@ class EmailNotifier:
             return False
 
     def _parseEp(self, ep_name):
-        ep_name = ss(ep_name)
+        ep_name = ep_name
 
         sep = " - "
         titles = ep_name.split(sep)

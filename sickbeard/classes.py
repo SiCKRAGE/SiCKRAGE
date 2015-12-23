@@ -189,7 +189,7 @@ class AllShowsListUI(object):
         seriesnames = []
 
         # get all available shows
-        if allSeries:
+        try:
             if 'searchterm' in self.config:
                 searchterm = self.config[b'searchterm']
                 # try to pick a show that's in my show list
@@ -205,13 +205,14 @@ class AllShowsListUI(object):
                     for name in seriesnames:
                         if searchterm.lower() in name.lower():
                             if 'firstaired' not in curShow:
-                                curShow[b'firstaired'] = str(datetime.date.fromordinal(1))
+                                curShow[b'firstaired'] = datetime.date.fromordinal(1).strftime("%Y-%m-%d")
                                 curShow[b'firstaired'] = re.sub("([-]0{2})+", "", curShow[b'firstaired'])
                                 fixDate = parser.parse(curShow[b'firstaired'], fuzzy=True).date()
                                 curShow[b'firstaired'] = fixDate.strftime(dateFormat)
 
                             if curShow not in searchResults:
                                 searchResults += [curShow]
+        except:pass
 
         return searchResults
 

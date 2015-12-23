@@ -19,30 +19,28 @@
 
 from __future__ import unicode_literals
 
+import datetime
+import io
 import logging
 import os
 import re
 import threading
-import datetime
 import traceback
 
-import io
-
 import sickbeard
-
-from sickbeard.common import SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, Quality, SEASON_RESULT, MULTI_EP_RESULT
-from sickbeard import name_cache
-from sickbeard import db, show_name_helpers, helpers
-from sickbeard import sab
-from sickbeard import nzbget
+from providers import GenericProvider
 from sickbeard import clients
+from sickbeard import common
+from sickbeard import db, show_name_helpers, helpers
+from sickbeard import failed_history
 from sickbeard import history
+from sickbeard import name_cache
 from sickbeard import notifiers
 from sickbeard import nzbSplitter
+from sickbeard import nzbget
+from sickbeard import sab
 from sickbeard import ui
-from sickbeard import failed_history
-from sickbeard.providers.generic import GenericProvider
-from sickbeard import common
+from sickbeard.common import SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, Quality, SEASON_RESULT, MULTI_EP_RESULT
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import AuthException, ex
 

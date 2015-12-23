@@ -22,11 +22,12 @@ from __future__ import print_function, unicode_literals
 
 from time import strptime
 
+import sickbeard
+
 strptime("2012", "%Y")
 
 import os
 import sys
-import time
 import signal
 import getopt
 import shutil
@@ -36,16 +37,13 @@ import threading
 import traceback
 import subprocess
 
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
+# sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
 
-# https://mail.python.org/pipermail/python-dev/2014-September/136300.html
 if sys.version_info >= (2, 7, 9):
     import ssl
-
     ssl._create_default_https_context = ssl._create_unverified_context
 
-import sickbeard
-from sickbeard import db, network_timezones, failed_history, name_cache
+from sickbeard import db, failed_history, name_cache
 from sickbeard.tv import TVShow
 from sickbeard.webserveInit import SRWebServer
 from sickbeard.event_queue import Events

@@ -1,4 +1,4 @@
-<%inherit file="/layouts/main.mako"/>
+import providers<%inherit file="/layouts/main.mako"/>
 <%!
     import sickbeard
     import os.path
@@ -8,8 +8,6 @@
 
     from sickbeard import providers
     from sickbeard import sbdatetime
-    from sickbeard.providers import generic
-
     from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
     from sickbeard.common import Quality, statusStrings, Overview
 
@@ -89,7 +87,7 @@
                 % else:
                     % if hItem["provider"] > 0:
                         % if curStatus in [SNATCHED, FAILED]:
-                            <% provider = providers.getProviderClass(generic.GenericProvider.makeID(hItem["provider"])) %>
+                            <% provider = providers.getProviderClass(providers.GenericProvider.makeID(hItem["provider"])) %>
                             % if provider != None:
                                 <img src="${srRoot}/images/providers/${provider.imageName()}" width="16" height="16" style="vertical-align:middle;" /> <span style="vertical-align:middle;">${provider.name}</span>
                             % else:
@@ -144,7 +142,7 @@
                     % for action in sorted(hItem["actions"]):
                         <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
                         % if curStatus in [SNATCHED, FAILED]:
-                            <% provider = providers.getProviderClass(generic.GenericProvider.makeID(action["provider"])) %>
+                            <% provider = providers.getProviderClass(providers.GenericProvider.makeID(action["provider"])) %>
                             % if provider != None:
                                 <img src="${srRoot}/images/providers/${provider.imageName()}" width="16" height="16" style="vertical-align:middle;" alt="${provider.name}" style="cursor: help;" title="${provider.name}: ${os.path.basename(action["resource"])}"/>
                             % else:

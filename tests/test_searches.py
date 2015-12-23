@@ -29,13 +29,13 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import unittest
 
-from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
+from tests import SiCKRAGETestDBCase
 
 import sickbeard
 import sickbeard.common as c
 from sickbeard.tv import TVEpisode, TVShow
 
-from sickbeard.providers.generic import GenericProvider
+from providers import GenericProvider
 
 tests = {"Game of Thrones":
              {"tvdbid": 121361, "s": 5, "e": [10],

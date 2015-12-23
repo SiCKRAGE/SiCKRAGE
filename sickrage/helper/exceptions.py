@@ -20,16 +20,13 @@
 
 from __future__ import unicode_literals
 
-from encoding import uu
-
-
 def ex(e):
     """
     :param e: The exception to convert into a unicode string
     :return: A unicode string from the exception text if it exists
     """
 
-    return uu(e)
+    return e
 
 
 class SickRageException(Exception):

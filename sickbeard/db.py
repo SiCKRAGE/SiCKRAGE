@@ -20,19 +20,14 @@
 
 from __future__ import unicode_literals
 
-import re
-import six
-import time
-import os.path
-import sqlite3
 import logging
+import os.path
+import re
+import sqlite3
 import threading
-import collections
+import time
 
-import sickbeard
-from sickrage.helper.encoding import ek, uu
-from sickrage.helper.exceptions import ex
-
+import helpers
 
 def dbFilename(filename="sickbeard.db", suffix=None):
     """
@@ -44,7 +39,7 @@ def dbFilename(filename="sickbeard.db", suffix=None):
     """
     if suffix:
         filename = "%s.%s" % (filename, suffix)
-    return ek(os.path.join, sickbeard.DATA_DIR, filename)
+    return os.path.join(DATA_DIR, filename)
 
 
 class Cursor:
@@ -94,7 +89,7 @@ class DBConnection(object):
         try:
             self.open()
         except Exception as e:
-            logging.error("DB error: {}".format(ex(e)))
+            logging.error("DB error: {}".format(e))
 
     def open(self):
         try:
@@ -165,7 +160,7 @@ class DBConnection(object):
                         logging.db("Transaction {} of {} queries executed of ".format(len(sqlResult), len(querylist)))
                         raise StopIteration
                     except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
-                        logging.error("DB error: {}".format(ex(e)))
+                        logging.error("DB error: {}".format(e))
                         attempt += 1
                         sqlResult = []
                         time.sleep(1)
@@ -179,8 +174,8 @@ class DBConnection(object):
         """
         Execute single query
 
+        :rtype: query results
         :param query: Query string
-        :return: query results
         """
 
         with self.lock:
@@ -197,7 +192,7 @@ class DBConnection(object):
                         sqlResult = self.execute(query, *args, **kwargs)
                         raise StopIteration
                     except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
-                        logging.error("DB error: {}".format(ex(e)))
+                        logging.error("DB error: {}".format(e))
                         attempt += 1
                         time.sleep(1)
             except StopIteration:pass
@@ -372,7 +367,7 @@ def restoreDatabase(version):
     :return: True if restore succeeds, False if it fails
     """
     logging.info("Restoring database before trying upgrade again")
-    if not sickbeard.helpers.restoreVersionedFile(dbFilename(suffix='v' + str(version)), version):
+    if not helpers.restoreVersionedFile(dbFilename(suffix='v' + str(version)), version):
         logging.info("Database restore failed, abort upgrading database")
         return False
     return True
@@ -390,8 +385,8 @@ class SchemaUpgrade(object):
         return column in self.connection.tableInfo(tableName)
 
     def addColumn(self, table, column, type="NUMERIC", default=0):
-        self.connection.action("ALTER TABLE [%s] ADD %s %s" % (table, column, type))
-        self.connection.action("UPDATE [%s] SET %s = ?" % (table, column), default)
+        self.connection.action("ALTER TABLE [{}] ADD {} {}".format(table, column, type))
+        self.connection.action("UPDATE [{}] SET {} = ?".format(table, column), default)
 
     def checkDBVersion(self):
         return self.connection.checkDBVersion()

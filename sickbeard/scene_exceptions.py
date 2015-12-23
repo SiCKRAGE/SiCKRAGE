@@ -21,16 +21,18 @@
 
 from __future__ import unicode_literals
 
-import re
-import time
-import threading
 import datetime
-import adba
 import logging
+import re
+import threading
+import time
+
+import adba
 import requests
 
-import sickbeard
-from sickbeard import db
+import db
+import helpers
+from indexers.indexer_api import indexerApi
 
 exception_dict = {}
 anidb_exception_dict = {}
@@ -171,7 +173,7 @@ def get_scene_exception_by_name_multiple(show_name):
 
         if show_name.lower() in (
                 cur_exception_name.lower(),
-                sickbeard.helpers.sanitizeSceneName(cur_exception_name).lower().replace('.', ' ')):
+                helpers.sanitizeSceneName(cur_exception_name).lower().replace('.', ' ')):
             logging.debug("Scene exception lookup got indexer id " + str(cur_indexer_id) + ", using that")
             out.append((cur_indexer_id, cur_season))
 
@@ -187,13 +189,13 @@ def retrieve_exceptions():
     scene_exceptions table in cache.db. Also clears the scene name cache.
     """
 
-    for indexer in sickbeard.indexerApi().indexers:
-        if shouldRefresh(sickbeard.indexerApi(indexer).name):
-            logging.info("Checking for scene exception updates for " + sickbeard.indexerApi(indexer).name + "")
+    for indexer in indexerApi().indexers:
+        if shouldRefresh(indexerApi(indexer).name):
+            logging.info("Checking for scene exception updates for " + indexerApi(indexer).name + "")
 
-            loc = sickbeard.indexerApi(indexer).config[b'scene_loc']
+            loc = indexerApi(indexer).config[b'scene_loc']
             try:
-                data = sickbeard.helpers.getURL(loc, session=sickbeard.indexerApi(indexer).session)
+                data = helpers.getURL(loc, session=indexerApi(indexer).session)
             except Exception:
                 continue
 
@@ -202,7 +204,7 @@ def retrieve_exceptions():
                 logging.debug("Check scene exceptions update failed. Unable to update from: " + loc)
                 continue
 
-            setLastRefresh(sickbeard.indexerApi(indexer).name)
+            setLastRefresh(indexerApi(indexer).name)
 
             # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
             for cur_line in data.splitlines():
@@ -287,7 +289,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
 def _anidb_exceptions_fetcher():
     if shouldRefresh('anidb'):
         logging.info("Checking for scene exception updates for AniDB")
-        for show in sickbeard.showList:
+        for show in showList:
             if show.is_anime and show.indexer == 1:
                 try:
                     anime = adba.Anime(None, name=show.name, tvdbid=show.indexerid, autoCorrectName=True)
@@ -306,15 +308,15 @@ xem_session = requests.Session()
 
 def _xem_exceptions_fetcher():
     if shouldRefresh('xem'):
-        for indexer in sickbeard.indexerApi().indexers:
-            logging.info("Checking for XEM scene exception updates for " + sickbeard.indexerApi(indexer).name)
+        for indexer in indexerApi().indexers:
+            logging.info("Checking for XEM scene exception updates for " + indexerApi(indexer).name)
 
-            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickbeard.indexerApi(indexer).config[
+            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % indexerApi(indexer).config[
                 'xem_origin']
 
-            parsedJSON = sickbeard.helpers.getURL(url, session=xem_session, timeout=90, json=True)
+            parsedJSON = helpers.getURL(url, session=xem_session, timeout=90, json=True)
             if not parsedJSON:
-                logging.debug("Check scene exceptions update failed for " + sickbeard.indexerApi(
+                logging.debug("Check scene exceptions update failed for " + indexerApi(
                         indexer).name + ", Unable to get URL: " + url)
                 continue
 

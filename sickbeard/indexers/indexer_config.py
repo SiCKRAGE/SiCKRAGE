@@ -21,7 +21,7 @@
 from __future__ import unicode_literals
 
 import requests
-from indexers.thetvdb.tvdb_api import Tvdb
+from thetvdb.tvdb_api import Tvdb
 
 initConfig = {
     'valid_languages': ["da", "fi", "nl", "de", "it", "es", "fr", "pl", "hu", "el", "tr",
@@ -43,6 +43,7 @@ indexerConfig = {
         'name': 'theTVDB',
         'module': Tvdb,
         'api_params': {'apikey': 'F9C450E78D99172E',
+                       'apitoken': '',
                        'language': 'en',
                        'useZip': True,
                        },

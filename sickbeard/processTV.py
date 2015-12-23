@@ -20,28 +20,26 @@
 
 from __future__ import unicode_literals
 
+import logging
 import os
 import stat
 
-import sickbeard
-from sickbeard import postProcessor
-from sickbeard import db, helpers
-import logging
-from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
-from sickbeard import common
-from sickbeard import failedProcessor
-from sickbeard.helpers import removetree
-from sickrage.helper.encoding import ek
-from sickrage.helper.exceptions import EpisodePostProcessingFailedException, ex, FailedPostProcessingFailedException
-
 from unrar2 import RarFile
-from unrar2.rar_exceptions import FileOpenError
 from unrar2.rar_exceptions import ArchiveHeaderBroken
+from unrar2.rar_exceptions import FileOpenError
+from unrar2.rar_exceptions import IncorrectRARPassword
 from unrar2.rar_exceptions import InvalidRARArchive
 from unrar2.rar_exceptions import InvalidRARArchiveUsage
-from unrar2.rar_exceptions import IncorrectRARPassword
 
-import shutil
+import common
+import db
+import failedProcessor
+import helpers
+import postProcessor
+from helper.exceptions import EpisodePostProcessingFailedException, FailedPostProcessingFailedException
+from name_parser import parser
+from sickbeard import TV_DOWNLOAD_DIR, SYS_ENCODING, POSTPONE_IF_SYNC_FILES, PROCESS_METHOD, DELRARCONTENTS, NO_DELETE, \
+    UNPACK, USE_FAILED_DOWNLOADS, DELETE_FAILED
 
 
 class ProcessResult(object):
@@ -62,29 +60,29 @@ def delete_folder(folder, check_empty=True):
     """
 
     # check if it's a folder
-    if not ek(os.path.isdir, folder):
+    if not os.path.isdir(folder):
         return False
 
     # check if it isn't TV_DOWNLOAD_DIR
-    if sickbeard.TV_DOWNLOAD_DIR:
-        if helpers.real_path(folder) == helpers.real_path(sickbeard.TV_DOWNLOAD_DIR):
+    if TV_DOWNLOAD_DIR:
+        if helpers.real_path(folder) == helpers.real_path(TV_DOWNLOAD_DIR):
             return False
 
     # check if it's empty folder when wanted checked
     try:
         if check_empty:
-            check_files = ek(os.listdir, folder)
+            check_files = os.listdir(folder)
             if check_files:
                 logging.info("Not deleting folder {} found the following files: {}".format(folder, check_files))
                 return False
 
             logging.info("Deleting folder (if it's empty): " + folder)
-            ek(os.rmdir, folder)
+            os.rmdir(folder)
         else:
             logging.info("Deleting folder: " + folder)
-            ek(removetree, folder)
+            helpers.removetree(folder)
     except (OSError, IOError) as e:
-        logging.warning("Warning: unable to delete folder: {}: {}".format(folder, ex(e)))
+        logging.warning("Warning: unable to delete folder: {}: {}".format(folder, e))
         return False
 
     return True
@@ -107,30 +105,30 @@ def delete_files(processPath, notwantedFiles, result, force=False):
 
     # Delete all file not needed
     for cur_file in notwantedFiles:
-        cur_file_path = ek(os.path.join, processPath, cur_file)
+        cur_file_path = os.path.join(processPath, cur_file)
 
-        if not ek(os.path.isfile, cur_file_path):
+        if not os.path.isfile(cur_file_path):
             continue  # Prevent error when a notwantedfiles is an associated files
 
         result.output += logHelper("Deleting file %s" % cur_file, logging.DEBUG)
 
         # check first the read-only attribute
-        file_attribute = ek(os.stat, cur_file_path)[0]
+        file_attribute = os.stat(cur_file_path)[0]
         if not file_attribute & stat.S_IWRITE:
             # File is read-only, so make it writeable
             result.output += logHelper("Changing ReadOnly Flag for file %s" % cur_file, logging.DEBUG)
             try:
-                ek(os.chmod, cur_file_path, stat.S_IWRITE)
+                os.chmod(cur_file_path, stat.S_IWRITE)
             except OSError as e:
                 result.output += logHelper(
-                    "Cannot change permissions of %s: %s" % (cur_file, str(e.strerror).decode(sickbeard.SYS_ENCODING)),
-                    logging.DEBUG)
+                        "Cannot change permissions of %s: %s" % (cur_file, str(e.strerror).decode(SYS_ENCODING)),
+                        logging.DEBUG)
         try:
-            ek(os.remove, cur_file_path)
+            os.remove(cur_file_path)
         except OSError as e:
             result.output += logHelper(
-                "Unable to delete file %s: %s" % (cur_file, str(e.strerror).decode(sickbeard.SYS_ENCODING)),
-                logging.DEBUG)
+                    "Unable to delete file %s: %s" % (cur_file, str(e.strerror).decode(SYS_ENCODING)),
+                    logging.DEBUG)
 
 
 def logHelper(logMessage, logLevel=logging.INFO):
@@ -154,21 +152,21 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
     result.output += logHelper("Processing folder %s" % dirName, logging.DEBUG)
 
-    result.output += logHelper("TV_DOWNLOAD_DIR: %s" % sickbeard.TV_DOWNLOAD_DIR, logging.DEBUG)
+    result.output += logHelper("TV_DOWNLOAD_DIR: %s" % TV_DOWNLOAD_DIR, logging.DEBUG)
     postpone = False
 
     # if they passed us a real dir then assume it's the one we want
-    if ek(os.path.isdir, dirName):
-        dirName = ek(os.path.realpath, dirName)
+    if os.path.isdir(dirName):
+        dirName = os.path.realpath(dirName)
 
     # if the client and SickRage are not on the same machine translate the Dir in a network dir
-    elif sickbeard.TV_DOWNLOAD_DIR and ek(os.path.isdir, sickbeard.TV_DOWNLOAD_DIR) \
-            and ek(os.path.normpath, dirName) != ek(os.path.normpath, sickbeard.TV_DOWNLOAD_DIR):
-        dirName = ek(os.path.join, sickbeard.TV_DOWNLOAD_DIR, ek(os.path.abspath, dirName).split(os.path.sep)[-1])
+    elif TV_DOWNLOAD_DIR and os.path.isdir(TV_DOWNLOAD_DIR) \
+            and os.path.normpath(dirName) != os.path.normpath(TV_DOWNLOAD_DIR):
+        dirName = os.path.join(TV_DOWNLOAD_DIR, os.path.abspath(dirName).split(os.path.sep)[-1])
         result.output += logHelper("Trying to use folder %s" % dirName, logging.DEBUG)
 
     # if we didn't find a real dir then quit
-    if not ek(os.path.isdir, dirName):
+    if not os.path.isdir(dirName):
         result.output += logHelper(
                 "Unable to figure out what folder to process. If your downloader and SiCKRAGE aren't on the same PC make sure you fill out your TV download dir in the config.",
                 logging.DEBUG)
@@ -180,7 +178,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     SyncFiles = [x for x in files if helpers.isSyncFile(x)]
 
     # Don't post process if files are still being synced and option is activated
-    if SyncFiles and sickbeard.POSTPONE_IF_SYNC_FILES:
+    if SyncFiles and POSTPONE_IF_SYNC_FILES:
         postpone = True
 
     nzbNameOriginal = nzbName
@@ -205,7 +203,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
             nzbName = None
 
         if not process_method:
-            process_method = sickbeard.PROCESS_METHOD
+            process_method = PROCESS_METHOD
 
         result.result = True
 
@@ -215,7 +213,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
             delete_files(path, rarContent, result)
             for video in set(videoFiles) - set(videoInRar):
                 process_media(path, [video], nzbName, process_method, force, is_priority, result)
-        elif sickbeard.DELRARCONTENTS and videoInRar:
+        elif DELRARCONTENTS and videoInRar:
             process_media(path, videoInRar, nzbName, process_method, force, is_priority, result)
             delete_files(path, rarContent, result, True)
             for video in set(videoFiles) - set(videoInRar):
@@ -234,7 +232,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
         result.result = True
 
-        for processPath, _, fileList in ek(os.walk, ek(os.path.join, path, curDir), topdown=False):
+        for processPath, _, fileList in os.walk(os.path.join(path, curDir), topdown=False):
 
             if not validateDir(path, processPath, nzbNameOriginal, failed, result):
                 continue
@@ -244,7 +242,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
             SyncFiles = [x for x in fileList if helpers.isSyncFile(x)]
 
             # Don't post process if files are still being synced and option is activated
-            if SyncFiles and sickbeard.POSTPONE_IF_SYNC_FILES:
+            if SyncFiles and POSTPONE_IF_SYNC_FILES:
                 postpone = True
 
             if not postpone:
@@ -263,7 +261,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                     process_media(processPath, set(videoFiles) - set(videoInRar), nzbName, process_method, force,
                                   is_priority, result)
                     delete_files(processPath, rarContent, result)
-                elif sickbeard.DELRARCONTENTS and videoInRar:
+                elif DELRARCONTENTS and videoInRar:
                     process_media(processPath, videoInRar, nzbName, process_method, force, is_priority, result)
                     process_media(processPath, set(videoFiles) - set(videoInRar), nzbName, process_method, force,
                                   is_priority, result)
@@ -274,14 +272,13 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                     # Delete all file not needed
                     if process_method != "move" or not result.result \
                             or (
-                                    proc_type == "manual" and not delete_on):  # Avoid to delete files if is Manual PostProcessing
+                                            proc_type == "manual" and not delete_on):  # Avoid to delete files if is Manual PostProcessing
                         continue
 
                     delete_files(processPath, notwantedFiles, result)
 
-                    if (not sickbeard.NO_DELETE or proc_type == "manual") and process_method == "move" and \
-                                    ek(os.path.normpath, processPath) != ek(os.path.normpath,
-                                                                            sickbeard.TV_DOWNLOAD_DIR):
+                    if (not NO_DELETE or proc_type == "manual") and process_method == "move" and \
+                                    os.path.normpath(processPath) != os.path.normpath(TV_DOWNLOAD_DIR):
                         if delete_folder(processPath, check_empty=True):
                             result.output += logHelper("Deleted folder: %s" % processPath, logging.DEBUG)
             else:
@@ -295,8 +292,9 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
             result.output += logHelper("I did encounter some unprocessable items: [%s]" % ", ".join(result.missedfiles))
     else:
         result.output += logHelper(
-            "Problem(s) during processing, failed the following files/folders:  [%s]" % ", ".join(result.missedfiles),
-            logging.WARNING)
+                "Problem(s) during processing, failed the following files/folders:  [%s]" % ", ".join(
+                        result.missedfiles),
+                logging.WARNING)
 
     return result.output
 
@@ -315,7 +313,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
 
     IGNORED_FOLDERS = ['.AppleDouble', '.@__thumb', '@eaDir']
 
-    folder_name = ek(os.path.basename, dirName)
+    folder_name = os.path.basename(dirName)
     if folder_name in IGNORED_FOLDERS:
         return False
 
@@ -330,16 +328,16 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
         failed = True
     elif folder_name.upper().startswith('_UNPACK'):
         result.output += logHelper(
-            "The directory name indicates that this release is in the process of being unpacked.", logging.DEBUG)
+                "The directory name indicates that this release is in the process of being unpacked.", logging.DEBUG)
         result.missedfiles.append(dirName + " : Being unpacked")
         return False
 
     if failed:
-        process_failed(ek(os.path.join, path, dirName), nzbNameOriginal, result)
+        process_failed(os.path.join(path, dirName), nzbNameOriginal, result)
         result.missedfiles.append(dirName + " : Failed download")
         return False
 
-    if helpers.is_hidden_folder(ek(os.path.join, path, dirName)):
+    if helpers.is_hidden_folder(os.path.join(path, dirName)):
         result.output += logHelper("Ignoring hidden folder: " + dirName, logging.DEBUG)
         result.missedfiles.append(dirName + " : Hidden folder")
         return False
@@ -349,8 +347,8 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     sqlResults = myDB.select("SELECT * FROM tv_shows")
 
     for sqlShow in sqlResults:
-        if dirName.lower().startswith(ek(os.path.realpath, sqlShow[b"location"]).lower() + os.sep) or \
-                        dirName.lower() == ek(os.path.realpath, sqlShow[b"location"]).lower():
+        if dirName.lower().startswith(os.path.realpath(sqlShow[b"location"]).lower() + os.sep) or \
+                        dirName.lower() == os.path.realpath(sqlShow[b"location"]).lower():
             result.output += logHelper(
                     "Cannot process an episode that's already been moved to its show dir, skipping " + dirName,
                     logging.WARNING)
@@ -359,7 +357,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     # Get the videofile list for the next checks
     allFiles = []
     allDirs = []
-    for _, processdir, fileList in ek(os.walk, ek(os.path.join, path, dirName), topdown=False):
+    for _, processdir, fileList in os.walk(os.path.join(path, dirName), topdown=False):
         allDirs += processdir
         allFiles += fileList
 
@@ -369,27 +367,27 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     # check if the dir have at least one tv video file
     for video in videoFiles:
         try:
-            NameParser().parse(video, cache_result=False)
+            parser.NameParser().parse(video, cache_result=False)
             return True
-        except (InvalidNameException, InvalidShowException):
+        except (parser.InvalidNameException, parser.InvalidShowException):
             pass
 
     for proc_dir in allDirs:
         try:
-            NameParser().parse(proc_dir, cache_result=False)
+            parser.NameParser().parse(proc_dir, cache_result=False)
             return True
-        except (InvalidNameException, InvalidShowException):
+        except (parser.InvalidNameException, parser.InvalidShowException):
             pass
 
-    if sickbeard.UNPACK:
+    if UNPACK:
         # Search for packed release
         packedFiles = [x for x in allFiles if helpers.isRarFile(x)]
 
         for packed in packedFiles:
             try:
-                NameParser().parse(packed, cache_result=False)
+                parser.NameParser().parse(packed, cache_result=False)
                 return True
-            except (InvalidNameException, InvalidShowException):
+            except (parser.InvalidNameException, parser.InvalidShowException):
                 pass
 
     result.output += logHelper(dirName + " : No processable items found in folder", logging.DEBUG)
@@ -409,7 +407,7 @@ def unRAR(path, rarFiles, force, result):
 
     unpacked_files = []
 
-    if sickbeard.UNPACK and rarFiles:
+    if UNPACK and rarFiles:
 
         result.output += logHelper("Packed Releases detected: " + str(rarFiles), logging.DEBUG)
 
@@ -418,11 +416,11 @@ def unRAR(path, rarFiles, force, result):
             result.output += logHelper("Unpacking archive: " + archive, logging.DEBUG)
 
             try:
-                rar_handle = RarFile(ek(os.path.join, path, archive))
+                rar_handle = RarFile(os.path.join(path, archive))
 
                 # Skip extraction if any file in archive has previously been extracted
                 skip_file = False
-                for file_in_archive in [ek(os.path.basename, x.filename) for x in rar_handle.infolist() if not x.isdir]:
+                for file_in_archive in [os.path.basename(x.filename) for x in rar_handle.infolist() if not x.isdir]:
                     if already_postprocessed(path, file_in_archive, force, result):
                         result.output += logHelper(
                                 "Archive file already post-processed, extraction skipped: " + file_in_archive,
@@ -436,7 +434,7 @@ def unRAR(path, rarFiles, force, result):
                 rar_handle.extract(path=path, withSubpath=False, overwrite=False)
                 for x in rar_handle.infolist():
                     if not x.isdir:
-                        basename = ek(os.path.basename, x.filename)
+                        basename = os.path.basename(x.filename)
                         if basename not in unpacked_files:
                             unpacked_files.append(basename)
                 del rar_handle
@@ -455,8 +453,8 @@ def unRAR(path, rarFiles, force, result):
                 continue
             except FileOpenError:
                 result.output += logHelper(
-                    "Failed Unrar archive {0}: Unrar: File Open Error, check the parent folder and destination file permissions.".format(
-                        archive), logging.ERROR)
+                        "Failed Unrar archive {0}: Unrar: File Open Error, check the parent folder and destination file permissions.".format(
+                                archive), logging.ERROR)
                 result.result = False
                 result.missedfiles.append(archive + " : Unpacking failed with a File Open Error (file permissions?)")
                 continue
@@ -473,7 +471,7 @@ def unRAR(path, rarFiles, force, result):
                 result.missedfiles.append(archive + " : Unpacking Failed with an Invalid Rar Archive Error")
                 continue
             except Exception as e:
-                result.output += logHelper("Failed Unrar archive " + archive + ': ' + ex(e), logging.ERROR)
+                result.output += logHelper("Failed Unrar archive {}: {}".format(archive, e), logging.ERROR)
                 result.result = False
                 result.missedfiles.append(archive + " : Unpacking failed for an unknown reason")
                 continue
@@ -511,20 +509,20 @@ def already_postprocessed(dirName, videofile, force, result):
 
         # Needed if we have downloaded the same episode @ different quality
         # But we need to make sure we check the history of the episode we're going to PP, and not others
-        np = NameParser(dirName, tryIndexers=True)
-        try:  # if it fails to find any info (because we're doing an unparsable folder (like the TV root dir) it will throw an exception, which we want to ignore
+        np = parser.NameParser(dirName, tryIndexers=True)
+        try:
             parse_result = np.parse(dirName)
-        except Exception:  # ignore the exception, because we kind of expected it, but create parse_result anyway so we can perform a check on it.
+        except:
             parse_result = False
 
         search_sql = "SELECT tv_episodes.indexerid, history.resource FROM tv_episodes INNER JOIN history ON history.showid=tv_episodes.showid"  # This part is always the same
         search_sql += " WHERE history.season=tv_episodes.season and history.episode=tv_episodes.episode"
         # If we find a showid, a season number, and one or more episode numbers then we need to use those in the query
         if parse_result and (
-                parse_result.show.indexerid and parse_result.episode_numbers and parse_result.season_number):
+                        parse_result.show.indexerid and parse_result.episode_numbers and parse_result.season_number):
             search_sql += " and tv_episodes.showid = '" + str(
-                parse_result.show.indexerid) + "' and tv_episodes.season = '" + str(
-                parse_result.season_number) + "' and tv_episodes.episode = '" + str(
+                    parse_result.show.indexerid) + "' and tv_episodes.season = '" + str(
+                    parse_result.season_number) + "' and tv_episodes.episode = '" + str(
                     parse_result.episode_numbers[0]) + "'"
 
         search_sql += " and tv_episodes.status IN (" + ",".join([str(x) for x in common.Quality.DOWNLOADED]) + ")"
@@ -552,7 +550,7 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
 
     processor = None
     for cur_video_file in videoFiles:
-        cur_video_file_path = ek(os.path.join, processPath, cur_video_file)
+        cur_video_file_path = os.path.join(processPath, cur_video_file)
 
         if already_postprocessed(processPath, cur_video_file, force, result):
             result.output += logHelper("Already Processed " + cur_video_file_path + " : Skipping", logging.DEBUG)
@@ -564,7 +562,7 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
             process_fail_message = ""
         except EpisodePostProcessingFailedException as e:
             result.result = False
-            process_fail_message = ex(e)
+            process_fail_message = e
 
         if processor:
             result.output += processor.log
@@ -591,16 +589,15 @@ def get_path_dir_files(dirName, nzbName, proc_type):
     dirs = []
     files = []
 
-    if dirName == sickbeard.TV_DOWNLOAD_DIR and not nzbName or proc_type == "manual":  # Scheduled Post Processing Active
+    if dirName == TV_DOWNLOAD_DIR and not nzbName or proc_type == "manual":  # Scheduled Post Processing Active
         # Get at first all the subdir in the dirName
-        for path, dirs, files in ek(os.walk, dirName):
+        for path, dirs, files in os.walk(dirName):
             break
     else:
-        path, dirs = ek(os.path.split, dirName)  # Script Post Processing
-        if not nzbName is None and not nzbName.endswith('.nzb') and ek(os.path.isfile, ek(os.path.join, dirName,
-                                                                                          nzbName)):  # For single torrent file without Dir
+        path, dirs = os.path.split(dirName)  # Script Post Processing
+        if not nzbName is None and not nzbName.endswith('.nzb') and os.path.isfile(os.path.join(dirName, nzbName)):
             dirs = []
-            files = [ek(os.path.join, dirName, nzbName)]
+            files = [os.path.join(dirName, nzbName)]
         else:
             dirs = [dirs]
             files = []
@@ -611,7 +608,7 @@ def get_path_dir_files(dirName, nzbName, proc_type):
 def process_failed(dirName, nzbName, result):
     """Process a download that did not complete correctly"""
 
-    if sickbeard.USE_FAILED_DOWNLOADS:
+    if USE_FAILED_DOWNLOADS:
         processor = None
 
         try:
@@ -620,19 +617,17 @@ def process_failed(dirName, nzbName, result):
             process_fail_message = ""
         except FailedPostProcessingFailedException as e:
             result.result = False
-            process_fail_message = ex(e)
+            process_fail_message = e
 
         if processor:
             result.output += processor.log
 
-        if sickbeard.DELETE_FAILED and result.result:
+        if DELETE_FAILED and result.result:
             if delete_folder(dirName, check_empty=False):
                 result.output += logHelper("Deleted folder: " + dirName, logging.DEBUG)
 
         if result.result:
             result.output += logHelper("Failed Download Processing succeeded: (" + str(nzbName) + ", " + dirName + ")")
         else:
-            result.output += logHelper(
-                    "Failed Download Processing failed: (" + str(
-                        nzbName) + ", " + dirName + "): " + process_fail_message,
-                    logging.WARNING)
+            result.output += logHelper("Failed Download Processing failed: ({}, {}): {}"
+                                       .format(nzbName, dirName, process_fail_message), logging.WARNING)
