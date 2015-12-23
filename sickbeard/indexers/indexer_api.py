@@ -24,8 +24,6 @@ import os
 import sickbeard
 
 from indexer_config import initConfig, indexerConfig
-from sickrage.helper.encoding import ek
-
 
 class indexerApi(object):
     def __init__(self, indexerID=None):
@@ -58,7 +56,7 @@ class indexerApi(object):
     def api_params(self):
         if self.indexerID:
             if sickbeard.CACHE_DIR:
-                indexerConfig[self.indexerID][b'api_params'][b'cache'] = ek(os.path.join, sickbeard.CACHE_DIR, 'indexers',
+                indexerConfig[self.indexerID][b'api_params'][b'cache'] = os.path.join(sickbeard.CACHE_DIR, 'indexers',
                                                                           self.name)
             if sickbeard.PROXY_SETTING and sickbeard.PROXY_INDEXERS:
                 indexerConfig[self.indexerID][b'api_params'][b'proxy'] = sickbeard.PROXY_SETTING

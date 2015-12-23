@@ -2275,7 +2275,7 @@ class HomeAddShows(Home):
         if not lang or lang == 'null':
             lang = sickbeard.INDEXER_DEFAULT_LANGUAGE
 
-        search_term = search_term.encode('utf-8')
+        #search_term = search_term.encode('utf-8')
 
         results = {}
         final_results = []

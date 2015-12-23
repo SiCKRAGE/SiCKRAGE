@@ -21,9 +21,7 @@
 from __future__ import unicode_literals
 
 import requests
-
-import sickbeard
-from tvdb_api.tvdb_api import Tvdb
+from indexers.thetvdb.tvdb_api import Tvdb
 
 initConfig = {
     'valid_languages': ["da", "fi", "nl", "de", "it", "es", "fr", "pl", "hu", "el", "tr",

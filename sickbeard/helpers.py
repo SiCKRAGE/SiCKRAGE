@@ -1561,8 +1561,8 @@ def touchFile(fname, atime=None):
 
 def _getTempDir():
     """
-    Returns the [system temp dir]/tvdb_api-u501 (or
-    tvdb_api-myuser)
+    Returns the [system temp dir]/thetvdb-u501 (or
+    thetvdb-myuser)
     """
 
     import getpass
