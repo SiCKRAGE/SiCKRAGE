@@ -460,7 +460,7 @@ class NameParser(object):
         if cache_result:
             name_parser_cache.add(name, final_result)
 
-        logging.debug("Parsed " + name + " into " + ss(final_result))
+        logging.debug(u"Parsed " + ss(name).decode('utf-8') + " into " + ss(final_result).decode('utf-8'))
         return final_result
 
 

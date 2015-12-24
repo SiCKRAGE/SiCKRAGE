@@ -292,6 +292,7 @@ def setUp_test_web_server():
     sickbeard.WEB_SERVER = SRWebServer({
         'port': 8081,
         'host': '0.0.0.0',
+        'gui_root': sickbeard.GUI_DIR,
         'data_root': ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME),
         'web_root': "",
         'log_dir': sickbeard.LOG_DIR,
