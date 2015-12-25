@@ -23,7 +23,7 @@ from sickbeard.providers import btn, newznab, womble, thepiratebay, torrentleech
     fnt, xthor, torrentbytes, \
     freshontv, titansoftv, libertalia, morethantv, bitsoup, t411, tokyotoshokan, shazbat, rarbg, alpharatio, tntvillage, \
     binsearch, torrentproject, extratorrent, \
-    scenetime, btdigg, strike, transmitthenet, tvchaosuk, bitcannon, pretome, gftracker, hdspace, newpct
+    scenetime, btdigg, strike, transmitthenet, tvchaosuk, bitcannon, pretome, gftracker, hdspace, newpct, danishbits
 
 __all__ = ['womble',
            'btn',
@@ -69,7 +69,8 @@ __all__ = ['womble',
            'pretome',
            'gftracker',
            'hdspace',
-           'newpct'
+           'newpct',
+           'danishbits'
            ]
 
 import sickbeard
