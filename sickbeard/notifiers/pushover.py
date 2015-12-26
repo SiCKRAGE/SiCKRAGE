@@ -21,7 +21,8 @@
 from __future__ import unicode_literals
 
 import httplib
-import urllib, urllib2
+import urllib
+import urllib2
 import time
 
 import sickbeard
@@ -35,6 +36,7 @@ API_URL = "https://api.pushover.net/1/messages.json"
 
 # pylint: disable=W0232
 class PushoverNotifier(object):
+
     def test_notify(self, userKey=None, apiKey=None):
         return self._notifyPushover("This is a test notification from SiCKRAGE", 'Test', userKey=userKey, apiKey=apiKey,
                                     force=True)
@@ -51,13 +53,13 @@ class PushoverNotifier(object):
         returns: True if the message succeeded, False otherwise
         """
 
-        if userKey == None:
+        if userKey is None:
             userKey = sickbeard.PUSHOVER_USERKEY
 
-        if apiKey == None:
+        if apiKey is None:
             apiKey = sickbeard.PUSHOVER_APIKEY
 
-        if sound == None:
+        if sound is None:
             sound = sickbeard.PUSHOVER_SOUND
 
         logging.debug("Pushover API KEY in use: " + apiKey)
@@ -96,23 +98,29 @@ class PushoverNotifier(object):
                          urllib.urlencode(args), {"Content-type": "application/x-www-form-urlencoded"})
 
         except urllib2.HTTPError as e:
-            # if we get an error back that doesn't have an error code then who knows what's really happening
+            # if we get an error back that doesn't have an error code then who
+            # knows what's really happening
             if not hasattr(e, 'code'):
                 logging.error("Pushover notification failed.{}".format(ex(e)))
                 return False
             else:
-                logging.error("Pushover notification failed. Error code: " + str(e.code))
+                logging.error(
+                    "Pushover notification failed. Error code: " + str(e.code))
 
-            # HTTP status 404 if the provided email address isn't a Pushover user.
+            # HTTP status 404 if the provided email address isn't a Pushover
+            # user.
             if e.code == 404:
-                logging.warning("Username is wrong/not a pushover email. Pushover will send an email to it")
+                logging.warning(
+                    "Username is wrong/not a pushover email. Pushover will send an email to it")
                 return False
 
-            # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
+            # For HTTP status code 401's, it is because you are passing in
+            # either an invalid token, or the user has not added your service.
             elif e.code == 401:
 
                 # HTTP status 401 if the user doesn't have the service added
-                subscribeNote = self._sendPushover(msg, title, sound=sound, userKey=userKey, apiKey=apiKey)
+                subscribeNote = self._sendPushover(
+                    msg, title, sound=sound, userKey=userKey, apiKey=apiKey)
                 if subscribeNote:
                     logging.debug("Subscription sent")
                     return True
@@ -120,14 +128,17 @@ class PushoverNotifier(object):
                     logging.error("Subscription could not be sent")
                     return False
 
-            # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
+            # If you receive an HTTP status code of 400, it is because you
+            # failed to send the proper parameters
             elif e.code == 400:
                 logging.error("Wrong data sent to pushover")
                 return False
 
-            # If you receive a HTTP status code of 429, it is because the message limit has been reached (free limit is 7,500)
+            # If you receive a HTTP status code of 429, it is because the
+            # message limit has been reached (free limit is 7,500)
             elif e.code == 429:
-                logging.error("Pushover API message limit reached - try a different API key")
+                logging.error(
+                    "Pushover API message limit reached - try a different API key")
                 return False
 
         logging.info("Pushover notification successful.")
@@ -141,7 +152,8 @@ class PushoverNotifier(object):
         if sickbeard.PUSHOVER_NOTIFY_ONDOWNLOAD:
             self._notifyPushover(title, ep_name)
 
-    def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
+    def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[
+                                 NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyPushover(title, ep_name + ": " + lang)
 
@@ -151,7 +163,8 @@ class PushoverNotifier(object):
             title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notifyPushover(title, update_text + new_version)
 
-    def _notifyPushover(self, title, message, sound=None, userKey=None, apiKey=None, force=False):
+    def _notifyPushover(self, title, message, sound=None,
+                        userKey=None, apiKey=None, force=False):
         """
         Sends a pushover notification based on the provided info or SR config
 
@@ -164,12 +177,14 @@ class PushoverNotifier(object):
         """
 
         if not sickbeard.USE_PUSHOVER and not force:
-            logging.debug("Notification for Pushover not enabled, skipping this notification")
+            logging.debug(
+                "Notification for Pushover not enabled, skipping this notification")
             return False
 
         logging.debug("Sending notification for " + message)
 
-        return self._sendPushover(message, title, sound=sound, userKey=userKey, apiKey=apiKey)
+        return self._sendPushover(
+            message, title, sound=sound, userKey=userKey, apiKey=apiKey)
 
 
 notifier = PushoverNotifier

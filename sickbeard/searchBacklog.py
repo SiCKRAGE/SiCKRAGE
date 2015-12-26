@@ -32,6 +32,7 @@ from sickbeard import common
 
 
 class BacklogSearchScheduler(scheduler.Scheduler):
+
     def forceSearch(self):
         self.action._set_lastBacklog(1)
         self.lastRun = datetime.datetime.fromordinal(1)
@@ -40,10 +41,12 @@ class BacklogSearchScheduler(scheduler.Scheduler):
         if self.action._lastBacklog <= 1:
             return datetime.date.today()
         else:
-            return datetime.date.fromordinal(self.action._lastBacklog + self.action.cycleTime)
+            return datetime.date.fromordinal(
+                self.action._lastBacklog + self.action.cycleTime)
 
 
 class BacklogSearcher:
+
     def __init__(self):
 
         self._lastBacklog = self._get_lastBacklog()
@@ -61,12 +64,14 @@ class BacklogSearcher:
 
     def getProgressIndicator(self):
         if self.amActive:
-            return ui.ProgressIndicator(self.percentDone, self.currentSearchInfo)
+            return ui.ProgressIndicator(
+                self.percentDone, self.currentSearchInfo)
         else:
             return None
 
     def am_running(self):
-        logging.debug("amWaiting: " + str(self.amWaiting) + ", amActive: " + str(self.amActive))
+        logging.debug("amWaiting: " + str(self.amWaiting) +
+                      ", amActive: " + str(self.amActive))
         return (not self.amWaiting) and self.amActive
 
     def searchBacklog(self, which_shows=None):
@@ -88,7 +93,8 @@ class BacklogSearcher:
         curDate = datetime.date.today().toordinal()
         fromDate = datetime.date.fromordinal(1)
 
-        if not which_shows and not ((curDate - self._lastBacklog) >= self.cycleTime):
+        if not which_shows and not (
+                (curDate - self._lastBacklog) >= self.cycleTime):
             logging.info(
                 "Running limited backlog on missed episodes " + str(sickbeard.BACKLOG_DAYS) + " day(s) and older only")
             fromDate = datetime.date.today() - datetime.timedelta(days=sickbeard.BACKLOG_DAYS)
@@ -102,12 +108,17 @@ class BacklogSearcher:
             segments = self._get_segments(curShow, fromDate)
 
             for season, segment in segments.iteritems():
-                self.currentSearchInfo = {'title': curShow.name + " Season " + str(season)}
+                self.currentSearchInfo = {
+                    'title': curShow.name + " Season " + str(season)}
 
-                backlog_queue_item = search_queue.BacklogQueueItem(curShow, segment)
-                sickbeard.searchQueueScheduler.action.add_item(backlog_queue_item)  # @UndefinedVariable
+                backlog_queue_item = search_queue.BacklogQueueItem(
+                    curShow, segment)
+                sickbeard.searchQueueScheduler.action.add_item(
+                    backlog_queue_item)  # @UndefinedVariable
             else:
-                logging.debug("Nothing needs to be downloaded for {show_name}, skipping".format(show_name=curShow.name))
+                logging.debug(
+                    "Nothing needs to be downloaded for {show_name}, skipping".format(
+                        show_name=curShow.name))
 
         # don't consider this an actual backlog search if we only did recent eps
         # or if we only did certain shows
@@ -138,12 +149,17 @@ class BacklogSearcher:
 
     def _get_segments(self, show, fromDate):
         if show.paused:
-            logging.debug("Skipping backlog for {show_name} because the show is paused".format(show_name=show.name))
+            logging.debug(
+                "Skipping backlog for {show_name} because the show is paused".format(
+                    show_name=show.name))
             return {}
 
-        anyQualities, bestQualities = common.Quality.splitQuality(show.quality)  # @UnusedVariable
+        anyQualities, bestQualities = common.Quality.splitQuality(
+            show.quality)  # @UnusedVariable
 
-        logging.debug("Seeing if we need anything from {show_name}".format(show_name=show.name))
+        logging.debug(
+            "Seeing if we need anything from {show_name}".format(
+                show_name=show.name))
 
         myDB = db.DBConnection()
         sqlResults = myDB.select(
@@ -154,7 +170,8 @@ class BacklogSearcher:
         wanted = {}
         for result in sqlResults:
             curCompositeStatus = int(result[b"status"] or -1)
-            curStatus, curQuality = common.Quality.splitCompositeStatus(curCompositeStatus)
+            curStatus, curQuality = common.Quality.splitCompositeStatus(
+                curCompositeStatus)
 
             if bestQualities:
                 highestBestQuality = max(bestQualities)
@@ -166,10 +183,13 @@ class BacklogSearcher:
             # if we need a better one then say yes
             if (curStatus in (common.DOWNLOADED, common.SNATCHED,
                               common.SNATCHED_PROPER) and curQuality < highestBestQuality) or curStatus == common.WANTED:
-                epObj = show.getEpisode(int(result[b"season"]), int(result[b"episode"]))
+                epObj = show.getEpisode(
+                    int(result[b"season"]), int(result[b"episode"]))
 
-                # only fetch if not archive on first match, or if show is lowest than the lower expected quality
-                if (epObj.show.archive_firstmatch == 0 or curQuality < lowestBestQuality):
+                # only fetch if not archive on first match, or if show is
+                # lowest than the lower expected quality
+                if (epObj.show.archive_firstmatch ==
+                        0 or curQuality < lowestBestQuality):
                     if epObj.season not in wanted:
                         wanted[epObj.season] = [epObj]
                     else:
@@ -185,7 +205,9 @@ class BacklogSearcher:
         sqlResults = myDB.select("SELECT * FROM info")
 
         if len(sqlResults) == 0:
-            myDB.action("INSERT INTO info (last_backlog, last_indexer) VALUES (?,?)", [str(when), 0])
+            myDB.action(
+                "INSERT INTO info (last_backlog, last_indexer) VALUES (?,?)", [
+                    str(when), 0])
         else:
             myDB.action("UPDATE info SET last_backlog=" + str(when))
 

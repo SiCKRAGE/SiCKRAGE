@@ -27,6 +27,7 @@ from sickbeard.clients.generic import GenericClient
 
 
 class uTorrentAPI(GenericClient):
+
     def __init__(self, host=None, username=None, password=None):
 
         super(uTorrentAPI, self).__init__('uTorrent', host, username, password)
@@ -42,12 +43,14 @@ class uTorrentAPI(GenericClient):
         for k, v in params.iteritems() or {}:
             ordered_params.update({k: v})
 
-        return super(uTorrentAPI, self)._request(method=method, params=ordered_params, data=data, files=files)
+        return super(uTorrentAPI, self)._request(
+            method=method, params=ordered_params, data=data, files=files)
 
     def _get_auth(self):
 
         try:
-            self.response = self.session.get(self.url + 'token.html', verify=False)
+            self.response = self.session.get(
+                self.url + 'token.html', verify=False)
             self.auth = re.findall("<div.*?>(.*?)</", self.response.text)[0]
         except Exception:
             return None

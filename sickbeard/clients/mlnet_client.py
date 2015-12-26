@@ -24,6 +24,7 @@ from sickbeard.clients.generic import GenericClient
 
 
 class mlnetAPI(GenericClient):
+
     def __init__(self, host=None, username=None, password=None):
 
         super(mlnetAPI, self).__init__('mlnet', host, username, password)

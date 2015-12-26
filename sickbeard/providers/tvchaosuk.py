@@ -29,6 +29,7 @@ from sickrage.helper.exceptions import AuthException
 
 
 class TVChaosUKProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, 'TvChaosUK')
 
@@ -61,13 +62,17 @@ class TVChaosUKProvider(generic.TorrentProvider):
         if self.username and self.password:
             return True
 
-        raise AuthException('Your authentication credentials for ' + self.name + ' are missing, check your config.')
+        raise AuthException(
+            'Your authentication credentials for ' +
+            self.name +
+            ' are missing, check your config.')
 
     def _get_season_search_strings(self, ep_obj):
 
         search_string = {'Season': []}
 
-        for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
+        for show_name in set(
+                show_name_helpers.allPossibleShowNames(self.show)):
             for sep in ' ', ' - ':
                 season_string = show_name + sep + 'Series '
                 if ep_obj.show.air_by_date or ep_obj.show.sports:
@@ -77,7 +82,13 @@ class TVChaosUKProvider(generic.TorrentProvider):
                 else:
                     season_string += '%d' % int(ep_obj.scene_season)
 
-                search_string[b'Season'].append(re.sub(r'\s+', ' ', season_string.replace('.', ' ').strip()))
+                search_string[b'Season'].append(
+                    re.sub(
+                        r'\s+',
+                        ' ',
+                        season_string.replace(
+                            '.',
+                            ' ').strip()))
 
         return [search_string]
 
@@ -88,13 +99,15 @@ class TVChaosUKProvider(generic.TorrentProvider):
         if not ep_obj:
             return []
 
-        for show_name in set(show_name_helpers.allPossibleShowNames(self.show)):
+        for show_name in set(
+                show_name_helpers.allPossibleShowNames(self.show)):
             for sep in ' ', ' - ':
                 ep_string = sanitizeSceneName(show_name) + sep
                 if self.show.air_by_date:
                     ep_string += str(ep_obj.airdate).replace('-', '|')
                 elif self.show.sports:
-                    ep_string += str(ep_obj.airdate).replace('-', '|') + '|' + ep_obj.airdate.strftime('%b')
+                    ep_string += str(ep_obj.airdate).replace('-',
+                                                             '|') + '|' + ep_obj.airdate.strftime('%b')
                 elif self.show.anime:
                     ep_string += '%i' % int(ep_obj.scene_absolute_number)
                 else:
@@ -104,25 +117,31 @@ class TVChaosUKProvider(generic.TorrentProvider):
                 if add_string:
                     ep_string += ' %s' % add_string
 
-                search_string[b'Episode'].append(re.sub(r'\s+', ' ', ep_string.replace('.', ' ').strip()))
+                search_string[b'Episode'].append(
+                    re.sub(r'\s+', ' ', ep_string.replace('.', ' ').strip()))
 
         return [search_string]
 
     def _doLogin(self):
 
         login_params = {'username': self.username, 'password': self.password}
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Error: Username or password incorrect!', response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -138,7 +157,9 @@ class TVChaosUKProvider(generic.TorrentProvider):
                     logging.debug("Search string: %s " % search_string)
 
                 self.search_params[b'keywords'] = search_string.strip()
-                data = self.getURL(self.urls[b'search'], params=self.search_params)
+                data = self.getURL(
+                    self.urls[b'search'],
+                    params=self.search_params)
                 # url_searched = self.urls[b'search'] + '?' + urlencode(self.search_params)
 
                 if not data:
@@ -149,10 +170,16 @@ class TVChaosUKProvider(generic.TorrentProvider):
                     torrent_table = html.find(id='listtorrents').find_all('tr')
                     for torrent in torrent_table:
                         try:
-                            title = torrent.find(attrs={'class': 'tooltip-content'}).text.strip()
-                            download_url = torrent.find(title="Click to Download this Torrent!").parent[b'href'].strip()
-                            seeders = int(torrent.find(title='Seeders').text.strip())
-                            leechers = int(torrent.find(title='Leechers').text.strip())
+                            title = torrent.find(
+                                attrs={'class': 'tooltip-content'}).text.strip()
+                            download_url = torrent.find(
+                                title="Click to Download this Torrent!").parent[b'href'].strip()
+                            seeders = int(
+                                torrent.find(
+                                    title='Seeders').text.strip())
+                            leechers = int(
+                                torrent.find(
+                                    title='Leechers').text.strip())
 
                             if not all([title, download_url]):
                                 continue
@@ -165,12 +192,16 @@ class TVChaosUKProvider(generic.TorrentProvider):
                                             title, seeders, leechers))
                                 continue
 
-                            # Chop off tracker/channel prefix or we cant parse the result!
-                            show_name_first_word = re.search(r'^[^ .]+', self.search_params[b'keywords']).group()
+                            # Chop off tracker/channel prefix or we cant parse
+                            # the result!
+                            show_name_first_word = re.search(
+                                r'^[^ .]+', self.search_params[b'keywords']).group()
                             if not title.startswith(show_name_first_word):
-                                title = re.match(r'(.*)(' + show_name_first_word + '.*)', title).group(2)
+                                title = re.match(
+                                    r'(.*)(' + show_name_first_word + '.*)', title).group(2)
 
-                            # Change title from Series to Season, or we can't parse
+                            # Change title from Series to Season, or we can't
+                            # parse
                             if 'Series' in self.search_params[b'keywords']:
                                 title = re.sub(r'(?i)series', 'Season', title)
 
@@ -201,6 +232,7 @@ class TVChaosUKProvider(generic.TorrentProvider):
 
 
 class TVChaosUKCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

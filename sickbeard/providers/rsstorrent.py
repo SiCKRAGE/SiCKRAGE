@@ -34,6 +34,7 @@ from sickrage.helper.exceptions import ex
 
 
 class TorrentRssProvider(generic.TorrentProvider):
+
     def __init__(self, name, url, cookies='', titleTAG='title', search_mode='eponly', search_fallback=False,
                  enable_daily=False,
                  enable_backlog=False):
@@ -103,7 +104,8 @@ class TorrentRssProvider(generic.TorrentProvider):
             if self.cookies:
                 cookie_validator = re.compile(r"^(\w+=\w+)(;\w+=\w+)*$")
                 if not cookie_validator.match(self.cookies):
-                    return (False, 'Cookie is not correctly formatted: ' + self.cookies)
+                    return (
+                        False, 'Cookie is not correctly formatted: ' + self.cookies)
 
             # pylint: disable=W0212
             # Access to a protected member of a client class
@@ -119,7 +121,8 @@ class TorrentRssProvider(generic.TorrentProvider):
             if not url:
                 return (False, 'Unable to get torrent url from first item')
 
-            if url.startswith('magnet:') and re.search(r'urn:btih:([\w]{32,40})', url):
+            if url.startswith('magnet:') and re.search(
+                    r'urn:btih:([\w]{32,40})', url):
                 return (True, 'RSS feed Parsed correctly')
             else:
                 if self.cookies:
@@ -130,7 +133,8 @@ class TorrentRssProvider(generic.TorrentProvider):
                     bdecode(torrent_file)
                 except Exception as e:
                     self.dumpHTML(torrent_file)
-                    return (False, 'Torrent link is not a valid torrent file: ' + ex(e))
+                    return (
+                        False, 'Torrent link is not a valid torrent file: ' + ex(e))
 
             return (True, 'RSS feed Parsed correctly')
 
@@ -157,6 +161,7 @@ class TorrentRssProvider(generic.TorrentProvider):
 
 
 class TorrentRssCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
         self.minTime = 15

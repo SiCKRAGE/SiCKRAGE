@@ -37,6 +37,7 @@ class GetOutOfLoop(Exception):
 
 
 class RarbgProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "Rarbg")
 
@@ -69,8 +70,8 @@ class RarbgProvider(generic.TorrentProvider):
                            'token': '&token={token}'}
 
         self.defaultOptions = self.urlOptions[b'categories'].format(categories='tv') + \
-                              self.urlOptions[b'limit'].format(limit='100') + \
-                              self.urlOptions[b'format'].format(format='json_extended')
+            self.urlOptions[b'limit'].format(limit='100') + \
+            self.urlOptions[b'format'].format(format='json_extended')
 
         self.proper_strings = ['{{PROPER|REPACK}}']
 
@@ -100,7 +101,8 @@ class RarbgProvider(generic.TorrentProvider):
 
         return False
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -108,7 +110,7 @@ class RarbgProvider(generic.TorrentProvider):
         if not self._doLogin():
             return results
 
-        if epObj != None:
+        if epObj is not None:
             ep_indexerid = epObj.show.indexerid
             ep_indexer = epObj.show.indexer
         else:
@@ -127,29 +129,35 @@ class RarbgProvider(generic.TorrentProvider):
                 elif mode == 'Season':
                     if ep_indexer == INDEXER_TVDB:
                         searchURL = self.urls[b'search_tvdb'].format(search_string=search_string,
-                                                                    tvdb=ep_indexerid) + self.defaultOptions
+                                                                     tvdb=ep_indexerid) + self.defaultOptions
                     else:
-                        searchURL = self.urls[b'search'].format(search_string=search_string) + self.defaultOptions
+                        searchURL = self.urls[b'search'].format(
+                            search_string=search_string) + self.defaultOptions
                 elif mode == 'Episode':
                     if ep_indexer == INDEXER_TVDB:
                         searchURL = self.urls[b'search_tvdb'].format(search_string=search_string,
-                                                                    tvdb=ep_indexerid) + self.defaultOptions
+                                                                     tvdb=ep_indexerid) + self.defaultOptions
                     else:
-                        searchURL = self.urls[b'search'].format(search_string=search_string) + self.defaultOptions
+                        searchURL = self.urls[b'search'].format(
+                            search_string=search_string) + self.defaultOptions
                 else:
                     logging.error("Invalid search mode: %s " % mode)
 
                 if self.minleech:
-                    searchURL += self.urlOptions[b'leechers'].format(min_leechers=int(self.minleech))
+                    searchURL += self.urlOptions[b'leechers'].format(
+                        min_leechers=int(self.minleech))
 
                 if self.minseed:
-                    searchURL += self.urlOptions[b'seeders'].format(min_seeders=int(self.minseed))
+                    searchURL += self.urlOptions[b'seeders'].format(
+                        min_seeders=int(self.minseed))
 
                 if self.sorting:
-                    searchURL += self.urlOptions[b'sorting'].format(sorting=self.sorting)
+                    searchURL += self.urlOptions[
+                        b'sorting'].format(sorting=self.sorting)
 
                 if self.ranked:
-                    searchURL += self.urlOptions[b'ranked'].format(ranked=int(self.ranked))
+                    searchURL += self.urlOptions[
+                        b'ranked'].format(ranked=int(self.ranked))
 
                 logging.debug("Search URL: %s" % searchURL)
 
@@ -157,11 +165,15 @@ class RarbgProvider(generic.TorrentProvider):
                     retry = 3
                     while retry > 0:
                         time_out = 0
-                        while (datetime.datetime.now() < self.next_request) and time_out <= 15:
+                        while (datetime.datetime.now() <
+                               self.next_request) and time_out <= 15:
                             time_out = time_out + 1
                             time.sleep(1)
 
-                        data = self.getURL(searchURL + self.urlOptions[b'token'].format(token=self.token))
+                        data = self.getURL(
+                            searchURL +
+                            self.urlOptions[b'token'].format(
+                                token=self.token))
 
                         self.next_request = datetime.datetime.now() + datetime.timedelta(seconds=10)
 
@@ -177,16 +189,22 @@ class RarbgProvider(generic.TorrentProvider):
                         if re.search('Invalid token set!', data):
                             logging.warning("Invalid token!")
                             return results
-                        if re.search('Too many requests per minute. Please try again later!', data):
+                        if re.search(
+                                'Too many requests per minute. Please try again later!', data):
                             logging.warning("Too many requests per minute")
                             retry = retry - 1
                             time.sleep(10)
                             continue
-                        if re.search('Cant find search_tvdb in database. Are you sure this imdb exists?', data):
-                            logging.warning("No results found. The tvdb id: %s do not exist on provider" % ep_indexerid)
+                        if re.search(
+                                'Cant find search_tvdb in database. Are you sure this imdb exists?', data):
+                            logging.warning(
+                                "No results found. The tvdb id: %s do not exist on provider" %
+                                ep_indexerid)
                             raise GetOutOfLoop
-                        if re.search('Invalid token. Use get_token for a new one!', data):
-                            logging.debug("Invalid token, retrieving new token")
+                        if re.search(
+                                'Invalid token. Use get_token for a new one!', data):
+                            logging.debug(
+                                "Invalid token, retrieving new token")
                             retry = retry - 1
                             self.token = None
                             self.tokenExpireDate = None
@@ -199,7 +217,8 @@ class RarbgProvider(generic.TorrentProvider):
                         # No error found break
                         break
                     else:
-                        logging.debug("Retried 3 times without getting results")
+                        logging.debug(
+                            "Retried 3 times without getting results")
                         continue
                 except GetOutOfLoop:
                     continue
@@ -211,7 +230,9 @@ class RarbgProvider(generic.TorrentProvider):
                     else:
                         data_json = {}
                 except Exception:
-                    logging.error("JSON load failed: %s" % traceback.format_exc())
+                    logging.error(
+                        "JSON load failed: %s" %
+                        traceback.format_exc())
                     logging.debug("JSON load failed. Data dump: %s" % data)
                     continue
 
@@ -234,10 +255,13 @@ class RarbgProvider(generic.TorrentProvider):
                             items[mode].append(item)
 
                         except Exception:
-                            logging.debug("Skipping invalid result. JSON item: %s" % item)
+                            logging.debug(
+                                "Skipping invalid result. JSON item: %s" % item)
 
                 except Exception:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -250,6 +274,7 @@ class RarbgProvider(generic.TorrentProvider):
 
 
 class RarbgCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

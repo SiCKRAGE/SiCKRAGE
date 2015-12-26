@@ -32,6 +32,7 @@ from sickbeard.providers import generic
 
 
 class OmgwtfnzbsProvider(generic.NZBProvider):
+
     def __init__(self):
         generic.NZBProvider.__init__(self, "omgwtfnzbs")
 
@@ -78,10 +79,12 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
             return True
 
     def _get_season_search_strings(self, ep_obj):
-        return [x for x in show_name_helpers.makeSceneSeasonSearchString(self.show, ep_obj)]
+        return [x for x in show_name_helpers.makeSceneSeasonSearchString(
+            self.show, ep_obj)]
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
-        return [x for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
+        return [x for x in show_name_helpers.makeSceneSearchString(
+            self.show, ep_obj)]
 
     def _get_title_and_url(self, item):
         return (item[b'release'], item[b'getnzb'])
@@ -94,7 +97,8 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
 
         return size
 
-    def _doSearch(self, search, search_mode='eponly', epcount=0, retention=0, epObj=None):
+    def _doSearch(self, search, search_mode='eponly',
+                  epcount=0, retention=0, epObj=None):
 
         self._checkAuth()
 
@@ -108,7 +112,8 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
         if retention or not params[b'retention']:
             params[b'retention'] = retention
 
-        searchURL = 'https://api.omgwtfnzbs.org/json/?' + urllib.urlencode(params)
+        searchURL = 'https://api.omgwtfnzbs.org/json/?' + \
+            urllib.urlencode(params)
         logging.debug("Search string: %s" % params)
         logging.debug("Search URL: %s" % searchURL)
 
@@ -138,17 +143,24 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
 
                     title, url = self._get_title_and_url(item)
                     try:
-                        result_date = datetime.fromtimestamp(int(item[b'usenetage']))
+                        result_date = datetime.fromtimestamp(
+                            int(item[b'usenetage']))
                     except Exception:
                         result_date = None
 
                     if result_date:
-                        results.append(classes.Proper(title, url, result_date, self.show))
+                        results.append(
+                            classes.Proper(
+                                title,
+                                url,
+                                result_date,
+                                self.show))
 
         return results
 
 
 class OmgwtfnzbsCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
         self.minTime = 20
@@ -179,7 +191,8 @@ class OmgwtfnzbsCache(tvcache.TVCache):
                   'eng': 1,
                   'catid': '19,20'}  # SD,HD
 
-        rss_url = 'https://rss.omgwtfnzbs.org/rss-download.php?' + urllib.urlencode(params)
+        rss_url = 'https://rss.omgwtfnzbs.org/rss-download.php?' + \
+            urllib.urlencode(params)
 
         logging.debug("Cache update URL: %s" % rss_url)
 

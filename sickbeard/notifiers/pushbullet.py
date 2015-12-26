@@ -47,7 +47,8 @@ class PushbulletNotifier(object):
                                     message="Testing Pushbullet settings from SiCKRAGE")
 
     def get_devices(self, pushbullet_api):
-        logging.debug("Testing Pushbullet authentication and retrieving the device list.")
+        logging.debug(
+            "Testing Pushbullet authentication and retrieving the device list.")
         return self._sendPushbullet(pushbullet_api)
 
     def notify_snatch(self, ep_name):
@@ -63,7 +64,8 @@ class PushbulletNotifier(object):
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendPushbullet(pushbullet_api=None,
-                                 event=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
+                                 event=notifyStrings[
+                                     NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
                                  message=ep_name + ": " + lang)
 
     def notify_git_update(self, new_version="??"):
@@ -71,7 +73,8 @@ class PushbulletNotifier(object):
             self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_GIT_UPDATE],
                                  message=notifyStrings[NOTIFY_GIT_UPDATE_TEXT] + new_version)
 
-    def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None):
+    def _sendPushbullet(self, pushbullet_api=None,
+                        pushbullet_device=None, event=None, message=None):
 
         if not (sickbeard.USE_PUSHBULLET or event is 'Test' or event is None):
             return False
@@ -83,9 +86,12 @@ class PushbulletNotifier(object):
         logging.debug("Pushbullet message: %r" % message)
         logging.debug("Pushbullet api: %r" % pushbullet_api)
         logging.debug("Pushbullet devices: %r" % pushbullet_device)
-        logging.debug("Pushbullet notification type: %r" % 'note' if event else 'None')
+        logging.debug(
+            "Pushbullet notification type: %r" %
+            'note' if event else 'None')
 
-        url = 'https://api.pushbullet.com/v2/%s' % ('devices', 'pushes')[event is not None]
+        url = 'https://api.pushbullet.com/v2/%s' % (
+            'devices', 'pushes')[event is not None]
 
         data = json.dumps({
             'title': event.encode('utf-8'),
@@ -95,12 +101,16 @@ class PushbulletNotifier(object):
         }) if event else None
 
         method = 'GET' if data is None else 'POST'
-        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer %s' % pushbullet_api}
+        headers = {'Content-Type': 'application/json',
+                   'Authorization': 'Bearer %s' % pushbullet_api}
 
         try:
-            response = self.session.request(method, url, data=data, headers=headers)
+            response = self.session.request(
+                method, url, data=data, headers=headers)
         except Exception:
-            logging.debug('Pushbullet authorization failed with exception: %r' % traceback.format_exc())
+            logging.debug(
+                'Pushbullet authorization failed with exception: %r' %
+                traceback.format_exc())
             return False
 
         if response.status_code == 410:
@@ -108,7 +118,9 @@ class PushbulletNotifier(object):
             return False
 
         if response.status_code != 200:
-            logging.debug('Pushbullet call failed with error code %r' % response.status_code)
+            logging.debug(
+                'Pushbullet call failed with error code %r' %
+                response.status_code)
             return False
 
         logging.debug("Pushbullet response: %r" % response.text)

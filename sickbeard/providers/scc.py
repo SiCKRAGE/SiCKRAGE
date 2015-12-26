@@ -32,6 +32,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class SCCProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "SceneAccess")
@@ -55,7 +56,9 @@ class SCCProvider(generic.TorrentProvider):
         self.url = self.urls[b'base_url']
 
         self.categories = {'sponly': 'c26=26&c44=44&c45=45',
-                           # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
+                           # Archive, non-scene HD, non-scene SD; need to
+                           # include non-scene because WEB-DL packs get added
+                           # to those categories
                            'eponly': 'c27=27&c17=17&c44=44&c45=45&c33=33&c34=34'}  # TV HD, TV SD, non-scene HD, non-scene SD, foreign XviD, foreign x264
 
     def _doLogin(self):
@@ -64,14 +67,18 @@ class SCCProvider(generic.TorrentProvider):
                         'password': self.password,
                         'submit': 'come on in'}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
         if re.search(r'Username or password incorrect', response) \
                 or re.search(r'<title>SceneAccess \| Login</title>', response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
@@ -80,7 +87,8 @@ class SCCProvider(generic.TorrentProvider):
         title = r'<title>.+? \| %s</title>' % section
         return re.search(title, text, re.IGNORECASE)
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
 
@@ -96,43 +104,65 @@ class SCCProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (urllib.quote(search_string), self.categories[search_mode])
+                searchURL = self.urls[b'search'] % (urllib.quote(
+                    search_string), self.categories[search_mode])
 
                 try:
                     logging.debug("Search URL: %s" % searchURL)
                     data = self.getURL(searchURL)
                     time.sleep(cpu_presets[sickbeard.CPU_PRESET])
                 except Exception as e:
-                    logging.warning("Unable to fetch data. Error: %s" % repr(e))
+                    logging.warning(
+                        "Unable to fetch data. Error: %s" %
+                        repr(e))
 
                 if not data:
                     continue
 
                 with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                    torrent_table = html.find('table', attrs={'id': 'torrents-table'})
-                    torrent_rows = torrent_table.find_all('tr') if torrent_table else []
+                    torrent_table = html.find(
+                        'table', attrs={'id': 'torrents-table'})
+                    torrent_rows = torrent_table.find_all(
+                        'tr') if torrent_table else []
 
                     # Continue only if at least one Release is found
                     if len(torrent_rows) < 2:
-                        logging.debug("Data returned from provider does not contain any torrents")
+                        logging.debug(
+                            "Data returned from provider does not contain any torrents")
                         continue
 
                     for result in torrent_table.find_all('tr')[1:]:
 
                         try:
-                            link = result.find('td', attrs={'class': 'ttr_name'}).find('a')
-                            url = result.find('td', attrs={'class': 'td_dl'}).find('a')
+                            link = result.find(
+                                'td', attrs={
+                                    'class': 'ttr_name'}).find('a')
+                            url = result.find(
+                                'td', attrs={
+                                    'class': 'td_dl'}).find('a')
 
                             title = link.string
                             if re.search(r'\.\.\.', title):
-                                data = self.getURL(self.url + "/" + link[b'href'])
+                                data = self.getURL(
+                                    self.url + "/" + link[b'href'])
                                 if data:
                                     with BS4Parser(data) as details_html:
-                                        title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
-                            download_url = self.urls[b'download'] % url[b'href']
-                            seeders = int(result.find('td', attrs={'class': 'ttr_seeders'}).string)
-                            leechers = int(result.find('td', attrs={'class': 'ttr_leechers'}).string)
-                            size = self._convertSize(result.find('td', attrs={'class': 'ttr_size'}).contents[0])
+                                        title = re.search(
+                                            '(?<=").+(?<!")', details_html.title.string).group(0)
+                            download_url = self.urls[
+                                b'download'] % url[b'href']
+                            seeders = int(
+                                result.find(
+                                    'td', attrs={
+                                        'class': 'ttr_seeders'}).string)
+                            leechers = int(
+                                result.find(
+                                    'td', attrs={
+                                        'class': 'ttr_leechers'}).string)
+                            size = self._convertSize(
+                                result.find(
+                                    'td', attrs={
+                                        'class': 'ttr_size'}).contents[0])
                         except (AttributeError, TypeError):
                             continue
 
@@ -178,6 +208,7 @@ class SCCProvider(generic.TorrentProvider):
 
 
 class SCCCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

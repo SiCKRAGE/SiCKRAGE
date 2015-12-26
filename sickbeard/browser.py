@@ -27,7 +27,8 @@ import logging
 from sickrage.helper.encoding import ek
 
 
-# adapted from http://stackoverflow.com/questions/827371/is-there-a-way-to-list-all-the-available-drive-letters-in-python/827490
+# adapted from
+# http://stackoverflow.com/questions/827371/is-there-a-way-to-list-all-the-available-drive-letters-in-python/827490
 def getWinDrives():
     """ Return list of detected drives """
     assert os.name == 'nt'
@@ -75,24 +76,34 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
     path = ek(os.path.abspath, ek(os.path.normpath, path))
     parentPath = ek(os.path.dirname, path)
 
-    # if we're at the root then the next step is the meta-node showing our drive letters
+    # if we're at the root then the next step is the meta-node showing our
+    # drive letters
     if path == parentPath and os.name == 'nt':
         parentPath = ""
 
     try:
-        fileList = [{'name': filename, 'path': ek(os.path.join, path, filename)} for filename in ek(os.listdir, path)]
+        fileList = [{'name': filename, 'path': ek(
+            os.path.join, path, filename)} for filename in ek(os.listdir, path)]
     except OSError as e:
-        logging.warning("Unable to open " + path + ": " + repr(e) + " / " + str(e))
+        logging.warning(
+            "Unable to open " +
+            path +
+            ": " +
+            repr(e) +
+            " / " +
+            str(e))
         fileList = [{'name': filename, 'path': ek(os.path.join, parentPath, filename)} for filename in
                     ek(os.listdir, parentPath)]
 
     if not includeFiles:
         fileList = [x for x in fileList if ek(os.path.isdir, x['path'])]
 
-    # prune out directories to protect the user from doing stupid things (already lower case the dir to reduce calls)
+    # prune out directories to protect the user from doing stupid things
+    # (already lower case the dir to reduce calls)
     hideList = ["boot", "bootmgr", "cache", "msocache", "recovery", "$recycle.bin", "recycler",
                 "system volume information", "temporary internet files"]  # windows specific
-    hideList += [".fseventd", ".spotlight", ".trashes", ".vol", "cachedmessages", "caches", "trash"]  # osx specific
+    hideList += [".fseventd", ".spotlight", ".trashes", ".vol",
+                 "cachedmessages", "caches", "trash"]  # osx specific
 
     fileList = [x for x in fileList if x['name'].lower() not in hideList]
 

@@ -28,6 +28,7 @@ from sickrage.helper.encoding import ek
 
 
 class indexerApi(object):
+
     def __init__(self, indexerID=None):
         self.indexerID = int(indexerID) if indexerID else None
 
@@ -44,7 +45,9 @@ class indexerApi(object):
             return indexerConfig[self.indexerID]
         _ = initConfig
         if sickbeard.INDEXER_DEFAULT_LANGUAGE in _:
-            del _[_[b'valid_languages'].index(sickbeard.INDEXER_DEFAULT_LANGUAGE)]
+            del _[
+                _[b'valid_languages'].index(
+                    sickbeard.INDEXER_DEFAULT_LANGUAGE)]
         _[b'valid_languages'].sort()
         _[b'valid_languages'].insert(0, sickbeard.INDEXER_DEFAULT_LANGUAGE)
         return _
@@ -59,9 +62,10 @@ class indexerApi(object):
         if self.indexerID:
             if sickbeard.CACHE_DIR:
                 indexerConfig[self.indexerID][b'api_params'][b'cache'] = ek(os.path.join, sickbeard.CACHE_DIR, 'indexers',
-                                                                          self.name)
+                                                                            self.name)
             if sickbeard.PROXY_SETTING and sickbeard.PROXY_INDEXERS:
-                indexerConfig[self.indexerID][b'api_params'][b'proxy'] = sickbeard.PROXY_SETTING
+                indexerConfig[self.indexerID][b'api_params'][
+                    b'proxy'] = sickbeard.PROXY_SETTING
 
             return indexerConfig[self.indexerID][b'api_params']
 
@@ -72,7 +76,8 @@ class indexerApi(object):
 
     @property
     def indexers(self):
-        return dict((int(x[b'id']), x[b'name']) for x in indexerConfig.values())
+        return dict((int(x[b'id']), x[b'name'])
+                    for x in indexerConfig.values())
 
     @property
     def session(self):

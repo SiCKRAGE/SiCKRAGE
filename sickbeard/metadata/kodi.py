@@ -124,7 +124,8 @@ class KODIMetadata(kodi_12plus.KODI_12PlusMetadata):
         else:
             season_poster_filename = 'season' + str(season).zfill(2)
 
-        return ek(os.path.join, show_obj.location, season_poster_filename + '.tbn')
+        return ek(os.path.join, show_obj.location,
+                  season_poster_filename + '.tbn')
 
 
 # present a standard "interface" from the module

@@ -30,6 +30,7 @@ from sickbeard import tvcache
 
 
 class BinSearchProvider(generic.NZBProvider):
+
     def __init__(self):
         generic.NZBProvider.__init__(self, "BinSearch")
 
@@ -40,6 +41,7 @@ class BinSearchProvider(generic.NZBProvider):
 
 
 class BinSearchCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
         # only poll Binsearch every 30 minutes max
@@ -48,7 +50,8 @@ class BinSearchCache(tvcache.TVCache):
         # compile and save our regular expressions
 
         # this pulls the title from the URL in the description
-        self.descTitleStart = re.compile(r'^.*https?://www\.binsearch\.info/.b=')
+        self.descTitleStart = re.compile(
+            r'^.*https?://www\.binsearch\.info/.b=')
         self.descTitleEnd = re.compile('&amp;.*$')
 
         # these clean up the horrible mess of a title if the above fail
@@ -117,7 +120,8 @@ class BinSearchCache(tvcache.TVCache):
         return True
 
     def _checkAuth(self, data):
-        return data if data[b'feed'] and data[b'feed'][b'title'] != 'Invalid Link' else None
+        return data if data[b'feed'] and data[b'feed'][
+            b'title'] != 'Invalid Link' else None
 
 
 provider = BinSearchProvider()

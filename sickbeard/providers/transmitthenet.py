@@ -27,6 +27,7 @@ from sickrage.helper.exceptions import AuthException
 
 
 class TransmitTheNetProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "TransmitTheNet")
@@ -57,7 +58,10 @@ class TransmitTheNetProvider(generic.TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
+            raise AuthException(
+                "Your authentication credentials for " +
+                self.name +
+                " are missing, check your config.")
 
         return True
 
@@ -70,18 +74,26 @@ class TransmitTheNetProvider(generic.TorrentProvider):
             'login': 'submit'
         }
 
-        response = self.getURL(self.urls[b'index'], params={'page': 'login'}, post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'index'],
+            params={
+                'page': 'login'},
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
-        if re.search('Username Incorrect', response) or re.search('Password Incorrect', response):
-            logging.warning("Invalid username or password. Check your settings")
+        if re.search('Username Incorrect', response) or re.search(
+                'Password Incorrect', response):
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -95,8 +107,11 @@ class TransmitTheNetProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                data = self.getURL(self.urls[b'index'], params=self.search_params)
-                searchURL = self.urls[b'index'] + "?" + urlencode(self.search_params)
+                data = self.getURL(
+                    self.urls[b'index'],
+                    params=self.search_params)
+                searchURL = self.urls[b'index'] + \
+                    "?" + urlencode(self.search_params)
                 logging.debug("Search URL: %s" % searchURL)
 
                 if not data:
@@ -108,7 +123,8 @@ class TransmitTheNetProvider(generic.TorrentProvider):
 
                         torrent_rows = []
 
-                        down_elems = html.findAll("img", {"alt": "Download Torrent"})
+                        down_elems = html.findAll(
+                            "img", {"alt": "Download Torrent"})
                         for down_elem in down_elems:
                             if down_elem:
                                 torr_row = down_elem.findParent('tr')
@@ -117,18 +133,22 @@ class TransmitTheNetProvider(generic.TorrentProvider):
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 1:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
                         for torrent_row in torrent_rows:
 
-                            title = torrent_row.find('a', {"data-src": True})['data-src'].rsplit('.', 1)[0]
-                            download_href = torrent_row.find('img', {"alt": 'Download Torrent'}).findParent()['href']
+                            title = torrent_row.find(
+                                'a', {"data-src": True})['data-src'].rsplit('.', 1)[0]
+                            download_href = torrent_row.find(
+                                'img', {"alt": 'Download Torrent'}).findParent()['href']
                             seeders = int(
                                 torrent_row.findAll('a', {'title': 'Click here to view peers details'})[0].text.strip())
                             leechers = int(
                                 torrent_row.findAll('a', {'title': 'Click here to view peers details'})[1].text.strip())
-                            download_url = self.urls[b'base_url'] + download_href
+                            download_url = self.urls[
+                                b'base_url'] + download_href
                             # FIXME
                             size = -1
 
@@ -150,7 +170,9 @@ class TransmitTheNetProvider(generic.TorrentProvider):
                             items[mode].append(item)
 
                 except Exception:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -164,6 +186,7 @@ class TransmitTheNetProvider(generic.TorrentProvider):
 
 
 class TransmitTheNetCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

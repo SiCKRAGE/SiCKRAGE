@@ -30,6 +30,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class TorrentBytesProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "TorrentBytes")
@@ -63,18 +64,23 @@ class TorrentBytesProvider(generic.TorrentProvider):
                         'password': self.password,
                         'login': 'Log in!'}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Username or password incorrect', response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -89,7 +95,8 @@ class TorrentBytesProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
+                searchURL = self.urls[b'search'] % (urllib.quote(
+                    search_string.encode('utf-8')), self.categories)
                 logging.debug("Search URL: %s" % searchURL)
 
                 data = self.getURL(searchURL)
@@ -101,22 +108,29 @@ class TorrentBytesProvider(generic.TorrentProvider):
                         # Continue only if one Release is found
                         empty = html.find('Nothing found!')
                         if empty:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
-                        torrent_table = html.find('table', attrs={'border': '1'})
-                        torrent_rows = torrent_table.find_all('tr') if torrent_table else []
+                        torrent_table = html.find(
+                            'table', attrs={'border': '1'})
+                        torrent_rows = torrent_table.find_all(
+                            'tr') if torrent_table else []
 
                         for result in torrent_rows[1:]:
                             cells = result.find_all('td')
                             size = None
                             link = cells[1].find('a', attrs={'class': 'index'})
 
-                            full_id = link[b'href'].replace('details.php?id=', '')
+                            full_id = link[b'href'].replace(
+                                'details.php?id=', '')
                             torrent_id = full_id.split("&")[0]
 
-                            # Free leech torrents are marked with green [F L] in the title (i.e. <font color=green>[F&nbsp;L]</font>)
-                            freeleechTag = cells[1].find('font', attrs={'color': 'green'})
+                            # Free leech torrents are marked with green [F L]
+                            # in the title (i.e. <font
+                            # color=green>[F&nbsp;L]</font>)
+                            freeleechTag = cells[1].find(
+                                'font', attrs={'color': 'green'})
                             if freeleechTag and freeleechTag.text == '[F\xa0L]':
                                 isFreeleechTorrent = True
                             else:
@@ -126,17 +140,22 @@ class TorrentBytesProvider(generic.TorrentProvider):
                                 continue
 
                             try:
-                                if link.has_key('title'):
-                                    title = cells[1].find('a', {'class': 'index'})['title']
+                                if 'title' in link:
+                                    title = cells[1].find(
+                                        'a', {'class': 'index'})['title']
                                 else:
                                     title = link.contents[0]
-                                download_url = self.urls[b'download'] % (torrent_id, link.contents[0])
-                                seeders = int(cells[8].find('span').contents[0])
-                                leechers = int(cells[9].find('span').contents[0])
+                                download_url = self.urls[b'download'] % (
+                                    torrent_id, link.contents[0])
+                                seeders = int(
+                                    cells[8].find('span').contents[0])
+                                leechers = int(
+                                    cells[9].find('span').contents[0])
 
                                 # Need size for failed downloads handling
                                 if size is None:
-                                    if re.match(r'[0-9]+,?\.?[0-9]*[KkMmGg]+[Bb]+', cells[6].text):
+                                    if re.match(
+                                            r'[0-9]+,?\.?[0-9]*[KkMmGg]+[Bb]+', cells[6].text):
                                         size = self._convertSize(cells[6].text)
                                         if not size:
                                             size = -1
@@ -162,7 +181,9 @@ class TorrentBytesProvider(generic.TorrentProvider):
                             items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -190,6 +211,7 @@ class TorrentBytesProvider(generic.TorrentProvider):
 
 
 class TorrentBytesCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

@@ -33,6 +33,7 @@ from sickbeard.common import cpu_presets
 
 
 class TORRENTZProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Torrentz")
@@ -56,15 +57,18 @@ class TORRENTZProvider(generic.TorrentProvider):
         match = re.findall(r'[0-9]+', description)
         return (int(match[0]) * 1024 ** 2, int(match[1]), int(match[2]))
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings:
             for search_string in search_strings[mode]:
-                search_url = self.urls[b'verified'] if self.confirmed else self.urls[b'feed']
+                search_url = self.urls[
+                    b'verified'] if self.confirmed else self.urls[b'feed']
                 if mode is not 'RSS':
-                    search_url += '?q=' + urllib.parse.quote_plus(search_string)
+                    search_url += '?q=' + \
+                        urllib.parse.quote_plus(search_string)
 
                 logging.info(search_url)
                 data = self.getURL(search_url)
@@ -77,17 +81,22 @@ class TORRENTZProvider(generic.TorrentProvider):
                     continue
 
                 if not data.startswith('<?xml'):
-                    logging.info('Expected xml but got something else, is your mirror failing?')
+                    logging.info(
+                        'Expected xml but got something else, is your mirror failing?')
                     continue
 
                 try:
                     data = xmltodict.parse(data)
                 except ExpatError:
-                    logging.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
+                    logging.error(
+                        "Failed parsing provider. Traceback: %r\n%r" %
+                        (traceback.format_exc(), data))
                     continue
 
-                if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
-                    logging.debug("Malformed rss returned or no results, skipping")
+                if not all([data, 'rss' in data, 'channel' in data[
+                           b'rss'], 'item' in data[b'rss'][b'channel']]):
+                    logging.debug(
+                        "Malformed rss returned or no results, skipping")
                     continue
 
                 time.sleep(cpu_presets[sickbeard.CPU_PRESET])
@@ -100,17 +109,27 @@ class TORRENTZProvider(generic.TorrentProvider):
                     try:
                         if 'tv' not in item[b'category']:
                             continue
-                    except:continue
+                    except:
+                        continue
 
-                    title = item.get('title', '').rsplit(' ', 1)[0].replace(' ', '.')
+                    title = item.get(
+                        'title',
+                        '').rsplit(
+                        ' ',
+                        1)[0].replace(
+                        ' ',
+                        '.')
                     t_hash = item.get('guid', '').rsplit('/', 1)[-1]
 
                     if not all([title, t_hash]):
                         continue
 
-                    # TODO: Add method to generic provider for building magnet from hash.
-                    download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://open.demonii.com:1337&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://exodus.desync.com:6969"
-                    size, seeders, leechers = self._split_description(item.get('description', ''))
+                    # TODO: Add method to generic provider for building magnet
+                    # from hash.
+                    download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + \
+                        "&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://open.demonii.com:1337&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://exodus.desync.com:6969"
+                    size, seeders, leechers = self._split_description(
+                        item.get('description', ''))
 
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
@@ -120,7 +139,8 @@ class TORRENTZProvider(generic.TorrentProvider):
                                     title, seeders, leechers))
                         continue
 
-                    items[mode].append((title, download_url, size, seeders, leechers))
+                    items[mode].append(
+                        (title, download_url, size, seeders, leechers))
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -130,6 +150,7 @@ class TORRENTZProvider(generic.TorrentProvider):
 
 
 class TORRENTZCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

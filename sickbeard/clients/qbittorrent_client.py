@@ -26,9 +26,16 @@ from requests.auth import HTTPDigestAuth
 
 
 class qbittorrentAPI(GenericClient):
+
     def __init__(self, host=None, username=None, password=None):
 
-        super(qbittorrentAPI, self).__init__('qbittorrent', host, username, password)
+        super(
+            qbittorrentAPI,
+            self).__init__(
+            'qbittorrent',
+            host,
+            username,
+            password)
 
         self.url = self.host
         self.session.auth = HTTPDigestAuth(self.username, self.password)

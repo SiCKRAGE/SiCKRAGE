@@ -30,6 +30,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class XthorProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Xthor")
@@ -48,14 +49,18 @@ class XthorProvider(generic.TorrentProvider):
 
     def _doLogin(self):
 
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(
+                self.session.cookies).values()):
             return True
 
         login_params = {'username': self.username,
                         'password': self.password,
                         'submitme': 'X'}
 
-        response = self.getURL(self.url + '/takelogin.php', post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.url + '/takelogin.php',
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -63,12 +68,14 @@ class XthorProvider(generic.TorrentProvider):
         if re.search('donate.php', response):
             return True
         else:
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -84,7 +91,8 @@ class XthorProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
+                searchURL = self.urlsearch % (
+                    urllib.quote(search_string), self.categories)
                 logging.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
 
@@ -92,14 +100,18 @@ class XthorProvider(generic.TorrentProvider):
                     continue
 
                 with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                    resultsTable = html.find("table", {"class": "table2 table-bordered2"})
+                    resultsTable = html.find(
+                        "table", {"class": "table2 table-bordered2"})
                     if resultsTable:
                         rows = resultsTable.findAll("tr")
                         for row in rows:
-                            link = row.find("a", href=re.compile("details.php"))
+                            link = row.find(
+                                "a", href=re.compile("details.php"))
                             if link:
                                 title = link.text
-                                download_url = self.url + '/' + row.find("a", href=re.compile("download.php"))['href']
+                                download_url = self.url + '/' + \
+                                    row.find(
+                                        "a", href=re.compile("download.php"))['href']
                                 # FIXME
                                 size = -1
                                 seeders = 1
@@ -120,7 +132,8 @@ class XthorProvider(generic.TorrentProvider):
 
                                 items[mode].append(item)
 
-            # For each search mode sort all the items by seeders if available if available
+            # For each search mode sort all the items by seeders if available
+            # if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]

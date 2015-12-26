@@ -38,9 +38,17 @@ class ShowNetworkLogo(GenericMedia):
 
         show = self.get_show()
         if show:
-            media_file = os.path.join(self.get_media_root(), 'images', 'network', show.network_logo_name + '.png')
+            media_file = os.path.join(
+                self.get_media_root(),
+                'images',
+                'network',
+                show.network_logo_name +
+                '.png')
 
         if not all([media_file, os.path.exists(media_file)]):
-            media_file = os.path.join(self.get_media_root(), 'images', self.get_default_media_name())
+            media_file = os.path.join(
+                self.get_media_root(),
+                'images',
+                self.get_default_media_name())
 
         return media_file

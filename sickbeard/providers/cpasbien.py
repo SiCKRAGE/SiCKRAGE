@@ -29,6 +29,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class CpasbienProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Cpasbien")
@@ -42,7 +43,8 @@ class CpasbienProvider(generic.TorrentProvider):
 
         self.cache = CpasbienCache(self)
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -54,7 +56,8 @@ class CpasbienProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.url + '/recherche/' + search_string.replace('.', '-') + '.html'
+                searchURL = self.url + '/recherche/' + \
+                    search_string.replace('.', '-') + '.html'
                 logging.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
 
@@ -68,7 +71,8 @@ class CpasbienProvider(generic.TorrentProvider):
                         while erlin == 0:
                             try:
                                 classlin = 'ligne' + str(lin)
-                                resultlin = html.findAll(attrs={'class': [classlin]})
+                                resultlin = html.findAll(
+                                    attrs={'class': [classlin]})
                                 if resultlin:
                                     for ele in resultlin:
                                         resultdiv.append(ele)
@@ -85,9 +89,11 @@ class CpasbienProvider(generic.TorrentProvider):
                                 pageURL = link[b'href']
 
                                 # downloadTorrentLink = torrentSoup.find("a", title.startswith('Cliquer'))
-                                tmp = pageURL.split('/')[-1].replace('.html', '.torrent')
+                                tmp = pageURL.split(
+                                    '/')[-1].replace('.html', '.torrent')
 
-                                downloadTorrentLink = ('http://www.cpasbien.io/telechargement/%s' % tmp)
+                                downloadTorrentLink = (
+                                    'http://www.cpasbien.io/telechargement/%s' % tmp)
 
                                 if downloadTorrentLink:
                                     download_url = downloadTorrentLink
@@ -109,7 +115,9 @@ class CpasbienProvider(generic.TorrentProvider):
                             items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -123,6 +131,7 @@ class CpasbienProvider(generic.TorrentProvider):
 
 
 class CpasbienCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

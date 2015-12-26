@@ -31,6 +31,7 @@ from sickbeard.providers import generic
 
 
 class ExtraTorrentProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "ExtraTorrent")
 
@@ -51,7 +52,8 @@ class ExtraTorrentProvider(generic.TorrentProvider):
         self.headers.update({'User-Agent': USER_AGENT})
         self.search_params = {'cid': 8}
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -64,29 +66,36 @@ class ExtraTorrentProvider(generic.TorrentProvider):
                     logging.debug("Search string: %s " % search_string)
 
                 try:
-                    self.search_params.update({'type': ('search', 'rss')[mode is 'RSS'], 'search': search_string})
-                    data = self.getURL(self.urls[b'rss'], params=self.search_params)
+                    self.search_params.update(
+                        {'type': ('search', 'rss')[mode is 'RSS'], 'search': search_string})
+                    data = self.getURL(
+                        self.urls[b'rss'], params=self.search_params)
                     if not data:
                         logging.debug("No data returned from provider")
                         continue
 
                     if not data.startswith('<?xml'):
-                        logging.info('Expected xml but got something else, is your mirror failing?')
+                        logging.info(
+                            'Expected xml but got something else, is your mirror failing?')
                         continue
 
                     try:
                         data = xmltodict.parse(data)
                     except ExpatError:
-                        logging.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
+                        logging.error(
+                            "Failed parsing provider. Traceback: %r\n%r" %
+                            (traceback.format_exc(), data))
                         continue
 
-                    if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
+                    if not all([data, 'rss' in data, 'channel' in data[
+                               b'rss'], 'item' in data[b'rss'][b'channel']]):
                         logging.debug("Malformed rss returned, skipping")
                         continue
 
                     # https://github.com/martinblech/xmltodict/issues/111
                     entries = data[b'rss'][b'channel'][b'item']
-                    entries = entries if isinstance(entries, list) else [entries]
+                    entries = entries if isinstance(
+                        entries, list) else [entries]
 
                     for item in entries:
                         title = item[b'title'].decode('utf-8')
@@ -95,7 +104,7 @@ class ExtraTorrentProvider(generic.TorrentProvider):
                         seeders = helpers.tryInt(item[b'seeders'], 0)
                         leechers = helpers.tryInt(item[b'leechers'], 0)
                         download_url = item[b'enclosure']['@url'] if 'enclosure' in item else self._magnet_from_details(
-                                item[b'link'])
+                            item[b'link'])
 
                         if not all([title, download_url]):
                             continue
@@ -115,7 +124,9 @@ class ExtraTorrentProvider(generic.TorrentProvider):
                         items[mode].append(item)
 
                 except (AttributeError, TypeError, KeyError, ValueError):
-                    logging.error("Failed parsing provider. Traceback: %r" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %r" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -140,6 +151,7 @@ class ExtraTorrentProvider(generic.TorrentProvider):
 
 
 class ExtraTorrentCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

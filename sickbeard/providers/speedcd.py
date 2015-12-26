@@ -26,6 +26,7 @@ from sickbeard.providers import generic
 
 
 class SpeedCDProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Speedcd")
@@ -47,7 +48,11 @@ class SpeedCDProvider(generic.TorrentProvider):
 
         self.url = self.urls[b'base_url']
 
-        self.categories = {'Season': {'c14': 1}, 'Episode': {'c2': 1, 'c49': 1}, 'RSS': {'c14': 1, 'c2': 1, 'c49': 1}}
+        self.categories = {
+            'Season': {
+                'c14': 1}, 'Episode': {
+                'c2': 1, 'c49': 1}, 'RSS': {
+                'c14': 1, 'c2': 1, 'c49': 1}}
 
         self.proper_strings = ['PROPER', 'REPACK']
 
@@ -58,18 +63,24 @@ class SpeedCDProvider(generic.TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
-        if re.search('Incorrect username or Password. Please try again.', response):
-            logging.warning("Invalid username or password. Check your settings")
+        if re.search(
+                'Incorrect username or Password. Please try again.', response):
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -89,12 +100,19 @@ class SpeedCDProvider(generic.TorrentProvider):
                 post_data = dict({'/browse.php?': None, 'cata': 'yes', 'jxt': 4, 'jxw': 'b', 'search': search_string},
                                  **self.categories[mode])
 
-                parsedJSON = self.getURL(self.urls[b'search'], post_data=post_data, json=True)
+                parsedJSON = self.getURL(
+                    self.urls[b'search'], post_data=post_data, json=True)
                 if not parsedJSON:
                     continue
 
                 try:
-                    torrents = parsedJSON.get('Fs', [])[0].get('Cn', {}).get('torrents', [])
+                    torrents = parsedJSON.get(
+                        'Fs',
+                        [])[0].get(
+                        'Cn',
+                        {}).get(
+                        'torrents',
+                        [])
                 except Exception:
                     continue
 
@@ -139,6 +157,7 @@ class SpeedCDProvider(generic.TorrentProvider):
 
 
 class SpeedCDCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

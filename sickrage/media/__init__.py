@@ -8,9 +8,16 @@ from ShowFanArt import ShowFanArt
 from ShowBanner import ShowBanner
 from ShowNetworkLogo import ShowNetworkLogo
 
+
 def showImage(show=None, which=None):
     media = None
-    media_format = ('normal', 'thumb')[which in ('banner_thumb', 'poster_thumb', 'small')]
+    media_format = (
+        'normal',
+        'thumb')[
+        which in (
+            'banner_thumb',
+            'poster_thumb',
+            'small')]
 
     try:
         if which[0:6] == 'banner':
@@ -24,4 +31,5 @@ def showImage(show=None, which=None):
 
         static_url = url_escape(media.get_media, False)
         return static_url
-    except:pass
+    except:
+        pass

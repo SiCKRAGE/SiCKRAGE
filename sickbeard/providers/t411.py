@@ -29,6 +29,7 @@ from sickbeard.providers import generic
 
 
 class T411Provider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "T411")
 
@@ -65,7 +66,11 @@ class T411Provider(generic.TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls[b'login_page'], post_data=login_params, timeout=30, json=True)
+        response = self.getURL(
+            self.urls[b'login_page'],
+            post_data=login_params,
+            timeout=30,
+            json=True)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -80,7 +85,8 @@ class T411Provider(generic.TorrentProvider):
             logging.warning("Token not found in authentication response")
             return False
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -96,8 +102,8 @@ class T411Provider(generic.TorrentProvider):
                     logging.debug("Search string: %s " % search_string)
 
                 searchURLS = \
-                ([self.urls[b'search'] % (search_string, u) for u in self.subcategories], [self.urls[b'rss']])[
-                    mode is 'RSS']
+                    ([self.urls[b'search'] % (search_string, u) for u in self.subcategories], [self.urls[b'rss']])[
+                        mode is 'RSS']
                 for searchURL in searchURLS:
                     logging.debug("Search URL: %s" % searchURL)
                     data = self.getURL(searchURL, json=True)
@@ -106,23 +112,29 @@ class T411Provider(generic.TorrentProvider):
 
                     try:
                         if 'torrents' not in data and mode is not 'RSS':
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
-                        torrents = data[b'torrents'] if mode is not 'RSS' else data
+                        torrents = data[
+                            b'torrents'] if mode is not 'RSS' else data
 
                         if not torrents:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
                         for torrent in torrents:
-                            if mode is 'RSS' and int(torrent[b'category']) not in self.subcategories:
+                            if mode is 'RSS' and int(
+                                    torrent[b'category']) not in self.subcategories:
                                 continue
 
                             try:
                                 title = torrent[b'name']
                                 torrent_id = torrent[b'id']
-                                download_url = (self.urls[b'download'] % torrent_id).encode('utf8')
+                                download_url = (
+                                    self.urls[b'download'] %
+                                    torrent_id).encode('utf8')
                                 if not all([title, download_url]):
                                     continue
 
@@ -151,14 +163,20 @@ class T411Provider(generic.TorrentProvider):
                                 items[mode].append(item)
 
                             except Exception:
-                                logging.debug("Invalid torrent data, skipping result: %s" % torrent)
-                                logging.debug("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                                logging.debug(
+                                    "Invalid torrent data, skipping result: %s" % torrent)
+                                logging.debug(
+                                    "Failed parsing provider. Traceback: %s" %
+                                    traceback.format_exc())
                                 continue
 
                     except Exception:
-                        logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                        logging.error(
+                            "Failed parsing provider. Traceback: %s" %
+                            traceback.format_exc())
 
-            # For each search mode sort all the items by seeders if available if available
+            # For each search mode sort all the items by seeders if available
+            # if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -181,6 +199,7 @@ class T411Auth(AuthBase):
 
 
 class T411Cache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

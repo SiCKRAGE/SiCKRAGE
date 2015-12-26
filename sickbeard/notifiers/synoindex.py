@@ -29,6 +29,7 @@ from sickrage.helper.exceptions import ex
 
 
 class synoIndexNotifier:
+
     def notify_snatch(self, ep_name):
         pass
 
@@ -52,7 +53,8 @@ class synoIndexNotifier:
             synoindex_cmd = ['/usr/syno/bin/synoindex', '-N', ek(os.path.abspath, new_path),
                              ek(os.path.abspath, old_path)]
             logging.debug("Executing command " + str(synoindex_cmd))
-            logging.debug("Absolute path to command: " + ek(os.path.abspath, synoindex_cmd[0]))
+            logging.debug("Absolute path to command: " +
+                          ek(os.path.abspath, synoindex_cmd[0]))
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                      cwd=sickbeard.PROG_DIR)
@@ -75,9 +77,11 @@ class synoIndexNotifier:
 
     def makeObject(self, cmd_arg, cur_path):
         if sickbeard.USE_SYNOINDEX:
-            synoindex_cmd = ['/usr/syno/bin/synoindex', cmd_arg, ek(os.path.abspath, cur_path)]
+            synoindex_cmd = ['/usr/syno/bin/synoindex',
+                             cmd_arg, ek(os.path.abspath, cur_path)]
             logging.debug("Executing command " + str(synoindex_cmd))
-            logging.debug("Absolute path to command: " + ek(os.path.abspath, synoindex_cmd[0]))
+            logging.debug("Absolute path to command: " +
+                          ek(os.path.abspath, synoindex_cmd[0]))
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                      cwd=sickbeard.PROG_DIR)

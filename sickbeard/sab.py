@@ -19,13 +19,15 @@
 
 from __future__ import unicode_literals
 
-import urllib, httplib
+import urllib
+import httplib
 
 import sickbeard
 import datetime
 
 import MultipartPostHandler
-import urllib2, cookielib
+import urllib2
+import cookielib
 
 try:
     import json
@@ -46,11 +48,11 @@ def sendNZB(nzb):
 
     # set up a dict with the URL params in it
     params = {}
-    if sickbeard.SAB_USERNAME != None:
+    if sickbeard.SAB_USERNAME is not None:
         params[b'ma_username'] = sickbeard.SAB_USERNAME
-    if sickbeard.SAB_PASSWORD != None:
+    if sickbeard.SAB_PASSWORD is not None:
         params[b'ma_password'] = sickbeard.SAB_PASSWORD
-    if sickbeard.SAB_APIKEY != None:
+    if sickbeard.SAB_APIKEY is not None:
         params[b'apikey'] = sickbeard.SAB_APIKEY
     category = sickbeard.SAB_CATEGORY
     if nzb.show.is_anime:
@@ -63,7 +65,7 @@ def sendNZB(nzb):
             if nzb.show.is_anime:
                 category = sickbeard.SAB_CATEGORY_ANIME_BACKLOG
 
-    if category != None:
+    if category is not None:
         params[b'cat'] = category
 
     # use high priority if specified (recently aired episode)
@@ -79,7 +81,8 @@ def sendNZB(nzb):
         if nzb.provider.getID() == 'newzbin':
             id = nzb.provider.getIDFromURL(nzb.url)
             if not id:
-                logging.error("Unable to send NZB to sab, can't find ID in URL " + str(nzb.url))
+                logging.error(
+                    "Unable to send NZB to sab, can't find ID in URL " + str(nzb.url))
                 return False
             params[b'mode'] = 'addid'
             params[b'name'] = id
@@ -98,11 +101,13 @@ def sendNZB(nzb):
     logging.debug("URL: " + url)
 
     try:
-        # if we have the URL to an NZB then we've built up the SAB API URL already so just call it
+        # if we have the URL to an NZB then we've built up the SAB API URL
+        # already so just call it
         if nzb.resultType == "nzb":
             f = urllib.urlopen(url)
 
-        # if we are uploading the NZB data to SAB then we need to build a little POST form and send it
+        # if we are uploading the NZB data to SAB then we need to build a
+        # little POST form and send it
         elif nzb.resultType == "nzbdata":
             cookies = cookielib.CookieJar()
             opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies),
@@ -122,7 +127,7 @@ def sendNZB(nzb):
         return False
 
     # this means we couldn't open the connection or something just as bad
-    if f == None:
+    if f is None:
         logging.error("No data returned from SABnzbd, NZB not sent")
         return False
 
@@ -130,10 +135,13 @@ def sendNZB(nzb):
     try:
         result = f.readlines()
     except Exception as e:
-        logging.error("Error trying to get result from SAB, NZB not sent: {}".format(ex(e)))
+        logging.error(
+            "Error trying to get result from SAB, NZB not sent: {}".format(
+                ex(e)))
         return False
 
-    # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and didn't recieve the NZB
+    # SAB shouldn't return a blank result, this most likely (but not always)
+    # means that it timed out and didn't recieve the NZB
     if len(result) == 0:
         logging.error("No data returned from SABnzbd, NZB not sent")
         return False
@@ -151,7 +159,9 @@ def sendNZB(nzb):
         logging.error("Incorrect username/password sent to SAB, NZB not sent")
         return False
     else:
-        logging.error("Unknown failure sending NZB to sab. Return text is: " + sabText)
+        logging.error(
+            "Unknown failure sending NZB to sab. Return text is: " +
+            sabText)
         return False
 
 
@@ -204,7 +214,7 @@ def _sabURLOpenSimple(url):
     except httplib.InvalidURL as e:
         logging.error("Invalid SAB host, check your config: {}".format(ex(e)))
         return False, "Invalid SAB host"
-    if f == None:
+    if f is None:
         logging.error("No data returned from SABnzbd")
         return False, "No data returned from SABnzbd"
     else:

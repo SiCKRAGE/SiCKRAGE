@@ -33,6 +33,7 @@ except ImportError:
 
 
 class EMBYNotifier:
+
     def _notify_emby(self, message, host=None, emby_apikey=None):
         """Handles notifying Emby host via HTTP API
 
@@ -64,16 +65,20 @@ class EMBYNotifier:
             return True
 
         except (urllib2.URLError, IOError) as e:
-            logging.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + ex(e))
+            logging.warning(
+                'EMBY: Warning: Couldn\'t contact Emby at ' +
+                url +
+                ' ' +
+                ex(e))
             return False
 
-
-        ##############################################################################
+        #######################################################################
         # Public functions
-        ##############################################################################
+        #######################################################################
 
     def test_notify(self, host, emby_apikey):
-        return self._notify_emby('This is a test notification from SiCKRAGE', host, emby_apikey)
+        return self._notify_emby(
+            'This is a test notification from SiCKRAGE', host, emby_apikey)
 
     def update_library(self, show=None):
         """Handles updating the Emby Media Server host via HTTP API
@@ -102,7 +107,8 @@ class EMBYNotifier:
             else:
                 query = ''
 
-            url = 'http://%s/emby/Library/Series/Updated%s' % (sickbeard.EMBY_HOST, query)
+            url = 'http://%s/emby/Library/Series/Updated%s' % (
+                sickbeard.EMBY_HOST, query)
             values = {}
             data = urllib.urlencode(values)
             try:
@@ -113,11 +119,19 @@ class EMBYNotifier:
                 result = response.read()
                 response.close()
 
-                logging.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
+                logging.debug(
+                    'EMBY: HTTP response: ' +
+                    result.replace(
+                        '\n',
+                        ''))
                 return True
 
             except (urllib2.URLError, IOError) as e:
-                logging.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + ex(e))
+                logging.warning(
+                    'EMBY: Warning: Couldn\'t contact Emby at ' +
+                    url +
+                    ' ' +
+                    ex(e))
                 return False
 
 

@@ -27,6 +27,7 @@ from sickrage.helper.exceptions import AuthException, ex
 
 
 class IPTorrentsProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "IPTorrents")
@@ -53,7 +54,10 @@ class IPTorrentsProvider(generic.TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
+            raise AuthException(
+                "Your authentication credentials for " +
+                self.name +
+                " are missing, check your config.")
 
         return True
 
@@ -64,21 +68,27 @@ class IPTorrentsProvider(generic.TorrentProvider):
                         'login': 'submit'}
 
         self.getURL(self.urls[b'login'], timeout=30)
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
         if re.search('tries left', response):
-            logging.warning("You tried too often, please try again after 1 hour! Disable IPTorrents for at least 1 hour")
+            logging.warning(
+                "You tried too often, please try again after 1 hour! Disable IPTorrents for at least 1 hour")
             return False
         if re.search('Password not correct', response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -95,8 +105,10 @@ class IPTorrentsProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                # URL with 50 tv-show results, or max 150 if adjusted in IPTorrents profile
-                searchURL = self.urls[b'search'] % (self.categories, freeleech, search_string)
+                # URL with 50 tv-show results, or max 150 if adjusted in
+                # IPTorrents profile
+                searchURL = self.urls[b'search'] % (
+                    self.categories, freeleech, search_string)
                 searchURL += ';o=seeders' if mode is not 'RSS' else ''
                 logging.debug("Search URL: %s" % searchURL)
 
@@ -112,24 +124,36 @@ class IPTorrentsProvider(generic.TorrentProvider):
                             continue
 
                         if html.find(text='No Torrents Found!'):
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
-                        torrent_table = html.find('table', attrs={'class': 'torrents'})
-                        torrents = torrent_table.find_all('tr') if torrent_table else []
+                        torrent_table = html.find(
+                            'table', attrs={'class': 'torrents'})
+                        torrents = torrent_table.find_all(
+                            'tr') if torrent_table else []
 
                         # Continue only if one Release is found
                         if len(torrents) < 2:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
                         for result in torrents[1:]:
                             try:
                                 title = result.find_all('td')[1].find('a').text
-                                download_url = self.urls[b'base_url'] + result.find_all('td')[3].find('a')['href']
-                                size = self._convertSize(result.find_all('td')[5].text)
-                                seeders = int(result.find('td', attrs={'class': 'ac t_seeders'}).text)
-                                leechers = int(result.find('td', attrs={'class': 'ac t_leechers'}).text)
+                                download_url = self.urls[
+                                    b'base_url'] + result.find_all('td')[3].find('a')['href']
+                                size = self._convertSize(
+                                    result.find_all('td')[5].text)
+                                seeders = int(
+                                    result.find(
+                                        'td', attrs={
+                                            'class': 'ac t_seeders'}).text)
+                                leechers = int(
+                                    result.find(
+                                        'td', attrs={
+                                            'class': 'ac t_leechers'}).text)
                             except (AttributeError, TypeError, KeyError):
                                 continue
 
@@ -179,6 +203,7 @@ class IPTorrentsProvider(generic.TorrentProvider):
 
 
 class IPTorrentsCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

@@ -23,8 +23,10 @@ from __future__ import unicode_literals
 from sickbeard import db
 
 
-# Add new migrations at the bottom of the list; subclass the previous migration.
+# Add new migrations at the bottom of the list; subclass the previous
+# migration.
 class InitialSchema(db.SchemaUpgrade):
+
     def test(self):
         return self.hasTable("db_version")
 
@@ -33,7 +35,7 @@ class InitialSchema(db.SchemaUpgrade):
             ("CREATE TABLE lastUpdate (provider TEXT, time NUMERIC);",),
             ("CREATE TABLE lastSearch (provider TEXT, time NUMERIC);",),
             (
-            "CREATE TABLE scene_exceptions (exception_id INTEGER PRIMARY KEY, indexer_id INTEGER KEY, show_name TEXT, season NUMERIC DEFAULT -1, custom NUMERIC DEFAULT 0);",),
+                "CREATE TABLE scene_exceptions (exception_id INTEGER PRIMARY KEY, indexer_id INTEGER KEY, show_name TEXT, season NUMERIC DEFAULT -1, custom NUMERIC DEFAULT 0);",),
             ("CREATE TABLE scene_names (indexer_id INTEGER, name TEXT);",),
             ("CREATE TABLE network_timezones (network_name TEXT PRIMARY KEY, timezone TEXT);",),
             ("CREATE TABLE scene_exceptions_refresh (list TEXT PRIMARY KEY, last_refreshed INTEGER);",),
@@ -48,39 +50,47 @@ class InitialSchema(db.SchemaUpgrade):
 
 
 class AddSceneExceptions(InitialSchema):
+
     def test(self):
         return self.hasTable("scene_exceptions")
 
     def execute(self):
         self.connection.action(
-                "CREATE TABLE scene_exceptions (exception_id INTEGER PRIMARY KEY, indexer_id INTEGER KEY, show_name TEXT);")
+            "CREATE TABLE scene_exceptions (exception_id INTEGER PRIMARY KEY, indexer_id INTEGER KEY, show_name TEXT);")
 
 
 class AddSceneNameCache(AddSceneExceptions):
+
     def test(self):
         return self.hasTable("scene_names")
 
     def execute(self):
-        self.connection.action("CREATE TABLE scene_names (indexer_id INTEGER, name TEXT);")
+        self.connection.action(
+            "CREATE TABLE scene_names (indexer_id INTEGER, name TEXT);")
 
 
 class AddNetworkTimezones(AddSceneNameCache):
+
     def test(self):
         return self.hasTable("network_timezones")
 
     def execute(self):
-        self.connection.action("CREATE TABLE network_timezones (network_name TEXT PRIMARY KEY, timezone TEXT);")
+        self.connection.action(
+            "CREATE TABLE network_timezones (network_name TEXT PRIMARY KEY, timezone TEXT);")
 
 
 class AddLastSearch(AddNetworkTimezones):
+
     def test(self):
         return self.hasTable("lastSearch")
 
     def execute(self):
-        self.connection.action("CREATE TABLE lastSearch (provider TEXT, time NUMERIC);")
+        self.connection.action(
+            "CREATE TABLE lastSearch (provider TEXT, time NUMERIC);")
 
 
 class AddSceneExceptionsSeasons(AddLastSearch):
+
     def test(self):
         return self.hasColumn("scene_exceptions", "season")
 
@@ -89,6 +99,7 @@ class AddSceneExceptionsSeasons(AddLastSearch):
 
 
 class AddSceneExceptionsCustom(AddSceneExceptionsSeasons):
+
     def test(self):
         return self.hasColumn("scene_exceptions", "custom")
 
@@ -97,9 +108,10 @@ class AddSceneExceptionsCustom(AddSceneExceptionsSeasons):
 
 
 class AddSceneExceptionsRefresh(AddSceneExceptionsCustom):
+
     def test(self):
         return self.hasTable("scene_exceptions_refresh")
 
     def execute(self):
         self.connection.action(
-                "CREATE TABLE scene_exceptions_refresh (list TEXT PRIMARY KEY, last_refreshed INTEGER);")
+            "CREATE TABLE scene_exceptions_refresh (list TEXT PRIMARY KEY, last_refreshed INTEGER);")

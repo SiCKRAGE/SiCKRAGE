@@ -25,6 +25,7 @@ from sickbeard.providers import generic
 
 
 class TorrentDayProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "TorrentDay")
@@ -56,11 +57,13 @@ class TorrentDayProvider(generic.TorrentProvider):
 
     def _doLogin(self):
 
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(
+                self.session.cookies).values()):
             return True
 
         if self._uid and self._hash:
-            requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
+            requests.utils.add_dict_to_cookiejar(
+                self.session.cookies, self.cookies)
         else:
 
             login_params = {'username': self.username,
@@ -68,7 +71,10 @@ class TorrentDayProvider(generic.TorrentProvider):
                             'submit.x': 0,
                             'submit.y': 0}
 
-            response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+            response = self.getURL(
+                self.urls[b'login'],
+                post_data=login_params,
+                timeout=30)
             if not response:
                 logging.warning("Unable to connect to provider")
                 return False
@@ -80,8 +86,10 @@ class TorrentDayProvider(generic.TorrentProvider):
             try:
                 if requests.utils.dict_from_cookiejar(self.session.cookies)['uid'] and \
                         requests.utils.dict_from_cookiejar(self.session.cookies)['pass']:
-                    self._uid = requests.utils.dict_from_cookiejar(self.session.cookies)['uid']
-                    self._hash = requests.utils.dict_from_cookiejar(self.session.cookies)['pass']
+                    self._uid = requests.utils.dict_from_cookiejar(
+                        self.session.cookies)['uid']
+                    self._hash = requests.utils.dict_from_cookiejar(
+                        self.session.cookies)['pass']
 
                     self.cookies = {'uid': self._uid,
                                     'pass': self._hash}
@@ -92,7 +100,8 @@ class TorrentDayProvider(generic.TorrentProvider):
             logging.warning("Unable to obtain cookie")
             return False
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -115,21 +124,31 @@ class TorrentDayProvider(generic.TorrentProvider):
                 if self.freeleech:
                     post_data.update({'free': 'on'})
 
-                parsedJSON = self.getURL(self.urls[b'search'], post_data=post_data, json=True)
+                parsedJSON = self.getURL(
+                    self.urls[b'search'], post_data=post_data, json=True)
                 if not parsedJSON:
                     logging.debug("No data returned from provider")
                     continue
 
                 try:
-                    torrents = parsedJSON.get('Fs', [])[0].get('Cn', {}).get('torrents', [])
+                    torrents = parsedJSON.get(
+                        'Fs',
+                        [])[0].get(
+                        'Cn',
+                        {}).get(
+                        'torrents',
+                        [])
                 except Exception:
-                    logging.debug("Data returned from provider does not contain any torrents")
+                    logging.debug(
+                        "Data returned from provider does not contain any torrents")
                     continue
 
                 for torrent in torrents:
 
-                    title = re.sub(r"\[.*\=.*\].*\[/.*\]", "", torrent[b'name'])
-                    download_url = self.urls[b'download'] % (torrent[b'id'], torrent[b'fname'])
+                    title = re.sub(
+                        r"\[.*\=.*\].*\[/.*\]", "", torrent[b'name'])
+                    download_url = self.urls[b'download'] % (
+                        torrent[b'id'], torrent[b'fname'])
                     seeders = int(torrent[b'seed'])
                     leechers = int(torrent[b'leech'])
                     # FIXME
@@ -152,7 +171,8 @@ class TorrentDayProvider(generic.TorrentProvider):
 
                     items[mode].append(item)
 
-            # For each search mode sort all the items by seeders if available if available
+            # For each search mode sort all the items by seeders if available
+            # if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -164,6 +184,7 @@ class TorrentDayProvider(generic.TorrentProvider):
 
 
 class TorrentDayCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

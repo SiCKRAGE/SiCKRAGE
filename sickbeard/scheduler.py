@@ -29,6 +29,7 @@ from sickrage.helper.exceptions import ex
 
 
 class Scheduler(threading.Thread):
+
     def __init__(self, action, cycleTime=datetime.timedelta(minutes=10), run_delay=datetime.timedelta(minutes=0),
                  start_time=None, threadName="ScheduledThread", silent=True):
         super(Scheduler, self).__init__()
@@ -58,10 +59,12 @@ class Scheduler(threading.Thread):
         """
         if self.isAlive():
             if self.start_time is None:
-                return self.cycleTime - (datetime.datetime.now() - self.lastRun)
+                return self.cycleTime - \
+                    (datetime.datetime.now() - self.lastRun)
             else:
                 time_now = datetime.datetime.now()
-                start_time_today = datetime.datetime.combine(time_now.date(), self.start_time)
+                start_time_today = datetime.datetime.combine(
+                    time_now.date(), self.start_time)
                 start_time_tomorrow = datetime.datetime.combine(time_now.date(), self.start_time) + datetime.timedelta(
                     days=1)
                 if time_now.hour >= self.start_time.hour:
@@ -91,13 +94,15 @@ class Scheduler(threading.Thread):
                         should_run = True
                     # check if interval has passed
                     elif current_time - self.lastRun >= self.cycleTime:
-                        # check if wanting to start around certain time taking interval into account
+                        # check if wanting to start around certain time taking
+                        # interval into account
                         if self.start_time is not None:
                             hour_diff = current_time.time().hour - self.start_time.hour
                             if not hour_diff < 0 and hour_diff < self.cycleTime.seconds / 3600:
                                 should_run = True
                             else:
-                                # set lastRun to only check start_time after another cycleTime
+                                # set lastRun to only check start_time after
+                                # another cycleTime
                                 self.lastRun = current_time
                         else:
                             should_run = True
@@ -115,5 +120,9 @@ class Scheduler(threading.Thread):
             # exiting thread
             self.stop.clear()
         except Exception as e:
-            logging.error("Exception generated in thread " + self.name + ": {}".format(ex(e)))
+            logging.error(
+                "Exception generated in thread " +
+                self.name +
+                ": {}".format(
+                    ex(e)))
             logging.debug(repr(traceback.format_exc()))

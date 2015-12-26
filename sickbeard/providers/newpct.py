@@ -31,6 +31,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class newpctProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Newpct")
@@ -73,7 +74,8 @@ class newpctProvider(generic.TorrentProvider):
             'q': ''
         }
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -91,8 +93,16 @@ class newpctProvider(generic.TorrentProvider):
             for search_string in search_strings[mode]:
                 self.search_params.update({'q': search_string.strip()})
 
-                logging.debug("Search URL: %s" % self.urls[b'search'] + '?' + urllib.parse.urlencode(self.search_params))
-                data = self.getURL(self.urls[b'search'], post_data=self.search_params, timeout=30)
+                logging.debug(
+                    "Search URL: %s" %
+                    self.urls[b'search'] +
+                    '?' +
+                    urllib.parse.urlencode(
+                        self.search_params))
+                data = self.getURL(
+                    self.urls[b'search'],
+                    post_data=self.search_params,
+                    timeout=30)
                 if not data:
                     continue
 
@@ -101,7 +111,8 @@ class newpctProvider(generic.TorrentProvider):
                         torrent_tbody = html.find('tbody')
 
                         if len(torrent_tbody) < 1:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
                         torrent_table = torrent_tbody.findAll('tr')
@@ -130,7 +141,9 @@ class newpctProvider(generic.TorrentProvider):
                                 continue
 
                 except Exception:
-                    logging.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.warning(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             results += items[mode]
 
@@ -175,6 +188,7 @@ class newpctProvider(generic.TorrentProvider):
 
 
 class newpctCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

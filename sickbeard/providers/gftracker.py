@@ -29,6 +29,7 @@ from sickrage.helper.exceptions import AuthException
 
 
 class GFTrackerProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "GFTracker")
@@ -60,7 +61,10 @@ class GFTrackerProvider(generic.TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
+            raise AuthException(
+                "Your authentication credentials for " +
+                self.name +
+                " are missing, check your config.")
 
         return True
 
@@ -69,7 +73,10 @@ class GFTrackerProvider(generic.TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         # Save cookies from response
         self.cookies = self.headers.get('Set-Cookie')
 
@@ -78,12 +85,14 @@ class GFTrackerProvider(generic.TorrentProvider):
             return False
 
         if re.search('Username or password incorrect', response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -98,7 +107,8 @@ class GFTrackerProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (self.categories, search_string)
+                searchURL = self.urls[b'search'] % (
+                    self.categories, search_string)
                 logging.debug("Search URL: %s" % searchURL)
 
                 # Set cookies from response
@@ -111,11 +121,13 @@ class GFTrackerProvider(generic.TorrentProvider):
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
                         torrent_table = html.find("div", id="torrentBrowse")
-                        torrent_rows = torrent_table.findChildren("tr") if torrent_table else []
+                        torrent_rows = torrent_table.findChildren(
+                            "tr") if torrent_table else []
 
                         # Continue only if at least one release is found
                         if len(torrent_rows) < 1:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
                         for result in torrent_rows[1:]:
@@ -126,18 +138,21 @@ class GFTrackerProvider(generic.TorrentProvider):
                             torrent_size = cells[7].get_text().split("/", 1)[0]
 
                             try:
-                                if title.has_key('title'):
+                                if 'title' in title:
                                     title = title[b'title']
                                 else:
                                     title = cells[1].find("a")['title']
 
-                                download_url = self.urls[b'download'] % (link[b'href'])
+                                download_url = self.urls[
+                                    b'download'] % (link[b'href'])
                                 seeders = int(shares[0])
                                 leechers = int(shares[1])
 
                                 size = -1
-                                if re.match(r"\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]", torrent_size):
-                                    size = self._convertSize(torrent_size.rstrip())
+                                if re.match(
+                                        r"\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]", torrent_size):
+                                    size = self._convertSize(
+                                        torrent_size.rstrip())
 
                             except (AttributeError, TypeError):
                                 continue
@@ -160,7 +175,9 @@ class GFTrackerProvider(generic.TorrentProvider):
                             items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -191,6 +208,7 @@ class GFTrackerProvider(generic.TorrentProvider):
 
 
 class GFTrackerCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

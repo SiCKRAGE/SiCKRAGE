@@ -33,6 +33,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class LibertaliaProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Libertalia")
@@ -56,13 +57,17 @@ class LibertaliaProvider(generic.TorrentProvider):
 
     def _doLogin(self):
 
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(
+                self.session.cookies).values()):
             return True
 
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.url + '/login.php', post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.url + '/login.php',
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -70,12 +75,14 @@ class LibertaliaProvider(generic.TorrentProvider):
         if re.search('upload.php', response):
             return True
         else:
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -91,27 +98,32 @@ class LibertaliaProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
+                searchURL = self.urlsearch % (
+                    urllib.quote(search_string), self.categories)
                 logging.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
                 if not data:
                     continue
 
                 with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                    resultsTable = html.find("table", {"class": "torrent_table"})
+                    resultsTable = html.find(
+                        "table", {"class": "torrent_table"})
                     if resultsTable:
-                        rows = resultsTable.findAll("tr", {"class": re.compile("torrent_row(.*)?")})
+                        rows = resultsTable.findAll(
+                            "tr", {"class": re.compile("torrent_row(.*)?")})
                         for row in rows:
 
                             # bypass first row because title only
                             columns = row.find('td', {"class": "torrent_name"})
                             # isvfclass = row.find('td', {"class" : "sprite-vf"})
                             # isvostfrclass = row.find('td', {"class" : "sprite-vostfr"})
-                            link = columns.find("a", href=re.compile("torrents"))
+                            link = columns.find(
+                                "a", href=re.compile("torrents"))
                             if link:
                                 title = link.text
                                 # recherched = searchURL.replace(".", "(.*)").replace(" ", "(.*)").replace("'", "(.*)")
-                                download_url = row.find("a", href=re.compile("torrent_pass"))['href']
+                                download_url = row.find(
+                                    "a", href=re.compile("torrent_pass"))['href']
                                 # FIXME
                                 size = -1
                                 seeders = 1
@@ -144,6 +156,7 @@ class LibertaliaProvider(generic.TorrentProvider):
 
 
 class LibertaliaCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

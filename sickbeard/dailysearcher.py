@@ -32,6 +32,7 @@ from sickrage.helper.exceptions import MultipleShowObjectsException
 
 
 class DailySearcher():
+
     def __init__(self):
         self.lock = threading.Lock()
         self.amActive = False
@@ -53,9 +54,15 @@ class DailySearcher():
             network_timezones.update_network_dict()
 
         if network_timezones.network_dict:
-            curDate = (datetime.date.today() + datetime.timedelta(days=1)).toordinal()
+            curDate = (
+                datetime.date.today() +
+                datetime.timedelta(
+                    days=1)).toordinal()
         else:
-            curDate = (datetime.date.today() + datetime.timedelta(days=2)).toordinal()
+            curDate = (
+                datetime.date.today() +
+                datetime.timedelta(
+                    days=2)).toordinal()
 
         curTime = datetime.datetime.now(network_timezones.sb_timezone)
 
@@ -70,14 +77,17 @@ class DailySearcher():
         for sqlEp in sqlResults:
             try:
                 if not show or int(sqlEp[b"showid"]) != show.indexerid:
-                    show = helpers.findCertainShow(sickbeard.showList, int(sqlEp[b"showid"]))
+                    show = helpers.findCertainShow(
+                        sickbeard.showList, int(sqlEp[b"showid"]))
 
-                # for when there is orphaned series in the database but not loaded into our showlist
+                # for when there is orphaned series in the database but not
+                # loaded into our showlist
                 if not show or show.paused:
                     continue
 
             except MultipleShowObjectsException:
-                logging.info("ERROR: expected to find a single show matching " + str(sqlEp[b'showid']))
+                logging.info(
+                    "ERROR: expected to find a single show matching " + str(sqlEp[b'showid']))
                 continue
 
             if show.airs and show.network:
@@ -99,7 +109,7 @@ class DailySearcher():
                     ep.status = common.SKIPPED
                 else:
                     logging.info("New episode %s airs today, setting to default episode status for this show: %s" % (
-                    ep.prettyName(), common.statusStrings[ep.show.default_ep_status]))
+                        ep.prettyName(), common.statusStrings[ep.show.default_ep_status]))
                     ep.status = ep.show.default_ep_status
 
                 sql_l.append(ep.get_sql())

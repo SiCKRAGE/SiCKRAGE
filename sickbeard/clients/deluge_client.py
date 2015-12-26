@@ -29,6 +29,7 @@ from sickbeard.clients.generic import GenericClient
 
 
 class DelugeAPI(GenericClient):
+
     def __init__(self, host=None, username=None, password=None):
 
         super(DelugeAPI, self).__init__('Deluge', host, username, password)
@@ -98,7 +99,8 @@ class DelugeAPI(GenericClient):
 
             connected = self.response.json()['result']
             if not connected:
-                logging.error(self.name + ': WebUI could not connect to daemon')
+                logging.error(self.name +
+                              ': WebUI could not connect to daemon')
                 return None
 
         return self.auth
@@ -133,7 +135,9 @@ class DelugeAPI(GenericClient):
         if result.show.is_anime:
             label = sickbeard.TORRENT_LABEL_ANIME
         if ' ' in label:
-            logging.error(self.name + ': Invalid label. Label must not contain a space')
+            logging.error(
+                self.name +
+                ': Invalid label. Label must not contain a space')
             return False
 
         if label:
@@ -147,13 +151,15 @@ class DelugeAPI(GenericClient):
 
             if labels is not None:
                 if label not in labels:
-                    logging.debug(self.name + ': ' + label + " label does not exist in Deluge we must add it")
+                    logging.debug(
+                        self.name + ': ' + label + " label does not exist in Deluge we must add it")
                     post_data = json.dumps({"method": 'label.add',
                                             "params": [label],
                                             "id": 4})
 
                     self._request(method='post', data=post_data)
-                    logging.debug(self.name + ': ' + label + " label added to Deluge")
+                    logging.debug(
+                        self.name + ': ' + label + " label added to Deluge")
 
                 # add label to torrent
                 post_data = json.dumps({"method": 'label.set_torrent',
@@ -161,7 +167,8 @@ class DelugeAPI(GenericClient):
                                         "id": 5})
 
                 self._request(method='post', data=post_data)
-                logging.debug(self.name + ': ' + label + " label added to torrent")
+                logging.debug(self.name + ': ' + label +
+                              " label added to torrent")
             else:
                 logging.debug(self.name + ': ' + "label plugin not detected")
                 return False

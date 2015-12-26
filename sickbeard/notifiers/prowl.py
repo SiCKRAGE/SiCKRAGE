@@ -37,6 +37,7 @@ from sickbeard import common
 
 
 class ProwlNotifier:
+
     def test_notify(self, prowl_api, prowl_priority):
         return self._sendProwl(prowl_api, prowl_priority, event="Test",
                                message="Testing Prowl settings from SiCKRAGE", force=True)
@@ -63,21 +64,22 @@ class ProwlNotifier:
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=title, message=update_text + new_version)
 
-    def _sendProwl(self, prowl_api=None, prowl_priority=None, event=None, message=None, force=False):
+    def _sendProwl(self, prowl_api=None, prowl_priority=None,
+                   event=None, message=None, force=False):
 
         if not sickbeard.USE_PROWL and not force:
             return False
 
-        if prowl_api == None:
+        if prowl_api is None:
             prowl_api = sickbeard.PROWL_API
 
-        if prowl_priority == None:
+        if prowl_priority is None:
             prowl_priority = sickbeard.PROWL_PRIORITY
 
         title = "SiCKRAGE"
 
         logging.debug("PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (
-        event, message, prowl_priority, prowl_api))
+            event, message, prowl_priority, prowl_api))
 
         http_handler = HTTPSConnection("api.prowlapp.com")
 
@@ -90,7 +92,8 @@ class ProwlNotifier:
         try:
             http_handler.request("POST",
                                  "/publicapi/add",
-                                 headers={'Content-type': "application/x-www-form-urlencoded"},
+                                 headers={
+                                     'Content-type': "application/x-www-form-urlencoded"},
                                  body=urlencode(data))
         except (SSLError, HTTPException, socket.error):
             logging.error("Prowl notification failed.")

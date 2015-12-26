@@ -25,7 +25,9 @@ import logging
 from sickbeard.providers import generic
 from sickbeard import tvcache
 
+
 class BTDIGGProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "BTDigg")
 
@@ -39,7 +41,8 @@ class BTDIGGProvider(generic.TorrentProvider):
 
         self.cache = BTDiggCache(self)
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -51,7 +54,8 @@ class BTDIGGProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s" % search_string)
 
-                searchURL = self.urls[b'api'] + "api/private-341ada3245790954/s02?q=" + search_string + "&p=0&order=1"
+                searchURL = self.urls[
+                    b'api'] + "api/private-341ada3245790954/s02?q=" + search_string + "&p=0&order=1"
                 logging.debug("Search URL: %s" % searchURL)
 
                 jdata = self.getURL(searchURL, json=True)
@@ -95,6 +99,7 @@ class BTDIGGProvider(generic.TorrentProvider):
 
 
 class BTDiggCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 
@@ -102,7 +107,8 @@ class BTDiggCache(tvcache.TVCache):
         self.minTime = 60
 
     def _getRSSData(self):
-        # Use x264 for RSS search since most results will use that codec and since the site doesnt have latest results search
+        # Use x264 for RSS search since most results will use that codec and
+        # since the site doesnt have latest results search
         search_params = {'RSS': ['x264']}
         return {'entries': self.provider._doSearch(search_params)}
 

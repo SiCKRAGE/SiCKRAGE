@@ -32,6 +32,7 @@ from sickrage.helper.encoding import ek
 
 
 class imdbPopular(object):
+
     def __init__(self):
         """Gets a list of most popular TV series from imdb"""
 
@@ -69,7 +70,7 @@ class imdbPopular(object):
                 image = image_td.find("img")
                 show[b'image_url_large'] = self.change_size(image[b'src'], 3)
                 show[b'image_path'] = ek(os.path.join, 'images', 'imdb_popular',
-                                        ek(os.path.basename, show[b'image_url_large']))
+                                         ek(os.path.basename, show[b'image_url_large']))
 
                 self.cache_image(show[b'image_url_large'])
 
@@ -77,17 +78,21 @@ class imdbPopular(object):
 
             if td:
                 show[b'name'] = td.find("a").contents[0]
-                show[b'imdb_url'] = "http://www.imdb.com" + td.find("a")["href"]
+                show[b'imdb_url'] = "http://www.imdb.com" + \
+                    td.find("a")["href"]
                 show[b'imdb_tt'] = show[b'imdb_url'][-10:][0:9]
-                show[b'year'] = td.find("span", {"class": "year_type"}).contents[0].split(" ")[0][1:]
+                show[b'year'] = td.find("span", {"class": "year_type"}).contents[
+                    0].split(" ")[0][1:]
 
                 rating_all = td.find("div", {"class": "user_rating"})
                 if rating_all:
-                    rating_string = rating_all.find("div", {"class": "rating rating-list"})
+                    rating_string = rating_all.find(
+                        "div", {"class": "rating rating-list"})
                     if rating_string:
                         rating_string = rating_string[b'title']
 
-                        match = re.search(r".* (.*)\/10.*\((.*)\).*", rating_string)
+                        match = re.search(
+                            r".* (.*)\/10.*\((.*)\).*", rating_string)
                         if match:
                             matches = match.groups()
                             show[b'rating'] = matches[0]
@@ -111,7 +116,9 @@ class imdbPopular(object):
 
     @staticmethod
     def change_size(image_url, factor=3):
-        match = re.search("^(.*)V1._(.{2})(.*?)_(.{2})(.*?),(.*?),(.*?),(.*?)_.jpg$", image_url)
+        match = re.search(
+            "^(.*)V1._(.{2})(.*?)_(.{2})(.*?),(.*?),(.*?),(.*?)_.jpg$",
+            image_url)
 
         if match:
             matches = match.groups()
@@ -133,7 +140,9 @@ class imdbPopular(object):
         Store cache of image in cache dir
         :param image_url: Source URL
         """
-        path = ek(os.path.abspath, ek(os.path.join, sickbeard.CACHE_DIR, 'images', 'imdb_popular'))
+        path = ek(
+            os.path.abspath, ek(
+                os.path.join, sickbeard.CACHE_DIR, 'images', 'imdb_popular'))
 
         if not ek(os.path.exists, path):
             ek(os.makedirs, path)

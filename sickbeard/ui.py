@@ -66,8 +66,10 @@ class Notifications(object):
         self._errors = [x for x in self._errors if not x.is_expired()]
         self._messages = [x for x in self._messages if not x.is_expired()]
 
-        # return any notifications that haven't been shown to the client already
-        return [x.see(remote_ip) for x in self._errors + self._messages if x.is_new(remote_ip)]
+        # return any notifications that haven't been shown to the client
+        # already
+        return [x.see(remote_ip) for x in self._errors +
+                self._messages if x.is_new(remote_ip)]
 
 
 # static notification queue object
@@ -118,6 +120,7 @@ class Notification(object):
 
 
 class ProgressIndicator():
+
     def __init__(self, percentComplete=0, currentStatus={'title': ''}):
         self.percentComplete = percentComplete
         self.currentStatus = currentStatus
@@ -136,7 +139,7 @@ class ProgressIndicators():
 
         # if any of the progress indicators are done take them off the list
         for curPI in ProgressIndicators._pi[name]:
-            if curPI != None and curPI.percentComplete() == 100:
+            if curPI is not None and curPI.percentComplete() == 100:
                 ProgressIndicators._pi[name].remove(curPI)
 
         # return the list of progress indicators associated with this name
@@ -167,7 +170,7 @@ class QueueProgressIndicator():
 
     def nextName(self):
         for curItem in [
-            sickbeard.showQueueScheduler.action.currentItem] + sickbeard.showQueueScheduler.action.queue:  # @UndefinedVariable
+                sickbeard.showQueueScheduler.action.currentItem] + sickbeard.showQueueScheduler.action.queue:  # @UndefinedVariable
             if curItem in self.queueItemList:
                 return curItem.name
 
@@ -184,6 +187,7 @@ class QueueProgressIndicator():
 
 
 class LoadingTVShow():
+
     def __init__(self, dir):
         self.dir = dir
         self.show = None
