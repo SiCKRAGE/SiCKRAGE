@@ -31,6 +31,7 @@ from sickbeard.providers import generic
 
 
 class HDTorrentsProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "HDTorrents")
@@ -59,31 +60,38 @@ class HDTorrentsProvider(generic.TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
 
         return True
 
     def _doLogin(self):
 
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(
+                self.session.cookies).values()):
             return True
 
         login_params = {'uid': self.username,
                         'pwd': self.password,
                         'submit': 'Confirm'}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
         if re.search('You need cookies enabled to log in.', response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -96,7 +104,8 @@ class HDTorrentsProvider(generic.TorrentProvider):
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    searchURL = self.urls[b'search'] % (urllib.quote_plus(search_string), self.categories)
+                    searchURL = self.urls[b'search'] % (
+                        urllib.quote_plus(search_string), self.categories)
                 else:
                     searchURL = self.urls[b'rss'] % self.categories
 
@@ -115,10 +124,12 @@ class HDTorrentsProvider(generic.TorrentProvider):
                 try:
                     index = data.lower().index('<table class="mainblockcontenttt"')
                 except ValueError:
-                    logging.error("Could not find table of torrents mainblockcontenttt")
+                    logging.error(
+                        "Could not find table of torrents mainblockcontenttt")
                     continue
 
-                data = urllib.unquote(data[index:].encode('utf-8')).decode('utf-8').replace('\t', '')
+                data = urllib.unquote(data[index:].encode(
+                    'utf-8')).decode('utf-8').replace('\t', '')
 
                 with BS4Parser(data, features=["html5lib", "permissive"]) as html:
                     if not html:
@@ -127,12 +138,16 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
                     empty = html.find('No torrents here')
                     if empty:
-                        logging.debug("Data returned from provider does not contain any torrents")
+                        logging.debug(
+                            "Data returned from provider does not contain any torrents")
                         continue
 
-                    tables = html.find('table', attrs={'class': 'mainblockcontenttt'})
+                    tables = html.find(
+                        'table', attrs={
+                            'class': 'mainblockcontenttt'})
                     if not tables:
-                        logging.error("Could not find table of torrents mainblockcontenttt")
+                        logging.error(
+                            "Could not find table of torrents mainblockcontenttt")
                         continue
 
                     torrents = tables.findChildren('tr')
@@ -150,19 +165,25 @@ class HDTorrentsProvider(generic.TorrentProvider):
                             title = download_url = seeders = leechers = size = None
                             for cell in cells:
                                 try:
-                                    if None is title and cell.get('title') and cell.get('title') in 'Download':
-                                        title = re.search('f=(.*).torrent', cell.a[b'href']).group(1).replace('+', '.')
+                                    if None is title and cell.get(
+                                            'title') and cell.get('title') in 'Download':
+                                        title = re.search(
+                                            'f=(.*).torrent',
+                                            cell.a[b'href']).group(1).replace(
+                                            '+',
+                                            '.')
                                         title = title.decode('utf-8')
-                                        download_url = self.urls[b'home'] % cell.a[b'href']
+                                        download_url = self.urls[
+                                            b'home'] % cell.a[b'href']
                                         continue
                                     if None is seeders and cell.get('class')[0] and cell.get('class')[
-                                        0] in 'green' 'yellow' 'red':
+                                            0] in 'green' 'yellow' 'red':
                                         seeders = int(cell.text)
                                         if not seeders:
                                             seeders = 1
                                             continue
                                     elif None is leechers and cell.get('class')[0] and cell.get('class')[
-                                        0] in 'green' 'yellow' 'red':
+                                            0] in 'green' 'yellow' 'red':
                                         leechers = int(cell.text)
                                         if not leechers:
                                             leechers = 0
@@ -170,13 +191,16 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
                                     # Need size for failed downloads handling
                                     if size is None:
-                                        if re.match(r'[0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+', cell.text):
+                                        if re.match(
+                                                r'[0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+', cell.text):
                                             size = self._convertSize(cell.text)
                                             if not size:
                                                 size = -1
 
                                 except Exception:
-                                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                                    logging.error(
+                                        "Failed parsing provider. Traceback: %s" %
+                                        traceback.format_exc())
 
                             if not all([title, download_url]):
                                 continue
@@ -223,6 +247,7 @@ class HDTorrentsProvider(generic.TorrentProvider):
 
 
 class HDTorrentsCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

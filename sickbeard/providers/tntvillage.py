@@ -59,6 +59,7 @@ category_excluded = {'Sport': 22,
 
 
 class TNTVillageProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "TNTVillage")
 
@@ -118,7 +119,10 @@ class TNTVillageProvider(generic.TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
+            raise AuthException(
+                "Your authentication credentials for " +
+                self.name +
+                " are missing, check your config.")
 
         return True
 
@@ -129,14 +133,18 @@ class TNTVillageProvider(generic.TorrentProvider):
                         'CookieDate': 0,
                         'submit': 'Connettiti al Forum'}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Sono stati riscontrati i seguenti errori', response) or re.search('<title>Connettiti</title>',
                                                                                         response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
@@ -178,21 +186,27 @@ class TNTVillageProvider(generic.TorrentProvider):
             for img_type in img_all:
                 try:
                     file_quality = file_quality + " " + img_type[b'src'].replace("style_images/mkportal-636/",
-                                                                                "").replace(".gif", "").replace(".png",
-                                                                                                                "")
+                                                                                 "").replace(".gif", "").replace(".png",
+                                                                                                                 "")
                 except Exception:
-                    logging.error("Failed parsing quality. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing quality. Traceback: %s" %
+                        traceback.format_exc())
 
         else:
             file_quality = (torrent_rows.find_all('td'))[1].get_text()
             logging.debug("Episode quality: %s" % file_quality)
 
         def checkName(options, func):
-            return func([re.search(option, file_quality, re.I) for option in options])
+            return func([re.search(option, file_quality, re.I)
+                         for option in options])
 
-        dvdOptions = checkName(["dvd", "dvdrip", "dvdmux", "DVD9", "DVD5"], any)
-        bluRayOptions = checkName(["BD", "BDmux", "BDrip", "BRrip", "Bluray"], any)
-        sdOptions = checkName(["h264", "divx", "XviD", "tv", "TVrip", "SATRip", "DTTrip", "Mpeg2"], any)
+        dvdOptions = checkName(
+            ["dvd", "dvdrip", "dvdmux", "DVD9", "DVD5"], any)
+        bluRayOptions = checkName(
+            ["BD", "BDmux", "BDrip", "BRrip", "Bluray"], any)
+        sdOptions = checkName(
+            ["h264", "divx", "XviD", "tv", "TVrip", "SATRip", "DTTrip", "Mpeg2"], any)
         hdOptions = checkName(["720p"], any)
         fullHD = checkName(["1080p", "fullHD"], any)
 
@@ -200,8 +214,9 @@ class TNTVillageProvider(generic.TorrentProvider):
             file_quality = (torrent_rows.find_all('td'))[1].get_text()
 
         webdl = checkName(
-                ["webdl", "webmux", "webrip", "dl-webmux", "web-dlmux", "webdl-mux", "web-dl", "webdlmux", "dlmux"],
-                any)
+            ["webdl", "webmux", "webrip", "dl-webmux", "web-dlmux",
+                "webdl-mux", "web-dl", "webdlmux", "dlmux"],
+            any)
 
         if sdOptions and not dvdOptions and not fullHD and not hdOptions:
             return Quality.SDTV
@@ -265,19 +280,26 @@ class TNTVillageProvider(generic.TorrentProvider):
             myParser = NameParser(tryIndexers=True)
             parse_result = myParser.parse(name)
         except InvalidNameException:
-            logging.debug("Unable to parse the filename %s into a valid episode" % name)
+            logging.debug(
+                "Unable to parse the filename %s into a valid episode" %
+                name)
             return False
         except InvalidShowException:
-            logging.debug("Unable to parse the filename %s into a valid show" % name)
+            logging.debug(
+                "Unable to parse the filename %s into a valid show" %
+                name)
             return False
 
         myDB = db.DBConnection()
         sql_selection = "SELECT count(*) AS count FROM tv_episodes WHERE showid = ? AND season = ?"
-        episodes = myDB.select(sql_selection, [parse_result.show.indexerid, parse_result.season_number])
+        episodes = myDB.select(
+            sql_selection, [
+                parse_result.show.indexerid, parse_result.season_number])
         if int(episodes[0][b'count']) == len(parse_result.episode_numbers):
             return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -308,9 +330,15 @@ class TNTVillageProvider(generic.TorrentProvider):
                         break
 
                     if mode is not 'RSS':
-                        searchURL = (self.urls[b'search_page'] + '&filter={2}').format(z, self.categories, search_string)
+                        searchURL = (
+                            self.urls[b'search_page'] +
+                            '&filter={2}').format(
+                            z,
+                            self.categories,
+                            search_string)
                     else:
-                        searchURL = self.urls[b'search_page'].format(z, self.categories)
+                        searchURL = self.urls[b'search_page'].format(
+                            z, self.categories)
 
                     if mode is not 'RSS':
                         logging.debug("Search string: %s " % search_string)
@@ -323,12 +351,15 @@ class TNTVillageProvider(generic.TorrentProvider):
 
                     try:
                         with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                            torrent_table = html.find('table', attrs={'class': 'copyright'})
-                            torrent_rows = torrent_table.find_all('tr') if torrent_table else []
+                            torrent_table = html.find(
+                                'table', attrs={'class': 'copyright'})
+                            torrent_rows = torrent_table.find_all(
+                                'tr') if torrent_table else []
 
                             # Continue only if one Release is found
                             if len(torrent_rows) < 3:
-                                logging.debug("Data returned from provider does not contain any torrents")
+                                logging.debug(
+                                    "Data returned from provider does not contain any torrents")
                                 last_page = 1
                                 continue
 
@@ -341,41 +372,51 @@ class TNTVillageProvider(generic.TorrentProvider):
                                     link = result.find('td').find('a')
                                     title = link.string
                                     download_url = self.urls[b'download'] % result.find_all('td')[8].find('a')['href'][
-                                                                           -8:]
-                                    leechers = result.find_all('td')[3].find_all('td')[1].text
+                                        -8:]
+                                    leechers = result.find_all(
+                                        'td')[3].find_all('td')[1].text
                                     leechers = int(leechers.strip('[]'))
-                                    seeders = result.find_all('td')[3].find_all('td')[2].text
+                                    seeders = result.find_all(
+                                        'td')[3].find_all('td')[2].text
                                     seeders = int(seeders.strip('[]'))
                                     # FIXME
                                     size = -1
                                 except (AttributeError, TypeError):
                                     continue
 
-                                filename_qt = self._reverseQuality(self._episodeQuality(result))
+                                filename_qt = self._reverseQuality(
+                                    self._episodeQuality(result))
                                 for text in self.hdtext:
                                     title1 = title
                                     title = title.replace(text, filename_qt)
                                     if title != title1:
                                         break
 
-                                if Quality.nameQuality(title) == Quality.UNKNOWN:
+                                if Quality.nameQuality(
+                                        title) == Quality.UNKNOWN:
                                     title += filename_qt
 
-                                if not self._is_italian(result) and not self.subtitle:
-                                    logging.debug("Torrent is subtitled, skipping: %s " % title)
+                                if not self._is_italian(
+                                        result) and not self.subtitle:
+                                    logging.debug(
+                                        "Torrent is subtitled, skipping: %s " % title)
                                     continue
 
-                                if self.engrelease and not self._is_english(result):
-                                    logging.debug("Torrent isnt english audio/subtitled , skipping: %s " % title)
+                                if self.engrelease and not self._is_english(
+                                        result):
+                                    logging.debug(
+                                        "Torrent isnt english audio/subtitled , skipping: %s " % title)
                                     continue
 
-                                search_show = re.split(r'([Ss][\d{1,2}]+)', search_string)[0]
+                                search_show = re.split(
+                                    r'([Ss][\d{1,2}]+)', search_string)[0]
                                 show_title = search_show
                                 rindex = re.search(r'([Ss][\d{1,2}]+)', title)
                                 if rindex:
                                     show_title = title[:rindex.start()]
                                     ep_params = title[rindex.start():]
-                                if show_title.lower() != search_show.lower() and search_show.lower() in show_title.lower():
+                                if show_title.lower() != search_show.lower(
+                                ) and search_show.lower() in show_title.lower():
                                     new_title = search_show + ep_params
                                     title = new_title
 
@@ -383,7 +424,8 @@ class TNTVillageProvider(generic.TorrentProvider):
                                     continue
 
                                 if self._is_season_pack(title):
-                                    title = re.sub(r'([Ee][\d{1,2}\-?]+)', '', title)
+                                    title = re.sub(
+                                        r'([Ee][\d{1,2}\-?]+)', '', title)
 
                                 # Filter unseeded torrent
                                 if seeders < self.minseed or leechers < self.minleech:
@@ -400,9 +442,12 @@ class TNTVillageProvider(generic.TorrentProvider):
                                 items[mode].append(item)
 
                     except Exception:
-                        logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                        logging.error(
+                            "Failed parsing provider. Traceback: %s" %
+                            traceback.format_exc())
 
-                # For each search mode sort all the items by seeders if available if available
+                # For each search mode sort all the items by seeders if
+                # available if available
                 items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
                 results += items[mode]
@@ -414,6 +459,7 @@ class TNTVillageProvider(generic.TorrentProvider):
 
 
 class TNTVillageCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

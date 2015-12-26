@@ -28,6 +28,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class FNTProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "FNT")
 
@@ -56,7 +57,8 @@ class FNTProvider(generic.TorrentProvider):
 
     def _doLogin(self):
 
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(
+                self.session.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -64,7 +66,10 @@ class FNTProvider(generic.TorrentProvider):
                         'submit': 'Se loguer'
                         }
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -72,12 +77,14 @@ class FNTProvider(generic.TorrentProvider):
         if not re.search('Pseudo ou mot de passe non valide', response):
             return True
         else:
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -95,38 +102,45 @@ class FNTProvider(generic.TorrentProvider):
 
                 self.search_params[b'recherche'] = search_string
 
-                data = self.getURL(self.urls[b'search'], params=self.search_params)
+                data = self.getURL(
+                    self.urls[b'search'],
+                    params=self.search_params)
                 if not data:
                     continue
 
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        result_table = html.find('table', {'id': 'tablealign3bis'})
+                        result_table = html.find(
+                            'table', {'id': 'tablealign3bis'})
 
                         if not result_table:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
                         if result_table:
-                            rows = result_table.findAll("tr", {"class": "ligntorrent"})
+                            rows = result_table.findAll(
+                                "tr", {"class": "ligntorrent"})
 
                             for row in rows:
-                                link = row.findAll('td')[1].find("a", href=re.compile("fiche_film"))
+                                link = row.findAll('td')[1].find(
+                                    "a", href=re.compile("fiche_film"))
 
                                 if link:
                                     try:
                                         title = link.text
                                         download_url = self.urls[b'base_url'] + "/" + \
-                                                       row.find("a", href=re.compile(r"download\.php"))['href']
+                                            row.find(
+                                            "a", href=re.compile(r"download\.php"))['href']
                                     except (AttributeError, TypeError):
                                         continue
 
                                     try:
                                         detailseedleech = link[b'mtcontent']
                                         seeders = int(
-                                                detailseedleech.split("<font color='#00b72e'>")[1].split("</font>")[0])
+                                            detailseedleech.split("<font color='#00b72e'>")[1].split("</font>")[0])
                                         leechers = int(
-                                                detailseedleech.split("<font color='red'>")[1].split("</font>")[0])
+                                            detailseedleech.split("<font color='red'>")[1].split("</font>")[0])
                                         # FIXME
                                         size = -1
                                     except Exception:
@@ -147,12 +161,16 @@ class FNTProvider(generic.TorrentProvider):
 
                                     item = title, download_url, size, seeders, leechers
                                     if mode is not 'RSS':
-                                        logging.debug("Found result: %s " % title)
+                                        logging.debug(
+                                            "Found result: %s " %
+                                            title)
 
                                     items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -166,6 +184,7 @@ class FNTProvider(generic.TorrentProvider):
 
 
 class FNTCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

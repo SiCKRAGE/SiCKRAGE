@@ -8,6 +8,7 @@ from sickrage.helper.exceptions import ex
 
 
 class Event:
+
     def __init__(self, type):
         self._type = type
 
@@ -17,6 +18,7 @@ class Event:
 
 
 class Events(threading.Thread):
+
     def __init__(self, callback):
         super(Events, self).__init__()
         self.queue = Queue()
@@ -49,7 +51,11 @@ class Events(threading.Thread):
             # exiting thread
             self.stop.clear()
         except Exception as e:
-            logging.error("Exception generated in thread " + self.name + ": {}".format(ex(e)))
+            logging.error(
+                "Exception generated in thread " +
+                self.name +
+                ": {}".format(
+                    ex(e)))
             logging.debug(repr(traceback.format_exc()))
 
     # System Events

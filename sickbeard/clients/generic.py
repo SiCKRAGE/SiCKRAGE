@@ -34,6 +34,7 @@ from bencode.BTL import BTFailure
 
 
 class GenericClient(object):
+
     def __init__(self, name, host=None, username=None, password=None):
 
         self.name = name
@@ -56,8 +57,8 @@ class GenericClient(object):
             self._get_auth()
 
         logging.debug(
-                self.name + ': Requested a ' + method.upper() + ' connection to url ' + self.url +
-                ' with Params: ' + str(params) + ' Data: ' + str(data)[0:99] + ('...' if len(str(data)) > 200 else ''))
+            self.name + ': Requested a ' + method.upper() + ' connection to url ' + self.url +
+            ' with Params: ' + str(params) + ' Data: ' + str(data)[0:99] + ('...' if len(str(data)) > 200 else ''))
 
         if not self.auth:
             logging.warning(self.name + ': Authentication Failed')
@@ -78,18 +79,23 @@ class GenericClient(object):
             logging.warning(self.name + ': Connection Timeout ' + str(e))
             return False
         except Exception as e:
-            logging.error(self.name + ': Unknown exception raised when send torrent to ' + self.name + ': ' + str(e))
+            logging.error(
+                self.name + ': Unknown exception raised when send torrent to ' + self.name + ': ' + str(e))
             return False
 
         if self.response.status_code == 401:
-            logging.error(self.name + u': Invalid Username or Password, check your config')
+            logging.error(
+                self.name +
+                u': Invalid Username or Password, check your config')
             return False
 
         if self.response.status_code in http_error_code.keys():
-            logging.debug(self.name + ': ' + http_error_code[self.response.status_code])
+            logging.debug(self.name + ': ' +
+                          http_error_code[self.response.status_code])
             return False
 
-        logging.debug(self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
+        logging.debug(self.name + ': Response to ' +
+                      method.upper() + ' request is ' + self.response.text)
 
         return True
 
@@ -204,30 +210,39 @@ class GenericClient(object):
                 r_code = self._add_torrent_file(result)
 
             if not r_code:
-                logging.error(self.name + ': Unable to send Torrent: Return code undefined')
+                logging.error(
+                    self.name +
+                    ': Unable to send Torrent: Return code undefined')
                 return False
 
             if not self._set_torrent_pause(result):
-                logging.error(self.name + ': Unable to set the pause for Torrent')
+                logging.error(self.name +
+                              ': Unable to set the pause for Torrent')
 
             if not self._set_torrent_label(result):
-                logging.error(self.name + ': Unable to set the label for Torrent')
+                logging.error(self.name +
+                              ': Unable to set the label for Torrent')
 
             if not self._set_torrent_ratio(result):
-                logging.error(self.name + ': Unable to set the ratio for Torrent')
+                logging.error(self.name +
+                              ': Unable to set the ratio for Torrent')
 
             if not self._set_torrent_seed_time(result):
-                logging.error(self.name + ': Unable to set the seed time for Torrent')
+                logging.error(self.name +
+                              ': Unable to set the seed time for Torrent')
 
             if not self._set_torrent_path(result):
-                logging.error(self.name + ': Unable to set the path for Torrent')
+                logging.error(self.name +
+                              ': Unable to set the path for Torrent')
 
             if result.priority != 0 and not self._set_torrent_priority(result):
-                logging.error(self.name + ': Unable to set priority for Torrent')
+                logging.error(self.name +
+                              ': Unable to set priority for Torrent')
 
         except Exception as e:
             logging.error(self.name + ': Failed Sending Torrent')
-            logging.debug(self.name + ': Exception raised when sending torrent: ' + str(result) + '. Error: ' + str(e))
+            logging.debug(self.name + ': Exception raised when sending torrent: ' +
+                          str(result) + '. Error: ' + str(e))
             return r_code
 
         return r_code
@@ -235,20 +250,23 @@ class GenericClient(object):
     def testAuthentication(self):
 
         try:
-            self.response = self.session.get(self.url, timeout=120, verify=False)
+            self.response = self.session.get(
+                self.url, timeout=120, verify=False)
         except requests.exceptions.ConnectionError:
             return False, 'Error: ' + self.name + ' Connection Error'
         except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):
             return False, 'Error: Invalid ' + self.name + ' host'
 
         if self.response.status_code == 401:
-            return False, 'Error: Invalid ' + self.name + ' Username or Password, check your config!'
+            return False, 'Error: Invalid ' + self.name + \
+                ' Username or Password, check your config!'
 
         try:
             self._get_auth()
             if self.response.status_code == 200 and self.auth:
                 return True, 'Success: Connected and Authenticated'
             else:
-                return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'
+                return False, 'Error: Unable to get ' + \
+                    self.name + ' Authentication, check your config!'
         except Exception:
             return False, 'Error: Unable to connect to ' + self.name

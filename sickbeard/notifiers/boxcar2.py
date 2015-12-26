@@ -20,7 +20,8 @@
 
 from __future__ import unicode_literals
 
-import urllib, urllib2
+import urllib
+import urllib2
 
 import sickbeard
 
@@ -33,8 +34,10 @@ API_URL = "https://new.boxcar.io/api/notifications"
 
 
 class Boxcar2Notifier:
+
     def test_notify(self, accesstoken, title="SiCKRAGE : Test"):
-        return self._sendBoxcar2("This is a test notification from SiCKRAGE", title, accesstoken)
+        return self._sendBoxcar2(
+            "This is a test notification from SiCKRAGE", title, accesstoken)
 
     def _sendBoxcar2(self, msg, title, accesstoken):
         """
@@ -48,7 +51,8 @@ class Boxcar2Notifier:
         """
 
         # build up the URL and parameters
-        # more info goes here - https://boxcar.uservoice.com/knowledgebase/articles/306788-how-to-send-your-boxcar-account-a-notification
+        # more info goes here -
+        # https://boxcar.uservoice.com/knowledgebase/articles/306788-how-to-send-your-boxcar-account-a-notification
         msg = msg.strip()
         curUrl = API_URL
 
@@ -66,19 +70,22 @@ class Boxcar2Notifier:
             handle.close()
 
         except Exception as e:
-            # if we get an error back that doesn't have an error code then who knows what's really happening
+            # if we get an error back that doesn't have an error code then who
+            # knows what's really happening
             if not hasattr(e, 'code'):
                 logging.error("Boxcar2 notification failed.{}".format(ex(e)))
                 return False
             else:
-                logging.warning("Boxcar2 notification failed. Error code: " + str(e.code))
+                logging.warning(
+                    "Boxcar2 notification failed. Error code: " + str(e.code))
 
             # HTTP status 404
             if e.code == 404:
                 logging.warning("Access token is invalid. Check it.")
                 return False
 
-            # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
+            # If you receive an HTTP status code of 400, it is because you
+            # failed to send the proper parameters
             elif e.code == 400:
                 logging.error("Wrong data send to boxcar2")
                 return False
@@ -94,7 +101,8 @@ class Boxcar2Notifier:
         if sickbeard.BOXCAR2_NOTIFY_ONDOWNLOAD:
             self._notifyBoxcar2(title, ep_name)
 
-    def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
+    def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[
+                                 NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyBoxcar2(title, ep_name + ": " + lang)
 
@@ -114,7 +122,8 @@ class Boxcar2Notifier:
         """
 
         if not sickbeard.USE_BOXCAR2:
-            logging.debug("Notification for Boxcar2 not enabled, skipping this notification")
+            logging.debug(
+                "Notification for Boxcar2 not enabled, skipping this notification")
             return False
 
         # if no username was given then use the one from the config

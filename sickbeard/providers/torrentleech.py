@@ -29,6 +29,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class TorrentLeechProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "TorrentLeech")
@@ -63,19 +64,24 @@ class TorrentLeechProvider(generic.TorrentProvider):
                         'remember_me': 'on',
                         'login': 'submit'}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Invalid Username/password', response) or re.search('<title>Login :: TorrentLeech.org</title>',
                                                                          response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -91,7 +97,7 @@ class TorrentLeechProvider(generic.TorrentProvider):
                     searchURL = self.urls[b'index'] % self.categories
                 else:
                     searchURL = self.urls[b'search'] % (
-                    urllib.quote_plus(search_string.encode('utf-8')), self.categories)
+                        urllib.quote_plus(search_string.encode('utf-8')), self.categories)
                     logging.debug("Search string: %s " % search_string)
 
                 data = self.getURL(searchURL)
@@ -101,23 +107,36 @@ class TorrentLeechProvider(generic.TorrentProvider):
 
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        torrent_table = html.find('table', attrs={'id': 'torrenttable'})
-                        torrent_rows = torrent_table.find_all('tr') if torrent_table else []
+                        torrent_table = html.find(
+                            'table', attrs={'id': 'torrenttable'})
+                        torrent_rows = torrent_table.find_all(
+                            'tr') if torrent_table else []
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
                         for result in torrent_table.find_all('tr')[1:]:
 
                             try:
-                                link = result.find('td', attrs={'class': 'name'}).find('a')
-                                url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
+                                link = result.find(
+                                    'td', attrs={'class': 'name'}).find('a')
+                                url = result.find(
+                                    'td', attrs={
+                                        'class': 'quickdownload'}).find('a')
                                 title = link.string
-                                download_url = self.urls[b'download'] % url[b'href']
-                                seeders = int(result.find('td', attrs={'class': 'seeders'}).string)
-                                leechers = int(result.find('td', attrs={'class': 'leechers'}).string)
+                                download_url = self.urls[
+                                    b'download'] % url[b'href']
+                                seeders = int(
+                                    result.find(
+                                        'td', attrs={
+                                            'class': 'seeders'}).string)
+                                leechers = int(
+                                    result.find(
+                                        'td', attrs={
+                                            'class': 'leechers'}).string)
                                 # FIXME
                                 size = -1
                             except (AttributeError, TypeError):
@@ -141,7 +160,9 @@ class TorrentLeechProvider(generic.TorrentProvider):
                             items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -155,6 +176,7 @@ class TorrentLeechProvider(generic.TorrentProvider):
 
 
 class TorrentLeechCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

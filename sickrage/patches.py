@@ -60,7 +60,8 @@ def shutil_copyfile(src, dst):
 
 
 # auto_apply patches
-for name, patch in inspect.getmembers(sys.modules[__name__], inspect.isfunction):
+for name, patch in inspect.getmembers(
+        sys.modules[__name__], inspect.isfunction):
     try:
         mod, func = name.split("_", 1)
         if not hasattr(sys.modules, mod):

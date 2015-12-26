@@ -15,6 +15,7 @@ from tornado.routes import route
 
 from sickrage.helper.encoding import ek
 
+
 class StaticImageHandler(StaticFileHandler):
 
     def initialize(self, path, default_filename=None):
@@ -23,12 +24,19 @@ class StaticImageHandler(StaticFileHandler):
     def get(self, path, include_body=True):
         # image cache check
         self.root = (self.root, os.path.join(sickbeard.CACHE_DIR, 'images'))[
-            os.path.exists(os.path.normpath(os.path.join(sickbeard.CACHE_DIR, 'images', path)))
+            os.path.exists(
+                os.path.normpath(
+                    os.path.join(
+                        sickbeard.CACHE_DIR,
+                        'images',
+                        path)))
         ]
 
         return super(StaticImageHandler, self).get(path, include_body)
 
+
 class SRWebServer(threading.Thread):
+
     def __init__(self, options={}, io_loop=None):
         threading.Thread.__init__(self)
         self.name = "TORNADO"
@@ -55,12 +63,14 @@ class SRWebServer(threading.Thread):
 
         # web root
         if self.options[b'web_root']:
-            sickbeard.WEB_ROOT = self.options[b'web_root'] = ('/' + self.options[b'web_root'].lstrip('/').strip('/'))
+            sickbeard.WEB_ROOT = self.options[b'web_root'] = (
+                '/' + self.options[b'web_root'].lstrip('/').strip('/'))
 
         # api root
         if not sickbeard.API_KEY:
             sickbeard.API_KEY = generateApiKey()
-        self.options[b'api_root'] = r'%s/api/%s' % (sickbeard.WEB_ROOT, sickbeard.API_KEY)
+        self.options[
+            b'api_root'] = r'%s/api/%s' % (sickbeard.WEB_ROOT, sickbeard.API_KEY)
 
         # tornado setup
         self.enable_https = self.options[b'enable_https']
@@ -68,16 +78,21 @@ class SRWebServer(threading.Thread):
         self.https_key = self.options[b'https_key']
 
         if self.enable_https:
-            # If either the HTTPS certificate or key do not exist, make some self-signed ones.
+            # If either the HTTPS certificate or key do not exist, make some
+            # self-signed ones.
             if not (self.https_cert and ek(os.path.exists, self.https_cert)) or not (
-                        self.https_key and ek(os.path.exists, self.https_key)):
-                if not create_https_certificates(self.https_cert, self.https_key):
-                    logging.info("Unable to create CERT/KEY files, disabling HTTPS")
+                    self.https_key and ek(os.path.exists, self.https_key)):
+                if not create_https_certificates(
+                        self.https_cert, self.https_key):
+                    logging.info(
+                        "Unable to create CERT/KEY files, disabling HTTPS")
                     sickbeard.ENABLE_HTTPS = False
                     self.enable_https = False
 
-            if not (os.path.exists(self.https_cert) and ek(os.path.exists, self.https_key)):
-                logging.warning("Disabled HTTPS because of missing CERT and KEY files")
+            if not (os.path.exists(self.https_cert)
+                    and ek(os.path.exists, self.https_key)):
+                logging.warning(
+                    "Disabled HTTPS because of missing CERT and KEY files")
                 sickbeard.ENABLE_HTTPS = False
                 self.enable_https = False
 
@@ -88,7 +103,8 @@ class SRWebServer(threading.Thread):
                                gzip=sickbeard.WEB_USE_GZIP,
                                xheaders=sickbeard.HANDLE_REVERSE_PROXY,
                                cookie_secret=sickbeard.WEB_COOKIE_SECRET,
-                               login_url='%s/login/' % self.options[b'web_root'],
+                               login_url='%s/login/' % self.options[
+                                   b'web_root'],
                                )
 
         # Main Handlers
@@ -143,19 +159,27 @@ class SRWebServer(threading.Thread):
 
         if self.enable_https:
             protocol = 'https'
-            self.server.ssl_options={"certfile": self.https_cert, "keyfile": self.https_key}
+            self.server.ssl_options = {
+                "certfile": self.https_cert,
+                "keyfile": self.https_key}
 
         logging.info("Starting SiCKRAGE web server on [{}://{}:{}/]".format(protocol, self.options[b'host'],
-                                                                           self.options[b'port']))
+                                                                            self.options[b'port']))
 
         try:
             self.server.listen(self.options[b'port'], self.options[b'host'])
         except:
-            logging.info("Could not start webserver on port %s, already in use!" % self.options[b'port'])
+            logging.info(
+                "Could not start webserver on port %s, already in use!" %
+                self.options[b'port'])
             os._exit(1)
 
         if sickbeard.LAUNCH_BROWSER and not sickbeard.DAEMONIZE:
-            self.io_loop.add_callback(sickbeard.launchBrowser, protocol, sickbeard.WEB_PORT, sickbeard.WEB_ROOT)
+            self.io_loop.add_callback(
+                sickbeard.launchBrowser,
+                protocol,
+                sickbeard.WEB_PORT,
+                sickbeard.WEB_ROOT)
 
         try:
             self.io_loop.start()

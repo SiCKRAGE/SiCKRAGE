@@ -50,7 +50,10 @@ def getSeasonNZBs(name, urlData, season):
     try:
         showXML = etree.ElementTree(etree.XML(urlData))
     except SyntaxError:
-        logging.error("Unable to parse the XML of " + name + ", not splitting it")
+        logging.error(
+            "Unable to parse the XML of " +
+            name +
+            ", not splitting it")
         return ({}, '')
 
     filename = name.replace(".nzb", "")
@@ -63,17 +66,23 @@ def getSeasonNZBs(name, urlData, season):
     if sceneNameMatch:
         showName, qualitySection, groupName = sceneNameMatch.groups()  # @UnusedVariable
     else:
-        logging.error("Unable to parse " + name + " into a scene name. If it's a valid one log a bug.")
+        logging.error(
+            "Unable to parse " +
+            name +
+            " into a scene name. If it's a valid one log a bug.")
         return ({}, '')
 
-    regex = '(' + re.escape(showName) + '\.S%02d(?:[E0-9]+)\.[\w\._]+\-\w+' % season + ')'
+    regex = '(' + re.escape(showName) + \
+        '\.S%02d(?:[E0-9]+)\.[\w\._]+\-\w+' % season + ')'
     regex = regex.replace(' ', '.')
 
     epFiles = {}
     xmlns = None
 
     for curFile in nzbElement.getchildren():
-        xmlnsMatch = re.match("\{(http:\/\/[A-Za-z0-9_\.\/]+\/nzb)\}file", curFile.tag)
+        xmlnsMatch = re.match(
+            "\{(http:\/\/[A-Za-z0-9_\.\/]+\/nzb)\}file",
+            curFile.tag)
         if not xmlnsMatch:
             continue
         else:
@@ -132,9 +141,15 @@ def splitResult(result):
     :param result: search result object
     :return: False upon failure, a list of episode objects otherwise
     """
-    urlData = helpers.getURL(result.url, session=requests.Session(), needBytes=True)
+    urlData = helpers.getURL(
+        result.url,
+        session=requests.Session(),
+        needBytes=True)
     if urlData is None:
-        logging.error("Unable to load url " + result.url + ", can't download season NZB")
+        logging.error(
+            "Unable to load url " +
+            result.url +
+            ", can't download season NZB")
         return False
 
     # parse the season ep name
@@ -142,14 +157,20 @@ def splitResult(result):
         np = NameParser(False, showObj=result.show)
         parse_result = np.parse(result.name)
     except InvalidNameException:
-        logging.debug("Unable to parse the filename " + result.name + " into a valid episode")
+        logging.debug(
+            "Unable to parse the filename " +
+            result.name +
+            " into a valid episode")
         return False
     except InvalidShowException:
-        logging.debug("Unable to parse the filename " + result.name + " into a valid show")
+        logging.debug(
+            "Unable to parse the filename " +
+            result.name +
+            " into a valid show")
         return False
 
     # bust it up
-    season = parse_result.season_number if parse_result.season_number != None else 1
+    season = parse_result.season_number if parse_result.season_number is not None else 1
 
     separateNZBs, xmlns = getSeasonNZBs(result.name, urlData, season)
 
@@ -164,28 +185,35 @@ def splitResult(result):
             np = NameParser(False, showObj=result.show)
             parse_result = np.parse(newNZB)
         except InvalidNameException:
-            logging.debug("Unable to parse the filename " + newNZB + " into a valid episode")
+            logging.debug(
+                "Unable to parse the filename " +
+                newNZB +
+                " into a valid episode")
             return False
         except InvalidShowException:
-            logging.debug("Unable to parse the filename " + newNZB + " into a valid show")
+            logging.debug(
+                "Unable to parse the filename " +
+                newNZB +
+                " into a valid show")
             return False
 
         # make sure the result is sane
-        if (parse_result.season_number != None and parse_result.season_number != season) or (
-                        parse_result.season_number == None and season != 1):
+        if (parse_result.season_number is not None and parse_result.season_number != season) or (
+                parse_result.season_number is None and season != 1):
             logging.warning(
-                    "Found " + newNZB + " inside " + result.name + " but it doesn't seem to belong to the same season, ignoring it")
+                "Found " + newNZB + " inside " + result.name + " but it doesn't seem to belong to the same season, ignoring it")
             continue
         elif len(parse_result.episode_numbers) == 0:
             logging.warning(
-                    "Found " + newNZB + " inside " + result.name + " but it doesn't seem to be a valid episode NZB, ignoring it")
+                "Found " + newNZB + " inside " + result.name + " but it doesn't seem to be a valid episode NZB, ignoring it")
             continue
 
         wantEp = True
         for epNo in parse_result.episode_numbers:
-            if not result.extraInfo[0].wantEpisode(season, epNo, result.quality):
+            if not result.extraInfo[0].wantEpisode(
+                    season, epNo, result.quality):
                 logging.info("Ignoring result " + newNZB + " because we don't want an episode that is " +
-                            Quality.qualityStrings[result.quality])
+                             Quality.qualityStrings[result.quality])
                 wantEp = False
                 break
         if not wantEp:

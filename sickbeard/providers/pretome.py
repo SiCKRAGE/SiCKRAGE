@@ -29,6 +29,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class PretomeProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Pretome")
@@ -59,7 +60,8 @@ class PretomeProvider(generic.TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password or not self.pin:
-            logging.warning("Invalid username or password or pin. Check your settings")
+            logging.warning(
+                "Invalid username or password or pin. Check your settings")
 
         return True
 
@@ -69,18 +71,23 @@ class PretomeProvider(generic.TorrentProvider):
                         'password': self.password,
                         'login_pin': self.pin}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Username or password incorrect', response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -95,7 +102,8 @@ class PretomeProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
+                searchURL = self.urls[b'search'] % (urllib.quote(
+                    search_string.encode('utf-8')), self.categories)
                 logging.debug("Search URL: %s" % searchURL)
 
                 data = self.getURL(searchURL)
@@ -105,38 +113,48 @@ class PretomeProvider(generic.TorrentProvider):
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
                         # Continue only if one Release is found
-                        empty = html.find('h2', text="No .torrents fit this filter criteria")
+                        empty = html.find(
+                            'h2', text="No .torrents fit this filter criteria")
                         if empty:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
-                        torrent_table = html.find('table', attrs={'style': 'border: none; width: 100%;'})
+                        torrent_table = html.find(
+                            'table', attrs={
+                                'style': 'border: none; width: 100%;'})
                         if not torrent_table:
                             logging.error("Could not find table of torrents")
                             continue
 
-                        torrent_rows = torrent_table.find_all('tr', attrs={'class': 'browse'})
+                        torrent_rows = torrent_table.find_all(
+                            'tr', attrs={'class': 'browse'})
 
                         for result in torrent_rows:
                             cells = result.find_all('td')
                             size = None
-                            link = cells[1].find('a', attrs={'style': 'font-size: 1.25em; font-weight: bold;'})
+                            link = cells[1].find(
+                                'a', attrs={
+                                    'style': 'font-size: 1.25em; font-weight: bold;'})
 
-                            torrent_id = link[b'href'].replace('details.php?id=', '')
+                            torrent_id = link[b'href'].replace(
+                                'details.php?id=', '')
 
                             try:
-                                if link.has_key('title'):
+                                if 'title' in link:
                                     title = link[b'title']
                                 else:
                                     title = link.contents[0]
 
-                                download_url = self.urls[b'download'] % (torrent_id, link.contents[0])
+                                download_url = self.urls[b'download'] % (
+                                    torrent_id, link.contents[0])
                                 seeders = int(cells[9].contents[0])
                                 leechers = int(cells[10].contents[0])
 
                                 # Need size for failed downloads handling
                                 if size is None:
-                                    if re.match(r'[0-9]+,?\.?[0-9]*[KkMmGg]+[Bb]+', cells[7].text):
+                                    if re.match(
+                                            r'[0-9]+,?\.?[0-9]*[KkMmGg]+[Bb]+', cells[7].text):
                                         size = self._convertSize(cells[7].text)
                                         if not size:
                                             size = -1
@@ -162,7 +180,9 @@ class PretomeProvider(generic.TorrentProvider):
                             items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -190,6 +210,7 @@ class PretomeProvider(generic.TorrentProvider):
 
 
 class PretomeCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

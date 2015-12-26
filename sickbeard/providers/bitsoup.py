@@ -28,6 +28,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class BitSoupProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "BitSoup")
 
@@ -57,7 +58,8 @@ class BitSoupProvider(generic.TorrentProvider):
 
     def _checkAuth(self):
         if not self.username or not self.password:
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
 
         return True
 
@@ -69,18 +71,23 @@ class BitSoupProvider(generic.TorrentProvider):
             'ssl': 'yes'
         }
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Username or password incorrect', response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -97,25 +104,31 @@ class BitSoupProvider(generic.TorrentProvider):
 
                 self.search_params[b'search'] = search_string
 
-                data = self.getURL(self.urls[b'search'], params=self.search_params)
+                data = self.getURL(
+                    self.urls[b'search'],
+                    params=self.search_params)
                 if not data:
                     continue
 
                 try:
                     with BS4Parser(data, "html.parser") as html:
-                        torrent_table = html.find('table', attrs={'class': 'koptekst'})
-                        torrent_rows = torrent_table.find_all('tr') if torrent_table else []
+                        torrent_table = html.find(
+                            'table', attrs={'class': 'koptekst'})
+                        torrent_rows = torrent_table.find_all(
+                            'tr') if torrent_table else []
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
                         for result in torrent_rows[1:]:
                             cells = result.find_all('td')
 
                             link = cells[1].find('a')
-                            download_url = self.urls[b'download'] % cells[2].find('a')['href']
+                            download_url = self.urls[b'download'] % cells[2].find('a')[
+                                'href']
 
                             try:
                                 title = link.getText()
@@ -144,7 +157,9 @@ class BitSoupProvider(generic.TorrentProvider):
                             items[mode].append(item)
 
                 except Exception:
-                    logging.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.warning(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -158,6 +173,7 @@ class BitSoupProvider(generic.TorrentProvider):
 
 
 class BitSoupCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

@@ -28,20 +28,22 @@ from sickbeard.common import USER_AGENT
 
 
 class TORRENTPROJECTProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "TorrentProject")
 
         self.supportsBacklog = True
         self.public = True
         self.ratio = 0
-        self.urls = {'api': 'https://torrentproject.se/',}
+        self.urls = {'api': 'https://torrentproject.se/', }
         self.url = self.urls[b'api']
         self.headers.update({'User-Agent': USER_AGENT})
         self.minseed = None
         self.minleech = None
         self.cache = TORRENTPROJECTCache(self)
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -57,8 +59,10 @@ class TORRENTPROJECTProvider(generic.TorrentProvider):
 
                 logging.debug("Search URL: %s" % searchURL)
                 torrents = self.getURL(searchURL, json=True)
-                if not (torrents and "total_found" in torrents and int(torrents[b"total_found"]) > 0):
-                    logging.debug("Data returned from provider does not contain any torrents")
+                if not (torrents and "total_found" in torrents and int(
+                        torrents[b"total_found"]) > 0):
+                    logging.debug(
+                        "Data returned from provider does not contain any torrents")
                     continue
 
                 del torrents[b"total_found"]
@@ -70,7 +74,9 @@ class TORRENTPROJECTProvider(generic.TorrentProvider):
                     leechers = helpers.tryInt(torrents[i][b"leechs"], 0)
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            logging.debug("Torrent doesn't meet minimum seeds & leechers not selecting : %s" % title)
+                            logging.debug(
+                                "Torrent doesn't meet minimum seeds & leechers not selecting : %s" %
+                                title)
                         continue
 
                     t_hash = torrents[i][b"torrent_hash"]
@@ -79,14 +85,17 @@ class TORRENTPROJECTProvider(generic.TorrentProvider):
                     try:
                         assert seeders < 10
                         assert mode is not 'RSS'
-                        logging.debug("Torrent has less than 10 seeds getting dyn trackers: " + title)
-                        trackerUrl = self.urls[b'api'] + "" + t_hash + "/trackers_json"
+                        logging.debug(
+                            "Torrent has less than 10 seeds getting dyn trackers: " + title)
+                        trackerUrl = self.urls[b'api'] + \
+                            "" + t_hash + "/trackers_json"
                         jdata = self.getURL(trackerUrl, json=True)
                         assert jdata is not "maintenance"
                         download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "".join(
-                                ["&tr=" + s for s in jdata])
+                            ["&tr=" + s for s in jdata])
                     except (Exception, AssertionError):
-                        download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://open.demonii.com:1337&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://exodus.desync.com:6969"
+                        download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + \
+                            "&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://open.demonii.com:1337&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://exodus.desync.com:6969"
 
                     if not all([title, download_url]):
                         continue
@@ -110,6 +119,7 @@ class TORRENTPROJECTProvider(generic.TorrentProvider):
 
 
 class TORRENTPROJECTCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

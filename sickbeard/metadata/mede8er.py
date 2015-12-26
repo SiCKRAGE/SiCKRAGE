@@ -67,9 +67,9 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                  season_all_banner=False):
 
         mediabrowser.MediaBrowserMetadata.__init__(
-                self, show_metadata, episode_metadata, fanart,
-                poster, banner, episode_thumbnails, season_posters,
-                season_banners, season_all_poster, season_all_banner
+            self, show_metadata, episode_metadata, fanart,
+            poster, banner, episode_thumbnails, season_posters,
+            season_banners, season_all_poster, season_all_banner
         )
 
         self.name = "Mede8er"
@@ -89,7 +89,8 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         # self.eg_season_all_banner = "<i>not supported</i>"
 
     def get_episode_file_path(self, ep_obj):
-        return helpers.replaceExtension(ep_obj.location, self._ep_nfo_extension)
+        return helpers.replaceExtension(
+            ep_obj.location, self._ep_nfo_extension)
 
     @staticmethod
     def get_episode_thumb_path(ep_obj):
@@ -104,7 +105,8 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         """
 
         indexer_lang = show_obj.lang
-        lINDEXER_API_PARMS = sickbeard.indexerApi(show_obj.indexer).api_params.copy()
+        lINDEXER_API_PARMS = sickbeard.indexerApi(
+            show_obj.indexer).api_params.copy()
 
         lINDEXER_API_PARMS[b'actors'] = True
 
@@ -114,7 +116,9 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         if show_obj.dvdorder != 0:
             lINDEXER_API_PARMS[b'dvdorder'] = True
 
-        t = sickbeard.indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+        t = sickbeard.indexerApi(
+            show_obj.indexer).indexer(
+            **lINDEXER_API_PARMS)
 
         rootNode = etree.Element("details")
         tv_node = etree.SubElement(rootNode, "movie")
@@ -125,7 +129,8 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         try:
             myShow = t[int(show_obj.indexerid)]
         except sickbeard.indexer_shownotfound:
-            logging.error("Unable to find show with id " + str(show_obj.indexerid) + " on tvdb, skipping it")
+            logging.error("Unable to find show with id " +
+                          str(show_obj.indexerid) + " on tvdb, skipping it")
             raise
 
         except sickbeard.indexer_error:
@@ -133,9 +138,10 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             raise
 
         # check for title and id
-        if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
+        if not (getattr(myShow, 'seriesname', None)
+                and getattr(myShow, 'id', None)):
             logging.info("Incomplete info for show with id " + str(show_obj.indexerid) + " on " + sickbeard.indexerApi(
-                    show_obj.indexer).name + ", skipping it")
+                show_obj.indexer).name + ", skipping it")
             return False
 
         SeriesName = etree.SubElement(tv_node, "title")
@@ -154,7 +160,10 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
         if getattr(myShow, "firstaired", None):
             try:
-                year_text = str(datetime.datetime.strptime(myShow[b"firstaired"], dateFormat).year)
+                year_text = str(
+                    datetime.datetime.strptime(
+                        myShow[b"firstaired"],
+                        dateFormat).year)
                 if year_text:
                     year = etree.SubElement(tv_node, "year")
                     year.text = year_text
@@ -224,7 +233,8 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
-            lINDEXER_API_PARMS = sickbeard.indexerApi(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickbeard.indexerApi(
+                ep_obj.show.indexer).api_params.copy()
 
             if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS[b'language'] = indexer_lang
@@ -232,12 +242,15 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS[b'dvdorder'] = True
 
-            t = sickbeard.indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickbeard.indexerApi(
+                ep_obj.show.indexer).indexer(
+                **lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except sickbeard.indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except sickbeard.indexer_error as e:
-            logging.error("Unable to connect to TVDB while creating meta files - skipping - {}".format(ex(e)))
+            logging.error(
+                "Unable to connect to TVDB while creating meta files - skipping - {}".format(ex(e)))
             return False
 
         rootNode = etree.Element("details")
@@ -254,17 +267,19 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
                 logging.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
-                            (curEpToWrite.season, curEpToWrite.episode, sickbeard.indexerApi(ep_obj.show.indexer).name))
+                             (curEpToWrite.season, curEpToWrite.episode, sickbeard.indexerApi(ep_obj.show.indexer).name))
                 return None
 
             if curEpToWrite == ep_obj:
                 # root (or single) episode
 
                 # default to today's date for specials if firstaired is not set
-                if curEpToWrite.season == 0 and not getattr(myEp, 'firstaired', None):
+                if curEpToWrite.season == 0 and not getattr(
+                        myEp, 'firstaired', None):
                     myEp[b'firstaired'] = str(datetime.date.fromordinal(1))
 
-                if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
+                if not (getattr(myEp, 'episodename', None)
+                        and getattr(myEp, 'firstaired', None)):
                     return None
 
                 episode = movie
@@ -281,7 +296,10 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
                 if getattr(myShow, "firstaired", None):
                     try:
-                        year_text = str(datetime.datetime.strptime(myShow[b"firstaired"], dateFormat).year)
+                        year_text = str(
+                            datetime.datetime.strptime(
+                                myShow[b"firstaired"],
+                                dateFormat).year)
                         if year_text:
                             year = etree.SubElement(episode, "year")
                             year.text = year_text
@@ -318,10 +336,13 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
                     writer = etree.SubElement(episode, "credits")
                     writer.text = myEp[b'writer']
 
-                if getattr(myShow, '_actors', None) or getattr(myEp, 'gueststars', None):
+                if getattr(myShow, '_actors', None) or getattr(
+                        myEp, 'gueststars', None):
                     cast = etree.SubElement(episode, "cast")
-                    if getattr(myEp, 'gueststars', None) and isinstance(myEp[b'gueststars'], basestring):
-                        for actor in (x.strip() for x in myEp[b'gueststars'].split('|') if x.strip()):
+                    if getattr(myEp, 'gueststars', None) and isinstance(
+                            myEp[b'gueststars'], basestring):
+                        for actor in (x.strip() for x in myEp[
+                                      b'gueststars'].split('|') if x.strip()):
                             cur_actor = etree.SubElement(cast, "actor")
                             cur_actor.text = actor
 
@@ -376,7 +397,9 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
         try:
             if not ek(os.path.isdir, nfo_file_dir):
-                logging.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
+                logging.debug(
+                    "Metadata dir didn't exist, creating it at " +
+                    nfo_file_dir)
                 ek(os.makedirs, nfo_file_dir)
                 helpers.chmodAsParent(nfo_file_dir)
 
@@ -421,7 +444,9 @@ class Mede8erMetadata(mediabrowser.MediaBrowserMetadata):
 
         try:
             if not ek(os.path.isdir, nfo_file_dir):
-                logging.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
+                logging.debug(
+                    "Metadata dir didn't exist, creating it at " +
+                    nfo_file_dir)
                 ek(os.makedirs, nfo_file_dir)
                 helpers.chmodAsParent(nfo_file_dir)
 

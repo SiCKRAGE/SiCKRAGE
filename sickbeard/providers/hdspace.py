@@ -31,6 +31,7 @@ from sickbeard.providers import generic
 
 
 class HDSpaceProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "HDSpace")
 
@@ -49,7 +50,8 @@ class HDSpaceProvider(generic.TorrentProvider):
                      'search': 'https://hd-space.org/index.php?page=torrents&search=%s&active=1&options=0',
                      'rss': 'https://hd-space.org/rss_torrents.php?feed=dl'}
 
-        self.categories = [15, 21, 22, 24, 25, 40]  # HDTV/DOC 1080/720, bluray, remux
+        # HDTV/DOC 1080/720, bluray, remux
+        self.categories = [15, 21, 22, 24, 25, 40]
         self.urls[b'search'] += '&category='
         for cat in self.categories:
             self.urls[b'search'] += str(cat) + '%%3B'
@@ -61,7 +63,8 @@ class HDSpaceProvider(generic.TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
 
         return True
 
@@ -73,18 +76,23 @@ class HDSpaceProvider(generic.TorrentProvider):
         login_params = {'uid': self.username,
                         'pwd': self.password}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Password Incorrect', response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -97,7 +105,8 @@ class HDSpaceProvider(generic.TorrentProvider):
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    searchURL = self.urls[b'search'] % (urllib.quote_plus(search_string.replace('.', ' ')),)
+                    searchURL = self.urls[b'search'] % (
+                        urllib.quote_plus(search_string.replace('.', ' ')),)
                 else:
                     searchURL = self.urls[b'search'] % ''
 
@@ -136,12 +145,27 @@ class HDSpaceProvider(generic.TorrentProvider):
                         continue
 
                     try:
-                        dl_href = result.find('a', attrs={'href': re.compile(r'download.php.*')})['href']
-                        title = re.search('f=(.*).torrent', dl_href).group(1).replace('+', '.')
+                        dl_href = result.find(
+                            'a', attrs={
+                                'href': re.compile(r'download.php.*')})['href']
+                        title = re.search(
+                            'f=(.*).torrent',
+                            dl_href).group(1).replace(
+                            '+',
+                            '.')
                         download_url = self.urls[b'base_url'] + dl_href
-                        seeders = int(result.find('span', attrs={'class': 'seedy'}).find('a').text)
-                        leechers = int(result.find('span', attrs={'class': 'leechy'}).find('a').text)
-                        size = re.match(r'.*?([0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+).*', str(result), re.DOTALL).group(1)
+                        seeders = int(
+                            result.find(
+                                'span', attrs={
+                                    'class': 'seedy'}).find('a').text)
+                        leechers = int(
+                            result.find(
+                                'span', attrs={
+                                    'class': 'leechy'}).find('a').text)
+                        size = re.match(
+                            r'.*?([0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+).*',
+                            str(result),
+                            re.DOTALL).group(1)
 
                         if not all([title, download_url]):
                             continue
@@ -188,6 +212,7 @@ class HDSpaceProvider(generic.TorrentProvider):
 
 
 class HDSpaceCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

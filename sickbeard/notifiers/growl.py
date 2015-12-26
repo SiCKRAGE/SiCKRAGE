@@ -36,15 +36,24 @@ class GrowlNotifier:
 
     def notify_snatch(self, ep_name):
         if sickbeard.GROWL_NOTIFY_ONSNATCH:
-            self._sendGrowl(common.notifyStrings[common.NOTIFY_SNATCH], ep_name)
+            self._sendGrowl(
+                common.notifyStrings[
+                    common.NOTIFY_SNATCH],
+                ep_name)
 
     def notify_download(self, ep_name):
         if sickbeard.GROWL_NOTIFY_ONDOWNLOAD:
-            self._sendGrowl(common.notifyStrings[common.NOTIFY_DOWNLOAD], ep_name)
+            self._sendGrowl(
+                common.notifyStrings[
+                    common.NOTIFY_DOWNLOAD],
+                ep_name)
 
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._sendGrowl(common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
+            self._sendGrowl(
+                common.notifyStrings[
+                    common.NOTIFY_SUBTITLE_DOWNLOAD],
+                ep_name + ": " + lang)
 
     def notify_git_update(self, new_version="??"):
         if sickbeard.USE_GROWL:
@@ -76,12 +85,18 @@ class GrowlNotifier:
         if message:
             notice.add_header('Notification-Text', message)
 
-        response = self._send(options[b'host'], options[b'port'], notice.encode(), options[b'debug'])
-        if isinstance(response, gntp.GNTPOK): return True
+        response = self._send(
+            options[b'host'],
+            options[b'port'],
+            notice.encode(),
+            options[b'debug'])
+        if isinstance(response, gntp.GNTPOK):
+            return True
         return False
 
     def _send(self, host, port, data, debug=False):
-        if debug: print '<Sending>\n', data, '\n</Sending>'
+        if debug:
+            print '<Sending>\n', data, '\n</Sending>'
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((host, port))
@@ -89,7 +104,8 @@ class GrowlNotifier:
         response = gntp.parse_gntp(s.recv(1024))
         s.close()
 
-        if debug: print '<Recieved>\n', response, '\n</Recieved>'
+        if debug:
+            print '<Recieved>\n', response, '\n</Recieved>'
 
         return response
 
@@ -98,10 +114,10 @@ class GrowlNotifier:
         if not sickbeard.USE_GROWL and not force:
             return False
 
-        if name == None:
+        if name is None:
             name = title
 
-        if host == None:
+        if host is None:
             hostParts = sickbeard.GROWL_HOST.split(':')
         else:
             hostParts = host.split(':')
@@ -124,7 +140,7 @@ class GrowlNotifier:
         opts[b'priority'] = None
         opts[b'debug'] = False
 
-        if password == None:
+        if password is None:
             opts[b'password'] = sickbeard.GROWL_PASSWORD
         else:
             opts[b'password'] = password
@@ -134,7 +150,8 @@ class GrowlNotifier:
         for pc in growlHosts:
             opts[b'host'] = pc[0]
             opts[b'port'] = pc[1]
-            logging.debug("GROWL: Sending message '" + message + "' to " + opts[b'host'] + ":" + str(opts[b'port']))
+            logging.debug("GROWL: Sending message '" + message +
+                          "' to " + opts[b'host'] + ":" + str(opts[b'port']))
             try:
                 if self._send_growl(opts, message):
                     return True
@@ -148,10 +165,11 @@ class GrowlNotifier:
                     "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(ex(e)))
                 return False
 
-    def _sendRegistration(self, host=None, password=None, name='SiCKRAGE Notification'):
+    def _sendRegistration(self, host=None, password=None,
+                          name='SiCKRAGE Notification'):
         opts = {}
 
-        if host == None:
+        if host is None:
             hostParts = sickbeard.GROWL_HOST.split(':')
         else:
             hostParts = host.split(':')
@@ -164,7 +182,7 @@ class GrowlNotifier:
         opts[b'host'] = hostParts[0]
         opts[b'port'] = port
 
-        if password == None:
+        if password is None:
             opts[b'password'] = sickbeard.GROWL_PASSWORD
         else:
             opts[b'password'] = password
@@ -178,15 +196,22 @@ class GrowlNotifier:
         register.add_header('Application-Icon', self.sr_logo_url)
 
         register.add_notification('Test', True)
-        register.add_notification(common.notifyStrings[common.NOTIFY_SNATCH], True)
-        register.add_notification(common.notifyStrings[common.NOTIFY_DOWNLOAD], True)
-        register.add_notification(common.notifyStrings[common.NOTIFY_GIT_UPDATE], True)
+        register.add_notification(
+            common.notifyStrings[
+                common.NOTIFY_SNATCH], True)
+        register.add_notification(
+            common.notifyStrings[
+                common.NOTIFY_DOWNLOAD], True)
+        register.add_notification(
+            common.notifyStrings[
+                common.NOTIFY_GIT_UPDATE], True)
 
         if opts[b'password']:
             register.set_password(opts[b'password'])
 
         try:
-            return self._send(opts[b'host'], opts[b'port'], register.encode(), opts[b'debug'])
+            return self._send(opts[b'host'], opts[b'port'],
+                              register.encode(), opts[b'debug'])
         except Exception as e:
             logging.warning(
                 "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(ex(e)))

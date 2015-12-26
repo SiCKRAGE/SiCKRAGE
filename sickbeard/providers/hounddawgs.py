@@ -28,6 +28,7 @@ from sickbeard.providers import generic
 
 
 class HoundDawgsProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "HoundDawgs")
@@ -72,7 +73,10 @@ class HoundDawgsProvider(generic.TorrentProvider):
                         'login': 'Login'}
 
         self.getURL(self.urls[b'base_url'], timeout=30)
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -80,12 +84,14 @@ class HoundDawgsProvider(generic.TorrentProvider):
         if re.search('Dit brugernavn eller kodeord er forkert.', response) \
                 or re.search('<title>Login :: HoundDawgs</title>', response) \
                 or re.search('Dine cookies er ikke aktiveret.', response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -102,7 +108,9 @@ class HoundDawgsProvider(generic.TorrentProvider):
 
                 self.search_params[b'searchstr'] = search_string
 
-                data = self.getURL(self.urls[b'search'], params=self.search_params)
+                data = self.getURL(
+                    self.urls[b'search'],
+                    params=self.search_params)
 
                 strTableStart = "<table class=\"torrent_table"
                 startTableIndex = data.find(strTableStart)
@@ -112,10 +120,12 @@ class HoundDawgsProvider(generic.TorrentProvider):
 
                 try:
                     with BS4Parser(trimmedData, features=["html5lib", "permissive"]) as html:
-                        result_table = html.find('table', {'id': 'torrent_table'})
+                        result_table = html.find(
+                            'table', {'id': 'torrent_table'})
 
                         if not result_table:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
                         result_tbody = result_table.find('tbody')
@@ -134,7 +144,8 @@ class HoundDawgsProvider(generic.TorrentProvider):
                                 # link = self.urls[b'base_url'] + allAs[2].attrs[b'href']
                                 # url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
                                 title = allAs[2].string
-                                # Trimming title so accepted by scene check(Feature has been rewuestet i forum)
+                                # Trimming title so accepted by scene
+                                # check(Feature has been rewuestet i forum)
                                 title = title.replace("custom.", "")
                                 title = title.replace("CUSTOM.", "")
                                 title = title.replace("Custom.", "")
@@ -145,7 +156,8 @@ class HoundDawgsProvider(generic.TorrentProvider):
                                 title = title.replace("SUBS.", "")
                                 title = title.replace("Subs.", "")
 
-                                download_url = self.urls[b'base_url'] + allAs[0].attrs[b'href']
+                                download_url = self.urls[
+                                    b'base_url'] + allAs[0].attrs[b'href']
                                 # FIXME
                                 size = -1
                                 seeders = 1
@@ -170,7 +182,9 @@ class HoundDawgsProvider(generic.TorrentProvider):
                             items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -184,6 +198,7 @@ class HoundDawgsProvider(generic.TorrentProvider):
 
 
 class HoundDawgsCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

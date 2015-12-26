@@ -33,6 +33,7 @@ from sickbeard import tvcache
 
 
 class BLUETIGERSProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "BLUETIGERS")
 
@@ -60,7 +61,8 @@ class BLUETIGERSProvider(generic.TorrentProvider):
         self.url = self.urls[b'base_url']
 
     def _doLogin(self):
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(
+                self.session.cookies).values()):
             return True
 
         login_params = {
@@ -69,7 +71,10 @@ class BLUETIGERSProvider(generic.TorrentProvider):
             'take_login': '1'
         }
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
@@ -77,12 +82,14 @@ class BLUETIGERSProvider(generic.TorrentProvider):
         if re.search('/account-logout.php', response):
             return True
         else:
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -100,23 +107,29 @@ class BLUETIGERSProvider(generic.TorrentProvider):
 
                 self.search_params[b'search'] = search_string
 
-                data = self.getURL(self.urls[b'search'], params=self.search_params)
+                data = self.getURL(
+                    self.urls[b'search'],
+                    params=self.search_params)
                 if not data:
                     continue
 
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        result_linkz = html.findAll('a', href=re.compile("torrents-details"))
+                        result_linkz = html.findAll(
+                            'a', href=re.compile("torrents-details"))
 
                         if not result_linkz:
-                            logging.debug("Data returned from provider do not contains any torrent")
+                            logging.debug(
+                                "Data returned from provider do not contains any torrent")
                             continue
 
                         if result_linkz:
                             for link in result_linkz:
                                 title = link.text
-                                download_url = self.urls[b'base_url'] + "/" + link[b'href']
-                                download_url = download_url.replace("torrents-details", "download")
+                                download_url = self.urls[
+                                    b'base_url'] + "/" + link[b'href']
+                                download_url = download_url.replace(
+                                    "torrents-details", "download")
                                 # FIXME
                                 size = -1
                                 seeders = 1
@@ -138,7 +151,9 @@ class BLUETIGERSProvider(generic.TorrentProvider):
                                 items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -163,6 +178,7 @@ class BLUETIGERSAuth(AuthBase):
 
 
 class BLUETIGERSCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

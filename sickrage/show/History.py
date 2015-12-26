@@ -25,20 +25,21 @@ from datetime import timedelta
 import sickbeard
 from sickbeard.common import Quality
 
+
 class History:
     date_format = '%Y%m%d%H%M%S'
 
     def __init__(self):
         self.myDB = sickbeard.db.DBConnection()
-        
+
     def clear(self):
         """
         Clear all the history
         """
         self.myDB.action(
-                'DELETE '
-                'FROM history '
-                'WHERE 1 = 1'
+            'DELETE '
+            'FROM history '
+            'WHERE 1 = 1'
         )
 
     def get(self, limit=100, action=None):
@@ -67,14 +68,22 @@ class History:
 
         if limit == 0:
             if len(actions) > 0:
-                results = self.myDB.select(common_sql + filter_sql + order_sql, actions)
+                results = self.myDB.select(
+                    common_sql + filter_sql + order_sql, actions)
             else:
                 results = self.myDB.select(common_sql + order_sql)
         else:
             if len(actions) > 0:
-                results = self.myDB.select(common_sql + filter_sql + order_sql + 'LIMIT ?', actions + [limit])
+                results = self.myDB.select(
+                    common_sql +
+                    filter_sql +
+                    order_sql +
+                    'LIMIT ?',
+                    actions +
+                    [limit])
             else:
-                results = self.myDB.select(common_sql + order_sql + 'LIMIT ?', [limit])
+                results = self.myDB.select(
+                    common_sql + order_sql + 'LIMIT ?', [limit])
 
         data = []
         for result in results:
@@ -98,8 +107,8 @@ class History:
         """
 
         self.myDB.action(
-                'DELETE '
-                'FROM history '
-                'WHERE date < ?',
-                [(datetime.today() - timedelta(days=30)).strftime(History.date_format)]
+            'DELETE '
+            'FROM history '
+            'WHERE date < ?',
+            [(datetime.today() - timedelta(days=30)).strftime(History.date_format)]
         )

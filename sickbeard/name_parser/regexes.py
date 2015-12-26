@@ -120,7 +120,8 @@ normal_regexes = [
      '''),
 
     ('newpct',
-     # Example: Sobrenatural - Temporada 10 [HDTV][Cap.1023][Espanol Castellano]
+     # Example: Sobrenatural - Temporada 10 [HDTV][Cap.1023][Espanol
+     # Castellano]
      r'''
      (?P<series_name>.+?)                      # Showw_Name: "Sobrenatural"
      (?:.-.+\d{1,2}.\[)                        # Separator and junk: " - Temporada 10 ["

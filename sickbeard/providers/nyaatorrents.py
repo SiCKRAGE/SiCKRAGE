@@ -27,6 +27,7 @@ from sickbeard.providers import generic
 
 
 class NyaaProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "NyaaTorrents")
@@ -47,7 +48,8 @@ class NyaaProvider(generic.TorrentProvider):
         self.minleech = 0
         self.confirmed = False
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
         if self.show and not self.show.is_anime:
             return []
 
@@ -76,13 +78,15 @@ class NyaaProvider(generic.TorrentProvider):
                 s = re.compile(summary_regex, re.DOTALL)
 
                 results = []
-                for curItem in self.cache.getRSSFeed(searchURL)['entries'] or []:
+                for curItem in self.cache.getRSSFeed(
+                        searchURL)['entries'] or []:
                     title = curItem[b'title']
                     download_url = curItem[b'link']
                     if not all([title, download_url]):
                         continue
 
-                    seeders, leechers, size, verified = s.findall(curItem[b'summary'])[0]
+                    seeders, leechers, size, verified = s.findall(
+                        curItem[b'summary'])[0]
                     size = self._convertSize(size)
 
                     # Filter unseeded torrent
@@ -130,6 +134,7 @@ class NyaaProvider(generic.TorrentProvider):
 
 
 class NyaaCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

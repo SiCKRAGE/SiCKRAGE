@@ -49,8 +49,9 @@ def sendNZB(nzb, proper=False):
     else:
         nzbgetXMLrpc = "http://%(username)s:%(password)s@%(host)s/xmlrpc"
 
-    if sickbeard.NZBGET_HOST == None:
-        logging.error("No NZBget host found in configuration. Please configure it.")
+    if sickbeard.NZBGET_HOST is None:
+        logging.error(
+            "No NZBget host found in configuration. Please configure it.")
         return False
 
     url = nzbgetXMLrpc % {"host": sickbeard.NZBGET_HOST, "username": sickbeard.NZBGET_USERNAME,
@@ -58,14 +59,16 @@ def sendNZB(nzb, proper=False):
 
     nzbGetRPC = xmlrpclib.ServerProxy(url)
     try:
-        if nzbGetRPC.writelog("INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
+        if nzbGetRPC.writelog(
+                "INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
             logging.debug("Successful connected to NZBget")
         else:
-            logging.error("Successful connected to NZBget, but unable to send a message")
+            logging.error(
+                "Successful connected to NZBget, but unable to send a message")
 
     except httplib.socket.error:
         logging.error(
-                "Please check your NZBget host and port (if it is running). NZBget is not responding to this combination")
+            "Please check your NZBget host and port (if it is running). NZBget is not responding to this combination")
         return False
 
     except xmlrpclib.ProtocolError as e:
@@ -107,20 +110,25 @@ def sendNZB(nzb, proper=False):
     logging.debug("URL: " + url)
 
     try:
-        # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old command
+        # Find out if nzbget supports priority (Version 9.0+), old versions
+        # beginning with a 0.x will use the old command
         nzbget_version_str = nzbGetRPC.version()
-        nzbget_version = helpers.tryInt(nzbget_version_str[:nzbget_version_str.find(".")])
+        nzbget_version = helpers.tryInt(
+            nzbget_version_str[
+                :nzbget_version_str.find(".")])
         if nzbget_version == 0:
             if nzbcontent64 is not None:
-                nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
+                nzbget_result = nzbGetRPC.append(
+                    nzb.name + ".nzb", category, addToTop, nzbcontent64)
             else:
                 if nzb.resultType == "nzb":
                     genProvider = GenericProvider("")
                     data = genProvider.getURL(nzb.url)
-                    if data == None:
+                    if data is None:
                         return False
                     nzbcontent64 = standard_b64encode(data)
-                nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
+                nzbget_result = nzbGetRPC.append(
+                    nzb.name + ".nzb", category, addToTop, nzbcontent64)
         elif nzbget_version == 12:
             if nzbcontent64 is not None:
                 nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, nzbgetprio, False,
@@ -148,8 +156,12 @@ def sendNZB(nzb, proper=False):
             logging.debug("NZB sent to NZBget successfully")
             return True
         else:
-            logging.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
+            logging.error(
+                "NZBget could not add %s to the queue" %
+                (nzb.name + ".nzb"))
             return False
     except Exception:
-        logging.error("Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
+        logging.error(
+            "Connect Error to NZBget: could not add %s to the queue" %
+            (nzb.name + ".nzb"))
         return False

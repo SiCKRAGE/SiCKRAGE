@@ -29,6 +29,7 @@ from sickrage.helper.exceptions import MultipleShowObjectsException
 
 
 class Show:
+
     def __init__(self):
         pass
 
@@ -49,7 +50,8 @@ class Show:
             return error, show
 
         try:
-            sickbeard.showQueueScheduler.action.removeShow(show, bool(remove_files))
+            sickbeard.showQueueScheduler.action.removeShow(
+                show, bool(remove_files))
         except CantRemoveShowException as exception:
             return ex(exception), show
 
@@ -66,11 +68,11 @@ class Show:
         total_status = [SKIPPED, WANTED]
 
         results = db.select(
-                'SELECT airdate, status '
-                'FROM tv_episodes '
-                'WHERE season > 0 '
-                'AND episode > 0 '
-                'AND airdate > 1'
+            'SELECT airdate, status '
+            'FROM tv_episodes '
+            'WHERE season > 0 '
+            'AND episode > 0 '
+            'AND airdate > 1'
         )
 
         stats = {

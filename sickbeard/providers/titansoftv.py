@@ -29,6 +29,7 @@ from sickrage.helper.exceptions import AuthException
 
 
 class TitansOfTVProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, 'TitansOfTV')
         self.supportsBacklog = True
@@ -45,7 +46,10 @@ class TitansOfTVProvider(generic.TorrentProvider):
 
     def _checkAuth(self):
         if not self.api_key:
-            raise AuthException('Your authentication credentials for ' + self.name + ' are missing, check your config.')
+            raise AuthException(
+                'Your authentication credentials for ' +
+                self.name +
+                ' are missing, check your config.')
 
         return True
 
@@ -56,7 +60,8 @@ class TitansOfTVProvider(generic.TorrentProvider):
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
         # FIXME ADD MODE
         self._checkAuth()
         results = []
@@ -132,7 +137,8 @@ class TitansOfTVProvider(generic.TorrentProvider):
         search_params = {'limit': 100}
 
         # Do a general name search for the episode, formatted like SXXEYY
-        search_params[b'episode'] = 'S%02dE%02d' % (ep_obj.scene_season, ep_obj.scene_episode)
+        search_params[b'episode'] = 'S%02dE%02d' % (
+            ep_obj.scene_season, ep_obj.scene_episode)
 
         if ep_obj.show.indexer == 1:
             search_params[b'series_id'] = ep_obj.show.indexerid
@@ -145,6 +151,7 @@ class TitansOfTVProvider(generic.TorrentProvider):
 
 
 class TitansOfTVCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

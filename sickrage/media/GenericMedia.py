@@ -25,14 +25,22 @@ import sickbeard
 from sickbeard.helpers import findCertainShow
 from sickrage.helper.exceptions import MultipleShowObjectsException
 
+
 class GenericMedia(object):
+
     def __init__(self, indexer_id, media_format):
         """
         :param indexer_id: The indexer id of the show
         :param media_format: The media format of the show image
         """
 
-        self.media_format = ('normal', 'thumb')[media_format in ('banner_thumb', 'poster_thumb', 'small')]
+        self.media_format = (
+            'normal',
+            'thumb')[
+            media_format in (
+                'banner_thumb',
+                'poster_thumb',
+                'small')]
 
         try:
             self.indexer_id = int(indexer_id)
@@ -52,7 +60,7 @@ class GenericMedia(object):
         :return: The content of the desired media file
         """
 
-        return os.path.relpath(self.get_static_media_path()).replace('\\','/')
+        return os.path.relpath(self.get_static_media_path()).replace('\\', '/')
 
     def get_media_path(self):
         """

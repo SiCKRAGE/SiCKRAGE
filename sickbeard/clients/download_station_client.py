@@ -25,15 +25,24 @@ from sickbeard.clients.generic import GenericClient
 
 
 class DownloadStationAPI(GenericClient):
+
     def __init__(self, host=None, username=None, password=None):
 
-        super(DownloadStationAPI, self).__init__('DownloadStation', host, username, password)
+        super(
+            DownloadStationAPI,
+            self).__init__(
+            'DownloadStation',
+            host,
+            username,
+            password)
 
         self.url = self.host + 'webapi/DownloadStation/task.cgi'
 
     def _get_auth(self):
 
-        auth_url = self.host + 'webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&account=' + self.username + '&passwd=' + self.password + '&session=DownloadStation&format=sid'
+        auth_url = self.host + 'webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&account=' + \
+            self.username + '&passwd=' + self.password + \
+            '&session=DownloadStation&format=sid'
 
         try:
             self.response = self.session.get(auth_url, verify=False)

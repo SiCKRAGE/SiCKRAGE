@@ -205,10 +205,14 @@ class AllShowsListUI(object):
                     for name in seriesnames:
                         if searchterm.lower() in name.lower():
                             if 'firstaired' not in curShow:
-                                curShow[b'firstaired'] = str(datetime.date.fromordinal(1))
-                                curShow[b'firstaired'] = re.sub("([-]0{2})+", "", curShow[b'firstaired'])
-                                fixDate = parser.parse(curShow[b'firstaired'], fuzzy=True).date()
-                                curShow[b'firstaired'] = fixDate.strftime(dateFormat)
+                                curShow[b'firstaired'] = str(
+                                    datetime.date.fromordinal(1))
+                                curShow[b'firstaired'] = re.sub(
+                                    "([-]0{2})+", "", curShow[b'firstaired'])
+                                fixDate = parser.parse(
+                                    curShow[b'firstaired'], fuzzy=True).date()
+                                curShow[b'firstaired'] = fixDate.strftime(
+                                    dateFormat)
 
                             if curShow not in searchResults:
                                 searchResults += [curShow]
@@ -242,6 +246,7 @@ class ShowListUI(object):
 
 
 class Proper(object):
+
     def __init__(self, name, url, date, show):
         self.name = name
         self.url = url
@@ -261,7 +266,7 @@ class Proper(object):
 
     def __str__(self):
         return str(self.date) + " " + self.name + " " + str(self.season) + "x" + str(self.episode) + " of " + str(
-                self.indexerid) + " from " + str(sickbeard.indexerApi(self.indexer).name)
+            self.indexerid) + " from " + str(sickbeard.indexerApi(self.indexer).name)
 
 
 class UIError(object):
@@ -274,6 +279,7 @@ class UIError(object):
         self.title = sys.exc_info()[-2] or message
         self.message = message
 
+
 class UIWarning(object):
     """
     Represents an error to be displayed in the web UI.
@@ -284,6 +290,7 @@ class UIWarning(object):
         self.title = sys.exc_info()[-2] or message
         self.message = message
 
+
 class ErrorViewer(object):
     """
     Keeps a static list of UIErrors to be displayed on the UI and allows
@@ -291,14 +298,16 @@ class ErrorViewer(object):
     """
 
     errors = []
+
     def add(self, error, ui=False):
-        self.errors +=[(error, UIError(error))[ui]]
+        self.errors += [(error, UIError(error))[ui]]
 
     def clear(self):
         self.errors = []
 
     def get(self):
         return self.errors
+
 
 class WarningViewer(object):
     """
@@ -307,8 +316,9 @@ class WarningViewer(object):
     """
 
     errors = []
+
     def add(self, error, ui=False):
-        self.errors +=[(error, UIWarning(error))[ui]]
+        self.errors += [(error, UIWarning(error))[ui]]
 
     def clear(self):
         self.errors = []

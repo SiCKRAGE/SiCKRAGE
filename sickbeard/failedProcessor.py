@@ -48,21 +48,32 @@ class FailedProcessor(object):
 
         :return: True
         """
-        self._log("Failed download detected: (" + str(self.nzb_name) + ", " + str(self.dir_name) + ")")
+        self._log("Failed download detected: (" +
+                  str(self.nzb_name) + ", " + str(self.dir_name) + ")")
 
-        releaseName = show_name_helpers.determineReleaseName(self.dir_name, self.nzb_name)
+        releaseName = show_name_helpers.determineReleaseName(
+            self.dir_name, self.nzb_name)
         if releaseName is None:
-            self._log("Warning: unable to find a valid release name.", logging.WARNING)
+            self._log(
+                "Warning: unable to find a valid release name.",
+                logging.WARNING)
             raise FailedPostProcessingFailedException()
 
         try:
             parser = NameParser(False)
             parsed = parser.parse(releaseName)
         except InvalidNameException:
-            self._log("Error: release name is invalid: " + releaseName, logging.DEBUG)
+            self._log(
+                "Error: release name is invalid: " +
+                releaseName,
+                logging.DEBUG)
             raise FailedPostProcessingFailedException()
         except InvalidShowException:
-            self._log("Error: unable to parse release name " + releaseName + " into a valid show", logging.DEBUG)
+            self._log(
+                "Error: unable to parse release name " +
+                releaseName +
+                " into a valid show",
+                logging.DEBUG)
             raise FailedPostProcessingFailedException()
 
         logging.debug("name_parser info: ")
@@ -76,8 +87,10 @@ class FailedProcessor(object):
         for episode in parsed.episode_numbers:
             segment = parsed.show.getEpisode(parsed.season_number, episode)
 
-            cur_failed_queue_item = search_queue.FailedQueueItem(parsed.show, [segment])
-            sickbeard.searchQueueScheduler.action.add_item(cur_failed_queue_item)
+            cur_failed_queue_item = search_queue.FailedQueueItem(parsed.show, [
+                                                                 segment])
+            sickbeard.searchQueueScheduler.action.add_item(
+                cur_failed_queue_item)
 
         return True
 

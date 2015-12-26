@@ -33,6 +33,7 @@ from sickbeard.providers import generic
 
 
 class animenzb(generic.NZBProvider):
+
     def __init__(self):
 
         generic.NZBProvider.__init__(self, "AnimeNZB")
@@ -49,12 +50,15 @@ class animenzb(generic.NZBProvider):
         self.url = self.urls[b'base_url']
 
     def _get_season_search_strings(self, ep_obj):
-        return [x for x in show_name_helpers.makeSceneSeasonSearchString(self.show, ep_obj)]
+        return [x for x in show_name_helpers.makeSceneSeasonSearchString(
+            self.show, ep_obj)]
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
-        return [x for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
+        return [x for x in show_name_helpers.makeSceneSearchString(
+            self.show, ep_obj)]
 
-    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_string, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         logging.debug("Search string: %s " % search_string)
 
@@ -77,7 +81,8 @@ class animenzb(generic.NZBProvider):
                 results.append(curItem)
                 logging.debug("Found result: %s " % title)
 
-        # For each search mode sort all the items by seeders if available if available
+        # For each search mode sort all the items by seeders if available if
+        # available
         results.sort(key=lambda tup: tup[0], reverse=True)
 
         return results
@@ -90,7 +95,7 @@ class animenzb(generic.NZBProvider):
 
             (title, url) = self._get_title_and_url(item)
 
-            if item.has_key('published_parsed') and item[b'published_parsed']:
+            if 'published_parsed' in item and item[b'published_parsed']:
                 result_date = item.published_parsed
                 if result_date:
                     result_date = datetime.datetime(*result_date[0:6])
@@ -98,13 +103,15 @@ class animenzb(generic.NZBProvider):
                 continue
 
             if not date or result_date > date:
-                search_result = classes.Proper(title, url, result_date, self.show)
+                search_result = classes.Proper(
+                    title, url, result_date, self.show)
                 results.append(search_result)
 
         return results
 
 
 class animenzbCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

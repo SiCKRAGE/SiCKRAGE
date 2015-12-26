@@ -62,6 +62,7 @@ def diagnose():
 
 
 class LibnotifyNotifier:
+
     def __init__(self):
         self.Notify = None
         self.gobject = None
@@ -72,15 +73,18 @@ class LibnotifyNotifier:
         try:
             from gi.repository import Notify
         except ImportError:
-            logging.error("Unable to import Notify from gi.repository. libnotify notifications won't work.")
+            logging.error(
+                "Unable to import Notify from gi.repository. libnotify notifications won't work.")
             return False
         try:
             from gi.repository import GObject
         except ImportError:
-            logging.error("Unable to import GObject from gi.repository. We can't catch a GError in display.")
+            logging.error(
+                "Unable to import GObject from gi.repository. We can't catch a GError in display.")
             return False
         if not Notify.init('SiCKRAGE'):
-            logging.error("Initialization of Notify failed. libnotify notifications won't work.")
+            logging.error(
+                "Initialization of Notify failed. libnotify notifications won't work.")
             return False
         self.Notify = Notify
         self.gobject = GObject
@@ -96,7 +100,10 @@ class LibnotifyNotifier:
 
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._notify(common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
+            self._notify(
+                common.notifyStrings[
+                    common.NOTIFY_SUBTITLE_DOWNLOAD],
+                ep_name + ": " + lang)
 
     def notify_git_update(self, new_version="??"):
         if sickbeard.USE_LIBNOTIFY:
@@ -105,7 +112,8 @@ class LibnotifyNotifier:
             self._notify(title, update_text + new_version)
 
     def test_notify(self):
-        return self._notify('Test notification', "This is a test notification from SiCKRAGE", force=True)
+        return self._notify(
+            'Test notification', "This is a test notification from SiCKRAGE", force=True)
 
     def _notify(self, title, message, force=False):
         if not sickbeard.USE_LIBNOTIFY and not force:
@@ -115,7 +123,14 @@ class LibnotifyNotifier:
 
         # Can't make this a global constant because PROG_DIR isn't available
         # when the module is imported.
-        icon_path = ek(os.path.join, sickbeard.PROG_DIR, 'gui', 'slick', 'images', 'ico', 'favicon-120.png')
+        icon_path = ek(
+            os.path.join,
+            sickbeard.PROG_DIR,
+            'gui',
+            'slick',
+            'images',
+            'ico',
+            'favicon-120.png')
 
         # If the session bus can't be acquired here a bunch of warning messages
         # will be printed but the call to show() will still return True.

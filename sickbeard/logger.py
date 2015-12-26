@@ -41,6 +41,7 @@ from sickrage.helper.common import dateTimeFormat
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 
+
 class SRLogger(logging.Logger):
 
     def __init__(self, name='root', *args, **kwargs):
@@ -85,7 +86,10 @@ class SRLogger(logging.Logger):
         }
 
         # list of allowed loggers
-        self.allowedLoggers = ['root', 'tornado.general', 'tornado.application']
+        self.allowedLoggers = [
+            'root',
+            'tornado.general',
+            'tornado.application']
 
     def initalize(self):
         # set custom level for database logging
@@ -95,22 +99,32 @@ class SRLogger(logging.Logger):
         # console log handler
         if self.consoleLogging:
             console = logging.StreamHandler()
-            console.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S'))
-            console.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
+            console.setFormatter(
+                logging.Formatter(
+                    '%(asctime)s %(levelname)s::%(threadName)s::%(message)s',
+                    '%H:%M:%S'))
+            console.setLevel(
+                self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
             logging.getLogger().addHandler(console)
 
         # rotating log file handler
         if self.fileLogging and self.logFile:
             rfh = logging.handlers.RotatingFileHandler(
-                    filename=self.logFile,
-                    maxBytes=self.logSize,
-                    backupCount=self.logNr
+                filename=self.logFile,
+                maxBytes=self.logSize,
+                backupCount=self.logNr
             )
-            rfh.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', dateTimeFormat))
-            rfh.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
+            rfh.setFormatter(
+                logging.Formatter(
+                    '%(asctime)s %(levelname)s::%(threadName)s::%(message)s',
+                    dateTimeFormat))
+            rfh.setLevel(
+                self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
             logging.getLogger().addHandler(rfh)
 
+
 class CustomLogger(SRLogger):
+
     def __init__(self, *args, **kwargs):
         super(CustomLogger, self).__init__(*args, **kwargs)
         logging.log_error_and_exit = self.log_error_and_exit
@@ -128,13 +142,19 @@ class CustomLogger(SRLogger):
                                             .join([x for x in self.censoredItems.values() if len(x)])), r"\1\3",
                                     record.msg)
 
-                # needed because Newznab apikey isn't stored as key=value in a section.
-                record.msg = re.sub(r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)", r"\1=**********\2", record.msg)
-            except:pass
+                # needed because Newznab apikey isn't stored as key=value in a
+                # section.
+                record.msg = re.sub(
+                    r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)",
+                    r"\1=**********\2",
+                    record.msg)
+            except:
+                pass
 
             # sending record to UI
             if record.levelno in [WARNING, ERROR]:
-                (classes.WarningViewer().add(record.msg, True), classes.ErrorViewer().add(record.msg, True))[int(level) == ERROR]
+                (classes.WarningViewer().add(record.msg, True),
+                 classes.ErrorViewer().add(record.msg, True))[int(level) == ERROR]
 
             super(CustomLogger, self).handle(record)
             if 'exit' in record.args:
@@ -149,12 +169,20 @@ class CustomLogger(SRLogger):
         super(CustomLogger, self).warning(msg, exc_info=1, *args, **kwargs)
 
     def db(self, msg, *args, **kwargs):
-        super(CustomLogger, self).log(self.logLevels[b'DB'], msg, *args, **kwargs)
+        super(
+            CustomLogger,
+            self).log(
+            self.logLevels[b'DB'],
+            msg,
+            *
+            args,
+            **kwargs)
 
     def log_error_and_exit(self, msg, *args, **kwargs):
         super(CustomLogger, self).error(msg, exit=1, *args, **kwargs)
 
-    def submit_errors(self):  # Too many local variables, too many branches, pylint: disable=R0912,R0914
+    # Too many local variables, too many branches, pylint: disable=R0912,R0914
+    def submit_errors(self):
         submitter_result = None
         issue_id = None
 
@@ -186,7 +214,10 @@ class CustomLogger(SRLogger):
         gh_org = sickbeard.GIT_ORG or 'SiCKRAGETV'
         gh_repo = 'sickrage-issues'
 
-        gh = Github(login_or_token=sickbeard.GIT_USERNAME, password=sickbeard.GIT_PASSWORD, user_agent="SiCKRAGE")
+        gh = Github(
+            login_or_token=sickbeard.GIT_USERNAME,
+            password=sickbeard.GIT_PASSWORD,
+            user_agent="SiCKRAGE")
 
         try:
             # read log file
@@ -197,24 +228,31 @@ class CustomLogger(SRLogger):
                     log_data = f.readlines()
 
             for i in range(1, int(sickbeard.LOG_NR)):
-                if ek(os.path.isfile, self.logFile + ".%i" % i) and (len(log_data) <= 500):
+                if ek(os.path.isfile, self.logFile + ".%i" %
+                      i) and (len(log_data) <= 500):
                     with ek(io.open, self.logFile + ".%i" % i, 'r') as f:
                         log_data += f.readlines()
 
             log_data = [line for line in reversed(log_data)]
 
             # parse and submit errors to issue tracker
-            for curError in sorted(classes.ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
+            for curError in sorted(
+                    classes.ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
 
                 try:
                     title_Error = "[APP SUBMITTED]: {}".format(curError.title)
                     if not len(title_Error) or title_Error == 'None':
-                        title_Error = re.match(r"^[A-Z0-9\-\[\] :]+::\s*(.*)$", curError.message).group(1)
+                        title_Error = re.match(
+                            r"^[A-Z0-9\-\[\] :]+::\s*(.*)$",
+                            curError.message).group(1)
 
                     if len(title_Error) > 1000:
                         title_Error = title_Error[0:1000]
                 except Exception as e:
-                    super(CustomLogger, self).error("Unable to get error title : {}".format(ex(e)))
+                    super(
+                        CustomLogger, self).error(
+                        "Unable to get error title : {}".format(
+                            ex(e)))
 
                 gist = None
                 regex = r"^({})\s+([A-Z]+)\s+([0-9A-Z\-]+)\s*(.*)$".format(curError.time)
@@ -225,13 +263,15 @@ class CustomLogger(SRLogger):
                         if level == logging.ERROR:
                             paste_data = "".join(log_data[i:i + 50])
                             if paste_data:
-                                gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
+                                gist = gh.get_user().create_gist(
+                                    True, {"sickrage.log": InputFileContent(paste_data)})
                             break
                     else:
                         gist = 'No ERROR found'
 
                 message = "### INFO\n"
-                message += "Python Version: **" + sys.version[:120].replace('\n', '') + "**\n"
+                message += "Python Version: **" + \
+                    sys.version[:120].replace('\n', '') + "**\n"
                 message += "Operating System: **" + platform.platform() + "**\n"
                 try:
                     message += "Locale: " + locale.getdefaultlocale()[1] + "\n"
@@ -250,13 +290,16 @@ class CustomLogger(SRLogger):
                 message += "---\n"
                 message += "_STAFF NOTIFIED_: @SiCKRAGETV/owners @SiCKRAGETV/moderators"
 
-                reports = gh.get_organization(gh_org).get_repo(gh_repo).get_issues(state="all")
+                reports = gh.get_organization(gh_org).get_repo(
+                    gh_repo).get_issues(state="all")
 
                 def is_ascii_error(title):
-                    return re.search(r".* codec can't .*code .* in position .*:", title) is not None
+                    return re.search(
+                        r".* codec can't .*code .* in position .*:", title) is not None
 
                 def is_malformed_error(title):
-                    return re.search(r".* not well-formed \(invalid token\): line .* column .*", title) is not None
+                    return re.search(
+                        r".* not well-formed \(invalid token\): line .* column .*", title) is not None
 
                 ascii_error = is_ascii_error(title_Error)
                 malformed_error = is_malformed_error(title_Error)
@@ -280,7 +323,8 @@ class CustomLogger(SRLogger):
                         break
 
                 if not issue_found:
-                    issue = gh.get_organization(gh_org).get_repo(gh_repo).create_issue(title_Error, message)
+                    issue = gh.get_organization(gh_org).get_repo(
+                        gh_repo).create_issue(title_Error, message)
                     if issue:
                         issue_id = issue.number
                         submitter_result = 'Your issue ticket #%s was submitted successfully!' % issue_id

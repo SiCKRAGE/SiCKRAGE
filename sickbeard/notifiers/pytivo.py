@@ -30,6 +30,7 @@ from sickrage.helper.exceptions import ex
 
 
 class pyTivoNotifier:
+
     def notify_snatch(self, ep_name):
         pass
 
@@ -65,7 +66,6 @@ class pyTivoNotifier:
         # come up with.
         #
 
-
         # Calculated values
 
         showPath = ep_obj.show.location
@@ -85,7 +85,7 @@ class pyTivoNotifier:
 
         # Finally create the url and make request
         requestUrl = "http://" + host + "/TiVoConnect?" + urlencode(
-                {'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn})
+            {'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn})
 
         logging.debug("pyTivo notification: Requesting " + requestUrl)
 
@@ -93,18 +93,23 @@ class pyTivoNotifier:
 
         try:
             response = urlopen(request)  # @UnusedVariable
-        except HTTPError  as e:
+        except HTTPError as e:
             if hasattr(e, 'reason'):
-                logging.error("pyTivo notification: Error, failed to reach a server - " + e.reason)
+                logging.error(
+                    "pyTivo notification: Error, failed to reach a server - " +
+                    e.reason)
                 return False
             elif hasattr(e, 'code'):
-                logging.error("pyTivo notification: Error, the server couldn't fulfill the request - " + e.code)
+                logging.error(
+                    "pyTivo notification: Error, the server couldn't fulfill the request - " +
+                    e.code)
             return False
         except Exception as e:
             logging.error("PYTIVO: Unknown exception: {}".format(ex(e)))
             return False
         else:
-            logging.info("pyTivo notification: Successfully requested transfer of file")
+            logging.info(
+                "pyTivo notification: Successfully requested transfer of file")
             return True
 
 

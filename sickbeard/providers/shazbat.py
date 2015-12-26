@@ -25,6 +25,7 @@ from sickrage.helper.exceptions import AuthException
 
 
 class ShazbatProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Shazbat.tv")
@@ -38,12 +39,15 @@ class ShazbatProvider(generic.TorrentProvider):
         self.cache = ShazbatCache(self)
 
         self.urls = {'base_url': 'http://www.shazbat.tv/',
-                     'website': 'http://www.shazbat.tv/login',}
+                     'website': 'http://www.shazbat.tv/login', }
         self.url = self.urls[b'website']
 
     def _checkAuth(self):
         if not self.passkey:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
+            raise AuthException(
+                "Your authentication credentials for " +
+                self.name +
+                " are missing, check your config.")
 
         return True
 
@@ -51,7 +55,8 @@ class ShazbatProvider(generic.TorrentProvider):
         if not self.passkey:
             self._checkAuth()
         elif not (data[b'entries'] and data[b'feed']):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
 
         return True
 
@@ -60,6 +65,7 @@ class ShazbatProvider(generic.TorrentProvider):
 
 
 class ShazbatCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 
@@ -67,7 +73,8 @@ class ShazbatCache(tvcache.TVCache):
         self.minTime = 15
 
     def _getRSSData(self):
-        rss_url = self.provider.urls[b'base_url'] + 'rss/recent?passkey=' + provider.passkey + '&fname=true'
+        rss_url = self.provider.urls[
+            b'base_url'] + 'rss/recent?passkey=' + provider.passkey + '&fname=true'
         logging.debug("Cache update URL: %s" % rss_url)
 
         return self.getRSSFeed(rss_url)

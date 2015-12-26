@@ -40,6 +40,7 @@ from sickbeard.common import USER_AGENT
 
 
 class NewznabProvider(generic.NZBProvider):
+
     def __init__(self, name, url, key='0', catIDs='5030,5040', search_mode='eponly', search_fallback=False,
                  enable_daily=False, enable_backlog=False):
 
@@ -80,8 +81,8 @@ class NewznabProvider(generic.NZBProvider):
 
     def configStr(self):
         return self.name + '|' + self.url + '|' + self.key + '|' + self.catIDs + '|' + str(
-                int(self.enabled)) + '|' + self.search_mode + '|' + str(int(self.search_fallback)) + '|' + str(
-                int(self.enable_daily)) + '|' + str(int(self.enable_backlog))
+            int(self.enabled)) + '|' + self.search_mode + '|' + str(int(self.search_fallback)) + '|' + str(
+            int(self.enable_daily)) + '|' + str(int(self.enable_backlog))
 
     def imageName(self):
         if ek(os.path.isfile, ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME, 'images', 'providers',
@@ -89,8 +90,10 @@ class NewznabProvider(generic.NZBProvider):
             return self.getID() + '.png'
         return 'newznab.png'
 
-    def _getURL(self, url, post_data=None, params=None, timeout=30, json=False):
-        return self.getURL(url, post_data=post_data, params=params, timeout=timeout, json=json)
+    def _getURL(self, url, post_data=None,
+                params=None, timeout=30, json=False):
+        return self.getURL(url, post_data=post_data,
+                           params=params, timeout=timeout, json=json)
 
     def get_newznab_categories(self):
         """
@@ -108,16 +111,19 @@ class NewznabProvider(generic.NZBProvider):
             params[b'apikey'] = self.key
 
         try:
-            data = self.cache.getRSSFeed("%s/api?%s" % (self.url, urllib.urlencode(params)))
+            data = self.cache.getRSSFeed(
+                "%s/api?%s" %
+                (self.url, urllib.urlencode(params)))
         except Exception:
             logging.warning("Error getting html for [%s]" %
-                        ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x, y) for x, y in params.iteritems()))))
+                            ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x, y) for x, y in params.iteritems()))))
             return (False, return_categories, "Error getting html for [%s]" %
                     ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x, y) for x, y in params.iteritems()))))
 
         if not self._checkAuthFromData(data):
             logging.debug("Error parsing xml")
-            return False, return_categories, "Error parsing xml for [%s]" % (self.name)
+            return False, return_categories, "Error parsing xml for [%s]" % (
+                self.name)
 
         try:
             for category in data.feed.categories:
@@ -127,7 +133,8 @@ class NewznabProvider(generic.NZBProvider):
                         return_categories.append(subcat)
         except Exception:
             logging.debug("Error parsing result for [%s]" % (self.name))
-            return (False, return_categories, "Error parsing result for [%s]" % (self.name))
+            return (False, return_categories,
+                    "Error parsing result for [%s]" % (self.name))
 
         return True, return_categories, ""
 
@@ -139,7 +146,7 @@ class NewznabProvider(generic.NZBProvider):
             return to_return
 
         params[b'maxage'] = (datetime.datetime.now() - datetime.datetime.combine(ep_obj.airdate,
-                                                                                datetime.datetime.min.time())).days + 1
+                                                                                 datetime.datetime.min.time())).days + 1
         params[b'tvdbid'] = ep_obj.show.indexerid
 
         # season
@@ -154,7 +161,7 @@ class NewznabProvider(generic.NZBProvider):
 
         # add new query strings for exceptions
         name_exceptions = list(
-                set([ep_obj.show.name] + scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid)))
+            set([ep_obj.show.name] + scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid)))
         for cur_exception in name_exceptions:
             params[b'q'] = helpers.sanitizeSceneName(cur_exception) + save_q
             to_return.append(dict(params))
@@ -168,7 +175,7 @@ class NewznabProvider(generic.NZBProvider):
             return to_return
 
         params[b'maxage'] = (datetime.datetime.now() - datetime.datetime.combine(ep_obj.airdate,
-                                                                                datetime.datetime.min.time())).days + 1
+                                                                                 datetime.datetime.min.time())).days + 1
         params[b'tvdbid'] = ep_obj.show.indexerid
 
         if ep_obj.show.air_by_date or ep_obj.show.sports:
@@ -181,7 +188,7 @@ class NewznabProvider(generic.NZBProvider):
 
         # add new query strings for exceptions
         name_exceptions = list(
-                set([ep_obj.show.name] + scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid)))
+            set([ep_obj.show.name] + scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid)))
         for cur_exception in name_exceptions:
             params[b'q'] = helpers.sanitizeSceneName(cur_exception)
             if add_string:
@@ -196,7 +203,10 @@ class NewznabProvider(generic.NZBProvider):
 
     def _checkAuth(self):
         if self.needs_auth and not self.key:
-            logging.warning("Your authentication credentials for " + self.name + " are missing, check your config.")
+            logging.warning(
+                "Your authentication credentials for " +
+                self.name +
+                " are missing, check your config.")
             return False
         return True
 
@@ -205,30 +215,40 @@ class NewznabProvider(generic.NZBProvider):
         try:
             data[b'feed']
             data[b'entries']
-        except (AttributeError,KeyError):return self._checkAuth()
+        except (AttributeError, KeyError):
+            return self._checkAuth()
 
         try:
             if int(data[b'bozo']) == 1:
                 raise Exception(data[b'bozo_exception'])
-        except (AttributeError,KeyError):pass
+        except (AttributeError, KeyError):
+            pass
 
         try:
             err_code = data[b'feed'][b'error'][b'code']
             err_desc = data[b'feed'][b'error'][b'description']
 
             if int(err_code) == 100:
-                raise AuthException("Your API key for " + self.name + " is incorrect, check your config.")
+                raise AuthException(
+                    "Your API key for " +
+                    self.name +
+                    " is incorrect, check your config.")
             elif int(err_code) == 101:
-                raise AuthException("Your account on " + self.name + " has been suspended, contact the administrator.")
+                raise AuthException(
+                    "Your account on " +
+                    self.name +
+                    " has been suspended, contact the administrator.")
             elif int(err_code) == 102:
                 raise AuthException(
-                        "Your account isn't allowed to use the API on " + self.name + ", contact the administrator")
+                    "Your account isn't allowed to use the API on " + self.name + ", contact the administrator")
             raise Exception("Unknown error: %s" % err_desc)
-        except (AttributeError,KeyError):pass
+        except (AttributeError, KeyError):
+            pass
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         self._checkAuth()
 
@@ -297,15 +317,17 @@ class NewznabProvider(generic.NZBProvider):
                 break
 
             if offset != params[b'offset']:
-                logging.info("Tell your newznab provider to fix their bloody newznab responses")
+                logging.info(
+                    "Tell your newznab provider to fix their bloody newznab responses")
                 break
 
             params[b'offset'] += params[b'limit']
             if (total > int(params[b'offset'])) and (offset < 500):
                 offset = int(params[b'offset'])
-                # if there are more items available then the amount given in one call, grab some more
+                # if there are more items available then the amount given in
+                # one call, grab some more
                 logging.debug('%d' % (total - offset) + ' more items to be fetched from provider.' +
-                            'Fetching another %d' % int(params[b'limit']) + ' items.')
+                              'Fetching another %d' % int(params[b'limit']) + ' items.')
             else:
                 logging.debug('No more searches needed')
                 break
@@ -317,31 +339,41 @@ class NewznabProvider(generic.NZBProvider):
 
         myDB = db.DBConnection()
         sqlResults = myDB.select(
-                'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
-                ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
-                ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
-                ' AND (e.status IN (' + ','.join([str(x) for x in Quality.DOWNLOADED]) + ')' +
-                ' OR (e.status IN (' + ','.join([str(x) for x in Quality.SNATCHED]) + ')))'
+            'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
+            ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
+            ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
+            ' AND (e.status IN (' + ','.join([str(x) for x in Quality.DOWNLOADED]) + ')' +
+            ' OR (e.status IN (' + ','.join([str(x)
+                                             for x in Quality.SNATCHED]) + ')))'
         )
 
         if not sqlResults:
             return []
 
         for sqlshow in sqlResults:
-            self.show = helpers.findCertainShow(sickbeard.showList, int(sqlshow[b"showid"]))
+            self.show = helpers.findCertainShow(
+                sickbeard.showList, int(sqlshow[b"showid"]))
             if self.show:
-                curEp = self.show.getEpisode(int(sqlshow[b"season"]), int(sqlshow[b"episode"]))
-                searchStrings = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
+                curEp = self.show.getEpisode(
+                    int(sqlshow[b"season"]), int(sqlshow[b"episode"]))
+                searchStrings = self._get_episode_search_strings(
+                    curEp, add_string='PROPER|REPACK')
                 for searchString in searchStrings:
                     for item in self._doSearch(searchString):
                         title, url = self._get_title_and_url(item)
                         if re.match(r'.*(REPACK|PROPER).*', title, re.I):
-                            results.append(classes.Proper(title, url, datetime.datetime.today(), self.show))
+                            results.append(
+                                classes.Proper(
+                                    title,
+                                    url,
+                                    datetime.datetime.today(),
+                                    self.show))
 
         return results
 
 
 class NewznabCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)

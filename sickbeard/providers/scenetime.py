@@ -29,6 +29,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class SceneTimeProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "SceneTime")
@@ -58,18 +59,23 @@ class SceneTimeProvider(generic.TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls[b'login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Username or password incorrect', response):
-            logging.warning("Invalid username or password. Check your settings")
+            logging.warning(
+                "Invalid username or password. Check your settings")
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -84,7 +90,8 @@ class SceneTimeProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls[b'search'] % (urllib.quote(search_string), self.categories)
+                searchURL = self.urls[b'search'] % (
+                    urllib.quote(search_string), self.categories)
                 logging.debug("Search URL: %s" % searchURL)
 
                 data = self.getURL(searchURL)
@@ -94,33 +101,41 @@ class SceneTimeProvider(generic.TorrentProvider):
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
                         torrent_table = html.select("#torrenttable table")
-                        torrent_rows = torrent_table[0].select("tr") if torrent_table else []
+                        torrent_rows = torrent_table[0].select(
+                            "tr") if torrent_table else []
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            logging.debug(
+                                "Data returned from provider does not contain any torrents")
                             continue
 
                         # Scenetime apparently uses different number of cells in #torrenttable based
                         # on who you are. This works around that by extracting labels from the first
                         # <tr> and using their index to find the correct download/seeders/leechers td.
-                        labels = [label.get_text() for label in torrent_rows[0].find_all('td')]
+                        labels = [label.get_text()
+                                  for label in torrent_rows[0].find_all('td')]
 
                         for result in torrent_rows[1:]:
                             cells = result.find_all('td')
 
                             link = cells[labels.index('Name')].find('a')
 
-                            full_id = link[b'href'].replace('details.php?id=', '')
+                            full_id = link[b'href'].replace(
+                                'details.php?id=', '')
                             torrent_id = full_id.split("&")[0]
 
                             try:
                                 title = link.contents[0].get_text()
-                                filename = "%s.torrent" % title.replace(" ", ".")
-                                download_url = self.urls[b'download'] % (torrent_id, filename)
+                                filename = "%s.torrent" % title.replace(
+                                    " ", ".")
+                                download_url = self.urls[
+                                    b'download'] % (torrent_id, filename)
 
-                                seeders = int(cells[labels.index('Seeders')].get_text())
-                                leechers = int(cells[labels.index('Leechers')].get_text())
+                                seeders = int(
+                                    cells[labels.index('Seeders')].get_text())
+                                leechers = int(
+                                    cells[labels.index('Leechers')].get_text())
                                 # FIXME
                                 size = -1
 
@@ -145,7 +160,9 @@ class SceneTimeProvider(generic.TorrentProvider):
                             items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -159,6 +176,7 @@ class SceneTimeProvider(generic.TorrentProvider):
 
 
 class SceneTimeCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

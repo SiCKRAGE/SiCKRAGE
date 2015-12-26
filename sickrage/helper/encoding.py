@@ -37,8 +37,10 @@ import sickbeard
 
 def encodingInit():
     # map the following codecs to utf-8
-    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
-    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp1252' else None)
+    codecs.register(lambda name: codecs.lookup(
+        'utf-8') if name == 'cp65001' else None)
+    codecs.register(lambda name: codecs.lookup(
+        'utf-8') if name == 'cp1252' else None)
 
     # get locale encoding
     try:
@@ -48,15 +50,18 @@ def encodingInit():
         sickbeard.SYS_ENCODING = None
 
     # enforce UTF-8
-    if not sickbeard.SYS_ENCODING or codecs.lookup(sickbeard.SYS_ENCODING).name == 'ascii':
+    if not sickbeard.SYS_ENCODING or codecs.lookup(
+            sickbeard.SYS_ENCODING).name == 'ascii':
         sickbeard.SYS_ENCODING = 'UTF-8'
 
     # wrap i/o in unicode
     sys.stdout = codecs.getwriter(sickbeard.SYS_ENCODING)(sys.stdout)
     sys.stdin = codecs.getreader(sickbeard.SYS_ENCODING)(sys.stdin)
 
+
 def getEncoding():
     return sickbeard.SYS_ENCODING or "UTF-8"
+
 
 def ek(f, *args, **kwargs):
     """
@@ -73,7 +78,8 @@ def ek(f, *args, **kwargs):
         if name == 'nt':
             result = f(*args, **kwargs)
         else:
-            result = f(*[ss(x) if isinstance(x, (six.text_type, six.binary_type)) else x for x in args], **kwargs)
+            result = f(*[ss(x) if isinstance(x, (six.text_type,
+                                                 six.binary_type)) else x for x in args], **kwargs)
 
         def _wrapper(result, *args, **kwargs):
             try:
@@ -82,9 +88,11 @@ def ek(f, *args, **kwargs):
                 elif isinstance(result, collections.Mapping):
                     return dict(imap(_wrapper, result.items()))
                 elif isinstance(result, collections.Iterable) and isinstance(result, types.GeneratorType):
-                    return filter(lambda x: x is not None, imap(_wrapper, result))
+                    return filter(lambda x: x is not None,
+                                  imap(_wrapper, result))
                 elif isinstance(result, collections.Iterable) and isinstance(result, (types.TupleType, types.ListType)):
-                    return type(result)(filter(lambda x: x is not None, imap(_wrapper, result)))
+                    return type(result)(
+                        filter(lambda x: x is not None, imap(_wrapper, result)))
             except Exception as e:
                 print(e)
 

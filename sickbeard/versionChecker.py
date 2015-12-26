@@ -71,13 +71,16 @@ class CheckVersion(object):
 
             if self.check_for_new_version(force):
                 if sickbeard.AUTO_UPDATE:
-                    logging.info("New update found for SiCKRAGE, starting auto-updater ...")
-                    ui.notifications.message('New update found for SiCKRAGE, starting auto-updater')
+                    logging.info(
+                        "New update found for SiCKRAGE, starting auto-updater ...")
+                    ui.notifications.message(
+                        'New update found for SiCKRAGE, starting auto-updater')
                     if self.run_backup_if_safe() is True:
                         if sickbeard.versionCheckScheduler.action.update():
                             logging.info("Update was successful!")
                             ui.notifications.message('Update was successful')
-                            sickbeard.events.put(sickbeard.events.SystemEvent.RESTART)
+                            sickbeard.events.put(
+                                sickbeard.events.SystemEvent.RESTART)
                         else:
                             logging.info("Update failed!")
                             ui.notifications.message('Update failed!')
@@ -100,15 +103,18 @@ class CheckVersion(object):
 
             if self._keeplatestbackup(backupDir) and self._backup(backupDir):
                 logging.info("Config backup successful, updating...")
-                ui.notifications.message('Backup', 'Config backup successful, updating...')
+                ui.notifications.message(
+                    'Backup', 'Config backup successful, updating...')
                 return True
             else:
                 logging.error("Config backup failed, aborting update")
-                ui.notifications.message('Backup', 'Config backup failed, aborting update')
+                ui.notifications.message(
+                    'Backup', 'Config backup failed, aborting update')
                 return False
         except Exception as e:
             logging.error('Update: Config backup failed. Error: %s' % ex(e))
-            ui.notifications.message('Backup', 'Config backup failed, aborting update')
+            ui.notifications.message(
+                'Backup', 'Config backup failed, aborting update')
             return False
 
     @staticmethod
@@ -139,12 +145,19 @@ class CheckVersion(object):
     def _backup(backupDir=None):
         if not backupDir:
             return False
-        source = [ek(os.path.join, sickbeard.DATA_DIR, 'sickbeard.db'), sickbeard.CONFIG_FILE]
+        source = [ek(os.path.join, sickbeard.DATA_DIR,
+                     'sickbeard.db'), sickbeard.CONFIG_FILE]
         source.append(ek(os.path.join, sickbeard.DATA_DIR, 'failed.db'))
         source.append(ek(os.path.join, sickbeard.DATA_DIR, 'cache.db'))
-        target = ek(os.path.join, backupDir, 'sickrage-' + time.strftime('%Y%m%d%H%M%S') + '.zip')
+        target = ek(
+            os.path.join,
+            backupDir,
+            'sickrage-' +
+            time.strftime('%Y%m%d%H%M%S') +
+            '.zip')
 
-        for (path, dirs, files) in ek(os.walk, sickbeard.CACHE_DIR, topdown=True):
+        for (path, dirs, files) in ek(
+                os.walk, sickbeard.CACHE_DIR, topdown=True):
             for dirname in dirs:
                 if path == sickbeard.CACHE_DIR and dirname not in ['images']:
                     dirs.remove(dirname)
@@ -157,14 +170,16 @@ class CheckVersion(object):
         try:
             self.updater.need_update()
             cur_hash = str(self.updater.get_newest_commit_hash())
-            assert len(cur_hash) is 40, "Commit hash wrong length: %s hash: %s" % (len(cur_hash), cur_hash)
+            assert len(cur_hash) is 40, "Commit hash wrong length: %s hash: %s" % (
+                len(cur_hash), cur_hash)
 
             check_url = "http://cdn.rawgit.com/%s/%s/%s/sickbeard/databases/mainDB.py" % (
-            sickbeard.GIT_ORG, sickbeard.GIT_REPO, cur_hash)
+                sickbeard.GIT_ORG, sickbeard.GIT_REPO, cur_hash)
             response = helpers.getURL(check_url, session=self.session)
             assert response, "Empty response from %s" % check_url
 
-            match = re.search(r"MAX_DB_VERSION\s=\s(?P<version>\d{2,3})", response)
+            match = re.search(
+                r"MAX_DB_VERSION\s=\s(?P<version>\d{2,3})", response)
             branchDestDBversion = int(match.group('version'))
             myDB = db.DBConnection()
             branchCurrDBversion = myDB.checkDBVersion()
@@ -183,33 +198,40 @@ class CheckVersion(object):
                 result = self.getDBcompare()
 
                 if result == 'equal':
-                    logging.debug("We can proceed with the update. New update has same DB version")
+                    logging.debug(
+                        "We can proceed with the update. New update has same DB version")
                     return True
                 elif result == 'upgrade':
                     logging.warning(
-                            "We can't proceed with the update. New update has a new DB version. Please manually update")
+                        "We can't proceed with the update. New update has a new DB version. Please manually update")
                     return False
                 elif result == 'downgrade':
                     logging.error(
-                            "We can't proceed with the update. New update has a old DB version. It's not possible to downgrade")
+                        "We can't proceed with the update. New update has a old DB version. It's not possible to downgrade")
                     return False
             except Exception as e:
-                logging.error("We can't proceed with the update. Unable to compare DB version. Error: %s" % repr(e))
+                logging.error(
+                    "We can't proceed with the update. Unable to compare DB version. Error: %s" %
+                    repr(e))
 
         def postprocessor_safe():
             if not sickbeard.autoPostProcesserScheduler.action.amActive:
-                logging.debug("We can proceed with the update. Post-Processor is not running")
+                logging.debug(
+                    "We can proceed with the update. Post-Processor is not running")
                 return True
             else:
-                logging.debug("We can't proceed with the update. Post-Processor is running")
+                logging.debug(
+                    "We can't proceed with the update. Post-Processor is running")
                 return False
 
         def showupdate_safe():
             if not sickbeard.showUpdateScheduler.action.amActive:
-                logging.debug("We can proceed with the update. Shows are not being updated")
+                logging.debug(
+                    "We can proceed with the update. Shows are not being updated")
                 return True
             else:
-                logging.debug("We can't proceed with the update. Shows are being updated")
+                logging.debug(
+                    "We can't proceed with the update. Shows are being updated")
                 return False
 
         if (postprocessor_safe(), showupdate_safe()):
@@ -248,13 +270,17 @@ class CheckVersion(object):
         force: if true the VERSION_NOTIFY setting will be ignored and a check will be forced
         """
 
-        if not self.updater or (not sickbeard.VERSION_NOTIFY and not sickbeard.AUTO_UPDATE and not force):
-            logging.info("Version checking is disabled, not checking for the newest version")
+        if not self.updater or (
+                not sickbeard.VERSION_NOTIFY and not sickbeard.AUTO_UPDATE and not force):
+            logging.info(
+                "Version checking is disabled, not checking for the newest version")
             return False
 
         # checking for updates
         if force or not sickbeard.AUTO_UPDATE:
-            logging.info("Checking for updates using " + self.install_type.upper())
+            logging.info(
+                "Checking for updates using " +
+                self.install_type.upper())
 
         if self.updater.need_update():
             # proceed with update
@@ -280,7 +306,8 @@ class CheckVersion(object):
         try:
             news = helpers.getURL(sickbeard.NEWS_URL, session=self.session)
         except Exception:
-            logging.warning('check_for_new_news: Could not load news from repo.')
+            logging.warning(
+                'check_for_new_news: Could not load news from repo.')
             news = ''
 
         if not news:
@@ -291,7 +318,8 @@ class CheckVersion(object):
             return news or ''
 
         try:
-            last_read = datetime.datetime.strptime(sickbeard.NEWS_LAST_READ, '%Y-%m-%d')
+            last_read = datetime.datetime.strptime(
+                sickbeard.NEWS_LAST_READ, '%Y-%m-%d')
         except Exception:
             last_read = 0
 
@@ -303,7 +331,8 @@ class CheckVersion(object):
                 sickbeard.NEWS_LATEST = match.group(1)
 
             try:
-                if datetime.datetime.strptime(match.group(1), '%Y-%m-%d') > last_read:
+                if datetime.datetime.strptime(
+                        match.group(1), '%Y-%m-%d') > last_read:
                     sickbeard.NEWS_UNREAD += 1
             except Exception:
                 pass
@@ -329,6 +358,7 @@ class CheckVersion(object):
 
 
 class UpdateManager(object):
+
     @staticmethod
     def get_github_org():
         return sickbeard.GIT_ORG
@@ -343,6 +373,7 @@ class UpdateManager(object):
 
 
 class GitUpdateManager(UpdateManager):
+
     def __init__(self):
         self._git_path = self._find_working_git()
         self.github_org = self.get_github_org()
@@ -362,10 +393,12 @@ class GitUpdateManager(UpdateManager):
         return self._newest_commit_hash
 
     def get_cur_version(self):
-        return self._run_git(self._git_path, "describe --abbrev=0 " + self._cur_commit_hash)[0]
+        return self._run_git(
+            self._git_path, "describe --abbrev=0 " + self._cur_commit_hash)[0]
 
     def get_newest_version(self):
-        return self._run_git(self._git_path, "describe --abbrev=0 " + self._newest_commit_hash)[0]
+        return self._run_git(
+            self._git_path, "describe --abbrev=0 " + self._newest_commit_hash)[0]
 
     def get_num_commits_behind(self):
         return self._num_commits_behind
@@ -383,7 +416,11 @@ class GitUpdateManager(UpdateManager):
         else:
             main_git = 'git'
 
-        logging.debug("Checking if we can use git commands: " + main_git + ' ' + test_cmd)
+        logging.debug(
+            "Checking if we can use git commands: " +
+            main_git +
+            ' ' +
+            test_cmd)
         _, _, exit_status = self._run_git(main_git, test_cmd)
 
         if exit_status == 0:
@@ -394,10 +431,10 @@ class GitUpdateManager(UpdateManager):
 
         # trying alternatives
 
-
         alternative_git = []
 
-        # osx people who start sr from launchd have a broken path, so try a hail-mary attempt for them
+        # osx people who start sr from launchd have a broken path, so try a
+        # hail-mary attempt for them
         if platform.system().lower() == 'darwin':
             alternative_git.append('/usr/local/git/bin/git')
 
@@ -409,7 +446,11 @@ class GitUpdateManager(UpdateManager):
             logging.debug("Trying known alternative git locations")
 
             for cur_git in alternative_git:
-                logging.debug("Checking if we can use git commands: " + cur_git + ' ' + test_cmd)
+                logging.debug(
+                    "Checking if we can use git commands: " +
+                    cur_git +
+                    ' ' +
+                    test_cmd)
                 _, _, exit_status = self._run_git(cur_git, test_cmd)
 
                 if exit_status == 0:
@@ -437,7 +478,11 @@ class GitUpdateManager(UpdateManager):
         cmd = git_path + ' ' + args
 
         try:
-            logging.debug("Executing " + cmd + " with your shell in " + sickbeard.PROG_DIR)
+            logging.debug(
+                "Executing " +
+                cmd +
+                " with your shell in " +
+                sickbeard.PROG_DIR)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  shell=True, cwd=sickbeard.PROG_DIR)
             output, err = p.communicate()
@@ -445,7 +490,6 @@ class GitUpdateManager(UpdateManager):
 
             if output:
                 output = output.strip()
-
 
         except OSError:
             logging.info("Command " + cmd + " didn't work")
@@ -457,7 +501,8 @@ class GitUpdateManager(UpdateManager):
 
         elif exit_status == 1:
             if 'stash' in output:
-                logging.warning("Please enable 'git reset' in settings or stash your changes in local files")
+                logging.warning(
+                    "Please enable 'git reset' in settings or stash your changes in local files")
             else:
                 logging.error(cmd + " returned : " + str(output))
             exit_status = 1
@@ -467,7 +512,11 @@ class GitUpdateManager(UpdateManager):
             exit_status = 128
 
         else:
-            logging.error(cmd + " returned : " + str(output) + ", treat as error for now")
+            logging.error(
+                cmd +
+                " returned : " +
+                str(output) +
+                ", treat as error for now")
             exit_status = 1
 
         return (output, err, exit_status)
@@ -481,7 +530,8 @@ class GitUpdateManager(UpdateManager):
         Returns: True for success or False for failure
         """
 
-        output, _, exit_status = self._run_git(self._git_path, 'rev-parse HEAD')  # @UnusedVariable
+        output, _, exit_status = self._run_git(
+            self._git_path, 'rev-parse HEAD')  # @UnusedVariable
 
         if exit_status == 0 and output:
             cur_commit_hash = output.strip()
@@ -495,7 +545,8 @@ class GitUpdateManager(UpdateManager):
             return False
 
     def _find_installed_branch(self):
-        branch_info, _, exit_status = self._run_git(self._git_path, 'symbolic-ref -q HEAD')  # @UnusedVariable
+        branch_info, _, exit_status = self._run_git(
+            self._git_path, 'symbolic-ref -q HEAD')  # @UnusedVariable
         if exit_status == 0 and branch_info:
             branch = branch_info.strip().replace('refs/heads/', '', 1)
             if branch:
@@ -516,13 +567,16 @@ class GitUpdateManager(UpdateManager):
         self.update_remote_origin()
 
         # get all new info from github
-        output, _, exit_status = self._run_git(self._git_path, 'fetch %s' % sickbeard.GIT_REMOTE)
+        output, _, exit_status = self._run_git(
+            self._git_path, 'fetch %s' %
+            sickbeard.GIT_REMOTE)
         if not exit_status == 0:
             logging.warning("Unable to contact github, can't check for update")
             return
 
         # get latest commit_hash from remote
-        output, _, exit_status = self._run_git(self._git_path, 'rev-parse --verify --quiet "@{upstream}"')
+        output, _, exit_status = self._run_git(
+            self._git_path, 'rev-parse --verify --quiet "@{upstream}"')
 
         if exit_status == 0 and output:
             cur_commit_hash = output.strip()
@@ -537,8 +591,10 @@ class GitUpdateManager(UpdateManager):
             logging.debug("git didn't return newest commit hash")
             return
 
-        # get number of commits behind and ahead (option --count not supported git < 1.7.2)
-        output, _, exit_status = self._run_git(self._git_path, 'rev-list --left-right "@{upstream}"...HEAD')
+        # get number of commits behind and ahead (option --count not supported
+        # git < 1.7.2)
+        output, _, exit_status = self._run_git(
+            self._git_path, 'rev-list --left-right "@{upstream}"...HEAD')
         if exit_status == 0 and output:
 
             try:
@@ -546,12 +602,13 @@ class GitUpdateManager(UpdateManager):
                 self._num_commits_ahead = int(output.count(">"))
 
             except Exception:
-                logging.debug("git didn't return numbers for behind and ahead, not using it")
+                logging.debug(
+                    "git didn't return numbers for behind and ahead, not using it")
                 return
 
         logging.debug("cur_commit = %s, newest_commit = %s, num_commits_behind = %s, num_commits_ahead = %s" %
-                    (
-                    self._cur_commit_hash, self._newest_commit_hash, self._num_commits_behind, self._num_commits_ahead))
+                      (
+                          self._cur_commit_hash, self._newest_commit_hash, self._num_commits_behind, self._num_commits_ahead))
 
     def set_newest_text(self):
 
@@ -559,22 +616,30 @@ class GitUpdateManager(UpdateManager):
         sickbeard.NEWEST_VERSION_STRING = None
 
         if self._num_commits_ahead:
-            logging.warning("Local branch is ahead of " + self.branch + ". Automatic update not possible.")
-            newest_text = "Local branch is ahead of " + self.branch + ". Automatic update not possible."
+            logging.warning(
+                "Local branch is ahead of " +
+                self.branch +
+                ". Automatic update not possible.")
+            newest_text = "Local branch is ahead of " + \
+                self.branch + ". Automatic update not possible."
 
         elif self._num_commits_behind > 0:
 
             base_url = 'http://github.com/' + self.github_org + '/' + self.github_repo
             if self._newest_commit_hash:
-                url = base_url + '/compare/' + self._cur_commit_hash + '...' + self._newest_commit_hash
+                url = base_url + '/compare/' + self._cur_commit_hash + \
+                    '...' + self._newest_commit_hash
             else:
                 url = base_url + '/commits/'
 
-            newest_text = 'There is a <a href="' + url + '" onclick="window.open(this.href); return false;">newer version available</a> '
-            newest_text += " (yo're " + str(self._num_commits_behind) + " commit"
+            newest_text = 'There is a <a href="' + url + \
+                '" onclick="window.open(this.href); return false;">newer version available</a> '
+            newest_text += " (yo're " + \
+                str(self._num_commits_behind) + " commit"
             if self._num_commits_behind > 1:
                 newest_text += 's'
-            newest_text += ' behind)' + "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
+            newest_text += ' behind)' + "&mdash; <a href=\"" + \
+                self.get_update_url() + "\">Update Now</a>"
 
         else:
             return
@@ -584,7 +649,11 @@ class GitUpdateManager(UpdateManager):
     def need_update(self):
 
         if self.branch != self._find_installed_branch():
-            logging.debug("Branch checkout: " + self._find_installed_branch() + "->" + self.branch)
+            logging.debug(
+                "Branch checkout: " +
+                self._find_installed_branch() +
+                "->" +
+                self.branch)
             return True
 
         self._find_installed_version()
@@ -594,7 +663,8 @@ class GitUpdateManager(UpdateManager):
             try:
                 self._check_github_for_update()
             except Exception as e:
-                logging.warning("Unable to contact github, can't check for update: " + repr(e))
+                logging.warning(
+                    "Unable to contact github, can't check for update: " + repr(e))
                 return False
 
             if self._num_commits_behind > 0:
@@ -611,7 +681,8 @@ class GitUpdateManager(UpdateManager):
         # update remote origin url
         self.update_remote_origin()
 
-        # remove untracked files and performs a hard reset on git branch to avoid update issues
+        # remove untracked files and performs a hard reset on git branch to
+        # avoid update issues
         if sickbeard.GIT_RESET:
             # self.clean() # This is removing user data and backups
             self.reset()
@@ -620,10 +691,12 @@ class GitUpdateManager(UpdateManager):
             _, _, exit_status = self._run_git(self._git_path,
                                               'pull -f %s %s' % (sickbeard.GIT_REMOTE, self.branch))  # @UnusedVariable
         else:
-            _, _, exit_status = self._run_git(self._git_path, 'checkout -f ' + self.branch)  # @UnusedVariable
+            _, _, exit_status = self._run_git(
+                self._git_path, 'checkout -f ' + self.branch)  # @UnusedVariable
 
         if exit_status == 0:
-            _, _, exit_status = self._run_git(self._git_path, 'submodule update --init --recursive')
+            _, _, exit_status = self._run_git(
+                self._git_path, 'submodule update --init --recursive')
 
             if exit_status == 0:
                 self._find_installed_version()
@@ -631,7 +704,8 @@ class GitUpdateManager(UpdateManager):
 
                 # Notify update successful
                 if sickbeard.NOTIFY_ON_UPDATE:
-                    notifiers.notify_git_update(sickbeard.CUR_COMMIT_HASH if sickbeard.CUR_COMMIT_HASH else "")
+                    notifiers.notify_git_update(
+                        sickbeard.CUR_COMMIT_HASH if sickbeard.CUR_COMMIT_HASH else "")
 
                 return True
 
@@ -646,7 +720,8 @@ class GitUpdateManager(UpdateManager):
         Calls git clean to remove all untracked files. Returns a bool depending
         on the call's success.
         """
-        _, _, exit_status = self._run_git(self._git_path, 'clean -df ""')  # @UnusedVariable
+        _, _, exit_status = self._run_git(
+            self._git_path, 'clean -df ""')  # @UnusedVariable
         if exit_status == 0:
             return True
 
@@ -655,7 +730,8 @@ class GitUpdateManager(UpdateManager):
         Calls git reset --hard to perform a hard reset. Returns a bool depending
         on the call's success.
         """
-        _, _, exit_status = self._run_git(self._git_path, 'reset --hard')  # @UnusedVariable
+        _, _, exit_status = self._run_git(
+            self._git_path, 'reset --hard')  # @UnusedVariable
         if exit_status == 0:
             return True
 
@@ -672,13 +748,15 @@ class GitUpdateManager(UpdateManager):
         return []
 
     def update_remote_origin(self):
-        self._run_git(self._git_path, 'config remote.%s.url %s' % (sickbeard.GIT_REMOTE, sickbeard.GIT_REMOTE_URL))
+        self._run_git(self._git_path, 'config remote.%s.url %s' %
+                      (sickbeard.GIT_REMOTE, sickbeard.GIT_REMOTE_URL))
         if sickbeard.GIT_USERNAME:
             self._run_git(self._git_path, 'config remote.%s.pushurl %s' % (
-            sickbeard.GIT_REMOTE, sickbeard.GIT_REMOTE_URL.replace(sickbeard.GIT_ORG, sickbeard.GIT_USERNAME)))
+                sickbeard.GIT_REMOTE, sickbeard.GIT_REMOTE_URL.replace(sickbeard.GIT_ORG, sickbeard.GIT_USERNAME)))
 
 
 class SourceUpdateManager(UpdateManager):
+
     def __init__(self):
         self.github_org = self.get_github_org()
         self.github_repo = self.get_github_repo()
@@ -719,11 +797,17 @@ class SourceUpdateManager(UpdateManager):
         try:
             self._check_github_for_update()
         except Exception as e:
-            logging.warning("Unable to contact github, can't check for update: " + repr(e))
+            logging.warning(
+                "Unable to contact github, can't check for update: " +
+                repr(e))
             return False
 
         if self.branch != self._find_installed_branch():
-            logging.debug("Branch checkout: " + self._find_installed_branch() + "->" + self.branch)
+            logging.debug(
+                "Branch checkout: " +
+                self._find_installed_branch() +
+                "->" +
+                self.branch)
             return True
 
         if not self._cur_commit_hash or self._num_commits_behind > 0:
@@ -740,13 +824,16 @@ class SourceUpdateManager(UpdateManager):
         self._num_commits_behind = 0
         self._newest_commit_hash = None
 
-        # try to get newest commit hash and commits behind directly by comparing branch and current commit
+        # try to get newest commit hash and commits behind directly by
+        # comparing branch and current commit
         if self._cur_commit_hash:
-            branch_compared = sickbeard.gh.compare(base=self.branch, head=self._cur_commit_hash)
+            branch_compared = sickbeard.gh.compare(
+                base=self.branch, head=self._cur_commit_hash)
             self._newest_commit_hash = branch_compared.base_commit.sha
             self._num_commits_behind = branch_compared.behind_by
 
-        # fall back and iterate over last 100 (items per page in gh_api) commits
+        # fall back and iterate over last 100 (items per page in gh_api)
+        # commits
         if not self._newest_commit_hash:
             for curCommit in sickbeard.gh.get_commits():
                 if not self._newest_commit_hash:
@@ -754,11 +841,12 @@ class SourceUpdateManager(UpdateManager):
                     if not self._cur_commit_hash or curCommit.sha == self._cur_commit_hash:
                         break
 
-                # when _cur_commit_hash doesn't match anything _num_commits_behind == 100
+                # when _cur_commit_hash doesn't match anything
+                # _num_commits_behind == 100
                 self._num_commits_behind += 1
 
         logging.debug("cur_commit = " + str(self._cur_commit_hash) + ", newest_commit = " + str(self._newest_commit_hash)
-                    + ", num_commits_behind = " + str(self._num_commits_behind))
+                      + ", num_commits_behind = " + str(self._num_commits_behind))
 
     def set_newest_text(self):
 
@@ -766,7 +854,8 @@ class SourceUpdateManager(UpdateManager):
         sickbeard.NEWEST_VERSION_STRING = None
 
         if not self._cur_commit_hash:
-            logging.debug("Unknown current version number, don't know if we should update or not")
+            logging.debug(
+                "Unknown current version number, don't know if we should update or not")
 
             newest_text = "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set."
             newest_text += "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
@@ -774,15 +863,19 @@ class SourceUpdateManager(UpdateManager):
         elif self._num_commits_behind > 0:
             base_url = 'http://github.com/' + self.github_org + '/' + self.github_repo
             if self._newest_commit_hash:
-                url = base_url + '/compare/' + self._cur_commit_hash + '...' + self._newest_commit_hash
+                url = base_url + '/compare/' + self._cur_commit_hash + \
+                    '...' + self._newest_commit_hash
             else:
                 url = base_url + '/commits/'
 
-            newest_text = 'There is a <a href="' + url + '" onclick="window.open(this.href); return false;">newer version available</a>'
-            newest_text += " (yo're " + str(self._num_commits_behind) + " commit"
+            newest_text = 'There is a <a href="' + url + \
+                '" onclick="window.open(this.href); return false;">newer version available</a>'
+            newest_text += " (yo're " + \
+                str(self._num_commits_behind) + " commit"
             if self._num_commits_behind > 1:
                 newest_text += "s"
-            newest_text += " behind)" + "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
+            newest_text += " behind)" + "&mdash; <a href=\"" + \
+                self.get_update_url() + "\">Update Now</a>"
         else:
             return
 
@@ -793,30 +886,47 @@ class SourceUpdateManager(UpdateManager):
         Downloads the latest source tarball from github and installs it over the existing version.
         """
 
-        tar_download_url = 'http://github.com/' + self.github_org + '/' + self.github_repo + '/tarball/' + self.branch
+        tar_download_url = 'http://github.com/' + self.github_org + \
+            '/' + self.github_repo + '/tarball/' + self.branch
 
         try:
             # prepare the update dir
             sr_update_dir = ek(os.path.join, sickbeard.PROG_DIR, 'sr-update')
 
             if ek(os.path.isdir, sr_update_dir):
-                logging.info("Clearing out update folder " + sr_update_dir + " before extracting")
+                logging.info(
+                    "Clearing out update folder " +
+                    sr_update_dir +
+                    " before extracting")
                 ek(removetree, sr_update_dir)
 
-            logging.info("Creating update folder " + sr_update_dir + " before extracting")
+            logging.info(
+                "Creating update folder " +
+                sr_update_dir +
+                " before extracting")
             ek(os.makedirs, sr_update_dir)
 
             # retrieve file
             logging.info("Downloading update from " + repr(tar_download_url))
-            tar_download_path = ek(os.path.join, sr_update_dir, 'sr-update.tar')
-            helpers.download_file(tar_download_url, tar_download_path, session=self.session)
+            tar_download_path = ek(
+                os.path.join, sr_update_dir, 'sr-update.tar')
+            helpers.download_file(
+                tar_download_url,
+                tar_download_path,
+                session=self.session)
 
             if not ek(os.path.isfile, tar_download_path):
-                logging.warning("Unable to retrieve new version from " + tar_download_url + ", can't update")
+                logging.warning(
+                    "Unable to retrieve new version from " +
+                    tar_download_url +
+                    ", can't update")
                 return False
 
             if not ek(tarfile.is_tarfile, tar_download_path):
-                logging.error("Retrieved version from " + tar_download_url + " is corrupt, can't update")
+                logging.error(
+                    "Retrieved version from " +
+                    tar_download_url +
+                    " is corrupt, can't update")
                 return False
 
             # extract to sr-update dir
@@ -833,17 +943,31 @@ class SourceUpdateManager(UpdateManager):
             update_dir_contents = [x for x in ek(os.listdir, sr_update_dir) if
                                    ek(os.path.isdir, ek(os.path.join, sr_update_dir, x))]
             if len(update_dir_contents) != 1:
-                logging.error("Invalid update data, update failed: " + str(update_dir_contents))
+                logging.error(
+                    "Invalid update data, update failed: " +
+                    str(update_dir_contents))
                 return False
-            content_dir = ek(os.path.join, sr_update_dir, update_dir_contents[0])
+            content_dir = ek(
+                os.path.join,
+                sr_update_dir,
+                update_dir_contents[0])
 
             # walk temp folder and move files to main folder
-            logging.info("Moving files from " + content_dir + " to " + sickbeard.PROG_DIR)
-            for dirname, _, filenames in ek(os.walk, content_dir):  # @UnusedVariable
+            logging.info(
+                "Moving files from " +
+                content_dir +
+                " to " +
+                sickbeard.PROG_DIR)
+            for dirname, _, filenames in ek(
+                    os.walk, content_dir):  # @UnusedVariable
                 dirname = dirname[len(content_dir) + 1:]
                 for curfile in filenames:
                     old_path = ek(os.path.join, content_dir, dirname, curfile)
-                    new_path = ek(os.path.join, sickbeard.PROG_DIR, dirname, curfile)
+                    new_path = ek(
+                        os.path.join,
+                        sickbeard.PROG_DIR,
+                        dirname,
+                        curfile)
 
                     # Avoid DLL access problem on WIN32/64
                     # These files needing to be updated manually
@@ -854,8 +978,10 @@ class SourceUpdateManager(UpdateManager):
                             ek(os.remove, new_path)
                             ek(os.renames, old_path, new_path)
                         except Exception as e:
-                            logging.debug("Unable to update " + new_path + ': ' + ex(e))
-                            ek(os.remove, old_path)  # Trash the updated file without moving in new path
+                            logging.debug(
+                                "Unable to update " + new_path + ': ' + ex(e))
+                            # Trash the updated file without moving in new path
+                            ek(os.remove, old_path)
                         continue
 
                     if ek(os.path.isfile, new_path):

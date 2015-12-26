@@ -36,7 +36,12 @@ import threading
 import traceback
 import subprocess
 
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
+sys.path.insert(
+    1,
+    os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            'lib')))
 
 # https://mail.python.org/pipermail/python-dev/2014-September/136300.html
 if sys.version_info >= (2, 7, 9):
@@ -55,6 +60,7 @@ from configobj import ConfigObj
 
 
 class SickRage(object):
+
     def __init__(self):
         # signal and event handlers
         signal.signal(signal.SIGINT, sickbeard.sig_handler)
@@ -104,7 +110,8 @@ class SickRage(object):
         help_msg += "                                    Default: " + sickbeard.PROG_DIR + "\n"
         help_msg += "                --config=<path>     Override config filename (full path including filename)\n"
         help_msg += "                                    to load configuration from \n"
-        help_msg += "                                    Default: config.ini in " + sickbeard.PROG_DIR + " or --datadir location\n"
+        help_msg += "                                    Default: config.ini in " + \
+            sickbeard.PROG_DIR + " or --datadir location\n"
         help_msg += "                --noresize          Prevent resizing of the banner/posters even if PIL is installed\n"
 
         return help_msg
@@ -117,25 +124,33 @@ class SickRage(object):
         encodingInit()
 
         # do some preliminary stuff
-        sickbeard.MY_FULLNAME = ek(os.path.normpath, ek(os.path.abspath, __file__))
+        sickbeard.MY_FULLNAME = ek(
+            os.path.normpath, ek(
+                os.path.abspath, __file__))
         sickbeard.MY_NAME = ek(os.path.basename, sickbeard.MY_FULLNAME)
         sickbeard.PROG_DIR = ek(os.path.dirname, sickbeard.MY_FULLNAME)
         sickbeard.DATA_DIR = sickbeard.PROG_DIR
         sickbeard.MY_ARGS = sys.argv[1:]
 
         # Need console logging for SickBeard.py and SickBeard-console.exe
-        self.consoleLogging = (not hasattr(sys, "frozen")) or (sickbeard.MY_NAME.lower().find('-console') > 0)
+        self.consoleLogging = (not hasattr(sys, "frozen")) or (
+            sickbeard.MY_NAME.lower().find('-console') > 0)
 
-        # Do this before importing sickbeard, to prevent locked files and incorrect import
-        oldtornado = ek(os.path.abspath, ek(os.path.join, ek(os.path.dirname, __file__), 'tornado'))
+        # Do this before importing sickbeard, to prevent locked files and
+        # incorrect import
+        oldtornado = ek(
+            os.path.abspath, ek(
+                os.path.join, ek(
+                    os.path.dirname, __file__), 'tornado'))
         if ek(os.path.isdir, oldtornado):
             ek(shutil.move, oldtornado, oldtornado + '_kill')
             ek(removetree, oldtornado + '_kill')
 
         try:
             opts, _ = getopt.getopt(
-                    sys.argv[1:], "hqdp::",
-                    ['help', 'quiet', 'nolaunch', 'daemon', 'pidfile=', 'port=', 'datadir=', 'config=', 'noresize']
+                sys.argv[1:], "hqdp::",
+                ['help', 'quiet', 'nolaunch', 'daemon', 'pidfile=',
+                    'port=', 'datadir=', 'config=', 'noresize']
             )
         except getopt.GetoptError:
             sys.exit(self.help_message())
@@ -165,7 +180,8 @@ class SickRage(object):
             # Run as a double forked daemon
             if o in ('-d', '--daemon'):
                 self.runAsDaemon = True
-                # When running as daemon disable consoleLogging and don't start browser
+                # When running as daemon disable consoleLogging and don't start
+                # browser
                 self.consoleLogging = False
                 self.noLaunch = True
 
@@ -177,9 +193,13 @@ class SickRage(object):
                 self.CREATEPID = True
                 self.PIDFILE = str(a)
 
-                # If the pidfile already exists, sickbeard may still be running, so exit
+                # If the pidfile already exists, sickbeard may still be
+                # running, so exit
                 if ek(os.path.exists, self.PIDFILE):
-                    sys.exit("PID file: " + self.PIDFILE + " already exists. Exiting.")
+                    sys.exit(
+                        "PID file: " +
+                        self.PIDFILE +
+                        " already exists. Exiting.")
 
             # Specify folder to load the config file from
             if o in ('--config',):
@@ -193,24 +213,33 @@ class SickRage(object):
             if o in ('--noresize',):
                 sickbeard.NO_RESIZE = True
 
-        # The pidfile is only useful in daemon mode, make sure we can write the file properly
+        # The pidfile is only useful in daemon mode, make sure we can write the
+        # file properly
         if self.CREATEPID:
             if self.runAsDaemon:
                 pid_dir = ek(os.path.dirname, self.PIDFILE)
                 if not ek(os.access, pid_dir, os.F_OK):
-                    sys.exit("PID dir: " + pid_dir + " doesn't exist. Exiting.")
+                    sys.exit(
+                        "PID dir: " +
+                        pid_dir +
+                        " doesn't exist. Exiting.")
                 if not ek(os.access, pid_dir, os.W_OK):
-                    sys.exit("PID dir: " + pid_dir + " must be writable (write permissions). Exiting.")
+                    sys.exit(
+                        "PID dir: " +
+                        pid_dir +
+                        " must be writable (write permissions). Exiting.")
 
             else:
                 if self.consoleLogging:
-                    sys.stdout.write("Not running in daemon mode. PID file creation disabled.\n")
+                    sys.stdout.write(
+                        "Not running in daemon mode. PID file creation disabled.\n")
 
                 self.CREATEPID = False
 
         # If they don't specify a config file then put it in the data dir
         if not sickbeard.CONFIG_FILE:
-            sickbeard.CONFIG_FILE = ek(os.path.join, sickbeard.DATA_DIR, "config.ini")
+            sickbeard.CONFIG_FILE = ek(
+                os.path.join, sickbeard.DATA_DIR, "config.ini")
 
         # Make sure that we can create the data dir
         result = ek(os.access, sickbeard.DATA_DIR, os.F_OK)
@@ -218,19 +247,28 @@ class SickRage(object):
             try:
                 ek(os.makedirs, sickbeard.DATA_DIR, 0o744)
             except os.error as e:
-                raise SystemExit("Unable to create datadir '" + sickbeard.DATA_DIR + "'")
+                raise SystemExit(
+                    "Unable to create datadir '" +
+                    sickbeard.DATA_DIR +
+                    "'")
 
         # Make sure we can write to the data dir
         if not ek(os.access, sickbeard.DATA_DIR, os.W_OK):
-            raise SystemExit("Datadir must be writeable '" + sickbeard.DATA_DIR + "'")
+            raise SystemExit(
+                "Datadir must be writeable '" +
+                sickbeard.DATA_DIR +
+                "'")
 
         # Make sure we can write to the config file
         if not ek(os.access, sickbeard.CONFIG_FILE, os.W_OK):
             if ek(os.path.isfile, sickbeard.CONFIG_FILE):
-                raise SystemExit("Config file '" + sickbeard.CONFIG_FILE + "' must be writeable.")
+                raise SystemExit(
+                    "Config file '" +
+                    sickbeard.CONFIG_FILE +
+                    "' must be writeable.")
             elif not ek(os.access, ek(os.path.dirname, sickbeard.CONFIG_FILE), os.W_OK):
                 raise SystemExit(
-                        "Config file root dir '" + ek(os.path.dirname, sickbeard.CONFIG_FILE) + "' must be writeable.")
+                    "Config file root dir '" + ek(os.path.dirname, sickbeard.CONFIG_FILE) + "' must be writeable.")
 
         ek(os.chdir, sickbeard.DATA_DIR)
 
@@ -239,11 +277,18 @@ class SickRage(object):
         if ek(os.path.exists, restoreDir):
             success = self.restoreDB(restoreDir, sickbeard.DATA_DIR)
             if self.consoleLogging:
-                sys.stdout.write("Restore: restoring DB and config.ini %s!\n" % ("FAILED", "SUCCESSFUL")[success])
+                sys.stdout.write(
+                    "Restore: restoring DB and config.ini %s!\n" %
+                    ("FAILED", "SUCCESSFUL")[success])
 
         # Load the config and publish it to the sickbeard package
-        if self.consoleLogging and not ek(os.path.isfile, sickbeard.CONFIG_FILE):
-            sys.stdout.write("Unable to find '" + sickbeard.CONFIG_FILE + "' , all settings will be default!" + "\n")
+        if self.consoleLogging and not ek(
+                os.path.isfile, sickbeard.CONFIG_FILE):
+            sys.stdout.write(
+                "Unable to find '" +
+                sickbeard.CONFIG_FILE +
+                "' , all settings will be default!" +
+                "\n")
 
         sickbeard.CFG = ConfigObj(sickbeard.CONFIG_FILE)
 
@@ -272,7 +317,8 @@ class SickRage(object):
             self.log_dir = None
 
         # sickbeard.WEB_HOST is available as a configuration value in various
-        # places but is not configurable. It is supported here for historic reasons.
+        # places but is not configurable. It is supported here for historic
+        # reasons.
         if sickbeard.WEB_HOST and sickbeard.WEB_HOST != '0.0.0.0':
             self.webhost = sickbeard.WEB_HOST
         else:
@@ -292,7 +338,10 @@ class SickRage(object):
             sickbeard.GIT_NEWVER = False
 
         # Fire up all our threads
-        logging.info("Starting SiCKRAGE:[{}] CONFIG:[{}]".format(sickbeard.BRANCH, sickbeard.CONFIG_FILE))
+        logging.info(
+            "Starting SiCKRAGE:[{}] CONFIG:[{}]".format(
+                sickbeard.BRANCH,
+                sickbeard.CONFIG_FILE))
         sickbeard.start()
 
         # sure, why not?
@@ -330,7 +379,9 @@ class SickRage(object):
             if pid != 0:
                 os._exit(0)
         except OSError as e:
-            sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
+            sys.stderr.write(
+                "fork #1 failed: %d (%s)\n" %
+                (e.errno, e.strerror))
             sys.exit(1)
 
         os.setsid()  # @UndefinedVariable - only available in UNIX
@@ -339,7 +390,8 @@ class SickRage(object):
         # http://www.microhowto.info/howto/cause_a_process_to_become_a_daemon_in_c.html#idp23920
         # https://www.safaribooksonline.com/library/view/python-cookbook/0596001673/ch06s08.html
         # Previous code simply set the umask to whatever it was because it was ANDing instead of ORring
-        # Daemons traditionally run with umask 0 anyways and this should not have repercussions
+        # Daemons traditionally run with umask 0 anyways and this should not
+        # have repercussions
         os.umask(0)
 
         # Make the child a session-leader by detaching from the terminal
@@ -348,7 +400,9 @@ class SickRage(object):
             if pid != 0:
                 os._exit(0)
         except OSError as e:
-            sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
+            sys.stderr.write(
+                "fork #2 failed: %d (%s)\n" %
+                (e.errno, e.strerror))
             sys.exit(1)
 
         # Write pid
@@ -360,8 +414,8 @@ class SickRage(object):
                 file(self.PIDFILE, 'w').write("%s\n" % pid)
             except IOError as e:
                 logging.log_error_and_exit(
-                        "Unable to write PID file: " + self.PIDFILE + " Error: " + str(e.strerror) + " [" + str(
-                                e.errno) + "]")
+                    "Unable to write PID file: " + self.PIDFILE + " Error: " + str(e.strerror) + " [" + str(
+                        e.errno) + "]")
 
         # Redirect all output
         sys.stdout.flush()
@@ -372,9 +426,24 @@ class SickRage(object):
         stdout = file(devnull, 'a+')
         stderr = file(devnull, 'a+')
 
-        os.dup2(stdin.fileno(), getattr(sys.stdin, 'device', sys.stdin).fileno())
-        os.dup2(stdout.fileno(), getattr(sys.stdout, 'device', sys.stdout).fileno())
-        os.dup2(stderr.fileno(), getattr(sys.stderr, 'device', sys.stderr).fileno())
+        os.dup2(
+            stdin.fileno(),
+            getattr(
+                sys.stdin,
+                'device',
+                sys.stdin).fileno())
+        os.dup2(
+            stdout.fileno(),
+            getattr(
+                sys.stdout,
+                'device',
+                sys.stdout).fileno())
+        os.dup2(
+            stderr.fileno(),
+            getattr(
+                sys.stderr,
+                'device',
+                sys.stderr).fileno())
 
     @staticmethod
     def remove_pid_file(PIDFILE):
@@ -399,7 +468,8 @@ class SickRage(object):
         sickbeard.showList = []
         for sqlShow in sqlResults:
             try:
-                curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
+                curShow = TVShow(int(sqlShow[b"indexer"]), int(
+                    sqlShow[b"indexer_id"]))
 
                 # Build internal name cache for show
                 name_cache.buildNameCache(curShow)
@@ -411,8 +481,8 @@ class SickRage(object):
                 sickbeard.showList.append(curShow)
             except Exception as e:
                 logging.error(
-                        "There was an error creating the show in " + sqlShow[b"location"] + ": " + str(e).decode(
-                                'utf-8'))
+                    "There was an error creating the show in " + sqlShow[b"location"] + ": " + str(e).decode(
+                        'utf-8'))
                 logging.debug(traceback.format_exc())
 
     @staticmethod
@@ -463,14 +533,17 @@ class SickRage(object):
                 if install_type in ('git', 'source'):
                     popen_list = [sys.executable, sickbeard.MY_FULLNAME]
                 elif install_type == 'win':
-                    logging.error("You are using a binary Windows build of SiCKRAGE. Please switch to using git.")
+                    logging.error(
+                        "You are using a binary Windows build of SiCKRAGE. Please switch to using git.")
 
                 if popen_list and not sickbeard.NO_RESTART:
                     popen_list += sickbeard.MY_ARGS
                     if '--nolaunch' not in popen_list:
                         popen_list += ['--nolaunch']
                     logging.info("Restarting SiCKRAGE with " + str(popen_list))
-                    logging.shutdown()  # shutdown the logger to make sure it's released the logfile BEFORE it restarts SR.
+                    # shutdown the logger to make sure it's released the
+                    # logfile BEFORE it restarts SR.
+                    logging.shutdown()
                     subprocess.Popen(popen_list, cwd=os.getcwd())
 
         # system exit

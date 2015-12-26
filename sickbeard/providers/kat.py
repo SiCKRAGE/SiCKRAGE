@@ -34,6 +34,7 @@ from xml.parsers.expat import ExpatError
 
 
 class KATProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "KickAssTorrents")
@@ -64,27 +65,32 @@ class KATProvider(generic.TorrentProvider):
             'category': 'tv'
         }
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         # select the correct category
-        anime = (self.show and self.show.anime) or (epObj and epObj.show and epObj.show.anime) or False
+        anime = (self.show and self.show.anime) or (
+            epObj and epObj.show and epObj.show.anime) or False
         self.search_params[b'category'] = ('tv', 'anime')[anime]
 
         for mode in search_strings.keys():
             logging.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                self.search_params[b'q'] = search_string.encode('utf-8') if mode is not 'RSS' else ''
-                self.search_params[b'field'] = 'seeders' if mode is not 'RSS' else 'time_add'
+                self.search_params[b'q'] = search_string.encode(
+                    'utf-8') if mode is not 'RSS' else ''
+                self.search_params[
+                    b'field'] = 'seeders' if mode is not 'RSS' else 'time_add'
 
                 if mode is not 'RSS':
                     logging.debug("Search string: %s" % search_string)
 
                 url_fmt_string = 'usearch' if mode is not 'RSS' else search_string
                 try:
-                    searchURL = self.urls[b'search'] % url_fmt_string + '?' + urlencode(self.search_params)
+                    searchURL = self.urls[
+                        b'search'] % url_fmt_string + '?' + urlencode(self.search_params)
                     logging.debug("Search URL: %s" % searchURL)
                     data = self.getURL(searchURL)
                     # data = self.getURL(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
@@ -93,22 +99,27 @@ class KATProvider(generic.TorrentProvider):
                         continue
 
                     if not data.startswith('<?xml'):
-                        logging.info('Expected xml but got something else, is your mirror failing?')
+                        logging.info(
+                            'Expected xml but got something else, is your mirror failing?')
                         continue
 
                     try:
                         data = xmltodict.parse(data)
                     except ExpatError:
-                        logging.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
+                        logging.error(
+                            "Failed parsing provider. Traceback: %r\n%r" %
+                            (traceback.format_exc(), data))
                         continue
 
-                    if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
+                    if not all([data, 'rss' in data, 'channel' in data[
+                               b'rss'], 'item' in data[b'rss'][b'channel']]):
                         logging.debug("Malformed rss returned, skipping")
                         continue
 
                     # https://github.com/martinblech/xmltodict/issues/111
                     entries = data[b'rss'][b'channel'][b'item']
-                    entries = entries if isinstance(entries, list) else [entries]
+                    entries = entries if isinstance(
+                        entries, list) else [entries]
 
                     for item in entries:
                         try:
@@ -156,7 +167,9 @@ class KATProvider(generic.TorrentProvider):
                         items[mode].append(item)
 
                 except Exception:
-                    logging.error("Failed parsing provider. Traceback: %r" % traceback.format_exc())
+                    logging.error(
+                        "Failed parsing provider. Traceback: %r" %
+                        traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -170,6 +183,7 @@ class KATProvider(generic.TorrentProvider):
 
 
 class KATCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

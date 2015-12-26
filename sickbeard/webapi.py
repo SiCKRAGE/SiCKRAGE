@@ -78,7 +78,9 @@ RESULT_SUCCESS = 10  # only use inside the run methods
 RESULT_FAILURE = 20  # only use inside the run methods
 RESULT_TIMEOUT = 30  # not used yet :(
 RESULT_ERROR = 40  # only use outside of the run methods !
-RESULT_FATAL = 50  # only use in Api.default() ! this is the "we encountered an internal error" error
+# only use in Api.default() ! this is the "we encountered an internal
+# error" error
+RESULT_FATAL = 50
 RESULT_DENIED = 60  # only use in Api.default() ! this is the access denied error
 result_type_map = {
     RESULT_SUCCESS: "success",
@@ -89,7 +91,9 @@ result_type_map = {
     RESULT_DENIED: "denied",
 }
 
+
 class KeyHandler(RequestHandler):
+
     def __init__(self, *args, **kwargs):
         super(KeyHandler, self).__init__(*args, **kwargs)
 
@@ -106,10 +110,15 @@ class KeyHandler(RequestHandler):
 
             self.finish({'success': api_key is not None, 'api_key': api_key})
         except Exception:
-            logging.error('Failed doing key request: %s' % (traceback.format_exc()))
-            self.finish({'success': False, 'error': 'Failed returning results'})
+            logging.error(
+                'Failed doing key request: %s' %
+                (traceback.format_exc()))
+            self.finish({'success': False,
+                         'error': 'Failed returning results'})
 
 # basically everything except RESULT_SUCCESS / success is bad
+
+
 class ApiHandler(RequestHandler):
     """ api class that returns json results """
     version = 5  # use an int since float-point is unpredictable
@@ -121,7 +130,9 @@ class ApiHandler(RequestHandler):
 
     @coroutine
     def prepare(self, *args, **kwargs):
-        kwargs = {k: self.request.arguments[k][0] for k in self.request.arguments if len(self.request.arguments[k])}
+        kwargs = {
+            k: self.request.arguments[k][0] for k in self.request.arguments if len(
+                self.request.arguments[k])}
         args = args[1:]
 
         # set the output callback
@@ -131,7 +142,8 @@ class ApiHandler(RequestHandler):
             'image': self._out_as_image,
         }
 
-        accessMsg = "API :: " + self.request.remote_ip + " - gave correct API KEY. ACCESS GRANTED"
+        accessMsg = "API :: " + self.request.remote_ip + \
+            " - gave correct API KEY. ACCESS GRANTED"
         logging.debug(accessMsg)
 
         # set the original call_dispatcher as the local _call_dispatcher
@@ -171,7 +183,9 @@ class ApiHandler(RequestHandler):
         try:
             return function(*args, **kwargs)
         except Exception:
-            logging.error('Failed doing webui callback: {}'.format(traceback.format_exc()))
+            logging.error(
+                'Failed doing webui callback: {}'.format(
+                    traceback.format_exc()))
             raise
 
     def _out_as_image(self, _dict):
@@ -182,9 +196,12 @@ class ApiHandler(RequestHandler):
         self.set_header("Content-Type", "application/json;charset=UTF-8")
         try:
             out = json_encode(_dict)
-            callback = self.get_query_argument('callback', None) or self.get_query_argument('jsonp', None)
+            callback = self.get_query_argument(
+                'callback', None) or self.get_query_argument(
+                'jsonp', None)
             if callback is not None:
-                out = callback + '(' + out + ');'  # wrap with JSONP call if requested
+                # wrap with JSONP call if requested
+                out = callback + '(' + out + ');'
         except Exception as e:  # if we fail to generate the output fake an error
             logging.debug("API :: " + traceback.format_exc())
             out = '{"result": "%s", "message": "error while composing output: %s"}' % \
@@ -201,7 +218,8 @@ class ApiHandler(RequestHandler):
         logging.debug("API :: all kwargs: '" + str(kwargs) + "'")
 
         try:
-            cmds = kwargs.pop('cmd', args[0] if len(args) else "").split('|') or []
+            cmds = kwargs.pop('cmd', args[0] if len(
+                args) else "").split('|') or []
         except Exception as e:
             cmds = []
 
@@ -211,7 +229,8 @@ class ApiHandler(RequestHandler):
             curArgs, curKwargs = self.filter_params(cmd, *args, **kwargs)
             cmdIndex = None
             if len(cmd.split("_")) > 1:  # was a index used for this cmd ?
-                cmd, cmdIndex = cmd.split("_")  # this gives us the clear cmd and the index
+                # this gives us the clear cmd and the index
+                cmd, cmdIndex = cmd.split("_")
 
             logging.debug("API :: " + cmd + ": curKwargs " + str(curKwargs))
             if not (multiCmds and cmd in ('show.getbanner', 'show.getfanart', 'show.getnetworklogo',
@@ -219,15 +238,22 @@ class ApiHandler(RequestHandler):
                 try:
                     if cmd in self.function_mapper:
                         # call function and get response back
-                        curOutDict = self.function_mapper[cmd](self.application, self.request, *curArgs, **curKwargs).run()
+                        curOutDict = self.function_mapper[cmd](
+                            self.application, self.request, *curArgs, **curKwargs).run()
                     elif _is_int(cmd):
-                        curOutDict = TVDBShorthandWrapper(cmd, self.application, self.request, *curArgs, **curKwargs).run()
+                        curOutDict = TVDBShorthandWrapper(
+                            cmd, self.application, self.request, *curArgs, **curKwargs).run()
                     else:
-                        curOutDict = _responds(RESULT_ERROR, "No such cmd: '" + cmd + "'")
+                        curOutDict = _responds(
+                            RESULT_ERROR, "No such cmd: '" + cmd + "'")
                 except ApiError as e:  # Api errors that we raised, they are harmless
                     curOutDict = _responds(RESULT_ERROR, msg=ex(e))
             else:  # if someone chained one of the forbiden cmds they will get an error for this one cmd
-                curOutDict = _responds(RESULT_ERROR, msg="The cmd '" + cmd + "' is not supported while chaining")
+                curOutDict = _responds(
+                    RESULT_ERROR,
+                    msg="The cmd '" +
+                    cmd +
+                    "' is not supported while chaining")
 
             if multiCmds:
                 # note: if multiple same cmds are issued but one has not an index defined it will override all others
@@ -271,7 +297,8 @@ class ApiHandler(RequestHandler):
         for arg in args[1:] or []:
             try:
                 curArgs += [arg.lower()]
-            except:continue
+            except:
+                continue
 
         curKwargs = {}
         for kwarg in kwargs or []:
@@ -281,7 +308,8 @@ class ApiHandler(RequestHandler):
                     curKwargs[cleanKey] = kwargs[kwarg].lower()
                 elif not "." in kwarg:
                     curKwargs[kwarg] = kwargs[kwarg]
-            except:continue
+            except:
+                continue
 
         return curArgs, curKwargs
 
@@ -340,8 +368,10 @@ class ApiHandler(RequestHandler):
             "shows.stats": CMD_ShowsStats
         }
 
+
 class ApiCall(ApiHandler):
-    _help = {"desc": "This command is not documented. Please report this to the developers."}
+    _help = {
+        "desc": "This command is not documented. Please report this to the developers."}
 
     def __init__(self, application, request, *args, **kwargs):
         super(ApiCall, self).__init__(application, request, *args, **kwargs)
@@ -380,15 +410,20 @@ class ApiCall(ApiHandler):
                     if not paramName in self._help[paramType]:
                         self._help.setdefault(paramType, {})[paramName] = {}
                     if paramDict[paramName][b"allowedValues"]:
-                        self._help.setdefault(paramType, {})[paramName][b"allowedValues"] = paramDict[paramName][b"allowedValues"]
+                        self._help.setdefault(paramType, {})[paramName][b"allowedValues"] = paramDict[
+                            paramName][b"allowedValues"]
                     else:
-                        self._help.setdefault(paramType, {})[paramName][b"allowedValues"] = "see desc"
-                    self._help.setdefault(paramType, {})[paramName][b"defaultValue"] = paramDict[paramName][b"defaultValue"]
-                    self._help.setdefault(paramType, {})[paramName][b"type"] = paramDict[paramName][b"type"]
+                        self._help.setdefault(paramType, {})[paramName][
+                            b"allowedValues"] = "see desc"
+                    self._help.setdefault(paramType, {})[paramName][b"defaultValue"] = paramDict[
+                        paramName][b"defaultValue"]
+                    self._help.setdefault(paramType, {})[paramName][
+                        b"type"] = paramDict[paramName][b"type"]
 
             elif paramDict:
                 for paramName in paramDict:
-                    self._help.setdefault(paramType, {})[paramName] = paramDict[paramName]
+                    self._help.setdefault(
+                        paramType, {})[paramName] = paramDict[paramName]
             else:
                 self._help[paramType] = {}
         msg = "No description available"
@@ -398,13 +433,15 @@ class ApiCall(ApiHandler):
 
     def return_missing(self):
         if len(self._missing) == 1:
-            msg = "The required parameter: '" + self._missing[0] + "' was not set"
+            msg = "The required parameter: '" + \
+                self._missing[0] + "' was not set"
         else:
-            msg = "The required parameters: '" + "','".join(self._missing) + "' where not set"
+            msg = "The required parameters: '" + \
+                "','".join(self._missing) + "' where not set"
         return _responds(RESULT_ERROR, msg=msg)
 
-    def check_params(self, key, default, required, arg_type, allowedValues, *args, **kwargs):
-
+    def check_params(self, key, default, required, arg_type,
+                     allowedValues, *args, **kwargs):
         """ function to check passed params for the shorthand wrapper
             and to detect missing/required params
         """
@@ -491,7 +528,9 @@ class ApiCall(ApiHandler):
         elif arg_type == "ignore":
             pass
         else:
-            logging.error('API :: Invalid param type: "%s" can not be checked. Ignoring it.' % str(arg_type))
+            logging.error(
+                'API :: Invalid param type: "%s" can not be checked. Ignoring it.' %
+                str(arg_type))
 
         if error:
             # this is a real ApiError !!
@@ -516,9 +555,10 @@ class ApiCall(ApiHandler):
                     error = True
 
             if error:
-                # this is kinda a ApiError but raising an error is the only way of quitting here
+                # this is kinda a ApiError but raising an error is the only way
+                # of quitting here
                 raise ApiError("param: '" + str(name) + "' with given value: '" + str(
-                        value) + "' is out of allowed range '" + str(allowedValues) + "'")
+                    value) + "' is out of allowed range '" + str(allowedValues) + "'")
 
 
 class TVDBShorthandWrapper(ApiCall):
@@ -529,11 +569,20 @@ class TVDBShorthandWrapper(ApiCall):
         self.kwargs = kwargs
         self.sid = sid
 
-        self.s, args = self.check_params("s", None, False, "ignore", [], *args, **kwargs)
-        self.e, args = self.check_params("e", None, False, "ignore", [], *args, **kwargs)
+        self.s, args = self.check_params(
+            "s", None, False, "ignore", [], *args, **kwargs)
+        self.e, args = self.check_params(
+            "e", None, False, "ignore", [], *args, **kwargs)
         self.args = args
 
-        super(TVDBShorthandWrapper, self).__init__(application, request, *args, **kwargs)
+        super(
+            TVDBShorthandWrapper,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ internal function wrapper """
@@ -651,7 +700,8 @@ def _getRootDirs():
     if len(root_dirs) < default_index:
         return {}
 
-    # clean up the list - replace %xx escapes by their single-character equivalent
+    # clean up the list - replace %xx escapes by their single-character
+    # equivalent
     root_dirs = [urllib.unquote_plus(x) for x in root_dirs]
 
     default_dir = root_dirs[default_index]
@@ -709,7 +759,8 @@ class CMD_Help(ApiCall):
     def run(self):
         """ Get help about a given command """
         if self.subject in self.function_mapper:
-            out = _responds(RESULT_SUCCESS, self.function_mapper.get(self.subject)(self.application, self.request, **{"help": 1}).run())
+            out = _responds(RESULT_SUCCESS, self.function_mapper.get(
+                self.subject)(self.application, self.request, **{"help": 1}).run())
         else:
             out = _responds(RESULT_FAILURE, msg="No such cmd")
         return out
@@ -730,17 +781,26 @@ class CMD_ComingEpisodes(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         # required
         # optional
-        self.sort, args = self.check_params("sort", "date", False, "string", ComingEpisodes.sorts.keys(), *args, **kwargs)
+        self.sort, args = self.check_params(
+            "sort", "date", False, "string", ComingEpisodes.sorts.keys(), *args, **kwargs)
         self.type, args = self.check_params("type", '|'.join(ComingEpisodes.categories), False, "list",
                                             ComingEpisodes.categories, *args, **kwargs)
         self.paused, args = self.check_params("paused", bool(sickbeard.COMING_EPS_DISPLAY_PAUSED), False, "bool", [],
                                               *args, **kwargs)
         # super, missing, help
-        super(CMD_ComingEpisodes, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ComingEpisodes,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get the coming episodes """
-        grouped_coming_episodes = ComingEpisodes.get_coming_episodes(self.type, self.sort, True, self.paused)
+        grouped_coming_episodes = ComingEpisodes.get_coming_episodes(
+            self.type, self.sort, True, self.paused)
         data = {section: [] for section in grouped_coming_episodes.keys()}
 
         for section, coming_episodes in grouped_coming_episodes.iteritems():
@@ -783,24 +843,36 @@ class CMD_Episode(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
-        self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
+        self.s, args = self.check_params(
+            "season", None, True, "int", [], *args, **kwargs)
+        self.e, args = self.check_params(
+            "episode", None, True, "int", [], *args, **kwargs)
         # optional
-        self.fullPath, args = self.check_params("full_path", False, False, "bool", [], *args, **kwargs)
+        self.fullPath, args = self.check_params(
+            "full_path", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
-        super(CMD_Episode, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_Episode,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get detailed information about an episode """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         myDB = db.DBConnection(row_type="dict")
         sqlResults = myDB.select(
-                "SELECT name, description, airdate, status, location, file_size, release_name, subtitles FROM tv_episodes WHERE showid = ? AND episode = ? AND season = ?",
-                [self.indexerid, self.e, self.s])
+            "SELECT name, description, airdate, status, location, file_size, release_name, subtitles FROM tv_episodes WHERE showid = ? AND episode = ? AND season = ?",
+            [self.indexerid, self.e, self.s])
         if not len(sqlResults) == 1:
             raise ApiError("Episode not found")
         episode = sqlResults[0]
@@ -816,7 +888,8 @@ class CMD_Episode(ApiCall):
             pass
         elif bool(self.fullPath) == False and showPath:
             # using the length because lstrip removes to much
-            showPathLength = len(showPath) + 1  # the / or \ yeah not that nice i know
+            # the / or \ yeah not that nice i know
+            showPathLength = len(showPath) + 1
             episode[b"location"] = episode[b"location"][showPathLength:]
         elif not showPath:  # show dir is broken ... episode path will be empty
             episode[b"location"] = ""
@@ -824,15 +897,16 @@ class CMD_Episode(ApiCall):
         # convert stuff to human form
         if helpers.tryInt(episode[b'airdate'], 1) > 693595:  # 1900
             episode[b'airdate'] = sbdatetime.sbdatetime.sbfdate(sbdatetime.sbdatetime.convert_to_setting(
-                    network_timezones.parse_date_time(int(episode[b'airdate']), showObj.airs, showObj.network)),
-                    d_preset=dateFormat)
+                network_timezones.parse_date_time(int(episode[b'airdate']), showObj.airs, showObj.network)),
+                d_preset=dateFormat)
         else:
             episode[b'airdate'] = 'Never'
 
         status, quality = Quality.splitCompositeStatus(int(episode[b"status"]))
         episode[b"status"] = _get_status_Strings(status)
         episode[b"quality"] = get_quality_string(quality)
-        episode[b"file_size_human"] = helpers.pretty_filesize(episode[b"file_size"])
+        episode[b"file_size_human"] = helpers.pretty_filesize(episode[
+                                                              b"file_size"])
 
         return _responds(RESULT_SUCCESS, episode)
 
@@ -852,16 +926,27 @@ class CMD_EpisodeSearch(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
-        self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
+        self.s, args = self.check_params(
+            "season", None, True, "int", [], *args, **kwargs)
+        self.e, args = self.check_params(
+            "episode", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_EpisodeSearch, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_EpisodeSearch,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Search for an episode """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -872,15 +957,17 @@ class CMD_EpisodeSearch(ApiCall):
 
         # make a queue item for it and put it on the queue
         ep_queue_item = search_queue.ManualSearchQueueItem(showObj, epObj)
-        sickbeard.searchQueueScheduler.action.add_item(ep_queue_item)  # @UndefinedVariable
+        sickbeard.searchQueueScheduler.action.add_item(
+            ep_queue_item)  # @UndefinedVariable
 
         # wait until the queue item tells us whether it worked or not
-        while ep_queue_item.success == None:  # @UndefinedVariable
+        while ep_queue_item.success is None:  # @UndefinedVariable
             time.sleep(1)
 
         # return the correct json value
         if ep_queue_item.success:
-            status, quality = Quality.splitCompositeStatus(epObj.status)  # @UnusedVariable
+            status, quality = Quality.splitCompositeStatus(
+                epObj.status)  # @UnusedVariable
             # TODO: split quality and status?
             return _responds(RESULT_SUCCESS, {"quality": get_quality_string(quality)},
                              "Snatched (" + get_quality_string(quality) + ")")
@@ -905,19 +992,31 @@ class CMD_EpisodeSetStatus(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
+        self.s, args = self.check_params(
+            "season", None, True, "int", [], *args, **kwargs)
         self.status, args = self.check_params("status", None, True, "string",
                                               ["wanted", "skipped", "ignored", "failed"], *args, **kwargs)
         # optional
-        self.e, args = self.check_params("episode", None, False, "int", [], *args, **kwargs)
-        self.force, args = self.check_params("force", False, False, "bool", [], *args, **kwargs)
+        self.e, args = self.check_params(
+            "episode", None, False, "int", [], *args, **kwargs)
+        self.force, args = self.check_params(
+            "force", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
-        super(CMD_EpisodeSetStatus, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_EpisodeSetStatus,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Set the status of an episode or a season (when no episode is provided) """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -927,13 +1026,15 @@ class CMD_EpisodeSetStatus(ApiCall):
                 self.status = status
                 break
         else:  # if we dont break out of the for loop we got here.
-            # the allowed values has at least one item that could not be matched against the internal status strings
-            raise ApiError("The status string could not be matched to a status. Report to Devs!")
+            # the allowed values has at least one item that could not be
+            # matched against the internal status strings
+            raise ApiError(
+                "The status string could not be matched to a status. Report to Devs!")
 
         ep_list = []
         if self.e:
             epObj = showObj.getEpisode(self.s, self.e)
-            if epObj == None:
+            if epObj is None:
                 return _responds(RESULT_FAILURE, msg="Episode not found")
             ep_list = [epObj]
         else:
@@ -953,7 +1054,8 @@ class CMD_EpisodeSetStatus(ApiCall):
         for epObj in ep_list:
             with epObj.lock:
                 if self.status == WANTED:
-                    # figure out what episodes are wanted so we can backlog them
+                    # figure out what episodes are wanted so we can backlog
+                    # them
                     if epObj.season in segments:
                         segments[epObj.season].append(epObj)
                     else:
@@ -961,9 +1063,9 @@ class CMD_EpisodeSetStatus(ApiCall):
 
                 # don't let them mess up UNAIRED episodes
                 if epObj.status == UNAIRED:
-                    if self.e != None:  # setting the status of a unaired is only considert a failure if we directly wanted this episode, but is ignored on a season request
+                    if self.e is not None:  # setting the status of a unaired is only considert a failure if we directly wanted this episode, but is ignored on a season request
                         ep_results.append(
-                                _epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is UNAIRED"))
+                            _epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is UNAIRED"))
                         failure = True
                     continue
 
@@ -973,7 +1075,8 @@ class CMD_EpisodeSetStatus(ApiCall):
                     failure = True
                     continue
 
-                # allow the user to force setting the status for an already downloaded episode
+                # allow the user to force setting the status for an already
+                # downloaded episode
                 if epObj.status in Quality.DOWNLOADED + Quality.ARCHIVED and not self.force:
                     ep_results.append(_epResult(RESULT_FAILURE, epObj,
                                                 "Refusing to change status because it is already marked as DOWNLOADED"))
@@ -994,18 +1097,22 @@ class CMD_EpisodeSetStatus(ApiCall):
         extra_msg = ""
         if start_backlog:
             for season, segment in segments.iteritems():
-                cur_backlog_queue_item = search_queue.BacklogQueueItem(showObj, segment)
-                sickbeard.searchQueueScheduler.action.add_item(cur_backlog_queue_item)  # @UndefinedVariable
+                cur_backlog_queue_item = search_queue.BacklogQueueItem(
+                    showObj, segment)
+                sickbeard.searchQueueScheduler.action.add_item(
+                    cur_backlog_queue_item)  # @UndefinedVariable
 
                 logging.info("API :: Starting backlog for " + showObj.name + " season " + str(
-                        season) + " because some episodes were set to WANTED")
+                    season) + " because some episodes were set to WANTED")
 
             extra_msg = " Backlog started"
 
         if failure:
-            return _responds(RESULT_FAILURE, ep_results, 'Failed to set all or some status. Check data.' + extra_msg)
+            return _responds(RESULT_FAILURE, ep_results,
+                             'Failed to set all or some status. Check data.' + extra_msg)
         else:
-            return _responds(RESULT_SUCCESS, msg='All status set successfully.' + extra_msg)
+            return _responds(
+                RESULT_SUCCESS, msg='All status set successfully.' + extra_msg)
 
 
 class CMD_SubtitleSearch(ApiCall):
@@ -1023,16 +1130,27 @@ class CMD_SubtitleSearch(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
-        self.s, args = self.check_params("season", None, True, "int", [], *args, **kwargs)
-        self.e, args = self.check_params("episode", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
+        self.s, args = self.check_params(
+            "season", None, True, "int", [], *args, **kwargs)
+        self.e, args = self.check_params(
+            "episode", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_SubtitleSearch, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SubtitleSearch,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Search for an episode subtitles """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -1050,14 +1168,18 @@ class CMD_SubtitleSearch(ApiCall):
             return _responds(RESULT_FAILURE, msg='Unable to find subtitles')
 
         # return the correct json value
-        newSubtitles = frozenset(epObj.subtitles).difference(previous_subtitles)
+        newSubtitles = frozenset(
+            epObj.subtitles).difference(previous_subtitles)
         if newSubtitles:
             newLangs = [subtitles.fromietf(newSub) for newSub in newSubtitles]
-            status = 'New subtitles downloaded: %s' % ', '.join([newLang.name for newLang in newLangs])
+            status = 'New subtitles downloaded: %s' % ', '.join(
+                [newLang.name for newLang in newLangs])
             response = _responds(RESULT_SUCCESS, msg='New subtitles found')
         else:
             status = 'No subtitles downloaded'
-            response = _responds(RESULT_FAILURE, msg='Unable to find subtitles')
+            response = _responds(
+                RESULT_FAILURE,
+                msg='Unable to find subtitles')
 
         ui.notifications.message('Subtitles Search', status)
 
@@ -1076,17 +1198,26 @@ class CMD_Exceptions(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         # required
         # optional
-        self.indexerid, args = self.check_params("indexerid", None, False, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, False, "int", [], *args, **kwargs)
 
         # super, missing, help
-        super(CMD_Exceptions, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_Exceptions,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get the scene exceptions for all or a given show """
         myDB = db.DBConnection("cache.db", row_type="dict")
 
-        if self.indexerid == None:
-            sqlResults = myDB.select("SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions")
+        if self.indexerid is None:
+            sqlResults = myDB.select(
+                "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions")
             scene_exceptions = {}
             for row in sqlResults:
                 indexerid = row[b"indexerid"]
@@ -1095,13 +1226,14 @@ class CMD_Exceptions(ApiCall):
                 scene_exceptions[indexerid].append(row[b"show_name"])
 
         else:
-            showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+            showObj = sickbeard.helpers.findCertainShow(
+                sickbeard.showList, int(self.indexerid))
             if not showObj:
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
             sqlResults = myDB.select(
-                    "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions WHERE indexer_id = ?",
-                    [self.indexerid])
+                "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions WHERE indexer_id = ?",
+                [self.indexerid])
             scene_exceptions = []
             for row in sqlResults:
                 scene_exceptions.append(row[b"show_name"])
@@ -1121,12 +1253,22 @@ class CMD_History(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         # required
         # optional
-        self.limit, args = self.check_params("limit", 100, False, "int", [], *args, **kwargs)
-        self.type, args = self.check_params("type", None, False, "string", ["downloaded", "snatched"], *args, **kwargs)
+        self.limit, args = self.check_params(
+            "limit", 100, False, "int", [], *args, **kwargs)
+        self.type, args = self.check_params(
+            "type", None, False, "string", [
+                "downloaded", "snatched"], *args, **kwargs)
         self.type = self.type.lower() if isinstance(self.type, str) else ''
 
         # super, missing, help
-        super(CMD_History, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_History,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get the downloaded and/or snatched history """
@@ -1164,7 +1306,14 @@ class CMD_HistoryClear(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_HistoryClear, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_HistoryClear,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Clear the entire history """
@@ -1180,13 +1329,21 @@ class CMD_HistoryTrim(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_HistoryTrim, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_HistoryTrim,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Trim history entries older than 30 days """
         History().trim()
 
-        return _responds(RESULT_SUCCESS, msg='Removed history entries older than 30 days')
+        return _responds(
+            RESULT_SUCCESS, msg='Removed history entries older than 30 days')
 
 
 class CMD_Failed(ApiCall):
@@ -1200,7 +1357,8 @@ class CMD_Failed(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         # required
         # optional
-        self.limit, args = self.check_params("limit", 100, False, "int", [], *args, **kwargs)
+        self.limit, args = self.check_params(
+            "limit", 100, False, "int", [], *args, **kwargs)
         # super, missing, help
         super(CMD_Failed, self).__init__(application, request, *args, **kwargs)
 
@@ -1225,7 +1383,14 @@ class CMD_Backlog(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_Backlog, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_Backlog,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get the backlogged episodes """
@@ -1238,8 +1403,8 @@ class CMD_Backlog(ApiCall):
             showEps = []
 
             sqlResults = myDB.select(
-                    "SELECT tv_episodes.*, tv_shows.paused FROM tv_episodes INNER JOIN tv_shows ON tv_episodes.showid = tv_shows.indexer_id WHERE showid = ? and paused = 0 ORDER BY season DESC, episode DESC",
-                    [curShow.indexerid])
+                "SELECT tv_episodes.*, tv_shows.paused FROM tv_episodes INNER JOIN tv_shows ON tv_episodes.showid = tv_shows.indexer_id WHERE showid = ? and paused = 0 ORDER BY season DESC, episode DESC",
+                [curShow.indexerid])
 
             for curResult in sqlResults:
 
@@ -1341,21 +1506,36 @@ class CMD_PostProcess(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         # required
         # optional
-        self.path, args = self.check_params("path", None, False, "string", [], *args, **kwargs)
-        self.force_replace, args = self.check_params("force_replace", False, False, "bool", [], *args, **kwargs)
-        self.return_data, args = self.check_params("return_data", False, False, "bool", [], *args, **kwargs)
+        self.path, args = self.check_params(
+            "path", None, False, "string", [], *args, **kwargs)
+        self.force_replace, args = self.check_params(
+            "force_replace", False, False, "bool", [], *args, **kwargs)
+        self.return_data, args = self.check_params(
+            "return_data", False, False, "bool", [], *args, **kwargs)
         self.process_method, args = self.check_params("process_method", False, False, "string",
                                                       ["copy", "symlink", "hardlink", "move"], *args, **kwargs)
-        self.is_priority, args = self.check_params("is_priority", False, False, "bool", [], *args, **kwargs)
-        self.failed, args = self.check_params("failed", False, False, "bool", [], *args, **kwargs)
-        self.type, args = self.check_params("type", "auto", None, "string", ["auto", "manual"], *args, **kwargs)
+        self.is_priority, args = self.check_params(
+            "is_priority", False, False, "bool", [], *args, **kwargs)
+        self.failed, args = self.check_params(
+            "failed", False, False, "bool", [], *args, **kwargs)
+        self.type, args = self.check_params(
+            "type", "auto", None, "string", [
+                "auto", "manual"], *args, **kwargs)
         # super, missing, help
-        super(CMD_PostProcess, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_PostProcess,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Manually post-process the files in the download folder """
         if not self.path and not sickbeard.TV_DOWNLOAD_DIR:
-            return _responds(RESULT_FAILURE, msg="You need to provide a path or set TV Download Dir")
+            return _responds(
+                RESULT_FAILURE, msg="You need to provide a path or set TV Download Dir")
 
         if not self.path:
             self.path = sickbeard.TV_DOWNLOAD_DIR
@@ -1369,7 +1549,8 @@ class CMD_PostProcess(ApiCall):
         if not self.return_data:
             data = ""
 
-        return _responds(RESULT_SUCCESS, data=data, msg="Started postprocess for %s" % self.path)
+        return _responds(RESULT_SUCCESS, data=data,
+                         msg="Started postprocess for %s" % self.path)
 
 
 class CMD_SickBeard(ApiCall):
@@ -1379,7 +1560,14 @@ class CMD_SickBeard(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_SickBeard, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeard,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ dGet miscellaneous information about SiCKRAGE """
@@ -1401,11 +1589,20 @@ class CMD_SickBeardAddRootDir(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
+        self.location, args = self.check_params(
+            "location", None, True, "string", [], *args, **kwargs)
         # optional
-        self.default, args = self.check_params("default", False, False, "bool", [], *args, **kwargs)
+        self.default, args = self.check_params(
+            "default", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
-        super(CMD_SickBeardAddRootDir, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardAddRootDir,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Add a new root (parent) directory to SiCKRAGE """
@@ -1426,7 +1623,8 @@ class CMD_SickBeardAddRootDir(ApiCall):
             root_dirs = sickbeard.ROOT_DIRS.split('|')
             index = int(sickbeard.ROOT_DIRS.split('|')[0])
             root_dirs.pop(0)
-            # clean up the list - replace %xx escapes by their single-character equivalent
+            # clean up the list - replace %xx escapes by their single-character
+            # equivalent
             root_dirs = [urllib.unquote_plus(x) for x in root_dirs]
             for x in root_dirs:
                 if x == self.location:
@@ -1446,7 +1644,8 @@ class CMD_SickBeardAddRootDir(ApiCall):
         root_dirs_new = '|'.join(unicode(x) for x in root_dirs_new)
 
         sickbeard.ROOT_DIRS = root_dirs_new
-        return _responds(RESULT_SUCCESS, _getRootDirs(), msg="Root directories updated")
+        return _responds(RESULT_SUCCESS, _getRootDirs(),
+                         msg="Root directories updated")
 
 
 class CMD_SickBeardCheckVersion(ApiCall):
@@ -1456,7 +1655,14 @@ class CMD_SickBeardCheckVersion(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_SickBeardCheckVersion, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardCheckVersion,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         checkversion = CheckVersion()
@@ -1487,16 +1693,25 @@ class CMD_SickBeardCheckScheduler(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_SickBeardCheckScheduler, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardCheckScheduler,
+            self).__init__(
+            application,
+            request,
+            *args,
+            **kwargs)
 
     def run(self):
         """ Get information about the scheduler """
         myDB = db.DBConnection()
         sqlResults = myDB.select("SELECT last_backlog FROM info")
 
-        backlogPaused = sickbeard.searchQueueScheduler.action.is_backlog_paused()  # @UndefinedVariable
-        backlogRunning = sickbeard.searchQueueScheduler.action.is_backlog_in_progress()  # @UndefinedVariable
-        nextBacklog = sickbeard.backlogSearchScheduler.nextRun().strftime(dateFormat).decode(sickbeard.SYS_ENCODING)
+        # @UndefinedVariable
+        backlogPaused = sickbeard.searchQueueScheduler.action.is_backlog_paused()
+        # @UndefinedVariable
+        backlogRunning = sickbeard.searchQueueScheduler.action.is_backlog_in_progress()
+        nextBacklog = sickbeard.backlogSearchScheduler.nextRun().strftime(
+            dateFormat).decode(sickbeard.SYS_ENCODING)
 
         data = {"backlog_is_paused": int(backlogPaused), "backlog_is_running": int(backlogRunning),
                 "last_backlog": _ordinal_to_dateForm(sqlResults[0][b"last_backlog"]),
@@ -1511,22 +1726,31 @@ class CMD_SickBeardDeleteRootDir(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
+        self.location, args = self.check_params(
+            "location", None, True, "string", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_SickBeardDeleteRootDir, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardDeleteRootDir,
+            self).__init__(
+            application,
+            request,
+            *args,
+            **kwargs)
 
     def run(self):
         """ Delete a root (parent) directory from SiCKRAGE """
         if sickbeard.ROOT_DIRS == "":
-            return _responds(RESULT_FAILURE, _getRootDirs(), msg="No root directories detected")
+            return _responds(RESULT_FAILURE, _getRootDirs(),
+                             msg="No root directories detected")
 
         newIndex = 0
         root_dirs_new = []
         root_dirs = sickbeard.ROOT_DIRS.split('|')
         index = int(root_dirs[0])
         root_dirs.pop(0)
-        # clean up the list - replace %xx escapes by their single-character equivalent
+        # clean up the list - replace %xx escapes by their single-character
+        # equivalent
         root_dirs = [urllib.unquote_plus(x) for x in root_dirs]
         old_root_dir = root_dirs[index]
         for curRootDir in root_dirs:
@@ -1547,7 +1771,8 @@ class CMD_SickBeardDeleteRootDir(ApiCall):
 
         sickbeard.ROOT_DIRS = root_dirs_new
         # what if the root dir was not found?
-        return _responds(RESULT_SUCCESS, _getRootDirs(), msg="Root directory deleted")
+        return _responds(RESULT_SUCCESS, _getRootDirs(),
+                         msg="Root directory deleted")
 
 
 class CMD_SickBeardGetDefaults(ApiCall):
@@ -1557,7 +1782,14 @@ class CMD_SickBeardGetDefaults(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_SickBeardGetDefaults, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardGetDefaults,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get SiCKRAGE's user default configuration value """
@@ -1577,11 +1809,19 @@ class CMD_SickBeardGetMessages(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_SickBeardGetMessages, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardGetMessages,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         messages = []
-        for cur_notification in ui.notifications.get_notifications(self.request.remote_ip):
+        for cur_notification in ui.notifications.get_notifications(
+                self.request.remote_ip):
             messages.append({"title": cur_notification.title,
                              "message": cur_notification.message,
                              "type": cur_notification.type})
@@ -1595,7 +1835,14 @@ class CMD_SickBeardGetRootDirs(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_SickBeardGetRootDirs, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardGetRootDirs,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get all root (parent) directories """
@@ -1614,9 +1861,17 @@ class CMD_SickBeardPauseBacklog(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         # required
         # optional
-        self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
+        self.pause, args = self.check_params(
+            "pause", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
-        super(CMD_SickBeardPauseBacklog, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardPauseBacklog,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Pause or unpause the backlog search """
@@ -1635,7 +1890,14 @@ class CMD_SickBeardPing(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_SickBeardPing, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardPing,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Ping SiCKRAGE to check if it is running """
@@ -1652,12 +1914,20 @@ class CMD_SickBeardRestart(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_SickBeardRestart, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardRestart,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Restart SiCKRAGE """
         if not Restart.restart(sickbeard.PID):
-            return _responds(RESULT_FAILURE, msg='SiCKRAGE can not be restarted')
+            return _responds(
+                RESULT_FAILURE, msg='SiCKRAGE can not be restarted')
 
         return _responds(RESULT_SUCCESS, msg="SiCKRAGE is restarting...")
 
@@ -1677,13 +1947,21 @@ class CMD_SickBeardSearchIndexers(ApiCall):
         self.valid_languages = sickbeard.indexerApi().config[b'langabbv_to_id']
         # required
         # optional
-        self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
+        self.name, args = self.check_params(
+            "name", None, False, "string", [], *args, **kwargs)
         self.lang, args = self.check_params("lang", sickbeard.INDEXER_DEFAULT_LANGUAGE, False, "string",
                                             self.valid_languages.keys(), *args, **kwargs)
-        self.indexerid, args = self.check_params("indexerid", None, False, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, False, "int", [], *args, **kwargs)
 
         # super, missing, help
-        super(CMD_SickBeardSearchIndexers, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardSearchIndexers,
+            self).__init__(
+            application,
+            request,
+            *args,
+            **kwargs)
 
     def run(self):
         """ Search for a show with a given name on all the indexers, in a specific language """
@@ -1692,8 +1970,10 @@ class CMD_SickBeardSearchIndexers(ApiCall):
         lang_id = self.valid_languages[self.lang]
 
         if self.name and not self.indexerid:  # only name was given
-            for _indexer in sickbeard.indexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
-                lINDEXER_API_PARMS = sickbeard.indexerApi(_indexer).api_params.copy()
+            for _indexer in sickbeard.indexerApi().indexers if self.indexer == 0 else [
+                    int(self.indexer)]:
+                lINDEXER_API_PARMS = sickbeard.indexerApi(
+                    _indexer).api_params.copy()
 
                 if self.lang and not self.lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                     lINDEXER_API_PARMS[b'language'] = self.lang
@@ -1701,12 +1981,14 @@ class CMD_SickBeardSearchIndexers(ApiCall):
                 lINDEXER_API_PARMS[b'actors'] = False
                 lINDEXER_API_PARMS[b'custom_ui'] = classes.AllShowsListUI
 
-                t = sickbeard.indexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
+                t = sickbeard.indexerApi(
+                    _indexer).indexer(**lINDEXER_API_PARMS)
 
                 try:
                     apiData = t[str(self.name).encode()]
                 except (sickbeard.indexer_shownotfound, sickbeard.indexer_showincomplete, sickbeard.indexer_error):
-                    logging.warning("API :: Unable to find show with id " + str(self.indexerid))
+                    logging.warning(
+                        "API :: Unable to find show with id " + str(self.indexerid))
                     continue
 
                 for curSeries in apiData:
@@ -1715,30 +1997,37 @@ class CMD_SickBeardSearchIndexers(ApiCall):
                                     "first_aired": curSeries[b'firstaired'],
                                     "indexer": int(_indexer)})
 
-            return _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})
+            return _responds(RESULT_SUCCESS, {
+                             "results": results, "langid": lang_id})
 
         elif self.indexerid:
-            for _indexer in sickbeard.indexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
-                lINDEXER_API_PARMS = sickbeard.indexerApi(_indexer).api_params.copy()
+            for _indexer in sickbeard.indexerApi().indexers if self.indexer == 0 else [
+                    int(self.indexer)]:
+                lINDEXER_API_PARMS = sickbeard.indexerApi(
+                    _indexer).api_params.copy()
 
                 if self.lang and not self.lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
                     lINDEXER_API_PARMS[b'language'] = self.lang
 
                 lINDEXER_API_PARMS[b'actors'] = False
 
-                t = sickbeard.indexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
+                t = sickbeard.indexerApi(
+                    _indexer).indexer(**lINDEXER_API_PARMS)
 
                 try:
                     myShow = t[int(self.indexerid)]
                 except (sickbeard.indexer_shownotfound, sickbeard.indexer_showincomplete, sickbeard.indexer_error):
-                    logging.warning("API :: Unable to find show with id " + str(self.indexerid))
-                    return _responds(RESULT_SUCCESS, {"results": [], "langid": lang_id})
+                    logging.warning(
+                        "API :: Unable to find show with id " + str(self.indexerid))
+                    return _responds(RESULT_SUCCESS, {
+                                     "results": [], "langid": lang_id})
 
                 if not myShow.data[b'seriesname']:
                     logging.debug(
-                            "API :: Found show with indexerid: " + str(
-                                    self.indexerid) + ", however it contained no show name")
-                    return _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
+                        "API :: Found show with indexerid: " + str(
+                            self.indexerid) + ", however it contained no show name")
+                    return _responds(
+                        RESULT_FAILURE, msg="Show contains no name, invalid result")
 
                 # found show
                 results = [{indexer_ids[_indexer]: int(myShow.data[b'id']),
@@ -1747,9 +2036,11 @@ class CMD_SickBeardSearchIndexers(ApiCall):
                             "indexer": int(_indexer)}]
                 break
 
-            return _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})
+            return _responds(RESULT_SUCCESS, {
+                             "results": results, "langid": lang_id})
         else:
-            return _responds(RESULT_FAILURE, msg="Either a unique id or name is required!")
+            return _responds(
+                RESULT_FAILURE, msg="Either a unique id or name is required!")
 
 
 class CMD_SickBeardSearchTVDB(CMD_SickBeardSearchIndexers):
@@ -1763,8 +2054,16 @@ class CMD_SickBeardSearchTVDB(CMD_SickBeardSearchIndexers):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        super(CMD_SickBeardSearchTVDB, self).__init__(application, request, *args, **kwargs)
-        self.indexerid, args = self.check_params("tvdbid", None, False, "int", [], *args, **kwargs)
+        super(
+            CMD_SickBeardSearchTVDB,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
+        self.indexerid, args = self.check_params(
+            "tvdbid", None, False, "int", [], *args, **kwargs)
 
 
 class CMD_SickBeardSearchTVRAGE(CMD_SickBeardSearchIndexers):
@@ -1785,10 +2084,18 @@ class CMD_SickBeardSearchTVRAGE(CMD_SickBeardSearchIndexers):
     def __init__(self, application, request, *args, **kwargs):
         # Leave this one as APICall so it doesnt try and search anything
         # pylint: disable=W0233,W0231
-        super(CMD_SickBeardSearchTVRAGE, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardSearchTVRAGE,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
-        return _responds(RESULT_FAILURE, msg="TVRage is disabled, invalid result")
+        return _responds(
+            RESULT_FAILURE, msg="TVRage is disabled, invalid result")
 
 
 class CMD_SickBeardSetDefaults(ApiCall):
@@ -1812,12 +2119,21 @@ class CMD_SickBeardSetDefaults(ApiCall):
         self.archive, args = self.check_params("archive", None, False, "list",
                                                ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
                                                 "fullhdwebdl", "hdbluray", "fullhdbluray"], *args, **kwargs)
-        self.future_show_paused, args = self.check_params("future_show_paused", None, False, "bool", [], *args, **kwargs)
-        self.flatten_folders, args = self.check_params("flatten_folders", None, False, "bool", [], *args, **kwargs)
+        self.future_show_paused, args = self.check_params(
+            "future_show_paused", None, False, "bool", [], *args, **kwargs)
+        self.flatten_folders, args = self.check_params(
+            "flatten_folders", None, False, "bool", [], *args, **kwargs)
         self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], args,
                                               kwargs)
         # super, missing, help
-        super(CMD_SickBeardSetDefaults, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardSetDefaults,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Set SiCKRAGE's user default configuration value """
@@ -1844,7 +2160,8 @@ class CMD_SickBeardSetDefaults(ApiCall):
                 aqualityID.append(quality_map[quality])
 
         if iqualityID or aqualityID:
-            sickbeard.QUALITY_DEFAULT = Quality.combineQualities(iqualityID, aqualityID)
+            sickbeard.QUALITY_DEFAULT = Quality.combineQualities(
+                iqualityID, aqualityID)
 
         if self.status:
             # convert the string status to a int
@@ -1860,10 +2177,10 @@ class CMD_SickBeardSetDefaults(ApiCall):
                 raise ApiError("Status Prohibited")
             sickbeard.STATUS_DEFAULT = self.status
 
-        if self.flatten_folders != None:
+        if self.flatten_folders is not None:
             sickbeard.FLATTEN_FOLDERS_DEFAULT = int(self.flatten_folders)
 
-        if self.future_show_paused != None:
+        if self.future_show_paused is not None:
             sickbeard.COMING_EPS_DISPLAY_PAUSED = int(self.future_show_paused)
 
         return _responds(RESULT_SUCCESS, msg="Saved defaults")
@@ -1876,12 +2193,20 @@ class CMD_SickBeardShutdown(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_SickBeardShutdown, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardShutdown,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Shutdown SiCKRAGE """
         if not Shutdown.stop(sickbeard.PID):
-            return _responds(RESULT_FAILURE, msg='SiCKRAGE can not be shut down')
+            return _responds(
+                RESULT_FAILURE, msg='SiCKRAGE can not be shut down')
 
         return _responds(RESULT_SUCCESS, msg="SiCKRAGE is shutting down...")
 
@@ -1893,7 +2218,14 @@ class CMD_SickBeardUpdate(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_SickBeardUpdate, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_SickBeardUpdate,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         checkversion = CheckVersion()
@@ -1902,9 +2234,11 @@ class CMD_SickBeardUpdate(ApiCall):
             if checkversion.run_backup_if_safe():
                 checkversion.update()
 
-                return _responds(RESULT_SUCCESS, msg="SiCKRAGE is updating ...")
+                return _responds(
+                    RESULT_SUCCESS, msg="SiCKRAGE is updating ...")
 
-            return _responds(RESULT_FAILURE, msg="SiCKRAGE could not backup config ...")
+            return _responds(
+                RESULT_FAILURE, msg="SiCKRAGE could not backup config ...")
 
         return _responds(RESULT_FAILURE, msg="SiCKRAGE is already up to date")
 
@@ -1922,14 +2256,16 @@ class CMD_Show(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
         super(CMD_Show, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
         """ Get detailed information about a show """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -1949,7 +2285,9 @@ class CMD_Show(ApiCall):
         showDict[b"quality"] = get_quality_string(showObj.quality)
 
         anyQualities, bestQualities = _mapQuality(showObj.quality)
-        showDict[b"quality_details"] = {"initial": anyQualities, "archive": bestQualities}
+        showDict[b"quality_details"] = {
+            "initial": anyQualities,
+            "archive": bestQualities}
 
         try:
             showDict[b"location"] = showObj.location
@@ -1964,16 +2302,25 @@ class CMD_Show(ApiCall):
         showDict[b"flatten_folders"] = (0, 1)[showObj.flatten_folders]
         showDict[b"sports"] = (0, 1)[showObj.sports]
         showDict[b"anime"] = (0, 1)[showObj.anime]
-        showDict[b"airs"] = str(showObj.airs).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
+        showDict[b"airs"] = str(
+            showObj.airs).replace(
+            'am',
+            ' AM').replace(
+            'pm',
+            ' PM').replace(
+                '  ',
+            ' ')
         showDict[b"dvdorder"] = (0, 1)[showObj.dvdorder]
 
         if showObj.rls_require_words:
-            showDict[b"rls_require_words"] = showObj.rls_require_words.split(", ")
+            showDict[
+                b"rls_require_words"] = showObj.rls_require_words.split(", ")
         else:
             showDict[b"rls_require_words"] = []
 
         if showObj.rls_ignore_words:
-            showDict[b"rls_ignore_words"] = showObj.rls_ignore_words.split(", ")
+            showDict[
+                b"rls_ignore_words"] = showObj.rls_ignore_words.split(", ")
         else:
             showDict[b"rls_ignore_words"] = []
 
@@ -1991,10 +2338,11 @@ class CMD_Show(ApiCall):
 
         if helpers.tryInt(showObj.nextaired, 1) > 693595:
             dtEpisodeAirs = sbdatetime.sbdatetime.convert_to_setting(
-                    network_timezones.parse_date_time(showObj.nextaired, showDict[b'airs'], showDict[b'network']))
+                network_timezones.parse_date_time(showObj.nextaired, showDict[b'airs'], showDict[b'network']))
             showDict[b'airs'] = sbdatetime.sbdatetime.sbftime(dtEpisodeAirs, t_preset=timeFormat).lstrip('0').replace(
-                    ' 0', ' ')
-            showDict[b'next_ep_airdate'] = sbdatetime.sbdatetime.sbfdate(dtEpisodeAirs, d_preset=dateFormat)
+                ' 0', ' ')
+            showDict[b'next_ep_airdate'] = sbdatetime.sbdatetime.sbfdate(
+                dtEpisodeAirs, d_preset=dateFormat)
         else:
             showDict[b'next_ep_airdate'] = ''
 
@@ -2019,8 +2367,10 @@ class CMD_ShowAddExisting(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "", [], *args, **kwargs)
-        self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "", [], *args, **kwargs)
+        self.location, args = self.check_params(
+            "location", None, True, "string", [], *args, **kwargs)
         # optional
         self.initial, args = self.check_params("initial", None, False, "list",
                                                ["sdtv", "sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
@@ -2028,34 +2378,48 @@ class CMD_ShowAddExisting(ApiCall):
         self.archive, args = self.check_params("archive", None, False, "list",
                                                ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
                                                 "fullhdwebdl", "hdbluray", "fullhdbluray"], *args, **kwargs)
-        self.archive_firstmatch, args = self.check_params("archive_firstmatch", None, False, "int", [], *args, **kwargs)
+        self.archive_firstmatch, args = self.check_params(
+            "archive_firstmatch", None, False, "int", [], *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders", bool(sickbeard.FLATTEN_FOLDERS_DEFAULT),
                                                        False, "bool", [], *args, **kwargs)
         self.subtitles, args = self.check_params("subtitles", int(sickbeard.USE_SUBTITLES), False, "int", [], args,
                                                  kwargs)
         # super, missing, help
-        super(CMD_ShowAddExisting, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowAddExisting,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Add an existing show in SiCKRAGE """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if showObj:
-            return _responds(RESULT_FAILURE, msg="An existing indexerid already exists in the database")
+            return _responds(
+                RESULT_FAILURE, msg="An existing indexerid already exists in the database")
 
         if not ek(os.path.isdir, self.location):
             return _responds(RESULT_FAILURE, msg='Not a valid location')
 
         indexerName = None
-        indexerResult = CMD_SickBeardSearchIndexers([], {indexer_ids[self.indexer]: self.indexerid}).run()
+        indexerResult = CMD_SickBeardSearchIndexers(
+            [], {indexer_ids[self.indexer]: self.indexerid}).run()
 
         if indexerResult[b'result'] == result_type_map[RESULT_SUCCESS]:
             if not indexerResult[b'data'][b'results']:
-                return _responds(RESULT_FAILURE, msg="Empty results returned, check indexerid and try again")
-            if len(indexerResult[b'data'][b'results']) == 1 and 'name' in indexerResult[b'data'][b'results'][0]:
+                return _responds(
+                    RESULT_FAILURE, msg="Empty results returned, check indexerid and try again")
+            if len(indexerResult[b'data'][b'results']) == 1 and 'name' in indexerResult[
+                    b'data'][b'results'][0]:
                 indexerName = indexerResult[b'data'][b'results'][0][b'name']
 
         if not indexerName:
-            return _responds(RESULT_FAILURE, msg="Unable to retrieve information from indexer")
+            return _responds(
+                RESULT_FAILURE, msg="Unable to retrieve information from indexer")
 
         # set indexer so we can pass it along when adding show to SR
         indexer = indexerResult[b'data'][b'results'][0][b'indexer']
@@ -2087,12 +2451,13 @@ class CMD_ShowAddExisting(ApiCall):
             newQuality = Quality.combineQualities(iqualityID, aqualityID)
 
         sickbeard.showQueueScheduler.action.addShow(
-                int(indexer), int(self.indexerid), self.location, default_status=sickbeard.STATUS_DEFAULT,
-                quality=newQuality, flatten_folders=int(self.flatten_folders), subtitles=self.subtitles,
-                default_status_after=sickbeard.STATUS_DEFAULT_AFTER, archive=self.archive_firstmatch
+            int(indexer), int(self.indexerid), self.location, default_status=sickbeard.STATUS_DEFAULT,
+            quality=newQuality, flatten_folders=int(self.flatten_folders), subtitles=self.subtitles,
+            default_status_after=sickbeard.STATUS_DEFAULT_AFTER, archive=self.archive_firstmatch
         )
 
-        return _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")
+        return _responds(RESULT_SUCCESS, {
+                         "name": indexerName}, indexerName + " has been queued to be added")
 
 
 class CMD_ShowAddNew(ApiCall):
@@ -2122,9 +2487,11 @@ class CMD_ShowAddNew(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         self.valid_languages = sickbeard.indexerApi().config[b'langabbv_to_id']
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
-        self.location, args = self.check_params("location", None, False, "string", [], *args, **kwargs)
+        self.location, args = self.check_params(
+            "location", None, False, "string", [], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list",
                                                ["sdtv", "sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl",
                                                 "fullhdwebdl", "hdbluray", "fullhdbluray", "unknown"], *args, **kwargs)
@@ -2139,21 +2506,32 @@ class CMD_ShowAddNew(ApiCall):
                                             self.valid_languages.keys(), *args, **kwargs)
         self.subtitles, args = self.check_params("subtitles", bool(sickbeard.USE_SUBTITLES), False, "bool", [], args,
                                                  kwargs)
-        self.anime, args = self.check_params("anime", bool(sickbeard.ANIME_DEFAULT), False, "bool", [], *args, **kwargs)
-        self.scene, args = self.check_params("scene", bool(sickbeard.SCENE_DEFAULT), False, "bool", [], *args, **kwargs)
+        self.anime, args = self.check_params("anime", bool(
+            sickbeard.ANIME_DEFAULT), False, "bool", [], *args, **kwargs)
+        self.scene, args = self.check_params("scene", bool(
+            sickbeard.SCENE_DEFAULT), False, "bool", [], *args, **kwargs)
         self.future_status, args = self.check_params("future_status", None, False, "string",
                                                      ["wanted", "skipped", "ignored"], *args, **kwargs)
         self.archive_firstmatch, args = self.check_params("archive_firstmatch", bool(sickbeard.ARCHIVE_DEFAULT), False,
                                                           "bool", [], *args, **kwargs)
 
         # super, missing, help
-        super(CMD_ShowAddNew, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowAddNew,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Add a new show to SiCKRAGE """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if showObj:
-            return _responds(RESULT_FAILURE, msg="An existing indexerid already exists in database")
+            return _responds(
+                RESULT_FAILURE, msg="An existing indexerid already exists in database")
 
         if not self.location:
             if sickbeard.ROOT_DIRS != "":
@@ -2162,10 +2540,12 @@ class CMD_ShowAddNew(ApiCall):
                 default_index = int(sickbeard.ROOT_DIRS.split('|')[0])
                 self.location = root_dirs[default_index]
             else:
-                return _responds(RESULT_FAILURE, msg="Root directory is not set, please provide a location")
+                return _responds(
+                    RESULT_FAILURE, msg="Root directory is not set, please provide a location")
 
         if not ek(os.path.isdir, self.location):
-            return _responds(RESULT_FAILURE, msg="'" + self.location + "' is not a valid location")
+            return _responds(RESULT_FAILURE, msg="'" +
+                             self.location + "' is not a valid location")
 
         quality_map = {'sdtv': Quality.SDTV,
                        'sddvd': Quality.SDDVD,
@@ -2215,7 +2595,8 @@ class CMD_ShowAddNew(ApiCall):
         if self.future_status:
             # convert the string status to a int
             for status in statusStrings.statusStrings:
-                if statusStrings[status].lower() == str(self.future_status).lower():
+                if statusStrings[status].lower() == str(
+                        self.future_status).lower():
                     self.future_status = status
                     break
 
@@ -2228,42 +2609,57 @@ class CMD_ShowAddNew(ApiCall):
             default_ep_status_after = self.future_status
 
         indexerName = None
-        indexerResult = CMD_SickBeardSearchIndexers([], {indexer_ids[self.indexer]: self.indexerid}).run()
+        indexerResult = CMD_SickBeardSearchIndexers(
+            [], {indexer_ids[self.indexer]: self.indexerid}).run()
 
         if indexerResult[b'result'] == result_type_map[RESULT_SUCCESS]:
             if not indexerResult[b'data'][b'results']:
-                return _responds(RESULT_FAILURE, msg="Empty results returned, check indexerid and try again")
-            if len(indexerResult[b'data'][b'results']) == 1 and 'name' in indexerResult[b'data'][b'results'][0]:
+                return _responds(
+                    RESULT_FAILURE, msg="Empty results returned, check indexerid and try again")
+            if len(indexerResult[b'data'][b'results']) == 1 and 'name' in indexerResult[
+                    b'data'][b'results'][0]:
                 indexerName = indexerResult[b'data'][b'results'][0][b'name']
 
         if not indexerName:
-            return _responds(RESULT_FAILURE, msg="Unable to retrieve information from indexer")
+            return _responds(
+                RESULT_FAILURE, msg="Unable to retrieve information from indexer")
 
         # set indexer for found show so we can pass it along
         indexer = indexerResult[b'data'][b'results'][0][b'indexer']
 
-        # moved the logic check to the end in an attempt to eliminate empty directory being created from previous errors
-        showPath = ek(os.path.join, self.location, helpers.sanitizeFileName(indexerName))
+        # moved the logic check to the end in an attempt to eliminate empty
+        # directory being created from previous errors
+        showPath = ek(
+            os.path.join,
+            self.location,
+            helpers.sanitizeFileName(indexerName))
 
         # don't create show dir if config says not to
         if sickbeard.ADD_SHOWS_WO_DIR:
-            logging.info("Skipping initial creation of " + showPath + " due to config.ini setting")
+            logging.info(
+                "Skipping initial creation of " +
+                showPath +
+                " due to config.ini setting")
         else:
             dir_exists = helpers.makeDir(showPath)
             if not dir_exists:
-                logging.error("API :: Unable to create the folder " + showPath + ", can't add the show")
+                logging.error(
+                    "API :: Unable to create the folder " +
+                    showPath +
+                    ", can't add the show")
                 return _responds(RESULT_FAILURE, {"path": showPath},
                                  "Unable to create the folder " + showPath + ", can't add the show")
             else:
                 helpers.chmodAsParent(showPath)
 
         sickbeard.showQueueScheduler.action.addShow(
-                int(indexer), int(self.indexerid), showPath, default_status=newStatus, quality=newQuality,
-                flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime,
-                scene=self.scene, default_status_after=default_ep_status_after, archive=self.archive_firstmatch
+            int(indexer), int(self.indexerid), showPath, default_status=newStatus, quality=newQuality,
+            flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime,
+            scene=self.scene, default_status_after=default_ep_status_after, archive=self.archive_firstmatch
         )
 
-        return _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")
+        return _responds(RESULT_SUCCESS, {
+                         "name": indexerName}, indexerName + " has been queued to be added")
 
 
 class CMD_ShowCache(ApiCall):
@@ -2279,14 +2675,23 @@ class CMD_ShowCache(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_ShowCache, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowCache,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Check SiCKRAGE's cache to see if the images (poster, banner, fanart) for a show are valid """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2303,7 +2708,8 @@ class CMD_ShowCache(ApiCall):
         if ek(os.path.isfile, cache_obj.banner_path(showObj.indexerid)):
             has_banner = 1
 
-        return _responds(RESULT_SUCCESS, {"poster": has_poster, "banner": has_banner})
+        return _responds(RESULT_SUCCESS, {
+                         "poster": has_poster, "banner": has_banner})
 
 
 class CMD_ShowDelete(ApiCall):
@@ -2322,11 +2728,20 @@ class CMD_ShowDelete(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
-        self.removefiles, args = self.check_params("removefiles", False, False, "bool", [], *args, **kwargs)
+        self.removefiles, args = self.check_params(
+            "removefiles", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
-        super(CMD_ShowDelete, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowDelete,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Delete a show in SiCKRAGE """
@@ -2335,7 +2750,8 @@ class CMD_ShowDelete(ApiCall):
         if error is not None:
             return _responds(RESULT_FAILURE, msg=error)
 
-        return _responds(RESULT_SUCCESS, msg='%s has been queued to be deleted' % show.name)
+        return _responds(
+            RESULT_SUCCESS, msg='%s has been queued to be deleted' % show.name)
 
 
 class CMD_ShowGetQuality(ApiCall):
@@ -2351,20 +2767,30 @@ class CMD_ShowGetQuality(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_ShowGetQuality, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowGetQuality,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get the quality setting of a show """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         anyQualities, bestQualities = _mapQuality(showObj.quality)
 
-        return _responds(RESULT_SUCCESS, {"initial": anyQualities, "archive": bestQualities})
+        return _responds(RESULT_SUCCESS, {
+                         "initial": anyQualities, "archive": bestQualities})
 
 
 class CMD_ShowGetPoster(ApiCall):
@@ -2380,10 +2806,18 @@ class CMD_ShowGetPoster(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_ShowGetPoster, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowGetPoster,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get the poster a show """
@@ -2406,10 +2840,18 @@ class CMD_ShowGetBanner(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_ShowGetBanner, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowGetBanner,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get the banner of a show """
@@ -2432,10 +2874,18 @@ class CMD_ShowGetNetworkLogo(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_ShowGetNetworkLogo, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowGetNetworkLogo,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """
@@ -2460,10 +2910,18 @@ class CMD_ShowGetFanArt(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_ShowGetFanArt, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowGetFanArt,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get the fan art of a show """
@@ -2487,11 +2945,20 @@ class CMD_ShowPause(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
-        self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
+        self.pause, args = self.check_params(
+            "pause", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
-        super(CMD_ShowPause, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowPause,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Pause or unpause a show """
@@ -2500,7 +2967,8 @@ class CMD_ShowPause(ApiCall):
         if error is not None:
             return _responds(RESULT_FAILURE, msg=error)
 
-        return _responds(RESULT_SUCCESS, msg='%s has been %s' % (show.name, ('resumed', 'paused')[show.paused]))
+        return _responds(RESULT_SUCCESS, msg='%s has been %s' %
+                         (show.name, ('resumed', 'paused')[show.paused]))
 
 
 class CMD_ShowRefresh(ApiCall):
@@ -2516,10 +2984,18 @@ class CMD_ShowRefresh(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_ShowRefresh, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowRefresh,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Refresh a show in SiCKRAGE """
@@ -2528,7 +3004,8 @@ class CMD_ShowRefresh(ApiCall):
         if error is not None:
             return _responds(RESULT_FAILURE, msg=error)
 
-        return _responds(RESULT_SUCCESS, msg='%s has queued to be refreshed' % show.name)
+        return _responds(
+            RESULT_SUCCESS, msg='%s has queued to be refreshed' % show.name)
 
 
 class CMD_ShowSeasonList(ApiCall):
@@ -2545,15 +3022,26 @@ class CMD_ShowSeasonList(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
-        self.sort, args = self.check_params("sort", "desc", False, "string", ["asc", "desc"], *args, **kwargs)
+        self.sort, args = self.check_params(
+            "sort", "desc", False, "string", [
+                "asc", "desc"], *args, **kwargs)
         # super, missing, help
-        super(CMD_ShowSeasonList, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowSeasonList,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get the list of seasons of a show """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2585,33 +3073,45 @@ class CMD_ShowSeasons(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
-        self.season, args = self.check_params("season", None, False, "int", [], *args, **kwargs)
+        self.season, args = self.check_params(
+            "season", None, False, "int", [], *args, **kwargs)
         # super, missing, help
-        super(CMD_ShowSeasons, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowSeasons,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get the list of episodes for one or all seasons of a show """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         myDB = db.DBConnection(row_type="dict")
 
-        if self.season == None:
+        if self.season is None:
             sqlResults = myDB.select(
-                    "SELECT name, episode, airdate, status, release_name, season, location, file_size, subtitles FROM tv_episodes WHERE showid = ?",
-                    [self.indexerid])
+                "SELECT name, episode, airdate, status, release_name, season, location, file_size, subtitles FROM tv_episodes WHERE showid = ?",
+                [self.indexerid])
             seasons = {}
             for row in sqlResults:
-                status, quality = Quality.splitCompositeStatus(int(row[b"status"]))
+                status, quality = Quality.splitCompositeStatus(
+                    int(row[b"status"]))
                 row[b"status"] = _get_status_Strings(status)
                 row[b"quality"] = get_quality_string(quality)
                 if helpers.tryInt(row[b'airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = sbdatetime.sbdatetime.convert_to_setting(
-                            network_timezones.parse_date_time(row[b'airdate'], showObj.airs, showObj.network))
-                    row[b'airdate'] = sbdatetime.sbdatetime.sbfdate(dtEpisodeAirs, d_preset=dateFormat)
+                        network_timezones.parse_date_time(row[b'airdate'], showObj.airs, showObj.network))
+                    row[b'airdate'] = sbdatetime.sbdatetime.sbfdate(
+                        dtEpisodeAirs, d_preset=dateFormat)
                 else:
                     row[b'airdate'] = 'Never'
                 curSeason = int(row[b"season"])
@@ -2624,21 +3124,23 @@ class CMD_ShowSeasons(ApiCall):
 
         else:
             sqlResults = myDB.select(
-                    "SELECT name, episode, airdate, status, location, file_size, release_name, subtitles FROM tv_episodes WHERE showid = ? AND season = ?",
-                    [self.indexerid, self.season])
+                "SELECT name, episode, airdate, status, location, file_size, release_name, subtitles FROM tv_episodes WHERE showid = ? AND season = ?",
+                [self.indexerid, self.season])
             if len(sqlResults) is 0:
                 return _responds(RESULT_FAILURE, msg="Season not found")
             seasons = {}
             for row in sqlResults:
                 curEpisode = int(row[b"episode"])
                 del row[b"episode"]
-                status, quality = Quality.splitCompositeStatus(int(row[b"status"]))
+                status, quality = Quality.splitCompositeStatus(
+                    int(row[b"status"]))
                 row[b"status"] = _get_status_Strings(status)
                 row[b"quality"] = get_quality_string(quality)
                 if helpers.tryInt(row[b'airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = sbdatetime.sbdatetime.convert_to_setting(
-                            network_timezones.parse_date_time(row[b'airdate'], showObj.airs, showObj.network))
-                    row[b'airdate'] = sbdatetime.sbdatetime.sbfdate(dtEpisodeAirs, d_preset=dateFormat)
+                        network_timezones.parse_date_time(row[b'airdate'], showObj.airs, showObj.network))
+                    row[b'airdate'] = sbdatetime.sbdatetime.sbfdate(
+                        dtEpisodeAirs, d_preset=dateFormat)
                 else:
                     row[b'airdate'] = 'Never'
                 if not curEpisode in seasons:
@@ -2663,7 +3165,8 @@ class CMD_ShowSetQuality(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
         # this for whatever reason removes hdbluray not sdtv... which is just wrong. reverting to previous code.. plus we didnt use the new code everywhere.
         # self.archive, args = self.check_params("archive", None, False, "list", _getQualityMap().values()[1:], *args, **kwargs)
@@ -2675,11 +3178,19 @@ class CMD_ShowSetQuality(ApiCall):
                                                 "fullhdwebdl",
                                                 "hdbluray", "fullhdbluray"], *args, **kwargs)
         # super, missing, help
-        super(CMD_ShowSetQuality, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowSetQuality,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Set the quality setting of a show. If no quality is provided, the default user setting is used. """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2727,14 +3238,23 @@ class CMD_ShowStats(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_ShowStats, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowStats,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get episode statistics for a given show """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2742,7 +3262,8 @@ class CMD_ShowStats(ApiCall):
         episode_status_counts_total = {}
         episode_status_counts_total[b"total"] = 0
         for status in statusStrings.statusStrings.keys():
-            if status in [UNKNOWN, DOWNLOADED, SNATCHED, SNATCHED_PROPER, ARCHIVED]:
+            if status in [UNKNOWN, DOWNLOADED,
+                          SNATCHED, SNATCHED_PROPER, ARCHIVED]:
                 continue
             episode_status_counts_total[status] = 0
 
@@ -2790,35 +3311,44 @@ class CMD_ShowStats(ApiCall):
         # turning codes into strings
         for statusCode in episode_qualities_counts_download:
             if statusCode == "total":
-                episodes_stats[b"downloaded"][b"total"] = episode_qualities_counts_download[statusCode]
+                episodes_stats[b"downloaded"][
+                    b"total"] = episode_qualities_counts_download[statusCode]
                 continue
             status, quality = Quality.splitCompositeStatus(int(statusCode))
-            statusString = Quality.qualityStrings[quality].lower().replace(" ", "_").replace("(", "").replace(")", "")
-            episodes_stats[b"downloaded"][statusString] = episode_qualities_counts_download[statusCode]
+            statusString = Quality.qualityStrings[quality].lower().replace(
+                " ", "_").replace("(", "").replace(")", "")
+            episodes_stats[b"downloaded"][
+                statusString] = episode_qualities_counts_download[statusCode]
 
         episodes_stats[b"snatched"] = {}
         # truning codes into strings
         # and combining proper and normal
         for statusCode in episode_qualities_counts_snatch:
             if statusCode == "total":
-                episodes_stats[b"snatched"][b"total"] = episode_qualities_counts_snatch[statusCode]
+                episodes_stats[b"snatched"][
+                    b"total"] = episode_qualities_counts_snatch[statusCode]
                 continue
             status, quality = Quality.splitCompositeStatus(int(statusCode))
-            statusString = Quality.qualityStrings[quality].lower().replace(" ", "_").replace("(", "").replace(")", "")
+            statusString = Quality.qualityStrings[quality].lower().replace(
+                " ", "_").replace("(", "").replace(")", "")
             if Quality.qualityStrings[quality] in episodes_stats[b"snatched"]:
-                episodes_stats[b"snatched"][statusString] += episode_qualities_counts_snatch[statusCode]
+                episodes_stats[b"snatched"][
+                    statusString] += episode_qualities_counts_snatch[statusCode]
             else:
-                episodes_stats[b"snatched"][statusString] = episode_qualities_counts_snatch[statusCode]
+                episodes_stats[b"snatched"][
+                    statusString] = episode_qualities_counts_snatch[statusCode]
 
         # episodes_stats[b"total"] = {}
         for statusCode in episode_status_counts_total:
             if statusCode == "total":
-                episodes_stats[b"total"] = episode_status_counts_total[statusCode]
+                episodes_stats[
+                    b"total"] = episode_status_counts_total[statusCode]
                 continue
             status, quality = Quality.splitCompositeStatus(int(statusCode))
             statusString = statusStrings.statusStrings[statusCode].lower().replace(" ", "_").replace("(", "").replace(
-                    ")", "")
-            episodes_stats[statusString] = episode_status_counts_total[statusCode]
+                ")", "")
+            episodes_stats[
+                statusString] = episode_status_counts_total[statusCode]
 
         return _responds(RESULT_SUCCESS, episodes_stats)
 
@@ -2836,23 +3366,35 @@ class CMD_ShowUpdate(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         # required
-        self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
+        self.indexerid, args = self.check_params(
+            "indexerid", None, True, "int", [], *args, **kwargs)
         # optional
         # super, missing, help
-        super(CMD_ShowUpdate, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowUpdate,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Update a show in SiCKRAGE """
-        showObj = sickbeard.helpers.findCertainShow(sickbeard.showList, int(self.indexerid))
+        showObj = sickbeard.helpers.findCertainShow(
+            sickbeard.showList, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickbeard.showQueueScheduler.action.updateShow(showObj, True)  # @UndefinedVariable
-            return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
+            sickbeard.showQueueScheduler.action.updateShow(
+                showObj, True)  # @UndefinedVariable
+            return _responds(RESULT_SUCCESS, msg=str(
+                showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
             logging.debug("API::Unable to update show: {0}".format(str(e)))
-            return _responds(RESULT_FAILURE, msg="Unable to update " + str(showObj.name))
+            return _responds(
+                RESULT_FAILURE, msg="Unable to update " + str(showObj.name))
 
 
 class CMD_Shows(ApiCall):
@@ -2867,8 +3409,11 @@ class CMD_Shows(ApiCall):
     def __init__(self, application, request, *args, **kwargs):
         # required
         # optional
-        self.sort, args = self.check_params("sort", "id", False, "string", ["id", "name"], *args, **kwargs)
-        self.paused, args = self.check_params("paused", None, False, "bool", [], *args, **kwargs)
+        self.sort, args = self.check_params(
+            "sort", "id", False, "string", [
+                "id", "name"], *args, **kwargs)
+        self.paused, args = self.check_params(
+            "paused", None, False, "bool", [], *args, **kwargs)
         # super, missing, help
         super(CMD_Shows, self).__init__(application, request, *args, **kwargs)
 
@@ -2877,7 +3422,8 @@ class CMD_Shows(ApiCall):
         shows = {}
         for curShow in sickbeard.showList:
 
-            if self.paused is not None and bool(self.paused) != bool(curShow.paused):
+            if self.paused is not None and bool(
+                    self.paused) != bool(curShow.paused):
                 continue
 
             indexerShow = helpers.mapIndexersToShow(curShow)
@@ -2899,12 +3445,14 @@ class CMD_Shows(ApiCall):
 
             if helpers.tryInt(curShow.nextaired, 1) > 693595:  # 1900
                 dtEpisodeAirs = sbdatetime.sbdatetime.convert_to_setting(
-                        network_timezones.parse_date_time(curShow.nextaired, curShow.airs, showDict[b'network']))
-                showDict[b'next_ep_airdate'] = sbdatetime.sbdatetime.sbfdate(dtEpisodeAirs, d_preset=dateFormat)
+                    network_timezones.parse_date_time(curShow.nextaired, curShow.airs, showDict[b'network']))
+                showDict[b'next_ep_airdate'] = sbdatetime.sbdatetime.sbfdate(
+                    dtEpisodeAirs, d_preset=dateFormat)
             else:
                 showDict[b'next_ep_airdate'] = ''
 
-            showDict[b"cache"] = CMD_ShowCache(self.application, self.request, **{"indexerid": curShow.indexerid}).run()[b"data"]
+            showDict[b"cache"] = CMD_ShowCache(
+                self.application, self.request, **{"indexerid": curShow.indexerid}).run()[b"data"]
             if not showDict[b"network"]:
                 showDict[b"network"] = ""
             if self.sort == "name":
@@ -2922,7 +3470,14 @@ class CMD_ShowsStats(ApiCall):
         # required
         # optional
         # super, missing, help
-        super(CMD_ShowsStats, self).__init__(application, request, *args, **kwargs)
+        super(
+            CMD_ShowsStats,
+            self).__init__(
+            application,
+            request,
+            *
+            args,
+            **kwargs)
 
     def run(self):
         """ Get the global shows and episodes statistics """

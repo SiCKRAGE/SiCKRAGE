@@ -44,6 +44,9 @@ class ShowBanner(GenericMedia):
                 media_file = ImageCache().banner_thumb_path(self.indexer_id)
 
         if not all([media_file, os.path.exists(media_file)]):
-            media_file = os.path.join(self.get_media_root(), 'images', self.get_default_media_name())
+            media_file = os.path.join(
+                self.get_media_root(),
+                'images',
+                self.get_default_media_name())
 
         return media_file

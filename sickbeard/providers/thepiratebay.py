@@ -28,6 +28,7 @@ from sickbeard.common import USER_AGENT
 
 
 class ThePirateBayProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "ThePirateBay")
@@ -65,7 +66,8 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
         self.re_title_url = r'/torrent/(?P<id>\d+)/(?P<title>.*?)".+?(?P<url>magnet.*?)".+?Size (?P<size>[\d\.]*&nbsp;[TGKMiB]{2,3}).+?(?P<seeders>\d+)</td>.+?(?P<leechers>\d+)</td>'
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -79,14 +81,16 @@ class ThePirateBayProvider(generic.TorrentProvider):
                 if mode is not 'RSS':
                     logging.debug("Search string: " + search_string)
 
-                searchURL = self.urls[('search', 'rss')[mode is 'RSS']] + '?' + urlencode(self.search_params)
+                searchURL = self.urls[
+                    ('search', 'rss')[mode is 'RSS']] + '?' + urlencode(self.search_params)
                 logging.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
                 # data = self.getURL(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
                 if not data:
                     continue
 
-                matches = re.compile(self.re_title_url, re.DOTALL).finditer(data)
+                matches = re.compile(
+                    self.re_title_url, re.DOTALL).finditer(data)
                 for torrent in matches:
                     title = torrent.group('title')
                     download_url = torrent.group('url')
@@ -106,8 +110,10 @@ class ThePirateBayProvider(generic.TorrentProvider):
                                     title, seeders, leechers))
                         continue
 
-                    # Accept Torrent only from Good People for every Episode Search
-                    if self.confirmed and re.search(r'(VIP|Trusted|Helper|Moderator)', torrent.group(0)) is None:
+                    # Accept Torrent only from Good People for every Episode
+                    # Search
+                    if self.confirmed and re.search(
+                            r'(VIP|Trusted|Helper|Moderator)', torrent.group(0)) is None:
                         if mode is not 'RSS':
                             logging.debug(
                                 "Found result %s but that doesn't seem like a trusted result so I'm ignoring it" % title)
@@ -144,6 +150,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
 
 class ThePirateBayCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

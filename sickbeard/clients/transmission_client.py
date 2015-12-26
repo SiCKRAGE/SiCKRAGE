@@ -29,9 +29,16 @@ from sickbeard.clients.generic import GenericClient
 
 
 class TransmissionAPI(GenericClient):
+
     def __init__(self, host=None, username=None, password=None):
 
-        super(TransmissionAPI, self).__init__('Transmission', host, username, password)
+        super(
+            TransmissionAPI,
+            self).__init__(
+            'Transmission',
+            host,
+            username,
+            password)
 
         if not self.host.endswith('/'):
             self.host += '/'
@@ -46,12 +53,14 @@ class TransmissionAPI(GenericClient):
 
     def _get_auth(self):
 
-        post_data = json.dumps({'method': 'session-get',})
+        post_data = json.dumps({'method': 'session-get', })
 
         try:
             self.response = self.session.post(self.url, data=post_data.encode('utf-8'), timeout=120,
                                               verify=sickbeard.TORRENT_VERIFY_CERT)
-            self.auth = re.search(r'X-Transmission-Session-Id:\s*(\w+)', self.response.text).group(1)
+            self.auth = re.search(
+                r'X-Transmission-Session-Id:\s*(\w+)',
+                self.response.text).group(1)
         except Exception:
             return None
 

@@ -37,6 +37,7 @@ log.use_print = False
 
 
 class ImageCache:
+
     def __init__(self):
         pass
 
@@ -47,13 +48,15 @@ class ImageCache:
         """
         Builds up the full path to the image cache directory
         """
-        return ek(os.path.abspath, ek(os.path.join, sickbeard.CACHE_DIR, 'images'))
+        return ek(os.path.abspath, ek(
+            os.path.join, sickbeard.CACHE_DIR, 'images'))
 
     def _thumbnails_dir(self):
         """
         Builds up the full path to the thumbnails image cache directory
         """
-        return ek(os.path.abspath, ek(os.path.join, self._cache_dir(), 'thumbnails'))
+        return ek(os.path.abspath, ek(os.path.join,
+                                      self._cache_dir(), 'thumbnails'))
 
     def poster_path(self, indexer_id):
         """
@@ -160,7 +163,10 @@ class ImageCache:
         """
 
         if not ek(os.path.isfile, path):
-            logging.warning("Couldn't check the type of " + str(path) + " cause it doesn't exist")
+            logging.warning(
+                "Couldn't check the type of " +
+                str(path) +
+                " cause it doesn't exist")
             return None
 
         # use hachoir to parse the image for us
@@ -168,10 +174,14 @@ class ImageCache:
         img_metadata = extractMetadata(img_parser)
 
         if not img_metadata:
-            logging.debug("Unable to get metadata from " + str(path) + ", not using your existing image")
+            logging.debug(
+                "Unable to get metadata from " +
+                str(path) +
+                ", not using your existing image")
             return None
 
-        img_ratio = float(img_metadata.get('width')) / float(img_metadata.get('height'))
+        img_ratio = float(img_metadata.get('width')) / \
+            float(img_metadata.get('height'))
 
         img_parser.stream._input.close()
 
@@ -183,11 +193,15 @@ class ImageCache:
         elif 5 < img_ratio < 6:
             return self.BANNER
 
-        # most fanart are around 1.77777 width/height ratio (eg. 1280/720 and 1920/1080)
+        # most fanart are around 1.77777 width/height ratio (eg. 1280/720 and
+        # 1920/1080)
         elif 1.7 < img_ratio < 1.8:
             return self.FANART
         else:
-            logging.warning("Image has size ratio of " + str(img_ratio) + ", unknown type")
+            logging.warning(
+                "Image has size ratio of " +
+                str(img_ratio) +
+                ", unknown type")
             return None
 
     def _cache_image_from_file(self, image_path, img_type, indexer_id):
@@ -213,11 +227,13 @@ class ImageCache:
 
         # make sure the cache folder exists before we try copying to it
         if not ek(os.path.isdir, self._cache_dir()):
-            logging.info("Image cache dir didn't exist, creating it at " + str(self._cache_dir()))
+            logging.info(
+                "Image cache dir didn't exist, creating it at " + str(self._cache_dir()))
             ek(os.makedirs, self._cache_dir())
 
         if not ek(os.path.isdir, self._thumbnails_dir()):
-            logging.info("Thumbnails cache dir didn't exist, creating it at " + str(self._thumbnails_dir()))
+            logging.info(
+                "Thumbnails cache dir didn't exist, creating it at " + str(self._thumbnails_dir()))
             ek(os.makedirs, self._thumbnails_dir())
 
         logging.info("Copying from " + image_path + " to " + dest_path)
@@ -257,7 +273,8 @@ class ImageCache:
         # retrieve the image from indexer using the generic metadata class
         # TODO: refactor
         metadata_generator = GenericMetadata()
-        img_data = metadata_generator._retrieve_show_image(img_type_name, show_obj)
+        img_data = metadata_generator._retrieve_show_image(
+            img_type_name, show_obj)
         result = metadata_generator._write_image(img_data, dest_path)
 
         return result
@@ -270,7 +287,8 @@ class ImageCache:
         :param show_obj: TVShow object to cache images for
         """
 
-        logging.debug("Checking if we need any cache images for show " + str(show_obj.indexerid))
+        logging.debug(
+            "Checking if we need any cache images for show " + str(show_obj.indexerid))
 
         # check if the images are already cached or not
         need_images = {self.POSTER: not self.has_poster(show_obj.indexerid),
@@ -281,38 +299,51 @@ class ImageCache:
 
         if not need_images[self.POSTER] and not need_images[self.BANNER] and not need_images[self.POSTER_THUMB] and not \
                 need_images[self.BANNER_THUMB] and not need_images[self.FANART]:
-            logging.debug("No new cache images needed, not retrieving new ones")
+            logging.debug(
+                "No new cache images needed, not retrieving new ones")
             return
 
         # check the show dir for poster or banner images and use them
-        if need_images[self.POSTER] or need_images[self.BANNER] or need_images[self.FANART]:
+        if need_images[self.POSTER] or need_images[
+                self.BANNER] or need_images[self.FANART]:
             try:
                 for cur_provider in sickbeard.metadata_provider_dict.values():
-                    logging.debug("Checking if we can use the show image from the " + cur_provider.name + " metadata")
-                    if ek(os.path.isfile, cur_provider.get_poster_path(show_obj)):
-                        cur_file_name = ek(os.path.abspath, cur_provider.get_poster_path(show_obj))
+                    logging.debug(
+                        "Checking if we can use the show image from the " +
+                        cur_provider.name +
+                        " metadata")
+                    if ek(os.path.isfile,
+                          cur_provider.get_poster_path(show_obj)):
+                        cur_file_name = ek(
+                            os.path.abspath, cur_provider.get_poster_path(show_obj))
                         cur_file_type = self.which_type(cur_file_name)
 
-                        if cur_file_type == None:
-                            logging.warning("Unable to retrieve image type, not using the image from " + str(cur_file_name))
+                        if cur_file_type is None:
+                            logging.warning(
+                                "Unable to retrieve image type, not using the image from " +
+                                str(cur_file_name))
                             continue
 
                         logging.debug("Checking if image " + cur_file_name + " (type " + str(
-                                cur_file_type) + " needs metadata: " + str(need_images[cur_file_type]))
+                            cur_file_type) + " needs metadata: " + str(need_images[cur_file_type]))
 
-                        if cur_file_type in need_images and need_images[cur_file_type]:
+                        if cur_file_type in need_images and need_images[
+                                cur_file_type]:
                             logging.debug(
-                                    "Found an image in the show dir that doesn't exist in the cache, caching it: " + cur_file_name + ", type " + str(
-                                            cur_file_type))
-                            self._cache_image_from_file(cur_file_name, cur_file_type, show_obj.indexerid)
+                                "Found an image in the show dir that doesn't exist in the cache, caching it: " + cur_file_name + ", type " + str(
+                                    cur_file_type))
+                            self._cache_image_from_file(
+                                cur_file_name, cur_file_type, show_obj.indexerid)
                             need_images[cur_file_type] = False
             except ShowDirectoryNotFoundException:
-                logging.warning("Unable to search for images in show dir because it doesn't exist")
+                logging.warning(
+                    "Unable to search for images in show dir because it doesn't exist")
 
         # download from indexer for missing ones
-        for cur_image_type in [self.POSTER, self.BANNER, self.POSTER_THUMB, self.BANNER_THUMB, self.FANART]:
+        for cur_image_type in [self.POSTER, self.BANNER,
+                               self.POSTER_THUMB, self.BANNER_THUMB, self.FANART]:
             logging.debug("Seeing if we still need an image of type " + str(cur_image_type) + ": " + str(
-                    need_images[cur_image_type]))
+                need_images[cur_image_type]))
             if cur_image_type in need_images and need_images[cur_image_type]:
                 self._cache_image_from_indexer(show_obj, cur_image_type)
 

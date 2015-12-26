@@ -54,7 +54,8 @@ class BlackAndWhiteList(object):
         """
         myDB = db.DBConnection()
         for value in values:
-            myDB.action('INSERT INTO [' + table + '] (show_id, keyword) VALUES (?,?)', [self.show_id, value])
+            myDB.action(
+                'INSERT INTO [' + table + '] (show_id, keyword) VALUES (?,?)', [self.show_id, value])
 
     def set_black_keywords(self, values):
         """
@@ -85,7 +86,8 @@ class BlackAndWhiteList(object):
         :param table: SQL table remove keywords from
         """
         myDB = db.DBConnection()
-        myDB.action('DELETE FROM [' + table + '] WHERE show_id = ?', [self.show_id])
+        myDB.action('DELETE FROM [' + table +
+                    '] WHERE show_id = ?', [self.show_id])
 
     def _load_list(self, table):
         """
@@ -96,14 +98,16 @@ class BlackAndWhiteList(object):
         :return: keywords in list
         """
         myDB = db.DBConnection()
-        sqlResults = myDB.select('SELECT keyword FROM [' + table + '] WHERE show_id = ?', [self.show_id])
+        sqlResults = myDB.select(
+            'SELECT keyword FROM [' + table + '] WHERE show_id = ?', [self.show_id])
         if not sqlResults or not len(sqlResults):
             return []
         groups = []
         for result in sqlResults:
             groups.append(result[b"keyword"])
 
-        logging.debug('BWL: ' + str(self.show_id) + ' loaded keywords from ' + table + ': ' + str(groups))
+        logging.debug('BWL: ' + str(self.show_id) +
+                      ' loaded keywords from ' + table + ': ' + str(groups))
 
         return groups
 
@@ -120,18 +124,22 @@ class BlackAndWhiteList(object):
                 logging.debug('Failed to detect release group')
                 return False
 
-            if result.release_group.lower() in [x.lower() for x in self.whitelist]:
+            if result.release_group.lower() in [
+                    x.lower() for x in self.whitelist]:
                 white_result = True
             elif not self.whitelist:
                 white_result = True
             else:
                 white_result = False
-            if result.release_group.lower() in [x.lower() for x in self.blacklist]:
+            if result.release_group.lower() in [
+                    x.lower() for x in self.blacklist]:
                 black_result = False
             else:
                 black_result = True
 
-            logging.debug('Whitelist check passed: %s. Blacklist check passed: %s' % (white_result, black_result))
+            logging.debug(
+                'Whitelist check passed: %s. Blacklist check passed: %s' %
+                (white_result, black_result))
 
             if white_result and black_result:
                 return True
@@ -160,9 +168,11 @@ def short_group_names(groups):
             try:
                 group = sickbeard.ADBA_CONNECTION.group(gname=groupName)
             except AniDBCommandTimeoutError:
-                logging.debug("Timeout while loading group from AniDB. Trying next group")
+                logging.debug(
+                    "Timeout while loading group from AniDB. Trying next group")
             except Exception:
-                logging.debug("Failed while loading group from AniDB. Trying next group")
+                logging.debug(
+                    "Failed while loading group from AniDB. Trying next group")
             else:
                 for line in group.datalines:
                     if line[b"shortname"]:

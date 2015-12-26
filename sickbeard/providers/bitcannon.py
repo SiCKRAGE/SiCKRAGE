@@ -27,6 +27,7 @@ from sickbeard.providers import generic
 
 
 class BitCannonProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "BitCannon")
@@ -47,13 +48,20 @@ class BitCannonProvider(generic.TorrentProvider):
             'trackers': self.url + 'stats',
         }
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        trackers = (self.getURL(self.urls[b'trackers'], json=True) or {}).get('Trackers', [])
+        trackers = (
+            self.getURL(
+                self.urls[b'trackers'],
+                json=True) or {}).get(
+            'Trackers',
+            [])
         if not trackers:
-            logging.info('Could not get tracker list from BitCannon, aborting search')
+            logging.info(
+                'Could not get tracker list from BitCannon, aborting search')
             return results
 
         for mode in search_strings.keys():
@@ -87,8 +95,8 @@ class BitCannonProvider(generic.TorrentProvider):
                     # Only build the url if we selected it
                     download_url = 'magnet:?xt=urn:btih:%s&dn=%s&tr=%s' % (info_hash, quote_plus(title.encode('utf-8')),
                                                                            '&tr='.join(
-                                                                                   [quote_plus(x.encode('utf-8')) for x
-                                                                                    in trackers]))
+                        [quote_plus(x.encode('utf-8')) for x
+                         in trackers]))
 
                     item = title, download_url, size, seeders, leechers
                     if mode is not 'RSS':
@@ -108,6 +116,7 @@ class BitCannonProvider(generic.TorrentProvider):
 
 
 class BitCannonCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 
