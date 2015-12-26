@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: https://sickrage.tv/
 # Git: https://github.com/SiCKRAGETV/SickRage.git
@@ -29,6 +30,7 @@ import logging
 from sickbeard.name_parser.parser import NameParser, InvalidNameException, InvalidShowException
 from sickbeard import common
 from sickbeard import failedProcessor
+from sickbeard.helpers import removetree
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import EpisodePostProcessingFailedException, ex, FailedPostProcessingFailedException
 
@@ -40,7 +42,6 @@ from unrar2.rar_exceptions import InvalidRARArchiveUsage
 from unrar2.rar_exceptions import IncorrectRARPassword
 
 import shutil
-import shutil_custom
 
 
 class ProcessResult(object):
@@ -106,7 +107,6 @@ def delete_files(processPath, notwantedFiles, result, force=False):
 
     # Delete all file not needed
     for cur_file in notwantedFiles:
-
         cur_file_path = ek(os.path.join, processPath, cur_file)
 
         if not ek(os.path.isfile, cur_file_path):
@@ -147,7 +147,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     :param nzbName: The NZB name which resulted in this folder being downloaded
     :param force: True to postprocess already postprocessed files
     :param failed: Boolean for whether or not the download failed
-    :param type: Type of postprocessing auto or manual
+    :param proc_type: Type of postprocessing auto or manual
     """
 
     result = ProcessResult()
@@ -156,6 +156,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
     result.output += logHelper("TV_DOWNLOAD_DIR: %s" % sickbeard.TV_DOWNLOAD_DIR, logging.DEBUG)
     postpone = False
+
     # if they passed us a real dir then assume it's the one we want
     if ek(os.path.isdir, dirName):
         dirName = ek(os.path.realpath, dirName)
@@ -173,10 +174,10 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                 logging.DEBUG)
         return result.output
 
-    path, dirs, files = get_path_dir_files(dirName, nzbName, type)
+    path, dirs, files = get_path_dir_files(dirName, nzbName, proc_type)
 
-    files = filter(helpers.notTorNZBFile, files)
-    SyncFiles = filter(helpers.isSyncFile, files)
+    files = [x for x in files if helpers.notTorNZBFile(x)]
+    SyncFiles = [x for x in files if helpers.isSyncFile(x)]
 
     # Don't post process if files are still being synced and option is activated
     if SyncFiles and sickbeard.POSTPONE_IF_SYNC_FILES:
@@ -188,11 +189,11 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         result.output += logHelper("PostProcessing Path: %s" % path, logging.INFO)
         result.output += logHelper("PostProcessing Dirs: [%s]" % dirs, logging.DEBUG)
 
-        rarFiles = filter(helpers.isRarFile, files)
+        rarFiles = [x for x in files if helpers.isRarFile(x)]
         rarContent = unRAR(path, rarFiles, force, result)
         files += rarContent
-        videoFiles = filter(helpers.isMediaFile, files)
-        videoInRar = filter(helpers.isMediaFile, rarContent)
+        videoFiles = [x for x in files if helpers.isMediaFile(x)]
+        videoInRar = [x for x in rarContent if helpers.isMediaFile(x)]
 
         result.output += logHelper("PostProcessing Files: [%s]" % ", ".join(files), logging.DEBUG)
         result.output += logHelper("PostProcessing VideoFiles: [%s]" % ", ".join(videoFiles), logging.DEBUG)
@@ -208,7 +209,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
         result.result = True
 
-        #Don't Link media when the media is extracted from a rar in the same path
+        # Don't Link media when the media is extracted from a rar in the same path
         if process_method in ('hardlink', 'symlink') and videoInRar:
             process_media(path, videoInRar, nzbName, 'move', force, is_priority, result)
             delete_files(path, rarContent, result)
@@ -228,35 +229,35 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         result.output += logHelper("Sync Files: [%s] in path %s" % (", ".join(SyncFiles), path))
         result.missedfiles.append("%s : Syncfiles found" % path)
 
-    #Process Video File in all TV Subdir
-    for dir in [x for x in dirs if validateDir(path, x, nzbNameOriginal, failed, result)]:
+    # Process Video File in all TV Subdir
+    for curDir in [x for x in dirs if validateDir(path, x, nzbNameOriginal, failed, result)]:
 
         result.result = True
 
-        for processPath, processDir, fileList in ek(os.walk, ek(os.path.join, path, dir), topdown=False):
+        for processPath, _, fileList in ek(os.walk, ek(os.path.join, path, curDir), topdown=False):
 
-            if (not validateDir(path, processPath, nzbNameOriginal, failed, result)):
+            if not validateDir(path, processPath, nzbNameOriginal, failed, result):
                 continue
 
             postpone = False
 
-            SyncFiles = filter(helpers.isSyncFile, fileList)
+            SyncFiles = [x for x in fileList if helpers.isSyncFile(x)]
 
             # Don't post process if files are still being synced and option is activated
             if SyncFiles and sickbeard.POSTPONE_IF_SYNC_FILES:
                 postpone = True
 
             if not postpone:
-                rarFiles = filter(helpers.isRarFile, fileList)
+                rarFiles = [x for x in fileList if helpers.isRarFile(x)]
                 rarContent = unRAR(processPath, rarFiles, force, result)
                 fileList = set(fileList + rarContent)
-                videoFiles = filter(helpers.isMediaFile, fileList)
-                videoInRar = filter(helpers.isMediaFile, rarContent)
+                videoFiles = [x for x in fileList if helpers.isMediaFile(x)]
+                videoInRar = [x for x in rarContent if helpers.isMediaFile(x)]
                 notwantedFiles = [x for x in fileList if x not in videoFiles]
                 if notwantedFiles:
                     result.output += logHelper("Found unwanted files: [%s]" % ", ".join(notwantedFiles), logging.DEBUG)
 
-                #Don't Link media when the media is extracted from a rar in the same path
+                # Don't Link media when the media is extracted from a rar in the same path
                 if process_method in ('hardlink', 'symlink') and videoInRar:
                     process_media(processPath, videoInRar, nzbName, 'move', force, is_priority, result)
                     process_media(processPath, set(videoFiles) - set(videoInRar), nzbName, process_method, force,
@@ -270,7 +271,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                 else:
                     process_media(processPath, videoFiles, nzbName, process_method, force, is_priority, result)
 
-                    #Delete all file not needed
+                    # Delete all file not needed
                     if process_method != "move" or not result.result \
                             or (
                                     proc_type == "manual" and not delete_on):  # Avoid to delete files if is Manual PostProcessing
@@ -313,6 +314,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     """
 
     IGNORED_FOLDERS = ['.AppleDouble', '.@__thumb', '@eaDir']
+
     folder_name = ek(os.path.basename, dirName)
     if folder_name in IGNORED_FOLDERS:
         return False
@@ -361,10 +363,10 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
         allDirs += processdir
         allFiles += fileList
 
-    videoFiles = filter(helpers.isMediaFile, allFiles)
+    videoFiles = [x for x in allFiles if helpers.isMediaFile(x)]
     allDirs.append(dirName)
 
-    #check if the dir have at least one tv video file
+    # check if the dir have at least one tv video file
     for video in videoFiles:
         try:
             NameParser().parse(video, cache_result=False)
@@ -372,16 +374,16 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
         except (InvalidNameException, InvalidShowException):
             pass
 
-    for dir in allDirs:
+    for proc_dir in allDirs:
         try:
-            NameParser().parse(dir, cache_result=False)
+            NameParser().parse(proc_dir, cache_result=False)
             return True
         except (InvalidNameException, InvalidShowException):
             pass
 
     if sickbeard.UNPACK:
-        #Search for packed release
-        packedFiles = filter(helpers.isRarFile, allFiles)
+        # Search for packed release
+        packedFiles = [x for x in allFiles if helpers.isRarFile(x)]
 
         for packed in packedFiles:
             try:
@@ -416,11 +418,11 @@ def unRAR(path, rarFiles, force, result):
             result.output += logHelper("Unpacking archive: " + archive, logging.DEBUG)
 
             try:
-                rar_handle = RarFile(os.path.join(path, archive))
+                rar_handle = RarFile(ek(os.path.join, path, archive))
 
                 # Skip extraction if any file in archive has previously been extracted
                 skip_file = False
-                for file_in_archive in [os.path.basename(x.filename) for x in rar_handle.infolist() if not x.isdir]:
+                for file_in_archive in [ek(os.path.basename, x.filename) for x in rar_handle.infolist() if not x.isdir]:
                     if already_postprocessed(path, file_in_archive, force, result):
                         result.output += logHelper(
                                 "Archive file already post-processed, extraction skipped: " + file_in_archive,
@@ -434,7 +436,7 @@ def unRAR(path, rarFiles, force, result):
                 rar_handle.extract(path=path, withSubpath=False, overwrite=False)
                 for x in rar_handle.infolist():
                     if not x.isdir:
-                        basename = os.path.basename(x.filename)
+                        basename = ek(os.path.basename, x.filename)
                         if basename not in unpacked_files:
                             unpacked_files.append(basename)
                 del rar_handle
@@ -505,9 +507,9 @@ def already_postprocessed(dirName, videofile, force, result):
         # Needed if we have downloaded the same episode @ different quality
         # But we need to make sure we check the history of the episode we're going to PP, and not others
         np = NameParser(dirName, tryIndexers=True)
-        try: #if it fails to find any info (because we're doing an unparsable folder (like the TV root dir) it will throw an exception, which we want to ignore
+        try:  # if it fails to find any info (because we're doing an unparsable folder (like the TV root dir) it will throw an exception, which we want to ignore
             parse_result = np.parse(dirName)
-        except: #ignore the exception, because we kind of expected it, but create parse_result anyway so we can perform a check on it.
+        except Exception:  # ignore the exception, because we kind of expected it, but create parse_result anyway so we can perform a check on it.
             parse_result = False
 
         search_sql = "SELECT tv_episodes.indexerid, history.resource FROM tv_episodes INNER JOIN history ON history.showid=tv_episodes.showid"  # This part is always the same
@@ -571,20 +573,20 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
             result.aggresult = False
 
 
-def get_path_dir_files(dirName, nzbName, type):
+def get_path_dir_files(dirName, nzbName, proc_type):
     """
     Get files in a path
 
     :param dirName: Directory to start in
     :param nzbName: NZB file, if present
-    :param type: auto/manual
+    :param proc_type: auto/manual
     :return: a tuple of (path,dirs,files)
     """
     path = ""
     dirs = []
     files = []
 
-    if dirName == sickbeard.TV_DOWNLOAD_DIR and not nzbName or type == "manual":  # Scheduled Post Processing Active
+    if dirName == sickbeard.TV_DOWNLOAD_DIR and not nzbName or proc_type == "manual":  # Scheduled Post Processing Active
         # Get at first all the subdir in the dirName
         for path, dirs, files in ek(os.walk, dirName):
             break
@@ -593,7 +595,7 @@ def get_path_dir_files(dirName, nzbName, type):
         if not nzbName is None and not nzbName.endswith('.nzb') and ek(os.path.isfile, ek(os.path.join, dirName,
                                                                                           nzbName)):  # For single torrent file without Dir
             dirs = []
-            files = [os.path.join(dirName, nzbName)]
+            files = [ek(os.path.join, dirName, nzbName)]
         else:
             dirs = [dirs]
             files = []
