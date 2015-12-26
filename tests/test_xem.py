@@ -1,6 +1,7 @@
-# coding=UTF-8
-# Author: Dennis Lutter <lad1337@gmail.com>
-# URL: http://code.google.com/p/sickbeard/
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -17,33 +18,34 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
 
-import sys, os.path
+import os.path
+import sys
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import datetime
 import unittest
 import re
 
-import test_lib as test
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase, db
 import sickbeard
-from sickbeard.helpers import sanitizeSceneName
-from sickbeard.name_parser.parser import NameParser
 from sickbeard.tv import TVShow
 
-class XEMBasicTests(test.SiCKRAGETestDBCase):
+
+class XEMBasicTests(SiCKRAGETestDBCase):
     def loadShowsFromDB(self):
         """
         Populates the showList with shows from the database
         """
 
-        myDB = test.db.DBConnection()
+        myDB = db.DBConnection()
         sqlResults = myDB.select("SELECT * FROM tv_shows")
 
         for sqlShow in sqlResults:
             try:
-                curShow = TVShow(int(sqlShow["indexer"]), int(sqlShow["indexer_id"]))
+                curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
                 sickbeard.showList.append(curShow)
             except Exception:
                 pass
@@ -53,14 +55,14 @@ class XEMBasicTests(test.SiCKRAGETestDBCase):
         Populates the showList with shows from the database
         """
 
-        myDB = test.db.DBConnection()
+        myDB = db.DBConnection()
         sqlResults = myDB.select("SELECT * FROM tv_shows")
 
         for sqlShow in sqlResults:
             try:
-                curShow = TVShow(int(sqlShow["indexer"]), int(sqlShow["indexer_id"]))
+                curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
                 sickbeard.showList.append(curShow)
-            except Exception, e:
+            except Exception as e:
                 print "There was an error creating the show"
 
     def test_formating(self):
@@ -83,5 +85,4 @@ if __name__ == "__main__":
     print "STARTING - XEM SCENE NUMBERING TESTS"
     print "=================="
     print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(XEMBasicTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.main()

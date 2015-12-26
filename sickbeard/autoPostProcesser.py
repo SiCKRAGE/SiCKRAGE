@@ -17,40 +17,38 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import os.path
 import threading
 import sickbeard
 
-from sickbeard import logger
+import logging
 from sickbeard import processTV
 from sickrage.helper.encoding import ek
 
 
-class PostProcesser():
-
+class PostProcessor():
     def __init__(self):
         self.lock = threading.Lock()
         self.amActive = False
 
     def run(self, force=False):
         """
-        TODO: Rename class to PostProcessor (classname contains a typo)
         Runs the postprocessor
         :param force: Forces postprocessing run (reserved for future use)
         :return: Returns when done without a return state/code
         """
         self.amActive = True
 
-        if not ek(os.path.isdir,sickbeard.TV_DOWNLOAD_DIR):
-            logger.log(u"Automatic post-processing attempted but dir " + sickbeard.TV_DOWNLOAD_DIR + " doesn't exist",
-                       logger.ERROR)
+        if not ek(os.path.isdir, sickbeard.TV_DOWNLOAD_DIR):
+            logging.error("Automatic post-processing attempted but dir " + sickbeard.TV_DOWNLOAD_DIR + " doesn't exist")
             self.amActive = False
             return
 
         if not os.path.isabs(sickbeard.TV_DOWNLOAD_DIR):
-            logger.log(
-                u"Automatic post-processing attempted but dir " + sickbeard.TV_DOWNLOAD_DIR + " is relative (and probably not what you really want to process)",
-                logger.ERROR)
+            logging.error(
+                    "Automatic post-processing attempted but dir " + sickbeard.TV_DOWNLOAD_DIR + " is relative (and probably not what you really want to process)")
             self.amActive = False
             return
 

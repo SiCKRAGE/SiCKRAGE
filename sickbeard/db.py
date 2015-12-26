@@ -1,4 +1,4 @@
-# coding=UTF-8
+# -*- coding: utf-8 -*-
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: https://sickrage.tv
 # Git: https://github.com/SiCKRAGETV/SickRage.git
@@ -18,17 +18,21 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
 
-import os.path
 import re
-import sqlite3
+import six
 import time
+import os.path
+import sqlite3
+import logging
 import threading
-import sickbeard
+import collections
 
-from sickbeard import logger
+import sickbeard
 from sickrage.helper.encoding import ek, uu
 from sickrage.helper.exceptions import ex
+
 
 def dbFilename(filename="sickbeard.db", suffix=None):
     """
@@ -42,35 +46,41 @@ def dbFilename(filename="sickbeard.db", suffix=None):
         filename = "%s.%s" % (filename, suffix)
     return ek(os.path.join, sickbeard.DATA_DIR, filename)
 
+
 class Cursor:
-    def __init__ (self, cursor):
+    def __init__(self, cursor):
         self.cursor = cursor
         self.lock = threading.Lock()
 
-    def _execute(self, query, args):
-        try:
-            if not args:
-                return self.cursor.execute(query)
-            return self.cursor.execute(query, args)
-        except:
-            raise
-
-    def execute(self, query, args, fetchall=False, fetchone=False):
+    def execute(self, query, *args, **kwargs):
         with self.lock:
             try:
-                if fetchall:
-                    return self._execute(query, args).fetchall()
-                elif fetchone:
-                    return self._execute(query, args).fetchone()
-                else:
-                    return self._execute(query, args)
-            except:
+                args = reduce(lambda l, i: l + type(l)(i) if isinstance(i, (list,tuple)) else l + [i], args, []),
+                if kwargs.get('fetchall'):
+                    return self.cursor.execute(query, *args).fetchall()
+                elif kwargs.get('fetchone'):
+                    return self.cursor.execute(query, *args).fetchone()
+                return self.cursor.execute(query, *args)
+            except Exception as e:
+                raise
+
+    def executemany(self, query, *args, **kwargs):
+        with self.lock:
+            try:
+                args = (args, [args])[len(args[0:]) > 1]
+                if kwargs.get('fetchall'):
+                    return self.cursor.executemany(query, *args).fetchall()
+                elif kwargs.get('fetchone'):
+                    return self.cursor.executemany(query, *args).fetchone()
+                return self.cursor.executemany(query, *args)
+            except Exception as e:
                 raise
 
     @property
     def rowcount(self):
         with self.lock:
             return self.cursor.rowcount
+
 
 class DBConnection(object):
     def __init__(self, filename="sickbeard.db", suffix=None, row_type=None, *args, **kwargs):
@@ -84,30 +94,37 @@ class DBConnection(object):
         try:
             self.open()
         except Exception as e:
-            logger.log(u"DB error: " + ex(e), logger.ERROR)
+            logging.error("DB error: {}".format(ex(e)))
 
     def open(self):
         try:
             if not self.connection:
-                self.connection = sqlite3.connect(dbFilename(self.filename, self.suffix), timeout=20, check_same_thread=False, isolation_level=None)
-                self.connection.text_factory = uu
+                self.connection = sqlite3.connect(dbFilename(self.filename, self.suffix), timeout=20,
+                                                  check_same_thread=False, isolation_level=None)
                 self.connection.row_factory = self._dict_factory if self.row_type == "dict" else sqlite3.Row
-                self.cursor = Cursor (self.connection.cursor())
-        except:
-            raise
+                self.cursor = Cursor(self.connection.cursor())
+        except:raise
 
     def close(self):
         self.commit()
 
-    def execute(self, query, args=None, fetchall=False, fetchone=False):
+    def execute(self, query, *args, **kwargs):
         self.open()
-        return self.cursor.execute(query, args, fetchall=fetchall, fetchone=fetchone)
+        try:return self.cursor.execute(query, *args, **kwargs)
+        except:self.commit()
+
+    def executemany(self, query, *args, **kwargs):
+        self.open()
+        try:return self.cursor.executemany(query, *args, **kwargs)
+        except:self.commit()
 
     def commit(self):
         if self.connection:
-            self.connection.commit()
-            self.connection.close()
-            self.connection = None
+            try:
+                self.connection.commit()
+            finally:
+                self.connection.close()
+                self.connection = None
 
     def checkDBVersion(self):
         """
@@ -125,102 +142,70 @@ class DBConnection(object):
 
         return 0
 
-    def mass_action(self, querylist=[], logTransaction=False, fetchall=False):
+    def mass_action(self, querylist, *args, **kwargs):
         """
         Execute multiple queries
 
         :param querylist: list of queries
-        :param logTransaction: Boolean to wrap all in one transaction
-        :param fetchall: Boolean, when using a select query force returning all results
         :return: list of results
         """
 
         with self.lock:
-            querylist = [i for i in querylist if i is not None and len(i)]
-
             sqlResult = []
             attempt = 0
 
-            while attempt < 5:
-                try:
-                    for qu in querylist:
-                        if len(qu) == 1:
-                            if logTransaction:
-                                logger.log(qu[0], logger.DEBUG)
-                            sqlResult.append(self.execute(qu[0], fetchall=fetchall))
-                        elif len(qu) > 1:
-                            if logTransaction:
-                                logger.log(qu[0] + " with args " + str(qu[1]), logger.DEBUG)
-                            sqlResult.append(self.execute(qu[0], qu[1], fetchall=fetchall))
+            try:
+                while attempt < 5:
+                    try:
+                        sqlResult += [
+                            self.execute(x[0], *x[1] if len(x) > 1 else self.execute(x[0], **kwargs), **kwargs)
+                            for x in filter(lambda q: q is not None, querylist)
+                            ]
 
-                    logger.log(u"Transaction with " + str(len(querylist)) + u" queries executed", logger.DEBUG)
-                except sqlite3.OperationalError, e:
-                    sqlResult = []
-                    if self.connection:
-                        self.connection.rollback()
-                    if "unable to open database file" in e.args[0] or "database is locked" in e.args[0]:
-                        logger.log(u"DB error: " + ex(e), logger.WARNING)
+                        logging.db("Transaction {} of {} queries executed of ".format(len(sqlResult), len(querylist)))
+                        raise StopIteration
+                    except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
+                        logging.error("DB error: {}".format(ex(e)))
                         attempt += 1
+                        sqlResult = []
                         time.sleep(1)
-                    else:
-                        logger.log(u"DB error: " + ex(e), logger.ERROR)
-                        raise
-                except sqlite3.DatabaseError, e:
-                    sqlResult = []
-                    if self.connection:
                         self.connection.rollback()
-                    logger.log(u"Fatal error executing query: " + ex(e), logger.ERROR)
-                    raise
-                finally:
-                    self.commit()
-                    break
+            except StopIteration:pass
+            finally:self.commit()
 
             return sqlResult
 
-    def action(self, query, args=None, fetchall=False, fetchone=False):
+    def action(self, query, *args, **kwargs):
         """
         Execute single query
 
         :param query: Query string
-        :param args: Arguments to query string
-        :param fetchall: Boolean to indicate all results must be fetched
-        :param fetchone: Boolean to indicate one result must be fetched (to walk results for instance)
         :return: query results
         """
 
         with self.lock:
-            if query == None:
+            if not query:
                 return
 
             sqlResult = None
             attempt = 0
 
-            while attempt < 5:
-                try:
-                    if args == None:
-                        logger.log(self.filename + ": " + query, logger.DB)
-                    else:
-                        logger.log(self.filename + ": " + query + " with args " + str(args), logger.DB)
-
-                    sqlResult = self.execute(query, args, fetchall=fetchall, fetchone=fetchone)
-                except sqlite3.OperationalError, e:
-                    if "unable to open database file" in e.args[0] or "database is locked" in e.args[0]:
-                        logger.log(u"DB error: " + ex(e), logger.WARNING)
+            try:
+                while attempt < 5:
+                    try:
+                        logging.db("{}: {} with args {} and kwargs {}".format(self.filename, query, args, kwargs))
+                        sqlResult = self.execute(query, *args, **kwargs)
+                        raise StopIteration
+                    except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
+                        logging.error("DB error: {}".format(ex(e)))
                         attempt += 1
                         time.sleep(1)
-                    else:
-                        logger.log(u"DB error: " + ex(e), logger.ERROR)
-                        raise
-                except sqlite3.DatabaseError, e:
-                    logger.log(u"Fatal error executing query: " + ex(e), logger.ERROR)
-                    raise
-                finally:
-                    self.commit()
-                    break
+            except StopIteration:pass
+            finally:self.commit()
 
             return sqlResult
 
-    def select(self, query, args=None):
+    def select(self, query, *args, **kwargs):
         """
         Perform single select query on database
 
@@ -229,14 +214,14 @@ class DBConnection(object):
         :return: query results
         """
 
-        sqlResults = self.action(query, args, fetchall=True)
+        sqlResults = self.action(query, fetchall=True, *args, **kwargs)
 
         if sqlResults == None:
             return []
 
         return sqlResults
 
-    def selectOne(self, query, args=None):
+    def selectOne(self, query, *args, **kwargs):
         """
         Perform single select query on database, returning one result
 
@@ -244,7 +229,7 @@ class DBConnection(object):
         :param args: arguments to query string
         :return: query results
         """
-        sqlResults = self.action(query, args, fetchone=True)
+        sqlResults = self.action(query, fetchone=True, *args, **kwargs)
 
         if sqlResults == None:
             return []
@@ -264,7 +249,7 @@ class DBConnection(object):
         genParams = lambda myDict: [x + " = ?" for x in myDict.keys()]
 
         query = "UPDATE [" + tableName + "] SET " + ", ".join(genParams(valueDict)) + " WHERE " + " AND ".join(
-            genParams(keyDict))
+                genParams(keyDict))
 
         self.action(query, valueDict.values() + keyDict.values())
 
@@ -283,7 +268,7 @@ class DBConnection(object):
         sqlResult = self.select("PRAGMA table_info(`%s`)" % tableName)
         columns = {}
         for column in sqlResult:
-            columns[column['name']] = {'type': column['type']}
+            columns[column[b'name']] = {'type': column[b'type']}
         return columns
 
     def _dict_factory(self, cursor, row):
@@ -299,7 +284,7 @@ class DBConnection(object):
         :param tableName: table name to check
         :return: True if table exists, False if it does not
         """
-        return len(self.select("SELECT 1 FROM sqlite_master WHERE name = ?;", (tableName, ))) > 0
+        return len(self.select("SELECT 1 FROM sqlite_master WHERE name = ?;", tableName)) > 0
 
     def hasColumn(self, tableName, column):
         """
@@ -322,10 +307,12 @@ class DBConnection(object):
         :param default: Default value for column
         """
         self.action("ALTER TABLE [%s] ADD %s %s" % (table, column, type))
-        self.action("UPDATE [%s] SET %s = ?" % (table, column), (default,))
+        self.action("UPDATE [%s] SET %s = ?" % (table, column), default)
+
 
 def sanityCheckDatabase(connection, sanity_check):
     sanity_check(connection).check()
+
 
 class DBSanityCheck(object):
     def __init__(self, connection):
@@ -351,17 +338,17 @@ def upgradeDatabase(connection, schema):
         while(True):
             version = connection.checkDBVersion()
 
-            logger.log(u"Checking database structure..." + connection.filename, logger.DEBUG)
+            logging.debug("Checking database structure... {}".format(connection.filename))
 
             try:
                 instance = upgradeClass(connection)
 
                 if not instance.test():
-                    logger.log(u"Database upgrade required: " + prettyName(upgradeClass.__name__), logger.DEBUG)
+                    logging.debug("Database upgrade required: " + prettyName(upgradeClass.__name__))
                     instance.execute()
-                    logger.log(upgradeClass.__name__ + " upgrade completed", logger.DEBUG)
+                    logging.debug(upgradeClass.__name__ + " upgrade completed")
                 else:
-                    logger.log(upgradeClass.__name__ + " upgrade not required", logger.DEBUG)
+                    logging.debug(upgradeClass.__name__ + " upgrade not required")
 
                 return True
             except sqlite3.DatabaseError, e:
@@ -371,6 +358,7 @@ def upgradeDatabase(connection, schema):
     if _processUpgrade(connection, schema):
         for upgradeSubClass in schema.__subclasses__():
             _processUpgrade(connection, upgradeSubClass)
+
 
 def prettyName(class_name):
     return ' '.join([x.group() for x in re.finditer("([A-Z])([a-z0-9]+)", class_name)])
@@ -383,9 +371,9 @@ def restoreDatabase(version):
     :param version: Version to restore to
     :return: True if restore succeeds, False if it fails
     """
-    logger.log(u"Restoring database before trying upgrade again")
+    logging.info("Restoring database before trying upgrade again")
     if not sickbeard.helpers.restoreVersionedFile(dbFilename(suffix='v' + str(version)), version):
-        logger.log(u"Database restore failed, abort upgrading database")
+        logging.info("Database restore failed, abort upgrading database")
         return False
     return True
 
@@ -396,14 +384,14 @@ class SchemaUpgrade(object):
         self.connection = connection
 
     def hasTable(self, tableName):
-        return len(self.connection.select("SELECT 1 FROM sqlite_master WHERE name = ?;", (tableName, ))) > 0
+        return len(self.connection.select("SELECT 1 FROM sqlite_master WHERE name = ?;", tableName)) > 0
 
     def hasColumn(self, tableName, column):
         return column in self.connection.tableInfo(tableName)
 
     def addColumn(self, table, column, type="NUMERIC", default=0):
         self.connection.action("ALTER TABLE [%s] ADD %s %s" % (table, column, type))
-        self.connection.action("UPDATE [%s] SET %s = ?" % (table, column), (default,))
+        self.connection.action("UPDATE [%s] SET %s = ?" % (table, column), default)
 
     def checkDBVersion(self):
         return self.connection.checkDBVersion()

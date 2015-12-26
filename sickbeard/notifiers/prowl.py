@@ -16,6 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
+import logging
 import socket
 from httplib import HTTPSConnection, HTTPException
 from urllib import urlencode
@@ -30,13 +33,13 @@ except ImportError:
 
 import sickbeard
 
-from sickbeard import logger, common
+from sickbeard import common
 
 
 class ProwlNotifier:
     def test_notify(self, prowl_api, prowl_priority):
         return self._sendProwl(prowl_api, prowl_priority, event="Test",
-                               message="Testing Prowl settings from SickRage", force=True)
+                               message="Testing Prowl settings from SiCKRAGE", force=True)
 
     def notify_snatch(self, ep_name):
         if sickbeard.PROWL_NOTIFY_ONSNATCH:
@@ -52,11 +55,11 @@ class ProwlNotifier:
         if sickbeard.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
-                            
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_PROWL:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=title, message=update_text + new_version)
 
@@ -71,9 +74,10 @@ class ProwlNotifier:
         if prowl_priority == None:
             prowl_priority = sickbeard.PROWL_PRIORITY
 
-        title = "SickRage"
+        title = "SiCKRAGE"
 
-        logger.log(u"PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (event, message, prowl_priority, prowl_api), logger.DEBUG)
+        logging.debug("PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (
+        event, message, prowl_priority, prowl_api))
 
         http_handler = HTTPSConnection("api.prowlapp.com")
 
@@ -89,19 +93,19 @@ class ProwlNotifier:
                                  headers={'Content-type': "application/x-www-form-urlencoded"},
                                  body=urlencode(data))
         except (SSLError, HTTPException, socket.error):
-            logger.log(u"Prowl notification failed.", logger.ERROR)
+            logging.error("Prowl notification failed.")
             return False
         response = http_handler.getresponse()
         request_status = response.status
 
         if request_status == 200:
-            logger.log(u"Prowl notifications sent.", logger.INFO)
+            logging.info("Prowl notifications sent.")
             return True
         elif request_status == 401:
-            logger.log(u"Prowl auth failed: %s" % response.reason, logger.ERROR)
+            logging.error("Prowl auth failed: %s" % response.reason)
             return False
         else:
-            logger.log(u"Prowl notification failed.", logger.ERROR)
+            logging.error("Prowl notification failed.")
             return False
 
 

@@ -15,12 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import os
 import subprocess
 
 import sickbeard
 
-from sickbeard import logger
+import logging
 from sickbeard import common
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
@@ -39,23 +41,23 @@ class synologyNotifier:
         if sickbeard.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._send_synologyNotifier(ep_name + ": " + lang, common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD])
 
-    def notify_git_update(self, new_version = "??"):
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_SYNOLOGYNOTIFIER:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._send_synologyNotifier(update_text + new_version, title)
 
     def _send_synologyNotifier(self, message, title):
         synodsmnotify_cmd = ["/usr/syno/bin/synodsmnotify", "@administrators", title, message]
-        logger.log(u"Executing command " + str(synodsmnotify_cmd))
-        logger.log(u"Absolute path to command: " + ek(os.path.abspath, synodsmnotify_cmd[0]), logger.DEBUG)
+        logging.info("Executing command " + str(synodsmnotify_cmd))
+        logging.debug("Absolute path to command: " + ek(os.path.abspath, synodsmnotify_cmd[0]))
         try:
             p = subprocess.Popen(synodsmnotify_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  cwd=sickbeard.PROG_DIR)
             out, err = p.communicate()  # @UnusedVariable
-            logger.log(u"Script result: " + str(out), logger.DEBUG)
-        except OSError, e:
-            logger.log(u"Unable to run synodsmnotify: " + ex(e))
+            logging.debug("Script result: " + str(out))
+        except OSError as e:
+            logging.info("Unable to run synodsmnotify: {}".format(ex(e)))
 
 
 notifier = synologyNotifier

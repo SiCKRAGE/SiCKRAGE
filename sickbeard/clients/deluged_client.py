@@ -1,20 +1,34 @@
-# coding=utf-8
-# Author: Paul Wollaston
-# Contributions: Luke Mullan
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
-# This client script allows connection to Deluge Daemon directly, completely
-# circumventing the requirement to use the WebUI.
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from base64 import b64encode
+from __future__ import unicode_literals
+
+import logging
 
 import sickbeard
-from sickbeard import logger
 from sickbeard.clients.generic import GenericClient
 from synchronousdeluge import DelugeClient
+from base64 import b64encode
 
 
 class DelugeDAPI(GenericClient):
-
     drpc = None
 
     def __init__(self, host=None, username=None, password=None):
@@ -80,7 +94,7 @@ class DelugeDAPI(GenericClient):
         if result.show.is_anime:
             label = sickbeard.TORRENT_LABEL_ANIME
         if ' ' in label:
-            logger.log(self.name + u': Invalid label. Label must not contain a space', logger.ERROR)
+            logging.error(self.name + ': Invalid label. Label must not contain a space')
             return False
 
         if label:
@@ -119,7 +133,6 @@ class DelugeDAPI(GenericClient):
 
 
 class DelugeRPC(object):
-
     host = 'localhost'
     port = 58846
     username = None
@@ -238,9 +251,10 @@ class DelugeRPC(object):
 
     def _check_torrent(self, torrent_hash):
         torrent_id = self.client.core.get_torrent_status(torrent_hash, {}).get()
-        if torrent_id['hash']:
-            logger.log(u'DelugeD: Torrent already exists in Deluge', logger.DEBUG)
+        if torrent_id[b'hash']:
+            logging.debug('DelugeD: Torrent already exists in Deluge')
             return torrent_hash
         return False
+
 
 api = DelugeDAPI()

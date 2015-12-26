@@ -22,25 +22,25 @@
     </div>
 % else:
 % for cur_show in trending_shows:
-    <% show_url = 'http://www.trakt.tv/shows/%s' % cur_show['show']['ids']['slug'] %>
+    <% show_url = 'http://www.trakt.tv/shows/%s' % cur_show[b'show'][b'ids'][b'slug'] %>
 
-    <div class="trakt_show" data-name="${cur_show['show']['title']}" data-rating="${cur_show['show']['rating']}" data-votes="${cur_show['show']['votes']}">
+    <div class="trakt_show" data-name="${cur_show[b'show'][b'title']}" data-rating="${cur_show[b'show'][b'rating']}" data-votes="${cur_show[b'show'][b'votes']}">
         <div class="traktContainer">
             <div class="trakt-image">
-                <a class="trakt-image" href="${anon_url(show_url)}" target="_blank"><img alt="" class="trakt-image" src="${cur_show['show']['images']['poster']['thumb']}" /></a>
+                <a class="trakt-image" href="${anon_url(show_url)}" target="_blank"><img alt="" class="trakt-image" src="${cur_show[b'show'][b'images'][b'poster'][b'thumb']}" /></a>
             </div>
 
             <div class="show-title">
-                ${(cur_show['show']['title'], '<span>&nbsp;</span>')['' == cur_show['show']['title']]}
+                ${(cur_show[b'show'][b'title'], '<span>&nbsp;</span>')['' == cur_show[b'show'][b'title']]}
             </div>
 
         <div class="clearfix">
-            <p>${int(cur_show['show']['rating']*10)}% <img src="${srRoot}/images/heart.png"></p>
-            <i>${cur_show['show']['votes']} votes</i>
+            <p>${int(cur_show[b'show'][b'rating']*10)}% <img src="${srRoot}/images/heart.png"></p>
+            <i>${cur_show[b'show'][b'votes']} votes</i>
             <div class="traktShowTitleIcons">
-                <a href="${srRoot}/home/addShows/addTraktShow?indexer_id=${cur_show['show']['ids']['tvdb']}&amp;showName=${cur_show['show']['title']}" class="btn btn-xs">Add Show</a>
+                <a href="${srRoot}/home/addShows/addTraktShow?indexer_id=${cur_show[b'show'][b'ids'][b'tvdb']}&amp;showName=${cur_show[b'show'][b'title']}" class="btn btn-xs">Add Show</a>
                 % if blacklist:
-                <a href="${srRoot}/home/addShows/addShowToBlacklist?indexer_id=${cur_show['show']['ids']['tvdb'] or cur_show['show']['ids']['tvrage']}" class="btn btn-xs">Remove Show</a>
+                <a href="${srRoot}/home/addShows/addShowToBlacklist?indexer_id=${cur_show[b'show'][b'ids'][b'tvdb'] or cur_show[b'show'][b'ids'][b'tvrage']}" class="btn btn-xs">Remove Show</a>
                 % endif
             </div>
         </div>

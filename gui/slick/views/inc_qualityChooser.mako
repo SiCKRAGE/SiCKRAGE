@@ -1,14 +1,12 @@
 <%!
     import sickbeard
     from sickbeard.common import Quality, qualityPresets, qualityPresetStrings
+
+    try:__quality = int(show.quality)
+    except NameError:__quality = int(sickbeard.QUALITY_DEFAULT)
 %>
 
 <%
-if not show is UNDEFINED:
-    __quality = int(show.quality)
-else:
-    __quality = int(sickbeard.QUALITY_DEFAULT)
-
 qualities = Quality.splitQuality(__quality)
 anyQualities = qualities[0]
 bestQualities = qualities[1]

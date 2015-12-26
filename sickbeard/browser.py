@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: https://sickrage.tv/
 # Git: https://github.com/SiCKRAGETV/SickRage.git
@@ -17,10 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import os
 import string
 
-from sickbeard import logger
+import logging
 from sickrage.helper.encoding import ek
 
 
@@ -51,7 +54,7 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
     """
 
     # walk up the tree until we find a valid path
-    while path and not ek(os.path.isdir,path):
+    while path and not ek(os.path.isdir, path):
         if path == ek(os.path.dirname, path):
             path = ''
             break
@@ -78,12 +81,13 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
 
     try:
         fileList = [{'name': filename, 'path': ek(os.path.join, path, filename)} for filename in ek(os.listdir, path)]
-    except OSError, e:
-        logger.log(u"Unable to open " + path + ": " + repr(e) + " / " + str(e), logger.WARNING)
-        fileList = [{'name': filename, 'path': ek(os.path.join, parentPath, filename)} for filename in ek(os.listdir, parentPath)]
+    except OSError as e:
+        logging.warning("Unable to open " + path + ": " + repr(e) + " / " + str(e))
+        fileList = [{'name': filename, 'path': ek(os.path.join, parentPath, filename)} for filename in
+                    ek(os.listdir, parentPath)]
 
     if not includeFiles:
-        fileList = [x for x in fileList if ek(os.path.isdir,x['path'])]
+        fileList = [x for x in fileList if ek(os.path.isdir, x['path'])]
 
     # prune out directories to protect the user from doing stupid things (already lower case the dir to reduce calls)
     hideList = ["boot", "bootmgr", "cache", "msocache", "recovery", "$recycle.bin", "recycler",
@@ -93,7 +97,8 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
     fileList = [x for x in fileList if x['name'].lower() not in hideList]
 
     fileList = sorted(fileList,
-                      lambda x, y: cmp(ek(os.path.basename, x['name']).lower(), ek(os.path.basename, y['path']).lower()))
+                      lambda x, y: cmp(ek(os.path.basename, x['name']).lower(),
+                                       ek(os.path.basename, y['path']).lower()))
 
     entries = [{'current_path': path}]
     if includeParent and parentPath != path:

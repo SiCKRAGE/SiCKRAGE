@@ -85,7 +85,7 @@
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${sbPID}"/>
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/${sickbeard.THEME_NAME}.css?${sbPID}" />
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/print.css?${sbPID}" />
-        % if srLogin:
+        % if current_user:
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/pnotify.custom.min.css?${sbPID}" />
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/country-flags.css?${sbPID}"/>
         % endif
@@ -94,17 +94,16 @@
     <body>
         <nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">
             <div class="container-fluid">
-                <div class="navbar-header">
+                <span class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="${srRoot}/home/" title="SickRage"><img alt="SickRage" src="${srRoot}/images/sickrage.png" style="height: 50px;" class="img-responsive pull-left" /></a>
-                </div>
-
-            % if srLogin:
+                    <a class="navbar-brand" href="${srRoot}/home/" title="SiCKRAGE"><img alt="SiCKRAGE" src="${srRoot}/images/sickrage.png" style="height: 50px;" class="img-responsive pull-left" /></a>
+                </span>
+            % if current_user:
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav navbar-right">
                         <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
@@ -118,7 +117,7 @@
                                 % if sickbeard.SHOWS_RECENT:
                                     <li role="separator" class="divider"></li>
                                     % for recentShow in sickbeard.SHOWS_RECENT:
-                                        <li><a href="${srRoot}/home/displayShow/?show=${recentShow['indexerid']}"><i class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}</a></li>
+                                        <li><a href="${srRoot}/home/displayShow/?show=${recentShow[b'indexerid']}"><i class="menu-icon-addshow"></i>&nbsp;${recentShow[b'name']|trim,h}</a></li>
                                     % endfor
                                 % endif
                             </ul>
@@ -209,7 +208,7 @@
                                 <li><a href="${srRoot}/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
                                 <li><a href="${srRoot}/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
                                 <li><a href="${srRoot}/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
-                                <li><a href="https://github.com/SiCKRAGETV/SickRage/wiki/Donations" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><i class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
+                                <li><a href="http://sickragetv.herokuapp.com/donate" rel="noreferrer" onclick="window.open('${sickbeard.ANON_REDIRECT}' + this.href); return false;"><i class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
                                 <li role="separator" class="divider"></li>
                                 %if numErrors:
                                     <li><a href="${srRoot}/errorlogs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors <span class="badge btn-danger">${numErrors}</span></a></li>
@@ -222,7 +221,7 @@
                                 <li><a href="${srRoot}/home/updateCheck?pid=${sbPID}"><i class="menu-icon-update"></i>&nbsp;Check For Updates</a></li>
                                 <li><a href="${srRoot}/home/restart/?pid=${sbPID}" class="confirm restart"><i class="menu-icon-restart"></i>&nbsp;Restart</a></li>
                                 <li><a href="${srRoot}/home/shutdown/?pid=${sbPID}" class="confirm shutdown"><i class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
-                                % if srLogin != True:
+                                % if current_user != True:
                                     <li><a href="${srRoot}/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a></li>
                                 % endif
                                 <li role="separator" class="divider"></li>
@@ -241,20 +240,20 @@
             <span>
             <% first = True %>
             % for menuItem in submenu:
-                % if 'requires' not in menuItem or menuItem['requires']:
-                    <% icon_class = '' if 'icon' not in menuItem else ' ' + menuItem['icon'] %>
-                      % if type(menuItem['path']) == dict:
-                          ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
+                % if 'requires' not in menuItem or menuItem[b'requires']:
+                    <% icon_class = '' if 'icon' not in menuItem else ' ' + menuItem[b'icon'] %>
+                      % if type(menuItem[b'path']) == dict:
+                          ${("</span><span>", "")[bool(first)]}<b>${menuItem[b'title']}</b>
                           <%
                               first = False
                               inner_first = True
                           %>
-                          % for cur_link in menuItem['path']:
-                              ${("&middot; ", "")[bool(inner_first)]}<a class="inner" href="${srRoot}/${menuItem['path'][cur_link]}">${cur_link}</a>
+                          % for cur_link in menuItem[b'path']:
+                              ${("&middot; ", "")[bool(inner_first)]}<a class="inner" href="${srRoot}/${menuItem[b'path'][cur_link]}">${cur_link}</a>
                               <% inner_first = False %>
                           % endfor
                       % else:
-                          <a href="${srRoot}/${menuItem['path']}" class="btn${('', (' confirm ' + menuItem.get('class', '')))['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem['title']}</a>
+                          <a href="${srRoot}/${menuItem[b'path']}" class="btn${('', (' confirm ' + menuItem.get('class', '')))['confirm' in menuItem]}">${('', '<span class="pull-left ' + icon_class + '"></span> ')[bool(icon_class)]}${menuItem[b'title']}</a>
                           <% first = False %>
                       % endif
                 % endif
@@ -263,13 +262,7 @@
         </div>
         % endif
 
-        % if sickbeard.BRANCH and sickbeard.BRANCH != 'master' and not sickbeard.DEVELOPER and srLogin:
-        <div class="alert alert-danger upgrade-notification hidden-print" role="alert">
-            <span>You're using the ${sickbeard.BRANCH} branch. Please use 'master' unless specifically asked</span>
-        </div>
-        % endif
-
-        % if sickbeard.NEWEST_VERSION_STRING and srLogin:
+        % if sickbeard.NEWEST_VERSION_STRING and current_user:
         <div class="alert alert-success upgrade-notification hidden-print" role="alert">
             <span>${sickbeard.NEWEST_VERSION_STRING}</span>
         </div>
@@ -280,17 +273,17 @@
                 <%block name="content" />
             </div> <!-- /content -->
         </div> <!-- /contentWrapper -->
-    % if srLogin:
+    % if current_user:
         <footer>
             <div class="footer clearfix">
             <%
                 stats = Show.overall_stats()
-                ep_downloaded = stats['episodes']['downloaded']
-                ep_snatched = stats['episodes']['snatched']
-                ep_total = stats['episodes']['total']
+                ep_downloaded = stats[b'episodes'][b'downloaded']
+                ep_snatched = stats[b'episodes'][b'snatched']
+                ep_total = stats[b'episodes'][b'total']
                 ep_percentage = '' if ep_total == 0 else '(<span class="footerhighlight">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
             %>
-                <span class="footerhighlight">${stats['shows']['total']}</span> Shows (<span class="footerhighlight">${stats['shows']['active']}</span> Active)
+                <span class="footerhighlight">${stats[b'shows'][b'total']}</span> Shows (<span class="footerhighlight">${stats[b'shows'][b'active']}</span> Active)
                 | <span class="footerhighlight">${ep_downloaded}</span>
 
                 % if ep_snatched:

@@ -1,33 +1,34 @@
-#!/usr/bin/env python2.7
-"""
-Author: Dustyn Gibson <miigotu@gmail.com>
-URL: http://github.com/SiCKRAGETV/SickRage
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-This file is part of SickRage.
+from __future__ import unicode_literals
 
-SickRage is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-SickRage is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-"""
-
-import sys
 import os.path
+import sys
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 
-import test_lib as test
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 
 from sickbeard.helpers import remove_non_release_groups
 
@@ -73,15 +74,19 @@ test_cases = {
     ]
 }
 
-class HelpersTests(test.SiCKRAGETestCase):
+
+class HelpersTests(SiCKRAGETestCase):
     def __init__(self, *args, **kwargs):
         super(HelpersTests, self).__init__(*args, **kwargs)
+
 
 def test_generator(test_strings):
     def _test(self):
         for test_string in test_strings:
             self.assertEqual(remove_non_release_groups(test_string), test_result)
+
     return _test
+
 
 if __name__ == '__main__':
     print "=================="
@@ -93,5 +98,4 @@ if __name__ == '__main__':
         test = test_generator(test_data)
         setattr(HelpersTests, test_name, test)
 
-    suite = unittest.TestLoader().loadTestsFromTestCase(HelpersTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.main()

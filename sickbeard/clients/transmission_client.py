@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 # Author: Mr_Orange <mr_orange@hotmail.it>
 # URL: http://code.google.com/p/sickbeard/
@@ -17,6 +17,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
 
 import re
 import json
@@ -44,7 +46,7 @@ class TransmissionAPI(GenericClient):
 
     def _get_auth(self):
 
-        post_data = json.dumps({'method': 'session-get', })
+        post_data = json.dumps({'method': 'session-get',})
 
         try:
             self.response = self.session.post(self.url, data=post_data.encode('utf-8'), timeout=120,
@@ -142,9 +144,9 @@ class TransmissionAPI(GenericClient):
             # set high priority for all files in torrent
             arguments['priority-high'] = []
             # move torrent to the top if the queue
-            arguments['queuePosition'] = 0
+            arguments[b'queuePosition'] = 0
             if sickbeard.TORRENT_HIGH_BANDWIDTH:
-                arguments['bandwidthPriority'] = 1
+                arguments[b'bandwidthPriority'] = 1
         else:
             arguments['priority-normal'] = []
 

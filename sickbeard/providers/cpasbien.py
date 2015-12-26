@@ -1,32 +1,34 @@
-# -*- coding: latin-1 -*-
-# Author: Guillaume Serre <guillaume.serre@gmail.com>
-# URL: http://code.google.com/p/sickbeard/
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
-# Sick Beard is free software: you can redistribute it and/or modify
+# SickRage is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Sick Beard is distributed in the hope that it will be useful,
+# SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
+import logging
 import traceback
 
-from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard.bs4_parser import BS4Parser
 
 
 class CpasbienProvider(generic.TorrentProvider):
-
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Cpasbien")
@@ -46,14 +48,14 @@ class CpasbienProvider(generic.TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_params.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.url + '/recherche/'+search_string.replace('.', '-') + '.html'
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                searchURL = self.url + '/recherche/' + search_string.replace('.', '-') + '.html'
+                logging.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
 
                 if not data:
@@ -66,7 +68,7 @@ class CpasbienProvider(generic.TorrentProvider):
                         while erlin == 0:
                             try:
                                 classlin = 'ligne' + str(lin)
-                                resultlin = html.findAll(attrs={'class' : [classlin]})
+                                resultlin = html.findAll(attrs={'class': [classlin]})
                                 if resultlin:
                                     for ele in resultlin:
                                         resultdiv.append(ele)
@@ -80,7 +82,7 @@ class CpasbienProvider(generic.TorrentProvider):
                             try:
                                 link = row.find("a", title=True)
                                 title = link.text.lower().strip()
-                                pageURL = link['href']
+                                pageURL = link[b'href']
 
                                 # downloadTorrentLink = torrentSoup.find("a", title.startswith('Cliquer'))
                                 tmp = pageURL.split('/')[-1].replace('.html', '.torrent')
@@ -102,12 +104,12 @@ class CpasbienProvider(generic.TorrentProvider):
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                logging.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
-                except Exception, e:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+                except Exception as e:
+                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -119,9 +121,9 @@ class CpasbienProvider(generic.TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
+
 class CpasbienCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         self.minTime = 30
@@ -129,5 +131,6 @@ class CpasbienCache(tvcache.TVCache):
     def _getRSSData(self):
         # search_strings = {'RSS': ['']}
         return {'entries': {}}
+
 
 provider = CpasbienProvider()

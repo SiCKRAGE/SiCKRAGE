@@ -17,15 +17,20 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
+
 import urllib2
 
 import sickbeard
-from sickbeard import logger
-from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT
+import logging
+from sickbeard.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, \
+    NOTIFY_GIT_UPDATE_TEXT
+
 
 class FreeMobileNotifier:
     def test_notify(self, id=None, apiKey=None):
-        return self._notifyFreeMobile('Test', "This is a test notification from SickRage", id, apiKey, force=True)
+        return self._notifyFreeMobile('Test', "This is a test notification from SiCKRAGE", id, apiKey, force=True)
 
     def _sendFreeMobileSMS(self, title, msg, id=None, apiKey=None):
         """
@@ -43,7 +48,7 @@ class FreeMobileNotifier:
         if apiKey == None:
             apiKey = sickbeard.FREEMOBILE_APIKEY
 
-        logger.log(u"Free Mobile in use with API KEY: " + apiKey, logger.DEBUG)
+        logging.debug("Free Mobile in use with API KEY: " + apiKey)
 
         # build up the URL and parameters
         msg = msg.strip()
@@ -54,40 +59,36 @@ class FreeMobileNotifier:
         # send the request to Free Mobile
         try:
             urllib2.urlopen(req)
-        except IOError, e:
-            if hasattr(e,'code'):
+        except IOError as e:
+            if hasattr(e, 'code'):
                 if e.code == 400:
                     message = "Missing parameter(s)."
-                    logger.log(message, logger.ERROR)
+                    logging.error(message)
                     return False, message
                 if e.code == 402:
                     message = "Too much SMS sent in a short time."
-                    logger.log(message, logger.ERROR)
+                    logging.error(message)
                     return False, message
                 if e.code == 403:
                     message = "API service isn't enabled in your account or ID / API key is incorrect."
-                    logger.log(message, logger.ERROR)
+                    logging.error(message)
                     return False, message
                 if e.code == 500:
                     message = "Server error. Please retry in few moment."
-                    logger.log(message, logger.ERROR)
+                    logging.error(message)
                     return False, message
-        except Exception, e:
-                message = u"Error while sending SMS: {0}".format(e)
-                logger.log(message, logger.ERROR)
-                return False, message
+        except Exception as e:
+            message = "Error while sending SMS: {0}".format(e)
+            logging.error(message)
+            return False, message
 
         message = "Free Mobile SMS successful."
-        logger.log(message, logger.INFO)
+        logging.info(message)
         return True, message
-
-
-
 
     def notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
         if sickbeard.FREEMOBILE_NOTIFY_ONSNATCH:
             self._notifyFreeMobile(title, ep_name)
-
 
     def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
         if sickbeard.FREEMOBILE_NOTIFY_ONDOWNLOAD:
@@ -97,10 +98,10 @@ class FreeMobileNotifier:
         if sickbeard.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyFreeMobile(title, ep_name + ": " + lang)
 
-    def notify_git_update(self, new_version = "??"):
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_FREEMOBILE:
-            update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title=notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
+            title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notifyFreeMobile(title, update_text + new_version)
 
     def _notifyFreeMobile(self, title, message, id=None, apiKey=None, force=False):
@@ -115,10 +116,10 @@ class FreeMobileNotifier:
         """
 
         if not sickbeard.USE_FREEMOBILE and not force:
-            logger.log(u"Notification for Free Mobile not enabled, skipping this notification", logger.DEBUG)
+            logging.debug("Notification for Free Mobile not enabled, skipping this notification")
             return False, "Disabled"
 
-        logger.log(u"Sending a SMS for " + message, logger.DEBUG)
+        logging.debug("Sending a SMS for " + message)
 
         return self._sendFreeMobileSMS(title, message, id, apiKey)
 

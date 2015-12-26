@@ -1,21 +1,43 @@
-# coding=utf-8
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os.path
+from __future__ import unicode_literals
+
+import os.path
+import sys
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import locale
 import unittest
-import test_lib as test
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 import sickbeard
 from sickbeard.helpers import sanitizeFileName
-from sickrage.helper.encoding import ek, ss, uu
+from sickrage.helper.encoding import ek
 
-class EncodingTests(test.SiCKRAGETestCase):
+
+class EncodingTests(SiCKRAGETestCase):
     def test_encoding(self):
         rootDir = 'C:\\Temp\\TV'
-        strings = [u'Les Enfants De La T\xe9l\xe9', u'RT� One']
+        strings = ['Les Enfants De La T\xe9l\xe9', 'RT� One']
 
         sickbeard.SYS_ENCODING = None
 
@@ -33,10 +55,10 @@ class EncodingTests(test.SiCKRAGETestCase):
             show_dir = ek(os.path.join, rootDir, sanitizeFileName(s))
             self.assertIsInstance(show_dir, unicode)
 
+
 if __name__ == "__main__":
     print "=================="
     print "STARTING - ENCODING TESTS"
     print "=================="
     print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(EncodingTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.main()

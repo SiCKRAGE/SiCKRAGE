@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
@@ -18,7 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import datetime
+import logging
 import os
 import re
 
@@ -26,7 +29,7 @@ import sickbeard
 
 from sickbeard.metadata import generic
 
-from sickbeard import logger, helpers
+from sickbeard import helpers
 from sickrage.helper.common import dateFormat
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex, ShowNotFoundException
@@ -129,7 +132,7 @@ class WDTVMetadata(generic.GenericMetadata):
 
         ep_obj: a TVEpisode instance for which to create the thumbnail
         """
-        if ek(os.path.isfile,ep_obj.location):
+        if ek(os.path.isfile, ep_obj.location):
             tbn_filename = helpers.replaceExtension(ep_obj.location, 'metathumb')
         else:
             return None
@@ -145,7 +148,7 @@ class WDTVMetadata(generic.GenericMetadata):
         """
 
         dir_list = [x for x in ek(os.listdir, show_obj.location) if
-                    ek(os.path.isdir,ek(os.path.join, show_obj.location, x))]
+                    ek(os.path.isdir, ek(os.path.join, show_obj.location, x))]
 
         season_dir_regex = r'^Season\s+(\d+)$'
 
@@ -167,10 +170,10 @@ class WDTVMetadata(generic.GenericMetadata):
                 break
 
         if not season_dir:
-            logger.log(u"Unable to find a season dir for season " + str(season), logger.DEBUG)
+            logging.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        logger.log(u"Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season), logger.DEBUG)
+        logging.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
 
         return ek(os.path.join, show_obj.location, season_dir, 'folder.jpg')
 
@@ -189,21 +192,21 @@ class WDTVMetadata(generic.GenericMetadata):
         try:
             lINDEXER_API_PARMS = sickbeard.indexerApi(ep_obj.show.indexer).api_params.copy()
 
-            lINDEXER_API_PARMS['actors'] = True
+            lINDEXER_API_PARMS[b'actors'] = True
 
             if indexer_lang and not indexer_lang == sickbeard.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS['language'] = indexer_lang
+                lINDEXER_API_PARMS[b'language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
-                lINDEXER_API_PARMS['dvdorder'] = True
+                lINDEXER_API_PARMS[b'dvdorder'] = True
 
             t = sickbeard.indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
-        except sickbeard.indexer_shownotfound, e:
+        except sickbeard.indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
-        except sickbeard.indexer_error, e:
-            logger.log(u"Unable to connect to " + sickbeard.indexerApi(
-                ep_obj.show.indexer).name + " while creating meta files - skipping - " + ex(e), logger.ERROR)
+        except sickbeard.indexer_error as e:
+            logging.error("Unable to connect to " + sickbeard.indexerApi(
+                    ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(ex(e)))
             return False
 
         rootNode = etree.Element("details")
@@ -214,12 +217,12 @@ class WDTVMetadata(generic.GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (sickbeard.indexer_episodenotfound, sickbeard.indexer_seasonnotfound):
-                logger.log(u"Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
-                           (curEpToWrite.season, curEpToWrite.episode, sickbeard.indexerApi(ep_obj.show.indexer).name))
+                logging.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
+                            (curEpToWrite.season, curEpToWrite.episode, sickbeard.indexerApi(ep_obj.show.indexer).name))
                 return None
 
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                myEp["firstaired"] = str(datetime.date.fromordinal(1))
+                myEp[b"firstaired"] = str(datetime.date.fromordinal(1))
 
             if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                 return None
@@ -238,7 +241,7 @@ class WDTVMetadata(generic.GenericMetadata):
 
             if getattr(myShow, 'seriesname', None):
                 seriesName = etree.SubElement(episode, "series_name")
-                seriesName.text = myShow["seriesname"]
+                seriesName.text = myShow[b"seriesname"]
 
             if curEpToWrite.name:
                 episodeName = etree.SubElement(episode, "episode_name")
@@ -257,7 +260,7 @@ class WDTVMetadata(generic.GenericMetadata):
 
             if getattr(myShow, 'firstaired', None):
                 try:
-                    year_text = str(datetime.datetime.strptime(myShow["firstaired"], dateFormat).year)
+                    year_text = str(datetime.datetime.strptime(myShow[b"firstaired"], dateFormat).year)
                     if year_text:
                         year = etree.SubElement(episode, "year")
                         year.text = year_text
@@ -266,29 +269,29 @@ class WDTVMetadata(generic.GenericMetadata):
 
             if curEpToWrite.season != 0 and getattr(myShow, 'runtime', None):
                 runtime = etree.SubElement(episode, "runtime")
-                runtime.text = myShow["runtime"]
+                runtime.text = myShow[b"runtime"]
 
             if getattr(myShow, 'genre', None):
                 genre = etree.SubElement(episode, "genre")
-                genre.text = " / ".join([x.strip() for x in myShow["genre"].split('|') if x.strip()])
+                genre.text = " / ".join([x.strip() for x in myShow[b"genre"].split('|') if x.strip()])
 
             if getattr(myEp, 'director', None):
                 director = etree.SubElement(episode, "director")
-                director.text = myEp['director']
+                director.text = myEp[b'director']
 
             if getattr(myShow, '_actors', None):
-                for actor in myShow['_actors']:
-                    if not ('name' in actor and actor['name'].strip()):
+                for actor in myShow[b'_actors']:
+                    if not ('name' in actor and actor[b'name'].strip()):
                         continue
 
                     cur_actor = etree.SubElement(episode, "actor")
 
                     cur_actor_name = etree.SubElement(cur_actor, "name")
-                    cur_actor_name.text = actor['name']
+                    cur_actor_name.text = actor[b'name']
 
-                    if 'role' in actor and actor['role'].strip():
+                    if 'role' in actor and actor[b'role'].strip():
                         cur_actor_role = etree.SubElement(cur_actor, "role")
-                        cur_actor_role.text = actor['role'].strip()
+                        cur_actor_role.text = actor[b'role'].strip()
 
             if curEpToWrite.description:
                 overview = etree.SubElement(episode, "overview")

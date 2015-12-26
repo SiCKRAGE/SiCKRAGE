@@ -28,8 +28,8 @@
                     <span><h4>Available Groups</h4></span>
                     <select id="pool" multiple="multiple" size="12">
                     % for group in groups:
-                        % if group not in whitelist and group['name'] not in blacklist:
-                            <option value="${group['name']}">${group['name']} | ${group['rating']} | ${group['range']}</option>
+                        % if group not in whitelist and group[b'name'] not in blacklist:
+                            <option value="${group[b'name']}">${group[b'name']} | ${group[b'rating']} | ${group[b'range']}</option>
                         % endif
                     % endfor
                     </select>

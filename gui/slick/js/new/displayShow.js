@@ -40,6 +40,23 @@ $(document).ready(function(){
         window.location.href = srRoot + '/home/setStatus?show=' + $('#showID').attr('value') + '&eps=' + epArr.join('|') + '&status=' + $('#statusSelect').val();
     });
 
+    $('#deleteEpisode').on('click', function () {
+        var srRoot = $('#srRoot').val();
+        var epArr = [];
+
+        $('.epCheck').each(function () {
+            if (this.checked === true) {
+                epArr.push($(this).attr('id'));
+            }
+        });
+
+        if (epArr.length === 0) {
+            return false;
+        }
+
+        window.location.href = srRoot + '/home/deleteEpisode?show=' + $('#showID').attr('value') + '&eps=' + epArr.join('|');
+    });
+
     $('.seasonCheck').on('click', function(){
         var seasCheck = this;
         var seasNo = $(seasCheck).attr('id');

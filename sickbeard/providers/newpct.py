@@ -18,10 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import traceback
-from six.moves import urllib
+from __future__ import unicode_literals
 
-from sickbeard import logger
+import traceback
+
+import logging
+from six.moves import urllib
 from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard.common import USER_AGENT
@@ -42,7 +44,7 @@ class newpctProvider(generic.TorrentProvider):
             'search': 'http://www.newpct.com/buscar-descargas/'
         }
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
         self.headers.update({'User-Agent': USER_AGENT})
 
         """
@@ -80,17 +82,17 @@ class newpctProvider(generic.TorrentProvider):
 
         # Only search if user conditions are true
         if self.onlyspasearch and lang_info != 'es':
-            logger.log(u"Show info is not spanish, skipping provider search", logger.DEBUG)
+            logging.debug("Show info is not spanish, skipping provider search")
             return results
 
         for mode in search_strings.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
 
             for search_string in search_strings[mode]:
                 self.search_params.update({'q': search_string.strip()})
 
-                logger.log(u"Search URL: %s" % self.urls['search'] + '?' + urllib.parse.urlencode(self.search_params), logger.DEBUG)
-                data = self.getURL(self.urls['search'], post_data=self.search_params, timeout=30)
+                logging.debug("Search URL: %s" % self.urls[b'search'] + '?' + urllib.parse.urlencode(self.search_params))
+                data = self.getURL(self.urls[b'search'], post_data=self.search_params, timeout=30)
                 if not data:
                     continue
 
@@ -99,7 +101,7 @@ class newpctProvider(generic.TorrentProvider):
                         torrent_tbody = html.find('tbody')
 
                         if len(torrent_tbody) < 1:
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                            logging.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         torrent_table = torrent_tbody.findAll('tr')
@@ -119,7 +121,7 @@ class newpctProvider(generic.TorrentProvider):
                                     title = self._processTitle(title_raw)
 
                                     item = title, download_url, size
-                                    logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                    logging.debug("Found result: %s " % title)
 
                                     items[mode].append(item)
                                     iteration += 1
@@ -128,7 +130,7 @@ class newpctProvider(generic.TorrentProvider):
                                 continue
 
                 except Exception:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.WARNING)
+                    logging.warning("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             results += items[mode]
 
@@ -141,11 +143,11 @@ class newpctProvider(generic.TorrentProvider):
         if modifier in 'KB':
             size = size * 1024
         elif modifier in 'MB':
-            size = size * 1024**2
+            size = size * 1024 ** 2
         elif modifier in 'GB':
-            size = size * 1024**3
+            size = size * 1024 ** 3
         elif modifier in 'TB':
-            size = size * 1024**4
+            size = size * 1024 ** 4
         return int(size)
 
     def _processTitle(self, title):
@@ -172,14 +174,11 @@ class newpctProvider(generic.TorrentProvider):
         return title
 
 
-
 class newpctCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         self.minTime = 30
-
 
 
 provider = newpctProvider()

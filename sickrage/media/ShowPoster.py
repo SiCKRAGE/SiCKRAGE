@@ -16,6 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
+import os
+
 from sickbeard.image_cache import ImageCache
 from sickrage.media.GenericMedia import GenericMedia
 
@@ -25,15 +29,23 @@ class ShowPoster(GenericMedia):
     Get the poster of a show
     """
 
+    def __init__(self, indexer_id, media_format):
+        super(ShowPoster, self).__init__(indexer_id, media_format)
+
     def get_default_media_name(self):
         return 'poster.png'
 
     def get_media_path(self):
+        media_file = None
+
         if self.get_show():
             if self.media_format == 'normal':
-                return ImageCache().poster_path(self.indexer_id)
+                media_file = ImageCache().poster_path(self.indexer_id)
 
             if self.media_format == 'thumb':
-                return ImageCache().poster_thumb_path(self.indexer_id)
+                media_file = ImageCache().poster_thumb_path(self.indexer_id)
 
-        return ''
+        if not all([media_file, os.path.exists(media_file)]):
+            media_file = os.path.join(self.get_media_root(), 'images', self.get_default_media_name())
+
+        return media_file

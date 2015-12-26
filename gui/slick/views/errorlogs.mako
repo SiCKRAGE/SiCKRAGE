@@ -1,8 +1,8 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickbeard
+    from sickbeard.logger import SRLogger
     from sickbeard import classes
-    from sickbeard.logger import reverseNames
 %>
 <%block name="css">
 <style>
@@ -18,7 +18,7 @@ pre {
 </%block>
 <%block name="content">
 <%
-    if logLevel == sickbeard.logger.WARNING:
+    if logLevel == SRLogger.logLevels[b'WARNING']:
         errors = classes.WarningViewer.errors
         title = 'WARNING logs'
     else:

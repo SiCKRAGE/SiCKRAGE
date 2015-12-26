@@ -1,19 +1,42 @@
-import sys, os.path
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import os.path
+import sys
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
 
-import test_lib as test
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 
 from sickbeard import show_name_helpers, scene_exceptions, common, name_cache
 from sickbeard import db
 from sickbeard.tv import TVShow as Show
 
 
-class SceneTests(test.SiCKRAGETestDBCase):
-
+class SceneTests(SiCKRAGETestDBCase):
     def _test_sceneToNormalShowNames(self, name, expected):
         result = show_name_helpers.sceneToNormalShowNames(name)
         self.assertTrue(len(set(expected).intersection(set(result))) == len(expected))
@@ -38,13 +61,13 @@ class SceneTests(test.SiCKRAGETestDBCase):
 
     def test_isGoodName(self):
         listOfcases = [('Show.Name.S01E02.Test-Test', 'Show/Name'),
-                        ('Show.Name.S01E02.Test-Test', 'Show. Name'),
-                        ('Show.Name.S01E02.Test-Test', 'Show- Name'),
-                        ('Show.Name.Part.IV.Test-Test', 'Show Name'),
-                        ('Show.Name.S01.Test-Test', 'Show Name'),
-                        ('Show.Name.E02.Test-Test', 'Show: Name'),
-                        ('Show Name Season 2 Test', 'Show: Name'),
-                        ]
+                       ('Show.Name.S01E02.Test-Test', 'Show. Name'),
+                       ('Show.Name.S01E02.Test-Test', 'Show- Name'),
+                       ('Show.Name.Part.IV.Test-Test', 'Show Name'),
+                       ('Show.Name.S01.Test-Test', 'Show Name'),
+                       ('Show.Name.E02.Test-Test', 'Show: Name'),
+                       ('Show Name Season 2 Test', 'Show: Name'),
+                       ]
 
         for testCase in listOfcases:
             scene_name, show_name = testCase
@@ -59,7 +82,9 @@ class SceneTests(test.SiCKRAGETestDBCase):
         self._test_sceneToNormalShowNames('Show Name AU', ['Show Name AU', 'Show Name (AU)'])
         self._test_sceneToNormalShowNames('Show Name CA', ['Show Name CA', 'Show Name (CA)'])
         self._test_sceneToNormalShowNames('Show and Name', ['Show and Name', 'Show & Name'])
-        self._test_sceneToNormalShowNames('Show and Name 2010', ['Show and Name 2010', 'Show & Name 2010', 'Show and Name (2010)', 'Show & Name (2010)'])
+        self._test_sceneToNormalShowNames('Show and Name 2010',
+                                          ['Show and Name 2010', 'Show & Name 2010', 'Show and Name (2010)',
+                                           'Show & Name (2010)'])
         self._test_sceneToNormalShowNames('show name us', ['show name us', 'show name (us)'])
         self._test_sceneToNormalShowNames('Show And Name', ['Show And Name', 'Show & Name'])
 
@@ -68,17 +93,21 @@ class SceneTests(test.SiCKRAGETestDBCase):
         self._test_sceneToNormalShowNames('Show Name YA', ['Show Name YA'])
 
     def test_allPossibleShowNames(self):
-        #common.sceneExceptions[-1] = ['Exception Test']
+        scene_exceptions.exceptionsCache[-1] = ['Exception Test']
         myDB = db.DBConnection("cache.db")
-        myDB.action("INSERT INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?)", [-1, 'Exception Test', -1])
+        myDB.action("INSERT INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?)",
+                    [-1, 'Exception Test', -1])
         common.countryList['Full Country Name'] = 'FCN'
 
         self._test_allPossibleShowNames('Show Name', expected=['Show Name'])
         self._test_allPossibleShowNames('Show Name', -1, expected=['Show Name', 'Exception Test'])
         self._test_allPossibleShowNames('Show Name FCN', expected=['Show Name FCN', 'Show Name (Full Country Name)'])
-        self._test_allPossibleShowNames('Show Name (FCN)', expected=['Show Name (FCN)', 'Show Name (Full Country Name)'])
-        self._test_allPossibleShowNames('Show Name Full Country Name', expected=['Show Name Full Country Name', 'Show Name (FCN)'])
-        self._test_allPossibleShowNames('Show Name (Full Country Name)', expected=['Show Name (Full Country Name)', 'Show Name (FCN)'])
+        self._test_allPossibleShowNames('Show Name (FCN)',
+                                        expected=['Show Name (FCN)', 'Show Name (Full Country Name)'])
+        self._test_allPossibleShowNames('Show Name Full Country Name',
+                                        expected=['Show Name Full Country Name', 'Show Name (FCN)'])
+        self._test_allPossibleShowNames('Show Name (Full Country Name)',
+                                        expected=['Show Name (Full Country Name)', 'Show Name (FCN)'])
 
     def test_filterBadReleases(self):
         self._test_filterBadReleases('Show.S02.German.Stuff-Grp', False)
@@ -87,13 +116,12 @@ class SceneTests(test.SiCKRAGETestDBCase):
         self._test_filterBadReleases('Show.S02.This.Is.German', False)
 
 
-class SceneExceptionTestCase(test.SiCKRAGETestDBCase):
-
-    def setUp(self):
+class SceneExceptionTestCase(SiCKRAGETestDBCase):
+    def setUp(self, **kwargs):
         super(SceneExceptionTestCase, self).setUp()
         scene_exceptions.retrieve_exceptions()
 
-    def tearDown(self):
+    def tearDown(self, **kwargs):
         super(SceneExceptionTestCase, self).tearDown()
 
     def test_sceneExceptionsEmpty(self):
@@ -124,16 +152,8 @@ class SceneExceptionTestCase(test.SiCKRAGETestDBCase):
 
 
 if __name__ == '__main__':
-    print "=================="
-    print "STARTING - SCENE HELPER TESTS"
-    print "=================="
-    print "######################################################################"
-    if len(sys.argv) > 1:
-        suite = unittest.TestLoader().loadTestsFromName('scene_helpers_tests.SceneExceptionTestCase.test_' + sys.argv[1])
-        unittest.TextTestRunner(verbosity=2).run(suite)
-    else:
-        suite = unittest.TestLoader().loadTestsFromTestCase(SceneTests)
-        unittest.TextTestRunner(verbosity=2).run(suite)
-        print "######################################################################"
-        suite = unittest.TestLoader().loadTestsFromTestCase(SceneExceptionTestCase)
-        unittest.TextTestRunner(verbosity=2).run(suite)
+    print("==================")
+    print("STARTING - SCENE HELPER TESTS")
+    print("==================")
+    print("######################################################################")
+    unittest.main()

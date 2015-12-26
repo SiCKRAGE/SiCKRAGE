@@ -16,12 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import urllib
 import urllib2
 
 import sickbeard
 
-from sickbeard import logger
+import logging
 from sickrage.helper.exceptions import ex
 
 try:
@@ -31,7 +33,6 @@ except ImportError:
 
 
 class EMBYNotifier:
-
     def _notify_emby(self, message, host=None, emby_apikey=None):
         """Handles notifying Emby host via HTTP API
 
@@ -47,7 +48,8 @@ class EMBYNotifier:
             emby_apikey = sickbeard.EMBY_APIKEY
 
         url = 'http://%s/emby/Notifications/Admin' % (host)
-        values = {'Name': 'SickRage', 'Description': message, 'ImageUrl': 'https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/slick/images/sickrage-shark-mascot.png'}
+        values = {'Name': 'SiCKRAGE', 'Description': message,
+                  'ImageUrl': 'https://raw.githubusercontent.com/SiCKRAGETV/SiCKRAGE/master/gui/slick/images/sickrage-shark-mascot.png'}
         data = json.dumps(values)
         try:
             req = urllib2.Request(url, data)
@@ -58,20 +60,20 @@ class EMBYNotifier:
             result = response.read()
             response.close()
 
-            logger.log(u'EMBY: HTTP response: ' + result.replace('\n', ''), logger.DEBUG)
+            logging.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
             return True
 
-        except (urllib2.URLError, IOError), e:
-            logger.log(u'EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + ex(e), logger.WARNING)
+        except (urllib2.URLError, IOError) as e:
+            logging.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + ex(e))
             return False
 
 
-##############################################################################
-# Public functions
-##############################################################################
+        ##############################################################################
+        # Public functions
+        ##############################################################################
 
     def test_notify(self, host, emby_apikey):
-        return self._notify_emby('This is a test notification from SickRage', host, emby_apikey)
+        return self._notify_emby('This is a test notification from SiCKRAGE', host, emby_apikey)
 
     def update_library(self, show=None):
         """Handles updating the Emby Media Server host via HTTP API
@@ -84,17 +86,17 @@ class EMBYNotifier:
         if sickbeard.USE_EMBY:
 
             if not sickbeard.EMBY_HOST:
-                logger.log(u'EMBY: No host specified, check your settings', logger.DEBUG)
+                logging.debug('EMBY: No host specified, check your settings')
                 return False
 
             if show:
                 if show.indexer == 1:
                     provider = 'tvdb'
                 elif show.indexer == 2:
-                    logger.log(u'EMBY: TVRage Provider no longer valid', logger.WARNING)
+                    logging.warning('EMBY: TVRage Provider no longer valid')
                     return False
                 else:
-                    logger.log(u'EMBY: Provider unknown', logger.WARNING)
+                    logging.warning('EMBY: Provider unknown')
                     return False
                 query = '?%sid=%s' % (provider, show.indexerid)
             else:
@@ -111,11 +113,12 @@ class EMBYNotifier:
                 result = response.read()
                 response.close()
 
-                logger.log(u'EMBY: HTTP response: ' + result.replace('\n', ''), logger.DEBUG)
+                logging.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
                 return True
 
-            except (urllib2.URLError, IOError), e:
-                logger.log(u'EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + ex(e), logger.WARNING)
+            except (urllib2.URLError, IOError) as e:
+                logging.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + ex(e))
                 return False
+
 
 notifier = EMBYNotifier

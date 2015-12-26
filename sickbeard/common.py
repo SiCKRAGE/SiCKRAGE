@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: https://sickrage.tv/
 # Git: https://github.com/SiCKRAGETV/SickRage.git
@@ -17,18 +19,24 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals, print_function
+
+import re
+import six
+import uuid
 import os.path
 import operator
 import platform
-import re
-import uuid
 
-from UserDict import UserDict
+import sickbeard
+from sickrage.helper.encoding import ek
 from itertools import chain
 from random import shuffle
 
-import shutil
-from sickrage.helper.encoding import ek
+if six.PY3:
+    from collections import UserDict
+else:
+    from UserDict import UserDict
 
 SPOOF_USER_AGENT = False
 
@@ -43,10 +51,10 @@ user_agents = ['Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gec
                'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25'
                'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko'
                'Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'
-              ]
+               ]
 
 INSTANCE_ID = str(uuid.uuid1())
-USER_AGENT = ('SickRage/(' + platform.system() + '; ' + platform.release() + '; ' + INSTANCE_ID + ')')
+USER_AGENT = ('SiCKRAGE/(' + platform.system() + '; ' + platform.release() + '; ' + INSTANCE_ID + ')')
 
 if SPOOF_USER_AGENT:
     shuffle(user_agents)
@@ -63,7 +71,7 @@ subtitleExtensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
 cpu_presets = {'HIGH': 5,
                'NORMAL': 2,
                'LOW': 1
-              }
+               }
 
 ### Other constants
 MULTI_EP_RESULT = -1
@@ -80,8 +88,8 @@ notifyStrings = {}
 notifyStrings[NOTIFY_SNATCH] = "Started Download"
 notifyStrings[NOTIFY_DOWNLOAD] = "Download Finished"
 notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] = "Subtitle Download Finished"
-notifyStrings[NOTIFY_GIT_UPDATE] = "SickRage Updated"
-notifyStrings[NOTIFY_GIT_UPDATE_TEXT] = "SickRage Updated To Commit#: "
+notifyStrings[NOTIFY_GIT_UPDATE] = "SiCKRAGE Updated"
+notifyStrings[NOTIFY_GIT_UPDATE_TEXT] = "SiCKRAGE Updated To Commit#: "
 
 ### Episode statuses
 UNKNOWN = -1  # should never happen
@@ -111,6 +119,7 @@ multiEpStrings[NAMING_DUPLICATE] = "Duplicate"
 multiEpStrings[NAMING_EXTEND] = "Extend"
 multiEpStrings[NAMING_LIMITED_EXTEND] = "Extend (Limited)"
 multiEpStrings[NAMING_LIMITED_EXTEND_E_PREFIXED] = "Extend (Limited, E-prefixed)"
+
 
 # pylint: disable=W0232
 class Quality(object):
@@ -220,7 +229,7 @@ class Quality(object):
     @staticmethod
     def nameQuality(name, anime=False):
         """
-        Return The quality from an episode File renamed by SickRage
+        Return The quality from an episode File renamed by SiCKRAGE
         If no quality is achieved it will try sceneQuality regex
 
         :param anime: Boolean to indicate if the show we're resolving is Anime
@@ -237,7 +246,6 @@ class Quality(object):
             return quality
 
         return Quality.UNKNOWN
-
 
     @staticmethod
     def sceneQuality(name, anime=False):
@@ -283,22 +291,25 @@ class Quality(object):
 
             return ret
 
-        if (checkName([r"480p|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"], all)
-                and not checkName([r"(720|1080)[pi]"], all) and not checkName([r"hr.ws.pdtv.[xh].?26[45]"], any)):
+        if (checkName([r"480p|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"],
+                      all)
+            and not checkName([r"(720|1080)[pi]"], all) and not checkName([r"hr.ws.pdtv.[xh].?26[45]"], any)):
             ret = Quality.SDTV
         elif (checkName([r"dvd(rip|mux)|b[rd](rip|mux)|blue?-?ray", r"xvid|divx|[xh].?26[45]"], all)
               and not checkName([r"(720|1080)[pi]"], all) and not checkName([r"hr.ws.pdtv.[xh].?26[45]"], any)):
             ret = Quality.SDDVD
         elif (checkName([r"720p", r"hd.?tv", r"[xh].?26[45]"], all) or checkName([r"hr.ws.pdtv.[xh].?26[45]"], any)
-              and not checkName([r"1080[pi]"], all)):
+        and not checkName([r"1080[pi]"], all)):
             ret = Quality.HDTV
         elif checkName([r"720p|1080i", r"hd.?tv", r"mpeg-?2"], all) or checkName([r"1080[pi].hdtv", r"h.?26[45]"], all):
             ret = Quality.RAWHDTV
         elif checkName([r"1080p", r"hd.?tv", r"[xh].?26[45]"], all):
             ret = Quality.FULLHDTV
-        elif checkName([r"720p", r"web.?dl|web(rip|mux|hd)"], all) or checkName([r"720p", r"itunes", r"[xh].?26[45]"], all):
+        elif checkName([r"720p", r"web.?dl|web(rip|mux|hd)"], all) or checkName([r"720p", r"itunes", r"[xh].?26[45]"],
+                                                                                all):
             ret = Quality.HDWEBDL
-        elif checkName([r"1080p", r"web.?dl|web(rip|mux|hd)"], all) or checkName([r"1080p", r"itunes", r"[xh].?26[45]"], all):
+        elif checkName([r"1080p", r"web.?dl|web(rip|mux|hd)"], all) or checkName([r"1080p", r"itunes", r"[xh].?26[45]"],
+                                                                                 all):
             ret = Quality.FULLHDWEBDL
         elif checkName([r"720p", r"blue?-?ray|hddvd|b[rd](rip|mux)", r"[xh].?26[45]"], all):
             ret = Quality.HDBLURAY
@@ -334,40 +345,29 @@ class Quality(object):
         :return: Quality prefix
         """
 
-        from hachoir_parser import createParser
+        from hachoir_core.stream import StringInputStream
+        from hachoir_parser import guessParser
         from hachoir_metadata import extractMetadata
-        from hachoir_core.log import log
-        log.use_print = False
+        from hachoir_core import config as hachoir_config
+        hachoir_config.quiet = True
 
-        try:
-            tmpFile = filename + ".tmp"
-            ek(shutil.copyfile, filename, tmpFile)
-            parser = createParser(tmpFile)
-            file_metadata = extractMetadata(parser)
-            parser.stream._input.close()
-            os.remove(tmpFile)
+        if ek(os.path.isfile, filename):
+            base_filename = ek(os.path.basename, filename)
+            bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
+            webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
-            if not file_metadata:
-                raise
-
-            height = 0
-            for metadata in chain([file_metadata], file_metadata.iterGroups()):
-                height = metadata.get('height')
-                if height:
-                    break
-        except Exception:
-            return Quality.UNKNOWN
-
-        base_filename = ek(os.path.basename, filename)
-        bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
-        webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
-
-        if height > 1000:
-            return ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
-        elif height > 680 and height < 800:
-            return ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
-        elif height < 680:
-            return (Quality.SDTV, Quality.SDDVD)[re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+            for byte in sickbeard.helpers.readFileBuffered(filename):
+                try:
+                    file_metadata = extractMetadata(guessParser(StringInputStream(byte)))
+                    for metadata in chain([file_metadata], file_metadata.iterGroups()):
+                        height = metadata.get('height', 0)
+                        if height > 1000:
+                            return ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
+                        elif height > 680 and height < 800:
+                            return ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
+                        elif height < 680:
+                            return (Quality.SDTV, Quality.SDDVD)[re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+                except:continue
 
         return Quality.UNKNOWN
 
@@ -409,6 +409,7 @@ class Quality(object):
 
         found_codecs = {}
         found_codec = None
+        rip_type = ""
 
         for codec in codecList:
             if codec in name.lower():
@@ -472,6 +473,7 @@ class Quality(object):
     SNATCHED_BEST = None
     ARCHIVED = None
 
+
 Quality.DOWNLOADED = [Quality.compositeStatus(DOWNLOADED, x) for x in Quality.qualityStrings.keys()]
 Quality.SNATCHED = [Quality.compositeStatus(SNATCHED, x) for x in Quality.qualityStrings.keys()]
 Quality.SNATCHED_PROPER = [Quality.compositeStatus(SNATCHED_PROPER, x) for x in Quality.qualityStrings.keys()]
@@ -506,6 +508,7 @@ class StatusStrings(UserDict):
 
     Membership checks using __contains__ (i.e. 'x in y') do not raise a ValueError to match expected dict functionality
     """
+
     # todo: Deprecate StatusStrings().statusStrings and use StatusStrings() directly
     # todo: Deprecate .has_key and switch to 'x in y'
     # todo: Switch from raising ValueError to a saner KeyError
@@ -532,7 +535,8 @@ class StatusStrings(UserDict):
                 if quality == Quality.NONE:  # If a Quality is not listed... (shouldn't this be 'if not quality:'?)
                     return self[status]  # ...return the status...
                 else:
-                    return self[status] + " (" + Quality.qualityStrings[quality] + ")"  # ...otherwise append the quality to the status
+                    return self[status] + " (" + Quality.qualityStrings[
+                        quality] + ")"  # ...otherwise append the quality to the status
             else:
                 return ''  # return '' to match old functionality when the numeric key is not found
         return self[int(key)]  # Since the key was not an int, let's try int(key) instead
@@ -558,29 +562,31 @@ class StatusStrings(UserDict):
         try:
             # This will raise a ValueError if we can't convert the key to int
             return ((int(key) in self.data) or
-                    (int(key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED))
+                    (int(
+                            key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED))
         except ValueError:  # The key is not numeric and since we only want numeric keys...
             # ...and we don't want this function to fail...
             pass  # ...suppress the ValueError and do nothing, the key does not exist
 
+
 statusStrings = StatusStrings(
-    {UNKNOWN: "Unknown",
-     UNAIRED: "Unaired",
-     SNATCHED: "Snatched",
-     DOWNLOADED: "Downloaded",
-     SKIPPED: "Skipped",
-     SNATCHED_PROPER: "Snatched (Proper)",
-     WANTED: "Wanted",
-     ARCHIVED: "Archived",
-     IGNORED: "Ignored",
-     SUBTITLED: "Subtitled",
-     FAILED: "Failed",
-     SNATCHED_BEST: "Snatched (Best)"
-     })
+        {UNKNOWN: "Unknown",
+         UNAIRED: "Unaired",
+         SNATCHED: "Snatched",
+         DOWNLOADED: "Downloaded",
+         SKIPPED: "Skipped",
+         SNATCHED_PROPER: "Snatched (Proper)",
+         WANTED: "Wanted",
+         ARCHIVED: "Archived",
+         IGNORED: "Ignored",
+         SUBTITLED: "Subtitled",
+         FAILED: "Failed",
+         SNATCHED_BEST: "Snatched (Best)"
+         })
+
 
 # pylint: disable=R0903
 class Overview(object):
-
     UNAIRED = UNAIRED  # 1
     QUAL = 2
     WANTED = WANTED  # 3
@@ -605,4 +611,4 @@ XML_NSMAP = {'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
 countryList = {'Australia': 'AU',
                'Canada': 'CA',
                'USA': 'US'
-              }
+               }

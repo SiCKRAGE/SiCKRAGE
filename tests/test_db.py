@@ -1,6 +1,7 @@
-# coding=UTF-8
-# Author: Dennis Lutter <lad1337@gmail.com>
-# URL: http://code.google.com/p/sickbeard/
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -17,25 +18,31 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os.path
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import os.path
+import sys
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import unittest
-import test_lib as test
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase, db
 
-class DBBasicTests(test.SiCKRAGETestDBCase):
-    def setUp(self):
+
+class DBBasicTests(SiCKRAGETestDBCase):
+    def setUp(self, **kwargs):
         super(DBBasicTests, self).setUp()
-        self.db = test.db.DBConnection()
+        self.db = db.DBConnection()
 
     def test_select(self):
         self.db.select("SELECT * FROM tv_episodes WHERE showid = ? AND location != ''", [0000])
 
+
 if __name__ == '__main__':
-    print "=================="
-    print "STARTING - DB TESTS"
-    print "=================="
-    print "######################################################################"
-    suite = unittest.TestLoader().loadTestsFromTestCase(DBBasicTests)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("==================")
+    print("STARTING - DB TESTS")
+    print("==================")
+    print("######################################################################")
+    unittest.main()

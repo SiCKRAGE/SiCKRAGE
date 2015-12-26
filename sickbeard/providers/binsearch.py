@@ -1,27 +1,33 @@
-# Author: moparisthebest <admin@moparisthebest.com>
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
-# This file is part of Sick Beard.
+# This file is part of SickRage.
 #
-# Sick Beard is free software: you can redistribute it and/or modify
+# SickRage is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Sick Beard is distributed in the hope that it will be useful,
+# SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
+
 import urllib
 import re
 
-
 from sickbeard.providers import generic
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
+
 
 class BinSearchProvider(generic.NZBProvider):
     def __init__(self):
@@ -30,7 +36,7 @@ class BinSearchProvider(generic.NZBProvider):
         self.public = True
         self.cache = BinSearchCache(self)
         self.urls = {'base_url': 'https://www.binsearch.info/'}
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
 
 class BinSearchCache(tvcache.TVCache):
@@ -62,7 +68,7 @@ class BinSearchCache(tvcache.TVCache):
 
         title = item.get('description')
         if title:
-            title = u'' + title
+            title = '' + title
             if self.descTitleStart.match(title):
                 title = self.descTitleStart.sub('', title)
                 title = self.descTitleEnd.sub('', title)
@@ -82,34 +88,36 @@ class BinSearchCache(tvcache.TVCache):
 
     def updateCache(self):
         # check if we should update
-        if not self.shouldUpdate():
-            return
+        if self.shouldUpdate():
+            # clear cache
+            self._clearCache()
 
-        # clear cache
-        self._clearCache()
+            # set updated
+            self.setLastUpdate()
 
-        # set updated
-        self.setLastUpdate()
+            cl = []
+            for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries',
+                          'alt.binaries.teevee']:
+                url = self.provider.url + 'rss.php?'
+                urlArgs = {'max': 1000, 'g': group}
 
-        cl = []
-        for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries', 'alt.binaries.teevee']:
-            url = self.provider.url + 'rss.php?'
-            urlArgs = {'max': 1000, 'g': group}
+                url += urllib.urlencode(urlArgs)
 
-            url += urllib.urlencode(urlArgs)
+                logging.debug("Cache update URL: %s " % url)
 
-            logger.log(u"Cache update URL: %s " % url, logger.DEBUG)
+                for item in self.getRSSFeed(url)['entries'] or []:
+                    ci = self._parseItem(item)
+                    if ci is not None:
+                        cl.append(ci)
 
-            for item in self.getRSSFeed(url)['entries'] or []:
-                ci = self._parseItem(item)
-                if ci is not None:
-                    cl.append(ci)
+            if len(cl) > 0:
+                myDB = self._getDB()
+                myDB.mass_action(cl)
 
-        if len(cl) > 0:
-            myDB = self._getDB()
-            myDB.mass_action(cl)
+        return True
 
     def _checkAuth(self, data):
-        return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None
+        return data if data[b'feed'] and data[b'feed'][b'title'] != 'Invalid Link' else None
+
 
 provider = BinSearchProvider()

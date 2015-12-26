@@ -1,7 +1,7 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    import sickbeard
     import re
+    import sickbeard
     from sickbeard.helpers import anon_url
     from sickbeard.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickbeard.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
@@ -1563,7 +1563,7 @@
                                     <span class="component-desc">PIN code to authorize SickRage to access Trakt on your behalf.</span>
                                 </p>
                             </div>
-                            <input type="button" class="btn hide" value="Authorize SickRage" id="authTrakt" />
+                            <input type="button" class="btn hide" value="Authorize SiCKRAGE" id="authTrakt" />
                             <div class="field-pair">
                                 <label for="trakt_timeout">
                                     <span class="component-title">API Timeout</span>

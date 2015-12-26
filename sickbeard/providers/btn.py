@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 # Author: Daniel Heimans
 # URL: http://code.google.com/p/sickbeard
 #
@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import time
 import socket
 import math
@@ -24,7 +26,7 @@ import jsonrpclib
 from datetime import datetime
 
 import sickbeard
-from sickbeard import logger
+import logging
 from sickbeard import classes
 from sickbeard import tvcache
 from sickbeard import scene_exceptions
@@ -47,14 +49,14 @@ class BTNProvider(generic.TorrentProvider):
 
         self.cache = BTNCache(self)
 
-        self.urls = {'base_url': u'http://api.btnapps.net',
-                     'website': u'http://broadcasthe.net/',}
+        self.urls = {'base_url': 'http://api.btnapps.net',
+                     'website': 'http://broadcasthe.net/',}
 
-        self.url = self.urls['website']
+        self.url = self.urls[b'website']
 
     def _checkAuth(self):
         if not self.api_key:
-            logger.log(u"Invalid api key. Check your settings", logger.WARNING)
+            logging.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -64,9 +66,9 @@ class BTNProvider(generic.TorrentProvider):
             return self._checkAuth()
 
         if 'api-error' in parsedJSON:
-            logger.log(u"Incorrect authentication credentials: % s" % parsedJSON['api-error'], logger.DEBUG)
+            logging.debug("Incorrect authentication credentials: % s" % parsedJSON['api-error'])
             raise AuthException(
-                "Your authentication credentials for " + self.name + " are incorrect, check your config.")
+                    "Your authentication credentials for " + self.name + " are incorrect, check your config.")
 
         return True
 
@@ -80,21 +82,21 @@ class BTNProvider(generic.TorrentProvider):
 
         # age in seconds
         if age:
-            params['age'] = "<=" + str(int(age))
+            params[b'age'] = "<=" + str(int(age))
 
         if search_params:
             params.update(search_params)
-            logger.log(u"Search string: %s" %  search_params, logger.DEBUG)
+            logging.debug("Search string: %s" % search_params)
 
         parsedJSON = self._api_call(apikey, params)
         if not parsedJSON:
-            logger.log(u"No data returned from provider", logger.DEBUG)
+            logging.debug("No data returned from provider")
             return results
 
         if self._checkAuthFromData(parsedJSON):
 
             if 'torrents' in parsedJSON:
-                found_torrents = parsedJSON['torrents']
+                found_torrents = parsedJSON[b'torrents']
             else:
                 found_torrents = {}
 
@@ -105,8 +107,8 @@ class BTNProvider(generic.TorrentProvider):
             max_pages = 150
             results_per_page = 1000
 
-            if 'results' in parsedJSON and int(parsedJSON['results']) >= results_per_page:
-                pages_needed = int(math.ceil(int(parsedJSON['results']) / results_per_page))
+            if 'results' in parsedJSON and int(parsedJSON[b'results']) >= results_per_page:
+                pages_needed = int(math.ceil(int(parsedJSON[b'results']) / results_per_page))
                 if pages_needed > max_pages:
                     pages_needed = max_pages
 
@@ -116,13 +118,13 @@ class BTNProvider(generic.TorrentProvider):
                     # Note that this these are individual requests and might time out individually. This would result in 'gaps'
                     # in the results. There is no way to fix this though.
                     if 'torrents' in parsedJSON:
-                        found_torrents.update(parsedJSON['torrents'])
+                        found_torrents.update(parsedJSON[b'torrents'])
 
             for torrentid, torrent_info in found_torrents.iteritems():
                 (title, url) = self._get_title_and_url(torrent_info)
 
                 if title and url:
-                    logger.log(u"Found result: %s " % title, logger.DEBUG)
+                    logging.debug("Found result: %s " % title)
                     results.append(torrent_info)
 
         # FIXME SORT RESULTS
@@ -130,7 +132,7 @@ class BTNProvider(generic.TorrentProvider):
 
     def _api_call(self, apikey, params={}, results_per_page=1000, offset=0):
 
-        server = jsonrpclib.Server(self.urls['base_url'])
+        server = jsonrpclib.Server(self.urls[b'base_url'])
         parsedJSON = {}
 
         try:
@@ -139,24 +141,25 @@ class BTNProvider(generic.TorrentProvider):
 
         except jsonrpclib.jsonrpc.ProtocolError, error:
             if error.message == 'Call Limit Exceeded':
-                logger.log(u"You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account", logger.WARNING)
+                logging.warning(
+                    "You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account")
             else:
-                logger.log(u"JSON-RPC protocol error while accessing provicer. Error: %s " % repr(error), logger.ERROR)
+                logging.error("JSON-RPC protocol error while accessing provicer. Error: %s " % repr(error))
             parsedJSON = {'api-error': ex(error)}
             return parsedJSON
 
         except socket.timeout:
-            logger.log(u"Timeout while accessing provider", logger.WARNING)
+            logging.warning("Timeout while accessing provider")
 
         except socket.error, error:
             # Note that sometimes timeouts are thrown as socket errors
-            logger.log(u"Socket error while accessing provider. Error: %s " % error[1], logger.WARNING)
+            logging.warning("Socket error while accessing provider. Error: %s " % error[1])
 
         except Exception, error:
             errorstring = str(error)
             if errorstring.startswith('<') and errorstring.endswith('>'):
                 errorstring = errorstring[1:-1]
-            logger.log(u"Unknown error while accessing provider. Error: %s " % errorstring, logger.WARNING)
+            logging.warning("Unknown error while accessing provider. Error: %s " % errorstring)
 
         return parsedJSON
 
@@ -166,28 +169,28 @@ class BTNProvider(generic.TorrentProvider):
         # however SickRage is built mostly around Scene or
         # release names, which is why we are using them here.
 
-        if 'ReleaseName' in parsedJSON and parsedJSON['ReleaseName']:
-            title = parsedJSON['ReleaseName']
+        if 'ReleaseName' in parsedJSON and parsedJSON[b'ReleaseName']:
+            title = parsedJSON[b'ReleaseName']
 
         else:
             # If we don't have a release name we need to get creative
-            title = u''
+            title = ''
             if 'Series' in parsedJSON:
-                title += parsedJSON['Series']
+                title += parsedJSON[b'Series']
             if 'GroupName' in parsedJSON:
-                title += '.' + parsedJSON['GroupName'] if title else parsedJSON['GroupName']
+                title += '.' + parsedJSON[b'GroupName'] if title else parsedJSON[b'GroupName']
             if 'Resolution' in parsedJSON:
-                title += '.' + parsedJSON['Resolution'] if title else parsedJSON['Resolution']
+                title += '.' + parsedJSON[b'Resolution'] if title else parsedJSON[b'Resolution']
             if 'Source' in parsedJSON:
-                title += '.' + parsedJSON['Source'] if title else parsedJSON['Source']
+                title += '.' + parsedJSON[b'Source'] if title else parsedJSON[b'Source']
             if 'Codec' in parsedJSON:
-                title += '.' + parsedJSON['Codec'] if title else parsedJSON['Codec']
+                title += '.' + parsedJSON[b'Codec'] if title else parsedJSON[b'Codec']
             if title:
                 title = title.replace(' ', '.')
 
         url = None
         if 'DownloadURL' in parsedJSON:
-            url = parsedJSON['DownloadURL']
+            url = parsedJSON[b'DownloadURL']
             if url:
                 # unescaped / is valid in JSON, but it can be escaped
                 url = url.replace("\\/", "/")
@@ -201,22 +204,22 @@ class BTNProvider(generic.TorrentProvider):
         # Search for entire seasons: no need to do special things for air by date or sports shows
         if ep_obj.show.air_by_date or ep_obj.show.sports:
             # Search for the year of the air by date show
-            current_params['name'] = str(ep_obj.airdate).split('-')[0]
+            current_params[b'name'] = str(ep_obj.airdate).split('-')[0]
         elif ep_obj.show.is_anime:
-            current_params['name'] = "%d" % ep_obj.scene_absolute_number
+            current_params[b'name'] = "%d" % ep_obj.scene_absolute_number
         else:
-            current_params['name'] = 'Season ' + str(ep_obj.scene_season)
+            current_params[b'name'] = 'Season ' + str(ep_obj.scene_season)
 
         # search
         if ep_obj.show.indexer == 1:
-            current_params['tvdb'] = ep_obj.show.indexerid
+            current_params[b'tvdb'] = ep_obj.show.indexerid
             search_params.append(current_params)
         else:
             name_exceptions = list(
-                set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
+                    set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
             for name in name_exceptions:
                 # Search by name if we don't have tvdb id
-                current_params['series'] = sanitizeSceneName(name)
+                current_params[b'series'] = sanitizeSceneName(name)
                 search_params.append(current_params)
 
         return search_params
@@ -235,23 +238,23 @@ class BTNProvider(generic.TorrentProvider):
 
             # BTN uses dots in dates, we just search for the date since that
             # combined with the series identifier should result in just one episode
-            search_params['name'] = date_str.replace('-', '.')
+            search_params[b'name'] = date_str.replace('-', '.')
         elif ep_obj.show.anime:
-            search_params['name'] = "%i" % int(ep_obj.scene_absolute_number)
+            search_params[b'name'] = "%i" % int(ep_obj.scene_absolute_number)
         else:
             # Do a general name search for the episode, formatted like SXXEYY
-            search_params['name'] = "S%02dE%02d" % (ep_obj.scene_season, ep_obj.scene_episode)
+            search_params[b'name'] = "S%02dE%02d" % (ep_obj.scene_season, ep_obj.scene_episode)
 
         # search
         if ep_obj.show.indexer == 1:
-            search_params['tvdb'] = ep_obj.show.indexerid
+            search_params[b'tvdb'] = ep_obj.show.indexerid
             to_return.append(search_params)
         else:
             # add new query string for every exception
             name_exceptions = list(
-                set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
+                    set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
             for cur_exception in name_exceptions:
-                search_params['series'] = sanitizeSceneName(cur_exception)
+                search_params[b'series'] = sanitizeSceneName(cur_exception)
                 to_return.append(search_params)
 
         return to_return
@@ -268,9 +271,9 @@ class BTNProvider(generic.TorrentProvider):
 
         for term in search_terms:
             for item in self._doSearch({'release': term}, age=4 * 24 * 60 * 60):
-                if item['Time']:
+                if item[b'Time']:
                     try:
-                        result_date = datetime.fromtimestamp(float(item['Time']))
+                        result_date = datetime.fromtimestamp(float(item[b'Time']))
                     except TypeError:
                         result_date = None
 
@@ -303,9 +306,8 @@ class BTNCache(tvcache.TVCache):
 
         # Set maximum to 24 hours (24 * 60 * 60 = 86400 seconds) of "RSS" data search, older things will need to be done through backlog
         if seconds_since_last_update > 86400:
-            logger.log(
-                u"The last known successful update was more than 24 hours ago, only trying to fetch the last 24 hours!",
-                logger.DEBUG)
+            logging.debug(
+                    "The last known successful update was more than 24 hours ago, only trying to fetch the last 24 hours!")
             seconds_since_last_update = 86400
 
         return {'entries': self.provider._doSearch(search_params=None, age=seconds_since_last_update)}

@@ -1,11 +1,33 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: Nic Wolfe <nic@wolfeden.ca>
+# URL: https://sickrage.tv/
+# Git: https://github.com/SiCKRAGETV/SickRage.git
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
+
+import logging
 import requests
 import certifi
 import json
-import sickbeard
 import time
-from sickbeard import logger
 
-from exceptions import traktException, traktAuthException, traktServerBusy
+import sickbeard
 
 class TraktAPI():
     def __init__(self, ssl_verify=True, timeout=30):
@@ -75,7 +97,7 @@ class TraktAPI():
             headers = self.headers
        
         if None == sickbeard.TRAKT_ACCESS_TOKEN:
-            logger.log(u'You must get a Trakt TOKEN. Check your Trakt settings', logger.WARNING)
+            logging.warning('You must get a Trakt TOKEN. Check your Trakt settings')
             return {}
 
         headers['Authorization'] = 'Bearer ' + sickbeard.TRAKT_ACCESS_TOKEN
@@ -93,27 +115,27 @@ class TraktAPI():
             code = getattr(e.response, 'status_code', None)
             if not code:
                 if 'timed out' in e:
-                    logger.log(u'Timeout connecting to Trakt. Try to increase timeout value in Trakt settings', logger.WARNING)                      
+                    logging.warning('Timeout connecting to Trakt. Try to increase timeout value in Trakt settings')
                 # This is pretty much a fatal error if there is no status_code
                 # It means there basically was no response at all                    
                 else:
-                    logger.log(u'Could not connect to Trakt. Error: {0}'.format(e), logger.DEBUG)                
+                    logging.debug('Could not connect to Trakt. Error: {0}'.format(e))
             elif code == 502:
                 # Retry the request, cloudflare had a proxying issue
-                logger.log(u'Retrying trakt api request: %s' % path, logger.DEBUG)
+                logging.debug('Retrying trakt api request: %s' % path)
                 return self.traktRequest(path, data, headers, url, method)
             elif code == 401:
                 if self.traktToken(refresh=True, count=count):
                     return self.traktRequest(path, data, headers, url, method)
                 else:
-                    logger.log(u'Unauthorized. Please check your Trakt settings', logger.WARNING)
+                    logging.warning('Unauthorized. Please check your Trakt settings')
             elif code in (500,501,503,504,520,521,522):
                 #http://docs.trakt.apiary.io/#introduction/status-codes
-                logger.log(u'Trakt may have some issues and it\'s unavailable. Try again later please', logger.DEBUG)
+                logging.debug('Trakt may have some issues and it\'s unavailable. Try again later please')
             elif code == 404:
-                logger.log(u'Trakt error (404) the resource does not exist: %s' % url + path, logger.ERROR)
+                logging.debug('Trakt error (404) the resource does not exist: %s' % url + path)
             else:
-                logger.log(u'Could not connect to Trakt. Code error: {0}'.format(code), logger.ERROR)
+                logging.error('Could not connect to Trakt. Code error: {0}'.format(code))
             return {}
 
         # check and confirm trakt call did not fail
@@ -126,3 +148,12 @@ class TraktAPI():
                 raise traktException('Unknown Error')
 
         return resp
+
+class traktException(Exception):
+    pass
+
+class traktAuthException(traktException):
+    pass
+
+class traktServerBusy(traktException):
+    pass

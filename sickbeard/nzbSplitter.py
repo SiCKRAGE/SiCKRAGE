@@ -17,7 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
 
+import logging
+
+import io
 import requests
 import re
 
@@ -26,7 +30,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as etree
 
-from sickbeard import logger, classes, helpers
+from sickbeard import classes, helpers
 from sickbeard.common import Quality
 from sickrage.helper.encoding import ek, ss
 from sickrage.helper.exceptions import ex
@@ -46,7 +50,7 @@ def getSeasonNZBs(name, urlData, season):
     try:
         showXML = etree.ElementTree(etree.XML(urlData))
     except SyntaxError:
-        logger.log(u"Unable to parse the XML of " + name + ", not splitting it", logger.ERROR)
+        logging.error("Unable to parse the XML of " + name + ", not splitting it")
         return ({}, '')
 
     filename = name.replace(".nzb", "")
@@ -59,7 +63,7 @@ def getSeasonNZBs(name, urlData, season):
     if sceneNameMatch:
         showName, qualitySection, groupName = sceneNameMatch.groups()  # @UnusedVariable
     else:
-        logger.log(u"Unable to parse " + name + " into a scene name. If it's a valid one log a bug.", logger.ERROR)
+        logging.error("Unable to parse " + name + " into a scene name. If it's a valid one log a bug.")
         return ({}, '')
 
     regex = '(' + re.escape(showName) + '\.S%02d(?:[E0-9]+)\.[\w\._]+\-\w+' % season + ')'
@@ -109,8 +113,8 @@ def saveNZB(nzbName, nzbString):
         with ek(io.open, nzbName + ".nzb", 'w') as nzb_fh:
             nzb_fh.write(nzbString)
 
-    except EnvironmentError, e:
-        logger.log(u"Unable to save NZB: " + ex(e), logger.ERROR)
+    except EnvironmentError as e:
+        logging.error("Unable to save NZB: {}".format(ex(e)))
 
 
 def stripNS(element, ns):
@@ -130,7 +134,7 @@ def splitResult(result):
     """
     urlData = helpers.getURL(result.url, session=requests.Session(), needBytes=True)
     if urlData is None:
-        logger.log(u"Unable to load url " + result.url + ", can't download season NZB", logger.ERROR)
+        logging.error("Unable to load url " + result.url + ", can't download season NZB")
         return False
 
     # parse the season ep name
@@ -138,10 +142,10 @@ def splitResult(result):
         np = NameParser(False, showObj=result.show)
         parse_result = np.parse(result.name)
     except InvalidNameException:
-        logger.log(u"Unable to parse the filename " + result.name + " into a valid episode", logger.DEBUG)
+        logging.debug("Unable to parse the filename " + result.name + " into a valid episode")
         return False
     except InvalidShowException:
-        logger.log(u"Unable to parse the filename " + result.name + " into a valid show", logger.DEBUG)
+        logging.debug("Unable to parse the filename " + result.name + " into a valid show")
         return False
 
     # bust it up
@@ -153,37 +157,35 @@ def splitResult(result):
 
     for newNZB in separateNZBs:
 
-        logger.log(u"Split out " + newNZB + " from " + result.name, logger.DEBUG)
+        logging.debug("Split out " + newNZB + " from " + result.name)
 
         # parse the name
         try:
             np = NameParser(False, showObj=result.show)
             parse_result = np.parse(newNZB)
         except InvalidNameException:
-            logger.log(u"Unable to parse the filename " + newNZB + " into a valid episode", logger.DEBUG)
+            logging.debug("Unable to parse the filename " + newNZB + " into a valid episode")
             return False
         except InvalidShowException:
-            logger.log(u"Unable to parse the filename " + newNZB + " into a valid show", logger.DEBUG)
+            logging.debug("Unable to parse the filename " + newNZB + " into a valid show")
             return False
 
         # make sure the result is sane
         if (parse_result.season_number != None and parse_result.season_number != season) or (
-                parse_result.season_number == None and season != 1):
-            logger.log(
-                u"Found " + newNZB + " inside " + result.name + " but it doesn't seem to belong to the same season, ignoring it",
-                logger.WARNING)
+                        parse_result.season_number == None and season != 1):
+            logging.warning(
+                    "Found " + newNZB + " inside " + result.name + " but it doesn't seem to belong to the same season, ignoring it")
             continue
         elif len(parse_result.episode_numbers) == 0:
-            logger.log(
-                u"Found " + newNZB + " inside " + result.name + " but it doesn't seem to be a valid episode NZB, ignoring it",
-                logger.WARNING)
+            logging.warning(
+                    "Found " + newNZB + " inside " + result.name + " but it doesn't seem to be a valid episode NZB, ignoring it")
             continue
 
         wantEp = True
         for epNo in parse_result.episode_numbers:
             if not result.extraInfo[0].wantEpisode(season, epNo, result.quality):
-                logger.log(u"Ignoring result " + newNZB + " because we don't want an episode that is " +
-                           Quality.qualityStrings[result.quality], logger.INFO)
+                logging.info("Ignoring result " + newNZB + " because we don't want an episode that is " +
+                            Quality.qualityStrings[result.quality])
                 wantEp = False
                 break
         if not wantEp:

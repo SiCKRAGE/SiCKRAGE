@@ -16,11 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
 
 import re
 from urllib import urlencode
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard.common import USER_AGENT
@@ -47,7 +48,7 @@ class ThePirateBayProvider(generic.TorrentProvider):
             'rss': 'https://pirateproxy.la/tv/latest'
         }
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
         self.headers.update({'User-Agent': USER_AGENT})
 
         """
@@ -70,16 +71,16 @@ class ThePirateBayProvider(generic.TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 self.search_params.update({'q': search_string.strip()})
 
                 if mode is not 'RSS':
-                    logger.log(u"Search string: " + search_string, logger.DEBUG)
+                    logging.debug("Search string: " + search_string)
 
                 searchURL = self.urls[('search', 'rss')[mode is 'RSS']] + '?' + urlencode(self.search_params)
-                logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
+                logging.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
                 # data = self.getURL(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
                 if not data:
@@ -100,18 +101,21 @@ class ThePirateBayProvider(generic.TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                            logging.debug(
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers))
                         continue
 
                     # Accept Torrent only from Good People for every Episode Search
                     if self.confirmed and re.search(r'(VIP|Trusted|Helper|Moderator)', torrent.group(0)) is None:
                         if mode is not 'RSS':
-                            logger.log(u"Found result %s but that doesn't seem like a trusted result so I'm ignoring it" % title, logger.DEBUG)
+                            logging.debug(
+                                "Found result %s but that doesn't seem like a trusted result so I'm ignoring it" % title)
                         continue
 
                     item = title, download_url, size, seeders, leechers
                     if mode is not 'RSS':
-                        logger.log(u"Found result: %s " % title, logger.DEBUG)
+                        logging.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 
@@ -128,11 +132,11 @@ class ThePirateBayProvider(generic.TorrentProvider):
         if modifier in 'KiB':
             size = size * 1024
         elif modifier in 'MiB':
-            size = size * 1024**2
+            size = size * 1024 ** 2
         elif modifier in 'GiB':
-            size = size * 1024**3
+            size = size * 1024 ** 3
         elif modifier in 'TiB':
-            size = size * 1024**4
+            size = size * 1024 ** 4
         return size
 
     def seedRatio(self):
@@ -141,7 +145,6 @@ class ThePirateBayProvider(generic.TorrentProvider):
 
 class ThePirateBayCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         # only poll ThePirateBay every 30 minutes max
@@ -150,5 +153,6 @@ class ThePirateBayCache(tvcache.TVCache):
     def _getRSSData(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_params)}
+
 
 provider = ThePirateBayProvider()

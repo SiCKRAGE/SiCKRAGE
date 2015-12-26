@@ -1,4 +1,24 @@
-# coding=utf-8
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
 
 import re
 import time
@@ -6,7 +26,7 @@ from hashlib import sha1
 from base64 import b16encode, b32decode
 
 import sickbeard
-from sickbeard import logger
+import logging
 from sickbeard.clients import http_error_code
 from bencode import bencode, bdecode
 import requests
@@ -35,42 +55,41 @@ class GenericClient(object):
             self.last_time = time.time()
             self._get_auth()
 
-        logger.log(
-            self.name + u': Requested a ' + method.upper() + ' connection to url ' + self.url +
-            ' with Params: ' + str(params) + ' Data: ' + str(data)[0:99] + ('...' if len(str(data)) > 200 else ''), logger.DEBUG)
+        logging.debug(
+                self.name + ': Requested a ' + method.upper() + ' connection to url ' + self.url +
+                ' with Params: ' + str(params) + ' Data: ' + str(data)[0:99] + ('...' if len(str(data)) > 200 else ''))
 
         if not self.auth:
-            logger.log(self.name + u': Authentication Failed', logger.WARNING)
+            logging.warning(self.name + ': Authentication Failed')
             return False
         try:
             self.response = self.session.__getattribute__(method)(self.url, params=params, data=data, files=files,
                                                                   timeout=120, verify=False)
-        except requests.exceptions.ConnectionError, e:
-            logger.log(self.name + u': Unable to connect ' + str(e), logger.ERROR)
+        except requests.exceptions.ConnectionError as e:
+            logging.error(self.name + ': Unable to connect ' + str(e))
             return False
         except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):
-            logger.log(self.name + u': Invalid Host', logger.ERROR)
+            logging.error(self.name + ': Invalid Host')
             return False
-        except requests.exceptions.HTTPError, e:
-            logger.log(self.name + u': Invalid HTTP Request ' + str(e), logger.ERROR)
+        except requests.exceptions.HTTPError as e:
+            logging.error(self.name + ': Invalid HTTP Request ' + str(e))
             return False
-        except requests.exceptions.Timeout, e:
-            logger.log(self.name + u': Connection Timeout ' + str(e), logger.WARNING)
+        except requests.exceptions.Timeout as e:
+            logging.warning(self.name + ': Connection Timeout ' + str(e))
             return False
-        except Exception, e:
-            logger.log(self.name + u': Unknown exception raised when send torrent to ' + self.name + ': ' + str(e),
-                       logger.ERROR)
+        except Exception as e:
+            logging.error(self.name + ': Unknown exception raised when send torrent to ' + self.name + ': ' + str(e))
             return False
 
         if self.response.status_code == 401:
-            logger.log(self.name + u': Invalid Username or Password, check your config', logger.ERROR)
+            logging.error(self.name + u': Invalid Username or Password, check your config')
             return False
 
         if self.response.status_code in http_error_code.keys():
-            logger.log(self.name + u': ' + http_error_code[self.response.status_code], logger.DEBUG)
+            logging.debug(self.name + ': ' + http_error_code[self.response.status_code])
             return False
 
-        logger.log(self.name + u': Response to ' + method.upper() + ' request is ' + self.response.text, logger.DEBUG)
+        logging.debug(self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
 
         return True
 
@@ -144,19 +163,19 @@ class GenericClient(object):
                 result.hash = b16encode(b32decode(result.hash)).lower()
         else:
             if not result.content:
-                logger.log(u'Torrent without content', logger.ERROR)
+                logging.error('Torrent without content')
                 raise Exception('Torrent without content')
 
             try:
                 torrent_bdecode = bdecode(result.content)
             except BTFailure:
-                logger.log(u'Unable to bdecode torrent', logger.ERROR)
-                logger.log(u'Torrent bencoded data: %r' % result.content, logger.DEBUG)
+                logging.error('Unable to bdecode torrent')
+                logging.debug('Torrent bencoded data: %r' % result.content)
                 raise
             try:
-                info = torrent_bdecode["info"]
+                info = torrent_bdecode[b"info"]
             except Exception:
-                logger.log(u'Unable to find info field in torrent', logger.ERROR)
+                logging.error('Unable to find info field in torrent')
                 raise
             result.hash = sha1(bencode(info)).hexdigest()
 
@@ -166,10 +185,10 @@ class GenericClient(object):
 
         r_code = False
 
-        logger.log(u'Calling ' + self.name + ' Client', logger.DEBUG)
+        logging.debug('Calling ' + self.name + ' Client')
 
         if not self._get_auth():
-            logger.log(self.name + u': Authentication Failed', logger.ERROR)
+            logging.error(self.name + ': Authentication Failed')
             return r_code
 
         try:
@@ -185,30 +204,30 @@ class GenericClient(object):
                 r_code = self._add_torrent_file(result)
 
             if not r_code:
-                logger.log(self.name + u': Unable to send Torrent: Return code undefined', logger.ERROR)
+                logging.error(self.name + ': Unable to send Torrent: Return code undefined')
                 return False
 
             if not self._set_torrent_pause(result):
-                logger.log(self.name + u': Unable to set the pause for Torrent', logger.ERROR)
+                logging.error(self.name + ': Unable to set the pause for Torrent')
 
             if not self._set_torrent_label(result):
-                logger.log(self.name + u': Unable to set the label for Torrent', logger.ERROR)
+                logging.error(self.name + ': Unable to set the label for Torrent')
 
             if not self._set_torrent_ratio(result):
-                logger.log(self.name + u': Unable to set the ratio for Torrent', logger.ERROR)
+                logging.error(self.name + ': Unable to set the ratio for Torrent')
 
             if not self._set_torrent_seed_time(result):
-                logger.log(self.name + u': Unable to set the seed time for Torrent', logger.ERROR)
+                logging.error(self.name + ': Unable to set the seed time for Torrent')
 
             if not self._set_torrent_path(result):
-                logger.log(self.name + u': Unable to set the path for Torrent', logger.ERROR)
+                logging.error(self.name + ': Unable to set the path for Torrent')
 
             if result.priority != 0 and not self._set_torrent_priority(result):
-                logger.log(self.name + u': Unable to set priority for Torrent', logger.ERROR)
+                logging.error(self.name + ': Unable to set priority for Torrent')
 
-        except Exception, e:
-            logger.log(self.name + u': Failed Sending Torrent', logger.ERROR)
-            logger.log(self.name + u': Exception raised when sending torrent: ' + str(result) + u'. Error: ' + str(e), logger.DEBUG)
+        except Exception as e:
+            logging.error(self.name + ': Failed Sending Torrent')
+            logging.debug(self.name + ': Exception raised when sending torrent: ' + str(result) + '. Error: ' + str(e))
             return r_code
 
         return r_code

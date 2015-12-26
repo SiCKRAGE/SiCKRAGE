@@ -1,8 +1,7 @@
-# coding=utf-8
-
-# Author: Nic Wolfe <nic@wolfeden.ca>
-# URL: https://sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -19,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 # Dynamic patch system
 # function naming scheme: targetmodule_targetfunction
 
@@ -27,6 +28,7 @@ import sys
 import stat
 import shutil
 import inspect
+
 
 def shutil_copyfile(src, dst):
     """Copy data from src to dst"""
@@ -49,13 +51,13 @@ def shutil_copyfile(src, dst):
                 except NameError:
                     raise shutil.Error("`%s` is a named pipe" % fn)
 
-    BUFFER_SIZE = 128*1024
     try:
         with open(src, "rb") as fin, open(dst, "wb") as fout:
-            for x in iter(lambda: fin.read(BUFFER_SIZE), ""):
+            for x in iter(lambda: fin.read(128 * 1024), ""):
                 fout.write(x)
-    except Exception as e:
+    except Exception:
         raise
+
 
 # auto_apply patches
 for name, patch in inspect.getmembers(sys.modules[__name__], inspect.isfunction):

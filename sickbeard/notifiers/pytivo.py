@@ -16,13 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import os
 import sickbeard
 
 from urllib import urlencode
 from urllib2 import Request, urlopen, HTTPError
 
-from sickbeard import logger
+import logging
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 
@@ -83,26 +85,26 @@ class pyTivoNotifier:
 
         # Finally create the url and make request
         requestUrl = "http://" + host + "/TiVoConnect?" + urlencode(
-            {'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn})
+                {'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn})
 
-        logger.log(u"pyTivo notification: Requesting " + requestUrl, logger.DEBUG)
+        logging.debug("pyTivo notification: Requesting " + requestUrl)
 
         request = Request(requestUrl)
 
         try:
             response = urlopen(request)  # @UnusedVariable
-        except HTTPError , e:
+        except HTTPError  as e:
             if hasattr(e, 'reason'):
-                logger.log(u"pyTivo notification: Error, failed to reach a server - " + e.reason, logger.ERROR)
+                logging.error("pyTivo notification: Error, failed to reach a server - " + e.reason)
                 return False
             elif hasattr(e, 'code'):
-                logger.log(u"pyTivo notification: Error, the server couldn't fulfill the request - " + e.code, logger.ERROR)
+                logging.error("pyTivo notification: Error, the server couldn't fulfill the request - " + e.code)
             return False
-        except Exception, e:
-            logger.log(u"PYTIVO: Unknown exception: " + ex(e), logger.ERROR)
+        except Exception as e:
+            logging.error("PYTIVO: Unknown exception: {}".format(ex(e)))
             return False
         else:
-            logger.log(u"pyTivo notification: Successfully requested transfer of file")
+            logging.info("pyTivo notification: Successfully requested transfer of file")
             return True
 
 

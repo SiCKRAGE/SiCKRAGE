@@ -1,5 +1,7 @@
-# Author: Jordon Smith <smith@jordon.me.uk>
-# URL: http://code.google.com/p/sickbeard/
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -10,19 +12,21 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
+import logging
 import urllib
-from datetime import datetime
 
 import sickbeard
+from datetime import datetime
 from sickbeard import tvcache
 from sickbeard import classes
-from sickbeard import logger
 from sickbeard import show_name_helpers
 from sickbeard.providers import generic
 
@@ -36,14 +40,14 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
         self.cache = OmgwtfnzbsCache(self)
 
         self.urls = {'base_url': 'https://omgwtfnzbs.org/'}
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
         self.supportsBacklog = True
 
     def _checkAuth(self):
 
         if not self.username or not self.api_key:
-            logger.log(u"Invalid api key. Check your settings", logger.WARNING)
+            logging.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -62,13 +66,13 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
                 description_text = parsedJSON.get('notice')
 
                 if 'information is incorrect' in parsedJSON.get('notice'):
-                    logger.log(u"Invalid api key. Check your settings", logger.WARNING)
+                    logging.warning("Invalid api key. Check your settings")
 
                 elif '0 results matched your terms' in parsedJSON.get('notice'):
                     return True
 
                 else:
-                    logger.log(u"Unknown error: %s"  % description_text, logger.DEBUG)
+                    logging.debug("Unknown error: %s" % description_text)
                     return False
 
             return True
@@ -80,11 +84,11 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
         return [x for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
 
     def _get_title_and_url(self, item):
-        return (item['release'], item['getnzb'])
+        return (item[b'release'], item[b'getnzb'])
 
     def _get_size(self, item):
         try:
-            size = int(item['sizebytes'])
+            size = int(item[b'sizebytes'])
         except (ValueError, TypeError, AttributeError, KeyError):
             return -1
 
@@ -101,12 +105,12 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
                   'retention': sickbeard.USENET_RETENTION,
                   'search': search}
 
-        if retention or not params['retention']:
-            params['retention'] = retention
+        if retention or not params[b'retention']:
+            params[b'retention'] = retention
 
         searchURL = 'https://api.omgwtfnzbs.org/json/?' + urllib.urlencode(params)
-        logger.log(u"Search string: %s" % params, logger.DEBUG)
-        logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+        logging.debug("Search string: %s" % params)
+        logging.debug("Search URL: %s" % searchURL)
 
         parsedJSON = self.getURL(searchURL, json=True)
         if not parsedJSON:
@@ -117,7 +121,7 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
 
             for item in parsedJSON:
                 if 'release' in item and 'getnzb' in item:
-                    logger.log(u"Found result: %s " % item.get('title'), logger.DEBUG)
+                    logging.debug("Found result: %s " % item.get('title'))
                     results.append(item)
 
             return results
@@ -134,7 +138,7 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
 
                     title, url = self._get_title_and_url(item)
                     try:
-                        result_date = datetime.fromtimestamp(int(item['usenetage']))
+                        result_date = datetime.fromtimestamp(int(item[b'usenetage']))
                     except Exception:
                         result_date = None
 
@@ -160,7 +164,7 @@ class OmgwtfnzbsCache(tvcache.TVCache):
 
         title = item.get('title')
         if title:
-            title = u'' + title
+            title = '' + title
             title = title.replace(' ', '.')
 
         url = item.get('link')
@@ -177,8 +181,9 @@ class OmgwtfnzbsCache(tvcache.TVCache):
 
         rss_url = 'https://rss.omgwtfnzbs.org/rss-download.php?' + urllib.urlencode(params)
 
-        logger.log(u"Cache update URL: %s" % rss_url, logger.DEBUG)
+        logging.debug("Cache update URL: %s" % rss_url)
 
         return self.getRSSFeed(rss_url)
+
 
 provider = OmgwtfnzbsProvider()

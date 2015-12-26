@@ -17,25 +17,26 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import re
 import time
 import urllib
 
 import sickbeard
 from sickbeard.common import cpu_presets
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard.bs4_parser import BS4Parser
 
-class SCCProvider(generic.TorrentProvider):
 
+class SCCProvider(generic.TorrentProvider):
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "SceneAccess")
 
         self.supportsBacklog = True
-
 
         self.username = None
         self.password = None
@@ -51,10 +52,11 @@ class SCCProvider(generic.TorrentProvider):
                      'search': 'https://sceneaccess.eu/all?search=%s&method=1&%s',
                      'download': 'https://www.sceneaccess.eu/%s'}
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
-        self.categories = { 'sponly': 'c26=26&c44=44&c45=45', # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
-                            'eponly': 'c27=27&c17=17&c44=44&c45=45&c33=33&c34=34'} # TV HD, TV SD, non-scene HD, non-scene SD, foreign XviD, foreign x264
+        self.categories = {'sponly': 'c26=26&c44=44&c45=45',
+                           # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
+                           'eponly': 'c27=27&c17=17&c44=44&c45=45&c33=33&c34=34'}  # TV HD, TV SD, non-scene HD, non-scene SD, foreign XviD, foreign x264
 
     def _doLogin(self):
 
@@ -62,15 +64,14 @@ class SCCProvider(generic.TorrentProvider):
                         'password': self.password,
                         'submit': 'come on in'}
 
-
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
         if not response:
-            logger.log(u"Unable to connect to provider", logger.WARNING)
+            logging.warning("Unable to connect to provider")
             return False
 
         if re.search(r'Username or password incorrect', response) \
                 or re.search(r'<title>SceneAccess \| Login</title>', response):
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logging.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -90,19 +91,19 @@ class SCCProvider(generic.TorrentProvider):
 
         for mode in search_strings.keys():
             if mode is not 'RSS':
-                logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+                logging.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode is not 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories[search_mode])
+                searchURL = self.urls[b'search'] % (urllib.quote(search_string), self.categories[search_mode])
 
                 try:
-                    logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                    logging.debug("Search URL: %s" % searchURL)
                     data = self.getURL(searchURL)
                     time.sleep(cpu_presets[sickbeard.CPU_PRESET])
                 except Exception as e:
-                    logger.log(u"Unable to fetch data. Error: %s" % repr(e), logger.WARNING)
+                    logging.warning("Unable to fetch data. Error: %s" % repr(e))
 
                 if not data:
                     continue
@@ -113,22 +114,22 @@ class SCCProvider(generic.TorrentProvider):
 
                     # Continue only if at least one Release is found
                     if len(torrent_rows) < 2:
-                        logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                        logging.debug("Data returned from provider does not contain any torrents")
                         continue
 
                     for result in torrent_table.find_all('tr')[1:]:
 
                         try:
                             link = result.find('td', attrs={'class': 'ttr_name'}).find('a')
-                            url  = result.find('td', attrs={'class': 'td_dl'}).find('a')
+                            url = result.find('td', attrs={'class': 'td_dl'}).find('a')
 
                             title = link.string
                             if re.search(r'\.\.\.', title):
-                                data = self.getURL(self.url + "/" + link['href'])
+                                data = self.getURL(self.url + "/" + link[b'href'])
                                 if data:
                                     with BS4Parser(data) as details_html:
                                         title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
-                            download_url = self.urls['download'] % url['href']
+                            download_url = self.urls[b'download'] % url[b'href']
                             seeders = int(result.find('td', attrs={'class': 'ttr_seeders'}).string)
                             leechers = int(result.find('td', attrs={'class': 'ttr_leechers'}).string)
                             size = self._convertSize(result.find('td', attrs={'class': 'ttr_size'}).contents[0])
@@ -141,12 +142,14 @@ class SCCProvider(generic.TorrentProvider):
                         # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode is not 'RSS':
-                                logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                logging.debug(
+                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                        title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers
                         if mode is not 'RSS':
-                            logger.log(u"Found result: %s " % title, logger.DEBUG)
+                            logging.debug("Found result: %s " % title)
 
                         items[mode].append(item)
 
@@ -166,17 +169,16 @@ class SCCProvider(generic.TorrentProvider):
         if base in 'KB':
             size = size * 1024
         elif base in 'MB':
-            size = size * 1024**2
+            size = size * 1024 ** 2
         elif base in 'GB':
-            size = size * 1024**3
+            size = size * 1024 ** 3
         elif base in 'TB':
-            size = size * 1024**4
+            size = size * 1024 ** 4
         return int(size)
 
 
 class SCCCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         # only poll SCC every 20 minutes max
@@ -185,5 +187,6 @@ class SCCCache(tvcache.TVCache):
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_strings)}
+
 
 provider = SCCProvider()

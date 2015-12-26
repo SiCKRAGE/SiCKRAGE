@@ -1,8 +1,7 @@
-# coding=utf-8
-# Authors:
-# Pedro Jose Pereira Vieito <pvieito@gmail.com> (Twitter: @pvieito)
-#
-# URL: https://github.com/mr-orange/Sick-Beard
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -13,20 +12,19 @@
 #
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
-#
-# Uses the Synology Download Station API: http://download.synology.com/download/Document/DeveloperGuide/Synology_Download_Station_Web_API.pdf
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
 
 import sickbeard
 from sickbeard.clients.generic import GenericClient
 
 
 class DownloadStationAPI(GenericClient):
-
     def __init__(self, host=None, username=None, password=None):
 
         super(DownloadStationAPI, self).__init__('DownloadStation', host, username, password)
@@ -39,7 +37,7 @@ class DownloadStationAPI(GenericClient):
 
         try:
             self.response = self.session.get(auth_url, verify=False)
-            self.auth = self.response.json()['data']['sid']
+            self.auth = self.response.json()['data'][b'sid']
         except Exception:
             return None
 
@@ -57,7 +55,7 @@ class DownloadStationAPI(GenericClient):
         }
 
         if sickbeard.TORRENT_PATH:
-            data['destination'] = sickbeard.TORRENT_PATH
+            data[b'destination'] = sickbeard.TORRENT_PATH
         self._request(method='post', data=data)
 
         return self.response.json()['success']
@@ -73,10 +71,11 @@ class DownloadStationAPI(GenericClient):
         }
 
         if sickbeard.TORRENT_PATH:
-            data['destination'] = sickbeard.TORRENT_PATH
+            data[b'destination'] = sickbeard.TORRENT_PATH
         files = {'file': (result.name + '.torrent', result.content)}
         self._request(method='post', data=data, files=files)
 
         return self.response.json()['success']
+
 
 api = DownloadStationAPI()

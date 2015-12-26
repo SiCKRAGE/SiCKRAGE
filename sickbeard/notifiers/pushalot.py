@@ -17,19 +17,22 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
+import logging
 import socket
 from httplib import HTTPSConnection, HTTPException
 from urllib import urlencode
 from ssl import SSLError
 
 import sickbeard
-from sickbeard import logger, common
+from sickbeard import common
 
 
 class PushalotNotifier:
     def test_notify(self, pushalot_authorizationtoken):
         return self._sendPushalot(pushalot_authorizationtoken, event="Test",
-                                  message="Testing Pushalot settings from SickRage", force=True)
+                                  message="Testing Pushalot settings from SiCKRAGE", force=True)
 
     def notify_snatch(self, ep_name):
         if sickbeard.PUSHALOT_NOTIFY_ONSNATCH:
@@ -46,13 +49,13 @@ class PushalotNotifier:
             self._sendPushalot(pushalot_authorizationtoken=None,
                                event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD],
                                message=ep_name + ": " + lang)
-                               
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_PUSHALOT:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._sendPushalot(pushalot_authorizationtoken=None,
-                               event=title, 
+                               event=title,
                                message=update_text + new_version)
 
     def _sendPushalot(self, pushalot_authorizationtoken=None, event=None, message=None, force=False):
@@ -63,9 +66,9 @@ class PushalotNotifier:
         if pushalot_authorizationtoken == None:
             pushalot_authorizationtoken = sickbeard.PUSHALOT_AUTHORIZATIONTOKEN
 
-        logger.log(u"Pushalot event: " + event, logger.DEBUG)
-        logger.log(u"Pushalot message: " + message, logger.DEBUG)
-        logger.log(u"Pushalot api: " + pushalot_authorizationtoken, logger.DEBUG)
+        logging.debug("Pushalot event: " + event)
+        logging.debug("Pushalot message: " + message)
+        logging.debug("Pushalot api: " + pushalot_authorizationtoken)
 
         http_handler = HTTPSConnection("pushalot.com")
 
@@ -79,19 +82,19 @@ class PushalotNotifier:
                                  headers={'Content-type': "application/x-www-form-urlencoded"},
                                  body=urlencode(data))
         except (SSLError, HTTPException, socket.error):
-            logger.log(u"Pushalot notification failed.", logger.ERROR)
+            logging.error("Pushalot notification failed.")
             return False
         response = http_handler.getresponse()
         request_status = response.status
 
         if request_status == 200:
-            logger.log(u"Pushalot notifications sent.", logger.DEBUG)
+            logging.debug("Pushalot notifications sent.")
             return True
         elif request_status == 410:
-            logger.log(u"Pushalot auth failed: %s" % response.reason, logger.ERROR)
+            logging.error("Pushalot auth failed: %s" % response.reason)
             return False
         else:
-            logger.log(u"Pushalot notification failed.", logger.ERROR)
+            logging.error("Pushalot notification failed.")
             return False
 
 

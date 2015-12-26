@@ -38,7 +38,7 @@
                     <div class="component-group">
                         <h3>Main Settings</h3>
 
-                        ==> <u>Changing any settings marked with (<span class="separator">*</span>) will force a refresh of the selected shows.</u><br>
+                        ==> <span style="text-decoration: underline;">Changing any settings marked with (<span class="separator">*</span>) will force a refresh of the selected shows.</span><br>
                         <br>
 
                         <fieldset class="component-group-list">
@@ -95,7 +95,6 @@
                                             initial_quality = int(quality_value)
                                         else:
                                             initial_quality = common.SD
-                                        endif
 
                                         anyQualities, bestQualities = common.Quality.splitQuality(initial_quality)
                                     %>
@@ -169,7 +168,7 @@
                                         <option value="keep" ${('', 'selected="selected"')[paused_value == None]}>&lt; Keep &gt;</option>
                                         <option value="enable" ${('', 'selected="selected"')[paused_value == 1]}>Yes</option>
                                         <option value="disable" ${('', 'selected="selected"')[paused_value == 0]}>No</option>
-                                    </select><br/ >
+                                    </select><br/>
                                     Pause these shows (SickRage will not download episodes).
                                 </span>
                             </label>

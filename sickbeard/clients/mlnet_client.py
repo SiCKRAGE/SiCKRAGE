@@ -1,7 +1,7 @@
-# coding=utf-8
-
-# Author: kounch
-# URL: http://code.google.com/p/sickbeard/
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -13,10 +13,12 @@
 # SickRage is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import unicode_literals
 
 from sickbeard.clients.generic import GenericClient
 
@@ -50,5 +52,6 @@ class mlnetAPI(GenericClient):
         self.url = self.host + 'submit'
         params = {'q': 'dllink ' + result.url}
         return self._request(method='get', params=params)
+
 
 api = mlnetAPI()

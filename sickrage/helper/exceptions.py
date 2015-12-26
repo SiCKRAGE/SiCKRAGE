@@ -1,7 +1,9 @@
-# This file is part of SickRage.
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
 #
-# URL: https://www.sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# This file is part of SickRage.
 #
 # SickRage is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import sickrage.helper.encoding
+from __future__ import unicode_literals
+
+from encoding import uu
+
 
 def ex(e):
     """
@@ -24,33 +29,12 @@ def ex(e):
     :return: A unicode string from the exception text if it exists
     """
 
-    message = u''
-
-    if not e or not e.args:
-        return message
-
-    for arg in e.args:
-        if arg is not None:
-            if isinstance(arg, (str, unicode)):
-                fixed_arg = sickrage.helper.encoding.ss(arg)
-            else:
-                try:
-                    fixed_arg = u'error %s' % sickrage.helper.encoding.ss(str(arg))
-                except Exception:
-                    fixed_arg = None
-
-            if fixed_arg:
-                if not message:
-                    message = fixed_arg
-                else:
-                    message = '%s : %s' % (message, fixed_arg)
-
-    return message
+    return uu(e)
 
 
 class SickRageException(Exception):
     """
-    Generic SickRage Exception - should never be thrown, only sub-classed
+    Generic SiCKRAGE Exception - should never be thrown, only sub-classed
     """
 
 

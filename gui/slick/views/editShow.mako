@@ -97,7 +97,7 @@
                             <label for="indexerLangSelect">
                                 <span class="component-title">Info Language</span>
                                 <span class="component-desc">
-                                    <select name="indexerLang" id="indexerLangSelect" class="form-control form-control-inline input-sm bfh-languages" data-language="${show.lang}" data-available="${','.join(sickbeard.indexerApi().config['valid_languages'])}"></select>
+                                    <select name="indexerLang" id="indexerLangSelect" class="form-control form-control-inline input-sm bfh-languages" data-language="${show.lang}" data-available="${','.join(sickbeard.indexerApi().config[b'valid_languages'])}"></select>
                                     <div class="clear-left"><p>This only applies to episode filenames and the contents of metadata files.</p></div>
                                 </span>
                             </label>
@@ -107,7 +107,7 @@
                             <label for="subtitles">
                                 <span class="component-title">Subtitles</span>
                                 <span class="component-desc">
-                                    <input type="checkbox" id="subtitles" name="subtitles" ${('', 'checked="checked"')[show.subtitles == 1 and sickbeard.USE_SUBTITLES == True]} ${('disabled="disabled"', '')[bool(sickbeard.USE_SUBTITLES)]}/> search for subtitles
+                                    <input type="checkbox" id="subtitles" name="subtitles" ${('', 'checked="checked')[show.subtitles == 1 and sickbeard.USE_SUBTITLES == True]} ${('disabled="disabled', '')[bool(sickbeard.USE_SUBTITLES)]}/> search for subtitles
                                 </span>
                             </label>
                         </div>
@@ -205,7 +205,7 @@
                                 <span class="component-desc">
                                     <input type="text" id="rls_ignore_words" name="rls_ignore_words" id="rls_ignore_words" value="${show.rls_ignore_words}" class="form-control form-control-inline input-sm input350" /><br>
                                     <div class="clear-left">
-                                        <p>comma-separated <i>e.g. "word1,word2,word3"</i></>
+                                        <p>comma-separated <i>e.g. "word1,word2,word3"</i>
                                         <p>Search results with one or more words from this list will be ignored.</p>
                                     </div>
                                 </span>

@@ -16,10 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import urllib
 import re
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 
@@ -39,7 +41,7 @@ class NyaaProvider(generic.TorrentProvider):
 
         self.urls = {'base_url': 'http://www.nyaa.se/'}
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
         self.minseed = 0
         self.minleech = 0
@@ -53,49 +55,52 @@ class NyaaProvider(generic.TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode is not 'RSS':
-                    logger.log(u"Search string: %s" % search_string, logger.DEBUG)
+                    logging.debug("Search string: %s" % search_string)
 
                 params = {
                     "page": 'rss',
                     "cats": '1_0',  # All anime
-                    "sort": 2,     # Sort Descending By Seeders
+                    "sort": 2,  # Sort Descending By Seeders
                     "order": 1
                 }
                 if mode is not 'RSS':
-                    params["term"] = search_string.encode('utf-8')
+                    params[b"term"] = search_string.encode('utf-8')
 
                 searchURL = self.url + '?' + urllib.urlencode(params)
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                logging.debug("Search URL: %s" % searchURL)
 
                 summary_regex = ur"(\d+) seeder\(s\), (\d+) leecher\(s\), \d+ download\(s\) - (\d+.?\d* [KMGT]iB)(.*)"
                 s = re.compile(summary_regex, re.DOTALL)
 
                 results = []
                 for curItem in self.cache.getRSSFeed(searchURL)['entries'] or []:
-                    title = curItem['title']
-                    download_url = curItem['link']
+                    title = curItem[b'title']
+                    download_url = curItem[b'link']
                     if not all([title, download_url]):
                         continue
 
-                    seeders, leechers, size, verified = s.findall(curItem['summary'])[0]
+                    seeders, leechers, size, verified = s.findall(curItem[b'summary'])[0]
                     size = self._convertSize(size)
 
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                            logging.debug(
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers))
                         continue
 
                     if self.confirmed and not verified and mode is not 'RSS':
-                        logger.log(u"Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it", logger.DEBUG)
+                        logging.debug(
+                            "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
                         continue
 
                     item = title, download_url, size, seeders, leechers
                     if mode is not 'RSS':
-                        logger.log(u"Found result: %s " % title, logger.DEBUG)
+                        logging.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 
@@ -113,11 +118,11 @@ class NyaaProvider(generic.TorrentProvider):
         if modifier in 'KiB':
             size = size * 1024
         elif modifier in 'MiB':
-            size = size * 1024**2
+            size = size * 1024 ** 2
         elif modifier in 'GiB':
-            size = size * 1024**3
+            size = size * 1024 ** 3
         elif modifier in 'TiB':
-            size = size * 1024**4
+            size = size * 1024 ** 4
         return int(size)
 
     def seedRatio(self):
@@ -134,5 +139,6 @@ class NyaaCache(tvcache.TVCache):
     def _getRSSData(self):
         search_params = {'RSS': ['']}
         return {'entries': self.provider._doSearch(search_params)}
+
 
 provider = NyaaProvider()

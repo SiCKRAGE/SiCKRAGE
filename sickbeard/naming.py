@@ -17,13 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import datetime
 import os
 
 import sickbeard
 from sickbeard import tv
 from sickbeard import common
-from sickbeard import logger
+import logging
 from sickbeard.name_parser.parser import NameParser
 from sickbeard.common import Quality, DOWNLOADED
 
@@ -149,11 +151,11 @@ def check_valid_naming(pattern=None, multi=None, anime_type=None):
     if anime_type == None:
         anime_type = sickbeard.NAMING_ANIME
 
-    logger.log(u"Checking whether the pattern " + pattern + " is valid for a single episode", logger.DEBUG)
+    logging.debug("Checking whether the pattern " + pattern + " is valid for a single episode")
     valid = validate_name(pattern, None, anime_type)
 
     if multi != None:
-        logger.log(u"Checking whether the pattern " + pattern + " is valid for a multi episode", logger.DEBUG)
+        logging.debug("Checking whether the pattern " + pattern + " is valid for a multi episode")
         valid = valid and validate_name(pattern, multi, anime_type)
 
     return valid
@@ -168,7 +170,7 @@ def check_valid_abd_naming(pattern=None):
     if pattern == None:
         pattern = sickbeard.NAMING_PATTERN
 
-    logger.log(u"Checking whether the pattern " + pattern + " is valid for an air-by-date episode", logger.DEBUG)
+    logging.debug("Checking whether the pattern " + pattern + " is valid for an air-by-date episode")
     valid = validate_name(pattern, abd=True)
 
     return valid
@@ -183,7 +185,7 @@ def check_valid_sports_naming(pattern=None):
     if pattern == None:
         pattern = sickbeard.NAMING_PATTERN
 
-    logger.log(u"Checking whether the pattern " + pattern + " is valid for an sports episode", logger.DEBUG)
+    logging.debug("Checking whether the pattern " + pattern + " is valid for an sports episode")
     valid = validate_name(pattern, sports=True)
 
     return valid
@@ -209,35 +211,36 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
         new_name = ek(os.path.join, new_path, new_name)
 
     if not new_name:
-        logger.log(u"Unable to create a name out of " + pattern, logger.DEBUG)
+        logging.debug("Unable to create a name out of " + pattern)
         return False
 
-    logger.log(u"Trying to parse " + new_name, logger.DEBUG)
+    logging.debug("Trying to parse " + new_name)
 
     parser = NameParser(True, showObj=ep.show, naming_pattern=True)
 
     try:
         result = parser.parse(new_name)
     except Exception:
-        logger.log(u"Unable to parse " + new_name + ", not valid", logger.DEBUG)
+        logging.debug("Unable to parse " + new_name + ", not valid")
         return False
 
-    logger.log(u"The name " + new_name + " parsed into " + str(result), logger.DEBUG)
+    logging.debug("The name " + new_name + " parsed into " + str(result))
 
     if abd or sports:
         if result.air_date != ep.airdate:
-            logger.log(u"Air date incorrect in parsed episode, pattern isn't valid", logger.DEBUG)
+            logging.debug("Air date incorrect in parsed episode, pattern isn't valid")
             return False
     elif anime_type != 3:
-        if len(result.ab_episode_numbers) and result.ab_episode_numbers != [x.absolute_number for x in [ep] + ep.relatedEps]:
-            logger.log(u"Absolute numbering incorrect in parsed episode, pattern isn't valid", logger.DEBUG)
+        if len(result.ab_episode_numbers) and result.ab_episode_numbers != [x.absolute_number for x in
+                                                                            [ep] + ep.relatedEps]:
+            logging.debug("Absolute numbering incorrect in parsed episode, pattern isn't valid")
             return False
     else:
         if result.season_number != ep.season:
-            logger.log(u"Season number incorrect in parsed episode, pattern isn't valid", logger.DEBUG)
+            logging.debug("Season number incorrect in parsed episode, pattern isn't valid")
             return False
         if result.episode_numbers != [x.episode for x in [ep] + ep.relatedEps]:
-            logger.log(u"Episode numbering incorrect in parsed episode, pattern isn't valid", logger.DEBUG)
+            logging.debug("Episode numbering incorrect in parsed episode, pattern isn't valid")
             return False
 
     return True

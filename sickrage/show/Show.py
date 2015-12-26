@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import sickbeard
 
 from datetime import date
@@ -64,11 +66,11 @@ class Show:
         total_status = [SKIPPED, WANTED]
 
         results = db.select(
-            'SELECT airdate, status '
-            'FROM tv_episodes '
-            'WHERE season > 0 '
-            'AND episode > 0 '
-            'AND airdate > 1'
+                'SELECT airdate, status '
+                'FROM tv_episodes '
+                'WHERE season > 0 '
+                'AND episode > 0 '
+                'AND airdate > 1'
         )
 
         stats = {
@@ -84,14 +86,14 @@ class Show:
         }
 
         for result in results:
-            if result['status'] in downloaded_status:
-                stats['episodes']['downloaded'] += 1
-                stats['episodes']['total'] += 1
-            elif result['status'] in snatched_status:
-                stats['episodes']['snatched'] += 1
-                stats['episodes']['total'] += 1
-            elif result['airdate'] <= today and result['status'] in total_status:
-                stats['episodes']['total'] += 1
+            if result[b'status'] in downloaded_status:
+                stats[b'episodes'][b'downloaded'] += 1
+                stats[b'episodes'][b'total'] += 1
+            elif result[b'status'] in snatched_status:
+                stats[b'episodes'][b'snatched'] += 1
+                stats[b'episodes'][b'total'] += 1
+            elif result[b'airdate'] <= today and result[b'status'] in total_status:
+                stats[b'episodes'][b'total'] += 1
 
         return stats
 

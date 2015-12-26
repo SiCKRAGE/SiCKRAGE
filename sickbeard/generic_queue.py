@@ -17,10 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import datetime
 import threading
 
-from sickbeard import logger
+import logging
 
 
 class QueuePriorities:
@@ -44,12 +46,12 @@ class GenericQueue(object):
 
     def pause(self):
         """Pauses this queue"""
-        logger.log(u"Pausing queue")
+        logging.info("Pausing queue")
         self.min_priority = 999999999999
 
     def unpause(self):
         """Unpauses this queue"""
-        logger.log(u"Unpausing queue")
+        logging.info("Unpausing queue")
         self.min_priority = 0
 
     def add_item(self, item):
@@ -108,6 +110,7 @@ class GenericQueue(object):
                     self.currentItem.start()
 
         self.amActive = False
+
 
 class QueueItem(threading.Thread):
     def __init__(self, name, action_id=0):

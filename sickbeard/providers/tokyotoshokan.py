@@ -16,10 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import urllib
 import traceback
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard import show_name_helpers
@@ -40,7 +42,7 @@ class TokyoToshokanProvider(generic.TorrentProvider):
         self.cache = TokyoToshokanCache(self)
 
         self.urls = {'base_url': 'http://tokyotosho.info/'}
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
     def seedRatio(self):
         return self.ratio
@@ -56,7 +58,7 @@ class TokyoToshokanProvider(generic.TorrentProvider):
         if self.show and not self.show.is_anime:
             return []
 
-        logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+        logging.debug("Search string: %s " % search_string)
 
         params = {
             "terms": search_string.encode('utf-8'),
@@ -64,7 +66,7 @@ class TokyoToshokanProvider(generic.TorrentProvider):
         }
 
         searchURL = self.url + 'search.php?' + urllib.urlencode(params)
-        logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+        logging.debug("Search URL: %s" % searchURL)
         data = self.getURL(searchURL)
 
         if not data:
@@ -96,15 +98,15 @@ class TokyoToshokanProvider(generic.TorrentProvider):
                         # Filter unseeded torrent
                         # if seeders < self.minseed or leechers < self.minleech:
                         #    if mode is not 'RSS':
-                        #        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                        #        logging.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                         #    continue
 
                         item = title, download_url, size, seeders, leechers
 
                         results.append(item)
 
-        except Exception, e:
-            logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+        except Exception as e:
+            logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
         # FIXME SORTING
         return results
@@ -124,7 +126,7 @@ class TokyoToshokanCache(tvcache.TVCache):
 
         url = self.provider.url + 'rss.php?' + urllib.urlencode(params)
 
-        logger.log(u"Cache update URL: %s" % url, logger.DEBUG)
+        logging.debug("Cache update URL: %s" % url)
 
         return self.getRSSFeed(url)
 

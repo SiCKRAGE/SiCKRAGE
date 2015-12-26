@@ -17,12 +17,13 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
 
 import datetime
 import threading
 
 import sickbeard
-from sickbeard import logger
+import logging
 from sickbeard import db
 from sickbeard import common
 from sickbeard import helpers
@@ -46,7 +47,7 @@ class DailySearcher():
 
         self.amActive = True
 
-        logger.log(u"Searching for new released episodes ...")
+        logging.info("Searching for new released episodes ...")
 
         if not network_timezones.network_dict:
             network_timezones.update_network_dict()
@@ -59,28 +60,30 @@ class DailySearcher():
         curTime = datetime.datetime.now(network_timezones.sb_timezone)
 
         myDB = db.DBConnection()
-        sqlResults = myDB.select("SELECT * FROM tv_episodes WHERE status = ? AND season > 0 AND (airdate <= ? and airdate > 1)",
-                                 [common.UNAIRED, curDate])
+        sqlResults = myDB.select(
+            "SELECT * FROM tv_episodes WHERE status = ? AND season > 0 AND (airdate <= ? AND airdate > 1)",
+            [common.UNAIRED, curDate])
 
         sql_l = []
         show = None
 
         for sqlEp in sqlResults:
             try:
-                if not show or int(sqlEp["showid"]) != show.indexerid:
-                    show = helpers.findCertainShow(sickbeard.showList, int(sqlEp["showid"]))
+                if not show or int(sqlEp[b"showid"]) != show.indexerid:
+                    show = helpers.findCertainShow(sickbeard.showList, int(sqlEp[b"showid"]))
 
                 # for when there is orphaned series in the database but not loaded into our showlist
                 if not show or show.paused:
                     continue
 
             except MultipleShowObjectsException:
-                logger.log(u"ERROR: expected to find a single show matching " + str(sqlEp['showid']))
+                logging.info("ERROR: expected to find a single show matching " + str(sqlEp[b'showid']))
                 continue
 
             if show.airs and show.network:
                 # This is how you assure it is always converted to local time
-                air_time = network_timezones.parse_date_time(sqlEp['airdate'], show.airs, show.network).astimezone(network_timezones.sb_timezone)
+                air_time = network_timezones.parse_date_time(sqlEp[b'airdate'], show.airs, show.network).astimezone(
+                    network_timezones.sb_timezone)
 
                 # filter out any episodes that haven't started airing yet,
                 # but set them to the default status while they are airing
@@ -88,13 +91,15 @@ class DailySearcher():
                 if air_time > curTime:
                     continue
 
-            ep = show.getEpisode(int(sqlEp["season"]), int(sqlEp["episode"]))
+            ep = show.getEpisode(int(sqlEp[b"season"]), int(sqlEp[b"episode"]))
             with ep.lock:
                 if ep.season == 0:
-                    logger.log(u"New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
+                    logging.info(
+                        "New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
                     ep.status = common.SKIPPED
                 else:
-                    logger.log(u"New episode %s airs today, setting to default episode status for this show: %s" % (ep.prettyName(), common.statusStrings[ep.show.default_ep_status]))
+                    logging.info("New episode %s airs today, setting to default episode status for this show: %s" % (
+                    ep.prettyName(), common.statusStrings[ep.show.default_ep_status]))
                     ep.status = ep.show.default_ep_status
 
                 sql_l.append(ep.get_sql())
@@ -103,7 +108,7 @@ class DailySearcher():
             myDB = db.DBConnection()
             myDB.mass_action(sql_l)
         else:
-            logger.log(u"No new released episodes found ...")
+            logging.info("No new released episodes found ...")
 
         # queue episode for daily search
         dailysearch_queue_item = sickbeard.search_queue.DailySearchQueueItem()

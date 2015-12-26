@@ -1,30 +1,39 @@
-import re
-import urlparse
+# -*- coding: utf-8 -*-
+# Author: Nic Wolfe <nic@wolfeden.ca>
+# URL: http://code.google.com/p/sickbeard/
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
+import logging
 import sickbeard
-from sickbeard import logger
-from sickrage.helper.exceptions import ex
+from sickbeard.helpers import normalize_url
 from feedparser.api import parse
-from feedparser.util import FeedParserDict
 
 def getFeed(url, request_headers=None, handlers=None):
-    parsed = list(urlparse.urlparse(url))
-    parsed[2] = re.sub("/{2,}", "/", parsed[2])  # replace two or more / with one
+    url = normalize_url(url)
 
     try:
-        feed = parse(url, False, False, request_headers, handlers=handlers)
-
-        if feed:
-            if 'entries' in feed:
-                return feed
-            elif 'error' in feed.feed:
-                err_code = feed.feed['error']['code']
-                err_desc = feed.feed['error']['description']
-                logger.log(u'RSS ERROR:[%s] CODE:[%s]' % (err_desc, err_code), logger.DEBUG)
-        else:
-            logger.log(u'RSS error loading url: ' + url, logger.DEBUG)
-
-    except Exception as e:
-        logger.log(u'RSS error: ' + ex(e), logger.DEBUG)
-
-    return FeedParserDict()
+        try:
+            feed = parse(url, False, False, request_headers, handlers=handlers)
+            feed[b'entries']
+            return feed
+        except AttributeError:
+            logging.debug('RSS ERROR:[{}] CODE:[{}]'.format(
+                    feed.feed[b'error'][b'description'],
+                    feed.feed[b'error'][b'code']))
+    except:pass

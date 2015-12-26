@@ -16,12 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import urllib, urllib2
 import sickbeard
 import telnetlib
 import re
 
-from sickbeard import logger
+import logging
 from sickrage.helper.exceptions import ex
 
 try:
@@ -45,11 +47,11 @@ class NMJNotifier:
         try:
             terminal = telnetlib.Telnet(host)
         except Exception:
-            logger.log(u"Warning: unable to get a telnet session to %s" % (host), logger.WARNING)
+            logging.warning("Warning: unable to get a telnet session to %s" % (host))
             return False
 
         # tell the terminal to output the necessary info to the screen so we can search it later
-        logger.log(u"Connected to %s via telnet" % (host), logger.DEBUG)
+        logging.debug("Connected to %s via telnet" % (host))
         terminal.read_until("sh-3.00# ")
         terminal.write("cat /tmp/source\n")
         terminal.write("cat /tmp/netshare\n")
@@ -64,10 +66,10 @@ class NMJNotifier:
         if match:
             database = match.group(1)
             device = match.group(2)
-            logger.log(u"Found NMJ database %s on device %s" % (database, device), logger.DEBUG)
+            logging.debug("Found NMJ database %s on device %s" % (database, device))
             sickbeard.NMJ_DATABASE = database
         else:
-            logger.log(u"Could not get current NMJ database on %s, NMJ is probably not running!" % (host), logger.WARNING)
+            logging.warning("Could not get current NMJ database on %s, NMJ is probably not running!" % (host))
             return False
 
         # if the device is a remote host then try to parse the mounting URL and save it to the config
@@ -76,11 +78,10 @@ class NMJNotifier:
 
             if match:
                 mount = match.group().replace("127.0.0.1", host)
-                logger.log(u"Found mounting url on the Popcorn Hour in configuration: %s" % (mount), logger.DEBUG)
+                logging.debug("Found mounting url on the Popcorn Hour in configuration: %s" % (mount))
                 sickbeard.NMJ_MOUNT = mount
             else:
-                logger.log(u"Detected a network share on the Popcorn Hour, but could not get the mounting url",
-                           logger.WARNING)
+                logging.warning("Detected a network share on the Popcorn Hour, but could not get the mounting url")
                 return False
 
         return True
@@ -119,16 +120,16 @@ class NMJNotifier:
         if mount:
             try:
                 req = urllib2.Request(mount)
-                logger.log(u"Try to mount network drive via url: %s" % (mount), logger.DEBUG)
+                logging.debug("Try to mount network drive via url: %s" % (mount))
                 handle = urllib2.urlopen(req)
-            except IOError, e:
+            except IOError as e:
                 if hasattr(e, 'reason'):
-                    logger.log(u"NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason), logger.WARNING)
+                    logging.warning("NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason))
                 elif hasattr(e, 'code'):
-                    logger.log(u"NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code), logger.WARNING)
+                    logging.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
                 return False
-            except Exception, e:
-                logger.log(u"NMJ: Unknown exception: " + ex(e), logger.ERROR)
+            except Exception as e:
+                logging.error("NMJ: Unknown exception: {}".format(ex(e)))
                 return False
 
         # build up the request URL and parameters
@@ -145,33 +146,33 @@ class NMJNotifier:
         # send the request to the server
         try:
             req = urllib2.Request(updateUrl)
-            logger.log(u"Sending NMJ scan update command via url: %s" % (updateUrl), logger.DEBUG)
+            logging.debug("Sending NMJ scan update command via url: %s" % (updateUrl))
             handle = urllib2.urlopen(req)
             response = handle.read()
-        except IOError, e:
+        except IOError as e:
             if hasattr(e, 'reason'):
-                logger.log(u"NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason), logger.WARNING)
+                logging.warning("NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason))
             elif hasattr(e, 'code'):
-                logger.log(u"NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code), logger.WARNING)
+                logging.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
             return False
-        except Exception, e:
-            logger.log(u"NMJ: Unknown exception: " + ex(e), logger.ERROR)
+        except Exception as e:
+            logging.error("NMJ: Unknown exception: {}".format(ex(e)))
             return False
 
         # try to parse the resulting XML
         try:
             et = etree.fromstring(response)
             result = et.findtext("returnValue")
-        except SyntaxError, e:
-            logger.log(u"Unable to parse XML returned from the Popcorn Hour: %s" % (e), logger.ERROR)
+        except SyntaxError as e:
+            logging.error("Unable to parse XML returned from the Popcorn Hour: %s" % (e))
             return False
 
         # if the result was a number then consider that an error
         if int(result) > 0:
-            logger.log(u"Popcorn Hour returned an errorcode: %s" % (result), logger.ERROR)
+            logging.error("Popcorn Hour returned an errorcode: %s" % (result))
             return False
         else:
-            logger.log(u"NMJ started background scan", logger.INFO)
+            logging.info("NMJ started background scan")
             return True
 
     def _notifyNMJ(self, host=None, database=None, mount=None, force=False):
@@ -184,7 +185,7 @@ class NMJNotifier:
         force: If True then the notification will be sent even if NMJ is disabled in the config
         """
         if not sickbeard.USE_NMJ and not force:
-            logger.log(u"Notification for NMJ scan update not enabled, skipping this notification", logger.DEBUG)
+            logging.debug("Notification for NMJ scan update not enabled, skipping this notification")
             return False
 
         # fill in omitted parameters
@@ -195,7 +196,7 @@ class NMJNotifier:
         if not mount:
             mount = sickbeard.NMJ_MOUNT
 
-        logger.log(u"Sending scan command for NMJ ", logger.DEBUG)
+        logging.debug("Sending scan command for NMJ ")
 
         return self._sendNMJ(host, database, mount)
 

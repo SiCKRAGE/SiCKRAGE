@@ -17,12 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import urllib2
 from xml.dom.minidom import parseString
 import sickbeard
 import time
 
-from sickbeard import logger
+import logging
 
 try:
     import xml.etree.cElementTree as etree
@@ -40,7 +42,7 @@ class NMJv2Notifier:
 
     def notify_subtitle_download(self, ep_name, lang):
         self._notifyNMJ()
-        
+
     def notify_git_update(self, new_version):
         return False
         # Not implemented, no reason to start scanner.
@@ -74,11 +76,11 @@ class NMJv2Notifier:
                 responsedb = handledb.read()
                 xmldb = parseString(responsedb)
                 returnvalue = xmldb.getElementsByTagName('returnValue')[0].toxml().replace('<returnValue>', '').replace(
-                    '</returnValue>', '')
+                        '</returnValue>', '')
                 if returnvalue == "0":
                     DB_path = xmldb.getElementsByTagName('database_path')[0].toxml().replace('<database_path>',
                                                                                              '').replace(
-                        '</database_path>', '').replace('[=]', '')
+                            '</database_path>', '').replace('[=]', '')
                     if dbloc == "local" and DB_path.find("localhost") > -1:
                         sickbeard.NMJv2_HOST = host
                         sickbeard.NMJv2_DATABASE = DB_path
@@ -88,8 +90,8 @@ class NMJv2Notifier:
                         sickbeard.NMJv2_DATABASE = DB_path
                         return True
 
-        except IOError, e:
-            logger.log(u"Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e), logger.WARNING)
+        except IOError as e:
+            logging.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
         return False
 
@@ -107,9 +109,9 @@ class NMJv2Notifier:
         # if a host is provided then attempt to open a handle to that URL
         try:
             url_scandir = "http://" + host + ":8008/metadata_database?arg0=update_scandir&arg1=" + sickbeard.NMJv2_DATABASE + "&arg2=&arg3=update_all"
-            logger.log(u"NMJ scan update command sent to host: %s" % (host), logger.DEBUG)
+            logging.debug("NMJ scan update command sent to host: %s" % (host))
             url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + sickbeard.NMJv2_DATABASE + "&arg2=background&arg3="
-            logger.log(u"Try to mount network drive via url: %s" % (host), logger.DEBUG)
+            logging.debug("Try to mount network drive via url: %s" % (host))
             prereq = urllib2.Request(url_scandir)
             req = urllib2.Request(url_updatedb)
             handle1 = urllib2.urlopen(prereq)
@@ -117,20 +119,20 @@ class NMJv2Notifier:
             time.sleep(300.0 / 1000.0)
             handle2 = urllib2.urlopen(req)
             response2 = handle2.read()
-        except IOError, e:
-            logger.log(u"Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e), logger.WARNING)
+        except IOError as e:
+            logging.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
         try:
             et = etree.fromstring(response1)
             result1 = et.findtext("returnValue")
-        except SyntaxError, e:
-            logger.log(u"Unable to parse XML returned from the Popcorn Hour: update_scandir, %s" % (e), logger.ERROR)
+        except SyntaxError as e:
+            logging.error("Unable to parse XML returned from the Popcorn Hour: update_scandir, %s" % (e))
             return False
         try:
             et = etree.fromstring(response2)
             result2 = et.findtext("returnValue")
-        except SyntaxError, e:
-            logger.log(u"Unable to parse XML returned from the Popcorn Hour: scanner_start, %s" % (e), logger.ERROR)
+        except SyntaxError as e:
+            logging.error("Unable to parse XML returned from the Popcorn Hour: scanner_start, %s" % (e))
             return False
 
         # if the result was a number then consider that an error
@@ -144,15 +146,15 @@ class NMJv2Notifier:
                           "Read only file system"]
         if int(result1) > 0:
             index = error_codes.index(result1)
-            logger.log(u"Popcorn Hour returned an error: %s" % (error_messages[index]), logger.ERROR)
+            logging.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
             return False
         else:
             if int(result2) > 0:
                 index = error_codes.index(result2)
-                logger.log(u"Popcorn Hour returned an error: %s" % (error_messages[index]), logger.ERROR)
+                logging.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
                 return False
             else:
-                logger.log(u"NMJv2 started background scan", logger.INFO)
+                logging.info("NMJv2 started background scan")
                 return True
 
     def _notifyNMJ(self, host=None, force=False):
@@ -165,14 +167,14 @@ class NMJv2Notifier:
         force: If True then the notification will be sent even if NMJ is disabled in the config
         """
         if not sickbeard.USE_NMJv2 and not force:
-            logger.log(u"Notification for NMJ scan update not enabled, skipping this notification", logger.DEBUG)
+            logging.debug("Notification for NMJ scan update not enabled, skipping this notification")
             return False
 
         # fill in omitted parameters
         if not host:
             host = sickbeard.NMJv2_HOST
 
-        logger.log(u"Sending scan command for NMJ ", logger.DEBUG)
+        logging.debug("Sending scan command for NMJ ")
 
         return self._sendNMJ(host)
 

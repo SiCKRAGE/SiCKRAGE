@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 # Author: Nic Wolfe <nic@wolfeden.ca>
 # URL: http://code.google.com/p/sickbeard/
 #
@@ -17,13 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import traceback
 import re
 import datetime
 import json
 import time
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard.common import USER_AGENT
@@ -35,7 +37,6 @@ class GetOutOfLoop(Exception):
 
 
 class RarbgProvider(generic.TorrentProvider):
-
     def __init__(self):
         generic.TorrentProvider.__init__(self, "Rarbg")
 
@@ -49,27 +50,27 @@ class RarbgProvider(generic.TorrentProvider):
         self.token = None
         self.tokenExpireDate = None
 
-        self.urls = {'url': u'https://rarbg.com',
-                     'token': u'http://torrentapi.org/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage',
-                     'listing': u'http://torrentapi.org/pubapi_v2.php?mode=list&app_id=sickrage',
-                     'search': u'http://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_string={search_string}',
-                     'search_tvdb': u'http://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb={tvdb}&search_string={search_string}',
-                     'api_spec': u'https://rarbg.com/pubapi/apidocs.txt'}
+        self.urls = {'url': 'https://rarbg.com',
+                     'token': 'http://torrentapi.org/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage',
+                     'listing': 'http://torrentapi.org/pubapi_v2.php?mode=list&app_id=sickrage',
+                     'search': 'http://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_string={search_string}',
+                     'search_tvdb': 'http://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb={tvdb}&search_string={search_string}',
+                     'api_spec': 'https://rarbg.com/pubapi/apidocs.txt'}
 
-        self.url = self.urls['listing']
+        self.url = self.urls[b'listing']
 
         self.urlOptions = {'categories': '&category={categories}',
                            'seeders': '&min_seeders={min_seeders}',
                            'leechers': '&min_leechers={min_leechers}',
-                           'sorting' : '&sort={sorting}',
+                           'sorting': '&sort={sorting}',
                            'limit': '&limit={limit}',
                            'format': '&format={format}',
                            'ranked': '&ranked={ranked}',
                            'token': '&token={token}'}
 
-        self.defaultOptions = self.urlOptions['categories'].format(categories='tv') + \
-                                self.urlOptions['limit'].format(limit='100') + \
-                                self.urlOptions['format'].format(format='json_extended')
+        self.defaultOptions = self.urlOptions[b'categories'].format(categories='tv') + \
+                              self.urlOptions[b'limit'].format(limit='100') + \
+                              self.urlOptions[b'format'].format(format='json_extended')
 
         self.proper_strings = ['{{PROPER|REPACK}}']
 
@@ -83,20 +84,19 @@ class RarbgProvider(generic.TorrentProvider):
         if self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
             return True
 
-
-        response = self.getURL(self.urls['token'], timeout=30, json=True)
+        response = self.getURL(self.urls[b'token'], timeout=30, json=True)
         if not response:
-            logger.log(u"Unable to connect to provider", logger.WARNING)
+            logging.warning("Unable to connect to provider")
             return False
 
         try:
-            if response['token']:
-                self.token = response['token']
+            if response[b'token']:
+                self.token = response[b'token']
                 self.tokenExpireDate = datetime.datetime.now() + datetime.timedelta(minutes=14)
                 return True
         except Exception as e:
-            logger.log(u"No token found", logger.WARNING)
-            logger.log(u"No token found: %s" % repr(e), logger.DEBUG)
+            logging.warning("No token found")
+            logging.debug("No token found: %s" % repr(e))
 
         return False
 
@@ -116,40 +116,42 @@ class RarbgProvider(generic.TorrentProvider):
             ep_indexer = None
 
         for mode in search_params.keys():  # Mode = RSS, Season, Episode
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logging.debug("Search string: %s " % search_string)
 
                 if mode is 'RSS':
-                    searchURL = self.urls['listing'] + self.defaultOptions
+                    searchURL = self.urls[b'listing'] + self.defaultOptions
                 elif mode == 'Season':
                     if ep_indexer == INDEXER_TVDB:
-                        searchURL = self.urls['search_tvdb'].format(search_string=search_string, tvdb=ep_indexerid) + self.defaultOptions
+                        searchURL = self.urls[b'search_tvdb'].format(search_string=search_string,
+                                                                    tvdb=ep_indexerid) + self.defaultOptions
                     else:
-                        searchURL = self.urls['search'].format(search_string=search_string) + self.defaultOptions
+                        searchURL = self.urls[b'search'].format(search_string=search_string) + self.defaultOptions
                 elif mode == 'Episode':
                     if ep_indexer == INDEXER_TVDB:
-                        searchURL = self.urls['search_tvdb'].format(search_string=search_string, tvdb=ep_indexerid) + self.defaultOptions
+                        searchURL = self.urls[b'search_tvdb'].format(search_string=search_string,
+                                                                    tvdb=ep_indexerid) + self.defaultOptions
                     else:
-                        searchURL = self.urls['search'].format(search_string=search_string) + self.defaultOptions
+                        searchURL = self.urls[b'search'].format(search_string=search_string) + self.defaultOptions
                 else:
-                    logger.log(u"Invalid search mode: %s " % mode, logger.ERROR)
+                    logging.error("Invalid search mode: %s " % mode)
 
                 if self.minleech:
-                    searchURL += self.urlOptions['leechers'].format(min_leechers=int(self.minleech))
+                    searchURL += self.urlOptions[b'leechers'].format(min_leechers=int(self.minleech))
 
                 if self.minseed:
-                    searchURL += self.urlOptions['seeders'].format(min_seeders=int(self.minseed))
+                    searchURL += self.urlOptions[b'seeders'].format(min_seeders=int(self.minseed))
 
                 if self.sorting:
-                    searchURL += self.urlOptions['sorting'].format(sorting=self.sorting)
+                    searchURL += self.urlOptions[b'sorting'].format(sorting=self.sorting)
 
                 if self.ranked:
-                    searchURL += self.urlOptions['ranked'].format(ranked=int(self.ranked))
+                    searchURL += self.urlOptions[b'ranked'].format(ranked=int(self.ranked))
 
-                logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
+                logging.debug("Search URL: %s" % searchURL)
 
                 try:
                     retry = 3
@@ -159,45 +161,45 @@ class RarbgProvider(generic.TorrentProvider):
                             time_out = time_out + 1
                             time.sleep(1)
 
-                        data = self.getURL(searchURL + self.urlOptions['token'].format(token=self.token))
+                        data = self.getURL(searchURL + self.urlOptions[b'token'].format(token=self.token))
 
                         self.next_request = datetime.datetime.now() + datetime.timedelta(seconds=10)
 
                         if not data:
-                            logger.log(u"No data returned from provider", logger.DEBUG)
+                            logging.debug("No data returned from provider")
                             raise GetOutOfLoop
                         if re.search('ERROR', data):
-                            logger.log(u"Error returned from provider", logger.DEBUG)
+                            logging.debug("Error returned from provider")
                             raise GetOutOfLoop
                         if re.search('No results found', data):
-                            logger.log(u"No results found", logger.DEBUG)
+                            logging.debug("No results found")
                             raise GetOutOfLoop
                         if re.search('Invalid token set!', data):
-                            logger.log(u"Invalid token!", logger.WARNING)
+                            logging.warning("Invalid token!")
                             return results
                         if re.search('Too many requests per minute. Please try again later!', data):
-                            logger.log(u"Too many requests per minute", logger.WARNING)
+                            logging.warning("Too many requests per minute")
                             retry = retry - 1
                             time.sleep(10)
                             continue
                         if re.search('Cant find search_tvdb in database. Are you sure this imdb exists?', data):
-                            logger.log(u"No results found. The tvdb id: %s do not exist on provider" % ep_indexerid, logger.WARNING)
+                            logging.warning("No results found. The tvdb id: %s do not exist on provider" % ep_indexerid)
                             raise GetOutOfLoop
                         if re.search('Invalid token. Use get_token for a new one!', data):
-                            logger.log(u"Invalid token, retrieving new token", logger.DEBUG)
+                            logging.debug("Invalid token, retrieving new token")
                             retry = retry - 1
                             self.token = None
                             self.tokenExpireDate = None
                             if not self._doLogin():
-                                logger.log(u"Failed retrieving new token", logger.DEBUG)
+                                logging.debug("Failed retrieving new token")
                                 return results
-                            logger.log(u"Using new token", logger.DEBUG)
+                            logging.debug("Using new token")
                             continue
 
                         # No error found break
                         break
                     else:
-                        logger.log(u"Retried 3 times without getting results", logger.DEBUG)
+                        logging.debug("Retried 3 times without getting results")
                         continue
                 except GetOutOfLoop:
                     continue
@@ -209,33 +211,33 @@ class RarbgProvider(generic.TorrentProvider):
                     else:
                         data_json = {}
                 except Exception:
-                    logger.log(u"JSON load failed: %s" % traceback.format_exc(), logger.ERROR)
-                    logger.log(u"JSON load failed. Data dump: %s" % data, logger.DEBUG)
+                    logging.error("JSON load failed: %s" % traceback.format_exc())
+                    logging.debug("JSON load failed. Data dump: %s" % data)
                     continue
 
                 try:
                     for item in data_json:
                         try:
-                            title = item['title']
-                            download_url = item['download']
-                            size = item['size']
-                            seeders = item['seeders']
-                            leechers = item['leechers']
-                            # pubdate = item['pubdate']
+                            title = item[b'title']
+                            download_url = item[b'download']
+                            size = item[b'size']
+                            seeders = item[b'seeders']
+                            leechers = item[b'leechers']
+                            # pubdate = item[b'pubdate']
 
                             if not all([title, download_url]):
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                logging.debug("Found result: %s " % title)
                             items[mode].append(item)
 
                         except Exception:
-                            logger.log(u"Skipping invalid result. JSON item: %s" % item, logger.DEBUG)
+                            logging.debug("Skipping invalid result. JSON item: %s" % item)
 
                 except Exception:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -249,7 +251,6 @@ class RarbgProvider(generic.TorrentProvider):
 
 class RarbgCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         # only poll RARBG every 10 minutes max

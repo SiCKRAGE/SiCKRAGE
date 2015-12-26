@@ -13,11 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import re
 import traceback
 from urllib import urlencode
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.bs4_parser import BS4Parser
 from sickbeard.providers import generic
@@ -34,7 +36,7 @@ class TransmitTheNetProvider(generic.TorrentProvider):
             'index': 'https://transmithe.net/index.php',
         }
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
         self.supportsBacklog = True
 
@@ -68,13 +70,13 @@ class TransmitTheNetProvider(generic.TorrentProvider):
             'login': 'submit'
         }
 
-        response = self.getURL(self.urls['index'], params={'page': 'login'}, post_data=login_params, timeout=30)
+        response = self.getURL(self.urls[b'index'], params={'page': 'login'}, post_data=login_params, timeout=30)
         if not response:
-            logger.log(u"Unable to connect to provider", logger.WARNING)
+            logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Username Incorrect', response) or re.search('Password Incorrect', response):
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logging.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -91,14 +93,14 @@ class TransmitTheNetProvider(generic.TorrentProvider):
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logging.debug("Search string: %s " % search_string)
 
-                data = self.getURL(self.urls['index'], params=self.search_params)
-                searchURL = self.urls['index'] + "?" + urlencode(self.search_params)
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                data = self.getURL(self.urls[b'index'], params=self.search_params)
+                searchURL = self.urls[b'index'] + "?" + urlencode(self.search_params)
+                logging.debug("Search URL: %s" % searchURL)
 
                 if not data:
-                    logger.log(u"No data returned from provider", logger.DEBUG)
+                    logging.debug("No data returned from provider")
                     continue
 
                 try:
@@ -115,16 +117,18 @@ class TransmitTheNetProvider(generic.TorrentProvider):
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 1:
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                            logging.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for torrent_row in torrent_rows:
 
                             title = torrent_row.find('a', {"data-src": True})['data-src'].rsplit('.', 1)[0]
                             download_href = torrent_row.find('img', {"alt": 'Download Torrent'}).findParent()['href']
-                            seeders = int(torrent_row.findAll('a', {'title': 'Click here to view peers details'})[0].text.strip())
-                            leechers = int(torrent_row.findAll('a', {'title': 'Click here to view peers details'})[1].text.strip())
-                            download_url = self.urls['base_url'] + download_href
+                            seeders = int(
+                                torrent_row.findAll('a', {'title': 'Click here to view peers details'})[0].text.strip())
+                            leechers = int(
+                                torrent_row.findAll('a', {'title': 'Click here to view peers details'})[1].text.strip())
+                            download_url = self.urls[b'base_url'] + download_href
                             # FIXME
                             size = -1
 
@@ -134,17 +138,19 @@ class TransmitTheNetProvider(generic.TorrentProvider):
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
-                                    logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                    logging.debug(
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                logging.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

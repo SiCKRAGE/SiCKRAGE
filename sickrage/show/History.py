@@ -1,7 +1,8 @@
-# This file is part of SickRage.
+# -*- coding: utf-8 -*-
+# Author: Nic Wolfe <nic@wolfeden.ca>
+# URL: http://code.google.com/p/sickbeard/
 #
-# URL: https://www.sickrage.tv
-# Git: https://github.com/SiCKRAGETV/SickRage.git
+# This file is part of SickRage.
 #
 # SickRage is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,26 +17,28 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 from datetime import datetime
 from datetime import timedelta
-from sickbeard.common import Quality
-from sickbeard.db import DBConnection
 
+import sickbeard
+from sickbeard.common import Quality
 
 class History:
     date_format = '%Y%m%d%H%M%S'
 
     def __init__(self):
-        self.db = DBConnection()
-
+        self.myDB = sickbeard.db.DBConnection()
+        
     def clear(self):
         """
         Clear all the history
         """
-        self.db.action(
-            'DELETE '
-            'FROM history '
-            'WHERE 1 = 1'
+        self.myDB.action(
+                'DELETE '
+                'FROM history '
+                'WHERE 1 = 1'
         )
 
     def get(self, limit=100, action=None):
@@ -64,27 +67,27 @@ class History:
 
         if limit == 0:
             if len(actions) > 0:
-                results = self.db.select(common_sql + filter_sql + order_sql, actions)
+                results = self.myDB.select(common_sql + filter_sql + order_sql, actions)
             else:
-                results = self.db.select(common_sql + order_sql)
+                results = self.myDB.select(common_sql + order_sql)
         else:
             if len(actions) > 0:
-                results = self.db.select(common_sql + filter_sql + order_sql + 'LIMIT ?', actions + [limit])
+                results = self.myDB.select(common_sql + filter_sql + order_sql + 'LIMIT ?', actions + [limit])
             else:
-                results = self.db.select(common_sql + order_sql + 'LIMIT ?', [limit])
+                results = self.myDB.select(common_sql + order_sql + 'LIMIT ?', [limit])
 
         data = []
         for result in results:
             data.append({
-                'action': result['action'],
-                'date': result['date'],
-                'episode': result['episode'],
-                'provider': result['provider'],
-                'quality': result['quality'],
-                'resource': result['resource'],
-                'season': result['season'],
-                'show_id': result['showid'],
-                'show_name': result['show_name']
+                'action': result[b'action'],
+                'date': result[b'date'],
+                'episode': result[b'episode'],
+                'provider': result[b'provider'],
+                'quality': result[b'quality'],
+                'resource': result[b'resource'],
+                'season': result[b'season'],
+                'show_id': result[b'showid'],
+                'show_name': result[b'show_name']
             })
 
         return data
@@ -94,9 +97,9 @@ class History:
         Remove all elements older than 30 days from the history
         """
 
-        self.db.action(
-            'DELETE '
-            'FROM history '
-            'WHERE date < ?',
-            [(datetime.today() - timedelta(days=30)).strftime(History.date_format)]
+        self.myDB.action(
+                'DELETE '
+                'FROM history '
+                'WHERE date < ?',
+                [(datetime.today() - timedelta(days=30)).strftime(History.date_format)]
         )

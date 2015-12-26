@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import urllib
 import urllib2
 import base64
@@ -23,7 +25,7 @@ import re
 
 import sickbeard
 
-from sickbeard import logger
+import logging
 from sickbeard import common
 from sickrage.helper.exceptions import ex
 
@@ -34,7 +36,6 @@ except ImportError:
 
 
 class PLEXNotifier:
-
     def _send_to_plex(self, command, host, username=None, password=None):
         """Handles communication to Plex hosts via HTTP API
 
@@ -56,7 +57,7 @@ class PLEXNotifier:
             password = sickbeard.PLEX_CLIENT_PASSWORD
 
         if not host:
-            logger.log(u'PLEX: No host specified, check your settings', logger.WARNING)
+            logging.warning('PLEX: No host specified, check your settings')
             return False
 
         for key in command:
@@ -64,9 +65,9 @@ class PLEXNotifier:
                 command[key] = command[key].encode('utf-8')
 
         enc_command = urllib.urlencode(command)
-        logger.log(u'PLEX: Encoded API command: ' + enc_command, logger.DEBUG)
+        logging.debug('PLEX: Encoded API command: ' + enc_command)
 
-        url = u'http://%s/xbmcCmds/xbmcHttp/?%s' % (host, enc_command)
+        url = 'http://%s/xbmcCmds/xbmcHttp/?%s' % (host, enc_command)
         try:
             req = urllib2.Request(url)
             # if we have a password, use authentication
@@ -74,24 +75,24 @@ class PLEXNotifier:
                 base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
                 authheader = 'Basic %s' % base64string
                 req.add_header('Authorization', authheader)
-                logger.log(u'PLEX: Contacting (with auth header) via url: ' + url, logger.DEBUG)
+                logging.debug('PLEX: Contacting (with auth header) via url: ' + url)
             else:
-                logger.log(u'PLEX: Contacting via url: ' + url, logger.DEBUG)
+                logging.debug('PLEX: Contacting via url: ' + url)
 
             response = urllib2.urlopen(req)
 
             result = response.read().decode(sickbeard.SYS_ENCODING)
             response.close()
 
-            logger.log(u'PLEX: HTTP response: ' + result.replace('\n', ''), logger.DEBUG)
+            logging.debug('PLEX: HTTP response: ' + result.replace('\n', ''))
             # could return result response = re.compile('<html><li>(.+\w)</html>').findall(result)
             return 'OK'
 
-        except (urllib2.URLError, IOError), e:
-            logger.log(u'PLEX: Warning: Couldn\'t contact Plex at ' + url + ' ' + ex(e), logger.WARNING)
+        except (urllib2.URLError, IOError) as e:
+            logging.warning('PLEX: Warning: Couldn\'t contact Plex at ' + url + ' ' + ex(e))
             return False
 
-    def _notify_pmc(self, message, title='SickRage', host=None, username=None, password=None, force=False):
+    def _notify_pmc(self, message, title='SiCKRAGE', host=None, username=None, password=None, force=False):
         """Internal wrapper for the notify_snatch and notify_download functions
 
         Args:
@@ -122,18 +123,19 @@ class PLEXNotifier:
 
         result = ''
         for curHost in [x.strip() for x in host.split(',')]:
-            logger.log(u'PLEX: Sending notification to \'%s\' - %s' % (curHost, message), logger.DEBUG)
+            logging.debug('PLEX: Sending notification to \'%s\' - %s' % (curHost, message))
 
-            command = {'command': 'ExecBuiltIn', 'parameter': 'Notification(%s,%s)' % (title.encode('utf-8'), message.encode('utf-8'))}
+            command = {'command': 'ExecBuiltIn',
+                       'parameter': 'Notification(%s,%s)' % (title.encode('utf-8'), message.encode('utf-8'))}
             notify_result = self._send_to_plex(command, curHost, username, password)
             if notify_result:
                 result += '%s:%s' % (curHost, str(notify_result))
 
         return result
 
-##############################################################################
-# Public functions
-##############################################################################
+    ##############################################################################
+    # Public functions
+    ##############################################################################
 
     def notify_snatch(self, ep_name):
         if sickbeard.PLEX_NOTIFY_ONSNATCH:
@@ -155,10 +157,12 @@ class PLEXNotifier:
                 self._notify_pmc(update_text + new_version, title)
 
     def test_notify_pmc(self, host, username, password):
-        return self._notify_pmc('This is a test notification from SickRage', 'Test Notification', host, username, password, force=True)
+        return self._notify_pmc('This is a test notification from SiCKRAGE', 'Test Notification', host, username,
+                                password, force=True)
 
     def test_notify_pms(self, host, username, password, plex_server_token):
-        return self.update_library(host=host, username=username, password=password, plex_server_token=plex_server_token, force=False)
+        return self.update_library(host=host, username=username, password=password, plex_server_token=plex_server_token,
+                                   force=False)
 
     def update_library(self, ep_obj=None, host=None, username=None, password=None, plex_server_token=None, force=True):
         """Handles updating the Plex Media Server host via HTTP API
@@ -173,7 +177,7 @@ class PLEXNotifier:
         if sickbeard.USE_PLEX and sickbeard.PLEX_UPDATE_LIBRARY:
 
             if not sickbeard.PLEX_SERVER_HOST:
-                logger.log(u'PLEX: No Plex Media Server host specified, check your settings', logger.DEBUG)
+                logging.debug('PLEX: No Plex Media Server host specified, check your settings')
                 return False
 
             if not host:
@@ -191,12 +195,12 @@ class PLEXNotifier:
             if plex_server_token:
                 token_arg = '?X-Plex-Token=' + plex_server_token
             elif username and password:
-                logger.log(u'PLEX: fetching plex.tv credentials for user: ' + username, logger.DEBUG)
+                logging.debug('PLEX: fetching plex.tv credentials for user: ' + username)
                 req = urllib2.Request('https://plex.tv/users/sign_in.xml', data='')
                 authheader = 'Basic %s' % base64.encodestring('%s:%s' % (username, password))[:-1]
                 req.add_header('Authorization', authheader)
-                req.add_header('X-Plex-Device-Name', 'SickRage')
-                req.add_header('X-Plex-Product', 'SickRage Notifier')
+                req.add_header('X-Plex-Device-Name', 'SiCKRAGE')
+                req.add_header('X-Plex-Product', 'SiCKRAGE Notifier')
                 req.add_header('X-Plex-Client-Identifier', sickbeard.common.USER_AGENT)
                 req.add_header('X-Plex-Version', '1.0')
 
@@ -207,10 +211,11 @@ class PLEXNotifier:
                     token_arg = '?X-Plex-Token=' + token
 
                 except urllib2.URLError as e:
-                    logger.log(u'PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, ex(e)), logger.DEBUG)
+                    logging.debug(
+                        'PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, ex(e)))
 
                 except (ValueError, IndexError) as e:
-                    logger.log(u'PLEX: Error parsing plex.tv response: ' + ex(e), logger.DEBUG)
+                    logging.debug('PLEX: Error parsing plex.tv response: ' + ex(e))
 
             file_location = '' if None is ep_obj else ep_obj.location
             host_list = [x.strip() for x in host.split(',')]
@@ -223,33 +228,33 @@ class PLEXNotifier:
                 try:
                     xml_tree = etree.parse(urllib.urlopen(url))
                     media_container = xml_tree.getroot()
-                except IOError, e:
-                    logger.log(u'PLEX: Error while trying to contact Plex Media Server: ' + ex(e), logger.WARNING)
+                except IOError as e:
+                    logging.warning('PLEX: Error while trying to contact Plex Media Server: ' + ex(e))
                     hosts_failed.append(cur_host)
                     continue
                 except Exception as e:
                     if 'invalid token' in str(e):
-                        logger.log(u'PLEX: Please set TOKEN in Plex settings: ', logger.ERROR)
+                        logging.error('PLEX: Please set TOKEN in Plex settings: ')
                     else:
-                        logger.log(u'PLEX: Error while trying to contact Plex Media Server: ' + ex(e), logger.ERROR)
+                        logging.error('PLEX: Error while trying to contact Plex Media Server: ' + ex(e))
                     continue
 
                 sections = media_container.findall('.//Directory')
                 if not sections:
-                    logger.log(u'PLEX: Plex Media Server not running on: ' + cur_host, logger.DEBUG)
+                    logging.debug('PLEX: Plex Media Server not running on: ' + cur_host)
                     hosts_failed.append(cur_host)
                     continue
 
                 for section in sections:
-                    if 'show' == section.attrib['type']:
+                    if 'show' == section.attrib[b'type']:
 
-                        keyed_host = [(str(section.attrib['key']), cur_host)]
+                        keyed_host = [(str(section.attrib[b'key']), cur_host)]
                         hosts_all.update(keyed_host)
                         if not file_location:
                             continue
 
                         for section_location in section.findall('.//Location'):
-                            section_path = re.sub(r'[/\\]+', '/', section_location.attrib['path'].lower())
+                            section_path = re.sub(r'[/\\]+', '/', section_location.attrib[b'path'].lower())
                             section_path = re.sub(r'^(.{,2})[/\\]', '', section_path)
                             location_path = re.sub(r'[/\\]+', '/', file_location.lower())
                             location_path = re.sub(r'^(.{,2})[/\\]', '', location_path)
@@ -265,15 +270,17 @@ class PLEXNotifier:
                 try:
                     force and urllib.urlopen(url)
                     host_list.append(cur_host)
-                except Exception, e:
-                    logger.log(u'PLEX: Error updating library section for Plex Media Server: ' + ex(e), logger.WARNING)
+                except Exception as e:
+                    logging.warning('PLEX: Error updating library section for Plex Media Server: ' + ex(e))
                     hosts_failed.append(cur_host)
 
             if hosts_match:
-                logger.log(u'PLEX: Updating hosts where TV section paths match the downloaded show: ' + ', '.join(set(host_list)), logger.DEBUG)
+                logging.debug('PLEX: Updating hosts where TV section paths match the downloaded show: ' + ', '.join(
+                    set(host_list)))
             else:
-                logger.log(u'PLEX: Updating all hosts with TV sections: ' + ', '.join(set(host_list)), logger.DEBUG)
+                logging.debug('PLEX: Updating all hosts with TV sections: ' + ', '.join(set(host_list)))
 
             return (', '.join(set(hosts_failed)), None)[not len(hosts_failed)]
+
 
 notifier = PLEXNotifier

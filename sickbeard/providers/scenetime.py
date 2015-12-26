@@ -16,24 +16,24 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import re
 import urllib
 import traceback
 
-from sickbeard import logger
+import logging
 from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard.bs4_parser import BS4Parser
 
 
 class SceneTimeProvider(generic.TorrentProvider):
-
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "SceneTime")
 
         self.supportsBacklog = True
-
 
         self.username = None
         self.password = None
@@ -49,7 +49,7 @@ class SceneTimeProvider(generic.TorrentProvider):
                      'search': 'https://www.scenetime.com/browse.php?search=%s%s',
                      'download': 'https://www.scenetime.com/download.php/%s/%s'}
 
-        self.url = self.urls['base_url']
+        self.url = self.urls[b'base_url']
 
         self.categories = "&c2=1&c43=13&c9=1&c63=1&c77=1&c79=1&c100=1&c101=1"
 
@@ -58,13 +58,13 @@ class SceneTimeProvider(generic.TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = self.getURL(self.urls[b'login'], post_data=login_params, timeout=30)
         if not response:
-            logger.log(u"Unable to connect to provider", logger.WARNING)
+            logging.warning("Unable to connect to provider")
             return False
 
         if re.search('Username or password incorrect', response):
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logging.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -78,14 +78,14 @@ class SceneTimeProvider(generic.TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
+            logging.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logging.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                searchURL = self.urls[b'search'] % (urllib.quote(search_string), self.categories)
+                logging.debug("Search URL: %s" % searchURL)
 
                 data = self.getURL(searchURL)
                 if not data:
@@ -98,7 +98,7 @@ class SceneTimeProvider(generic.TorrentProvider):
 
                         # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                            logging.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         # Scenetime apparently uses different number of cells in #torrenttable based
@@ -111,13 +111,13 @@ class SceneTimeProvider(generic.TorrentProvider):
 
                             link = cells[labels.index('Name')].find('a')
 
-                            full_id = link['href'].replace('details.php?id=', '')
+                            full_id = link[b'href'].replace('details.php?id=', '')
                             torrent_id = full_id.split("&")[0]
 
                             try:
                                 title = link.contents[0].get_text()
                                 filename = "%s.torrent" % title.replace(" ", ".")
-                                download_url = self.urls['download'] % (torrent_id, filename)
+                                download_url = self.urls[b'download'] % (torrent_id, filename)
 
                                 seeders = int(cells[labels.index('Seeders')].get_text())
                                 leechers = int(cells[labels.index('Leechers')].get_text())
@@ -133,17 +133,19 @@ class SceneTimeProvider(generic.TorrentProvider):
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
-                                    logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                    logging.debug(
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                logging.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
-                except Exception, e:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+                except Exception as e:
+                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -158,7 +160,6 @@ class SceneTimeProvider(generic.TorrentProvider):
 
 class SceneTimeCache(tvcache.TVCache):
     def __init__(self, provider_obj):
-
         tvcache.TVCache.__init__(self, provider_obj)
 
         # only poll SceneTime every 20 minutes max
