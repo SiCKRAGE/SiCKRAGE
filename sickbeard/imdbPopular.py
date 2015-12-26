@@ -9,7 +9,10 @@ from sickbeard import helpers
 from sickrage.helper.encoding import ek
 
 # pylint: disable=C1001
+
+
 class imdbPopular:
+
     def __init__(self):
         """Gets a list of most popular TV series from imdb"""
 
@@ -30,7 +33,12 @@ class imdbPopular:
 
         popular_shows = []
 
-        data = helpers.getURL(self.url, session=self.session, params=self.params, headers={'Referer': 'http://akas.imdb.com/'})
+        data = helpers.getURL(
+            self.url,
+            session=self.session,
+            params=self.params,
+            headers={
+                'Referer': 'http://akas.imdb.com/'})
         if not data:
             return None
 
@@ -45,7 +53,9 @@ class imdbPopular:
             if image_td:
                 image = image_td.find("img")
                 show['image_url_large'] = self.change_size(image['src'], 3)
-                show['image_path'] = os.path.join('images', 'imdb_popular', os.path.basename(show['image_url_large']))
+                show['image_path'] = os.path.join(
+                    'images', 'imdb_popular', os.path.basename(
+                        show['image_url_large']))
 
                 self.cache_image(show['image_url_large'])
 
@@ -54,16 +64,19 @@ class imdbPopular:
             if td:
                 show['name'] = td.find("a").contents[0]
                 show['imdb_url'] = "http://www.imdb.com" + td.find("a")["href"]
-                show['imdb_tt'] =  show['imdb_url'][-10:][0:9]
-                show['year'] = td.find("span", {"class": "year_type"}).contents[0].split(" ")[0][1:]
+                show['imdb_tt'] = show['imdb_url'][-10:][0:9]
+                show['year'] = td.find("span", {"class": "year_type"}).contents[
+                    0].split(" ")[0][1:]
 
                 rating_all = td.find("div", {"class": "user_rating"})
                 if rating_all:
-                    rating_string = rating_all.find("div", {"class": "rating rating-list"})
+                    rating_string = rating_all.find(
+                        "div", {"class": "rating rating-list"})
                     if rating_string:
                         rating_string = rating_string['title']
 
-                        match = re.search(r".* (.*)\/10.*\((.*)\).*", rating_string)
+                        match = re.search(
+                            r".* (.*)\/10.*\((.*)\).*", rating_string)
                         if match:
                             matches = match.groups()
                             show['rating'] = matches[0]
@@ -87,7 +100,9 @@ class imdbPopular:
 
     @staticmethod
     def change_size(image_url, factor=3):
-        match = re.search("^(.*)V1._(.{2})(.*?)_(.{2})(.*?),(.*?),(.*?),(.*?)_.jpg$", image_url)
+        match = re.search(
+            "^(.*)V1._(.{2})(.*?)_(.{2})(.*?),(.*?),(.*?),(.*?)_.jpg$",
+            image_url)
 
         if match:
             matches = match.groups()
@@ -109,7 +124,9 @@ class imdbPopular:
         Store cache of image in cache dir
         :param image_url: Source URL
         """
-        path = ek(os.path.abspath, ek(os.path.join, sickbeard.CACHE_DIR, 'images', 'imdb_popular'))
+        path = ek(
+            os.path.abspath, ek(
+                os.path.join, sickbeard.CACHE_DIR, 'images', 'imdb_popular'))
 
         if not os.path.exists(path):
             os.makedirs(path)

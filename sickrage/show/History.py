@@ -64,14 +64,22 @@ class History:
 
         if limit == 0:
             if len(actions) > 0:
-                results = self.db.select(common_sql + filter_sql + order_sql, actions)
+                results = self.db.select(
+                    common_sql + filter_sql + order_sql, actions)
             else:
                 results = self.db.select(common_sql + order_sql)
         else:
             if len(actions) > 0:
-                results = self.db.select(common_sql + filter_sql + order_sql + 'LIMIT ?', actions + [limit])
+                results = self.db.select(
+                    common_sql +
+                    filter_sql +
+                    order_sql +
+                    'LIMIT ?',
+                    actions +
+                    [limit])
             else:
-                results = self.db.select(common_sql + order_sql + 'LIMIT ?', [limit])
+                results = self.db.select(
+                    common_sql + order_sql + 'LIMIT ?', [limit])
 
         data = []
         for result in results:

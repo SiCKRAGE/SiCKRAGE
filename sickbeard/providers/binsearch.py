@@ -23,7 +23,9 @@ import generic
 from sickbeard import logger
 from sickbeard import tvcache
 
+
 class BinSearchProvider(generic.NZBProvider):
+
     def __init__(self):
         generic.NZBProvider.__init__(self, "BinSearch")
 
@@ -35,7 +37,9 @@ class BinSearchProvider(generic.NZBProvider):
     def isEnabled(self):
         return self.enabled
 
+
 class BinSearchCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
         # only poll Binsearch every 30 minutes max
@@ -44,7 +48,8 @@ class BinSearchCache(tvcache.TVCache):
         # compile and save our regular expressions
 
         # this pulls the title from the URL in the description
-        self.descTitleStart = re.compile('^.*https?://www\.binsearch\.info/.b=')
+        self.descTitleStart = re.compile(
+            '^.*https?://www\.binsearch\.info/.b=')
         self.descTitleEnd = re.compile('&amp;.*$')
 
         # these clean up the horrible mess of a title if the above fail
@@ -94,9 +99,10 @@ class BinSearchCache(tvcache.TVCache):
         self.setLastUpdate()
 
         cl = []
-        for group in ['alt.binaries.boneless','alt.binaries.misc','alt.binaries.hdtv','alt.binaries.hdtv.x264','alt.binaries.tv','alt.binaries.tvseries','alt.binaries.teevee']:
+        for group in ['alt.binaries.boneless', 'alt.binaries.misc', 'alt.binaries.hdtv',
+                      'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries', 'alt.binaries.teevee']:
             url = self.provider.url + 'rss.php?'
-            urlArgs = {'max': 1000,'g': group}
+            urlArgs = {'max': 1000, 'g': group}
 
             url += urllib.urlencode(urlArgs)
 
@@ -112,6 +118,7 @@ class BinSearchCache(tvcache.TVCache):
             myDB.mass_action(cl)
 
     def _checkAuth(self, data):
-        return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None
+        return data if data['feed'] and data['feed'][
+            'title'] != 'Invalid Link' else None
 
 provider = BinSearchProvider()

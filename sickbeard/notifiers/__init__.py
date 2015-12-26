@@ -69,7 +69,9 @@ trakt_notifier = trakt.TraktNotifier()
 email_notifier = emailnotify.EmailNotifier()
 
 notifiers = [
-    libnotify_notifier,  # Libnotify notifier goes first because it doesn't involve blocking on network activity.
+    # Libnotify notifier goes first because it doesn't involve blocking on
+    # network activity.
+    libnotify_notifier,
     kodi_notifier,
     plex_notifier,
     nmj_notifier,

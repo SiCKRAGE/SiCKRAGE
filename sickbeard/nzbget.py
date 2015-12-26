@@ -18,7 +18,6 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import httplib
 import datetime
 
@@ -46,14 +45,16 @@ def sendNZB(nzb, proper=False):
     category = sickbeard.NZBGET_CATEGORY
     if nzb.show.is_anime:
         category = sickbeard.NZBGET_CATEGORY_ANIME
-    
+
     if sickbeard.NZBGET_USE_HTTPS:
         nzbgetXMLrpc = "https://%(username)s:%(password)s@%(host)s/xmlrpc"
     else:
         nzbgetXMLrpc = "http://%(username)s:%(password)s@%(host)s/xmlrpc"
 
-    if sickbeard.NZBGET_HOST == None:
-        logger.log(u"No NZBget host found in configuration. Please configure it.", logger.ERROR)
+    if sickbeard.NZBGET_HOST is None:
+        logger.log(
+            u"No NZBget host found in configuration. Please configure it.",
+            logger.ERROR)
         return False
 
     url = nzbgetXMLrpc % {"host": sickbeard.NZBGET_HOST, "username": sickbeard.NZBGET_USERNAME,
@@ -61,10 +62,13 @@ def sendNZB(nzb, proper=False):
 
     nzbGetRPC = xmlrpclib.ServerProxy(url)
     try:
-        if nzbGetRPC.writelog("INFO", "SickRage connected to drop of %s any moment now." % (nzb.name + ".nzb")):
+        if nzbGetRPC.writelog(
+                "INFO", "SickRage connected to drop of %s any moment now." % (nzb.name + ".nzb")):
             logger.log(u"Successful connected to NZBget", logger.DEBUG)
         else:
-            logger.log(u"Successful connected to NZBget, but unable to send a message", logger.ERROR)
+            logger.log(
+                u"Successful connected to NZBget, but unable to send a message",
+                logger.ERROR)
 
     except httplib.socket.error:
         logger.log(
@@ -72,9 +76,11 @@ def sendNZB(nzb, proper=False):
             logger.ERROR)
         return False
 
-    except xmlrpclib.ProtocolError, e:
+    except xmlrpclib.ProtocolError as e:
         if (e.errmsg == "Unauthorized"):
-            logger.log(u"NZBget username or password is incorrect.", logger.ERROR)
+            logger.log(
+                u"NZBget username or password is incorrect.",
+                logger.ERROR)
         else:
             logger.log(u"Protocol Error: " + e.errmsg, logger.ERROR)
         return False
@@ -111,20 +117,25 @@ def sendNZB(nzb, proper=False):
     logger.log(u"URL: " + url, logger.DEBUG)
 
     try:
-        # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old command
+        # Find out if nzbget supports priority (Version 9.0+), old versions
+        # beginning with a 0.x will use the old command
         nzbget_version_str = nzbGetRPC.version()
-        nzbget_version = helpers.tryInt(nzbget_version_str[:nzbget_version_str.find(".")])
+        nzbget_version = helpers.tryInt(
+            nzbget_version_str[
+                :nzbget_version_str.find(".")])
         if nzbget_version == 0:
             if nzbcontent64 is not None:
-                nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
+                nzbget_result = nzbGetRPC.append(
+                    nzb.name + ".nzb", category, addToTop, nzbcontent64)
             else:
                 if nzb.resultType == "nzb":
                     genProvider = GenericProvider("")
                     data = genProvider.getURL(nzb.url)
-                    if (data == None):
+                    if (data is None):
                         return False
                     nzbcontent64 = standard_b64encode(data)
-                nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
+                nzbget_result = nzbGetRPC.append(
+                    nzb.name + ".nzb", category, addToTop, nzbcontent64)
         elif nzbget_version == 12:
             if nzbcontent64 is not None:
                 nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, nzbgetprio, False,
@@ -133,7 +144,7 @@ def sendNZB(nzb, proper=False):
                 nzbget_result = nzbGetRPC.appendurl(nzb.name + ".nzb", category, nzbgetprio, False,
                                                     nzb.url, False, dupekey, dupescore, "score")
         # v13+ has a new combined append method that accepts both (url and content)
-        # also the return value has changed from boolean to integer 
+        # also the return value has changed from boolean to integer
         # (Positive number representing NZBID of the queue item. 0 and negative numbers represent error codes.)
         elif nzbget_version >= 13:
             nzbget_result = True if nzbGetRPC.append(nzb.name + ".nzb", nzbcontent64 if nzbcontent64 is not None else nzb.url,
@@ -151,8 +162,12 @@ def sendNZB(nzb, proper=False):
             logger.log(u"NZB sent to NZBget successfully", logger.DEBUG)
             return True
         else:
-            logger.log(u"NZBget could not add %s to the queue" % (nzb.name + ".nzb"), logger.ERROR)
+            logger.log(
+                u"NZBget could not add %s to the queue" %
+                (nzb.name + ".nzb"), logger.ERROR)
             return False
     except:
-        logger.log(u"Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"), logger.ERROR)
+        logger.log(
+            u"Connect Error to NZBget: could not add %s to the queue" %
+            (nzb.name + ".nzb"), logger.ERROR)
         return False

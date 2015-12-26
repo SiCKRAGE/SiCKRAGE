@@ -31,6 +31,7 @@ from sickrage.helper.exceptions import MultipleShowObjectsException
 
 
 class DailySearcher():
+
     def __init__(self):
         self.lock = threading.Lock()
         self.amActive = False
@@ -52,9 +53,15 @@ class DailySearcher():
             network_timezones.update_network_dict()
 
         if network_timezones.network_dict:
-            curDate = (datetime.date.today() + datetime.timedelta(days=1)).toordinal()
+            curDate = (
+                datetime.date.today() +
+                datetime.timedelta(
+                    days=1)).toordinal()
         else:
-            curDate = (datetime.date.today() + datetime.timedelta(days=2)).toordinal()
+            curDate = (
+                datetime.date.today() +
+                datetime.timedelta(
+                    days=2)).toordinal()
 
         curTime = datetime.datetime.now(network_timezones.sb_timezone)
 
@@ -68,19 +75,24 @@ class DailySearcher():
         for sqlEp in sqlResults:
             try:
                 if not show or int(sqlEp["showid"]) != show.indexerid:
-                    show = helpers.findCertainShow(sickbeard.showList, int(sqlEp["showid"]))
+                    show = helpers.findCertainShow(
+                        sickbeard.showList, int(sqlEp["showid"]))
 
-                # for when there is orphaned series in the database but not loaded into our showlist
+                # for when there is orphaned series in the database but not
+                # loaded into our showlist
                 if not show or show.paused:
                     continue
 
             except MultipleShowObjectsException:
-                logger.log(u"ERROR: expected to find a single show matching " + str(sqlEp['showid']))
+                logger.log(
+                    u"ERROR: expected to find a single show matching " + str(sqlEp['showid']))
                 continue
 
             if show.airs and show.network:
                 # This is how you assure it is always converted to local time
-                air_time = network_timezones.parse_date_time(sqlEp['airdate'], show.airs, show.network).astimezone(network_timezones.sb_timezone)
+                air_time = network_timezones.parse_date_time(
+                    sqlEp['airdate'], show.airs, show.network).astimezone(
+                    network_timezones.sb_timezone)
 
                 # filter out any episodes that haven't started airing yet,
                 # but set them to the default status while they are airing
@@ -91,10 +103,16 @@ class DailySearcher():
             ep = show.getEpisode(int(sqlEp["season"]), int(sqlEp["episode"]))
             with ep.lock:
                 if ep.season == 0:
-                    logger.log(u"New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
+                    logger.log(
+                        u"New episode " +
+                        ep.prettyName() +
+                        " airs today, setting status to SKIPPED because is a special season")
                     ep.status = common.SKIPPED
                 else:
-                    logger.log(u"New episode %s airs today, setting to default episode status for this show: %s" % (ep.prettyName(), common.statusStrings[ep.show.default_ep_status]))
+                    logger.log(
+                        u"New episode %s airs today, setting to default episode status for this show: %s" %
+                        (ep.prettyName(), common.statusStrings[
+                            ep.show.default_ep_status]))
                     ep.status = ep.show.default_ep_status
 
                 sql_l.append(ep.get_sql())

@@ -40,8 +40,13 @@ resultFilters = [
     "dub(bed)?"
 ]
 
-if hasattr('General','ignored_subs_list') and sickbeard.IGNORED_SUBS_LIST:
-    resultFilters.append("(" + sickbeard.IGNORED_SUBS_LIST.replace(",", "|") + ")sub(bed|ed|s)?")
+if hasattr('General', 'ignored_subs_list') and sickbeard.IGNORED_SUBS_LIST:
+    resultFilters.append(
+        "(" +
+        sickbeard.IGNORED_SUBS_LIST.replace(
+            ",",
+            "|") +
+        ")sub(bed|ed|s)?")
 
 
 def containsAtLeastOneWord(name, words):
@@ -55,7 +60,13 @@ def containsAtLeastOneWord(name, words):
     """
     if isinstance(words, basestring):
         words = words.split(',')
-    items = [(re.compile('(^|[\W_])%s($|[\W_])' % re.escape(word.strip()), re.I), word.strip()) for word in words]
+    items = [
+        (re.compile(
+            '(^|[\W_])%s($|[\W_])' %
+            re.escape(
+                word.strip()),
+            re.I),
+            word.strip()) for word in words]
     for regexp, word in items:
         if regexp.search(name):
             return word
@@ -76,7 +87,11 @@ def filterBadReleases(name, parse=True):
         if parse:
             NameParser().parse(name)
     except InvalidNameException:
-        logger.log(u"Unable to parse the filename " + name + " into a valid episode", logger.DEBUG)
+        logger.log(
+            u"Unable to parse the filename " +
+            name +
+            " into a valid episode",
+            logger.DEBUG)
         return False
     except InvalidShowException:
         pass
@@ -89,7 +104,13 @@ def filterBadReleases(name, parse=True):
         ignore_words.extend(sickbeard.IGNORE_WORDS.split(','))
     word = containsAtLeastOneWord(name, ignore_words)
     if word:
-        logger.log(u"Invalid scene release: " + name + " contains " + word + ", ignoring it", logger.DEBUG)
+        logger.log(
+            u"Invalid scene release: " +
+            name +
+            " contains " +
+            word +
+            ", ignoring it",
+            logger.DEBUG)
         return False
 
     # if any of the good strings aren't in the name then say no
@@ -130,7 +151,11 @@ def sceneToNormalShowNames(name):
 
         # add brackets around the country
         country_match_str = '|'.join(common.countryList.values())
-        results.append(re.sub('(?i)([. _-])(' + country_match_str + ')$', '\\1(\\2)', cur_name))
+        results.append(
+            re.sub(
+                '(?i)([. _-])(' + country_match_str + ')$',
+                '\\1(\\2)',
+                cur_name))
 
     results += name_list
 
@@ -168,14 +193,16 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
 
             # get quality of the episode
             curCompositeStatus = episode.status
-            curStatus, curQuality = common.Quality.splitCompositeStatus(curCompositeStatus)
+            curStatus, curQuality = common.Quality.splitCompositeStatus(
+                curCompositeStatus)
 
             if bestQualities:
                 highestBestQuality = max(bestQualities)
             else:
                 highestBestQuality = 0
 
-            # if we need a better one then add it to the list of episodes to fetch
+            # if we need a better one then add it to the list of episodes to
+            # fetch
             if (curStatus in (
                     common.DOWNLOADED,
                     common.SNATCHED) and curQuality < highestBestQuality) or curStatus == common.WANTED:
@@ -200,20 +227,22 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
     for curShow in showNames:
         # most providers all work the same way
         if not extraSearchType:
-            # if there's only one season then we can just use the show name straight up
+            # if there's only one season then we can just use the show name
+            # straight up
             if numseasons == 1:
                 toReturn.append(curShow)
-            # for providers that don't allow multiple searches in one request we only search for Sxx style stuff
+            # for providers that don't allow multiple searches in one request
+            # we only search for Sxx style stuff
             else:
                 for cur_season in seasonStrings:
                     if ep_obj.show.is_anime:
                         if ep_obj.show.release_groups is not None:
                             if len(show.release_groups.whitelist) > 0:
                                 for keyword in show.release_groups.whitelist:
-                                    toReturn.append(keyword + '.' + curShow+ "." + cur_season)
+                                    toReturn.append(
+                                        keyword + '.' + curShow + "." + cur_season)
                     else:
                         toReturn.append(curShow + "." + cur_season)
-
 
     return toReturn
 
@@ -229,13 +258,16 @@ def makeSceneSearchString(show, ep_obj):
     if (show.air_by_date or show.sports) and ep_obj.airdate != datetime.date.fromordinal(1):
         epStrings = [str(ep_obj.airdate)]
     elif show.is_anime:
-        epStrings = ["%02i" % int(ep_obj.scene_absolute_number if ep_obj.scene_absolute_number > 0 else ep_obj.scene_episode)]
+        epStrings = [
+            "%02i" % int(
+                ep_obj.scene_absolute_number if ep_obj.scene_absolute_number > 0 else ep_obj.scene_episode)]
     else:
         epStrings = ["S%02iE%02i" % (int(ep_obj.scene_season), int(ep_obj.scene_episode)),
                      "%ix%02i" % (int(ep_obj.scene_season), int(ep_obj.scene_episode))]
 
     # for single-season shows just search for the show name -- if total ep count (exclude s0) is less than 11
-    # due to the amount of qualities and releases, it is easy to go over the 50 result limit on rss feeds otherwise
+    # due to the amount of qualities and releases, it is easy to go over the
+    # 50 result limit on rss feeds otherwise
     if numseasons == 1 and not ep_obj.show.is_anime:
         epStrings = ['']
 
@@ -249,9 +281,11 @@ def makeSceneSearchString(show, ep_obj):
                 if ep_obj.show.release_groups is not None:
                     if len(ep_obj.show.release_groups.whitelist) > 0:
                         for keyword in ep_obj.show.release_groups.whitelist:
-                            toReturn.append(keyword + '.' + curShow + '.' + curEpString)
+                            toReturn.append(
+                                keyword + '.' + curShow + '.' + curEpString)
                     elif len(ep_obj.show.release_groups.blacklist) == 0:
-                        # If we have neither whitelist or blacklist we just append what we have
+                        # If we have neither whitelist or blacklist we just
+                        # append what we have
                         toReturn.append(curShow + '.' + curEpString)
             else:
                 toReturn.append(curShow + '.' + curEpString)
@@ -273,14 +307,22 @@ def isGoodResult(name, show, log=True, season=-1):
             escaped_name = re.sub('\\\\[\\s.-]', '\W+', re.escape(curName))
             if show.startyear:
                 escaped_name += "(?:\W+" + str(show.startyear) + ")?"
-            curRegex = '^' + escaped_name + '\W+(?:(?:S\d[\dE._ -])|(?:\d\d?x)|(?:\d{4}\W\d\d\W\d\d)|(?:(?:part|pt)[\._ -]?(\d|[ivx]))|Season\W+\d+\W+|E\d+\W+|(?:\d{1,3}.+\d{1,}[a-zA-Z]{2}\W+[a-zA-Z]{3,}\W+\d{4}.+))'
+            curRegex = '^' + escaped_name + \
+                '\W+(?:(?:S\d[\dE._ -])|(?:\d\d?x)|(?:\d{4}\W\d\d\W\d\d)|(?:(?:part|pt)[\._ -]?(\d|[ivx]))|Season\W+\d+\W+|E\d+\W+|(?:\d{1,3}.+\d{1,}[a-zA-Z]{2}\W+[a-zA-Z]{3,}\W+\d{4}.+))'
         else:
             escaped_name = re.sub('\\\\[\\s.-]', '[\W_]+', re.escape(curName))
-            # FIXME: find a "automatically-created" regex for anime releases # test at http://regexr.com?2uon3
-            curRegex = '^((\[.*?\])|(\d+[\.-]))*[ _\.]*' + escaped_name + '(([ ._-]+\d+)|([ ._-]+s\d{2})).*'
+            # FIXME: find a "automatically-created" regex for anime releases #
+            # test at http://regexr.com?2uon3
+            curRegex = '^((\[.*?\])|(\d+[\.-]))*[ _\.]*' + \
+                escaped_name + '(([ ._-]+\d+)|([ ._-]+s\d{2})).*'
 
         if log:
-            logger.log(u"Checking if show " + name + " matches " + curRegex, logger.DEBUG)
+            logger.log(
+                u"Checking if show " +
+                name +
+                " matches " +
+                curRegex,
+                logger.DEBUG)
 
         match = re.search(curRegex, name, re.I)
         if match:
@@ -314,7 +356,8 @@ def allPossibleShowNames(show, season=-1):
     if not show.is_anime:
         newShowNames = []
         country_list = common.countryList
-        country_list.update(dict(zip(common.countryList.values(), common.countryList.keys())))
+        country_list.update(
+            dict(zip(common.countryList.values(), common.countryList.keys())))
         for curName in set(showNames):
             if not curName:
                 continue
@@ -324,16 +367,23 @@ def allPossibleShowNames(show, season=-1):
             # (and vice versa)
             for curCountry in country_list:
                 if curName.endswith(' ' + curCountry):
-                    newShowNames.append(curName.replace(' ' + curCountry, ' (' + country_list[curCountry] + ')'))
+                    newShowNames.append(
+                        curName.replace(
+                            ' ' + curCountry,
+                            ' (' + country_list[curCountry] + ')'))
                 elif curName.endswith(' (' + curCountry + ')'):
-                    newShowNames.append(curName.replace(' (' + curCountry + ')', ' (' + country_list[curCountry] + ')'))
+                    newShowNames.append(
+                        curName.replace(
+                            ' (' + curCountry + ')',
+                            ' (' + country_list[curCountry] + ')'))
 
             # if we have "Show Name (2013)" this will strip the (2013) show year from the show name
-            #newShowNames.append(re.sub('\(\d{4}\)','',curName))
+            # newShowNames.append(re.sub('\(\d{4}\)','',curName))
 
         showNames += newShowNames
 
     return showNames
+
 
 def determineReleaseName(dir_name=None, nzb_name=None):
     """Determine a release name from an nzb and/or folder name"""
@@ -359,7 +409,12 @@ def determineReleaseName(dir_name=None, nzb_name=None):
             found_file = ek(os.path.basename, results[0])
             found_file = found_file.rpartition('.')[0]
             if filterBadReleases(found_file):
-                logger.log(u"Release name (" + found_file + ") found from file (" + results[0] + ")")
+                logger.log(
+                    u"Release name (" +
+                    found_file +
+                    ") found from file (" +
+                    results[0] +
+                    ")")
                 return found_file.rpartition('.')[0]
 
     # If that fails, we try the folder
@@ -368,7 +423,11 @@ def determineReleaseName(dir_name=None, nzb_name=None):
         # NOTE: Multiple failed downloads will change the folder name.
         # (e.g., appending #s)
         # Should we handle that?
-        logger.log(u"Folder name (" + folder + ") appears to be a valid release name. Using it.", logger.DEBUG)
+        logger.log(
+            u"Folder name (" +
+            folder +
+            ") appears to be a valid release name. Using it.",
+            logger.DEBUG)
         return folder
 
     return None

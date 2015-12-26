@@ -11,7 +11,9 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.routes import route
 
+
 class SRWebServer(threading.Thread):
+
     def __init__(self, options={}, io_loop=None):
         threading.Thread.__init__(self)
         self.daemon = True
@@ -38,12 +40,14 @@ class SRWebServer(threading.Thread):
 
         # web root
         if self.options['web_root']:
-            sickbeard.WEB_ROOT = self.options['web_root'] = ('/' + self.options['web_root'].lstrip('/').strip('/'))
+            sickbeard.WEB_ROOT = self.options['web_root'] = (
+                '/' + self.options['web_root'].lstrip('/').strip('/'))
 
         # api root
         if not sickbeard.API_KEY:
             sickbeard.API_KEY = generateApiKey()
-        self.options['api_root'] = r'%s/api/%s' % (sickbeard.WEB_ROOT, sickbeard.API_KEY)
+        self.options[
+            'api_root'] = r'%s/api/%s' % (sickbeard.WEB_ROOT, sickbeard.API_KEY)
 
         # tornado setup
         self.enable_https = self.options['enable_https']
@@ -51,28 +55,35 @@ class SRWebServer(threading.Thread):
         self.https_key = self.options['https_key']
 
         if self.enable_https:
-            # If either the HTTPS certificate or key do not exist, make some self-signed ones.
+            # If either the HTTPS certificate or key do not exist, make some
+            # self-signed ones.
             if not (self.https_cert and os.path.exists(self.https_cert)) or not (
-                        self.https_key and os.path.exists(self.https_key)):
-                if not create_https_certificates(self.https_cert, self.https_key):
-                    logger.log(u"Unable to create CERT/KEY files, disabling HTTPS")
+                    self.https_key and os.path.exists(self.https_key)):
+                if not create_https_certificates(
+                        self.https_cert, self.https_key):
+                    logger.log(
+                        u"Unable to create CERT/KEY files, disabling HTTPS")
                     sickbeard.ENABLE_HTTPS = False
                     self.enable_https = False
 
-            if not (os.path.exists(self.https_cert) and os.path.exists(self.https_key)):
-                logger.log(u"Disabled HTTPS because of missing CERT and KEY files", logger.WARNING)
+            if not (os.path.exists(self.https_cert)
+                    and os.path.exists(self.https_key)):
+                logger.log(
+                    u"Disabled HTTPS because of missing CERT and KEY files",
+                    logger.WARNING)
                 sickbeard.ENABLE_HTTPS = False
                 self.enable_https = False
 
         # Load the app
         self.app = Application([],
-                                 debug=True,
-                                 autoreload=False,
-                                 gzip=sickbeard.WEB_USE_GZIP,
-                                 xheaders=sickbeard.HANDLE_REVERSE_PROXY,
-                                 cookie_secret=sickbeard.WEB_COOKIE_SECRET,
-                                 login_url='%s/login/' % self.options['web_root'],
-        )
+                               debug=True,
+                               autoreload=False,
+                               gzip=sickbeard.WEB_USE_GZIP,
+                               xheaders=sickbeard.HANDLE_REVERSE_PROXY,
+                               cookie_secret=sickbeard.WEB_COOKIE_SECRET,
+                               login_url='%s/login/' % self.options[
+                                   'web_root'],
+                               )
 
         # Main Handlers
         self.app.add_handlers('.*$', [
@@ -83,7 +94,9 @@ class SRWebServer(threading.Thread):
             (r'%s/getkey(/?.*)' % self.options['web_root'], KeyHandler),
 
             # webapi builder redirect
-            (r'%s/api/builder' % self.options['web_root'], RedirectHandler, {"url": self.options['web_root'] + '/apibuilder/'}),
+            (r'%s/api/builder' %
+             self.options['web_root'], RedirectHandler, {"url": self.options['web_root'] +
+                                                         '/apibuilder/'}),
 
             # webui login/logout handlers
             (r'%s/login(/?)' % self.options['web_root'], LoginHandler),
@@ -126,7 +139,11 @@ class SRWebServer(threading.Thread):
     def run(self):
         if self.enable_https:
             protocol = "https"
-            self.server = HTTPServer(self.app, ssl_options={"certfile": self.https_cert, "keyfile": self.https_key})
+            self.server = HTTPServer(
+                self.app,
+                ssl_options={
+                    "certfile": self.https_cert,
+                    "keyfile": self.https_key})
         else:
             protocol = "http"
             self.server = HTTPServer(self.app)
@@ -138,16 +155,22 @@ class SRWebServer(threading.Thread):
             self.server.listen(self.options['port'], self.options['host'])
         except:
             if sickbeard.LAUNCH_BROWSER and not self.daemon:
-                sickbeard.launchBrowser('https' if sickbeard.ENABLE_HTTPS else 'http', self.options['port'], sickbeard.WEB_ROOT)
+                sickbeard.launchBrowser(
+                    'https' if sickbeard.ENABLE_HTTPS else 'http',
+                    self.options['port'],
+                    sickbeard.WEB_ROOT)
                 logger.log(u"Launching browser and exiting")
-            logger.log(u"Could not start webserver on port %s, already in use!" % self.options['port'])
+            logger.log(
+                u"Could not start webserver on port %s, already in use!" %
+                self.options['port'])
             os._exit(1)
 
         try:
             self.io_loop.start()
             self.io_loop.close(True)
         except (IOError, ValueError):
-            # Ignore errors like "ValueError: I/O operation on closed kqueue fd". These might be thrown during a reload.
+            # Ignore errors like "ValueError: I/O operation on closed kqueue
+            # fd". These might be thrown during a reload.
             pass
 
     def shutDown(self):

@@ -29,6 +29,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class newpctProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Newpct")
@@ -71,20 +72,22 @@ class newpctProvider(generic.TorrentProvider):
             'q': ''
         }
 
-
     def isEnabled(self):
         return self.enabled
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         lang_info = '' if not epObj or not epObj.show else epObj.show.lang
 
-        #Only search if user conditions are true
+        # Only search if user conditions are true
         if self.onlyspasearch and lang_info != 'es':
-            logger.log(u"Show info is not spanish, skipping provider search", logger.DEBUG)
+            logger.log(
+                u"Show info is not spanish, skipping provider search",
+                logger.DEBUG)
             return results
 
         for mode in search_strings.keys():
@@ -93,8 +96,17 @@ class newpctProvider(generic.TorrentProvider):
             for search_string in search_strings[mode]:
                 self.search_params.update({'q': search_string.strip()})
 
-                logger.log(u"Search URL: %s" % self.urls['search'] + '?' + urllib.parse.urlencode(self.search_params), logger.DEBUG)
-                data = self.getURL(self.urls['search'], post_data=self.search_params, timeout=30)
+                logger.log(
+                    u"Search URL: %s" %
+                    self.urls['search'] +
+                    '?' +
+                    urllib.parse.urlencode(
+                        self.search_params),
+                    logger.DEBUG)
+                data = self.getURL(
+                    self.urls['search'],
+                    post_data=self.search_params,
+                    timeout=30)
                 if not data:
                     continue
 
@@ -103,7 +115,9 @@ class newpctProvider(generic.TorrentProvider):
                         torrent_tbody = html.find('tbody')
 
                         if len(torrent_tbody) < 1:
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                            logger.log(
+                                u"Data returned from provider does not contain any torrents",
+                                logger.DEBUG)
                             continue
 
                         torrent_table = torrent_tbody.findAll('tr')
@@ -123,7 +137,9 @@ class newpctProvider(generic.TorrentProvider):
                                     title = self._processTitle(title_raw)
 
                                     item = title, download_url, size
-                                    logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                    logger.log(
+                                        u"Found result: %s " %
+                                        title, logger.DEBUG)
 
                                     items[mode].append(item)
                                     iteration += 1
@@ -132,7 +148,9 @@ class newpctProvider(generic.TorrentProvider):
                                 continue
 
                 except Exception:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.WARNING)
+                    logger.log(
+                        u"Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc(), logger.WARNING)
 
             results += items[mode]
 
@@ -156,7 +174,7 @@ class newpctProvider(generic.TorrentProvider):
 
         title = title.replace('Descargar ', '')
 
-        #Quality
+        # Quality
         title = title.replace('[HDTV]', '[720p HDTV x264]')
         title = title.replace('[HDTV 720p AC3 5.1]', '[720p HDTV x264]')
         title = title.replace('[HDTV 1080p AC3 5.1]', '[1080p HDTV x264]')
@@ -175,14 +193,13 @@ class newpctProvider(generic.TorrentProvider):
         return title
 
 
-
 class newpctCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
 
         self.minTime = 30
-
 
 
 provider = newpctProvider()

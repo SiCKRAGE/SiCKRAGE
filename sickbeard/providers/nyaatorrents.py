@@ -29,6 +29,7 @@ from sickbeard import show_name_helpers
 
 
 class NyaaProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "NyaaTorrents")
@@ -52,7 +53,8 @@ class NyaaProvider(generic.TorrentProvider):
     def isEnabled(self):
         return self.enabled
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
         if self.show and not self.show.is_anime:
             return []
 
@@ -63,7 +65,9 @@ class NyaaProvider(generic.TorrentProvider):
             logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    logger.log(u"Search string: %s" % search_string, logger.DEBUG)
+                    logger.log(
+                        u"Search string: %s" %
+                        search_string, logger.DEBUG)
 
                 params = {
                     "page": 'rss',
@@ -75,29 +79,37 @@ class NyaaProvider(generic.TorrentProvider):
                     params["term"] = search_string.encode('utf-8')
 
                 searchURL = self.url + '?' + urllib.urlencode(params)
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
 
                 summary_regex = ur"(\d+) seeder\(s\), (\d+) leecher\(s\), \d+ download\(s\) - (\d+.?\d* [KMGT]iB)(.*)"
                 s = re.compile(summary_regex, re.DOTALL)
 
                 results = []
-                for curItem in self.cache.getRSSFeed(searchURL, items=['entries'])['entries'] or []:
+                for curItem in self.cache.getRSSFeed(searchURL, items=['entries'])[
+                        'entries'] or []:
                     title = curItem['title']
                     download_url = curItem['link']
                     if not all([title, download_url]):
                         continue
 
-                    seeders, leechers, size, verified = s.findall(curItem['summary'])[0]
+                    seeders, leechers, size, verified = s.findall(curItem['summary'])[
+                        0]
                     size = self._convertSize(size)
 
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode != 'RSS':
-                            logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                            logger.log(
+                                u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers), logger.DEBUG)
                         continue
 
                     if self.confirmed and not verified and mode != 'RSS':
-                        logger.log(u"Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it", logger.DEBUG)
+                        logger.log(
+                            u"Found result " +
+                            title +
+                            " but that doesn't seem like a verified result so I'm ignoring it",
+                            logger.DEBUG)
                         continue
 
                     item = title, download_url, size, seeders, leechers
@@ -115,7 +127,9 @@ class NyaaProvider(generic.TorrentProvider):
 
     def _extract_name_from_filename(self, filename):
         name_regex = '(.*?)\.?(\[.*]|\d+\.TPB)\.torrent$'
-        logger.log(u"Comparing %s against %s" % (name_regex, filename), logger.DEBUG)
+        logger.log(
+            u"Comparing %s against %s" %
+            (name_regex, filename), logger.DEBUG)
         match = re.match(name_regex, filename, re.I)
         if match:
             return match.group(1)
@@ -139,6 +153,7 @@ class NyaaProvider(generic.TorrentProvider):
 
 
 class NyaaCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

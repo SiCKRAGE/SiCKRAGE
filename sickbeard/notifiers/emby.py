@@ -47,7 +47,10 @@ class EMBYNotifier:
             emby_apikey = sickbeard.EMBY_APIKEY
 
         url = 'http://%s/emby/Notifications/Admin' % (host)
-        values = {'Name': 'SickRage', 'Description': message, 'ImageUrl': 'https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/slick/images/sickrage-shark-mascot.png'}
+        values = {
+            'Name': 'SickRage',
+            'Description': message,
+            'ImageUrl': 'https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/slick/images/sickrage-shark-mascot.png'}
         data = json.dumps(values)
         try:
             req = urllib2.Request(url, data)
@@ -58,11 +61,21 @@ class EMBYNotifier:
             result = response.read()
             response.close()
 
-            logger.log(u'EMBY: HTTP response: ' + result.replace('\n', ''), logger.DEBUG)
+            logger.log(
+                u'EMBY: HTTP response: ' +
+                result.replace(
+                    '\n',
+                    ''),
+                logger.DEBUG)
             return True
 
-        except (urllib2.URLError, IOError), e:
-            logger.log(u'EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + ex(e), logger.WARNING)
+        except (urllib2.URLError, IOError) as e:
+            logger.log(
+                u'EMBY: Warning: Couldn\'t contact Emby at ' +
+                url +
+                ' ' +
+                ex(e),
+                logger.WARNING)
             return False
 
 
@@ -71,7 +84,8 @@ class EMBYNotifier:
 ##############################################################################
 
     def test_notify(self, host, emby_apikey):
-        return self._notify_emby('This is a test notification from SickRage', host, emby_apikey)
+        return self._notify_emby(
+            'This is a test notification from SickRage', host, emby_apikey)
 
     def update_library(self, show=None):
         """Handles updating the Emby Media Server host via HTTP API
@@ -84,14 +98,18 @@ class EMBYNotifier:
         if sickbeard.USE_EMBY:
 
             if not sickbeard.EMBY_HOST:
-                logger.log(u'EMBY: No host specified, check your settings', logger.DEBUG)
+                logger.log(
+                    u'EMBY: No host specified, check your settings',
+                    logger.DEBUG)
                 return False
 
             if show:
                 if show.indexer == 1:
                     provider = 'tvdb'
                 elif show.indexer == 2:
-                    logger.log(u'EMBY: TVRage Provider no longer valid', logger.WARNING)
+                    logger.log(
+                        u'EMBY: TVRage Provider no longer valid',
+                        logger.WARNING)
                     return False
                 else:
                     logger.log(u'EMBY: Provider unknown', logger.WARNING)
@@ -100,7 +118,8 @@ class EMBYNotifier:
             else:
                 query = ''
 
-            url = 'http://%s/emby/Library/Series/Updated%s' % (sickbeard.EMBY_HOST, query)
+            url = 'http://%s/emby/Library/Series/Updated%s' % (
+                sickbeard.EMBY_HOST, query)
             values = {}
             data = urllib.urlencode(values)
             try:
@@ -111,11 +130,21 @@ class EMBYNotifier:
                 result = response.read()
                 response.close()
 
-                logger.log(u'EMBY: HTTP response: ' + result.replace('\n', ''), logger.DEBUG)
+                logger.log(
+                    u'EMBY: HTTP response: ' +
+                    result.replace(
+                        '\n',
+                        ''),
+                    logger.DEBUG)
                 return True
 
-            except (urllib2.URLError, IOError), e:
-                logger.log(u'EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + ex(e), logger.WARNING)
+            except (urllib2.URLError, IOError) as e:
+                logger.log(
+                    u'EMBY: Warning: Couldn\'t contact Emby at ' +
+                    url +
+                    ' ' +
+                    ex(e),
+                    logger.WARNING)
                 return False
 
 notifier = EMBYNotifier

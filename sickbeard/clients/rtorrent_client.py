@@ -25,6 +25,7 @@ from rtorrent import RTorrent
 
 
 class rTorrentAPI(GenericClient):
+
     def __init__(self, host=None, username=None, password=None):
         super(rTorrentAPI, self).__init__('rTorrent', host, username, password)
 
@@ -45,7 +46,12 @@ class rTorrentAPI(GenericClient):
             tp_kwargs['check_ssl_cert'] = False
 
         if self.username and self.password:
-            self.auth = RTorrent(self.host, self.username, self.password, True, tp_kwargs=tp_kwargs)
+            self.auth = RTorrent(
+                self.host,
+                self.username,
+                self.password,
+                True,
+                tp_kwargs=tp_kwargs)
         else:
             self.auth = RTorrent(self.host, None, None, True)
 
@@ -172,7 +178,8 @@ class rTorrentAPI(GenericClient):
             if self.auth is not None:
                 return True, 'Success: Connected and Authenticated'
             else:
-                return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'
+                return False, 'Error: Unable to get ' + \
+                    self.name + ' Authentication, check your config!'
         except Exception:
             return False, 'Error: Unable to connect to ' + self.name
 

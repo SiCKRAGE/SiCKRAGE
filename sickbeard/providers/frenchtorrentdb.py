@@ -24,6 +24,7 @@ from sickbeard.bs4_parser import BS4Parser
 from sickbeard import logger
 from sickbeard import tvcache
 
+
 class FrenchTorrentDBProvider(generic.TorrentProvider):
 
     def __init__(self):
@@ -32,10 +33,9 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
 
         self.supportsBacklog = True
 
-
         self.urls = {
             'base_url': 'http://www.frenchtorrentdb.com',
-            }
+        }
 
         self.url = self.urls['base_url']
         self.search_params = {
@@ -50,7 +50,7 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
             "section": "TORRENTS",
             "exact": 1,
             "submit": "GO"
-            }
+        }
 
         self.username = None
         self.password = None
@@ -71,11 +71,11 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
         data = self.getURL(self.url, params=params, json=True)
 
         post_data = {
-            'username'    : self.username,
-            'password'    : self.password,
+            'username': self.username,
+            'password': self.password,
             'secure_login': self._getSecureLogin(data['challenge']),
-            'hash'        : data['hash']
-            }
+            'hash': data['hash']
+        }
 
         params.pop('challenge')
         params['ajax'] = 1
@@ -91,6 +91,7 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
         def decodeString(p, a, c, k, e, d):
             a = int(a)
             c = int(c)
+
             def e(c):
                 if c < a:
                     f = ''
@@ -105,7 +106,8 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
             return p
 
         def decodeChallenge(challenge):
-            regexGetArgs = re.compile('\'([^\']+)\',([0-9]+),([0-9]+),\'([^\']+)\'')
+            regexGetArgs = re.compile(
+                '\'([^\']+)\',([0-9]+),([0-9]+),\'([^\']+)\'')
             regexIsEncoded = re.compile('decodeURIComponent')
             regexUnquote = re.compile('\'')
             if challenge == 'a':
@@ -124,7 +126,8 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
             secureLogin += decodeChallenge(challenge)
         return secureLogin
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -138,7 +141,9 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logger.log(
+                        u"Search string: %s " %
+                        search_string, logger.DEBUG)
 
                 self.search_params['name'] = search_string
 
@@ -152,33 +157,41 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
                         for row in rows:
                             link = row.find("a", title=True)
                             title = link['title']
-                            #FIXME
+                            # FIXME
                             size = -1
                             seeders = 1
                             leechers = 0
 
-                            autogetURL = self.url + '/' + (row.find("li", {"class": "torrents_name"}).find('a')['href'][1:]).replace('#FTD_MENU', '&menu=4')
+                            autogetURL = self.url + '/' + (
+                                row.find(
+                                    "li", {
+                                        "class": "torrents_name"}).find('a')['href'][
+                                    1:]).replace(
+                                '#FTD_MENU', '&menu=4')
                             r = self.getURL(autogetURL)
                             with BS4Parser(r, features=["html5lib", "permissive"]) as html:
 
-                                download_url = html.find("div", {"class" : "autoget"}).find('a')['href']
+                                download_url = html.find(
+                                    "div", {"class": "autoget"}).find('a')['href']
 
                                 if not all([title, download_url]):
                                     continue
 
-                                #Filter unseeded torrent
-                                #if seeders < self.minseed or leechers < self.minleech:
+                                # Filter unseeded torrent
+                                # if seeders < self.minseed or leechers < self.minleech:
                                 #    if mode != 'RSS':
                                 #        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
                                 #    continue
 
                                 item = title, download_url, size, seeders, leechers
                                 if mode != 'RSS':
-                                    logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                    logger.log(
+                                        u"Found result: %s " %
+                                        title, logger.DEBUG)
 
                                 items[mode].append(item)
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -190,6 +203,7 @@ class FrenchTorrentDBProvider(generic.TorrentProvider):
 
 
 class FrenchTorrentDBCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

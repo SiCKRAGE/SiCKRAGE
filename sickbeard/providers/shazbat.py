@@ -24,12 +24,12 @@ from sickrage.helper.exceptions import AuthException
 
 
 class ShazbatProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "Shazbat.tv")
 
         self.supportsBacklog = False
-
 
         self.passkey = None
         self.ratio = None
@@ -38,7 +38,7 @@ class ShazbatProvider(generic.TorrentProvider):
         self.cache = ShazbatCache(self)
 
         self.urls = {'base_url': u'http://www.shazbat.tv/',
-                     'website': u'http://www.shazbat.tv/login',}
+                     'website': u'http://www.shazbat.tv/login', }
         self.url = self.urls['website']
 
     def isEnabled(self):
@@ -46,7 +46,10 @@ class ShazbatProvider(generic.TorrentProvider):
 
     def _checkAuth(self):
         if not self.passkey:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
+            raise AuthException(
+                "Your authentication credentials for " +
+                self.name +
+                " are missing, check your config.")
 
         return True
 
@@ -54,7 +57,9 @@ class ShazbatProvider(generic.TorrentProvider):
         if not self.passkey:
             self._checkAuth()
         elif not (data['entries'] and data['feed']):
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logger.log(
+                u"Invalid username or password. Check your settings",
+                logger.WARNING)
 
         return True
 
@@ -63,6 +68,7 @@ class ShazbatProvider(generic.TorrentProvider):
 
 
 class ShazbatCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 
@@ -71,7 +77,8 @@ class ShazbatCache(tvcache.TVCache):
 
     def _getRSSData(self):
 
-        rss_url = self.provider.urls['base_url'] + 'rss/recent?passkey=' + provider.passkey + '&fname=true'
+        rss_url = self.provider.urls[
+            'base_url'] + 'rss/recent?passkey=' + provider.passkey + '&fname=true'
         logger.log(u"Cache update URL: %s" % rss_url, logger.DEBUG)
 
         return self.getRSSFeed(rss_url, items=['entries', 'feed'])

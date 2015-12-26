@@ -14,9 +14,14 @@ from sqliteshelf import SQLiteShelf
 
 
 class RSSFeeds:
+
     def __init__(self, db_name='feeds'):
         try:
-            db_name = ek(os.path.join, sickbeard.CACHE_DIR, 'rss', db_name) + '.db'
+            db_name = ek(
+                os.path.join,
+                sickbeard.CACHE_DIR,
+                'rss',
+                db_name) + '.db'
             if not os.path.exists(os.path.dirname(db_name)):
                 sickbeard.helpers.makeDir(os.path.dirname(db_name))
 
@@ -30,13 +35,15 @@ class RSSFeeds:
         finally:
             self.rssDB.close()
 
-    def getFeed(self, url, post_data=None, request_headers=None, items=None, handlers=[]):
+    def getFeed(self, url, post_data=None,
+                request_headers=None, items=None, handlers=[]):
 
         if post_data:
             url += urllib.urlencode(post_data)
 
         try:
-            resp = Cache(self.rssDB, userAgent=sickbeard.common.USER_AGENT).fetch(url, force_update=True, request_headers=request_headers, handlers=handlers)
+            resp = Cache(self.rssDB, userAgent=sickbeard.common.USER_AGENT).fetch(
+                url, force_update=True, request_headers=request_headers, handlers=handlers)
         finally:
             self.rssDB.close()
 

@@ -30,6 +30,7 @@ class QueuePriorities:
 
 
 class GenericQueue(object):
+
     def __init__(self):
 
         self.currentItem = None
@@ -75,12 +76,14 @@ class GenericQueue(object):
             # only start a new task if one isn't already going
             if self.currentItem is None or not self.currentItem.isAlive():
 
-                # if the thread is dead then the current item should be finished
+                # if the thread is dead then the current item should be
+                # finished
                 if self.currentItem:
                     self.currentItem.finish()
                     self.currentItem = None
 
-                # if there's something in the queue then run it in a thread and take it out of the queue
+                # if there's something in the queue then run it in a thread and
+                # take it out of the queue
                 if len(self.queue) > 0:
 
                     # sort by priority
@@ -109,7 +112,9 @@ class GenericQueue(object):
 
         self.amActive = False
 
+
 class QueueItem(threading.Thread):
+
     def __init__(self, name, action_id=0):
         super(QueueItem, self).__init__()
 

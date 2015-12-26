@@ -50,14 +50,18 @@ class XthorProvider(generic.TorrentProvider):
 
     def _doLogin(self):
 
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(
+                self.session.cookies).values()):
             return True
 
         login_params = {'username': self.username,
                         'password': self.password,
                         'submitme': 'X'}
 
-        response = self.getURL(self.url + '/takelogin.php', post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.url + '/takelogin.php',
+            post_data=login_params,
+            timeout=30)
         if not response:
             logger.log(u"Unable to connect to provider", logger.WARNING)
             return False
@@ -65,12 +69,15 @@ class XthorProvider(generic.TorrentProvider):
         if re.search('donate.php', response):
             return True
         else:
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logger.log(
+                u"Invalid username or password. Check your settings",
+                logger.WARNING)
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -84,25 +91,32 @@ class XthorProvider(generic.TorrentProvider):
             for search_string in search_params[mode]:
 
                 if mode != 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logger.log(
+                        u"Search string: %s " %
+                        search_string, logger.DEBUG)
 
-                searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                searchURL = self.urlsearch % (
+                    urllib.quote(search_string), self.categories)
+                logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
                 data = self.getURL(searchURL)
 
                 if not data:
                     continue
 
                 with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                    resultsTable = html.find("table", {"class" : "table2 table-bordered2"})
+                    resultsTable = html.find(
+                        "table", {"class": "table2 table-bordered2"})
                     if resultsTable:
                         rows = resultsTable.findAll("tr")
                         for row in rows:
-                            link = row.find("a", href=re.compile("details.php"))
+                            link = row.find(
+                                "a", href=re.compile("details.php"))
                             if link:
                                 title = link.text
-                                download_url = self.url + '/' + row.find("a", href=re.compile("download.php"))['href']
-                                #FIXME
+                                download_url = self.url + '/' + \
+                                    row.find(
+                                        "a", href=re.compile("download.php"))['href']
+                                # FIXME
                                 size = -1
                                 seeders = 1
                                 leechers = 0
@@ -110,19 +124,22 @@ class XthorProvider(generic.TorrentProvider):
                                 if not all([title, download_url]):
                                     continue
 
-                                #Filter unseeded torrent
-                                #if seeders < self.minseed or leechers < self.minleech:
+                                # Filter unseeded torrent
+                                # if seeders < self.minseed or leechers < self.minleech:
                                 #    if mode != 'RSS':
                                 #        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
                                 #    continue
 
                                 item = title, download_url, size, seeders, leechers
                                 if mode != 'RSS':
-                                    logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                    logger.log(
+                                        u"Found result: %s " %
+                                        title, logger.DEBUG)
 
                                 items[mode].append(item)
 
-            #For each search mode sort all the items by seeders if available if available
+            # For each search mode sort all the items by seeders if available
+            # if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]

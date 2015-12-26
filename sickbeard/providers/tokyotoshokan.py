@@ -27,6 +27,7 @@ from sickbeard.bs4_parser import BS4Parser
 
 
 class TokyoToshokanProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "TokyoToshokan")
@@ -49,13 +50,16 @@ class TokyoToshokanProvider(generic.TorrentProvider):
         return self.ratio
 
     def _get_season_search_strings(self, ep_obj):
-        return [x.replace('.', ' ') for x in show_name_helpers.makeSceneSeasonSearchString(self.show, ep_obj)]
+        return [x.replace('.', ' ') for x in show_name_helpers.makeSceneSeasonSearchString(
+            self.show, ep_obj)]
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
-        return [x.replace('.', ' ') for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
+        return [x.replace('.', ' ') for x in show_name_helpers.makeSceneSearchString(
+            self.show, ep_obj)]
 
-    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
-        #FIXME ADD MODE
+    def _doSearch(self, search_string, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
+        # FIXME ADD MODE
         if self.show and not self.show.is_anime:
             return []
 
@@ -63,11 +67,11 @@ class TokyoToshokanProvider(generic.TorrentProvider):
 
         params = {
             "terms": search_string.encode('utf-8'),
-            "type": 1, # get anime types
+            "type": 1,  # get anime types
         }
 
         searchURL = self.url + 'search.php?' + urllib.urlencode(params)
-        logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+        logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
         data = self.getURL(searchURL)
 
         if not data:
@@ -77,18 +81,25 @@ class TokyoToshokanProvider(generic.TorrentProvider):
         try:
             with BS4Parser(data, features=["html5lib", "permissive"]) as soup:
                 torrent_table = soup.find('table', attrs={'class': 'listing'})
-                torrent_rows = torrent_table.find_all('tr') if torrent_table else []
+                torrent_rows = torrent_table.find_all(
+                    'tr') if torrent_table else []
                 if torrent_rows:
-                    if torrent_rows[0].find('td', attrs={'class': 'centertext'}):
+                    if torrent_rows[0].find(
+                            'td', attrs={'class': 'centertext'}):
                         a = 1
                     else:
                         a = 0
 
-                    for top, bottom in zip(torrent_rows[a::2], torrent_rows[a::2]):
-                        title = top.find('td', attrs={'class': 'desc-top'}).text
+                    for top, bottom in zip(
+                            torrent_rows[a::2], torrent_rows[a::2]):
+                        title = top.find(
+                            'td', attrs={
+                                'class': 'desc-top'}).text
                         title.lstrip()
-                        download_url = top.find('td', attrs={'class': 'desc-top'}).find('a')['href']
-                        #FIXME
+                        download_url = top.find(
+                            'td', attrs={
+                                'class': 'desc-top'}).find('a')['href']
+                        # FIXME
                         size = -1
                         seeders = 1
                         leechers = 0
@@ -96,8 +107,8 @@ class TokyoToshokanProvider(generic.TorrentProvider):
                         if not all([title, download_url]):
                             continue
 
-                        #Filter unseeded torrent
-                        #if seeders < self.minseed or leechers < self.minleech:
+                        # Filter unseeded torrent
+                        # if seeders < self.minseed or leechers < self.minleech:
                         #    if mode != 'RSS':
                         #        logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
                         #    continue
@@ -106,14 +117,17 @@ class TokyoToshokanProvider(generic.TorrentProvider):
 
                         results.append(item)
 
-        except Exception, e:
-            logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+        except Exception as e:
+            logger.log(
+                u"Failed parsing provider. Traceback: %s" %
+                traceback.format_exc(), logger.ERROR)
 
-        #FIXME SORTING
+        # FIXME SORTING
         return results
 
 
 class TokyoToshokanCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
 

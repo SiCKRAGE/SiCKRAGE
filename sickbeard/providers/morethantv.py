@@ -68,34 +68,45 @@ class MoreThanTVProvider(generic.TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
+            raise AuthException(
+                "Your authentication credentials for " +
+                self.name +
+                " are missing, check your config.")
 
         return True
 
     def _doLogin(self):
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(
+                self.session.cookies).values()):
             return True
 
         if self._uid and self._hash:
-            requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
+            requests.utils.add_dict_to_cookiejar(
+                self.session.cookies, self.cookies)
         else:
             login_params = {'username': self.username,
                             'password': self.password,
                             'login': 'Log in',
                             'keeplogged': '1'}
 
-            response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+            response = self.getURL(
+                self.urls['login'],
+                post_data=login_params,
+                timeout=30)
             if not response:
                 logger.log(u"Unable to connect to provider", logger.WARNING)
                 return False
 
             if re.search('Your username or password was incorrect.', response):
-                logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+                logger.log(
+                    u"Invalid username or password. Check your settings",
+                    logger.WARNING)
                 return False
 
             return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -110,75 +121,95 @@ class MoreThanTVProvider(generic.TorrentProvider):
             for search_string in search_params[mode]:
 
                 if mode != 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logger.log(
+                        u"Search string: %s " %
+                        search_string, logger.DEBUG)
 
-                searchURL = self.urls['search'] % (search_string.replace('(', '').replace(')', ''))
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                searchURL = self.urls['search'] % (
+                    search_string.replace('(', '').replace(')', ''))
+                logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
 
-                # returns top 15 results by default, expandable in user profile to 100
+                # returns top 15 results by default, expandable in user profile
+                # to 100
                 data = self.getURL(searchURL)
                 if not data:
                     continue
 
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
-                        torrent_table = html.find('table', attrs={'class': 'torrent_table'})
-                        torrent_rows = torrent_table.findChildren('tr') if torrent_table else []
+                        torrent_table = html.find(
+                            'table', attrs={'class': 'torrent_table'})
+                        torrent_rows = torrent_table.findChildren(
+                            'tr') if torrent_table else []
 
-                        #Continue only if one Release is found
+                        # Continue only if one Release is found
                         if len(torrent_rows) < 2:
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                            logger.log(
+                                u"Data returned from provider does not contain any torrents",
+                                logger.DEBUG)
                             continue
 
                         # skip colheader
                         for result in torrent_rows[1:]:
                             cells = result.findChildren('td')
-                            link = cells[1].find('a', attrs={'title': 'Download'})
+                            link = cells[1].find(
+                                'a', attrs={'title': 'Download'})
 
-                            #skip if torrent has been nuked due to poor quality
+                            # skip if torrent has been nuked due to poor
+                            # quality
                             if cells[1].find('img', alt='Nuked') != None:
                                 continue
 
-                            torrent_id_long = link['href'].replace('torrents.php?action=download&id=', '')
+                            torrent_id_long = link['href'].replace(
+                                'torrents.php?action=download&id=', '')
 
                             try:
-                                if link.has_key('title'):
-                                    title = cells[1].find('a', {'title': 'View torrent'}).contents[0].strip()
+                                if 'title' in link:
+                                    title = cells[1].find('a', {'title': 'View torrent'}).contents[
+                                        0].strip()
                                 else:
                                     title = link.contents[0]
-                                download_url = self.urls['download'] % (torrent_id_long)
+                                download_url = self.urls[
+                                    'download'] % (torrent_id_long)
 
                                 seeders = cells[6].contents[0]
 
                                 leechers = cells[7].contents[0]
 
                                 size = -1
-                                if re.match(r'\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]', cells[4].contents[0]):
-                                    size = self._convertSize(cells[4].text.strip())
+                                if re.match(
+                                        r'\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]', cells[4].contents[0]):
+                                    size = self._convertSize(
+                                        cells[4].text.strip())
 
                             except (AttributeError, TypeError):
                                 continue
 
-
                             if not all([title, download_url]):
                                 continue
 
-                            #Filter unseeded torrent
+                            # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode != 'RSS':
-                                    logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                    logger.log(
+                                        u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers), logger.DEBUG)
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode != 'RSS':
-                                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                logger.log(
+                                    u"Found result: %s " %
+                                    title, logger.DEBUG)
 
                             items[mode].append(item)
 
-                except Exception, e:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+                except Exception as e:
+                    logger.log(
+                        u"Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -205,7 +236,9 @@ class MoreThanTVProvider(generic.TorrentProvider):
             size = -1
         return int(size)
 
+
 class MoreThanTVCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)

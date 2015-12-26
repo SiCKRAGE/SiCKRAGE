@@ -28,6 +28,7 @@ from sickbeard.providers import generic
 
 
 class OmgwtfnzbsProvider(generic.NZBProvider):
+
     def __init__(self):
         generic.NZBProvider.__init__(self, "omgwtfnzbs")
 
@@ -39,7 +40,6 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
         self.url = self.urls['base_url']
 
         self.supportsBacklog = True
-
 
     def isEnabled(self):
         return self.enabled
@@ -66,22 +66,28 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
                 description_text = parsedJSON.get('notice')
 
                 if 'information is incorrect' in parsedJSON.get('notice'):
-                    logger.log(u"Invalid api key. Check your settings", logger.WARNING)
+                    logger.log(
+                        u"Invalid api key. Check your settings",
+                        logger.WARNING)
 
                 elif '0 results matched your terms' in parsedJSON.get('notice'):
                     return True
 
                 else:
-                    logger.log(u"Unknown error: %s"  % description_text, logger.DEBUG)
+                    logger.log(
+                        u"Unknown error: %s" %
+                        description_text, logger.DEBUG)
                     return False
 
             return True
 
     def _get_season_search_strings(self, ep_obj):
-        return [x for x in show_name_helpers.makeSceneSeasonSearchString(self.show, ep_obj)]
+        return [x for x in show_name_helpers.makeSceneSeasonSearchString(
+            self.show, ep_obj)]
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
-        return [x for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
+        return [x for x in show_name_helpers.makeSceneSearchString(
+            self.show, ep_obj)]
 
     def _get_title_and_url(self, item):
         return (item['release'], item['getnzb'])
@@ -94,7 +100,8 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
 
         return size
 
-    def _doSearch(self, search, search_mode='eponly', epcount=0, retention=0, epObj=None):
+    def _doSearch(self, search, search_mode='eponly',
+                  epcount=0, retention=0, epObj=None):
 
         self._checkAuth()
 
@@ -108,9 +115,10 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
         if retention or not params['retention']:
             params['retention'] = retention
 
-        searchURL = 'https://api.omgwtfnzbs.org/json/?' + urllib.urlencode(params)
+        searchURL = 'https://api.omgwtfnzbs.org/json/?' + \
+            urllib.urlencode(params)
         logger.log(u"Search string: %s" % params, logger.DEBUG)
-        logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+        logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
 
         parsedJSON = self.getURL(searchURL, json=True)
         if not parsedJSON:
@@ -121,7 +129,9 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
 
             for item in parsedJSON:
                 if 'release' in item and 'getnzb' in item:
-                    logger.log(u"Found result: %s " % item.get('title'), logger.DEBUG)
+                    logger.log(
+                        u"Found result: %s " %
+                        item.get('title'), logger.DEBUG)
                     results.append(item)
 
             return results
@@ -138,17 +148,24 @@ class OmgwtfnzbsProvider(generic.NZBProvider):
 
                     title, url = self._get_title_and_url(item)
                     try:
-                        result_date = datetime.fromtimestamp(int(item['usenetage']))
+                        result_date = datetime.fromtimestamp(
+                            int(item['usenetage']))
                     except Exception:
                         result_date = None
 
                     if result_date:
-                        results.append(classes.Proper(title, url, result_date, self.show))
+                        results.append(
+                            classes.Proper(
+                                title,
+                                url,
+                                result_date,
+                                self.show))
 
         return results
 
 
 class OmgwtfnzbsCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
         self.minTime = 20
@@ -179,7 +196,8 @@ class OmgwtfnzbsCache(tvcache.TVCache):
                   'eng': 1,
                   'catid': '19,20'}  # SD,HD
 
-        rss_url = 'https://rss.omgwtfnzbs.org/rss-download.php?' + urllib.urlencode(params)
+        rss_url = 'https://rss.omgwtfnzbs.org/rss-download.php?' + \
+            urllib.urlencode(params)
 
         logger.log(u"Cache update URL: %s" % rss_url, logger.DEBUG)
 

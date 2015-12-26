@@ -20,6 +20,7 @@ from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard.providers import generic
 
+
 class STRIKEProvider(generic.TorrentProvider):
 
     def __init__(self):
@@ -35,20 +36,24 @@ class STRIKEProvider(generic.TorrentProvider):
     def isEnabled(self):
         return self.enabled
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        for mode in search_strings.keys(): #Mode = RSS, Season, Episode
+        for mode in search_strings.keys():  # Mode = RSS, Season, Episode
             logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
-                    logger.log(u"Search string: " + search_string.strip(), logger.DEBUG)
+                    logger.log(
+                        u"Search string: " +
+                        search_string.strip(),
+                        logger.DEBUG)
 
                 searchURL = self.url + "api/v2/torrents/search/?category=TV&phrase=" + search_string
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
                 jdata = self.getURL(searchURL, json=True)
                 if not jdata:
                     logger.log("No data returned from provider", logger.DEBUG)
@@ -59,17 +64,21 @@ class STRIKEProvider(generic.TorrentProvider):
                 for item in jdata['torrents']:
                     seeders = ('seeds' in item and item['seeds']) or 0
                     leechers = ('leeches' in item and item['leeches']) or 0
-                    title = ('torrent_title' in item and item['torrent_title']) or ''
+                    title = ('torrent_title' in item and item[
+                             'torrent_title']) or ''
                     size = ('size' in item and item['size']) or 0
-                    download_url = ('magnet_uri' in item and item['magnet_uri']) or ''
+                    download_url = (
+                        'magnet_uri' in item and item['magnet_uri']) or ''
 
                     if not all([title, download_url]):
                         continue
 
-                    #Filter unseeded torrent
+                    # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode != 'RSS':
-                            logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                            logger.log(
+                                u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers), logger.DEBUG)
                         continue
 
                     if mode != 'RSS':
@@ -78,19 +87,19 @@ class STRIKEProvider(generic.TorrentProvider):
                     item = title, download_url, size, seeders, leechers
                     items[mode].append(item)
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
 
         return results
 
-
     def seedRatio(self):
         return self.ratio
 
 
 class StrikeCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)

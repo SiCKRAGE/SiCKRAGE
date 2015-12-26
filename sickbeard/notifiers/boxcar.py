@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2
+import urllib
+import urllib2
 import time
 
 import sickbeard
@@ -30,8 +31,10 @@ API_URL = "https://boxcar.io/devices/providers/fWc4sgSmpcN6JujtBmR6/notification
 
 
 class BoxcarNotifier:
+
     def test_notify(self, boxcar_username):
-        return self._notifyBoxcar("This is a test notification from Sick Beard", "Test", boxcar_username, force=True)
+        return self._notifyBoxcar(
+            "This is a test notification from Sick Beard", "Test", boxcar_username, force=True)
 
     def _sendBoxcar(self, msg, title, email, subscribe=False):
         """
@@ -63,46 +66,58 @@ class BoxcarNotifier:
                 'notification[from_remote_service_id]': int(time.time())
             })
 
-
         # send the request to boxcar
         try:
             req = urllib2.Request(curUrl)
             handle = urllib2.urlopen(req, data)
             handle.close()
 
-        except urllib2.HTTPError, e:
-            # if we get an error back that doesn't have an error code then who knows what's really happening
+        except urllib2.HTTPError as e:
+            # if we get an error back that doesn't have an error code then who
+            # knows what's really happening
             if not hasattr(e, 'code'):
-                logger.log("Boxcar notification failed. Error code: " + ex(e), logger.ERROR)
+                logger.log(
+                    "Boxcar notification failed. Error code: " +
+                    ex(e),
+                    logger.ERROR)
                 return False
             else:
-                logger.log("Boxcar notification failed. Error code: " + str(e.code), logger.WARNING)
+                logger.log("Boxcar notification failed. Error code: " +
+                           str(e.code), logger.WARNING)
 
-            # HTTP status 404 if the provided email address isn't a Boxcar user.
+            # HTTP status 404 if the provided email address isn't a Boxcar
+            # user.
             if e.code == 404:
-                logger.log("Username is wrong/not a boxcar email. Boxcar will send an email to it", logger.WARNING)
+                logger.log(
+                    "Username is wrong/not a boxcar email. Boxcar will send an email to it",
+                    logger.WARNING)
                 return False
 
-            # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
+            # For HTTP status code 401's, it is because you are passing in
+            # either an invalid token, or the user has not added your service.
             elif e.code == 401:
 
-                # If the user has already added your service, we'll return an HTTP status code of 401.
+                # If the user has already added your service, we'll return an
+                # HTTP status code of 401.
                 if subscribe:
                     logger.log("Already subscribed to service", logger.ERROR)
-                    # i dont know if this is true or false ... its neither but i also dont know how we got here in the first place
+                    # i dont know if this is true or false ... its neither but
+                    # i also dont know how we got here in the first place
                     return False
 
-                #HTTP status 401 if the user doesn't have the service added
+                # HTTP status 401 if the user doesn't have the service added
                 else:
                     subscribeNote = self._sendBoxcar(msg, title, email, True)
                     if subscribeNote:
                         logger.log("Subscription send", logger.DEBUG)
                         return True
                     else:
-                        logger.log("Subscription could not be send", logger.ERROR)
+                        logger.log(
+                            "Subscription could not be send", logger.ERROR)
                         return False
 
-            # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
+            # If you receive an HTTP status code of 400, it is because you
+            # failed to send the proper parameters
             elif e.code == 400:
                 logger.log("Wrong data sent to boxcar", logger.ERROR)
                 return False
@@ -114,19 +129,19 @@ class BoxcarNotifier:
         if sickbeard.BOXCAR_NOTIFY_ONSNATCH:
             self._notifyBoxcar(title, ep_name)
 
-
     def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
         if sickbeard.BOXCAR_NOTIFY_ONDOWNLOAD:
             self._notifyBoxcar(title, ep_name)
 
-    def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
+    def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[
+                                 NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyBoxcar(title, ep_name + ": " + lang)
 
-    def notify_git_update(self, new_version = "??"):
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_BOXCAR:
-            update_text=notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title=notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
+            title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notifyBoxcar(title, update_text + new_version)
 
     def _notifyBoxcar(self, title, message, username=None, force=False):
@@ -140,7 +155,9 @@ class BoxcarNotifier:
         """
 
         if not sickbeard.USE_BOXCAR and not force:
-            logger.log("Notification for Boxcar not enabled, skipping this notification", logger.DEBUG)
+            logger.log(
+                "Notification for Boxcar not enabled, skipping this notification",
+                logger.DEBUG)
             return False
 
         # if no username was given then use the one from the config

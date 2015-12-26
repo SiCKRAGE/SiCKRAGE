@@ -22,10 +22,12 @@ import sickbeard
 MESSAGE = 'notice'
 ERROR = 'error'
 
+
 class Notifications(object):
     """
     A queue of Notification objects.
     """
+
     def __init__(self):
         self._messages = []
         self._errors = []
@@ -60,8 +62,10 @@ class Notifications(object):
         self._errors = [x for x in self._errors if not x.is_expired()]
         self._messages = [x for x in self._messages if not x.is_expired()]
 
-        # return any notifications that haven't been shown to the client already
-        return [x.see(remote_ip) for x in self._errors + self._messages if x.is_new(remote_ip)]
+        # return any notifications that haven't been shown to the client
+        # already
+        return [x.see(remote_ip) for x in self._errors +
+                self._messages if x.is_new(remote_ip)]
 
 # static notification queue object
 notifications = Notifications()
@@ -72,6 +76,7 @@ class Notification(object):
     Represents a single notification. Tracks its own timeout and a list of which clients have
     seen it before.
     """
+
     def __init__(self, title, message='', type=None, timeout=None):
         self.title = title
         self.message = message
@@ -101,7 +106,6 @@ class Notification(object):
         """
         return datetime.datetime.now() - self._when > self._timeout
 
-
     def see(self, remote_ip='127.0.0.1'):
         """
         Returns this notification object and marks it as seen by the client ip
@@ -109,11 +113,13 @@ class Notification(object):
         self._seen.append(remote_ip)
         return self
 
+
 class ProgressIndicator():
 
     def __init__(self, percentComplete=0, currentStatus={'title': ''}):
         self.percentComplete = percentComplete
         self.currentStatus = currentStatus
+
 
 class ProgressIndicators():
     _pi = {'massUpdate': [],
@@ -128,7 +134,7 @@ class ProgressIndicators():
 
         # if any of the progress indicators are done take them off the list
         for curPI in ProgressIndicators._pi[name]:
-            if curPI != None and curPI.percentComplete() == 100:
+            if curPI is not None and curPI.percentComplete() == 100:
                 ProgressIndicators._pi[name].remove(curPI)
 
         # return the list of progress indicators associated with this name
@@ -138,10 +144,12 @@ class ProgressIndicators():
     def setIndicator(name, indicator):
         ProgressIndicators._pi[name].append(indicator)
 
+
 class QueueProgressIndicator():
     """
     A class used by the UI to show the progress of the queue or a part of it.
     """
+
     def __init__(self, name, queueItemList):
         self.queueItemList = queueItemList
         self.name = name
@@ -156,7 +164,8 @@ class QueueProgressIndicator():
         return len([x for x in self.queueItemList if x.isInQueue()])
 
     def nextName(self):
-        for curItem in [sickbeard.showQueueScheduler.action.currentItem]+sickbeard.showQueueScheduler.action.queue: #@UndefinedVariable
+        for curItem in [sickbeard.showQueueScheduler.action.currentItem] + \
+                sickbeard.showQueueScheduler.action.queue:  # @UndefinedVariable
             if curItem in self.queueItemList:
                 return curItem.name
 
@@ -169,9 +178,11 @@ class QueueProgressIndicator():
         if numTotal == 0:
             return 0
         else:
-            return int(float(numFinished)/float(numTotal)*100)
+            return int(float(numFinished) / float(numTotal) * 100)
+
 
 class LoadingTVShow():
+
     def __init__(self, dir):
         self.dir = dir
         self.show = None

@@ -11,6 +11,7 @@ from sickbeard import logger
 from .generic import GenericClient
 from synchronousdeluge import DelugeClient
 
+
 class DelugeDAPI(GenericClient):
 
     drpc = None
@@ -24,11 +25,15 @@ class DelugeDAPI(GenericClient):
 
         return True
 
-    def connect(self, reconnect = False):
+    def connect(self, reconnect=False):
         hostname = self.host.replace("/", "").split(':')
 
         if not self.drpc or reconnect:
-            self.drpc = DelugeRPC(hostname[1], port = hostname[2], username = self.username, password = self.password)
+            self.drpc = DelugeRPC(
+                hostname[1],
+                port=hostname[2],
+                username=self.username,
+                password=self.password)
 
         return self.drpc
 
@@ -41,7 +46,8 @@ class DelugeDAPI(GenericClient):
             'add_paused': sickbeard.TORRENT_PAUSED
         }
 
-        remote_torrent = self.drpc.add_torrent_magnet(result.url, options, result.hash)
+        remote_torrent = self.drpc.add_torrent_magnet(
+            result.url, options, result.hash)
 
         if not remote_torrent:
             return None
@@ -55,7 +61,8 @@ class DelugeDAPI(GenericClient):
         if result.show.is_anime:
             label = sickbeard.TORRENT_LABEL_ANIME
 
-        if not result.content: result.content = {}
+        if not result.content:
+            result.content = {}
 
         if not result.content:
             return None
@@ -64,7 +71,8 @@ class DelugeDAPI(GenericClient):
             'add_paused': sickbeard.TORRENT_PAUSED
         }
 
-        remote_torrent = self.drpc.add_torrent_file(result.name + '.torrent', result.content, options, result.hash)
+        remote_torrent = self.drpc.add_torrent_file(
+            result.name + '.torrent', result.content, options, result.hash)
 
         if not remote_torrent:
             return None
@@ -79,13 +87,15 @@ class DelugeDAPI(GenericClient):
         if result.show.is_anime:
             label = sickbeard.TORRENT_LABEL_ANIME
         if ' ' in label:
-            logger.log(self.name + u': Invalid label. Label must not contain a space', logger.ERROR)
+            logger.log(
+                self.name +
+                u': Invalid label. Label must not contain a space',
+                logger.ERROR)
             return False
 
         if label:
             return self.drpc.set_torrent_label(result.hash, label)
         return True
-
 
     def _set_torrent_ratio(self, result):
         if result.ratio:
@@ -117,6 +127,7 @@ class DelugeDAPI(GenericClient):
         else:
             return False, 'Error: Unable to Authenticate!  Please check your config!'
 
+
 class DelugeRPC(object):
 
     host = 'localhost'
@@ -125,7 +136,8 @@ class DelugeRPC(object):
     password = None
     client = None
 
-    def __init__(self, host = 'localhost', port = 58846, username = None, password = None):
+    def __init__(self, host='localhost', port=58846,
+                 username=None, password=None):
         super(DelugeRPC, self).__init__()
 
         self.host = host
@@ -135,7 +147,8 @@ class DelugeRPC(object):
 
     def connect(self):
         self.client = DelugeClient()
-        self.client.connect(self.host, int(self.port), self.username, self.password)
+        self.client.connect(self.host, int(self.port),
+                            self.username, self.password)
 
     def test(self):
         try:
@@ -148,7 +161,8 @@ class DelugeRPC(object):
         torrent_id = False
         try:
             self.connect()
-            torrent_id = self.client.core.add_torrent_magnet(torrent, options).get()
+            torrent_id = self.client.core.add_torrent_magnet(
+                torrent, options).get()
             if not torrent_id:
                 torrent_id = self._check_torrent(torrent_hash)
         except Exception as err:
@@ -163,7 +177,8 @@ class DelugeRPC(object):
         torrent_id = False
         try:
             self.connect()
-            torrent_id = self.client.core.add_torrent_file(filename, b64encode(torrent), options).get()
+            torrent_id = self.client.core.add_torrent_file(
+                filename, b64encode(torrent), options).get()
             if not torrent_id:
                 torrent_id = self._check_torrent(torrent_hash)
         except Exception as err:
@@ -188,7 +203,8 @@ class DelugeRPC(object):
     def set_torrent_path(self, torrent_id, path):
         try:
             self.connect()
-            self.client.core.set_torrent_move_completed_path(torrent_id, path).get()
+            self.client.core.set_torrent_move_completed_path(
+                torrent_id, path).get()
             self.client.core.set_torrent_move_completed(torrent_id, 1).get()
         except Exception as err:
             return False
@@ -202,7 +218,7 @@ class DelugeRPC(object):
             self.connect()
             if priority:
                 self.client.core.queue_top([torrent_ids]).get()
-        except Exception, err:
+        except Exception as err:
             return False
         finally:
             if self.client:
@@ -214,7 +230,7 @@ class DelugeRPC(object):
             self.connect()
             self.client.core.set_torrent_stop_at_ratio(torrent_ids, True).get()
             self.client.core.set_torrent_stop_ratio(torrent_ids, ratio).get()
-        except Exception, err:
+        except Exception as err:
             return False
         finally:
             if self.client:
@@ -236,9 +252,12 @@ class DelugeRPC(object):
         self.client.disconnect()
 
     def _check_torrent(self, torrent_hash):
-        torrent_id = self.client.core.get_torrent_status(torrent_hash, {}).get()
+        torrent_id = self.client.core.get_torrent_status(
+            torrent_hash, {}).get()
         if torrent_id['hash']:
-            logger.log('DelugeD: Torrent already exists in Deluge', logger.DEBUG)
+            logger.log(
+                'DelugeD: Torrent already exists in Deluge',
+                logger.DEBUG)
             return torrent_hash
         return False
 

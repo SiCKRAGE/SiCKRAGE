@@ -36,6 +36,7 @@ from sickrage.helper.exceptions import AuthException, ex
 
 
 class CacheDBConnection(db.DBConnection):
+
     def __init__(self, providerName):
         db.DBConnection.__init__(self, "cache.db")
 
@@ -45,13 +46,21 @@ class CacheDBConnection(db.DBConnection):
                 self.action(
                     "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
             else:
-                sqlResults = self.select("SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
+                sqlResults = self.select(
+                    "SELECT url, COUNT(url) AS count FROM [" +
+                    providerName +
+                    "] GROUP BY url HAVING count > 1")
 
                 for cur_dupe in sqlResults:
-                    self.action("DELETE FROM [" + providerName + "] WHERE url = ?", [cur_dupe["url"]])
+                    self.action(
+                        "DELETE FROM [" + providerName + "] WHERE url = ?", [cur_dupe["url"]])
 
-            # add unique index to prevent further dupes from happening if one does not exist
-            self.action("CREATE UNIQUE INDEX IF NOT EXISTS idx_url ON [" + providerName + "] (url)")
+            # add unique index to prevent further dupes from happening if one
+            # does not exist
+            self.action(
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_url ON [" +
+                providerName +
+                "] (url)")
 
             # add release_group column to table if missing
             if not self.hasColumn(providerName, 'release_group'):
@@ -61,20 +70,22 @@ class CacheDBConnection(db.DBConnection):
             if not self.hasColumn(providerName, 'version'):
                 self.addColumn(providerName, 'version', "NUMERIC", "-1")
 
-        except Exception, e:
+        except Exception as e:
             if str(e) != "table [" + providerName + "] already exists":
                 raise
 
         # Create the table if it's not already there
         try:
             if not self.hasTable('lastUpdate'):
-                self.action("CREATE TABLE lastUpdate (provider TEXT, time NUMERIC)")
-        except Exception, e:
+                self.action(
+                    "CREATE TABLE lastUpdate (provider TEXT, time NUMERIC)")
+        except Exception as e:
             if str(e) != "table lastUpdate already exists":
                 raise
 
 
 class TVCache():
+
     def __init__(self, provider):
         self.provider = provider
         self.providerID = self.provider.getID()
@@ -129,21 +140,28 @@ class TVCache():
                     myDB = self._getDB()
                     myDB.mass_action(cl)
 
-        except AuthException, e:
+        except AuthException as e:
             logger.log(u"Authentication error: " + ex(e), logger.ERROR)
-        except Exception, e:
-            logger.log(u"Error while searching " + self.provider.name + ", skipping: " + repr(e), logger.DEBUG)
+        except Exception as e:
+            logger.log(
+                u"Error while searching " +
+                self.provider.name +
+                ", skipping: " +
+                repr(e),
+                logger.DEBUG)
 
     def getRSSFeed(self, url, post_data=None, items=[]):
         handlers = []
 
         if self.provider.proxy.isEnabled():
-            self.provider.headers.update({'Referer': self.provider.proxy.getProxyURL()})
+            self.provider.headers.update(
+                {'Referer': self.provider.proxy.getProxyURL()})
         elif sickbeard.PROXY_SETTING:
             logger.log("Using proxy for url: " + url, logger.DEBUG)
             scheme, address = urllib2.splittype(sickbeard.PROXY_SETTING)
             address = sickbeard.PROXY_SETTING if scheme else 'http://' + sickbeard.PROXY_SETTING
-            handlers = [urllib2.ProxyHandler({'http': address, 'https': address})]
+            handlers = [urllib2.ProxyHandler(
+                {'http': address, 'https': address})]
             self.provider.headers.update({'Referer': address})
         elif 'Referer' in self.provider.headers:
             self.provider.headers.pop('Referer')
@@ -170,21 +188,28 @@ class TVCache():
             title = self._translateTitle(title)
             url = self._translateLinkURL(url)
 
-            logger.log(u"Attempting to add item to cache: " + title, logger.DEBUG)
+            logger.log(
+                u"Attempting to add item to cache: " +
+                title,
+                logger.DEBUG)
             return self._addCacheEntry(title, url)
 
         else:
             logger.log(
-                u"The data returned from the " + self.provider.name + " feed is incomplete, this result is unusable",
+                u"The data returned from the " + self.provider.name +
+                " feed is incomplete, this result is unusable",
                 logger.DEBUG)
 
     def _getLastUpdate(self):
         myDB = self._getDB()
-        sqlResults = myDB.select("SELECT time FROM lastUpdate WHERE provider = ?", [self.providerID])
+        sqlResults = myDB.select(
+            "SELECT time FROM lastUpdate WHERE provider = ?", [
+                self.providerID])
 
         if sqlResults:
             lastTime = int(sqlResults[0]["time"])
-            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
+            if lastTime > int(time.mktime(
+                    datetime.datetime.today().timetuple())):
                 lastTime = 0
         else:
             lastTime = 0
@@ -193,17 +218,19 @@ class TVCache():
 
     def _getLastSearch(self):
         myDB = self._getDB()
-        sqlResults = myDB.select("SELECT time FROM lastSearch WHERE provider = ?", [self.providerID])
+        sqlResults = myDB.select(
+            "SELECT time FROM lastSearch WHERE provider = ?", [
+                self.providerID])
 
         if sqlResults:
             lastTime = int(sqlResults[0]["time"])
-            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
+            if lastTime > int(time.mktime(
+                    datetime.datetime.today().timetuple())):
                 lastTime = 0
         else:
             lastTime = 0
 
         return datetime.datetime.fromtimestamp(lastTime)
-
 
     def setLastUpdate(self, toDate=None):
         if not toDate:
@@ -229,13 +256,18 @@ class TVCache():
     def shouldUpdate(self):
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
-            logger.log(u"Last update was too soon, using old cache: " + str(self.lastUpdate) + ". Updated less then " + str(self.minTime) + " minutes ago", logger.DEBUG)
+            logger.log(u"Last update was too soon, using old cache: " +
+                       str(self.lastUpdate) +
+                       ". Updated less then " +
+                       str(self.minTime) +
+                       " minutes ago", logger.DEBUG)
             return False
 
         return True
 
     def shouldClearCache(self):
-        # if daily search hasn't used our previous results yet then don't clear the cache
+        # if daily search hasn't used our previous results yet then don't clear
+        # the cache
         if self.lastUpdate > self.lastSearch:
             return False
 
@@ -249,22 +281,32 @@ class TVCache():
             # create showObj from indexer_id if available
             showObj = None
             if indexer_id:
-                showObj = helpers.findCertainShow(sickbeard.showList, indexer_id)
+                showObj = helpers.findCertainShow(
+                    sickbeard.showList, indexer_id)
 
             try:
                 myParser = NameParser(showObj=showObj)
                 parse_result = myParser.parse(name)
             except InvalidNameException:
-                logger.log(u"Unable to parse the filename " + name + " into a valid episode", logger.DEBUG)
+                logger.log(
+                    u"Unable to parse the filename " +
+                    name +
+                    " into a valid episode",
+                    logger.DEBUG)
                 return None
             except InvalidShowException:
-                logger.log(u"Unable to parse the filename " + name + " into a valid show", logger.DEBUG)
+                logger.log(
+                    u"Unable to parse the filename " +
+                    name +
+                    " into a valid show",
+                    logger.DEBUG)
                 return None
 
             if not parse_result or not parse_result.series_name:
                 return None
 
-        # if we made it this far then lets add the parsed result to cache for usager later on
+        # if we made it this far then lets add the parsed result to cache for
+        # usager later on
         season = parse_result.season_number if parse_result.season_number else 1
         episodes = parse_result.episode_numbers
 
@@ -273,7 +315,9 @@ class TVCache():
             episodeText = "|" + "|".join(map(str, episodes)) + "|"
 
             # get the current timestamp
-            curTimestamp = int(time.mktime(datetime.datetime.today().timetuple()))
+            curTimestamp = int(
+                time.mktime(
+                    datetime.datetime.today().timetuple()))
 
             # get quality of release
             quality = parse_result.quality
@@ -286,37 +330,46 @@ class TVCache():
             # get version
             version = parse_result.version
 
-            logger.log(u"Added RSS item: [" + name + "] to cache: [" + self.providerID + "]", logger.DEBUG)
+            logger.log(
+                u"Added RSS item: [" +
+                name +
+                "] to cache: [" +
+                self.providerID +
+                "]",
+                logger.DEBUG)
 
             return [
-                "INSERT OR IGNORE INTO [" + self.providerID + "] (name, season, episodes, indexerid, url, time, quality, release_group, version) VALUES (?,?,?,?,?,?,?,?,?)",
+                "INSERT OR IGNORE INTO [" + self.providerID +
+                "] (name, season, episodes, indexerid, url, time, quality, release_group, version) VALUES (?,?,?,?,?,?,?,?,?)",
                 [name, season, episodeText, parse_result.show.indexerid, url, curTimestamp, quality, release_group, version]]
 
-
     def searchCache(self, episode, manualSearch=False, downCurQuality=False):
-        neededEps = self.findNeededEpisodes(episode, manualSearch, downCurQuality)
+        neededEps = self.findNeededEpisodes(
+            episode, manualSearch, downCurQuality)
         return neededEps[episode] if episode in neededEps else []
 
     def listPropers(self, date=None, delimiter="."):
         myDB = self._getDB()
-        sql = "SELECT * FROM [" + self.providerID + "] WHERE name LIKE '%.PROPER.%' OR name LIKE '%.REPACK.%'"
+        sql = "SELECT * FROM [" + self.providerID + \
+            "] WHERE name LIKE '%.PROPER.%' OR name LIKE '%.REPACK.%'"
 
-        if date != None:
+        if date is not None:
             sql += " AND time >= " + str(int(time.mktime(date.timetuple())))
 
         return filter(lambda x: x['indexerid'] != 0, myDB.select(sql))
 
-
-    def findNeededEpisodes(self, episode, manualSearch=False, downCurQuality=False):
+    def findNeededEpisodes(
+            self, episode, manualSearch=False, downCurQuality=False):
         neededEps = {}
         cl = []
 
         myDB = self._getDB()
         if not episode:
             sqlResults = myDB.select("SELECT * FROM [" + self.providerID + "]")
-        elif type(episode) != list:
+        elif not isinstance(episode, list):
             sqlResults = myDB.select(
-                "SELECT * FROM [" + self.providerID + "] WHERE indexerid = ? AND season = ? AND episodes LIKE ?",
+                "SELECT * FROM [" + self.providerID +
+                "] WHERE indexerid = ? AND season = ? AND episodes LIKE ?",
                 [episode.show.indexerid, episode.season, "%|" + str(episode.episode) + "|%"])
         else:
             for epObj in episode:
@@ -334,14 +387,18 @@ class TVCache():
             if not show_name_helpers.filterBadReleases(curResult["name"]):
                 continue
 
-            # get the show object, or if it's not one of our shows then ignore it
-            showObj = helpers.findCertainShow(sickbeard.showList, int(curResult["indexerid"]))
+            # get the show object, or if it's not one of our shows then ignore
+            # it
+            showObj = helpers.findCertainShow(
+                sickbeard.showList, int(
+                    curResult["indexerid"]))
             if not showObj:
                 continue
 
             # skip if provider is anime only and show is not anime
             if self.provider.anime_only and not showObj.is_anime:
-                logger.log(u"" + str(showObj.name) + " is not an anime, skiping", logger.DEBUG)
+                logger.log(u"" + str(showObj.name) +
+                           " is not an anime, skiping", logger.DEBUG)
                 continue
 
             # get season and ep data (ignoring multi-eps for now)
@@ -360,7 +417,8 @@ class TVCache():
             curVersion = curResult["version"]
 
             # if the show says we want that episode then add it to the list
-            if not showObj.wantEpisode(curSeason, curEp, curQuality, manualSearch, downCurQuality):
+            if not showObj.wantEpisode(
+                    curSeason, curEp, curQuality, manualSearch, downCurQuality):
                 logger.log(u"Skipping " + curResult["name"] + " because we don't want an episode that's " +
                            Quality.qualityStrings[curQuality], logger.INFO)
                 continue
@@ -392,4 +450,3 @@ class TVCache():
         self.setLastSearch()
 
         return neededEps
-

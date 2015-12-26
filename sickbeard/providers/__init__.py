@@ -68,7 +68,7 @@ __all__ = ['womble',
            'gftracker',
            'hdspace',
            'newpct'
-]
+           ]
 
 import sickbeard
 
@@ -76,8 +76,10 @@ from sickbeard import logger
 from os import sys
 from random import shuffle
 
+
 def sortedProviderList(randomize=False):
-    initialList = sickbeard.providerList + sickbeard.newznabProviderList + sickbeard.torrentRssProviderList
+    initialList = sickbeard.providerList + \
+        sickbeard.newznabProviderList + sickbeard.torrentRssProviderList
     providerDict = dict(zip([x.getID() for x in initialList], initialList))
 
     newList = []
@@ -89,7 +91,8 @@ def sortedProviderList(randomize=False):
 
     # add all enabled providers first
     for curModule in providerDict:
-        if providerDict[curModule] not in newList and providerDict[curModule].isEnabled():
+        if providerDict[curModule] not in newList and providerDict[
+                curModule].isEnabled():
             newList.append(providerDict[curModule])
 
     # add any modules that are missing from that list
@@ -108,8 +111,11 @@ def makeProviderList():
 
 
 def getNewznabProviderList(data):
-    defaultList = [makeNewznabProvider(x) for x in getDefaultNewznabProviders().split('!!!')]
-    providerList = filter(lambda x: x, [makeNewznabProvider(x) for x in data.split('!!!')])
+    defaultList = [makeNewznabProvider(
+        x) for x in getDefaultNewznabProviders().split('!!!')]
+    providerList = filter(
+        lambda x: x, [
+            makeNewznabProvider(x) for x in data.split('!!!')])
 
     seen_values = set()
     providerListDeduped = []
@@ -135,9 +141,12 @@ def getNewznabProviderList(data):
             providerDict[curDefault.name].url = curDefault.url
             providerDict[curDefault.name].needs_auth = curDefault.needs_auth
             providerDict[curDefault.name].search_mode = curDefault.search_mode
-            providerDict[curDefault.name].search_fallback = curDefault.search_fallback
-            providerDict[curDefault.name].enable_daily = curDefault.enable_daily
-            providerDict[curDefault.name].enable_backlog = curDefault.enable_backlog
+            providerDict[
+                curDefault.name].search_fallback = curDefault.search_fallback
+            providerDict[
+                curDefault.name].enable_daily = curDefault.enable_daily
+            providerDict[
+                curDefault.name].enable_backlog = curDefault.enable_backlog
 
     return filter(lambda x: x, providerList)
 
@@ -162,7 +171,11 @@ def makeNewznabProvider(configString):
             catIDs = values[3]
             enabled = values[4]
     except ValueError:
-        logger.log(u"Skipping Newznab provider string: '" + configString + "', incorrect format", logger.ERROR)
+        logger.log(
+            u"Skipping Newznab provider string: '" +
+            configString +
+            "', incorrect format",
+            logger.ERROR)
         return None
 
     newznab = sys.modules['sickbeard.providers.newznab']
@@ -176,7 +189,9 @@ def makeNewznabProvider(configString):
 
 
 def getTorrentRssProviderList(data):
-    providerList = filter(lambda x: x, [makeTorrentRssProvider(x) for x in data.split('!!!')])
+    providerList = filter(
+        lambda x: x, [
+            makeTorrentRssProvider(x) for x in data.split('!!!')])
 
     seen_values = set()
     providerListDeduped = []
@@ -228,11 +243,12 @@ def makeTorrentRssProvider(configString):
 
 
 def getDefaultNewznabProviders():
-    #name|url|key|catIDs|enabled|search_mode|search_fallback|enable_daily|enable_backlog
+    # name|url|key|catIDs|enabled|search_mode|search_fallback|enable_daily|enable_backlog
     return 'NZB.Cat|https://nzb.cat/||5030,5040,5010|0|eponly|1|1|1!!!' + \
            'NZBGeek|https://api.nzbgeek.info/||5030,5040|0|eponly|0|0|0!!!' + \
            'NZBs.org|https://nzbs.org/||5030,5040|0|eponly|0|0|0!!!' + \
            'Usenet-Crawler|https://www.usenet-crawler.com/||5030,5040|0|eponly|0|0|0'
+
 
 def getProviderModule(name):
     name = name.lower()

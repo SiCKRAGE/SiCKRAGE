@@ -22,6 +22,7 @@ from sickbeard.event_queue import Events
 
 
 class Restart:
+
     def __init__(self):
         pass
 

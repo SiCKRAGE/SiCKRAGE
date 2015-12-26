@@ -24,12 +24,14 @@ import re
 import uuid
 
 from random import shuffle
+from functools import reduce
 
 SPOOF_USER_AGENT = False
 
 # If some provider has an issue with functionality of SR, other than user agents, it's best to come talk to us rather than block.
 # It is no different than us going to a provider if we have questions or issues. Be a team player here.
-# This is disabled, was only added for testing, and has no config.ini or web ui setting. To enable, set SPOOF_USER_AGENT = True
+# This is disabled, was only added for testing, and has no config.ini or
+# web ui setting. To enable, set SPOOF_USER_AGENT = True
 user_agents = ['Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36'
                'Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0'
@@ -38,10 +40,17 @@ user_agents = ['Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gec
                'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25'
                'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko'
                'Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'
-              ]
+               ]
 
 INSTANCE_ID = str(uuid.uuid1())
-USER_AGENT = ('SickRage/(' + platform.system() + '; ' + platform.release() + '; ' + INSTANCE_ID + ')')
+USER_AGENT = (
+    'SickRage/(' +
+    platform.system() +
+    '; ' +
+    platform.release() +
+    '; ' +
+    INSTANCE_ID +
+    ')')
 
 if SPOOF_USER_AGENT:
     shuffle(user_agents)
@@ -58,13 +67,13 @@ subtitleExtensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
 cpu_presets = {'HIGH': 5,
                'NORMAL': 2,
                'LOW': 1
-              }
+               }
 
-### Other constants
+# Other constants
 MULTI_EP_RESULT = -1
 SEASON_RESULT = -2
 
-### Notification Types
+# Notification Types
 NOTIFY_SNATCH = 1
 NOTIFY_DOWNLOAD = 2
 NOTIFY_SUBTITLE_DOWNLOAD = 3
@@ -78,18 +87,20 @@ notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] = "Subtitle Download Finished"
 notifyStrings[NOTIFY_GIT_UPDATE] = "SickRage Updated"
 notifyStrings[NOTIFY_GIT_UPDATE_TEXT] = "SickRage Updated To Commit#: "
 
-### Episode statuses
+# Episode statuses
 UNKNOWN = -1  # should never happen
 UNAIRED = 1  # episodes that haven't aired yet
 SNATCHED = 2  # qualified with quality
 WANTED = 3  # episodes we don't have but want to get
 DOWNLOADED = 4  # qualified with quality
 SKIPPED = 5  # episodes we don't want
-ARCHIVED = 6  # episodes that you don't have locally (counts toward download completion stats)
+# episodes that you don't have locally (counts toward download completion
+# stats)
+ARCHIVED = 6
 IGNORED = 7  # episodes that you don't want included in your download stats
 SNATCHED_PROPER = 9  # qualified with quality
 SUBTITLED = 10  # qualified with quality
-FAILED = 11  #episode downloaded or snatched we don't want
+FAILED = 11  # episode downloaded or snatched we don't want
 SNATCHED_BEST = 12  # episode redownloaded using best quality
 
 NAMING_REPEAT = 1
@@ -105,9 +116,12 @@ multiEpStrings[NAMING_SEPARATED_REPEAT] = "Repeat (Separated)"
 multiEpStrings[NAMING_DUPLICATE] = "Duplicate"
 multiEpStrings[NAMING_EXTEND] = "Extend"
 multiEpStrings[NAMING_LIMITED_EXTEND] = "Extend (Limited)"
-multiEpStrings[NAMING_LIMITED_EXTEND_E_PREFIXED] = "Extend (Limited, E-prefixed)"
+multiEpStrings[
+    NAMING_LIMITED_EXTEND_E_PREFIXED] = "Extend (Limited, E-prefixed)"
 
 # pylint: disable=W0232,C1001
+
+
 class Quality:
     NONE = 0  # 0
     SDTV = 1  # 1
@@ -123,7 +137,8 @@ class Quality:
     ANYWEBDL = HDWEBDL | FULLHDWEBDL  # 96
     ANYBLURAY = HDBLURAY | FULLHDBLURAY  # 384
 
-    # put these bits at the other end of the spectrum, far enough out that they shouldn't interfere
+    # put these bits at the other end of the spectrum, far enough out that
+    # they shouldn't interfere
     UNKNOWN = 1 << 15  # 32768
 
     qualityStrings = {NONE: "N/A",
@@ -175,6 +190,7 @@ class Quality:
                       FAILED: "Failed",
                       SNATCHED_BEST: "Snatched (Best)",
                       ARCHIVED: "Archived"}
+
     @staticmethod
     def _getStatusStrings(status):
         """
@@ -186,7 +202,7 @@ class Quality:
         toReturn = {}
         for q in Quality.qualityStrings.keys():
             toReturn[Quality.compositeStatus(status, q)] = Quality.statusPrefixes[status] + " (" + \
-                                                           Quality.qualityStrings[q] + ")"
+                Quality.qualityStrings[q] + ")"
         return toReturn
 
     @staticmethod
@@ -221,7 +237,7 @@ class Quality:
         :return: Quality prefix
         """
 
-        #Try Scene names first
+        # Try Scene names first
         quality = Quality.sceneQuality(name, anime)
         if quality != Quality.UNKNOWN:
             return quality
@@ -231,7 +247,6 @@ class Quality:
             return quality
 
         return Quality.UNKNOWN
-
 
     @staticmethod
     def sceneQuality(name, anime=False):
@@ -251,7 +266,8 @@ class Quality:
 
         name = os.path.basename(name)
 
-        checkName = lambda list, func: func([re.search(x, name, re.I) for x in list])
+        checkName = lambda list, func: func(
+            [re.search(x, name, re.I) for x in list])
 
         if anime:
             dvdOptions = checkName([r"dvd", r"dvdrip"], any)
@@ -373,16 +389,30 @@ class Quality:
             return Quality.UNKNOWN
 
         base_filename = os.path.basename(filename)
-        bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
-        webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
+        bluray = re.search(
+            r"blue?-?ray|hddvd|b[rd](rip|mux)",
+            base_filename,
+            re.I) is not None
+        webdl = re.search(
+            r"web.?dl|web(rip|mux|hd)",
+            base_filename,
+            re.I) is not None
 
         ret = Quality.UNKNOWN
         if height > 1000:
-            ret = ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
+            ret = ((Quality.FULLHDTV, Quality.FULLHDBLURAY)
+                   [bluray], Quality.FULLHDWEBDL)[webdl]
         elif height > 680 and height < 800:
-            ret = ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
+            ret = ((Quality.HDTV, Quality.HDBLURAY)
+                   [bluray], Quality.HDWEBDL)[webdl]
         elif height < 680:
-            ret = (Quality.SDTV, Quality.SDDVD)[re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+            ret = (
+                Quality.SDTV,
+                Quality.SDDVD)[
+                re.search(
+                    r'dvd|b[rd]rip|blue?-?ray',
+                    base_filename,
+                    re.I) is not None]
 
         return ret
 
@@ -487,22 +517,43 @@ class Quality:
     SNATCHED_BEST = None
     ARCHIVED = None
 
-Quality.DOWNLOADED = [Quality.compositeStatus(DOWNLOADED, x) for x in Quality.qualityStrings.keys()]
-Quality.SNATCHED = [Quality.compositeStatus(SNATCHED, x) for x in Quality.qualityStrings.keys()]
-Quality.SNATCHED_PROPER = [Quality.compositeStatus(SNATCHED_PROPER, x) for x in Quality.qualityStrings.keys()]
-Quality.FAILED = [Quality.compositeStatus(FAILED, x) for x in Quality.qualityStrings.keys()]
-Quality.SNATCHED_BEST = [Quality.compositeStatus(SNATCHED_BEST, x) for x in Quality.qualityStrings.keys()]
-Quality.ARCHIVED = [Quality.compositeStatus(ARCHIVED, x) for x in Quality.qualityStrings.keys()]
+Quality.DOWNLOADED = [
+    Quality.compositeStatus(
+        DOWNLOADED,
+        x) for x in Quality.qualityStrings.keys()]
+Quality.SNATCHED = [
+    Quality.compositeStatus(
+        SNATCHED,
+        x) for x in Quality.qualityStrings.keys()]
+Quality.SNATCHED_PROPER = [
+    Quality.compositeStatus(
+        SNATCHED_PROPER,
+        x) for x in Quality.qualityStrings.keys()]
+Quality.FAILED = [
+    Quality.compositeStatus(
+        FAILED,
+        x) for x in Quality.qualityStrings.keys()]
+Quality.SNATCHED_BEST = [
+    Quality.compositeStatus(
+        SNATCHED_BEST,
+        x) for x in Quality.qualityStrings.keys()]
+Quality.ARCHIVED = [
+    Quality.compositeStatus(
+        ARCHIVED,
+        x) for x in Quality.qualityStrings.keys()]
 
-HD720p = Quality.combineQualities([Quality.HDTV, Quality.HDWEBDL, Quality.HDBLURAY], [])
-HD1080p = Quality.combineQualities([Quality.FULLHDTV, Quality.FULLHDWEBDL, Quality.FULLHDBLURAY], [])
+HD720p = Quality.combineQualities(
+    [Quality.HDTV, Quality.HDWEBDL, Quality.HDBLURAY], [])
+HD1080p = Quality.combineQualities(
+    [Quality.FULLHDTV, Quality.FULLHDWEBDL, Quality.FULLHDBLURAY], [])
 
 SD = Quality.combineQualities([Quality.SDTV, Quality.SDDVD], [])
 HD = Quality.combineQualities([HD720p, HD1080p], [])
 ANY = Quality.combineQualities([SD, HD], [])
 
 # legacy template, cant remove due to reference in mainDB upgrade?
-BEST = Quality.combineQualities([Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])
+BEST = Quality.combineQualities(
+    [Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])
 
 qualityPresets = (SD, HD, HD720p, HD1080p, ANY)
 qualityPresetStrings = {SD: "SD",
@@ -514,6 +565,7 @@ qualityPresetStrings = {SD: "SD",
 
 # pylint: disable=R0903,C1001
 class StatusStrings:
+
     def __init__(self):
         self.statusStrings = {UNKNOWN: "Unknown",
                               UNAIRED: "Unaired",
@@ -530,21 +582,24 @@ class StatusStrings:
 
     def __getitem__(self, key):
         key = int(key)
-        if key in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED:
+        if key in Quality.DOWNLOADED + Quality.SNATCHED + \
+                Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED:
             status, quality = Quality.splitCompositeStatus(key)
             if quality == Quality.NONE:
                 return self.statusStrings[status]
             else:
-                return self.statusStrings[status] + " (" + Quality.qualityStrings[quality] + ")"
+                return self.statusStrings[
+                    status] + " (" + Quality.qualityStrings[quality] + ")"
         else:
-            return self.statusStrings[key] if self.statusStrings.has_key(key) else ''
+            return self.statusStrings[key] if key in self.statusStrings else ''
 
     def has_key(self, key):
         key = int(key)
-        return key in self.statusStrings or key in Quality.DOWNLOADED + Quality.ARCHIVED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
+        return key in self.statusStrings or key in Quality.DOWNLOADED + Quality.ARCHIVED + \
+            Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
 
     def __contains__(self, key):
-        return self.has_key(key)
+        return key in self
 
 statusStrings = StatusStrings()
 
@@ -558,7 +613,8 @@ class Overview:
     GOOD = 4
     SKIPPED = SKIPPED  # 5
 
-    # For both snatched statuses. Note: SNATCHED/QUAL have same value and break dict.
+    # For both snatched statuses. Note: SNATCHED/QUAL have same value and
+    # break dict.
     SNATCHED = SNATCHED_PROPER = SNATCHED_BEST  # 9
 
     overviewStrings = {SKIPPED: "skipped",
@@ -576,4 +632,4 @@ XML_NSMAP = {'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
 countryList = {'Australia': 'AU',
                'Canada': 'CA',
                'USA': 'US'
-              }
+               }

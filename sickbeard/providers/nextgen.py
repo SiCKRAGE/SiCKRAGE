@@ -26,6 +26,7 @@ from sickbeard.providers import generic
 
 from sickbeard.bs4_parser import BS4Parser
 
+
 class NextGenProvider(generic.TorrentProvider):
 
     def __init__(self):
@@ -33,7 +34,6 @@ class NextGenProvider(generic.TorrentProvider):
         generic.TorrentProvider.__init__(self, "NextGen")
 
         self.supportsBacklog = True
-
 
         self.username = None
         self.password = None
@@ -97,7 +97,9 @@ class NextGenProvider(generic.TorrentProvider):
 
             with BS4Parser(data) as bs:
                 csrfraw = bs.find('form', attrs={'id': 'login'})['action']
-                output = self.getURL(self.urls['base_url'] + csrfraw, post_data=login_params)
+                output = self.getURL(
+                    self.urls['base_url'] + csrfraw,
+                    post_data=login_params)
 
                 if self.loginSuccess(output):
                     self.last_login_check = now
@@ -113,7 +115,8 @@ class NextGenProvider(generic.TorrentProvider):
         logger.log(u"Failed to login: %s" % error, logger.ERROR)
         return False
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -126,43 +129,64 @@ class NextGenProvider(generic.TorrentProvider):
             for search_string in search_params[mode]:
 
                 if mode != 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logger.log(
+                        u"Search string: %s " %
+                        search_string, logger.DEBUG)
 
-                searchURL = self.urls['search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                searchURL = self.urls['search'] % (urllib.quote(
+                    search_string.encode('utf-8')), self.categories)
+                logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
                 data = self.getURL(searchURL)
                 if not data:
                     continue
 
                 try:
                     with BS4Parser(data.decode('iso-8859-1'), features=["html5lib", "permissive"]) as html:
-                        resultsTable = html.find('div', attrs={'id': 'torrent-table-wrapper'})
+                        resultsTable = html.find(
+                            'div', attrs={'id': 'torrent-table-wrapper'})
 
                         if not resultsTable:
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                            logger.log(
+                                u"Data returned from provider does not contain any torrents",
+                                logger.DEBUG)
                             continue
 
                         # Collecting entries
-                        entries_std = html.find_all('div', attrs={'id': 'torrent-std'})
-                        entries_sticky = html.find_all('div', attrs={'id': 'torrent-sticky'})
+                        entries_std = html.find_all(
+                            'div', attrs={'id': 'torrent-std'})
+                        entries_sticky = html.find_all(
+                            'div', attrs={'id': 'torrent-sticky'})
 
                         entries = entries_std + entries_sticky
 
-                        #Xirg STANDARD TORRENTS
-                        #Continue only if one Release is found
+                        # Xirg STANDARD TORRENTS
+                        # Continue only if one Release is found
                         if not entries:
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                            logger.log(
+                                u"Data returned from provider does not contain any torrents",
+                                logger.DEBUG)
                             continue
 
                         for result in entries:
 
                             try:
-                                title = result.find('div', attrs={'id': 'torrent-udgivelse2-users'}).a['title']
-                                download_url = self.urls['base_url'] + result.find('div', attrs={'id': 'torrent-download'}).a['href']
-                                seeders = int(result.find('div', attrs={'id' : 'torrent-seeders'}).text)
-                                leechers = int(result.find('div', attrs={'id' : 'torrent-leechers'}).text)
-                                size = self._convertSize(result.find('div', attrs={'id' : 'torrent-size'}).text)
-                                freeleech = result.find('div', attrs={'id': 'browse-mode-F2L'}) is not None
+                                title = result.find(
+                                    'div', attrs={
+                                        'id': 'torrent-udgivelse2-users'}).a['title']
+                                download_url = self.urls[
+                                    'base_url'] + result.find('div', attrs={'id': 'torrent-download'}).a['href']
+                                seeders = int(
+                                    result.find(
+                                        'div', attrs={
+                                            'id': 'torrent-seeders'}).text)
+                                leechers = int(
+                                    result.find(
+                                        'div', attrs={
+                                            'id': 'torrent-leechers'}).text)
+                                size = self._convertSize(result.find(
+                                    'div', attrs={'id': 'torrent-size'}).text)
+                                freeleech = result.find(
+                                    'div', attrs={'id': 'browse-mode-F2L'}) is not None
                             except (AttributeError, TypeError, KeyError):
                                 continue
 
@@ -172,22 +196,28 @@ class NextGenProvider(generic.TorrentProvider):
                             if not all([title, download_url]):
                                 continue
 
-                            #Filter unseeded torrent
+                            # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode != 'RSS':
-                                    logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                    logger.log(
+                                        u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers), logger.DEBUG)
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode != 'RSS':
-                                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                logger.log(
+                                    u"Found result: %s " %
+                                    title, logger.DEBUG)
 
                             items[mode].append(item)
 
-                except Exception, e:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+                except Exception as e:
+                    logger.log(
+                        u"Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -212,6 +242,7 @@ class NextGenProvider(generic.TorrentProvider):
 
 
 class NextGenCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)

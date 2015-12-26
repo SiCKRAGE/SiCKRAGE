@@ -23,8 +23,7 @@ __all__ = ['utorrent',
            'download_station',
            'rtorrent',
            'qbittorrent'
-]
-
+           ]
 
 
 # Mapping error status codes to official W3C names
@@ -104,7 +103,7 @@ default_host = {'utorrent': 'http://localhost:8000',
                 'download_station': 'http://localhost:5000',
                 'rtorrent': 'scgi://localhost:5000',
                 'qbittorrent': 'http://localhost:8080'
-}
+                }
 
 
 def getClientModule(name):

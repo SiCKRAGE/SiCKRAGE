@@ -28,7 +28,9 @@ from sickbeard import logger
 from sickbeard import tvcache
 from sickbeard.providers import generic
 
+
 class HDSpaceProvider(generic.TorrentProvider):
+
     def __init__(self):
         generic.TorrentProvider.__init__(self, "HDSpace")
 
@@ -47,12 +49,13 @@ class HDSpaceProvider(generic.TorrentProvider):
                      'search': u'https://hd-space.org/index.php?page=torrents&search=%s&active=1&options=0',
                      'rss': u'https://hd-space.org/rss_torrents.php?feed=dl'}
 
-        self.categories = [15, 21, 22, 24, 25, 40] # HDTV/DOC 1080/720, bluray, remux
+        # HDTV/DOC 1080/720, bluray, remux
+        self.categories = [15, 21, 22, 24, 25, 40]
         self.urls['search'] += '&category='
         for cat in self.categories:
             self.urls['search'] += str(cat) + '%%3B'
             self.urls['rss'] += '&cat[]=' + str(cat)
-        self.urls['search'] = self.urls['search'][:-4] # remove extra %%3B
+        self.urls['search'] = self.urls['search'][:-4]  # remove extra %%3B
 
         self.url = self.urls['base_url']
 
@@ -62,7 +65,9 @@ class HDSpaceProvider(generic.TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logger.log(
+                u"Invalid username or password. Check your settings",
+                logger.WARNING)
 
         return True
 
@@ -74,18 +79,24 @@ class HDSpaceProvider(generic.TorrentProvider):
         login_params = {'uid': self.username,
                         'pwd': self.password}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls['login'],
+            post_data=login_params,
+            timeout=30)
         if not response:
             logger.log(u"Unable to connect to provider", logger.WARNING)
             return False
 
         if re.search('Password Incorrect', response):
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logger.log(
+                u"Invalid username or password. Check your settings",
+                logger.WARNING)
             return False
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -98,13 +109,16 @@ class HDSpaceProvider(generic.TorrentProvider):
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
-                    searchURL = self.urls['search'] % (urllib.quote_plus(search_string.replace('.', ' ')),)
+                    searchURL = self.urls['search'] % (
+                        urllib.quote_plus(search_string.replace('.', ' ')),)
                 else:
                     searchURL = self.urls['search'] % ''
 
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
                 if mode != 'RSS':
-                    logger.log(u"Search string: %s" %  search_string, logger.DEBUG)
+                    logger.log(
+                        u"Search string: %s" %
+                        search_string, logger.DEBUG)
 
                 data = self.getURL(searchURL)
                 if not data or 'please try later' in data:
@@ -118,12 +132,16 @@ class HDSpaceProvider(generic.TorrentProvider):
                     data = data.split('<div id="information"></div>')[1]
                     index = data.index('<table')
                 except ValueError:
-                    logger.log(u"Could not find main torrent table", logger.ERROR)
+                    logger.log(
+                        u"Could not find main torrent table",
+                        logger.ERROR)
                     continue
 
                 html = BeautifulSoup(data[index:], 'html5lib')
                 if not html:
-                    logger.log("No html data parsed from provider", logger.DEBUG)
+                    logger.log(
+                        "No html data parsed from provider",
+                        logger.DEBUG)
                     continue
 
                 torrents = html.findAll('tr')
@@ -133,36 +151,55 @@ class HDSpaceProvider(generic.TorrentProvider):
                 # Skip column headers
                 for result in torrents[1:]:
                     if len(result.contents) < 10:
-                        #skip extraneous rows at the end
+                        # skip extraneous rows at the end
                         continue
 
                     try:
-                        dl_href = result.find('a', attrs={'href':re.compile(r'download.php.*')})['href']
-                        title = re.search('f=(.*).torrent', dl_href).group(1).replace('+', '.')
+                        dl_href = result.find(
+                            'a', attrs={
+                                'href': re.compile(r'download.php.*')})['href']
+                        title = re.search(
+                            'f=(.*).torrent',
+                            dl_href).group(1).replace(
+                            '+',
+                            '.')
                         download_url = self.urls['base_url'] + dl_href
-                        seeders = int(result.find('span', attrs={'class':'seedy'}).find('a').text)
-                        leechers = int(result.find('span', attrs={'class':'leechy'}).find('a').text)
-                        size = re.match(r'.*?([0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+).*', str(result), re.DOTALL).group(1)
+                        seeders = int(
+                            result.find(
+                                'span', attrs={
+                                    'class': 'seedy'}).find('a').text)
+                        leechers = int(
+                            result.find(
+                                'span', attrs={
+                                    'class': 'leechy'}).find('a').text)
+                        size = re.match(
+                            r'.*?([0-9]+,?\.?[0-9]* [KkMmGg]+[Bb]+).*',
+                            str(result),
+                            re.DOTALL).group(1)
 
                         if not all([title, download_url]):
                             continue
 
-                        #Filter unseeded torrent
+                        # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode != 'RSS':
-                                logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                logger.log(
+                                    u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                        title, seeders, leechers), logger.DEBUG)
                             continue
 
                         item = title, download_url, size, seeders, leechers
                         if mode != 'RSS':
-                            logger.log(u"Found result: %s " % title, logger.DEBUG)
+                            logger.log(
+                                u"Found result: %s " %
+                                title, logger.DEBUG)
 
                         items[mode].append(item)
 
                     except (AttributeError, TypeError, KeyError, ValueError):
                         continue
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -185,7 +222,9 @@ class HDSpaceProvider(generic.TorrentProvider):
             size = size * 1024**4
         return int(size)
 
+
 class HDSpaceCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)

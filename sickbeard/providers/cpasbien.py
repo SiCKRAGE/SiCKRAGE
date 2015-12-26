@@ -43,7 +43,8 @@ class CpasbienProvider(generic.TorrentProvider):
     def isEnabled(self):
         return self.enabled
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -53,10 +54,13 @@ class CpasbienProvider(generic.TorrentProvider):
             for search_string in search_params[mode]:
 
                 if mode != 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logger.log(
+                        u"Search string: %s " %
+                        search_string, logger.DEBUG)
 
-                searchURL = self.url + '/recherche/'+search_string.replace('.', '-') + '.html'
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                searchURL = self.url + '/recherche/' + \
+                    search_string.replace('.', '-') + '.html'
+                logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
                 data = self.getURL(searchURL)
 
                 if not data:
@@ -69,7 +73,8 @@ class CpasbienProvider(generic.TorrentProvider):
                         while erlin == 0:
                             try:
                                 classlin = 'ligne' + str(lin)
-                                resultlin = html.findAll(attrs={'class' : [classlin]})
+                                resultlin = html.findAll(
+                                    attrs={'class': [classlin]})
                                 if resultlin:
                                     for ele in resultlin:
                                         resultdiv.append(ele)
@@ -86,13 +91,15 @@ class CpasbienProvider(generic.TorrentProvider):
                                 pageURL = link['href']
 
                                 #downloadTorrentLink = torrentSoup.find("a", title.startswith('Cliquer'))
-                                tmp = pageURL.split('/')[-1].replace('.html', '.torrent')
+                                tmp = pageURL.split(
+                                    '/')[-1].replace('.html', '.torrent')
 
-                                downloadTorrentLink = ('http://www.cpasbien.io/telechargement/%s' % tmp)
+                                downloadTorrentLink = (
+                                    'http://www.cpasbien.io/telechargement/%s' % tmp)
 
                                 if downloadTorrentLink:
                                     download_url = downloadTorrentLink
-                                    #FIXME
+                                    # FIXME
                                     size = -1
                                     seeders = 1
                                     leechers = 0
@@ -105,14 +112,18 @@ class CpasbienProvider(generic.TorrentProvider):
 
                             item = title, download_url, size, seeders, leechers
                             if mode != 'RSS':
-                                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                logger.log(
+                                    u"Found result: %s " %
+                                    title, logger.DEBUG)
 
                             items[mode].append(item)
 
-                except Exception, e:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+                except Exception as e:
+                    logger.log(
+                        u"Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -122,7 +133,9 @@ class CpasbienProvider(generic.TorrentProvider):
     def seedRatio(self):
         return self.ratio
 
+
 class CpasbienCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)

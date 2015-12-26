@@ -29,7 +29,7 @@ def diagnose():
     user-readable message indicating possible issues.
     '''
     try:
-        from gi.repository import Notify #@UnusedImport
+        from gi.repository import Notify  # @UnusedImport
     except ImportError:
         return (u"<p>Error: gir-notify isn't installed. On Ubuntu/Debian, install the "
                 u"<a href=\"apt:gir1.2-notify-0.7\">gir1.2-notify-0.7</a> or "
@@ -45,19 +45,20 @@ def diagnose():
     else:
         try:
             bus = dbus.SessionBus()
-        except dbus.DBusException, e:
+        except dbus.DBusException as e:
             return (u"<p>Error: unable to connect to D-Bus session bus: <code>%s</code>."
                     u"<p>Are you running SickRage in a desktop session?") % (cgi.escape(e),)
         try:
             bus.get_object('org.freedesktop.Notifications',
                            '/org/freedesktop/Notifications')
-        except dbus.DBusException, e:
+        except dbus.DBusException as e:
             return (u"<p>Error: there doesn't seem to be a notification daemon available: <code>%s</code> "
                     u"<p>Try installing notification-daemon or notify-osd.") % (cgi.escape(e),)
     return u"<p>Error: Unable to send notification."
 
 
 class LibnotifyNotifier:
+
     def __init__(self):
         self.Notify = None
         self.gobject = None
@@ -68,15 +69,21 @@ class LibnotifyNotifier:
         try:
             from gi.repository import Notify
         except ImportError:
-            logger.log(u"Unable to import Notify from gi.repository. libnotify notifications won't work.", logger.ERROR)
+            logger.log(
+                u"Unable to import Notify from gi.repository. libnotify notifications won't work.",
+                logger.ERROR)
             return False
         try:
             from gi.repository import GObject
         except ImportError:
-            logger.log(u"Unable to import GObject from gi.repository. We can't catch a GError in display.", logger.ERROR)
+            logger.log(
+                u"Unable to import GObject from gi.repository. We can't catch a GError in display.",
+                logger.ERROR)
             return False
         if not Notify.init('SickRage'):
-            logger.log(u"Initialization of Notify failed. libnotify notifications won't work.", logger.ERROR)
+            logger.log(
+                u"Initialization of Notify failed. libnotify notifications won't work.",
+                logger.ERROR)
             return False
         self.Notify = Notify
         self.gobject = GObject
@@ -92,16 +99,20 @@ class LibnotifyNotifier:
 
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._notify(common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
-            
-    def notify_git_update(self, new_version = "??"):
+            self._notify(
+                common.notifyStrings[
+                    common.NOTIFY_SUBTITLE_DOWNLOAD],
+                ep_name + ": " + lang)
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_LIBNOTIFY:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._notify(title, update_text + new_version)
 
     def test_notify(self):
-        return self._notify('Test notification', "This is a test notification from SickRage", force=True)
+        return self._notify(
+            'Test notification', "This is a test notification from SickRage", force=True)
 
     def _notify(self, title, message, force=False):
         if not sickbeard.USE_LIBNOTIFY and not force:
@@ -111,7 +122,13 @@ class LibnotifyNotifier:
 
         # Can't make this a global constant because PROG_DIR isn't available
         # when the module is imported.
-        icon_path = os.path.join(sickbeard.PROG_DIR, 'gui', 'slick', 'images', 'ico', 'favicon-120.png')
+        icon_path = os.path.join(
+            sickbeard.PROG_DIR,
+            'gui',
+            'slick',
+            'images',
+            'ico',
+            'favicon-120.png')
 
         # If the session bus can't be acquired here a bunch of warning messages
         # will be printed but the call to show() will still return True.

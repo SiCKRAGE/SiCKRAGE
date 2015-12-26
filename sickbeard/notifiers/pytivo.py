@@ -28,6 +28,7 @@ from sickrage.helper.exceptions import ex
 
 
 class pyTivoNotifier:
+
     def notify_snatch(self, ep_name):
         pass
 
@@ -63,7 +64,6 @@ class pyTivoNotifier:
         # come up with.
         #
 
-
         # Calculated values
 
         showPath = ep_obj.show.location
@@ -85,24 +85,34 @@ class pyTivoNotifier:
         requestUrl = "http://" + host + "/TiVoConnect?" + urlencode(
             {'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn})
 
-        logger.log(u"pyTivo notification: Requesting " + requestUrl, logger.DEBUG)
+        logger.log(
+            u"pyTivo notification: Requesting " +
+            requestUrl,
+            logger.DEBUG)
 
         request = Request(requestUrl)
 
         try:
-            response = urlopen(request)  #@UnusedVariable
-        except HTTPError , e:
+            response = urlopen(request)  # @UnusedVariable
+        except HTTPError as e:
             if hasattr(e, 'reason'):
-                logger.log(u"pyTivo notification: Error, failed to reach a server - " + e.reason, logger.ERROR)
+                logger.log(
+                    u"pyTivo notification: Error, failed to reach a server - " +
+                    e.reason,
+                    logger.ERROR)
                 return False
             elif hasattr(e, 'code'):
-                logger.log(u"pyTivo notification: Error, the server couldn't fulfill the request - " + e.code, logger.ERROR)
+                logger.log(
+                    u"pyTivo notification: Error, the server couldn't fulfill the request - " +
+                    e.code,
+                    logger.ERROR)
             return False
-        except Exception, e:
+        except Exception as e:
             logger.log(u"PYTIVO: Unknown exception: " + ex(e), logger.ERROR)
             return False
         else:
-            logger.log(u"pyTivo notification: Successfully requested transfer of file")
+            logger.log(
+                u"pyTivo notification: Successfully requested transfer of file")
             return True
 
 

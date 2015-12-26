@@ -27,6 +27,7 @@ from sickbeard import logger, common
 
 
 class PushalotNotifier:
+
     def test_notify(self, pushalot_authorizationtoken):
         return self._sendPushalot(pushalot_authorizationtoken, event="Test",
                                   message="Testing Pushalot settings from SickRage", force=True)
@@ -44,28 +45,33 @@ class PushalotNotifier:
     def notify_subtitle_download(self, ep_name, lang):
         if sickbeard.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendPushalot(pushalot_authorizationtoken=None,
-                               event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD],
+                               event=common.notifyStrings[
+                                   common.NOTIFY_SUBTITLE_DOWNLOAD],
                                message=ep_name + ": " + lang)
-                               
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_PUSHALOT:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._sendPushalot(pushalot_authorizationtoken=None,
-                               event=title, 
+                               event=title,
                                message=update_text + new_version)
 
-    def _sendPushalot(self, pushalot_authorizationtoken=None, event=None, message=None, force=False):
+    def _sendPushalot(self, pushalot_authorizationtoken=None,
+                      event=None, message=None, force=False):
 
         if not sickbeard.USE_PUSHALOT and not force:
             return False
 
-        if pushalot_authorizationtoken == None:
+        if pushalot_authorizationtoken is None:
             pushalot_authorizationtoken = sickbeard.PUSHALOT_AUTHORIZATIONTOKEN
 
         logger.log(u"Pushalot event: " + event, logger.DEBUG)
         logger.log(u"Pushalot message: " + message, logger.DEBUG)
-        logger.log(u"Pushalot api: " + pushalot_authorizationtoken, logger.DEBUG)
+        logger.log(
+            u"Pushalot api: " +
+            pushalot_authorizationtoken,
+            logger.DEBUG)
 
         http_handler = HTTPSConnection("pushalot.com")
 
@@ -76,7 +82,8 @@ class PushalotNotifier:
         try:
             http_handler.request("POST",
                                  "/api/sendmessage",
-                                 headers={'Content-type': "application/x-www-form-urlencoded"},
+                                 headers={
+                                     'Content-type': "application/x-www-form-urlencoded"},
                                  body=urlencode(data))
         except (SSLError, HTTPException, socket.error):
             logger.log(u"Pushalot notification failed.", logger.ERROR)
@@ -88,7 +95,9 @@ class PushalotNotifier:
             logger.log(u"Pushalot notifications sent.", logger.DEBUG)
             return True
         elif request_status == 410:
-            logger.log(u"Pushalot auth failed: %s" % response.reason, logger.ERROR)
+            logger.log(
+                u"Pushalot auth failed: %s" %
+                response.reason, logger.ERROR)
             return False
         else:
             logger.log(u"Pushalot notification failed.", logger.ERROR)

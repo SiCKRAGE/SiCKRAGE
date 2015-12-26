@@ -24,14 +24,15 @@ from sickbeard import logger
 from sickrage.helper.encoding import ek
 
 
-# adapted from http://stackoverflow.com/questions/827371/is-there-a-way-to-list-all-the-available-drive-letters-in-python/827490
+# adapted from
+# http://stackoverflow.com/questions/827371/is-there-a-way-to-list-all-the-available-drive-letters-in-python/827490
 def getWinDrives():
     """ Return list of detected drives """
     assert os.name == 'nt'
     from ctypes import windll
 
     drives = []
-    bitmask = windll.kernel32.GetLogicalDrives()  #@UndefinedVariable
+    bitmask = windll.kernel32.GetLogicalDrives()  # @UndefinedVariable
     for letter in string.uppercase:
         if bitmask & 1:
             drives.append(letter)
@@ -72,24 +73,42 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
     path = os.path.abspath(os.path.normpath(path))
     parentPath = os.path.dirname(path)
 
-    # if we're at the root then the next step is the meta-node showing our drive letters
+    # if we're at the root then the next step is the meta-node showing our
+    # drive letters
     if path == parentPath and os.name == 'nt':
         parentPath = ""
 
     try:
-        fileList = [{'name': filename, 'path': ek(os.path.join, path, filename)} for filename in ek(os.listdir, path)]
-    except OSError, e:
-        logger.log(u"Unable to open " + path + ": " + repr(e) + " / " + str(e), logger.WARNING)
-        fileList = [{'name': filename, 'path': ek(os.path.join, parentPath, filename)} for filename in ek(os.listdir, parentPath)]
+        fileList = [{'name': filename, 'path': ek(
+            os.path.join, path, filename)} for filename in ek(os.listdir, path)]
+    except OSError as e:
+        logger.log(
+            u"Unable to open " +
+            path +
+            ": " +
+            repr(e) +
+            " / " +
+            str(e),
+            logger.WARNING)
+        fileList = [{'name': filename, 'path': ek(
+            os.path.join, parentPath, filename)} for filename in ek(os.listdir, parentPath)]
 
     if not includeFiles:
-        fileList = filter(lambda entry: ek(os.path.isdir, entry['path']), fileList)
+        fileList = filter(
+            lambda entry: ek(
+                os.path.isdir,
+                entry['path']),
+            fileList)
 
-    # prune out directories to protect the user from doing stupid things (already lower case the dir to reduce calls)
+    # prune out directories to protect the user from doing stupid things
+    # (already lower case the dir to reduce calls)
     hideList = ["boot", "bootmgr", "cache", "msocache", "recovery", "$recycle.bin", "recycler",
                 "system volume information", "temporary internet files"]  # windows specific
-    hideList += [".fseventd", ".spotlight", ".trashes", ".vol", "cachedmessages", "caches", "trash"]  # osx specific
-    fileList = filter(lambda entry: entry['name'].lower() not in hideList, fileList)
+    hideList += [".fseventd", ".spotlight", ".trashes", ".vol",
+                 "cachedmessages", "caches", "trash"]  # osx specific
+    fileList = filter(
+        lambda entry: entry['name'].lower() not in hideList,
+        fileList)
 
     fileList = sorted(fileList,
                       lambda x, y: cmp(os.path.basename(x['name']).lower(), os.path.basename(y['path']).lower()))

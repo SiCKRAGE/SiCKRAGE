@@ -17,13 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, httplib
+import urllib
+import httplib
 
 import sickbeard
 import datetime
 
 import MultipartPostHandler
-import urllib2, cookielib
+import urllib2
+import cookielib
 
 try:
     import json
@@ -44,11 +46,11 @@ def sendNZB(nzb):
 
     # set up a dict with the URL params in it
     params = {}
-    if sickbeard.SAB_USERNAME != None:
+    if sickbeard.SAB_USERNAME is not None:
         params['ma_username'] = sickbeard.SAB_USERNAME
-    if sickbeard.SAB_PASSWORD != None:
+    if sickbeard.SAB_PASSWORD is not None:
         params['ma_password'] = sickbeard.SAB_PASSWORD
-    if sickbeard.SAB_APIKEY != None:
+    if sickbeard.SAB_APIKEY is not None:
         params['apikey'] = sickbeard.SAB_APIKEY
     category = sickbeard.SAB_CATEGORY
     if nzb.show.is_anime:
@@ -61,7 +63,7 @@ def sendNZB(nzb):
             if nzb.show.is_anime:
                 category = sickbeard.SAB_CATEGORY_ANIME_BACKLOG
 
-    if category != None:
+    if category is not None:
         params['cat'] = category
 
     # use high priority if specified (recently aired episode)
@@ -77,7 +79,8 @@ def sendNZB(nzb):
         if nzb.provider.getID() == 'newzbin':
             id = nzb.provider.getIDFromURL(nzb.url)
             if not id:
-                logger.log("Unable to send NZB to sab, can't find ID in URL " + str(nzb.url), logger.ERROR)
+                logger.log(
+                    "Unable to send NZB to sab, can't find ID in URL " + str(nzb.url), logger.ERROR)
                 return False
             params['mode'] = 'addid'
             params['name'] = id
@@ -96,11 +99,13 @@ def sendNZB(nzb):
     logger.log(u"URL: " + url, logger.DEBUG)
 
     try:
-        # if we have the URL to an NZB then we've built up the SAB API URL already so just call it
+        # if we have the URL to an NZB then we've built up the SAB API URL
+        # already so just call it
         if nzb.resultType == "nzb":
             f = urllib.urlopen(url)
 
-        # if we are uploading the NZB data to SAB then we need to build a little POST form and send it
+        # if we are uploading the NZB data to SAB then we need to build a
+        # little POST form and send it
         elif nzb.resultType == "nzbdata":
             cookies = cookielib.CookieJar()
             opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies),
@@ -111,29 +116,40 @@ def sendNZB(nzb):
 
             f = opener.open(req)
 
-    except (EOFError, IOError), e:
+    except (EOFError, IOError) as e:
         logger.log(u"Unable to connect to SAB: " + ex(e), logger.ERROR)
         return False
 
-    except httplib.InvalidURL, e:
-        logger.log(u"Invalid SAB host, check your config: " + ex(e), logger.ERROR)
+    except httplib.InvalidURL as e:
+        logger.log(
+            u"Invalid SAB host, check your config: " +
+            ex(e),
+            logger.ERROR)
         return False
 
     # this means we couldn't open the connection or something just as bad
-    if f == None:
-        logger.log(u"No data returned from SABnzbd, NZB not sent", logger.ERROR)
+    if f is None:
+        logger.log(
+            u"No data returned from SABnzbd, NZB not sent",
+            logger.ERROR)
         return False
 
     # if we opened the URL connection then read the result from SAB
     try:
         result = f.readlines()
-    except Exception, e:
-        logger.log(u"Error trying to get result from SAB, NZB not sent: " + ex(e), logger.ERROR)
+    except Exception as e:
+        logger.log(
+            u"Error trying to get result from SAB, NZB not sent: " +
+            ex(e),
+            logger.ERROR)
         return False
 
-    # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and didn't recieve the NZB
+    # SAB shouldn't return a blank result, this most likely (but not always)
+    # means that it timed out and didn't recieve the NZB
     if len(result) == 0:
-        logger.log(u"No data returned from SABnzbd, NZB not sent", logger.ERROR)
+        logger.log(
+            u"No data returned from SABnzbd, NZB not sent",
+            logger.ERROR)
         return False
 
     # massage the result a little bit
@@ -146,10 +162,15 @@ def sendNZB(nzb):
         logger.log(u"NZB sent to SAB successfully", logger.DEBUG)
         return True
     elif sabText == "Missing authentication":
-        logger.log(u"Incorrect username/password sent to SAB, NZB not sent", logger.ERROR)
+        logger.log(
+            u"Incorrect username/password sent to SAB, NZB not sent",
+            logger.ERROR)
         return False
     else:
-        logger.log(u"Unknown failure sending NZB to sab. Return text is: " + sabText, logger.ERROR)
+        logger.log(
+            u"Unknown failure sending NZB to sab. Return text is: " +
+            sabText,
+            logger.ERROR)
         return False
 
 
@@ -162,19 +183,24 @@ def _checkSabResponse(f):
     """
     try:
         result = f.readlines()
-    except Exception, e:
-        logger.log(u"Error trying to get result from SAB" + ex(e), logger.ERROR)
+    except Exception as e:
+        logger.log(
+            u"Error trying to get result from SAB" +
+            ex(e),
+            logger.ERROR)
         return False, "Error from SAB"
 
     if len(result) == 0:
-        logger.log(u"No data returned from SABnzbd, NZB not sent", logger.ERROR)
+        logger.log(
+            u"No data returned from SABnzbd, NZB not sent",
+            logger.ERROR)
         return False, "No data from SAB"
 
     sabText = result[0].strip()
     sabJson = {}
     try:
         sabJson = json.loads(sabText)
-    except ValueError, e:
+    except ValueError as e:
         pass
 
     if sabText == "Missing authentication":
@@ -196,13 +222,16 @@ def _sabURLOpenSimple(url):
     """
     try:
         f = urllib.urlopen(url)
-    except (EOFError, IOError), e:
+    except (EOFError, IOError) as e:
         logger.log(u"Unable to connect to SAB: " + ex(e), logger.ERROR)
         return False, "Unable to connect"
-    except httplib.InvalidURL, e:
-        logger.log(u"Invalid SAB host, check your config: " + ex(e), logger.ERROR)
+    except httplib.InvalidURL as e:
+        logger.log(
+            u"Invalid SAB host, check your config: " +
+            ex(e),
+            logger.ERROR)
         return False, "Invalid SAB host"
-    if f == None:
+    if f is None:
         logger.log(u"No data returned from SABnzbd", logger.ERROR)
         return False, "No data returned from SABnzbd"
     else:
@@ -264,4 +293,3 @@ def testAuthentication(host=None, username=None, password=None, apikey=None):
         return False, sabText
 
     return True, "Success"
-

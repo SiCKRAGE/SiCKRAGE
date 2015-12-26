@@ -32,7 +32,9 @@ from sickbeard.common import USER_AGENT
 from sickbeard.providers import generic
 from xml.parsers.expat import ExpatError
 
+
 class KATProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "KickAssTorrents")
@@ -66,51 +68,67 @@ class KATProvider(generic.TorrentProvider):
     def isEnabled(self):
         return self.enabled
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         # select the correct category
-        anime = (self.show and self.show.anime) or (epObj and epObj.show and epObj.show.anime) or False
+        anime = (self.show and self.show.anime) or (
+            epObj and epObj.show and epObj.show.anime) or False
         self.search_params['category'] = ('tv', 'anime')[anime]
 
         for mode in search_strings.keys():
             logger.log(u"Search Mode: %s" % mode, logger.DEBUG)
             for search_string in search_strings[mode]:
 
-                self.search_params['q'] = search_string.encode('utf-8') if mode != 'RSS' else ''
-                self.search_params['field'] = 'seeders' if mode != 'RSS' else 'time_add'
+                self.search_params['q'] = search_string.encode(
+                    'utf-8') if mode != 'RSS' else ''
+                self.search_params[
+                    'field'] = 'seeders' if mode != 'RSS' else 'time_add'
 
                 if mode != 'RSS':
-                    logger.log(u"Search string: %s" % search_string, logger.DEBUG)
+                    logger.log(
+                        u"Search string: %s" %
+                        search_string, logger.DEBUG)
 
                 url_fmt_string = 'usearch' if mode != 'RSS' else search_string
                 try:
-                    searchURL = self.urls['search'] % url_fmt_string + '?' + urlencode(self.search_params)
+                    searchURL = self.urls[
+                        'search'] % url_fmt_string + '?' + urlencode(self.search_params)
                     logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
                     data = self.getURL(searchURL)
                     #data = self.getURL(self.urls[('search', 'rss')[mode == 'RSS']], params=self.search_params)
                     if not data:
-                        logger.log("No data returned from provider", logger.DEBUG)
+                        logger.log(
+                            "No data returned from provider", logger.DEBUG)
                         continue
 
                     if not data.startswith('<?xml'):
-                        logger.log(u'Expected xml but got something else, is your proxy failing?', logger.INFO)
+                        logger.log(
+                            u'Expected xml but got something else, is your proxy failing?',
+                            logger.INFO)
                         continue
 
                     try:
-                        data = xmltodict.parse(HTMLParser.HTMLParser().unescape(data.encode('utf-8')).decode('utf-8').replace('&', '&amp;'))
+                        data = xmltodict.parse(HTMLParser.HTMLParser().unescape(
+                            data.encode('utf-8')).decode('utf-8').replace('&', '&amp;'))
                     except ExpatError:
-                        logger.log(u"Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data), logger.ERROR)
+                        logger.log(
+                            u"Failed parsing provider. Traceback: %r\n%r" %
+                            (traceback.format_exc(), data), logger.ERROR)
                         continue
 
-                    if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
-                        logger.log(u"Malformed rss returned, skipping", logger.DEBUG)
+                    if not all([data, 'rss' in data, 'channel' in data[
+                               'rss'], 'item' in data['rss']['channel']]):
+                        logger.log(
+                            u"Malformed rss returned, skipping", logger.DEBUG)
                         continue
 
                     # https://github.com/martinblech/xmltodict/issues/111
                     entries = data['rss']['channel']['item']
-                    entries = entries if isinstance(entries, list) else [entries]
+                    entries = entries if isinstance(
+                        entries, list) else [entries]
 
                     for item in entries:
                         try:
@@ -138,27 +156,37 @@ class KATProvider(generic.TorrentProvider):
                         if not all([title, download_url]):
                             continue
 
-                        #Filter unseeded torrent
+                        # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode != 'RSS':
-                                logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                logger.log(
+                                    u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                        title, seeders, leechers), logger.DEBUG)
                             continue
 
                         if self.confirmed and not verified:
                             if mode != 'RSS':
-                                logger.log(u"Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it", logger.DEBUG)
+                                logger.log(
+                                    u"Found result " +
+                                    title +
+                                    " but that doesn't seem like a verified result so I'm ignoring it",
+                                    logger.DEBUG)
                             continue
 
                         item = title, download_url, size, seeders, leechers, info_hash
                         if mode != 'RSS':
-                            logger.log(u"Found result: %s " % title, logger.DEBUG)
+                            logger.log(
+                                u"Found result: %s " %
+                                title, logger.DEBUG)
 
                         items[mode].append(item)
 
                 except Exception:
-                    logger.log(u"Failed parsing provider. Traceback: %r" % traceback.format_exc(), logger.ERROR)
+                    logger.log(
+                        u"Failed parsing provider. Traceback: %r" %
+                        traceback.format_exc(), logger.ERROR)
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
 
             results += items[mode]
@@ -170,6 +198,7 @@ class KATProvider(generic.TorrentProvider):
 
 
 class KATCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)

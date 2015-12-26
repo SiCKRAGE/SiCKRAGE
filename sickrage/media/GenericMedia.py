@@ -27,6 +27,7 @@ from sickrage.helper.exceptions import MultipleShowObjectsException
 
 
 class GenericMedia:
+
     def __init__(self, indexer_id, media_format='normal'):
         """
         :param indexer_id: The indexer id of the show
@@ -113,6 +114,10 @@ class GenericMedia:
             if ek(isfile, media_path):
                 return normpath(media_path)
 
-        image_path = ek(join, self.get_media_root(), 'images', self.get_default_media_name())
+        image_path = ek(
+            join,
+            self.get_media_root(),
+            'images',
+            self.get_default_media_name())
 
         return image_path.replace('\\', '/')

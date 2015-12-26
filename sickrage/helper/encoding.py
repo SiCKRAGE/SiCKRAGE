@@ -36,7 +36,8 @@ def ek(function, *args, **kwargs):
     if name == 'nt':
         result = function(*args, **kwargs)
     else:
-        result = function(*[ss(x) if isinstance(x, (str, unicode)) else x for x in args], **kwargs)
+        result = function(
+            *[ss(x) if isinstance(x, (str, unicode)) else x for x in args], **kwargs)
 
     if isinstance(result, (list, tuple)):
         return _fix_list_encoding(result)
@@ -110,6 +111,7 @@ def _to_unicode(var):
                             # Chardet can be wrong, so try it last
                             var = unicode(var, detect(var).get('encoding'))
                         except Exception:
-                            var = unicode(var, sickbeard.SYS_ENCODING, 'replace')
+                            var = unicode(
+                                var, sickbeard.SYS_ENCODING, 'replace')
 
     return var

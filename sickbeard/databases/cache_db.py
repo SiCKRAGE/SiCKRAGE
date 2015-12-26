@@ -18,8 +18,12 @@
 
 from sickbeard import db
 
-# Add new migrations at the bottom of the list; subclass the previous migration.
+# Add new migrations at the bottom of the list; subclass the previous
+# migration.
+
+
 class InitialSchema(db.SchemaUpgrade):
+
     def test(self):
         return self.hasTable("db_version")
 
@@ -42,6 +46,7 @@ class InitialSchema(db.SchemaUpgrade):
 
 
 class AddSceneExceptions(InitialSchema):
+
     def test(self):
         return self.hasTable("scene_exceptions")
 
@@ -49,43 +54,57 @@ class AddSceneExceptions(InitialSchema):
         self.connection.action(
             "CREATE TABLE scene_exceptions (exception_id INTEGER PRIMARY KEY, indexer_id INTEGER KEY, show_name TEXT);")
 
+
 class AddSceneNameCache(AddSceneExceptions):
+
     def test(self):
         return self.hasTable("scene_names")
 
     def execute(self):
-        self.connection.action("CREATE TABLE scene_names (indexer_id INTEGER, name TEXT);")
+        self.connection.action(
+            "CREATE TABLE scene_names (indexer_id INTEGER, name TEXT);")
 
 
 class AddNetworkTimezones(AddSceneNameCache):
+
     def test(self):
         return self.hasTable("network_timezones")
 
     def execute(self):
-        self.connection.action("CREATE TABLE network_timezones (network_name TEXT PRIMARY KEY, timezone TEXT);")
+        self.connection.action(
+            "CREATE TABLE network_timezones (network_name TEXT PRIMARY KEY, timezone TEXT);")
+
 
 class AddLastSearch(AddNetworkTimezones):
+
     def test(self):
         return self.hasTable("lastSearch")
 
     def execute(self):
-        self.connection.action("CREATE TABLE lastSearch (provider TEXT, time NUMERIC);")
+        self.connection.action(
+            "CREATE TABLE lastSearch (provider TEXT, time NUMERIC);")
+
 
 class AddSceneExceptionsSeasons(AddLastSearch):
+
     def test(self):
         return self.hasColumn("scene_exceptions", "season")
 
     def execute(self):
         self.addColumn("scene_exceptions", "season", "NUMERIC", -1)
 
+
 class AddSceneExceptionsCustom(AddSceneExceptionsSeasons):
+
     def test(self):
         return self.hasColumn("scene_exceptions", "custom")
 
     def execute(self):
         self.addColumn("scene_exceptions", "custom", "NUMERIC", 0)
 
+
 class AddSceneExceptionsRefresh(AddSceneExceptionsCustom):
+
     def test(self):
         return self.hasTable("scene_exceptions_refresh")
 

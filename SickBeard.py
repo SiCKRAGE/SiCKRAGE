@@ -25,7 +25,8 @@ from __future__ import with_statement
 
 import codecs
 
-codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+codecs.register(lambda name: codecs.lookup(
+    'utf-8') if name == 'cp65001' else None)
 
 import time
 import signal
@@ -34,7 +35,12 @@ import subprocess
 import traceback
 
 import os
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
+sys.path.insert(
+    1,
+    os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            'lib')))
 
 import shutil
 import shutil_custom
@@ -71,6 +77,7 @@ signal.signal(signal.SIGTERM, sickbeard.sig_handler)
 
 class SickRage(object):
     # pylint: disable=R0902
+
     def __init__(self):
         # system event callback for shutdown/restart
         sickbeard.events = Events(self.shutdown)
@@ -91,7 +98,6 @@ class SickRage(object):
 
         self.log_dir = None
         self.consoleLogging = True
-
 
     @staticmethod
     def help_message():
@@ -120,7 +126,8 @@ class SickRage(object):
         help_msg += "                                    Default: " + sickbeard.PROG_DIR + "\n"
         help_msg += "                --config=<path>     Override config filename (full path including filename)\n"
         help_msg += "                                    to load configuration from \n"
-        help_msg += "                                    Default: config.ini in " + sickbeard.PROG_DIR + " or --datadir location\n"
+        help_msg += "                                    Default: config.ini in " + \
+            sickbeard.PROG_DIR + " or --datadir location\n"
         help_msg += "                --noresize          Prevent resizing of the banner/posters even if PIL is installed\n"
 
         return help_msg
@@ -168,27 +175,31 @@ class SickRage(object):
             pass
 
         # For OSes that are poorly configured I'll just randomly force UTF-8
-        if not sickbeard.SYS_ENCODING or sickbeard.SYS_ENCODING in ('ANSI_X3.4-1968', 'US-ASCII', 'ASCII'):
+        if not sickbeard.SYS_ENCODING or sickbeard.SYS_ENCODING in (
+                'ANSI_X3.4-1968', 'US-ASCII', 'ASCII'):
             sickbeard.SYS_ENCODING = 'UTF-8'
 
         if not hasattr(sys, "setdefaultencoding"):
             reload(sys)
 
         if sys.platform == 'win32':
-            #pylint: disable=E1101
-            if sys.getwindowsversion()[0] >= 6 and sys.stdout.encoding == 'cp65001':
+            # pylint: disable=E1101
+            if sys.getwindowsversion()[
+                    0] >= 6 and sys.stdout.encoding == 'cp65001':
                 sickbeard.SYS_ENCODING = 'UTF-8'
 
         try:
             # pylint: disable=E1101
-            # On non-unicode builds this will raise an AttributeError, if encoding type is not valid it throws a LookupError
+            # On non-unicode builds this will raise an AttributeError, if
+            # encoding type is not valid it throws a LookupError
             sys.setdefaultencoding(sickbeard.SYS_ENCODING)
         except Exception:
             sys.exit("Sorry, you MUST add the SickRage folder to the PYTHONPATH environment variable\n" +
                      "or find another way to force Python to use " + sickbeard.SYS_ENCODING + " for string encoding.")
 
         # Need console logging for SickBeard.py and SickBeard-console.exe
-        self.consoleLogging = (not hasattr(sys, "frozen")) or (sickbeard.MY_NAME.lower().find('-console') > 0)
+        self.consoleLogging = (not hasattr(sys, "frozen")) or (
+            sickbeard.MY_NAME.lower().find('-console') > 0)
 
         # Rename the main thread
         threading.currentThread().name = "MAIN"
@@ -226,7 +237,8 @@ class SickRage(object):
             # Run as a double forked daemon
             if o in ('-d', '--daemon'):
                 self.runAsDaemon = True
-                # When running as daemon disable consoleLogging and don't start browser
+                # When running as daemon disable consoleLogging and don't start
+                # browser
                 self.consoleLogging = False
                 self.noLaunch = True
 
@@ -238,9 +250,13 @@ class SickRage(object):
                 self.CREATEPID = True
                 self.PIDFILE = str(a)
 
-                # If the pidfile already exists, sickbeard may still be running, so exit
+                # If the pidfile already exists, sickbeard may still be
+                # running, so exit
                 if os.path.exists(self.PIDFILE):
-                    sys.exit("PID file: " + self.PIDFILE + " already exists. Exiting.")
+                    sys.exit(
+                        "PID file: " +
+                        self.PIDFILE +
+                        " already exists. Exiting.")
 
             # Specify folder to load the config file from
             if o in ('--config',):
@@ -254,40 +270,58 @@ class SickRage(object):
             if o in ('--noresize',):
                 sickbeard.NO_RESIZE = True
 
-        # The pidfile is only useful in daemon mode, make sure we can write the file properly
+        # The pidfile is only useful in daemon mode, make sure we can write the
+        # file properly
         if self.CREATEPID:
             if self.runAsDaemon:
                 pid_dir = os.path.dirname(self.PIDFILE)
                 if not os.access(pid_dir, os.F_OK):
-                    sys.exit("PID dir: " + pid_dir + " doesn't exist. Exiting.")
+                    sys.exit(
+                        "PID dir: " +
+                        pid_dir +
+                        " doesn't exist. Exiting.")
                 if not os.access(pid_dir, os.W_OK):
-                    sys.exit("PID dir: " + pid_dir + " must be writable (write permissions). Exiting.")
+                    sys.exit(
+                        "PID dir: " +
+                        pid_dir +
+                        " must be writable (write permissions). Exiting.")
 
             else:
                 if self.consoleLogging:
-                    sys.stdout.write("Not running in daemon mode. PID file creation disabled.\n")
+                    sys.stdout.write(
+                        "Not running in daemon mode. PID file creation disabled.\n")
 
                 self.CREATEPID = False
 
         # If they don't specify a config file then put it in the data dir
         if not sickbeard.CONFIG_FILE:
-            sickbeard.CONFIG_FILE = os.path.join(sickbeard.DATA_DIR, "config.ini")
+            sickbeard.CONFIG_FILE = os.path.join(
+                sickbeard.DATA_DIR, "config.ini")
 
         # Make sure that we can create the data dir
         if not os.access(sickbeard.DATA_DIR, os.F_OK):
             try:
-                os.makedirs(sickbeard.DATA_DIR, 0744)
+                os.makedirs(sickbeard.DATA_DIR, 0o744)
             except os.error:
-                raise SystemExit("Unable to create datadir '" + sickbeard.DATA_DIR + "'")
+                raise SystemExit(
+                    "Unable to create datadir '" +
+                    sickbeard.DATA_DIR +
+                    "'")
 
         # Make sure we can write to the data dir
         if not os.access(sickbeard.DATA_DIR, os.W_OK):
-            raise SystemExit("Datadir must be writeable '" + sickbeard.DATA_DIR + "'")
+            raise SystemExit(
+                "Datadir must be writeable '" +
+                sickbeard.DATA_DIR +
+                "'")
 
         # Make sure we can write to the config file
         if not os.access(sickbeard.CONFIG_FILE, os.W_OK):
             if os.path.isfile(sickbeard.CONFIG_FILE):
-                raise SystemExit("Config file '" + sickbeard.CONFIG_FILE + "' must be writeable.")
+                raise SystemExit(
+                    "Config file '" +
+                    sickbeard.CONFIG_FILE +
+                    "' must be writeable.")
             elif not os.access(os.path.dirname(sickbeard.CONFIG_FILE), os.W_OK):
                 raise SystemExit(
                     "Config file root dir '" + os.path.dirname(sickbeard.CONFIG_FILE) + "' must be writeable.")
@@ -299,11 +333,17 @@ class SickRage(object):
         if os.path.exists(restoreDir):
             success = self.restoreDB(restoreDir, sickbeard.DATA_DIR)
             if self.consoleLogging:
-                sys.stdout.write("Restore: restoring DB and config.ini %s!\n" % ("FAILED", "SUCCESSFUL")[success])
+                sys.stdout.write(
+                    "Restore: restoring DB and config.ini %s!\n" %
+                    ("FAILED", "SUCCESSFUL")[success])
 
         # Load the config and publish it to the sickbeard package
         if self.consoleLogging and not os.path.isfile(sickbeard.CONFIG_FILE):
-            sys.stdout.write("Unable to find '" + sickbeard.CONFIG_FILE + "' , all settings will be default!" + "\n")
+            sys.stdout.write(
+                "Unable to find '" +
+                sickbeard.CONFIG_FILE +
+                "' , all settings will be default!" +
+                "\n")
 
         sickbeard.CFG = ConfigObj(sickbeard.CONFIG_FILE)
 
@@ -334,7 +374,8 @@ class SickRage(object):
             self.log_dir = None
 
         # sickbeard.WEB_HOST is available as a configuration value in various
-        # places but is not configurable. It is supported here for historic reasons.
+        # places but is not configurable. It is supported here for historic
+        # reasons.
         if sickbeard.WEB_HOST and sickbeard.WEB_HOST != '0.0.0.0':
             self.webhost = sickbeard.WEB_HOST
         else:
@@ -389,11 +430,15 @@ class SickRage(object):
             failed_history.trimHistory()
 
         # Check for metadata indexer updates for shows (Disabled until we use api)
-        #sickbeard.showUpdateScheduler.forceRun()
+        # sickbeard.showUpdateScheduler.forceRun()
 
         # Launch browser
-        if sickbeard.LAUNCH_BROWSER and not (self.noLaunch or self.runAsDaemon):
-            sickbeard.launchBrowser('https' if sickbeard.ENABLE_HTTPS else 'http', self.startPort, sickbeard.WEB_ROOT)
+        if sickbeard.LAUNCH_BROWSER and not (
+                self.noLaunch or self.runAsDaemon):
+            sickbeard.launchBrowser(
+                'https' if sickbeard.ENABLE_HTTPS else 'http',
+                self.startPort,
+                sickbeard.WEB_ROOT)
 
         # main loop
         while True:
@@ -409,8 +454,10 @@ class SickRage(object):
             pid = os.fork()  # @UndefinedVariable - only available in UNIX
             if pid != 0:
                 os._exit(0)
-        except OSError, e:
-            sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
+        except OSError as e:
+            sys.stderr.write(
+                "fork #1 failed: %d (%s)\n" %
+                (e.errno, e.strerror))
             sys.exit(1)
 
         os.setsid()  # @UndefinedVariable - only available in UNIX
@@ -419,17 +466,19 @@ class SickRage(object):
         # http://www.microhowto.info/howto/cause_a_process_to_become_a_daemon_in_c.html#idp23920
         # https://www.safaribooksonline.com/library/view/python-cookbook/0596001673/ch06s08.html
         # Previous code simply set the umask to whatever it was because it was ANDing instead of ORring
-        # Daemons traditionally run with umask 0 anyways and this should not have repercussions
+        # Daemons traditionally run with umask 0 anyways and this should not
+        # have repercussions
         os.umask(0)
-
 
         # Make the child a session-leader by detaching from the terminal
         try:
             pid = os.fork()  # @UndefinedVariable - only available in UNIX
             if pid != 0:
                 os._exit(0)
-        except OSError, e:
-            sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
+        except OSError as e:
+            sys.stderr.write(
+                "fork #2 failed: %d (%s)\n" %
+                (e.errno, e.strerror))
             sys.exit(1)
 
         # Write pid
@@ -438,7 +487,7 @@ class SickRage(object):
             logger.log(u"Writing PID: " + pid + " to " + str(self.PIDFILE))
             try:
                 file(self.PIDFILE, 'w').write("%s\n" % pid)
-            except IOError, e:
+            except IOError as e:
                 logger.log_error_and_exit(
                     u"Unable to write PID file: " + self.PIDFILE + " Error: " + str(e.strerror) + " [" + str(
                         e.errno) + "]")
@@ -480,12 +529,14 @@ class SickRage(object):
         sickbeard.showList = []
         for sqlShow in sqlResults:
             try:
-                curShow = TVShow(int(sqlShow["indexer"]), int(sqlShow["indexer_id"]))
+                curShow = TVShow(
+                    int(sqlShow["indexer"]), int(sqlShow["indexer_id"]))
                 curShow.nextEpisode()
                 sickbeard.showList.append(curShow)
-            except Exception, e:
+            except Exception as e:
                 logger.log(
-                    u"There was an error creating the show in " + sqlShow["location"] + ": " + str(e).decode('utf-8'),
+                    u"There was an error creating the show in " +
+                    sqlShow["location"] + ": " + str(e).decode('utf-8'),
                     logger.ERROR)
                 logger.log(traceback.format_exc(), logger.DEBUG)
 
@@ -497,7 +548,10 @@ class SickRage(object):
             for filename in filesList:
                 srcFile = os.path.join(srcDir, filename)
                 dstFile = os.path.join(dstDir, filename)
-                bakFile = os.path.join(dstDir, '{0}.bak-{1}'.format(filename, datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d_%H%M%S')))
+                bakFile = os.path.join(
+                    dstDir, '{0}.bak-{1}'.format(
+                        filename, datetime.datetime.strftime(
+                            datetime.datetime.now(), '%Y%m%d_%H%M%S')))
                 if os.path.isfile(dstFile):
                     shutil.move(dstFile, bakFile)
                 shutil.move(srcFile, dstFile)
@@ -534,18 +588,22 @@ class SickRage(object):
                 if install_type in ('git', 'source'):
                     popen_list = [sys.executable, sickbeard.MY_FULLNAME]
                 elif install_type == 'win':
-                    logger.log(u"You are using a binary Windows build of SickRage. Please switch to using git.", logger.ERROR)
+                    logger.log(
+                        u"You are using a binary Windows build of SickRage. Please switch to using git.",
+                        logger.ERROR)
 
                 if popen_list and not sickbeard.NO_RESTART:
                     popen_list += sickbeard.MY_ARGS
                     if '--nolaunch' not in popen_list:
                         popen_list += ['--nolaunch']
                     logger.log(u"Restarting SickRage with " + str(popen_list))
-                    logger.shutdown() #shutdown the logger to make sure it's released the logfile BEFORE it restarts SR.
+                    # shutdown the logger to make sure it's released the
+                    # logfile BEFORE it restarts SR.
+                    logger.shutdown()
                     subprocess.Popen(popen_list, cwd=os.getcwd())
 
         # system exit
-        logger.shutdown() #Make sure the logger has stopped, just in case
+        logger.shutdown()  # Make sure the logger has stopped, just in case
         # pylint: disable=W0212
         os._exit(0)
 

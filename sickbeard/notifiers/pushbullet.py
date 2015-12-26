@@ -26,6 +26,7 @@ from sickbeard import logger, common
 
 
 class PushbulletNotifier:
+
     def test_notify(self, pushbullet_api):
         return self._sendPushbullet(pushbullet_api, event="Test", message="Testing Pushbullet settings from SickRage",
                                     method="POST", notificationType="note", force=True)
@@ -47,12 +48,18 @@ class PushbulletNotifier:
         if sickbeard.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendPushbullet(pushbullet_api=None, event=common.notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
                                  message=ep_name + ": " + lang, notificationType="note", method="POST")
-                                 
-    def notify_git_update(self, new_version = "??"):
+
+    def notify_git_update(self, new_version="??"):
         if sickbeard.USE_PUSHBULLET:
-            update_text=common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
-            title=common.notifyStrings[common.NOTIFY_GIT_UPDATE]
-            self._sendPushbullet(pushbullet_api=None, event=title, message=update_text + new_version, notificationType="note", method="POST")
+            update_text = common.notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = common.notifyStrings[common.NOTIFY_GIT_UPDATE]
+            self._sendPushbullet(
+                pushbullet_api=None,
+                event=title,
+                message=update_text +
+                new_version,
+                notificationType="note",
+                method="POST")
 
     def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None,
                         notificationType=None, method=None, force=False):
@@ -60,9 +67,9 @@ class PushbulletNotifier:
         if not sickbeard.USE_PUSHBULLET and not force:
             return False
 
-        if pushbullet_api == None:
+        if pushbullet_api is None:
             pushbullet_api = sickbeard.PUSHBULLET_API
-        if pushbullet_device == None:
+        if pushbullet_device is None:
             pushbullet_device = sickbeard.PUSHBULLET_DEVICE
 
         if method == 'POST':
@@ -73,16 +80,25 @@ class PushbulletNotifier:
         logger.log(u"Pushbullet event: " + str(event), logger.DEBUG)
         logger.log(u"Pushbullet message: " + str(message), logger.DEBUG)
         logger.log(u"Pushbullet api: " + str(pushbullet_api), logger.DEBUG)
-        logger.log(u"Pushbullet devices: " + str(pushbullet_device), logger.DEBUG)
-        logger.log(u"Pushbullet notification type: " + str(notificationType), logger.DEBUG)
+        logger.log(
+            u"Pushbullet devices: " +
+            str(pushbullet_device),
+            logger.DEBUG)
+        logger.log(
+            u"Pushbullet notification type: " +
+            str(notificationType),
+            logger.DEBUG)
 
         http_handler = HTTPSConnection("api.pushbullet.com")
 
-        if notificationType == None:
+        if notificationType is None:
             testMessage = True
             try:
-                logger.log(u"Testing Pushbullet authentication and retrieving the device list.", logger.DEBUG)
-                http_handler.request(method, uri, None, headers={'Authorization': 'Bearer %s' % pushbullet_api})
+                logger.log(
+                    u"Testing Pushbullet authentication and retrieving the device list.",
+                    logger.DEBUG)
+                http_handler.request(method, uri, None, headers={
+                                     'Authorization': 'Bearer %s' % pushbullet_api})
             except (SSLError, HTTPException, socket.error):
                 logger.log(u"Pushbullet notification failed.", logger.ERROR)
                 return False
@@ -112,7 +128,9 @@ class PushbulletNotifier:
                 logger.log(u"Pushbullet notifications sent.", logger.DEBUG)
                 return True
         elif request_status == 410:
-            logger.log(u"Pushbullet auth failed: %s" % response.reason, logger.ERROR)
+            logger.log(
+                u"Pushbullet auth failed: %s" %
+                response.reason, logger.ERROR)
             return False
         else:
             logger.log(u"Pushbullet notification failed.", logger.ERROR)
@@ -120,4 +138,3 @@ class PushbulletNotifier:
 
 
 notifier = PushbulletNotifier
-

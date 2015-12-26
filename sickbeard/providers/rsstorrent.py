@@ -32,6 +32,7 @@ from bencode import bdecode
 
 
 class TorrentRssProvider(generic.TorrentProvider):
+
     def __init__(self, name, url, cookies='', titleTAG='title', search_mode='eponly', search_fallback=False, enable_daily=False,
                  enable_backlog=False):
         generic.TorrentProvider.__init__(self, name)
@@ -53,19 +54,19 @@ class TorrentRssProvider(generic.TorrentProvider):
 
     def configStr(self):
         return "%s|%s|%s|%s|%d|%s|%d|%d|%d" % (self.name or '',
-                                            self.url or '',
-                                            self.cookies or '',
-                                            self.titleTAG or '',
-                                            self.enabled,
-                                            self.search_mode or '',
-                                            self.search_fallback,
-                                            self.enable_daily,
-                                            self.enable_backlog)
+                                               self.url or '',
+                                               self.cookies or '',
+                                               self.titleTAG or '',
+                                               self.enabled,
+                                               self.search_mode or '',
+                                               self.search_fallback,
+                                               self.enable_daily,
+                                               self.enable_backlog)
 
     def imageName(self):
         if ek(os.path.isfile,
-                 ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME, 'images', 'providers',
-                       self.getID() + '.png')):
+              ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME, 'images', 'providers',
+                 self.getID() + '.png')):
             return self.getID() + '.png'
         return 'torrentrss.png'
 
@@ -102,7 +103,8 @@ class TorrentRssProvider(generic.TorrentProvider):
             if self.cookies:
                 cookie_validator = re.compile("^(\w+=\w+)(;\w+=\w+)*$")
                 if not cookie_validator.match(self.cookies):
-                    return (False, 'Cookie is not correctly formatted: ' + self.cookies)
+                    return (
+                        False, 'Cookie is not correctly formatted: ' + self.cookies)
 
             data = self.cache._getRSSData()['entries']
             if not data:
@@ -116,7 +118,8 @@ class TorrentRssProvider(generic.TorrentProvider):
             if not url:
                 return (False, 'Unable to get torrent url from first item')
 
-            if url.startswith('magnet:') and re.search('urn:btih:([\w]{32,40})', url):
+            if url.startswith('magnet:') and re.search(
+                    'urn:btih:([\w]{32,40})', url):
                 return (True, 'RSS feed Parsed correctly')
             else:
                 if self.cookies:
@@ -125,13 +128,14 @@ class TorrentRssProvider(generic.TorrentProvider):
                 torrent_file = self.getURL(url)
                 try:
                     bdecode(torrent_file)
-                except Exception, e:
+                except Exception as e:
                     self.dumpHTML(torrent_file)
-                    return (False, 'Torrent link is not a valid torrent file: ' + ex(e))
+                    return (
+                        False, 'Torrent link is not a valid torrent file: ' + ex(e))
 
             return (True, 'RSS feed Parsed correctly')
 
-        except Exception, e:
+        except Exception as e:
             return (False, 'Error when trying to load RSS: ' + ex(e))
 
     def dumpHTML(self, data):
@@ -142,10 +146,12 @@ class TorrentRssProvider(generic.TorrentProvider):
             fileOut.write(data)
             fileOut.close()
             helpers.chmodAsParent(dumpName)
-        except IOError, e:
+        except IOError as e:
             logger.log("Unable to save the file: %s " % repr(e), logger.ERROR)
             return False
-        logger.log(u"Saved custom_torrent html dump %s " % dumpName, logger.INFO)
+        logger.log(
+            u"Saved custom_torrent html dump %s " %
+            dumpName, logger.INFO)
         return True
 
     def seedRatio(self):
@@ -153,6 +159,7 @@ class TorrentRssProvider(generic.TorrentProvider):
 
 
 class TorrentRssCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
         tvcache.TVCache.__init__(self, provider_obj)
         self.minTime = 15

@@ -22,6 +22,7 @@ from indexer_config import initConfig, indexerConfig
 
 
 class indexerApi(object):
+
     def __init__(self, indexerID=None):
         self.indexerID = int(indexerID) if indexerID else None
 
@@ -38,7 +39,9 @@ class indexerApi(object):
             return indexerConfig[self.indexerID]
         _ = initConfig
         if sickbeard.INDEXER_DEFAULT_LANGUAGE in _:
-            del _[_['valid_languages'].index(sickbeard.INDEXER_DEFAULT_LANGUAGE)]
+            del _[
+                _['valid_languages'].index(
+                    sickbeard.INDEXER_DEFAULT_LANGUAGE)]
         _['valid_languages'].sort()
         _['valid_languages'].insert(0, sickbeard.INDEXER_DEFAULT_LANGUAGE)
         return _
@@ -52,9 +55,11 @@ class indexerApi(object):
     def api_params(self):
         if self.indexerID:
             if sickbeard.CACHE_DIR:
-                indexerConfig[self.indexerID]['api_params']['cache'] = os.path.join(sickbeard.CACHE_DIR, 'indexers', self.name)
+                indexerConfig[self.indexerID]['api_params']['cache'] = os.path.join(
+                    sickbeard.CACHE_DIR, 'indexers', self.name)
             if sickbeard.PROXY_SETTING and sickbeard.PROXY_INDEXERS:
-                indexerConfig[self.indexerID]['api_params']['proxy'] = sickbeard.PROXY_SETTING
+                indexerConfig[self.indexerID]['api_params'][
+                    'proxy'] = sickbeard.PROXY_SETTING
 
             return indexerConfig[self.indexerID]['api_params']
 

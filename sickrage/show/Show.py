@@ -27,6 +27,7 @@ from sickrage.helper.exceptions import MultipleShowObjectsException
 
 
 class Show:
+
     def __init__(self):
         pass
 
@@ -47,7 +48,8 @@ class Show:
             return error, show
 
         try:
-            sickbeard.showQueueScheduler.action.removeShow(show, bool(remove_files))
+            sickbeard.showQueueScheduler.action.removeShow(
+                show, bool(remove_files))
         except CantRemoveShowException as exception:
             return ex(exception), show
 

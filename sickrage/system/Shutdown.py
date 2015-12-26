@@ -22,6 +22,7 @@ from sickbeard.event_queue import Events
 
 
 class Shutdown:
+
     def __init__(self):
         pass
 

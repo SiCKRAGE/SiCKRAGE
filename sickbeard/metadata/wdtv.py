@@ -128,7 +128,8 @@ class WDTVMetadata(generic.GenericMetadata):
         ep_obj: a TVEpisode instance for which to create the thumbnail
         """
         if ek(os.path.isfile, ep_obj.location):
-            tbn_filename = helpers.replaceExtension(ep_obj.location, 'metathumb')
+            tbn_filename = helpers.replaceExtension(
+                ep_obj.location, 'metathumb')
         else:
             return None
 
@@ -165,10 +166,18 @@ class WDTVMetadata(generic.GenericMetadata):
                 break
 
         if not season_dir:
-            logger.log(u"Unable to find a season dir for season " + str(season), logger.DEBUG)
+            logger.log(
+                u"Unable to find a season dir for season " +
+                str(season),
+                logger.DEBUG)
             return None
 
-        logger.log(u"Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season), logger.DEBUG)
+        logger.log(
+            u"Using " +
+            str(season_dir) +
+            "/folder.jpg as season dir for season " +
+            str(season),
+            logger.DEBUG)
 
         return ek(os.path.join, show_obj.location, season_dir, 'folder.jpg')
 
@@ -185,7 +194,8 @@ class WDTVMetadata(generic.GenericMetadata):
         indexer_lang = ep_obj.show.lang
 
         try:
-            lINDEXER_API_PARMS = sickbeard.indexerApi(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickbeard.indexerApi(
+                ep_obj.show.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['actors'] = True
 
@@ -195,11 +205,13 @@ class WDTVMetadata(generic.GenericMetadata):
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = sickbeard.indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickbeard.indexerApi(
+                ep_obj.show.indexer).indexer(
+                **lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
-        except sickbeard.indexer_shownotfound, e:
+        except sickbeard.indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
-        except sickbeard.indexer_error, e:
+        except sickbeard.indexer_error as e:
             logger.log(u"Unable to connect to " + sickbeard.indexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - " + ex(e), logger.ERROR)
             return False
@@ -219,7 +231,8 @@ class WDTVMetadata(generic.GenericMetadata):
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
                 myEp["firstaired"] = str(datetime.date.fromordinal(1))
 
-            if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
+            if not (getattr(myEp, 'episodename', None)
+                    and getattr(myEp, 'firstaired', None)):
                 return None
 
             if len(eps_to_write) > 1:
@@ -255,7 +268,10 @@ class WDTVMetadata(generic.GenericMetadata):
 
             if getattr(myShow, 'firstaired', None):
                 try:
-                    year_text = str(datetime.datetime.strptime(myShow["firstaired"], dateFormat).year)
+                    year_text = str(
+                        datetime.datetime.strptime(
+                            myShow["firstaired"],
+                            dateFormat).year)
                     if year_text:
                         year = etree.SubElement(episode, "year")
                         year.text = year_text
@@ -268,7 +284,8 @@ class WDTVMetadata(generic.GenericMetadata):
 
             if getattr(myShow, 'genre', None):
                 genre = etree.SubElement(episode, "genre")
-                genre.text = " / ".join([x.strip() for x in myShow["genre"].split('|') if x.strip()])
+                genre.text = " / ".join([x.strip()
+                                         for x in myShow["genre"].split('|') if x.strip()])
 
             if getattr(myEp, 'director', None):
                 director = etree.SubElement(episode, "director")

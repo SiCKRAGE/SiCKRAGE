@@ -44,7 +44,7 @@ class GFTrackerProvider(generic.TorrentProvider):
                      'login': 'https://www.thegft.org/loginsite.php',
                      'search': 'https://www.thegft.org/browse.php?view=%s%s',
                      'download': 'https://www.thegft.org/%s',
-        }
+                     }
 
         self.url = self.urls['base_url']
 
@@ -62,7 +62,10 @@ class GFTrackerProvider(generic.TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
+            raise AuthException(
+                "Your authentication credentials for " +
+                self.name +
+                " are missing, check your config.")
 
         return True
 
@@ -71,7 +74,10 @@ class GFTrackerProvider(generic.TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = self.getURL(
+            self.urls['login'],
+            post_data=login_params,
+            timeout=30)
         # Save cookies from response
         self.cookies = self.headers.get('Set-Cookie')
 
@@ -80,12 +86,15 @@ class GFTrackerProvider(generic.TorrentProvider):
             return False
 
         if re.search('Username or password incorrect', response):
-            logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+            logger.log(
+                u"Invalid username or password. Check your settings",
+                logger.WARNING)
             return False
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -98,10 +107,13 @@ class GFTrackerProvider(generic.TorrentProvider):
             for search_string in search_params[mode]:
 
                 if mode != 'RSS':
-                    logger.log(u"Search string: %s " % search_string, logger.DEBUG)
+                    logger.log(
+                        u"Search string: %s " %
+                        search_string, logger.DEBUG)
 
-                searchURL = self.urls['search'] % (self.categories, search_string)
-                logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+                searchURL = self.urls['search'] % (
+                    self.categories, search_string)
+                logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
 
                 # Set cookies from response
                 self.headers.update({'Cookie': self.cookies})
@@ -113,11 +125,14 @@ class GFTrackerProvider(generic.TorrentProvider):
                 try:
                     with BS4Parser(data, features=["html5lib", "permissive"]) as html:
                         torrent_table = html.find("div", id="torrentBrowse")
-                        torrent_rows = torrent_table.findChildren("tr") if torrent_table else []
+                        torrent_rows = torrent_table.findChildren(
+                            "tr") if torrent_table else []
 
                         # Continue only if at least one release is found
                         if len(torrent_rows) < 1:
-                            logger.log(u"Data returned from provider does not contain any torrents", logger.DEBUG)
+                            logger.log(
+                                u"Data returned from provider does not contain any torrents",
+                                logger.DEBUG)
                             continue
 
                         for result in torrent_rows[1:]:
@@ -128,18 +143,21 @@ class GFTrackerProvider(generic.TorrentProvider):
                             torrent_size = cells[7].get_text().split("/", 1)[0]
 
                             try:
-                                if title.has_key('title'):
+                                if 'title' in title:
                                     title = title['title']
                                 else:
                                     title = cells[1].find("a")['title']
 
-                                download_url = self.urls['download'] % (link['href'])
+                                download_url = self.urls[
+                                    'download'] % (link['href'])
                                 seeders = int(shares[0])
                                 leechers = int(shares[1])
 
                                 size = -1
-                                if re.match(r"\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]", torrent_size):
-                                    size = self._convertSize(torrent_size.rstrip())
+                                if re.match(
+                                        r"\d+([,\.]\d+)?\s*[KkMmGgTt]?[Bb]", torrent_size):
+                                    size = self._convertSize(
+                                        torrent_size.rstrip())
 
                             except (AttributeError, TypeError):
                                 continue
@@ -150,17 +168,23 @@ class GFTrackerProvider(generic.TorrentProvider):
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode != 'RSS':
-                                    logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                                    logger.log(
+                                        u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers), logger.DEBUG)
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode != 'RSS':
-                                logger.log(u"Found result: %s " % title, logger.DEBUG)
+                                logger.log(
+                                    u"Found result: %s " %
+                                    title, logger.DEBUG)
 
                             items[mode].append(item)
 
-                except Exception, e:
-                    logger.log(u"Failed parsing provider. Traceback: %s" % traceback.format_exc(), logger.ERROR)
+                except Exception as e:
+                    logger.log(
+                        u"Failed parsing provider. Traceback: %s" %
+                        traceback.format_exc(), logger.ERROR)
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
@@ -189,7 +213,9 @@ class GFTrackerProvider(generic.TorrentProvider):
             size = -1
         return int(size)
 
+
 class GFTrackerCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)

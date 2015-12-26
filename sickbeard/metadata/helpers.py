@@ -21,14 +21,16 @@ from sickbeard import logger
 import requests
 
 meta_session = requests.Session()
+
+
 def getShowImage(url, imgNum=None):
     image_data = None  # @UnusedVariable
 
-    if url == None:
+    if url is None:
         return None
 
     # if they provided a fanart number try to use it instead
-    if imgNum != None:
+    if imgNum is not None:
         tempURL = url.split('-')[0] + "-" + str(imgNum) + ".jpg"
     else:
         tempURL = url
@@ -37,7 +39,9 @@ def getShowImage(url, imgNum=None):
 
     image_data = helpers.getURL(tempURL, session=meta_session)
     if image_data is None:
-        logger.log(u"There was an error trying to retrieve the image, aborting", logger.WARNING)
+        logger.log(
+            u"There was an error trying to retrieve the image, aborting",
+            logger.WARNING)
         return
 
     return image_data

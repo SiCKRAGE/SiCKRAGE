@@ -31,6 +31,7 @@ from sickbeard import tvcache
 from sickbeard.providers import generic
 from sickbeard.common import cpu_presets
 
+
 class TORRENTZProvider(generic.TorrentProvider):
 
     def __init__(self):
@@ -59,15 +60,18 @@ class TORRENTZProvider(generic.TorrentProvider):
         match = re.findall(r'[0-9]+', description)
         return (int(match[0]) * 1024**2, int(match[1]), int(match[2]))
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_strings, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings:
             for search_string in search_strings[mode]:
-                search_url = self.urls['verified'] if self.confirmed else self.urls['feed']
+                search_url = self.urls[
+                    'verified'] if self.confirmed else self.urls['feed']
                 if mode != 'RSS':
-                    search_url += '?q=' + urllib.parse.quote_plus(search_string)
+                    search_url += '?q=' + \
+                        urllib.parse.quote_plus(search_string)
 
                 logger.log(search_url)
                 data = self.getURL(search_url)
@@ -76,21 +80,32 @@ class TORRENTZProvider(generic.TorrentProvider):
                     continue
 
                 if not data.startswith("<?xml"):
-                    logger.log('Wrong data returned from: ' + search_url, logger.DEBUG)
+                    logger.log(
+                        'Wrong data returned from: ' +
+                        search_url,
+                        logger.DEBUG)
                     continue
 
                 if not data.startswith('<?xml'):
-                    logger.log(u'Expected xml but got something else, is your proxy failing?', logger.INFO)
+                    logger.log(
+                        u'Expected xml but got something else, is your proxy failing?',
+                        logger.INFO)
                     continue
 
                 try:
-                    data = xmltodict.parse(HTMLParser.HTMLParser().unescape(data.encode('utf-8')).decode('utf-8').replace('&', '&amp;'))
+                    data = xmltodict.parse(HTMLParser.HTMLParser().unescape(
+                        data.encode('utf-8')).decode('utf-8').replace('&', '&amp;'))
                 except ExpatError:
-                    logger.log(u"Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data), logger.ERROR)
+                    logger.log(
+                        u"Failed parsing provider. Traceback: %r\n%r" %
+                        (traceback.format_exc(), data), logger.ERROR)
                     continue
 
-                if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
-                    logger.log(u"Malformed rss returned, skipping", logger.DEBUG)
+                if not all([data, 'rss' in data, 'channel' in data[
+                           'rss'], 'item' in data['rss']['channel']]):
+                    logger.log(
+                        u"Malformed rss returned, skipping",
+                        logger.DEBUG)
                     continue
 
                 time.sleep(cpu_presets[sickbeard.CPU_PRESET])
@@ -103,29 +118,42 @@ class TORRENTZProvider(generic.TorrentProvider):
                     if 'tv' not in item.get('category', ''):
                         continue
 
-                    title = item.get('title', '').rsplit(' ', 1)[0].replace(' ', '.')
+                    title = item.get(
+                        'title',
+                        '').rsplit(
+                        ' ',
+                        1)[0].replace(
+                        ' ',
+                        '.')
                     t_hash = item.get('guid', '').rsplit('/', 1)[-1]
 
                     if not all([title, t_hash]):
                         continue
 
-                    # TODO: Add method to generic provider for building magnet from hash.
-                    download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://open.demonii.com:1337&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://exodus.desync.com:6969"
-                    size, seeders, leechers = self._split_description(item.get('description', ''))
+                    # TODO: Add method to generic provider for building magnet
+                    # from hash.
+                    download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + \
+                        "&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://open.demonii.com:1337&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://exodus.desync.com:6969"
+                    size, seeders, leechers = self._split_description(
+                        item.get('description', ''))
 
-                    #Filter unseeded torrent
+                    # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode != 'RSS':
-                            logger.log(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers), logger.DEBUG)
+                            logger.log(
+                                u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers), logger.DEBUG)
                         continue
 
-                    items[mode].append((title, download_url, size, seeders, leechers))
+                    items[mode].append(
+                        (title, download_url, size, seeders, leechers))
 
-            #For each search mode sort all the items by seeders if available
+            # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)
             results += items[mode]
 
         return results
+
 
 class TORRENTZCache(tvcache.TVCache):
 

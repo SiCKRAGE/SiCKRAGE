@@ -28,7 +28,9 @@ from sickbeard import helpers
 from sickbeard import logger
 
 # regex to parse time (12/24 hour format)
-time_regex = re.compile(r'(\d{1,2})(([:.](\d{2,2}))? ?([PA][. ]? ?M)|[:.](\d{2,2}))\b', flags=re.IGNORECASE)
+time_regex = re.compile(
+    r'(\d{1,2})(([:.](\d{2,2}))? ?([PA][. ]? ?M)|[:.](\d{2,2}))\b',
+    flags=re.IGNORECASE)
 am_regex = re.compile(r'(A[. ]? ?M)', flags=re.IGNORECASE)
 pm_regex = re.compile(r'(P[. ]? ?M)', flags=re.IGNORECASE)
 
@@ -40,13 +42,17 @@ else:
     sb_timezone = tz.tzlocal()
 
 # update the network timezone table
+
+
 def update_network_dict():
     """Update timezone information from SR repositories"""
 
     url = 'http://sickragetv.github.io/sb_network_timezones/network_timezones.txt'
     url_data = helpers.getURL(url, session=requests.Session())
     if not url_data:
-        logger.log(u'Updating network timezones failed, this can happen from time to time. URL: %s' % url, logger.WARNING)
+        logger.log(
+            u'Updating network timezones failed, this can happen from time to time. URL: %s' %
+            url, logger.WARNING)
         load_network_dict()
         return
 
@@ -66,18 +72,28 @@ def update_network_dict():
 
     queries = []
     for network, timezone in d.iteritems():
-        existing = network_list.has_key(network)
+        existing = network in network_list
         if not existing:
-            queries.append(['INSERT OR IGNORE INTO network_timezones VALUES (?,?);', [network, timezone]])
+            queries.append(
+                ['INSERT OR IGNORE INTO network_timezones VALUES (?,?);', [network, timezone]])
         elif network_list[network] is not timezone:
-            queries.append(['UPDATE OR IGNORE network_timezones SET timezone = ? WHERE network_name = ?;', [timezone, network]])
+            queries.append(
+                [
+                    'UPDATE OR IGNORE network_timezones SET timezone = ? WHERE network_name = ?;', [
+                        timezone, network]])
 
         if existing:
             del network_list[network]
 
     if network_list:
         purged = list(x for x in network_list)
-        queries.append(['DELETE FROM network_timezones WHERE network_name IN (%s);' % ','.join(['?'] * len(purged)), purged])
+        queries.append(
+            [
+                'DELETE FROM network_timezones WHERE network_name IN (%s);' %
+                ','.join(
+                    ['?'] *
+                    len(purged)),
+                purged])
 
     if queries:
         my_db.mass_action(queries)
@@ -170,10 +186,12 @@ def parse_date_time(d, t, network):
     te = datetime.datetime.fromordinal(helpers.tryInt(d) or 1)
     try:
         foreign_timezone = get_network_timezone(network, network_dict)
-        foreign_naive = datetime.datetime(te.year, te.month, te.day, hr, m, tzinfo=foreign_timezone)
+        foreign_naive = datetime.datetime(
+            te.year, te.month, te.day, hr, m, tzinfo=foreign_timezone)
         return foreign_naive
     except Exception:
-        return datetime.datetime(te.year, te.month, te.day, hr, m, tzinfo=sb_timezone)
+        return datetime.datetime(
+            te.year, te.month, te.day, hr, m, tzinfo=sb_timezone)
 
 
 def test_timeformat(t):

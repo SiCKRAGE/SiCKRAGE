@@ -50,12 +50,15 @@ class animenzb(generic.NZBProvider):
         return self.enabled
 
     def _get_season_search_strings(self, ep_obj):
-        return [x for x in show_name_helpers.makeSceneSeasonSearchString(self.show, ep_obj)]
+        return [x for x in show_name_helpers.makeSceneSeasonSearchString(
+            self.show, ep_obj)]
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
-        return [x for x in show_name_helpers.makeSceneSearchString(self.show, ep_obj)]
+        return [x for x in show_name_helpers.makeSceneSearchString(
+            self.show, ep_obj)]
 
-    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_string, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
         logger.log(u"Search string: %s " % search_string, logger.DEBUG)
 
@@ -69,16 +72,18 @@ class animenzb(generic.NZBProvider):
         }
 
         searchURL = self.url + "rss?" + urllib.urlencode(params)
-        logger.log(u"Search URL: %s" %  searchURL, logger.DEBUG)
+        logger.log(u"Search URL: %s" % searchURL, logger.DEBUG)
         results = []
-        for curItem in self.cache.getRSSFeed(searchURL, items=['entries'])['entries'] or []:
+        for curItem in self.cache.getRSSFeed(searchURL, items=['entries'])[
+                'entries'] or []:
             (title, url) = self._get_title_and_url(curItem)
 
             if title and url:
                 results.append(curItem)
                 logger.log(u"Found result: %s " % title, logger.DEBUG)
 
-        #For each search mode sort all the items by seeders if available if available
+        # For each search mode sort all the items by seeders if available if
+        # available
         results.sort(key=lambda tup: tup[0], reverse=True)
 
         return results
@@ -91,7 +96,7 @@ class animenzb(generic.NZBProvider):
 
             (title, url) = self._get_title_and_url(item)
 
-            if item.has_key('published_parsed') and item['published_parsed']:
+            if 'published_parsed' in item and item['published_parsed']:
                 result_date = item.published_parsed
                 if result_date:
                     result_date = datetime.datetime(*result_date[0:6])
@@ -99,7 +104,8 @@ class animenzb(generic.NZBProvider):
                 continue
 
             if not date or result_date > date:
-                search_result = classes.Proper(title, url, result_date, self.show)
+                search_result = classes.Proper(
+                    title, url, result_date, self.show)
                 results.append(search_result)
 
         return results

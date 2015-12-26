@@ -25,7 +25,8 @@ from sickrage.helper.encoding import ss
 from sickrage.show.History import History
 
 
-def _logHistoryItem(action, showid, season, episode, quality, resource, provider, version=-1):
+def _logHistoryItem(action, showid, season, episode,
+                    quality, resource, provider, version=-1):
     """
     Insert a history item in DB
 
@@ -62,7 +63,7 @@ def logSnatch(searchResult):
         version = searchResult.version
 
         providerClass = searchResult.provider
-        if providerClass != None:
+        if providerClass is not None:
             provider = providerClass.name
         else:
             provider = "unknown"
@@ -71,10 +72,19 @@ def logSnatch(searchResult):
 
         resource = searchResult.name
 
-        _logHistoryItem(action, showid, season, episode, quality, resource, provider, version)
+        _logHistoryItem(
+            action,
+            showid,
+            season,
+            episode,
+            quality,
+            resource,
+            provider,
+            version)
 
 
-def logDownload(episode, filename, new_ep_quality, release_group=None, version=-1):
+def logDownload(episode, filename, new_ep_quality,
+                release_group=None, version=-1):
     """
     Log history of download
 
@@ -98,7 +108,15 @@ def logDownload(episode, filename, new_ep_quality, release_group=None, version=-
 
     action = episode.status
 
-    _logHistoryItem(action, showid, season, epNum, quality, filename, provider, version)
+    _logHistoryItem(
+        action,
+        showid,
+        season,
+        epNum,
+        quality,
+        filename,
+        provider,
+        version)
 
 
 def logSubtitle(showid, season, episode, status, subtitleResult):
@@ -117,7 +135,14 @@ def logSubtitle(showid, season, episode, status, subtitleResult):
     status, quality = Quality.splitCompositeStatus(status)
     action = Quality.compositeStatus(SUBTITLED, quality)
 
-    _logHistoryItem(action, showid, season, episode, quality, resource, provider)
+    _logHistoryItem(
+        action,
+        showid,
+        season,
+        episode,
+        quality,
+        resource,
+        provider)
 
 
 def logFailed(epObj, release, provider=None):

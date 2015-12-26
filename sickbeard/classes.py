@@ -189,10 +189,14 @@ class AllShowsListUI:
                     for name in seriesnames:
                         if searchterm.lower() in name.lower():
                             if 'firstaired' not in curShow:
-                                curShow['firstaired'] = str(datetime.date.fromordinal(1))
-                                curShow['firstaired'] = re.sub("([-]0{2})+", "", curShow['firstaired'])
-                                fixDate = parser.parse(curShow['firstaired'], fuzzy=True).date()
-                                curShow['firstaired'] = fixDate.strftime(dateFormat)
+                                curShow['firstaired'] = str(
+                                    datetime.date.fromordinal(1))
+                                curShow['firstaired'] = re.sub(
+                                    "([-]0{2})+", "", curShow['firstaired'])
+                                fixDate = parser.parse(
+                                    curShow['firstaired'], fuzzy=True).date()
+                                curShow['firstaired'] = fixDate.strftime(
+                                    dateFormat)
 
                             if curShow not in searchResults:
                                 searchResults += [curShow]
@@ -215,7 +219,8 @@ class ShowListUI:
         try:
             # try to pick a show that's in my show list
             for curShow in allSeries:
-                if filter(lambda x: int(x.indexerid) == int(curShow['id']), sickbeard.showList):
+                if filter(lambda x: int(x.indexerid) == int(
+                        curShow['id']), sickbeard.showList):
                     return curShow
         except:
             pass
@@ -225,6 +230,7 @@ class ShowListUI:
 
 
 class Proper:
+
     def __init__(self, name, url, date, show):
         self.name = name
         self.url = url

@@ -55,11 +55,13 @@ censoredItems = {}
 
 
 class NullHandler(logging.Handler):
+
     def emit(self, record):
         pass
 
 
 class CensoredFormatter(logging.Formatter, object):
+
     def __init__(self, *args, **kwargs):
         super(CensoredFormatter, self).__init__(*args, **kwargs)
 
@@ -71,11 +73,15 @@ class CensoredFormatter(logging.Formatter, object):
             if v and len(v) > 0 and v in msg:
                 msg = msg.replace(v, len(v) * '*')
         # Needed because Newznab apikey isn't stored as key=value in a section.
-        msg = re.sub(r'([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)', r'\1=**********\2', msg)
+        msg = re.sub(
+            r'([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)',
+            r'\1=**********\2',
+            msg)
         return msg
 
 
 class Logger(object):
+
     def __init__(self):
         self.logger = logging.getLogger('sickrage')
 
@@ -93,8 +99,10 @@ class Logger(object):
 
         self.submitter_running = False
 
-    def initLogging(self, consoleLogging=False, fileLogging=False, debugLogging=False):
-        self.logFile = self.logFile or os.path.join(sickbeard.LOG_DIR, 'sickrage.log')
+    def initLogging(self, consoleLogging=False,
+                    fileLogging=False, debugLogging=False):
+        self.logFile = self.logFile or os.path.join(
+            sickbeard.LOG_DIR, 'sickrage.log')
         self.debugLogging = debugLogging
         self.consoleLogging = consoleLogging
         self.fileLogging = fileLogging
@@ -118,7 +126,10 @@ class Logger(object):
         # console log handler
         if self.consoleLogging:
             console = logging.StreamHandler()
-            console.setFormatter(CensoredFormatter(u'%(asctime)s %(levelname)s::%(message)s', '%H:%M:%S'))
+            console.setFormatter(
+                CensoredFormatter(
+                    u'%(asctime)s %(levelname)s::%(message)s',
+                    '%H:%M:%S'))
             console.setLevel(INFO if not self.debugLogging else DEBUG)
 
             for logger in self.loggers:
@@ -126,8 +137,15 @@ class Logger(object):
 
         # rotating log file handler
         if self.fileLogging:
-            rfh = logging.handlers.RotatingFileHandler(self.logFile, maxBytes=sickbeard.LOG_SIZE, backupCount=sickbeard.LOG_NR, encoding='utf-8')
-            rfh.setFormatter(CensoredFormatter(u'%(asctime)s %(levelname)-8s %(message)s', dateTimeFormat))
+            rfh = logging.handlers.RotatingFileHandler(
+                self.logFile,
+                maxBytes=sickbeard.LOG_SIZE,
+                backupCount=sickbeard.LOG_NR,
+                encoding='utf-8')
+            rfh.setFormatter(
+                CensoredFormatter(
+                    u'%(asctime)s %(levelname)-8s %(message)s',
+                    dateTimeFormat))
             rfh.setLevel(DEBUG)
 
             for logger in self.loggers:
@@ -141,19 +159,23 @@ class Logger(object):
         meThread = threading.currentThread().getName()
         message = meThread + u" :: " + msg
 
-        # Change the SSL error to a warning with a link to information about how to fix it.
-        check = re.sub(r'error \[Errno 1\] _ssl.c:\d{3}: error:\d{8}:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error', 'See: http://git.io/vJrkM', message)
+        # Change the SSL error to a warning with a link to information about
+        # how to fix it.
+        check = re.sub(
+            r'error \[Errno 1\] _ssl.c:\d{3}: error:\d{8}:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert internal error',
+            'See: http://git.io/vJrkM',
+            message)
         if check is not message:
             message = check
             level = WARNING
-        
-        #Avoid open issues when user only need to clear cache to fix issue    
-        if re.search(r"_mako\'$",message):
-            #'C__SickRage_gui_slick_views_schedule_mako' 
+
+        # Avoid open issues when user only need to clear cache to fix issue
+        if re.search(r"_mako\'$", message):
+            #'C__SickRage_gui_slick_views_schedule_mako'
             #'_usr_local_sickrage_var_SickRage_gui_slick_views_schedule_mako'
             #'_volume1___plugins_AppCentral_sickbeard_tvrage_SickBeard_TVRage_gui_slick_views_schedule_mako'
             message = 'Please stop SickRage and delete \SickRage\cache\mako folder. You can see cache folder location in SickRage Help&Info menu'
-            level = WARNING            
+            level = WARNING
 
         if level == ERROR:
             self.logger.exception(message, *args, **kwargs)
@@ -171,7 +193,10 @@ class Logger(object):
         self.log(error_msg, ERROR, *args, **kwargs)
 
         if not self.consoleLogging:
-            sys.exit(error_msg.encode(sickbeard.SYS_ENCODING, 'xmlcharrefreplace'))
+            sys.exit(
+                error_msg.encode(
+                    sickbeard.SYS_ENCODING,
+                    'xmlcharrefreplace'))
         else:
             sys.exit(1)
 
@@ -180,7 +205,8 @@ class Logger(object):
         submitter_result = u''
         issue_id = None
         # pylint: disable=R0912,R0914,R0915
-        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and sickbeard.DEBUG and len(classes.ErrorViewer.errors) > 0):
+        if not (sickbeard.GIT_USERNAME and sickbeard.GIT_PASSWORD and sickbeard.DEBUG and len(
+                classes.ErrorViewer.errors) > 0):
             submitter_result = u'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
 
@@ -195,7 +221,7 @@ class Logger(object):
 
         if commits_behind is None or commits_behind > 0:
             submitter_result = u'Please update SickRage, unable to submit issue ticket to GitHub with an outdated version!'
-            return  submitter_result, issue_id
+            return submitter_result, issue_id
 
         if self.submitter_running:
             submitter_result = u'Issue submitter is running, please wait for it to complete'
@@ -206,7 +232,10 @@ class Logger(object):
         gh_org = sickbeard.GIT_ORG or 'SiCKRAGETV'
         gh_repo = 'sickrage-issues'
 
-        gh = Github(login_or_token=sickbeard.GIT_USERNAME, password=sickbeard.GIT_PASSWORD, user_agent="SiCKRAGE")
+        gh = Github(
+            login_or_token=sickbeard.GIT_USERNAME,
+            password=sickbeard.GIT_PASSWORD,
+            user_agent="SiCKRAGE")
 
         try:
             # read log file
@@ -217,19 +246,22 @@ class Logger(object):
                     log_data = f.readlines()
 
             for i in range(1, int(sickbeard.LOG_NR)):
-                if os.path.isfile(self.logFile + ".%i" % i) and (len(log_data) <= 500):
+                if os.path.isfile(self.logFile + ".%i" %
+                                  i) and (len(log_data) <= 500):
                     with ek(codecs.open, *[self.logFile + ".%i" % i, 'r', 'utf-8']) as f:
                         log_data += f.readlines()
 
             log_data = [line for line in reversed(log_data)]
 
             # parse and submit errors to issue tracker
-            for curError in sorted(classes.ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
+            for curError in sorted(
+                    classes.ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
 
                 try:
                     title_Error = ss(str(curError.title))
                     if not len(title_Error) or title_Error == 'None':
-                        title_Error = re.match(r"^[A-Z0-9\-\[\] :]+::\s*(.*)$", ss(curError.message)).group(1)
+                        title_Error = re.match(
+                            r"^[A-Z0-9\-\[\] :]+::\s*(.*)$", ss(curError.message)).group(1)
 
                     if len(title_Error) > 1000:
                         title_Error = title_Error[0:1000]
@@ -244,19 +276,22 @@ class Logger(object):
                     if match:
                         level = match.group(2)
                         if reverseNames[level] == ERROR:
-                            paste_data = "".join(log_data[i:i+50])
+                            paste_data = "".join(log_data[i:i + 50])
                             if paste_data:
-                                gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
+                                gist = gh.get_user().create_gist(
+                                    True, {"sickrage.log": InputFileContent(paste_data)})
                             break
                     else:
                         gist = 'No ERROR found'
 
                 message = u"### INFO\n"
-                message += u"Python Version: **" + sys.version[:120].replace('\n', '') + "**\n"
+                message += u"Python Version: **" + \
+                    sys.version[:120].replace('\n', '') + "**\n"
                 message += u"Operating System: **" + platform.platform() + "**\n"
                 if not 'Windows' in platform.platform():
                     try:
-                        message += u"Locale: " + locale.getdefaultlocale()[1] + "\n"
+                        message += u"Locale: " + \
+                            locale.getdefaultlocale()[1] + "\n"
                     except Exception:
                         message += u"Locale: unknown" + "\n"
                 message += u"Branch: **" + sickbeard.BRANCH + "**\n"
@@ -273,22 +308,27 @@ class Logger(object):
                 message += u"_STAFF NOTIFIED_: @SiCKRAGETV/owners @SiCKRAGETV/moderators"
 
                 title_Error = u"[APP SUBMITTED]: " + title_Error
-                reports = gh.get_organization(gh_org).get_repo(gh_repo).get_issues(state="all")
+                reports = gh.get_organization(gh_org).get_repo(
+                    gh_repo).get_issues(state="all")
 
                 def is_mako_error(title):
                     #[APP SUBMITTED]: Loaded module _home_pi_SickRage_gui_slick_views_home_mako not found in sys.modules
                     #[APP SUBMITTED]: Loaded module _opt_sickbeard_gui_slick_views_home_mako not found in sys.modules
                     #[APP SUBMITTED]: Loaded module D__TV_SickRage_gui_slick_views_home_mako not found in sys.modules
-                    return re.search(r".* Loaded module .* not found in sys\.modules", title) is not None
+                    return re.search(
+                        r".* Loaded module .* not found in sys\.modules", title) is not None
 
                 def is_ascii_error(title):
                     #[APP SUBMITTED]: 'ascii' codec can't encode characters in position 00-00: ordinal not in range(128)
                     #[APP SUBMITTED]: 'charmap' codec can't decode byte 0x00 in position 00: character maps to <undefined>
-                    return re.search(r".* codec can't .*code .* in position .*:", title) is not None
+                    return re.search(
+                        r".* codec can't .*code .* in position .*:", title) is not None
 
                 def is_malformed_error(title):
                     #[APP SUBMITTED]: not well-formed (invalid token): line 0, column 0
-                    re.search(r".* not well-formed \(invalid token\): line .* column .*", title) is not None
+                    re.search(
+                        r".* not well-formed \(invalid token\): line .* column .*",
+                        title) is not None
 
                 mako_error = is_mako_error(title_Error)
                 ascii_error = is_ascii_error(title_Error)
@@ -297,7 +337,7 @@ class Logger(object):
                 issue_found = False
                 for report in reports:
                     if title_Error.rsplit(' :: ')[-1] in report.title or \
-           	         (mako_error and is_mako_error(report.title)) or \
+                        (mako_error and is_mako_error(report.title)) or \
                         (malformed_error and is_malformed_error(report.title)) or \
                             (ascii_error and is_ascii_error(report.title)):
 
@@ -314,7 +354,8 @@ class Logger(object):
                         break
 
                 if not issue_found:
-                    issue = gh.get_organization(gh_org).get_repo(gh_repo).create_issue(title_Error, message)
+                    issue = gh.get_organization(gh_org).get_repo(
+                        gh_repo).create_issue(title_Error, message)
                     if issue:
                         issue_id = issue.number
                         submitter_result = u'Your issue ticket #%s was submitted successfully!' % issue_id
@@ -334,6 +375,8 @@ class Logger(object):
             return submitter_result, issue_id
 
 # pylint: disable=R0903
+
+
 class Wrapper(object):
     instance = Logger()
 

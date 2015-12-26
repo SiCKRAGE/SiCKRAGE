@@ -29,12 +29,12 @@ except ImportError:
 
 
 class HDBitsProvider(generic.TorrentProvider):
+
     def __init__(self):
 
         generic.TorrentProvider.__init__(self, "HDBits")
 
         self.supportsBacklog = True
-
 
         self.username = None
         self.passkey = None
@@ -55,7 +55,10 @@ class HDBitsProvider(generic.TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.passkey:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
+            raise AuthException(
+                "Your authentication credentials for " +
+                self.name +
+                " are missing, check your config.")
 
         return True
 
@@ -63,16 +66,24 @@ class HDBitsProvider(generic.TorrentProvider):
 
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
-                logger.log(u"Invalid username or password. Check your settings", logger.WARNING)
+                logger.log(
+                    u"Invalid username or password. Check your settings",
+                    logger.WARNING)
 
         return True
 
     def _get_season_search_strings(self, ep_obj):
-        season_search_string = [self._make_post_data_JSON(show=ep_obj.show, season=ep_obj)]
+        season_search_string = [
+            self._make_post_data_JSON(
+                show=ep_obj.show,
+                season=ep_obj)]
         return season_search_string
 
     def _get_episode_search_strings(self, ep_obj, add_string=''):
-        episode_search_string = [self._make_post_data_JSON(show=ep_obj.show, episode=ep_obj)]
+        episode_search_string = [
+            self._make_post_data_JSON(
+                show=ep_obj.show,
+                episode=ep_obj)]
         return episode_search_string
 
     def _get_title_and_url(self, item):
@@ -81,20 +92,25 @@ class HDBitsProvider(generic.TorrentProvider):
         if title:
             title = self._clean_title_from_provider(title)
 
-        url = self.urls['download'] + urllib.urlencode({'id': item['id'], 'passkey': self.passkey})
+        url = self.urls['download'] + \
+            urllib.urlencode({'id': item['id'], 'passkey': self.passkey})
 
         return (title, url)
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def _doSearch(self, search_params, search_mode='eponly',
+                  epcount=0, age=0, epObj=None):
 
-        #FIXME
+        # FIXME
         results = []
 
-        logger.log(u"Search string: %s" %  search_params, logger.DEBUG)
+        logger.log(u"Search string: %s" % search_params, logger.DEBUG)
 
         self._checkAuth()
 
-        parsedJSON = self.getURL(self.urls['search'], post_data=search_params, json=True)
+        parsedJSON = self.getURL(
+            self.urls['search'],
+            post_data=search_params,
+            json=True)
         if not parsedJSON:
             return []
 
@@ -102,12 +118,14 @@ class HDBitsProvider(generic.TorrentProvider):
             if parsedJSON and 'data' in parsedJSON:
                 items = parsedJSON['data']
             else:
-                logger.log(u"Resulting JSON from provider isn't correct, not parsing it", logger.ERROR)
+                logger.log(
+                    u"Resulting JSON from provider isn't correct, not parsing it",
+                    logger.ERROR)
                 items = []
 
             for item in items:
                 results.append(item)
-        #FIXME SORTING
+        # FIXME SORTING
         return results
 
     def findPropers(self, search_date=None):
@@ -116,21 +134,26 @@ class HDBitsProvider(generic.TorrentProvider):
         search_terms = [' proper ', ' repack ']
 
         for term in search_terms:
-            for item in self._doSearch(self._make_post_data_JSON(search_term=term)):
+            for item in self._doSearch(
+                    self._make_post_data_JSON(search_term=term)):
                 if item['utadded']:
                     try:
-                        result_date = datetime.datetime.fromtimestamp(int(item['utadded']))
+                        result_date = datetime.datetime.fromtimestamp(
+                            int(item['utadded']))
                     except Exception:
                         result_date = None
 
                     if result_date:
                         if not search_date or result_date > search_date:
                             title, url = self._get_title_and_url(item)
-                            results.append(classes.Proper(title, url, result_date, self.show))
+                            results.append(
+                                classes.Proper(
+                                    title, url, result_date, self.show))
 
         return results
 
-    def _make_post_data_JSON(self, show=None, episode=None, season=None, search_term=None):
+    def _make_post_data_JSON(
+            self, show=None, episode=None, season=None, search_term=None):
 
         post_data = {
             'username': self.username,
@@ -189,6 +212,7 @@ class HDBitsProvider(generic.TorrentProvider):
 
 
 class HDBitsCache(tvcache.TVCache):
+
     def __init__(self, provider_obj):
 
         tvcache.TVCache.__init__(self, provider_obj)
@@ -200,7 +224,10 @@ class HDBitsCache(tvcache.TVCache):
         results = []
 
         try:
-            parsedJSON = self.provider.getURL(self.provider.urls['rss'], post_data=self.provider._make_post_data_JSON(), json=True)
+            parsedJSON = self.provider.getURL(
+                self.provider.urls['rss'],
+                post_data=self.provider._make_post_data_JSON(),
+                json=True)
 
             if self.provider._checkAuthFromData(parsedJSON):
                 results = parsedJSON['data']
