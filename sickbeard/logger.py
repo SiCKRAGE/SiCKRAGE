@@ -23,8 +23,10 @@ from __future__ import unicode_literals
 import io
 import os
 import re
+import abc
 import sys
 import locale
+import github
 import platform
 import threading
 import traceback
@@ -34,16 +36,17 @@ import logging.handlers
 from logging import INFO, WARNING, ERROR, DEBUG, NOTSET, NullHandler
 
 import sickbeard
-from github import Github, InputFileContent
 from sickbeard import classes
 from sickrage.helper.common import dateTimeFormat
 from sickrage.helper.encoding import ek
 from sickrage.helper.exceptions import ex
 
 class SRLogger(logging.Logger):
+
     def __init__(self, name='root', *args, **kwargs):
-        logging.setLoggerClass(CustomLogger)
         logging.Logger.__init__(self, name, *args, **kwargs)
+        logging.setLoggerClass(CustomLogger)
+
         self.logFile = None
         self.consoleLogging = True
         self.fileLogging = False
@@ -81,6 +84,9 @@ class SRLogger(logging.Logger):
             'MAIN': 'Main',
         }
 
+        # list of allowed loggers
+        self.allowedLoggers = ['root', 'tornado.general', 'tornado.application']
+
     def initalize(self):
         # set custom level for database logging
         logging.addLevelName(self.logLevels[b'DB'], 'DB')
@@ -91,7 +97,6 @@ class SRLogger(logging.Logger):
             console = logging.StreamHandler()
             console.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S'))
             console.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
-            console.addFilter(CustomFilter(self.censoredItems))
             logging.getLogger().addHandler(console)
 
         # rotating log file handler
@@ -103,58 +108,51 @@ class SRLogger(logging.Logger):
             )
             rfh.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', dateTimeFormat))
             rfh.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
-            rfh.addFilter(CustomFilter(self.censoredItems))
             logging.getLogger().addHandler(rfh)
-
-class CustomFilter(logging.Filter):
-    def filter(self, record):
-        self.allowedLoggers = ['root', 'tornado.general', 'tornado.application']
-        if record.name in self.allowedLoggers:
-            try:
-                # mask sensitive info
-                record.msg = re.sub(r"(.*)\b({})\b(.*)".format('|'.join([x for x in self.name.values() if len(x)])), r"\1\3", record.msg)
-
-                # needed because Newznab apikey isn't stored as key=value in a section.
-                record.msg = re.sub(r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)", r"\1=**********\2", record.msg)
-
-                return record
-            except Exception as e:
-                pass
 
 class CustomLogger(SRLogger):
     def __init__(self, *args, **kwargs):
         super(CustomLogger, self).__init__(*args, **kwargs)
-        setattr(logging, 'db', self.db)
-        setattr(logging, 'log_error_and_exit', self.log_error_and_exit)
-        setattr(logging, 'submit_errors', self.submit_errors)
+        logging.log_error_and_exit = self.log_error_and_exit
+        logging.submit_errors = self.submit_errors
+        logging.db = self.db
 
-    def debug(self, msg, *args, **kwargs):
-        super(CustomLogger, self).debug(msg, *args, **kwargs)
+    def handle(self, record):
+        if not record.name in self.allowedLoggers:
+            self.disabled = 1
 
-    def log(self, level, msg, *args, **kwargs):
-        super(CustomLogger, self).log(level, msg, *args, **kwargs)
+        if not self.disabled:
+            try:
+                record.msg = re.sub(r"(.*)\b({})\b(.*)"
+                                    .format('|'
+                                            .join([x for x in self.censoredItems.values() if len(x)])), r"\1\3",
+                                    record.msg)
 
-    def info(self, msg, *args, **kwargs):
-        super(CustomLogger, self).info(msg, *args, **kwargs)
+                # needed because Newznab apikey isn't stored as key=value in a section.
+                record.msg = re.sub(r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)", r"\1=**********\2", record.msg)
+            except:pass
+
+            # sending record to UI
+            if record.levelno in [WARNING, ERROR]:
+                (classes.WarningViewer().add(record.msg, True), classes.ErrorViewer().add(record.msg, True))[int(level) == ERROR]
+
+            super(CustomLogger, self).handle(record)
+            if 'exit' in record.args:
+                if self.consoleLogging:
+                    sys.exit(record.msg)
+                sys.exit(1)
 
     def error(self, msg, *args, **kwargs):
-        super(CustomLogger, self).exception(msg, *args, **kwargs)
-        classes.ErrorViewer.add(classes.UIError(msg))
+        super(CustomLogger, self).error(msg, exc_info=1, *args, **kwargs)
 
     def warning(self, msg, *args, **kwargs):
-        super(CustomLogger, self).exception(msg, *args, **kwargs)
-        classes.WarningViewer.add(classes.UIError(msg))
+        super(CustomLogger, self).warning(msg, exc_info=1, *args, **kwargs)
 
     def db(self, msg, *args, **kwargs):
         super(CustomLogger, self).log(self.logLevels[b'DB'], msg, *args, **kwargs)
 
     def log_error_and_exit(self, msg, *args, **kwargs):
-        super(CustomLogger, self).error(msg, *args, **kwargs)
-
-        if not sickbeard:
-            sys.exit(msg)
-        else:
-            sys.exit(1)
+        super(CustomLogger, self).error(msg, exit=1, *args, **kwargs)
 
     def submit_errors(self):  # Too many local variables, too many branches, pylint: disable=R0912,R0914
         submitter_result = None
@@ -301,5 +299,4 @@ class CustomLogger(SRLogger):
 
         return submitter_result, issue_id
 
-# logger instance
 SRLogger = SRLogger()

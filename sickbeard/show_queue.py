@@ -286,7 +286,7 @@ class QueueItemAdd(ShowQueueItem):
 
         ShowQueueItem.run(self)
 
-        logging.info("Starting to add show " + self.showDir)
+        logging.info("Starting to add show {}".format(self.showDir))
         # make sure the Indexer IDs are valid
         try:
 

@@ -18,6 +18,8 @@
 
 from __future__ import unicode_literals
 
+import os
+
 from sickbeard.image_cache import ImageCache
 from sickrage.media.GenericMedia import GenericMedia
 
@@ -27,11 +29,19 @@ class ShowFanArt(GenericMedia):
     Get the fan art of a show
     """
 
+    def __init__(self, indexer_id, media_format):
+        super(ShowFanArt, self).__init__(indexer_id, media_format)
+
     def get_default_media_name(self):
         return 'fanart.png'
 
     def get_media_path(self):
-        if self.get_show():
-            return ImageCache().fanart_path(self.indexer_id)
+        media_file = None
 
-        return ''
+        if self.get_show():
+            media_file = ImageCache().fanart_path(self.indexer_id)
+
+        if not all([media_file, os.path.exists(media_file)]):
+            media_file = os.path.join(self.get_media_root(), 'images', self.get_default_media_name())
+
+        return media_file

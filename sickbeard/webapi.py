@@ -65,10 +65,10 @@ from sickbeard.common import ARCHIVED
 from sickbeard.common import statusStrings
 from sickbeard.logger import SRLogger
 
-from tornado.web import RequestHandler
+from tornado.web import RequestHandler, asynchronous
 from tornado.escape import json_encode
 from tornado.ioloop import IOLoop
-from tornado.gen import coroutine
+from tornado.gen import coroutine, Task
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
 
@@ -113,11 +113,11 @@ class KeyHandler(RequestHandler):
 class ApiHandler(RequestHandler):
     """ api class that returns json results """
     version = 5  # use an int since float-point is unpredictable
-    executor = ThreadPoolExecutor(50)
 
     def __init__(self, application, request, *args, **kwargs):
         super(ApiHandler, self).__init__(application, request)
-        self.io_loop = IOLoop.current()
+        self.executor = ThreadPoolExecutor(50)
+        self.io_loop = IOLoop.instance()
 
     @coroutine
     def prepare(self, *args, **kwargs):
@@ -144,7 +144,7 @@ class ApiHandler(RequestHandler):
             del kwargs[b"profile"]
 
         try:
-            outDict = yield self.async_call(_call_dispatcher, *args, **kwargs)
+            outDict = yield Task(self.async_call, _call_dispatcher, *args, **kwargs)
         except Exception as e:  # real internal error oohhh nooo :(
             logging.error("API :: {}".format(e))
             errorData = {
@@ -161,7 +161,8 @@ class ApiHandler(RequestHandler):
             outputCallback = outputCallbackDict[b'default']
 
         try:
-            self.finish(outputCallback(outDict))
+            if not self._finished:
+                self.finish(outputCallback(outDict))
         except Exception:
             pass
 
@@ -175,7 +176,7 @@ class ApiHandler(RequestHandler):
 
     def _out_as_image(self, _dict):
         self.set_header('Content-Type', _dict[b'image'].get_media_type())
-        return _dict[b'image'].get_media()
+        return _dict[b'image'].get_media
 
     def _out_as_json(self, _dict):
         self.set_header("Content-Type", "application/json;charset=UTF-8")

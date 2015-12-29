@@ -213,10 +213,11 @@ class SickRage(object):
             sickbeard.CONFIG_FILE = ek(os.path.join, sickbeard.DATA_DIR, "config.ini")
 
         # Make sure that we can create the data dir
+        result = ek(os.access, sickbeard.DATA_DIR, os.F_OK)
         if not ek(os.access, sickbeard.DATA_DIR, os.F_OK):
             try:
                 ek(os.makedirs, sickbeard.DATA_DIR, 0o744)
-            except os.error:
+            except os.error as e:
                 raise SystemExit("Unable to create datadir '" + sickbeard.DATA_DIR + "'")
 
         # Make sure we can write to the data dir
@@ -250,6 +251,7 @@ class SickRage(object):
         sickbeard.initialize(consoleLogging=self.consoleLogging)
 
         if self.runAsDaemon:
+            sickbeard.DAEMONIZE = True
             self.daemonize()
 
         # Get PID
@@ -279,21 +281,6 @@ class SickRage(object):
             else:
                 self.webhost = '0.0.0.0'
 
-        # start tornado web server
-        sickbeard.WEB_SERVER = SRWebServer({
-            'port': int(self.startPort),
-            'host': self.webhost,
-            'data_root': ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME),
-            'web_root': sickbeard.WEB_ROOT,
-            'log_dir': self.log_dir,
-            'username': sickbeard.WEB_USERNAME,
-            'password': sickbeard.WEB_PASSWORD,
-            'enable_https': sickbeard.ENABLE_HTTPS,
-            'handle_reverse_proxy': sickbeard.HANDLE_REVERSE_PROXY,
-            'https_cert': ek(os.path.join, sickbeard.PROG_DIR, sickbeard.HTTPS_CERT),
-            'https_key': ek(os.path.join, sickbeard.PROG_DIR, sickbeard.HTTPS_KEY),
-        }).start()
-
         # Clean up after update
         if sickbeard.GIT_NEWVER:
             toclean = ek(os.path.join, sickbeard.CACHE_DIR, 'mako')
@@ -308,12 +295,6 @@ class SickRage(object):
         logging.info("Starting SiCKRAGE:[{}] CONFIG:[{}]".format(sickbeard.BRANCH, sickbeard.CONFIG_FILE))
         sickbeard.start()
 
-        # Build internal name cache
-        name_cache.buildNameCache()
-
-        # Prepopulate network timezones, it isn't thread safe
-        network_timezones.update_network_dict()
-
         # sure, why not?
         if sickbeard.USE_FAILED_DOWNLOADS:
             failed_history.trimHistory()
@@ -321,13 +302,20 @@ class SickRage(object):
         # Check for metadata indexer updates for shows (Disabled until we use api)
         # sickbeard.showUpdateScheduler.forceRun()
 
-        # Launch browser
-        if sickbeard.LAUNCH_BROWSER and not (self.noLaunch or self.runAsDaemon):
-            sickbeard.launchBrowser('https' if sickbeard.ENABLE_HTTPS else 'http', self.startPort, sickbeard.WEB_ROOT)
-
-        # main loop
-        while True:
-            time.sleep(1)
+        # start tornado web server
+        sickbeard.WEB_SERVER = SRWebServer({
+            'port': int(self.startPort),
+            'host': self.webhost,
+            'gui_root': sickbeard.GUI_DIR,
+            'web_root': sickbeard.WEB_ROOT,
+            'log_dir': self.log_dir,
+            'username': sickbeard.WEB_USERNAME,
+            'password': sickbeard.WEB_PASSWORD,
+            'enable_https': sickbeard.ENABLE_HTTPS,
+            'handle_reverse_proxy': sickbeard.HANDLE_REVERSE_PROXY,
+            'https_cert': ek(os.path.join, sickbeard.PROG_DIR, sickbeard.HTTPS_CERT),
+            'https_key': ek(os.path.join, sickbeard.PROG_DIR, sickbeard.HTTPS_KEY),
+        }).start()
 
     def daemonize(self):
         """
@@ -412,7 +400,14 @@ class SickRage(object):
         for sqlShow in sqlResults:
             try:
                 curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
+
+                # Build internal name cache for show
+                name_cache.buildNameCache(curShow)
+
+                # get next episode info
                 curShow.nextEpisode()
+
+                # add show to internal show list
                 sickbeard.showList.append(curShow)
             except Exception as e:
                 logging.error(
@@ -483,7 +478,6 @@ class SickRage(object):
         # pylint: disable=W0212
         # Access to a protected member of a client class
         os._exit(0)
-
 
 if __name__ == "__main__":
     if sys.version_info < (2, 7):
