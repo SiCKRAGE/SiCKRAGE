@@ -1488,7 +1488,7 @@ def start():
 
     with INIT_LOCK:
         if __INITIALIZED__:
-            # start sysetm events queue
+            # start system events queue
             events.start()
 
             # Prepopulate network timezones, it isn't thread safe

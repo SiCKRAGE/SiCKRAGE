@@ -498,7 +498,7 @@ def already_postprocessed(dirName, videofile, force, result):
 
     # Avoid processing the same dir again if we use a process method <> move
     myDB = db.DBConnection()
-    sqlResult = myDB.select("SELECT * FROM tv_episodes WHERE release_name = ? OR release_name = ?", [dirName, videofile.rpartition('.')[0]])
+    sqlResult = myDB.select("SELECT status FROM tv_episodes WHERE release_name = ? OR release_name = ?", [dirName, videofile.rpartition('.')[0]])
     if sqlResult:
         # result.output += logHelper(u"You're trying to post process a dir that's already been processed, skipping", logging.DEBUG)
         return True
