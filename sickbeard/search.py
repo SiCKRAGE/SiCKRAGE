@@ -385,6 +385,9 @@ def searchForNeededEpisodes():
     for curShow in show_list:
         if not curShow.paused:
             episodes.extend(wantedEpisodes(curShow, fromDate))
+    if not episodes:
+        # nothing wanted so early out
+        return foundResults.values()
 
     providers = [x for x in sickbeard.providers.sortedProviderList(sickbeard.RANDOMIZE_PROVIDERS) if
                  x.isActive() and x.enable_daily]
