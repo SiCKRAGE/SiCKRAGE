@@ -130,13 +130,14 @@ class DBConnection(object):
         """
         Fetch database version
 
-        :return: Integer inidicating current DB version
+        :return: Integer indicating current DB version
         """
         result = None
 
         try:
             if self.hasTable('db_version'):
-                return self.select("SELECT db_version FROM db_version")
+                sqlResult = self.select("SELECT db_version FROM db_version")
+                return int(sqlResult[0][b"db_version"])
         except:
             pass
 
