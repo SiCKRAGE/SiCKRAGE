@@ -218,7 +218,7 @@ class WebHandler(BaseHandler):
         threading.currentThread().name = threadName
         try:
             kwargs = recursive_unicode({k: self.request.arguments[k][0] for k in self.request.arguments if len(self.request.arguments[k]) == 1})
-            kwargs.update({k: self.request.arguments[k] for k in self.request.arguments if len(self.request.arguments[k]) > 1})
+            kwargs.update(recursive_unicode({k: self.request.arguments[k] for k in self.request.arguments if len(self.request.arguments[k]) > 1}))
             return function(**kwargs)
         except Exception:
             logging.debug('Failed doing webui callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
