@@ -143,10 +143,10 @@ class CustomLogger(SRLogger):
                 sys.exit(1)
 
     def error(self, msg, *args, **kwargs):
-        super(CustomLogger, self).error(msg, exc_info=1, *args, **kwargs)
+        super(CustomLogger, self).error(msg, exc_info=kwargs.pop('exc_info', 1), *args, **kwargs)
 
     def warning(self, msg, *args, **kwargs):
-        super(CustomLogger, self).warning(msg, exc_info=1, *args, **kwargs)
+        super(CustomLogger, self).warning(msg, exc_info=kwargs.pop('exc_info', 1), *args, **kwargs)
 
     def db(self, msg, *args, **kwargs):
         super(CustomLogger, self).log(self.logLevels[b'DB'], msg, *args, **kwargs)
