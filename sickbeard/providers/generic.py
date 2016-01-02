@@ -630,6 +630,11 @@ class TorrentProvider(GenericProvider):
                 if '\'s' in ep_string:
                     search_string[b'Episode'].append(ep_string.replace('\'s', '').encode('utf-8').strip())
 
+            if '\'' in ep_string:
+                search_string['Episode'].append(ep_string.replace('\'', '').encode('utf-8').strip())
+                if '\'s' in ep_string:
+                    search_string['Episode'].append(ep_string.replace('\'s', '').encode('utf-8').strip())
+
         return [search_string]
 
     @staticmethod
