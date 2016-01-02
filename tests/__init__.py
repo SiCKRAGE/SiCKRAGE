@@ -293,6 +293,7 @@ def setUp_test_web_server():
         'port': 8081,
         'host': '0.0.0.0',
         'data_root': ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME),
+        'gui_root': ek(os.path.join, sickbeard.PROG_DIR, 'gui', sickbeard.GUI_NAME),
         'web_root': "",
         'log_dir': sickbeard.LOG_DIR,
         'username': sickbeard.WEB_USERNAME,
