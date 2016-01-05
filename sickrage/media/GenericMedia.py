@@ -52,7 +52,10 @@ class GenericMedia(object):
         :return: The content of the desired media file
         """
 
-        return os.path.relpath(self.get_static_media_path()).replace('\\','/')
+        relative_path = os.path.relpath(self.get_static_media_path()).replace('\\','/')
+        if relative_path.startswith(os.pardir + os.sep):
+            return self.get_static_media_path()
+        return relative_path
 
     def get_media_path(self):
         """
