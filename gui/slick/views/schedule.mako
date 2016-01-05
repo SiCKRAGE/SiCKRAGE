@@ -388,7 +388,7 @@
                 <tr>
                     <td class="calendarShow">
                         <div class="poster">
-                            <a title="${cur_result[b'show_name']}" href="${srRoot}/home/displayShow?show=${cur_result[b'showid']}"><img alt="" src="${srRoot}${showImage(cur_result[b'showid'], 'poster_thumb')}" /></a>
+                            <a title="${cur_result[b'show_name']}" href="${srRoot}/home/displayShow?show=${cur_result[b'showid']}"><img alt="" src="${srRoot}/${showImage(cur_result[b'showid'], 'poster_thumb')}" /></a>
                         </div>
                         <div class="text">
                             <span class="airtime">

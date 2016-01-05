@@ -147,7 +147,7 @@
 %>
     <div class="show" id="show${curShow.indexerid}" data-name="${curShow.name}" data-date="${data_date}" data-network="${curShow.network}" data-progress="${progressbar_percent}">
         <div class="show-image">
-            <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${srRoot}${showImage(curShow.indexerid, 'poster_thumb')}" /></a>
+            <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}"><img alt="" class="show-image" src="${srRoot}/${showImage(curShow.indexerid, 'poster_thumb')}" /></a>
         </div>
 
         <div class="progressbar hidden-print" style="position:relative;" data-show-id="${curShow.indexerid}" data-progress-percentage="${progressbar_percent}"></div>
@@ -190,7 +190,7 @@
                 <td class="show-table">
                     % if sickbeard.HOME_LAYOUT != 'simple':
                         % if curShow.network:
-                            <span title="${curShow.network}"><img class="show-network-image" src="${srRoot}${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
+                            <span title="${curShow.network}"><img class="show-network-image" src="${srRoot}/${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
                         % else:
                             <span title="No Network"><img class="show-network-image" src="${srRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>
                         % endif
@@ -349,7 +349,7 @@
         <td class="tvShow">
             <div class="imgsmallposter ${sickbeard.HOME_LAYOUT}">
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}" title="${curShow.name}">
-                    <img src="${srRoot}${showImage(curShow.indexerid, 'poster_thumb')}" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}"/>
+                    <img src="${srRoot}/${showImage(curShow.indexerid, 'poster_thumb')}" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}"/>
                 </a>
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}" style="vertical-align: middle;">${curShow.name}</a>
             </div>
@@ -359,7 +359,7 @@
             <span style="display: none;">${curShow.name}</span>
             <div class="imgbanner ${sickbeard.HOME_LAYOUT}">
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}">
-                    <img src="${srRoot}${showImage(curShow.indexerid, 'banner')}" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}" title="${curShow.name}"/>
+                    <img src="${srRoot}/${showImage(curShow.indexerid, 'banner')}" class="${sickbeard.HOME_LAYOUT}" alt="${curShow.indexerid}" title="${curShow.name}"/>
                 </a>
             </div>
         </td>
@@ -370,7 +370,7 @@
     % if sickbeard.HOME_LAYOUT != 'simple':
         <td align="center">
         % if curShow.network:
-            <span title="${curShow.network}" class="hidden-print"><img id="network" width="54" height="27" src="${srRoot}${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
+            <span title="${curShow.network}" class="hidden-print"><img id="network" width="54" height="27" src="${srRoot}/${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
             <span class="visible-print-inline">${curShow.network}</span>
         % else:
             <span title="No Network" class="hidden-print"><img id="network" width="54" height="27" src="${srRoot}/images/network/nonetwork.png" alt="No Network" title="No Network" /></span>
