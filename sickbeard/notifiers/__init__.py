@@ -37,6 +37,7 @@ import nma
 import pushalot
 import pushbullet
 import freemobile
+import telegram
 
 import tweet
 import trakt
@@ -64,6 +65,7 @@ nma_notifier = nma.NMA_Notifier()
 pushalot_notifier = pushalot.PushalotNotifier()
 pushbullet_notifier = pushbullet.PushbulletNotifier()
 freemobile_notifier = freemobile.FreeMobileNotifier()
+telegram_notifier = telegram.TelegramNotifier()
 # social
 twitter_notifier = tweet.TwitterNotifier()
 trakt_notifier = trakt.TraktNotifier()
@@ -80,6 +82,7 @@ notifiers = [
     pytivo_notifier,
     growl_notifier,
     freemobile_notifier,
+    telegram_notifier,
     prowl_notifier,
     pushover_notifier,
     boxcar_notifier,
