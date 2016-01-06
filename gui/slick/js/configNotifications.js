@@ -337,6 +337,35 @@ $(document).ready(function(){
         });
     });
 
+    $('#testTelegram').on('click', function () {
+        var telegram_id = $.trim($('#telegram_id').val());
+        var telegram_apikey = $.trim($('#telegram_apikey').val());
+        if (!telegram_id || !telegram_apikey) {
+            $('#testTelegram-result').html('Please fill out the necessary fields above.');
+            if (!telegram_id) {
+                $('#telegram_id').addClass('warning');
+            } else {
+                $('#telegram_id').removeClass('warning');
+            }
+            if (!telegram_apikey) {
+                $('#telegram_apikey').addClass('warning');
+            } else {
+                $('#telegram_apikey').removeClass('warning');
+            }
+            return;
+        }
+        $('#telegram_id,#telegram_apikey').removeClass('warning');
+        $(this).prop('disabled', true);
+        $('#testTelegram-result').html(loading);
+        $.get(srRoot + '/home/testTelegram', {
+            'telegram_id': telegram_id,
+            'telegram_apikey': telegram_apikey
+        }).done(function (data) {
+            $('#testTelegram-result').html(data);
+            $('#testTelegram').prop('disabled', false);
+        });
+    });
+
     $('#TraktGetPin').click(function () {
         var trakt_pin_url = $('#trakt_pin_url').val();
         var w;
