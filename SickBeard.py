@@ -36,7 +36,13 @@ import threading
 import traceback
 import subprocess
 
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
+ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
+# Add legacy packages
+sys.path.insert(1, os.path.join(ROOT_PATH, 'lib'))
+# Add pip packages for bumb platforms that do not support python venv
+venv_dir = os.path.join(ROOT_PATH, 'venv')
+assert os.path.isdir(venv_dir), 'Install the venv. RTFM please'
+sys.path.insert(1, os.path.join(venv_dir, 'lib', 'python2.7', 'site-packages'))
 
 # https://mail.python.org/pipermail/python-dev/2014-September/136300.html
 if sys.version_info >= (2, 7, 9):
