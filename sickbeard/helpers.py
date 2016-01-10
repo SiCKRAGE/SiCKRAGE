@@ -401,7 +401,7 @@ def makeDir(path):
         try:
             os.makedirs(path)
             # do the library update for synoindex
-            synoindex_notifier().addFolder(path)
+            synoindex_notifier.addFolder(path)
         except OSError:
             return False
     return True
@@ -668,7 +668,7 @@ def make_dirs(path):
                     # use normpath to remove end separator, otherwise checks permissions against itself
                     chmodAsParent(os.path.normpath(sofar))
                     # do the library update for synoindex
-                    synoindex_notifier().addFolder(sofar)
+                    synoindex_notifier.addFolder(sofar)
                 except (OSError, IOError) as e:
                     logging.error("Failed creating %s : %r" % (sofar, e))
                     return False
@@ -748,7 +748,7 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
                 # need shutil.rmtree when ignore_items is really implemented
                 os.rmdir(check_empty_dir)
                 # do the library update for synoindex
-                synoindex_notifier().deleteFolder(check_empty_dir)
+                synoindex_notifier.deleteFolder(check_empty_dir)
             except OSError as e:
                 logging.warning("Unable to delete %s. Error: %r" % (check_empty_dir, repr(e)))
                 break
