@@ -1,4 +1,3 @@
-configobj
 Mako == 1.0.3
 PyYAML == 3.11
 feedparser == 5.1.3

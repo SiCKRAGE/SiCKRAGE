@@ -201,8 +201,8 @@ if __name__ == "__main__":
         import pip
 
         print("Installing/Upgrading pip and required libs, please stand by ...")
-        pip.main(['install', '--quiet', '--upgrade', '--user', 'pip'])
-        pip.main(['install', '--quiet', '--upgrade', '--user', '-r', 'requirements.txt'])
+        pip.main(['install', '-q', '-U', '--user', 'pip'])
+        pip.main(['install', '-q', '-U', '--user', '-r', os.path.join(os.path.dirname(__file__), 'requirements.txt')])
 
         # start main thread
         import sickbeard
