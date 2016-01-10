@@ -124,7 +124,8 @@ class GenericProvider(object):
             result = {'nzb': classes.NZBSearchResult, 'torrent': classes.TorrentSearchResult}[self.type](episodes)
         except:
             result = classes.SearchResult(episodes)
-
+        finally:
+            result.provider = self
         return result
 
     def getURL(self, url, post_data=None, params=None, timeout=30, json=False, needBytes=False):

@@ -165,7 +165,6 @@ class NZBDataSearchResult(SearchResult):
     def __init__(self, episodes):
         super(NZBDataSearchResult, self).__init__(episodes)
         self.resultType = "nzbdata"
-        self.provider = self
 
 class TorrentSearchResult(SearchResult):
     """
@@ -175,7 +174,6 @@ class TorrentSearchResult(SearchResult):
     def __init__(self, episodes):
         super(TorrentSearchResult, self).__init__(episodes)
         self.resultType = "torrent"
-        self.provider = self
 
 class AllShowsListUI(object):
     """
