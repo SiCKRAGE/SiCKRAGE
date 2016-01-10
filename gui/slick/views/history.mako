@@ -11,7 +11,7 @@ from sickbeard import providers<%inherit file="/layouts/main.mako"/>
     from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
     from common import Quality, statusStrings, Overview
 
-    from show import History
+    from sickrage.show.History import History
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/history.js"></script>
