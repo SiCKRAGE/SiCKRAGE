@@ -29,9 +29,9 @@ from UnRAR2.rar_exceptions import ArchiveHeaderBroken, IncorrectRARPassword, Fil
     InvalidRARArchive
 
 import db
-import failedprocessor
+import failedProcessor
 import helpers
-import postprocessor
+import postProcessor
 import sickbeard
 from common import Quality
 from name_parser import parser
@@ -605,7 +605,7 @@ def process_failed(dirName, nzbName, result):
         processor = None
 
         try:
-            processor = failedprocessor.FailedProcessor(dirName, nzbName)
+            processor = failedProcessor.FailedProcessor(dirName, nzbName)
             result.result = processor.process()
             process_fail_message = ""
         except FailedPostProcessingFailedException as e:

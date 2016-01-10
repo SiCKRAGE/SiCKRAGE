@@ -40,7 +40,7 @@ import helpers
 import image_cache
 import network_timezones
 import notifiers
-import postprocessor
+import postProcessor
 import scene_numbering
 import sickbeard
 from blackandwhitelist import BlackAndWhiteList
