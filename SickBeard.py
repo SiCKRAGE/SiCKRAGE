@@ -145,7 +145,7 @@ class SickRage(object):
         return help_msg
 
     def start(self):
-        from sickbeard.sickrage.helper import encoding
+        from sickrage.helper import encoding
         encoding.encodingInit()
 
         # The pidfile is only useful in daemon mode, make sure we can write the file properly
