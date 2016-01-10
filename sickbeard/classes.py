@@ -116,6 +116,10 @@ class SearchResult(object):
         # content
         self.content = None
 
+        # ratio
+        self.ratio = None
+
+        # result type
         self.resultType = ''
 
     def __str__(self):
