@@ -21,8 +21,9 @@ from __future__ import unicode_literals
 
 import logging
 import threading
-import time
 import traceback
+
+from tornado import gen
 
 import common
 import failed_history
@@ -154,7 +155,7 @@ class DailySearchQueueItem(generic_queue.QueueItem):
                     self.success = search.snatchEpisode(result)
 
                     # give the CPU a break
-                    time.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
+                    gen.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
 
             generic_queue.QueueItem.finish(self)
         except Exception:
@@ -192,7 +193,7 @@ class ManualSearchQueueItem(generic_queue.QueueItem):
                 self.success = search.snatchEpisode(searchResult[0])
 
                 # give the CPU a break
-                time.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
+                gen.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
 
             else:
                 ui.notifications.message('No downloads were found',
@@ -236,7 +237,7 @@ class BacklogQueueItem(generic_queue.QueueItem):
                         search.snatchEpisode(result)
 
                         # give the CPU a break
-                        time.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
+                        gen.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
                 else:
                     logging.info("No needed episodes found during backlog search for: [" + self.show.name + "]")
             except Exception:
@@ -286,7 +287,7 @@ class FailedQueueItem(generic_queue.QueueItem):
                     search.snatchEpisode(result)
 
                     # give the CPU a break
-                    time.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
+                    gen.sleep(common.cpu_presets[sickbeard.CPU_PRESET])
             else:
                 pass
                 # logging.info(u"No valid episode found to retry for: [" + self.segment.prettyName() + "]")

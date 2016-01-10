@@ -24,9 +24,9 @@ import logging
 import os
 import os.path
 import re
-import time
 
 from dateutil import parser
+from tornado import gen
 
 import common
 import db
@@ -328,7 +328,7 @@ class NameParser(object):
                 logging.debug("Converted parsed result {} into {}".format(bestResult.original_name, bestResult))
 
         # CPU sleep
-        time.sleep(0.02)
+        gen.sleep(1)
 
         return bestResult
 

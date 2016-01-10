@@ -20,10 +20,11 @@
 from __future__ import unicode_literals
 
 import logging
-import time
 import urllib2
 from xml.dom.minidom import parseString
 from xml.etree.ElementTree import fromstring
+
+from tornado import gen
 
 import sickbeard
 
@@ -61,7 +62,7 @@ class NMJv2Notifier:
             handle1 = urllib2.urlopen(req)
             response1 = handle1.read()
             xml = parseString(response1)
-            time.sleep(300.0 / 1000.0)
+            gen.sleep(300.0 / 1000.0)
             for node in xml.getElementsByTagName('path'):
                 xmlTag = node.toxml()
                 xmlData = xmlTag.replace('<path>', '').replace('</path>', '').replace('[=]', '')
@@ -111,7 +112,7 @@ class NMJv2Notifier:
             req = urllib2.Request(url_updatedb)
             handle1 = urllib2.urlopen(prereq)
             response1 = handle1.read()
-            time.sleep(300.0 / 1000.0)
+            gen.sleep(300.0 / 1000.0)
             handle2 = urllib2.urlopen(req)
             response2 = handle2.read()
         except IOError as e:

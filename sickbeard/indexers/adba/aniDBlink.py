@@ -15,11 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with aDBa.  If not, see <http://www.gnu.org/licenses/>.
 
-import socket, sys, zlib
-from time import time, sleep
+import socket
+import sys
 import threading
-from aniDBresponses import ResponseResolver
+import zlib
+from time import time
+
+from tornado import gen
+
 from aniDBerrors import *
+from aniDBresponses import ResponseResolver
 
 
 class AniDBLink(threading.Thread):
@@ -185,7 +190,7 @@ class AniDBLink(threading.Thread):
         age = time() - self.lastpacket
         delay = self._delay()
         if age <= delay:
-            sleep(delay - age)
+            gen.sleep(delay - age)
 
     def _send(self, command):
         if self.banned:

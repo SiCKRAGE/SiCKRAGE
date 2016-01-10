@@ -20,10 +20,10 @@ from __future__ import unicode_literals
 
 import logging
 import re
-import time
 import traceback
 
 import requests
+from tornado import gen
 
 from sickbeard import providers
 from sickbeard import tvcache
@@ -165,7 +165,7 @@ class FreshOnTVProvider(providers.TorrentProvider):
                 if max_page_number > 1:
                     for i in range(1, max_page_number):
 
-                        time.sleep(1)
+                        gen.sleep(1)
                         page_searchURL = searchURL + '&page=' + str(i)
                         # '.log(u"Search string: " + page_searchURL, logging.DEBUG)
                         page_html = self.getURL(page_searchURL)

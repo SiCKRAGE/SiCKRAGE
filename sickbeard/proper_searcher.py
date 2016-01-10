@@ -24,8 +24,9 @@ import logging
 import operator
 import re
 import threading
-import time
 import traceback
+
+from tornado import gen
 
 import db
 import helpers
@@ -264,7 +265,7 @@ class ProperSearcher(object):
 
                 # snatch it
                 snatchEpisode(result, SNATCHED_PROPER)
-                time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+                gen.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
     def _genericName(self, name):
         return name.replace(".", " ").replace("-", " ").replace("_", " ").lower()

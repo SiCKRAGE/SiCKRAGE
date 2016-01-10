@@ -55,6 +55,7 @@ import certifi
 import requests
 import six
 from cachecontrol.caches.file_cache import FileCache
+from tornado import gen
 
 import db
 import sickbeard
@@ -1069,7 +1070,7 @@ def backupVersionedFile(old_file, version):
         except Exception as e:
             logging.warning("Error while trying to back up %s to %s : %r" % (old_file, new_file, e))
             numTries += 1
-            time.sleep(1)
+            gen.sleep(1)
             logging.debug("Trying again.")
 
         if numTries >= 10:
@@ -1928,7 +1929,7 @@ def isFileLocked(checkfile, writeLockCheck=False):
             os.remove(lockFile)
         try:
             os.rename(checkfile, lockFile)
-            time.sleep(1)
+            gen.sleep(1)
             os.rename(lockFile, checkfile)
         except (Exception, OSError, IOError) as e:
             return True
@@ -1975,7 +1976,7 @@ def removetree(tgt):
             shutil.rmtree(tmp, onerror=error_handler)
             break
         except OSError as e:
-            time.sleep(1)  # Give file system some time to catch up
+            gen.sleep(1)
             if e.errno in [errno.EACCES, errno.ENOTEMPTY]:
                 continue  # Try another temp name
             if e.errno == errno.EEXIST:

@@ -23,10 +23,11 @@ import httplib
 import json
 import logging
 import socket
-import time
 import urllib
 import urllib2
 import xml
+
+from tornado import gen
 
 import sickbeard
 from common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
@@ -318,7 +319,7 @@ class KODINotifier:
                     return False
                 # sleep for a few seconds just to be sure kodi has a chance to finish each directory
                 if len(paths) > 1:
-                    time.sleep(5)
+                    gen.sleep(5)
         # do a full update if requested
         else:
             logging.debug("Doing Full Library KODI update on host: " + host)

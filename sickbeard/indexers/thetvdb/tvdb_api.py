@@ -30,6 +30,7 @@ import zipfile
 
 import requests
 import xmltodict
+from tornado import gen
 
 try:
     import gzip
@@ -82,7 +83,7 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
                         logger.warning(msg)
                     else:
                         print msg
-                    time.sleep(mdelay)
+                    gen.sleep(mdelay)
                     mtries -= 1
                     mdelay *= backoff
             return f(*args, **kwargs)

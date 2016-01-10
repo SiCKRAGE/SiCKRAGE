@@ -21,8 +21,9 @@ from __future__ import unicode_literals
 
 import logging
 import re
-import time
 import urllib
+
+from tornado import gen
 
 import sickbeard
 from common import cpu_presets
@@ -102,7 +103,7 @@ class SCCProvider(providers.TorrentProvider):
                 try:
                     logging.debug("Search URL: %s" % searchURL)
                     data = self.getURL(searchURL)
-                    time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+                    gen.sleep(cpu_presets[sickbeard.CPU_PRESET])
                 except Exception as e:
                     logging.warning("Unable to fetch data. Error: %s" % repr(e))
 

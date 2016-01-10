@@ -15,13 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with aDBa.  If not, see <http://www.gnu.org/licenses/>.
 import threading
-from time import time, sleep, strftime, localtime
+from time import time, strftime, localtime
 from types import *
 
-from aniDBlink import AniDBLink
+from tornado import gen
+
+from aniDBAbstracter import Anime, Episode
 from aniDBcommands import *
 from aniDBerrors import *
-from aniDBAbstracter import Anime, Episode
+from aniDBlink import AniDBLink
 
 version = 100
 
@@ -174,7 +176,7 @@ class Connection(threading.Thread):
     def run(self):
         while self.keepAlive:
             self._keep_alive()
-            sleep(120)
+            gen.sleep(120)
 
 
     def auth(self, username, password, nat=None, mtu=None, callback=None):
@@ -763,28 +765,6 @@ class Connection(threading.Thread):
         
         """
         return self.handle(EncryptCommand(user, apipassword, type), callback)
-
-    def encoding(self, name, callback=None):
-        """
-        Change encoding used in messages
-
-        parameters:
-        name    - name of the encoding
-
-        structure of parameters:
-        name
-
-        comments:
-        DO NOT USE THIS!
-        utf8 is the only encoding which will support all the text in anidb responses
-        the responses have japanese, russian, french and probably other alphabets as well
-        even if you can't display utf-8 locally, don't change the server-client -connections encoding
-        rather, make python convert the encoding when you DISPLAY the text
-        it's better that way, let it go as utf8 to databases etc. because then you've the real data stored
-        
-        """
-        raise AniDBStupidUserError, "pylibanidb sets the encoding to utf8 as default and it's stupid to use any other encoding. you WILL lose some data if you use other encodings, and now you've been warned. you will need to modify the code yourself if you want to do something as stupid as changing the encoding"
-        return self.handle(EncodingCommand(name), callback)
 
     def sendmsg(self, to, title, body, callback=None):
         """

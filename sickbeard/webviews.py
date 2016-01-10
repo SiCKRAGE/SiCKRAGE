@@ -35,6 +35,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dateutil import tz
 from mako.exceptions import html_error_template
 from mako.lookup import TemplateLookup
+from tornado import gen
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, to_unicode, recursive_unicode
 from tornado.gen import coroutine
@@ -153,7 +154,7 @@ class BaseHandler(RequestHandler):
         super(BaseHandler, self).redirect(url, *args, **kwargs)
 
     def get_current_user(self):
-        return self.get_secure_cookie('sickrage_user')
+        return self.get_secure_cookie('user')
 
     def render_string(self, template_name, **kwargs):
         template_kwargs = {
@@ -237,10 +238,9 @@ class LoginHandler(BaseHandler):
     def prepare(self, *args, **kwargs):
         self.name = threading.currentThread().name
         try:
-            if not self.get_current_user():
-                result = yield self.async_call(self.checkAuth)
-                if not self._finished:
-                    self.finish(result)
+            result = yield self.async_call(self.checkAuth)
+            if not self._finished:
+                self.finish(result)
         except Exception:
             logging.debug('Failed doing webui login request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             raise HTTPError(404)
@@ -251,17 +251,19 @@ class LoginHandler(BaseHandler):
             password = to_unicode(self.get_argument('password', ''))
 
             if cmp([username, password], [sickbeard.WEB_USERNAME, sickbeard.WEB_PASSWORD]) == 0:
-                remember_me = int(self.get_argument('remember_me', default=0) or 0)
-                self.set_secure_cookie('sickrage_user', sickbeard.API_KEY, expires_days=30 if remember_me > 0 else None)
+                remember_me = int(self.get_argument('remember_me', default=0))
+                self.set_secure_cookie('user', json_encode(sickbeard.API_KEY),
+                                       expires_days=30 if remember_me > 0 else None)
                 logging.info('User logged into the SiCKRAGE web interface')
-                return self.redirect('/')
+                return self.redirect("/")
             elif username and password:
                 logging.warning(
                         'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
                                 self.request.remote_ip)
                 )
 
-            return self.render("login.mako", title="Login", header="Login", topmenu="login")
+            return self.render("login.mako", title="Login", header="Login", topmenu="login",
+                               next=self.get_argument("next", "/"))
         except Exception:
             logging.debug('Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             return html_error_template().render_unicode()
@@ -272,9 +274,8 @@ class LogoutHandler(BaseHandler):
         super(LogoutHandler, self).__init__(*args, **kwargs)
 
     def prepare(self, *args, **kwargs):
-        self.clear_cookie("sickrage_user")
-        return self.redirect('/')
-
+        self.clear_cookie("user")
+        return self.redirect(self.get_argument("next", "/"))
 
 @route('(.*)(/?)')
 class WebRoot(WebHandler):
@@ -1471,7 +1472,7 @@ class Home(WebRoot):
         if do_update:
             try:
                 sickbeard.showQueue.updateShow(showObj, True)
-                time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+                gen.sleep(cpu_presets[sickbeard.CPU_PRESET])
             except CantUpdateShowException as e:
                 errors.append("Unable to update show: {0}".format(str(e)))
 
@@ -1479,14 +1480,14 @@ class Home(WebRoot):
             try:
                 update_scene_exceptions(showObj.indexerid,
                                         exceptions_list)  # @UndefinedVdexerid)
-                time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+                gen.sleep(cpu_presets[sickbeard.CPU_PRESET])
             except CantUpdateShowException as e:
                 errors.append("Unable to force an update on scene exceptions of the show.")
 
         if do_update_scene_numbering:
             try:
                 scene_numbering.xem_refresh(showObj.indexerid, showObj.indexer)
-                time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+                gen.sleep(cpu_presets[sickbeard.CPU_PRESET])
             except CantUpdateShowException as e:
                 errors.append("Unable to force an update on scene numbering of the show.")
 
@@ -1525,7 +1526,7 @@ class Home(WebRoot):
                     )
             )
 
-            time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+            gen.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
         # Don't redirect to the default page, so the user can confirm that the show was deleted
         return self.redirect('/home/')
@@ -1541,7 +1542,7 @@ class Home(WebRoot):
         if error is not None:
             ui.notifications.error('Unable to refresh this show.', error)
 
-        time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+        gen.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
         return self.redirect("/home/displayShow?show=" + str(show.indexerid))
 
@@ -1562,7 +1563,7 @@ class Home(WebRoot):
             ui.notifications.error("Unable to update this show.", e)
 
         # just give it some time
-        time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+        gen.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
         return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
@@ -1579,7 +1580,7 @@ class Home(WebRoot):
         # search and download subtitles
         sickbeard.showQueue.downloadSubtitles(showObj, bool(force))
 
-        time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+        gen.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
         return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
@@ -2239,7 +2240,7 @@ class HomePostProcess(Home):
                  if k.lower() not in ['proc_dir', 'dir', 'nzbname', 'process_method', 'proc_type'] else v
                  ) for k, v in kwargs.items())
 
-        if not pp_options[b"proc_dir"]:
+        if not pp_options.has_key('proc_dir'):
             return self.redirect("/home/postprocess/")
 
         result = process_tv.processDir(pp_options[b"proc_dir"], **pp_options)

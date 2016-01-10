@@ -26,6 +26,7 @@ import time
 from datetime import datetime
 
 import jsonrpclib
+from tornado import gen
 
 import classes
 import scene_exceptions
@@ -33,6 +34,7 @@ import sickbeard
 from common import cpu_presets
 from sickbeard import providers
 from sickbeard import tvcache
+from sickbeard.exceptions import AuthException
 from sickbeard.helpers import sanitizeSceneName
 
 
@@ -137,7 +139,7 @@ class BTNProvider(providers.TorrentProvider):
 
         try:
             parsedJSON = server.getTorrents(apikey, params, int(results_per_page), int(offset))
-            time.sleep(cpu_presets[sickbeard.CPU_PRESET])
+            gen.sleep(cpu_presets[sickbeard.CPU_PRESET])
 
         except jsonrpclib.jsonrpc.ProtocolError, error:
             if error.message == 'Call Limit Exceeded':

@@ -26,11 +26,11 @@ import logging
 import os
 import re
 import threading
-import time
 import traceback
 import urllib
 
 from concurrent.futures import ThreadPoolExecutor
+from tornado import gen
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
@@ -868,7 +868,7 @@ class CMD_EpisodeSearch(ApiCall):
 
         # wait until the queue item tells us whether it worked or not
         while ep_queue_item.success == None:  # @UndefinedVariable
-            time.sleep(1)
+            gen.sleep(1)
 
         # return the correct json value
         if ep_queue_item.success:

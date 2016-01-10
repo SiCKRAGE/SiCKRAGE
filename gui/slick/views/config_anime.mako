@@ -14,7 +14,6 @@
     <div id="config-content">
 
         <form id="configForm" action="saveAnime" method="post">
-
             <div id="config-components">
 
                 <ul>

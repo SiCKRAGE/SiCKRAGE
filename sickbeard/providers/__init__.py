@@ -26,7 +26,6 @@ import logging
 import os
 import random
 import re
-import time
 import urllib
 from base64 import b16encode, b32decode
 
@@ -35,6 +34,7 @@ import requests
 from feedparser import FeedParserDict
 from hachoir_core.stream import StringInputStream
 from hachoir_parser import guessParser
+from tornado import gen
 
 import classes
 import common
@@ -1118,7 +1118,7 @@ class NewznabProvider(NZBProvider):
             search_url = self.url + 'api?' + urllib.urlencode(params)
 
             while (datetime.datetime.now() - self.last_search).seconds < 5:
-                time.sleep(1)
+                gen.sleep(1)
 
             logging.debug("Search url: %s" % search_url)
 
@@ -1311,7 +1311,7 @@ class NewznabCache(tvcache.TVCache):
         rss_url = self.provider.url + 'api?' + urllib.urlencode(params)
 
         while (datetime.datetime.now() - self.last_search).seconds < 5:
-            time.sleep(1)
+            gen.sleep(1)
 
         logging.debug("Cache update URL: %s " % rss_url)
         data = self.getRSSFeed(rss_url)
