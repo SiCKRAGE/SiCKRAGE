@@ -70,3 +70,4 @@ Thumbs.db
 bower_components
 node_modules
 gui/**/_bower.js
+scheduler.db
