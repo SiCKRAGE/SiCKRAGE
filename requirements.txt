@@ -34,3 +34,4 @@ subliminal == 1.0.1
 dogpile.cache == 0.5.7
 py-unrar2 == 0.99.6
 IMDbPY == 5.0
+profilehooks == 1.8.1

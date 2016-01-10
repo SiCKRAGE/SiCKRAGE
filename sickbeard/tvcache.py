@@ -323,7 +323,7 @@ class TVCache(object):
                             [str(x) for x in epObj.wantedQuality]) + ")",
                     [epObj.show.indexerid, epObj.season, "%|" + str(epObj.episode) + "|%"]])
 
-            sqlResults = myDB.mass_action(cl).fetchall()
+            sqlResults = myDB.mass_action(cl, fetchall=True)
             sqlResults = list(itertools.chain(*sqlResults))
 
         # for each cache entry

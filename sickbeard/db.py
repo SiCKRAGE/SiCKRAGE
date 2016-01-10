@@ -92,11 +92,18 @@ class DBConnection(object):
                     if isinstance(query, list):
                         result = [cursor.execute((x[0]), (x[0], x[1])[len(x) > 1], **kwargs) for x in query if x]
                     else:
-                        result = cursor.execute(query, *args)
+                        try:
+                            result = cursor.execute(query, *args)
+                        except:
+                            result = cursor.execute(query)
 
                     if result and kwargs.has_key('fetchall'):
+                        if isinstance(result, list):
+                            return [x.fetchall() for x in result]
                         return result.fetchall()
                     elif result and kwargs.has_key('fetchone'):
+                        if isinstance(result, list):
+                            return [x.fetchone() for x in result]
                         return result.fetchone()
                     return result
                 except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:

@@ -211,7 +211,7 @@ class SRWebServer(object):
         # shutdown tornado
         self.server.stop()
         if self.running:
-            logging.info('Tornado web server shutting down!')
+            logging.info('TORNADO is now shutting down!')
             self.io_loop.stop()
 
         # if run as daemon delete the pidfile
@@ -220,6 +220,7 @@ class SRWebServer(object):
 
         # shutdown sickrage
         if sickbeard.STARTED:
+            logging.info('SiCKRAGE is now shutting down!')
             sickbeard.core.halt()
             sickbeard.core.saveall()
 

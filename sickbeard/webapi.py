@@ -344,13 +344,12 @@ class ApiHandler(RequestHandler):
 
 class ApiCall(ApiHandler):
     _help = {"desc": "This command is not documented. Please report this to the developers."}
+    _requiredParams = {}
+    _optionalParams = {}
+    _missing = []
 
     def __init__(self, application, request, *args, **kwargs):
         super(ApiCall, self).__init__(application, request, *args, **kwargs)
-
-        self._requiredParams = {}
-        self._optionalParams = []
-        self._missing = []
 
         try:
             if self._missing:
@@ -439,15 +438,9 @@ class ApiCall(ApiHandler):
             if missing and key not in self._missing:
                 self._missing.append(key)
         else:
-            try:
-                self._optionalParams[key] = {"allowedValues": allowedValues,
-                                             "defaultValue": orgDefault,
-                                             "type": arg_type}
-            except AttributeError:
-                self._optionalParams = {}
-                self._optionalParams[key] = {"allowedValues": allowedValues,
-                                             "defaultValue": orgDefault,
-                                             "type": arg_type}
+            self._optionalParams[key] = {"allowedValues": allowedValues,
+                                         "defaultValue": orgDefault,
+                                         "type": arg_type}
 
         if default:
             default = self._check_param_type(default, key, arg_type)
