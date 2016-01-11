@@ -31,6 +31,6 @@ setup(
         author_email='sickrage.tv@gmail.com',
         url='https://github.com/SiCKRAGETV/SickRage',
         download_url='https://github.com/SiCKRAGETV/SickRage/tarball/v4.1.0.2',
-        keywords=['sickrage', 'sickbeard', 'tv', 'torrent', 'nzb'],
+        keywords=['sickrage', 'sickragetv', 'sickbeard', 'tv', 'torrent', 'nzb'],
         classifiers=[],
 )

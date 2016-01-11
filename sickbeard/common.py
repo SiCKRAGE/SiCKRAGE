@@ -30,6 +30,8 @@ from itertools import chain
 
 import six
 
+import helpers
+
 if six.PY3:
     from collections import UserDict
 else:
