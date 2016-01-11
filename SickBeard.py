@@ -242,6 +242,13 @@ if __name__ == "__main__":
         print("Installing/Upgrading SiCKRAGE required libs, please stand by ...")
         pip.main(['install', '-q', '-U', '-r', os.path.join(os.path.dirname(__file__), 'requirements.txt')])
 
+        print("Installing/Upgrading SiCKRAGE optional libs, please stand by ...")
+        try:
+            pip.main(
+                    ['install', '-q', '-U', '-r', os.path.join(os.path.dirname(__file__), 'requirements-optional.txt')])
+        except:
+            pass
+
         # start main thread
         import sickbeard
         import sickbeard.core
