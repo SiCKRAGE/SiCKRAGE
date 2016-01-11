@@ -213,15 +213,21 @@ class WebHandler(BaseHandler):
             # route -> method obj
             route = self.request.path.strip('/').split('/')[::-1][0].replace('.', '_') or 'index'
             method = getattr(self, route, getattr(self, 'index'))
-            result = yield self.async_call(
-                    method, **recursive_unicode(
-                            {
-                                k: self.request.arguments[k][0]
-                                for k in self.request.arguments
-                                if len(self.request.arguments[k])
-                                }
-                    )
+            kwargs = recursive_unicode(
+                {
+                    k: self.request.arguments[k][0]
+                    for k in self.request.arguments
+                    if len(self.request.arguments[k]) == 1
+                }
             )
+            kwargs.update(recursive_unicode(
+                {
+                    k: self.request.arguments[k]
+                    for k in self.request.arguments
+                    if len(self.request.arguments[k]) > 1
+                }
+            ))
+            result = yield self.async_call(method, **kwargs)
 
             if not self._finished:
                 self.finish(result)
