@@ -2561,12 +2561,12 @@ class TVEpisode(object):
             logging.debug(str(self.indexerid) + ": File " + self.location + " is already named correctly, skipping")
             return
 
-        related_files = postprocessor.PostProcessor(self.location).list_associated_files(
+        related_files = postProcessor.PostProcessor(self.location).list_associated_files(
                 self.location, base_name_only=True, subfolders=True)
 
         # This is wrong. Cause of pp not moving subs.
         if self.show.subtitles and sickbeard.SUBTITLES_DIR != '':
-            related_subs = postprocessor.PostProcessor(self.location).list_associated_files(sickbeard.SUBTITLES_DIR,
+            related_subs = postProcessor.PostProcessor(self.location).list_associated_files(sickbeard.SUBTITLES_DIR,
                                                                                             subtitles_only=True,
                                                                                             subfolders=True)
             absolute_proper_subs_path = os.path.join(sickbeard.SUBTITLES_DIR, self.formatted_filename())
