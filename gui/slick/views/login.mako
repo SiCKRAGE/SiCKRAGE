@@ -1,7 +1,7 @@
 <%inherit file="/layouts/main.mako"/>
 <%block name="content">
 <div class="login">
-    <form action="login" method="post">
+    <form action="" method="post">
         <h1>SickRage</h1>
         <div class="ctrlHolder"><input class="inlay" id="username" name="username" type="text" placeholder="Username"
                                        autocomplete="off" autocapitalize="off"/></div>

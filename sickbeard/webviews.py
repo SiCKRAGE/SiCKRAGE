@@ -253,16 +253,15 @@ class LoginHandler(BaseHandler):
                 remember_me = int(self.get_argument('remember_me', default=0))
                 self.set_secure_cookie('user', json_encode(sickbeard.API_KEY),
                                        expires_days=30 if remember_me > 0 else None)
-                logging.info('User logged into the SiCKRAGE web interface')
-                return self.redirect("/")
+                logging.debug('User logged into the SiCKRAGE web interface')
+                return self.redirect(self.get_argument("next", "/"))
             elif username and password:
                 logging.warning(
                         'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
                                 self.request.remote_ip)
                 )
 
-            return self.render("login.mako", title="Login", header="Login", topmenu="login",
-                               next=self.get_argument("next", "/"))
+            return self.render("login.mako", title="Login", header="Login", topmenu="login")
         except Exception:
             logging.debug('Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             return html_error_template().render_unicode()
