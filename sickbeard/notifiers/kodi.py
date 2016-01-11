@@ -437,7 +437,7 @@ class KODINotifier:
             logging.debug("Updating library in KODI via JSON method for show " + showName)
 
             # let's try letting kodi filter the shows
-            showsCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.GetTVShows","params":{"filter":{"field":"title","operator":"is","value":"%s"},"properties":["title",]},"id":"SiCKRAGE"}'
+            showsCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.GetTVShows","params":{"filter":{"field":"title","operator":"is","value":"%s"},"properties":["title"]},"id":"SiCKRAGE"}'
 
             # get tvshowid by showName
             showsResponse = self._send_to_kodi_json(showsCommand % showName, host)
