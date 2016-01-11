@@ -87,6 +87,32 @@ from webserver import SRWebServer
 def initialize(console_logging=True):
     if not sickbeard.INITIALIZED:
         with threading.Lock():
+            # initialize notifiers
+            sickbeard.NOTIFIERS = AttrDict(
+                    libnotify=LibnotifyNotifier(),
+                    kodi_notifier=KODINotifier(),
+                    plex_notifier=PLEXNotifier(),
+                    emby_notifier=EMBYNotifier(),
+                    nmj_notifier=NMJNotifier(),
+                    nmjv2_notifier=NMJv2Notifier(),
+                    synoindex_notifier=synoIndexNotifier(),
+                    synology_notifier=synologyNotifier(),
+                    pytivo_notifier=pyTivoNotifier(),
+                    growl_notifier=GrowlNotifier(),
+                    prowl_notifier=ProwlNotifier(),
+                    libnotify_notifier=LibnotifyNotifier(),
+                    pushover_notifier=PushoverNotifier(),
+                    boxcar_notifier=BoxcarNotifier(),
+                    boxcar2_notifier=Boxcar2Notifier(),
+                    nma_notifier=NMA_Notifier(),
+                    pushalot_notifier=PushalotNotifier(),
+                    pushbullet_notifier=PushbulletNotifier(),
+                    freemobile_notifier=FreeMobileNotifier(),
+                    twitter_notifier=TwitterNotifier(),
+                    trakt_notifier=TraktNotifier(),
+                    email_notifier=EmailNotifier(),
+            )
+
             # Check if we need to perform a restore first
             os.chdir(sickbeard.DATA_DIR)
             restore_dir = os.path.join(sickbeard.DATA_DIR, 'restore')
@@ -238,32 +264,6 @@ def initialize(console_logging=True):
                 sickbeard.SUBTITLES_LANGUAGES = []
 
             sickbeard.TIME_PRESET = sickbeard.TIME_PRESET_W_SECONDS.replace(":%S", "")
-
-            # initialize notifiers
-            sickbeard.NOTIFIERS = AttrDict(
-                    libnotify=LibnotifyNotifier(),
-                    kodi_notifier=KODINotifier(),
-                    plex_notifier=PLEXNotifier(),
-                    emby_notifier=EMBYNotifier(),
-                    nmj_notifier=NMJNotifier(),
-                    nmjv2_notifier=NMJv2Notifier(),
-                    synoindex_notifier=synoIndexNotifier(),
-                    synology_notifier=synologyNotifier(),
-                    pytivo_notifier=pyTivoNotifier(),
-                    growl_notifier=GrowlNotifier(),
-                    prowl_notifier=ProwlNotifier(),
-                    libnotify_notifier=LibnotifyNotifier(),
-                    pushover_notifier=PushoverNotifier(),
-                    boxcar_notifier=BoxcarNotifier(),
-                    boxcar2_notifier=Boxcar2Notifier(),
-                    nma_notifier=NMA_Notifier(),
-                    pushalot_notifier=PushalotNotifier(),
-                    pushbullet_notifier=PushbulletNotifier(),
-                    freemobile_notifier=FreeMobileNotifier(),
-                    twitter_notifier=TwitterNotifier(),
-                    trakt_notifier=TraktNotifier(),
-                    email_notifier=EmailNotifier(),
-            )
 
             # initialize metadata_providers
             sickbeard.metadataProvideDict = get_metadata_generator_dict()
