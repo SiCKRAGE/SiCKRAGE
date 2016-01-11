@@ -194,7 +194,7 @@ def install_pip():
     print("Downloading pip ...")
     import urllib2
 
-    url = "https://raw.github.com/pypa/pip/master/contrib/get-pip.py"
+    url = "https://bootstrap.pypa.io/get-pip.py"
     file_name = url.split('/')[-1]
     u = urllib2.urlopen(url)
     f = open(file_name, 'wb')
@@ -214,7 +214,8 @@ def install_pip():
         print(status),
     f.close()
     print("Installing pip ...")
-    execfile('get-pip.py')
+    import subprocess
+    subprocess.call([sys.executable, 'get-pip.py'])
 
     import os
     print("Cleaning up downloaded pip files")
