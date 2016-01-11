@@ -107,6 +107,3 @@ class ProwlNotifier:
         else:
             logging.error("Prowl notification failed.")
             return False
-
-
-notifier = ProwlNotifier

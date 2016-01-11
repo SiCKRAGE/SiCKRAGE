@@ -120,6 +120,3 @@ class PushbulletNotifier(object):
 
         logging.debug("Pushbullet notifications sent.")
         return (True, response.text)[event is self.TEST_EVENT or event is None]
-
-
-notifier = PushbulletNotifier

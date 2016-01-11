@@ -570,6 +570,3 @@ class KODINotifier:
                 return True
             else:
                 return False
-
-
-notifier = KODINotifier

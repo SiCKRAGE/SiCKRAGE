@@ -23,8 +23,8 @@ import logging
 import os.path
 import threading
 
+import process_tv
 import sickbeard
-from sickbeard import process_tv
 
 
 class PostProcessor(object):

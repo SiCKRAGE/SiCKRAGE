@@ -83,6 +83,3 @@ class synoIndexNotifier:
                 logging.debug("Script result: " + str(out))
             except OSError as e:
                 logging.error("Unable to run synoindex: {}".format(e))
-
-
-notifier = synoIndexNotifier

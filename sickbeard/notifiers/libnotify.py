@@ -125,6 +125,3 @@ class LibnotifyNotifier:
             return n.show()
         except self.gobject.GError:
             return False
-
-
-notifier = LibnotifyNotifier

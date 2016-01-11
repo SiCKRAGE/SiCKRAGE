@@ -1121,7 +1121,7 @@ class TVShow(object):
         if sickbeard.USE_TRAKT and sickbeard.TRAKT_SYNC_WATCHLIST:
             logging.debug(
                 "Removing show: indexerid " + str(self.indexerid) + ", Title " + str(self.name) + " from Watchlist")
-            notifiers.trakt_notifier.update_watchlist(self, update="remove")
+            sickbeard.NOTIFIERS.trakt_notifier.update_watchlist(self, update="remove")
 
     def populateCache(self):
         cache_inst = image_cache.ImageCache()
@@ -1969,10 +1969,10 @@ class TVEpisode(object):
                 self.season) + " AND episode=" + str(self.episode)
         myDB.action(sql)
 
-        data = notifiers.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
+        data = sickbeard.NOTIFIERS.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
         if sickbeard.USE_TRAKT and sickbeard.TRAKT_SYNC_WATCHLIST and data:
             logging.debug("Deleting myself from Trakt")
-            notifiers.trakt_notifier.update_watchlist(self.show, data_episode=data, update="remove")
+            sickbeard.NOTIFIERS.trakt_notifier.update_watchlist(self.show, data_episode=data, update="remove")
 
         if full:
             logging.info('Attempt to delete episode file %s' % self._location)

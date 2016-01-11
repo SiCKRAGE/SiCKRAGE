@@ -274,6 +274,3 @@ class PLEXNotifier:
                 logging.debug('PLEX: Updating all hosts with TV sections: ' + ', '.join(set(host_list)))
 
             return (', '.join(set(hosts_failed)), None)[not len(hosts_failed)]
-
-
-notifier = PLEXNotifier

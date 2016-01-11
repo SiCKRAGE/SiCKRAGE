@@ -192,6 +192,3 @@ class GrowlNotifier:
             logging.warning(
                     "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(e))
             return False
-
-
-notifier = GrowlNotifier

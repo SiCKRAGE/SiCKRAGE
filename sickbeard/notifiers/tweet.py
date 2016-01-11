@@ -161,6 +161,3 @@ class TwitterNotifier:
             return self._send_dm(prefix + ": " + message)
         else:
             return self._send_tweet(prefix + ": " + message)
-
-
-notifier = TwitterNotifier

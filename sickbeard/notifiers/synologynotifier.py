@@ -55,6 +55,3 @@ class synologyNotifier:
             logging.debug("Script result: " + str(out))
         except OSError as e:
             logging.info("Unable to run synodsmnotify: {}".format(e))
-
-
-notifier = synologyNotifier

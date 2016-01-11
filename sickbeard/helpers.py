@@ -57,13 +57,12 @@ import six
 from cachecontrol.caches.file_cache import FileCache
 from tornado import gen
 
+import common
 import db
 import sickbeard
-from common import mediaExtensions, subtitleExtensions, USER_AGENTS
 from indexers import adba
 from indexers.indexer_api import indexerApi
 from indexers.indexer_exceptions import indexer_episodenotfound, indexer_seasonnotfound
-from notifiers import synoindex_notifier
 from scene_exceptions import get_scene_exceptions
 from sickbeard import classes
 from sickbeard import clients
@@ -152,7 +151,7 @@ def remove_extension(name):
 
     if name and "." in name:
         base_name, sep, extension = name.rpartition('.')  # @UnusedVariable
-        if base_name and extension.lower() in ['nzb', 'torrent'] + mediaExtensions:
+        if base_name and extension.lower() in ['nzb', 'torrent'] + common.mediaExtensions:
             name = base_name
 
     return name
@@ -291,7 +290,7 @@ def isMediaFile(filename):
     if re.search('extras?$', sepFile[0], re.I):
         return False
 
-    if sepFile[2].lower() in mediaExtensions:
+    if sepFile[2].lower() in common.mediaExtensions:
         return True
     else:
         return False
@@ -402,7 +401,7 @@ def makeDir(path):
         try:
             os.makedirs(path)
             # do the library update for synoindex
-            synoindex_notifier.addFolder(path)
+            sickbeard.NOTIFIERS.synoindex_notifier.addFolder(path)
         except OSError:
             return False
     return True
@@ -669,7 +668,7 @@ def make_dirs(path):
                     # use normpath to remove end separator, otherwise checks permissions against itself
                     chmodAsParent(os.path.normpath(sofar))
                     # do the library update for synoindex
-                    synoindex_notifier.addFolder(sofar)
+                    sickbeard.NOTIFIERS.synoindex_notifier.addFolder(sofar)
                 except (OSError, IOError) as e:
                     logging.error("Failed creating %s : %r" % (sofar, e))
                     return False
@@ -697,7 +696,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
         cur_file_ext = cur_path[old_path_length:]
         cur_file_name = cur_path[:old_path_length]
 
-    if cur_file_ext[1:] in subtitleExtensions:
+    if cur_file_ext[1:] in common.subtitleExtensions:
         # Extract subtitle language from filename
         sublang = os.path.splitext(cur_file_name)[1][1:]
 
@@ -738,25 +737,28 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
     logging.info("Trying to clean any empty folders under " + check_empty_dir)
 
     # as long as the folder exists and doesn't contain any files, delete it
-    while os.path.isdir(check_empty_dir) and check_empty_dir != keep_dir:
-        check_files = os.listdir(check_empty_dir)
+    try:
+        while os.path.isdir(check_empty_dir) and check_empty_dir != keep_dir:
+            check_files = os.listdir(check_empty_dir)
 
-        if not check_files or (len(check_files) <= len(ignore_items) and all(
-                [check_file in ignore_items for check_file in check_files])):
-            # directory is empty or contains only ignore_items
-            try:
-                logging.info("Deleting empty folder: " + check_empty_dir)
-                # need shutil.rmtree when ignore_items is really implemented
-                os.rmdir(check_empty_dir)
-                # do the library update for synoindex
-                synoindex_notifier.deleteFolder(check_empty_dir)
-            except OSError as e:
-                logging.warning("Unable to delete %s. Error: %r" % (check_empty_dir, repr(e)))
-                break
-            check_empty_dir = os.path.dirname(check_empty_dir)
-        else:
-            break
+            if not check_files or (len(check_files) <= len(ignore_items)
+                                   and all([check_file in ignore_items for check_file in check_files])):
 
+                try:
+                    # directory is empty or contains only ignore_items
+                    logging.info("Deleting empty folder: " + check_empty_dir)
+                    os.rmdir(check_empty_dir)
+
+                    # do the library update for synoindex
+                    sickbeard.NOTIFIERS.synoindex_notifier.deleteFolder(check_empty_dir)
+                except OSError as e:
+                    logging.warning("Unable to delete %s. Error: %r" % (check_empty_dir, repr(e)))
+                    raise StopIteration
+                check_empty_dir = os.path.dirname(check_empty_dir)
+            else:
+                raise StopIteration
+    except StopIteration:
+        pass
 
 def fileBitFilter(mode):
     """
@@ -1593,7 +1595,7 @@ def _setUpSession(session=None, headers=None, params=None):
     # request session headers
     session.headers.update(headers)
     session.headers.update({'Accept-Encoding': 'gzip,deflate'})
-    session.headers.update(random.choice(USER_AGENTS))
+    session.headers.update(random.choice(common.USER_AGENTS))
 
     # request session clear residual referer
     if 'Referer' in session.headers and 'Referer' not in headers:

@@ -191,6 +191,3 @@ class NMA_Notifier:
         else:
             logging.info("NMA: Notification sent to NotifyMyAndroid")
             return True
-
-
-notifier = NMA_Notifier

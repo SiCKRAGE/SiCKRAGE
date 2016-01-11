@@ -260,7 +260,7 @@ class PostProcessor(object):
                 os.remove(cur_file)
 
                 # do the library update for synoindex
-                notifiers.synoindex_notifier.deleteFile(cur_file)
+                sickbeard.NOTIFIERS.synoindex_notifier.deleteFile(cur_file)
 
     def _combined_file_operation(self, file_path, new_path, new_base_name, associated_files=False, action=None,
                                  subs=False):
@@ -983,7 +983,7 @@ class PostProcessor(object):
                 helpers.chmodAsParent(ep_obj.show._location)
 
                 # do the library update for synoindex
-                notifiers.synoindex_notifier.addFolder(ep_obj.show._location)
+                sickbeard.NOTIFIERS.synoindex_notifier.addFolder(ep_obj.show._location)
             except (OSError, IOError):
                 raise EpisodePostProcessingFailedException(
                         "Unable to create the show directory: " + ep_obj.show._location)
@@ -1130,25 +1130,25 @@ class PostProcessor(object):
             notifiers.notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))
 
             # do the library update for KODI
-            notifiers.kodi_notifier.update_library(ep_obj.show.name)
+            sickbeard.NOTIFIERS.kodi_notifier.update_library(ep_obj.show.name)
 
             # do the library update for Plex
-            notifiers.plex_notifier.update_library(ep_obj)
+            sickbeard.NOTIFIERS.plex_notifier.update_library(ep_obj)
 
             # do the library update for EMBY
-            notifiers.emby_notifier.update_library(ep_obj.show)
+            sickbeard.NOTIFIERS.emby_notifier.update_library(ep_obj.show)
 
             # do the library update for NMJ
             # nmj_notifier kicks off its library update when the notify_download is issued (inside notifiers)
 
             # do the library update for Synology Indexer
-            notifiers.synoindex_notifier.addFile(ep_obj.location)
+            sickbeard.NOTIFIERS.synoindex_notifier.addFile(ep_obj.location)
 
             # do the library update for pyTivo
-            notifiers.pytivo_notifier.update_library(ep_obj)
+            sickbeard.NOTIFIERS.pytivo_notifier.update_library(ep_obj)
 
             # do the library update for Trakt
-            notifiers.trakt_notifier.update_library(ep_obj)
+            sickbeard.NOTIFIERS.trakt_notifier.update_library(ep_obj)
         except:
             logging.info("Some notifications could not be sent. Continuing with postProcessing...")
 

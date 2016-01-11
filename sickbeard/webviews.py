@@ -50,7 +50,6 @@ import db
 import helpers
 import naming
 import network_timezones
-import notifiers
 import sab
 import scene_exceptions
 import scene_numbering
@@ -734,7 +733,7 @@ class Home(WebRoot):
     @staticmethod
     def testFreeMobile(freemobile_id=None, freemobile_apikey=None):
 
-        result, message = notifiers.freemobile_notifier.test_notify(freemobile_id, freemobile_apikey)
+        result, message = sickbeard.NOTIFIERS.freemobile_notifier.test_notify(freemobile_id, freemobile_apikey)
         if result:
             return "SMS sent successfully"
         else:
@@ -746,7 +745,7 @@ class Home(WebRoot):
 
         host = config.clean_host(host, default_port=23053)
 
-        result = notifiers.growl_notifier.test_notify(host, password)
+        result = sickbeard.NOTIFIERS.growl_notifier.test_notify(host, password)
         if password is None or password == '':
             pw_append = ''
         else:
@@ -760,7 +759,7 @@ class Home(WebRoot):
     @staticmethod
     def testProwl(prowl_api=None, prowl_priority=0):
 
-        result = notifiers.prowl_notifier.test_notify(prowl_api, prowl_priority)
+        result = sickbeard.NOTIFIERS.prowl_notifier.test_notify(prowl_api, prowl_priority)
         if result:
             return "Test prowl notice sent successfully"
         else:
@@ -769,7 +768,7 @@ class Home(WebRoot):
     @staticmethod
     def testBoxcar(username=None):
 
-        result = notifiers.boxcar_notifier.test_notify(username)
+        result = sickbeard.NOTIFIERS.boxcar_notifier.test_notify(username)
         if result:
             return "Boxcar notification succeeded. Check your Boxcar clients to make sure it worked"
         else:
@@ -778,7 +777,7 @@ class Home(WebRoot):
     @staticmethod
     def testBoxcar2(accesstoken=None):
 
-        result = notifiers.boxcar2_notifier.test_notify(accesstoken)
+        result = sickbeard.NOTIFIERS.boxcar2_notifier.test_notify(accesstoken)
         if result:
             return "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
         else:
@@ -787,7 +786,7 @@ class Home(WebRoot):
     @staticmethod
     def testPushover(userKey=None, apiKey=None):
 
-        result = notifiers.pushover_notifier.test_notify(userKey, apiKey)
+        result = sickbeard.NOTIFIERS.pushover_notifier.test_notify(userKey, apiKey)
         if result:
             return "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
         else:
@@ -795,12 +794,12 @@ class Home(WebRoot):
 
     @staticmethod
     def twitterStep1():
-        return notifiers.twitter_notifier._get_authorization()
+        return sickbeard.NOTIFIERS.twitter_notifier._get_authorization()
 
     @staticmethod
     def twitterStep2(key):
 
-        result = notifiers.twitter_notifier._get_credentials(key)
+        result = sickbeard.NOTIFIERS.twitter_notifier._get_credentials(key)
         logging.info("result: " + str(result))
         if result:
             return "Key verification successful"
@@ -810,7 +809,7 @@ class Home(WebRoot):
     @staticmethod
     def testTwitter():
 
-        result = notifiers.twitter_notifier.test_notify()
+        result = sickbeard.NOTIFIERS.twitter_notifier.test_notify()
         if result:
             return "Tweet successful, check your twitter to make sure it worked"
         else:
@@ -822,7 +821,7 @@ class Home(WebRoot):
         host = config.clean_hosts(host)
         finalResult = ''
         for curHost in [x.strip() for x in host.split(",")]:
-            curResult = notifiers.kodi_notifier.test_notify(urllib.unquote_plus(curHost), username, password)
+            curResult = sickbeard.NOTIFIERS.kodi_notifier.test_notify(urllib.unquote_plus(curHost), username, password)
             if len(curResult.split(":")) > 2 and 'OK' in curResult.split(":")[2]:
                 finalResult += "Test KODI notice sent successfully to " + urllib.unquote_plus(curHost)
             else:
@@ -839,7 +838,8 @@ class Home(WebRoot):
 
         finalResult = ''
         for curHost in [x.strip() for x in host.split(',')]:
-            curResult = notifiers.plex_notifier.test_notify_pmc(urllib.unquote_plus(curHost), username, password)
+            curResult = sickbeard.NOTIFIERS.plex_notifier.test_notify_pmc(urllib.unquote_plus(curHost), username,
+                                                                          password)
             if len(curResult.split(':')) > 2 and 'OK' in curResult.split(':')[2]:
                 finalResult += 'Successful test notice sent to Plex client ... ' + urllib.unquote_plus(curHost)
             else:
@@ -858,8 +858,8 @@ class Home(WebRoot):
 
         finalResult = ''
 
-        curResult = notifiers.plex_notifier.test_notify_pms(urllib.unquote_plus(host), username, password,
-                                                            plex_server_token)
+        curResult = sickbeard.NOTIFIERS.plex_notifier.test_notify_pms(urllib.unquote_plus(host), username, password,
+                                                                      plex_server_token)
         if curResult is None:
             finalResult += 'Successful test of Plex server(s) ... ' + urllib.unquote_plus(host.replace(',', ', '))
         elif curResult is False:
@@ -876,16 +876,16 @@ class Home(WebRoot):
     @staticmethod
     def testLibnotify():
 
-        if notifiers.libnotify_notifier.test_notify():
+        if sickbeard.NOTIFIERS.libnotify_notifier.test_notify():
             return "Tried sending desktop notification via libnotify"
         else:
-            return notifiers.libnotify.diagnose()
+            return sickbeard.NOTIFIERS.libnotify.diagnose()
 
     @staticmethod
     def testEMBY(host=None, emby_apikey=None):
 
         host = config.clean_host(host)
-        result = notifiers.emby_notifier.test_notify(urllib.unquote_plus(host), emby_apikey)
+        result = sickbeard.NOTIFIERS.emby_notifier.test_notify(urllib.unquote_plus(host), emby_apikey)
         if result:
             return "Test notice sent successfully to " + urllib.unquote_plus(host)
         else:
@@ -895,7 +895,7 @@ class Home(WebRoot):
     def testNMJ(host=None, database=None, mount=None):
 
         host = config.clean_host(host)
-        result = notifiers.nmj_notifier.test_notify(urllib.unquote_plus(host), database, mount)
+        result = sickbeard.NOTIFIERS.nmj_notifier.test_notify(urllib.unquote_plus(host), database, mount)
         if result:
             return "Successfully started the scan update"
         else:
@@ -905,7 +905,7 @@ class Home(WebRoot):
     def settingsNMJ(host=None):
 
         host = config.clean_host(host)
-        result = notifiers.nmj_notifier.notify_settings(urllib.unquote_plus(host))
+        result = sickbeard.NOTIFIERS.nmj_notifier.notify_settings(urllib.unquote_plus(host))
         if result:
             return '{"message": "Got settings from %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
                 "host": host, "database": sickbeard.NMJ_DATABASE, "mount": sickbeard.NMJ_MOUNT}
@@ -916,7 +916,7 @@ class Home(WebRoot):
     def testNMJv2(host=None):
 
         host = config.clean_host(host)
-        result = notifiers.nmjv2_notifier.test_notify(urllib.unquote_plus(host))
+        result = sickbeard.NOTIFIERS.nmjv2_notifier.test_notify(urllib.unquote_plus(host))
         if result:
             return "Test notice sent successfully to " + urllib.unquote_plus(host)
         else:
@@ -926,7 +926,7 @@ class Home(WebRoot):
     def settingsNMJv2(host=None, dbloc=None, instance=None):
 
         host = config.clean_host(host)
-        result = notifiers.nmjv2_notifier.notify_settings(urllib.unquote_plus(host), dbloc, instance)
+        result = sickbeard.NOTIFIERS.nmjv2_notifier.notify_settings(urllib.unquote_plus(host), dbloc, instance)
         if result:
             return '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' % {"host": host,
                                                                                                    "database": sickbeard.NMJv2_DATABASE}
@@ -945,7 +945,7 @@ class Home(WebRoot):
 
     @staticmethod
     def testTrakt(username=None, blacklist_name=None):
-        return notifiers.trakt_notifier.test_notify(username, blacklist_name)
+        return sickbeard.NOTIFIERS.trakt_notifier.test_notify(username, blacklist_name)
 
     @staticmethod
     def loadShowNotifyLists():
@@ -974,15 +974,15 @@ class Home(WebRoot):
     def testEmail(host=None, port=None, smtp_from=None, use_tls=None, user=None, pwd=None, to=None):
 
         host = config.clean_host(host)
-        if notifiers.email_notifier.test_notify(host, port, smtp_from, use_tls, user, pwd, to):
+        if sickbeard.NOTIFIERS.email_notifier.test_notify(host, port, smtp_from, use_tls, user, pwd, to):
             return 'Test email sent successfully! Check inbox.'
         else:
-            return 'ERROR: %s' % notifiers.email_notifier.last_err
+            return 'ERROR: %s' % sickbeard.NOTIFIERS.email_notifier.last_err
 
     @staticmethod
     def testNMA(nma_api=None, nma_priority=0):
 
-        result = notifiers.nma_notifier.test_notify(nma_api, nma_priority)
+        result = sickbeard.NOTIFIERS.nma_notifier.test_notify(nma_api, nma_priority)
         if result:
             return "Test NMA notice sent successfully"
         else:
@@ -991,7 +991,7 @@ class Home(WebRoot):
     @staticmethod
     def testPushalot(authorizationToken=None):
 
-        result = notifiers.pushalot_notifier.test_notify(authorizationToken)
+        result = sickbeard.NOTIFIERS.pushalot_notifier.test_notify(authorizationToken)
         if result:
             return "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
         else:
@@ -1000,7 +1000,7 @@ class Home(WebRoot):
     @staticmethod
     def testPushbullet(api=None):
 
-        result = notifiers.pushbullet_notifier.test_notify(api)
+        result = sickbeard.NOTIFIERS.pushbullet_notifier.test_notify(api)
         if result:
             return "Pushbullet notification succeeded. Check your device to make sure it worked"
         else:
@@ -1010,7 +1010,7 @@ class Home(WebRoot):
     def getPushbulletDevices(api=None):
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
-        result = notifiers.pushbullet_notifier.get_devices(api)
+        result = sickbeard.NOTIFIERS.pushbullet_notifier.get_devices(api)
         if result:
             return result
         else:
@@ -1598,7 +1598,7 @@ class Home(WebRoot):
         else:
             host = sickbeard.KODI_HOST
 
-        if notifiers.kodi_notifier.update_library(showName=showName):
+        if sickbeard.NOTIFIERS.kodi_notifier.update_library(showName=showName):
             ui.notifications.message("Library update command sent to KODI host(s): " + host)
         else:
             ui.notifications.error("Unable to contact one or more KODI host(s): " + host)
@@ -1609,7 +1609,7 @@ class Home(WebRoot):
             return self.redirect('/home/')
 
     def updatePLEX(self):
-        if None is notifiers.plex_notifier.update_library():
+        if None is sickbeard.NOTIFIERS.plex_notifier.update_library():
             ui.notifications.message(
                     "Library update command sent to Plex Media Server host: " + sickbeard.PLEX_SERVER_HOST)
         else:
@@ -1622,7 +1622,7 @@ class Home(WebRoot):
         if show:
             showObj = helpers.findCertainShow(sickbeard.showList, int(show))
 
-        if notifiers.emby_notifier.update_library(showObj):
+        if sickbeard.NOTIFIERS.emby_notifier.update_library(showObj):
             ui.notifications.message(
                     "Library update command sent to Emby host: " + sickbeard.EMBY_HOST)
         else:
@@ -1770,16 +1770,16 @@ class Home(WebRoot):
 
                     trakt_data.append((epObj.season, epObj.episode))
 
-            data = notifiers.trakt_notifier.trakt_episode_data_generate(trakt_data)
+            data = sickbeard.NOTIFIERS.trakt_notifier.trakt_episode_data_generate(trakt_data)
             if data and sickbeard.USE_TRAKT and sickbeard.TRAKT_SYNC_WATCHLIST:
                 if int(status) in [WANTED, FAILED]:
                     logging.debug("Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " to Watchlist")
-                    notifiers.trakt_notifier.update_watchlist(showObj, data_episode=data, update="add")
+                    sickbeard.NOTIFIERS.trakt_notifier.update_watchlist(showObj, data_episode=data, update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                     logging.debug("Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " from Watchlist")
-                    notifiers.trakt_notifier.update_watchlist(showObj, data_episode=data, update="remove")
+                    sickbeard.NOTIFIERS.trakt_notifier.update_watchlist(showObj, data_episode=data, update="remove")
 
             if len(sql_l) > 0:
                 myDB = db.DBConnection()
@@ -1954,7 +1954,7 @@ class Home(WebRoot):
                 logging.error('No Show Object found for show with indexerID: ' + str(searchThread.show.indexerid))
                 return results
 
-            if isinstance(searchThread, sickbeard.search_queue.ManualSearchQueueItem):
+            if isinstance(searchThread, search_queue.ManualSearchQueueItem):
                 results.append({'show': searchThread.show.indexerid,
                                 'episode': searchThread.segment.episode,
                                 'episodeindexid': searchThread.segment.indexerid,
@@ -1996,12 +1996,12 @@ class Home(WebRoot):
 
         # Finished Searches
         searchstatus = 'finished'
-        for searchThread in sickbeard.search_queue.MANUAL_SEARCH_HISTORY:
+        for searchThread in search_queue.MANUAL_SEARCH_HISTORY:
             if show is not None:
                 if not str(searchThread.show.indexerid) == show:
                     continue
 
-            if isinstance(searchThread, sickbeard.search_queue.ManualSearchQueueItem):
+            if isinstance(searchThread, search_queue.ManualSearchQueueItem):
                 if not [x for x in episodes if x[b'episodeindexid'] == searchThread.segment.indexerid]:
                     episodes += getEpisodes(searchThread, searchstatus)
             else:

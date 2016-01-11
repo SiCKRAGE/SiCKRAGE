@@ -33,8 +33,8 @@ import webbrowser
 
 import configobj
 
+import auto_postprocessor
 import sickbeard
-from auto_postprocessor import PostProcessor
 from backlog_searcher import get_backlog_cycle_time, BacklogSearcher
 from common import SD, WANTED, SKIPPED
 from config import CheckSection, check_setting_int, check_setting_str
@@ -49,6 +49,27 @@ from metadata import ps3, mediabrowser, get_metadata_generator_dict, wdtv, tivo,
 from name_cache import nameCache
 from naming import check_force_season_folders
 from network_timezones import update_network_dict
+from notifiers.boxcar import BoxcarNotifier
+from notifiers.boxcar2 import Boxcar2Notifier
+from notifiers.emailnotify import EmailNotifier
+from notifiers.emby import EMBYNotifier
+from notifiers.freemobile import FreeMobileNotifier
+from notifiers.growl import GrowlNotifier
+from notifiers.kodi import KODINotifier
+from notifiers.libnotify import LibnotifyNotifier
+from notifiers.nma import NMA_Notifier
+from notifiers.nmj import NMJNotifier
+from notifiers.nmjv2 import NMJv2Notifier
+from notifiers.plex import PLEXNotifier
+from notifiers.prowl import ProwlNotifier
+from notifiers.pushalot import PushalotNotifier
+from notifiers.pushbullet import PushbulletNotifier
+from notifiers.pushover import PushoverNotifier
+from notifiers.pytivo import pyTivoNotifier
+from notifiers.synoindex import synoIndexNotifier
+from notifiers.synologynotifier import synologyNotifier
+from notifiers.trakt import TraktNotifier
+from notifiers.tweet import TwitterNotifier
 from proper_searcher import ProperSearcher
 from providers import NewznabProvider, NZBProvider, GenericProvider, TorrentProvider
 from providers import TorrentRssProvider
@@ -218,6 +239,32 @@ def initialize(console_logging=True):
 
             sickbeard.TIME_PRESET = sickbeard.TIME_PRESET_W_SECONDS.replace(":%S", "")
 
+            # initialize notifiers
+            sickbeard.NOTIFIERS = dict(
+                    libnotify=LibnotifyNotifier(),
+                    kodi_notifier=KODINotifier(),
+                    plex_notifier=PLEXNotifier(),
+                    emby_notifier=EMBYNotifier(),
+                    nmj_notifier=NMJNotifier(),
+                    nmjv2_notifier=NMJv2Notifier(),
+                    synoindex_notifier=synoIndexNotifier(),
+                    synology_notifier=synologyNotifier(),
+                    pytivo_notifier=pyTivoNotifier(),
+                    growl_notifier=GrowlNotifier(),
+                    prowl_notifier=ProwlNotifier(),
+                    libnotify_notifier=LibnotifyNotifier(),
+                    pushover_notifier=PushoverNotifier(),
+                    boxcar_notifier=BoxcarNotifier(),
+                    boxcar2_notifier=Boxcar2Notifier(),
+                    nma_notifier=NMA_Notifier(),
+                    pushalot_notifier=PushalotNotifier(),
+                    pushbullet_notifier=PushbulletNotifier(),
+                    freemobile_notifier=FreeMobileNotifier(),
+                    twitter_notifier=TwitterNotifier(),
+                    trakt_notifier=TraktNotifier(),
+                    email_notifier=EmailNotifier(),
+            )
+
             # initialize metadata_providers
             sickbeard.metadataProvideDict = get_metadata_generator_dict()
             for cur_metadata_tuple in [(sickbeard.METADATA_KODI, kodi),
@@ -334,7 +381,7 @@ def initialize(console_logging=True):
 
             # add auto-postprocessing job to scheduler
             job = sickbeard.SCHEDULER.add_job(
-                    PostProcessor().run,
+                    auto_postprocessor.PostProcessor().run,
                     SRIntervalTrigger(**{'minutes': sickbeard.AUTOPOSTPROCESSOR_FREQ,
                                          'min': sickbeard.MIN_AUTOPOSTPROCESSOR_FREQ}),
                     name="POSTPROCESSOR",

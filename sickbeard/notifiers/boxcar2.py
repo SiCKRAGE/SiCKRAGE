@@ -124,6 +124,3 @@ class Boxcar2Notifier:
 
         self._sendBoxcar2(message, title, accesstoken)
         return True
-
-
-notifier = Boxcar2Notifier

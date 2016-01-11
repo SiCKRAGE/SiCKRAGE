@@ -28,12 +28,12 @@ import UnRAR2
 from UnRAR2.rar_exceptions import ArchiveHeaderBroken, IncorrectRARPassword, FileOpenError, InvalidRARArchiveUsage, \
     InvalidRARArchive
 
-import common
 import db
 import failedprocessor
 import helpers
 import postprocessor
 import sickbeard
+from common import Quality
 from name_parser import parser
 from sickbeard.exceptions import EpisodePostProcessingFailedException, FailedPostProcessingFailedException
 
@@ -515,7 +515,7 @@ def already_postprocessed(dirName, videofile, force, result):
                     parse_result.season_number) + "' and tv_episodes.episode = '" + str(
                     parse_result.episode_numbers[0]) + "'"
 
-        search_sql += " and tv_episodes.status IN (" + ",".join([str(x) for x in common.Quality.DOWNLOADED]) + ")"
+        search_sql += " and tv_episodes.status IN (" + ",".join([str(x) for x in Quality.DOWNLOADED]) + ")"
         search_sql += " and history.resource LIKE ?"
         if db.DBConnection().select(search_sql, ['%' + videofile]):
             # result.output += logHelper(u"You're trying to post process a video that's already been processed, skipping", logging.DEBUG)

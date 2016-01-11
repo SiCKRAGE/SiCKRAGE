@@ -118,6 +118,3 @@ class EMBYNotifier:
             except (urllib2.URLError, IOError) as e:
                 logging.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
                 return False
-
-
-notifier = EMBYNotifier

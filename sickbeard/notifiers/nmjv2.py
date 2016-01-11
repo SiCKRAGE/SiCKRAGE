@@ -173,6 +173,3 @@ class NMJv2Notifier:
         logging.debug("Sending scan command for NMJ ")
 
         return self._sendNMJ(host)
-
-
-notifier = NMJv2Notifier

@@ -32,9 +32,8 @@ from contextlib import contextmanager
 
 from tornado import gen
 
+import helpers
 import sickbeard
-from helpers import moveFile
-
 
 def dbFilename(filename="sickrage.db", suffix=""):
     """
@@ -55,7 +54,7 @@ def dbFilename(filename="sickrage.db", suffix=""):
 
     # migrate old sb database filenames
     if not os.path.exists(filename) and os.path.exists(sbfilename):
-        moveFile(sbfilename, filename)
+        helpers.moveFile(sbfilename, filename)
 
     return filename
 

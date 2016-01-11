@@ -25,7 +25,6 @@ import traceback
 
 import common
 import generic_queue
-import notifiers
 import scene_numbering
 import sickbeard
 import tv
@@ -466,15 +465,15 @@ class QueueItemAdd(ShowQueueItem):
 
         if sickbeard.USE_TRAKT:
             # if there are specific episodes that need to be added by trakt
-            sickbeard.traktCheckerScheduler.callback.manageNewShow(self.show)
+            sickbeard.traktSearcher.manageNewShow(self.show)
 
             # add show to trakt.tv library
             if sickbeard.TRAKT_SYNC:
-                sickbeard.traktCheckerScheduler.callback.addShowToTraktLibrary(self.show)
+                sickbeard.traktSearcher.addShowToTraktLibrary(self.show)
 
             if sickbeard.TRAKT_SYNC_WATCHLIST:
                 logging.info("update watchlist")
-                notifiers.trakt_notifier.update_watchlist(show_obj=self.show)
+                sickbeard.NOTIFIERS.trakt_notifier.update_watchlist(show_obj=self.show)
 
         # Load XEM data to DB for show
         scene_numbering.xem_refresh(self.show.indexerid, self.show.indexer, force=True)
@@ -692,7 +691,7 @@ class QueueItemRemove(ShowQueueItem):
 
         if sickbeard.USE_TRAKT:
             try:
-                sickbeard.traktCheckerScheduler.callback.removeShowFromTraktLibrary(self.show)
+                sickbeard.traktSearcher.removeShowFromTraktLibrary(self.show)
             except Exception as e:
                 logging.warning("Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, e))
 

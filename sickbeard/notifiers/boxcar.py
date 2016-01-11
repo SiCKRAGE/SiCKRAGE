@@ -24,9 +24,9 @@ import time
 import urllib
 import urllib2
 
+import common
 import sickbeard
-from common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE, \
-    NOTIFY_GIT_UPDATE_TEXT
+from common import notifyStrings
 
 API_URL = "https://boxcar.io/devices/providers/fWc4sgSmpcN6JujtBmR6/notifications"
 
@@ -111,22 +111,22 @@ class BoxcarNotifier:
         logging.info("Boxcar notification successful.")
         return True
 
-    def notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
+    def notify_snatch(self, ep_name, title=notifyStrings[common.NOTIFY_SNATCH]):
         if sickbeard.BOXCAR_NOTIFY_ONSNATCH:
             self._notifyBoxcar(title, ep_name)
 
-    def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
+    def notify_download(self, ep_name, title=notifyStrings[common.NOTIFY_DOWNLOAD]):
         if sickbeard.BOXCAR_NOTIFY_ONDOWNLOAD:
             self._notifyBoxcar(title, ep_name)
 
-    def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
+    def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[common.NOTIFY_SUBTITLE_DOWNLOAD]):
         if sickbeard.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyBoxcar(title, ep_name + ": " + lang)
 
     def notify_git_update(self, new_version="??"):
         if sickbeard.USE_BOXCAR:
-            update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
-            title = notifyStrings[NOTIFY_GIT_UPDATE]
+            update_text = notifyStrings[common.NOTIFY_GIT_UPDATE_TEXT]
+            title = notifyStrings[common.NOTIFY_GIT_UPDATE]
             self._notifyBoxcar(title, update_text + new_version)
 
     def _notifyBoxcar(self, title, message, username=None, force=False):
@@ -150,6 +150,3 @@ class BoxcarNotifier:
         logging.debug("Sending notification for " + message)
 
         return self._sendBoxcar(message, title, username)
-
-
-notifier = BoxcarNotifier

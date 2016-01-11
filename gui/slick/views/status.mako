@@ -15,20 +15,6 @@
     <h1 class="title">${title}</h1>
 % endif
 
-<%
-    schedulerList = {
-        'Daily Search': 'dailySearchScheduler',
-        'Backlog': 'backlogSearchScheduler',
-        'Show Update': 'showUpdateScheduler',
-        'Version Check': 'versionCheckScheduler',
-        'Show Queue': 'showQueueScheduler',
-        'Search Queue': 'searchQueueScheduler',
-        'Proper Finder': 'properFinderScheduler',
-        'Post Process': 'autoPostProcesserScheduler',
-        'Subtitles Finder': 'subtitlesFinderScheduler',
-        'Trakt Checker': 'traktCheckerScheduler',
-    }
-%>
 <div id="config-content">
     <h2 class="header">Scheduler</h2>
     <table id="schedulerStatusTable" class="tablesorter" width="100%">
@@ -46,36 +32,31 @@
             </tr>
         </thead>
         <tbody>
-            % for schedulerName, scheduler in schedulerList.iteritems():
-               <% service = getattr(sickbeard, scheduler) %>
+            % for job in sickbeard.SCHEDULER.get_jobs():
            <tr>
-               <td>${schedulerName}</td>
-               % if service.isAlive():
-               <td style="background-color:green">${service.isAlive()}</td>
+               <td>${job.name}</td>
+               % if job.func.isAlive():
+                   <td style="background-color:green">${job.func.isAlive()}</td>
                % else:
-               <td style="background-color:red">${service.isAlive()}</td>
+                   <td style="background-color:red">${job.func.isAlive()}</td>
                % endif
-               % if scheduler == 'backlogSearchScheduler':
-                   <% searchQueue = getattr(sickbeard, 'searchQueueScheduler') %>
-                   <% BLSpaused = searchQueue.callback.is_backlog_paused() %>
-                   <% del searchQueue %>
+               % if job.name == 'BACKLOG':
+                   <% BLSpaused = sickbeard.searchQueue.is_backlog_paused() %>
                    % if BLSpaused:
                <td>Paused</td>
                    % else:
-               <td>${service.enable}</td>
+                       <td>${job.resume()}</td>
                    % endif
                % else:
-               <td>${service.enable}</td>
+                   <td>${job.resume()}</td>
                % endif
-               % if scheduler == 'backlogSearchScheduler':
-                   <% searchQueue = getattr(sickbeard, 'searchQueueScheduler') %>
-                   <% BLSinProgress = searchQueue.callback.is_backlog_in_progress() %>
-                   <% del searchQueue %>
+               % if job.name == 'BACKLOG':
+                   <% BLSinProgress = sickbeard.searchQueue.is_backlog_in_progress() %>
                    % if BLSinProgress:
                <td>True</td>
                    % else:
                        % try:
-                       <% amActive = service.callback.amActive %>
+                       <% amActive = job.func.amActive %>
                <td>${amActive}</td>
                        % except Exception:
                <td>N/A</td>
@@ -83,27 +64,25 @@
                    % endif
                % else:
                    % try:
-                   <% amActive = service.callback.amActive %>
+                   <% amActive = job.func.amActive %>
                <td>${amActive}</td>
                    % except Exception:
                <td>N/A</td>
                    % endtry
                % endif
-               % if service.start_time:
-               <td align="right">${service.start_time}</td>
+               % if job.start_time:
+                   <td align="right">${job.start_time}</td>
                % else:
                <td align="right"></td>
                % endif
-               <% cycleTime = (service.cycleTime.microseconds + (service.cycleTime.seconds + service.cycleTime.days * 24 * 3600) * 10**6) / 10**6 %>
-               <td align="right">${helpers.pretty_time_delta(cycleTime)}</td>
-               % if service.enable:
-                   <% timeLeft = (service.timeLeft().microseconds + (service.timeLeft().seconds + service.timeLeft().days * 24 * 3600) * 10**6) / 10**6 %>
+               <td align="right">${helpers.pretty_time_delta(job.next_run_time)}</td>
+               % if job.enable:
+               <% timeLeft = (job.timeLeft().microseconds + (job.timeLeft().seconds + job.timeLeft().days * 24 * 3600) * 10**6) / 10**6 %>
                <td align="right">${helpers.pretty_time_delta(timeLeft)}</td>
                % else:
                <td></td>
                % endif
-               <td>${service.lastRun.strftime(dateTimeFormat)}</td>
-               <td>${service.silent}</td>
+               <td>${job.lastRun.strftime(dateTimeFormat)}</td>
            </tr>
            <% del service %>
            % endfor

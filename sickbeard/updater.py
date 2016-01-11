@@ -34,7 +34,6 @@ import requests
 
 import db
 import helpers
-import notifiers
 import sickbeard
 import ui
 
@@ -640,7 +639,8 @@ class GitUpdateManager(UpdateManager):
 
                 # Notify update successful
                 if sickbeard.NOTIFY_ON_UPDATE:
-                    notifiers.notify_git_update(sickbeard.CUR_COMMIT_HASH if sickbeard.CUR_COMMIT_HASH else "")
+                    sickbeard.NOTIFIERS.notify_git_update(
+                        sickbeard.CUR_COMMIT_HASH if sickbeard.CUR_COMMIT_HASH else "")
 
                 return True
 
@@ -883,7 +883,7 @@ class SourceUpdateManager(UpdateManager):
             return False
 
         # Notify update successful
-        notifiers.notify_git_update(sickbeard.NEWEST_VERSION_STRING)
+        sickbeard.NOTIFIERS.notify_git_update(sickbeard.NEWEST_VERSION_STRING)
 
         return True
 

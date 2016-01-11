@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 import logging
 
 import sickbeard
-
 from sickbeard.trakt import TraktAPI, traktException, traktServerBusy, traktAuthException
 
 class TraktNotifier:
@@ -235,6 +234,3 @@ class TraktNotifier:
         except (traktException, traktAuthException, traktServerBusy) as e:
             logging.warning("Could not connect to Trakt service: %s" % e)
             return "Test notice failed to Trakt: %s" % e
-
-
-notifier = TraktNotifier

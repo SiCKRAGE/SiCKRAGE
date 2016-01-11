@@ -104,6 +104,3 @@ class pyTivoNotifier:
         else:
             logging.info("pyTivo notification: Successfully requested transfer of file")
             return True
-
-
-notifier = pyTivoNotifier

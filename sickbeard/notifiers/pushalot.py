@@ -96,6 +96,3 @@ class PushalotNotifier:
         else:
             logging.error("Pushalot notification failed.")
             return False
-
-
-notifier = PushalotNotifier

@@ -195,6 +195,3 @@ class NMJNotifier:
         logging.debug("Sending scan command for NMJ ")
 
         return self._sendNMJ(host, database, mount)
-
-
-notifier = NMJNotifier

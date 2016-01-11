@@ -221,6 +221,3 @@ class EmailNotifier:
         titles.sort(key=len, reverse=True)
         logging.debug("TITLES: %s" % titles)
         return titles
-
-
-notifier = EmailNotifier

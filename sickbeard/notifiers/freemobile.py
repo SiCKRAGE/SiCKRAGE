@@ -122,6 +122,3 @@ class FreeMobileNotifier:
         logging.debug("Sending a SMS for " + message)
 
         return self._sendFreeMobileSMS(title, message, id, apiKey)
-
-
-notifier = FreeMobileNotifier

@@ -170,6 +170,3 @@ class PushoverNotifier(object):
         logging.debug("Sending notification for " + message)
 
         return self._sendPushover(message, title, sound=sound, userKey=userKey, apiKey=apiKey)
-
-
-notifier = PushoverNotifier

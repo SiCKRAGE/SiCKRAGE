@@ -32,6 +32,7 @@ import six
 
 import helpers
 
+
 if six.PY3:
     from collections import UserDict
 else:
@@ -118,12 +119,13 @@ NOTIFY_SUBTITLE_DOWNLOAD = 3
 NOTIFY_GIT_UPDATE = 4
 NOTIFY_GIT_UPDATE_TEXT = 5
 
-notifyStrings = {}
-notifyStrings[NOTIFY_SNATCH] = "Started Download"
-notifyStrings[NOTIFY_DOWNLOAD] = "Download Finished"
-notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] = "Subtitle Download Finished"
-notifyStrings[NOTIFY_GIT_UPDATE] = "SiCKRAGE Updated"
-notifyStrings[NOTIFY_GIT_UPDATE_TEXT] = "SiCKRAGE Updated To Commit#: "
+notifyStrings = {
+    NOTIFY_SNATCH: "Started Download",
+    NOTIFY_DOWNLOAD: "Download Finished",
+    NOTIFY_SUBTITLE_DOWNLOAD: "Subtitle Download Finished",
+    NOTIFY_GIT_UPDATE: "SiCKRAGE Updated",
+    NOTIFY_GIT_UPDATE_TEXT: "SiCKRAGE Updated To Commit#: "
+}
 
 ### Episode statuses
 UNKNOWN = -1  # should never happen
