@@ -547,7 +547,7 @@ class ParseResult(object):
                 to_return += ' [EPISODE: {}]'.format(str(ep_num).zfill(2))
 
         if self.is_air_by_date:
-            to_return += self.air_date
+            to_return += ' [AIRDATE: {}]'.format(self.air_date)
         if self.ab_episode_numbers:
             to_return += ' [ABS: {}]'.format(self.ab_episode_numbers)
         if self.version and self.is_anime is True:

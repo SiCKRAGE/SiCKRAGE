@@ -4384,7 +4384,7 @@ class ConfigProviders(Config):
     def saveProviders(self, newznab_string='', torrentrss_string='', provider_order=None, **kwargs):
         results = []
 
-        provider_str_list = provider_order.split()
+        provider_str_list = provider_order.split() or []
 
         newznabProviderDict = dict(
                 zip([x.id for x in sickbeard.newznabProviderList], sickbeard.newznabProviderList))
