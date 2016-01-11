@@ -4497,7 +4497,7 @@ class ConfigProviders(Config):
         # delete anything that is missing
         for curProvider in sickbeard.torrentRssProviderList + sickbeard.newznabProviderList:
             if curProvider.id in finishedNames:
-                finishedNames.pop(curProvider.id)
+                finishedNames.pop(finishedNames.index(curProvider.id))
                 continue
 
             if curProvider.type == GenericProvider.NZB:

@@ -213,7 +213,7 @@
                                 <span class="component-title">Check the server every*</span>
                                 <span class="component-desc">
                                     <input type="text" name="update_frequency" id="update_frequency"
-                                           value="${sickbeard.UPDATER_FREQ}" class="form-control input-sm input75"/>
+                                           value="${sickbeard.SRUPDATER_FREQ}" class="form-control input-sm input75"/>
                                     <p>hours for software updates (default:12)</p>
                                 </span>
                             </label>

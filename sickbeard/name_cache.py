@@ -34,7 +34,7 @@ class nameCache(object):
         self.name = "NAMECACHE"
         self.amActive = False
         self.lastUpdate = datetime.datetime.fromtimestamp(int(time.mktime(datetime.datetime.today().timetuple())))
-        self.minTime = 10
+        self.minTime = sickbeard.NAMECACHE_FREQ
         self.cache = {}
 
     def run(self, force=False):
