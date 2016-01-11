@@ -44,7 +44,7 @@ class Updater(object):
     """
 
     def __init__(self, **kwargs):
-        self.name = "UPDATER"
+        self.name = "srUpdater"
         self.amActive = False
         self.updater = None
         self.session = None

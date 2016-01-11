@@ -244,11 +244,11 @@ def change_UPDATER_FREQ(freq):
 
     :param freq: New frequency
     """
-    sickbeard.UPDATER_FREQ = to_int(freq, default=sickbeard.DEFAULT_UPDATE_FREQ)
-    sickbeard.SCHEDULER.modify_job('UPDATER',
+    sickbeard.SRUPDATER_FREQ = to_int(freq, default=sickbeard.DEFAULT_SRUPDATE_FREQ)
+    sickbeard.SCHEDULER.modify_job('SRUPDATER',
                                    trigger=scheduler.SRIntervalTrigger(
-                                           **{'hours': sickbeard.UPDATER_FREQ,
-                                              'min': sickbeard.MIN_UPDATER_FREQ}))
+                                           **{'hours': sickbeard.SRUPDATER_FREQ,
+                                              'min': sickbeard.MIN_SRUPDATER_FREQ}))
 
 
 def change_SHOWUPDATE_HOUR(freq):

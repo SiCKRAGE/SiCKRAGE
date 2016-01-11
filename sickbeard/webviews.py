@@ -76,9 +76,9 @@ from sickbeard.providers import TorrentRssProvider, NewznabProvider, sortedProvi
 from sickrage.show.ComingEpisodes import ComingEpisodes
 from sickrage.show.History import History as HistoryTool
 from sickrage.show.Show import Show
+from srupdater import Updater
 from trakt import TraktAPI, traktException
 from tv import EpisodeDeletedException, TVEpisode
-from updater import Updater
 from webapi import ApiHandler
 from webroutes import route
 
@@ -1056,8 +1056,8 @@ class Home(WebRoot):
         if str(pid) != str(sickbeard.PID):
             return self.redirect('/home/')
 
-        sickbeard.UPDATER.check_for_new_version(True)
-        sickbeard.UPDATER.check_for_new_news(True)
+        sickbeard.srUpdater.check_for_new_version(True)
+        sickbeard.srUpdater.check_for_new_news(True)
 
         return self.redirect('/' + sickbeard.DEFAULT_PAGE + '/')
 
@@ -1071,7 +1071,7 @@ class Home(WebRoot):
 
         if backup is True:
 
-            if sickbeard.UPDATER.update():
+            if sickbeard.srUpdater.update():
                 # do a hard restart
                 #sickbeard.events.put(sickbeard.events.SystemEvent.RESTART)
 
@@ -2178,7 +2178,7 @@ class HomeNews(Home):
 
     def index(self):
         try:
-            news = sickbeard.UPDATER.check_for_new_news(force=True)
+            news = sickbeard.srUpdater.check_for_new_news(force=True)
         except Exception:
             logging.debug('Could not load news from repo, giving a link!')
             news = 'Could not load news from the repo. [Click here for news.md](' + sickbeard.NEWS_URL + ')'

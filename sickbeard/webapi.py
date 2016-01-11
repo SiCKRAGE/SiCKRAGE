@@ -59,7 +59,7 @@ from sickrage.media import ShowPoster, ShowBanner, ShowNetworkLogo, ShowFanArt
 from sickrage.show.ComingEpisodes import ComingEpisodes
 from sickrage.show.History import History
 from sickrage.show.Show import Show
-from updater import Updater
+from srupdater import Updater
 
 indexer_ids = ["indexerid", "tvdbid"]
 

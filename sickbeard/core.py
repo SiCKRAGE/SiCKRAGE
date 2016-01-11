@@ -78,10 +78,10 @@ from scheduler import Scheduler, SRIntervalTrigger
 from search_queue import SearchQueue
 from show_queue import ShowQueue
 from show_updater import ShowUpdater
+from srupdater import Updater
 from subtitle_searcher import SubtitleSearcher
 from trakt_searcher import TraktSearcher
 from tv import TVShow
-from updater import Updater
 from webserver import SRWebServer
 
 def initialize(console_logging=True):
@@ -120,7 +120,7 @@ def initialize(console_logging=True):
             socket.setdefaulttimeout(sickbeard.SOCKET_TIMEOUT)
 
             # init updater
-            sickbeard.UPDATER = Updater()
+            sickbeard.srUpdater = Updater()
 
             # initialize the main SB database
             upgradeDatabase(DBConnection(), mainDB.InitialSchema)
@@ -221,8 +221,8 @@ def initialize(console_logging=True):
             if sickbeard.BACKLOG_SEARCHER_FREQ < sickbeard.MIN_BACKLOG_SEARCHER_FREQ:
                 sickbeard.BACKLOG_SEARCHER_FREQ = sickbeard.MIN_BACKLOG_SEARCHER_FREQ
 
-            if sickbeard.UPDATER_FREQ < sickbeard.MIN_UPDATER_FREQ:
-                sickbeard.UPDATER_FREQ = sickbeard.MIN_UPDATER_FREQ
+            if sickbeard.SRUPDATER_FREQ < sickbeard.MIN_SRUPDATER_FREQ:
+                sickbeard.SRUPDATER_FREQ = sickbeard.MIN_SRUPDATER_FREQ
 
             if sickbeard.SHOWUPDATE_HOUR > 23:
                 sickbeard.SHOWUPDATE_HOUR = 0
@@ -284,6 +284,7 @@ def initialize(console_logging=True):
             sickbeard.nameCache = nameCache()
 
             # init queues
+            sickbeard.showUpdater = ShowUpdater()
             sickbeard.showQueue = ShowQueue()
             sickbeard.searchQueue = SearchQueue()
 
@@ -302,11 +303,10 @@ def initialize(console_logging=True):
 
             # add version checker job to scheduler
             sickbeard.SCHEDULER.add_job(
-                    sickbeard.UPDATER.run,
-                    SRIntervalTrigger(
-                            **{'hours': sickbeard.UPDATER_FREQ, 'min': sickbeard.MIN_UPDATER_FREQ}),
-                    name="UPDATER",
-                    id="UPDATER",
+                    sickbeard.srUpdater.run,
+                    SRIntervalTrigger(**{'hours': sickbeard.SRUPDATER_FREQ, 'min': sickbeard.MIN_SRUPDATER_FREQ}),
+                    name="SRUPDATER",
+                    id="SRUPDATER",
                     replace_existing=True
             )
 
@@ -322,8 +322,7 @@ def initialize(console_logging=True):
             # add namecache updater job to scheduler
             sickbeard.SCHEDULER.add_job(
                     sickbeard.nameCache.run,
-                    SRIntervalTrigger(
-                            **{'minutes': sickbeard.NAMECACHE_FREQ, 'min': sickbeard.MIN_NAMECACHE_FREQ}),
+                    SRIntervalTrigger(**{'minutes': sickbeard.NAMECACHE_FREQ, 'min': sickbeard.MIN_NAMECACHE_FREQ}),
                     name="NAMECACHE",
                     id="NAMECACHE",
                     replace_existing=True
@@ -349,7 +348,7 @@ def initialize(console_logging=True):
 
             # add show updater job to scheduler
             sickbeard.SCHEDULER.add_job(
-                    ShowUpdater().run,
+                    sickbeard.showUpdater.run,
                     SRIntervalTrigger(
                             **{'hours': 1,
                                'start_date': datetime.datetime.now().replace(hour=sickbeard.SHOWUPDATE_HOUR)}),
@@ -693,7 +692,7 @@ def load_config(cfgfile, defaults=False):
                                                       sickbeard.DEFAULT_DAILY_SEARCHER_FREQ)
     sickbeard.BACKLOG_SEARCHER_FREQ = check_setting_int(cfgobj, 'General', 'backlog_frequency',
                                                         sickbeard.DEFAULT_BACKLOG_SEARCHER_FREQ)
-    sickbeard.UPDATER_FREQ = check_setting_int(cfgobj, 'General', 'update_frequency', sickbeard.DEFAULT_UPDATE_FREQ)
+    sickbeard.SRUPDATER_FREQ = check_setting_int(cfgobj, 'General', 'update_frequency', sickbeard.DEFAULT_SRUPDATE_FREQ)
     sickbeard.SHOWUPDATE_HOUR = check_setting_int(cfgobj, 'General', 'showupdate_hour',
                                                   sickbeard.DEFAULT_SHOWUPDATE_HOUR)
     sickbeard.BACKLOG_DAYS = check_setting_int(cfgobj, 'General', 'backlog_days', 7)
@@ -1242,7 +1241,7 @@ def save_config(cfgfile):
     new_config[b'General'][b'autopostprocessor_frequency'] = int(sickbeard.AUTOPOSTPROCESSOR_FREQ)
     new_config[b'General'][b'dailysearch_frequency'] = int(sickbeard.DAILY_SEARCHER_FREQ)
     new_config[b'General'][b'backlog_frequency'] = int(sickbeard.BACKLOG_SEARCHER_FREQ)
-    new_config[b'General'][b'update_frequency'] = int(sickbeard.UPDATER_FREQ)
+    new_config[b'General'][b'update_frequency'] = int(sickbeard.SRUPDATER_FREQ)
     new_config[b'General'][b'showupdate_hour'] = int(sickbeard.SHOWUPDATE_HOUR)
     new_config[b'General'][b'download_propers'] = int(sickbeard.DOWNLOAD_PROPERS)
     new_config[b'General'][b'randomize_providers'] = int(sickbeard.RANDOMIZE_PROVIDERS)

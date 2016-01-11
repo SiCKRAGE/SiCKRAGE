@@ -2,7 +2,7 @@
 <%!
     import sickbeard
     import helpers
-    from sickbeard.show_queue import ShowQueueActions
+    from show_queue import ShowQueueActions
     from common import dateTimeFormat
 %>
 <%block name="scripts">
@@ -21,71 +21,14 @@
         <thead>
             <tr>
                 <th>Scheduler</th>
-                <th>Alive</th>
-                <th>Enable</th>
-                <th>Active</th>
-                <th>Start Time</th>
-                <th>Cycle Time</th>
-                <th>Next Run</th>
-                <th>Last Run</th>
-                <th>Silent</th>
             </tr>
         </thead>
         <tbody>
             % for job in sickbeard.SCHEDULER.get_jobs():
-           <tr>
-               <td>${job.name}</td>
-               % if job.func.isAlive():
-                   <td style="background-color:green">${job.func.isAlive()}</td>
-               % else:
-                   <td style="background-color:red">${job.func.isAlive()}</td>
-               % endif
-               % if job.name == 'BACKLOG':
-                   <% BLSpaused = sickbeard.searchQueue.is_backlog_paused() %>
-                   % if BLSpaused:
-               <td>Paused</td>
-                   % else:
-                       <td>${job.resume()}</td>
-                   % endif
-               % else:
-                   <td>${job.resume()}</td>
-               % endif
-               % if job.name == 'BACKLOG':
-                   <% BLSinProgress = sickbeard.searchQueue.is_backlog_in_progress() %>
-                   % if BLSinProgress:
-               <td>True</td>
-                   % else:
-                       % try:
-                       <% amActive = job.func.amActive %>
-               <td>${amActive}</td>
-                       % except Exception:
-               <td>N/A</td>
-                       % endtry
-                   % endif
-               % else:
-                   % try:
-                   <% amActive = job.func.amActive %>
-               <td>${amActive}</td>
-                   % except Exception:
-               <td>N/A</td>
-                   % endtry
-               % endif
-               % if job.start_time:
-                   <td align="right">${job.start_time}</td>
-               % else:
-               <td align="right"></td>
-               % endif
-               <td align="right">${helpers.pretty_time_delta(job.next_run_time)}</td>
-               % if job.enable:
-               <% timeLeft = (job.timeLeft().microseconds + (job.timeLeft().seconds + job.timeLeft().days * 24 * 3600) * 10**6) / 10**6 %>
-               <td align="right">${helpers.pretty_time_delta(timeLeft)}</td>
-               % else:
-               <td></td>
-               % endif
-               <td>${job.lastRun.strftime(dateTimeFormat)}</td>
-           </tr>
-           <% del service %>
-           % endfor
+                <tr>
+                    <td>${job}</td>
+                </tr>
+            % endfor
        </tbody>
     </table>
     <h2 class="header">Show Queue</h2>

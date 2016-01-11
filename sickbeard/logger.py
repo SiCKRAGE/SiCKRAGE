@@ -66,7 +66,7 @@ class SRLogger(logging.Logger):
             'DAILYSEARCHER': 'Daily Searcher',
             'BACKLOG': 'Backlog',
             'SHOWUPDATER': 'Show Updater',
-            'UPDATER': 'Check Version',
+            'srUpdater': 'Check Version',
             'SHOWQUEUE': 'Show Queue',
             'SEARCHQUEUE': 'Search Queue',
             'FINDPROPERS': 'Find Propers',
@@ -167,7 +167,7 @@ class CustomLogger(SRLogger):
             return submitter_result, issue_id
 
         try:
-            from sickbeard.updater import Updater
+            from sickbeard.srupdater import Updater
 
             checkversion = Updater()
             checkversion.check_for_new_version()
