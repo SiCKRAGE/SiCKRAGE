@@ -233,13 +233,13 @@ if __name__ == "__main__":
             import pip
 
             print("Upgrading pip ...")
-            pip.main(['install', '-q', '-U', '--user', 'pip'])
+            pip.main(['install', '-q', '-U', 'pip'])
         except ImportError:
             install_pip()
             import pip
 
         print("Installing/Upgrading SiCKRAGE required libs, please stand by ...")
-        pip.main(['install', '-q', '-U', '--user', '-r', os.path.join(os.path.dirname(__file__), 'requirements.txt')])
+        pip.main(['install', '-q', '-U', '-r', os.path.join(os.path.dirname(__file__), 'requirements.txt')])
 
         # start main thread
         import sickbeard
