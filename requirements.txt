@@ -1,3 +1,4 @@
+attrdict==2.0.0
 APScheduler==3.0.5
 babelfish==0.5.5
 backport-ipaddress==0.1

@@ -157,6 +157,7 @@ class NZBSearchResult(SearchResult):
         self.resultType = "nzb"
         self.provider = self
 
+
 class NZBDataSearchResult(SearchResult):
     """
     NZB result where the actual NZB XML data is stored in the extraInfo
@@ -166,6 +167,7 @@ class NZBDataSearchResult(SearchResult):
         super(NZBDataSearchResult, self).__init__(episodes)
         self.resultType = "nzbdata"
 
+
 class TorrentSearchResult(SearchResult):
     """
     Torrent result with an URL to the torrent
@@ -174,6 +176,7 @@ class TorrentSearchResult(SearchResult):
     def __init__(self, episodes):
         super(TorrentSearchResult, self).__init__(episodes)
         self.resultType = "torrent"
+
 
 class AllShowsListUI(object):
     """
@@ -214,7 +217,8 @@ class AllShowsListUI(object):
 
                             if curShow not in searchResults:
                                 searchResults += [curShow]
-        except:pass
+        except:
+            pass
 
         return searchResults
 
@@ -277,6 +281,7 @@ class UIError(object):
         self.title = sys.exc_info()[-2] or message
         self.message = message
 
+
 class UIWarning(object):
     """
     Represents an error to be displayed in the web UI.
@@ -287,6 +292,7 @@ class UIWarning(object):
         self.title = sys.exc_info()[-2] or message
         self.message = message
 
+
 class ErrorViewer(object):
     """
     Keeps a static list of UIErrors to be displayed on the UI and allows
@@ -294,8 +300,9 @@ class ErrorViewer(object):
     """
 
     errors = []
+
     def add(self, error, ui=False):
-        self.errors +=[(error, UIError(error))[ui]]
+        self.errors += [(error, UIError(error))[ui]]
 
     @classmethod
     def clear(cls):
@@ -304,6 +311,7 @@ class ErrorViewer(object):
     def get(self):
         return self.errors
 
+
 class WarningViewer(object):
     """
     Keeps a static list of (warning) UIErrors to be displayed on the UI and allows
@@ -311,8 +319,9 @@ class WarningViewer(object):
     """
 
     errors = []
+
     def add(self, error, ui=False):
-        self.errors +=[(error, UIWarning(error))[ui]]
+        self.errors += [(error, UIWarning(error))[ui]]
 
     @classmethod
     def clear(cls):

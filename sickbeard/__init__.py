@@ -527,8 +527,8 @@ TRAKT_API_URL = 'https://api-v2launch.trakt.tv/'
 
 FANART_API_KEY = '9b3afaf26f6241bdb57d6cc6bd798da7'
 
+NOTIFIERS = None
 NEWZNAB_DATA = None
 TORRENTRSS_DATA = None
 
 SHOWS_RECENT = []
-NOTIFIERS = {}

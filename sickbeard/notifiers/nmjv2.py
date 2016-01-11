@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 import logging
 import urllib2
 from xml.dom.minidom import parseString
-from xml.etree.ElementTree import fromstring
+from xml.etree import ElementTree
 
 from tornado import gen
 
@@ -119,16 +119,16 @@ class NMJv2Notifier:
             logging.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
         try:
-            et = fromstring(response1)
+            et = ElementTree.fromstring(response1)
             result1 = et.findtext("returnValue")
         except SyntaxError as e:
-            logging.error("Unable to parse XML returned from the Popcorn Hour: update_scandir, %s" % (e))
+            logging.error("Unable to parse XML returned from the Popcorn Hour: update_scandir, {}".format(e))
             return False
         try:
-            et = fromstring(response2)
+            et = ElementTree.fromstring(response2)
             result2 = et.findtext("returnValue")
         except SyntaxError as e:
-            logging.error("Unable to parse XML returned from the Popcorn Hour: scanner_start, %s" % (e))
+            logging.error("Unable to parse XML returned from the Popcorn Hour: scanner_start, {}".format(e))
             return False
 
         # if the result was a number then consider that an error

@@ -23,7 +23,7 @@ import logging
 import re
 import urllib
 import urllib2
-import xml
+from xml.etree import ElementTree
 
 import common
 import sickbeard
@@ -194,12 +194,12 @@ class PLEXNotifier:
                 req.add_header('Authorization', authheader)
                 req.add_header('X-Plex-Device-Name', 'SiCKRAGE')
                 req.add_header('X-Plex-Product', 'SiCKRAGE Notifier')
-                req.add_header('X-Plex-Client-Identifier', sickbeard.common.USER_AGENT)
+                req.add_header('X-Plex-Client-Identifier', common.USER_AGENT)
                 req.add_header('X-Plex-Version', '1.0')
 
                 try:
                     response = urllib2.urlopen(req)
-                    auth_tree = xml.etree.parse(response)
+                    auth_tree = ElementTree.parse(response)
                     token = auth_tree.findall('.//authentication-token')[0].text
                     token_arg = '?X-Plex-Token=' + token
 
@@ -219,17 +219,17 @@ class PLEXNotifier:
 
                 url = 'http://%s/library/sections%s' % (cur_host, token_arg)
                 try:
-                    xml_tree = xml.etree.parse(urllib.urlopen(url))
+                    xml_tree = ElementTree.parse(urllib.urlopen(url))
                     media_container = xml_tree.getroot()
                 except IOError as e:
-                    logging.warning('PLEX: Error while trying to contact Plex Media Server: ' + e)
+                    logging.warning('PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
                     hosts_failed.append(cur_host)
                     continue
                 except Exception as e:
                     if 'invalid token' in str(e):
                         logging.error('PLEX: Please set TOKEN in Plex settings: ')
                     else:
-                        logging.error('PLEX: Error while trying to contact Plex Media Server: ' + e)
+                        logging.error('PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
                     continue
 
                 sections = media_container.findall('.//Directory')
@@ -264,7 +264,7 @@ class PLEXNotifier:
                     force and urllib.urlopen(url)
                     host_list.append(cur_host)
                 except Exception as e:
-                    logging.warning('PLEX: Error updating library section for Plex Media Server: ' + e)
+                    logging.warning('PLEX: Error updating library section for Plex Media Server: {}'.format(e))
                     hosts_failed.append(cur_host)
 
             if hosts_match:

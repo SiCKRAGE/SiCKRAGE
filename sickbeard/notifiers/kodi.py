@@ -25,7 +25,7 @@ import logging
 import socket
 import urllib
 import urllib2
-import xml
+from xml.etree import ElementTree
 
 from tornado import gen
 
@@ -297,7 +297,7 @@ class KODINotifier:
 
             encSqlXML = urllib.quote(sqlXML, ':\\/<>')
             try:
-                et = xml.etree.fromstring(encSqlXML)
+                et = ElementTree.fromstring(encSqlXML)
             except SyntaxError as e:
                 logging.error("Unable to parse XML returned from KODI: {}".format(e))
                 return False

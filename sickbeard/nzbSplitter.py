@@ -22,8 +22,7 @@ from __future__ import unicode_literals
 import io
 import logging
 import re
-import xml
-from xml.etree.ElementTree import ElementTree, XML, Element
+from xml.etree import ElementTree
 
 import requests
 
@@ -43,7 +42,7 @@ def getSeasonNZBs(name, urlData, season):
     :return: dict of (episode files, xml matches)
     """
     try:
-        showXML = ElementTree(XML(urlData))
+        showXML = ElementTree.parse(urlData)
     except SyntaxError:
         logging.error("Unable to parse the XML of " + name + ", not splitting it")
         return {}, ''
@@ -87,14 +86,14 @@ def getSeasonNZBs(name, urlData, season):
 
 
 def createNZBString(fileElements, xmlns):
-    rootElement = Element("nzb")
+    rootElement = ElementTree.Element("nzb")
     if xmlns:
         rootElement.set("xmlns", xmlns)
 
     for curFile in fileElements:
         rootElement.append(stripNS(curFile, xmlns))
 
-    return xml.etree.tostring(rootElement)
+    return ElementTree.tostring(rootElement)
 
 
 def saveNZB(nzbName, nzbString):

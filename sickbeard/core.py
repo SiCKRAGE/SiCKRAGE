@@ -32,6 +32,7 @@ import traceback
 import webbrowser
 
 import configobj
+from attrdict import AttrDict
 
 import auto_postprocessor
 import sickbeard
@@ -82,7 +83,6 @@ from trakt_searcher import TraktSearcher
 from tv import TVShow
 from updater import Updater
 from webserver import SRWebServer
-
 
 def initialize(console_logging=True):
     if not sickbeard.INITIALIZED:
@@ -240,7 +240,7 @@ def initialize(console_logging=True):
             sickbeard.TIME_PRESET = sickbeard.TIME_PRESET_W_SECONDS.replace(":%S", "")
 
             # initialize notifiers
-            sickbeard.NOTIFIERS = dict(
+            sickbeard.NOTIFIERS = AttrDict(
                     libnotify=LibnotifyNotifier(),
                     kodi_notifier=KODINotifier(),
                     plex_notifier=PLEXNotifier(),

@@ -23,7 +23,7 @@ import re
 import telnetlib
 import urllib
 import urllib2
-from xml.etree.ElementTree import fromstring
+from xml.etree import ElementTree
 
 import sickbeard
 
@@ -157,15 +157,15 @@ class NMJNotifier:
 
         # try to parse the resulting XML
         try:
-            et = fromstring(response)
+            et = ElementTree.fromstring(response)
             result = et.findtext("returnValue")
         except SyntaxError as e:
-            logging.error("Unable to parse XML returned from the Popcorn Hour: %s" % (e))
+            logging.error("Unable to parse XML returned from the Popcorn Hour: {}".format(e))
             return False
 
         # if the result was a number then consider that an error
         if int(result) > 0:
-            logging.error("Popcorn Hour returned an errorcode: %s" % (result))
+            logging.error("Popcorn Hour returned an errorcode: {}".format(result))
             return False
         else:
             logging.info("NMJ started background scan")
