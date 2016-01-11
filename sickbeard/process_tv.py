@@ -546,7 +546,7 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
             continue
 
         try:
-            processor = postprocessor.PostProcessor(cur_video_file_path, nzbName, process_method, is_priority)
+            processor = postProcessor.PostProcessor(cur_video_file_path, nzbName, process_method, is_priority)
             result.result = processor.process
             process_fail_message = ""
         except EpisodePostProcessingFailedException as e:
