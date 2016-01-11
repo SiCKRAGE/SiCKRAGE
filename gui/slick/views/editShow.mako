@@ -1,7 +1,6 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickbeard
-    import adba
     import common
     from common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from common import statusStrings
