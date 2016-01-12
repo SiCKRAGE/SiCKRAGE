@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+
 # Author: echel0n <sickrage.tv@gmail.com>
 # URL: http://www.github.com/sickragetv/sickrage/
 #
@@ -18,22 +18,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
-from __future__ import unicode_literals
-
-import os.path
-import sys
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from __future__ import print_function, unicode_literals
 
 import unittest
 
-from tests import SiCKRAGETestCase
-
 import certifi
 import requests
-import sickbeard.providers as providers
+
+providers
+from tests import SiCKRAGETestCase
 
 
 class SNI_Tests(SiCKRAGETestCase): pass

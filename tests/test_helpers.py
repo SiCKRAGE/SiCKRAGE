@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+
 # Author: echel0n <sickrage.tv@gmail.com>
 # URL: http://www.github.com/sickragetv/sickrage/
 #
@@ -20,17 +20,11 @@
 
 from __future__ import unicode_literals
 
-import os.path
-import sys
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import unittest
 
-from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
+from sickrage.core.helpers import remove_non_release_groups
+from tests import SiCKRAGETestCase
 
-from sickbeard.helpers import remove_non_release_groups
 
 test_result = 'Show.Name.S01E01.HDTV.x264-RLSGROUP'
 test_cases = {

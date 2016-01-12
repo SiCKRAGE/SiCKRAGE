@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+
 # Author: echel0n <sickrage.tv@gmail.com>
 # URL: http://www.github.com/sickragetv/sickrage/
 #
@@ -18,37 +18,29 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import print_function, unicode_literals
 
+import os
 import os.path
-import sys
-
-from helper import encodingInit
-
-import core
-import helpers
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import unittest
 
 from configobj import ConfigObj
 
-import sickbeard
-
-import db
-from sickbeard import tvcache
-from sickbeard import providers
-from sickbeard.databases import mainDB, cache_db, failed_db
-from sickbeard.tv import TVEpisode
-from sickbeard.webserver import SRWebServer
-from sickbeard.logger import SRLogger
+import sickrage
+from sickrage.core import removetree
+from sickrage.core.caches import tv_cache
+from sickrage.core.config import Config
+from sickrage.core.databases import cache_db, failed_db, main_db
+from sickrage.core.helpers.encoding import encodingInit
+from sickrage.core.logger import SRLogger
+from sickrage.core.tv import TV
+from sickrage.core.webserver import SRWebServer
 
 # =================
 # test globals
 # =================
+from sickrage.providers import NewznabProvider
+
 TESTALL = False
 TESTSKIPPED = ['test_issue_submitter', 'test_ssl_sni']
 TESTDIR = os.path.abspath(os.path.dirname(__file__))
@@ -68,73 +60,72 @@ SHOWDIR = os.path.join(TESTDIR, SHOWNAME + " final")
 # prepare env functions
 # =================
 def createTestLogFolder():
-    if not os.path.isdir(sickbeard.LOG_DIR):
-        os.mkdir(sickbeard.LOG_DIR)
+    if not os.path.isdir(sickrage.LOG_DIR):
+        os.mkdir(sickrage.LOG_DIR)
 
 
 def createTestCacheFolder():
-    if not os.path.isdir(sickbeard.CACHE_DIR):
-        os.mkdir(sickbeard.CACHE_DIR)
+    if not os.path.isdir(sickrage.CACHE_DIR):
+        os.mkdir(sickrage.CACHE_DIR)
 
 
-# call env functions at appropriate time during sickbeard var setup
+# call env functions at appropriate time during sickrage var setup
 encodingInit()
 
 # =================
-# sickbeard globals
+# sickrage globals
 # =================
-sickbeard.SYS_ENCODING = 'UTF-8'
+sickrage.SYS_ENCODING = 'UTF-8'
 
-sickbeard.showList = []
-sickbeard.QUALITY_DEFAULT = 4  # hdtv
-sickbeard.FLATTEN_FOLDERS_DEFAULT = 0
+sickrage.showList = []
+sickrage.QUALITY_DEFAULT = 4  # hdtv
+sickrage.FLATTEN_FOLDERS_DEFAULT = 0
 
-sickbeard.NAMING_PATTERN = ''
-sickbeard.NAMING_ABD_PATTERN = ''
-sickbeard.NAMING_SPORTS_PATTERN = ''
-sickbeard.NAMING_MULTI_EP = 1
+sickrage.NAMING_PATTERN = ''
+sickrage.NAMING_ABD_PATTERN = ''
+sickrage.NAMING_SPORTS_PATTERN = ''
+sickrage.NAMING_MULTI_EP = 1
 
-sickbeard.PROVIDER_ORDER = ["sick_beard_index"]
-sickbeard.newznabProviderList = providers.NewznabProvider.getProviderList(
-        providers.NewznabProvider.getDefaultProviders())
+sickrage.PROVIDER_ORDER = ["sick_beard_index"]
+sickrage.newznabProviderList = NewznabProvider.getProviderList(NewznabProvider.getDefaultProviders())
 
-sickbeard.PROG_DIR = os.path.abspath(os.path.join(TESTDIR, '..'))
-sickbeard.DATA_DIR = TESTDIR
-sickbeard.CONFIG_FILE = os.path.join(sickbeard.DATA_DIR, "config.ini")
-sickbeard.CFG = ConfigObj(sickbeard.CONFIG_FILE)
-sickbeard.TV_DOWNLOAD_DIR = FILEDIR
-sickbeard.GUI_NAME = "slick"
-sickbeard.HTTPS_CERT = "server.crt"
-sickbeard.HTTPS_KEY = "server.key"
-sickbeard.WEB_USERNAME = "sickrage"
-sickbeard.WEB_PASSWORD = "sickrage"
-sickbeard.WEB_COOKIE_SECRET = "sickrage"
-sickbeard.WEB_ROOT = ""
-sickbeard.WEB_SERVER = None
-sickbeard.CPU_PRESET = "NORMAL"
+sickrage.PROG_DIR = os.path.abspath(os.path.join(TESTDIR, '..'))
+sickrage.DATA_DIR = TESTDIR
+sickrage.CONFIG_FILE = os.path.join(sickrage.DATA_DIR, "config.ini")
+sickrage.CFG = ConfigObj(sickrage.CONFIG_FILE)
+sickrage.TV_DOWNLOAD_DIR = FILEDIR
+sickrage.GUI_NAME = "slick"
+sickrage.HTTPS_CERT = "server.crt"
+sickrage.HTTPS_KEY = "server.key"
+sickrage.WEB_USERNAME = "sickrage"
+sickrage.WEB_PASSWORD = "sickrage"
+sickrage.WEB_COOKIE_SECRET = "sickrage"
+sickrage.WEB_ROOT = ""
+sickrage.WEB_SERVER = None
+sickrage.CPU_PRESET = "NORMAL"
 
-sickbeard.GIT_BRANCH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'branch', '')
-sickbeard.CUR_COMMIT_HASH = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'cur_commit_hash', '')
-sickbeard.GIT_USERNAME = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'git_username', '')
-sickbeard.GIT_PASSWORD = sickbeard.config.check_setting_str(sickbeard.CFG, 'General', 'git_password', '',
+sickrage.GIT_BRANCH = Config.check_setting_str(sickrage.CFG, 'General', 'branch', '')
+sickrage.CUR_COMMIT_HASH = Config.check_setting_str(sickrage.CFG, 'General', 'cur_commit_hash', '')
+sickrage.GIT_USERNAME = Config.check_setting_str(sickrage.CFG, 'General', 'git_username', '')
+sickrage.GIT_PASSWORD = Config.check_setting_str(sickrage.CFG, 'General', 'git_password', '',
                                                             censor_log=True)
 
-sickbeard.CACHE_DIR = os.path.join(TESTDIR, 'cache')
+sickrage.CACHE_DIR = os.path.join(TESTDIR, 'cache')
 createTestCacheFolder()
 
-sickbeard.LOG_DIR = os.path.join(TESTDIR, 'Logs')
-sickbeard.LOG_FILE = os.path.join(sickbeard.LOG_DIR, 'sickrage.log')
-sickbeard.LOG_NR = 5
-sickbeard.LOG_SIZE = 1048576
+sickrage.LOG_DIR = os.path.join(TESTDIR, 'Logs')
+sickrage.LOG_FILE = os.path.join(sickrage.LOG_DIR, 'sickrage.log')
+sickrage.LOG_NR = 5
+sickrage.LOG_SIZE = 1048576
 
 createTestLogFolder()
 
 SRLogger.consoleLogging=False
 SRLogger.fileLogging=True
 SRLogger.debugLogging=True
-SRLogger.logFile=sickbeard.LOG_FILE
-SRLogger.logSize=sickbeard.LOG_SIZE
-SRLogger.logNr=sickbeard.LOG_NR
+SRLogger.logFile = sickrage.LOG_FILE
+SRLogger.logSize = sickrage.LOG_SIZE
+SRLogger.logNr = sickrage.LOG_NR
 SRLogger.initialize()
 
 
@@ -145,8 +136,8 @@ def _dummy_saveConfig():
     return True
 
 
-# this overrides the sickbeard save_config which gets called during a db upgrade
-core.save_config = _dummy_saveConfig
+# this overrides the sickrage save_config which gets called during a db upgrade
+Config.save_config = _dummy_saveConfig
 
 
 # the real one tries to contact tvdb just stop it from getting more info on the ep
@@ -154,7 +145,7 @@ def _fake_specifyEP(self, season, episode):
     pass
 
 
-TVEpisode.specifyEpisode = _fake_specifyEP
+TV.TVEpisode.specifyEpisode = _fake_specifyEP
 
 
 # =================
@@ -168,7 +159,7 @@ class SiCKRAGETestCase(unittest.TestCase):
 
 class SiCKRAGETestDBCase(SiCKRAGETestCase):
     def setUp(self, web=False):
-        sickbeard.showList = []
+        sickrage.showList = []
         setUp_test_db()
         setUp_test_episode_file()
         setUp_test_show_dir()
@@ -176,7 +167,7 @@ class SiCKRAGETestDBCase(SiCKRAGETestCase):
             setUp_test_web_server()
 
     def tearDown(self, web=False):
-        sickbeard.showList = []
+        sickrage.showList = []
         tearDown_test_db()
         tearDown_test_episode_file()
         tearDown_test_show_dir()
@@ -184,14 +175,14 @@ class SiCKRAGETestDBCase(SiCKRAGETestCase):
             tearDown_test_web_server()
 
 
-class TestDBConnection(db.DBConnection, object):
+class TestDBConnection(main_db.MainDB(), object):
     def __init__(self, filename=TESTDBNAME):
         super(TestDBConnection, self).__init__(os.path.join(TESTDIR, filename))
 
 
 class TestCacheDBConnection(TestDBConnection, object):
     def __init__(self, providerName):
-        db.DBConnection.__init__(self, os.path.join(TESTDIR, TESTCACHEDBNAME))
+        super(TestCacheDBConnection, self).__init__(os.path.join(TESTDIR, TESTCACHEDBNAME))
 
         # Create the table if it's not already there
         try:
@@ -230,8 +221,8 @@ class TestCacheDBConnection(TestDBConnection, object):
 
 
 # this will override the normal db connection
-db.DBConnection = TestDBConnection
-tvcache.CacheDBConnection = TestCacheDBConnection
+main_db.MainDB = TestDBConnection
+tv_cache.CacheDBConnection = TestCacheDBConnection
 
 
 # =================
@@ -241,16 +232,16 @@ def setUp_test_db():
     """upgrades the db to the latest version
     """
     # upgrading the db
-    db.upgradeDatabase(db.DBConnection(), mainDB.InitialSchema)
+    main_db.MainDB().InitialSchema().upgrade()
 
     # fix up any db problems
-    db.sanityCheckDatabase(db.DBConnection(), mainDB.MainSanityCheck)
+    main_db.MainDB().SanityCheck()
 
     # and for cachedb too
-    db.upgradeDatabase(db.DBConnection("cache.db"), cache_db.InitialSchema)
+    cache_db.CacheDB().InitialSchema().upgrade()
 
     # and for faileddb too
-    db.upgradeDatabase(db.DBConnection("failed.db"), failed_db.InitialSchema)
+    failed_db.FailedDB().InitialSchema().upgrade()
 
 
 def tearDown_test_db():
@@ -279,7 +270,7 @@ def setUp_test_episode_file():
 
 def tearDown_test_episode_file():
     if os.path.exists(FILEDIR):
-        helpers.removetree(FILEDIR)
+        removetree(FILEDIR)
 
 
 def setUp_test_show_dir():
@@ -289,41 +280,41 @@ def setUp_test_show_dir():
 
 def tearDown_test_show_dir():
     if os.path.exists(SHOWDIR):
-        helpers.removetree(SHOWDIR)
+        removetree(SHOWDIR)
 
 
 def setUp_test_web_server():
-    sickbeard.WEB_SERVER = SRWebServer(**{
-        'port': int(sickbeard.WEB_PORT),
-        'host': sickbeard.WEB_HOST,
-        'data_root': sickbeard.DATA_DIR,
-        'gui_root': sickbeard.GUI_DIR,
-        'web_root': sickbeard.WEB_ROOT,
-        'log_dir': sickbeard.WEB_LOG or sickbeard.LOG_DIR,
-        'username': sickbeard.WEB_USERNAME,
-        'password': sickbeard.WEB_PASSWORD,
-        'enable_https': sickbeard.ENABLE_HTTPS,
-        'handle_reverse_proxy': sickbeard.HANDLE_REVERSE_PROXY,
-        'https_cert': os.path.join(sickbeard.PROG_DIR, sickbeard.HTTPS_CERT),
-        'https_key': os.path.join(sickbeard.PROG_DIR, sickbeard.HTTPS_KEY),
-        'daemonize': sickbeard.DAEMONIZE,
-        'pidfile': sickbeard.PIDFILE,
+    sickrage.WEB_SERVER = SRWebServer(**{
+        'port': int(sickrage.WEB_PORT),
+        'host': sickrage.WEB_HOST,
+        'data_root': sickrage.DATA_DIR,
+        'gui_root': sickrage.GUI_DIR,
+        'web_root': sickrage.WEB_ROOT,
+        'log_dir': sickrage.WEB_LOG or sickrage.LOG_DIR,
+        'username': sickrage.WEB_USERNAME,
+        'password': sickrage.WEB_PASSWORD,
+        'enable_https': sickrage.ENABLE_HTTPS,
+        'handle_reverse_proxy': sickrage.HANDLE_REVERSE_PROXY,
+        'https_cert': os.path.join(sickrage.ROOT_DIR, sickrage.HTTPS_CERT),
+        'https_key': os.path.join(sickrage.ROOT_DIR, sickrage.HTTPS_KEY),
+        'daemonize': sickrage.DAEMONIZE,
+        'pidfile': sickrage.PIDFILE,
         'stop_timeout': 3,
-        'nolaunch': sickbeard.WEB_NOLAUNCH
+        'nolaunch': sickrage.WEB_NOLAUNCH
     }
-                                       ).start()
+                                      ).start()
 
 
 def tearDown_test_web_server():
-    if sickbeard.WEB_SERVER:
-        sickbeard.WEB_SERVER.shutDown()
+    if sickrage.WEB_SERVER:
+        sickrage.WEB_SERVER.shutDown()
 
         try:
-            sickbeard.WEB_SERVER.join(10)
+            sickrage.WEB_SERVER.join(10)
         except:
             pass
 
-        sickbeard.WEB_SERVER = None
+        sickrage.WEB_SERVER = None
 
 def load_tests(loader, tests, pattern):
     global TESTALL

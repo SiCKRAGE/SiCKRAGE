@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+
 # Author: echel0n <sickrage.tv@gmail.com>
 # URL: http://www.github.com/sickragetv/sickrage/
 #
@@ -20,20 +20,14 @@
 
 from __future__ import unicode_literals
 
-import os.path
-import sys
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import unittest
-
-from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
-
 import urlparse
+
 import requests
 from bs4 import BeautifulSoup
-from sickbeard.helpers import getURL
+
+from sickrage.core.helpers import getURL
+from tests import SiCKRAGETestDBCase
 
 
 class TorrentBasicTests(SiCKRAGETestDBCase):

@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+
 # Author: echel0n <sickrage.tv@gmail.com>
 # URL: http://www.github.com/sickragetv/sickrage/
 #
@@ -22,12 +22,13 @@ from __future__ import unicode_literals
 
 import unittest
 
-import search
-import sickbeard
-from common import HD, SD, WANTED
-from sickbeard import providers
+import sickrage
+from sickrage.core.common import HD, SD, WANTED
+from sickrage.core.search import searchProviders
+from sickrage.core.tv import TV
+from sickrage.providers import sortedProviderDict
 from tests import SiCKRAGETestDBCase
-from tv import TVEpisode, TVShow
+
 
 tests = {"Dexter": {"a": 1, "q": HD, "s": 5, "e": [7], "b": 'Dexter.S05E07.720p.BluRay.X264-REWARD',
                     "i": ['Dexter.S05E07.720p.BluRay.X264-REWARD', 'Dexter.S05E07.720p.X264-REWARD']},
@@ -60,7 +61,7 @@ class SearchTest(SiCKRAGETestDBCase):
         return True
 
     def __init__(self, something):
-        for provider in providers.sortedProviderDict().values():
+        for provider in sortedProviderDict().values():
             provider.getURL = self._fake_getURL
             # provider.isActive = self._fake_isActive
 
@@ -72,19 +73,19 @@ def test_generator(tvdbdid, show_name, curData, forceSearch):
     def test(self):
         global searchItems
         searchItems = curData[b"i"]
-        show = TVShow(1, tvdbdid)
+        show = TV.TVShow(1, tvdbdid)
         show.name = show_name
         show.quality = curData[b"q"]
         show.saveToDB()
-        sickbeard.showList.append(show)
+        sickrage.showList.append(show)
         episode = None
 
         for epNumber in curData[b"e"]:
-            episode = TVEpisode(show, curData[b"s"], epNumber)
+            episode = TV.TVEpisode(show, curData[b"s"], epNumber)
             episode.status = WANTED
             episode.saveToDB()
 
-        bestResult = search.searchProviders(show, episode.episode, forceSearch)
+        bestResult = searchProviders(show, episode.episode, forceSearch)
         if not bestResult:
             self.assertEqual(curData[b"b"], bestResult)
         self.assertEqual(curData[b"b"], bestResult.name)  # first is expected, second is choosen one

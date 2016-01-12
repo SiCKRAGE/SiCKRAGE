@@ -6,19 +6,17 @@
 ######################
 /contributing.md
 /README.md
+/README.txt
 
 #  SR User Related   #
 ######################
+*.db
+*.ini
 /cache/
 /Logs/
 /data/
 /restore/
 /backup*/
-/cache.db*
-/config.ini*
-/sickbeard.db*
-/sickrage.db*
-/failed.db*
 /autoProcessTV.cfg
 /server.crt
 /server.key
@@ -69,4 +67,4 @@ Thumbs.db
 ######################
 bower_components
 node_modules
-gui/**/_bower.js
+sickrage/core/webserver/gui/**/_bower.js

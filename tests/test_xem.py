@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+
 # Author: echel0n <sickrage.tv@gmail.com>
 # URL: http://www.github.com/sickragetv/sickrage/
 #
@@ -20,18 +20,14 @@
 
 from __future__ import unicode_literals
 
-import os.path
-import sys
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-import unittest
 import re
+import unittest
 
-from tests import SiCKRAGETestCase, SiCKRAGETestDBCase, db
-import sickbeard
-from sickbeard.tv import TVShow
+import core.databases
+
+import sickrage
+from sickrage.core.tv import TVShow
+from tests import SiCKRAGETestDBCase
 
 
 class XEMBasicTests(SiCKRAGETestDBCase):
@@ -40,13 +36,13 @@ class XEMBasicTests(SiCKRAGETestDBCase):
         Populates the showList with shows from the database
         """
 
-        myDB = db.DBConnection()
+        myDB = core.databases.DBConnection()
         sqlResults = myDB.select("SELECT * FROM tv_shows")
 
         for sqlShow in sqlResults:
             try:
                 curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
-                sickbeard.showList.append(curShow)
+                sickrage.showList.append(curShow)
             except Exception:
                 pass
 
@@ -55,13 +51,13 @@ class XEMBasicTests(SiCKRAGETestDBCase):
         Populates the showList with shows from the database
         """
 
-        myDB = db.DBConnection()
+        myDB = core.databases.DBConnection()
         sqlResults = myDB.select("SELECT * FROM tv_shows")
 
         for sqlShow in sqlResults:
             try:
                 curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
-                sickbeard.showList.append(curShow)
+                sickrage.showList.append(curShow)
             except Exception as e:
                 print "There was an error creating the show"
 

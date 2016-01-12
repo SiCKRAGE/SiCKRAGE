@@ -1,0 +1,4 @@
+include *.txt
+recursive-include gui *
+recursive-include contrib *
+recursive-include runscripts *

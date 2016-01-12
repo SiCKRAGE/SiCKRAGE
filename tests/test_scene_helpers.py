@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+
 # Author: echel0n <sickrage.tv@gmail.com>
 # URL: http://www.github.com/sickragetv/sickrage/
 #
@@ -18,30 +18,26 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
-from __future__ import unicode_literals
-
-import os.path
-import sys
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib')))
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from __future__ import print_function, unicode_literals
 
 import unittest
 
+import sickrage
+from sickrage.core.common import countryList
+from sickrage.core.databases import cache_db
+from sickrage.core.helpers import show_names
+from sickrage.core.scene_exceptions import exceptionsCache, retrieve_exceptions, get_scene_exceptions, \
+    get_scene_exception_by_name
+from sickrage.core.tv import TVShow as Show
 from tests import SiCKRAGETestDBCase
-
-from sickbeard import show_name_helpers, scene_exceptions, common, name_cache
-import db
-from sickbeard.tv import TVShow as Show
 
 
 class SceneTests(SiCKRAGETestDBCase):
     def _test_sceneToNormalShowNames(self, name, expected):
-        result = show_name_helpers.sceneToNormalShowNames(name)
+        result = show_names.sceneToNormalShowNames(name)
         self.assertTrue(len(set(expected).intersection(set(result))) == len(expected))
 
-        dot_result = show_name_helpers.sceneToNormalShowNames(name.replace(' ', '.'))
+        dot_result = show_names.sceneToNormalShowNames(name.replace(' ', '.'))
         dot_expected = [x.replace(' ', '.') for x in expected]
         self.assertTrue(len(set(dot_expected).intersection(set(dot_result))) == len(dot_expected))
 
@@ -49,15 +45,15 @@ class SceneTests(SiCKRAGETestDBCase):
         s = Show(1, indexerid)
         s.name = name
 
-        result = show_name_helpers.allPossibleShowNames(s)
+        result = show_names.allPossibleShowNames(s)
         self.assertTrue(len(set(expected).intersection(set(result))) == len(expected))
 
     def _test_filterBadReleases(self, name, expected):
-        result = show_name_helpers.filterBadReleases(name)
+        result = show_names.filterBadReleases(name)
         self.assertEqual(result, expected)
 
     def _test_isGoodName(self, name, show):
-        self.assertTrue(show_name_helpers.isGoodResult(name, show))
+        self.assertTrue(show_names.isGoodResult(name, show))
 
     def test_isGoodName(self):
         listOfcases = [('Show.Name.S01E02.Test-Test', 'Show/Name'),
@@ -93,11 +89,10 @@ class SceneTests(SiCKRAGETestDBCase):
         self._test_sceneToNormalShowNames('Show Name YA', ['Show Name YA'])
 
     def test_allPossibleShowNames(self):
-        scene_exceptions.exceptionsCache[-1] = ['Exception Test']
-        myDB = db.DBConnection("cache.db")
-        myDB.action("INSERT INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?)",
+        exceptionsCache[-1] = ['Exception Test']
+        cache_db.CacheDB().action("INSERT INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?)",
                     [-1, 'Exception Test', -1])
-        common.countryList['Full Country Name'] = 'FCN'
+        countryList['Full Country Name'] = 'FCN'
 
         self._test_allPossibleShowNames('Show Name', expected=['Show Name'])
         self._test_allPossibleShowNames('Show Name', -1, expected=['Show Name', 'Exception Test'])
@@ -119,36 +114,35 @@ class SceneTests(SiCKRAGETestDBCase):
 class SceneExceptionTestCase(SiCKRAGETestDBCase):
     def setUp(self, **kwargs):
         super(SceneExceptionTestCase, self).setUp()
-        scene_exceptions.retrieve_exceptions()
+        retrieve_exceptions()
 
     def tearDown(self, **kwargs):
         super(SceneExceptionTestCase, self).tearDown()
 
     def test_sceneExceptionsEmpty(self):
-        self.assertEqual(scene_exceptions.get_scene_exceptions(0), [])
+        self.assertEqual(get_scene_exceptions(0), [])
 
     def test_sceneExceptionsBabylon5(self):
-        self.assertEqual(sorted(scene_exceptions.get_scene_exceptions(70726)), ['Babylon 5', 'Babylon5'])
+        self.assertEqual(sorted(get_scene_exceptions(70726)), ['Babylon 5', 'Babylon5'])
 
     def test_sceneExceptionByName(self):
-        self.assertEqual(scene_exceptions.get_scene_exception_by_name('Babylon5'), (70726, -1))
-        self.assertEqual(scene_exceptions.get_scene_exception_by_name('babylon 5'), (70726, -1))
-        self.assertEqual(scene_exceptions.get_scene_exception_by_name('Carlos 2010'), (164451, -1))
+        self.assertEqual(get_scene_exception_by_name('Babylon5'), (70726, -1))
+        self.assertEqual(get_scene_exception_by_name('babylon 5'), (70726, -1))
+        self.assertEqual(get_scene_exception_by_name('Carlos 2010'), (164451, -1))
 
     def test_sceneExceptionByNameEmpty(self):
-        self.assertEqual(scene_exceptions.get_scene_exception_by_name('nothing useful'), (None, None))
+        self.assertEqual(get_scene_exception_by_name('nothing useful'), (None, None))
 
     def test_sceneExceptionsResetNameCache(self):
         # clear the exceptions
-        myDB = db.DBConnection("cache.db")
-        myDB.action("DELETE FROM scene_exceptions")
+        cache_db.CacheDB().action("DELETE FROM scene_exceptions")
 
         # put something in the cache
-        name_cache.addNameToCache('Cached Name', 0)
+        sickrage.nameCache.addNameToCache('Cached Name', 0)
 
         # updating should not clear the cache this time since our exceptions didn't change
-        scene_exceptions.retrieve_exceptions()
-        self.assertEqual(name_cache.retrieveNameFromCache('Cached Name'), 0)
+        retrieve_exceptions()
+        self.assertEqual(sickrage.nameCache.retrieveNameFromCache('Cached Name'), 0)
 
 
 if __name__ == '__main__':
