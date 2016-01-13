@@ -125,21 +125,21 @@
                     run_time = cur_result[b'runtime']
 
                     if int(cur_result[b'paused']) and not sickrage.COMING_EPS_DISPLAY_PAUSED:
-        continue
+                    continue
 
                     cur_ep_airdate = cur_result[b'localtime'].date()
 
                     if run_time:
-        cur_ep_enddate = cur_result[b'localtime'] + datetime.timedelta(minutes = run_time)
-        if cur_ep_enddate < today:
-            show_div = 'listing-overdue'
-        elif cur_ep_airdate >= next_week.date():
-            show_div = 'listing-toofar'
-        elif cur_ep_airdate >= today.date() and cur_ep_airdate < next_week.date():
-            if cur_ep_airdate == today.date():
-                show_div = 'listing-current'
-            else:
-                show_div = 'listing-default'
+                    cur_ep_enddate = cur_result[b'localtime'] + datetime.timedelta(minutes = run_time)
+                    if cur_ep_enddate < today:
+                    show_div = 'listing-overdue'
+                    elif cur_ep_airdate >= next_week.date():
+                    show_div = 'listing-toofar'
+                    elif cur_ep_airdate >= today.date() and cur_ep_airdate < next_week.date():
+                    if cur_ep_airdate == today.date():
+                    show_div = 'listing-current'
+                    else:
+                    show_div = 'listing-default'
                 %>
 
                 <tr class="${show_div}">
