@@ -123,7 +123,7 @@ class BoxcarNotifier:
         if sickrage.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyBoxcar(title, ep_name + ": " + lang)
 
-    def notify_git_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.USE_BOXCAR:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]

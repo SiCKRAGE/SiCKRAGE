@@ -869,7 +869,7 @@ class CMD_EpisodeSearch(ApiCall):
 
         # make a queue item for it and put it on the queue
         ep_queue_item = ManualSearchQueueItem(showObj, epObj)
-        sickrage.searchQueue.add_item(ep_queue_item)  # @UndefinedVariable
+        sickrage.SEARCHQUEUE.add_item(ep_queue_item)  # @UndefinedVariable
 
         # wait until the queue item tells us whether it worked or not
         while ep_queue_item.success == None:  # @UndefinedVariable
@@ -991,7 +991,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         if start_backlog:
             for season, segment in segments.iteritems():
                 cur_backlog_queue_item = BacklogQueueItem(showObj, segment)
-                sickrage.searchQueue.add_item(cur_backlog_queue_item)  # @UndefinedVariable
+                sickrage.SEARCHQUEUE.add_item(cur_backlog_queue_item)  # @UndefinedVariable
 
                 logging.info("API :: Starting backlog for " + showObj.name + " season " + str(
                         season) + " because some episodes were set to WANTED")
@@ -1376,7 +1376,7 @@ class CMD_SiCKRAGE(ApiCall):
 
     def run(self):
         """ dGet miscellaneous information about SiCKRAGE """
-        data = {"sr_version": sickrage.GIT_BRANCH, "api_version": self.version,
+        data = {"sr_version": sickrage.VERSION, "api_version": self.version,
                 "api_commands": sorted(self.function_mapper.keys())}
         return _responds(RESULT_SUCCESS, data)
 
@@ -1452,20 +1452,20 @@ class CMD_SiCKRAGECheckVersion(ApiCall):
         super(CMD_SiCKRAGECheckVersion, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
-        needs_update = sickrage.VersionUpdater.check_for_new_version()
+        needs_update = sickrage.VERSIONUPDATER.check_for_new_version()
 
         data = {
             "current_version": {
-                "branch": sickrage.VersionUpdater.get_branch,
-                "commit": sickrage.VersionUpdater.updater.get_cur_commit_hash,
-                "version": sickrage.VersionUpdater.updater.get_cur_version,
+                "branch": sickrage.VERSIONUPDATER.get_branch,
+                "commit": sickrage.VERSIONUPDATER.updater.get_cur_commit_hash,
+                "version": sickrage.VERSIONUPDATER.updater.get_cur_version,
             },
             "latest_version": {
-                "branch": sickrage.VersionUpdater.get_branch,
-                "commit": sickrage.VersionUpdater.updater.get_newest_commit_hash,
-                "version": sickrage.VersionUpdater.updater.get_newest_version,
+                "branch": sickrage.VERSIONUPDATER.get_branch,
+                "commit": sickrage.VERSIONUPDATER.updater.get_newest_commit_hash,
+                "version": sickrage.VERSIONUPDATER.updater.get_newest_version,
             },
-            "commits_offset": sickrage.VersionUpdater.updater.get_num_commits_behind,
+            "commits_offset": sickrage.VERSIONUPDATER.updater.get_num_commits_behind,
             "needs_update": needs_update,
         }
 
@@ -1485,9 +1485,9 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
         """ Get information about the scheduler """
         sqlResults = main_db.MainDB(row_type='dict').select("SELECT last_backlog FROM info")
 
-        backlogPaused = sickrage.searchQueue.is_backlog_paused()  # @UndefinedVariable
-        backlogRunning = sickrage.searchQueue.is_backlog_in_progress()  # @UndefinedVariable
-        nextBacklog = sickrage.backlogSearcher.nextRun().strftime(dateFormat).decode(sickrage.SYS_ENCODING)
+        backlogPaused = sickrage.SEARCHQUEUE.is_backlog_paused()  # @UndefinedVariable
+        backlogRunning = sickrage.SEARCHQUEUE.is_backlog_in_progress()  # @UndefinedVariable
+        nextBacklog = sickrage.BACKLOGSEARCHER.nextRun().strftime(dateFormat).decode(sickrage.SYS_ENCODING)
 
         data = {"backlog_is_paused": int(backlogPaused), "backlog_is_running": int(backlogRunning),
                 "last_backlog": _ordinal_to_dateForm(sqlResults[0][b"last_backlog"]),
@@ -1612,10 +1612,10 @@ class CMD_SiCKRAGEPauseBacklog(ApiCall):
     def run(self):
         """ Pause or unpause the backlog search """
         if self.pause:
-            sickrage.searchQueue.pause_backlog()  # @UndefinedVariable
+            sickrage.SEARCHQUEUE.pause_backlog()  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg="Backlog paused")
         else:
-            sickrage.searchQueue.unpause_backlog()  # @UndefinedVariable
+            sickrage.SEARCHQUEUE.unpause_backlog()  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg="Backlog unpaused")
 
 
@@ -1889,9 +1889,9 @@ class CMD_SiCKRAGEUpdate(ApiCall):
         super(CMD_SiCKRAGEUpdate, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
-        if sickrage.VersionUpdater.check_for_new_version():
-            if sickrage.VersionUpdater.run_backup_if_safe():
-                sickrage.VersionUpdater.update()
+        if sickrage.VERSIONUPDATER.check_for_new_version():
+            if sickrage.VERSIONUPDATER.run_backup_if_safe():
+                sickrage.VERSIONUPDATER.update()
 
                 return _responds(RESULT_SUCCESS, msg="SiCKRAGE is updating ...")
 
@@ -2078,7 +2078,7 @@ class CMD_ShowAddExisting(ApiCall):
         if iqualityID or aqualityID:
             newQuality = Quality.combineQualities(iqualityID, aqualityID)
 
-        sickrage.showQueue.addShow(
+        sickrage.SHOWQUEUE.addShow(
                 int(indexer), int(self.indexerid), self.location, default_status=sickrage.STATUS_DEFAULT,
                 quality=newQuality, flatten_folders=int(self.flatten_folders), subtitles=self.subtitles,
                 default_status_after=sickrage.STATUS_DEFAULT_AFTER, archive=self.archive_firstmatch
@@ -2249,7 +2249,7 @@ class CMD_ShowAddNew(ApiCall):
             else:
                 chmodAsParent(showPath)
 
-        sickrage.showQueue.addShow(
+        sickrage.SHOWQUEUE.addShow(
                 int(indexer), int(self.indexerid), showPath, default_status=newStatus, quality=newQuality,
                 flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime,
                 scene=self.scene, default_status_after=default_ep_status_after, archive=self.archive_firstmatch
@@ -2842,7 +2842,7 @@ class CMD_ShowUpdate(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickrage.showQueue.updateShow(showObj, True)  # @UndefinedVariable
+            sickrage.SHOWQUEUE.updateShow(showObj, True)  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
             logging.debug("API::Unable to update show: {0}".format(str(e)))

@@ -1,7 +1,8 @@
-import core.databases<%inherit file="/layouts/main.mako"/>
+<%inherit file="/layouts/main.mako"/>
 <%!
     import sys, os
     import sickrage
+    from sickrage.core.databases import dbFilename
     from sickrage.core.helpers import anon_url
 %>
 <%block name="content">
@@ -26,7 +27,7 @@ import core.databases<%inherit file="/layouts/main.mako"/>
 <table class="infoTable" cellspacing="1" border="0" cellpadding="0" width="100%">
     <tr><td class="infoTableHeader">SR Version: </td><td class="infoTableCell">
         % if sickrage.VERSION_NOTIFY:
-            BRANCH: (${sickrage.GIT_BRANCH}) / COMMIT: (${sickrage.CUR_COMMIT_HASH}) <!-- &ndash; build.date //--><br>
+            BRANCH: (${sickrage.VERSION}) / COMMIT: (${sickrage.CUR_COMMIT_HASH}) <!-- &ndash; build.date //--><br>
 % else:
         You don't have version checking turned on. Please turn on "Check for Update" in Config > General.<br>
 % endif
@@ -59,7 +60,7 @@ import core.databases<%inherit file="/layouts/main.mako"/>
     </tr>
     <tr>
         <td class="infoTableHeader">SR Database:</td>
-        <td class="infoTableCell">${core.databases.dbFilename()}</td>
+        <td class="infoTableCell">${dbFilename()}</td>
     </tr>
     <tr>
         <td class="infoTableHeader">SR Cache Dir:</td>

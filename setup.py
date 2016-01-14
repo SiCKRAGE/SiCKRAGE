@@ -1,11 +1,17 @@
+from sys import path
+
 try:
     from setuptools import setup, find_packages
 except ImportError:
     from distutils.core import setup, find_packages
 
+# Get the version number
+with open(path.join(path.abspath(path.dirname(__file__)), 'version.txt')) as f:
+    version = f.read()
+
 setup(
         name='sickrage',
-        version='5.0.2',
+        version=version,
         description='Automatic Video Library Manager for TV Shows',
         author='echel0n',
         author_email='sickrage.tv@gmail.com',

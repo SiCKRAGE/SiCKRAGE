@@ -36,7 +36,7 @@ class pyTivoNotifier:
     def notify_subtitle_download(self, ep_name, lang):
         pass
 
-    def notify_git_update(self, new_version):
+    def notify_version_update(self, new_version):
         pass
 
     def update_library(self, ep_obj):

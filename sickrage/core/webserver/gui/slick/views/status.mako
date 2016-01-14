@@ -1,7 +1,6 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    import core.helpers
     from sickrage.core.queues.show_queue import ShowQueueActions
     from sickrage.core.common import dateTimeFormat
 %>
@@ -44,39 +43,39 @@
             </tr>
         </thead>
         <tbody>
-            % if sickrage.showQueue.currentItem is not None:
+            % if sickrage.SHOWQUEUE.currentItem is not None:
                 <tr>
                     % try:
-                        <% showindexerid = sickrage.showQueue.currentItem.show.indexerid %>
+                        <% showindexerid = sickrage.SHOWQUEUE.currentItem.show.indexerid %>
                         <td>${showindexerid}</td>
                     % except Exception:
                         <td></td>
                     % endtry
                     % try:
-                        <% showname = sickrage.showQueue.currentItem.show.name %>
+                        <% showname = sickrage.SHOWQUEUE.currentItem.show.name %>
                         <td>${showname}</td>
                     % except Exception:
-                        % if sickrage.showQueue.currentItem.action_id == ShowQueueActions.ADD:
-                            <td>${sickrage.showQueue.currentItem.showDir}</td>
+                        % if sickrage.SHOWQUEUE.currentItem.action_id == ShowQueueActions.ADD:
+                            <td>${sickrage.SHOWQUEUE.currentItem.showDir}</td>
                         % else:
                             <td></td>
                         % endif
                     % endtry
-                        <td>${sickrage.showQueue.currentItem.inProgress}</td>
-                        % if sickrage.showQueue.currentItem.priority == 10:
+                        <td>${sickrage.SHOWQUEUE.currentItem.inProgress}</td>
+                        % if sickrage.SHOWQUEUE.currentItem.priority == 10:
                         <td>LOW</td>
-                        % elif sickrage.showQueue.currentItem.priority == 20:
+                        % elif sickrage.SHOWQUEUE.currentItem.priority == 20:
                         <td>NORMAL</td>
-                        % elif sickrage.showQueue.currentItem.priority == 30:
+                        % elif sickrage.SHOWQUEUE.currentItem.priority == 30:
                         <td>HIGH</td>
                     % else:
                             <td>sickrage.showQueue.currentItem.priority</td>
                     % endif
-                        <td>${sickrage.showQueue.currentItem.added.strftime(dateTimeFormat)}</td>
-                        <td>${ShowQueueActions.names[sickrage.showQueue.currentItem.action_id]}</td>
+                        <td>${sickrage.SHOWQUEUE.currentItem.added.strftime(dateTimeFormat)}</td>
+                        <td>${ShowQueueActions.names[sickrage.SHOWQUEUE.currentItem.action_id]}</td>
                 </tr>
             % endif
-            % for item in sickrage.showQueue.queue:
+            % for item in sickrage.SHOWQUEUE.queue:
                 <tr>
                     % try:
                         <% showindexerid = item.show.indexerid %>

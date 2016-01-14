@@ -64,7 +64,7 @@ class PPBasicTests(SiCKRAGETestDBCase):
         ep.name = "some ep name"
         ep.saveToDB()
 
-        sickrage.nameCache.addNameToCache('show name', 3)
+        sickrage.NAMECACHE.addNameToCache('show name', 3)
         self.pp = PostProcessor(FILEPATH, process_method='move')
         self.assertTrue(self.pp.process)
 

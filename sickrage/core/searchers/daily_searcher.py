@@ -111,7 +111,7 @@ class DailySearcher(object):
             logging.info("No new released episodes found ...")
 
         # queue episode for daily search
-        dailysearch_queue_item = sickrage.searchQueue.DailySearchQueueItem()
-        sickrage.searchQueue.add_item(dailysearch_queue_item)
+        dailysearch_queue_item = sickrage.SEARCHQUEUE.DailySearchQueueItem()
+        sickrage.SEARCHQUEUE.add_item(dailysearch_queue_item)
 
         self.amActive = False

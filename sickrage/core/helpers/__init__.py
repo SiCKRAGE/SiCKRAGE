@@ -696,7 +696,7 @@ def rename_ep_file(cur_path, new_path, old_path_length=0):
         sublang = os.path.splitext(cur_file_name)[1][1:]
 
         # Check if the language extracted from filename is a valid language
-        if sickrage.subtitleSearcher.isValidLanguage(sublang):
+        if sickrage.SUBTITLESEARCHER.isValidLanguage(sublang):
             cur_file_ext = '.' + sublang + cur_file_ext
 
     # put the extension on the incoming file

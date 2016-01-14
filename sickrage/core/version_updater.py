@@ -30,14 +30,11 @@ import time
 import traceback
 
 import github
-import requests
 
 import sickrage
 from sickrage.core.databases import main_db
-from sickrage.core.helpers import _setUpSession, backupAll, download_file, \
-    getURL, removetree
+from sickrage.core.helpers import _setUpSession, backupAll, download_file, getURL, removetree
 from sickrage.core.ui import notifications
-
 
 class VersionUpdater(object):
     """
@@ -45,16 +42,10 @@ class VersionUpdater(object):
     """
 
     def __init__(self, **kwargs):
-        self.name = "VersionUpdater"
+        self.name = "VERSIONUPDATER"
         self.amActive = False
-        self.updater = None
+        self.updater = (SourceUpdateManager(), GitUpdateManager())[self.find_install_type() == 'git']
         self.session = None
-
-        # init github api
-        try:
-            self.init_github()
-        except:
-            pass
 
     def run(self, force=False):
         if self.amActive:
@@ -62,44 +53,22 @@ class VersionUpdater(object):
 
         self.amActive = True
 
-        if not sickrage.GITHUB:
-            self.init_github()
-
         if self.updater:
-            # set current branch version
-            sickrage.GIT_BRANCH = self.get_branch
-
             if self.check_for_new_version(force):
-                if sickrage.AUTO_UPDATE:
-                    logging.info("New update found for SiCKRAGE, starting auto-updater ...")
-                    notifications.message('New update found for SiCKRAGE, starting auto-updater')
-                    if self.run_backup_if_safe() is True:
-                        if self.update():
-                            logging.info("Update was successful!")
-                            notifications.message('Update was successful')
-                            sickrage.WEB_SERVER.server_restart()
-                        else:
-                            logging.info("Update failed!")
-                            notifications.message('Update failed!')
+                if self.run_backup_if_safe() is True:
+                    from sickrage.core.ui import notifications
+                    if self.update():
+                        logging.info("Update was successful!")
+                        notifications.message('Update was successful')
+                        import sickrage
+                        sickrage.WEB_SERVER.server_restart()
+                    else:
+                        logging.info("Update failed!")
+                        notifications.message('Update failed!')
 
             self.check_for_new_news(force)
 
         self.amActive = False
-
-    def init_github(self):
-        try:
-            sickrage.GITHUB = github.Github(
-                    login_or_token=sickrage.GIT_USERNAME,
-                    password=sickrage.GIT_PASSWORD,
-                    user_agent="SiCKRAGE"
-            ).get_organization(sickrage.GIT_ORG).get_repo(sickrage.GIT_REPO)
-        except:
-            sickrage.GITHUB = github.Github(
-                    user_agent="SiCKRAGE"
-            ).get_organization(sickrage.GIT_ORG).get_repo(sickrage.GIT_REPO)
-        finally:
-            self.session = _setUpSession()
-            self.updater = (SourceUpdateManager(), GitUpdateManager())[self.find_install_type() == 'git']
 
     def run_backup_if_safe(self):
         return self.safe_to_update() is True and self._runbackup() is True
@@ -225,7 +194,7 @@ class VersionUpdater(object):
         """
 
         install_type = 'source'
-        if sickrage.GIT_BRANCH.startswith('build '):
+        if sickrage.VERSION.startswith('build '):
             install_type = 'win'
         elif os.path.isdir(os.path.join(sickrage.ROOT_DIR, '.git')):
             install_type = 'git'
@@ -249,8 +218,12 @@ class VersionUpdater(object):
             logging.info("Checking for updates using " + self.updater.type.upper())
 
         if self.updater.need_update():
-            # proceed with update
             self.updater.set_newest_text()
+
+            if sickrage.AUTO_UPDATE:
+                logging.info("New update found for SiCKRAGE, starting auto-updater ...")
+                notifications.message('New update found for SiCKRAGE, starting auto-updater')
+
             return True
 
         # no updates needed if we made it here
@@ -304,7 +277,7 @@ class VersionUpdater(object):
     def update(self):
         if self.updater:
             # update branch with current config branch value
-            self.updater.branch = sickrage.GIT_BRANCH
+            self.updater.branch = sickrage.VERSION
 
             # check for updates
             if self.updater.need_update():
@@ -329,6 +302,7 @@ class VersionUpdater(object):
         if self.updater:
             return self.updater.branch
 
+
 class UpdateManager(object):
     @staticmethod
     def get_github_org():
@@ -345,17 +319,33 @@ class UpdateManager(object):
 
 class GitUpdateManager(UpdateManager):
     def __init__(self):
+
         self.type = "git"
         self._git_path = self._find_working_git
         self.github_org = self.get_github_org()
         self.github_repo = self.get_github_repo()
 
-        self.branch = sickrage.GIT_BRANCH = self._find_installed_branch()
+        self.branch = sickrage.VERSION = self._find_installed_branch()
 
         self._cur_commit_hash = None
         self._newest_commit_hash = None
         self._num_commits_behind = 0
         self._num_commits_ahead = 0
+
+        # init github api
+        self.init_github()
+
+    def init_github(self):
+        try:
+            sickrage.GITHUB = github.Github(
+                    login_or_token=sickrage.GIT_USERNAME,
+                    password=sickrage.GIT_PASSWORD,
+                    user_agent="SiCKRAGE"
+            ).get_organization(sickrage.GIT_ORG).get_repo(sickrage.GIT_REPO)
+        except:
+            sickrage.GITHUB = github.Github(
+                    user_agent="SiCKRAGE"
+            ).get_organization(sickrage.GIT_ORG).get_repo(sickrage.GIT_REPO)
 
     @property
     def get_cur_commit_hash(self):
@@ -507,7 +497,7 @@ class GitUpdateManager(UpdateManager):
         if exit_status == 0 and branch_info:
             branch = branch_info.strip().replace('refs/heads/', '', 1)
             if branch:
-                sickrage.GIT_BRANCH = branch
+                sickrage.VERSION = branch
                 return branch
         return ""
 
@@ -639,8 +629,7 @@ class GitUpdateManager(UpdateManager):
 
                 # Notify update successful
                 if sickrage.NOTIFY_ON_UPDATE:
-                    sickrage.NOTIFIERS.notify_git_update(
-                            sickrage.CUR_COMMIT_HASH if sickrage.CUR_COMMIT_HASH else "")
+                    sickrage.NOTIFIERS.notify_version_update(sickrage.CUR_COMMIT_HASH or "")
 
                 return True
 
@@ -672,7 +661,7 @@ class GitUpdateManager(UpdateManager):
     def list_remote_branches(self):
         # update remote origin url
         self.update_remote_origin()
-        sickrage.GIT_BRANCH = self._find_installed_branch()
+        sickrage.VERSION = self._find_installed_branch()
 
         branches, _, exit_status = self._run_git(self._git_path,
                                                  'ls-remote --heads %s' % sickrage.GIT_REMOTE)  # @UnusedVariable
@@ -694,19 +683,19 @@ class SourceUpdateManager(UpdateManager):
         self.github_org = self.get_github_org()
         self.github_repo = self.get_github_repo()
 
-        self.branch = sickrage.GIT_BRANCH
-        if sickrage.GIT_BRANCH == '':
-            self.branch = self._find_installed_branch()
+        self.branch = sickrage.VERSION
+        if not sickrage.VERSION:
+            self.branch = self.get_cur_version()
 
         self._cur_commit_hash = sickrage.CUR_COMMIT_HASH
         self._newest_commit_hash = None
         self._num_commits_behind = 0
 
-        self.session = requests.Session()
+        self.session = _setUpSession()
 
     @staticmethod
     def _find_installed_branch():
-        return sickrage.CUR_COMMIT_BRANCH if sickrage.CUR_COMMIT_BRANCH else "master"
+        return sickrage.CUR_COMMIT_BRANCH
 
     def get_cur_commit_hash(self):
         return self._cur_commit_hash
@@ -716,7 +705,8 @@ class SourceUpdateManager(UpdateManager):
 
     @staticmethod
     def get_cur_version():
-        return ""
+        with open(os.path.join(sickrage.ROOT_DIR, 'version.txt')) as f:
+            return f.read()
 
     @staticmethod
     def get_newest_version():
@@ -883,7 +873,7 @@ class SourceUpdateManager(UpdateManager):
             return False
 
         # Notify update successful
-        sickrage.NOTIFIERS.notify_git_update(sickrage.NEWEST_VERSION_STRING)
+        sickrage.NOTIFIERS.notify_version_update(sickrage.NEWEST_VERSION_STRING)
 
         return True
 

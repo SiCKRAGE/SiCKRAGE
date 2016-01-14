@@ -97,7 +97,7 @@
         <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.HOME_LAYOUT == 'poster']}"
              class="clearfix">
 <div class="posterview">
-    % for curLoadingShow in sickrage.showQueue.loadingShowList:
+    % for curLoadingShow in sickrage.SHOWQUEUE.loadingShowList:
         % if curLoadingShow.show == None:
             <div class="show" data-name="0" data-date="010101" data-network="0" data-progress="101">
                 <img alt="" title="${curLoadingShow.show_name}" class="show-image"
@@ -164,7 +164,7 @@
 
     data_date = '6000000000.0'
     if cur_airs_next:
-        data_date = calendar.timegm(srdatetime.srDateTime.convert_to_setting(network_timezones.parse_date_time(cur_airs_next, curShow.airs, curShow.network)).timetuple())
+        data_date = calendar.timegm(srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network)).timetuple())
     elif None is not display_status:
         if 'nded' not in display_status and 1 == int(curShow.paused):
             data_date = '5000000500.0'
@@ -186,7 +186,7 @@
 
         <div class="show-date">
 % if cur_airs_next:
-    <% ldatetime = srdatetime.srDateTime.convert_to_setting(network_timezones.parse_date_time(cur_airs_next, curShow.airs, curShow.network)) %>
+    <% ldatetime = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network)) %>
     <%
         try:
             out = srdatetime.srDateTime.srfdate(ldatetime)
@@ -272,9 +272,9 @@
     </tfoot>
 
 
-    % if sickrage.showQueue.loadingShowList:
+    % if sickrage.SHOWQUEUE.loadingShowList:
     <tbody class="tablesorter-infoOnly">
-        % for curLoadingShow in sickrage.showQueue.loadingShowList:
+        % for curLoadingShow in sickrage.SHOWQUEUE.loadingShowList:
 
             % if curLoadingShow.show != None and curLoadingShow.show in sickrage.showList:
          continue
@@ -348,7 +348,7 @@
 %>
     <tr>
     % if cur_airs_next:
-    <% airDate = srdatetime.srDateTime.convert_to_setting(network_timezones.parse_date_time(cur_airs_next, curShow.airs, curShow.network)) %>
+    <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network)) %>
         % try:
             <td align="center" class="nowrap">
                 <time datetime="${airDate.isoformat()}" class="date">${srdatetime.srDateTime.srfdate(airDate)}</time>
@@ -361,7 +361,7 @@
     % endif
 
     % if cur_airs_prev:
-    <% airDate = srdatetime.srDateTime.convert_to_setting(network_timezones.parse_date_time(cur_airs_prev, curShow.airs, curShow.network)) %>
+    <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network)) %>
         % try:
             <td align="center" class="nowrap">
                 <time datetime="${airDate.isoformat()}" class="date">${srdatetime.srDateTime.srfdate(airDate)}</time>

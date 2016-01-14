@@ -220,8 +220,8 @@ class ShowQueueItem(QueueItem):
         self.show = show
 
     def isInQueue(self):
-        return self in sickrage.showQueue.queue + [
-            sickrage.showQueue.currentItem]  # @UndefinedVariable
+        return self in sickrage.SHOWQUEUE.queue + [
+            sickrage.SHOWQUEUE.currentItem]  # @UndefinedVariable
 
     def _getName(self):
         return str(self.show.indexerid)
@@ -445,7 +445,7 @@ class QueueItemAdd(ShowQueueItem):
             logging.debug(traceback.format_exc())
 
         # update internal name cache
-        sickrage.nameCache.buildNameCache()
+        sickrage.NAMECACHE.buildNameCache()
 
         try:
             self.show.loadEpisodesFromDir()
@@ -457,7 +457,7 @@ class QueueItemAdd(ShowQueueItem):
         # FIXME: This needs to be a backlog queue item!!!
         if self.show.default_ep_status == WANTED:
             logging.info("Launching backlog for this show since its episodes are WANTED")
-            sickrage.backlogSearcher.searchBacklog([self.show])
+            sickrage.BACKLOGSEARCHER.searchBacklog([self.show])
 
         self.show.writeMetadata()
         self.show.updateMetadata()
@@ -467,11 +467,11 @@ class QueueItemAdd(ShowQueueItem):
 
         if sickrage.USE_TRAKT:
             # if there are specific episodes that need to be added by trakt
-            sickrage.traktSearcher.manageNewShow(self.show)
+            sickrage.TRAKTSEARCHER.manageNewShow(self.show)
 
             # add show to trakt.tv library
             if sickrage.TRAKT_SYNC:
-                sickrage.traktSearcher.addShowToTraktLibrary(self.show)
+                sickrage.TRAKTSEARCHER.addShowToTraktLibrary(self.show)
 
             if sickrage.TRAKT_SYNC_WATCHLIST:
                 logging.info("update watchlist")
@@ -492,7 +492,7 @@ class QueueItemAdd(ShowQueueItem):
 
     def _finishEarly(self):
         if self.show != None:
-            sickrage.showQueue.removeShow(self.show)
+            sickrage.SHOWQUEUE.removeShow(self.show)
 
         self.finish()
 
@@ -668,7 +668,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         logging.debug("Finished update of " + self.show.name)
 
-        sickrage.showQueue.refreshShow(self.show, self.force)
+        sickrage.SHOWQUEUE.refreshShow(self.show, self.force)
         self.finish()
 
 
@@ -693,7 +693,7 @@ class QueueItemRemove(ShowQueueItem):
 
         if sickrage.USE_TRAKT:
             try:
-                sickrage.traktSearcher.removeShowFromTraktLibrary(self.show)
+                sickrage.TRAKTSEARCHER.removeShowFromTraktLibrary(self.show)
             except Exception as e:
                 logging.warning("Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, e))
 

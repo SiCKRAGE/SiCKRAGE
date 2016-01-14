@@ -74,14 +74,14 @@ class ShowUpdater(object):
                 if curShow.should_update(update_date=update_date) or curShow.indexerid in stale_should_update:
                     try:
                         piList.append(
-                                sickrage.showQueue.updateShow(curShow, True))  # @UndefinedVariable
+                                sickrage.SHOWQUEUE.updateShow(curShow, True))  # @UndefinedVariable
                     except CantUpdateShowException as e:
                         logging.debug("Unable to update show: {0}".format(str(e)))
                 else:
                     logging.debug(
                             "Not updating episodes for show " + curShow.name + " because it's marked as ended and last/next episode is not within the grace period.")
                     piList.append(
-                            sickrage.showQueue.refreshShow(curShow, True))  # @UndefinedVariable
+                            sickrage.SHOWQUEUE.refreshShow(curShow, True))  # @UndefinedVariable
 
             except (CantUpdateShowException, CantRefreshShowException) as e:
                 logging.error("Automatic update failed: {}".format(e))

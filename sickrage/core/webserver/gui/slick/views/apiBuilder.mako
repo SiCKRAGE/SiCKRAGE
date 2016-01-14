@@ -10,13 +10,13 @@
     <meta name="viewport" content="width=device-width">
 
     <!-- These values come from css/dark.css and css/light.css -->
-    % if sbThemeName == "dark":
+    % if srThemeName == "dark":
     <meta name="theme-color" content="#15528F">
-    % elif sbThemeName == "light":
+    % elif srThemeName == "light":
     <meta name="theme-color" content="#333333">
     % endif
 
-    <title>SickRage - BRANCH:[${sickrage.GIT_BRANCH}] - ${title}</title>
+    <title>SickRage - BRANCH:[${sickrage.VERSION}] - ${title}</title>
 
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -65,7 +65,7 @@
     <link rel="stylesheet" type="text/css" href="${srRoot}/css/browser.css?${sbPID}" />
     <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery-ui-1.10.4.custom.min.css?${sbPID}" />
     <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${sbPID}"/>
-    <link rel="stylesheet" type="text/css" href="${srRoot}/css/${sbThemeName}.css?${sbPID}" />
+    <link rel="stylesheet" type="text/css" href="${srRoot}/css/${srThemeName}.css?${sbPID}"/>
 </head>
 <body>
 <nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">

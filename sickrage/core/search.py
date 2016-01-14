@@ -456,7 +456,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
     threads = []
 
     # build name cache for show
-    sickrage.nameCache.buildNameCache(show)
+    sickrage.NAMECACHE.buildNameCache(show)
 
     origThreadName = threading.currentThread().name
 

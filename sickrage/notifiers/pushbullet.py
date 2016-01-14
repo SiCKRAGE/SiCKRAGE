@@ -64,7 +64,7 @@ class PushbulletNotifier(object):
                                  event=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
                                  message=ep_name + ": " + lang)
 
-    def notify_git_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.USE_PUSHBULLET:
             self._sendPushbullet(pushbullet_api=None, event=notifyStrings[NOTIFY_GIT_UPDATE],
                                  message=notifyStrings[NOTIFY_GIT_UPDATE_TEXT] + new_version)

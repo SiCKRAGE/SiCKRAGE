@@ -26,7 +26,7 @@ class Show:
             return error, show
 
         try:
-            sickrage.showQueue.removeShow(show, bool(remove_files))
+            sickrage.SHOWQUEUE.removeShow(show, bool(remove_files))
         except CantRemoveShowException as exception:
             return exception, show
 
@@ -114,7 +114,7 @@ class Show:
             return error, show
 
         try:
-            sickrage.showQueue.refreshShow(show)
+            sickrage.SHOWQUEUE.refreshShow(show)
         except CantRefreshShowException as exception:
             return exception, show
 

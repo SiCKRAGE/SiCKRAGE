@@ -161,7 +161,7 @@ class EmailNotifier:
                 else:
                     logging.error("Download notification ERROR: %s" % self.last_err)
 
-    def notify_git_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         pass
 
     def _generate_recipients(self, show):

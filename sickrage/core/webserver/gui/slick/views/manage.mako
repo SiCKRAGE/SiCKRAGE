@@ -66,37 +66,37 @@
         <% curDelete_disabled = "" %>
         <% curRemove_disabled = "" %>
 
-        % if sickrage.showQueue.isBeingUpdated(curShow) or sickrage.showQueue.isInUpdateQueue(curShow):
+        % if sickrage.SHOWQUEUE.isBeingUpdated(curShow) or sickrage.SHOWQUEUE.isInUpdateQueue(curShow):
             <% curUpdate_disabled = "disabled=\"disabled\" " %>
         % endif
 
         <% curUpdate = "<input type=\"checkbox\" class=\"updateCheck\" id=\"update-"+str(curShow.indexerid)+"\" "+curUpdate_disabled+"/>" %>
 
-        % if sickrage.showQueue.isBeingRefreshed(curShow) or sickrage.showQueue.isInRefreshQueue(curShow):
+        % if sickrage.SHOWQUEUE.isBeingRefreshed(curShow) or sickrage.SHOWQUEUE.isInRefreshQueue(curShow):
             <% curRefresh_disabled = "disabled=\"disabled\" " %>
         % endif
 
         <% curRefresh = "<input type=\"checkbox\" class=\"refreshCheck\" id=\"refresh-"+str(curShow.indexerid)+"\" "+curRefresh_disabled+"/>" %>
 
-        % if sickrage.showQueue.isBeingRenamed(curShow) or sickrage.showQueue.isInRenameQueue(curShow):
+        % if sickrage.SHOWQUEUE.isBeingRenamed(curShow) or sickrage.SHOWQUEUE.isInRenameQueue(curShow):
             <% curRename = "disabled=\"disabled\" " %>
         % endif
 
         <% curRename = "<input type=\"checkbox\" class=\"renameCheck\" id=\"rename-"+str(curShow.indexerid)+"\" "+curRename_disabled+"/>" %>
 
-        % if not curShow.subtitles or sickrage.showQueue.isBeingSubtitled(curShow) or sickrage.showQueue.isInSubtitleQueue(curShow):
+        % if not curShow.subtitles or sickrage.SHOWQUEUE.isBeingSubtitled(curShow) or sickrage.SHOWQUEUE.isInSubtitleQueue(curShow):
             <% curSubtitle_disabled = "disabled=\"disabled\" " %>
         % endif
 
         <% curSubtitle = "<input type=\"checkbox\" class=\"subtitleCheck\" id=\"subtitle-"+str(curShow.indexerid)+"\" "+curSubtitle_disabled+"/>" %>
 
-        % if sickrage.showQueue.isBeingRenamed(curShow) or sickrage.showQueue.isInRenameQueue(curShow) or sickrage.showQueue.isInRefreshQueue(curShow):
+        % if sickrage.SHOWQUEUE.isBeingRenamed(curShow) or sickrage.SHOWQUEUE.isInRenameQueue(curShow) or sickrage.SHOWQUEUE.isInRefreshQueue(curShow):
             <% curDelete = "disabled=\"disabled\" " %>
         % endif
 
         <% curDelete = "<input type=\"checkbox\" class=\"deleteCheck\" id=\"delete-"+str(curShow.indexerid)+"\" "+curDelete_disabled+"/>" %>
 
-        % if sickrage.showQueue.isBeingRenamed(curShow) or sickrage.showQueue.isInRenameQueue(curShow) or sickrage.showQueue.isInRefreshQueue(curShow):
+        % if sickrage.SHOWQUEUE.isBeingRenamed(curShow) or sickrage.SHOWQUEUE.isInRenameQueue(curShow) or sickrage.SHOWQUEUE.isInRefreshQueue(curShow):
             <% curRemove = "disabled=\"disabled\" " %>
         % endif
 

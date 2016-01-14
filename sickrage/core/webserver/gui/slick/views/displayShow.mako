@@ -1,17 +1,17 @@
-import core.helper<%inherit file="/layouts/main.mako"/>
+<%inherit file="/layouts/main.mako"/>
 <%!
     import datetime
     import urllib
     import ntpath
     import sickrage
-    import core.helpers
 
     from sickrage.core.updaters import tz_updater
     from sickrage.core.searchers import subtitle_searcher
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview
-    from sickrage.core.helpers import anon_url, srdatetime
+    from sickrage.core.helpers import anon_url, srdatetime, pretty_filesize, get_size
     from sickrage.core.media.util import showImage
+    from sickrage.indexers.indexer_api import indexerApi
 
 %>
 <%block name="scripts">
@@ -198,7 +198,7 @@ import core.helper<%inherit file="/layouts/main.mako"/>
                     % if show.network and show.airs:
                         <tr>
                             <td class="showLegend">Originally Airs:</td>
-                            <td>${show.airs} ${("<font color='#FF0000'><b>(invalid Timeformat)</b></font> ", "")[network_timezones.test_timeformat(show.airs)]}
+                            <td>${show.airs} ${("<font color='#FF0000'><b>(invalid Timeformat)</b></font> ", "")[tz_updater.test_timeformat(show.airs)]}
                                 on ${show.network}</td>
                         </tr>
                     % elif show.network:
@@ -209,7 +209,7 @@ import core.helper<%inherit file="/layouts/main.mako"/>
                     % elif show.airs:
                         <tr>
                             <td class="showLegend">Originally Airs:</td>
-                            <td>${show.airs} ${("<font color='#FF0000'><b>(invalid Timeformat)</b></font>", "")[network_timezones.test_timeformat(show.airs)]}</td>
+                            <td>${show.airs} ${("<font color='#FF0000'><b>(invalid Timeformat)</b></font>", "")[tz_updater.test_timeformat(show.airs)]}</td>
                         </tr>
                     % endif
                     <tr>
@@ -263,7 +263,7 @@ import core.helper<%inherit file="/layouts/main.mako"/>
 
                     <tr>
                         <td class="showLegend">Size:</td>
-                        <td>${core.helper.pretty_filesize(core.helper.get_size(showLoc[0]))}</td>
+                        <td>${pretty_filesize(get_size(showLoc[0]))}</td>
                     </tr>
 
                 </table>
@@ -382,9 +382,12 @@ import core.helper<%inherit file="/layouts/main.mako"/>
 
     <table id="${("showTable", "animeTable")[bool(show.is_anime)]}" class="displayShowTable display_show"
            cellspacing="0" border="0" cellpadding="0">
+
         <% curSeason = -1 %>
         <% odd = 0 %>
+
         %  for epResult in sqlResults:
+            <%
             epStr = str(epResult[b"season"]) + "x" + str(epResult[b"episode"])
             if not epStr in epCats:
                 continue
@@ -423,7 +426,7 @@ import core.helper<%inherit file="/layouts/main.mako"/>
             epLoc = epResult[b"location"]
             if epLoc and show._location and epLoc.lower().startswith(show._location.lower()):
                 epLoc = epLoc[len(show._location)+1:]
-
+            %>
         % if int(epResult[b"season"]) != curSeason:
             % if curSeason == -1:
                 <thead>
@@ -622,7 +625,7 @@ import core.helper<%inherit file="/layouts/main.mako"/>
             <td class="col-name">${epLoc}</td>
             <td class="col-ep">
                 % if epResult[b"file_size"]:
-                    <% file_size = core.helper.pretty_filesize(epResult[b"file_size"]) %>
+                    <% file_size = pretty_filesize(epResult[b"file_size"]) %>
                     ${file_size}
                 % endif
             </td>
@@ -632,7 +635,7 @@ import core.helper<%inherit file="/layouts/main.mako"/>
                     ## Avoid issues with dateutil's _isdst on Windows but still provide air dates
                     <% airDate = datetime.datetime.fromordinal(epResult[b'airdate']) %>
                     % if airDate.year >= 1970 or show.network:
-                        <% airDate = srdatetime.srDateTime.convert_to_setting(network_timezones.parse_date_time(epResult[b'airdate'], show.airs, show.network)) %>
+                        <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(epResult[b'airdate'], show.airs, show.network)) %>
                     % endif
                         <time datetime="${airDate.isoformat()}"
                               class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>

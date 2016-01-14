@@ -32,7 +32,7 @@ from sickrage.indexers.indexer_api import indexerApi
 
 
 class SiCKRAGEURLopener(urllib.FancyURLopener):
-    version = (sickrage.USER_AGENT)
+    version = sickrage.USER_AGENT
 
 
 class AuthURLOpener(SiCKRAGEURLopener):

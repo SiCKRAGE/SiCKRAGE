@@ -29,12 +29,10 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates, generateApiKey, \
-    get_lan_ip
+from sickrage.core.helpers import create_https_certificates, generateApiKey, get_lan_ip
 from sickrage.core.webserver.api import ApiHandler, KeyHandler
 from sickrage.core.webserver.routes import route
-from sickrage.core.webserver.views import CalendarHandler, LoginHandler, \
-    LogoutHandler
+from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
 
 
 class StaticImageHandler(StaticFileHandler):

@@ -39,7 +39,7 @@ class synologyNotifier:
         if sickrage.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._send_synologyNotifier(ep_name + ": " + lang, notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD])
 
-    def notify_git_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.USE_SYNOLOGYNOTIFIER:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]

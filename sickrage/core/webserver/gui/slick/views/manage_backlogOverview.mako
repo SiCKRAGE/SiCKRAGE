@@ -79,7 +79,7 @@ Jump to Show
                 ${curResult[b"name"]}
             </td>
             <td>
-                <% airDate = srdatetime.srDateTime.convert_to_setting(network_timezones.parse_date_time(curResult[b'airdate'], curShow.airs, curShow.network)) %>
+                <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(curResult[b'airdate'], curShow.airs, curShow.network)) %>
             % if int(curResult[b'airdate']) != 1:
                 <time datetime="${airDate.isoformat()}"
                       class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>

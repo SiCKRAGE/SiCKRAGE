@@ -80,7 +80,7 @@
     <span class="listing-key listing-default">Soon</span>
     <span class="listing-key listing-toofar">Later</span>
 % endif
-    <a class="btn btn-inline forceBacklog" href="webcal://${sbHost}:${sbHttpPort}/calendar">
+    <a class="btn btn-inline forceBacklog" href="webcal://${sbHost}:${srHttpPort}/calendar">
     <i class="icon-calendar icon-white"></i>Subscribe</a>
 </div>
 

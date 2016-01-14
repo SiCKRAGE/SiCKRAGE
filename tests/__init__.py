@@ -29,10 +29,10 @@ from configobj import ConfigObj
 import sickrage
 from sickrage.core import removetree
 from sickrage.core.caches import tv_cache
-from sickrage.core.config import Config
 from sickrage.core.databases import cache_db, failed_db, main_db
 from sickrage.core.helpers.encoding import encodingInit
 from sickrage.core.logger import SRLogger
+from sickrage.core.srconfig import srConfig
 from sickrage.core.tv import TV
 from sickrage.core.webserver import SRWebServer
 
@@ -104,11 +104,11 @@ sickrage.WEB_ROOT = ""
 sickrage.WEB_SERVER = None
 sickrage.CPU_PRESET = "NORMAL"
 
-sickrage.GIT_BRANCH = Config.check_setting_str(sickrage.CFG, 'General', 'branch', '')
-sickrage.CUR_COMMIT_HASH = Config.check_setting_str(sickrage.CFG, 'General', 'cur_commit_hash', '')
-sickrage.GIT_USERNAME = Config.check_setting_str(sickrage.CFG, 'General', 'git_username', '')
-sickrage.GIT_PASSWORD = Config.check_setting_str(sickrage.CFG, 'General', 'git_password', '',
-                                                            censor_log=True)
+sickrage.VERSION = srConfig.check_setting_str(sickrage.CFG, 'General', 'branch', '')
+sickrage.CUR_COMMIT_HASH = srConfig.check_setting_str(sickrage.CFG, 'General', 'cur_commit_hash', '')
+sickrage.GIT_USERNAME = srConfig.check_setting_str(sickrage.CFG, 'General', 'git_username', '')
+sickrage.GIT_PASSWORD = srConfig.check_setting_str(sickrage.CFG, 'General', 'git_password', '',
+                                                   censor_log=True)
 
 sickrage.CACHE_DIR = os.path.join(TESTDIR, 'cache')
 createTestCacheFolder()
@@ -137,7 +137,7 @@ def _dummy_saveConfig():
 
 
 # this overrides the sickrage save_config which gets called during a db upgrade
-Config.save_config = _dummy_saveConfig
+srConfig.save_config = _dummy_saveConfig
 
 
 # the real one tries to contact tvdb just stop it from getting more info on the ep

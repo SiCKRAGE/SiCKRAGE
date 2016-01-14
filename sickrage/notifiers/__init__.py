@@ -36,6 +36,6 @@ def notify_snatch(ep_name):
         n.notify_snatch(ep_name)
 
 
-def notify_git_update(new_version=""):
+def notify_version_update(new_version=""):
     for n in sickrage.NOTIFIERS:
-        n.notify_git_update(new_version)
+        n.notify_version_update(new_version)

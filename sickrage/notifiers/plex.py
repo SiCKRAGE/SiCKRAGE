@@ -145,7 +145,7 @@ class PLEXNotifier:
         if sickrage.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify_pmc(ep_name + ': ' + lang, notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD])
 
-    def notify_git_update(self, new_version='??'):
+    def notify_version_update(self, new_version='??'):
         if sickrage.USE_PLEX:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]

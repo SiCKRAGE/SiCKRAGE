@@ -1,7 +1,6 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    import core.helpers
     from sickrage.core.searchers import subtitle_searcher
 %>
 <%block name="scripts">

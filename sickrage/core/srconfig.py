@@ -38,7 +38,7 @@ from sickrage.core.searchers import backlog_searcher
 from sickrage.providers import NewznabProvider, TorrentRssProvider, GenericProvider, NZBProvider, TorrentProvider
 
 
-class Config(object):
+class srConfig(object):
     @staticmethod
     def change_HTTPS_CERT(https_cert):
         """
@@ -92,7 +92,7 @@ class Config(object):
         """
         log_dir_changed = False
         log_dir = os.path.normpath(os.path.join(sickrage.DATA_DIR, new_log_dir))
-        web_log = Config.checkbox_to_value(new_web_log)
+        web_log = srConfig.checkbox_to_value(new_web_log)
 
         if os.path.normpath(sickrage.LOG_DIR) != log_dir:
             if makeDir(log_dir):
@@ -182,7 +182,7 @@ class Config(object):
     
         :param freq: New frequency
         """
-        sickrage.AUTOPOSTPROCESSOR_FREQ = Config.to_int(freq, default=sickrage.DEFAULT_AUTOPOSTPROCESSOR_FREQ)
+        sickrage.AUTOPOSTPROCESSOR_FREQ = srConfig.to_int(freq, default=sickrage.DEFAULT_AUTOPOSTPROCESSOR_FREQ)
 
         if sickrage.AUTOPOSTPROCESSOR_FREQ < sickrage.MIN_AUTOPOSTPROCESSOR_FREQ:
             sickrage.AUTOPOSTPROCESSOR_FREQ = sickrage.MIN_AUTOPOSTPROCESSOR_FREQ
@@ -199,7 +199,7 @@ class Config(object):
     
         :param freq: New frequency
         """
-        sickrage.DAILY_SEARCHER_FREQ = Config.to_int(freq, default=sickrage.DEFAULT_DAILY_SEARCHER_FREQ)
+        sickrage.DAILY_SEARCHER_FREQ = srConfig.to_int(freq, default=sickrage.DEFAULT_DAILY_SEARCHER_FREQ)
         sickrage.Scheduler.modify_job('DAILYSEARCHER',
                                       trigger=sickrage.Scheduler.SRIntervalTrigger(
                                               **{'minutes': sickrage.DAILY_SEARCHER_FREQ,
@@ -212,7 +212,7 @@ class Config(object):
     
         :param freq: New frequency
         """
-        sickrage.BACKLOG_SEARCHER_FREQ = Config.to_int(freq, default=sickrage.DEFAULT_BACKLOG_SEARCHER_FREQ)
+        sickrage.BACKLOG_SEARCHER_FREQ = srConfig.to_int(freq, default=sickrage.DEFAULT_BACKLOG_SEARCHER_FREQ)
         sickrage.MIN_BACKLOG_SEARCHER_FREQ = backlog_searcher.get_backlog_cycle_time()
         sickrage.Scheduler.modify_job('BACKLOG',
                                       trigger=sickrage.Scheduler.SRIntervalTrigger(
@@ -226,7 +226,7 @@ class Config(object):
     
         :param freq: New frequency
         """
-        sickrage.VERSION_UPDATER_FREQ = Config.to_int(freq, default=sickrage.DEFAULT_VERSION_UPDATE_FREQ)
+        sickrage.VERSION_UPDATER_FREQ = srConfig.to_int(freq, default=sickrage.DEFAULT_VERSION_UPDATE_FREQ)
         sickrage.Scheduler.modify_job('VERSIONUPDATER',
                                       trigger=sickrage.Scheduler.SRIntervalTrigger(
                                               **{'hours': sickrage.VERSION_UPDATER_FREQ,
@@ -239,7 +239,7 @@ class Config(object):
     
         :param freq: New frequency
         """
-        sickrage.SHOWUPDATE_HOUR = Config.to_int(freq, default=sickrage.DEFAULT_SHOWUPDATE_HOUR)
+        sickrage.SHOWUPDATE_HOUR = srConfig.to_int(freq, default=sickrage.DEFAULT_SHOWUPDATE_HOUR)
         if sickrage.SHOWUPDATE_HOUR < 0 or sickrage.SHOWUPDATE_HOUR > 23:
             sickrage.SHOWUPDATE_HOUR = 0
 
@@ -256,7 +256,7 @@ class Config(object):
     
         :param freq: New frequency
         """
-        sickrage.SUBTITLE_SEARCHER_FREQ = Config.to_int(freq, default=sickrage.DEFAULT_SUBTITLE_SEARCHER_FREQ)
+        sickrage.SUBTITLE_SEARCHER_FREQ = srConfig.to_int(freq, default=sickrage.DEFAULT_SUBTITLE_SEARCHER_FREQ)
         sickrage.Scheduler.modify_job('SUBTITLESEARCHER',
                                       trigger=sickrage.Scheduler.SRIntervalTrigger(
                                               **{'hours': sickrage.SUBTITLE_SEARCHER_FREQ,
@@ -269,7 +269,7 @@ class Config(object):
     
         :param version_notify: New frequency
         """
-        sickrage.VERSION_NOTIFY = Config.checkbox_to_value(version_notify)
+        sickrage.VERSION_NOTIFY = srConfig.checkbox_to_value(version_notify)
         if not sickrage.VERSION_NOTIFY:
             sickrage.NEWEST_VERSION_STRING = None
 
@@ -281,7 +281,7 @@ class Config(object):
     
         :param download_propers: New desired state
         """
-        sickrage.DOWNLOAD_PROPERS = Config.checkbox_to_value(download_propers)
+        sickrage.DOWNLOAD_PROPERS = srConfig.checkbox_to_value(download_propers)
         job = sickrage.Scheduler.get_job('PROPERSEARCHER')
         (job.pause, job.resume)[sickrage.DOWNLOAD_PROPERS]()
 
@@ -293,7 +293,7 @@ class Config(object):
     
         :param use_trakt: New desired state
         """
-        sickrage.USE_TRAKT = Config.checkbox_to_value(use_trakt)
+        sickrage.USE_TRAKT = srConfig.checkbox_to_value(use_trakt)
         job = sickrage.Scheduler.get_job('TRAKTSEARCHER')
         (job.pause, job.resume)[sickrage.USE_TRAKT]()
 
@@ -305,7 +305,7 @@ class Config(object):
     
         :param use_subtitles: New desired state
         """
-        sickrage.USE_SUBTITLES = Config.checkbox_to_value(use_subtitles)
+        sickrage.USE_SUBTITLES = srConfig.checkbox_to_value(use_subtitles)
         job = sickrage.Scheduler.get_job('SUBTITLESEARCHER')
         (job.pause, job.resume)[sickrage.USE_SUBTITLES]()
 
@@ -317,7 +317,7 @@ class Config(object):
     
         :param process_automatically: New desired state
         """
-        sickrage.PROCESS_AUTOMATICALLY = Config.checkbox_to_value(process_automatically)
+        sickrage.PROCESS_AUTOMATICALLY = srConfig.checkbox_to_value(process_automatically)
         job = sickrage.Scheduler.get_job('POSTPROCESSOR')
         (job.pause, job.resume)[sickrage.PROCESS_AUTOMATICALLY]()
 
@@ -391,7 +391,7 @@ class Config(object):
 
         for cur_host in [x.strip() for x in hosts.split(",")]:
             if cur_host:
-                cleaned_host = Config.clean_host(cur_host, default_port)
+                cleaned_host = srConfig.clean_host(cur_host, default_port)
                 if cleaned_host:
                     cleaned_hosts.append(cleaned_host)
 
@@ -447,7 +447,7 @@ class Config(object):
     def minimax(val, default, low, high):
         """ Return value forced within range """
 
-        val = Config.to_int(val, default=default)
+        val = srConfig.to_int(val, default=default)
 
         if val < low:
             return low
@@ -548,8 +548,8 @@ class Config(object):
             self.config_obj = config_obj
 
             # check the version of the config
-            self.config_version = Config.check_setting_int(config_obj, 'General', 'config_version',
-                                                           sickrage.CONFIG_VERSION)
+            self.config_version = srConfig.check_setting_int(config_obj, 'General', 'config_version',
+                                                             sickrage.CONFIG_VERSION)
             self.expected_config_version = sickrage.CONFIG_VERSION
             self.migration_names = {
                 1: 'Custom naming',
@@ -609,7 +609,7 @@ class Config(object):
             logging.info(
                 "Based on your old settings I'm setting your new naming pattern to: " + sickrage.NAMING_PATTERN)
 
-            sickrage.NAMING_CUSTOM_ABD = bool(Config.check_setting_int(self.config_obj, 'General', 'naming_dates', 0))
+            sickrage.NAMING_CUSTOM_ABD = bool(srConfig.check_setting_int(self.config_obj, 'General', 'naming_dates', 0))
 
             if sickrage.NAMING_CUSTOM_ABD:
                 sickrage.NAMING_ABD_PATTERN = self._name_to_pattern(True)
@@ -619,7 +619,7 @@ class Config(object):
                 sickrage.NAMING_ABD_PATTERN = validator.name_abd_presets[0]
 
             sickrage.NAMING_MULTI_EP = int(
-                Config.check_setting_int(self.config_obj, 'General', 'NAMING_MULTI_EP_TYPE', 1))
+                    srConfig.check_setting_int(self.config_obj, 'General', 'NAMING_MULTI_EP_TYPE', 1))
 
             # see if any of their shows used season folders
             season_folder_shows = main_db.MainDB().select("SELECT * FROM tv_shows WHERE flatten_folders = 0")
@@ -627,7 +627,7 @@ class Config(object):
             # if any shows had season folders on then prepend season folder to the pattern
             if season_folder_shows:
 
-                old_season_format = Config.check_setting_str(self.config_obj, 'General', 'season_folders_format',
+                old_season_format = srConfig.check_setting_str(self.config_obj, 'General', 'season_folders_format',
                                                              'Season %02d')
 
                 if old_season_format:
@@ -656,13 +656,13 @@ class Config(object):
         def _name_to_pattern(self, abd=False):
 
             # get the old settings from the file
-            use_periods = bool(Config.check_setting_int(self.config_obj, 'General', 'naming_use_periods', 0))
-            ep_type = Config.check_setting_int(self.config_obj, 'General', 'NAMING_EP_TYPE', 0)
-            sep_type = Config.check_setting_int(self.config_obj, 'General', 'NAMING_SEP_TYPE', 0)
-            use_quality = bool(Config.check_setting_int(self.config_obj, 'General', 'naming_quality', 0))
+            use_periods = bool(srConfig.check_setting_int(self.config_obj, 'General', 'naming_use_periods', 0))
+            ep_type = srConfig.check_setting_int(self.config_obj, 'General', 'NAMING_EP_TYPE', 0)
+            sep_type = srConfig.check_setting_int(self.config_obj, 'General', 'NAMING_SEP_TYPE', 0)
+            use_quality = bool(srConfig.check_setting_int(self.config_obj, 'General', 'naming_quality', 0))
 
-            use_show_name = bool(Config.check_setting_int(self.config_obj, 'General', 'naming_show_name', 1))
-            use_ep_name = bool(Config.check_setting_int(self.config_obj, 'General', 'naming_ep_name', 1))
+            use_show_name = bool(srConfig.check_setting_int(self.config_obj, 'General', 'naming_show_name', 1))
+            use_ep_name = bool(srConfig.check_setting_int(self.config_obj, 'General', 'naming_ep_name', 1))
 
             # make the presets into templates
             naming_ep_type = ("%Sx%0E",
@@ -720,15 +720,16 @@ class Config(object):
             Reads in the old naming settings from your config and generates a new config template from them.
             """
             # get the old settings from the file and store them in the new variable names
-            sickrage.OMGWTFNZBS_USERNAME = Config.check_setting_str(self.config_obj, 'omgwtfnzbs', 'omgwtfnzbs_uid', '')
-            sickrage.OMGWTFNZBS_APIKEY = Config.check_setting_str(self.config_obj, 'omgwtfnzbs', 'omgwtfnzbs_key', '')
+            sickrage.OMGWTFNZBS_USERNAME = srConfig.check_setting_str(self.config_obj, 'omgwtfnzbs', 'omgwtfnzbs_uid',
+                                                                      '')
+            sickrage.OMGWTFNZBS_APIKEY = srConfig.check_setting_str(self.config_obj, 'omgwtfnzbs', 'omgwtfnzbs_key', '')
 
         # Migration v4: Add default newznab catIDs
         def _migrate_v4(self):
             """ Update newznab providers so that the category IDs can be set independently via the config """
 
             new_newznab_data = []
-            old_newznab_data = Config.check_setting_str(self.config_obj, 'Newznab', 'newznab_data', '')
+            old_newznab_data = srConfig.check_setting_str(self.config_obj, 'Newznab', 'newznab_data', '')
 
             if old_newznab_data:
                 old_newznab_data_list = old_newznab_data.split("!!!")
@@ -780,17 +781,17 @@ class Config(object):
             Migrate the poster override to just using the banner option (applies to xbmc only).
             """
 
-            metadata_xbmc = Config.check_setting_str(self.config_obj, 'General', 'metadata_xbmc', '0|0|0|0|0|0')
-            metadata_xbmc_12plus = Config.check_setting_str(self.config_obj, 'General', 'metadata_xbmc_12plus',
+            metadata_xbmc = srConfig.check_setting_str(self.config_obj, 'General', 'metadata_xbmc', '0|0|0|0|0|0')
+            metadata_xbmc_12plus = srConfig.check_setting_str(self.config_obj, 'General', 'metadata_xbmc_12plus',
                                                             '0|0|0|0|0|0')
-            metadata_mediabrowser = Config.check_setting_str(self.config_obj, 'General', 'metadata_mediabrowser',
+            metadata_mediabrowser = srConfig.check_setting_str(self.config_obj, 'General', 'metadata_mediabrowser',
                                                              '0|0|0|0|0|0')
-            metadata_ps3 = Config.check_setting_str(self.config_obj, 'General', 'metadata_ps3', '0|0|0|0|0|0')
-            metadata_wdtv = Config.check_setting_str(self.config_obj, 'General', 'metadata_wdtv', '0|0|0|0|0|0')
-            metadata_tivo = Config.check_setting_str(self.config_obj, 'General', 'metadata_tivo', '0|0|0|0|0|0')
-            metadata_mede8er = Config.check_setting_str(self.config_obj, 'General', 'metadata_mede8er', '0|0|0|0|0|0')
+            metadata_ps3 = srConfig.check_setting_str(self.config_obj, 'General', 'metadata_ps3', '0|0|0|0|0|0')
+            metadata_wdtv = srConfig.check_setting_str(self.config_obj, 'General', 'metadata_wdtv', '0|0|0|0|0|0')
+            metadata_tivo = srConfig.check_setting_str(self.config_obj, 'General', 'metadata_tivo', '0|0|0|0|0|0')
+            metadata_mede8er = srConfig.check_setting_str(self.config_obj, 'General', 'metadata_mede8er', '0|0|0|0|0|0')
 
-            use_banner = bool(Config.check_setting_int(self.config_obj, 'General', 'use_banner', 0))
+            use_banner = bool(srConfig.check_setting_int(self.config_obj, 'General', 'use_banner', 0))
 
             def _migrate_metadata(metadata, metadata_name, use_banner):
                 cur_metadata = metadata.split('|')
@@ -832,27 +833,28 @@ class Config(object):
 
         # Migration v6: Convert from XBMC to KODI variables
         def _migrate_v6(self):
-            sickrage.USE_KODI = bool(Config.check_setting_int(self.config_obj, 'XBMC', 'use_xbmc', 0))
-            sickrage.KODI_ALWAYS_ON = bool(Config.check_setting_int(self.config_obj, 'XBMC', 'xbmc_always_on', 1))
+            sickrage.USE_KODI = bool(srConfig.check_setting_int(self.config_obj, 'XBMC', 'use_xbmc', 0))
+            sickrage.KODI_ALWAYS_ON = bool(srConfig.check_setting_int(self.config_obj, 'XBMC', 'xbmc_always_on', 1))
             sickrage.KODI_NOTIFY_ONSNATCH = bool(
-                Config.check_setting_int(self.config_obj, 'XBMC', 'xbmc_notify_onsnatch', 0))
+                    srConfig.check_setting_int(self.config_obj, 'XBMC', 'xbmc_notify_onsnatch', 0))
             sickrage.KODI_NOTIFY_ONDOWNLOAD = bool(
-                Config.check_setting_int(self.config_obj, 'XBMC', 'xbmc_notify_ondownload', 0))
+                    srConfig.check_setting_int(self.config_obj, 'XBMC', 'xbmc_notify_ondownload', 0))
             sickrage.KODI_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                    Config.check_setting_int(self.config_obj, 'XBMC', 'xbmc_notify_onsubtitledownload', 0))
+                    srConfig.check_setting_int(self.config_obj, 'XBMC', 'xbmc_notify_onsubtitledownload', 0))
             sickrage.KODI_UPDATE_LIBRARY = bool(
-                Config.check_setting_int(self.config_obj, 'XBMC', 'xbmc_update_library', 0))
-            sickrage.KODI_UPDATE_FULL = bool(Config.check_setting_int(self.config_obj, 'XBMC', 'xbmc_update_full', 0))
+                    srConfig.check_setting_int(self.config_obj, 'XBMC', 'xbmc_update_library', 0))
+            sickrage.KODI_UPDATE_FULL = bool(srConfig.check_setting_int(self.config_obj, 'XBMC', 'xbmc_update_full', 0))
             sickrage.KODI_UPDATE_ONLYFIRST = bool(
-                Config.check_setting_int(self.config_obj, 'XBMC', 'xbmc_update_onlyfirst', 0))
-            sickrage.KODI_HOST = Config.check_setting_str(self.config_obj, 'XBMC', 'xbmc_host', '')
-            sickrage.KODI_USERNAME = Config.check_setting_str(self.config_obj, 'XBMC', 'xbmc_username', '',
-                                                              censor_log=True)
-            sickrage.KODI_PASSWORD = Config.check_setting_str(self.config_obj, 'XBMC', 'xbmc_password', '',
-                                                              censor_log=True)
-            sickrage.METADATA_KODI = Config.check_setting_str(self.config_obj, 'General', 'metadata_xbmc',
+                    srConfig.check_setting_int(self.config_obj, 'XBMC', 'xbmc_update_onlyfirst', 0))
+            sickrage.KODI_HOST = srConfig.check_setting_str(self.config_obj, 'XBMC', 'xbmc_host', '')
+            sickrage.KODI_USERNAME = srConfig.check_setting_str(self.config_obj, 'XBMC', 'xbmc_username', '',
+                                                                censor_log=True)
+            sickrage.KODI_PASSWORD = srConfig.check_setting_str(self.config_obj, 'XBMC', 'xbmc_password', '',
+                                                                censor_log=True)
+            sickrage.METADATA_KODI = srConfig.check_setting_str(self.config_obj, 'General', 'metadata_xbmc',
                                                               '0|0|0|0|0|0|0|0|0|0')
-            sickrage.METADATA_KODI_12PLUS = Config.check_setting_str(self.config_obj, 'General', 'metadata_xbmc_12plus',
+            sickrage.METADATA_KODI_12PLUS = srConfig.check_setting_str(self.config_obj, 'General',
+                                                                       'metadata_xbmc_12plus',
                                                                      '0|0|0|0|0|0|0|0|0|0')
 
         # Migration v6: Use version 2 for password encryption
@@ -867,568 +869,590 @@ class Config(object):
                 raise ConfigObjError
             cfgobj = ConfigObj(cfgfile)
         else:
-            cfgobj = Config.ConfigMigrator(ConfigObj(cfgfile)).migrate_config()
+            cfgobj = srConfig.ConfigMigrator(ConfigObj(cfgfile)).migrate_config()
 
         # config sanity check
-        Config.CheckSection(cfgobj, 'General')
-        Config.CheckSection(cfgobj, 'Blackhole')
-        Config.CheckSection(cfgobj, 'Newzbin')
-        Config.CheckSection(cfgobj, 'SABnzbd')
-        Config.CheckSection(cfgobj, 'NZBget')
-        Config.CheckSection(cfgobj, 'KODI')
-        Config.CheckSection(cfgobj, 'PLEX')
-        Config.CheckSection(cfgobj, 'Emby')
-        Config.CheckSection(cfgobj, 'Growl')
-        Config.CheckSection(cfgobj, 'Prowl')
-        Config.CheckSection(cfgobj, 'Twitter')
-        Config.CheckSection(cfgobj, 'Boxcar')
-        Config.CheckSection(cfgobj, 'Boxcar2')
-        Config.CheckSection(cfgobj, 'NMJ')
-        Config.CheckSection(cfgobj, 'NMJv2')
-        Config.CheckSection(cfgobj, 'Synology')
-        Config.CheckSection(cfgobj, 'SynologyNotifier')
-        Config.CheckSection(cfgobj, 'pyTivo')
-        Config.CheckSection(cfgobj, 'NMA')
-        Config.CheckSection(cfgobj, 'Pushalot')
-        Config.CheckSection(cfgobj, 'Pushbullet')
-        Config.CheckSection(cfgobj, 'Subtitles')
-        Config.CheckSection(cfgobj, 'pyTivo')
-        Config.CheckSection(cfgobj, 'theTVDB')
-        Config.CheckSection(cfgobj, 'Trakt')
+        srConfig.CheckSection(cfgobj, 'General')
+        srConfig.CheckSection(cfgobj, 'Blackhole')
+        srConfig.CheckSection(cfgobj, 'Newzbin')
+        srConfig.CheckSection(cfgobj, 'SABnzbd')
+        srConfig.CheckSection(cfgobj, 'NZBget')
+        srConfig.CheckSection(cfgobj, 'KODI')
+        srConfig.CheckSection(cfgobj, 'PLEX')
+        srConfig.CheckSection(cfgobj, 'Emby')
+        srConfig.CheckSection(cfgobj, 'Growl')
+        srConfig.CheckSection(cfgobj, 'Prowl')
+        srConfig.CheckSection(cfgobj, 'Twitter')
+        srConfig.CheckSection(cfgobj, 'Boxcar')
+        srConfig.CheckSection(cfgobj, 'Boxcar2')
+        srConfig.CheckSection(cfgobj, 'NMJ')
+        srConfig.CheckSection(cfgobj, 'NMJv2')
+        srConfig.CheckSection(cfgobj, 'Synology')
+        srConfig.CheckSection(cfgobj, 'SynologyNotifier')
+        srConfig.CheckSection(cfgobj, 'pyTivo')
+        srConfig.CheckSection(cfgobj, 'NMA')
+        srConfig.CheckSection(cfgobj, 'Pushalot')
+        srConfig.CheckSection(cfgobj, 'Pushbullet')
+        srConfig.CheckSection(cfgobj, 'Subtitles')
+        srConfig.CheckSection(cfgobj, 'pyTivo')
+        srConfig.CheckSection(cfgobj, 'theTVDB')
+        srConfig.CheckSection(cfgobj, 'Trakt')
 
         # Need to be before any passwords
-        sickrage.ENCRYPTION_VERSION = Config.check_setting_int(
+        sickrage.ENCRYPTION_VERSION = srConfig.check_setting_int(
                 cfgobj, 'General', 'encryption_version', 0
         )
 
-        sickrage.ENCRYPTION_SECRET = Config.check_setting_str(
+        sickrage.ENCRYPTION_SECRET = srConfig.check_setting_str(
                 cfgobj, 'General', 'encryption_secret', generateCookieSecret(), censor_log=True
         )
 
-        sickrage.DEBUG = bool(Config.check_setting_int(cfgobj, 'General', 'debug', 0))
-        sickrage.DEVELOPER = bool(Config.check_setting_int(cfgobj, 'General', 'developer', 0))
+        sickrage.DEBUG = bool(srConfig.check_setting_int(cfgobj, 'General', 'debug', 0))
+        sickrage.DEVELOPER = bool(srConfig.check_setting_int(cfgobj, 'General', 'developer', 0))
 
         # logging settings
         sickrage.LOG_DIR = os.path.normpath(
-                os.path.join(sickrage.DATA_DIR, Config.check_setting_str(cfgobj, 'General', 'log_dir', 'Logs'))
+                os.path.join(sickrage.DATA_DIR, srConfig.check_setting_str(cfgobj, 'General', 'log_dir', 'Logs'))
         )
 
-        sickrage.LOG_NR = Config.check_setting_int(cfgobj, 'General', 'log_nr', 5)
-        sickrage.LOG_SIZE = Config.check_setting_int(cfgobj, 'General', 'log_size', 1048576)
+        sickrage.LOG_NR = srConfig.check_setting_int(cfgobj, 'General', 'log_nr', 5)
+        sickrage.LOG_SIZE = srConfig.check_setting_int(cfgobj, 'General', 'log_size', 1048576)
 
-        sickrage.LOG_FILE = Config.check_setting_str(
+        sickrage.LOG_FILE = srConfig.check_setting_str(
                 cfgobj, 'General', 'log_file', os.path.join(sickrage.LOG_DIR, 'sickrage.log')
         )
 
         # misc settings
-        sickrage.GUI_NAME = Config.check_setting_str(cfgobj, 'GUI', 'gui_name', 'slick')
+        sickrage.GUI_NAME = srConfig.check_setting_str(cfgobj, 'GUI', 'gui_name', 'slick')
         sickrage.GUI_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'gui', sickrage.GUI_NAME)
-        sickrage.THEME_NAME = Config.check_setting_str(cfgobj, 'GUI', 'theme_name', 'dark')
-        sickrage.SOCKET_TIMEOUT = Config.check_setting_int(cfgobj, 'General', 'socket_timeout', 30)
+        sickrage.THEME_NAME = srConfig.check_setting_str(cfgobj, 'GUI', 'theme_name', 'dark')
+        sickrage.SOCKET_TIMEOUT = srConfig.check_setting_int(cfgobj, 'General', 'socket_timeout', 30)
 
-        sickrage.DEFAULT_PAGE = Config.check_setting_str(cfgobj, 'General', 'default_page', 'home')
+        sickrage.DEFAULT_PAGE = srConfig.check_setting_str(cfgobj, 'General', 'default_page', 'home')
 
         # git settings
-        sickrage.GIT_REMOTE_URL = Config.check_setting_str(
+        sickrage.GIT_REMOTE_URL = srConfig.check_setting_str(
                 cfgobj, 'General', 'git_remote_url',
                 'https://github.com/{}/{}.git'.format(sickrage.GIT_ORG, sickrage.GIT_REPO)
         )
-        sickrage.GIT_PATH = Config.check_setting_str(cfgobj, 'General', 'git_path', '')
-        sickrage.GIT_AUTOISSUES = bool(Config.check_setting_int(cfgobj, 'General', 'git_autoissues', 0))
-        sickrage.GIT_USERNAME = Config.check_setting_str(cfgobj, 'General', 'git_username', '')
-        sickrage.GIT_PASSWORD = Config.check_setting_str(cfgobj, 'General', 'git_password', '', censor_log=True)
-        sickrage.GIT_NEWVER = bool(Config.check_setting_int(cfgobj, 'General', 'git_newver', 0))
-        sickrage.GIT_RESET = bool(Config.check_setting_int(cfgobj, 'General', 'git_reset', 1))
-        sickrage.GIT_BRANCH = Config.check_setting_str(cfgobj, 'General', 'branch', '')
-        sickrage.GIT_REMOTE = Config.check_setting_str(cfgobj, 'General', 'git_remote', 'origin')
-        sickrage.CUR_COMMIT_HASH = Config.check_setting_str(cfgobj, 'General', 'cur_commit_hash', '')
-        sickrage.CUR_COMMIT_BRANCH = Config.check_setting_str(cfgobj, 'General', 'cur_commit_branch', '')
+        sickrage.GIT_PATH = srConfig.check_setting_str(cfgobj, 'General', 'git_path', '')
+        sickrage.GIT_AUTOISSUES = bool(srConfig.check_setting_int(cfgobj, 'General', 'git_autoissues', 0))
+        sickrage.GIT_USERNAME = srConfig.check_setting_str(cfgobj, 'General', 'git_username', '')
+        sickrage.GIT_PASSWORD = srConfig.check_setting_str(cfgobj, 'General', 'git_password', '', censor_log=True)
+        sickrage.GIT_NEWVER = bool(srConfig.check_setting_int(cfgobj, 'General', 'git_newver', 0))
+        sickrage.GIT_RESET = bool(srConfig.check_setting_int(cfgobj, 'General', 'git_reset', 1))
+        sickrage.VERSION = srConfig.check_setting_str(cfgobj, 'General', 'branch', '')
+        sickrage.GIT_REMOTE = srConfig.check_setting_str(cfgobj, 'General', 'git_remote', 'origin')
+        sickrage.CUR_COMMIT_HASH = srConfig.check_setting_str(cfgobj, 'General', 'cur_commit_hash', '')
+        sickrage.CUR_COMMIT_BRANCH = srConfig.check_setting_str(cfgobj, 'General', 'cur_commit_branch', '')
 
         # cache settings
-        sickrage.CACHE_DIR = Config.check_setting_str(cfgobj, 'General', 'cache_dir', 'cache')
+        sickrage.CACHE_DIR = srConfig.check_setting_str(cfgobj, 'General', 'cache_dir', 'cache')
         if not os.path.isabs(sickrage.CACHE_DIR):
             sickrage.CACHE_DIR = os.path.join(sickrage.DATA_DIR, sickrage.CACHE_DIR)
 
         # web settings
-        sickrage.WEB_PORT = Config.check_setting_int(cfgobj, 'General', 'web_port', 8081)
-        sickrage.WEB_HOST = Config.check_setting_str(cfgobj, 'General', 'web_host', '0.0.0.0')
-        sickrage.WEB_IPV6 = bool(Config.check_setting_int(cfgobj, 'General', 'web_ipv6', 0))
-        sickrage.WEB_ROOT = Config.check_setting_str(cfgobj, 'General', 'web_root', '').rstrip("/")
-        sickrage.WEB_LOG = bool(Config.check_setting_int(cfgobj, 'General', 'web_log', 0))
-        sickrage.WEB_USERNAME = Config.check_setting_str(cfgobj, 'General', 'web_username', '', censor_log=True)
-        sickrage.WEB_PASSWORD = Config.check_setting_str(cfgobj, 'General', 'web_password', '', censor_log=True)
-        sickrage.WEB_COOKIE_SECRET = Config.check_setting_str(
+        sickrage.WEB_PORT = srConfig.check_setting_int(cfgobj, 'General', 'web_port', 8081)
+        sickrage.WEB_HOST = srConfig.check_setting_str(cfgobj, 'General', 'web_host', '0.0.0.0')
+        sickrage.WEB_IPV6 = bool(srConfig.check_setting_int(cfgobj, 'General', 'web_ipv6', 0))
+        sickrage.WEB_ROOT = srConfig.check_setting_str(cfgobj, 'General', 'web_root', '').rstrip("/")
+        sickrage.WEB_LOG = bool(srConfig.check_setting_int(cfgobj, 'General', 'web_log', 0))
+        sickrage.WEB_USERNAME = srConfig.check_setting_str(cfgobj, 'General', 'web_username', '', censor_log=True)
+        sickrage.WEB_PASSWORD = srConfig.check_setting_str(cfgobj, 'General', 'web_password', '', censor_log=True)
+        sickrage.WEB_COOKIE_SECRET = srConfig.check_setting_str(
                 cfgobj, 'General', 'web_cookie_secret', generateCookieSecret(), censor_log=True
         )
-        sickrage.WEB_USE_GZIP = bool(Config.check_setting_int(cfgobj, 'General', 'web_use_gzip', 1))
+        sickrage.WEB_USE_GZIP = bool(srConfig.check_setting_int(cfgobj, 'General', 'web_use_gzip', 1))
 
-        sickrage.SSL_VERIFY = bool(Config.check_setting_int(cfgobj, 'General', 'ssl_verify', 1))
-        sickrage.LAUNCH_BROWSER = bool(Config.check_setting_int(cfgobj, 'General', 'launch_browser', 1))
-        sickrage.INDEXER_DEFAULT_LANGUAGE = Config.check_setting_str(cfgobj, 'General', 'indexerDefaultLang', 'en')
-        sickrage.EP_DEFAULT_DELETED_STATUS = Config.check_setting_int(cfgobj, 'General', 'ep_default_deleted_status', 6)
-        sickrage.DOWNLOAD_URL = Config.check_setting_str(cfgobj, 'General', 'download_url', "")
-        sickrage.LOCALHOST_IP = Config.check_setting_str(cfgobj, 'General', 'localhost_ip', '')
-        sickrage.CPU_PRESET = Config.check_setting_str(cfgobj, 'General', 'cpu_preset', 'NORMAL')
-        sickrage.ANON_REDIRECT = Config.check_setting_str(cfgobj, 'General', 'anon_redirect', 'http://dereferer.org/?')
-        sickrage.PROXY_SETTING = Config.check_setting_str(cfgobj, 'General', 'proxy_setting', '')
-        sickrage.PROXY_INDEXERS = bool(Config.check_setting_int(cfgobj, 'General', 'proxy_indexers', 1))
-        sickrage.TRASH_REMOVE_SHOW = bool(Config.check_setting_int(cfgobj, 'General', 'trash_remove_show', 0))
-        sickrage.TRASH_ROTATE_LOGS = bool(Config.check_setting_int(cfgobj, 'General', 'trash_rotate_logs', 0))
-        sickrage.SORT_ARTICLE = bool(Config.check_setting_int(cfgobj, 'General', 'sort_article', 0))
-        sickrage.API_KEY = Config.check_setting_str(cfgobj, 'General', 'api_key', '', censor_log=True)
-        sickrage.ENABLE_HTTPS = bool(Config.check_setting_int(cfgobj, 'General', 'enable_https', 0))
-        sickrage.HTTPS_CERT = Config.check_setting_str(cfgobj, 'General', 'https_cert', 'server.crt')
-        sickrage.HTTPS_KEY = Config.check_setting_str(cfgobj, 'General', 'https_key', 'server.key')
-        sickrage.HANDLE_REVERSE_PROXY = bool(Config.check_setting_int(cfgobj, 'General', 'handle_reverse_proxy', 0))
-        sickrage.NEWS_LAST_READ = Config.check_setting_str(cfgobj, 'General', 'news_last_read', '1970-01-01')
+        sickrage.SSL_VERIFY = bool(srConfig.check_setting_int(cfgobj, 'General', 'ssl_verify', 1))
+        sickrage.LAUNCH_BROWSER = bool(srConfig.check_setting_int(cfgobj, 'General', 'launch_browser', 1))
+        sickrage.INDEXER_DEFAULT_LANGUAGE = srConfig.check_setting_str(cfgobj, 'General', 'indexerDefaultLang', 'en')
+        sickrage.EP_DEFAULT_DELETED_STATUS = srConfig.check_setting_int(cfgobj, 'General', 'ep_default_deleted_status',
+                                                                        6)
+        sickrage.DOWNLOAD_URL = srConfig.check_setting_str(cfgobj, 'General', 'download_url', "")
+        sickrage.LOCALHOST_IP = srConfig.check_setting_str(cfgobj, 'General', 'localhost_ip', '')
+        sickrage.CPU_PRESET = srConfig.check_setting_str(cfgobj, 'General', 'cpu_preset', 'NORMAL')
+        sickrage.ANON_REDIRECT = srConfig.check_setting_str(cfgobj, 'General', 'anon_redirect',
+                                                            'http://dereferer.org/?')
+        sickrage.PROXY_SETTING = srConfig.check_setting_str(cfgobj, 'General', 'proxy_setting', '')
+        sickrage.PROXY_INDEXERS = bool(srConfig.check_setting_int(cfgobj, 'General', 'proxy_indexers', 1))
+        sickrage.TRASH_REMOVE_SHOW = bool(srConfig.check_setting_int(cfgobj, 'General', 'trash_remove_show', 0))
+        sickrage.TRASH_ROTATE_LOGS = bool(srConfig.check_setting_int(cfgobj, 'General', 'trash_rotate_logs', 0))
+        sickrage.SORT_ARTICLE = bool(srConfig.check_setting_int(cfgobj, 'General', 'sort_article', 0))
+        sickrage.API_KEY = srConfig.check_setting_str(cfgobj, 'General', 'api_key', '', censor_log=True)
+        sickrage.ENABLE_HTTPS = bool(srConfig.check_setting_int(cfgobj, 'General', 'enable_https', 0))
+        sickrage.HTTPS_CERT = srConfig.check_setting_str(cfgobj, 'General', 'https_cert', 'server.crt')
+        sickrage.HTTPS_KEY = srConfig.check_setting_str(cfgobj, 'General', 'https_key', 'server.key')
+        sickrage.HANDLE_REVERSE_PROXY = bool(srConfig.check_setting_int(cfgobj, 'General', 'handle_reverse_proxy', 0))
+        sickrage.NEWS_LAST_READ = srConfig.check_setting_str(cfgobj, 'General', 'news_last_read', '1970-01-01')
 
         # show settings
-        sickrage.ROOT_DIRS = Config.check_setting_str(cfgobj, 'General', 'root_dirs', '')
-        sickrage.QUALITY_DEFAULT = Config.check_setting_int(cfgobj, 'General', 'quality_default', SD)
-        sickrage.STATUS_DEFAULT = Config.check_setting_int(cfgobj, 'General', 'status_default', SKIPPED)
-        sickrage.STATUS_DEFAULT_AFTER = Config.check_setting_int(cfgobj, 'General', 'status_default_after', WANTED)
-        sickrage.VERSION_NOTIFY = bool(Config.check_setting_int(cfgobj, 'General', 'version_notify', 1))
-        sickrage.AUTO_UPDATE = bool(Config.check_setting_int(cfgobj, 'General', 'auto_update', 0))
-        sickrage.NOTIFY_ON_UPDATE = bool(Config.check_setting_int(cfgobj, 'General', 'notify_on_update', 1))
+        sickrage.ROOT_DIRS = srConfig.check_setting_str(cfgobj, 'General', 'root_dirs', '')
+        sickrage.QUALITY_DEFAULT = srConfig.check_setting_int(cfgobj, 'General', 'quality_default', SD)
+        sickrage.STATUS_DEFAULT = srConfig.check_setting_int(cfgobj, 'General', 'status_default', SKIPPED)
+        sickrage.STATUS_DEFAULT_AFTER = srConfig.check_setting_int(cfgobj, 'General', 'status_default_after', WANTED)
+        sickrage.VERSION_NOTIFY = bool(srConfig.check_setting_int(cfgobj, 'General', 'version_notify', 1))
+        sickrage.AUTO_UPDATE = bool(srConfig.check_setting_int(cfgobj, 'General', 'auto_update', 0))
+        sickrage.NOTIFY_ON_UPDATE = bool(srConfig.check_setting_int(cfgobj, 'General', 'notify_on_update', 1))
         sickrage.FLATTEN_FOLDERS_DEFAULT = bool(
-            Config.check_setting_int(cfgobj, 'General', 'flatten_folders_default', 0))
-        sickrage.INDEXER_DEFAULT = Config.check_setting_int(cfgobj, 'General', 'indexer_default', 0)
-        sickrage.INDEXER_TIMEOUT = Config.check_setting_int(cfgobj, 'General', 'indexer_timeout', 20)
-        sickrage.ANIME_DEFAULT = bool(Config.check_setting_int(cfgobj, 'General', 'anime_default', 0))
-        sickrage.SCENE_DEFAULT = bool(Config.check_setting_int(cfgobj, 'General', 'scene_default', 0))
-        sickrage.ARCHIVE_DEFAULT = bool(Config.check_setting_int(cfgobj, 'General', 'archive_default', 0))
+                srConfig.check_setting_int(cfgobj, 'General', 'flatten_folders_default', 0))
+        sickrage.INDEXER_DEFAULT = srConfig.check_setting_int(cfgobj, 'General', 'indexer_default', 0)
+        sickrage.INDEXER_TIMEOUT = srConfig.check_setting_int(cfgobj, 'General', 'indexer_timeout', 20)
+        sickrage.ANIME_DEFAULT = bool(srConfig.check_setting_int(cfgobj, 'General', 'anime_default', 0))
+        sickrage.SCENE_DEFAULT = bool(srConfig.check_setting_int(cfgobj, 'General', 'scene_default', 0))
+        sickrage.ARCHIVE_DEFAULT = bool(srConfig.check_setting_int(cfgobj, 'General', 'archive_default', 0))
 
         # naming settings
-        sickrage.NAMING_PATTERN = Config.check_setting_str(cfgobj, 'General', 'naming_pattern',
+        sickrage.NAMING_PATTERN = srConfig.check_setting_str(cfgobj, 'General', 'naming_pattern',
                                                            'Season %0S/%SN - S%0SE%0E - %EN')
-        sickrage.NAMING_ABD_PATTERN = Config.check_setting_str(cfgobj, 'General', 'naming_abd_pattern',
+        sickrage.NAMING_ABD_PATTERN = srConfig.check_setting_str(cfgobj, 'General', 'naming_abd_pattern',
                                                                '%SN - %A.D - %EN')
-        sickrage.NAMING_CUSTOM_ABD = bool(Config.check_setting_int(cfgobj, 'General', 'naming_custom_abd', 0))
-        sickrage.NAMING_SPORTS_PATTERN = Config.check_setting_str(cfgobj, 'General', 'naming_sports_pattern',
+        sickrage.NAMING_CUSTOM_ABD = bool(srConfig.check_setting_int(cfgobj, 'General', 'naming_custom_abd', 0))
+        sickrage.NAMING_SPORTS_PATTERN = srConfig.check_setting_str(cfgobj, 'General', 'naming_sports_pattern',
                                                                   '%SN - %A-D - %EN')
-        sickrage.NAMING_ANIME_PATTERN = Config.check_setting_str(cfgobj, 'General', 'naming_anime_pattern',
+        sickrage.NAMING_ANIME_PATTERN = srConfig.check_setting_str(cfgobj, 'General', 'naming_anime_pattern',
                                                                  'Season %0S/%SN - S%0SE%0E - %EN')
-        sickrage.NAMING_ANIME = Config.check_setting_int(cfgobj, 'General', 'naming_anime', 3)
-        sickrage.NAMING_CUSTOM_SPORTS = bool(Config.check_setting_int(cfgobj, 'General', 'naming_custom_sports', 0))
-        sickrage.NAMING_CUSTOM_ANIME = bool(Config.check_setting_int(cfgobj, 'General', 'naming_custom_anime', 0))
-        sickrage.NAMING_MULTI_EP = Config.check_setting_int(cfgobj, 'General', 'naming_multi_ep', 1)
-        sickrage.NAMING_ANIME_MULTI_EP = Config.check_setting_int(cfgobj, 'General', 'naming_anime_multi_ep', 1)
-        sickrage.NAMING_STRIP_YEAR = bool(Config.check_setting_int(cfgobj, 'General', 'naming_strip_year', 0))
+        sickrage.NAMING_ANIME = srConfig.check_setting_int(cfgobj, 'General', 'naming_anime', 3)
+        sickrage.NAMING_CUSTOM_SPORTS = bool(srConfig.check_setting_int(cfgobj, 'General', 'naming_custom_sports', 0))
+        sickrage.NAMING_CUSTOM_ANIME = bool(srConfig.check_setting_int(cfgobj, 'General', 'naming_custom_anime', 0))
+        sickrage.NAMING_MULTI_EP = srConfig.check_setting_int(cfgobj, 'General', 'naming_multi_ep', 1)
+        sickrage.NAMING_ANIME_MULTI_EP = srConfig.check_setting_int(cfgobj, 'General', 'naming_anime_multi_ep', 1)
+        sickrage.NAMING_STRIP_YEAR = bool(srConfig.check_setting_int(cfgobj, 'General', 'naming_strip_year', 0))
 
         # provider settings
-        sickrage.USE_NZBS = bool(Config.check_setting_int(cfgobj, 'General', 'use_nzbs', 0))
-        sickrage.USE_TORRENTS = bool(Config.check_setting_int(cfgobj, 'General', 'use_torrents', 1))
-        sickrage.NZB_METHOD = Config.check_setting_str(cfgobj, 'General', 'nzb_method', 'blackhole')
-        sickrage.TORRENT_METHOD = Config.check_setting_str(cfgobj, 'General', 'torrent_method', 'blackhole')
-        sickrage.DOWNLOAD_PROPERS = bool(Config.check_setting_int(cfgobj, 'General', 'download_propers', 1))
-        sickrage.PROPER_SEARCHER_INTERVAL = Config.check_setting_str(cfgobj, 'General', 'check_propers_interval',
+        sickrage.USE_NZBS = bool(srConfig.check_setting_int(cfgobj, 'General', 'use_nzbs', 0))
+        sickrage.USE_TORRENTS = bool(srConfig.check_setting_int(cfgobj, 'General', 'use_torrents', 1))
+        sickrage.NZB_METHOD = srConfig.check_setting_str(cfgobj, 'General', 'nzb_method', 'blackhole')
+        sickrage.TORRENT_METHOD = srConfig.check_setting_str(cfgobj, 'General', 'torrent_method', 'blackhole')
+        sickrage.DOWNLOAD_PROPERS = bool(srConfig.check_setting_int(cfgobj, 'General', 'download_propers', 1))
+        sickrage.PROPER_SEARCHER_INTERVAL = srConfig.check_setting_str(cfgobj, 'General', 'check_propers_interval',
                                                                      'daily')
-        sickrage.RANDOMIZE_PROVIDERS = bool(Config.check_setting_int(cfgobj, 'General', 'randomize_providers', 0))
-        sickrage.ALLOW_HIGH_PRIORITY = bool(Config.check_setting_int(cfgobj, 'General', 'allow_high_priority', 1))
-        sickrage.SKIP_REMOVED_FILES = bool(Config.check_setting_int(cfgobj, 'General', 'skip_removed_files', 0))
-        sickrage.USENET_RETENTION = Config.check_setting_int(cfgobj, 'General', 'usenet_retention', 500)
+        sickrage.RANDOMIZE_PROVIDERS = bool(srConfig.check_setting_int(cfgobj, 'General', 'randomize_providers', 0))
+        sickrage.ALLOW_HIGH_PRIORITY = bool(srConfig.check_setting_int(cfgobj, 'General', 'allow_high_priority', 1))
+        sickrage.SKIP_REMOVED_FILES = bool(srConfig.check_setting_int(cfgobj, 'General', 'skip_removed_files', 0))
+        sickrage.USENET_RETENTION = srConfig.check_setting_int(cfgobj, 'General', 'usenet_retention', 500)
 
         # scheduler settings
-        sickrage.AUTOPOSTPROCESSOR_FREQ = Config.check_setting_int(
+        sickrage.AUTOPOSTPROCESSOR_FREQ = srConfig.check_setting_int(
                 cfgobj, 'General', 'autopostprocessor_frequency', sickrage.DEFAULT_AUTOPOSTPROCESSOR_FREQ
         )
 
-        sickrage.SUBTITLE_SEARCHER_FREQ = Config.check_setting_int(
+        sickrage.SUBTITLE_SEARCHER_FREQ = srConfig.check_setting_int(
                 cfgobj, 'Subtitles', 'subtitles_finder_frequency', sickrage.DEFAULT_SUBTITLE_SEARCHER_FREQ
         )
 
-        sickrage.NAMECACHE_FREQ = Config.check_setting_int(cfgobj, 'General', 'namecache_frequency',
-                                                           sickrage.DEFAULT_NAMECACHE_FREQ)
-        sickrage.DAILY_SEARCHER_FREQ = Config.check_setting_int(cfgobj, 'General', 'dailysearch_frequency',
-                                                                sickrage.DEFAULT_DAILY_SEARCHER_FREQ)
-        sickrage.BACKLOG_SEARCHER_FREQ = Config.check_setting_int(cfgobj, 'General', 'backlog_frequency',
-                                                                  sickrage.DEFAULT_BACKLOG_SEARCHER_FREQ)
-        sickrage.VERSION_UPDATER_FREQ = Config.check_setting_int(cfgobj, 'General', 'update_frequency',
-                                                                 sickrage.DEFAULT_VERSION_UPDATE_FREQ)
-        sickrage.SHOWUPDATE_HOUR = Config.check_setting_int(cfgobj, 'General', 'showupdate_hour',
-                                                            sickrage.DEFAULT_SHOWUPDATE_HOUR)
-        sickrage.BACKLOG_DAYS = Config.check_setting_int(cfgobj, 'General', 'backlog_days', 7)
+        sickrage.NAMECACHE_FREQ = srConfig.check_setting_int(cfgobj, 'General', 'namecache_frequency',
+                                                             sickrage.DEFAULT_NAMECACHE_FREQ)
+        sickrage.DAILY_SEARCHER_FREQ = srConfig.check_setting_int(cfgobj, 'General', 'dailysearch_frequency',
+                                                                  sickrage.DEFAULT_DAILY_SEARCHER_FREQ)
+        sickrage.BACKLOG_SEARCHER_FREQ = srConfig.check_setting_int(cfgobj, 'General', 'backlog_frequency',
+                                                                    sickrage.DEFAULT_BACKLOG_SEARCHER_FREQ)
+        sickrage.VERSION_UPDATER_FREQ = srConfig.check_setting_int(cfgobj, 'General', 'update_frequency',
+                                                                   sickrage.DEFAULT_VERSION_UPDATE_FREQ)
+        sickrage.SHOWUPDATE_HOUR = srConfig.check_setting_int(cfgobj, 'General', 'showupdate_hour',
+                                                              sickrage.DEFAULT_SHOWUPDATE_HOUR)
+        sickrage.BACKLOG_DAYS = srConfig.check_setting_int(cfgobj, 'General', 'backlog_days', 7)
 
-        sickrage.NZB_DIR = Config.check_setting_str(cfgobj, 'Blackhole', 'nzb_dir', '')
-        sickrage.TORRENT_DIR = Config.check_setting_str(cfgobj, 'Blackhole', 'torrent_dir', '')
+        sickrage.NZB_DIR = srConfig.check_setting_str(cfgobj, 'Blackhole', 'nzb_dir', '')
+        sickrage.TORRENT_DIR = srConfig.check_setting_str(cfgobj, 'Blackhole', 'torrent_dir', '')
 
-        sickrage.TV_DOWNLOAD_DIR = Config.check_setting_str(cfgobj, 'General', 'tv_download_dir', '')
-        sickrage.PROCESS_AUTOMATICALLY = bool(Config.check_setting_int(cfgobj, 'General', 'process_automatically', 0))
-        sickrage.NO_DELETE = bool(Config.check_setting_int(cfgobj, 'General', 'no_delete', 0))
-        sickrage.UNPACK = bool(Config.check_setting_int(cfgobj, 'General', 'unpack', 0))
-        sickrage.RENAME_EPISODES = bool(Config.check_setting_int(cfgobj, 'General', 'rename_episodes', 1))
-        sickrage.AIRDATE_EPISODES = bool(Config.check_setting_int(cfgobj, 'General', 'airdate_episodes', 0))
-        sickrage.FILE_TIMESTAMP_TIMEZONE = Config.check_setting_str(cfgobj, 'General', 'file_timestamp_timezone',
+        sickrage.TV_DOWNLOAD_DIR = srConfig.check_setting_str(cfgobj, 'General', 'tv_download_dir', '')
+        sickrage.PROCESS_AUTOMATICALLY = bool(srConfig.check_setting_int(cfgobj, 'General', 'process_automatically', 0))
+        sickrage.NO_DELETE = bool(srConfig.check_setting_int(cfgobj, 'General', 'no_delete', 0))
+        sickrage.UNPACK = bool(srConfig.check_setting_int(cfgobj, 'General', 'unpack', 0))
+        sickrage.RENAME_EPISODES = bool(srConfig.check_setting_int(cfgobj, 'General', 'rename_episodes', 1))
+        sickrage.AIRDATE_EPISODES = bool(srConfig.check_setting_int(cfgobj, 'General', 'airdate_episodes', 0))
+        sickrage.FILE_TIMESTAMP_TIMEZONE = srConfig.check_setting_str(cfgobj, 'General', 'file_timestamp_timezone',
                                                                     'network')
-        sickrage.KEEP_PROCESSED_DIR = bool(Config.check_setting_int(cfgobj, 'General', 'keep_processed_dir', 1))
-        sickrage.PROCESS_METHOD = Config.check_setting_str(cfgobj, 'General', 'process_method',
+        sickrage.KEEP_PROCESSED_DIR = bool(srConfig.check_setting_int(cfgobj, 'General', 'keep_processed_dir', 1))
+        sickrage.PROCESS_METHOD = srConfig.check_setting_str(cfgobj, 'General', 'process_method',
                                                            'copy' if sickrage.KEEP_PROCESSED_DIR else 'move')
-        sickrage.DELRARCONTENTS = bool(Config.check_setting_int(cfgobj, 'General', 'del_rar_contents', 0))
-        sickrage.MOVE_ASSOCIATED_FILES = bool(Config.check_setting_int(cfgobj, 'General', 'move_associated_files', 0))
-        sickrage.POSTPONE_IF_SYNC_FILES = bool(Config.check_setting_int(cfgobj, 'General', 'postpone_if_sync_files', 1))
-        sickrage.SYNC_FILES = Config.check_setting_str(cfgobj, 'General', 'sync_files',
+        sickrage.DELRARCONTENTS = bool(srConfig.check_setting_int(cfgobj, 'General', 'del_rar_contents', 0))
+        sickrage.MOVE_ASSOCIATED_FILES = bool(srConfig.check_setting_int(cfgobj, 'General', 'move_associated_files', 0))
+        sickrage.POSTPONE_IF_SYNC_FILES = bool(
+            srConfig.check_setting_int(cfgobj, 'General', 'postpone_if_sync_files', 1))
+        sickrage.SYNC_FILES = srConfig.check_setting_str(cfgobj, 'General', 'sync_files',
                                                        '!sync,lftp-pget-status,part,bts,!qb')
-        sickrage.NFO_RENAME = bool(Config.check_setting_int(cfgobj, 'General', 'nfo_rename', 1))
+        sickrage.NFO_RENAME = bool(srConfig.check_setting_int(cfgobj, 'General', 'nfo_rename', 1))
         sickrage.CREATE_MISSING_SHOW_DIRS = bool(
-            Config.check_setting_int(cfgobj, 'General', 'create_missing_show_dirs', 0))
-        sickrage.ADD_SHOWS_WO_DIR = bool(Config.check_setting_int(cfgobj, 'General', 'add_shows_wo_dir', 0))
+                srConfig.check_setting_int(cfgobj, 'General', 'create_missing_show_dirs', 0))
+        sickrage.ADD_SHOWS_WO_DIR = bool(srConfig.check_setting_int(cfgobj, 'General', 'add_shows_wo_dir', 0))
 
-        sickrage.NZBS = bool(Config.check_setting_int(cfgobj, 'NZBs', 'nzbs', 0))
-        sickrage.NZBS_UID = Config.check_setting_str(cfgobj, 'NZBs', 'nzbs_uid', '', censor_log=True)
-        sickrage.NZBS_HASH = Config.check_setting_str(cfgobj, 'NZBs', 'nzbs_hash', '', censor_log=True)
+        sickrage.NZBS = bool(srConfig.check_setting_int(cfgobj, 'NZBs', 'nzbs', 0))
+        sickrage.NZBS_UID = srConfig.check_setting_str(cfgobj, 'NZBs', 'nzbs_uid', '', censor_log=True)
+        sickrage.NZBS_HASH = srConfig.check_setting_str(cfgobj, 'NZBs', 'nzbs_hash', '', censor_log=True)
 
-        sickrage.NEWZBIN = bool(Config.check_setting_int(cfgobj, 'Newzbin', 'newzbin', 0))
-        sickrage.NEWZBIN_USERNAME = Config.check_setting_str(cfgobj, 'Newzbin', 'newzbin_username', '', censor_log=True)
-        sickrage.NEWZBIN_PASSWORD = Config.check_setting_str(cfgobj, 'Newzbin', 'newzbin_password', '', censor_log=True)
+        sickrage.NEWZBIN = bool(srConfig.check_setting_int(cfgobj, 'Newzbin', 'newzbin', 0))
+        sickrage.NEWZBIN_USERNAME = srConfig.check_setting_str(cfgobj, 'Newzbin', 'newzbin_username', '',
+                                                               censor_log=True)
+        sickrage.NEWZBIN_PASSWORD = srConfig.check_setting_str(cfgobj, 'Newzbin', 'newzbin_password', '',
+                                                               censor_log=True)
 
-        sickrage.SAB_USERNAME = Config.check_setting_str(cfgobj, 'SABnzbd', 'sab_username', '', censor_log=True)
-        sickrage.SAB_PASSWORD = Config.check_setting_str(cfgobj, 'SABnzbd', 'sab_password', '', censor_log=True)
-        sickrage.SAB_APIKEY = Config.check_setting_str(cfgobj, 'SABnzbd', 'sab_apikey', '', censor_log=True)
-        sickrage.SAB_CATEGORY = Config.check_setting_str(cfgobj, 'SABnzbd', 'sab_category', 'tv')
-        sickrage.SAB_CATEGORY_BACKLOG = Config.check_setting_str(cfgobj, 'SABnzbd', 'sab_category_backlog',
-                                                                 sickrage.SAB_CATEGORY)
-        sickrage.SAB_CATEGORY_ANIME = Config.check_setting_str(cfgobj, 'SABnzbd', 'sab_category_anime', 'anime')
-        sickrage.SAB_CATEGORY_ANIME_BACKLOG = Config.check_setting_str(cfgobj, 'SABnzbd', 'sab_category_anime_backlog',
-                                                                       sickrage.SAB_CATEGORY_ANIME)
-        sickrage.SAB_HOST = Config.check_setting_str(cfgobj, 'SABnzbd', 'sab_host', '')
-        sickrage.SAB_FORCED = bool(Config.check_setting_int(cfgobj, 'SABnzbd', 'sab_forced', 0))
+        sickrage.SAB_USERNAME = srConfig.check_setting_str(cfgobj, 'SABnzbd', 'sab_username', '', censor_log=True)
+        sickrage.SAB_PASSWORD = srConfig.check_setting_str(cfgobj, 'SABnzbd', 'sab_password', '', censor_log=True)
+        sickrage.SAB_APIKEY = srConfig.check_setting_str(cfgobj, 'SABnzbd', 'sab_apikey', '', censor_log=True)
+        sickrage.SAB_CATEGORY = srConfig.check_setting_str(cfgobj, 'SABnzbd', 'sab_category', 'tv')
+        sickrage.SAB_CATEGORY_BACKLOG = srConfig.check_setting_str(cfgobj, 'SABnzbd', 'sab_category_backlog',
+                                                                   sickrage.SAB_CATEGORY)
+        sickrage.SAB_CATEGORY_ANIME = srConfig.check_setting_str(cfgobj, 'SABnzbd', 'sab_category_anime', 'anime')
+        sickrage.SAB_CATEGORY_ANIME_BACKLOG = srConfig.check_setting_str(cfgobj, 'SABnzbd',
+                                                                         'sab_category_anime_backlog',
+                                                                         sickrage.SAB_CATEGORY_ANIME)
+        sickrage.SAB_HOST = srConfig.check_setting_str(cfgobj, 'SABnzbd', 'sab_host', '')
+        sickrage.SAB_FORCED = bool(srConfig.check_setting_int(cfgobj, 'SABnzbd', 'sab_forced', 0))
 
-        sickrage.NZBGET_USERNAME = Config.check_setting_str(cfgobj, 'NZBget', 'nzbget_username', 'nzbget',
-                                                            censor_log=True)
-        sickrage.NZBGET_PASSWORD = Config.check_setting_str(cfgobj, 'NZBget', 'nzbget_password', 'tegbzn6789',
-                                                            censor_log=True)
-        sickrage.NZBGET_CATEGORY = Config.check_setting_str(cfgobj, 'NZBget', 'nzbget_category', 'tv')
-        sickrage.NZBGET_CATEGORY_BACKLOG = Config.check_setting_str(cfgobj, 'NZBget', 'nzbget_category_backlog',
-                                                                    sickrage.NZBGET_CATEGORY)
-        sickrage.NZBGET_CATEGORY_ANIME = Config.check_setting_str(cfgobj, 'NZBget', 'nzbget_category_anime', 'anime')
-        sickrage.NZBGET_CATEGORY_ANIME_BACKLOG = Config.check_setting_str(
+        sickrage.NZBGET_USERNAME = srConfig.check_setting_str(cfgobj, 'NZBget', 'nzbget_username', 'nzbget',
+                                                              censor_log=True)
+        sickrage.NZBGET_PASSWORD = srConfig.check_setting_str(cfgobj, 'NZBget', 'nzbget_password', 'tegbzn6789',
+                                                              censor_log=True)
+        sickrage.NZBGET_CATEGORY = srConfig.check_setting_str(cfgobj, 'NZBget', 'nzbget_category', 'tv')
+        sickrage.NZBGET_CATEGORY_BACKLOG = srConfig.check_setting_str(cfgobj, 'NZBget', 'nzbget_category_backlog',
+                                                                      sickrage.NZBGET_CATEGORY)
+        sickrage.NZBGET_CATEGORY_ANIME = srConfig.check_setting_str(cfgobj, 'NZBget', 'nzbget_category_anime', 'anime')
+        sickrage.NZBGET_CATEGORY_ANIME_BACKLOG = srConfig.check_setting_str(
                 cfgobj, 'NZBget', 'nzbget_category_anime_backlog', sickrage.NZBGET_CATEGORY_ANIME
         )
-        sickrage.NZBGET_HOST = Config.check_setting_str(cfgobj, 'NZBget', 'nzbget_host', '')
-        sickrage.NZBGET_USE_HTTPS = bool(Config.check_setting_int(cfgobj, 'NZBget', 'nzbget_use_https', 0))
-        sickrage.NZBGET_PRIORITY = Config.check_setting_int(cfgobj, 'NZBget', 'nzbget_priority', 100)
+        sickrage.NZBGET_HOST = srConfig.check_setting_str(cfgobj, 'NZBget', 'nzbget_host', '')
+        sickrage.NZBGET_USE_HTTPS = bool(srConfig.check_setting_int(cfgobj, 'NZBget', 'nzbget_use_https', 0))
+        sickrage.NZBGET_PRIORITY = srConfig.check_setting_int(cfgobj, 'NZBget', 'nzbget_priority', 100)
 
-        sickrage.TORRENT_USERNAME = Config.check_setting_str(cfgobj, 'TORRENT', 'torrent_username', '', censor_log=True)
-        sickrage.TORRENT_PASSWORD = Config.check_setting_str(cfgobj, 'TORRENT', 'torrent_password', '', censor_log=True)
-        sickrage.TORRENT_HOST = Config.check_setting_str(cfgobj, 'TORRENT', 'torrent_host', '')
-        sickrage.TORRENT_PATH = Config.check_setting_str(cfgobj, 'TORRENT', 'torrent_path', '')
-        sickrage.TORRENT_SEED_TIME = Config.check_setting_int(cfgobj, 'TORRENT', 'torrent_seed_time', 0)
-        sickrage.TORRENT_PAUSED = bool(Config.check_setting_int(cfgobj, 'TORRENT', 'torrent_paused', 0))
-        sickrage.TORRENT_HIGH_BANDWIDTH = bool(Config.check_setting_int(cfgobj, 'TORRENT', 'torrent_high_bandwidth', 0))
-        sickrage.TORRENT_LABEL = Config.check_setting_str(cfgobj, 'TORRENT', 'torrent_label', '')
-        sickrage.TORRENT_LABEL_ANIME = Config.check_setting_str(cfgobj, 'TORRENT', 'torrent_label_anime', '')
-        sickrage.TORRENT_VERIFY_CERT = bool(Config.check_setting_int(cfgobj, 'TORRENT', 'torrent_verify_cert', 0))
-        sickrage.TORRENT_RPCURL = Config.check_setting_str(cfgobj, 'TORRENT', 'torrent_rpcurl', 'transmission')
-        sickrage.TORRENT_AUTH_TYPE = Config.check_setting_str(cfgobj, 'TORRENT', 'torrent_auth_type', '')
+        sickrage.TORRENT_USERNAME = srConfig.check_setting_str(cfgobj, 'TORRENT', 'torrent_username', '',
+                                                               censor_log=True)
+        sickrage.TORRENT_PASSWORD = srConfig.check_setting_str(cfgobj, 'TORRENT', 'torrent_password', '',
+                                                               censor_log=True)
+        sickrage.TORRENT_HOST = srConfig.check_setting_str(cfgobj, 'TORRENT', 'torrent_host', '')
+        sickrage.TORRENT_PATH = srConfig.check_setting_str(cfgobj, 'TORRENT', 'torrent_path', '')
+        sickrage.TORRENT_SEED_TIME = srConfig.check_setting_int(cfgobj, 'TORRENT', 'torrent_seed_time', 0)
+        sickrage.TORRENT_PAUSED = bool(srConfig.check_setting_int(cfgobj, 'TORRENT', 'torrent_paused', 0))
+        sickrage.TORRENT_HIGH_BANDWIDTH = bool(
+            srConfig.check_setting_int(cfgobj, 'TORRENT', 'torrent_high_bandwidth', 0))
+        sickrage.TORRENT_LABEL = srConfig.check_setting_str(cfgobj, 'TORRENT', 'torrent_label', '')
+        sickrage.TORRENT_LABEL_ANIME = srConfig.check_setting_str(cfgobj, 'TORRENT', 'torrent_label_anime', '')
+        sickrage.TORRENT_VERIFY_CERT = bool(srConfig.check_setting_int(cfgobj, 'TORRENT', 'torrent_verify_cert', 0))
+        sickrage.TORRENT_RPCURL = srConfig.check_setting_str(cfgobj, 'TORRENT', 'torrent_rpcurl', 'transmission')
+        sickrage.TORRENT_AUTH_TYPE = srConfig.check_setting_str(cfgobj, 'TORRENT', 'torrent_auth_type', '')
 
-        sickrage.USE_KODI = bool(Config.check_setting_int(cfgobj, 'KODI', 'use_kodi', 0))
-        sickrage.KODI_ALWAYS_ON = bool(Config.check_setting_int(cfgobj, 'KODI', 'kodi_always_on', 1))
-        sickrage.KODI_NOTIFY_ONSNATCH = bool(Config.check_setting_int(cfgobj, 'KODI', 'kodi_notify_onsnatch', 0))
-        sickrage.KODI_NOTIFY_ONDOWNLOAD = bool(Config.check_setting_int(cfgobj, 'KODI', 'kodi_notify_ondownload', 0))
+        sickrage.USE_KODI = bool(srConfig.check_setting_int(cfgobj, 'KODI', 'use_kodi', 0))
+        sickrage.KODI_ALWAYS_ON = bool(srConfig.check_setting_int(cfgobj, 'KODI', 'kodi_always_on', 1))
+        sickrage.KODI_NOTIFY_ONSNATCH = bool(srConfig.check_setting_int(cfgobj, 'KODI', 'kodi_notify_onsnatch', 0))
+        sickrage.KODI_NOTIFY_ONDOWNLOAD = bool(srConfig.check_setting_int(cfgobj, 'KODI', 'kodi_notify_ondownload', 0))
         sickrage.KODI_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'KODI', 'kodi_notify_onsubtitledownload', 0))
-        sickrage.KODI_UPDATE_LIBRARY = bool(Config.check_setting_int(cfgobj, 'KODI', 'kodi_update_library', 0))
-        sickrage.KODI_UPDATE_FULL = bool(Config.check_setting_int(cfgobj, 'KODI', 'kodi_update_full', 0))
-        sickrage.KODI_UPDATE_ONLYFIRST = bool(Config.check_setting_int(cfgobj, 'KODI', 'kodi_update_onlyfirst', 0))
-        sickrage.KODI_HOST = Config.check_setting_str(cfgobj, 'KODI', 'kodi_host', '')
-        sickrage.KODI_USERNAME = Config.check_setting_str(cfgobj, 'KODI', 'kodi_username', '', censor_log=True)
-        sickrage.KODI_PASSWORD = Config.check_setting_str(cfgobj, 'KODI', 'kodi_password', '', censor_log=True)
+                srConfig.check_setting_int(cfgobj, 'KODI', 'kodi_notify_onsubtitledownload', 0))
+        sickrage.KODI_UPDATE_LIBRARY = bool(srConfig.check_setting_int(cfgobj, 'KODI', 'kodi_update_library', 0))
+        sickrage.KODI_UPDATE_FULL = bool(srConfig.check_setting_int(cfgobj, 'KODI', 'kodi_update_full', 0))
+        sickrage.KODI_UPDATE_ONLYFIRST = bool(srConfig.check_setting_int(cfgobj, 'KODI', 'kodi_update_onlyfirst', 0))
+        sickrage.KODI_HOST = srConfig.check_setting_str(cfgobj, 'KODI', 'kodi_host', '')
+        sickrage.KODI_USERNAME = srConfig.check_setting_str(cfgobj, 'KODI', 'kodi_username', '', censor_log=True)
+        sickrage.KODI_PASSWORD = srConfig.check_setting_str(cfgobj, 'KODI', 'kodi_password', '', censor_log=True)
 
-        sickrage.USE_PLEX = bool(Config.check_setting_int(cfgobj, 'Plex', 'use_plex', 0))
-        sickrage.PLEX_NOTIFY_ONSNATCH = bool(Config.check_setting_int(cfgobj, 'Plex', 'plex_notify_onsnatch', 0))
-        sickrage.PLEX_NOTIFY_ONDOWNLOAD = bool(Config.check_setting_int(cfgobj, 'Plex', 'plex_notify_ondownload', 0))
+        sickrage.USE_PLEX = bool(srConfig.check_setting_int(cfgobj, 'Plex', 'use_plex', 0))
+        sickrage.PLEX_NOTIFY_ONSNATCH = bool(srConfig.check_setting_int(cfgobj, 'Plex', 'plex_notify_onsnatch', 0))
+        sickrage.PLEX_NOTIFY_ONDOWNLOAD = bool(srConfig.check_setting_int(cfgobj, 'Plex', 'plex_notify_ondownload', 0))
         sickrage.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Plex', 'plex_notify_onsubtitledownload', 0))
-        sickrage.PLEX_UPDATE_LIBRARY = bool(Config.check_setting_int(cfgobj, 'Plex', 'plex_update_library', 0))
-        sickrage.PLEX_SERVER_HOST = Config.check_setting_str(cfgobj, 'Plex', 'plex_server_host', '')
-        sickrage.PLEX_SERVER_TOKEN = Config.check_setting_str(cfgobj, 'Plex', 'plex_server_token', '')
-        sickrage.PLEX_HOST = Config.check_setting_str(cfgobj, 'Plex', 'plex_host', '')
-        sickrage.PLEX_USERNAME = Config.check_setting_str(cfgobj, 'Plex', 'plex_username', '', censor_log=True)
-        sickrage.PLEX_PASSWORD = Config.check_setting_str(cfgobj, 'Plex', 'plex_password', '', censor_log=True)
-        sickrage.USE_PLEX_CLIENT = bool(Config.check_setting_int(cfgobj, 'Plex', 'use_plex_client', 0))
-        sickrage.PLEX_CLIENT_USERNAME = Config.check_setting_str(cfgobj, 'Plex', 'plex_client_username', '',
-                                                                 censor_log=True)
-        sickrage.PLEX_CLIENT_PASSWORD = Config.check_setting_str(cfgobj, 'Plex', 'plex_client_password', '',
-                                                                 censor_log=True)
+                srConfig.check_setting_int(cfgobj, 'Plex', 'plex_notify_onsubtitledownload', 0))
+        sickrage.PLEX_UPDATE_LIBRARY = bool(srConfig.check_setting_int(cfgobj, 'Plex', 'plex_update_library', 0))
+        sickrage.PLEX_SERVER_HOST = srConfig.check_setting_str(cfgobj, 'Plex', 'plex_server_host', '')
+        sickrage.PLEX_SERVER_TOKEN = srConfig.check_setting_str(cfgobj, 'Plex', 'plex_server_token', '')
+        sickrage.PLEX_HOST = srConfig.check_setting_str(cfgobj, 'Plex', 'plex_host', '')
+        sickrage.PLEX_USERNAME = srConfig.check_setting_str(cfgobj, 'Plex', 'plex_username', '', censor_log=True)
+        sickrage.PLEX_PASSWORD = srConfig.check_setting_str(cfgobj, 'Plex', 'plex_password', '', censor_log=True)
+        sickrage.USE_PLEX_CLIENT = bool(srConfig.check_setting_int(cfgobj, 'Plex', 'use_plex_client', 0))
+        sickrage.PLEX_CLIENT_USERNAME = srConfig.check_setting_str(cfgobj, 'Plex', 'plex_client_username', '',
+                                                                   censor_log=True)
+        sickrage.PLEX_CLIENT_PASSWORD = srConfig.check_setting_str(cfgobj, 'Plex', 'plex_client_password', '',
+                                                                   censor_log=True)
 
-        sickrage.USE_EMBY = bool(Config.check_setting_int(cfgobj, 'Emby', 'use_emby', 0))
-        sickrage.EMBY_HOST = Config.check_setting_str(cfgobj, 'Emby', 'emby_host', '')
-        sickrage.EMBY_APIKEY = Config.check_setting_str(cfgobj, 'Emby', 'emby_apikey', '')
+        sickrage.USE_EMBY = bool(srConfig.check_setting_int(cfgobj, 'Emby', 'use_emby', 0))
+        sickrage.EMBY_HOST = srConfig.check_setting_str(cfgobj, 'Emby', 'emby_host', '')
+        sickrage.EMBY_APIKEY = srConfig.check_setting_str(cfgobj, 'Emby', 'emby_apikey', '')
 
-        sickrage.USE_GROWL = bool(Config.check_setting_int(cfgobj, 'Growl', 'use_growl', 0))
-        sickrage.GROWL_NOTIFY_ONSNATCH = bool(Config.check_setting_int(cfgobj, 'Growl', 'growl_notify_onsnatch', 0))
-        sickrage.GROWL_NOTIFY_ONDOWNLOAD = bool(Config.check_setting_int(cfgobj, 'Growl', 'growl_notify_ondownload', 0))
+        sickrage.USE_GROWL = bool(srConfig.check_setting_int(cfgobj, 'Growl', 'use_growl', 0))
+        sickrage.GROWL_NOTIFY_ONSNATCH = bool(srConfig.check_setting_int(cfgobj, 'Growl', 'growl_notify_onsnatch', 0))
+        sickrage.GROWL_NOTIFY_ONDOWNLOAD = bool(
+            srConfig.check_setting_int(cfgobj, 'Growl', 'growl_notify_ondownload', 0))
         sickrage.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Growl', 'growl_notify_onsubtitledownload', 0))
-        sickrage.GROWL_HOST = Config.check_setting_str(cfgobj, 'Growl', 'growl_host', '')
-        sickrage.GROWL_PASSWORD = Config.check_setting_str(cfgobj, 'Growl', 'growl_password', '', censor_log=True)
+                srConfig.check_setting_int(cfgobj, 'Growl', 'growl_notify_onsubtitledownload', 0))
+        sickrage.GROWL_HOST = srConfig.check_setting_str(cfgobj, 'Growl', 'growl_host', '')
+        sickrage.GROWL_PASSWORD = srConfig.check_setting_str(cfgobj, 'Growl', 'growl_password', '', censor_log=True)
 
-        sickrage.USE_FREEMOBILE = bool(Config.check_setting_int(cfgobj, 'FreeMobile', 'use_freemobile', 0))
+        sickrage.USE_FREEMOBILE = bool(srConfig.check_setting_int(cfgobj, 'FreeMobile', 'use_freemobile', 0))
         sickrage.FREEMOBILE_NOTIFY_ONSNATCH = bool(
-                Config.check_setting_int(cfgobj, 'FreeMobile', 'freemobile_notify_onsnatch', 0))
+                srConfig.check_setting_int(cfgobj, 'FreeMobile', 'freemobile_notify_onsnatch', 0))
         sickrage.FREEMOBILE_NOTIFY_ONDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'FreeMobile', 'freemobile_notify_ondownload', 0))
+                srConfig.check_setting_int(cfgobj, 'FreeMobile', 'freemobile_notify_ondownload', 0))
         sickrage.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'FreeMobile', 'freemobile_notify_onsubtitledownload', 0))
-        sickrage.FREEMOBILE_ID = Config.check_setting_str(cfgobj, 'FreeMobile', 'freemobile_id', '')
-        sickrage.FREEMOBILE_APIKEY = Config.check_setting_str(cfgobj, 'FreeMobile', 'freemobile_apikey', '')
+                srConfig.check_setting_int(cfgobj, 'FreeMobile', 'freemobile_notify_onsubtitledownload', 0))
+        sickrage.FREEMOBILE_ID = srConfig.check_setting_str(cfgobj, 'FreeMobile', 'freemobile_id', '')
+        sickrage.FREEMOBILE_APIKEY = srConfig.check_setting_str(cfgobj, 'FreeMobile', 'freemobile_apikey', '')
 
-        sickrage.USE_PROWL = bool(Config.check_setting_int(cfgobj, 'Prowl', 'use_prowl', 0))
-        sickrage.PROWL_NOTIFY_ONSNATCH = bool(Config.check_setting_int(cfgobj, 'Prowl', 'prowl_notify_onsnatch', 0))
-        sickrage.PROWL_NOTIFY_ONDOWNLOAD = bool(Config.check_setting_int(cfgobj, 'Prowl', 'prowl_notify_ondownload', 0))
+        sickrage.USE_PROWL = bool(srConfig.check_setting_int(cfgobj, 'Prowl', 'use_prowl', 0))
+        sickrage.PROWL_NOTIFY_ONSNATCH = bool(srConfig.check_setting_int(cfgobj, 'Prowl', 'prowl_notify_onsnatch', 0))
+        sickrage.PROWL_NOTIFY_ONDOWNLOAD = bool(
+            srConfig.check_setting_int(cfgobj, 'Prowl', 'prowl_notify_ondownload', 0))
         sickrage.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Prowl', 'prowl_notify_onsubtitledownload', 0))
-        sickrage.PROWL_API = Config.check_setting_str(cfgobj, 'Prowl', 'prowl_api', '', censor_log=True)
-        sickrage.PROWL_PRIORITY = Config.check_setting_str(cfgobj, 'Prowl', 'prowl_priority', "0")
+                srConfig.check_setting_int(cfgobj, 'Prowl', 'prowl_notify_onsubtitledownload', 0))
+        sickrage.PROWL_API = srConfig.check_setting_str(cfgobj, 'Prowl', 'prowl_api', '', censor_log=True)
+        sickrage.PROWL_PRIORITY = srConfig.check_setting_str(cfgobj, 'Prowl', 'prowl_priority', "0")
 
-        sickrage.USE_TWITTER = bool(Config.check_setting_int(cfgobj, 'Twitter', 'use_twitter', 0))
+        sickrage.USE_TWITTER = bool(srConfig.check_setting_int(cfgobj, 'Twitter', 'use_twitter', 0))
         sickrage.TWITTER_NOTIFY_ONSNATCH = bool(
-            Config.check_setting_int(cfgobj, 'Twitter', 'twitter_notify_onsnatch', 0))
+                srConfig.check_setting_int(cfgobj, 'Twitter', 'twitter_notify_onsnatch', 0))
         sickrage.TWITTER_NOTIFY_ONDOWNLOAD = bool(
-            Config.check_setting_int(cfgobj, 'Twitter', 'twitter_notify_ondownload', 0))
+                srConfig.check_setting_int(cfgobj, 'Twitter', 'twitter_notify_ondownload', 0))
         sickrage.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Twitter', 'twitter_notify_onsubtitledownload', 0))
-        sickrage.TWITTER_USERNAME = Config.check_setting_str(cfgobj, 'Twitter', 'twitter_username', '', censor_log=True)
-        sickrage.TWITTER_PASSWORD = Config.check_setting_str(cfgobj, 'Twitter', 'twitter_password', '', censor_log=True)
-        sickrage.TWITTER_PREFIX = Config.check_setting_str(cfgobj, 'Twitter', 'twitter_prefix', sickrage.GIT_REPO)
-        sickrage.TWITTER_DMTO = Config.check_setting_str(cfgobj, 'Twitter', 'twitter_dmto', '')
-        sickrage.TWITTER_USEDM = bool(Config.check_setting_int(cfgobj, 'Twitter', 'twitter_usedm', 0))
+                srConfig.check_setting_int(cfgobj, 'Twitter', 'twitter_notify_onsubtitledownload', 0))
+        sickrage.TWITTER_USERNAME = srConfig.check_setting_str(cfgobj, 'Twitter', 'twitter_username', '',
+                                                               censor_log=True)
+        sickrage.TWITTER_PASSWORD = srConfig.check_setting_str(cfgobj, 'Twitter', 'twitter_password', '',
+                                                               censor_log=True)
+        sickrage.TWITTER_PREFIX = srConfig.check_setting_str(cfgobj, 'Twitter', 'twitter_prefix', sickrage.GIT_REPO)
+        sickrage.TWITTER_DMTO = srConfig.check_setting_str(cfgobj, 'Twitter', 'twitter_dmto', '')
+        sickrage.TWITTER_USEDM = bool(srConfig.check_setting_int(cfgobj, 'Twitter', 'twitter_usedm', 0))
 
-        sickrage.USE_BOXCAR = bool(Config.check_setting_int(cfgobj, 'Boxcar', 'use_boxcar', 0))
-        sickrage.BOXCAR_NOTIFY_ONSNATCH = bool(Config.check_setting_int(cfgobj, 'Boxcar', 'boxcar_notify_onsnatch', 0))
+        sickrage.USE_BOXCAR = bool(srConfig.check_setting_int(cfgobj, 'Boxcar', 'use_boxcar', 0))
+        sickrage.BOXCAR_NOTIFY_ONSNATCH = bool(
+            srConfig.check_setting_int(cfgobj, 'Boxcar', 'boxcar_notify_onsnatch', 0))
         sickrage.BOXCAR_NOTIFY_ONDOWNLOAD = bool(
-            Config.check_setting_int(cfgobj, 'Boxcar', 'boxcar_notify_ondownload', 0))
+                srConfig.check_setting_int(cfgobj, 'Boxcar', 'boxcar_notify_ondownload', 0))
         sickrage.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Boxcar', 'boxcar_notify_onsubtitledownload', 0))
-        sickrage.BOXCAR_USERNAME = Config.check_setting_str(cfgobj, 'Boxcar', 'boxcar_username', '', censor_log=True)
+                srConfig.check_setting_int(cfgobj, 'Boxcar', 'boxcar_notify_onsubtitledownload', 0))
+        sickrage.BOXCAR_USERNAME = srConfig.check_setting_str(cfgobj, 'Boxcar', 'boxcar_username', '', censor_log=True)
 
-        sickrage.USE_BOXCAR2 = bool(Config.check_setting_int(cfgobj, 'Boxcar2', 'use_boxcar2', 0))
+        sickrage.USE_BOXCAR2 = bool(srConfig.check_setting_int(cfgobj, 'Boxcar2', 'use_boxcar2', 0))
         sickrage.BOXCAR2_NOTIFY_ONSNATCH = bool(
-            Config.check_setting_int(cfgobj, 'Boxcar2', 'boxcar2_notify_onsnatch', 0))
+                srConfig.check_setting_int(cfgobj, 'Boxcar2', 'boxcar2_notify_onsnatch', 0))
         sickrage.BOXCAR2_NOTIFY_ONDOWNLOAD = bool(
-            Config.check_setting_int(cfgobj, 'Boxcar2', 'boxcar2_notify_ondownload', 0))
+                srConfig.check_setting_int(cfgobj, 'Boxcar2', 'boxcar2_notify_ondownload', 0))
         sickrage.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Boxcar2', 'boxcar2_notify_onsubtitledownload', 0))
-        sickrage.BOXCAR2_ACCESSTOKEN = Config.check_setting_str(cfgobj, 'Boxcar2', 'boxcar2_accesstoken', '',
-                                                                censor_log=True)
+                srConfig.check_setting_int(cfgobj, 'Boxcar2', 'boxcar2_notify_onsubtitledownload', 0))
+        sickrage.BOXCAR2_ACCESSTOKEN = srConfig.check_setting_str(cfgobj, 'Boxcar2', 'boxcar2_accesstoken', '',
+                                                                  censor_log=True)
 
-        sickrage.USE_PUSHOVER = bool(Config.check_setting_int(cfgobj, 'Pushover', 'use_pushover', 0))
+        sickrage.USE_PUSHOVER = bool(srConfig.check_setting_int(cfgobj, 'Pushover', 'use_pushover', 0))
         sickrage.PUSHOVER_NOTIFY_ONSNATCH = bool(
-            Config.check_setting_int(cfgobj, 'Pushover', 'pushover_notify_onsnatch', 0))
+                srConfig.check_setting_int(cfgobj, 'Pushover', 'pushover_notify_onsnatch', 0))
         sickrage.PUSHOVER_NOTIFY_ONDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Pushover', 'pushover_notify_ondownload', 0))
+                srConfig.check_setting_int(cfgobj, 'Pushover', 'pushover_notify_ondownload', 0))
         sickrage.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Pushover', 'pushover_notify_onsubtitledownload', 0))
-        sickrage.PUSHOVER_USERKEY = Config.check_setting_str(cfgobj, 'Pushover', 'pushover_userkey', '',
-                                                             censor_log=True)
-        sickrage.PUSHOVER_APIKEY = Config.check_setting_str(cfgobj, 'Pushover', 'pushover_apikey', '', censor_log=True)
-        sickrage.PUSHOVER_DEVICE = Config.check_setting_str(cfgobj, 'Pushover', 'pushover_device', '')
-        sickrage.PUSHOVER_SOUND = Config.check_setting_str(cfgobj, 'Pushover', 'pushover_sound', 'pushover')
+                srConfig.check_setting_int(cfgobj, 'Pushover', 'pushover_notify_onsubtitledownload', 0))
+        sickrage.PUSHOVER_USERKEY = srConfig.check_setting_str(cfgobj, 'Pushover', 'pushover_userkey', '',
+                                                               censor_log=True)
+        sickrage.PUSHOVER_APIKEY = srConfig.check_setting_str(cfgobj, 'Pushover', 'pushover_apikey', '',
+                                                              censor_log=True)
+        sickrage.PUSHOVER_DEVICE = srConfig.check_setting_str(cfgobj, 'Pushover', 'pushover_device', '')
+        sickrage.PUSHOVER_SOUND = srConfig.check_setting_str(cfgobj, 'Pushover', 'pushover_sound', 'pushover')
 
-        sickrage.USE_LIBNOTIFY = bool(Config.check_setting_int(cfgobj, 'Libnotify', 'use_libnotify', 0))
+        sickrage.USE_LIBNOTIFY = bool(srConfig.check_setting_int(cfgobj, 'Libnotify', 'use_libnotify', 0))
         sickrage.LIBNOTIFY_NOTIFY_ONSNATCH = bool(
-                Config.check_setting_int(cfgobj, 'Libnotify', 'libnotify_notify_onsnatch', 0))
+                srConfig.check_setting_int(cfgobj, 'Libnotify', 'libnotify_notify_onsnatch', 0))
         sickrage.LIBNOTIFY_NOTIFY_ONDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Libnotify', 'libnotify_notify_ondownload', 0))
+                srConfig.check_setting_int(cfgobj, 'Libnotify', 'libnotify_notify_ondownload', 0))
         sickrage.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Libnotify', 'libnotify_notify_onsubtitledownload', 0))
+                srConfig.check_setting_int(cfgobj, 'Libnotify', 'libnotify_notify_onsubtitledownload', 0))
 
-        sickrage.USE_NMJ = bool(Config.check_setting_int(cfgobj, 'NMJ', 'use_nmj', 0))
-        sickrage.NMJ_HOST = Config.check_setting_str(cfgobj, 'NMJ', 'nmj_host', '')
-        sickrage.NMJ_DATABASE = Config.check_setting_str(cfgobj, 'NMJ', 'nmj_database', '')
-        sickrage.NMJ_MOUNT = Config.check_setting_str(cfgobj, 'NMJ', 'nmj_mount', '')
+        sickrage.USE_NMJ = bool(srConfig.check_setting_int(cfgobj, 'NMJ', 'use_nmj', 0))
+        sickrage.NMJ_HOST = srConfig.check_setting_str(cfgobj, 'NMJ', 'nmj_host', '')
+        sickrage.NMJ_DATABASE = srConfig.check_setting_str(cfgobj, 'NMJ', 'nmj_database', '')
+        sickrage.NMJ_MOUNT = srConfig.check_setting_str(cfgobj, 'NMJ', 'nmj_mount', '')
 
-        sickrage.USE_NMJv2 = bool(Config.check_setting_int(cfgobj, 'NMJv2', 'use_nmjv2', 0))
-        sickrage.NMJv2_HOST = Config.check_setting_str(cfgobj, 'NMJv2', 'nmjv2_host', '')
-        sickrage.NMJv2_DATABASE = Config.check_setting_str(cfgobj, 'NMJv2', 'nmjv2_database', '')
-        sickrage.NMJv2_DBLOC = Config.check_setting_str(cfgobj, 'NMJv2', 'nmjv2_dbloc', '')
+        sickrage.USE_NMJv2 = bool(srConfig.check_setting_int(cfgobj, 'NMJv2', 'use_nmjv2', 0))
+        sickrage.NMJv2_HOST = srConfig.check_setting_str(cfgobj, 'NMJv2', 'nmjv2_host', '')
+        sickrage.NMJv2_DATABASE = srConfig.check_setting_str(cfgobj, 'NMJv2', 'nmjv2_database', '')
+        sickrage.NMJv2_DBLOC = srConfig.check_setting_str(cfgobj, 'NMJv2', 'nmjv2_dbloc', '')
 
-        sickrage.USE_SYNOINDEX = bool(Config.check_setting_int(cfgobj, 'Synology', 'use_synoindex', 0))
+        sickrage.USE_SYNOINDEX = bool(srConfig.check_setting_int(cfgobj, 'Synology', 'use_synoindex', 0))
 
         sickrage.USE_SYNOLOGYNOTIFIER = bool(
-            Config.check_setting_int(cfgobj, 'SynologyNotifier', 'use_synologynotifier', 0))
+                srConfig.check_setting_int(cfgobj, 'SynologyNotifier', 'use_synologynotifier', 0))
         sickrage.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH = bool(
-                Config.check_setting_int(cfgobj, 'SynologyNotifier', 'synologynotifier_notify_onsnatch', 0))
+                srConfig.check_setting_int(cfgobj, 'SynologyNotifier', 'synologynotifier_notify_onsnatch', 0))
         sickrage.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'SynologyNotifier', 'synologynotifier_notify_ondownload', 0))
+                srConfig.check_setting_int(cfgobj, 'SynologyNotifier', 'synologynotifier_notify_ondownload', 0))
         sickrage.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'SynologyNotifier', 'synologynotifier_notify_onsubtitledownload', 0))
+                srConfig.check_setting_int(cfgobj, 'SynologyNotifier', 'synologynotifier_notify_onsubtitledownload', 0))
 
-        sickrage.THETVDB_APITOKEN = Config.check_setting_str(cfgobj, 'theTVDB', 'thetvdb_apitoken', '', censor_log=True)
-
-        sickrage.USE_TRAKT = bool(Config.check_setting_int(cfgobj, 'Trakt', 'use_trakt', 0))
-        sickrage.TRAKT_USERNAME = Config.check_setting_str(cfgobj, 'Trakt', 'trakt_username', '', censor_log=True)
-        sickrage.TRAKT_ACCESS_TOKEN = Config.check_setting_str(cfgobj, 'Trakt', 'trakt_access_token', '',
+        sickrage.THETVDB_APITOKEN = srConfig.check_setting_str(cfgobj, 'theTVDB', 'thetvdb_apitoken', '',
                                                                censor_log=True)
-        sickrage.TRAKT_REFRESH_TOKEN = Config.check_setting_str(cfgobj, 'Trakt', 'trakt_refresh_token', '',
-                                                                censor_log=True)
-        sickrage.TRAKT_REMOVE_WATCHLIST = bool(Config.check_setting_int(cfgobj, 'Trakt', 'trakt_remove_watchlist', 0))
-        sickrage.TRAKT_REMOVE_SERIESLIST = bool(Config.check_setting_int(cfgobj, 'Trakt', 'trakt_remove_serieslist', 0))
+
+        sickrage.USE_TRAKT = bool(srConfig.check_setting_int(cfgobj, 'Trakt', 'use_trakt', 0))
+        sickrage.TRAKT_USERNAME = srConfig.check_setting_str(cfgobj, 'Trakt', 'trakt_username', '', censor_log=True)
+        sickrage.TRAKT_ACCESS_TOKEN = srConfig.check_setting_str(cfgobj, 'Trakt', 'trakt_access_token', '',
+                                                                 censor_log=True)
+        sickrage.TRAKT_REFRESH_TOKEN = srConfig.check_setting_str(cfgobj, 'Trakt', 'trakt_refresh_token', '',
+                                                                  censor_log=True)
+        sickrage.TRAKT_REMOVE_WATCHLIST = bool(srConfig.check_setting_int(cfgobj, 'Trakt', 'trakt_remove_watchlist', 0))
+        sickrage.TRAKT_REMOVE_SERIESLIST = bool(
+            srConfig.check_setting_int(cfgobj, 'Trakt', 'trakt_remove_serieslist', 0))
         sickrage.TRAKT_REMOVE_SHOW_FROM_SICKRAGE = bool(
-                Config.check_setting_int(cfgobj, 'Trakt', 'trakt_remove_show_from_sickrage', 0))
-        sickrage.TRAKT_SYNC_WATCHLIST = bool(Config.check_setting_int(cfgobj, 'Trakt', 'trakt_sync_watchlist', 0))
-        sickrage.TRAKT_METHOD_ADD = Config.check_setting_int(cfgobj, 'Trakt', 'trakt_method_add', 0)
-        sickrage.TRAKT_START_PAUSED = bool(Config.check_setting_int(cfgobj, 'Trakt', 'trakt_start_paused', 0))
-        sickrage.TRAKT_USE_RECOMMENDED = bool(Config.check_setting_int(cfgobj, 'Trakt', 'trakt_use_recommended', 0))
-        sickrage.TRAKT_SYNC = bool(Config.check_setting_int(cfgobj, 'Trakt', 'trakt_sync', 0))
-        sickrage.TRAKT_SYNC_REMOVE = bool(Config.check_setting_int(cfgobj, 'Trakt', 'trakt_sync_remove', 0))
-        sickrage.TRAKT_DEFAULT_INDEXER = Config.check_setting_int(cfgobj, 'Trakt', 'trakt_default_indexer', 1)
-        sickrage.TRAKT_TIMEOUT = Config.check_setting_int(cfgobj, 'Trakt', 'trakt_timeout', 30)
-        sickrage.TRAKT_BLACKLIST_NAME = Config.check_setting_str(cfgobj, 'Trakt', 'trakt_blacklist_name', '')
+                srConfig.check_setting_int(cfgobj, 'Trakt', 'trakt_remove_show_from_sickrage', 0))
+        sickrage.TRAKT_SYNC_WATCHLIST = bool(srConfig.check_setting_int(cfgobj, 'Trakt', 'trakt_sync_watchlist', 0))
+        sickrage.TRAKT_METHOD_ADD = srConfig.check_setting_int(cfgobj, 'Trakt', 'trakt_method_add', 0)
+        sickrage.TRAKT_START_PAUSED = bool(srConfig.check_setting_int(cfgobj, 'Trakt', 'trakt_start_paused', 0))
+        sickrage.TRAKT_USE_RECOMMENDED = bool(srConfig.check_setting_int(cfgobj, 'Trakt', 'trakt_use_recommended', 0))
+        sickrage.TRAKT_SYNC = bool(srConfig.check_setting_int(cfgobj, 'Trakt', 'trakt_sync', 0))
+        sickrage.TRAKT_SYNC_REMOVE = bool(srConfig.check_setting_int(cfgobj, 'Trakt', 'trakt_sync_remove', 0))
+        sickrage.TRAKT_DEFAULT_INDEXER = srConfig.check_setting_int(cfgobj, 'Trakt', 'trakt_default_indexer', 1)
+        sickrage.TRAKT_TIMEOUT = srConfig.check_setting_int(cfgobj, 'Trakt', 'trakt_timeout', 30)
+        sickrage.TRAKT_BLACKLIST_NAME = srConfig.check_setting_str(cfgobj, 'Trakt', 'trakt_blacklist_name', '')
 
-        sickrage.USE_PYTIVO = bool(Config.check_setting_int(cfgobj, 'pyTivo', 'use_pytivo', 0))
-        sickrage.PYTIVO_NOTIFY_ONSNATCH = bool(Config.check_setting_int(cfgobj, 'pyTivo', 'pytivo_notify_onsnatch', 0))
+        sickrage.USE_PYTIVO = bool(srConfig.check_setting_int(cfgobj, 'pyTivo', 'use_pytivo', 0))
+        sickrage.PYTIVO_NOTIFY_ONSNATCH = bool(
+            srConfig.check_setting_int(cfgobj, 'pyTivo', 'pytivo_notify_onsnatch', 0))
         sickrage.PYTIVO_NOTIFY_ONDOWNLOAD = bool(
-            Config.check_setting_int(cfgobj, 'pyTivo', 'pytivo_notify_ondownload', 0))
+                srConfig.check_setting_int(cfgobj, 'pyTivo', 'pytivo_notify_ondownload', 0))
         sickrage.PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'pyTivo', 'pytivo_notify_onsubtitledownload', 0))
-        sickrage.PYTIVO_UPDATE_LIBRARY = bool(Config.check_setting_int(cfgobj, 'pyTivo', 'pyTivo_update_library', 0))
-        sickrage.PYTIVO_HOST = Config.check_setting_str(cfgobj, 'pyTivo', 'pytivo_host', '')
-        sickrage.PYTIVO_SHARE_NAME = Config.check_setting_str(cfgobj, 'pyTivo', 'pytivo_share_name', '')
-        sickrage.PYTIVO_TIVO_NAME = Config.check_setting_str(cfgobj, 'pyTivo', 'pytivo_tivo_name', '')
+                srConfig.check_setting_int(cfgobj, 'pyTivo', 'pytivo_notify_onsubtitledownload', 0))
+        sickrage.PYTIVO_UPDATE_LIBRARY = bool(srConfig.check_setting_int(cfgobj, 'pyTivo', 'pyTivo_update_library', 0))
+        sickrage.PYTIVO_HOST = srConfig.check_setting_str(cfgobj, 'pyTivo', 'pytivo_host', '')
+        sickrage.PYTIVO_SHARE_NAME = srConfig.check_setting_str(cfgobj, 'pyTivo', 'pytivo_share_name', '')
+        sickrage.PYTIVO_TIVO_NAME = srConfig.check_setting_str(cfgobj, 'pyTivo', 'pytivo_tivo_name', '')
 
-        sickrage.USE_NMA = bool(Config.check_setting_int(cfgobj, 'NMA', 'use_nma', 0))
-        sickrage.NMA_NOTIFY_ONSNATCH = bool(Config.check_setting_int(cfgobj, 'NMA', 'nma_notify_onsnatch', 0))
-        sickrage.NMA_NOTIFY_ONDOWNLOAD = bool(Config.check_setting_int(cfgobj, 'NMA', 'nma_notify_ondownload', 0))
+        sickrage.USE_NMA = bool(srConfig.check_setting_int(cfgobj, 'NMA', 'use_nma', 0))
+        sickrage.NMA_NOTIFY_ONSNATCH = bool(srConfig.check_setting_int(cfgobj, 'NMA', 'nma_notify_onsnatch', 0))
+        sickrage.NMA_NOTIFY_ONDOWNLOAD = bool(srConfig.check_setting_int(cfgobj, 'NMA', 'nma_notify_ondownload', 0))
         sickrage.NMA_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'NMA', 'nma_notify_onsubtitledownload', 0))
-        sickrage.NMA_API = Config.check_setting_str(cfgobj, 'NMA', 'nma_api', '', censor_log=True)
-        sickrage.NMA_PRIORITY = Config.check_setting_str(cfgobj, 'NMA', 'nma_priority', "0")
+                srConfig.check_setting_int(cfgobj, 'NMA', 'nma_notify_onsubtitledownload', 0))
+        sickrage.NMA_API = srConfig.check_setting_str(cfgobj, 'NMA', 'nma_api', '', censor_log=True)
+        sickrage.NMA_PRIORITY = srConfig.check_setting_str(cfgobj, 'NMA', 'nma_priority', "0")
 
-        sickrage.USE_PUSHALOT = bool(Config.check_setting_int(cfgobj, 'Pushalot', 'use_pushalot', 0))
+        sickrage.USE_PUSHALOT = bool(srConfig.check_setting_int(cfgobj, 'Pushalot', 'use_pushalot', 0))
         sickrage.PUSHALOT_NOTIFY_ONSNATCH = bool(
-            Config.check_setting_int(cfgobj, 'Pushalot', 'pushalot_notify_onsnatch', 0))
+                srConfig.check_setting_int(cfgobj, 'Pushalot', 'pushalot_notify_onsnatch', 0))
         sickrage.PUSHALOT_NOTIFY_ONDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Pushalot', 'pushalot_notify_ondownload', 0))
+                srConfig.check_setting_int(cfgobj, 'Pushalot', 'pushalot_notify_ondownload', 0))
         sickrage.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Pushalot', 'pushalot_notify_onsubtitledownload', 0))
-        sickrage.PUSHALOT_AUTHORIZATIONTOKEN = Config.check_setting_str(cfgobj, 'Pushalot',
+                srConfig.check_setting_int(cfgobj, 'Pushalot', 'pushalot_notify_onsubtitledownload', 0))
+        sickrage.PUSHALOT_AUTHORIZATIONTOKEN = srConfig.check_setting_str(cfgobj, 'Pushalot',
                                                                         'pushalot_authorizationtoken', '',
-                                                                        censor_log=True)
+                                                                          censor_log=True)
 
-        sickrage.USE_PUSHBULLET = bool(Config.check_setting_int(cfgobj, 'Pushbullet', 'use_pushbullet', 0))
+        sickrage.USE_PUSHBULLET = bool(srConfig.check_setting_int(cfgobj, 'Pushbullet', 'use_pushbullet', 0))
         sickrage.PUSHBULLET_NOTIFY_ONSNATCH = bool(
-                Config.check_setting_int(cfgobj, 'Pushbullet', 'pushbullet_notify_onsnatch', 0))
+                srConfig.check_setting_int(cfgobj, 'Pushbullet', 'pushbullet_notify_onsnatch', 0))
         sickrage.PUSHBULLET_NOTIFY_ONDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Pushbullet', 'pushbullet_notify_ondownload', 0))
+                srConfig.check_setting_int(cfgobj, 'Pushbullet', 'pushbullet_notify_ondownload', 0))
         sickrage.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Pushbullet', 'pushbullet_notify_onsubtitledownload', 0))
-        sickrage.PUSHBULLET_API = Config.check_setting_str(cfgobj, 'Pushbullet', 'pushbullet_api', '', censor_log=True)
-        sickrage.PUSHBULLET_DEVICE = Config.check_setting_str(cfgobj, 'Pushbullet', 'pushbullet_device', '')
+                srConfig.check_setting_int(cfgobj, 'Pushbullet', 'pushbullet_notify_onsubtitledownload', 0))
+        sickrage.PUSHBULLET_API = srConfig.check_setting_str(cfgobj, 'Pushbullet', 'pushbullet_api', '',
+                                                             censor_log=True)
+        sickrage.PUSHBULLET_DEVICE = srConfig.check_setting_str(cfgobj, 'Pushbullet', 'pushbullet_device', '')
 
         # email notify settings
-        sickrage.USE_EMAIL = bool(Config.check_setting_int(cfgobj, 'Email', 'use_email', 0))
-        sickrage.EMAIL_NOTIFY_ONSNATCH = bool(Config.check_setting_int(cfgobj, 'Email', 'email_notify_onsnatch', 0))
-        sickrage.EMAIL_NOTIFY_ONDOWNLOAD = bool(Config.check_setting_int(cfgobj, 'Email', 'email_notify_ondownload', 0))
+        sickrage.USE_EMAIL = bool(srConfig.check_setting_int(cfgobj, 'Email', 'use_email', 0))
+        sickrage.EMAIL_NOTIFY_ONSNATCH = bool(srConfig.check_setting_int(cfgobj, 'Email', 'email_notify_onsnatch', 0))
+        sickrage.EMAIL_NOTIFY_ONDOWNLOAD = bool(
+            srConfig.check_setting_int(cfgobj, 'Email', 'email_notify_ondownload', 0))
         sickrage.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
-                Config.check_setting_int(cfgobj, 'Email', 'email_notify_onsubtitledownload', 0))
-        sickrage.EMAIL_HOST = Config.check_setting_str(cfgobj, 'Email', 'email_host', '')
-        sickrage.EMAIL_PORT = Config.check_setting_int(cfgobj, 'Email', 'email_port', 25)
-        sickrage.EMAIL_TLS = bool(Config.check_setting_int(cfgobj, 'Email', 'email_tls', 0))
-        sickrage.EMAIL_USER = Config.check_setting_str(cfgobj, 'Email', 'email_user', '', censor_log=True)
-        sickrage.EMAIL_PASSWORD = Config.check_setting_str(cfgobj, 'Email', 'email_password', '', censor_log=True)
-        sickrage.EMAIL_FROM = Config.check_setting_str(cfgobj, 'Email', 'email_from', '')
-        sickrage.EMAIL_LIST = Config.check_setting_str(cfgobj, 'Email', 'email_list', '')
+                srConfig.check_setting_int(cfgobj, 'Email', 'email_notify_onsubtitledownload', 0))
+        sickrage.EMAIL_HOST = srConfig.check_setting_str(cfgobj, 'Email', 'email_host', '')
+        sickrage.EMAIL_PORT = srConfig.check_setting_int(cfgobj, 'Email', 'email_port', 25)
+        sickrage.EMAIL_TLS = bool(srConfig.check_setting_int(cfgobj, 'Email', 'email_tls', 0))
+        sickrage.EMAIL_USER = srConfig.check_setting_str(cfgobj, 'Email', 'email_user', '', censor_log=True)
+        sickrage.EMAIL_PASSWORD = srConfig.check_setting_str(cfgobj, 'Email', 'email_password', '', censor_log=True)
+        sickrage.EMAIL_FROM = srConfig.check_setting_str(cfgobj, 'Email', 'email_from', '')
+        sickrage.EMAIL_LIST = srConfig.check_setting_str(cfgobj, 'Email', 'email_list', '')
 
         # subtitle settings
-        sickrage.USE_SUBTITLES = bool(Config.check_setting_int(cfgobj, 'Subtitles', 'use_subtitles', 0))
-        sickrage.SUBTITLES_LANGUAGES = Config.check_setting_str(cfgobj, 'Subtitles', 'subtitles_languages', '').split(
+        sickrage.USE_SUBTITLES = bool(srConfig.check_setting_int(cfgobj, 'Subtitles', 'use_subtitles', 0))
+        sickrage.SUBTITLES_LANGUAGES = srConfig.check_setting_str(cfgobj, 'Subtitles', 'subtitles_languages', '').split(
             ',')
-        sickrage.SUBTITLES_DIR = Config.check_setting_str(cfgobj, 'Subtitles', 'subtitles_dir', '')
-        sickrage.SUBTITLES_SERVICES_LIST = Config.check_setting_str(cfgobj, 'Subtitles', 'SUBTITLES_SERVICES_LIST',
+        sickrage.SUBTITLES_DIR = srConfig.check_setting_str(cfgobj, 'Subtitles', 'subtitles_dir', '')
+        sickrage.SUBTITLES_SERVICES_LIST = srConfig.check_setting_str(cfgobj, 'Subtitles', 'SUBTITLES_SERVICES_LIST',
                                                                     '').split(
                 ',')
-        sickrage.SUBTITLES_DEFAULT = bool(Config.check_setting_int(cfgobj, 'Subtitles', 'subtitles_default', 0))
-        sickrage.SUBTITLES_HISTORY = bool(Config.check_setting_int(cfgobj, 'Subtitles', 'subtitles_history', 0))
+        sickrage.SUBTITLES_DEFAULT = bool(srConfig.check_setting_int(cfgobj, 'Subtitles', 'subtitles_default', 0))
+        sickrage.SUBTITLES_HISTORY = bool(srConfig.check_setting_int(cfgobj, 'Subtitles', 'subtitles_history', 0))
         sickrage.SUBTITLES_HEARING_IMPAIRED = bool(
-                Config.check_setting_int(cfgobj, 'Subtitles', 'subtitles_hearing_impaired', 0))
+                srConfig.check_setting_int(cfgobj, 'Subtitles', 'subtitles_hearing_impaired', 0))
         sickrage.EMBEDDED_SUBTITLES_ALL = bool(
-            Config.check_setting_int(cfgobj, 'Subtitles', 'embedded_subtitles_all', 0))
-        sickrage.SUBTITLES_MULTI = bool(Config.check_setting_int(cfgobj, 'Subtitles', 'subtitles_multi', 1))
+                srConfig.check_setting_int(cfgobj, 'Subtitles', 'embedded_subtitles_all', 0))
+        sickrage.SUBTITLES_MULTI = bool(srConfig.check_setting_int(cfgobj, 'Subtitles', 'subtitles_multi', 1))
         sickrage.SUBTITLES_SERVICES_ENABLED = [int(x) for x in
-                                               Config.check_setting_str(cfgobj, 'Subtitles',
+                                               srConfig.check_setting_str(cfgobj, 'Subtitles',
                                                                         'SUBTITLES_SERVICES_ENABLED',
                                                                         '').split(
                                                        '|')
                                                if x]
         sickrage.SUBTITLES_EXTRA_SCRIPTS = [x.strip() for x in
-                                            Config.check_setting_str(cfgobj, 'Subtitles', 'subtitles_extra_scripts',
+                                            srConfig.check_setting_str(cfgobj, 'Subtitles', 'subtitles_extra_scripts',
                                                                      '').split('|') if
                                             x.strip()]
 
-        sickrage.ADDIC7ED_USER = Config.check_setting_str(cfgobj, 'Subtitles', 'addic7ed_username', '', censor_log=True)
-        sickrage.ADDIC7ED_PASS = Config.check_setting_str(cfgobj, 'Subtitles', 'addic7ed_password', '', censor_log=True)
-
-        sickrage.LEGENDASTV_USER = Config.check_setting_str(cfgobj, 'Subtitles', 'legendastv_username', '',
+        sickrage.ADDIC7ED_USER = srConfig.check_setting_str(cfgobj, 'Subtitles', 'addic7ed_username', '',
                                                             censor_log=True)
-        sickrage.LEGENDASTV_PASS = Config.check_setting_str(cfgobj, 'Subtitles', 'legendastv_password', '',
+        sickrage.ADDIC7ED_PASS = srConfig.check_setting_str(cfgobj, 'Subtitles', 'addic7ed_password', '',
                                                             censor_log=True)
 
-        sickrage.OPENSUBTITLES_USER = Config.check_setting_str(cfgobj, 'Subtitles', 'opensubtitles_username', '',
-                                                               censor_log=True)
-        sickrage.OPENSUBTITLES_PASS = Config.check_setting_str(cfgobj, 'Subtitles', 'opensubtitles_password', '',
-                                                               censor_log=True)
+        sickrage.LEGENDASTV_USER = srConfig.check_setting_str(cfgobj, 'Subtitles', 'legendastv_username', '',
+                                                              censor_log=True)
+        sickrage.LEGENDASTV_PASS = srConfig.check_setting_str(cfgobj, 'Subtitles', 'legendastv_password', '',
+                                                              censor_log=True)
+
+        sickrage.OPENSUBTITLES_USER = srConfig.check_setting_str(cfgobj, 'Subtitles', 'opensubtitles_username', '',
+                                                                 censor_log=True)
+        sickrage.OPENSUBTITLES_PASS = srConfig.check_setting_str(cfgobj, 'Subtitles', 'opensubtitles_password', '',
+                                                                 censor_log=True)
 
         sickrage.USE_FAILED_DOWNLOADS = bool(
-            Config.check_setting_int(cfgobj, 'FailedDownloads', 'use_failed_downloads', 0))
-        sickrage.DELETE_FAILED = bool(Config.check_setting_int(cfgobj, 'FailedDownloads', 'delete_failed', 0))
+                srConfig.check_setting_int(cfgobj, 'FailedDownloads', 'use_failed_downloads', 0))
+        sickrage.DELETE_FAILED = bool(srConfig.check_setting_int(cfgobj, 'FailedDownloads', 'delete_failed', 0))
 
-        sickrage.REQUIRE_WORDS = Config.check_setting_str(cfgobj, 'General', 'require_words', '')
-        sickrage.IGNORE_WORDS = Config.check_setting_str(cfgobj, 'General', 'ignore_words',
+        sickrage.REQUIRE_WORDS = srConfig.check_setting_str(cfgobj, 'General', 'require_words', '')
+        sickrage.IGNORE_WORDS = srConfig.check_setting_str(cfgobj, 'General', 'ignore_words',
                                                          'german,french,core2hd,dutch,swedish,reenc,MrLss')
-        sickrage.IGNORED_SUBS_LIST = Config.check_setting_str(cfgobj, 'General', 'ignored_subs_list',
+        sickrage.IGNORED_SUBS_LIST = srConfig.check_setting_str(cfgobj, 'General', 'ignored_subs_list',
                                                               'dk,fin,heb,kor,nor,nordic,pl,swe')
 
-        sickrage.CALENDAR_UNPROTECTED = bool(Config.check_setting_int(cfgobj, 'General', 'calendar_unprotected', 0))
-        sickrage.CALENDAR_ICONS = bool(Config.check_setting_int(cfgobj, 'General', 'calendar_icons', 0))
+        sickrage.CALENDAR_UNPROTECTED = bool(srConfig.check_setting_int(cfgobj, 'General', 'calendar_unprotected', 0))
+        sickrage.CALENDAR_ICONS = bool(srConfig.check_setting_int(cfgobj, 'General', 'calendar_icons', 0))
 
-        sickrage.NO_RESTART = bool(Config.check_setting_int(cfgobj, 'General', 'no_restart', 0))
+        sickrage.NO_RESTART = bool(srConfig.check_setting_int(cfgobj, 'General', 'no_restart', 0))
         sickrage.EXTRA_SCRIPTS = [x.strip() for x in
-                                  Config.check_setting_str(cfgobj, 'General', 'extra_scripts', '').split('|') if
+                                  srConfig.check_setting_str(cfgobj, 'General', 'extra_scripts', '').split('|') if
                                   x.strip()]
-        sickrage.USE_LISTVIEW = bool(Config.check_setting_int(cfgobj, 'General', 'use_listview', 0))
+        sickrage.USE_LISTVIEW = bool(srConfig.check_setting_int(cfgobj, 'General', 'use_listview', 0))
 
-        sickrage.USE_ANIDB = bool(Config.check_setting_int(cfgobj, 'ANIDB', 'use_anidb', 0))
-        sickrage.ANIDB_USERNAME = Config.check_setting_str(cfgobj, 'ANIDB', 'anidb_username', '', censor_log=True)
-        sickrage.ANIDB_PASSWORD = Config.check_setting_str(cfgobj, 'ANIDB', 'anidb_password', '', censor_log=True)
-        sickrage.ANIDB_USE_MYLIST = bool(Config.check_setting_int(cfgobj, 'ANIDB', 'anidb_use_mylist', 0))
+        sickrage.USE_ANIDB = bool(srConfig.check_setting_int(cfgobj, 'ANIDB', 'use_anidb', 0))
+        sickrage.ANIDB_USERNAME = srConfig.check_setting_str(cfgobj, 'ANIDB', 'anidb_username', '', censor_log=True)
+        sickrage.ANIDB_PASSWORD = srConfig.check_setting_str(cfgobj, 'ANIDB', 'anidb_password', '', censor_log=True)
+        sickrage.ANIDB_USE_MYLIST = bool(srConfig.check_setting_int(cfgobj, 'ANIDB', 'anidb_use_mylist', 0))
 
-        sickrage.ANIME_SPLIT_HOME = bool(Config.check_setting_int(cfgobj, 'ANIME', 'anime_split_home', 0))
+        sickrage.ANIME_SPLIT_HOME = bool(srConfig.check_setting_int(cfgobj, 'ANIME', 'anime_split_home', 0))
 
-        sickrage.METADATA_KODI = Config.check_setting_str(cfgobj, 'General', 'metadata_kodi', '0|0|0|0|0|0|0|0|0|0')
-        sickrage.METADATA_KODI_12PLUS = Config.check_setting_str(cfgobj, 'General', 'metadata_kodi_12plus',
+        sickrage.METADATA_KODI = srConfig.check_setting_str(cfgobj, 'General', 'metadata_kodi', '0|0|0|0|0|0|0|0|0|0')
+        sickrage.METADATA_KODI_12PLUS = srConfig.check_setting_str(cfgobj, 'General', 'metadata_kodi_12plus',
                                                                  '0|0|0|0|0|0|0|0|0|0')
-        sickrage.METADATA_MEDIABROWSER = Config.check_setting_str(cfgobj, 'General', 'metadata_mediabrowser',
+        sickrage.METADATA_MEDIABROWSER = srConfig.check_setting_str(cfgobj, 'General', 'metadata_mediabrowser',
                                                            '0|0|0|0|0|0|0|0|0|0')
-        sickrage.METADATA_PS3 = Config.check_setting_str(cfgobj, 'General', 'metadata_ps3', '0|0|0|0|0|0|0|0|0|0')
-        sickrage.METADATA_WDTV = Config.check_setting_str(cfgobj, 'General', 'metadata_wdtv', '0|0|0|0|0|0|0|0|0|0')
-        sickrage.METADATA_TIVO = Config.check_setting_str(cfgobj, 'General', 'metadata_tivo', '0|0|0|0|0|0|0|0|0|0')
-        sickrage.METADATA_MEDE8ER = Config.check_setting_str(cfgobj, 'General', 'metadata_mede8er',
+        sickrage.METADATA_PS3 = srConfig.check_setting_str(cfgobj, 'General', 'metadata_ps3', '0|0|0|0|0|0|0|0|0|0')
+        sickrage.METADATA_WDTV = srConfig.check_setting_str(cfgobj, 'General', 'metadata_wdtv', '0|0|0|0|0|0|0|0|0|0')
+        sickrage.METADATA_TIVO = srConfig.check_setting_str(cfgobj, 'General', 'metadata_tivo', '0|0|0|0|0|0|0|0|0|0')
+        sickrage.METADATA_MEDE8ER = srConfig.check_setting_str(cfgobj, 'General', 'metadata_mede8er',
                                                              '0|0|0|0|0|0|0|0|0|0')
 
-        sickrage.HOME_LAYOUT = Config.check_setting_str(cfgobj, 'GUI', 'home_layout', 'poster')
-        sickrage.HISTORY_LAYOUT = Config.check_setting_str(cfgobj, 'GUI', 'history_layout', 'detailed')
-        sickrage.HISTORY_LIMIT = Config.check_setting_str(cfgobj, 'GUI', 'history_limit', '100')
-        sickrage.DISPLAY_SHOW_SPECIALS = bool(Config.check_setting_int(cfgobj, 'GUI', 'display_show_specials', 1))
-        sickrage.COMING_EPS_LAYOUT = Config.check_setting_str(cfgobj, 'GUI', 'coming_eps_layout', 'banner')
+        sickrage.HOME_LAYOUT = srConfig.check_setting_str(cfgobj, 'GUI', 'home_layout', 'poster')
+        sickrage.HISTORY_LAYOUT = srConfig.check_setting_str(cfgobj, 'GUI', 'history_layout', 'detailed')
+        sickrage.HISTORY_LIMIT = srConfig.check_setting_str(cfgobj, 'GUI', 'history_limit', '100')
+        sickrage.DISPLAY_SHOW_SPECIALS = bool(srConfig.check_setting_int(cfgobj, 'GUI', 'display_show_specials', 1))
+        sickrage.COMING_EPS_LAYOUT = srConfig.check_setting_str(cfgobj, 'GUI', 'coming_eps_layout', 'banner')
         sickrage.COMING_EPS_DISPLAY_PAUSED = bool(
-            Config.check_setting_int(cfgobj, 'GUI', 'coming_eps_display_paused', 0))
-        sickrage.COMING_EPS_SORT = Config.check_setting_str(cfgobj, 'GUI', 'coming_eps_sort', 'date')
-        sickrage.COMING_EPS_MISSED_RANGE = Config.check_setting_int(cfgobj, 'GUI', 'coming_eps_missed_range', 7)
-        sickrage.FUZZY_DATING = bool(Config.check_setting_int(cfgobj, 'GUI', 'fuzzy_dating', 0))
-        sickrage.TRIM_ZERO = bool(Config.check_setting_int(cfgobj, 'GUI', 'trim_zero', 0))
-        sickrage.DATE_PRESET = Config.check_setting_str(cfgobj, 'GUI', 'date_preset', '%x')
-        sickrage.TIME_PRESET_W_SECONDS = Config.check_setting_str(cfgobj, 'GUI', 'time_preset', '%I:%M:%S %p')
-        sickrage.TIMEZONE_DISPLAY = Config.check_setting_str(cfgobj, 'GUI', 'timezone_display', 'local')
-        sickrage.POSTER_SORTBY = Config.check_setting_str(cfgobj, 'GUI', 'poster_sortby', 'name')
-        sickrage.POSTER_SORTDIR = Config.check_setting_int(cfgobj, 'GUI', 'poster_sortdir', 1)
-        sickrage.FILTER_ROW = bool(Config.check_setting_int(cfgobj, 'GUI', 'filter_row', 1))
-        sickrage.DISPLAY_ALL_SEASONS = bool(Config.check_setting_int(cfgobj, 'General', 'display_all_seasons', 1))
+                srConfig.check_setting_int(cfgobj, 'GUI', 'coming_eps_display_paused', 0))
+        sickrage.COMING_EPS_SORT = srConfig.check_setting_str(cfgobj, 'GUI', 'coming_eps_sort', 'date')
+        sickrage.COMING_EPS_MISSED_RANGE = srConfig.check_setting_int(cfgobj, 'GUI', 'coming_eps_missed_range', 7)
+        sickrage.FUZZY_DATING = bool(srConfig.check_setting_int(cfgobj, 'GUI', 'fuzzy_dating', 0))
+        sickrage.TRIM_ZERO = bool(srConfig.check_setting_int(cfgobj, 'GUI', 'trim_zero', 0))
+        sickrage.DATE_PRESET = srConfig.check_setting_str(cfgobj, 'GUI', 'date_preset', '%x')
+        sickrage.TIME_PRESET_W_SECONDS = srConfig.check_setting_str(cfgobj, 'GUI', 'time_preset', '%I:%M:%S %p')
+        sickrage.TIMEZONE_DISPLAY = srConfig.check_setting_str(cfgobj, 'GUI', 'timezone_display', 'local')
+        sickrage.POSTER_SORTBY = srConfig.check_setting_str(cfgobj, 'GUI', 'poster_sortby', 'name')
+        sickrage.POSTER_SORTDIR = srConfig.check_setting_int(cfgobj, 'GUI', 'poster_sortdir', 1)
+        sickrage.FILTER_ROW = bool(srConfig.check_setting_int(cfgobj, 'GUI', 'filter_row', 1))
+        sickrage.DISPLAY_ALL_SEASONS = bool(srConfig.check_setting_int(cfgobj, 'General', 'display_all_seasons', 1))
 
-        sickrage.NEWZNAB_DATA = Config.check_setting_str(cfgobj, 'Newznab', 'newznab_data',
-                                                         NewznabProvider.getDefaultProviders())
-        sickrage.TORRENTRSS_DATA = Config.check_setting_str(cfgobj, 'TorrentRss', 'torrentrss_data',
-                                                            TorrentRssProvider.getDefaultProviders())
+        sickrage.NEWZNAB_DATA = srConfig.check_setting_str(cfgobj, 'Newznab', 'newznab_data',
+                                                           NewznabProvider.getDefaultProviders())
+        sickrage.TORRENTRSS_DATA = srConfig.check_setting_str(cfgobj, 'TorrentRss', 'torrentrss_data',
+                                                              TorrentRssProvider.getDefaultProviders())
 
         # NEWZNAB PROVIDER LIST
         sickrage.newznabProviderList = NewznabProvider.getProviderList(sickrage.NEWZNAB_DATA)
@@ -1442,133 +1466,133 @@ class Config(object):
             GenericProvider.TORRENT: {p.id: p for p in TorrentProvider.getProviderList()},
         }
 
-        sickrage.PROVIDER_ORDER = Config.check_setting_str(cfgobj, 'General', 'provider_order', '').split()
+        sickrage.PROVIDER_ORDER = srConfig.check_setting_str(cfgobj, 'General', 'provider_order', '').split()
 
         # TORRENT PROVIDER SETTINGS
         for providerID, providerObj in sickrage.providersDict[GenericProvider.TORRENT].items():
-            providerObj.enabled = bool(Config.check_setting_int(cfgobj, providerID.upper(), providerID, 0))
+            providerObj.enabled = bool(srConfig.check_setting_int(cfgobj, providerID.upper(), providerID, 0))
 
             if hasattr(providerObj, 'api_key'):
-                providerObj.api_key = Config.check_setting_str(
+                providerObj.api_key = srConfig.check_setting_str(
                         cfgobj, providerID.upper(), providerID + '_api_key', '', censor_log=True
                 )
 
             if hasattr(providerObj, 'hash'):
-                providerObj.hash = Config.check_setting_str(
+                providerObj.hash = srConfig.check_setting_str(
                         cfgobj, providerID.upper(), providerID + '_hash', '', censor_log=True
                 )
 
             if hasattr(providerObj, 'digest'):
-                providerObj.digest = Config.check_setting_str(
+                providerObj.digest = srConfig.check_setting_str(
                         cfgobj, providerID.upper(), providerID + '_digest', '', censor_log=True
                 )
 
             if hasattr(providerObj, 'username'):
-                providerObj.username = Config.check_setting_str(
+                providerObj.username = srConfig.check_setting_str(
                         cfgobj, providerID.upper(), providerID + '_username', '', censor_log=True
                 )
 
             if hasattr(providerObj, 'password'):
-                providerObj.password = Config.check_setting_str(
+                providerObj.password = srConfig.check_setting_str(
                         cfgobj, providerID.upper(), providerID + '_password', '', censor_log=True
                 )
 
             if hasattr(providerObj, 'passkey'):
-                providerObj.passkey = Config.check_setting_str(cfgobj, providerID.upper(),
-                                                               providerID + '_passkey', '',
-                                                               censor_log=True)
+                providerObj.passkey = srConfig.check_setting_str(cfgobj, providerID.upper(),
+                                                                 providerID + '_passkey', '',
+                                                                 censor_log=True)
             if hasattr(providerObj, 'pin'):
-                providerObj.pin = Config.check_setting_str(cfgobj, providerID.upper(),
-                                                           providerID + '_pin', '', censor_log=True)
+                providerObj.pin = srConfig.check_setting_str(cfgobj, providerID.upper(),
+                                                             providerID + '_pin', '', censor_log=True)
             if hasattr(providerObj, 'confirmed'):
-                providerObj.confirmed = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                      providerID + '_confirmed', 1))
+                providerObj.confirmed = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                        providerID + '_confirmed', 1))
             if hasattr(providerObj, 'ranked'):
-                providerObj.ranked = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                   providerID + '_ranked', 1))
+                providerObj.ranked = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                     providerID + '_ranked', 1))
 
             if hasattr(providerObj, 'engrelease'):
-                providerObj.engrelease = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                       providerID + '_engrelease', 0))
+                providerObj.engrelease = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                         providerID + '_engrelease', 0))
 
             if hasattr(providerObj, 'onlyspasearch'):
-                providerObj.onlyspasearch = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                          providerID + '_onlyspasearch',
-                                                                          0))
-
-            if hasattr(providerObj, 'sorting'):
-                providerObj.sorting = Config.check_setting_str(cfgobj, providerID.upper(),
-                                                               providerID + '_sorting', 'seeders')
-            if hasattr(providerObj, 'options'):
-                providerObj.options = Config.check_setting_str(cfgobj, providerID.upper(),
-                                                               providerID + '_options', '')
-            if hasattr(providerObj, 'ratio'):
-                providerObj.ratio = Config.check_setting_str(cfgobj, providerID.upper(),
-                                                             providerID + '_ratio', '')
-            if hasattr(providerObj, 'minseed'):
-                providerObj.minseed = Config.check_setting_int(cfgobj, providerID.upper(),
-                                                               providerID + '_minseed', 1)
-            if hasattr(providerObj, 'minleech'):
-                providerObj.minleech = Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                providerID + '_minleech', 0)
-            if hasattr(providerObj, 'freeleech'):
-                providerObj.freeleech = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                      providerID + '_freeleech', 0))
-            if hasattr(providerObj, 'search_mode'):
-                providerObj.search_mode = Config.check_setting_str(cfgobj, providerID.upper(),
-                                                                   providerID + '_search_mode',
-                                                                   'eponly')
-            if hasattr(providerObj, 'search_fallback'):
-                providerObj.search_fallback = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                            providerID + '_search_fallback',
+                providerObj.onlyspasearch = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                            providerID + '_onlyspasearch',
                                                                             0))
 
+            if hasattr(providerObj, 'sorting'):
+                providerObj.sorting = srConfig.check_setting_str(cfgobj, providerID.upper(),
+                                                                 providerID + '_sorting', 'seeders')
+            if hasattr(providerObj, 'options'):
+                providerObj.options = srConfig.check_setting_str(cfgobj, providerID.upper(),
+                                                                 providerID + '_options', '')
+            if hasattr(providerObj, 'ratio'):
+                providerObj.ratio = srConfig.check_setting_str(cfgobj, providerID.upper(),
+                                                               providerID + '_ratio', '')
+            if hasattr(providerObj, 'minseed'):
+                providerObj.minseed = srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                 providerID + '_minseed', 1)
+            if hasattr(providerObj, 'minleech'):
+                providerObj.minleech = srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                  providerID + '_minleech', 0)
+            if hasattr(providerObj, 'freeleech'):
+                providerObj.freeleech = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                        providerID + '_freeleech', 0))
+            if hasattr(providerObj, 'search_mode'):
+                providerObj.search_mode = srConfig.check_setting_str(cfgobj, providerID.upper(),
+                                                                     providerID + '_search_mode',
+                                                                   'eponly')
+            if hasattr(providerObj, 'search_fallback'):
+                providerObj.search_fallback = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                              providerID + '_search_fallback',
+                                                                              0))
+
             if hasattr(providerObj, 'enable_daily'):
-                providerObj.enable_daily = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                         providerID + '_enable_daily',
-                                                                         1))
+                providerObj.enable_daily = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                           providerID + '_enable_daily',
+                                                                           1))
 
             if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supportsBacklog'):
-                providerObj.enable_backlog = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                           providerID + '_enable_backlog',
-                                                                           providerObj.supportsBacklog))
+                providerObj.enable_backlog = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                             providerID + '_enable_backlog',
+                                                                             providerObj.supportsBacklog))
 
             if hasattr(providerObj, 'cat'):
-                providerObj.cat = Config.check_setting_int(cfgobj, providerID.upper(),
-                                                           providerID + '_cat', 0)
+                providerObj.cat = srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                             providerID + '_cat', 0)
             if hasattr(providerObj, 'subtitle'):
-                providerObj.subtitle = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                     providerID + '_subtitle', 0))
+                providerObj.subtitle = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                       providerID + '_subtitle', 0))
 
         # NZB PROVIDER SETTINGS
         for providerID, providerObj in sickrage.providersDict[GenericProvider.NZB].items():
             providerObj.enabled = bool(
-                    Config.check_setting_int(cfgobj, providerID.upper(), providerID, 0))
+                    srConfig.check_setting_int(cfgobj, providerID.upper(), providerID, 0))
             if hasattr(providerObj, 'api_key'):
-                providerObj.api_key = Config.check_setting_str(cfgobj, providerID.upper(),
-                                                               providerID + '_api_key', '', censor_log=True)
+                providerObj.api_key = srConfig.check_setting_str(cfgobj, providerID.upper(),
+                                                                 providerID + '_api_key', '', censor_log=True)
             if hasattr(providerObj, 'username'):
-                providerObj.username = Config.check_setting_str(cfgobj, providerID.upper(),
-                                                                providerID + '_username', '', censor_log=True)
+                providerObj.username = srConfig.check_setting_str(cfgobj, providerID.upper(),
+                                                                  providerID + '_username', '', censor_log=True)
             if hasattr(providerObj, 'search_mode'):
-                providerObj.search_mode = Config.check_setting_str(cfgobj, providerID.upper(),
-                                                                   providerID + '_search_mode',
+                providerObj.search_mode = srConfig.check_setting_str(cfgobj, providerID.upper(),
+                                                                     providerID + '_search_mode',
                                                                    'eponly')
             if hasattr(providerObj, 'search_fallback'):
-                providerObj.search_fallback = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                            providerID + '_search_fallback',
-                                                                            0))
+                providerObj.search_fallback = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                              providerID + '_search_fallback',
+                                                                              0))
             if hasattr(providerObj, 'enable_daily'):
-                providerObj.enable_daily = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                         providerID + '_enable_daily',
-                                                                         1))
+                providerObj.enable_daily = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                           providerID + '_enable_daily',
+                                                                           1))
 
             if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supportsBacklog'):
-                providerObj.enable_backlog = bool(Config.check_setting_int(cfgobj, providerID.upper(),
-                                                                           providerID + '_enable_backlog',
-                                                                           providerObj.supportsBacklog))
+                providerObj.enable_backlog = bool(srConfig.check_setting_int(cfgobj, providerID.upper(),
+                                                                             providerID + '_enable_backlog',
+                                                                             providerObj.supportsBacklog))
 
-        return Config.save_config(cfgfile)
+        return srConfig.save_config(cfgfile)
 
     @staticmethod
     def save_config(cfgfile):
@@ -1580,7 +1604,7 @@ class Config(object):
         new_config[b'General'][b'git_username'] = sickrage.GIT_USERNAME
         new_config[b'General'][b'git_password'] = encrypt(sickrage.GIT_PASSWORD, sickrage.ENCRYPTION_VERSION)
         new_config[b'General'][b'git_reset'] = int(sickrage.GIT_RESET)
-        new_config[b'General'][b'branch'] = sickrage.GIT_BRANCH
+        new_config[b'General'][b'branch'] = sickrage.VERSION
         new_config[b'General'][b'git_remote'] = sickrage.GIT_REMOTE
         new_config[b'General'][b'git_remote_url'] = sickrage.GIT_REMOTE_URL
         new_config[b'General'][b'cur_commit_hash'] = sickrage.CUR_COMMIT_HASH

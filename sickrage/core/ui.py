@@ -166,7 +166,7 @@ class QueueProgressIndicator():
 
     def nextName(self):
         for curItem in [
-            sickrage.showQueue.currentItem] + sickrage.showQueue.queue:  # @UndefinedVariable
+            sickrage.SHOWQUEUE.currentItem] + sickrage.SHOWQUEUE.queue:  # @UndefinedVariable
             if curItem in self.queueItemList:
                 return curItem.name
 

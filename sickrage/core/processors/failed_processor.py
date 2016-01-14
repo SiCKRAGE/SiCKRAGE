@@ -78,7 +78,7 @@ class FailedProcessor(object):
             segment = parsed.show.getEpisode(parsed.season_number, episode)
 
             cur_failed_queue_item = FailedQueueItem(parsed.show, [segment])
-            sickrage.searchQueue.add_item(cur_failed_queue_item)
+            sickrage.SEARCHQUEUE.add_item(cur_failed_queue_item)
 
         return True
 

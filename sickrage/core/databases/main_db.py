@@ -25,7 +25,7 @@ import os.path
 import babelfish
 
 import sickrage
-import sickrage.core.config
+import sickrage.core.srconfig
 from sickrage.core.common import ARCHIVED, DOWNLOADED, Quality, SKIPPED, \
     UNAIRED, UNKNOWN, WANTED, dateTimeFormat, statusStrings
 from sickrage.core.databases import Connection, SchemaUpgrade
@@ -575,7 +575,7 @@ class MainDB(Connection):
 
             # update the default quality so we dont grab the wrong qualities after migration
             sickrage.QUALITY_DEFAULT = self._update_composite_qualities(sickrage.QUALITY_DEFAULT)
-            sickrage.core.config.save_config(sickrage.CONFIG_FILE)
+            sickrage.core.srconfig.save_config(sickrage.CONFIG_FILE)
 
             # upgrade previous HD to HD720p -- shift previous qualities to new placevalues
             old_hd = Quality.combineQualities(

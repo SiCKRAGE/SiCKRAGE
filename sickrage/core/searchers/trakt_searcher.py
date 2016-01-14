@@ -52,7 +52,7 @@ def setEpisodeToWanted(show, s, e):
             epObj.saveToDB()
 
         cur_backlog_queue_item = BacklogQueueItem(show, [epObj])
-        sickrage.searchQueue.add_item(cur_backlog_queue_item)
+        sickrage.SEARCHQUEUE.add_item(cur_backlog_queue_item)
 
         logging.info(
                 "Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (
@@ -382,7 +382,7 @@ class TraktSearcher(object):
 
                         if 'aired' in progress and 'completed' in progress and progress[b'aired'] == progress[
                             b'completed']:
-                            sickrage.showQueue.removeShow(show, full=True)
+                            sickrage.SHOWQUEUE.removeShow(show, full=True)
                             logging.debug("Show: %s has been removed from SiCKRAGE" % show.name)
 
             logging.debug("SHOW_SICKRAGE::REMOVE::FINISH - Trakt Show Watchlist")
@@ -483,7 +483,7 @@ class TraktSearcher(object):
                 else:
                     chmodAsParent(showPath)
 
-                sickrage.showQueue.addShow(int(indexer), int(indexer_id), showPath,
+                sickrage.SHOWQUEUE.addShow(int(indexer), int(indexer_id), showPath,
                                            default_status=status,
                                            quality=int(sickrage.QUALITY_DEFAULT),
                                            flatten_folders=int(sickrage.FLATTEN_FOLDERS_DEFAULT),

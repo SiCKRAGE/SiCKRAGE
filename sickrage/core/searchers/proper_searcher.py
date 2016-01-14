@@ -66,8 +66,8 @@ class ProperSearcher(object):
         self._set_lastProperSearch(datetime.datetime.today().toordinal())
 
         run_at = ""
-        if None is sickrage.properSearcher.start_time:
-            run_in = sickrage.properSearcher.lastRun + sickrage.properSearcher.cycleTime - datetime.datetime.now()
+        if None is sickrage.PROPERSEARCHER.start_time:
+            run_in = sickrage.PROPERSEARCHER.lastRun + sickrage.PROPERSEARCHER.cycleTime - datetime.datetime.now()
             hours, remainder = divmod(run_in.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
             run_at = ", next check in approx. " + (

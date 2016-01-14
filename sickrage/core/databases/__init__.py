@@ -18,6 +18,8 @@
 
 from __future__ import unicode_literals
 
+from sickrage.core.logger import SRLogger
+
 __all__ = ["main_db", "cache_db", "failed_db"]
 
 import os
@@ -31,8 +33,6 @@ from tornado import gen
 
 import sickrage
 from sickrage.core.helpers import backupVersionedFile, restoreVersionedFile
-from sickrage.core.logger import SRLogger
-
 
 def prettyName(class_name):
     return ' '.join([x.group() for x in re.finditer("([A-Z])([a-z0-9]+)", class_name)])
@@ -47,6 +47,8 @@ def dbFilename(filename=None, suffix=None):
     @return: the correct location of the database file.
     """
 
+    filename = filename or 'sickrage.rb'
+
     if suffix:
         filename = filename + ".{}".format(suffix)
     return os.path.join(sickrage.DATA_DIR, filename)
@@ -54,14 +56,9 @@ def dbFilename(filename=None, suffix=None):
 
 class Connection(object):
     def __init__(self, filename=None, suffix=None, row_type=None):
-        self._filename = filename or "sickrage.db"
-        self._suffix = suffix or ""
+        self.filename = dbFilename(filename, suffix)
         self.row_type = row_type or sqlite3.Row
         self.lock = threading.Lock()
-
-    @property
-    def filename(self):
-        return dbFilename(self._filename, self._suffix)
 
     @contextmanager
     def connection(self):

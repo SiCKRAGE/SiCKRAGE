@@ -749,15 +749,15 @@
                                 <span class="component-title">Branch version:</span>
                                 <span class="component-desc">
                                     <select id="branchVersion" class="form-control form-control-inline input-sm pull-left">
-                                        <% gh_branch = sickrage.VersionUpdater.list_remote_branches %>
+                                        <% gh_branch = sickrage.VERSIONUPDATER.list_remote_branches %>
                                         % if gh_branch:
                                             % for cur_branch in gh_branch:
                                                 % if sickrage.GIT_USERNAME and sickrage.GIT_PASSWORD and sickrage.DEVELOPER == 1:
-                                                    <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.GIT_BRANCH == cur_branch]}>${cur_branch}</option>
+                                                    <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.VERSION == cur_branch]}>${cur_branch}</option>
                                                 % elif sickrage.GIT_USERNAME and sickrage.GIT_PASSWORD and cur_branch in ['master', 'develop']:
-                                                    <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.GIT_BRANCH == cur_branch]}>${cur_branch}</option>
+                                                    <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.VERSION == cur_branch]}>${cur_branch}</option>
                                                 % elif cur_branch == 'master':
-                                                    <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.GIT_BRANCH == cur_branch]}>${cur_branch}</option>
+                                                    <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.VERSION == cur_branch]}>${cur_branch}</option>
                                                 % endif
                                             % endfor
                                         % endif

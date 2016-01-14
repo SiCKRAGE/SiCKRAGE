@@ -67,7 +67,7 @@ class SRLogger(Logger):
             'DAILYSEARCHER': 'Daily Searcher',
             'BACKLOG': 'Backlog',
             'SHOWUPDATER': 'Show Updater',
-            'VersionUpdater': 'Check Version',
+            'VERSIONUPDATER': 'Check Version',
             'SHOWQUEUE': 'Show Queue',
             'SEARCHQUEUE': 'Search Queue',
             'FINDPROPERS': 'Find Propers',
@@ -169,8 +169,8 @@ class CustomLogger(SRLogger):
         try:
             from version_updater import VersionUpdater
 
-            sickrage.VersionUpdater.check_for_new_version()
-            commits_behind = sickrage.VersionUpdater.updater.get_num_commits_behind
+            sickrage.VERSIONUPDATER.check_for_new_version()
+            commits_behind = sickrage.VERSIONUPDATER.updater.get_num_commits_behind
         except Exception:
             submitter_result = 'Could not check if your SiCKRAGE is updated, unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
@@ -240,7 +240,7 @@ class CustomLogger(SRLogger):
                     message += "Locale: " + locale.getdefaultlocale()[1] + "\n"
                 except Exception:
                     message += "Locale: unknown" + "\n"
-                message += "Branch: **" + sickrage.GIT_BRANCH + "**\n"
+                message += "Branch: **" + sickrage.VERSION + "**\n"
                 message += "Commit: SiCKRAGETV/SiCKRAGE@" + sickrage.CUR_COMMIT_HASH + "\n"
                 if gist and gist != 'No ERROR found':
                     message += "Link to Log: " + gist.html_url + "\n"

@@ -1,11 +1,11 @@
-import core.helper<%!
+<%!
     import datetime
     import re
-                      import sickrage
-                      import core.helpers
-                      from sickrage.core.updaters import tz_updater
-                      from time import time
-    from sickrage.show.Show import Show
+    import sickrage
+    from time import time
+    from sickrage.core.updaters import tz_updater
+    from sickrage.core.show import Show
+    from sickrage.core.helpers import pretty_filesize
 
     # resource module is unix only
     has_resource_module = True
@@ -32,7 +32,7 @@ import core.helper<%!
         <meta name="theme-color" content="#333333">
         % endif
 
-        <title>SickRage - BRANCH:[${sickrage.GIT_BRANCH}] - ${title}</title>
+        <title>SickRage - BRANCH:[${sickrage.VERSION}] - ${title}</title>
 
         <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -304,12 +304,13 @@ import core.helper<%!
                 <div>
                     % if has_resource_module:
                         Memory used: <span
-                            class="footerhighlight">${core.helper.pretty_filesize(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)}</span>
+                            class="footerhighlight">${pretty_filesize(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)}</span>
                         |
                     % endif
-                    Load time: <span class="footerhighlight">${"%.4f" % (time() - sbStartTime)}s</span> / Mako: <span class="footerhighlight">${"%.4f" % (time() - makoStartTime)}s</span> |
-                    Branch: <span class="footerhighlight">${sickrage.GIT_BRANCH}</span> |
-                    Now: <span class="footerhighlight">${datetime.datetime.now(network_timezones.sb_timezone)}</span>
+                    Load time: <span class="footerhighlight">${"%.4f" % (time() - srStartTime)}s</span> / Mako: <span
+                        class="footerhighlight">${"%.4f" % (time() - makoStartTime)}s</span> |
+                    Branch: <span class="footerhighlight">${sickrage.VERSION}</span> |
+                    Now: <span class="footerhighlight">${datetime.datetime.now(tz_updater.sr_timezone)}</span>
                 </div>
             </div>
         </footer>

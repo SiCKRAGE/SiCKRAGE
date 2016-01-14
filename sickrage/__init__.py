@@ -22,7 +22,6 @@ from __future__ import unicode_literals
 
 # bugfix
 from time import strptime
-
 strptime("2012", "%Y")
 
 import os
@@ -33,7 +32,6 @@ import platform
 import threading
 import traceback
 import uuid
-
 
 INITIALIZED = False
 STARTED = False
@@ -68,25 +66,25 @@ PID = None
 Scheduler = None
 
 # app updater
-VersionUpdater = None
+VERSIONUPDATER = None
 
 # show lists
 showList = None
 
 # queues
-showUpdater = None
-showQueue = None
-searchQueue = None
+SHOWUPDATER = None
+SHOWQUEUE = None
+SEARCHQUEUE = None
 
 # caches
-nameCache = None
+NAMECACHE = None
 
 # searchers
-dailySearcher = None
-backlogSearcher = None
-properSearcher = None
-traktSearcher = None
-subtitleSearcher = None
+DAILYSEARCHER = None
+BACKLOGSEARCHER = None
+PROPERSEARCHER = None
+TRAKTSEARCHER = None
+SUBTITLESEARCHER = None
 
 # provider lists/dicts
 providersDict = None
@@ -115,7 +113,7 @@ GIT_NEWVER = False
 DEVELOPER = False
 CUR_COMMIT_BRANCH = None
 CUR_COMMIT_HASH = None
-GIT_BRANCH = None
+VERSION = None
 
 # news
 NEWS_URL = 'http://sickragetv.github.io/sickrage-news/news.md'
@@ -556,39 +554,6 @@ TORRENTRSS_DATA = None
 SHOWS_RECENT = []
 CENSOREDITEMS = {}
 
-
-def install_pip():
-    print("Downloading pip ...")
-    import urllib2
-
-    url = "https://bootstrap.pypa.io/get-pip.py"
-    file_name = url.split('/')[-1]
-    u = urllib2.urlopen(url)
-    f = open(file_name, 'wb')
-    meta = u.info()
-    file_size = int(meta.getheaders("Content-Length")[0])
-    print("Downloading: %s Bytes: %s" % (file_name, file_size))
-    file_size_dl = 0
-    block_sz = 8192
-    while True:
-        buffer = u.read(block_sz)
-        if not buffer:
-            break
-        file_size_dl += len(buffer)
-        f.write(buffer)
-        status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-        status = status + chr(8) * (len(status) + 1)
-        print(status),
-    f.close()
-    print("Installing pip ...")
-    import subprocess
-    subprocess.call([sys.executable, 'get-pip.py'])
-
-    import os
-    print("Cleaning up downloaded pip files")
-    os.remove("get-pip.py")
-
-
 def help_message():
     """
     print help message for commandline options
@@ -624,12 +589,7 @@ def help_message():
 
 def main():
     global APP_NAME, MY_FULLNAME, NO_RESIZE, MY_ARGS, WEB_PORT, WEB_NOLAUNCH, CREATEPID, DAEMONIZE, PIDFILE, \
-        ROOT_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, WEB_SERVER
-
-    APP_NAME = 'SiCKRAGE'
-    DATA_DIR = ROOT_DIR = os.path.abspath(os.path.dirname('.'))
-    PROG_DIR = os.path.abspath(os.path.dirname(__file__))
-    MY_ARGS = sys.argv[1:]
+        ROOT_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, WEB_SERVER, VERSIONUPDATER
 
     threading.currentThread().name = 'MAIN'
 
@@ -637,9 +597,45 @@ def main():
         print("Sorry, SiCKRAGE requires Python 2.7+")
         sys.exit(1)
 
+    APP_NAME = 'SiCKRAGE'
+    DATA_DIR = ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    PROG_DIR = os.path.abspath(os.path.dirname(__file__))
+    MY_ARGS = sys.argv[1:]
+
+    def install_pip():
+        print("Downloading pip ...")
+        import urllib2
+
+        url = "https://bootstrap.pypa.io/get-pip.py"
+        file_name = url.split('/')[-1]
+        u = urllib2.urlopen(url)
+        f = open(file_name, 'wb')
+        meta = u.info()
+        file_size = int(meta.getheaders("Content-Length")[0])
+        print("Downloading: %s Bytes: %s" % (file_name, file_size))
+        file_size_dl = 0
+        block_sz = 8192
+        while True:
+            buffer = u.read(block_sz)
+            if not buffer:
+                break
+            file_size_dl += len(buffer)
+            f.write(buffer)
+            status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
+            status = status + chr(8) * (len(status) + 1)
+            print(status),
+        f.close()
+        print("Installing pip ...")
+        import subprocess
+        subprocess.call([sys.executable, os.path.join(ROOT_DIR, 'get-pip.py')])
+
+        import os
+        print("Cleaning up downloaded pip files")
+        os.remove(os.path.join(ROOT_DIR, 'get-pip.py'))
+
     try:
         import pip
-        print("Upgrading pip ...")
+        print("Upgrading pip")
         pip.main(['install', '-q', '-U', 'pip'])
     except ImportError:
         install_pip()
@@ -656,15 +652,19 @@ def main():
 
     print("Installing/Upgrading SiCKRAGE required libs")
     pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
-              os.path.join(os.path.dirname(os.path.dirname(__file__)), 'requirements.txt')])
+              os.path.join(ROOT_DIR, 'requirements.txt')])
 
     try:
         print("Installing/Upgrading SiCKRAGE optional libs")
         pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
-                  os.path.join(os.path.dirname(os.path.dirname(__file__)), 'requirements-optional.txt')])
+                  os.path.join(ROOT_DIR, 'requirements-optional.txt')])
     except ImportError as e:
         print(e.message)
         pass
+
+    # init pip and updater
+    from sickrage.core.version_updater import VersionUpdater
+    VERSIONUPDATER = VersionUpdater()
 
     # Need console logging for py and SiCKRAGE-console.exe
     consolelogging = (not hasattr(sys, "frozen")) or (APP_NAME.lower().find('-console') > 0)

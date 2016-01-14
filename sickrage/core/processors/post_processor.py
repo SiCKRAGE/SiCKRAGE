@@ -39,7 +39,7 @@ from sickrage.core.helpers import findCertainShow, show_names, fixGlob, subtitle
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.searchers import subtitle_searcher
-from sickrage.core.show.history import History
+from sickrage.core.show.history import History, FailedHistory
 from sickrage.indexers import adba
 from sickrage.notifiers import notify_download
 
@@ -857,7 +857,7 @@ class PostProcessor(object):
         return False
 
     @property
-    def process(self, failed_history=None):
+    def process(self):
         """
         Post-process a given file
 
@@ -1028,7 +1028,7 @@ class PostProcessor(object):
         # Just want to keep this consistent for failed handling right now
         releaseName = show_names.determineReleaseName(self.folder_path, self.nzb_name)
         if releaseName is not None:
-            failed_history.logSuccess(releaseName)
+            FailedHistory.logSuccess(releaseName)
         else:
             self._log("Couldn't find release in snatch history", logging.WARNING)
 
