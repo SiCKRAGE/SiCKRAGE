@@ -10,8 +10,8 @@
 
 #  SR User Related   #
 ######################
-*.db
-*.ini
+/*.db*
+/*.ini
 /cache/
 /Logs/
 /data/
@@ -23,12 +23,15 @@
 
 #  SR Test Related   #
 ######################
+/tests/*.db*
+/tests/*.ini
 /tests/Logs/
 /tests/cache/
-/tests/sickrage.db*
-/tests/cache.db*
-/tests/failed.db
 /tests/data/
+/tests/restore/
+/tests/backup*/
+/tests/server.crt
+/tests/server.key
 
 #  Compiled source   #
 ######################
@@ -67,4 +70,4 @@ Thumbs.db
 ######################
 bower_components
 node_modules
-sickrage/core/webserver/gui/**/_bower.js
+_bower.js
