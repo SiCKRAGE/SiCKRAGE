@@ -8,9 +8,9 @@ fonts
 
     src: url('fonts/OpenSans-Regular-webfont.eot');
     src: url('fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/OpenSans-Regular-webfont.woff') format('woff'),
-    url('fonts/OpenSans-Regular-webfont.ttf') format('truetype'),
-    url('fonts/OpenSans-Regular-webfont.svg#OpenSansRegular') format('svg');
+         url('fonts/OpenSans-Regular-webfont.woff') format('woff'),
+         url('fonts/OpenSans-Regular-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-Regular-webfont.svg#OpenSansRegular') format('svg');
     font-weight: normal;
     font-weight: 400;
     font-style: normal;
@@ -21,9 +21,9 @@ fonts
     font-family: 'Open Sans';
     src: url('fonts/OpenSans-Italic-webfont.eot');
     src: url('fonts/OpenSans-Italic-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/OpenSans-Italic-webfont.woff') format('woff'),
-    url('fonts/OpenSans-Italic-webfont.ttf') format('truetype'),
-    url('fonts/OpenSans-Italic-webfont.svg#OpenSansItalic') format('svg');
+         url('fonts/OpenSans-Italic-webfont.woff') format('woff'),
+         url('fonts/OpenSans-Italic-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-Italic-webfont.svg#OpenSansItalic') format('svg');
     font-weight: normal;
     font-weight: 400;
     font-style: italic;
@@ -34,9 +34,9 @@ fonts
     font-family: 'Open Sans';
     src: url('fonts/OpenSans-Light-webfont.eot');
     src: url('fonts/OpenSans-Light-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/OpenSans-Light-webfont.woff') format('woff'),
-    url('fonts/OpenSans-Light-webfont.ttf') format('truetype'),
-    url('fonts/OpenSans-Light-webfont.svg#OpenSansLight') format('svg');
+         url('fonts/OpenSans-Light-webfont.woff') format('woff'),
+         url('fonts/OpenSans-Light-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-Light-webfont.svg#OpenSansLight') format('svg');
     font-weight: 200;
     font-style: normal;
 }
@@ -46,9 +46,9 @@ fonts
     font-family: 'Open Sans';
     src: url('fonts/OpenSans-LightItalic-webfont.eot');
     src: url('fonts/OpenSans-LightItalic-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/OpenSans-LightItalic-webfont.woff') format('woff'),
-    url('fonts/OpenSans-LightItalic-webfont.ttf') format('truetype'),
-    url('fonts/OpenSans-LightItalic-webfont.svg#OpenSansLightItalic') format('svg');
+         url('fonts/OpenSans-LightItalic-webfont.woff') format('woff'),
+         url('fonts/OpenSans-LightItalic-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-LightItalic-webfont.svg#OpenSansLightItalic') format('svg');
     font-weight: 200;
     font-style: italic;
 }
@@ -58,9 +58,9 @@ fonts
     font-family: 'Open Sans';
     src: url('fonts/OpenSans-Semibold-webfont.eot');
     src: url('fonts/OpenSans-Semibold-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/OpenSans-Semibold-webfont.woff') format('woff'),
-    url('fonts/OpenSans-Semibold-webfont.ttf') format('truetype'),
-    url('fonts/OpenSans-Semibold-webfont.svg#OpenSansSemibold') format('svg');
+         url('fonts/OpenSans-Semibold-webfont.woff') format('woff'),
+         url('fonts/OpenSans-Semibold-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-Semibold-webfont.svg#OpenSansSemibold') format('svg');
     font-weight: 600;
     font-style: normal;
 }
@@ -70,9 +70,9 @@ fonts
     font-family: 'Open Sans';
     src: url('fonts/OpenSans-SemiboldItalic-webfont.eot');
     src: url('fonts/OpenSans-SemiboldItalic-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/OpenSans-SemiboldItalic-webfont.woff') format('woff'),
-    url('fonts/OpenSans-SemiboldItalic-webfont.ttf') format('truetype'),
-    url('fonts/OpenSans-SemiboldItalic-webfont.svg#OpenSansSemiboldItalic') format('svg');
+         url('fonts/OpenSans-SemiboldItalic-webfont.woff') format('woff'),
+         url('fonts/OpenSans-SemiboldItalic-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-SemiboldItalic-webfont.svg#OpenSansSemiboldItalic') format('svg');
     font-weight: 600;
     font-style: italic;
 }
@@ -82,9 +82,9 @@ fonts
     font-family: 'Open Sans';
     src: url('fonts/OpenSans-Semibold-webfont.eot');
     src: url('fonts/OpenSans-Semibold-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/OpenSans-Semibold-webfont.woff') format('woff'),
-    url('fonts/OpenSans-Semibold-webfont.ttf') format('truetype'),
-    url('fonts/OpenSans-Semibold-webfont.svg#OpenSansSemibold') format('svg');
+         url('fonts/OpenSans-Semibold-webfont.woff') format('woff'),
+         url('fonts/OpenSans-Semibold-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-Semibold-webfont.svg#OpenSansSemibold') format('svg');
     font-weight: bold;
     font-weight: 700;
     font-style: normal;
@@ -95,9 +95,9 @@ fonts
     font-family: 'Open Sans';
     src: url('fonts/OpenSans-SemiboldItalic-webfont.eot');
     src: url('fonts/OpenSans-SemiboldItalic-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/OpenSans-SemiboldItalic-webfont.woff') format('woff'),
-    url('fonts/OpenSans-SemiboldItalic-webfont.ttf') format('truetype'),
-    url('fonts/OpenSans-SemiboldItalic-webfont.svg#OpenSansSemiboldItalic') format('svg');
+         url('fonts/OpenSans-SemiboldItalic-webfont.woff') format('woff'),
+         url('fonts/OpenSans-SemiboldItalic-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-SemiboldItalic-webfont.svg#OpenSansSemiboldItalic') format('svg');
     font-weight: bold;
     font-weight: 700;
     font-style: italic;
@@ -108,9 +108,9 @@ fonts
     font-family: 'Open Sans';
     src: url('fonts/OpenSans-Bold-webfont.eot');
     src: url('fonts/OpenSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/OpenSans-Bold-webfont.woff') format('woff'),
-    url('fonts/OpenSans-Bold-webfont.ttf') format('truetype'),
-    url('fonts/OpenSans-Bold-webfont.svg#OpenSansBold') format('svg');
+         url('fonts/OpenSans-Bold-webfont.woff') format('woff'),
+         url('fonts/OpenSans-Bold-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-Bold-webfont.svg#OpenSansBold') format('svg');
     font-weight: 900;
     font-style: normal;
 }
@@ -120,9 +120,9 @@ fonts
     font-family: 'Open Sans';
     src: url('fonts/OpenSans-BoldItalic-webfont.eot');
     src: url('fonts/OpenSans-BoldItalic-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/OpenSans-BoldItalic-webfont.woff') format('woff'),
-    url('fonts/OpenSans-BoldItalic-webfont.ttf') format('truetype'),
-    url('fonts/OpenSans-BoldItalic-webfont.svg#OpenSansBoldItalic') format('svg');
+         url('fonts/OpenSans-BoldItalic-webfont.woff') format('woff'),
+         url('fonts/OpenSans-BoldItalic-webfont.ttf') format('truetype'),
+         url('fonts/OpenSans-BoldItalic-webfont.svg#OpenSansBoldItalic') format('svg');
     font-weight: 900;
     font-style: italic;
 }
@@ -132,12 +132,13 @@ fonts
     font-family: 'droid_sans_mono';
     src: url('fonts/droidsansmono-webfont.eot');
     src: url('fonts/droidsansmono-webfont.eot?#iefix') format('embedded-opentype'),
-    url('fonts/droidsansmono-webfont.woff') format('woff'),
-    url('fonts/droidsansmono-webfont.ttf') format('truetype'),
-    url('fonts/droidsansmono-webfont.svg#droid_sans_monoregular') format('svg');
+         url('fonts/droidsansmono-webfont.woff') format('woff'),
+         url('fonts/droidsansmono-webfont.ttf') format('truetype'),
+         url('fonts/droidsansmono-webfont.svg#droid_sans_monoregular') format('svg');
     font-weight: normal;
     font-style: normal;
 }
+
 
 /* =======================================================================
 inc_top.mako
@@ -149,7 +150,7 @@ inc_top.mako
 }
 
 #contentWrapper {
-    /*	background: url("../images/bg.png") repeat 0 0 transparent; */
+/*	background: url("../images/bg.png") repeat 0 0 transparent; */
 }
 
 [class^="icon-"],
@@ -180,12 +181,12 @@ inc_top.mako
 }
 
 .ui-progressbar .ui-progressbar-overlay {
-    background: url("lib/images/animated-overlay.gif");
+    background: url("../css/lib/images/animated-overlay.gif");
 }
 
 .ui-dialog,
 .ui-dialog-buttonpane {
-    background: #eceadf url("lib/images/ui-bg_fine-grain_10_eceadf_60x60.png") 50% 50% repeat !important;
+    background: #eceadf url("../css/lib/images/ui-bg_fine-grain_10_eceadf_60x60.png") 50% 50% repeat !important;
 }
 
 .ui-accordion-content,
@@ -200,11 +201,11 @@ inc_top.mako
 }
 
 .ui-widget-content {
-    background: #dcdcdc url("lib/images/ui-bg_highlight-soft_75_dcdcdc_1x100.png") 50% top repeat-x;
+    background: #dcdcdc url("../css/lib/images/ui-bg_highlight-soft_75_dcdcdc_1x100.png") 50% top repeat-x;
 }
 
 .ui-widget-header {
-    background: #ffffff url("lib/images/ui-bg_flat_0_ffffff_40x100.png") 50% 50% repeat-x;
+    background: #ffffff url("../css/lib/images/ui-bg_flat_0_ffffff_40x100.png") 50% 50% repeat-x;
 }
 
 .ui-state-default,
@@ -232,52 +233,52 @@ inc_top.mako
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
-    background: #fbf9ee url("lib/images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x;
+    background: #fbf9ee url("../css/lib/images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x;
 }
 
 .ui-state-error,
 .ui-widget-content .ui-state-error,
 .ui-widget-header .ui-state-error {
-    background: #fef1ec url("lib/images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x;
+    background: #fef1ec url("../css/lib/images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x;
 }
 
 .ui-icon,
 .ui-widget-content .ui-icon {
-    background-image: url("lib/images/ui-icons_222222_256x240.png");
+    background-image: url("../css/lib/images/ui-icons_222222_256x240.png");
 }
 
 .ui-widget-header .ui-icon {
-    background-image: url("lib/images/ui-icons_222222_256x240.png");
+    background-image: url("../css/lib/images/ui-icons_222222_256x240.png");
 }
 
 .ui-state-default .ui-icon {
-    background-image: url("lib/images/ui-icons_8c291d_256x240.png");
+    background-image: url("../css/lib/images/ui-icons_8c291d_256x240.png");
 }
 
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon {
-    background-image: url("lib/images/ui-icons_222222_256x240.png");
+    background-image: url("../css/lib/images/ui-icons_222222_256x240.png");
 }
 
 .ui-state-active .ui-icon {
-    background-image: url("lib/images/ui-icons_8c291d_256x240.png");
+    background-image: url("../css/lib/images/ui-icons_8c291d_256x240.png");
 }
 
 .ui-state-highlight .ui-icon {
-    background-image: url("lib/images/ui-icons_2e83ff_256x240.png");
+    background-image: url("../css/lib/images/ui-icons_2e83ff_256x240.png");
 }
 
 .ui-state-error .ui-icon,
 .ui-state-error-text .ui-icon {
-    background-image: url("lib/images/ui-icons_cd0a0a_256x240.png");
+    background-image: url("../css/lib/images/ui-icons_cd0a0a_256x240.png");
 }
 
 .ui-widget-overlay {
-    background: #aaaaaa url("lib/images/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x;
+    background: #aaaaaa url("../css/lib/images/ui-bg_flat_0_aaaaaa_40x100.png") 50% 50% repeat-x;
 }
 
 .ui-widget-shadow {
-    background: #000000 url("lib/images/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x;
+    background: #000000 url("../css/lib/images/ui-bg_flat_0_000000_40x100.png") 50% 50% repeat-x;
 }
 
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
@@ -316,7 +317,7 @@ inc_top.mako
     border-top-right-radius: 5px;
 }
 
-.ui-tabs-nav > :not(.ui-tabs-active) {
+.ui-tabs-nav > :not(.ui-tabs-active){
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
@@ -356,7 +357,7 @@ inc_top.mako
     float: left;
 }
 
-@media (max-width: 767px) {
+@media(max-width:767px){
     [class^="menu-icon-"], [class*=" menu-icon-"] {
         background: url("../images/menu/menu-icons-white.png");
         height: 16px;
@@ -503,11 +504,9 @@ inc_rootDirs.mako
 .rootdir-controls {
     width: 430px
 }
-
 .rootdir-selectbox {
     padding: 0 0 5px
 }
-
 .rootdir-controls {
     text-align: center
 }
@@ -663,15 +662,12 @@ home.mako
     border-left: 0px;
     border-right: 0px;
 }
-
 .ui-progressbar .ui-progressbar-value {
-    height: 20px
+    height:20px
 }
-
 .ui-progressbar .progress-20 {
     border: none;
 }
-
 .show .progress-20,
 .show .progress-40,
 .show .progress-60,
@@ -727,8 +723,8 @@ home.mako
 }
 
 .show-table {
-    text-align: center;
-    vertical-align: middle;
+    text-align:center;
+    vertical-align:middle;
     width: 33%
 }
 
@@ -814,7 +810,7 @@ home_addShows.mako
     margin-left: auto;
 }
 
-#addShowPortal a {
+#addShowPortal  a {
     padding: 10px;
 }
 
@@ -872,7 +868,7 @@ home_newShow.mako
     margin-left: auto;
     margin-right: auto;
     padding: 10px 0;
-    font-size: 13px;
+    font-size:13px;
 }
 
 #newShowPortal {
@@ -913,7 +909,7 @@ ul#rootDirStaticList li {
     margin: 2px;
     list-style: none outside none;
     cursor: pointer;
-    background: url('lib/images/ui-bg_highlight-soft_75_efefef_1x100.png') repeat-x scroll 50% 50% #EFEFEF;
+    background: url('../css/lib/images/ui-bg_highlight-soft_75_efefef_1x100.png') repeat-x scroll 50% 50% #EFEFEF;
 }
 
 ul#rootDirStaticList li label {
@@ -948,7 +944,7 @@ home_trendingShows.mako
     white-space: nowrap;
     font-size: 12px;
     overflow: hidden;
-    /*	text-shadow: 1px 1px 0px #000;*/
+/*	text-shadow: 1px 1px 0px #000;*/
     padding-left: 4px;
     margin: 0;
 }
@@ -1051,7 +1047,7 @@ span.imdbstars, span.imdbstars > * {
 
 span.imdbstars > * {
     background-position: 0 0;
-    max-width: 120px;
+    max-width:120px;
 }
 
 ul.tags {
@@ -1074,7 +1070,7 @@ ul.tags li {
     float: left;
 }
 
-ul.tags li a {
+ul.tags li a{
     color: #FFF;
 }
 
@@ -1124,23 +1120,18 @@ ul.tags li a {
 .unaired {
     background-color: #f5f1e4;
 }
-
 .skipped {
     background-color: #bedeed;
 }
-
 .good {
     background-color: #c3e3c8;
 }
-
 .qual {
     background-color: #ffda8a;
 }
-
 .wanted {
     background-color: #ffb0b0;
 }
-
 .snatched {
     background-color: #ebc1ea;
 }
@@ -1149,27 +1140,22 @@ span.unaired {
     color: #584b20;
     border: 1px solid #584b20;
 }
-
 span.skipped {
     color: #1d5068;
     border: 1px solid #1d5068;
 }
-
 span.good {
     color: #295730;
     border: 1px solid #295730;
 }
-
 span.qual {
     color: #765100;
     border: 1px solid #765100;
 }
-
 span.wanted {
     color: #890000;
     border: 1px solid #890000;
 }
-
 span.snatched {
     color: #652164;
     border: 1px solid #652164;
@@ -1212,7 +1198,7 @@ span.snatched b {
 }
 
 .displayShowTable.display_show {
-    clear: both
+    clear:both
 }
 
 .displayShowTable th.row-seasonheader {
@@ -1238,7 +1224,7 @@ span.snatched b {
 }
 
 .sickrageTable.display_show {
-    clear: both
+    clear:both
 }
 
 .sickrageTable th {
@@ -1333,7 +1319,7 @@ td.col-legend {
 
 th.col-search,
 td.col-search {
-    width: 46px;
+  width: 46px;
 }
 
 .showLegend {
@@ -1436,7 +1422,7 @@ h2.day, h2.network {
     color: #428BCA;
 }
 
-.tvshowDiv a, .tvshowDiv a:link, .tvshowDiv a:visited, .tvshowDiv a:hover {
+.tvshowDiv a, .tvshowDiv a:link, .tvshowDiv a:visited, .tvshowDiv a:hover  {
     text-decoration: none;
     background: none;
 }
@@ -1503,46 +1489,46 @@ h2.day, h2.network {
 }
 
 .calendarWrapper {
-    width: 1000px;
-    margin: 0 auto;
-    padding: 0 3px
+    width:1000px;
+    margin:0 auto;
+    padding:0 3px
 }
 
 .calendarTable {
-    float: left;
-    width: 142px !important;
-    white-space: nowrap;
-    table-layout: fixed !important;
+    float:left;
+    width:142px !important;
+    white-space:nowrap;
+    table-layout:fixed !important;
 }
 
 .calendarShow {
-    padding: 0 !important
+    padding:0 !important
 }
 
 .calendarShow .poster {
-    padding-bottom: 2px
+    padding-bottom:2px
 }
 
 .calendarShow .poster img {
-    width: 142px;
-    height: auto
+    width:142px;
+    height:auto
 }
 
 .calendarShow .text {
-    padding: 0 5px 10px 5px
+    padding:0 5px 10px 5px
 }
 
 .calendarShow .text .airtime,
 .calendarShow .text .episode-title {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-    font-size: 11px
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:block;
+    font-size:11px
 }
 
 .calendarShow .show-status {
-    padding: 5px 10px 10px;
-    text-align: center
+    padding:5px 10px 10px;
+    text-align:center
 }
 
 /* =======================================================================
@@ -1569,12 +1555,12 @@ config*.mako
     min-height: 200px;
 }
 
-.component-group-desc {
+.component-group-desc{
     float: left;
     width: 250px;
 }
 
-.component-group-desc h3 {
+.component-group-desc h3{
     margin-top: 5px;
 }
 
@@ -1612,13 +1598,13 @@ config*.mako
 #config span.component-desc {
     font-size: 12px;
     font-weight: normal;
-    display: block;
-    width: 475px;
-    margin-left: 182px
+    display:block;
+    width:475px;
+    margin-left:182px
 }
 
 #config label.space-right {
-    margin-right: 10px
+    margin-right:10px
 }
 
 #config .metadataDiv {
@@ -1713,19 +1699,15 @@ select .selected {
 .icon16-github {
     background-position: 0 0;
 }
-
 .icon16-mirc {
     background-position: -20px 0;
 }
-
 .icon16-sb {
     background-position: -40px 0;
 }
-
 .icon16-web {
     background-position: -60px 0;
 }
-
 .icon16-win {
     background-position: -80px 0;
 }
@@ -1735,8 +1717,7 @@ config_postProcessing.mako
 ========================================================================== */
 
 #config div.example {
-    padding: 10px;
-    background-color: #efefef;
+    padding: 10px; background-color: #efefef;
 }
 
 .Key {
@@ -1911,12 +1892,12 @@ span.path {
 
 span.quality {
     font: 12px/13px "Open Sans", verdana, sans-serif;
-    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.25));
-    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.25));
-    background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.25));
-    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.25));
-    -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.15);
-    box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.15);
+    background-image:-webkit-linear-gradient(top, rgba(255,255,255,0.08),rgba(255,255,255,0) 50%,rgba(0,0,0,0) 50%,rgba(0,0,0,0.25));
+    background-image:-moz-linear-gradient(top, rgba(255,255,255,0.08),rgba(255,255,255,0) 50%,rgba(0,0,0,0) 50%,rgba(0,0,0,0.25));
+    background-image:-o-linear-gradient(top, rgba(255,255,255,0.08),rgba(255,255,255,0) 50%,rgba(0,0,0,0) 50%,rgba(0,0,0,0.25));
+    background-image:linear-gradient(to bottom, rgba(255,255,255,0.08),rgba(255,255,255,0) 50%,rgba(0,0,0,0) 50%,rgba(0,0,0,0.25));
+    -webkit-box-shadow:inset 0 1px rgba(255,255,255,0.1),inset 0 -1px 3px rgba(0,0,0,0.3),inset 0 0 0 1px rgba(255,255,255,0.08),0 1px 2px rgba(0,0,0,0.15);
+    box-shadow:inset 0 1px rgba(255,255,255,0.1),inset 0 -1px 3px rgba(0,0,0,0.3),inset 0 0 0 1px rgba(255,255,255,0.08),0 1px 2px rgba(0,0,0,0.15);
     text-shadow: 0px 1px rgba(0, 0, 0, 0.8);
     color: #FFFFFF;
     display: inline-block;
@@ -1932,11 +1913,11 @@ span.quality {
 span.any-hd {
     background-color: #2672b6;
     background: repeating-linear-gradient(
-            -45deg,
-            #2672b6,
-            #2672b6 10px,
-            #5b990d 10px,
-            #5b990d 20px
+        -45deg,
+        #2672b6,
+        #2672b6 10px,
+        #5b990d 10px,
+        #5b990d 20px
     );
 }
 
@@ -2010,7 +1991,7 @@ option.flag {
 
 /* Anime section for editShow */
 .bwlWrapper {
-    height: auto;
+    height:auto;
     margin: 0 auto;
 }
 
@@ -2034,8 +2015,8 @@ option.flag {
     width: 95%;
 }
 
-div.blackwhitelist {
-    float: left;
+div.blackwhitelist{
+    float:left;
     text-align: center;
 }
 
@@ -2043,7 +2024,7 @@ div.blackwhitelist input {
     margin: 5px 0px;
 }
 
-div.blackwhitelist.pool select {
+div.blackwhitelist.pool select{
     width: 230px;
 }
 
@@ -2174,20 +2155,17 @@ input, textarea, select, .uneditable-input {
     .navbar-default .navbar-nav .open .dropdown-menu > li > a {
         color: #dddddd;
     }
-
     .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
     .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
         color: #ffffff;
         background-color: transparent;
     }
-
     .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
     .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
     .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
         color: #ffffff;
         background-color: #333333;
     }
-
     .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a,
     .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:hover,
     .navbar-default .navbar-nav .open .dropdown-menu > .disabled > a:focus {
@@ -2586,7 +2564,7 @@ fieldset[disabled] .navbar-default .btn-link:focus {
     border-radius: 3px;
 }
 
-@media (min-width: 768px) {
+@media(min-width:768px){
     .navbar .nav > li > .dropdown-menu:after {
         position: absolute;
         top: -6px;
@@ -2768,8 +2746,8 @@ div.formpaginate .prev, div.formpaginate .next {
     cursor: pointer;
     background: #57442b;
     -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
+        -moz-border-radius: 6px;
+            border-radius: 6px;
 }
 
 .stepDiv {
@@ -2858,7 +2836,7 @@ tablesorter.css
 .tablesorter th {
     color: #fff;
     text-align: center;
-    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+    text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
     background-color: #333;
     border-collapse: collapse;
     font-weight: normal;
@@ -2880,9 +2858,9 @@ tablesorter.css
 }
 
 .tablesorter thead .tablesorter-headerAsc {
-    background-color: #555;
-    background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
-    /* background-image: url(../images/tablesorter/desc.gif); */
+  background-color: #555;
+  background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+  /* background-image: url(../images/tablesorter/desc.gif); */
 }
 
 .tablesorter thead .sorter-false {
@@ -2914,8 +2892,8 @@ thead.tablesorter-stickyHeader {
     width: 98%;
     height: auto;
     -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+        -moz-box-sizing: border-box;
+            box-sizing: border-box;
 }
 
 .tablesorter tr.tablesorter-filter-row,
@@ -2938,13 +2916,13 @@ thead.tablesorter-stickyHeader {
 .tablesorter tfoot tr {
     color: #fff;
     text-align: center;
-    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+    text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
     background-color: #333;
     border-collapse: collapse;
 }
 
 .tablesorter tfoot a {
-    color: #fff;
+    color:#fff;
     text-decoration: none;
 }
 
@@ -2966,7 +2944,7 @@ ul.token-input-list {
     padding: 0 0 1px 0;
     background-color: #fff;
     list-style-type: none;
-    /*    clear: left; */
+/*    clear: left; */
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     border-bottom-left-radius: 3px;
@@ -2981,7 +2959,7 @@ ul.token-input-list li input {
     border: 0;
     padding: 3px 4px;
     background-color: white;
-    /*    -webkit-appearance: caret; */
+/*    -webkit-appearance: caret; */
 }
 
 li.token-input-token {
@@ -3087,17 +3065,9 @@ span.token-input-delete-token {
     margin: 0 1px;
 }
 
-.red-text {
-    color: #d33
-}
-
-.clear-left {
-    clear: left
-}
-
-.nextline-block {
-    display: block
-}
+.red-text {color:#d33}
+.clear-left {clear:left}
+.nextline-block {display:block}
 
 .trakt-image {
     display: block;
@@ -3111,19 +3081,19 @@ span.token-input-delete-token {
 jquery.confirm.css
 ========================================================================== */
 
-#confirmOverlay {
+#confirmOverlay{
     width: 100%;
     height: 100%;
     position: fixed;
     top: 0;
     left: 0;
     background: url('../images/bg.gif');
-    background: -moz-linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)) repeat-x rgba(0, 0, 0, 0.5);
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(0, 0, 0, 0.5)), to(rgba(0, 0, 0, 0.5))) repeat-x rgba(0, 0, 0, 0.5);
+    background: -moz-linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)) repeat-x rgba(0,0,0,0.5);
+    background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(0,0,0,0.5)), to(rgba(0,0,0,0.5))) repeat-x rgba(0,0,0,0.5);
     z-index: 100000;
 }
 
-#confirmBox {
+#confirmBox{
     background: #F5F1E4;
     width: 460px;
     position: fixed;
@@ -3135,7 +3105,7 @@ jquery.confirm.css
 }
 
 #confirmBox h1,
-#confirmBox p {
+#confirmBox p{
     padding: 6px 10px;
 }
 
@@ -3165,7 +3135,7 @@ jquery.confirm.css
     text-decoration: none;
     display: inline-block;
     color: #fff;
-    text-align: center;
+    text-align:center;
     text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.75);
     background-clip: padding-box;
     border: 1px solid #111;
@@ -3174,16 +3144,16 @@ jquery.confirm.css
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 51%, rgba(0, 0, 0, 0.25));
-    background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 51%, rgba(0, 0, 0, 0.25));
-    background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 51%, rgba(0, 0, 0, 0.25));
-    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 51%, rgba(0, 0, 0, 0.25));
-    -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.15);
-    box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.15);
+    background-image: -webkit-linear-gradient(top, rgba(255,255,255,0.08),rgba(255,255,255,0) 50%,rgba(0,0,0,0) 51%,rgba(0,0,0,0.25));
+    background-image: -moz-linear-gradient(top, rgba(255,255,255,0.08),rgba(255,255,255,0) 50%,rgba(0,0,0,0) 51%,rgba(0,0,0,0.25));
+    background-image: -o-linear-gradient(top, rgba(255,255,255,0.08),rgba(255,255,255,0) 50%,rgba(0,0,0,0) 51%,rgba(0,0,0,0.25));
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0.08),rgba(255,255,255,0) 50%,rgba(0,0,0,0) 51%,rgba(0,0,0,0.25));
+    -webkit-box-shadow: inset 0 1px rgba(255,255,255,0.1),inset 0 -1px 3px rgba(0,0,0,0.3),inset 0 0 0 1px rgba(255,255,255,0.08),0 1px 2px rgba(0,0,0,0.15);
+    box-shadow: inset 0 1px rgba(255,255,255,0.1),inset 0 -1px 3px rgba(0,0,0,0.3),inset 0 0 0 1px rgba(255,255,255,0.08),0 1px 2px rgba(0,0,0,0.15);
 }
 
 #confirmBox .button:last-child {
-    margin-right: 0;
+    margin-right:0;
 }
 
 #confirmBox .green {
@@ -3289,44 +3259,44 @@ login.css
 IMDB Popular
 ========================================================================== */
 
-.popularShow {
-    margin-bottom: 30px;
+.popularShow{
+    margin-bottom:30px;
 }
 
-.popularShow h3 {
-    padding: 0px;
-    margin: 0px;
-    display: inline-block;
-    margin-right: 30px;
+.popularShow h3{
+    padding:0px;
+    margin:0px;
+    display:inline-block;
+    margin-right:30px;
 }
 
-.popularShow .left {
-    float: left;
-    width: 100px;
+.popularShow .left{
+    float:left;
+    width:100px;
 }
 
-.popularShow .right {
-    float: left;
-    width: 600px;
+.popularShow .right{
+    float:left;
+    width:600px;
 }
 
-.popularShow .year {
-    font-style: italic;
-    opacity: 0.7;
+.popularShow .year{
+    font-style:italic;
+    opacity:0.7;
 }
 
-.popularShow .coverImage {
-    width: 80%;
-    padding-left: 20px;
-    margin-top: 4px;
+.popularShow .coverImage{
+    width:80%;
+    padding-left:20px;
+    margin-top:4px;
 }
 
-.popularShow .rating {
-    font-size: 90%;
-    display: inline-block;
-    margin-left: 0px;
+.popularShow .rating{
+    font-size:90%;
+    display:inline-block;
+    margin-left:0px;
 }
 
-.popularShow p {
-    margin-bottom: 0px;
+.popularShow p{
+    margin-bottom:0px;
 }

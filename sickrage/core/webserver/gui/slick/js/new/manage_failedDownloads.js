@@ -5,6 +5,6 @@ $(document).ready(function(){
         headers: { 3: { sorter: false } }
     });
     $('#limit').change(function(){
-        window.location.href = srRoot + '/manage/failedDownloads/?limit=' + $(this).val();
+        window.location.href = srRoot + '/manage/failedDownloads/?limit='+$(this).val();;
     });
 });

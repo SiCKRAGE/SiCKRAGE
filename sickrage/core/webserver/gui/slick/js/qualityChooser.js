@@ -25,7 +25,7 @@ $(document).ready(function() {
             }
         });
 
-
+        return;
     }
 
     $('#qualityPreset').change(function() {

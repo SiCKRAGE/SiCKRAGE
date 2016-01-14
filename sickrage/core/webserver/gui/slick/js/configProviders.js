@@ -151,12 +151,12 @@ $(document).ready(function(){
 
             $("#newznab_cat option").each(function() {
                 $(this).remove();
-
+                return;
             });
 
             $("#newznab_cap option").each(function() {
                 $(this).remove();
-
+                return;
             });
 
         } else {

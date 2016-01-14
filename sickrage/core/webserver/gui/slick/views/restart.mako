@@ -6,10 +6,10 @@
     <%
         try:
             curSBHost = sbHost
-            curSBHttpPort = srHttpPort
-            curSBHttpsEnabled = srHttpsEnabled
-            curSBHandleReverseProxy = srHandleReverseProxy
-            themeSpinner = srThemeName
+            curSBHttpPort = sbHttpPort
+            curSBHttpsEnabled = sbHttpsEnabled
+            curSBHandleReverseProxy = sbHandleReverseProxy
+            themeSpinner = sbThemeName
         except NameError:
             curSBHost = "localhost"
             curSBHttpPort = sickrage.WEB_PORT
@@ -19,14 +19,14 @@
     %>
     <script type="text/javascript" charset="utf-8">
         srRoot = "${srRoot}";
-        srHttpPort = "${curSBHttpPort}";
-        srHttpsEnabled = "${curSBHttpsEnabled}";
-        srHandleReverseProxy = "${curSBHandleReverseProxy}";
+        sbHttpPort = "${curSBHttpPort}";
+        sbHttpsEnabled = "${curSBHttpsEnabled}";
+        sbHandleReverseProxy = "${curSBHandleReverseProxy}";
         sbHost = "${curSBHost}";
-        srDefaultPage = "${srDefaultPage}";
+        sbDefaultPage = "${sbDefaultPage}";
     </script>
     <script type="text/javascript" src="${srRoot}/js/lib/jquery-1.11.2.min.js?${sbPID}"></script>
-    <script type="text/javascript" src="${srRoot}/js/restart.js?${sbPID}&amp;${srDefaultPage}"></script>
+    <script type="text/javascript" src="${srRoot}/js/restart.js?${sbPID}&amp;${sbDefaultPage}"></script>
 </%block>
 <%block name="css">
     <style>
@@ -39,10 +39,10 @@
     <%
         try:
             curSBHost = sbHost
-            curSBHttpPort = srHttpPort
-            curSBHttpsEnabled = srHttpsEnabled
-            curSBHandleReverseProxy = srHandleReverseProxy
-            themeSpinner = srThemeName
+            curSBHttpPort = sbHttpPort
+            curSBHttpsEnabled = sbHttpsEnabled
+            curSBHandleReverseProxy = sbHandleReverseProxy
+            themeSpinner = sbThemeName
         except NameError:
             curSBHost = "localhost"
             curSBHttpPort = sickrage.WEB_PORT

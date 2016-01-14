@@ -1,4 +1,4 @@
-<%inherit file="/layouts/main.mako"/>
+import core.helper<%inherit file="/layouts/main.mako"/>
 <%!
     import datetime
     import urllib
@@ -387,42 +387,42 @@
         %  for epResult in sqlResults:
             epStr = str(epResult[b"season"]) + "x" + str(epResult[b"episode"])
             if not epStr in epCats:
-            continue
+                continue
 
             if not sickrage.DISPLAY_SHOW_SPECIALS and int(epResult[b"season"]) == 0:
-            continue
+                continue
 
             scene = False
             scene_anime = False
             if not show.air_by_date and not show.is_sports and not show.is_anime and show.is_scene:
-            scene = True
+                scene = True
             elif not show.air_by_date and not show.is_sports and show.is_anime and show.is_scene:
-            scene_anime = True
+                scene_anime = True
 
             (dfltSeas, dfltEpis, dfltAbsolute) = (0, 0, 0)
             if (epResult[b"season"], epResult[b"episode"]) in xem_numbering:
-            (dfltSeas, dfltEpis) = xem_numbering[(epResult[b"season"], epResult[b"episode"])]
+                (dfltSeas, dfltEpis) = xem_numbering[(epResult[b"season"], epResult[b"episode"])]
 
             if epResult[b"absolute_number"] in xem_absolute_numbering:
-            dfltAbsolute = xem_absolute_numbering[epResult[b"absolute_number"]]
+                dfltAbsolute = xem_absolute_numbering[epResult[b"absolute_number"]]
 
             if epResult[b"absolute_number"] in scene_absolute_numbering:
-            scAbsolute = scene_absolute_numbering[epResult[b"absolute_number"]]
-            dfltAbsNumbering = False
+                scAbsolute = scene_absolute_numbering[epResult[b"absolute_number"]]
+                dfltAbsNumbering = False
             else:
-            scAbsolute = dfltAbsolute
-            dfltAbsNumbering = True
+                scAbsolute = dfltAbsolute
+                dfltAbsNumbering = True
 
             if (epResult[b"season"], epResult[b"episode"]) in scene_numbering:
-            (scSeas, scEpis) = scene_numbering[(epResult[b"season"], epResult[b"episode"])]
-            dfltEpNumbering = False
+                (scSeas, scEpis) = scene_numbering[(epResult[b"season"], epResult[b"episode"])]
+                dfltEpNumbering = False
             else:
-            (scSeas, scEpis) = (dfltSeas, dfltEpis)
-            dfltEpNumbering = True
+                (scSeas, scEpis) = (dfltSeas, dfltEpis)
+                dfltEpNumbering = True
 
             epLoc = epResult[b"location"]
             if epLoc and show._location and epLoc.lower().startswith(show._location.lower()):
-            epLoc = epLoc[len(show._location)+1:]
+                epLoc = epLoc[len(show._location)+1:]
 
         % if int(epResult[b"season"]) != curSeason:
             % if curSeason == -1:
@@ -551,19 +551,17 @@
                 <th class="col-status">Status</th>
                 <th class="col-search">Search</th>
             </tr>
-            % endif
+                % endif
             </tbody>
             % if sickrage.DISPLAY_ALL_SEASONS == False:
                 <tbody class="collapse${("", " in")[curSeason == -1]}" id="collapseSeason-${epResult[b'season']}">
             % else:
 
 
-
-
                 <tbody>
-            % endif
+                % endif
             <% curSeason = int(epResult[b"season"]) %>
-        % endif
+            % endif
         <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle"
             id="${'S' + str(epResult[b"season"]) + 'E' + str(epResult[b"episode"])}">
             <td class="col-checkbox">
@@ -616,42 +614,42 @@
                 % if epResult[b"description"] != "" and epResult[b"description"] != None:
                     <img src="${srRoot}/images/info32.png" width="16" height="16" class="plotInfo" alt=""
                          id="plot_info_${str(show.indexerid)}_${str(epResult[b"season"])}_${str(epResult[b"episode"])}"/>
-                % else:
+                    % else:
                     <img src="${srRoot}/images/info32.png" width="16" height="16" class="plotInfoNone" alt=""/>
-                % endif
+                    % endif
                 ${epResult[b"name"]}
             </td>
             <td class="col-name">${epLoc}</td>
             <td class="col-ep">
                 % if epResult[b"file_size"]:
                     <% file_size = core.helper.pretty_filesize(epResult[b"file_size"]) %>
-                ${file_size}
+                    ${file_size}
                 % endif
             </td>
             <td class="col-airdate">
                 % if int(epResult[b'airdate']) != 1:
-                ## Lets do this exactly like ComingEpisodes and History
+                    ## Lets do this exactly like ComingEpisodes and History
                     ## Avoid issues with dateutil's _isdst on Windows but still provide air dates
                     <% airDate = datetime.datetime.fromordinal(epResult[b'airdate']) %>
-                % if airDate.year >= 1970 or show.network:
-                    <% airDate = srdatetime.srDateTime.convert_to_setting(network_timezones.parse_date_time(epResult[b'airdate'], show.airs, show.network)) %>
-                % endif
-                    <time datetime="${airDate.isoformat()}"
-                          class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>
+                    % if airDate.year >= 1970 or show.network:
+                        <% airDate = srdatetime.srDateTime.convert_to_setting(network_timezones.parse_date_time(epResult[b'airdate'], show.airs, show.network)) %>
+                    % endif
+                        <time datetime="${airDate.isoformat()}"
+                              class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>
                 % else:
                     Never
                 % endif
             </td>
             <td>
                 % if sickrage.DOWNLOAD_URL and epResult[b'location']:
-                <%
-                    filename = epResult[b'location']
-                    for rootDir in sickrage.ROOT_DIRS.split('|'):
+                    <%
+                        filename = epResult[b'location']
+                        for rootDir in sickrage.ROOT_DIRS.split('|'):
                             if rootDir.startswith('/'):
                                 filename = filename.replace(rootDir, "")
-                    filename = sickrage.DOWNLOAD_URL + urllib.quote(filename.encode('utf8'))
-                %>
-                    <div style="text-align: center;"><a href="${filename}">Download</a></div>
+                        filename = sickrage.DOWNLOAD_URL + urllib.quote(filename.encode('utf8'))
+                    %>
+                        <div style="text-align: center;"><a href="${filename}">Download</a></div>
                 % endif
             </td>
             <td class="col-subtitles" align="center">
@@ -665,12 +663,12 @@
                          onError="this.onerror=null;this.src='${srRoot}/images/flags/unknown.png';"/>
                 % endfor
             </td>
-            <% curStatus, curQuality = Quality.splitCompositeStatus(int(epResult[b"status"])) %>
-            % if curQuality != Quality.NONE:
-                <td class="col-status">${statusStrings[curStatus]} ${renderQualityPill(curQuality)}</td>
-            % else:
-                <td class="col-status">${statusStrings[curStatus]}</td>
-            % endif
+                <% curStatus, curQuality = Quality.splitCompositeStatus(int(epResult[b"status"])) %>
+                % if curQuality != Quality.NONE:
+                    <td class="col-status">${statusStrings[curStatus]} ${renderQualityPill(curQuality)}</td>
+                % else:
+                    <td class="col-status">${statusStrings[curStatus]}</td>
+                % endif
             <td class="col-search">
                 % if int(epResult[b"season"]) != 0:
                     % if ( int(epResult[b"status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickrage.USE_FAILED_DOWNLOADS:
@@ -687,7 +685,7 @@
                                 src="${srRoot}/images/search16.png" width="16" height="16" alt="search"
                                 title="Manual Search"/></a>
                     % endif
-                % endif
+                    % endif
                 % if sickrage.USE_SUBTITLES and show.subtitles and epResult[b"location"] and frozenset(subtitle_searcher.wantedLanguages()).difference(epResult[b"subtitles"].split(',')):
                     <a class="epSubtitlesSearch"
                        href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult[b"season"]}&amp;episode=${epResult[b"episode"]}"><img

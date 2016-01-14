@@ -118,7 +118,7 @@ var methods = {
     get: function() {
     	return this.data("tokenInputObject").getTokens();
    	}
-};
+}
 
 // Expose the .tokenInput function to jQuery as a plugin
 $.fn.tokenInput = function (method) {
@@ -390,11 +390,11 @@ $.TokenList = function (input, url_or_data, settings) {
                 delete_token($(this));
             }
         });
-    };
+    }
 
     this.add = function(item) {
         add_token(item);
-    };
+    }
 
     this.remove = function(item) {
         token_list.children("li").each(function() {
@@ -412,11 +412,11 @@ $.TokenList = function (input, url_or_data, settings) {
                 }
             }
         });
-    };
+    }
     
     this.getTokens = function() {
    		return saved_tokens;
-    };
+   	}
 
     //
     // Private functions
@@ -426,7 +426,7 @@ $.TokenList = function (input, url_or_data, settings) {
         if(settings.tokenLimit !== null && token_count >= settings.tokenLimit) {
             input_box.hide();
             hide_dropdown();
-
+            return;
         }
     }
 

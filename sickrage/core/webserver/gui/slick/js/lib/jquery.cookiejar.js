@@ -33,14 +33,16 @@
                 } else {
                     alert(s);
                 }
-            }
+            };
+
             /**
              * @access private
              **/
             function save() {
                 if (self.options.debug) log('save ' + $.toJSON(self.cookieObject));
                 return $.cookie(self.cookieName, $.toJSON(self.cookieObject), self.options.cookie);
-            }
+            };
+
             /**
              * @access private
              **/

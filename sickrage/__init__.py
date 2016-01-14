@@ -646,7 +646,7 @@ def main():
         import pip
 
     print("Installing/Upgrading OpenSSL and contexts")
-    #    pip.main(['install', '-q', '-U', '--no-cache-dir', 'pyopenssl', 'ndg-httpsclient', 'pyasn1'])
+    pip.main(['install', '-q', '-U', '--no-cache-dir', 'pyopenssl', 'ndg-httpsclient', 'pyasn1'])
 
     try:
         import urllib3.contrib.pyopenssl
@@ -655,14 +655,13 @@ def main():
         pass
 
     print("Installing/Upgrading SiCKRAGE required libs")
-    #    pip.main(['install', '-q', '-U', '--no-cache-dir', '-r', os.path.join(os.path.dirname(os.path.dirname(__file__)),
-    #                                                        'requirements.txt')])
+    pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
+              os.path.join(os.path.dirname(os.path.dirname(__file__)), 'requirements.txt')])
 
     try:
         print("Installing/Upgrading SiCKRAGE optional libs")
-    #        pip.main(
-    #                ['install', '-q', '-U', '--no-cache-dir', '-r', os.path.join(os.path.dirname(os.path.dirname(__file__)),
-    #                                                           'requirements-optional.txt')])
+        pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
+                  os.path.join(os.path.dirname(os.path.dirname(__file__)), 'requirements-optional.txt')])
     except ImportError as e:
         print(e.message)
         pass

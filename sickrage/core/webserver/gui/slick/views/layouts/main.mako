@@ -1,11 +1,11 @@
-<%!
+import core.helper<%!
     import datetime
     import re
-    import sickrage
-    from time import time
-    from sickrage.core.updaters import tz_updater
-    from sickrage.core.show import Show
-    from sickrage.core.helpers import pretty_filesize
+                      import sickrage
+                      import core.helpers
+                      from sickrage.core.updaters import tz_updater
+                      from time import time
+    from sickrage.show.Show import Show
 
     # resource module is unix only
     has_resource_module = True
@@ -304,13 +304,12 @@
                 <div>
                     % if has_resource_module:
                         Memory used: <span
-                            class="footerhighlight">${pretty_filesize(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)}</span>
+                            class="footerhighlight">${core.helper.pretty_filesize(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)}</span>
                         |
                     % endif
-                    Load time: <span class="footerhighlight">${"%.4f" % (time() - srStartTime)}s</span> / Mako: <span
-                        class="footerhighlight">${"%.4f" % (time() - makoStartTime)}s</span> |
+                    Load time: <span class="footerhighlight">${"%.4f" % (time() - sbStartTime)}s</span> / Mako: <span class="footerhighlight">${"%.4f" % (time() - makoStartTime)}s</span> |
                     Branch: <span class="footerhighlight">${sickrage.GIT_BRANCH}</span> |
-                    Now: <span class="footerhighlight">${datetime.datetime.now(tz_updater.sr_timezone)}</span>
+                    Now: <span class="footerhighlight">${datetime.datetime.now(network_timezones.sb_timezone)}</span>
                 </div>
             </div>
         </footer>
