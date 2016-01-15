@@ -194,7 +194,10 @@ class SRWebServer(object):
             self.server.listen(self.options[b'port'], self.options[b'host'])
 
             # start tornado web server
-            self.io_loop.add_callback(sickrage.Scheduler.start)
+            from sickrage.core.helpers import get_lan_ip
+            sickrage.LOGGER.info("Starting SiCKRAGE web server on [{}://{}:{}/]".format(
+                            ('http', 'https')[sickrage.ENABLE_HTTPS], get_lan_ip(), sickrage.WEB_PORT))
+
             self.io_loop.add_callback(sickrage.core.start)
             self.io_loop.start()
         except (KeyboardInterrupt, SystemExit) as e:

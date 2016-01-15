@@ -160,6 +160,9 @@ def initialize():
             # init config file
             srConfig.load_config(sickrage.CONFIG_FILE, True)
 
+            # set socket timeout
+            socket.setdefaulttimeout(sickrage.SOCKET_TIMEOUT)
+
             # init logger
             sickrage.LOGGER = sickrage.LOGGER.__class__(logFile=sickrage.LOG_FILE,
                                                         logSize=sickrage.LOG_SIZE,
@@ -167,11 +170,9 @@ def initialize():
                                                         fileLogging=makeDir(sickrage.LOG_DIR),
                                                         debugLogging=sickrage.DEBUG)
 
-            # init updater
+            # init updater and get current version
             sickrage.VERSIONUPDATER = VersionUpdater()
-
-            # set socket timeout
-            socket.setdefaulttimeout(sickrage.SOCKET_TIMEOUT)
+            sickrage.VERSION = sickrage.VERSIONUPDATER.updater.get_cur_version
 
             # initialize the main SB database
             main_db.MainDB().InitialSchema().upgrade()
@@ -467,25 +468,22 @@ def initialize():
                 'nolaunch': sickrage.WEB_NOLAUNCH
             })
 
+            sickrage.LOGGER.info("SiCKRAGE VERSION:[{}] CONFIG:[{}]".format(sickrage.VERSION, sickrage.CONFIG_FILE))
             sickrage.INITIALIZED = True
             return True
 
 
 def start():
-    sickrage.VERSION = sickrage.VERSIONUPDATER.updater.get_cur_version
-    sickrage.LOGGER.info("Starting SiCKRAGE VERSION:[{}] CONFIG:[{}]".format(sickrage.VERSION, sickrage.CONFIG_FILE))
-
     if sickrage.INITIALIZED and not sickrage.STARTED:
-        sickrage.STARTED = True
-
-        sickrage.LOGGER.info(
-                "Starting SiCKRAGE web server on [{}://{}:{}/]".format(
-                        ('http', 'https')[sickrage.ENABLE_HTTPS], get_lan_ip(), sickrage.WEB_PORT
-                ))
+        sickrage.LOGGER.info("Starting SiCKRAGE scheduler jobs")
+        sickrage.Scheduler.start()
 
         # launch browser window
         if sickrage.LAUNCH_BROWSER and not any([sickrage.WEB_NOLAUNCH, sickrage.DAEMONIZE]):
+            sickrage.LOGGER.info("Launching browser window")
             launch_browser(('http', 'https')[sickrage.ENABLE_HTTPS], sickrage.WEB_PORT, sickrage.WEB_ROOT)
+
+        sickrage.STARTED = True
 
 def halt():
     if sickrage.INITIALIZED and sickrage.STARTED:

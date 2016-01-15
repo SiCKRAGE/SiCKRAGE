@@ -331,8 +331,8 @@ class GitUpdateManager(UpdateManager):
         self.github_repo = self.get_github_repo()
         self.init_github()
 
-        self._cur_commit_hash = None
-        self._newest_commit_hash = None
+        self._cur_commit_hash = ""
+        self._newest_commit_hash = ""
         self._num_commits_behind = 0
         self._num_commits_ahead = 0
 
@@ -357,7 +357,7 @@ class GitUpdateManager(UpdateManager):
 
     @property
     def get_cur_version(self):
-        return self._run_git(self._git_path, "describe --abbrev=0 " + self._cur_commit_hash)[0]
+        return self._find_installed_version()
 
     @property
     def get_newest_version(self):
@@ -679,15 +679,11 @@ class SourceUpdateManager(UpdateManager):
         self.github_org = self.get_github_org()
         self.github_repo = self.get_github_repo()
 
-        self._cur_commit_hash = sickrage.CUR_COMMIT_HASH
-        self._newest_commit_hash = None
+        self._cur_commit_hash = ""
+        self._newest_commit_hash = ""
         self._num_commits_behind = 0
 
         self.branch = sickrage.VERSION = self._find_installed_version
-
-    @property
-    def _find_installed_version(self):
-        return self.get_cur_version
 
     def get_cur_commit_hash(self):
         return self._cur_commit_hash
@@ -697,9 +693,7 @@ class SourceUpdateManager(UpdateManager):
 
     @property
     def get_cur_version(self):
-        with open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
-            version = f.read().strip()
-        return version or ""
+        return self._find_installed_version()
 
     @property
     def get_newest_version(self):
@@ -721,6 +715,10 @@ class SourceUpdateManager(UpdateManager):
 
         return self._find_installed_version
 
+    def _find_installed_version(self):
+        with open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
+            version = f.read().strip()
+        return version or ""
 
     def get_num_commits_behind(self):
         return self._num_commits_behind
@@ -753,6 +751,7 @@ class SourceUpdateManager(UpdateManager):
             return
         else:
             newest_text = "New SiCKRAGE update found on PyPy servers, version {}".format(sickrage.VERSION)
+            newest_text += "&mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
 
         sickrage.NEWEST_VERSION_STRING = newest_text
 
