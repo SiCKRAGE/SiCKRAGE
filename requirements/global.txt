@@ -1,3 +1,5 @@
+virtualenv
+attrdict
 APScheduler
 babelfish
 backport-ipaddress
@@ -76,4 +78,3 @@ yarg
 pyopenssl
 configobj
 python-daemon
-attrdict

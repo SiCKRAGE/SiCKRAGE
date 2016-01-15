@@ -716,6 +716,9 @@ def main():
     if not DEVELOPER:
         try:
             import pip
+            print("Upgrading setuptools")
+            pip.main(['install', '-q', '-U', 'setuptools'])
+
             print("Upgrading pip")
             pip.main(['install', '-q', '-U', 'pip'])
         except ImportError:
