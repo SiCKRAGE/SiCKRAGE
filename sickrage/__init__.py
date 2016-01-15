@@ -716,13 +716,11 @@ def main():
             pass
 
         print("Installing/Upgrading SiCKRAGE required libs")
-        pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
-                  os.path.join(ROOT_DIR, 'requirements', 'global.txt')])
+        pip.main(['install', '-q', '-U', '--no-cache-dir', '-r', os.path.join(ROOT_DIR, 'requirements', 'global.txt')])
 
         try:
             print("Installing/Upgrading SiCKRAGE optional libs")
-            pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
-                      os.path.join(ROOT_DIR, 'requirements', 'optional.txt')])
+            pip.main(['install', '-q', '-U', '--no-cache-dir', '-r', os.path.join(ROOT_DIR, 'requirements', 'optional.txt')])
         except ImportError as e:
             print(e.message)
             pass
