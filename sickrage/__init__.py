@@ -667,12 +667,8 @@ def main():
         if o in ('--noresize',):
             NO_RESIZE = True
 
-    # init logging
-    from sickrage.core.srlogger import srLogger
-    LOGGER = srLogger(consoleLogging=consoleLogging)
-
     def install_pip():
-        LOGGER.info("Downloading pip ...")
+        print("Downloading pip ...")
         import urllib2
 
         url = "https://bootstrap.pypa.io/get-pip.py"
@@ -681,7 +677,7 @@ def main():
         with open(file_name, 'wb') as f:
             meta = u.info()
             file_size = int(meta.getheaders("Content-Length")[0])
-            LOGGER.info("Downloading: %s Bytes: %s" % (file_name, file_size))
+            print("Downloading: %s Bytes: %s" % (file_name, file_size))
             file_size_dl = 0
             block_sz = 8192
             while True:
@@ -692,25 +688,25 @@ def main():
                 f.write(buffer)
                 status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
                 status = status + chr(8) * (len(status) + 1)
-                LOGGER.info(status),
+                print(status),
 
-        LOGGER.info("Installing pip ...")
+        print("Installing pip ...")
         import subprocess
         subprocess.call([sys.executable, os.path.join(ROOT_DIR, 'get-pip.py')])
 
-        LOGGER.info("Cleaning up downloaded pip files")
+        print("Cleaning up downloaded pip files")
         os.remove(os.path.join(ROOT_DIR, 'get-pip.py'))
 
     if not DEVELOPER:
         try:
             import pip
-            LOGGER.info("Upgrading pip")
+            print("Upgrading pip")
             pip.main(['install', '-q', '-U', 'pip'])
         except ImportError:
             install_pip()
             import pip
 
-        LOGGER.info("Installing/Upgrading OpenSSL and contexts")
+        print("Installing/Upgrading OpenSSL and contexts")
         pip.main(['install', '-q', '-U', '--no-cache-dir', 'pyopenssl', 'ndg-httpsclient', 'pyasn1'])
 
         try:
@@ -719,17 +715,21 @@ def main():
         except ImportError:
             pass
 
-        LOGGER.info("Installing/Upgrading SiCKRAGE required libs")
+        print("Installing/Upgrading SiCKRAGE required libs")
         pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
                   os.path.join(ROOT_DIR, 'requirements', 'global.txt')])
 
         try:
-            LOGGER.info("Installing/Upgrading SiCKRAGE optional libs")
+            print("Installing/Upgrading SiCKRAGE optional libs")
             pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
                       os.path.join(ROOT_DIR, 'requirements', 'optional.txt')])
         except ImportError as e:
-            LOGGER.info(e.message)
+            print(e.message)
             pass
+
+    # init logging
+    from sickrage.core.srlogger import srLogger
+    LOGGER = srLogger(consoleLogging=consoleLogging)
 
     # init pip and updater
     from sickrage.core.version_updater import VersionUpdater
