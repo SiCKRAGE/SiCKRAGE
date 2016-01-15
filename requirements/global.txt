@@ -1,4 +1,4 @@
-python-tz,
+python-tz
 python-concurrent.futures
 python-daemon
 attrdict
