@@ -37,7 +37,7 @@ load_rc_config ${name}
 
 pidfile="/var/run/sickrage/sickrage.pid"
 command="/usr/local/bin/python2.7"
-command_args="${sickrage_dir}/SickBeard.py --datadir ${sickrage_datadir} -d --pidfile ${pidfile} --quiet --nolaunch"
+command_args="${sickrage_dir}/SiCKRAGE.py --datadir ${sickrage_datadir} -d --pidfile ${pidfile} --quiet --nolaunch"
 
 start_precmd="sickrage_prestart"
 sickrage_prestart() {
