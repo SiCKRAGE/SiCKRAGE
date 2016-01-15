@@ -13,11 +13,11 @@
 </%block>
 
 <%block name="scripts">
-    <script type="text/javascript" src="${srRoot}/js/qualityChooser.js?${sbPID}"></script>
-    <script type="text/javascript" src="${srRoot}/js/lib/bootstrap-formhelpers.min-2.3.0.js?${sbPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/qualityChooser.js?${srPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/lib/bootstrap-formhelpers.min-2.3.0.js?${srPID}"></script>
     <script type="text/javascript" src="${srRoot}/js/new/editShow.js"></script>
 % if show.is_anime:
-    <script type="text/javascript" src="${srRoot}/js/blackwhite.js?${sbPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/blackwhite.js?${srPID}"></script>
 % endif
 </%block>
 

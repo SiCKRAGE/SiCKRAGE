@@ -10,7 +10,7 @@
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/manage_failedDownloads.js"></script>
-<script type="text/javascript" src="${srRoot}/js/failedDownloads.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/failedDownloads.js?${srPID}"></script>
 </%block>
 <%block name="content">
 % if not header is UNDEFINED:

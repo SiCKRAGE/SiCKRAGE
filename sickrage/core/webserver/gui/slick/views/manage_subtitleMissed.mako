@@ -5,7 +5,7 @@
     from sickrage.core.searchers import subtitle_searcher
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/manageSubtitleMissed.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/manageSubtitleMissed.js?${srPID}"></script>
 </%block>
 <%block name="content">
 <div id="content960">

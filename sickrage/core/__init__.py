@@ -493,7 +493,7 @@ def halt():
             sickrage.LOGGER.info("Aborting all threads")
 
             # shutdown scheduler
-            sickrage.LOGGER.info("Shutting down scheduler service")
+            sickrage.LOGGER.info("Shutting down scheduler jobs")
             sickrage.Scheduler.shutdown()
 
             if sickrage.ADBA_CONNECTION:
@@ -503,6 +503,10 @@ def halt():
             sickrage.STARTED = False
             return True
 
+def shutdown():
+    if sickrage.STARTED:
+        halt()
+        saveall()
 
 def load_shows():
     """
@@ -532,7 +536,7 @@ def saveall():
         show.saveToDB()
 
     # save config
-    sickrage.LOGGER.info("Saving config file to disk")
+    sickrage.LOGGER.info("Saving settings to disk")
     srConfig.save_config(sickrage.CONFIG_FILE)
 
 

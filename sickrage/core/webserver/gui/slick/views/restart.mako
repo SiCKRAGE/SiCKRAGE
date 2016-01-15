@@ -1,32 +1,33 @@
 <%!
+    import sys
     import sickrage
 %>
 <%inherit file="/layouts/main.mako"/>
 <%block name="scripts">
     <%
         try:
-            curSBHost = sbHost
-            curSBHttpPort = srHttpPort
-            curSBHttpsEnabled = srHttpsEnabled
-            curSBHandleReverseProxy = srHandleReverseProxy
+            curSRHost = srHost
+            curSRHttpPort = srHttpPort
+            curSRHttpsEnabled = srHttpsEnabled
+            curSRHandleReverseProxy = srHandleReverseProxy
             themeSpinner = srThemeName
         except NameError:
-            curSBHost = "localhost"
-            curSBHttpPort = sickrage.WEB_PORT
-            curSBHttpsEnabled = "False"
-            curSBHandleReverseProxy = "False"
+            curSRHost = "localhost"
+            curSRHttpPort = sickrage.WEB_PORT
+            curSRHttpsEnabled = "False"
+            curSRHandleReverseProxy = "False"
             themeSpinner = sickrage.THEME_NAME
     %>
     <script type="text/javascript" charset="utf-8">
         srRoot = "${srRoot}";
-        srHttpPort = "${curSBHttpPort}";
-        srHttpsEnabled = "${curSBHttpsEnabled}";
-        srHandleReverseProxy = "${curSBHandleReverseProxy}";
-        sbHost = "${curSBHost}";
+        srHttpPort = "${curSRHttpPort}";
+        srHttpsEnabled = "${curSRHttpsEnabled}";
+        srHandleReverseProxy = "${curSRHandleReverseProxy}";
+        srHost = "${curSRHost}";
         srDefaultPage = "${srDefaultPage}";
     </script>
-    <script type="text/javascript" src="${srRoot}/js/lib/jquery-1.11.2.min.js?${sbPID}"></script>
-    <script type="text/javascript" src="${srRoot}/js/restart.js?${sbPID}&amp;${srDefaultPage}"></script>
+    <script type="text/javascript" src="${srRoot}/js/lib/jquery-1.11.2.min.js?${srPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/restart.js?${srPID}&amp;${srDefaultPage}"></script>
 </%block>
 <%block name="css">
     <style>
@@ -38,16 +39,16 @@
 <%block name="content">
     <%
         try:
-            curSBHost = sbHost
-            curSBHttpPort = srHttpPort
-            curSBHttpsEnabled = srHttpsEnabled
-            curSBHandleReverseProxy = srHandleReverseProxy
+            curSRHost = srHost
+            curSRHttpPort = srHttpPort
+            curSRHttpsEnabled = srHttpsEnabled
+            curSRHandleReverseProxy = srHandleReverseProxy
             themeSpinner = srThemeName
         except NameError:
-            curSBHost = "localhost"
-            curSBHttpPort = sickrage.WEB_PORT
-            curSBHttpsEnabled = "False"
-            curSBHandleReverseProxy = "False"
+            curSRHost = "localhost"
+            curSRHttpPort = sickrage.WEB_PORT
+            curSRHttpsEnabled = "False"
+            curSRHandleReverseProxy = "False"
             themeSpinner = sickrage.THEME_NAME
     %>
     <% themeSpinner = ('', '-dark')['dark' == themeSpinner] %>

@@ -5,7 +5,7 @@
     from sickrage.core.helpers import anon_url
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/configSubtitles.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/configSubtitles.js?${srPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/config.js"></script>
 <script>
 $(document).ready(function() {

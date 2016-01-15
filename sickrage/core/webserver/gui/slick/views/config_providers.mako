@@ -6,8 +6,8 @@
     from sickrage.core.helpers import anon_url
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/configProviders.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/config.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/configProviders.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/config.js?${srPID}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
     % if sickrage.USE_NZBS:

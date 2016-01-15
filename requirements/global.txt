@@ -1,3 +1,6 @@
+python-tz,
+python-concurrent.futures
+python-daemon
 attrdict
 APScheduler
 babelfish
@@ -76,4 +79,3 @@ xmltodict
 yarg
 pyopenssl
 configobj
-python-daemon

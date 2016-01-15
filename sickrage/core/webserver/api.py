@@ -24,7 +24,6 @@ import datetime
 import io
 import os
 import re
-import threading
 import traceback
 import urllib
 
@@ -166,8 +165,6 @@ class ApiHandler(RequestHandler):
 
     @run_on_executor
     def async_call(self, function, *args, **kwargs):
-        threading.currentThread().name = "SICKRAGE-API"
-
         try:
             return recursive_unicode(function(*args, **kwargs))
         except Exception:

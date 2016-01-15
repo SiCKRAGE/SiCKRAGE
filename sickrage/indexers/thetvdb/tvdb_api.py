@@ -520,18 +520,19 @@ class Tvdb:
 
     def getToken(self, refresh=False):
         jwtResp = {'token': ''}
+        timeout = 10
 
         try:
             if refresh and self.config[b'apitoken']:
                 jwtResp.update(**requests.post(self.config[b'api'][self.config[b'apiver']][b'refresh'],
                                                headers={'Content-type': 'application/json'},
-                                               timeout=sickrage.INDEXER_TIMEOUT
+                                               timeout=timeout
                                                ).json())
             elif not self.config[b'apitoken']:
                 jwtResp.update(**requests.post(self.config[b'api'][self.config[b'apiver']][b'login'],
                                                data=json.dumps(dict(apikey=self.config[b'apikey'])),
                                                headers={'Content-type': 'application/json'},
-                                               timeout=sickrage.INDEXER_TIMEOUT
+                                               timeout=timeout
                                                ).json())
         except:
             pass

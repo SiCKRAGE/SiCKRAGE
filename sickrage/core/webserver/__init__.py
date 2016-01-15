@@ -68,6 +68,7 @@ class StaticImageHandler(StaticFileHandler):
 class SRWebServer(object):
     def __init__(self, **kwargs):
         self.running = True
+        self.restart = False
         self.io_loop = IOLoop.instance()
 
         self.options = {}
@@ -178,9 +179,10 @@ class SRWebServer(object):
             ctx.open()
 
         # write sickrage pidfile
+        sickrage.PID = os.getpid()
         if sickrage.CREATEPID:
             with file(sickrage.PIDFILE, 'w+') as pf:
-                pf.write(str(os.getpid()))
+                pf.write(str(sickrage.PID))
 
     def start(self):
         threading.currentThread().name = "TORNADO"
@@ -195,12 +197,14 @@ class SRWebServer(object):
             self.io_loop.add_callback(sickrage.Scheduler.start)
             self.io_loop.add_callback(sickrage.core.start)
             self.io_loop.start()
-        except KeyboardInterrupt:
-            self.server_shutdown()
+        except (KeyboardInterrupt, SystemExit) as e:
+            sickrage.LOGGER.info('PERFORMING SHUTDOWN')
         except Exception as e:
-            sickrage.LOGGER.info("Tornado failed to start: {}".format(e))
+            sickrage.LOGGER.info("TORNADO failed to start: {}".format(e))
         finally:
-            sickrage.LOGGER.info("SiCKRAGE has shutdown!")
+            self.server_shutdown()
+            sickrage.LOGGER.shutdown()
+
 
     @staticmethod
     def remove_pid_file():
@@ -211,29 +215,23 @@ class SRWebServer(object):
             pass
 
     def server_restart(self):
-        sickrage.LOGGER.info('SiCKRAGE is restarting!')
-
+        sickrage.LOGGER.info('PERFORMING RESTART')
         import tornado.autoreload
         tornado.autoreload.add_reload_hook(self.server_shutdown)
         tornado.autoreload.start()
         tornado.autoreload._reload()
 
     def server_shutdown(self):
-        # shutdown tornado
         self.server.stop()
         if self.running:
-            sickrage.LOGGER.info('TORNADO is now shutting down!')
             self.io_loop.stop()
-
-        # if run as daemon delete the pidfile
-        if sickrage.DAEMONIZE and sickrage.PIDFILE:
-            self.remove_pid_file()
 
         # shutdown sickrage
         if sickrage.STARTED:
-            sickrage.LOGGER.info('SiCKRAGE is now shutting down!')
             sickrage.core.halt()
             sickrage.core.saveall()
 
-        # shutown logging
-        sickrage.LOGGER.shutdown()
+        if sickrage.DAEMONIZE and sickrage.PIDFILE:
+            self.remove_pid_file()
+
+        sickrage.LOGGER.info('SHUTDOWN/RESTART COMPLETED!')

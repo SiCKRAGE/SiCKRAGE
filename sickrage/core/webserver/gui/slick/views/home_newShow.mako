@@ -5,12 +5,12 @@
 
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/qualityChooser.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/newShow.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/addShowOptions.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/lib/bootstrap-formhelpers.min-2.3.0.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/rootDirs.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/blackwhite.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/qualityChooser.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/newShow.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/addShowOptions.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/lib/bootstrap-formhelpers.min-2.3.0.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/rootDirs.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/blackwhite.js?${srPID}"></script>
 </%block>
 <%block name="content">
 % if not header is UNDEFINED:

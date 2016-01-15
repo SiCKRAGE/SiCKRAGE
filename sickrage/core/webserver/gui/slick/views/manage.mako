@@ -5,9 +5,9 @@
     from sickrage.core.common import statusStrings
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/lib/bootbox.min.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/lib/bootbox.min.js?${srPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/new/manage.js"></script>
-<script type="text/javascript" src="${srRoot}/js/massUpdate.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/massUpdate.js?${srPID}"></script>
 </%block>
 <%block name="content">
 <%namespace file="/inc_defs.mako" import="renderQualityPill"/>

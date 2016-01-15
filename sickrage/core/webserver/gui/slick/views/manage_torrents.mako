@@ -1,6 +1,6 @@
 <%inherit file="/layouts/main.mako"/>
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/plotTooltip.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/plotTooltip.js?${srPID}"></script>
 </%block>
 <%block name="content">
 % if not header is UNDEFINED:

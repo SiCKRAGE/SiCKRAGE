@@ -3,9 +3,9 @@
     import sickrage
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/new/recommendedShows.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/rootDirs.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/plotTooltip.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/new/recommendedShows.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/rootDirs.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/plotTooltip.js?${srPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/new/home_recommendedShows.js"></script>
 </%block>
 <%block name="content">

@@ -15,13 +15,13 @@
 
 %>
 <%block name="scripts">
-    <script type="text/javascript" src="${srRoot}/js/lib/jquery.bookmarkscroll.js?${sbPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/lib/jquery.bookmarkscroll.js?${srPID}"></script>
     <script type="text/javascript" src="${srRoot}/js/new/displayShow.js"></script>
-    <script type="text/javascript" src="${srRoot}/js/plotTooltip.js?${sbPID}"></script>
-    <script type="text/javascript" src="${srRoot}/js/sceneExceptionsTooltip.js?${sbPID}"></script>
-    <script type="text/javascript" src="${srRoot}/js/ratingTooltip.js?${sbPID}"></script>
-    <script type="text/javascript" src="${srRoot}/js/ajaxEpSearch.js?${sbPID}"></script>
-    <script type="text/javascript" src="${srRoot}/js/ajaxEpSubtitles.js?${sbPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/plotTooltip.js?${srPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/sceneExceptionsTooltip.js?${srPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/ratingTooltip.js?${srPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/ajaxEpSearch.js?${srPID}"></script>
+    <script type="text/javascript" src="${srRoot}/js/ajaxEpSubtitles.js?${srPID}"></script>
 </%block>
 <%block name="content">
     <%namespace file="/inc_defs.mako" import="renderQualityPill"/>

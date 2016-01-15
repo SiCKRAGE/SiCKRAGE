@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 import datetime
 import os
 import re
-import threading
 import time
 import traceback
 import urllib
@@ -86,8 +85,8 @@ from sickrage.indexers import adba
 from sickrage.providers import GenericProvider, NewznabProvider, \
     TorrentRssProvider, sortedProviderDict
 
-class BaseHandler(RequestHandler):
 
+class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
         self.io_loop = IOLoop.instance()
@@ -108,12 +107,11 @@ class BaseHandler(RequestHandler):
 
     @run_on_executor
     def async_call(self, function, **kwargs):
-        threading.currentThread().name = "SICKRAGE-WEB"
-
         try:
             return function(**kwargs)
         except Exception:
-            sickrage.LOGGER.debug('Failed doing webui callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
+            sickrage.LOGGER.debug(
+                'Failed doing webui callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             return html_error_template().render_unicode()
 
     def write_error(self, status_code, **kwargs):
@@ -159,40 +157,24 @@ class BaseHandler(RequestHandler):
 
     def render_string(self, template_name, **kwargs):
         template_kwargs = {
+            'title': "",
+            'header': "",
+            'topmenu': "",
+            'submenu': "",
+            'srPID': sickrage.PID,
             'srRoot': sickrage.WEB_ROOT,
-            'srHttpPort': sickrage.WEB_PORT,
+            'srHttpsEnabled': sickrage.ENABLE_HTTPS or bool(self.request.headers.get('X-Forwarded-Proto') == 'https'),
+            'srHost': self.request.headers.get('X-Forwarded-Host', self.request.host.split(':')[0]),
+            'srHttpPort': self.request.headers.get('X-Forwarded-Port', sickrage.WEB_PORT),
             'srHttpsPort': sickrage.WEB_PORT,
-            'srHttpsEnabled': sickrage.ENABLE_HTTPS,
             'srHandleReverseProxy': sickrage.HANDLE_REVERSE_PROXY,
             'srThemeName': sickrage.THEME_NAME,
             'srDefaultPage': sickrage.DEFAULT_PAGE,
-            'srStartTime': self.startTime
+            'numErrors': len(ErrorViewer.errors),
+            'numWarnings': len(WarningViewer.errors),
+            'srStartTime': self.startTime,
+            'makoStartTime': time.time()
         }
-
-        if self.request.headers[b'Host'][0] == '[':
-            template_kwargs[b'sbHost'] = re.match(r"^\[.*\]", self.request.headers[b'Host'], re.X | re.M | re.S).group(
-                0)
-        else:
-            template_kwargs[b'sbHost'] = re.match(r"^[^:]+", self.request.headers[b'Host'], re.X | re.M | re.S).group(0)
-
-        if "X-Forwarded-Host" in self.request.headers:
-            template_kwargs[b'sbHost'] = self.request.headers['X-Forwarded-Host']
-        if "X-Forwarded-Port" in self.request.headers:
-            srHttpPort = self.request.headers['X-Forwarded-Port']
-            template_kwargs[b'srHttpsPort'] = srHttpPort
-        if "X-Forwarded-Proto" in self.request.headers:
-            template_kwargs[b'srHttpsEnabled'] = True if self.request.headers['X-Forwarded-Proto'] == 'https' else False
-
-        template_kwargs[b'numErrors'] = len(ErrorViewer.errors)
-        template_kwargs[b'numWarnings'] = len(WarningViewer.errors)
-        template_kwargs[b'sbPID'] = str(sickrage.PID)
-
-        template_kwargs[b'title'] = ""
-        template_kwargs[b'header'] = ""
-        template_kwargs[b'topmenu'] = ""
-        template_kwargs[b'submenu'] = ""
-
-        template_kwargs[b'makoStartTime'] = time.time()
 
         template_kwargs.update(self.get_template_namespace())
         template_kwargs.update(kwargs)
@@ -231,8 +213,10 @@ class WebHandler(BaseHandler):
             if not self._finished:
                 self.finish(result)
         except Exception:
-            sickrage.LOGGER.debug('Failed doing webui request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
+            sickrage.LOGGER.debug(
+                'Failed doing webui request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             raise HTTPError(404)
+
 
 class LoginHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
@@ -245,7 +229,8 @@ class LoginHandler(BaseHandler):
             if not self._finished:
                 self.finish(result)
         except Exception:
-            sickrage.LOGGER.debug('Failed doing webui login request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
+            sickrage.LOGGER.debug(
+                'Failed doing webui login request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             raise HTTPError(404)
 
     def checkAuth(self):
@@ -267,7 +252,8 @@ class LoginHandler(BaseHandler):
 
             return self.render("login.mako", title="Login", header="Login", topmenu="login")
         except Exception:
-            sickrage.LOGGER.debug('Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
+            sickrage.LOGGER.debug(
+                'Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             return html_error_template().render_unicode()
 
 
@@ -278,6 +264,7 @@ class LogoutHandler(BaseHandler):
     def prepare(self, *args, **kwargs):
         self.clear_cookie("user")
         return self.redirect(self.get_argument("next", "/"))
+
 
 @route('(.*)(/?)')
 class WebRoot(WebHandler):
@@ -669,7 +656,7 @@ class Home(WebRoot):
 
     def is_alive(self, *args, **kwargs):
         if 'callback' in kwargs and '_' in kwargs:
-            callback, _ = kwargs[b'callback'], kwargs[b'_']
+            callback, _ = kwargs['callback'], kwargs['_']
         else:
             return "Error: Unsupported Request. Send jsonp request with 'callback' variable in the query string."
 
@@ -1037,20 +1024,16 @@ class Home(WebRoot):
 
     def shutdown(self, pid=None):
         if sickrage.WEB_SERVER:
-            sickrage.WEB_SERVER.server_shutdown()
-            title = "Shutting down"
-            message = "SiCKRAGE is shutting down..."
-            return self._genericMessage(title, message)
-        return self.redirect('/' + sickrage.DEFAULT_PAGE + '/')
+            self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
+            raise KeyboardInterrupt
+        return self.redirect('/{}/'.format(sickrage.DEFAULT_PAGE))
 
     def restart(self, pid=None):
         if sickrage.WEB_SERVER:
-            sickrage.WEB_SERVER.server_restart()
-            return self.render("restart.mako",
-                               title="Home",
-                               header="Restarting SiCKRAGE",
-                               topmenu="system")
-        return self.redirect('/' + sickrage.DEFAULT_PAGE + '/')
+            self._genericMessage("Restarting", "SiCKRAGE is restarting")
+            self.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.WEB_SERVER.server_restart)
+            return self.render("restart.mako", title="Home", header="Restarting SiCKRAGE", topmenu="system")
+        return self.redirect('/{}/'.format(sickrage.DEFAULT_PAGE))
 
     def updateCheck(self, pid=None):
         if str(pid) != str(sickrage.PID):
@@ -1326,7 +1309,8 @@ class Home(WebRoot):
                     except Exception as e:
                         anidb_failed = True
                         notifications.error('Unable to retreive Fansub Groups from AniDB.')
-                        sickrage.LOGGER.debug('Unable to retreive Fansub Groups from AniDB. Error is {0}'.format(str(e)))
+                        sickrage.LOGGER.debug(
+                            'Unable to retreive Fansub Groups from AniDB. Error is {0}'.format(str(e)))
 
             with showObj.lock:
                 show = showObj
@@ -1490,7 +1474,7 @@ class Home(WebRoot):
 
         if len(errors) > 0:
             notifications.error('%d error%s while saving changes:' % (len(errors), "" if len(errors) == 1 else "s"),
-                                   '<ul>' + '\n'.join(['<li>%s</li>' % error for error in errors]) + "</ul>")
+                                '<ul>' + '\n'.join(['<li>%s</li>' % error for error in errors]) + "</ul>")
 
         return self.redirect("/home/displayShow?show=" + show)
 
@@ -1655,8 +1639,9 @@ class Home(WebRoot):
                 epInfo = curEp.split('x')
 
                 if not all(epInfo):
-                    sickrage.LOGGER.debug("Something went wrong when trying to deleteEpisode, epInfo[0]: %s, epInfo[1]: %s" % (
-                        epInfo[0], epInfo[1]))
+                    sickrage.LOGGER.debug(
+                        "Something went wrong when trying to deleteEpisode, epInfo[0]: %s, epInfo[1]: %s" % (
+                            epInfo[0], epInfo[1]))
                     continue
 
                 epObj = showObj.getEpisode(int(epInfo[0]), int(epInfo[1]))
@@ -1717,8 +1702,9 @@ class Home(WebRoot):
                 epInfo = curEp.split('x')
 
                 if not all(epInfo):
-                    sickrage.LOGGER.debug("Something went wrong when trying to setStatus, epInfo[0]: %s, epInfo[1]: %s" % (
-                        epInfo[0], epInfo[1]))
+                    sickrage.LOGGER.debug(
+                        "Something went wrong when trying to setStatus, epInfo[0]: %s, epInfo[1]: %s" % (
+                            epInfo[0], epInfo[1]))
                     continue
 
                 epObj = showObj.getEpisode(int(epInfo[0]), int(epInfo[1]))
@@ -1767,12 +1753,14 @@ class Home(WebRoot):
             data = sickrage.NOTIFIERS.trakt_notifier.trakt_episode_data_generate(trakt_data)
             if data and sickrage.USE_TRAKT and sickrage.TRAKT_SYNC_WATCHLIST:
                 if int(status) in [WANTED, FAILED]:
-                    sickrage.LOGGER.debug("Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
-                            showObj.name) + " to Watchlist")
+                    sickrage.LOGGER.debug(
+                        "Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
+                                showObj.name) + " to Watchlist")
                     sickrage.NOTIFIERS.trakt_notifier.update_watchlist(showObj, data_episode=data, update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
-                    sickrage.LOGGER.debug("Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
-                            showObj.name) + " from Watchlist")
+                    sickrage.LOGGER.debug(
+                        "Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
+                                showObj.name) + " from Watchlist")
                     sickrage.NOTIFIERS.trakt_notifier.update_watchlist(showObj, data_episode=data, update="remove")
 
             if len(sql_l) > 0:
@@ -1887,7 +1875,6 @@ class Home(WebRoot):
         if eps is None:
             return self.redirect("/home/displayShow?show=" + show)
 
-
         for curEp in eps.split('|'):
 
             epInfo = curEp.split('x')
@@ -1900,8 +1887,8 @@ class Home(WebRoot):
                 sickrage.LOGGER.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
             related_eps_result = main_db.MainDB().select(
-                "SELECT * FROM tv_episodes WHERE location = ? AND episode != ?",
-                [ep_result[0][b"location"], epInfo[1]])
+                    "SELECT * FROM tv_episodes WHERE location = ? AND episode != ?",
+                    [ep_result[0][b"location"], epInfo[1]])
 
             root_ep_obj = show_obj.getEpisode(int(epInfo[0]), int(epInfo[1]))
             root_ep_obj.relatedEps = []
@@ -1945,7 +1932,8 @@ class Home(WebRoot):
             showObj = findCertainShow(sickrage.showList, int(searchThread.show.indexerid))
 
             if not showObj:
-                sickrage.LOGGER.error('No Show Object found for show with indexerID: ' + str(searchThread.show.indexerid))
+                sickrage.LOGGER.error(
+                    'No Show Object found for show with indexerID: ' + str(searchThread.show.indexerid))
                 return results
 
             if isinstance(searchThread, ManualSearchQueueItem):
@@ -2083,7 +2071,7 @@ class Home(WebRoot):
             result[b'errorMessage'] = ep_obj
         elif showObj.is_anime:
             sickrage.LOGGER.debug("setAbsoluteSceneNumbering for %s from %s to %s" %
-                          (show, forAbsolute, sceneAbsolute))
+                                  (show, forAbsolute, sceneAbsolute))
 
             show = int(show)
             indexer = int(indexer)
@@ -2094,7 +2082,7 @@ class Home(WebRoot):
             set_scene_numbering(show, indexer, absolute_number=forAbsolute, sceneAbsolute=sceneAbsolute)
         else:
             sickrage.LOGGER.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" %
-                          (show, forSeason, forEpisode, sceneSeason, sceneEpisode))
+                                  (show, forSeason, forEpisode, sceneSeason, sceneEpisode))
 
             show = int(show)
             indexer = int(indexer)
@@ -2187,10 +2175,10 @@ class HomeNews(Home):
                 extras=['header-ids'])
 
         return self.render("markdown.mako",
-                        title="News",
-                        header="News",
-                        topmenu="system",
-                        data=data)
+                           title="News",
+                           header="News",
+                           topmenu="system",
+                           data=data)
 
 
 @route('/changes(/?.*)')
@@ -2271,7 +2259,7 @@ class HomeAddShows(Home):
         if not lang or lang == 'null':
             lang = sickrage.INDEXER_DEFAULT_LANGUAGE
 
-        #search_term = search_term.encode('utf-8')
+        # search_term = search_term.encode('utf-8')
 
         results = {}
         final_results = []
@@ -2325,7 +2313,6 @@ class HomeAddShows(Home):
                 root_dirs = [tmp] + root_dirs
 
         dir_list = []
-
 
         for root_dir in root_dirs:
             try:
@@ -2469,9 +2456,10 @@ class HomeAddShows(Home):
 
                     if sickrage.TRAKT_BLACKLIST_NAME is not None and sickrage.TRAKT_BLACKLIST_NAME:
                         not_liked_show = trakt_api.traktRequest(
-                            "users/{}/lists/{}/items".format(sickrage.TRAKT_USERNAME, sickrage.TRAKT_BLACKLIST_NAME))
+                                "users/{}/lists/{}/items".format(sickrage.TRAKT_USERNAME,
+                                                                 sickrage.TRAKT_BLACKLIST_NAME))
                         if not_liked_show and [nlshow for nlshow in not_liked_show if (
-                                show_id == nlshow[b'show'][b'ids'][b'tvdb'] and nlshow[b'type'] == 'show')]:
+                                        show_id == nlshow[b'show'][b'ids'][b'tvdb'] and nlshow[b'type'] == 'show')]:
                             continue
 
                         trending_shows += [show]
@@ -2532,10 +2520,11 @@ class HomeAddShows(Home):
                         if show_id not in [lshow[b'show'][b'ids'][b'tvdb'] for lshow in library_shows]:
                             if sickrage.TRAKT_BLACKLIST_NAME:
                                 not_liked_show = trakt_api.traktRequest(
-                                    "users/{}/lists/{}/items".format(sickrage.TRAKT_USERNAME,
-                                                                     sickrage.TRAKT_BLACKLIST_NAME))
+                                        "users/{}/lists/{}/items".format(sickrage.TRAKT_USERNAME,
+                                                                         sickrage.TRAKT_BLACKLIST_NAME))
                                 if not_liked_show and [nlshow for nlshow in not_liked_show if (
-                                        show_id == nlshow[b'show'][b'ids'][b'tvdb'] and nlshow[b'type'] == 'show')]:
+                                                show_id == nlshow[b'show'][b'ids'][b'tvdb'] and nlshow[
+                                            b'type'] == 'show')]:
                                     continue
 
                                 trending_shows += [show]
@@ -2712,7 +2701,7 @@ class HomeAddShows(Home):
             if not dir_exists:
                 sickrage.LOGGER.error("Unable to create the folder " + show_dir + ", can't add the show")
                 notifications.error("Unable to add show",
-                                       "Unable to create the folder " + show_dir + ", can't add the show")
+                                    "Unable to create the folder " + show_dir + ", can't add the show")
                 # Don't redirect to default page because user wants to see the new show
                 return self.redirect("/home/")
             else:
@@ -2783,7 +2772,7 @@ class HomeAddShows(Home):
         dirs_only = []
         # separate all the ones with Indexer IDs
         for cur_dir in shows_to_add:
-            indexer, show_dir, indexer_id, show_name =None, None, None, None
+            indexer, show_dir, indexer_id, show_name = None, None, None, None
             split_vals = cur_dir.split('|')
             if split_vals:
                 if len(split_vals) > 2:
@@ -2795,7 +2784,7 @@ class HomeAddShows(Home):
             else:
                 dirs_only.append(cur_dir)
 
-            if all([show_dir,indexer_id,show_name]):
+            if all([show_dir, indexer_id, show_name]):
                 indexer_id_given.append((int(indexer), show_dir, int(indexer_id), show_name))
 
         # if they want me to prompt for settings then I will just carry on to the newShow page
@@ -2822,7 +2811,7 @@ class HomeAddShows(Home):
 
         if num_added:
             notifications.message("Shows Added",
-                                     "Automatically added " + str(num_added) + " from their existing metadata files")
+                                  "Automatically added " + str(num_added) + " from their existing metadata files")
 
         # if we're done then go home
         if not dirs_only:
@@ -2839,8 +2828,8 @@ class Manage(Home, WebRoot):
 
     def index(self):
         return self.render("manage.mako",
-                           title='Mass Update', 
-                           header='Mass Update', 
+                           title='Mass Update',
+                           header='Mass Update',
                            topmenu='manage')
 
     @staticmethod
@@ -2925,7 +2914,6 @@ class Manage(Home, WebRoot):
 
             to_change[indexer_id].append(what)
 
-
         for cur_indexer_id in to_change:
 
             # get a list of all the eps we want to change if they just said "all"
@@ -2974,9 +2962,9 @@ class Manage(Home, WebRoot):
     def subtitleMissed(self, whichSubs=None):
         if not whichSubs:
             return self.render("manage_subtitleMissed.mako",
-                               whichSubs=whichSubs, 
-                               title='Episode Overview', 
-                               header='Episode Overview', 
+                               whichSubs=whichSubs,
+                               title='Episode Overview',
+                               header='Episode Overview',
                                topmenu='manage')
 
         status_results = main_db.MainDB().select(
@@ -3059,7 +3047,6 @@ class Manage(Home, WebRoot):
         showCounts = {}
         showCats = {}
         showSQLResults = {}
-
 
         for curShow in sickrage.showList:
 
@@ -3347,7 +3334,7 @@ class Manage(Home, WebRoot):
 
         if len(errors) > 0:
             notifications.error('%d error%s while saving changes:' % (len(errors), "" if len(errors) == 1 else "s"),
-                                   " ".join(errors))
+                                " ".join(errors))
 
         return self.redirect("/manage/")
 
@@ -3439,7 +3426,7 @@ class Manage(Home, WebRoot):
 
         if errors:
             notifications.error("Errors encountered",
-                                   '<br >\n'.join(errors))
+                                '<br >\n'.join(errors))
 
         messageDetail = ""
 
@@ -3516,11 +3503,11 @@ class Manage(Home, WebRoot):
             return self.redirect('/manage/failedDownloads/')
 
         return self.render("manage_failedDownloads.mako",
-                        limit=limit, 
-                        failedResults=sqlResults, 
-                        title='Failed Downloads', 
-                        header='Failed Downloads',
-                        topmenu='manage')
+                           limit=limit,
+                           failedResults=sqlResults,
+                           title='Failed Downloads',
+                           header='Failed Downloads',
+                           topmenu='manage')
 
 
 @route('/manage/manageSearches(/?.*)')
@@ -3698,10 +3685,10 @@ class ConfigGeneral(Config):
 
     def index(self):
         return self.render("config_general.mako",
-                        title='Config - General',
-                        header='General Configuration',
-                        topmenu='config',
-                        submenu=self.ConfigMenu())
+                           title='Config - General',
+                           header='General Configuration',
+                           topmenu='config',
+                           submenu=self.ConfigMenu())
 
     @staticmethod
     def generateApiKey():
@@ -3855,7 +3842,7 @@ class ConfigGeneral(Config):
             for x in results:
                 sickrage.LOGGER.error(x)
             notifications.error('Error(s) Saving Configuration',
-                                   '<br>\n'.join(results))
+                                '<br>\n'.join(results))
         else:
             notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
@@ -4012,7 +3999,7 @@ class ConfigSearch(Config):
             for x in results:
                 sickrage.LOGGER.error(x)
             notifications.error('Error(s) Saving Configuration',
-                                   '<br>\n'.join(results))
+                                '<br>\n'.join(results))
         else:
             notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
@@ -4141,7 +4128,7 @@ class ConfigPostProcessing(Config):
             for x in results:
                 sickrage.LOGGER.warning(x)
             notifications.error('Error(s) Saving Configuration',
-                                   '<br>\n'.join(results))
+                                '<br>\n'.join(results))
         else:
             notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
@@ -4690,7 +4677,7 @@ class ConfigProviders(Config):
             for x in results:
                 sickrage.LOGGER.error(x)
             notifications.error('Error(s) Saving Configuration',
-                                   '<br>\n'.join(results))
+                                '<br>\n'.join(results))
         else:
             notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
@@ -4928,7 +4915,7 @@ class ConfigNotifications(Config):
             for x in results:
                 sickrage.LOGGER.error(x)
             notifications.error('Error(s) Saving Configuration',
-                                   '<br>\n'.join(results))
+                                '<br>\n'.join(results))
         else:
             notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
@@ -4993,7 +4980,7 @@ class ConfigSubtitles(Config):
             for x in results:
                 sickrage.LOGGER.error(x)
             notifications.error('Error(s) Saving Configuration',
-                                   '<br>\n'.join(results))
+                                '<br>\n'.join(results))
         else:
             notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
@@ -5029,7 +5016,7 @@ class ConfigAnime(Config):
             for x in results:
                 sickrage.LOGGER.error(x)
             notifications.error('Error(s) Saving Configuration',
-                                   '<br>\n'.join(results))
+                                '<br>\n'.join(results))
         else:
             notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
@@ -5083,7 +5070,8 @@ class ErrorLogs(WebRoot):
 
         logFiles = [sickrage.LOG_FILE] + ["{}.{}".format(sickrage.LOG_FILE, x) for x in xrange(int(sickrage.LOG_NR))]
 
-        levelsFiltered = b'|'.join([x for x in sickrage.LOGGER.logLevels.keys() if sickrage.LOGGER.logLevels[x] >= int(minLevel)])
+        levelsFiltered = b'|'.join(
+                [x for x in sickrage.LOGGER.logLevels.keys() if sickrage.LOGGER.logLevels[x] >= int(minLevel)])
 
         logRegex = re.compile(
                 r"(^\d+\-\d+\-\d+\s*\d+\:\d+\:\d+\s*(?:{}.+?)\:\:(?:{}.+?)\:\:.+?$)".format(levelsFiltered, logFilter)
@@ -5101,12 +5089,14 @@ class ErrorLogs(WebRoot):
                                         logFile, reverse=True)).splitlines(True)[::-1]),
                                 re.S + re.M + re.I)))[:maxLines])
 
-                maxLines -=len(data)
+                maxLines -= len(data)
                 if len(data) == maxLines:
                     raise StopIteration
 
-        except StopIteration: pass
-        except Exception as e:pass
+        except StopIteration:
+            pass
+        except Exception as e:
+            pass
 
         return self.render("viewlogs.mako",
                            header="Log File",

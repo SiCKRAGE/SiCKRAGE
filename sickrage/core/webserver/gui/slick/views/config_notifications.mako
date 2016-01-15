@@ -9,8 +9,8 @@
 %>
 
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/configNotifications.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/config.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/configNotifications.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/config.js?${srPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/new/config_notifications.js"></script>
 </%block>
 <%block name="content">

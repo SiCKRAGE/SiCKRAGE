@@ -10,8 +10,8 @@
     from sickrage.core.media.util import showImage
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/ajaxEpSearch.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/plotTooltip.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/ajaxEpSearch.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/plotTooltip.js?${srPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/new/schedule.js"></script>
 </%block>
 <%block name="css">
@@ -81,7 +81,7 @@
     <span class="listing-key listing-default">Soon</span>
     <span class="listing-key listing-toofar">Later</span>
 % endif
-    <a class="btn btn-inline forceBacklog" href="webcal://${sbHost}:${srHttpPort}/calendar">
+    <a class="btn btn-inline forceBacklog" href="webcal://${srHost}:${srHttpPort}/calendar">
     <i class="icon-calendar icon-white"></i>Subscribe</a>
 </div>
 

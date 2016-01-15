@@ -5,7 +5,7 @@
 %>
 
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/config.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/config.js?${srPID}"></script>
 </%block>
 <%block name="content">
 <div id="content960">

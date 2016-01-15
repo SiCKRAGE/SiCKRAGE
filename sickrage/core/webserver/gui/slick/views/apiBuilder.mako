@@ -61,11 +61,11 @@
     <link rel="apple-touch-icon" sizes="72x72" href="${srRoot}/images/ico/favicon-72.png">
     <link rel="apple-touch-icon" href="${srRoot}/images/ico/favicon-57.png">
 
-    <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/bootstrap.min.css?${sbPID}"/>
-    <link rel="stylesheet" type="text/css" href="${srRoot}/css/browser.css?${sbPID}" />
-    <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery-ui-1.10.4.custom.min.css?${sbPID}" />
-    <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${sbPID}"/>
-    <link rel="stylesheet" type="text/css" href="${srRoot}/css/${srThemeName}.css?${sbPID}"/>
+    <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/bootstrap.min.css?${srPID}"/>
+    <link rel="stylesheet" type="text/css" href="${srRoot}/css/browser.css?${srPID}" />
+    <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery-ui-1.10.4.custom.min.css?${srPID}" />
+    <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${srPID}"/>
+    <link rel="stylesheet" type="text/css" href="${srRoot}/css/${srThemeName}.css?${srPID}"/>
 </head>
 <body>
 <nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">
@@ -186,10 +186,10 @@
 var commands = ${sorted(commands)};
 var episodes = ${episodes};
 </script>
-<script type="text/javascript" src="${srRoot}/js/_bower.min.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/new/meta.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/new/core.js?${sbPID}"></script>
-<script type="text/javascript" src="${srRoot}/js/apibuilder.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/_bower.min.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/new/meta.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/new/core.js?${srPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/apibuilder.js?${srPID}"></script>
 </body>
 </html>
 

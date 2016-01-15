@@ -9,7 +9,7 @@
     from sickrage.metadata import GenericMetadata
 %>
 <%block name="scripts">
-<script type="text/javascript" src="${srRoot}/js/configBackupRestore.js?${sbPID}"></script>
+<script type="text/javascript" src="${srRoot}/js/configBackupRestore.js?${srPID}"></script>
 <script type="text/javascript" src="${srRoot}/js/new/config_backuprestore.js"></script>
 </%block>
 <%block name="content">

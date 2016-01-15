@@ -79,16 +79,16 @@
         <link rel="apple-touch-icon" sizes="72x72" href="${srRoot}/images/ico/favicon-72.png">
         <link rel="apple-touch-icon" href="${srRoot}/images/ico/favicon-57.png">
 
-        <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/bootstrap.min.css?${sbPID}"/>
-        <link rel="stylesheet" type="text/css" href="${srRoot}/css/browser.css?${sbPID}" />
-        <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery-ui-1.10.4.custom.min.css?${sbPID}" />
-        <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery.qtip-2.2.1.min.css?${sbPID}"/>
-        <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${sbPID}"/>
-        <link rel="stylesheet" type="text/css" href="${srRoot}/css/${sickrage.THEME_NAME}.css?${sbPID}"/>
-        <link rel="stylesheet" type="text/css" href="${srRoot}/css/print.css?${sbPID}" />
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/bootstrap.min.css?${srPID}"/>
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/browser.css?${srPID}" />
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery-ui-1.10.4.custom.min.css?${srPID}" />
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery.qtip-2.2.1.min.css?${srPID}"/>
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${srPID}"/>
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/${sickrage.THEME_NAME}.css?${srPID}"/>
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/print.css?${srPID}" />
         % if current_user:
-        <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/pnotify.custom.min.css?${sbPID}" />
-        <link rel="stylesheet" type="text/css" href="${srRoot}/css/country-flags.css?${sbPID}"/>
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/pnotify.custom.min.css?${srPID}" />
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/country-flags.css?${srPID}"/>
         % endif
         <%block name="css" />
     </head>
@@ -223,9 +223,9 @@
                                 %endif
                                 <li><a href="${srRoot}/errorlogs/viewlog/"><i class="menu-icon-viewlog"></i>&nbsp;View Log</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="${srRoot}/home/updateCheck?pid=${sbPID}"><i class="menu-icon-update"></i>&nbsp;Check For Updates</a></li>
-                                <li><a href="${srRoot}/home/restart/?pid=${sbPID}" class="confirm restart"><i class="menu-icon-restart"></i>&nbsp;Restart</a></li>
-                                <li><a href="${srRoot}/home/shutdown/?pid=${sbPID}" class="confirm shutdown"><i class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
+                                <li><a href="${srRoot}/home/updateCheck?pid=${srPID}"><i class="menu-icon-update"></i>&nbsp;Check For Updates</a></li>
+                                <li><a href="${srRoot}/home/restart/?pid=${srPID}" class="confirm restart"><i class="menu-icon-restart"></i>&nbsp;Restart</a></li>
+                                <li><a href="${srRoot}/home/shutdown/?pid=${srPID}" class="confirm shutdown"><i class="menu-icon-shutdown"></i>&nbsp;Shutdown</a></li>
                                 % if current_user != True:
                                     <li><a href="${srRoot}/logout" class="confirm logout"><i class="menu-icon-shutdown"></i>&nbsp;Logout</a></li>
                                 % endif
@@ -314,28 +314,28 @@
                 </div>
             </div>
         </footer>
-        <script type="text/javascript" src="${srRoot}/js/_bower.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.cookie.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.cookiejar.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.json-2.2.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.selectboxes.min.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tokeninput.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter-2.17.7.min.js?${sbPID}"></script><!-- Can't be added to bower -->
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter.widgets-2.17.7.min.js?${sbPID}"></script><!-- Can't be added to bower -->
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter.widget-columnSelector-2.17.7.js?${sbPID}"></script><!-- Can't be added to bower -->
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.qtip-2.2.1.min.js?${sbPID}"></script><!-- Can't be added to bower -->
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.ui.touch-punch-0.2.2.min.js?${sbPID}"></script><!-- Can't be added to bower -->
-        <script type="text/javascript" src="${srRoot}/js/lib/isotope.pkgd.min.js?${sbPID}"></script><!-- Can't be added to bower -->
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.confirm.js?${sbPID}"></script><!-- Can't be added to bower -->
-        <script type="text/javascript" src="${srRoot}/js/lib/formwizard.js?${sbPID}"></script><!-- Can't be added to bower -->
-        <script type="text/javascript" src="${srRoot}/js/lib/pnotify.custom.min.js?${sbPID}"></script><!-- Needs to be removed -->
-        <script type="text/javascript" src="${srRoot}/js/new/parsers.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/new/meta.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/new/core.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/lib/jquery.scrolltopcontrol-1.1.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/browser.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/ajaxNotifications.js?${sbPID}"></script>
-        <script type="text/javascript" src="${srRoot}/js/confirmations.js?${sbPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/_bower.min.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.cookie.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.cookiejar.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.json-2.2.min.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.selectboxes.min.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tokeninput.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter-2.17.7.min.js?${srPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter.widgets-2.17.7.min.js?${srPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.tablesorter.widget-columnSelector-2.17.7.js?${srPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.qtip-2.2.1.min.js?${srPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.ui.touch-punch-0.2.2.min.js?${srPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/isotope.pkgd.min.js?${srPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.confirm.js?${srPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/formwizard.js?${srPID}"></script><!-- Can't be added to bower -->
+        <script type="text/javascript" src="${srRoot}/js/lib/pnotify.custom.min.js?${srPID}"></script><!-- Needs to be removed -->
+        <script type="text/javascript" src="${srRoot}/js/new/parsers.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/new/meta.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/new/core.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/lib/jquery.scrolltopcontrol-1.1.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/browser.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/ajaxNotifications.js?${srPID}"></script>
+        <script type="text/javascript" src="${srRoot}/js/confirmations.js?${srPID}"></script>
     % endif
         <%block name="scripts" />
     </body>
