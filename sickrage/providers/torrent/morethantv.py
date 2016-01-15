@@ -127,7 +127,8 @@ class MoreThanTVProvider(TorrentProvider):
                         # skip colheader
                         for result in torrent_rows[1:]:
                             cells = result.findChildren('td')
-                            link = cells[1].find('a', attrs={'title': 'Download'})
+                            link = cells[1].find('span', attrs={'title': 'Download'}).parent
+                            title_anchor = cells[1].find('a', attrs = {'dir': 'ltr'})
 
                             # skip if torrent has been nuked due to poor quality
                             if cells[1].find('img', alt='Nuked') is not None:
@@ -136,10 +137,10 @@ class MoreThanTVProvider(TorrentProvider):
                             torrent_id_long = link[b'href'].replace('torrents.php?action=download&id=', '')
 
                             try:
-                                if link.has_key('title'):
+                                if title_anchor.has_key('title'):
                                     title = cells[1].find('a', {'title': 'View torrent'}).contents[0].strip()
                                 else:
-                                    title = link.contents[0]
+                                    title = title_anchor.contents[0]
                                 download_url = self.urls['download'] % torrent_id_long
 
                                 seeders = cells[6].contents[0]
