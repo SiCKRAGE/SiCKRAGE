@@ -95,8 +95,6 @@ class BaseHandler(RequestHandler):
 
     def initialize(self):
         self.startTime = time.time()
-        self.name = "TORNADO"
-
         self.mako_lookup = TemplateLookup(
                 directories=[os.path.join(sickrage.GUI_DIR, 'views{}'.format(os.sep))],
                 module_directory=os.path.join(sickrage.CACHE_DIR, 'mako{}'.format(os.sep)),
@@ -110,7 +108,8 @@ class BaseHandler(RequestHandler):
 
     @run_on_executor
     def async_call(self, function, **kwargs):
-        threading.currentThread().name = self.name
+        threading.currentThread().name = "SICKRAGE-WEB"
+
         try:
             return function(**kwargs)
         except Exception:
@@ -215,7 +214,6 @@ class WebHandler(BaseHandler):
     @coroutine
     @authenticated
     def prepare(self, *args, **kwargs):
-        self.name = threading.currentThread().name
         try:
             # route -> method obj
             route = self.request.path.strip('/').split('/')[::-1][0].replace('.', '_') or 'index'
@@ -242,7 +240,6 @@ class LoginHandler(BaseHandler):
 
     @coroutine
     def prepare(self, *args, **kwargs):
-        self.name = threading.currentThread().name
         try:
             result = yield self.async_call(self.checkAuth)
             if not self._finished:

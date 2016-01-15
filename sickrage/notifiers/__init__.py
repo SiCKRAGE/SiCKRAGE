@@ -22,20 +22,22 @@ import sickrage
 
 
 def notify_download(ep_name):
-    for n in sickrage.NOTIFIERS:
-        n.notify_download(ep_name)
-
+    for n in sickrage.NOTIFIERS.values():
+        try:n.notify_download(ep_name)
+        except:continue
 
 def notify_subtitle_download(ep_name, lang):
-    for n in sickrage.NOTIFIERS:
-        n.notify_subtitle_download(ep_name, lang)
-
+    for n in sickrage.NOTIFIERS.values():
+        try:n.notify_subtitle_download(ep_name, lang)
+        except:continue
 
 def notify_snatch(ep_name):
-    for n in sickrage.NOTIFIERS:
-        n.notify_snatch(ep_name)
+    for n in sickrage.NOTIFIERS.values():
+        try:n.notify_snatch(ep_name)
+        except:continue
 
 
 def notify_version_update(new_version=""):
-    for n in sickrage.NOTIFIERS:
-        n.notify_version_update(new_version)
+    for n in sickrage.NOTIFIERS.values():
+        try:n.notify_version_update(new_version)
+        except:continue

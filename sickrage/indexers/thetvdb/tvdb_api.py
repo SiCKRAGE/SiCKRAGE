@@ -44,6 +44,7 @@ from tvdb_ui import BaseUI, ConsoleUI
 from tvdb_exceptions import (tvdb_error, tvdb_shownotfound, tvdb_showincomplete,
                              tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound)
 
+
 def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
     """Retry calling the decorated function using an exponential backoff.
 
@@ -456,51 +457,51 @@ class Tvdb:
 
         # api-v1 urls
         self.config[b'api'][1][b'getSeries'] = "{base}/api/GetSeries.php?seriesname={{}}".format(
-            base=self.config[b'api'][1][b'base'])
+                base=self.config[b'api'][1][b'base'])
         self.config[b'api'][1][b'epInfo'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.xml".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][1][b'epInfo_zip'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.zip".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][1][b'seriesInfo'] = "{base}/api/{apikey}/series/{{}}/{{}}.xml".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][1][b'actorsInfo'] = "{base}/api/{apikey}/series/{{}}/actors.xml".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][1][b'seriesBanner'] = "{base}/api/{apikey}/series/{{}}/banners.xml".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][1][b'artworkPrefix'] = "{base}/banners/{{}}".format(base=self.config[b'api'][1][b'base'])
         self.config[b'api'][1][b'updates_all'] = "{base}/api/{apikey}/updates_all.zip".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][1][b'updates_month'] = "{base}/api/{apikey}/updates_month.zip".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][1][b'updates_week'] = "{base}/api/{apikey}/updates_week.zip".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][1][b'updates_day'] = "{base}/api/{apikey}/updates_day.zip".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
 
         # api-v2 urls
         self.config[b'api'][2][b'login'] = '{base}/login'.format(base=self.config[b'api'][2][b'base'])
         self.config[b'api'][2][b'refresh'] = '{base}/refresh_token'.format(base=self.config[b'api'][2][b'base'])
         self.config[b'api'][2][b'getSeries'] = "{base}/search/series?name={{}}".format(
-            base=self.config[b'api'][2][b'base'])
+                base=self.config[b'api'][2][b'base'])
         self.config[b'api'][2][b'epInfo'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.xml".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][2][b'epInfo_zip'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.zip".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][2][b'seriesInfo'] = "{base}/api/{apikey}/series/{{}}/{{}}.xml".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][2][b'actorsInfo'] = "{base}/api/{apikey}/series/{{}}/actors.xml".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][2][b'seriesBanner'] = "{base}/api/{apikey}/series/{{}}/banners.xml".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][2][b'artworkPrefix'] = "{base}/banners/{{}}".format(base=self.config[b'api'][1][b'base'])
         self.config[b'api'][2][b'updates_all'] = "{base}/api/{apikey}/updates_all.zip".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][2][b'updates_month'] = "{base}/api/{apikey}/updates_month.zip".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][2][b'updates_week'] = "{base}/api/{apikey}/updates_week.zip".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
         self.config[b'api'][2][b'updates_day'] = "{base}/api/{apikey}/updates_day.zip".format(
-            base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
 
     def _getTempDir(self):
         """Returns the [system temp dir]/thetvdb-u501 (or
@@ -523,14 +524,17 @@ class Tvdb:
         try:
             if refresh and self.config[b'apitoken']:
                 jwtResp.update(**requests.post(self.config[b'api'][self.config[b'apiver']][b'refresh'],
-                                               headers={'Content-type': 'application/json'}
+                                               headers={'Content-type': 'application/json'},
+                                               timeout=sickrage.INDEXER_TIMEOUT
                                                ).json())
             elif not self.config[b'apitoken']:
                 jwtResp.update(**requests.post(self.config[b'api'][self.config[b'apiver']][b'login'],
                                                data=json.dumps(dict(apikey=self.config[b'apikey'])),
-                                               headers={'Content-type': 'application/json'}
+                                               headers={'Content-type': 'application/json'},
+                                               timeout=sickrage.INDEXER_TIMEOUT
                                                ).json())
-        except:pass
+        except:
+            pass
 
         if jwtResp.get('token'):
             self.config[b'apitoken'] = jwtResp[b'token']
@@ -564,9 +568,10 @@ class Tvdb:
                         "https": self.config[b'proxy'],
                     }
                 session.headers.update(self.config[b'headers'])
-                resp = session.get(url.strip(), params=params)
+                resp = session.get(url.strip(), params=params, timeout=sickrage.INDEXER_TIMEOUT)
             else:
-                resp = requests.get(url.strip(), params=params, headers=self.config[b'headers'])
+                resp = requests.get(url.strip(), params=params, headers=self.config[b'headers'],
+                                    timeout=sickrage.INDEXER_TIMEOUT)
 
             resp.raise_for_status()
         except requests.exceptions.HTTPError, e:
@@ -596,7 +601,8 @@ class Tvdb:
                 return resp.json()
             except:
                 return json.loads(json.dumps(xmltodict.parse(resp.content)))
-        except:pass
+        except:
+            pass
 
     def _getetsrc(self, url, params=None, language=None):
         """Loads a URL using caching, returns an ElementTree of the source
@@ -612,6 +618,7 @@ class Tvdb:
                 return [keys2lower(obj) for obj in in_dict]
             else:
                 return in_dict
+
         try:
             return keys2lower(self._loadUrl(url, params=params, language=language)).values()[0]
         except Exception, e:
@@ -875,8 +882,9 @@ class Tvdb:
                     seasnum, epno = cur_ep[b'seasonnumber'], cur_ep[b'episodenumber']
 
                 if seasnum is None or epno is None:
-                    sickrage.LOGGER.warning("An episode has incomplete season/episode number (season: %r, episode: %r)".format(
-                            seasnum, epno))
+                    sickrage.LOGGER.warning(
+                            "An episode has incomplete season/episode number (season: %r, episode: %r)".format(
+                                    seasnum, epno))
                     continue  # Skip to next episode
 
                 # float() is because https://github.com/dbr/tvnamer/issues/95 - should probably be fixed in TVDB data

@@ -22,6 +22,8 @@ from __future__ import unicode_literals
 import datetime
 import threading
 
+import sickrage
+
 
 class QueuePriorities:
     LOW = 10
@@ -109,12 +111,12 @@ class GenericQueue(object):
                     # launch the queue item in a thread
                     self.currentItem = self.queue.pop(0)
                     self.currentItem.name = self.queue_name + '-' + self.currentItem.name
-                    self.currentItem.start()
+                    sickrage.Scheduler.add_job(self.currentItem.run)
 
         self.amActive = False
 
 
-class QueueItem(threading.Thread):
+class QueueItem(object):
     def __init__(self, name, action_id=0):
         super(QueueItem, self).__init__()
 
@@ -127,6 +129,7 @@ class QueueItem(threading.Thread):
 
     def run(self):
         """Implementing classes should call this"""
+        threading.currentThread().name = self.name
 
         self.inProgress = True
 

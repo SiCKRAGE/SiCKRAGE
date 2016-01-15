@@ -1313,18 +1313,25 @@ def restoreConfigZip(archive, targetDir):
 def backupAll(backupDir):
     source = []
 
-    filesList = ['sickrage.db', 'sickrage.db', 'config.ini', 'failed.db', 'cache.db', sickrage.CONFIG_FILE]
+    filesList = ['sickrage.db',
+                 'scheduer.db',
+                 'config.ini',
+                 'failed.db',
+                 'cache.db',
+                 sickrage.CONFIG_FILE]
+
     for f in filesList:
         fp = os.path.join(sickrage.DATA_DIR, f)
         if os.path.exists(fp):
             source += [fp]
 
-    for (path, dirs, files) in os.walk(sickrage.CACHE_DIR, topdown=True):
-        for dirname in dirs:
-            if path == sickrage.CACHE_DIR and dirname not in ['images']:
-                dirs.remove(dirname)
-        for filename in files:
-            source += [os.path.join(path, filename)]
+    if sickrage.CACHE_DIR:
+        for (path, dirs, files) in os.walk(sickrage.CACHE_DIR, topdown=True):
+            for dirname in dirs:
+                if path == sickrage.CACHE_DIR and dirname not in ['images']:
+                    dirs.remove(dirname)
+            for filename in files:
+                source += [os.path.join(path, filename)]
 
     target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S')))
     return backupConfigZip(source, target, sickrage.DATA_DIR)
@@ -1796,7 +1803,12 @@ def removetree(tgt):
 
 def restoreDB(srcDir, dstDir):
     try:
-        filesList = ['sickrage.db', 'sickrage.db', 'config.ini', 'failed.db', 'cache.db', sickrage.CONFIG_FILE]
+        filesList = ['sickrage.db',
+                     'scheduler.db',
+                     'config.ini',
+                     'failed.db',
+                     'cache.db',
+                     sickrage.CONFIG_FILE]
 
         for filename in filesList:
             srcFile = os.path.join(srcDir, filename)

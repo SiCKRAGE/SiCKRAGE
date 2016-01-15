@@ -41,7 +41,7 @@ from sickrage.core.common import SKIPPED
 from sickrage.core.common import WANTED
 from sickrage.core.databases import main_db, cache_db, failed_db
 from sickrage.core.helpers import encrypt, findCertainShow, \
-    generateCookieSecret, makeDir, removetree, restoreDB
+    generateCookieSecret, makeDir, removetree, restoreDB, get_lan_ip
 from sickrage.core.helpers.encoding import encodingInit
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
@@ -58,6 +58,7 @@ from sickrage.core.srconfig import srConfig
 from sickrage.core.tv import TV
 from sickrage.core.updaters.show_updater import ShowUpdater
 from sickrage.core.updaters.tz_updater import update_network_dict
+from sickrage.core.version_updater import VersionUpdater
 from sickrage.core.webserver import SRWebServer
 from sickrage.indexers.indexer_api import indexerApi
 from sickrage.metadata import get_metadata_generator_dict, kodi, kodi_12plus, \
@@ -165,6 +166,9 @@ def initialize():
                                                         logNr=sickrage.LOG_NR,
                                                         fileLogging=makeDir(sickrage.LOG_DIR),
                                                         debugLogging=sickrage.DEBUG)
+
+            # init updater
+            sickrage.VERSIONUPDATER = VersionUpdater()
 
             # set socket timeout
             socket.setdefaulttimeout(sickrage.SOCKET_TIMEOUT)
@@ -468,23 +472,20 @@ def initialize():
 
 
 def start():
-    sickrage.VERSION = sickrage.VERSIONUPDATER.updater.branch
+    sickrage.VERSION = sickrage.VERSIONUPDATER.updater.get_cur_version
     sickrage.LOGGER.info("Starting SiCKRAGE VERSION:[{}] CONFIG:[{}]".format(sickrage.VERSION, sickrage.CONFIG_FILE))
 
     if sickrage.INITIALIZED and not sickrage.STARTED:
-        with threading.Lock():
-            # start scheduler
-            sickrage.LOGGER.info("Starting SiCKRAGE scheduler service")
-            sickrage.Scheduler.start()
+        sickrage.STARTED = True
 
-            # Launch browser
-            if sickrage.LAUNCH_BROWSER and not any([sickrage.WEB_NOLAUNCH, sickrage.DAEMONIZE]):
-                launch_browser(('http', 'https')[sickrage.ENABLE_HTTPS], sickrage.WEB_PORT,
-                               sickrage.WEB_ROOT)
+        sickrage.LOGGER.info(
+                "Starting SiCKRAGE web server on [{}://{}:{}/]".format(
+                        ('http', 'https')[sickrage.ENABLE_HTTPS], get_lan_ip(), sickrage.WEB_PORT
+                ))
 
-            sickrage.STARTED = True
-            return True
-
+        # launch browser window
+        if sickrage.LAUNCH_BROWSER and not any([sickrage.WEB_NOLAUNCH, sickrage.DAEMONIZE]):
+            launch_browser(('http', 'https')[sickrage.ENABLE_HTTPS], sickrage.WEB_PORT, sickrage.WEB_ROOT)
 
 def halt():
     if sickrage.INITIALIZED and sickrage.STARTED:

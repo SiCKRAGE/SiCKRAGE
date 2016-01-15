@@ -119,7 +119,6 @@ class ApiHandler(RequestHandler):
 
     @coroutine
     def prepare(self, *args, **kwargs):
-        self.name = threading.currentThread().name
         kwargs = {k: self.request.arguments[k][0] for k in self.request.arguments if len(self.request.arguments[k])}
         args = args[1:]
 
@@ -167,7 +166,8 @@ class ApiHandler(RequestHandler):
 
     @run_on_executor
     def async_call(self, function, *args, **kwargs):
-        threading.currentThread().name = self.name
+        threading.currentThread().name = "SICKRAGE-API"
+
         try:
             return recursive_unicode(function(*args, **kwargs))
         except Exception:

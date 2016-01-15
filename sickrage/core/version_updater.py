@@ -32,6 +32,7 @@ import sickrage
 from sickrage.core.databases import main_db
 from sickrage.core.helpers import backupAll, getURL
 from sickrage.core.ui import notifications
+from sickrage.notifiers import notify_version_update
 
 
 class VersionUpdater(object):
@@ -51,21 +52,21 @@ class VersionUpdater(object):
 
         self.amActive = True
 
-        if self.updater and not sickrage.DEVELOPER:
-            if self.check_for_new_version(force):
-                if self.run_backup_if_safe() is True:
-                    from sickrage.core.ui import notifications
-                    if self.update():
-                        sickrage.LOGGER.info("Update was successful!")
-                        notifications.message('Update was successful')
-                        sickrage.WEB_SERVER.server_restart()
-                    else:
-                        sickrage.LOGGER.info("Update failed!")
-                        notifications.message('Update failed!')
+        try:
+            if self.updater:
+                if self.check_for_new_version(force):
+                    if self.run_backup_if_safe() is True:
+                        from sickrage.core.ui import notifications
+                        if self.update():
+                            sickrage.LOGGER.info("Update was successful!")
+                            notifications.message('Update was successful')
+                            sickrage.WEB_SERVER.server_restart()
+                        else:
+                            sickrage.LOGGER.info("Update failed!")
+                            notifications.message('Update failed!')
 
-            self.check_for_new_news(force)
-
-        self.amActive = False
+                self.check_for_new_news(force)
+        finally:self.amActive = False
 
     def run_backup_if_safe(self):
         return self.safe_to_update() is True and self._runbackup() is True
@@ -159,6 +160,9 @@ class VersionUpdater(object):
                         "We can't proceed with the update. Unable to compare DB version. Error: %s" % repr(e))
 
         def postprocessor_safe():
+            if not sickrage.STARTED:
+                return True
+
             if not sickrage.Scheduler.get_job('POSTPROCESSOR').func.im_self.amActive:
                 sickrage.LOGGER.debug("We can proceed with the update. Post-Processor is not running")
                 return True
@@ -167,6 +171,9 @@ class VersionUpdater(object):
                 return False
 
         def showupdate_safe():
+            if not sickrage.STARTED:
+                return True
+
             if not sickrage.Scheduler.get_job('SHOWUPDATER').func.im_self.amActive:
                 sickrage.LOGGER.debug("We can proceed with the update. Shows are not being updated")
                 return True
@@ -311,7 +318,7 @@ class UpdateManager(object):
 
     @staticmethod
     def get_update_url():
-        return sickrage.WEB_ROOT + "/home/update/?pid=" + str(sickrage.PID)
+        return "home/update/?pid={}".format(sickrage.PID)
 
 
 class GitUpdateManager(UpdateManager):
@@ -561,12 +568,9 @@ class GitUpdateManager(UpdateManager):
             else:
                 url = base_url + '/commits/'
 
-            newest_text = 'There is a <a href="' + url + '" onclick="window.open(this.href); return false;">newer version available</a> '
-            newest_text += " (yo're " + str(self._num_commits_behind) + " commit"
-            if self._num_commits_behind > 1:
-                newest_text += 's'
-            newest_text += ' behind)' + "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
-
+            newest_text = 'There is a <a href="{}" onclick="window.open(this.href); return false;">newer version available</a> '.format(url)
+            newest_text += " (you're {} commit(s)".format(self._num_commits_behind)
+            newest_text += ' behind)' + "&mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
         else:
             return
 
@@ -621,7 +625,7 @@ class GitUpdateManager(UpdateManager):
 
                 # Notify update successful
                 if sickrage.NOTIFY_ON_UPDATE:
-                    sickrage.NOTIFIERS.notify_version_update(sickrage.CUR_COMMIT_HASH or "")
+                    notify_version_update(sickrage.CUR_COMMIT_HASH or "")
 
                 return True
 
@@ -679,12 +683,11 @@ class SourceUpdateManager(UpdateManager):
         self._newest_commit_hash = None
         self._num_commits_behind = 0
 
-        self.branch = sickrage.VERSION = self._find_installed_version().strip()
+        self.branch = sickrage.VERSION = self._find_installed_version
 
-    @staticmethod
-    def _find_installed_version():
-        version = SourceUpdateManager.get_cur_version()
-        return version
+    @property
+    def _find_installed_version(self):
+        return self.get_cur_version
 
     def get_cur_commit_hash(self):
         return self._cur_commit_hash
@@ -692,17 +695,32 @@ class SourceUpdateManager(UpdateManager):
     def get_newest_commit_hash(self):
         return self._newest_commit_hash
 
-    @staticmethod
-    def get_cur_version():
+    @property
+    def get_cur_version(self):
         with open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
-            version = f.read()
+            version = f.read().strip()
         return version or ""
 
-    @staticmethod
-    def get_newest_version():
-        with open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
-            version = f.read()
-        return version or ""
+    @property
+    def get_newest_version(self):
+        import xmlrpclib
+        pypi = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
+
+        import pip
+        for dist in pip.get_installed_distributions():
+            if not dist.project_name.lower() == 'sickrage':
+                continue
+
+            available = pypi.package_releases(dist.project_name)
+            if not available:
+                # Try to capitalize pkg name
+                available = pypi.package_releases(dist.project_name.capitalize())
+
+            if available:
+                return available[0]
+
+        return self._find_installed_version
+
 
     def get_num_commits_behind(self):
         return self._num_commits_behind
@@ -710,44 +728,17 @@ class SourceUpdateManager(UpdateManager):
     def need_update(self):
         # need this to run first to set self._newest_commit_hash
         try:
-            self._check_for_new_version()
+            pypi_version = self.get_newest_version
+            if self._find_installed_version != pypi_version:
+                self.branch = sickrage.VERSION = pypi_version
+                sickrage.LOGGER.debug("Version upgrade: " + self._find_installed_version + "->" + pypi_version)
+                return True
         except Exception as e:
-            sickrage.LOGGER.warning("Unable to contact github, can't check for update: " + repr(e))
+            sickrage.LOGGER.warning("Unable to contact PyPi, can't check for update: " + repr(e))
             return False
 
-        if self.branch != self._find_installed_version():
-            sickrage.LOGGER.debug("Branch checkout: " + self._find_installed_version() + "->" + self.branch)
-            return True
-
-        if not self._cur_commit_hash or self._num_commits_behind > 0:
-            return True
-
     def _check_for_new_version(self):
-        """
-        Uses pygithub to ask github if there is a newer version that the provided
-        commit hash. If there is a newer version it sets SiCKRAGE's version text.
-
-        commit_hash: hash that we're checking against
-        """
-
-        import xmlrpclib
-        pypi = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
-
-        import pip
-        for dist in pip.get_installed_distributions():
-            available = pypi.package_releases(dist.project_name)
-            if not available:
-                # Try to capitalize pkg name
-                available = pypi.package_releases(dist.project_name.capitalize())
-
-            if not available:
-                msg = 'no releases at pypi'
-            elif available[0] != dist.version:
-                msg = '{} available'.format(available[0])
-            else:
-                msg = 'up to date'
-            pkg_info = '{dist.project_name} {dist.version}'.format(dist=dist)
-            print '{pkg_info:40} {msg}'.format(pkg_info=pkg_info, msg=msg)
+        return self.get_newest_version
 
     def set_newest_text(self):
 
@@ -758,8 +749,10 @@ class SourceUpdateManager(UpdateManager):
             sickrage.LOGGER.debug("Unknown current version number, don't know if we should update or not")
 
             newest_text = "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set."
-            newest_text += "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
-        else:return
+            newest_text += "&mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
+            return
+        else:
+            newest_text = "New SiCKRAGE update found on PyPy servers, version {}".format(sickrage.VERSION)
 
         sickrage.NEWEST_VERSION_STRING = newest_text
 
@@ -777,7 +770,7 @@ class SourceUpdateManager(UpdateManager):
             return False
 
         # Notify update successful
-        sickrage.NOTIFIERS.notify_version_update(sickrage.NEWEST_VERSION_STRING)
+        notify_version_update(sickrage.NEWEST_VERSION_STRING)
 
         return True
 

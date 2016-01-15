@@ -22,16 +22,30 @@ from __future__ import unicode_literals
 
 import os
 import signal
+import threading
+import webbrowser
 
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates, generateApiKey, get_lan_ip
+from sickrage.core.helpers import create_https_certificates, generateApiKey
 from sickrage.core.webserver.api import ApiHandler, KeyHandler
 from sickrage.core.webserver.routes import route
 from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
+
+
+def launch_browser(protocol='http', startport=8081, web_root='/'):
+    browserurl = '{}://localhost:{}{}/home/'.format(protocol, startport, web_root)
+
+    try:
+        try:
+            webbrowser.open(browserurl, 2, 1)
+        except webbrowser.Error:
+            webbrowser.open(browserurl, 1, 1)
+    except webbrowser.Error:
+        sickrage.LOGGER.error("Unable to launch a browser")
 
 
 class StaticImageHandler(StaticFileHandler):
@@ -50,6 +64,7 @@ class StaticImageHandler(StaticFileHandler):
         ]
 
         return super(StaticImageHandler, self).get(path, include_body)
+
 
 class SRWebServer(object):
     def __init__(self, **kwargs):
@@ -169,21 +184,17 @@ class SRWebServer(object):
                 pf.write(str(os.getpid()))
 
     def start(self):
+        threading.currentThread().name = "TORNADO"
+
         try:
             self.server = HTTPServer(self.app)
             if self.enable_https:
                 self.server.ssl_options = {"certfile": self.https_cert, "keyfile": self.https_key}
             self.server.listen(self.options[b'port'], self.options[b'host'])
 
-            sickrage.LOGGER.info(
-                    "Starting SiCKRAGE web server on [{}://{}:{}/]".format(
-                            ('http', 'https')[self.enable_https], get_lan_ip(), self.options[b'port']
-                    ))
-
-            # callback to fire sickrage threads
+            # start tornado web server
+            self.io_loop.add_callback(sickrage.Scheduler.start)
             self.io_loop.add_callback(sickrage.core.start)
-
-            # start IOLoop
             self.io_loop.start()
         except KeyboardInterrupt:
             self.server_shutdown()

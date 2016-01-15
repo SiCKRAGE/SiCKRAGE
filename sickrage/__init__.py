@@ -583,6 +583,7 @@ def help_message():
     help_msg += "                                    to load configuration from \n"
     help_msg += "                                    Default: config.ini in " + PROG_DIR + " or --datadir location\n"
     help_msg += "                --noresize          Prevent resizing of the banner/posters even if PIL is installed\n"
+    help_msg += "                --noupdate          Prevent auto-update of SiCKRAGE on start-up only!\n"
 
     return help_msg
 
@@ -599,13 +600,24 @@ def main():
     DATA_DIR = ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     PROG_DIR = os.path.abspath(os.path.dirname(__file__))
     MY_ARGS = sys.argv[1:]
+    NO_UPDATE = False
 
     consoleLogging = (not hasattr(sys, "frozen")) or (APP_NAME.lower().find('-console') > 0)
 
     try:
         opts, _ = getopt.getopt(
                 sys.argv[1:], "hqdp::",
-                ['help', 'dev', 'quiet', 'nolaunch', 'daemon', 'pidfile=', 'port=', 'datadir=', 'config=', 'noresize']
+                ['help',
+                 'dev',
+                 'quiet',
+                 'nolaunch',
+                 'daemon',
+                 'pidfile=',
+                 'port=',
+                 'datadir=',
+                 'config=',
+                 'noresize',
+                 'noupdate']
         )
     except getopt.GetoptError:
         sys.exit(help_message())
@@ -666,6 +678,10 @@ def main():
         # Prevent resizing of the banner/posters even if PIL is installed
         if o in ('--noresize',):
             NO_RESIZE = True
+
+        # Prevent auto-updating of app on startup only!
+        if o in ('--noupdate',):
+            NO_UPDATE = True
 
     def install_pip():
         print("Downloading pip ...")
@@ -728,13 +744,6 @@ def main():
     # init logging
     from sickrage.core.srlogger import srLogger
     LOGGER = srLogger(consoleLogging=consoleLogging)
-
-    # init pip and updater
-    from sickrage.core.version_updater import VersionUpdater
-    VERSIONUPDATER = VersionUpdater()
-
-    # check for updates
-    VERSIONUPDATER.run()
 
     # The pidfile is only useful in daemon mode, make sure we can write the file properly
     if CREATEPID:

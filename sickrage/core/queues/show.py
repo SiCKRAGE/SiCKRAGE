@@ -214,7 +214,7 @@ class ShowQueueItem(QueueItem):
     """
 
     def __init__(self, action_id, show):
-        QueueItem.__init__(self, ShowQueueActions.names[action_id], action_id)
+        super(ShowQueueItem, self).__init__(ShowQueueActions.names[action_id], action_id)
         self.show = show
 
     def isInQueue(self):
@@ -577,12 +577,11 @@ class QueueItemSubtitle(ShowQueueItem):
 
 
 class QueueItemUpdate(ShowQueueItem):
-    def __init__(self, show=None):
-        ShowQueueItem.__init__(self, ShowQueueActions.UPDATE, show)
+    def __init__(self, action_id=None, show=None):
+        super(QueueItemUpdate, self).__init__(ShowQueueActions.UPDATE, show)
         self.force = False
 
     def run(self):
-
         ShowQueueItem.run(self)
 
         sickrage.LOGGER.debug("Beginning update of " + self.show.name)
@@ -672,13 +671,13 @@ class QueueItemUpdate(ShowQueueItem):
 
 class QueueItemForceUpdate(QueueItemUpdate):
     def __init__(self, show=None):
-        ShowQueueItem.__init__(self, ShowQueueActions.FORCEUPDATE, show)
+        super(QueueItemForceUpdate, self).__init__(ShowQueueActions.FORCEUPDATE, show)
         self.force = True
 
 
 class QueueItemRemove(ShowQueueItem):
     def __init__(self, show=None, full=False):
-        ShowQueueItem.__init__(self, ShowQueueActions.REMOVE, show)
+        super(QueueItemRemove, self).__init__(ShowQueueActions.REMOVE, show)
 
         # lets make sure this happens before any other high priority actions
         self.priority = QueuePriorities.HIGH + QueuePriorities.HIGH

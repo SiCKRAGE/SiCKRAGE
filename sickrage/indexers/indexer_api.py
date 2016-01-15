@@ -41,7 +41,7 @@ class indexerApi(object):
             return indexerConfig[self.indexerID]
         _ = initConfig
         if sickrage.INDEXER_DEFAULT_LANGUAGE in _:
-            del _[_[b'valid_languages'].indsickrage.INDEXER_DEFAULT_LANGUAGE]
+            del _[_[b'valid_languages'].index(sickrage.INDEXER_DEFAULT_LANGUAGE)]
         _[b'valid_languages'].sort()
         _[b'valid_languages'].insert(0, sickrage.INDEXER_DEFAULT_LANGUAGE)
         return _
