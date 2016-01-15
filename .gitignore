@@ -53,6 +53,7 @@ Session.vim
 .idea
 *.ipr
 .settings/*
+.pypirc
 
 # OS generated files #
 ######################
