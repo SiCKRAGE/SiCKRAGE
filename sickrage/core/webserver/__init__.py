@@ -21,7 +21,6 @@
 from __future__ import unicode_literals
 
 import os
-import signal
 import threading
 import webbrowser
 
@@ -213,7 +212,6 @@ class SRWebServer(object):
 
     def server_restart(self):
         sickrage.LOGGER.info('SiCKRAGE is restarting!')
-        signal.signal(signal.SIGTERM, signal.SIG_IGN)
 
         import tornado.autoreload
         tornado.autoreload.add_reload_hook(self.server_shutdown)
