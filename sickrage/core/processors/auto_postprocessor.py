@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import os.path
 import threading
 
@@ -45,12 +44,12 @@ class PostProcessor(object):
         self.amActive = True
 
         if not os.path.isdir(sickrage.TV_DOWNLOAD_DIR):
-            logging.error("Automatic post-processing attempted but dir " + sickrage.TV_DOWNLOAD_DIR + " doesn't exist")
+            sickrage.LOGGER.error("Automatic post-processing attempted but dir " + sickrage.TV_DOWNLOAD_DIR + " doesn't exist")
             self.amActive = False
             return
 
         if not os.path.isabs(sickrage.TV_DOWNLOAD_DIR):
-            logging.error(
+            sickrage.LOGGER.error(
                     "Automatic post-processing attempted but dir " + sickrage.TV_DOWNLOAD_DIR + " is relative (and probably not what you really want to process)")
             self.amActive = False
             return

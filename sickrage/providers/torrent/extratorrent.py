@@ -18,13 +18,13 @@
 
 from __future__ import unicode_literals
 
-import logging
 import re
 import traceback
 from xml.parsers.expat import ExpatError
 
 import xmltodict
 
+import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import tryInt
 from sickrage.providers import TorrentProvider
@@ -57,31 +57,31 @@ class ExtraTorrentProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    logging.debug("Search string: %s " % search_string)
+                    sickrage.LOGGER.debug("Search string: %s " % search_string)
 
                 try:
                     self.search_params.update({'type': ('search', 'rss')[mode is 'RSS'], 'search': search_string})
                     data = self.getURL(self.urls['rss'], params=self.search_params)
                     if not data:
-                        logging.debug("No data returned from provider")
+                        sickrage.LOGGER.debug("No data returned from provider")
                         continue
 
                     if not data.startswith('<?xml'):
-                        logging.info('Expected xml but got something else, is your mirror failing?')
+                        sickrage.LOGGER.info('Expected xml but got something else, is your mirror failing?')
                         continue
 
                     try:
                         data = xmltodict.parse(data)
                     except ExpatError:
-                        logging.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
+                        sickrage.LOGGER.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                         continue
 
                     if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
-                        logging.debug("Malformed rss returned, skipping")
+                        sickrage.LOGGER.debug("Malformed rss returned, skipping")
                         continue
 
                     # https://github.com/martinblech/xmltodict/issues/111
@@ -103,19 +103,19 @@ class ExtraTorrentProvider(TorrentProvider):
                             # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode is not 'RSS':
-                                logging.debug(
+                                sickrage.LOGGER.debug(
                                         "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                 title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers
                         if mode is not 'RSS':
-                            logging.debug("Found result: %s " % title)
+                            sickrage.LOGGER.debug("Found result: %s " % title)
 
                         items[mode].append(item)
 
                 except (AttributeError, TypeError, KeyError, ValueError):
-                    logging.error("Failed parsing provider. Traceback: %r" % traceback.format_exc())
+                    sickrage.LOGGER.error("Failed parsing provider. Traceback: %r" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

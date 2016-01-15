@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 
 import datetime
 import httplib
-import logging
 import xmlrpclib
 from base64 import standard_b64encode
 
@@ -52,7 +51,7 @@ class NZBGet(object):
             nzbgetXMLrpc = "http://%(username)s:%(password)s@%(host)s/xmlrpc"
 
         if sickrage.NZBGET_HOST == None:
-            logging.error("No NZBget host found in configuration. Please configure it.")
+            sickrage.LOGGER.error("No NZBget host found in configuration. Please configure it.")
             return False
 
         url = nzbgetXMLrpc % {"host": sickrage.NZBGET_HOST, "username": sickrage.NZBGET_USERNAME,
@@ -61,20 +60,20 @@ class NZBGet(object):
         nzbGetRPC = xmlrpclib.ServerProxy(url)
         try:
             if nzbGetRPC.writelog("INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
-                logging.debug("Successful connected to NZBget")
+                sickrage.LOGGER.debug("Successful connected to NZBget")
             else:
-                logging.error("Successful connected to NZBget, but unable to send a message")
+                sickrage.LOGGER.error("Successful connected to NZBget, but unable to send a message")
 
         except httplib.socket.error:
-            logging.error(
+            sickrage.LOGGER.error(
                     "Please check your NZBget host and port (if it is running). NZBget is not responding to this combination")
             return False
 
         except xmlrpclib.ProtocolError as e:
             if e.errmsg == "Unauthorized":
-                logging.error("NZBget username or password is incorrect.")
+                sickrage.LOGGER.error("NZBget username or password is incorrect.")
             else:
-                logging.error("Protocol Error: " + e.errmsg)
+                sickrage.LOGGER.error("Protocol Error: " + e.errmsg)
             return False
 
         dupekey = ""
@@ -105,8 +104,8 @@ class NZBGet(object):
             data = nzb.extraInfo[0]
             nzbcontent64 = standard_b64encode(data)
 
-        logging.info("Sending NZB to NZBget")
-        logging.debug("URL: " + url)
+        sickrage.LOGGER.info("Sending NZB to NZBget")
+        sickrage.LOGGER.debug("URL: " + url)
 
         try:
             # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old command
@@ -147,11 +146,11 @@ class NZBGet(object):
                                                         nzb.url)
 
             if nzbget_result:
-                logging.debug("NZB sent to NZBget successfully")
+                sickrage.LOGGER.debug("NZB sent to NZBget successfully")
                 return True
             else:
-                logging.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
+                sickrage.LOGGER.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
                 return False
         except Exception:
-            logging.error("Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
+            sickrage.LOGGER.error("Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
             return False

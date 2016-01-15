@@ -20,13 +20,13 @@
 
 from __future__ import unicode_literals
 
-import logging
 import re
 import urllib
 
 import requests
 from bs4 import BeautifulSoup
 
+import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.providers import TorrentProvider
 
@@ -62,7 +62,7 @@ class HDSpaceProvider(TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            logging.warning("Invalid username or password. Check your settings")
+            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
 
         return True
 
@@ -76,11 +76,11 @@ class HDSpaceProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            logging.warning("Unable to connect to provider")
+            sickrage.LOGGER.warning("Unable to connect to provider")
             return False
 
         if re.search('Password Incorrect', response):
-            logging.warning("Invalid username or password. Check your settings")
+            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -94,7 +94,7 @@ class HDSpaceProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
@@ -102,13 +102,13 @@ class HDSpaceProvider(TorrentProvider):
                 else:
                     searchURL = self.urls['search'] % ''
 
-                logging.debug("Search URL: %s" % searchURL)
+                sickrage.LOGGER.debug("Search URL: %s" % searchURL)
                 if mode is not 'RSS':
-                    logging.debug("Search string: %s" % search_string)
+                    sickrage.LOGGER.debug("Search string: %s" % search_string)
 
                 data = self.getURL(searchURL)
                 if not data or 'please try later' in data:
-                    logging.debug("No data returned from provider")
+                    sickrage.LOGGER.debug("No data returned from provider")
                     continue
 
                 # Search result page contains some invalid html that prevents html parser from returning all data.
@@ -119,12 +119,12 @@ class HDSpaceProvider(TorrentProvider):
                     index = data.ind
                     '<table'
                 except ValueError:
-                    logging.error("Could not find main torrent table")
+                    sickrage.LOGGER.error("Could not find main torrent table")
                     continue
 
                 html = BeautifulSoup(data[index:], 'html5lib')
                 if not html:
-                    logging.debug("No html data parsed from provider")
+                    sickrage.LOGGER.debug("No html data parsed from provider")
                     continue
 
                 torrents = html.findAll('tr')
@@ -151,14 +151,14 @@ class HDSpaceProvider(TorrentProvider):
                         # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode is not 'RSS':
-                                logging.debug(
+                                sickrage.LOGGER.debug(
                                         "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                 title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers
                         if mode is not 'RSS':
-                            logging.debug("Found result: %s " % title)
+                            sickrage.LOGGER.debug("Found result: %s " % title)
 
                         items[mode].append(item)
 

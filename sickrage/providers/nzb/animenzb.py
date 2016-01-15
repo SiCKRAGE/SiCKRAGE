@@ -21,9 +21,9 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import urllib
 
+import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.classes import Proper
 from sickrage.core.helpers import show_names
@@ -53,7 +53,7 @@ class AnimeNZBProvider(NZBProvider):
 
     def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
 
-        logging.debug("Search string: %s " % search_string)
+        sickrage.LOGGER.debug("Search string: %s " % search_string)
 
         if self.show and not self.show.is_anime:
             return []
@@ -65,14 +65,14 @@ class AnimeNZBProvider(NZBProvider):
         }
 
         searchURL = self.url + "rss?" + urllib.urlencode(params)
-        logging.debug("Search URL: %s" % searchURL)
+        sickrage.LOGGER.debug("Search URL: %s" % searchURL)
         results = []
         for curItem in self.cache.getRSSFeed(searchURL)['entries'] or []:
             (title, url) = self._get_title_and_url(curItem)
 
             if title and url:
                 results.append(curItem)
-                logging.debug("Found result: %s " % title)
+                sickrage.LOGGER.debug("Found result: %s " % title)
 
         # For each search mode sort all the items by seeders if available if available
         results.sort(key=lambda tup: tup[0], reverse=True)

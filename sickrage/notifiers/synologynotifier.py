@@ -17,7 +17,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import os
 import subprocess
 
@@ -47,12 +46,12 @@ class synologyNotifier:
 
     def _send_synologyNotifier(self, message, title):
         synodsmnotify_cmd = ["/usr/syno/bin/synodsmnotify", "@administrators", title, message]
-        logging.info("Executing command " + str(synodsmnotify_cmd))
-        logging.debug("Absolute path to command: " + os.path.abspath(synodsmnotify_cmd[0]))
+        sickrage.LOGGER.info("Executing command " + str(synodsmnotify_cmd))
+        sickrage.LOGGER.debug("Absolute path to command: " + os.path.abspath(synodsmnotify_cmd[0]))
         try:
             p = subprocess.Popen(synodsmnotify_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  cwd=sickrage.ROOT_DIR)
             out, err = p.communicate()  # @UnusedVariable
-            logging.debug("Script result: " + str(out))
+            sickrage.LOGGER.debug("Script result: " + str(out))
         except OSError as e:
-            logging.info("Unable to run synodsmnotify: {}".format(e))
+            sickrage.LOGGER.info("Unable to run synodsmnotify: {}".format(e))

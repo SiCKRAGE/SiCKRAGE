@@ -17,12 +17,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
 
-import logging
+
 import re
 import traceback
 
 import requests
 
+import sickrage
 from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
 from sickrage.providers import TorrentProvider
@@ -67,11 +68,11 @@ class FNTProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            logging.warning("Unable to connect to provider")
+            sickrage.LOGGER.warning("Unable to connect to provider")
             return False
 
         if re.search('Pseudo ou mot de passe non valide', response):
-            logging.warning("Invalid username or password. Check your settings")
+            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -86,11 +87,11 @@ class FNTProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    logging.debug("Search string: %s " % search_string)
+                    sickrage.LOGGER.debug("Search string: %s " % search_string)
 
                 self.search_params[b'recherche'] = search_string
 
@@ -103,7 +104,7 @@ class FNTProvider(TorrentProvider):
                         result_table = html.find('table', {'id': 'tablealign3bis'})
 
                         if not result_table:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            sickrage.LOGGER.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         if result_table:
@@ -129,7 +130,7 @@ class FNTProvider(TorrentProvider):
                                         # FIXME
                                         size = -1
                                     except Exception:
-                                        logging.debug(
+                                        sickrage.LOGGER.debug(
                                                 "Unable to parse torrent id & seeders & leechers. Traceback: %s " % traceback.format_exc())
                                         continue
 
@@ -139,19 +140,19 @@ class FNTProvider(TorrentProvider):
                                     # Filter unseeded torrent
                                     if seeders < self.minseed or leechers < self.minleech:
                                         if mode is not 'RSS':
-                                            logging.debug(
+                                            sickrage.LOGGER.debug(
                                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                             title, seeders, leechers))
                                         continue
 
                                     item = title, download_url, size, seeders, leechers
                                     if mode is not 'RSS':
-                                        logging.debug("Found result: %s " % title)
+                                        sickrage.LOGGER.debug("Found result: %s " % title)
 
                                     items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.LOGGER.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

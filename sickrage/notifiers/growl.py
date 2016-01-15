@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import socket
 
 import gntp
@@ -137,7 +136,7 @@ class GrowlNotifier:
         for pc in growlHosts:
             opts[b'host'] = pc[0]
             opts[b'port'] = pc[1]
-            logging.debug("GROWL: Sending message '" + message + "' to " + opts[b'host'] + ":" + str(opts[b'port']))
+            sickrage.LOGGER.debug("GROWL: Sending message '" + message + "' to " + opts[b'host'] + ":" + str(opts[b'port']))
             try:
                 if self._send_growl(opts, message):
                     return True
@@ -147,7 +146,7 @@ class GrowlNotifier:
                     else:
                         return False
             except Exception as e:
-                logging.warning(
+                sickrage.LOGGER.warning(
                         "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(
                             e))
                 return False
@@ -192,6 +191,6 @@ class GrowlNotifier:
         try:
             return self._send(opts[b'host'], opts[b'port'], register.encode(), opts[b'debug'])
         except Exception as e:
-            logging.warning(
+            sickrage.LOGGER.warning(
                     "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(e))
             return False

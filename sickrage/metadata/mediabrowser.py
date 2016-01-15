@@ -19,7 +19,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import os
 import re
 from xml.etree.ElementTree import Element, ElementTree, SubElement
@@ -28,7 +27,6 @@ import sickrage
 from sickrage.core.common import dateFormat
 from sickrage.core.exceptions import ShowNotFoundException
 from sickrage.core.helpers import replaceExtension, indentXML
-from sickrage.indexers.indexer_api import indexerApi
 from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
 from sickrage.metadata import GenericMetadata
@@ -117,7 +115,7 @@ class MediaBrowserMetadata(GenericMetadata):
             metadata_dir_name = os.path.join(os.path.dirname(ep_obj.location), 'metadata')
             xml_file_path = os.path.join(metadata_dir_name, xml_file_name)
         else:
-            logging.debug("Episode location doesn't exist: " + str(ep_obj.location))
+            sickrage.LOGGER.debug("Episode location doesn't exist: " + str(ep_obj.location))
             return ''
 
         return xml_file_path
@@ -174,10 +172,10 @@ class MediaBrowserMetadata(GenericMetadata):
                 break
 
         if not season_dir:
-            logging.debug("Unable to find a season dir for season " + str(season))
+            sickrage.LOGGER.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        logging.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
+        sickrage.LOGGER.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'folder.jpg')
 
@@ -215,10 +213,10 @@ class MediaBrowserMetadata(GenericMetadata):
                 break
 
         if not season_dir:
-            logging.debug("Unable to find a season dir for season " + str(season))
+            sickrage.LOGGER.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        logging.debug("Using " + str(season_dir) + "/banner.jpg as season dir for season " + str(season))
+        sickrage.LOGGER.debug("Using " + str(season_dir) + "/banner.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'banner.jpg')
 
@@ -233,7 +231,7 @@ class MediaBrowserMetadata(GenericMetadata):
         indexer_lang = show_obj.lang
         # There's gotta be a better way of doing this but we don't wanna
         # change the language value elsewhere
-        lINDEXER_API_PARMS = indexerApi(show_obj.indexer).api_params.copy()
+        lINDEXER_API_PARMS = sickrage.INDEXER_API(show_obj.indexer).api_params.copy()
 
         lINDEXER_API_PARMS[b'actors'] = True
 
@@ -243,25 +241,25 @@ class MediaBrowserMetadata(GenericMetadata):
         if show_obj.dvdorder != 0:
             lINDEXER_API_PARMS[b'dvdorder'] = True
 
-        t = indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+        t = sickrage.INDEXER_API(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
         tv_node = Element("Series")
 
         try:
             myShow = t[int(show_obj.indexerid)]
         except indexer_shownotfound:
-            logging.error("Unable to find show with id " + str(show_obj.indexerid) + " on " + indexerApi(
+            sickrage.LOGGER.error("Unable to find show with id " + str(show_obj.indexerid) + " on " + sickrage.INDEXER_API(
                     show_obj.indexer).name + ", skipping it")
             raise
 
         except indexer_error:
-            logging.error(
-                    "" + indexerApi(show_obj.indexer).name + " is down, can't use its data to make the NFO")
+            sickrage.LOGGER.error(
+                    "" + sickrage.INDEXER_API(show_obj.indexer).name + " is down, can't use its data to make the NFO")
             raise
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
-            logging.info("Incomplete info for show with id " + str(show_obj.indexerid) + " on " + indexerApi(
+            sickrage.LOGGER.info("Incomplete info for show with id " + str(show_obj.indexerid) + " on " + sickrage.INDEXER_API(
                     show_obj.indexer).name + ", skipping it")
             return False
 
@@ -406,7 +404,7 @@ class MediaBrowserMetadata(GenericMetadata):
         indexer_lang = ep_obj.show.lang
 
         try:
-            lINDEXER_API_PARMS = indexerApi(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickrage.INDEXER_API(ep_obj.show.indexer).api_params.copy()
 
             lINDEXER_API_PARMS[b'actors'] = True
 
@@ -416,13 +414,13 @@ class MediaBrowserMetadata(GenericMetadata):
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS[b'dvdorder'] = True
 
-            t = indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickrage.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
 
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            logging.error("Unable to connect to " + indexerApi(
+            sickrage.LOGGER.error("Unable to connect to " + sickrage.INDEXER_API(
                     ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e))
             return False
 
@@ -434,8 +432,8 @@ class MediaBrowserMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                logging.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
-                             (curEpToWrite.season, curEpToWrite.episode, indexerApi(ep_obj.show.indexer).name))
+                sickrage.LOGGER.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
+                             (curEpToWrite.season, curEpToWrite.episode, sickrage.INDEXER_API(ep_obj.show.indexer).name))
                 return None
 
             if curEpToWrite == ep_obj:

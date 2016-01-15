@@ -19,7 +19,6 @@
 from __future__ import unicode_literals
 
 import json
-import logging
 import urllib
 import urllib2
 
@@ -54,11 +53,11 @@ class EMBYNotifier:
             result = response.read()
             response.close()
 
-            logging.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
+            sickrage.LOGGER.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
             return True
 
         except (urllib2.URLError, IOError) as e:
-            logging.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
+            sickrage.LOGGER.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
             return False
 
 
@@ -80,17 +79,17 @@ class EMBYNotifier:
         if sickrage.USE_EMBY:
 
             if not sickrage.EMBY_HOST:
-                logging.debug('EMBY: No host specified, check your settings')
+                sickrage.LOGGER.debug('EMBY: No host specified, check your settings')
                 return False
 
             if show:
                 if show.indexer == 1:
                     provider = 'tvdb'
                 elif show.indexer == 2:
-                    logging.warning('EMBY: TVRage Provider no longer valid')
+                    sickrage.LOGGER.warning('EMBY: TVRage Provider no longer valid')
                     return False
                 else:
-                    logging.warning('EMBY: Provider unknown')
+                    sickrage.LOGGER.warning('EMBY: Provider unknown')
                     return False
                 query = '?%sid=%s' % (provider, show.indexerid)
             else:
@@ -107,9 +106,9 @@ class EMBYNotifier:
                 result = response.read()
                 response.close()
 
-                logging.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
+                sickrage.LOGGER.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
                 return True
 
             except (urllib2.URLError, IOError) as e:
-                logging.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
+                sickrage.LOGGER.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
                 return False

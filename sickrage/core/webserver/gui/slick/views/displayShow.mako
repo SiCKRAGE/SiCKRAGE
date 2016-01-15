@@ -11,7 +11,7 @@
     from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview
     from sickrage.core.helpers import anon_url, srdatetime, pretty_filesize, get_size
     from sickrage.core.media.util import showImage
-    from sickrage.indexers.indexer_api import indexerApi
+
 
 %>
 <%block name="scripts">
@@ -142,11 +142,11 @@
                                                                              src="${srRoot}/images/imdb.png"
                                                                              style="margin-top: -1px; vertical-align:middle;"/></a>
                 % endif
-                <a href="${anon_url(indexerApi(_show.indexer).config[b'show_url'], _show.indexerid)}"
+                <a href="${anon_url(sickrage.INDEXER_API(_show.indexer).config[b'show_url'], _show.indexerid)}"
                    onclick="window.open(this.href, '_blank'); return false;"
-                   title="${indexerApi(show.indexer).config[b"show_url"] + str(show.indexerid)}"><img
-                        alt="${indexerApi(show.indexer).name}" height="16" width="16"
-                        src="${srRoot}/images/${indexerApi(show.indexer).config[b"icon"]}"
+                   title="${sickrage.INDEXER_API(show.indexer).config[b"show_url"] + str(show.indexerid)}"><img
+                        alt="${sickrage.INDEXER_API(show.indexer).name}" height="16" width="16"
+                        src="${srRoot}/images/${sickrage.INDEXER_API(show.indexer).config[b"icon"]}"
                         style="margin-top: -1px; vertical-align:middle;"/></a>
                 % if xem_numbering or xem_absolute_numbering:
                     <a href="${anon_url('http://thexem.de/search?q=', _show.name)}" rel="noreferrer"

@@ -2,6 +2,7 @@
 <%!
     import sickrage
     from sickrage.core.helpers import anon_url
+
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/qualityChooser.js?${sbPID}"></script>
@@ -39,7 +40,7 @@
 
             % if use_provided_info:
                 Show retrieved from existing metadata: <a
-                    href="${anon_url(indexerApi(provided_indexer).config[b'show_url'], provided_indexer_id)}">${provided_indexer_name}</a>
+                    href="${anon_url(sickrage.INDEXER_API(provided_indexer).config[b'show_url'], provided_indexer_id)}">${provided_indexer_name}</a>
                 <input type="hidden" id="indexerLang" name="indexerLang" value="en" />
                 <input type="hidden" id="whichSeries" name="whichSeries" value="${provided_indexer_id}" />
                 <input type="hidden" id="providedIndexer" name="providedIndexer" value="${provided_indexer}" />
@@ -50,7 +51,7 @@
                 <select name="indexerLang" id="indexerLangSelect"
                         class="form-control form-control-inline input-sm bfh-languages"
                         data-language="${sickrage.INDEXER_DEFAULT_LANGUAGE}"
-                        data-available="${','.join(indexerApi().config[b'valid_languages'])}">
+                        data-available="${','.join(sickrage.INDEXER_API().config[b'valid_languages'])}">
                 </select><b>*</b>
                 &nbsp;
                 <select name="providedIndexer" id="providedIndexer" class="form-control form-control-inline input-sm">

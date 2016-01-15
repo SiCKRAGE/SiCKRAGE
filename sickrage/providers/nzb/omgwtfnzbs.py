@@ -20,7 +20,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import urllib
 from datetime import datetime
 
@@ -48,7 +47,7 @@ class OmgwtfnzbsProvider(NZBProvider):
     def _checkAuth(self):
 
         if not self.username or not self.api_key:
-            logging.warning("Invalid api key. Check your settings")
+            sickrage.LOGGER.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -67,13 +66,13 @@ class OmgwtfnzbsProvider(NZBProvider):
                 description_text = parsedJSON.get('notice')
 
                 if 'information is incorrect' in parsedJSON.get('notice'):
-                    logging.warning("Invalid api key. Check your settings")
+                    sickrage.LOGGER.warning("Invalid api key. Check your settings")
 
                 elif '0 results matched your terms' in parsedJSON.get('notice'):
                     return True
 
                 else:
-                    logging.debug("Unknown error: %s" % description_text)
+                    sickrage.LOGGER.debug("Unknown error: %s" % description_text)
                     return False
 
             return True
@@ -110,8 +109,8 @@ class OmgwtfnzbsProvider(NZBProvider):
             params[b'retention'] = retention
 
         searchURL = 'https://api.omgwtfnzbs.org/json/?' + urllib.urlencode(params)
-        logging.debug("Search string: %s" % params)
-        logging.debug("Search URL: %s" % searchURL)
+        sickrage.LOGGER.debug("Search string: %s" % params)
+        sickrage.LOGGER.debug("Search URL: %s" % searchURL)
 
         parsedJSON = self.getURL(searchURL, json=True)
         if not parsedJSON:
@@ -122,7 +121,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
             for item in parsedJSON:
                 if 'release' in item and 'getnzb' in item:
-                    logging.debug("Found result: %s " % item.get('title'))
+                    sickrage.LOGGER.debug("Found result: %s " % item.get('title'))
                     results.append(item)
 
             return results
@@ -182,6 +181,6 @@ class OmgwtfnzbsCache(TVCache):
 
         rss_url = 'https://rss.omgwtfnzbs.org/rss-download.php?' + urllib.urlencode(params)
 
-        logging.debug("Cache update URL: %s" % rss_url)
+        sickrage.LOGGER.debug("Cache update URL: %s" % rss_url)
 
         return self.getRSSFeed(rss_url)

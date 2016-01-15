@@ -18,10 +18,10 @@
 
 from __future__ import unicode_literals
 
-import logging
 import re
 import traceback
 
+import sickrage
 from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
 from sickrage.providers import TorrentProvider
@@ -73,13 +73,13 @@ class HoundDawgsProvider(TorrentProvider):
         self.getURL(self.urls['base_url'], timeout=30)
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            logging.warning("Unable to connect to provider")
+            sickrage.LOGGER.warning("Unable to connect to provider")
             return False
 
         if re.search('Dit brugernavn eller kodeord er forkert.', response) \
                 or re.search('<title>Login :: HoundDawgs</title>', response) \
                 or re.search('Dine cookies er ikke aktiveret.', response):
-            logging.warning("Invalid username or password. Check your settings")
+            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -93,11 +93,11 @@ class HoundDawgsProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    logging.debug("Search string: %s " % search_string)
+                    sickrage.LOGGER.debug("Search string: %s " % search_string)
 
                 self.search_params[b'searchstr'] = search_string
 
@@ -114,7 +114,7 @@ class HoundDawgsProvider(TorrentProvider):
                         result_table = html.find('table', {'id': 'torrent_table'})
 
                         if not result_table:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            sickrage.LOGGER.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         result_tbody = result_table.find('tbody')
@@ -159,17 +159,17 @@ class HoundDawgsProvider(TorrentProvider):
                             # Filter unseeded torrent
                             # if seeders < self.minseed or leechers < self.minleech:
                             #    if mode is not 'RSS':
-                            #        logging.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
+                            #        sickrage.LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                             #    continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                logging.debug("Found result: %s " % title)
+                                sickrage.LOGGER.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.LOGGER.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

@@ -1,7 +1,7 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    import clients
+    import sickrage.clients
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/configSearch.js?${sbPID}"></script>

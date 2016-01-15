@@ -19,9 +19,9 @@
 
 from __future__ import unicode_literals
 
-import logging
 from urllib import quote_plus
 
+import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.providers import TorrentProvider
 
@@ -52,14 +52,14 @@ class BitCannonProvider(TorrentProvider):
 
         trackers = (self.getURL(self.urls['trackers'], json=True) or {}).get('Trackers', [])
         if not trackers:
-            logging.info('Could not get tracker list from BitCannon, aborting search')
+            sickrage.LOGGER.info('Could not get tracker list from BitCannon, aborting search')
             return results
 
         for mode in search_strings.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 searchURL = self.urls['search'] + search_string
-                logging.debug("Search URL: %s" % searchURL)
+                sickrage.LOGGER.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL, json=True)
                 for item in data or []:
                     if 'tv' not in (item.get('Category') or '').lower():
@@ -78,7 +78,7 @@ class BitCannonProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            logging.debug(
+                            sickrage.LOGGER.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue
@@ -91,7 +91,7 @@ class BitCannonProvider(TorrentProvider):
 
                     item = title, download_url, size, seeders, leechers
                     if mode is not 'RSS':
-                        logging.debug("Found result: %s " % title)
+                        sickrage.LOGGER.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 

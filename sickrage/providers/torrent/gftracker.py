@@ -18,10 +18,10 @@
 
 from __future__ import unicode_literals
 
-import logging
 import re
 import traceback
 
+import sickrage
 from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
@@ -73,11 +73,11 @@ class GFTrackerProvider(TorrentProvider):
         self.cookies = self.headers.get('Set-Cookie')
 
         if not response:
-            logging.warning("Unable to connect to provider")
+            sickrage.LOGGER.warning("Unable to connect to provider")
             return False
 
         if re.search('Username or password incorrect', response):
-            logging.warning("Invalid username or password. Check your settings")
+            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -91,14 +91,14 @@ class GFTrackerProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    logging.debug("Search string: %s " % search_string)
+                    sickrage.LOGGER.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (self.categories, search_string)
-                logging.debug("Search URL: %s" % searchURL)
+                sickrage.LOGGER.debug("Search URL: %s" % searchURL)
 
                 # Set cookies from response
                 self.headers.update({'Cookie': self.cookies})
@@ -114,7 +114,7 @@ class GFTrackerProvider(TorrentProvider):
 
                         # Continue only if at least one release is found
                         if len(torrent_rows) < 1:
-                            logging.debug("Data returned from provider does not contain any torrents")
+                            sickrage.LOGGER.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for result in torrent_rows[1:]:
@@ -147,19 +147,19 @@ class GFTrackerProvider(TorrentProvider):
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
-                                    logging.debug(
+                                    sickrage.LOGGER.debug(
                                             "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                     title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                logging.debug("Found result: %s " % title)
+                                sickrage.LOGGER.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 
                 except Exception as e:
-                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.LOGGER.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

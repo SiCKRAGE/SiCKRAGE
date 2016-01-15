@@ -20,7 +20,6 @@ from __future__ import unicode_literals
 
 import datetime
 import io
-import logging
 import os
 from xml.etree.ElementTree import Element, ElementTree, SubElement
 
@@ -29,7 +28,6 @@ from mediabrowser import MediaBrowserMetadata
 from sickrage.core.common import dateFormat
 from sickrage.core.exceptions import ShowNotFoundException
 from sickrage.core.helpers import replaceExtension, indentXML, chmodAsParent
-from sickrage.indexers.indexer_api import indexerApi
 from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
 
@@ -99,7 +97,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
         """
 
         indexer_lang = show_obj.lang
-        lINDEXER_API_PARMS = indexerApi(show_obj.indexer).api_params.copy()
+        lINDEXER_API_PARMS = sickrage.INDEXER_API(show_obj.indexer).api_params.copy()
 
         lINDEXER_API_PARMS[b'actors'] = True
 
@@ -109,7 +107,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
         if show_obj.dvdorder != 0:
             lINDEXER_API_PARMS[b'dvdorder'] = True
 
-        t = indexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+        t = sickrage.INDEXER_API(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
         rootNode = Element("details")
         tv_node = SubElement(rootNode, "movie")
@@ -120,16 +118,16 @@ class Mede8erMetadata(MediaBrowserMetadata):
         try:
             myShow = t[int(show_obj.indexerid)]
         except indexer_shownotfound:
-            logging.error("Unable to find show with id " + str(show_obj.indexerid) + " on tvdb, skipping it")
+            sickrage.LOGGER.error("Unable to find show with id " + str(show_obj.indexerid) + " on tvdb, skipping it")
             raise
 
         except indexer_error:
-            logging.error("TVDB is down, can't use its data to make the NFO")
+            sickrage.LOGGER.error("TVDB is down, can't use its data to make the NFO")
             raise
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
-            logging.info("Incomplete info for show with id " + str(show_obj.indexerid) + " on " + indexerApi(
+            sickrage.LOGGER.info("Incomplete info for show with id " + str(show_obj.indexerid) + " on " + sickrage.INDEXER_API(
                     show_obj.indexer).name + ", skipping it")
             return False
 
@@ -219,7 +217,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
-            lINDEXER_API_PARMS = indexerApi(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickrage.INDEXER_API(ep_obj.show.indexer).api_params.copy()
 
             if indexer_lang and not indexer_lang == sickrage.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS[b'language'] = indexer_lang
@@ -227,12 +225,12 @@ class Mede8erMetadata(MediaBrowserMetadata):
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS[b'dvdorder'] = True
 
-            t = indexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickrage.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            logging.error("Unable to connect to TVDB while creating meta files - skipping - {}".format(e))
+            sickrage.LOGGER.error("Unable to connect to TVDB while creating meta files - skipping - {}".format(e))
             return False
 
         rootNode = Element("details")
@@ -248,8 +246,8 @@ class Mede8erMetadata(MediaBrowserMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                logging.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
-                             (curEpToWrite.season, curEpToWrite.episode, indexerApi(ep_obj.show.indexer).name))
+                sickrage.LOGGER.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
+                             (curEpToWrite.season, curEpToWrite.episode, sickrage.INDEXER_API(ep_obj.show.indexer).name))
                 return None
 
             if curEpToWrite == ep_obj:
@@ -371,11 +369,11 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
         try:
             if not os.path.isdir(nfo_file_dir):
-                logging.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
+                sickrage.LOGGER.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
                 chmodAsParent(nfo_file_dir)
 
-            logging.debug("Writing show nfo file to " + nfo_file_path)
+            sickrage.LOGGER.debug("Writing show nfo file to " + nfo_file_path)
 
             nfo_file = io.open(nfo_file_path, 'wb')
 
@@ -383,7 +381,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
             nfo_file.close()
             chmodAsParent(nfo_file_path)
         except IOError as e:
-            logging.error(
+            sickrage.LOGGER.error(
                     "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 
@@ -416,11 +414,11 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
         try:
             if not os.path.isdir(nfo_file_dir):
-                logging.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
+                sickrage.LOGGER.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
                 chmodAsParent(nfo_file_dir)
 
-            logging.debug("Writing episode nfo file to " + nfo_file_path)
+            sickrage.LOGGER.debug("Writing episode nfo file to " + nfo_file_path)
 
             nfo_file = io.open(nfo_file_path, 'wb')
 
@@ -428,7 +426,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
             nfo_file.close()
             chmodAsParent(nfo_file_path)
         except IOError as e:
-            logging.error(
+            sickrage.LOGGER.error(
                     "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 

@@ -18,8 +18,7 @@
 
 from __future__ import unicode_literals
 
-import logging
-
+import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
 from sickrage.providers import TorrentProvider
@@ -52,7 +51,7 @@ class ShazbatProvider(TorrentProvider):
         if not self.passkey:
             self._checkAuth()
         elif not (data[b'entries'] and data[b'feed']):
-            logging.warning("Invalid username or password. Check your settings")
+            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
 
         return True
 
@@ -69,7 +68,7 @@ class ShazbatCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         rss_url = self.provider.urls[b'base_url'] + 'rss/recent?passkey=' + self.provider.passkey + '&fname=true'
-        logging.debug("Cache update URL: %s" % rss_url)
+        sickrage.LOGGER.debug("Cache update URL: %s" % rss_url)
 
         return self.getRSSFeed(rss_url)
 

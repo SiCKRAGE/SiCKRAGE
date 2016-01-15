@@ -22,7 +22,6 @@
 from __future__ import unicode_literals
 
 import json
-import logging
 
 import certifi
 import requests
@@ -98,7 +97,7 @@ class TraktAPI():
             headers = self.headers
 
         if None == sickrage.TRAKT_ACCESS_TOKEN:
-            logging.warning('You must get a Trakt TOKEN. Check your Trakt settings')
+            sickrage.LOGGER.warning('You must get a Trakt TOKEN. Check your Trakt settings')
             return {}
 
         headers['Authorization'] = 'Bearer ' + sickrage.TRAKT_ACCESS_TOKEN
@@ -116,27 +115,27 @@ class TraktAPI():
             code = getattr(e.response, 'status_code', None)
             if not code:
                 if 'timed out' in e:
-                    logging.warning('Timeout connecting to Trakt. Try to increase timeout value in Trakt settings')
+                    sickrage.LOGGER.warning('Timeout connecting to Trakt. Try to increase timeout value in Trakt settings')
                 # This is pretty much a fatal error if there is no status_code
                 # It means there basically was no response at all                    
                 else:
-                    logging.debug('Could not connect to Trakt. Error: {0}'.format(e))
+                    sickrage.LOGGER.debug('Could not connect to Trakt. Error: {0}'.format(e))
             elif code == 502:
                 # Retry the request, cloudflare had a proxying issue
-                logging.debug('Retrying trakt api request: %s' % path)
+                sickrage.LOGGER.debug('Retrying trakt api request: %s' % path)
                 return self.traktRequest(path, data, headers, url, method)
             elif code == 401:
                 if self.traktToken(refresh=True, count=count):
                     return self.traktRequest(path, data, headers, url, method)
                 else:
-                    logging.warning('Unauthorized. Please check your Trakt settings')
+                    sickrage.LOGGER.warning('Unauthorized. Please check your Trakt settings')
             elif code in (500, 501, 503, 504, 520, 521, 522):
                 # http://docs.trakt.apiary.io/#introduction/status-codes
-                logging.debug('Trakt may have some issues and it\'s unavailable. Try again later please')
+                sickrage.LOGGER.debug('Trakt may have some issues and it\'s unavailable. Try again later please')
             elif code == 404:
-                logging.debug('Trakt error (404) the resource does not exist: %s' % url + path)
+                sickrage.LOGGER.debug('Trakt error (404) the resource does not exist: %s' % url + path)
             else:
-                logging.error('Could not connect to Trakt. Code error: {0}'.format(code))
+                sickrage.LOGGER.error('Could not connect to Trakt. Code error: {0}'.format(code))
             return {}
 
         # check and confirm trakt call did not fail

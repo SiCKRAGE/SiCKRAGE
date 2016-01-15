@@ -5,6 +5,7 @@
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import statusStrings, Quality
     from sickrage.core.exceptions import scene_exceptions
+
 %>
 
 <%block name="metas">
@@ -98,7 +99,7 @@
                                     <select name="indexerLang" id="indexerLangSelect"
                                             class="form-control form-control-inline input-sm bfh-languages"
                                             data-language="${show.lang}"
-                                            data-available="${','.join(indexerApi().config[b'valid_languages'])}"></select>
+                                            data-available="${','.join(sickrage.INDEXER_API().config[b'valid_languages'])}"></select>
                                     <div class="clear-left"><p>This only applies to episode filenames and the contents of metadata files.</p></div>
                                 </span>
                             </label>

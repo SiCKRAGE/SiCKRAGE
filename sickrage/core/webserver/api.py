@@ -22,7 +22,6 @@ from __future__ import unicode_literals
 
 import datetime
 import io
-import logging
 import os
 import re
 import threading
@@ -49,7 +48,6 @@ from sickrage.core.exceptions import CantUpdateShowException, \
     ShowDirectoryNotFoundException
 from sickrage.core.helpers import chmodAsParent, findCertainShow, makeDir, \
     pretty_filesize, sanitizeFileName, srdatetime, tryInt
-from sickrage.core.logger import SRLogger
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
@@ -62,7 +60,6 @@ from sickrage.core.show.coming_episodes import ComingEpisodes
 from sickrage.core.show.history import History
 from sickrage.core.ui import notifications
 from sickrage.core.updaters import tz_updater
-from sickrage.indexers.indexer_api import indexerApi
 from sickrage.indexers.indexer_exceptions import indexer_error, \
     indexer_showincomplete, indexer_shownotfound
 
@@ -102,7 +99,7 @@ class KeyHandler(RequestHandler):
 
             self.finish({'success': api_key is not None, 'api_key': api_key})
         except Exception:
-            logging.error('Failed doing key request: %s' % (traceback.format_exc()))
+            sickrage.LOGGER.error('Failed doing key request: %s' % (traceback.format_exc()))
             self.finish({'success': False, 'error': 'Failed returning results'})
 
 
@@ -134,7 +131,7 @@ class ApiHandler(RequestHandler):
         }
 
         accessMsg = "API :: " + self.request.remote_ip + " - gave correct API KEY. ACCESS GRANTED"
-        logging.debug(accessMsg)
+        sickrage.LOGGER.debug(accessMsg)
 
         # set the original call_dispatcher as the local _call_dispatcher
         _call_dispatcher = self.call_dispatcher
@@ -148,7 +145,7 @@ class ApiHandler(RequestHandler):
         try:
             outDict = yield self.async_call(_call_dispatcher, *args, **kwargs)
         except Exception as e:  # real internal error oohhh nooo :(
-            logging.error("API :: {}".format(e))
+            sickrage.LOGGER.error("API :: {}".format(e))
             errorData = {
                 "error_msg": e,
                 "args": args,
@@ -174,7 +171,7 @@ class ApiHandler(RequestHandler):
         try:
             return recursive_unicode(function(*args, **kwargs))
         except Exception:
-            logging.error('Failed doing webui callback: {}'.format(traceback.format_exc()))
+            sickrage.LOGGER.error('Failed doing webui callback: {}'.format(traceback.format_exc()))
             raise
 
     def _out_as_image(self, _dict):
@@ -189,7 +186,7 @@ class ApiHandler(RequestHandler):
             if callback is not None:
                 out = callback + '(' + out + ');'  # wrap with JSONP call if requested
         except Exception as e:  # if we fail to generate the output fake an error
-            logging.debug("API :: " + traceback.format_exc())
+            sickrage.LOGGER.debug("API :: " + traceback.format_exc())
             out = '{"result": "%s", "message": "error while composing output: %s"}' % \
                   (result_type_map[RESULT_ERROR], e)
         return out
@@ -200,8 +197,8 @@ class ApiHandler(RequestHandler):
             or calls the TVDBShorthandWrapper when the first args element is a number
             or returns an error that there is no such cmd
         """
-        logging.debug("API :: all args: '" + str(args) + "'")
-        logging.debug("API :: all kwargs: '" + str(kwargs) + "'")
+        sickrage.LOGGER.debug("API :: all args: '" + str(args) + "'")
+        sickrage.LOGGER.debug("API :: all kwargs: '" + str(kwargs) + "'")
 
         try:
             cmds = kwargs.pop('cmd', args[0] if len(args) else "").split('|') or []
@@ -216,7 +213,7 @@ class ApiHandler(RequestHandler):
             if len(cmd.split("_")) > 1:  # was a index used for this cmd ?
                 cmd, cmdIndex = cmd.split("_")  # this gives us the clear cmd and the index
 
-            logging.debug("API :: " + cmd + ": curKwargs " + str(curKwargs))
+            sickrage.LOGGER.debug("API :: " + cmd + ": curKwargs " + str(curKwargs))
             if not (multiCmds and cmd in ('show.getbanner', 'show.getfanart', 'show.getnetworklogo',
                                           'show.getposter')):  # skip these cmd while chaining
                 try:
@@ -487,7 +484,7 @@ class ApiCall(ApiHandler):
         elif arg_type == "ignore":
             pass
         else:
-            logging.error('API :: Invalid param type: "%s" can not be checked. Ignoring it.' % str(arg_type))
+            sickrage.LOGGER.error('API :: Invalid param type: "%s" can not be checked. Ignoring it.' % str(arg_type))
 
         if error:
             # this is a real ApiError !!
@@ -993,7 +990,7 @@ class CMD_EpisodeSetStatus(ApiCall):
                 cur_backlog_queue_item = BacklogQueueItem(showObj, segment)
                 sickrage.SEARCHQUEUE.add_item(cur_backlog_queue_item)  # @UndefinedVariable
 
-                logging.info("API :: Starting backlog for " + showObj.name + " season " + str(
+                sickrage.LOGGER.info("API :: Starting backlog for " + showObj.name + " season " + str(
                         season) + " because some episodes were set to WANTED")
 
             extra_msg = " Backlog started"
@@ -1274,7 +1271,7 @@ class CMD_Logs(ApiCall):
     def run(self):
         """ Get the logs """
         # 10 = Debug / 20 = Info / 30 = Warning / 40 = Error
-        minLevel = SRLogger.logLevels[str(self.min_level).upper()]
+        minLevel = sickrage.LOGGER.logLevels[str(self.min_level).upper()]
 
         data = []
         if os.path.isfile(sickrage.LOG_FILE):
@@ -1295,11 +1292,11 @@ class CMD_Logs(ApiCall):
 
             if match:
                 level = match.group(7)
-                if level not in SRLogger.logLevels:
+                if level not in sickrage.LOGGER.logLevels:
                     lastLine = False
                     continue
 
-                if SRLogger.logLevels[level] >= minLevel:
+                if sickrage.LOGGER.logLevels[level] >= minLevel:
                     lastLine = True
                     finalData.append(x.rstrip("\n"))
                 else:
@@ -1666,7 +1663,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        self.valid_languages = indexerApi().config[b'langabbv_to_id']
+        self.valid_languages = sickrage.INDEXER_API().config[b'langabbv_to_id']
         # required
         # optional
         self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
@@ -1684,8 +1681,8 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
         lang_id = self.valid_languages[self.lang]
 
         if self.name and not self.indexerid:  # only name was given
-            for _indexer in indexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
-                lINDEXER_API_PARMS = indexerApi(_indexer).api_params.copy()
+            for _indexer in sickrage.INDEXER_API().indexers if self.indexer == 0 else [int(self.indexer)]:
+                lINDEXER_API_PARMS = sickrage.INDEXER_API(_indexer).api_params.copy()
 
                 if self.lang and not self.lang == sickrage.INDEXER_DEFAULT_LANGUAGE:
                     lINDEXER_API_PARMS[b'language'] = self.lang
@@ -1693,12 +1690,12 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                 lINDEXER_API_PARMS[b'actors'] = False
                 lINDEXER_API_PARMS[b'custom_ui'] = AllShowsListUI
 
-                t = indexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
+                t = sickrage.INDEXER_API(_indexer).indexer(**lINDEXER_API_PARMS)
 
                 try:
                     apiData = t[str(self.name).encode()]
                 except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    logging.warning("API :: Unable to find show with id " + str(self.indexerid))
+                    sickrage.LOGGER.warning("API :: Unable to find show with id " + str(self.indexerid))
                     continue
 
                 for curSeries in apiData:
@@ -1710,24 +1707,24 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
             return _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})
 
         elif self.indexerid:
-            for _indexer in indexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
-                lINDEXER_API_PARMS = indexerApi(_indexer).api_params.copy()
+            for _indexer in sickrage.INDEXER_API().indexers if self.indexer == 0 else [int(self.indexer)]:
+                lINDEXER_API_PARMS = sickrage.INDEXER_API(_indexer).api_params.copy()
 
                 if self.lang and not self.lang == sickrage.INDEXER_DEFAULT_LANGUAGE:
                     lINDEXER_API_PARMS[b'language'] = self.lang
 
                 lINDEXER_API_PARMS[b'actors'] = False
 
-                t = indexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
+                t = sickrage.INDEXER_API(_indexer).indexer(**lINDEXER_API_PARMS)
 
                 try:
                     myShow = t[int(self.indexerid)]
                 except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    logging.warning("API :: Unable to find show with id " + str(self.indexerid))
+                    sickrage.LOGGER.warning("API :: Unable to find show with id " + str(self.indexerid))
                     return _responds(RESULT_SUCCESS, {"results": [], "langid": lang_id})
 
                 if not myShow.data[b'seriesname']:
-                    logging.debug(
+                    sickrage.LOGGER.debug(
                             "API :: Found show with indexerid: " + str(
                                     self.indexerid) + ", however it contained no show name")
                     return _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
@@ -2112,7 +2109,7 @@ class CMD_ShowAddNew(ApiCall):
     }
 
     def __init__(self, application, request, *args, **kwargs):
-        self.valid_languages = indexerApi().config[b'langabbv_to_id']
+        self.valid_languages = sickrage.INDEXER_API().config[b'langabbv_to_id']
         # required
         self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         # optional
@@ -2239,11 +2236,11 @@ class CMD_ShowAddNew(ApiCall):
 
         # don't create show dir if config says not to
         if sickrage.ADD_SHOWS_WO_DIR:
-            logging.info("Skipping initial creation of " + showPath + " due to config.ini setting")
+            sickrage.LOGGER.info("Skipping initial creation of " + showPath + " due to config.ini setting")
         else:
             dir_exists = makeDir(showPath)
             if not dir_exists:
-                logging.error("API :: Unable to create the folder " + showPath + ", can't add the show")
+                sickrage.LOGGER.error("API :: Unable to create the folder " + showPath + ", can't add the show")
                 return _responds(RESULT_FAILURE, {"path": showPath},
                                  "Unable to create the folder " + showPath + ", can't add the show")
             else:
@@ -2845,7 +2842,7 @@ class CMD_ShowUpdate(ApiCall):
             sickrage.SHOWQUEUE.updateShow(showObj, True)  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
-            logging.debug("API::Unable to update show: {0}".format(str(e)))
+            sickrage.LOGGER.debug("API::Unable to update show: {0}".format(str(e)))
             return _responds(RESULT_FAILURE, msg="Unable to update " + str(showObj.name))
 
 

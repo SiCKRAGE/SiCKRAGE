@@ -103,7 +103,7 @@
         </div><br>
 
 % if enable_anime_options:
-    <% import core.blackandwhitelist %>
+    <% import sickrage.core.blackandwhitelist %>
     <%include file="/inc_blackwhitelist.mako"/>
 % else:
         <input type="hidden" name="anime" id="anime" value="0" />

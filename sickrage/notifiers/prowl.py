@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import socket
 from httplib import HTTPException, HTTPSConnection
 from urllib import urlencode
@@ -76,7 +75,7 @@ class ProwlNotifier:
 
         title = "SiCKRAGE"
 
-        logging.debug("PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (
+        sickrage.LOGGER.debug("PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (
         event, message, prowl_priority, prowl_api))
 
         http_handler = HTTPSConnection("api.prowlapp.com")
@@ -93,17 +92,17 @@ class ProwlNotifier:
                                  headers={'Content-type': "application/x-www-form-urlencoded"},
                                  body=urlencode(data))
         except (SSLError, HTTPException, socket.error):
-            logging.error("Prowl notification failed.")
+            sickrage.LOGGER.error("Prowl notification failed.")
             return False
         response = http_handler.getresponse()
         request_status = response.status
 
         if request_status == 200:
-            logging.info("Prowl notifications sent.")
+            sickrage.LOGGER.info("Prowl notifications sent.")
             return True
         elif request_status == 401:
-            logging.error("Prowl auth failed: %s" % response.reason)
+            sickrage.LOGGER.error("Prowl auth failed: %s" % response.reason)
             return False
         else:
-            logging.error("Prowl notification failed.")
+            sickrage.LOGGER.error("Prowl notification failed.")
             return False

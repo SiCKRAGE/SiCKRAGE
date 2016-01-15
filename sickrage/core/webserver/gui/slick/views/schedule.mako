@@ -6,6 +6,7 @@
 
     import sickrage
     from sickrage.core.helpers import anon_url, srdatetime
+
     from sickrage.core.media.util import showImage
 %>
 <%block name="scripts">
@@ -181,11 +182,11 @@
                 % if cur_result[b'imdb_id']:
                     <a href="${anon_url('http://www.imdb.com/title/', cur_result[b'imdb_id'])}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false" title="http://www.imdb.com/title/${cur_result[b'imdb_id']}"><img alt="[imdb]" height="16" width="16" src="${srRoot}/images/imdb.png" /></a>
                 % endif
-                <a href="${anon_url(indexerApi(cur_indexer).config[b'show_url'], cur_result[b'showid'])}"
+                <a href="${anon_url(sickrage.INDEXER_API(cur_indexer).config[b'show_url'], cur_result[b'showid'])}"
                    rel="noreferrer" onclick="window.open(this.href, '_blank'); return false"
-                   title="${indexerApi(cur_indexer).config[b'show_url']}${cur_result[b'showid']}">
-                    <img alt="${indexerApi(cur_indexer).name}" height="16" width="16"
-                         src="${srRoot}/images/${indexerApi(cur_indexer).config[b'icon']}"/>
+                   title="${sickrage.INDEXER_API(cur_indexer).config[b'show_url']}${cur_result[b'showid']}">
+                    <img alt="${sickrage.INDEXER_API(cur_indexer).name}" height="16" width="16"
+                         src="${srRoot}/images/${sickrage.INDEXER_API(cur_indexer).config[b'icon']}"/>
                 </a>
             </td>
 
@@ -338,11 +339,11 @@
                         % if cur_result[b'imdb_id']:
                             <a href="${anon_url('http://www.imdb.com/title/', cur_result[b'imdb_id'])}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false" title="http://www.imdb.com/title/${cur_result[b'imdb_id']}"><img alt="[imdb]" height="16" width="16" src="${srRoot}/images/imdb.png" /></a>
                         % endif
-                        <a href="${anon_url(indexerApi(cur_indexer).config[b'show_url'], cur_result[b'showid'])}"
+                        <a href="${anon_url(sickrage.INDEXER_API(cur_indexer).config[b'show_url'], cur_result[b'showid'])}"
                            rel="noreferrer" onclick="window.open(this.href, '_blank'); return false"
-                           title="${indexerApi(cur_indexer).config[b'show_url']}"><img
-                                alt="${indexerApi(cur_indexer).name}" height="16" width="16"
-                                src="${srRoot}/images/${indexerApi(cur_indexer).config[b'icon']}"/></a>
+                           title="${sickrage.INDEXER_API(cur_indexer).config[b'show_url']}"><img
+                                alt="${sickrage.INDEXER_API(cur_indexer).name}" height="16" width="16"
+                                src="${srRoot}/images/${sickrage.INDEXER_API(cur_indexer).config[b'icon']}"/></a>
                         <span><a href="${srRoot}/home/searchEpisode?show=${cur_result[b'showid']}&amp;season=${cur_result[b'season']}&amp;episode=${cur_result[b'episode']}" title="Manual Search" id="forceUpdate-${cur_result[b'showid']}" class="epSearch forceUpdate"><img alt="[search]" height="16" width="16" src="${srRoot}/images/search16.png" id="forceUpdateImage-${cur_result[b'showid']}" /></a></span>
                     </span>
                 </div>
@@ -445,10 +446,10 @@
         </tbody>
         </table>
     % endfor
-
+    </div>
 <!-- end calender view //-->
 </div>
 % endif
-
+</div>
 <div class="clearfix"></div>
 </%block>

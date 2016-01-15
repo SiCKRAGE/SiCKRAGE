@@ -21,7 +21,6 @@
 from __future__ import unicode_literals
 
 import json
-import logging
 import traceback
 
 import requests
@@ -40,12 +39,12 @@ class PushbulletNotifier(object):
         pass
 
     def test_notify(self, pushbullet_api):
-        logging.debug("Sending a test Pushbullet notification.")
+        sickrage.LOGGER.debug("Sending a test Pushbullet notification.")
         return self._sendPushbullet(pushbullet_api, event=self.TEST_EVENT,
                                     message="Testing Pushbullet settings from SiCKRAGE")
 
     def get_devices(self, pushbullet_api):
-        logging.debug("Testing Pushbullet authentication and retrieving the device list.")
+        sickrage.LOGGER.debug("Testing Pushbullet authentication and retrieving the device list.")
         return self._sendPushbullet(pushbullet_api)
 
     def notify_snatch(self, ep_name):
@@ -77,11 +76,11 @@ class PushbulletNotifier(object):
         pushbullet_api = pushbullet_api or sickrage.PUSHBULLET_API
         pushbullet_device = pushbullet_device or sickrage.PUSHBULLET_DEVICE
 
-        logging.debug("Pushbullet event: %r" % event)
-        logging.debug("Pushbullet message: %r" % message)
-        logging.debug("Pushbullet api: %r" % pushbullet_api)
-        logging.debug("Pushbullet devices: %r" % pushbullet_device)
-        logging.debug("Pushbullet notification type: %r" % 'note' if event else 'None')
+        sickrage.LOGGER.debug("Pushbullet event: %r" % event)
+        sickrage.LOGGER.debug("Pushbullet message: %r" % message)
+        sickrage.LOGGER.debug("Pushbullet api: %r" % pushbullet_api)
+        sickrage.LOGGER.debug("Pushbullet devices: %r" % pushbullet_device)
+        sickrage.LOGGER.debug("Pushbullet notification type: %r" % 'note' if event else 'None')
 
         url = 'https://api.pushbullet.com/v2/%s' % ('devices', 'pushes')[event is not None]
 
@@ -98,22 +97,22 @@ class PushbulletNotifier(object):
         try:
             response = self.session.request(method, url, data=data, headers=headers)
         except Exception:
-            logging.debug('Pushbullet authorization failed with exception: %r' % traceback.format_exc())
+            sickrage.LOGGER.debug('Pushbullet authorization failed with exception: %r' % traceback.format_exc())
             return False
 
         if response.status_code == 410:
-            logging.debug('Pushbullet authorization failed')
+            sickrage.LOGGER.debug('Pushbullet authorization failed')
             return False
 
         if response.status_code != 200:
-            logging.debug('Pushbullet call failed with error code %r' % response.status_code)
+            sickrage.LOGGER.debug('Pushbullet call failed with error code %r' % response.status_code)
             return False
 
-        logging.debug("Pushbullet response: %r" % response.text)
+        sickrage.LOGGER.debug("Pushbullet response: %r" % response.text)
 
         if not response.text:
-            logging.error("Pushbullet notification failed.")
+            sickrage.LOGGER.error("Pushbullet notification failed.")
             return False
 
-        logging.debug("Pushbullet notifications sent.")
+        sickrage.LOGGER.debug("Pushbullet notifications sent.")
         return (True, response.text)[event is self.TEST_EVENT or event is None]

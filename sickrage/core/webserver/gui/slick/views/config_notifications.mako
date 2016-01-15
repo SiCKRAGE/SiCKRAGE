@@ -3,6 +3,7 @@
     import re
     import sickrage
     from sickrage.core.helpers import anon_url
+
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
 %>
@@ -1784,8 +1785,8 @@
                                     <span class="component-title">Default indexer</span>
                                     <span class="component-desc">
                                         <select id="trakt_default_indexer" name="trakt_default_indexer" class="form-control input-sm">
-                                            % for indexer in indexerApi().indexers:
-                                                <option value="${indexer}" ${('', 'selected="selected"')[sickrage.TRAKT_DEFAULT_INDEXER == indexer]}>${indexerApi().indexers[indexer]}</option>
+                                            % for indexer in sickrage.INDEXER_API().indexers:
+                                                <option value="${indexer}" ${('', 'selected="selected"')[sickrage.TRAKT_DEFAULT_INDEXER == indexer]}>${sickrage.INDEXER_API().indexers[indexer]}</option>
                                             % endfor
                                         </select>
                                     </span>

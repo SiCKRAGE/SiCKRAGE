@@ -19,7 +19,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import socket
 from httplib import HTTPException, HTTPSConnection
 from ssl import SSLError
@@ -69,9 +68,9 @@ class PushalotNotifier:
         if pushalot_authorizationtoken == None:
             pushalot_authorizationtoken = pushalot_authorizationtoken
 
-        logging.debug("Pushalot event: " + event)
-        logging.debug("Pushalot message: " + message)
-        logging.debug("Pushalot api: " + pushalot_authorizationtoken)
+        sickrage.LOGGER.debug("Pushalot event: " + event)
+        sickrage.LOGGER.debug("Pushalot message: " + message)
+        sickrage.LOGGER.debug("Pushalot api: " + pushalot_authorizationtoken)
 
         http_handler = HTTPSConnection("pushalot.com")
 
@@ -85,17 +84,17 @@ class PushalotNotifier:
                                  headers={'Content-type': "application/x-www-form-urlencoded"},
                                  body=urlencode(data))
         except (SSLError, HTTPException, socket.error):
-            logging.error("Pushalot notification failed.")
+            sickrage.LOGGER.error("Pushalot notification failed.")
             return False
         response = http_handler.getresponse()
         request_status = response.status
 
         if request_status == 200:
-            logging.debug("Pushalot notifications sent.")
+            sickrage.LOGGER.debug("Pushalot notifications sent.")
             return True
         elif request_status == 410:
-            logging.error("Pushalot auth failed: %s" % response.reason)
+            sickrage.LOGGER.error("Pushalot auth failed: %s" % response.reason)
             return False
         else:
-            logging.error("Pushalot notification failed.")
+            sickrage.LOGGER.error("Pushalot notification failed.")
             return False

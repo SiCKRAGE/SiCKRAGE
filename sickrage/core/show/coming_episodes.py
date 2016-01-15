@@ -65,8 +65,12 @@ class ComingEpisodes:
         today = date.today().toordinal()
         next_week = (date.today() + timedelta(days=7)).toordinal()
         recently = (date.today() - timedelta(days=sickrage.COMING_EPS_MISSED_RANGE)).toordinal()
-        qualities_list = Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER + Quality.ARCHIVED + [
-            Quality.IGNORED]
+        qualities_list = Quality.DOWNLOADED + \
+                         Quality.SNATCHED + \
+                         Quality.SNATCHED_BEST + \
+                         Quality.SNATCHED_PROPER + \
+                         Quality.ARCHIVED + \
+                         Quality.IGNORED
 
         fields_to_select = ', '.join(
                 ['airdate', 'airs', 'description', 'episode', 'imdb_id', 'e.indexer', 'indexer_id', 'name', 'network',

@@ -1,10 +1,30 @@
+#!/usr/bin/env python2
+
+# Author: echel0n <sickrage.tv@gmail.com>
+# URL: http://www.github.com/sickragetv/sickrage/
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
 from __future__ import unicode_literals
 
-import logging
 import re
 
 import requests
 
+import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.providers import TorrentProvider
 
@@ -55,11 +75,11 @@ class TorrentDayProvider(TorrentProvider):
 
             response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
             if not response:
-                logging.warning("Unable to connect to provider")
+                sickrage.LOGGER.warning("Unable to connect to provider")
                 return False
 
             if re.search('You tried too often', response):
-                logging.warning("Too many login access attempts")
+                sickrage.LOGGER.warning("Too many login access attempts")
                 return False
 
             try:
@@ -74,7 +94,7 @@ class TorrentDayProvider(TorrentProvider):
             except:
                 pass
 
-            logging.warning("Unable to obtain cookie")
+            sickrage.LOGGER.warning("Unable to obtain cookie")
             return False
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
@@ -86,11 +106,11 @@ class TorrentDayProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    logging.debug("Search string: %s " % search_string)
+                    sickrage.LOGGER.debug("Search string: %s " % search_string)
 
                 search_string = '+'.join(search_string.split())
 
@@ -102,13 +122,13 @@ class TorrentDayProvider(TorrentProvider):
 
                 parsedJSON = self.getURL(self.urls['search'], post_data=post_data, json=True)
                 if not parsedJSON:
-                    logging.debug("No data returned from provider")
+                    sickrage.LOGGER.debug("No data returned from provider")
                     continue
 
                 try:
                     torrents = parsedJSON.get('Fs', [])[0].get('Cn', {}).get('torrents', [])
                 except Exception:
-                    logging.debug("Data returned from provider does not contain any torrents")
+                    sickrage.LOGGER.debug("Data returned from provider does not contain any torrents")
                     continue
 
                 for torrent in torrents:
@@ -126,14 +146,14 @@ class TorrentDayProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            logging.debug(
+                            sickrage.LOGGER.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
                                             title, seeders, leechers))
                         continue
 
                     item = title, download_url, size, seeders, leechers
                     if mode is not 'RSS':
-                        logging.debug("Found result: %s " % title)
+                        sickrage.LOGGER.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 

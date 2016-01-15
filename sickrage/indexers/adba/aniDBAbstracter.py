@@ -18,7 +18,7 @@
 from __future__ import unicode_literals, with_statement
 
 fileInfo
-import logging
+
 import re
 import string
 from aniDBfileInfo import read_anidb_xml
@@ -285,7 +285,7 @@ class Episode(aniDBabstractObject):
     def _calculate_file_stuff(self, filePath):
         if not filePath:
             return (None, None)
-        logging.info("Calculating the ed2k. Please wait...")
+        sickrage.LOGGER.info("Calculating the ed2k. Please wait...")
         ed2k = fileInfo.get_file_hash(filePath)
         size = fileInfo.get_file_size(filePath)
         return ed2k, size

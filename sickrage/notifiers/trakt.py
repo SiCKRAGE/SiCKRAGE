@@ -18,12 +18,10 @@
 
 from __future__ import unicode_literals
 
-import logging
-
 import sickrage
 from sickrage.core.trakt import TraktAPI, traktAuthException, traktException, \
     traktServerBusy
-from sickrage.indexers.indexer_api import indexerApi
+
 
 
 class TraktNotifier:
@@ -50,7 +48,7 @@ class TraktNotifier:
         ep_obj: The TVEpisode object to add to trakt
         """
 
-        trakt_id = indexerApi(ep_obj.show.indexer).config[b'trakt_id']
+        trakt_id = sickrage.INDEXER_API(ep_obj.show.indexer).config[b'trakt_id']
         trakt_api = TraktAPI(sickrage.SSL_VERIFY, sickrage.TRAKT_TIMEOUT)
 
         if sickrage.USE_TRAKT:
@@ -89,7 +87,7 @@ class TraktNotifier:
                 trakt_api.traktRequest("sync/collection", data, method='POST')
 
             except (traktException, traktAuthException, traktServerBusy) as e:
-                logging.warning("Could not connect to Trakt service: %s" % e)
+                sickrage.LOGGER.warning("Could not connect to Trakt service: %s" % e)
 
     def update_watchlist(self, show_obj=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
 
@@ -112,7 +110,7 @@ class TraktNotifier:
             try:
                 # URL parameters
                 if show_obj is not None:
-                    trakt_id = indexerApi(show_obj.indexer).config[b'trakt_id']
+                    trakt_id = sickrage.INDEXER_API(show_obj.indexer).config[b'trakt_id']
                     data = {
                         'shows': [
                             {
@@ -130,7 +128,7 @@ class TraktNotifier:
                 elif data_show is not None:
                     data.update(data_show)
                 else:
-                    logging.warning(
+                    sickrage.LOGGER.warning(
                         "there's a coding problem contact developer. It's needed to be provided at lest one of the two: data_show or show_obj")
                     return False
 
@@ -168,7 +166,7 @@ class TraktNotifier:
                 trakt_api.traktRequest(trakt_url, data, method='POST')
 
             except (traktException, traktAuthException, traktServerBusy) as e:
-                logging.warning("Could not connect to Trakt service: %s" % e)
+                sickrage.LOGGER.warning("Could not connect to Trakt service: %s" % e)
                 return False
 
         return True
@@ -177,7 +175,7 @@ class TraktNotifier:
 
         showList = []
         for indexer, indexerid, title, year in data:
-            trakt_id = indexerApi(indexer).config[b'trakt_id']
+            trakt_id = sickrage.INDEXER_API(indexer).config[b'trakt_id']
             show = {'title': title, 'year': year, 'ids': {}}
             if trakt_id == 'tvdb_id':
                 show[b'ids'][b'tvdb'] = indexerid
@@ -235,5 +233,5 @@ class TraktNotifier:
             else:
                 return "Test notice sent successfully to Trakt"
         except (traktException, traktAuthException, traktServerBusy) as e:
-            logging.warning("Could not connect to Trakt service: %s" % e)
+            sickrage.LOGGER.warning("Could not connect to Trakt service: %s" % e)
             return "Test notice failed to Trakt: %s" % e

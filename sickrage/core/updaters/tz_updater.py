@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import re
 
 import requests
@@ -44,7 +43,7 @@ def update_network_dict():
     url = 'http://sickragetv.github.io/sb_network_timezones/network_timezones.txt'
     url_data = getURL(url, session=requests.Session())
     if not url_data:
-        logging.warning('Updating network timezones failed, this can happen from time to time. URL: %s' % url)
+        sickrage.LOGGER.warning('Updating network timezones failed, this can happen from time to time. URL: %s' % url)
         load_network_dict()
         return
 

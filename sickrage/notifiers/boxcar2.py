@@ -20,7 +20,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import urllib
 import urllib2
 
@@ -67,22 +66,22 @@ class Boxcar2Notifier:
         except urllib2.HTTPError as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
             if not hasattr(e, 'code'):
-                logging.error("Boxcar2 notification failed.{}".format(e))
+                sickrage.LOGGER.error("Boxcar2 notification failed.{}".format(e))
                 return False
             else:
-                logging.warning("Boxcar2 notification failed. Error code: " + str(e.code))
+                sickrage.LOGGER.warning("Boxcar2 notification failed. Error code: " + str(e.code))
 
             # HTTP status 404
             if e.code == 404:
-                logging.warning("Access token is invalid. Check it.")
+                sickrage.LOGGER.warning("Access token is invalid. Check it.")
                 return False
 
             # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
             elif e.code == 400:
-                logging.error("Wrong data send to boxcar2")
+                sickrage.LOGGER.error("Wrong data send to boxcar2")
                 return False
 
-        logging.debug("Boxcar2 notification successful.")
+        sickrage.LOGGER.debug("Boxcar2 notification successful.")
         return True
 
     def notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
@@ -113,14 +112,14 @@ class Boxcar2Notifier:
         """
 
         if not sickrage.USE_BOXCAR2:
-            logging.debug("Notification for Boxcar2 not enabled, skipping this notification")
+            sickrage.LOGGER.debug("Notification for Boxcar2 not enabled, skipping this notification")
             return False
 
         # if no username was given then use the one from the config
         if not accesstoken:
             accesstoken = sickrage.BOXCAR2_ACCESSTOKEN
 
-        logging.debug("Sending notification for " + message)
+        sickrage.LOGGER.debug("Sending notification for " + message)
 
         self._sendBoxcar2(message, title, accesstoken)
         return True

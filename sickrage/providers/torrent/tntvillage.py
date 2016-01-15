@@ -19,10 +19,10 @@
 
 from __future__ import unicode_literals
 
-import logging
 import re
 import traceback
 
+import sickrage
 from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
 from sickrage.core.common import Quality
@@ -132,12 +132,12 @@ class TNTVillageProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            logging.warning("Unable to connect to provider")
+            sickrage.LOGGER.warning("Unable to connect to provider")
             return False
 
         if re.search('Sono stati riscontrati i seguenti errori', response) or re.search('<title>Connettiti</title>',
                                                                                         response):
-            logging.warning("Invalid username or password. Check your settings")
+            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -184,11 +184,11 @@ class TNTVillageProvider(TorrentProvider):
                                                                                  "").replace(".gif", "").replace(".png",
                                                                                                                  "")
                 except Exception:
-                    logging.error("Failed parsing quality. Traceback: {}".format(traceback.format_exc()))
+                    sickrage.LOGGER.error("Failed parsing quality. Traceback: {}".format(traceback.format_exc()))
 
         else:
             file_quality = (torrent_rows.find_all('td'))[1].get_text()
-            logging.debug("Episode quality: %s" % file_quality)
+            sickrage.LOGGER.debug("Episode quality: %s" % file_quality)
 
         def checkName(options, func):
             return func([re.search(option, file_quality, re.I) for option in options])
@@ -239,12 +239,12 @@ class TNTVillageProvider(TorrentProvider):
                 continue
 
             if re.search("ita", name.split(sub)[0], re.I):
-                logging.debug("Found Italian release:  " + name)
+                sickrage.LOGGER.debug("Found Italian release:  " + name)
                 italian = True
                 break
 
         if not subFound and re.search("ita", name, re.I):
-            logging.debug("Found Italian release:  " + name)
+            sickrage.LOGGER.debug("Found Italian release:  " + name)
             italian = True
 
         return italian
@@ -258,7 +258,7 @@ class TNTVillageProvider(TorrentProvider):
 
         english = False
         if re.search("eng", name, re.I):
-            logging.debug("Found English release:  " + name)
+            sickrage.LOGGER.debug("Found English release:  " + name)
             english = True
 
         return english
@@ -270,10 +270,10 @@ class TNTVillageProvider(TorrentProvider):
             myParser = NameParser(tryIndexers=True)
             parse_result = myParser.parse(name)
         except InvalidNameException:
-            logging.debug("Unable to parse the filename %s into a valid episode" % name)
+            sickrage.LOGGER.debug("Unable to parse the filename %s into a valid episode" % name)
             return False
         except InvalidShowException:
-            logging.debug("Unable to parse the filename %s into a valid show" % name)
+            sickrage.LOGGER.debug("Unable to parse the filename %s into a valid show" % name)
             return False
 
         sql_selection = "SELECT count(*) AS count FROM tv_episodes WHERE showid = ? AND season = ?"
@@ -292,7 +292,7 @@ class TNTVillageProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is 'RSS':
@@ -318,12 +318,12 @@ class TNTVillageProvider(TorrentProvider):
                         searchURL = self.urls['search_page'].format(z, self.categories)
 
                     if mode is not 'RSS':
-                        logging.debug("Search string: %s " % search_string)
+                        sickrage.LOGGER.debug("Search string: %s " % search_string)
 
-                    logging.debug("Search URL: %s" % searchURL)
+                    sickrage.LOGGER.debug("Search URL: %s" % searchURL)
                     data = self.getURL(searchURL)
                     if not data:
-                        logging.debug("No data returned from provider")
+                        sickrage.LOGGER.debug("No data returned from provider")
                         continue
 
                     try:
@@ -333,7 +333,7 @@ class TNTVillageProvider(TorrentProvider):
 
                             # Continue only if one Release is found
                             if len(torrent_rows) < 3:
-                                logging.debug("Data returned from provider does not contain any torrents")
+                                sickrage.LOGGER.debug("Data returned from provider does not contain any torrents")
                                 last_page = 1
                                 continue
 
@@ -367,11 +367,11 @@ class TNTVillageProvider(TorrentProvider):
                                     title += filename_qt
 
                                 if not self._is_italian(result) and not self.subtitle:
-                                    logging.debug("Torrent is subtitled, skipping: %s " % title)
+                                    sickrage.LOGGER.debug("Torrent is subtitled, skipping: %s " % title)
                                     continue
 
                                 if self.engrelease and not self._is_english(result):
-                                    logging.debug("Torrent isnt english audio/subtitled , skipping: %s " % title)
+                                    sickrage.LOGGER.debug("Torrent isnt english audio/subtitled , skipping: %s " % title)
                                     continue
 
                                 search_show = re.split(r'([Ss][\d{1,2}]+)', search_string)[0]
@@ -394,19 +394,19 @@ class TNTVillageProvider(TorrentProvider):
                                 # Filter unseeded torrent
                                 if seeders < self.minseed or leechers < self.minleech:
                                     if mode is not 'RSS':
-                                        logging.debug(
+                                        sickrage.LOGGER.debug(
                                                 "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                         title, seeders, leechers))
                                     continue
 
                                 item = title, download_url, size, seeders, leechers
                                 if mode is not 'RSS':
-                                    logging.debug("Found result: %s " % title)
+                                    sickrage.LOGGER.debug("Found result: %s " % title)
 
                                 items[mode].append(item)
 
                     except Exception:
-                        logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                        sickrage.LOGGER.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
                 # For each search mode sort all the items by seeders if available if available
                 items[mode].sort(key=lambda tup: tup[3], reverse=True)

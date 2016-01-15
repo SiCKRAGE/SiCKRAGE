@@ -18,9 +18,9 @@
 
 from __future__ import unicode_literals
 
-import logging
 from urllib import quote_plus
 
+import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import tryInt
 from sickrage.providers import TorrentProvider
@@ -46,18 +46,18 @@ class TORRENTPROJECTProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():  # Mode = RSS, Season, Episode
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode is not 'RSS':
-                    logging.debug("Search string: %s " % search_string)
+                    sickrage.LOGGER.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['api'] + "?s=%s&out=json&filter=2101&num=150" % quote_plus(
                         search_string.encode('utf-8'))
 
-                logging.debug("Search URL: %s" % searchURL)
+                sickrage.LOGGER.debug("Search URL: %s" % searchURL)
                 torrents = self.getURL(searchURL, json=True)
                 if not (torrents and "total_found" in torrents and int(torrents[b"total_found"]) > 0):
-                    logging.debug("Data returned from provider does not contain any torrents")
+                    sickrage.LOGGER.debug("Data returned from provider does not contain any torrents")
                     continue
 
                 del torrents[b"total_found"]
@@ -69,7 +69,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
                     leechers = tryInt(torrents[i][b"leechs"], 0)
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            logging.debug("Torrent doesn't meet minimum seeds & leechers not selecting : %s" % title)
+                            sickrage.LOGGER.debug("Torrent doesn't meet minimum seeds & leechers not selecting : %s" % title)
                         continue
 
                     t_hash = torrents[i][b"torrent_hash"]
@@ -78,7 +78,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
                     try:
                         assert seeders < 10
                         assert mode is not 'RSS'
-                        logging.debug("Torrent has less than 10 seeds getting dyn trackers: " + title)
+                        sickrage.LOGGER.debug("Torrent has less than 10 seeds getting dyn trackers: " + title)
                         trackerUrl = self.urls['api'] + "" + t_hash + "/trackers_json"
                         jdata = self.getURL(trackerUrl, json=True)
                         assert jdata is not "maintenance"
@@ -93,7 +93,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
                     item = title, download_url, size, seeders, leechers
 
                     if mode is not 'RSS':
-                        logging.debug("Found result: %s" % title)
+                        sickrage.LOGGER.debug("Found result: %s" % title)
 
                     items[mode].append(item)
 

@@ -20,7 +20,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import urllib2
 
 import sickrage
@@ -48,7 +47,7 @@ class FreeMobileNotifier:
         if apiKey == None:
             apiKey = sickrage.FREEMOBILE_APIKEY
 
-        logging.debug("Free Mobile in use with API KEY: " + apiKey)
+        sickrage.LOGGER.debug("Free Mobile in use with API KEY: " + apiKey)
 
         # build up the URL and parameters
         msg = msg.strip()
@@ -63,27 +62,27 @@ class FreeMobileNotifier:
             if hasattr(e, 'code'):
                 if e.code == 400:
                     message = "Missing parameter(s)."
-                    logging.error(message)
+                    sickrage.LOGGER.error(message)
                     return False, message
                 if e.code == 402:
                     message = "Too much SMS sent in a short time."
-                    logging.error(message)
+                    sickrage.LOGGER.error(message)
                     return False, message
                 if e.code == 403:
                     message = "API service isn't enabled in your account or ID / API key is incorrect."
-                    logging.error(message)
+                    sickrage.LOGGER.error(message)
                     return False, message
                 if e.code == 500:
                     message = "Server error. Please retry in few moment."
-                    logging.error(message)
+                    sickrage.LOGGER.error(message)
                     return False, message
         except Exception as e:
             message = "Error while sending SMS: {0}".format(e)
-            logging.error(message)
+            sickrage.LOGGER.error(message)
             return False, message
 
         message = "Free Mobile SMS successful."
-        logging.info(message)
+        sickrage.LOGGER.info(message)
         return True, message
 
     def notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
@@ -116,9 +115,9 @@ class FreeMobileNotifier:
         """
 
         if not sickrage.USE_FREEMOBILE and not force:
-            logging.debug("Notification for Free Mobile not enabled, skipping this notification")
+            sickrage.LOGGER.debug("Notification for Free Mobile not enabled, skipping this notification")
             return False, "Disabled"
 
-        logging.debug("Sending a SMS for " + message)
+        sickrage.LOGGER.debug("Sending a SMS for " + message)
 
         return self._sendFreeMobileSMS(title, message, id, apiKey)

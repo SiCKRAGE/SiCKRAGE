@@ -20,18 +20,19 @@
 
 from __future__ import unicode_literals
 
-# bugfix
-from time import strptime
-strptime("2012", "%Y")
-
-import os
-import sys
-
 import getopt
+import os
 import platform
+import sys
 import threading
 import traceback
 import uuid
+
+threading.currentThread().name = 'MAIN'
+
+USER_AGENT = 'SiCKRAGE/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
+
+INDEXER_API = None
 
 INITIALIZED = False
 STARTED = False
@@ -44,8 +45,6 @@ CONFIG_VERSION = 7
 # Default encryption version (0 for None)
 ENCRYPTION_VERSION = 0
 ENCRYPTION_SECRET = None
-
-USER_AGENT = 'SiCKRAGE/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
 
 MY_FULLNAME = None
 APP_NAME = None
@@ -61,6 +60,13 @@ DAEMON = None
 DAEMONIZE = False
 NO_RESIZE = False
 PID = None
+
+# logging
+LOGGER = None
+LOG_DIR = None
+LOG_FILE = None
+LOG_SIZE = 1048576
+LOG_NR = 5
 
 # scheduler
 Scheduler = None
@@ -120,12 +126,6 @@ NEWS_URL = 'http://sickragetv.github.io/sickrage-news/news.md'
 NEWS_LAST_READ = None
 NEWS_LATEST = None
 NEWS_UNREAD = False
-
-# logging
-LOG_DIR = None
-LOG_FILE = None
-LOG_SIZE = 1048576
-LOG_NR = 5
 
 SOCKET_TIMEOUT = None
 
@@ -556,7 +556,7 @@ CENSOREDITEMS = {}
 
 def help_message():
     """
-    print help message for commandline options
+    LOGGER.info help message for commandline options
     """
 
     help_msg = "\n"
@@ -564,7 +564,7 @@ def help_message():
     help_msg += "\n"
     help_msg += "Options:\n"
     help_msg += "\n"
-    help_msg += "    -h          --help              Prints this message\n"
+    help_msg += "    -h          --help              LOGGER.infos this message\n"
     help_msg += "    -q          --quiet             Disables logging to console\n"
     help_msg += "                --nolaunch          Suppress launching web browser on startup\n"
 
@@ -589,9 +589,7 @@ def help_message():
 
 def main():
     global APP_NAME, MY_FULLNAME, NO_RESIZE, MY_ARGS, WEB_PORT, WEB_NOLAUNCH, CREATEPID, DAEMONIZE, PIDFILE, \
-        ROOT_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, WEB_SERVER, VERSIONUPDATER
-
-    threading.currentThread().name = 'MAIN'
+        ROOT_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, WEB_SERVER, VERSIONUPDATER, DEVELOPER, LOGGER
 
     if sys.version_info < (2, 7):
         print("Sorry, SiCKRAGE requires Python 2.7+")
@@ -602,89 +600,29 @@ def main():
     PROG_DIR = os.path.abspath(os.path.dirname(__file__))
     MY_ARGS = sys.argv[1:]
 
-    def install_pip():
-        print("Downloading pip ...")
-        import urllib2
-
-        url = "https://bootstrap.pypa.io/get-pip.py"
-        file_name = url.split('/')[-1]
-        u = urllib2.urlopen(url)
-        f = open(file_name, 'wb')
-        meta = u.info()
-        file_size = int(meta.getheaders("Content-Length")[0])
-        print("Downloading: %s Bytes: %s" % (file_name, file_size))
-        file_size_dl = 0
-        block_sz = 8192
-        while True:
-            buffer = u.read(block_sz)
-            if not buffer:
-                break
-            file_size_dl += len(buffer)
-            f.write(buffer)
-            status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-            status = status + chr(8) * (len(status) + 1)
-            print(status),
-        f.close()
-        print("Installing pip ...")
-        import subprocess
-        subprocess.call([sys.executable, os.path.join(ROOT_DIR, 'get-pip.py')])
-
-        import os
-        print("Cleaning up downloaded pip files")
-        os.remove(os.path.join(ROOT_DIR, 'get-pip.py'))
-
-    try:
-        import pip
-        print("Upgrading pip")
-        pip.main(['install', '-q', '-U', 'pip'])
-    except ImportError:
-        install_pip()
-        import pip
-
-    print("Installing/Upgrading OpenSSL and contexts")
-    pip.main(['install', '-q', '-U', '--no-cache-dir', 'pyopenssl', 'ndg-httpsclient', 'pyasn1'])
-
-    try:
-        import urllib3.contrib.pyopenssl
-        urllib3.contrib.pyopenssl.inject_into_urllib3()
-    except ImportError:
-        pass
-
-    print("Installing/Upgrading SiCKRAGE required libs")
-    pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
-              os.path.join(ROOT_DIR, 'requirements.txt')])
-
-    try:
-        print("Installing/Upgrading SiCKRAGE optional libs")
-        pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
-                  os.path.join(ROOT_DIR, 'requirements-optional.txt')])
-    except ImportError as e:
-        print(e.message)
-        pass
-
-    # init pip and updater
-    from sickrage.core.version_updater import VersionUpdater
-    VERSIONUPDATER = VersionUpdater()
-
-    # Need console logging for py and SiCKRAGE-console.exe
-    consolelogging = (not hasattr(sys, "frozen")) or (APP_NAME.lower().find('-console') > 0)
+    consoleLogging = (not hasattr(sys, "frozen")) or (APP_NAME.lower().find('-console') > 0)
 
     try:
         opts, _ = getopt.getopt(
                 sys.argv[1:], "hqdp::",
-                ['help', 'quiet', 'nolaunch', 'daemon', 'pidfile=', 'port=', 'datadir=', 'config=', 'noresize']
+                ['help', 'dev', 'quiet', 'nolaunch', 'daemon', 'pidfile=', 'port=', 'datadir=', 'config=', 'noresize']
         )
     except getopt.GetoptError:
         sys.exit(help_message())
 
     for o, a in opts:
-        # Prints help message
+        # help message
         if o in ('-h', '--help'):
             sys.exit(help_message())
 
         # For now we'll just silence the logging
         if o in ('-q', '--quiet'):
-            consolelogging = False
+            consoleLogging = False
+
+        # developer mode
+        if o in ('--dev',):
+            print("!!! DEVELOPER MODE ENABLED !!!")
+            DEVELOPER = True
 
         # Suppress launching web browser
         # Needed for OSes without default browser assigned
@@ -703,7 +641,7 @@ def main():
         if o in ('-d', '--daemon'):
             DAEMONIZE = True
             WEB_NOLAUNCH = True
-            consolelogging = False
+            consoleLogging = False
 
             if sys.platform == 'win32' or sys.platform == 'darwin':
                 DAEMONIZE = False
@@ -729,6 +667,77 @@ def main():
         if o in ('--noresize',):
             NO_RESIZE = True
 
+    # init logging
+    from sickrage.core.srlogger import srLogger
+    LOGGER = srLogger(consoleLogging=consoleLogging)
+
+    def install_pip():
+        LOGGER.info("Downloading pip ...")
+        import urllib2
+
+        url = "https://bootstrap.pypa.io/get-pip.py"
+        file_name = url.split('/')[-1]
+        u = urllib2.urlopen(url)
+        with open(file_name, 'wb') as f:
+            meta = u.info()
+            file_size = int(meta.getheaders("Content-Length")[0])
+            LOGGER.info("Downloading: %s Bytes: %s" % (file_name, file_size))
+            file_size_dl = 0
+            block_sz = 8192
+            while True:
+                buffer = u.read(block_sz)
+                if not buffer:
+                    break
+                file_size_dl += len(buffer)
+                f.write(buffer)
+                status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
+                status = status + chr(8) * (len(status) + 1)
+                LOGGER.info(status),
+
+        LOGGER.info("Installing pip ...")
+        import subprocess
+        subprocess.call([sys.executable, os.path.join(ROOT_DIR, 'get-pip.py')])
+
+        LOGGER.info("Cleaning up downloaded pip files")
+        os.remove(os.path.join(ROOT_DIR, 'get-pip.py'))
+
+    if not DEVELOPER:
+        try:
+            import pip
+            LOGGER.info("Upgrading pip")
+            pip.main(['install', '-q', '-U', 'pip'])
+        except ImportError:
+            install_pip()
+            import pip
+
+        LOGGER.info("Installing/Upgrading OpenSSL and contexts")
+        pip.main(['install', '-q', '-U', '--no-cache-dir', 'pyopenssl', 'ndg-httpsclient', 'pyasn1'])
+
+        try:
+            import urllib3.contrib.pyopenssl
+            urllib3.contrib.pyopenssl.inject_into_urllib3()
+        except ImportError:
+            pass
+
+        LOGGER.info("Installing/Upgrading SiCKRAGE required libs")
+        pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
+                  os.path.join(ROOT_DIR, 'requirements', 'global.txt')])
+
+        try:
+            LOGGER.info("Installing/Upgrading SiCKRAGE optional libs")
+            pip.main(['install', '-q', '-U', '--no-cache-dir', '-r',
+                      os.path.join(ROOT_DIR, 'requirements', 'optional.txt')])
+        except ImportError as e:
+            LOGGER.info(e.message)
+            pass
+
+    # init pip and updater
+    from sickrage.core.version_updater import VersionUpdater
+    VERSIONUPDATER = VersionUpdater()
+
+    # check for updates
+    VERSIONUPDATER.run()
+
     # The pidfile is only useful in daemon mode, make sure we can write the file properly
     if CREATEPID:
         if DAEMONIZE:
@@ -740,8 +749,7 @@ def main():
 
         else:
             CREATEPID = False
-            if consolelogging:
-                sys.stdout.write("Not running in daemon mode. PID file creation disabled.\n")
+            LOGGER.info("Not running in daemon mode. PID file creation disabled.\n")
 
     # If they don't specify a config file then put it in the data dir
     if not CONFIG_FILE:
@@ -769,7 +777,7 @@ def main():
     try:
         # initialize and startup sickrage
         from sickrage import core
-        if core.initialize(consolelogging):
+        if core.initialize():
             WEB_SERVER.start()
     except:
         exc_type, exc_value, exc_traceback = sys.exc_info()

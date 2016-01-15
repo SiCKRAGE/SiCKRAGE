@@ -16,9 +16,9 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import urllib
 
+import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.classes import Proper
 from sickrage.core.exceptions import AuthException
@@ -56,7 +56,7 @@ class HDBitsProvider(TorrentProvider):
 
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
-                logging.warning("Invalid username or password. Check your settings")
+                sickrage.LOGGER.warning("Invalid username or password. Check your settings")
 
         return True
 
@@ -83,7 +83,7 @@ class HDBitsProvider(TorrentProvider):
         # FIXME
         results = []
 
-        logging.debug("Search string: %s" % search_params)
+        sickrage.LOGGER.debug("Search string: %s" % search_params)
 
         self._checkAuth()
 
@@ -95,7 +95,7 @@ class HDBitsProvider(TorrentProvider):
             if parsedJSON and 'data' in parsedJSON:
                 items = parsedJSON[b'data']
             else:
-                logging.error("Resulting JSON from provider isn't correct, not parsing it")
+                sickrage.LOGGER.error("Resulting JSON from provider isn't correct, not parsing it")
                 items = []
 
             for item in items:

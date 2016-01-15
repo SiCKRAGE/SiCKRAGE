@@ -20,12 +20,12 @@
 from __future__ import unicode_literals
 
 import cookielib
-import logging
 import re
 import urllib
 
 import requests
 
+import sickrage
 from sickrage.core.bs4_parser import BS4Parser
 from sickrage.providers import TorrentProvider
 
@@ -58,11 +58,11 @@ class XthorProvider(TorrentProvider):
 
         response = self.getURL(self.url + '/takelogin.php', post_data=login_params, timeout=30)
         if not response:
-            logging.warning("Unable to connect to provider")
+            sickrage.LOGGER.warning("Unable to connect to provider")
             return False
 
         if not re.search('donate.php', response):
-            logging.warning("Invalid username or password. Check your settings")
+            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -77,14 +77,14 @@ class XthorProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    logging.debug("Search string: %s " % search_string)
+                    sickrage.LOGGER.debug("Search string: %s " % search_string)
 
                 searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
-                logging.debug("Search URL: %s" % searchURL)
+                sickrage.LOGGER.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
 
                 if not data:
@@ -110,12 +110,12 @@ class XthorProvider(TorrentProvider):
                                 # Filter unseeded torrent
                                 # if seeders < self.minseed or leechers < self.minleech:
                                 #    if mode is not 'RSS':
-                                #        logging.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
+                                #        sickrage.LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                                 #    continue
 
                                 item = title, download_url, size, seeders, leechers
                                 if mode is not 'RSS':
-                                    logging.debug("Found result: %s " % title)
+                                    sickrage.LOGGER.debug("Found result: %s " % title)
 
                                 items[mode].append(item)
 

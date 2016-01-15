@@ -19,7 +19,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import os
 import string
 
@@ -79,7 +78,7 @@ def foldersAtPath(path, includeParent=False, includeFiles=False):
     try:
         fileList = [{'name': filename, 'path': os.path.join(path, filename)} for filename in os.listdir(path)]
     except OSError as e:
-        logging.warning("Unable to open " + path + ": " + repr(e) + " / " + str(e))
+        sickrage.LOGGER.warning("Unable to open " + path + ": " + repr(e) + " / " + str(e))
         fileList = [{'name': filename, 'path': os.path.join(parentPath, filename)} for filename in
                     os.listdir(parentPath)]
 

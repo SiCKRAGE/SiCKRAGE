@@ -1,7 +1,6 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.logger import SRLogger
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/viewlogs.js"></script>
@@ -14,10 +13,10 @@
 % endif
 
 <div class="h2footer pull-right">Minimum logging level to display: <select name="minLevel" id="minLevel" class="form-control form-control-inline input-sm">
-    <% levels = [x for x in SRLogger.logLevels.keys() if any([sickrage.DEBUG and x in ['DEBUG','DB'], x not in ['DEBUG','DB']])]%>
-<% levels.sort(lambda x,y: cmp(SRLogger.logLevels[x], SRLogger.logLevels[y])) %>
+    <% levels = [x for x in sickrage.LOGGER.logLevels.keys() if any([sickrage.DEBUG and x in ['DEBUG','DB'], x not in ['DEBUG','DB']])]%>
+<% levels.sort(lambda x,y: cmp(sickrage.LOGGER.logLevels[x], sickrage.LOGGER.logLevels[y])) %>
 % for level in levels:
-    <option value="${SRLogger.logLevels[level]}" ${('', 'selected="selected"')[minLevel == SRLogger.logLevels[level]]}>${level.title()}</option>
+    <option value="${sickrage.LOGGER.logLevels[level]}" ${('', 'selected="selected"')[minLevel == sickrage.LOGGER.logLevels[level]]}>${level.title()}</option>
 % endfor
 </select>
 

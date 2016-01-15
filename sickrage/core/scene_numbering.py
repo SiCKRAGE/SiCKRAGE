@@ -20,14 +20,13 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import time
 import traceback
 
 import sickrage
 from sickrage.core.databases import main_db
 from sickrage.core.helpers import getURL, findCertainShow
-from sickrage.indexers.indexer_api import indexerApi
+
 
 
 def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=True):
@@ -461,8 +460,8 @@ def xem_refresh(indexer_id, indexer, force=False):
         refresh = True
 
     if refresh or force:
-        logging.debug(
-                'Looking up XEM scene mapping for show %s on %s' % (indexer_id, indexerApi(indexer).name))
+        sickrage.LOGGER.debug(
+                'Looking up XEM scene mapping for show %s on %s' % (indexer_id, sickrage.INDEXER_API(indexer).name))
 
         # mark refreshed
         main_db.MainDB().upsert("xem_refresh",
@@ -474,7 +473,7 @@ def xem_refresh(indexer_id, indexer, force=False):
             from scene_exceptions import xem_session
 
             # XEM MAP URL
-            url = "http://thexem.de/map/havemap?origin=%s" % indexerApi(indexer).config[b'xem_origin']
+            url = "http://thexem.de/map/havemap?origin=%s" % sickrage.INDEXER_API(indexer).config[b'xem_origin']
             parsedJSON = getURL(url, session=xem_session, json=True)
             if not parsedJSON or 'result' not in parsedJSON or 'success' not in parsedJSON[
                 b'result'] or 'data' not in parsedJSON or str(indexer_id) not in parsedJSON[b'data']:
@@ -482,11 +481,11 @@ def xem_refresh(indexer_id, indexer, force=False):
 
             # XEM API URL
             url = "http://thexem.de/map/all?id={}&origin={}&destination=scene".format(
-                    indexer_id, indexerApi(indexer).config[b'xem_origin'])
+                    indexer_id, sickrage.INDEXER_API(indexer).config[b'xem_origin'])
 
             parsedJSON = getURL(url, session=xem_session, json=True)
             if not ((parsedJSON and 'result' in parsedJSON) and 'success' in parsedJSON[b'result']):
-                logging.info('No XEM data for show "%s on %s"' % (indexer_id, indexerApi(indexer).name,))
+                sickrage.LOGGER.info('No XEM data for show "%s on %s"' % (indexer_id, sickrage.INDEXER_API(indexer).name,))
                 return
 
             cl = []
@@ -498,8 +497,8 @@ def xem_refresh(indexer_id, indexer, force=False):
                          entry[b'scene'][b'episode'],
                          entry[b'scene'][b'absolute'],
                          indexer_id,
-                         entry[indexerApi(indexer).config[b'xem_origin']][b'season'],
-                         entry[indexerApi(indexer).config[b'xem_origin']][b'episode']
+                         entry[sickrage.INDEXER_API(indexer).config[b'xem_origin']][b'season'],
+                         entry[sickrage.INDEXER_API(indexer).config[b'xem_origin']][b'episode']
                          ]])
                 if 'scene_2' in entry:  # for doubles
                     cl.append([
@@ -508,18 +507,18 @@ def xem_refresh(indexer_id, indexer, force=False):
                          entry[b'scene_2'][b'episode'],
                          entry[b'scene_2'][b'absolute'],
                          indexer_id,
-                         entry[indexerApi(indexer).config[b'xem_origin']][b'season'],
-                         entry[indexerApi(indexer).config[b'xem_origin']][b'episode']
+                         entry[sickrage.INDEXER_API(indexer).config[b'xem_origin']][b'season'],
+                         entry[sickrage.INDEXER_API(indexer).config[b'xem_origin']][b'episode']
                          ]])
 
             if len(cl) > 0:
                 main_db.MainDB().mass_action(cl)
 
         except Exception as e:
-            logging.warning(
-                    "Exception while refreshing XEM data for show " + str(indexer_id) + " on " + indexerApi(
+            sickrage.LOGGER.warning(
+                    "Exception while refreshing XEM data for show " + str(indexer_id) + " on " + sickrage.INDEXER_API(
                             indexer).name + ": {}".format(e))
-            logging.debug(traceback.format_exc())
+            sickrage.LOGGER.debug(traceback.format_exc())
 
 
 def fix_xem_numbering(indexer_id, indexer):
@@ -548,8 +547,8 @@ def fix_xem_numbering(indexer_id, indexer):
     update_scene_episode = False
     update_scene_absolute_number = False
 
-    logging.debug(
-            'Fixing any XEM scene mapping issues for show %s on %s' % (indexer_id, indexerApi(indexer).name))
+    sickrage.LOGGER.debug(
+            'Fixing any XEM scene mapping issues for show %s on %s' % (indexer_id, sickrage.INDEXER_API(indexer).name))
 
     cl = []
     for row in rows:
@@ -661,9 +660,9 @@ def get_absolute_number_from_season_and_episode(show, season, episode):
 
         if len(sqlResults) == 1:
             absolute_number = int(sqlResults[0][b"absolute_number"])
-            logging.debug(
+            sickrage.LOGGER.debug(
                     "Found absolute number %s for show %s S%02dE%02d" % (absolute_number, show.name, season, episode))
         else:
-            logging.debug("No entries for absolute number for show %s S%02dE%02d" % (show.name, season, episode))
+            sickrage.LOGGER.debug("No entries for absolute number for show %s S%02dE%02d" % (show.name, season, episode))
 
     return absolute_number

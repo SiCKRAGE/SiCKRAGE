@@ -19,13 +19,13 @@
 
 from __future__ import unicode_literals
 
-import logging
 import re
 import traceback
 import urllib
 
 import requests
 
+import sickrage
 from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
 from sickrage.providers import TorrentProvider
@@ -59,7 +59,7 @@ class HDTorrentsProvider(TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            logging.warning("Invalid username or password. Check your settings")
+            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
 
         return True
 
@@ -74,11 +74,11 @@ class HDTorrentsProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            logging.warning("Unable to connect to provider")
+            sickrage.LOGGER.warning("Unable to connect to provider")
             return False
 
         if re.search('You need cookies enabled to log in.', response):
-            logging.warning("Invalid username or password. Check your settings")
+            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -92,7 +92,7 @@ class HDTorrentsProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
@@ -100,13 +100,13 @@ class HDTorrentsProvider(TorrentProvider):
                 else:
                     searchURL = self.urls['rss'] % self.categories
 
-                logging.debug("Search URL: %s" % searchURL)
+                sickrage.LOGGER.debug("Search URL: %s" % searchURL)
                 if mode is not 'RSS':
-                    logging.debug("Search string: %s" % search_string)
+                    sickrage.LOGGER.debug("Search string: %s" % search_string)
 
                 data = self.getURL(searchURL)
                 if not data or 'please try later' in data:
-                    logging.debug("No data returned from provider")
+                    sickrage.LOGGER.debug("No data returned from provider")
                     continue
 
                 # Search result page contains some invalid html that prevents html parser from returning all data.
@@ -116,24 +116,24 @@ class HDTorrentsProvider(TorrentProvider):
                     index = data.lower().ind
                     '<table class="mainblockcontenttt"'
                 except ValueError:
-                    logging.error("Could not find table of torrents mainblockcontenttt")
+                    sickrage.LOGGER.error("Could not find table of torrents mainblockcontenttt")
                     continue
 
                 data = urllib.unquote(data[index:].encode('utf-8')).decode('utf-8').replace('\t', '')
 
                 with BS4Parser(data, features=["html5lib", "permissive"]) as html:
                     if not html:
-                        logging.debug("No html data parsed from provider")
+                        sickrage.LOGGER.debug("No html data parsed from provider")
                         continue
 
                     empty = html.find('No torrents here')
                     if empty:
-                        logging.debug("Data returned from provider does not contain any torrents")
+                        sickrage.LOGGER.debug("Data returned from provider does not contain any torrents")
                         continue
 
                     tables = html.find('table', attrs={'class': 'mainblockcontenttt'})
                     if not tables:
-                        logging.error("Could not find table of torrents mainblockcontenttt")
+                        sickrage.LOGGER.error("Could not find table of torrents mainblockcontenttt")
                         continue
 
                     torrents = tables.findChildren('tr')
@@ -177,7 +177,7 @@ class HDTorrentsProvider(TorrentProvider):
                                                 size = -1
 
                                 except Exception:
-                                    logging.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                                    sickrage.LOGGER.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
                             if not all([title, download_url]):
                                 continue
@@ -185,14 +185,14 @@ class HDTorrentsProvider(TorrentProvider):
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
-                                    logging.debug(
+                                    sickrage.LOGGER.debug(
                                             "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                     title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                logging.debug("Found result: %s " % title)
+                                sickrage.LOGGER.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 

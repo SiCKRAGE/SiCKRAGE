@@ -18,8 +18,7 @@
 
 from __future__ import unicode_literals
 
-import logging
-
+import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.providers import TorrentProvider
 
@@ -41,17 +40,17 @@ class STRIKEProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():  # Mode = RSS, Season, Episode
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    logging.debug("Search string: " + search_string.strip())
+                    sickrage.LOGGER.debug("Search string: " + search_string.strip())
 
                 searchURL = self.url + "api/v2/torrents/search/?category=TV&phrase=" + search_string
-                logging.debug("Search URL: %s" % searchURL)
+                sickrage.LOGGER.debug("Search URL: %s" % searchURL)
                 jdata = self.getURL(searchURL, json=True)
                 if not jdata:
-                    logging.debug("No data returned from provider")
+                    sickrage.LOGGER.debug("No data returned from provider")
                     return []
 
                 results = []
@@ -69,13 +68,13 @@ class STRIKEProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            logging.debug(
+                            sickrage.LOGGER.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue
 
                     if mode is not 'RSS':
-                        logging.debug("Found result: %s " % title)
+                        sickrage.LOGGER.debug("Found result: %s " % title)
 
                     item = title, download_url, size, seeders, leechers
                     items[mode].append(item)

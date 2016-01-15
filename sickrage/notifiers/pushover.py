@@ -21,7 +21,6 @@
 from __future__ import unicode_literals
 
 import httplib
-import logging
 import time
 import urllib
 import urllib2
@@ -60,7 +59,7 @@ class PushoverNotifier(object):
         if sound == None:
             sound = sickrage.PUSHOVER_SOUND
 
-        logging.debug("Pushover API KEY in use: " + apiKey)
+        sickrage.LOGGER.debug("Pushover API KEY in use: " + apiKey)
 
         # build up the URL and parameters
         msg = msg.strip()
@@ -98,14 +97,14 @@ class PushoverNotifier(object):
         except urllib2.HTTPError as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
             if not hasattr(e, 'code'):
-                logging.error("Pushover notification failed.{}".format(e))
+                sickrage.LOGGER.error("Pushover notification failed.{}".format(e))
                 return False
             else:
-                logging.error("Pushover notification failed. Error code: " + str(e.code))
+                sickrage.LOGGER.error("Pushover notification failed. Error code: " + str(e.code))
 
             # HTTP status 404 if the provided email address isn't a Pushover user.
             if e.code == 404:
-                logging.warning("Username is wrong/not a pushover email. Pushover will send an email to it")
+                sickrage.LOGGER.warning("Username is wrong/not a pushover email. Pushover will send an email to it")
                 return False
 
             # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
@@ -114,23 +113,23 @@ class PushoverNotifier(object):
                 # HTTP status 401 if the user doesn't have the service added
                 subscribeNote = self._sendPushover(msg, title, sound=sound, userKey=userKey, apiKey=apiKey)
                 if subscribeNote:
-                    logging.debug("Subscription sent")
+                    sickrage.LOGGER.debug("Subscription sent")
                     return True
                 else:
-                    logging.error("Subscription could not be sent")
+                    sickrage.LOGGER.error("Subscription could not be sent")
                     return False
 
             # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
             elif e.code == 400:
-                logging.error("Wrong data sent to pushover")
+                sickrage.LOGGER.error("Wrong data sent to pushover")
                 return False
 
             # If you receive a HTTP status code of 429, it is because the message limit has been reached (free limit is 7,500)
             elif e.code == 429:
-                logging.error("Pushover API message limit reached - try a different API key")
+                sickrage.LOGGER.error("Pushover API message limit reached - try a different API key")
                 return False
 
-        logging.info("Pushover notification successful.")
+        sickrage.LOGGER.info("Pushover notification successful.")
         return True
 
     def notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
@@ -164,9 +163,9 @@ class PushoverNotifier(object):
         """
 
         if not sickrage.USE_PUSHOVER and not force:
-            logging.debug("Notification for Pushover not enabled, skipping this notification")
+            sickrage.LOGGER.debug("Notification for Pushover not enabled, skipping this notification")
             return False
 
-        logging.debug("Sending notification for " + message)
+        sickrage.LOGGER.debug("Sending notification for " + message)
 
         return self._sendPushover(message, title, sound=sound, userKey=userKey, apiKey=apiKey)

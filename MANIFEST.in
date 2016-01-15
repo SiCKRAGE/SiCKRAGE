@@ -1,4 +1,4 @@
-include *.txt
-recursive-include gui *
-recursive-include contrib *
+recursive-include sickrage *
 recursive-include runscripts *
+recursive-include tests *
+recursive-include requirements *

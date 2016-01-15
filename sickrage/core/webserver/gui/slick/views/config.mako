@@ -26,11 +26,24 @@
 <div id="config-content">
 <table class="infoTable" cellspacing="1" border="0" cellpadding="0" width="100%">
     <tr><td class="infoTableHeader">SR Version: </td><td class="infoTableCell">
+        <% sr_install_type = sickrage.VERSIONUPDATER.updater.type %>
         % if sickrage.VERSION_NOTIFY:
-            BRANCH: (${sickrage.VERSION}) / COMMIT: (${sickrage.CUR_COMMIT_HASH}) <!-- &ndash; build.date //--><br>
-% else:
-        You don't have version checking turned on. Please turn on "Check for Update" in Config > General.<br>
-% endif
+            % if sr_install_type == 'git':
+                BRANCH: (${sickrage.VERSION}) / COMMIT: (${sickrage.CUR_COMMIT_HASH}) <!-- &ndash; build.date //--><br>
+            % else:
+                ${sickrage.VERSION} <!-- &ndash; build.date //--><br>
+            % endif
+        % else:
+            You don't have version checking turned on. Please turn on "Check for Update" in Config > General.<br>
+        % endif
+    </td></tr>
+
+    <tr><td class="infoTableHeader">SR Type: </td><td class="infoTableCell">
+        % if sickrage.VERSION_NOTIFY:
+            ${sr_install_type} <!-- &ndash; build.date //--><br>
+        % else:
+            You don't have version checking turned on. Please turn on "Check for Update" in Config > General.<br>
+        % endif
     </td></tr>
 
 <%

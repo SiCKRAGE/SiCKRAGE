@@ -22,17 +22,15 @@ import time
 import urllib
 import xmlrpclib
 
-from rtorrent.common import convert_version_tuple_to_str, find_torrent, \
+from sickrage.clients.rtorrent.common import convert_version_tuple_to_str, find_torrent, \
     is_valid_port
-from rtorrent.group import Group
-from rtorrent.lib.torrentparser import TorrentParser
-from rtorrent.lib.xmlrpc.basic_auth import BasicAuthTransport
-from rtorrent.lib.xmlrpc.http import HTTPServerProxy
-from rtorrent.lib.xmlrpc.scgi import SCGIServerProxy
-from rtorrent.rpc import Method
-from rtorrent.torrent import Torrent
-
-from sickrage.clients import rtorrent
+from sickrage.clients.rtorrent.group import Group
+from sickrage.clients.rtorrent.lib.torrentparser import TorrentParser
+from sickrage.clients.rtorrent.lib.xmlrpc.basic_auth import BasicAuthTransport
+from sickrage.clients.rtorrent.lib.xmlrpc.http import HTTPServerProxy
+from sickrage.clients.rtorrent.lib.xmlrpc.scgi import SCGIServerProxy
+from sickrage.clients.rtorrent.rpc import Method
+from sickrage.clients.rtorrent.torrent import Torrent, rtorrent
 
 __version__ = "0.2.9"
 __author__ = "Chris Lucas"
@@ -221,8 +219,8 @@ class RTorrent:
                     time.sleep(1)
                     i += 1
 
-            # Resolve magnet to torrent
-            torrent.start()
+                    # Resolve magnet to torrent
+                    torrent.start()
 
             assert info_hash in [t.info_hash for t in self.torrents], \
                 "Adding torrent was unsuccessful."
@@ -235,8 +233,6 @@ class RTorrent:
                         if str(info_hash) not in str(torrent.name):
                             time.sleep(1)
                             i += 1
-
-        return (torrent)
 
     def load_torrent(self, torrent, start=False, verbose=False, verify_load=True):
         """
@@ -325,7 +321,7 @@ class RTorrent:
         verification that the torrent was successfully added to rTorrent.
         Use load_torrent() if you would like these features.
         """
-        p = self._get_conn()
+        self._p = self._get_conn()
 
         assert file_type in ["raw", "file", "url"], \
             "Invalid file_type, options are: 'url', 'file', 'raw'."
@@ -340,10 +336,10 @@ class RTorrent:
 
         if file_type in ["raw", "file"]:
             finput = xmlrpclib.Binary(torrent)
+            getattr(self._p, func_name)(finput)
         elif file_type == "url":
             finput = torrent
-
-        getattr(p, func_name)(finput)
+            getattr(self._p, func_name)(finput)
 
     def get_views(self):
         p = self._get_conn()
@@ -411,13 +407,16 @@ class RTorrent:
 
         @return: None
         """
-        multicall = rtorrent.rpc.Multicall(self)
+        multicall = rpc.Multicall(self)
         retriever_methods = [m for m in methods
                              if m.is_retriever() and m.is_available(self)]
         for method in retriever_methods:
             multicall.add(method)
 
         multicall.call()
+
+    def set_check_hash(self, True):
+        pass
 
 
 def _build_class_methods(class_obj):

@@ -8,6 +8,7 @@
     from sickrage.core.helpers.srdatetime import srDateTime, date_presets, time_presets
     from sickrage.metadata import GenericMetadata
     from sickrage.core.helpers import anon_url
+
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/config.js?${sbPID}"></script>
@@ -56,7 +57,7 @@
                                 <span class="component-desc">
                                     <select name="indexerDefaultLang" id="indexerDefaultLang"
                                             class="form-control form-control-inline input-sm bfh-languages"
-                                            data-language=${sickrage.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(indexerApi().config[b'valid_languages'])}"></select>
+                                            data-language=${sickrage.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(sickrage.INDEXER_API().config[b'valid_languages'])}"></select>
                                     <span>for adding shows and metadata providers</span>
                                 </span>
                             </label>
@@ -162,8 +163,8 @@
                                 <span class="component-desc">
                                     <select id="indexer_default" name="indexer_default" class="form-control input-sm">
                                         <option value="0" ${('', 'selected="selected"')[indexer == 0]}>All Indexers</option>
-                                        % for indexer in indexerApi().indexers:
-                                            <option value="${indexer}" ${('', 'selected="selected"')[sickrage.INDEXER_DEFAULT == indexer]}>${indexerApi().indexers[indexer]}</option>
+                                        % for indexer in sickrage.INDEXER_API().indexers:
+                                            <option value="${indexer}" ${('', 'selected="selected"')[sickrage.INDEXER_DEFAULT == indexer]}>${sickrage.INDEXER_API().indexers[indexer]}</option>
                                         % endfor
                                     </select>
                                     <span>as the default selection when adding new shows</span>
@@ -379,7 +380,7 @@
                                 <span class="component-desc">
                                     <select id="time_presets" name="time_preset" class="form-control input-sm">
                                          % for cur_preset in time_presets:
-                                             <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.TIME_PRESET_W_SECONDS == cur_preset]}>${sbdatetime.now().srftime(show_seconds=True, t_preset=cur_preset)}</option>
+                                             <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.TIME_PRESET_W_SECONDS == cur_preset]}>${srDateTime.now().srftime(show_seconds=True, t_preset=cur_preset)}</option>
                                          % endfor
                                     </select>
                                     <span><b>note:</b> seconds are only shown on the History page</span>

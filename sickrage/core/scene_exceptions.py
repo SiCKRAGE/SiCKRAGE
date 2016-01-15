@@ -22,7 +22,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import re
 import threading
 import time
@@ -34,7 +33,7 @@ from sickrage.core.databases import cache_db
 from sickrage.core.helpers import full_sanitizeSceneName, getURL, \
     sanitizeSceneName
 from sickrage.indexers import adba
-from sickrage.indexers.indexer_api import indexerApi
+
 
 exception_dict = {}
 anidb_exception_dict = {}
@@ -173,7 +172,7 @@ def get_scene_exception_by_name_multiple(show_name):
         if show_name.lower() in (
                 cur_exception_name.lower(),
                 sanitizeSceneName(cur_exception_name).lower().replace('.', ' ')):
-            logging.debug("Scene exception lookup got indexer id " + str(cur_indexer_id) + ", using that")
+            sickrage.LOGGER.debug("Scene exception lookup got indexer id " + str(cur_indexer_id) + ", using that")
             out.append((cur_indexer_id, cur_season))
 
     if out:
@@ -188,22 +187,22 @@ def retrieve_exceptions():
     scene_exceptions table in cache.db. Also clears the scene name cache.
     """
 
-    for indexer in indexerApi().indexers:
-        if shouldRefresh(indexerApi(indexer).name):
-            logging.info("Checking for scene exception updates for " + indexerApi(indexer).name + "")
+    for indexer in sickrage.INDEXER_API().indexers:
+        if shouldRefresh(sickrage.INDEXER_API(indexer).name):
+            sickrage.LOGGER.info("Checking for scene exception updates for " + sickrage.INDEXER_API(indexer).name + "")
 
-            loc = indexerApi(indexer).config[b'scene_loc']
+            loc = sickrage.INDEXER_API(indexer).config[b'scene_loc']
             try:
-                data = getURL(loc, session=indexerApi(indexer).session)
+                data = getURL(loc, session=sickrage.INDEXER_API(indexer).session)
             except Exception:
                 continue
 
             if data is None:
                 # When data is None, trouble connecting to github, or reading file failed
-                logging.debug("Check scene exceptions update failed. Unable to update from: " + loc)
+                sickrage.LOGGER.debug("Check scene exceptions update failed. Unable to update from: " + loc)
                 continue
 
-            setLastRefresh(indexerApi(indexer).name)
+            setLastRefresh(sickrage.INDEXER_API(indexer).name)
 
             # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
             for cur_line in data.splitlines():
@@ -255,9 +254,9 @@ def retrieve_exceptions():
                              [cur_indexer_id, cur_exception, curSeason]])
     if queries:
         cache_db.CacheDB().mass_action(queries)
-        logging.debug("Updated scene exceptions")
+        sickrage.LOGGER.debug("Updated scene exceptions")
     else:
-        logging.debug("No scene exceptions update needed")
+        sickrage.LOGGER.debug("No scene exceptions update needed")
 
     # cleanup
     exception_dict.clear()
@@ -271,7 +270,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     """
     cache_db.CacheDB().action('DELETE FROM scene_exceptions WHERE indexer_id=? AND season=?', [indexer_id, season])
 
-    logging.info("Updating scene exceptions")
+    sickrage.LOGGER.info("Updating scene exceptions")
 
     # A change has been made to the scene exception list. Let's clear the cache, to make this visible
     if indexer_id in exceptionsCache:
@@ -285,7 +284,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
 
 def _anidb_exceptions_fetcher():
     if shouldRefresh('anidb'):
-        logging.info("Checking for scene exception updates for AniDB")
+        sickrage.LOGGER.info("Checking for scene exception updates for AniDB")
         for show in sickrage.showList:
             if show.is_anime and show.indexer == 1:
                 try:
@@ -305,15 +304,15 @@ xem_session = requests.Session()
 
 def _xem_exceptions_fetcher():
     if shouldRefresh('xem'):
-        for indexer in indexerApi().indexers:
-            logging.info("Checking for XEM scene exception updates for " + indexerApi(indexer).name)
+        for indexer in sickrage.INDEXER_API().indexers:
+            sickrage.LOGGER.info("Checking for XEM scene exception updates for " + sickrage.INDEXER_API(indexer).name)
 
-            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % indexerApi(indexer).config[
+            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickrage.INDEXER_API(indexer).config[
                 'xem_origin']
 
             parsedJSON = getURL(url, session=xem_session, timeout=90, json=True)
             if not parsedJSON:
-                logging.debug("Check scene exceptions update failed for " + indexerApi(
+                sickrage.LOGGER.debug("Check scene exceptions update failed for " + sickrage.INDEXER_API(
                         indexer).name + ", Unable to get URL: " + url)
                 continue
 
@@ -324,8 +323,8 @@ def _xem_exceptions_fetcher():
                 try:
                     xem_exception_dict[int(indexerid)] = names
                 except Exception as e:
-                    logging.warning("XEM: Rejected entry: indexerid:{0}; names:{1}".format(indexerid, names))
-                    logging.debug("XEM: Rejected entry error message:{0}".format(str(e)))
+                    sickrage.LOGGER.warning("XEM: Rejected entry: indexerid:{0}; names:{1}".format(indexerid, names))
+                    sickrage.LOGGER.debug("XEM: Rejected entry error message:{0}".format(str(e)))
 
         setLastRefresh('xem')
 

@@ -7,11 +7,10 @@
     import time
 
     from sickrage.core.helpers import srdatetime
-    from sickrage.providers import getProvider
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
     from sickrage.core.common import Quality, statusStrings, Overview
 
-    from show import History
+    from sickrage.core.show.history import History
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/history.js"></script>
@@ -91,7 +90,7 @@
                 % else:
                     % if hItem[b"provider"] > 0:
                         % if curStatus in [SNATCHED, FAILED]:
-                            <% provider = getProvider(hItem[b"provider"]) %>
+                            <% provider = sickrage.providersDict[hItem[b"provider"]] %>
                             % if provider != None:
                                 <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16"
                                      style="vertical-align:middle;"/> <span
@@ -148,7 +147,7 @@
                     % for action in sorted(hItem["actions"]):
                         <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
                         % if curStatus in [SNATCHED, FAILED]:
-                            <% provider = getProvider(action["action"]) %>
+                            <% provider = sickrage.providersDict[action["action"]] %>
                             % if provider != None:
                                 <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16"
                                      style="vertical-align:middle;" alt="${provider.name}" style="cursor: help;"

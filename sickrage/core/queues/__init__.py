@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import threading
 
 
@@ -45,12 +44,12 @@ class GenericQueue(object):
 
     def pause(self):
         """Pauses this queue"""
-        logging.info("Pausing queue")
+        sickrage.LOGGER.info("Pausing queue")
         self.min_priority = 999999999999
 
     def unpause(self):
         """Unpauses this queue"""
-        logging.info("Unpausing queue")
+        sickrage.LOGGER.info("Unpausing queue")
         self.min_priority = 0
 
     def add_item(self, item):

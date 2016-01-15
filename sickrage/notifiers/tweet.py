@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 from urlparse import parse_qsl
 
 import oauth2
@@ -65,12 +64,12 @@ class TwitterNotifier:
         oauth_consumer = oauth2.Consumer(key=self.consumer_key, secret=self.consumer_secret)
         oauth_client = oauth2.Client(oauth_consumer)
 
-        logging.debug('Requesting temp token from Twitter')
+        sickrage.LOGGER.debug('Requesting temp token from Twitter')
 
         resp, content = oauth_client.request(self.REQUEST_TOKEN_URL, 'GET')
 
         if resp[b'status'] != '200':
-            logging.error('Invalid response from Twitter requesting temp token: %s' % resp[b'status'])
+            sickrage.LOGGER.error('Invalid response from Twitter requesting temp token: %s' % resp[b'status'])
         else:
             request_token = dict(parse_qsl(content))
 
@@ -89,26 +88,26 @@ class TwitterNotifier:
         token = oauth2.Token(request_token[b'oauth_token'], request_token[b'oauth_token_secret'])
         token.set_verifier(key)
 
-        logging.debug('Generating and signing request for an access token using key ' + key)
+        sickrage.LOGGER.debug('Generating and signing request for an access token using key ' + key)
 
         signature_method_hmac_sha1 = oauth2.SignatureMethod_HMAC_SHA1()  # @UnusedVariable
         oauth_consumer = oauth2.Consumer(key=self.consumer_key, secret=self.consumer_secret)
-        logging.debug('oauth_consumer: ' + str(oauth_consumer))
+        sickrage.LOGGER.debug('oauth_consumer: ' + str(oauth_consumer))
         oauth_client = oauth2.Client(oauth_consumer, token)
-        logging.debug('oauth_client: ' + str(oauth_client))
+        sickrage.LOGGER.debug('oauth_client: ' + str(oauth_client))
         resp, content = oauth_client.request(self.ACCESS_TOKEN_URL, method='POST', body='oauth_verifier=%s' % key)
-        logging.debug('resp, content: ' + str(resp) + ',' + str(content))
+        sickrage.LOGGER.debug('resp, content: ' + str(resp) + ',' + str(content))
 
         access_token = dict(parse_qsl(content))
-        logging.debug('access_token: ' + str(access_token))
+        sickrage.LOGGER.debug('access_token: ' + str(access_token))
 
-        logging.debug('resp[status] = ' + str(resp[b'status']))
+        sickrage.LOGGER.debug('resp[status] = ' + str(resp[b'status']))
         if resp[b'status'] != '200':
-            logging.error('The request for a token with did not succeed: ' + str(resp[b'status']))
+            sickrage.LOGGER.error('The request for a token with did not succeed: ' + str(resp[b'status']))
             return False
         else:
-            logging.debug('Your Twitter Access Token key: %s' % access_token[b'oauth_token'])
-            logging.debug('Access Token secret: %s' % access_token[b'oauth_token_secret'])
+            sickrage.LOGGER.debug('Your Twitter Access Token key: %s' % access_token[b'oauth_token'])
+            sickrage.LOGGER.debug('Access Token secret: %s' % access_token[b'oauth_token_secret'])
             sickrage.TWITTER_USERNAME = access_token[b'oauth_token']
             sickrage.TWITTER_PASSWORD = access_token[b'oauth_token_secret']
             return True
@@ -120,14 +119,14 @@ class TwitterNotifier:
         access_token_key = sickrage.TWITTER_USERNAME
         access_token_secret = sickrage.TWITTER_PASSWORD
 
-        logging.debug("Sending tweet: " + message)
+        sickrage.LOGGER.debug("Sending tweet: " + message)
 
         api = twitter.Twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
             api.PostUpdate(message.encode('utf8')[:139])
         except Exception as e:
-            logging.error("Error Sending Tweet: {}".format(e))
+            sickrage.LOGGER.error("Error Sending Tweet: {}".format(e))
             return False
 
         return True
@@ -140,14 +139,14 @@ class TwitterNotifier:
         access_token_key = sickrage.TWITTER_USERNAME
         access_token_secret = sickrage.TWITTER_PASSWORD
 
-        logging.debug("Sending DM: " + dmdest + " " + message)
+        sickrage.LOGGER.debug("Sending DM: " + dmdest + " " + message)
 
         api = twitter.Twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
             api.PostDirectMessage(dmdest, message.encode('utf8')[:139])
         except Exception as e:
-            logging.error("Error Sending Tweet (DM): {}".format(e))
+            sickrage.LOGGER.error("Error Sending Tweet (DM): {}".format(e))
             return False
 
         return True

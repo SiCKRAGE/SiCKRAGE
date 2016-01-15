@@ -217,7 +217,7 @@
                                     <li><a href="${srRoot}/errorlogs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors <span class="badge btn-danger">${numErrors}</span></a></li>
                                 %endif
                                 %if numWarnings:
-                                    <li><a href="${srRoot}/errorlogs/?level=${sickrage.logger.WARNING}"><i
+                                    <li><a href="${srRoot}/errorlogs/?level=${sickrage.LOGGER.WARNING}"><i
                                             class="menu-icon-viewlog-errors"></i>&nbsp;View Warnings <span
                                             class="badge btn-warning">${numWarnings}</span></a></li>
                                 %endif

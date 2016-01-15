@@ -22,7 +22,6 @@ from __future__ import unicode_literals
 
 import datetime
 import itertools
-import logging
 import time
 import urllib2
 
@@ -131,10 +130,10 @@ class TVCache(object):
                     myDB = self._getDB()
                     myDB.mass_action(cl)
             except AuthException as e:
-                logging.error("Authentication error: {}".format(e))
+                sickrage.LOGGER.error("Authentication error: {}".format(e))
                 return False
             except Exception as e:
-                logging.debug("Error while searching {}, skipping: {}".format(self.provider.name, repr(e)))
+                sickrage.LOGGER.debug("Error while searching {}, skipping: {}".format(self.provider.name, repr(e)))
                 return False
 
         return True
@@ -143,7 +142,7 @@ class TVCache(object):
         handlers = []
 
         if sickrage.PROXY_SETTING:
-            logging.debug("Using global proxy for url: " + url)
+            sickrage.LOGGER.debug("Using global proxy for url: " + url)
             scheme, address = urllib2.splittype(sickrage.PROXY_SETTING)
             address = sickrage.PROXY_SETTING if scheme else 'http://' + sickrage.PROXY_SETTING
             handlers = [urllib2.ProxyHandler({'http': address, 'https': address})]
@@ -168,11 +167,11 @@ class TVCache(object):
             title = self._translateTitle(title)
             url = self._translateLinkURL(url)
 
-            logging.debug("Attempting to add item to cache: " + title)
+            sickrage.LOGGER.debug("Attempting to add item to cache: " + title)
             return self._addCacheEntry(title, url)
 
         else:
-            logging.debug(
+            sickrage.LOGGER.debug(
                     "The data returned from the " + self.provider.name + " feed is incomplete, this result is unusable")
 
         return False
@@ -227,7 +226,7 @@ class TVCache(object):
     def shouldUpdate(self):
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
-            logging.debug(
+            sickrage.LOGGER.debug(
                 "Last update was too soon, using old tv cache: " + str(self.lastUpdate) + ". Updated less then " + str(
                     self.minTime) + " minutes ago")
             return False
@@ -255,10 +254,10 @@ class TVCache(object):
                 myParser = NameParser(showObj=showObj)
                 parse_result = myParser.parse(name)
             except InvalidNameException:
-                logging.debug("Unable to parse the filename " + name + " into a valid episode")
+                sickrage.LOGGER.debug("Unable to parse the filename " + name + " into a valid episode")
                 return None
             except InvalidShowException:
-                logging.debug("Unable to parse the filename " + name + " into a valid show")
+                sickrage.LOGGER.debug("Unable to parse the filename " + name + " into a valid show")
                 return None
 
             if not parse_result or not parse_result.series_name:
@@ -284,7 +283,7 @@ class TVCache(object):
             # get version
             version = parse_result.version
 
-            logging.debug("Added RSS item: [" + name + "] to cache: [" + self.providerID + "]")
+            sickrage.LOGGER.debug("Added RSS item: [" + name + "] to cache: [" + self.providerID + "]")
 
             return [
                 "INSERT OR IGNORE INTO [" + self.providerID + "] (name, season, episodes, indexerid, url, time, quality, release_group, version) VALUES (?,?,?,?,?,?,?,?,?)",
@@ -339,7 +338,7 @@ class TVCache(object):
 
             # skip if provider is anime only and show is not anime
             if self.provider.anime_only and not showObj.is_anime:
-                logging.debug("" + str(showObj.name) + " is not an anime, skiping")
+                sickrage.LOGGER.debug("" + str(showObj.name) + " is not an anime, skiping")
                 continue
 
             # get season and ep data (ignoring multi-eps for now)
@@ -359,7 +358,7 @@ class TVCache(object):
 
             # if the show says we want that episode then add it to the list
             if not showObj.wantEpisode(curSeason, curEp, curQuality, manualSearch, downCurQuality):
-                logging.info("Skipping " + curResult[b"name"] + " because we don't want an episode that's " +
+                sickrage.LOGGER.info("Skipping " + curResult[b"name"] + " because we don't want an episode that's " +
                             Quality.qualityStrings[curQuality])
                 continue
 
@@ -369,7 +368,7 @@ class TVCache(object):
             title = curResult[b"name"]
             url = curResult[b"url"]
 
-            logging.info("Found result " + title + " at " + url)
+            sickrage.LOGGER.info("Found result " + title + " at " + url)
 
             result = self.provider.getResult([epObj])
             result.show = showObj

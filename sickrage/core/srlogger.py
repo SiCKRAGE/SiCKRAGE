@@ -23,42 +23,55 @@ from __future__ import unicode_literals
 import io
 import locale
 import logging
-import logging.handlers
 import os
 import platform
 import re
 import sys
 import traceback
-from logging import Logger, DEBUG, ERROR, INFO, WARNING
-
-import github
-
-import classes
-import sickrage
-from sickrage.core.common import dateTimeFormat
+from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
 
 
-class SRLogger(Logger):
+class srLogger(logging.getLoggerClass()):
+    # disable root logger
+    logging.getLogger().addHandler(logging.NullHandler())
 
-    def __init__(self, name='root', *args, **kwargs):
+    def __init__(self,
+                 name='sickrage',
+                 logFile=None,
+                 logSize=1048576,
+                 logNr=5,
+                 consoleLogging=True,
+                 fileLogging=True,
+                 debugLogging=False,
+                 *args, **kwargs):
+
         logging.Logger.__init__(self, name, *args, **kwargs)
-        logging.setLoggerClass(CustomLogger)
 
-        self.logFile = None
-        self.consoleLogging = True
-        self.fileLogging = False
-        self.debugLogging = False
-        self.logSize = 1048576
-        self.logNr = 5
         self.censoredItems = {}
+
+        self.consoleLogging = consoleLogging
+        self.fileLogging = fileLogging
+        self.debugLogging = debugLogging
+
+        self.logFile = logFile
+        self.logSize = logSize
+        self.logNr = logNr
 
         self.submitter_running = False
 
+        self.CRITICAL = CRITICAL
+        self.DEBUG = DEBUG
+        self.ERROR = ERROR
+        self.WARNING = WARNING
+        self.INFO = INFO
+        self.DB = 5
+
         self.logLevels = {
-            'ERROR': ERROR,
-            'WARNING': WARNING,
-            'INFO': INFO,
-            'DEBUG': DEBUG,
+            'CRITICAL': self.CRITICAL,
+            'ERROR': self.ERROR,
+            'WARNING': self.WARNING,
+            'INFO': self.INFO,
+            'DEBUG': self.DEBUG,
             'DB': 5
         }
 
@@ -82,13 +95,7 @@ class SRLogger(Logger):
         }
 
         # list of allowed loggers
-        self.allowedLoggers = ['root', 'tornado.general', 'tornado.application']
-
-    def initialize(self):
-        # disable loggers not present in allowed loggers list
-        for logger in Logger.manager.loggerDict.values():
-            if hasattr(logger, "handlers") and hasattr(logger, "name"):
-                logger.disabled = (False, True)[logger.name not in self.allowedLoggers]
+        self.allowedLoggers = ['sickrage', 'tornado.general', 'tornado.application']
 
         # set custom level for database logging
         logging.addLevelName(self.logLevels[b'DB'], 'DB')
@@ -97,9 +104,10 @@ class SRLogger(Logger):
         # console log handler
         if self.consoleLogging:
             console = logging.StreamHandler()
-            console.setFormatter(logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S'))
+            console.setFormatter(
+                    logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S'))
             console.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
-            logging.getLogger().addHandler(console)
+            self.addHandler(console)
 
         # rotating log file handler
         if self.fileLogging and self.logFile:
@@ -108,61 +116,71 @@ class SRLogger(Logger):
                     maxBytes=self.logSize,
                     backupCount=self.logNr
             )
+
             rfh.setFormatter(
-                    logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', dateTimeFormat))
+                    logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%Y-%m-%d %H:%M:%S'))
             rfh.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
-            logging.getLogger().addHandler(rfh)
+            self.addHandler(rfh)
 
-class CustomLogger(SRLogger):
-    def __init__(self, *args, **kwargs):
-        super(CustomLogger, self).__init__(*args, **kwargs)
-        self.disabled = (False, True)[self.name not in self.allowedLoggers]
-        logging.log_error_and_exit = self.log_error_and_exit
-        logging.submit_errors = self.submit_errors
+    def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
+        if (False, True)[name in self.allowedLoggers]:
+            record = super(srLogger, self).makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra)
 
-    def handle(self, record):
-        if self.disabled:
-            return
+            try:
+                record.msg = re.sub(r"(.*)\b({})\b(.*)"
+                                    .format('|'
+                                            .join([x for x in self.censoredItems.values() if len(x)])), r"\1\3",
+                                    record.msg)
 
-        try:
-            record.msg = re.sub(r"(.*)\b({})\b(.*)"
-                                .format('|'
-                                        .join([x for x in self.censoredItems.values() if len(x)])), r"\1\3",
-                                record.msg)
+                # needed because Newznab apikey isn't stored as key=value in a section.
+                record.msg = re.sub(r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)", r"\1=**********\2", record.msg)
+            except:
+                pass
 
-            # needed because Newznab apikey isn't stored as key=value in a section.
-            record.msg = re.sub(r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)", r"\1=**********\2", record.msg)
-        except:
-            pass
+            # sending record to UI
+            if record.levelno in [WARNING, ERROR]:
+                from sickrage.core.classes import WarningViewer
+                from sickrage.core.classes import ErrorViewer
+                (WarningViewer(), ErrorViewer())[record.levelno == ERROR].add(record.msg, True)
 
-        # sending record to UI
-        if record.levelno in [WARNING, ERROR]:
-            (classes.WarningViewer(), classes.ErrorViewer())[record.levelno == ERROR].add(record.msg, True)
+            return record
 
-        super(CustomLogger, self).handle(record)
-        if 'exit' in record.args:
-            if self.consoleLogging:
-                sys.exit(record.msg)
-            sys.exit(1)
+    def log(self, level, msg, *args, **kwargs):
+        super(srLogger, self).log(level, msg, *args, **kwargs)
+
+    def info(self, msg, *args, **kwargs):
+        super(srLogger, self).info(msg, *args, **kwargs)
+
+    def debug(self, msg, *args, **kwargs):
+        super(srLogger, self).debug(msg, *args, **kwargs)
+
+    def critical(self, msg, *args, **kwargs):
+        super(srLogger, self).critical(msg, *args, **kwargs)
+
+    def exception(self, msg, *args, **kwargs):
+        super(srLogger, self).exception(msg, *args, **kwargs)
 
     def error(self, msg, *args, **kwargs):
-        super(CustomLogger, self).error(msg, exc_info=1, *args, **kwargs)
+        super(srLogger, self).error(msg, exc_info=1, *args, **kwargs)
 
     def warning(self, msg, *args, **kwargs):
-        super(CustomLogger, self).warning(msg, exc_info=1, *args, **kwargs)
+        super(srLogger, self).warning(msg, *args, **kwargs)
 
     def db(self, msg, *args, **kwargs):
-        super(CustomLogger, self).log(self.logLevels[b'DB'], msg, *args, **kwargs)
+        super(srLogger, self).log(self.logLevels[b'DB'], msg, *args, **kwargs)
 
     def log_error_and_exit(self, msg, *args, **kwargs):
-        super(CustomLogger, self).error(msg, exit=1, *args, **kwargs)
+        if self.consoleLogging:
+            sys.exit(super(srLogger, self).error(msg, *args, **kwargs))
+        sys.exit(1)
 
     def submit_errors(self):  # Too many local variables, too many branches, pylint: disable=R0912,R0914
         submitter_result = None
         issue_id = None
 
-        if not (sickrage.GIT_USERNAME and sickrage.GIT_PASSWORD and sickrage.DEBUG and len(
-                classes.ErrorViewer.errors) > 0):
+        import sickrage
+        from sickrage.core.classes import ErrorViewer
+        if not (sickrage.GIT_USERNAME and sickrage.GIT_PASSWORD and sickrage.DEBUG and len(ErrorViewer.errors) > 0):
             submitter_result = 'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
 
@@ -188,6 +206,7 @@ class CustomLogger(SRLogger):
         gh_org = sickrage.GIT_ORG or 'SiCKRAGETV'
         gh_repo = 'sickrage-issues'
 
+        import github
         gh = github.Github(login_or_token=sickrage.GIT_USERNAME, password=sickrage.GIT_PASSWORD,
                            user_agent="SiCKRAGE")
 
@@ -207,7 +226,7 @@ class CustomLogger(SRLogger):
             log_data = [line for line in reversed(log_data)]
 
             # parse and submit errors to issue tracker
-            for curError in sorted(classes.ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
+            for curError in sorted(ErrorViewer.errors, key=lambda error: error.time, reverse=True)[:500]:
 
                 try:
                     title_Error = "[APP SUBMITTED]: {}".format(curError.title)
@@ -217,7 +236,7 @@ class CustomLogger(SRLogger):
                     if len(title_Error) > 1000:
                         title_Error = title_Error[0:1000]
                 except Exception as e:
-                    super(CustomLogger, self).error("Unable to get error title : {}".format(e))
+                    super(srLogger, self).error("Unable to get error title : {}".format(e))
 
                 gist = None
                 regex = r"^({})\s+([A-Z]+)\s+([0-9A-Z\-]+)\s*(.*)$".format(curError.time)
@@ -225,7 +244,7 @@ class CustomLogger(SRLogger):
                     match = re.match(regex, x)
                     if match:
                         level = match.group(2)
-                        # if level == logging.ERROR:
+                        # if level == sickrage.LOGGER.ERROR:
                         # paste_data = "".join(log_data[i:i + 50])
                         # if paste_data:
                         #    gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
@@ -290,16 +309,18 @@ class CustomLogger(SRLogger):
                     else:
                         submitter_result = 'Failed to create a new issue!'
 
-                if issue_id and curError in classes.ErrorViewer.errors:
+                if issue_id and curError in ErrorViewer.errors:
                     # clear error from error list
-                    classes.ErrorViewer.errors.remove(curError)
+                    ErrorViewer.errors.remove(curError)
 
         except Exception as e:
-            super(CustomLogger, self).error(traceback.format_exc())
+            super(srLogger, self).error(traceback.format_exc())
             submitter_result = 'Exception generated in issue submitter, please check the log'
         finally:
             self.submitter_running = False
 
         return submitter_result, issue_id
 
-SRLogger = SRLogger()
+    @staticmethod
+    def shutdown():
+        logging.shutdown()

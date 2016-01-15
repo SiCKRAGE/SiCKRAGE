@@ -20,7 +20,6 @@ from __future__ import unicode_literals
 
 import datetime
 import io
-import logging
 import os
 import re
 import subprocess
@@ -129,7 +128,7 @@ def downloadSubtitles(subtitles_info):
     # First of all, check if we need subtitles
     languages = getNeededLanguages(existing_subtitles)
     if not languages:
-        logging.debug('%s: No missing subtitles for S%02dE%02d' % (
+        sickrage.LOGGER.debug('%s: No missing subtitles for S%02dE%02d' % (
             subtitles_info[b'show.indexerid'], subtitles_info[b'season'], subtitles_info[b'episode']))
         return existing_subtitles, None
 
@@ -140,7 +139,7 @@ def downloadSubtitles(subtitles_info):
     try:
         video = subliminal.scan_video(video_path, subtitles=False, embedded_subtitles=False)
     except Exception:
-        logging.debug('%s: Exception caught in subliminal.scan_video for S%02dE%02d' %
+        sickrage.LOGGER.debug('%s: Exception caught in subliminal.scan_video for S%02dE%02d' %
                       (subtitles_info[b'show.indexerid'], subtitles_info[b'season'], subtitles_info[b'episode']))
         return existing_subtitles, None
 
@@ -154,7 +153,7 @@ def downloadSubtitles(subtitles_info):
     try:
         subtitles_list = pool.list_subtitles(video, languages)
         if not subtitles_list:
-            logging.debug('%s: No subtitles found for S%02dE%02d on any provider' % (
+            sickrage.LOGGER.debug('%s: No subtitles found for S%02dE%02d on any provider' % (
                 subtitles_info[b'show.indexerid'], subtitles_info[b'season'], subtitles_info[b'episode']))
             return existing_subtitles, None
 
@@ -172,13 +171,13 @@ def downloadSubtitles(subtitles_info):
         new_subtitles = frozenset(current_subtitles).difference(existing_subtitles)
 
     except Exception:
-        logging.info("Error occurred when downloading subtitles for: %s" % video_path)
-        logging.error(traceback.format_exc())
+        sickrage.LOGGER.info("Error occurred when downloading subtitles for: %s" % video_path)
+        sickrage.LOGGER.error(traceback.format_exc())
         return existing_subtitles, None
 
     if sickrage.SUBTITLES_HISTORY:
         for subtitle in found_subtitles:
-            logging.debug('history.logSubtitle %s, %s' % (subtitle.provider_name, subtitle.language.opensubtitles))
+            sickrage.LOGGER.debug('history.logSubtitle %s, %s' % (subtitle.provider_name, subtitle.language.opensubtitles))
             History.logSubtitle(subtitles_info[b'show.indexerid'], subtitles_info[b'season'],
                                 subtitles_info[b'episode'],
                                 subtitles_info[b'status'], subtitle)
@@ -191,12 +190,12 @@ def save_subtitles(video, subtitles, single=False, directory=None):
     for subtitle in subtitles:
         # check content
         if subtitle.content is None:
-            logging.debug("Skipping subtitle for %s: no content" % video.name)
+            sickrage.LOGGER.debug("Skipping subtitle for %s: no content" % video.name)
             continue
 
         # check language
         if subtitle.language in set(s.language for s in saved_subtitles):
-            logging.debug("Skipping subtitle for %s: language already saved" % video.name)
+            sickrage.LOGGER.debug("Skipping subtitle for %s: language already saved" % video.name)
             continue
 
         # create subtitle path
@@ -205,7 +204,7 @@ def save_subtitles(video, subtitles, single=False, directory=None):
             subtitle_path = os.path.join(directory, os.path.split(subtitle_path)[1])
 
         # save content as is or in the specified encoding
-        logging.debug("Saving subtitle for %s to %s" % (video.name, subtitle_path))
+        sickrage.LOGGER.debug("Saving subtitle for %s to %s" % (video.name, subtitle_path))
         if subtitle.encoding:
             with io.open(subtitle_path, 'w', encoding=subtitle.encoding) as f:
                 f.write(subtitle.text)
@@ -248,7 +247,7 @@ def getSubtitlesPath(video_path):
         new_subtitles_path = os.path.join(os.path.dirname(video_path), sickrage.SUBTITLES_DIR)
         dir_exists = makeDir(new_subtitles_path)
         if not dir_exists:
-            logging.error('Unable to create subtitles folder ' + new_subtitles_path)
+            sickrage.LOGGER.error('Unable to create subtitles folder ' + new_subtitles_path)
         else:
             chmodAsParent(new_subtitles_path)
     else:
@@ -326,20 +325,20 @@ def getEmbeddedLanguages(video_path):
                         try:
                             embedded_subtitle_languages.add(babelfish.Language.fromalpha3b(st.language))
                         except babelfish.Error:
-                            logging.debug('Embedded subtitle track is not a valid language')
+                            sickrage.LOGGER.debug('Embedded subtitle track is not a valid language')
                             embedded_subtitle_languages.add(babelfish.Language('und'))
                     elif st.name:
                         try:
                             embedded_subtitle_languages.add(babelfish.Language.fromname(st.name))
                         except babelfish.Error:
-                            logging.debug('Embedded subtitle track is not a valid language')
+                            sickrage.LOGGER.debug('Embedded subtitle track is not a valid language')
                             embedded_subtitle_languages.add(babelfish.Language('und'))
                     else:
                         embedded_subtitle_languages.add(babelfish.Language('und'))
             else:
-                logging.debug('MKV has no subtitle track')
+                sickrage.LOGGER.debug('MKV has no subtitle track')
     except MalformedMKVError:
-        logging.info('MKV seems to be malformed ( %s ), ignoring embedded subtitles' % video_path)
+        sickrage.LOGGER.info('MKV seems to be malformed ( %s ), ignoring embedded subtitles' % video_path)
 
     return embedded_subtitle_languages
 
@@ -395,12 +394,12 @@ class SubtitleSearcher(object):
         self.amActive = True
 
         if len(getEnabledServiceList()) < 1:
-            logging.warning(
+            sickrage.LOGGER.warning(
                     'Not enough services selected. At least 1 service is required to search subtitles in the background'
             )
             return
 
-        logging.info('Checking for subtitles')
+        sickrage.LOGGER.info('Checking for subtitles')
 
         # get episodes on which we want subtitles
         # criteria is:
@@ -423,7 +422,7 @@ class SubtitleSearcher(object):
                 'AND e.location != ""', [today, wantedLanguages(True)])
 
         if len(sqlResults) == 0:
-            logging.info('No subtitles to download')
+            sickrage.LOGGER.info('No subtitles to download')
             return
 
         rules = self._getRules()
@@ -431,7 +430,7 @@ class SubtitleSearcher(object):
         for epToSub in sqlResults:
 
             if not os.path.isfile(epToSub[b'location']):
-                logging.debug('Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' % (
+                sickrage.LOGGER.debug('Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' % (
                     epToSub[b'season'], epToSub[b'episode'], epToSub[b'show_name']))
                 continue
 
@@ -454,17 +453,17 @@ class SubtitleSearcher(object):
                         )
             ):
 
-                logging.debug('Downloading subtitles for episode %dx%d of show %s' % (
+                sickrage.LOGGER.debug('Downloading subtitles for episode %dx%d of show %s' % (
                     epToSub[b'season'], epToSub[b'episode'], epToSub[b'show_name']))
 
                 showObj = findCertainShow(sickrage.showList, int(epToSub[b'showid']))
                 if not showObj:
-                    logging.debug('Show not found')
+                    sickrage.LOGGER.debug('Show not found')
                     return
 
                 epObj = showObj.getEpisode(int(epToSub[b"season"]), int(epToSub[b"episode"]))
                 if isinstance(epObj, str):
-                    logging.debug('Episode not found')
+                    sickrage.LOGGER.debug('Episode not found')
                     return
 
                 existing_subtitles = epObj.subtitles
@@ -472,13 +471,13 @@ class SubtitleSearcher(object):
                 try:
                     epObj.downloadSubtitles()
                 except Exception as e:
-                    logging.debug('Unable to find subtitles')
-                    logging.debug(str(e))
+                    sickrage.LOGGER.debug('Unable to find subtitles')
+                    sickrage.LOGGER.debug(str(e))
                     return
 
                 newSubtitles = frozenset(epObj.subtitles).difference(existing_subtitles)
                 if newSubtitles:
-                    logging.info('Downloaded subtitles for S%02dE%02d in %s' % (
+                    sickrage.LOGGER.info('Downloaded subtitles for S%02dE%02d in %s' % (
                         epToSub[b"season"], epToSub[b"episode"], ', '.join(newSubtitles)))
 
         self.amActive = False
@@ -497,7 +496,7 @@ def run_subs_extra_scripts(epObj, found_subtitles, video, single=False):
     for curScriptName in sickrage.SUBTITLES_EXTRA_SCRIPTS:
         script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
         script_cmd[0] = os.path.abspath(script_cmd[0])
-        logging.debug("Absolute path to script: " + script_cmd[0])
+        sickrage.LOGGER.debug("Absolute path to script: " + script_cmd[0])
 
         for subtitle in found_subtitles:
             subtitle_path = subliminal.subtitle.get_subtitle_path(video.name, None if single else subtitle.language)
@@ -507,12 +506,12 @@ def run_subs_extra_scripts(epObj, found_subtitles, video, single=False):
                                       str(epObj[b'show.indexerid'])]
 
             # use subprocess to run the command and capture output
-            logging.info("Executing command: %s" % inner_cmd)
+            sickrage.LOGGER.info("Executing command: %s" % inner_cmd)
             try:
                 p = subprocess.Popen(inner_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT, cwd=sickrage.ROOT_DIR)
                 out, _ = p.communicate()  # @UnusedVariable
-                logging.debug("Script result: %s" % out)
+                sickrage.LOGGER.debug("Script result: %s" % out)
 
             except Exception as e:
-                logging.info("Unable to run subs_extra_script: {}".format(e))
+                sickrage.LOGGER.info("Unable to run subs_extra_script: {}".format(e))

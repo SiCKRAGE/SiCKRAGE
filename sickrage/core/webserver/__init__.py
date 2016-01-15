@@ -20,7 +20,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import os
 import signal
 
@@ -45,8 +44,12 @@ class StaticImageHandler(StaticFileHandler):
             os.path.exists(os.path.normpath(os.path.join(sickrage.CACHE_DIR, 'images', path)))
         ]
 
-        return super(StaticImageHandler, self).get(path, include_body)
+        # image css check
+        self.root = (self.root, os.path.join(sickrage.GUI_DIR, 'css', 'lib', 'images'))[
+            os.path.exists(os.path.normpath(os.path.join(sickrage.GUI_DIR, 'css', 'lib', 'images', path)))
+        ]
 
+        return super(StaticImageHandler, self).get(path, include_body)
 
 class SRWebServer(object):
     def __init__(self, **kwargs):
@@ -89,12 +92,12 @@ class SRWebServer(object):
             if not (self.https_cert and os.path.exists(self.https_cert)) or not (
                         self.https_key and os.path.exists(self.https_key)):
                 if not create_https_certificates(self.https_cert, self.https_key):
-                    logging.info("Unable to create CERT/KEY files, disabling HTTPS")
+                    sickrage.LOGGER.info("Unable to create CERT/KEY files, disabling HTTPS")
                     sickrage.ENABLE_HTTPS = False
                     self.enable_https = False
 
             if not (os.path.exists(self.https_cert) and os.path.exists(self.https_key)):
-                logging.warning("Disabled HTTPS because of missing CERT and KEY files")
+                sickrage.LOGGER.warning("Disabled HTTPS because of missing CERT and KEY files")
                 sickrage.ENABLE_HTTPS = False
                 self.enable_https = False
 
@@ -172,7 +175,7 @@ class SRWebServer(object):
                 self.server.ssl_options = {"certfile": self.https_cert, "keyfile": self.https_key}
             self.server.listen(self.options[b'port'], self.options[b'host'])
 
-            logging.info(
+            sickrage.LOGGER.info(
                     "Starting SiCKRAGE web server on [{}://{}:{}/]".format(
                             ('http', 'https')[self.enable_https], get_lan_ip(), self.options[b'port']
                     ))
@@ -185,9 +188,9 @@ class SRWebServer(object):
         except KeyboardInterrupt:
             self.server_shutdown()
         except Exception as e:
-            logging.info("Tornado failed to start: {}".format(e))
+            sickrage.LOGGER.info("Tornado failed to start: {}".format(e))
         finally:
-            logging.info("SiCKRAGE has shutdown!")
+            sickrage.LOGGER.info("SiCKRAGE has shutdown!")
 
     @staticmethod
     def remove_pid_file():
@@ -198,7 +201,7 @@ class SRWebServer(object):
             pass
 
     def server_restart(self):
-        logging.info('SiCKRAGE is restarting!')
+        sickrage.LOGGER.info('SiCKRAGE is restarting!')
         signal.signal(signal.SIGTERM, signal.SIG_IGN)
 
         import tornado.autoreload
@@ -210,7 +213,7 @@ class SRWebServer(object):
         # shutdown tornado
         self.server.stop()
         if self.running:
-            logging.info('TORNADO is now shutting down!')
+            sickrage.LOGGER.info('TORNADO is now shutting down!')
             self.io_loop.stop()
 
         # if run as daemon delete the pidfile
@@ -219,9 +222,9 @@ class SRWebServer(object):
 
         # shutdown sickrage
         if sickrage.STARTED:
-            logging.info('SiCKRAGE is now shutting down!')
+            sickrage.LOGGER.info('SiCKRAGE is now shutting down!')
             sickrage.core.halt()
             sickrage.core.saveall()
 
         # shutown logging
-        logging.shutdown()
+        sickrage.LOGGER.shutdown()

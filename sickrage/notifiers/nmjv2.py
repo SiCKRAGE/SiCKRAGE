@@ -19,7 +19,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import urllib2
 from xml.dom.minidom import parseString
 from xml.etree import ElementTree
@@ -88,7 +87,7 @@ class NMJv2Notifier:
                         return True
 
         except IOError as e:
-            logging.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
+            sickrage.LOGGER.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
         return False
 
@@ -106,9 +105,9 @@ class NMJv2Notifier:
         # if a host is provided then attempt to open a handle to that URL
         try:
             url_scandir = "http://" + host + ":8008/metadata_database?arg0=update_scandir&arg1=" + sickrage.NMJv2_DATABASE + "&arg2=&arg3=update_all"
-            logging.debug("NMJ scan update command sent to host: %s" % (host))
+            sickrage.LOGGER.debug("NMJ scan update command sent to host: %s" % (host))
             url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + sickrage.NMJv2_DATABASE + "&arg2=background&arg3="
-            logging.debug("Try to mount network drive via url: %s" % (host))
+            sickrage.LOGGER.debug("Try to mount network drive via url: %s" % (host))
             prereq = urllib2.Request(url_scandir)
             req = urllib2.Request(url_updatedb)
             handle1 = urllib2.urlopen(prereq)
@@ -117,19 +116,19 @@ class NMJv2Notifier:
             handle2 = urllib2.urlopen(req)
             response2 = handle2.read()
         except IOError as e:
-            logging.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
+            sickrage.LOGGER.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
         try:
             et = ElementTree.fromstring(response1)
             result1 = et.findtext("returnValue")
         except SyntaxError as e:
-            logging.error("Unable to parse XML returned from the Popcorn Hour: update_scandir, {}".format(e))
+            sickrage.LOGGER.error("Unable to parse XML returned from the Popcorn Hour: update_scandir, {}".format(e))
             return False
         try:
             et = ElementTree.fromstring(response2)
             result2 = et.findtext("returnValue")
         except SyntaxError as e:
-            logging.error("Unable to parse XML returned from the Popcorn Hour: scanner_start, {}".format(e))
+            sickrage.LOGGER.error("Unable to parse XML returned from the Popcorn Hour: scanner_start, {}".format(e))
             return False
 
         # if the result was a number then consider that an error
@@ -143,15 +142,15 @@ class NMJv2Notifier:
                           "Read only file system"]
         if int(result1) > 0:
             index = error_codes.index(result1)
-            logging.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
+            sickrage.LOGGER.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
             return False
         else:
             if int(result2) > 0:
                 index = error_codes.index(result2)
-                logging.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
+                sickrage.LOGGER.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
                 return False
             else:
-                logging.info("NMJv2 started background scan")
+                sickrage.LOGGER.info("NMJv2 started background scan")
                 return True
 
     def _notifyNMJ(self, host=None, force=False):
@@ -164,13 +163,13 @@ class NMJv2Notifier:
         force: If True then the notification will be sent even if NMJ is disabled in the config
         """
         if not sickrage.USE_NMJv2 and not force:
-            logging.debug("Notification for NMJ scan update not enabled, skipping this notification")
+            sickrage.LOGGER.debug("Notification for NMJ scan update not enabled, skipping this notification")
             return False
 
         # fill in omitted parameters
         if not host:
             host = sickrage.NMJv2_HOST
 
-        logging.debug("Sending scan command for NMJ ")
+        sickrage.LOGGER.debug("Sending scan command for NMJ ")
 
         return self._sendNMJ(host)

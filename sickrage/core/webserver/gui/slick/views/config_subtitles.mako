@@ -2,6 +2,7 @@
 <%!
     import sickrage
     from sickrage.core.searchers import subtitle_searcher
+    from sickrage.core.helpers import anon_url
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/configSubtitles.js?${sbPID}"></script>
@@ -176,7 +177,7 @@ $('#subtitles_dir').fileBrowser({ title: 'Select Subtitles Download Directory' }
                             % for curService in subtitle_searcher.sortedServiceList():
                             <li class="ui-state-default" id="${curService[b'name']}">
                                 <input type="checkbox" id="enable_${curService[b'name']}" class="service_enabler" ${('', 'checked="checked"')[curService[b'enabled'] == True]}/>
-                                <a href="${helpers.anon_url(curService[b'url'])}" class="imgLink" target="_new">
+                                <a href="${anon_url(curService[b'url'])}" class="imgLink" target="_new">
                                     <img src="${srRoot}/images/subtitles/${curService[b'image']}" alt="${curService[b'url']}" title="${curService[b'url']}" width="16" height="16" style="vertical-align:middle;"/>
                                 </a>
                             <span style="vertical-align:middle;">${curService[b'name'].capitalize()}</span>

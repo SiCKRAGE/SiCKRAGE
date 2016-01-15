@@ -20,8 +20,6 @@
 
 from __future__ import unicode_literals
 
-import logging
-
 import sickrage
 from sickrage.core.databases import main_db
 from sickrage.core.helpers import set_up_anidb_connection
@@ -42,7 +40,7 @@ class BlackAndWhiteList(object):
         """
         Builds black and whitelist
         """
-        logging.debug('Building black and white list for ' + str(self.show_id))
+        sickrage.LOGGER.debug('Building black and white list for ' + str(self.show_id))
         self.blacklist = self._load_list('blacklist')
         self.whitelist = self._load_list('whitelist')
 
@@ -66,7 +64,7 @@ class BlackAndWhiteList(object):
         self._del_all_keywords('blacklist')
         self._add_keywords('blacklist', values)
         self.blacklist = values
-        logging.debug('Blacklist set to: %s' % self.blacklist)
+        sickrage.LOGGER.debug('Blacklist set to: %s' % self.blacklist)
 
     def set_white_keywords(self, values):
         """
@@ -77,7 +75,7 @@ class BlackAndWhiteList(object):
         self._del_all_keywords('whitelist')
         self._add_keywords('whitelist', values)
         self.whitelist = values
-        logging.debug('Whitelist set to: %s' % self.whitelist)
+        sickrage.LOGGER.debug('Whitelist set to: %s' % self.whitelist)
 
     def _del_all_keywords(self, table):
         """
@@ -102,7 +100,7 @@ class BlackAndWhiteList(object):
         for result in sqlResults:
             groups.append(result[b"keyword"])
 
-        logging.debug('BWL: ' + str(self.show_id) + ' loaded keywords from ' + table + ': ' + str(groups))
+        sickrage.LOGGER.debug('BWL: ' + str(self.show_id) + ' loaded keywords from ' + table + ': ' + str(groups))
 
         return groups
 
@@ -116,7 +114,7 @@ class BlackAndWhiteList(object):
 
         if self.whitelist or self.blacklist:
             if not result.release_group:
-                logging.debug('Failed to detect release group')
+                sickrage.LOGGER.debug('Failed to detect release group')
                 return False
 
             if result.release_group.lower() in [x.lower() for x in self.whitelist]:
@@ -130,14 +128,14 @@ class BlackAndWhiteList(object):
             else:
                 black_result = True
 
-            logging.debug('Whitelist check passed: %s. Blacklist check passed: %s' % (white_result, black_result))
+            sickrage.LOGGER.debug('Whitelist check passed: %s. Blacklist check passed: %s' % (white_result, black_result))
 
             if white_result and black_result:
                 return True
             else:
                 return False
         else:
-            logging.debug('No Whitelist and  Blacklist defined')
+            sickrage.LOGGER.debug('No Whitelist and  Blacklist defined')
             return True
 
 
@@ -159,9 +157,9 @@ def short_group_names(groups):
             try:
                 group = sickrage.ADBA_CONNECTION.group(gname=groupName)
             except AniDBCommandTimeoutError:
-                logging.debug("Timeout while loading group from AniDB. Trying next group")
+                sickrage.LOGGER.debug("Timeout while loading group from AniDB. Trying next group")
             except Exception:
-                logging.debug("Failed while loading group from AniDB. Trying next group")
+                sickrage.LOGGER.debug("Failed while loading group from AniDB. Trying next group")
             else:
                 for line in group.datalines:
                     if line[b"shortname"]:

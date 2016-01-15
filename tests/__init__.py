@@ -31,7 +31,6 @@ from sickrage.core import removetree
 from sickrage.core.caches import tv_cache
 from sickrage.core.databases import cache_db, failed_db, main_db
 from sickrage.core.helpers.encoding import encodingInit
-from sickrage.core.logger import SRLogger
 from sickrage.core.srconfig import srConfig
 from sickrage.core.tv import TV
 from sickrage.core.webserver import SRWebServer
@@ -104,7 +103,6 @@ sickrage.WEB_ROOT = ""
 sickrage.WEB_SERVER = None
 sickrage.CPU_PRESET = "NORMAL"
 
-sickrage.VERSION = srConfig.check_setting_str(sickrage.CFG, 'General', 'branch', '')
 sickrage.CUR_COMMIT_HASH = srConfig.check_setting_str(sickrage.CFG, 'General', 'cur_commit_hash', '')
 sickrage.GIT_USERNAME = srConfig.check_setting_str(sickrage.CFG, 'General', 'git_username', '')
 sickrage.GIT_PASSWORD = srConfig.check_setting_str(sickrage.CFG, 'General', 'git_password', '',
@@ -120,13 +118,11 @@ sickrage.LOG_SIZE = 1048576
 
 createTestLogFolder()
 
-SRLogger.consoleLogging=False
-SRLogger.fileLogging=True
-SRLogger.debugLogging=True
-SRLogger.logFile = sickrage.LOG_FILE
-SRLogger.logSize = sickrage.LOG_SIZE
-SRLogger.logNr = sickrage.LOG_NR
-SRLogger.initialize()
+sickrage.LOGGER.debugLogging=True
+sickrage.LOGGER.logFile = sickrage.LOG_FILE
+sickrage.LOGGER.logSize = sickrage.LOG_SIZE
+sickrage.LOGGER.logNr = sickrage.LOG_NR
+sickrage.LOGGER.initialize()
 
 
 # =================

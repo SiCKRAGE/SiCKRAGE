@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import traceback
 
 import sickrage
@@ -84,7 +83,7 @@ class rTorrentAPI(GenericClient):
             return True
 
         except Exception:
-            logging.debug(traceback.format_exc())
+            sickrage.LOGGER.debug(traceback.format_exc())
             return False
 
     def _add_torrent_file(self, result):
@@ -126,7 +125,7 @@ class rTorrentAPI(GenericClient):
             return True
 
         except Exception:
-            logging.debug(traceback.format_exc())
+            sickrage.LOGGER.debug(traceback.format_exc())
             return False
 
     def _set_torrent_ratio(self, name):

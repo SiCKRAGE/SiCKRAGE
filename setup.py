@@ -1,4 +1,4 @@
-from sys import path
+import os
 
 try:
     from setuptools import setup, find_packages
@@ -6,8 +6,14 @@ except ImportError:
     from distutils.core import setup, find_packages
 
 # Get the version number
-with open(path.join(path.abspath(path.dirname(__file__)), 'version.txt')) as f:
+with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'version.txt')) as f:
     version = f.read()
+
+# Get requirements
+#requirements = []
+#for file in glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements', '*.txt')):
+#    with open(file) as f:
+#        requirements += f.readlines()
 
 setup(
         name='sickrage',
@@ -17,24 +23,9 @@ setup(
         author_email='sickrage.tv@gmail.com',
         url='https://github.com/SiCKRAGETV/SickRage',
         keywords=['sickrage', 'sickragetv', 'sickrage', 'tv', 'torrent', 'nzb'],
-
-        py_modules=["sickrage"],
-
-        packages=['sickrage',
-                  'sickrage.sickrage',
-                  'sickrage.gui',
-                  'sickrage.contrib',
-                  'sickrage.runscripts',
-                  'sickrage.tests'],
-
-        package_dir={'sickrage': '.',
-                     'sickrage.sickrage': 'sickrage',
-                     'sickrage.gui': 'gui',
-                     'sickrage.contrib': 'contrib',
-                     'sickrage.runscripts': 'runscripts',
-                     'sickrage.tests': 'tests',
-                     },
-
+#        install_requires=requirements,
+        packages=find_packages(),
+        py_modules=["SiCKRAGE", "SickBeard"],
         zip_safe=False,
         include_package_data=True,
         test_suite='tests',

@@ -20,6 +20,7 @@
 from __future__ import unicode_literals
 
 import datetime
+import random
 import re
 import sys
 import urllib
@@ -28,11 +29,12 @@ from dateutil import parser
 
 import sickrage
 from sickrage.core.common import Quality, dateFormat, dateTimeFormat
-from sickrage.indexers.indexer_api import indexerApi
+from sickrage.core.helpers import USER_AGENTS
+
 
 
 class SiCKRAGEURLopener(urllib.FancyURLopener):
-    version = sickrage.USER_AGENT
+    version = random.choice(USER_AGENTS)
 
 
 class AuthURLOpener(SiCKRAGEURLopener):
@@ -268,7 +270,7 @@ class Proper(object):
 
     def __str__(self):
         return str(self.date) + " " + self.name + " " + str(self.season) + "x" + str(self.episode) + " of " + str(
-                self.indexerid) + " from " + str(indexerApi(self.indexer).name)
+                self.indexerid) + " from " + str(sickrage.INDEXER_API(self.indexer).name)
 
 
 class UIError(object):

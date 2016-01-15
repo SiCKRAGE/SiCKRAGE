@@ -19,7 +19,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import time
 import urllib
 import urllib2
@@ -74,14 +73,14 @@ class BoxcarNotifier:
         except urllib2.HTTPError as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
             if not hasattr(e, 'code'):
-                logging.error("Boxcar notification failed. Error code: {}".format(e))
+                sickrage.LOGGER.error("Boxcar notification failed. Error code: {}".format(e))
                 return False
             else:
-                logging.warning("Boxcar notification failed. Error code: " + str(e.code))
+                sickrage.LOGGER.warning("Boxcar notification failed. Error code: " + str(e.code))
 
             # HTTP status 404 if the provided email address isn't a Boxcar user.
             if e.code == 404:
-                logging.warning("Username is wrong/not a boxcar email. Boxcar will send an email to it")
+                sickrage.LOGGER.warning("Username is wrong/not a boxcar email. Boxcar will send an email to it")
                 return False
 
             # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
@@ -89,7 +88,7 @@ class BoxcarNotifier:
 
                 # If the user has already added your service, we'll return an HTTP status code of 401.
                 if subscribe:
-                    logging.error("Already subscribed to service")
+                    sickrage.LOGGER.error("Already subscribed to service")
                     # i dont know if this is true or false ... its neither but i also dont know how we got here in the first place
                     return False
 
@@ -97,18 +96,18 @@ class BoxcarNotifier:
                 else:
                     subscribeNote = self._sendBoxcar(msg, title, email, True)
                     if subscribeNote:
-                        logging.debug("Subscription send")
+                        sickrage.LOGGER.debug("Subscription send")
                         return True
                     else:
-                        logging.error("Subscription could not be send")
+                        sickrage.LOGGER.error("Subscription could not be send")
                         return False
 
             # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
             elif e.code == 400:
-                logging.error("Wrong data sent to boxcar")
+                sickrage.LOGGER.error("Wrong data sent to boxcar")
                 return False
 
-        logging.info("Boxcar notification successful.")
+        sickrage.LOGGER.info("Boxcar notification successful.")
         return True
 
     def notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
@@ -140,13 +139,13 @@ class BoxcarNotifier:
         """
 
         if not sickrage.USE_BOXCAR and not force:
-            logging.debug("Notification for Boxcar not enabled, skipping this notification")
+            sickrage.LOGGER.debug("Notification for Boxcar not enabled, skipping this notification")
             return False
 
         # if no username was given then use the one from the config
         if not username:
             username = sickrage.BOXCAR_USERNAME
 
-        logging.debug("Sending notification for " + message)
+        sickrage.LOGGER.debug("Sending notification for " + message)
 
         return self._sendBoxcar(message, title, username)

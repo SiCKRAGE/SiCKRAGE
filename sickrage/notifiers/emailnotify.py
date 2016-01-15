@@ -21,7 +21,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import re
 import smtplib
 import traceback
@@ -58,7 +57,7 @@ class EmailNotifier:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
-                logging.warning('Skipping email notify because there are no configured recipients')
+                sickrage.LOGGER.warning('Skipping email notify because there are no configured recipients')
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -80,9 +79,9 @@ class EmailNotifier:
                 msg[b'Date'] = formatdate(localtime=True)
                 if self._sendmail(sickrage.EMAIL_HOST, sickrage.EMAIL_PORT, sickrage.EMAIL_FROM, sickrage.EMAIL_TLS,
                                   sickrage.EMAIL_USER, sickrage.EMAIL_PASSWORD, to, msg):
-                    logging.debug("Snatch notification sent to [%s] for '%s'" % (to, ep_name))
+                    sickrage.LOGGER.debug("Snatch notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
-                    logging.error("Snatch notification ERROR: %s" % self.last_err)
+                    sickrage.LOGGER.error("Snatch notification ERROR: %s" % self.last_err)
 
     def notify_download(self, ep_name, title="Completed:"):
         """
@@ -97,7 +96,7 @@ class EmailNotifier:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
-                logging.warning('Skipping email notify because there are no configured recipients')
+                sickrage.LOGGER.warning('Skipping email notify because there are no configured recipients')
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -119,9 +118,9 @@ class EmailNotifier:
                 msg[b'Date'] = formatdate(localtime=True)
                 if self._sendmail(sickrage.EMAIL_HOST, sickrage.EMAIL_PORT, sickrage.EMAIL_FROM, sickrage.EMAIL_TLS,
                                   sickrage.EMAIL_USER, sickrage.EMAIL_PASSWORD, to, msg):
-                    logging.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
+                    sickrage.LOGGER.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
-                    logging.error("Download notification ERROR: %s" % self.last_err)
+                    sickrage.LOGGER.error("Download notification ERROR: %s" % self.last_err)
 
     def notify_subtitle_download(self, ep_name, lang, title="Downloaded subtitle:"):
         """
@@ -136,7 +135,7 @@ class EmailNotifier:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
-                logging.warning('Skipping email notify because there are no configured recipients')
+                sickrage.LOGGER.warning('Skipping email notify because there are no configured recipients')
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -157,9 +156,9 @@ class EmailNotifier:
                 msg[b'To'] = ','.join(to)
                 if self._sendmail(sickrage.EMAIL_HOST, sickrage.EMAIL_PORT, sickrage.EMAIL_FROM, sickrage.EMAIL_TLS,
                                   sickrage.EMAIL_USER, sickrage.EMAIL_PASSWORD, to, msg):
-                    logging.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
+                    sickrage.LOGGER.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
-                    logging.error("Download notification ERROR: %s" % self.last_err)
+                    sickrage.LOGGER.error("Download notification ERROR: %s" % self.last_err)
 
     def notify_version_update(self, new_version="??"):
         pass
@@ -181,17 +180,17 @@ class EmailNotifier:
                             addrs.append(addr)
 
         addrs = set(addrs)
-        logging.debug('Notification recipients: %s' % addrs)
+        sickrage.LOGGER.debug('Notification recipients: %s' % addrs)
         return addrs
 
     def _sendmail(self, host, port, smtp_from, use_tls, user, pwd, to, msg, smtpDebug=False):
-        logging.debug('HOST: %s; PORT: %s; FROM: %s, TLS: %s, USER: %s, PWD: %s, TO: %s' % (
+        sickrage.LOGGER.debug('HOST: %s; PORT: %s; FROM: %s, TLS: %s, USER: %s, PWD: %s, TO: %s' % (
             host, port, smtp_from, use_tls, user, pwd, to))
         try:
             srv = smtplib.SMTP(host, int(port))
         except Exception as e:
-            logging.error("Exception generated while sending e-mail: " + str(e))
-            logging.debug(traceback.format_exc())
+            sickrage.LOGGER.error("Exception generated while sending e-mail: " + str(e))
+            sickrage.LOGGER.debug(traceback.format_exc())
             return False
 
         if smtpDebug:
@@ -199,13 +198,13 @@ class EmailNotifier:
         try:
             if (use_tls == '1' or use_tls == True) or (len(user) > 0 and len(pwd) > 0):
                 srv.ehlo()
-                logging.debug('Sent initial EHLO command!')
+                sickrage.LOGGER.debug('Sent initial EHLO command!')
             if use_tls == '1' or use_tls == True:
                 srv.starttls()
-                logging.debug('Sent STARTTLS command!')
+                sickrage.LOGGER.debug('Sent STARTTLS command!')
             if len(user) > 0 and len(pwd) > 0:
                 srv.login(user, pwd)
-                logging.debug('Sent LOGIN command!')
+                sickrage.LOGGER.debug('Sent LOGIN command!')
             srv.sendmail(smtp_from, to, msg.as_string())
             srv.quit()
             return True
@@ -219,5 +218,5 @@ class EmailNotifier:
         sep = " - "
         titles = ep_name.split(sep)
         titles.sort(key=len, reverse=True)
-        logging.debug("TITLES: %s" % titles)
+        sickrage.LOGGER.debug("TITLES: %s" % titles)
         return titles

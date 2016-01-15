@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import threading
 import time
 
@@ -64,7 +63,7 @@ class nameCache(object):
         if datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
             return True
 
-        logging.debug(
+        sickrage.LOGGER.debug(
             "Last update was too soon, using old name cache: " + str(self.lastUpdate) + ". Updated less then " + str(
                 self.minTime) + " minutes ago")
 
@@ -120,14 +119,14 @@ class nameCache(object):
             if not show:
                 retrieve_exceptions()
                 for show in sickrage.showList:
-                    logging.info("Building internal name cache for all shows")
+                    sickrage.LOGGER.info("Building internal name cache for all shows")
                     self.buildNameCache(show)
             else:
                 self.lastUpdate = datetime.datetime.fromtimestamp(
                         int(time.mktime(datetime.datetime.today().timetuple()))
                 )
 
-                logging.debug("Building internal name cache for [{}]".format(show.name))
+                sickrage.LOGGER.debug("Building internal name cache for [{}]".format(show.name))
                 self.clearCache(show.indexerid)
                 for curSeason in [-1] + get_scene_seasons(show.indexerid):
                     for name in list(set(get_scene_exceptions(
@@ -137,5 +136,5 @@ class nameCache(object):
                         if name not in self.cache:
                             self.cache[name] = int(show.indexerid)
 
-                logging.debug("Internal name cache for [{}] set to: [{}]".format(
+                sickrage.LOGGER.debug("Internal name cache for [{}] set to: [{}]".format(
                         show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))

@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import os
 import subprocess
 
@@ -48,15 +47,15 @@ class synoIndexNotifier:
         if sickrage.USE_SYNOINDEX:
             synoindex_cmd = ['/usr/syno/bin/synoindex', '-N', os.path.abspath(new_path),
                              os.path.abspath(old_path)]
-            logging.debug("Executing command " + str(synoindex_cmd))
-            logging.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
+            sickrage.LOGGER.debug("Executing command " + str(synoindex_cmd))
+            sickrage.LOGGER.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                      cwd=sickrage.ROOT_DIR)
                 out, err = p.communicate()  # @UnusedVariable
-                logging.debug("Script result: " + str(out))
+                sickrage.LOGGER.debug("Script result: " + str(out))
             except OSError as e:
-                logging.error("Unable to run synoindex: {}".format(e))
+                sickrage.LOGGER.error("Unable to run synoindex: {}".format(e))
 
     def deleteFolder(self, cur_path):
         self.makeObject('-D', cur_path)
@@ -73,12 +72,12 @@ class synoIndexNotifier:
     def makeObject(self, cmd_arg, cur_path):
         if sickrage.USE_SYNOINDEX:
             synoindex_cmd = ['/usr/syno/bin/synoindex', cmd_arg, os.path.abspath(cur_path)]
-            logging.debug("Executing command " + str(synoindex_cmd))
-            logging.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
+            sickrage.LOGGER.debug("Executing command " + str(synoindex_cmd))
+            sickrage.LOGGER.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                      cwd=sickrage.ROOT_DIR)
                 out, err = p.communicate()  # @UnusedVariable
-                logging.debug("Script result: " + str(out))
+                sickrage.LOGGER.debug("Script result: " + str(out))
             except OSError as e:
-                logging.error("Unable to run synoindex: {}".format(e))
+                sickrage.LOGGER.error("Unable to run synoindex: {}".format(e))

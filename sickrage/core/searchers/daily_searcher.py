@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import threading
 
 import sickrage
@@ -28,6 +27,7 @@ from sickrage.core.common import UNAIRED, SKIPPED, statusStrings
 from sickrage.core.databases import main_db
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import findCertainShow
+from sickrage.core.queues.search import DailySearchQueueItem
 from sickrage.core.show.history import FailedHistory
 from sickrage.core.updaters import tz_updater
 
@@ -52,7 +52,7 @@ class DailySearcher(object):
         if sickrage.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
 
-        logging.info("Searching for new released episodes ...")
+        sickrage.LOGGER.info("Searching for new released episodes ...")
 
         if tz_updater.network_dict:
             curDate = (datetime.date.today() + datetime.timedelta(days=1)).toordinal()
@@ -78,7 +78,7 @@ class DailySearcher(object):
                     continue
 
             except MultipleShowObjectsException:
-                logging.info("ERROR: expected to find a single show matching " + str(sqlEp[b'showid']))
+                sickrage.LOGGER.info("ERROR: expected to find a single show matching " + str(sqlEp[b'showid']))
                 continue
 
             if show.airs and show.network:
@@ -95,11 +95,11 @@ class DailySearcher(object):
             ep = show.getEpisode(int(sqlEp[b"season"]), int(sqlEp[b"episode"]))
             with ep.lock:
                 if ep.season == 0:
-                    logging.info(
+                    sickrage.LOGGER.info(
                             "New episode " + ep.prettyName() + " airs today, setting status to SKIPPED because is a special season")
                     ep.status = SKIPPED
                 else:
-                    logging.info("New episode %s airs today, setting to default episode status for this show: %s" % (
+                    sickrage.LOGGER.info("New episode %s airs today, setting to default episode status for this show: %s" % (
                         ep.prettyName(), statusStrings[ep.show.default_ep_status]))
                     ep.status = ep.show.default_ep_status
 
@@ -108,10 +108,10 @@ class DailySearcher(object):
         if len(sql_l) > 0:
             main_db.MainDB().mass_action(sql_l)
         else:
-            logging.info("No new released episodes found ...")
+            sickrage.LOGGER.info("No new released episodes found ...")
 
         # queue episode for daily search
-        dailysearch_queue_item = sickrage.SEARCHQUEUE.DailySearchQueueItem()
+        dailysearch_queue_item = DailySearchQueueItem()
         sickrage.SEARCHQUEUE.add_item(dailysearch_queue_item)
 
         self.amActive = False

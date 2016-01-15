@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import operator
 import re
 import threading
@@ -54,7 +53,7 @@ class ProperSearcher(object):
         if self.amActive:
             return
 
-        logging.info("Beginning the search for new propers")
+        sickrage.LOGGER.info("Beginning the search for new propers")
 
         self.amActive = True
 
@@ -73,7 +72,7 @@ class ProperSearcher(object):
             run_at = ", next check in approx. " + (
                 "%dh, %dm" % (hours, minutes) if 0 < hours else "%dm, %ds" % (minutes, seconds))
 
-        logging.info("Completed the search for new propers%s" % run_at)
+        sickrage.LOGGER.info("Completed the search for new propers%s" % run_at)
 
         self.amActive = False
 
@@ -91,27 +90,27 @@ class ProperSearcher(object):
                                         if v.isActive}.items():
 
             threading.currentThread().name = origThreadName + " :: [" + providerObj.name + "]"
-            logging.info("Searching for any new PROPER releases from " + providerObj.name)
+            sickrage.LOGGER.info("Searching for any new PROPER releases from " + providerObj.name)
 
             try:
                 curPropers = providerObj.findPropers(search_date)
             except AuthException as e:
-                logging.debug("Authentication error: {}".format(e))
+                sickrage.LOGGER.debug("Authentication error: {}".format(e))
                 continue
             except Exception as e:
-                logging.debug("Error while searching " + providerObj.name + ", skipping: {}".format(e))
-                logging.debug(traceback.format_exc())
+                sickrage.LOGGER.debug("Error while searching " + providerObj.name + ", skipping: {}".format(e))
+                sickrage.LOGGER.debug(traceback.format_exc())
                 continue
 
             # if they haven't been added by a different provider than add the proper to the list
             for x in curPropers:
                 if not re.search(r'(^|[\. _-])(proper|repack)([\. _-]|$)', x.name, re.I):
-                    logging.debug('findPropers returned a non-proper, we have caught and skipped it.')
+                    sickrage.LOGGER.debug('findPropers returned a non-proper, we have caught and skipped it.')
                     continue
 
                 name = self._genericName(x.name)
                 if not name in propers:
-                    logging.debug("Found new proper: " + x.name)
+                    sickrage.LOGGER.debug("Found new proper: " + x.name)
                     x.provider = providerObj
                     propers[name] = x
 
@@ -127,21 +126,21 @@ class ProperSearcher(object):
                 myParser = NameParser(False)
                 parse_result = myParser.parse(curProper.name)
             except InvalidNameException:
-                logging.debug("Unable to parse the filename " + curProper.name + " into a valid episode")
+                sickrage.LOGGER.debug("Unable to parse the filename " + curProper.name + " into a valid episode")
                 continue
             except InvalidShowException:
-                logging.debug("Unable to parse the filename " + curProper.name + " into a valid show")
+                sickrage.LOGGER.debug("Unable to parse the filename " + curProper.name + " into a valid show")
                 continue
 
             if not parse_result.series_name:
                 continue
 
             if not parse_result.episode_numbers:
-                logging.debug(
+                sickrage.LOGGER.debug(
                         "Ignoring " + curProper.name + " because it's for a full season rather than specific episode")
                 continue
 
-            logging.debug(
+            sickrage.LOGGER.debug(
                     "Successful match! Result " + parse_result.original_name + " matched to show " + parse_result.show.name)
 
             # set the indexerid in the db to the show's indexerid
@@ -162,13 +161,13 @@ class ProperSearcher(object):
             # filter release
             bestResult = pickBestResult(curProper, parse_result.show)
             if not bestResult:
-                logging.debug("Proper " + curProper.name + " were rejected by our release filters.")
+                sickrage.LOGGER.debug("Proper " + curProper.name + " were rejected by our release filters.")
                 continue
 
             # only get anime proper if it has release group and version
             if bestResult.show.is_anime:
                 if not bestResult.release_group and bestResult.version == -1:
-                    logging.debug("Proper " + bestResult.name + " doesn't have a release group and version, ignoring it")
+                    sickrage.LOGGER.debug("Proper " + bestResult.name + " doesn't have a release group and version, ignoring it")
                     continue
 
             # check if we actually want this proper (if it's the right quality)            
@@ -193,20 +192,20 @@ class ProperSearcher(object):
                 oldRelease_group = (sqlResults[0][b"release_group"])
 
                 if oldVersion > -1 and oldVersion < bestResult.version:
-                    logging.info(
+                    sickrage.LOGGER.info(
                         "Found new anime v" + str(bestResult.version) + " to replace existing v" + str(oldVersion))
                 else:
                     continue
 
                 if oldRelease_group != bestResult.release_group:
-                    logging.info(
+                    sickrage.LOGGER.info(
                         "Skipping proper from release group: " + bestResult.release_group + ", does not match existing release group: " + oldRelease_group)
                     continue
 
             # if the show is in our list and there hasn't been a proper already added for that particular episode then add it to our list of propers
             if bestResult.indexerid != -1 and (bestResult.indexerid, bestResult.season, bestResult.episode) not in map(
                     operator.attrgetter('indexerid', 'season', 'episode'), finalPropers):
-                logging.info("Found a proper that we need: " + str(bestResult.name))
+                sickrage.LOGGER.info("Found a proper that we need: " + str(bestResult.name))
                 finalPropers.append(bestResult)
 
         return finalPropers
@@ -232,7 +231,7 @@ class ProperSearcher(object):
 
             # if we didn't download this episode in the first place we don't know what quality to use for the proper so we can't do it
             if len(historyResults) == 0:
-                logging.info(
+                sickrage.LOGGER.info(
                         "Unable to find an original history entry for proper " + curProper.name + " so I'm not downloading it.")
                 continue
 
@@ -248,7 +247,7 @@ class ProperSearcher(object):
                         isSame = True
                         break
                 if isSame:
-                    logging.debug("This proper is already in history, skipping it")
+                    sickrage.LOGGER.debug("This proper is already in history, skipping it")
                     continue
 
                 # get the episode object
@@ -278,7 +277,7 @@ class ProperSearcher(object):
         :param when: When was the last proper search
         """
 
-        logging.debug("Setting the last Proper search in the DB to " + str(when))
+        sickrage.LOGGER.debug("Setting the last Proper search in the DB to " + str(when))
 
         sqlResults = main_db.MainDB().select("SELECT * FROM info")
 

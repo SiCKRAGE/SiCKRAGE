@@ -20,9 +20,6 @@
 
 from __future__ import unicode_literals
 
-import logging
-import warnings
-
 from tvdb_exceptions import tvdb_userabort
 
 
@@ -34,11 +31,6 @@ class BaseUI:
     """
     def __init__(self, config, log = None):
         self.config = config
-        if log is not None:
-            warnings.warn("the UI's log parameter is deprecated, instead use\n"
-                "use import logging; logging.getLogger('ui').info('blah')\n"
-                "The self.log attribute will be removed in the next version")
-            self.log = logging.getLogger(__name__)
 
     def selectSeries(self, allSeries):
         return allSeries[0]

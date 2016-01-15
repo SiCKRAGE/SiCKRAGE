@@ -4,7 +4,7 @@
     import os.path
     import datetime
     import re
-    from sickrage.providers import getProvider, GenericProvider
+    from sickrage.providers import GenericProvider
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, Overview
 %>
@@ -57,7 +57,7 @@
     % endif
     </td>
     <td align="center">
-        <% provider = getProvider(GenericProvider._makeID) %>
+        <% provider = sickrage.providersDict[GenericProvider._makeID] %>
     % if provider != None:
         <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16" alt="${provider.name}"
              title="${provider.name}"/>

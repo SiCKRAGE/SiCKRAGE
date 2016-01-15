@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 import base64
 import httplib
 import json
-import logging
 import socket
 import urllib
 import urllib2
@@ -115,17 +114,17 @@ class KODINotifier:
 
         # suppress notifications if the notifier is disabled but the notify options are checked
         if not sickrage.USE_KODI and not force:
-            logging.debug("Notification for KODI not enabled, skipping this notification")
+            sickrage.LOGGER.debug("Notification for KODI not enabled, skipping this notification")
             return False
 
         result = ''
         for curHost in [x.strip() for x in host.split(",")]:
-            logging.debug("Sending KODI notification to '" + curHost + "' - " + message)
+            sickrage.LOGGER.debug("Sending KODI notification to '" + curHost + "' - " + message)
 
             kodiapi = self._get_kodi_version(curHost, username, password)
             if kodiapi:
                 if kodiapi <= 4:
-                    logging.debug("Detected KODI version <= 11, using KODI HTTP API")
+                    sickrage.LOGGER.debug("Detected KODI version <= 11, using KODI HTTP API")
                     command = {'command': 'ExecBuiltIn',
                                'parameter': 'Notification(' + title.encode("utf-8") + ',' + message.encode(
                                        "utf-8") + ')'}
@@ -133,7 +132,7 @@ class KODINotifier:
                     if notifyResult:
                         result += curHost + ':' + str(notifyResult)
                 else:
-                    logging.debug("Detected KODI version >= 12, using KODI JSON API")
+                    sickrage.LOGGER.debug("Detected KODI version >= 12, using KODI JSON API")
                     command = '{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"%s","message":"%s", "image": "%s"},"id":1}' % (
                         title.encode("utf-8"), message.encode("utf-8"), self.sr_logo_url)
                     notifyResult = self._send_to_kodi_json(command, curHost, username, password)
@@ -141,7 +140,7 @@ class KODINotifier:
                         result += curHost + ':' + notifyResult[b"result"].decode(sickrage.SYS_ENCODING)
             else:
                 if sickrage.KODI_ALWAYS_ON or force:
-                    logging.warning(
+                    sickrage.LOGGER.warning(
                         "Failed to detect KODI version for '" + curHost + "', check configuration and try again.")
                 result += curHost + ':False'
 
@@ -161,26 +160,26 @@ class KODINotifier:
 
         """
 
-        logging.debug("Sending request to update library for KODI host: '" + host + "'")
+        sickrage.LOGGER.debug("Sending request to update library for KODI host: '" + host + "'")
 
         kodiapi = self._get_kodi_version(host, sickrage.KODI_USERNAME, sickrage.KODI_PASSWORD)
         if kodiapi:
             if kodiapi <= 4:
                 # try to update for just the show, if it fails, do full update if enabled
                 if not self._update_library(host, showName) and sickrage.KODI_UPDATE_FULL:
-                    logging.debug("Single show update failed, falling back to full update")
+                    sickrage.LOGGER.debug("Single show update failed, falling back to full update")
                     return self._update_library(host)
                 else:
                     return True
             else:
                 # try to update for just the show, if it fails, do full update if enabled
                 if not self._update_library_json(host, showName) and sickrage.KODI_UPDATE_FULL:
-                    logging.debug("Single show update failed, falling back to full update")
+                    sickrage.LOGGER.debug("Single show update failed, falling back to full update")
                     return self._update_library_json(host)
                 else:
                     return True
         elif sickrage.KODI_ALWAYS_ON:
-            logging.warning("Failed to detect KODI version for '" + host + "', check configuration and try again.")
+            sickrage.LOGGER.warning("Failed to detect KODI version for '" + host + "', check configuration and try again.")
 
         return False
 
@@ -209,7 +208,7 @@ class KODINotifier:
             password = sickrage.KODI_PASSWORD
 
         if not host:
-            logging.warning('No KODI host passed, aborting update')
+            sickrage.LOGGER.warning('No KODI host passed, aborting update')
             return False
 
         for key in command:
@@ -217,7 +216,7 @@ class KODINotifier:
                 command[key] = command[key].encode('utf-8')
 
         enc_command = urllib.urlencode(command)
-        logging.debug("KODI encoded API command: " + enc_command)
+        sickrage.LOGGER.debug("KODI encoded API command: " + enc_command)
 
         url = 'http://%s/kodiCmds/kodiHttp/?%s' % (host, enc_command)
         try:
@@ -227,24 +226,24 @@ class KODINotifier:
                 base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
                 authheader = "Basic %s" % base64string
                 req.add_header("Authorization", authheader)
-                logging.debug("Contacting KODI (with auth header) via url: " + url)
+                sickrage.LOGGER.debug("Contacting KODI (with auth header) via url: " + url)
             else:
-                logging.debug("Contacting KODI via url: " + url)
+                sickrage.LOGGER.debug("Contacting KODI via url: " + url)
 
             try:
                 response = urllib2.urlopen(req)
             except (httplib.BadStatusLine, urllib2.URLError) as e:
-                logging.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
+                sickrage.LOGGER.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
                 return False
 
             result = response.read().decode(sickrage.SYS_ENCODING)
             response.close()
 
-            logging.debug("KODI HTTP response: " + result.replace('\n', ''))
+            sickrage.LOGGER.debug("KODI HTTP response: " + result.replace('\n', ''))
             return result
 
         except Exception as e:
-            logging.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
+            sickrage.LOGGER.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
             return False
 
     def _update_library(self, host=None, showName=None):
@@ -263,14 +262,14 @@ class KODINotifier:
         """
 
         if not host:
-            logging.warning('No KODI host passed, aborting update')
+            sickrage.LOGGER.warning('No KODI host passed, aborting update')
             return False
 
-        logging.debug("Updating KODI library via HTTP method for host: " + host)
+        sickrage.LOGGER.debug("Updating KODI library via HTTP method for host: " + host)
 
         # if we're doing per-show
         if showName:
-            logging.debug("Updating library in KODI via HTTP method for show " + showName)
+            sickrage.LOGGER.debug("Updating library in KODI via HTTP method for show " + showName)
 
             pathSql = 'select path.strPath from path, tvshow, tvshowlinkpath where ' \
                       'tvshow.c00 = "{0:s}" and tvshowlinkpath.idShow = tvshow.idShow ' \
@@ -293,42 +292,42 @@ class KODINotifier:
             request = self._send_to_kodi(resetCommand, host)
 
             if not sqlXML:
-                logging.debug("Invalid response for " + showName + " on " + host)
+                sickrage.LOGGER.debug("Invalid response for " + showName + " on " + host)
                 return False
 
             encSqlXML = urllib.quote(sqlXML, ':\\/<>')
             try:
                 et = ElementTree.fromstring(encSqlXML)
             except SyntaxError as e:
-                logging.error("Unable to parse XML returned from KODI: {}".format(e))
+                sickrage.LOGGER.error("Unable to parse XML returned from KODI: {}".format(e))
                 return False
 
             paths = et.findall('.//field')
 
             if not paths:
-                logging.debug("No valid paths found for " + showName + " on " + host)
+                sickrage.LOGGER.debug("No valid paths found for " + showName + " on " + host)
                 return False
 
             for path in paths:
                 # we do not need it double-encoded, gawd this is dumb
                 unEncPath = urllib.unquote(path.text).decode(sickrage.SYS_ENCODING)
-                logging.debug("KODI Updating " + showName + " on " + host + " at " + unEncPath)
+                sickrage.LOGGER.debug("KODI Updating " + showName + " on " + host + " at " + unEncPath)
                 updateCommand = {'command': 'ExecBuiltIn', 'parameter': 'KODI.updatelibrary(video, %s)' % (unEncPath)}
                 request = self._send_to_kodi(updateCommand, host)
                 if not request:
-                    logging.warning("Update of show directory failed on " + showName + " on " + host + " at " + unEncPath)
+                    sickrage.LOGGER.warning("Update of show directory failed on " + showName + " on " + host + " at " + unEncPath)
                     return False
                 # sleep for a few seconds just to be sure kodi has a chance to finish each directory
                 if len(paths) > 1:
                     gen.sleep(5)
         # do a full update if requested
         else:
-            logging.debug("Doing Full Library KODI update on host: " + host)
+            sickrage.LOGGER.debug("Doing Full Library KODI update on host: " + host)
             updateCommand = {'command': 'ExecBuiltIn', 'parameter': 'KODI.updatelibrary(video)'}
             request = self._send_to_kodi(updateCommand, host)
 
             if not request:
-                logging.warning("KODI Full Library update failed on: " + host)
+                sickrage.LOGGER.warning("KODI Full Library update failed on: " + host)
                 return False
 
         return True
@@ -358,11 +357,11 @@ class KODINotifier:
             password = sickrage.KODI_PASSWORD
 
         if not host:
-            logging.warning('No KODI host passed, aborting update')
+            sickrage.LOGGER.warning('No KODI host passed, aborting update')
             return False
 
         command = command.encode('utf-8')
-        logging.debug("KODI JSON command: " + command)
+        sickrage.LOGGER.debug("KODI JSON command: " + command)
 
         url = 'http://%s/jsonrpc' % (host)
         try:
@@ -373,30 +372,30 @@ class KODINotifier:
                 base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
                 authheader = "Basic %s" % base64string
                 req.add_header("Authorization", authheader)
-                logging.debug("Contacting KODI (with auth header) via url: " + url)
+                sickrage.LOGGER.debug("Contacting KODI (with auth header) via url: " + url)
             else:
-                logging.debug("Contacting KODI via url: " + url)
+                sickrage.LOGGER.debug("Contacting KODI via url: " + url)
 
             try:
                 response = urllib2.urlopen(req)
             except (httplib.BadStatusLine, urllib2.URLError) as e:
                 if sickrage.KODI_ALWAYS_ON:
-                    logging.warning("Error while trying to retrieve KODI API version for " + host + ": {}".format(e))
+                    sickrage.LOGGER.warning("Error while trying to retrieve KODI API version for " + host + ": {}".format(e))
                 return False
 
             # parse the json result
             try:
                 result = json.load(response)
                 response.close()
-                logging.debug("KODI JSON response: " + str(result))
+                sickrage.LOGGER.debug("KODI JSON response: " + str(result))
                 return result  # need to return response for parsing
             except ValueError as e:
-                logging.warning("Unable to decode JSON: " + str(response.read()))
+                sickrage.LOGGER.warning("Unable to decode JSON: " + str(response.read()))
                 return False
 
         except IOError as e:
             if sickrage.KODI_ALWAYS_ON:
-                logging.warning("Warning: Couldn't contact KODI JSON API at " + url + " {}".format(e))
+                sickrage.LOGGER.warning("Warning: Couldn't contact KODI JSON API at " + url + " {}".format(e))
             return False
 
     def _update_library_json(self, host=None, showName=None):
@@ -415,10 +414,10 @@ class KODINotifier:
         """
 
         if not host:
-            logging.warning('No KODI host passed, aborting update')
+            sickrage.LOGGER.warning('No KODI host passed, aborting update')
             return False
 
-        logging.debug("Updating KODI library via JSON method for host: " + host)
+        sickrage.LOGGER.debug("Updating KODI library via JSON method for host: " + host)
 
         # if we're doing per-show
         if showName:
@@ -426,7 +425,7 @@ class KODINotifier:
             tvshowid = -1
             path = ''
 
-            logging.debug("Updating library in KODI via JSON method for show " + showName)
+            sickrage.LOGGER.debug("Updating library in KODI via JSON method for show " + showName)
 
             # let's try letting kodi filter the shows
             showsCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.GetTVShows","params":{"filter":{"field":"title","operator":"is","value":"%s"},"properties":["title"]},"id":"SiCKRAGE"}'
@@ -444,7 +443,7 @@ class KODINotifier:
                 if showsResponse and "result" in showsResponse and "tvshows" in showsResponse[b"result"]:
                     shows = showsResponse[b"result"][b"tvshows"]
                 else:
-                    logging.debug("KODI: No tvshows in KODI TV show list")
+                    sickrage.LOGGER.debug("KODI: No tvshows in KODI TV show list")
                     return False
 
             for show in shows:
@@ -461,7 +460,7 @@ class KODINotifier:
 
             # we didn't find the show (exact match), thus revert to just doing a full update if enabled
             if tvshowid == -1:
-                logging.debug('Exact show name not matched in KODI TV show list')
+                sickrage.LOGGER.debug('Exact show name not matched in KODI TV show list')
                 return False
 
             # lookup tv-show path if we don't already know it
@@ -472,35 +471,35 @@ class KODINotifier:
 
                 path = pathResponse[b"result"][b"tvshowdetails"][b"file"]
 
-            logging.debug("Received Show: " + showName + " with ID: " + str(tvshowid) + " Path: " + path)
+            sickrage.LOGGER.debug("Received Show: " + showName + " with ID: " + str(tvshowid) + " Path: " + path)
 
             if not len(path):
-                logging.warning("No valid path found for " + showName + " with ID: " + str(tvshowid) + " on " + host)
+                sickrage.LOGGER.warning("No valid path found for " + showName + " with ID: " + str(tvshowid) + " on " + host)
                 return False
 
-            logging.debug("KODI Updating " + showName + " on " + host + " at " + path)
+            sickrage.LOGGER.debug("KODI Updating " + showName + " on " + host + " at " + path)
             updateCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.Scan","params":{"directory":%s},"id":1}' % (
             json.dumps(path))
             request = self._send_to_kodi_json(updateCommand, host)
             if not request:
-                logging.warning("Update of show directory failed on " + showName + " on " + host + " at " + path)
+                sickrage.LOGGER.warning("Update of show directory failed on " + showName + " on " + host + " at " + path)
                 return False
 
             # catch if there was an error in the returned request
             for r in request:
                 if 'error' in r:
-                    logging.warning(
+                    sickrage.LOGGER.warning(
                         "Error while attempting to update show directory for " + showName + " on " + host + " at " + path)
                     return False
 
         # do a full update if requested
         else:
-            logging.debug("Doing Full Library KODI update on host: " + host)
+            sickrage.LOGGER.debug("Doing Full Library KODI update on host: " + host)
             updateCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.Scan","id":1}'
             request = self._send_to_kodi_json(updateCommand, host)
 
             if not request:
-                logging.warning("KODI Full Library update failed on: " + host)
+                sickrage.LOGGER.warning("KODI Full Library update failed on: " + host)
                 return False
 
         return True
@@ -549,7 +548,7 @@ class KODINotifier:
 
         if sickrage.USE_KODI and sickrage.KODI_UPDATE_LIBRARY:
             if not sickrage.KODI_HOST:
-                logging.debug("No KODI hosts specified, check your settings")
+                sickrage.LOGGER.debug("No KODI hosts specified, check your settings")
                 return False
 
             # either update each host, or only attempt to update until one successful result
@@ -557,11 +556,11 @@ class KODINotifier:
             for host in [x.strip() for x in sickrage.KODI_HOST.split(",")]:
                 if self._send_update_library(host, showName):
                     if sickrage.KODI_UPDATE_ONLYFIRST:
-                        logging.debug("Successfully updated '" + host + "', stopped sending update library commands.")
+                        sickrage.LOGGER.debug("Successfully updated '" + host + "', stopped sending update library commands.")
                         return True
                 else:
                     if sickrage.KODI_ALWAYS_ON:
-                        logging.warning(
+                        sickrage.LOGGER.warning(
                             "Failed to detect KODI version for '" + host + "', check configuration and try again.")
                     result = result + 1
 

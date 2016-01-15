@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import re
 import traceback
 from urllib import quote_plus
@@ -67,28 +66,28 @@ class TORRENTZProvider(TorrentProvider):
                 if mode is not 'RSS':
                     search_url += '?q=' + quote_plus(search_string)
 
-                logging.info(search_url)
+                sickrage.LOGGER.info(search_url)
                 data = self.getURL(search_url)
                 if not data:
-                    logging.info('Seems to be down right now!')
+                    sickrage.LOGGER.info('Seems to be down right now!')
                     continue
 
                 if not data.startswith("<?xml"):
-                    logging.debug('Wrong data returned from: ' + search_url)
+                    sickrage.LOGGER.debug('Wrong data returned from: ' + search_url)
                     continue
 
                 if not data.startswith('<?xml'):
-                    logging.info('Expected xml but got something else, is your mirror failing?')
+                    sickrage.LOGGER.info('Expected xml but got something else, is your mirror failing?')
                     continue
 
                 try:
                     data = xmltodict.parse(data)
                 except ExpatError:
-                    logging.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
+                    sickrage.LOGGER.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                     continue
 
                 if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
-                    logging.debug("Malformed rss returned or no results, skipping")
+                    sickrage.LOGGER.debug("Malformed rss returned or no results, skipping")
                     continue
 
                 gen.sleep(cpu_presets[sickrage.CPU_PRESET])
@@ -117,7 +116,7 @@ class TORRENTZProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            logging.debug(
+                            sickrage.LOGGER.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue

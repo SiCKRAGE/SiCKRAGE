@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import os
 
 import sickrage
@@ -148,11 +147,11 @@ def check_valid_naming(pattern=None, multi=None, anime_type=None):
     if anime_type == None:
         anime_type = sickrage.NAMING_ANIME
 
-    logging.debug("Checking whether the pattern " + pattern + " is valid for a single episode")
+    sickrage.LOGGER.debug("Checking whether the pattern " + pattern + " is valid for a single episode")
     valid = validate_name(pattern=pattern, anime_type=anime_type)
 
     if multi != None:
-        logging.debug("Checking whether the pattern " + pattern + " is valid for a multi episode")
+        sickrage.LOGGER.debug("Checking whether the pattern " + pattern + " is valid for a multi episode")
         valid = valid and validate_name(pattern, multi, anime_type)
 
     return valid
@@ -167,7 +166,7 @@ def check_valid_abd_naming(pattern=None):
     if pattern == None:
         pattern = sickrage.NAMING_PATTERN
 
-    logging.debug("Checking whether the pattern " + pattern + " is valid for an air-by-date episode")
+    sickrage.LOGGER.debug("Checking whether the pattern " + pattern + " is valid for an air-by-date episode")
     valid = validate_name(pattern, abd=True)
 
     return valid
@@ -182,7 +181,7 @@ def check_valid_sports_naming(pattern=None):
     if pattern == None:
         pattern = sickrage.NAMING_PATTERN
 
-    logging.debug("Checking whether the pattern " + pattern + " is valid for an sports episode")
+    sickrage.LOGGER.debug("Checking whether the pattern " + pattern + " is valid for an sports episode")
     valid = validate_name(pattern, sports=True)
 
     return valid
@@ -208,36 +207,36 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
         new_name = os.path.join(new_path, new_name)
 
     if not new_name:
-        logging.debug("Unable to create a name out of " + pattern)
+        sickrage.LOGGER.debug("Unable to create a name out of " + pattern)
         return False
 
-    logging.debug("Trying to parse " + new_name)
+    sickrage.LOGGER.debug("Trying to parse " + new_name)
 
     parser = NameParser(True, showObj=ep.show, naming_pattern=True)
 
     try:
         result = parser.parse(new_name)
     except Exception:
-        logging.debug("Unable to parse " + new_name + ", not valid")
+        sickrage.LOGGER.debug("Unable to parse " + new_name + ", not valid")
         return False
 
-    logging.debug("Parsed " + new_name + " into " + str(result))
+    sickrage.LOGGER.debug("Parsed " + new_name + " into " + str(result))
 
     if abd or sports:
         if result.air_date != ep.airdate:
-            logging.debug("Air date incorrect in parsed episode, pattern isn't valid")
+            sickrage.LOGGER.debug("Air date incorrect in parsed episode, pattern isn't valid")
             return False
     elif anime_type != 3:
         if len(result.ab_episode_numbers) and result.ab_episode_numbers != [x.absolute_number for x in
                                                                             [ep] + ep.relatedEps]:
-            logging.debug("Absolute numbering incorrect in parsed episode, pattern isn't valid")
+            sickrage.LOGGER.debug("Absolute numbering incorrect in parsed episode, pattern isn't valid")
             return False
     else:
         if result.season_number != ep.season:
-            logging.debug("Season number incorrect in parsed episode, pattern isn't valid")
+            sickrage.LOGGER.debug("Season number incorrect in parsed episode, pattern isn't valid")
             return False
         if result.episode_numbers != [x.episode for x in [ep] + ep.relatedEps]:
-            logging.debug("Episode numbering incorrect in parsed episode, pattern isn't valid")
+            sickrage.LOGGER.debug("Episode numbering incorrect in parsed episode, pattern isn't valid")
             return False
 
     return True

@@ -19,7 +19,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import logging
 import threading
 
 import sickrage
@@ -48,7 +47,7 @@ class ShowUpdater(object):
         if sickrage.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
 
-        logging.info("Doing full update on all shows")
+        sickrage.LOGGER.info("Doing full update on all shows")
 
         # select 10 'Ended' tv_shows updated more than 90 days ago to include in this update
         stale_should_update = []
@@ -76,19 +75,19 @@ class ShowUpdater(object):
                         piList.append(
                                 sickrage.SHOWQUEUE.updateShow(curShow, True))  # @UndefinedVariable
                     except CantUpdateShowException as e:
-                        logging.debug("Unable to update show: {0}".format(str(e)))
+                        sickrage.LOGGER.debug("Unable to update show: {0}".format(str(e)))
                 else:
-                    logging.debug(
+                    sickrage.LOGGER.debug(
                             "Not updating episodes for show " + curShow.name + " because it's marked as ended and last/next episode is not within the grace period.")
                     piList.append(
                             sickrage.SHOWQUEUE.refreshShow(curShow, True))  # @UndefinedVariable
 
             except (CantUpdateShowException, CantRefreshShowException) as e:
-                logging.error("Automatic update failed: {}".format(e))
+                sickrage.LOGGER.error("Automatic update failed: {}".format(e))
 
         ProgressIndicators.setIndicator('dailyUpdate', QueueProgressIndicator("Daily Update", piList))
 
-        logging.info("Completed full update on all shows")
+        sickrage.LOGGER.info("Completed full update on all shows")
 
         self.amActive = False
 

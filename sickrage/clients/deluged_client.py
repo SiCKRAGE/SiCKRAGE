@@ -20,7 +20,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 from base64 import b64encode
 
 import sickrage
@@ -94,7 +93,7 @@ class DelugeDAPI(GenericClient):
         if result.show.is_anime:
             label = sickrage.TORRENT_LABEL_ANIME
         if ' ' in label:
-            logging.error(self.name + ': Invalid label. Label must not contain a space')
+            sickrage.LOGGER.error(self.name + ': Invalid label. Label must not contain a space')
             return False
 
         if label:
@@ -252,7 +251,7 @@ class DelugeRPC(object):
     def _check_torrent(self, torrent_hash):
         torrent_id = self.client.core.get_torrent_status(torrent_hash, {}).get()
         if torrent_id[b'hash']:
-            logging.debug('DelugeD: Torrent already exists in Deluge')
+            sickrage.LOGGER.debug('DelugeD: Torrent already exists in Deluge')
             return torrent_hash
         return False
 

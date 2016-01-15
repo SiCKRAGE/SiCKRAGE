@@ -15,7 +15,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import re
 
 import sickrage
@@ -111,11 +110,11 @@ class TVChaosUKProvider(TorrentProvider):
         login_params = {'username': self.username, 'password': self.password}
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            logging.warning("Unable to connect to provider")
+            sickrage.LOGGER.warning("Unable to connect to provider")
             return False
 
         if re.search('Error: Username or password incorrect!', response):
-            logging.warning("Invalid username or password. Check your settings")
+            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -129,18 +128,18 @@ class TVChaosUKProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    logging.debug("Search string: %s " % search_string)
+                    sickrage.LOGGER.debug("Search string: %s " % search_string)
 
                 self.search_params[b'keywords'] = search_string.strip()
                 data = self.getURL(self.urls['search'], params=self.search_params)
                 # url_searched = self.urls['search'] + '?' + urlencode(self.search_params)
 
                 if not data:
-                    logging.debug("No data returned from provider")
+                    sickrage.LOGGER.debug("No data returned from provider")
                     continue
 
                 with BS4Parser(data) as html:
@@ -158,7 +157,7 @@ class TVChaosUKProvider(TorrentProvider):
                             # Filter unseeded torrent
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
-                                    logging.debug(
+                                    sickrage.LOGGER.debug(
                                             "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                     title, seeders, leechers))
                                 continue
@@ -180,7 +179,7 @@ class TVChaosUKProvider(TorrentProvider):
 
                             item = title, download_url, size, seeders, leechers
                             if mode is not 'RSS':
-                                logging.debug("Found result: %s " % title)
+                                sickrage.LOGGER.debug("Found result: %s " % title)
 
                             items[mode].append(item)
 

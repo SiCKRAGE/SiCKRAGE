@@ -18,10 +18,10 @@
 
 from __future__ import unicode_literals
 
-import logging
 import re
 from urllib import urlencode
 
+import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.providers import TorrentProvider
 
@@ -69,16 +69,16 @@ class ThePirateBayProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 self.search_params.update({'q': search_string.strip()})
 
                 if mode is not 'RSS':
-                    logging.debug("Search string: " + search_string)
+                    sickrage.LOGGER.debug("Search string: " + search_string)
 
                 searchURL = self.urls[('search', 'rss')[mode is 'RSS']] + '?' + urlencode(self.search_params)
-                logging.debug("Search URL: %s" % searchURL)
+                sickrage.LOGGER.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
                 # data = self.getURL(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
                 if not data:
@@ -99,7 +99,7 @@ class ThePirateBayProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            logging.debug(
+                            sickrage.LOGGER.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue
@@ -107,13 +107,13 @@ class ThePirateBayProvider(TorrentProvider):
                     # Accept Torrent only from Good People for every Episode Search
                     if self.confirmed and re.search(r'(VIP|Trusted|Helper|Moderator)', torrent.group(0)) is None:
                         if mode is not 'RSS':
-                            logging.debug(
+                            sickrage.LOGGER.debug(
                                     "Found result %s but that doesn't seem like a trusted result so I'm ignoring it" % title)
                         continue
 
                     item = title, download_url, size, seeders, leechers
                     if mode is not 'RSS':
-                        logging.debug("Found result: %s " % title)
+                        sickrage.LOGGER.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 

@@ -20,7 +20,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 from urllib import urlencode
 from xml.dom.minidom import parseString
 
@@ -182,14 +181,14 @@ class NMA_Notifier:
 
         if len(keys) > 1: batch = True
 
-        logging.debug("NMA: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, batch=%s" % (
+        sickrage.LOGGER.debug("NMA: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, batch=%s" % (
         event, message, nma_priority, batch))
         response = self.push(application=title, event=event, description=message, priority=nma_priority,
                              batch_mode=batch)
 
         if not response[nma_api][b'code'] == '200':
-            logging.error('Could not send notification to NotifyMyAndroid')
+            sickrage.LOGGER.error('Could not send notification to NotifyMyAndroid')
             return False
         else:
-            logging.info("NMA: Notification sent to NotifyMyAndroid")
+            sickrage.LOGGER.info("NMA: Notification sent to NotifyMyAndroid")
             return True

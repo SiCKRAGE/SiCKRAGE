@@ -1,6 +1,7 @@
 <%!
     import sickrage
     from sickrage.core.helpers import anon_url
+
 %>
 
 <table id="addRootDirTable" class="sickrageTable tablesorter">
@@ -29,14 +30,14 @@
         <td><label for="${show_id}">${curDir[b'display_dir']}</label></td>
         % if curDir[b'existing_info'][1] and indexer > 0:
             <td>
-                <a href="${anon_url(indexerApi(indexer).config[b'show_url'], curDir[b'existing_info'][0])}">${curDir[b'existing_info'][1]}</a>
+                <a href="${anon_url(sickrage.INDEXER_API(indexer).config[b'show_url'], curDir[b'existing_info'][0])}">${curDir[b'existing_info'][1]}</a>
             </td>
         % else:
             <td>?</td>
         % endif
         <td align="center">
             <select name="indexer">
-                % for curIndexer in indexerApi().indexers.iteritems():
+                % for curIndexer in sickrage.INDEXER_API().indexers.iteritems():
                     <option value="${curIndexer[0]}" ${('', 'selected="selected"')[curIndexer[0] == indexer]}>${curIndexer[1]}</option>
                 % endfor
             </select>

@@ -19,7 +19,6 @@
 
 from __future__ import unicode_literals
 
-import logging
 import traceback
 from urllib import urlencode
 from xml.parsers.expat import ExpatError
@@ -69,37 +68,37 @@ class KATProvider(TorrentProvider):
         self.search_params[b'category'] = ('tv', 'anime')[anime]
 
         for mode in search_strings.keys():
-            logging.debug("Search Mode: %s" % mode)
+            sickrage.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 self.search_params[b'q'] = search_string.encode('utf-8') if mode is not 'RSS' else ''
                 self.search_params[b'field'] = 'seeders' if mode is not 'RSS' else 'time_add'
 
                 if mode is not 'RSS':
-                    logging.debug("Search string: %s" % search_string)
+                    sickrage.LOGGER.debug("Search string: %s" % search_string)
 
                 url_fmt_string = 'usearch' if mode is not 'RSS' else search_string
                 try:
                     searchURL = self.urls['search'] % url_fmt_string + '?' + urlencode(self.search_params)
-                    logging.debug("Search URL: %s" % searchURL)
+                    sickrage.LOGGER.debug("Search URL: %s" % searchURL)
                     data = self.getURL(searchURL)
                     # data = self.getURL(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
                     if not data:
-                        logging.debug("No data returned from provider")
+                        sickrage.LOGGER.debug("No data returned from provider")
                         continue
 
                     if not data.startswith('<?xml'):
-                        logging.info('Expected xml but got something else, is your mirror failing?')
+                        sickrage.LOGGER.info('Expected xml but got something else, is your mirror failing?')
                         continue
 
                     try:
                         data = xmltodict.parse(data)
                     except ExpatError:
-                        logging.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
+                        sickrage.LOGGER.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                         continue
 
                     if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
-                        logging.debug("Malformed rss returned, skipping")
+                        sickrage.LOGGER.debug("Malformed rss returned, skipping")
                         continue
 
                     # https://github.com/martinblech/xmltodict/issues/111
@@ -134,25 +133,25 @@ class KATProvider(TorrentProvider):
                         # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode is not 'RSS':
-                                logging.debug(
+                                sickrage.LOGGER.debug(
                                         "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                 title, seeders, leechers))
                             continue
 
                         if self.confirmed and not verified:
                             if mode is not 'RSS':
-                                logging.debug(
+                                sickrage.LOGGER.debug(
                                         "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
                             continue
 
                         item = title, download_url, size, seeders, leechers, info_hash
                         if mode is not 'RSS':
-                            logging.debug("Found result: %s " % title)
+                            sickrage.LOGGER.debug("Found result: %s " % title)
 
                         items[mode].append(item)
 
                 except Exception:
-                    logging.error("Failed parsing provider. Traceback: %r" % traceback.format_exc())
+                    sickrage.LOGGER.error("Failed parsing provider. Traceback: %r" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

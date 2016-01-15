@@ -23,7 +23,6 @@ import cookielib
 import datetime
 import httplib
 import json
-import logging
 import urllib
 import urllib2
 
@@ -79,7 +78,7 @@ class SabNZBd(object):
                 if nzb.provider.id == 'newzbin':
                     id = nzb.provider.getIDFromURL(nzb.url)
                     if not id:
-                        logging.error("Unable to send NZB to sab, can't find ID in URL " + str(nzb.url))
+                        sickrage.LOGGER.error("Unable to send NZB to sab, can't find ID in URL " + str(nzb.url))
                         return False
                     params[b'mode'] = 'addid'
                     params[b'name'] = id
@@ -88,8 +87,8 @@ class SabNZBd(object):
                     params[b'name'] = nzb.url
 
                 url = sickrage.SAB_HOST + "api?" + urllib.urlencode(params)
-                logging.info("Sending NZB to SABnzbd")
-                logging.debug("URL: " + url)
+                sickrage.LOGGER.info("Sending NZB to SABnzbd")
+                sickrage.LOGGER.debug("URL: " + url)
 
                 # if we have the URL to an NZB then we've built up the SAB API URL already so just call it
                 if nzb.resultType == "nzb":
@@ -100,8 +99,8 @@ class SabNZBd(object):
                 multiPartParams = {"nzbfile": (nzb.name + ".nzb", nzb.extraInfo[0])}
 
                 url = sickrage.SAB_HOST + "api?" + urllib.urlencode(params)
-                logging.info("Sending NZB to SABnzbd")
-                logging.debug("URL: " + url)
+                sickrage.LOGGER.info("Sending NZB to SABnzbd")
+                sickrage.LOGGER.debug("URL: " + url)
 
                 cookies = cookielib.CookieJar()
                 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies),
@@ -110,43 +109,43 @@ class SabNZBd(object):
                 f = opener.open(req)
 
         except (EOFError, IOError) as e:
-            logging.error("Unable to connect to SAB: {}".format(e))
+            sickrage.LOGGER.error("Unable to connect to SAB: {}".format(e))
             return False
         except httplib.InvalidURL as e:
-            logging.error("Invalid SAB host, check your config: {}".format(e))
+            sickrage.LOGGER.error("Invalid SAB host, check your config: {}".format(e))
             return False
 
         # this means we couldn't open the connection or something just as bad
         if f is None:
-            logging.error("No data returned from SABnzbd, NZB not sent")
+            sickrage.LOGGER.error("No data returned from SABnzbd, NZB not sent")
             return False
 
         # if we opened the URL connection then read the result from SAB
         try:
             result = f.readlines()
         except Exception as e:
-            logging.error("Error trying to get result from SAB, NZB not sent: {}".format(e))
+            sickrage.LOGGER.error("Error trying to get result from SAB, NZB not sent: {}".format(e))
             return False
 
         # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and didn't recieve the NZB
         if len(result) == 0:
-            logging.error("No data returned from SABnzbd, NZB not sent")
+            sickrage.LOGGER.error("No data returned from SABnzbd, NZB not sent")
             return False
 
         # massage the result a little bit
         sabText = result[0].strip()
 
-        logging.debug("Result text from SAB: " + sabText)
+        sickrage.LOGGER.debug("Result text from SAB: " + sabText)
 
         # do some crude parsing of the result text to determine what SAB said
         if sabText == "ok":
-            logging.debug("NZB sent to SAB successfully")
+            sickrage.LOGGER.debug("NZB sent to SAB successfully")
             return True
         elif sabText == "Missing authentication":
-            logging.error("Incorrect username/password sent to SAB, NZB not sent")
+            sickrage.LOGGER.error("Incorrect username/password sent to SAB, NZB not sent")
             return False
         else:
-            logging.error("Unknown failure sending NZB to sab. Return text is: " + sabText)
+            sickrage.LOGGER.error("Unknown failure sending NZB to sab. Return text is: " + sabText)
             return False
 
     @staticmethod
@@ -160,11 +159,11 @@ class SabNZBd(object):
         try:
             result = f.readlines()
         except Exception as e:
-            logging.error("Error trying to get result from SAB{}".format(e))
+            sickrage.LOGGER.error("Error trying to get result from SAB{}".format(e))
             return False, "Error from SAB"
 
         if len(result) == 0:
-            logging.error("No data returned from SABnzbd, NZB not sent")
+            sickrage.LOGGER.error("No data returned from SABnzbd, NZB not sent")
             return False, "No data from SAB"
 
         sabText = result[0].strip()
@@ -175,10 +174,10 @@ class SabNZBd(object):
             pass
 
         if sabText == "Missing authentication":
-            logging.error("Incorrect username/password sent to SAB")
+            sickrage.LOGGER.error("Incorrect username/password sent to SAB")
             return False, "Incorrect username/password sent to SAB"
         elif 'error' in sabJson:
-            logging.error(sabJson[b'error'])
+            sickrage.LOGGER.error(sabJson[b'error'])
             return False, sabJson[b'error']
         else:
             return True, sabText
@@ -194,13 +193,13 @@ class SabNZBd(object):
         try:
             f = urllib.urlopen(url)
         except (EOFError, IOError) as e:
-            logging.error("Unable to connect to SAB: {}".format(e))
+            sickrage.LOGGER.error("Unable to connect to SAB: {}".format(e))
             return False, "Unable to connect"
         except httplib.InvalidURL as e:
-            logging.error("Invalid SAB host, check your config: {}".format(e))
+            sickrage.LOGGER.error("Invalid SAB host, check your config: {}".format(e))
             return False, "Invalid SAB host"
         if f == None:
-            logging.error("No data returned from SABnzbd")
+            sickrage.LOGGER.error("No data returned from SABnzbd")
             return False, "No data returned from SABnzbd"
         else:
             return True, f
@@ -250,7 +249,7 @@ class SabNZBd(object):
         url = host + "api?" + urllib.urlencode(params)
 
         # send the test request
-        logging.debug("SABnzbd test URL: " + url)
+        sickrage.LOGGER.debug("SABnzbd test URL: " + url)
         result, f = SabNZBd._sabURLOpenSimple(url)
         if not result:
             return False, f
