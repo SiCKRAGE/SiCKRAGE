@@ -554,6 +554,62 @@ TORRENTRSS_DATA = None
 SHOWS_RECENT = []
 CENSOREDITEMS = {}
 
+def ssl_contexts():
+    import pip
+    pip.main(['install', '-U', '--no-cache-dir', '-r', os.path.join(ROOT_DIR, 'requirements', 'sni.txt')])
+
+    try:
+        import pip._vendor.requests.packages.urllib3.contrib.pyopenssl
+        pip._vendor.requests.packages.urllib3.contrib.pyopenssl.inject_into_urllib3()
+    except ImportError:
+        pass
+
+def install_pip():
+    print("Downloading pip ...")
+    import urllib2
+
+    url = "https://bootstrap.pypa.io/get-pip.py"
+    file_name = url.split('/')[-1]
+    u = urllib2.urlopen(url)
+    with open(file_name, 'wb') as f:
+        meta = u.info()
+        file_size = int(meta.getheaders("Content-Length")[0])
+        print("Downloading: %s Bytes: %s" % (file_name, file_size))
+        file_size_dl = 0
+        block_sz = 8192
+        while True:
+            buffer = u.read(block_sz)
+            if not buffer:
+                break
+            file_size_dl += len(buffer)
+            f.write(buffer)
+            status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
+            status = status + chr(8) * (len(status) + 1)
+            print(status),
+
+    print("Installing pip ...")
+    import subprocess
+    subprocess.call([sys.executable, os.path.join(ROOT_DIR, 'get-pip.py')])
+
+    print("Cleaning up downloaded pip files")
+    os.remove(os.path.join(ROOT_DIR, 'get-pip.py'))
+
+def requirements():
+    # fix sni ssl support
+    ssl_contexts()
+
+    import pip
+
+    print("Upgrading SiCKRAGE required libs, please stand by")
+    pip.main(['install', '-U', '--no-cache-dir', '-r', os.path.join(ROOT_DIR, 'requirements', 'global.txt')])
+
+    try:
+        print("Upgrading SiCKRAGE optional libs")
+        pip.main(['install', '-q', '-U', '--no-cache-dir', '-r', os.path.join(ROOT_DIR, 'requirements', 'optional.txt')])
+    except ImportError as e:
+        print(e.message)
+        pass
+
 def help_message():
     """
     LOGGER.info help message for commandline options
@@ -583,7 +639,6 @@ def help_message():
     help_msg += "                                    to load configuration from \n"
     help_msg += "                                    Default: config.ini in " + PROG_DIR + " or --datadir location\n"
     help_msg += "                --noresize          Prevent resizing of the banner/posters even if PIL is installed\n"
-    help_msg += "                --noupdate          Prevent auto-update of SiCKRAGE on start-up only!\n"
 
     return help_msg
 
@@ -600,7 +655,6 @@ def main():
     DATA_DIR = ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     PROG_DIR = os.path.abspath(os.path.dirname(__file__))
     MY_ARGS = sys.argv[1:]
-    NO_UPDATE = False
 
     consoleLogging = (not hasattr(sys, "frozen")) or (APP_NAME.lower().find('-console') > 0)
 
@@ -616,8 +670,7 @@ def main():
                  'port=',
                  'datadir=',
                  'config=',
-                 'noresize',
-                 'noupdate']
+                 'noresize']
         )
     except getopt.GetoptError:
         sys.exit(help_message())
@@ -679,70 +732,13 @@ def main():
         if o in ('--noresize',):
             NO_RESIZE = True
 
-        # Prevent auto-updating of app on startup only!
-        if o in ('--noupdate',):
-            NO_UPDATE = True
 
-    def install_pip():
-        print("Downloading pip ...")
-        import urllib2
-
-        url = "https://bootstrap.pypa.io/get-pip.py"
-        file_name = url.split('/')[-1]
-        u = urllib2.urlopen(url)
-        with open(file_name, 'wb') as f:
-            meta = u.info()
-            file_size = int(meta.getheaders("Content-Length")[0])
-            print("Downloading: %s Bytes: %s" % (file_name, file_size))
-            file_size_dl = 0
-            block_sz = 8192
-            while True:
-                buffer = u.read(block_sz)
-                if not buffer:
-                    break
-                file_size_dl += len(buffer)
-                f.write(buffer)
-                status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-                status = status + chr(8) * (len(status) + 1)
-                print(status),
-
-        print("Installing pip ...")
-        import subprocess
-        subprocess.call([sys.executable, os.path.join(ROOT_DIR, 'get-pip.py')])
-
-        print("Cleaning up downloaded pip files")
-        os.remove(os.path.join(ROOT_DIR, 'get-pip.py'))
-
-    if not DEVELOPER:
-        try:
-            import pip
-            print("Upgrading setuptools")
-            pip.main(['install', '-q', '-U', 'setuptools'])
-
-            print("Upgrading pip")
-            pip.main(['install', '-q', '-U', 'pip'])
-        except ImportError:
-            install_pip()
-            import pip
-
-        print("Installing/Upgrading OpenSSL and contexts")
-        pip.main(['install', '-q', '-U', '--no-cache-dir', 'pyopenssl', 'ndg-httpsclient', 'pyasn1'])
-
-        try:
-            import urllib3.contrib.pyopenssl
-            urllib3.contrib.pyopenssl.inject_into_urllib3()
-        except ImportError:
-            pass
-
-        print("Installing/Upgrading SiCKRAGE required libs")
-        pip.main(['install', '-q', '-U', '--no-cache-dir', '-r', os.path.join(ROOT_DIR, 'requirements', 'global.txt')])
-
-        try:
-            print("Installing/Upgrading SiCKRAGE optional libs")
-            pip.main(['install', '-q', '-U', '--no-cache-dir', '-r', os.path.join(ROOT_DIR, 'requirements', 'optional.txt')])
-        except ImportError as e:
-            print(e.message)
-            pass
+    # install/upgrade pip and ssl contexts for required/optional imports
+    try:
+        requirements()
+    except ImportError:
+        install_pip()
+        requirements()
 
     # init logging
     from sickrage.core.srlogger import srLogger

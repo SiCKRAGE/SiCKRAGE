@@ -31,11 +31,9 @@ import urllib
 import urlparse
 import webbrowser
 
-from attrdict import AttrDict
-
 import sickrage
 from sickrage.core.caches.name_cache import nameCache
-from sickrage.core.classes import SiCKRAGEURLopener
+from sickrage.core.classes import SiCKRAGEURLopener, AttrDict
 from sickrage.core.common import SD
 from sickrage.core.common import SKIPPED
 from sickrage.core.common import WANTED

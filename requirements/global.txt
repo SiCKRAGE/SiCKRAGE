@@ -1,5 +1,3 @@
-virtualenv
-attrdict
 APScheduler
 babelfish
 backport-ipaddress
@@ -39,14 +37,11 @@ Mako
 markdown2
 MarkupSafe
 MultipartPostHandler
-ndg-httpsclient
 oauth2
 oauthlib
 pbr
 profilehooks
 py-unrar2
-pyasn
-pyasn1
 pycparser
 PyGithub
 pysrt

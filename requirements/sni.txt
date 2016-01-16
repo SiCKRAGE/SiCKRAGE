@@ -1,0 +1,5 @@
+ndg-httpsclient
+pyopenssl
+urllib3
+pyasn1
+pyasn

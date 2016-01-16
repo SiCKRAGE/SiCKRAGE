@@ -1,9 +1,15 @@
 import os
 
+import sys
+
 try:
     from setuptools import setup, find_packages
 except ImportError:
     from distutils.core import setup, find_packages
+
+if sys.argv[-1] == 'publish':
+    os.system('python setup.py sdist bdist_wheel upload')
+    sys.exit()
 
 # Get the version number
 with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'version.txt')) as f:
