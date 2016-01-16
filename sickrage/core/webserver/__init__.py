@@ -176,6 +176,7 @@ class SRWebServer(object):
         if sickrage.DAEMONIZE:
             import daemon
             ctx = daemon.DaemonContext()
+            ctx.initgroups = False
             ctx.open()
 
         # write sickrage pidfile

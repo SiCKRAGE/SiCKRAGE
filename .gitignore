@@ -54,6 +54,9 @@ Session.vim
 *.ipr
 .settings/*
 .pypirc
+/dist
+/build
+/sickrage.egg-info
 
 # OS generated files #
 ######################
