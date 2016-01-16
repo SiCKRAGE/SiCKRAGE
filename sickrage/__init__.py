@@ -585,6 +585,7 @@ def help_message():
     help_msg += "                                    to load configuration from \n"
     help_msg += "                                    Default: config.ini in " + PROG_DIR + " or --datadir location\n"
     help_msg += "                --noresize          Prevent resizing of the banner/posters even if PIL is installed\n"
+    help_msg += "                --install-optional  Install optional pacakges from requirements folder\n"
 
     return help_msg
 
@@ -604,6 +605,9 @@ def main():
 
     consoleLogging = (not hasattr(sys, "frozen")) or (APP_NAME.lower().find('-console') > 0)
 
+    # defaults
+    INSTALL_OPTIONAL = False
+
     try:
         opts, _ = getopt.getopt(
                 sys.argv[1:], "hqdp::",
@@ -616,7 +620,8 @@ def main():
                  'port=',
                  'datadir=',
                  'config=',
-                 'noresize']
+                 'noresize',
+                 'install-optional']
         )
     except getopt.GetoptError:
         sys.exit(help_message())
@@ -678,12 +683,16 @@ def main():
         if o in ('--noresize',):
             NO_RESIZE = True
 
+        # Install optional packages from requirements folder
+        if o in ('--install-optional',):
+            INSTALL_OPTIONAL = True
+
 
     # install/upgrade pip and ssl contexts for required/optional imports
     i = 0
-    while i < 5:
+    while i <= 2:
         try:
-            install_reqs()
+            install_reqs(optional=INSTALL_OPTIONAL)
             import sickrage
             raise StopIteration
         except ImportError:install_pip()

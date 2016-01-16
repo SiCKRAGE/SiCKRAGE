@@ -25,6 +25,7 @@ import re
 import requests
 from dateutil import tz
 
+import sickrage
 from sickrage.core.databases import cache_db
 from sickrage.core.helpers import getURL, tryInt
 
@@ -34,7 +35,7 @@ am_regex = re.compile(r'(A[. ]? ?M)', flags=re.IGNORECASE)
 pm_regex = re.compile(r'(P[. ]? ?M)', flags=re.IGNORECASE)
 
 network_dict = None
-sr_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
+sr_timezone = tz.tzwinlocal().display() if tz.tzwinlocal else tz.tzlocal()
 
 # update the network timezone table
 def update_network_dict():

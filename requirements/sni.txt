@@ -1,4 +1,4 @@
-urllib3==1.14
-ndg-httpsclient==0.4.0
-pyasn==1.5.0b6
-pyasn1==0.1.9
+urllib3
+ndg-httpsclient
+pyasn
+pyasn1

@@ -6,6 +6,7 @@
     import re
     import time
 
+    from sickrage.providers import GenericProvider
     from sickrage.core.helpers import srdatetime
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
     from sickrage.core.common import Quality, statusStrings, Overview
@@ -147,7 +148,7 @@
                     % for action in sorted(hItem["actions"]):
                         <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
                         % if curStatus in [SNATCHED, FAILED]:
-                            <% provider = sickrage.providersDict[action["action"]] %>
+                            <% provider = sickrage.providersDict[GenericProvider(action["provider"])._makeID()] %>
                             % if provider != None:
                                 <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16"
                                      style="vertical-align:middle;" alt="${provider.name}" style="cursor: help;"
