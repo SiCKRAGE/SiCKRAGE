@@ -1,1 +1,2 @@
-lxml
+IMDbPY==5.0
+lxml==3.5.0

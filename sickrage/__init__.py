@@ -28,6 +28,8 @@ import threading
 import traceback
 import uuid
 
+from requirements import install_reqs, install_pip
+
 threading.currentThread().name = 'MAIN'
 
 USER_AGENT = 'SiCKRAGE/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
@@ -554,62 +556,6 @@ TORRENTRSS_DATA = None
 SHOWS_RECENT = []
 CENSOREDITEMS = {}
 
-def ssl_contexts():
-    import pip
-    pip.main(['install', '-U', '--no-cache-dir', '-r', os.path.join(ROOT_DIR, 'requirements', 'sni.txt')])
-
-    try:
-        import pip._vendor.requests.packages.urllib3.contrib.pyopenssl
-        pip._vendor.requests.packages.urllib3.contrib.pyopenssl.inject_into_urllib3()
-    except ImportError:
-        pass
-
-def install_pip():
-    print("Downloading pip ...")
-    import urllib2
-
-    url = "https://bootstrap.pypa.io/get-pip.py"
-    file_name = url.split('/')[-1]
-    u = urllib2.urlopen(url)
-    with open(file_name, 'wb') as f:
-        meta = u.info()
-        file_size = int(meta.getheaders("Content-Length")[0])
-        print("Downloading: %s Bytes: %s" % (file_name, file_size))
-        file_size_dl = 0
-        block_sz = 8192
-        while True:
-            buffer = u.read(block_sz)
-            if not buffer:
-                break
-            file_size_dl += len(buffer)
-            f.write(buffer)
-            status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-            status = status + chr(8) * (len(status) + 1)
-            print(status),
-
-    print("Installing pip ...")
-    import subprocess
-    subprocess.call([sys.executable, os.path.join(ROOT_DIR, 'get-pip.py')])
-
-    print("Cleaning up downloaded pip files")
-    os.remove(os.path.join(ROOT_DIR, 'get-pip.py'))
-
-def requirements():
-    # fix sni ssl support
-    ssl_contexts()
-
-    import pip
-
-    print("Upgrading SiCKRAGE required libs, please stand by")
-    pip.main(['install', '-U', '--no-cache-dir', '-r', os.path.join(ROOT_DIR, 'requirements', 'global.txt')])
-
-    try:
-        print("Upgrading SiCKRAGE optional libs")
-        pip.main(['install', '-q', '-U', '--no-cache-dir', '-r', os.path.join(ROOT_DIR, 'requirements', 'optional.txt')])
-    except ImportError as e:
-        print(e.message)
-        pass
-
 def help_message():
     """
     LOGGER.info help message for commandline options
@@ -734,11 +680,15 @@ def main():
 
 
     # install/upgrade pip and ssl contexts for required/optional imports
-    try:
-        requirements()
-    except ImportError:
-        install_pip()
-        requirements()
+    i = 0
+    while i < 5:
+        try:
+            install_reqs()
+            import sickrage
+            raise StopIteration
+        except ImportError:install_pip()
+        except StopIteration:break
+        finally:i += 1
 
     # init logging
     from sickrage.core.srlogger import srLogger
@@ -785,7 +735,7 @@ def main():
         from sickrage import core
         if core.initialize():
             WEB_SERVER.start()
-    except:
+    except Exception:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_tb(exc_traceback)
         traceback.print_exception(exc_type, exc_value, exc_traceback)

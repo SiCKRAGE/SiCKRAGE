@@ -1,3 +1,4 @@
+import glob
 import os
 
 import sys
@@ -16,10 +17,10 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', '
     version = f.read()
 
 # Get requirements
-#requirements = []
-#for file in glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements', '*.txt')):
-#    with open(file) as f:
-#        requirements += f.readlines()
+requirements = []
+for file in glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements', '*.txt')):
+    with open(file) as f:
+        requirements += f.readlines()
 
 setup(
         name='sickrage',
@@ -29,7 +30,7 @@ setup(
         author_email='sickrage.tv@gmail.com',
         url='https://github.com/SiCKRAGETV/SickRage',
         keywords=['sickrage', 'sickragetv', 'sickrage', 'tv', 'torrent', 'nzb'],
-#        install_requires=requirements,
+        install_requires=requirements,
         packages=find_packages(),
         py_modules=["SiCKRAGE", "SickBeard"],
         zip_safe=False,

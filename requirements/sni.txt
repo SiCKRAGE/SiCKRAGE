@@ -1,5 +1,4 @@
-ndg-httpsclient
-pyopenssl
-urllib3
-pyasn1
-pyasn
+urllib3==1.14
+ndg-httpsclient==0.4.0
+pyasn==1.5.0b6
+pyasn1==0.1.9
