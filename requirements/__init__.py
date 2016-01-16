@@ -48,10 +48,10 @@ def install_pip():
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, os.path.join('.', 'get-pip.py')])
+    subprocess.call([sys.executable, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'get-pip.py')])
 
     print("Cleaning up downloaded pip files")
-    os.remove(os.path.join('.', 'get-pip.py'))
+    os.remove(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'get-pip.py'))
 
 
 def install_pkgs(requirements):
@@ -92,7 +92,7 @@ def ssl_contexts():
         urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST = "MEDIUM"
     except ImportError:
         # ssl contexts
-        install_pkgs(os.path.abspath(os.path.join('.', 'requirements', 'sni.txt')))
+        install_pkgs(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sni.txt'))
 
         # restart to enable sni contexts
         os.execl(sys.executable, sys.executable, *sys.argv)
@@ -108,10 +108,10 @@ def install_reqs():
     pip.main(['-q', '--no-cache-dir', 'install', '-U', '--user', 'configobj'])
 
     print("Checking for required SiCKRAGE packages, please stand by ...")
-    install_pkgs(os.path.abspath(os.path.join('.', 'requirements', 'global.txt')))
+    install_pkgs(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'global.txt'))
 
     print("Checking for optional SiCKRAGE packages, please stand by ...")
-    try:install_pkgs(os.path.abspath(os.path.join('.', 'requirements', 'optional.txt')))
+    try:install_pkgs(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'optional.txt'))
     except:pass
 
     print("Checking for upgradable SiCKRAGE packages, please stand by ...")
