@@ -25,7 +25,7 @@ import os
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality
 from sickrage.core.nameparser import NameParser
-from sickrage.core.tv import episode
+from sickrage.core.tv.episode import TVEpisode
 
 name_presets = (
     '%SN - %Sx%0E - %EN',
@@ -51,7 +51,7 @@ name_sports_presets = (
 
 
 class Validator(object):
-    class TVShow(object):
+    class FakeTVShow(object):
         def __init__(self):
             self.name = "Show Name"
             self.genre = "Comedy"
@@ -97,7 +97,7 @@ class Validator(object):
 
         is_scene = property(_is_scene)
 
-    class TVEpisode(episode.TVEpisode):
+    class FakeTVEpisode(TVEpisode):
         def __init__(self, season, episode, absolute_number, name):
             self.relatedEps = []
             self._name = name
@@ -108,7 +108,7 @@ class Validator(object):
             self.scene_episode = episode
             self.scene_absolute_number = absolute_number
             self._airdate = datetime.date(2010, 3, 9)
-            self.show = Validator.TVShow()
+            self.show = Validator.FakeTVShow()
             self._status = Quality.compositeStatus(DOWNLOADED, Quality.SDTV)
             self._release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
             self._is_proper = True
@@ -244,7 +244,7 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
 
 def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
     # make a fake episode object
-    ep = Validator.TVEpisode(2, 3, 3, "Ep Name")
+    ep = Validator.FakeTVEpisode(2, 3, 3, "Ep Name")
 
     ep._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
     ep._airdate = datetime.date(2011, 3, 9)
@@ -270,7 +270,7 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
 
             ep._release_name = 'Show.Name.003-004.HDTV.XviD-RLSGROUP'
 
-            secondEp = Validator.TVEpisode(2, 4, 4, "Ep Name (2)")
+            secondEp = Validator.FakeTVEpisode(2, 4, 4, "Ep Name (2)")
             secondEp._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
             secondEp._release_name = ep._release_name
 
@@ -278,11 +278,11 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
         else:
             ep._release_name = 'Show.Name.S02E03E04E05.HDTV.XviD-RLSGROUP'
 
-            secondEp = Validator.TVEpisode(2, 4, 4, "Ep Name (2)")
+            secondEp = Validator.FakeTVEpisode(2, 4, 4, "Ep Name (2)")
             secondEp._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
             secondEp._release_name = ep._release_name
 
-            thirdEp = Validator.TVEpisode(2, 5, 5, "Ep Name (3)")
+            thirdEp = Validator.FakeTVEpisode(2, 5, 5, "Ep Name (3)")
             thirdEp._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
             thirdEp._release_name = ep._release_name
 
