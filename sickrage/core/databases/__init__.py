@@ -271,8 +271,6 @@ class SchemaUpgrade(Connection):
     def upgrade(self):
         """
         Perform database upgrade and provide logging
-
-        :param schema: New schema to upgrade to
         """
 
         def _processUpgrade(upgradeClass, version):

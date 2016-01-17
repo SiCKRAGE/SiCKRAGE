@@ -54,9 +54,9 @@ from sickrage.core.media.poster import Poster
 from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, ManualSearchQueueItem
 from sickrage.core.searchers import subtitle_searcher
-from sickrage.core.tv.show import ComingEpisodes
-from sickrage.core.tv.show import History
 from sickrage.core.tv.show import TVShow
+from sickrage.core.tv.show.coming_episodes import ComingEpisodes
+from sickrage.core.tv.show.history import History
 from sickrage.core.ui import notifications
 from sickrage.core.updaters import tz_updater
 from sickrage.indexers.indexer_exceptions import indexer_error, \

@@ -25,7 +25,7 @@ import os
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality
 from sickrage.core.nameparser import NameParser
-from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv import formatted_filename, formatted_dir
 
 name_presets = (
     '%SN - %Sx%0E - %EN',
@@ -97,21 +97,21 @@ class Validator(object):
 
         is_scene = property(_is_scene)
 
-    class FakeTVEpisode(TVEpisode):
+    class FakeTVEpisode(object):
         def __init__(self, season, episode, absolute_number, name):
             self.relatedEps = []
-            self._name = name
-            self._season = season
-            self._episode = episode
-            self._absolute_number = absolute_number
+            self.name = name
+            self.season = season
+            self.episode = episode
+            self.absolute_number = absolute_number
             self.scene_season = season
             self.scene_episode = episode
             self.scene_absolute_number = absolute_number
-            self._airdate = datetime.date(2010, 3, 9)
+            self.airdate = datetime.date(2010, 3, 9)
             self.show = Validator.FakeTVShow()
-            self._status = Quality.compositeStatus(DOWNLOADED, Quality.SDTV)
-            self._release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
-            self._is_proper = True
+            self.status = Quality.compositeStatus(DOWNLOADED, Quality.SDTV)
+            self.release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
+            self.is_proper = True
 
 
 def check_force_season_folders(pattern=None, multi=None, anime_type=None):
@@ -201,8 +201,8 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
     """
     ep = generate_sample_ep(multi, abd, sports, anime_type)
 
-    new_name = ep.formatted_filename(pattern, multi, anime_type) + '.ext'
-    new_path = ep.formatted_dir(pattern, multi)
+    new_name = formatted_filename(ep.show, ep, pattern, multi, anime_type) + '.ext'
+    new_path = formatted_dir(ep.show, ep, pattern, multi)
     if not file_only:
         new_name = os.path.join(new_path, new_name)
 
@@ -246,45 +246,45 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
     # make a fake episode object
     ep = Validator.FakeTVEpisode(2, 3, 3, "Ep Name")
 
-    ep._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
-    ep._airdate = datetime.date(2011, 3, 9)
+    ep.status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
+    ep.airdate = datetime.date(2011, 3, 9)
 
     if abd:
-        ep._release_name = 'Show.Name.2011.03.09.HDTV.XviD-RLSGROUP'
+        ep.release_name = 'Show.Name.2011.03.09.HDTV.XviD-RLSGROUP'
         ep.show.air_by_date = 1
     elif sports:
-        ep._release_name = 'Show.Name.2011.03.09.HDTV.XviD-RLSGROUP'
+        ep.release_name = 'Show.Name.2011.03.09.HDTV.XviD-RLSGROUP'
         ep.show.sports = 1
     else:
         if anime_type != 3:
             ep.show.anime = 1
-            ep._release_name = 'Show.Name.003.HDTV.XviD-RLSGROUP'
+            ep.release_name = 'Show.Name.003.HDTV.XviD-RLSGROUP'
         else:
-            ep._release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
+            ep.release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
 
     if multi is not None:
-        ep._name = "Ep Name (1)"
+        ep.name = "Ep Name (1)"
 
         if anime_type != 3:
             ep.show.anime = 1
 
-            ep._release_name = 'Show.Name.003-004.HDTV.XviD-RLSGROUP'
+            ep.release_name = 'Show.Name.003-004.HDTV.XviD-RLSGROUP'
 
             secondEp = Validator.FakeTVEpisode(2, 4, 4, "Ep Name (2)")
-            secondEp._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
-            secondEp._release_name = ep._release_name
+            secondEp.status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
+            secondEp.release_name = ep.release_name
 
             ep.relatedEps.append(secondEp)
         else:
-            ep._release_name = 'Show.Name.S02E03E04E05.HDTV.XviD-RLSGROUP'
+            ep.release_name = 'Show.Name.S02E03E04E05.HDTV.XviD-RLSGROUP'
 
             secondEp = Validator.FakeTVEpisode(2, 4, 4, "Ep Name (2)")
-            secondEp._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
-            secondEp._release_name = ep._release_name
+            secondEp.status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
+            secondEp.release_name = ep.release_name
 
             thirdEp = Validator.FakeTVEpisode(2, 5, 5, "Ep Name (3)")
-            thirdEp._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
-            thirdEp._release_name = ep._release_name
+            thirdEp.status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
+            thirdEp.release_name = ep.release_name
 
             ep.relatedEps.append(secondEp)
             ep.relatedEps.append(thirdEp)
@@ -295,4 +295,4 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
 def test_name(pattern, multi=None, abd=False, sports=False, anime_type=None):
     ep = generate_sample_ep(multi, abd, sports, anime_type)
 
-    return {'name': ep.formatted_filename(pattern, multi, anime_type), 'dir': ep.formatted_dir(pattern, multi)}
+    return {'name': formatted_filename(ep.show, ep, pattern, multi, anime_type), 'dir': formatted_dir(ep.show, ep, pattern, multi)}

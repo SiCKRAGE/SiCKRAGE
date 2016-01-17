@@ -21,24 +21,21 @@ from __future__ import unicode_literals
 
 import datetime
 import os
-import re
 import threading
 from xml.etree.ElementTree import ElementTree
 
 import sickrage
 from sickrage.core import SKIPPED
-from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, NAMING_EXTEND, NAMING_LIMITED_EXTEND, \
-    NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
+from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat
 from sickrage.core.databases import main_db
 from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
 from sickrage.core.helpers import isMediaFile, tryInt, replaceExtension, \
-    sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, rename_ep_file, touchFile
-from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
+    rename_ep_file, touchFile
 from sickrage.core.processors import post_processor
 from sickrage.core.scene_numbering import xem_refresh, get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.searchers import subtitle_searcher
-from sickrage.core.tv import dirty_setter
+from sickrage.core.tv import dirty_setter, formatted_filename, formatted_dir, _format_pattern
 from sickrage.core.updaters import tz_updater
 from sickrage.indexers.indexer_exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import notify_subtitle_download
@@ -483,7 +480,7 @@ class TVEpisode(object):
                                         e))
                     raise NoNFOException("Error in NFO format")
 
-                for epDetails in showXML.getiterator('episodedetails'):
+                for epDetails in showXML.iter('episodedetails'):
                     if epDetails.findtext('season') is None or int(epDetails.findtext('season')) != self.season or \
                                     epDetails.findtext('episode') is None or int(
                             epDetails.findtext('episode')) != self.episode:
@@ -739,9 +736,9 @@ class TVEpisode(object):
         strings = []
         if not pattern:
             for p in patterns:
-                strings += [self._format_pattern(p)]
+                strings += [_format_pattern(self.show, self, p)]
             return strings
-        return self._format_pattern(pattern)
+        return _format_pattern(self.show, self, pattern)
 
     def prettyName(self):
         """
@@ -752,350 +749,11 @@ class TVEpisode(object):
         """
 
         if self.show.anime and not self.show.scene:
-            return self._format_pattern('%SN - %AB - %EN')
+            return _format_pattern(self.show, self, '%SN - %AB - %EN')
         elif self.show.air_by_date:
-            return self._format_pattern('%SN - %AD - %EN')
+            return _format_pattern(self.show, self, '%SN - %AD - %EN')
 
-        return self._format_pattern('%SN - %Sx%0E - %EN')
-
-    def _ep_name(self):
-        """
-        Returns the name of the episode to use during renaming. Combines the names of related episodes.
-        Eg. "Ep Name (1)" and "Ep Name (2)" becomes "Ep Name"
-            "Ep Name" and "Other Ep Name" becomes "Ep Name & Other Ep Name"
-        """
-
-        multiNameRegex = r"(.*) \(\d{1,2}\)"
-
-        self.relatedEps = sorted(self.relatedEps, key=lambda x: x.episode)
-
-        if len(self.relatedEps) == 0:
-            goodName = self.name
-        else:
-            goodName = ''
-
-            singleName = True
-            curGoodName = None
-
-            for curName in [self.name] + [x.name for x in self.relatedEps]:
-                match = re.match(multiNameRegex, curName)
-                if not match:
-                    singleName = False
-                    break
-
-                if curGoodName is None:
-                    curGoodName = match.group(1)
-                elif curGoodName != match.group(1):
-                    singleName = False
-                    break
-
-            if singleName:
-                goodName = curGoodName
-            else:
-                goodName = self.name
-                for relEp in self.relatedEps:
-                    goodName += " & " + relEp.name
-
-        return goodName
-
-    def _replace_map(self):
-        """
-        Generates a replacement map for this episode which maps all possible custom naming patterns to the correct
-        value for this episode.
-
-        Returns: A dict with patterns as the keys and their replacement values as the values.
-        """
-
-        ep_name = self._ep_name()
-
-        def dot(name):
-            return sanitizeSceneName(name)
-
-        def us(name):
-            return re.sub('[ -]', '_', name)
-
-        def release_name(name):
-            if name:
-                name = remove_non_release_groups(remove_extension(name))
-            return name
-
-        def release_group(show, name):
-            if name:
-                name = remove_non_release_groups(remove_extension(name))
-            else:
-                return ""
-
-            try:
-                np = NameParser(name, showObj=show, naming_pattern=True)
-                parse_result = np.parse(name)
-            except (InvalidNameException, InvalidShowException) as e:
-                sickrage.LOGGER.debug("Unable to get parse release_group: {}".format(e))
-                return ''
-
-            if not parse_result.release_group:
-                return ''
-            return parse_result.release_group
-
-        _, epQual = Quality.splitCompositeStatus(self.status)  # @UnusedVariable
-
-        if sickrage.NAMING_STRIP_YEAR:
-            show_name = re.sub(r"\(\d+\)$", "", self.show.name).rstrip()
-        else:
-            show_name = self.show.name
-
-        # try to get the release group
-        rel_grp = {}
-        rel_grp[b"SiCKRAGE"] = 'SiCKRAGE'
-        if hasattr(self, 'location'):  # from the location name
-            rel_grp[b'location'] = release_group(self.show, self.location)
-            if not rel_grp[b'location']:
-                del rel_grp[b'location']
-        if hasattr(self, '_release_group'):  # from the release group field in db
-            rel_grp[b'database'] = self._release_group
-            if not rel_grp[b'database']:
-                del rel_grp[b'database']
-        if hasattr(self, 'release_name'):  # from the release name field in db
-            rel_grp[b'release_name'] = release_group(self.show, self.release_name)
-            if not rel_grp[b'release_name']:
-                del rel_grp[b'release_name']
-
-        # use release_group, release_name, location in that order
-        if 'database' in rel_grp:
-            relgrp = 'database'
-        elif 'release_name' in rel_grp:
-            relgrp = 'release_name'
-        elif 'location' in rel_grp:
-            relgrp = 'location'
-        else:
-            relgrp = 'SiCKRAGE'
-
-        # try to get the release encoder to comply with scene naming standards
-        encoder = Quality.sceneQualityFromName(self.release_name.replace(rel_grp[relgrp], ""), epQual)
-        if encoder:
-            sickrage.LOGGER.debug("Found codec for '" + show_name + ": " + ep_name + "'.")
-
-        return {
-            '%SN': show_name,
-            '%S.N': dot(show_name),
-            '%S_N': us(show_name),
-            '%EN': ep_name,
-            '%E.N': dot(ep_name),
-            '%E_N': us(ep_name),
-            '%QN': Quality.qualityStrings[epQual],
-            '%Q.N': dot(Quality.qualityStrings[epQual]),
-            '%Q_N': us(Quality.qualityStrings[epQual]),
-            '%SQN': Quality.sceneQualityStrings[epQual] + encoder,
-            '%SQ.N': dot(Quality.sceneQualityStrings[epQual] + encoder),
-            '%SQ_N': us(Quality.sceneQualityStrings[epQual] + encoder),
-            '%S': str(self.season),
-            '%0S': '%02d' % self.season,
-            '%E': str(self.episode),
-            '%0E': '%02d' % self.episode,
-            '%XS': str(self.scene_season),
-            '%0XS': '%02d' % self.scene_season,
-            '%XE': str(self.scene_episode),
-            '%0XE': '%02d' % self.scene_episode,
-            '%AB': '%(#)03d' % {'#': self.absolute_number},
-            '%XAB': '%(#)03d' % {'#': self.scene_absolute_number},
-            '%RN': release_name(self.release_name),
-            '%RG': rel_grp[relgrp],
-            '%CRG': rel_grp[relgrp].upper(),
-            '%AD': str(self.airdate).replace('-', ' '),
-            '%A.D': str(self.airdate).replace('-', '.'),
-            '%A_D': us(str(self.airdate)),
-            '%A-D': str(self.airdate),
-            '%Y': str(self.airdate.year),
-            '%M': str(self.airdate.month),
-            '%D': str(self.airdate.day),
-            '%0M': '%02d' % self.airdate.month,
-            '%0D': '%02d' % self.airdate.day,
-            '%RT': "PROPER" if self.is_proper else "",
-        }
-
-    def _format_string(self, pattern, replace_map):
-        """
-        Replaces all template strings with the correct value
-        """
-
-        result_name = pattern
-
-        # do the replacements
-        for cur_replacement in sorted(replace_map.keys(), reverse=True):
-            result_name = result_name.replace(cur_replacement,
-                                              sanitizeFileName(replace_map[cur_replacement]))
-            result_name = result_name.replace(cur_replacement.lower(),
-                                              sanitizeFileName(replace_map[cur_replacement].lower()))
-
-        return result_name
-
-    def _format_pattern(self, pattern=None, multi=None, anime_type=None):
-        """
-        Manipulates an episode naming pattern and then fills the template in
-        """
-
-        if pattern is None:
-            pattern = sickrage.NAMING_PATTERN
-
-        if multi is None:
-            multi = sickrage.NAMING_MULTI_EP
-
-        if sickrage.NAMING_CUSTOM_ANIME:
-            if anime_type is None:
-                anime_type = sickrage.NAMING_ANIME
-        else:
-            anime_type = 3
-
-        replace_map = self._replace_map()
-
-        result_name = pattern
-
-        # if there's no release group in the db, let the user know we replaced it
-        if replace_map['%RG'] and replace_map['%RG'] != 'SiCKRAGE':
-            if not hasattr(self, '_release_group'):
-                sickrage.LOGGER.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
-                self._release_group = replace_map['%RG']  # if release_group is not in the db, put it there
-            elif not self._release_group:
-                sickrage.LOGGER.debug("Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
-                self._release_group = replace_map['%RG']  # if release_group is not in the db, put it there
-
-        # if there's no release name then replace it with a reasonable facsimile
-        if not replace_map['%RN']:
-
-            if self.show.air_by_date or self.show.sports:
-                result_name = result_name.replace('%RN', '%S.N.%A.D.%E.N-' + replace_map['%RG'])
-                result_name = result_name.replace('%rn', '%s.n.%A.D.%e.n-' + replace_map['%RG'].lower())
-
-            elif anime_type != 3:
-                result_name = result_name.replace('%RN', '%S.N.%AB.%E.N-' + replace_map['%RG'])
-                result_name = result_name.replace('%rn', '%s.n.%ab.%e.n-' + replace_map['%RG'].lower())
-
-            else:
-                result_name = result_name.replace('%RN', '%S.N.S%0SE%0E.%E.N-' + replace_map['%RG'])
-                result_name = result_name.replace('%rn', '%s.n.s%0se%0e.%e.n-' + replace_map['%RG'].lower())
-
-                # sickrage.LOGGER.debug(u"Episode has no release name, replacing it with a generic one: " + result_name)
-
-        if not replace_map['%RT']:
-            result_name = re.sub('([ _.-]*)%RT([ _.-]*)', r'\2', result_name)
-
-        # split off ep name part only
-        name_groups = re.split(r'[\\/]', result_name)
-
-        # figure out the double-ep numbering style for each group, if applicable
-        for cur_name_group in name_groups:
-
-            season_format = sep = ep_sep = ep_format = None
-
-            season_ep_regex = r'''
-                                (?P<pre_sep>[ _.-]*)
-                                ((?:s(?:eason|eries)?\s*)?%0?S(?![._]?N))
-                                (.*?)
-                                (%0?E(?![._]?N))
-                                (?P<post_sep>[ _.-]*)
-                              '''
-            ep_only_regex = r'(E?%0?E(?![._]?N))'
-
-            # try the normal way
-            season_ep_match = re.search(season_ep_regex, cur_name_group, re.I | re.X)
-            ep_only_match = re.search(ep_only_regex, cur_name_group, re.I | re.X)
-
-            # if we have a season and episode then collect the necessary data
-            if season_ep_match:
-                season_format = season_ep_match.group(2)
-                ep_sep = season_ep_match.group(3)
-                ep_format = season_ep_match.group(4)
-                sep = season_ep_match.group('pre_sep')
-                if not sep:
-                    sep = season_ep_match.group('post_sep')
-                if not sep:
-                    sep = ' '
-
-                # force 2-3-4 format if they chose to extend
-                if multi in (NAMING_EXTEND, NAMING_LIMITED_EXTEND,
-                             NAMING_LIMITED_EXTEND_E_PREFIXED):
-                    ep_sep = '-'
-
-                regex_used = season_ep_regex
-
-            # if there's no season then there's not much choice so we'll just force them to use 03-04-05 style
-            elif ep_only_match:
-                season_format = ''
-                ep_sep = '-'
-                ep_format = ep_only_match.group(1)
-                sep = ''
-                regex_used = ep_only_regex
-
-            else:
-                continue
-
-            # we need at least this much info to continue
-            if not ep_sep or not ep_format:
-                continue
-
-            # start with the ep string, eg. E03
-            ep_string = self._format_string(ep_format.upper(), replace_map)
-            for other_ep in self.relatedEps:
-
-                # for limited extend we only append the last ep
-                if multi in (NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED) and other_ep != \
-                        self.relatedEps[
-                            -1]:
-                    continue
-
-                elif multi == NAMING_DUPLICATE:
-                    # add " - S01"
-                    ep_string += sep + season_format
-
-                elif multi == NAMING_SEPARATED_REPEAT:
-                    ep_string += sep
-
-                # add "E04"
-                ep_string += ep_sep
-
-                if multi == NAMING_LIMITED_EXTEND_E_PREFIXED:
-                    ep_string += 'E'
-
-                ep_string += other_ep._format_string(ep_format.upper(), other_ep._replace_map())
-
-            if anime_type != 3:
-                if self.absolute_number == 0:
-                    curAbsolute_number = self.episode
-                else:
-                    curAbsolute_number = self.absolute_number
-
-                if self.season != 0:  # dont set absolute numbers if we are on specials !
-                    if anime_type == 1:  # this crazy person wants both ! (note: +=)
-                        ep_string += sep + "%(#)03d" % {
-                            "#": curAbsolute_number}
-                    elif anime_type == 2:  # total anime freak only need the absolute number ! (note: =)
-                        ep_string = "%(#)03d" % {"#": curAbsolute_number}
-
-                    for relEp in self.relatedEps:
-                        if relEp.absolute_number != 0:
-                            ep_string += '-' + "%(#)03d" % {"#": relEp.absolute_number}
-                        else:
-                            ep_string += '-' + "%(#)03d" % {"#": relEp.episode}
-
-            regex_replacement = None
-            if anime_type == 2:
-                regex_replacement = r'\g<pre_sep>' + ep_string + r'\g<post_sep>'
-            elif season_ep_match:
-                regex_replacement = r'\g<pre_sep>\g<2>\g<3>' + ep_string + r'\g<post_sep>'
-            elif ep_only_match:
-                regex_replacement = ep_string
-
-            if regex_replacement:
-                # fill out the template for this piece and then insert this piece into the actual pattern
-                cur_name_group_result = re.sub('(?i)(?x)' + regex_used, regex_replacement, cur_name_group)
-                # cur_name_group_result = cur_name_group.replace(ep_format, ep_string)
-                # sickrage.LOGGER.debug(u"found "+ep_format+" as the ep pattern using "+regex_used+" and replaced it with "+regex_replacement+" to result in "+cur_name_group_result+" from "+cur_name_group)
-                result_name = result_name.replace(cur_name_group, cur_name_group_result)
-
-        result_name = self._format_string(result_name, replace_map)
-
-        sickrage.LOGGER.debug("Formatting pattern: " + pattern + " -> " + result_name)
-
-        return result_name
+        return _format_pattern(self.show, self, '%SN - %Sx%0E - %EN')
 
     def proper_path(self):
         """
@@ -1106,7 +764,7 @@ class TVEpisode(object):
         if not self.show.is_anime:
             anime_type = 3
 
-        result = self.formatted_filename(anime_type=anime_type)
+        result = formatted_filename(self.show, self.relatedEps, anime_type=anime_type)
 
         # if they want us to flatten it and we're allowed to flatten it then we will
         if self.show.flatten_folders and not sickrage.NAMING_FORCE_FOLDERS:
@@ -1114,54 +772,9 @@ class TVEpisode(object):
 
         # if not we append the folder on and use that
         else:
-            result = os.path.join(self.formatted_dir(), result)
+            result = os.path.join(formatted_dir(self.show, self), result)
 
         return result
-
-    def formatted_dir(self, pattern=None, multi=None):
-        """
-        Just the folder name of the episode
-        """
-
-        if pattern is None:
-            # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
-            if self.show.air_by_date and sickrage.NAMING_CUSTOM_ABD and not self.relatedEps:
-                pattern = sickrage.NAMING_ABD_PATTERN
-            elif self.show.sports and sickrage.NAMING_CUSTOM_SPORTS and not self.relatedEps:
-                pattern = sickrage.NAMING_SPORTS_PATTERN
-            elif self.show.anime and sickrage.NAMING_CUSTOM_ANIME:
-                pattern = sickrage.NAMING_ANIME_PATTERN
-            else:
-                pattern = sickrage.NAMING_PATTERN
-
-        # split off the dirs only, if they exist
-        name_groups = re.split(r'[\\/]', pattern)
-
-        if len(name_groups) == 1:
-            return ''
-        else:
-            return self._format_pattern(os.sep.join(name_groups[:-1]), multi)
-
-    def formatted_filename(self, pattern=None, multi=None, anime_type=None):
-        """
-        Just the filename of the episode, formatted based on the naming settings
-        """
-
-        if pattern is None:
-            # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
-            if self.show.air_by_date and sickrage.NAMING_CUSTOM_ABD and not self.relatedEps:
-                pattern = sickrage.NAMING_ABD_PATTERN
-            elif self.show.sports and sickrage.NAMING_CUSTOM_SPORTS and not self.relatedEps:
-                pattern = sickrage.NAMING_SPORTS_PATTERN
-            elif self.show.anime and sickrage.NAMING_CUSTOM_ANIME:
-                pattern = sickrage.NAMING_ANIME_PATTERN
-            else:
-                pattern = sickrage.NAMING_PATTERN
-
-        # split off the dirs only, if they exist
-        name_groups = re.split(r'[\\/]', pattern)
-
-        return sanitizeFileName(self._format_pattern(name_groups[-1], multi, anime_type))
 
     def rename(self):
         """
@@ -1200,7 +813,7 @@ class TVEpisode(object):
             related_subs = post_processor.PostProcessor(self.location).list_associated_files(sickrage.SUBTITLES_DIR,
                                                                                              subtitles_only=True,
                                                                                              subfolders=True)
-            absolute_proper_subs_path = os.path.join(sickrage.SUBTITLES_DIR, self.formatted_filename())
+            absolute_proper_subs_path = os.path.join(sickrage.SUBTITLES_DIR, formatted_filename(self.show, self))
 
         sickrage.LOGGER.debug("Files associated to " + self.location + ": " + str(related_files))
 
@@ -1223,7 +836,7 @@ class TVEpisode(object):
                 sickrage.LOGGER.error(str(self.indexerid) + ": Unable to rename file " + cur_related_file)
 
         for cur_related_sub in related_subs:
-            absolute_proper_subs_path = os.path.join(sickrage.SUBTITLES_DIR, self.formatted_filename())
+            absolute_proper_subs_path = os.path.join(sickrage.SUBTITLES_DIR, formatted_filename(self.show, self))
             cur_result = rename_ep_file(cur_related_sub, absolute_proper_subs_path,
                                         absolute_current_path_no_ext_length)
             if not cur_result:

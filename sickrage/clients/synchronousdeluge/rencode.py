@@ -1,22 +1,6 @@
 
 """
 rencode -- Web safe object pickling/unpickling.
-
-Public domain, Connelly Barnes 2006-2007.
-
-The rencode module is a modified version of bencode from the
-BitTorrent project.  For complex, heterogeneous data structures with
-many small elements, r-encodings take up significantly less space than
-b-encodings:
-
- >>> len(rencode.dumps({'a':0, 'b':[1,2], 'c':99}))
- 13
- >>> len(bencode.bencode({'a':0, 'b':[1,2], 'c':99}))
- 26
-
-The rencode format is not standardized, and may change with different
-rencode module versions, so you should check that you are using the
-same rencode version throughout your project.
 """
 
 __version__ = '1.0.1'

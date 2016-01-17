@@ -29,6 +29,7 @@ import re
 import sys
 import traceback
 from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
+from logging.handlers import RotatingFileHandler
 
 
 class srLogger(logging.getLoggerClass()):
@@ -111,7 +112,7 @@ class srLogger(logging.getLoggerClass()):
 
         # rotating log file handler
         if self.fileLogging and self.logFile:
-            rfh = logging.handlers.RotatingFileHandler(
+            rfh = RotatingFileHandler(
                     filename=self.logFile,
                     maxBytes=self.logSize,
                     backupCount=self.logNr

@@ -961,12 +961,7 @@ def create_https_certificates(ssl_cert, ssl_key):
     domain name(replacing dots by underscores), finally signing the certificate using specified CA and
     returns the path of key and cert files. If you are yet to generate a CA then check the top comments"""
 
-    try:
-        import pyOpenSSL.crypto
-    except ImportError:
-        import pip
-        pip.main(['install', '-q', 'pyopenssl'])
-        import pyOpenSSL.crypto
+    import OpenSSL
 
     # Check happens if the certificate and key pair already exists for a domain
     if not os.path.exists(ssl_key) and os.path.exists(ssl_cert):
@@ -974,14 +969,14 @@ def create_https_certificates(ssl_cert, ssl_key):
         serial = int(time.time())
 
         # Create the CA Certificate
-        cakey = pyOpenSSL.crypto.PKey().generate_key(pyOpenSSL.crypto.TYPE_RSA, 2048)
-        careq = pyOpenSSL.crypto.X509()
+        cakey = OpenSSL.crypto.PKey().generate_key(OpenSSL.crypto.TYPE_RSA, 2048)
+        careq = OpenSSL.crypto.X509()
         careq.get_subject().CN = "Certificate Authority"
         careq.set_pubkey(cakey)
         careq.sign(cakey, "sha1")
 
         # Sign the CA Certificate
-        cacert = pyOpenSSL.crypto.X509()
+        cacert = OpenSSL.crypto.X509()
         cacert.set_serial_number(serial)
         cacert.gmtime_adj_notBefore(0)
         cacert.gmtime_adj_notAfter(365 * 24 * 60 * 60)
@@ -991,9 +986,9 @@ def create_https_certificates(ssl_cert, ssl_key):
         cacert.sign(cakey, "sha1")
 
         # Generate self-signed certificate
-        key = pyOpenSSL.crypto.PKey()
-        key.generate_key(pyOpenSSL.crypto.TYPE_RSA, 2048)
-        cert = pyOpenSSL.crypto.X509()
+        key = OpenSSL.crypto.PKey()
+        key.generate_key(OpenSSL.crypto.TYPE_RSA, 2048)
+        cert = OpenSSL.crypto.X509()
         cert.get_subject().CN = "SiCKRAGE"
         cert.gmtime_adj_notBefore(0)
         cert.gmtime_adj_notAfter(365 * 24 * 60 * 60)
@@ -1007,9 +1002,9 @@ def create_https_certificates(ssl_cert, ssl_key):
             # pylint: disable=E1101
             # Module has no member
             with io.open(ssl_key, 'w') as keyout:
-                keyout.write(pyOpenSSL.crypto.dump_privatekey(pyOpenSSL.crypto.FILETYPE_PEM, key))
+                keyout.write(OpenSSL.crypto.dump_privatekey(OpenSSL.crypto.FILETYPE_PEM, key))
             with io.open(ssl_cert, 'w') as certout:
-                certout.write(pyOpenSSL.crypto.dump_certificate(pyOpenSSL.crypto.FILETYPE_PEM, cert))
+                certout.write(OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, cert))
         except Exception:
             sickrage.LOGGER.error("Error creating SSL key and certificate")
             return False

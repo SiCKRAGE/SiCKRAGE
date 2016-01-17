@@ -105,7 +105,7 @@ def get_network_timezone(network, _network_dict):
     Get a timezone of a network from a given network dict
 
     :param network: network to look up (needle)
-    :param network_dict: dict to look up in (haystack)
+    :param _network_dict: dict to look up in (haystack)
     :return:
     """
     if network is None:

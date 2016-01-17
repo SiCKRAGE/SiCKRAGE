@@ -282,7 +282,7 @@
         <footer>
             <div class="footer clearfix">
             <%
-                stats = Show.overall_stats()
+                stats = TVShow.overall_stats()
                 ep_downloaded = stats[b'episodes'][b'downloaded']
                 ep_snatched = stats[b'episodes'][b'snatched']
                 ep_total = stats[b'episodes'][b'total']

@@ -47,7 +47,6 @@ from sickrage.core.exceptions import MultipleShowObjectsException, ShowDirectory
 from sickrage.core.helpers import listMediaFiles, isMediaFile, update_anime_support
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.tv import dirty_setter
-from sickrage.core.tv.episode import TVEpisode
 from sickrage.indexers.indexer_config import INDEXER_TVRAGE
 from sickrage.indexers.indexer_exceptions import indexer_seasonnotfound, indexer_error, indexer_attributenotfound
 

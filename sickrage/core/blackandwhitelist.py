@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 import sickrage
 from sickrage.core.databases import main_db
 from sickrage.core.helpers import set_up_anidb_connection
-from sickrage.indexers.adba import AniDBCommandTimeoutError
+from sickrage.indexers.adba.aniDBerrors import AniDBCommandTimeoutError
 
 
 class BlackAndWhiteList(object):

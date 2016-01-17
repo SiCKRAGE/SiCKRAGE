@@ -75,9 +75,9 @@ from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
 from sickrage.core.searchers import subtitle_searcher
 from sickrage.core.srconfig import srConfig
 from sickrage.core.trakt import TraktAPI, traktException
-from sickrage.core.tv.show import ComingEpisodes
-from sickrage.core.tv.show import History as HistoryTool
 from sickrage.core.tv.show import TVShow
+from sickrage.core.tv.show.coming_episodes import ComingEpisodes
+from sickrage.core.tv.show.history import History as HistoryTool
 from sickrage.core.ui import notifications
 from sickrage.core.updaters import tz_updater
 from sickrage.core.version_updater import VersionUpdater
@@ -1290,11 +1290,8 @@ class Home(WebRoot):
 
         showObj.exceptions = get_scene_exceptions(showObj.indexerid)
 
-        if tryInt(quality_preset, None):
-            bestQualities = []
-
         groups = []
-        if not location and not anyQualities and not bestQualities and not flatten_folders:
+        if not location and not anyQualities and not bestQualities and not quality_preset and not flatten_folders:
             if showObj.is_anime:
                 whitelist = showObj.release_groups.whitelist
                 blacklist = showObj.release_groups.blacklist
@@ -1391,7 +1388,10 @@ class Home(WebRoot):
 
         errors = []
         with showObj.lock:
-            newQuality = Quality.combineQualities([int(q) for q in anyQualities], [int(q) for q in bestQualities])
+            newQuality = tryInt(quality_preset, None)
+            if not newQuality:
+                newQuality = Quality.combineQualities([int(q) for q in anyQualities], [int(q) for q in bestQualities])
+
             showObj.quality = newQuality
             showObj.archive_firstmatch = archive_firstmatch
 
