@@ -123,7 +123,7 @@
     cur_ep_airdate = cur_result[b'localtime'].date()
 
     if run_time:
-        cur_ep_enddate = cur_result[b'localtime'] + datetime.timedelta(minutes = run_time)
+        cur_ep_enddate = cur_ep_airdate + datetime.timedelta(minutes = run_time)
         if cur_ep_enddate < today:
             show_div = 'listing-overdue'
         elif cur_ep_airdate >= next_week.date():
