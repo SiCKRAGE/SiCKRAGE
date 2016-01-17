@@ -1,4 +1,3 @@
-
 # Author: Dennis Lutter <lad1337@gmail.com>
 # Author: Jonathon Saine <thezoggy@gmail.com>
 # URL: http://github.com/SiCKRAGETV/SickRage/
@@ -24,6 +23,7 @@ import datetime
 import io
 import os
 import re
+import threading
 import traceback
 import urllib
 
@@ -54,14 +54,13 @@ from sickrage.core.media.poster import Poster
 from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, ManualSearchQueueItem
 from sickrage.core.searchers import subtitle_searcher
-from sickrage.core.show import Show
-from sickrage.core.show.coming_episodes import ComingEpisodes
-from sickrage.core.show.history import History
+from sickrage.core.tv.show import ComingEpisodes
+from sickrage.core.tv.show import History
+from sickrage.core.tv.show import TVShow
 from sickrage.core.ui import notifications
 from sickrage.core.updaters import tz_updater
 from sickrage.indexers.indexer_exceptions import indexer_error, \
     indexer_showincomplete, indexer_shownotfound
-
 
 indexer_ids = ["indexerid", "tvdbid"]
 
@@ -114,12 +113,14 @@ class ApiHandler(RequestHandler):
 
     def initialize(self):
         super(ApiHandler, self).initialize()
-        self.name = "SR-API"
 
     @coroutine
     def prepare(self, *args, **kwargs):
-        kwargs = {k: self.request.arguments[k][0] for k in self.request.arguments if len(self.request.arguments[k])}
+        threading.currentThread().setName("API")
+
         args = args[1:]
+        kwargs = {k: ''.join(v) if isinstance(v, list) else v for k, v in
+                  recursive_unicode(self.request.arguments.items())}
 
         # set the output callback
         # default json
@@ -165,8 +166,11 @@ class ApiHandler(RequestHandler):
 
     @run_on_executor
     def async_call(self, function, *args, **kwargs):
+        threading.currentThread().setName(function.im_class.__name__)
+
         try:
-            return recursive_unicode(function(*args, **kwargs))
+            return recursive_unicode(function(*args, **{k: ''.join(v) if isinstance(v, list) else v for k, v in
+                                                        recursive_unicode(kwargs.items())}))
         except Exception:
             sickrage.LOGGER.error('Failed doing webui callback: {}'.format(traceback.format_exc()))
             raise
@@ -866,7 +870,7 @@ class CMD_EpisodeSearch(ApiCall):
         sickrage.SEARCHQUEUE.add_item(ep_queue_item)  # @UndefinedVariable
 
         # wait until the queue item tells us whether it worked or not
-        while ep_queue_item.success == None:  # @UndefinedVariable
+        while ep_queue_item.success is None:  # @UndefinedVariable
             gen.sleep(1)
 
         # return the correct json value
@@ -924,7 +928,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         ep_list = []
         if self.e:
             epObj = showObj.getEpisode(self.s, self.e)
-            if epObj == None:
+            if epObj is None:
                 return _responds(RESULT_FAILURE, msg="Episode not found")
             ep_list = [epObj]
         else:
@@ -952,7 +956,7 @@ class CMD_EpisodeSetStatus(ApiCall):
 
                 # don't let them mess up UNAIRED episodes
                 if epObj.status == UNAIRED:
-                    if self.e != None:  # setting the status of a unaired is only considert a failure if we directly wanted this episode, but is ignored on a season request
+                    if self.e is not None:  # setting the status of a unaired is only considert a failure if we directly wanted this episode, but is ignored on a season request
                         ep_results.append(
                                 _epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is UNAIRED"))
                         failure = True
@@ -1074,9 +1078,9 @@ class CMD_Exceptions(ApiCall):
     def run(self):
         """ Get the scene exceptions for all or a given show """
 
-        if self.indexerid == None:
+        if self.indexerid is None:
             sqlResults = cache_db.CacheDB(row_type='dict').select(
-                "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions")
+                    "SELECT show_name, indexer_id AS 'indexerid' FROM scene_exceptions")
             scene_exceptions = {}
             for row in sqlResults:
                 indexerid = row[b"indexerid"]
@@ -1847,10 +1851,10 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
                 raise ApiError("Status Prohibited")
             sickrage.STATUS_DEFAULT = self.status
 
-        if self.flatten_folders != None:
+        if self.flatten_folders is not None:
             sickrage.FLATTEN_FOLDERS_DEFAULT = int(self.flatten_folders)
 
-        if self.future_show_paused != None:
+        if self.future_show_paused is not None:
             sickrage.COMING_EPS_DISPLAY_PAUSED = int(self.future_show_paused)
 
         return _responds(RESULT_SUCCESS, msg="Saved defaults")
@@ -2316,7 +2320,7 @@ class CMD_ShowDelete(ApiCall):
 
     def run(self):
         """ Delete a show in SiCKRAGE """
-        error, show = Show.delete(self.indexerid, self.removefiles)
+        error, show = TVShow.delete(self.indexerid, self.removefiles)
 
         if error is not None:
             return _responds(RESULT_FAILURE, msg=error)
@@ -2481,7 +2485,7 @@ class CMD_ShowPause(ApiCall):
 
     def run(self):
         """ Pause or unpause a show """
-        error, show = Show.pause(self.indexerid, self.pause)
+        error, show = TVShow.pause(self.indexerid, self.pause)
 
         if error is not None:
             return _responds(RESULT_FAILURE, msg=error)
@@ -2509,7 +2513,7 @@ class CMD_ShowRefresh(ApiCall):
 
     def run(self):
         """ Refresh a show in SiCKRAGE """
-        error, show = Show.refresh(self.indexerid)
+        error, show = TVShow.refresh(self.indexerid)
 
         if error is not None:
             return _responds(RESULT_FAILURE, msg=error)
@@ -2545,12 +2549,12 @@ class CMD_ShowSeasonList(ApiCall):
 
         if self.sort == "asc":
             sqlResults = main_db.MainDB(row_type='dict').select(
-                "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season ASC",
-                [self.indexerid])
+                    "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season ASC",
+                    [self.indexerid])
         else:
             sqlResults = main_db.MainDB(row_type='dict').select(
-                "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season DESC",
-                [self.indexerid])
+                    "SELECT DISTINCT season FROM tv_episodes WHERE showid = ? ORDER BY season DESC",
+                    [self.indexerid])
         seasonList = []  # a list with all season numbers
         for row in sqlResults:
             seasonList.append(int(row[b"season"]))
@@ -2584,7 +2588,7 @@ class CMD_ShowSeasons(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        if self.season == None:
+        if self.season is None:
             sqlResults = main_db.MainDB(row_type='dict').select(
                     "SELECT name, episode, airdate, status, release_name, season, location, file_size, subtitles FROM tv_episodes WHERE showid = ?",
                     [self.indexerid])
@@ -2750,8 +2754,8 @@ class CMD_ShowStats(ApiCall):
             episode_qualities_counts_snatch[statusCode] = 0
 
         sqlResults = main_db.MainDB(row_type='dict').select(
-            "SELECT status, season FROM tv_episodes WHERE season != 0 AND showid = ?",
-            [self.indexerid])
+                "SELECT status, season FROM tv_episodes WHERE season != 0 AND showid = ?",
+                [self.indexerid])
         # the main loop that goes through all episodes
         for row in sqlResults:
             status, quality = Quality.splitCompositeStatus(int(row[b"status"]))
@@ -2804,7 +2808,7 @@ class CMD_ShowStats(ApiCall):
                 continue
             status, quality = Quality.splitCompositeStatus(int(statusCode))
             statusString = statusStrings.statusStrings[statusCode].lower().replace(" ", "_").replace("(",
-                                                                                                            "").replace(
+                                                                                                     "").replace(
                     ")", "")
             episodes_stats[statusString] = episode_status_counts_total[statusCode]
 
@@ -2915,7 +2919,7 @@ class CMD_ShowsStats(ApiCall):
 
     def run(self):
         """ Get the global shows and episodes statistics """
-        stats = Show.overall_stats()
+        stats = TVShow.overall_stats()
 
         return _responds(RESULT_SUCCESS, {
             'ep_downloaded': stats[b'episodes'][b'downloaded'],

@@ -336,7 +336,7 @@ class GitUpdateManager(UpdateManager):
         self._num_commits_behind = 0
         self._num_commits_ahead = 0
 
-        self.branch = sickrage.VERSION = self._find_installed_version().strip()
+        self.branch = sickrage.VERSION = self._find_installed_version()
 
     def init_github(self):
         try:
@@ -493,12 +493,11 @@ class GitUpdateManager(UpdateManager):
             return False
 
     def _find_installed_version(self):
-        branch = ""
-
         branch_info, _, exit_status = self._run_git(self._git_path, 'symbolic-ref -q HEAD')  # @UnusedVariable
         if exit_status == 0 and branch_info:
-            branch = branch_info.strip().replace('refs/heads/', '', 1)
-        return branch
+            return branch_info.strip().replace('refs/heads/', '', 1).strip()
+
+        return ""
 
     def _check_for_new_version(self):
         """
@@ -683,7 +682,7 @@ class SourceUpdateManager(UpdateManager):
         self._newest_commit_hash = ""
         self._num_commits_behind = 0
 
-        self.branch = sickrage.VERSION = self._find_installed_version
+        self.branch = sickrage.VERSION = self._find_installed_version()
 
     def get_cur_commit_hash(self):
         return self._cur_commit_hash
@@ -713,12 +712,11 @@ class SourceUpdateManager(UpdateManager):
             if available:
                 return available[0]
 
-        return self._find_installed_version
+        return self._find_installed_version()
 
     def _find_installed_version(self):
         with open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
-            version = f.read().strip()
-        return version or ""
+            return f.read().strip() or ""
 
     def get_num_commits_behind(self):
         return self._num_commits_behind
@@ -727,9 +725,9 @@ class SourceUpdateManager(UpdateManager):
         # need this to run first to set self._newest_commit_hash
         try:
             pypi_version = self.get_newest_version
-            if self._find_installed_version != pypi_version:
+            if self._find_installed_version() != pypi_version:
                 self.branch = sickrage.VERSION = pypi_version
-                sickrage.LOGGER.debug("Version upgrade: " + self._find_installed_version + "->" + pypi_version)
+                sickrage.LOGGER.debug("Version upgrade: " + self._find_installed_version() + "->" + pypi_version)
                 return True
         except Exception as e:
             sickrage.LOGGER.warning("Unable to contact PyPi, can't check for update: " + repr(e))

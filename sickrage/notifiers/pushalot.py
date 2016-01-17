@@ -65,7 +65,7 @@ class PushalotNotifier:
         if not sickrage.USE_PUSHALOT and not force:
             return False
 
-        if pushalot_authorizationtoken == None:
+        if pushalot_authorizationtoken is None:
             pushalot_authorizationtoken = pushalot_authorizationtoken
 
         sickrage.LOGGER.debug("Pushalot event: " + event)

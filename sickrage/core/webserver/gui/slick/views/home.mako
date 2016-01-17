@@ -98,7 +98,7 @@
              class="clearfix">
 <div class="posterview">
     % for curLoadingShow in sickrage.SHOWQUEUE.loadingShowList:
-        % if curLoadingShow.show == None:
+        % if curLoadingShow.show is None:
             <div class="show" data-name="0" data-date="010101" data-network="0" data-progress="101">
                 <img alt="" title="${curLoadingShow.show_name}" class="show-image"
                      style="border-bottom: 1px solid #111;" src="${srRoot}/images/poster.png"/>
@@ -276,14 +276,14 @@
     <tbody class="tablesorter-infoOnly">
         % for curLoadingShow in sickrage.SHOWQUEUE.loadingShowList:
 
-            % if curLoadingShow.show != None and curLoadingShow.show in sickrage.showList:
+            % if curLoadingShow.show is not None and curLoadingShow.show in sickrage.showList:
          continue
     % endif
   <tr>
     <td align="center">(loading)</td>
     <td></td>
     <td>
-    % if curLoadingShow.show == None:
+    % if curLoadingShow.show is None:
         <span title="">Loading... (${curLoadingShow.show_name})</span>
     % else:
         <a href="displayShow?show=${curLoadingShow.show.indexerid}">${curLoadingShow.show.name}</a>

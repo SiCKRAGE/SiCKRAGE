@@ -26,6 +26,7 @@ from xml.etree import ElementTree
 import requests
 
 import classes
+import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.helpers import getURL
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \

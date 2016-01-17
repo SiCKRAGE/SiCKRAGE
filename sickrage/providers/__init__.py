@@ -54,6 +54,8 @@ from sickrage.core.scene_exceptions import get_scene_exceptions
 class GenericProvider(object):
     NZB = 'nzb'
     TORRENT = 'torrent'
+    types = [NZB, TORRENT]
+
     type = None
 
     def __init__(self, name):
@@ -518,29 +520,37 @@ class GenericProvider(object):
             return providerMatch[0]
 
     @classmethod
+    def getProviderByID(cls, id):
+        providerMatch = [x for x in cls.getProviderList() if x.id == id]
+        if len(providerMatch) == 1:
+            return providerMatch[0]
+
+    @classmethod
     def getProviderList(cls, data=None):
-        modules = cls.loadProviders()
+        modules = []
+        for type in GenericProvider.types:
+            modules += cls.loadProviders(type)
         return modules
 
     @classmethod
-    def loadProviders(cls):
+    def loadProviders(cls, type):
         providers = []
         pregex = re.compile('^([^_]*?)\.py$', re.IGNORECASE)
-        path = os.path.join(os.path.dirname(__file__), cls.type)
+        path = os.path.join(os.path.dirname(__file__), type)
         names = [pregex.match(m) for m in os.listdir(path)]
-        providers += [cls.loadProvider(name.group(1)) for name in names if name]
+        providers += [cls.loadProvider(name.group(1), type) for name in names if name]
         return providers
 
     @classmethod
-    def loadProvider(cls, name, *args, **kwargs):
+    def loadProvider(cls, name, type, *args, **kwargs):
         import inspect, sys
         sys.path.append(os.path.join(os.path.dirname(__file__), 'sickrage'))
         members = dict(
                 inspect.getmembers(
-                        importlib.import_module('.{}.{}'.format(cls.type, name), 'sickrage.providers'),
-                        inspect.isclass)
+                        importlib.import_module('.{}.{}'.format(type, name), 'sickrage.providers'),
+                        lambda x: hasattr(x, 'type') and x not in [NZBProvider, TorrentProvider])
         )
-        return [v for v in members.values() if hasattr(v, 'type') and v.type == cls.type and v.__base__ is cls][0](
+        return [v for v in members.values() if hasattr(v, 'type') and v.type == type][0](
             *args, **kwargs)
 
 class TorrentProvider(GenericProvider):
@@ -663,7 +673,7 @@ class TorrentProvider(GenericProvider):
 
     @classmethod
     def getProviderList(cls, data=None):
-        return super(TorrentProvider, cls).getProviderList()
+        return super(TorrentProvider, cls).loadProviders(GenericProvider.TORRENT)
 
 
 class NZBProvider(GenericProvider):
@@ -689,7 +699,7 @@ class NZBProvider(GenericProvider):
 
     @classmethod
     def getProviderList(cls, data=None):
-        return super(NZBProvider, cls).getProviderList()
+        return super(NZBProvider, cls).loadProviders(GenericProvider.NZB)
 
 
 class TorrentRssProvider(TorrentProvider):
@@ -969,8 +979,8 @@ class NewznabProvider(NZBProvider):
                     for subcat in category.subcats:
                         return_categories.append(subcat)
         except Exception:
-            sickrage.LOGGER.debug("Error parsing result for [%s]" % (self.name))
-            return (False, return_categories, "Error parsing result for [%s]" % (self.name))
+            sickrage.LOGGER.debug("[%s] does not list categories" % (self.name))
+            return (False, return_categories, "[%s] does not list categories" % (self.name))
 
         return True, return_categories, ""
 

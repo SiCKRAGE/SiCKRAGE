@@ -39,7 +39,7 @@ from sickrage.core.databases import main_db
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names, chmodAsParent
 from sickrage.core.nzbSplitter import splitNZBResult
-from sickrage.core.show.history import FailedHistory, History
+from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.core.ui import notifications
 from sickrage.notifiers import notify_snatch
 from sickrage.providers import sortedProviderDict, GenericProvider
@@ -369,7 +369,7 @@ def searchForNeededEpisodes():
     """
     foundResults = {}
 
-    origThreadName = threading.currentThread().name
+    origThreadName = threading.currentThread().getName()
 
     fromDate = datetime.date.fromordinal(1)
     episodes = []
@@ -396,7 +396,7 @@ def searchForNeededEpisodes():
     def perform_searches():
         didSearch = False
         for providerID, providerObj in {k: v for k, v in sortedProviderDict(sickrage.RANDOMIZE_PROVIDERS).items() if v.isActive and v.enable_daily}.items():
-            threading.currentThread().name = origThreadName + "::[" + providerObj.name + "]"
+            threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
             try:
                 curFoundResults = dict(providerObj.searchRSS(episodes))
@@ -451,7 +451,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
     # build name cache for show
     sickrage.NAMECACHE.buildNameCache(show)
 
-    origThreadName = threading.currentThread().name
+    origThreadName = threading.currentThread().getName()
 
     providers = [
         x for x in sortedProviderDict(sickrage.RANDOMIZE_PROVIDERS).values()
@@ -481,7 +481,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                 sickrage.LOGGER.debug("" + str(show.name) + " is not an anime, skiping")
                 continue
 
-            threading.currentThread().name = origThreadName + "::[" + providerObj.name + "]"
+            threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
             foundResults[providerObj.name] = {}
 

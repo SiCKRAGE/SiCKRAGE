@@ -24,6 +24,7 @@ import re
 import urllib
 from datetime import timedelta
 
+import sickrage
 from sickrage.core.common import Quality, SNATCHED, SUBTITLED, FAILED, WANTED
 from sickrage.core.databases import failed_db, main_db
 from sickrage.core.exceptions import EpisodeNotFoundException
@@ -102,7 +103,7 @@ class History:
                 'DELETE '
                 'FROM history '
                 'WHERE date < ?',
-                [(datetime.today() - timedelta(days=30)).strftime(History.date_format)]
+                [(datetime.datetime.today() - timedelta(days=30)).strftime(History.date_format)]
         )
 
     @staticmethod
@@ -142,7 +143,7 @@ class History:
             version = searchResult.version
 
             providerClass = searchResult.provider
-            if providerClass != None:
+            if providerClass is not None:
                 provider = providerClass.name
             else:
                 provider = "unknown"

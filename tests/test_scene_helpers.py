@@ -28,7 +28,7 @@ from sickrage.core.databases import cache_db
 from sickrage.core.helpers import show_names
 from sickrage.core.scene_exceptions import exceptionsCache, retrieve_exceptions, get_scene_exceptions, \
     get_scene_exception_by_name
-from sickrage.core.tv import TVShow as Show
+from sickrage.core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
 
@@ -42,7 +42,7 @@ class SceneTests(SiCKRAGETestDBCase):
         self.assertTrue(len(set(dot_expected).intersection(set(dot_result))) == len(dot_expected))
 
     def _test_allPossibleShowNames(self, name, indexerid=0, expected=[]):
-        s = Show(1, indexerid)
+        s = TVShow(1, indexerid)
         s.name = name
 
         result = show_names.allPossibleShowNames(s)
@@ -67,7 +67,7 @@ class SceneTests(SiCKRAGETestDBCase):
 
         for testCase in listOfcases:
             scene_name, show_name = testCase
-            s = Show(1, 0)
+            s = TVShow(1, 0)
             s.name = show_name
             self._test_isGoodName(scene_name, s)
             del s

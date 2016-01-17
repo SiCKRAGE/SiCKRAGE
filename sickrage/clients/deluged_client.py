@@ -24,7 +24,7 @@ from base64 import b64encode
 
 import sickrage
 from sickrage.clients import GenericClient
-from synchronousdeluge import DelugeClient
+from sickrage.clients.synchronousdeluge.client import DelugeClient
 
 
 class DelugeDAPI(GenericClient):

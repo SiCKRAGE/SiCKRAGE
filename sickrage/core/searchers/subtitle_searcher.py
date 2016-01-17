@@ -34,7 +34,7 @@ import sickrage
 from sickrage.core.common import dateTimeFormat
 from sickrage.core.databases import main_db
 from sickrage.core.helpers import findCertainShow, chmodAsParent, fixSetGroupID, makeDir
-from sickrage.core.show.history import History
+from sickrage.core.tv.show.history import History
 
 distribution = pkg_resources.Distribution(location=os.path.dirname(os.path.dirname(__file__)),
                                           project_name='fake_entry_points', version='1.0.0')

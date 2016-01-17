@@ -25,7 +25,8 @@ import unittest
 import sickrage
 from sickrage.core.common import HD, SD, WANTED
 from sickrage.core.search import searchProviders
-from sickrage.core.tv import TV
+from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show import TVShow
 from sickrage.providers import sortedProviderDict
 from tests import SiCKRAGETestDBCase
 
@@ -73,7 +74,7 @@ def test_generator(tvdbdid, show_name, curData, forceSearch):
     def test(self):
         global searchItems
         searchItems = curData[b"i"]
-        show = TV.TVShow(1, tvdbdid)
+        show = TVShow(1, tvdbdid)
         show.name = show_name
         show.quality = curData[b"q"]
         show.saveToDB()
@@ -81,7 +82,7 @@ def test_generator(tvdbdid, show_name, curData, forceSearch):
         episode = None
 
         for epNumber in curData[b"e"]:
-            episode = TV.TVEpisode(show, curData[b"s"], epNumber)
+            episode = TVEpisode(show, curData[b"s"], epNumber)
             episode.status = WANTED
             episode.saveToDB()
 

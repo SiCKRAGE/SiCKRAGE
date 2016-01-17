@@ -168,10 +168,10 @@ class NMA_Notifier:
         if not sickrage.USE_NMA and not force:
             return False
 
-        if nma_api == None:
+        if nma_api is None:
             nma_api = sickrage.NMA_API
 
-        if nma_priority == None:
+        if nma_priority is None:
             nma_priority = sickrage.NMA_PRIORITY
 
         batch = False

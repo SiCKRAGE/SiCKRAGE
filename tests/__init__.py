@@ -32,7 +32,7 @@ from sickrage.core.caches import tv_cache
 from sickrage.core.databases import cache_db, failed_db, main_db
 from sickrage.core.helpers.encoding import encodingInit
 from sickrage.core.srconfig import srConfig
-from sickrage.core.tv import TV
+from sickrage.core.tv import episode
 from sickrage.core.webserver import SRWebServer
 
 # =================
@@ -141,7 +141,7 @@ def _fake_specifyEP(self, season, episode):
     pass
 
 
-TV.TVEpisode.specifyEpisode = _fake_specifyEP
+episode.TVEpisode.specifyEpisode = _fake_specifyEP
 
 
 # =================

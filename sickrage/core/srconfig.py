@@ -94,20 +94,22 @@ class srConfig(object):
         web_log = srConfig.checkbox_to_value(new_web_log)
 
         if os.path.normpath(sickrage.LOG_DIR) != log_dir:
-            if makeDir(log_dir):
-                sickrage.LOG_DIR = log_dir
-                sickrage.LOG_FILE = os.path.join(sickrage.LOG_DIR, 'sickrage.log')
-                sickrage.LOGGER = sickrage.LOGGER.__class__(logFile=sickrage.LOG_FILE,
-                                                            logSize=sickrage.LOG_SIZE,
-                                                            logNr=sickrage.LOG_NR,
-                                                            fileLogging=True,
-                                                            debugLogging=sickrage.DEBUG)
+            if not makeDir(log_dir):
+                return False
 
-                sickrage.LOGGER.info("Initialized new log file in " + sickrage.LOG_DIR)
-                if sickrage.WEB_LOG != web_log:
-                    sickrage.WEB_LOG = web_log
+            sickrage.LOG_DIR = log_dir
+            sickrage.LOG_FILE = os.path.join(sickrage.LOG_DIR, 'sickrage.log')
+            sickrage.LOGGER = sickrage.LOGGER.__class__(logFile=sickrage.LOG_FILE,
+                                                        logSize=sickrage.LOG_SIZE,
+                                                        logNr=sickrage.LOG_NR,
+                                                        fileLogging=True,
+                                                        debugLogging=sickrage.DEBUG)
 
-                return True
+            sickrage.LOGGER.info("Initialized new log file in " + sickrage.LOG_DIR)
+            if sickrage.WEB_LOG != web_log:
+                sickrage.WEB_LOG = web_log
+
+        return True
 
     @staticmethod
     def change_NZB_DIR(nzb_dir):

@@ -4,7 +4,7 @@
     import sickrage
     from time import time
     from sickrage.core.updaters import tz_updater
-    from sickrage.core.show import Show
+    from sickrage.core.tv.show import TVShow
     from sickrage.core.helpers import pretty_filesize
 
     # resource module is unix only

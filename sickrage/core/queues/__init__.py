@@ -74,12 +74,13 @@ class GenericQueue(object):
         :param force: Force queue processing (currently not implemented)
         """
 
-        if self.amActive:
-            return
-
         with self.lock:
+
+            if self.amActive:
+                return
+
             # only start a new task if one isn't already going
-            if self.currentItem is None or not self.currentItem.isAlive():
+            if self.currentItem is None or not self.currentItem.inProgress:
 
                 # if the thread is dead then the current item should be finished
                 if self.currentItem:
@@ -111,9 +112,13 @@ class GenericQueue(object):
                     # launch the queue item in a thread
                     self.currentItem = self.queue.pop(0)
                     self.currentItem.name = self.queue_name + '-' + self.currentItem.name
-                    sickrage.Scheduler.add_job(self.currentItem.run)
 
-        self.amActive = False
+                    # add job from queue
+                    sickrage.Scheduler.add_job(self.currentItem.run,
+                                               name=self.currentItem.name,
+                                               id=self.currentItem.name)
+
+            self.amActive = False
 
 
 class QueueItem(object):
@@ -129,7 +134,7 @@ class QueueItem(object):
 
     def run(self):
         """Implementing classes should call this"""
-        threading.currentThread().name = self.name
+        threading.currentThread().setName(self.name)
 
         self.inProgress = True
 
@@ -138,4 +143,4 @@ class QueueItem(object):
 
         self.inProgress = False
 
-        threading.currentThread().name = self.name
+        threading.currentThread().setName(self.name)

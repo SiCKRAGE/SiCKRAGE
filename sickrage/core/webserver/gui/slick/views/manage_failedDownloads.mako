@@ -58,7 +58,7 @@
     </td>
     <td align="center">
         <% provider = sickrage.providersDict[GenericProvider._makeID] %>
-    % if provider != None:
+    % if provider is not None:
         <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16" alt="${provider.name}"
              title="${provider.name}"/>
     % else:

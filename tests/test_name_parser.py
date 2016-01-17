@@ -26,7 +26,7 @@ import unittest
 
 import sickrage
 from sickrage.core.nameparser import ParseResult, NameParser, InvalidNameException, InvalidShowException
-from sickrage.core.tv import TV
+from sickrage.core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
 
@@ -225,7 +225,7 @@ class UnicodeTests(SiCKRAGETestDBCase):
     def __init__(self, something):
         super(UnicodeTests, self).__init__(something)
         super(UnicodeTests, self).setUp()
-        self.show = TV.TVShow(1, 1, 'en')
+        self.show = TVShow(1, 1, 'en')
         self.show.name = "The Big Bang Theory"
 
     def _test_unicode(self, name, result):
@@ -294,7 +294,7 @@ class BasicTests(SiCKRAGETestDBCase):
     def __init__(self, something):
         super(BasicTests, self).__init__(something)
         super(BasicTests, self).setUp()
-        self.show = TV.TVShow(1, 1, 'en')
+        self.show = TVShow(1, 1, 'en')
 
     def _test_names(self, np, section, transform=None, verbose=False):
         if VERBOSE or verbose:

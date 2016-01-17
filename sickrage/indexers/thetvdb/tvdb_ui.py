@@ -22,9 +22,9 @@ from __future__ import unicode_literals
 
 from tvdb_exceptions import tvdb_userabort
 
-
 def log():
-    return logging.getLogger(__name__)
+    import sickrage
+    return sickrage.LOGGER
 
 class BaseUI:
     """Default non-interactive UI, which auto-selects first results

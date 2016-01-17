@@ -28,10 +28,8 @@ from sickrage.core.common import cpu_presets
 from sickrage.core.queues import GenericQueue, QueueItem, QueuePriorities
 from sickrage.core.search import searchForNeededEpisodes, searchProviders, \
     snatchEpisode
-from sickrage.core.show import history
-from sickrage.core.show.history import FailedHistory
+from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.core.ui import notifications
-
 
 search_queue_lock = threading.Lock()
 
@@ -271,7 +269,7 @@ class FailedQueueItem(QueueItem):
                 (release, provider) = FailedHistory.findFailedRelease(epObj)
                 if release:
                     FailedHistory.logFailed(release)
-                    history.logFailed(epObj, release, provider)
+                    History.logFailed(epObj, release, provider)
 
                 FailedHistory.revertFailedEpisode(epObj)
                 sickrage.LOGGER.info("Beginning failed download search for: [" + epObj.prettyName() + "]")

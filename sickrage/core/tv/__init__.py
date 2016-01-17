@@ -1,5 +1,6 @@
+#!/usr/bin/env python2
 # Author: echel0n <sickrage.tv@gmail.com>
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -18,20 +19,11 @@
 
 from __future__ import unicode_literals
 
-import feedparser
-from feedparser import FeedParserDict
 
-import sickrage
-from sickrage.core.helpers import normalize_url
+def dirty_setter(attr_name):
+    def wrapper(self, val):
+        if getattr(self, attr_name) != val:
+            setattr(self, attr_name, val)
+            self.dirty = True
 
-def getFeed(url, request_headers=None, handlers=None):
-    feed = FeedParserDict()
-    try:
-        try:
-            feed = feedparser.parse(normalize_url(url), False, False, request_headers, handlers=handlers)
-        except AttributeError:
-            sickrage.LOGGER.debug('RSS ERROR:[{}] CODE:[{}]'.format(
-                    feed.feed[b'error'][b'description'], feed.feed[b'error'][b'code']))
-    except:pass
-
-    return feed
+    return wrapper

@@ -186,7 +186,7 @@ class SRWebServer(object):
                 pf.write(str(sickrage.PID))
 
     def start(self):
-        threading.currentThread().name = "TORNADO"
+        threading.currentThread().setName("TORNADO")
 
         try:
             self.server = HTTPServer(self.app)

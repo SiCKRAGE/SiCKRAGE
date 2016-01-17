@@ -53,7 +53,8 @@ from sickrage.core.searchers.proper_searcher import ProperSearcher
 from sickrage.core.searchers.subtitle_searcher import SubtitleSearcher
 from sickrage.core.searchers.trakt_searcher import TraktSearcher
 from sickrage.core.srconfig import srConfig
-from sickrage.core.tv import TV
+from sickrage.core.tv import episode, show
+from sickrage.core.tv.show import TVShow
 from sickrage.core.updaters.show_updater import ShowUpdater
 from sickrage.core.updaters.tz_updater import update_network_dict
 from sickrage.core.version_updater import VersionUpdater
@@ -512,7 +513,7 @@ def load_shows():
     showlist = []
     for sqlShow in main_db.MainDB().select("SELECT * FROM tv_shows"):
         try:
-            curshow = TV.TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
+            curshow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
             sickrage.LOGGER.debug("Loading data for show: [{}]".format(curshow.name))
             sickrage.NAMECACHE.buildNameCache(curshow)
             curshow.nextEpisode()

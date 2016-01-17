@@ -24,6 +24,7 @@ import locale
 import os.path
 import unittest
 
+import sickrage
 from sickrage.core.helpers import sanitizeFileName
 from tests import SiCKRAGETestCase
 

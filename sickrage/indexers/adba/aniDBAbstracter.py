@@ -17,14 +17,13 @@
 
 from __future__ import unicode_literals, with_statement
 
-fileInfo
-
 import re
 import string
-from aniDBfileInfo import read_anidb_xml
+
+import sickrage
+from aniDBfileInfo import read_anidb_xml, get_file_size, get_file_hash
 from aniDBmaper import AniDBMaper
 from aniDBtvDBmaper import TvDBMap
-
 from sickrage.indexers.adba.aniDBerrors import AniDBIncorrectParameterError
 
 
@@ -286,6 +285,6 @@ class Episode(aniDBabstractObject):
         if not filePath:
             return (None, None)
         sickrage.LOGGER.info("Calculating the ed2k. Please wait...")
-        ed2k = fileInfo.get_file_hash(filePath)
-        size = fileInfo.get_file_size(filePath)
+        ed2k = get_file_hash(filePath)
+        size = get_file_size(filePath)
         return ed2k, size

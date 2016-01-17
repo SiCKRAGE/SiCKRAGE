@@ -12,6 +12,7 @@ chardet
 click
 cryptography
 decorator
+deluge-client
 dill
 docopt
 dogpile.cache
@@ -48,9 +49,11 @@ python-dateutil
 python-fanart
 python-twitter
 pytz
+pyxdg
 PyYAML
 requests
 requests-oauthlib
+rtorrent-python
 Send2Trash
 simplejson
 singledispatch

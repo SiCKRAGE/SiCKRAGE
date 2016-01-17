@@ -25,9 +25,8 @@ import unittest
 import certifi
 import requests
 
-providers
+from sickrage.providers import sortedProviderDict
 from tests import SiCKRAGETestCase
-
 
 class SNI_Tests(SiCKRAGETestCase): pass
 
@@ -43,8 +42,8 @@ def test_sni(self, provider):
         pass
 
 
-for provider in providers.sortedProviderDict().values():
-    setattr(SNI_Tests, 'test_%s' % provider.name, lambda self, x=provider: test_sni(self, x))
+for providerID, providerObj in sortedProviderDict().items():
+    setattr(SNI_Tests, 'test_%s' % providerObj.name, lambda self, x=providerObj: test_sni(self, x))
 
 if __name__ == "__main__":
     print("==================")

@@ -581,7 +581,7 @@
             <td align="center">
                 <%
                     text = str(epResult[b'episode'])
-                    if epLoc != '' and epLoc != None:
+                    if epLoc != '' and epLoc is not None:
                             text = '<span title="' + epLoc + '" class="addQTip">' + text + "</span>"
                 %>
                 ${text}
@@ -614,7 +614,7 @@
                        style="padding: 0; text-align: center; max-width: 60px;"/>
             </td>
             <td class="col-name">
-                % if epResult[b"description"] != "" and epResult[b"description"] != None:
+                % if epResult[b"description"] != "" and epResult[b"description"] is not None:
                     <img src="${srRoot}/images/info32.png" width="16" height="16" class="plotInfo" alt=""
                          id="plot_info_${str(show.indexerid)}_${str(epResult[b"season"])}_${str(epResult[b"episode"])}"/>
                     % else:

@@ -67,10 +67,10 @@ class ProwlNotifier:
         if not sickrage.USE_PROWL and not force:
             return False
 
-        if prowl_api == None:
+        if prowl_api is None:
             prowl_api = sickrage.PROWL_API
 
-        if prowl_priority == None:
+        if prowl_priority is None:
             prowl_priority = sickrage.PROWL_PRIORITY
 
         title = "SiCKRAGE"

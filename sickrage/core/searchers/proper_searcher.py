@@ -36,7 +36,7 @@ from sickrage.core.helpers import remove_non_release_groups
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.search import pickBestResult, snatchEpisode
-from sickrage.core.show.history import History
+from sickrage.core.tv.show.history import History
 from sickrage.providers import sortedProviderDict
 
 
@@ -84,12 +84,14 @@ class ProperSearcher(object):
 
         search_date = datetime.datetime.today() - datetime.timedelta(days=2)
 
+        origThreadName = threading.currentThread().getName()
+
         # for each provider get a list of the
-        origThreadName = threading.currentThread().name
         for providerID, providerObj in {k: v for k, v in sortedProviderDict(sickrage.RANDOMIZE_PROVIDERS).items()
                                         if v.isActive}.items():
 
-            threading.currentThread().name = origThreadName + " :: [" + providerObj.name + "]"
+            threading.currentThread().setName(origThreadName + " :: [" + providerObj.name + "]")
+
             sickrage.LOGGER.info("Searching for any new PROPER releases from " + providerObj.name)
 
             try:
@@ -114,7 +116,7 @@ class ProperSearcher(object):
                     x.provider = providerObj
                     propers[name] = x
 
-            threading.currentThread().name = origThreadName
+            threading.currentThread().setName(origThreadName)
 
         # take the list of unique propers and get it sorted by
         sortedPropers = sorted(propers.values(), key=operator.attrgetter('date'), reverse=True)

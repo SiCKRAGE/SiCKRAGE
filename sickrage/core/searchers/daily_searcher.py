@@ -28,7 +28,7 @@ from sickrage.core.databases import main_db
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.helpers import findCertainShow
 from sickrage.core.queues.search import DailySearchQueueItem
-from sickrage.core.show.history import FailedHistory
+from sickrage.core.tv.show.history import FailedHistory
 from sickrage.core.updaters import tz_updater
 
 

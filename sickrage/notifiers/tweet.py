@@ -121,7 +121,7 @@ class TwitterNotifier:
 
         sickrage.LOGGER.debug("Sending tweet: " + message)
 
-        api = twitter.Twitter.Api(username, password, access_token_key, access_token_secret)
+        api = twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
             api.PostUpdate(message.encode('utf8')[:139])
@@ -141,7 +141,7 @@ class TwitterNotifier:
 
         sickrage.LOGGER.debug("Sending DM: " + dmdest + " " + message)
 
-        api = twitter.Twitter.Api(username, password, access_token_key, access_token_secret)
+        api = twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
             api.PostDirectMessage(dmdest, message.encode('utf8')[:139])

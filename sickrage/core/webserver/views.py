@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import datetime
 import os
 import re
+import threading
 import time
 import traceback
 import urllib
@@ -34,7 +35,7 @@ from mako.exceptions import html_error_template, TemplateLookupException
 from mako.lookup import TemplateLookup
 from tornado import gen
 from tornado.concurrent import run_on_executor
-from tornado.escape import json_encode, recursive_unicode, to_unicode
+from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
 from tornado.web import HTTPError, RequestHandler, authenticated
@@ -44,7 +45,6 @@ from api import ApiHandler
 from routes import route
 from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd_client import SabNZBd
-from sickrage.core import TV
 from sickrage.core.blackandwhitelist import BlackAndWhiteList, \
     short_group_names
 from sickrage.core.classes import ErrorViewer, AllShowsListUI
@@ -73,11 +73,11 @@ from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
     get_scene_numbering_for_show, get_xem_absolute_numbering_for_show, \
     get_xem_numbering_for_show, set_scene_numbering, xem_refresh
 from sickrage.core.searchers import subtitle_searcher
-from sickrage.core.show import Show
-from sickrage.core.show.coming_episodes import ComingEpisodes
-from sickrage.core.show.history import History as HistoryTool
 from sickrage.core.srconfig import srConfig
 from sickrage.core.trakt import TraktAPI, traktException
+from sickrage.core.tv.show import ComingEpisodes
+from sickrage.core.tv.show import History as HistoryTool
+from sickrage.core.tv.show import TVShow
 from sickrage.core.ui import notifications
 from sickrage.core.updaters import tz_updater
 from sickrage.core.version_updater import VersionUpdater
@@ -107,11 +107,14 @@ class BaseHandler(RequestHandler):
 
     @run_on_executor
     def async_call(self, function, **kwargs):
+        threading.currentThread().setName(function.im_class.__name__)
+
         try:
-            return function(**kwargs)
+            return recursive_unicode(function(
+                **{k: ''.join(v) if isinstance(v, list) else v for k, v in recursive_unicode(kwargs.items())}))
         except Exception:
             sickrage.LOGGER.debug(
-                'Failed doing webui callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
+                    'Failed doing webui callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             return html_error_template().render_unicode()
 
     def write_error(self, status_code, **kwargs):
@@ -196,25 +199,19 @@ class WebHandler(BaseHandler):
     @coroutine
     @authenticated
     def prepare(self, *args, **kwargs):
+        threading.currentThread().setName("WEB")
+
         try:
             # route -> method obj
             route = self.request.path.strip('/').split('/')[::-1][0].replace('.', '_') or 'index'
             method = getattr(self, route, getattr(self, 'index'))
-            result = yield self.async_call(
-                    method, **recursive_unicode(
-                            {
-                                k: self.request.arguments[k][0]
-                                for k in self.request.arguments
-                                if len(self.request.arguments[k])
-                                }
-                    )
-            )
+            result = yield self.async_call(method, **self.request.arguments)
 
             if not self._finished:
                 self.finish(result)
         except Exception:
             sickrage.LOGGER.debug(
-                'Failed doing webui request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
+                    'Failed doing webui request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             raise HTTPError(404)
 
 
@@ -230,13 +227,13 @@ class LoginHandler(BaseHandler):
                 self.finish(result)
         except Exception:
             sickrage.LOGGER.debug(
-                'Failed doing webui login request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
+                    'Failed doing webui login request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             raise HTTPError(404)
 
     def checkAuth(self):
         try:
-            username = to_unicode(self.get_argument('username', ''))
-            password = to_unicode(self.get_argument('password', ''))
+            username = self.get_argument('username', '')
+            password = self.get_argument('password', '')
 
             if cmp([username, password], [sickrage.WEB_USERNAME, sickrage.WEB_PASSWORD]) == 0:
                 remember_me = int(self.get_argument('remember_me', default=0))
@@ -253,7 +250,7 @@ class LoginHandler(BaseHandler):
             return self.render("login.mako", title="Login", header="Login", topmenu="login")
         except Exception:
             sickrage.LOGGER.debug(
-                'Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
+                    'Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             return html_error_template().render_unicode()
 
 
@@ -1310,15 +1307,14 @@ class Home(WebRoot):
                         anidb_failed = True
                         notifications.error('Unable to retreive Fansub Groups from AniDB.')
                         sickrage.LOGGER.debug(
-                            'Unable to retreive Fansub Groups from AniDB. Error is {0}'.format(str(e)))
+                                'Unable to retreive Fansub Groups from AniDB. Error is {}'.format(str(e)))
 
             with showObj.lock:
-                show = showObj
                 scene_exceptions = get_scene_exceptions(showObj.indexerid)
 
             if showObj.is_anime:
                 return self.render("editShow.mako",
-                                   show=show,
+                                   show=showObj,
                                    scene_exceptions=scene_exceptions,
                                    groups=groups,
                                    whitelist=whitelist,
@@ -1327,7 +1323,7 @@ class Home(WebRoot):
                                    header='Edit Show')
             else:
                 return self.render("editShow.mako",
-                                   show=show,
+                                   show=showObj,
                                    scene_exceptions=scene_exceptions,
                                    title='Edit Show',
                                    header='Edit Show')
@@ -1479,7 +1475,7 @@ class Home(WebRoot):
         return self.redirect("/home/displayShow?show=" + show)
 
     def togglePause(self, show=None):
-        error, show = Show.pause(show)
+        error, show = TVShow.pause(show)
 
         if error is not None:
             return self._genericMessage('Error', error)
@@ -1490,7 +1486,7 @@ class Home(WebRoot):
 
     def deleteShow(self, show=None, full=0):
         if show:
-            error, show = Show.delete(show, full)
+            error, show = TVShow.delete(show, full)
 
             if error is not None:
                 return self._genericMessage('Error', error)
@@ -1510,7 +1506,7 @@ class Home(WebRoot):
         return self.redirect('/home/')
 
     def refreshShow(self, show=None):
-        error, show = Show.refresh(show)
+        error, show = TVShow.refresh(show)
 
         # This is a show validation error
         if error is not None and show is None:
@@ -1640,8 +1636,8 @@ class Home(WebRoot):
 
                 if not all(epInfo):
                     sickrage.LOGGER.debug(
-                        "Something went wrong when trying to deleteEpisode, epInfo[0]: %s, epInfo[1]: %s" % (
-                            epInfo[0], epInfo[1]))
+                            "Something went wrong when trying to deleteEpisode, epInfo[0]: %s, epInfo[1]: %s" % (
+                                epInfo[0], epInfo[1]))
                     continue
 
                 epObj = showObj.getEpisode(int(epInfo[0]), int(epInfo[1]))
@@ -1703,8 +1699,8 @@ class Home(WebRoot):
 
                 if not all(epInfo):
                     sickrage.LOGGER.debug(
-                        "Something went wrong when trying to setStatus, epInfo[0]: %s, epInfo[1]: %s" % (
-                            epInfo[0], epInfo[1]))
+                            "Something went wrong when trying to setStatus, epInfo[0]: %s, epInfo[1]: %s" % (
+                                epInfo[0], epInfo[1]))
                     continue
 
                 epObj = showObj.getEpisode(int(epInfo[0]), int(epInfo[1]))
@@ -1754,13 +1750,13 @@ class Home(WebRoot):
             if data and sickrage.USE_TRAKT and sickrage.TRAKT_SYNC_WATCHLIST:
                 if int(status) in [WANTED, FAILED]:
                     sickrage.LOGGER.debug(
-                        "Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
-                                showObj.name) + " to Watchlist")
+                            "Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
+                                    showObj.name) + " to Watchlist")
                     sickrage.NOTIFIERS.trakt_notifier.update_watchlist(showObj, data_episode=data, update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                     sickrage.LOGGER.debug(
-                        "Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
-                                showObj.name) + " from Watchlist")
+                            "Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
+                                    showObj.name) + " from Watchlist")
                     sickrage.NOTIFIERS.trakt_notifier.update_watchlist(showObj, data_episode=data, update="remove")
 
             if len(sql_l) > 0:
@@ -1906,7 +1902,7 @@ class Home(WebRoot):
 
         # retrieve the episode object and fail if we can't get one
         ep_obj = self._getEpisode(show, season, episode)
-        if isinstance(ep_obj, TV.TVEpisode):
+        if isinstance(ep_obj, episode.Episode):
             # make a queue item for it and put it on the queue
             ep_queue_item = ManualSearchQueueItem(ep_obj.show, ep_obj, bool(int(downCurQuality)))
 
@@ -1933,7 +1929,7 @@ class Home(WebRoot):
 
             if not showObj:
                 sickrage.LOGGER.error(
-                    'No Show Object found for show with indexerID: ' + str(searchThread.show.indexerid))
+                        'No Show Object found for show with indexerID: ' + str(searchThread.show.indexerid))
                 return results
 
             if isinstance(searchThread, ManualSearchQueueItem):
@@ -2009,7 +2005,7 @@ class Home(WebRoot):
     def searchEpisodeSubtitles(self, show=None, season=None, episode=None):
         # retrieve the episode object and fail if we can't get one
         ep_obj = self._getEpisode(show, season, episode)
-        if isinstance(ep_obj, TV.TVEpisode):
+        if isinstance(ep_obj, episode.Episode):
             # try do download subtitles for that episode
             previous_subtitles = ep_obj.subtitles
             try:
@@ -2114,7 +2110,7 @@ class Home(WebRoot):
     def retryEpisode(self, show, season, episode, downCurQuality):
         # retrieve the episode object and fail if we can't get one
         ep_obj = self._getEpisode(show, season, episode)
-        if isinstance(ep_obj, TV.TVEpisode):
+        if isinstance(ep_obj, episode.Episode):
             # make a queue item for it and put it on the queue
             ep_queue_item = FailedQueueItem(ep_obj.show, [ep_obj], bool(int(downCurQuality)))
             sickrage.SEARCHQUEUE.add_item(ep_queue_item)

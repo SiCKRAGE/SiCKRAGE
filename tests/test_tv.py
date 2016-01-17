@@ -22,7 +22,9 @@ from __future__ import unicode_literals
 
 import unittest
 
-from sickrage.core.tv import TVEpisode, TVShow
+import sickrage
+from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
 

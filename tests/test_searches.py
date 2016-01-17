@@ -24,7 +24,8 @@ import unittest
 
 import sickrage
 from sickrage.core.common import ANY, Quality, WANTED
-from sickrage.core.tv import TV
+from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show import TVShow
 from sickrage.providers import sortedProviderDict, GenericProvider
 from tests import SiCKRAGETestDBCase
 
@@ -42,14 +43,14 @@ class SearchTest(SiCKRAGETestDBCase):
 
 def test_generator(curData, name, provider, forceSearch):
     def test(self):
-        show = TV.TVShow(1, int(curData[b"tvdbid"]))
+        show = TVShow(1, int(curData[b"tvdbid"]))
         show.name = name
         show.quality = ANY | Quality.UNKNOWN | Quality.RAWHDTV
         show.saveToDB()
         sickrage.showList.append(show)
 
         for epNumber in curData[b"e"]:
-            episode = TV.TVEpisode(show, curData[b"s"], epNumber)
+            episode = TVEpisode(show, curData[b"s"], epNumber)
             episode.status = WANTED
 
             # We arent updating scene numbers, so fake it here

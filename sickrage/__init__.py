@@ -30,8 +30,6 @@ import uuid
 
 from requirements import install_reqs, install_pip
 
-threading.currentThread().name = 'MAIN'
-
 USER_AGENT = 'SiCKRAGE/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
 
 INDEXER_API = None
@@ -597,6 +595,9 @@ def main():
     if sys.version_info < (2, 7):
         print("Sorry, SiCKRAGE requires Python 2.7+")
         sys.exit(1)
+
+    # set thread name
+    threading.currentThread().setName('MAIN')
 
     APP_NAME = 'SiCKRAGE'
     DATA_DIR = ROOT_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))

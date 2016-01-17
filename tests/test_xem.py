@@ -23,10 +23,9 @@ from __future__ import unicode_literals
 import re
 import unittest
 
-import core.databases
-
 import sickrage
-from sickrage.core.tv import TVShow
+from sickrage.core.databases import main_db
+from sickrage.core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
 
@@ -36,8 +35,7 @@ class XEMBasicTests(SiCKRAGETestDBCase):
         Populates the showList with shows from the database
         """
 
-        myDB = core.databases.DBConnection()
-        sqlResults = myDB.select("SELECT * FROM tv_shows")
+        sqlResults = main_db.MainDB().select("SELECT * FROM tv_shows")
 
         for sqlShow in sqlResults:
             try:
@@ -51,8 +49,7 @@ class XEMBasicTests(SiCKRAGETestDBCase):
         Populates the showList with shows from the database
         """
 
-        myDB = core.databases.DBConnection()
-        sqlResults = myDB.select("SELECT * FROM tv_shows")
+        sqlResults = main_db.MainDB().select("SELECT * FROM tv_shows")
 
         for sqlShow in sqlResults:
             try:

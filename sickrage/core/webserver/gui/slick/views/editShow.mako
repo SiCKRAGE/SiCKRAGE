@@ -1,11 +1,9 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    import adba
+    from sickrage.indexers import adba
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import statusStrings, Quality
-    from sickrage.core.exceptions import scene_exceptions
-
 %>
 
 <%block name="metas">

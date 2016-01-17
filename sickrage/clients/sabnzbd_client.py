@@ -42,11 +42,11 @@ class SabNZBd(object):
 
         # set up a dict with the URL params in it
         params = {}
-        if sickrage.SAB_USERNAME != None:
+        if sickrage.SAB_USERNAME is not None:
             params[b'ma_username'] = sickrage.SAB_USERNAME
-        if sickrage.SAB_PASSWORD != None:
+        if sickrage.SAB_PASSWORD is not None:
             params[b'ma_password'] = sickrage.SAB_PASSWORD
-        if sickrage.SAB_APIKEY != None:
+        if sickrage.SAB_APIKEY is not None:
             params[b'apikey'] = sickrage.SAB_APIKEY
         category = sickrage.SAB_CATEGORY
         if nzb.show.is_anime:
@@ -59,7 +59,7 @@ class SabNZBd(object):
                 if nzb.show.is_anime:
                     category = sickrage.SAB_CATEGORY_ANIME_BACKLOG
 
-        if category != None:
+        if category is not None:
             params[b'cat'] = category
 
         # use high priority if specified (recently aired episode)
@@ -198,7 +198,7 @@ class SabNZBd(object):
         except httplib.InvalidURL as e:
             sickrage.LOGGER.error("Invalid SAB host, check your config: {}".format(e))
             return False, "Invalid SAB host"
-        if f == None:
+        if f is None:
             sickrage.LOGGER.error("No data returned from SABnzbd")
             return False, "No data returned from SABnzbd"
         else:

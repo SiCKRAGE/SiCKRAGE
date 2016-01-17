@@ -10,8 +10,7 @@
     from sickrage.core.helpers import srdatetime
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
     from sickrage.core.common import Quality, statusStrings, Overview
-
-    from sickrage.core.show.history import History
+    from sickrage.core.tv.show import History
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/history.js"></script>
@@ -92,7 +91,7 @@
                     % if hItem[b"provider"] > 0:
                         % if curStatus in [SNATCHED, FAILED]:
                             <% provider = sickrage.providersDict[hItem[b"provider"]] %>
-                            % if provider != None:
+                            % if provider is not None:
                                 <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16"
                                      style="vertical-align:middle;"/> <span
                                     style="vertical-align:middle;">${provider.name}</span>
@@ -148,8 +147,8 @@
                     % for action in sorted(hItem["actions"]):
                         <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
                         % if curStatus in [SNATCHED, FAILED]:
-                            <% provider = sickrage.providersDict[GenericProvider(action["provider"])._makeID()] %>
-                            % if provider != None:
+                            <% provider = GenericProvider.getProvider(action["provider"]) %>
+                            % if provider is not None:
                                 <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16"
                                      style="vertical-align:middle;" alt="${provider.name}" style="cursor: help;"
                                      title="${provider.name}: ${os.path.basename(action["resource"])}"/>

@@ -22,15 +22,14 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-import core.databases
-
+from sickrage.core.databases import main_db
 from tests import SiCKRAGETestDBCase
 
 
 class DBBasicTests(SiCKRAGETestDBCase):
     def setUp(self, **kwargs):
         super(DBBasicTests, self).setUp()
-        self.db = core.databases.DBConnection()
+        self.db = main_db.MainDB()
 
     def test_select(self):
         self.db.select("SELECT * FROM tv_episodes WHERE showid = ? AND location != ''", [0000])

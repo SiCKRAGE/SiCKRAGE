@@ -50,7 +50,7 @@ class NZBGet(object):
         else:
             nzbgetXMLrpc = "http://%(username)s:%(password)s@%(host)s/xmlrpc"
 
-        if sickrage.NZBGET_HOST == None:
+        if sickrage.NZBGET_HOST is None:
             sickrage.LOGGER.error("No NZBget host found in configuration. Please configure it.")
             return False
 
@@ -118,7 +118,7 @@ class NZBGet(object):
                     if nzb.resultType == "nzb":
                         genProvider = GenericProvider("")
                         data = genProvider.getURL(nzb.url)
-                        if data == None:
+                        if data is None:
                             return False
                         nzbcontent64 = standard_b64encode(data)
                     nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)

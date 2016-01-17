@@ -120,7 +120,7 @@ class LoginAcceptedResponse(Response):
         self.coderep = ()
 
         nat = cmd.parameters['nat']
-        nat = int(nat == None and nat or '0')
+        nat = int(nat is None and nat or '0')
         if nat:
             self.codehead = ('sesskey', 'address')
         else:
@@ -143,7 +143,7 @@ class LoginAcceptedNewVerResponse(Response):
         self.coderep = ()
 
         nat = cmd.parameters['nat']
-        nat = int(nat == None and nat or '0')
+        nat = int(nat is None and nat or '0')
         if nat:
             self.codehead = ('sesskey', 'address')
         else:
@@ -992,7 +992,7 @@ class NotificationStateResponse(Response):
         self.coderep = ()
 
         buddy = cmd.parameters['buddy']
-        buddy = int(buddy != None and buddy or '0')
+        buddy = int(buddy is not None and buddy or '0')
         if buddy:
             self.codetail = ('notifies', 'msgs', 'buddys')
         else:

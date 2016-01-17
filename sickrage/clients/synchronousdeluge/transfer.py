@@ -3,10 +3,9 @@ import ssl
 import struct
 import zlib
 
-import rencode
+from synchronousdeluge import rencode
 
 __all__ = ["DelugeTransfer"]
-
 
 class DelugeTransfer(object):
     def __init__(self):
@@ -53,3 +52,5 @@ class DelugeTransfer(object):
                 buf = dobj.unused_data
 
             yield message
+
+

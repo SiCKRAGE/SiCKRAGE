@@ -25,7 +25,7 @@ import sickrage
 from sickrage.core.databases import main_db
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException
-from sickrage.core.show.history import FailedHistory
+from sickrage.core.tv.show.history import FailedHistory
 from sickrage.core.ui import ProgressIndicators, QueueProgressIndicator
 
 

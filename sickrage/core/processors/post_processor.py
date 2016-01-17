@@ -38,7 +38,7 @@ from sickrage.core.helpers import findCertainShow, show_names, fixGlob, subtitle
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.searchers import subtitle_searcher
-from sickrage.core.show.history import History, FailedHistory
+from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.indexers import adba
 from sickrage.notifiers import notify_download
 

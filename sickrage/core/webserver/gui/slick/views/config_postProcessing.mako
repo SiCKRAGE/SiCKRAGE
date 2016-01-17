@@ -89,8 +89,8 @@
                         <div class="field-pair">
                             <label class="nocheck">
                                 <span class="component-title">Auto Post-Processing Frequency</span>
-                                <input type="number" min="10" name="autopostprocesser_frequency"
-                                       id="autopostprocesser_frequency" value="${sickrage.AUTOPOSTPROCESSOR_FREQ}"
+                                <input type="number" min="10" name="autopostprocessor_frequency"
+                                       id="autopostprocessor_frequency" value="${sickrage.AUTOPOSTPROCESSOR_FREQ}"
                                        class="form-control input-sm input75"/>
                             </label>
                             <label class="nocheck">

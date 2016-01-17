@@ -49,12 +49,11 @@ class nameCache(object):
 
         self.amActive = True
 
-        origThreadName = threading.currentThread().name
-        threading.currentThread().name = self.name
+        origThreadName = threading.currentThread().getName()
 
+        threading.currentThread().setName(self.name)
         self.buildNameCache()
-
-        threading.currentThread().name = origThreadName
+        threading.currentThread().setName(origThreadName)
 
         self.amActive = False
 

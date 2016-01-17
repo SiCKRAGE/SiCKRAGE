@@ -1,13 +1,10 @@
 <%!
     import sickrage
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
-
-    try:__quality = int(show.quality)
-    except NameError:__quality = int(sickrage.QUALITY_DEFAULT)
 %>
 
 <%
-qualities = Quality.splitQuality(__quality)
+qualities = Quality.splitQuality(show.quality)
 anyQualities = qualities[0]
 bestQualities = qualities[1]
 %>
@@ -23,7 +20,7 @@ bestQualities = qualities[1]
 
 <div id="customQualityWrapper">
     <div id="customQuality" style="padding-left: 0px;">
-        <p><b><u>Preferred</u></b> quality's will replace those in <b><u>allowed</u></b>, even if they are lower.</p>
+        <p><b><u>Preferred</u></b> qualities will replace those in <b><u>allowed</u></b>, even if they are lower.</p>
 
         <div style="padding-right: 40px; text-align: left; float: left;">
             <h5>Allowed</h5>

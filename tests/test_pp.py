@@ -25,8 +25,9 @@ import unittest
 import requests
 
 import sickrage
-from sickrage.core import TV
 from sickrage.core.processors.post_processor import PostProcessor
+from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show import TVShow
 from tests import EPISODE, FILEDIR, FILENAME, FILEPATH, SEASON, SHOWDIR, \
     SHOWNAME, SiCKRAGETestCase, SiCKRAGETestDBCase
 
@@ -54,13 +55,13 @@ class PPBasicTests(SiCKRAGETestDBCase):
         super(PPBasicTests, self).tearDown()
 
     def test_process(self):
-        show = TV.TVShow(1, 3)
+        show = TVShow(1, 3)
         show.name = SHOWNAME
         show.location = SHOWDIR
         show.saveToDB()
 
         sickrage.showList = [show]
-        ep = TV.TVEpisode(show, SEASON, EPISODE)
+        ep = TVEpisode(show, SEASON, EPISODE)
         ep.name = "some ep name"
         ep.saveToDB()
 

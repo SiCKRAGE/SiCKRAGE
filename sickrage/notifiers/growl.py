@@ -100,10 +100,10 @@ class GrowlNotifier:
         if not sickrage.USE_GROWL and not force:
             return False
 
-        if name == None:
+        if name is None:
             name = title
 
-        if host == None:
+        if host is None:
             hostParts = sickrage.GROWL_HOST.split(':')
         else:
             hostParts = host.split(':')
@@ -126,7 +126,7 @@ class GrowlNotifier:
         opts[b'priority'] = None
         opts[b'debug'] = False
 
-        if password == None:
+        if password is None:
             opts[b'password'] = sickrage.GROWL_PASSWORD
         else:
             opts[b'password'] = password
@@ -154,7 +154,7 @@ class GrowlNotifier:
     def _sendRegistration(self, host=None, password=None, name='SiCKRAGE Notification'):
         opts = {}
 
-        if host == None:
+        if host is None:
             hostParts = sickrage.GROWL_HOST.split(':')
         else:
             hostParts = host.split(':')
@@ -167,7 +167,7 @@ class GrowlNotifier:
         opts[b'host'] = hostParts[0]
         opts[b'port'] = port
 
-        if password == None:
+        if password is None:
             opts[b'password'] = sickrage.GROWL_PASSWORD
         else:
             opts[b'password'] = password

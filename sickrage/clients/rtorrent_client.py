@@ -20,8 +20,9 @@ from __future__ import unicode_literals
 
 import traceback
 
-import sickrage
 from rtorrent import RTorrent
+
+import sickrage
 from sickrage.clients import GenericClient
 
 
@@ -39,16 +40,17 @@ class rTorrentAPI(GenericClient):
             return
 
         sp_kwargs = {}
-        if sickrage.TORRENT_AUTH_TYPE is not 'none':
+        if sickrage.TORRENT_AUTH_TYPE != 'None':
             sp_kwargs[b'authtype'] = sickrage.TORRENT_AUTH_TYPE
 
         if not sickrage.TORRENT_VERIFY_CERT:
             sp_kwargs[b'check_ssl_cert'] = False
 
         if self.username and self.password:
-            self.auth = RTorrent(self.host, self.username, self.password, True, sp_kwargs=sp_kwargs)
+            url_parts = self.host.split('//')
+            self.auth = RTorrent( url_parts[0] + "{0}:{1}@".format(self.username, self.password) + url_parts[1])
         else:
-            self.auth = RTorrent(self.host, None, None, True)
+            self.auth = RTorrent(self.host)
 
         return self.auth
 
@@ -62,7 +64,7 @@ class rTorrentAPI(GenericClient):
 
         try:
             # Send magnet to rTorrent
-            torrent = self.auth.load_magnet(result.url, result.hash)
+            torrent = self.auth.load_torrent(result.url)
 
             if not torrent:
                 return False

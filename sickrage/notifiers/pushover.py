@@ -50,13 +50,13 @@ class PushoverNotifier(object):
         returns: True if the message succeeded, False otherwise
         """
 
-        if userKey == None:
+        if userKey is None:
             userKey = sickrage.PUSHOVER_USERKEY
 
-        if apiKey == None:
+        if apiKey is None:
             apiKey = sickrage.PUSHOVER_APIKEY
 
-        if sound == None:
+        if sound is None:
             sound = sickrage.PUSHOVER_SOUND
 
         sickrage.LOGGER.debug("Pushover API KEY in use: " + apiKey)

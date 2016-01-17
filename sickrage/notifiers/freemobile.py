@@ -42,9 +42,9 @@ class FreeMobileNotifier:
         returns: True if the message succeeded, False otherwise
         """
 
-        if id == None:
+        if id is None:
             id = sickrage.FREEMOBILE_ID
-        if apiKey == None:
+        if apiKey is None:
             apiKey = sickrage.FREEMOBILE_APIKEY
 
         sickrage.LOGGER.debug("Free Mobile in use with API KEY: " + apiKey)

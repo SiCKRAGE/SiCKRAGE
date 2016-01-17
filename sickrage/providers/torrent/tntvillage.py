@@ -228,7 +228,7 @@ class TNTVillageProvider(TorrentProvider):
     def _is_italian(self, torrent_rows):
 
         name = str(torrent_rows.find_all('td')[1].find('b').find('span'))
-        if not name or name is 'None':
+        if not name or name == 'None':
             return False
 
         subFound = italian = False
@@ -253,7 +253,7 @@ class TNTVillageProvider(TorrentProvider):
     def _is_english(torrent_rows):
 
         name = str(torrent_rows.find_all('td')[1].find('b').find('span'))
-        if not name or name is 'None':
+        if not name or name == 'None':
             return False
 
         english = False

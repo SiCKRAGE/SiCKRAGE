@@ -25,7 +25,7 @@ import os
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality
 from sickrage.core.nameparser import NameParser
-from sickrage.core.tv import TV
+from sickrage.core.tv import episode
 
 name_presets = (
     '%SN - %Sx%0E - %EN',
@@ -97,7 +97,7 @@ class Validator(object):
 
         is_scene = property(_is_scene)
 
-    class TVEpisode(TV.TVEpisode):
+    class TVEpisode(episode.TVEpisode):
         def __init__(self, season, episode, absolute_number, name):
             self.relatedEps = []
             self._name = name
@@ -121,15 +121,15 @@ def check_force_season_folders(pattern=None, multi=None, anime_type=None):
 
     :return: true if season folders need to be forced on or false otherwise.
     """
-    if pattern == None:
+    if pattern is None:
         pattern = sickrage.NAMING_PATTERN
 
-    if anime_type == None:
+    if anime_type is None:
         anime_type = sickrage.NAMING_ANIME
 
     valid = not validate_name(pattern=pattern, anime_type=anime_type, file_only=True)
 
-    if multi != None:
+    if multi is not None:
         valid = valid or not validate_name(pattern, multi, anime_type, file_only=True)
 
     return valid
@@ -141,16 +141,16 @@ def check_valid_naming(pattern=None, multi=None, anime_type=None):
 
     :return: true if the naming is valid, false if not.
     """
-    if pattern == None:
+    if pattern is None:
         pattern = sickrage.NAMING_PATTERN
 
-    if anime_type == None:
+    if anime_type is None:
         anime_type = sickrage.NAMING_ANIME
 
     sickrage.LOGGER.debug("Checking whether the pattern " + pattern + " is valid for a single episode")
     valid = validate_name(pattern=pattern, anime_type=anime_type)
 
-    if multi != None:
+    if multi is not None:
         sickrage.LOGGER.debug("Checking whether the pattern " + pattern + " is valid for a multi episode")
         valid = valid and validate_name(pattern, multi, anime_type)
 
@@ -163,7 +163,7 @@ def check_valid_abd_naming(pattern=None):
 
     :return: true if the naming is valid, false if not.
     """
-    if pattern == None:
+    if pattern is None:
         pattern = sickrage.NAMING_PATTERN
 
     sickrage.LOGGER.debug("Checking whether the pattern " + pattern + " is valid for an air-by-date episode")
@@ -178,7 +178,7 @@ def check_valid_sports_naming(pattern=None):
 
     :return: true if the naming is valid, false if not.
     """
-    if pattern == None:
+    if pattern is None:
         pattern = sickrage.NAMING_PATTERN
 
     sickrage.LOGGER.debug("Checking whether the pattern " + pattern + " is valid for an sports episode")
@@ -262,7 +262,7 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
         else:
             ep._release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
 
-    if multi != None:
+    if multi is not None:
         ep._name = "Ep Name (1)"
 
         if anime_type != 3:
