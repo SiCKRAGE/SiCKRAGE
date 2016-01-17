@@ -968,7 +968,7 @@ class GenericMetadata(object):
                     if 'thetvdb.com' in epg_url:
                         indexer = 1
                     elif 'tvrage' in epg_url:
-                        sickrage.LOGGER.warning("Invalid Indexer ID (" + str(
+                        sickrage.LOGGER.debug("Invalid Indexer ID (" + str(
                                 indexer_id) + "), not using metadata file because it has TVRage info")
                         return empty_return
 

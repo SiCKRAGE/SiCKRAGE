@@ -1312,6 +1312,7 @@ class Home(WebRoot):
             if showObj.is_anime:
                 return self.render("editShow.mako",
                                    show=showObj,
+                                   quality=showObj.quality,
                                    scene_exceptions=scene_exceptions,
                                    groups=groups,
                                    whitelist=whitelist,
@@ -1321,6 +1322,7 @@ class Home(WebRoot):
             else:
                 return self.render("editShow.mako",
                                    show=showObj,
+                                   quality=showObj.quality,
                                    scene_exceptions=scene_exceptions,
                                    title='Edit Show',
                                    header='Edit Show')
@@ -2415,6 +2417,7 @@ class HomeAddShows(Home):
                            provided_indexer_name=provided_indexer_name,
                            provided_indexer=provided_indexer,
                            indexers=sickrage.INDEXER_API().indexers,
+                           quality=sickrage.QUALITY_DEFAULT,
                            whitelist=[],
                            blacklist=[],
                            groups=[],
@@ -2576,6 +2579,7 @@ class HomeAddShows(Home):
         """
         return self.render("home_addExistingShow.mako",
                            enable_anime_options=False,
+                           quality=sickrage.QUALITY_DEFAULT,
                            title='Existing Show',
                            header='Existing Show',
                            topmenu="home")

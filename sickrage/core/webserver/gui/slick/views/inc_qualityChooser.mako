@@ -4,7 +4,7 @@
 %>
 
 <%
-qualities = Quality.splitQuality(show.quality)
+qualities = Quality.splitQuality(quality)
 anyQualities = qualities[0]
 bestQualities = qualities[1]
 %>
