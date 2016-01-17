@@ -12,7 +12,6 @@ chardet
 click
 cryptography
 decorator
-deluge-client
 dill
 docopt
 dogpile.cache

@@ -166,6 +166,8 @@ class ShowQueue(GenericQueue):
     def removeShow(self, show, full=False):
         if self._isInQueue(show, (ShowQueueActions.REMOVE,)):
             raise CantRemoveShowException("This show is already queued to be removed")
+        elif show is None:
+            raise CantRemoveShowException
 
         # remove other queued actions for this show.
         for x in self.queue:
