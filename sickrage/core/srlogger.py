@@ -96,7 +96,12 @@ class srLogger(logging.getLoggerClass()):
         }
 
         # list of allowed loggers
-        self.allowedLoggers = ['sickrage', 'tornado.general', 'tornado.application']
+        self.allowedLoggers = ['sickrage',
+                               'tornado.general',
+                               'tornado.application',
+                               'apscheduler.jobstores',
+                               'apscheduler.scheduler']
+
 
         # set custom level for database logging
         logging.addLevelName(self.logLevels[b'DB'], 'DB')

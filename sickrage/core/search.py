@@ -26,9 +26,6 @@ import re
 import threading
 import traceback
 
-from apscheduler.schedulers.tornado import TornadoScheduler
-from tornado import gen
-
 import sickrage
 from sickrage.clients import getClientIstance
 from sickrage.clients.nzbget_client import NZBGet
@@ -379,26 +376,17 @@ def searchForNeededEpisodes():
             if not curShow.paused:
                 episodes.extend(wantedEpisodes(curShow, fromDate))
 
-    jobScheduler = TornadoScheduler()
-    for providerID, providerObj in {k: v for k, v in sortedProviderDict(sickrage.RANDOMIZE_PROVIDERS).items()
-                                    if v.isActive and v.enable_daily}.items():
-        jobScheduler.add_job(
-                providerObj.cache.updateCache,
-                name=origThreadName + "::[" + providerObj.name + "]",
-                id=providerID
-        )
-
-    # wait for jobs to finish
-    while (jobScheduler.running):
-        gen.sleep(1)
+    # list of providers
+    providers = {k: v for k, v in sortedProviderDict(sickrage.RANDOMIZE_PROVIDERS).items() if v.isActive}
 
     # perform provider searchers
     def perform_searches():
         didSearch = False
-        for providerID, providerObj in {k: v for k, v in sortedProviderDict(sickrage.RANDOMIZE_PROVIDERS).items() if v.isActive and v.enable_daily}.items():
+        for providerID, providerObj in providers.items():
             threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
             try:
+                providerObj.cache.updateCache()
                 curFoundResults = dict(providerObj.searchRSS(episodes))
             except AuthException as e:
                 sickrage.LOGGER.error("Authentication error: {}".format(e))
@@ -453,30 +441,14 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
 
     origThreadName = threading.currentThread().getName()
 
-    providers = [
-        x for x in sortedProviderDict(sickrage.RANDOMIZE_PROVIDERS).values()
-        if x.isActive and x.enable_backlog
-        ]
-
-    jobScheduler = TornadoScheduler()
-    for providerID, providerObj in {k: v for k, v in sortedProviderDict(sickrage.RANDOMIZE_PROVIDERS).items()
-                                    if v.isActive and v.enable_daily}.items():
-        jobScheduler.add_job(
-                providerObj.cache.updateCache,
-                name=origThreadName + "::[" + providerObj.name + "]",
-                id=providerID
-        )
-
-    # wait for jobs to finish
-    while (jobScheduler.running):
-        gen.sleep(1)
+    providers = {k: v for k, v in sortedProviderDict(sickrage.RANDOMIZE_PROVIDERS).items() if v.isActive}
 
     def perform_searches():
 
         finalResults = []
         didSearch = False
 
-        for providerNum, providerObj in enumerate(providers):
+        for providerID, providerObj in providers.items():
             if providerObj.anime_only and not show.is_anime:
                 sickrage.LOGGER.debug("" + str(show.name) + " is not an anime, skiping")
                 continue
@@ -501,6 +473,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                     sickrage.LOGGER.info("Performing season pack search for " + show.name)
 
                 try:
+                    providerObj.cache.updateCache()
                     searchResults = providerObj.findSearchResults(show, episodes, search_mode, manualSearch, downCurQuality)
                 except AuthException as e:
                     sickrage.LOGGER.error("Authentication error: {}".format(e))

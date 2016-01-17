@@ -22,8 +22,9 @@ from __future__ import unicode_literals
 import datetime
 import threading
 
-import sickrage
+from tornado.ioloop import IOLoop
 
+import sickrage
 
 class QueuePriorities:
     LOW = 10
@@ -111,12 +112,12 @@ class GenericQueue(object):
 
                     # launch the queue item in a thread
                     self.currentItem = self.queue.pop(0)
-                    self.currentItem.name = self.queue_name + '-' + self.currentItem.name
+
+                    # set queue name
+                    self.currentItem.name = "{}-{}".format(self.queue_name, self.currentItem.name)
 
                     # add job from queue
-                    sickrage.Scheduler.add_job(self.currentItem.run,
-                                               name=self.currentItem.name,
-                                               id=self.currentItem.name)
+                    IOLoop.instance().add_callback(self.currentItem.run)
 
             self.amActive = False
 
