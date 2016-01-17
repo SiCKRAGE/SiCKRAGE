@@ -10,7 +10,7 @@
     from sickrage.core.helpers import srdatetime
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
     from sickrage.core.common import Quality, statusStrings, Overview
-    from sickrage.core.tv.show import History
+    from sickrage.core.tv.show.history import History
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/history.js"></script>
