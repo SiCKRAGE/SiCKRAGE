@@ -80,6 +80,7 @@ class Connection(object):
 
     def _execute(self, query, *args, **kwargs):
         with self.lock, self._cursor() as cursor:
+            result = []
 
             options = {'fetchall': kwargs.pop('fetchall', False),
                        'fetchone': kwargs.pop('fetchone', False)}
@@ -101,11 +102,13 @@ class Connection(object):
                             cursor.execute(query)
 
                     if options['fetchall']:
-                        return cursor.fetchall()
+                        result += cursor.fetchall()
                     elif options['fetchone']:
-                        return cursor.fetchone()
-
-                    return cursor
+                        result += cursor.fetchone()
+                    else:
+                        result = cursor
+                        if not result:
+                            result = cursor.fetchall()
 
                 except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
                     sickrage.LOGGER.error("DB error: {}".format(e))
@@ -118,6 +121,8 @@ class Connection(object):
                         pass
                 except Exception as e:
                     sickrage.LOGGER.error("DB error: {}".format(e))
+                finally:
+                    return result
 
     def checkDBVersion(self):
         """
@@ -143,7 +148,7 @@ class Connection(object):
 
         sqlResult = self._execute(querylist, *args, **kwargs)
         sickrage.LOGGER.log(sickrage.LOGGER.logLevels[b'DB'],
-                            "Transaction {} of {} queries executed of ".format(sqlResult.rowcount, len(querylist)))
+                            "Transaction with {} queries executed of ".format(len(querylist)))
 
         return sqlResult
 
