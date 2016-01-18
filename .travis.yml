@@ -8,10 +8,7 @@ branches:
   only:
     - master
 
-install:
-  pip install -r ./requirements/global.txt
-  pip install -r ./requirements/ssl.txt
-  pip install -r ./requirements/optional.txt
+install: .travis/install.sh
 
 cache: pip
 
@@ -25,7 +22,11 @@ after_failure:
   - cat ./tests/Logs/sickrage.log
 
 notifications:
-  irc: "irc.freenode.net#sickrage-updates"
+  irc:
+    channels:
+      - "irc.freenode.net#sickrage"
+    use_notice: true
+    skip_join: true
 
   email:
     on_success: change

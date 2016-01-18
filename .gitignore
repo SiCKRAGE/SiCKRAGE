@@ -25,6 +25,7 @@
 ######################
 /tests/*.db*
 /tests/*.ini
+/tests/show name/
 /tests/Logs/
 /tests/cache/
 /tests/data/
