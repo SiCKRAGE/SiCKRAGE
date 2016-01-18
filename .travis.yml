@@ -11,7 +11,7 @@ branches:
 
 install: .travis/install.sh
 
-script: .travis/install.sh
+script: .travis/run.sh
 
 after_failure:
   - cat ./tests/Logs/sickrage.log
