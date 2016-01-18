@@ -1,7 +1,7 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.queues.show_queue import ShowQueueActions
+    from sickrage.core.queues.show import ShowQueueActions
     from sickrage.core.common import dateTimeFormat
 %>
 <%block name="scripts">
