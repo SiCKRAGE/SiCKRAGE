@@ -116,8 +116,6 @@ class ApiHandler(RequestHandler):
 
     @coroutine
     def prepare(self, *args, **kwargs):
-        threading.currentThread().setName("API")
-
         args = args[1:]
         kwargs = {k: ''.join(v) if isinstance(v, list) else v for k, v in
                   recursive_unicode(self.request.arguments.items())}
@@ -166,7 +164,7 @@ class ApiHandler(RequestHandler):
 
     @run_on_executor
     def async_call(self, function, *args, **kwargs):
-        threading.currentThread().setName(function.im_class.__name__)
+        threading.currentThread().setName("API::{}".format(function.im_class.__name__))
 
         try:
             return recursive_unicode(function(*args, **{k: ''.join(v) if isinstance(v, list) else v for k, v in
@@ -1135,7 +1133,7 @@ class CMD_History(ApiCall):
                 continue
 
             row[b"status"] = status
-            row[b"quality"] = quality.get_quality_string(quality)
+            row[b"quality"] = get_quality_string(quality)
             row[b"date"] = _historyDate_to_dateTimeForm(str(row[b"date"]))
 
             del row[b"action"]
@@ -1450,9 +1448,7 @@ class CMD_SiCKRAGECheckVersion(ApiCall):
         super(CMD_SiCKRAGECheckVersion, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
-        needs_update = sickrage.VERSIONUPDATER.check_for_new_version()
-
-        data = {
+        return _responds(RESULT_SUCCESS, {
             "current_version": {
                 "branch": sickrage.VERSIONUPDATER.get_branch,
                 "commit": sickrage.VERSIONUPDATER.updater.get_cur_commit_hash,
@@ -1464,11 +1460,8 @@ class CMD_SiCKRAGECheckVersion(ApiCall):
                 "version": sickrage.VERSIONUPDATER.updater.get_newest_version,
             },
             "commits_offset": sickrage.VERSIONUPDATER.updater.get_num_commits_behind,
-            "needs_update": needs_update,
-        }
-
-        return _responds(RESULT_SUCCESS, data)
-
+            "needs_update": sickrage.VERSIONUPDATER.check_for_new_version(),
+        })
 
 class CMD_SiCKRAGECheckScheduler(ApiCall):
     _help = {"desc": "Get information about the scheduler"}
@@ -2596,7 +2589,7 @@ class CMD_ShowSeasons(ApiCall):
             for row in sqlResults:
                 status, quality = Quality.splitCompositeStatus(int(row[b"status"]))
                 row[b"status"] = _get_status_Strings(status)
-                row[b"quality"] = quality.get_quality_string(quality)
+                row[b"quality"] = get_quality_string(quality)
                 if tryInt(row[b'airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
                             tz_updater.parse_date_time(row[b'airdate'], showObj.airs, showObj.network))
@@ -2623,7 +2616,7 @@ class CMD_ShowSeasons(ApiCall):
                 del row[b"episode"]
                 status, quality = Quality.splitCompositeStatus(int(row[b"status"]))
                 row[b"status"] = _get_status_Strings(status)
-                row[b"quality"] = quality.get_quality_string(quality)
+                row[b"quality"] = get_quality_string(quality)
                 if tryInt(row[b'airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
                             tz_updater.parse_date_time(row[b'airdate'], showObj.airs, showObj.network))
@@ -2754,8 +2747,7 @@ class CMD_ShowStats(ApiCall):
             episode_qualities_counts_snatch[statusCode] = 0
 
         sqlResults = main_db.MainDB(row_type='dict').select(
-                "SELECT status, season FROM tv_episodes WHERE season != 0 AND showid = ?",
-                [self.indexerid])
+                "SELECT status, season FROM tv_episodes WHERE season != 0 AND showid = ?", [self.indexerid])
         # the main loop that goes through all episodes
         for row in sqlResults:
             status, quality = Quality.splitCompositeStatus(int(row[b"status"]))

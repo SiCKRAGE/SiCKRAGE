@@ -107,7 +107,7 @@ class BaseHandler(RequestHandler):
 
     @run_on_executor
     def async_call(self, function, **kwargs):
-        threading.currentThread().setName(function.im_class.__name__)
+        threading.currentThread().setName("WEB::{}".format(function.im_class.__name__))
 
         try:
             return recursive_unicode(function(
@@ -199,8 +199,6 @@ class WebHandler(BaseHandler):
     @coroutine
     @authenticated
     def prepare(self, *args, **kwargs):
-        threading.currentThread().setName("WEB")
-
         try:
             # route -> method obj
             route = self.request.path.strip('/').split('/')[::-1][0].replace('.', '_') or 'index'

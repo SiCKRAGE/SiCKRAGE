@@ -684,9 +684,11 @@ class SourceUpdateManager(UpdateManager):
 
         self.branch = sickrage.VERSION = self._find_installed_version()
 
+    @property
     def get_cur_commit_hash(self):
         return self._cur_commit_hash
 
+    @property
     def get_newest_commit_hash(self):
         return self._newest_commit_hash
 
@@ -718,6 +720,7 @@ class SourceUpdateManager(UpdateManager):
         with open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
             return f.read().strip() or ""
 
+    @property
     def get_num_commits_behind(self):
         return self._num_commits_behind
 

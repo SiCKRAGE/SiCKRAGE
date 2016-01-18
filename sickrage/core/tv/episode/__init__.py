@@ -764,7 +764,7 @@ class TVEpisode(object):
         if not self.show.is_anime:
             anime_type = 3
 
-        result = formatted_filename(self.show, self.relatedEps, anime_type=anime_type)
+        result = formatted_filename(self.show, self, anime_type=anime_type)
 
         # if they want us to flatten it and we're allowed to flatten it then we will
         if self.show.flatten_folders and not sickrage.NAMING_FORCE_FOLDERS:

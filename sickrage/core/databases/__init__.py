@@ -22,7 +22,6 @@ __all__ = ["main_db", "cache_db", "failed_db"]
 
 import os
 
-
 import re
 import sqlite3
 import threading
@@ -31,6 +30,7 @@ from tornado import gen
 
 import sickrage
 from sickrage.core.helpers import backupVersionedFile, restoreVersionedFile
+
 
 def prettyName(class_name):
     return ' '.join([x.group() for x in re.finditer("([A-Z])([a-z0-9]+)", class_name)])
@@ -61,7 +61,7 @@ class Connection(object):
     @contextmanager
     def connection(self):
         _connection = sqlite3.connect(self.filename, timeout=20, check_same_thread=False, isolation_level=None)
-        _connection.row_factory = (self._dict_factory, self.row_type)[self.row_type is not self._dict_factory]
+        _connection.row_factory = (self._dict_factory, self.row_type)[self.row_type != 'dict']
         try:
             yield _connection
         finally:
@@ -69,37 +69,44 @@ class Connection(object):
             _connection.close()
 
     @contextmanager
-    def cursor(self):
+    def _cursor(self):
         with self.connection() as _connection:
             _cursor = _connection.cursor()
+
             try:
                 yield _cursor
             finally:
                 _cursor.close()
 
     def _execute(self, query, *args, **kwargs):
-        with self.lock, self.cursor() as cursor:
+        with self.lock, self._cursor() as cursor:
+
+            options = {'fetchall': kwargs.pop('fetchall', False),
+                       'fetchone': kwargs.pop('fetchone', False)}
+
             args = reduce(lambda l, i: l + type(l)(i) if isinstance(i, (list, tuple)) else l + [i], args, []),
+
             attempt = 0
             while attempt < 5:
                 try:
                     if isinstance(query, list):
-                        result = [cursor.execute((x[0]), (x[0], x[1])[len(x) > 1]) for x in query if x]
+                        if len(query) == 1:
+                            [cursor.execute(*x) for x in zip(*[iter(query)] * 2)]
+                        else:
+                            [cursor.execute(*x) for x in query]
                     else:
-                        try:
-                            result = cursor.execute(query, *args)
-                        except:
-                            result = cursor.execute(query)
+                        if len(args):
+                            cursor.execute(query, *args)
+                        else:
+                            cursor.execute(query)
 
-                    if result and kwargs.has_key('fetchall'):
-                        if isinstance(result, list):
-                            return [x.fetchall() for x in result]
-                        return result.fetchall()
-                    elif result and kwargs.has_key('fetchone'):
-                        if isinstance(result, list):
-                            return [x.fetchone() for x in result]
-                        return result.fetchone()
-                    return result
+                    if options['fetchall']:
+                        return cursor.fetchall()
+                    elif options['fetchone']:
+                        return cursor.fetchone()
+
+                    return cursor
+
                 except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
                     sickrage.LOGGER.error("DB error: {}".format(e))
                     gen.sleep(1)
@@ -136,7 +143,7 @@ class Connection(object):
 
         sqlResult = self._execute(querylist, *args, **kwargs)
         sickrage.LOGGER.log(sickrage.LOGGER.logLevels[b'DB'],
-                    "Transaction {} of {} queries executed of ".format(len(sqlResult), len(querylist)))
+                            "Transaction {} of {} queries executed of ".format(sqlResult.rowcount, len(querylist)))
 
         return sqlResult
 
@@ -149,7 +156,8 @@ class Connection(object):
         """
 
         sickrage.LOGGER.log(sickrage.LOGGER.logLevels[b'DB'],
-                    "{}: {} with args {} and kwargs {}".format(self.filename, query, args, kwargs))
+                            "{}: {} with args {}".format(self.filename, query, args))
+
         return self._execute(query, *args, **kwargs)
 
     def select(self, query, *args, **kwargs):
@@ -160,8 +168,7 @@ class Connection(object):
         :param args:  arguments to query string
         :return: query results
         """
-
-        return self.action(query, fetchall=True, *args, **kwargs)
+        return self.action(query, *args, **{'fetchall': kwargs.pop('fetchall', True)})
 
     def selectOne(self, query, *args, **kwargs):
         """
@@ -171,8 +178,7 @@ class Connection(object):
         :param args: arguments to query string
         :return: query results
         """
-
-        return self.action(query, fetchone=True, *args, **kwargs)
+        return self.action(query, *args, **{'fetchone': kwargs.pop('fetchone', True)})
 
     def upsert(self, tableName, valueDict, keyDict):
         """
@@ -203,7 +209,7 @@ class Connection(object):
         """
         columns = {}
 
-        sqlResult = self.select("PRAGMA table_info(`%s`)" % tableName)
+        sqlResult = self.select("PRAGMA table_info(`{}`)".format(tableName))
 
         for column in sqlResult:
             columns[column[b'name']] = {'type': column[b'type']}
@@ -254,7 +260,7 @@ class SchemaUpgrade(Connection):
         super(SchemaUpgrade, self).__init__(filename, suffix, row_type)
 
     def hasTable(self, tableName):
-        return len(self.select("SELECT 1 FROM sqlite_master WHERE name = ?;", (tableName,))) > 0
+        return len(self.select("SELECT 1 FROM sqlite_master WHERE name = ?;", [tableName],)) > 0
 
     def hasColumn(self, tableName, column):
         return column in self.tableInfo(tableName)
@@ -265,7 +271,7 @@ class SchemaUpgrade(Connection):
 
     def incDBVersion(self):
         new_version = self.checkDBVersion() + 1
-        self.action("UPDATE db_version SET db_version = ?", [new_version])
+        self.action("UPDATE db_version SET db_version = ?", [new_version],)
         return new_version
 
     def upgrade(self):

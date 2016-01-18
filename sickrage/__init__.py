@@ -697,7 +697,8 @@ def main():
 
 
     # install/upgrade pip and ssl contexts for required/optional imports
-    install_reqs(optional=INSTALL_OPTIONAL, user=USER)
+    if not DEVELOPER:
+        install_reqs(optional=INSTALL_OPTIONAL, user=USER)
 
     # init logging
     from sickrage.core.srlogger import srLogger
