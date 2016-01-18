@@ -48,7 +48,7 @@ def install_pip(user=False):
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, (file_name, '{} --user'.format(file_name))[user]])
+    subprocess.call([sys.executable, file_name, ('', '--user')[user]])
 
     print("Cleaning up downloaded pip files")
     os.remove(file_name)
@@ -58,8 +58,10 @@ def install_pkgs(requirements, user=False):
     import pip
 
     # list installed packages
-    try:installed = [x.project_name.lower() for x in pip.get_installed_distributions(local_only=True, user_only=user)]
-    except:installed = []
+    try:
+        installed = [x.project_name.lower() for x in pip.get_installed_distributions(local_only=True, user_only=user)]
+    except:
+        installed = []
 
     try:
         with open(requirements) as f:
@@ -69,29 +71,37 @@ def install_pkgs(requirements, user=False):
             pkg_name = pkg.lower()
             if pkg_name not in installed:
                 print(r"[%3.2f%%]::Installing %s package" % (i * 100 / len(packages), pkg_name))
-                pip.main(['-q', 'install', (pkg, '--user {}'.format(pkg))[user]])
-    except KeyboardInterrupt:raise
+                pip.main(['-q', 'install'] + [('', '--user')[user]] + [pkg])
+    except KeyboardInterrupt:
+        raise
+
 
 def upgrade_pkgs(user=False):
     import pip
     from pip.commands.list import ListCommand
 
     pip_list = ListCommand()
-    pip_options = pip_list.parse_args(['--no-cache-dir', '-o', ('', '--user')[user]])
+    pip_options = pip_list.parse_args(['--no-cache-dir', '-o'] + [('', '--user')[user]])
 
-    while(True):
+    while (True):
         # list packages that need upgrading
-        try:packages = [p.project_name for p, y, _ in pip_list.find_packages_latest_versions(pip_options[0])
+        try:
+            packages = [p.project_name for p, y, _ in pip_list.find_packages_latest_versions(pip_options[0])
                         if p.version == y.available]
-        except:packages = []
+        except:
+            packages = []
 
         for i, pkg_name in enumerate(packages, start=1):
             try:
                 print(r"[%3.2f%%]::Upgrading %s package" % (i * 100 / len(packages), pkg_name.lower()))
-                pip.main(['-q', 'install', '-U', (pkg_name, '--user {}'.format(pkg_name))[user]])
-            except IndexError:continue
-            except KeyboardInterrupt:raise
-        else:break
+                pip.main(['-q', 'install', '-U'] + [('', '--user')[user]] + [pkg_name])
+            except IndexError:
+                continue
+            except KeyboardInterrupt:
+                raise
+        else:
+            break
+
 
 def ssl_contexts(user=False):
     try:
@@ -116,15 +126,17 @@ def install_reqs(optional=False, user=False):
     ssl_contexts(user)
 
     # install configobj seperately
-    pip.main(['-q', '--no-cache-dir', 'install', '-U', ('configobj', '--user {}'.format('configobj'))[user]])
+    pip.main(['-q', '--no-cache-dir', 'install', '-U'] + [('', '--user')[user]] + ['configobj'])
 
     print("Checking for required SiCKRAGE packages, please stand by ...")
     install_pkgs(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'global.txt'), user)
 
     if optional:
         print("Checking for optional SiCKRAGE packages, please stand by ...")
-        try:install_pkgs(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'optional.txt'), user)
-        except:pass
+        try:
+            install_pkgs(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'optional.txt'), user)
+        except:
+            pass
 
     print("Checking for upgradable SiCKRAGE packages, please stand by ...")
     upgrade_pkgs(user)
