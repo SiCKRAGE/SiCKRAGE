@@ -584,6 +584,7 @@ def help_message():
     help_msg += "                                    Default: config.ini in " + PROG_DIR + " or --datadir location\n"
     help_msg += "                --noresize          Prevent resizing of the banner/posters even if PIL is installed\n"
     help_msg += "                --install-optional  Install optional pacakges from requirements folder\n"
+    help_msg += "                --user              Install pacakges from requirements folder as non-root user\n"
 
     return help_msg
 
@@ -608,6 +609,7 @@ def main():
 
     # defaults
     INSTALL_OPTIONAL = False
+    USER = False
 
     try:
         opts, _ = getopt.getopt(
@@ -622,7 +624,8 @@ def main():
                  'datadir=',
                  'config=',
                  'noresize',
-                 'install-optional']
+                 'install-optional',
+                 'user']
         )
     except getopt.GetoptError:
         sys.exit(help_message())
@@ -688,15 +691,19 @@ def main():
         if o in ('--install-optional',):
             INSTALL_OPTIONAL = True
 
+        # Install optional packages from requirements folder
+        if o in ('--user',):
+            USER = True
+
 
     # install/upgrade pip and ssl contexts for required/optional imports
     i = 0
     while i <= 2:
         try:
-            install_reqs(optional=INSTALL_OPTIONAL)
+            install_reqs(optional=INSTALL_OPTIONAL, user=USER)
             import sickrage
             raise StopIteration
-        except ImportError:install_pip()
+        except ImportError:install_pip(user=USER)
         except StopIteration:break
         finally:i += 1
 

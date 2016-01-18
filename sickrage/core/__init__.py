@@ -342,7 +342,6 @@ def initialize():
                     SRIntervalTrigger(**{'days': 1}),
                     name="TZUPDATER",
                     id="TZUPDATER",
-                    max_instances=len(sickrage.showList),
                     replace_existing=True
             )
 
@@ -352,7 +351,6 @@ def initialize():
                     SRIntervalTrigger(**{'minutes': sickrage.NAMECACHE_FREQ, 'min': sickrage.MIN_NAMECACHE_FREQ}),
                     name="NAMECACHE",
                     id="NAMECACHE",
-                    max_instances=len(sickrage.showList),
                     replace_existing=True
             )
 
@@ -362,7 +360,6 @@ def initialize():
                     SRIntervalTrigger(**{'seconds': 3}),
                     name="SHOWQUEUE",
                     id="SHOWQUEUE",
-                    max_instances=len(sickrage.showList),
                     replace_existing=True
             )
 
@@ -372,7 +369,6 @@ def initialize():
                     SRIntervalTrigger(**{'seconds': 1}),
                     name="SEARCHQUEUE",
                     id="SEARCHQUEUE",
-                    max_instances=len(sickrage.showList),
                     replace_existing=True
             )
 
@@ -384,7 +380,6 @@ def initialize():
                                'start_date': datetime.datetime.now().replace(hour=sickrage.SHOWUPDATE_HOUR)}),
                     name="SHOWUPDATER",
                     id="SHOWUPDATER",
-                    max_instances=len(sickrage.showList),
                     replace_existing=True
             )
 
@@ -395,7 +390,6 @@ def initialize():
                             **{'minutes': sickrage.DAILY_SEARCHER_FREQ, 'min': sickrage.MIN_DAILY_SEARCHER_FREQ}),
                     name="DAILYSEARCHER",
                     id="DAILYSEARCHER",
-                    max_instances=len(sickrage.showList),
                     replace_existing=True
             )
 
@@ -407,7 +401,6 @@ def initialize():
                                'min': sickrage.MIN_BACKLOG_SEARCHER_FREQ}),
                     name="BACKLOG",
                     id="BACKLOG",
-                    max_instances=len(sickrage.showList),
                     replace_existing=True
             )
 
@@ -418,7 +411,6 @@ def initialize():
                                          'min': sickrage.MIN_AUTOPOSTPROCESSOR_FREQ}),
                     name="POSTPROCESSOR",
                     id="POSTPROCESSOR",
-                    max_instances=len(sickrage.showList),
                     replace_existing=True
             )
             (job.pause, job.resume)[sickrage.PROCESS_AUTOMATICALLY]()
@@ -431,7 +423,6 @@ def initialize():
                             sickrage.PROPER_SEARCHER_INTERVAL]}),
                     name="PROPERSEARCHER",
                     id="PROPERSEARCHER",
-                    max_instances=len(sickrage.showList),
                     replace_existing=True
             )
             (job.pause, job.resume)[sickrage.DOWNLOAD_PROPERS]()
@@ -442,7 +433,6 @@ def initialize():
                     SRIntervalTrigger(**{'hours': 1}),
                     name="TRAKTSEARCHER",
                     id="TRAKTSEARCHER",
-                    max_instances=len(sickrage.showList),
                     replace_existing=True,
             )
             (job.pause, job.resume)[sickrage.USE_TRAKT]()
@@ -453,7 +443,6 @@ def initialize():
                     SRIntervalTrigger(**{'hours': sickrage.SUBTITLE_SEARCHER_FREQ}),
                     name="SUBTITLESEARCHER",
                     id="SUBTITLESEARCHER",
-                    max_instances=len(sickrage.showList),
                     replace_existing=True
             )
             (job.pause, job.resume)[sickrage.USE_SUBTITLES]()
