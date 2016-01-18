@@ -29,7 +29,6 @@ import unittest
 from configobj import ConfigObj
 
 import sickrage
-from requirements import install_reqs
 from sickrage.core.caches import tv_cache
 from sickrage.core.caches.name_cache import nameCache
 from sickrage.core.databases import Connection, cache_db, failed_db, main_db
@@ -50,9 +49,6 @@ from sickrage.providers import NewznabProvider, GenericProvider, NZBProvider, To
 threading.currentThread().setName('TESTS')
 
 socket.setdefaulttimeout(30)
-
-# install packages
-install_reqs()
 
 TESTALL = False
 TESTSKIPPED = ['test_issue_submitter', 'test_ssl_sni']
