@@ -90,7 +90,7 @@
                 % else:
                     % if hItem[b"provider"] > 0:
                         % if curStatus in [SNATCHED, FAILED]:
-                            <% provider = sickrage.providersDict[hItem[b"provider"]] %>
+                            <% provider = GenericProvider.getProvider(hItem["provider"]) %>
                             % if provider is not None:
                                 <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16"
                                      style="vertical-align:middle;"/> <span
