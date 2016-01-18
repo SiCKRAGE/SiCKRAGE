@@ -48,10 +48,10 @@ def install_pip(user=False):
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'get-pip.py'), ('', '--user')[user]])
+    subprocess.call([sys.executable, os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir, ('get-pip.py', 'get-pip.py --user')[user])])
 
     print("Cleaning up downloaded pip files")
-    os.remove(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'get-pip.py'))
+    os.remove(os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir, ('get-pip.py')))
 
 
 def install_pkgs(requirements, user=False):
@@ -69,7 +69,7 @@ def install_pkgs(requirements, user=False):
             pkg_name = pkg.lower()
             if pkg_name not in installed:
                 print(r"[%3.2f%%]::Installing %s package" % (i * 100 / len(packages), pkg_name))
-                pip.main(['-q', 'install', ('', '--user')[user], pkg])
+                pip.main(['-q', 'install', (pkg, '--user {}'.format(pkg))[user]])
     except KeyboardInterrupt:raise
 
 def upgrade_pkgs(user=False):
@@ -77,9 +77,7 @@ def upgrade_pkgs(user=False):
     from pip.commands.list import ListCommand
 
     pip_list = ListCommand()
-    pip_options = pip_list.parse_args(['--no-cache-dir', '-o', ('--user')[user]])
-
-    pip.main(['-q', 'install', '-U', ('', '--user')[user], 'pip'])
+    pip_options = pip_list.parse_args(['--no-cache-dir', '-o', ('', '--user')[user]])
 
     while(True):
         # list packages that need upgrading
@@ -90,7 +88,7 @@ def upgrade_pkgs(user=False):
         for i, pkg_name in enumerate(packages, start=1):
             try:
                 print(r"[%3.2f%%]::Upgrading %s package" % (i * 100 / len(packages), pkg_name.lower()))
-                pip.main(['-q', 'install', '-U', ('', '--user')[user], pkg_name])
+                pip.main(['-q', 'install', '-U', (pkg_name, '--user {}'.format(pkg_name))[user]])
             except IndexError:continue
             except KeyboardInterrupt:raise
         else:break
@@ -103,20 +101,22 @@ def ssl_contexts(user=False):
         urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST = "MEDIUM"
     except ImportError:
         # ssl contexts
-        install_pkgs(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sni.txt'), user)
+        install_pkgs(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'ssl.txt'), user)
 
         # restart to enable sni contexts
         os.execl(sys.executable, sys.executable, *sys.argv)
 
 
 def install_reqs(optional=False, user=False):
+    # get and load pip
+    install_pip(user)
     import pip
 
     # install ssl sni contexts
     ssl_contexts(user)
 
     # install configobj seperately
-    pip.main(['-q', '--no-cache-dir', 'install', '-U', ('', '--user')[user],'configobj'])
+    pip.main(['-q', '--no-cache-dir', 'install', '-U', ('configobj', '--user {}'.format('configobj'))[user]])
 
     print("Checking for required SiCKRAGE packages, please stand by ...")
     install_pkgs(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'global.txt'), user)

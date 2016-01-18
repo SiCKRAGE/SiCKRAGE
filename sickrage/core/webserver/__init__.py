@@ -21,6 +21,8 @@
 from __future__ import unicode_literals
 
 import os
+import subprocess
+import sys
 import threading
 import webbrowser
 
@@ -36,15 +38,15 @@ from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutH
 
 
 def launch_browser(protocol='http', startport=8081, web_root='/'):
-    browserurl = '{}://localhost:{}{}/home/'.format(protocol, startport, web_root)
+    url = '{}://localhost:{}{}/home/'.format(protocol, startport, web_root)
 
     try:
-        try:
-            webbrowser.open(browserurl, 2, 1)
-        except webbrowser.Error:
-            webbrowser.open(browserurl, 1, 1)
-    except webbrowser.Error:
-        sickrage.LOGGER.error("Unable to launch a browser")
+        if sys.platform=='darwin':
+            subprocess.Popen(['open', url])
+        else:
+            webbrowser.open_new_tab(url)
+    except OSError:
+        print 'Please open a browser on: '+url
 
 
 class StaticImageHandler(StaticFileHandler):
@@ -185,6 +187,8 @@ class SRWebServer(object):
             with file(sickrage.PIDFILE, 'w+') as pf:
                 pf.write(str(sickrage.PID))
 
+        self.io_loop.add_callback(sickrage.Scheduler.start)
+
     def start(self):
         threading.currentThread().setName("TORNADO")
 
@@ -199,7 +203,12 @@ class SRWebServer(object):
             sickrage.LOGGER.info("Starting SiCKRAGE web server on [{}://{}:{}/]".format(
                             ('http', 'https')[sickrage.ENABLE_HTTPS], get_lan_ip(), sickrage.WEB_PORT))
 
-            self.io_loop.add_callback(sickrage.core.start)
+            # launch browser window
+            if sickrage.LAUNCH_BROWSER and not any([sickrage.WEB_NOLAUNCH, sickrage.DAEMONIZE]):
+                sickrage.LOGGER.info("Launching browser window")
+                threading.Thread(None, lambda: launch_browser(('http', 'https')[sickrage.ENABLE_HTTPS], sickrage.WEB_PORT, sickrage.WEB_ROOT)).start()
+
+            sickrage.STARTED = True
             self.io_loop.start()
         except (KeyboardInterrupt, SystemExit) as e:
             sickrage.LOGGER.info('PERFORMING SHUTDOWN')

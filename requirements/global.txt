@@ -7,7 +7,6 @@ beautifulsoup4
 bencode
 CacheControl
 certifi
-cffi
 chardet
 click
 cryptography
@@ -71,5 +70,4 @@ tzlocal
 wheel
 xmltodict
 yarg
-pyopenssl
 python-daemon

@@ -28,7 +28,7 @@ import threading
 import traceback
 import uuid
 
-from requirements import install_reqs, install_pip
+from requirements import install_reqs
 
 USER_AGENT = 'SiCKRAGE/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
 
@@ -697,15 +697,7 @@ def main():
 
 
     # install/upgrade pip and ssl contexts for required/optional imports
-    i = 0
-    while i <= 2:
-        try:
-            install_reqs(optional=INSTALL_OPTIONAL, user=USER)
-            import sickrage
-            raise StopIteration
-        except ImportError:install_pip(user=USER)
-        except StopIteration:break
-        finally:i += 1
+    install_reqs(optional=INSTALL_OPTIONAL, user=USER)
 
     # init logging
     from sickrage.core.srlogger import srLogger

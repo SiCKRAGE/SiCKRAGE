@@ -471,19 +471,6 @@ def initialize():
             sickrage.INITIALIZED = True
             return True
 
-
-def start():
-    if sickrage.INITIALIZED and not sickrage.STARTED:
-        sickrage.LOGGER.info("Starting SiCKRAGE scheduler jobs")
-        sickrage.Scheduler.start()
-
-        # launch browser window
-        if sickrage.LAUNCH_BROWSER and not any([sickrage.WEB_NOLAUNCH, sickrage.DAEMONIZE]):
-            sickrage.LOGGER.info("Launching browser window")
-            launch_browser(('http', 'https')[sickrage.ENABLE_HTTPS], sickrage.WEB_PORT, sickrage.WEB_ROOT)
-
-        sickrage.STARTED = True
-
 def halt():
     if sickrage.INITIALIZED and sickrage.STARTED:
         with threading.Lock():

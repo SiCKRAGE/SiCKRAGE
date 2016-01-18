@@ -1,4 +1,3 @@
-import glob
 import os
 import shutil
 import sys
@@ -15,10 +14,8 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', '
 
 # Get requirements
 requirements = []
-for file in glob.glob(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements', '*.txt')):
-    if not 'optional' in file:
-        with open(file) as f:
-            requirements += f.readlines()
+with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements', 'global.txt')) as f:
+    requirements += f.readlines()
 
 class CleanCommand(Command):
     """Custom clean command to tidy up the project root."""
