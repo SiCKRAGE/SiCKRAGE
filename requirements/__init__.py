@@ -48,10 +48,10 @@ def install_pip(user=False):
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir, ('get-pip.py', 'get-pip.py --user')[user])])
+    subprocess.call([sys.executable, ('get-pip.py', 'get-pip.py --user')[user]])
 
     print("Cleaning up downloaded pip files")
-    os.remove(os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir, ('get-pip.py')))
+    os.remove('get-pip.py')
 
 
 def install_pkgs(requirements, user=False):
