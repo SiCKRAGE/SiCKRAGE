@@ -28,7 +28,7 @@ def install_pip(user=False):
     import urllib2
 
     url = "https://bootstrap.pypa.io/get-pip.py"
-    file_name = url.split('/')[-1]
+    file_name = os.path.join(os.path.abspath(os.path.dirname(__file__)), url.split('/')[-1])
     u = urllib2.urlopen(url)
     with open(file_name, 'wb') as f:
         meta = u.info()
@@ -48,10 +48,10 @@ def install_pip(user=False):
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, ('get-pip.py', 'get-pip.py --user')[user]])
+    subprocess.call([sys.executable, (file_name, '{} --user'.format(file_name))[user]])
 
     print("Cleaning up downloaded pip files")
-    os.remove('get-pip.py')
+    os.remove(file_name)
 
 
 def install_pkgs(requirements, user=False):
