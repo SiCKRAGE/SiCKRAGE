@@ -9,7 +9,7 @@ branches:
   only:
     - master
 
-install: .travis/install.sh
+cache: pip
 
 script: .travis/run.sh
 

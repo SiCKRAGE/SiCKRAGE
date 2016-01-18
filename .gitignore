@@ -1,6 +1,7 @@
 # SR Travis-CI Files #
 ######################
 /.travis.yml
+/.travis
 
 # SR Markdown Files  #
 ######################
