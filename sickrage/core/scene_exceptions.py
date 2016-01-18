@@ -32,8 +32,7 @@ import sickrage
 from sickrage.core.databases import cache_db
 from sickrage.core.helpers import full_sanitizeSceneName, getURL, \
     sanitizeSceneName
-from sickrage.indexers import adba
-
+from sickrage.indexers.adba.aniDBAbstracter import Anime
 
 exception_dict = {}
 anidb_exception_dict = {}
@@ -288,7 +287,7 @@ def _anidb_exceptions_fetcher():
         for show in sickrage.showList:
             if show.is_anime and show.indexer == 1:
                 try:
-                    anime = adba.Anime(None, name=show.name, tvdbid=show.indexerid, autoCorrectName=True)
+                    anime = Anime(None, name=show.name, tvdbid=show.indexerid, autoCorrectName=True)
                 except Exception:
                     continue
                 else:

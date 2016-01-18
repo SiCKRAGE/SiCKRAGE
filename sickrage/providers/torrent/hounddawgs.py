@@ -102,15 +102,13 @@ class HoundDawgsProvider(TorrentProvider):
                 self.search_params[b'searchstr'] = search_string
 
                 data = self.getURL(self.urls['search'], params=self.search_params)
-
-                strTableStart = "<table class=\"torrent_table"
-                startTableIndex = data.find(strTableStart)
-                trimmedData = data[startTableIndex:]
-                if not trimmedData:
+                startTableIndex = data.find("<table class=\"torrent_table")
+                data = data[startTableIndex:]
+                if not data:
                     continue
 
                 try:
-                    with BS4Parser(trimmedData, features=["html5lib", "permissive"]) as html:
+                    with BS4Parser(data, features=["html5lib", "permissive"]) as html:
                         result_table = html.find('table', {'id': 'torrent_table'})
 
                         if not result_table:

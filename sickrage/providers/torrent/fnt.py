@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
 
 import re
 import traceback
@@ -100,7 +101,7 @@ class FNTProvider(TorrentProvider):
                     continue
 
                 try:
-                    with BS4Parser(data, features=["html5lib", "permissive"]) as html:
+                    with BS4Parser(data, markup_type="HTML", features=["html5lib", "permissive"]) as html:
                         result_table = html.find('table', {'id': 'tablealign3bis'})
 
                         if not result_table:

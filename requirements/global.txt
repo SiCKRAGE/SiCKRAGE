@@ -27,6 +27,7 @@ hachoir-core
 hachoir-metadata
 hachoir-parser
 httplib2
+html5lib
 idna
 ipaddress
 jsonrpclib

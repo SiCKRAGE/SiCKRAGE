@@ -107,7 +107,7 @@ class IPTorrentsProvider(TorrentProvider):
 
                 try:
                     data = re.sub(r'(?im)<button.+?<[/]button>', '', data, 0)
-                    with BS4Parser(data, features=["html5lib", "permissive"]) as html:
+                    with BS4Parser(data, markup_type="HTML", features=["html5lib", "permissive"]) as html:
                         if not html:
                             sickrage.LOGGER.debug("No data returned from provider")
                             continue

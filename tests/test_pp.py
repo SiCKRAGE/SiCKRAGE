@@ -22,13 +22,11 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-import requests
-
 import sickrage
 from sickrage.core.processors.post_processor import PostProcessor
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import TVShow
-from tests import EPISODE, FILEDIR, FILENAME, FILEPATH, SEASON, SHOWDIR, \
+from tests import EPISODE, FILENAME, FILEPATH, SEASON, SHOWDIR, \
     SHOWNAME, SiCKRAGETestCase, SiCKRAGETestDBCase
 
 
@@ -70,49 +68,49 @@ class PPBasicTests(SiCKRAGETestDBCase):
         self.assertTrue(self.pp.process)
 
 
-class PPWebServerTests(SiCKRAGETestDBCase):
-    def setUp(self, **kwargs):
-        super(PPWebServerTests, self).setUp(True)
-
-    def tearDown(self, **kwargs):
-        super(PPWebServerTests, self).tearDown(True)
-
-    def test_process(self):
-        s = requests.Session()
-
-        params = {
-            "proc_dir": FILEDIR,
-            "nzbName": FILEPATH,
-            "failed": 0,
-            "process_method": "move",
-            "force": 0,
-            "quiet": 1
-        }
-
-        login_params = {
-            'username': sickrage.WEB_USERNAME,
-            'password': sickrage.WEB_PASSWORD
-        }
-
-        s.post(
-                "http://localhost:8081/login",
-                data=login_params,
-                stream=True,
-                verify=False,
-                timeout=(30, 60)
-        )
-
-        r = s.get(
-                "http://localhost:8081/home/postprocess/processEpisode",
-                auth=(sickrage.WEB_USERNAME, sickrage.WEB_PASSWORD),
-                params=params,
-                stream=True,
-                verify=False,
-                timeout=(30, 1800)
-        )
-
-        self.assertTrue(
-                line for line in r.iter_lines() if line.lower() in ["processing succeeded", "successfully processed"])
+# class PPWebServerTests(SiCKRAGETestDBCase):
+#     def setUp(self, **kwargs):
+#         super(PPWebServerTests, self).setUp(True)
+#
+#     def tearDown(self, **kwargs):
+#         super(PPWebServerTests, self).tearDown(True)
+#
+#     def test_process(self):
+#         s = requests.Session()
+#
+#         params = {
+#             "proc_dir": FILEDIR,
+#             "nzbName": FILEPATH,
+#             "failed": 0,
+#             "process_method": "move",
+#             "force": 0,
+#             "quiet": 1
+#         }
+#
+#         login_params = {
+#             'username': sickrage.WEB_USERNAME,
+#             'password': sickrage.WEB_PASSWORD
+#         }
+#
+#         s.post(
+#                 "http://localhost:8081/login",
+#                 data=login_params,
+#                 stream=True,
+#                 verify=False,
+#                 timeout=(30, 60)
+#         )
+#
+#         r = s.get(
+#                 "http://localhost:8081/home/postprocess/processEpisode",
+#                 auth=(sickrage.WEB_USERNAME, sickrage.WEB_PASSWORD),
+#                 params=params,
+#                 stream=True,
+#                 verify=False,
+#                 timeout=(30, 1800)
+#         )
+#
+#         self.assertTrue(
+#                 line for line in r.iter_lines() if line.lower() in ["processing succeeded", "successfully processed"])
 
 
 if __name__ == '__main__':

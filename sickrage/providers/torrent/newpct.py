@@ -95,7 +95,7 @@ class newpctProvider(TorrentProvider):
                     continue
 
                 try:
-                    with BS4Parser(data, features=["html5lib", "permissive"]) as html:
+                    with BS4Parser(data, markup_type="HTML", features=["html5lib", "permissive"]) as html:
                         torrent_tbody = html.find('tbody')
 
                         if len(torrent_tbody) < 1:

@@ -22,23 +22,33 @@ from __future__ import print_function, unicode_literals
 
 import os
 import os.path
+import socket
+import threading
 import unittest
 
 from configobj import ConfigObj
 
 import sickrage
-from sickrage.core import removetree
 from sickrage.core.caches import tv_cache
-from sickrage.core.databases import cache_db, failed_db, main_db
+from sickrage.core.caches.name_cache import nameCache
+from sickrage.core.databases import Connection, cache_db, failed_db, main_db
+from sickrage.core.helpers import removetree, get_lan_ip
 from sickrage.core.helpers.encoding import encodingInit
+from sickrage.core.scheduler import Scheduler
 from sickrage.core.srconfig import srConfig
+from sickrage.core.srlogger import srLogger
 from sickrage.core.tv import episode
 from sickrage.core.webserver import SRWebServer
-
 # =================
 # test globals
 # =================
-from sickrage.providers import NewznabProvider
+from sickrage.indexers.indexer_api import indexerApi
+from sickrage.metadata import get_metadata_generator_dict
+from sickrage.providers import NewznabProvider, GenericProvider, NZBProvider, TorrentProvider, TorrentRssProvider
+
+threading.currentThread().setName('TESTS')
+
+socket.setdefaulttimeout(30)
 
 TESTALL = False
 TESTSKIPPED = ['test_issue_submitter', 'test_ssl_sni']
@@ -76,6 +86,10 @@ encodingInit()
 # =================
 sickrage.SYS_ENCODING = 'UTF-8'
 
+sickrage.INDEXER_API = indexerApi
+
+sickrage.NAMECACHE = nameCache()
+
 sickrage.showList = []
 sickrage.QUALITY_DEFAULT = 4  # hdtv
 sickrage.FLATTEN_FOLDERS_DEFAULT = 0
@@ -87,13 +101,16 @@ sickrage.NAMING_MULTI_EP = 1
 
 sickrage.PROVIDER_ORDER = ["sick_beard_index"]
 sickrage.newznabProviderList = NewznabProvider.getProviderList(NewznabProvider.getDefaultProviders())
-
-sickrage.PROG_DIR = os.path.abspath(os.path.join(TESTDIR, '..'))
-sickrage.DATA_DIR = TESTDIR
+sickrage.torrentRssProviderList = TorrentRssProvider.getProviderList(TorrentRssProvider.getDefaultProviders())
+sickrage.metadataProvideDict = get_metadata_generator_dict()
+sickrage.GUI_NAME = "slick"
+sickrage.THEME_NAME = "dark"
+sickrage.ROOT_DIR = sickrage.DATA_DIR = TESTDIR
+sickrage.PROG_DIR = os.path.abspath(os.path.join(TESTDIR, os.pardir, 'sickrage'))
+sickrage.GUI_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'gui', sickrage.GUI_NAME)
 sickrage.CONFIG_FILE = os.path.join(sickrage.DATA_DIR, "config.ini")
 sickrage.CFG = ConfigObj(sickrage.CONFIG_FILE)
 sickrage.TV_DOWNLOAD_DIR = FILEDIR
-sickrage.GUI_NAME = "slick"
 sickrage.HTTPS_CERT = "server.crt"
 sickrage.HTTPS_KEY = "server.key"
 sickrage.WEB_USERNAME = "sickrage"
@@ -102,37 +119,42 @@ sickrage.WEB_COOKIE_SECRET = "sickrage"
 sickrage.WEB_ROOT = ""
 sickrage.WEB_SERVER = None
 sickrage.CPU_PRESET = "NORMAL"
+sickrage.EXTRA_SCRIPTS = []
+
+sickrage.CACHE_DIR = os.path.join(TESTDIR, 'cache')
+createTestCacheFolder()
+
+sickrage.LOG_DIR = os.path.join(TESTDIR, 'Logs')
+createTestLogFolder()
+
+sickrage.LOG_FILE = os.path.join(sickrage.LOG_DIR, 'sickrage.log')
+sickrage.LOG_NR = 5
+sickrage.LOG_SIZE = 1048576
+
+sickrage.LOGGER = srLogger(logFile=sickrage.LOG_FILE, logSize=sickrage.LOG_SIZE, logNr=sickrage.LOG_NR,
+                fileLogging=sickrage.LOG_DIR, debugLogging=True)
 
 sickrage.CUR_COMMIT_HASH = srConfig.check_setting_str(sickrage.CFG, 'General', 'cur_commit_hash', '')
 sickrage.GIT_USERNAME = srConfig.check_setting_str(sickrage.CFG, 'General', 'git_username', '')
 sickrage.GIT_PASSWORD = srConfig.check_setting_str(sickrage.CFG, 'General', 'git_password', '',
                                                    censor_log=True)
 
-sickrage.CACHE_DIR = os.path.join(TESTDIR, 'cache')
-createTestCacheFolder()
+sickrage.providersDict = {
+    GenericProvider.NZB: {p.id: p for p in NZBProvider.getProviderList()},
+    GenericProvider.TORRENT: {p.id: p for p in TorrentProvider.getProviderList()},
+}
 
-sickrage.LOG_DIR = os.path.join(TESTDIR, 'Logs')
-sickrage.LOG_FILE = os.path.join(sickrage.LOG_DIR, 'sickrage.log')
-sickrage.LOG_NR = 5
-sickrage.LOG_SIZE = 1048576
-
-createTestLogFolder()
-
-sickrage.LOGGER.debugLogging=True
-sickrage.LOGGER.logFile = sickrage.LOG_FILE
-sickrage.LOGGER.logSize = sickrage.LOG_SIZE
-sickrage.LOGGER.logNr = sickrage.LOG_NR
-sickrage.LOGGER.initialize()
-
+sickrage.Scheduler = Scheduler()
 
 # =================
 # dummy functions
 # =================
-def _dummy_saveConfig():
+def _dummy_saveConfig(cfgfile=sickrage.CONFIG_FILE):
     return True
 
 
 # this overrides the sickrage save_config which gets called during a db upgrade
+sickrage.core.saveall = _dummy_saveConfig
 srConfig.save_config = _dummy_saveConfig
 
 
@@ -170,15 +192,9 @@ class SiCKRAGETestDBCase(SiCKRAGETestCase):
         if web:
             tearDown_test_web_server()
 
-
-class TestDBConnection(main_db.MainDB(), object):
-    def __init__(self, filename=TESTDBNAME):
-        super(TestDBConnection, self).__init__(os.path.join(TESTDIR, filename))
-
-
-class TestCacheDBConnection(TestDBConnection, object):
+class TestCacheDBConnection(Connection, object):
     def __init__(self, providerName):
-        super(TestCacheDBConnection, self).__init__(os.path.join(TESTDIR, TESTCACHEDBNAME))
+        super(TestCacheDBConnection, self).__init__(providerName)
 
         # Create the table if it's not already there
         try:
@@ -216,10 +232,8 @@ class TestCacheDBConnection(TestDBConnection, object):
                 raise
 
 
-# this will override the normal db connection
-main_db.MainDB = TestDBConnection
+# this will override the normal cache db connection
 tv_cache.CacheDBConnection = TestCacheDBConnection
-
 
 # =================
 # test functions
@@ -230,15 +244,14 @@ def setUp_test_db():
     # upgrading the db
     main_db.MainDB().InitialSchema().upgrade()
 
-    # fix up any db problems
-    main_db.MainDB().SanityCheck()
-
     # and for cachedb too
     cache_db.CacheDB().InitialSchema().upgrade()
 
     # and for faileddb too
     failed_db.FailedDB().InitialSchema().upgrade()
 
+    # fix up any db problems
+    main_db.MainDB().SanityCheck()
 
 def tearDown_test_db():
     for current_db in [TESTDBNAME, TESTCACHEDBNAME, TESTFAILEDDBNAME]:
@@ -281,8 +294,8 @@ def tearDown_test_show_dir():
 
 def setUp_test_web_server():
     sickrage.WEB_SERVER = SRWebServer(**{
-        'port': int(sickrage.WEB_PORT),
-        'host': sickrage.WEB_HOST,
+        'port': 8081,
+        'host': get_lan_ip(),
         'data_root': sickrage.DATA_DIR,
         'gui_root': sickrage.GUI_DIR,
         'web_root': sickrage.WEB_ROOT,
@@ -297,20 +310,13 @@ def setUp_test_web_server():
         'pidfile': sickrage.PIDFILE,
         'stop_timeout': 3,
         'nolaunch': sickrage.WEB_NOLAUNCH
-    }
-                                      ).start()
+    })
 
+    threading.Thread(None, sickrage.WEB_SERVER.start).start()
 
 def tearDown_test_web_server():
     if sickrage.WEB_SERVER:
-        sickrage.WEB_SERVER.shutDown()
-
-        try:
-            sickrage.WEB_SERVER.join(10)
-        except:
-            pass
-
-        sickrage.WEB_SERVER = None
+        sickrage.WEB_SERVER.server_shutdown()
 
 def load_tests(loader, tests, pattern):
     global TESTALL

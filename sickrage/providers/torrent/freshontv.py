@@ -124,18 +124,18 @@ class FreshOnTVProvider(TorrentProvider):
 
                 searchURL = self.urls['search'] % (freeleech, search_string)
                 sickrage.LOGGER.debug("Search URL: %s" % searchURL)
-                init_html = self.getURL(searchURL)
+                data = self.getURL(searchURL)
                 max_page_number = 0
 
-                if not init_html:
+                if not data:
                     sickrage.LOGGER.debug("No data returned from provider")
                     continue
 
                 try:
-                    with BS4Parser(init_html, features=["html5lib", "permissive"]) as init_soup:
+                    with BS4Parser(data, markup_type="HTML", features=["html5lib", "permissive"]) as html:
 
                         # Check to see if there is more than 1 page of results
-                        pager = init_soup.find('div', {'class': 'pager'})
+                        pager = html.find('div', {'class': 'pager'})
                         if pager:
                             page_links = pager.find_all('a', href=True)
                         else:
@@ -159,7 +159,7 @@ class FreshOnTVProvider(TorrentProvider):
                     sickrage.LOGGER.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
                     continue
 
-                data_response_list = [init_html]
+                data_response_list = [data]
 
                 # Freshon starts counting pages from zero, even though it displays numbers from 1
                 if max_page_number > 1:
@@ -177,9 +177,9 @@ class FreshOnTVProvider(TorrentProvider):
 
                 try:
 
-                    for data_response in data_response_list:
+                    for data in data_response_list:
 
-                        with BS4Parser(data_response, features=["html5lib", "permissive"]) as html:
+                        with BS4Parser(data, markup_type="HTML", features=["html5lib", "permissive"]) as html:
 
                             torrent_rows = html.findAll("tr", {"class": re.compile('torrent_[0-9]*')})
 

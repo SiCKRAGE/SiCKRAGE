@@ -24,6 +24,8 @@ from xml.etree.ElementTree import ElementTree
 
 import requests
 
+from sickrage.core.helpers import download_file
+
 
 def get_file_hash(filePath):
     """ Returns the ed2k hash of a given file."""
@@ -63,7 +65,7 @@ def _remove_file_failed(file):
     except:
         pass
 
-def download_file(url, filename):
+def _download_file(url, filename):
     try:
         r = requests.get(url, stream=True, verify=False)
         with open(filename, 'wb') as fp:

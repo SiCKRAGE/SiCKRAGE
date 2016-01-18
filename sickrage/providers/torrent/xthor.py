@@ -90,7 +90,7 @@ class XthorProvider(TorrentProvider):
                 if not data:
                     continue
 
-                with BS4Parser(data, features=["html5lib", "permissive"]) as html:
+                with BS4Parser(data, markup_type="HTML", features=["html5lib", "permissive"]) as html:
                     resultsTable = html.find("table", {"class": "table2 table-bordered2"})
                     if resultsTable:
                         rows = resultsTable.findAll("tr")
