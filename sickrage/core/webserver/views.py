@@ -75,6 +75,7 @@ from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
 from sickrage.core.searchers import subtitle_searcher
 from sickrage.core.srconfig import srConfig
 from sickrage.core.trakt import TraktAPI, traktException
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import TVShow
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History as HistoryTool
@@ -1902,7 +1903,7 @@ class Home(WebRoot):
 
         # retrieve the episode object and fail if we can't get one
         ep_obj = self._getEpisode(show, season, episode)
-        if isinstance(ep_obj, episode.Episode):
+        if isinstance(ep_obj, TVEpisode):
             # make a queue item for it and put it on the queue
             ep_queue_item = ManualSearchQueueItem(ep_obj.show, ep_obj, bool(int(downCurQuality)))
 
@@ -2005,7 +2006,7 @@ class Home(WebRoot):
     def searchEpisodeSubtitles(self, show=None, season=None, episode=None):
         # retrieve the episode object and fail if we can't get one
         ep_obj = self._getEpisode(show, season, episode)
-        if isinstance(ep_obj, episode.Episode):
+        if isinstance(ep_obj, TVEpisode):
             # try do download subtitles for that episode
             previous_subtitles = ep_obj.subtitles
             try:
@@ -2110,7 +2111,7 @@ class Home(WebRoot):
     def retryEpisode(self, show, season, episode, downCurQuality):
         # retrieve the episode object and fail if we can't get one
         ep_obj = self._getEpisode(show, season, episode)
-        if isinstance(ep_obj, episode.Episode):
+        if isinstance(ep_obj, TVEpisode):
             # make a queue item for it and put it on the queue
             ep_queue_item = FailedQueueItem(ep_obj.show, [ep_obj], bool(int(downCurQuality)))
             sickrage.SEARCHQUEUE.add_item(ep_queue_item)
