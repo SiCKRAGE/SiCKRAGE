@@ -95,7 +95,7 @@ class LibertaliaProvider(TorrentProvider):
                 if not data:
                     continue
 
-                with BS4Parser(data, markup_type="HTML", features=["html5lib", "permissive"]) as html:
+                with BS4Parser(data) as html:
                     resultsTable = html.find("table", {"class": "torrent_table"})
                     if resultsTable:
                         rows = resultsTable.findAll("tr", {"class": re.compile("torrent_row(.*)?")})

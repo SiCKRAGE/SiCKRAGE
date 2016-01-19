@@ -108,7 +108,7 @@ class GFTrackerProvider(TorrentProvider):
                     continue
 
                 try:
-                    with BS4Parser(data, markup_type="HTML", features=["html5lib", "permissive"]) as html:
+                    with BS4Parser(data) as html:
                         torrent_table = html.find("div", id="torrentBrowse")
                         torrent_rows = torrent_table.findChildren("tr") if torrent_table else []
 
