@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+from glob import glob
 
 from setuptools import setup, find_packages, Command
 
@@ -11,11 +12,6 @@ if sys.argv[-1] == 'publish':
 # Get the version number
 with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'version.txt')) as f:
     version = f.read()
-
-# Get requirements
-requirements = []
-with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements', 'global.txt')) as f:
-    requirements += f.readlines()
 
 class CleanCommand(Command):
     """Custom clean command to tidy up the project root."""
@@ -40,9 +36,12 @@ setup(
         author_email='sickrage.tv@gmail.com',
         url='https://github.com/SiCKRAGETV/SickRage',
         keywords=['sickrage', 'sickragetv', 'tv', 'torrent', 'nzb', 'video'],
-        install_requires=requirements,
         packages=find_packages(),
-        py_modules=["SiCKRAGE", "SickBeard"],
+       	data_files=[("sickrage",
+                     glob("tests/*.py"),
+                     glob("requirements/*"),
+                     glob("runscripts/*"),
+                     glob("sickrage/core/webserver/gui/*"))],
         zip_safe=False,
         include_package_data=True,
         test_suite='tests',
