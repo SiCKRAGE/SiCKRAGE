@@ -20,11 +20,11 @@
 
 from __future__ import unicode_literals
 
-import sys
-import os
-import time
 import ConfigParser
 import logging
+import os
+import sys
+import time
 
 sickragePath = os.path.split(os.path.split(sys.argv[0])[0])[0]
 sys.path.append(sickragePath)

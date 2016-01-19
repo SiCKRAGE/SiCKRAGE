@@ -29,7 +29,7 @@ import threading
 import traceback
 import uuid
 
-from requirements import install_reqs
+from .requirements import install_reqs
 
 USER_AGENT = 'SiCKRAGE/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
 
