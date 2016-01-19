@@ -22,9 +22,8 @@ import traceback
 import urllib
 
 import sickrage
-from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
-from sickrage.core.helpers import show_names
+from sickrage.core.helpers import show_names, bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -74,7 +73,7 @@ class TokyoToshokanProvider(TorrentProvider):
 
         results = []
         try:
-            with BS4Parser(data) as html:
+            with bs4_parser(data) as html:
                 torrent_table = html.find('table', attrs={'class': 'listing'})
                 torrent_rows = torrent_table.find_all('tr') if torrent_table else []
                 if torrent_rows:

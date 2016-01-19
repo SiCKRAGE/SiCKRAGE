@@ -25,9 +25,9 @@ import urllib
 from tornado import gen
 
 import sickrage
-from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
 from sickrage.core.common import cpu_presets
+from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -109,7 +109,7 @@ class SCCProvider(TorrentProvider):
                 if not data:
                     continue
 
-                with BS4Parser(data) as html:
+                with bs4_parser(data) as html:
                     torrent_table = html.find('table', attrs={'id': 'torrents-table'})
                     torrent_rows = torrent_table.find_all('tr') if torrent_table else []
 
@@ -128,7 +128,7 @@ class SCCProvider(TorrentProvider):
                             if re.search(r'\.\.\.', title):
                                 data = self.getURL(self.url + "/" + link[b'href'])
                                 if data:
-                                    with BS4Parser(data) as details_html:
+                                    with bs4_parser(data) as details_html:
                                         title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
                             download_url = self.urls['download'] % url[b'href']
                             seeders = int(result.find('td', attrs={'class': 'ttr_seeders'}).string)

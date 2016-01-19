@@ -25,21 +25,20 @@ import urlparse
 
 import requests
 
-from sickrage.core.bs4_parser import BS4Parser
-from sickrage.core.helpers import getURL
+from sickrage.core.helpers import getURL, bs4_parser
 from tests import SiCKRAGETestDBCase
 
 
 class TorrentBasicTests(SiCKRAGETestDBCase):
     def test_search(self):
-        self.url = 'http://kickass.to/'
-        searchURL = 'http://kickass.to/usearch/American%20Dad%21%20S08%20-S08E%20category%3Atv/?field=seeders&sorder=desc'
+        self.url = 'http://kickass.unblocked.li'
+        searchURL = '{}/usearch/American%20Dad%20S08/'.format(self.url)
 
         data = getURL(searchURL, session=requests.Session())
         if not data:
             return
 
-        with BS4Parser(data) as html:
+        with bs4_parser(data) as html:
             torrent_table = html.find('table', attrs={'class': 'data'})
 
         # Continue only if one Release is found
