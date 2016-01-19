@@ -164,7 +164,7 @@ class ApiHandler(RequestHandler):
 
     @run_on_executor
     def async_call(self, function, *args, **kwargs):
-        threading.currentThread().setName("API::{}".format(function.im_class.__name__))
+        threading.currentThread().setName("API")
 
         try:
             return recursive_unicode(function(*args, **{k: ''.join(v) if isinstance(v, list) else v for k, v in

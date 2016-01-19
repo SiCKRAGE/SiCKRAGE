@@ -107,7 +107,7 @@ class BaseHandler(RequestHandler):
 
     @run_on_executor
     def async_call(self, function, **kwargs):
-        threading.currentThread().setName("WEB::{}".format(function.im_class.__name__))
+        threading.currentThread().setName("WEB")
 
         try:
             return recursive_unicode(function(
