@@ -747,7 +747,6 @@ class Tvdb:
             for k, v in banners[btype][btype2][bid].items():
                 if k.endswith("path"):
                     new_key = "_{}".format(k)
-                    sickrage.LOGGER.debug("Transforming {} to {}".format(k, new_key))
                     new_url = self.config[b'api'][self.config[b'apiver']][b'artworkPrefix'].format(v)
                     banners[btype][btype2][bid][new_key] = new_url
 

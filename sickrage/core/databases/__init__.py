@@ -70,7 +70,7 @@ class Connection(object):
 
     @contextmanager
     def _cursor(self):
-        with self.connection() as _connection:
+        with self.lock, self.connection() as _connection:
             _cursor = _connection.cursor()
 
             try:
@@ -79,7 +79,7 @@ class Connection(object):
                 _cursor.close()
 
     def _execute(self, query, *args, **kwargs):
-        with self.lock, self._cursor() as cursor:
+        with self._cursor() as cursor:
             result = []
 
             options = {'fetchall': kwargs.pop('fetchall', False),
@@ -92,9 +92,9 @@ class Connection(object):
                 try:
                     if isinstance(query, list):
                         if len(query) == 1:
-                            [cursor.execute(*x) for x in zip(*[iter(query)] * 2)]
+                            map(lambda x: cursor.execute(*x), zip(*[iter(query)] * 2))
                         else:
-                            [cursor.execute(*x) for x in query]
+                            map(lambda x: cursor.execute(*x), query)
                     else:
                         if len(args):
                             cursor.execute(query, *args)
