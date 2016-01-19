@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import ctypes
 import getopt
 import os
 import platform
@@ -609,7 +610,12 @@ def main():
 
     # defaults
     INSTALL_OPTIONAL = False
-    USER = False
+
+    # auto-detect user rights
+    try:
+        USER = os.getuid() == 0
+    except AttributeError:
+        USER = ctypes.windll.shell32.IsUserAnAdmin() != 0
 
     try:
         opts, _ = getopt.getopt(
