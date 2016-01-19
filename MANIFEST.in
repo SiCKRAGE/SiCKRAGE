@@ -1,4 +1,5 @@
 recursive-include sickrage *
+recursive-include autoProcessTV *
 recursive-include runscripts *
 recursive-include tests *
 recursive-include requirements *

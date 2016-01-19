@@ -48,7 +48,7 @@ def install_pip(user=False):
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, file_name, ('', '--user')[user]])
+    subprocess.call([sys.executable, file_name] + ([], ['--user'])[user])
 
     print("Cleaning up downloaded pip files")
     os.remove(file_name)
@@ -56,6 +56,9 @@ def install_pip(user=False):
 
 def install_pkgs(requirements, user=False):
     import pip
+    from pip.commands.install import InstallCommand
+
+    pip_install_cmd = InstallCommand()
 
     # list installed packages
     try:
@@ -64,37 +67,51 @@ def install_pkgs(requirements, user=False):
         installed = []
 
     try:
-        with open(requirements) as f:
-            packages = [x.strip() for x in f.readlines()]
+        # install configobj seperately
+        options = pip_install_cmd.parse_args(['-q', '--no-cache-dir', '--upgrade'])[0]
+        options.use_user_site = user
 
-        for i, pkg in enumerate(packages, start=1):
-            pkg_name = pkg.lower()
-            if pkg_name not in installed:
-                print(r"[%3.2f%%]::Installing %s package" % (i * 100 / len(packages), pkg_name))
-                pip.main(['-q', 'install'] + [('', '--user')[user]] + [pkg])
+        pip_install_cmd.run(options, ['configobj'])
+
+        # read requirements file
+        with open(requirements) as f:
+            packages = [x.strip() for x in f.readlines() if x not in installed]
+
+        # install requirements packages
+        options = pip_install_cmd.parse_args(['-q'])[0]
+        options.use_user_site = user
+        for i, pkg_name in enumerate(packages, start=1):
+            print(r"[%3.2f%%]::Installing %s package" % (i * 100 / len(packages), pkg_name))
+            pip_install_cmd.run(options, [pkg_name])
     except KeyboardInterrupt:
         raise
 
 
 def upgrade_pkgs(user=False):
-    import pip
     from pip.commands.list import ListCommand
+    from pip.commands.install import InstallCommand
 
-    pip_list = ListCommand()
-    pip_options = pip_list.parse_args(['--no-cache-dir', '-o'] + [('', '--user')[user]])
+    pip_install_cmd = InstallCommand()
+    pip_list_cmd = ListCommand()
 
     while (True):
         # list packages that need upgrading
         try:
-            packages = [p.project_name for p, y, _ in pip_list.find_packages_latest_versions(pip_options[0])
+            options = pip_list_cmd.parse_args(['--no-cache-dir', '--outdated'])[0]
+            options.use_user_site = user
+
+            packages = [p.project_name for p, y, _ in pip_list_cmd.find_packages_latest_versions(options)
                         if p.version == y.available]
         except:
             packages = []
 
+        options = pip_install_cmd.parse_args(['-q', '--upgrade'])[0]
+        options.use_user_site = user
+
         for i, pkg_name in enumerate(packages, start=1):
             try:
                 print(r"[%3.2f%%]::Upgrading %s package" % (i * 100 / len(packages), pkg_name.lower()))
-                pip.main(['-q', 'install', '-U'] + [('', '--user')[user]] + [pkg_name])
+                pip_install_cmd.run(options, [pkg_name])
             except IndexError:
                 continue
             except KeyboardInterrupt:
@@ -120,13 +137,9 @@ def ssl_contexts(user=False):
 def install_reqs(optional=False, user=False):
     # get and load pip
     install_pip(user)
-    import pip
 
     # install ssl sni contexts
     ssl_contexts(user)
-
-    # install configobj seperately
-    pip.main(['-q', '--no-cache-dir', 'install', '-U'] + [('', '--user')[user]] + ['configobj'])
 
     print("Checking for required SiCKRAGE packages, please stand by ...")
     install_pkgs(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'global.txt'), user)
