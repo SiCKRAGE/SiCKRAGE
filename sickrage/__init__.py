@@ -555,6 +555,12 @@ TORRENTRSS_DATA = None
 SHOWS_RECENT = []
 CENSOREDITEMS = {}
 
+def root_check():
+    try:
+        return not os.getuid() == 0
+    except AttributeError:
+        return not ctypes.windll.shell32.IsUserAnAdmin() != 0
+
 def help_message():
     """
     LOGGER.info help message for commandline options
@@ -612,10 +618,7 @@ def main():
     INSTALL_OPTIONAL = False
 
     # auto-detect user rights
-    try:
-        USER = os.getuid() == 0
-    except AttributeError:
-        USER = ctypes.windll.shell32.IsUserAnAdmin() != 0
+    USER = root_check()
 
     try:
         opts, _ = getopt.getopt(
