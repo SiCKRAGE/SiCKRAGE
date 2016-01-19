@@ -24,9 +24,9 @@ import re
 import urllib
 
 import requests
-from bs4 import BeautifulSoup
 
 import sickrage
+from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
 from sickrage.providers import TorrentProvider
 
@@ -122,10 +122,10 @@ class HDSpaceProvider(TorrentProvider):
                     sickrage.LOGGER.error("Could not find main torrent table")
                     continue
 
-                html = BeautifulSoup(data[index:], 'html5lib')
-                if not html:
-                    sickrage.LOGGER.debug("No html data parsed from provider")
-                    continue
+                with BS4Parser(data[index:]) as html:
+                    if not html:
+                        sickrage.LOGGER.debug("No html data parsed from provider")
+                        continue
 
                 torrents = html.findAll('tr')
                 if not torrents:

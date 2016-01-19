@@ -101,7 +101,7 @@ class FNTProvider(TorrentProvider):
                     continue
 
                 try:
-                    with BS4Parser(data, markup_type="HTML", features=["html5lib", "permissive"]) as html:
+                    with BS4Parser(data) as html:
                         result_table = html.find('table', {'id': 'tablealign3bis'})
 
                         if not result_table:

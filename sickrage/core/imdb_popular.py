@@ -25,9 +25,9 @@ import re
 from datetime import date
 
 import requests
-from bs4 import BeautifulSoup
 
 import sickrage
+from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.helpers import getURL, download_file
 
 
@@ -57,9 +57,10 @@ class imdbPopular(object):
         if not data:
             return None
 
-        soup = BeautifulSoup(data, 'html.parser')
-        results = soup.find("table", {"class": "results"})
-        rows = results.find_all("tr")
+        rows = []
+        with BS4Parser(data) as soup:
+            results = soup.find("table", {"class": "results"})
+            rows = results.find_all("tr")
 
         for row in rows:
             show = {}

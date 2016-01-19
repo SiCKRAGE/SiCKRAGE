@@ -100,7 +100,7 @@ class TorrentLeechProvider(TorrentProvider):
                     continue
 
                 try:
-                    with BS4Parser(data, markup_type="HTML", features=["html5lib", "permissive"]) as html:
+                    with BS4Parser(data) as html:
                         torrent_table = html.find('table', attrs={'id': 'torrenttable'})
                         torrent_rows = torrent_table.find_all('tr') if torrent_table else []
 

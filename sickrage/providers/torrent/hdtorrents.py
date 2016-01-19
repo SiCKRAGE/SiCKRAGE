@@ -121,7 +121,7 @@ class HDTorrentsProvider(TorrentProvider):
 
                 data = urllib.unquote(data[index:].encode('utf-8')).decode('utf-8').replace('\t', '')
 
-                with BS4Parser(data, markup_type="HTML", features=["html5lib", "permissive"]) as html:
+                with BS4Parser(data) as html:
                     if not html:
                         sickrage.LOGGER.debug("No html data parsed from provider")
                         continue
