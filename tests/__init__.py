@@ -37,25 +37,25 @@ from sickrage.core.helpers.encoding import encodingInit
 from sickrage.core.scheduler import Scheduler
 from sickrage.core.srconfig import srConfig
 from sickrage.core.srlogger import srLogger
-from sickrage.core.tv import episode
+from sickrage.core.tv import episode, show
 from sickrage.core.webserver import SRWebServer
-# =================
-# test globals
-# =================
 from sickrage.indexers.indexer_api import indexerApi
 from sickrage.metadata import get_metadata_generator_dict
 from sickrage.providers import NewznabProvider, GenericProvider, NZBProvider, TorrentProvider, TorrentRssProvider
 
 threading.currentThread().setName('TESTS')
-
 socket.setdefaulttimeout(30)
 
+# =================
+# test globals
+# =================
 TESTALL = False
 TESTSKIPPED = ['test_issue_submitter', 'test_ssl_sni']
 TESTDIR = os.path.abspath(os.path.dirname(__file__))
 TESTDBNAME = "sickrage.db"
 TESTCACHEDBNAME = "cache.db"
 TESTFAILEDDBNAME = "failed.db"
+TESTDB_INITALIZED = False
 
 SHOWNAME = "show name"
 SEASON = 4
@@ -64,6 +64,7 @@ FILENAME = "show name - s0" + str(SEASON) + "e0" + str(EPISODE) + ".mkv"
 FILEDIR = os.path.join(TESTDIR, SHOWNAME)
 FILEPATH = os.path.join(FILEDIR, FILENAME)
 SHOWDIR = os.path.join(TESTDIR, SHOWNAME + " final")
+
 
 # =================
 # prepare env functions
@@ -132,7 +133,7 @@ sickrage.LOG_NR = 5
 sickrage.LOG_SIZE = 1048576
 
 sickrage.LOGGER = srLogger(logFile=sickrage.LOG_FILE, logSize=sickrage.LOG_SIZE, logNr=sickrage.LOG_NR,
-                fileLogging=sickrage.LOG_DIR, debugLogging=True)
+                           fileLogging=sickrage.LOG_DIR, debugLogging=True)
 
 sickrage.CUR_COMMIT_HASH = srConfig.check_setting_str(sickrage.CFG, 'General', 'cur_commit_hash', '')
 sickrage.GIT_USERNAME = srConfig.check_setting_str(sickrage.CFG, 'General', 'git_username', '')
@@ -146,9 +147,16 @@ sickrage.providersDict = {
 
 sickrage.Scheduler = Scheduler()
 
+
 # =================
 # dummy functions
 # =================
+def _dummy_loadFromDB(self, skipNFO=False):
+    return True
+
+show.TVShow.loadFromDB = _dummy_loadFromDB
+
+
 def _dummy_saveConfig(cfgfile=sickrage.CONFIG_FILE):
     return True
 
@@ -165,6 +173,7 @@ def _fake_specifyEP(self, season, episode):
 
 episode.TVEpisode.specifyEpisode = _fake_specifyEP
 
+
 # =================
 # test classes
 # =================
@@ -176,8 +185,8 @@ class SiCKRAGETestCase(unittest.TestCase):
 
 class SiCKRAGETestDBCase(SiCKRAGETestCase):
     def setUp(self, web=False):
-        sickrage.showList = []
         setUp_test_db()
+        sickrage.showList = []
         setUp_test_episode_file()
         setUp_test_show_dir()
         if web:
@@ -185,11 +194,11 @@ class SiCKRAGETestDBCase(SiCKRAGETestCase):
 
     def tearDown(self, web=False):
         sickrage.showList = []
-        tearDown_test_db()
         tearDown_test_episode_file()
         tearDown_test_show_dir()
         if web:
             tearDown_test_web_server()
+
 
 class TestCacheDBConnection(Connection, object):
     def __init__(self, providerName):
@@ -202,7 +211,7 @@ class TestCacheDBConnection(Connection, object):
                         "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
             else:
                 sqlResults = self.select(
-                    "SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
+                        "SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
 
                 for cur_dupe in sqlResults:
                     self.action("DELETE FROM [" + providerName + "] WHERE url = ?", [cur_dupe[b"url"]])
@@ -234,23 +243,34 @@ class TestCacheDBConnection(Connection, object):
 # this will override the normal cache db connection
 tv_cache.CacheDBConnection = TestCacheDBConnection
 
+
 # =================
 # test functions
 # =================
 def setUp_test_db():
     """upgrades the db to the latest version
     """
-    # upgrading the db
-    main_db.MainDB().InitialSchema().upgrade()
 
-    # and for cachedb too
-    cache_db.CacheDB().InitialSchema().upgrade()
+    global TESTDB_INITALIZED
 
-    # and for faileddb too
-    failed_db.FailedDB().InitialSchema().upgrade()
+    if not TESTDB_INITALIZED:
+        # remove old db files
+        tearDown_test_db()
 
-    # fix up any db problems
-    main_db.MainDB().SanityCheck()
+        # upgrading the db
+        main_db.MainDB().InitialSchema().upgrade()
+
+        # fix up any db problems
+        main_db.MainDB().SanityCheck()
+
+        # and for cachedb too
+        cache_db.CacheDB().InitialSchema().upgrade()
+
+        # and for faileddb too
+        failed_db.FailedDB().InitialSchema().upgrade()
+
+        TESTDB_INITALIZED = True
+
 
 def tearDown_test_db():
     for current_db in [TESTDBNAME, TESTCACHEDBNAME, TESTFAILEDDBNAME]:
@@ -313,9 +333,11 @@ def setUp_test_web_server():
 
     threading.Thread(None, sickrage.WEB_SERVER.start).start()
 
+
 def tearDown_test_web_server():
     if sickrage.WEB_SERVER:
         sickrage.WEB_SERVER.server_shutdown()
+
 
 def load_tests(loader, tests, pattern):
     global TESTALL
