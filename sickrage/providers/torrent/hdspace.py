@@ -26,8 +26,8 @@ import urllib
 import requests
 
 import sickrage
-from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -116,13 +116,12 @@ class HDSpaceProvider(TorrentProvider):
                 # the invalid html portions
                 try:
                     data = data.split('<div id="information"></div>')[1]
-                    index = data.ind
-                    '<table'
+                    index = data.index('<table')
                 except ValueError:
                     sickrage.LOGGER.error("Could not find main torrent table")
                     continue
 
-                with BS4Parser(data[index:]) as html:
+                with bs4_parser(data[index:]) as html:
                     if not html:
                         sickrage.LOGGER.debug("No html data parsed from provider")
                         continue

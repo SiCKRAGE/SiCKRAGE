@@ -28,8 +28,8 @@ import urllib
 import requests
 
 import sickrage
-from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -95,7 +95,7 @@ class LibertaliaProvider(TorrentProvider):
                 if not data:
                     continue
 
-                with BS4Parser(data) as html:
+                with bs4_parser(data) as html:
                     resultsTable = html.find("table", {"class": "torrent_table"})
                     if resultsTable:
                         rows = resultsTable.findAll("tr", {"class": re.compile("torrent_row(.*)?")})

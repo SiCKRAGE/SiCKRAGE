@@ -25,9 +25,8 @@ import requests
 from tornado import gen
 
 import sickrage
-from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
-from sickrage.core.helpers import tryInt
+from sickrage.core.helpers import tryInt, bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -132,7 +131,7 @@ class FreshOnTVProvider(TorrentProvider):
                     continue
 
                 try:
-                    with BS4Parser(data) as html:
+                    with bs4_parser(data) as html:
 
                         # Check to see if there is more than 1 page of results
                         pager = html.find('div', {'class': 'pager'})
@@ -179,7 +178,7 @@ class FreshOnTVProvider(TorrentProvider):
 
                     for data in data_response_list:
 
-                        with BS4Parser(data) as html:
+                        with bs4_parser(data) as html:
 
                             torrent_rows = html.findAll("tr", {"class": re.compile('torrent_[0-9]*')})
 

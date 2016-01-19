@@ -26,7 +26,7 @@ import urllib
 import requests
 
 import sickrage
-from sickrage.core.bs4_parser import BS4Parser
+from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -90,7 +90,7 @@ class XthorProvider(TorrentProvider):
                 if not data:
                     continue
 
-                with BS4Parser(data) as html:
+                with bs4_parser(data) as html:
                     resultsTable = html.find("table", {"class": "table2 table-bordered2"})
                     if resultsTable:
                         rows = resultsTable.findAll("tr")

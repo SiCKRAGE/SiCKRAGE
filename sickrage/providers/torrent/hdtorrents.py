@@ -26,8 +26,8 @@ import urllib
 import requests
 
 import sickrage
-from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -121,7 +121,7 @@ class HDTorrentsProvider(TorrentProvider):
 
                 data = urllib.unquote(data[index:].encode('utf-8')).decode('utf-8').replace('\t', '')
 
-                with BS4Parser(data) as html:
+                with bs4_parser(data) as html:
                     if not html:
                         sickrage.LOGGER.debug("No html data parsed from provider")
                         continue

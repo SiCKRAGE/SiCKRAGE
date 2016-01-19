@@ -23,8 +23,8 @@ import traceback
 import urllib
 
 import sickrage
-from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -102,7 +102,7 @@ class PretomeProvider(TorrentProvider):
                     continue
 
                 try:
-                    with BS4Parser(data) as html:
+                    with bs4_parser(data) as html:
                         # Continue only if one Release is found
                         empty = html.find('h2', text="No .torrents fit this filter criteria")
                         if empty:

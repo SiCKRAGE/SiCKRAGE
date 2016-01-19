@@ -18,10 +18,9 @@ from __future__ import unicode_literals
 import re
 
 import sickrage
-from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import sanitizeSceneName, show_names
+from sickrage.core.helpers import sanitizeSceneName, show_names, bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -142,7 +141,7 @@ class TVChaosUKProvider(TorrentProvider):
                     sickrage.LOGGER.debug("No data returned from provider")
                     continue
 
-                with BS4Parser(data) as html:
+                with bs4_parser(data) as html:
                     torrent_table = html.find(id='listtorrents').find_all('tr')
                     for torrent in torrent_table:
                         try:

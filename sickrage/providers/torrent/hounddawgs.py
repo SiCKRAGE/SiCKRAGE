@@ -22,8 +22,8 @@ import re
 import traceback
 
 import sickrage
-from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -108,7 +108,7 @@ class HoundDawgsProvider(TorrentProvider):
                     continue
 
                 try:
-                    with BS4Parser(data, features=["html5lib", "permissive"]) as html:
+                    with bs4_parser(data) as html:
                         result_table = html.find('table', {'id': 'torrent_table'})
 
                         if not result_table:

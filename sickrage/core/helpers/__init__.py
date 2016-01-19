@@ -24,13 +24,14 @@ import urlparse
 import uuid
 import zipfile
 from _socket import timeout as SocketTimeout
-from contextlib import closing
+from contextlib import closing, contextmanager
 from itertools import cycle, izip
 
 import cachecontrol
 import certifi
 import requests
 import six
+from bs4 import BeautifulSoup
 from cachecontrol.caches import FileCache
 from tornado import gen
 
@@ -1913,3 +1914,13 @@ def flatten_dict(d, delimiter='.'):
             return [(delimiter.join([key, k]), v) for k, v in flatten_dict(value, delimiter).items()]
         else:return [(key, value)]
     return dict([item for k, v in d.items() for item in expand(k, v)])
+
+@contextmanager
+def bs4_parser(markup, features="html5lib", *args, **kwargs):
+
+    _soup = BeautifulSoup(markup, features=features, *args, **kwargs)
+
+    try:
+        yield _soup
+    finally:
+        _soup.clear(True)

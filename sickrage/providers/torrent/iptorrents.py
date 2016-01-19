@@ -21,9 +21,9 @@ from __future__ import unicode_literals
 import re
 
 import sickrage
-from sickrage.core.bs4_parser import BS4Parser
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
+from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
 
@@ -107,7 +107,7 @@ class IPTorrentsProvider(TorrentProvider):
 
                 try:
                     data = re.sub(r'(?im)<button.+?<[/]button>', '', data, 0)
-                    with BS4Parser(data) as html:
+                    with bs4_parser(data) as html:
                         if not html:
                             sickrage.LOGGER.debug("No data returned from provider")
                             continue
