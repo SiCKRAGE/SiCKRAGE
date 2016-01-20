@@ -20,6 +20,8 @@
 
 from __future__ import unicode_literals
 
+from sickrage.requirements import install_pip, install_reqs
+
 __all__ = ["main"]
 
 import ctypes
@@ -30,8 +32,6 @@ import sys
 import threading
 import traceback
 import uuid
-
-from requirements import install_reqs, install_ssl, install_pip
 
 USER_AGENT = 'SiCKRAGE/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
 
