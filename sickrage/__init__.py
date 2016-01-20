@@ -20,6 +20,8 @@
 
 from __future__ import unicode_literals
 
+__all__ = ["main"]
+
 import ctypes
 import getopt
 import os
@@ -29,7 +31,7 @@ import threading
 import traceback
 import uuid
 
-from .requirements import install_reqs
+from requirements import install_reqs, install_ssl, install_pip
 
 USER_AGENT = 'SiCKRAGE/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
 
@@ -591,6 +593,7 @@ def help_message():
     help_msg += "                                    Default: config.ini in " + PROG_DIR + " or --datadir location\n"
     help_msg += "                --noresize          Prevent resizing of the banner/posters even if PIL is installed\n"
     help_msg += "                --install-optional  Install optional pacakges from requirements folder\n"
+    help_msg += "                --ssl               Enables ssl/https\n"
     help_msg += "                --user              Install pacakges from requirements folder as non-root user\n"
 
     return help_msg
@@ -598,7 +601,7 @@ def help_message():
 
 def main():
     global APP_NAME, MY_FULLNAME, NO_RESIZE, MY_ARGS, WEB_PORT, WEB_NOLAUNCH, CREATEPID, DAEMONIZE, PIDFILE, \
-        ROOT_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, WEB_SERVER, VERSIONUPDATER, DEVELOPER, LOGGER
+        ROOT_DIR, PROG_DIR, DATA_DIR, CONFIG_FILE, WEB_SERVER, VERSIONUPDATER, DEVELOPER, LOGGER, ENABLE_HTTPS
 
     if sys.version_info < (2, 7):
         print("Sorry, SiCKRAGE requires Python 2.7+")
@@ -634,6 +637,7 @@ def main():
                  'config=',
                  'noresize',
                  'install-optional',
+                 'ssl'
                  'user']
         )
     except getopt.GetoptError:
@@ -700,14 +704,22 @@ def main():
         if o in ('--install-optional',):
             INSTALL_OPTIONAL = True
 
-        # Install optional packages from requirements folder
+        # Install ssl packages from requirements folder
+        if o in ('--ssl',):
+            ENABLE_HTTPS = True
+
+        # Installs packages for non-root users
         if o in ('--user',):
             USER = True
 
 
     # install/upgrade pip and ssl contexts for required/optional imports
     if not DEVELOPER:
-        install_reqs(optional=INSTALL_OPTIONAL, user=USER)
+        # install pip package manager
+        install_pip(user=USER)
+
+        # install required packages
+        install_reqs(optional=INSTALL_OPTIONAL, ssl=ENABLE_HTTPS, user=USER)
 
     # init logging
     from sickrage.core.srlogger import srLogger

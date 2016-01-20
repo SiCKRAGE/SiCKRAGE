@@ -20,7 +20,6 @@
 
 from __future__ import print_function, unicode_literals
 
-from sickrage import main
-
+from __init__ import main
 if __name__ == '__main__':
     main()

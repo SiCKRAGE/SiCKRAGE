@@ -952,7 +952,9 @@ class srConfig(object):
             sickrage.CACHE_DIR = os.path.join(sickrage.DATA_DIR, sickrage.CACHE_DIR)
 
         # web settings
-        sickrage.WEB_PORT = srConfig.check_setting_int(cfgobj, 'General', 'web_port', 8081)
+        if not sickrage.WEB_PORT:
+            sickrage.WEB_PORT = srConfig.check_setting_int(cfgobj, 'General', 'web_port', 8081)
+
         sickrage.WEB_HOST = srConfig.check_setting_str(cfgobj, 'General', 'web_host', '0.0.0.0')
         sickrage.WEB_IPV6 = bool(srConfig.check_setting_int(cfgobj, 'General', 'web_ipv6', 0))
         sickrage.WEB_ROOT = srConfig.check_setting_str(cfgobj, 'General', 'web_root', '').rstrip("/")
@@ -980,10 +982,14 @@ class srConfig(object):
         sickrage.TRASH_ROTATE_LOGS = bool(srConfig.check_setting_int(cfgobj, 'General', 'trash_rotate_logs', 0))
         sickrage.SORT_ARTICLE = bool(srConfig.check_setting_int(cfgobj, 'General', 'sort_article', 0))
         sickrage.API_KEY = srConfig.check_setting_str(cfgobj, 'General', 'api_key', '', censor_log=True)
-        sickrage.ENABLE_HTTPS = bool(srConfig.check_setting_int(cfgobj, 'General', 'enable_https', 0))
+
+        if not sickrage.ENABLE_HTTPS:
+            sickrage.ENABLE_HTTPS = bool(srConfig.check_setting_int(cfgobj, 'General', 'enable_https', 0))
+
         sickrage.HTTPS_CERT = srConfig.check_setting_str(cfgobj, 'General', 'https_cert', 'server.crt')
         sickrage.HTTPS_KEY = srConfig.check_setting_str(cfgobj, 'General', 'https_key', 'server.key')
         sickrage.HANDLE_REVERSE_PROXY = bool(srConfig.check_setting_int(cfgobj, 'General', 'handle_reverse_proxy', 0))
+
         sickrage.NEWS_LAST_READ = srConfig.check_setting_str(cfgobj, 'General', 'news_last_read', '1970-01-01')
 
         # show settings
