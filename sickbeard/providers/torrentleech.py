@@ -40,11 +40,11 @@ from sickbeard.helpers import sanitizeSceneName
 
 
 class TorrentLeechProvider(generic.TorrentProvider):
-    urls = {'base_url': 'http://torrentleech.org/',
-            'login': 'http://torrentleech.org/user/account/login/',
-            'detail': 'http://torrentleech.org/torrent/%s',
-            'search': 'http://torrentleech.org/torrents/browse/index/query/%s/categories/%s',
-            'download': 'http://torrentleech.org%s',
+    urls = {'base_url': 'https://torrentleech.org/',
+            'login': 'https://torrentleech.org/user/account/login/',
+            'detail': 'https://torrentleech.org/torrent/%s',
+            'search': 'https://torrentleech.org/torrents/browse/index/query/%s/categories/%s',
+            'download': 'https://torrentleech.org%s',
     }
 
     def __init__(self):
@@ -78,10 +78,12 @@ class TorrentLeechProvider(generic.TorrentProvider):
                         'login': 'submit',
         }
 
+        headers = {'Content-type': 'application/x-www-form-urlencoded'}
+
         self.session = requests.Session()
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30)
+            response = self.session.post(self.urls['login'], headers=headers, data=login_params, timeout=30)
         except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError), e:
             logger.log(u'Unable to connect to ' + self.name + ' provider: ' + ex(e), logger.ERROR)
             return False
