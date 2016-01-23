@@ -79,8 +79,8 @@ class MainDB(Connection):
                                      ('NOT FOUND', 'EXISTS')[bool(existing)]))
 
                 self.action(
-                        "UPDATE tv_episodes SET status = {0} WHERE episode_id = {}".format(fixedStatus,
-                                                                                           archivedEp[b'episode_id']))
+                        "UPDATE tv_episodes SET status = {0} WHERE episode_id = {1}".format(fixedStatus,
+                                                                                            archivedEp[b'episode_id']))
 
         def convert_tvrage_to_tvdb(self):
             sickrage.LOGGER.debug("Checking for shows with tvrage id's, since tvrage is gone")
