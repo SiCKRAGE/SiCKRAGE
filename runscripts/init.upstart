@@ -32,5 +32,9 @@ script
 
     [ -z $SR_HOME ] && echo "I can't start SickRage if I don't know where it is"
 
+    if [ -n "$VIRTUALENV" ]; then
+        . "$VIRTUALENV/bin/activate"
+    fi
+
     exec ${SR_HOME}/SiCKRAGE.py -q --nolaunch --datadir=${SR_DATA-SR_HOME} ${SR_OPTS-}
 end script
