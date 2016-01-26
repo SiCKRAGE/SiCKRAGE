@@ -4371,7 +4371,8 @@ class ConfigProviders(Config):
                 zip([x.id for x in sickrage.torrentRssProviderList], sickrage.torrentRssProviderList))
 
         # do the enable/disable
-        providers_reordered = []
+        enabled_providers = []
+        disabled_providers = []
         sorted_providers = sortedProviderDict()
         for curProviderStr in provider_str_list:
             curProvider, curEnabled = curProviderStr.split(':')
@@ -4381,9 +4382,9 @@ class ConfigProviders(Config):
                 curProvObj = sorted_providers[curProvider]
                 curProvObj.enabled = curEnabled
                 if curEnabled:
-                    providers_reordered.insert(0, curProvider)
+                    enabled_providers.append(curProvider)
                 else:
-                    providers_reordered.append(curProvider)
+                    disabled_providers.append(curProvider)
             except:
                 continue
 
@@ -4391,8 +4392,8 @@ class ConfigProviders(Config):
                 newznabProviderDict[curProvider].enabled = curEnabled
             elif curProvider in torrentRssProviderDict:
                 torrentRssProviderDict[curProvider].enabled = curEnabled
-        sickrage.PROVIDER_ORDER = providers_reordered
-        del providers_reordered, sorted_providers
+        sickrage.PROVIDER_ORDER = enabled_providers + disabled_providers
+        del enabled_providers, disabled_providers, sorted_providers
 
         # add all the newznab info we got into our list
         finishedNames = []
