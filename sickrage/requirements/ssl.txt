@@ -1,0 +1,7 @@
+urllib3
+ndg-httpsclient
+pyasn
+pyasn1
+pyopenssl
+cffi
+cryptography

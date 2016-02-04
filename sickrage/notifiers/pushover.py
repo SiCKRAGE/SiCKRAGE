@@ -26,14 +26,15 @@ import urllib
 import urllib2
 
 import sickrage
-from sickrage.core.common import NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT, \
+from core.common import NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT, \
     notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD
+from notifiers import srNotifiers
 
 API_URL = "https://api.pushover.net/1/messages.json"
 
 
 # pylint: disable=W0232
-class PushoverNotifier(object):
+class PushoverNotifier(srNotifiers):
     def test_notify(self, userKey=None, apiKey=None):
         return self._notifyPushover("This is a test notification from SiCKRAGE", 'Test', userKey=userKey, apiKey=apiKey,
                                     force=True)
@@ -51,22 +52,22 @@ class PushoverNotifier(object):
         """
 
         if userKey is None:
-            userKey = sickrage.PUSHOVER_USERKEY
+            userKey = sickrage.srCore.CONFIG.PUSHOVER_USERKEY
 
         if apiKey is None:
-            apiKey = sickrage.PUSHOVER_APIKEY
+            apiKey = sickrage.srCore.CONFIG.PUSHOVER_APIKEY
 
         if sound is None:
-            sound = sickrage.PUSHOVER_SOUND
+            sound = sickrage.srCore.CONFIG.PUSHOVER_SOUND
 
-        sickrage.LOGGER.debug("Pushover API KEY in use: " + apiKey)
+        sickrage.srCore.LOGGER.debug("Pushover API KEY in use: " + apiKey)
 
         # build up the URL and parameters
         msg = msg.strip()
 
         # send the request to pushover
         try:
-            if sickrage.PUSHOVER_SOUND != "default":
+            if sickrage.srCore.CONFIG.PUSHOVER_SOUND != "default":
                 args = {"token": apiKey,
                         "user": userKey,
                         "title": title.encode('utf-8'),
@@ -87,8 +88,8 @@ class PushoverNotifier(object):
                         "expire": 3600,
                         }
 
-            if sickrage.PUSHOVER_DEVICE:
-                args[b"device"] = sickrage.PUSHOVER_DEVICE
+            if sickrage.srCore.CONFIG.PUSHOVER_DEVICE:
+                args[b"device"] = sickrage.srCore.CONFIG.PUSHOVER_DEVICE
 
             conn = httplib.HTTPSConnection("api.pushover.net:443")
             conn.request("POST", "/1/messages.json",
@@ -97,14 +98,14 @@ class PushoverNotifier(object):
         except urllib2.HTTPError as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
             if not hasattr(e, 'code'):
-                sickrage.LOGGER.error("Pushover notification failed.{}".format(e))
+                sickrage.srCore.LOGGER.error("Pushover notification failed.{}".format(e))
                 return False
             else:
-                sickrage.LOGGER.error("Pushover notification failed. Error code: " + str(e.code))
+                sickrage.srCore.LOGGER.error("Pushover notification failed. Error code: " + str(e.code))
 
             # HTTP status 404 if the provided email address isn't a Pushover user.
             if e.code == 404:
-                sickrage.LOGGER.warning("Username is wrong/not a pushover email. Pushover will send an email to it")
+                sickrage.srCore.LOGGER.warning("Username is wrong/not a pushover email. Pushover will send an email to it")
                 return False
 
             # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
@@ -113,39 +114,39 @@ class PushoverNotifier(object):
                 # HTTP status 401 if the user doesn't have the service added
                 subscribeNote = self._sendPushover(msg, title, sound=sound, userKey=userKey, apiKey=apiKey)
                 if subscribeNote:
-                    sickrage.LOGGER.debug("Subscription sent")
+                    sickrage.srCore.LOGGER.debug("Subscription sent")
                     return True
                 else:
-                    sickrage.LOGGER.error("Subscription could not be sent")
+                    sickrage.srCore.LOGGER.error("Subscription could not be sent")
                     return False
 
             # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
             elif e.code == 400:
-                sickrage.LOGGER.error("Wrong data sent to pushover")
+                sickrage.srCore.LOGGER.error("Wrong data sent to pushover")
                 return False
 
             # If you receive a HTTP status code of 429, it is because the message limit has been reached (free limit is 7,500)
             elif e.code == 429:
-                sickrage.LOGGER.error("Pushover API message limit reached - try a different API key")
+                sickrage.srCore.LOGGER.error("Pushover API message limit reached - try a different API key")
                 return False
 
-        sickrage.LOGGER.info("Pushover notification successful.")
+        sickrage.srCore.LOGGER.info("Pushover notification successful.")
         return True
 
-    def notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
-        if sickrage.PUSHOVER_NOTIFY_ONSNATCH:
+    def _notify_snatch(self, ep_name, title=notifyStrings[NOTIFY_SNATCH]):
+        if sickrage.srCore.CONFIG.PUSHOVER_NOTIFY_ONSNATCH:
             self._notifyPushover(title, ep_name)
 
-    def notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
-        if sickrage.PUSHOVER_NOTIFY_ONDOWNLOAD:
+    def _notify_download(self, ep_name, title=notifyStrings[NOTIFY_DOWNLOAD]):
+        if sickrage.srCore.CONFIG.PUSHOVER_NOTIFY_ONDOWNLOAD:
             self._notifyPushover(title, ep_name)
 
-    def notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
-        if sickrage.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
+    def _notify_subtitle_download(self, ep_name, lang, title=notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD]):
+        if sickrage.srCore.CONFIG.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyPushover(title, ep_name + ": " + lang)
 
-    def notify_version_update(self, new_version="??"):
-        if sickrage.USE_PUSHOVER:
+    def _notify_version_update(self, new_version="??"):
+        if sickrage.srCore.CONFIG.USE_PUSHOVER:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notifyPushover(title, update_text + new_version)
@@ -162,10 +163,10 @@ class PushoverNotifier(object):
         force: Enforce sending, for instance for testing
         """
 
-        if not sickrage.USE_PUSHOVER and not force:
-            sickrage.LOGGER.debug("Notification for Pushover not enabled, skipping this notification")
+        if not sickrage.srCore.CONFIG.USE_PUSHOVER and not force:
+            sickrage.srCore.LOGGER.debug("Notification for Pushover not enabled, skipping this notification")
             return False
 
-        sickrage.LOGGER.debug("Sending notification for " + message)
+        sickrage.srCore.LOGGER.debug("Sending notification for " + message)
 
         return self._sendPushover(message, title, sound=sound, userKey=userKey, apiKey=apiKey)

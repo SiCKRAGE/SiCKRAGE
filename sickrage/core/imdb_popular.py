@@ -22,12 +22,12 @@ from __future__ import unicode_literals
 
 import os
 import re
-from datetime import date
 
 import requests
+from datetime import date
 
 import sickrage
-from sickrage.core.helpers import getURL, download_file, bs4_parser
+from core.helpers import getURL, download_file, bs4_parser
 
 
 class imdbPopular(object):
@@ -132,7 +132,7 @@ class imdbPopular(object):
         Store cache of image in cache dir
         :param image_url: Source URL
         """
-        path = os.path.abspath(os.path.join(sickrage.CACHE_DIR, 'images', 'imdb_popular'))
+        path = os.path.abspath(os.path.join(sickrage.srCore.CONFIG.CACHE_DIR, 'images', 'imdb_popular'))
 
         if not os.path.exists(path):
             os.makedirs(path)

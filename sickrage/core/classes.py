@@ -19,18 +19,17 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import random
 import re
 import sys
 import urllib
 
+from datetime import datetime, date
 from dateutil import parser
 
 import sickrage
-from sickrage.core.common import Quality, dateFormat, dateTimeFormat
-from sickrage.core.helpers import USER_AGENTS
-
+from core.common import Quality, dateFormat, dateTimeFormat
+from core.helpers.sessions import USER_AGENTS
 
 
 class SiCKRAGEURLopener(urllib.FancyURLopener):
@@ -212,7 +211,7 @@ class AllShowsListUI(object):
                     for name in seriesnames:
                         if searchterm.lower() in name.lower():
                             if 'firstaired' not in curShow:
-                                curShow[b'firstaired'] = datetime.date.fromordinal(1).strftime("%Y-%m-%d")
+                                curShow[b'firstaired'] = date.fromordinal(1).strftime("%Y-%m-%d")
                                 curShow[b'firstaired'] = re.sub("([-]0{2})+", "", curShow[b'firstaired'])
                                 fixDate = parser.parse(curShow[b'firstaired'], fuzzy=True).date()
                                 curShow[b'firstaired'] = fixDate.strftime(dateFormat)
@@ -239,7 +238,7 @@ class ShowListUI(object):
     def selectSeries(self, allSeries):
         try:
             # try to pick a show that's in my show list
-            showIDList = [int(x.indexerid) for x in sickrage.showList]
+            showIDList = [int(x.indexerid) for x in sickrage.srCore.SHOWLIST]
             for curShow in allSeries:
                 if int(curShow[b'id']) in showIDList:
                     return curShow
@@ -270,7 +269,7 @@ class Proper(object):
 
     def __str__(self):
         return str(self.date) + " " + self.name + " " + str(self.season) + "x" + str(self.episode) + " of " + str(
-                self.indexerid) + " from " + str(sickrage.INDEXER_API(self.indexer).name)
+                self.indexerid) + " from " + str(sickrage.srCore.INDEXER_API(self.indexer).name)
 
 
 class UIError(object):
@@ -279,7 +278,7 @@ class UIError(object):
     """
 
     def __init__(self, message):
-        self.time = datetime.datetime.now().strftime(dateTimeFormat)
+        self.time = datetime.now().strftime(dateTimeFormat)
         self.title = sys.exc_info()[-2] or message
         self.message = message
 
@@ -290,7 +289,7 @@ class UIWarning(object):
     """
 
     def __init__(self, message):
-        self.time = datetime.datetime.now().strftime(dateTimeFormat)
+        self.time = datetime.now().strftime(dateTimeFormat)
         self.title = sys.exc_info()[-2] or message
         self.message = message
 

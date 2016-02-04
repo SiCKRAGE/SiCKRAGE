@@ -1,6 +1,6 @@
 ### Questions about SickRage?
 
-To get your questions answered, please ask on the [SickRage Forum](http://sickrage.tv/),  or [#sickrage](http://webchat.freenode.net/?channels=sickrage) IRC channel on irc.freenode.net
+To get your questions answered, please ask on the [SickRage Forum](http://www.sickrage.tv/),  or [#sickrage](http://webchat.freenode.net/?channels=sickrage) IRC channel on irc.freenode.net
 
 # Contributing to SickRage
 
@@ -11,7 +11,7 @@ To get your questions answered, please ask on the [SickRage Forum](http://sickra
 
 ## Getting Involved
 
-There are a number of ways to get involved with the development of SickRage. Even if you've never contributed code to an Open Source project before, we're always looking for help identifying bugs, cleaning up code, writing documentation and testing.
+There are a number of ways to get involved with the development of sickrage.srCore.CONFIG. Even if you've never contributed code to an Open Source project before, we're always looking for help identifying bugs, cleaning up code, writing documentation and testing.
 
 The goal of this guide is to provide the best way to contribute to the official SickRage repository. Please read through the full guide detailing [How to Report Bugs](#how-to-report-bugs).
 
@@ -19,7 +19,7 @@ The goal of this guide is to provide the best way to contribute to the official 
 
 ### Forum and IRC
 
-The SickRage development team frequently tracks posts on the [SickRage Forum](http://sickrage.tv/). If you have longer posts or questions please feel free to post them there. If you think you've found a bug please [file it in the bug tracker](#how-to-report-bugs).
+The SickRage development team frequently tracks posts on the [SickRage Forum](http://www.sickrage.tv/). If you have longer posts or questions please feel free to post them there. If you think you've found a bug please [file it in the bug tracker](#how-to-report-bugs).
 
 Additionally most of the SickRage development team can be found in the [#sickrage](http://webchat.freenode.net/?channels=sickrage) IRC channel on irc.freenode.net.
 
@@ -30,7 +30,7 @@ Additionally most of the SickRage development team can be found in the [#sickrag
 
 Many bugs reported are actually issues with the user mis-understanding of how something works (there are a bit of moving parts to an ideal setup) and most of the time can be fixed by just changing some settings to fit the users needs.
 
-If you are new to SickRage, it is usually a much better idea to ask for help first in the [Using SickRage Forum](http://sickrage.tv) or the [SickRage IRC channel](http://webchat.freenode.net/?channels=sickrage). You will get much quicker support, and you will help avoid tying up the SickRage team with invalid bug reports.
+If you are new to SickRage, it is usually a much better idea to ask for help first in the [Using SickRage Forum](http://www.sickrage.tv) or the [SickRage IRC channel](http://webchat.freenode.net/?channels=sickrage). You will get much quicker support, and you will help avoid tying up the SickRage team with invalid bug reports.
 
 ### Try the latest version of SickRage
 
@@ -85,11 +85,11 @@ Please follow this process; it's the best way to get your work included in the p
 
 ```bash
    # clone your fork of the repo into the current directory in terminal
-   git clone git@github.com:<your username>/SickRage.git
+   git clone git@github.com:<your username>/sickrage.srCore.CONFIG.git
    # navigate to the newly cloned directory
    cd SickRage
    # assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/SiCKRAGETV/SickRage.git
+   git remote add upstream https://github.com/SiCKRAGETV/sickrage.srCore.CONFIG.git
    ```
 
 - If you cloned a while ago, get the latest changes from upstream:

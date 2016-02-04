@@ -31,6 +31,8 @@ import traceback
 from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
 
+import sickrage
+
 
 class srLogger(logging.getLoggerClass()):
     # disable root logger
@@ -47,8 +49,6 @@ class srLogger(logging.getLoggerClass()):
                  *args, **kwargs):
 
         logging.Logger.__init__(self, name, *args, **kwargs)
-
-        self.censoredItems = {}
 
         self.consoleLogging = consoleLogging
         self.fileLogging = fileLogging
@@ -135,7 +135,7 @@ class srLogger(logging.getLoggerClass()):
             try:
                 record.msg = re.sub(r"(.*)\b({})\b(.*)"
                                     .format('|'
-                                            .join([x for x in self.censoredItems.values() if len(x)])), r"\1\3",
+                                            .join([x for x in sickrage.srCore.CONFIG.CENSORED_ITEMS.values() if len(x)])), r"\1\3",
                                     record.msg)
 
                 # needed because Newznab apikey isn't stored as key=value in a section.
@@ -145,8 +145,8 @@ class srLogger(logging.getLoggerClass()):
 
             # sending record to UI
             if record.levelno in [WARNING, ERROR]:
-                from sickrage.core.classes import WarningViewer
-                from sickrage.core.classes import ErrorViewer
+                from core.classes import WarningViewer
+                from core.classes import ErrorViewer
                 (WarningViewer(), ErrorViewer())[record.levelno == ERROR].add(record.msg, True)
 
             return record
@@ -184,23 +184,18 @@ class srLogger(logging.getLoggerClass()):
         submitter_result = None
         issue_id = None
 
-        import sickrage
-        from sickrage.core.classes import ErrorViewer
-        if not (sickrage.GIT_USERNAME and sickrage.GIT_PASSWORD and sickrage.DEBUG and len(ErrorViewer.errors) > 0):
+
+        from core.classes import ErrorViewer
+        if not (sickrage.srCore.CONFIG.GIT_USERNAME and sickrage.srCore.CONFIG.GIT_PASSWORD and sickrage.srCore.CONFIG.DEBUG and len(ErrorViewer.errors) > 0):
             submitter_result = 'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
 
         try:
-            from version_updater import VersionUpdater
+            from version_updater import srVersionUpdater
 
-            sickrage.VERSIONUPDATER.check_for_new_version()
-            commits_behind = sickrage.VERSIONUPDATER.updater.get_num_commits_behind
+            sickrage.srCore.VERSIONUPDATER.check_for_new_version()
         except Exception:
             submitter_result = 'Could not check if your SiCKRAGE is updated, unable to submit issue ticket to GitHub!'
-            return submitter_result, issue_id
-
-        if commits_behind is None or commits_behind > 0:
-            submitter_result = 'Please update SiCKRAGE, unable to submit issue ticket to GitHub with an outdated version!'
             return submitter_result, issue_id
 
         if self.submitter_running:
@@ -209,11 +204,11 @@ class srLogger(logging.getLoggerClass()):
 
         self.submitter_running = True
 
-        gh_org = sickrage.GIT_ORG or 'SiCKRAGETV'
+        gh_org = sickrage.srCore.CONFIG.GIT_ORG or 'SiCKRAGETV'
         gh_repo = 'sickrage-issues'
 
         import github
-        gh = github.Github(login_or_token=sickrage.GIT_USERNAME, password=sickrage.GIT_PASSWORD,
+        gh = github.Github(login_or_token=sickrage.srCore.CONFIG.GIT_USERNAME, password=sickrage.srCore.CONFIG.GIT_PASSWORD,
                            user_agent="SiCKRAGE")
 
         try:
@@ -224,7 +219,7 @@ class srLogger(logging.getLoggerClass()):
                 with io.open(self.logFile, 'r') as f:
                     log_data = f.readlines()
 
-            for i in range(1, int(sickrage.LOG_NR)):
+            for i in range(1, int(sickrage.srCore.CONFIG.LOG_NR)):
                 if os.path.isfile(self.logFile + ".%i" % i) and (len(log_data) <= 500):
                     with io.open(self.logFile + ".%i" % i, 'r') as f:
                         log_data += f.readlines()
@@ -250,7 +245,7 @@ class srLogger(logging.getLoggerClass()):
                     match = re.match(regex, x)
                     if match:
                         level = match.group(2)
-                        # if level == sickrage.LOGGER.ERROR:
+                        # if level == srCore.LOGGER.ERROR:
                         # paste_data = "".join(log_data[i:i + 50])
                         # if paste_data:
                         #    gist = gh.get_user().create_gist(True, {"sickrage.log": InputFileContent(paste_data)})
@@ -265,8 +260,7 @@ class srLogger(logging.getLoggerClass()):
                     message += "Locale: " + locale.getdefaultlocale()[1] + "\n"
                 except Exception:
                     message += "Locale: unknown" + "\n"
-                message += "Branch: **" + sickrage.VERSION + "**\n"
-                message += "Commit: SiCKRAGETV/SiCKRAGE@" + sickrage.CUR_COMMIT_HASH + "\n"
+                message += "Version: **" + sickrage.srCore.VERSION + "**\n"
                 if gist and gist != 'No ERROR found':
                     message += "Link to Log: " + gist.html_url + "\n"
                 else:

@@ -18,18 +18,19 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import os
 import re
 from xml.etree.ElementTree import Element, ElementTree, SubElement
 
+from datetime import datetime, date
+
 import sickrage
-from sickrage.core.common import dateFormat
-from sickrage.core.exceptions import ShowNotFoundException
-from sickrage.core.helpers import replaceExtension, indentXML
-from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
+from core.common import dateFormat
+from core.exceptions import ShowNotFoundException
+from core.helpers import replaceExtension, indentXML
+from indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
-from sickrage.metadata import GenericMetadata
+from metadata import GenericMetadata
 
 
 class MediaBrowserMetadata(GenericMetadata):
@@ -115,7 +116,7 @@ class MediaBrowserMetadata(GenericMetadata):
             metadata_dir_name = os.path.join(os.path.dirname(ep_obj.location), 'metadata')
             xml_file_path = os.path.join(metadata_dir_name, xml_file_name)
         else:
-            sickrage.LOGGER.debug("Episode location doesn't exist: " + str(ep_obj.location))
+            sickrage.srCore.LOGGER.debug("Episode location doesn't exist: " + str(ep_obj.location))
             return ''
 
         return xml_file_path
@@ -172,10 +173,10 @@ class MediaBrowserMetadata(GenericMetadata):
                 break
 
         if not season_dir:
-            sickrage.LOGGER.debug("Unable to find a season dir for season " + str(season))
+            sickrage.srCore.LOGGER.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        sickrage.LOGGER.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
+        sickrage.srCore.LOGGER.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'folder.jpg')
 
@@ -213,10 +214,10 @@ class MediaBrowserMetadata(GenericMetadata):
                 break
 
         if not season_dir:
-            sickrage.LOGGER.debug("Unable to find a season dir for season " + str(season))
+            sickrage.srCore.LOGGER.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        sickrage.LOGGER.debug("Using " + str(season_dir) + "/banner.jpg as season dir for season " + str(season))
+        sickrage.srCore.LOGGER.debug("Using " + str(season_dir) + "/banner.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'banner.jpg')
 
@@ -231,35 +232,35 @@ class MediaBrowserMetadata(GenericMetadata):
         indexer_lang = show_obj.lang
         # There's gotta be a better way of doing this but we don't wanna
         # change the language value elsewhere
-        lINDEXER_API_PARMS = sickrage.INDEXER_API(show_obj.indexer).api_params.copy()
+        lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(show_obj.indexer).api_params.copy()
 
         lINDEXER_API_PARMS[b'actors'] = True
 
-        if indexer_lang and not indexer_lang == sickrage.INDEXER_DEFAULT_LANGUAGE:
+        if indexer_lang and not indexer_lang == sickrage.srCore.CONFIG.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS[b'language'] = indexer_lang
 
         if show_obj.dvdorder != 0:
             lINDEXER_API_PARMS[b'dvdorder'] = True
 
-        t = sickrage.INDEXER_API(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+        t = sickrage.srCore.INDEXER_API(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
         tv_node = Element("Series")
 
         try:
             myShow = t[int(show_obj.indexerid)]
         except indexer_shownotfound:
-            sickrage.LOGGER.error("Unable to find show with id " + str(show_obj.indexerid) + " on " + sickrage.INDEXER_API(
+            sickrage.srCore.LOGGER.error("Unable to find show with id " + str(show_obj.indexerid) + " on " + sickrage.srCore.INDEXER_API(
                     show_obj.indexer).name + ", skipping it")
             raise
 
         except indexer_error:
-            sickrage.LOGGER.error(
-                    "" + sickrage.INDEXER_API(show_obj.indexer).name + " is down, can't use its data to make the NFO")
+            sickrage.srCore.LOGGER.error(
+                    "" + sickrage.srCore.INDEXER_API(show_obj.indexer).name + " is down, can't use its data to make the NFO")
             raise
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
-            sickrage.LOGGER.info("Incomplete info for show with id " + str(show_obj.indexerid) + " on " + sickrage.INDEXER_API(
+            sickrage.srCore.LOGGER.info("Incomplete info for show with id " + str(show_obj.indexerid) + " on " + sickrage.srCore.INDEXER_API(
                     show_obj.indexer).name + ", skipping it")
             return False
 
@@ -318,7 +319,7 @@ class MediaBrowserMetadata(GenericMetadata):
 
         if getattr(myShow, 'firstaired', None):
             try:
-                year_text = str(datetime.datetime.strptime(myShow[b'firstaired'], dateFormat).year)
+                year_text = str(datetime.strptime(myShow[b'firstaired'], dateFormat).year)
                 if year_text:
                     ProductionYear = SubElement(tv_node, "ProductionYear")
                     ProductionYear.text = year_text
@@ -404,23 +405,23 @@ class MediaBrowserMetadata(GenericMetadata):
         indexer_lang = ep_obj.show.lang
 
         try:
-            lINDEXER_API_PARMS = sickrage.INDEXER_API(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).api_params.copy()
 
             lINDEXER_API_PARMS[b'actors'] = True
 
-            if indexer_lang and not indexer_lang == sickrage.INDEXER_DEFAULT_LANGUAGE:
+            if indexer_lang and not indexer_lang == sickrage.srCore.CONFIG.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS[b'language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS[b'dvdorder'] = True
 
-            t = sickrage.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
 
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.LOGGER.error("Unable to connect to " + sickrage.INDEXER_API(
+            sickrage.srCore.LOGGER.error("Unable to connect to " + sickrage.srCore.INDEXER_API(
                     ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e))
             return False
 
@@ -432,8 +433,8 @@ class MediaBrowserMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.LOGGER.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
-                             (curEpToWrite.season, curEpToWrite.episode, sickrage.INDEXER_API(ep_obj.show.indexer).name))
+                sickrage.srCore.LOGGER.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
+                                        (curEpToWrite.season, curEpToWrite.episode(ep_obj.show.indexer).name))
                 return None
 
             if curEpToWrite == ep_obj:
@@ -441,7 +442,7 @@ class MediaBrowserMetadata(GenericMetadata):
 
                 # default to today's date for specials if firstaired is not set
                 if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                    myEp[b'firstaired'] = str(datetime.date.fromordinal(1))
+                    myEp[b'firstaired'] = str(date.fromordinal(1))
 
                 if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                     return None
@@ -466,7 +467,7 @@ class MediaBrowserMetadata(GenericMetadata):
                     absolute_number = SubElement(episode, "absolute_number")
                     absolute_number.text = str(myEp[b'absolute_number'])
 
-                if curEpToWrite.airdate != datetime.date.fromordinal(1):
+                if curEpToWrite.airdate != date.fromordinal(1):
                     FirstAired = SubElement(episode, "FirstAired")
                     FirstAired.text = str(curEpToWrite.airdate)
 
@@ -528,7 +529,7 @@ class MediaBrowserMetadata(GenericMetadata):
                 try:
                     Language.text = myEp[b'language']
                 except Exception:
-                    Language.text = sickrage.INDEXER_DEFAULT_LANGUAGE  # tvrage api doesn't provide language so we must assume a value here
+                    Language.text = sickrage.srCore.CONFIG.INDEXER_DEFAULT_LANGUAGE  # tvrage api doesn't provide language so we must assume a value here
 
                 thumb = SubElement(episode, "filename")
                 # TODO: See what this is needed for.. if its still needed

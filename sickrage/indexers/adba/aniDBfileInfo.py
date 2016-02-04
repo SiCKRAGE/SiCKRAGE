@@ -24,7 +24,7 @@ from xml.etree.ElementTree import ElementTree
 
 import requests
 
-from sickrage.core.helpers import download_file
+from core.helpers import download_file
 
 
 def get_file_hash(filePath):

@@ -1,16 +1,16 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    import datetime
+    from datetime import datetime, date, timedelta
     import urllib
     import ntpath
-    import sickrage
 
-    from sickrage.core.updaters import tz_updater
-    from sickrage.core.searchers import subtitle_searcher
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
-    from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview
-    from sickrage.core.helpers import anon_url, srdatetime, pretty_filesize, get_size
-    from sickrage.core.media.util import showImage
+    import sickrage
+    from core.updaters import tz_updater
+    from core.searchers import subtitle_searcher
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
+    from core.common import Quality, qualityPresets, statusStrings, Overview
+    from core.helpers import anon_url, srdatetime, pretty_filesize, get_size
+    from core.media.util import showImage
 
 
 %>
@@ -61,14 +61,14 @@
         % else:
                     <% season_special = 0 %>
         % endif
-        % if not sickrage.DISPLAY_SHOW_SPECIALS and season_special:
+        % if not sickrage.srCore.CONFIG.DISPLAY_SHOW_SPECIALS and season_special:
             <% lastSeason = seasonResults.pop(-1) %>
         % endif
         <span class="h2footer displayspecials pull-right">
             % if season_special:
                 Display Specials:
                 <a class="inner"
-                   href="${srRoot}/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.DISPLAY_SHOW_SPECIALS)]}</a>
+                   href="${srRoot}/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.srCore.CONFIG.DISPLAY_SHOW_SPECIALS)]}</a>
             % endif
         </span>
 
@@ -142,11 +142,11 @@
                                                                              src="${srRoot}/images/imdb.png"
                                                                              style="margin-top: -1px; vertical-align:middle;"/></a>
                 % endif
-                <a href="${anon_url(sickrage.INDEXER_API(_show.indexer).config[b'show_url'], _show.indexerid)}"
+                <a href="${anon_url(sickrage.srCore.INDEXER_API(_show.indexer).config[b'show_url'], _show.indexerid)}"
                    onclick="window.open(this.href, '_blank'); return false;"
-                   title="${sickrage.INDEXER_API(show.indexer).config[b"show_url"] + str(show.indexerid)}"><img
-                        alt="${sickrage.INDEXER_API(show.indexer).name}" height="16" width="16"
-                        src="${srRoot}/images/${sickrage.INDEXER_API(show.indexer).config[b"icon"]}"
+                   title="${sickrage.srCore.INDEXER_API(show.indexer).config[b"show_url"] + str(show.indexerid)}"><img
+                        alt="${sickrage.srCore.INDEXER_API(show.indexer).name}" height="16" width="16"
+                        src="${srRoot}/images/${sickrage.srCore.INDEXER_API(show.indexer).config[b"icon"]}"
                         style="margin-top: -1px; vertical-align:middle;"/></a>
                 % if xem_numbering or xem_absolute_numbering:
                     <a href="${anon_url('http://thexem.de/search?q=', _show.name)}" rel="noreferrer"
@@ -276,7 +276,7 @@
                                  alt="${show.lang}" title="${show.lang}"
                                  onError="this.onerror=null;this.src='${srRoot}/images/flags/unknown.png';"/></td>
                     </tr>
-                    % if sickrage.USE_SUBTITLES:
+                    % if sickrage.srCore.CONFIG.USE_SUBTITLES:
                         <tr>
                             <td class="showLegend">Subtitles:</td>
                             <td><img src="${srRoot}/images/${("no16.png", "yes16.png")[bool(show.subtitles)]}"
@@ -286,8 +286,8 @@
                     <tr>
                         <td class="showLegend">Season Folders:</td>
                         <td><img
-                                src="${srRoot}/images/${("no16.png", "yes16.png")[bool(not show.flatten_folders or sickrage.NAMING_FORCE_FOLDERS)]}"
-                                alt=="${("N", "Y")[bool(not show.flatten_folders or sickrage.NAMING_FORCE_FOLDERS)]}"
+                                src="${srRoot}/images/${("no16.png", "yes16.png")[bool(not show.flatten_folders or sickrage.srCore.CONFIG.NAMING_FORCE_FOLDERS)]}"
+                                alt=="${("N", "Y")[bool(not show.flatten_folders or sickrage.srCore.CONFIG.NAMING_FORCE_FOLDERS)]}"
                                 width="16" height="16"/></td>
                     </tr>
                     <tr>
@@ -337,7 +337,7 @@
             Change selected episodes to:</br>
             <select id="statusSelect" class="form-control form-control-inline input-sm">
                 <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
-                % if not sickrage.USE_FAILED_DOWNLOADS:
+                % if not sickrage.srCore.CONFIG.USE_FAILED_DOWNLOADS:
                     <% availableStatus.remove(FAILED) %>
                 % endif
                 % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
@@ -392,7 +392,7 @@
             if not epStr in epCats:
                 continue
 
-            if not sickrage.DISPLAY_SHOW_SPECIALS and int(epResult[b"season"]) == 0:
+            if not sickrage.srCore.CONFIG.DISPLAY_SHOW_SPECIALS and int(epResult[b"season"]) == 0:
                 continue
 
             scene = False
@@ -450,10 +450,10 @@
                     <th data-sorter="false" class="col-name columnSelector-false">File Name</th>
                     <th data-sorter="false" class="col-ep columnSelector-false">Size</th>
                     <th data-sorter="false" class="col-airdate">Airdate</th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.DOWNLOAD_URL)]}>
+                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.srCore.CONFIG.DOWNLOAD_URL)]}>
                         Download
                     </th>
-                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.USE_SUBTITLES)]}>
+                    <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.srCore.CONFIG.USE_SUBTITLES)]}>
                         Subtitles
                     </th>
                     <th data-sorter="false" class="col-status">Status</th>
@@ -467,7 +467,7 @@
                         <h3 style="display: inline;"><a
                                 name="season-${epResult[b"season"]}"></a>${("Specials", "Season " + str(epResult[b"season"]))[int(epResult[b"season"]) > 0]}
                         </h3>
-                        % if sickrage.DISPLAY_ALL_SEASONS == False:
+                        % if sickrage.srCore.CONFIG.DISPLAY_ALL_SEASONS == False:
                             <button id="showseason-${epResult[b'season']}" type="button"
                                     class="btn btn-xs pull-right" data-toggle="collapse"
                                     data-target="#collapseSeason-${epResult[b'season']}">Show Episodes
@@ -515,7 +515,7 @@
                         <h3 style="display: inline;"><a
                                 name="season-${epResult[b"season"]}"></a>${("Specials", "Season " + str(epResult[b"season"]))[bool(int(epResult[b"season"]))]}
                         </h3>
-                        % if sickrage.DISPLAY_ALL_SEASONS == False:
+                        % if sickrage.srCore.CONFIG.DISPLAY_ALL_SEASONS == False:
                             <button id="showseason-${epResult[b'season']}" type="button"
                                     class="btn btn-xs pull-right" data-toggle="collapse"
                                     data-target="#collapseSeason-${epResult[b'season']}">Show Episodes
@@ -556,7 +556,7 @@
             </tr>
                 % endif
             </tbody>
-            % if sickrage.DISPLAY_ALL_SEASONS == False:
+            % if sickrage.srCore.CONFIG.DISPLAY_ALL_SEASONS == False:
                 <tbody class="collapse${("", " in")[curSeason == -1]}" id="collapseSeason-${epResult[b'season']}">
             % else:
 
@@ -633,7 +633,7 @@
                 % if int(epResult[b'airdate']) != 1:
                     ## Lets do this exactly like ComingEpisodes and History
                     ## Avoid issues with dateutil's _isdst on Windows but still provide air dates
-                    <% airDate = datetime.datetime.fromordinal(epResult[b'airdate']) %>
+                    <% airDate = datetime.fromordinal(epResult[b'airdate']) %>
                     % if airDate.year >= 1970 or show.network:
                         <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(epResult[b'airdate'], show.airs, show.network)) %>
                     % endif
@@ -644,13 +644,13 @@
                 % endif
             </td>
             <td>
-                % if sickrage.DOWNLOAD_URL and epResult[b'location']:
+                % if sickrage.srCore.CONFIG.DOWNLOAD_URL and epResult[b'location']:
                     <%
                         filename = epResult[b'location']
-                        for rootDir in sickrage.ROOT_DIRS.split('|'):
+                        for rootDir in sickrage.srCore.CONFIG.ROOT_DIRS.split('|'):
                             if rootDir.startswith('/'):
                                 filename = filename.replace(rootDir, "")
-                        filename = sickrage.DOWNLOAD_URL + urllib.quote(filename.encode('utf8'))
+                        filename = sickrage.srCore.CONFIG.DOWNLOAD_URL + urllib.quote(filename.encode('utf8'))
                     %>
                         <div style="text-align: center;"><a href="${filename}">Download</a></div>
                 % endif
@@ -658,7 +658,7 @@
             <td class="col-subtitles" align="center">
                 % for sub_lang in [subtitle_searcher.fromietf(x) for x in epResult[b"subtitles"].split(',') if epResult[b"subtitles"]]:
                 <% flag = sub_lang.opensubtitles %>
-                % if (not sickrage.SUBTITLES_MULTI and len(subtitle_searcher.wantedLanguages()) is 1) and subtitle_searcher.wantedLanguages()[0] in sub_lang.opensubtitles:
+                % if (not sickrage.srCore.CONFIG.SUBTITLES_MULTI and len(subtitle_searcher.wantedLanguages()) is 1) and subtitle_searcher.wantedLanguages()[0] in sub_lang.opensubtitles:
                     <% flag = 'checkbox' %>
                 % endif
                     <img src="${srRoot}/images/subtitles/flags/${flag}.png" width="16" height="11"
@@ -674,7 +674,7 @@
                 % endif
             <td class="col-search">
                 % if int(epResult[b"season"]) != 0:
-                    % if ( int(epResult[b"status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickrage.USE_FAILED_DOWNLOADS:
+                    % if ( int(epResult[b"status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickrage.srCore.CONFIG.USE_FAILED_DOWNLOADS:
                         <a class="epRetry"
                            id="${str(show.indexerid)}x${str(epResult[b"season"])}x${str(epResult[b"episode"])}"
                            name="${str(show.indexerid)}x${str(epResult[b"season"])}x${str(epResult[b"episode"])}"
@@ -689,7 +689,7 @@
                                 title="Manual Search"/></a>
                     % endif
                     % endif
-                % if sickrage.USE_SUBTITLES and show.subtitles and epResult[b"location"] and frozenset(subtitle_searcher.wantedLanguages()).difference(epResult[b"subtitles"].split(',')):
+                % if sickrage.srCore.CONFIG.USE_SUBTITLES and show.subtitles and epResult[b"location"] and frozenset(subtitle_searcher.wantedLanguages()).difference(epResult[b"subtitles"].split(',')):
                     <a class="epSubtitlesSearch"
                        href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult[b"season"]}&amp;episode=${epResult[b"episode"]}"><img
                             src="${srRoot}/images/closed_captioning.png" height="16" alt="search subtitles"

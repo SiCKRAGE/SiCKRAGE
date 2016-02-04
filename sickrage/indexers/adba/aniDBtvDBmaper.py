@@ -16,7 +16,7 @@
 # along with aDBa.  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import unicode_literals
 
-from sickrage.indexers.adba.aniDBfileInfo import read_tvdb_map_xml
+from indexers.adba.aniDBfileInfo import read_tvdb_map_xml
 
 
 class TvDBMap():

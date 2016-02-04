@@ -18,18 +18,19 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import os
 import re
 from xml.etree.ElementTree import Element, ElementTree, SubElement
 
+from datetime import datetime, date
+
 import sickrage
-from sickrage.core.common import dateFormat
-from sickrage.core.exceptions import ShowNotFoundException
-from sickrage.core.helpers import replaceExtension, indentXML
-from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
+from core.common import dateFormat
+from core.exceptions import ShowNotFoundException
+from core.helpers import replaceExtension, indentXML
+from indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
-from sickrage.metadata import GenericMetadata
+from metadata import GenericMetadata
 
 
 class WDTVMetadata(GenericMetadata):
@@ -162,10 +163,10 @@ class WDTVMetadata(GenericMetadata):
                 break
 
         if not season_dir:
-            sickrage.LOGGER.debug("Unable to find a season dir for season " + str(season))
+            sickrage.srCore.LOGGER.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        sickrage.LOGGER.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
+        sickrage.srCore.LOGGER.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'folder.jpg')
 
@@ -182,22 +183,22 @@ class WDTVMetadata(GenericMetadata):
         indexer_lang = ep_obj.show.lang
 
         try:
-            lINDEXER_API_PARMS = sickrage.INDEXER_API(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).api_params.copy()
 
             lINDEXER_API_PARMS[b'actors'] = True
 
-            if indexer_lang and not indexer_lang == sickrage.INDEXER_DEFAULT_LANGUAGE:
+            if indexer_lang and not indexer_lang == sickrage.srCore.CONFIG.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS[b'language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS[b'dvdorder'] = True
 
-            t = sickrage.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.LOGGER.error("Unable to connect to " + sickrage.INDEXER_API(
+            sickrage.srCore.LOGGER.error("Unable to connect to " + sickrage.srCore.INDEXER_API(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e))
             return False
 
@@ -209,12 +210,12 @@ class WDTVMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.LOGGER.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
-                             (curEpToWrite.season, curEpToWrite.episode, sickrage.INDEXER_API(ep_obj.show.indexer).name))
+                sickrage.srCore.LOGGER.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
+                                        (curEpToWrite.season, curEpToWrite.episode(ep_obj.show.indexer).name))
                 return None
 
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                myEp[b"firstaired"] = str(datetime.date.fromordinal(1))
+                myEp[b"firstaired"] = str(date.fromordinal(1))
 
             if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                 return None
@@ -247,12 +248,12 @@ class WDTVMetadata(GenericMetadata):
 
             firstAired = SubElement(episode, "firstaired")
 
-            if curEpToWrite.airdate != datetime.date.fromordinal(1):
+            if curEpToWrite.airdate != date.fromordinal(1):
                 firstAired.text = str(curEpToWrite.airdate)
 
             if getattr(myShow, 'firstaired', None):
                 try:
-                    year_text = str(datetime.datetime.strptime(myShow[b"firstaired"], dateFormat).year)
+                    year_text = str(datetime.strptime(myShow[b"firstaired"], dateFormat).year)
                     if year_text:
                         year = SubElement(episode, "year")
                         year.text = year_text

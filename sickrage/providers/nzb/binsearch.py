@@ -24,8 +24,8 @@ import re
 import urllib
 
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.providers import NZBProvider
+from core.caches import tv_cache
+from providers import NZBProvider
 
 
 class BinSearchProvider(NZBProvider):
@@ -102,7 +102,7 @@ class BinSearchCache(tv_cache.TVCache):
 
                 url += urllib.urlencode(urlArgs)
 
-                sickrage.LOGGER.debug("Cache update URL: %s " % url)
+                sickrage.srCore.LOGGER.debug("Cache update URL: %s " % url)
 
                 for item in self.getRSSFeed(url)['entries'] or []:
                     ci = self._parseItem(item)

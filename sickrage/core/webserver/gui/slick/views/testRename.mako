@@ -1,13 +1,14 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    import sickrage
-    import calendar
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
-    from sickrage.core.helpers import srdatetime
-    from sickrage.core.updaters import tz_updater
-    import datetime
     import re
+    from datetime import datetime, date, timedelta
+    import calendar
+
+    import sickrage
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import Quality, qualityPresets, qualityPresetStrings
+    from core.helpers import srdatetime
+    from core.updaters import tz_updater
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/testRename.js"></script>
@@ -23,12 +24,12 @@
 
 <h3>Preview of the proposed name changes</h3>
 <blockquote>
-    % if int(show.air_by_date) == 1 and sickrage.NAMING_CUSTOM_ABD:
-    ${sickrage.NAMING_ABD_PATTERN}
-    % elif int(show.sports) == 1 and sickrage.NAMING_CUSTOM_SPORTS:
-    ${sickrage.NAMING_SPORTS_PATTERN}
+    % if int(show.air_by_date) == 1 and sickrage.srCore.CONFIG.NAMING_CUSTOM_ABD:
+    ${sickrage.srCore.CONFIG.NAMING_ABD_PATTERN}
+    % elif int(show.sports) == 1 and sickrage.srCore.CONFIG.NAMING_CUSTOM_SPORTS:
+    ${sickrage.srCore.CONFIG.NAMING_SPORTS_PATTERN}
 % else:
-    ${sickrage.NAMING_PATTERN}
+    ${sickrage.srCore.CONFIG.NAMING_PATTERN}
 % endif
 </blockquote>
 

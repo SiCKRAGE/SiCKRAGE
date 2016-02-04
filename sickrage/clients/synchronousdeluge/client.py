@@ -3,9 +3,9 @@ import platform
 from collections import defaultdict
 from itertools import imap
 
-from sickrage.clients.synchronousdeluge.exceptions import DelugeRPCError
-from sickrage.clients.synchronousdeluge.protocol import DelugeRPCRequest, DelugeRPCResponse
-from sickrage.clients.synchronousdeluge.transfer import DelugeTransfer
+from clients.synchronousdeluge.exceptions import DelugeRPCError
+from clients.synchronousdeluge.protocol import DelugeRPCRequest, DelugeRPCResponse
+from clients.synchronousdeluge.transfer import DelugeTransfer
 
 __all__ = ["DelugeClient"]
 
@@ -28,6 +28,7 @@ class DelugeClient(object):
         if platform.system() in ('Windows', 'Microsoft'):
             appDataPath = os.environ.get("APPDATA")
             if not appDataPath:
+                # noinspection PyUnresolvedReferences
                 import _winreg
                 hkey = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders")
                 appDataReg = _winreg.QueryValueEx(hkey, "AppData")

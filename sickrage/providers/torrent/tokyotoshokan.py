@@ -22,9 +22,9 @@ import traceback
 import urllib
 
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.core.helpers import show_names, bs4_parser
-from sickrage.providers import TorrentProvider
+from core.caches import tv_cache
+from core.helpers import show_names, bs4_parser
+from providers import TorrentProvider
 
 
 class TokyoToshokanProvider(TorrentProvider):
@@ -57,7 +57,7 @@ class TokyoToshokanProvider(TorrentProvider):
         if self.show and not self.show.is_anime:
             return []
 
-        sickrage.LOGGER.debug("Search string: %s " % search_string)
+        sickrage.srCore.LOGGER.debug("Search string: %s " % search_string)
 
         params = {
             "terms": search_string.encode('utf-8'),
@@ -65,7 +65,7 @@ class TokyoToshokanProvider(TorrentProvider):
         }
 
         searchURL = self.url + 'search.php?' + urllib.urlencode(params)
-        sickrage.LOGGER.debug("Search URL: %s" % searchURL)
+        sickrage.srCore.LOGGER.debug("Search URL: %s" % searchURL)
         data = self.getURL(searchURL)
 
         if not data:
@@ -97,7 +97,7 @@ class TokyoToshokanProvider(TorrentProvider):
                         # Filter unseeded torrent
                         # if seeders < self.minseed or leechers < self.minleech:
                         #    if mode is not 'RSS':
-                        #        sickrage.LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
+                        #        LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                         #    continue
 
                         item = title, download_url, size, seeders, leechers
@@ -105,7 +105,7 @@ class TokyoToshokanProvider(TorrentProvider):
                         results.append(item)
 
         except Exception as e:
-            sickrage.LOGGER.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+            sickrage.srCore.LOGGER.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
         # FIXME SORTING
         return results
@@ -125,6 +125,6 @@ class TokyoToshokanCache(tv_cache.TVCache):
 
         url = self.provider.url + 'rss.php?' + urllib.urlencode(params)
 
-        sickrage.LOGGER.debug("Cache update URL: %s" % url)
+        sickrage.srCore.LOGGER.debug("Cache update URL: %s" % url)
 
         return self.getRSSFeed(url)

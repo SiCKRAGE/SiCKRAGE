@@ -1,7 +1,7 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.classes import ErrorViewer, WarningViewer
+    from core.classes import ErrorViewer, WarningViewer
 %>
 <%block name="css">
 <style>
@@ -17,7 +17,7 @@ pre {
 </%block>
 <%block name="content">
 <%
-    if logLevel == sickrage.LOGGER.logLevels[b'WARNING']:
+    if logLevel == sickrage.srCore.LOGGER.logLevels[b'WARNING']:
         errors = WarningViewer.errors
         title = 'WARNING logs'
     else:

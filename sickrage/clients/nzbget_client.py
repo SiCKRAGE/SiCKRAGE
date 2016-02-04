@@ -19,15 +19,16 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import httplib
 import xmlrpclib
 from base64 import standard_b64encode
 
+from datetime import date, timedelta
+
 import sickrage
-from sickrage.core.common import Quality
-from sickrage.core.helpers import tryInt
-from sickrage.providers import GenericProvider
+from core.common import Quality
+from core.helpers import tryInt
+from providers import GenericProvider
 
 
 class NZBGet(object):
@@ -41,39 +42,39 @@ class NZBGet(object):
         """
         addToTop = False
         nzbgetprio = 0
-        category = sickrage.NZBGET_CATEGORY
+        category = sickrage.srCore.CONFIG.NZBGET_CATEGORY
         if nzb.show.is_anime:
-            category = sickrage.NZBGET_CATEGORY_ANIME
+            category = sickrage.srCore.CONFIG.NZBGET_CATEGORY_ANIME
 
-        if sickrage.NZBGET_USE_HTTPS:
+        if sickrage.srCore.CONFIG.NZBGET_USE_HTTPS:
             nzbgetXMLrpc = "https://%(username)s:%(password)s@%(host)s/xmlrpc"
         else:
             nzbgetXMLrpc = "http://%(username)s:%(password)s@%(host)s/xmlrpc"
 
-        if sickrage.NZBGET_HOST is None:
-            sickrage.LOGGER.error("No NZBget host found in configuration. Please configure it.")
+        if sickrage.srCore.CONFIG.NZBGET_HOST is None:
+            sickrage.srCore.LOGGER.error("No NZBget host found in configuration. Please configure it.")
             return False
 
-        url = nzbgetXMLrpc % {"host": sickrage.NZBGET_HOST, "username": sickrage.NZBGET_USERNAME,
-                              "password": sickrage.NZBGET_PASSWORD}
+        url = nzbgetXMLrpc % {"host": sickrage.srCore.CONFIG.NZBGET_HOST, "username": sickrage.srCore.CONFIG.NZBGET_USERNAME,
+                              "password": sickrage.srCore.CONFIG.NZBGET_PASSWORD}
 
         nzbGetRPC = xmlrpclib.ServerProxy(url)
         try:
             if nzbGetRPC.writelog("INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
-                sickrage.LOGGER.debug("Successful connected to NZBget")
+                sickrage.srCore.LOGGER.debug("Successful connected to NZBget")
             else:
-                sickrage.LOGGER.error("Successful connected to NZBget, but unable to send a message")
+                sickrage.srCore.LOGGER.error("Successful connected to NZBget, but unable to send a message")
 
         except httplib.socket.error:
-            sickrage.LOGGER.error(
+            sickrage.srCore.LOGGER.error(
                     "Please check your NZBget host and port (if it is running). NZBget is not responding to this combination")
             return False
 
         except xmlrpclib.ProtocolError as e:
             if e.errmsg == "Unauthorized":
-                sickrage.LOGGER.error("NZBget username or password is incorrect.")
+                sickrage.srCore.LOGGER.error("NZBget username or password is incorrect.")
             else:
-                sickrage.LOGGER.error("Protocol Error: " + e.errmsg)
+                sickrage.srCore.LOGGER.error("Protocol Error: " + e.errmsg)
             return False
 
         dupekey = ""
@@ -86,13 +87,13 @@ class NZBGet(object):
                 elif curEp.show.indexer == 2:
                     dupekey = "SiCKRAGE-tvr" + str(curEp.show.indexerid)
             dupekey += "-" + str(curEp.season) + "." + str(curEp.episode)
-            if datetime.date.today() - curEp.airdate <= datetime.timedelta(days=7):
+            if date.today() - curEp.airdate <= timedelta(days=7):
                 addToTop = True
-                nzbgetprio = sickrage.NZBGET_PRIORITY
+                nzbgetprio = sickrage.srCore.CONFIG.NZBGET_PRIORITY
             else:
-                category = sickrage.NZBGET_CATEGORY_BACKLOG
+                category = sickrage.srCore.CONFIG.NZBGET_CATEGORY_BACKLOG
                 if nzb.show.is_anime:
-                    category = sickrage.NZBGET_CATEGORY_ANIME_BACKLOG
+                    category = sickrage.srCore.CONFIG.NZBGET_CATEGORY_ANIME_BACKLOG
 
         if nzb.quality != Quality.UNKNOWN:
             dupescore = nzb.quality * 100
@@ -104,8 +105,8 @@ class NZBGet(object):
             data = nzb.extraInfo[0]
             nzbcontent64 = standard_b64encode(data)
 
-        sickrage.LOGGER.info("Sending NZB to NZBget")
-        sickrage.LOGGER.debug("URL: " + url)
+        sickrage.srCore.LOGGER.info("Sending NZB to NZBget")
+        sickrage.srCore.LOGGER.debug("URL: " + url)
 
         try:
             # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old command
@@ -146,11 +147,11 @@ class NZBGet(object):
                                                         nzb.url)
 
             if nzbget_result:
-                sickrage.LOGGER.debug("NZB sent to NZBget successfully")
+                sickrage.srCore.LOGGER.debug("NZB sent to NZBget successfully")
                 return True
             else:
-                sickrage.LOGGER.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
+                sickrage.srCore.LOGGER.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
                 return False
         except Exception:
-            sickrage.LOGGER.error("Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
+            sickrage.srCore.LOGGER.error("Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
             return False

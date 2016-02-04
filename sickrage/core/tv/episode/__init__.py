@@ -19,26 +19,30 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import os
+import re
 import threading
 from xml.etree.ElementTree import ElementTree
 
+from datetime import datetime, date
+
 import sickrage
-from sickrage.core import SKIPPED
-from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat
-from sickrage.core.databases import main_db
-from sickrage.core.exceptions import NoNFOException, \
+from core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
+    NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
+from core.databases import main_db
+from core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
-from sickrage.core.helpers import isMediaFile, tryInt, replaceExtension, \
-    rename_ep_file, touchFile
-from sickrage.core.processors import post_processor
-from sickrage.core.scene_numbering import xem_refresh, get_scene_absolute_numbering, get_scene_numbering
-from sickrage.core.searchers import subtitle_searcher
-from sickrage.core.tv import dirty_setter, formatted_filename, formatted_dir, _format_pattern
-from sickrage.core.updaters import tz_updater
-from sickrage.indexers.indexer_exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
-from sickrage.notifiers import notify_subtitle_download
+from core.helpers import isMediaFile, tryInt, replaceExtension, \
+    rename_ep_file, touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName
+from core.nameparser import NameParser, InvalidNameException, InvalidShowException
+from core.processors.post_processor import PostProcessor
+from core.scene_numbering import xem_refresh, get_scene_absolute_numbering, get_scene_numbering
+from core.searchers import subtitle_searcher
+from core.tv import dirty_setter
+from core.updaters import tz_updater
+from indexers.indexer_exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
+from notifiers import srNotifiers
+
 
 class TVEpisode(object):
     def __init__(self, show, season, episode, file=""):
@@ -49,8 +53,8 @@ class TVEpisode(object):
         self._description = ""
         self._subtitles = list()
         self._subtitles_searchcount = 0
-        self._subtitles_lastsearch = str(datetime.datetime.min)
-        self._airdate = datetime.date.fromordinal(1)
+        self._subtitles_lastsearch = str(datetime.min)
+        self._airdate = date.fromordinal(1)
         self._hasnfo = False
         self._hastbn = False
         self._status = UNKNOWN
@@ -107,32 +111,32 @@ class TVEpisode(object):
     release_group = property(lambda self: self._release_group, dirty_setter("_release_group"))
 
     def _set_location(self, new_location):
-        sickrage.LOGGER.debug("Setter sets location to " + new_location)
+        sickrage.srCore.LOGGER.debug("Setter sets location to " + new_location)
 
         # self._location = newLocation
         dirty_setter("_location")(self, new_location)
 
         if new_location and os.path.isfile(new_location):
-            self.file_size = os.path.getsize(new_location)
+            self._file_size = os.path.getsize(new_location)
         else:
-            self.file_size = 0
+            self._file_size = 0
 
     location = property(lambda self: self._location, _set_location)
 
     def refreshSubtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
-        self.subtitles, save_subtitles = subtitle_searcher.subtitlesLanguages(self.location)
+        self._subtitles, save_subtitles = subtitle_searcher.subtitlesLanguages(self.location)
         if save_subtitles:
             self.saveToDB()
 
     def downloadSubtitles(self, force=False):
         if not os.path.isfile(self.location):
-            sickrage.LOGGER.debug("%s: Episode file doesn't exist, can't download subtitles for S%02dE%02d" %
-                          (self.show.indexerid, self.season or 0, self.episode or 0))
+            sickrage.srCore.LOGGER.debug("%s: Episode file doesn't exist, can't download subtitles for S%02dE%02d" %
+                                         (self.show.indexerid, self.season or 0, self.episode or 0))
             return
 
-        sickrage.LOGGER.debug(
-                "%s: Downloading subtitles for S%02dE%02d" % (
+        sickrage.srCore.LOGGER.debug(
+            "%s: Downloading subtitles for S%02dE%02d" % (
                 self.show.indexerid, self.season or 0, self.episode or 0))
 
         subtitles_info = {'location': self.location, 'subtitles': self.subtitles,
@@ -141,21 +145,21 @@ class TVEpisode(object):
                           'episode': self.episode, 'name': self.name, 'show.name': self.show.name,
                           'status': self.status}
 
-        self.subtitles, newSubtitles = subtitle_searcher.downloadSubtitles(subtitles_info)
+        self._subtitles, newSubtitles = subtitle_searcher.downloadSubtitles(subtitles_info)
 
-        self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
-        self.subtitles_lastsearch = datetime.datetime.now().strftime(dateTimeFormat)
+        self._subtitles_searchcount += 1 if self.subtitles_searchcount else 1
+        self._subtitles_lastsearch = datetime.now().strftime(dateTimeFormat)
         self.saveToDB()
 
         if newSubtitles:
             subtitleList = ", ".join([subtitle_searcher.fromietf(newSub).name for newSub in newSubtitles])
-            sickrage.LOGGER.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
-                          (self.show.indexerid, subtitleList, self.season or 0, self.episode or 0))
+            sickrage.srCore.LOGGER.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
+                                         (self.show.indexerid, subtitleList, self.season or 0, self.episode or 0))
 
-            notify_subtitle_download(self.prettyName(), subtitleList)
+            srNotifiers.notify_subtitle_download(self.prettyName(), subtitleList)
         else:
-            sickrage.LOGGER.debug("%s: No subtitles downloaded for S%02dE%02d" %
-                          (self.show.indexerid, self.season or 0, self.episode or 0))
+            sickrage.srCore.LOGGER.debug("%s: No subtitles downloaded for S%02dE%02d" %
+                                         (self.show.indexerid, self.season or 0, self.episode or 0))
 
     def checkForMetaFiles(self):
 
@@ -167,7 +171,7 @@ class TVEpisode(object):
 
         # check for nfo and tbn
         if os.path.isfile(self.location):
-            for cur_provider in sickrage.metadataProvideDict.values():
+            for cur_provider in sickrage.srCore.metadataProviderDict.values():
                 if cur_provider.episode_metadata:
                     new_result = cur_provider._has_episode_metadata(self)
                 else:
@@ -180,8 +184,8 @@ class TVEpisode(object):
                     new_result = False
                 cur_tbn = new_result or cur_tbn
 
-        self.hasnfo = cur_nfo
-        self.hastbn = cur_tbn
+        self._hasnfo = cur_nfo
+        self._hastbn = cur_tbn
 
         # if either setting has changed return true, if not return false
         return oldhasnfo != self.hasnfo or oldhastbn != self.hastbn
@@ -196,7 +200,7 @@ class TVEpisode(object):
                 try:
                     self.loadFromNFO(self.location)
                 except NoNFOException:
-                    sickrage.LOGGER.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
+                    sickrage.srCore.LOGGER.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
                         self.show.indexerid, season or 0, episode or 0))
 
                 # if we tried loading it from NFO and didn't find the NFO, try the Indexers
@@ -212,48 +216,48 @@ class TVEpisode(object):
                             "Couldn't find episode S%02dE%02d" % (season or 0, episode or 0))
 
     def loadFromDB(self, season, episode):
-        sickrage.LOGGER.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (
+        sickrage.srCore.LOGGER.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (
             self.show.indexerid, self.show.name, season or 0, episode or 0))
 
         sqlResults = main_db.MainDB().select(
-                "SELECT * FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
-                [self.show.indexerid, season, episode])
+            "SELECT * FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
+            [self.show.indexerid, season, episode])
 
         if len(sqlResults) > 1:
             raise MultipleEpisodesInDatabaseException("Your DB has two records for the same show somehow.")
         elif len(sqlResults) == 0:
-            sickrage.LOGGER.debug("%s: Episode S%02dE%02d not found in the database" % (
+            sickrage.srCore.LOGGER.debug("%s: Episode S%02dE%02d not found in the database" % (
                 self.show.indexerid, self.season or 0, self.episode or 0))
             return False
         else:
-            # NAMEIT sickrage.LOGGER.info(u"AAAAA from" + str(self.season)+"x"+str(self.episode) + " -" + self.name + " to " + str(sqlResults[0][b"name"]))
+            # NAMEIT LOGGER.info(u"AAAAA from" + str(self.season)+"x"+str(self.episode) + " -" + self.name + " to " + str(sqlResults[0][b"name"]))
             if sqlResults[0][b"name"]:
-                self.name = sqlResults[0][b"name"]
+                self._name = sqlResults[0][b"name"]
 
-            self.season = season
-            self.episode = episode
-            self.absolute_number = sqlResults[0][b"absolute_number"]
-            self.description = sqlResults[0][b"description"]
+            self._season = season
+            self._episode = episode
+            self._absolute_number = sqlResults[0][b"absolute_number"]
+            self._description = sqlResults[0][b"description"]
             if not self.description:
-                self.description = ""
+                self._description = ""
             if sqlResults[0][b"subtitles"] and sqlResults[0][b"subtitles"]:
-                self.subtitles = sqlResults[0][b"subtitles"].split(",")
-            self.subtitles_searchcount = sqlResults[0][b"subtitles_searchcount"]
-            self.subtitles_lastsearch = sqlResults[0][b"subtitles_lastsearch"]
-            self.airdate = datetime.date.fromordinal(int(sqlResults[0][b"airdate"]))
-            # sickrage.LOGGER.debug(u"1 Status changes from " + str(self.status) + " to " + str(sqlResults[0][b"status"]))
-            self.status = int(sqlResults[0][b"status"] or -1)
+                self._subtitles = sqlResults[0][b"subtitles"].split(",")
+            self._subtitles_searchcount = sqlResults[0][b"subtitles_searchcount"]
+            self._subtitles_lastsearch = sqlResults[0][b"subtitles_lastsearch"]
+            self._airdate = date.fromordinal(int(sqlResults[0][b"airdate"]))
+            # LOGGER.debug(u"1 Status changes from " + str(self.status) + " to " + str(sqlResults[0][b"status"]))
+            self._status = int(sqlResults[0][b"status"] or -1)
 
             # don't overwrite my location
             if sqlResults[0][b"location"] and sqlResults[0][b"location"]:
                 self.location = os.path.normpath(sqlResults[0][b"location"])
             if sqlResults[0][b"file_size"]:
-                self.file_size = int(sqlResults[0][b"file_size"])
+                self._file_size = int(sqlResults[0][b"file_size"])
             else:
-                self.file_size = 0
+                self._file_size = 0
 
-            self.indexerid = int(sqlResults[0][b"indexerid"])
-            self.indexer = int(sqlResults[0][b"indexer"])
+            self._indexerid = int(sqlResults[0][b"indexerid"])
+            self._indexer = int(sqlResults[0][b"indexer"])
 
             xem_refresh(self.show.indexerid, self.show.indexer)
 
@@ -263,49 +267,51 @@ class TVEpisode(object):
 
             if self.scene_absolute_number == 0:
                 self.scene_absolute_number = get_scene_absolute_numbering(
-                        self.show.indexerid,
-                        self.show.indexer,
-                        self.absolute_number
+                    self.show.indexerid,
+                    self.show.indexer,
+                    self.absolute_number
                 )
 
             if self.scene_season == 0 or self.scene_episode == 0:
                 self.scene_season, self.scene_episode = get_scene_numbering(
-                        self.show.indexerid,
-                        self.show.indexer,
-                        self.season, self.episode
+                    self.show.indexerid,
+                    self.show.indexer,
+                    self.season, self.episode
                 )
 
             if sqlResults[0][b"release_name"] is not None:
-                self.release_name = sqlResults[0][b"release_name"]
+                self._release_name = sqlResults[0][b"release_name"]
 
             if sqlResults[0][b"is_proper"]:
-                self.is_proper = int(sqlResults[0][b"is_proper"])
+                self._is_proper = int(sqlResults[0][b"is_proper"])
 
             if sqlResults[0][b"version"]:
-                self.version = int(sqlResults[0][b"version"])
+                self._version = int(sqlResults[0][b"version"])
 
             if sqlResults[0][b"release_group"] is not None:
-                self.release_group = sqlResults[0][b"release_group"]
+                self._release_group = sqlResults[0][b"release_group"]
 
             self.dirty = False
             return True
 
     def loadFromIndexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
+        indexer_name = sickrage.srCore.INDEXER_API(self.indexer).name
 
         if season is None:
             season = self.season
         if episode is None:
             episode = self.episode
 
-        sickrage.LOGGER.debug("%s: Loading episode details from %s for episode S%02dE%02d" %
-                      (self.show.indexerid, sickrage.INDEXER_API(self.show.indexer).name, season or 0, episode or 0))
+        sickrage.srCore.LOGGER.debug("{}: Loading episode details from {} for episode S{}E{}".format(
+            self.show.indexerid, indexer_name, season or 0, episode or 0)
+        )
 
         indexer_lang = self.show.lang
 
         try:
             if cachedSeason is None:
                 if tvapi is None:
-                    lINDEXER_API_PARMS = sickrage.INDEXER_API(self.indexer).api_params.copy()
+                    lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(self.indexer).api_params.copy()
 
                     if not cache:
                         lINDEXER_API_PARMS[b'cache'] = False
@@ -316,7 +322,7 @@ class TVEpisode(object):
                     if self.show.dvdorder != 0:
                         lINDEXER_API_PARMS[b'dvdorder'] = True
 
-                    t = sickrage.INDEXER_API(self.indexer).indexer(**lINDEXER_API_PARMS)
+                    t = sickrage.srCore.INDEXER_API(self.indexer).indexer(**lINDEXER_API_PARMS)
                 else:
                     t = tvapi
                 myEp = t[self.show.indexerid][season][episode]
@@ -324,26 +330,28 @@ class TVEpisode(object):
                 myEp = cachedSeason[episode]
 
         except (indexer_error, IOError) as e:
-            sickrage.LOGGER.debug("" + sickrage.INDEXER_API(self.indexer).name + " threw up an error: {}".format(e))
+            sickrage.srCore.LOGGER.debug("{} threw up an error: {}".format(indexer_name, e.message))
+
             # if the episode is already valid just log it, if not throw it up
             if self.name:
-                sickrage.LOGGER.debug("" + sickrage.INDEXER_API(
-                        self.indexer).name + " timed out but we have enough info from other sources, allowing the error")
+                sickrage.srCore.LOGGER.debug(
+                    "{} timed out but we have enough info from other sources, allowing the error".format(indexer_name))
                 return
             else:
-                sickrage.LOGGER.error("" + sickrage.INDEXER_API(self.indexer).name + " timed out, unable to create the episode")
+                sickrage.srCore.LOGGER.error("{} timed out, unable to create the episode".format(indexer_name))
                 return False
+
         except (indexer_episodenotfound, indexer_seasonnotfound):
-            sickrage.LOGGER.debug("Unable to find the episode on " + sickrage.INDEXER_API(
-                    self.indexer).name + "... has it been removed? Should I delete from db?")
+            sickrage.srCore.LOGGER.debug("Unable to find the episode on {}, has it been removed?".format(indexer_name))
             # if I'm no longer on the Indexers but I once was then delete myself from the DB
             if self.indexerid != -1:
                 self.deleteEpisode()
             return
 
         if getattr(myEp, 'episodename', None) is None:
-            sickrage.LOGGER.info("This episode %s - S%02dE%02d has no name on %s. Setting to an empty string" % (
-                self.show.name, season or 0, episode or 0, sickrage.INDEXER_API(self.indexer).name))
+            sickrage.srCore.LOGGER.info("This episode {} - S{}E{} has no name on {}. Setting to an empty string"
+                                        .format(self.show.name, season or 0, episode or 0, indexer_name))
+
             setattr(myEp, 'episodename', '')
             # # if I'm incomplete on TVDB but I once was complete then just delete myself from the DB for now
             # if self.indexerid != -1:
@@ -351,108 +359,109 @@ class TVEpisode(object):
             # return False
 
         if getattr(myEp, 'absolute_number', None) is None:
-            sickrage.LOGGER.debug("This episode %s - S%02dE%02d has no absolute number on %s" % (
-                self.show.name, season or 0, episode or 0, sickrage.INDEXER_API(self.indexer).name))
+            sickrage.srCore.LOGGER.debug("This episode {} - S{}E{} has no absolute number on {}".format(
+                self.show.name, season or 0, episode or 0, indexer_name))
         else:
-            sickrage.LOGGER.debug("%s: The absolute_number for S%02dE%02d is: %s " % (
+            sickrage.srCore.LOGGER.debug("{}: The absolute_number for S{}E{} is: {}".format(
                 self.show.indexerid, season or 0, episode or 0, myEp[b"absolute_number"]))
-            self.absolute_number = int(myEp[b"absolute_number"])
+            self._absolute_number = int(myEp[b"absolute_number"])
 
-        self.name = getattr(myEp, 'episodename', "")
-        self.season = season
-        self.episode = episode
+        self._name = getattr(myEp, 'episodename', "")
+        self._season = season
+        self._episode = episode
 
         xem_refresh(self.show.indexerid, self.show.indexer)
 
         self.scene_absolute_number = get_scene_absolute_numbering(
-                self.show.indexerid,
-                self.show.indexer,
-                self.absolute_number
+            self.show.indexerid,
+            self.show.indexer,
+            self.absolute_number
         )
 
         self.scene_season, self.scene_episode = get_scene_numbering(
-                self.show.indexerid,
-                self.show.indexer,
-                self.season, self.episode
+            self.show.indexerid,
+            self.show.indexer,
+            self.season, self.episode
         )
 
-        self.description = getattr(myEp, 'overview', "")
+        self._description = getattr(myEp, 'overview', "")
 
         firstaired = getattr(myEp, 'firstaired', None)
         if not firstaired or firstaired == "0000-00-00":
-            firstaired = str(datetime.date.fromordinal(1))
+            firstaired = str(date.fromordinal(1))
         rawAirdate = [int(x) for x in firstaired.split("-")]
 
         try:
-            self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
+            self._airdate = date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError):
-            sickrage.LOGGER.warning("Malformed air date of %s retrieved from %s for (%s - S%02dE%02d)" % (
-                firstaired, sickrage.INDEXER_API(self.indexer).name, self.show.name, season or 0, episode or 0))
+            sickrage.srCore.LOGGER.warning("Malformed air date of {} retrieved from {} for ({} - S{}E{})".format(
+                firstaired, indexer_name, self.show.name, season or 0, episode or 0))
             # if I'm incomplete on the indexer but I once was complete then just delete myself from the DB for now
             if self.indexerid != -1:
                 self.deleteEpisode()
             return False
 
         # early conversion to int so that episode doesn't get marked dirty
-        self.indexerid = getattr(myEp, 'id', None)
+        self._indexerid = getattr(myEp, 'id', None)
         if self.indexerid is None:
-            sickrage.LOGGER.error("Failed to retrieve ID from " + sickrage.INDEXER_API(self.indexer).name)
+            sickrage.srCore.LOGGER.error("Failed to retrieve ID from " + sickrage.srCore.INDEXER_API(self.indexer).name)
             if self.indexerid != -1:
                 self.deleteEpisode()
             return False
 
         # don't update show status if show dir is missing, unless it's missing on purpose
         if not os.path.isdir(
-                self.show._location) and not sickrage.CREATE_MISSING_SHOW_DIRS and not sickrage.ADD_SHOWS_WO_DIR:
-            sickrage.LOGGER.info(
-                    "The show dir %s is missing, not bothering to change the episode statuses since it'd probably be invalid" % self.show._location)
+                self.show._location) and not sickrage.srCore.CONFIG.CREATE_MISSING_SHOW_DIRS and not sickrage.srCore.CONFIG.ADD_SHOWS_WO_DIR:
+            sickrage.srCore.LOGGER.info(
+                "The show dir %s is missing, not bothering to change the episode statuses since it'd probably be invalid" % self.show._location)
             return
 
         if self.location:
-            sickrage.LOGGER.debug("%s: Setting status for S%02dE%02d based on status %s and location %s" %
-                          (self.show.indexerid, season or 0, episode or 0, statusStrings[self.status],
-                           self.location))
+            sickrage.srCore.LOGGER.debug("%s: Setting status for S%02dE%02d based on status %s and location %s" %
+                                         (self.show.indexerid, season or 0, episode or 0, statusStrings[self.status],
+                                          self.location))
 
         if not os.path.isfile(self.location):
-            if self.airdate >= datetime.date.today() or self.airdate == datetime.date.fromordinal(1):
-                sickrage.LOGGER.debug("Episode airs in the future or has no airdate, marking it %s" % statusStrings[
-                    UNAIRED])
-                self.status = UNAIRED
+            if self.airdate >= date.today() or self.airdate == date.fromordinal(1):
+                sickrage.srCore.LOGGER.debug(
+                    "Episode airs in the future or has no airdate, marking it %s" % statusStrings[
+                        UNAIRED])
+                self._status = UNAIRED
             elif self.status in [UNAIRED, UNKNOWN]:
                 # Only do UNAIRED/UNKNOWN, it could already be snatched/ignored/skipped, or downloaded/archived to disconnected media
-                sickrage.LOGGER.debug(
+                sickrage.srCore.LOGGER.debug(
                     "Episode has already aired, marking it %s" % statusStrings[self.show.default_ep_status])
-                self.status = self.show.default_ep_status if self.season > 0 else SKIPPED  # auto-skip specials
+                self._status = self.show.default_ep_status if self.season > 0 else SKIPPED  # auto-skip specials
             else:
-                sickrage.LOGGER.debug(
-                        "Not touching status [ %s ] It could be skipped/ignored/snatched/archived" % statusStrings[
-                            self.status])
+                sickrage.srCore.LOGGER.debug(
+                    "Not touching status [ %s ] It could be skipped/ignored/snatched/archived" % statusStrings[
+                        self.status])
 
         # if we have a media file then it's downloaded
         elif isMediaFile(self.location):
             # leave propers alone, you have to either post-process them or manually change them back
             if self.status not in Quality.SNATCHED_PROPER + Quality.DOWNLOADED + Quality.SNATCHED + Quality.ARCHIVED:
-                sickrage.LOGGER.debug(
-                        "5 Status changes from " + str(self.status) + " to " + str(
-                                Quality.statusFromName(self.location)))
-                self.status = Quality.statusFromName(self.location, anime=self.show.is_anime)
+                sickrage.srCore.LOGGER.debug(
+                    "5 Status changes from " + str(self.status) + " to " + str(
+                        Quality.statusFromName(self.location)))
+                self._status = Quality.statusFromName(self.location, anime=self.show.is_anime)
 
         # shouldn't get here probably
         else:
-            sickrage.LOGGER.debug("6 Status changes from " + str(self.status) + " to " + str(UNKNOWN))
-            self.status = UNKNOWN
+            sickrage.srCore.LOGGER.debug("6 Status changes from " + str(self.status) + " to " + str(UNKNOWN))
+            self._status = UNKNOWN
 
     def loadFromNFO(self, location):
 
         if not os.path.isdir(self.show._location):
-            sickrage.LOGGER.info(
-                    str(
-                            self.show.indexerid) + ": The show dir is missing, not bothering to try loading the episode NFO")
+            sickrage.srCore.LOGGER.info(
+                str(
+                    self.show.indexerid) + ": The show dir is missing, not bothering to try loading the episode NFO")
             return
 
-        sickrage.LOGGER.debug(
-                str(
-                    self.show.indexerid) + ": Loading episode details from the NFO file associated with " + location)
+        sickrage.srCore.LOGGER.debug(
+            str(
+                self.show.indexerid) + ": Loading episode details from the NFO file associated with " + location)
 
         self.location = location
 
@@ -460,77 +469,78 @@ class TVEpisode(object):
 
             if self.status == UNKNOWN:
                 if isMediaFile(self.location):
-                    sickrage.LOGGER.debug("7 Status changes from " + str(self.status) + " to " + str(
-                            Quality.statusFromName(self.location, anime=self.show.is_anime)))
-                    self.status = Quality.statusFromName(self.location, anime=self.show.is_anime)
+                    sickrage.srCore.LOGGER.debug("7 Status changes from " + str(self.status) + " to " + str(
+                        Quality.statusFromName(self.location, anime=self.show.is_anime)))
+                    self._status = Quality.statusFromName(self.location, anime=self.show.is_anime)
 
             nfoFile = replaceExtension(self.location, "nfo")
-            sickrage.LOGGER.debug(str(self.show.indexerid) + ": Using NFO name " + nfoFile)
+            sickrage.srCore.LOGGER.debug(str(self.show.indexerid) + ": Using NFO name " + nfoFile)
 
             if os.path.isfile(nfoFile):
                 try:
                     showXML = ElementTree(file=nfoFile)
                 except (SyntaxError, ValueError) as e:
-                    sickrage.LOGGER.error("Error loading the NFO, backing up the NFO and skipping for now: {}".format(e))
+                    sickrage.srCore.LOGGER.error(
+                        "Error loading the NFO, backing up the NFO and skipping for now: {}".format(e.message))
                     try:
                         os.rename(nfoFile, nfoFile + ".old")
                     except Exception as e:
-                        sickrage.LOGGER.error(
-                                "Failed to rename your episode's NFO file - you need to delete it or fix it: {}".format(
-                                        e))
+                        sickrage.srCore.LOGGER.error(
+                            "Failed to rename your episode's NFO file - you need to delete it or fix it: {}".format(
+                                e.message))
                     raise NoNFOException("Error in NFO format")
 
                 for epDetails in showXML.iter('episodedetails'):
                     if epDetails.findtext('season') is None or int(epDetails.findtext('season')) != self.season or \
                                     epDetails.findtext('episode') is None or int(
-                            epDetails.findtext('episode')) != self.episode:
-                        sickrage.LOGGER.debug(
-                                "%s: NFO has an <episodedetails> block for a different episode - wanted S%02dE%02d but got S%02dE%02d" %
-                                (
-                                    self.show.indexerid, self.season or 0, self.episode or 0,
-                                    epDetails.findtext('season') or 0,
-                                    epDetails.findtext('episode') or 0))
+                        epDetails.findtext('episode')) != self.episode:
+                        sickrage.srCore.LOGGER.debug(
+                            "%s: NFO has an <episodedetails> block for a different episode - wanted S%02dE%02d but got S%02dE%02d" %
+                            (
+                                self.show.indexerid, self.season or 0, self.episode or 0,
+                                epDetails.findtext('season') or 0,
+                                epDetails.findtext('episode') or 0))
                         continue
 
                     if epDetails.findtext('title') is None or epDetails.findtext('aired') is None:
                         raise NoNFOException("Error in NFO format (missing episode title or airdate)")
 
-                    self.name = epDetails.findtext('title')
-                    self.episode = int(epDetails.findtext('episode'))
-                    self.season = int(epDetails.findtext('season'))
+                    self._name = epDetails.findtext('title')
+                    self._episode = int(epDetails.findtext('episode'))
+                    self._season = int(epDetails.findtext('season'))
 
                     xem_refresh(self.show.indexerid, self.show.indexer)
 
                     self.scene_absolute_number = get_scene_absolute_numbering(
-                            self.show.indexerid,
-                            self.show.indexer,
-                            self.absolute_number
+                        self.show.indexerid,
+                        self.show.indexer,
+                        self.absolute_number
                     )
 
                     self.scene_season, self.scene_episode = get_scene_numbering(
-                            self.show.indexerid,
-                            self.show.indexer,
-                            self.season, self.episode
+                        self.show.indexerid,
+                        self.show.indexer,
+                        self.season, self.episode
                     )
 
-                    self.description = epDetails.findtext('plot')
+                    self._description = epDetails.findtext('plot')
                     if self.description is None:
-                        self.description = ""
+                        self._description = ""
 
                     if epDetails.findtext('aired'):
                         rawAirdate = [int(x) for x in epDetails.findtext('aired').split("-")]
-                        self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
+                        self._airdate = date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
                     else:
-                        self.airdate = datetime.date.fromordinal(1)
+                        self._airdate = date.fromordinal(1)
 
-                    self.hasnfo = True
+                    self._hasnfo = True
             else:
-                self.hasnfo = False
+                self._hasnfo = False
 
             if os.path.isfile(replaceExtension(nfoFile, "tbn")):
-                self.hastbn = True
+                self._hastbn = True
             else:
-                self.hastbn = False
+                self._hastbn = False
 
     def __str__(self):
 
@@ -550,8 +560,8 @@ class TVEpisode(object):
     def createMetaFiles(self):
 
         if not os.path.isdir(self.show._location):
-            sickrage.LOGGER.info(
-                    str(self.show.indexerid) + ": The show dir is missing, not bothering to try to create metadata")
+            sickrage.srCore.LOGGER.info(
+                str(self.show.indexerid) + ": The show dir is missing, not bothering to try to create metadata")
             return
 
         self.createNFO()
@@ -564,7 +574,7 @@ class TVEpisode(object):
 
         result = False
 
-        for cur_provider in sickrage.metadataProvideDict.values():
+        for cur_provider in sickrage.srCore.metadataProviderDict.values():
             result = cur_provider.create_episode_metadata(self) or result
 
         return result
@@ -573,38 +583,39 @@ class TVEpisode(object):
 
         result = False
 
-        for cur_provider in sickrage.metadataProvideDict.values():
+        for cur_provider in sickrage.srCore.metadataProviderDict.values():
             result = cur_provider.create_episode_thumb(self) or result
 
         return result
 
     def deleteEpisode(self, full=False):
 
-        sickrage.LOGGER.debug("Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
+        sickrage.srCore.LOGGER.debug(
+            "Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
 
         # remove myself from the show dictionary
         if self.show.getEpisode(self.season, self.episode, noCreate=True) == self:
-            sickrage.LOGGER.debug("Removing myself from my show's list")
+            sickrage.srCore.LOGGER.debug("Removing myself from my show's list")
             del self.show.episodes[self.season][self.episode]
 
         # delete myself from the DB
-        sickrage.LOGGER.debug("Deleting myself from the database")
+        sickrage.srCore.LOGGER.debug("Deleting myself from the database")
 
         sql = "DELETE FROM tv_episodes WHERE showid=" + str(self.show.indexerid) + " AND season=" + str(
-                self.season) + " AND episode=" + str(self.episode)
+            self.season) + " AND episode=" + str(self.episode)
         main_db.MainDB().action(sql)
 
-        data = sickrage.NOTIFIERS.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
-        if sickrage.USE_TRAKT and sickrage.TRAKT_SYNC_WATCHLIST and data:
-            sickrage.LOGGER.debug("Deleting myself from Trakt")
-            sickrage.NOTIFIERS.trakt_notifier.update_watchlist(self.show, data_episode=data, update="remove")
+        data = sickrage.srCore.NOTIFIERS.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
+        if sickrage.srCore.CONFIG.USE_TRAKT and sickrage.srCore.CONFIG.TRAKT_SYNC_WATCHLIST and data:
+            sickrage.srCore.LOGGER.debug("Deleting myself from Trakt")
+            sickrage.srCore.NOTIFIERS.trakt_notifier.update_watchlist(self.show, data_episode=data, update="remove")
 
         if full:
-            sickrage.LOGGER.info('Attempt to delete episode file %s' % self._location)
+            sickrage.srCore.LOGGER.info('Attempt to delete episode file %s' % self._location)
             try:
                 os.remove(self._location)
             except OSError as e:
-                sickrage.LOGGER.warning('Unable to delete %s: %s / %s' % (self._location, repr(e), str(e)))
+                sickrage.srCore.LOGGER.warning('Unable to delete %s: %s / %s' % (self._location, repr(e), str(e)))
 
         raise EpisodeDeletedException()
 
@@ -617,12 +628,13 @@ class TVEpisode(object):
         """
         try:
             if not self.dirty and not forceSave:
-                sickrage.LOGGER.debug(str(self.show.indexerid) + ": Not creating SQL queue - record is not dirty")
+                sickrage.srCore.LOGGER.debug(
+                    str(self.show.indexerid) + ": Not creating SQL queue - record is not dirty")
                 return
 
             rows = main_db.MainDB().select(
-                    'SELECT episode_id, subtitles FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?',
-                    [self.show.indexerid, self.season, self.episode])
+                'SELECT episode_id, subtitles FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?',
+                [self.show.indexerid, self.season, self.episode])
 
             epID = None
             if rows:
@@ -631,7 +643,7 @@ class TVEpisode(object):
             if epID:
                 # use a custom update method to get the data into the DB for existing records.
                 # Multi or added subtitle or removed subtitles
-                if sickrage.SUBTITLES_MULTI or not rows[0][b'subtitles'] or not self.subtitles:
+                if sickrage.srCore.CONFIG.SUBTITLES_MULTI or not rows[0][b'subtitles'] or not self.subtitles:
                     return [
                         "UPDATE tv_episodes SET indexerid = ?, indexer = ?, name = ?, description = ?, subtitles = ?, "
                         "subtitles_searchcount = ?, subtitles_lastsearch = ?, airdate = ?, hasnfo = ?, hastbn = ?, status = ?, "
@@ -673,8 +685,8 @@ class TVEpisode(object):
                      self.release_name, self.is_proper, self.show.indexerid, self.season, self.episode,
                      self.absolute_number, self.version, self.release_group]]
         except Exception as e:
-            sickrage.LOGGER.error("Error while updating database: %s" %
-                          (repr(e)))
+            sickrage.srCore.LOGGER.error("Error while updating database: %s" %
+                                         (repr(e)))
 
     def saveToDB(self, forceSave=False):
         """
@@ -685,7 +697,7 @@ class TVEpisode(object):
         """
 
         if not self.dirty and not forceSave:
-            # sickrage.LOGGER.debug(str(self.show.indexerid) + u": Not saving episode to db - record is not dirty")
+            # LOGGER.debug(str(self.show.indexerid) + u": Not saving episode to db - record is not dirty")
             return
 
         newValueDict = {"indexerid": self.indexerid,
@@ -736,9 +748,9 @@ class TVEpisode(object):
         strings = []
         if not pattern:
             for p in patterns:
-                strings += [_format_pattern(self.show, self, p)]
+                strings += [self._format_pattern(p)]
             return strings
-        return _format_pattern(self.show, self, pattern)
+        return self._format_pattern(pattern)
 
     def prettyName(self):
         """
@@ -749,30 +761,30 @@ class TVEpisode(object):
         """
 
         if self.show.anime and not self.show.scene:
-            return _format_pattern(self.show, self, '%SN - %AB - %EN')
+            return self._format_pattern('%SN - %AB - %EN')
         elif self.show.air_by_date:
-            return _format_pattern(self.show, self, '%SN - %AD - %EN')
+            return self._format_pattern('%SN - %AD - %EN')
 
-        return _format_pattern(self.show, self, '%SN - %Sx%0E - %EN')
+        return self._format_pattern('%SN - %Sx%0E - %EN')
 
     def proper_path(self):
         """
         Figures out the path where this episode SHOULD live according to the renaming rules, relative from the show dir
         """
 
-        anime_type = sickrage.NAMING_ANIME
+        anime_type = sickrage.srCore.CONFIG.NAMING_ANIME
         if not self.show.is_anime:
             anime_type = 3
 
-        result = formatted_filename(self.show, self, anime_type=anime_type)
+        result = self.formatted_filename(anime_type=anime_type)
 
         # if they want us to flatten it and we're allowed to flatten it then we will
-        if self.show.flatten_folders and not sickrage.NAMING_FORCE_FOLDERS:
+        if self.show.flatten_folders and not sickrage.srCore.CONFIG.NAMING_FORCE_FOLDERS:
             return result
 
         # if not we append the folder on and use that
         else:
-            result = os.path.join(formatted_dir(self.show, self), result)
+            result = os.path.join(self.formatted_dir(), result)
 
         return result
 
@@ -783,7 +795,8 @@ class TVEpisode(object):
         """
 
         if not os.path.isfile(self.location):
-            sickrage.LOGGER.warning("Can't perform rename on " + self.location + " when it doesn't exist, skipping")
+            sickrage.srCore.LOGGER.warning(
+                "Can't perform rename on " + self.location + " when it doesn't exist, skipping")
             return
 
         proper_path = self.proper_path()
@@ -798,24 +811,27 @@ class TVEpisode(object):
         if absolute_current_path_no_ext.startswith(self.show.location):
             current_path = absolute_current_path_no_ext[len(self.show.location):]
 
-        sickrage.LOGGER.debug("Renaming/moving episode from the base path " + self.location + " to " + absolute_proper_path)
+        sickrage.srCore.LOGGER.debug(
+            "Renaming/moving episode from the base path " + self.location + " to " + absolute_proper_path)
 
         # if it's already named correctly then don't do anything
         if proper_path == current_path:
-            sickrage.LOGGER.debug(str(self.indexerid) + ": File " + self.location + " is already named correctly, skipping")
+            sickrage.srCore.LOGGER.debug(
+                str(self.indexerid) + ": File " + self.location + " is already named correctly, skipping")
             return
 
-        related_files = post_processor.PostProcessor(self.location).list_associated_files(
-                self.location, base_name_only=True, subfolders=True)
+        related_files = PostProcessor(self.location).list_associated_files(
+            self.location, base_name_only=True, subfolders=True)
 
         # This is wrong. Cause of pp not moving subs.
-        if self.show.subtitles and sickrage.SUBTITLES_DIR != '':
-            related_subs = post_processor.PostProcessor(self.location).list_associated_files(sickrage.SUBTITLES_DIR,
-                                                                                             subtitles_only=True,
-                                                                                             subfolders=True)
-            absolute_proper_subs_path = os.path.join(sickrage.SUBTITLES_DIR, formatted_filename(self.show, self))
+        if self.show.subtitles and sickrage.srCore.CONFIG.SUBTITLES_DIR != '':
+            related_subs = PostProcessor(self.location).list_associated_files(
+                sickrage.srCore.CONFIG.SUBTITLES_DIR,
+                subtitles_only=True,
+                subfolders=True)
+            absolute_proper_subs_path = os.path.join(sickrage.srCore.CONFIG.SUBTITLES_DIR, self.formatted_filename())
 
-        sickrage.LOGGER.debug("Files associated to " + self.location + ": " + str(related_files))
+        sickrage.srCore.LOGGER.debug("Files associated to " + self.location + ": " + str(related_files))
 
         # move the ep file
         result = rename_ep_file(self.location, absolute_proper_path, absolute_current_path_no_ext_length)
@@ -833,14 +849,14 @@ class TVEpisode(object):
             cur_result = rename_ep_file(cur_related_file, proper_related_path,
                                         absolute_current_path_no_ext_length + len(subfolder))
             if not cur_result:
-                sickrage.LOGGER.error(str(self.indexerid) + ": Unable to rename file " + cur_related_file)
+                sickrage.srCore.LOGGER.error(str(self.indexerid) + ": Unable to rename file " + cur_related_file)
 
         for cur_related_sub in related_subs:
-            absolute_proper_subs_path = os.path.join(sickrage.SUBTITLES_DIR, formatted_filename(self.show, self))
+            absolute_proper_subs_path = os.path.join(sickrage.srCore.CONFIG.SUBTITLES_DIR, self.formatted_filename())
             cur_result = rename_ep_file(cur_related_sub, absolute_proper_subs_path,
                                         absolute_current_path_no_ext_length)
             if not cur_result:
-                sickrage.LOGGER.error(str(self.indexerid) + ": Unable to rename file " + cur_related_sub)
+                sickrage.srCore.LOGGER.error(str(self.indexerid) + ": Unable to rename file " + cur_related_sub)
 
         # save the ep
         with self.lock:
@@ -878,32 +894,413 @@ class TVEpisode(object):
 
         airdatetime = tz_updater.parse_date_time(airdate_ordinal, self.show.airs, self.show.network)
 
-        if sickrage.FILE_TIMESTAMP_TIMEZONE == 'local':
+        if sickrage.srCore.CONFIG.FILE_TIMESTAMP_TIMEZONE == 'local':
             airdatetime = airdatetime.astimezone(tz_updater.sr_timezone)
 
-        filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location)).replace(
-                tzinfo=tz_updater.sr_timezone)
+        filemtime = datetime.fromtimestamp(os.path.getmtime(self.location)).replace(
+            tzinfo=tz_updater.sr_timezone)
 
         if filemtime != airdatetime:
             import time
 
             airdatetime = airdatetime.timetuple()
-            sickrage.LOGGER.debug(str(self.show.indexerid) + ": About to modify date of '" + self.location +
-                          "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+            sickrage.srCore.LOGGER.debug(str(self.show.indexerid) + ": About to modify date of '" + self.location +
+                                         "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
             try:
                 if touchFile(self.location, time.mktime(airdatetime)):
-                    sickrage.LOGGER.info(
-                            str(self.show.indexerid) + ": Changed modify date of " + os.path.basename(self.location)
-                            + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+                    sickrage.srCore.LOGGER.info(
+                        str(self.show.indexerid) + ": Changed modify date of " + os.path.basename(self.location)
+                        + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
                 else:
-                    sickrage.LOGGER.error(
-                            str(self.show.indexerid) + ": Unable to modify date of " + os.path.basename(
-                                self.location)
-                            + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+                    sickrage.srCore.LOGGER.error(
+                        str(self.show.indexerid) + ": Unable to modify date of " + os.path.basename(
+                            self.location)
+                        + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
             except Exception:
-                sickrage.LOGGER.error(
-                        str(self.show.indexerid) + ": Failed to modify date of '" + os.path.basename(self.location)
-                        + "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+                sickrage.srCore.LOGGER.error(
+                    str(self.show.indexerid) + ": Failed to modify date of '" + os.path.basename(self.location)
+                    + "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+
+    def _ep_name(self):
+        """
+        Returns the name of the episode to use during renaming. Combines the names of related episodes.
+        Eg. "Ep Name (1)" and "Ep Name (2)" becomes "Ep Name"
+            "Ep Name" and "Other Ep Name" becomes "Ep Name & Other Ep Name"
+        """
+
+        multiNameRegex = r"(.*) \(\d{1,2}\)"
+
+        self.relatedEps = sorted(self.relatedEps, key=lambda x: x.episode)
+
+        singleName = True
+        curGoodName = None
+
+        for curName in [self.name] + [x.name for x in self.relatedEps]:
+            match = re.match(multiNameRegex, curName)
+            if not match:
+                singleName = False
+                break
+
+            if curGoodName is None:
+                curGoodName = match.group(1)
+            elif curGoodName != match.group(1):
+                singleName = False
+                break
+
+        if singleName:
+            goodName = curGoodName
+        else:
+            goodName = self.name
+            for relEp in self.relatedEps:
+                goodName += " & " + relEp.name
+
+        return goodName
+
+    def _replace_map(self):
+        """
+        Generates a replacement map for this episode which maps all possible custom naming patterns to the correct
+        value for this episode.
+
+        Returns: A dict with patterns as the keys and their replacement values as the values.
+        """
+
+        ep_name = self._ep_name()
+
+        def dot(name):
+            return sanitizeSceneName(name)
+
+        def us(name):
+            return re.sub('[ -]', '_', name)
+
+        def release_name(name):
+            if name:
+                name = remove_non_release_groups(remove_extension(name))
+            return name
+
+        def release_group(show, name):
+            if name:
+                name = remove_non_release_groups(remove_extension(name))
+            else:
+                return ""
+
+            try:
+                np = NameParser(name, showObj=show, naming_pattern=True)
+                parse_result = np.parse(name)
+            except (InvalidNameException, InvalidShowException) as e:
+                sickrage.srCore.LOGGER.debug("Unable to get parse release_group: {}".format(e.message))
+                return ''
+
+            if not parse_result.release_group:
+                return ''
+            return parse_result.release_group
+
+        _, epQual = Quality.splitCompositeStatus(self.status)  # @UnusedVariable
+
+        if sickrage.srCore.CONFIG.NAMING_STRIP_YEAR:
+            show_name = re.sub(r"\(\d+\)$", "", self.show.name).rstrip()
+        else:
+            show_name = self.show.name
+
+        # try to get the release group
+        rel_grp = {}
+        rel_grp[b"SiCKRAGE"] = 'SiCKRAGE'
+        if hasattr(self, 'location'):  # from the location name
+            rel_grp[b'location'] = release_group(self.show, self.location)
+            if not rel_grp[b'location']:
+                del rel_grp[b'location']
+        if hasattr(self, '_release_group'):  # from the release group field in db
+            rel_grp[b'database'] = self._release_group
+            if not rel_grp[b'database']:
+                del rel_grp[b'database']
+        if hasattr(self, 'release_name'):  # from the release name field in db
+            rel_grp[b'release_name'] = release_group(self.show, self.release_name)
+            if not rel_grp[b'release_name']:
+                del rel_grp[b'release_name']
+
+        # use release_group, release_name, location in that order
+        if 'database' in rel_grp:
+            relgrp = 'database'
+        elif 'release_name' in rel_grp:
+            relgrp = 'release_name'
+        elif 'location' in rel_grp:
+            relgrp = 'location'
+        else:
+            relgrp = 'SiCKRAGE'
+
+        # try to get the release encoder to comply with scene naming standards
+        encoder = Quality.sceneQualityFromName(self.release_name.replace(rel_grp[relgrp], ""), epQual)
+        if encoder:
+            sickrage.srCore.LOGGER.debug("Found codec for '" + show_name + ": " + ep_name + "'.")
+
+        return {
+            '%SN': show_name,
+            '%S.N': dot(show_name),
+            '%S_N': us(show_name),
+            '%EN': ep_name,
+            '%E.N': dot(ep_name),
+            '%E_N': us(ep_name),
+            '%QN': Quality.qualityStrings[epQual],
+            '%Q.N': dot(Quality.qualityStrings[epQual]),
+            '%Q_N': us(Quality.qualityStrings[epQual]),
+            '%SQN': Quality.sceneQualityStrings[epQual] + encoder,
+            '%SQ.N': dot(Quality.sceneQualityStrings[epQual] + encoder),
+            '%SQ_N': us(Quality.sceneQualityStrings[epQual] + encoder),
+            '%S': str(self.season),
+            '%0S': '%02d' % self.season,
+            '%E': str(self.episode),
+            '%0E': '%02d' % self.episode,
+            '%XS': str(self.scene_season),
+            '%0XS': '%02d' % self.scene_season,
+            '%XE': str(self.scene_episode),
+            '%0XE': '%02d' % self.scene_episode,
+            '%AB': '%(#)03d' % {'#': self.absolute_number},
+            '%XAB': '%(#)03d' % {'#': self.scene_absolute_number},
+            '%RN': release_name(self.release_name),
+            '%RG': rel_grp[relgrp],
+            '%CRG': rel_grp[relgrp].upper(),
+            '%AD': str(self.airdate).replace('-', ' '),
+            '%A.D': str(self.airdate).replace('-', '.'),
+            '%A_D': us(str(self.airdate)),
+            '%A-D': str(self.airdate),
+            '%Y': str(self.airdate.year),
+            '%M': str(self.airdate.month),
+            '%D': str(self.airdate.day),
+            '%0M': '%02d' % self.airdate.month,
+            '%0D': '%02d' % self.airdate.day,
+            '%RT': "PROPER" if self.is_proper else "",
+        }
+
+    def _format_string(self, pattern, replace_map):
+        """
+        Replaces all template strings with the correct value
+        """
+
+        result_name = pattern
+
+        # do the replacements
+        for cur_replacement in sorted(replace_map.keys(), reverse=True):
+            result_name = result_name.replace(cur_replacement,
+                                              sanitizeFileName(replace_map[cur_replacement]))
+            result_name = result_name.replace(cur_replacement.lower(),
+                                              sanitizeFileName(replace_map[cur_replacement].lower()))
+
+        return result_name
+
+    def _format_pattern(self, pattern=None, multi=None, anime_type=None):
+        """
+        Manipulates an episode naming pattern and then fills the template in
+        """
+
+        if pattern is None:
+            pattern = sickrage.srCore.CONFIG.NAMING_PATTERN
+
+        if multi is None:
+            multi = sickrage.srCore.CONFIG.NAMING_MULTI_EP
+
+        if sickrage.srCore.CONFIG.NAMING_CUSTOM_ANIME:
+            if anime_type is None:
+                anime_type = sickrage.srCore.CONFIG.NAMING_ANIME
+        else:
+            anime_type = 3
+
+        replace_map = self._replace_map()
+
+        result_name = pattern
+
+        # if there's no release group in the db, let the user know we replaced it
+        if replace_map['%RG'] and replace_map['%RG'] != 'SiCKRAGE':
+            if not hasattr(self, '_release_group'):
+                sickrage.srCore.LOGGER.debug(
+                    "Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
+                self._release_group = replace_map['%RG']  # if release_group is not in the db, put it there
+            elif not self._release_group:
+                sickrage.srCore.LOGGER.debug(
+                    "Episode has no release group, replacing it with '" + replace_map['%RG'] + "'")
+                self._release_group = replace_map['%RG']  # if release_group is not in the db, put it there
+
+        # if there's no release name then replace it with a reasonable facsimile
+        if not replace_map['%RN']:
+
+            if self.show.air_by_date or self.show.sports:
+                result_name = result_name.replace('%RN', '%S.N.%A.D.%E.N-' + replace_map['%RG'])
+                result_name = result_name.replace('%rn', '%s.n.%A.D.%e.n-' + replace_map['%RG'].lower())
+
+            elif anime_type != 3:
+                result_name = result_name.replace('%RN', '%S.N.%AB.%E.N-' + replace_map['%RG'])
+                result_name = result_name.replace('%rn', '%s.n.%ab.%e.n-' + replace_map['%RG'].lower())
+
+            else:
+                result_name = result_name.replace('%RN', '%S.N.S%0SE%0E.%E.N-' + replace_map['%RG'])
+                result_name = result_name.replace('%rn', '%s.n.s%0se%0e.%e.n-' + replace_map['%RG'].lower())
+
+                # LOGGER.debug(u"Episode has no release name, replacing it with a generic one: " + result_name)
+
+        if not replace_map['%RT']:
+            result_name = re.sub('([ _.-]*)%RT([ _.-]*)', r'\2', result_name)
+
+        # split off ep name part only
+        name_groups = re.split(r'[\\/]', result_name)
+
+        # figure out the double-ep numbering style for each group, if applicable
+        for cur_name_group in name_groups:
+
+            season_format = sep = ep_sep = ep_format = None
+
+            season_ep_regex = r'''
+                                (?P<pre_sep>[ _.-]*)
+                                ((?:s(?:eason|eries)?\s*)?%0?S(?![._]?N))
+                                (.*?)
+                                (%0?E(?![._]?N))
+                                (?P<post_sep>[ _.-]*)
+                              '''
+            ep_only_regex = r'(E?%0?E(?![._]?N))'
+
+            # try the normal way
+            season_ep_match = re.search(season_ep_regex, cur_name_group, re.I | re.X)
+            ep_only_match = re.search(ep_only_regex, cur_name_group, re.I | re.X)
+
+            # if we have a season and episode then collect the necessary data
+            if season_ep_match:
+                season_format = season_ep_match.group(2)
+                ep_sep = season_ep_match.group(3)
+                ep_format = season_ep_match.group(4)
+                sep = season_ep_match.group('pre_sep')
+                if not sep:
+                    sep = season_ep_match.group('post_sep')
+                if not sep:
+                    sep = ' '
+
+                # force 2-3-4 format if they chose to extend
+                if multi in (NAMING_EXTEND, NAMING_LIMITED_EXTEND,
+                             NAMING_LIMITED_EXTEND_E_PREFIXED):
+                    ep_sep = '-'
+
+                regex_used = season_ep_regex
+
+            # if there's no season then there's not much choice so we'll just force them to use 03-04-05 style
+            elif ep_only_match:
+                season_format = ''
+                ep_sep = '-'
+                ep_format = ep_only_match.group(1)
+                sep = ''
+                regex_used = ep_only_regex
+
+            else:
+                continue
+
+            # we need at least this much info to continue
+            if not ep_sep or not ep_format:
+                continue
+
+            # start with the ep string, eg. E03
+            ep_string = self._format_string(ep_format.upper(), replace_map)
+            for other_ep in self.relatedEps:
+
+                # for limited extend we only append the last ep
+                if multi in (NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED) and other_ep != \
+                        self.relatedEps[
+                            -1]:
+                    continue
+
+                elif multi == NAMING_DUPLICATE:
+                    # add " - S01"
+                    ep_string += sep + season_format
+
+                elif multi == NAMING_SEPARATED_REPEAT:
+                    ep_string += sep
+
+                # add "E04"
+                ep_string += ep_sep
+
+                if multi == NAMING_LIMITED_EXTEND_E_PREFIXED:
+                    ep_string += 'E'
+
+                ep_string += other_ep._format_string(ep_format.upper(), other_ep._replace_map())
+
+            if anime_type != 3:
+                if self.absolute_number == 0:
+                    curAbsolute_number = self.episode
+                else:
+                    curAbsolute_number = self.absolute_number
+
+                if self.season != 0:  # dont set absolute numbers if we are on specials !
+                    if anime_type == 1:  # this crazy person wants both ! (note: +=)
+                        ep_string += sep + "%(#)03d" % {
+                            "#": curAbsolute_number}
+                    elif anime_type == 2:  # total anime freak only need the absolute number ! (note: =)
+                        ep_string = "%(#)03d" % {"#": curAbsolute_number}
+
+                    for relEp in self.relatedEps:
+                        if relEp.absolute_number != 0:
+                            ep_string += '-' + "%(#)03d" % {"#": relEp.absolute_number}
+                        else:
+                            ep_string += '-' + "%(#)03d" % {"#": relEp.episode}
+
+            regex_replacement = None
+            if anime_type == 2:
+                regex_replacement = r'\g<pre_sep>' + ep_string + r'\g<post_sep>'
+            elif season_ep_match:
+                regex_replacement = r'\g<pre_sep>\g<2>\g<3>' + ep_string + r'\g<post_sep>'
+            elif ep_only_match:
+                regex_replacement = ep_string
+
+            if regex_replacement:
+                # fill out the template for this piece and then insert this piece into the actual pattern
+                cur_name_group_result = re.sub('(?i)(?x)' + regex_used, regex_replacement, cur_name_group)
+                # cur_name_group_result = cur_name_group.replace(ep_format, ep_string)
+                # LOGGER.debug(u"found "+ep_format+" as the ep pattern using "+regex_used+" and replaced it with "+regex_replacement+" to result in "+cur_name_group_result+" from "+cur_name_group)
+                result_name = result_name.replace(cur_name_group, cur_name_group_result)
+
+        result_name = self._format_string(result_name, replace_map)
+
+        sickrage.srCore.LOGGER.debug("Formatting pattern: " + pattern + " -> " + result_name)
+
+        return result_name
+
+    def formatted_filename(self, pattern=None, multi=None, anime_type=None):
+        """
+        Just the filename of the episode, formatted based on the naming settings
+        """
+
+        if pattern is None:
+            # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
+            if self.show.air_by_date and sickrage.srCore.CONFIG.NAMING_CUSTOM_ABD and not self.relatedEps:
+                pattern = sickrage.srCore.CONFIG.NAMING_ABD_PATTERN
+            elif self.show.sports and sickrage.srCore.CONFIG.NAMING_CUSTOM_SPORTS and not self.relatedEps:
+                pattern = sickrage.srCore.CONFIG.NAMING_SPORTS_PATTERN
+            elif self.show.anime and sickrage.srCore.CONFIG.NAMING_CUSTOM_ANIME:
+                pattern = sickrage.srCore.CONFIG.NAMING_ANIME_PATTERN
+            else:
+                pattern = sickrage.srCore.CONFIG.NAMING_PATTERN
+
+        # split off the dirs only, if they exist
+        name_groups = re.split(r'[\\/]', pattern)
+
+        return sanitizeFileName(self._format_pattern(name_groups[-1], multi, anime_type))
+
+    def formatted_dir(self, pattern=None, multi=None):
+        """
+        Just the folder name of the episode
+        """
+
+        if pattern is None:
+            # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
+            if self.show.air_by_date and sickrage.srCore.CONFIG.NAMING_CUSTOM_ABD and not self.relatedEps:
+                pattern = sickrage.srCore.CONFIG.NAMING_ABD_PATTERN
+            elif self.show.sports and sickrage.srCore.CONFIG.NAMING_CUSTOM_SPORTS and not self.relatedEps:
+                pattern = sickrage.srCore.CONFIG.NAMING_SPORTS_PATTERN
+            elif self.show.anime and sickrage.srCore.CONFIG.NAMING_CUSTOM_ANIME:
+                pattern = sickrage.srCore.CONFIG.NAMING_ANIME_PATTERN
+            else:
+                pattern = sickrage.srCore.CONFIG.NAMING_PATTERN
+
+        # split off the dirs only, if they exist
+        name_groups = re.split(r'[\\/]', pattern)
+
+        if len(name_groups) == 1:
+            return ''
+        else:
+            return self._format_pattern(os.sep.join(name_groups[:-1]), multi)
 
     def __getstate__(self):
         d = dict(self.__dict__)

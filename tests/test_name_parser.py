@@ -20,17 +20,17 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import os.path
 import unittest
 
+from datetime import date
+
 import sickrage
-from sickrage.core.nameparser import ParseResult, NameParser, InvalidNameException, InvalidShowException
-from sickrage.core.tv.show import TVShow
+from core.nameparser import ParseResult, NameParser, InvalidNameException, InvalidShowException
+from core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
-
-sickrage.SYS_ENCODING = 'UTF-8'
+sickrage.srCore.CONFIG.SYS_ENCODING = 'UTF-8'
 
 DEBUG = VERBOSE = False
 
@@ -158,17 +158,17 @@ simple_test_cases = {
     'scene_date_format': {
         'Show.Name.2010.11.23.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', None, [],
                                                                             'Source.Quality.Etc', 'Group',
-                                                                     datetime.date(2010, 11, 23)),
-        'Show Name - 2010.11.23': ParseResult(None, 'Show Name', air_date=datetime.date(2010, 11, 23)),
+                                                                     date(2010, 11, 23)),
+        'Show Name - 2010.11.23': ParseResult(None, 'Show Name', air_date=date(2010, 11, 23)),
         'Show.Name.2010.23.11.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', None, [],
                                                                             'Source.Quality.Etc', 'Group',
-                                                                                     datetime.date(2010, 11, 23)),
+                                                                                     date(2010, 11, 23)),
         'Show Name - 2010-11-23 - Ep Name': ParseResult(None, 'Show Name', extra_info='Ep Name',
-                                                        air_date=datetime.date(2010, 11, 23)),
+                                                        air_date=date(2010, 11, 23)),
         '2010-11-23 - Ep Name': ParseResult(None, extra_info='Ep Name',
-                                            air_date=datetime.date(2010, 11, 23)),
+                                            air_date=date(2010, 11, 23)),
         'Show.Name.2010.11.23.WEB-DL': ParseResult(None, 'Show Name', None, [], 'WEB-DL', None,
-                                                   datetime.date(2010, 11, 23))
+                                                   date(2010, 11, 23))
     },
 }
 
@@ -191,7 +191,7 @@ combination_test_cases = [
     ['standard']),
 
     (r'/Test/TV/Jimmy Fallon/Season 2/Jimmy Fallon - 2010-12-15 - blah.avi',
-     ParseResult(None, 'Jimmy Fallon', extra_info='blah', air_date=datetime.date(2010, 12, 15)),
+     ParseResult(None, 'Jimmy Fallon', extra_info='blah', air_date=date(2010, 12, 15)),
      ['scene_date_format']),
 
     (r'/X/30 Rock/Season 4/30 Rock - 4x22 -.avi',
@@ -224,9 +224,11 @@ failure_cases = ['7sins-jfcs01e09-720p-bluray-x264']
 class UnicodeTests(SiCKRAGETestDBCase):
     def __init__(self, something):
         super(UnicodeTests, self).__init__(something)
-        super(UnicodeTests, self).setUp()
-        self.show = TVShow(1, 1, 'en')
+        self.setUp()
+        self.show = TVShow(1, 1, 'en', dbload=False)
         self.show.name = "The Big Bang Theory"
+        self.show.saveToDB()
+        self.show.loadFromDB(skipNFO=True)
 
     def _test_unicode(self, name, result):
         np = NameParser(True, showObj=self.show)
@@ -294,7 +296,9 @@ class BasicTests(SiCKRAGETestDBCase):
     def __init__(self, something):
         super(BasicTests, self).__init__(something)
         super(BasicTests, self).setUp()
-        self.show = TVShow(1, 1, 'en')
+        self.show = TVShow(1, 1, 'en', dbload=False)
+        self.show.saveToDB()
+        self.show.loadFromDB(skipNFO=True)
 
     def _test_names(self, np, section, transform=None, verbose=False):
         if VERBOSE or verbose:

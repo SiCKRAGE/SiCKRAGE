@@ -23,8 +23,8 @@ from __future__ import unicode_literals
 from base64 import b64encode
 
 import sickrage
-from sickrage.clients import GenericClient
-from sickrage.clients.synchronousdeluge.client import DelugeClient
+from clients import GenericClient
+from clients.synchronousdeluge.client import DelugeClient
 
 
 class DelugeDAPI(GenericClient):
@@ -53,7 +53,7 @@ class DelugeDAPI(GenericClient):
         #     label = sickrage.TORRENT_LABEL_ANIME
 
         options = {
-            'add_paused': sickrage.TORRENT_PAUSED
+            'add_paused': sickrage.srCore.CONFIG.TORRENT_PAUSED
         }
 
         remote_torrent = self.drpc.add_torrent_magnet(result.url, options, result.hash)
@@ -75,7 +75,7 @@ class DelugeDAPI(GenericClient):
             return None
 
         options = {
-            'add_paused': sickrage.TORRENT_PAUSED
+            'add_paused': sickrage.srCore.CONFIG.TORRENT_PAUSED
         }
 
         remote_torrent = self.drpc.add_torrent_file(result.name + '.torrent', result.content, options, result.hash)
@@ -89,11 +89,11 @@ class DelugeDAPI(GenericClient):
 
     def _set_torrent_label(self, result):
 
-        label = sickrage.TORRENT_LABEL
+        label = sickrage.srCore.CONFIG.TORRENT_LABEL
         if result.show.is_anime:
-            label = sickrage.TORRENT_LABEL_ANIME
+            label = sickrage.srCore.CONFIG.TORRENT_LABEL_ANIME
         if ' ' in label:
-            sickrage.LOGGER.error(self.name + ': Invalid label. Label must not contain a space')
+            sickrage.srCore.LOGGER.error(self.name + ': Invalid label. Label must not contain a space')
             return False
 
         if label:
@@ -113,14 +113,14 @@ class DelugeDAPI(GenericClient):
 
     def _set_torrent_path(self, result):
 
-        path = sickrage.TORRENT_PATH
+        path = sickrage.srCore.CONFIG.TORRENT_PATH
         if path:
             return self.drpc.set_torrent_path(result.hash, path)
         return True
 
     def _set_torrent_pause(self, result):
 
-        if sickrage.TORRENT_PAUSED:
+        if sickrage.srCore.CONFIG.TORRENT_PAUSED:
             return self.drpc.pause_torrent(result.hash)
         return True
 
@@ -161,6 +161,7 @@ class DelugeRPC(object):
         torrent_id = False
         try:
             self.connect()
+            # noinspection PyUnresolvedReferences
             torrent_id = self.client.core.add_torrent_magnet(torrent, options).get()
             if not torrent_id:
                 torrent_id = self._check_torrent(torrent_hash)
@@ -176,6 +177,7 @@ class DelugeRPC(object):
         torrent_id = False
         try:
             self.connect()
+            # noinspection PyUnresolvedReferences
             torrent_id = self.client.core.add_torrent_file(filename, b64encode(torrent), options).get()
             if not torrent_id:
                 torrent_id = self._check_torrent(torrent_hash)
@@ -190,6 +192,7 @@ class DelugeRPC(object):
     def set_torrent_label(self, torrent_id, label):
         try:
             self.connect()
+            # noinspection PyUnresolvedReferences
             self.client.label.set_torrent(torrent_id, label).get()
         except Exception:
             return False
@@ -201,7 +204,9 @@ class DelugeRPC(object):
     def set_torrent_path(self, torrent_id, path):
         try:
             self.connect()
+            # noinspection PyUnresolvedReferences
             self.client.core.set_torrent_move_completed_path(torrent_id, path).get()
+            # noinspection PyUnresolvedReferences
             self.client.core.set_torrent_move_completed(torrent_id, 1).get()
         except Exception:
             return False
@@ -214,6 +219,7 @@ class DelugeRPC(object):
         try:
             self.connect()
             if priority:
+                # noinspection PyUnresolvedReferences
                 self.client.core.queue_top([torrent_ids]).get()
         except Exception, err:
             return False
@@ -225,7 +231,9 @@ class DelugeRPC(object):
     def set_torrent_ratio(self, torrent_ids, ratio):
         try:
             self.connect()
+            # noinspection PyUnresolvedReferences
             self.client.core.set_torrent_stop_at_ratio(torrent_ids, True).get()
+            # noinspection PyUnresolvedReferences
             self.client.core.set_torrent_stop_ratio(torrent_ids, ratio).get()
         except Exception, err:
             return False
@@ -237,6 +245,7 @@ class DelugeRPC(object):
     def pause_torrent(self, torrent_ids):
         try:
             self.connect()
+            # noinspection PyUnresolvedReferences
             self.client.core.pause_torrent(torrent_ids).get()
         except Exception:
             return False
@@ -249,9 +258,10 @@ class DelugeRPC(object):
         self.client.disconnect()
 
     def _check_torrent(self, torrent_hash):
+        # noinspection PyUnresolvedReferences
         torrent_id = self.client.core.get_torrent_status(torrent_hash, {}).get()
         if torrent_id[b'hash']:
-            sickrage.LOGGER.debug('DelugeD: Torrent already exists in Deluge')
+            sickrage.srCore.LOGGER.debug('DelugeD: Torrent already exists in Deluge')
             return torrent_hash
         return False
 

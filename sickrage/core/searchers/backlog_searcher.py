@@ -18,22 +18,23 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import threading
 
+from datetime import datetime, date, timedelta
+
 import sickrage
-from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
-from sickrage.core.databases import main_db
-from sickrage.core.queues.search import BacklogQueueItem
-from sickrage.core.ui import ProgressIndicator
+from core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
+from core.databases import main_db
+from core.queues.search import BacklogQueueItem
+from core.ui import ProgressIndicator
 
 
-class BacklogSearcher(object):
+class srBacklogSearcher(object):
     def __init__(self, *args, **kwargs):
         self.name = "BACKLOG"
         self.lock = threading.Lock()
         self._lastBacklog = self._get_lastBacklog()
-        self.cycleTime = sickrage.BACKLOG_SEARCHER_FREQ / 60 / 24
+        self.cycleTime = sickrage.srCore.CONFIG.BACKLOG_SEARCHER_FREQ / 60 / 24
         self.amActive = False
         self.amPaused = False
         self.amWaiting = False
@@ -50,13 +51,13 @@ class BacklogSearcher(object):
 
     def forceSearch(self):
         self._set_lastBacklog(1)
-        self.lastRun = datetime.datetime.fromordinal(1)
+        self.lastRun = datetime.fromordinal(1)
 
     def nextRun(self):
         if self._lastBacklog <= 1:
-            return datetime.date.today()
+            return date.today()
         else:
-            return datetime.date.fromordinal(self._lastBacklog + self.cycleTime)
+            return date.fromordinal(self._lastBacklog + self.cycleTime)
 
     def _resetPI(self):
         self.percentDone = 0
@@ -69,13 +70,13 @@ class BacklogSearcher(object):
             return None
 
     def am_running(self):
-        sickrage.LOGGER.debug("amWaiting: " + str(self.amWaiting) + ", amActive: " + str(self.amActive))
+        sickrage.srCore.LOGGER.debug("amWaiting: " + str(self.amWaiting) + ", amActive: " + str(self.amActive))
         return (not self.amWaiting) and self.amActive
 
     def searchBacklog(self, which_shows=None):
 
         if self.amActive:
-            sickrage.LOGGER.debug("Backlog is still running, not starting it again")
+            sickrage.srCore.LOGGER.debug("Backlog is still running, not starting it again")
             return
 
         self.amActive = True
@@ -84,18 +85,18 @@ class BacklogSearcher(object):
         if which_shows:
             show_list = which_shows
         else:
-            show_list = sickrage.showList
+            show_list = sickrage.srCore.SHOWLIST
 
         self._get_lastBacklog()
 
-        curDate = datetime.date.today().toordinal()
-        fromDate = datetime.date.fromordinal(1)
+        curDate = date.today().toordinal()
+        fromDate = date.fromordinal(1)
 
         if not which_shows and not ((curDate - self._lastBacklog) >= self.cycleTime):
-            sickrage.LOGGER.info(
+            sickrage.srCore.LOGGER.info(
                     "Running limited backlog on missed episodes " + str(
-                        sickrage.BACKLOG_DAYS) + " day(s) and older only")
-            fromDate = datetime.date.today() - datetime.timedelta(days=sickrage.BACKLOG_DAYS)
+                            sickrage.srCore.CONFIG.BACKLOG_DAYS) + " day(s) and older only")
+            fromDate = date.today() - timedelta(days=sickrage.srCore.CONFIG.BACKLOG_DAYS)
 
         # go through non air-by-date shows and see if they need any episodes
         for curShow in show_list:
@@ -109,13 +110,13 @@ class BacklogSearcher(object):
                 self.currentSearchInfo = {'title': curShow.name + " Season " + str(season)}
 
                 backlog_queue_item = BacklogQueueItem(curShow, segment)
-                sickrage.SEARCHQUEUE.add_item(backlog_queue_item)  # @UndefinedVariable
+                sickrage.srCore.SEARCHQUEUE.add_item(backlog_queue_item)  # @UndefinedVariable
             else:
-                sickrage.LOGGER.debug("Nothing needs to be downloaded for {show_name}, skipping".format(show_name=curShow.name))
+                sickrage.srCore.LOGGER.debug("Nothing needs to be downloaded for {show_name}, skipping".format(show_name=curShow.name))
 
         # don't consider this an actual backlog search if we only did recent eps
         # or if we only did certain shows
-        if fromDate == datetime.date.fromordinal(1) and not which_shows:
+        if fromDate == date.fromordinal(1) and not which_shows:
             self._set_lastBacklog(curDate)
 
         self.amActive = False
@@ -123,7 +124,7 @@ class BacklogSearcher(object):
 
     def _get_lastBacklog(self):
 
-        sickrage.LOGGER.debug("Retrieving the last check time from the DB")
+        sickrage.srCore.LOGGER.debug("Retrieving the last check time from the DB")
 
         sqlResults = main_db.MainDB().select("SELECT * FROM info")
 
@@ -133,7 +134,7 @@ class BacklogSearcher(object):
             lastBacklog = 1
         else:
             lastBacklog = int(sqlResults[0][b"last_backlog"])
-            if lastBacklog > datetime.date.today().toordinal():
+            if lastBacklog > date.today().toordinal():
                 lastBacklog = 1
 
         self._lastBacklog = lastBacklog
@@ -141,12 +142,12 @@ class BacklogSearcher(object):
 
     def _get_segments(self, show, fromDate):
         if show.paused:
-            sickrage.LOGGER.debug("Skipping backlog for {show_name} because the show is paused".format(show_name=show.name))
+            sickrage.srCore.LOGGER.debug("Skipping backlog for {show_name} because the show is paused".format(show_name=show.name))
             return {}
 
         anyQualities, bestQualities = Quality.splitQuality(show.quality)  # @UnusedVariable
 
-        sickrage.LOGGER.debug("Seeing if we need anything from {show_name}".format(show_name=show.name))
+        sickrage.srCore.LOGGER.debug("Seeing if we need anything from {show_name}".format(show_name=show.name))
 
         sqlResults = main_db.MainDB().select(
             "SELECT status, season, episode FROM tv_episodes WHERE season > 0 AND airdate > ? AND showid = ?",
@@ -182,7 +183,7 @@ class BacklogSearcher(object):
     @classmethod
     def _set_lastBacklog(self, when):
 
-        sickrage.LOGGER.debug("Setting the last backlog in the DB to " + str(when))
+        sickrage.srCore.LOGGER.debug("Setting the last backlog in the DB to " + str(when))
 
         sqlResults = main_db.MainDB().select("SELECT * FROM info")
 
@@ -193,5 +194,5 @@ class BacklogSearcher(object):
 
 
 def get_backlog_cycle_time():
-    cycletime = sickrage.DAILY_SEARCHER_FREQ * 2 + 7
+    cycletime = sickrage.srCore.CONFIG.DAILY_SEARCHER_FREQ * 2 + 7
     return max([cycletime, 720])

@@ -21,14 +21,15 @@
 from __future__ import unicode_literals
 
 import urllib
+
 from datetime import datetime
 
 import sickrage
-from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.classes import Proper
-from sickrage.core.helpers.show_names import makeSceneSearchString, \
+from core.caches.tv_cache import TVCache
+from core.classes import Proper
+from core.helpers.show_names import makeSceneSearchString, \
     makeSceneSeasonSearchString
-from sickrage.providers import NZBProvider
+from providers import NZBProvider
 
 
 class OmgwtfnzbsProvider(NZBProvider):
@@ -47,7 +48,7 @@ class OmgwtfnzbsProvider(NZBProvider):
     def _checkAuth(self):
 
         if not self.username or not self.api_key:
-            sickrage.LOGGER.warning("Invalid api key. Check your settings")
+            sickrage.srCore.LOGGER.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -66,13 +67,13 @@ class OmgwtfnzbsProvider(NZBProvider):
                 description_text = parsedJSON.get('notice')
 
                 if 'information is incorrect' in parsedJSON.get('notice'):
-                    sickrage.LOGGER.warning("Invalid api key. Check your settings")
+                    sickrage.srCore.LOGGER.warning("Invalid api key. Check your settings")
 
                 elif '0 results matched your terms' in parsedJSON.get('notice'):
                     return True
 
                 else:
-                    sickrage.LOGGER.debug("Unknown error: %s" % description_text)
+                    sickrage.srCore.LOGGER.debug("Unknown error: %s" % description_text)
                     return False
 
             return True
@@ -102,15 +103,15 @@ class OmgwtfnzbsProvider(NZBProvider):
                   'api': self.api_key,
                   'eng': 1,
                   'catid': '19,20',  # SD,HD
-                  'retention': sickrage.USENET_RETENTION,
+                  'retention': sickrage.srCore.CONFIG.USENET_RETENTION,
                   'search': search}
 
         if retention or not params[b'retention']:
             params[b'retention'] = retention
 
         searchURL = 'https://api.omgwtfnzbs.org/json/?' + urllib.urlencode(params)
-        sickrage.LOGGER.debug("Search string: %s" % params)
-        sickrage.LOGGER.debug("Search URL: %s" % searchURL)
+        sickrage.srCore.LOGGER.debug("Search string: %s" % params)
+        sickrage.srCore.LOGGER.debug("Search URL: %s" % searchURL)
 
         parsedJSON = self.getURL(searchURL, json=True)
         if not parsedJSON:
@@ -121,7 +122,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
             for item in parsedJSON:
                 if 'release' in item and 'getnzb' in item:
-                    sickrage.LOGGER.debug("Found result: %s " % item.get('title'))
+                    sickrage.srCore.LOGGER.debug("Found result: %s " % item.get('title'))
                     results.append(item)
 
             return results
@@ -181,6 +182,6 @@ class OmgwtfnzbsCache(TVCache):
 
         rss_url = 'https://rss.omgwtfnzbs.org/rss-download.php?' + urllib.urlencode(params)
 
-        sickrage.LOGGER.debug("Cache update URL: %s" % rss_url)
+        sickrage.srCore.LOGGER.debug("Cache update URL: %s" % rss_url)
 
         return self.getRSSFeed(rss_url)

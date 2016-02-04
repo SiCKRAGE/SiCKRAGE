@@ -1,11 +1,12 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    import sickrage
-    import datetime
+    from datetime import datetime, date, timedelta
     import re
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
-    from sickrage.core.helpers import anon_url, srdatetime
+
+    import sickrage
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import Quality, qualityPresets, qualityPresetStrings
+    from core.helpers import anon_url, srdatetime
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/addTrendingShow.js?${srPID}"></script>

@@ -1,14 +1,15 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import re
-    import datetime
+    from datetime import datetime, date, timedelta
+
     import sickrage
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
-    from sickrage.core.helpers import anon_url, srdatetime
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import Quality, qualityPresets, qualityPresetStrings
+    from core.helpers import anon_url, srdatetime
 %>
 <%block name="metas">
-    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.SORT_ARTICLE}">
+    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srCore.CONFIG.SORT_ARTICLE}">
 </%block>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/trendingShows.js"></script>
@@ -17,7 +18,7 @@
 <div id="container">
 % if not trending_shows:
     <div class="trakt_show" style="width:100%; margin-top:20px">
-        <p class="red-text">Trakt API did not return any results, please check your config.
+        <p class="red-text">Trakt API did not return any results, please check your sickrage.srCore.CONFIG.
     </div>
 % else:
 % for cur_show in trending_shows:

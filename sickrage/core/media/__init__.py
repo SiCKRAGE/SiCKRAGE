@@ -4,8 +4,8 @@ import os
 from mimetypes import guess_type
 
 import sickrage
-from sickrage.core.exceptions import MultipleShowObjectsException
-from sickrage.core.helpers import findCertainShow
+from core.exceptions import MultipleShowObjectsException
+from core.helpers import findCertainShow
 
 class Media(object):
     def __init__(self, indexer_id, media_format=None):
@@ -51,7 +51,7 @@ class Media(object):
         :return: The root folder containing the media
         """
 
-        return os.path.join(sickrage.GUI_DIR)
+        return os.path.join(sickrage.srCore.CONFIG.GUI_DIR)
 
     def get_media_type(self):
         """
@@ -71,7 +71,7 @@ class Media(object):
         """
 
         try:
-            return findCertainShow(sickrage.showList, self.indexer_id)
+            return findCertainShow(sickrage.srCore.SHOWLIST, self.indexer_id)
         except MultipleShowObjectsException:
             return None
 

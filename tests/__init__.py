@@ -26,22 +26,49 @@ import socket
 import threading
 import unittest
 
-from configobj import ConfigObj
+from tornado.ioloop import IOLoop
 
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.core.caches.name_cache import nameCache
-from sickrage.core.databases import Connection, cache_db, failed_db, main_db
-from sickrage.core.helpers import removetree, get_lan_ip
-from sickrage.core.helpers.encoding import encodingInit
-from sickrage.core.scheduler import Scheduler
-from sickrage.core.srconfig import srConfig
-from sickrage.core.srlogger import srLogger
-from sickrage.core.tv import episode, show
-from sickrage.core.webserver import SRWebServer
-from sickrage.indexers.indexer_api import indexerApi
-from sickrage.metadata import get_metadata_generator_dict
-from sickrage.providers import NewznabProvider, GenericProvider, NZBProvider, TorrentProvider, TorrentRssProvider
+from core import encodingInit, srLogger
+from core import webserver
+from core.caches import tv_cache
+from core.caches.name_cache import srNameCache
+from core.classes import AttrDict
+from core.databases import Connection
+from core.databases import cache_db
+from core.databases import failed_db
+from core.databases import main_db
+from core.helpers import removetree
+from core.srscheduler import srScheduler
+from core.tv import episode
+from indexers import srIndexerApi
+from metadata import get_metadata_generator_dict
+from notifiers.boxcar import BoxcarNotifier
+from notifiers.boxcar2 import Boxcar2Notifier
+from notifiers.emailnotify import EmailNotifier
+from notifiers.emby import EMBYNotifier
+from notifiers.freemobile import FreeMobileNotifier
+from notifiers.growl import GrowlNotifier
+from notifiers.kodi import KODINotifier
+from notifiers.libnotify import LibnotifyNotifier
+from notifiers.nma import NMA_Notifier
+from notifiers.nmj import NMJNotifier
+from notifiers.nmjv2 import NMJv2Notifier
+from notifiers.plex import PLEXNotifier
+from notifiers.prowl import ProwlNotifier
+from notifiers.pushalot import PushalotNotifier
+from notifiers.pushbullet import PushbulletNotifier
+from notifiers.pushover import PushoverNotifier
+from notifiers.pytivo import pyTivoNotifier
+from notifiers.synoindex import synoIndexNotifier
+from notifiers.synologynotifier import synologyNotifier
+from notifiers.trakt import TraktNotifier
+from notifiers.tweet import TwitterNotifier
+from providers import GenericProvider
+from providers import NZBProvider
+from providers import NewznabProvider
+from providers import TorrentProvider
+from providers import TorrentRssProvider
 
 threading.currentThread().setName('TESTS')
 socket.setdefaulttimeout(30)
@@ -70,100 +97,123 @@ SHOWDIR = os.path.join(TESTDIR, SHOWNAME + " final")
 # prepare env functions
 # =================
 def createTestLogFolder():
-    if not os.path.isdir(sickrage.LOG_DIR):
-        os.mkdir(sickrage.LOG_DIR)
+    if not os.path.isdir(sickrage.srCore.CONFIG.LOG_DIR):
+        os.mkdir(sickrage.srCore.CONFIG.LOG_DIR)
 
 
 def createTestCacheFolder():
-    if not os.path.isdir(sickrage.CACHE_DIR):
-        os.mkdir(sickrage.CACHE_DIR)
+    if not os.path.isdir(sickrage.srCore.CONFIG.CACHE_DIR):
+        os.mkdir(sickrage.srCore.CONFIG.CACHE_DIR)
 
-
-# call env functions at appropriate time during sickrage var setup
-encodingInit()
 
 # =================
 # sickrage globals
 # =================
-sickrage.SYS_ENCODING = 'UTF-8'
+import core
 
-sickrage.INDEXER_API = indexerApi
+threading.Thread(None, IOLoop.instance().start).start()
 
-sickrage.NAMECACHE = nameCache()
+sickrage.srCore.DATA_DIR = TESTDIR
+CONFIG_FILE = os.path.join(sickrage.srCore.DATA_DIR, "config.ini")
+sickrage.srCore.PROG_DIR = os.path.abspath(os.path.join(TESTDIR, os.pardir, 'sickrage'))
+sickrage.srCore = core.Core(CONFIG_FILE, sickrage.srCore.DATA_DIR)
+sickrage.srCore.CONFIG.SYS_ENCODING = encodingInit()
+sickrage.srCore.CONFIG.SSL_VERIFY = False
+sickrage.srCore.CONFIG.PROXY_SETTING = ''
+sickrage.srCore.SHOWLIST = []
 
-sickrage.showList = []
-sickrage.QUALITY_DEFAULT = 4  # hdtv
-sickrage.FLATTEN_FOLDERS_DEFAULT = 0
-
-sickrage.NAMING_PATTERN = ''
-sickrage.NAMING_ABD_PATTERN = ''
-sickrage.NAMING_SPORTS_PATTERN = ''
-sickrage.NAMING_MULTI_EP = 1
-
-sickrage.PROVIDER_ORDER = ["sick_beard_index"]
-sickrage.newznabProviderList = NewznabProvider.getProviderList(NewznabProvider.getDefaultProviders())
-sickrage.torrentRssProviderList = TorrentRssProvider.getProviderList(TorrentRssProvider.getDefaultProviders())
-sickrage.metadataProvideDict = get_metadata_generator_dict()
-sickrage.GUI_NAME = "slick"
-sickrage.THEME_NAME = "dark"
-sickrage.ROOT_DIR = sickrage.DATA_DIR = TESTDIR
-sickrage.PROG_DIR = os.path.abspath(os.path.join(TESTDIR, os.pardir, 'sickrage'))
-sickrage.GUI_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'gui', sickrage.GUI_NAME)
-sickrage.CONFIG_FILE = os.path.join(sickrage.DATA_DIR, "config.ini")
-sickrage.CFG = ConfigObj(sickrage.CONFIG_FILE)
-sickrage.TV_DOWNLOAD_DIR = FILEDIR
-sickrage.HTTPS_CERT = "server.crt"
-sickrage.HTTPS_KEY = "server.key"
-sickrage.WEB_USERNAME = "sickrage"
-sickrage.WEB_PASSWORD = "sickrage"
-sickrage.WEB_COOKIE_SECRET = "sickrage"
-sickrage.WEB_ROOT = ""
-sickrage.WEB_SERVER = None
-sickrage.CPU_PRESET = "NORMAL"
-sickrage.EXTRA_SCRIPTS = []
-
-sickrage.CACHE_DIR = os.path.join(TESTDIR, 'cache')
+sickrage.srCore.CONFIG.CACHE_DIR = os.path.join(TESTDIR, 'cache')
 createTestCacheFolder()
 
-sickrage.LOG_DIR = os.path.join(TESTDIR, 'Logs')
+sickrage.srCore.CONFIG.LOG_DIR = os.path.join(TESTDIR, 'Logs')
 createTestLogFolder()
 
-sickrage.LOG_FILE = os.path.join(sickrage.LOG_DIR, 'sickrage.log')
-sickrage.LOG_NR = 5
-sickrage.LOG_SIZE = 1048576
+sickrage.srCore.CONFIG.IGNORE_WORDS = 'german, french, core2hd, dutch, swedish, reenc, MrLss'
+sickrage.srCore.CONFIG.QUALITY_DEFAULT = 4  # hdtv
+sickrage.srCore.CONFIG.FLATTEN_FOLDERS_DEFAULT = 0
 
-sickrage.LOGGER = srLogger(logFile=sickrage.LOG_FILE, logSize=sickrage.LOG_SIZE, logNr=sickrage.LOG_NR,
-                           fileLogging=sickrage.LOG_DIR, debugLogging=True)
+sickrage.srCore.CONFIG.NAMING_PATTERN = ''
+sickrage.srCore.CONFIG.NAMING_ABD_PATTERN = ''
+sickrage.srCore.CONFIG.NAMING_SPORTS_PATTERN = ''
+sickrage.srCore.CONFIG.NAMING_MULTI_EP = 1
 
-sickrage.CUR_COMMIT_HASH = srConfig.check_setting_str(sickrage.CFG, 'General', 'cur_commit_hash', '')
-sickrage.GIT_USERNAME = srConfig.check_setting_str(sickrage.CFG, 'General', 'git_username', '')
-sickrage.GIT_PASSWORD = srConfig.check_setting_str(sickrage.CFG, 'General', 'git_password', '',
-                                                   censor_log=True)
+sickrage.srCore.CONFIG.PROVIDER_ORDER = ["sick_beard_index"]
+sickrage.srCore.newznabProviderList = NewznabProvider.getProviderList(NewznabProvider.getDefaultProviders())
+sickrage.srCore.torrentRssProviderList = TorrentRssProvider.getProviderList(
+    TorrentRssProvider.getDefaultProviders())
+sickrage.srCore.metadataProviderDict = get_metadata_generator_dict()
+sickrage.srCore.CONFIG.GUI_NAME = "slick"
+sickrage.srCore.CONFIG.THEME_NAME = "dark"
+sickrage.srCore.CONFIG.GUI_DIR = os.path.join(sickrage.srCore.PROG_DIR, 'core', 'webserver', 'gui',
+                                              sickrage.srCore.CONFIG.GUI_NAME)
+sickrage.srCore.CONFIG.TV_DOWNLOAD_DIR = FILEDIR
+sickrage.srCore.CONFIG.HTTPS_CERT = "server.crt"
+sickrage.srCore.CONFIG.HTTPS_KEY = "server.key"
+sickrage.srCore.CONFIG.WEB_USERNAME = "sickrage"
+sickrage.srCore.CONFIG.WEB_PASSWORD = "sickrage"
+sickrage.srCore.CONFIG.WEB_COOKIE_SECRET = "sickrage"
+sickrage.srCore.CONFIG.WEB_ROOT = ""
+sickrage.srCore.WEBSERVER = None
+sickrage.srCore.CONFIG.CPU_PRESET = "NORMAL"
+sickrage.srCore.CONFIG.EXTRA_SCRIPTS = []
 
-sickrage.providersDict = {
+sickrage.srCore.CONFIG.LOG_FILE = os.path.join(sickrage.srCore.CONFIG.LOG_DIR, 'sickrage.log')
+sickrage.srCore.CONFIG.LOG_NR = 5
+sickrage.srCore.CONFIG.LOG_SIZE = 1048576
+
+LOGGER = srLogger(logFile=sickrage.srCore.CONFIG.LOG_FILE, logSize=sickrage.srCore.CONFIG.LOG_SIZE,
+                  logNr=sickrage.srCore.CONFIG.LOG_NR,
+                  fileLogging=sickrage.srCore.CONFIG.LOG_DIR, debugLogging=True)
+
+sickrage.srCore.CONFIG.GIT_USERNAME = sickrage.srCore.CONFIG.check_setting_str('General', 'git_username', '')
+sickrage.srCore.CONFIG.GIT_PASSWORD = sickrage.srCore.CONFIG.check_setting_str('General', 'git_password', '',
+                                                                               censor_log=True)
+
+sickrage.srCore.providersDict = {
     GenericProvider.NZB: {p.id: p for p in NZBProvider.getProviderList()},
     GenericProvider.TORRENT: {p.id: p for p in TorrentProvider.getProviderList()},
 }
 
-sickrage.Scheduler = Scheduler()
+sickrage.srCore.INDEXER_API = srIndexerApi
+sickrage.srCore.SCHEDULER = srScheduler()
+sickrage.srCore.NAMECACHE = srNameCache()
+
+sickrage.srCore.NOTIFIERS = AttrDict(
+    libnotify=LibnotifyNotifier(),
+    kodi_notifier=KODINotifier(),
+    plex_notifier=PLEXNotifier(),
+    emby_notifier=EMBYNotifier(),
+    nmj_notifier=NMJNotifier(),
+    nmjv2_notifier=NMJv2Notifier(),
+    synoindex_notifier=synoIndexNotifier(),
+    synology_notifier=synologyNotifier(),
+    pytivo_notifier=pyTivoNotifier(),
+    growl_notifier=GrowlNotifier(),
+    prowl_notifier=ProwlNotifier(),
+    libnotify_notifier=LibnotifyNotifier(),
+    pushover_notifier=PushoverNotifier(),
+    boxcar_notifier=BoxcarNotifier(),
+    boxcar2_notifier=Boxcar2Notifier(),
+    nma_notifier=NMA_Notifier(),
+    pushalot_notifier=PushalotNotifier(),
+    pushbullet_notifier=PushbulletNotifier(),
+    freemobile_notifier=FreeMobileNotifier(),
+    twitter_notifier=TwitterNotifier(),
+    trakt_notifier=TraktNotifier(),
+    email_notifier=EmailNotifier()
+)
 
 
 # =================
 # dummy functions
 # =================
-def _dummy_loadFromDB(self, skipNFO=False):
-    return True
-
-show.TVShow.loadFromDB = _dummy_loadFromDB
-
-
-def _dummy_saveConfig(cfgfile=sickrage.CONFIG_FILE):
+def _dummy_saveConfig(cfgfile=sickrage.srCore.CONFIG_FILE):
     return True
 
 
 # this overrides the sickrage save_config which gets called during a db upgrade
-sickrage.core.saveall = _dummy_saveConfig
-srConfig.save_config = _dummy_saveConfig
+sickrage.srCore.save_all = _dummy_saveConfig
+sickrage.srCore.CONFIG.save_config = _dummy_saveConfig
 
 
 # the real one tries to contact tvdb just stop it from getting more info on the ep
@@ -184,16 +234,16 @@ class SiCKRAGETestCase(unittest.TestCase):
 
 
 class SiCKRAGETestDBCase(SiCKRAGETestCase):
-    def setUp(self, web=False):
-        setUp_test_db()
-        sickrage.showList = []
+    def setUp(self, web=False, force_db=False):
+        sickrage.srCore.SHOWLIST = []
+        setUp_test_db(force_db)
         setUp_test_episode_file()
         setUp_test_show_dir()
         if web:
             setUp_test_web_server()
 
     def tearDown(self, web=False):
-        sickrage.showList = []
+        sickrage.srCore.SHOWLIST = []
         tearDown_test_episode_file()
         tearDown_test_show_dir()
         if web:
@@ -208,10 +258,10 @@ class TestCacheDBConnection(Connection, object):
         try:
             if not self.hasTable(providerName):
                 self.action(
-                        "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
+                    "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
             else:
                 sqlResults = self.select(
-                        "SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
+                    "SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
 
                 for cur_dupe in sqlResults:
                     self.action("DELETE FROM [" + providerName + "] WHERE url = ?", [cur_dupe[b"url"]])
@@ -247,27 +297,30 @@ tv_cache.CacheDBConnection = TestCacheDBConnection
 # =================
 # test functions
 # =================
-def setUp_test_db():
+def setUp_test_db(force=False):
     """upgrades the db to the latest version
     """
 
     global TESTDB_INITALIZED
 
-    if not TESTDB_INITALIZED:
+    if not TESTDB_INITALIZED or force:
         # remove old db files
         tearDown_test_db()
 
-        # upgrading the db
+        # upgrade main
         main_db.MainDB().InitialSchema().upgrade()
 
-        # fix up any db problems
+        # sanity check main
         main_db.MainDB().SanityCheck()
 
-        # and for cachedb too
+        # upgrade cache
         cache_db.CacheDB().InitialSchema().upgrade()
 
-        # and for faileddb too
+        # upgrade failed
         failed_db.FailedDB().InitialSchema().upgrade()
+
+        # populate scene exceiptions table
+        #retrieve_exceptions(False, False)
 
         TESTDB_INITALIZED = True
 
@@ -312,31 +365,13 @@ def tearDown_test_show_dir():
 
 
 def setUp_test_web_server():
-    sickrage.WEB_SERVER = SRWebServer(**{
-        'port': 8081,
-        'host': get_lan_ip(),
-        'data_root': sickrage.DATA_DIR,
-        'gui_root': sickrage.GUI_DIR,
-        'web_root': sickrage.WEB_ROOT,
-        'log_dir': sickrage.WEB_LOG or sickrage.LOG_DIR,
-        'username': sickrage.WEB_USERNAME,
-        'password': sickrage.WEB_PASSWORD,
-        'enable_https': sickrage.ENABLE_HTTPS,
-        'handle_reverse_proxy': sickrage.HANDLE_REVERSE_PROXY,
-        'https_cert': os.path.join(sickrage.ROOT_DIR, sickrage.HTTPS_CERT),
-        'https_key': os.path.join(sickrage.ROOT_DIR, sickrage.HTTPS_KEY),
-        'daemonize': sickrage.DAEMONIZE,
-        'pidfile': sickrage.PIDFILE,
-        'stop_timeout': 3,
-        'nolaunch': sickrage.WEB_NOLAUNCH
-    })
-
-    threading.Thread(None, sickrage.WEB_SERVER.start).start()
+    sickrage.srCore.WEBSERVER = webserver.srWebServer()
+    threading.Thread(None, sickrage.srCore.WEBSERVER.start).start()
 
 
 def tearDown_test_web_server():
-    if sickrage.WEB_SERVER:
-        sickrage.WEB_SERVER.server_shutdown()
+    if sickrage.srCore.WEBSERVER:
+        sickrage.srCore.WEBSERVER.server_shutdown()
 
 
 def load_tests(loader, tests, pattern):

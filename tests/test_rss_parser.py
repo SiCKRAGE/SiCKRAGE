@@ -22,7 +22,7 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-from sickrage.providers import sortedProviderDict
+from providers import sortedProviderDict
 from tests import SiCKRAGETestCase
 
 

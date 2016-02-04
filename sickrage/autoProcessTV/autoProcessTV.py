@@ -24,15 +24,17 @@ import os.path
 import sys
 
 # Try importing Python 2 modules using new names
+import sickrage
+
 try:
     import ConfigParser as configparser
     import urllib2
     from urllib import urlencode
-
-# On error import Python 3 modules
 except ImportError:
     import configparser
+    # noinspection PyUnresolvedReferences
     import urllib.request as urllib2
+    # noinspection PyUnresolvedReferences,PyUnresolvedReferences
     from urllib.parse import urlencode
 
 # workaround for broken urllib2 in python 2.6.5: wrong credentials lead to an infinite recursion
@@ -78,22 +80,22 @@ def processEpisode(dir_to_process, org_NZB_name=None, status=None):
             print ("Loading config from " + config_filename + "\n")
 
             with open(config_filename, "r") as fp:
-                config.readfp(fp)
+                sickrage.srCore.CONFIG.readfp(fp)
 
             # Replace default values with config_file values
-            host = config.get("SiCKRAGE", "host")
-            port = config.get("SiCKRAGE", "port")
-            username = config.get("SiCKRAGE", "username")
-            password = config.get("SiCKRAGE", "password")
+            host = sickrage.srCore.CONFIG.get("SiCKRAGE", "host")
+            port = sickrage.srCore.CONFIG.get("SiCKRAGE", "port")
+            username = sickrage.srCore.CONFIG.get("SiCKRAGE", "username")
+            password = sickrage.srCore.CONFIG.get("SiCKRAGE", "password")
 
             try:
-                ssl = int(config.get("SiCKRAGE", "ssl"))
+                ssl = int(sickrage.srCore.CONFIG.get("SiCKRAGE", "ssl"))
 
             except (configparser.NoOptionError, ValueError):
                 pass
 
             try:
-                web_root = config.get("SiCKRAGE", "web_root")
+                web_root = sickrage.srCore.CONFIG.get("SiCKRAGE", "web_root")
                 if not web_root.startswith("/"):
                     web_root = "/" + web_root
 

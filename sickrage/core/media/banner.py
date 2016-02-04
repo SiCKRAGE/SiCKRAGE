@@ -20,8 +20,8 @@ from __future__ import unicode_literals
 
 import os
 
-from sickrage.core.caches.image_cache import ImageCache
-from sickrage.core.media import Media
+from core.caches.image_cache import ImageCache
+from core.media import Media
 
 
 class Banner(Media):

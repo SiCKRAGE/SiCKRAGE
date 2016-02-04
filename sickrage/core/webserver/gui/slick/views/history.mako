@@ -1,16 +1,16 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    import sickrage
     import os.path
-    import datetime
+    from datetime import datetime, date, timedelta
     import re
     import time
 
-    from sickrage.providers import GenericProvider
-    from sickrage.core.helpers import srdatetime
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
-    from sickrage.core.common import Quality, statusStrings, Overview
-    from sickrage.core.tv.show.history import History
+    import sickrage
+    from providers import GenericProvider
+    from core.helpers import srdatetime
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
+    from core.common import Quality, statusStrings, Overview
+    from core.tv.show.history import History
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/history.js"></script>
@@ -37,10 +37,10 @@
 
     <span> Layout:
         <select name="HistoryLayout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
-            <option value="${srRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected="selected"')[sickrage.HISTORY_LAYOUT == 'compact']}>
+            <option value="${srRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected="selected"')[sickrage.srCore.CONFIG.HISTORY_LAYOUT == 'compact']}>
                 Compact
             </option>
-            <option value="${srRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected="selected"')[sickrage.HISTORY_LAYOUT == 'detailed']}>
+            <option value="${srRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.HISTORY_LAYOUT == 'detailed']}>
                 Detailed
             </option>
         </select>
@@ -48,7 +48,7 @@
 </div>
 <br>
 
-% if sickrage.HISTORY_LAYOUT == "detailed":
+% if sickrage.srCore.CONFIG.HISTORY_LAYOUT == "detailed":
     <table id="historyTable" class="sickrageTable tablesorter" cellspacing="1" border="0" cellpadding="0">
         <thead>
             <tr>
@@ -71,8 +71,8 @@
             <% curStatus, curQuality = Quality.splitCompositeStatus(int(hItem["action"])) %>
             <tr>
                 <td align="center">
-                    <% airDate = srdatetime.srDateTime.srfdatetime(datetime.datetime.strptime(str(hItem["date"]), History.date_format), show_seconds=True) %>
-                    <% isoDate = datetime.datetime.strptime(str(hItem["date"]), History.date_format).isoformat() %>
+                    <% airDate = srdatetime.srDateTime.srfdatetime(datetime.strptime(str(hItem["date"]), History.date_format), show_seconds=True) %>
+                    <% isoDate = datetime.strptime(str(hItem["date"]), History.date_format).isoformat() %>
                     <time datetime="${isoDate}" class="date">${airDate}</time>
                 </td>
                 <td class="tvShow" width="35%"><a href="${srRoot}/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">${hItem["show_name"]} - ${"S%02i" % int(hItem["season"])}${"E%02i" % int(hItem["episode"])} ${('', '<span class="quality Proper">Proper</span>')["proper" in hItem["resource"].lower() or "repack" in hItem["resource"].lower()]}</a></td>
@@ -119,7 +119,7 @@
                 <th>Episode</th>
                 <th>Snatched</th>
                 <th>Downloaded</th>
-                % if sickrage.USE_SUBTITLES:
+                % if sickrage.srCore.CONFIG.USE_SUBTITLES:
                 <th>Subtitled</th>
                 % endif
                 <th>Quality</th>
@@ -136,8 +136,8 @@
         % for hItem in compactResults:
             <tr>
                 <td align="center">
-                    <% airDate = srdatetime.srDateTime.srfdatetime(datetime.datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format), show_seconds=True) %>
-                    <% isoDate = datetime.datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format).isoformat() %>
+                    <% airDate = srdatetime.srDateTime.srfdatetime(datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format), show_seconds=True) %>
+                    <% isoDate = datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format).isoformat() %>
                     <time datetime="${isoDate}" class="date">${airDate}</time>
                 </td>
                 <td class="tvShow" width="25%">
@@ -170,7 +170,7 @@
                         % endif
                     % endfor
                 </td>
-                % if sickrage.USE_SUBTITLES:
+                % if sickrage.srCore.CONFIG.USE_SUBTITLES:
                 <td align="center">
                     % for action in sorted(hItem["actions"]):
                         <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>

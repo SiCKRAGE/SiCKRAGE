@@ -1,12 +1,13 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    import sickrage
     import os.path
-    import datetime
+    from datetime import datetime, date, timedelta
     import re
-    from sickrage.providers import GenericProvider
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, Overview
+
+    import sickrage
+    from providers import GenericProvider
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings, Overview
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/manage_failedDownloads.js"></script>
@@ -57,7 +58,7 @@
     % endif
     </td>
     <td align="center">
-        <% provider = sickrage.providersDict[GenericProvider._makeID] %>
+        <% provider = sickrage.srCore.providersDict[GenericProvider._makeID] %>
     % if provider is not None:
         <img src="${srRoot}/images/providers/${provider.imageName}" width="16" height="16" alt="${provider.name}"
              title="${provider.name}"/>

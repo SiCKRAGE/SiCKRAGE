@@ -18,7 +18,7 @@
 
 from __future__ import unicode_literals
 
-import datetime
+from datetime import datetime, timedelta
 
 import sickrage
 
@@ -83,7 +83,7 @@ class Notification(object):
         self.title = title
         self.message = message
 
-        self._when = datetime.datetime.now()
+        self._when = datetime.now()
         self._seen = []
 
         if type:
@@ -94,7 +94,7 @@ class Notification(object):
         if timeout:
             self._timeout = timeout
         else:
-            self._timeout = datetime.timedelta(minutes=1)
+            self._timeout = timedelta(minutes=1)
 
     def is_new(self, remote_ip='127.0.0.1'):
         """
@@ -106,7 +106,7 @@ class Notification(object):
         """
         Returns True if the notification is older than the specified timeout value.
         """
-        return datetime.datetime.now() - self._when > self._timeout
+        return datetime.now() - self._when > self._timeout
 
     def see(self, remote_ip='127.0.0.1'):
         """
@@ -166,7 +166,7 @@ class QueueProgressIndicator():
 
     def nextName(self):
         for curItem in [
-            sickrage.SHOWQUEUE.currentItem] + sickrage.SHOWQUEUE.queue:  # @UndefinedVariable
+            sickrage.srCore.SHOWQUEUE.currentItem] + sickrage.srCore.SHOWQUEUE.queue:  # @UndefinedVariable
             if curItem in self.queueItemList:
                 return curItem.name
 

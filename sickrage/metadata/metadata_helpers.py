@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 import requests
 
 import sickrage
-from sickrage.core.helpers import getURL
+from core.helpers import getURL
 
 meta_session = requests.Session()
 
@@ -36,11 +36,11 @@ def getShowImage(url, imgNum=None):
     else:
         tempURL = url
 
-    sickrage.LOGGER.debug("Fetching image from " + tempURL)
+    sickrage.srCore.LOGGER.debug("Fetching image from " + tempURL)
 
     image_data = getURL(tempURL, session=meta_session, needBytes=True)
     if image_data is None:
-        sickrage.LOGGER.warning("There was an error trying to retrieve the image, aborting")
+        sickrage.srCore.LOGGER.warning("There was an error trying to retrieve the image, aborting")
         return
 
     return image_data

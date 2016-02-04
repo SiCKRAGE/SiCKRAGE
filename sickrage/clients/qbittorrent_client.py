@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 from requests.auth import HTTPDigestAuth
 
 import sickrage
-from sickrage.clients import GenericClient
+from clients import GenericClient
 
 
 class qbittorrentAPI(GenericClient):
@@ -68,7 +68,7 @@ class qbittorrentAPI(GenericClient):
     def _set_torrent_pause(self, result):
 
         self.url = self.host + 'command/resume'
-        if sickrage.TORRENT_PAUSED:
+        if sickrage.srCore.CONFIG.TORRENT_PAUSED:
             self.url = self.host + 'command/pause'
 
         data = {'hash': result.hash}
