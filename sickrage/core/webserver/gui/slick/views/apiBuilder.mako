@@ -16,7 +16,7 @@
     <meta name="theme-color" content="#333333">
     % endif
 
-    <title>SickRage - BRANCH:[${sickrage.VERSION}] - ${title}</title>
+    <title>SickRage - BRANCH:[${sickrage.srCore.VERSION}] - ${title}</title>
 
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -27,23 +27,23 @@
     <meta name="msapplication-config" content="${srRoot}/css/browserconfig.xml">
 
     <meta data-var="srRoot" data-content="${srRoot}">
-    <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.THEME_NAME == 'dark']}">
-    <meta data-var="anonURL" data-content="${sickrage.ANON_REDIRECT}">
+    <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.srCore.CONFIG.THEME_NAME == 'dark']}">
+    <meta data-var="anonURL" data-content="${sickrage.srCore.CONFIG.ANON_REDIRECT}">
 
-    <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.ANIME_SPLIT_HOME}">
-    <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.COMING_EPS_LAYOUT}">
-    <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.COMING_EPS_SORT}">
-    <meta data-var="sickrage.DATE_PRESET" data-content="${sickrage.DATE_PRESET}">
-    <meta data-var="sickrage.FILTER_ROW" data-content="${sickrage.FILTER_ROW}">
-    <meta data-var="sickrage.FUZZY_DATING" data-content="${sickrage.FUZZY_DATING}">
-    <meta data-var="sickrage.HISTORY_LAYOUT" data-content="${sickrage.HISTORY_LAYOUT}">
-    <meta data-var="sickrage.HOME_LAYOUT" data-content="${sickrage.HOME_LAYOUT}">
-    <meta data-var="sickrage.POSTER_SORTBY" data-content="${sickrage.POSTER_SORTBY}">
-    <meta data-var="sickrage.POSTER_SORTDIR" data-content="${sickrage.POSTER_SORTDIR}">
-    <meta data-var="sickrage.ROOT_DIRS" data-content="${sickrage.ROOT_DIRS}">
-    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.SORT_ARTICLE}">
-    <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.TIME_PRESET}">
-    <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.TRIM_ZERO}">
+    <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.srCore.CONFIG.ANIME_SPLIT_HOME}">
+    <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.srCore.CONFIG.COMING_EPS_LAYOUT}">
+    <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.srCore.CONFIG.COMING_EPS_SORT}">
+    <meta data-var="sickrage.DATE_PRESET" data-content="${sickrage.srCore.CONFIG.DATE_PRESET}">
+    <meta data-var="sickrage.FILTER_ROW" data-content="${sickrage.srCore.CONFIG.FILTER_ROW}">
+    <meta data-var="sickrage.FUZZY_DATING" data-content="${sickrage.srCore.CONFIG.FUZZY_DATING}">
+    <meta data-var="sickrage.HISTORY_LAYOUT" data-content="${sickrage.srCore.CONFIG.HISTORY_LAYOUT}">
+    <meta data-var="sickrage.HOME_LAYOUT" data-content="${sickrage.srCore.CONFIG.HOME_LAYOUT}">
+    <meta data-var="sickrage.POSTER_SORTBY" data-content="${sickrage.srCore.CONFIG.POSTER_SORTBY}">
+    <meta data-var="sickrage.POSTER_SORTDIR" data-content="${sickrage.srCore.CONFIG.POSTER_SORTDIR}">
+    <meta data-var="sickrage.ROOT_DIRS" data-content="${sickrage.srCore.CONFIG.ROOT_DIRS}">
+    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srCore.CONFIG.SORT_ARTICLE}">
+    <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.srCore.CONFIG.TIME_PRESET}">
+    <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srCore.CONFIG.TRIM_ZERO}">
 
     <link rel="shortcut icon" href="${srRoot}/images/ico/favicon.ico">
     <link rel="icon" sizes="16x16 32x32 64x64" href="${srRoot}/images/ico/favicon.ico">
@@ -97,7 +97,7 @@
                 <li><a href="${srRoot}/home/">Back to SickRage</a></li>
                 <li class="hidden-xs">
                     <a href="https://github.com/SiCKRAGETV/SiCKRAGE/wiki/Donations" rel="noreferrer"
-                       onclick="window.open('${sickrage.ANON_REDIRECT}' + this.href); return false;">
+                       onclick="window.open('${sickrage.srCore.CONFIG.ANON_REDIRECT}' + this.href); return false;">
                         <img src="${srRoot}/images/donate.jpg" alt="[donate]" class="navbaricon" />
                     </a>
                 </li>

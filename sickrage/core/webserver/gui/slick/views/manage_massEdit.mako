@@ -1,9 +1,9 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
-    from sickrage.core.common import SD
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
+    from core.common import SD
 %>
 
 <%block name="scripts">

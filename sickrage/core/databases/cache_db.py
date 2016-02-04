@@ -18,7 +18,7 @@
 
 from __future__ import unicode_literals
 
-from sickrage.core.databases import Connection, SchemaUpgrade
+from core.databases import Connection, SchemaUpgrade
 
 
 class CacheDB(Connection):

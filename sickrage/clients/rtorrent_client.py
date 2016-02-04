@@ -23,7 +23,7 @@ import traceback
 from rtorrent import RTorrent
 
 import sickrage
-from sickrage.clients import GenericClient
+from clients import GenericClient
 
 
 class rTorrentAPI(GenericClient):
@@ -40,10 +40,10 @@ class rTorrentAPI(GenericClient):
             return
 
         sp_kwargs = {}
-        if sickrage.TORRENT_AUTH_TYPE != 'None':
-            sp_kwargs[b'authtype'] = sickrage.TORRENT_AUTH_TYPE
+        if sickrage.srCore.CONFIG.TORRENT_AUTH_TYPE != 'None':
+            sp_kwargs[b'authtype'] = sickrage.srCore.CONFIG.TORRENT_AUTH_TYPE
 
-        if not sickrage.TORRENT_VERIFY_CERT:
+        if not sickrage.srCore.CONFIG.TORRENT_VERIFY_CERT:
             sp_kwargs[b'check_ssl_cert'] = False
 
         if self.username and self.password:
@@ -70,14 +70,14 @@ class rTorrentAPI(GenericClient):
                 return False
 
             # Set label
-            label = sickrage.TORRENT_LABEL
+            label = sickrage.srCore.CONFIG.TORRENT_LABEL
             if result.show.is_anime:
-                label = sickrage.TORRENT_LABEL_ANIME
+                label = sickrage.srCore.CONFIG.TORRENT_LABEL_ANIME
             if label:
                 torrent.set_custom(1, label)
 
-            if sickrage.TORRENT_PATH:
-                torrent.set_directory(sickrage.TORRENT_PATH)
+            if sickrage.srCore.CONFIG.TORRENT_PATH:
+                torrent.set_directory(sickrage.srCore.CONFIG.TORRENT_PATH)
 
             # Start torrent
             torrent.start()
@@ -85,7 +85,7 @@ class rTorrentAPI(GenericClient):
             return True
 
         except Exception:
-            sickrage.LOGGER.debug(traceback.format_exc())
+            sickrage.srCore.LOGGER.debug(traceback.format_exc())
             return False
 
     def _add_torrent_file(self, result):
@@ -109,14 +109,14 @@ class rTorrentAPI(GenericClient):
                 return False
 
             # Set label
-            label = sickrage.TORRENT_LABEL
+            label = sickrage.srCore.CONFIG.TORRENT_LABEL
             if result.show.is_anime:
-                label = sickrage.TORRENT_LABEL_ANIME
+                label = sickrage.srCore.CONFIG.TORRENT_LABEL_ANIME
             if label:
                 torrent.set_custom(1, label)
 
-            if sickrage.TORRENT_PATH:
-                torrent.set_directory(sickrage.TORRENT_PATH)
+            if sickrage.srCore.CONFIG.TORRENT_PATH:
+                torrent.set_directory(sickrage.srCore.CONFIG.TORRENT_PATH)
 
             # Set Ratio Group
             # torrent.set_visible(group_name)
@@ -127,7 +127,7 @@ class rTorrentAPI(GenericClient):
             return True
 
         except Exception:
-            sickrage.LOGGER.debug(traceback.format_exc())
+            sickrage.srCore.LOGGER.debug(traceback.format_exc())
             return False
 
     def _set_torrent_ratio(self, name):

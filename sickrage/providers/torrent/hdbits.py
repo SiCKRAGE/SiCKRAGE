@@ -15,14 +15,15 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import urllib
 
+from datetime import datetime
+
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.core.classes import Proper
-from sickrage.core.exceptions import AuthException
-from sickrage.providers import TorrentProvider
+from core.caches import tv_cache
+from core.classes import Proper
+from core.exceptions import AuthException
+from providers import TorrentProvider
 
 
 class HDBitsProvider(TorrentProvider):
@@ -56,7 +57,7 @@ class HDBitsProvider(TorrentProvider):
 
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
-                sickrage.LOGGER.warning("Invalid username or password. Check your settings")
+                sickrage.srCore.LOGGER.warning("Invalid username or password. Check your settings")
 
         return True
 
@@ -83,7 +84,7 @@ class HDBitsProvider(TorrentProvider):
         # FIXME
         results = []
 
-        sickrage.LOGGER.debug("Search string: %s" % search_params)
+        sickrage.srCore.LOGGER.debug("Search string: %s" % search_params)
 
         self._checkAuth()
 
@@ -95,7 +96,7 @@ class HDBitsProvider(TorrentProvider):
             if parsedJSON and 'data' in parsedJSON:
                 items = parsedJSON[b'data']
             else:
-                sickrage.LOGGER.error("Resulting JSON from provider isn't correct, not parsing it")
+                sickrage.srCore.LOGGER.error("Resulting JSON from provider isn't correct, not parsing it")
                 items = []
 
             for item in items:
@@ -112,7 +113,7 @@ class HDBitsProvider(TorrentProvider):
             for item in self._doSearch(self._make_post_data_JSON(search_term=term)):
                 if item[b'utadded']:
                     try:
-                        result_date = datetime.datetime.fromtimestamp(int(item[b'utadded']))
+                        result_date = datetime.fromtimestamp(int(item[b'utadded']))
                     except Exception:
                         result_date = None
 

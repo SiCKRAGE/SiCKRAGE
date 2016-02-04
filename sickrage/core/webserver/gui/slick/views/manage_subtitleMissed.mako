@@ -1,8 +1,9 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    import datetime
+    from datetime import datetime, date, timedelta
+
     import sickrage
-    from sickrage.core.searchers import subtitle_searcher
+    from core.searchers import subtitle_searcher
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/manageSubtitleMissed.js?${srPID}"></script>

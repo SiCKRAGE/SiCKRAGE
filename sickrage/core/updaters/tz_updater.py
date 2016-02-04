@@ -19,15 +19,15 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import re
 
 import requests
+from datetime import datetime
 from dateutil import tz
 
 import sickrage
-from sickrage.core.databases import cache_db
-from sickrage.core.helpers import getURL, tryInt
+from core.databases import cache_db
+from core.helpers import getURL, tryInt
 
 
 time_regex = re.compile(r'(\d{1,2})(([:.](\d{2,2}))? ?([PA][. ]? ?M)|[:.](\d{2,2}))\b', flags=re.IGNORECASE)
@@ -44,7 +44,7 @@ def update_network_dict():
     url = 'http://sickragetv.github.io/sb_network_timezones/network_timezones.txt'
     url_data = getURL(url, session=requests.Session())
     if not url_data:
-        sickrage.LOGGER.warning('Updating network timezones failed, this can happen from time to time. URL: %s' % url)
+        sickrage.srCore.LOGGER.warning('Updating network timezones failed, this can happen from time to time. URL: %s' % url)
         load_network_dict()
         return
 
@@ -163,12 +163,12 @@ def parse_date_time(d, t, network):
         hr = 0
         m = 0
 
-    te = datetime.datetime.fromordinal(tryInt(d) or 1)
+    te = datetime.fromordinal(tryInt(d) or 1)
     try:
         foreign_timezone = get_network_timezone(network, load_network_dict())
-        return datetime.datetime(te.year, te.month, te.day, hr, m, tzinfo=foreign_timezone)
+        return datetime(te.year, te.month, te.day, hr, m, tzinfo=foreign_timezone)
     except Exception:
-        return datetime.datetime(te.year, te.month, te.day, hr, m, tzinfo=sr_timezone)
+        return datetime(te.year, te.month, te.day, hr, m, tzinfo=sr_timezone)
 
 
 def test_timeformat(t):

@@ -25,9 +25,9 @@ import traceback
 import requests
 
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.core.helpers import bs4_parser
-from sickrage.providers import TorrentProvider
+from core.caches import tv_cache
+from core.helpers import bs4_parser
+from providers import TorrentProvider
 
 
 class FNTProvider(TorrentProvider):
@@ -58,7 +58,6 @@ class FNTProvider(TorrentProvider):
         }
 
     def _doLogin(self):
-
         if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
             return True
 
@@ -69,11 +68,11 @@ class FNTProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.LOGGER.warning("Unable to connect to provider")
+            sickrage.srCore.LOGGER.warning("Unable to connect to provider")
             return False
 
         if re.search('Pseudo ou mot de passe non valide', response):
-            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.LOGGER.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -88,11 +87,11 @@ class FNTProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.LOGGER.debug("Search Mode: %s" % mode)
+            sickrage.srCore.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.LOGGER.debug("Search string: %s " % search_string)
+                    sickrage.srCore.LOGGER.debug("Search string: %s " % search_string)
 
                 self.search_params[b'recherche'] = search_string
 
@@ -105,7 +104,7 @@ class FNTProvider(TorrentProvider):
                         result_table = html.find('table', {'id': 'tablealign3bis'})
 
                         if not result_table:
-                            sickrage.LOGGER.debug("Data returned from provider does not contain any torrents")
+                            sickrage.srCore.LOGGER.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         if result_table:
@@ -131,7 +130,7 @@ class FNTProvider(TorrentProvider):
                                         # FIXME
                                         size = -1
                                     except Exception:
-                                        sickrage.LOGGER.debug(
+                                        sickrage.srCore.LOGGER.debug(
                                                 "Unable to parse torrent id & seeders & leechers. Traceback: %s " % traceback.format_exc())
                                         continue
 
@@ -141,19 +140,19 @@ class FNTProvider(TorrentProvider):
                                     # Filter unseeded torrent
                                     if seeders < self.minseed or leechers < self.minleech:
                                         if mode is not 'RSS':
-                                            sickrage.LOGGER.debug(
+                                            sickrage.srCore.LOGGER.debug(
                                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                             title, seeders, leechers))
                                         continue
 
                                     item = title, download_url, size, seeders, leechers
                                     if mode is not 'RSS':
-                                        sickrage.LOGGER.debug("Found result: %s " % title)
+                                        sickrage.srCore.LOGGER.debug("Found result: %s " % title)
 
                                     items[mode].append(item)
 
                 except Exception as e:
-                    sickrage.LOGGER.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srCore.LOGGER.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

@@ -22,19 +22,19 @@ from __future__ import unicode_literals
 import math
 import socket
 import time
-from datetime import datetime
 
 import jsonrpclib
+from datetime import datetime
 from tornado import gen
 
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.core.classes import Proper
-from sickrage.core.common import cpu_presets
-from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import sanitizeSceneName
-from sickrage.core.scene_exceptions import get_scene_exceptions
-from sickrage.providers import TorrentProvider
+from core.caches import tv_cache
+from core.classes import Proper
+from core.common import cpu_presets
+from core.exceptions import AuthException
+from core.helpers import sanitizeSceneName
+from core.scene_exceptions import get_scene_exceptions
+from providers import TorrentProvider
 
 
 class BTNProvider(TorrentProvider):
@@ -57,7 +57,7 @@ class BTNProvider(TorrentProvider):
 
     def _checkAuth(self):
         if not self.api_key:
-            sickrage.LOGGER.warning("Invalid api key. Check your settings")
+            sickrage.srCore.LOGGER.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -67,7 +67,7 @@ class BTNProvider(TorrentProvider):
             return self._checkAuth()
 
         if 'api-error' in parsedJSON:
-            sickrage.LOGGER.debug("Incorrect authentication credentials: % s" % parsedJSON['api-error'])
+            sickrage.srCore.LOGGER.debug("Incorrect authentication credentials: % s" % parsedJSON['api-error'])
             raise AuthException(
                     "Your authentication credentials for " + self.name + " are incorrect, check your config.")
 
@@ -87,11 +87,11 @@ class BTNProvider(TorrentProvider):
 
         if search_params:
             params.update(search_params)
-            sickrage.LOGGER.debug("Search string: %s" % search_params)
+            sickrage.srCore.LOGGER.debug("Search string: %s" % search_params)
 
         parsedJSON = self._api_call(apikey, params)
         if not parsedJSON:
-            sickrage.LOGGER.debug("No data returned from provider")
+            sickrage.srCore.LOGGER.debug("No data returned from provider")
             return results
 
         if self._checkAuthFromData(parsedJSON):
@@ -125,7 +125,7 @@ class BTNProvider(TorrentProvider):
                 (title, url) = self._get_title_and_url(torrent_info)
 
                 if title and url:
-                    sickrage.LOGGER.debug("Found result: %s " % title)
+                    sickrage.srCore.LOGGER.debug("Found result: %s " % title)
                     results.append(torrent_info)
 
         # FIXME SORT RESULTS
@@ -138,29 +138,29 @@ class BTNProvider(TorrentProvider):
 
         try:
             parsedJSON = server.getTorrents(apikey, params, int(results_per_page), int(offset))
-            gen.sleep(cpu_presets[sickrage.CPU_PRESET])
+            gen.sleep(cpu_presets[sickrage.srCore.CONFIG.CPU_PRESET])
 
         except jsonrpclib.jsonrpc.ProtocolError, error:
             if error.message == 'Call Limit Exceeded':
-                sickrage.LOGGER.warning(
+                sickrage.srCore.LOGGER.warning(
                         "You have exceeded the limit of 150 calls per hour, per API key which is unique to your user account")
             else:
-                sickrage.LOGGER.error("JSON-RPC protocol error while accessing provicer. Error: %s " % repr(error))
+                sickrage.srCore.LOGGER.error("JSON-RPC protocol error while accessing provicer. Error: %s " % repr(error))
             parsedJSON = {'api-error': error}
             return parsedJSON
 
         except socket.timeout:
-            sickrage.LOGGER.warning("Timeout while accessing provider")
+            sickrage.srCore.LOGGER.warning("Timeout while accessing provider")
 
         except socket.error, error:
             # Note that sometimes timeouts are thrown as socket errors
-            sickrage.LOGGER.warning("Socket error while accessing provider. Error: %s " % error[1])
+            sickrage.srCore.LOGGER.warning("Socket error while accessing provider. Error: %s " % error[1])
 
         except Exception, error:
             errorstring = str(error)
             if errorstring.startswith('<') and errorstring.endswith('>'):
                 errorstring = errorstring[1:-1]
-            sickrage.LOGGER.warning("Unknown error while accessing provider. Error: %s " % errorstring)
+            sickrage.srCore.LOGGER.warning("Unknown error while accessing provider. Error: %s " % errorstring)
 
         return parsedJSON
 
@@ -310,7 +310,7 @@ class BTNCache(tv_cache.TVCache):
 
         # Set maximum to 24 hours (24 * 60 * 60 = 86400 seconds) of "RSS" data search, older things will need to be done through backlog
         if seconds_since_last_update > 86400:
-            sickrage.LOGGER.debug(
+            sickrage.srCore.LOGGER.debug(
                     "The last known successful update was more than 24 hours ago, only trying to fetch the last 24 hours!")
             seconds_since_last_update = 86400
 

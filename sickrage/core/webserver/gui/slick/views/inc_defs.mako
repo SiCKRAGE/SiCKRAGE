@@ -1,6 +1,7 @@
 <%!
     import cgi
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
+    import sickrage
+    from core.common import Quality, qualityPresets, qualityPresetStrings
 %>
 <%def name="renderQualityPill(quality, showTitle=False, overrideClass=None)"><%
     # Build a string of quality names to use as title attribute

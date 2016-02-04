@@ -21,10 +21,10 @@ from __future__ import unicode_literals
 from datetime import date, timedelta
 
 import sickrage
-from sickrage.core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
-from sickrage.core.databases import main_db
-from sickrage.core.helpers.srdatetime import srDateTime
-from sickrage.core.updaters.tz_updater import parse_date_time
+from core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
+from core.databases import main_db
+from core.helpers.srdatetime import srDateTime
+from core.updaters.tz_updater import parse_date_time
 
 
 class ComingEpisodes:
@@ -54,7 +54,7 @@ class ComingEpisodes:
         :return: The list of coming episodes
         """
 
-        paused = sickrage.COMING_EPS_DISPLAY_PAUSED or paused
+        paused = sickrage.srCore.CONFIG.COMING_EPS_DISPLAY_PAUSED or paused
 
         if not isinstance(categories, list):
             categories = categories.split('|')
@@ -64,7 +64,7 @@ class ComingEpisodes:
 
         today = date.today().toordinal()
         next_week = (date.today() + timedelta(days=7)).toordinal()
-        recently = (date.today() - timedelta(days=sickrage.COMING_EPS_MISSED_RANGE)).toordinal()
+        recently = (date.today() - timedelta(days=sickrage.srCore.CONFIG.COMING_EPS_MISSED_RANGE)).toordinal()
         qualities_list = Quality.DOWNLOADED + \
                          Quality.SNATCHED + \
                          Quality.SNATCHED_BEST + \

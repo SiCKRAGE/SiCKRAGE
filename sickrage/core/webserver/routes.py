@@ -23,7 +23,7 @@ import tornado.web
 
 route_list = []
 
-class route(object):
+class Route(object):
     _routes = []
 
     def __init__(self, uri, name=None):
@@ -36,12 +36,12 @@ class route(object):
         self._routes.append((self._uri, _handler, name))
         return _handler
 
-    @classmethod
-    def get_routes(self, webroot=''):
-        self._routes.reverse()
-        routes = [tornado.web.url(webroot + _uri, _handler, name=name) for _uri, _handler, name, in self._routes]
+    @staticmethod
+    def get_routes(webroot=''):
+        Route._routes.reverse()
+        routes = [tornado.web.url(webroot + _uri, _handler, name=name) for _uri, _handler, name, in Route._routes]
         return routes
 
 
 def route_redirect(from_, to, name=None):
-    route._routes.append(tornado.web.url(from_, tornado.web.RedirectHandler, dict(url=to), name=name))
+    Route._routes.append(tornado.web.url(from_, tornado.web.RedirectHandler, dict(url=to), name=name))

@@ -55,7 +55,7 @@ $(document).ready(function() {
     });
 
     // Update the list of episodes
-    $('[data-action=update-episodes').on('change', function() {
+    $('[data-action=update-episodes]').on('change', function() {
         var command = $(this).data('command');
         var select = $('[data-command=' + command + '][name=episode]');
         var season = $(this).val();
@@ -75,7 +75,7 @@ $(document).ready(function() {
     });
 
     // Update the list of seasons
-    $('[data-action=update-seasons').on('change', function() {
+    $('[data-action=update-seasons]').on('change', function() {
         var command = $(this).data('command');
         var select = $('[data-command=' + command + '][name=season]');
         var show = $(this).val();

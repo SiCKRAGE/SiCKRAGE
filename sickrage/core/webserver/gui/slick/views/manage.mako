@@ -1,8 +1,8 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import statusStrings
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import statusStrings
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/lib/bootbox.min.js?${srPID}"></script>
@@ -36,7 +36,7 @@
             <th width="1%">Update<br><input type="checkbox" class="bulkCheck" id="updateCheck" /></th>
             <th width="1%">Rescan<br><input type="checkbox" class="bulkCheck" id="refreshCheck" /></th>
             <th width="1%">Rename<br><input type="checkbox" class="bulkCheck" id="renameCheck" /></th>
-            % if sickrage.USE_SUBTITLES:
+            % if sickrage.srCore.CONFIG.USE_SUBTITLES:
             <th width="1%">Search Subtitle<br><input type="checkbox" class="bulkCheck" id="subtitleCheck" /></th>
         % endif
             <!-- <th>Force Metadata Regen <input type="checkbox" class="bulkCheck" id="metadataCheck" /></th>//-->
@@ -48,13 +48,13 @@
     <tfoot>
         <tr>
             <td rowspan="1" colspan="2" class="align-center alt"><input class="btn pull-left" type="button" value="Edit Selected" id="submitMassEdit" /></td>
-            <td rowspan="1" colspan="${(15, 16)[bool(sickrage.USE_SUBTITLES)]}" class="align-right alt"><input
+            <td rowspan="1" colspan="${(15, 16)[bool(sickrage.srCore.CONFIG.USE_SUBTITLES)]}" class="align-right alt"><input
                     class="btn pull-right" type="button" value="Submit" id="submitMassUpdate"/></td>
         </tr>
     </tfoot>
 
     <tbody>
-        <% myShowList = sickrage.showList %>
+        <% myShowList = sickrage.srCore.SHOWLIST %>
         <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
 
         % for curShow in myShowList:
@@ -66,37 +66,37 @@
         <% curDelete_disabled = "" %>
         <% curRemove_disabled = "" %>
 
-        % if sickrage.SHOWQUEUE.isBeingUpdated(curShow) or sickrage.SHOWQUEUE.isInUpdateQueue(curShow):
+        % if sickrage.srCore.SHOWQUEUE.isBeingUpdated(curShow) or sickrage.srCore.SHOWQUEUE.isInUpdateQueue(curShow):
             <% curUpdate_disabled = "disabled=\"disabled\" " %>
         % endif
 
         <% curUpdate = "<input type=\"checkbox\" class=\"updateCheck\" id=\"update-"+str(curShow.indexerid)+"\" "+curUpdate_disabled+"/>" %>
 
-        % if sickrage.SHOWQUEUE.isBeingRefreshed(curShow) or sickrage.SHOWQUEUE.isInRefreshQueue(curShow):
+        % if sickrage.srCore.SHOWQUEUE.isBeingRefreshed(curShow) or sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow):
             <% curRefresh_disabled = "disabled=\"disabled\" " %>
         % endif
 
         <% curRefresh = "<input type=\"checkbox\" class=\"refreshCheck\" id=\"refresh-"+str(curShow.indexerid)+"\" "+curRefresh_disabled+"/>" %>
 
-        % if sickrage.SHOWQUEUE.isBeingRenamed(curShow) or sickrage.SHOWQUEUE.isInRenameQueue(curShow):
+        % if sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow) or sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow):
             <% curRename = "disabled=\"disabled\" " %>
         % endif
 
         <% curRename = "<input type=\"checkbox\" class=\"renameCheck\" id=\"rename-"+str(curShow.indexerid)+"\" "+curRename_disabled+"/>" %>
 
-        % if not curShow.subtitles or sickrage.SHOWQUEUE.isBeingSubtitled(curShow) or sickrage.SHOWQUEUE.isInSubtitleQueue(curShow):
+        % if not curShow.subtitles or sickrage.srCore.SHOWQUEUE.isBeingSubtitled(curShow) or sickrage.srCore.SHOWQUEUE.isInSubtitleQueue(curShow):
             <% curSubtitle_disabled = "disabled=\"disabled\" " %>
         % endif
 
         <% curSubtitle = "<input type=\"checkbox\" class=\"subtitleCheck\" id=\"subtitle-"+str(curShow.indexerid)+"\" "+curSubtitle_disabled+"/>" %>
 
-        % if sickrage.SHOWQUEUE.isBeingRenamed(curShow) or sickrage.SHOWQUEUE.isInRenameQueue(curShow) or sickrage.SHOWQUEUE.isInRefreshQueue(curShow):
+        % if sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow) or sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow) or sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow):
             <% curDelete = "disabled=\"disabled\" " %>
         % endif
 
         <% curDelete = "<input type=\"checkbox\" class=\"deleteCheck\" id=\"delete-"+str(curShow.indexerid)+"\" "+curDelete_disabled+"/>" %>
 
-        % if sickrage.SHOWQUEUE.isBeingRenamed(curShow) or sickrage.SHOWQUEUE.isInRenameQueue(curShow) or sickrage.SHOWQUEUE.isInRefreshQueue(curShow):
+        % if sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow) or sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow) or sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow):
             <% curRemove = "disabled=\"disabled\" " %>
         % endif
 
@@ -105,19 +105,19 @@
             <td align="center"><input type="checkbox" class="editCheck" id="edit-${curShow.indexerid}" /></td>
             <td class="tvShow"><a href="${srRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a></td>
             <td align="center">${renderQualityPill(curShow.quality, showTitle=True)}</td>
-            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_sports) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_scene) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_anime) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[not int(curShow.flatten_folders) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.archive_firstmatch) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.paused) == 1]} width="16" height="16" /></td>
-            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.subtitles) == 1]} width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_sports) == 1]}" width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_scene) == 1]}" width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_anime) == 1]}" width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[not int(curShow.flatten_folders) == 1]}" width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.archive_firstmatch) == 1]}" width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.paused) == 1]}" width="16" height="16" /></td>
+            <td align="center"><img src="${srRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.subtitles) == 1]}" width="16" height="16" /></td>
             <td align="center">${statusStrings[curShow.default_ep_status]}</td>
             <td align="center">${curShow.status}</td>
             <td align="center">${curUpdate}</td>
             <td align="center">${curRefresh}</td>
             <td align="center">${curRename}</td>
-            % if sickrage.USE_SUBTITLES:
+            % if sickrage.srCore.CONFIG.USE_SUBTITLES:
             <td align="center">${curSubtitle}</td>
         % endif
             <td align="center">${curDelete}</td>

@@ -351,6 +351,7 @@ encode_func[UnicodeType] = encode_unicode
 lock = Lock()
 
 try:
+    # noinspection PyUnresolvedReferences
     from types import BooleanType
     encode_func[BooleanType] = encode_bool
 except ImportError:
@@ -405,6 +406,7 @@ def test():
     assert abs(loads(dumps(1.1,64))-1.1)<1e-12
     assert loads(dumps(u"Hello World!!"))
 try:
+    # noinspection PyUnresolvedReferences
     import psyco
     psyco.bind(dumps)
     psyco.bind(loads)

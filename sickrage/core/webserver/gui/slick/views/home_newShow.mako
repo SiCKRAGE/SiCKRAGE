@@ -1,7 +1,7 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.helpers import anon_url
+    from core.helpers import anon_url
 
 %>
 <%block name="scripts">
@@ -36,11 +36,11 @@
         <legend class="legendStep">Find a show on theTVDB</legend>
 
         <div class="stepDiv">
-            <input type="hidden" id="indexer_timeout" value="${sickrage.INDEXER_TIMEOUT}"/>
+            <input type="hidden" id="indexer_timeout" value="${sickrage.srCore.CONFIG.INDEXER_TIMEOUT}"/>
 
             % if use_provided_info:
                 Show retrieved from existing metadata: <a
-                    href="${anon_url(sickrage.INDEXER_API(provided_indexer).config[b'show_url'], provided_indexer_id)}">${provided_indexer_name}</a>
+                    href="${anon_url(sickrage.srCore.INDEXER_API(provided_indexer).config[b'show_url'], provided_indexer_id)}">${provided_indexer_name}</a>
                 <input type="hidden" id="indexerLang" name="indexerLang" value="en" />
                 <input type="hidden" id="whichSeries" name="whichSeries" value="${provided_indexer_id}" />
                 <input type="hidden" id="providedIndexer" name="providedIndexer" value="${provided_indexer}" />
@@ -50,8 +50,8 @@
                 &nbsp;&nbsp;
                 <select name="indexerLang" id="indexerLangSelect"
                         class="form-control form-control-inline input-sm bfh-languages"
-                        data-language="${sickrage.INDEXER_DEFAULT_LANGUAGE}"
-                        data-available="${','.join(sickrage.INDEXER_API().config[b'valid_languages'])}">
+                        data-language="${sickrage.srCore.CONFIG.INDEXER_DEFAULT_LANGUAGE}"
+                        data-available="${','.join(sickrage.srCore.INDEXER_API().config[b'valid_languages'])}">
                 </select><b>*</b>
                 &nbsp;
                 <select name="providedIndexer" id="providedIndexer" class="form-control form-control-inline input-sm">

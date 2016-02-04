@@ -1,6 +1,6 @@
 <%!
     import sickrage
-    from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
+    from core.common import Quality, qualityPresets, qualityPresetStrings
 %>
 
 <%

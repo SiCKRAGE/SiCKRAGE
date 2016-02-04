@@ -20,11 +20,12 @@
 
 from __future__ import unicode_literals
 
+import sickrage
 from tvdb_exceptions import tvdb_userabort
 
 def log():
-    import sickrage
-    return sickrage.LOGGER
+
+    return sickrage.srCore.LOGGER
 
 class BaseUI:
     """Default non-interactive UI, which auto-selects first results

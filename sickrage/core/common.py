@@ -28,10 +28,10 @@ from itertools import chain
 
 import six
 
-from sickrage.core.helpers import readFileBuffered
-
+from core.helpers import readFileBuffered
 
 if six.PY3:
+    # noinspection PyUnresolvedReferences
     from collections import UserDict
 else:
     from UserDict import UserDict
@@ -537,26 +537,26 @@ class StatusStrings(UserDict):
             # This will raise a ValueError if we can't convert the key to int
             return ((int(key) in self.data) or
                     (int(
-                            key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED))
+                        key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED))
         except ValueError:  # The key is not numeric and since we only want numeric keys...
             # ...and we don't want this function to fail...
             pass  # ...suppress the ValueError and do nothing, the key does not exist
 
 
 statusStrings = StatusStrings(
-        {UNKNOWN: "Unknown",
-         UNAIRED: "Unaired",
-         SNATCHED: "Snatched",
-         DOWNLOADED: "Downloaded",
-         SKIPPED: "Skipped",
-         SNATCHED_PROPER: "Snatched (Proper)",
-         WANTED: "Wanted",
-         ARCHIVED: "Archived",
-         IGNORED: "Ignored",
-         SUBTITLED: "Subtitled",
-         FAILED: "Failed",
-         SNATCHED_BEST: "Snatched (Best)"
-         })
+    {UNKNOWN: "Unknown",
+     UNAIRED: "Unaired",
+     SNATCHED: "Snatched",
+     DOWNLOADED: "Downloaded",
+     SKIPPED: "Skipped",
+     SNATCHED_PROPER: "Snatched (Proper)",
+     WANTED: "Wanted",
+     ARCHIVED: "Archived",
+     IGNORED: "Ignored",
+     SUBTITLED: "Subtitled",
+     FAILED: "Failed",
+     SNATCHED_BEST: "Snatched (Best)"
+     })
 
 
 class Overview(object):

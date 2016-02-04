@@ -19,8 +19,8 @@
 from __future__ import unicode_literals
 
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.providers import NZBProvider
+from core.caches import tv_cache
+from providers import NZBProvider
 
 
 class WombleProvider(NZBProvider):
@@ -52,7 +52,7 @@ class WombleCache(tv_cache.TVCache):
                         self.provider.url + 'rss/?sec=tv-sd&fr=false',
                         self.provider.url + 'rss/?sec=tv-dvd&fr=false',
                         self.provider.url + 'rss/?sec=tv-hd&fr=false']:
-                sickrage.LOGGER.debug("Cache update URL: %s" % url)
+                sickrage.srCore.LOGGER.debug("Cache update URL: %s" % url)
 
                 for item in self.getRSSFeed(url)['entries'] or []:
                     ci = self._parseItem(item)

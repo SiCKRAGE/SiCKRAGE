@@ -28,9 +28,9 @@ import urllib
 import requests
 
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.core.helpers import bs4_parser
-from sickrage.providers import TorrentProvider
+from core.caches import tv_cache
+from core.helpers import bs4_parser
+from providers import TorrentProvider
 
 
 class LibertaliaProvider(TorrentProvider):
@@ -64,11 +64,11 @@ class LibertaliaProvider(TorrentProvider):
 
         response = self.getURL(self.url + '/login.php', post_data=login_params, timeout=30)
         if not response:
-            sickrage.LOGGER.warning("Unable to connect to provider")
+            sickrage.srCore.LOGGER.warning("Unable to connect to provider")
             return False
 
         if not re.search('upload.php', response):
-            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
+            sickrage.srCore.LOGGER.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -83,14 +83,14 @@ class LibertaliaProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.LOGGER.debug("Search Mode: %s" % mode)
+            sickrage.srCore.LOGGER.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.LOGGER.debug("Search string: %s " % search_string)
+                    sickrage.srCore.LOGGER.debug("Search string: %s " % search_string)
 
                 searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
-                sickrage.LOGGER.debug("Search URL: %s" % searchURL)
+                sickrage.srCore.LOGGER.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
                 if not data:
                     continue
@@ -121,12 +121,12 @@ class LibertaliaProvider(TorrentProvider):
                                 # Filter unseeded torrent
                                 # if seeders < self.minseed or leechers < self.minleech:
                                 #    if mode is not 'RSS':
-                                #        sickrage.LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
+                                #        LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                                 #    continue
 
                                 item = title, download_url, size, seeders, leechers
                                 if mode is not 'RSS':
-                                    sickrage.LOGGER.debug("Found result: %s " % title)
+                                    sickrage.srCore.LOGGER.debug("Found result: %s " % title)
 
                                 items[mode].append(item)
 

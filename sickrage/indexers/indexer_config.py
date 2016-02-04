@@ -20,8 +20,7 @@
 
 from __future__ import unicode_literals
 
-import requests
-
+from core.helpers.sessions import _setUpSession
 from thetvdb.tvdb_api import Tvdb
 
 initConfig = {
@@ -48,7 +47,7 @@ indexerConfig = {
                        'language': 'en',
                        'useZip': True,
                        },
-        'session': requests.Session(),
+        'session': _setUpSession,
         'trakt_id': 'tvdb_id',
         'xem_origin': 'tvdb',
         'icon': 'thetvdb16.png',

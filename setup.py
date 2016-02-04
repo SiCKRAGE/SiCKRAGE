@@ -48,5 +48,5 @@ setup(
             "console_scripts": [
                 "sickrage=sickrage:main",
             ]
-        },
+        }, requires=['configobj']
 )

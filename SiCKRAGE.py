@@ -20,6 +20,6 @@
 
 from __future__ import print_function, unicode_literals
 
-from __init__ import main
 if __name__ == '__main__':
-    main()
+    import sickrage
+    sickrage.main()

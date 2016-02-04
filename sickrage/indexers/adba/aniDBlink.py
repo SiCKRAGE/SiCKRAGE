@@ -24,7 +24,7 @@ from time import time
 from tornado import gen
 
 from aniDBresponses import ResponseResolver
-from sickrage.indexers.adba.aniDBerrors import AniDBBannedError, \
+from indexers.adba.aniDBerrors import AniDBBannedError, \
     AniDBMustAuthError, AniDBPacketCorruptedError
 
 

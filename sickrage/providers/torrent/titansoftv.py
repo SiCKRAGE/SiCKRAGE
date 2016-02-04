@@ -22,9 +22,9 @@ from __future__ import unicode_literals
 import urllib
 
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.core.exceptions import AuthException
-from sickrage.providers import TorrentProvider
+from core.caches import tv_cache
+from core.exceptions import AuthException
+from providers import TorrentProvider
 
 
 class TitansOfTVProvider(TorrentProvider):
@@ -52,7 +52,7 @@ class TitansOfTVProvider(TorrentProvider):
     def _checkAuthFromData(data):
 
         if 'error' in data:
-            sickrage.LOGGER.warning("Invalid api key. Check your settings")
+            sickrage.srCore.LOGGER.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -67,13 +67,13 @@ class TitansOfTVProvider(TorrentProvider):
             params.update(search_params)
 
         searchURL = self.url + '?' + urllib.urlencode(params)
-        sickrage.LOGGER.debug("Search string: %s " % search_params)
-        sickrage.LOGGER.debug("Search URL: %s" % searchURL)
+        sickrage.srCore.LOGGER.debug("Search string: %s " % search_params)
+        sickrage.srCore.LOGGER.debug("Search URL: %s" % searchURL)
 
         parsedJSON = self.getURL(searchURL, json=True)  # do search
 
         if not parsedJSON:
-            sickrage.LOGGER.debug("No data returned from provider")
+            sickrage.srCore.LOGGER.debug("No data returned from provider")
             return results
 
         if self._checkAuthFromData(parsedJSON):
@@ -98,12 +98,12 @@ class TitansOfTVProvider(TorrentProvider):
                 # Filter unseeded torrent
                 # if seeders < self.minseed or leechers < self.minleech:
                 #    if mode is not 'RSS':
-                #        sickrage.LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
+                #        LOGGER.debug(u"Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(title, seeders, leechers))
                 #    continue
 
                 item = title, download_url, size, seeders, leechers
 
-                sickrage.LOGGER.debug("Found result: %s " % title)
+                sickrage.srCore.LOGGER.debug("Found result: %s " % title)
                 results.append(item)
 
         # FIXME SORTING

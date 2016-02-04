@@ -1,12 +1,13 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    import datetime
+    from datetime import datetime, date, timedelta
     import locale
+
     import sickrage
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
-    from sickrage.core.helpers.srdatetime import srDateTime, date_presets, time_presets
-    from sickrage.metadata import GenericMetadata
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
+    from core.helpers.srdatetime import srDateTime, date_presets, time_presets
+    from metadata import GenericMetadata
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/configBackupRestore.js?${srPID}"></script>
@@ -20,8 +21,8 @@
 % endif
 
 <% indexer = 0 %>
-% if sickrage.INDEXER_DEFAULT:
-    <% indexer = sickrage.INDEXER_DEFAULT %>
+% if sickrage.srCore.CONFIG.INDEXER_DEFAULT:
+    <% indexer = sickrage.srCore.CONFIG.INDEXER_DEFAULT %>
 % endif
 <div id="config">
     <div id="config-content">
@@ -36,7 +37,7 @@
                 <div id="core-component-group1" class="component-group clearfix">
                     <div class="component-group-desc">
                         <h3>Backup</h3>
-                        <p><b>Backup your main database file and config.</b></p>
+                        <p><b>Backup your main database file and sickrage.srCore.CONFIG.</b></p>
                     </div>
 
                     <fieldset class="component-group-list">
@@ -59,7 +60,7 @@
                 <div id="core-component-group2" class="component-group clearfix">
                     <div class="component-group-desc">
                         <h3>Restore</h3>
-                        <p><b>Restore your main database file and config.</b></p>
+                        <p><b>Restore your main database file and sickrage.srCore.CONFIG.</b></p>
                     </div>
 
                     <fieldset class="component-group-list">

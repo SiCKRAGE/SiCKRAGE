@@ -14,12 +14,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with aDBa.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import unicode_literals
 
 from threading import Lock
 
-from sickrage.indexers.adba.aniDBerrors import AniDBIncorrectParameterError, \
+from indexers.adba.aniDBerrors import AniDBIncorrectParameterError, \
     AniDBInternalError
-from sickrage.indexers.adba.aniDBresponses import MylistResponse, \
+from indexers.adba.aniDBresponses import MylistResponse, \
     NoSuchFileResponse, NoSuchMylistEntryResponse, ProducerResponse
 
 

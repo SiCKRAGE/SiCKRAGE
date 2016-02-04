@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 import os
 
-from sickrage.core.media import Media
+from core.media import Media
 
 
 class Network(Media):

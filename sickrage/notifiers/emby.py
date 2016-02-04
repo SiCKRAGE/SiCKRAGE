@@ -23,9 +23,10 @@ import urllib
 import urllib2
 
 import sickrage
+from notifiers import srNotifiers
 
 
-class EMBYNotifier:
+class EMBYNotifier(srNotifiers):
     def _notify_emby(self, message, host=None, emby_apikey=None):
         """Handles notifying Emby host via HTTP API
 
@@ -36,9 +37,9 @@ class EMBYNotifier:
 
         # fill in omitted parameters
         if not host:
-            host = sickrage.EMBY_HOST
+            host = sickrage.srCore.CONFIG.EMBY_HOST
         if not emby_apikey:
-            emby_apikey = sickrage.EMBY_APIKEY
+            emby_apikey = sickrage.srCore.CONFIG.EMBY_APIKEY
 
         url = 'http://%s/emby/Notifications/Admin' % (host)
         values = {'Name': 'SiCKRAGE', 'Description': message,
@@ -53,11 +54,11 @@ class EMBYNotifier:
             result = response.read()
             response.close()
 
-            sickrage.LOGGER.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
+            sickrage.srCore.LOGGER.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
             return True
 
         except (urllib2.URLError, IOError) as e:
-            sickrage.LOGGER.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
+            sickrage.srCore.LOGGER.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
             return False
 
 
@@ -76,39 +77,39 @@ class EMBYNotifier:
 
         """
 
-        if sickrage.USE_EMBY:
+        if sickrage.srCore.CONFIG.USE_EMBY:
 
-            if not sickrage.EMBY_HOST:
-                sickrage.LOGGER.debug('EMBY: No host specified, check your settings')
+            if not sickrage.srCore.CONFIG.EMBY_HOST:
+                sickrage.srCore.LOGGER.debug('EMBY: No host specified, check your settings')
                 return False
 
             if show:
                 if show.indexer == 1:
                     provider = 'tvdb'
                 elif show.indexer == 2:
-                    sickrage.LOGGER.warning('EMBY: TVRage Provider no longer valid')
+                    sickrage.srCore.LOGGER.warning('EMBY: TVRage Provider no longer valid')
                     return False
                 else:
-                    sickrage.LOGGER.warning('EMBY: Provider unknown')
+                    sickrage.srCore.LOGGER.warning('EMBY: Provider unknown')
                     return False
                 query = '?%sid=%s' % (provider, show.indexerid)
             else:
                 query = ''
 
-            url = 'http://%s/emby/Library/Series/Updated%s' % (sickrage.EMBY_HOST, query)
+            url = 'http://%s/emby/Library/Series/Updated%s' % (sickrage.srCore.CONFIG.EMBY_HOST, query)
             values = {}
             data = urllib.urlencode(values)
             try:
                 req = urllib2.Request(url, data)
-                req.add_header('X-MediaBrowser-Token', sickrage.EMBY_APIKEY)
+                req.add_header('X-MediaBrowser-Token', sickrage.srCore.CONFIG.EMBY_APIKEY)
 
                 response = urllib2.urlopen(req)
                 result = response.read()
                 response.close()
 
-                sickrage.LOGGER.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
+                sickrage.srCore.LOGGER.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
                 return True
 
             except (urllib2.URLError, IOError) as e:
-                sickrage.LOGGER.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
+                sickrage.srCore.LOGGER.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
                 return False

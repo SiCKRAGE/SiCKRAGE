@@ -19,12 +19,13 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import threading
 
+from datetime import datetime
 from tornado.ioloop import IOLoop
 
 import sickrage
+
 
 class QueuePriorities:
     LOW = 10
@@ -47,12 +48,12 @@ class GenericQueue(object):
 
     def pause(self):
         """Pauses this queue"""
-        sickrage.LOGGER.info("Pausing queue")
+        sickrage.srCore.LOGGER.info("Pausing queue")
         self.min_priority = 999999999999
 
     def unpause(self):
         """Unpauses this queue"""
-        sickrage.LOGGER.info("Unpausing queue")
+        sickrage.srCore.LOGGER.info("Unpausing queue")
         self.min_priority = 0
 
     def add_item(self, item):
@@ -63,7 +64,7 @@ class GenericQueue(object):
         :return: item
         """
         with self.lock:
-            item.added = datetime.datetime.now()
+            item.added = datetime.now()
             self.queue.append(item)
 
             return item

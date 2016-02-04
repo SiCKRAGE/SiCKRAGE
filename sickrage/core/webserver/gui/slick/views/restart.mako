@@ -13,10 +13,10 @@
             themeSpinner = srThemeName
         except NameError:
             curSRHost = "localhost"
-            curSRHttpPort = sickrage.WEB_PORT
+            curSRHttpPort = sickrage.srCore.CONFIG.WEB_PORT
             curSRHttpsEnabled = "False"
             curSRHandleReverseProxy = "False"
-            themeSpinner = sickrage.THEME_NAME
+            themeSpinner = sickrage.srCore.CONFIG.THEME_NAME
     %>
     <script type="text/javascript" charset="utf-8">
         srRoot = "${srRoot}";
@@ -46,10 +46,10 @@
             themeSpinner = srThemeName
         except NameError:
             curSRHost = "localhost"
-            curSRHttpPort = sickrage.WEB_PORT
+            curSRHttpPort = sickrage.srCore.CONFIG.WEB_PORT
             curSRHttpsEnabled = "False"
             curSRHandleReverseProxy = "False"
-            themeSpinner = sickrage.THEME_NAME
+            themeSpinner = sickrage.srCore.CONFIG.THEME_NAME
     %>
     <% themeSpinner = ('', '-dark')['dark' == themeSpinner] %>
     <h2>Performing Restart</h2>

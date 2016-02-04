@@ -22,9 +22,10 @@ import cgi
 import os
 
 import sickrage
-from sickrage.core.common import NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
+from core.common import NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
     NOTIFY_GIT_UPDATE
-from sickrage.core.common import notifyStrings
+from core.common import notifyStrings
+from notifiers import srNotifiers
 
 
 def diagnose():
@@ -33,6 +34,7 @@ def diagnose():
     user-readable message indicating possible issues.
     '''
     try:
+        # noinspection PyUnresolvedReferences
         from gi.repository import Notify  # @UnusedImport
     except ImportError:
         return ("<p>Error: gir-notify isn't installed. On Ubuntu/Debian, install the "
@@ -43,6 +45,7 @@ def diagnose():
                 "aren't set.  libnotify will only work when you run SiCKRAGE "
                 "from a desktop login.")
     try:
+        # noinspection PyUnresolvedReferences
         import dbus
     except ImportError:
         pass
@@ -61,7 +64,7 @@ def diagnose():
     return "<p>Error: Unable to send notification."
 
 
-class LibnotifyNotifier:
+class LibnotifyNotifier(srNotifiers):
     def __init__(self):
         self.Notify = None
         self.gobject = None
@@ -70,36 +73,38 @@ class LibnotifyNotifier:
         if self.Notify is not None:
             return True
         try:
+            # noinspection PyUnresolvedReferences
             from gi.repository import Notify
         except ImportError:
-            sickrage.LOGGER.error("Unable to import Notify from gi.repository. libnotify notifications won't work.")
+            sickrage.srCore.LOGGER.error("Unable to import Notify from gi.repository. libnotify notifications won't work.")
             return False
         try:
+            # noinspection PyUnresolvedReferences
             from gi.repository import GObject
         except ImportError:
-            sickrage.LOGGER.error("Unable to import GObject from gi.repository. We can't catch a GError in display.")
+            sickrage.srCore.LOGGER.error("Unable to import GObject from gi.repository. We can't catch a GError in display.")
             return False
         if not Notify.init('SiCKRAGE'):
-            sickrage.LOGGER.error("Initialization of Notify failed. libnotify notifications won't work.")
+            sickrage.srCore.LOGGER.error("Initialization of Notify failed. libnotify notifications won't work.")
             return False
         self.Notify = Notify
         self.gobject = GObject
         return True
 
-    def notify_snatch(self, ep_name):
-        if sickrage.LIBNOTIFY_NOTIFY_ONSNATCH:
+    def _notify_snatch(self, ep_name):
+        if sickrage.srCore.CONFIG.LIBNOTIFY_NOTIFY_ONSNATCH:
             self._notify(notifyStrings[NOTIFY_SNATCH], ep_name)
 
-    def notify_download(self, ep_name):
-        if sickrage.LIBNOTIFY_NOTIFY_ONDOWNLOAD:
+    def _notify_download(self, ep_name):
+        if sickrage.srCore.CONFIG.LIBNOTIFY_NOTIFY_ONDOWNLOAD:
             self._notify(notifyStrings[NOTIFY_DOWNLOAD], ep_name)
 
-    def notify_subtitle_download(self, ep_name, lang):
-        if sickrage.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD:
+    def _notify_subtitle_download(self, ep_name, lang):
+        if sickrage.srCore.CONFIG.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify(notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
 
-    def notify_version_update(self, new_version="??"):
-        if sickrage.USE_LIBNOTIFY:
+    def _notify_version_update(self, new_version="??"):
+        if sickrage.srCore.CONFIG.USE_LIBNOTIFY:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notify(title, update_text + new_version)
@@ -108,14 +113,14 @@ class LibnotifyNotifier:
         return self._notify('Test notification', "This is a test notification from SiCKRAGE", force=True)
 
     def _notify(self, title, message, force=False):
-        if not sickrage.USE_LIBNOTIFY and not force:
+        if not sickrage.srCore.CONFIG.USE_LIBNOTIFY and not force:
             return False
         if not self.init_notify():
             return False
 
         # Can't make this a global constant because PROG_DIR isn't available
         # when the module is imported.
-        icon_path = os.path.join(sickrage.GUI_DIR, 'images', 'ico', 'favicon-120.png')
+        icon_path = os.path.join(sickrage.srCore.CONFIG.GUI_DIR, 'images', 'ico', 'favicon-120.png')
 
         # If the session bus can't be acquired here a bunch of warning messages
         # will be printed but the call to show() will still return True.

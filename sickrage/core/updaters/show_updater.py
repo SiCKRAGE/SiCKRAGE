@@ -18,18 +18,19 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import threading
 
+from datetime import datetime
+
 import sickrage
-from sickrage.core.databases import main_db
-from sickrage.core.exceptions import CantRefreshShowException, \
+from core.databases import main_db
+from core.exceptions import CantRefreshShowException, \
     CantUpdateShowException
-from sickrage.core.tv.show.history import FailedHistory
-from sickrage.core.ui import ProgressIndicators, QueueProgressIndicator
+from core.tv.show.history import FailedHistory
+from core.ui import ProgressIndicators, QueueProgressIndicator
 
 
-class ShowUpdater(object):
+class srShowUpdater(object):
     def __init__(self):
         self.name = "SHOWUPDATER"
         self.lock = threading.Lock()
@@ -44,14 +45,14 @@ class ShowUpdater(object):
         update_datetime = datetime.datetime.now()
         update_date = update_datetime.date()
 
-        if sickrage.USE_FAILED_DOWNLOADS:
+        if sickrage.srCore.CONFIG.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
 
-        sickrage.LOGGER.info("Doing full update on all shows")
+        sickrage.srCore.LOGGER.info("Doing full update on all shows")
 
         # select 10 'Ended' tv_shows updated more than 90 days ago to include in this update
         stale_should_update = []
-        stale_update_date = (update_date - datetime.timedelta(days=90)).toordinal()
+        stale_update_date = (update_date - timedelta(days=90)).toordinal()
 
         # last_update_date <= 90 days, sorted ASC because dates are ordinal
         sql_result = main_db.MainDB().select(
@@ -63,7 +64,7 @@ class ShowUpdater(object):
 
         # start update process
         piList = []
-        for curShow in sickrage.showList:
+        for curShow in sickrage.srCore.SHOWLIST:
 
             try:
                 # get next episode airdate
@@ -73,21 +74,21 @@ class ShowUpdater(object):
                 if curShow.should_update(update_date=update_date) or curShow.indexerid in stale_should_update:
                     try:
                         piList.append(
-                                sickrage.SHOWQUEUE.updateShow(curShow, True))  # @UndefinedVariable
+                                sickrage.srCore.SHOWQUEUE.updateShow(curShow, True))  # @UndefinedVariable
                     except CantUpdateShowException as e:
-                        sickrage.LOGGER.debug("Unable to update show: {0}".format(str(e)))
+                        sickrage.srCore.LOGGER.debug("Unable to update show: {0}".format(str(e)))
                 else:
-                    sickrage.LOGGER.debug(
+                    sickrage.srCore.LOGGER.debug(
                             "Not updating episodes for show " + curShow.name + " because it's marked as ended and last/next episode is not within the grace period.")
                     piList.append(
-                            sickrage.SHOWQUEUE.refreshShow(curShow, True))  # @UndefinedVariable
+                            sickrage.srCore.SHOWQUEUE.refreshShow(curShow, True))  # @UndefinedVariable
 
             except (CantUpdateShowException, CantRefreshShowException) as e:
-                sickrage.LOGGER.error("Automatic update failed: {}".format(e))
+                sickrage.srCore.LOGGER.error("Automatic update failed: {}".format(e))
 
         ProgressIndicators.setIndicator('dailyUpdate', QueueProgressIndicator("Daily Update", piList))
 
-        sickrage.LOGGER.info("Completed full update on all shows")
+        sickrage.srCore.LOGGER.info("Completed full update on all shows")
 
         self.amActive = False
 
