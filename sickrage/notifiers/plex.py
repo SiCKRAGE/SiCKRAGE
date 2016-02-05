@@ -225,14 +225,14 @@ class PLEXNotifier(srNotifiers):
                     xml_tree = ElementTree.parse(urllib.urlopen(url))
                     media_container = xml_tree.getroot()
                 except IOError as e:
-                    sickrage.srCore.LOGGER.warning('PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
+                    sickrage.srCore.LOGGER.warning('PLEX: Error while trying to contact Plex Media Server: {}'.format(e.message))
                     hosts_failed.append(cur_host)
                     continue
                 except Exception as e:
                     if 'invalid token' in str(e):
                         sickrage.srCore.LOGGER.error('PLEX: Please set TOKEN in Plex settings: ')
                     else:
-                        sickrage.srCore.LOGGER.error('PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
+                        sickrage.srCore.LOGGER.error('PLEX: Error while trying to contact Plex Media Server: {}'.format(e.message))
                     continue
 
                 sections = media_container.findall('.//Directory')
@@ -267,7 +267,7 @@ class PLEXNotifier(srNotifiers):
                     force and urllib.urlopen(url)
                     host_list.append(cur_host)
                 except Exception as e:
-                    sickrage.srCore.LOGGER.warning('PLEX: Error updating library section for Plex Media Server: {}'.format(e))
+                    sickrage.srCore.LOGGER.warning('PLEX: Error updating library section for Plex Media Server: {}'.format(e.message))
                     hosts_failed.append(cur_host)
 
             if hosts_match:

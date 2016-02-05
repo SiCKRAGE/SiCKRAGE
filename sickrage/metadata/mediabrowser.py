@@ -422,7 +422,7 @@ class MediaBrowserMetadata(GenericMetadata):
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
             sickrage.srCore.LOGGER.error("Unable to connect to " + sickrage.srCore.INDEXER_API(
-                    ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e))
+                    ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e.message))
             return False
 
         rootNode = Element("Item")

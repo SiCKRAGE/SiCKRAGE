@@ -221,7 +221,7 @@ def _fake_specifyEP(self, season, episode):
     pass
 
 
-episode.TVEpisode.specifyEpisode = _fake_specifyEP
+episode.TVEpisode.populateEpisode = _fake_specifyEP
 
 
 # =================

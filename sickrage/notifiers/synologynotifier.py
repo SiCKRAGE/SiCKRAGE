@@ -55,4 +55,4 @@ class synologyNotifier(srNotifiers):
             out, err = p.communicate()  # @UnusedVariable
             sickrage.srCore.LOGGER.debug("Script result: " + str(out))
         except OSError as e:
-            sickrage.srCore.LOGGER.info("Unable to run synodsmnotify: {}".format(e))
+            sickrage.srCore.LOGGER.info("Unable to run synodsmnotify: {}".format(e.message))

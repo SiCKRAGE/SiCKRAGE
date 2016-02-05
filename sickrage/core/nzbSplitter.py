@@ -109,7 +109,7 @@ def saveNZB(nzbName, nzbString):
             nzb_fh.write(nzbString)
 
     except EnvironmentError as e:
-        sickrage.srCore.LOGGER.error("Unable to save NZB: {}".format(e))
+        sickrage.srCore.LOGGER.error("Unable to save NZB: {}".format(e.message))
 
 
 def stripNS(element, ns):

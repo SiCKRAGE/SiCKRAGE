@@ -19,6 +19,7 @@
 
 from __future__ import unicode_literals
 
+
 # marks show and episode objects dirty
 def dirty_setter(attr_name):
     def wrapper(self, val):

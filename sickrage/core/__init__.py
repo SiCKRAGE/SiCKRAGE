@@ -25,6 +25,7 @@ import re
 import shutil
 import socket
 import sys
+import threading
 import traceback
 import urllib
 import urlparse
@@ -501,6 +502,9 @@ class srCore(object):
             replace_existing=True
         )
         (job.pause, job.resume)[self.CONFIG.USE_SUBTITLES]()
+
+        # start scheduler
+        threading.Thread(None, self.SCHEDULER.start, 'SCHEDULER').start()
 
     def halt(self):
         self.LOGGER.info("Aborting all threads")

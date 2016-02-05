@@ -119,7 +119,7 @@ class TraktAPI():
                 # This is pretty much a fatal error if there is no status_code
                 # It means there basically was no response at all                    
                 else:
-                    sickrage.srCore.LOGGER.debug('Could not connect to Trakt. Error: {0}'.format(e))
+                    sickrage.srCore.LOGGER.debug('Could not connect to Trakt. Error: {0}'.format(e.message))
             elif code == 502:
                 # Retry the request, cloudflare had a proxying issue
                 sickrage.srCore.LOGGER.debug('Retrying trakt api request: %s' % path)

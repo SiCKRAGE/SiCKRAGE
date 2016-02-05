@@ -110,8 +110,7 @@ class BinSearchCache(tv_cache.TVCache):
                         cl.append(ci)
 
             if len(cl) > 0:
-                myDB = self._getDB()
-                myDB.mass_action(cl)
+                self._getDB().mass_action(cl)
 
         return True
 

@@ -26,7 +26,6 @@ import traceback
 import urllib
 
 import markdown2
-import requests
 from UnRAR2 import RarFile
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, date, timedelta
@@ -540,7 +539,10 @@ class UI(WebRoot):
                 'type': cur_notification.type
             }
 
-        return json_encode(messages)
+        try:
+            return json_encode(messages)
+        except:
+            pass
 
 
 @Route('/browser(/?.*)')
@@ -1099,7 +1101,7 @@ class Home(WebRoot):
         try:
             showLoc = (showObj.location, True)
         except ShowDirectoryNotFoundException:
-            showLoc = (showObj._location, False)
+            showLoc = (showObj.location, False)
 
         show_message = ''
 
@@ -1390,7 +1392,7 @@ class Home(WebRoot):
                 try:
                     sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
                 except CantRefreshShowException as e:
-                    errors.append("Unable to refresh this show: {}".format(e))
+                    errors.append("Unable to refresh this show: {}".format(e.message))
 
             showObj.paused = paused
             showObj.scene = scene
@@ -1407,8 +1409,8 @@ class Home(WebRoot):
                 showObj.rls_require_words = rls_require_words.strip()
 
             # if we change location clear the db of episodes, change it, write to db, and rescan
-            if os.path.normpath(showObj._location) != os.path.normpath(location):
-                sickrage.srCore.LOGGER.debug(os.path.normpath(showObj._location) + " != " + os.path.normpath(location))
+            if os.path.normpath(showObj.location) != os.path.normpath(location):
+                sickrage.srCore.LOGGER.debug(os.path.normpath(showObj.location) + " != " + os.path.normpath(location))
                 if not os.path.isdir(location) and not sickrage.srCore.CONFIG.CREATE_MISSING_SHOW_DIRS:
                     errors.append("New location <tt>%s</tt> does not exist" % location)
 
@@ -1420,7 +1422,7 @@ class Home(WebRoot):
                         try:
                             sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
                         except CantRefreshShowException as e:
-                            errors.append("Unable to refresh this show:{}".format(e))
+                            errors.append("Unable to refresh this show:{}".format(e.message))
                             # grab updated info from TVDB
                             # showObj.loadEpisodesFromIndexer()
                             # rescan the episodes in the new folder
@@ -1523,7 +1525,7 @@ class Home(WebRoot):
         try:
             sickrage.srCore.SHOWQUEUE.updateShow(showObj, bool(force))
         except CantUpdateShowException as e:
-            notifications.error("Unable to update this show.", e)
+            notifications.error("Unable to update this show.", e.message)
 
         # just give it some time
         gen.sleep(cpu_presets[sickrage.srCore.CONFIG.CPU_PRESET])
@@ -1675,7 +1677,6 @@ class Home(WebRoot):
         segments = {}
         trakt_data = []
         if eps:
-
             sql_l = []
             for curEp in eps.split('|'):
 
@@ -1732,7 +1733,9 @@ class Home(WebRoot):
                     epObj.status = int(status)
 
                     # mass add to database
-                    sql_l.append(epObj.get_sql())
+                    sql_q = epObj.saveToDB(False)
+                    if sql_q:
+                        sql_l.append(sql_q)
 
                     trakt_data.append((epObj.season, epObj.episode))
 
@@ -1751,7 +1754,7 @@ class Home(WebRoot):
                                                                               update="remove")
 
             if len(sql_l) > 0:
-                main_db.MainDB().mass_action(sql_l)
+                main_db.MainDB().mass_upsert(sql_l)
 
         if int(status) == WANTED and not showObj.paused:
             msg = "Backlog was automatically started for the following seasons of <b>" + showObj.name + "</b>:<br>"
@@ -2175,11 +2178,10 @@ class HomeChangeLog(Home):
 
     def index(self):
         try:
-            changes = getURL('http://sickragetv.github.io/sickrage-news/CHANGES.md',
-                             session=requests.Session())
+            changes = getURL(sickrage.srCore.CONFIG.CHANGES_URL)
         except Exception:
             sickrage.srCore.LOGGER.debug('Could not load changes from repo, giving a link!')
-            changes = 'Could not load changes from the repo. [Click here for CHANGES.md](http://sickragetv.github.io/sickrage-news/CHANGES.md)'
+            changes = 'Could not load changes from the repo. [Click here for CHANGES.md]({})'.format(sickrage.srCore.CONFIG.CHANGES_URL)
 
         data = markdown2.markdown(
             changes if changes else "The was a problem connecting to github, please refresh and try again",
@@ -2246,8 +2248,6 @@ class HomeAddShows(Home):
         if not lang or lang == 'null':
             lang = sickrage.srCore.CONFIG.INDEXER_DEFAULT_LANGUAGE
 
-        # search_term = search_term.encode('utf-8')
-
         results = {}
         final_results = []
 
@@ -2268,12 +2268,8 @@ class HomeAddShows(Home):
 
         for i, shows in results.items():
             final_results.extend(
-                [[sickrage.srCore.INDEXER_API(i).name, i(i).config[b"show_url"], int(show[b'id']),
-                  show[b'seriesname'], show[b'firstaired']] for show in shows])
-
-        # map(final_results.extend,
-        #            ([[sickrage.INDEXER_API(id).name, id, sickrage.INDEXER_API(id).config[b"show_url"], int(show[b'id']),
-        #               show[b'seriesname'], show[b'firstaired']] for show in shows] for id, shows in results.iteritems()))
+                [[sickrage.srCore.INDEXER_API(i).name, i, sickrage.srCore.INDEXER_API(i).config[b"show_url"],
+                  int(show[b'id']), show[b'seriesname'], show[b'firstaired']] for show in shows])
 
         lang_id = sickrage.srCore.INDEXER_API().config[b'langabbv_to_id'][lang]
         return json_encode({'results': final_results, 'langid': lang_id})
@@ -3120,7 +3116,7 @@ class Manage(Home, WebRoot):
 
         for curShow in showList:
 
-            cur_root_dir = os.path.dirname(curShow._location)
+            cur_root_dir = os.path.dirname(curShow.location)
             if cur_root_dir not in root_dir_list:
                 root_dir_list.append(cur_root_dir)
 
@@ -3238,14 +3234,14 @@ class Manage(Home, WebRoot):
             if not showObj:
                 continue
 
-            cur_root_dir = os.path.dirname(showObj._location)
-            cur_show_dir = os.path.basename(showObj._location)
+            cur_root_dir = os.path.dirname(showObj.location)
+            cur_show_dir = os.path.basename(showObj.location)
             if cur_root_dir in dir_map and cur_root_dir != dir_map[cur_root_dir]:
                 new_show_dir = os.path.join(dir_map[cur_root_dir], cur_show_dir)
                 sickrage.srCore.LOGGER.info(
-                    "For show " + showObj.name + " changing dir from " + showObj._location + " to " + new_show_dir)
+                    "For show " + showObj.name + " changing dir from " + showObj.location + " to " + new_show_dir)
             else:
-                new_show_dir = showObj._location
+                new_show_dir = showObj.location
 
             if archive_firstmatch == 'keep':
                 new_archive_firstmatch = showObj.archive_firstmatch
@@ -3405,7 +3401,7 @@ class Manage(Home, WebRoot):
                     sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
                     refreshes.append(showObj.name)
                 except CantRefreshShowException as e:
-                    errors.append("Unable to refresh show " + showObj.name + ": {}".format(e))
+                    errors.append("Unable to refresh show " + showObj.name + ": {}".format(e.message))
 
             if curShowID in toRename:
                 sickrage.srCore.SHOWQUEUE.renameShowEpisodes(showObj)
@@ -4195,7 +4191,7 @@ class ConfigPostProcessing(Config):
             sickrage.srCore.LOGGER.error('Rar Not Supported: Can not read the content of test file')
             return 'not supported'
         except Exception as e:
-            sickrage.srCore.LOGGER.error('Rar Not Supported: {}'.format(e))
+            sickrage.srCore.LOGGER.error('Rar Not Supported: {}'.format(e.message))
             return 'not supported'
 
 

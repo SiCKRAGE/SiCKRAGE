@@ -127,7 +127,7 @@ class TwitterNotifier(srNotifiers):
         try:
             api.PostUpdate(message.encode('utf8')[:139])
         except Exception as e:
-            sickrage.srCore.LOGGER.error("Error Sending Tweet: {}".format(e))
+            sickrage.srCore.LOGGER.error("Error Sending Tweet: {}".format(e.message))
             return False
 
         return True
@@ -147,7 +147,7 @@ class TwitterNotifier(srNotifiers):
         try:
             api.PostDirectMessage(dmdest, message.encode('utf8')[:139])
         except Exception as e:
-            sickrage.srCore.LOGGER.error("Error Sending Tweet (DM): {}".format(e))
+            sickrage.srCore.LOGGER.error("Error Sending Tweet (DM): {}".format(e.message))
             return False
 
         return True

@@ -91,7 +91,7 @@ class srConfig(object):
         self.AUTO_UPDATE = False
         self.NOTIFY_ON_UPDATE = False
         self.GIT_ORG = 'SiCKRAGETV'
-        self.GIT_REPO = 'SickRage'
+        self.GIT_REPO = 'SiCKRAGE'
         self.GITHUB = None
         self.GIT_RESET = True
         self.GIT_REMOTE = None
@@ -103,6 +103,7 @@ class srConfig(object):
         self.GIT_NEWVER = False
         self.DEVELOPER = False
         self.NEWS_URL = 'http://sickragetv.github.io/news/news.md'
+        self.CHANGES_URL = 'http://sickragetv.github.io/news/changes.md'
         self.NEWS_LAST_READ = None
         self.NEWS_LATEST = None
         self.NEWS_UNREAD = False
@@ -1530,7 +1531,7 @@ class srConfig(object):
         self.FUZZY_DATING = bool(self.check_setting_int('GUI', 'fuzzy_dating', 0))
         self.TRIM_ZERO = bool(self.check_setting_int('GUI', 'trim_zero', 0))
         self.DATE_PRESET = self.check_setting_str('GUI', 'date_preset', '%x')
-        self.TIME_PRESET_W_SECONDS = self.check_setting_str('GUI', 'time_preset', '%I:%M:%self.S%p')
+        self.TIME_PRESET_W_SECONDS = self.check_setting_str('GUI', 'time_preset', '%I:%M:%S%p')
         self.TIMEZONE_DISPLAY = self.check_setting_str('GUI', 'timezone_display', 'local')
         self.POSTER_SORTBY = self.check_setting_str('GUI', 'poster_sortby', 'name')
         self.POSTER_SORTDIR = self.check_setting_int('GUI', 'poster_sortdir', 1)

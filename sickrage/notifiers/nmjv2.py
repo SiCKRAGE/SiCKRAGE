@@ -123,13 +123,13 @@ class NMJv2Notifier(srNotifiers):
             et = ElementTree.fromstring(response1)
             result1 = et.findtext("returnValue")
         except SyntaxError as e:
-            sickrage.srCore.LOGGER.error("Unable to parse XML returned from the Popcorn Hour: update_scandir, {}".format(e))
+            sickrage.srCore.LOGGER.error("Unable to parse XML returned from the Popcorn Hour: update_scandir, {}".format(e.message))
             return False
         try:
             et = ElementTree.fromstring(response2)
             result2 = et.findtext("returnValue")
         except SyntaxError as e:
-            sickrage.srCore.LOGGER.error("Unable to parse XML returned from the Popcorn Hour: scanner_start, {}".format(e))
+            sickrage.srCore.LOGGER.error("Unable to parse XML returned from the Popcorn Hour: scanner_start, {}".format(e.message))
             return False
 
         # if the result was a number then consider that an error

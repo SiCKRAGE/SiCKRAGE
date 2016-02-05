@@ -27,16 +27,18 @@ from core.tv.episode import TVEpisode
 
 class Episode(TVEpisode):
     def __init__(self, season, episode, absolute_number, name):
-        self.relatedEps = []
         self._name = name
         self._season = season
         self._episode = episode
         self._absolute_number = absolute_number
+        self._airdate = date(2010, 3, 9)
+        self._status = Quality.compositeStatus(DOWNLOADED, Quality.SDTV)
+        self._release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
+        self._release_group = 'RLSGROUP'
+        self._is_proper = True
+
+        self.show = Show()
         self.scene_season = season
         self.scene_episode = episode
         self.scene_absolute_number = absolute_number
-        self._airdate = date(2010, 3, 9)
-        self.show = Show()
-        self._status = Quality.compositeStatus(DOWNLOADED, Quality.SDTV)
-        self._release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
-        self._is_proper = True
+        self.relatedEps = []

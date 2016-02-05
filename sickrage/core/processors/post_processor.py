@@ -348,7 +348,7 @@ class PostProcessor(object):
                 moveFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                self._log("Unable to move file " + cur_file_path + " to " + new_file_path + ": {}".format(e),
+                self._log("Unable to move file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message),
                           sickrage.srCore.LOGGER.ERROR)
                 raise
 
@@ -372,7 +372,7 @@ class PostProcessor(object):
                 copyFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                sickrage.srCore.LOGGER.error("Unable to copy file " + cur_file_path + " to " + new_file_path + ": {}".format(e))
+                sickrage.srCore.LOGGER.error("Unable to copy file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message))
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_copy,
@@ -418,7 +418,7 @@ class PostProcessor(object):
                 moveAndSymlinkFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": {}".format(e),
+                self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message),
                           sickrage.srCore.LOGGER.ERROR)
                 raise
 
@@ -612,7 +612,7 @@ class PostProcessor(object):
             try:
                 (cur_show, cur_season, cur_episodes, cur_quality, cur_version) = cur_attempt()
             except (InvalidNameException, InvalidShowException) as e:
-                sickrage.srCore.LOGGER.debug("Unable to parse, skipping: {}".format(e))
+                sickrage.srCore.LOGGER.debug("Unable to parse, skipping: {}".format(e.message))
                 continue
 
             if not cur_show:
@@ -702,7 +702,7 @@ class PostProcessor(object):
                 if not curEp:
                     raise EpisodeNotFoundException()
             except EpisodeNotFoundException as e:
-                self._log("Unable to create episode: {}".format(e)), sickrage.srCore.LOGGER.DEBUG
+                self._log("Unable to create episode: {}".format(e.message)), sickrage.srCore.LOGGER.DEBUG
                 raise EpisodePostProcessingFailedException()
 
             # associate all the episodes together under a single root episode
@@ -799,10 +799,10 @@ class PostProcessor(object):
                 self._log("Script result: " + str(out), sickrage.srCore.LOGGER.DEBUG)
 
             except OSError as e:
-                self._log("Unable to run extra_script: {}".format(e))
+                self._log("Unable to run extra_script: {}".format(e.message))
 
             except Exception as e:
-                self._log("Unable to run extra_script: {}".format(e))
+                self._log("Unable to run extra_script: {}".format(e.message))
 
     def _is_priority(self, ep_obj, new_ep_quality):
         """
@@ -953,7 +953,7 @@ class PostProcessor(object):
 
         # try to find out if we have enough space to perform the copy or move action.
         if not isFileLocked(self.file_path, False):
-            if not verify_freespace(self.file_path, ep_obj.show._location, [ep_obj] + ep_obj.relatedEps):
+            if not verify_freespace(self.file_path, ep_obj.show.location, [ep_obj] + ep_obj.relatedEps):
                 self._log("Not enough space to continue PP, exiting", sickrage.srCore.LOGGER.WARNING)
                 return False
         else:
@@ -966,7 +966,7 @@ class PostProcessor(object):
 
                 # clean up any left over folders
                 if cur_ep.location:
-                    delete_empty_folders(os.path.dirname(cur_ep.location), keep_dir=ep_obj.show._location)
+                    delete_empty_folders(os.path.dirname(cur_ep.location), keep_dir=ep_obj.show.location)
             except (OSError, IOError):
                 raise EpisodePostProcessingFailedException("Unable to delete the existing files")
 
@@ -975,17 +975,17 @@ class PostProcessor(object):
                 #    curEp.status = Quality.compositeStatus(SNATCHED, new_ep_quality)
 
         # if the show directory doesn't exist then make it if allowed
-        if not os.path.isdir(ep_obj.show._location) and sickrage.srCore.CONFIG.CREATE_MISSING_SHOW_DIRS:
+        if not os.path.isdir(ep_obj.show.location) and sickrage.srCore.CONFIG.CREATE_MISSING_SHOW_DIRS:
             self._log("Show directory doesn't exist, creating it", sickrage.srCore.LOGGER.DEBUG)
             try:
-                os.mkdir(ep_obj.show._location)
-                chmodAsParent(ep_obj.show._location)
+                os.mkdir(ep_obj.show.location)
+                chmodAsParent(ep_obj.show.location)
 
                 # do the library update for synoindex
-                sickrage.srCore.NOTIFIERS.synoindex_notifier.addFolder(ep_obj.show._location)
+                sickrage.srCore.NOTIFIERS.synoindex_notifier.addFolder(ep_obj.show.location)
             except (OSError, IOError):
                 raise EpisodePostProcessingFailedException(
-                        "Unable to create the show directory: " + ep_obj.show._location)
+                        "Unable to create the show directory: " + ep_obj.show.location)
 
             # get metadata for the show (but not episode because it hasn't been fully processed)
             ep_obj.show.writeMetadata(True)
@@ -1021,7 +1021,9 @@ class PostProcessor(object):
                 else:
                     cur_ep.release_group = ""
 
-                sql_l.append(cur_ep.get_sql())
+                sql_q = cur_ep.saveToDB(False)
+                if sql_q:
+                    sql_l.append(sql_q)
 
         # Just want to keep this consistent for failed handling right now
         releaseName = show_names.determineReleaseName(self.folder_path, self.nzb_name)
@@ -1096,17 +1098,19 @@ class PostProcessor(object):
 
         # now that processing has finished, we can put the info in the DB. If we do it earlier, then when processing fails, it won't try again.
         if len(sql_l) > 0:
-            main_db.MainDB().mass_action(sql_l)
+            main_db.MainDB().mass_upsert(sql_l)
 
         # put the new location in the database
         sql_l = []
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
             with cur_ep.lock:
                 cur_ep.location = os.path.join(dest_path, new_file_name)
-                sql_l.append(cur_ep.get_sql())
+                sql_q = cur_ep.saveToDB(False)
+                if sql_q:
+                    sql_l.append(sql_q)
 
         if len(sql_l) > 0:
-            main_db.MainDB().mass_action(sql_l)
+            main_db.MainDB().mass_upsert(sql_l)
 
         # set file modify stamp to show airdate
         if sickrage.srCore.CONFIG.AIRDATE_EPISODES:

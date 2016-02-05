@@ -423,7 +423,7 @@
             <span class="visible-print-inline">${download_stat}</span>
         </td>
 
-        ## <% show_size = helpers.get_size(curShow._location) %>
+        ## <% show_size = helpers.get_size(curShow.location) %>
         ## <td align="center" data-show-size="${show_size}">${helpers.pretty_filesize(show_size)}</td>
 
         <td align="center">

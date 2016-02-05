@@ -128,10 +128,9 @@ class TVCache(object):
                         cl.append(ci)
 
                 if len(cl) > 0:
-                    myDB = self._getDB()
-                    myDB.mass_action(cl)
+                    self._getDB().mass_action(cl)
             except AuthException as e:
-                sickrage.srCore.LOGGER.error("Authentication error: {}".format(e))
+                sickrage.srCore.LOGGER.error("Authentication error: {}".format(e.message))
                 return False
             except Exception as e:
                 sickrage.srCore.LOGGER.debug("Error while searching {}, skipping: {}".format(self.provider.name, repr(e)))
@@ -306,14 +305,14 @@ class TVCache(object):
         return [x for x in propers_results if x[b'indexerid']]
 
     def findNeededEpisodes(self, episode, manualSearch=False, downCurQuality=False):
+        sqlResults = []
         neededEps = {}
         cl = []
 
-        myDB = self._getDB()
         if not episode:
-            sqlResults = myDB.select("SELECT * FROM [" + self.providerID + "]")
+            sqlResults = self._getDB().select("SELECT * FROM [" + self.providerID + "]")
         elif type(episode) != list:
-            sqlResults = myDB.select(
+            sqlResults = self._getDB().select(
                     "SELECT * FROM [" + self.providerID + "] WHERE indexerid = ? AND season = ? AND episodes LIKE ?",
                     [episode.show.indexerid, episode.season, "%|" + str(episode.episode) + "|%"])
         else:
@@ -323,8 +322,8 @@ class TVCache(object):
                             [str(x) for x in epObj.wantedQuality]) + ")",
                     [epObj.show.indexerid, epObj.season, "%|" + str(epObj.episode) + "|%"]])
 
-            sqlResults = myDB.mass_action(cl, fetchall=True)
-            sqlResults = list(itertools.chain(*sqlResults))
+            if len(cl) > 0:
+                sqlResults = list(itertools.chain(*self._getDB().mass_action(cl)))
 
         # for each cache entry
         for curResult in sqlResults:

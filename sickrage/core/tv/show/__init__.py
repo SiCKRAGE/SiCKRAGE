@@ -44,16 +44,19 @@ from core.exceptions import CantRefreshShowException, \
     CantRemoveShowException
 from core.exceptions import MultipleShowObjectsException, ShowDirectoryNotFoundException, NoNFOException, \
     ShowNotFoundException, EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
-from core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow
+from core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt
 from core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from core.tv import dirty_setter
 from indexers.indexer_config import INDEXER_TVRAGE
-from indexers.indexer_exceptions import indexer_seasonnotfound, indexer_error, indexer_attributenotfound
+from indexers.indexer_exceptions import indexer_attributenotfound
 
 
 # noinspection PyUnresolvedReferences
 class TVShow(object):
     def __init__(self, indexer, indexerid, lang="", dbload=True):
+        self.lock = threading.Lock()
+        self.dirty = True
+
         self._indexerid = int(indexerid)
         self._indexer = int(indexer)
         self._name = ""
@@ -61,11 +64,11 @@ class TVShow(object):
         self._tmdbid = ""
         self._network = ""
         self._genre = ""
-        self._classification = ""
+        self._classification = 'Scripted'
         self._runtime = 0
         self._imdb_info = {}
         self._tmdb_info = {}
-        self._quality = int(sickrage.srCore.CONFIG.QUALITY_DEFAULT)
+        self._quality = tryInt(sickrage.srCore.CONFIG.QUALITY_DEFAULT, UNKNOWN)
         self._flatten_folders = int(sickrage.srCore.CONFIG.FLATTEN_FOLDERS_DEFAULT)
         self._status = "Unknown"
         self._airs = ""
@@ -83,10 +86,7 @@ class TVShow(object):
         self._rls_ignore_words = ""
         self._rls_require_words = ""
         self._default_ep_status = SKIPPED
-        self.dirty = True
-
         self._location = ""
-        self.lock = threading.Lock()
         self.episodes = {}
         self.nextaired = ""
         self.release_groups = None
@@ -101,7 +101,6 @@ class TVShow(object):
     name = property(lambda self: self._name, dirty_setter("_name"))
     indexerid = property(lambda self: self._indexerid, dirty_setter("_indexerid"))
     indexer = property(lambda self: self._indexer, dirty_setter("_indexer"))
-    # location = property(lambda self: self._location, dirty_setter("_location"))
     imdbid = property(lambda self: self._imdbid, dirty_setter("_imdbid"))
     tmdbid = property(lambda self: self._tmdbid, dirty_setter("_tmdbid"))
     network = property(lambda self: self._network, dirty_setter("_network"))
@@ -154,7 +153,7 @@ class TVShow(object):
     def network_logo_name(self):
         return self.network.replace('\u00C9', 'e').replace('\u00E9', 'e').lower()
 
-    def _getLocation(self):
+    def _get_location(self):
         # no dir check needed if missing show dirs are created during post-processing
         if sickrage.srCore.CONFIG.CREATE_MISSING_SHOW_DIRS:
             return self._location
@@ -164,15 +163,15 @@ class TVShow(object):
         else:
             raise ShowDirectoryNotFoundException("Show folder doesn't exist, you shouldn't be using it")
 
-    def _setLocation(self, newLocation):
-        sickrage.srCore.LOGGER.debug("Setter sets location to " + newLocation)
+    def _set_location(self, new_location):
+        sickrage.srCore.LOGGER.debug("Setter sets location to " + new_location)
         # Don't validate dir if user wants to add shows without creating a dir
-        if sickrage.srCore.CONFIG.ADD_SHOWS_WO_DIR or os.path.isdir(newLocation):
-            dirty_setter("_location")(self, newLocation)
+        if sickrage.srCore.CONFIG.ADD_SHOWS_WO_DIR or os.path.isdir(new_location):
+            dirty_setter("_location")(self, new_location)
         else:
             raise NoNFOException("Invalid folder for the show!")
 
-    location = property(_getLocation, _setLocation)
+    location = property(_get_location, _set_location)
 
     # delete references to anything that's not in the internal lists
     def flushEpisodes(self):
@@ -255,8 +254,6 @@ class TVShow(object):
             if noCreate:
                 return None
 
-            # LOGGER.debug(str(self.indexerid) + u": An object for episode S%02dE%02d didn't exist in the cache, trying to create it" % (season or 0, episode or 0))
-
             from core.tv.episode import TVEpisode
 
             if file:
@@ -302,7 +299,7 @@ class TVShow(object):
             if next_airdate <= (update_date + graceperiod):
                 return True
 
-        self._last_update_indexer = date.fromordinal(self.last_update_indexer)
+        self.last_update_indexer = date.fromordinal(self.last_update_indexer)
 
         # in the first year after ended (last airdate), update every 30 days
         if (update_date - last_airdate) < timedelta(days=450) and (
@@ -315,7 +312,7 @@ class TVShow(object):
 
         result = False
 
-        if not os.path.isdir(self._location):
+        if not os.path.isdir(self.location):
             sickrage.srCore.LOGGER.info(str(self.indexerid) + ": Show dir doesn't exist, skipping NFO generation")
             return False
 
@@ -327,7 +324,7 @@ class TVShow(object):
 
     def writeMetadata(self, show_only=False):
 
-        if not os.path.isdir(self._location):
+        if not os.path.isdir(self.location):
             sickrage.srCore.LOGGER.info(str(self.indexerid) + ": Show dir doesn't exist, skipping NFO generation")
             return
 
@@ -340,7 +337,7 @@ class TVShow(object):
 
     def writeEpisodeNFOs(self):
 
-        if not os.path.isdir(self._location):
+        if not os.path.isdir(self.location):
             sickrage.srCore.LOGGER.info(str(self.indexerid) + ": Show dir doesn't exist, skipping NFO generation")
             return
 
@@ -360,7 +357,7 @@ class TVShow(object):
 
     def updateMetadata(self):
 
-        if not os.path.isdir(self._location):
+        if not os.path.isdir(self.location):
             sickrage.srCore.LOGGER.info(str(self.indexerid) + ": Show dir doesn't exist, skipping NFO generation")
             return
 
@@ -370,7 +367,7 @@ class TVShow(object):
 
         result = False
 
-        if not os.path.isdir(self._location):
+        if not os.path.isdir(self.location):
             sickrage.srCore.LOGGER.info(str(self.indexerid) + ": Show dir doesn't exist, skipping NFO generation")
             return False
 
@@ -382,36 +379,34 @@ class TVShow(object):
 
     # find all media files in the show folder and create episodes for as many as possible
     def loadEpisodesFromDir(self):
-
-        if not os.path.isdir(self._location):
+        if not os.path.isdir(self.location):
             sickrage.srCore.LOGGER.debug(
                 str(self.indexerid) + ": Show dir doesn't exist, not loading episodes from disk")
             return
 
         sickrage.srCore.LOGGER.debug(
-            str(self.indexerid) + ": Loading all episodes from the show directory " + self._location)
+            str(self.indexerid) + ": Loading all episodes from the show directory " + self.location)
 
         # get file list
-        mediaFiles = listMediaFiles(self._location)
+        mediaFiles = listMediaFiles(self.location)
         sickrage.srCore.LOGGER.debug("%s: Found files: %s" %
                                      (self.indexerid, mediaFiles))
 
         # create TVEpisodes from each media file (if possible)
         sql_l = []
         for mediaFile in mediaFiles:
-            parse_result = None
             curEpisode = None
 
             sickrage.srCore.LOGGER.debug(str(self.indexerid) + ": Creating episode from " + mediaFile)
             try:
-                curEpisode = self.makeEpFromFile(os.path.join(self._location, mediaFile))
+                curEpisode = self.makeEpFromFile(os.path.join(self.location, mediaFile))
             except (ShowNotFoundException, EpisodeNotFoundException) as e:
-                sickrage.srCore.LOGGER.error("Episode " + mediaFile + " returned an exception: {}".format(e))
-                continue
+                sickrage.srCore.LOGGER.error("Episode " + mediaFile + " returned an exception: {}".format(e.message))
             except EpisodeDeletedException:
                 sickrage.srCore.LOGGER.debug("The episode deleted itself when I tried making an object for it")
 
-            if curEpisode is None:
+            # skip to next episode?
+            if not curEpisode:
                 continue
 
             # see if we should save the release name in the db
@@ -425,96 +420,62 @@ class TVShow(object):
             except (InvalidNameException, InvalidShowException):
                 pass
 
-            if not ' ' in ep_file_name and parse_result and parse_result.release_group:
+            if ' ' not in ep_file_name and parse_result and parse_result.release_group:
                 sickrage.srCore.LOGGER.debug(
                     "Name " + ep_file_name + " gave release group of " + parse_result.release_group + ", seems valid")
                 curEpisode.release_name = ep_file_name
 
             # store the reference in the show
-            if curEpisode is not None:
-                if self.subtitles:
-                    try:
-                        curEpisode.refreshSubtitles()
-                    except Exception:
-                        sickrage.srCore.LOGGER.error("%s: Could not refresh subtitles" % self.indexerid)
-                        sickrage.srCore.LOGGER.debug(traceback.format_exc())
+            if self.subtitles:
+                try:
+                    curEpisode.refreshSubtitles()
+                except Exception:
+                    sickrage.srCore.LOGGER.error("%s: Could not refresh subtitles" % self.indexerid)
+                    sickrage.srCore.LOGGER.debug(traceback.format_exc())
 
-                sql_l.append(curEpisode.get_sql())
+            sql_q = curEpisode.saveToDB(False)
+            if sql_q:
+                sql_l.append(sql_q)
 
-        if sql_l:
-            main_db.MainDB().mass_action(sql_l)
+        if len(sql_l) > 0:
+            main_db.MainDB().mass_upsert(sql_l)
 
     def loadEpisodesFromDB(self):
+        scannedEps = {}
 
-        sickrage.srCore.LOGGER.debug("Loading all episodes from the DB")
+        sickrage.srCore.LOGGER.debug("{}: Loading all episodes for show".format(self.indexerid))
 
         sql = "SELECT * FROM tv_episodes WHERE showid = ?"
         sqlResults = main_db.MainDB().select(sql, [self.indexerid])
 
-        scannedEps = {}
-
-        lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(self.indexer).api_params.copy()
-
-        if self.lang:
-            lINDEXER_API_PARMS[b'language'] = self.lang
-            sickrage.srCore.LOGGER.debug("Using language: " + str(self.lang))
-
-        if self.dvdorder != 0:
-            lINDEXER_API_PARMS[b'dvdorder'] = True
-
-        # LOGGER.debug(u"lINDEXER_API_PARMS: " + str(lINDEXER_API_PARMS))
-        # Spamming log
-        t = sickrage.srCore.INDEXER_API(self.indexer).indexer(**lINDEXER_API_PARMS)
-
-        cachedShow = t[self.indexerid]
-        cachedSeasons = {}
-
         for curResult in sqlResults:
+            curEp = None
 
             curSeason = int(curResult[b"season"])
             curEpisode = int(curResult[b"episode"])
-            curShowid = int(curResult[b'showid'])
 
-            sickrage.srCore.LOGGER.debug("%s: loading Episodes from DB" % curShowid)
-            deleteEp = False
-
-            if curSeason not in cachedSeasons:
-                try:
-                    cachedSeasons[curSeason] = cachedShow[curSeason]
-                except indexer_seasonnotfound as e:
-                    sickrage.LOGGER.warning("%s: Error when trying to load the episode from %s. Message: %s " %
-                                            (curShowid, sickrage.srCore.INDEXER_API(self.indexer).name, e.message))
-                    deleteEp = True
-
-            if not curSeason in scannedEps:
+            if curSeason not in scannedEps:
                 sickrage.srCore.LOGGER.debug("Not curSeason in scannedEps")
                 scannedEps[curSeason] = {}
 
-            sickrage.srCore.LOGGER.debug(
-                "%s: Loading episode S%02dE%02d from the DB" % (curShowid, curSeason or 0, curEpisode or 0))
-
             try:
+                sickrage.srCore.LOGGER.debug(
+                    "{}: Loading episode S{}E{} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
+
                 curEp = self.getEpisode(curSeason, curEpisode)
                 if not curEp:
                     raise EpisodeNotFoundException
 
-                # if we found out that the ep is no longer on TVDB then delete it from our database too
-                if deleteEp:
-                    curEp.deleteEpisode()
-
-                curEp.loadFromDB(curSeason, curEpisode)
-                curEp.loadFromIndexer(tvapi=t, cachedSeason=cachedSeasons[curSeason])
                 scannedEps[curSeason][curEpisode] = True
             except EpisodeDeletedException:
-                sickrage.srCore.LOGGER.debug(
-                    "Tried loading an episode from the DB that should have been deleted, skipping it")
-                continue
+                if curEp:
+                    curEp.deleteEpisode()
 
-        sickrage.srCore.LOGGER.debug("Finished loading all episodes from the DB")
-
+        sickrage.srCore.LOGGER.debug("{}: Finished loading all episodes for show".format(self.indexerid))
         return scannedEps
 
     def loadEpisodesFromIndexer(self, cache=True):
+        scannedEps = {}
 
         lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(self.indexer).api_params.copy()
 
@@ -527,57 +488,48 @@ class TVShow(object):
         if self.dvdorder != 0:
             lINDEXER_API_PARMS[b'dvdorder'] = True
 
-        try:
-            t = sickrage.srCore.INDEXER_API(self.indexer).indexer(**lINDEXER_API_PARMS)
-            showObj = t[self.indexerid]
-        except indexer_error:
-            sickrage.srCore.LOGGER.warning("" + sickrage.srCore.INDEXER_API(self.indexer).name +
-                                           " timed out, unable to update episodes from " +
-                                           sickrage.srCore.INDEXER_API(self.indexer).name)
-            return None
+        t = sickrage.srCore.INDEXER_API(self.indexer).indexer(**lINDEXER_API_PARMS)
+        showObj = t[self.indexerid]
 
         sickrage.srCore.LOGGER.debug(
             str(self.indexerid) + ": Loading all episodes from " + sickrage.srCore.INDEXER_API(
                 self.indexer).name + "..")
 
-        scannedEps = {}
-
         sql_l = []
         for season in showObj:
-            scannedEps[season] = {}
+            if season not in scannedEps:
+                scannedEps[season] = {}
+
             for episode in showObj[season]:
+                curEp = None
+
                 # need some examples of wtf episode 0 means to decide if we want it or not
                 if episode == 0:
                     continue
+
                 try:
-                    ep = self.getEpisode(season, episode)
-                    if not ep:
+                    curEp = self.getEpisode(season, episode)
+                    if not curEp:
                         raise EpisodeNotFoundException
+
+                    with curEp.lock:
+                        sickrage.srCore.LOGGER.debug("%s: Loading info from %s for episode S%02dE%02d" % (
+                            self.indexerid, sickrage.srCore.INDEXER_API(self.indexer).name, season or 0, episode or 0))
+
+                        sql_q = curEp.saveToDB(False)
+                        if sql_q:
+                            sql_l.append(sql_q)
+
+                    scannedEps[season][episode] = True
                 except EpisodeNotFoundException:
                     sickrage.LOGGER.info("%s: %s object for S%02dE%02d is incomplete, skipping this episode" % (
                         self.indexerid, sickrage.srCore.INDEXER_API(self.indexer).name, season or 0, episode or 0))
-                    continue
-                else:
-                    try:
-                        ep.loadFromIndexer(tvapi=t)
-                    except EpisodeDeletedException:
-                        sickrage.srCore.LOGGER.info("The episode was deleted, skipping the rest of the load")
-                        continue
-
-                with ep.lock:
-                    sickrage.srCore.LOGGER.debug("%s: Loading info from %s for episode S%02dE%02d" % (
-                        self.indexerid, sickrage.srCore.INDEXER_API(self.indexer).name, season or 0, episode or 0))
-                    ep.loadFromIndexer(season, episode, tvapi=t)
-
-                    sql_l.append(ep.get_sql())
-
-                scannedEps[season][episode] = True
 
         if len(sql_l) > 0:
-            main_db.MainDB().mass_action(sql_l)
+            main_db.MainDB().mass_upsert(sql_l)
 
         # Done updating save last update date
-        self._last_update_indexer = date.today().toordinal()
+        self.last_update_indexer = date.today().toordinal()
 
         self.saveToDB()
 
@@ -731,10 +683,12 @@ class TVShow(object):
                         curEp.status = Quality.compositeStatus(newStatus, newQuality)
 
             with curEp.lock:
-                sql_l.append(curEp.get_sql())
+                sql_q = curEp.saveToDB(False)
+                if sql_q:
+                    sql_l.append(sql_q)
 
         if len(sql_l) > 0:
-            main_db.MainDB().mass_action(sql_l)
+            main_db.MainDB().mass_upsert(sql_l)
 
         # creating metafiles on the root should be good enough
         if rootEp:
@@ -754,64 +708,38 @@ class TVShow(object):
             raise MultipleShowsInDatabaseException()
         elif len(sqlResults) == 0:
             sickrage.srCore.LOGGER.info(str(self.indexerid) + ": Unable to find the show in the database")
-            return
-        else:
-            self._indexer = int(sqlResults[0][b"indexer"] or 0)
+            return False
 
-            if not self.name:
-                self._name = sqlResults[0][b"show_name"]
-            if not self.network:
-                self._network = sqlResults[0][b"network"]
-            if not self.genre:
-                self._genre = sqlResults[0][b"genre"]
-            if not self.classification:
-                self._classification = sqlResults[0][b"classification"]
+        self._indexer = tryInt(sqlResults[0][b"indexer"], self.indexer)
+        self._name = sqlResults[0][b"show_name"] or self.name
+        self._network = sqlResults[0][b"network"] or self.network
+        self._genre = sqlResults[0][b"genre"] or self.genre
+        self._classification = sqlResults[0][b"classification"] or self.classification
+        self._runtime = sqlResults[0][b"runtime"] or self.runtime
+        self._status = sqlResults[0][b"status"] or self.status
+        self._airs = sqlResults[0][b"airs"] or self.airs
+        self._startyear = tryInt(sqlResults[0][b"startyear"], self.startyear)
+        self._air_by_date = tryInt(sqlResults[0][b"air_by_date"], self.air_by_date)
+        self._anime = tryInt(sqlResults[0][b"anime"], self.anime)
+        self._sports = tryInt(sqlResults[0][b"sports"], self.sports)
+        self._scene = tryInt(sqlResults[0][b"scene"], self.scene)
+        self._subtitles = tryInt(sqlResults[0][b"subtitles"], self.subtitles)
+        self._dvdorder = tryInt(sqlResults[0][b"dvdorder"], self.dvdorder)
+        self._archive_firstmatch = tryInt(sqlResults[0][b"archive_firstmatch"], self.archive_firstmatch)
+        self._quality = tryInt(sqlResults[0][b"quality"], self.quality)
+        self._flatten_folders = tryInt(sqlResults[0][b"flatten_folders"], self.flatten_folders)
+        self._paused = tryInt(sqlResults[0][b"paused"], self.paused)
+        self._lang = sqlResults[0][b"lang"] or self.lang
+        self._last_update_indexer = sqlResults[0][b"last_update_indexer"] or self.last_update_indexer
+        self._rls_ignore_words = sqlResults[0][b"rls_ignore_words"] or self.rls_ignore_words
+        self._rls_require_words = sqlResults[0][b"rls_require_words"] or self.rls_require_words
+        self._default_ep_status = tryInt(sqlResults[0][b"default_ep_status"], self.default_ep_status)
+        self._imdbid = sqlResults[0][b"imdb_id"] or self.imdbid
+        self._tmdbid = sqlResults[0][b"tmdb_id"] or self.tmdbid
+        self._location = sqlResults[0][b"location"] or self.location
 
-            self._runtime = sqlResults[0][b"runtime"]
-
-            self._status = sqlResults[0][b"status"]
-            if self.status is None:
-                self._status = "Unknown"
-
-            self._airs = sqlResults[0][b"airs"]
-            if self.airs is None:
-                self._airs = ""
-
-            self._startyear = int(sqlResults[0][b"startyear"] or 0)
-            self._air_by_date = int(sqlResults[0][b"air_by_date"] or 0)
-            self._anime = int(sqlResults[0][b"anime"] or 0)
-            self._sports = int(sqlResults[0][b"sports"] or 0)
-            self._scene = int(sqlResults[0][b"scene"] or 0)
-            self._subtitles = int(sqlResults[0][b"subtitles"] or 0)
-            self._dvdorder = int(sqlResults[0][b"dvdorder"] or 0)
-            self._archive_firstmatch = int(sqlResults[0][b"archive_firstmatch"] or 0)
-            self._quality = int(sqlResults[0][b"quality"] or UNKNOWN)
-            self._flatten_folders = int(sqlResults[0][b"flatten_folders"] or 0)
-            self._paused = int(sqlResults[0][b"paused"] or 0)
-
-            try:
-                self.location = sqlResults[0][b"location"]
-            except Exception:
-                dirty_setter("_location")(self, sqlResults[0][b"location"])
-
-            if not self.lang:
-                self._lang = sqlResults[0][b"lang"]
-
-            self._last_update_indexer = sqlResults[0][b"last_update_indexer"]
-
-            self._rls_ignore_words = sqlResults[0][b"rls_ignore_words"]
-            self._rls_require_words = sqlResults[0][b"rls_require_words"]
-
-            self._default_ep_status = int(sqlResults[0][b"default_ep_status"] or SKIPPED)
-
-            if not self.imdbid:
-                self._imdbid = sqlResults[0][b"imdb_id"]
-
-            if not self.tmdbid:
-                self._tmdbid = sqlResults[0][b"tmdb_id"]
-
-            if self.is_anime:
-                self.release_groups = BlackAndWhiteList(self.indexerid)
+        if self.is_anime:
+            self._release_groups = BlackAndWhiteList(self.indexerid)
 
         if not skipNFO:
             foundNFO = False
@@ -821,7 +749,7 @@ class TVShow(object):
             if len(sqlResults) == 0:
                 sickrage.srCore.LOGGER.debug(str(self.indexerid) + ": Unable to find TMDb show info in the database")
             else:
-                self._tmdb_info = dict(zip(sqlResults[0].keys(), sqlResults[0]))
+                self._tmdb_info = dict(zip(sqlResults[0].keys(), sqlResults[0])) or self.tmdb_info
                 foundNFO = True
 
             # Get IMDb_info from database
@@ -829,13 +757,12 @@ class TVShow(object):
             if len(sqlResults) == 0:
                 sickrage.srCore.LOGGER.debug(str(self.indexerid) + ": Unable to find IMDb show info in the database")
             else:
-                self._imdb_info = dict(zip(sqlResults[0].keys(), sqlResults[0]))
+                self._imdb_info = dict(zip(sqlResults[0].keys(), sqlResults[0])) or self.imdb_info
                 foundNFO = True
 
             if not foundNFO:
-                return
+                return False
 
-        self.dirty = False
         return True
 
     def loadFromIndexer(self, cache=True, tvapi=None, cachedSeason=None):
@@ -846,6 +773,7 @@ class TVShow(object):
 
             # There's gotta be a better way of doing this but we don't wanna
             # change the cache value elsewhere
+            t = tvapi
             if tvapi is None:
                 lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(self.indexer).api_params.copy()
 
@@ -860,35 +788,25 @@ class TVShow(object):
 
                 t = sickrage.srCore.INDEXER_API(self.indexer).indexer(**lINDEXER_API_PARMS)
 
-            else:
-                t = tvapi
-
             myEp = t[self.indexerid]
+            if not myEp:
+                return
 
             try:
-                self._name = myEp[b'seriesname'].strip()
+                self.name = myEp[b'seriesname'].strip()
             except AttributeError:
                 raise indexer_attributenotfound(
                     "Found %s, but attribute 'seriesname' was empty." % (self.indexerid))
 
-            self._classification = getattr(myEp, 'classification', 'Scripted')
-            self._genre = getattr(myEp, 'genre', '')
-            self._network = getattr(myEp, 'network', '')
-            self._runtime = getattr(myEp, 'runtime', '')
-
-            self._imdbid = getattr(myEp, 'imdb_id', '')
-            self._tmdbid = getattr(myEp, 'tmdb_id', '')
-
-            if getattr(myEp, 'airs_dayofweek', None) is not None and getattr(myEp, 'airs_time', None) is not None:
-                self._airs = myEp[b"airs_dayofweek"] + " " + myEp[b"airs_time"]
-
-            if self.airs is None:
-                self._airs = ''
-
-            if getattr(myEp, 'firstaired', None) is not None:
-                self._startyear = int(str(myEp[b"firstaired"]).split('-')[0])
-
-            self._status = getattr(myEp, 'status', 'Unknown')
+            self.classification = getattr(myEp, 'classification', self.classification)
+            self.genre = getattr(myEp, 'genre', self.genre)
+            self.network = getattr(myEp, 'network', self.network)
+            self.runtime = getattr(myEp, 'runtime', self.runtime)
+            self.imdbid = getattr(myEp, 'imdb_id', self.imdbid)
+            self.tmdbid = getattr(myEp, 'tmdb_id', self.tmdbid)
+            self.airs = getattr(myEp, 'airs_dayofweek', self.airs) + " " + getattr(myEp, 'airs_time', self.airs)
+            self.startyear = tryInt(str(getattr(myEp, 'firstaired', "")).split('-')[0], self.startyear)
+            self.status = getattr(myEp, 'status', self.status)
         else:
             sickrage.srCore.LOGGER.warning(
                 str(self.indexerid) + ": NOT loading info from " + sickrage.srCore.INDEXER_API(
@@ -916,7 +834,7 @@ class TVShow(object):
             raise
 
         if not self.imdbid:
-            self._imdbid = i.title2imdbID(self.name, kind='tv series')
+            self.imdbid = i.title2imdbID(self.name, kind='tv series') or self.imdbid
 
         if self.imdbid:
             sickrage.srCore.LOGGER.debug(str(self.indexerid) + ": Loading show info from IMDb")
@@ -969,7 +887,7 @@ class TVShow(object):
             imdb_info[b'last_update'] = date.today().toordinal()
 
             # Rename dict keys without spaces for DB upsert
-            self._imdb_info = dict(
+            self.imdb_info = dict(
                 (k.replace(' ', '_'), k(v) if hasattr(v, 'keys') else v) for k, v in imdb_info.iteritems())
             sickrage.srCore.LOGGER.debug(
                 str(self.indexerid) + ": Obtained IMDb info from TMDb ->" + str(self.imdb_info))
@@ -1005,12 +923,13 @@ class TVShow(object):
             return response.json()
 
         TMDB._request = _request
-
         if not self.tmdbid:
-            self._tmdbid = tmdbsimple.Search().tv(query=self.name)['results'][0]['id']
-            tmdb_info[b'tmdb_id'] = self.tmdbid
+            tmdb_result = tmdbsimple.Search().tv(query=self.name)['results']
+            if len(tmdb_result) > 0:
+                self.tmdbid = tmdb_result[0]['id']
 
         if self.tmdbid:
+            tmdb_info[b'tmdb_id'] = self.tmdbid
             tmdbInfo = tmdbsimple.TV(id=self.tmdbid).info()
             sickrage.srCore.LOGGER.debug(str(self.indexerid) + ": Loading show info from TMDb")
             for key in tmdb_info.keys():
@@ -1047,7 +966,7 @@ class TVShow(object):
                 tmdb_info[b'production_companies'] = ''
 
             # Rename dict keys without spaces for DB upsert
-            self._tmdb_info = dict(
+            self.tmdb_info = dict(
                 (k.replace(' ', '_'), k(v) if hasattr(v, 'keys') else v) for k, v in tmdb_info.items())
             sickrage.srCore.LOGGER.debug(str(self.indexerid) + ": Obtained info from TMDb ->" + str(self.tmdb_info))
 
@@ -1074,13 +993,11 @@ class TVShow(object):
 
     def deleteShow(self, full=False):
 
-        sql_l = [["DELETE FROM tv_episodes WHERE showid = ?", [self.indexerid]],
-                 ["DELETE FROM tv_shows WHERE indexer_id = ?", [self.indexerid]],
-                 ["DELETE FROM imdb_info WHERE indexer_id = ?", [self.indexerid]],
-                 ["DELETE FROM xem_refresh WHERE indexer_id = ?", [self.indexerid]],
-                 ["DELETE FROM scene_numbering WHERE indexer_id = ?", [self.indexerid]]]
-
-        main_db.MainDB().mass_action(sql_l)
+        main_db.MainDB().mass_action([["DELETE FROM tv_episodes WHERE showid = ?", [self.indexerid]],
+                                      ["DELETE FROM tv_shows WHERE indexer_id = ?", [self.indexerid]],
+                                      ["DELETE FROM imdb_info WHERE indexer_id = ?", [self.indexerid]],
+                                      ["DELETE FROM xem_refresh WHERE indexer_id = ?", [self.indexerid]],
+                                      ["DELETE FROM scene_numbering WHERE indexer_id = ?", [self.indexerid]]])
 
         action = ('delete', 'trash')[sickrage.srCore.CONFIG.TRASH_REMOVE_SHOW]
 
@@ -1103,17 +1020,17 @@ class TVShow(object):
         # remove entire show folder
         if full:
             try:
-                sickrage.srCore.LOGGER.info('Attempt to %s show folder %s' % (action, self._location))
+                sickrage.srCore.LOGGER.info('Attempt to %s show folder %s' % (action, self.location))
                 # check first the read-only attribute
                 file_attribute = os.stat(self.location)[0]
                 if not file_attribute & stat.S_IWRITE:
                     # File is read-only, so make it writeable
                     sickrage.srCore.LOGGER.debug(
-                        'Attempting to make writeable the read only folder %s' % self._location)
+                        'Attempting to make writeable the read only folder %s' % self.location)
                     try:
                         os.chmod(self.location, stat.S_IWRITE)
                     except Exception:
-                        sickrage.srCore.LOGGER.warning('Unable to change permissions of %s' % self._location)
+                        sickrage.srCore.LOGGER.warning('Unable to change permissions of %s' % self.location)
 
                 if sickrage.srCore.CONFIG.TRASH_REMOVE_SHOW:
                     send2trash.send2trash(self.location)
@@ -1122,13 +1039,13 @@ class TVShow(object):
 
                 sickrage.srCore.LOGGER.info('%s show folder %s' %
                                             (('Deleted', 'Trashed')[sickrage.srCore.CONFIG.TRASH_REMOVE_SHOW],
-                                             self._location))
+                                             self.location))
 
             except ShowDirectoryNotFoundException:
                 sickrage.srCore.LOGGER.warning(
-                    "Show folder does not exist, no need to %s %s" % (action, self._location))
+                    "Show folder does not exist, no need to %s %s" % (action, self.location))
             except OSError as e:
-                sickrage.srCore.LOGGER.warning('Unable to %s %s: %s / %s' % (action, self._location, repr(e), str(e)))
+                sickrage.srCore.LOGGER.warning('Unable to %s %s: %s / %s' % (action, self.location, repr(e), str(e)))
 
         if sickrage.srCore.CONFIG.USE_TRAKT and sickrage.srCore.CONFIG.TRAKT_SYNC_WATCHLIST:
             sickrage.srCore.LOGGER.debug(
@@ -1145,7 +1062,7 @@ class TVShow(object):
     def refreshDir(self):
 
         # make sure the show dir is where we think it is unless dirs are created on the fly
-        if not os.path.isdir(self._location) and not sickrage.srCore.CONFIG.CREATE_MISSING_SHOW_DIRS:
+        if not os.path.isdir(self.location) and not sickrage.srCore.CONFIG.CREATE_MISSING_SHOW_DIRS:
             return False
 
         # load from dir
@@ -1200,19 +1117,21 @@ class TVShow(object):
                         curEp.hastbn = False
                         curEp.release_name = ''
 
-                        sql_l.append(curEp.get_sql())
+                        sql_q = curEp.saveToDB(False)
+                        if sql_q:
+                            sql_l.append(sql_q)
             else:
                 # the file exists, set its modify file stamp
                 if sickrage.srCore.CONFIG.AIRDATE_EPISODES:
                     with curEp.lock:
                         curEp.airdateModifyStamp()
 
-        if sql_l:
-            main_db.MainDB().mass_action(sql_l)
+        if len(sql_l) > 0:
+            main_db.MainDB().mass_upsert(sql_l)
 
     def downloadSubtitles(self, force=False):
         # TODO: Add support for force option
-        if not os.path.isdir(self._location):
+        if not os.path.isdir(self.location):
             sickrage.srCore.LOGGER.debug(str(self.indexerid) + ": Show dir doesn't exist, can't download subtitles")
             return
 
@@ -1236,7 +1155,6 @@ class TVShow(object):
     def saveToDB(self, forceSave=False):
 
         if not self.dirty and not forceSave:
-            # LOGGER.debug(str(self.indexerid) + ": Not saving show to db - record is not dirty")
             return
 
         sickrage.srCore.LOGGER.debug("%i: Saving to database: %s" % (self.indexerid, self.name))
@@ -1244,7 +1162,7 @@ class TVShow(object):
         controlValueDict = {"indexer_id": self.indexerid}
         newValueDict = {"indexer": self.indexer,
                         "show_name": self.name,
-                        "location": self._location,
+                        "location": self.location,
                         "network": self.network,
                         "genre": self.genre,
                         "classification": self.classification,
@@ -1289,7 +1207,7 @@ class TVShow(object):
         toReturn += "indexerid: " + str(self.indexerid) + "\n"
         toReturn += "indexer: " + str(self.indexer) + "\n"
         toReturn += "name: " + self.name + "\n"
-        toReturn += "location: " + self._location + "\n"
+        toReturn += "location: " + self.location + "\n"
         if self.network:
             toReturn += "network: " + self.network + "\n"
         if self.airs:

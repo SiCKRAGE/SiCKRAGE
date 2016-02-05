@@ -18,6 +18,7 @@
 
 from __future__ import unicode_literals
 
+import ctypes
 import os
 import platform
 import re
@@ -286,6 +287,12 @@ class UpdateManager(object):
         except:
             return github.Github(user_agent="SiCKRAGE")
 
+    @staticmethod
+    def root_check():
+        try:
+            return not os.getuid() == 0
+        except AttributeError:
+            return not ctypes.windll.shell32.IsUserAnAdmin() != 0
 
 class GitUpdateManager(UpdateManager):
     def __init__(self):
@@ -763,22 +770,9 @@ class PipUpdateManager(UpdateManager):
 
     def update(self):
         """
-        Downloads the latest source tarball from github and installs it over the existing version.
+        Performs pip upgrade
         """
-        try:
-            import pip
-            sickrage.srCore.LOGGER.info("Updating SiCKRAGE from PyPi servers")
-            pip.main(['install', '-q', '-U', '--no-cache-dir', 'sickrage'])
-        except Exception as e:
-            sickrage.srCore.LOGGER.error("Error while trying to update: {}".format(e))
-            sickrage.srCore.LOGGER.debug("Traceback: " + traceback.format_exc())
-            return False
-
         # Notify update successful
+        sickrage.srCore.LOGGER.info("Updating SiCKRAGE from PyPi servers")
         srNotifiers.notify_version_update(sickrage.srCore.NEWEST_VERSION_STRING)
-
         return True
-
-    @property
-    def list_remote_branches(self):
-        return []

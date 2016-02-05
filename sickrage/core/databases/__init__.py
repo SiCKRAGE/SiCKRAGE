@@ -91,9 +91,8 @@ class Transaction(object):
         """Execute an SQL statement with substitution values and return
         a list of rows from the database.
         """
+        result = []
         with self.db._conn_cursor() as (conn, cursor):
-            result = []
-
             attempt = 0
             while attempt <= 5:
                 attempt += 1
@@ -104,10 +103,7 @@ class Transaction(object):
 
                     # get result
                     result = cursor.fetchall()
-                    raise StopIteration
-                except StopIteration:
-                    pass
-                except (sqlite3.OperationalError, sqlite3.DatabaseError):
+                except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
                     conn.rollback()
                     gen.sleep(1)
                 except Exception as e:
@@ -115,6 +111,32 @@ class Transaction(object):
                 finally:
                     return result
 
+
+    def upsert(self, tableName, valueDict, keyDict):
+        """
+        Update values, or if no updates done, insert values
+
+        :param tableName: table to update/insert
+        :param valueDict: values in table to update/insert
+        :param keyDict:  columns in table to update
+        """
+
+        with self.db._conn_cursor() as (conn, cursor):
+            # update existing row if exists
+            genParams = lambda myDict: [x + " = ?" for x in myDict.keys()]
+            query = ["UPDATE [" + tableName + "] SET " + ", ".join(
+                genParams(valueDict)) + " WHERE " + " AND ".join(genParams(keyDict)),
+                               valueDict.values() + keyDict.values()]
+
+            cursor.execute(*query)
+            if not conn.total_changes:
+                # insert new row if update failed
+                query = ["INSERT INTO [" + tableName + "] (" + ", ".join(
+                    valueDict.keys() + keyDict.keys()) + ")" + " VALUES (" + ", ".join(
+                    ["?"] * len(valueDict.keys() + keyDict.keys())) + ")", valueDict.values() + keyDict.values()]
+                cursor.execute(*query)
+
+            return (False, True)[conn.total_changes > 0]
 
 class Connection(object):
     def __init__(self, filename=None, suffix=None, row_type=None, timeout=None):
@@ -129,18 +151,21 @@ class Connection(object):
 
     @contextmanager
     def _conn(self):
-        thread_id = threading.current_thread().ident
         with self._shared_map_lock:
-            if thread_id in self._connections:
-                yield self._connections[thread_id]
-            else:
+            thread_id = threading.current_thread().ident
+
+            if thread_id not in self._connections:
                 with sqlite3.connect(self.filename, timeout=self.timeout) as conn:
                     conn.row_factory = (self._dict_factory, self.row_type)[self.row_type != 'dict']
+                    conn.execute("PRAGMA journal_mode=WAL")
                     self._connections[thread_id] = conn
-                    try:
-                        yield conn
-                    finally:
-                        conn.commit()
+
+            # yield database connection
+            try:
+                yield self._connections[thread_id]
+            finally:
+                self._connections[thread_id].commit()
+
 
     @contextmanager
     def _conn_cursor(self):
@@ -166,6 +191,7 @@ class Connection(object):
         """Get a :class:`Transaction` object for interacting directly
         with the underlying SQLite database.
         """
+        threading.Thread().setName("DB")
         yield Transaction(self)
 
     def _get_id(self):
@@ -188,6 +214,19 @@ class Connection(object):
         except:
             return 0
 
+    def mass_upsert(self, upserts):
+        """
+        Execute multiple upserts
+
+        :param upserts: list of upserts
+        :return: list of results
+        """
+
+        with futures.ThreadPoolExecutor(len(upserts)) as executor, self.transaction() as tx:
+            sqlResults = [executor.submit(tx.upsert, u[0], u[1], u[2]).result() for u in upserts]
+            sickrage.srCore.LOGGER.db("{} Upserts executed".format(len(upserts)))
+            return sqlResults
+
     def mass_action(self, queries):
         """
         Execute multiple queries
@@ -196,16 +235,10 @@ class Connection(object):
         :return: list of results
         """
 
-        sqlResults = []
-        with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
-            sql_futures = {executor.submit(tx.query, q): q for q in queries}
-            for f in futures.as_completed(sql_futures):
-                sqlResults += f.result()
-
-        sickrage.srCore.LOGGER.log(sickrage.srCore.LOGGER.logLevels[b'DB'],
-                                   "Transaction with %d queries executed of " % len(queries))
-
-        return sqlResults
+        with futures.ThreadPoolExecutor(len(queries)) as executor, self.transaction() as tx:
+            sqlResults = [executor.submit(tx.upsert, q).result() for q in queries]
+            sickrage.srCore.LOGGER.db("{} Transactions executed".format(len(queries)))
+            return sqlResults
 
     def action(self, query, *args):
         """
@@ -215,23 +248,10 @@ class Connection(object):
         :param query: Query string
         """
 
-        sickrage.srCore.LOGGER.log(sickrage.srCore.LOGGER.logLevels[b'DB'],
-                                   "{}: {} with args {}".format(self.filename, query, args))
+        sickrage.srCore.LOGGER.db("{}: {} with args {}".format(self.filename, query, args))
 
         with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
-            sqlResult = executor.submit(tx.query, [query, list(*args)]).result()
-
-        return sqlResult
-
-    def select(self, query, *args):
-        """
-        Perform single select query on database
-
-        :param query: query string
-        :param args:  arguments to query string
-        :return: query results
-        """
-        return self.action(query, *args)
+            return executor.submit(tx.query, [query, list(*args)]).result()
 
     def upsert(self, tableName, valueDict, keyDict):
         """
@@ -244,17 +264,17 @@ class Connection(object):
         """
 
         with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
-            # update existing row
-            genParams = lambda myDict: [x + " = ?" for x in myDict.keys()]
-            query = "UPDATE OR IGNORE [" + tableName + "] SET " + ", ".join(
-                genParams(valueDict)) + " WHERE " + " AND ".join(genParams(keyDict))
-            executor.submit(tx.query, [query, valueDict.values() + keyDict.values()]).result()
+            return executor.submit(tx.upsert, tableName, valueDict, keyDict).result()
 
-            # insert new row if does not exist
-            query = "INSERT OR IGNORE INTO [" + tableName + "] (" + ", ".join(
-                valueDict.keys() + keyDict.keys()) + ")" + " VALUES (" + ", ".join(
-                ["?"] * len(valueDict.keys() + keyDict.keys())) + ")"
-            executor.submit(tx.query, [query, valueDict.values() + keyDict.values()]).result()
+    def select(self, query, *args):
+        """
+        Perform single select query on database
+
+        :param query: query string
+        :param args:  arguments to query string
+        :return: query results
+        """
+        return self.action(query, *args)
 
     def tableInfo(self, tableName):
         """

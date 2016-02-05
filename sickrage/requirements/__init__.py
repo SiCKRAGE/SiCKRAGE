@@ -102,7 +102,7 @@ def upgrade_packages(user=False):
             options.use_user_site = user
 
             packages = [p.project_name for p, y, _ in pip_list_cmd.find_packages_latest_versions(options)
-                        if getattr(p, 'version', 0) == getattr(y, 'available', 0)]
+                        if getattr(p, 'version', 0) != getattr(y, 'public', 0)]
         except:
             packages = []
 

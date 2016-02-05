@@ -48,7 +48,7 @@
                                 <span class="component-title">Show Location</span>
                                 <span class="component-desc">
                                     <input type="hidden" name="show" value="${show.indexerid}" />
-                                    <input type="text" name="location" id="location" value="${show._location}" class="form-control form-control-inline input-sm input350" autocapitalize="off" />
+                                    <input type="text" name="location" id="location" value="${show.location}" class="form-control form-control-inline input-sm input350" autocapitalize="off" />
                                 </span>
                             </label>
                         </div>
