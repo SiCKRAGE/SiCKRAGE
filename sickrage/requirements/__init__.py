@@ -89,6 +89,7 @@ def install_packages(requirements, user=False):
 def upgrade_packages(user=False):
     from pip.commands.list import ListCommand
     from pip.commands.install import InstallCommand
+    from pip.exceptions import InstallationError
 
     packages = []
 
@@ -113,7 +114,7 @@ def upgrade_packages(user=False):
             try:
                 print(r"[%3.2f%%]::Upgrading %s package" % (i * 100 / len(packages), pkg_name.lower()))
                 pip_install_cmd.run(options, [pkg_name])
-            except IndexError:
+            except (IndexError, InstallationError):
                 continue
             except KeyboardInterrupt:
                 raise
