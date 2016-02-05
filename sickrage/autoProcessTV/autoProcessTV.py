@@ -83,19 +83,19 @@ def processEpisode(dir_to_process, org_NZB_name=None, status=None):
                 sickrage.srCore.CONFIG.readfp(fp)
 
             # Replace default values with config_file values
-            host = sickrage.srCore.CONFIG.get("SiCKRAGE", "host")
-            port = sickrage.srCore.CONFIG.get("SiCKRAGE", "port")
-            username = sickrage.srCore.CONFIG.get("SiCKRAGE", "username")
-            password = sickrage.srCore.CONFIG.get("SiCKRAGE", "password")
+            host = sickrage.srCore.CONFIG.get("sickrage", "host")
+            port = sickrage.srCore.CONFIG.get("sickrage", "port")
+            username = sickrage.srCore.CONFIG.get("sickrage", "username")
+            password = sickrage.srCore.CONFIG.get("sickrage", "password")
 
             try:
-                ssl = int(sickrage.srCore.CONFIG.get("SiCKRAGE", "ssl"))
+                ssl = int(sickrage.srCore.CONFIG.get("sickrage", "ssl"))
 
             except (configparser.NoOptionError, ValueError):
                 pass
 
             try:
-                web_root = sickrage.srCore.CONFIG.get("SiCKRAGE", "web_root")
+                web_root = sickrage.srCore.CONFIG.get("sickrage", "web_root")
                 if not web_root.startswith("/"):
                     web_root = "/" + web_root
 

@@ -176,20 +176,16 @@ class srWebServer(object):
                 threading.Thread(None, lambda: launch_browser(('http', 'https')[sickrage.srCore.CONFIG.ENABLE_HTTPS],
                                                               sickrage.srCore.CONFIG.WEB_PORT, sickrage.srCore.CONFIG.WEB_ROOT)).start()
 
-            def started():
-                from core.helpers import get_lan_ip
+            from core.helpers import get_lan_ip
+            sickrage.srCore.CONFIG.STARTED = True
+            print("SiCKRAGE STARTED :: VERSION:[{}] CONFIG:[{}] URL:[{}://{}:{}/]".format(
+                sickrage.srCore.VERSION,
+                sickrage.srCore.CONFIG_FILE,
+                ('http', 'https')[sickrage.srCore.CONFIG.ENABLE_HTTPS],
+                get_lan_ip(),
+                sickrage.srCore.CONFIG.WEB_PORT)
+            )
 
-                sickrage.srCore.SCHEDULER.start()
-                sickrage.srCore.CONFIG.STARTED = True
-                print("SiCKRAGE STARTED :: VERSION:[{}] CONFIG:[{}] URL:[{}://{}:{}/]".format(
-                    sickrage.srCore.VERSION,
-                    sickrage.srCore.CONFIG_FILE,
-                    ('http', 'https')[sickrage.srCore.CONFIG.ENABLE_HTTPS],
-                    get_lan_ip(),
-                    sickrage.srCore.CONFIG.WEB_PORT)
-                )
-
-            self.io_loop.add_callback(started)
             self.io_loop.start()
         except (KeyboardInterrupt, SystemExit) as e:
             sickrage.srCore.LOGGER.info('PERFORMING SHUTDOWN')

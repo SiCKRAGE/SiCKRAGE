@@ -77,56 +77,53 @@ class GenericQueue(object):
         """
 
         with self.lock:
-
             if self.amActive:
                 return
 
-            # only start a new task if one isn't already going
-            if self.currentItem is None or not self.currentItem.inProgress:
+            if self.currentItem:
+                if self.currentItem.inProgress:
+                    return
 
                 # if the thread is dead then the current item should be finished
-                if self.currentItem:
-                    self.currentItem.finish()
-                    self.currentItem = None
+                self.currentItem.finish()
+                self.currentItem = None
 
-                # if there's something in the queue then run it in a thread and take it out of the queue
-                if len(self.queue) > 0:
+            # if there's something in the queue then run it in a thread and take it out of the queue
+            if len(self.queue) > 0:
+                # sort by priority
+                def sorter(x, y):
+                    """
+                    Sorts by priority descending then time ascending
+                    """
+                    if x.priority == y.priority:
+                        if y.added == x.added:
+                            return 0
+                        elif y.added < x.added:
+                            return 1
+                        elif y.added > x.added:
+                            return -1
+                    else:
+                        return y.priority - x.priority
 
-                    # sort by priority
-                    def sorter(x, y):
-                        """
-                        Sorts by priority descending then time ascending
-                        """
-                        if x.priority == y.priority:
-                            if y.added == x.added:
-                                return 0
-                            elif y.added < x.added:
-                                return 1
-                            elif y.added > x.added:
-                                return -1
-                        else:
-                            return y.priority - x.priority
+                self.queue.sort(cmp=sorter)
+                if self.queue[0].priority < self.min_priority:
+                    return
 
-                    self.queue.sort(cmp=sorter)
-                    if self.queue[0].priority < self.min_priority:
-                        return
+                # launch the queue item in a thread
+                self.currentItem = self.queue.pop(0)
 
-                    # launch the queue item in a thread
-                    self.currentItem = self.queue.pop(0)
+                # set queue name
+                self.currentItem.name = "{}-{}".format(self.queue_name, self.currentItem.name)
 
-                    # set queue name
-                    self.currentItem.name = "{}-{}".format(self.queue_name, self.currentItem.name)
-
-                    # add job from queue
-                    IOLoop.instance().add_callback(self.currentItem.run)
+                # execute job from queue
+                IOLoop.instance().spawn_callback(self.currentItem.run)
 
             self.amActive = False
 
 
 class QueueItem(object):
     def __init__(self, name, action_id=0):
-        super(QueueItem, self).__init__()
-
+        self.lock = threading.Lock()
         self.name = name.replace(" ", "-").upper()
         self.inProgress = False
         self.priority = QueuePriorities.NORMAL

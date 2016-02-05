@@ -68,6 +68,10 @@ class EpisodePostProcessingFailedException(SickRageException):
     The episode post-processing failed
     """
 
+class EpisodeDirectoryNotFoundException(SickRageException):
+    """
+    The episode directory was not found
+    """
 
 class FailedPostProcessingFailedException(SickRageException):
     """

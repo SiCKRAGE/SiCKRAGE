@@ -104,10 +104,12 @@ class srDailySearcher(object):
                         ep.prettyName(), statusStrings[ep.show.default_ep_status]))
                     ep.status = ep.show.default_ep_status
 
-                sql_l.append(ep.get_sql())
+                sql_q = ep.saveToDB(False)
+                if sql_q:
+                    sql_l.append(sql_q)
 
         if len(sql_l) > 0:
-            main_db.MainDB().mass_action(sql_l)
+            main_db.MainDB().mass_upsert(sql_l)
         else:
             sickrage.srCore.LOGGER.info("No new released episodes found ...")
 

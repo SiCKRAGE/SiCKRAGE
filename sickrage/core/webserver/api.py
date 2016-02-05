@@ -142,7 +142,7 @@ class ApiHandler(RequestHandler):
         try:
             outDict = yield self.async_call(_call_dispatcher, *args, **kwargs)
         except Exception as e:  # real internal error oohhh nooo :(
-            sickrage.srCore.LOGGER.error("API :: {}".format(e))
+            sickrage.srCore.LOGGER.error("API :: {}".format(e.message))
             errorData = {
                 "error_msg": e,
                 "args": args,
@@ -974,14 +974,15 @@ class CMD_EpisodeSetStatus(ApiCall):
                     continue
 
                 epObj.status = self.status
-                sql_l.append(epObj.get_sql())
+                sql_l.append(epObj.saveToDB(False))
 
                 if self.status == WANTED:
                     start_backlog = True
+
                 ep_results.append(_epResult(RESULT_SUCCESS, epObj))
 
         if len(sql_l) > 0:
-            main_db.MainDB().mass_action(sql_l)
+            main_db.MainDB().mass_upsert(sql_l)
 
         extra_msg = ""
         if start_backlog:

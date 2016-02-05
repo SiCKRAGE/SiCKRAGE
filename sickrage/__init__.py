@@ -93,9 +93,7 @@ def main():
     threading.currentThread().setName('MAIN')
 
     PROG_DIR = os.path.abspath(os.path.dirname(__file__))
-    DATA_DIR = PROG_DIR
-
-    APP_NAME = 'SiCKRAGE'
+    DATA_DIR = os.path.join(os.path.expanduser("~"), '.sickrage')
     CONFIG_FILE = "config.ini"
 
     try:

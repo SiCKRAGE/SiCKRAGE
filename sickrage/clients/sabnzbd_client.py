@@ -109,10 +109,10 @@ class SabNZBd(object):
                 f = opener.open(req)
 
         except (EOFError, IOError) as e:
-            sickrage.srCore.LOGGER.error("Unable to connect to SAB: {}".format(e))
+            sickrage.srCore.LOGGER.error("Unable to connect to SAB: {}".format(e.message))
             return False
         except httplib.InvalidURL as e:
-            sickrage.srCore.LOGGER.error("Invalid SAB host, check your config: {}".format(e))
+            sickrage.srCore.LOGGER.error("Invalid SAB host, check your config: {}".format(e.message))
             return False
 
         # this means we couldn't open the connection or something just as bad
@@ -124,7 +124,7 @@ class SabNZBd(object):
         try:
             result = f.readlines()
         except Exception as e:
-            sickrage.srCore.LOGGER.error("Error trying to get result from SAB, NZB not sent: {}".format(e))
+            sickrage.srCore.LOGGER.error("Error trying to get result from SAB, NZB not sent: {}".format(e.message))
             return False
 
         # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and didn't recieve the NZB
@@ -159,7 +159,7 @@ class SabNZBd(object):
         try:
             result = f.readlines()
         except Exception as e:
-            sickrage.srCore.LOGGER.error("Error trying to get result from SAB{}".format(e))
+            sickrage.srCore.LOGGER.error("Error trying to get result from SAB{}".format(e.message))
             return False, "Error from SAB"
 
         if len(result) == 0:
@@ -193,10 +193,10 @@ class SabNZBd(object):
         try:
             f = urllib.urlopen(url)
         except (EOFError, IOError) as e:
-            sickrage.srCore.LOGGER.error("Unable to connect to SAB: {}".format(e))
+            sickrage.srCore.LOGGER.error("Unable to connect to SAB: {}".format(e.message))
             return False, "Unable to connect"
         except httplib.InvalidURL as e:
-            sickrage.srCore.LOGGER.error("Invalid SAB host, check your config: {}".format(e))
+            sickrage.srCore.LOGGER.error("Invalid SAB host, check your config: {}".format(e.message))
             return False, "Invalid SAB host"
         if f is None:
             sickrage.srCore.LOGGER.error("No data returned from SABnzbd")

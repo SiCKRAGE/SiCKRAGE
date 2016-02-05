@@ -60,12 +60,8 @@ class srNameCache(object):
 
     def shouldUpdate(self):
         # if we've updated recently then skip the update
-        if datetime.today() - self.lastUpdate < timedelta(minutes=self.minTime):
+        if not datetime.today() - self.lastUpdate < timedelta(minutes=self.minTime):
             return True
-
-        sickrage.srCore.LOGGER.debug(
-            "Last update was too soon, using old name cache: " + str(self.lastUpdate) + ". Updated less then " + str(
-                self.minTime) + " minutes ago")
 
     def addNameToCache(self, name, indexer_id=0):
         """
@@ -119,12 +115,9 @@ class srNameCache(object):
             if not show:
                 retrieve_exceptions()
                 for show in sickrage.srCore.SHOWLIST:
-                    sickrage.srCore.LOGGER.info("Building internal name cache for all shows")
                     self.buildNameCache(show)
             else:
-                self.lastUpdate = datetime.fromtimestamp(
-                    int(time.mktime(datetime.today().timetuple()))
-                )
+                self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
                 sickrage.srCore.LOGGER.debug("Building internal name cache for [{}]".format(show.name))
                 self.clearCache(show.indexerid)

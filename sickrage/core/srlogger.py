@@ -154,6 +154,9 @@ class srLogger(logging.getLoggerClass()):
     def log(self, level, msg, *args, **kwargs):
         super(srLogger, self).log(level, msg, *args, **kwargs)
 
+    def db(self, msg, *args, **kwargs):
+        super(srLogger, self).log(self.logLevels[b'DB'], msg, *args, **kwargs)
+
     def info(self, msg, *args, **kwargs):
         super(srLogger, self).info(msg, *args, **kwargs)
 
@@ -237,7 +240,7 @@ class srLogger(logging.getLoggerClass()):
                     if len(title_Error) > 1000:
                         title_Error = title_Error[0:1000]
                 except Exception as e:
-                    super(srLogger, self).error("Unable to get error title : {}".format(e))
+                    super(srLogger, self).error("Unable to get error title : {}".format(e.message))
 
                 gist = None
                 regex = r"^({})\s+([A-Z]+)\s+([0-9A-Z\-]+)\s*(.*)$".format(curError.time)

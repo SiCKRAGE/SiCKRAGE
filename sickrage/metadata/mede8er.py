@@ -231,7 +231,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.srCore.LOGGER.error("Unable to connect to TVDB while creating meta files - skipping - {}".format(e))
+            sickrage.srCore.LOGGER.error("Unable to connect to TVDB while creating meta files - skipping - {}".format(e.message))
             return False
 
         rootNode = Element("details")
@@ -383,7 +383,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
             chmodAsParent(nfo_file_path)
         except IOError as e:
             sickrage.srCore.LOGGER.error(
-                    "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
+                    "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e.message))
             return False
 
         return True
@@ -428,7 +428,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
             chmodAsParent(nfo_file_path)
         except IOError as e:
             sickrage.srCore.LOGGER.error(
-                    "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
+                    "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e.message))
             return False
 
         return True

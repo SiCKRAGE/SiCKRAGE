@@ -35,23 +35,29 @@ class Notifications(object):
         self._messages = []
         self._errors = []
 
-    def message(self, title, message=''):
+    def message(self, title, message=None):
         """
         Add a regular notification to the queue
 
         title: The title of the notification
         message: The message portion of the notification
         """
-        self._messages.append(Notification(title, message, MESSAGE))
+        if message:
+            if isinstance(message, Exception):
+                message = message.message
+            self._messages.append(Notification(title, message, MESSAGE))
 
-    def error(self, title, message=''):
+    def error(self, title, message=None):
         """
         Add an error notification to the queue
 
         title: The title of the notification
         message: The message portion of the notification
         """
-        self._errors.append(Notification(title, message, ERROR))
+        if message:
+            if isinstance(message, Exception):
+                message = message.message
+            self._errors.append(Notification(title, message, ERROR))
 
     def get_notifications(self, remote_ip='127.0.0.1'):
         """

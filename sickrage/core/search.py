@@ -77,7 +77,7 @@ def _downloadResult(result):
             chmodAsParent(fileName)
 
         except EnvironmentError as e:
-            sickrage.srCore.LOGGER.error("Error trying to save NZB to black hole: {}".format(e))
+            sickrage.srCore.LOGGER.error("Error trying to save NZB to black hole: {}".format(e.message))
             newResult = False
     elif resProvider.type == "torrent":
         newResult = resProvider.downloadResult(result)
@@ -165,7 +165,9 @@ def snatchEpisode(result, endStatus=SNATCHED):
             else:
                 curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
 
-            sql_l.append(curEpObj.get_sql())
+            sql_q = curEpObj.saveToDB(False)
+            if sql_q:
+                sql_l.append(sql_q)
 
         if curEpObj.status not in Quality.DOWNLOADED:
             try:
@@ -185,7 +187,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
             sickrage.srCore.NOTIFIERS.trakt_notifier.update_watchlist(result.show, data_episode=data, update="add")
 
     if len(sql_l) > 0:
-        main_db.MainDB().mass_action(sql_l)
+        main_db.MainDB().mass_upsert(sql_l)
 
     return True
 
@@ -390,10 +392,10 @@ def searchForNeededEpisodes():
                 providerObj.cache.updateCache()
                 curFoundResults = dict(providerObj.searchRSS(episodes))
             except AuthException as e:
-                sickrage.srCore.LOGGER.error("Authentication error: {}".format(e))
+                sickrage.srCore.LOGGER.error("Authentication error: {}".format(e.message))
                 return
             except Exception as e:
-                sickrage.srCore.LOGGER.error("Error while searching " + providerObj.name + ", skipping: {}".format(e))
+                sickrage.srCore.LOGGER.error("Error while searching " + providerObj.name + ", skipping: {}".format(e.message))
                 sickrage.srCore.LOGGER.debug(traceback.format_exc())
                 return
 
@@ -477,10 +479,10 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                     providerObj.cache.updateCache()
                     searchResults = providerObj.findSearchResults(show, episodes, search_mode, manualSearch, downCurQuality)
                 except AuthException as e:
-                    sickrage.srCore.LOGGER.error("Authentication error: {}".format(e))
+                    sickrage.srCore.LOGGER.error("Authentication error: {}".format(e.message))
                     break
                 except Exception as e:
-                    sickrage.srCore.LOGGER.error("Error while searching " + providerObj.name + ", skipping: {}".format(e))
+                    sickrage.srCore.LOGGER.error("Error while searching " + providerObj.name + ", skipping: {}".format(e.message))
                     sickrage.srCore.LOGGER.debug(traceback.format_exc())
                     break
 

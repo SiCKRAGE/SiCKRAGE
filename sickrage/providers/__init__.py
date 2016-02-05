@@ -229,7 +229,7 @@ class GenericProvider(object):
                     if mime_type == 'application/x-bittorrent':
                         return True
             except Exception as e:
-                sickrage.srCore.LOGGER.debug("Failed to validate torrent file: {}".format(e))
+                sickrage.srCore.LOGGER.debug("Failed to validate torrent file: {}".format(e.message))
 
             sickrage.srCore.LOGGER.debug("Result is not a valid torrent file")
             return False
@@ -489,10 +489,7 @@ class GenericProvider(object):
 
         # check if we have items to add to cache
         if len(cl) > 0:
-            # pylint: disable=W0212
-            # Access to a protected member of a client class
-            myDB = self.cache._getDB()
-            myDB.mass_action(cl)
+            self.cache._getDB().mass_action(cl)
 
         return results
 
@@ -809,12 +806,12 @@ class TorrentRssProvider(TorrentProvider):
                     bencode.bdecode(torrent_file)
                 except Exception as e:
                     self.dumpHTML(torrent_file)
-                    return False, 'Torrent link is not a valid torrent file: {}'.format(e)
+                    return False, 'Torrent link is not a valid torrent file: {}'.format(e.message)
 
             return True, 'RSS feed Parsed correctly'
 
         except Exception as e:
-            return False, 'Error when trying to load RSS: {}'.format(e)
+            return False, 'Error when trying to load RSS: {}'.format(e.message)
 
     @staticmethod
     def dumpHTML(data):

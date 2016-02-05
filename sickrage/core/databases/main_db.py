@@ -593,8 +593,8 @@ class MainDB(Connection):
                      Quality.UNKNOWN], [])
 
             # update qualities (including templates)
-            sickrage.srCore.LOGGER.info("[1/4] Updating pre-defined templates and the quality for each show...")
             cl = []
+            sickrage.srCore.LOGGER.info("[1/4] Updating pre-defined templates and the quality for each show...")
             shows = self.select("SELECT * FROM tv_shows")
             for cur_show in shows:
                 if cur_show[b"quality"] == old_hd:
@@ -604,36 +604,40 @@ class MainDB(Connection):
                 else:
                     new_quality = self._update_composite_qualities(cur_show[b"quality"])
                 cl.append(["UPDATE tv_shows SET quality = ? WHERE show_id = ?", [new_quality, cur_show[b"show_id"]]])
-            self.mass_action(cl)
+            if len(cl) > 0:
+                self.mass_action(cl)
 
             # update status that are are within the old hdwebdl (1<<3 which is 8) and better -- exclude unknown (1<<15 which is 32768)
-            sickrage.srCore.LOGGER.info("[2/4] Updating the status for the episodes within each show...")
             cl = []
+            sickrage.srCore.LOGGER.info("[2/4] Updating the status for the episodes within each show...")
             episodes = self.select("SELECT * FROM tv_episodes WHERE status < 3276800 AND status >= 800")
             for cur_episode in episodes:
                 cl.append(["UPDATE tv_episodes SET status = ? WHERE episode_id = ?",
                            [self._update_status(cur_episode[b"status"]), cur_episode[b"episode_id"]]])
-            self.mass_action(cl)
-
-            # make two seperate passes through the history since snatched and downloaded (action & quality) may not always coordinate together
+            if len(cl) > 0:
+                self.mass_action(cl)
 
             # update previous history so it shows the correct action
-            sickrage.srCore.LOGGER.info("[3/4] Updating history to reflect the correct action...")
             cl = []
+            sickrage.srCore.LOGGER.info("[3/4] Updating history to reflect the correct action...")
             historyAction = self.select("SELECT * FROM history WHERE action < 3276800 AND action >= 800")
             for cur_entry in historyAction:
                 cl.append(["UPDATE history SET action = ? WHERE showid = ? AND date = ?",
                            [self._update_status(cur_entry[b"action"]), cur_entry[b"showid"], cur_entry[b"date"]]])
-            self.mass_action(cl)
+            if len(cl) > 0:
+                self.mass_action(cl)
+
 
             # update previous history so it shows the correct quality
-            sickrage.srCore.LOGGER.info("[4/4] Updating history to reflect the correct quality...")
             cl = []
+            sickrage.srCore.LOGGER.info("[4/4] Updating history to reflect the correct quality...")
             historyQuality = self.select("SELECT * FROM history WHERE quality < 32768 AND quality >= 8")
             for cur_entry in historyQuality:
                 cl.append(["UPDATE history SET quality = ? WHERE showid = ? AND date = ?",
                            [self._update_quality(cur_entry[b"quality"]), cur_entry[b"showid"], cur_entry[b"date"]]])
-            self.mass_action(cl)
+            if len(cl) > 0:
+                self.mass_action(cl)
+
 
             self.incDBVersion()
 
@@ -883,16 +887,16 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(28)
 
-            cl = []
             sickrage.srCore.LOGGER.info("Converting Indexer to Integer ...")
-            cl.append(["UPDATE tv_shows SET indexer = ? WHERE LOWER(indexer) = ?", ["1", "tvdb"]])
-            cl.append(["UPDATE tv_shows SET indexer = ? WHERE LOWER(indexer) = ?", ["2", "tvrage"]])
-            cl.append(["UPDATE tv_episodes SET indexer = ? WHERE LOWER(indexer) = ?", ["1", "tvdb"]])
-            cl.append(["UPDATE tv_episodes SET indexer = ? WHERE LOWER(indexer) = ?", ["2", "tvrage"]])
-            cl.append(["UPDATE scene_numbering SET indexer = ? WHERE LOWER(indexer) = ?", ["1", "tvdb"]])
-            cl.append(["UPDATE scene_numbering SET indexer = ? WHERE LOWER(indexer) = ?", ["2", "tvrage"]])
 
-            self.mass_action(cl)
+            self.mass_action([
+                ["UPDATE tv_shows SET indexer = ? WHERE LOWER(indexer) = ?", ["1", "tvdb"]],
+                ["UPDATE tv_shows SET indexer = ? WHERE LOWER(indexer) = ?", ["2", "tvrage"]],
+                ["UPDATE tv_episodes SET indexer = ? WHERE LOWER(indexer) = ?", ["1", "tvdb"]],
+                ["UPDATE tv_episodes SET indexer = ? WHERE LOWER(indexer) = ?", ["2", "tvrage"]],
+                ["UPDATE scene_numbering SET indexer = ? WHERE LOWER(indexer) = ?", ["1", "tvdb"]],
+                ["UPDATE scene_numbering SET indexer = ? WHERE LOWER(indexer) = ?", ["2", "tvrage"]]
+            ])
 
             self.incDBVersion()
 
@@ -928,15 +932,17 @@ class MainDB(Connection):
 
             if self.hasColumn("tv_shows", "air_by_date") and self.hasColumn("tv_shows", "sports"):
                 # update sports column
-                sickrage.srCore.LOGGER.info("[4/4] Updating tv_shows to reflect the correct sports value...")
                 cl = []
+                sickrage.srCore.LOGGER.info("[4/4] Updating tv_shows to reflect the correct sports value...")
                 historyQuality = self.select(
                         "SELECT * FROM tv_shows WHERE LOWER(classification) = 'sports' AND air_by_date = 1 AND sports = 0")
                 for cur_entry in historyQuality:
                     cl.append(["UPDATE tv_shows SET sports = ? WHERE show_id = ?",
                                [cur_entry[b"air_by_date"], cur_entry[b"show_id"]]])
                     cl.append(["UPDATE tv_shows SET air_by_date = 0 WHERE show_id = ?", [cur_entry[b"show_id"]]])
-                self.mass_action(cl)
+
+                if len(cl) > 0:
+                    self.mass_action(cl)
 
             self.incDBVersion()
 
@@ -997,12 +1003,10 @@ class MainDB(Connection):
         def execute(self, **kwargs):
             self.backup(35)
 
-            cl = [
+            self.mass_action([
                 ["CREATE TABLE blacklist (show_id INTEGER, range TEXT, keyword TEXT)"],
                 ["CREATE TABLE whitelist (show_id INTEGER, range TEXT, keyword TEXT)"]
-            ]
-
-            self.mass_action(cl)
+            ])
 
             self.incDBVersion()
 

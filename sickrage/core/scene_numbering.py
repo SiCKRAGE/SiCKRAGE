@@ -517,7 +517,7 @@ def xem_refresh(indexer_id, indexer, force=False):
             sickrage.srCore.LOGGER.warning(
                 "Exception while refreshing XEM data for show " + str(
                     indexer_id) + " on " + sickrage.srCore.INDEXER_API(
-                    indexer).name + ": {}".format(e))
+                    indexer).name + ": {}".format(e.message))
             sickrage.srCore.LOGGER.debug(traceback.format_exc())
 
 
