@@ -56,7 +56,7 @@ def install_pip(path, user=False):
     os.remove(file_name)
 
 
-def install_packages(requirements, user=False):
+def install_packages(path, constraints, user=False):
     import pip
     from pip.commands.install import InstallCommand
 
@@ -70,11 +70,11 @@ def install_packages(requirements, user=False):
 
     try:
         # read requirements file
-        with open(requirements) as f:
+        with open(path) as f:
             packages = [x.strip() for x in f.readlines() if x.strip().lower() not in installed]
 
         # install requirements packages
-        options = pip_install_cmd.parse_args(['-q', '-I'])[0]
+        options = pip_install_cmd.parse_args(['-q', '-I', '-c {}'.format(constraints)])[0]
         options.use_user_site = user
         for i, pkg_name in enumerate(packages, start=1):
             print(r"[%3.2f%%]::Installing %s package" % (i * 100 / len(packages), pkg_name))
@@ -86,7 +86,7 @@ def install_packages(requirements, user=False):
         raise
 
 
-def upgrade_packages(user=False):
+def upgrade_packages(constraints, user=False):
     from pip.commands.list import ListCommand
     from pip.commands.install import InstallCommand
     from pip.exceptions import InstallationError
@@ -107,25 +107,22 @@ def upgrade_packages(user=False):
         except:
             packages = []
 
-        options = pip_install_cmd.parse_args(['-q', '--upgrade'])[0]
-        options.use_user_site = user
+        install_options = pip_install_cmd.parse_args(['-q', '--upgrade', '--no-cache-dir', '-c {}'.format(constraints)])[0]
+        install_options.use_user_site = user
 
         for i, pkg_name in enumerate(packages, start=1):
             try:
                 print(r"[%3.2f%%]::Upgrading %s package" % (i * 100 / len(packages), pkg_name.lower()))
-                pip_install_cmd.run(options, [pkg_name])
-            except (IndexError, InstallationError):
+                pip_install_cmd.run(install_options, [pkg_name])
+            except (IndexError, InstallationError) as e:
+                print("Failed to upgrade package: {}".format(pkg_name))
                 continue
             except KeyboardInterrupt:
                 raise
         else:
             break
 
-    if len(packages) > 0:
-        return True
-
-
-def install_ssl(path, user=False):
+def install_ssl(path, constraints, user=False):
     try:
         print("Installing and Patching SiCKRAGE SSL Contexts")
         # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
@@ -133,32 +130,34 @@ def install_ssl(path, user=False):
         urllib3.contrib.pyopenssl.inject_into_urllib3()
         urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST = "MEDIUM"
     except ImportError:
-        return install_packages(os.path.join(path, 'ssl.txt'), user)
+        return install_packages(path, '-c {}'.format(constraints), user)
 
 
 def install_requirements(path, optional=False, ssl=False, user=False):
+    constraints = os.path.join(path, 'constraints.txt')
+
     need_restart = False
 
     # install ssl packages
     if ssl:
         try:
-            if install_ssl(path, user=user):
+            if install_ssl(os.path.join(path, 'ssl.txt'), constraints, user):
                 os.execl(sys.executable, sys.executable, *sys.argv)
         except:
             pass
 
     print("Checking for required SiCKRAGE packages, please stand by ...")
-    need_restart = install_packages(os.path.join(path, 'global.txt'), user)
+    need_restart = install_packages(os.path.join(path, 'requirements.txt'), user)
 
     if optional:
         print("Checking for optional SiCKRAGE packages, please stand by ...")
         try:
-            need_restart = install_packages(os.path.join(path, 'optional.txt'), user)
+            need_restart = install_packages(os.path.join(path, 'optional.txt'), constraints, user)
         except:
             pass
 
     print("Checking for upgradable SiCKRAGE packages, please stand by ...")
-    need_restart = upgrade_packages(user)
+    need_restart = upgrade_packages(constraints, user)
 
     # silently restart sickrage if packages where installed or upgraded
     if need_restart:
