@@ -55,9 +55,9 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         sys.exit(1)
 
     # Decouple from parent environment
-    os.chdir(".")
+    os.chdir("/")
     os.setsid()
-    os.umask(0)
+    os.umask(022)
 
     # Second fork
     try:
@@ -69,20 +69,20 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         sys.stderr.write("Fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
         sys.exit(1)
 
-    # Redirect standard file descriptors
-    sys.stdout.flush()
-    sys.stderr.flush()
-    si = file(stdin, 'r')
-    so = file(stdout, 'a+')
-    se = file(stderr, 'a+', 0)
-    os.dup2(si.fileno(), sys.stdin.fileno())
-    os.dup2(so.fileno(), sys.stdout.fileno())
-    os.dup2(se.fileno(), sys.stderr.fileno())
+    if sys.platform != 'darwin':  # This block breaks on OS X
+        # Redirect standard file descriptors
+        sys.stdout.flush()
+        sys.stderr.flush()
+        si = file(stdin, 'r')
+        so = file(stdout, 'a+')
+        se = (so, file(stderr, 'a+', 0))[stderr is not None]
+        os.dup2(si.fileno(), sys.stdin.fileno())
+        os.dup2(so.fileno(), sys.stdout.fileno())
+        os.dup2(se.fileno(), sys.stderr.fileno())
 
     # Write the PID file
     atexit.register(lambda: delpid(pidfile))
-    pid = str(os.getpid())
-    file(pidfile, 'w+').write("%s\n" % pid)
+    file(pidfile, 'w+').write("%s\n" % str(os.getpid()))
 
 def delpid(pidfile):
     # Removes the PID file
@@ -165,14 +165,12 @@ def main():
         sys.exit(help_message(PROG_DIR))
 
     # defaults
-    PIDFILE = None
-    CREATEPID = False
+    PIDFILE = os.path.abspath(os.path.join(DATA_DIR, 'sickrage.pid'))
     DEVELOPER = False
     DAEMONIZE = False
     WEB_PORT = 8081
     INSTALL_OPTIONAL = False
     WEB_NOLAUNCH = False
-    NO_RESIZE = False
     SSL = False
     DEBUG = False
 
@@ -207,16 +205,12 @@ def main():
 
         # Run as a double forked daemon
         if o in ('-d', '--daemon'):
-            DAEMONIZE = True
+            DAEMONIZE = (False, True)[not sys.platform == 'win32']
             WEB_NOLAUNCH = True
             CONSOLE = False
 
-            if sys.platform == 'win32' or sys.platform == 'darwin':
-                DAEMONIZE = False
-
         # Write a pidfile if requested
         if o in ('--pidfile',):
-            CREATEPID = True
             PIDFILE = str(a)
 
             # If the pidfile already exists, sickrage may still be running, so exit
@@ -269,7 +263,7 @@ def main():
         # init logger
         srLogger = core.srLogger()
 
-        srLogger.info("SiCKRAGE INITIALIZING ...")
+        # init core
         srCore = core.srCore(PROG_DIR, DATA_DIR)
 
         # init config
@@ -304,4 +298,5 @@ def main():
     sys.exit(0)
 
 if __name__ == '__main__':
+    print("Starting SiCKRAGE ...")
     main()
