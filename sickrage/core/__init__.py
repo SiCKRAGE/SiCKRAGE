@@ -168,6 +168,8 @@ class srCore(object):
         self.torrentRssProviderList = None
 
     def start(self):
+        self.PID = os.getpid()
+
         # notifiers
         self.NOTIFIERS = AttrDict(
             libnotify=LibnotifyNotifier(),

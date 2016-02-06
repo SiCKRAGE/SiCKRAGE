@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import atexit
 import ctypes
 import getopt
 import os
@@ -43,14 +44,50 @@ def root_check():
     except AttributeError:
         return not ctypes.windll.shell32.IsUserAnAdmin() != 0
 
-
-def remove_pid_file(pidfile):
+def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
     try:
-        if os.path.exists(pidfile):
-            os.remove(pidfile)
-    except (IOError, OSError):
-        pass
+        pid = os.fork()
+        if pid > 0:
+            # Exit from first parent
+            sys.exit(0)
+    except OSError, e:
+        sys.stderr.write("Fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
+        sys.exit(1)
 
+    # Decouple from parent environment
+    os.chdir(".")
+    os.setsid()
+    os.umask(0)
+
+    # Second fork
+    try:
+        pid = os.fork()
+        if pid > 0:
+            # Exit from second parent
+            sys.exit(0)
+    except OSError, e:
+        sys.stderr.write("Fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
+        sys.exit(1)
+
+    # Redirect standard file descriptors
+    sys.stdout.flush()
+    sys.stderr.flush()
+    si = file(stdin, 'r')
+    so = file(stdout, 'a+')
+    se = file(stderr, 'a+', 0)
+    os.dup2(si.fileno(), sys.stdin.fileno())
+    os.dup2(so.fileno(), sys.stdout.fileno())
+    os.dup2(se.fileno(), sys.stderr.fileno())
+
+    # Write the PID file
+    atexit.register(lambda: delpid(pidfile))
+    pid = str(os.getpid())
+    file(pidfile, 'w+').write("%s\n" % pid)
+
+def delpid(pidfile):
+    # Removes the PID file
+    if os.path.exists(pidfile):
+        os.remove(pidfile)
 
 def help_message(prog_dir):
     """
@@ -212,6 +249,10 @@ def main():
             DEBUG = True
 
     try:
+        # daemonize sickrage ?
+        if DAEMONIZE:
+            daemonize(PIDFILE)
+
         # install/upgrade pip and ssl contexts for required/optional imports
         if not DEVELOPER:
             REQS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements'))
@@ -222,15 +263,6 @@ def main():
             # install required packages
             install_requirements(path=REQS_DIR, optional=INSTALL_OPTIONAL, ssl=SSL, user=root_check())
 
-        # daemonize sickrage
-        if DAEMONIZE:
-            import daemon
-            ctx = daemon.DaemonContext()
-            ctx.initgroups = False
-            ctx.open()
-        else:
-            CREATEPID = False
-
         import core
         from core.helpers import makeDir
 
@@ -239,18 +271,6 @@ def main():
 
         srLogger.info("SiCKRAGE INITIALIZING ...")
         srCore = core.srCore(PROG_DIR, DATA_DIR)
-        srCore.PID = os.getpid()
-
-        # create pid file
-        if CREATEPID:
-            pid_dir = os.path.dirname(PIDFILE)
-            if not os.access(pid_dir, os.F_OK):
-                sys.exit("PID dir: " + pid_dir + " doesn't exist. Exiting.")
-            if not os.access(pid_dir, os.W_OK):
-                sys.exit("PID dir: " + pid_dir + " must be writable (write permissions). Exiting.")
-
-            with file(PIDFILE, 'w+') as pf:
-                pf.write(str(srCore.PID))
 
         # init config
         srConfig = core.srConfig(CONFIG_FILE)
@@ -280,17 +300,8 @@ def main():
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_tb(exc_traceback)
         traceback.print_exception(exc_type, exc_value, exc_traceback)
-
-        # shutdown with errors
         sys.exit(1)
-    finally:
-        # cleanup pidfile
-        if DAEMONIZE and PIDFILE:
-            remove_pid_file(PIDFILE)
-
-    # shutdown without errors
     sys.exit(0)
-
 
 if __name__ == '__main__':
     main()
