@@ -42,7 +42,7 @@ class SearchTest(SiCKRAGETestDBCase):
 
 def test_generator(curData, name, provider, forceSearch):
     def test(self):
-        show = TVShow(1, int(curData[b"tvdbid"]), dbload=False)
+        show = TVShow(1, int(curData[b"tvdbid"]))
         show.name = name
         show.quality = ANY | Quality.UNKNOWN | Quality.RAWHDTV
         show.saveToDB()

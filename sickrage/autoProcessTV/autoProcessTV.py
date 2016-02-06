@@ -80,22 +80,22 @@ def processEpisode(dir_to_process, org_NZB_name=None, status=None):
             print ("Loading config from " + config_filename + "\n")
 
             with open(config_filename, "r") as fp:
-                sickrage.srCore.CONFIG.readfp(fp)
+                sickrage.srConfig.readfp(fp)
 
             # Replace default values with config_file values
-            host = sickrage.srCore.CONFIG.get("sickrage", "host")
-            port = sickrage.srCore.CONFIG.get("sickrage", "port")
-            username = sickrage.srCore.CONFIG.get("sickrage", "username")
-            password = sickrage.srCore.CONFIG.get("sickrage", "password")
+            host = sickrage.srConfig.get("sickrage", "host")
+            port = sickrage.srConfig.get("sickrage", "port")
+            username = sickrage.srConfig.get("sickrage", "username")
+            password = sickrage.srConfig.get("sickrage", "password")
 
             try:
-                ssl = int(sickrage.srCore.CONFIG.get("sickrage", "ssl"))
+                ssl = int(sickrage.srConfig.get("sickrage", "ssl"))
 
             except (configparser.NoOptionError, ValueError):
                 pass
 
             try:
-                web_root = sickrage.srCore.CONFIG.get("sickrage", "web_root")
+                web_root = sickrage.srConfig.get("sickrage", "web_root")
                 if not web_root.startswith("/"):
                     web_root = "/" + web_root
 

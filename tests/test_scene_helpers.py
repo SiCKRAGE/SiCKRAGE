@@ -42,7 +42,7 @@ class SceneTests(SiCKRAGETestDBCase):
         self.assertTrue(len(set(dot_expected).intersection(set(dot_result))) == len(dot_expected))
 
     def _test_allPossibleShowNames(self, name, indexerid=0, expected=[]):
-        s = TVShow(1, indexerid, dbload=False)
+        s = TVShow(1, indexerid)
         s.name = name
         s.saveToDB()
         s.loadFromDB(skipNFO=True)
@@ -70,7 +70,7 @@ class SceneTests(SiCKRAGETestDBCase):
 
         for testCase in listOfcases:
             scene_name, show_name = testCase
-            s = TVShow(1, 0, dbload=False)
+            s = TVShow(1, 0)
             s.name = show_name
             s.saveToDB()
             s.loadFromDB(skipNFO=True)

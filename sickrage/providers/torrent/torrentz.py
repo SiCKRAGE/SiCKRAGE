@@ -66,31 +66,31 @@ class TORRENTZProvider(TorrentProvider):
                 if mode is not 'RSS':
                     search_url += '?q=' + quote_plus(search_string)
 
-                sickrage.srCore.LOGGER.info(search_url)
+                sickrage.srLogger.info(search_url)
                 data = self.getURL(search_url)
                 if not data:
-                    sickrage.srCore.LOGGER.info('Seems to be down right now!')
+                    sickrage.srLogger.info('Seems to be down right now!')
                     continue
 
                 if not data.startswith("<?xml"):
-                    sickrage.srCore.LOGGER.debug('Wrong data returned from: ' + search_url)
+                    sickrage.srLogger.debug('Wrong data returned from: ' + search_url)
                     continue
 
                 if not data.startswith('<?xml'):
-                    sickrage.srCore.LOGGER.info('Expected xml but got something else, is your mirror failing?')
+                    sickrage.srLogger.info('Expected xml but got something else, is your mirror failing?')
                     continue
 
                 try:
                     data = xmltodict.parse(data)
                 except ExpatError:
-                    sickrage.srCore.LOGGER.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
+                    sickrage.srLogger.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                     continue
 
                 if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
-                    sickrage.srCore.LOGGER.debug("Malformed rss returned or no results, skipping")
+                    sickrage.srLogger.debug("Malformed rss returned or no results, skipping")
                     continue
 
-                gen.sleep(cpu_presets[sickrage.srCore.CONFIG.CPU_PRESET])
+                gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
 
                 # https://github.com/martinblech/xmltodict/issues/111
                 entries = data[b'rss'][b'channel'][b'item']
@@ -116,7 +116,7 @@ class TORRENTZProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            sickrage.srCore.LOGGER.debug(
+                            sickrage.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue

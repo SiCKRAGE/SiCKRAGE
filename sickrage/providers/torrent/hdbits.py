@@ -57,7 +57,7 @@ class HDBitsProvider(TorrentProvider):
 
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
-                sickrage.srCore.LOGGER.warning("Invalid username or password. Check your settings")
+                sickrage.srLogger.warning("Invalid username or password. Check your settings")
 
         return True
 
@@ -84,7 +84,7 @@ class HDBitsProvider(TorrentProvider):
         # FIXME
         results = []
 
-        sickrage.srCore.LOGGER.debug("Search string: %s" % search_params)
+        sickrage.srLogger.debug("Search string: %s" % search_params)
 
         self._checkAuth()
 
@@ -96,7 +96,7 @@ class HDBitsProvider(TorrentProvider):
             if parsedJSON and 'data' in parsedJSON:
                 items = parsedJSON[b'data']
             else:
-                sickrage.srCore.LOGGER.error("Resulting JSON from provider isn't correct, not parsing it")
+                sickrage.srLogger.error("Resulting JSON from provider isn't correct, not parsing it")
                 items = []
 
             for item in items:

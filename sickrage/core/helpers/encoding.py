@@ -56,8 +56,9 @@ def encodingInit():
 
     return encoding
 
+
 def getEncoding():
-    return sickrage.srCore.CONFIG.SYS_ENCODING or "UTF-8"
+    return sickrage.srCore.SYS_ENCODING or "UTF-8"
 
 
 def f(*args, **kwargs):

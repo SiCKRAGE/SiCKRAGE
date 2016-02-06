@@ -28,13 +28,13 @@
 % else:
     <span>Sort By:
         <select name="sort" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
-            <option value="${srRoot}/setScheduleSort/?sort=date" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.COMING_EPS_SORT == 'date']} >
+            <option value="${srRoot}/setScheduleSort/?sort=date" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_SORT == 'date']} >
                 Date
             </option>
-            <option value="${srRoot}/setScheduleSort/?sort=network" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.COMING_EPS_SORT == 'network']} >
+            <option value="${srRoot}/setScheduleSort/?sort=network" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_SORT == 'network']} >
                 Network
             </option>
-            <option value="${srRoot}/setScheduleSort/?sort=show" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.COMING_EPS_SORT == 'show']} >
+            <option value="${srRoot}/setScheduleSort/?sort=show" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_SORT == 'show']} >
                 Show
             </option>
         </select>
@@ -44,10 +44,10 @@
 
     <span>View Paused:
         <select name="viewpaused" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
-            <option value="${srRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[not bool(sickrage.srCore.CONFIG.COMING_EPS_DISPLAY_PAUSED)]}>
+            <option value="${srRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[not bool(sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
                 Hidden
             </option>
-            <option value="${srRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[bool(sickrage.srCore.CONFIG.COMING_EPS_DISPLAY_PAUSED)]}>
+            <option value="${srRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[bool(sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
                 Shown
             </option>
         </select>
@@ -56,16 +56,16 @@
 
     <span>Layout:
         <select name="layout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
-            <option value="${srRoot}/setScheduleLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.COMING_EPS_LAYOUT == 'poster']} >
+            <option value="${srRoot}/setScheduleLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_LAYOUT == 'poster']} >
                 Poster
             </option>
-            <option value="${srRoot}/setScheduleLayout/?layout=calendar" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.COMING_EPS_LAYOUT == 'calendar']} >
+            <option value="${srRoot}/setScheduleLayout/?layout=calendar" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_LAYOUT == 'calendar']} >
                 Calendar
             </option>
-            <option value="${srRoot}/setScheduleLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.COMING_EPS_LAYOUT == 'banner']} >
+            <option value="${srRoot}/setScheduleLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_LAYOUT == 'banner']} >
                 Banner
             </option>
-            <option value="${srRoot}/setScheduleLayout/?layout=list" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.COMING_EPS_LAYOUT == 'list']} >
+            <option value="${srRoot}/setScheduleLayout/?layout=list" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_LAYOUT == 'list']} >
                 List
             </option>
         </select>
@@ -96,7 +96,7 @@
 
     <thead>
         <tr>
-            <th>Airdate (${('local', 'network')[sickrage.srCore.CONFIG.TIMEZONE_DISPLAY == 'network']})</th>
+            <th>Airdate (${('local', 'network')[sickrage.srConfig.TIMEZONE_DISPLAY == 'network']})</th>
             <th>Ends</th>
             <th>Show</th>
             <th>Next Ep</th>
@@ -116,7 +116,7 @@
     cur_indexer = int(cur_result[b'indexer'])
     run_time = cur_result[b'runtime']
 
-    if int(cur_result[b'paused']) and not sickrage.srCore.CONFIG.COMING_EPS_DISPLAY_PAUSED:
+    if int(cur_result[b'paused']) and not sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED:
         continue
 
     cur_ep_airdate = cur_result[b'localtime'].date()
@@ -217,7 +217,7 @@
         today_header = False
         show_div = 'ep_listing listing-default'
     %>
-    % if sickrage.srCore.CONFIG.COMING_EPS_SORT == 'show':
+    % if sickrage.srConfig.COMING_EPS_SORT == 'show':
     <br><br>
 % endif
 
@@ -225,7 +225,7 @@
     <%
         cur_indexer = int(cur_result[b'indexer'])
 
-        if int(cur_result[b'paused']) and not sickrage.srCore.CONFIG.COMING_EPS_DISPLAY_PAUSED:
+        if int(cur_result[b'paused']) and not sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED:
             continue
 
         run_time = cur_result[b'runtime']
@@ -236,7 +236,7 @@
         else:
             cur_ep_enddate = cur_result[b'localtime']
     %>
-    % if sickrage.srCore.CONFIG.COMING_EPS_SORT == 'network':
+    % if sickrage.srConfig.COMING_EPS_SORT == 'network':
         <% show_network = ('no network', cur_result[b'network'])[bool(cur_result[b'network'])] %>
         % if cur_segment != show_network:
             <div>
@@ -257,7 +257,7 @@
             % endif
         % endif
 
-    % elif sickrage.srCore.CONFIG.COMING_EPS_SORT == 'date':
+    % elif sickrage.srConfig.COMING_EPS_SORT == 'date':
         % if cur_segment != cur_ep_airdate:
             % if cur_ep_enddate < today and cur_ep_airdate != today.date() and not missed_header:
                 <br><h2 class="day">Missed</h2>
@@ -268,12 +268,12 @@
             % elif cur_ep_enddate >= today and cur_ep_airdate < next_week.date():
                 % if cur_ep_airdate == today.date():
                     <br><h2
-                        class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.CONFIG.SYS_ENCODING).capitalize()}
+                        class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}
                     <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
                     <% today_header = True %>
                 % else:
                     <br><h2
-                        class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.CONFIG.SYS_ENCODING).capitalize()}</h2>
+                        class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}</h2>
                 % endif
             % endif
             <% cur_segment = cur_ep_airdate %>
@@ -282,7 +282,7 @@
         % if cur_ep_airdate == today.date() and not today_header:
             <div>
                 <br><h2
-                    class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.CONFIG.SYS_ENCODING).capitalize()}
+                    class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}
                 <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
             <% today_header = True %>
         % endif
@@ -299,7 +299,7 @@
             % endif
         % endif
 
-    % elif sickrage.srCore.CONFIG.COMING_EPS_SORT == 'show':
+    % elif sickrage.srConfig.COMING_EPS_SORT == 'show':
         % if cur_ep_enddate < today:
             <% show_div = 'ep_listing listing-overdue listingradius' %>
         % elif cur_ep_airdate >= next_week.date():
@@ -396,13 +396,13 @@
                cellspacing="0" border="0" cellpadding="0">
             <thead>
             <tr>
-                <th>${day.strftime('%A').decode(sickrage.srCore.CONFIG.SYS_ENCODING).capitalize()}</th>
+                <th>${day.strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}</th>
             </tr>
             </thead>
         <tbody>
         <% day_has_show = False %>
         % for cur_result in results:
-            % if int(cur_result[b'paused']) and not sickrage.srCore.CONFIG.COMING_EPS_DISPLAY_PAUSED:
+            % if int(cur_result[b'paused']) and not sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED:
                 <% continue %>
             % endif
 
@@ -413,8 +413,8 @@
             % if airday == day:
                 % try:
                     <% day_has_show = True %>
-                <% airtime = srdatetime.srDateTime.fromtimestamp(time.mktime(cur_result[b'localtime'].timetuple())).srftime().decode(sickrage.srCore.CONFIG.SYS_ENCODING) %>
-                % if sickrage.srCore.CONFIG.TRIM_ZERO:
+                <% airtime = srdatetime.srDateTime.fromtimestamp(time.mktime(cur_result[b'localtime'].timetuple())).srftime().decode(sickrage.srCore.SYS_ENCODING) %>
+                % if sickrage.srConfig.TRIM_ZERO:
                         <% airtime = re.sub(r'0(\d:\d\d)', r'\1', airtime, 0, re.IGNORECASE | re.MULTILINE) %>
                     % endif
                 % except OverflowError:

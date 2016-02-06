@@ -37,10 +37,10 @@
 
     <span> Layout:
         <select name="HistoryLayout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
-            <option value="${srRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected="selected"')[sickrage.srCore.CONFIG.HISTORY_LAYOUT == 'compact']}>
+            <option value="${srRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected="selected"')[sickrage.srConfig.HISTORY_LAYOUT == 'compact']}>
                 Compact
             </option>
-            <option value="${srRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.HISTORY_LAYOUT == 'detailed']}>
+            <option value="${srRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected="selected"')[sickrage.srConfig.HISTORY_LAYOUT == 'detailed']}>
                 Detailed
             </option>
         </select>
@@ -48,7 +48,7 @@
 </div>
 <br>
 
-% if sickrage.srCore.CONFIG.HISTORY_LAYOUT == "detailed":
+% if sickrage.srConfig.HISTORY_LAYOUT == "detailed":
     <table id="historyTable" class="sickrageTable tablesorter" cellspacing="1" border="0" cellpadding="0">
         <thead>
             <tr>
@@ -119,7 +119,7 @@
                 <th>Episode</th>
                 <th>Snatched</th>
                 <th>Downloaded</th>
-                % if sickrage.srCore.CONFIG.USE_SUBTITLES:
+                % if sickrage.srConfig.USE_SUBTITLES:
                 <th>Subtitled</th>
                 % endif
                 <th>Quality</th>
@@ -170,7 +170,7 @@
                         % endif
                     % endfor
                 </td>
-                % if sickrage.srCore.CONFIG.USE_SUBTITLES:
+                % if sickrage.srConfig.USE_SUBTITLES:
                 <td align="center">
                     % for action in sorted(hItem["actions"]):
                         <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>

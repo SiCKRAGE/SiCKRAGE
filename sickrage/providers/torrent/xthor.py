@@ -58,11 +58,11 @@ class XthorProvider(TorrentProvider):
 
         response = self.getURL(self.url + '/takelogin.php', post_data=login_params, timeout=30)
         if not response:
-            sickrage.srCore.LOGGER.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("Unable to connect to provider")
             return False
 
         if not re.search('donate.php', response):
-            sickrage.srCore.LOGGER.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -77,14 +77,14 @@ class XthorProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srCore.LOGGER.debug("Search Mode: %s" % mode)
+            sickrage.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srCore.LOGGER.debug("Search string: %s " % search_string)
+                    sickrage.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
-                sickrage.srCore.LOGGER.debug("Search URL: %s" % searchURL)
+                sickrage.srLogger.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
 
                 if not data:
@@ -115,7 +115,7 @@ class XthorProvider(TorrentProvider):
 
                                 item = title, download_url, size, seeders, leechers
                                 if mode is not 'RSS':
-                                    sickrage.srCore.LOGGER.debug("Found result: %s " % title)
+                                    sickrage.srLogger.debug("Found result: %s " % title)
 
                                 items[mode].append(item)
 

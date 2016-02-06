@@ -39,7 +39,7 @@ def update_network_dict():
     url = 'http://sickragetv.github.io/network_timezones/network_timezones.txt'
     url_data = getURL(url)
     if not url_data:
-        sickrage.srCore.LOGGER.warning(
+        sickrage.srLogger.warning(
             'Updating network timezones failed, this can happen from time to time. URL: %s' % url)
         load_network_dict()
         return

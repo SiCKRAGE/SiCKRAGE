@@ -163,10 +163,10 @@ class WDTVMetadata(GenericMetadata):
                 break
 
         if not season_dir:
-            sickrage.srCore.LOGGER.debug("Unable to find a season dir for season " + str(season))
+            sickrage.srLogger.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        sickrage.srCore.LOGGER.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
+        sickrage.srLogger.debug("Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'folder.jpg')
 
@@ -187,7 +187,7 @@ class WDTVMetadata(GenericMetadata):
 
             lINDEXER_API_PARMS[b'actors'] = True
 
-            if indexer_lang and not indexer_lang == sickrage.srCore.CONFIG.INDEXER_DEFAULT_LANGUAGE:
+            if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS[b'language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
@@ -198,7 +198,7 @@ class WDTVMetadata(GenericMetadata):
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.srCore.LOGGER.error("Unable to connect to " + sickrage.srCore.INDEXER_API(
+            sickrage.srLogger.error("Unable to connect to " + sickrage.srCore.INDEXER_API(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e.message))
             return False
 
@@ -210,7 +210,7 @@ class WDTVMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.srCore.LOGGER.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
+                sickrage.srLogger.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
                                         (curEpToWrite.season, curEpToWrite.episode(ep_obj.show.indexer).name))
                 return None
 

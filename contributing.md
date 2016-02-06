@@ -11,9 +11,9 @@ To get your questions answered, please ask on the [SickRage Forum](http://www.si
 
 ## Getting Involved
 
-There are a number of ways to get involved with the development of sickrage.srCore.CONFIG. Even if you've never contributed code to an Open Source project before, we're always looking for help identifying bugs, cleaning up code, writing documentation and testing.
+There are a number of ways to get involved with the development of SiCKRAGE. Even if you've never contributed code to an Open Source project before, we're always looking for help identifying bugs, cleaning up code, writing documentation and testing.
 
-The goal of this guide is to provide the best way to contribute to the official SickRage repository. Please read through the full guide detailing [How to Report Bugs](#how-to-report-bugs).
+The goal of this guide is to provide the best way to contribute to the official SiCKRAGE repository. Please read through the full guide detailing [How to Report Bugs](#how-to-report-bugs).
 
 ## Discussion
 
@@ -85,11 +85,11 @@ Please follow this process; it's the best way to get your work included in the p
 
 ```bash
    # clone your fork of the repo into the current directory in terminal
-   git clone git@github.com:<your username>/sickrage.srCore.CONFIG.git
+   git clone git@github.com:<your username>/sickrage.srConfig.git
    # navigate to the newly cloned directory
    cd SickRage
    # assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/SiCKRAGETV/sickrage.srCore.CONFIG.git
+   git remote add upstream https://github.com/SiCKRAGETV/sickrage.srConfig.git
    ```
 
 - If you cloned a while ago, get the latest changes from upstream:

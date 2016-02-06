@@ -40,10 +40,10 @@ class srIndexerApi(object):
         if self.indexerID:
             return indexerConfig[self.indexerID]
         _ = initConfig
-        if sickrage.srCore.CONFIG.INDEXER_DEFAULT_LANGUAGE in _:
-            del _[_[b'valid_languages'].index(sickrage.srCore.CONFIG.INDEXER_DEFAULT_LANGUAGE)]
+        if sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE in _:
+            del _[_[b'valid_languages'].index(sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE)]
         _[b'valid_languages'].sort()
-        _[b'valid_languages'].insert(0, sickrage.srCore.CONFIG.INDEXER_DEFAULT_LANGUAGE)
+        _[b'valid_languages'].insert(0, sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE)
         return _
 
     @property
@@ -54,17 +54,17 @@ class srIndexerApi(object):
     @property
     def api_params(self):
         if self.indexerID:
-            if sickrage.srCore.CONFIG.CACHE_DIR:
-                indexerConfig[self.indexerID][b'api_params'][b'cache'] = os.path.join(sickrage.srCore.CONFIG.CACHE_DIR, 'indexers',
+            if sickrage.srConfig.CACHE_DIR:
+                indexerConfig[self.indexerID][b'api_params'][b'cache'] = os.path.join(sickrage.srConfig.CACHE_DIR, 'indexers',
                                                                                       self.name)
-            if sickrage.srCore.CONFIG.PROXY_SETTING and sickrage.srCore.CONFIG.PROXY_INDEXERS:
-                indexerConfig[self.indexerID][b'api_params'][b'proxy'] = sickrage.srCore.CONFIG.PROXY_SETTING
+            if sickrage.srConfig.PROXY_SETTING and sickrage.srConfig.PROXY_INDEXERS:
+                indexerConfig[self.indexerID][b'api_params'][b'proxy'] = sickrage.srConfig.PROXY_SETTING
 
             return indexerConfig[self.indexerID][b'api_params']
 
     @property
     def cache(self):
-        if sickrage.srCore.CONFIG.CACHE_DIR:
+        if sickrage.srConfig.CACHE_DIR:
             return self.api_params[b'cache']
 
     @property

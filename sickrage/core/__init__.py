@@ -32,6 +32,7 @@ import urlparse
 
 from datetime import datetime
 
+import sickrage
 from core.caches.name_cache import srNameCache
 from core.classes import SiCKRAGEURLopener, AttrDict
 from core.common import SD, SKIPPED, WANTED
@@ -90,9 +91,12 @@ urlparse.uses_netloc.append('scgi')
 
 
 class srCore(object):
-    def __init__(self, config_file, prog_dir, data_dir, pid):
+    def __init__(self, prog_dir, data_dir):
         self.STARTED = False
-        self.PID = pid
+        self.PID = None
+
+        # init system encoding
+        self.SYS_ENCODING = encodingInit()
 
         # main program folder
         self.PROG_DIR = prog_dir
@@ -117,13 +121,6 @@ class srCore(object):
             print("Restore: restoring DB and config.ini %s!\n" % ("FAILED", "SUCCESSFUL")[success])
             if success:
                 os.execl(sys.executable, sys.executable, *sys.argv)
-
-        # init logger
-        self.LOGGER = srLogger()
-
-        # init config
-        self.CONFIG = srConfig()
-        self.CONFIG_FILE = os.path.join(self.DATA_DIR, config_file)
 
         # sickrage version
         self.VERSION = None
@@ -162,14 +159,15 @@ class srCore(object):
 
         self.metadataProviderDict = None
 
+        self.providersDict = {
+            GenericProvider.NZB: {p.id: p for p in NZBProvider.getProviderList()},
+            GenericProvider.TORRENT: {p.id: p for p in TorrentProvider.getProviderList()},
+        }
+
         self.newznabProviderList = None
         self.torrentRssProviderList = None
-        self.providersDict = None
 
-    def start(self, console=True, debug=False):
-        # init encoding
-        self.CONFIG.SYS_ENCODING = encodingInit()
-
+    def start(self):
         # notifiers
         self.NOTIFIERS = AttrDict(
             libnotify=LibnotifyNotifier(),
@@ -196,25 +194,8 @@ class srCore(object):
             email_notifier=EmailNotifier()
         )
 
-        self.providersDict = {
-            GenericProvider.NZB: {p.id: p for p in NZBProvider.getProviderList()},
-            GenericProvider.TORRENT: {p.id: p for p in TorrentProvider.getProviderList()},
-        }
-
-        # load config
-        self.CONFIG.load_config(self.CONFIG_FILE)
-
-        # init logger
-        self.LOGGER = srLogger(
-            logFile=os.path.abspath(os.path.join(self.DATA_DIR, self.CONFIG.LOG_DIR, self.CONFIG.LOG_FILE)),
-            logSize=self.CONFIG.LOG_SIZE,
-            logNr=self.CONFIG.LOG_NR,
-            consoleLogging=console,
-            fileLogging=makeDir(os.path.abspath(os.path.join(self.DATA_DIR, self.CONFIG.LOG_DIR))),
-            debugLogging=debug or self.CONFIG.DEBUG)
-
         # set socket timeout
-        socket.setdefaulttimeout(self.CONFIG.SOCKET_TIMEOUT)
+        socket.setdefaulttimeout(sickrage.srConfig.SOCKET_TIMEOUT)
 
         # init version updater
         self.VERSIONUPDATER = srVersionUpdater()
@@ -264,12 +245,12 @@ class srCore(object):
         # load data for shows from database
         self.load_shows()
 
-        if self.CONFIG.DEFAULT_PAGE not in ('home', 'schedule', 'history', 'news', 'IRC'):
-            self.CONFIG.DEFAULT_PAGE = 'home'
+        if sickrage.srConfig.DEFAULT_PAGE not in ('home', 'schedule', 'history', 'news', 'IRC'):
+            sickrage.srConfig.DEFAULT_PAGE = 'home'
 
-        if not makeDir(self.CONFIG.CACHE_DIR):
-            self.LOGGER.error("!!! Creating local cache dir failed")
-            self.CONFIG.CACHE_DIR = get_temp_dir()
+        if not makeDir(sickrage.srConfig.CACHE_DIR):
+            sickrage.srLogger.error("!!! Creating local cache dir failed")
+            sickrage.srConfig.CACHE_DIR = get_temp_dir()
 
         # Check if we need to perform a restore of the cache folder
         try:
@@ -286,96 +267,96 @@ class srCore(object):
                             shutil.move(dst_dir, os.path.join(os.path.dirname(dst_dir), bak_filename))
 
                         shutil.move(src_dir, dst_dir)
-                        self.LOGGER.info("Restore: restoring cache successful")
+                        sickrage.srLogger.info("Restore: restoring cache successful")
                     except Exception as E:
-                        self.LOGGER.error("Restore: restoring cache failed: {}".format(E.message))
+                        sickrage.srLogger.error("Restore: restoring cache failed: {}".format(E.message))
 
-                restore_cache(os.path.join(restore_dir, 'cache'), self.CONFIG.CACHE_DIR)
+                restore_cache(os.path.join(restore_dir, 'cache'), sickrage.srConfig.CACHE_DIR)
         except Exception as e:
-            self.LOGGER.error("Restore: restoring cache failed: {}".format(e.message))
+            sickrage.srLogger.error("Restore: restoring cache failed: {}".format(e.message))
         finally:
             if os.path.exists(os.path.join(self.DATA_DIR, 'restore')):
                 try:
                     removetree(os.path.join(self.DATA_DIR, 'restore'))
                 except Exception as e:
-                    self.LOGGER.error("Restore: Unable to remove the restore directory: {}".format(e.message))
+                    sickrage.srLogger.error("Restore: Unable to remove the restore directory: {}".format(e.message))
 
                 for cleanupDir in ['mako', 'sessions', 'indexers']:
                     try:
-                        removetree(os.path.join(self.CONFIG.CACHE_DIR, cleanupDir))
+                        removetree(os.path.join(sickrage.srConfig.CACHE_DIR, cleanupDir))
                     except Exception as e:
-                        self.LOGGER.warning(
+                        sickrage.srLogger.warning(
                             "Restore: Unable to remove the cache/{} directory: {1}".format(cleanupDir, e))
 
-        if self.CONFIG.WEB_PORT < 21 or self.CONFIG.WEB_PORT > 65535:
-            self.CONFIG.WEB_PORT = 8081
+        if sickrage.srConfig.WEB_PORT < 21 or sickrage.srConfig.WEB_PORT > 65535:
+            sickrage.srConfig.WEB_PORT = 8081
 
-        if not self.CONFIG.WEB_COOKIE_SECRET:
-            self.CONFIG.WEB_COOKIE_SECRET = generateCookieSecret()
+        if not sickrage.srConfig.WEB_COOKIE_SECRET:
+            sickrage.srConfig.WEB_COOKIE_SECRET = generateCookieSecret()
 
         # attempt to help prevent users from breaking links by using a bad url
-        if not self.CONFIG.ANON_REDIRECT.endswith('?'):
-            self.CONFIG.ANON_REDIRECT = ''
+        if not sickrage.srConfig.ANON_REDIRECT.endswith('?'):
+            sickrage.srConfig.ANON_REDIRECT = ''
 
-        if not re.match(r'\d+\|[^|]+(?:\|[^|]+)*', self.CONFIG.ROOT_DIRS):
-            self.CONFIG.ROOT_DIRS = ''
+        if not re.match(r'\d+\|[^|]+(?:\|[^|]+)*', sickrage.srConfig.ROOT_DIRS):
+            sickrage.srConfig.ROOT_DIRS = ''
 
-        self.CONFIG.NAMING_FORCE_FOLDERS = check_force_season_folders()
-        if self.CONFIG.NZB_METHOD not in ('blackhole', 'sabnzbd', 'nzbget'):
-            self.CONFIG.NZB_METHOD = 'blackhole'
+        sickrage.srConfig.NAMING_FORCE_FOLDERS = check_force_season_folders()
+        if sickrage.srConfig.NZB_METHOD not in ('blackhole', 'sabnzbd', 'nzbget'):
+            sickrage.srConfig.NZB_METHOD = 'blackhole'
 
-        if not self.CONFIG.PROVIDER_ORDER:
-            self.CONFIG.PROVIDER_ORDER = self.providersDict[GenericProvider.NZB].keys() + \
+        if not sickrage.srConfig.PROVIDER_ORDER:
+            sickrage.srConfig.PROVIDER_ORDER = self.providersDict[GenericProvider.NZB].keys() + \
                                          self.providersDict[GenericProvider.TORRENT].keys()
 
-        if self.CONFIG.TORRENT_METHOD not in (
+        if sickrage.srConfig.TORRENT_METHOD not in (
                 'blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent',
                 'qbittorrent', 'mlnet'):
-            self.CONFIG.TORRENT_METHOD = 'blackhole'
+            sickrage.srConfig.TORRENT_METHOD = 'blackhole'
 
-        if self.CONFIG.PROPER_SEARCHER_INTERVAL not in ('15m', '45m', '90m', '4h', 'daily'):
-            self.CONFIG.PROPER_SEARCHER_INTERVAL = 'daily'
+        if sickrage.srConfig.PROPER_SEARCHER_INTERVAL not in ('15m', '45m', '90m', '4h', 'daily'):
+            sickrage.srConfig.PROPER_SEARCHER_INTERVAL = 'daily'
 
-        if self.CONFIG.AUTOPOSTPROCESSOR_FREQ < self.CONFIG.MIN_AUTOPOSTPROCESSOR_FREQ:
-            self.CONFIG.AUTOPOSTPROCESSOR_FREQ = self.CONFIG.MIN_AUTOPOSTPROCESSOR_FREQ
+        if sickrage.srConfig.AUTOPOSTPROCESSOR_FREQ < sickrage.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ:
+            sickrage.srConfig.AUTOPOSTPROCESSOR_FREQ = sickrage.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ
 
-        if self.CONFIG.NAMECACHE_FREQ < self.CONFIG.MIN_NAMECACHE_FREQ:
-            self.CONFIG.NAMECACHE_FREQ = self.CONFIG.MIN_NAMECACHE_FREQ
+        if sickrage.srConfig.NAMECACHE_FREQ < sickrage.srConfig.MIN_NAMECACHE_FREQ:
+            sickrage.srConfig.NAMECACHE_FREQ = sickrage.srConfig.MIN_NAMECACHE_FREQ
 
-        if self.CONFIG.DAILY_SEARCHER_FREQ < self.CONFIG.MIN_DAILY_SEARCHER_FREQ:
-            self.CONFIG.DAILY_SEARCHER_FREQ = self.CONFIG.MIN_DAILY_SEARCHER_FREQ
+        if sickrage.srConfig.DAILY_SEARCHER_FREQ < sickrage.srConfig.MIN_DAILY_SEARCHER_FREQ:
+            sickrage.srConfig.DAILY_SEARCHER_FREQ = sickrage.srConfig.MIN_DAILY_SEARCHER_FREQ
 
-        self.CONFIG.MIN_BACKLOG_SEARCHER_FREQ = get_backlog_cycle_time()
-        if self.CONFIG.BACKLOG_SEARCHER_FREQ < self.CONFIG.MIN_BACKLOG_SEARCHER_FREQ:
-            self.CONFIG.BACKLOG_SEARCHER_FREQ = self.CONFIG.MIN_BACKLOG_SEARCHER_FREQ
+        sickrage.srConfig.MIN_BACKLOG_SEARCHER_FREQ = get_backlog_cycle_time()
+        if sickrage.srConfig.BACKLOG_SEARCHER_FREQ < sickrage.srConfig.MIN_BACKLOG_SEARCHER_FREQ:
+            sickrage.srConfig.BACKLOG_SEARCHER_FREQ = sickrage.srConfig.MIN_BACKLOG_SEARCHER_FREQ
 
-        if self.CONFIG.VERSION_UPDATER_FREQ < self.CONFIG.MIN_VERSION_UPDATER_FREQ:
-            self.CONFIG.VERSION_UPDATER_FREQ = self.CONFIG.MIN_VERSION_UPDATER_FREQ
+        if sickrage.srConfig.VERSION_UPDATER_FREQ < sickrage.srConfig.MIN_VERSION_UPDATER_FREQ:
+            sickrage.srConfig.VERSION_UPDATER_FREQ = sickrage.srConfig.MIN_VERSION_UPDATER_FREQ
 
-        if self.CONFIG.SHOWUPDATE_HOUR > 23:
-            self.CONFIG.SHOWUPDATE_HOUR = 0
-        elif self.CONFIG.SHOWUPDATE_HOUR < 0:
-            self.CONFIG.SHOWUPDATE_HOUR = 0
+        if sickrage.srConfig.SHOWUPDATE_HOUR > 23:
+            sickrage.srConfig.SHOWUPDATE_HOUR = 0
+        elif sickrage.srConfig.SHOWUPDATE_HOUR < 0:
+            sickrage.srConfig.SHOWUPDATE_HOUR = 0
 
-        if self.CONFIG.SUBTITLE_SEARCHER_FREQ < self.CONFIG.MIN_SUBTITLE_SEARCHER_FREQ:
-            self.CONFIG.SUBTITLE_SEARCHER_FREQ = self.CONFIG.MIN_SUBTITLE_SEARCHER_FREQ
+        if sickrage.srConfig.SUBTITLE_SEARCHER_FREQ < sickrage.srConfig.MIN_SUBTITLE_SEARCHER_FREQ:
+            sickrage.srConfig.SUBTITLE_SEARCHER_FREQ = sickrage.srConfig.MIN_SUBTITLE_SEARCHER_FREQ
 
-        self.CONFIG.NEWS_LATEST = self.CONFIG.NEWS_LAST_READ
+        sickrage.srConfig.NEWS_LATEST = sickrage.srConfig.NEWS_LAST_READ
 
-        if self.CONFIG.SUBTITLES_LANGUAGES[0] == '':
-            self.CONFIG.SUBTITLES_LANGUAGES = []
+        if sickrage.srConfig.SUBTITLES_LANGUAGES[0] == '':
+            sickrage.srConfig.SUBTITLES_LANGUAGES = []
 
-        self.CONFIG.TIME_PRESET = self.CONFIG.TIME_PRESET_W_SECONDS.replace(":%S", "")
+        sickrage.srConfig.TIME_PRESET = sickrage.srConfig.TIME_PRESET_W_SECONDS.replace(":%S", "")
 
         # initialize metadata_providers
         self.metadataProviderDict = get_metadata_generator_dict()
-        for cur_metadata_tuple in [(self.CONFIG.METADATA_KODI, kodi),
-                                   (self.CONFIG.METADATA_KODI_12PLUS, kodi_12plus),
-                                   (self.CONFIG.METADATA_MEDIABROWSER, mediabrowser),
-                                   (self.CONFIG.METADATA_PS3, ps3),
-                                   (self.CONFIG.METADATA_WDTV, wdtv),
-                                   (self.CONFIG.METADATA_TIVO, tivo),
-                                   (self.CONFIG.METADATA_MEDE8ER, mede8er)]:
+        for cur_metadata_tuple in [(sickrage.srConfig.METADATA_KODI, kodi),
+                                   (sickrage.srConfig.METADATA_KODI_12PLUS, kodi_12plus),
+                                   (sickrage.srConfig.METADATA_MEDIABROWSER, mediabrowser),
+                                   (sickrage.srConfig.METADATA_PS3, ps3),
+                                   (sickrage.srConfig.METADATA_WDTV, wdtv),
+                                   (sickrage.srConfig.METADATA_TIVO, tivo),
+                                   (sickrage.srConfig.METADATA_MEDE8ER, mede8er)]:
             (cur_metadata_config, cur_metadata_class) = cur_metadata_tuple
             tmp_provider = cur_metadata_class.metadata_class()
             tmp_provider.set_config(cur_metadata_config)
@@ -386,7 +367,7 @@ class srCore(object):
         self.SCHEDULER.add_job(
             self.VERSIONUPDATER.run,
             srIntervalTrigger(
-                **{'hours': self.CONFIG.VERSION_UPDATER_FREQ, 'min': self.CONFIG.MIN_VERSION_UPDATER_FREQ}),
+                **{'hours': sickrage.srConfig.VERSION_UPDATER_FREQ, 'min': sickrage.srConfig.MIN_VERSION_UPDATER_FREQ}),
             name="VERSIONUPDATER",
             id="VERSIONUPDATER",
             replace_existing=True
@@ -404,7 +385,7 @@ class srCore(object):
         # add namecache updater job to scheduler
         self.SCHEDULER.add_job(
             self.NAMECACHE.run,
-            srIntervalTrigger(**{'minutes': self.CONFIG.NAMECACHE_FREQ, 'min': self.CONFIG.MIN_NAMECACHE_FREQ}),
+            srIntervalTrigger(**{'minutes': sickrage.srConfig.NAMECACHE_FREQ, 'min': sickrage.srConfig.MIN_NAMECACHE_FREQ}),
             name="NAMECACHE",
             id="NAMECACHE",
             replace_existing=True
@@ -433,7 +414,7 @@ class srCore(object):
             self.SHOWUPDATER.run,
             srIntervalTrigger(
                 **{'hours': 1,
-                   'start_date': datetime.now().replace(hour=self.CONFIG.SHOWUPDATE_HOUR)}),
+                   'start_date': datetime.now().replace(hour=sickrage.srConfig.SHOWUPDATE_HOUR)}),
             name="SHOWUPDATER",
             id="SHOWUPDATER",
             replace_existing=True
@@ -443,7 +424,7 @@ class srCore(object):
         self.SCHEDULER.add_job(
             self.DAILYSEARCHER.run,
             srIntervalTrigger(
-                **{'minutes': self.CONFIG.DAILY_SEARCHER_FREQ, 'min': self.CONFIG.MIN_DAILY_SEARCHER_FREQ}),
+                **{'minutes': sickrage.srConfig.DAILY_SEARCHER_FREQ, 'min': sickrage.srConfig.MIN_DAILY_SEARCHER_FREQ}),
             name="DAILYSEARCHER",
             id="DAILYSEARCHER",
             replace_existing=True
@@ -453,8 +434,8 @@ class srCore(object):
         self.SCHEDULER.add_job(
             self.BACKLOGSEARCHER.run,
             srIntervalTrigger(
-                **{'minutes': self.CONFIG.BACKLOG_SEARCHER_FREQ,
-                   'min': self.CONFIG.MIN_BACKLOG_SEARCHER_FREQ}),
+                **{'minutes': sickrage.srConfig.BACKLOG_SEARCHER_FREQ,
+                   'min': sickrage.srConfig.MIN_BACKLOG_SEARCHER_FREQ}),
             name="BACKLOG",
             id="BACKLOG",
             replace_existing=True
@@ -463,25 +444,25 @@ class srCore(object):
         # add auto-postprocessing job to scheduler
         job = self.SCHEDULER.add_job(
             self.AUTOPOSTPROCESSOR.run,
-            srIntervalTrigger(**{'minutes': self.CONFIG.AUTOPOSTPROCESSOR_FREQ,
-                                 'min': self.CONFIG.MIN_AUTOPOSTPROCESSOR_FREQ}),
+            srIntervalTrigger(**{'minutes': sickrage.srConfig.AUTOPOSTPROCESSOR_FREQ,
+                                 'min': sickrage.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ}),
             name="POSTPROCESSOR",
             id="POSTPROCESSOR",
             replace_existing=True
         )
-        (job.pause, job.resume)[self.CONFIG.PROCESS_AUTOMATICALLY]()
+        (job.pause, job.resume)[sickrage.srConfig.PROCESS_AUTOMATICALLY]()
 
         # add find proper job to scheduler
         job = self.SCHEDULER.add_job(
             self.PROPERSEARCHER.run,
             srIntervalTrigger(**{
                 'minutes': {'15m': 15, '45m': 45, '90m': 90, '4h': 4 * 60, 'daily': 24 * 60}[
-                    self.CONFIG.PROPER_SEARCHER_INTERVAL]}),
+                    sickrage.srConfig.PROPER_SEARCHER_INTERVAL]}),
             name="PROPERSEARCHER",
             id="PROPERSEARCHER",
             replace_existing=True
         )
-        (job.pause, job.resume)[self.CONFIG.DOWNLOAD_PROPERS]()
+        (job.pause, job.resume)[sickrage.srConfig.DOWNLOAD_PROPERS]()
 
         # add trakt.tv checker job to scheduler
         job = self.SCHEDULER.add_job(
@@ -491,31 +472,31 @@ class srCore(object):
             id="TRAKTSEARCHER",
             replace_existing=True,
         )
-        (job.pause, job.resume)[self.CONFIG.USE_TRAKT]()
+        (job.pause, job.resume)[sickrage.srConfig.USE_TRAKT]()
 
         # add subtitles finder job to scheduler
         job = self.SCHEDULER.add_job(
             self.SUBTITLESEARCHER.run,
-            srIntervalTrigger(**{'hours': self.CONFIG.SUBTITLE_SEARCHER_FREQ}),
+            srIntervalTrigger(**{'hours': sickrage.srConfig.SUBTITLE_SEARCHER_FREQ}),
             name="SUBTITLESEARCHER",
             id="SUBTITLESEARCHER",
             replace_existing=True
         )
-        (job.pause, job.resume)[self.CONFIG.USE_SUBTITLES]()
+        (job.pause, job.resume)[sickrage.srConfig.USE_SUBTITLES]()
 
         # start scheduler
         threading.Thread(None, self.SCHEDULER.start, 'SCHEDULER').start()
 
     def halt(self):
-        self.LOGGER.info("Aborting all threads")
+        sickrage.srLogger.info("Aborting all threads")
 
         # shutdown scheduler
-        self.LOGGER.info("Shutting down scheduler jobs")
+        sickrage.srLogger.info("Shutting down scheduler jobs")
         self.SCHEDULER.shutdown()
 
-        if self.CONFIG.ADBA_CONNECTION:
-            self.LOGGER.info("Logging out ANIDB connection")
-            self.CONFIG.ADBA_CONNECTION.logout()
+        if sickrage.srConfig.ADBA_CONNECTION:
+            sickrage.srLogger.info("Logging out ANIDB connection")
+            sickrage.srConfig.ADBA_CONNECTION.logout()
 
         self.STARTED = False
 
@@ -528,12 +509,12 @@ class srCore(object):
 
     def save_all(self):
         # write all shows
-        self.LOGGER.info("Saving all shows to the database")
+        sickrage.srLogger.info("Saving all shows to the database")
         for SHOW in self.SHOWLIST:
             SHOW.saveToDB()
 
         # save config
-        self.CONFIG.save_config()
+        sickrage.srConfig.save_config()
 
     def load_shows(self):
         """
@@ -543,12 +524,12 @@ class srCore(object):
         for sqlShow in main_db.MainDB().select("SELECT * FROM tv_shows"):
             try:
                 curshow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
-                self.LOGGER.debug("Loading data for show: [{}]".format(curshow.name))
+                sickrage.srLogger.debug("Loading data for show: [{}]".format(curshow.name))
                 self.NAMECACHE.buildNameCache(curshow)
                 curshow.nextEpisode()
                 self.SHOWLIST += [curshow]
             except Exception as e:
-                self.LOGGER.error(
+                sickrage.srLogger.error(
                     "There was an error creating the show in {}: {}".format(sqlShow[b"location"], e.message))
-                self.LOGGER.debug(traceback.format_exc())
+                sickrage.srLogger.debug(traceback.format_exc())
                 continue

@@ -45,18 +45,18 @@ class BTDIGGProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():
-            sickrage.srCore.LOGGER.debug("Search Mode: %s" % mode)
+            sickrage.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srCore.LOGGER.debug("Search string: %s" % search_string)
+                    sickrage.srLogger.debug("Search string: %s" % search_string)
 
                 searchURL = self.urls['api'] + "api/private-341ada3245790954/s02?q=" + search_string + "&p=0&order=1"
-                sickrage.srCore.LOGGER.debug("Search URL: %s" % searchURL)
+                sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 jdata = self.getURL(searchURL, json=True)
                 if not jdata:
-                    sickrage.srCore.LOGGER.info("No data returned to be parsed!!!")
+                    sickrage.srLogger.info("No data returned to be parsed!!!")
                     return []
 
                 for torrent in jdata:
@@ -79,7 +79,7 @@ class BTDIGGProvider(TorrentProvider):
 
                         item = title, download_url, size, seeders, leechers
                         if mode is not 'RSS':
-                            sickrage.srCore.LOGGER.debug("Found result: %s" % title)
+                            sickrage.srLogger.debug("Found result: %s" % title)
 
                         items[mode].append(item)
 

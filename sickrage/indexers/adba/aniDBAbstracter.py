@@ -284,7 +284,7 @@ class Episode(aniDBabstractObject):
     def _calculate_file_stuff(self, filePath):
         if not filePath:
             return (None, None)
-        sickrage.srCore.LOGGER.info("Calculating the ed2k. Please wait...")
+        sickrage.srLogger.info("Calculating the ed2k. Please wait...")
         ed2k = get_file_hash(filePath)
         size = get_file_size(filePath)
         return ed2k, size

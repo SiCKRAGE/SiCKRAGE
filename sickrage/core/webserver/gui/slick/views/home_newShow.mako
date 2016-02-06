@@ -36,7 +36,7 @@
         <legend class="legendStep">Find a show on theTVDB</legend>
 
         <div class="stepDiv">
-            <input type="hidden" id="indexer_timeout" value="${sickrage.srCore.CONFIG.INDEXER_TIMEOUT}"/>
+            <input type="hidden" id="indexer_timeout" value="${sickrage.srConfig.INDEXER_TIMEOUT}"/>
 
             % if use_provided_info:
                 Show retrieved from existing metadata: <a
@@ -50,7 +50,7 @@
                 &nbsp;&nbsp;
                 <select name="indexerLang" id="indexerLangSelect"
                         class="form-control form-control-inline input-sm bfh-languages"
-                        data-language="${sickrage.srCore.CONFIG.INDEXER_DEFAULT_LANGUAGE}"
+                        data-language="${sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE}"
                         data-available="${','.join(sickrage.srCore.INDEXER_API().config[b'valid_languages'])}">
                 </select><b>*</b>
                 &nbsp;

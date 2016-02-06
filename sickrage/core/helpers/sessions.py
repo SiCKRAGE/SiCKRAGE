@@ -120,7 +120,7 @@ def _setUpSession(session=None, headers=None, params=None):
         headers = {}
 
     sessionCache = None
-    FileCacheDir = sickrage.srCore.CONFIG.CACHE_DIR or get_temp_dir()
+    FileCacheDir = sickrage.srConfig.CACHE_DIR or get_temp_dir()
     if FileCacheDir:
         sessionCache = FileCache(os.path.join(FileCacheDir, 'sessions'), use_dir_lock=True)
     session = cachecontrol.CacheControl(sess=session or requests.Session(), cache=sessionCache, cache_etags=False)
@@ -137,15 +137,15 @@ def _setUpSession(session=None, headers=None, params=None):
     try:
         # request session ssl verify
         session.verify = False
-        if sickrage.srCore.CONFIG.SSL_VERIFY:
+        if sickrage.srConfig.SSL_VERIFY:
             session.verify = certifi.where()
     except:pass
 
     # request session proxies
-    if 'Referer' not in session.headers and sickrage.srCore.CONFIG.PROXY_SETTING:
-        sickrage.srCore.LOGGER.debug("Using global proxy: " + sickrage.srCore.CONFIG.PROXY_SETTING)
-        scheme, address = urllib2.splittype(sickrage.srCore.CONFIG.PROXY_SETTING)
-        address = ('http://{}'.format(sickrage.srCore.CONFIG.PROXY_SETTING), sickrage.srCore.CONFIG.PROXY_SETTING)[scheme]
+    if 'Referer' not in session.headers and sickrage.srConfig.PROXY_SETTING:
+        sickrage.srLogger.debug("Using global proxy: " + sickrage.srConfig.PROXY_SETTING)
+        scheme, address = urllib2.splittype(sickrage.srConfig.PROXY_SETTING)
+        address = ('http://{}'.format(sickrage.srConfig.PROXY_SETTING), sickrage.srConfig.PROXY_SETTING)[scheme]
         session.proxies = {
             "http": address,
             "https": address,

@@ -10,13 +10,13 @@
 <script type="text/javascript" src="${srRoot}/js/config.js?${srPID}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-    % if sickrage.srCore.CONFIG.USE_NZBS:
-        var show_nzb_providers = ${("false", "true")[bool(sickrage.srCore.CONFIG.USE_NZBS)]};
+    % if sickrage.srConfig.USE_NZBS:
+        var show_nzb_providers = ${("false", "true")[bool(sickrage.srConfig.USE_NZBS)]};
     % for curNewznabProvider in sickrage.srCore.newznabProviderList:
             $(this).addProvider('${curNewznabProvider.id}', '${curNewznabProvider.name}', '${curNewznabProvider.url}', '${curNewznabProvider.key}', '${curNewznabProvider.catIDs}', ${int(curNewznabProvider.default)}, show_nzb_providers);
         % endfor
     % endif
-    % if sickrage.srCore.CONFIG.USE_TORRENTS:
+    % if sickrage.srConfig.USE_TORRENTS:
         % for curTorrentRssProvider in sickrage.srCore.torrentRssProviderList:
             $(this).addTorrentRssProvider('${curTorrentRssProvider.id}', '${curTorrentRssProvider.name}', '${curTorrentRssProvider.url}', '${curTorrentRssProvider.cookies}', '${curTorrentRssProvider.titleTAG}');
         % endfor
@@ -40,10 +40,10 @@ $('#config-components').tabs();
                 <ul>
                     <li><a href="#core-component-group1">Provider Priorities</a></li>
                     <li><a href="#core-component-group2">Provider Options</a></li>
-                    % if sickrage.srCore.CONFIG.USE_NZBS:
+                    % if sickrage.srConfig.USE_NZBS:
                     <li><a href="#core-component-group3">Configure Custom Newznab Providers</a></li>
                   % endif
-                    % if sickrage.srCore.CONFIG.USE_TORRENTS:
+                    % if sickrage.srConfig.USE_TORRENTS:
                     <li><a href="#core-component-group4">Configure Custom Torrent Providers</a></li>
                   % endif
                 </ul>
@@ -55,7 +55,7 @@ $('#config-components').tabs();
                         <p>Check off and drag the providers into the order you want them to be used.</p>
                         <p>At least one provider is required but two are recommended.</p>
 
-                        % if not sickrage.srCore.CONFIG.USE_NZBS or not sickrage.srCore.CONFIG.USE_TORRENTS:
+                        % if not sickrage.srConfig.USE_NZBS or not sickrage.srConfig.USE_TORRENTS:
                         <blockquote style="margin: 20px 0;">NZB/Torrent providers can be toggled in <b><a href="${srRoot}/config/search">Search Settings</a></b></blockquote>
                         % else:
                         <br>
@@ -70,7 +70,7 @@ $('#config-components').tabs();
                     <fieldset class="component-group-list">
                         <ul id="provider_order_list">
                             % for providerObj in sortedProviderDict().values():
-                                % if (providerObj.type == GenericProvider.NZB and sickrage.srCore.CONFIG.USE_NZBS) or (providerObj.type == GenericProvider.TORRENT and sickrage.srCore.CONFIG.USE_TORRENTS):
+                                % if (providerObj.type == GenericProvider.NZB and sickrage.srConfig.USE_NZBS) or (providerObj.type == GenericProvider.TORRENT and sickrage.srConfig.USE_TORRENTS):
                                     <li class="ui-state-default ${('nzb-provider', 'torrent-provider')[bool(providerObj.type == GenericProvider.TORRENT)]}"
                                         id="${providerObj.id}">
                                         <input type="checkbox" id="enable_${providerObj.id}"
@@ -112,7 +112,7 @@ $('#config-components').tabs();
                                     <%
                                         provider_config_list = []
                                         for curProvider in sortedProviderDict().values():
-                                            if (False, True)[curProvider.isEnabled and ((curProvider.type == 'nzb' and sickrage.srCore.CONFIG.USE_NZBS)or(curProvider.type == 'torrent' and sickrage.srCore.CONFIG.USE_TORRENTS))]:
+                                            if (False, True)[curProvider.isEnabled and ((curProvider.type == 'nzb' and sickrage.srConfig.USE_NZBS)or(curProvider.type == 'torrent' and sickrage.srConfig.USE_TORRENTS))]:
                                                 provider_config_list.append(curProvider)
                                     %>
                                     % if provider_config_list:
@@ -643,7 +643,7 @@ $('#config-components').tabs();
                     </fieldset>
                 </div><!-- /component-group2 //-->
 
-                % if sickrage.srCore.CONFIG.USE_NZBS:
+                % if sickrage.srConfig.USE_NZBS:
                 <div id="core-component-group3" class="component-group">
 
                     <div class="component-group-desc">
@@ -718,7 +718,7 @@ $('#config-components').tabs();
                 </div><!-- /component-group3 //-->
                 % endif
 
-                % if sickrage.srCore.CONFIG.USE_TORRENTS:
+                % if sickrage.srConfig.USE_TORRENTS:
 
                 <div id="core-component-group4" class="component-group">
 

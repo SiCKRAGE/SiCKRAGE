@@ -36,7 +36,7 @@
             <th width="1%">Update<br><input type="checkbox" class="bulkCheck" id="updateCheck" /></th>
             <th width="1%">Rescan<br><input type="checkbox" class="bulkCheck" id="refreshCheck" /></th>
             <th width="1%">Rename<br><input type="checkbox" class="bulkCheck" id="renameCheck" /></th>
-            % if sickrage.srCore.CONFIG.USE_SUBTITLES:
+            % if sickrage.srConfig.USE_SUBTITLES:
             <th width="1%">Search Subtitle<br><input type="checkbox" class="bulkCheck" id="subtitleCheck" /></th>
         % endif
             <!-- <th>Force Metadata Regen <input type="checkbox" class="bulkCheck" id="metadataCheck" /></th>//-->
@@ -48,7 +48,7 @@
     <tfoot>
         <tr>
             <td rowspan="1" colspan="2" class="align-center alt"><input class="btn pull-left" type="button" value="Edit Selected" id="submitMassEdit" /></td>
-            <td rowspan="1" colspan="${(15, 16)[bool(sickrage.srCore.CONFIG.USE_SUBTITLES)]}" class="align-right alt"><input
+            <td rowspan="1" colspan="${(15, 16)[bool(sickrage.srConfig.USE_SUBTITLES)]}" class="align-right alt"><input
                     class="btn pull-right" type="button" value="Submit" id="submitMassUpdate"/></td>
         </tr>
     </tfoot>
@@ -117,7 +117,7 @@
             <td align="center">${curUpdate}</td>
             <td align="center">${curRefresh}</td>
             <td align="center">${curRename}</td>
-            % if sickrage.srCore.CONFIG.USE_SUBTITLES:
+            % if sickrage.srConfig.USE_SUBTITLES:
             <td align="center">${curSubtitle}</td>
         % endif
             <td align="center">${curDelete}</td>

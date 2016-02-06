@@ -35,7 +35,7 @@ class srNameCache(object):
         self.name = "NAMECACHE"
         self.amActive = False
         self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
-        self.minTime = sickrage.srCore.CONFIG.NAMECACHE_FREQ
+        self.minTime = sickrage.srConfig.NAMECACHE_FREQ
         self.cache = {}
 
     def run(self, force=False):
@@ -119,7 +119,7 @@ class srNameCache(object):
             else:
                 self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
-                sickrage.srCore.LOGGER.debug("Building internal name cache for [{}]".format(show.name))
+                sickrage.srLogger.debug("Building internal name cache for [{}]".format(show.name))
                 self.clearCache(show.indexerid)
                 for curSeason in [-1] + get_scene_seasons(show.indexerid):
                     for name in list(set(get_scene_exceptions(
@@ -129,5 +129,5 @@ class srNameCache(object):
                         if name not in self.cache:
                             self.cache[name] = int(show.indexerid)
 
-                sickrage.srCore.LOGGER.debug("Internal name cache for [{}] set to: [{}]".format(
+                sickrage.srLogger.debug("Internal name cache for [{}] set to: [{}]".format(
                     show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))

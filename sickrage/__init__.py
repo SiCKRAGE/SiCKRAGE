@@ -31,7 +31,10 @@ import traceback
 from requirements import install_pip, install_requirements
 
 time.strptime("2012", "%Y")
+
 srCore = None
+srLogger = None
+srConfig = None
 
 
 def root_check():
@@ -39,6 +42,14 @@ def root_check():
         return not os.getuid() == 0
     except AttributeError:
         return not ctypes.windll.shell32.IsUserAnAdmin() != 0
+
+
+def remove_pid_file(pidfile):
+    try:
+        if os.path.exists(pidfile):
+            os.remove(pidfile)
+    except (IOError, OSError):
+        pass
 
 
 def help_message(prog_dir):
@@ -78,7 +89,7 @@ def help_message(prog_dir):
 
 
 def main():
-    global srCore
+    global srCore, srConfig, srLogger
 
     if sys.version_info < (2, 7):
         print("Sorry, SiCKRAGE requires Python 2.7+")
@@ -200,17 +211,26 @@ def main():
             print("!!! DEBUGGING MODE ENABLED !!!")
             DEBUG = True
 
-    # install/upgrade pip and ssl contexts for required/optional imports
-    if not DEVELOPER:
-        REQS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements'))
-
-        # install pip package manager
-        install_pip(path=REQS_DIR, user=root_check())
-
-        # install required packages
-        install_requirements(path=REQS_DIR, optional=INSTALL_OPTIONAL, ssl=SSL, user=root_check())
-
     try:
+        # install/upgrade pip and ssl contexts for required/optional imports
+        if not DEVELOPER:
+            REQS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements'))
+
+            # install pip package manager
+            install_pip(path=REQS_DIR, user=root_check())
+
+            # install required packages
+            install_requirements(path=REQS_DIR, optional=INSTALL_OPTIONAL, ssl=SSL, user=root_check())
+
+        import core
+        from core.helpers import makeDir
+
+        # init logger
+        srLogger = core.srLogger()
+
+        srLogger.info("SiCKRAGE INITIALIZING ...")
+        srCore = core.srCore(PROG_DIR, DATA_DIR)
+
         # daemonize sickrage
         if DAEMONIZE:
             import daemon
@@ -220,8 +240,10 @@ def main():
         else:
             CREATEPID = False
 
+        # sickrage pid
+        srCore.PID = os.getpid()
+
         # create pid file
-        PID = os.getpid()
         if CREATEPID:
             pid_dir = os.path.dirname(PIDFILE)
             if not os.access(pid_dir, os.F_OK):
@@ -230,20 +252,45 @@ def main():
                 sys.exit("PID dir: " + pid_dir + " must be writable (write permissions). Exiting.")
 
             with file(PIDFILE, 'w+') as pf:
-                pf.write(str(PID))
+                pf.write(str(srCore.PID))
 
-        import core
-        print("SiCKRAGE INITIALIZING ...")
-        srCore = core.srCore(CONFIG_FILE, PROG_DIR, DATA_DIR, PID)
-        srCore.start(CONSOLE, DEBUG)
+        # init config
+        srConfig = core.srConfig(CONFIG_FILE)
+
+        # load config
+        srConfig.load_config()
+
+        # start logger
+        srLogger.logFile = os.path.abspath(os.path.join(srCore.DATA_DIR, srConfig.LOG_DIR, srConfig.LOG_FILE))
+        srLogger.logSize = srConfig.LOG_SIZE
+        srLogger.logNr = srConfig.LOG_NR
+        srLogger.consoleLogging = CONSOLE
+        srLogger.debugLogging = DEBUG or srConfig.DEBUG
+        srLogger.fileLogging = makeDir(os.path.abspath(os.path.join(srCore.DATA_DIR, srConfig.LOG_DIR)))
+        srLogger.start()
+
+        # start core
+        srCore.start()
+
+        # start web-ui
         srCore.WEBSERVER.open_browser = (True, False)[WEB_NOLAUNCH]
-        srCore.WEBSERVER.port = (srCore.CONFIG.WEB_PORT, WEB_PORT)[WEB_PORT != srCore.CONFIG.WEB_PORT]
+        srCore.WEBSERVER.port = (srConfig.WEB_PORT, WEB_PORT)[WEB_PORT != srConfig.WEB_PORT]
         srCore.WEBSERVER.start()
+    except KeyboardInterrupt:
+        pass
     except Exception:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_tb(exc_traceback)
         traceback.print_exception(exc_type, exc_value, exc_traceback)
+
+        # shutdown with errors
         sys.exit(1)
+    finally:
+        # cleanup pidfile
+        if DAEMONIZE and PIDFILE:
+            remove_pid_file(PIDFILE)
+
+    # shutdown without errors
     sys.exit(0)
 
 

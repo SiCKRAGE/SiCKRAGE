@@ -34,17 +34,17 @@ class EncodingTests(SiCKRAGETestCase):
         rootDir = 'C:\\Temp\\TV'
         strings = ['Les Enfants De La T\xe9l\xe9', 'RT� One']
 
-        sickrage.srCore.CONFIG.SYS_ENCODING = None
+        sickrage.srCore.SYS_ENCODING = None
 
         try:
             locale.setlocale(locale.LC_ALL, "")
-            sickrage.srCore.CONFIG.SYS_ENCODING = locale.getpreferredencoding()
+            sickrage.srCore.SYS_ENCODING = locale.getpreferredencoding()
         except (locale.Error, IOError):
             pass
 
         # For OSes that are poorly configured I'll just randomly force UTF-8
-        if not sickrage.srCore.CONFIG.SYS_ENCODING or sickrage.srCore.CONFIG.SYS_ENCODING in ('ANSI_X3.4-1968', 'US-ASCII', 'ASCII'):
-            sickrage.srCore.CONFIG.SYS_ENCODING = 'UTF-8'
+        if not sickrage.srCore.SYS_ENCODING or sickrage.srCore.SYS_ENCODING in ('ANSI_X3.4-1968', 'US-ASCII', 'ASCII'):
+            sickrage.srCore.SYS_ENCODING = 'UTF-8'
 
         for s in strings:
             show_dir = os.path.join(rootDir, sanitizeFileName(s))

@@ -31,24 +31,16 @@ import traceback
 from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
 
-import sickrage
-
 
 class srLogger(logging.getLoggerClass()):
     # disable root logger
     logging.getLogger().addHandler(logging.NullHandler())
 
-    def __init__(self,
-                 name='sickrage',
-                 logFile=None,
-                 logSize=1048576,
-                 logNr=5,
-                 consoleLogging=True,
-                 fileLogging=True,
-                 debugLogging=False,
-                 *args, **kwargs):
+    def __init__(self, logFile=None, logSize=1048576, logNr=5, consoleLogging=True, fileLogging=True,
+                 debugLogging=False, *args, **kwargs):
+        super(srLogger, self).__init__("sickrage")
 
-        logging.Logger.__init__(self, name, *args, **kwargs)
+        self.censored_items = {}
 
         self.consoleLogging = consoleLogging
         self.fileLogging = fileLogging
@@ -102,29 +94,32 @@ class srLogger(logging.getLoggerClass()):
                                'apscheduler.jobstores',
                                'apscheduler.scheduler']
 
-
         # set custom level for database logging
         logging.addLevelName(self.logLevels[b'DB'], 'DB')
-        logging.getLogger().setLevel(self.logLevels[b'DB'])
+        logging.getLogger("sickrage").setLevel(self.logLevels[b'DB'])
 
+        # start logger
+        self.start()
+
+    def start(self):
         # console log handler
         if self.consoleLogging:
             console = logging.StreamHandler()
             console.setFormatter(
-                    logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S'))
+                logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S'))
             console.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
             self.addHandler(console)
 
         # rotating log file handler
         if self.fileLogging and self.logFile:
             rfh = RotatingFileHandler(
-                    filename=self.logFile,
-                    maxBytes=self.logSize,
-                    backupCount=self.logNr
+                filename=self.logFile,
+                maxBytes=self.logSize,
+                backupCount=self.logNr
             )
 
             rfh.setFormatter(
-                    logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%Y-%m-%d %H:%M:%S'))
+                logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%Y-%m-%d %H:%M:%S'))
             rfh.setLevel(self.logLevels[b'INFO'] if not self.debugLogging else self.logLevels[b'DEBUG'])
             self.addHandler(rfh)
 
@@ -133,10 +128,9 @@ class srLogger(logging.getLoggerClass()):
             record = super(srLogger, self).makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra)
 
             try:
-                record.msg = re.sub(r"(.*)\b({})\b(.*)"
-                                    .format('|'
-                                            .join([x for x in sickrage.srCore.CONFIG.CENSORED_ITEMS.values() if len(x)])), r"\1\3",
-                                    record.msg)
+                record.msg = re.sub(
+                    r"(.*)\b({})\b(.*)".format('|'.join([x for x in self.censored_items.values() if len(x)])), r"\1\3",
+                    record.msg)
 
                 # needed because Newznab apikey isn't stored as key=value in a section.
                 record.msg = re.sub(r"([&?]r|[&?]apikey|[&?]api_key)=[^&]*([&\w]?)", r"\1=**********\2", record.msg)
@@ -175,21 +169,20 @@ class srLogger(logging.getLoggerClass()):
     def warning(self, msg, *args, **kwargs):
         super(srLogger, self).warning(msg, *args, **kwargs)
 
-    def db(self, msg, *args, **kwargs):
-        super(srLogger, self).log(self.logLevels[b'DB'], msg, *args, **kwargs)
-
     def log_error_and_exit(self, msg, *args, **kwargs):
         if self.consoleLogging:
             sys.exit(super(srLogger, self).error(msg, *args, **kwargs))
         sys.exit(1)
 
     def submit_errors(self):  # Too many local variables, too many branches, pylint: disable=R0912,R0914
+        import sickrage
+
         submitter_result = None
         issue_id = None
 
-
         from core.classes import ErrorViewer
-        if not (sickrage.srCore.CONFIG.GIT_USERNAME and sickrage.srCore.CONFIG.GIT_PASSWORD and sickrage.srCore.CONFIG.DEBUG and len(ErrorViewer.errors) > 0):
+        if not (sickrage.srConfig.GIT_USERNAME and sickrage.srConfig.GIT_PASSWORD and sickrage.srConfig.DEBUG and len(
+                ErrorViewer.errors) > 0):
             submitter_result = 'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id
 
@@ -207,11 +200,11 @@ class srLogger(logging.getLoggerClass()):
 
         self.submitter_running = True
 
-        gh_org = sickrage.srCore.CONFIG.GIT_ORG or 'SiCKRAGETV'
+        gh_org = sickrage.srConfig.GIT_ORG or 'SiCKRAGETV'
         gh_repo = 'sickrage-issues'
 
         import github
-        gh = github.Github(login_or_token=sickrage.srCore.CONFIG.GIT_USERNAME, password=sickrage.srCore.CONFIG.GIT_PASSWORD,
+        gh = github.Github(login_or_token=sickrage.srConfig.GIT_USERNAME, password=sickrage.srConfig.GIT_PASSWORD,
                            user_agent="SiCKRAGE")
 
         try:
@@ -222,7 +215,7 @@ class srLogger(logging.getLoggerClass()):
                 with io.open(self.logFile, 'r') as f:
                     log_data = f.readlines()
 
-            for i in range(1, int(sickrage.srCore.CONFIG.LOG_NR)):
+            for i in range(1, int(sickrage.srConfig.LOG_NR)):
                 if os.path.isfile(self.logFile + ".%i" % i) and (len(log_data) <= 500):
                     with io.open(self.logFile + ".%i" % i, 'r') as f:
                         log_data += f.readlines()

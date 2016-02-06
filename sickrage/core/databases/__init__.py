@@ -107,7 +107,7 @@ class Transaction(object):
                     conn.rollback()
                     gen.sleep(1)
                 except Exception as e:
-                    sickrage.srCore.LOGGER.error("QUERY: {} ERROR: {}".format(query, e.message))
+                    sickrage.srLogger.error("QUERY: {} ERROR: {}".format(query, e.message))
                 finally:
                     return result
 
@@ -224,7 +224,7 @@ class Connection(object):
 
         with futures.ThreadPoolExecutor(len(upserts)) as executor, self.transaction() as tx:
             sqlResults = [executor.submit(tx.upsert, u[0], u[1], u[2]).result() for u in upserts]
-            sickrage.srCore.LOGGER.db("{} Upserts executed".format(len(upserts)))
+            sickrage.srLogger.db("{} Upserts executed".format(len(upserts)))
             return sqlResults
 
     def mass_action(self, queries):
@@ -237,7 +237,7 @@ class Connection(object):
 
         with futures.ThreadPoolExecutor(len(queries)) as executor, self.transaction() as tx:
             sqlResults = [executor.submit(tx.upsert, q).result() for q in queries]
-            sickrage.srCore.LOGGER.db("{} Transactions executed".format(len(queries)))
+            sickrage.srLogger.db("{} Transactions executed".format(len(queries)))
             return sqlResults
 
     def action(self, query, *args):
@@ -248,7 +248,7 @@ class Connection(object):
         :param query: Query string
         """
 
-        sickrage.srCore.LOGGER.db("{}: {} with args {}".format(self.filename, query, args))
+        sickrage.srLogger.db("{}: {} with args {}".format(self.filename, query, args))
 
         with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
             return executor.submit(tx.query, [query, list(*args)]).result()
@@ -356,17 +356,17 @@ class SchemaUpgrade(Connection):
             name = prettyName(upgradeClass.__name__)
 
             while (True):
-                sickrage.srCore.LOGGER.debug("Checking {} database structure".format(name))
+                sickrage.srLogger.debug("Checking {} database structure".format(name))
 
                 try:
                     instance = upgradeClass()
 
                     if not instance.test():
-                        sickrage.srCore.LOGGER.debug("Database upgrade required: {}".format(name))
+                        sickrage.srLogger.debug("Database upgrade required: {}".format(name))
                         instance.execute()
-                        sickrage.srCore.LOGGER.debug("{} upgrade completed".format(name))
+                        sickrage.srLogger.debug("{} upgrade completed".format(name))
                     else:
-                        sickrage.srCore.LOGGER.debug("{} upgrade not required".format(name))
+                        sickrage.srLogger.debug("{} upgrade not required".format(name))
 
                     return True
                 except sqlite3.DatabaseError:
@@ -384,18 +384,18 @@ class SchemaUpgrade(Connection):
         :return: True if restore succeeds, False if it fails
         """
 
-        sickrage.srCore.LOGGER.info("Restoring database before trying upgrade again")
+        sickrage.srLogger.info("Restoring database before trying upgrade again")
         if not restoreVersionedFile(dbFilename(suffix='v' + str(version)), version):
-            sickrage.srCore.LOGGER.info("Database restore failed, abort upgrading database")
+            sickrage.srLogger.info("Database restore failed, abort upgrading database")
             return False
         return True
 
     def backup(self, version):
-        sickrage.srCore.LOGGER.info("Backing up database before upgrade")
+        sickrage.srLogger.info("Backing up database before upgrade")
         if not backupVersionedFile(dbFilename(), version):
-            sickrage.srCore.LOGGER.log_error_and_exit("Database backup failed, abort upgrading database")
+            sickrage.srLogger.log_error_and_exit("Database backup failed, abort upgrading database")
         else:
-            sickrage.srCore.LOGGER.info("Proceeding with upgrade")
+            sickrage.srLogger.info("Proceeding with upgrade")
 
     @classmethod
     def get_subclasses(cls):

@@ -73,7 +73,7 @@ def test_generator(tvdbdid, show_name, curData, forceSearch):
     def test(self):
         global searchItems
         searchItems = curData[b"i"]
-        show = TVShow(1, tvdbdid, dbload=False)
+        show = TVShow(1, tvdbdid)
         show.name = show_name
         show.quality = curData[b"q"]
         show.saveToDB()

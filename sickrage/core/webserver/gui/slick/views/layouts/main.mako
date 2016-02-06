@@ -25,9 +25,9 @@
         <meta name="viewport" content="width=device-width">
 
         <!-- These values come from css/dark.css and css/light.css -->
-        % if sickrage.srCore.CONFIG.THEME_NAME == "dark":
+        % if sickrage.srConfig.THEME_NAME == "dark":
         <meta name="theme-color" content="#15528F">
-        % elif sickrage.srCore.CONFIG.THEME_NAME == "light":
+        % elif sickrage.srConfig.THEME_NAME == "light":
         <meta name="theme-color" content="#333333">
         % endif
 
@@ -43,23 +43,23 @@
 
 
         <meta data-var="srRoot" data-content="${srRoot}">
-        <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.srCore.CONFIG.THEME_NAME == 'dark']}">
-        <meta data-var="anonURL" data-content="${sickrage.srCore.CONFIG.ANON_REDIRECT}">
+        <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.srConfig.THEME_NAME == 'dark']}">
+        <meta data-var="anonURL" data-content="${sickrage.srConfig.ANON_REDIRECT}">
 
-        <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.srCore.CONFIG.ANIME_SPLIT_HOME}">
-        <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.srCore.CONFIG.COMING_EPS_LAYOUT}">
-        <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.srCore.CONFIG.COMING_EPS_SORT}">
-        <meta data-var="sickrage.DATE_PRESET" data-content="${sickrage.srCore.CONFIG.DATE_PRESET}">
-        <meta data-var="sickrage.FILTER_ROW" data-content="${sickrage.srCore.CONFIG.FILTER_ROW}">
-        <meta data-var="sickrage.FUZZY_DATING" data-content="${sickrage.srCore.CONFIG.FUZZY_DATING}">
-        <meta data-var="sickrage.HISTORY_LAYOUT" data-content="${sickrage.srCore.CONFIG.HISTORY_LAYOUT}">
-        <meta data-var="sickrage.HOME_LAYOUT" data-content="${sickrage.srCore.CONFIG.HOME_LAYOUT}">
-        <meta data-var="sickrage.POSTER_SORTBY" data-content="${sickrage.srCore.CONFIG.POSTER_SORTBY}">
-        <meta data-var="sickrage.POSTER_SORTDIR" data-content="${sickrage.srCore.CONFIG.POSTER_SORTDIR}">
-        <meta data-var="sickrage.ROOT_DIRS" data-content="${sickrage.srCore.CONFIG.ROOT_DIRS}">
-        <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srCore.CONFIG.SORT_ARTICLE}">
-        <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.srCore.CONFIG.TIME_PRESET}">
-        <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srCore.CONFIG.TRIM_ZERO}">
+        <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.srConfig.ANIME_SPLIT_HOME}">
+        <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.srConfig.COMING_EPS_LAYOUT}">
+        <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.srConfig.COMING_EPS_SORT}">
+        <meta data-var="sickrage.DATE_PRESET" data-content="${sickrage.srConfig.DATE_PRESET}">
+        <meta data-var="sickrage.FILTER_ROW" data-content="${sickrage.srConfig.FILTER_ROW}">
+        <meta data-var="sickrage.FUZZY_DATING" data-content="${sickrage.srConfig.FUZZY_DATING}">
+        <meta data-var="sickrage.HISTORY_LAYOUT" data-content="${sickrage.srConfig.HISTORY_LAYOUT}">
+        <meta data-var="sickrage.HOME_LAYOUT" data-content="${sickrage.srConfig.HOME_LAYOUT}">
+        <meta data-var="sickrage.POSTER_SORTBY" data-content="${sickrage.srConfig.POSTER_SORTBY}">
+        <meta data-var="sickrage.POSTER_SORTDIR" data-content="${sickrage.srConfig.POSTER_SORTDIR}">
+        <meta data-var="sickrage.ROOT_DIRS" data-content="${sickrage.srConfig.ROOT_DIRS}">
+        <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srConfig.SORT_ARTICLE}">
+        <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.srConfig.TIME_PRESET}">
+        <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.srConfig.TRIM_ZERO}">
         <%block name="metas" />
 
         <link rel="shortcut icon" href="${srRoot}/images/ico/favicon.ico">
@@ -83,7 +83,7 @@
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery-ui-1.10.4.custom.min.css?${srPID}" />
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/jquery.qtip-2.2.1.min.css?${srPID}"/>
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/style.css?${srPID}"/>
-        <link rel="stylesheet" type="text/css" href="${srRoot}/css/${sickrage.srCore.CONFIG.THEME_NAME}.css?${srPID}"/>
+        <link rel="stylesheet" type="text/css" href="${srRoot}/css/${sickrage.srConfig.THEME_NAME}.css?${srPID}"/>
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/print.css?${srPID}" />
         % if current_user:
         <link rel="stylesheet" type="text/css" href="${srRoot}/css/lib/pnotify.custom.min.css?${srPID}" />
@@ -114,9 +114,9 @@
                                 <li><a href="${srRoot}/home/"><i class="menu-icon-home"></i>&nbsp;Show List</a></li>
                                 <li><a href="${srRoot}/home/addShows/"><i class="menu-icon-addshow"></i>&nbsp;Add Shows</a></li>
                                 <li><a href="${srRoot}/home/postprocess/"><i class="menu-icon-postprocess"></i>&nbsp;Manual Post-Processing</a></li>
-                                % if sickrage.srCore.CONFIG.SHOWS_RECENT:
+                                % if sickrage.srConfig.SHOWS_RECENT:
                                     <li role="separator" class="divider"></li>
-                                % for recentShow in sickrage.srCore.CONFIG.SHOWS_RECENT:
+                                % for recentShow in sickrage.srConfig.SHOWS_RECENT:
                                         <li><a href="${srRoot}/home/displayShow/?show=${recentShow[b'indexerid']}"><i class="menu-icon-addshow"></i>&nbsp;${recentShow[b'name']|trim,h}</a></li>
                                     % endfor
                                 % endif
@@ -141,22 +141,22 @@
                                 <li><a href="${srRoot}/manage/backlogOverview/"><i class="menu-icon-backlog-view"></i>&nbsp;Backlog Overview</a></li>
                                 <li><a href="${srRoot}/manage/manageSearches/"><i class="menu-icon-manage-searches"></i>&nbsp;Manage Searches</a></li>
                                 <li><a href="${srRoot}/manage/episodeStatuses/"><i class="menu-icon-backlog"></i>&nbsp;Episode Status Management</a></li>
-                                % if sickrage.srCore.CONFIG.USE_PLEX and sickrage.srCore.CONFIG.PLEX_SERVER_HOST != "":
+                                % if sickrage.srConfig.USE_PLEX and sickrage.srConfig.PLEX_SERVER_HOST != "":
                                 <li><a href="${srRoot}/home/updatePLEX/"><i class="menu-icon-backlog-view"></i>&nbsp;Update PLEX</a></li>
                             % endif
-                                % if sickrage.srCore.CONFIG.USE_KODI and sickrage.srCore.CONFIG.KODI_HOST != "":
+                                % if sickrage.srConfig.USE_KODI and sickrage.srConfig.KODI_HOST != "":
                                 <li><a href="${srRoot}/home/updateKODI/"><i class="menu-icon-kodi"></i>&nbsp;Update KODI</a></li>
                             % endif
-                                % if sickrage.srCore.CONFIG.USE_EMBY and sickrage.srCore.CONFIG.EMBY_HOST != "" and sickrage.srCore.CONFIG.EMBY_APIKEY != "":
+                                % if sickrage.srConfig.USE_EMBY and sickrage.srConfig.EMBY_HOST != "" and sickrage.srConfig.EMBY_APIKEY != "":
                                 <li><a href="${srRoot}/home/updateEMBY/"><i class="menu-icon-backlog-view"></i>&nbsp;Update Emby</a></li>
                             % endif
-                                % if sickrage.srCore.CONFIG.USE_TORRENTS and sickrage.srCore.CONFIG.TORRENT_METHOD != 'blackhole' and (sickrage.srCore.CONFIG.ENABLE_HTTPS and sickrage.srCore.CONFIG.TORRENT_HOST[:5] == 'https' or not sickrage.srCore.CONFIG.ENABLE_HTTPS and sickrage.srCore.CONFIG.TORRENT_HOST[:5] == 'http:'):
+                                % if sickrage.srConfig.USE_TORRENTS and sickrage.srConfig.TORRENT_METHOD != 'blackhole' and (sickrage.srConfig.ENABLE_HTTPS and sickrage.srConfig.TORRENT_HOST[:5] == 'https' or not sickrage.srConfig.ENABLE_HTTPS and sickrage.srConfig.TORRENT_HOST[:5] == 'http:'):
                                 <li><a href="${srRoot}/manage/manageTorrents/"><i class="menu-icon-bittorrent"></i>&nbsp;Manage Torrents</a></li>
                             % endif
-                                % if sickrage.srCore.CONFIG.USE_FAILED_DOWNLOADS:
+                                % if sickrage.srConfig.USE_FAILED_DOWNLOADS:
                                 <li><a href="${srRoot}/manage/failedDownloads/"><i class="menu-icon-failed-download"></i>&nbsp;Failed Downloads</a></li>
                             % endif
-                                % if sickrage.srCore.CONFIG.USE_SUBTITLES:
+                                % if sickrage.srConfig.USE_SUBTITLES:
                                 <li><a href="${srRoot}/manage/subtitleMissed/"><i class="menu-icon-backlog"></i>&nbsp;Missed Subtitle Management</a></li>
                             % endif
                             </ul>
@@ -182,12 +182,12 @@
                         </li>
 
                         <%
-                            if sickrage.srCore.CONFIG.NEWS_UNREAD:
-                                newsBadge = ' <span class="badge">'+str(sickrage.srCore.CONFIG.NEWS_UNREAD)+'</span>'
+                            if sickrage.srConfig.NEWS_UNREAD:
+                                newsBadge = ' <span class="badge">'+str(sickrage.srConfig.NEWS_UNREAD)+'</span>'
                             else:
                                 newsBadge = ''
 
-                            numCombined = numErrors + numWarnings + sickrage.srCore.CONFIG.NEWS_UNREAD
+                            numCombined = numErrors + numWarnings + sickrage.srConfig.NEWS_UNREAD
                             if numCombined:
                                 if numErrors:
                                     toolsBadgeClass = ' btn-danger'
@@ -209,14 +209,14 @@
                                 <li><a href="${srRoot}/IRC/"><i class="menu-icon-help"></i>&nbsp;IRC</a></li>
                                 <li><a href="${srRoot}/changes/"><i class="menu-icon-help"></i>&nbsp;Changelog</a></li>
                                 <li><a href="http://sickragetv.herokuapp.com/donate" rel="noreferrer"
-                                       onclick="window.open('${sickrage.srCore.CONFIG.ANON_REDIRECT}' + this.href); return false;"><i
+                                       onclick="window.open('${sickrage.srConfig.ANON_REDIRECT}' + this.href); return false;"><i
                                         class="menu-icon-help"></i>&nbsp;Support SickRage</a></li>
                                 <li role="separator" class="divider"></li>
                                 %if numErrors:
                                     <li><a href="${srRoot}/errorlogs/"><i class="menu-icon-viewlog-errors"></i>&nbsp;View Errors <span class="badge btn-danger">${numErrors}</span></a></li>
                                 %endif
                                 %if numWarnings:
-                                    <li><a href="${srRoot}/errorlogs/?level=${sickrage.srCore.LOGGER.WARNING}"><i
+                                    <li><a href="${srRoot}/errorlogs/?level=${sickrage.srLogger.WARNING}"><i
                                             class="menu-icon-viewlog-errors"></i>&nbsp;View Warnings <span
                                             class="badge btn-warning">${numWarnings}</span></a></li>
                                 %endif

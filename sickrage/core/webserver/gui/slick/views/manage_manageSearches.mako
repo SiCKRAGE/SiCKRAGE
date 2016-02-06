@@ -35,9 +35,9 @@ ${('Not in progress', 'In Progress')[dailySearchStatus]}<br>
 <br>
 
 <h3>Find Propers Search:</h3>
-    <a class="btn ${('disabled', '')[bool(sickrage.srCore.CONFIG.DOWNLOAD_PROPERS)]}"
+    <a class="btn ${('disabled', '')[bool(sickrage.srConfig.DOWNLOAD_PROPERS)]}"
        href="${srRoot}/manage/manageSearches/forceFindPropers"><i class="icon-exclamation-sign"></i> Force</a>
-    % if not sickrage.srCore.CONFIG.DOWNLOAD_PROPERS:
+    % if not sickrage.srConfig.DOWNLOAD_PROPERS:
     Propers search disabled <br>
 % elif not findPropersStatus:
     Not in progress<br>

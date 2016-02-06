@@ -23,49 +23,49 @@
 % endif
 
 <div id="HomeLayout" class="pull-right hidden-print" style="margin-top: -40px;">
-    % if sickrage.srCore.CONFIG.HOME_LAYOUT != 'poster':
+    % if sickrage.srConfig.HOME_LAYOUT != 'poster':
         <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>
     % endif
     <span> Layout:
         <select name="layout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
-            <option value="${srRoot}/setHomeLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.HOME_LAYOUT == 'poster']}>
+            <option value="${srRoot}/setHomeLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srConfig.HOME_LAYOUT == 'poster']}>
                 Poster
             </option>
-            <option value="${srRoot}/setHomeLayout/?layout=small" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.HOME_LAYOUT == 'small']}>
+            <option value="${srRoot}/setHomeLayout/?layout=small" ${('', 'selected="selected"')[sickrage.srConfig.HOME_LAYOUT == 'small']}>
                 Small Poster
             </option>
-            <option value="${srRoot}/setHomeLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.HOME_LAYOUT == 'banner']}>
+            <option value="${srRoot}/setHomeLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srConfig.HOME_LAYOUT == 'banner']}>
                 Banner
             </option>
-            <option value="${srRoot}/setHomeLayout/?layout=simple" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.HOME_LAYOUT == 'simple']}>
+            <option value="${srRoot}/setHomeLayout/?layout=simple" ${('', 'selected="selected"')[sickrage.srConfig.HOME_LAYOUT == 'simple']}>
                 Simple
             </option>
         </select>
-        % if sickrage.srCore.CONFIG.HOME_LAYOUT != 'poster':
+        % if sickrage.srConfig.HOME_LAYOUT != 'poster':
         Search:
             <input class="search form-control form-control-inline input-sm input200" type="search" data-column="2" placeholder="Search Show Name">
             <button type="button" class="resetsorting btn btn-inline">Reset Search</button>
         % endif
     </span>
 
-    % if sickrage.srCore.CONFIG.HOME_LAYOUT == 'poster':
+    % if sickrage.srConfig.HOME_LAYOUT == 'poster':
     &nbsp;
     <span> Sort By:
         <select id="postersort" class="form-control form-control-inline input-sm">
             <option value="name"
-                    data-sort="${srRoot}/setPosterSortBy/?sort=name" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.POSTER_SORTBY == 'name']}>
+                    data-sort="${srRoot}/setPosterSortBy/?sort=name" ${('', 'selected="selected"')[sickrage.srConfig.POSTER_SORTBY == 'name']}>
                 Name
             </option>
             <option value="date"
-                    data-sort="${srRoot}/setPosterSortBy/?sort=date" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.POSTER_SORTBY == 'date']}>
+                    data-sort="${srRoot}/setPosterSortBy/?sort=date" ${('', 'selected="selected"')[sickrage.srConfig.POSTER_SORTBY == 'date']}>
                 Next Episode
             </option>
             <option value="network"
-                    data-sort="${srRoot}/setPosterSortBy/?sort=network" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.POSTER_SORTBY == 'network']}>
+                    data-sort="${srRoot}/setPosterSortBy/?sort=network" ${('', 'selected="selected"')[sickrage.srConfig.POSTER_SORTBY == 'network']}>
                 Network
             </option>
             <option value="progress"
-                    data-sort="${srRoot}/setPosterSortBy/?sort=progress" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.POSTER_SORTBY == 'progress']}>
+                    data-sort="${srRoot}/setPosterSortBy/?sort=progress" ${('', 'selected="selected"')[sickrage.srConfig.POSTER_SORTBY == 'progress']}>
                 Progress
             </option>
         </select>
@@ -74,11 +74,11 @@
     <span> Sort Order:
         <select id="postersortdirection" class="form-control form-control-inline input-sm">
             <option value="true"
-                    data-sort="${srRoot}/setPosterSortDir/?direction=1" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.POSTER_SORTDIR == 1]}>
+                    data-sort="${srRoot}/setPosterSortDir/?direction=1" ${('', 'selected="selected"')[sickrage.srConfig.POSTER_SORTDIR == 1]}>
                 Asc
             </option>
             <option value="false"
-                    data-sort="${srRoot}/setPosterSortDir/?direction=0" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.POSTER_SORTDIR == 0]}>
+                    data-sort="${srRoot}/setPosterSortDir/?direction=0" ${('', 'selected="selected"')[sickrage.srConfig.POSTER_SORTDIR == 0]}>
                 Desc
             </option>
         </select>
@@ -94,8 +94,8 @@
     % if curListType == "Anime":
         <h1 class="header">Anime List</h1>
     % endif
-    % if sickrage.srCore.CONFIG.HOME_LAYOUT == 'poster':
-        <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.srCore.CONFIG.HOME_LAYOUT == 'poster']}"
+    % if sickrage.srConfig.HOME_LAYOUT == 'poster':
+        <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.srConfig.HOME_LAYOUT == 'poster']}"
              class="clearfix">
 <div class="posterview">
     % for curLoadingShow in sickrage.srCore.SHOWQUEUE.loadingShowList:
@@ -217,7 +217,7 @@
                 </td>
 
                 <td class="show-table">
-                    % if sickrage.srCore.CONFIG.HOME_LAYOUT != 'simple':
+                    % if sickrage.srConfig.HOME_LAYOUT != 'simple':
                         % if curShow.network:
                             <span title="${curShow.network}"><img class="show-network-image" src="${srRoot}${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>
                         % else:
@@ -374,31 +374,31 @@
         <td align="center" class="nowrap"></td>
     % endif
 
-        % if sickrage.srCore.CONFIG.HOME_LAYOUT == 'small':
+        % if sickrage.srConfig.HOME_LAYOUT == 'small':
         <td class="tvShow">
-            <div class="imgsmallposter ${sickrage.srCore.CONFIG.HOME_LAYOUT}">
+            <div class="imgsmallposter ${sickrage.srConfig.HOME_LAYOUT}">
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}" title="${curShow.name}">
-                    <img src="${srRoot}${showImage(curShow.indexerid, 'poster_thumb')}" class="${sickrage.srCore.CONFIG.HOME_LAYOUT}"
+                    <img src="${srRoot}${showImage(curShow.indexerid, 'poster_thumb')}" class="${sickrage.srConfig.HOME_LAYOUT}"
                          alt="${curShow.indexerid}"/>
                 </a>
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}" style="vertical-align: middle;">${curShow.name}</a>
             </div>
         </td>
-        % elif sickrage.srCore.CONFIG.HOME_LAYOUT == 'banner':
+        % elif sickrage.srConfig.HOME_LAYOUT == 'banner':
         <td>
             <span style="display: none;">${curShow.name}</span>
-            <div class="imgbanner ${sickrage.srCore.CONFIG.HOME_LAYOUT}">
+            <div class="imgbanner ${sickrage.srConfig.HOME_LAYOUT}">
                 <a href="${srRoot}/home/displayShow?show=${curShow.indexerid}">
-                    <img src="${srRoot}${showImage(curShow.indexerid, 'banner')}" class="${sickrage.srCore.CONFIG.HOME_LAYOUT}"
+                    <img src="${srRoot}${showImage(curShow.indexerid, 'banner')}" class="${sickrage.srConfig.HOME_LAYOUT}"
                          alt="${curShow.indexerid}" title="${curShow.name}"/>
                 </a>
             </div>
         </td>
-        % elif sickrage.srCore.CONFIG.HOME_LAYOUT == 'simple':
+        % elif sickrage.srConfig.HOME_LAYOUT == 'simple':
         <td class="tvShow"><a href="${srRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a></td>
     % endif
 
-        % if sickrage.srCore.CONFIG.HOME_LAYOUT != 'simple':
+        % if sickrage.srConfig.HOME_LAYOUT != 'simple':
         <td align="center">
         % if curShow.network:
             <span title="${curShow.network}" class="hidden-print"><img id="network" width="54" height="27" src="${srRoot}${showImage(curShow.indexerid, 'network')}" alt="${curShow.network}" title="${curShow.network}" /></span>

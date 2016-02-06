@@ -53,7 +53,7 @@ class PPBasicTests(SiCKRAGETestDBCase):
         super(PPBasicTests, self).tearDown()
 
     def test_process(self):
-        show = TVShow(1, 3, dbload=False)
+        show = TVShow(1, 3)
         show.name = SHOWNAME
         show.location = SHOWDIR
         show.saveToDB()

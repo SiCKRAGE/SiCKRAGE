@@ -71,11 +71,11 @@ class BLUETIGERSProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srCore.LOGGER.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("Unable to connect to provider")
             return False
 
         if not re.search('/account-logout.php', response):
-            sickrage.srCore.LOGGER.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -90,11 +90,11 @@ class BLUETIGERSProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srCore.LOGGER.debug("Search Mode: %s" % mode)
+            sickrage.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srCore.LOGGER.debug("Search string: %s " % search_string)
+                    sickrage.srLogger.debug("Search string: %s " % search_string)
 
                 self.search_params[b'search'] = search_string
 
@@ -107,7 +107,7 @@ class BLUETIGERSProvider(TorrentProvider):
                         result_linkz = html.findAll('a', href=re.compile("torrents-details"))
 
                         if not result_linkz:
-                            sickrage.srCore.LOGGER.debug("Data returned from provider do not contains any torrent")
+                            sickrage.srLogger.debug("Data returned from provider do not contains any torrent")
                             continue
 
                         if result_linkz:
@@ -131,12 +131,12 @@ class BLUETIGERSProvider(TorrentProvider):
 
                                 item = title, download_url, size, seeders, leechers
                                 if mode is not 'RSS':
-                                    sickrage.srCore.LOGGER.debug("Found result: %s " % title)
+                                    sickrage.srLogger.debug("Found result: %s " % title)
 
                                 items[mode].append(item)
 
                 except Exception as e:
-                    sickrage.srCore.LOGGER.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                    sickrage.srLogger.error("Failed parsing provider. Traceback: %s" % traceback.format_exc())
 
             # For each search mode sort all the items by seeders if available
             items[mode].sort(key=lambda tup: tup[3], reverse=True)

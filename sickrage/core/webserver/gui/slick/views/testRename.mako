@@ -24,12 +24,12 @@
 
 <h3>Preview of the proposed name changes</h3>
 <blockquote>
-    % if int(show.air_by_date) == 1 and sickrage.srCore.CONFIG.NAMING_CUSTOM_ABD:
-    ${sickrage.srCore.CONFIG.NAMING_ABD_PATTERN}
-    % elif int(show.sports) == 1 and sickrage.srCore.CONFIG.NAMING_CUSTOM_SPORTS:
-    ${sickrage.srCore.CONFIG.NAMING_SPORTS_PATTERN}
+    % if int(show.air_by_date) == 1 and sickrage.srConfig.NAMING_CUSTOM_ABD:
+    ${sickrage.srConfig.NAMING_ABD_PATTERN}
+    % elif int(show.sports) == 1 and sickrage.srConfig.NAMING_CUSTOM_SPORTS:
+    ${sickrage.srConfig.NAMING_SPORTS_PATTERN}
 % else:
-    ${sickrage.srCore.CONFIG.NAMING_PATTERN}
+    ${sickrage.srConfig.NAMING_PATTERN}
 % endif
 </blockquote>
 

@@ -30,11 +30,11 @@ def getShowImage(url, imgNum=None):
     if imgNum:
         tempURL = url.split('-')[0] + "-" + str(imgNum) + ".jpg"
 
-    sickrage.srCore.LOGGER.debug("Fetching image from " + tempURL)
+    sickrage.srLogger.debug("Fetching image from " + tempURL)
 
     image_data = getURL(tempURL, needBytes=True)
     if image_data is None:
-        sickrage.srCore.LOGGER.warning("There was an error trying to retrieve the image, aborting")
+        sickrage.srLogger.warning("There was an error trying to retrieve the image, aborting")
         return
 
     return image_data

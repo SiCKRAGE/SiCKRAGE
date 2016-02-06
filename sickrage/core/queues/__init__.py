@@ -48,12 +48,12 @@ class GenericQueue(object):
 
     def pause(self):
         """Pauses this queue"""
-        sickrage.srCore.LOGGER.info("Pausing queue")
+        sickrage.srLogger.info("Pausing queue")
         self.min_priority = 999999999999
 
     def unpause(self):
         """Unpauses this queue"""
-        sickrage.srCore.LOGGER.info("Unpausing queue")
+        sickrage.srLogger.info("Unpausing queue")
         self.min_priority = 0
 
     def add_item(self, item):

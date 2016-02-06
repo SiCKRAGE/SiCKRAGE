@@ -460,7 +460,7 @@ def xem_refresh(indexer_id, indexer, force=False):
         refresh = True
 
     if refresh or force:
-        sickrage.srCore.LOGGER.debug(
+        sickrage.srLogger.debug(
             'Looking up XEM scene mapping for show %s on %s' % (indexer_id, sickrage.srCore.INDEXER_API(indexer).name))
 
         # mark refreshed
@@ -483,7 +483,7 @@ def xem_refresh(indexer_id, indexer, force=False):
 
             parsedJSON = getURL(url, session=xem_session, json=True)
             if not ((parsedJSON and 'result' in parsedJSON) and 'success' in parsedJSON[b'result']):
-                sickrage.srCore.LOGGER.info(
+                sickrage.srLogger.info(
                     'No XEM data for show "%s on %s"' % (indexer_id, sickrage.srCore.INDEXER_API(indexer).name,))
                 return
 
@@ -514,11 +514,11 @@ def xem_refresh(indexer_id, indexer, force=False):
                 main_db.MainDB().mass_action(cl)
 
         except Exception as e:
-            sickrage.srCore.LOGGER.warning(
+            sickrage.srLogger.warning(
                 "Exception while refreshing XEM data for show " + str(
                     indexer_id) + " on " + sickrage.srCore.INDEXER_API(
                     indexer).name + ": {}".format(e.message))
-            sickrage.srCore.LOGGER.debug(traceback.format_exc())
+            sickrage.srLogger.debug(traceback.format_exc())
 
 
 def fix_xem_numbering(indexer_id, indexer):
@@ -547,7 +547,7 @@ def fix_xem_numbering(indexer_id, indexer):
     update_scene_episode = False
     update_scene_absolute_number = False
 
-    sickrage.srCore.LOGGER.debug(
+    sickrage.srLogger.debug(
         'Fixing any XEM scene mapping issues for show %s on %s' % (
         indexer_id, sickrage.srCore.INDEXER_API(indexer).name))
 
@@ -661,10 +661,10 @@ def get_absolute_number_from_season_and_episode(show, season, episode):
 
         if len(sqlResults) == 1:
             absolute_number = int(sqlResults[0][b"absolute_number"])
-            sickrage.srCore.LOGGER.debug(
+            sickrage.srLogger.debug(
                 "Found absolute number %s for show %s S%02dE%02d" % (absolute_number, show.name, season, episode))
         else:
-            sickrage.srCore.LOGGER.debug(
+            sickrage.srLogger.debug(
                 "No entries for absolute number for show %s S%02dE%02d" % (show.name, season, episode))
 
     return absolute_number

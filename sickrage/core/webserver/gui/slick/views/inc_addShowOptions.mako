@@ -4,13 +4,13 @@
     from core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
     from core.searchers import subtitle_searcher
 %>
-% if sickrage.srCore.CONFIG.USE_SUBTITLES:
+% if sickrage.srConfig.USE_SUBTITLES:
         <br><div class="field-pair">
             <label for="subtitles" class="clearfix">
                 <span class="component-title">Subtitles</span>
                 <span class="component-desc">
                      <input type="checkbox" name="subtitles"
-                            id="subtitles" ${('', 'checked="checked"')[bool(sickrage.srCore.CONFIG.SUBTITLES_DEFAULT)]} />
+                            id="subtitles" ${('', 'checked="checked"')[bool(sickrage.srConfig.SUBTITLES_DEFAULT)]} />
                     <p>Download subtitles for this show?</p>
                 </span>
             </label>
@@ -23,7 +23,7 @@
                 <span class="component-desc">
                     <select name="defaultStatus" id="statusSelect" class="form-control form-control-inline input-sm">
                     % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                        <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.STATUS_DEFAULT == curStatus]}>${statusStrings[curStatus]}</option>
+                        <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srConfig.STATUS_DEFAULT == curStatus]}>${statusStrings[curStatus]}</option>
                     % endfor
                     </select>
                 </span>
@@ -35,7 +35,7 @@
                 <span class="component-desc">
                     <select name="defaultStatusAfter" id="statusSelectAfter" class="form-control form-control-inline input-sm">
                     % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                        <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srCore.CONFIG.STATUS_DEFAULT_AFTER == curStatus]}>${statusStrings[curStatus]}</option>
+                        <option value="${curStatus}" ${('', 'selected="selected"')[sickrage.srConfig.STATUS_DEFAULT_AFTER == curStatus]}>${statusStrings[curStatus]}</option>
                     % endfor
                     </select>
                 </span>
@@ -46,7 +46,7 @@
                 <span class="component-title">Flatten Folders</span>
                 <span class="component-desc">
                     <input class="cb" type="checkbox" name="flatten_folders"
-                           id="flatten_folders" ${('', 'checked="checked"')[bool(sickrage.srCore.CONFIG.FLATTEN_FOLDERS_DEFAULT)]}/>
+                           id="flatten_folders" ${('', 'checked="checked"')[bool(sickrage.srConfig.FLATTEN_FOLDERS_DEFAULT)]}/>
                     <p>Disregard sub-folders?</p>
                 </span>
             </label>
@@ -58,7 +58,7 @@
                 <span class="component-title">Anime</span>
                 <span class="component-desc">
                     <input type="checkbox" name="anime"
-                           id="anime" ${('', 'checked="checked"')[bool(sickrage.srCore.CONFIG.ANIME_DEFAULT)]} />
+                           id="anime" ${('', 'checked="checked"')[bool(sickrage.srConfig.ANIME_DEFAULT)]} />
                     <p>Is this show an Anime?<p>
                 </span>
             </label>
@@ -70,7 +70,7 @@
                 <span class="component-title">Scene Numbering</span>
                 <span class="component-desc">
                     <input type="checkbox" name="scene"
-                           id="scene" ${('', 'checked="checked"')[bool(sickrage.srCore.CONFIG.SCENE_DEFAULT)]} />
+                           id="scene" ${('', 'checked="checked"')[bool(sickrage.srConfig.SCENE_DEFAULT)]} />
                     <p>Is this show scene numbered?</p>
                 </span>
             </label>
@@ -81,13 +81,13 @@
                 <span class="component-title">Archive first match</span>
                 <span class="component-desc">
                     <input type="checkbox" name="archive"
-                           id="archive" ${('', 'checked="checked"')[bool(sickrage.srCore.CONFIG.ARCHIVE_DEFAULT)]} />
+                           id="archive" ${('', 'checked="checked"')[bool(sickrage.srConfig.ARCHIVE_DEFAULT)]} />
                     <p>Archive episodes after downloading first match?</p>
                 </span>
             </label>
         </div>
 
-<% qualities = Quality.splitQuality(sickrage.srCore.CONFIG.QUALITY_DEFAULT) %>
+<% qualities = Quality.splitQuality(sickrage.srConfig.QUALITY_DEFAULT) %>
         <% anyQualities = qualities[0] %>
         <% bestQualities = qualities[1] %>
         <%include file="/inc_qualityChooser.mako"/>

@@ -39,7 +39,7 @@ class XEMBasicTests(SiCKRAGETestDBCase):
 
         for sqlShow in sqlResults:
             try:
-                curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]), dbload=False)
+                curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
                 curShow.saveToDB()
                 curShow.loadFromDB(skipNFO=True)
                 sickrage.srCore.SHOWLIST.append(curShow)
@@ -55,7 +55,7 @@ class XEMBasicTests(SiCKRAGETestDBCase):
 
         for sqlShow in sqlResults:
             try:
-                curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]), dbload=False)
+                curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
                 curShow.saveToDB()
                 curShow.loadFromDB(skipNFO=True)
                 sickrage.srCore.SHOWLIST.append(curShow)

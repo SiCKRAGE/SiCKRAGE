@@ -60,11 +60,11 @@ class SpeedCDProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srCore.LOGGER.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("Unable to connect to provider")
             return False
 
         if re.search('Incorrect username or Password. Please try again.', response):
-            sickrage.srCore.LOGGER.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -78,11 +78,11 @@ class SpeedCDProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srCore.LOGGER.debug("Search Mode: %s" % mode)
+            sickrage.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srCore.LOGGER.debug("Search string: %s " % search_string)
+                    sickrage.srLogger.debug("Search string: %s " % search_string)
 
                 search_string = '+'.join(search_string.split())
 
@@ -116,14 +116,14 @@ class SpeedCDProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            sickrage.srCore.LOGGER.debug(
+                            sickrage.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue
 
                     item = title, download_url, size, seeders, leechers
                     if mode is not 'RSS':
-                        sickrage.srCore.LOGGER.debug("Found result: %s " % title)
+                        sickrage.srLogger.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 

@@ -23,13 +23,19 @@ from __future__ import print_function, unicode_literals
 import os
 import os.path
 import socket
+import sys
 import threading
 import unittest
 
 from tornado.ioloop import IOLoop
 
+# add sickrage module to python system path
+PROG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'sickrage'))
+if PROG_DIR not in sys.path:
+    sys.path.insert(0, PROG_DIR)
+
 import sickrage
-from core import encodingInit, srLogger
+from core import srLogger
 from core import webserver
 from core.caches import tv_cache
 from core.caches.name_cache import srNameCache
@@ -79,6 +85,7 @@ socket.setdefaulttimeout(30)
 TESTALL = False
 TESTSKIPPED = ['test_issue_submitter', 'test_ssl_sni']
 TESTDIR = os.path.abspath(os.path.dirname(__file__))
+TESTCONFIGNAME = "config.ini"
 TESTDBNAME = "sickrage.db"
 TESTCACHEDBNAME = "cache.db"
 TESTFAILEDDBNAME = "failed.db"
@@ -97,13 +104,13 @@ SHOWDIR = os.path.join(TESTDIR, SHOWNAME + " final")
 # prepare env functions
 # =================
 def createTestLogFolder():
-    if not os.path.isdir(sickrage.srCore.CONFIG.LOG_DIR):
-        os.mkdir(sickrage.srCore.CONFIG.LOG_DIR)
+    if not os.path.isdir(sickrage.srConfig.LOG_DIR):
+        os.mkdir(sickrage.srConfig.LOG_DIR)
 
 
 def createTestCacheFolder():
-    if not os.path.isdir(sickrage.srCore.CONFIG.CACHE_DIR):
-        os.mkdir(sickrage.srCore.CONFIG.CACHE_DIR)
+    if not os.path.isdir(sickrage.srConfig.CACHE_DIR):
+        os.mkdir(sickrage.srConfig.CACHE_DIR)
 
 
 # =================
@@ -112,62 +119,57 @@ def createTestCacheFolder():
 import core
 
 threading.Thread(None, IOLoop.instance().start).start()
+sickrage.srCore = core.srCore(TESTCONFIGNAME, PROG_DIR, TESTDIR)
 
-sickrage.srCore.DATA_DIR = TESTDIR
-CONFIG_FILE = os.path.join(sickrage.srCore.DATA_DIR, "config.ini")
-sickrage.srCore.PROG_DIR = os.path.abspath(os.path.join(TESTDIR, os.pardir, 'sickrage'))
-sickrage.srCore = core.Core(CONFIG_FILE, sickrage.srCore.DATA_DIR)
-sickrage.srCore.CONFIG.SYS_ENCODING = encodingInit()
-sickrage.srCore.CONFIG.SSL_VERIFY = False
-sickrage.srCore.CONFIG.PROXY_SETTING = ''
+sickrage.srConfig.load_config()
+sickrage.srConfig.SSL_VERIFY = False
+sickrage.srConfig.PROXY_SETTING = ''
 sickrage.srCore.SHOWLIST = []
 
-sickrage.srCore.CONFIG.CACHE_DIR = os.path.join(TESTDIR, 'cache')
+sickrage.srConfig.CACHE_DIR = os.path.join(TESTDIR, 'cache')
 createTestCacheFolder()
 
-sickrage.srCore.CONFIG.LOG_DIR = os.path.join(TESTDIR, 'Logs')
+sickrage.srConfig.LOG_DIR = os.path.join(TESTDIR, 'Logs')
 createTestLogFolder()
 
-sickrage.srCore.CONFIG.IGNORE_WORDS = 'german, french, core2hd, dutch, swedish, reenc, MrLss'
-sickrage.srCore.CONFIG.QUALITY_DEFAULT = 4  # hdtv
-sickrage.srCore.CONFIG.FLATTEN_FOLDERS_DEFAULT = 0
+sickrage.srConfig.IGNORE_WORDS = 'german, french, core2hd, dutch, swedish, reenc, MrLss'
+sickrage.srConfig.QUALITY_DEFAULT = 4  # hdtv
+sickrage.srConfig.FLATTEN_FOLDERS_DEFAULT = 0
 
-sickrage.srCore.CONFIG.NAMING_PATTERN = ''
-sickrage.srCore.CONFIG.NAMING_ABD_PATTERN = ''
-sickrage.srCore.CONFIG.NAMING_SPORTS_PATTERN = ''
-sickrage.srCore.CONFIG.NAMING_MULTI_EP = 1
+sickrage.srConfig.NAMING_PATTERN = ''
+sickrage.srConfig.NAMING_ABD_PATTERN = ''
+sickrage.srConfig.NAMING_SPORTS_PATTERN = ''
+sickrage.srConfig.NAMING_MULTI_EP = 1
 
-sickrage.srCore.CONFIG.PROVIDER_ORDER = ["sick_beard_index"]
+sickrage.srConfig.PROVIDER_ORDER = ["sick_beard_index"]
 sickrage.srCore.newznabProviderList = NewznabProvider.getProviderList(NewznabProvider.getDefaultProviders())
-sickrage.srCore.torrentRssProviderList = TorrentRssProvider.getProviderList(
-    TorrentRssProvider.getDefaultProviders())
+sickrage.srCore.torrentRssProviderList = TorrentRssProvider.getProviderList(TorrentRssProvider.getDefaultProviders())
 sickrage.srCore.metadataProviderDict = get_metadata_generator_dict()
-sickrage.srCore.CONFIG.GUI_NAME = "slick"
-sickrage.srCore.CONFIG.THEME_NAME = "dark"
-sickrage.srCore.CONFIG.GUI_DIR = os.path.join(sickrage.srCore.PROG_DIR, 'core', 'webserver', 'gui',
-                                              sickrage.srCore.CONFIG.GUI_NAME)
-sickrage.srCore.CONFIG.TV_DOWNLOAD_DIR = FILEDIR
-sickrage.srCore.CONFIG.HTTPS_CERT = "server.crt"
-sickrage.srCore.CONFIG.HTTPS_KEY = "server.key"
-sickrage.srCore.CONFIG.WEB_USERNAME = "sickrage"
-sickrage.srCore.CONFIG.WEB_PASSWORD = "sickrage"
-sickrage.srCore.CONFIG.WEB_COOKIE_SECRET = "sickrage"
-sickrage.srCore.CONFIG.WEB_ROOT = ""
+sickrage.srConfig.GUI_NAME = "slick"
+sickrage.srConfig.THEME_NAME = "dark"
+sickrage.srConfig.GUI_DIR = os.path.join(sickrage.srCore.PROG_DIR, 'core', 'webserver', 'gui',
+                                              sickrage.srConfig.GUI_NAME)
+sickrage.srConfig.TV_DOWNLOAD_DIR = FILEDIR
+sickrage.srConfig.HTTPS_CERT = "server.crt"
+sickrage.srConfig.HTTPS_KEY = "server.key"
+sickrage.srConfig.WEB_USERNAME = "sickrage"
+sickrage.srConfig.WEB_PASSWORD = "sickrage"
+sickrage.srConfig.WEB_COOKIE_SECRET = "sickrage"
+sickrage.srConfig.WEB_ROOT = ""
 sickrage.srCore.WEBSERVER = None
-sickrage.srCore.CONFIG.CPU_PRESET = "NORMAL"
-sickrage.srCore.CONFIG.EXTRA_SCRIPTS = []
+sickrage.srConfig.CPU_PRESET = "NORMAL"
+sickrage.srConfig.EXTRA_SCRIPTS = []
 
-sickrage.srCore.CONFIG.LOG_FILE = os.path.join(sickrage.srCore.CONFIG.LOG_DIR, 'sickrage.log')
-sickrage.srCore.CONFIG.LOG_NR = 5
-sickrage.srCore.CONFIG.LOG_SIZE = 1048576
+sickrage.srConfig.LOG_FILE = os.path.join(sickrage.srConfig.LOG_DIR, 'sickrage.log')
+sickrage.srConfig.LOG_NR = 5
+sickrage.srConfig.LOG_SIZE = 1048576
 
-LOGGER = srLogger(logFile=sickrage.srCore.CONFIG.LOG_FILE, logSize=sickrage.srCore.CONFIG.LOG_SIZE,
-                  logNr=sickrage.srCore.CONFIG.LOG_NR,
-                  fileLogging=sickrage.srCore.CONFIG.LOG_DIR, debugLogging=True)
+sickrage.srCore.LOGGER = srLogger(logFile=sickrage.srConfig.LOG_FILE, logSize=sickrage.srConfig.LOG_SIZE,
+                                  logNr=sickrage.srConfig.LOG_NR,
+                                  fileLogging=sickrage.srConfig.LOG_DIR, debugLogging=True)
 
-sickrage.srCore.CONFIG.GIT_USERNAME = sickrage.srCore.CONFIG.check_setting_str('General', 'git_username', '')
-sickrage.srCore.CONFIG.GIT_PASSWORD = sickrage.srCore.CONFIG.check_setting_str('General', 'git_password', '',
-                                                                               censor_log=True)
+sickrage.srConfig.GIT_USERNAME = sickrage.srConfig.check_setting_str('General', 'git_username', '')
+sickrage.srConfig.GIT_PASSWORD = sickrage.srConfig.check_setting_str('General', 'git_password', '')
 
 sickrage.srCore.providersDict = {
     GenericProvider.NZB: {p.id: p for p in NZBProvider.getProviderList()},
@@ -207,13 +209,13 @@ sickrage.srCore.NOTIFIERS = AttrDict(
 # =================
 # dummy functions
 # =================
-def _dummy_saveConfig(cfgfile=sickrage.srCore.CONFIG_FILE):
+def _dummy_saveConfig(cfgfile=sickrage.srConfig.CONFIG_FILE):
     return True
 
 
 # this overrides the sickrage save_config which gets called during a db upgrade
 sickrage.srCore.save_all = _dummy_saveConfig
-sickrage.srCore.CONFIG.save_config = _dummy_saveConfig
+sickrage.srConfig.save_config = _dummy_saveConfig
 
 
 # the real one tries to contact tvdb just stop it from getting more info on the ep
@@ -320,7 +322,7 @@ def setUp_test_db(force=False):
         failed_db.FailedDB().InitialSchema().upgrade()
 
         # populate scene exceiptions table
-        #retrieve_exceptions(False, False)
+        # retrieve_exceptions(False, False)
 
         TESTDB_INITALIZED = True
 

@@ -21,8 +21,8 @@
         indexer = 0
         if curDir[b'existing_info'][0]:
             indexer = curDir[b'existing_info'][2]
-        elif sickrage.srCore.CONFIG.INDEXER_DEFAULT > 0:
-            indexer = sickrage.srCore.CONFIG.INDEXER_DEFAULT
+        elif sickrage.srConfig.INDEXER_DEFAULT > 0:
+            indexer = sickrage.srConfig.INDEXER_DEFAULT
     %>
 
     <tr>

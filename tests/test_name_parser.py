@@ -30,7 +30,7 @@ from core.nameparser import ParseResult, NameParser, InvalidNameException, Inval
 from core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
-sickrage.srCore.CONFIG.SYS_ENCODING = 'UTF-8'
+sickrage.srCore.SYS_ENCODING = 'UTF-8'
 
 DEBUG = VERBOSE = False
 
@@ -225,7 +225,7 @@ class UnicodeTests(SiCKRAGETestDBCase):
     def __init__(self, something):
         super(UnicodeTests, self).__init__(something)
         self.setUp()
-        self.show = TVShow(1, 1, 'en', dbload=False)
+        self.show = TVShow(1, 1, 'en')
         self.show.name = "The Big Bang Theory"
         self.show.saveToDB()
         self.show.loadFromDB(skipNFO=True)
@@ -296,9 +296,8 @@ class BasicTests(SiCKRAGETestDBCase):
     def __init__(self, something):
         super(BasicTests, self).__init__(something)
         super(BasicTests, self).setUp()
-        self.show = TVShow(1, 1, 'en', dbload=False)
+        self.show = TVShow(1, 1, 'en')
         self.show.saveToDB()
-        self.show.loadFromDB(skipNFO=True)
 
     def _test_names(self, np, section, transform=None, verbose=False):
         if VERBOSE or verbose:

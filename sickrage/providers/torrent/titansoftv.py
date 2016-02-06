@@ -52,7 +52,7 @@ class TitansOfTVProvider(TorrentProvider):
     def _checkAuthFromData(data):
 
         if 'error' in data:
-            sickrage.srCore.LOGGER.warning("Invalid api key. Check your settings")
+            sickrage.srLogger.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -67,13 +67,13 @@ class TitansOfTVProvider(TorrentProvider):
             params.update(search_params)
 
         searchURL = self.url + '?' + urllib.urlencode(params)
-        sickrage.srCore.LOGGER.debug("Search string: %s " % search_params)
-        sickrage.srCore.LOGGER.debug("Search URL: %s" % searchURL)
+        sickrage.srLogger.debug("Search string: %s " % search_params)
+        sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
         parsedJSON = self.getURL(searchURL, json=True)  # do search
 
         if not parsedJSON:
-            sickrage.srCore.LOGGER.debug("No data returned from provider")
+            sickrage.srLogger.debug("No data returned from provider")
             return results
 
         if self._checkAuthFromData(parsedJSON):
@@ -103,7 +103,7 @@ class TitansOfTVProvider(TorrentProvider):
 
                 item = title, download_url, size, seeders, leechers
 
-                sickrage.srCore.LOGGER.debug("Found result: %s " % title)
+                sickrage.srLogger.debug("Found result: %s " % title)
                 results.append(item)
 
         # FIXME SORTING

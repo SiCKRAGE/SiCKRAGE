@@ -75,11 +75,11 @@ class TorrentDayProvider(TorrentProvider):
 
             response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
             if not response:
-                sickrage.srCore.LOGGER.warning("Unable to connect to provider")
+                sickrage.srLogger.warning("Unable to connect to provider")
                 return False
 
             if re.search('You tried too often', response):
-                sickrage.srCore.LOGGER.warning("Too many login access attempts")
+                sickrage.srLogger.warning("Too many login access attempts")
                 return False
 
             try:
@@ -94,7 +94,7 @@ class TorrentDayProvider(TorrentProvider):
             except:
                 pass
 
-            sickrage.srCore.LOGGER.warning("Unable to obtain cookie")
+            sickrage.srLogger.warning("Unable to obtain cookie")
             return False
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
@@ -106,11 +106,11 @@ class TorrentDayProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srCore.LOGGER.debug("Search Mode: %s" % mode)
+            sickrage.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.srCore.LOGGER.debug("Search string: %s " % search_string)
+                    sickrage.srLogger.debug("Search string: %s " % search_string)
 
                 search_string = '+'.join(search_string.split())
 
@@ -122,13 +122,13 @@ class TorrentDayProvider(TorrentProvider):
 
                 parsedJSON = self.getURL(self.urls['search'], post_data=post_data, json=True)
                 if not parsedJSON:
-                    sickrage.srCore.LOGGER.debug("No data returned from provider")
+                    sickrage.srLogger.debug("No data returned from provider")
                     continue
 
                 try:
                     torrents = parsedJSON.get('Fs', [])[0].get('Cn', {}).get('torrents', [])
                 except Exception:
-                    sickrage.srCore.LOGGER.debug("Data returned from provider does not contain any torrents")
+                    sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
                     continue
 
                 for torrent in torrents:
@@ -146,14 +146,14 @@ class TorrentDayProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            sickrage.srCore.LOGGER.debug(
+                            sickrage.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
                                             title, seeders, leechers))
                         continue
 
                     item = title, download_url, size, seeders, leechers
                     if mode is not 'RSS':
-                        sickrage.srCore.LOGGER.debug("Found result: %s " % title)
+                        sickrage.srLogger.debug("Found result: %s " % title)
 
                     items[mode].append(item)
 

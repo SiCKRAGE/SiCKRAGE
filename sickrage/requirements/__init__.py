@@ -34,19 +34,12 @@ def install_pip(path, user=False):
     u = urllib2.urlopen(url)
     with open(file_name, 'wb') as f:
         meta = u.info()
-        file_size = int(meta.getheaders("Content-Length")[0])
-        print("Downloading: %s Bytes: %s" % (file_name, file_size))
-        file_size_dl = 0
         block_sz = 8192
         while True:
             buf = u.read(block_sz)
             if not buf:
                 break
-            file_size_dl += len(buf)
             f.write(buf)
-            status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-            status += chr(8) * (len(status) + 1)
-            print(status),
 
     print("Installing pip ...")
     import subprocess
@@ -59,6 +52,7 @@ def install_pip(path, user=False):
 def install_packages(path, constraints, user=False):
     import pip
     from pip.commands.install import InstallCommand
+    from pip.exceptions import InstallationError
 
     pip_install_cmd = InstallCommand()
 
@@ -68,22 +62,30 @@ def install_packages(path, constraints, user=False):
     except:
         installed = []
 
-    try:
-        # read requirements file
-        with open(path) as f:
-            packages = [x.strip() for x in f.readlines() if x.strip().lower() not in installed]
+    # read requirements file
+    with open(path) as f:
+        packages = [x.strip() for x in f.readlines() if x.strip().lower() not in installed]
 
-        # install requirements packages
-        options = pip_install_cmd.parse_args(['-q', '-I', '-c {}'.format(constraints)])[0]
-        options.use_user_site = user
-        for i, pkg_name in enumerate(packages, start=1):
+    # install requirements packages
+    options = pip_install_cmd.parse_args([])[0]
+    options.use_user_site = user
+    options.constraints = [constraints]
+    options.quiet = 1
+
+    for i, pkg_name in enumerate(packages, start=1):
+        try:
             print(r"[%3.2f%%]::Installing %s package" % (i * 100 / len(packages), pkg_name))
             pip_install_cmd.run(options, [pkg_name])
+        except InstallationError:
+            try:
+                options.ignore_dependencies = True
+                pip_install_cmd.run(options, [pkg_name])
+            except:continue
+        except IndexError:
+            continue
 
-        if len(packages) > 0:
-            return True
-    except KeyboardInterrupt:
-        raise
+    if len(packages) > 0:
+        return True
 
 
 def upgrade_packages(constraints, user=False):
@@ -96,29 +98,38 @@ def upgrade_packages(constraints, user=False):
     pip_install_cmd = InstallCommand()
     pip_list_cmd = ListCommand()
 
+
     while True:
         # list packages that need upgrading
         try:
-            options = pip_list_cmd.parse_args(['--no-cache-dir', '--outdated'])[0]
+            options = pip_list_cmd.parse_args([])[0]
             options.use_user_site = user
+            options.cache_dir = None
+            options.outdated = True
 
             packages = [p.project_name for p, y, _ in pip_list_cmd.find_packages_latest_versions(options)
                         if getattr(p, 'version', 0) != getattr(y, 'public', 0)]
         except:
             packages = []
 
-        install_options = pip_install_cmd.parse_args(['-q', '--upgrade', '--no-cache-dir', '-c {}'.format(constraints)])[0]
-        install_options.use_user_site = user
+        options = pip_install_cmd.parse_args([])[0]
+        options.use_user_site = user
+        options.constraints = [constraints]
+        options.cache_dir = None
+        options.upgrade = True
+        options.quiet = 1
 
         for i, pkg_name in enumerate(packages, start=1):
             try:
                 print(r"[%3.2f%%]::Upgrading %s package" % (i * 100 / len(packages), pkg_name.lower()))
-                pip_install_cmd.run(install_options, [pkg_name])
-            except (IndexError, InstallationError) as e:
-                print("Failed to upgrade package: {}".format(pkg_name))
+                pip_install_cmd.run(options, [pkg_name])
+            except InstallationError:
+                try:
+                    options.ignore_dependencies = True
+                    pip_install_cmd.run(options, [pkg_name])
+                except:continue
+            except IndexError:
                 continue
-            except KeyboardInterrupt:
-                raise
         else:
             break
 
@@ -130,35 +141,29 @@ def install_ssl(path, constraints, user=False):
         urllib3.contrib.pyopenssl.inject_into_urllib3()
         urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST = "MEDIUM"
     except ImportError:
-        return install_packages(path, '-c {}'.format(constraints), user)
+        return install_packages(path, constraints, user)
 
 
 def install_requirements(path, optional=False, ssl=False, user=False):
-    constraints = os.path.join(path, 'constraints.txt')
-
-    need_restart = False
+    constraints = os.path.abspath(os.path.join(path, 'constraints.txt'))
 
     # install ssl packages
     if ssl:
         try:
-            if install_ssl(os.path.join(path, 'ssl.txt'), constraints, user):
+            if install_ssl(os.path.abspath(os.path.join(path, 'ssl.txt')), constraints, user):
                 os.execl(sys.executable, sys.executable, *sys.argv)
         except:
             pass
 
     print("Checking for required SiCKRAGE packages, please stand by ...")
-    need_restart = install_packages(os.path.join(path, 'requirements.txt'), user)
+    install_packages(os.path.abspath(os.path.join(path, 'requirements.txt')), constraints, user)
 
     if optional:
         print("Checking for optional SiCKRAGE packages, please stand by ...")
         try:
-            need_restart = install_packages(os.path.join(path, 'optional.txt'), constraints, user)
+            install_packages(os.path.abspath(os.path.join(path, 'optional.txt')), constraints, user)
         except:
             pass
 
     print("Checking for upgradable SiCKRAGE packages, please stand by ...")
-    need_restart = upgrade_packages(constraints, user)
-
-    # silently restart sickrage if packages where installed or upgraded
-    if need_restart:
-        os.execl(sys.executable, sys.executable, *sys.argv)
+    upgrade_packages(constraints, user)

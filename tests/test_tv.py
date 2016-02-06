@@ -34,14 +34,14 @@ class TVShowTests(SiCKRAGETestDBCase):
         sickrage.srCore.SHOWLIST = []
 
     def test_init_indexerid(self):
-        show = TVShow(1, 0001, "en", dbload=False)
+        show = TVShow(1, 0001, "en")
         show.saveToDB()
         show.loadFromDB(skipNFO=True)
 
         self.assertEqual(show.indexerid, 0001)
 
     def test_change_indexerid(self):
-        show = TVShow(1, 0001, "en", dbload=False)
+        show = TVShow(1, 0001, "en")
         show.name = "show name"
         show.network = "cbs"
         show.genre = "crime"
@@ -57,7 +57,7 @@ class TVShowTests(SiCKRAGETestDBCase):
         self.assertEqual(show.indexerid, 0002)
 
     def test_set_name(self):
-        show = TVShow(1, 0001, "en", dbload=False)
+        show = TVShow(1, 0001, "en")
         show.name = "newName"
         show.saveToDB()
         show.loadFromDB(skipNFO=True)
@@ -70,7 +70,7 @@ class TVEpisodeTests(SiCKRAGETestDBCase):
         sickrage.srCore.SHOWLIST = []
 
     def test_init_empty_db(self):
-        show = TVShow(1, 0001, "en", dbload=False)
+        show = TVShow(1, 0001, "en")
         show.saveToDB()
         show.loadFromDB(skipNFO=True)
 
@@ -87,7 +87,7 @@ class TVTests(SiCKRAGETestDBCase):
         sickrage.srCore.SHOWLIST = []
 
     def test_getEpisode(self):
-        show = TVShow(1, 0001, "en", dbload=False)
+        show = TVShow(1, 0001, "en")
         show.name = "show name"
         show.network = "cbs"
         show.genre = "crime"

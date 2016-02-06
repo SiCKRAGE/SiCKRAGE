@@ -54,8 +54,8 @@ class DownloadStationAPI(GenericClient):
             'uri': result.url
         }
 
-        if sickrage.srCore.CONFIG.TORRENT_PATH:
-            data[b'destination'] = sickrage.srCore.CONFIG.TORRENT_PATH
+        if sickrage.srConfig.TORRENT_PATH:
+            data[b'destination'] = sickrage.srConfig.TORRENT_PATH
         self._request(method='post', data=data)
 
         return self.response.json()['success']
@@ -70,8 +70,8 @@ class DownloadStationAPI(GenericClient):
             '_sid': self.auth
         }
 
-        if sickrage.srCore.CONFIG.TORRENT_PATH:
-            data[b'destination'] = sickrage.srCore.CONFIG.TORRENT_PATH
+        if sickrage.srConfig.TORRENT_PATH:
+            data[b'destination'] = sickrage.srConfig.TORRENT_PATH
         files = {'file': (result.name + '.torrent', result.content)}
         self._request(method='post', data=data, files=files)
 

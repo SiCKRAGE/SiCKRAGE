@@ -39,19 +39,19 @@ class TwitterNotifier(srNotifiers):
     SIGNIN_URL = 'https://api.twitter.com/oauth/authenticate'
 
     def _notify_snatch(self, ep_name):
-        if sickrage.srCore.CONFIG.TWITTER_NOTIFY_ONSNATCH:
+        if sickrage.srConfig.TWITTER_NOTIFY_ONSNATCH:
             self._notifyTwitter(notifyStrings[NOTIFY_SNATCH] + ': ' + ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.srCore.CONFIG.TWITTER_NOTIFY_ONDOWNLOAD:
+        if sickrage.srConfig.TWITTER_NOTIFY_ONDOWNLOAD:
             self._notifyTwitter(notifyStrings[NOTIFY_DOWNLOAD] + ': ' + ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.srCore.CONFIG.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.srConfig.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyTwitter(notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.srCore.CONFIG.USE_TWITTER:
+        if sickrage.srConfig.USE_TWITTER:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._notifyTwitter(title + " - " + update_text + new_version)
@@ -65,69 +65,69 @@ class TwitterNotifier(srNotifiers):
         oauth_consumer = oauth2.Consumer(key=self.consumer_key, secret=self.consumer_secret)
         oauth_client = oauth2.Client(oauth_consumer)
 
-        sickrage.srCore.LOGGER.debug('Requesting temp token from Twitter')
+        sickrage.srLogger.debug('Requesting temp token from Twitter')
 
         resp, content = oauth_client.request(self.REQUEST_TOKEN_URL, 'GET')
 
         if resp[b'status'] != '200':
-            sickrage.srCore.LOGGER.error('Invalid response from Twitter requesting temp token: %s' % resp[b'status'])
+            sickrage.srLogger.error('Invalid response from Twitter requesting temp token: %s' % resp[b'status'])
         else:
             request_token = dict(parse_qsl(content))
 
-            sickrage.srCore.CONFIG.TWITTER_USERNAME = request_token[b'oauth_token']
-            sickrage.srCore.CONFIG.TWITTER_PASSWORD = request_token[b'oauth_token_secret']
+            sickrage.srConfig.TWITTER_USERNAME = request_token[b'oauth_token']
+            sickrage.srConfig.TWITTER_PASSWORD = request_token[b'oauth_token_secret']
 
             return self.AUTHORIZATION_URL + "?oauth_token=" + request_token[b'oauth_token']
 
     def _get_credentials(self, key):
         request_token = {}
 
-        request_token[b'oauth_token'] = sickrage.srCore.CONFIG.TWITTER_USERNAME
-        request_token[b'oauth_token_secret'] = sickrage.srCore.CONFIG.TWITTER_PASSWORD
+        request_token[b'oauth_token'] = sickrage.srConfig.TWITTER_USERNAME
+        request_token[b'oauth_token_secret'] = sickrage.srConfig.TWITTER_PASSWORD
         request_token[b'oauth_callback_confirmed'] = 'true'
 
         token = oauth2.Token(request_token[b'oauth_token'], request_token[b'oauth_token_secret'])
         token.set_verifier(key)
 
-        sickrage.srCore.LOGGER.debug('Generating and signing request for an access token using key ' + key)
+        sickrage.srLogger.debug('Generating and signing request for an access token using key ' + key)
 
         signature_method_hmac_sha1 = oauth2.SignatureMethod_HMAC_SHA1()  # @UnusedVariable
         oauth_consumer = oauth2.Consumer(key=self.consumer_key, secret=self.consumer_secret)
-        sickrage.srCore.LOGGER.debug('oauth_consumer: ' + str(oauth_consumer))
+        sickrage.srLogger.debug('oauth_consumer: ' + str(oauth_consumer))
         oauth_client = oauth2.Client(oauth_consumer, token)
-        sickrage.srCore.LOGGER.debug('oauth_client: ' + str(oauth_client))
+        sickrage.srLogger.debug('oauth_client: ' + str(oauth_client))
         resp, content = oauth_client.request(self.ACCESS_TOKEN_URL, method='POST', body='oauth_verifier=%s' % key)
-        sickrage.srCore.LOGGER.debug('resp, content: ' + str(resp) + ',' + str(content))
+        sickrage.srLogger.debug('resp, content: ' + str(resp) + ',' + str(content))
 
         access_token = dict(parse_qsl(content))
-        sickrage.srCore.LOGGER.debug('access_token: ' + str(access_token))
+        sickrage.srLogger.debug('access_token: ' + str(access_token))
 
-        sickrage.srCore.LOGGER.debug('resp[status] = ' + str(resp[b'status']))
+        sickrage.srLogger.debug('resp[status] = ' + str(resp[b'status']))
         if resp[b'status'] != '200':
-            sickrage.srCore.LOGGER.error('The request for a token with did not succeed: ' + str(resp[b'status']))
+            sickrage.srLogger.error('The request for a token with did not succeed: ' + str(resp[b'status']))
             return False
         else:
-            sickrage.srCore.LOGGER.debug('Your Twitter Access Token key: %s' % access_token[b'oauth_token'])
-            sickrage.srCore.LOGGER.debug('Access Token secret: %s' % access_token[b'oauth_token_secret'])
-            sickrage.srCore.CONFIG.TWITTER_USERNAME = access_token[b'oauth_token']
-            sickrage.srCore.CONFIG.TWITTER_PASSWORD = access_token[b'oauth_token_secret']
+            sickrage.srLogger.debug('Your Twitter Access Token key: %s' % access_token[b'oauth_token'])
+            sickrage.srLogger.debug('Access Token secret: %s' % access_token[b'oauth_token_secret'])
+            sickrage.srConfig.TWITTER_USERNAME = access_token[b'oauth_token']
+            sickrage.srConfig.TWITTER_PASSWORD = access_token[b'oauth_token_secret']
             return True
 
     def _send_tweet(self, message=None):
 
         username = self.consumer_key
         password = self.consumer_secret
-        access_token_key = sickrage.srCore.CONFIG.TWITTER_USERNAME
-        access_token_secret = sickrage.srCore.CONFIG.TWITTER_PASSWORD
+        access_token_key = sickrage.srConfig.TWITTER_USERNAME
+        access_token_secret = sickrage.srConfig.TWITTER_PASSWORD
 
-        sickrage.srCore.LOGGER.debug("Sending tweet: " + message)
+        sickrage.srLogger.debug("Sending tweet: " + message)
 
         api = twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
             api.PostUpdate(message.encode('utf8')[:139])
         except Exception as e:
-            sickrage.srCore.LOGGER.error("Error Sending Tweet: {}".format(e.message))
+            sickrage.srLogger.error("Error Sending Tweet: {}".format(e.message))
             return False
 
         return True
@@ -136,29 +136,29 @@ class TwitterNotifier(srNotifiers):
 
         username = self.consumer_key
         password = self.consumer_secret
-        dmdest = sickrage.srCore.CONFIG.TWITTER_DMTO
-        access_token_key = sickrage.srCore.CONFIG.TWITTER_USERNAME
-        access_token_secret = sickrage.srCore.CONFIG.TWITTER_PASSWORD
+        dmdest = sickrage.srConfig.TWITTER_DMTO
+        access_token_key = sickrage.srConfig.TWITTER_USERNAME
+        access_token_secret = sickrage.srConfig.TWITTER_PASSWORD
 
-        sickrage.srCore.LOGGER.debug("Sending DM: " + dmdest + " " + message)
+        sickrage.srLogger.debug("Sending DM: " + dmdest + " " + message)
 
         api = twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
             api.PostDirectMessage(dmdest, message.encode('utf8')[:139])
         except Exception as e:
-            sickrage.srCore.LOGGER.error("Error Sending Tweet (DM): {}".format(e.message))
+            sickrage.srLogger.error("Error Sending Tweet (DM): {}".format(e.message))
             return False
 
         return True
 
     def _notifyTwitter(self, message='', force=False):
-        prefix = sickrage.srCore.CONFIG.TWITTER_PREFIX
+        prefix = sickrage.srConfig.TWITTER_PREFIX
 
-        if not sickrage.srCore.CONFIG.USE_TWITTER and not force:
+        if not sickrage.srConfig.USE_TWITTER and not force:
             return False
 
-        if sickrage.srCore.CONFIG.TWITTER_USEDM and sickrage.srCore.CONFIG.TWITTER_DMTO:
+        if sickrage.srConfig.TWITTER_USEDM and sickrage.srConfig.TWITTER_DMTO:
             return self._send_dm(prefix + ": " + message)
         else:
             return self._send_tweet(prefix + ": " + message)

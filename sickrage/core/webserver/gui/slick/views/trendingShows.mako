@@ -9,7 +9,7 @@
     from core.helpers import anon_url, srdatetime
 %>
 <%block name="metas">
-    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srCore.CONFIG.SORT_ARTICLE}">
+    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srConfig.SORT_ARTICLE}">
 </%block>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/trendingShows.js"></script>
@@ -18,7 +18,7 @@
 <div id="container">
 % if not trending_shows:
     <div class="trakt_show" style="width:100%; margin-top:20px">
-        <p class="red-text">Trakt API did not return any results, please check your sickrage.srCore.CONFIG.
+        <p class="red-text">Trakt API did not return any results, please check your sickrage.srConfig.
     </div>
 % else:
 % for cur_show in trending_shows:

@@ -42,7 +42,8 @@ from providers import NewznabProvider, TorrentRssProvider, GenericProvider
 
 
 class srConfig(object):
-    def __init__(self):
+    def __init__(self, config_file):
+        self.CONFIG_FILE = os.path.abspath(os.path.join(sickrage.srCore.DATA_DIR, config_file))
         self.CONFIG_VERSION = 7
         self.ENCRYPTION_VERSION = 0
         self.ENCRYPTION_SECRET = None
@@ -66,14 +67,6 @@ class srConfig(object):
         self.NAMING_SEP_TYPE_TEXT = (" - ", "space")
 
         # censored log items
-        self.CENSORED_ITEMS = {}
-        self.SYS_ENCODING = None
-        self.CREATEPID = False
-        self.PIDFILE = None
-        self.DAEMON = None
-        self.DAEMONIZE = False
-        self.NO_RESIZE = False
-        self.PID = None
         self.LOG_DIR = None
         self.LOG_FILE = None
         self.LOG_SIZE = 1048576
@@ -452,7 +445,6 @@ class srConfig(object):
         self.NEWZNAB_DATA = None
         self.TORRENTRSS_DATA = None
         self.SHOWS_RECENT = []
-        self.CENSOREDITEMS = {}
 
         self.DEFAULT_AUTOPOSTPROCESSOR_FREQ = 10
         self.AUTOPOSTPROCESSOR_FREQ = None
@@ -490,7 +482,7 @@ class srConfig(object):
         if os.path.normpath(self.HTTPS_CERT) != os.path.normpath(https_cert):
             if makeDir(os.path.dirname(os.path.abspath(https_cert))):
                 self.HTTPS_CERT = os.path.normpath(https_cert)
-                sickrage.srCore.LOGGER.info("Changed https cert path to " + https_cert)
+                sickrage.srLogger.info("Changed https cert path to " + https_cert)
             else:
                 return False
 
@@ -510,7 +502,7 @@ class srConfig(object):
         if os.path.normpath(self.HTTPS_KEY) != os.path.normpath(https_key):
             if makeDir(os.path.dirname(os.path.abspath(https_key))):
                 self.HTTPS_KEY = os.path.normpath(https_key)
-                sickrage.srCore.LOGGER.info("Changed https key path to " + https_key)
+                sickrage.srLogger.info("Changed https key path to " + https_key)
             else:
                 return False
 
@@ -539,7 +531,7 @@ class srConfig(object):
                                               fileLogging=True,
                                               debugLogging=self.DEBUG)
 
-            sickrage.srCore.LOGGER.info("Initialized new log file in " + self.LOG_DIR)
+            sickrage.srLogger.info("Initialized new log file in " + self.LOG_DIR)
             if self.WEB_LOG != web_log:
                 self.WEB_LOG = web_log
 
@@ -559,7 +551,7 @@ class srConfig(object):
         if os.path.normpath(self.NZB_DIR) != os.path.normpath(nzb_dir):
             if makeDir(nzb_dir):
                 self.NZB_DIR = os.path.normpath(nzb_dir)
-                sickrage.srCore.LOGGER.info("Changed NZB folder to " + nzb_dir)
+                sickrage.srLogger.info("Changed NZB folder to " + nzb_dir)
             else:
                 return False
 
@@ -579,7 +571,7 @@ class srConfig(object):
         if os.path.normpath(self.TORRENT_DIR) != os.path.normpath(torrent_dir):
             if makeDir(torrent_dir):
                 self.TORRENT_DIR = os.path.normpath(torrent_dir)
-                sickrage.srCore.LOGGER.info("Changed torrent folder to " + torrent_dir)
+                sickrage.srLogger.info("Changed torrent folder to " + torrent_dir)
             else:
                 return False
 
@@ -599,7 +591,7 @@ class srConfig(object):
         if os.path.normpath(self.TV_DOWNLOAD_DIR) != os.path.normpath(tv_download_dir):
             if makeDir(tv_download_dir):
                 self.TV_DOWNLOAD_DIR = os.path.normpath(tv_download_dir)
-                sickrage.srCore.LOGGER.info("Changed TV download folder to " + tv_download_dir)
+                sickrage.srLogger.info("Changed TV download folder to " + tv_download_dir)
             else:
                 return False
 
@@ -894,7 +886,7 @@ class srConfig(object):
                 self.CONFIG_OBJ[cfg_name][item_name] = my_val
 
         if not silent:
-            sickrage.srCore.LOGGER.debug(item_name + " -> " + str(my_val))
+            sickrage.srLogger.debug(item_name + " -> " + str(my_val))
 
         return my_val
 
@@ -916,7 +908,7 @@ class srConfig(object):
                 self.CONFIG_OBJ[cfg_name][item_name] = my_val
 
         if not silent:
-            sickrage.srCore.LOGGER.debug(item_name + " -> " + str(my_val))
+            sickrage.srLogger.debug(item_name + " -> " + str(my_val))
 
         return my_val
 
@@ -924,7 +916,7 @@ class srConfig(object):
     # Check_setting_str                                                            #
     ################################################################################
 
-    def check_setting_str(self, cfg_name, item_name, def_val, silent=True, censor_log=False):
+    def check_setting_str(self, cfg_name, item_name, def_val="", silent=True):
         # For passwords you must include the word `password` in the item_name and add `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save_config()
         if bool(item_name.find('password') + 1):
             encryption_version = self.ENCRYPTION_VERSION
@@ -943,25 +935,26 @@ class srConfig(object):
                 self.CONFIG_OBJ[cfg_name] = {}
                 self.CONFIG_OBJ[cfg_name][item_name] = encrypt(my_val, encryption_version)
 
-        if censor_log or (cfg_name, item_name) in self.CENSORED_ITEMS:
-            self.CENSORED_ITEMS[cfg_name, item_name] = my_val
+        censored_regex = re.compile(r"|".join(re.escape(word) for word in ["password", "token", "api"]), re.I)
+        if censored_regex.search(item_name) or (cfg_name, item_name) in sickrage.srLogger.censored_items:
+            sickrage.srLogger.censored_items[cfg_name, item_name] = my_val
 
         if not silent:
             print(item_name + " -> " + my_val)
 
         return my_val
 
-    def load_config(self, config_file):
+    def load_config(self):
         # Make sure we can write to the config file
-        if not os.access(config_file, os.W_OK):
-            if os.path.isfile(config_file):
-                raise SystemExit("Config file '" + config_file + "' must be writeable.")
-            elif not os.access(os.path.dirname(config_file), os.W_OK):
+        if not os.access(self.CONFIG_FILE, os.W_OK):
+            if os.path.isfile(self.CONFIG_FILE):
+                raise SystemExit("Config file '" + self.CONFIG_FILE + "' must be writeable.")
+            elif not os.access(os.path.dirname(self.CONFIG_FILE), os.W_OK):
                 raise SystemExit(
-                    "Config file root dir '" + os.path.dirname(config_file) + "' must be writeable.")
+                    "Config file root dir '" + os.path.dirname(self.CONFIG_FILE) + "' must be writeable.")
 
         # create config object from config file
-        self.CONFIG_OBJ = ConfigObj(config_file)
+        self.CONFIG_OBJ = ConfigObj(self.CONFIG_FILE)
 
         # migrate config settings
         ConfigMigrator(self.CONFIG_OBJ).migrate_config()
@@ -999,7 +992,7 @@ class srConfig(object):
         )
 
         self.ENCRYPTION_SECRET = self.check_setting_str(
-            'General', 'encryption_secret', generateCookieSecret(), censor_log=True
+            'General', 'encryption_secret', generateCookieSecret()
         )
 
         self.DEBUG = bool(self.check_setting_int('General', 'debug', 0))
@@ -1028,7 +1021,7 @@ class srConfig(object):
         self.GIT_PATH = self.check_setting_str('General', 'git_path', '')
         self.GIT_AUTOISSUES = bool(self.check_setting_int('General', 'git_autoissues', 0))
         self.GIT_USERNAME = self.check_setting_str('General', 'git_username', '')
-        self.GIT_PASSWORD = self.check_setting_str('General', 'git_password', '', censor_log=True)
+        self.GIT_PASSWORD = self.check_setting_str('General', 'git_password', '')
         self.GIT_NEWVER = bool(self.check_setting_int('General', 'git_newver', 0))
         self.GIT_RESET = bool(self.check_setting_int('General', 'git_reset', 1))
         self.GIT_REMOTE = self.check_setting_str('General', 'git_remote', 'origin')
@@ -1046,10 +1039,10 @@ class srConfig(object):
         self.WEB_IPV6 = bool(self.check_setting_int('General', 'web_ipv6', 0))
         self.WEB_ROOT = self.check_setting_str('General', 'web_root', '').rstrip("/")
         self.WEB_LOG = bool(self.check_setting_int('General', 'web_log', 0))
-        self.WEB_USERNAME = self.check_setting_str('General', 'web_username', '', censor_log=True)
-        self.WEB_PASSWORD = self.check_setting_str('General', 'web_password', '', censor_log=True)
+        self.WEB_USERNAME = self.check_setting_str('General', 'web_username', '')
+        self.WEB_PASSWORD = self.check_setting_str('General', 'web_password', '')
         self.WEB_COOKIE_SECRET = self.check_setting_str(
-            'General', 'web_cookie_secret', generateCookieSecret(), censor_log=True
+            'General', 'web_cookie_secret', generateCookieSecret()
         )
         self.WEB_USE_GZIP = bool(self.check_setting_int('General', 'web_use_gzip', 1))
 
@@ -1068,7 +1061,7 @@ class srConfig(object):
         self.TRASH_REMOVE_SHOW = bool(self.check_setting_int('General', 'trash_remove_show', 0))
         self.TRASH_ROTATE_LOGS = bool(self.check_setting_int('General', 'trash_rotate_logs', 0))
         self.SORT_ARTICLE = bool(self.check_setting_int('General', 'sort_article', 0))
-        self.API_KEY = self.check_setting_str('General', 'api_key', '', censor_log=True)
+        self.API_KEY = self.check_setting_str('General', 'api_key', '')
 
         if not self.ENABLE_HTTPS:
             self.ENABLE_HTTPS = bool(self.check_setting_int('General', 'enable_https', 0))
@@ -1175,18 +1168,16 @@ class srConfig(object):
         self.ADD_SHOWS_WO_DIR = bool(self.check_setting_int('General', 'add_shows_wo_dir', 0))
 
         self.NZBS = bool(self.check_setting_int('NZBs', 'nzbs', 0))
-        self.NZBS_UID = self.check_setting_str('NZBs', 'nzbs_uid', '', censor_log=True)
-        self.NZBS_HASH = self.check_setting_str('NZBs', 'nzbs_hash', '', censor_log=True)
+        self.NZBS_UID = self.check_setting_str('NZBs', 'nzbs_uid', '')
+        self.NZBS_HASH = self.check_setting_str('NZBs', 'nzbs_hash', '')
 
         self.NEWZBIN = bool(self.check_setting_int('Newzbin', 'newzbin', 0))
-        self.NEWZBIN_USERNAME = self.check_setting_str('Newzbin', 'newzbin_username', '',
-                                                       censor_log=True)
-        self.NEWZBIN_PASSWORD = self.check_setting_str('Newzbin', 'newzbin_password', '',
-                                                       censor_log=True)
+        self.NEWZBIN_USERNAME = self.check_setting_str('Newzbin', 'newzbin_username', '')
+        self.NEWZBIN_PASSWORD = self.check_setting_str('Newzbin', 'newzbin_password', '')
 
-        self.SAB_USERNAME = self.check_setting_str('SABnzbd', 'sab_username', '', censor_log=True)
-        self.SAB_PASSWORD = self.check_setting_str('SABnzbd', 'sab_password', '', censor_log=True)
-        self.SAB_APIKEY = self.check_setting_str('SABnzbd', 'sab_apikey', '', censor_log=True)
+        self.SAB_USERNAME = self.check_setting_str('SABnzbd', 'sab_username', '')
+        self.SAB_PASSWORD = self.check_setting_str('SABnzbd', 'sab_password', '')
+        self.SAB_APIKEY = self.check_setting_str('SABnzbd', 'sab_apikey', '')
         self.SAB_CATEGORY = self.check_setting_str('SABnzbd', 'sab_category', 'tv')
         self.SAB_CATEGORY_BACKLOG = self.check_setting_str('SABnzbd', 'sab_category_backlog',
                                                            self.SAB_CATEGORY)
@@ -1197,10 +1188,8 @@ class srConfig(object):
         self.SAB_HOST = self.check_setting_str('SABnzbd', 'sab_host', '')
         self.SAB_FORCED = bool(self.check_setting_int('SABnzbd', 'sab_forced', 0))
 
-        self.NZBGET_USERNAME = self.check_setting_str('NZBget', 'nzbget_username', 'nzbget',
-                                                      censor_log=True)
-        self.NZBGET_PASSWORD = self.check_setting_str('NZBget', 'nzbget_password', 'tegbzn6789',
-                                                      censor_log=True)
+        self.NZBGET_USERNAME = self.check_setting_str('NZBget', 'nzbget_username', 'nzbget')
+        self.NZBGET_PASSWORD = self.check_setting_str('NZBget', 'nzbget_password', 'tegbzn6789')
         self.NZBGET_CATEGORY = self.check_setting_str('NZBget', 'nzbget_category', 'tv')
         self.NZBGET_CATEGORY_BACKLOG = self.check_setting_str('NZBget', 'nzbget_category_backlog',
                                                               self.NZBGET_CATEGORY)
@@ -1211,10 +1200,8 @@ class srConfig(object):
         self.NZBGET_USE_HTTPS = bool(self.check_setting_int('NZBget', 'nzbget_use_https', 0))
         self.NZBGET_PRIORITY = self.check_setting_int('NZBget', 'nzbget_priority', 100)
 
-        self.TORRENT_USERNAME = self.check_setting_str('TORRENT', 'torrent_username', '',
-                                                       censor_log=True)
-        self.TORRENT_PASSWORD = self.check_setting_str('TORRENT', 'torrent_password', '',
-                                                       censor_log=True)
+        self.TORRENT_USERNAME = self.check_setting_str('TORRENT', 'torrent_username', '')
+        self.TORRENT_PASSWORD = self.check_setting_str('TORRENT', 'torrent_password', '')
         self.TORRENT_HOST = self.check_setting_str('TORRENT', 'torrent_host', '')
         self.TORRENT_PATH = self.check_setting_str('TORRENT', 'torrent_path', '')
         self.TORRENT_SEED_TIME = self.check_setting_int('TORRENT', 'torrent_seed_time', 0)
@@ -1237,8 +1224,8 @@ class srConfig(object):
         self.KODI_UPDATE_FULL = bool(self.check_setting_int('KODI', 'kodi_update_full', 0))
         self.KODI_UPDATE_ONLYFIRST = bool(self.check_setting_int('KODI', 'kodi_update_onlyfirst', 0))
         self.KODI_HOST = self.check_setting_str('KODI', 'kodi_host', '')
-        self.KODI_USERNAME = self.check_setting_str('KODI', 'kodi_username', '', censor_log=True)
-        self.KODI_PASSWORD = self.check_setting_str('KODI', 'kodi_password', '', censor_log=True)
+        self.KODI_USERNAME = self.check_setting_str('KODI', 'kodi_username', '')
+        self.KODI_PASSWORD = self.check_setting_str('KODI', 'kodi_password', '')
 
         self.USE_PLEX = bool(self.check_setting_int('Plex', 'use_plex', 0))
         self.PLEX_NOTIFY_ONSNATCH = bool(self.check_setting_int('Plex', 'plex_notify_onsnatch', 0))
@@ -1249,13 +1236,11 @@ class srConfig(object):
         self.PLEX_SERVER_HOST = self.check_setting_str('Plex', 'plex_server_host', '')
         self.PLEX_SERVER_TOKEN = self.check_setting_str('Plex', 'plex_server_token', '')
         self.PLEX_HOST = self.check_setting_str('Plex', 'plex_host', '')
-        self.PLEX_USERNAME = self.check_setting_str('Plex', 'plex_username', '', censor_log=True)
-        self.PLEX_PASSWORD = self.check_setting_str('Plex', 'plex_password', '', censor_log=True)
+        self.PLEX_USERNAME = self.check_setting_str('Plex', 'plex_username', '')
+        self.PLEX_PASSWORD = self.check_setting_str('Plex', 'plex_password', '')
         self.USE_PLEX_CLIENT = bool(self.check_setting_int('Plex', 'use_plex_client', 0))
-        self.PLEX_CLIENT_USERNAME = self.check_setting_str('Plex', 'plex_client_username', '',
-                                                           censor_log=True)
-        self.PLEX_CLIENT_PASSWORD = self.check_setting_str('Plex', 'plex_client_password', '',
-                                                           censor_log=True)
+        self.PLEX_CLIENT_USERNAME = self.check_setting_str('Plex', 'plex_client_username', '')
+        self.PLEX_CLIENT_PASSWORD = self.check_setting_str('Plex', 'plex_client_password', '')
 
         self.USE_EMBY = bool(self.check_setting_int('Emby', 'use_emby', 0))
         self.EMBY_HOST = self.check_setting_str('Emby', 'emby_host', '')
@@ -1268,7 +1253,7 @@ class srConfig(object):
         self.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
             self.check_setting_int('Growl', 'growl_notify_onsubtitledownload', 0))
         self.GROWL_HOST = self.check_setting_str('Growl', 'growl_host', '')
-        self.GROWL_PASSWORD = self.check_setting_str('Growl', 'growl_password', '', censor_log=True)
+        self.GROWL_PASSWORD = self.check_setting_str('Growl', 'growl_password', '')
 
         self.USE_FREEMOBILE = bool(self.check_setting_int('FreeMobile', 'use_freemobile', 0))
         self.FREEMOBILE_NOTIFY_ONSNATCH = bool(
@@ -1286,7 +1271,7 @@ class srConfig(object):
             self.check_setting_int('Prowl', 'prowl_notify_ondownload', 0))
         self.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
             self.check_setting_int('Prowl', 'prowl_notify_onsubtitledownload', 0))
-        self.PROWL_API = self.check_setting_str('Prowl', 'prowl_api', '', censor_log=True)
+        self.PROWL_API = self.check_setting_str('Prowl', 'prowl_api', '')
         self.PROWL_PRIORITY = self.check_setting_str('Prowl', 'prowl_priority', "0")
 
         self.USE_TWITTER = bool(self.check_setting_int('Twitter', 'use_twitter', 0))
@@ -1296,10 +1281,8 @@ class srConfig(object):
             self.check_setting_int('Twitter', 'twitter_notify_ondownload', 0))
         self.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
             self.check_setting_int('Twitter', 'twitter_notify_onsubtitledownload', 0))
-        self.TWITTER_USERNAME = self.check_setting_str('Twitter', 'twitter_username', '',
-                                                       censor_log=True)
-        self.TWITTER_PASSWORD = self.check_setting_str('Twitter', 'twitter_password', '',
-                                                       censor_log=True)
+        self.TWITTER_USERNAME = self.check_setting_str('Twitter', 'twitter_username', '')
+        self.TWITTER_PASSWORD = self.check_setting_str('Twitter', 'twitter_password', '')
         self.TWITTER_PREFIX = self.check_setting_str('Twitter', 'twitter_prefix',
                                                      self.GIT_REPO)
         self.TWITTER_DMTO = self.check_setting_str('Twitter', 'twitter_dmto', '')
@@ -1312,7 +1295,7 @@ class srConfig(object):
             self.check_setting_int('Boxcar', 'boxcar_notify_ondownload', 0))
         self.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
             self.check_setting_int('Boxcar', 'boxcar_notify_onsubtitledownload', 0))
-        self.BOXCAR_USERNAME = self.check_setting_str('Boxcar', 'boxcar_username', '', censor_log=True)
+        self.BOXCAR_USERNAME = self.check_setting_str('Boxcar', 'boxcar_username', '')
 
         self.USE_BOXCAR2 = bool(self.check_setting_int('Boxcar2', 'use_boxcar2', 0))
         self.BOXCAR2_NOTIFY_ONSNATCH = bool(
@@ -1321,8 +1304,7 @@ class srConfig(object):
             self.check_setting_int('Boxcar2', 'boxcar2_notify_ondownload', 0))
         self.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
             self.check_setting_int('Boxcar2', 'boxcar2_notify_onsubtitledownload', 0))
-        self.BOXCAR2_ACCESSTOKEN = self.check_setting_str('Boxcar2', 'boxcar2_accesstoken', '',
-                                                          censor_log=True)
+        self.BOXCAR2_ACCESSTOKEN = self.check_setting_str('Boxcar2', 'boxcar2_accesstoken', '')
 
         self.USE_PUSHOVER = bool(self.check_setting_int('Pushover', 'use_pushover', 0))
         self.PUSHOVER_NOTIFY_ONSNATCH = bool(
@@ -1331,10 +1313,8 @@ class srConfig(object):
             self.check_setting_int('Pushover', 'pushover_notify_ondownload', 0))
         self.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
             self.check_setting_int('Pushover', 'pushover_notify_onsubtitledownload', 0))
-        self.PUSHOVER_USERKEY = self.check_setting_str('Pushover', 'pushover_userkey', '',
-                                                       censor_log=True)
-        self.PUSHOVER_APIKEY = self.check_setting_str('Pushover', 'pushover_apikey', '',
-                                                      censor_log=True)
+        self.PUSHOVER_USERKEY = self.check_setting_str('Pushover', 'pushover_userkey', '')
+        self.PUSHOVER_APIKEY = self.check_setting_str('Pushover', 'pushover_apikey', '')
         self.PUSHOVER_DEVICE = self.check_setting_str('Pushover', 'pushover_device', '')
         self.PUSHOVER_SOUND = self.check_setting_str('Pushover', 'pushover_sound', 'pushover')
 
@@ -1367,15 +1347,12 @@ class srConfig(object):
         self.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
             self.check_setting_int('SynologyNotifier', 'synologynotifier_notify_onsubtitledownload', 0))
 
-        self.THETVDB_APITOKEN = self.check_setting_str('theTVDB', 'thetvdb_apitoken', '',
-                                                       censor_log=True)
+        self.THETVDB_APITOKEN = self.check_setting_str('theTVDB', 'thetvdb_apitoken', '')
 
         self.USE_TRAKT = bool(self.check_setting_int('Trakt', 'use_trakt', 0))
-        self.TRAKT_USERNAME = self.check_setting_str('Trakt', 'trakt_username', '', censor_log=True)
-        self.TRAKT_ACCESS_TOKEN = self.check_setting_str('Trakt', 'trakt_access_token', '',
-                                                         censor_log=True)
-        self.TRAKT_REFRESH_TOKEN = self.check_setting_str('Trakt', 'trakt_refresh_token', '',
-                                                          censor_log=True)
+        self.TRAKT_USERNAME = self.check_setting_str('Trakt', 'trakt_username', '')
+        self.TRAKT_ACCESS_TOKEN = self.check_setting_str('Trakt', 'trakt_access_token', '')
+        self.TRAKT_REFRESH_TOKEN = self.check_setting_str('Trakt', 'trakt_refresh_token', '')
         self.TRAKT_REMOVE_WATCHLIST = bool(self.check_setting_int('Trakt', 'trakt_remove_watchlist', 0))
         self.TRAKT_REMOVE_SERIESLIST = bool(
             self.check_setting_int('Trakt', 'trakt_remove_serieslist', 0))
@@ -1408,7 +1385,7 @@ class srConfig(object):
         self.NMA_NOTIFY_ONDOWNLOAD = bool(self.check_setting_int('NMA', 'nma_notify_ondownload', 0))
         self.NMA_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
             self.check_setting_int('NMA', 'nma_notify_onsubtitledownload', 0))
-        self.NMA_API = self.check_setting_str('NMA', 'nma_api', '', censor_log=True)
+        self.NMA_API = self.check_setting_str('NMA', 'nma_api', '')
         self.NMA_PRIORITY = self.check_setting_str('NMA', 'nma_priority', "0")
 
         self.USE_PUSHALOT = bool(self.check_setting_int('Pushalot', 'use_pushalot', 0))
@@ -1419,8 +1396,7 @@ class srConfig(object):
         self.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
             self.check_setting_int('Pushalot', 'pushalot_notify_onsubtitledownload', 0))
         self.PUSHALOT_AUTHORIZATIONTOKEN = self.check_setting_str('Pushalot',
-                                                                  'pushalot_authorizationtoken', '',
-                                                                  censor_log=True)
+                                                                  'pushalot_authorizationtoken', '')
 
         self.USE_PUSHBULLET = bool(self.check_setting_int('Pushbullet', 'use_pushbullet', 0))
         self.PUSHBULLET_NOTIFY_ONSNATCH = bool(
@@ -1429,8 +1405,7 @@ class srConfig(object):
             self.check_setting_int('Pushbullet', 'pushbullet_notify_ondownload', 0))
         self.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD = bool(
             self.check_setting_int('Pushbullet', 'pushbullet_notify_onsubtitledownload', 0))
-        self.PUSHBULLET_API = self.check_setting_str('Pushbullet', 'pushbullet_api', '',
-                                                     censor_log=True)
+        self.PUSHBULLET_API = self.check_setting_str('Pushbullet', 'pushbullet_api', '')
         self.PUSHBULLET_DEVICE = self.check_setting_str('Pushbullet', 'pushbullet_device', '')
 
         # self.emailself.notifyself.settings        self.USE_EMAIL= bool(self.check_setting_int('Email', 'use_email', 0))
@@ -1442,8 +1417,8 @@ class srConfig(object):
         self.EMAIL_HOST = self.check_setting_str('Email', 'email_host', '')
         self.EMAIL_PORT = self.check_setting_int('Email', 'email_port', 25)
         self.EMAIL_TLS = bool(self.check_setting_int('Email', 'email_tls', 0))
-        self.EMAIL_USER = self.check_setting_str('Email', 'email_user', '', censor_log=True)
-        self.EMAIL_PASSWORD = self.check_setting_str('Email', 'email_password', '', censor_log=True)
+        self.EMAIL_USER = self.check_setting_str('Email', 'email_user', '')
+        self.EMAIL_PASSWORD = self.check_setting_str('Email', 'email_password', '')
         self.EMAIL_FROM = self.check_setting_str('Email', 'email_from', '')
         self.EMAIL_LIST = self.check_setting_str('Email', 'email_list', '')
 
@@ -1468,20 +1443,14 @@ class srConfig(object):
                                         self.check_setting_str('Subtitles', 'subtitles_extra_scripts',
                                                                '').split('|') if x.strip()]
 
-        self.ADDIC7ED_USER = self.check_setting_str('Subtitles', 'addic7ed_username', '',
-                                                    censor_log=True)
-        self.ADDIC7ED_PASS = self.check_setting_str('Subtitles', 'addic7ed_password', '',
-                                                    censor_log=True)
+        self.ADDIC7ED_USER = self.check_setting_str('Subtitles', 'addic7ed_username', '')
+        self.ADDIC7ED_PASS = self.check_setting_str('Subtitles', 'addic7ed_password', '')
 
-        self.LEGENDASTV_USER = self.check_setting_str('Subtitles', 'legendastv_username', '',
-                                                      censor_log=True)
-        self.LEGENDASTV_PASS = self.check_setting_str('Subtitles', 'legendastv_password', '',
-                                                      censor_log=True)
+        self.LEGENDASTV_USER = self.check_setting_str('Subtitles', 'legendastv_username', '')
+        self.LEGENDASTV_PASS = self.check_setting_str('Subtitles', 'legendastv_password', '')
 
-        self.OPENSUBTITLES_USER = self.check_setting_str('Subtitles', 'opensubtitles_username', '',
-                                                         censor_log=True)
-        self.OPENSUBTITLES_PASS = self.check_setting_str('Subtitles', 'opensubtitles_password', '',
-                                                         censor_log=True)
+        self.OPENSUBTITLES_USER = self.check_setting_str('Subtitles', 'opensubtitles_username', '')
+        self.OPENSUBTITLES_PASS = self.check_setting_str('Subtitles', 'opensubtitles_password', '')
 
         self.USE_FAILED_DOWNLOADS = bool(
             self.check_setting_int('FailedDownloads', 'use_failed_downloads', 0))
@@ -1502,8 +1471,8 @@ class srConfig(object):
         self.USE_LISTVIEW = bool(self.check_setting_int('General', 'use_listview', 0))
 
         self.USE_ANIDB = bool(self.check_setting_int('ANIDB', 'use_anidb', 0))
-        self.ANIDB_USERNAME = self.check_setting_str('ANIDB', 'anidb_username', '', censor_log=True)
-        self.ANIDB_PASSWORD = self.check_setting_str('ANIDB', 'anidb_password', '', censor_log=True)
+        self.ANIDB_USERNAME = self.check_setting_str('ANIDB', 'anidb_username', '')
+        self.ANIDB_PASSWORD = self.check_setting_str('ANIDB', 'anidb_password', '')
         self.ANIDB_USE_MYLIST = bool(self.check_setting_int('ANIDB', 'anidb_use_mylist', 0))
 
         self.ANIME_SPLIT_HOME = bool(self.check_setting_int('ANIME', 'anime_split_home', 0))
@@ -1555,36 +1524,35 @@ class srConfig(object):
 
             if hasattr(providerObj, 'api_key'):
                 providerObj.api_key = self.check_setting_str(
-                    providerID.upper(), providerID + '_api_key', '', censor_log=True
+                    providerID.upper(), providerID + '_api_key', ''
                 )
 
             if hasattr(providerObj, 'hash'):
                 providerObj.hash = self.check_setting_str(
-                    providerID.upper(), providerID + '_hash', '', censor_log=True
+                    providerID.upper(), providerID + '_hash', ''
                 )
 
             if hasattr(providerObj, 'digest'):
                 providerObj.digest = self.check_setting_str(
-                    providerID.upper(), providerID + '_digest', '', censor_log=True
+                    providerID.upper(), providerID + '_digest', ''
                 )
 
             if hasattr(providerObj, 'username'):
                 providerObj.username = self.check_setting_str(
-                    providerID.upper(), providerID + '_username', '', censor_log=True
+                    providerID.upper(), providerID + '_username', ''
                 )
 
             if hasattr(providerObj, 'password'):
                 providerObj.password = self.check_setting_str(
-                    providerID.upper(), providerID + '_password', '', censor_log=True
+                    providerID.upper(), providerID + '_password', ''
                 )
 
             if hasattr(providerObj, 'passkey'):
                 providerObj.passkey = self.check_setting_str(providerID.upper(),
-                                                             providerID + '_passkey', '',
-                                                             censor_log=True)
+                                                             providerID + '_passkey', '')
             if hasattr(providerObj, 'pin'):
                 providerObj.pin = self.check_setting_str(providerID.upper(),
-                                                         providerID + '_pin', '', censor_log=True)
+                                                         providerID + '_pin', '')
             if hasattr(providerObj, 'confirmed'):
                 providerObj.confirmed = bool(self.check_setting_int(providerID.upper(),
                                                                     providerID + '_confirmed', 1))
@@ -1651,10 +1619,10 @@ class srConfig(object):
                 self.check_setting_int(providerID.upper(), providerID, 0))
             if hasattr(providerObj, 'api_key'):
                 providerObj.api_key = self.check_setting_str(providerID.upper(),
-                                                             providerID + '_api_key', '', censor_log=True)
+                                                             providerID + '_api_key', '')
             if hasattr(providerObj, 'username'):
                 providerObj.username = self.check_setting_str(providerID.upper(),
-                                                              providerID + '_username', '', censor_log=True)
+                                                              providerID + '_username', '')
             if hasattr(providerObj, 'search_mode'):
                 providerObj.search_mode = self.check_setting_str(providerID.upper(),
                                                                  providerID + '_search_mode',
@@ -1676,7 +1644,7 @@ class srConfig(object):
         return self.save_config()
 
     def save_config(self):
-        sickrage.srCore.LOGGER.debug("Saving settings to disk")
+        sickrage.srLogger.debug("Saving settings to disk")
 
         new_config = ConfigObj(self.CONFIG_OBJ.filename)
 
@@ -2230,9 +2198,9 @@ class ConfigMigrator(srConfig):
     def __init__(self, config_obj):
         """
         Initializes a config migrator that can take the config from the version indicated in the config
-        file up to the version required by SB
+        file up to the latest version
         """
-        super(ConfigMigrator, self).__init__()
+        super(ConfigMigrator, self).__init__(config_obj.filename)
         self.CONFIG_OBJ = config_obj
 
         # check the version of the config
@@ -2254,7 +2222,7 @@ class ConfigMigrator(srConfig):
         """
 
         if self.config_version > self.expected_config_version:
-            sickrage.srCore.LOGGER.log_error_and_exit(
+            sickrage.srLogger.log_error_and_exit(
                 """Your config version (%i) has been incremented past what this version of supports (%i).
                     If you have used other forks or a newer version of  your config file may be unusable due to their modifications.""" %
                 (self.config_version, self.expected_config_version)
@@ -2270,19 +2238,19 @@ class ConfigMigrator(srConfig):
             else:
                 migration_name = ''
 
-            sickrage.srCore.LOGGER.info("Backing up config before upgrade")
+            sickrage.srLogger.info("Backing up config before upgrade")
             if not backupVersionedFile(self.CONFIG_OBJ.filename, self.config_version):
-                sickrage.srCore.LOGGER.log_error_and_exit("Config backup failed, abort upgrading config")
+                sickrage.srLogger.log_error_and_exit("Config backup failed, abort upgrading config")
             else:
-                sickrage.srCore.LOGGER.info("Proceeding with upgrade")
+                sickrage.srLogger.info("Proceeding with upgrade")
 
             # do the migration, expect a method named _migrate_v<num>
-            sickrage.srCore.LOGGER.info("Migrating config up to version " + str(next_version) + migration_name)
+            sickrage.srLogger.info("Migrating config up to version " + str(next_version) + migration_name)
             getattr(self, '_migrate_v' + str(next_version))()
             self.config_version = next_version
 
             # save new config after migration
-            sickrage.srCore.CONFIG.CONFIG_VERSION = self.config_version
+            sickrage.srConfig.CONFIG_VERSION = self.config_version
 
     # Migration v1: Custom naming
     def _migrate_v1(self):
@@ -2291,14 +2259,14 @@ class ConfigMigrator(srConfig):
         """
 
         self.NAMING_PATTERN = self._name_to_pattern()
-        sickrage.srCore.LOGGER.info(
+        sickrage.srLogger.info(
             "Based on your old settings I'm setting your new naming pattern to: " + self.NAMING_PATTERN)
 
         self.NAMING_CUSTOM_ABD = bool(self.check_setting_int('General', 'naming_dates', 0))
 
         if self.NAMING_CUSTOM_ABD:
             self.NAMING_ABD_PATTERN = self._name_to_pattern(True)
-            sickrage.srCore.LOGGER.info(
+            sickrage.srLogger.info(
                 "Adding a custom air-by-date naming pattern to your config: " + self.NAMING_ABD_PATTERN)
         else:
             self.NAMING_ABD_PATTERN = validator.name_abd_presets[0]
@@ -2321,17 +2289,17 @@ class ConfigMigrator(srConfig):
                     new_season_format = str(new_season_format).replace('09', '%0S')
                     new_season_format = new_season_format.replace('9', '%S')
 
-                    sickrage.srCore.LOGGER.info(
+                    sickrage.srLogger.info(
                         "Changed season folder format from " + old_season_format + " to " + new_season_format + ", prepending it to your naming config")
                     self.NAMING_PATTERN = new_season_format + os.sep + self.NAMING_PATTERN
 
                 except (TypeError, ValueError):
-                    sickrage.srCore.LOGGER.error("Can't change " + old_season_format + " to new season format")
+                    sickrage.srLogger.error("Can't change " + old_season_format + " to new season format")
 
         # if no shows had it on then don't flatten any shows and don't put season folders in the config
         else:
 
-            sickrage.srCore.LOGGER.info(
+            sickrage.srLogger.info(
                 "No shows were using season folders before so I'm disabling flattening on all shows")
 
             # don't flatten any shows at all
@@ -2424,7 +2392,7 @@ class ConfigMigrator(srConfig):
                 try:
                     name, url, key, enabled = cur_provider_data.split("|")
                 except ValueError:
-                    sickrage.srCore.LOGGER.error(
+                    sickrage.srLogger.error(
                         "Skipping Newznab provider string: '" + cur_provider_data + "', incorrect format")
                     continue
 
@@ -2484,7 +2452,7 @@ class ConfigMigrator(srConfig):
             cur_metadata = metadata.split('|')
             # if target has the old number of values, do upgrade
             if len(cur_metadata) == 6:
-                sickrage.srCore.LOGGER.info("Upgrading " + metadata_name + " metadata, old value: " + metadata)
+                sickrage.srLogger.info("Upgrading " + metadata_name + " metadata, old value: " + metadata)
                 cur_metadata.insert(4, '0')
                 cur_metadata.append('0')
                 cur_metadata.append('0')
@@ -2496,18 +2464,18 @@ class ConfigMigrator(srConfig):
                     cur_metadata[4], cur_metadata[3] = cur_metadata[3], '0'
                 # write new format
                 metadata = '|'.join(cur_metadata)
-                sickrage.srCore.LOGGER.info("Upgrading " + metadata_name + " metadata, new value: " + metadata)
+                sickrage.srLogger.info("Upgrading " + metadata_name + " metadata, new value: " + metadata)
 
             elif len(cur_metadata) == 10:
 
                 metadata = '|'.join(cur_metadata)
-                sickrage.srCore.LOGGER.info("Keeping " + metadata_name + " metadata, value: " + metadata)
+                sickrage.srLogger.info("Keeping " + metadata_name + " metadata, value: " + metadata)
 
             else:
-                sickrage.srCore.LOGGER.error(
+                sickrage.srLogger.error(
                     "Skipping " + metadata_name + " metadata: '" + metadata + "', incorrect format")
                 metadata = '0|0|0|0|0|0|0|0|0|0'
-                sickrage.srCore.LOGGER.info("Setting " + metadata_name + " metadata, new value: " + metadata)
+                sickrage.srLogger.info("Setting " + metadata_name + " metadata, new value: " + metadata)
 
             return metadata
 
@@ -2535,10 +2503,8 @@ class ConfigMigrator(srConfig):
         self.KODI_UPDATE_ONLYFIRST = bool(
             self.check_setting_int('XBMC', 'xbmc_update_onlyfirst', 0))
         self.KODI_HOST = self.check_setting_str('XBMC', 'xbmc_host', '')
-        self.KODI_USERNAME = self.check_setting_str('XBMC', 'xbmc_username', '',
-                                                    censor_log=True)
-        self.KODI_PASSWORD = self.check_setting_str('XBMC', 'xbmc_password', '',
-                                                    censor_log=True)
+        self.KODI_USERNAME = self.check_setting_str('XBMC', 'xbmc_username', '')
+        self.KODI_PASSWORD = self.check_setting_str('XBMC', 'xbmc_password', '')
         self.METADATA_KODI = self.check_setting_str('General', 'metadata_xbmc',
                                                     '0|0|0|0|0|0|0|0|0|0')
         self.METADATA_KODI_12PLUS = self.check_setting_str('General',

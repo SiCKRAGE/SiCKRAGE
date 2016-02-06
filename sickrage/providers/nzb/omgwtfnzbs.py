@@ -48,7 +48,7 @@ class OmgwtfnzbsProvider(NZBProvider):
     def _checkAuth(self):
 
         if not self.username or not self.api_key:
-            sickrage.srCore.LOGGER.warning("Invalid api key. Check your settings")
+            sickrage.srLogger.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -67,13 +67,13 @@ class OmgwtfnzbsProvider(NZBProvider):
                 description_text = parsedJSON.get('notice')
 
                 if 'information is incorrect' in parsedJSON.get('notice'):
-                    sickrage.srCore.LOGGER.warning("Invalid api key. Check your settings")
+                    sickrage.srLogger.warning("Invalid api key. Check your settings")
 
                 elif '0 results matched your terms' in parsedJSON.get('notice'):
                     return True
 
                 else:
-                    sickrage.srCore.LOGGER.debug("Unknown error: %s" % description_text)
+                    sickrage.srLogger.debug("Unknown error: %s" % description_text)
                     return False
 
             return True
@@ -103,15 +103,15 @@ class OmgwtfnzbsProvider(NZBProvider):
                   'api': self.api_key,
                   'eng': 1,
                   'catid': '19,20',  # SD,HD
-                  'retention': sickrage.srCore.CONFIG.USENET_RETENTION,
+                  'retention': sickrage.srConfig.USENET_RETENTION,
                   'search': search}
 
         if retention or not params[b'retention']:
             params[b'retention'] = retention
 
         searchURL = 'https://api.omgwtfnzbs.org/json/?' + urllib.urlencode(params)
-        sickrage.srCore.LOGGER.debug("Search string: %s" % params)
-        sickrage.srCore.LOGGER.debug("Search URL: %s" % searchURL)
+        sickrage.srLogger.debug("Search string: %s" % params)
+        sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
         parsedJSON = self.getURL(searchURL, json=True)
         if not parsedJSON:
@@ -122,7 +122,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
             for item in parsedJSON:
                 if 'release' in item and 'getnzb' in item:
-                    sickrage.srCore.LOGGER.debug("Found result: %s " % item.get('title'))
+                    sickrage.srLogger.debug("Found result: %s " % item.get('title'))
                     results.append(item)
 
             return results
@@ -182,6 +182,6 @@ class OmgwtfnzbsCache(TVCache):
 
         rss_url = 'https://rss.omgwtfnzbs.org/rss-download.php?' + urllib.urlencode(params)
 
-        sickrage.srCore.LOGGER.debug("Cache update URL: %s" % rss_url)
+        sickrage.srLogger.debug("Cache update URL: %s" % rss_url)
 
         return self.getRSSFeed(rss_url)

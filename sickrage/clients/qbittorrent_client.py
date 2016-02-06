@@ -68,7 +68,7 @@ class qbittorrentAPI(GenericClient):
     def _set_torrent_pause(self, result):
 
         self.url = self.host + 'command/resume'
-        if sickrage.srCore.CONFIG.TORRENT_PAUSED:
+        if sickrage.srConfig.TORRENT_PAUSED:
             self.url = self.host + 'command/pause'
 
         data = {'hash': result.hash}

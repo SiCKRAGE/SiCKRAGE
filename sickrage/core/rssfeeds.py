@@ -30,7 +30,7 @@ def getFeed(url, request_headers=None, handlers=None):
         try:
             feed = feedparser.parse(normalize_url(url), False, False, request_headers, handlers=handlers)
         except AttributeError:
-            sickrage.srCore.LOGGER.debug('RSS ERROR:[{}] CODE:[{}]'.format(
+            sickrage.srLogger.debug('RSS ERROR:[{}] CODE:[{}]'.format(
                     feed.feed[b'error'][b'description'], feed.feed[b'error'][b'code']))
     except:pass
 
