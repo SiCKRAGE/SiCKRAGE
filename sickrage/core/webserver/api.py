@@ -70,6 +70,7 @@ RESULT_TIMEOUT = 30  # not used yet :(
 RESULT_ERROR = 40  # only use outside of the run methods !
 RESULT_FATAL = 50  # only use in Api.default() ! this is the "we encountered an internal error" error
 RESULT_DENIED = 60  # only use in Api.default() ! this is the access denied error
+
 result_type_map = {
     RESULT_SUCCESS: "success",
     RESULT_FAILURE: "failure",
@@ -117,7 +118,7 @@ class ApiHandler(RequestHandler):
     @coroutine
     def prepare(self, *args, **kwargs):
         args = args[1:]
-        kwargs = {k: ''.join(v) if isinstance(v, list) else v for k, v in
+        kwargs = {k: (v, ''.join(v))[isinstance(v, list) and len(v) == 1] for k, v in
                   recursive_unicode(self.request.arguments.items())}
 
         # set the output callback
@@ -165,13 +166,8 @@ class ApiHandler(RequestHandler):
     @run_on_executor
     def async_call(self, function, *args, **kwargs):
         threading.currentThread().setName("API")
-
-        try:
-            return recursive_unicode(function(*args, **{k: ''.join(v) if isinstance(v, list) else v for k, v in
-                                                        recursive_unicode(kwargs.items())}))
-        except Exception:
-            sickrage.srLogger.error('Failed doing webui callback: {}'.format(traceback.format_exc()))
-            raise
+        return recursive_unicode(function(
+            **{k: (v, ''.join(v))[isinstance(v, list) and len(v) == 1] for k, v in recursive_unicode(kwargs.items())}))
 
     def _out_as_image(self, _dict):
         self.set_header('Content-Type', _dict[b'image'].get_media_type())
@@ -580,7 +576,7 @@ def _get_status_Strings(s):
 def _ordinal_to_dateTimeForm(ordinal):
     # workaround for episodes with no airdate
     if int(ordinal) != 1:
-        date = date.fromordinal(ordinal)
+        date = datetime.now().date().fromordinal(ordinal)
     else:
         return ""
     return date.strftime(dateTimeFormat)
@@ -588,7 +584,7 @@ def _ordinal_to_dateTimeForm(ordinal):
 
 def _ordinal_to_dateForm(ordinal):
     if int(ordinal) != 1:
-        date = date.fromordinal(ordinal)
+        date = datetime.now().date().fromordinal(ordinal)
     else:
         return ""
     return date.strftime(dateFormat)

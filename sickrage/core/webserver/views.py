@@ -106,14 +106,8 @@ class BaseHandler(RequestHandler):
     @run_on_executor
     def async_call(self, function, **kwargs):
         threading.currentThread().setName("WEB")
-
-        try:
-            return recursive_unicode(function(
-                **{k: ''.join(v) if isinstance(v, list) else v for k, v in recursive_unicode(kwargs.items())}))
-        except Exception:
-            sickrage.srLogger.debug(
-                'Failed doing webui callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
-            return html_error_template().render_unicode()
+        return recursive_unicode(function(
+            **{k: (v, ''.join(v))[isinstance(v, list) and len(v) == 1] for k, v in recursive_unicode(kwargs.items())}))
 
     def write_error(self, status_code, **kwargs):
         # handle 404 http errors
@@ -1381,7 +1375,7 @@ class Home(WebRoot):
         with showObj.lock:
             newQuality = tryInt(quality_preset, None)
             if not newQuality:
-                newQuality = Quality.combineQualities([int(q) for q in anyQualities], [int(q) for q in bestQualities])
+                newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
 
             showObj.quality = newQuality
             showObj.archive_firstmatch = archive_firstmatch
@@ -2061,7 +2055,7 @@ class Home(WebRoot):
             result[b'errorMessage'] = ep_obj
         elif showObj.is_anime:
             sickrage.srLogger.debug("setAbsoluteSceneNumbering for %s from %s to %s" %
-                                         (show, forAbsolute, sceneAbsolute))
+                                    (show, forAbsolute, sceneAbsolute))
 
             show = int(show)
             indexer = int(indexer)
@@ -2072,7 +2066,7 @@ class Home(WebRoot):
             set_scene_numbering(show, indexer, absolute_number=forAbsolute, sceneAbsolute=sceneAbsolute)
         else:
             sickrage.srLogger.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" %
-                                         (show, forSeason, forEpisode, sceneSeason, sceneEpisode))
+                                    (show, forSeason, forEpisode, sceneSeason, sceneEpisode))
 
             show = int(show)
             indexer = int(indexer)
@@ -2181,7 +2175,8 @@ class HomeChangeLog(Home):
             changes = getURL(sickrage.srConfig.CHANGES_URL)
         except Exception:
             sickrage.srLogger.debug('Could not load changes from repo, giving a link!')
-            changes = 'Could not load changes from the repo. [Click here for CHANGES.md]({})'.format(sickrage.srConfig.CHANGES_URL)
+            changes = 'Could not load changes from the repo. [Click here for CHANGES.md]({})'.format(
+                sickrage.srConfig.CHANGES_URL)
 
         data = markdown2.markdown(
             changes if changes else "The was a problem connecting to github, please refresh and try again",
@@ -2708,13 +2703,16 @@ class HomeAddShows(Home):
 
         if not anyQualities:
             anyQualities = []
-        if not bestQualities or tryInt(quality_preset, None):
+        if not bestQualities:
             bestQualities = []
         if not isinstance(anyQualities, list):
             anyQualities = [anyQualities]
         if not isinstance(bestQualities, list):
             bestQualities = [bestQualities]
-        newQuality = Quality.combineQualities([int(q) for q in anyQualities], [int(q) for q in bestQualities])
+
+        newQuality = tryInt(quality_preset, None)
+        if not newQuality:
+            newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
 
         # add the show
         sickrage.srCore.SHOWQUEUE.addShow(indexer, indexer_id, show_dir, int(defaultStatus), newQuality,
@@ -2759,20 +2757,16 @@ class HomeAddShows(Home):
         dirs_only = []
         # separate all the ones with Indexer IDs
         for cur_dir in shows_to_add:
-            indexer, show_dir, indexer_id, show_name = None, None, None, None
             split_vals = cur_dir.split('|')
             if split_vals:
                 if len(split_vals) > 2:
                     indexer, show_dir, indexer_id, show_name = self.split_extra_show(cur_dir)
+                    if all([show_dir, indexer_id, show_name]):
+                        indexer_id_given.append((int(indexer), show_dir, int(indexer_id), show_name))
                 else:
                     dirs_only.append(cur_dir)
-            if '|' not in cur_dir:
-                dirs_only.append(cur_dir)
             else:
                 dirs_only.append(cur_dir)
-
-            if all([show_dir, indexer_id, show_name]):
-                indexer_id_given.append((int(indexer), show_dir, int(indexer_id), show_name))
 
         # if they want me to prompt for settings then I will just carry on to the newShow page
         if promptForSettings and shows_to_add:
@@ -3773,7 +3767,7 @@ class ConfigGeneral(Config):
         sickrage.srConfig.SSL_VERIFY = sickrage.srConfig.checkbox_to_value(ssl_verify)
         # sickrage.LOG_DIR is set in sickrage.CONFIG.change_log_dir()
         sickrage.srConfig.COMING_EPS_MISSED_RANGE = sickrage.srConfig.to_int(coming_eps_missed_range,
-                                                                                       default=7)
+                                                                             default=7)
         sickrage.srConfig.DISPLAY_ALL_SEASONS = sickrage.srConfig.checkbox_to_value(display_all_seasons)
 
         sickrage.srConfig.WEB_PORT = sickrage.srConfig.to_int(web_port)
@@ -3805,8 +3799,8 @@ class ConfigGeneral(Config):
 
         sickrage.srConfig.TIMEZONE_DISPLAY = timezone_display
 
-        if not sickrage.srConfig.change_log_dir(os.path.abspath(os.path.join(sickrage.srCore.DATA_DIR, log_dir)),
-                                                     web_log):
+        if not sickrage.srConfig.change_log_dir(os.path.abspath(os.path.join(sickrage.DATA_DIR, log_dir)),
+                                                web_log):
             results += ["Unable to create directory " + os.path.normpath(log_dir) + ", log directory not changed."]
 
         sickrage.srConfig.API_KEY = api_key
@@ -3875,7 +3869,7 @@ class ConfigBackupRestore(Config):
 
         if backupFile:
             source = backupFile
-            target_dir = os.path.join(sickrage.srCore.DATA_DIR, 'restore')
+            target_dir = os.path.join(sickrage.DATA_DIR, 'restore')
 
             if restoreConfigZip(source, target_dir):
                 finalResult += "Successfully extracted restore files to " + target_dir
@@ -4184,7 +4178,7 @@ class ConfigPostProcessing(Config):
         """
 
         try:
-            rar_path = os.path.join(sickrage.srCore.PROG_DIR, 'unrar2', 'test.rar')
+            rar_path = os.path.join(sickrage.PROG_DIR, 'unrar2', 'test.rar')
             testing = RarFile(rar_path).read_files('*test.txt')
             if testing[0][1] == 'This is only a test.':
                 return 'supported'
@@ -4981,8 +4975,8 @@ class ConfigSubtitles(Config):
         sickrage.srConfig.change_use_subtitles(use_subtitles)
 
         sickrage.srConfig.SUBTITLES_LANGUAGES = [lang.strip() for lang in subtitles_languages.split(',') if
-                                                      subtitle_searcher.isValidLanguage(
-                                                          lang.strip())] if subtitles_languages else []
+                                                 subtitle_searcher.isValidLanguage(
+                                                     lang.strip())] if subtitles_languages else []
         sickrage.srConfig.SUBTITLES_DIR = subtitles_dir
         sickrage.srConfig.SUBTITLES_HISTORY = sickrage.srConfig.checkbox_to_value(subtitles_history)
         sickrage.srConfig.EMBEDDED_SUBTITLES_ALL = sickrage.srConfig.checkbox_to_value(embedded_subtitles_all)
@@ -4990,7 +4984,7 @@ class ConfigSubtitles(Config):
             subtitles_hearing_impaired)
         sickrage.srConfig.SUBTITLES_MULTI = sickrage.srConfig.checkbox_to_value(subtitles_multi)
         sickrage.srConfig.SUBTITLES_EXTRA_SCRIPTS = [x.strip() for x in subtitles_extra_scripts.split('|') if
-                                                          x.strip()]
+                                                     x.strip()]
 
         # Subtitles services
         services_str_list = service_order.split()
@@ -5107,25 +5101,23 @@ class ErrorLogs(WebRoot):
         minLevel = minLevel or sickrage.srLogger.INFO
 
         logFiles = [sickrage.srConfig.LOG_FILE] + ["{}.{}".format(sickrage.srConfig.LOG_FILE, x) for x in
-                                                        xrange(int(
-                                                            sickrage.srConfig.LOG_NR))]
+                                                   xrange(int(
+                                                       sickrage.srConfig.LOG_NR))]
 
         levelsFiltered = b'|'.join(
             [x for x in sickrage.srLogger.logLevels.keys() if
              sickrage.srLogger.logLevels[x] >= int(minLevel)])
 
         logRegex = re.compile(
-            r"(^\d+\-\d+\-\d+\s*\d+\:\d+\:\d+\s*(?:{}.+?)\:\:(?:{}.+?)\:\:.+?$)".format(levelsFiltered, logFilter)
-            , re.S + re.M + re.I
-        )
+            r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levelsFiltered, logFilter),
+            re.S + re.M)
 
-        data = ""
-
+        data = []
         try:
             for logFile in [x for x in logFiles if os.path.isfile(x)]:
-                data += "\n".join(logRegex.findall("\n".join(re.findall("((?:^.+?{}.+?$))".format(logSearch), "\n".join(
-                    list(readFileBuffered(logFile, reverse=True))[::-1]), re.S + re.M + re.I)))[:maxLines])
-
+                data += list(reversed(re.findall("((?:^.+?{}.+?$))".format(logSearch),
+                                                 "\n".join(next(readFileBuffered(logFile, reverse=True)).splitlines()),
+                                                 re.S + re.M + re.I)))
                 maxLines -= len(data)
                 if len(data) == maxLines:
                     raise StopIteration
@@ -5139,7 +5131,7 @@ class ErrorLogs(WebRoot):
                            header="Log File",
                            title="Logs",
                            topmenu="system",
-                           logLines=data,
+                           logLines="\n".join(logRegex.findall("\n".join(data))),
                            minLevel=int(minLevel),
                            logNameFilters=sickrage.srLogger.logNameFilters,
                            logFilter=logFilter,

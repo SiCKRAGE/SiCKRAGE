@@ -227,21 +227,21 @@ class TVEpisode(object):
             self._subtitles_searchcount = sqlResults[0][b"subtitles_searchcount"] or self.subtitles_searchcount
             self._subtitles_lastsearch = sqlResults[0][b"subtitles_lastsearch"] or self.subtitles_lastsearch
             self._airdate = date.fromordinal(int(sqlResults[0][b"airdate"])) or self.airdate
-            self._status = tryInt(sqlResults[0][b"status"], self.status)
+            self._status = tryInt(sqlResults[0][b"status"]) or self.status
             self.location = os.path.normpath(sqlResults[0][b"location"]) or self.location
-            self._file_size = tryInt(sqlResults[0][b"file_size"], self.file_size)
-            self._indexerid = tryInt(sqlResults[0][b"indexerid"], self.indexerid)
-            self._indexer = tryInt(sqlResults[0][b"indexer"], self.indexer)
+            self._file_size = tryInt(sqlResults[0][b"file_size"]) or self.file_size
+            self._indexerid = tryInt(sqlResults[0][b"indexerid"]) or self.indexerid
+            self._indexer = tryInt(sqlResults[0][b"indexer"]) or self.indexer
             self._release_name = sqlResults[0][b"release_name"] or self.release_name
             self._release_group = sqlResults[0][b"release_group"] or self.release_group
-            self._is_proper = tryInt(sqlResults[0][b"is_proper"], self.is_proper)
-            self._version = tryInt(sqlResults[0][b"version"], self.version)
+            self._is_proper = tryInt(sqlResults[0][b"is_proper"]) or self.is_proper
+            self._version = tryInt(sqlResults[0][b"version"]) or self.version
 
             xem_refresh(self.show.indexerid, self.show.indexer)
 
-            self.scene_season = tryInt(sqlResults[0][b"scene_season"], self.scene_season)
-            self.scene_episode = tryInt(sqlResults[0][b"scene_episode"], self.scene_episode)
-            self.scene_absolute_number = tryInt(sqlResults[0][b"scene_absolute_number"], self.scene_absolute_number)
+            self.scene_season = tryInt(sqlResults[0][b"scene_season"]) or self.scene_season
+            self.scene_episode = tryInt(sqlResults[0][b"scene_episode"]) or self.scene_episode
+            self.scene_absolute_number = tryInt(sqlResults[0][b"scene_absolute_number"]) or self.scene_absolute_number
 
             if self.scene_absolute_number == 0:
                 self.scene_absolute_number = get_scene_absolute_numbering(
@@ -329,9 +329,9 @@ class TVEpisode(object):
         else:
             sickrage.srLogger.debug("{}: The absolute_number for S{}E{} is: {}".format(
                 self.show.indexerid, season or 0, episode or 0, myEp[b"absolute_number"]))
-            self.absolute_number = int(getattr(myEp, 'absolute_number', self.absolute_number))
+            self.absolute_number = tryInt(getattr(myEp, 'absolute_number')) or self.absolute_number
 
-        self.name = getattr(myEp, 'episodename', self.name)
+        self.name = getattr(myEp, 'episodename') or self.name
 
         self.season = season
         self.episode = episode
@@ -350,7 +350,7 @@ class TVEpisode(object):
             self.season, self.episode
         )
 
-        self.description = getattr(myEp, 'overview', "")
+        self.description = getattr(myEp, 'overview') or self.description
 
         firstaired = getattr(myEp, 'firstaired', None)
         if not firstaired or firstaired == "0000-00-00":
@@ -368,7 +368,7 @@ class TVEpisode(object):
             return False
 
         # early conversion to int so that episode doesn't get marked dirty
-        self.indexerid = getattr(myEp, 'id', self.indexerid)
+        self.indexerid = tryInt(getattr(myEp, 'id')) or self.indexerid
         if self.indexerid is None:
             sickrage.srLogger.error("Failed to retrieve ID from " + sickrage.srCore.INDEXER_API(self.indexer).name)
             if self.indexerid != -1:
@@ -473,8 +473,8 @@ class TVEpisode(object):
                         raise NoNFOException("Error in NFO format (missing episode title or airdate)")
 
                     self.name = epDetails.findtext('title')
-                    self.episode = int(epDetails.findtext('episode'))
-                    self.season = int(epDetails.findtext('season'))
+                    self.episode = tryInt(epDetails.findtext('episode'))
+                    self.season = tryInt(epDetails.findtext('season'))
 
                     xem_refresh(self.show.indexerid, self.show.indexer)
 
@@ -490,10 +490,7 @@ class TVEpisode(object):
                         self.season, self.episode
                     )
 
-                    self.description = epDetails.findtext('plot')
-                    if self.description is None:
-                        self.description = ""
-
+                    self.description = epDetails.findtext('plot') or self.description
                     if epDetails.findtext('aired'):
                         rawAirdate = [int(x) for x in epDetails.findtext('aired').split("-")]
                         self.airdate = date(rawAirdate[0], rawAirdate[1], rawAirdate[2])

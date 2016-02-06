@@ -509,7 +509,7 @@ def run_subs_extra_scripts(epObj, found_subtitles, video, single=False):
             sickrage.srLogger.info("Executing command: %s" % inner_cmd)
             try:
                 p = subprocess.Popen(inner_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT, cwd=sickrage.srCore.PROG_DIR)
+                                     stderr=subprocess.STDOUT, cwd=sickrage.PROG_DIR)
                 out, _ = p.communicate()  # @UnusedVariable
                 sickrage.srLogger.debug("Script result: %s" % out)
 

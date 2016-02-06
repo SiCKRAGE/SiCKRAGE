@@ -147,7 +147,7 @@ sickrage.srCore.torrentRssProviderList = TorrentRssProvider.getProviderList(Torr
 sickrage.srCore.metadataProviderDict = get_metadata_generator_dict()
 sickrage.srConfig.GUI_NAME = "slick"
 sickrage.srConfig.THEME_NAME = "dark"
-sickrage.srConfig.GUI_DIR = os.path.join(sickrage.srCore.PROG_DIR, 'core', 'webserver', 'gui',
+sickrage.srConfig.GUI_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'gui',
                                               sickrage.srConfig.GUI_NAME)
 sickrage.srConfig.TV_DOWNLOAD_DIR = FILEDIR
 sickrage.srConfig.HTTPS_CERT = "server.crt"

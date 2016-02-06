@@ -380,7 +380,6 @@ def makeDir(path):
     if not os.path.isdir(path):
         try:
             os.makedirs(path)
-            # do the library update for synoindex
             sickrage.srCore.NOTIFIERS.synoindex_notifier.addFolder(path)
         except OSError:
             return False
@@ -908,7 +907,7 @@ def create_https_certificates(ssl_cert, ssl_key):
     try:
         import OpenSSL
     except ImportError:
-        install_ssl(os.path.abspath(os.path.join(sickrage.srCore.PROG_DIR, 'requirements')))
+        install_ssl()
         import OpenSSL
 
     # Check happens if the certificate and key pair already exists for a domain
@@ -1265,7 +1264,7 @@ def backupAll(backupDir):
                  sickrage.srConfig.CONFIG_FILE]
 
     for f in filesList:
-        fp = os.path.join(sickrage.srCore.DATA_DIR, f)
+        fp = os.path.join(sickrage.DATA_DIR, f)
         if os.path.exists(fp):
             source += [fp]
 
@@ -1278,7 +1277,7 @@ def backupAll(backupDir):
                 source += [os.path.join(path, filename)]
 
     target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.now().strftime('%Y%m%d%H%M%S')))
-    return backupConfigZip(source, target, sickrage.srCore.DATA_DIR)
+    return backupConfigZip(source, target, sickrage.DATA_DIR)
 
 
 def touchFile(fname, atime=None):

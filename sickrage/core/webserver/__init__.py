@@ -213,4 +213,4 @@ class srWebServer(object):
             sickrage.srCore.halt()
             sickrage.srCore.save_all()
 
-        sickrage.srLogger.info('SHUTDOWN/RESTART COMPLETED!')
+        sickrage.srLogger.info('SHUTDOWN COMPLETED!')

@@ -21,7 +21,6 @@
 from __future__ import unicode_literals
 
 import atexit
-import ctypes
 import getopt
 import os
 import sys
@@ -37,12 +36,9 @@ srCore = None
 srLogger = None
 srConfig = None
 
+PROG_DIR = os.path.abspath(os.path.dirname(__file__))
+DATA_DIR = os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage'))
 
-def root_check():
-    try:
-        return not os.getuid() == 0
-    except AttributeError:
-        return not ctypes.windll.shell32.IsUserAnAdmin() != 0
 
 def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
     try:
@@ -84,10 +80,12 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
     atexit.register(lambda: delpid(pidfile))
     file(pidfile, 'w+').write("%s\n" % str(os.getpid()))
 
+
 def delpid(pidfile):
     # Removes the PID file
     if os.path.exists(pidfile):
         os.remove(pidfile)
+
 
 def help_message(prog_dir):
     """
@@ -126,13 +124,11 @@ def help_message(prog_dir):
 
 
 def main():
-    global srCore, srConfig, srLogger
+    global srCore, srConfig, srLogger, DATA_DIR
 
     if sys.version_info < (2, 7):
         print("Sorry, SiCKRAGE requires Python 2.7+")
         sys.exit(1)
-
-    print("Starting SiCKRAGE ...")
 
     # add sickrage module to python system path
     path = os.path.dirname(os.path.realpath(__file__))
@@ -141,10 +137,6 @@ def main():
 
     # set thread name
     threading.currentThread().setName('MAIN')
-
-    PROG_DIR = os.path.abspath(os.path.dirname(__file__))
-    DATA_DIR = os.path.join(os.path.expanduser("~"), '.sickrage')
-    CONFIG_FILE = "config.ini"
 
     try:
         opts, _ = getopt.getopt(
@@ -175,7 +167,7 @@ def main():
     WEB_NOLAUNCH = False
     SSL = False
     DEBUG = False
-
+    CONFIG_FILE = "config.ini"
     CONSOLE = not hasattr(sys, "frozen")
 
     for o, a in opts:
@@ -245,19 +237,30 @@ def main():
             DEBUG = True
 
     try:
+        print("Starting SiCKRAGE ...")
+        
+        # Make sure that we can create the data dir
+        if not os.access(DATA_DIR, os.F_OK):
+            try:
+                os.makedirs(DATA_DIR, 0o744)
+            except os.error:
+                raise SystemExit("Unable to create data directory '" + DATA_DIR + "'")
+
+        # Make sure we can write to the data dir
+        if not os.access(DATA_DIR, os.W_OK):
+            raise SystemExit("Data directory must be writeable '" + DATA_DIR + "'")
+
         # daemonize sickrage ?
         if DAEMONIZE:
             daemonize(PIDFILE)
 
         # install/upgrade pip and ssl contexts for required/optional imports
         if not DEVELOPER:
-            REQS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements'))
-
             # install pip package manager
-            install_pip(path=REQS_DIR, user=root_check())
+            install_pip()
 
             # install required packages
-            install_requirements(path=REQS_DIR, optional=INSTALL_OPTIONAL, ssl=SSL, user=root_check())
+            install_requirements(optional=INSTALL_OPTIONAL, ssl=SSL)
 
         import core
         from core.helpers import makeDir
@@ -266,7 +269,7 @@ def main():
         srLogger = core.srLogger()
 
         # init core
-        srCore = core.srCore(PROG_DIR, DATA_DIR)
+        srCore = core.srCore()
 
         # init config
         srConfig = core.srConfig(CONFIG_FILE)
@@ -275,12 +278,12 @@ def main():
         srConfig.load_config()
 
         # start logger
-        srLogger.logFile = os.path.abspath(os.path.join(srCore.DATA_DIR, srConfig.LOG_DIR, srConfig.LOG_FILE))
+        srLogger.logFile = os.path.abspath(os.path.join(DATA_DIR, srConfig.LOG_DIR, srConfig.LOG_FILE))
         srLogger.logSize = srConfig.LOG_SIZE
         srLogger.logNr = srConfig.LOG_NR
         srLogger.consoleLogging = CONSOLE
         srLogger.debugLogging = DEBUG or srConfig.DEBUG
-        srLogger.fileLogging = makeDir(os.path.abspath(os.path.join(srCore.DATA_DIR, srConfig.LOG_DIR)))
+        srLogger.fileLogging = makeDir(os.path.abspath(os.path.join(DATA_DIR, srConfig.LOG_DIR)))
         srLogger.start()
 
         # start core
@@ -298,6 +301,7 @@ def main():
         traceback.print_exception(exc_type, exc_value, exc_traceback)
         sys.exit(1)
     sys.exit(0)
+
 
 if __name__ == '__main__':
     main()

@@ -79,7 +79,7 @@ class srVersionUpdater(object):
         sickrage.srLogger.info("Config backup in progress...")
         notifications.message('Backup', 'Config backup in progress...')
         try:
-            backupDir = os.path.join(sickrage.srCore.DATA_DIR, 'backup')
+            backupDir = os.path.join(sickrage.DATA_DIR, 'backup')
             if not os.path.isdir(backupDir):
                 os.mkdir(backupDir)
 
@@ -161,7 +161,7 @@ class srVersionUpdater(object):
 
         import pip
 
-        if os.path.isdir(os.path.join(sickrage.srCore.PROG_DIR, '.git')):
+        if os.path.isdir(os.path.join(sickrage.PROG_DIR, '.git')):
             # git install
             return GitUpdateManager()
         else:
@@ -374,9 +374,9 @@ class GitUpdateManager(UpdateManager):
         cmd = git_path + ' ' + args
 
         try:
-            sickrage.srLogger.debug("Executing " + cmd + " with your shell in " + sickrage.srCore.PROG_DIR)
+            sickrage.srLogger.debug("Executing " + cmd + " with your shell in " + sickrage.PROG_DIR)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                 shell=True, cwd=sickrage.srCore.PROG_DIR)
+                                 shell=True, cwd=sickrage.PROG_DIR)
             output, err = p.communicate()
             exit_status = p.returncode
 
@@ -583,7 +583,7 @@ class SourceUpdateManager(UpdateManager):
         return self._check_for_new_version()
 
     def _find_installed_version(self):
-        with open(os.path.join(sickrage.srCore.PROG_DIR, 'version.txt')) as f:
+        with open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
             return f.read().strip() or ""
 
     def need_update(self):
@@ -628,7 +628,7 @@ class SourceUpdateManager(UpdateManager):
 
         try:
             # prepare the update dir
-            sr_update_dir = os.path.join(sickrage.srCore.PROG_DIR, 'sr-update')
+            sr_update_dir = os.path.join(sickrage.PROG_DIR, 'sr-update')
 
             if os.path.isdir(sr_update_dir):
                 sickrage.srLogger.info("Clearing out update folder " + sr_update_dir + " before extracting")
@@ -670,12 +670,12 @@ class SourceUpdateManager(UpdateManager):
             content_dir = os.path.join(sr_update_dir, update_dir_contents[0])
 
             # walk temp folder and move files to main folder
-            sickrage.srLogger.info("Moving files from " + content_dir + " to " + sickrage.srCore.PROG_DIR)
+            sickrage.srLogger.info("Moving files from " + content_dir + " to " + sickrage.PROG_DIR)
             for dirname, _, filenames in os.walk(content_dir):  # @UnusedVariable
                 dirname = dirname[len(content_dir) + 1:]
                 for curfile in filenames:
                     old_path = os.path.join(content_dir, dirname, curfile)
-                    new_path = os.path.join(sickrage.srCore.PROG_DIR, dirname, curfile)
+                    new_path = os.path.join(sickrage.PROG_DIR, dirname, curfile)
 
                     # Avoid DLL access problem on WIN32/64
                     # These files needing to be updated manually
@@ -718,7 +718,7 @@ class PipUpdateManager(UpdateManager):
         return self._check_for_new_version()
 
     def _find_installed_version(self):
-        with open(os.path.join(sickrage.srCore.PROG_DIR, 'version.txt')) as f:
+        with open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
             return f.read().strip() or ""
 
     def need_update(self):

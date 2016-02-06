@@ -51,7 +51,7 @@ def dbFilename(filename=None, suffix=None):
 
     if suffix:
         filename = filename + ".{}".format(suffix)
-    return os.path.join(sickrage.srCore.DATA_DIR, filename)
+    return os.path.join(sickrage.DATA_DIR, filename)
 
 
 class Transaction(object):
@@ -236,7 +236,7 @@ class Connection(object):
         """
 
         with futures.ThreadPoolExecutor(len(queries)) as executor, self.transaction() as tx:
-            sqlResults = [executor.submit(tx.upsert, q).result() for q in queries]
+            sqlResults = [executor.submit(tx.query, q).result() for q in queries]
             sickrage.srLogger.db("{} Transactions executed".format(len(queries)))
             return sqlResults
 

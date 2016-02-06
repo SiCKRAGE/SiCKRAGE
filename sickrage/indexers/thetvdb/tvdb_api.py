@@ -136,8 +136,6 @@ class Show(dict):
             # Non-numeric request is for show-data
             return self.data[key]
 
-        raise AttributeError
-
     def __getitem__(self, key):
         if key in self:
             # Key is an episode, return it
@@ -200,7 +198,6 @@ class Season(dict):
     def __getattr__(self, episode_number):
         if episode_number in self:
             return self[episode_number]
-        raise AttributeError
 
     def __getitem__(self, episode_number):
         if episode_number not in self:
@@ -241,7 +238,6 @@ class Episode(dict):
     def __getattr__(self, key):
         if key in self:
             return self[key]
-        raise AttributeError
 
     def __getitem__(self, key):
         try:

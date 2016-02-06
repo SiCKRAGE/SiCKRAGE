@@ -25,12 +25,12 @@ import re
 import shutil
 import socket
 import sys
-import threading
 import traceback
 import urllib
 import urlparse
 
 from datetime import datetime
+from tornado.ioloop import IOLoop
 
 import sickrage
 from core.caches.name_cache import srNameCache
@@ -91,33 +91,18 @@ urlparse.uses_netloc.append('scgi')
 
 
 class srCore(object):
-    def __init__(self, prog_dir, data_dir):
+    def __init__(self):
         self.STARTED = False
         self.PID = None
 
         # init system encoding
         self.SYS_ENCODING = encodingInit()
 
-        # main program folder
-        self.PROG_DIR = prog_dir
-
-        # Make sure that we can create the data dir
-        self.DATA_DIR = data_dir
-        if not os.access(self.DATA_DIR, os.F_OK):
-            try:
-                os.makedirs(self.DATA_DIR, 0o744)
-            except os.error:
-                raise SystemExit("Unable to create data directory '" + self.DATA_DIR + "'")
-
-        # Make sure we can write to the data dir
-        if not os.access(self.DATA_DIR, os.W_OK):
-            raise SystemExit("Data directory must be writeable '" + self.DATA_DIR + "'")
-
         # Check if we need to perform a restore first
-        os.chdir(self.DATA_DIR)
-        restore_dir = os.path.join(self.DATA_DIR, 'restore')
+        os.chdir(sickrage.DATA_DIR)
+        restore_dir = os.path.join(sickrage.DATA_DIR, 'restore')
         if os.path.exists(restore_dir):
-            success = restoreDB(restore_dir, self.DATA_DIR)
+            success = restoreDB(restore_dir, sickrage.DATA_DIR)
             print("Restore: restoring DB and config.ini %s!\n" % ("FAILED", "SUCCESSFUL")[success])
             if success:
                 os.execl(sys.executable, sys.executable, *sys.argv)
@@ -256,7 +241,7 @@ class srCore(object):
 
         # Check if we need to perform a restore of the cache folder
         try:
-            restore_dir = os.path.join(self.DATA_DIR, 'restore')
+            restore_dir = os.path.join(sickrage.DATA_DIR, 'restore')
             if os.path.exists(restore_dir) and os.path.exists(os.path.join(restore_dir, 'cache')):
                 def restore_cache(src_dir, dst_dir):
                     def path_leaf(path):
@@ -277,9 +262,9 @@ class srCore(object):
         except Exception as e:
             sickrage.srLogger.error("Restore: restoring cache failed: {}".format(e.message))
         finally:
-            if os.path.exists(os.path.join(self.DATA_DIR, 'restore')):
+            if os.path.exists(os.path.join(sickrage.DATA_DIR, 'restore')):
                 try:
-                    removetree(os.path.join(self.DATA_DIR, 'restore'))
+                    removetree(os.path.join(sickrage.DATA_DIR, 'restore'))
                 except Exception as e:
                     sickrage.srLogger.error("Restore: Unable to remove the restore directory: {}".format(e.message))
 
@@ -486,8 +471,8 @@ class srCore(object):
         )
         (job.pause, job.resume)[sickrage.srConfig.USE_SUBTITLES]()
 
-        # start scheduler
-        threading.Thread(None, self.SCHEDULER.start, 'SCHEDULER').start()
+        # add scheduler callback
+        IOLoop.instance().add_callback(self.SCHEDULER.start)
 
     def halt(self):
         sickrage.srLogger.info("Aborting all threads")

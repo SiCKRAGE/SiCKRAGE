@@ -51,7 +51,7 @@ class synologyNotifier(srNotifiers):
         sickrage.srLogger.debug("Absolute path to command: " + os.path.abspath(synodsmnotify_cmd[0]))
         try:
             p = subprocess.Popen(synodsmnotify_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                 cwd=sickrage.srCore.PROG_DIR)
+                                 cwd=sickrage.PROG_DIR)
             out, err = p.communicate()  # @UnusedVariable
             sickrage.srLogger.debug("Script result: " + str(out))
         except OSError as e:

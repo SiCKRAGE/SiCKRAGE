@@ -308,8 +308,8 @@
                     % endif
                     Load time: <span class="footerhighlight">${"%.4f" % (time() - srStartTime)}s</span> / Mako: <span
                         class="footerhighlight">${"%.4f" % (time() - makoStartTime)}s</span> |
-                    Branch: <span class="footerhighlight">${sickrage.srCore.VERSION}</span> |
-                    Now: <span class="footerhighlight">${datetime.now(tz_updater.sr_timezone)}</span>
+                    Version: <span class="footerhighlight">${sickrage.srCore.VERSION}</span> |
+                    Now: <span class="footerhighlight">${str(datetime.now(tz_updater.sr_timezone)).split('.')[0]}</span>
                 </div>
             </div>
         </footer>

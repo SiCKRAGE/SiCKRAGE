@@ -42,7 +42,7 @@ from providers import NewznabProvider, TorrentRssProvider, GenericProvider
 
 class srConfig(object):
     def __init__(self, config_file):
-        self.CONFIG_FILE = os.path.abspath(os.path.join(sickrage.srCore.DATA_DIR, config_file))
+        self.CONFIG_FILE = os.path.abspath(os.path.join(sickrage.DATA_DIR, config_file))
         self.CONFIG_VERSION = 7
         self.ENCRYPTION_VERSION = 0
         self.ENCRYPTION_SECRET = None
@@ -1008,7 +1008,7 @@ class srConfig(object):
 
         # misc settings
         self.GUI_NAME = self.check_setting_str('GUI', 'gui_name', 'slick')
-        self.GUI_DIR = os.path.join(sickrage.srCore.PROG_DIR, 'core', 'webserver', 'gui', self.GUI_NAME)
+        self.GUI_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'gui', self.GUI_NAME)
         self.THEME_NAME = self.check_setting_str('GUI', 'theme_name', 'dark')
         self.SOCKET_TIMEOUT = self.check_setting_int('General', 'socket_timeout', 30)
 
@@ -1031,7 +1031,7 @@ class srConfig(object):
         # cache settings
         self.CACHE_DIR = self.check_setting_str('General', 'cache_dir', 'cache')
         if not os.path.isabs(self.CACHE_DIR):
-            self.CACHE_DIR = os.path.join(sickrage.srCore.DATA_DIR, self.CACHE_DIR)
+            self.CACHE_DIR = os.path.join(sickrage.DATA_DIR, self.CACHE_DIR)
 
         # web settings
         if not self.WEB_PORT:
@@ -1069,9 +1069,9 @@ class srConfig(object):
             self.ENABLE_HTTPS = bool(self.check_setting_int('General', 'enable_https', 0))
 
         self.HTTPS_CERT = os.path.abspath(
-            os.path.join(sickrage.srCore.PROG_DIR, self.check_setting_str('General', 'https_cert', 'server.crt')))
+            os.path.join(sickrage.PROG_DIR, self.check_setting_str('General', 'https_cert', 'server.crt')))
         self.HTTPS_KEY = os.path.abspath(
-            os.path.join(sickrage.srCore.PROG_DIR, self.check_setting_str('General', 'https_key', 'server.key')))
+            os.path.join(sickrage.PROG_DIR, self.check_setting_str('General', 'https_key', 'server.key')))
 
         self.HANDLE_REVERSE_PROXY = bool(self.check_setting_int('General', 'handle_reverse_proxy', 0))
 
@@ -1663,7 +1663,7 @@ class srConfig(object):
         new_config[b'General'][b'encryption_version'] = int(self.ENCRYPTION_VERSION)
         new_config[b'General'][b'encryption_secret'] = self.ENCRYPTION_SECRET
         new_config[b'General'][b'log_dir'] = os.path.abspath(
-            os.path.join(sickrage.srCore.DATA_DIR, self.LOG_DIR or 'Logs'))
+            os.path.join(sickrage.DATA_DIR, self.LOG_DIR or 'Logs'))
         new_config[b'General'][b'log_nr'] = int(self.LOG_NR)
         new_config[b'General'][b'log_size'] = int(self.LOG_SIZE)
         new_config[b'General'][b'socket_timeout'] = self.SOCKET_TIMEOUT

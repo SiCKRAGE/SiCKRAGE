@@ -794,7 +794,7 @@ class PostProcessor(object):
             self._log("Executing command " + str(script_cmd))
             try:
                 p = subprocess.Popen(script_cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT, cwd=sickrage.srCore.PROG_DIR)
+                                     stderr=subprocess.STDOUT, cwd=sickrage.PROG_DIR)
                 out, _ = p.communicate()  # @UnusedVariable
                 self._log("Script result: " + str(out), sickrage.srLogger.DEBUG)
 

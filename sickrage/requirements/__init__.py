@@ -19,18 +19,24 @@
 
 from __future__ import unicode_literals
 
+import ctypes
 import os
 import sys
 
 import urllib3.contrib
 
+def root_check():
+    try:
+        return not os.getuid() == 0
+    except AttributeError:
+        return not ctypes.windll.shell32.IsUserAnAdmin() != 0
 
-def install_pip(path, user=False):
+def install_pip():
     print("Downloading pip ...")
     import urllib2
 
     url = "https://bootstrap.pypa.io/get-pip.py"
-    file_name = os.path.join(path, url.split('/')[-1])
+    file_name = os.path.abspath(os.path.join(os.path.dirname(__file__), url.split('/')[-1]))
     u = urllib2.urlopen(url)
     with open(file_name, 'wb') as f:
         meta = u.info()
@@ -43,32 +49,33 @@ def install_pip(path, user=False):
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, file_name] + ([], ['--user'])[user])
+    subprocess.call([sys.executable, file_name] + ([], ['--user'])[root_check()])
 
     print("Cleaning up downloaded pip files")
     os.remove(file_name)
 
 
-def install_packages(path, constraints, user=False):
+def install_packages(file):
     import pip
     from pip.commands.install import InstallCommand
     from pip.exceptions import InstallationError
 
+    constraints = os.path.abspath(os.path.join(os.path.dirname(__file__), 'constraints.txt'))
     pip_install_cmd = InstallCommand()
 
     # list installed packages
     try:
-        installed = [x.project_name.lower() for x in pip.get_installed_distributions(local_only=True, user_only=user)]
+        installed = [x.project_name.lower() for x in pip.get_installed_distributions(local_only=True, user_only=root_check())]
     except:
         installed = []
 
     # read requirements file
-    with open(path) as f:
+    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), file))) as f:
         packages = [x.strip() for x in f.readlines() if x.strip().lower() not in installed]
 
     # install requirements packages
     options = pip_install_cmd.parse_args([])[0]
-    options.use_user_site = user
+    options.use_user_site = root_check()
     options.constraints = [constraints]
     options.quiet = 1
 
@@ -80,7 +87,8 @@ def install_packages(path, constraints, user=False):
             try:
                 options.ignore_dependencies = True
                 pip_install_cmd.run(options, [pkg_name])
-            except:continue
+            except:
+                continue
         except IndexError:
             continue
 
@@ -88,22 +96,20 @@ def install_packages(path, constraints, user=False):
         return True
 
 
-def upgrade_packages(constraints, user=False):
+def upgrade_packages():
     from pip.commands.list import ListCommand
     from pip.commands.install import InstallCommand
     from pip.exceptions import InstallationError
 
-    packages = []
-
+    constraints = os.path.abspath(os.path.join(os.path.dirname(__file__), 'constraints.txt'))
     pip_install_cmd = InstallCommand()
     pip_list_cmd = ListCommand()
-
 
     while True:
         # list packages that need upgrading
         try:
             options = pip_list_cmd.parse_args([])[0]
-            options.use_user_site = user
+            options.use_user_site = root_check()
             options.cache_dir = None
             options.outdated = True
 
@@ -113,7 +119,7 @@ def upgrade_packages(constraints, user=False):
             packages = []
 
         options = pip_install_cmd.parse_args([])[0]
-        options.use_user_site = user
+        options.use_user_site = root_check()
         options.constraints = [constraints]
         options.cache_dir = None
         options.upgrade = True
@@ -127,43 +133,42 @@ def upgrade_packages(constraints, user=False):
                 try:
                     options.ignore_dependencies = True
                     pip_install_cmd.run(options, [pkg_name])
-                except:continue
+                except:
+                    continue
             except IndexError:
                 continue
         else:
             break
 
-def install_ssl(path, constraints, user=False):
+
+def install_ssl():
     try:
         print("Installing and Patching SiCKRAGE SSL Contexts")
-        # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
         import urllib3.contrib.pyopenssl
         urllib3.contrib.pyopenssl.inject_into_urllib3()
         urllib3.contrib.pyopenssl.DEFAULT_SSL_CIPHER_LIST = "MEDIUM"
     except ImportError:
-        return install_packages(path, constraints, user)
+        install_packages("ssl.txt")
+        os.execl(sys.executable, sys.executable, *sys.argv)
 
 
-def install_requirements(path, optional=False, ssl=False, user=False):
-    constraints = os.path.abspath(os.path.join(path, 'constraints.txt'))
-
+def install_requirements(optional=False, ssl=False):
     # install ssl packages
     if ssl:
         try:
-            if install_ssl(os.path.abspath(os.path.join(path, 'ssl.txt')), constraints, user):
-                os.execl(sys.executable, sys.executable, *sys.argv)
+            install_ssl()
         except:
             pass
 
     print("Checking for required SiCKRAGE packages, please stand by ...")
-    install_packages(os.path.abspath(os.path.join(path, 'requirements.txt')), constraints, user)
+    install_packages('requirements.txt')
 
     if optional:
         print("Checking for optional SiCKRAGE packages, please stand by ...")
         try:
-            install_packages(os.path.abspath(os.path.join(path, 'optional.txt')), constraints, user)
+            install_packages('optional.txt')
         except:
             pass
 
     print("Checking for upgradable SiCKRAGE packages, please stand by ...")
-    upgrade_packages(constraints, user)
+    upgrade_packages()
