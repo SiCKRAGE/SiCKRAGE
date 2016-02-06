@@ -382,7 +382,7 @@ class WebRoot(WebHandler):
 
     def schedule(self, layout=None):
         next_week = date.today() + timedelta(days=7)
-        next_week1 = datetime.combine(next_week, datetime.now().replace(tzinfo=tz_updater.sr_timezone))
+        next_week1 = datetime.combine(next_week, datetime.now().time().replace(tzinfo=tz_updater.sr_timezone))
         results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickrage.srConfig.COMING_EPS_SORT,
                                                      False)
         today = datetime.now().replace(tzinfo=tz_updater.sr_timezone)
@@ -5123,12 +5123,8 @@ class ErrorLogs(WebRoot):
 
         try:
             for logFile in [x for x in logFiles if os.path.isfile(x)]:
-                data += "\n".join(logRegex.findall(
-                    "\n".join(re.findall(
-                        "((?:^.+?{}.+?$))".format(logSearch),
-                        "\n".join(next(readFileBuffered(
-                            logFile, reverse=True)).splitlines(True)[::-1]),
-                        re.S + re.M + re.I)))[:maxLines])
+                data += "\n".join(logRegex.findall("\n".join(re.findall("((?:^.+?{}.+?$))".format(logSearch), "\n".join(
+                    list(readFileBuffered(logFile, reverse=True))[::-1]), re.S + re.M + re.I)))[:maxLines])
 
                 maxLines -= len(data)
                 if len(data) == maxLines:

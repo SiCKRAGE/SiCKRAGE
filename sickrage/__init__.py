@@ -132,6 +132,8 @@ def main():
         print("Sorry, SiCKRAGE requires Python 2.7+")
         sys.exit(1)
 
+    print("Starting SiCKRAGE ...")
+
     # add sickrage module to python system path
     path = os.path.dirname(os.path.realpath(__file__))
     if path not in sys.path:
@@ -298,5 +300,4 @@ def main():
     sys.exit(0)
 
 if __name__ == '__main__':
-    print("Starting SiCKRAGE ...")
     main()

@@ -523,7 +523,7 @@ class srConfig(object):
                 return False
 
             self.LOG_DIR = new_log_dir
-            self.LOG_FILE = os.path.join(self.LOG_DIR, 'sickrage.log')
+            self.LOG_FILE = os.path.abspath(os.path.join(self.LOG_DIR, 'sickrage.log'))
 
             sickrage.srLogger.logFile = self.LOG_FILE
             sickrage.srLogger.logSize = self.LOG_SIZE
@@ -1000,10 +1000,11 @@ class srConfig(object):
         self.DEVELOPER = bool(self.check_setting_int('General', 'developer', 0))
 
         # logging settings
-        self.LOG_DIR = self.check_setting_str('General', 'log_dir', 'Logs')
         self.LOG_NR = self.check_setting_int('General', 'log_nr', 5)
         self.LOG_SIZE = self.check_setting_int('General', 'log_size', 1048576)
-        self.LOG_FILE = self.check_setting_str('General', 'log_file', 'sickrage.log')
+        self.LOG_DIR = self.check_setting_str('General', 'log_dir', 'Logs')
+        self.LOG_FILE = os.path.abspath(
+            os.path.join(self.LOG_DIR, self.check_setting_str('General', 'log_file', 'sickrage.log')))
 
         # misc settings
         self.GUI_NAME = self.check_setting_str('GUI', 'gui_name', 'slick')
