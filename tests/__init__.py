@@ -119,8 +119,8 @@ def createTestCacheFolder():
 import core
 
 threading.Thread(None, IOLoop.instance().start).start()
-sickrage.srCore = core.srCore(TESTCONFIGNAME, PROG_DIR, TESTDIR)
-
+sickrage.srCore = core.srCore(PROG_DIR, TESTDIR)
+sickrage.srConfig(TESTCONFIGNAME)
 sickrage.srConfig.load_config()
 sickrage.srConfig.SSL_VERIFY = False
 sickrage.srConfig.PROXY_SETTING = ''
@@ -164,9 +164,11 @@ sickrage.srConfig.LOG_FILE = os.path.join(sickrage.srConfig.LOG_DIR, 'sickrage.l
 sickrage.srConfig.LOG_NR = 5
 sickrage.srConfig.LOG_SIZE = 1048576
 
-sickrage.srCore.LOGGER = srLogger(logFile=sickrage.srConfig.LOG_FILE, logSize=sickrage.srConfig.LOG_SIZE,
-                                  logNr=sickrage.srConfig.LOG_NR,
-                                  fileLogging=sickrage.srConfig.LOG_DIR, debugLogging=True)
+sickrage.srLogger = srLogger(logFile=sickrage.srConfig.LOG_FILE,
+                             logSize=sickrage.srConfig.LOG_SIZE,
+                             logNr=sickrage.srConfig.LOG_NR,
+                             fileLogging=sickrage.srConfig.LOG_DIR,
+                             debugLogging=True)
 
 sickrage.srConfig.GIT_USERNAME = sickrage.srConfig.check_setting_str('General', 'git_username', '')
 sickrage.srConfig.GIT_PASSWORD = sickrage.srConfig.check_setting_str('General', 'git_password', '')

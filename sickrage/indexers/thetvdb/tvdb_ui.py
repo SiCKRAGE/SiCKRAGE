@@ -24,8 +24,7 @@ import sickrage
 from tvdb_exceptions import tvdb_userabort
 
 def log():
-
-    return sickrage.srCore.LOGGER
+    return sickrage.srLogger
 
 class BaseUI:
     """Default non-interactive UI, which auto-selects first results

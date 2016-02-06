@@ -36,7 +36,6 @@ from core.helpers import backupVersionedFile, decrypt, encrypt, makeDir, generat
 from core.nameparser import validator
 from core.nameparser.validator import check_force_season_folders
 from core.searchers import backlog_searcher
-from core.srlogger import srLogger
 from core.srscheduler import srIntervalTrigger
 from providers import NewznabProvider, TorrentRssProvider, GenericProvider
 
@@ -525,11 +524,13 @@ class srConfig(object):
 
             self.LOG_DIR = new_log_dir
             self.LOG_FILE = os.path.join(self.LOG_DIR, 'sickrage.log')
-            sickrage.srCore.LOGGER = srLogger(logFile=self.LOG_FILE,
-                                              logSize=self.LOG_SIZE,
-                                              logNr=self.LOG_NR,
-                                              fileLogging=True,
-                                              debugLogging=self.DEBUG)
+
+            sickrage.srLogger.logFile = self.LOG_FILE
+            sickrage.srLogger.logSize = self.LOG_SIZE
+            sickrage.srLogger.logNr = self.LOG_NR
+            sickrage.srLogger.fileLogging = True
+            sickrage.srLogger.debugLogging = self.DEBUG
+            sickrage.srLogger.start()
 
             sickrage.srLogger.info("Initialized new log file in " + self.LOG_DIR)
             if self.WEB_LOG != web_log:
@@ -1660,7 +1661,8 @@ class srConfig(object):
         new_config[b'General'][b'config_version'] = self.CONFIG_VERSION
         new_config[b'General'][b'encryption_version'] = int(self.ENCRYPTION_VERSION)
         new_config[b'General'][b'encryption_secret'] = self.ENCRYPTION_SECRET
-        new_config[b'General'][b'log_dir'] = os.path.abspath(os.path.join(sickrage.srCore.DATA_DIR, self.LOG_DIR or 'Logs'))
+        new_config[b'General'][b'log_dir'] = os.path.abspath(
+            os.path.join(sickrage.srCore.DATA_DIR, self.LOG_DIR or 'Logs'))
         new_config[b'General'][b'log_nr'] = int(self.LOG_NR)
         new_config[b'General'][b'log_size'] = int(self.LOG_SIZE)
         new_config[b'General'][b'socket_timeout'] = self.SOCKET_TIMEOUT

@@ -39,6 +39,7 @@ class srLogger(logging.getLoggerClass()):
     def __init__(self, logFile=None, logSize=1048576, logNr=5, consoleLogging=True, fileLogging=True,
                  debugLogging=False, *args, **kwargs):
         super(srLogger, self).__init__("sickrage")
+        self.propagate = False
 
         self.censored_items = {}
 
@@ -102,6 +103,9 @@ class srLogger(logging.getLoggerClass()):
         self.start()
 
     def start(self):
+        # remove all handlers
+        self.handlers = []
+
         # console log handler
         if self.consoleLogging:
             console = logging.StreamHandler()
