@@ -222,15 +222,6 @@ def main():
             # install required packages
             install_requirements(path=REQS_DIR, optional=INSTALL_OPTIONAL, ssl=SSL, user=root_check())
 
-        import core
-        from core.helpers import makeDir
-
-        # init logger
-        srLogger = core.srLogger()
-
-        srLogger.info("SiCKRAGE INITIALIZING ...")
-        srCore = core.srCore(PROG_DIR, DATA_DIR)
-
         # daemonize sickrage
         if DAEMONIZE:
             import daemon
@@ -240,7 +231,14 @@ def main():
         else:
             CREATEPID = False
 
-        # sickrage pid
+        import core
+        from core.helpers import makeDir
+
+        # init logger
+        srLogger = core.srLogger()
+
+        srLogger.info("SiCKRAGE INITIALIZING ...")
+        srCore = core.srCore(PROG_DIR, DATA_DIR)
         srCore.PID = os.getpid()
 
         # create pid file
