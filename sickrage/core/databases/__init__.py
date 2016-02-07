@@ -218,8 +218,9 @@ class Connection(object):
         :return: list of results
         """
 
+        from itertools import izip
         with futures.ThreadPoolExecutor(10) as executor, self.transaction() as tx:
-            sqlResults = executor.map(tx.upsert, upserts)
+            sqlResults = executor.map(tx.upsert, *izip(*upserts))
             sickrage.srLogger.db("{} Upserts executed".format(len(upserts)))
             return sqlResults
 

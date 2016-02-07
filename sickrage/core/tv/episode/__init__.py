@@ -165,7 +165,7 @@ class TVEpisode(object):
                 else:
                     new_result = False
                 cur_nfo = new_result or cur_nfo
-                sickrage.srLogger.debug("{}: Checking if NFO: [{}] exists: [{}]"
+                sickrage.srLogger.debug("{}: [{}] has metadata files: [{}]"
                                         .format(cur_provider.name, os.path.split(self.location)[1], cur_nfo))
 
                 if cur_provider.episode_thumbnails:
@@ -173,7 +173,7 @@ class TVEpisode(object):
                 else:
                     new_result = False
                 cur_tbn = new_result or cur_tbn
-                sickrage.srLogger.debug("{}: Checking if thumbnail: [{}] exists: [{}]"
+                sickrage.srLogger.debug("{}: [{}] has thumbnail files: [{}]"
                                         .format(cur_provider.name, os.path.split(self.location)[1], cur_tbn))
 
         self.hasnfo = cur_nfo
