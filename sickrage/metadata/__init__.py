@@ -30,11 +30,10 @@ import fanart.core
 import requests
 import tmdbsimple as tmdb
 
-import metadata_helpers
 import sickrage
 from core.helpers import chmodAsParent, indentXML, replaceExtension, \
     validateShow
-from core.helpers.show_names import allPossibleShowNames
+from helpers import getShowImage
 from indexers.indexer_exceptions import indexer_error
 
 
@@ -147,7 +146,6 @@ class GenericMetadata(object):
     def _check_exists(location):
         if location:
             result = os.path.isfile(location)
-            sickrage.srLogger.debug("Checking if " + location + " exists: " + str(result))
             return result
         return False
 
@@ -503,7 +501,7 @@ class GenericMetadata(object):
             sickrage.srLogger.debug("No thumb is available for this episode, not creating a thumb")
             return False
 
-        thumb_data = metadata_helpers.getShowImage(thumb_url)
+        thumb_data = getShowImage(thumb_url)
 
         result = self._write_image(thumb_data, file_path)
 
@@ -605,7 +603,7 @@ class GenericMetadata(object):
                 sickrage.srLogger.debug("Path for season " + str(cur_season) + " came back blank, skipping this season")
                 continue
 
-            seasonData = metadata_helpers.getShowImage(season_url)
+            seasonData = getShowImage(season_url)
 
             if not seasonData:
                 sickrage.srLogger.debug("No season poster data available, skipping this season")
@@ -651,7 +649,7 @@ class GenericMetadata(object):
                 sickrage.srLogger.debug("Path for season " + str(cur_season) + " came back blank, skipping this season")
                 continue
 
-            seasonData = metadata_helpers.getShowImage(season_url)
+            seasonData = getShowImage(season_url)
 
             if not seasonData:
                 sickrage.srLogger.debug("No season banner data available, skipping this season")
@@ -791,7 +789,7 @@ class GenericMetadata(object):
                 image_url = self._retrieve_show_images_from_tmdb(show_obj, image_type)
 
         if image_url:
-            image_data = metadata_helpers.getShowImage(image_url, which)
+            image_data = getShowImage(image_url, which)
             return image_data
 
         return None
@@ -1014,6 +1012,7 @@ class GenericMetadata(object):
 
         try:
             search = tmdb.Search()
+            from core.helpers.show_names import allPossibleShowNames
             for show_name in set(allPossibleShowNames(show)):
                 for result in search.collection(query=show_name)[b'results'] + search.tv(query=show_name)[b'results']:
                     if types[img_type] and getattr(result, types[img_type]):

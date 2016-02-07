@@ -218,8 +218,8 @@ class Connection(object):
         :return: list of results
         """
 
-        with futures.ThreadPoolExecutor(len(upserts)) as executor, self.transaction() as tx:
-            sqlResults = [executor.submit(tx.upsert, u[0], u[1], u[2]).result() for u in upserts]
+        with futures.ThreadPoolExecutor(10) as executor, self.transaction() as tx:
+            sqlResults = executor.map(tx.upsert, upserts)
             sickrage.srLogger.db("{} Upserts executed".format(len(upserts)))
             return sqlResults
 
@@ -231,8 +231,8 @@ class Connection(object):
         :return: list of results
         """
 
-        with futures.ThreadPoolExecutor(len(queries)) as executor, self.transaction() as tx:
-            sqlResults = [executor.submit(tx.query, q).result() for q in queries]
+        with futures.ThreadPoolExecutor(10) as executor, self.transaction() as tx:
+            sqlResults = executor.map(tx.query, queries)
             sickrage.srLogger.db("{} Transactions executed".format(len(queries)))
             return sqlResults
 

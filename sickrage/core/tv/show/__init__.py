@@ -610,15 +610,22 @@ class TVShow(object):
                     checkQualityAgain = True
 
                 with curEp.lock:
-                    old_size = curEp.file_size
                     curEp.location = file
+
                     # if the sizes are the same then it's probably the same file
+                    old_size = curEp.file_size
                     if old_size and curEp.file_size == old_size:
                         same_file = True
                     else:
                         same_file = False
 
                     curEp.checkForMetaFiles()
+
+                    # tries to fix episodes with a UNKNOWN quality set to them
+                    oldStatus, oldQuality = Quality.splitCompositeStatus(curEp.status)
+                    if oldQuality == Quality.UNKNOWN:
+                        newQuality = Quality.nameQuality(file, self.is_anime)
+                        curEp.status = Quality.compositeStatus(oldStatus, newQuality)
 
             if rootEp is None:
                 rootEp = curEp
@@ -804,8 +811,8 @@ class TVShow(object):
             self.runtime = safe_getattr(myEp, 'runtime', self.runtime)
             self.imdbid = safe_getattr(myEp, 'imdb_id', self.imdbid)
             self.tmdbid = safe_getattr(myEp, 'tmdb_id', self.tmdbid)
-            self.airs = safe_getattr(myEp, 'airs_dayofweek', self.airs) + " " + safe_getattr(myEp, 'airs_time', self.airs)
-            self.startyear = tryInt(str(safe_getattr(myEp, 'firstaired', self.startyear)).split('-')[0])
+            self.airs = safe_getattr(myEp, 'airs_dayofweek', "") + " " + safe_getattr(myEp, 'airs_time', "")
+            self.startyear = tryInt(str(safe_getattr(myEp, 'firstaired', "0000-00-00")).split('-')[0])
             self.status = safe_getattr(myEp, 'status', self.status)
         else:
             sickrage.srLogger.warning(

@@ -24,11 +24,8 @@ from __future__ import print_function, unicode_literals
 import operator
 import os.path
 import re
-from itertools import chain
 
 import six
-
-from core.helpers import readFileBuffered
 
 if six.PY3:
     # noinspection PyUnresolvedReferences
@@ -292,56 +289,18 @@ class Quality(object):
     @staticmethod
     def assumeQuality(name):
         """
-        Assume a quality from file extension if we cannot resolve it otherwise
+        Assume a quality from file name or extension if we cannot resolve it otherwise
 
         :param name: File name of episode to analyse
         :return: Quality prefix
         """
 
-        quality = Quality.qualityFromFileMeta(name)
+        from metadata.helpers import qualityFromFileMeta
+        quality = qualityFromFileMeta(name)
         if quality != Quality.UNKNOWN:
             return quality
         elif name.lower().endswith(".ts"):
             return Quality.RAWHDTV
-
-        return Quality.UNKNOWN
-
-    @staticmethod
-    def qualityFromFileMeta(filename):
-        """
-        Get quality from file metadata
-
-        :param filename: Filename to analyse
-        :return: Quality prefix
-        """
-
-        from hachoir_core.stream import StringInputStream
-        from hachoir_parser import guessParser
-        from hachoir_metadata import extractMetadata
-        from hachoir_core import config as hachoir_config
-        hachoir_config.quiet = True
-
-        if os.path.isfile(filename):
-            base_filename = os.path.basename(filename)
-            bluray = re.search(r"blue?-?ray|hddvd|b[rd](rip|mux)", base_filename, re.I) is not None
-            webdl = re.search(r"web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
-
-            for byte in readFileBuffered(filename):
-                try:
-                    file_metadata = extractMetadata(guessParser(StringInputStream(byte)))
-                    for metadata in chain([file_metadata], file_metadata.iterGroups()):
-                        height = metadata.get('height', 0)
-                        if height > 1000:
-                            return ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
-                        elif 680 < height < 800:
-                            return ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
-                        elif height < 680:
-                            return (Quality.SDTV, Quality.SDDVD)[
-                                re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
-                    # clean up
-                    del file_metadata
-                except:
-                    continue
 
         return Quality.UNKNOWN
 

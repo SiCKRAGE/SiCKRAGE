@@ -213,11 +213,11 @@ def main():
 
         # Specify folder to use as the data dir
         if o in ('--datadir',):
-            DATA_DIR = os.path.abspath(a)
+            DATA_DIR = os.path.abspath(os.path.expanduser(a))
 
         # Specify folder to load the config file from
         if o in ('--config',):
-            CONFIG_FILE = os.path.abspath(a)
+            CONFIG_FILE = os.path.abspath(os.path.expanduser(a))
 
         # Prevent resizing of the banner/posters even if PIL is installed
         if o in ('--noresize',):

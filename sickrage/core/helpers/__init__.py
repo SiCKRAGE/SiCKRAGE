@@ -52,7 +52,7 @@ subtitleExtensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
 def safe_getattr(object, name, default=None):
     try:
         return getattr(object, name, default)
-    except AttributeError:
+    except:
         return default
 
 
@@ -1375,6 +1375,7 @@ def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=N
             [i.raw.release_conn() for i in resp.history]
             resp.raw.release_conn()
 
+
 def download_file(url, filename, session=None, headers=None):
     """
     Downloads a file specified
@@ -1434,6 +1435,7 @@ def download_file(url, filename, session=None, headers=None):
         remove_file_failed(filename)
         sickrage.srLogger.warning(
             "Unknown exception while loading download URL %s : %r" % (url, traceback.format_exc()))
+
 
 def get_size(start_path='.'):
     """
@@ -1806,3 +1808,10 @@ def bs4_parser(markup, features="html5lib", *args, **kwargs):
         yield _soup
     finally:
         _soup.clear(True)
+
+
+def getFileSize(file):
+    try:
+        return os.path.getsize(file) / 1024 / 1024
+    except:
+        return None
