@@ -30,7 +30,6 @@ import urllib
 import urlparse
 
 from datetime import datetime
-from tornado.ioloop import IOLoop
 
 import sickrage
 from core.caches.name_cache import srNameCache
@@ -472,7 +471,7 @@ class srCore(object):
         (job.pause, job.resume)[sickrage.srConfig.USE_SUBTITLES]()
 
         # add scheduler callback
-        IOLoop.instance().add_callback(self.SCHEDULER.start)
+        self.SCHEDULER.start()
 
     def halt(self):
         sickrage.srLogger.info("Aborting all threads")

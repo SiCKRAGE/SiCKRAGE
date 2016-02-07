@@ -154,16 +154,11 @@ class DailySearchQueueItem(QueueItem):
 
                     # give the CPU a break
                     gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
-
-            QueueItem.finish(self)
         except Exception:
             sickrage.srLogger.debug(traceback.format_exc())
 
         if self.success is None:
             self.success = False
-
-        self.finish()
-
 
 class ManualSearchQueueItem(QueueItem):
     def __init__(self, show, segment, downCurQuality=False):
@@ -208,9 +203,6 @@ class ManualSearchQueueItem(QueueItem):
         if self.success is None:
             self.success = False
 
-        self.finish()
-
-
 class BacklogQueueItem(QueueItem):
     def __init__(self, show, segment):
         QueueItem.__init__(self, 'Backlog', BACKLOG_SEARCH)
@@ -240,9 +232,6 @@ class BacklogQueueItem(QueueItem):
                     sickrage.srLogger.info("No needed episodes found during backlog search for: [" + self.show.name + "]")
             except Exception:
                 sickrage.srLogger.debug(traceback.format_exc())
-
-        self.finish()
-
 
 class FailedQueueItem(QueueItem):
     def __init__(self, show, segment, downCurQuality=False):
@@ -297,9 +286,6 @@ class FailedQueueItem(QueueItem):
 
         if self.success is None:
             self.success = False
-
-        self.finish()
-
 
 def fifo(myList, item, maxSize=100):
     if len(myList) >= maxSize:

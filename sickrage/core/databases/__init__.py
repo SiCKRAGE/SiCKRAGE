@@ -18,7 +18,7 @@
 
 from __future__ import unicode_literals
 
-from concurrent import futures
+import queue
 
 __all__ = ["main_db", "cache_db", "failed_db"]
 
@@ -87,7 +87,7 @@ class Transaction(object):
         if empty:
             self.db._db_lock.release()
 
-    def query(self, query):
+    def query(self, query, sql_rq):
         """Execute an SQL statement with substitution values and return
         a list of rows from the database.
         """
@@ -109,10 +109,9 @@ class Transaction(object):
                 except Exception as e:
                     sickrage.srLogger.error("QUERY: {} ERROR: {}".format(query, e.message))
                 finally:
-                    return result
+                    return sql_rq.put(result)
 
-
-    def upsert(self, tableName, valueDict, keyDict):
+    def upsert(self, tableName, valueDict, keyDict, sql_rq):
         """
         Update values, or if no updates done, insert values
 
@@ -126,7 +125,7 @@ class Transaction(object):
             genParams = lambda myDict: [x + " = ?" for x in myDict.keys()]
             query = ["UPDATE [" + tableName + "] SET " + ", ".join(
                 genParams(valueDict)) + " WHERE " + " AND ".join(genParams(keyDict)),
-                               valueDict.values() + keyDict.values()]
+                     valueDict.values() + keyDict.values()]
 
             cursor.execute(*query)
             if not conn.total_changes:
@@ -136,7 +135,7 @@ class Transaction(object):
                     ["?"] * len(valueDict.keys() + keyDict.keys())) + ")", valueDict.values() + keyDict.values()]
                 cursor.execute(*query)
 
-            return (False, True)[conn.total_changes > 0]
+            return sql_rq.put((False, True)[conn.total_changes > 0])
 
 class Connection(object):
     def __init__(self, filename=None, suffix=None, row_type=None, timeout=None):
@@ -165,7 +164,6 @@ class Connection(object):
                 yield self._connections[thread_id]
             finally:
                 self._connections[thread_id].commit()
-
 
     @contextmanager
     def _conn_cursor(self):
@@ -222,10 +220,11 @@ class Connection(object):
         :return: list of results
         """
 
-        with futures.ThreadPoolExecutor(len(upserts)) as executor, self.transaction() as tx:
-            sqlResults = [executor.submit(tx.upsert, u[0], u[1], u[2]).result() for u in upserts]
+        with self.transaction() as tx:
+            sql_rq = queue.Queue()
+            [threading.Thread(target=tx.upsert, args=(u[0], u[1], u[2], sql_rq,)).start() for u in upserts]
             sickrage.srLogger.db("{} Upserts executed".format(len(upserts)))
-            return sqlResults
+            return sql_rq.get()
 
     def mass_action(self, queries):
         """
@@ -235,10 +234,11 @@ class Connection(object):
         :return: list of results
         """
 
-        with futures.ThreadPoolExecutor(len(queries)) as executor, self.transaction() as tx:
-            sqlResults = [executor.submit(tx.query, q).result() for q in queries]
+        with self.transaction() as tx:
+            sql_rq = queue.Queue()
+            [threading.Thread(target=tx.query, args=(q, sql_rq,)).start() for q in queries]
             sickrage.srLogger.db("{} Transactions executed".format(len(queries)))
-            return sqlResults
+            return sql_rq.get()
 
     def action(self, query, *args):
         """
@@ -250,8 +250,10 @@ class Connection(object):
 
         sickrage.srLogger.db("{}: {} with args {}".format(self.filename, query, args))
 
-        with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
-            return executor.submit(tx.query, [query, list(*args)]).result()
+        with self.transaction() as tx:
+            sql_rq = queue.Queue()
+            threading.Thread(target=tx.query, args=([query, list(*args)], sql_rq,)).start()
+            return sql_rq.get()
 
     def upsert(self, tableName, valueDict, keyDict):
         """
@@ -263,8 +265,10 @@ class Connection(object):
         :param keyDict:  columns in table to update
         """
 
-        with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
-            return executor.submit(tx.upsert, tableName, valueDict, keyDict).result()
+        with self.transaction() as tx:
+            sql_rq = queue.Queue()
+            threading.Thread(target=tx.upsert, args=(tableName, valueDict, keyDict, sql_rq,)).start()
+            return sql_rq.get()
 
     def select(self, query, *args):
         """

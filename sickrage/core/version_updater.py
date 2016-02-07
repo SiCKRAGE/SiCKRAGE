@@ -263,7 +263,7 @@ class srVersionUpdater(object):
 
     @property
     def list_remote_branches(self):
-        if self.updater and self.updater.type != "pip":
+        if self.updater and self.updater.type == "git":
             return self.updater.list_remote_branches
 
     @property

@@ -705,7 +705,7 @@ class TVShow(object):
             sickrage.srLogger.info(str(self.indexerid) + ": Unable to find the show in the database")
             return False
 
-        self._indexer = tryInt(sqlResults[0][b"indexer"]) or self.indexer
+        self._indexer = tryInt(sqlResults[0][b"indexer"], self.indexer)
         self._name = sqlResults[0][b"show_name"] or self.name
         self._network = sqlResults[0][b"network"] or self.network
         self._genre = sqlResults[0][b"genre"] or self.genre
@@ -713,22 +713,22 @@ class TVShow(object):
         self._runtime = sqlResults[0][b"runtime"] or self.runtime
         self._status = sqlResults[0][b"status"] or self.status
         self._airs = sqlResults[0][b"airs"] or self.airs
-        self._startyear = tryInt(sqlResults[0][b"startyear"]) or self.startyear
-        self._air_by_date = tryInt(sqlResults[0][b"air_by_date"]) or self.air_by_date
-        self._anime = tryInt(sqlResults[0][b"anime"]) or self.anime
-        self._sports = tryInt(sqlResults[0][b"sports"]) or self.sports
-        self._scene = tryInt(sqlResults[0][b"scene"]) or self.scene
-        self._subtitles = tryInt(sqlResults[0][b"subtitles"]) or self.subtitles
-        self._dvdorder = tryInt(sqlResults[0][b"dvdorder"]) or self.dvdorder
-        self._archive_firstmatch = tryInt(sqlResults[0][b"archive_firstmatch"]) or self.archive_firstmatch
-        self._quality = tryInt(sqlResults[0][b"quality"]) or self.quality
-        self._flatten_folders = tryInt(sqlResults[0][b"flatten_folders"]) or self.flatten_folders
-        self._paused = tryInt(sqlResults[0][b"paused"]) or self.paused
+        self._startyear = tryInt(sqlResults[0][b"startyear"], self.startyear)
+        self._air_by_date = tryInt(sqlResults[0][b"air_by_date"], self.air_by_date)
+        self._anime = tryInt(sqlResults[0][b"anime"], self.anime)
+        self._sports = tryInt(sqlResults[0][b"sports"], self.sports)
+        self._scene = tryInt(sqlResults[0][b"scene"], self.scene)
+        self._subtitles = tryInt(sqlResults[0][b"subtitles"], self.subtitles)
+        self._dvdorder = tryInt(sqlResults[0][b"dvdorder"], self.dvdorder)
+        self._archive_firstmatch = tryInt(sqlResults[0][b"archive_firstmatch"], self.archive_firstmatch)
+        self._quality = tryInt(sqlResults[0][b"quality"], self.quality)
+        self._flatten_folders = tryInt(sqlResults[0][b"flatten_folders"], self.flatten_folders)
+        self._paused = tryInt(sqlResults[0][b"paused"], self.paused)
         self._lang = sqlResults[0][b"lang"] or self.lang
         self._last_update_indexer = sqlResults[0][b"last_update_indexer"] or self.last_update_indexer
         self._rls_ignore_words = sqlResults[0][b"rls_ignore_words"] or self.rls_ignore_words
         self._rls_require_words = sqlResults[0][b"rls_require_words"] or self.rls_require_words
-        self._default_ep_status = tryInt(sqlResults[0][b"default_ep_status"]) or self.default_ep_status
+        self._default_ep_status = tryInt(sqlResults[0][b"default_ep_status"], self.default_ep_status)
         self._imdbid = sqlResults[0][b"imdb_id"] or self.imdbid
         self._tmdbid = sqlResults[0][b"tmdb_id"] or self.tmdbid
         self._location = sqlResults[0][b"location"] or self.location
@@ -793,15 +793,15 @@ class TVShow(object):
                 raise indexer_attributenotfound(
                     "Found %s, but attribute 'seriesname' was empty." % (self.indexerid))
 
-            self.classification = getattr(myEp, 'classification') or self.classification
-            self.genre = getattr(myEp, 'genre') or self.genre
-            self.network = getattr(myEp, 'network') or self.network
-            self.runtime = getattr(myEp, 'runtime') or self.runtime
-            self.imdbid = getattr(myEp, 'imdb_id') or self.imdbid
-            self.tmdbid = getattr(myEp, 'tmdb_id') or self.tmdbid
-            self.airs = getattr(myEp, 'airs_dayofweek') or self.airs + " " + getattr(myEp, 'airs_time') or self.airs
-            self.startyear = tryInt(str(getattr(myEp, 'firstaired', "")).split('-')[0]) or self.startyear
-            self.status = getattr(myEp, 'status') or self.status
+            self.classification = getattr(myEp, 'classification', self.classification)
+            self.genre = getattr(myEp, 'genre', self.genre)
+            self.network = getattr(myEp, 'network', self.network)
+            self.runtime = getattr(myEp, 'runtime', self.runtime)
+            self.imdbid = getattr(myEp, 'imdb_id', self.imdbid)
+            self.tmdbid = getattr(myEp, 'tmdb_id', self.tmdbid)
+            self.airs = getattr(myEp, 'airs_dayofweek', self.airs) + " " + getattr(myEp, 'airs_time', self.airs)
+            self.startyear = tryInt(str(getattr(myEp, 'firstaired', "")).split('-')[0], self.startyear)
+            self.status = getattr(myEp, 'status', self.status)
         else:
             sickrage.srLogger.warning(
                 str(self.indexerid) + ": NOT loading info from " + sickrage.srCore.INDEXER_API(

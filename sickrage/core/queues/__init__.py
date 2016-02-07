@@ -22,7 +22,6 @@ from __future__ import unicode_literals
 import threading
 
 from datetime import datetime
-from tornado.ioloop import IOLoop
 
 import sickrage
 
@@ -40,11 +39,34 @@ class GenericQueue(object):
         self.currentItem = None
         self.min_priority = 0
         self.amActive = False
-        self.queue = []
+        self._queue = []
 
     @property
     def name(self):
         return self.queue_name
+
+    def _get_queue(self):
+        # sort by priority
+        def sorter(x, y):
+            """
+            Sorts by priority descending then time ascending
+            """
+            if x.priority == y.priority:
+                if y.added == x.added:
+                    return 0
+                elif y.added < x.added:
+                    return 1
+                elif y.added > x.added:
+                    return -1
+            else:
+                return y.priority - x.priority
+        self._queue.sort(cmp=sorter)
+        return self._queue
+
+    def _set_queue(self, item):
+        self._queue.append(item)
+
+    queue = property(_get_queue, _set_queue)
 
     def pause(self):
         """Pauses this queue"""
@@ -66,7 +88,6 @@ class GenericQueue(object):
         with self.lock:
             item.added = datetime.now()
             self.queue.append(item)
-
             return item
 
     def run(self, force=False):
@@ -80,43 +101,26 @@ class GenericQueue(object):
             if self.amActive:
                 return
 
-            if self.currentItem:
-                if self.currentItem.inProgress:
-                    return
-
-                # if the thread is dead then the current item should be finished
-                self.currentItem.finish()
-                self.currentItem = None
-
             # if there's something in the queue then run it in a thread and take it out of the queue
             if len(self.queue) > 0:
-                # sort by priority
-                def sorter(x, y):
-                    """
-                    Sorts by priority descending then time ascending
-                    """
-                    if x.priority == y.priority:
-                        if y.added == x.added:
-                            return 0
-                        elif y.added < x.added:
-                            return 1
-                        elif y.added > x.added:
-                            return -1
-                    else:
-                        return y.priority - x.priority
+                self.amActive = True
 
-                self.queue.sort(cmp=sorter)
+                workers = len(self.queue) * 2
                 if self.queue[0].priority < self.min_priority:
                     return
 
-                # launch the queue item in a thread
-                self.currentItem = self.queue.pop(0)
+                def execute(item, queue_name):
+                    # set queue name
+                    item.name = "{}-{}".format(queue_name, item.name)
 
-                # set queue name
-                self.currentItem.name = "{}-{}".format(self.queue_name, self.currentItem.name)
+                    # execute queue item
+                    item.run()
 
-                # execute job from queue
-                IOLoop.instance().spawn_callback(self.currentItem.run)
+                    # queue item finished
+                    item.finish()
+
+                # thread queue item
+                threading.Thread(target=execute, args=(self.queue.pop(0), self.queue_name)).start()
 
             self.amActive = False
 

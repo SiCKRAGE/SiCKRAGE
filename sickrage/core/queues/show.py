@@ -492,14 +492,9 @@ class QueueItemAdd(ShowQueueItem):
 
         sickrage.srLogger.info("Finished adding show {}".format(self.showDir))
 
-        self.finish()
-
     def _finishEarly(self):
         if self.show is not None:
             sickrage.srCore.SHOWQUEUE.removeShow(self.show)
-
-        self.finish()
-
 
 class QueueItemRefresh(ShowQueueItem):
     def __init__(self, show=None, force=False):
@@ -526,9 +521,6 @@ class QueueItemRefresh(ShowQueueItem):
         xem_refresh(self.show.indexerid, self.show.indexer)
 
         sickrage.srLogger.info("Finished refresh for show: {}".format(self.show.name))
-
-        self.finish()
-
 
 class QueueItemRename(ShowQueueItem):
     def __init__(self, show=None):
@@ -571,9 +563,6 @@ class QueueItemRename(ShowQueueItem):
 
         sickrage.srLogger.info("Finished renames for show: {}".format(self.show.name))
 
-        self.finish()
-
-
 class QueueItemSubtitle(ShowQueueItem):
     def __init__(self, show=None):
         ShowQueueItem.__init__(self, ShowQueueActions.SUBTITLE, show)
@@ -584,9 +573,6 @@ class QueueItemSubtitle(ShowQueueItem):
         sickrage.srLogger.info("Started downloading subtitles for show: {}".format(self.show.name))
         self.show.downloadSubtitles()
         sickrage.srLogger.info("Finished downloading subtitles for show: {}".format(self.show.name))
-
-        self.finish()
-
 
 class QueueItemUpdate(ShowQueueItem):
     def __init__(self, action_id=None, show=None):
@@ -670,18 +656,9 @@ class QueueItemUpdate(ShowQueueItem):
                     try:self.show.getEpisode(curSeason, curEpisode).deleteEpisode()
                     except EpisodeDeletedException:pass
 
-        # save show again, in case episodes have changed
-        try:
-            self.show.saveToDB()
-        except Exception as e:
-            sickrage.srLogger.error("Error saving show info to the database: {}".format(e.message))
-            sickrage.srLogger.debug(traceback.format_exc())
-
         sickrage.srLogger.info("Finished updates for show: {}".format(self.show.name))
 
         sickrage.srCore.SHOWQUEUE.refreshShow(self.show, self.force)
-        self.finish()
-
 
 class QueueItemForceUpdate(QueueItemUpdate):
     def __init__(self, show=None):
@@ -711,5 +688,3 @@ class QueueItemRemove(ShowQueueItem):
                 sickrage.srLogger.warning("Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, e))
 
         sickrage.srLogger.info("Finished removing show: {}".format(self.show.name))
-
-        self.finish()

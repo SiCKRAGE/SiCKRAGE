@@ -227,21 +227,21 @@ class TVEpisode(object):
             self._subtitles_searchcount = sqlResults[0][b"subtitles_searchcount"] or self.subtitles_searchcount
             self._subtitles_lastsearch = sqlResults[0][b"subtitles_lastsearch"] or self.subtitles_lastsearch
             self._airdate = date.fromordinal(int(sqlResults[0][b"airdate"])) or self.airdate
-            self._status = tryInt(sqlResults[0][b"status"]) or self.status
+            self._status = tryInt(sqlResults[0][b"status"], self.status)
             self.location = os.path.normpath(sqlResults[0][b"location"]) or self.location
-            self._file_size = tryInt(sqlResults[0][b"file_size"]) or self.file_size
-            self._indexerid = tryInt(sqlResults[0][b"indexerid"]) or self.indexerid
-            self._indexer = tryInt(sqlResults[0][b"indexer"]) or self.indexer
+            self._file_size = tryInt(sqlResults[0][b"file_size"], self.file_size)
+            self._indexerid = tryInt(sqlResults[0][b"indexerid"], self.indexerid)
+            self._indexer = tryInt(sqlResults[0][b"indexer"], self.indexer)
             self._release_name = sqlResults[0][b"release_name"] or self.release_name
             self._release_group = sqlResults[0][b"release_group"] or self.release_group
-            self._is_proper = tryInt(sqlResults[0][b"is_proper"]) or self.is_proper
-            self._version = tryInt(sqlResults[0][b"version"]) or self.version
+            self._is_proper = tryInt(sqlResults[0][b"is_proper"], self.is_proper)
+            self._version = tryInt(sqlResults[0][b"version"], self.version)
 
             xem_refresh(self.show.indexerid, self.show.indexer)
 
-            self.scene_season = tryInt(sqlResults[0][b"scene_season"]) or self.scene_season
-            self.scene_episode = tryInt(sqlResults[0][b"scene_episode"]) or self.scene_episode
-            self.scene_absolute_number = tryInt(sqlResults[0][b"scene_absolute_number"]) or self.scene_absolute_number
+            self.scene_season = tryInt(sqlResults[0][b"scene_season"], self.scene_season)
+            self.scene_episode = tryInt(sqlResults[0][b"scene_episode"], self.scene_episode)
+            self.scene_absolute_number = tryInt(sqlResults[0][b"scene_absolute_number"], self.scene_absolute_number)
 
             if self.scene_absolute_number == 0:
                 self.scene_absolute_number = get_scene_absolute_numbering(
@@ -262,10 +262,8 @@ class TVEpisode(object):
     def loadFromIndexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
         indexer_name = sickrage.srCore.INDEXER_API(self.indexer).name
 
-        if season is None:
-            season = self.season
-        if episode is None:
-            episode = self.episode
+        season = (self.season, season)[season is not None]
+        episode = (self.episode, episode)[episode is not None]
 
         sickrage.srLogger.debug("{}: Loading episode details from {} for episode S{}E{}".format(
             self.show.indexerid, indexer_name, season or 0, episode or 0)
@@ -313,9 +311,9 @@ class TVEpisode(object):
                 self.deleteEpisode()
             return
 
-        if getattr(myEp, 'episodename', None) is None:
+        if not getattr(myEp, 'episodename'):
             sickrage.srLogger.info("This episode {} - S{}E{} has no name on {}. Setting to an empty string"
-                                        .format(self.show.name, season or 0, episode or 0, indexer_name))
+                                   .format(self.show.name, season or 0, episode or 0, indexer_name))
 
             setattr(myEp, 'episodename', '')
             # # if I'm incomplete on TVDB but I once was complete then just delete myself from the DB for now
@@ -323,15 +321,15 @@ class TVEpisode(object):
             #     self.deleteEpisode()
             # return False
 
-        if getattr(myEp, 'absolute_number', None) is None:
+        if not getattr(myEp, 'absolute_number'):
             sickrage.srLogger.debug("This episode {} - S{}E{} has no absolute number on {}".format(
                 self.show.name, season or 0, episode or 0, indexer_name))
         else:
             sickrage.srLogger.debug("{}: The absolute_number for S{}E{} is: {}".format(
                 self.show.indexerid, season or 0, episode or 0, myEp[b"absolute_number"]))
-            self.absolute_number = tryInt(getattr(myEp, 'absolute_number')) or self.absolute_number
+            self.absolute_number = tryInt(getattr(myEp, 'absolute_number'), self.absolute_number)
 
-        self.name = getattr(myEp, 'episodename') or self.name
+        self.name = getattr(myEp, 'episodename', self.name)
 
         self.season = season
         self.episode = episode
@@ -350,14 +348,11 @@ class TVEpisode(object):
             self.season, self.episode
         )
 
-        self.description = getattr(myEp, 'overview') or self.description
+        self.description = getattr(myEp, 'overview', self.description)
 
-        firstaired = getattr(myEp, 'firstaired', None)
-        if not firstaired or firstaired == "0000-00-00":
-            firstaired = str(date.fromordinal(1))
-        rawAirdate = [int(x) for x in firstaired.split("-")]
-
+        firstaired = getattr(myEp, 'firstaired', str(date.fromordinal(1)))
         try:
+            rawAirdate = [int(x) for x in getattr(myEp, 'firstaired', str(date.fromordinal(1))).split("-")]
             self.airdate = date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError):
             sickrage.srLogger.warning("Malformed air date of {} retrieved from {} for ({} - S{}E{})".format(
@@ -368,7 +363,7 @@ class TVEpisode(object):
             return False
 
         # early conversion to int so that episode doesn't get marked dirty
-        self.indexerid = tryInt(getattr(myEp, 'id')) or self.indexerid
+        self.indexerid = tryInt(getattr(myEp, 'id'), self.indexerid)
         if self.indexerid is None:
             sickrage.srLogger.error("Failed to retrieve ID from " + sickrage.srCore.INDEXER_API(self.indexer).name)
             if self.indexerid != -1:
@@ -384,8 +379,8 @@ class TVEpisode(object):
 
         if self.location:
             sickrage.srLogger.debug("%s: Setting status for S%02dE%02d based on status %s and location %s" %
-                                         (self.show.indexerid, season or 0, episode or 0, statusStrings[self.status],
-                                          self.location))
+                                    (self.show.indexerid, season or 0, episode or 0, statusStrings[self.status],
+                                     self.location))
 
         if not os.path.isfile(self.location):
             if self.airdate >= date.today() or self.airdate == date.fromordinal(1):
@@ -434,7 +429,6 @@ class TVEpisode(object):
         self.location = location
 
         if self.location != "":
-
             if self.status == UNKNOWN:
                 if isMediaFile(self.location):
                     sickrage.srLogger.debug("7 Status changes from " + str(self.status) + " to " + str(
@@ -444,6 +438,7 @@ class TVEpisode(object):
             nfoFile = replaceExtension(self.location, "nfo")
             sickrage.srLogger.debug(str(self.show.indexerid) + ": Using NFO name " + nfoFile)
 
+            self.hasnfo = False
             if os.path.isfile(nfoFile):
                 try:
                     showXML = ElementTree(file=nfoFile)
@@ -491,20 +486,17 @@ class TVEpisode(object):
                     )
 
                     self.description = epDetails.findtext('plot') or self.description
+
+                    self.airdate = date.fromordinal(1)
                     if epDetails.findtext('aired'):
                         rawAirdate = [int(x) for x in epDetails.findtext('aired').split("-")]
                         self.airdate = date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
-                    else:
-                        self.airdate = date.fromordinal(1)
 
                     self.hasnfo = True
-            else:
-                self.hasnfo = False
 
+            self.hastbn = False
             if os.path.isfile(replaceExtension(nfoFile, "tbn")):
                 self.hastbn = True
-            else:
-                self.hastbn = False
 
     def __str__(self):
         toReturn = ""
