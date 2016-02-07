@@ -126,6 +126,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
     if len(sql_l) > 0:
         cache_db.CacheDB().mass_action(sql_l)
         sickrage.srLogger.debug("Updated scene exceptions")
+        del sql_l  # cleanup
     else:
         sickrage.srLogger.debug("No scene exceptions update needed")
 

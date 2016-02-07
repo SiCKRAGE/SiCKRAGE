@@ -604,8 +604,10 @@ class MainDB(Connection):
                 else:
                     new_quality = self._update_composite_qualities(cur_show[b"quality"])
                 cl.append(["UPDATE tv_shows SET quality = ? WHERE show_id = ?", [new_quality, cur_show[b"show_id"]]])
+
             if len(cl) > 0:
                 self.mass_action(cl)
+                del cl  # cleanup
 
             # update status that are are within the old hdwebdl (1<<3 which is 8) and better -- exclude unknown (1<<15 which is 32768)
             cl = []
@@ -616,6 +618,7 @@ class MainDB(Connection):
                            [self._update_status(cur_episode[b"status"]), cur_episode[b"episode_id"]]])
             if len(cl) > 0:
                 self.mass_action(cl)
+                del cl  # cleanup
 
             # update previous history so it shows the correct action
             cl = []
@@ -626,6 +629,7 @@ class MainDB(Connection):
                            [self._update_status(cur_entry[b"action"]), cur_entry[b"showid"], cur_entry[b"date"]]])
             if len(cl) > 0:
                 self.mass_action(cl)
+                del cl  # cleanup
 
 
             # update previous history so it shows the correct quality
@@ -637,6 +641,7 @@ class MainDB(Connection):
                            [self._update_quality(cur_entry[b"quality"]), cur_entry[b"showid"], cur_entry[b"date"]]])
             if len(cl) > 0:
                 self.mass_action(cl)
+                del cl  # cleanup
 
 
             self.incDBVersion()
@@ -943,6 +948,7 @@ class MainDB(Connection):
 
                 if len(cl) > 0:
                     self.mass_action(cl)
+                    del cl  # cleanup
 
             self.incDBVersion()
 

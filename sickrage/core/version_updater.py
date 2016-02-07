@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import ctypes
+import io
 import os
 import platform
 import re
@@ -583,7 +584,7 @@ class SourceUpdateManager(UpdateManager):
         return self._check_for_new_version()
 
     def _find_installed_version(self):
-        with open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
+        with io.open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
             return f.read().strip() or ""
 
     def need_update(self):
@@ -718,7 +719,7 @@ class PipUpdateManager(UpdateManager):
         return self._check_for_new_version()
 
     def _find_installed_version(self):
-        with open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
+        with io.open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
             return f.read().strip() or ""
 
     def need_update(self):

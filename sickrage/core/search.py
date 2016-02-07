@@ -168,6 +168,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
             sql_q = curEpObj.saveToDB(False)
             if sql_q:
                 sql_l.append(sql_q)
+                del sql_q  # cleanup
 
         if curEpObj.status not in Quality.DOWNLOADED:
             try:
@@ -188,6 +189,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
 
     if len(sql_l) > 0:
         main_db.MainDB().mass_upsert(sql_l)
+        del sql_l  # cleanup
 
     return True
 

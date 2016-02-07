@@ -55,7 +55,7 @@ class srDailySearcher(object):
 
         sickrage.srLogger.info("Searching for new released episodes ...")
 
-        if tz_updater.network_dict:
+        if tz_updater.load_network_dict():
             curDate = (date.today() + timedelta(days=1)).toordinal()
         else:
             curDate = (date.today() + timedelta(days=2)).toordinal()
@@ -107,14 +107,15 @@ class srDailySearcher(object):
                 sql_q = ep.saveToDB(False)
                 if sql_q:
                     sql_l.append(sql_q)
+                    del sql_q
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)
+            del sql_l
         else:
             sickrage.srLogger.info("No new released episodes found ...")
 
         # queue episode for daily search
-        dailysearch_queue_item = DailySearchQueueItem()
-        sickrage.srCore.SEARCHQUEUE.add_item(dailysearch_queue_item)
+        sickrage.srCore.SEARCHQUEUE.add_item(DailySearchQueueItem())
 
         self.amActive = False

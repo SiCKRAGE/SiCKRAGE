@@ -1,3 +1,4 @@
+import io
 import os
 import shutil
 import sys
@@ -9,7 +10,7 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 # Get the version number
-with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'version.txt')) as f:
+with io.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'version.txt')) as f:
     version = f.read()
 
 

@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import io
 import os.path
 import sys
 
@@ -79,7 +80,7 @@ def processEpisode(dir_to_process, org_NZB_name=None, status=None):
         try:
             print ("Loading config from " + config_filename + "\n")
 
-            with open(config_filename, "r") as fp:
+            with io.open(config_filename, "r") as fp:
                 sickrage.srConfig.readfp(fp)
 
             # Replace default values with config_file values

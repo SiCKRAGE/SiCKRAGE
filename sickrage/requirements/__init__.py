@@ -20,6 +20,7 @@
 from __future__ import unicode_literals
 
 import ctypes
+import io
 import os
 import sys
 
@@ -38,7 +39,7 @@ def install_pip():
     url = "https://bootstrap.pypa.io/get-pip.py"
     file_name = os.path.abspath(os.path.join(os.path.dirname(__file__), url.split('/')[-1]))
     u = urllib2.urlopen(url)
-    with open(file_name, 'wb') as f:
+    with io.open(file_name, 'wb') as f:
         meta = u.info()
         block_sz = 8192
         while True:
@@ -70,7 +71,7 @@ def install_packages(file):
         installed = []
 
     # read requirements file
-    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), file))) as f:
+    with io.open(os.path.abspath(os.path.join(os.path.dirname(__file__), file))) as f:
         packages = [x.strip() for x in f.readlines() if x.strip().lower() not in installed]
 
     # install requirements packages

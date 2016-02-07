@@ -860,8 +860,7 @@ class CMD_EpisodeSearch(ApiCall):
             return _responds(RESULT_FAILURE, msg="Episode not found")
 
         # make a queue item for it and put it on the queue
-        ep_queue_item = ManualSearchQueueItem(showObj, epObj)
-        sickrage.srCore.SEARCHQUEUE.add_item(ep_queue_item)  # @UndefinedVariable
+        ep_queue_item = sickrage.srCore.SEARCHQUEUE.add_item(ManualSearchQueueItem(showObj, epObj))  # @UndefinedVariable
 
         # wait until the queue item tells us whether it worked or not
         while ep_queue_item.success is None:  # @UndefinedVariable
@@ -970,7 +969,10 @@ class CMD_EpisodeSetStatus(ApiCall):
                     continue
 
                 epObj.status = self.status
-                sql_l.append(epObj.saveToDB(False))
+                sql_q = epObj.saveToDB(False)
+                if sql_q:
+                    sql_l.append(sql_q)
+                    del sql_q  # cleanup
 
                 if self.status == WANTED:
                     start_backlog = True
@@ -979,13 +981,12 @@ class CMD_EpisodeSetStatus(ApiCall):
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)
+            del sql_l  # cleanup
 
         extra_msg = ""
         if start_backlog:
             for season, segment in segments.iteritems():
-                cur_backlog_queue_item = BacklogQueueItem(showObj, segment)
-                sickrage.srCore.SEARCHQUEUE.add_item(cur_backlog_queue_item)  # @UndefinedVariable
-
+                sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(showObj, segment))  # @UndefinedVariable
                 sickrage.srLogger.info("API :: Starting backlog for " + showObj.name + " season " + str(
                         season) + " because some episodes were set to WANTED")
 

@@ -20,6 +20,7 @@
 
 from __future__ import print_function, unicode_literals
 
+import io
 import os
 import os.path
 import socket
@@ -345,7 +346,7 @@ def setUp_test_episode_file():
         os.makedirs(FILEDIR)
 
     try:
-        with open(FILEPATH, 'wb') as f:
+        with io.open(FILEPATH, 'wb') as f:
             f.write(b"foo bar")
             f.flush()
     except Exception:

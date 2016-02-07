@@ -18,21 +18,20 @@
 
 from __future__ import unicode_literals
 
-import queue
+from concurrent import futures
 
 __all__ = ["main_db", "cache_db", "failed_db"]
 
 import os
 import re
+import time
 import sqlite3
 import threading
 from contextlib import contextmanager
-from tornado import gen
 from collections import defaultdict
+
 import sickrage
-
 from core.helpers import backupVersionedFile, restoreVersionedFile
-
 
 def prettyName(class_name):
     return ' '.join([x.group() for x in re.finditer("([A-Z])([a-z0-9]+)", class_name)])
@@ -87,7 +86,7 @@ class Transaction(object):
         if empty:
             self.db._db_lock.release()
 
-    def query(self, query, sql_rq):
+    def query(self, query):
         """Execute an SQL statement with substitution values and return
         a list of rows from the database.
         """
@@ -105,13 +104,14 @@ class Transaction(object):
                     result = cursor.fetchall()
                 except (sqlite3.OperationalError, sqlite3.DatabaseError) as e:
                     conn.rollback()
-                    gen.sleep(1)
+                    time.sleep(1)
                 except Exception as e:
                     sickrage.srLogger.error("QUERY: {} ERROR: {}".format(query, e.message))
                 finally:
-                    return sql_rq.put(result)
+                    return result
 
-    def upsert(self, tableName, valueDict, keyDict, sql_rq):
+
+    def upsert(self, tableName, valueDict, keyDict):
         """
         Update values, or if no updates done, insert values
 
@@ -125,7 +125,7 @@ class Transaction(object):
             genParams = lambda myDict: [x + " = ?" for x in myDict.keys()]
             query = ["UPDATE [" + tableName + "] SET " + ", ".join(
                 genParams(valueDict)) + " WHERE " + " AND ".join(genParams(keyDict)),
-                     valueDict.values() + keyDict.values()]
+                               valueDict.values() + keyDict.values()]
 
             cursor.execute(*query)
             if not conn.total_changes:
@@ -135,7 +135,7 @@ class Transaction(object):
                     ["?"] * len(valueDict.keys() + keyDict.keys())) + ")", valueDict.values() + keyDict.values()]
                 cursor.execute(*query)
 
-            return sql_rq.put((False, True)[conn.total_changes > 0])
+            return (False, True)[conn.total_changes > 0]
 
 class Connection(object):
     def __init__(self, filename=None, suffix=None, row_type=None, timeout=None):
@@ -164,6 +164,7 @@ class Connection(object):
                 yield self._connections[thread_id]
             finally:
                 self._connections[thread_id].commit()
+
 
     @contextmanager
     def _conn_cursor(self):
@@ -197,9 +198,6 @@ class Connection(object):
             self.last_id += 1
             return self.last_id
 
-    def getChanges(self):
-        return self.action("SELECT changes();")
-
     def checkDBVersion(self):
         """
         Fetch database version
@@ -220,11 +218,10 @@ class Connection(object):
         :return: list of results
         """
 
-        with self.transaction() as tx:
-            sql_rq = queue.Queue()
-            [threading.Thread(target=tx.upsert, args=(u[0], u[1], u[2], sql_rq,)).start() for u in upserts]
+        with futures.ThreadPoolExecutor(len(upserts)) as executor, self.transaction() as tx:
+            sqlResults = [executor.submit(tx.upsert, u[0], u[1], u[2]).result() for u in upserts]
             sickrage.srLogger.db("{} Upserts executed".format(len(upserts)))
-            return sql_rq.get()
+            return sqlResults
 
     def mass_action(self, queries):
         """
@@ -234,11 +231,10 @@ class Connection(object):
         :return: list of results
         """
 
-        with self.transaction() as tx:
-            sql_rq = queue.Queue()
-            [threading.Thread(target=tx.query, args=(q, sql_rq,)).start() for q in queries]
+        with futures.ThreadPoolExecutor(len(queries)) as executor, self.transaction() as tx:
+            sqlResults = [executor.submit(tx.query, q).result() for q in queries]
             sickrage.srLogger.db("{} Transactions executed".format(len(queries)))
-            return sql_rq.get()
+            return sqlResults
 
     def action(self, query, *args):
         """
@@ -250,10 +246,8 @@ class Connection(object):
 
         sickrage.srLogger.db("{}: {} with args {}".format(self.filename, query, args))
 
-        with self.transaction() as tx:
-            sql_rq = queue.Queue()
-            threading.Thread(target=tx.query, args=([query, list(*args)], sql_rq,)).start()
-            return sql_rq.get()
+        with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
+            return executor.submit(tx.query, [query, list(*args)]).result()
 
     def upsert(self, tableName, valueDict, keyDict):
         """
@@ -265,10 +259,8 @@ class Connection(object):
         :param keyDict:  columns in table to update
         """
 
-        with self.transaction() as tx:
-            sql_rq = queue.Queue()
-            threading.Thread(target=tx.upsert, args=(tableName, valueDict, keyDict, sql_rq,)).start()
-            return sql_rq.get()
+        with futures.ThreadPoolExecutor(50) as executor, self.transaction() as tx:
+            return executor.submit(tx.upsert, tableName, valueDict, keyDict).result()
 
     def select(self, query, *args):
         """

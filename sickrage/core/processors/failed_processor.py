@@ -61,7 +61,8 @@ class FailedProcessor(object):
             self._log("Error: release name is invalid: " + releaseName, sickrage.srLogger.DEBUG)
             raise FailedPostProcessingFailedException()
         except InvalidShowException:
-            self._log("Error: unable to parse release name " + releaseName + " into a valid show", sickrage.srLogger.DEBUG)
+            self._log("Error: unable to parse release name " + releaseName + " into a valid show",
+                      sickrage.srLogger.DEBUG)
             raise FailedPostProcessingFailedException()
 
         sickrage.srLogger.debug("name_parser info: ")
@@ -73,10 +74,8 @@ class FailedProcessor(object):
         sickrage.srLogger.debug(" - " + str(parsed.air_date))
 
         for episode in parsed.episode_numbers:
-            segment = parsed.show.getEpisode(parsed.season_number, episode)
-
-            cur_failed_queue_item = FailedQueueItem(parsed.show, [segment])
-            sickrage.srCore.SEARCHQUEUE.add_item(cur_failed_queue_item)
+            sickrage.srCore.SEARCHQUEUE.add_item(
+                FailedQueueItem(parsed.show, [parsed.show.getEpisode(parsed.season_number, episode)]))
 
         return True
 

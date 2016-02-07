@@ -43,7 +43,7 @@ from core.databases import main_db
 from core.exceptions import CantRefreshShowException, \
     CantRemoveShowException
 from core.exceptions import MultipleShowObjectsException, ShowDirectoryNotFoundException, ShowNotFoundException, EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
-from core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt
+from core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt, safe_getattr
 from core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from core.tv import dirty_setter
 from indexers.indexer_config import INDEXER_TVRAGE
@@ -170,7 +170,6 @@ class TVShow(object):
 
     # delete references to anything that's not in the internal lists
     def flushEpisodes(self):
-
         for curSeason in self.episodes:
             for curEp in self.episodes[curSeason]:
                 myEp = self.episodes[curSeason][curEp]
@@ -431,9 +430,11 @@ class TVShow(object):
             sql_q = curEpisode.saveToDB(False)
             if sql_q:
                 sql_l.append(sql_q)
+                del sql_q  # cleanup
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)
+            del sql_l  # cleanup
 
     def loadEpisodesFromDB(self):
         scannedEps = {}
@@ -514,6 +515,7 @@ class TVShow(object):
                         sql_q = curEp.saveToDB(False)
                         if sql_q:
                             sql_l.append(sql_q)
+                            del sql_q  # cleanup
 
                     scannedEps[season][episode] = True
                 except EpisodeNotFoundException:
@@ -522,6 +524,7 @@ class TVShow(object):
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)
+            del sql_l  # cleanup
 
         # Done updating save last update date
         self.last_update_indexer = date.today().toordinal()
@@ -681,9 +684,11 @@ class TVShow(object):
                 sql_q = curEp.saveToDB(False)
                 if sql_q:
                     sql_l.append(sql_q)
+                    del sql_q  # cleanup
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)
+            del sql_l  # cleanup
 
         # creating metafiles on the root should be good enough
         if rootEp:
@@ -793,15 +798,15 @@ class TVShow(object):
                 raise indexer_attributenotfound(
                     "Found %s, but attribute 'seriesname' was empty." % (self.indexerid))
 
-            self.classification = getattr(myEp, 'classification', self.classification)
-            self.genre = getattr(myEp, 'genre', self.genre)
-            self.network = getattr(myEp, 'network', self.network)
-            self.runtime = getattr(myEp, 'runtime', self.runtime)
-            self.imdbid = getattr(myEp, 'imdb_id', self.imdbid)
-            self.tmdbid = getattr(myEp, 'tmdb_id', self.tmdbid)
-            self.airs = getattr(myEp, 'airs_dayofweek', self.airs) + " " + getattr(myEp, 'airs_time', self.airs)
-            self.startyear = tryInt(str(getattr(myEp, 'firstaired', "")).split('-')[0], self.startyear)
-            self.status = getattr(myEp, 'status', self.status)
+            self.classification = safe_getattr(myEp, 'classification', self.classification)
+            self.genre = safe_getattr(myEp, 'genre', self.genre)
+            self.network = safe_getattr(myEp, 'network', self.network)
+            self.runtime = safe_getattr(myEp, 'runtime', self.runtime)
+            self.imdbid = safe_getattr(myEp, 'imdb_id', self.imdbid)
+            self.tmdbid = safe_getattr(myEp, 'tmdb_id', self.tmdbid)
+            self.airs = safe_getattr(myEp, 'airs_dayofweek', self.airs) + " " + safe_getattr(myEp, 'airs_time', self.airs)
+            self.startyear = tryInt(str(safe_getattr(myEp, 'firstaired', self.startyear)).split('-')[0])
+            self.status = safe_getattr(myEp, 'status', self.status)
         else:
             sickrage.srLogger.warning(
                 str(self.indexerid) + ": NOT loading info from " + sickrage.srCore.INDEXER_API(
@@ -1115,6 +1120,7 @@ class TVShow(object):
                         sql_q = curEp.saveToDB(False)
                         if sql_q:
                             sql_l.append(sql_q)
+                            del sql_q  # cleanup
             else:
                 # the file exists, set its modify file stamp
                 if sickrage.srConfig.AIRDATE_EPISODES:
@@ -1123,6 +1129,7 @@ class TVShow(object):
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)
+            del sql_l  # cleanup
 
     def downloadSubtitles(self, force=False):
         # TODO: Add support for force option
@@ -1397,6 +1404,7 @@ class TVShow(object):
 
             if len(sql_l) > 0:
                 main_db.MainDB().mass_action(sql_l)
+                del sql_l  # cleanup
 
         return mapped
 

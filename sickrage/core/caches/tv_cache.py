@@ -129,6 +129,8 @@ class TVCache(object):
 
                 if len(cl) > 0:
                     self._getDB().mass_action(cl)
+                    del cl  # cleanup
+
             except AuthException as e:
                 sickrage.srLogger.error("Authentication error: {}".format(e.message))
                 return False
@@ -324,6 +326,7 @@ class TVCache(object):
 
             if len(cl) > 0:
                 sqlResults = list(itertools.chain(*self._getDB().mass_action(cl)))
+                del cl  # cleanup
 
         # for each cache entry
         for curResult in sqlResults:

@@ -333,11 +333,13 @@ class Quality(object):
                         height = metadata.get('height', 0)
                         if height > 1000:
                             return ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
-                        elif height > 680 and height < 800:
+                        elif 680 < height < 800:
                             return ((Quality.HDTV, Quality.HDBLURAY)[bluray], Quality.HDWEBDL)[webdl]
                         elif height < 680:
                             return (Quality.SDTV, Quality.SDDVD)[
                                 re.search(r'dvd|b[rd]rip|blue?-?ray', base_filename, re.I) is not None]
+                    # clean up
+                    del file_metadata
                 except:
                     continue
 

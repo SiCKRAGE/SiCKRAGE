@@ -50,6 +50,13 @@ mediaExtensions = [
 subtitleExtensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
 
 
+def safe_getattr(object, name, default=None):
+    try:
+        return getattr(object, name, default)
+    except AttributeError:
+        return default
+
+
 def readFileBuffered(filename, reverse=False):
     blocksize = (1 << 15)
     with io.open(filename, 'rb') as fh:
@@ -70,6 +77,7 @@ def readFileBuffered(filename, reverse=False):
             if not data:
                 break
             yield data
+            del data
 
 
 def normalize_url(url):
@@ -528,7 +536,7 @@ def hardlinkFile(srcFile, destFile):
         fixSetGroupID(destFile)
     except Exception as e:
         sickrage.srLogger.warning("Failed to create hardlink of %s at %s. Error: %r. Copying instead"
-                                   % (srcFile, destFile, e))
+                                  % (srcFile, destFile, e))
         copyFile(srcFile, destFile)
 
 
@@ -563,7 +571,7 @@ def moveAndSymlinkFile(srcFile, destFile):
         symlink(destFile, srcFile)
     except Exception as e:
         sickrage.srLogger.warning("Failed to create symlink of %s at %s. Error: %r. Copying instead"
-                                   % (srcFile, destFile, e))
+                                  % (srcFile, destFile, e))
         copyFile(srcFile, destFile)
 
 
@@ -755,7 +763,7 @@ def chmodAsParent(childPath):
     try:
         os.chmod(childPath, childMode)
         sickrage.srLogger.debug(
-                "Setting permissions for %s to %o as parent directory has %o" % (childPath, childMode, parentMode))
+            "Setting permissions for %s to %o as parent directory has %o" % (childPath, childMode, parentMode))
     except OSError:
         sickrage.srLogger.debug("Failed to set permission for %s to %o" % (childPath, childMode))
 
@@ -789,7 +797,8 @@ def fixSetGroupID(childPath):
         user_id = os.geteuid()  # @UndefinedVariable - only available on UNIX
 
         if user_id != 0 and user_id != childPath_owner:
-            sickrage.srLogger.debug("Not running as root or owner of " + childPath + ", not trying to set the set-group-ID")
+            sickrage.srLogger.debug(
+                "Not running as root or owner of " + childPath + ", not trying to set the set-group-ID")
             return
 
         try:
@@ -797,8 +806,8 @@ def fixSetGroupID(childPath):
             sickrage.srLogger.debug("Respecting the set-group-ID bit on the parent directory for %s" % childPath)
         except OSError:
             sickrage.srLogger.error(
-                    "Failed to respect the set-group-ID bit on the parent directory for %s (setting group ID %i)" % (
-                        childPath, parentGID))
+                "Failed to respect the set-group-ID bit on the parent directory for %s (setting group ID %i)" % (
+                    childPath, parentGID))
 
 
 def is_anime_in_show_list():
@@ -1042,7 +1051,7 @@ def encrypt(data, encryption_version=0, _decrypt=False):
             return ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(base64.decodestring(data), cycle(unique_key1)))
         else:
             return base64.encodestring(
-                    ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(unique_key1)))).strip()
+                ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(unique_key1)))).strip()
     # Version 2: Simple XOR encryption (this is not very secure, but works)
     elif encryption_version == 2:
         if _decrypt:
@@ -1050,8 +1059,8 @@ def encrypt(data, encryption_version=0, _decrypt=False):
                            izip(base64.decodestring(data), cycle(sickrage.srConfig.ENCRYPTION_SECRET)))
         else:
             return base64.encodestring(
-                    ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(
-                        sickrage.srConfig.ENCRYPTION_SECRET)))).strip()
+                ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(
+                    sickrage.srConfig.ENCRYPTION_SECRET)))).strip()
     # Version 0: Plain text
     else:
         return data
@@ -1299,7 +1308,7 @@ def touchFile(fname, atime=None):
                 sickrage.srLogger.debug("File air date stamping not available on your OS. Please disable setting")
             elif e.errno == errno.EACCES:
                 sickrage.srLogger.error(
-                        "File air date stamping failed(Permission denied). Check permissions for file: %s" % fname)
+                    "File air date stamping failed(Permission denied). Check permissions for file: %s" % fname)
             else:
                 sickrage.srLogger.error("File air date stamping failed. The error is: %r" % e)
 
@@ -1322,10 +1331,13 @@ def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=N
     Returns a byte-string retrieved from the url provider.
     """
 
+    resp = None
+
     if headers is None:
         headers = {}
     if not requests.__version__ < (2, 8):
-        sickrage.srLogger.debug("Requests version 2.8+ needed to avoid SSL cert verify issues, please upgrade your copy")
+        sickrage.srLogger.debug(
+            "Requests version 2.8+ needed to avoid SSL cert verify issues, please upgrade your copy")
 
     url = normalize_url(url)
     session = _setUpSession(session or requests.Session(), headers, params)
@@ -1343,34 +1355,26 @@ def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=N
         else:
             resp = session.get(url, timeout=timeout, allow_redirects=True, verify=session.verify)
 
-        if not resp.ok:
-            sickrage.srLogger.debug("Requested getURL %s returned status code is %s: %s"
-                                     % (url, resp.status_code, codeDescription(resp.status_code)))
-            return None
-
+        if resp.ok:
+            return (resp.text, resp.content)[needBytes] if not json else resp.json()
     except (SocketTimeout, TypeError) as e:
         sickrage.srLogger.warning("Connection timed out (sockets) accessing getURL %s Error: %r" % (url, e))
-        return None
     except requests.exceptions.HTTPError as e:
         sickrage.srLogger.debug("HTTP error in getURL %s Error: %r" % (url, e))
-        return None
     except requests.exceptions.ConnectionError as e:
         sickrage.srLogger.debug("Connection error to getURL %s Error: %r" % (url, e))
-        return None
     except requests.exceptions.Timeout as e:
         sickrage.srLogger.warning("Connection timed out accessing getURL %s Error: %r" % (url, e))
-        return None
     except requests.exceptions.ContentDecodingError:
         sickrage.srLogger.debug("Content-Encoding was gzip, but content was not compressed. getURL: %s" % url)
         sickrage.srLogger.debug(traceback.format_exc())
-        return None
     except Exception as e:
         sickrage.srLogger.debug("Unknown exception in getURL %s Error: %r" % (url, e))
         sickrage.srLogger.debug(traceback.format_exc())
-        return None
-
-    return (resp.text, resp.content)[needBytes] if not json else resp.json()
-
+    finally:
+        if resp:
+            [i.raw.release_conn() for i in resp.history]
+            resp.raw.release_conn()
 
 def download_file(url, filename, session=None, headers=None):
     """
@@ -1383,6 +1387,8 @@ def download_file(url, filename, session=None, headers=None):
     :return: True on success, False on failure
     """
 
+    resp = None
+
     if headers is None:
         headers = {}
     url = normalize_url(url)
@@ -1392,8 +1398,6 @@ def download_file(url, filename, session=None, headers=None):
     try:
         with closing(session.get(url, allow_redirects=True, verify=session.verify)) as resp:
             if not resp.ok:
-                sickrage.srLogger.debug("Requested download url %s returned status code is %s: %s"
-                                         % (url, resp.status_code, codeDescription(resp.status_code)))
                 return False
 
             try:
@@ -1404,36 +1408,33 @@ def download_file(url, filename, session=None, headers=None):
                             fp.flush()
 
                 chmodAsParent(filename)
+
+                [i.raw.release_conn() for i in resp.history]
+                resp.raw.release_conn()
+
+                return True
             except Exception:
                 sickrage.srLogger.warning("Problem setting permissions or writing file to: %s" % filename)
 
     except (SocketTimeout, TypeError) as e:
         remove_file_failed(filename)
         sickrage.srLogger.warning("Connection timed out (sockets) while loading download URL %s Error: %r" % (url, e))
-        return None
     except requests.exceptions.HTTPError as e:
         remove_file_failed(filename)
         sickrage.srLogger.warning("HTTP error %r while loading download URL %s " % (e), url)
-        return False
     except requests.exceptions.ConnectionError as e:
         remove_file_failed(filename)
         sickrage.srLogger.warning("Connection error %r while loading download URL %s " % (e), url)
-        return False
     except requests.exceptions.Timeout as e:
         remove_file_failed(filename)
         sickrage.srLogger.warning("Connection timed out %r while loading download URL %s " % (e), url)
-        return False
     except EnvironmentError as e:
         remove_file_failed(filename)
         sickrage.srLogger.warning("Unable to save the file: %r " % e)
-        return False
     except Exception:
         remove_file_failed(filename)
-        sickrage.srLogger.warning("Unknown exception while loading download URL %s : %r" % (url, traceback.format_exc()))
-        return False
-
-    return True
-
+        sickrage.srLogger.warning(
+            "Unknown exception while loading download URL %s : %r" % (url, traceback.format_exc()))
 
 def get_size(start_path='.'):
     """
@@ -1561,7 +1562,7 @@ def verify_freespace(src, dest, oldfile=None):
         return True
     else:
         sickrage.srLogger.warning("Not enough free space: Needed: %s bytes ( %s ), found: %s bytes ( %s )"
-                                   % (neededspace, pretty_filesize(neededspace), diskfree, pretty_filesize(diskfree)))
+                                  % (neededspace, pretty_filesize(neededspace), diskfree, pretty_filesize(diskfree)))
         return False
 
 
@@ -1718,12 +1719,12 @@ def restoreVersionedFile(backup_file, version):
 
     try:
         sickrage.srLogger.debug("Trying to backup %s to %s.r%s before restoring backup"
-                                 % (new_file, new_file, version))
+                                % (new_file, new_file, version))
 
         shutil.move(new_file, new_file + '.' + 'r' + str(version))
     except Exception as e:
         sickrage.srLogger.warning("Error while trying to backup file %s before proceeding with restore: %r"
-                                   % (restore_file, e))
+                                  % (restore_file, e))
         return False
 
     while not os.path.isfile(new_file):
@@ -1784,16 +1785,19 @@ def backupVersionedFile(old_file, version):
 
     return True
 
+
 def flatten_dict(d, delimiter='.'):
     def expand(key, value):
         if isinstance(value, dict):
             return [(delimiter.join([key, k]), v) for k, v in flatten_dict(value, delimiter).items()]
-        else:return [(key, value)]
+        else:
+            return [(key, value)]
+
     return dict([item for k, v in d.items() for item in expand(k, v)])
+
 
 @contextmanager
 def bs4_parser(markup, features="html5lib", *args, **kwargs):
-
     try:
         _soup = BeautifulSoup(markup, features=features, *args, **kwargs)
     except:
@@ -1803,5 +1807,3 @@ def bs4_parser(markup, features="html5lib", *args, **kwargs):
         yield _soup
     finally:
         _soup.clear(True)
-
-

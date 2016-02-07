@@ -21,6 +21,7 @@
 from __future__ import unicode_literals
 
 import ConfigParser
+import io
 import logging
 import os
 import sys
@@ -37,9 +38,8 @@ import requests
 config = ConfigParser.ConfigParser()
 
 try:
-    fp = open(configFilename, "r")
-    sickrage.srConfig.readfp(fp)
-    fp.close()
+    with io.open(configFilename, "r") as fp:
+        sickrage.srConfig.readfp(fp)
 except IOError, e:
     print "Could not find/read SiCKRAGE config.ini: " + str(e)
     print 'Possibly wrong mediaToSiCKRAGE.py location. Ensure the file is in the autoProcessTV subdir of your SiCKRAGE installation'

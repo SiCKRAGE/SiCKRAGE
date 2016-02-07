@@ -227,6 +227,9 @@ class GenericProvider(object):
                 for byte in readFileBuffered(file_name):
                     mime_type = guessParser(StringInputStream(byte))._getMimeType()
                     if mime_type == 'application/x-bittorrent':
+                        #clean up
+                        del mime_type
+
                         return True
             except Exception as e:
                 sickrage.srLogger.debug("Failed to validate torrent file: {}".format(e.message))
@@ -490,6 +493,7 @@ class GenericProvider(object):
         # check if we have items to add to cache
         if len(cl) > 0:
             self.cache._getDB().mass_action(cl)
+            del cl  # cleanup
 
         return results
 

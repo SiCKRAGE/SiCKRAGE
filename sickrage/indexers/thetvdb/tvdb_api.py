@@ -136,6 +136,8 @@ class Show(dict):
             # Non-numeric request is for show-data
             return self.data[key]
 
+        raise AttributeError
+
     def __getitem__(self, key):
         if key in self:
             # Key is an episode, return it
@@ -198,6 +200,7 @@ class Season(dict):
     def __getattr__(self, episode_number):
         if episode_number in self:
             return self[episode_number]
+        raise AttributeError
 
     def __getitem__(self, episode_number):
         if episode_number not in self:
@@ -238,6 +241,7 @@ class Episode(dict):
     def __getattr__(self, key):
         if key in self:
             return self[key]
+        raise AttributeError
 
     def __getitem__(self, key):
         try:
@@ -540,6 +544,8 @@ class Tvdb:
 
     @retry(tvdb_error)
     def _loadUrl(self, url, params=None, language=None):
+        resp = None
+
         try:
             # get api v2 token
             if self.config[b'apiver'] == 2:
@@ -582,6 +588,10 @@ class Tvdb:
             raise tvdb_error("Connection timed out {} while loading URL {}".format(e.message, url))
         except Exception as e:
             raise tvdb_error("Unknown exception while loading URL {}: {}".format(url, repr(e)))
+        finally:
+            if resp:
+                [i.raw.release_conn() for i in resp.history]
+                resp.raw.release_conn()
 
         try:
             if 'application/zip' in resp.headers.get("Content-Type", ''):

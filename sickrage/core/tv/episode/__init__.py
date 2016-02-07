@@ -33,7 +33,8 @@ from core.databases import main_db
 from core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
 from core.helpers import isMediaFile, tryInt, replaceExtension, \
-    rename_ep_file, touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName
+    rename_ep_file, touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, \
+    safe_getattr
 from core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from core.processors.post_processor import PostProcessor
 from core.scene_numbering import xem_refresh, get_scene_absolute_numbering, get_scene_numbering
@@ -311,15 +312,10 @@ class TVEpisode(object):
                 self.deleteEpisode()
             return
 
+        self.name = safe_getattr(myEp, 'episodename', self.name)
         if not getattr(myEp, 'episodename'):
             sickrage.srLogger.info("This episode {} - S{}E{} has no name on {}. Setting to an empty string"
                                    .format(self.show.name, season or 0, episode or 0, indexer_name))
-
-            setattr(myEp, 'episodename', '')
-            # # if I'm incomplete on TVDB but I once was complete then just delete myself from the DB for now
-            # if self.indexerid != -1:
-            #     self.deleteEpisode()
-            # return False
 
         if not getattr(myEp, 'absolute_number'):
             sickrage.srLogger.debug("This episode {} - S{}E{} has no absolute number on {}".format(
@@ -327,9 +323,7 @@ class TVEpisode(object):
         else:
             sickrage.srLogger.debug("{}: The absolute_number for S{}E{} is: {}".format(
                 self.show.indexerid, season or 0, episode or 0, myEp[b"absolute_number"]))
-            self.absolute_number = tryInt(getattr(myEp, 'absolute_number'), self.absolute_number)
-
-        self.name = getattr(myEp, 'episodename', self.name)
+            self.absolute_number = tryInt(safe_getattr(myEp, 'absolute_number'), self.absolute_number)
 
         self.season = season
         self.episode = episode
@@ -348,11 +342,11 @@ class TVEpisode(object):
             self.season, self.episode
         )
 
-        self.description = getattr(myEp, 'overview', self.description)
+        self.description = safe_getattr(myEp, 'overview', self.description)
 
-        firstaired = getattr(myEp, 'firstaired', str(date.fromordinal(1)))
+        firstaired = safe_getattr(myEp, 'firstaired', str(date.fromordinal(1)))
         try:
-            rawAirdate = [int(x) for x in getattr(myEp, 'firstaired', str(date.fromordinal(1))).split("-")]
+            rawAirdate = [int(x) for x in safe_getattr(myEp, 'firstaired', str(date.fromordinal(1))).split("-")]
             self.airdate = date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError):
             sickrage.srLogger.warning("Malformed air date of {} retrieved from {} for ({} - S{}E{})".format(
@@ -363,7 +357,7 @@ class TVEpisode(object):
             return False
 
         # early conversion to int so that episode doesn't get marked dirty
-        self.indexerid = tryInt(getattr(myEp, 'id'), self.indexerid)
+        self.indexerid = tryInt(safe_getattr(myEp, 'id'), self.indexerid)
         if self.indexerid is None:
             sickrage.srLogger.error("Failed to retrieve ID from " + sickrage.srCore.INDEXER_API(self.indexer).name)
             if self.indexerid != -1:
@@ -773,9 +767,11 @@ class TVEpisode(object):
                 sql_q = relEp.saveToDB(False)
                 if sql_q:
                     sql_l.append(sql_q)
+                    del sql_q  # cleanup
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)
+            del sql_l  # cleanup
 
     def airdateModifyStamp(self):
         """

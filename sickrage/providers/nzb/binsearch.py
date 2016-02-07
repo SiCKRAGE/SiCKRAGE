@@ -111,6 +111,7 @@ class BinSearchCache(tv_cache.TVCache):
 
             if len(cl) > 0:
                 self._getDB().mass_action(cl)
+                del cl  # cleanup
 
         return True
 

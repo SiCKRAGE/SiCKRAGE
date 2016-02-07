@@ -1,3 +1,4 @@
+import io
 import os
 import platform
 from collections import defaultdict
@@ -45,25 +46,26 @@ class DelugeClient(object):
 
 
         if os.path.exists(auth_file):
-            for line in open(auth_file):
-                if line.startswith("#"):
-                    # This is a comment line
-                    continue
-                line = line.strip()
-                try:
-                    lsplit = line.split(":")
-                except Exception, e:
-                    continue
+            with io.open(auth_file) as fp:
+                for line in fp.readlines():
+                    if line.startswith("#"):
+                        # This is a comment line
+                        continue
+                    line = line.strip()
+                    try:
+                        lsplit = line.split(":")
+                    except Exception, e:
+                        continue
 
-                if len(lsplit) == 2:
-                    username, password = lsplit
-                elif len(lsplit) == 3:
-                    username, password, level = lsplit
-                else:
-                    continue
+                    if len(lsplit) == 2:
+                        username, password = lsplit
+                    elif len(lsplit) == 3:
+                        username, password, level = lsplit
+                    else:
+                        continue
 
-                if username == "localclient":
-                    return (username, password)
+                    if username == "localclient":
+                        return (username, password)
 
         return ("", "")
 

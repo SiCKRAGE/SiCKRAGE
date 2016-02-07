@@ -1730,6 +1730,7 @@ class Home(WebRoot):
                     sql_q = epObj.saveToDB(False)
                     if sql_q:
                         sql_l.append(sql_q)
+                        del sql_q  # cleanup
 
                     trakt_data.append((epObj.season, epObj.episode))
 
@@ -1749,14 +1750,14 @@ class Home(WebRoot):
 
             if len(sql_l) > 0:
                 main_db.MainDB().mass_upsert(sql_l)
+                del sql_l  # cleanup
 
         if int(status) == WANTED and not showObj.paused:
             msg = "Backlog was automatically started for the following seasons of <b>" + showObj.name + "</b>:<br>"
             msg += '<ul>'
 
             for season, segment in segments.iteritems():
-                cur_backlog_queue_item = BacklogQueueItem(showObj, segment)
-                sickrage.srCore.SEARCHQUEUE.add_item(cur_backlog_queue_item)
+                sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(showObj, segment))
 
                 msg += "<li>Season " + str(season) + "</li>"
                 sickrage.srLogger.info("Sending backlog for " + showObj.name + " season " + str(
@@ -1775,8 +1776,7 @@ class Home(WebRoot):
             msg += '<ul>'
 
             for season, segment in segments.iteritems():
-                cur_failed_queue_item = FailedQueueItem(showObj, segment)
-                sickrage.srCore.SEARCHQUEUE.add_item(cur_failed_queue_item)
+                sickrage.srCore.SEARCHQUEUE.add_item(FailedQueueItem(showObj, segment))
 
                 msg += "<li>Season " + str(season) + "</li>"
                 sickrage.srLogger.info("Retrying Search for " + showObj.name + " season " + str(

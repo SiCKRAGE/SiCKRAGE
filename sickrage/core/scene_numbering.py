@@ -512,6 +512,7 @@ def xem_refresh(indexer_id, indexer, force=False):
 
             if len(cl) > 0:
                 main_db.MainDB().mass_action(cl)
+                del cl  # cleanup
 
         except Exception as e:
             sickrage.srLogger.warning(
@@ -641,6 +642,7 @@ def fix_xem_numbering(indexer_id, indexer):
 
     if len(cl) > 0:
         main_db.MainDB().mass_action(cl)
+        del cl  # cleanup
 
 
 def get_absolute_number_from_season_and_episode(show, season, episode):

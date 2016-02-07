@@ -40,7 +40,6 @@ def setEpisodeToWanted(show, s, e):
     """
     epObj = show.getEpisode(int(s), int(e))
     if epObj:
-
         with epObj.lock:
             if epObj.status != SKIPPED or epObj.airdate == date.fromordinal(1):
                 return
@@ -51,8 +50,10 @@ def setEpisodeToWanted(show, s, e):
             epObj.status = WANTED
             epObj.saveToDB()
 
-        cur_backlog_queue_item = BacklogQueueItem(show, [epObj])
-        sickrage.srCore.SEARCHQUEUE.add_item(cur_backlog_queue_item)
+        sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(show, [epObj]))
+
+        # cleanup
+        del epObj
 
         sickrage.srLogger.info(
                 "Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (

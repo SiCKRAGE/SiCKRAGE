@@ -75,6 +75,7 @@ def update_network_dict():
 
     if len(queries) > 0:
         cache_db.CacheDB().mass_action(queries)
+        del queries  # cleanup
 
 
 # load network timezones from db into dict
