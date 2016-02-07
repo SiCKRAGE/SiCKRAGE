@@ -1034,9 +1034,7 @@ class srConfig(object):
             self.CACHE_DIR = os.path.join(sickrage.DATA_DIR, self.CACHE_DIR)
 
         # web settings
-        if not self.WEB_PORT:
-            self.WEB_PORT = self.check_setting_int('General', 'web_port', 8081)
-
+        self.WEB_PORT = self.check_setting_int('General', 'web_port', 8081)
         self.WEB_HOST = self.check_setting_str('General', 'web_host', '0.0.0.0')
         self.WEB_IPV6 = bool(self.check_setting_int('General', 'web_ipv6', 0))
         self.WEB_ROOT = self.check_setting_str('General', 'web_root', '').rstrip("/")

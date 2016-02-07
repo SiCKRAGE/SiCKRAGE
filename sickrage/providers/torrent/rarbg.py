@@ -20,10 +20,10 @@ from __future__ import unicode_literals
 
 import json
 import re
+import time
 import traceback
 
 from datetime import datetime, timedelta
-from tornado import gen
 
 import sickrage
 from core.caches import tv_cache
@@ -156,7 +156,7 @@ class RarbgProvider(TorrentProvider):
                         time_out = 0
                         while (datetime.now() < self.next_request) and time_out <= 15:
                             time_out = time_out + 1
-                            gen.sleep(1)
+                            time.sleep(1)
 
                         data = self.getURL(searchURL + self.urlOptions[b'token'].format(token=self.token))
 
@@ -177,7 +177,7 @@ class RarbgProvider(TorrentProvider):
                         if re.search('Too many requests per minute. Please try again later!', data):
                             sickrage.srLogger.warning("Too many requests per minute")
                             retry = retry - 1
-                            gen.sleep(10)
+                            time.sleep(10)
                             continue
                         if re.search('Cant find search_tvdb in database. Are you sure this imdb exists?', data):
                             sickrage.srLogger.warning("No results found. The tvdb id: %s do not exist on provider" % ep_indexerid)

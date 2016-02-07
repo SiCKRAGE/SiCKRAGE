@@ -28,7 +28,6 @@ import requests
 import six
 from bs4 import BeautifulSoup
 from datetime import datetime
-from tornado import gen
 
 import sickrage
 from clients import http_error_code
@@ -1615,7 +1614,7 @@ def isFileLocked(checkfile, writeLockCheck=False):
             os.remove(lockFile)
         try:
             os.rename(checkfile, lockFile)
-            gen.sleep(1)
+            time.sleep(1)
             os.rename(lockFile, checkfile)
         except (Exception, OSError, IOError) as e:
             return True
@@ -1662,7 +1661,7 @@ def removetree(tgt):
             shutil.rmtree(tmp, onerror=error_handler)
             break
         except OSError as e:
-            gen.sleep(1)
+            time.sleep(1)
             if e.errno in [errno.EACCES, errno.ENOTEMPTY]:
                 continue  # Try another temp name
             if e.errno == errno.EEXIST:
@@ -1740,7 +1739,7 @@ def restoreVersionedFile(backup_file, version):
         except Exception as e:
             sickrage.srLogger.warning("Error while trying to restore file %s. Error: %r" % (restore_file, e))
             numTries += 1
-            gen.sleep(1)
+            time.sleep(1)
             sickrage.srLogger.debug("Trying again. Attempt #: %s" % numTries)
 
         if numTries >= 10:
@@ -1776,7 +1775,7 @@ def backupVersionedFile(old_file, version):
         except Exception as e:
             sickrage.srLogger.warning("Error while trying to back up %s to %s : %r" % (old_file, new_file, e))
             numTries += 1
-            gen.sleep(1)
+            time.sleep(1)
             sickrage.srLogger.debug("Trying again.")
 
         if numTries >= 10:

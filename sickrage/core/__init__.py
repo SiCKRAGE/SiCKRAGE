@@ -115,7 +115,30 @@ class srCore(object):
         self.SHOWLIST = []
 
         # notifiers
-        self.NOTIFIERS = None
+        self.NOTIFIERS = AttrDict(
+            libnotify=LibnotifyNotifier(),
+            kodi_notifier=KODINotifier(),
+            plex_notifier=PLEXNotifier(),
+            emby_notifier=EMBYNotifier(),
+            nmj_notifier=NMJNotifier(),
+            nmjv2_notifier=NMJv2Notifier(),
+            synoindex_notifier=synoIndexNotifier(),
+            synology_notifier=synologyNotifier(),
+            pytivo_notifier=pyTivoNotifier(),
+            growl_notifier=GrowlNotifier(),
+            prowl_notifier=ProwlNotifier(),
+            libnotify_notifier=LibnotifyNotifier(),
+            pushover_notifier=PushoverNotifier(),
+            boxcar_notifier=BoxcarNotifier(),
+            boxcar2_notifier=Boxcar2Notifier(),
+            nma_notifier=NMA_Notifier(),
+            pushalot_notifier=PushalotNotifier(),
+            pushbullet_notifier=PushbulletNotifier(),
+            freemobile_notifier=FreeMobileNotifier(),
+            twitter_notifier=TwitterNotifier(),
+            trakt_notifier=TraktNotifier(),
+            email_notifier=EmailNotifier()
+        )
 
         # services
         self.SCHEDULER = None
@@ -153,32 +176,6 @@ class srCore(object):
 
     def start(self):
         self.PID = os.getpid()
-
-        # notifiers
-        self.NOTIFIERS = AttrDict(
-            libnotify=LibnotifyNotifier(),
-            kodi_notifier=KODINotifier(),
-            plex_notifier=PLEXNotifier(),
-            emby_notifier=EMBYNotifier(),
-            nmj_notifier=NMJNotifier(),
-            nmjv2_notifier=NMJv2Notifier(),
-            synoindex_notifier=synoIndexNotifier(),
-            synology_notifier=synologyNotifier(),
-            pytivo_notifier=pyTivoNotifier(),
-            growl_notifier=GrowlNotifier(),
-            prowl_notifier=ProwlNotifier(),
-            libnotify_notifier=LibnotifyNotifier(),
-            pushover_notifier=PushoverNotifier(),
-            boxcar_notifier=BoxcarNotifier(),
-            boxcar2_notifier=Boxcar2Notifier(),
-            nma_notifier=NMA_Notifier(),
-            pushalot_notifier=PushalotNotifier(),
-            pushbullet_notifier=PushbulletNotifier(),
-            freemobile_notifier=FreeMobileNotifier(),
-            twitter_notifier=TwitterNotifier(),
-            trakt_notifier=TraktNotifier(),
-            email_notifier=EmailNotifier()
-        )
 
         # set socket timeout
         socket.setdefaulttimeout(sickrage.srConfig.SOCKET_TIMEOUT)

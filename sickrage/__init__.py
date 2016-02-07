@@ -162,7 +162,7 @@ def main():
     PIDFILE = os.path.abspath(os.path.join(DATA_DIR, 'sickrage.pid'))
     DEVELOPER = False
     DAEMONIZE = False
-    WEB_PORT = 8081
+    WEB_PORT = None
     INSTALL_OPTIONAL = False
     WEB_NOLAUNCH = False
     SSL = False
@@ -291,7 +291,7 @@ def main():
 
         # start web-ui
         srCore.WEBSERVER.open_browser = (True, False)[WEB_NOLAUNCH]
-        srCore.WEBSERVER.port = (srConfig.WEB_PORT, WEB_PORT)[WEB_PORT != srConfig.WEB_PORT]
+        srCore.WEBSERVER.port = (srConfig.WEB_PORT, WEB_PORT)[WEB_PORT is not None]
         srCore.WEBSERVER.start()
     except KeyboardInterrupt:
         pass

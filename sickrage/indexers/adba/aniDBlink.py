@@ -18,10 +18,8 @@
 import socket
 import sys
 import threading
+import time
 import zlib
-from time import time
-
-from tornado import gen
 
 from aniDBresponses import ResponseResolver
 from indexers.adba.aniDBerrors import AniDBBannedError, \
@@ -39,11 +37,11 @@ class AniDBLink(threading.Thread):
         self.myport = 0
         self.bound = self.connectSocket(myport, self.timeout)
 
-        self.cmd_queue = {None:None}
+        self.cmd_queue = {None: None}
         self.resp_tagged_queue = {}
         self.resp_untagged_queue = []
         self.tags = []
-        self.lastpacket = time()
+        self.lastpacket = time.time()
         self.delay = delay
         self.session = None
         self.banned = False
@@ -75,13 +73,13 @@ class AniDBLink(threading.Thread):
     def disconnectSocket(self):
         self.sock.close()
 
-    def stop (self):
+    def stop(self):
         self.log("Releasing socket and stopping link thread")
         self._quiting = True
         self.disconnectSocket()
         self._stop.set()
 
-    def stopped (self):
+    def stopped(self):
         return self._stop.isSet()
 
     def print_log(self, data):
@@ -100,10 +98,10 @@ class AniDBLink(threading.Thread):
                 continue
             self.log("NetIO < %s" % repr(data))
             try:
+                resp = None
                 for i in range(2):
                     try:
                         tmp = data
-                        resp = None
                         if tmp[:2] == '\x00\x00':
                             tmp = zlib.decompressobj().decompress(tmp[2:])
                             self.log("UnZip | %s" % repr(tmp))
@@ -114,8 +112,10 @@ class AniDBLink(threading.Thread):
                         self.session = None
                     else:
                         break
+
                 if not resp:
                     raise AniDBPacketCorruptedError, "Either decrypting, decompressing or parsing the packet failed"
+
                 cmd = self._cmd_dequeue(resp)
                 resp = resp.resolve(cmd)
                 resp.parse()
@@ -124,7 +124,7 @@ class AniDBLink(threading.Thread):
                 if resp.rescode in ('209',):
                     print "sorry encryption is not supported"
                     raise
-                    #self.crypt=aes(md5(resp.req.apipassword+resp.attrs['salt']).digest())
+                    # self.crypt=aes(md5(resp.req.apipassword+resp.attrs['salt']).digest())
                 if resp.rescode in ('203', '403', '500', '501', '503', '506'):
                     self.session = None
                     self.crypt = None
@@ -140,11 +140,15 @@ class AniDBLink(threading.Thread):
                 sys.excepthook(*sys.exc_info())
                 print "Avoiding flood by paranoidly panicing: Aborting link thread, killing connection, releasing waiters and quiting"
                 self.sock.close()
-                try:cmd.waiter.release()
-                except:pass
+                try:
+                    cmd.waiter.release()
+                except:
+                    pass
                 for tag, cmd in self.cmd_queue.iteritems():
-                    try:cmd.waiter.release()
-                    except:pass
+                    try:
+                        cmd.waiter.release()
+                    except:
+                        pass
                 sys.exit()
 
     def _handle_timeouts(self):
@@ -152,7 +156,7 @@ class AniDBLink(threading.Thread):
         for tag, cmd in self.cmd_queue.iteritems():
             if not tag:
                 continue
-            if time() - cmd.started > self.timeout:
+            if time.time() - cmd.started > self.timeout:
                 self.tags.remove(cmd.tag)
                 willpop.append(cmd.tag)
                 cmd.waiter.release()
@@ -188,18 +192,18 @@ class AniDBLink(threading.Thread):
         return (self.delay < 2.1 and 2.1 or self.delay)
 
     def _do_delay(self):
-        age = time() - self.lastpacket
+        age = time.time() - self.lastpacket
         delay = self._delay()
         if age <= delay:
-            gen.sleep(delay - age)
+            time.sleep(delay - age)
 
     def _send(self, command):
         if self.banned:
             self.log("NetIO | BANNED")
             raise AniDBBannedError, "Not sending, banned"
         self._do_delay()
-        self.lastpacket = time()
-        command.started = time()
+        self.lastpacket = time.time()
+        command.started = time.time()
         data = command.raw_data()
 
         self.sock.sendto(data, self.target)
@@ -219,6 +223,6 @@ class AniDBLink(threading.Thread):
     def request(self, command):
         if not (self.session and command.session) and command.command not in ('AUTH', 'PING', 'ENCRYPT'):
             raise AniDBMustAuthError, "You must be authed to execute commands besides AUTH and PING"
-        command.started = time()
+        command.started = time.time()
         self._cmd_queue(command)
         self._send(command)

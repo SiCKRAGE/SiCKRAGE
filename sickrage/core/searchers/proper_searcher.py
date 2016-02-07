@@ -22,10 +22,10 @@ from __future__ import unicode_literals
 import operator
 import re
 import threading
+import time
 import traceback
 
 from datetime import datetime, date, timedelta
-from tornado import gen
 
 import sickrage
 from core.common import DOWNLOADED, Quality, SNATCHED, SNATCHED_PROPER, \
@@ -268,7 +268,7 @@ class srProperSearcher(object):
 
                 # snatch it
                 snatchEpisode(result, SNATCHED_PROPER)
-                gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
 
     def _genericName(self, name):
         return name.replace(".", " ").replace("-", " ").replace("_", " ").lower()

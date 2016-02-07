@@ -19,12 +19,12 @@
 from __future__ import unicode_literals
 
 import re
+import time
 import traceback
 from urllib import quote_plus
 from xml.parsers.expat import ExpatError
 
 import xmltodict
-from tornado import gen
 
 import sickrage
 from core.caches import tv_cache
@@ -90,7 +90,7 @@ class TORRENTZProvider(TorrentProvider):
                     sickrage.srLogger.debug("Malformed rss returned or no results, skipping")
                     continue
 
-                gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
 
                 # https://github.com/martinblech/xmltodict/issues/111
                 entries = data[b'rss'][b'channel'][b'item']

@@ -19,10 +19,10 @@
 from __future__ import unicode_literals
 
 import re
+import time
 import traceback
 
 import requests
-from tornado import gen
 
 import sickrage
 from core.caches import tv_cache
@@ -164,7 +164,7 @@ class FreshOnTVProvider(TorrentProvider):
                 if max_page_number > 1:
                     for i in range(1, max_page_number):
 
-                        gen.sleep(1)
+                        time.sleep(1)
                         page_searchURL = searchURL + '&page=' + str(i)
                         # '.log(u"Search string: " + page_searchURL, LOGGER.DEBUG)
                         page_html = self.getURL(page_searchURL)

@@ -19,9 +19,8 @@
 from __future__ import unicode_literals
 
 import threading
+import time
 import traceback
-
-from tornado import gen
 
 import sickrage
 from core.common import cpu_presets
@@ -153,7 +152,7 @@ class DailySearchQueueItem(QueueItem):
                     self.success = snatchEpisode(result)
 
                     # give the CPU a break
-                    gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                    time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
         except Exception:
             sickrage.srLogger.debug(traceback.format_exc())
 
@@ -186,7 +185,7 @@ class ManualSearchQueueItem(QueueItem):
                 self.success = snatchEpisode(searchResult[0])
 
                 # give the CPU a break
-                gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
 
             else:
                 notifications.message('No downloads were found',
@@ -227,7 +226,7 @@ class BacklogQueueItem(QueueItem):
                         snatchEpisode(result)
 
                         # give the CPU a break
-                        gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                        time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
                 else:
                     sickrage.srLogger.info("No needed episodes found during backlog search for: [" + self.show.name + "]")
             except Exception:
@@ -274,7 +273,7 @@ class FailedQueueItem(QueueItem):
                     snatchEpisode(result)
 
                     # give the CPU a break
-                    gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                    time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
             else:
                 pass
                 # LOGGER.info(u"No valid episode found to retry for: [" + self.segment.prettyName() + "]")

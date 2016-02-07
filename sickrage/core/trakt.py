@@ -22,10 +22,10 @@
 from __future__ import unicode_literals
 
 import json
+import time
 
 import certifi
 import requests
-from tornado import gen
 
 import sickrage
 
@@ -49,7 +49,7 @@ class TraktAPI():
             sickrage.srConfig.TRAKT_ACCESS_TOKEN = ''
             return False
         elif count > 0:
-            gen.sleep(2)
+            time.sleep(2)
 
         data = {
             'client_id': sickrage.srConfig.TRAKT_API_KEY,

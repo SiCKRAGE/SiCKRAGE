@@ -20,9 +20,8 @@
 from __future__ import unicode_literals
 
 import re
+import time
 import urllib
-
-from tornado import gen
 
 import sickrage
 from core.caches import tv_cache
@@ -102,7 +101,7 @@ class SCCProvider(TorrentProvider):
                 try:
                     sickrage.srLogger.debug("Search URL: %s" % searchURL)
                     data = self.getURL(searchURL)
-                    gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                    time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
                 except Exception as e:
                     sickrage.srLogger.warning("Unable to fetch data. Error: %s" % repr(e))
 

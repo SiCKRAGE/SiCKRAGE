@@ -32,7 +32,6 @@ from datetime import datetime, date, timedelta
 from dateutil import tz
 from mako.exceptions import html_error_template, TemplateLookupException
 from mako.lookup import TemplateLookup
-from tornado import gen
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
@@ -1431,7 +1430,7 @@ class Home(WebRoot):
         if do_update:
             try:
                 sickrage.srCore.SHOWQUEUE.updateShow(showObj, True)
-                gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
             except CantUpdateShowException as e:
                 errors.append("Unable to update show: {0}".format(str(e)))
 
@@ -1439,14 +1438,14 @@ class Home(WebRoot):
             try:
                 update_scene_exceptions(showObj.indexerid,
                                         exceptions_list)  # @UndefinedVdexerid)
-                gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
             except CantUpdateShowException as e:
                 errors.append("Unable to force an update on scene exceptions of the show.")
 
         if do_update_scene_numbering:
             try:
                 xem_refresh(showObj.indexerid, showObj.indexer)
-                gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
             except CantUpdateShowException as e:
                 errors.append("Unable to force an update on scene numbering of the show.")
 
@@ -1485,7 +1484,7 @@ class Home(WebRoot):
                 )
             )
 
-            gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+            time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
 
         # Don't redirect to the default page, so the user can confirm that the show was deleted
         return self.redirect('/home/')
@@ -1501,7 +1500,7 @@ class Home(WebRoot):
         if error is not None:
             notifications.error('Unable to refresh this show.', error)
 
-        gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+        time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
 
         return self.redirect("/home/displayShow?show=" + str(show.indexerid))
 
@@ -1522,7 +1521,7 @@ class Home(WebRoot):
             notifications.error("Unable to update this show.", e.message)
 
         # just give it some time
-        gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+        time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
 
         return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
@@ -1539,7 +1538,7 @@ class Home(WebRoot):
         # search and download subtitles
         sickrage.srCore.SHOWQUEUE.downloadSubtitles(showObj, bool(force))
 
-        gen.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+        time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
 
         return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 

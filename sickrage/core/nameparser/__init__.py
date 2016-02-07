@@ -22,9 +22,9 @@ from __future__ import unicode_literals
 
 import os
 import re
+import time
 
 from dateutil import parser
-from tornado import gen
 
 import sickrage
 from core.classes import ShowListUI
@@ -368,7 +368,7 @@ class NameParser(object):
                 sickrage.srLogger.debug("Converted parsed result {} into {}".format(bestResult.original_name, bestResult))
 
         # CPU sleep
-        gen.sleep(1)
+        time.sleep(1)
 
         return bestResult
 
