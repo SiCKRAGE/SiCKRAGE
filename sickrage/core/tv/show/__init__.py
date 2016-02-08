@@ -26,11 +26,12 @@ import re
 import stat
 import threading
 import traceback
-from datetime import date
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
+import imdbpie
 import requests
 import send2trash
+import tmdbsimple
 
 import sickrage
 from core.blackandwhitelist import BlackAndWhiteList
@@ -843,14 +844,14 @@ class TVShow(object):
                      'votes': '',
                      'last_update': ''}
 
-        i = imdb.IMDb()
+        i = imdbpie.Imdb()
         if not self.imdbid:
-            self.imdbid = i.title2imdbID(self.name, kind='tv series') or self.imdbid
+            self.imdbid = i.search_for_title(self.name).imdb_id or self.imdbid
 
         if self.imdbid:
             sickrage.srLogger.debug(str(self.indexerid) + ": Loading show info from IMDb")
 
-            imdbTv = i.get_movie(str(re.sub(r"[^0-9]", "", self.imdbid)))
+            imdbTv = i.get_title_by_id(self.imdbid)
 
             for key in [x for x in imdb_info.keys() if x.replace('_', ' ') in imdbTv.keys()]:
                 # Store only the first value for string type
@@ -930,7 +931,7 @@ class TVShow(object):
             response.encoding = 'utf-8'
             return response.json()
 
-        TMDB._request = _request
+        tmdbsimple.base.TMDB._request = _request
         if not self.tmdbid:
             tmdb_result = tmdbsimple.Search().tv(query=self.name)['results']
             if len(tmdb_result) > 0:

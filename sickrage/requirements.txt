@@ -31,7 +31,7 @@ httplib2
 html5lib
 idna
 ipaddress
-IMDbPY
+imdbpie
 jsonrpclib
 lockfile
 Mako
