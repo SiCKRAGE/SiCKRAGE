@@ -55,7 +55,7 @@ def root_check():
 
 
 def virtualenv_check():
-    return not hasattr(sys, 'real_prefix')
+    return hasattr(sys, 'real_prefix')
 
 
 def install_pip():
@@ -88,22 +88,26 @@ def install_requirements():
 
     requirements = [os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))]
     options = InstallCommand().parse_args([])[0]
+    options.use_user_site = root_check() and not virtualenv_check()
     options.requirements = requirements
-    options.use_user_site = root_check() and virtualenv_check()
+    options.cache_dir = None
     options.upgrade = True
-    options.pre = True
     options.quiet = 1
+    options.pre = True
 
     # install/upgrade all requirements for sickrage
     print("Installing SiCKRAGE requirement packages, please stand by ...")
-    while True:
+
+    attempts = 0
+    while attempts < 3:
         try:
             options.ignore_dependencies = True
             InstallCommand().run(options, [])
             options.ignore_dependencies = False
             InstallCommand().run(options, [])
         except ContextualVersionConflict:
-            continue
+            attempts += 1
+            time.sleep(1)
         finally:
             break
 
