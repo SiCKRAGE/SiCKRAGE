@@ -102,7 +102,9 @@ class GenericProvider(object):
 
     @property
     def imageName(self):
-        return self.id + '.png'
+        if os.path.isfile(os.path.join(sickrage.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
+            return self.id + '.png'
+        return self.type + '.png'
 
     def _makeID(self):
         return str(re.sub(r"[^\w\d_]", "_", self.name.strip().lower()))
@@ -528,7 +530,7 @@ class GenericProvider(object):
             return providerMatch[0]
 
     @classmethod
-    def getProviderList(cls, data=None):
+    def getProviderList(cls, data=""):
         modules = []
         for type in GenericProvider.types:
             modules += cls.loadProviders(type)
@@ -674,7 +676,7 @@ class TorrentProvider(GenericProvider):
         return results
 
     @classmethod
-    def getProviderList(cls, data=None):
+    def getProviderList(cls, data=""):
         return super(TorrentProvider, cls).loadProviders(GenericProvider.TORRENT)
 
 
@@ -700,7 +702,7 @@ class NZBProvider(GenericProvider):
         return int(size)
 
     @classmethod
-    def getProviderList(cls, data=None):
+    def getProviderList(cls, data=""):
         return super(NZBProvider, cls).loadProviders(GenericProvider.NZB)
 
 
@@ -747,11 +749,6 @@ class TorrentRssProvider(TorrentProvider):
             int(self.enable_daily),
             int(self.enable_backlog)
         )
-
-    def imageName(self):
-        if os.path.isfile(os.path.join(sickrage.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
-            return '{}.png'.format(self.id)
-        return 'torrentrss.png'
 
     def _get_title_and_url(self, item):
 
@@ -835,7 +832,7 @@ class TorrentRssProvider(TorrentProvider):
         return self.ratio
 
     @classmethod
-    def getProviderList(cls, data=None):
+    def getProviderList(cls, data=""):
         providerList = filter(lambda x: x, [cls.makeProvider(x) for x in data.split('!!!')])
 
         seen_values = set()
@@ -937,12 +934,6 @@ class NewznabProvider(NZBProvider):
         return self.name + '|' + self.url + '|' + self.key + '|' + self.catIDs + '|' + str(
                 int(self.enabled)) + '|' + self.search_mode + '|' + str(int(self.search_fallback)) + '|' + str(
                 int(self.enable_daily)) + '|' + str(int(self.enable_backlog))
-
-    def imageName(self):
-        if os.path.isfile(
-                os.path.join(sickrage.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
-            return self.id + '.png'
-        return 'newznab.png'
 
     def _getURL(self, url, post_data=None, params=None, timeout=30, json=False):
         return self.getURL(url, post_data=post_data, params=params, timeout=timeout, json=json)
@@ -1202,7 +1193,7 @@ class NewznabProvider(NZBProvider):
         return results
 
     @classmethod
-    def getProviderList(cls, data=None):
+    def getProviderList(cls, data=""):
         defaultList = [cls.makeProvider(x) for x in cls.getDefaultProviders().split('!!!')]
         providerList = filter(lambda x: x, [cls.makeProvider(x) for x in data.split('!!!')])
 

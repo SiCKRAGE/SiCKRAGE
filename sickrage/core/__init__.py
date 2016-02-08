@@ -82,7 +82,7 @@ from notifiers.synoindex import synoIndexNotifier
 from notifiers.synologynotifier import synologyNotifier
 from notifiers.trakt import TraktNotifier
 from notifiers.tweet import TwitterNotifier
-from providers import GenericProvider, NZBProvider, TorrentProvider
+from providers import GenericProvider, NZBProvider, TorrentProvider, NewznabProvider, TorrentRssProvider
 
 urllib._urlopener = SiCKRAGEURLopener()
 urlparse.uses_netloc.append('scgi')
@@ -166,8 +166,8 @@ class srCore(object):
         self.metadataProviderDict = None
 
         self.providersDict = {
-            GenericProvider.NZB: {p.id: p for p in NZBProvider.getProviderList()},
-            GenericProvider.TORRENT: {p.id: p for p in TorrentProvider.getProviderList()},
+            GenericProvider.NZB: {p.id: p for p in NZBProvider.getProviderList() + NewznabProvider.getProviderList()},
+            GenericProvider.TORRENT: {p.id: p for p in TorrentProvider.getProviderList() + TorrentRssProvider.getProviderList()},
         }
 
         self.newznabProviderList = None
@@ -287,9 +287,11 @@ class srCore(object):
         if sickrage.srConfig.NZB_METHOD not in ('blackhole', 'sabnzbd', 'nzbget'):
             sickrage.srConfig.NZB_METHOD = 'blackhole'
 
-        if not sickrage.srConfig.PROVIDER_ORDER:
-            sickrage.srConfig.PROVIDER_ORDER = self.providersDict[GenericProvider.NZB].keys() + \
-                                         self.providersDict[GenericProvider.TORRENT].keys()
+        # provider order, adds missing providers as well
+        sickrage.srConfig.PROVIDER_ORDER += [x for x in
+                                            self.providersDict[GenericProvider.NZB].keys() + self.providersDict[
+                                                GenericProvider.TORRENT].keys() if
+                                            x not in sickrage.srConfig.PROVIDER_ORDER]
 
         if sickrage.srConfig.TORRENT_METHOD not in (
                 'blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent',

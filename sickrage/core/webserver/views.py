@@ -86,11 +86,6 @@ from providers import GenericProvider, NewznabProvider, \
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
-        self.io_loop = IOLoop.instance()
-        self.executor = ThreadPoolExecutor(50)
-
-    def initialize(self):
-        self.startTime = time.time()
         self.mako_lookup = TemplateLookup(
             directories=[os.path.join(sickrage.srConfig.GUI_DIR, 'views{}'.format(os.sep))],
             module_directory=os.path.join(sickrage.srConfig.CACHE_DIR, 'mako{}'.format(os.sep)),
@@ -101,6 +96,9 @@ class BaseHandler(RequestHandler):
             encoding_errors='replace',
             future_imports=['unicode_literals']
         )
+        self.startTime = time.time()
+        self.io_loop = IOLoop.instance()
+        self.executor = ThreadPoolExecutor(50)
 
     @run_on_executor
     def async_call(self, function, **kwargs):
@@ -375,7 +373,8 @@ class WebRoot(WebHandler):
 
     def schedule(self, layout=None):
         next_week = datetime.date.today() + datetime.timedelta(days=7)
-        next_week1 = datetime.datetime.combine(next_week, datetime.datetime.now().time().replace(tzinfo=tz_updater.sr_timezone))
+        next_week1 = datetime.datetime.combine(next_week,
+                                               datetime.datetime.now().time().replace(tzinfo=tz_updater.sr_timezone))
         results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickrage.srConfig.COMING_EPS_SORT,
                                                      False)
         today = datetime.datetime.now().replace(tzinfo=tz_updater.sr_timezone)
@@ -548,7 +547,7 @@ class WebFileBrowser(WebRoot):
         self.set_header("Content-Type", "application/json")
         return json_encode(foldersAtPath(path, True, bool(int(includeFiles))))
 
-    def complete(self, term, includeFiles=0, *args, **kwargs):
+    def complete(self, term, includeFiles=0):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header("Content-Type", "application/json")
         paths = [entry[b'path'] for entry in
@@ -1246,11 +1245,18 @@ class Home(WebRoot):
             out.append("S" + str(season) + ": " + ", ".join(names))
         return "<br>".join(out)
 
-    def editShow(self, show=None, location=None, anyQualities=[], bestQualities=[], exceptions_list=[],
+    def editShow(self, show=None, location=None, anyQualities=None, bestQualities=None, exceptions_list=None,
                  flatten_folders=None, paused=None, directCall=False, air_by_date=None, sports=None, dvdorder=None,
                  indexerLang=None, subtitles=None, archive_firstmatch=None, rls_ignore_words=None,
                  rls_require_words=None, anime=None, blacklist=None, whitelist=None,
                  scene=None, defaultEpStatus=None, quality_preset=None):
+
+        if exceptions_list is None:
+            exceptions_list = []
+        if bestQualities is None:
+            bestQualities = []
+        if anyQualities is None:
+            anyQualities = []
 
         anidb_failed = False
         if show is None:
@@ -3209,8 +3215,11 @@ class Manage(Home, WebRoot):
 
     def massEditSubmit(self, archive_firstmatch=None, paused=None, default_ep_status=None,
                        anime=None, sports=None, scene=None, flatten_folders=None, quality_preset=None,
-                       subtitles=None, air_by_date=None, anyQualities=[], bestQualities=[], toEdit=None, *args,
-                       **kwargs):
+                       subtitles=None, air_by_date=None, anyQualities=None, bestQualities=None, toEdit=None, **kwargs):
+        if bestQualities is None:
+            bestQualities = []
+        if anyQualities is None:
+            anyQualities = []
         dir_map = {}
         for cur_arg in kwargs:
             if not cur_arg.startswith('orig_root_dir_'):
@@ -5108,7 +5117,8 @@ class ErrorLogs(WebRoot):
              sickrage.srLogger.logLevels[x] >= int(minLevel)])
 
         logRegex = re.compile(
-            r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levelsFiltered, logFilter),
+            r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levelsFiltered,
+                                                                                                logFilter),
             re.S + re.M)
 
         data = []
