@@ -21,9 +21,8 @@
 # along with enzyme.  If not, see <http://www.gnu.org/licenses/>.
 import logging
 import re
-from struct import unpack
-
 from datetime import datetime
+from struct import unpack
 
 import core
 from exceptions import ParseError
@@ -361,7 +360,7 @@ class EbmlEntity:
         return self.id_len + self.len_size
 
 
-
+# noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
 class Matroska(core.AVContainer):
     """
     Matroska video and audio parser. If at least one video stream is

@@ -22,12 +22,12 @@ import uuid
 import zipfile
 from _socket import timeout as SocketTimeout
 from contextlib import closing, contextmanager
+from datetime import datetime
 from itertools import cycle, izip
 
 import requests
 import six
 from bs4 import BeautifulSoup
-from datetime import datetime
 
 import sickrage
 from clients import http_error_code
@@ -36,7 +36,6 @@ from core.helpers.sessions import _setUpSession
 from indexers import adba
 from indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_seasonnotfound
-from requirements import install_ssl
 
 mediaExtensions = [
     'avi', 'mkv', 'mpg', 'mpeg', 'wmv',
@@ -912,18 +911,13 @@ def create_https_certificates(ssl_cert, ssl_key):
     domain name(replacing dots by underscores), finally signing the certificate using specified CA and
     returns the path of key and cert files. If you are yet to generate a CA then check the top comments"""
 
-    try:
-        import OpenSSL
-    except ImportError:
-        install_ssl()
-        import OpenSSL
-
     # Check happens if the certificate and key pair already exists for a domain
     if not os.path.exists(ssl_key) and os.path.exists(ssl_cert):
         # Serial Generation - Serial number must be unique for each certificate,
         serial = int(time.time())
 
         # Create the CA Certificate
+        import OpenSSL
         cakey = OpenSSL.crypto.PKey().generate_key(OpenSSL.crypto.TYPE_RSA, 2048)
         careq = OpenSSL.crypto.X509()
         careq.get_subject().CN = "Certificate Authority"

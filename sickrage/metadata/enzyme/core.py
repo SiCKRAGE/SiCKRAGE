@@ -371,6 +371,7 @@ class AudioStream(Media):
     _keys = Media._keys + AUDIOCORE
 
 
+# noinspection PyUnresolvedReferences
 class Music(AudioStream):
     """
     Digital Music.

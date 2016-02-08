@@ -19,7 +19,6 @@
 from __future__ import unicode_literals
 
 import threading
-
 from datetime import datetime
 
 import sickrage
@@ -52,7 +51,7 @@ class srShowUpdater(object):
 
         # select 10 'Ended' tv_shows updated more than 90 days ago to include in this update
         stale_should_update = []
-        stale_update_date = (update_date - timedelta(days=90)).toordinal()
+        stale_update_date = (update_date - datetime.timedelta(days=90)).toordinal()
 
         # last_update_date <= 90 days, sorted ASC because dates are ordinal
         sql_result = main_db.MainDB().select(

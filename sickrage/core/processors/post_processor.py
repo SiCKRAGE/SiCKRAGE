@@ -39,7 +39,7 @@ from core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from core.searchers.subtitle_searcher import wantedLanguages
 from core.tv.show.history import FailedHistory, History
-from indexers import adba
+from indexers.adba import aniDBAbstracter
 from notifiers import srNotifiers
 
 
@@ -554,7 +554,7 @@ class PostProcessor(object):
         :param filePath: file to check
         :return: episode object
         """
-        ep = adba.Episode(connection, filePath=filePath,
+        ep = aniDBAbstracter.Episode(connection, filePath=filePath,
                           paramsF=["quality", "anidb_file_name", "crc32"],
                           paramsA=["epno", "english_name", "short_name_list", "other_name", "synonym_list"])
 

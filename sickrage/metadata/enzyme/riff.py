@@ -63,6 +63,7 @@ PIXEL_ASPECT = {
 }
 
 
+# noinspection PyUnresolvedReferences
 class Riff(core.AVContainer):
     """
     AVI parser also parsing metadata like title, languages, etc.

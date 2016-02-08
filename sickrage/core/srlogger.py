@@ -33,9 +33,6 @@ from logging.handlers import RotatingFileHandler
 
 
 class srLogger(logging.getLoggerClass()):
-    # disable root logger
-    logging.getLogger().addHandler(logging.NullHandler())
-
     def __init__(self, logFile=None, logSize=1048576, logNr=5, consoleLogging=True, fileLogging=True,
                  debugLogging=False, *args, **kwargs):
         super(srLogger, self).__init__("sickrage")
@@ -261,7 +258,7 @@ class srLogger(logging.getLoggerClass()):
                 except Exception:
                     message += "Locale: unknown" + "\n"
                 message += "Version: **" + sickrage.srCore.VERSION + "**\n"
-                if gist and gist != 'No ERROR found':
+                if hasattr(gist, 'html_url'):
                     message += "Link to Log: " + gist.html_url + "\n"
                 else:
                     message += "No Log available with ERRORS: " + "\n"

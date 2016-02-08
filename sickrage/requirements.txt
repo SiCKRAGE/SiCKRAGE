@@ -1,4 +1,5 @@
 APScheduler
+argparse
 babelfish
 backport-ipaddress
 backports-abc
@@ -22,7 +23,7 @@ FormEncode
 future
 futures
 gntp
-guessit
+guessit==1.0.3
 hachoir-core
 hachoir-metadata
 hachoir-parser
@@ -30,6 +31,7 @@ httplib2
 html5lib
 idna
 ipaddress
+IMDbPY
 jsonrpclib
 lockfile
 Mako
@@ -50,7 +52,7 @@ python-twitter
 pytz
 pyxdg
 PyYAML
-requests
+requests[security]==2.9.1
 requests-oauthlib
 rtorrent-python
 Send2Trash
@@ -71,4 +73,3 @@ tzlocal
 wheel
 xmltodict
 yarg
-python-daemon

@@ -21,14 +21,21 @@
 from __future__ import unicode_literals
 
 import atexit
+import ctypes
 import getopt
+import io
+import logging
 import os
 import sys
 import threading
 import time
 import traceback
 
-from requirements import install_pip, install_requirements
+# set thread name
+threading.currentThread().setName('MAIN')
+
+logging.basicConfig()
+logging.getLogger().addHandler(logging.NullHandler())
 
 time.strptime("2012", "%Y")
 
@@ -38,6 +45,67 @@ srConfig = None
 
 PROG_DIR = os.path.abspath(os.path.dirname(__file__))
 DATA_DIR = os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage'))
+
+
+def root_check():
+    try:
+        return not os.getuid() == 0
+    except AttributeError:
+        return not ctypes.windll.shell32.IsUserAnAdmin() != 0
+
+
+def virtualenv_check():
+    return not hasattr(sys, 'real_prefix')
+
+
+def install_pip():
+    print("Downloading pip ...")
+    import urllib2
+
+    url = "https://bootstrap.pypa.io/get-pip.py"
+    file_name = os.path.abspath(os.path.join(os.path.dirname(__file__), url.split('/')[-1]))
+    u = urllib2.urlopen(url)
+    with io.open(file_name, 'wb') as f:
+        meta = u.info()
+        block_sz = 8192
+        while True:
+            buf = u.read(block_sz)
+            if not buf:
+                break
+            f.write(buf)
+
+    print("Installing pip ...")
+    import subprocess
+    subprocess.call([sys.executable, file_name] + ([], ['--user'])[root_check() and virtualenv_check()])
+
+    print("Cleaning up downloaded pip files")
+    os.remove(file_name)
+
+
+def install_requirements():
+    from pip.commands.install import InstallCommand
+    from pkg_resources import ContextualVersionConflict
+
+    requirements = [os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))]
+    options = InstallCommand().parse_args([])[0]
+    options.requirements = requirements
+    options.use_user_site = root_check() and virtualenv_check()
+    options.upgrade = True
+    options.pre = True
+    options.quiet = 1
+
+    # install/upgrade all requirements for sickrage
+    print("Installing SiCKRAGE requirement packages, please stand by ...")
+    while True:
+        try:
+            options.ignore_dependencies = True
+            InstallCommand().run(options, [])
+            options.ignore_dependencies = False
+            InstallCommand().run(options, [])
+        except ContextualVersionConflict:
+            continue
+        finally:
+            break
 
 
 def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
@@ -123,6 +191,7 @@ def help_message(prog_dir):
     return help_msg
 
 
+# noinspection PyUnresolvedReferences,PyUnresolvedReferences
 def main():
     global srCore, srConfig, srLogger, DATA_DIR
 
@@ -134,9 +203,6 @@ def main():
     path = os.path.dirname(os.path.realpath(__file__))
     if path not in sys.path:
         sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
-
-    # set thread name
-    threading.currentThread().setName('MAIN')
 
     try:
         opts, _ = getopt.getopt(
@@ -237,8 +303,9 @@ def main():
             DEBUG = True
 
     try:
-        print("Starting SiCKRAGE ...")
-        
+        import core
+        from core.helpers import makeDir
+
         # Make sure that we can create the data dir
         if not os.access(DATA_DIR, os.F_OK):
             try:
@@ -250,20 +317,11 @@ def main():
         if not os.access(DATA_DIR, os.W_OK):
             raise SystemExit("Data directory must be writeable '" + DATA_DIR + "'")
 
+        print("Starting SiCKRAGE ...")
+
         # daemonize sickrage ?
         if DAEMONIZE:
             daemonize(PIDFILE)
-
-        # install/upgrade pip and ssl contexts for required/optional imports
-        if not DEVELOPER:
-            # install pip package manager
-            install_pip()
-
-            # install required packages
-            install_requirements(optional=INSTALL_OPTIONAL, ssl=SSL)
-
-        import core
-        from core.helpers import makeDir
 
         # init logger
         srLogger = core.srLogger()
@@ -293,6 +351,15 @@ def main():
         srCore.WEBSERVER.open_browser = (True, False)[WEB_NOLAUNCH]
         srCore.WEBSERVER.port = (srConfig.WEB_PORT, WEB_PORT)[WEB_PORT is not None]
         srCore.WEBSERVER.start()
+    except ImportError:
+        # install pip package manager
+        install_pip()
+
+        # install required packages
+        install_requirements()
+
+        # restart sickrage silently
+        os.execl(sys.executable, sys.executable, *sys.argv)
     except KeyboardInterrupt:
         pass
     except Exception:

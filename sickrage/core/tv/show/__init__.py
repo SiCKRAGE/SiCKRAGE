@@ -26,11 +26,11 @@ import re
 import stat
 import threading
 import traceback
+from datetime import date
+from datetime import datetime, timedelta
 
 import requests
 import send2trash
-from datetime import date
-from datetime import datetime, timedelta
 
 import sickrage
 from core.blackandwhitelist import BlackAndWhiteList
@@ -42,7 +42,8 @@ from core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, 
 from core.databases import main_db
 from core.exceptions import CantRefreshShowException, \
     CantRemoveShowException
-from core.exceptions import MultipleShowObjectsException, ShowDirectoryNotFoundException, ShowNotFoundException, EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
+from core.exceptions import MultipleShowObjectsException, ShowDirectoryNotFoundException, ShowNotFoundException, \
+    EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
 from core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt, safe_getattr
 from core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from core.tv import dirty_setter
@@ -384,7 +385,7 @@ class TVShow(object):
         # get file list
         mediaFiles = listMediaFiles(self.location)
         sickrage.srLogger.debug("%s: Found files: %s" %
-                                     (self.indexerid, mediaFiles))
+                                (self.indexerid, mediaFiles))
 
         # create TVEpisodes from each media file (if possible)
         sql_l = []
@@ -811,8 +812,17 @@ class TVShow(object):
             self.runtime = safe_getattr(myEp, 'runtime', self.runtime)
             self.imdbid = safe_getattr(myEp, 'imdb_id', self.imdbid)
             self.tmdbid = safe_getattr(myEp, 'tmdb_id', self.tmdbid)
-            self.airs = safe_getattr(myEp, 'airs_dayofweek', "") + " " + safe_getattr(myEp, 'airs_time', "")
-            self.startyear = tryInt(str(safe_getattr(myEp, 'firstaired', "0000-00-00")).split('-')[0])
+
+            try:
+                self.airs = safe_getattr(myEp, 'airs_dayofweek') + " " + safe_getattr(myEp, 'airs_time')
+            except:
+                pass
+
+            try:
+                self.startyear = tryInt(str(safe_getattr(myEp, 'firstaired') or date.fromordinal(1)).split('-')[0])
+            except:
+                pass
+
             self.status = safe_getattr(myEp, 'status', self.status)
         else:
             sickrage.srLogger.warning(
@@ -820,7 +830,6 @@ class TVShow(object):
                     self.indexer).name + " as it is temporarily disabled.")
 
     def loadIMDbInfo(self, imdbapi=None):
-
         imdb_info = {'imdb_id': self.imdbid,
                      'title': '',
                      'year': '',
@@ -834,12 +843,7 @@ class TVShow(object):
                      'votes': '',
                      'last_update': ''}
 
-        try:
-            from imdb import IMDb
-            i = IMDb()
-        except ImportError:
-            raise
-
+        i = imdb.IMDb()
         if not self.imdbid:
             self.imdbid = i.title2imdbID(self.name, kind='tv series') or self.imdbid
 
@@ -913,10 +917,7 @@ class TVShow(object):
                      'vote_count': '',
                      'last_air_date': ''}
 
-        import tmdbsimple
         tmdbsimple.API_KEY = sickrage.srConfig.TMDB_API_KEY
-
-        from tmdbsimple.base import TMDB
         def _request(self, method, path, params=None, payload=None):
             url = self._get_complete_url(path)
             params = self._get_params(params)
@@ -1045,8 +1046,8 @@ class TVShow(object):
                     removetree(self.location)
 
                 sickrage.srLogger.info('%s show folder %s' %
-                                            (('Deleted', 'Trashed')[sickrage.srConfig.TRASH_REMOVE_SHOW],
-                                             self.location))
+                                       (('Deleted', 'Trashed')[sickrage.srConfig.TRASH_REMOVE_SHOW],
+                                        self.location))
 
             except ShowDirectoryNotFoundException:
                 sickrage.srLogger.warning(
@@ -1259,9 +1260,9 @@ class TVShow(object):
         # if the quality isn't one we want under any circumstances then just say no
         anyQualities, bestQualities = Quality.splitQuality(self.quality)
         sickrage.srLogger.debug("Any,Best = [ %s ] [ %s ] Found = [ %s ]" %
-                                     (self.qualitiesToString(anyQualities),
-                                      self.qualitiesToString(bestQualities),
-                                      self.qualitiesToString([quality])))
+                                (self.qualitiesToString(anyQualities),
+                                 self.qualitiesToString(bestQualities),
+                                 self.qualitiesToString([quality])))
 
         if quality not in anyQualities + bestQualities or quality is UNKNOWN:
             sickrage.srLogger.debug("Don't want this quality, ignoring found episode")

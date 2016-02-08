@@ -22,9 +22,8 @@ from __future__ import unicode_literals
 import os
 import re
 import threading
-from xml.etree.ElementTree import ElementTree
-
 from datetime import datetime, date
+from xml.etree.ElementTree import ElementTree
 
 import sickrage
 from core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
@@ -348,9 +347,9 @@ class TVEpisode(object):
 
         self.description = safe_getattr(myEp, 'overview', self.description)
 
-        firstaired = safe_getattr(myEp, 'firstaired', str(date.fromordinal(1)))
+        firstaired = safe_getattr(myEp, 'firstaired') or date.fromordinal(1)
         try:
-            rawAirdate = [int(x) for x in safe_getattr(myEp, 'firstaired', str(date.fromordinal(1))).split("-")]
+            rawAirdate = [int(x) for x in str(firstaired).split("-")]
             self.airdate = date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError):
             sickrage.srLogger.warning("Malformed air date of {} retrieved from {} for ({} - S{}E{})".format(
