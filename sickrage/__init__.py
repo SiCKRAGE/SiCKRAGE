@@ -24,7 +24,6 @@ import atexit
 import ctypes
 import getopt
 import io
-import logging
 import os
 import sys
 import threading
@@ -33,9 +32,6 @@ import traceback
 
 # set thread name
 threading.currentThread().setName('MAIN')
-
-logging.basicConfig()
-logging.getLogger().addHandler(logging.NullHandler())
 
 time.strptime("2012", "%Y")
 
@@ -125,7 +121,7 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
     # Decouple from parent environment
     os.chdir("/")
     os.setsid()
-    os.umask(022)
+    os.umask(0)
 
     # Second fork
     try:
@@ -143,7 +139,7 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         sys.stderr.flush()
         si = file(stdin, 'r')
         so = file(stdout, 'a+')
-        se = (so, file(stderr, 'a+', 0))[stderr is not None]
+        se = file(stderr, 'a+', 0)
         os.dup2(si.fileno(), sys.stdin.fileno())
         os.dup2(so.fileno(), sys.stdout.fileno())
         os.dup2(se.fileno(), sys.stderr.fileno())
@@ -307,6 +303,10 @@ def main():
             DEBUG = True
 
     try:
+        # daemonize sickrage ?
+        if DAEMONIZE:
+            daemonize(PIDFILE)
+
         import core
         from core.helpers import makeDir
 
@@ -322,10 +322,6 @@ def main():
             raise SystemExit("Data directory must be writeable '" + DATA_DIR + "'")
 
         print("Starting SiCKRAGE ...")
-
-        # daemonize sickrage ?
-        if DAEMONIZE:
-            daemonize(PIDFILE)
 
         # init logger
         srLogger = core.srLogger()

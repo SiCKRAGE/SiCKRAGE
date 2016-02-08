@@ -31,6 +31,8 @@ import traceback
 from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
 
+logging.basicConfig()
+logging.getLogger().addHandler(logging.NullHandler())
 
 class srLogger(logging.getLoggerClass()):
     def __init__(self, logFile=None, logSize=1048576, logNr=5, consoleLogging=True, fileLogging=True,
