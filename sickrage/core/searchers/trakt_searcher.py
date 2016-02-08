@@ -19,10 +19,9 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import traceback
-
-from datetime import date
 
 import sickrage
 from core.common import Quality
@@ -41,7 +40,7 @@ def setEpisodeToWanted(show, s, e):
     epObj = show.getEpisode(int(s), int(e))
     if epObj:
         with epObj.lock:
-            if epObj.status != SKIPPED or epObj.airdate == date.fromordinal(1):
+            if epObj.status != SKIPPED or epObj.airdate == datetime.date.fromordinal(1):
                 return
 
             sickrage.srLogger.info("Setting episode %s S%02dE%02d to wanted" % (show.name, s, e))

@@ -1,7 +1,7 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import re
-    from datetime import datetime, date, timedelta
+    import datetime
     import calendar
 
     import sickrage

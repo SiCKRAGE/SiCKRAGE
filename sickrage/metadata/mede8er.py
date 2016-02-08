@@ -18,11 +18,10 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import io
 import os
 from xml.etree.ElementTree import Element, ElementTree, SubElement
-
-from datetime import datetime, date
 
 import sickrage
 from core.common import dateFormat
@@ -148,7 +147,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
         if getattr(myShow, "firstaired", None):
             try:
-                year_text = str(datetime.strptime(myShow[b"firstaired"], dateFormat).year)
+                year_text = str(datetime.datetime.strptime(myShow[b"firstaired"], dateFormat).year)
                 if year_text:
                     year = SubElement(tv_node, "year")
                     year.text = year_text
@@ -256,7 +255,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
                 # default to today's date for specials if firstaired is not set
                 if curEpToWrite.season == 0 and not getattr(myEp, 'firstaired', None):
-                    myEp[b'firstaired'] = str(date.fromordinal(1))
+                    myEp[b'firstaired'] = str(datetime.date.fromordinal(1))
 
                 if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                     return None
@@ -275,7 +274,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
                 if getattr(myShow, "firstaired", None):
                     try:
-                        year_text = str(datetime.strptime(myShow[b"firstaired"], dateFormat).year)
+                        year_text = str(datetime.datetime.strptime(myShow[b"firstaired"], dateFormat).year)
                         if year_text:
                             year = SubElement(episode, "year")
                             year.text = year_text

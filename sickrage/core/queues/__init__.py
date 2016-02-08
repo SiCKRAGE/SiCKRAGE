@@ -19,9 +19,8 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import threading
-
-from datetime import datetime
 
 import sickrage
 
@@ -86,7 +85,7 @@ class GenericQueue(object):
         :return: item
         """
         with self.lock:
-            item.added = datetime.now()
+            item.added = datetime.datetime.now()
             self.queue.append(item)
             return item
 

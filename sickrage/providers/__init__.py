@@ -18,6 +18,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import importlib
 import io
 import itertools
@@ -30,7 +31,6 @@ from base64 import b16encode, b32decode
 
 import bencode
 import requests
-from datetime import datetime
 from feedparser import FeedParserDict
 from hachoir_core.stream import StringInputStream
 from hachoir_parser import guessParser
@@ -501,7 +501,7 @@ class GenericProvider(object):
 
         results = self.cache.listPropers(search_date)
 
-        return [Proper(x[b'name'], x[b'url'], datetime.fromtimestamp(x[b'time']), self.show) for x in
+        return [Proper(x[b'name'], x[b'url'], datetime.datetime.fromtimestamp(x[b'time']), self.show) for x in
                 results]
 
     def seedRatio(self):
@@ -648,7 +648,7 @@ class TorrentProvider(GenericProvider):
     def _clean_title_from_provider(title):
         return (title or '').replace(' ', '.')
 
-    def findPropers(self, search_date=datetime.today()):
+    def findPropers(self, search_date=datetime.datetime.today()):
 
         results = []
 
@@ -669,7 +669,7 @@ class TorrentProvider(GenericProvider):
 
                     for item in self._doSearch(searchString[0]):
                         title, url = self._get_title_and_url(item)
-                        results.append(Proper(title, url, datetime.today(), show))
+                        results.append(Proper(title, url, datetime.datetime.today(), show))
 
         return results
 
@@ -931,7 +931,7 @@ class NewznabProvider(NZBProvider):
         self.supportsBacklog = True
 
         self.default = False
-        self.last_search = datetime.now()
+        self.last_search = datetime.datetime.now()
 
     def configStr(self):
         return self.name + '|' + self.url + '|' + self.key + '|' + self.catIDs + '|' + str(
@@ -993,8 +993,8 @@ class NewznabProvider(NZBProvider):
         if not ep_obj:
             return to_return
 
-        params[b'maxage'] = (datetime.now() - datetime.combine(ep_obj.airdate,
-                                                                                 datetime.min.time())).days + 1
+        params[b'maxage'] = (datetime.datetime.now() - datetime.datetime.combine(ep_obj.airdate,
+                                                                                 datetime.datetime.min.time())).days + 1
         params[b'tvdbid'] = ep_obj.show.indexerid
 
         # season
@@ -1022,8 +1022,8 @@ class NewznabProvider(NZBProvider):
         if not ep_obj:
             return to_return
 
-        params[b'maxage'] = (datetime.now() - datetime.combine(ep_obj.airdate,
-                                                                                 datetime.min.time())).days + 1
+        params[b'maxage'] = (datetime.datetime.now() - datetime.datetime.combine(ep_obj.airdate,
+                                                                                 datetime.datetime.min.time())).days + 1
         params[b'tvdbid'] = ep_obj.show.indexerid
 
         if ep_obj.show.air_by_date or ep_obj.show.sports:
@@ -1127,14 +1127,14 @@ class NewznabProvider(NZBProvider):
         while total >= offset:
             search_url = self.url + 'api?' + urllib.urlencode(params)
 
-            while (datetime.now() - self.last_search).seconds < 5:
+            while (datetime.datetime.now() - self.last_search).seconds < 5:
                 time.sleep(1)
 
             sickrage.srLogger.debug("Search url: %s" % search_url)
 
             data = self.cache.getRSSFeed(search_url)
 
-            self.last_search = datetime.now()
+            self.last_search = datetime.datetime.now()
 
             if not self._checkAuthFromData(data):
                 break
@@ -1174,7 +1174,7 @@ class NewznabProvider(NZBProvider):
 
         return results
 
-    def findPropers(self, search_date=datetime.today()):
+    def findPropers(self, search_date=datetime.datetime.today()):
         results = []
 
         sqlResults = main_db.MainDB().select(
@@ -1197,7 +1197,7 @@ class NewznabProvider(NZBProvider):
                     for item in self._doSearch(searchString):
                         title, url = self._get_title_and_url(item)
                         if re.match(r'.*(REPACK|PROPER).*', title, re.I):
-                            results.append(Proper(title, url, datetime.today(), self.show))
+                            results.append(Proper(title, url, datetime.datetime.today(), self.show))
 
         return results
 
@@ -1302,7 +1302,7 @@ class NewznabCache(TVCache):
 
         # only poll newznab providers every 30 minutes
         self.minTime = 30
-        self.last_search = datetime.now()
+        self.last_search = datetime.datetime.now()
 
     def _getRSSData(self):
 
@@ -1319,13 +1319,13 @@ class NewznabCache(TVCache):
 
         rss_url = self.provider.url + 'api?' + urllib.urlencode(params)
 
-        while (datetime.now() - self.last_search).seconds < 5:
+        while (datetime.datetime.now() - self.last_search).seconds < 5:
             time.sleep(1)
 
         sickrage.srLogger.debug("Cache update URL: %s " % rss_url)
         data = self.getRSSFeed(rss_url)
 
-        self.last_search = datetime.now()
+        self.last_search = datetime.datetime.now()
 
         return data
 

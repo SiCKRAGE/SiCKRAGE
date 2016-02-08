@@ -18,6 +18,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import io
 import os
 import re
@@ -27,7 +28,6 @@ import traceback
 import babelfish
 import pkg_resources
 import subliminal
-from datetime import datetime, date, timedelta
 from enzyme import MKV, MalformedMKVError
 
 import sickrage
@@ -408,7 +408,7 @@ class srSubtitleSearcher(object):
         #  - search count < 2 and diff(airdate, now) > 1 week : now -> 1d
         #  - search count < 7 and diff(airdate, now) <= 1 week : now -> 4h -> 8h -> 16h -> 1d -> 1d -> 1d
 
-        today = date.today().toordinal()
+        today = datetime.date.today().toordinal()
 
         # you have 5 minutes to understand that one. Good luck
 
@@ -426,7 +426,7 @@ class srSubtitleSearcher(object):
             return
 
         rules = self._getRules()
-        now = datetime.now()
+        now = datetime.datetime.now()
         for epToSub in sqlResults:
 
             if not os.path.isfile(epToSub[b'location']):
@@ -436,17 +436,17 @@ class srSubtitleSearcher(object):
 
             # http://bugs.python.org/issue7980#msg221094
             # I dont think this needs done here, but keeping to be safe
-            datetime.strptime('20110101', '%Y%m%d')
+            datetime.datetime.strptime('20110101', '%Y%m%d')
             if (
                         (epToSub[b'airdate_daydiff'] > 7 and epToSub[
-                            b'searchcount'] < 2 and now - datetime.strptime(
-                                epToSub[b'lastsearch'], dateTimeFormat) > timedelta(
+                            b'searchcount'] < 2 and now - datetime.datetime.strptime(
+                                epToSub[b'lastsearch'], dateTimeFormat) > datetime.timedelta(
                                 hours=rules['old'][epToSub[b'searchcount']])) or
                         (
                                             epToSub[b'airdate_daydiff'] <= 7 and
                                             epToSub[b'searchcount'] < 7 and
-                                            now - datetime.strptime(
-                                                epToSub[b'lastsearch'], dateTimeFormat) > timedelta
+                                            now - datetime.datetime.strptime(
+                                                epToSub[b'lastsearch'], dateTimeFormat) > datetime.timedelta
                                     (
                                             hours=rules[b'new'][epToSub[b'searchcount']]
                                     )

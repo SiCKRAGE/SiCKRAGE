@@ -18,12 +18,11 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import json
 import re
 import time
 import traceback
-
-from datetime import datetime, timedelta
 
 import sickrage
 from core.caches import tv_cache
@@ -73,12 +72,12 @@ class RarbgProvider(TorrentProvider):
 
         self.proper_strings = ['{{PROPER|REPACK}}']
 
-        self.next_request = datetime.now()
+        self.next_request = datetime.datetime.now()
 
         self.cache = RarbgCache(self)
 
     def _doLogin(self):
-        if self.token and self.tokenExpireDate and datetime.now() < self.tokenExpireDate:
+        if self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
             return True
 
         response = self.getURL(self.urls['token'], timeout=30, json=True)
@@ -89,7 +88,7 @@ class RarbgProvider(TorrentProvider):
         try:
             if response[b'token']:
                 self.token = response[b'token']
-                self.tokenExpireDate = datetime.now() + timedelta(minutes=14)
+                self.tokenExpireDate = datetime.datetime.now() + datetime.timedelta(minutes=14)
                 return True
         except Exception as e:
             sickrage.srLogger.warning("No token found")
@@ -154,13 +153,13 @@ class RarbgProvider(TorrentProvider):
                     retry = 3
                     while retry > 0:
                         time_out = 0
-                        while (datetime.now() < self.next_request) and time_out <= 15:
+                        while (datetime.datetime.now() < self.next_request) and time_out <= 15:
                             time_out = time_out + 1
                             time.sleep(1)
 
                         data = self.getURL(searchURL + self.urlOptions[b'token'].format(token=self.token))
 
-                        self.next_request = datetime.now() + timedelta(seconds=10)
+                        self.next_request = datetime.datetime.now() + datetime.timedelta(seconds=10)
 
                         if not data:
                             sickrage.srLogger.debug("No data returned from provider")

@@ -2,7 +2,7 @@
 <%!
     import re
     import time
-    from datetime import datetime, date, timedelta
+    import datetime
 
     import sickrage
     from core.helpers import anon_url, srdatetime
@@ -122,7 +122,7 @@
     cur_ep_airdate = cur_result[b'localtime'].date()
 
     if run_time:
-        cur_ep_enddate = cur_result[b'localtime'] + timedelta(minutes = run_time)
+        cur_ep_enddate = cur_result[b'localtime'] + datetime.timedelta(minutes = run_time)
         if cur_ep_enddate < today:
             show_div = 'listing-overdue'
         elif cur_ep_airdate >= next_week.date():
@@ -232,7 +232,7 @@
         cur_ep_airdate = cur_result[b'localtime'].date()
 
         if run_time:
-            cur_ep_enddate = cur_result[b'localtime'] + timedelta(minutes = run_time)
+            cur_ep_enddate = cur_result[b'localtime'] + datetime.timedelta(minutes = run_time)
         else:
             cur_ep_enddate = cur_result[b'localtime']
     %>
@@ -268,12 +268,12 @@
             % elif cur_ep_enddate >= today and cur_ep_airdate < next_week.date():
                 % if cur_ep_airdate == today.date():
                     <br><h2
-                        class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}
+                        class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}
                     <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
                     <% today_header = True %>
                 % else:
                     <br><h2
-                        class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}</h2>
+                        class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}</h2>
                 % endif
             % endif
             <% cur_segment = cur_ep_airdate %>
@@ -282,7 +282,7 @@
         % if cur_ep_airdate == today.date() and not today_header:
             <div>
                 <br><h2
-                    class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}
+                    class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}
                 <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
             <% today_header = True %>
         % endif
@@ -384,7 +384,7 @@
 % endif
 
 % if 'calendar' == layout:
-<% dates = [today.date() + timedelta(days = i) for i in range(7)] %>
+<% dates = [today.date() + datetime.timedelta(days = i) for i in range(7)] %>
 <% tbl_day = 0 %>
 <br>
 <br>

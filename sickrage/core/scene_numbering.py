@@ -19,10 +19,9 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import time
 import traceback
-
-from datetime import datetime
 
 import sickrage
 from core.databases import main_db
@@ -455,7 +454,7 @@ def xem_refresh(indexer_id, indexer, force=False):
                                    [indexer, indexer_id])
     if rows:
         lastRefresh = int(rows[0][b'last_refreshed'])
-        refresh = int(time.mktime(datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
+        refresh = int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
     else:
         refresh = True
 
@@ -466,7 +465,7 @@ def xem_refresh(indexer_id, indexer, force=False):
         # mark refreshed
         main_db.MainDB().upsert("xem_refresh",
                                 {'indexer': indexer,
-                                 'last_refreshed': int(time.mktime(datetime.today().timetuple()))},
+                                 'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple()))},
                                 {'indexer_id': indexer_id})
 
         try:

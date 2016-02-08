@@ -20,9 +20,8 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import urllib
-
-from datetime import datetime
 
 import sickrage
 from core.caches import tv_cache
@@ -91,7 +90,7 @@ class AnimeNZBProvider(NZBProvider):
             if item.has_key('published_parsed') and item[b'published_parsed']:
                 result_date = item.published_parsed
                 if result_date:
-                    result_date = datetime(*result_date[0:6])
+                    result_date = datetime.datetime(*result_date[0:6])
             else:
                 continue
 

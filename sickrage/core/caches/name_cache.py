@@ -19,10 +19,9 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import threading
 import time
-
-from datetime import datetime, timedelta
 
 import sickrage
 from core.databases import cache_db
@@ -34,7 +33,7 @@ class srNameCache(object):
     def __init__(self, *args, **kwargs):
         self.name = "NAMECACHE"
         self.amActive = False
-        self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
+        self.lastUpdate = datetime.datetime.fromtimestamp(int(time.mktime(datetime.datetime.today().timetuple())))
         self.minTime = sickrage.srConfig.NAMECACHE_FREQ
         self.cache = {}
 
@@ -60,7 +59,7 @@ class srNameCache(object):
 
     def shouldUpdate(self):
         # if we've updated recently then skip the update
-        if not datetime.today() - self.lastUpdate < timedelta(minutes=self.minTime):
+        if not datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
             return True
 
     def addNameToCache(self, name, indexer_id=0):
@@ -117,7 +116,7 @@ class srNameCache(object):
                 for show in sickrage.srCore.SHOWLIST:
                     self.buildNameCache(show)
             else:
-                self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
+                self.lastUpdate = datetime.datetime.fromtimestamp(int(time.mktime(datetime.datetime.today().timetuple())))
 
                 sickrage.srLogger.debug("Building internal name cache for [{}]".format(show.name))
                 self.clearCache(show.indexerid)

@@ -19,12 +19,12 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import math
 import socket
 import time
 
 import jsonrpclib
-from datetime import datetime
 
 import sickrage
 from core.caches import tv_cache
@@ -276,7 +276,7 @@ class BTNProvider(TorrentProvider):
             for item in self._doSearch({'release': term}, age=4 * 24 * 60 * 60):
                 if item[b'Time']:
                     try:
-                        result_date = datetime.fromtimestamp(float(item[b'Time']))
+                        result_date = datetime.datetime.fromtimestamp(float(item[b'Time']))
                     except TypeError:
                         result_date = None
 

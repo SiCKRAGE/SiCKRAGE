@@ -19,10 +19,10 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import re
 import threading
-from datetime import datetime, date
 from xml.etree.ElementTree import ElementTree
 
 import sickrage
@@ -57,8 +57,8 @@ class TVEpisode(object):
         self._description = ""
         self._subtitles = []
         self._subtitles_searchcount = 0
-        self._subtitles_lastsearch = str(datetime.min)
-        self._airdate = date.fromordinal(1)
+        self._subtitles_lastsearch = str(datetime.datetime.min)
+        self._airdate = datetime.date.fromordinal(1)
         self._hasnfo = False
         self._hastbn = False
         self._status = UNKNOWN
@@ -135,7 +135,7 @@ class TVEpisode(object):
         self.subtitles, newSubtitles = subtitle_searcher.downloadSubtitles(subtitles_info)
 
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
-        self.subtitles_lastsearch = datetime.now().strftime(dateTimeFormat)
+        self.subtitles_lastsearch = datetime.datetime.now().strftime(dateTimeFormat)
         self.saveToDB()
 
         if newSubtitles:
@@ -230,7 +230,7 @@ class TVEpisode(object):
             self._subtitles = sqlResults[0][b"subtitles"].split(",") or self.subtitles
             self._subtitles_searchcount = sqlResults[0][b"subtitles_searchcount"] or self.subtitles_searchcount
             self._subtitles_lastsearch = sqlResults[0][b"subtitles_lastsearch"] or self.subtitles_lastsearch
-            self._airdate = date.fromordinal(int(sqlResults[0][b"airdate"])) or self.airdate
+            self._airdate = datetime.date.fromordinal(int(sqlResults[0][b"airdate"])) or self.airdate
             self._status = tryInt(sqlResults[0][b"status"], self.status)
             self.location = os.path.normpath(sqlResults[0][b"location"]) or self.location
             self._file_size = tryInt(sqlResults[0][b"file_size"], self.file_size)
@@ -347,10 +347,10 @@ class TVEpisode(object):
 
         self.description = safe_getattr(myEp, 'overview', self.description)
 
-        firstaired = safe_getattr(myEp, 'firstaired') or date.fromordinal(1)
+        firstaired = safe_getattr(myEp, 'firstaired') or datetime.date.fromordinal(1)
         try:
             rawAirdate = [int(x) for x in str(firstaired).split("-")]
-            self.airdate = date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
+            self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError):
             sickrage.srLogger.warning("Malformed air date of {} retrieved from {} for ({} - S{}E{})".format(
                 firstaired, indexer_name, self.show.name, season or 0, episode or 0))
@@ -380,7 +380,7 @@ class TVEpisode(object):
                                      self.location))
 
         if not os.path.isfile(self.location):
-            if self.airdate >= date.today() or self.airdate == date.fromordinal(1):
+            if self.airdate >= datetime.date.today() or self.airdate == datetime.date.fromordinal(1):
                 sickrage.srLogger.debug(
                     "Episode airs in the future or has no airdate, marking it %s" % statusStrings[
                         UNAIRED])
@@ -484,10 +484,10 @@ class TVEpisode(object):
 
                     self.description = epDetails.findtext('plot') or self.description
 
-                    self.airdate = date.fromordinal(1)
+                    self.airdate = datetime.date.fromordinal(1)
                     if epDetails.findtext('aired'):
                         rawAirdate = [int(x) for x in epDetails.findtext('aired').split("-")]
-                        self.airdate = date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
+                        self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
 
                     self.hasnfo = True
 
@@ -795,7 +795,7 @@ class TVEpisode(object):
         if sickrage.srConfig.FILE_TIMESTAMP_TIMEZONE == 'local':
             airdatetime = airdatetime.astimezone(tz_updater.sr_timezone)
 
-        filemtime = datetime.fromtimestamp(os.path.getmtime(self.location)).replace(
+        filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location)).replace(
             tzinfo=tz_updater.sr_timezone)
 
         if filemtime != airdatetime:

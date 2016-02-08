@@ -19,9 +19,9 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import re
 
-from datetime import datetime
 from dateutil import tz
 
 import sickrage
@@ -144,7 +144,7 @@ def parse_date_time(d, t, network):
         hr = hr if 0 <= hr <= 23 else 0
         m = m if 0 <= m <= 59 else 0
 
-    result = datetime.fromordinal(max(tryInt(d), 1))
+    result = datetime.datetime.fromordinal(max(tryInt(d), 1))
 
     return result.replace(hour=hr, minute=m, tzinfo=network_tz)
 

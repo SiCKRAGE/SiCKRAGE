@@ -19,11 +19,10 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import httplib
 import xmlrpclib
 from base64 import standard_b64encode
-
-from datetime import date, timedelta
 
 import sickrage
 from core.common import Quality
@@ -87,7 +86,7 @@ class NZBGet(object):
                 elif curEp.show.indexer == 2:
                     dupekey = "SiCKRAGE-tvr" + str(curEp.show.indexerid)
             dupekey += "-" + str(curEp.season) + "." + str(curEp.episode)
-            if date.today() - curEp.airdate <= timedelta(days=7):
+            if datetime.date.today() - curEp.airdate <= datetime.timedelta(days=7):
                 addToTop = True
                 nzbgetprio = sickrage.srConfig.NZBGET_PRIORITY
             else:

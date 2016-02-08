@@ -19,6 +19,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import io
 import os
 import re
@@ -28,7 +29,6 @@ import traceback
 import urllib
 
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
@@ -576,7 +576,7 @@ def _get_status_Strings(s):
 def _ordinal_to_dateTimeForm(ordinal):
     # workaround for episodes with no airdate
     if int(ordinal) != 1:
-        date = datetime.now().date().fromordinal(ordinal)
+        date = datetime.datetime.now().date().fromordinal(ordinal)
     else:
         return ""
     return date.strftime(dateTimeFormat)
@@ -584,14 +584,14 @@ def _ordinal_to_dateTimeForm(ordinal):
 
 def _ordinal_to_dateForm(ordinal):
     if int(ordinal) != 1:
-        date = datetime.now().date().fromordinal(ordinal)
+        date = datetime.datetime.now().date().fromordinal(ordinal)
     else:
         return ""
     return date.strftime(dateFormat)
 
 
 def _historyDate_to_dateTimeForm(timeString):
-    date = datetime.strptime(timeString, History.date_format)
+    date = datetime.datetime.strptime(timeString, History.date_format)
     return date.strftime(dateTimeFormat)
 
 

@@ -1,6 +1,6 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    from datetime import datetime, date, timedelta
+    import datetime
     import urllib
     import ntpath
 
@@ -633,7 +633,7 @@
                 % if int(epResult[b'airdate']) != 1:
                     ## Lets do this exactly like ComingEpisodes and History
                     ## Avoid issues with dateutil's _isdst on Windows but still provide air dates
-                    <% airDate = datetime.fromordinal(epResult[b'airdate']) %>
+                    <% airDate = datetime.datetime.fromordinal(epResult[b'airdate']) %>
                     % if airDate.year >= 1970 or show.network:
                         <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(epResult[b'airdate'], show.airs, show.network)) %>
                     % endif

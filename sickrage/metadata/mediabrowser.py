@@ -18,11 +18,10 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import re
 from xml.etree.ElementTree import Element, ElementTree, SubElement
-
-from datetime import datetime, date
 
 import sickrage
 from core.common import dateFormat
@@ -319,7 +318,7 @@ class MediaBrowserMetadata(GenericMetadata):
 
         if getattr(myShow, 'firstaired', None):
             try:
-                year_text = str(datetime.strptime(myShow[b'firstaired'], dateFormat).year)
+                year_text = str(datetime.datetime.strptime(myShow[b'firstaired'], dateFormat).year)
                 if year_text:
                     ProductionYear = SubElement(tv_node, "ProductionYear")
                     ProductionYear.text = year_text
@@ -442,7 +441,7 @@ class MediaBrowserMetadata(GenericMetadata):
 
                 # default to today's date for specials if firstaired is not set
                 if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                    myEp[b'firstaired'] = str(date.fromordinal(1))
+                    myEp[b'firstaired'] = str(datetime.date.fromordinal(1))
 
                 if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                     return None
@@ -467,7 +466,7 @@ class MediaBrowserMetadata(GenericMetadata):
                     absolute_number = SubElement(episode, "absolute_number")
                     absolute_number.text = str(myEp[b'absolute_number'])
 
-                if curEpToWrite.airdate != date.fromordinal(1):
+                if curEpToWrite.airdate != datetime.date.fromordinal(1):
                     FirstAired = SubElement(episode, "FirstAired")
                     FirstAired.text = str(curEpToWrite.airdate)
 

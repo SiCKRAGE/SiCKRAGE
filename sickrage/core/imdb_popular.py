@@ -20,11 +20,11 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import re
 
 import requests
-from datetime import date
 
 import sickrage
 from core.helpers import getURL, download_file, bs4_parser
@@ -41,7 +41,7 @@ class imdbPopular(object):
             'at': 0,
             'sort': 'moviemeter',
             'title_type': 'tv_series',
-            'year': '%s,%s' % (date.today().year - 1, date.today().year + 1)
+            'year': '%s,%s' % (datetime.date.today().year - 1, datetime.date.today().year + 1)
         }
 
         self.session = requests.Session()

@@ -18,8 +18,8 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import threading
-from datetime import datetime
 
 import sickrage
 from core.databases import main_db

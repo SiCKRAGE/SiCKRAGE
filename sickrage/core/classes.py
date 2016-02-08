@@ -19,12 +19,12 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import random
 import re
 import sys
 import urllib
 
-from datetime import datetime, date
 from dateutil import parser
 
 import sickrage
@@ -211,7 +211,7 @@ class AllShowsListUI(object):
                     for name in seriesnames:
                         if searchterm.lower() in name.lower():
                             if 'firstaired' not in curShow:
-                                curShow[b'firstaired'] = date.fromordinal(1).strftime("%Y-%m-%d")
+                                curShow[b'firstaired'] = datetime.date.fromordinal(1).strftime("%Y-%m-%d")
                                 curShow[b'firstaired'] = re.sub("([-]0{2})+", "", curShow[b'firstaired'])
                                 fixDate = parser.parse(curShow[b'firstaired'], fuzzy=True).date()
                                 curShow[b'firstaired'] = fixDate.strftime(dateFormat)
@@ -278,7 +278,7 @@ class UIError(object):
     """
 
     def __init__(self, message):
-        self.time = datetime.now().strftime(dateTimeFormat)
+        self.time = datetime.datetime.now().strftime(dateTimeFormat)
         self.title = sys.exc_info()[-2] or message
         self.message = message
 
@@ -289,7 +289,7 @@ class UIWarning(object):
     """
 
     def __init__(self, message):
-        self.time = datetime.now().strftime(dateTimeFormat)
+        self.time = datetime.datetime.now().strftime(dateTimeFormat)
         self.title = sys.exc_info()[-2] or message
         self.message = message
 

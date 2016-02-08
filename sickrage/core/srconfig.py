@@ -19,6 +19,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import os.path
 import platform
@@ -27,7 +28,6 @@ import urlparse
 import uuid
 
 from configobj import ConfigObj
-from datetime import datetime
 
 import sickrage
 from core.common import SD, WANTED, SKIPPED
@@ -665,7 +665,7 @@ class srConfig(object):
         sickrage.srCore.SCHEDULER.modify_job('SHOWUPDATER',
                                              trigger=srIntervalTrigger(
                                                  **{'hours': 1,
-                                                    'start_date': datetime.now().replace(
+                                                    'start_date': datetime.datetime.now().replace(
                                                         hour=self.SHOWUPDATE_HOUR)}))
 
     def change_subtitle_searcher_freq(self, freq):
@@ -1501,6 +1501,7 @@ class srConfig(object):
         self.TRIM_ZERO = bool(self.check_setting_int('GUI', 'trim_zero', 0))
         self.DATE_PRESET = self.check_setting_str('GUI', 'date_preset', '%x')
         self.TIME_PRESET_W_SECONDS = self.check_setting_str('GUI', 'time_preset', '%I:%M:%S%p')
+        self.TIME_PRESET = self.TIME_PRESET_W_SECONDS.replace(":%S", "")
         self.TIMEZONE_DISPLAY = self.check_setting_str('GUI', 'timezone_display', 'local')
         self.POSTER_SORTBY = self.check_setting_str('GUI', 'poster_sortby', 'name')
         self.POSTER_SORTDIR = self.check_setting_int('GUI', 'poster_sortdir', 1)

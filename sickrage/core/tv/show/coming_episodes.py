@@ -18,7 +18,7 @@
 
 from __future__ import unicode_literals
 
-from datetime import date, timedelta
+import datetime
 
 import sickrage
 from core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
@@ -62,9 +62,9 @@ class ComingEpisodes:
         if sort not in ComingEpisodes.sorts.keys():
             sort = 'date'
 
-        today = date.today().toordinal()
-        next_week = (date.today() + timedelta(days=7)).toordinal()
-        recently = (date.today() - timedelta(days=sickrage.srConfig.COMING_EPS_MISSED_RANGE)).toordinal()
+        today = datetime.date.today().toordinal()
+        next_week = (datetime.date.today() + datetime.timedelta(days=7)).toordinal()
+        recently = (datetime.date.today() - datetime.timedelta(days=sickrage.srConfig.COMING_EPS_MISSED_RANGE)).toordinal()
         qualities_list = Quality.DOWNLOADED + \
                          Quality.SNATCHED + \
                          Quality.SNATCHED_BEST + \
@@ -159,7 +159,7 @@ class ComingEpisodes:
             result[b'quality'] = get_quality_string(result[b'quality'])
             result[b'airs'] = srDateTime.srftime(result[b'localtime'], t_preset=timeFormat).lstrip('0').replace(' 0',
                                                                                                                 ' ')
-            result[b'weekday'] = 1 + date.fromordinal(result[b'airdate']).weekday()
+            result[b'weekday'] = 1 + datetime.date.fromordinal(result[b'airdate']).weekday()
             result[b'tvdbid'] = result[b'indexer_id']
             result[b'airdate'] = srDateTime.srfdate(result[b'localtime'], d_preset=dateFormat)
             result[b'localtime'] = result[b'localtime'].toordinal()

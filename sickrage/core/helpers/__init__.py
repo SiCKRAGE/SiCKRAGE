@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import ast
 import base64
 import ctypes
+import datetime
 import errno
 import hashlib
 import httplib
@@ -22,7 +23,6 @@ import uuid
 import zipfile
 from _socket import timeout as SocketTimeout
 from contextlib import closing, contextmanager
-from datetime import datetime
 from itertools import cycle, izip
 
 import requests
@@ -1242,7 +1242,7 @@ def restoreConfigZip(archive, targetDir):
                 head, tail = os.path.split(path)
                 return tail or os.path.basename(head)
 
-            bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.now().strftime('%Y%m%d_%H%M%S'))
+            bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
             shutil.move(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
 
         with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
@@ -1278,7 +1278,7 @@ def backupAll(backupDir):
             for filename in files:
                 source += [os.path.join(path, filename)]
 
-    target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.now().strftime('%Y%m%d%H%M%S')))
+    target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S')))
     return backupConfigZip(source, target, sickrage.DATA_DIR)
 
 
@@ -1682,7 +1682,7 @@ def restoreDB(srcDir, dstDir):
             srcFile = os.path.join(srcDir, filename)
             dstFile = os.path.join(dstDir, filename)
             bakFile = os.path.join(dstDir, '{0}.bak-{1}'
-                                   .format(filename, datetime.now().strftime('%Y%m%d_%H%M%S')))
+                                   .format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
 
             if os.path.exists(srcFile):
                 if os.path.isfile(dstFile):

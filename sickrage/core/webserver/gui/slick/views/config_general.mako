@@ -1,6 +1,6 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    from datetime import datetime, date, timedelta
+    import datetime
     import locale
 
     import sickrage
@@ -358,7 +358,7 @@
                                             id="date_presets${('_na', '')[bool(sickrage.srConfig.FUZZY_DATING)]}"
                                             name="date_preset${('_na', '')[bool(sickrage.srConfig.FUZZY_DATING)]}">
                                         % for cur_preset in date_presets:
-                                            <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srConfig.DATE_PRESET == cur_preset or ("%x" == sickrage.srConfig.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime(datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset)}</option>
+                                            <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srConfig.DATE_PRESET == cur_preset or ("%x" == sickrage.srConfig.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset)}</option>
                                         % endfor
                                     </select>
                                     <select class="form-control input-sm ${(' metadataDiv', '')[not bool(sickrage.srConfig.FUZZY_DATING)]}"
@@ -368,7 +368,7 @@
                                             Use System Default
                                         </option>
                                         % for cur_preset in date_presets:
-                                            <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srConfig.DATE_PRESET == cur_preset]}>${datetime(datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset)}</option>
+                                            <option value="${cur_preset}" ${('', 'selected="selected"')[sickrage.srConfig.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset)}</option>
                                         % endfor
                                     </select>
                                 </span>

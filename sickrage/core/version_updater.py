@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import ctypes
+import datetime
 import io
 import os
 import platform
@@ -30,7 +31,6 @@ import time
 import traceback
 
 import github
-from datetime import datetime
 
 import sickrage
 from core.helpers import backupAll, getURL, download_file, removetree
@@ -228,7 +228,7 @@ class srVersionUpdater(object):
                 return news or ''
 
             try:
-                last_read = datetime.strptime(sickrage.srConfig.NEWS_LAST_READ, '%Y-%m-%d')
+                last_read = datetime.datetime.strptime(sickrage.srConfig.NEWS_LAST_READ, '%Y-%m-%d')
             except:
                 last_read = 0
 
@@ -240,7 +240,7 @@ class srVersionUpdater(object):
                     sickrage.srConfig.NEWS_LATEST = match.group(1)
 
                 try:
-                    if datetime.strptime(match.group(1), '%Y-%m-%d') > last_read:
+                    if datetime.datetime.strptime(match.group(1), '%Y-%m-%d') > last_read:
                         sickrage.srConfig.NEWS_UNREAD += 1
                 except Exception:
                     pass

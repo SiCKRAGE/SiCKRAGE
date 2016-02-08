@@ -19,6 +19,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import glob
 import json
 import os
@@ -26,7 +27,6 @@ import re
 import stat
 import threading
 import traceback
-from datetime import date, datetime, timedelta
 
 import imdbpie
 import requests
@@ -262,7 +262,7 @@ class TVShow(object):
 
         return self.episodes[season][episode]
 
-    def should_update(self, update_date=date.today()):
+    def should_update(self, update_date=datetime.date.today()):
 
         # if show is not 'Ended' always update (status 'Continuing')
         if self.status == 'Continuing':
@@ -270,9 +270,9 @@ class TVShow(object):
 
         # run logic against the current show latest aired and next unaired data to see if we should bypass 'Ended' status
 
-        graceperiod = timedelta(days=30)
+        graceperiod = datetime.timedelta(days=30)
 
-        last_airdate = date.fromordinal(1)
+        last_airdate = datetime.date.fromordinal(1)
 
         # get latest aired episode to compare against today - graceperiod and today + graceperiod
 
@@ -281,7 +281,7 @@ class TVShow(object):
             [self.indexerid])
 
         if sql_result:
-            last_airdate = date.fromordinal(sql_result[0][b'airdate'])
+            last_airdate = datetime.date.fromordinal(sql_result[0][b'airdate'])
             if last_airdate >= (update_date - graceperiod) and last_airdate <= (update_date + graceperiod):
                 return True
 
@@ -291,15 +291,15 @@ class TVShow(object):
             [self.indexerid])
 
         if sql_result:
-            next_airdate = date.fromordinal(sql_result[0][b'airdate'])
+            next_airdate = datetime.date.fromordinal(sql_result[0][b'airdate'])
             if next_airdate <= (update_date + graceperiod):
                 return True
 
-        self.last_update_indexer = date.fromordinal(self.last_update_indexer)
+        self.last_update_indexer = datetime.date.fromordinal(self.last_update_indexer)
 
         # in the first year after ended (last airdate), update every 30 days
-        if (update_date - last_airdate) < timedelta(days=450) and (
-                    update_date - self.last_update_indexer) > timedelta(days=30):
+        if (update_date - last_airdate) < datetime.timedelta(days=450) and (
+                    update_date - self.last_update_indexer) > datetime.timedelta(days=30):
             return True
 
         return False
@@ -529,7 +529,7 @@ class TVShow(object):
             del sql_l  # cleanup
 
         # Done updating save last update date
-        self.last_update_indexer = date.today().toordinal()
+        self.last_update_indexer = datetime.date.today().toordinal()
 
         self.saveToDB()
 
@@ -820,7 +820,7 @@ class TVShow(object):
                 pass
 
             try:
-                self.startyear = tryInt(str(safe_getattr(myEp, 'firstaired') or date.fromordinal(1)).split('-')[0])
+                self.startyear = tryInt(str(safe_getattr(myEp, 'firstaired') or datetime.date.fromordinal(1)).split('-')[0])
             except:
                 pass
 
@@ -896,7 +896,7 @@ class TVShow(object):
             else:
                 imdb_info[b'country_codes'] = ''
 
-            imdb_info[b'last_update'] = date.today().toordinal()
+            imdb_info[b'last_update'] = datetime.date.today().toordinal()
 
             # Rename dict keys without spaces for DB upsert
             self.imdb_info = dict(
@@ -959,7 +959,7 @@ class TVShow(object):
             tmdb_info[b'origin_country'] = '|'.join(tmdb_info[b'origin_country']) or ''
             tmdb_info[b'genres'] = '|'.join([x[b'name'] for x in tmdb_info[b'genres']]) or ''
             tmdb_info[b'languages'] = '|'.join(tmdb_info[b'languages']) or ''
-            tmdb_info[b'last_air_date'] = date.today().toordinal()
+            tmdb_info[b'last_air_date'] = datetime.date.today().toordinal()
 
             # Get only the production country certificate if any
             if tmdb_info[b'production_companies'] and tmdb_info[b'production_companies']:
@@ -982,12 +982,12 @@ class TVShow(object):
     def nextEpisode(self):
         sickrage.srLogger.debug(str(self.indexerid) + ": Finding the episode which airs next")
 
-        curDate = date.today().toordinal()
+        curDate = datetime.date.today().toordinal()
         if not self.nextaired or self.nextaired and curDate > self.nextaired:
 
             sqlResults = main_db.MainDB().select(
                 "SELECT airdate, season, episode FROM tv_episodes WHERE showid = ? AND airdate >= ? AND status IN (?,?) ORDER BY airdate ASC LIMIT 1",
-                [self.indexerid, date.today().toordinal(), UNAIRED, WANTED])
+                [self.indexerid, datetime.date.today().toordinal(), UNAIRED, WANTED])
 
             if sqlResults is None or len(sqlResults) == 0:
                 sickrage.srLogger.debug(
@@ -1120,7 +1120,7 @@ class TVShow(object):
                             curEp.status = new_status
                             curEp.subtitles = list()
                             curEp.subtitles_searchcount = 0
-                            curEp.subtitles_lastsearch = str(datetime.min)
+                            curEp.subtitles_lastsearch = str(datetime.datetime.min)
                         curEp.location = ''
                         curEp.hasnfo = False
                         curEp.hastbn = False
@@ -1452,7 +1452,7 @@ class TVShow(object):
     @staticmethod
     def overall_stats():
         shows = sickrage.srCore.SHOWLIST
-        today = str(date.today().toordinal())
+        today = str(datetime.date.today().toordinal())
 
         downloaded_status = Quality.DOWNLOADED + Quality.ARCHIVED
         snatched_status = Quality.SNATCHED + Quality.SNATCHED_PROPER

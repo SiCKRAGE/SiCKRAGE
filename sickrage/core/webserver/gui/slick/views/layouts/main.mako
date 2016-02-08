@@ -1,5 +1,5 @@
 <%!
-    from datetime import datetime, date, timedelta
+    import datetime
     import re
 
     from time import time
@@ -309,7 +309,7 @@
                     Load time: <span class="footerhighlight">${"%.4f" % (time() - srStartTime)}s</span> / Mako: <span
                         class="footerhighlight">${"%.4f" % (time() - makoStartTime)}s</span> |
                     Version: <span class="footerhighlight">${sickrage.srCore.VERSION}</span> |
-                    Now: <span class="footerhighlight">${str(datetime.now(tz_updater.sr_timezone)).split('.')[0]}</span>
+                    Now: <span class="footerhighlight">${str(datetime.datetime.now(tz_updater.sr_timezone)).split('.')[0]}</span>
                 </div>
             </div>
         </footer>

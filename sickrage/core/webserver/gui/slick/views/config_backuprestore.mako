@@ -1,6 +1,6 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    from datetime import datetime, date, timedelta
+    import datetime
     import locale
 
     import sickrage

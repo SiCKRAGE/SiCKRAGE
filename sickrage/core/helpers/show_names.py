@@ -18,12 +18,11 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import fnmatch
 import os
 import re
 from functools import partial
-
-from datetime import date
 
 import sickrage
 from core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
@@ -243,7 +242,7 @@ def makeSceneSearchString(show, ep_obj):
         numseasons = int(numseasonsSQlResult[0][0])
 
     # see if we should use dates instead of episodes
-    if (show.air_by_date or show.sports) and ep_obj.airdate != date.fromordinal(1):
+    if (show.air_by_date or show.sports) and ep_obj.airdate != datetime.date.fromordinal(1):
         epStrings = [str(ep_obj.airdate)]
     elif show.is_anime:
         epStrings = [

@@ -19,13 +19,12 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import operator
 import re
 import threading
 import time
 import traceback
-
-from datetime import datetime, date, timedelta
 
 import sickrage
 from core.common import DOWNLOADED, Quality, SNATCHED, SNATCHED_PROPER, \
@@ -62,11 +61,11 @@ class srProperSearcher(object):
         if propers:
             self._downloadPropers(propers)
 
-        self._set_lastProperSearch(datetime.today().toordinal())
+        self._set_lastProperSearch(datetime.datetime.today().toordinal())
 
         run_at = ""
         if None is sickrage.srCore.PROPERSEARCHER.start_time:
-            run_in = sickrage.srCore.PROPERSEARCHER.lastRun + sickrage.srCore.PROPERSEARCHER.cycleTime - datetime.now()
+            run_in = sickrage.srCore.PROPERSEARCHER.lastRun + sickrage.srCore.PROPERSEARCHER.cycleTime - datetime.datetime.now()
             hours, remainder = divmod(run_in.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
             run_at = ", next check in approx. " + (
@@ -82,7 +81,7 @@ class srProperSearcher(object):
         """
         propers = {}
 
-        search_date = datetime.today() - timedelta(days=2)
+        search_date = datetime.datetime.today() - datetime.timedelta(days=2)
 
         origThreadName = threading.currentThread().getName()
 
@@ -222,7 +221,7 @@ class srProperSearcher(object):
 
         for curProper in properList:
 
-            historyLimit = datetime.today() - timedelta(days=30)
+            historyLimit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
             historyResults = main_db.MainDB().select(
@@ -299,8 +298,8 @@ class srProperSearcher(object):
         sqlResults = main_db.MainDB().select("SELECT * FROM info")
 
         try:
-            last_proper_search = date.fromordinal(int(sqlResults[0][b"last_proper_search"]))
+            last_proper_search = datetime.date.fromordinal(int(sqlResults[0][b"last_proper_search"]))
         except:
-            return date.fromordinal(1)
+            return datetime.date.fromordinal(1)
 
         return last_proper_search

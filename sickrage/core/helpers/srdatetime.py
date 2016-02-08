@@ -19,10 +19,9 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import functools
 import locale
-
-from datetime import datetime
 
 import sickrage
 from core.updaters.tz_updater import sr_timezone
@@ -104,7 +103,7 @@ class static_or_instance(object):
 
 
 # subclass datetime to add function to display custom date and time formats
-class srDateTime(datetime):
+class srDateTime(datetime.datetime):
     has_locale = True
     en_US_norm = locale.normalize('en_US.utf-8')
 

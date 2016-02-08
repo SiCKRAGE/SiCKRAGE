@@ -21,11 +21,10 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import re
 import threading
 import time
-
-from datetime import datetime
 
 import sickrage
 from core.databases import cache_db
@@ -55,7 +54,7 @@ def shouldRefresh(exList):
     rows = cache_db.CacheDB().select("SELECT last_refreshed FROM scene_exceptions_refresh WHERE list = ?", [exList])
     if rows:
         lastRefresh = int(rows[0][b'last_refreshed'])
-        return int(time.mktime(datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
+        return int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
     else:
         return True
 
@@ -67,7 +66,7 @@ def setLastRefresh(exList):
     :param exList: exception list to set refresh time
     """
     cache_db.CacheDB().upsert("scene_exceptions_refresh",
-                              {'last_refreshed': int(time.mktime(datetime.today().timetuple()))},
+                              {'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple()))},
                               {'list': exList})
 
 def retrieve_exceptions(get_xem=True, get_anidb=True):

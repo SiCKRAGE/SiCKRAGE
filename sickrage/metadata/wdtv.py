@@ -18,11 +18,10 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import re
 from xml.etree.ElementTree import Element, ElementTree, SubElement
-
-from datetime import datetime, date
 
 import sickrage
 from core.common import dateFormat
@@ -215,7 +214,7 @@ class WDTVMetadata(GenericMetadata):
                 return None
 
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                myEp[b"firstaired"] = str(date.fromordinal(1))
+                myEp[b"firstaired"] = str(datetime.date.fromordinal(1))
 
             if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                 return None
@@ -248,12 +247,12 @@ class WDTVMetadata(GenericMetadata):
 
             firstAired = SubElement(episode, "firstaired")
 
-            if curEpToWrite.airdate != date.fromordinal(1):
+            if curEpToWrite.airdate != datetime.date.fromordinal(1):
                 firstAired.text = str(curEpToWrite.airdate)
 
             if getattr(myShow, 'firstaired', None):
                 try:
-                    year_text = str(datetime.strptime(myShow[b"firstaired"], dateFormat).year)
+                    year_text = str(datetime.datetime.strptime(myShow[b"firstaired"], dateFormat).year)
                     if year_text:
                         year = SubElement(episode, "year")
                         year.text = year_text

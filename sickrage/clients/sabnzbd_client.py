@@ -20,13 +20,13 @@
 from __future__ import unicode_literals
 
 import cookielib
+import datetime
 import httplib
 import json
 import urllib
 import urllib2
 
 import MultipartPostHandler
-from datetime import date, timedelta
 
 import sickrage
 
@@ -54,7 +54,7 @@ class SabNZBd(object):
 
         # if it aired more than 7 days ago, override with the backlog category IDs
         for curEp in nzb.episodes:
-            if date.today() - curEp.airdate > timedelta(days=7):
+            if datetime.date.today() - curEp.airdate > datetime.timedelta(days=7):
                 category = sickrage.srConfig.SAB_CATEGORY_BACKLOG
                 if nzb.show.is_anime:
                     category = sickrage.srConfig.SAB_CATEGORY_ANIME_BACKLOG

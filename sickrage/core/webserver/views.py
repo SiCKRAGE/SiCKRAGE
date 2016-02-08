@@ -18,6 +18,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import re
 import threading
@@ -28,7 +29,6 @@ import urllib
 import markdown2
 from UnRAR2 import RarFile
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, date, timedelta
 from dateutil import tz
 from mako.exceptions import html_error_template, TemplateLookupException
 from mako.lookup import TemplateLookup
@@ -374,11 +374,11 @@ class WebRoot(WebHandler):
         return self.redirect("/schedule/")
 
     def schedule(self, layout=None):
-        next_week = date.today() + timedelta(days=7)
-        next_week1 = datetime.combine(next_week, datetime.now().time().replace(tzinfo=tz_updater.sr_timezone))
+        next_week = datetime.date.today() + datetime.timedelta(days=7)
+        next_week1 = datetime.datetime.combine(next_week, datetime.datetime.now().time().replace(tzinfo=tz_updater.sr_timezone))
         results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickrage.srConfig.COMING_EPS_SORT,
                                                      False)
-        today = datetime.now().replace(tzinfo=tz_updater.sr_timezone)
+        today = datetime.datetime.now().replace(tzinfo=tz_updater.sr_timezone)
 
         submenu = [
             {
@@ -454,8 +454,8 @@ class CalendarHandler(BaseHandler):
         ical += 'PRODID://Sick-Beard Upcoming Episodes//\r\n'
 
         # Limit dates
-        past_date = (date.today() + timedelta(weeks=-52)).toordinal()
-        future_date = (date.today() + timedelta(weeks=52)).toordinal()
+        past_date = (datetime.date.today() + datetime.timedelta(weeks=-52)).toordinal()
+        future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
         calendar_shows = main_db.MainDB().select(
@@ -472,7 +472,7 @@ class CalendarHandler(BaseHandler):
 
                 air_date_time = tz_updater.parse_date_time(episode[b'airdate'], show[b"airs"],
                                                            show[b'network']).astimezone(utc)
-                air_date_time_end = air_date_time + timedelta(
+                air_date_time_end = air_date_time + datetime.timedelta(
                     minutes=tryInt(show[b"runtime"], 60))
 
                 # Create event for episode
@@ -488,7 +488,7 @@ class CalendarHandler(BaseHandler):
                 ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(
                     show[b'show_name'], episode[b'season'], episode[b'episode'], episode[b'name']
                 )
-                ical += 'UID:SiCKRAGE-' + str(date.today().isoformat()) + '-' + \
+                ical += 'UID:SiCKRAGE-' + str(datetime.date.today().isoformat()) + '-' + \
                         show[b'show_name'].replace(" ", "-") + '-E' + str(episode[b'episode']) + \
                         'S' + str(episode[b'season']) + '\r\n'
                 if episode[b'description']:
@@ -615,7 +615,7 @@ class Home(WebRoot):
 
     @staticmethod
     def show_statistics():
-        today = str(date.today().toordinal())
+        today = str(datetime.date.today().toordinal())
 
         status_quality = '(' + ','.join([str(x) for x in Quality.SNATCHED + Quality.SNATCHED_PROPER]) + ')'
         status_download = '(' + ','.join([str(x) for x in Quality.DOWNLOADED + Quality.ARCHIVED]) + ')'
@@ -1028,7 +1028,7 @@ class Home(WebRoot):
     def restart(self, pid=None):
         if sickrage.srCore.WEBSERVER:
             self._genericMessage("Restarting", "SiCKRAGE is restarting")
-            self.io_loop.add_timeout(timedelta(seconds=5), sickrage.srCore.WEBSERVER.server_restart)
+            self.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.srCore.WEBSERVER.server_restart)
             return self.render("restart.mako", title="Home", header="Restarting SiCKRAGE", topmenu="system")
         return self.redirect('/{}/'.format(sickrage.srConfig.DEFAULT_PAGE))
 
@@ -1048,7 +1048,7 @@ class Home(WebRoot):
 
         if sickrage.srCore.VERSIONUPDATER._runbackup() is True:
             if sickrage.srCore.VERSIONUPDATER.update():
-                self.io_loop.add_timeout(timedelta(seconds=5), sickrage.srCore.WEBSERVER.server_restart)
+                self.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.srCore.WEBSERVER.server_restart)
                 return self.render("restart.mako",
                                    title="Home",
                                    header="Restarting SiCKRAGE",

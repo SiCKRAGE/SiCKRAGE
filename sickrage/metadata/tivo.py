@@ -19,10 +19,9 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import io
 import os
-
-from datetime import date
 
 import sickrage
 from core.exceptions import ShowNotFoundException
@@ -200,7 +199,7 @@ class TIVOMetadata(GenericMetadata):
                 return None
 
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                myEp[b"firstaired"] = str(date.fromordinal(1))
+                myEp[b"firstaired"] = str(datetime.date.fromordinal(1))
 
             if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                 return None
@@ -251,7 +250,7 @@ class TIVOMetadata(GenericMetadata):
             # This must be entered as yyyy-mm-ddThh:mm:ssZ (the t is capitalized and never changes, the Z is also
             # capitalized and never changes). This is the original air date of the episode.
             # NOTE: Hard coded the time to T00:00:00Z as we really don't know when during the day the first run happened.
-            if curEpToWrite.airdate != date.fromordinal(1):
+            if curEpToWrite.airdate != datetime.date.fromordinal(1):
                 data += ("originalAirDate : " + str(curEpToWrite.airdate) + "T00:00:00Z\n")
 
             # This shows up at the beginning of the description on the Program screen and on the Details screen.

@@ -19,11 +19,9 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import re
 import urllib
-
-from datetime import datetime
-from datetime import timedelta
 
 import sickrage
 from core.common import Quality, SNATCHED, SUBTITLED, FAILED, WANTED
@@ -104,7 +102,7 @@ class History:
                 'DELETE '
                 'FROM history '
                 'WHERE date < ?',
-                [(datetime.today() - timedelta(days=30)).strftime(History.date_format)]
+                [(datetime.datetime.today() - datetime.timedelta(days=30)).strftime(History.date_format)]
         )
 
     @staticmethod
@@ -121,7 +119,7 @@ class History:
         :param provider: provider used
         :param version: tracked version of file (defaults to -1)
         """
-        logDate = datetime.today().strftime(History.date_format)
+        logDate = datetime.datetime.today().strftime(History.date_format)
         resource = resource
 
         main_db.MainDB().action(
@@ -350,7 +348,7 @@ class FailedHistory(object):
 
         :param searchResult: Search result that was successful
         """
-        logDate = datetime.today().strftime(History.date_format)
+        logDate = datetime.datetime.today().strftime(History.date_format)
         release = FailedHistory.prepareFailedName(searchResult.name)
 
         providerClass = searchResult.provider
@@ -386,7 +384,7 @@ class FailedHistory(object):
     def trimHistory():
         """Trims history table to 1 month of history from today"""
         failed_db.FailedDB().action("DELETE FROM history WHERE date < " + str(
-                (datetime.today() - timedelta(days=30)).strftime(History.date_format)))
+                (datetime.datetime.today() - datetime.timedelta(days=30)).strftime(History.date_format)))
 
     @staticmethod
     def findFailedRelease(epObj):

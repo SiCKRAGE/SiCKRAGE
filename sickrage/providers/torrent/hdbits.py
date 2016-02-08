@@ -15,9 +15,8 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import urllib
-
-from datetime import datetime
 
 import sickrage
 from core.caches import tv_cache
@@ -113,7 +112,7 @@ class HDBitsProvider(TorrentProvider):
             for item in self._doSearch(self._make_post_data_JSON(search_term=term)):
                 if item[b'utadded']:
                     try:
-                        result_date = datetime.fromtimestamp(int(item[b'utadded']))
+                        result_date = datetime.datetime.fromtimestamp(int(item[b'utadded']))
                     except Exception:
                         result_date = None
 

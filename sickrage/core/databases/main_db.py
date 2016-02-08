@@ -18,10 +18,10 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os.path
 
 import babelfish
-from datetime import datetime, date
 
 import sickrage
 from core.common import ARCHIVED, DOWNLOADED, Quality, SKIPPED, \
@@ -229,7 +229,7 @@ class MainDB(Connection):
 
         def fix_unaired_episodes(self):
 
-            curDate = date.today()
+            curDate = datetime.date.today()
 
             sqlResults = self.select(
                     "SELECT episode_id FROM tv_episodes WHERE (airdate > ? OR airdate = 1) AND status IN (?,?) AND season > 0",
@@ -276,7 +276,7 @@ class MainDB(Connection):
 
             sqlResults = self.select(
                     "SELECT episode_id, showid FROM tv_episodes WHERE airdate >= ? OR airdate < 1",
-                    [date.max.toordinal()])
+                    [datetime.date.max.toordinal()])
 
             for bad_airdate in sqlResults:
                 sickrage.srLogger.debug(
@@ -291,7 +291,7 @@ class MainDB(Connection):
 
             sqlResults = self.select(
                     "SELECT subtitles, episode_id FROM tv_episodes WHERE subtitles != '' AND subtitles_lastsearch < ?;",
-                    [datetime(2015, 7, 15, 17, 20, 44, 326380).strftime(dateTimeFormat)]
+                    [datetime.datetime(2015, 7, 15, 17, 20, 44, 326380).strftime(dateTimeFormat)]
             )
 
             validLanguages = [babelfish.Language.fromopensubtitles(language).opensubtitles for language in
@@ -316,7 +316,7 @@ class MainDB(Connection):
 
                 self.action(
                         "UPDATE tv_episodes SET subtitles = ?, subtitles_lastsearch = ? WHERE episode_id = ?;",
-                        [','.join(langs), datetime.now().strftime(dateTimeFormat),
+                        [','.join(langs), datetime.datetime.now().strftime(dateTimeFormat),
                          sqlResult[b'episode_id']])
 
         def fix_show_nfo_lang(self):
@@ -754,7 +754,7 @@ class MainDB(Connection):
                 self.addColumn("tv_shows", "subtitles")
                 self.addColumn("tv_episodes", "subtitles", "TEXT", "")
                 self.addColumn("tv_episodes", "subtitles_searchcount")
-                self.addColumn("tv_episodes", "subtitles_lastsearch", "TIMESTAMP", str(datetime.min))
+                self.addColumn("tv_episodes", "subtitles_lastsearch", "TIMESTAMP", str(datetime.datetime.min))
             self.incDBVersion()
 
     class ConvertTVShowsToIndexerScheme(AddSubtitlesSupport):

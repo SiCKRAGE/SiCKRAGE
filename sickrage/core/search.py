@@ -19,13 +19,12 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import io
 import os
 import re
 import threading
 import traceback
-
-from datetime import date, timedelta
 
 import sickrage
 from clients import getClientIstance
@@ -105,7 +104,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
     if sickrage.srConfig.ALLOW_HIGH_PRIORITY:
         # if it aired recently make it high priority
         for curEp in result.episodes:
-            if date.today() - curEp.airdate <= timedelta(days=7):
+            if datetime.date.today() - curEp.airdate <= datetime.timedelta(days=7):
                 result.priority = 1
     if re.search(r'(^|[\. _-])(proper|repack)([\. _-]|$)', result.name, re.I) is not None:
         endStatus = SNATCHED_PROPER
@@ -373,7 +372,7 @@ def searchForNeededEpisodes():
 
     origThreadName = threading.currentThread().getName()
 
-    fromDate = date.fromordinal(1)
+    fromDate = datetime.date.fromordinal(1)
     episodes = []
 
     with threading.Lock():

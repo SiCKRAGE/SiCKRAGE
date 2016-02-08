@@ -19,9 +19,8 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
-
-from datetime import date
 
 import sickrage
 from core.common import DOWNLOADED, Quality
@@ -192,7 +191,7 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
     ep = Episode(2, 3, 3, "Ep Name")
 
     ep._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
-    ep._airdate = date(2011, 3, 9)
+    ep._airdate = datetime.date(2011, 3, 9)
 
     if abd:
         ep._release_name = 'Show.Name.2011.03.09.HDTV.XviD-RLSGROUP'

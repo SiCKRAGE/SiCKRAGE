@@ -20,9 +20,8 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import urllib
-
-from datetime import datetime
 
 import sickrage
 from core.caches.tv_cache import TVCache
@@ -139,7 +138,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
                     title, url = self._get_title_and_url(item)
                     try:
-                        result_date = datetime.fromtimestamp(int(item[b'usenetage']))
+                        result_date = datetime.datetime.fromtimestamp(int(item[b'usenetage']))
                     except Exception:
                         result_date = None
 

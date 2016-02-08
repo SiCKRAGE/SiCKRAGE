@@ -1,7 +1,7 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import os.path
-    from datetime import datetime, date, timedelta
+    import datetime
     import re
     import time
 
@@ -71,8 +71,8 @@
             <% curStatus, curQuality = Quality.splitCompositeStatus(int(hItem["action"])) %>
             <tr>
                 <td align="center">
-                    <% airDate = srdatetime.srDateTime.srfdatetime(datetime.strptime(str(hItem["date"]), History.date_format), show_seconds=True) %>
-                    <% isoDate = datetime.strptime(str(hItem["date"]), History.date_format).isoformat() %>
+                    <% airDate = srdatetime.srDateTime.srfdatetime(datetime.datetime.strptime(str(hItem["date"]), History.date_format), show_seconds=True) %>
+                    <% isoDate = datetime.datetime.strptime(str(hItem["date"]), History.date_format).isoformat() %>
                     <time datetime="${isoDate}" class="date">${airDate}</time>
                 </td>
                 <td class="tvShow" width="35%"><a href="${srRoot}/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">${hItem["show_name"]} - ${"S%02i" % int(hItem["season"])}${"E%02i" % int(hItem["episode"])} ${('', '<span class="quality Proper">Proper</span>')["proper" in hItem["resource"].lower() or "repack" in hItem["resource"].lower()]}</a></td>
@@ -136,8 +136,8 @@
         % for hItem in compactResults:
             <tr>
                 <td align="center">
-                    <% airDate = srdatetime.srDateTime.srfdatetime(datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format), show_seconds=True) %>
-                    <% isoDate = datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format).isoformat() %>
+                    <% airDate = srdatetime.srDateTime.srfdatetime(datetime.datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format), show_seconds=True) %>
+                    <% isoDate = datetime.datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format).isoformat() %>
                     <time datetime="${isoDate}" class="date">${airDate}</time>
                 </td>
                 <td class="tvShow" width="25%">

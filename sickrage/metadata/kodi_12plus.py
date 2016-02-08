@@ -17,9 +17,8 @@
 
 from __future__ import unicode_literals
 
+import datetime
 from xml.etree.ElementTree import Element, ElementTree, SubElement
-
-from datetime import datetime, date
 
 import sickrage
 from core.common import dateFormat
@@ -142,7 +141,7 @@ class KODI_12PlusMetadata(GenericMetadata):
 
         if getattr(myShow, 'firstaired', None):
             try:
-                year_text = str(datetime.strptime(myShow[b"firstaired"], dateFormat).year)
+                year_text = str(datetime.datetime.strptime(myShow[b"firstaired"], dateFormat).year)
                 if year_text:
                     year = SubElement(tv_node, "year")
                     year.text = year_text
@@ -252,7 +251,7 @@ class KODI_12PlusMetadata(GenericMetadata):
                 return None
 
             if not getattr(myEp, 'firstaired', None):
-                myEp[b"firstaired"] = str(date.fromordinal(1))
+                myEp[b"firstaired"] = str(datetime.date.fromordinal(1))
 
             if not getattr(myEp, 'episodename', None):
                 sickrage.srLogger.debug("Not generating nfo because the ep has no title")
@@ -282,7 +281,7 @@ class KODI_12PlusMetadata(GenericMetadata):
             uniqueid = SubElement(episode, "uniqueid")
             uniqueid.text = str(curEpToWrite.indexerid)
 
-            if curEpToWrite.airdate != date.fromordinal(1):
+            if curEpToWrite.airdate != datetime.date.fromordinal(1):
                 aired = SubElement(episode, "aired")
                 aired.text = str(curEpToWrite.airdate)
 

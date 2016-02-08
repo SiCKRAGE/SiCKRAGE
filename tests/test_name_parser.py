@@ -20,10 +20,9 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os.path
 import unittest
-
-from datetime import date
 
 import sickrage
 from core.nameparser import ParseResult, NameParser, InvalidNameException, InvalidShowException
@@ -158,17 +157,17 @@ simple_test_cases = {
     'scene_date_format': {
         'Show.Name.2010.11.23.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', None, [],
                                                                             'Source.Quality.Etc', 'Group',
-                                                                     date(2010, 11, 23)),
-        'Show Name - 2010.11.23': ParseResult(None, 'Show Name', air_date=date(2010, 11, 23)),
+                                                                     datetime.date(2010, 11, 23)),
+        'Show Name - 2010.11.23': ParseResult(None, 'Show Name', air_date=datetime.date(2010, 11, 23)),
         'Show.Name.2010.23.11.Source.Quality.Etc-Group': ParseResult(None, 'Show Name', None, [],
                                                                             'Source.Quality.Etc', 'Group',
-                                                                                     date(2010, 11, 23)),
+                                                                     datetime.date(2010, 11, 23)),
         'Show Name - 2010-11-23 - Ep Name': ParseResult(None, 'Show Name', extra_info='Ep Name',
-                                                        air_date=date(2010, 11, 23)),
+                                                        air_date=datetime.date(2010, 11, 23)),
         '2010-11-23 - Ep Name': ParseResult(None, extra_info='Ep Name',
-                                            air_date=date(2010, 11, 23)),
+                                            air_date=datetime.date(2010, 11, 23)),
         'Show.Name.2010.11.23.WEB-DL': ParseResult(None, 'Show Name', None, [], 'WEB-DL', None,
-                                                   date(2010, 11, 23))
+                                                   datetime.date(2010, 11, 23))
     },
 }
 
@@ -191,7 +190,7 @@ combination_test_cases = [
     ['standard']),
 
     (r'/Test/TV/Jimmy Fallon/Season 2/Jimmy Fallon - 2010-12-15 - blah.avi',
-     ParseResult(None, 'Jimmy Fallon', extra_info='blah', air_date=date(2010, 12, 15)),
+     ParseResult(None, 'Jimmy Fallon', extra_info='blah', air_date=datetime.date(2010, 12, 15)),
      ['scene_date_format']),
 
     (r'/X/30 Rock/Season 4/30 Rock - 4x22 -.avi',

@@ -20,11 +20,10 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import itertools
 import time
 import urllib2
-
-from datetime import datetime, timedelta
 
 import sickrage
 from core.common import Quality
@@ -184,12 +183,12 @@ class TVCache(object):
 
         if sqlResults:
             lastTime = int(sqlResults[0][b"time"])
-            if lastTime > int(time.mktime(datetime.today().timetuple())):
+            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
         else:
             lastTime = 0
 
-        return datetime.fromtimestamp(lastTime)
+        return datetime.datetime.fromtimestamp(lastTime)
 
     def _getLastSearch(self):
         myDB = self._getDB()
@@ -197,16 +196,16 @@ class TVCache(object):
 
         if sqlResults:
             lastTime = int(sqlResults[0][b"time"])
-            if lastTime > int(time.mktime(datetime.today().timetuple())):
+            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
         else:
             lastTime = 0
 
-        return datetime.fromtimestamp(lastTime)
+        return datetime.datetime.fromtimestamp(lastTime)
 
     def setLastUpdate(self, toDate=None):
         if not toDate:
-            toDate = datetime.today()
+            toDate = datetime.datetime.today()
 
         myDB = self._getDB()
         myDB.upsert("lastUpdate",
@@ -215,7 +214,7 @@ class TVCache(object):
 
     def setLastSearch(self, toDate=None):
         if not toDate:
-            toDate = datetime.today()
+            toDate = datetime.datetime.today()
 
         myDB = self._getDB()
         myDB.upsert("lastSearch",
@@ -227,7 +226,7 @@ class TVCache(object):
 
     def shouldUpdate(self):
         # if we've updated recently then skip the update
-        if datetime.today() - self.lastUpdate < timedelta(minutes=self.minTime):
+        if datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
             sickrage.srLogger.debug(
                 "Last update was too soon, using old tv cache: " + str(self.lastUpdate) + ". Updated less then " + str(
                     self.minTime) + " minutes ago")
@@ -274,7 +273,7 @@ class TVCache(object):
             episodeText = "|" + "|".join(map(str, episodes)) + "|"
 
             # get the current timestamp
-            curTimestamp = int(time.mktime(datetime.today().timetuple()))
+            curTimestamp = int(time.mktime(datetime.datetime.today().timetuple()))
 
             # get quality of release
             quality = parse_result.quality

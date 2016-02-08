@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import re
 import shutil
@@ -28,8 +29,6 @@ import sys
 import traceback
 import urllib
 import urlparse
-
-from datetime import datetime
 
 import sickrage
 from core.caches.name_cache import srNameCache
@@ -246,7 +245,7 @@ class srCore(object):
 
                     try:
                         if os.path.isdir(dst_dir):
-                            bak_filename = '{}-{}'.format(path_leaf(dst_dir), datetime.now().strftime('%Y%m%d_%H%M%S'))
+                            bak_filename = '{}-{}'.format(path_leaf(dst_dir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
                             shutil.move(dst_dir, os.path.join(os.path.dirname(dst_dir), bak_filename))
 
                         shutil.move(src_dir, dst_dir)
@@ -329,8 +328,6 @@ class srCore(object):
         if sickrage.srConfig.SUBTITLES_LANGUAGES[0] == '':
             sickrage.srConfig.SUBTITLES_LANGUAGES = []
 
-        sickrage.srConfig.TIME_PRESET = sickrage.srConfig.TIME_PRESET_W_SECONDS.replace(":%S", "")
-
         # initialize metadata_providers
         self.metadataProviderDict = get_metadata_generator_dict()
         for cur_metadata_tuple in [(sickrage.srConfig.METADATA_KODI, kodi),
@@ -397,7 +394,7 @@ class srCore(object):
             self.SHOWUPDATER.run,
             srIntervalTrigger(
                 **{'hours': 1,
-                   'start_date': datetime.now().replace(hour=sickrage.srConfig.SHOWUPDATE_HOUR)}),
+                   'start_date': datetime.datetime.now().replace(hour=sickrage.srConfig.SHOWUPDATE_HOUR)}),
             name="SHOWUPDATER",
             id="SHOWUPDATER",
             replace_existing=True
