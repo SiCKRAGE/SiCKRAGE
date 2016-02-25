@@ -39,7 +39,7 @@ class RarbgProvider(TorrentProvider):
         super(RarbgProvider, self).__init__("Rarbg")
 
         self.supportsBacklog = True
-        self.public = True
+
         self.ratio = None
         self.minseed = None
         self.ranked = None
@@ -48,14 +48,14 @@ class RarbgProvider(TorrentProvider):
         self.token = None
         self.tokenExpireDate = None
 
-        self.urls = {'url': 'https://rarbg.com',
-                     'token': 'http://torrentapi.org/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage',
-                     'listing': 'http://torrentapi.org/pubapi_v2.php?mode=list&app_id=sickrage',
-                     'search': 'http://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_string={search_string}',
-                     'search_tvdb': 'http://torrentapi.org/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb={tvdb}&search_string={search_string}',
-                     'api_spec': 'https://rarbg.com/pubapi/apidocs.txt'}
-
-        self.url = self.urls['listing']
+        self.url = 'torrentapi.org'
+        self.urls.update({
+            'token': '{base_url}/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage',
+            'listing': '{base_url}/pubapi_v2.php?mode=list&app_id=sickrage',
+            'search': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_string={search_string}',
+            'search_tvdb': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb={tvdb}&search_string={search_string}',
+            'api_spec': '{base_url}/apidocs_v2.txt'
+        })
 
         self.urlOptions = {'categories': '&category={categories}',
                            'seeders': '&min_seeders={min_seeders}',
@@ -179,7 +179,8 @@ class RarbgProvider(TorrentProvider):
                             time.sleep(10)
                             continue
                         if re.search('Cant find search_tvdb in database. Are you sure this imdb exists?', data):
-                            sickrage.srLogger.warning("No results found. The tvdb id: %s do not exist on provider" % ep_indexerid)
+                            sickrage.srLogger.warning(
+                                "No results found. The tvdb id: %s do not exist on provider" % ep_indexerid)
                             raise GetOutOfLoop
                         if re.search('Invalid token. Use get_token for a new one!', data):
                             sickrage.srLogger.debug("Invalid token, retrieving new token")

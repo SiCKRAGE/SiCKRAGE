@@ -2570,103 +2570,23 @@ browser.css overrides
 }
 
 /* =======================================================================
-formWizard.css
+jquery-steps.css
 ========================================================================== */
-
-fieldset.sectionwrap {
-    width: 800px;
-    padding: 5px;
-    text-align: left;
-    border-width: 0;
+.wizard .content {
+    background: transparent;
+    min-height: 100px;
 }
 
-legend.legendStep {
+.wizard .content > .body {
+    width: 100%;
+    height: auto;
+    padding: 15px;
+    position: relative;
+}
+
+.wizard > .content > section {
+    text-align: left;
     color: #57442b;
-    margin-bottom: 0px;
-}
-
-div.stepsguide {
-    margin-bottom: 15px;
-    overflow: hidden;
-    text-align: left;
-    cursor: pointer;
-}
-
-div.stepsguide .step {
-    float: left;
-    width: 33%;
-    font: bold 24px Arial;
-}
-
-div.stepsguide .step p {
-    margin: 12px 0;
-    border-bottom: 4px solid #57442b;
-}
-
-div.stepsguide .disabledstep {
-    color: #c4c4c4;
-}
-
-div.stepsguide .disabledstep p {
-    border-bottom: 4px solid #8a775e;
-}
-
-div.stepsguide .step .smalltext {
-    font-size: 13px;
-    font-weight: normal;
-}
-
-div.formpaginate {
-    width: 800px;
-    margin-top: 1em;
-    overflow: auto;
-    font-weight: bold;
-    text-align: center;
-}
-
-div.formpaginate .prev, div.formpaginate .next {
-    padding: 3px 6px;
-    color: #fff;
-    cursor: hand;
-    cursor: pointer;
-    background: #57442b;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-}
-
-.stepDiv {
-    padding: 15px 0;
-}
-
-#tabs .nocheck,
-.stepDiv .nocheck {
-    padding-left: 16px;
-}
-
-#tabs label span.component-title,
-.stepDiv label span.component-title {
-    padding-bottom: 10px;
-    float: left;
-    width: 172px;
-    margin-right: 10px;
-    font-size: 13px;
-    font-weight: bold;
-}
-
-#tabs label span.component-desc,
-.stepDiv label span.component-desc {
-    padding-bottom: 10px;
-    font-size: 12px;
-    font-weight: normal;
-    display: block;
-    width: 475px;
-    margin-left: 182px;
-}
-
-div.field-pair input {
-    margin-right: 6px;
-    float: left;
 }
 
 /* step 3 related */
@@ -2677,13 +2597,13 @@ div.field-pair input {
     clear: both;
 }
 
-#customQualityWrapper div.component-group-desc {
+#customQuality div.component-group-desc {
     float: left;
     width: 172px;
     margin-right: 10px;
 }
 
-#customQualityWrapper div.component-group-desc p {
+#customQuality div.component-group-desc p {
     width: 85%;
     margin: .8em 0;
     font-size: 1.13em;
@@ -4291,6 +4211,6 @@ Country Flags
     background-image: url("../images/top.png");
     bottom: 20px;
     right: 20px;
-    width: 38px;    /* Width of image */
-    height: 38px;   /* Height of image */
+    width: 38px; /* Width of image */
+    height: 38px; /* Height of image */
 }

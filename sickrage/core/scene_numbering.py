@@ -25,7 +25,9 @@ import traceback
 
 import sickrage
 from sickrage.core.databases import main_db
-from sickrage.core.helpers import getURL, findCertainShow, _setUpSession
+from sickrage.core.helpers import getURL, findCertainShow
+from sickrage.core.srsession import srSession
+from sickrage.indexers import srIndexerApi
 
 
 def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=True):
@@ -446,7 +448,7 @@ def xem_refresh(indexer_id, indexer, force=False):
 
     indexer_id = int(indexer_id)
     indexer = int(indexer)
-    xem_session = _setUpSession()
+    xem_session = srSession().session
 
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
@@ -460,7 +462,7 @@ def xem_refresh(indexer_id, indexer, force=False):
 
     if refresh or force:
         sickrage.srLogger.debug(
-            'Looking up XEM scene mapping for show %s on %s' % (indexer_id, sickrage.srCore.INDEXER_API(indexer).name))
+            'Looking up XEM scene mapping for show %s on %s' % (indexer_id, srIndexerApi(indexer).name))
 
         # mark refreshed
         main_db.MainDB().upsert("xem_refresh",
@@ -470,7 +472,7 @@ def xem_refresh(indexer_id, indexer, force=False):
 
         try:
             # XEM MAP URL
-            url = "http://thexem.de/map/havemap?origin=%s" % sickrage.srCore.INDEXER_API(indexer).config['xem_origin']
+            url = "http://thexem.de/map/havemap?origin=%s" % srIndexerApi(indexer).config['xem_origin']
             parsedJSON = getURL(url, session=xem_session, json=True)
             if not parsedJSON or 'result' not in parsedJSON or 'success' not in parsedJSON['result'] \
                     or 'data' not in parsedJSON or str(indexer_id) not in parsedJSON['data']:
@@ -478,12 +480,12 @@ def xem_refresh(indexer_id, indexer, force=False):
 
             # XEM API URL
             url = "http://thexem.de/map/all?id={}&origin={}&destination=scene".format(
-                indexer_id, sickrage.srCore.INDEXER_API(indexer).config['xem_origin'])
+                indexer_id, srIndexerApi(indexer).config['xem_origin'])
 
             parsedJSON = getURL(url, session=xem_session, json=True)
             if not ((parsedJSON and 'result' in parsedJSON) and 'success' in parsedJSON['result']):
                 sickrage.srLogger.info(
-                    'No XEM data for show "%s on %s"' % (indexer_id, sickrage.srCore.INDEXER_API(indexer).name,))
+                    'No XEM data for show "%s on %s"' % (indexer_id, srIndexerApi(indexer).name,))
                 return
 
             cl = []
@@ -495,8 +497,8 @@ def xem_refresh(indexer_id, indexer, force=False):
                          entry['scene']['episode'],
                          entry['scene']['absolute'],
                          indexer_id,
-                         entry[sickrage.srCore.INDEXER_API(indexer).config['xem_origin']]['season'],
-                         entry[sickrage.srCore.INDEXER_API(indexer).config['xem_origin']]['episode']
+                         entry[srIndexerApi(indexer).config['xem_origin']]['season'],
+                         entry[srIndexerApi(indexer).config['xem_origin']]['episode']
                          ]])
                 if 'scene_2' in entry:  # for doubles
                     cl.append([
@@ -505,8 +507,8 @@ def xem_refresh(indexer_id, indexer, force=False):
                          entry['scene_2']['episode'],
                          entry['scene_2']['absolute'],
                          indexer_id,
-                         entry[sickrage.srCore.INDEXER_API(indexer).config['xem_origin']]['season'],
-                         entry[sickrage.srCore.INDEXER_API(indexer).config['xem_origin']]['episode']
+                         entry[srIndexerApi(indexer).config['xem_origin']]['season'],
+                         entry[srIndexerApi(indexer).config['xem_origin']]['episode']
                          ]])
 
             if len(cl) > 0:
@@ -516,7 +518,7 @@ def xem_refresh(indexer_id, indexer, force=False):
         except Exception as e:
             sickrage.srLogger.warning(
                 "Exception while refreshing XEM data for show " + str(
-                    indexer_id) + " on " + sickrage.srCore.INDEXER_API(
+                    indexer_id) + " on " + srIndexerApi(
                     indexer).name + ": {}".format(e.message))
             sickrage.srLogger.debug(traceback.format_exc())
 
@@ -549,7 +551,7 @@ def fix_xem_numbering(indexer_id, indexer):
 
     sickrage.srLogger.debug(
         'Fixing any XEM scene mapping issues for show %s on %s' % (
-        indexer_id, sickrage.srCore.INDEXER_API(indexer).name))
+        indexer_id, srIndexerApi(indexer).name))
 
     cl = []
     for row in rows:

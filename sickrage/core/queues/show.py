@@ -266,7 +266,7 @@ class QueueItemAdd(ShowQueueItem):
 
         sickrage.srLogger.info("Started adding show {}".format(self.showDir))
 
-        index_name = sickrage.srCore.INDEXER_API(self.indexer).name
+        index_name = srIndexerApi(self.indexer).name
 
         # update internal name cache
         sickrage.srCore.NAMECACHE.buildNameCache()
@@ -274,13 +274,13 @@ class QueueItemAdd(ShowQueueItem):
         # make sure the Indexer IDs are valid
         try:
 
-            lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(self.indexer).api_params.copy()
+            lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
             if self.lang:
                 lINDEXER_API_PARMS['language'] = self.lang
 
             sickrage.srLogger.info("{}: {}".format(index_name, repr(lINDEXER_API_PARMS)))
 
-            t = sickrage.srCore.INDEXER_API(self.indexer).indexer(**lINDEXER_API_PARMS)
+            t = srIndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
             s = t[self.indexer_id]
 
             # this usually only happens if they have an NFO in their show dir which gave us a Indexer ID that has no proper english version of the show
@@ -296,9 +296,9 @@ class QueueItemAdd(ShowQueueItem):
             # if the show has no episodes/seasons
             if not s:
                 sickrage.srLogger.error("Show " + str(s['seriesname']) + " is on " + str(
-                    sickrage.srCore.INDEXER_API(self.indexer).name) + " but contains no season/episode data.")
+                    srIndexerApi(self.indexer).name) + " but contains no season/episode data.")
                 notifications.error("Unable to add show",
-                                    "Show " + str(s['seriesname']) + " is on " + str(sickrage.srCore.INDEXER_API(
+                                    "Show " + str(s['seriesname']) + " is on " + str(srIndexerApi(
                                         self.indexer).name) + " but contains no season/episode data.")
                 return self._finishEarly()
         except Exception as e:
@@ -314,7 +314,7 @@ class QueueItemAdd(ShowQueueItem):
 
             if sickrage.srConfig.USE_TRAKT:
 
-                trakt_id = sickrage.srCore.INDEXER_API(self.indexer).config['trakt_id']
+                trakt_id = srIndexerApi(self.indexer).config['trakt_id']
                 trakt_api = TraktAPI(sickrage.srConfig.SSL_VERIFY, sickrage.srConfig.TRAKT_TIMEOUT)
 
                 title = self.showDir.split("/")[-1]
@@ -371,15 +371,15 @@ class QueueItemAdd(ShowQueueItem):
 
         except indexer_exception as e:
             sickrage.srLogger.error(
-                "Unable to add show due to an error with " + sickrage.srCore.INDEXER_API(
+                "Unable to add show due to an error with " + srIndexerApi(
                     self.indexer).name + ": {}".format(e.message))
             if self.show:
                 notifications.error(
-                    "Unable to add " + str(self.show.name) + " due to an error with " + sickrage.srCore.INDEXER_API(
+                    "Unable to add " + str(self.show.name) + " due to an error with " + srIndexerApi(
                         self.indexer).name + "")
             else:
                 notifications.error(
-                    "Unable to add show due to an error with " + sickrage.srCore.INDEXER_API(self.indexer).name + "")
+                    "Unable to add show due to an error with " + srIndexerApi(self.indexer).name + "")
             return self._finishEarly()
 
         except MultipleShowObjectsException:
@@ -424,7 +424,7 @@ class QueueItemAdd(ShowQueueItem):
             self.show.loadEpisodesFromIndexer()
         except Exception as e:
             sickrage.srLogger.error(
-                "Error with " + sickrage.srCore.INDEXER_API(
+                "Error with " + srIndexerApi(
                     self.show.indexer).name + ", not creating episode list: {}".format(e.message))
             sickrage.srLogger.debug(traceback.format_exc())
 
@@ -561,16 +561,16 @@ class QueueItemUpdate(ShowQueueItem):
         sickrage.srLogger.info("Performing updates for show: {}".format(self.show.name))
 
         sickrage.srLogger.debug(
-            "Retrieving show info from " + sickrage.srCore.INDEXER_API(self.show.indexer).name + "")
+            "Retrieving show info from " + srIndexerApi(self.show.indexer).name + "")
         try:
             self.show.loadFromIndexer(cache=not self.force)
         except indexer_error as e:
             sickrage.srLogger.warning(
-                "Unable to contact " + sickrage.srCore.INDEXER_API(self.show.indexer).name + ", aborting: {}".format(
+                "Unable to contact " + srIndexerApi(self.show.indexer).name + ", aborting: {}".format(
                     e))
             return
         except indexer_attributenotfound as e:
-            sickrage.srLogger.error("Data retrieved from " + sickrage.srCore.INDEXER_API(
+            sickrage.srLogger.error("Data retrieved from " + srIndexerApi(
                 self.show.indexer).name + " was incomplete, aborting: {}".format(e.message))
             return
 
@@ -601,12 +601,12 @@ class QueueItemUpdate(ShowQueueItem):
         try:
             IndexerEpList = self.show.loadEpisodesFromIndexer(cache=not self.force)
         except indexer_exception as e:
-            sickrage.srLogger.error("Unable to get info from " + sickrage.srCore.INDEXER_API(
+            sickrage.srLogger.error("Unable to get info from " + srIndexerApi(
                 self.show.indexer).name + ", the show info will not be refreshed: {}".format(e.message))
             IndexerEpList = None
 
         if IndexerEpList is None:
-            sickrage.srLogger.error("No data returned from " + sickrage.srCore.INDEXER_API(
+            sickrage.srLogger.error("No data returned from " + srIndexerApi(
                 self.show.indexer).name + ", unable to update this show")
         else:
             # for each ep we found on the Indexer delete it from the DB list

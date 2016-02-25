@@ -27,6 +27,7 @@ import requests
 from bencode import BTFailure, bdecode, bencode
 
 import sickrage
+from sickrage.core.srsession import srSession
 
 __all__ = [
     'utorrent',
@@ -154,7 +155,7 @@ class GenericClient(object):
         self.response = None
         self.auth = None
         self.last_time = time.time()
-        self.session = requests.Session()
+        self.session = srSession().session
         self.session.auth = (self.username, self.password)
 
     def _request(self, method='get', params=None, data=None, files=None):

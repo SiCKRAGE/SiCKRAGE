@@ -18,7 +18,7 @@
 
 from __future__ import unicode_literals
 
-from datetime import datetime, timedelta
+import datetime
 
 import sickrage
 
@@ -89,7 +89,7 @@ class Notification(object):
         self.title = title
         self.message = message
 
-        self._when = datetime.now()
+        self._when = datetime.datetime.now()
         self._seen = []
 
         if type:
@@ -100,7 +100,7 @@ class Notification(object):
         if timeout:
             self._timeout = timeout
         else:
-            self._timeout = timedelta(minutes=1)
+            self._timeout = datetime.timedelta(minutes=1)
 
     def is_new(self, remote_ip='127.0.0.1'):
         """
@@ -112,7 +112,7 @@ class Notification(object):
         """
         Returns True if the notification is older than the specified timeout value.
         """
-        return datetime.now() - self._when > self._timeout
+        return datetime.datetime.now() - self._when > self._timeout
 
     def see(self, remote_ip='127.0.0.1'):
         """

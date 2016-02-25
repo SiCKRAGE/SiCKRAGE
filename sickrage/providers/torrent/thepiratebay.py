@@ -32,7 +32,6 @@ class ThePirateBayProvider(TorrentProvider):
         super(ThePirateBayProvider, self).__init__("ThePirateBay")
 
         self.supportsBacklog = True
-        self.public = True
 
         self.ratio = None
         self.confirmed = True
@@ -41,13 +40,11 @@ class ThePirateBayProvider(TorrentProvider):
 
         self.cache = ThePirateBayCache(self)
 
-        self.urls = {
-            'base_url': 'https://pirateproxy.la/',
-            'search': 'https://pirateproxy.la/s/',
-            'rss': 'https://pirateproxy.la/tv/latest'
-        }
-
-        self.url = self.urls['base_url']
+        self.url = 'pirateproxy.la'
+        self.urls.update({
+            'search': '{base_url}/s/',
+            'rss': '{base_url}/tv/latest'
+        })
 
         """
         205 = SD, 208 = HD, 200 = All Videos
@@ -100,15 +97,15 @@ class ThePirateBayProvider(TorrentProvider):
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
                             sickrage.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers))
                         continue
 
                     # Accept Torrent only from Good People for every Episode Search
                     if self.confirmed and re.search(r'(VIP|Trusted|Helper|Moderator)', torrent.group(0)) is None:
                         if mode is not 'RSS':
                             sickrage.srLogger.debug(
-                                    "Found result %s but that doesn't seem like a trusted result so I'm ignoring it" % title)
+                                "Found result %s but that doesn't seem like a trusted result so I'm ignoring it" % title)
                         continue
 
                     item = title, download_url, size, seeders, leechers

@@ -44,6 +44,7 @@ __all__ = [
 
 SYS_ENCODING = "UTF-8"
 
+DEBUG = False
 DEVELOPER = False
 
 PROG_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -244,7 +245,7 @@ def help_message(prog_dir):
 
 
 def main():
-    global srCore, PROG_DIR, DATA_DIR, SYS_ENCODING, DEVELOPER
+    global srCore, PROG_DIR, DATA_DIR, SYS_ENCODING, DEVELOPER, DEBUG
 
     # sickrage requires python 2.7+
     if sys.version_info < (2, 7):
@@ -255,20 +256,18 @@ def main():
     if path not in sys.path:
         sys.path.insert(0, path)
 
-    # setup locale system encoding
-    SYS_ENCODING = encodingInit()
-
     try:
+        # setup locale system encoding
+        SYS_ENCODING = encodingInit()
+
         # print logo
         print_logo()
 
         # defaults
-        SYS_ENCODING = None
         PIDFILE = None
         DAEMONIZE = False
         WEB_PORT = 8081
         LAUNCH_BROWSER = True
-        DEBUG = False
         CONFIG_FILE = "config.ini"
         CONSOLE = not hasattr(sys, "frozen")
 
@@ -362,20 +361,26 @@ def main():
             srCore = core.srCore(CONFIG_FILE, CONSOLE, DEBUG, WEB_PORT, LAUNCH_BROWSER)
             srCore.start()
     except ImportError as e:
-        # install pip package manager
-        install_pip()
+        if DEBUG:
+            traceback.print_exc()
 
-        # install required packages
-        install_requirements()
+        if not DEVELOPER:
+            # install pip package manager
+            install_pip()
 
-        # restart sickrage silently
-        os.execl(sys.executable, sys.executable, *sys.argv)
+            # install required packages
+            install_requirements()
+
+            # restart sickrage silently
+            os.execl(sys.executable, sys.executable, *sys.argv)
     except KeyboardInterrupt:
         if srCore:
             srCore.shutdown()
     except Exception as e:
+        traceback.print_exc()
         if srCore:
             srCore.shutdown(status=str(e))
+        sys.exit(str(e))
 
 
 if __name__ == '__main__':

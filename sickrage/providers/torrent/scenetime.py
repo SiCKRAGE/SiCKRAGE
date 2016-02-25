@@ -43,13 +43,13 @@ class SceneTimeProvider(TorrentProvider):
 
         self.cache = SceneTimeCache(self)
 
-        self.urls = {'base_url': 'https://www.scenetime.com',
-                     'login': 'https://www.scenetime.com/takelogin.php',
-                     'detail': 'https://www.scenetime.com/details.php?id=%s',
-                     'search': 'https://www.scenetime.com/browse.php?search=%s%s',
-                     'download': 'https://www.scenetime.com/download.php/%s/%s'}
-
-        self.url = self.urls['base_url']
+        self.url = 'www.scenetime.com'
+        self.urls.update({
+            'login': '{base_url}/takelogin.php',
+            'detail': '{base_url}/details.php?id=%s',
+            'search': '{base_url}/browse.php?search=%s%s',
+            'download': '{base_url}/download.php/%s/%s'
+        })
 
         self.categories = "&c2=1&c43=13&c9=1&c63=1&c77=1&c79=1&c100=1&c101=1"
 
@@ -135,8 +135,8 @@ class SceneTimeProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
                                     sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers

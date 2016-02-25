@@ -33,15 +33,14 @@ class TokyoToshokanProvider(TorrentProvider):
         super(TokyoToshokanProvider, self).__init__("TokyoToshokan")
 
         self.supportsBacklog = True
-        self.public = True
+
         self.supportsAbsoluteNumbering = True
         self.anime_only = True
         self.ratio = None
 
         self.cache = TokyoToshokanCache(self)
 
-        self.urls = {'base_url': 'http://tokyotosho.info/'}
-        self.url = self.urls['base_url']
+        self.url = 'tokyotosho.info'
 
     def seedRatio(self):
         return self.ratio
@@ -64,7 +63,7 @@ class TokyoToshokanProvider(TorrentProvider):
             "type": 1,  # get anime types
         }
 
-        searchURL = self.url + 'search.php?' + urllib.urlencode(params)
+        searchURL = self.urls['base_url'] + '/search.php?' + urllib.urlencode(params)
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
         data = self.getURL(searchURL)
 

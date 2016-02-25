@@ -57,7 +57,7 @@ from sickrage.core.helpers import argToBool, backupAll, check_url, \
     get_lan_ip, makeDir, readFileBuffered, remove_article, restoreConfigZip, \
     sanitizeFileName, searchIndexerForShowID, set_up_anidb_connection, tryInt
 from sickrage.core.helpers.browser import foldersAtPath
-from sickrage.core.imdb_popular import imdb_popular
+from sickrage.core.imdb_popular import imdbPopular
 from sickrage.core.nameparser import validator
 from sickrage.core.process_tv import processDir
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, \
@@ -77,6 +77,7 @@ from sickrage.core.tv.show.history import History as HistoryTool
 from sickrage.core.ui import notifications
 from sickrage.core.updaters import tz_updater
 from sickrage.core.webserver.routes import Route
+from sickrage.indexers import srIndexerApi
 from sickrage.indexers.adba import aniDBAbstracter
 from sickrage.providers import NewznabProvider, TorrentRssProvider
 
@@ -1381,7 +1382,7 @@ class Home(WebRoot):
         anime = sickrage.srConfig.checkbox_to_value(anime)
         subtitles = sickrage.srConfig.checkbox_to_value(subtitles)
 
-        if indexerLang and indexerLang in sickrage.srCore.INDEXER_API(showObj.indexer).indexer().config[
+        if indexerLang and indexerLang in srIndexerApi(showObj.indexer).indexer().config[
             'valid_languages']:
             indexer_lang = indexerLang
         else:
@@ -2317,7 +2318,7 @@ class HomeAddShows(Home):
 
     @staticmethod
     def getIndexerLanguages():
-        result = sickrage.srCore.INDEXER_API().config['valid_languages']
+        result = srIndexerApi().config['valid_languages']
 
         return json_encode({'results': result})
 
@@ -2334,14 +2335,14 @@ class HomeAddShows(Home):
         final_results = []
 
         # Query Indexers for each search term and build the list of results
-        for indexer in sickrage.srCore.INDEXER_API().indexers if not int(indexer) else [int(indexer)]:
-            lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(indexer).api_params.copy()
+        for indexer in srIndexerApi().indexers if not int(indexer) else [int(indexer)]:
+            lINDEXER_API_PARMS = srIndexerApi(indexer).api_params.copy()
             lINDEXER_API_PARMS['language'] = lang
             lINDEXER_API_PARMS['custom_ui'] = AllShowsListUI
-            t = sickrage.srCore.INDEXER_API(indexer).indexer(**lINDEXER_API_PARMS)
+            t = srIndexerApi(indexer).indexer(**lINDEXER_API_PARMS)
 
             sickrage.srLogger.debug("Searching for Show with searchterm: %s on Indexer: %s" % (
-                search_term, sickrage.srCore.INDEXER_API(indexer).name))
+                search_term, srIndexerApi(indexer).name))
             try:
                 # add search results
                 results.setdefault(indexer, []).extend(t[search_term])
@@ -2350,10 +2351,10 @@ class HomeAddShows(Home):
 
         for i, shows in results.items():
             final_results.extend(
-                [[sickrage.srCore.INDEXER_API(i).name, i, sickrage.srCore.INDEXER_API(i).config["show_url"],
+                [[srIndexerApi(i).name, i, srIndexerApi(i).config["show_url"],
                   int(show['id']), show['seriesname'], show['firstaired']] for show in shows])
 
-        lang_id = sickrage.srCore.INDEXER_API().config['langabbv_to_id'][lang]
+        lang_id = srIndexerApi().config['langabbv_to_id'][lang]
         return json_encode({'results': final_results, 'langid': lang_id})
 
     def massAddTable(self, rootDir=None):
@@ -2488,7 +2489,7 @@ class HomeAddShows(Home):
             provided_indexer_id=provided_indexer_id,
             provided_indexer_name=provided_indexer_name,
             provided_indexer=provided_indexer,
-            indexers=sickrage.srCore.INDEXER_API().indexers,
+            indexers=srIndexerApi().indexers,
             quality=sickrage.srConfig.QUALITY_DEFAULT,
             whitelist=[],
             blacklist=[],
@@ -2640,7 +2641,7 @@ class HomeAddShows(Home):
         e = None
 
         try:
-            popular_shows = imdb_popular.fetch_popular_shows()
+            popular_shows = imdbPopular().fetch_popular_shows()
         except Exception as e:
             popular_shows = None
 
@@ -4397,70 +4398,6 @@ class ConfigProviders(Config):
         return json_encode({'error': 'Provider Name already exists as ' + name})
 
     @staticmethod
-    def saveNewznabProvider(name, url, key=''):
-        if not name or not url:
-            return '0'
-
-        newProvider = NewznabProvider(name, url, key=key)
-
-        try:
-            providerObj = sickrage.srCore.providersDict.newznab()[newProvider.id]
-            if not providerObj.default:
-                providerObj.url = sickrage.srConfig.clean_url(url)
-
-            providerObj.key = key
-            providerObj.needs_auth = True
-            if key == '0':
-                providerObj.needs_auth = False
-
-            sickrage.srCore.providersDict.newznab().update(**{providerObj.id: providerObj})
-            return providerObj.id + '|' + providerObj.configStr()
-        except Exception:
-            sickrage.srCore.providersDict.newznab().update(**{newProvider.id: newProvider})
-            return newProvider.id + '|' + newProvider.configStr()
-
-    @staticmethod
-    def getNewznabCategories(name, url, key):
-        """
-        Retrieves a list of possible categories with category id's
-        Using the default url/api?cat
-        http://yournewznaburl.com/api?t=caps&apikey=yourapikey
-        """
-        error = ""
-        success = False
-
-        if not name:
-            error += "\nNo Provider Name specified"
-        if not url:
-            error += "\nNo Provider Url specified"
-        if not key:
-            error += "\nNo Provider Api key specified"
-
-        if error != "":
-            return json_encode({'success': False, 'error': error})
-
-        # Get newznabprovider obj with provided name
-        tempProvider = NewznabProvider(name, url, key)
-        success, tv_categories, error = tempProvider.get_newznab_categories()
-
-        return json_encode({'success': success, 'tv_categories': tv_categories, 'error': error})
-
-    @staticmethod
-    def deleteNewznabProvider(nnid):
-        try:
-            providerObj = sickrage.srCore.providersDict.newznab()[nnid]
-            if providerObj.default:
-                raise
-
-            # delete it from the list
-            sickrage.srCore.providersDict.newznab().pop(nnid)
-            if nnid in sickrage.srConfig.PROVIDER_ORDER:
-                sickrage.srConfig.PROVIDER_ORDER.remove(nnid)
-        except:
-            return '0'
-        return '1'
-
-    @staticmethod
     def canAddTorrentRssProvider(name, url, cookies, titleTAG):
         if not name:
             return json_encode({'error': 'No Provider Name specified'})
@@ -4474,17 +4411,30 @@ class ConfigProviders(Config):
         return json_encode({'error': 'Provider Name already exists as ' + name})
 
     @staticmethod
-    def deleteTorrentRssProvider(id):
-        # delete it
-        try:
-            sickrage.srCore.providersDict.torrentrss().pop(id)
-            if id in sickrage.srConfig.PROVIDER_ORDER:
-                sickrage.srConfig.PROVIDER_ORDER.remove(id)
-        except Exception:
-            return '0'
-        return '1'
+    def getNewznabCategories(name, url, key):
+        """
+        Retrieves a list of possible categories with category id's
+        Using the default url/api?cat
+        http://yournewznaburl.com/api?t=caps&apikey=yourapikey
+        """
 
-    def saveProviders(self, newznab_string='', torrentrss_string='', provider_order='', **kwargs):
+        error = ""
+        success = False
+        tv_categories = []
+
+        if not name:
+            error += "\nNo Provider Name specified"
+        if not url:
+            error += "\nNo Provider Url specified"
+        if not key:
+            error += "\nNo Provider Api key specified"
+
+        if not error:
+            tempProvider = NewznabProvider(name, url, key)
+            success, tv_categories, error = tempProvider.get_newznab_categories()
+        return json_encode({'success': success, 'tv_categories': tv_categories, 'error': error})
+
+    def saveProviders(self, provider_strings='', provider_order='', **kwargs):
         results = []
 
         # enable/disable providers
@@ -4497,12 +4447,11 @@ class ConfigProviders(Config):
             curProvObj.enabled = bool(sickrage.srConfig.to_int(curEnabled))
 
         # add all the newznab info we got into our list
-        if newznab_string:
-            for curNewznabProviderStr in newznab_string.split('!!!'):
-                if not curNewznabProviderStr:
-                    continue
+        for curProviderStr in provider_strings.split():
+            cur_type, curProviderStr = curProviderStr.split('|', 1)
 
-                cur_name, cur_url, cur_key, cur_cat = curNewznabProviderStr.split('|')
+            if cur_type == "newznab":
+                cur_name, cur_url, cur_key, cur_cat = curProviderStr.split('|')
                 cur_url = sickrage.srConfig.clean_url(cur_url)
 
                 providerObj = NewznabProvider(cur_name, cur_url, key=cur_key)
@@ -4516,7 +4465,6 @@ class ConfigProviders(Config):
                 providerObj.url = cur_url
                 providerObj.key = cur_key
                 providerObj.catIDs = cur_cat
-                providerObj.needs_auth = (True, False)[cur_key == 0]
                 providerObj.search_mode = str(getattr(kwargs, providerObj.id + '_search_mode', 'eponly')).strip()
                 providerObj.search_fallback = sickrage.srConfig.checkbox_to_value(
                     getattr(kwargs, providerObj.id + '_search_fallback', 0))
@@ -4524,13 +4472,8 @@ class ConfigProviders(Config):
                     getattr(kwargs, providerObj.id + '_enable_daily', 0))
                 providerObj.enable_backlog = sickrage.srConfig.checkbox_to_value(
                     getattr(kwargs, providerObj.id + '_enable_backlog', 0))
-
-        if torrentrss_string:
-            for curTorrentRssProviderStr in torrentrss_string.split('!!!'):
-                if not curTorrentRssProviderStr:
-                    continue
-
-                curName, curURL, curCookies, curTitleTAG = curTorrentRssProviderStr.split('|')
+            elif cur_type == "torrentrss":
+                curName, curURL, curCookies, curTitleTAG = curProviderStr.split('|')
                 curURL = sickrage.srConfig.clean_url(curURL)
 
                 providerObj = TorrentRssProvider(curName, curURL, curCookies, curTitleTAG)

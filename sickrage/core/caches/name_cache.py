@@ -104,29 +104,28 @@ class srNameCache(object):
             cache_db.CacheDB().action("INSERT OR REPLACE INTO scene_names (indexer_id, name) VALUES (?, ?)",
                                       [indexer_id, name])
 
-    def buildNameCache(self, show=None):
+    def buildNameCache(self, show=None, force=False):
         """Build internal name cache
 
         :param show: Specify show to build name cache for, if None, just do all shows
         """
 
-        if self.shouldUpdate():
-            if not show:
-                retrieve_exceptions()
-                for show in sickrage.srCore.SHOWLIST:
-                    self.buildNameCache(show)
-            else:
-                self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
+        if not show and self.shouldUpdate():
+            retrieve_exceptions()
+            for show in sickrage.srCore.SHOWLIST:
+                self.buildNameCache(show)
+        else:
+            self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
-                sickrage.srLogger.debug("Building internal name cache for [{}]".format(show.name))
-                self.clearCache(show.indexerid)
-                for curSeason in [-1] + get_scene_seasons(show.indexerid):
-                    for name in list(set(get_scene_exceptions(
-                            show.indexerid, season=curSeason) + [show.name])):
+            sickrage.srLogger.debug("Building internal name cache for [{}]".format(show.name))
+            self.clearCache(show.indexerid)
+            for curSeason in [-1] + get_scene_seasons(show.indexerid):
+                for name in list(set(get_scene_exceptions(
+                        show.indexerid, season=curSeason) + [show.name])):
 
-                        name = full_sanitizeSceneName(name)
-                        if name not in self.cache:
-                            self.cache[name] = int(show.indexerid)
+                    name = full_sanitizeSceneName(name)
+                    if name not in self.cache:
+                        self.cache[name] = int(show.indexerid)
 
-                sickrage.srLogger.debug("Internal name cache for [{}] set to: [{}]".format(
-                    show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))
+            sickrage.srLogger.debug("Internal name cache for [{}] set to: [{}]".format(
+                show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))

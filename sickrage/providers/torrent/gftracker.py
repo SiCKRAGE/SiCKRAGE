@@ -40,13 +40,12 @@ class GFTrackerProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls = {'base_url': 'https://www.thegft.org',
-                     'login': 'https://www.thegft.org/loginsite.php',
-                     'search': 'https://www.thegft.org/browse.php?view=%s%s',
-                     'download': 'https://www.thegft.org/%s',
-                     }
-
-        self.url = self.urls['base_url']
+        self.url = 'www.thegft.org'
+        self.urls.update({
+            'login': '{base_url}/loginsite.php',
+            'search': '{base_url}/browse.php?view=%s%s',
+            'download': '{base_url}/%s',
+        })
 
         self.cookies = None
 
@@ -148,8 +147,8 @@ class GFTrackerProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
                                     sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers

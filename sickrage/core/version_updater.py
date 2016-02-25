@@ -184,9 +184,8 @@ class srVersionUpdater(object):
         :param force: if true the VERSION_NOTIFY setting will be ignored and a check will be forced
         """
 
-        if not self.updater or (
-                        not sickrage.srConfig.VERSION_NOTIFY and not sickrage.srConfig.AUTO_UPDATE and not force):
-            sickrage.srLogger.info("Version checking is disabled, not checking for the newest version")
+        if not self.updater or not all([sickrage.srConfig.VERSION_NOTIFY, sickrage.srConfig.AUTO_UPDATE, force]):
+            sickrage.srLogger.debug("Version checking is disabled, not checking for the newest version")
             return False
 
         # checking for updates

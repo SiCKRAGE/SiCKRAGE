@@ -62,7 +62,7 @@ class LibertaliaProvider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.url + '/login.php', post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['base_url'] + '/login.php', post_data=login_params, timeout=30)
         if not response:
             sickrage.srLogger.warning("Unable to connect to provider")
             return False

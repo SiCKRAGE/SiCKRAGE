@@ -44,12 +44,12 @@ class FNTProvider(TorrentProvider):
 
         self.cache = FNTCache(self)
 
-        self.urls = {'base_url': 'https://fnt.nu',
-                     'search': 'https://www.fnt.nu/torrents/recherche/',
-                     'login': 'https://fnt.nu/account-login.php',
-                     }
+        self.url = 'fnt.nu'
+        self.urls.update({
+            'search': '{base_url}/torrents/recherche/',
+            'login': '{base_url}/account-login.php',
+        })
 
-        self.url = self.urls['base_url']
         self.search_params = {
             "afficher": 1, "c118": 1, "c129": 1, "c119": 1, "c120": 1, "c121": 1, "c126": 1,
             "c137": 1, "c138": 1, "c146": 1, "c122": 1, "c110": 1, "c109": 1, "c135": 1, "c148": 1,
@@ -124,14 +124,14 @@ class FNTProvider(TorrentProvider):
                                     try:
                                         detailseedleech = link['mtcontent']
                                         seeders = int(
-                                                detailseedleech.split("<font color='#00b72e'>")[1].split("</font>")[0])
+                                            detailseedleech.split("<font color='#00b72e'>")[1].split("</font>")[0])
                                         leechers = int(
-                                                detailseedleech.split("<font color='red'>")[1].split("</font>")[0])
+                                            detailseedleech.split("<font color='red'>")[1].split("</font>")[0])
                                         # FIXME
                                         size = -1
                                     except Exception:
                                         sickrage.srLogger.debug(
-                                                "Unable to parse torrent id & seeders & leechers. Traceback: %s " % traceback.format_exc())
+                                            "Unable to parse torrent id & seeders & leechers. Traceback: %s " % traceback.format_exc())
                                         continue
 
                                     if not all([title, download_url]):
@@ -141,8 +141,8 @@ class FNTProvider(TorrentProvider):
                                     if seeders < self.minseed or leechers < self.minleech:
                                         if mode is not 'RSS':
                                             sickrage.srLogger.debug(
-                                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                            title, seeders, leechers))
+                                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                                    title, seeders, leechers))
                                         continue
 
                                     item = title, download_url, size, seeders, leechers

@@ -1,4 +1,3 @@
-
 # URL: http://code.google.com/p/sickrage
 # Originally written for SickGear
 #
@@ -36,8 +35,11 @@ class TitansOfTVProvider(TorrentProvider):
         self.api_key = None
         self.ratio = None
         self.cache = TitansOfTVCache(self)
-        self.url = 'http://titansof.tv/api/torrents'
-        self.download_url = 'http://titansof.tv/api/torrents/%s/download?apikey=%s'
+        self.url = 'titansof.tv'
+        self.urls.update({
+            'api': '{base_url}/api/torrents',
+            'download': '{base_url}/api/torrents/%s/download?apikey=%s'
+        })
 
     def seedRatio(self):
         return self.ratio
@@ -66,7 +68,7 @@ class TitansOfTVProvider(TorrentProvider):
         if search_params:
             params.update(search_params)
 
-        searchURL = self.url + '?' + urllib.urlencode(params)
+        searchURL = self.urls['api'] + '?' + urllib.urlencode(params)
         sickrage.srLogger.debug("Search string: %s " % search_params)
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
@@ -86,7 +88,7 @@ class TitansOfTVProvider(TorrentProvider):
             for result in found_torrents:
                 title = result.get('release_name', '')
                 tid = result.get('id', '')
-                download_url = self.download_url % (tid, self.api_key)
+                download_url = self.urls['download'] % (tid, self.api_key)
                 # FIXME size, seeders, leechers
                 size = -1
                 seeders = 1
@@ -107,7 +109,6 @@ class TitansOfTVProvider(TorrentProvider):
                 results.append(item)
 
         # FIXME SORTING
-
         return results
 
     def _get_season_search_strings(self, ep_obj):

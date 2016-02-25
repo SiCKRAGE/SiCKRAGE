@@ -31,10 +31,9 @@ class TORRENTPROJECTProvider(TorrentProvider):
         super(TORRENTPROJECTProvider, self).__init__("TorrentProject")
 
         self.supportsBacklog = True
-        self.public = True
+
         self.ratio = 0
-        self.urls = {'api': 'https://torrentproject.se/'}
-        self.url = self.urls['api']
+        self.url = 'torrentproject.se'
 
         self.minseed = None
         self.minleech = None
@@ -51,7 +50,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls['api'] + "?s=%s&out=json&filter=2101&num=150" % quote_plus(
+                searchURL = self.urls['base_url'] + "?s=%s&out=json&filter=2101&num=150" % quote_plus(
                         search_string.encode('utf-8'))
 
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
@@ -79,7 +78,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
                         assert seeders < 10
                         assert mode is not 'RSS'
                         sickrage.srLogger.debug("Torrent has less than 10 seeds getting dyn trackers: " + title)
-                        trackerUrl = self.urls['api'] + "" + t_hash + "/trackers_json"
+                        trackerUrl = self.urls['base_url'] + "" + t_hash + "/trackers_json"
                         jdata = self.getURL(trackerUrl, json=True)
                         assert jdata is not "maintenance"
                         download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "".join(

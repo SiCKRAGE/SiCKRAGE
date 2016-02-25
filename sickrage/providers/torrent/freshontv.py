@@ -47,13 +47,14 @@ class FreshOnTVProvider(TorrentProvider):
 
         self.cache = FreshOnTVCache(self)
 
-        self.urls = {'base_url': 'https://freshon.tv/',
-                     'login': 'https://freshon.tv/login.php?action=makelogin',
-                     'detail': 'https://freshon.tv/details.php?id=%s',
-                     'search': 'https://freshon.tv/browse.php?incldead=%s&words=0&cat=0&search=%s',
-                     'download': 'https://freshon.tv/download.php?id=%s&type=torrent'}
+        self.url = 'freshon.tv'
+        self.urls.update({
+                     'login': '{base_url}/login.php?action=makelogin',
+                     'detail': '{base_url}/details.php?id=%s',
+                     'search': '{base_url}/browse.php?incldead=%s&words=0&cat=0&search=%s',
+                     'download': '{base_url}/download.php?id=%s&type=torrent'
+        })
 
-        self.url = self.urls['base_url']
 
         self.cookies = None
 

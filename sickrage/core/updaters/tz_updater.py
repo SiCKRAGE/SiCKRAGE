@@ -29,7 +29,7 @@ from sickrage.core.databases import cache_db
 from sickrage.core.helpers import getURL, tryInt
 
 time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
-sr_timezone = tz.tzwinlocal().display() if tz.tzwinlocal else tz.tzlocal()
+sr_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
 
 
 # update the network timezone table

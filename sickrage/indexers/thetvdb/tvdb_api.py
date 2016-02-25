@@ -36,9 +36,6 @@ try:
 except ImportError:
     gzip = None
 
-import cachecontrol
-import cachecontrol.caches
-
 from tvdb_ui import BaseUI, ConsoleUI
 from tvdb_exceptions import (tvdb_error, tvdb_shownotfound, tvdb_showincomplete,
                              tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound)
@@ -122,8 +119,8 @@ class Show(dict):
 
     def __repr__(self):
         return "<Show {} (containing {} seasons)>".format(
-                self.data.get('seriesname', 'instance'),
-                len(self)
+            self.data.get('seriesname', 'instance'),
+            len(self)
         )
 
     def __getattr__(self, key):
@@ -193,7 +190,7 @@ class Season(dict):
 
     def __repr__(self):
         return "<Season instance (containing {} episodes)>".format(
-                len(self.keys())
+            len(self.keys())
         )
 
     def __getattr__(self, episode_number):
@@ -216,7 +213,7 @@ class Season(dict):
             searchresult = ep.search(term=term, key=key)
             if searchresult is not None:
                 results.append(
-                        searchresult
+                    searchresult
                 )
         return results
 
@@ -309,9 +306,8 @@ class Tvdb:
                  actors=False,
                  custom_ui=None,
                  language='all',
-                 search_all_languages=False,
                  apikey='F9C450E78D99172E',
-                 forceConnect=False,
+                 session=None,
                  useZip=False,
                  dvdorder=False,
                  proxy=None,
@@ -364,11 +360,6 @@ class Tvdb:
             >>> Tvdb().config['valid_languages'] #doctest: +ELLIPSIS
             ['da', 'fi', 'nl', ...]
 
-        search_all_languages (True/False):
-            By default, Tvdb will only search in the language specified using
-            the language option. When this is True, it will search for the
-            show in and language
-
         apikey (str/unicode):
             Override the default thetvdb.com API key. By default it will use
             thetvdb's own key (fine for small scripts), but you can use your
@@ -406,8 +397,6 @@ class Tvdb:
 
         self.config['select_first'] = select_first
 
-        self.config['search_all_languages'] = search_all_languages
-
         self.config['useZip'] = useZip
 
         self.config['dvdorder'] = dvdorder
@@ -419,6 +408,7 @@ class Tvdb:
         self.config['apitoken'] = apitoken
 
         self.config['apiver'] = apiver
+
         self.config['api'] = {1: {}, 2: {}}
 
         if cache is True:
@@ -432,7 +422,7 @@ class Tvdb:
         else:
             raise ValueError("Invalid value for Cache %r (type was {})".format(cache, type(cache)))
 
-        self.config['session'] = requests.Session()
+        self.config['session'] = session
 
         self.config['banners_enabled'] = banners
         self.config['actors_enabled'] = actors
@@ -443,9 +433,9 @@ class Tvdb:
         ]
 
         self.config['langabbv_to_id'] = {'el': 20, 'en': 7, 'zh': 27,
-                                          'it': 15, 'cs': 28, 'es': 16, 'ru': 22, 'nl': 13, 'pt': 26, 'no': 9,
-                                          'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31, 'de': 14, 'da': 10, 'fi': 11,
-                                          'hu': 19, 'ja': 25, 'he': 24, 'ko': 32, 'sv': 8, 'sl': 30}
+                                         'it': 15, 'cs': 28, 'es': 16, 'ru': 22, 'nl': 13, 'pt': 26, 'no': 9,
+                                         'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31, 'de': 14, 'da': 10, 'fi': 11,
+                                         'hu': 19, 'ja': 25, 'he': 24, 'ko': 32, 'sv': 8, 'sl': 30}
         self.config['language'] = language
         if language not in self.config['valid_languages']:
             self.config['language'] = 'all'
@@ -456,51 +446,51 @@ class Tvdb:
 
         # api-v1 urls
         self.config['api'][1]['getSeries'] = "{base}/api/GetSeries.php?seriesname={{}}".format(
-                base=self.config['api'][1]['base'])
+            base=self.config['api'][1]['base'])
         self.config['api'][1]['epInfo'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.xml".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][1]['epInfo_zip'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.zip".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][1]['seriesInfo'] = "{base}/api/{apikey}/series/{{}}/{{}}.xml".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][1]['actorsInfo'] = "{base}/api/{apikey}/series/{{}}/actors.xml".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][1]['seriesBanner'] = "{base}/api/{apikey}/series/{{}}/banners.xml".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][1]['artworkPrefix'] = "{base}/banners/{{}}".format(base=self.config['api'][1]['base'])
         self.config['api'][1]['updates_all'] = "{base}/api/{apikey}/updates_all.zip".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][1]['updates_month'] = "{base}/api/{apikey}/updates_month.zip".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][1]['updates_week'] = "{base}/api/{apikey}/updates_week.zip".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][1]['updates_day'] = "{base}/api/{apikey}/updates_day.zip".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
 
         # api-v2 urls
         self.config['api'][2]['login'] = '{base}/login'.format(base=self.config['api'][2]['base'])
         self.config['api'][2]['refresh'] = '{base}/refresh_token'.format(base=self.config['api'][2]['base'])
         self.config['api'][2]['getSeries'] = "{base}/search/series?name={{}}".format(
-                base=self.config['api'][2]['base'])
+            base=self.config['api'][2]['base'])
         self.config['api'][2]['epInfo'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.xml".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][2]['epInfo_zip'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.zip".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][2]['seriesInfo'] = "{base}/api/{apikey}/series/{{}}/{{}}.xml".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][2]['actorsInfo'] = "{base}/api/{apikey}/series/{{}}/actors.xml".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][2]['seriesBanner'] = "{base}/api/{apikey}/series/{{}}/banners.xml".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][2]['artworkPrefix'] = "{base}/banners/{{}}".format(base=self.config['api'][1]['base'])
         self.config['api'][2]['updates_all'] = "{base}/api/{apikey}/updates_all.zip".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][2]['updates_month'] = "{base}/api/{apikey}/updates_month.zip".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][2]['updates_week'] = "{base}/api/{apikey}/updates_week.zip".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
         self.config['api'][2]['updates_day'] = "{base}/api/{apikey}/updates_day.zip".format(
-                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+            base=self.config['api'][1]['base'], apikey=self.config['apikey'])
 
     def _getTempDir(self):
         """Returns the [system temp dir]/thetvdb-u501 (or
@@ -523,23 +513,21 @@ class Tvdb:
 
         try:
             if refresh and self.config['apitoken']:
-                jwtResp.update(**requests.post(self.config['api'][self.config['apiver']]['refresh'],
-                                               headers={'Content-type': 'application/json'},
-                                               timeout=timeout
-                                               ).json())
+                jwtResp.update(**self.config['session'].post(self.config['api'][self.config['apiver']]['refresh'],
+                                                             headers={'Content-type': 'application/json'},
+                                                             timeout=timeout
+                                                             ).json())
             elif not self.config['apitoken']:
-                jwtResp.update(**requests.post(self.config['api'][self.config['apiver']]['login'],
-                                               data=json.dumps(dict(apikey=self.config['apikey'])),
-                                               headers={'Content-type': 'application/json'},
-                                               timeout=timeout
-                                               ).json())
-        except:
-            pass
+                jwtResp.update(**self.config['session'].post(self.config['api'][self.config['apiver']]['login'],
+                                                             json={'apikey': self.config['apikey']},
+                                                             headers={'Content-type': 'application/json'},
+                                                             timeout=timeout
+                                                             ).json())
 
-        if jwtResp.get('token'):
             self.config['apitoken'] = jwtResp['token']
-
-        return self.config['apitoken']
+            self.config['headers']['authorization'] = 'Bearer {}'.format(jwtResp['token'])
+        except Exception as e:
+            self.config['headers']['authorization'] = self.config['apitoken'] = ""
 
     @retry(tvdb_error)
     def _loadUrl(self, url, params=None, language=None):
@@ -551,26 +539,21 @@ class Tvdb:
                 self.getToken()
 
             self.config['headers'].update({
-                'Authorization': 'Bearer {}'.format(self.config['apitoken']),
-                'Accept-Language': self.config['language']
+                'Accept-Language': language or self.config['language']
             })
 
             sickrage.srLogger.debug("Retrieving URL {}".format(url))
 
             # get response from TVDB
             if self.config['cache_enabled']:
-
-                session = cachecontrol.CacheControl(sess=self.config['session'], cache=cachecontrol.caches.FileCache(
-                        self.config['cache_location'], use_dir_lock=True), cache_etags=False)
-
                 if self.config['proxy']:
                     sickrage.srLogger.debug("Using proxy for URL: {}".format(url))
-                    session.proxies = {
+                    self.config['session'].proxies = {
                         "http": self.config['proxy'],
                         "https": self.config['proxy'],
                     }
-                session.headers.update(self.config['headers'])
-                resp = session.get(url.strip(), params=params, timeout=sickrage.srConfig.INDEXER_TIMEOUT)
+                self.config['session'].headers.update(self.config['headers'])
+                resp = self.config['session'].get(url.strip(), params=params, timeout=sickrage.srConfig.INDEXER_TIMEOUT)
             else:
                 resp = requests.get(url.strip(), params=params, headers=self.config['headers'],
                                     timeout=sickrage.srConfig.INDEXER_TIMEOUT)
@@ -598,7 +581,8 @@ class Tvdb:
                     from StringIO import StringIO
                     sickrage.srLogger.debug("We received a zip file unpacking now ...")
                     return json.loads(json.dumps(xmltodict.parse(
-                            zipfile.ZipFile(StringIO(resp.content)).read("{}.xml".format(language))))
+                        zipfile.ZipFile(StringIO(resp.content)).read(
+                            "{}.xml".format(language or self.config['language']))))
                     )
                 except zipfile.BadZipfile:
                     raise tvdb_error("Bad zip file received from theTVDB.com, could not read it")
@@ -818,17 +802,17 @@ class Tvdb:
             getShowInLanguage = language
         else:
             sickrage.srLogger.debug(
-                    'Configured language {} override show language of {}'.format(
-                            self.config['language'],
-                            language
-                    )
+                'Configured language {} override show language of {}'.format(
+                    self.config['language'],
+                    language
+                )
             )
             getShowInLanguage = self.config['language']
 
         # Parse show information
         sickrage.srLogger.debug('Getting all series data for {}'.format(sid))
         seriesInfoEt = self._getetsrc(
-                self.config['api'][self.config['apiver']]['seriesInfo'].format(sid, getShowInLanguage)
+            self.config['api'][self.config['apiver']]['seriesInfo'].format(sid, getShowInLanguage)
         )
 
         if not seriesInfoEt:
@@ -888,8 +872,8 @@ class Tvdb:
 
                 if seasnum is None or epno is None:
                     sickrage.srLogger.warning(
-                            "An episode has incomplete season/episode number (season: %r, episode: %r)".format(
-                                    seasnum, epno))
+                        "An episode has incomplete season/episode number (season: %r, episode: %r)".format(
+                            seasnum, epno))
                     continue  # Skip to next episode
 
                 # float() is because https://github.com/dbr/tvnamer/issues/95 - should probably be fixed in TVDB data

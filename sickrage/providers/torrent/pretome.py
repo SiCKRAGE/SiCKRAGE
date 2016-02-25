@@ -41,13 +41,13 @@ class PretomeProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls = {'base_url': 'https://pretome.info',
-                     'login': 'https://pretome.info/takelogin.php',
-                     'detail': 'https://pretome.info/details.php?id=%s',
-                     'search': 'https://pretome.info/browse.php?search=%s%s',
-                     'download': 'https://pretome.info/download.php/%s/%s.torrent'}
-
-        self.url = self.urls['base_url']
+        self.url = 'pretome.info'
+        self.urls.update({
+            'login': '{base_url}/takelogin.php',
+            'detail': '{base_url}/details.php?id=%s',
+            'search': '{base_url}/browse.php?search=%s%s',
+            'download': '{base_url}/download.php/%s/%s.torrent'
+        })
 
         self.categories = "&st=1&cat%5B%5D=7"
 
@@ -150,8 +150,8 @@ class PretomeProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
                                     sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers

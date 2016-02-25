@@ -45,19 +45,18 @@ class HDSpaceProvider(TorrentProvider):
 
         self.cache = HDSpaceCache(self)
 
-        self.urls = {'base_url': 'https://hd-space.org/',
-                     'login': 'https://hd-space.org/index.php?page=login',
-                     'search': 'https://hd-space.org/index.php?page=torrents&search=%s&active=1&options=0',
-                     'rss': 'https://hd-space.org/rss_torrents.php?feed=dl'}
+        self.url = 'hd-space.org'
+        self.urls.update({
+            'login': '{base_url}/index.php?page=login',
+            'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category=',
+            'rss': '{base_url}/rss_torrents.php?feed=dl'
+        })
 
         self.categories = [15, 21, 22, 24, 25, 40]  # HDTV/DOC 1080/720, bluray, remux
-        self.urls['search'] += '&category='
         for cat in self.categories:
             self.urls['search'] += str(cat) + '%%3B'
             self.urls['rss'] += '&cat[]=' + str(cat)
         self.urls['search'] = self.urls['search'][:-4]  # remove extra %%3B
-
-        self.url = self.urls['base_url']
 
     def _checkAuth(self):
 
@@ -151,8 +150,8 @@ class HDSpaceProvider(TorrentProvider):
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode is not 'RSS':
                                 sickrage.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                title, seeders, leechers))
+                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                        title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers

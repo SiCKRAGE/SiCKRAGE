@@ -28,11 +28,12 @@ import certifi
 import requests
 
 import sickrage
+from sickrage.core.srsession import srSession
 
 
 class TraktAPI():
     def __init__(self, ssl_verify=True, timeout=30):
-        self.session = requests.Session()
+        self.session = srSession().session
         self.verify = certifi.where() if ssl_verify else False
         self.timeout = timeout if timeout else None
         self.auth_url = sickrage.srConfig.TRAKT_OAUTH_URL

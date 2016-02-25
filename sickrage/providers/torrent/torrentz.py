@@ -36,17 +36,19 @@ class TORRENTZProvider(TorrentProvider):
     def __init__(self):
 
         super(TORRENTZProvider, self).__init__("Torrentz")
-        self.public = True
+
         self.supportsBacklog = True
         self.confirmed = True
         self.ratio = None
         self.minseed = None
         self.minleech = None
         self.cache = TORRENTZCache(self)
-        self.urls = {'verified': 'https://torrentz.eu/feed_verified',
-                     'feed': 'https://torrentz.eu/feed',
-                     'base': 'https://torrentz.eu/'}
-        self.url = self.urls['base']
+
+        self.url = 'torrentz.eu'
+        self.urls.update({
+            'verified': '{base_url}/feed_verified',
+            'feed': '{base_url}/feed',
+        })
 
     def seedRatio(self):
         return self.ratio
@@ -83,7 +85,8 @@ class TORRENTZProvider(TorrentProvider):
                 try:
                     data = xmltodict.parse(data)
                 except ExpatError:
-                    sickrage.srLogger.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
+                    sickrage.srLogger.error(
+                        "Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                     continue
 
                 if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
@@ -117,8 +120,8 @@ class TORRENTZProvider(TorrentProvider):
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
                             sickrage.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers))
                         continue
 
                     items[mode].append((title, download_url, size, seeders, leechers))

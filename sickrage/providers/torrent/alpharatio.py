@@ -39,13 +39,13 @@ class AlphaRatioProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls = {'base_url': 'http://alpharatio.cc/',
-                     'login': 'http://alpharatio.cc/login.php',
-                     'detail': 'http://alpharatio.cc/torrents.php?torrentid=%s',
-                     'search': 'http://alpharatio.cc/torrents.php?searchstr=%s%s',
-                     'download': 'http://alpharatio.cc/%s'}
-
-        self.url = self.urls['base_url']
+        self.url = 'alpharatio.cc'
+        self.urls.update({
+            'login': '{base_url}/login.php',
+            'detail': '{base_url}/torrents.php?torrentid=%s',
+            'search': '{base_url}/torrents.php?searchstr=%s%s',
+            'download': '{base_url}/%s'
+        })
 
         self.catagories = "&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1"
 
@@ -125,8 +125,8 @@ class AlphaRatioProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
                                     sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers

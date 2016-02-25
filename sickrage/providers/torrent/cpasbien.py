@@ -33,7 +33,7 @@ class CpasbienProvider(TorrentProvider):
         super(CpasbienProvider, self).__init__("Cpasbien")
 
         self.supportsBacklog = True
-        self.public = True
+
         self.ratio = None
         self.url = "http://www.cpasbien.io"
 
@@ -57,7 +57,7 @@ class CpasbienProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
-                searchURL = self.url + '/recherche/' + search_string.replace('.', '-') + '.html'
+                searchURL = self.urls['base_url'] + '/recherche/' + search_string.replace('.', '-') + '.html'
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
 

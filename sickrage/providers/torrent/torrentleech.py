@@ -41,14 +41,14 @@ class TorrentLeechProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls = {'base_url': 'https://torrentleech.org/',
-                     'login': 'https://torrentleech.org/user/account/login/',
-                     'detail': 'https://torrentleech.org/torrent/%s',
-                     'search': 'https://torrentleech.org/torrents/browse/index/query/%s/categories/%s',
-                     'download': 'https://torrentleech.org%s',
-                     'index': 'https://torrentleech.org/torrents/browse/index/categories/%s'}
-
-        self.url = self.urls['base_url']
+        self.url = 'torrentleech.org'
+        self.urls.update({
+            'login': '{base_url}/user/account/login/',
+            'detail': '{base_url}/torrent/%s',
+            'search': '{base_url}/torrents/browse/index/query/%s/categories/%s',
+            'download': '{base_url}/%s',
+            'index': '{base_url}/torrents/browse/index/categories/%s'
+        })
 
         self.categories = "2,7,26,27,32,34,35"
 
@@ -130,8 +130,8 @@ class TorrentLeechProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
                                     sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers

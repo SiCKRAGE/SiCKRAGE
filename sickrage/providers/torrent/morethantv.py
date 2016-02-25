@@ -45,13 +45,13 @@ class MoreThanTVProvider(TorrentProvider):
         self.minleech = None
         # self.freeleech = False
 
-        self.urls = {'base_url': 'https://www.morethan.tv/',
-                     'login': 'https://www.morethan.tv/login.php',
-                     'detail': 'https://www.morethan.tv/torrents.php?id=%s',
-                     'search': 'https://www.morethan.tv/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s',
-                     'download': 'https://www.morethan.tv/torrents.php?action=download&id=%s'}
-
-        self.url = self.urls['base_url']
+        self.url = 'www.morethan.tv'
+        self.urls.update({
+            'login': '{base_url}/login.php',
+            'detail': '{base_url}/torrents.php?id=%s',
+            'search': '{base_url}/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s',
+            'download': '{base_url}/torrents.php?action=download&id=%s'
+        })
 
         self.cookies = None
 
@@ -128,7 +128,7 @@ class MoreThanTVProvider(TorrentProvider):
                         for result in torrent_rows[1:]:
                             cells = result.findChildren('td')
                             link = cells[1].find('span', attrs={'title': 'Download'}).parent
-                            title_anchor = cells[1].find('a', attrs = {'dir': 'ltr'})
+                            title_anchor = cells[1].find('a', attrs={'dir': 'ltr'})
 
                             # skip if torrent has been nuked due to poor quality
                             if cells[1].find('img', alt='Nuked') is not None:
@@ -161,8 +161,8 @@ class MoreThanTVProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
                                     sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers

@@ -31,7 +31,6 @@ class BitCannonProvider(TorrentProvider):
         super(BitCannonProvider, self).__init__("BitCannon")
 
         self.supportsBacklog = True
-        self.public = True
 
         self.minseed = None
         self.minleech = None
@@ -39,12 +38,11 @@ class BitCannonProvider(TorrentProvider):
 
         self.cache = BitCannonCache(self)
 
-        self.url = 'http://127.0.0.1:1337/'
-        self.urls = {
-            'base_url': self.url,
-            'search': self.url + 'search/',
-            'trackers': self.url + 'stats',
-        }
+        self.url = '127.0.0.1:1337'
+        self.urls.update({
+            'search': '{base_url}/search/',
+            'trackers': '{base_url}/stats',
+        })
 
     def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []

@@ -30,12 +30,13 @@ class BTDIGGProvider(TorrentProvider):
         super(BTDIGGProvider, self).__init__("BTDigg")
 
         self.supportsBacklog = True
-        self.public = True
-        self.ratio = 0
-        self.urls = {'url': 'https://btdigg.org/',
-                     'api': 'https://api.btdigg.org/'}
 
-        self.url = self.urls['url']
+        self.ratio = 0
+
+        self.url = 'btdigg.org'
+        self.urls.update({
+            'api': 'api.{base_url}/'
+        })
 
         self.cache = BTDiggCache(self)
 

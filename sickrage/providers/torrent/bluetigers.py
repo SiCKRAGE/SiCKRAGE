@@ -46,18 +46,16 @@ class BLUETIGERSProvider(TorrentProvider):
 
         self.cache = BLUETIGERSCache(self)
 
-        self.urls = {
-            'base_url': 'https://www.bluetigers.ca/',
-            'search': 'https://www.bluetigers.ca/torrents-search.php',
-            'login': 'https://www.bluetigers.ca/account-login.php',
-            'download': 'https://www.bluetigers.ca/torrents-details.php?id=%s&hit=1',
-        }
+        self.url = 'www.bluetigers.ca'
+        self.urls.update({
+            'search': '{base_url}/torrents-search.php',
+            'login': '{base_url}/account-login.php',
+            'download': '{base_url}/torrents-details.php?id=%s&hit=1',
+        })
 
         self.search_params = {
             "c16": 1, "c10": 1, "c130": 1, "c131": 1, "c17": 1, "c18": 1, "c19": 1
         }
-
-        self.url = self.urls['base_url']
 
     def _doLogin(self):
         if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):

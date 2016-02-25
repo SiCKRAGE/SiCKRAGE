@@ -37,12 +37,11 @@ class newpctProvider(TorrentProvider):
         self.onlyspasearch = None
         self.cache = newpctCache(self)
 
-        self.urls = {
-            'base_url': 'http://www.newpct.com',
-            'search': 'http://www.newpct.com/buscar-descargas/'
-        }
+        self.url = 'www.newpct.com'
+        self.urls.update({
+            'search': '{base_url}/buscar-descargas/'
+        })
 
-        self.url = self.urls['base_url']
 
         """
         Search query:

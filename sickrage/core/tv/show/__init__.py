@@ -475,7 +475,7 @@ class TVShow(object):
     def loadEpisodesFromIndexer(self, cache=True):
         scannedEps = {}
 
-        lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(self.indexer).api_params.copy()
+        lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
 
         if not cache:
             lINDEXER_API_PARMS['cache'] = False
@@ -486,11 +486,11 @@ class TVShow(object):
         if self.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
 
-        t = sickrage.srCore.INDEXER_API(self.indexer).indexer(**lINDEXER_API_PARMS)
+        t = srIndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
         showObj = t[self.indexerid]
 
         sickrage.srLogger.debug(
-            str(self.indexerid) + ": Loading all episodes from " + sickrage.srCore.INDEXER_API(
+            str(self.indexerid) + ": Loading all episodes from " + srIndexerApi(
                 self.indexer).name + "..")
 
         sql_l = []
@@ -512,7 +512,7 @@ class TVShow(object):
 
                     with curEp.lock:
                         sickrage.srLogger.debug("%s: Loading info from %s for episode S%02dE%02d" % (
-                            self.indexerid, sickrage.srCore.INDEXER_API(self.indexer).name, season or 0, episode or 0))
+                            self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
 
                         sql_q = curEp.saveToDB(False)
                         if sql_q:
@@ -522,7 +522,7 @@ class TVShow(object):
                     scannedEps[season][episode] = True
                 except EpisodeNotFoundException:
                     sickrage.LOGGER.info("%s: %s object for S%02dE%02d is incomplete, skipping this episode" % (
-                        self.indexerid, sickrage.srCore.INDEXER_API(self.indexer).name, season or 0, episode or 0))
+                        self.indexerid, srIndexerApi(self.indexer).name, season or 0, episode or 0))
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)
@@ -778,13 +778,13 @@ class TVShow(object):
 
         if self.indexer is not INDEXER_TVRAGE:
             sickrage.srLogger.debug(
-                str(self.indexerid) + ": Loading show info from " + sickrage.srCore.INDEXER_API(self.indexer).name)
+                str(self.indexerid) + ": Loading show info from " + srIndexerApi(self.indexer).name)
 
             # There's gotta be a better way of doing this but we don't wanna
             # change the cache value elsewhere
             t = tvapi
             if tvapi is None:
-                lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(self.indexer).api_params.copy()
+                lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
 
                 if not cache:
                     lINDEXER_API_PARMS['cache'] = False
@@ -795,7 +795,7 @@ class TVShow(object):
                 if self.dvdorder != 0:
                     lINDEXER_API_PARMS['dvdorder'] = True
 
-                t = sickrage.srCore.INDEXER_API(self.indexer).indexer(**lINDEXER_API_PARMS)
+                t = srIndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
 
             myEp = t[self.indexerid]
             if not myEp:
@@ -827,7 +827,7 @@ class TVShow(object):
             self.status = safe_getattr(myEp, 'status', self.status)
         else:
             sickrage.srLogger.warning(
-                str(self.indexerid) + ": NOT loading info from " + sickrage.srCore.INDEXER_API(
+                str(self.indexerid) + ": NOT loading info from " + srIndexerApi(
                     self.indexer).name + " as it is temporarily disabled.")
 
     def loadIMDbInfo(self, imdbapi=None):
@@ -1364,7 +1364,7 @@ class TVShow(object):
         mapped = {}
 
         # init mapped indexers object
-        for indexer in sickrage.srCore.INDEXER_API().indexers:
+        for indexer in srIndexerApi().indexers:
             mapped[indexer] = self.indexerid if int(indexer) == int(self.indexer) else 0
 
         sqlResults = main_db.MainDB().select(
@@ -1381,26 +1381,26 @@ class TVShow(object):
                 return mapped
         else:
             sql_l = []
-            for indexer in sickrage.srCore.INDEXER_API().indexers:
+            for indexer in srIndexerApi().indexers:
                 if indexer == self.indexer:
                     mapped[indexer] = self.indexerid
                     continue
 
-                lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(indexer).api_params.copy()
+                lINDEXER_API_PARMS = srIndexerApi(indexer).api_params.copy()
                 lINDEXER_API_PARMS['custom_ui'] = ShowListUI
-                t = sickrage.srCore.INDEXER_API(indexer).indexer(**lINDEXER_API_PARMS)
+                t = srIndexerApi(indexer).indexer(**lINDEXER_API_PARMS)
 
                 try:
                     mapped_show = t[self.name]
                 except Exception:
-                    sickrage.srLogger.debug("Unable to map " + sickrage.srCore.INDEXER_API(
-                        self.indexer).name + "->" + sickrage.srCore.INDEXER_API(
+                    sickrage.srLogger.debug("Unable to map " + srIndexerApi(
+                        self.indexer).name + "->" + srIndexerApi(
                         indexer).name + " for show: " + self.name + ", skipping it")
                     continue
 
                 if mapped_show and len(mapped_show) == 1:
-                    sickrage.srLogger.debug("Mapping " + sickrage.srCore.INDEXER_API(
-                        self.indexer).name + "->" + sickrage.srCore.INDEXER_API(
+                    sickrage.srLogger.debug("Mapping " + srIndexerApi(
+                        self.indexer).name + "->" + srIndexerApi(
                         indexer).name + " for show: " + self.name)
 
                     mapped[indexer] = int(mapped_show[0]['id'])

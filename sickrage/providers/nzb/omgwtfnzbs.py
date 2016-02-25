@@ -39,8 +39,7 @@ class OmgwtfnzbsProvider(NZBProvider):
         self.api_key = None
         self.cache = OmgwtfnzbsCache(self)
 
-        self.urls = {'base_url': 'https://omgwtfnzbs.org/'}
-        self.url = self.urls['base_url']
+        self.url = 'omgwtfnzbs.org'
 
         self.supportsBacklog = True
 

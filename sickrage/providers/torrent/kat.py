@@ -35,7 +35,7 @@ class KATProvider(TorrentProvider):
         super(KATProvider, self).__init__("KickAssTorrents")
 
         self.supportsBacklog = True
-        self.public = True
+
 
         self.confirmed = True
         self.ratio = None
@@ -44,12 +44,11 @@ class KATProvider(TorrentProvider):
 
         self.cache = KATCache(self)
 
-        self.urls = {
-            'base_url': 'https://kickass.unblocked.la/',
-            'search': 'https://kickass.unblocked.la/%s/',
-        }
+        self.url = 'kickass.unblocked.la'
+        self.urls.update({
+            'search': '{base_url}/%s/'
+        })
 
-        self.url = self.urls['base_url']
 
         self.search_params = {
             'q': '',

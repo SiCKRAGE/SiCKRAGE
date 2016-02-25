@@ -28,6 +28,7 @@ from mediabrowser import MediaBrowserMetadata
 from sickrage.core.common import dateFormat
 from sickrage.core.exceptions import ShowNotFoundException
 from sickrage.core.helpers import replaceExtension, indentXML, chmodAsParent
+from sickrage.indexers import srIndexerApi
 from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
 
@@ -97,7 +98,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
         """
 
         indexer_lang = show_obj.lang
-        lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(show_obj.indexer).api_params.copy()
+        lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
         lINDEXER_API_PARMS['actors'] = True
 
@@ -107,7 +108,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
         if show_obj.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
 
-        t = sickrage.srCore.INDEXER_API(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+        t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
         rootNode = Element("details")
         tv_node = SubElement(rootNode, "movie")
@@ -127,7 +128,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
-            sickrage.srLogger.info("Incomplete info for show with id " + str(show_obj.indexerid) + " on " + sickrage.srCore.INDEXER_API(
+            sickrage.srLogger.info("Incomplete info for show with id " + str(show_obj.indexerid) + " on " + srIndexerApi(
                     show_obj.indexer).name + ", skipping it")
             return False
 
@@ -217,7 +218,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
-            lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
 
             if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS['language'] = indexer_lang
@@ -225,7 +226,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = srIndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)

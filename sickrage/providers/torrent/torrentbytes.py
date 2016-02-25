@@ -44,13 +44,13 @@ class TorrentBytesProvider(TorrentProvider):
         self.minleech = None
         self.freeleech = False
 
-        self.urls = {'base_url': 'https://www.torrentbytes.net',
-                     'login': 'https://www.torrentbytes.net/takelogin.php',
-                     'detail': 'https://www.torrentbytes.net/details.php?id=%s',
-                     'search': 'https://www.torrentbytes.net/browse.php?search=%s%s',
-                     'download': 'https://www.torrentbytes.net/download.php?id=%s&name=%s'}
-
-        self.url = self.urls['base_url']
+        self.url = 'www.torrentbytes.net'
+        self.urls.update({
+            'login': '{base_url}/takelogin.php',
+            'detail': '{base_url}/details.php?id=%s',
+            'search': '{base_url}/browse.php?search=%s%s',
+            'download': '{base_url}/download.php?id=%s&name=%s'
+        })
 
         self.categories = "&c41=1&c33=1&c38=1&c32=1&c37=1"
 
@@ -152,8 +152,8 @@ class TorrentBytesProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
                                     sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
-                                                    title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers

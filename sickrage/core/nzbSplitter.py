@@ -23,8 +23,6 @@ import io
 import re
 from xml.etree import ElementTree
 
-import requests
-
 import classes
 import sickrage
 from sickrage.core.common import Quality
@@ -127,7 +125,7 @@ def splitNZBResult(result):
     :param result: search result object
     :return: False upon failure, a list of episode objects otherwise
     """
-    urlData = getURL(result.url, session=requests.Session(), needBytes=True)
+    urlData = getURL(result.url, needBytes=True)
     if urlData is None:
         sickrage.srLogger.error("Unable to load url " + result.url + ", can't download season NZB")
         return False

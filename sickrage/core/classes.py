@@ -24,7 +24,6 @@ import os
 import random
 import re
 import sys
-import urllib
 from collections import OrderedDict
 
 from dateutil import parser
@@ -32,51 +31,7 @@ from dill import dill
 
 import sickrage
 from sickrage.core.common import Quality, dateFormat, dateTimeFormat
-from sickrage.core.helpers.sessions import USER_AGENTS
-
-
-class SiCKRAGEURLopener(urllib.FancyURLopener):
-    version = random.choice(USER_AGENTS)
-
-
-class AuthURLOpener(SiCKRAGEURLopener):
-    """
-    URLOpener class that supports http auth without needing interactive password entry.
-    If the provided username/password don't work it simply fails.
-
-    user: username to use for HTTP auth
-    pw: password to use for HTTP auth
-    """
-
-    def __init__(self, user, pw):
-        self.username = user
-        self.password = pw
-
-        # remember if we've tried the username/password before
-        self.numTries = 0
-
-        # call the base class
-        urllib.FancyURLopener.__init__(self)
-
-    def prompt_user_passwd(self, host, realm):
-        """
-        Override this function and instead of prompting just give the
-        username/password that were provided when the class was instantiated.
-        """
-
-        # if this is the first try then provide a username/password
-        if self.numTries == 0:
-            self.numTries = 1
-            return self.username, self.password
-
-        # if we've tried before then return blank which cancels the request
-        else:
-            return '', ''
-
-    # this is pretty much just a hack for convenience
-    def openit(self, url):
-        self.numTries = 0
-        return SiCKRAGEURLopener.open(self, url)
+from sickrage.indexers import srIndexerApi
 
 
 class SearchResult(object):
@@ -272,7 +227,7 @@ class Proper(object):
 
     def __str__(self):
         return str(self.date) + " " + self.name + " " + str(self.season) + "x" + str(self.episode) + " of " + str(
-            self.indexerid) + " from " + str(sickrage.srCore.INDEXER_API(self.indexer).name)
+            self.indexerid) + " from " + str(srIndexerApi(self.indexer).name)
 
 
 class UIError(object):
@@ -370,10 +325,10 @@ class providersDict(dict):
             NewznabProvider, \
             TorrentRssProvider
 
-        self[GenericProvider.NZB] = {p.id: p for p in NZBProvider.getProviderList()}
-        self[GenericProvider.TORRENT] = {p.id: p for p in TorrentProvider.getProviderList()}
-        self[GenericProvider.NEWZNAB] = {p.id: p for p in NewznabProvider.getProviderList()}
-        self[GenericProvider.TORRENTRSS] = {p.id: p for p in TorrentRssProvider.getProviderList()}
+        self[GenericProvider.NZB] = {p.id: p for p in NZBProvider.getProviders()}
+        self[GenericProvider.TORRENT] = {p.id: p for p in TorrentProvider.getProviders()}
+        self[GenericProvider.NEWZNAB] = {p.id: p for p in NewznabProvider.getProviders()}
+        self[GenericProvider.TORRENTRSS] = {p.id: p for p in TorrentRssProvider.getProviders()}
 
         # load providers from database file
         self.load()

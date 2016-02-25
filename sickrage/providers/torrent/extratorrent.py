@@ -34,15 +34,13 @@ class ExtraTorrentProvider(TorrentProvider):
     def __init__(self):
         super(ExtraTorrentProvider, self).__init__("ExtraTorrent")
 
-        self.urls = {
-            'index': 'http://extratorrent.cc',
-            'rss': 'http://extratorrent.cc/rss.xml',
-        }
-
-        self.url = self.urls['index']
+        self.url = 'extratorrent.cc'
+        self.urls.update({
+            'rss': '{base_url}/rss.xml',
+        })
 
         self.supportsBacklog = True
-        self.public = True
+
         self.ratio = None
         self.minseed = None
         self.minleech = None
@@ -77,7 +75,8 @@ class ExtraTorrentProvider(TorrentProvider):
                     try:
                         data = xmltodict.parse(data)
                     except ExpatError:
-                        sickrage.srLogger.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
+                        sickrage.srLogger.error(
+                            "Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                         continue
 
                     if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
@@ -95,7 +94,7 @@ class ExtraTorrentProvider(TorrentProvider):
                         seeders = tryInt(item['seeders'], 0)
                         leechers = tryInt(item['leechers'], 0)
                         download_url = item['enclosure']['@url'] if 'enclosure' in item else self._magnet_from_details(
-                                item['link'])
+                            item['link'])
 
                         if not all([title, download_url]):
                             continue
@@ -104,8 +103,8 @@ class ExtraTorrentProvider(TorrentProvider):
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode is not 'RSS':
                                 sickrage.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                title, seeders, leechers))
+                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                        title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers

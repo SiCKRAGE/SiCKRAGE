@@ -37,12 +37,12 @@ class HDBitsProvider(TorrentProvider):
 
         self.cache = HDBitsCache(self)
 
-        self.urls = {'base_url': 'https://hdbits.org',
-                     'search': 'https://hdbits.org/api/torrents',
-                     'rss': 'https://hdbits.org/api/torrents',
-                     'download': 'https://hdbits.org/download.php?'}
-
-        self.url = self.urls['base_url']
+        self.url = 'hdbits.org'
+        self.urls.update({
+            'search': '{base_url}/api/torrents',
+            'rss': '{base_url}/api/torrents',
+            'download': '{base_url}/download.php?'
+        })
 
     def _checkAuth(self):
 

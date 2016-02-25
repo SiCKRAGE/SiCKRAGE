@@ -21,6 +21,7 @@
 from __future__ import unicode_literals
 
 import os
+import shutil
 import threading
 import webbrowser
 
@@ -184,6 +185,11 @@ class srWebServer(object):
         if self.open_browser:
             threading.Thread(None, lambda: launch_browser(('http', 'https')[sickrage.srConfig.ENABLE_HTTPS],
                                                           self.host, self.port, sickrage.srConfig.WEB_ROOT)).start()
+
+        # clear mako cache folder
+        makocache = os.path.join(sickrage.srConfig.CACHE_DIR, 'mako')
+        if os.path.isdir(makocache):
+            shutil.rmtree(makocache)
 
         sickrage.srLogger.info(
             "SiCKRAGE STARTED :: VERSION:[{}] CONFIG:[{}] URL:[{}://{}:{}/]"

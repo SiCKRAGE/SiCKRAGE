@@ -44,13 +44,13 @@ class T411Provider(TorrentProvider):
 
         self.cache = T411Cache(self)
 
-        self.urls = {'base_url': 'http://www.t411.in/',
-                     'search': 'https://api.t411.in/torrents/search/%s?cid=%s&limit=100',
-                     'rss': 'https://api.t411.in/torrents/top/today',
-                     'login_page': 'https://api.t411.in/auth',
-                     'download': 'https://api.t411.in/torrents/download/%s'}
-
-        self.url = self.urls['base_url']
+        self.url = 'www.t411.in'
+        self.urls.update({
+            'search': '{base_url}/torrents/search/%s?cid=%s&limit=100',
+            'rss': '{base_url}/torrents/top/today',
+            'login': '{base_url}/auth',
+            'download': '{base_url}/torrents/download/%s'
+        })
 
         self.subcategories = [433, 637, 455, 639]
 
@@ -67,7 +67,7 @@ class T411Provider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls['login_page'], post_data=login_params, timeout=30, json=True)
+        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30, json=True)
         if not response:
             sickrage.srLogger.warning("Unable to connect to provider")
             return False
@@ -137,13 +137,13 @@ class T411Provider(TorrentProvider):
                                 if seeders < self.minseed or leechers < self.minleech:
                                     if mode is not 'RSS':
                                         sickrage.srLogger.debug(
-                                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                        title, seeders, leechers))
+                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                                title, seeders, leechers))
                                     continue
 
                                 if self.confirmed and not verified and mode is not 'RSS':
                                     sickrage.srLogger.debug(
-                                            "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
+                                        "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
                                     continue
 
                                 item = title, download_url, size, seeders, leechers
@@ -154,7 +154,8 @@ class T411Provider(TorrentProvider):
 
                             except Exception:
                                 sickrage.srLogger.debug("Invalid torrent data, skipping result: %s" % torrent)
-                                sickrage.srLogger.debug("Failed parsing provider. Traceback: %s" % traceback.format_exc())
+                                sickrage.srLogger.debug(
+                                    "Failed parsing provider. Traceback: %s" % traceback.format_exc())
                                 continue
 
                     except Exception:

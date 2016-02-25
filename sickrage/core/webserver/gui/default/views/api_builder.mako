@@ -5,19 +5,17 @@
 %>
 
 <%block name="metas">
-    <% commands = ApiHandler.function_mapper() %>
-    <meta data-var="commands" data-content="${commands}">
+    <meta data-var="commands" data-content="${ApiHandler.api_calls.keys()}">
     <meta data-var="episodes" data-content="${episodes}">
 </%block>
 
 <%block name="content">
-    <% commands = ApiHandler.function_mapper() %>
     <div id="content">
         <div class="panel-group" id="commands_list">
-            % for command in sorted(commands.keys()):
+            % for command in ApiHandler.api_calls.keys():
             <%
                 command_id = command.replace('.', '-')
-                help = commands[command]((), {'help': 1}).run()
+                help = ApiHandler.api_calls[command]((), {'help': 1}).run()
             %>
             <div class="panel panel-default">
                 <div class="panel-heading">

@@ -37,9 +37,10 @@ class ShazbatProvider(TorrentProvider):
 
         self.cache = ShazbatCache(self)
 
-        self.urls = {'base_url': 'http://www.shazbat.tv/',
-                     'website': 'http://www.shazbat.tv/login',}
-        self.url = self.urls['website']
+        self.url = 'www.shazbat.tv'
+        self.urls.update({
+            'login': '{base_url}/login'
+        })
 
     def _checkAuth(self):
         if not self.passkey:

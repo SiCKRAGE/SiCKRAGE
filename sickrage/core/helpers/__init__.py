@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import ast
 import base64
 import ctypes
+import datetime
 import errno
 import hashlib
 import httplib
@@ -15,6 +16,7 @@ import re
 import shutil
 import socket
 import stat
+import tempfile
 import time
 import traceback
 import urlparse
@@ -22,7 +24,6 @@ import uuid
 import zipfile
 from _socket import timeout as SocketTimeout
 from contextlib import closing, contextmanager
-from datetime import datetime
 from itertools import cycle, izip
 
 import requests
@@ -32,8 +33,8 @@ from bs4 import BeautifulSoup
 import sickrage
 from sickrage.clients import http_error_code
 from sickrage.core.exceptions import MultipleShowObjectsException
-from sickrage.core.helpers.sessions import _setUpSession
-from sickrage.indexers import adba
+from sickrage.core.srsession import srSession
+from sickrage.indexers import adba, srIndexerApi
 from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_seasonnotfound
 
@@ -406,15 +407,15 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
     showNames = [re.sub('[. -]', ' ', regShowName)]
 
     # Query Indexers for each search term and build the list of results
-    for i in sickrage.srCore.INDEXER_API().indexers if not indexer else int(indexer or []):
+    for i in srIndexerApi().indexers if not indexer else int(indexer or []):
         # Query Indexers for each search term and build the list of results
-        lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(i).api_params.copy()
+        lINDEXER_API_PARMS = srIndexerApi(i).api_params.copy()
         if ui is not None:
             lINDEXER_API_PARMS['custom_ui'] = ui
-        t = sickrage.srCore.INDEXER_API(i).indexer(**lINDEXER_API_PARMS)
+        t = srIndexerApi(i).indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
-            sickrage.srLogger.debug("Trying to find " + name + " on " + sickrage.srCore.INDEXER_API(i).name)
+            sickrage.srLogger.debug("Trying to find " + name + " on " + srIndexerApi(i).name)
 
             try:
                 search = t[indexer_id] if indexer_id else t[name]
@@ -1027,7 +1028,12 @@ def anon_url(*url):
     """
     Return a URL string consisting of the Anonymous redirect URL and an arbitrary number of values appended.
     """
-    return '{}{}'.format(sickrage.srConfig.ANON_REDIRECT, ''.join(map(str, url)))
+
+    url = ''.join(map(str, url))
+    if not url.startswith('http://'):
+        url = 'http://' + url
+
+    return '{}{}'.format(sickrage.srConfig.ANON_REDIRECT, url)
 
 
 unique_key1 = hex(uuid.getnode() ** 2)  # Used in encryption v1
@@ -1105,7 +1111,7 @@ def validateShow(show, season=None, episode=None):
     indexer_lang = show.lang
 
     try:
-        lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(show.indexer).api_params.copy()
+        lINDEXER_API_PARMS = srIndexerApi(show.indexer).api_params.copy()
 
         if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
             lINDEXER_API_PARMS['language'] = indexer_lang
@@ -1113,7 +1119,7 @@ def validateShow(show, season=None, episode=None):
         if show.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
 
-        t = sickrage.srCore.INDEXER_API(show.indexer).indexer(**lINDEXER_API_PARMS)
+        t = srIndexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
         if season is None and episode is None:
             return t
 
@@ -1242,7 +1248,7 @@ def restoreConfigZip(archive, targetDir):
                 head, tail = os.path.split(path)
                 return tail or os.path.basename(head)
 
-            bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.now().strftime('%Y%m%d_%H%M%S'))
+            bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
             shutil.move(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
 
         with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
@@ -1278,7 +1284,7 @@ def backupAll(backupDir):
             for filename in files:
                 source += [os.path.join(path, filename)]
 
-    target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.now().strftime('%Y%m%d%H%M%S')))
+    target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S')))
     return backupConfigZip(source, target, sickrage.DATA_DIR)
 
 
@@ -1319,7 +1325,7 @@ def codeDescription(status_code):
         return 'unknown'
 
 
-def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=None, json=False, needBytes=False):
+def getURL(url, post_data=None, params=None, headers=None, timeout=None, session=None, json=False, needBytes=False):
     """
     Returns a byte-string retrieved from the url provider.
     """
@@ -1328,12 +1334,13 @@ def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=N
 
     if headers is None:
         headers = {}
+
     if not requests.__version__ < (2, 8):
         sickrage.srLogger.debug(
             "Requests version 2.8+ needed to avoid SSL cert verify issues, please upgrade your copy")
 
     url = normalize_url(url)
-    session = _setUpSession(session or requests.Session(), headers, params)
+    session = srSession(headers, params).session or session
 
     try:
         # decide if we get or post data to server
@@ -1364,10 +1371,6 @@ def getURL(url, post_data=None, params=None, headers=None, timeout=30, session=N
     except Exception as e:
         sickrage.srLogger.debug("Unknown exception in getURL %s Error: %r" % (url, e))
         sickrage.srLogger.debug(traceback.format_exc())
-    finally:
-        if resp:
-            [i.raw.release_conn() for i in resp.history]
-            resp.raw.release_conn()
 
 
 def download_file(url, filename, session=None, headers=None):
@@ -1386,7 +1389,7 @@ def download_file(url, filename, session=None, headers=None):
     if headers is None:
         headers = {}
     url = normalize_url(url)
-    session = _setUpSession(session, headers)
+    session = srSession(headers).session or session
     session.stream = True
 
     try:
@@ -1415,13 +1418,13 @@ def download_file(url, filename, session=None, headers=None):
         sickrage.srLogger.warning("Connection timed out (sockets) while loading download URL %s Error: %r" % (url, e))
     except requests.exceptions.HTTPError as e:
         remove_file_failed(filename)
-        sickrage.srLogger.warning("HTTP error %r while loading download URL %s " % (e), url)
+        sickrage.srLogger.warning("HTTP error %r while loading download URL %s " % e, url)
     except requests.exceptions.ConnectionError as e:
         remove_file_failed(filename)
-        sickrage.srLogger.warning("Connection error %r while loading download URL %s " % (e), url)
+        sickrage.srLogger.warning("Connection error %r while loading download URL %s " % e, url)
     except requests.exceptions.Timeout as e:
         remove_file_failed(filename)
-        sickrage.srLogger.warning("Connection timed out %r while loading download URL %s " % (e), url)
+        sickrage.srLogger.warning("Connection timed out %r while loading download URL %s " % e, url)
     except EnvironmentError as e:
         remove_file_failed(filename)
         sickrage.srLogger.warning("Unable to save the file: %r " % e)
@@ -1608,11 +1611,12 @@ def isFileLocked(checkfile, writeLockCheck=False):
         lockFile = checkfile + ".lckchk"
         if os.path.exists(lockFile):
             os.remove(lockFile)
+
         try:
             os.rename(checkfile, lockFile)
             time.sleep(1)
             os.rename(lockFile, checkfile)
-        except (Exception, OSError, IOError) as e:
+        except (Exception, OSError, IOError):
             return True
 
     return False
@@ -1682,7 +1686,7 @@ def restoreDB(srcDir, dstDir):
             srcFile = os.path.join(srcDir, filename)
             dstFile = os.path.join(dstDir, filename)
             bakFile = os.path.join(dstDir, '{0}.bak-{1}'
-                                   .format(filename, datetime.now().strftime('%Y%m%d_%H%M%S')))
+                                   .format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
 
             if os.path.exists(srcFile):
                 if os.path.isfile(dstFile):
@@ -1809,3 +1813,23 @@ def getFileSize(file):
         return os.path.getsize(file) / 1024 / 1024
     except:
         return None
+
+
+def get_temp_dir():
+    """
+    Returns the [system temp dir]/thetvdb-u501 (or
+    thetvdb-myuser)
+    """
+
+    import getpass
+
+    if hasattr(os, 'getuid'):
+        uid = "u%d" % (os.getuid())
+    else:
+        # For Windows
+        try:
+            uid = getpass.getuser()
+        except ImportError:
+            return os.path.join(tempfile.gettempdir(), "sickrage")
+
+    return os.path.join(tempfile.gettempdir(), "sickrage-%s" % uid)

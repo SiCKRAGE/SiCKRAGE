@@ -1421,7 +1421,7 @@ class srConfig(object):
         self.SUBTITLES_LANGUAGES = self.check_setting_str('Subtitles', 'subtitles_languages', '').split(
             ',')
         self.SUBTITLES_DIR = self.check_setting_str('Subtitles', 'subtitles_dir', '')
-        self.SUBTITLES_SERVICES_LIST = self.check_setting_str('Subtitles', 'SUBTITLES_SERVICES_LIST',
+        self.SUBTITLES_SERVICES_LIST = self.check_setting_str('Subtitles', 'subtitles_services_list',
                                                               '').split(
             ',')
         self.SUBTITLES_DEFAULT = bool(self.check_setting_int('Subtitles', 'subtitles_default', 0))
@@ -1432,7 +1432,7 @@ class srConfig(object):
             self.check_setting_int('Subtitles', 'embedded_subtitles_all', 0))
         self.SUBTITLES_MULTI = bool(self.check_setting_int('Subtitles', 'subtitles_multi', 1))
         self.SUBTITLES_SERVICES_ENABLED = [int(x) for x in
-                                           self.check_setting_str('Subtitles', 'SUBTITLES_SERVICES_ENABLED',
+                                           self.check_setting_str('Subtitles', 'subtitles_services_enabled',
                                                                   '').split('|') if x]
         self.SUBTITLES_EXTRA_SCRIPTS = [x.strip() for x in
                                         self.check_setting_str('Subtitles', 'subtitles_extra_scripts',
@@ -1913,9 +1913,9 @@ class srConfig(object):
             int(self.USE_SUBTITLES)
         new_config['Subtitles']['subtitles_languages'] = \
             ','.join(self.SUBTITLES_LANGUAGES)
-        new_config['Subtitles']['SUBTITLES_SERVICES_LIST'] = \
+        new_config['Subtitles']['subtitles_services_list'] = \
             ','.join(self.SUBTITLES_SERVICES_LIST)
-        new_config['Subtitles']['SUBTITLES_SERVICES_ENABLED'] = \
+        new_config['Subtitles']['subtitles_services_enabled'] = \
             '|'.join([str(x) for x in self.SUBTITLES_SERVICES_ENABLED])
         new_config['Subtitles']['subtitles_dir'] = \
             self.SUBTITLES_DIR

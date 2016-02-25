@@ -26,6 +26,7 @@ import os
 import sickrage
 from sickrage.core.exceptions import ShowNotFoundException
 from sickrage.core.helpers import chmodAsParent
+from sickrage.indexers import srIndexerApi
 from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
 from sickrage.metadata import GenericMetadata
@@ -171,7 +172,7 @@ class TIVOMetadata(GenericMetadata):
         indexer_lang = ep_obj.show.lang
 
         try:
-            lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['actors'] = True
 
@@ -181,12 +182,12 @@ class TIVOMetadata(GenericMetadata):
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = srIndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(str(e))
         except indexer_error as e:
-            sickrage.srLogger.error("Unable to connect to " + sickrage.srCore.INDEXER_API(
+            sickrage.srLogger.error("Unable to connect to " + srIndexerApi(
                     ep_obj.show.indexer).name + " while creating meta files - skipping - " + str(e))
             return False
 
@@ -195,7 +196,7 @@ class TIVOMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.srLogger.info("Unable to find episode %dx%d on %s, has it been removed? Should I delete from db?" % (curEpToWrite.season, curEpToWrite.episode, sickrage.srCore.INDEXER_API(ep_obj.show.indexer).name))
+                sickrage.srLogger.info("Unable to find episode %dx%d on %s, has it been removed? Should I delete from db?" % (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
                 return None
 
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):

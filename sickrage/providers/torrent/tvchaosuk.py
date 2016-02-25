@@ -28,12 +28,12 @@ class TVChaosUKProvider(TorrentProvider):
     def __init__(self):
         super(TVChaosUKProvider, self).__init__('TvChaosUK')
 
-        self.urls = {'base_url': 'https://tvchaosuk.com/',
-                     'login': 'https://tvchaosuk.com/takelogin.php',
-                     'index': 'https://tvchaosuk.com/index.php',
-                     'search': 'https://tvchaosuk.com/browse.php'}
-
-        self.url = self.urls['base_url']
+        self.url = 'tvchaosuk.com'
+        self.urls.update({
+            'login': '{base_url}/takelogin.php',
+            'index': '{base_url}/index.php',
+            'search': '{base_url}/browse.php'
+        })
 
         self.supportsBacklog = True
 
@@ -95,7 +95,7 @@ class TVChaosUKProvider(TorrentProvider):
                     ep_string += '%i' % int(ep_obj.scene_absolute_number)
                 else:
                     ep_string += sickrage.srConfig.NAMING_EP_TYPE[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                       'episodenumber': ep_obj.scene_episode}
+                                                                        'episodenumber': ep_obj.scene_episode}
 
                 if add_string:
                     ep_string += ' %s' % add_string
@@ -157,8 +157,8 @@ class TVChaosUKProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
                                     sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             # Chop off tracker/channel prefix or we cant parse the result!

@@ -124,7 +124,7 @@ class srTraktSearcher(object):
 
     def removeShowFromTraktLibrary(self, show_obj):
         if self.findShow(show_obj.indexer, show_obj.indexerid):
-            trakt_id = sickrage.srCore.INDEXER_API(show_obj.indexer).config['trakt_id']
+            trakt_id = srIndexerApi(show_obj.indexer).config['trakt_id']
 
             # URL parameters
             data = {
@@ -160,7 +160,7 @@ class srTraktSearcher(object):
         data = {}
 
         if not self.findShow(show_obj.indexer, show_obj.indexerid):
-            trakt_id = sickrage.srCore.INDEXER_API(show_obj.indexer).config['trakt_id']
+            trakt_id = srIndexerApi(show_obj.indexer).config['trakt_id']
             # URL parameters
             data = {
                 'shows': [
@@ -208,7 +208,7 @@ class srTraktSearcher(object):
                 trakt_data = []
 
                 for cur_episode in episodes:
-                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode["indexer"]).config['trakt_id']
+                    trakt_id = srIndexerApi(cur_episode["indexer"]).config['trakt_id']
 
                     if self._checkInList(trakt_id, str(cur_episode["showid"]), str(cur_episode["season"]),
                                          str(cur_episode["episode"]), List='Collection'):
@@ -241,7 +241,7 @@ class srTraktSearcher(object):
                 trakt_data = []
 
                 for cur_episode in episodes:
-                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode["indexer"]).config['trakt_id']
+                    trakt_id = srIndexerApi(cur_episode["indexer"]).config['trakt_id']
 
                     if not self._checkInList(trakt_id, str(cur_episode["showid"]), str(cur_episode["season"]),
                                              str(cur_episode["episode"]), List='Collection'):
@@ -286,7 +286,7 @@ class srTraktSearcher(object):
                 trakt_data = []
 
                 for cur_episode in episodes:
-                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode["indexer"]).config['trakt_id']
+                    trakt_id = srIndexerApi(cur_episode["indexer"]).config['trakt_id']
 
                     if self._checkInList(trakt_id, str(cur_episode["showid"]), str(cur_episode["season"]),
                                          str(cur_episode["episode"])) and cur_episode[
@@ -318,7 +318,7 @@ class srTraktSearcher(object):
                 trakt_data = []
 
                 for cur_episode in episodes:
-                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode["indexer"]).config['trakt_id']
+                    trakt_id = srIndexerApi(cur_episode["indexer"]).config['trakt_id']
 
                     if not self._checkInList(trakt_id, str(cur_episode["showid"]), str(cur_episode["season"]),
                                              str(cur_episode["episode"])):
@@ -346,7 +346,7 @@ class srTraktSearcher(object):
                 trakt_data = []
 
                 for show in sickrage.srCore.SHOWLIST:
-                    trakt_id = sickrage.srCore.INDEXER_API(show.indexer).config['trakt_id']
+                    trakt_id = srIndexerApi(show.indexer).config['trakt_id']
 
                     if not self._checkInList(trakt_id, str(show.indexerid), '0', '0', List='Show'):
                         sickrage.srLogger.debug(
@@ -399,7 +399,7 @@ class srTraktSearcher(object):
             return
 
         indexer = int(sickrage.srConfig.TRAKT_DEFAULT_INDEXER)
-        trakt_id = sickrage.srCore.INDEXER_API(indexer).config['trakt_id']
+        trakt_id = srIndexerApi(indexer).config['trakt_id']
 
         for show_el in self.ShowWatchlist[trakt_id]:
             indexer_id = int(str(show_el))
@@ -433,7 +433,7 @@ class srTraktSearcher(object):
         managed_show = []
 
         indexer = int(sickrage.srConfig.TRAKT_DEFAULT_INDEXER)
-        trakt_id = sickrage.srCore.INDEXER_API(indexer).config['trakt_id']
+        trakt_id = srIndexerApi(indexer).config['trakt_id']
 
         for show_el in self.EpisodeWatchlist[trakt_id]:
             indexer_id = int(show_el)
@@ -705,7 +705,7 @@ class srTraktSearcher(object):
         for showid, indexerid, show_name, startyear, season, episode in data:
             if showid not in uniqueShows:
                 uniqueShows[showid] = {'title': show_name, 'year': startyear, 'ids': {}, 'seasons': []}
-                trakt_id = sickrage.srCore.INDEXER_API(indexerid).config['trakt_id']
+                trakt_id = srIndexerApi(indexerid).config['trakt_id']
 
                 if trakt_id == 'tvdb_id':
                     uniqueShows[showid]['ids']["tvdb"] = showid

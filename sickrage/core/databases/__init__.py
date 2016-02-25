@@ -197,8 +197,10 @@ class Connection(object):
         """Get a :class:`Transaction` object for interacting directly
         with the underlying SQLite database.
         """
+        _ = threading.currentThread().getName()
         threading.currentThread().setName("DB")
         yield Transaction(self)
+        threading.currentThread().setName(_)
 
     def _get_id(self):
         with self._db_lock:

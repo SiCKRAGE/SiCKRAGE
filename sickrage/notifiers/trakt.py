@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import sickrage
 from sickrage.core.trakt import TraktAPI, traktAuthException, traktException, \
     traktServerBusy
+from sickrage.indexers import srIndexerApi
 from sickrage.notifiers import srNotifiers
 
 
@@ -49,7 +50,7 @@ class TraktNotifier(srNotifiers):
         ep_obj: The TVEpisode object to add to trakt
         """
 
-        trakt_id = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).config['trakt_id']
+        trakt_id = srIndexerApi(ep_obj.show.indexer).config['trakt_id']
         trakt_api = TraktAPI(sickrage.srConfig.SSL_VERIFY, sickrage.srConfig.TRAKT_TIMEOUT)
 
         if sickrage.srConfig.USE_TRAKT:
@@ -111,7 +112,7 @@ class TraktNotifier(srNotifiers):
             try:
                 # URL parameters
                 if show_obj is not None:
-                    trakt_id = sickrage.srCore.INDEXER_API(show_obj.indexer).config['trakt_id']
+                    trakt_id = srIndexerApi(show_obj.indexer).config['trakt_id']
                     data = {
                         'shows': [
                             {
@@ -176,7 +177,7 @@ class TraktNotifier(srNotifiers):
 
         showList = []
         for indexer, indexerid, title, year in data:
-            trakt_id = sickrage.srCore.INDEXER_API(indexer).config['trakt_id']
+            trakt_id = srIndexerApi(indexer).config['trakt_id']
             show = {'title': title, 'year': year, 'ids': {}}
             if trakt_id == 'tvdb_id':
                 show['ids']['tvdb'] = indexerid

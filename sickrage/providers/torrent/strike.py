@@ -28,8 +28,9 @@ class STRIKEProvider(TorrentProvider):
         super(STRIKEProvider, self).__init__("Strike")
 
         self.supportsBacklog = True
-        self.public = True
-        self.url = 'https://getstrike.net/'
+
+        self.url = 'getstrike.net'
+
         self.ratio = 0
         self.cache = StrikeCache(self)
         self.minseed, self.minleech = 2 * [None]
@@ -46,7 +47,7 @@ class STRIKEProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: " + search_string.strip())
 
-                searchURL = self.url + "api/v2/torrents/search/?category=TV&phrase=" + search_string
+                searchURL = self.urls['base_url'] + "/api/v2/torrents/search/?category=TV&phrase=" + search_string
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
                 jdata = self.getURL(searchURL, json=True)
                 if not jdata:

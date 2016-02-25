@@ -32,10 +32,8 @@ class BinSearchProvider(NZBProvider):
     def __init__(self):
         super(BinSearchProvider, self).__init__("BinSearch")
 
-        self.public = True
         self.cache = BinSearchCache(self)
-        self.urls = {'base_url': 'https://www.binsearch.info/'}
-        self.url = self.urls['base_url']
+        self.url = 'www.binsearch.info'
 
 
 class BinSearchCache(tv_cache.TVCache):

@@ -23,18 +23,16 @@ from __future__ import unicode_literals
 import unittest
 import urlparse
 
-import requests
-
 from sickrage.core.helpers import getURL, bs4_parser
 from tests import SiCKRAGETestDBCase
 
 
 class TorrentBasicTests(SiCKRAGETestDBCase):
     def test_search(self):
-        self.url = 'http://kickass.unblocked.li'
+        self.url = 'kickass.unblocked.li'
         searchURL = '{}/usearch/American%20Dad%20S08/'.format(self.url)
 
-        data = getURL(searchURL, session=requests.Session())
+        data = getURL(searchURL)
         if not data:
             return
 

@@ -45,13 +45,13 @@ class SCCProvider(TorrentProvider):
 
         self.cache = SCCCache(self)
 
-        self.urls = {'base_url': 'https://sceneaccess.eu',
-                     'login': 'https://sceneaccess.eu/login',
-                     'detail': 'https://www.sceneaccess.eu/details?id=%s',
-                     'search': 'https://sceneaccess.eu/all?search=%s&method=1&%s',
-                     'download': 'https://www.sceneaccess.eu/%s'}
-
-        self.url = self.urls['base_url']
+        self.url = 'sceneaccess.eu'
+        self.urls.update({
+            'login': '{base_url}/login',
+            'detail': '{base_url}/details?id=%s',
+            'search': '{base_url}/all?search=%s&method=1&%s',
+            'download': '{base_url}/%s'
+        })
 
         self.categories = {'sponly': 'c26=26&c44=44&c45=45',
                            # Archive, non-scene HD, non-scene SD; need to include non-scene because WEB-DL packs get added to those categories
@@ -125,7 +125,7 @@ class SCCProvider(TorrentProvider):
 
                             title = link.string
                             if re.search(r'\.\.\.', title):
-                                data = self.getURL(self.url + "/" + link['href'])
+                                data = self.getURL(self.urls['base_url'] + "/" + link['href'])
                                 if data:
                                     with bs4_parser(data) as details_html:
                                         title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
@@ -143,8 +143,8 @@ class SCCProvider(TorrentProvider):
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode is not 'RSS':
                                 sickrage.srLogger.debug(
-                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                title, seeders, leechers))
+                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                        title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers

@@ -39,8 +39,11 @@ class XthorProvider(TorrentProvider):
 
         self.cj = cookielib.CookieJar()
 
-        self.url = "https://xthor.bz"
-        self.urlsearch = "https://xthor.bz/browse.php?search=\"%s\"%s"
+        self.url = "xthor.bz"
+        self.urls.update({
+            'search': "{base_url}/browse.php?search=\"{}\"{}"
+        })
+
         self.categories = "&searchin=title&incldead=0"
 
         self.username = None
@@ -56,7 +59,7 @@ class XthorProvider(TorrentProvider):
                         'password': self.password,
                         'submitme': 'X'}
 
-        response = self.getURL(self.url + '/takelogin.php', post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['base_url'] + '/takelogin.php', post_data=login_params, timeout=30)
         if not response:
             sickrage.srLogger.warning("Unable to connect to provider")
             return False
@@ -83,7 +86,7 @@ class XthorProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
-                searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
+                searchURL = self.urls['search'].format(urllib.quote(search_string), self.categories)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
 
@@ -98,7 +101,8 @@ class XthorProvider(TorrentProvider):
                             link = row.find("a", href=re.compile("details.php"))
                             if link:
                                 title = link.text
-                                download_url = self.url + '/' + row.find("a", href=re.compile("download.php"))['href']
+                                download_url = self.urls['base_url'] + '/' + \
+                                               row.find("a", href=re.compile("download.php"))['href']
                                 # FIXME
                                 size = -1
                                 seeders = 1

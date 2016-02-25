@@ -31,12 +31,7 @@ class TransmitTheNetProvider(TorrentProvider):
 
         super(TransmitTheNetProvider, self).__init__("TransmitTheNet")
 
-        self.urls = {
-            'base_url': 'https://transmithe.net/',
-            'index': 'https://transmithe.net/index.php',
-        }
-
-        self.url = self.urls['base_url']
+        self.url = 'transmithe.net'
 
         self.supportsBacklog = True
 
@@ -70,7 +65,7 @@ class TransmitTheNetProvider(TorrentProvider):
             'login': 'submit'
         }
 
-        response = self.getURL(self.urls['index'], params={'page': 'login'}, post_data=login_params, timeout=30)
+        response = self.getURL(self.urls['base_url'], params={'page': 'login'}, post_data=login_params, timeout=30)
         if not response:
             sickrage.srLogger.warning("Unable to connect to provider")
             return False
@@ -95,8 +90,8 @@ class TransmitTheNetProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
-                data = self.getURL(self.urls['index'], params=self.search_params)
-                searchURL = self.urls['index'] + "?" + urlencode(self.search_params)
+                data = self.getURL(self.urls['base_url'], params=self.search_params)
+                searchURL = self.urls['base_url'] + "?" + urlencode(self.search_params)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 if not data:

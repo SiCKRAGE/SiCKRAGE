@@ -77,7 +77,6 @@ module.exports = function (grunt) {
                     relative: false
                 },
                 dependencies: {
-                    'formwizard': 'jquery',
                     'selectboxes': 'jquery',
                     'bookmarkscroll': 'jquery'
                 }

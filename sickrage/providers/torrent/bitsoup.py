@@ -31,15 +31,13 @@ class BitSoupProvider(TorrentProvider):
     def __init__(self):
         super(BitSoupProvider, self).__init__("BitSoup")
 
-        self.urls = {
-            'base_url': 'https://www.bitsoup.me',
-            'login': 'https://www.bitsoup.me/takelogin.php',
-            'detail': 'https://www.bitsoup.me/details.php?id=%s',
-            'search': 'https://www.bitsoup.me/browse.php',
-            'download': 'https://bitsoup.me/%s',
-        }
-
-        self.url = self.urls['base_url']
+        self.url = 'www.bitsoup.me'
+        self.urls.update({
+            'login': '{base_url}/takelogin.php',
+            'detail': '{base_url}/details.php?id=%s',
+            'search': '{base_url}/browse.php',
+            'download': '{base_url}/%s'
+        })
 
         self.supportsBacklog = True
 
@@ -133,8 +131,8 @@ class BitSoupProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
                                     sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers

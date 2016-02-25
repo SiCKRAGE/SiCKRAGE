@@ -39,13 +39,13 @@ class SpeedCDProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.urls = {'base_url': 'http://speed.cd/',
-                     'login': 'http://speed.cd/take_login.php',
-                     'detail': 'http://speed.cd/t/%s',
-                     'search': 'http://speed.cd/V3/API/API.php',
-                     'download': 'http://speed.cd/download.php?torrent=%s'}
-
-        self.url = self.urls['base_url']
+        self.url = 'speed.cd'
+        self.urls.update({
+            'login': '{base_url}/take_login.php',
+            'detail': '{base_url}/t/%s',
+            'search': '{base_url}/V3/API/API.php',
+            'download': '{base_url}/download.php?torrent=%s'
+        })
 
         self.categories = {'Season': {'c14': 1}, 'Episode': {'c2': 1, 'c49': 1}, 'RSS': {'c14': 1, 'c2': 1, 'c49': 1}}
 
@@ -117,8 +117,8 @@ class SpeedCDProvider(TorrentProvider):
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
                             sickrage.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                            title, seeders, leechers))
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                    title, seeders, leechers))
                         continue
 
                     item = title, download_url, size, seeders, leechers

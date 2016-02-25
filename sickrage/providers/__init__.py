@@ -31,6 +31,7 @@ from base64 import b16encode, b32decode
 
 import bencode
 import requests
+import xmltodict
 from feedparser import FeedParserDict
 from hachoir_core.stream import StringInputStream
 from hachoir_parser import guessParser
@@ -68,9 +69,10 @@ class GenericProvider(object):
     def __init__(self, name):
         # these need to be set in the subclass
         self.name = name
-        self.urls = {}
-        self.url = ''
-        self.public = False
+
+        self.url = ""
+        self.urls = {'base_url': re.sub(r'/$', '', self.url)}
+
         self.show = None
         self.supportsBacklog = False
         self.supportsAbsoluteNumbering = False
@@ -83,6 +85,7 @@ class GenericProvider(object):
         self.cache = TVCache(self)
         self.session = None
         self.proper_strings = ['PROPER|REPACK|REAL']
+        self.private = False
 
         self.headers = {}
         self.session = None
@@ -524,18 +527,18 @@ class GenericProvider(object):
 
     @classmethod
     def getProvider(cls, name):
-        providerMatch = [x for x in cls.getProviderList() if x.name == name]
+        providerMatch = [x for x in cls.getProviders() if x.name == name]
         if len(providerMatch) == 1:
             return providerMatch[0]
 
     @classmethod
     def getProviderByID(cls, id):
-        providerMatch = [x for x in cls.getProviderList() if x.id == id]
+        providerMatch = [x for x in cls.getProviders() if x.id == id]
         if len(providerMatch) == 1:
             return providerMatch[0]
 
     @classmethod
-    def getProviderList(cls, data=""):
+    def getProviders(cls):
         modules = []
         for type in GenericProvider.types:
             modules += cls.loadProviders(type)
@@ -681,7 +684,7 @@ class TorrentProvider(GenericProvider):
         return results
 
     @classmethod
-    def getProviderList(cls, data=""):
+    def getProviders(cls):
         return super(TorrentProvider, cls).loadProviders(GenericProvider.TORRENT)
 
 
@@ -707,7 +710,7 @@ class NZBProvider(GenericProvider):
         return int(size)
 
     @classmethod
-    def getProviderList(cls, data=""):
+    def getProviders(cls):
         return super(NZBProvider, cls).loadProviders(GenericProvider.NZB)
 
 
@@ -722,15 +725,14 @@ class TorrentRssProvider(TorrentProvider):
                  search_mode='eponly',
                  search_fallback=False,
                  enable_daily=False,
-                 enable_backlog=False
-                 ):
+                 enable_backlog=False,
+                 default=False):
         super(TorrentRssProvider, self).__init__(name)
 
         self.cache = TorrentRssCache(self)
 
-        self.urls = {'base_url': re.sub(r'/$', '', url)}
-
-        self.url = self.urls['base_url']
+        self.url = url
+        self.urls = {'base_url': re.sub(r'/$', '', self.url)}
 
         self.ratio = None
         self.supportsBacklog = False
@@ -741,19 +743,7 @@ class TorrentRssProvider(TorrentProvider):
         self.enable_backlog = enable_backlog
         self.cookies = cookies
         self.titleTAG = titleTAG
-
-    def configStr(self):
-        return "%s|%s|%s|%s|%d|%s|%d|%d|%d" % (
-            self.name,
-            self.url,
-            self.cookies,
-            self.titleTAG,
-            int(self.enabled),
-            self.search_mode,
-            int(self.search_fallback),
-            int(self.enable_daily),
-            int(self.enable_backlog)
-        )
+        self.default = default
 
     def _get_title_and_url(self, item):
 
@@ -837,56 +827,14 @@ class TorrentRssProvider(TorrentProvider):
         return self.ratio
 
     @classmethod
-    def getProviderList(cls, data=""):
-        providerList = filter(lambda x: x, [cls.makeProvider(x) for x in data.split('!!!')])
-
-        seen_values = set()
-        providerListDeduped = []
-        for d in providerList:
-            value = d.name
-            if value not in seen_values:
-                providerListDeduped.append(d)
-                seen_values.add(value)
-
-        return filter(lambda l: l, providerList)
+    def getProviders(cls):
+        return cls.getDefaultProviders()
 
     @classmethod
-    def makeProvider(cls, configString):
-        if not configString:
-            return None
-
-        cookies = None
-        titleTAG = 'title'
-        search_mode = 'eponly'
-        search_fallback = 0
-        enable_daily = 0
-        enable_backlog = 0
-
-        try:
-            values = configString.split('|')
-            if len(values) == 9:
-                name, url, cookies, titleTAG, enabled, search_mode, search_fallback, enable_daily, enable_backlog = values
-            elif len(values) == 8:
-                name, url, cookies, enabled, search_mode, search_fallback, enable_daily, enable_backlog = values
-            else:
-                name = values[0]
-                url = values[1]
-                enabled = values[4]
-        except ValueError:
-            sickrage.srLogger.error("Skipping RSS Torrent provider string: '" + configString + "', incorrect format")
-            return None
-
-        newProvider = cls(name=name,
-                          url=url,
-                          cookies=cookies,
-                          titleTAG=titleTAG,
-                          search_mode=search_mode,
-                          search_fallback=search_fallback,
-                          enable_daily=enable_daily,
-                          enable_backlog=enable_backlog)
-
-        newProvider.enabled = enabled == '1'
-        return newProvider
+    def getDefaultProviders(cls):
+        return [
+            cls('showRSS', 'showrss.info', None, 'title', 'eponly', True, True, True, True)
+        ]
 
 
 class NewznabProvider(NZBProvider):
@@ -895,50 +843,28 @@ class NewznabProvider(NZBProvider):
     def __init__(self,
                  name,
                  url,
-                 key='0',
+                 key=None,
                  catIDs='5030,5040',
                  search_mode='eponly',
                  search_fallback=False,
                  enable_daily=False,
-                 enable_backlog=False
-                 ):
+                 enable_backlog=False,
+                 default=False):
         super(NewznabProvider, self).__init__(name)
 
+        self.url = url
+        self.urls = {'base_url': re.sub(r'/$', '', self.url)}
+
         self.cache = NewznabCache(self)
-
-        self.urls = {'base_url': url}
-
-        self.url = self.urls['base_url']
-
-        self.key = key
-
         self.search_mode = search_mode
         self.search_fallback = search_fallback
         self.enable_daily = enable_daily
         self.enable_backlog = enable_backlog
-
-        # a 0 in the key spot indicates that no key is needed
-        if self.key == '0':
-            self.needs_auth = False
-        else:
-            self.needs_auth = True
-
-        self.public = not self.needs_auth
-
-        if catIDs:
-            self.catIDs = catIDs
-        else:
-            self.catIDs = '5030,5040'
-
+        self.key = key
         self.supportsBacklog = True
-
-        self.default = False
+        self.catIDs = catIDs
+        self.default = default
         self.last_search = datetime.datetime.now()
-
-    def configStr(self):
-        return self.name + '|' + self.url + '|' + self.key + '|' + self.catIDs + '|' + str(
-            int(self.enabled)) + '|' + self.search_mode + '|' + str(int(self.search_fallback)) + '|' + str(
-            int(self.enable_daily)) + '|' + str(int(self.enable_backlog))
 
     def _getURL(self, url, post_data=None, params=None, timeout=30, json=False):
         return self.getURL(url, post_data=post_data, params=params, timeout=timeout, json=json)
@@ -950,38 +876,29 @@ class NewznabProvider(NZBProvider):
         Returns a tuple with (succes or not, array with dicts [{"id": "5070", "name": "Anime"},
         {"id": "5080", "name": "Documentary"}, {"id": "5020", "name": "Foreign"}...etc}], error message)
         """
-        return_categories = []
+        success = False
+        categories = []
+        message = ""
 
         self._checkAuth()
 
         params = {"t": "caps"}
-        if self.needs_auth and self.key:
+        if self.key:
             params['apikey'] = self.key
 
         try:
-            data = self.cache.getRSSFeed("%s/api?%s" % (self.url, urllib.urlencode(params)))
+            data = xmltodict.parse(getURL("{}api?{}".format(self.url, urllib.urlencode(params))))
+            for category in data["caps"]["categories"]["category"]:
+                if category.get('@name') == 'TV':
+                    categories += [{"id": category['@id'], "name": category['@name']}]
+                    categories += [{"id": x["@id"], "name": x["@name"]} for x in category["subcat"]]
+
+            success = True
         except Exception:
-            sickrage.srLogger.warning("Error getting html for [%s]" %
-                                      ("%s/api?%s" % (
-                                          self.url, '&'.join("%s=%s" % (x, y) for x, y in params.iteritems()))))
-            return (False, return_categories, "Error getting html for [%s]" %
-                    ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x, y) for x, y in params.iteritems()))))
+            sickrage.srLogger.debug("[%s] failed to list categories" % self.name)
+            message = "[%s] failed to list categories" % self.name
 
-        if not self._checkAuthFromData(data):
-            sickrage.srLogger.debug("Error parsing xml")
-            return False, return_categories, "Error parsing xml for [%s]" % (self.name)
-
-        try:
-            for category in data.feed.categories:
-                if category.get('name') == 'TV':
-                    return_categories.append(category)
-                    for subcat in category.subcats:
-                        return_categories.append(subcat)
-        except Exception:
-            sickrage.srLogger.debug("[%s] does not list categories" % (self.name))
-            return (False, return_categories, "[%s] does not list categories" % (self.name))
-
-        return True, return_categories, ""
+        return success, categories, message
 
     def _get_season_search_strings(self, ep_obj):
 
@@ -1047,10 +964,6 @@ class NewznabProvider(NZBProvider):
         return self._doSearch({'q': search_string})
 
     def _checkAuth(self):
-        if self.needs_auth and not self.key:
-            sickrage.srLogger.warning(
-                "Your authentication credentials for " + self.name + " are missing, check your config.")
-            return False
         return True
 
     def _checkAuthFromData(self, data):
@@ -1089,38 +1002,23 @@ class NewznabProvider(NZBProvider):
 
         self._checkAuth()
 
-        params = {"t": "tvsearch",
-                  "maxage": (4, age)[age],
-                  "limit": 100,
-                  "offset": 0}
+        params = {
+            "t": "tvsearch",
+            "maxage": min(age, sickrage.srConfig.USENET_RETENTION),
+            "limit": 100,
+            "offset": 0,
+            "cat": self.catIDs.strip(', ') or '5030,5040'
+        }.update(search_params)
 
-        if search_params:
-            params.update(search_params)
-            sickrage.srLogger.debug('Search parameters: %s' % repr(search_params))
-
-        # category ids
-        if self.show and self.show.is_sports:
-            params['cat'] = self.catIDs + ',5060'
-        elif self.show and self.show.is_anime:
-            params['cat'] = self.catIDs + ',5070'
-        else:
-            params['cat'] = self.catIDs
-
-        params['cat'] = params['cat'].strip(', ')
-
-        if self.needs_auth and self.key:
+        if self.key:
             params['apikey'] = self.key
 
-        params['maxage'] = min(params['maxage'], sickrage.srConfig.USENET_RETENTION)
+        sickrage.srLogger.debug('[{}] Search parameters: {}'.format(self.name, repr(params)))
 
         results = []
         offset = total = 0
-
-        if 'lolo.sickrage.com' in self.url and params['maxage'] < 33:
-            params['maxage'] = 33
-
         while total >= offset:
-            search_url = self.url + 'api?' + urllib.urlencode(params)
+            search_url = self.urls['base_url'] + '/api?' + urllib.urlencode(params)
 
             while (datetime.datetime.now() - self.last_search).seconds < 5:
                 time.sleep(1)
@@ -1197,83 +1095,18 @@ class NewznabProvider(NZBProvider):
         return results
 
     @classmethod
-    def getProviderList(cls, data=""):
-        defaultList = [cls.makeProvider(x) for x in cls.getDefaultProviders().split('!!!')]
-        providerList = filter(lambda x: x, [cls.makeProvider(x) for x in data.split('!!!')])
-
-        seen_values = set()
-        providerListDeduped = []
-        for d in providerList:
-            value = d.name
-            if value not in seen_values:
-                providerListDeduped.append(d)
-                seen_values.add(value)
-
-        providerList = providerListDeduped
-        providerDict = dict(zip([x.name for x in providerList], providerList))
-
-        for curDefault in defaultList:
-            if not curDefault:
-                continue
-
-            if curDefault.name not in providerDict:
-                curDefault.default = True
-                providerList.append(curDefault)
-            else:
-                providerDict[curDefault.name].default = True
-                providerDict[curDefault.name].name = curDefault.name
-                providerDict[curDefault.name].url = curDefault.url
-                providerDict[curDefault.name].needs_auth = curDefault.needs_auth
-                providerDict[curDefault.name].search_mode = curDefault.search_mode
-                providerDict[curDefault.name].search_fallback = curDefault.search_fallback
-                providerDict[curDefault.name].enable_daily = curDefault.enable_daily
-                providerDict[curDefault.name].enable_backlog = curDefault.enable_backlog
-
-        return filter(lambda x: x, providerList)
-
-    @classmethod
-    def makeProvider(cls, configString):
-        if not configString:
-            return None
-
-        search_mode = 'eponly'
-        search_fallback = 0
-        enable_daily = 0
-        enable_backlog = 0
-
-        try:
-            values = configString.split('|')
-            if len(values) == 9:
-                name, url, key, catIDs, enabled, search_mode, search_fallback, enable_daily, enable_backlog = values
-            else:
-                name = values[0]
-                url = values[1]
-                key = values[2]
-                catIDs = values[3]
-                enabled = values[4]
-        except ValueError:
-            sickrage.srLogger.error("Skipping Newznab provider string: '" + configString + "', incorrect format")
-            return None
-
-        newProvider = cls(name=name,
-                          url=url,
-                          key=key,
-                          catIDs=catIDs,
-                          search_mode=search_mode,
-                          search_fallback=search_fallback,
-                          enable_daily=enable_daily,
-                          enable_backlog=enable_backlog)
-
-        newProvider.enabled = enabled == '1'
-        return newProvider
+    def getProviders(cls):
+        return cls.getDefaultProviders()
 
     @classmethod
     def getDefaultProviders(cls):
-        # name|url|key|catIDs|enabled|search_mode|search_fallback|enable_daily|enable_backlog
-        return 'NZB.Cat|https://nzb.cat/||5030,5040,5010|0|eponly|1|1|1!!!' + \
-               'NZBGeek|https://api.nzbgeek.info/||5030,5040|0|eponly|0|0|0!!!' + \
-               'NZBs.org|https://nzbs.org/||5030,5040|0|eponly|0|0|0!!!' + \
-               'Usenet-Crawler|https://www.usenet-crawler.com/||5030,5040|0|eponly|0|0|0'
+        return [
+            cls('NZB.Cat', 'nzb.cat', None, '5030,5040,5010', 'eponly', True, True, True, True),
+            cls('NZBGeek', 'api.nzbgeek.info', None, '5030,5040', 'eponly', False, False, False, True),
+            cls('NZBs.org', 'nzbs.org', None, '5030,5040', 'eponly', False, False, False, True),
+            cls('Usenet-Crawler', 'www.usenet-crawler.com', None, '5030,5040', 'eponly', False, False, False,
+                True)
+        ]
 
 
 class TorrentRssCache(TVCache):
@@ -1302,14 +1135,11 @@ class NewznabCache(TVCache):
     def _getRSSData(self):
 
         params = {"t": "tvsearch",
-                  "cat": self.provider.catIDs + ',5060,5070',
+                  "cat": self.provider.catIDs.strip(',', ''),
                   "maxage": 4,
                   }
 
-        if 'lolo.sickrage.com' in self.provider.url:
-            params['maxage'] = 33
-
-        if self.provider.needs_auth and self.provider.key:
+        if self.provider.key:
             params['apikey'] = self.provider.key
 
         rss_url = self.provider.url + 'api?' + urllib.urlencode(params)

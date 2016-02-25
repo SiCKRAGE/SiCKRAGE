@@ -25,7 +25,7 @@ from datetime import datetime
 import sickrage
 
 
-class QueuePriorities:
+class QueuePriorities(object):
     LOW = 10
     NORMAL = 20
     HIGH = 30

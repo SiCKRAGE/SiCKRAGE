@@ -1,4 +1,3 @@
-
 # Author: Giovanni Borri
 # Modified by gborri, https://github.com/gborri for TNTVillage
 #
@@ -97,14 +96,14 @@ class TNTVillageProvider(TorrentProvider):
                               'Documentari': 14,
                               'All': 0}
 
-        self.urls = {'base_url': 'http://forum.tntvillage.scambioetico.org',
-                     'login': 'http://forum.tntvillage.scambioetico.org/index.php?act=Login&CODE=01',
-                     'detail': 'http://forum.tntvillage.scambioetico.org/index.php?showtopic=%s',
-                     'search': 'http://forum.tntvillage.scambioetico.org/?act=allreleases&%s',
-                     'search_page': 'http://forum.tntvillage.scambioetico.org/?act=allreleases&st={0}&{1}',
-                     'download': 'http://forum.tntvillage.scambioetico.org/index.php?act=Attach&type=post&id=%s'}
-
-        self.url = self.urls['base_url']
+        self.url = 'forum.tntvillage.scambioetico.org'
+        self.urls.update({
+            'login': '{base_url}/index.php?act=Login&CODE=01',
+            'detail': '{base_url}/index.php?showtopic=%s',
+            'search': '{base_url}/?act=allreleases&%s',
+            'search_page': '{base_url}/?act=allreleases&st={0}&{1}',
+            'download': '{base_url}/index.php?act=Attach&type=post&id=%s'
+        })
 
         self.cookies = None
 
@@ -181,8 +180,8 @@ class TNTVillageProvider(TorrentProvider):
             for img_type in img_all:
                 try:
                     file_quality = file_quality + " " + img_type['src'].replace("style_images/mkportal-636/",
-                                                                                 "").replace(".gif", "").replace(".png",
-                                                                                                                 "")
+                                                                                "").replace(".gif", "").replace(".png",
+                                                                                                                "")
                 except Exception:
                     sickrage.srLogger.error("Failed parsing quality. Traceback: {}".format(traceback.format_exc()))
 
@@ -203,8 +202,8 @@ class TNTVillageProvider(TorrentProvider):
             file_quality = (torrent_rows.find_all('td'))[1].get_text()
 
         webdl = checkName(
-                ["webdl", "webmux", "webrip", "dl-webmux", "web-dlmux", "webdl-mux", "web-dl", "webdlmux", "dlmux"],
-                any)
+            ["webdl", "webmux", "webrip", "dl-webmux", "web-dlmux", "webdl-mux", "web-dl", "webdlmux", "dlmux"],
+            any)
 
         if sdOptions and not dvdOptions and not fullHD and not hdOptions:
             return Quality.SDTV
@@ -371,7 +370,8 @@ class TNTVillageProvider(TorrentProvider):
                                     continue
 
                                 if self.engrelease and not self._is_english(result):
-                                    sickrage.srLogger.debug("Torrent isnt english audio/subtitled , skipping: %s " % title)
+                                    sickrage.srLogger.debug(
+                                        "Torrent isnt english audio/subtitled , skipping: %s " % title)
                                     continue
 
                                 search_show = re.split(r'([Ss][\d{1,2}]+)', search_string)[0]
@@ -395,8 +395,8 @@ class TNTVillageProvider(TorrentProvider):
                                 if seeders < self.minseed or leechers < self.minleech:
                                     if mode is not 'RSS':
                                         sickrage.srLogger.debug(
-                                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                        title, seeders, leechers))
+                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                                title, seeders, leechers))
                                     continue
 
                                 item = title, download_url, size, seeders, leechers

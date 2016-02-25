@@ -41,11 +41,11 @@ class HoundDawgsProvider(TorrentProvider):
 
         self.cache = HoundDawgsCache(self)
 
-        self.urls = {'base_url': 'https://hounddawgs.org/',
-                     'search': 'https://hounddawgs.org/torrents.php',
-                     'login': 'https://hounddawgs.org/login.php'}
-
-        self.url = self.urls['base_url']
+        self.url = 'hounddawgs.org'
+        self.urls.update({
+            'search': '{base_url}/torrents.php',
+            'login': '{base_url}/login.php'
+        })
 
         self.search_params = {
             "filter_cat[85]": 1,

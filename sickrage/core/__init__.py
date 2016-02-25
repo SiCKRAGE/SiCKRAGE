@@ -22,22 +22,21 @@ from __future__ import unicode_literals
 
 import datetime
 import os
+import random
 import re
 import shutil
 import socket
 import sys
 import traceback
 import urllib
-import urlparse
 
 import sickrage
 from sickrage.core.caches.name_cache import srNameCache
-from sickrage.core.classes import SiCKRAGEURLopener, AttrDict, providersDict
+from sickrage.core.classes import AttrDict, providersDict
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.databases import main_db, cache_db, failed_db
 from sickrage.core.helpers import encrypt, findCertainShow, \
-    generateCookieSecret, makeDir, removetree, restoreDB, get_lan_ip
-from sickrage.core.helpers.sessions import get_temp_dir
+    generateCookieSecret, makeDir, removetree, restoreDB, get_lan_ip, get_temp_dir
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import srPostProcessor
@@ -52,12 +51,12 @@ from sickrage.core.searchers.trakt_searcher import srTraktSearcher
 from sickrage.core.srconfig import srConfig
 from sickrage.core.srlogger import srLogger
 from sickrage.core.srscheduler import srIntervalTrigger, srScheduler
+from sickrage.core.srsession import srSession
 from sickrage.core.tv.show import TVShow
 from sickrage.core.updaters.show_updater import srShowUpdater
 from sickrage.core.updaters.tz_updater import update_network_dict
 from sickrage.core.version_updater import srVersionUpdater
 from sickrage.core.webserver import srWebServer
-from sickrage.indexers import srIndexerApi
 from sickrage.metadata import get_metadata_generator_dict, kodi, kodi_12plus, \
     mede8er, mediabrowser, ps3, tivo, wdtv
 from sickrage.notifiers.boxcar import BoxcarNotifier
@@ -82,9 +81,6 @@ from sickrage.notifiers.synologynotifier import synologyNotifier
 from sickrage.notifiers.trakt import TraktNotifier
 from sickrage.notifiers.tweet import TwitterNotifier
 
-urllib._urlopener = SiCKRAGEURLopener()
-urlparse.uses_netloc.append('scgi')
-
 
 class srCore(object):
     def __init__(self, config_file, console=None, debug=None, web_port=None, open_broswser=None):
@@ -92,6 +88,9 @@ class srCore(object):
         self.RESTARTED = False
         self.CONSOLE = console
         self.DEBUG = debug
+
+        # random user agent
+        urllib.FancyURLopener.version = random.choice(srSession.USER_AGENTS)
 
         # process id
         self.PID = os.getpid()
@@ -157,8 +156,7 @@ class srCore(object):
         # show list
         self.SHOWLIST = []
 
-        # indexers
-        self.INDEXER_API = None
+        # updater
         self.VERSIONUPDATER = None
 
         # name cache
@@ -205,9 +203,6 @@ class srCore(object):
 
         # init updater and get current version
         self.VERSION = self.VERSIONUPDATER.updater.version
-
-        # init indexers
-        self.INDEXER_API = srIndexerApi
 
         # init caches
         self.NAMECACHE = srNameCache()
@@ -491,17 +486,6 @@ class srCore(object):
         self.STARTED = True
         sickrage.srWebServer.start()
 
-    def halt(self):
-        sickrage.srLogger.info("Aborting all threads")
-
-        # shutdown scheduler
-        sickrage.srLogger.info("Shutting down scheduler jobs")
-        sickrage.srScheduler.shutdown()
-
-        if sickrage.srConfig.ADBA_CONNECTION:
-            sickrage.srLogger.info("Logging out ANIDB connection")
-            sickrage.srConfig.ADBA_CONNECTION.logout()
-
     def shutdown(self, status=None, restart=False):
         self.RESTARTED = restart
 
@@ -512,7 +496,15 @@ class srCore(object):
                 sickrage.srLogger.info('SiCKRAGE IS PERFORMING A SHUTDOWN!')
 
             # stop all background services
-            self.halt()
+            sickrage.srLogger.info("Aborting all threads")
+
+            # shutdown scheduler
+            sickrage.srLogger.info("Shutting down scheduler jobs")
+            sickrage.srScheduler.shutdown()
+
+            if sickrage.srConfig.ADBA_CONNECTION:
+                sickrage.srLogger.info("Logging out ANIDB connection")
+                sickrage.srConfig.ADBA_CONNECTION.logout()
 
             # save all settings
             self.save_all()
@@ -536,8 +528,10 @@ class srCore(object):
         # write all shows
         sickrage.srLogger.info("Saving all shows to the database")
         for SHOW in self.SHOWLIST:
-            try:SHOW.saveToDB()
-            except:continue
+            try:
+                SHOW.saveToDB()
+            except:
+                continue
 
         # save config
         sickrage.srConfig.save()

@@ -33,17 +33,11 @@ from sickrage.providers import NZBProvider
 class AnimeNZBProvider(NZBProvider):
     def __init__(self):
         super(AnimeNZBProvider, self).__init__("AnimeNZB")
-
         self.supportsBacklog = False
-        self.public = True
         self.supportsAbsoluteNumbering = True
         self.anime_only = True
-
         self.cache = animenzbCache(self)
-
-        self.urls = {'base_url': 'http://animenzb.com//'}
-
-        self.url = self.urls['base_url']
+        self.url = 'animenzb.com'
 
     def _get_season_search_strings(self, ep_obj):
         return [x for x in show_names.makeSceneSeasonSearchString(self.show, ep_obj)]
@@ -64,7 +58,7 @@ class AnimeNZBProvider(NZBProvider):
             "max": "100"
         }
 
-        searchURL = self.url + "rss?" + urllib.urlencode(params)
+        searchURL = self.urls['base_url'] + "/rss?" + urllib.urlencode(params)
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
         results = []
         for curItem in self.cache.getRSSFeed(searchURL)['entries'] or []:

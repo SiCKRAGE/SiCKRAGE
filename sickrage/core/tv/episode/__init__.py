@@ -40,6 +40,7 @@ from sickrage.core.scene_numbering import xem_refresh, get_scene_absolute_number
 from sickrage.core.searchers import subtitle_searcher
 from sickrage.core.tv import dirty_setter
 from sickrage.core.updaters import tz_updater
+from sickrage.indexers import srIndexerApi
 from sickrage.indexers.indexer_exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import srNotifiers
 
@@ -264,7 +265,7 @@ class TVEpisode(object):
             return True
 
     def loadFromIndexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
-        indexer_name = sickrage.srCore.INDEXER_API(self.indexer).name
+        indexer_name = srIndexerApi(self.indexer).name
 
         season = (self.season, season)[season is not None]
         episode = (self.episode, episode)[episode is not None]
@@ -278,7 +279,7 @@ class TVEpisode(object):
         try:
             if cachedSeason is None:
                 if tvapi is None:
-                    lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(self.indexer).api_params.copy()
+                    lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
 
                     if not cache:
                         lINDEXER_API_PARMS['cache'] = False
@@ -289,7 +290,7 @@ class TVEpisode(object):
                     if self.show.dvdorder != 0:
                         lINDEXER_API_PARMS['dvdorder'] = True
 
-                    t = sickrage.srCore.INDEXER_API(self.indexer).indexer(**lINDEXER_API_PARMS)
+                    t = srIndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
                 else:
                     t = tvapi
                 myEp = t[self.show.indexerid][season][episode]
@@ -362,7 +363,7 @@ class TVEpisode(object):
         # early conversion to int so that episode doesn't get marked dirty
         self.indexerid = tryInt(safe_getattr(myEp, 'id'), self.indexerid)
         if self.indexerid is None:
-            sickrage.srLogger.error("Failed to retrieve ID from " + sickrage.srCore.INDEXER_API(self.indexer).name)
+            sickrage.srLogger.error("Failed to retrieve ID from " + srIndexerApi(self.indexer).name)
             if self.indexerid != -1:
                 self.deleteEpisode()
             return False

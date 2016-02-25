@@ -75,11 +75,11 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
     scene_exceptions table in cache.db. Also clears the scene name cache.
     """
 
-    for indexer in sickrage.srCore.INDEXER_API().indexers:
-        indexer_name = sickrage.srCore.INDEXER_API(indexer).name
+    for indexer in srIndexerApi().indexers:
+        indexer_name = srIndexerApi(indexer).name
         if shouldRefresh(indexer_name):
             sickrage.srLogger.info("Checking for SiCKRAGE scene exception updates for {}".format(indexer_name))
-            loc = sickrage.srCore.INDEXER_API(indexer).config['scene_loc']
+            loc = srIndexerApi(indexer).config['scene_loc']
 
             try:
                 # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
@@ -285,15 +285,15 @@ def _anidb_exceptions_fetcher():
 
 def _xem_exceptions_fetcher():
     if shouldRefresh('xem'):
-        for indexer in sickrage.srCore.INDEXER_API().indexers:
-            sickrage.srLogger.info("Checking for XEM scene exception updates for " + sickrage.srCore.INDEXER_API(indexer).name)
+        for indexer in srIndexerApi().indexers:
+            sickrage.srLogger.info("Checking for XEM scene exception updates for " + srIndexerApi(indexer).name)
 
-            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickrage.srCore.INDEXER_API(indexer).config[
+            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % srIndexerApi(indexer).config[
                 'xem_origin']
 
             parsedJSON = getURL(url, timeout=90, json=True)
             if not parsedJSON:
-                sickrage.srLogger.debug("Check scene exceptions update failed for " + sickrage.srCore.INDEXER_API(
+                sickrage.srLogger.debug("Check scene exceptions update failed for " + srIndexerApi(
                         indexer).name + ", Unable to get URL: " + url)
                 continue
 

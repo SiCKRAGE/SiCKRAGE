@@ -42,11 +42,11 @@ class IPTorrentsProvider(TorrentProvider):
 
         self.cache = IPTorrentsCache(self)
 
-        self.urls = {'base_url': 'https://iptorrents.eu',
-                     'login': 'https://iptorrents.eu/torrents/',
-                     'search': 'https://iptorrents.eu/t?%s%s&q=%s&qf=#torrents'}
-
-        self.url = self.urls['base_url']
+        self.url = 'iptorrents.eu'
+        self.urls.update({
+            'login': '{base_url}/torrents/',
+            'search': '{base_url}/t?%s%s&q=%s&qf=#torrents'
+        })
 
         self.categories = '73=&60='
 
@@ -71,7 +71,7 @@ class IPTorrentsProvider(TorrentProvider):
 
         if re.search('tries left', response):
             sickrage.srLogger.warning(
-                    "You tried too often, please try again after 1 hour! Disable IPTorrents for at least 1 hour")
+                "You tried too often, please try again after 1 hour! Disable IPTorrents for at least 1 hour")
             return False
         if re.search('Password not correct', response):
             sickrage.srLogger.warning("Invalid username or password. Check your settings")
@@ -141,8 +141,8 @@ class IPTorrentsProvider(TorrentProvider):
                             if seeders < self.minseed or leechers < self.minleech:
                                 if mode is not 'RSS':
                                     sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                    title, seeders, leechers))
+                                        "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                            title, seeders, leechers))
                                 continue
 
                             item = title, download_url, size, seeders, leechers

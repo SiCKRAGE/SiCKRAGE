@@ -27,12 +27,13 @@
     "jqueryui-touch-punch": "*",
     "jquery-confirm": "^2.5.2",
     "isotope": "^2.2.2",
-    "formwizard": "http://www.dynamicdrive.com/dynamicindex16/formwizard.js",
     "selectboxes": "https://raw.githubusercontent.com/SamWM/jQuery-Plugins/master/selectboxes/jquery.selectboxes.js",
     "bookmarkscroll": "http://dynamicdrive.com/dynamicindex5/bookmarkscroll.js",
     "jquery.tablesorter": "^2.25.4",
     "scrollup": "^2.4.1",
-    "qtip2": "^2.2.1"
+    "qtip2": "^2.2.1",
+    "uri.js": "^1.17.1",
+    "jquery.steps": "jquery-steps#^1.1.0"
   },
   "resolutions": {
     "bootstrap": "^3.0.0"

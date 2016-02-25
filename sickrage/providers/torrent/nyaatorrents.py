@@ -31,16 +31,14 @@ class NyaaProvider(TorrentProvider):
         super(NyaaProvider, self).__init__("NyaaTorrents")
 
         self.supportsBacklog = True
-        self.public = True
+
         self.supportsAbsoluteNumbering = True
         self.anime_only = True
         self.ratio = None
 
         self.cache = NyaaCache(self)
 
-        self.urls = {'base_url': 'http://www.nyaa.se/'}
-
-        self.url = self.urls['base_url']
+        self.url = 'www.nyaa.se'
 
         self.minseed = 0
         self.minleech = 0
@@ -68,7 +66,7 @@ class NyaaProvider(TorrentProvider):
                 if mode is not 'RSS':
                     params["term"] = search_string.encode('utf-8')
 
-                searchURL = self.url + '?' + urllib.urlencode(params)
+                searchURL = self.urls['base_url'] + '?' + urllib.urlencode(params)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 summary_regex = ur"(\d+) seeder\(s\), (\d+) leecher\(s\), \d+ download\(s\) - (\d+.?\d* [KMGT]iB)(.*)"

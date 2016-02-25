@@ -19,7 +19,7 @@
 
 from __future__ import unicode_literals
 
-from datetime import date
+import datetime
 
 from sickrage.core.common import Quality, DOWNLOADED
 from sickrage.core.nameparser.show import Show
@@ -31,7 +31,7 @@ class Episode(TVEpisode):
         self._season = season
         self._episode = episode
         self._absolute_number = absolute_number
-        self._airdate = date(2010, 3, 9)
+        self._airdate = datetime.date(2010, 3, 9)
         self._status = Quality.compositeStatus(DOWNLOADED, Quality.SDTV)
         self._release_name = 'Show.Name.S02E03.HDTV.XviD-RLSGROUP'
         self._release_group = 'RLSGROUP'

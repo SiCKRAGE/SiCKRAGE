@@ -49,10 +49,7 @@ class BTNProvider(TorrentProvider):
 
         self.cache = BTNCache(self)
 
-        self.urls = {'base_url': 'http://api.btnapps.net',
-                     'website': 'http://broadcasthe.net/',}
-
-        self.url = self.urls['website']
+        self.url = 'api.btnapps.net'
 
     def _checkAuth(self):
         if not self.api_key:

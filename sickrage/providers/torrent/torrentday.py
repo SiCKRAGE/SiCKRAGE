@@ -47,12 +47,12 @@ class TorrentDayProvider(TorrentProvider):
 
         self.cache = TorrentDayCache(self)
 
-        self.urls = {'base_url': 'https://classic.torrentday.com',
-                     'login': 'https://classic.torrentday.com/torrents/',
-                     'search': 'https://classic.torrentday.com/V3/API/API.php',
-                     'download': 'https://classic.torrentday.com/download.php/%s/%s'}
-
-        self.url = self.urls['base_url']
+        self.url = 'classic.torrentday.com'
+        self.urls.update({
+            'login': '{base_url}/torrents/',
+            'search': '{base_url}/V3/API/API.php',
+            'download': '{base_url}/download.php/%s/%s'
+        })
 
         self.cookies = None
 
@@ -147,8 +147,8 @@ class TorrentDayProvider(TorrentProvider):
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
                             sickrage.srLogger.debug(
-                                    "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
-                                            title, seeders, leechers))
+                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {} (S:{} L:{})".format(
+                                    title, seeders, leechers))
                         continue
 
                     item = title, download_url, size, seeders, leechers

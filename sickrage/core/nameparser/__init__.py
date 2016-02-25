@@ -271,12 +271,12 @@ class NameParser(object):
 
                 if not season_number or not len(episode_numbers):
                     try:
-                        lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(bestResult.show.indexer).api_params.copy()
+                        lINDEXER_API_PARMS = srIndexerApi(bestResult.show.indexer).api_params.copy()
 
                         if bestResult.show.lang:
                             lINDEXER_API_PARMS['language'] = bestResult.show.lang
 
-                        t = sickrage.srCore.INDEXER_API(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
+                        t = srIndexerApi(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
 
                         epObj = t[bestResult.show.indexerid].airedOn(bestResult.air_date)[0]
 
@@ -288,7 +288,7 @@ class NameParser(object):
                         episode_numbers = []
                     except indexer_error as e:
                         sickrage.srLogger.warning(
-                                "Unable to contact " + sickrage.srCore.INDEXER_API(bestResult.show.indexer).name + ": {}".format(
+                                "Unable to contact " + srIndexerApi(bestResult.show.indexer).name + ": {}".format(
                                         e))
                         episode_numbers = []
 
