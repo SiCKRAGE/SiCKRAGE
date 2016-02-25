@@ -21,14 +21,13 @@
 from __future__ import unicode_literals
 
 import urllib
-
 from datetime import datetime
 
 import sickrage
-from core.caches import tv_cache
-from core.classes import Proper
-from core.helpers import show_names
-from providers import NZBProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.classes import Proper
+from sickrage.core.helpers import show_names
+from sickrage.providers import NZBProvider
 
 
 class AnimeNZBProvider(NZBProvider):
@@ -88,7 +87,7 @@ class AnimeNZBProvider(NZBProvider):
 
             (title, url) = self._get_title_and_url(item)
 
-            if item.has_key('published_parsed') and item[b'published_parsed']:
+            if item.has_key('published_parsed') and item['published_parsed']:
                 result_date = item.published_parsed
                 if result_date:
                     result_date = datetime(*result_date[0:6])

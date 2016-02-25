@@ -28,9 +28,9 @@ import urllib
 import requests
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class LibertaliaProvider(TorrentProvider):

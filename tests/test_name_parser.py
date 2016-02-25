@@ -22,15 +22,14 @@ from __future__ import unicode_literals
 
 import os.path
 import unittest
-
 from datetime import date
 
 import sickrage
-from core.nameparser import ParseResult, NameParser, InvalidNameException, InvalidShowException
-from core.tv.show import TVShow
+from sickrage.core.nameparser import ParseResult, NameParser, InvalidNameException, InvalidShowException
+from sickrage.core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
-sickrage.srCore.SYS_ENCODING = 'UTF-8'
+sickrage.SYS_ENCODING = 'UTF-8'
 
 DEBUG = VERBOSE = False
 

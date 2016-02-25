@@ -22,12 +22,13 @@ from __future__ import unicode_literals
 
 import unittest
 
-import sickrage
-from core.common import HD, SD, WANTED
-from core.search import searchProviders
-from core.tv.episode import TVEpisode
-from core.tv.show import TVShow
 from providers import sortedProviderDict
+
+import sickrage
+from sickrage.core.common import HD, SD, WANTED
+from sickrage.core.search import searchProviders
+from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
 tests = {"Dexter": {"a": 1, "q": HD, "s": 5, "e": [7], "b": 'Dexter.S05E07.720p.BluRay.X264-REWARD',
@@ -72,24 +73,24 @@ class SearchTest(SiCKRAGETestDBCase):
 def test_generator(tvdbdid, show_name, curData, forceSearch):
     def test(self):
         global searchItems
-        searchItems = curData[b"i"]
+        searchItems = curData["i"]
         show = TVShow(1, tvdbdid)
         show.name = show_name
-        show.quality = curData[b"q"]
+        show.quality = curData["q"]
         show.saveToDB()
         show.loadFromDB(skipNFO=True)
         sickrage.srCore.SHOWLIST.append(show)
         episode = None
 
-        for epNumber in curData[b"e"]:
-            episode = TVEpisode(show, curData[b"s"], epNumber)
+        for epNumber in curData["e"]:
+            episode = TVEpisode(show, curData["s"], epNumber)
             episode.status = WANTED
             episode.saveToDB()
 
         bestResult = searchProviders(show, episode.episode, forceSearch)
         if not bestResult:
-            self.assertEqual(curData[b"b"], bestResult)
-        self.assertEqual(curData[b"b"], bestResult.name)  # first is expected, second is choosen one
+            self.assertEqual(curData["b"], bestResult)
+        self.assertEqual(curData["b"], bestResult.name)  # first is expected, second is choosen one
 
     return test
 
@@ -103,7 +104,7 @@ if __name__ == '__main__':
     tvdbdid = 1
     for forceSearch in (True, False):
         for name, curData in tests.items():
-            if not curData[b"a"]:
+            if not curData["a"]:
                 continue
             fname = name.replace(' ', '_')
             if forceSearch:

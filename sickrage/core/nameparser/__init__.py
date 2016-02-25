@@ -27,17 +27,17 @@ import time
 from dateutil import parser
 
 import sickrage
-from core.classes import ShowListUI
-from core.common import Quality
-from core.helpers import findCertainShow, full_sanitizeSceneName, \
+from sickrage.core.classes import ShowListUI
+from sickrage.core.common import Quality
+from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, \
     get_all_episodes_from_absolute_number, remove_extension, \
     searchIndexerForShowID
-from core.nameparser import regexes
-from core.scene_exceptions import get_scene_exception_by_name
-from core.scene_numbering import \
+from sickrage.core.nameparser import regexes
+from sickrage.core.scene_exceptions import get_scene_exception_by_name
+from sickrage.core.scene_numbering import \
     get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
     get_indexer_numbering
-from indexers.indexer_exceptions import indexer_episodenotfound, \
+from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error
 
 
@@ -256,7 +256,7 @@ class NameParser(object):
 
             # if we have an air-by-date show then get the real season/episode numbers
             if bestResult.is_air_by_date:
-                from core.databases import main_db
+                from sickrage.core.databases import main_db
                 airdate = bestResult.air_date.toordinal()
                 sql_result = main_db.MainDB().select(
                         "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ?",
@@ -274,14 +274,14 @@ class NameParser(object):
                         lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(bestResult.show.indexer).api_params.copy()
 
                         if bestResult.show.lang:
-                            lINDEXER_API_PARMS[b'language'] = bestResult.show.lang
+                            lINDEXER_API_PARMS['language'] = bestResult.show.lang
 
                         t = sickrage.srCore.INDEXER_API(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
 
                         epObj = t[bestResult.show.indexerid].airedOn(bestResult.air_date)[0]
 
-                        season_number = int(epObj[b"seasonnumber"])
-                        episode_numbers = [int(epObj[b"episodenumber"])]
+                        season_number = int(epObj["seasonnumber"])
+                        episode_numbers = [int(epObj["episodenumber"])]
                     except indexer_episodenotfound:
                         sickrage.srLogger.warning(
                                 "Unable to find episode with date " + bestResult.air_date + " for show " + bestResult.show.name + ", skipping")

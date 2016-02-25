@@ -20,7 +20,7 @@
 
 from __future__ import unicode_literals
 
-from core.helpers.sessions import _setUpSession
+from sickrage.core.helpers.sessions import _setUpSession
 from thetvdb.tvdb_api import Tvdb
 
 initConfig = {
@@ -57,4 +57,4 @@ indexerConfig = {
     }
 }
 
-indexerConfig[INDEXER_TVDB][b'base_url'] %= indexerConfig[INDEXER_TVDB][b'api_params']  # insert API key into base url
+indexerConfig[INDEXER_TVDB]['base_url'] %= indexerConfig[INDEXER_TVDB]['api_params']  # insert API key into base url

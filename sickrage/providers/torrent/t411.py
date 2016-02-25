@@ -26,8 +26,8 @@ import traceback
 from requests.auth import AuthBase
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class T411Provider(TorrentProvider):
@@ -73,9 +73,9 @@ class T411Provider(TorrentProvider):
             return False
 
         if response and 'token' in response:
-            self.token = response[b'token']
+            self.token = response['token']
             self.tokenLastUpdate = time.time()
-            self.uid = response[b'uid'].encode('ascii', 'ignore')
+            self.uid = response['uid'].encode('ascii', 'ignore')
             self.session.auth = T411Auth(self.token)
             return True
         else:
@@ -111,27 +111,27 @@ class T411Provider(TorrentProvider):
                             sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
-                        torrents = data[b'torrents'] if mode is not 'RSS' else data
+                        torrents = data['torrents'] if mode is not 'RSS' else data
 
                         if not torrents:
                             sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
                             continue
 
                         for torrent in torrents:
-                            if mode is 'RSS' and int(torrent[b'category']) not in self.subcategories:
+                            if mode is 'RSS' and int(torrent['category']) not in self.subcategories:
                                 continue
 
                             try:
-                                title = torrent[b'name']
-                                torrent_id = torrent[b'id']
+                                title = torrent['name']
+                                torrent_id = torrent['id']
                                 download_url = (self.urls['download'] % torrent_id).encode('utf8')
                                 if not all([title, download_url]):
                                     continue
 
-                                size = int(torrent[b'size'])
-                                seeders = int(torrent[b'seeders'])
-                                leechers = int(torrent[b'leechers'])
-                                verified = bool(torrent[b'isVerified'])
+                                size = int(torrent['size'])
+                                seeders = int(torrent['seeders'])
+                                leechers = int(torrent['leechers'])
+                                verified = bool(torrent['isVerified'])
 
                                 # Filter unseeded torrent
                                 if seeders < self.minseed or leechers < self.minleech:
@@ -178,7 +178,7 @@ class T411Auth(AuthBase):
         self.token = token
 
     def __call__(self, r):
-        r.headers[b'Authorization'] = self.token
+        r.headers['Authorization'] = self.token
         return r
 
 

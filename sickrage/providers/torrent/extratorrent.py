@@ -25,9 +25,9 @@ from xml.parsers.expat import ExpatError
 import xmltodict
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import tryInt
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import tryInt
+from sickrage.providers import TorrentProvider
 
 
 class ExtraTorrentProvider(TorrentProvider):
@@ -80,22 +80,22 @@ class ExtraTorrentProvider(TorrentProvider):
                         sickrage.srLogger.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                         continue
 
-                    if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
+                    if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
                         sickrage.srLogger.debug("Malformed rss returned, skipping")
                         continue
 
                     # https://github.com/martinblech/xmltodict/issues/111
-                    entries = data[b'rss'][b'channel'][b'item']
+                    entries = data['rss']['channel']['item']
                     entries = entries if isinstance(entries, list) else [entries]
 
                     for item in entries:
-                        title = item[b'title'].decode('utf-8')
-                        # info_hash = item[b'info_hash']
-                        size = int(item[b'size'])
-                        seeders = tryInt(item[b'seeders'], 0)
-                        leechers = tryInt(item[b'leechers'], 0)
-                        download_url = item[b'enclosure']['@url'] if 'enclosure' in item else self._magnet_from_details(
-                                item[b'link'])
+                        title = item['title'].decode('utf-8')
+                        # info_hash = item['info_hash']
+                        size = int(item['size'])
+                        seeders = tryInt(item['seeders'], 0)
+                        leechers = tryInt(item['leechers'], 0)
+                        download_url = item['enclosure']['@url'] if 'enclosure' in item else self._magnet_from_details(
+                                item['link'])
 
                         if not all([title, download_url]):
                             continue

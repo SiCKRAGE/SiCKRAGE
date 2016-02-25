@@ -22,7 +22,7 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-from core.common import Quality
+from sickrage.core.common import Quality
 from tests import SiCKRAGETestCase
 
 

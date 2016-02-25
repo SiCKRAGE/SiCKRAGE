@@ -20,13 +20,12 @@
 from __future__ import unicode_literals
 
 import os
-
 from datetime import date
 
 import sickrage
-from core.common import DOWNLOADED, Quality
-from core.nameparser import NameParser
-from core.nameparser.episode import Episode
+from sickrage.core.common import DOWNLOADED, Quality
+from sickrage.core.nameparser import NameParser
+from sickrage.core.nameparser.episode import Episode
 
 name_presets = (
     '%SN - %Sx%0E - %EN',

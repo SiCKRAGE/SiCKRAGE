@@ -26,9 +26,9 @@ from xml.dom.minidom import parseString
 from requests import request
 
 import sickrage
-from core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
+from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class NMA_Notifier(srNotifiers):
@@ -187,7 +187,7 @@ class NMA_Notifier(srNotifiers):
         response = self.push(application=title, event=event, description=message, priority=nma_priority,
                              batch_mode=batch)
 
-        if not response[nma_api][b'code'] == '200':
+        if not response[nma_api]['code'] == '200':
             sickrage.srLogger.error('Could not send notification to NotifyMyAndroid')
             return False
         else:

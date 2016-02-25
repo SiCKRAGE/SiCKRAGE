@@ -23,7 +23,7 @@ from urllib import urlencode
 from urllib2 import HTTPError, Request, urlopen
 
 import sickrage
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class pyTivoNotifier(srNotifiers):

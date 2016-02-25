@@ -21,11 +21,11 @@
 from __future__ import print_function, unicode_literals
 
 import sickrage
-from core.exceptions import FailedPostProcessingFailedException
-from core.helpers import show_names
-from core.nameparser import InvalidNameException, InvalidShowException, \
+from sickrage.core.exceptions import FailedPostProcessingFailedException
+from sickrage.core.helpers import show_names
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from core.queues.search import FailedQueueItem
+from sickrage.core.queues.search import FailedQueueItem
 
 
 class FailedProcessor(object):

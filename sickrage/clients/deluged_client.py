@@ -23,8 +23,8 @@ from __future__ import unicode_literals
 from base64 import b64encode
 
 import sickrage
-from clients import GenericClient
-from clients.synchronousdeluge.client import DelugeClient
+from sickrage.clients import GenericClient
+from sickrage.clients.synchronousdeluge.client import DelugeClient
 
 
 class DelugeDAPI(GenericClient):
@@ -260,7 +260,7 @@ class DelugeRPC(object):
     def _check_torrent(self, torrent_hash):
         # noinspection PyUnresolvedReferences
         torrent_id = self.client.core.get_torrent_status(torrent_hash, {}).get()
-        if torrent_id[b'hash']:
+        if torrent_id['hash']:
             sickrage.srLogger.debug('DelugeD: Torrent already exists in Deluge')
             return torrent_hash
         return False

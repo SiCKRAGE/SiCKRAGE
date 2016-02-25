@@ -27,9 +27,9 @@ from xml.parsers.expat import ExpatError
 import xmltodict
 
 import sickrage
-from core.caches import tv_cache
-from core.common import cpu_presets
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.common import cpu_presets
+from sickrage.providers import TorrentProvider
 
 
 class TORRENTZProvider(TorrentProvider):
@@ -86,19 +86,19 @@ class TORRENTZProvider(TorrentProvider):
                     sickrage.srLogger.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                     continue
 
-                if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
+                if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
                     sickrage.srLogger.debug("Malformed rss returned or no results, skipping")
                     continue
 
                 time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
 
                 # https://github.com/martinblech/xmltodict/issues/111
-                entries = data[b'rss'][b'channel'][b'item']
+                entries = data['rss']['channel']['item']
                 entries = entries if isinstance(entries, list) else [entries]
 
                 for item in entries:
                     try:
-                        if 'tv' not in item[b'category']:
+                        if 'tv' not in item['category']:
                             continue
                     except:
                         continue

@@ -23,9 +23,9 @@ import traceback
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class SceneTimeProvider(TorrentProvider):
@@ -111,7 +111,7 @@ class SceneTimeProvider(TorrentProvider):
 
                             link = cells[labels.index('Name')].find('a')
 
-                            full_id = link[b'href'].replace('details.php?id=', '')
+                            full_id = link['href'].replace('details.php?id=', '')
                             torrent_id = full_id.split("&")[0]
 
                             try:

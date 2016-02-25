@@ -21,8 +21,8 @@ from __future__ import unicode_literals
 import re
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class SpeedCDProvider(TorrentProvider):
@@ -100,13 +100,13 @@ class SpeedCDProvider(TorrentProvider):
 
                 for torrent in torrents:
 
-                    if self.freeleech and not torrent[b'free']:
+                    if self.freeleech and not torrent['free']:
                         continue
 
-                    title = re.sub('<[^>]*>', '', torrent[b'name'])
-                    download_url = self.urls['download'] % (torrent[b'id'])
-                    seeders = int(torrent[b'seed'])
-                    leechers = int(torrent[b'leech'])
+                    title = re.sub('<[^>]*>', '', torrent['name'])
+                    download_url = self.urls['download'] % (torrent['id'])
+                    seeders = int(torrent['seed'])
+                    leechers = int(torrent['leech'])
                     # FIXME
                     size = -1
 

@@ -19,21 +19,21 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import math
 import socket
 import time
 
 import jsonrpclib
-from datetime import datetime
 
 import sickrage
-from core.caches import tv_cache
-from core.classes import Proper
-from core.common import cpu_presets
-from core.exceptions import AuthException
-from core.helpers import sanitizeSceneName
-from core.scene_exceptions import get_scene_exceptions
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.classes import Proper
+from sickrage.core.common import cpu_presets
+from sickrage.core.exceptions import AuthException
+from sickrage.core.helpers import sanitizeSceneName
+from sickrage.core.scene_exceptions import get_scene_exceptions
+from sickrage.providers import TorrentProvider
 
 
 class BTNProvider(TorrentProvider):
@@ -82,7 +82,7 @@ class BTNProvider(TorrentProvider):
 
         # age in seconds
         if age:
-            params[b'age'] = "<=" + str(int(age))
+            params['age'] = "<=" + str(int(age))
 
         if search_params:
             params.update(search_params)
@@ -96,7 +96,7 @@ class BTNProvider(TorrentProvider):
         if self._checkAuthFromData(parsedJSON):
 
             if 'torrents' in parsedJSON:
-                found_torrents = parsedJSON[b'torrents']
+                found_torrents = parsedJSON['torrents']
             else:
                 found_torrents = {}
 
@@ -107,8 +107,8 @@ class BTNProvider(TorrentProvider):
             max_pages = 150
             results_per_page = 1000
 
-            if 'results' in parsedJSON and int(parsedJSON[b'results']) >= results_per_page:
-                pages_needed = int(math.ceil(int(parsedJSON[b'results']) / results_per_page))
+            if 'results' in parsedJSON and int(parsedJSON['results']) >= results_per_page:
+                pages_needed = int(math.ceil(int(parsedJSON['results']) / results_per_page))
                 if pages_needed > max_pages:
                     pages_needed = max_pages
 
@@ -118,7 +118,7 @@ class BTNProvider(TorrentProvider):
                     # Note that this these are individual requests and might time out individually. This would result in 'gaps'
                     # in the results. There is no way to fix this though.
                     if 'torrents' in parsedJSON:
-                        found_torrents.update(parsedJSON[b'torrents'])
+                        found_torrents.update(parsedJSON['torrents'])
 
             for torrentid, torrent_info in found_torrents.iteritems():
                 (title, url) = self._get_title_and_url(torrent_info)
@@ -170,28 +170,28 @@ class BTNProvider(TorrentProvider):
         # however SickRage is built mostly around Scene or
         # release names, which is why we are using them here.
 
-        if 'ReleaseName' in parsedJSON and parsedJSON[b'ReleaseName']:
-            title = parsedJSON[b'ReleaseName']
+        if 'ReleaseName' in parsedJSON and parsedJSON['ReleaseName']:
+            title = parsedJSON['ReleaseName']
 
         else:
             # If we don't have a release name we need to get creative
             title = ''
             if 'Series' in parsedJSON:
-                title += parsedJSON[b'Series']
+                title += parsedJSON['Series']
             if 'GroupName' in parsedJSON:
-                title += '.' + parsedJSON[b'GroupName'] if title else parsedJSON[b'GroupName']
+                title += '.' + parsedJSON['GroupName'] if title else parsedJSON['GroupName']
             if 'Resolution' in parsedJSON:
-                title += '.' + parsedJSON[b'Resolution'] if title else parsedJSON[b'Resolution']
+                title += '.' + parsedJSON['Resolution'] if title else parsedJSON['Resolution']
             if 'Source' in parsedJSON:
-                title += '.' + parsedJSON[b'Source'] if title else parsedJSON[b'Source']
+                title += '.' + parsedJSON['Source'] if title else parsedJSON['Source']
             if 'Codec' in parsedJSON:
-                title += '.' + parsedJSON[b'Codec'] if title else parsedJSON[b'Codec']
+                title += '.' + parsedJSON['Codec'] if title else parsedJSON['Codec']
             if title:
                 title = title.replace(' ', '.')
 
         url = None
         if 'DownloadURL' in parsedJSON:
-            url = parsedJSON[b'DownloadURL']
+            url = parsedJSON['DownloadURL']
             if url:
                 # unescaped / is valid in JSON, but it can be escaped
                 url = url.replace("\\/", "/")
@@ -206,22 +206,22 @@ class BTNProvider(TorrentProvider):
         # Search for entire seasons: no need to do special things for air by date or sports shows
         if ep_obj.show.air_by_date or ep_obj.show.sports:
             # Search for the year of the air by date show
-            current_params[b'name'] = str(ep_obj.airdate).split('-')[0]
+            current_params['name'] = str(ep_obj.airdate).split('-')[0]
         elif ep_obj.show.is_anime:
-            current_params[b'name'] = "%d" % ep_obj.scene_absolute_number
+            current_params['name'] = "%d" % ep_obj.scene_absolute_number
         else:
-            current_params[b'name'] = 'Season ' + str(ep_obj.scene_season)
+            current_params['name'] = 'Season ' + str(ep_obj.scene_season)
 
         # search
         if ep_obj.show.indexer == 1:
-            current_params[b'tvdb'] = ep_obj.show.indexerid
+            current_params['tvdb'] = ep_obj.show.indexerid
             search_params.append(current_params)
         else:
             name_exceptions = list(
                     set(get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
             for name in name_exceptions:
                 # Search by name if we don't have tvdb id
-                current_params[b'series'] = sanitizeSceneName(name)
+                current_params['series'] = sanitizeSceneName(name)
                 search_params.append(current_params)
 
         return search_params
@@ -241,23 +241,23 @@ class BTNProvider(TorrentProvider):
 
             # BTN uses dots in dates, we just search for the date since that
             # combined with the series identifier should result in just one episode
-            search_params[b'name'] = date_str.replace('-', '.')
+            search_params['name'] = date_str.replace('-', '.')
         elif ep_obj.show.anime:
-            search_params[b'name'] = "%i" % int(ep_obj.scene_absolute_number)
+            search_params['name'] = "%i" % int(ep_obj.scene_absolute_number)
         else:
             # Do a general name search for the episode, formatted like SXXEYY
-            search_params[b'name'] = "S%02dE%02d" % (ep_obj.scene_season, ep_obj.scene_episode)
+            search_params['name'] = "S%02dE%02d" % (ep_obj.scene_season, ep_obj.scene_episode)
 
         # search
         if ep_obj.show.indexer == 1:
-            search_params[b'tvdb'] = ep_obj.show.indexerid
+            search_params['tvdb'] = ep_obj.show.indexerid
             to_return.append(search_params)
         else:
             # add new query string for every exception
             name_exceptions = list(
                     set(get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
             for cur_exception in name_exceptions:
-                search_params[b'series'] = sanitizeSceneName(cur_exception)
+                search_params['series'] = sanitizeSceneName(cur_exception)
                 to_return.append(search_params)
 
         return to_return
@@ -274,9 +274,9 @@ class BTNProvider(TorrentProvider):
 
         for term in search_terms:
             for item in self._doSearch({'release': term}, age=4 * 24 * 60 * 60):
-                if item[b'Time']:
+                if item['Time']:
                     try:
-                        result_date = datetime.fromtimestamp(float(item[b'Time']))
+                        result_date = datetime.datetime.fromtimestamp(float(item['Time']))
                     except TypeError:
                         result_date = None
 

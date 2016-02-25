@@ -23,6 +23,7 @@ from __future__ import print_function, unicode_literals
 import unittest
 
 from providers import sortedProviderDict
+
 from tests import SiCKRAGETestCase
 
 
@@ -31,9 +32,9 @@ class RSSTest(SiCKRAGETestCase): pass
 def test_get_rss(self, provider):
     result = provider.cache.getRSSFeed(provider.url)
     if result:
-        self.assertTrue(isinstance(result[b'feed'], dict))
-        self.assertTrue(isinstance(result[b'entries'], list))
-        for item in result[b'entries']:
+        self.assertTrue(isinstance(result['feed'], dict))
+        self.assertTrue(isinstance(result['entries'], list))
+        for item in result['entries']:
             title, url = provider._get_title_and_url(item)
             self.assertTrue(title and url, "Failed to get title and url from RSS feed for %s" % provider.name)
 

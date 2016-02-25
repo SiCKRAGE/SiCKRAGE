@@ -23,9 +23,9 @@ import traceback
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class TorrentLeechProvider(TorrentProvider):
@@ -115,7 +115,7 @@ class TorrentLeechProvider(TorrentProvider):
                                 link = result.find('td', attrs={'class': 'name'}).find('a')
                                 url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
                                 title = link.string
-                                download_url = self.urls['download'] % url[b'href']
+                                download_url = self.urls['download'] % url['href']
                                 seeders = int(result.find('td', attrs={'class': 'seeders'}).string)
                                 leechers = int(result.find('td', attrs={'class': 'leechers'}).string)
                                 # FIXME

@@ -19,9 +19,9 @@
 from __future__ import unicode_literals
 
 import sickrage
-from core.trakt import TraktAPI, traktAuthException, traktException, \
+from sickrage.core.trakt import TraktAPI, traktAuthException, traktException, \
     traktServerBusy
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 
@@ -49,7 +49,7 @@ class TraktNotifier(srNotifiers):
         ep_obj: The TVEpisode object to add to trakt
         """
 
-        trakt_id = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).config[b'trakt_id']
+        trakt_id = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).config['trakt_id']
         trakt_api = TraktAPI(sickrage.srConfig.SSL_VERIFY, sickrage.srConfig.TRAKT_TIMEOUT)
 
         if sickrage.srConfig.USE_TRAKT:
@@ -66,19 +66,19 @@ class TraktNotifier(srNotifiers):
                 }
 
                 if trakt_id == 'tvdb_id':
-                    data[b'shows'][0][b'ids'][b'tvdb'] = ep_obj.show.indexerid
+                    data['shows'][0]['ids']['tvdb'] = ep_obj.show.indexerid
                 else:
-                    data[b'shows'][0][b'ids'][b'tvrage'] = ep_obj.show.indexerid
+                    data['shows'][0]['ids']['tvrage'] = ep_obj.show.indexerid
 
                 if sickrage.srConfig.TRAKT_SYNC_WATCHLIST:
                     if sickrage.srConfig.TRAKT_REMOVE_SERIESLIST:
                         trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
 
                 # Add Season and Episode + Related Episodes
-                data[b'shows'][0][b'seasons'] = [{'number': ep_obj.season, 'episodes': []}]
+                data['shows'][0]['seasons'] = [{'number': ep_obj.season, 'episodes': []}]
 
                 for relEp_Obj in [ep_obj] + ep_obj.relatedEps:
-                    data[b'shows'][0][b'seasons'][0][b'episodes'].append({'number': relEp_Obj.episode})
+                    data['shows'][0]['seasons'][0]['episodes'].append({'number': relEp_Obj.episode})
 
                 if sickrage.srConfig.TRAKT_SYNC_WATCHLIST:
                     if sickrage.srConfig.TRAKT_REMOVE_WATCHLIST:
@@ -111,7 +111,7 @@ class TraktNotifier(srNotifiers):
             try:
                 # URL parameters
                 if show_obj is not None:
-                    trakt_id = sickrage.srCore.INDEXER_API(show_obj.indexer).config[b'trakt_id']
+                    trakt_id = sickrage.srCore.INDEXER_API(show_obj.indexer).config['trakt_id']
                     data = {
                         'shows': [
                             {
@@ -123,9 +123,9 @@ class TraktNotifier(srNotifiers):
                     }
 
                     if trakt_id == 'tvdb_id':
-                        data[b'shows'][0][b'ids'][b'tvdb'] = show_obj.indexerid
+                        data['shows'][0]['ids']['tvdb'] = show_obj.indexerid
                     else:
-                        data[b'shows'][0][b'ids'][b'tvrage'] = show_obj.indexerid
+                        data['shows'][0]['ids']['tvrage'] = show_obj.indexerid
                 elif data_show is not None:
                     data.update(data_show)
                 else:
@@ -134,7 +134,7 @@ class TraktNotifier(srNotifiers):
                     return False
 
                 if data_episode is not None:
-                    data[b'shows'][0].update(data_episode)
+                    data['shows'][0].update(data_episode)
 
                 elif s is not None:
                     # traktv URL parameters
@@ -156,9 +156,9 @@ class TraktNotifier(srNotifiers):
                             ]
                         }
 
-                        season[b'season'][0].update(episode)
+                        season['season'][0].update(episode)
 
-                    data[b'shows'][0].update(season)
+                    data['shows'][0].update(season)
 
                 trakt_url = "sync/watchlist"
                 if update == "remove":
@@ -176,12 +176,12 @@ class TraktNotifier(srNotifiers):
 
         showList = []
         for indexer, indexerid, title, year in data:
-            trakt_id = sickrage.srCore.INDEXER_API(indexer).config[b'trakt_id']
+            trakt_id = sickrage.srCore.INDEXER_API(indexer).config['trakt_id']
             show = {'title': title, 'year': year, 'ids': {}}
             if trakt_id == 'tvdb_id':
-                show[b'ids'][b'tvdb'] = indexerid
+                show['ids']['tvdb'] = indexerid
             else:
-                show[b'ids'][b'tvrage'] = indexerid
+                show['ids']['tvrage'] = indexerid
             showList.append(show)
 
         post_data = {'shows': showList}
@@ -227,7 +227,7 @@ class TraktNotifier(srNotifiers):
                 trakt_lists = trakt_api.traktRequest("users/" + username + "/lists")
                 found = False
                 for trakt_list in trakt_lists:
-                    if (trakt_list[b'ids'][b'slug'] == blacklist_name):
+                    if (trakt_list['ids']['slug'] == blacklist_name):
                         return "Test notice sent successfully to Trakt"
                 if not found:
                     return "Trakt blacklist doesn't exists"

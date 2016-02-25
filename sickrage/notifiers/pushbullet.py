@@ -24,10 +24,10 @@ import json
 import traceback
 
 import sickrage
-from core.common import NOTIFY_DOWNLOAD, NOTIFY_GIT_UPDATE, \
+from sickrage.core.common import NOTIFY_DOWNLOAD, NOTIFY_GIT_UPDATE, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_SNATCH, NOTIFY_SUBTITLE_DOWNLOAD, \
     notifyStrings
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class PushbulletNotifier(srNotifiers):

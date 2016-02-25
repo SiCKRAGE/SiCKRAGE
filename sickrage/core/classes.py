@@ -19,17 +19,20 @@
 
 from __future__ import unicode_literals
 
+import datetime
+import os
 import random
 import re
 import sys
 import urllib
+from collections import OrderedDict
 
-from datetime import datetime, date
 from dateutil import parser
+from dill import dill
 
 import sickrage
-from core.common import Quality, dateFormat, dateTimeFormat
-from core.helpers.sessions import USER_AGENTS
+from sickrage.core.common import Quality, dateFormat, dateTimeFormat
+from sickrage.core.helpers.sessions import USER_AGENTS
 
 
 class SiCKRAGEURLopener(urllib.FancyURLopener):
@@ -197,24 +200,24 @@ class AllShowsListUI(object):
         # get all available shows
         try:
             if 'searchterm' in self.config:
-                searchterm = self.config[b'searchterm']
+                searchterm = self.config['searchterm']
                 # try to pick a show that's in my show list
                 for curShow in allSeries:
                     if curShow in searchResults:
                         continue
 
                     if 'seriesname' in curShow:
-                        seriesnames.append(curShow[b'seriesname'])
+                        seriesnames.append(curShow['seriesname'])
                     if 'aliasnames' in curShow:
-                        seriesnames.extend(curShow[b'aliasnames'].split('|'))
+                        seriesnames.extend(curShow['aliasnames'].split('|'))
 
                     for name in seriesnames:
                         if searchterm.lower() in name.lower():
                             if 'firstaired' not in curShow:
-                                curShow[b'firstaired'] = date.fromordinal(1).strftime("%Y-%m-%d")
-                                curShow[b'firstaired'] = re.sub("([-]0{2})+", "", curShow[b'firstaired'])
-                                fixDate = parser.parse(curShow[b'firstaired'], fuzzy=True).date()
-                                curShow[b'firstaired'] = fixDate.strftime(dateFormat)
+                                curShow['firstaired'] = datetime.date.fromordinal(1).strftime("%Y-%m-%d")
+                                curShow['firstaired'] = re.sub("([-]0{2})+", "", curShow['firstaired'])
+                                fixDate = parser.parse(curShow['firstaired'], fuzzy=True).date()
+                                curShow['firstaired'] = fixDate.strftime(dateFormat)
 
                             if curShow not in searchResults:
                                 searchResults += [curShow]
@@ -240,7 +243,7 @@ class ShowListUI(object):
             # try to pick a show that's in my show list
             showIDList = [int(x.indexerid) for x in sickrage.srCore.SHOWLIST]
             for curShow in allSeries:
-                if int(curShow[b'id']) in showIDList:
+                if int(curShow['id']) in showIDList:
                     return curShow
         except Exception:
             pass
@@ -269,7 +272,7 @@ class Proper(object):
 
     def __str__(self):
         return str(self.date) + " " + self.name + " " + str(self.season) + "x" + str(self.episode) + " of " + str(
-                self.indexerid) + " from " + str(sickrage.srCore.INDEXER_API(self.indexer).name)
+            self.indexerid) + " from " + str(sickrage.srCore.INDEXER_API(self.indexer).name)
 
 
 class UIError(object):
@@ -278,7 +281,7 @@ class UIError(object):
     """
 
     def __init__(self, message):
-        self.time = datetime.now().strftime(dateTimeFormat)
+        self.time = datetime.datetime.now().strftime(dateTimeFormat)
         self.title = sys.exc_info()[-2] or message
         self.message = message
 
@@ -289,7 +292,7 @@ class UIWarning(object):
     """
 
     def __init__(self, message):
-        self.time = datetime.now().strftime(dateTimeFormat)
+        self.time = datetime.datetime.now().strftime(dateTimeFormat)
         self.title = sys.exc_info()[-2] or message
         self.message = message
 
@@ -331,6 +334,7 @@ class WarningViewer(object):
     def get(self):
         return self.errors
 
+
 class AttrDict(dict):
     def __getattr__(self, name):
         if name in self:
@@ -346,3 +350,111 @@ class AttrDict(dict):
             del self[name]
         else:
             raise AttributeError("No such attribute: " + name)
+
+
+class providersDict(dict):
+    def __init__(self):
+        super(providersDict, self).__init__()
+
+        # provider settings database filename
+        self.filename = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'providers.db'))
+
+        # provider order
+        self.provider_order = []
+
+        # individual provider types
+        from sickrage.providers import \
+            GenericProvider, \
+            NZBProvider, \
+            TorrentProvider, \
+            NewznabProvider, \
+            TorrentRssProvider
+
+        self[GenericProvider.NZB] = {p.id: p for p in NZBProvider.getProviderList()}
+        self[GenericProvider.TORRENT] = {p.id: p for p in TorrentProvider.getProviderList()}
+        self[GenericProvider.NEWZNAB] = {p.id: p for p in NewznabProvider.getProviderList()}
+        self[GenericProvider.TORRENTRSS] = {p.id: p for p in TorrentRssProvider.getProviderList()}
+
+        # load providers from database file
+        self.load()
+
+    def sync(self):
+        remove = []
+
+        # find
+        for p in self.provider_order:
+            if p not in self.all():
+                remove.append(p)
+
+        # remove
+        for r in remove:
+            self.provider_order.pop(self.provider_order.index(r))
+
+    def sort(self, key=None, randomize=False):
+        sorted_providers = []
+
+        if not key:
+            key = self.provider_order or [x.id for x in self.all().values()]
+
+        if randomize:
+            random.shuffle(key)
+
+        for p in [self.all()[x] for x in key]:
+            (lambda: sorted_providers.append(p), lambda: sorted_providers.insert(0, p))[p.isEnabled]()
+
+        self.provider_order = [x.id for x in sorted_providers]
+        return OrderedDict([(x.id, x) for x in sorted_providers])
+
+    def enabled(self):
+        return {pID:pObj for pID, pObj in self.all().items() if pObj.isEnabled}
+
+    def disabled(self):
+        return {pID:pObj for pID, pObj in self.all().items() if not pObj.isEnabled}
+
+    def all(self):
+        return reduce(lambda a, b: a.update(b) or a, [
+            self.nzb(),
+            self.torrent(),
+            self.newznab(),
+            self.torrentrss()
+        ], {})
+
+    def all_nzb(self):
+        return reduce(lambda a, b: a.update(b) or a, [
+            self.nzb(),
+            self.newznab()
+        ], {})
+
+    def all_torrent(self):
+        return reduce(lambda a, b: a.update(b) or a, [
+            self.torrent(),
+            self.torrentrss()
+        ], {})
+
+    def nzb(self):
+        from sickrage.providers import GenericProvider
+        return self[GenericProvider.NZB]
+
+    def newznab(self):
+        from sickrage.providers import GenericProvider
+        return self[GenericProvider.NEWZNAB]
+
+    def torrent(self):
+        from sickrage.providers import GenericProvider
+        return self[GenericProvider.TORRENT]
+
+    def torrentrss(self):
+        from sickrage.providers import GenericProvider
+        return self[GenericProvider.TORRENTRSS]
+
+    def load(self):
+        try:
+            return self.update(dill.load(open(self.filename, 'rb')))
+        except:
+            dill.dump(self, open(self.filename, 'wb'))
+            return self.update(dill.load(open(self.filename, 'rb')))
+
+    def save(self):
+        self.filename = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'providers.db'))
+        self.sync()
+        dill.dump(self, open(self.filename, 'wb'))

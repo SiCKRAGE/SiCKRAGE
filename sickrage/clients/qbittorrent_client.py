@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 from requests.auth import HTTPDigestAuth
 
 import sickrage
-from clients import GenericClient
+from sickrage.clients import GenericClient
 
 
 class qbittorrentAPI(GenericClient):

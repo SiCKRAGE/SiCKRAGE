@@ -29,14 +29,14 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from core.helpers import create_https_certificates, generateApiKey, get_lan_ip
-from core.webserver.api import ApiHandler, KeyHandler
-from core.webserver.routes import Route
-from core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
+from sickrage.core.helpers import create_https_certificates, generateApiKey, get_lan_ip
+from sickrage.core.webserver.api import ApiHandler, KeyHandler
+from sickrage.core.webserver.routes import Route
+from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
 
 
-def launch_browser(protocol=None, startport=None, web_root=None):
-    browserurl = '{}://{}:{}{}/home/'.format(protocol or 'http', get_lan_ip(), startport or 8081, web_root or '/')
+def launch_browser(protocol=None, host=None, startport=None, web_root=None):
+    browserurl = '{}://{}:{}{}/home/'.format(protocol or 'http', host, startport or 8081, web_root or '/')
 
     try:
         print("Launching browser window")
@@ -68,25 +68,30 @@ class StaticImageHandler(StaticFileHandler):
 
 
 class srWebServer(object):
-    def __init__(self):
+    def __init__(self, web_port=8081, web_host=get_lan_ip(), open_browser=True):
+        super(srWebServer, self).__init__()
+        self.name = "TORNADO"
         self.io_loop = IOLoop.instance()
-        self.running = True
-        self.restart = False
-        self.open_browser = False
+        self.started = False
+        self.open_browser = open_browser
+        self.port = web_port
+        self.host = web_host
 
-        self.port = sickrage.srConfig.WEB_PORT
-        self.host = sickrage.srConfig.WEB_HOST
+    def start(self):
+        self.started = True
+
+        threading.currentThread().setName(self.name)
 
         # video root
+        self.video_root = None
         if sickrage.srConfig.ROOT_DIRS:
             root_dirs = sickrage.srConfig.ROOT_DIRS.split('|')
             self.video_root = root_dirs[int(root_dirs[0]) + 1]
-        else:
-            self.video_root = None
 
         # web root
         if sickrage.srConfig.WEB_ROOT:
-            sickrage.srConfig.WEB_ROOT = sickrage.srConfig.WEB_ROOT = ('/' + sickrage.srConfig.WEB_ROOT.lstrip('/').strip('/'))
+            sickrage.srConfig.WEB_ROOT = sickrage.srConfig.WEB_ROOT = (
+                '/' + sickrage.srConfig.WEB_ROOT.lstrip('/').strip('/'))
 
         # api root
         if not sickrage.srConfig.API_KEY:
@@ -154,6 +159,14 @@ class srWebServer(object):
             (r'%s/css/(.*)' % sickrage.srConfig.WEB_ROOT, StaticFileHandler,
              {"path": os.path.join(sickrage.srConfig.GUI_DIR, 'css')}),
 
+            # scss
+            (r'%s/scss/(.*)' % sickrage.srConfig.WEB_ROOT, StaticFileHandler,
+             {"path": os.path.join(sickrage.srConfig.GUI_DIR, 'scss')}),
+
+            # fonts
+            (r'%s/fonts/(.*)' % sickrage.srConfig.WEB_ROOT, StaticFileHandler,
+             {"path": os.path.join(sickrage.srConfig.GUI_DIR, 'fonts')}),
+
             # javascript
             (r'%s/js/(.*)' % sickrage.srConfig.WEB_ROOT, StaticFileHandler,
              {"path": os.path.join(sickrage.srConfig.GUI_DIR, 'js')}),
@@ -162,55 +175,28 @@ class srWebServer(object):
         ] + [(r'%s/videos/(.*)' % sickrage.srConfig.WEB_ROOT, StaticFileHandler,
               {"path": self.video_root})])
 
-    def start(self):
-        threading.currentThread().setName("TORNADO")
+        self.server = HTTPServer(self.app)
+        if sickrage.srConfig.ENABLE_HTTPS:
+            self.server.ssl_options = {"certfile": sickrage.srConfig.HTTPS_CERT, "keyfile": sickrage.srConfig.HTTPS_KEY}
+        self.server.listen(self.port, None)
 
-        try:
-            self.server = HTTPServer(self.app)
-            if sickrage.srConfig.ENABLE_HTTPS:
-                self.server.ssl_options = {"certfile": sickrage.srConfig.HTTPS_CERT, "keyfile": sickrage.srConfig.HTTPS_KEY}
-            self.server.listen(self.port, self.host)
+        # launch browser window
+        if self.open_browser:
+            threading.Thread(None, lambda: launch_browser(('http', 'https')[sickrage.srConfig.ENABLE_HTTPS],
+                                                          self.host, self.port, sickrage.srConfig.WEB_ROOT)).start()
 
-            # launch browser window
-            if self.open_browser:
-                threading.Thread(None, lambda: launch_browser(('http', 'https')[sickrage.srConfig.ENABLE_HTTPS],
-                                                              sickrage.srConfig.WEB_PORT, sickrage.srConfig.WEB_ROOT)).start()
+        sickrage.srLogger.info(
+            "SiCKRAGE STARTED :: VERSION:[{}] CONFIG:[{}] URL:[{}://{}:{}/]"
+                .format(sickrage.srCore.VERSION,
+                        sickrage.srConfig.CONFIG_FILE,
+                        ('http', 'https')[sickrage.srConfig.ENABLE_HTTPS],
+                        get_lan_ip(), self.port)
+        )
 
-            sickrage.srConfig.STARTED = True
-            
-            sickrage.srLogger.info(
-                "SiCKRAGE STARTED :: VERSION:[{}] CONFIG:[{}] URL:[{}://{}:{}/]"
-                    .format(sickrage.srCore.VERSION,
-                            sickrage.srConfig.CONFIG_FILE,
-                            ('http', 'https')[sickrage.srConfig.ENABLE_HTTPS],
-                            get_lan_ip(),
-                            sickrage.srConfig.WEB_PORT)
-            )
+        self.io_loop.start()
 
-            self.io_loop.start()
-        except (KeyboardInterrupt, SystemExit) as e:
-            sickrage.srLogger.info('PERFORMING SHUTDOWN')
-        except Exception as e:
-            sickrage.srLogger.info("TORNADO failed to start: {}".format(e.message))
-        finally:
-            self.server_shutdown()
-            sickrage.srLogger.shutdown()
-
-    def server_restart(self):
-        sickrage.srLogger.info('PERFORMING RESTART')
-        import tornado.autoreload
-        tornado.autoreload.add_reload_hook(self.server_shutdown)
-        tornado.autoreload.start()
-        tornado.autoreload._reload()
-
-    def server_shutdown(self):
+    def shutdown(self):
         self.server.stop()
-        if self.running:
+        if self.started:
             self.io_loop.stop()
-
-        # shutdown sickrage
-        if sickrage.srCore.STARTED:
-            sickrage.srCore.halt()
-            sickrage.srCore.save_all()
-
-        sickrage.srLogger.info('SHUTDOWN COMPLETED!')
+        self.started = False

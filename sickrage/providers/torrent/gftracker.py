@@ -22,10 +22,10 @@ import re
 import traceback
 
 import sickrage
-from core.caches import tv_cache
-from core.exceptions import AuthException
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.exceptions import AuthException
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class GFTrackerProvider(TorrentProvider):
@@ -126,11 +126,11 @@ class GFTrackerProvider(TorrentProvider):
 
                             try:
                                 if title.has_key('title'):
-                                    title = title[b'title']
+                                    title = title['title']
                                 else:
                                     title = cells[1].find("a")['title']
 
-                                download_url = self.urls['download'] % (link[b'href'])
+                                download_url = self.urls['download'] % (link['href'])
                                 seeders = int(shares[0])
                                 leechers = int(shares[1])
 

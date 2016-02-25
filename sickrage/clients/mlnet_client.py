@@ -20,7 +20,7 @@
 
 from __future__ import unicode_literals
 
-from clients import GenericClient
+from sickrage.clients import GenericClient
 
 
 class mlnetAPI(GenericClient):

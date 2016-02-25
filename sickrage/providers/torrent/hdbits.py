@@ -15,15 +15,14 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import urllib
 
-from datetime import datetime
-
 import sickrage
-from core.caches import tv_cache
-from core.classes import Proper
-from core.exceptions import AuthException
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.classes import Proper
+from sickrage.core.exceptions import AuthException
+from sickrage.providers import TorrentProvider
 
 
 class HDBitsProvider(TorrentProvider):
@@ -71,11 +70,11 @@ class HDBitsProvider(TorrentProvider):
 
     def _get_title_and_url(self, item):
 
-        title = item[b'name']
+        title = item['name']
         if title:
             title = self._clean_title_from_provider(title)
 
-        url = self.urls['download'] + urllib.urlencode({'id': item[b'id'], 'passkey': self.passkey})
+        url = self.urls['download'] + urllib.urlencode({'id': item['id'], 'passkey': self.passkey})
 
         return title, url
 
@@ -94,7 +93,7 @@ class HDBitsProvider(TorrentProvider):
 
         if self._checkAuthFromData(parsedJSON):
             if parsedJSON and 'data' in parsedJSON:
-                items = parsedJSON[b'data']
+                items = parsedJSON['data']
             else:
                 sickrage.srLogger.error("Resulting JSON from provider isn't correct, not parsing it")
                 items = []
@@ -111,9 +110,9 @@ class HDBitsProvider(TorrentProvider):
 
         for term in search_terms:
             for item in self._doSearch(self._make_post_data_JSON(search_term=term)):
-                if item[b'utadded']:
+                if item['utadded']:
                     try:
-                        result_date = datetime.fromtimestamp(int(item[b'utadded']))
+                        result_date = datetime.datetime.fromtimestamp(int(item['utadded']))
                     except Exception:
                         result_date = None
 
@@ -135,22 +134,22 @@ class HDBitsProvider(TorrentProvider):
 
         if episode:
             if show.air_by_date:
-                post_data[b'tvdb'] = {
+                post_data['tvdb'] = {
                     'id': show.indexerid,
                     'episode': str(episode.airdate).replace('-', '|')
                 }
             elif show.sports:
-                post_data[b'tvdb'] = {
+                post_data['tvdb'] = {
                     'id': show.indexerid,
                     'episode': episode.airdate.strftime('%b')
                 }
             elif show.anime:
-                post_data[b'tvdb'] = {
+                post_data['tvdb'] = {
                     'id': show.indexerid,
                     'episode': "%i" % int(episode.scene_absolute_number)
                 }
             else:
-                post_data[b'tvdb'] = {
+                post_data['tvdb'] = {
                     'id': show.indexerid,
                     'season': episode.scene_season,
                     'episode': episode.scene_episode
@@ -158,23 +157,23 @@ class HDBitsProvider(TorrentProvider):
 
         if season:
             if show.air_by_date or show.sports:
-                post_data[b'tvdb'] = {
+                post_data['tvdb'] = {
                     'id': show.indexerid,
                     'season': str(season.airdate)[:7],
                 }
             elif show.anime:
-                post_data[b'tvdb'] = {
+                post_data['tvdb'] = {
                     'id': show.indexerid,
                     'season': "%d" % season.scene_absolute_number,
                 }
             else:
-                post_data[b'tvdb'] = {
+                post_data['tvdb'] = {
                     'id': show.indexerid,
                     'season': season.scene_season,
                 }
 
         if search_term:
-            post_data[b'search'] = search_term
+            post_data['search'] = search_term
 
         return post_data
 
@@ -194,12 +193,12 @@ class HDBitsCache(tv_cache.TVCache):
         results = []
 
         try:
-            parsedJSON = self.provider.getURL(self.provider.urls[b'rss'],
+            parsedJSON = self.provider.getURL(self.provider.urls['rss'],
                                               post_data=self.provider._make_post_data_JSON(),
                                               json=True)
 
             if self.provider._checkAuthFromData(parsedJSON):
-                results = parsedJSON[b'data']
+                results = parsedJSON['data']
         except Exception:
             pass
 

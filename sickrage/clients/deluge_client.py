@@ -24,7 +24,7 @@ import json
 from base64 import b64encode
 
 import sickrage
-from clients import GenericClient
+from sickrage.clients import GenericClient
 
 
 class DelugeAPI(GenericClient):

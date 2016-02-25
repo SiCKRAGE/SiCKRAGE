@@ -21,11 +21,10 @@ from __future__ import unicode_literals
 
 import functools
 import locale
-
 from datetime import datetime
 
 import sickrage
-from core.updaters.tz_updater import sr_timezone
+from sickrage.core.updaters.tz_updater import sr_timezone
 
 
 date_presets = (

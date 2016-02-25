@@ -18,10 +18,10 @@ from __future__ import unicode_literals
 import re
 
 import sickrage
-from core.caches import tv_cache
-from core.exceptions import AuthException
-from core.helpers import sanitizeSceneName, show_names, bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.exceptions import AuthException
+from sickrage.core.helpers import sanitizeSceneName, show_names, bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class TVChaosUKProvider(TorrentProvider):
@@ -133,7 +133,7 @@ class TVChaosUKProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
-                self.search_params[b'keywords'] = search_string.strip()
+                self.search_params['keywords'] = search_string.strip()
                 data = self.getURL(self.urls['search'], params=self.search_params)
                 # url_searched = self.urls['search'] + '?' + urlencode(self.search_params)
 
@@ -146,7 +146,7 @@ class TVChaosUKProvider(TorrentProvider):
                     for torrent in torrent_table:
                         try:
                             title = torrent.find(attrs={'class': 'tooltip-content'}).text.strip()
-                            download_url = torrent.find(title="Click to Download this Torrent!").parent[b'href'].strip()
+                            download_url = torrent.find(title="Click to Download this Torrent!").parent['href'].strip()
                             seeders = int(torrent.find(title='Seeders').text.strip())
                             leechers = int(torrent.find(title='Leechers').text.strip())
 
@@ -162,12 +162,12 @@ class TVChaosUKProvider(TorrentProvider):
                                 continue
 
                             # Chop off tracker/channel prefix or we cant parse the result!
-                            show_name_first_word = re.search(r'^[^ .]+', self.search_params[b'keywords']).group()
+                            show_name_first_word = re.search(r'^[^ .]+', self.search_params['keywords']).group()
                             if not title.startswith(show_name_first_word):
                                 title = re.match(r'(.*)(' + show_name_first_word + '.*)', title).group(2)
 
                             # Change title from Series to Season, or we can't parse
-                            if 'Series' in self.search_params[b'keywords']:
+                            if 'Series' in self.search_params['keywords']:
                                 title = re.sub(r'(?i)series', 'Season', title)
 
                             # Strip year from the end or we can't parse it!

@@ -20,17 +20,17 @@
 from __future__ import unicode_literals
 
 import os
+import threading
 import traceback
-
 from datetime import date
 
 import sickrage
-from core.common import Quality
-from core.common import SKIPPED, WANTED, ARCHIVED, UNKNOWN
-from core.databases import main_db
-from core.helpers import findCertainShow, sanitizeFileName, makeDir, chmodAsParent
-from core.queues.search import BacklogQueueItem
-from core.trakt import TraktAPI, traktException
+from sickrage.core.common import Quality
+from sickrage.core.common import SKIPPED, WANTED, ARCHIVED, UNKNOWN
+from sickrage.core.databases import main_db
+from sickrage.core.helpers import findCertainShow, sanitizeFileName, makeDir, chmodAsParent
+from sickrage.core.queues.search import BacklogQueueItem
+from sickrage.core.trakt import TraktAPI, traktException
 
 
 
@@ -77,6 +77,9 @@ class srTraktSearcher(object):
 
         self.amActive = True
 
+        # set thread name
+        threading.currentThread().setName(self.name)
+
         # add shows from tv watchlist
         if sickrage.srConfig.TRAKT_SYNC_WATCHLIST:
             self.todoWanted = []  # its about to all get re-added
@@ -112,8 +115,8 @@ class srTraktSearcher(object):
                 return
 
             traktShow = [x for x in library if
-                         int(indexerid) in [int(x[b'show'][b'ids'][b'tvdb'] or 0),
-                                            int(x[b'show'][b'ids'][b'tvrage'] or 0)]]
+                         int(indexerid) in [int(x['show']['ids']['tvdb'] or 0),
+                                            int(x['show']['ids']['tvrage'] or 0)]]
         except traktException as e:
             sickrage.srLogger.warning("Could not connect to Trakt service. Aborting library check. Error: %s" % repr(e))
 
@@ -121,7 +124,7 @@ class srTraktSearcher(object):
 
     def removeShowFromTraktLibrary(self, show_obj):
         if self.findShow(show_obj.indexer, show_obj.indexerid):
-            trakt_id = sickrage.srCore.INDEXER_API(show_obj.indexer).config[b'trakt_id']
+            trakt_id = sickrage.srCore.INDEXER_API(show_obj.indexer).config['trakt_id']
 
             # URL parameters
             data = {
@@ -135,9 +138,9 @@ class srTraktSearcher(object):
             }
 
             if trakt_id == 'tvdb_id':
-                data[b'shows'][0][b'ids'][b'tvdb'] = show_obj.indexerid
+                data['shows'][0]['ids']['tvdb'] = show_obj.indexerid
             else:
-                data[b'shows'][0][b'ids'][b'tvrage'] = show_obj.indexerid
+                data['shows'][0]['ids']['tvrage'] = show_obj.indexerid
 
             sickrage.srLogger.debug("Removing %s from tv library" % show_obj.name)
 
@@ -157,7 +160,7 @@ class srTraktSearcher(object):
         data = {}
 
         if not self.findShow(show_obj.indexer, show_obj.indexerid):
-            trakt_id = sickrage.srCore.INDEXER_API(show_obj.indexer).config[b'trakt_id']
+            trakt_id = sickrage.srCore.INDEXER_API(show_obj.indexer).config['trakt_id']
             # URL parameters
             data = {
                 'shows': [
@@ -170,9 +173,9 @@ class srTraktSearcher(object):
             }
 
             if trakt_id == 'tvdb_id':
-                data[b'shows'][0][b'ids'][b'tvdb'] = show_obj.indexerid
+                data['shows'][0]['ids']['tvdb'] = show_obj.indexerid
             else:
-                data[b'shows'][0][b'ids'][b'tvrage'] = show_obj.indexerid
+                data['shows'][0]['ids']['tvrage'] = show_obj.indexerid
 
         if len(data):
             sickrage.srLogger.debug("Adding %s to tv library" % show_obj.name)
@@ -205,16 +208,16 @@ class srTraktSearcher(object):
                 trakt_data = []
 
                 for cur_episode in episodes:
-                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode[b"indexer"]).config[b'trakt_id']
+                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode["indexer"]).config['trakt_id']
 
-                    if self._checkInList(trakt_id, str(cur_episode[b"showid"]), str(cur_episode[b"season"]),
-                                         str(cur_episode[b"episode"]), List='Collection'):
-                        if cur_episode[b"location"] == '':
+                    if self._checkInList(trakt_id, str(cur_episode["showid"]), str(cur_episode["season"]),
+                                         str(cur_episode["episode"]), List='Collection'):
+                        if cur_episode["location"] == '':
                             sickrage.srLogger.debug("Removing Episode %s S%02dE%02d from collection" %
-                                                     (cur_episode[b"show_name"], cur_episode[b"season"], cur_episode[b"episode"]))
+                                                     (cur_episode["show_name"], cur_episode["season"], cur_episode["episode"]))
                             trakt_data.append(
-                                    (cur_episode[b"showid"], cur_episode[b"indexer"], cur_episode[b"show_name"],
-                                     cur_episode[b"startyear"], cur_episode[b"season"], cur_episode[b"episode"]))
+                                    (cur_episode["showid"], cur_episode["indexer"], cur_episode["show_name"],
+                                     cur_episode["startyear"], cur_episode["season"], cur_episode["episode"]))
 
                 if len(trakt_data):
                     try:
@@ -238,14 +241,14 @@ class srTraktSearcher(object):
                 trakt_data = []
 
                 for cur_episode in episodes:
-                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode[b"indexer"]).config[b'trakt_id']
+                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode["indexer"]).config['trakt_id']
 
-                    if not self._checkInList(trakt_id, str(cur_episode[b"showid"]), str(cur_episode[b"season"]),
-                                             str(cur_episode[b"episode"]), List='Collection'):
+                    if not self._checkInList(trakt_id, str(cur_episode["showid"]), str(cur_episode["season"]),
+                                             str(cur_episode["episode"]), List='Collection'):
                         sickrage.srLogger.debug("Adding Episode %s S%02dE%02d to collection" %
-                                                 (cur_episode[b"show_name"], cur_episode[b"season"], cur_episode[b"episode"]))
-                        trakt_data.append((cur_episode[b"showid"], cur_episode[b"indexer"], cur_episode[b"show_name"],
-                                           cur_episode[b"startyear"], cur_episode[b"season"], cur_episode[b"episode"]))
+                                                 (cur_episode["show_name"], cur_episode["season"], cur_episode["episode"]))
+                        trakt_data.append((cur_episode["showid"], cur_episode["indexer"], cur_episode["show_name"],
+                                           cur_episode["startyear"], cur_episode["season"], cur_episode["episode"]))
 
                 if len(trakt_data):
                     try:
@@ -283,15 +286,15 @@ class srTraktSearcher(object):
                 trakt_data = []
 
                 for cur_episode in episodes:
-                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode[b"indexer"]).config[b'trakt_id']
+                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode["indexer"]).config['trakt_id']
 
-                    if self._checkInList(trakt_id, str(cur_episode[b"showid"]), str(cur_episode[b"season"]),
-                                         str(cur_episode[b"episode"])) and cur_episode[
-                        b"status"] not in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]:
+                    if self._checkInList(trakt_id, str(cur_episode["showid"]), str(cur_episode["season"]),
+                                         str(cur_episode["episode"])) and cur_episode[
+                        "status"] not in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]:
                         sickrage.srLogger.debug("Removing Episode %s S%02dE%02d from watchlist" %
-                                                 (cur_episode[b"show_name"], cur_episode[b"season"], cur_episode[b"episode"]))
-                        trakt_data.append((cur_episode[b"showid"], cur_episode[b"indexer"], cur_episode[b"show_name"],
-                                           cur_episode[b"startyear"], cur_episode[b"season"], cur_episode[b"episode"]))
+                                                 (cur_episode["show_name"], cur_episode["season"], cur_episode["episode"]))
+                        trakt_data.append((cur_episode["showid"], cur_episode["indexer"], cur_episode["show_name"],
+                                           cur_episode["startyear"], cur_episode["season"], cur_episode["episode"]))
 
                 if len(trakt_data):
                     try:
@@ -315,15 +318,15 @@ class srTraktSearcher(object):
                 trakt_data = []
 
                 for cur_episode in episodes:
-                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode[b"indexer"]).config[b'trakt_id']
+                    trakt_id = sickrage.srCore.INDEXER_API(cur_episode["indexer"]).config['trakt_id']
 
-                    if not self._checkInList(trakt_id, str(cur_episode[b"showid"]), str(cur_episode[b"season"]),
-                                             str(cur_episode[b"episode"])):
+                    if not self._checkInList(trakt_id, str(cur_episode["showid"]), str(cur_episode["season"]),
+                                             str(cur_episode["episode"])):
                         sickrage.srLogger.debug("Adding Episode %s S%02dE%02d to watchlist" %
-                                                 (cur_episode[b"show_name"], cur_episode[b"season"], cur_episode[b"episode"]))
-                        trakt_data.append((cur_episode[b"showid"], cur_episode[b"indexer"], cur_episode[b"show_name"],
-                                           cur_episode[b"startyear"], cur_episode[b"season"],
-                                           cur_episode[b"episode"]))
+                                                 (cur_episode["show_name"], cur_episode["season"], cur_episode["episode"]))
+                        trakt_data.append((cur_episode["showid"], cur_episode["indexer"], cur_episode["show_name"],
+                                           cur_episode["startyear"], cur_episode["season"],
+                                           cur_episode["episode"]))
 
                 if len(trakt_data):
                     try:
@@ -343,7 +346,7 @@ class srTraktSearcher(object):
                 trakt_data = []
 
                 for show in sickrage.srCore.SHOWLIST:
-                    trakt_id = sickrage.srCore.INDEXER_API(show.indexer).config[b'trakt_id']
+                    trakt_id = sickrage.srCore.INDEXER_API(show.indexer).config['trakt_id']
 
                     if not self._checkInList(trakt_id, str(show.indexerid), '0', '0', List='Show'):
                         sickrage.srLogger.debug(
@@ -351,9 +354,9 @@ class srTraktSearcher(object):
                                     trakt_id, str(show.indexerid), show.name))
                         show_el = {'title': show.name, 'year': show.startyear, 'ids': {}}
                         if trakt_id == 'tvdb_id':
-                            show_el[b'ids'][b'tvdb'] = show.indexerid
+                            show_el['ids']['tvdb'] = show.indexerid
                         else:
-                            show_el[b'ids'][b'tvrage'] = show.indexerid
+                            show_el['ids']['tvrage'] = show.indexerid
                         trakt_data.append(show_el)
 
                 if len(trakt_data):
@@ -381,8 +384,8 @@ class srTraktSearcher(object):
                                         show.name, repr(e)))
                             return
 
-                        if 'aired' in progress and 'completed' in progress and progress[b'aired'] == progress[
-                            b'completed']:
+                        if 'aired' in progress and 'completed' in progress and progress['aired'] == progress[
+                            'completed']:
                             sickrage.srCore.SHOWQUEUE.removeShow(show, full=True)
                             sickrage.srLogger.debug("Show: %s has been removed from SiCKRAGE" % show.name)
 
@@ -396,17 +399,17 @@ class srTraktSearcher(object):
             return
 
         indexer = int(sickrage.srConfig.TRAKT_DEFAULT_INDEXER)
-        trakt_id = sickrage.srCore.INDEXER_API(indexer).config[b'trakt_id']
+        trakt_id = sickrage.srCore.INDEXER_API(indexer).config['trakt_id']
 
         for show_el in self.ShowWatchlist[trakt_id]:
             indexer_id = int(str(show_el))
             show = self.ShowWatchlist[trakt_id][show_el]
 
-            # LOGGER.debug(u"Checking Show: %s %s %s" % (trakt_id, indexer_id, show[b'title']))
+            # LOGGER.debug(u"Checking Show: %s %s %s" % (trakt_id, indexer_id, show['title']))
             if int(sickrage.srConfig.TRAKT_METHOD_ADD) != 2:
-                self.addDefaultShow(indexer, indexer_id, show[b'title'], SKIPPED)
+                self.addDefaultShow(indexer, indexer_id, show['title'], SKIPPED)
             else:
-                self.addDefaultShow(indexer, indexer_id, show[b'title'], WANTED)
+                self.addDefaultShow(indexer, indexer_id, show['title'], WANTED)
 
             if int(sickrage.srConfig.TRAKT_METHOD_ADD) == 1:
                 newShow = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
@@ -430,7 +433,7 @@ class srTraktSearcher(object):
         managed_show = []
 
         indexer = int(sickrage.srConfig.TRAKT_DEFAULT_INDEXER)
-        trakt_id = sickrage.srCore.INDEXER_API(indexer).config[b'trakt_id']
+        trakt_id = sickrage.srCore.INDEXER_API(indexer).config['trakt_id']
 
         for show_el in self.EpisodeWatchlist[trakt_id]:
             indexer_id = int(show_el)
@@ -441,23 +444,23 @@ class srTraktSearcher(object):
             try:
                 if newShow is None:
                     if indexer_id not in managed_show:
-                        self.addDefaultShow(indexer, indexer_id, show[b'title'], SKIPPED)
+                        self.addDefaultShow(indexer, indexer_id, show['title'], SKIPPED)
                         managed_show.append(indexer_id)
 
-                        for season_el in show[b'seasons']:
+                        for season_el in show['seasons']:
                             season = int(season_el)
 
-                            for episode_el in show[b'seasons'][season_el][b'episodes']:
+                            for episode_el in show['seasons'][season_el]['episodes']:
                                 self.todoWanted.append((indexer_id, season, int(episode_el)))
                 else:
                     if newShow.indexer == indexer:
-                        for season_el in show[b'seasons']:
+                        for season_el in show['seasons']:
                             season = int(season_el)
 
-                            for episode_el in show[b'seasons'][season_el][b'episodes']:
+                            for episode_el in show['seasons'][season_el]['episodes']:
                                 setEpisodeToWanted(newShow, season, int(episode_el))
             except TypeError:
-                sickrage.srLogger.debug("Could not parse the output from trakt for %s " % show[b"title"])
+                sickrage.srLogger.debug("Could not parse the output from trakt for %s " % show["title"])
         sickrage.srLogger.debug("SHOW_WATCHLIST::CHECK::FINISH - Trakt Episode Watchlist")
 
     @staticmethod
@@ -512,19 +515,19 @@ class srTraktSearcher(object):
 
         if "Collection" == List:
             try:
-                if self.Collectionlist[trakt_id][showid][b'seasons'][season][b'episodes'][episode] == episode:
+                if self.Collectionlist[trakt_id][showid]['seasons'][season]['episodes'][episode] == episode:
                     return True
             except Exception:
                 return False
         elif "Show" == List:
             try:
-                if self.ShowWatchlist[trakt_id][showid][b'id'] == showid:
+                if self.ShowWatchlist[trakt_id][showid]['id'] == showid:
                     return True
             except Exception:
                 return False
         else:
             try:
-                if self.EpisodeWatchlist[trakt_id][showid][b'seasons'][season][b'episodes'][episode] == episode:
+                if self.EpisodeWatchlist[trakt_id][showid]['seasons'][season]['episodes'][episode] == episode:
                     return True
             except Exception:
                 return False
@@ -543,21 +546,21 @@ class srTraktSearcher(object):
                 tvdb = False
                 tvrage = False
 
-                if not watchlist_el[b'show'][b'ids'][b"tvdb"] is None:
+                if not watchlist_el['show']['ids']["tvdb"] is None:
                     tvdb = True
 
-                if not watchlist_el[b'show'][b'ids'][b"tvrage"] is None:
+                if not watchlist_el['show']['ids']["tvrage"] is None:
                     tvrage = True
 
-                title = watchlist_el[b'show'][b'title']
-                year = str(watchlist_el[b'show'][b'year'])
+                title = watchlist_el['show']['title']
+                year = str(watchlist_el['show']['year'])
 
                 if tvdb:
-                    showid = str(watchlist_el[b'show'][b'ids'][tvdb_id])
+                    showid = str(watchlist_el['show']['ids'][tvdb_id])
                     self.ShowWatchlist[tvdb_id + '_id'][showid] = {'id': showid, 'title': title, 'year': year}
 
                 if tvrage:
-                    showid = str(watchlist_el[b'show'][b'ids'][tvrage_id])
+                    showid = str(watchlist_el['show']['ids'][tvrage_id])
                     self.ShowWatchlist[tvrage_id + '_id'][showid] = {'id': showid, 'title': title, 'year': year}
         except traktException as e:
             sickrage.srLogger.warning("Could not connect to trakt service, cannot download Show Watchlist: %s" % repr(e))
@@ -578,47 +581,47 @@ class srTraktSearcher(object):
                 tvdb = False
                 tvrage = False
 
-                if not watchlist_el[b'show'][b'ids'][b"tvdb"] is None:
+                if not watchlist_el['show']['ids']["tvdb"] is None:
                     tvdb = True
 
-                if not watchlist_el[b'show'][b'ids'][b"tvrage"] is None:
+                if not watchlist_el['show']['ids']["tvrage"] is None:
                     tvrage = True
 
-                title = watchlist_el[b'show'][b'title']
-                year = str(watchlist_el[b'show'][b'year'])
-                season = str(watchlist_el[b'episode'][b'season'])
-                episode = str(watchlist_el[b'episode'][b'number'])
+                title = watchlist_el['show']['title']
+                year = str(watchlist_el['show']['year'])
+                season = str(watchlist_el['episode']['season'])
+                episode = str(watchlist_el['episode']['number'])
 
                 if tvdb:
-                    showid = str(watchlist_el[b'show'][b'ids'][tvdb_id])
+                    showid = str(watchlist_el['show']['ids'][tvdb_id])
 
                     if showid not in self.EpisodeWatchlist[tvdb_id + '_id'].keys():
                         self.EpisodeWatchlist[tvdb_id + '_id'][showid] = {'id': showid, 'title': title, 'year': year,
                                                                           'seasons': {}}
 
-                    if season not in self.EpisodeWatchlist[tvdb_id + '_id'][showid][b'seasons'].keys():
-                        self.EpisodeWatchlist[tvdb_id + '_id'][showid][b'seasons'][season] = {'s': season,
+                    if season not in self.EpisodeWatchlist[tvdb_id + '_id'][showid]['seasons'].keys():
+                        self.EpisodeWatchlist[tvdb_id + '_id'][showid]['seasons'][season] = {'s': season,
                                                                                               'episodes': {}}
 
-                    if episode not in self.EpisodeWatchlist[tvdb_id + '_id'][showid][b'seasons'][season][
+                    if episode not in self.EpisodeWatchlist[tvdb_id + '_id'][showid]['seasons'][season][
                         'episodes'].keys():
-                        self.EpisodeWatchlist[tvdb_id + '_id'][showid][b'seasons'][season][b'episodes'][
+                        self.EpisodeWatchlist[tvdb_id + '_id'][showid]['seasons'][season]['episodes'][
                             episode] = episode
 
                 if tvrage:
-                    showid = str(watchlist_el[b'show'][b'ids'][tvrage_id])
+                    showid = str(watchlist_el['show']['ids'][tvrage_id])
 
                     if showid not in self.EpisodeWatchlist[tvrage_id + '_id'].keys():
                         self.EpisodeWatchlist[tvrage_id + '_id'][showid] = {'id': showid, 'title': title, 'year': year,
                                                                             'seasons': {}}
 
-                    if season not in self.EpisodeWatchlist[tvrage_id + '_id'][showid][b'seasons'].keys():
-                        self.EpisodeWatchlist[tvrage_id + '_id'][showid][b'seasons'][season] = {'s': season,
+                    if season not in self.EpisodeWatchlist[tvrage_id + '_id'][showid]['seasons'].keys():
+                        self.EpisodeWatchlist[tvrage_id + '_id'][showid]['seasons'][season] = {'s': season,
                                                                                                 'episodes': {}}
 
-                    if episode not in self.EpisodeWatchlist[tvrage_id + '_id'][showid][b'seasons'][season][
+                    if episode not in self.EpisodeWatchlist[tvrage_id + '_id'][showid]['seasons'][season][
                         'episodes'].keys():
-                        self.EpisodeWatchlist[tvrage_id + '_id'][showid][b'seasons'][season][b'episodes'][
+                        self.EpisodeWatchlist[tvrage_id + '_id'][showid]['seasons'][season]['episodes'][
                             episode] = episode
         except traktException as e:
             sickrage.srLogger.warning("Could not connect to trakt service, cannot download Episode Watchlist: %s" % repr(e))
@@ -640,51 +643,51 @@ class srTraktSearcher(object):
                 tvdb = False
                 tvrage = False
 
-                if not watchlist_el[b'show'][b'ids'][b"tvdb"] is None:
+                if not watchlist_el['show']['ids']["tvdb"] is None:
                     tvdb = True
 
-                if not watchlist_el[b'show'][b'ids'][b"tvrage"] is None:
+                if not watchlist_el['show']['ids']["tvrage"] is None:
                     tvrage = True
 
-                title = watchlist_el[b'show'][b'title']
-                year = str(watchlist_el[b'show'][b'year'])
+                title = watchlist_el['show']['title']
+                year = str(watchlist_el['show']['year'])
 
                 if 'seasons' in watchlist_el:
-                    for season_el in watchlist_el[b'seasons']:
-                        for episode_el in season_el[b'episodes']:
-                            season = str(season_el[b'number'])
-                            episode = str(episode_el[b'number'])
+                    for season_el in watchlist_el['seasons']:
+                        for episode_el in season_el['episodes']:
+                            season = str(season_el['number'])
+                            episode = str(episode_el['number'])
 
                             if tvdb:
-                                showid = str(watchlist_el[b'show'][b'ids'][tvdb_id])
+                                showid = str(watchlist_el['show']['ids'][tvdb_id])
 
                                 if showid not in self.Collectionlist[tvdb_id + '_id'].keys():
                                     self.Collectionlist[tvdb_id + '_id'][showid] = {'id': showid, 'title': title,
                                                                                     'year': year, 'seasons': {}}
 
-                                if season not in self.Collectionlist[tvdb_id + '_id'][showid][b'seasons'].keys():
-                                    self.Collectionlist[tvdb_id + '_id'][showid][b'seasons'][season] = {'s': season,
+                                if season not in self.Collectionlist[tvdb_id + '_id'][showid]['seasons'].keys():
+                                    self.Collectionlist[tvdb_id + '_id'][showid]['seasons'][season] = {'s': season,
                                                                                                         'episodes': {}}
 
-                                if episode not in self.Collectionlist[tvdb_id + '_id'][showid][b'seasons'][season][
+                                if episode not in self.Collectionlist[tvdb_id + '_id'][showid]['seasons'][season][
                                     'episodes'].keys():
-                                    self.Collectionlist[tvdb_id + '_id'][showid][b'seasons'][season][b'episodes'][
+                                    self.Collectionlist[tvdb_id + '_id'][showid]['seasons'][season]['episodes'][
                                         episode] = episode
 
                             if tvrage:
-                                showid = str(watchlist_el[b'show'][b'ids'][tvrage_id])
+                                showid = str(watchlist_el['show']['ids'][tvrage_id])
 
                                 if showid not in self.Collectionlist[tvrage_id + '_id'].keys():
                                     self.Collectionlist[tvrage_id + '_id'][showid] = {'id': showid, 'title': title,
                                                                                       'year': year, 'seasons': {}}
 
-                                if season not in self.Collectionlist[tvrage_id + '_id'][showid][b'seasons'].keys():
-                                    self.Collectionlist[tvrage_id + '_id'][showid][b'seasons'][season] = {'s': season,
+                                if season not in self.Collectionlist[tvrage_id + '_id'][showid]['seasons'].keys():
+                                    self.Collectionlist[tvrage_id + '_id'][showid]['seasons'][season] = {'s': season,
                                                                                                           'episodes': {}}
 
-                                if episode not in self.Collectionlist[tvrage_id + '_id'][showid][b'seasons'][season][
+                                if episode not in self.Collectionlist[tvrage_id + '_id'][showid]['seasons'][season][
                                     'episodes'].keys():
-                                    self.Collectionlist[tvrage_id + '_id'][showid][b'seasons'][season][b'episodes'][
+                                    self.Collectionlist[tvrage_id + '_id'][showid]['seasons'][season]['episodes'][
                                         episode] = episode
         except traktException as e:
             sickrage.srLogger.warning("Could not connect to trakt service, cannot download Show Collection: %s" % repr(e))
@@ -702,12 +705,12 @@ class srTraktSearcher(object):
         for showid, indexerid, show_name, startyear, season, episode in data:
             if showid not in uniqueShows:
                 uniqueShows[showid] = {'title': show_name, 'year': startyear, 'ids': {}, 'seasons': []}
-                trakt_id = sickrage.srCore.INDEXER_API(indexerid).config[b'trakt_id']
+                trakt_id = sickrage.srCore.INDEXER_API(indexerid).config['trakt_id']
 
                 if trakt_id == 'tvdb_id':
-                    uniqueShows[showid][b'ids'][b"tvdb"] = showid
+                    uniqueShows[showid]['ids']["tvdb"] = showid
                 else:
-                    uniqueShows[showid][b'ids'][b"tvrage"] = showid
+                    uniqueShows[showid]['ids']["tvrage"] = showid
                 uniqueSeasons[showid] = []
 
         # Get the unique seasons per Show
@@ -729,7 +732,7 @@ class srTraktSearcher(object):
                     if season == searchedSeason and showid == searchedShow:
                         episodesList.append({'number': episode})
                 show = uniqueShows[searchedShow]
-                show[b'seasons'].append({'number': searchedSeason, 'episodes': episodesList})
+                show['seasons'].append({'number': searchedSeason, 'episodes': episodesList})
                 traktShowList.append(show)
         post_data = {'shows': traktShowList}
         return post_data

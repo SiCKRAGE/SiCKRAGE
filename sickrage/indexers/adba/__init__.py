@@ -22,7 +22,7 @@ from time import localtime, strftime
 from types import FunctionType, MethodType
 
 from aniDBlink import AniDBLink
-from indexers.adba.aniDBcommands import AnimeCommand, AuthCommand, \
+from sickrage.indexers.adba.aniDBcommands import AnimeCommand, AuthCommand, \
     BuddyAcceptCommand, BuddyAddCommand, BuddyDelCommand, BuddyDenyCommand, \
     BuddyListCommand, BuddyStateCommand, EncryptCommand, EpisodeCommand, \
     FileCommand, GroupCommand, GroupstatusCommand, LogoutCommand, \
@@ -31,7 +31,7 @@ from indexers.adba.aniDBcommands import AnimeCommand, AuthCommand, \
     NotifyListCommand, PingCommand, ProducerCommand, PushAckCommand, \
     PushCommand, RandomAnimeCommand, SendMsgCommand, UptimeCommand, UserCommand, \
     VersionCommand, VoteCommand, Notification
-from indexers.adba.aniDBerrors import AniDBBannedError, \
+from sickrage.indexers.adba.aniDBerrors import AniDBBannedError, \
     AniDBCommandTimeoutError
 
 version = 100

@@ -22,10 +22,10 @@ import cgi
 import os
 
 import sickrage
-from core.common import NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
+from sickrage.core.common import NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
     NOTIFY_GIT_UPDATE
-from core.common import notifyStrings
-from notifiers import srNotifiers
+from sickrage.core.common import notifyStrings
+from sickrage.notifiers import srNotifiers
 
 
 def diagnose():

@@ -18,19 +18,18 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import re
 from xml.etree.ElementTree import Element, ElementTree, SubElement
 
-from datetime import datetime, date
-
 import sickrage
-from core.common import dateFormat
-from core.exceptions import ShowNotFoundException
-from core.helpers import replaceExtension, indentXML
-from indexers.indexer_exceptions import indexer_episodenotfound, \
+from sickrage.core.common import dateFormat
+from sickrage.core.exceptions import ShowNotFoundException
+from sickrage.core.helpers import replaceExtension, indentXML
+from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
-from metadata import GenericMetadata
+from sickrage.metadata import GenericMetadata
 
 
 class WDTVMetadata(GenericMetadata):
@@ -185,13 +184,13 @@ class WDTVMetadata(GenericMetadata):
         try:
             lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).api_params.copy()
 
-            lINDEXER_API_PARMS[b'actors'] = True
+            lINDEXER_API_PARMS['actors'] = True
 
             if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS[b'language'] = indexer_lang
+                lINDEXER_API_PARMS['language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
-                lINDEXER_API_PARMS[b'dvdorder'] = True
+                lINDEXER_API_PARMS['dvdorder'] = True
 
             t = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
@@ -215,7 +214,7 @@ class WDTVMetadata(GenericMetadata):
                 return None
 
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                myEp[b"firstaired"] = str(date.fromordinal(1))
+                myEp["firstaired"] = str(datetime.date.fromordinal(1))
 
             if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                 return None
@@ -234,7 +233,7 @@ class WDTVMetadata(GenericMetadata):
 
             if getattr(myShow, 'seriesname', None):
                 seriesName = SubElement(episode, "series_name")
-                seriesName.text = myShow[b"seriesname"]
+                seriesName.text = myShow["seriesname"]
 
             if curEpToWrite.name:
                 episodeName = SubElement(episode, "episode_name")
@@ -248,12 +247,12 @@ class WDTVMetadata(GenericMetadata):
 
             firstAired = SubElement(episode, "firstaired")
 
-            if curEpToWrite.airdate != date.fromordinal(1):
+            if curEpToWrite.airdate != datetime.date.fromordinal(1):
                 firstAired.text = str(curEpToWrite.airdate)
 
             if getattr(myShow, 'firstaired', None):
                 try:
-                    year_text = str(datetime.strptime(myShow[b"firstaired"], dateFormat).year)
+                    year_text = str(datetime.datetime.strptime(myShow["firstaired"], dateFormat).year)
                     if year_text:
                         year = SubElement(episode, "year")
                         year.text = year_text
@@ -262,29 +261,29 @@ class WDTVMetadata(GenericMetadata):
 
             if curEpToWrite.season != 0 and getattr(myShow, 'runtime', None):
                 runtime = SubElement(episode, "runtime")
-                runtime.text = myShow[b"runtime"]
+                runtime.text = myShow["runtime"]
 
             if getattr(myShow, 'genre', None):
                 genre = SubElement(episode, "genre")
-                genre.text = " / ".join([x.strip() for x in myShow[b"genre"].split('|') if x.strip()])
+                genre.text = " / ".join([x.strip() for x in myShow["genre"].split('|') if x.strip()])
 
             if getattr(myEp, 'director', None):
                 director = SubElement(episode, "director")
-                director.text = myEp[b'director']
+                director.text = myEp['director']
 
             if getattr(myShow, '_actors', None):
-                for actor in myShow[b'_actors']:
-                    if not ('name' in actor and actor[b'name'].strip()):
+                for actor in myShow['_actors']:
+                    if not ('name' in actor and actor['name'].strip()):
                         continue
 
                     cur_actor = SubElement(episode, "actor")
 
                     cur_actor_name = SubElement(cur_actor, "name")
-                    cur_actor_name.text = actor[b'name']
+                    cur_actor_name.text = actor['name']
 
-                    if 'role' in actor and actor[b'role'].strip():
+                    if 'role' in actor and actor['role'].strip():
                         cur_actor_role = SubElement(cur_actor, "role")
-                        cur_actor_role.text = actor[b'role'].strip()
+                        cur_actor_role.text = actor['role'].strip()
 
             if curEpToWrite.description:
                 overview = SubElement(episode, "overview")

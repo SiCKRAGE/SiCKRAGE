@@ -24,9 +24,9 @@ import oauth2
 import twitter
 
 import sickrage
-from core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
+from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class TwitterNotifier(srNotifiers):
@@ -69,24 +69,24 @@ class TwitterNotifier(srNotifiers):
 
         resp, content = oauth_client.request(self.REQUEST_TOKEN_URL, 'GET')
 
-        if resp[b'status'] != '200':
-            sickrage.srLogger.error('Invalid response from Twitter requesting temp token: %s' % resp[b'status'])
+        if resp['status'] != '200':
+            sickrage.srLogger.error('Invalid response from Twitter requesting temp token: %s' % resp['status'])
         else:
             request_token = dict(parse_qsl(content))
 
-            sickrage.srConfig.TWITTER_USERNAME = request_token[b'oauth_token']
-            sickrage.srConfig.TWITTER_PASSWORD = request_token[b'oauth_token_secret']
+            sickrage.srConfig.TWITTER_USERNAME = request_token['oauth_token']
+            sickrage.srConfig.TWITTER_PASSWORD = request_token['oauth_token_secret']
 
-            return self.AUTHORIZATION_URL + "?oauth_token=" + request_token[b'oauth_token']
+            return self.AUTHORIZATION_URL + "?oauth_token=" + request_token['oauth_token']
 
     def _get_credentials(self, key):
         request_token = {}
 
-        request_token[b'oauth_token'] = sickrage.srConfig.TWITTER_USERNAME
-        request_token[b'oauth_token_secret'] = sickrage.srConfig.TWITTER_PASSWORD
-        request_token[b'oauth_callback_confirmed'] = 'true'
+        request_token['oauth_token'] = sickrage.srConfig.TWITTER_USERNAME
+        request_token['oauth_token_secret'] = sickrage.srConfig.TWITTER_PASSWORD
+        request_token['oauth_callback_confirmed'] = 'true'
 
-        token = oauth2.Token(request_token[b'oauth_token'], request_token[b'oauth_token_secret'])
+        token = oauth2.Token(request_token['oauth_token'], request_token['oauth_token_secret'])
         token.set_verifier(key)
 
         sickrage.srLogger.debug('Generating and signing request for an access token using key ' + key)
@@ -102,15 +102,15 @@ class TwitterNotifier(srNotifiers):
         access_token = dict(parse_qsl(content))
         sickrage.srLogger.debug('access_token: ' + str(access_token))
 
-        sickrage.srLogger.debug('resp[status] = ' + str(resp[b'status']))
-        if resp[b'status'] != '200':
-            sickrage.srLogger.error('The request for a token with did not succeed: ' + str(resp[b'status']))
+        sickrage.srLogger.debug('resp[status] = ' + str(resp['status']))
+        if resp['status'] != '200':
+            sickrage.srLogger.error('The request for a token with did not succeed: ' + str(resp['status']))
             return False
         else:
-            sickrage.srLogger.debug('Your Twitter Access Token key: %s' % access_token[b'oauth_token'])
-            sickrage.srLogger.debug('Access Token secret: %s' % access_token[b'oauth_token_secret'])
-            sickrage.srConfig.TWITTER_USERNAME = access_token[b'oauth_token']
-            sickrage.srConfig.TWITTER_PASSWORD = access_token[b'oauth_token_secret']
+            sickrage.srLogger.debug('Your Twitter Access Token key: %s' % access_token['oauth_token'])
+            sickrage.srLogger.debug('Access Token secret: %s' % access_token['oauth_token_secret'])
+            sickrage.srConfig.TWITTER_USERNAME = access_token['oauth_token']
+            sickrage.srConfig.TWITTER_PASSWORD = access_token['oauth_token_secret']
             return True
 
     def _send_tweet(self, message=None):

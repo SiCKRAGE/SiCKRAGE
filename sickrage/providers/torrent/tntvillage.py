@@ -23,14 +23,14 @@ import re
 import traceback
 
 import sickrage
-from core.caches import tv_cache
-from core.common import Quality
-from core.databases import main_db
-from core.exceptions import AuthException
-from core.helpers import bs4_parser
-from core.nameparser import InvalidNameException, InvalidShowException, \
+from sickrage.core.caches import tv_cache
+from sickrage.core.common import Quality
+from sickrage.core.databases import main_db
+from sickrage.core.exceptions import AuthException
+from sickrage.core.helpers import bs4_parser
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from providers import TorrentProvider
+from sickrage.providers import TorrentProvider
 
 category_excluded = {'Sport': 22,
                      'Teatro': 23,
@@ -180,7 +180,7 @@ class TNTVillageProvider(TorrentProvider):
         if len(img_all) > 0:
             for img_type in img_all:
                 try:
-                    file_quality = file_quality + " " + img_type[b'src'].replace("style_images/mkportal-636/",
+                    file_quality = file_quality + " " + img_type['src'].replace("style_images/mkportal-636/",
                                                                                  "").replace(".gif", "").replace(".png",
                                                                                                                  "")
                 except Exception:
@@ -278,7 +278,7 @@ class TNTVillageProvider(TorrentProvider):
 
         sql_selection = "SELECT count(*) AS count FROM tv_episodes WHERE showid = ? AND season = ?"
         episodes = main_db.MainDB().select(sql_selection, [parse_result.show.indexerid, parse_result.season_number])
-        if int(episodes[0][b'count']) == len(parse_result.episode_numbers):
+        if int(episodes[0]['count']) == len(parse_result.episode_numbers):
             return True
 
     def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):

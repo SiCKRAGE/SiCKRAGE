@@ -22,8 +22,8 @@ from __future__ import unicode_literals
 from urllib import quote_plus
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class BitCannonProvider(TorrentProvider):

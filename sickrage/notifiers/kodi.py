@@ -28,14 +28,14 @@ import urllib2
 from xml.etree import ElementTree
 
 import sickrage
-from core.common import NOTIFY_DOWNLOAD, NOTIFY_GIT_UPDATE, \
+from sickrage.core.common import NOTIFY_DOWNLOAD, NOTIFY_GIT_UPDATE, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_SNATCH, NOTIFY_SUBTITLE_DOWNLOAD, \
     notifyStrings
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class KODINotifier(srNotifiers):
-    sr_logo_url = 'https://raw.githubusercontent.com/SiCKRAGETV/SiCKRAGE/master/gui/slick/images/sickrage-shark-mascot.png'
+    sr_logo_url = 'http://www.sickrage.ca/favicon.ico'
 
     def _get_kodi_version(self, host, username, password):
         """Returns KODI JSON-RPC API version (odd # = dev, even # = stable)
@@ -84,7 +84,7 @@ class KODINotifier(srNotifiers):
             else:
                 return False
 
-        return result[b"result"][b"version"]
+        return result["result"]["version"]
     def _notify_kodi(self, message, title="SiCKRAGE", host=None, username=None, password=None, force=False):
         """Internal wrapper for the notify_snatch and notify_download functions
 
@@ -137,7 +137,7 @@ class KODINotifier(srNotifiers):
                         title.encode("utf-8"), message.encode("utf-8"), self.sr_logo_url)
                     notifyResult = self._send_to_kodi_json(command, curHost, username, password)
                     if notifyResult and notifyResult.get('result'):
-                        result += curHost + ':' + notifyResult[b"result"].decode(sickrage.srCore.SYS_ENCODING)
+                        result += curHost + ':' + notifyResult["result"].decode(sickrage.SYS_ENCODING)
             else:
                 if sickrage.srConfig.KODI_ALWAYS_ON or force:
                     sickrage.srLogger.warning(
@@ -236,7 +236,7 @@ class KODINotifier(srNotifiers):
                 sickrage.srLogger.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
                 return False
 
-            result = response.read().decode(sickrage.srCore.SYS_ENCODING)
+            result = response.read().decode(sickrage.SYS_ENCODING)
             response.close()
 
             sickrage.srLogger.debug("KODI HTTP response: " + result.replace('\n', ''))
@@ -310,7 +310,7 @@ class KODINotifier(srNotifiers):
 
             for path in paths:
                 # we do not need it double-encoded, gawd this is dumb
-                unEncPath = urllib.unquote(path.text).decode(sickrage.srCore.SYS_ENCODING)
+                unEncPath = urllib.unquote(path.text).decode(sickrage.SYS_ENCODING)
                 sickrage.srLogger.debug("KODI Updating " + showName + " on " + host + " at " + unEncPath)
                 updateCommand = {'command': 'ExecBuiltIn', 'parameter': 'KODI.updatelibrary(video, %s)' % (unEncPath)}
                 request = self._send_to_kodi(updateCommand, host)
@@ -433,25 +433,25 @@ class KODINotifier(srNotifiers):
             # get tvshowid by showName
             showsResponse = self._send_to_kodi_json(showsCommand % showName, host)
 
-            if showsResponse and "result" in showsResponse and "tvshows" in showsResponse[b"result"]:
-                shows = showsResponse[b"result"][b"tvshows"]
+            if showsResponse and "result" in showsResponse and "tvshows" in showsResponse["result"]:
+                shows = showsResponse["result"]["tvshows"]
             else:
                 # fall back to retrieving the entire show list
                 showsCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.GetTVShows","id":1}'
                 showsResponse = self._send_to_kodi_json(showsCommand, host)
 
-                if showsResponse and "result" in showsResponse and "tvshows" in showsResponse[b"result"]:
-                    shows = showsResponse[b"result"][b"tvshows"]
+                if showsResponse and "result" in showsResponse and "tvshows" in showsResponse["result"]:
+                    shows = showsResponse["result"]["tvshows"]
                 else:
                     sickrage.srLogger.debug("KODI: No tvshows in KODI TV show list")
                     return False
 
             for show in shows:
-                if ("label" in show and show[b"label"] == showName) or ("title" in show and show[b"title"] == showName):
-                    tvshowid = show[b"tvshowid"]
+                if ("label" in show and show["label"] == showName) or ("title" in show and show["title"] == showName):
+                    tvshowid = show["tvshowid"]
                     # set the path is we have it already
                     if "file" in show:
-                        path = show[b"file"]
+                        path = show["file"]
 
                     break
 
@@ -469,7 +469,7 @@ class KODINotifier(srNotifiers):
                 tvshowid)
                 pathResponse = self._send_to_kodi_json(pathCommand, host)
 
-                path = pathResponse[b"result"][b"tvshowdetails"][b"file"]
+                path = pathResponse["result"]["tvshowdetails"]["file"]
 
             sickrage.srLogger.debug("Received Show: " + showName + " with ID: " + str(tvshowid) + " Path: " + path)
 

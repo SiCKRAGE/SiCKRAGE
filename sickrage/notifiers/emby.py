@@ -23,7 +23,7 @@ import urllib
 import urllib2
 
 import sickrage
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class EMBYNotifier(srNotifiers):
@@ -43,7 +43,7 @@ class EMBYNotifier(srNotifiers):
 
         url = 'http://%s/emby/Notifications/Admin' % (host)
         values = {'Name': 'SiCKRAGE', 'Description': message,
-                  'ImageUrl': 'https://raw.githubusercontent.com/SiCKRAGETV/SiCKRAGE/master/gui/slick/images/sickrage-shark-mascot.png'}
+                  'ImageUrl': 'http://www.sickrage.ca/favicon.ico'}
         data = json.dumps(values)
         try:
             req = urllib2.Request(url, data)
@@ -62,9 +62,9 @@ class EMBYNotifier(srNotifiers):
             return False
 
 
-        ##############################################################################
-        # Public functions
-        ##############################################################################
+            ##############################################################################
+            # Public functions
+            ##############################################################################
 
     def test_notify(self, host, emby_apikey):
         return self._notify_emby('This is a test notification from SiCKRAGE', host, emby_apikey)

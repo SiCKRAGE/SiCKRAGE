@@ -23,12 +23,12 @@ import time
 import traceback
 
 import sickrage
-from core.common import cpu_presets
-from core.queues import GenericQueue, QueueItem, QueuePriorities
-from core.search import searchForNeededEpisodes, searchProviders, \
+from sickrage.core.common import cpu_presets
+from sickrage.core.queues import GenericQueue, QueueItem, QueuePriorities
+from sickrage.core.search import searchForNeededEpisodes, searchProviders, \
     snatchEpisode
-from core.tv.show.history import FailedHistory, History
-from core.ui import notifications
+from sickrage.core.tv.show.history import FailedHistory, History
+from sickrage.core.ui import notifications
 
 search_queue_lock = threading.Lock()
 
@@ -76,11 +76,11 @@ class srSearchQueue(GenericQueue):
 
     def pause_backlog(self):
         self.min_priority = QueuePriorities.HIGH
-        sickrage.srCore.SCHEDULER.pause_job('BACKLOG')
+        sickrage.srScheduler.pause_job('BACKLOG')
 
     def unpause_backlog(self):
         self.min_priority = 0
-        sickrage.srCore.SCHEDULER.resume_job('BACKLOG')
+        sickrage.srScheduler.resume_job('BACKLOG')
 
     def is_backlog_paused(self):
         # backlog priorities are NORMAL, this should be done properly somewhere
@@ -108,13 +108,13 @@ class srSearchQueue(GenericQueue):
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
         for cur_item in self.queue:
             if isinstance(cur_item, DailySearchQueueItem):
-                length[b'daily'] += 1
+                length['daily'] += 1
             elif isinstance(cur_item, BacklogQueueItem):
-                length[b'backlog'] += 1
+                length['backlog'] += 1
             elif isinstance(cur_item, ManualSearchQueueItem):
-                length[b'manual'] += 1
+                length['manual'] += 1
             elif isinstance(cur_item, FailedQueueItem):
-                length[b'failed'] += 1
+                length['failed'] += 1
         return length
 
     def add_item(self, item):

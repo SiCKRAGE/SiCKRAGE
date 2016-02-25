@@ -18,6 +18,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import importlib
 import io
 import itertools
@@ -30,31 +31,37 @@ from base64 import b16encode, b32decode
 
 import bencode
 import requests
-from datetime import datetime
 from feedparser import FeedParserDict
 from hachoir_core.stream import StringInputStream
 from hachoir_parser import guessParser
 
 import sickrage
-from core.caches.tv_cache import TVCache
-from core.classes import NZBSearchResult, Proper, SearchResult, \
+from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
     TorrentSearchResult
-from core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT
-from core.databases import main_db
-from core.exceptions import AuthException
-from core.helpers import chmodAsParent, download_file, \
+from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT
+from sickrage.core.databases import main_db
+from sickrage.core.exceptions import AuthException
+from sickrage.core.helpers import chmodAsParent, download_file, \
     findCertainShow, getURL, readFileBuffered, remove_file_failed, \
     sanitizeFileName, sanitizeSceneName
-from core.helpers.show_names import allPossibleShowNames
-from core.nameparser import InvalidNameException, InvalidShowException, \
+from sickrage.core.helpers.show_names import allPossibleShowNames
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from core.scene_exceptions import get_scene_exceptions
+from sickrage.core.scene_exceptions import get_scene_exceptions
 
 
 class GenericProvider(object):
     NZB = 'nzb'
     TORRENT = 'torrent'
-    types = [NZB, TORRENT]
+    NEWZNAB = 'newznab'
+    TORRENTRSS = 'torrentrss'
+
+    types = {
+        'all': [NZB, NEWZNAB, TORRENT, TORRENTRSS],
+        NZB: [NZB, NEWZNAB],
+        TORRENT: [TORRENT, TORRENTRSS]
+    }
 
     type = None
 
@@ -93,16 +100,14 @@ class GenericProvider(object):
         return self._makeID()
 
     @property
-    def isActive(self):
-        return False
-
-    @property
     def isEnabled(self):
         return self.enabled
 
     @property
     def imageName(self):
-        return self.id + '.png'
+        if os.path.isfile(os.path.join(sickrage.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
+            return self.id + '.png'
+        return self.type + '.png'
 
     def _makeID(self):
         return str(re.sub(r"[^\w\d_]", "_", self.name.strip().lower()))
@@ -162,7 +167,7 @@ class GenericProvider(object):
                     return urls, filename
 
                 urls = random.shuffle(
-                        [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btCacheURLS])
+                    [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in self.btCacheURLS])
             except Exception:
                 sickrage.srLogger.error("Unable to extract torrent hash or name from magnet: " + result.url)
                 return urls, filename
@@ -227,7 +232,7 @@ class GenericProvider(object):
                 for byte in readFileBuffered(file_name):
                     mime_type = guessParser(StringInputStream(byte))._getMimeType()
                     if mime_type == 'application/x-bittorrent':
-                        #clean up
+                        # clean up
                         del mime_type
 
                         return True
@@ -334,11 +339,12 @@ class GenericProvider(object):
                 if first:
                     first = False
                     if itemList:
-                        sickrage.srLogger.debug('First search_string had rid, and returned results, skipping query by string')
+                        sickrage.srLogger.debug(
+                            'First search_string had rid, and returned results, skipping query by string')
                         break
                     else:
                         sickrage.srLogger.debug(
-                                'First search_string had rid, but returned no results, searching with string query')
+                            'First search_string had rid, but returned no results, searching with string query')
 
         # if we found what we needed already from cache then return results and exit
         if len(results) == len(episodes):
@@ -387,25 +393,25 @@ class GenericProvider(object):
                 if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         sickrage.srLogger.debug(
-                                "This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it")
+                            "This is supposed to be a season pack search but the result " + title + " is not a valid season pack, skipping it")
                         addCacheEntry = True
                     if len(parse_result.episode_numbers) and (
                                     parse_result.season_number not in set([ep.season for ep in episodes])
                             or not [ep for ep in episodes if ep.scene_episode in parse_result.episode_numbers]):
                         sickrage.srLogger.debug(
-                                "The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
+                            "The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
                         addCacheEntry = True
                 else:
                     if not len(parse_result.episode_numbers) and parse_result.season_number and not [ep for ep in
                                                                                                      episodes if
                                                                                                      ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         sickrage.srLogger.debug(
-                                "The result " + title + " doesn't seem to be a valid season that we are trying to snatch, ignoring")
+                            "The result " + title + " doesn't seem to be a valid season that we are trying to snatch, ignoring")
                         addCacheEntry = True
                     elif len(parse_result.episode_numbers) and not [ep for ep in episodes if
                                                                     ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         sickrage.srLogger.debug(
-                                "The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
+                            "The result " + title + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
                         addCacheEntry = True
 
                 if not addCacheEntry:
@@ -415,22 +421,22 @@ class GenericProvider(object):
             else:
                 if not parse_result.is_air_by_date:
                     sickrage.srLogger.debug(
-                            "This is supposed to be a date search but the result " + title + " didn't parse as one, skipping it")
+                        "This is supposed to be a date search but the result " + title + " didn't parse as one, skipping it")
                     addCacheEntry = True
                 else:
                     airdate = parse_result.air_date.toordinal()
                     sql_results = main_db.MainDB().select(
-                            "SELECT season, episode FROM tv_episodes WHERE showid = ? AND airdate = ?",
-                            [showObj.indexerid, airdate])
+                        "SELECT season, episode FROM tv_episodes WHERE showid = ? AND airdate = ?",
+                        [showObj.indexerid, airdate])
 
                     if len(sql_results) != 1:
                         sickrage.srLogger.warning(
-                                "Tried to look up the date for the episode " + title + " but the database didn't give proper results, skipping it")
+                            "Tried to look up the date for the episode " + title + " but the database didn't give proper results, skipping it")
                         addCacheEntry = True
 
                 if not addCacheEntry:
-                    actual_season = int(sql_results[0][b"season"])
-                    actual_episodes = [int(sql_results[0][b"episode"])]
+                    actual_season = int(sql_results[0]["season"])
+                    actual_episodes = [int(sql_results[0]["episode"])]
 
             # add parsed result to cache for usage later on
             if addCacheEntry:
@@ -451,9 +457,9 @@ class GenericProvider(object):
 
             if not wantEp:
                 sickrage.srLogger.info(
-                        "Ignoring result " + title + " because we don't want an episode that is " +
-                        Quality.qualityStrings[
-                            quality])
+                    "Ignoring result " + title + " because we don't want an episode that is " +
+                    Quality.qualityStrings[
+                        quality])
 
                 continue
 
@@ -479,7 +485,8 @@ class GenericProvider(object):
                 sickrage.srLogger.debug("Single episode result.")
             elif len(epObj) > 1:
                 epNum = MULTI_EP_RESULT
-                sickrage.srLogger.debug("Separating multi-episode result to check for later - result contains episodes: " + str(
+                sickrage.srLogger.debug(
+                    "Separating multi-episode result to check for later - result contains episodes: " + str(
                         parse_result.episode_numbers))
             elif len(epObj) == 0:
                 epNum = SEASON_RESULT
@@ -501,7 +508,7 @@ class GenericProvider(object):
 
         results = self.cache.listPropers(search_date)
 
-        return [Proper(x[b'name'], x[b'url'], datetime.fromtimestamp(x[b'time']), self.show) for x in
+        return [Proper(x['name'], x['url'], datetime.datetime.fromtimestamp(x['time']), self.show) for x in
                 results]
 
     def seedRatio(self):
@@ -528,7 +535,7 @@ class GenericProvider(object):
             return providerMatch[0]
 
     @classmethod
-    def getProviderList(cls, data=None):
+    def getProviderList(cls, data=""):
         modules = []
         for type in GenericProvider.types:
             modules += cls.loadProviders(type)
@@ -545,15 +552,15 @@ class GenericProvider(object):
 
     @classmethod
     def loadProvider(cls, name, type, *args, **kwargs):
-        import inspect, sys
-        sys.path.append(os.path.join(os.path.dirname(__file__), 'sickrage'))
+        import inspect
         members = dict(
-                inspect.getmembers(
-                        importlib.import_module('.{}.{}'.format(type, name), 'providers'),
-                        lambda x: hasattr(x, 'type') and x not in [NZBProvider, TorrentProvider])
+            inspect.getmembers(
+                importlib.import_module('.{}.{}'.format(type, name), 'sickrage.providers'),
+                lambda x: hasattr(x, 'type') and x not in [NZBProvider, TorrentProvider])
         )
         return [v for v in members.values() if hasattr(v, 'type') and v.type == type][0](
             *args, **kwargs)
+
 
 class TorrentProvider(GenericProvider):
     type = GenericProvider.TORRENT
@@ -614,7 +621,7 @@ class TorrentProvider(GenericProvider):
             else:
                 ep_string = show_name + ' S%02d' % int(ep_obj.scene_season)  # 1) showName.SXX
 
-            search_string[b'Season'].append(ep_string.encode('utf-8').strip())
+            search_string['Season'].append(ep_string.encode('utf-8').strip())
 
         return [search_string]
 
@@ -636,11 +643,11 @@ class TorrentProvider(GenericProvider):
                 ep_string += "%02d" % int(ep_obj.scene_absolute_number)
             else:
                 ep_string += sickrage.srConfig.NAMING_EP_TYPE[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                   'episodenumber': ep_obj.scene_episode}
+                                                                    'episodenumber': ep_obj.scene_episode}
             if add_string:
                 ep_string = ep_string + ' %s' % add_string
 
-            search_string[b'Episode'].append(ep_string.strip())
+            search_string['Episode'].append(ep_string.strip())
 
         return [search_string]
 
@@ -648,33 +655,33 @@ class TorrentProvider(GenericProvider):
     def _clean_title_from_provider(title):
         return (title or '').replace(' ', '.')
 
-    def findPropers(self, search_date=datetime.today()):
+    def findPropers(self, search_date=datetime.datetime.today()):
 
         results = []
 
         sqlResults = main_db.MainDB().select(
-                'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
-                ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
-                ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
-                ' AND e.status IN (' + ','.join(
-                        [str(x) for x in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST]) + ')'
+            'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
+            ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
+            ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
+            ' AND e.status IN (' + ','.join(
+                [str(x) for x in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST]) + ')'
         )
 
         for sqlshow in sqlResults or []:
-            show = findCertainShow(sickrage.srCore.SHOWLIST, int(sqlshow[b"showid"]))
+            show = findCertainShow(sickrage.srCore.SHOWLIST, int(sqlshow["showid"]))
             if show:
-                curEp = show.getEpisode(int(sqlshow[b"season"]), int(sqlshow[b"episode"]))
+                curEp = show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
                 for term in self.proper_strings:
                     searchString = self._get_episode_search_strings(curEp, add_string=term)
 
                     for item in self._doSearch(searchString[0]):
                         title, url = self._get_title_and_url(item)
-                        results.append(Proper(title, url, datetime.today(), show))
+                        results.append(Proper(title, url, datetime.datetime.today(), show))
 
         return results
 
     @classmethod
-    def getProviderList(cls, data=None):
+    def getProviderList(cls, data=""):
         return super(TorrentProvider, cls).loadProviders(GenericProvider.TORRENT)
 
 
@@ -700,7 +707,7 @@ class NZBProvider(GenericProvider):
         return int(size)
 
     @classmethod
-    def getProviderList(cls, data=None):
+    def getProviderList(cls, data=""):
         return super(NZBProvider, cls).loadProviders(GenericProvider.NZB)
 
 
@@ -747,11 +754,6 @@ class TorrentRssProvider(TorrentProvider):
             int(self.enable_daily),
             int(self.enable_backlog)
         )
-
-    def imageName(self):
-        if os.path.isfile(os.path.join(sickrage.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
-            return '{}.png'.format(self.id)
-        return 'torrentrss.png'
 
     def _get_title_and_url(self, item):
 
@@ -835,7 +837,7 @@ class TorrentRssProvider(TorrentProvider):
         return self.ratio
 
     @classmethod
-    def getProviderList(cls, data=None):
+    def getProviderList(cls, data=""):
         providerList = filter(lambda x: x, [cls.makeProvider(x) for x in data.split('!!!')])
 
         seen_values = set()
@@ -931,18 +933,12 @@ class NewznabProvider(NZBProvider):
         self.supportsBacklog = True
 
         self.default = False
-        self.last_search = datetime.now()
+        self.last_search = datetime.datetime.now()
 
     def configStr(self):
         return self.name + '|' + self.url + '|' + self.key + '|' + self.catIDs + '|' + str(
-                int(self.enabled)) + '|' + self.search_mode + '|' + str(int(self.search_fallback)) + '|' + str(
-                int(self.enable_daily)) + '|' + str(int(self.enable_backlog))
-
-    def imageName(self):
-        if os.path.isfile(
-                os.path.join(sickrage.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
-            return self.id + '.png'
-        return 'newznab.png'
+            int(self.enabled)) + '|' + self.search_mode + '|' + str(int(self.search_fallback)) + '|' + str(
+            int(self.enable_daily)) + '|' + str(int(self.enable_backlog))
 
     def _getURL(self, url, post_data=None, params=None, timeout=30, json=False):
         return self.getURL(url, post_data=post_data, params=params, timeout=timeout, json=json)
@@ -960,13 +956,14 @@ class NewznabProvider(NZBProvider):
 
         params = {"t": "caps"}
         if self.needs_auth and self.key:
-            params[b'apikey'] = self.key
+            params['apikey'] = self.key
 
         try:
             data = self.cache.getRSSFeed("%s/api?%s" % (self.url, urllib.urlencode(params)))
         except Exception:
             sickrage.srLogger.warning("Error getting html for [%s]" %
-                                       ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x, y) for x, y in params.iteritems()))))
+                                      ("%s/api?%s" % (
+                                          self.url, '&'.join("%s=%s" % (x, y) for x, y in params.iteritems()))))
             return (False, return_categories, "Error getting html for [%s]" %
                     ("%s/api?%s" % (self.url, '&'.join("%s=%s" % (x, y) for x, y in params.iteritems()))))
 
@@ -993,25 +990,25 @@ class NewznabProvider(NZBProvider):
         if not ep_obj:
             return to_return
 
-        params[b'maxage'] = (datetime.now() - datetime.combine(ep_obj.airdate,
-                                                                                 datetime.min.time())).days + 1
-        params[b'tvdbid'] = ep_obj.show.indexerid
+        params['maxage'] = (datetime.datetime.now() - datetime.datetime.combine(ep_obj.airdate,
+                                                                                datetime.datetime.min.time())).days + 1
+        params['tvdbid'] = ep_obj.show.indexerid
 
         # season
         if ep_obj.show.air_by_date or ep_obj.show.sports:
             date_str = str(ep_obj.airdate).split('-')[0]
-            params[b'season'] = date_str
-            params[b'q'] = date_str.replace('-', '.')
+            params['season'] = date_str
+            params['q'] = date_str.replace('-', '.')
         else:
-            params[b'season'] = str(ep_obj.scene_season)
+            params['season'] = str(ep_obj.scene_season)
 
-        save_q = ' ' + params[b'q'] if 'q' in params else ''
+        save_q = ' ' + params['q'] if 'q' in params else ''
 
         # add new query strings for exceptions
         name_exceptions = list(
-                set([ep_obj.show.name] + get_scene_exceptions(ep_obj.show.indexerid)))
+            set([ep_obj.show.name] + get_scene_exceptions(ep_obj.show.indexerid)))
         for cur_exception in name_exceptions:
-            params[b'q'] = sanitizeSceneName(cur_exception) + save_q
+            params['q'] = sanitizeSceneName(cur_exception) + save_q
             to_return.append(dict(params))
 
         return to_return
@@ -1022,25 +1019,25 @@ class NewznabProvider(NZBProvider):
         if not ep_obj:
             return to_return
 
-        params[b'maxage'] = (datetime.now() - datetime.combine(ep_obj.airdate,
-                                                                                 datetime.min.time())).days + 1
-        params[b'tvdbid'] = ep_obj.show.indexerid
+        params['maxage'] = (datetime.datetime.now() - datetime.datetime.combine(ep_obj.airdate,
+                                                                                datetime.datetime.min.time())).days + 1
+        params['tvdbid'] = ep_obj.show.indexerid
 
         if ep_obj.show.air_by_date or ep_obj.show.sports:
             date_str = str(ep_obj.airdate)
-            params[b'season'] = date_str.partition('-')[0]
-            params[b'ep'] = date_str.partition('-')[2].replace('-', '/')
+            params['season'] = date_str.partition('-')[0]
+            params['ep'] = date_str.partition('-')[2].replace('-', '/')
         else:
-            params[b'season'] = ep_obj.scene_season
-            params[b'ep'] = ep_obj.scene_episode
+            params['season'] = ep_obj.scene_season
+            params['ep'] = ep_obj.scene_episode
 
         # add new query strings for exceptions
         name_exceptions = list(
-                set([ep_obj.show.name] + get_scene_exceptions(ep_obj.show.indexerid)))
+            set([ep_obj.show.name] + get_scene_exceptions(ep_obj.show.indexerid)))
         for cur_exception in name_exceptions:
-            params[b'q'] = sanitizeSceneName(cur_exception)
+            params['q'] = sanitizeSceneName(cur_exception)
             if add_string:
-                params[b'q'] += ' ' + add_string
+                params['q'] += ' ' + add_string
 
             to_return.append(dict(params))
 
@@ -1051,7 +1048,8 @@ class NewznabProvider(NZBProvider):
 
     def _checkAuth(self):
         if self.needs_auth and not self.key:
-            sickrage.srLogger.warning("Your authentication credentials for " + self.name + " are missing, check your config.")
+            sickrage.srLogger.warning(
+                "Your authentication credentials for " + self.name + " are missing, check your config.")
             return False
         return True
 
@@ -1061,21 +1059,18 @@ class NewznabProvider(NZBProvider):
 
         :type data: dict
         """
-        try:
-            data[b'feed']
-            data[b'entries']
-        except (AttributeError, KeyError):
+        if not all([x in data for x in ['feed', 'entries']]):
             return self._checkAuth()
 
         try:
-            if int(data[b'bozo']) == 1:
-                raise Exception(data[b'bozo_exception'])
+            if int(data['bozo']) == 1:
+                raise data['bozo_exception']
         except (AttributeError, KeyError):
             pass
 
         try:
-            err_code = data[b'feed'][b'error'][b'code']
-            err_desc = data[b'feed'][b'error'][b'description']
+            err_code = data['feed']['error']['code']
+            err_desc = data['feed']['error']['description']
 
             if int(err_code) == 100:
                 raise AuthException("Your API key for " + self.name + " is incorrect, check your config.")
@@ -1083,7 +1078,7 @@ class NewznabProvider(NZBProvider):
                 raise AuthException("Your account on " + self.name + " has been suspended, contact the administrator.")
             elif int(err_code) == 102:
                 raise AuthException(
-                        "Your account isn't allowed to use the API on " + self.name + ", contact the administrator")
+                    "Your account isn't allowed to use the API on " + self.name + ", contact the administrator")
             raise Exception("Unknown error: %s" % err_desc)
         except (AttributeError, KeyError):
             pass
@@ -1105,41 +1100,41 @@ class NewznabProvider(NZBProvider):
 
         # category ids
         if self.show and self.show.is_sports:
-            params[b'cat'] = self.catIDs + ',5060'
+            params['cat'] = self.catIDs + ',5060'
         elif self.show and self.show.is_anime:
-            params[b'cat'] = self.catIDs + ',5070'
+            params['cat'] = self.catIDs + ',5070'
         else:
-            params[b'cat'] = self.catIDs
+            params['cat'] = self.catIDs
 
-        params[b'cat'] = params[b'cat'].strip(', ')
+        params['cat'] = params['cat'].strip(', ')
 
         if self.needs_auth and self.key:
-            params[b'apikey'] = self.key
+            params['apikey'] = self.key
 
-        params[b'maxage'] = min(params[b'maxage'], sickrage.srConfig.USENET_RETENTION)
+        params['maxage'] = min(params['maxage'], sickrage.srConfig.USENET_RETENTION)
 
         results = []
         offset = total = 0
 
-        if 'lolo.sickrage.com' in self.url and params[b'maxage'] < 33:
-            params[b'maxage'] = 33
+        if 'lolo.sickrage.com' in self.url and params['maxage'] < 33:
+            params['maxage'] = 33
 
         while total >= offset:
             search_url = self.url + 'api?' + urllib.urlencode(params)
 
-            while (datetime.now() - self.last_search).seconds < 5:
+            while (datetime.datetime.now() - self.last_search).seconds < 5:
                 time.sleep(1)
 
             sickrage.srLogger.debug("Search url: %s" % search_url)
 
             data = self.cache.getRSSFeed(search_url)
 
-            self.last_search = datetime.now()
+            self.last_search = datetime.datetime.now()
 
             if not self._checkAuthFromData(data):
                 break
 
-            for item in data[b'entries']:
+            for item in data['entries']:
 
                 (title, url) = self._get_title_and_url(item)
 
@@ -1149,8 +1144,8 @@ class NewznabProvider(NZBProvider):
             # get total and offset attribs
             try:
                 if total == 0:
-                    total = int(data[b'feed'].newznab_response[b'total'] or 0)
-                offset = int(data[b'feed'].newznab_response[b'offset'] or 0)
+                    total = int(data['feed'].newznab_response['total'] or 0)
+                offset = int(data['feed'].newznab_response['offset'] or 0)
             except AttributeError:
                 break
 
@@ -1158,51 +1153,51 @@ class NewznabProvider(NZBProvider):
             if total == 0:
                 break
 
-            if offset != params[b'offset']:
+            if offset != params['offset']:
                 sickrage.srLogger.info("Tell your newznab provider to fix their bloody newznab responses")
                 break
 
-            params[b'offset'] += params[b'limit']
-            if (total > int(params[b'offset'])) and (offset < 500):
-                offset = int(params[b'offset'])
+            params['offset'] += params['limit']
+            if (total > int(params['offset'])) and (offset < 500):
+                offset = int(params['offset'])
                 # if there are more items available then the amount given in one call, grab some more
                 sickrage.srLogger.debug('%d' % (total - offset) + ' more items to be fetched from provider.' +
-                              'Fetching another %d' % int(params[b'limit']) + ' items.')
+                                        'Fetching another %d' % int(params['limit']) + ' items.')
             else:
                 sickrage.srLogger.debug('No more searches needed')
                 break
 
         return results
 
-    def findPropers(self, search_date=datetime.today()):
+    def findPropers(self, search_date=datetime.datetime.today()):
         results = []
 
         sqlResults = main_db.MainDB().select(
-                'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
-                ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
-                ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
-                ' AND (e.status IN (' + ','.join([str(x) for x in Quality.DOWNLOADED]) + ')' +
-                ' OR (e.status IN (' + ','.join([str(x) for x in Quality.SNATCHED]) + ')))'
+            'SELECT s.show_name, e.showid, e.season, e.episode, e.status, e.airdate FROM tv_episodes AS e' +
+            ' INNER JOIN tv_shows AS s ON (e.showid = s.indexer_id)' +
+            ' WHERE e.airdate >= ' + str(search_date.toordinal()) +
+            ' AND (e.status IN (' + ','.join([str(x) for x in Quality.DOWNLOADED]) + ')' +
+            ' OR (e.status IN (' + ','.join([str(x) for x in Quality.SNATCHED]) + ')))'
         )
 
         if not sqlResults:
             return []
 
         for sqlshow in sqlResults:
-            self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(sqlshow[b"showid"]))
+            self.show = findCertainShow(sickrage.srCore.SHOWLIST, int(sqlshow["showid"]))
             if self.show:
-                curEp = self.show.getEpisode(int(sqlshow[b"season"]), int(sqlshow[b"episode"]))
+                curEp = self.show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
                 searchStrings = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
                 for searchString in searchStrings:
                     for item in self._doSearch(searchString):
                         title, url = self._get_title_and_url(item)
                         if re.match(r'.*(REPACK|PROPER).*', title, re.I):
-                            results.append(Proper(title, url, datetime.today(), self.show))
+                            results.append(Proper(title, url, datetime.datetime.today(), self.show))
 
         return results
 
     @classmethod
-    def getProviderList(cls, data=None):
+    def getProviderList(cls, data=""):
         defaultList = [cls.makeProvider(x) for x in cls.getDefaultProviders().split('!!!')]
         providerList = filter(lambda x: x, [cls.makeProvider(x) for x in data.split('!!!')])
 
@@ -1302,7 +1297,7 @@ class NewznabCache(TVCache):
 
         # only poll newznab providers every 30 minutes
         self.minTime = 30
-        self.last_search = datetime.now()
+        self.last_search = datetime.datetime.now()
 
     def _getRSSData(self):
 
@@ -1312,20 +1307,20 @@ class NewznabCache(TVCache):
                   }
 
         if 'lolo.sickrage.com' in self.provider.url:
-            params[b'maxage'] = 33
+            params['maxage'] = 33
 
         if self.provider.needs_auth and self.provider.key:
-            params[b'apikey'] = self.provider.key
+            params['apikey'] = self.provider.key
 
         rss_url = self.provider.url + 'api?' + urllib.urlencode(params)
 
-        while (datetime.now() - self.last_search).seconds < 5:
+        while (datetime.datetime.now() - self.last_search).seconds < 5:
             time.sleep(1)
 
         sickrage.srLogger.debug("Cache update URL: %s " % rss_url)
         data = self.getRSSFeed(rss_url)
 
-        self.last_search = datetime.now()
+        self.last_search = datetime.datetime.now()
 
         return data
 
@@ -1344,20 +1339,3 @@ class NewznabCache(TVCache):
 
         sickrage.srLogger.debug("Attempting to add item from RSS to cache: %s" % title)
         return self._addCacheEntry(title, url, indexer_id=tvrageid)
-
-
-def sortedProviderDict(randomize=False):
-    from collections import OrderedDict
-
-    sortedProviders = OrderedDict()
-
-    providerOrder = sickrage.srConfig.PROVIDER_ORDER
-
-    if randomize:
-        random.shuffle(providerOrder)
-
-    for providerType in [GenericProvider.NZB, GenericProvider.TORRENT]:
-        sortedProviders.update((key, sickrage.srCore.providersDict[providerType][key]) for key in providerOrder
-                               if sickrage.srCore.providersDict[providerType].has_key(key))
-
-    return sortedProviders

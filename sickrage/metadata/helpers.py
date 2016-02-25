@@ -23,8 +23,8 @@ import re
 import traceback
 
 import sickrage
-from core.common import Quality, get_quality_string
-from core.helpers import getURL, tryInt
+from sickrage.core.common import Quality, get_quality_string
+from sickrage.core.helpers import getURL, tryInt
 
 extensions = {
     'tvshow': ['mkv', 'wmv', 'avi', 'mpg', 'mpeg', 'mp4', 'm2ts', 'iso', 'img', 'mdf', 'ts', 'm4v', 'flv'],

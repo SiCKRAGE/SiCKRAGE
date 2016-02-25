@@ -59,11 +59,20 @@ desktop.ini
 ehthumbs.db
 Thumbs.db
 .directory
-*~
 *.torrent
+*~
+
+# GruntJS Files #
+######################
+Gruntfile.js
+
+# NodeJS Files #
+######################
+package.json
+node_modules
 
 # Bower #
 ######################
 bower_components
-node_modules
+bower.json
 _bower.js

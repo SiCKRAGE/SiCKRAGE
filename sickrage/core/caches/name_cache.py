@@ -21,13 +21,12 @@ from __future__ import unicode_literals
 
 import threading
 import time
-
 from datetime import datetime, timedelta
 
 import sickrage
-from core.databases import cache_db
-from core.helpers import full_sanitizeSceneName
-from core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
+from sickrage.core.databases import cache_db
+from sickrage.core.helpers import full_sanitizeSceneName
+from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
 
 
 class srNameCache(object):
@@ -50,11 +49,11 @@ class srNameCache(object):
 
         self.amActive = True
 
-        origThreadName = threading.currentThread().getName()
-
+        # set thread name
         threading.currentThread().setName(self.name)
+
+        # build name cache
         self.buildNameCache()
-        threading.currentThread().setName(origThreadName)
 
         self.amActive = False
 

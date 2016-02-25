@@ -24,9 +24,9 @@ import re
 import traceback
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class AlphaRatioProvider(TorrentProvider):
@@ -110,7 +110,7 @@ class AlphaRatioProvider(TorrentProvider):
 
                             try:
                                 title = link.contents[0]
-                                download_url = self.urls['download'] % (url[b'href'])
+                                download_url = self.urls['download'] % (url['href'])
                                 seeders = cells[len(cells) - 2].contents[0]
                                 leechers = cells[len(cells) - 1].contents[0]
                                 # FIXME

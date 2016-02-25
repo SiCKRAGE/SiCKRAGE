@@ -20,16 +20,15 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import urllib
 
-from datetime import datetime
-
 import sickrage
-from core.caches.tv_cache import TVCache
-from core.classes import Proper
-from core.helpers.show_names import makeSceneSearchString, \
+from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.classes import Proper
+from sickrage.core.helpers.show_names import makeSceneSearchString, \
     makeSceneSeasonSearchString
-from providers import NZBProvider
+from sickrage.providers import NZBProvider
 
 
 class OmgwtfnzbsProvider(NZBProvider):
@@ -85,11 +84,11 @@ class OmgwtfnzbsProvider(NZBProvider):
         return [x for x in makeSceneSearchString(self.show, ep_obj)]
 
     def _get_title_and_url(self, item):
-        return (item[b'release'], item[b'getnzb'])
+        return (item['release'], item['getnzb'])
 
     def _get_size(self, item):
         try:
-            size = int(item[b'sizebytes'])
+            size = int(item['sizebytes'])
         except (ValueError, TypeError, AttributeError, KeyError):
             return -1
 
@@ -106,8 +105,8 @@ class OmgwtfnzbsProvider(NZBProvider):
                   'retention': sickrage.srConfig.USENET_RETENTION,
                   'search': search}
 
-        if retention or not params[b'retention']:
-            params[b'retention'] = retention
+        if retention or not params['retention']:
+            params['retention'] = retention
 
         searchURL = 'https://api.omgwtfnzbs.org/json/?' + urllib.urlencode(params)
         sickrage.srLogger.debug("Search string: %s" % params)
@@ -139,7 +138,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
                     title, url = self._get_title_and_url(item)
                     try:
-                        result_date = datetime.fromtimestamp(int(item[b'usenetage']))
+                        result_date = datetime.datetime.fromtimestamp(int(item['usenetage']))
                     except Exception:
                         result_date = None
 

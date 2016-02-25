@@ -25,7 +25,7 @@ import re
 from base64 import b64encode
 
 import sickrage
-from clients import GenericClient
+from sickrage.clients import GenericClient
 
 
 class TransmissionAPI(GenericClient):
@@ -144,9 +144,9 @@ class TransmissionAPI(GenericClient):
             # set high priority for all files in torrent
             arguments['priority-high'] = []
             # move torrent to the top if the queue
-            arguments[b'queuePosition'] = 0
+            arguments['queuePosition'] = 0
             if sickrage.srConfig.TORRENT_HIGH_BANDWIDTH:
-                arguments[b'bandwidthPriority'] = 1
+                arguments['bandwidthPriority'] = 1
         else:
             arguments['priority-normal'] = []
 

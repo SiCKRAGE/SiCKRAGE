@@ -27,9 +27,9 @@ import requests
 
 import classes
 import sickrage
-from core.common import Quality
-from core.helpers import getURL
-from core.nameparser import InvalidNameException, InvalidShowException, \
+from sickrage.core.common import Quality
+from sickrage.core.helpers import getURL
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 
 

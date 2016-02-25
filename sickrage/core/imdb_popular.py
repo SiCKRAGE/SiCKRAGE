@@ -22,12 +22,12 @@ from __future__ import unicode_literals
 
 import os
 import re
-
-import requests
 from datetime import date
 
+import requests
+
 import sickrage
-from core.helpers import getURL, download_file, bs4_parser
+from sickrage.core.helpers import getURL, download_file, bs4_parser
 
 
 class imdbPopular(object):
@@ -66,43 +66,43 @@ class imdbPopular(object):
 
             if image_td:
                 image = image_td.find("img")
-                show[b'image_url_large'] = self.change_size(image[b'src'], 3)
-                show[b'image_path'] = os.path.join('images', 'imdb_popular',
-                                                   os.path.basename(show[b'image_url_large']))
+                show['image_url_large'] = self.change_size(image['src'], 3)
+                show['image_path'] = os.path.join('images', 'imdb_popular',
+                                                   os.path.basename(show['image_url_large']))
 
-                self.cache_image(show[b'image_url_large'])
+                self.cache_image(show['image_url_large'])
 
             td = row.find("td", {"class": "title"})
 
             if td:
-                show[b'name'] = td.find("a").contents[0]
-                show[b'imdb_url'] = "http://www.imdb.com" + td.find("a")["href"]
-                show[b'imdb_tt'] = show[b'imdb_url'][-10:][0:9]
-                show[b'year'] = td.find("span", {"class": "year_type"}).contents[0].split(" ")[0][1:]
+                show['name'] = td.find("a").contents[0]
+                show['imdb_url'] = "http://www.imdb.com" + td.find("a")["href"]
+                show['imdb_tt'] = show['imdb_url'][-10:][0:9]
+                show['year'] = td.find("span", {"class": "year_type"}).contents[0].split(" ")[0][1:]
 
                 rating_all = td.find("div", {"class": "user_rating"})
                 if rating_all:
                     rating_string = rating_all.find("div", {"class": "rating rating-list"})
                     if rating_string:
-                        rating_string = rating_string[b'title']
+                        rating_string = rating_string['title']
 
                         match = re.search(r".* (.*)\/10.*\((.*)\).*", rating_string)
                         if match:
                             matches = match.groups()
-                            show[b'rating'] = matches[0]
-                            show[b'votes'] = matches[1]
+                            show['rating'] = matches[0]
+                            show['votes'] = matches[1]
                         else:
-                            show[b'rating'] = None
-                            show[b'votes'] = None
+                            show['rating'] = None
+                            show['votes'] = None
                 else:
-                    show[b'rating'] = None
-                    show[b'votes'] = None
+                    show['rating'] = None
+                    show['votes'] = None
 
                 outline = td.find("span", {"class": "outline"})
                 if outline:
-                    show[b'outline'] = outline.contents[0]
+                    show['outline'] = outline.contents[0]
                 else:
-                    show[b'outline'] = ''
+                    show['outline'] = ''
 
                 popular_shows.append(show)
 

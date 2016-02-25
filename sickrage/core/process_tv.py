@@ -27,15 +27,15 @@ from UnRAR2.rar_exceptions import ArchiveHeaderBroken, FileOpenError, \
     IncorrectRARPassword, InvalidRARArchive, InvalidRARArchiveUsage
 
 import sickrage
-from core.common import Quality
-from core.databases import main_db
-from core.exceptions import EpisodePostProcessingFailedException, \
+from sickrage.core.common import Quality
+from sickrage.core.databases import main_db
+from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
     FailedPostProcessingFailedException
-from core.helpers import isMediaFile, isRarFile, isSyncFile, \
+from sickrage.core.helpers import isMediaFile, isRarFile, isSyncFile, \
     is_hidden_folder, notTorNZBFile, real_path, removetree
-from core.nameparser import InvalidNameException, InvalidShowException, \
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from core.processors import failed_processor, post_processor
+from sickrage.core.processors import failed_processor, post_processor
 
 
 class ProcessResult(object):
@@ -118,13 +118,13 @@ def delete_files(processPath, notwantedFiles, result, force=False):
             except OSError as e:
                 result.output += logHelper(
                         "Cannot change permissions of %s: %s" % (
-                            cur_file, str(e.strerror).decode(sickrage.srCore.SYS_ENCODING)),
+                            cur_file, str(e.strerror).decode(sickrage.SYS_ENCODING)),
                         sickrage.srLogger.DEBUG)
         try:
             os.remove(cur_file_path)
         except OSError as e:
             result.output += logHelper(
-                    "Unable to delete file %s: %s" % (cur_file, str(e.strerror).decode(sickrage.srCore.SYS_ENCODING)),
+                    "Unable to delete file %s: %s" % (cur_file, str(e.strerror).decode(sickrage.SYS_ENCODING)),
                     sickrage.srLogger.DEBUG)
 
 
@@ -341,8 +341,8 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
 
     # make sure the dir isn't inside a show dir
     for sqlShow in main_db.MainDB().select("SELECT * FROM tv_shows"):
-        if dirName.lower().startswith(os.path.realpath(sqlShow[b"location"]).lower() + os.sep) or \
-                        dirName.lower() == os.path.realpath(sqlShow[b"location"]).lower():
+        if dirName.lower().startswith(os.path.realpath(sqlShow["location"]).lower() + os.sep) or \
+                        dirName.lower() == os.path.realpath(sqlShow["location"]).lower():
             result.output += logHelper(
                     "Cannot process an episode that's already been moved to its show dir, skipping " + dirName,
                     sickrage.srLogger.WARNING)

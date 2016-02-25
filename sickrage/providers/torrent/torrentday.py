@@ -25,8 +25,8 @@ import re
 import requests
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class TorrentDayProvider(TorrentProvider):
@@ -133,10 +133,10 @@ class TorrentDayProvider(TorrentProvider):
 
                 for torrent in torrents:
 
-                    title = re.sub(r"\[.*=.*\].*\[/.*\]", "", torrent[b'name'])
-                    download_url = self.urls['download'] % (torrent[b'id'], torrent[b'fname'])
-                    seeders = int(torrent[b'seed'])
-                    leechers = int(torrent[b'leech'])
+                    title = re.sub(r"\[.*=.*\].*\[/.*\]", "", torrent['name'])
+                    download_url = self.urls['download'] % (torrent['id'], torrent['fname'])
+                    seeders = int(torrent['seed'])
+                    leechers = int(torrent['leech'])
                     # FIXME
                     size = -1
 

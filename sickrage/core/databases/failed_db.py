@@ -18,8 +18,8 @@
 
 from __future__ import unicode_literals
 
-from core.common import Quality
-from core.databases import Connection, SchemaUpgrade
+from sickrage.core.common import Quality
+from sickrage.core.databases import Connection, SchemaUpgrade
 
 
 class FailedDB(Connection):

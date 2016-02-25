@@ -26,8 +26,8 @@ from xml.parsers.expat import ExpatError
 import xmltodict
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class KATProvider(TorrentProvider):
@@ -65,14 +65,14 @@ class KATProvider(TorrentProvider):
 
         # select the correct category
         anime = (self.show and self.show.anime) or (epObj and epObj.show and epObj.show.anime) or False
-        self.search_params[b'category'] = ('tv', 'anime')[anime]
+        self.search_params['category'] = ('tv', 'anime')[anime]
 
         for mode in search_strings.keys():
             sickrage.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
-                self.search_params[b'q'] = search_string.encode('utf-8') if mode is not 'RSS' else ''
-                self.search_params[b'field'] = 'seeders' if mode is not 'RSS' else 'time_add'
+                self.search_params['q'] = search_string.encode('utf-8') if mode is not 'RSS' else ''
+                self.search_params['field'] = 'seeders' if mode is not 'RSS' else 'time_add'
 
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s" % search_string)
@@ -97,22 +97,22 @@ class KATProvider(TorrentProvider):
                         sickrage.srLogger.error("Failed parsing provider. Traceback: %r\n%r" % (traceback.format_exc(), data))
                         continue
 
-                    if not all([data, 'rss' in data, 'channel' in data[b'rss'], 'item' in data[b'rss'][b'channel']]):
+                    if not all([data, 'rss' in data, 'channel' in data['rss'], 'item' in data['rss']['channel']]):
                         sickrage.srLogger.debug("Malformed rss returned, skipping")
                         continue
 
                     # https://github.com/martinblech/xmltodict/issues/111
-                    entries = data[b'rss'][b'channel'][b'item']
+                    entries = data['rss']['channel']['item']
                     entries = entries if isinstance(entries, list) else [entries]
 
                     for item in entries:
                         try:
-                            title = item[b'title']
+                            title = item['title']
                             # Use the torcache link kat provides,
                             # unless it is not torcache or we are not using blackhole
                             # because we want to use magnets if connecting direct to client
                             # so that proxies work.
-                            download_url = item[b'enclosure']['@url']
+                            download_url = item['enclosure']['@url']
                             if sickrage.srConfig.TORRENT_METHOD != "blackhole" or 'torcache' not in download_url:
                                 download_url = item['torrent:magnetURI']
 
@@ -122,7 +122,7 @@ class KATProvider(TorrentProvider):
                             size = int(item['torrent:contentLength'])
 
                             info_hash = item['torrent:infoHash']
-                            # link = item[b'link']
+                            # link = item['link']
 
                         except (AttributeError, TypeError, KeyError):
                             continue

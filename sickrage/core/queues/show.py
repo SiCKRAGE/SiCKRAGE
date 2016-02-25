@@ -23,18 +23,18 @@ from __future__ import unicode_literals
 import traceback
 
 import sickrage
-from core.blackandwhitelist import BlackAndWhiteList
-from core.common import WANTED
-from core.databases import main_db
-from core.exceptions import CantRefreshShowException, \
+from sickrage.core.blackandwhitelist import BlackAndWhiteList
+from sickrage.core.common import WANTED
+from sickrage.core.databases import main_db
+from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException, ShowDirectoryNotFoundException
-from core.queues import GenericQueue, QueueItem, QueuePriorities
-from core.scene_numbering import xem_refresh, get_xem_numbering_for_show
-from core.trakt import TraktAPI
-from core.tv.show import TVShow
-from core.ui import notifications
-from indexers.indexer_exceptions import indexer_attributenotfound, \
+from sickrage.core.queues import GenericQueue, QueueItem, QueuePriorities
+from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
+from sickrage.core.trakt import TraktAPI
+from sickrage.core.tv.show import TVShow
+from sickrage.core.ui import notifications
+from sickrage.indexers.indexer_exceptions import indexer_attributenotfound, \
     indexer_error, indexer_exception
 
 
@@ -276,7 +276,7 @@ class QueueItemAdd(ShowQueueItem):
 
             lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(self.indexer).api_params.copy()
             if self.lang:
-                lINDEXER_API_PARMS[b'language'] = self.lang
+                lINDEXER_API_PARMS['language'] = self.lang
 
             sickrage.srLogger.info("{}: {}".format(index_name, repr(lINDEXER_API_PARMS)))
 
@@ -295,10 +295,10 @@ class QueueItemAdd(ShowQueueItem):
 
             # if the show has no episodes/seasons
             if not s:
-                sickrage.srLogger.error("Show " + str(s[b'seriesname']) + " is on " + str(
+                sickrage.srLogger.error("Show " + str(s['seriesname']) + " is on " + str(
                     sickrage.srCore.INDEXER_API(self.indexer).name) + " but contains no season/episode data.")
                 notifications.error("Unable to add show",
-                                    "Show " + str(s[b'seriesname']) + " is on " + str(sickrage.srCore.INDEXER_API(
+                                    "Show " + str(s['seriesname']) + " is on " + str(sickrage.srCore.INDEXER_API(
                                         self.indexer).name) + " but contains no season/episode data.")
                 return self._finishEarly()
         except Exception as e:
@@ -314,7 +314,7 @@ class QueueItemAdd(ShowQueueItem):
 
             if sickrage.srConfig.USE_TRAKT:
 
-                trakt_id = sickrage.srCore.INDEXER_API(self.indexer).config[b'trakt_id']
+                trakt_id = sickrage.srCore.INDEXER_API(self.indexer).config['trakt_id']
                 trakt_api = TraktAPI(sickrage.srConfig.SSL_VERIFY, sickrage.srConfig.TRAKT_TIMEOUT)
 
                 title = self.showDir.split("/")[-1]
@@ -327,9 +327,9 @@ class QueueItemAdd(ShowQueueItem):
                     ]
                 }
                 if trakt_id == 'tvdb_id':
-                    data[b'shows'][0][b'ids'][b'tvdb'] = self.indexer_id
+                    data['shows'][0]['ids']['tvdb'] = self.indexer_id
                 else:
-                    data[b'shows'][0][b'ids'][b'tvrage'] = self.indexer_id
+                    data['shows'][0]['ids']['tvrage'] = self.indexer_id
 
                 trakt_api.traktRequest("sync/watchlist/remove", data, method='POST')
 
@@ -453,7 +453,7 @@ class QueueItemAdd(ShowQueueItem):
 
             if sickrage.srConfig.TRAKT_SYNC_WATCHLIST:
                 sickrage.srLogger.info("update watchlist")
-                sickrage.srCore.NOTIFIERS.trakt_notifier.update_watchlist(show_obj=self.show)
+                sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(show_obj=self.show)
 
         # After initial add, set to default_status_after.
         sickrage.srLogger.info(

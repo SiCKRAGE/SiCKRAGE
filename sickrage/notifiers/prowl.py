@@ -25,9 +25,9 @@ from urllib import urlencode
 from requests.exceptions import SSLError
 
 import sickrage
-from core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
+from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 class ProwlNotifier(srNotifiers):
     def test_notify(self, prowl_api, prowl_priority):

@@ -21,17 +21,16 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import re
 import threading
 import time
 
-from datetime import datetime
-
 import sickrage
-from core.databases import cache_db
-from core.helpers import full_sanitizeSceneName, getURL, \
+from sickrage.core.databases import cache_db
+from sickrage.core.helpers import full_sanitizeSceneName, getURL, \
     sanitizeSceneName
-from indexers.adba.aniDBAbstracter import Anime
+from sickrage.indexers.adba.aniDBAbstracter import Anime
 
 exception_dict = {}
 anidb_exception_dict = {}
@@ -54,8 +53,8 @@ def shouldRefresh(exList):
 
     rows = cache_db.CacheDB().select("SELECT last_refreshed FROM scene_exceptions_refresh WHERE list = ?", [exList])
     if rows:
-        lastRefresh = int(rows[0][b'last_refreshed'])
-        return int(time.mktime(datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
+        lastRefresh = int(rows[0]['last_refreshed'])
+        return int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
     else:
         return True
 
@@ -67,7 +66,7 @@ def setLastRefresh(exList):
     :param exList: exception list to set refresh time
     """
     cache_db.CacheDB().upsert("scene_exceptions_refresh",
-                              {'last_refreshed': int(time.mktime(datetime.today().timetuple()))},
+                              {'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple()))},
                               {'list': exList})
 
 def retrieve_exceptions(get_xem=True, get_anidb=True):
@@ -80,7 +79,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
         indexer_name = sickrage.srCore.INDEXER_API(indexer).name
         if shouldRefresh(indexer_name):
             sickrage.srLogger.info("Checking for SiCKRAGE scene exception updates for {}".format(indexer_name))
-            loc = sickrage.srCore.INDEXER_API(indexer).config[b'scene_loc']
+            loc = sickrage.srCore.INDEXER_API(indexer).config['scene_loc']
 
             try:
                 # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
@@ -112,7 +111,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
     sql_l = []
     for cur_indexer_id in exception_dict:
         sql_ex = cache_db.CacheDB().select("SELECT * FROM scene_exceptions WHERE indexer_id = ?;", [cur_indexer_id])
-        existing_exceptions = [x[b"show_name"] for x in sql_ex]
+        existing_exceptions = [x["show_name"] for x in sql_ex]
         if not cur_indexer_id in exception_dict:
             continue
 
@@ -147,7 +146,7 @@ def get_scene_exceptions(indexer_id, season=-1):
                 "SELECT show_name FROM scene_exceptions WHERE indexer_id = ? AND season = ?",
                 [indexer_id, season])
         if exceptions:
-            exceptionsList = list(set([cur_exception[b"show_name"] for cur_exception in exceptions]))
+            exceptionsList = list(set([cur_exception["show_name"] for cur_exception in exceptions]))
 
             if not indexer_id in exceptionsCache:
                 exceptionsCache[indexer_id] = {}
@@ -175,9 +174,9 @@ def get_all_scene_exceptions(indexer_id):
 
     if exceptions:
         for cur_exception in exceptions:
-            if not cur_exception[b"season"] in exceptionsDict:
-                exceptionsDict[cur_exception[b"season"]] = []
-            exceptionsDict[cur_exception[b"season"]].append(cur_exception[b"show_name"])
+            if not cur_exception["season"] in exceptionsDict:
+                exceptionsDict[cur_exception["season"]] = []
+            exceptionsDict[cur_exception["season"]].append(cur_exception["show_name"])
 
     return exceptionsDict
 
@@ -193,7 +192,7 @@ def get_scene_seasons(indexer_id):
                 "SELECT DISTINCT(season) AS season FROM scene_exceptions WHERE indexer_id = ?",
                 [indexer_id])
         if sqlResults:
-            exceptionsSeasonList = list(set([int(x[b"season"]) for x in sqlResults]))
+            exceptionsSeasonList = list(set([int(x["season"]) for x in sqlResults]))
 
             if not indexer_id in exceptionsSeasonCache:
                 exceptionsSeasonCache[indexer_id] = {}
@@ -220,16 +219,16 @@ def get_scene_exception_by_name_multiple(show_name):
             "SELECT indexer_id, season FROM scene_exceptions WHERE LOWER(show_name) = ? ORDER BY season ASC",
             [show_name.lower()])
     if exception_result:
-        return [(int(x[b"indexer_id"]), int(x[b"season"])) for x in exception_result]
+        return [(int(x["indexer_id"]), int(x["season"])) for x in exception_result]
 
     out = []
     all_exception_results = cache_db.CacheDB().select("SELECT show_name, indexer_id, season FROM scene_exceptions")
 
     for cur_exception in all_exception_results:
 
-        cur_exception_name = cur_exception[b"show_name"]
-        cur_indexer_id = int(cur_exception[b"indexer_id"])
-        cur_season = int(cur_exception[b"season"])
+        cur_exception_name = cur_exception["show_name"]
+        cur_indexer_id = int(cur_exception["indexer_id"])
+        cur_season = int(cur_exception["season"])
 
         if show_name.lower() in (
                 cur_exception_name.lower(),
@@ -298,10 +297,10 @@ def _xem_exceptions_fetcher():
                         indexer).name + ", Unable to get URL: " + url)
                 continue
 
-            if parsedJSON[b'result'] == 'failure':
+            if parsedJSON['result'] == 'failure':
                 continue
 
-            for indexerid, names in parsedJSON[b'data'].iteritems():
+            for indexerid, names in parsedJSON['data'].iteritems():
                 try:
                     xem_exception_dict[int(indexerid)] = names
                 except Exception as e:
@@ -323,7 +322,7 @@ def getSceneSeasons(indexer_id):
     """get a list of season numbers that have scene exceptions"""
     seasons = cache_db.CacheDB().select("SELECT DISTINCT season FROM scene_exceptions WHERE indexer_id = ?",
                                         [indexer_id])
-    return [cur_exception[b"season"] for cur_exception in seasons]
+    return [cur_exception["season"] for cur_exception in seasons]
 
 
 def check_against_names(nameInQuestion, show, season=-1):

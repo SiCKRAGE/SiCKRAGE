@@ -22,8 +22,8 @@ import re
 from urllib import urlencode
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class ThePirateBayProvider(TorrentProvider):

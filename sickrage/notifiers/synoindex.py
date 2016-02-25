@@ -22,7 +22,7 @@ import os
 import subprocess
 
 import sickrage
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class synoIndexNotifier(srNotifiers):

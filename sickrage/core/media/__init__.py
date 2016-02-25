@@ -4,8 +4,8 @@ import os
 from mimetypes import guess_type
 
 import sickrage
-from core.exceptions import MultipleShowObjectsException
-from core.helpers import findCertainShow
+from sickrage.core.exceptions import MultipleShowObjectsException
+from sickrage.core.helpers import findCertainShow
 
 class Media(object):
     def __init__(self, indexer_id, media_format=None):

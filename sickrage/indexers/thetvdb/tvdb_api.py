@@ -170,7 +170,7 @@ class Show(dict):
         match, and so on.
 
         Each array index is an Episode() instance, so doing
-        search_results[0][b'episodename'] will retrieve the episode name of the
+        search_results[0]['episodename'] will retrieve the episode name of the
         first match.
 
         Search terms are converted to lower case (unicode) strings.
@@ -296,7 +296,7 @@ class NetworkError(ValueError):
 class Tvdb:
     """Create easy-to-use interface to name of season/episode name
     >>> t = Tvdb()
-    >>> t[b'Scrubs'][1][24][b'episodename']
+    >>> t['Scrubs'][1][24]['episodename']
     'My Last Day'
     """
 
@@ -343,15 +343,15 @@ class Tvdb:
             Retrieves the banners for a show. These are accessed
             via the _banners key of a Show(), for example:
 
-            >>> Tvdb(banners=True)[b'scrubs'][b'_banners'].keys()
-            [b'fanart', 'poster', 'series', 'season']
+            >>> Tvdb(banners=True)['scrubs']['_banners'].keys()
+            ['fanart', 'poster', 'series', 'season']
 
         actors (True/False):
             Retrieves a list of the actors for a show. These are accessed
             via the _actors key of a Show(), for example:
 
             >>> t = Tvdb(actors=True)
-            >>> t[b'scrubs'][b'_actors'][0][b'name']
+            >>> t['scrubs']['_actors'][0]['name']
             'Zach Braff'
 
         custom_ui (tvdb_ui.BaseUI subclass):
@@ -361,8 +361,8 @@ class Tvdb:
             The language of the returned data. Is also the language search
             uses. Default is "en" (English). For full list, run..
 
-            >>> Tvdb().config[b'valid_languages'] #doctest: +ELLIPSIS
-            [b'da', 'fi', 'nl', ...]
+            >>> Tvdb().config['valid_languages'] #doctest: +ELLIPSIS
+            ['da', 'fi', 'nl', ...]
 
         search_all_languages (True/False):
             By default, Tvdb will only search in the language specified using
@@ -396,111 +396,111 @@ class Tvdb:
 
         self.config = {}
 
-        self.config[b'apikey'] = apikey
+        self.config['apikey'] = apikey
 
-        self.config[b'debug_enabled'] = debug  # show debugging messages
+        self.config['debug_enabled'] = debug  # show debugging messages
 
-        self.config[b'custom_ui'] = custom_ui
+        self.config['custom_ui'] = custom_ui
 
-        self.config[b'interactive'] = interactive  # prompt for correct series?
+        self.config['interactive'] = interactive  # prompt for correct series?
 
-        self.config[b'select_first'] = select_first
+        self.config['select_first'] = select_first
 
-        self.config[b'search_all_languages'] = search_all_languages
+        self.config['search_all_languages'] = search_all_languages
 
-        self.config[b'useZip'] = useZip
+        self.config['useZip'] = useZip
 
-        self.config[b'dvdorder'] = dvdorder
+        self.config['dvdorder'] = dvdorder
 
-        self.config[b'proxy'] = proxy
+        self.config['proxy'] = proxy
 
-        self.config[b'headers'] = headers
+        self.config['headers'] = headers
 
-        self.config[b'apitoken'] = apitoken
+        self.config['apitoken'] = apitoken
 
-        self.config[b'apiver'] = apiver
-        self.config[b'api'] = {1: {}, 2: {}}
+        self.config['apiver'] = apiver
+        self.config['api'] = {1: {}, 2: {}}
 
         if cache is True:
-            self.config[b'cache_enabled'] = True
-            self.config[b'cache_location'] = self._getTempDir()
+            self.config['cache_enabled'] = True
+            self.config['cache_location'] = self._getTempDir()
         elif cache is False:
-            self.config[b'cache_enabled'] = False
+            self.config['cache_enabled'] = False
         elif isinstance(cache, basestring):
-            self.config[b'cache_enabled'] = True
-            self.config[b'cache_location'] = cache
+            self.config['cache_enabled'] = True
+            self.config['cache_location'] = cache
         else:
             raise ValueError("Invalid value for Cache %r (type was {})".format(cache, type(cache)))
 
-        self.config[b'session'] = requests.Session()
+        self.config['session'] = requests.Session()
 
-        self.config[b'banners_enabled'] = banners
-        self.config[b'actors_enabled'] = actors
+        self.config['banners_enabled'] = banners
+        self.config['actors_enabled'] = actors
 
-        self.config[b'valid_languages'] = [
+        self.config['valid_languages'] = [
             "da", "fi", "nl", "de", "it", "es", "fr", "pl", "hu", "el", "tr",
             "ru", "he", "ja", "pt", "zh", "cs", "sl", "hr", "ko", "en", "sv", "no"
         ]
 
-        self.config[b'langabbv_to_id'] = {'el': 20, 'en': 7, 'zh': 27,
+        self.config['langabbv_to_id'] = {'el': 20, 'en': 7, 'zh': 27,
                                           'it': 15, 'cs': 28, 'es': 16, 'ru': 22, 'nl': 13, 'pt': 26, 'no': 9,
                                           'tr': 21, 'pl': 18, 'fr': 17, 'hr': 31, 'de': 14, 'da': 10, 'fi': 11,
                                           'hu': 19, 'ja': 25, 'he': 24, 'ko': 32, 'sv': 8, 'sl': 30}
-        self.config[b'language'] = language
-        if language not in self.config[b'valid_languages']:
-            self.config[b'language'] = 'all'
+        self.config['language'] = language
+        if language not in self.config['valid_languages']:
+            self.config['language'] = 'all'
 
         # api base urls
-        self.config[b'api'][1][b'base'] = "http://thetvdb.com"
-        self.config[b'api'][2][b'base'] = "https://api-beta.thetvdb.com"
+        self.config['api'][1]['base'] = "http://thetvdb.com"
+        self.config['api'][2]['base'] = "https://api-beta.thetvdb.com"
 
         # api-v1 urls
-        self.config[b'api'][1][b'getSeries'] = "{base}/api/GetSeries.php?seriesname={{}}".format(
-                base=self.config[b'api'][1][b'base'])
-        self.config[b'api'][1][b'epInfo'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.xml".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][1][b'epInfo_zip'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.zip".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][1][b'seriesInfo'] = "{base}/api/{apikey}/series/{{}}/{{}}.xml".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][1][b'actorsInfo'] = "{base}/api/{apikey}/series/{{}}/actors.xml".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][1][b'seriesBanner'] = "{base}/api/{apikey}/series/{{}}/banners.xml".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][1][b'artworkPrefix'] = "{base}/banners/{{}}".format(base=self.config[b'api'][1][b'base'])
-        self.config[b'api'][1][b'updates_all'] = "{base}/api/{apikey}/updates_all.zip".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][1][b'updates_month'] = "{base}/api/{apikey}/updates_month.zip".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][1][b'updates_week'] = "{base}/api/{apikey}/updates_week.zip".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][1][b'updates_day'] = "{base}/api/{apikey}/updates_day.zip".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config['api'][1]['getSeries'] = "{base}/api/GetSeries.php?seriesname={{}}".format(
+                base=self.config['api'][1]['base'])
+        self.config['api'][1]['epInfo'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.xml".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][1]['epInfo_zip'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.zip".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][1]['seriesInfo'] = "{base}/api/{apikey}/series/{{}}/{{}}.xml".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][1]['actorsInfo'] = "{base}/api/{apikey}/series/{{}}/actors.xml".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][1]['seriesBanner'] = "{base}/api/{apikey}/series/{{}}/banners.xml".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][1]['artworkPrefix'] = "{base}/banners/{{}}".format(base=self.config['api'][1]['base'])
+        self.config['api'][1]['updates_all'] = "{base}/api/{apikey}/updates_all.zip".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][1]['updates_month'] = "{base}/api/{apikey}/updates_month.zip".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][1]['updates_week'] = "{base}/api/{apikey}/updates_week.zip".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][1]['updates_day'] = "{base}/api/{apikey}/updates_day.zip".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
 
         # api-v2 urls
-        self.config[b'api'][2][b'login'] = '{base}/login'.format(base=self.config[b'api'][2][b'base'])
-        self.config[b'api'][2][b'refresh'] = '{base}/refresh_token'.format(base=self.config[b'api'][2][b'base'])
-        self.config[b'api'][2][b'getSeries'] = "{base}/search/series?name={{}}".format(
-                base=self.config[b'api'][2][b'base'])
-        self.config[b'api'][2][b'epInfo'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.xml".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][2][b'epInfo_zip'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.zip".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][2][b'seriesInfo'] = "{base}/api/{apikey}/series/{{}}/{{}}.xml".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][2][b'actorsInfo'] = "{base}/api/{apikey}/series/{{}}/actors.xml".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][2][b'seriesBanner'] = "{base}/api/{apikey}/series/{{}}/banners.xml".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][2][b'artworkPrefix'] = "{base}/banners/{{}}".format(base=self.config[b'api'][1][b'base'])
-        self.config[b'api'][2][b'updates_all'] = "{base}/api/{apikey}/updates_all.zip".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][2][b'updates_month'] = "{base}/api/{apikey}/updates_month.zip".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][2][b'updates_week'] = "{base}/api/{apikey}/updates_week.zip".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
-        self.config[b'api'][2][b'updates_day'] = "{base}/api/{apikey}/updates_day.zip".format(
-                base=self.config[b'api'][1][b'base'], apikey=self.config[b'apikey'])
+        self.config['api'][2]['login'] = '{base}/login'.format(base=self.config['api'][2]['base'])
+        self.config['api'][2]['refresh'] = '{base}/refresh_token'.format(base=self.config['api'][2]['base'])
+        self.config['api'][2]['getSeries'] = "{base}/search/series?name={{}}".format(
+                base=self.config['api'][2]['base'])
+        self.config['api'][2]['epInfo'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.xml".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][2]['epInfo_zip'] = "{base}/api/{apikey}/series/{{}}/all/{{}}.zip".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][2]['seriesInfo'] = "{base}/api/{apikey}/series/{{}}/{{}}.xml".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][2]['actorsInfo'] = "{base}/api/{apikey}/series/{{}}/actors.xml".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][2]['seriesBanner'] = "{base}/api/{apikey}/series/{{}}/banners.xml".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][2]['artworkPrefix'] = "{base}/banners/{{}}".format(base=self.config['api'][1]['base'])
+        self.config['api'][2]['updates_all'] = "{base}/api/{apikey}/updates_all.zip".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][2]['updates_month'] = "{base}/api/{apikey}/updates_month.zip".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][2]['updates_week'] = "{base}/api/{apikey}/updates_week.zip".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
+        self.config['api'][2]['updates_day'] = "{base}/api/{apikey}/updates_day.zip".format(
+                base=self.config['api'][1]['base'], apikey=self.config['apikey'])
 
     def _getTempDir(self):
         """Returns the [system temp dir]/thetvdb-u501 (or
@@ -522,14 +522,14 @@ class Tvdb:
         timeout = 10
 
         try:
-            if refresh and self.config[b'apitoken']:
-                jwtResp.update(**requests.post(self.config[b'api'][self.config[b'apiver']][b'refresh'],
+            if refresh and self.config['apitoken']:
+                jwtResp.update(**requests.post(self.config['api'][self.config['apiver']]['refresh'],
                                                headers={'Content-type': 'application/json'},
                                                timeout=timeout
                                                ).json())
-            elif not self.config[b'apitoken']:
-                jwtResp.update(**requests.post(self.config[b'api'][self.config[b'apiver']][b'login'],
-                                               data=json.dumps(dict(apikey=self.config[b'apikey'])),
+            elif not self.config['apitoken']:
+                jwtResp.update(**requests.post(self.config['api'][self.config['apiver']]['login'],
+                                               data=json.dumps(dict(apikey=self.config['apikey'])),
                                                headers={'Content-type': 'application/json'},
                                                timeout=timeout
                                                ).json())
@@ -537,9 +537,9 @@ class Tvdb:
             pass
 
         if jwtResp.get('token'):
-            self.config[b'apitoken'] = jwtResp[b'token']
+            self.config['apitoken'] = jwtResp['token']
 
-        return self.config[b'apitoken']
+        return self.config['apitoken']
 
     @retry(tvdb_error)
     def _loadUrl(self, url, params=None, language=None):
@@ -547,32 +547,32 @@ class Tvdb:
 
         try:
             # get api v2 token
-            if self.config[b'apiver'] == 2:
+            if self.config['apiver'] == 2:
                 self.getToken()
 
-            self.config[b'headers'].update({
-                'Authorization': 'Bearer {}'.format(self.config[b'apitoken']),
-                'Accept-Language': self.config[b'language']
+            self.config['headers'].update({
+                'Authorization': 'Bearer {}'.format(self.config['apitoken']),
+                'Accept-Language': self.config['language']
             })
 
             sickrage.srLogger.debug("Retrieving URL {}".format(url))
 
             # get response from TVDB
-            if self.config[b'cache_enabled']:
+            if self.config['cache_enabled']:
 
-                session = cachecontrol.CacheControl(sess=self.config[b'session'], cache=cachecontrol.caches.FileCache(
-                        self.config[b'cache_location'], use_dir_lock=True), cache_etags=False)
+                session = cachecontrol.CacheControl(sess=self.config['session'], cache=cachecontrol.caches.FileCache(
+                        self.config['cache_location'], use_dir_lock=True), cache_etags=False)
 
-                if self.config[b'proxy']:
+                if self.config['proxy']:
                     sickrage.srLogger.debug("Using proxy for URL: {}".format(url))
                     session.proxies = {
-                        "http": self.config[b'proxy'],
-                        "https": self.config[b'proxy'],
+                        "http": self.config['proxy'],
+                        "https": self.config['proxy'],
                     }
-                session.headers.update(self.config[b'headers'])
+                session.headers.update(self.config['headers'])
                 resp = session.get(url.strip(), params=params, timeout=sickrage.srConfig.INDEXER_TIMEOUT)
             else:
-                resp = requests.get(url.strip(), params=params, headers=self.config[b'headers'],
+                resp = requests.get(url.strip(), params=params, headers=self.config['headers'],
                                     timeout=sickrage.srConfig.INDEXER_TIMEOUT)
 
             resp.raise_for_status()
@@ -634,14 +634,14 @@ class Tvdb:
         """Creates a new episode, creating Show(), Season() and
         Episode()s as required. Called by _getShowData to populate show
 
-        Since the nice-to-use tvdb[1][24][b'name] interface
-        makes it impossible to do tvdb[1][24][b'name] = "name"
+        Since the nice-to-use tvdb[1][24]['name] interface
+        makes it impossible to do tvdb[1][24]['name] = "name"
         and still be capable of checking if an episode exists
         so we can raise tvdb_shownotfound, we have a slightly
         less pretty method of setting items.. but since the API
         is supposed to be read-only, this is the best way to
         do it!
-        The problem is that calling tvdb[1][24][b'episodename'] = "name"
+        The problem is that calling tvdb[1][24]['episodename'] = "name"
         calls __getitem__ on tvdb[1], there is no way to check if
         tvdb.__dict__ should have a key "1" before we auto-create it
         """
@@ -676,7 +676,7 @@ class Tvdb:
         """
         # series = series.encode("utf-8")
         sickrage.srLogger.debug("Searching for show {}".format(series))
-        return self._getetsrc(self.config[b'api'][self.config[b'apiver']][b'getSeries'].format(series))
+        return self._getetsrc(self.config['api'][self.config['apiver']]['getSeries'].format(series))
 
     def _getSeries(self, series):
         """This searches TheTVDB.com for the series name,
@@ -689,12 +689,12 @@ class Tvdb:
             sickrage.srLogger.debug('Series result returned zero')
             raise tvdb_shownotfound("Show search returned zero results (cannot find show on TVDB)")
 
-        if self.config[b'custom_ui'] is not None:
-            sickrage.srLogger.debug("Using custom UI {}".format(repr(self.config[b'custom_ui'])))
-            CustomUI = self.config[b'custom_ui']
+        if self.config['custom_ui'] is not None:
+            sickrage.srLogger.debug("Using custom UI {}".format(repr(self.config['custom_ui'])))
+            CustomUI = self.config['custom_ui']
             ui = CustomUI(config=self.config)
         else:
-            if not self.config[b'interactive']:
+            if not self.config['interactive']:
                 sickrage.srLogger.debug('Auto-selecting first search result using BaseUI')
                 ui = BaseUI(config=self.config)
             else:
@@ -707,12 +707,12 @@ class Tvdb:
         """Parses banners XML, from
         http://thetvdb.com/api/[APIKEY]/series/[SERIES ID]/banners.xml
 
-        Banners are retrieved using t[b'show name][b'_banners'], for example:
+        Banners are retrieved using t['show name]['_banners'], for example:
 
         >>> t = Tvdb(banners = True)
-        >>> t[b'scrubs'][b'_banners'].keys()
-        [b'fanart', 'poster', 'series', 'season']
-        >>> t[b'scrubs'][b'_banners'][b'poster'][b'680x1000'][b'35308'][b'_bannerpath']
+        >>> t['scrubs']['_banners'].keys()
+        ['fanart', 'poster', 'series', 'season']
+        >>> t['scrubs']['_banners']['poster']['680x1000']['35308']['_bannerpath']
         'http://thetvdb.com/banners/posters/76156-2.jpg'
         >>>
 
@@ -722,17 +722,17 @@ class Tvdb:
         This interface will be improved in future versions.
         """
         sickrage.srLogger.debug('Getting season banners for {}'.format(sid))
-        bannersEt = self._getetsrc(self.config[b'api'][self.config[b'apiver']][b'seriesBanner'].format(sid))
+        bannersEt = self._getetsrc(self.config['api'][self.config['apiver']]['seriesBanner'].format(sid))
 
         if not bannersEt:
             sickrage.srLogger.debug('Banners result returned zero')
             return
 
         banners = {}
-        for cur_banner in bannersEt[b'banner'] if isinstance(bannersEt[b'banner'], list) else [bannersEt[b'banner']]:
-            bid = cur_banner[b'id']
-            btype = cur_banner[b'bannertype']
-            btype2 = cur_banner[b'bannertype2']
+        for cur_banner in bannersEt['banner'] if isinstance(bannersEt['banner'], list) else [bannersEt['banner']]:
+            bid = cur_banner['id']
+            btype = cur_banner['bannertype']
+            btype2 = cur_banner['bannertype2']
             if btype is None or btype2 is None:
                 continue
             if not btype in banners:
@@ -752,7 +752,7 @@ class Tvdb:
             for k, v in banners[btype][btype2][bid].items():
                 if k.endswith("path"):
                     new_key = "_{}".format(k)
-                    new_url = self.config[b'api'][self.config[b'apiver']][b'artworkPrefix'].format(v)
+                    new_url = self.config['api'][self.config['apiver']]['artworkPrefix'].format(v)
                     banners[btype][btype2][bid][new_key] = new_url
 
         self._setShowData(sid, "_banners", banners)
@@ -761,10 +761,10 @@ class Tvdb:
         """Parsers actors XML, from
         http://thetvdb.com/api/[APIKEY]/series/[SERIES ID]/actors.xml
 
-        Actors are retrieved using t[b'show name][b'_actors'], for example:
+        Actors are retrieved using t['show name]['_actors'], for example:
 
         >>> t = Tvdb(actors = True)
-        >>> actors = t[b'scrubs'][b'_actors']
+        >>> actors = t['scrubs']['_actors']
         >>> type(actors)
         <class 'thetvdb.Actors'>
         >>> type(actors[0])
@@ -772,24 +772,24 @@ class Tvdb:
         >>> actors[0]
         <Actor "Zach Braff">
         >>> sorted(actors[0].keys())
-        [b'id', 'image', 'name', 'role', 'sortorder']
-        >>> actors[0][b'name']
+        ['id', 'image', 'name', 'role', 'sortorder']
+        >>> actors[0]['name']
         'Zach Braff'
-        >>> actors[0][b'image']
+        >>> actors[0]['image']
         'http://thetvdb.com/banners/actors/43640.jpg'
 
         Any key starting with an underscore has been processed (not the raw
         data from the XML)
         """
         sickrage.srLogger.debug("Getting actors for {}".format(sid))
-        actorsEt = self._getetsrc(self.config[b'api'][self.config[b'apiver']][b'actorsInfo'].format(sid))
+        actorsEt = self._getetsrc(self.config['api'][self.config['apiver']]['actorsInfo'].format(sid))
 
         if not actorsEt:
             sickrage.srLogger.debug('Actors result returned zero')
             return
 
         cur_actors = Actors()
-        for cur_actor in actorsEt[b'actor'] if isinstance(actorsEt[b'actor'], list) else [actorsEt[b'actor']]:
+        for cur_actor in actorsEt['actor'] if isinstance(actorsEt['actor'], list) else [actorsEt['actor']]:
             curActor = Actor()
             for k, v in cur_actor.items():
                 if k is None or v is None:
@@ -797,7 +797,7 @@ class Tvdb:
 
                 k = k.lower()
                 if k == "image":
-                    v = self.config[b'api'][self.config[b'apiver']][b'artworkPrefix'].format(v)
+                    v = self.config['api'][self.config['apiver']]['artworkPrefix'].format(v)
                 else:
                     v = self._cleanData(v)
 
@@ -811,24 +811,24 @@ class Tvdb:
         shows[series_id][season_number][episode_number]
         """
 
-        if self.config[b'language'] is None:
+        if self.config['language'] is None:
             sickrage.srLogger.debug('Config language is none, using show language')
             if language is None:
-                raise tvdb_error("config[b'language'] was None, this should not happen")
+                raise tvdb_error("config['language'] was None, this should not happen")
             getShowInLanguage = language
         else:
             sickrage.srLogger.debug(
                     'Configured language {} override show language of {}'.format(
-                            self.config[b'language'],
+                            self.config['language'],
                             language
                     )
             )
-            getShowInLanguage = self.config[b'language']
+            getShowInLanguage = self.config['language']
 
         # Parse show information
         sickrage.srLogger.debug('Getting all series data for {}'.format(sid))
         seriesInfoEt = self._getetsrc(
-                self.config[b'api'][self.config[b'apiver']][b'seriesInfo'].format(sid, getShowInLanguage)
+                self.config['api'][self.config['apiver']]['seriesInfo'].format(sid, getShowInLanguage)
         )
 
         if not seriesInfoEt:
@@ -836,10 +836,10 @@ class Tvdb:
             raise tvdb_error("Series result returned zero")
 
         # get series data
-        for k, v in seriesInfoEt[b'series'].items():
+        for k, v in seriesInfoEt['series'].items():
             if v is not None:
                 if k in ['banner', 'fanart', 'poster']:
-                    v = self.config[b'api'][self.config[b'apiver']][b'artworkPrefix'].format(v)
+                    v = self.config['api'][self.config['apiver']]['artworkPrefix'].format(v)
                 else:
                     v = self._cleanData(v)
 
@@ -848,19 +848,19 @@ class Tvdb:
         # get episode data
         if getEpInfo:
             # Parse banners
-            if self.config[b'banners_enabled']:
+            if self.config['banners_enabled']:
                 self._parseBanners(sid)
 
             # Parse actors
-            if self.config[b'actors_enabled']:
+            if self.config['actors_enabled']:
                 self._parseActors(sid)
 
             # Parse episode data
             sickrage.srLogger.debug('Getting all episodes of {}'.format(sid))
-            if self.config[b'useZip']:
-                url = self.config[b'api'][self.config[b'apiver']][b'epInfo_zip'].format(sid, language)
+            if self.config['useZip']:
+                url = self.config['api'][self.config['apiver']]['epInfo_zip'].format(sid, language)
             else:
-                url = self.config[b'api'][self.config[b'apiver']][b'epInfo'].format(sid, language)
+                url = self.config['api'][self.config['apiver']]['epInfo'].format(sid, language)
             epsEt = self._getetsrc(url, language=language)
 
             if not epsEt:
@@ -870,21 +870,21 @@ class Tvdb:
             if 'episode' not in epsEt:
                 return False
 
-            episodes = epsEt[b'episode']
+            episodes = epsEt['episode']
             if not isinstance(episodes, list):
                 episodes = [episodes]
 
             for cur_ep in episodes:
-                if self.config[b'dvdorder']:
+                if self.config['dvdorder']:
                     sickrage.srLogger.debug('Using DVD ordering.')
-                    use_dvd = cur_ep[b'dvd_season'] is not None and cur_ep[b'dvd_episodenumber'] is not None
+                    use_dvd = cur_ep['dvd_season'] is not None and cur_ep['dvd_episodenumber'] is not None
                 else:
                     use_dvd = False
 
                 if use_dvd:
-                    seasnum, epno = cur_ep[b'dvd_season'], cur_ep[b'dvd_episodenumber']
+                    seasnum, epno = cur_ep['dvd_season'], cur_ep['dvd_episodenumber']
                 else:
-                    seasnum, epno = cur_ep[b'seasonnumber'], cur_ep[b'episodenumber']
+                    seasnum, epno = cur_ep['seasonnumber'], cur_ep['episodenumber']
 
                 if seasnum is None or epno is None:
                     sickrage.srLogger.warning(
@@ -901,7 +901,7 @@ class Tvdb:
 
                     if v is not None:
                         if k == 'filename':
-                            v = self.config[b'api'][self.config[b'apiver']][b'artworkPrefix'].format(v)
+                            v = self.config['api'][self.config['apiver']]['artworkPrefix'].format(v)
                         else:
                             v = self._cleanData(v)
 
@@ -922,26 +922,26 @@ class Tvdb:
             selected_series = self._getSeries(name)
             if isinstance(selected_series, dict):
                 selected_series = [selected_series]
-            sids = list(int(x[b'id']) for x in selected_series if
-                        self._getShowData(int(x[b'id']), self.config[b'language']))
-            self.corrections.update(dict((x[b'seriesname'], int(x[b'id'])) for x in selected_series))
+            sids = list(int(x['id']) for x in selected_series if
+                        self._getShowData(int(x['id']), self.config['language']))
+            self.corrections.update(dict((x['seriesname'], int(x['id'])) for x in selected_series))
             return sids
 
     def __getitem__(self, key):
-        """Handles tvdb_instance[b'seriesname'] calls.
+        """Handles tvdb_instance['seriesname'] calls.
         The dict index should be the show id
         """
         if isinstance(key, (int, long)):
             # Item is integer, treat as show id
             if key not in self.shows:
-                self._getShowData(key, self.config[b'language'], True)
+                self._getShowData(key, self.config['language'], True)
             return self.shows[key]
 
-        self.config[b'searchterm'] = key
+        self.config['searchterm'] = key
         selected_series = self._getSeries(key)
         if isinstance(selected_series, dict):
             selected_series = [selected_series]
-        [[self._setShowData(show[b'id'], k, v) for k, v in show.items()] for show in selected_series]
+        [[self._setShowData(show['id'], k, v) for k, v in show.items()] for show in selected_series]
         return selected_series
 
     def __repr__(self):

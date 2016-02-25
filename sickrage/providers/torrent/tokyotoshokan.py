@@ -22,9 +22,9 @@ import traceback
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import show_names, bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import show_names, bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class TokyoToshokanProvider(TorrentProvider):

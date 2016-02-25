@@ -22,9 +22,9 @@ import re
 import traceback
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class HoundDawgsProvider(TorrentProvider):
@@ -99,7 +99,7 @@ class HoundDawgsProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
-                self.search_params[b'searchstr'] = search_string
+                self.search_params['searchstr'] = search_string
 
                 data = self.getURL(self.urls['search'], params=self.search_params)
                 startTableIndex = data.find("<table class=\"torrent_table")
@@ -128,7 +128,7 @@ class HoundDawgsProvider(TorrentProvider):
                             allAs = (torrent[1]).find_all('a')
 
                             try:
-                                # link = self.urls['base_url'] + allAs[2].attrs[b'href']
+                                # link = self.urls['base_url'] + allAs[2].attrs['href']
                                 # url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
                                 title = allAs[2].string
                                 # Trimming title so accepted by scene check(Feature has been rewuestet i forum)
@@ -142,7 +142,7 @@ class HoundDawgsProvider(TorrentProvider):
                                 title = title.replace("SUBS.", "")
                                 title = title.replace("Subs.", "")
 
-                                download_url = self.urls['base_url'] + allAs[0].attrs[b'href']
+                                download_url = self.urls['base_url'] + allAs[0].attrs['href']
                                 # FIXME
                                 size = -1
                                 seeders = 1

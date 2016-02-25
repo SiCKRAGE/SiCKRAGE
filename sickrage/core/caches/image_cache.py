@@ -28,9 +28,9 @@ from hachoir_metadata import extractMetadata
 from hachoir_parser import guessParser
 
 import sickrage
-from core.exceptions import ShowDirectoryNotFoundException
-from core.helpers import copyFile
-from metadata import GenericMetadata
+from sickrage.core.exceptions import ShowDirectoryNotFoundException
+from sickrage.core.helpers import copyFile
+from sickrage.metadata import GenericMetadata
 
 
 class ImageCache(object):

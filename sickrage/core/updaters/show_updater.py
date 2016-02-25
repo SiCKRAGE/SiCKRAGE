@@ -22,11 +22,11 @@ import threading
 from datetime import datetime
 
 import sickrage
-from core.databases import main_db
-from core.exceptions import CantRefreshShowException, \
+from sickrage.core.databases import main_db
+from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException
-from core.tv.show.history import FailedHistory
-from core.ui import ProgressIndicators, QueueProgressIndicator
+from sickrage.core.tv.show.history import FailedHistory
+from sickrage.core.ui import ProgressIndicators, QueueProgressIndicator
 
 
 class srShowUpdater(object):
@@ -40,6 +40,9 @@ class srShowUpdater(object):
             return
 
         self.amActive = True
+
+        # set thread name
+        threading.currentThread().setName(self.name)
 
         update_datetime = datetime.datetime.now()
         update_date = update_datetime.date()
@@ -59,7 +62,7 @@ class srShowUpdater(object):
                 [stale_update_date])
 
         for cur_result in sql_result:
-            stale_should_update.append(int(cur_result[b'indexer_id']))
+            stale_should_update.append(int(cur_result['indexer_id']))
 
         # start update process
         piList = []

@@ -25,9 +25,9 @@ from ssl import SSLError
 from urllib import urlencode
 
 import sickrage
-from core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
+from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class PushalotNotifier(srNotifiers):

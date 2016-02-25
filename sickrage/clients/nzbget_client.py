@@ -22,13 +22,12 @@ from __future__ import unicode_literals
 import httplib
 import xmlrpclib
 from base64 import standard_b64encode
-
 from datetime import date, timedelta
 
 import sickrage
-from core.common import Quality
-from core.helpers import tryInt
-from providers import GenericProvider
+from sickrage.core.common import Quality
+from sickrage.core.helpers import tryInt
+from sickrage.providers import GenericProvider
 
 
 class NZBGet(object):

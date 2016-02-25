@@ -24,23 +24,22 @@ import os
 import re
 import threading
 import traceback
-
 from datetime import date, timedelta
 
 import sickrage
-from clients import getClientIstance
-from clients.nzbget_client import NZBGet
-from clients.sabnzbd_client import SabNZBd
-from core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
+from sickrage.clients import getClientIstance
+from sickrage.clients.nzbget_client import NZBGet
+from sickrage.clients.sabnzbd_client import SabNZBd
+from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
     SNATCHED_PROPER, SNATCHED, DOWNLOADED, WANTED, MULTI_EP_RESULT
-from core.databases import main_db
-from core.exceptions import AuthException
-from core.helpers import show_names, chmodAsParent
-from core.nzbSplitter import splitNZBResult
-from core.tv.show.history import FailedHistory, History
-from core.ui import notifications
-from notifiers import srNotifiers
-from providers import sortedProviderDict, GenericProvider
+from sickrage.core.databases import main_db
+from sickrage.core.exceptions import AuthException
+from sickrage.core.helpers import show_names, chmodAsParent
+from sickrage.core.nzbSplitter import splitNZBResult
+from sickrage.core.tv.show.history import FailedHistory, History
+from sickrage.core.ui import notifications
+from sickrage.notifiers import srNotifiers
+from sickrage.providers import GenericProvider
 
 
 def _downloadResult(result):
@@ -179,13 +178,13 @@ def snatchEpisode(result, endStatus=SNATCHED):
 
             trakt_data.append((curEpObj.season, curEpObj.episode))
 
-    data = sickrage.srCore.NOTIFIERS.trakt_notifier.trakt_episode_data_generate(trakt_data)
+    data = sickrage.srCore.notifiersDict.trakt_notifier.trakt_episode_data_generate(trakt_data)
 
     if sickrage.srConfig.USE_TRAKT and sickrage.srConfig.TRAKT_SYNC_WATCHLIST:
         sickrage.srLogger.debug("Add episodes, showid: indexerid " + str(result.show.indexerid) + ", Title " + str(
                 result.show.name) + " to Traktv Watchlist")
         if data:
-            sickrage.srCore.NOTIFIERS.trakt_notifier.update_watchlist(result.show, data_episode=data, update="add")
+            sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(result.show, data_episode=data, update="add")
 
     if len(sql_l) > 0:
         main_db.MainDB().mass_upsert(sql_l)
@@ -345,7 +344,7 @@ def wantedEpisodes(show, fromDate):
     # check through the list of statuses to see if we want any
     wanted = []
     for result in sqlResults:
-        curCompositeStatus = int(result[b"status"] or -1)
+        curCompositeStatus = int(result["status"] or -1)
         curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
 
         if bestQualities:
@@ -356,7 +355,7 @@ def wantedEpisodes(show, fromDate):
         # if we need a better one then say yes
         if (curStatus in (DOWNLOADED, SNATCHED,
                           SNATCHED_PROPER) and curQuality < highestBestQuality) or curStatus == WANTED:
-            epObj = show.getEpisode(int(result[b"season"]), int(result[b"episode"]))
+            epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
             epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != Quality.UNKNOWN)]
             wanted.append(epObj)
 
@@ -381,13 +380,13 @@ def searchForNeededEpisodes():
             if not curShow.paused:
                 episodes.extend(wantedEpisodes(curShow, fromDate))
 
-    # list of providers
-    providers = {k: v for k, v in sortedProviderDict(sickrage.srConfig.RANDOMIZE_PROVIDERS).items() if v.isActive}
-
     # perform provider searchers
     def perform_searches():
         didSearch = False
-        for providerID, providerObj in providers.items():
+        for providerID, providerObj in sickrage.srCore.providersDict.sort(randomize=sickrage.srConfig.RANDOMIZE_PROVIDERS).items():
+            if not providerObj.isEnabled:
+                continue
+
             threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
             try:
@@ -446,14 +445,15 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
 
     origThreadName = threading.currentThread().getName()
 
-    providers = {k: v for k, v in sortedProviderDict(sickrage.srConfig.RANDOMIZE_PROVIDERS).items() if v.isActive}
-
     def perform_searches():
 
         finalResults = []
         didSearch = False
 
-        for providerID, providerObj in providers.items():
+        for providerID, providerObj in sickrage.srCore.providersDict.sort(randomize=sickrage.srConfig.RANDOMIZE_PROVIDERS).items():
+            if not providerObj.isEnabled:
+                continue
+
             if providerObj.anime_only and not show.is_anime:
                 sickrage.srLogger.debug("" + str(show.name) + " is not an anime, skiping")
                 continue
@@ -536,7 +536,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
                         Quality.qualityStrings[
                             seasonQual])
 
-                allEps = [int(x[b"episode"])
+                allEps = [int(x["episode"])
                           for x in main_db.MainDB().select(
                             "SELECT episode FROM tv_episodes WHERE showid = ? AND ( season IN ( " + ','.join(
                                     searchedSeasons) + " ) )",

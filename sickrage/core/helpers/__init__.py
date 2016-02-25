@@ -30,11 +30,11 @@ import six
 from bs4 import BeautifulSoup
 
 import sickrage
-from clients import http_error_code
-from core.exceptions import MultipleShowObjectsException
-from core.helpers.sessions import _setUpSession
-from indexers import adba
-from indexers.indexer_exceptions import indexer_episodenotfound, \
+from sickrage.clients import http_error_code
+from sickrage.core.exceptions import MultipleShowObjectsException
+from sickrage.core.helpers.sessions import _setUpSession
+from sickrage.indexers import adba
+from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_seasonnotfound
 
 mediaExtensions = [
@@ -386,7 +386,7 @@ def makeDir(path):
     if not os.path.isdir(path):
         try:
             os.makedirs(path)
-            sickrage.srCore.NOTIFIERS.synoindex_notifier.addFolder(path)
+            sickrage.srCore.notifiersDict.synoindex_notifier.addFolder(path)
         except OSError:
             return False
     return True
@@ -410,7 +410,7 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
         # Query Indexers for each search term and build the list of results
         lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(i).api_params.copy()
         if ui is not None:
-            lINDEXER_API_PARMS[b'custom_ui'] = ui
+            lINDEXER_API_PARMS['custom_ui'] = ui
         t = sickrage.srCore.INDEXER_API(i).indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
@@ -422,12 +422,12 @@ def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
                 continue
 
             try:
-                seriesname = search[0][b'seriesname']
+                seriesname = search[0]['seriesname']
             except Exception:
                 seriesname = None
 
             try:
-                series_id = search[0][b'id']
+                series_id = search[0]['id']
             except Exception:
                 series_id = None
 
@@ -610,7 +610,7 @@ def make_dirs(path):
                     # use normpath to remove end separator, otherwise checks permissions against itself
                     chmodAsParent(os.path.normpath(sofar))
                     # do the library update for synoindex
-                    sickrage.srCore.NOTIFIERS.synoindex_notifier.addFolder(sofar)
+                    sickrage.srCore.notifiersDict.synoindex_notifier.addFolder(sofar)
                 except (OSError, IOError) as e:
                     sickrage.srLogger.error("Failed creating %s : %r" % (sofar, e))
                     return False
@@ -692,7 +692,7 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
                     os.rmdir(check_empty_dir)
 
                     # do the library update for synoindex
-                    sickrage.srCore.NOTIFIERS.synoindex_notifier.deleteFolder(check_empty_dir)
+                    sickrage.srCore.notifiersDict.synoindex_notifier.deleteFolder(check_empty_dir)
                 except OSError as e:
                     sickrage.srLogger.warning("Unable to delete %s. Error: %r" % (check_empty_dir, repr(e)))
                     raise StopIteration
@@ -1108,10 +1108,10 @@ def validateShow(show, season=None, episode=None):
         lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(show.indexer).api_params.copy()
 
         if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
-            lINDEXER_API_PARMS[b'language'] = indexer_lang
+            lINDEXER_API_PARMS['language'] = indexer_lang
 
         if show.dvdorder != 0:
-            lINDEXER_API_PARMS[b'dvdorder'] = True
+            lINDEXER_API_PARMS['dvdorder'] = True
 
         t = sickrage.srCore.INDEXER_API(show.indexer).indexer(**lINDEXER_API_PARMS)
         if season is None and episode is None:

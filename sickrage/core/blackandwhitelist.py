@@ -21,9 +21,9 @@
 from __future__ import unicode_literals
 
 import sickrage
-from core.databases import main_db
-from core.helpers import set_up_anidb_connection
-from indexers.adba.aniDBerrors import AniDBCommandTimeoutError
+from sickrage.core.databases import main_db
+from sickrage.core.helpers import set_up_anidb_connection
+from sickrage.indexers.adba.aniDBerrors import AniDBCommandTimeoutError
 
 
 class BlackAndWhiteList(object):
@@ -98,7 +98,7 @@ class BlackAndWhiteList(object):
             return []
         groups = []
         for result in sqlResults:
-            groups.append(result[b"keyword"])
+            groups.append(result["keyword"])
 
         sickrage.srLogger.debug('BWL: ' + str(self.show_id) + ' loaded keywords from ' + table + ': ' + str(groups))
 
@@ -162,8 +162,8 @@ def short_group_names(groups):
                 sickrage.srLogger.debug("Failed while loading group from AniDB. Trying next group")
             else:
                 for line in group.datalines:
-                    if line[b"shortname"]:
-                        shortGroupList.append(line[b"shortname"])
+                    if line["shortname"]:
+                        shortGroupList.append(line["shortname"])
                     else:
                         if groupName not in shortGroupList:
                             shortGroupList.append(groupName)

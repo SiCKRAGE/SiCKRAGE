@@ -29,8 +29,8 @@ from email.mime.text import MIMEText
 from email.utils import formatdate
 
 import sickrage
-from core.databases import main_db
-from notifiers import srNotifiers
+from sickrage.core.databases import main_db
+from sickrage.notifiers import srNotifiers
 
 
 class EmailNotifier(srNotifiers):
@@ -39,10 +39,10 @@ class EmailNotifier(srNotifiers):
 
     def test_notify(self, host, port, smtp_from, use_tls, user, pwd, to):
         msg = MIMEText('This is a test message from SiCKRAGE.  If you\'re reading this, the test succeeded.')
-        msg[b'Subject'] = 'SiCKRAGE: Test Message'
-        msg[b'From'] = smtp_from
-        msg[b'To'] = to
-        msg[b'Date'] = formatdate(localtime=True)
+        msg['Subject'] = 'SiCKRAGE: Test Message'
+        msg['From'] = smtp_from
+        msg['To'] = to
+        msg['Date'] = formatdate(localtime=True)
         return self._sendmail(host, port, smtp_from, use_tls, user, pwd, [to], msg, True)
 
     def _notify_snatch(self, ep_name, title="Snatched:"):
@@ -74,10 +74,10 @@ class EmailNotifier(srNotifiers):
                     except:
                         msg = MIMEText("Episode Snatched")
 
-                msg[b'Subject'] = 'Snatched: ' + ep_name
-                msg[b'From'] = sickrage.srConfig.EMAIL_FROM
-                msg[b'To'] = ','.join(to)
-                msg[b'Date'] = formatdate(localtime=True)
+                msg['Subject'] = 'Snatched: ' + ep_name
+                msg['From'] = sickrage.srConfig.EMAIL_FROM
+                msg['To'] = ','.join(to)
+                msg['Date'] = formatdate(localtime=True)
                 if self._sendmail(sickrage.srConfig.EMAIL_HOST, sickrage.srConfig.EMAIL_PORT, sickrage.srConfig.EMAIL_FROM,
                                   sickrage.srConfig.EMAIL_TLS,
                                   sickrage.srConfig.EMAIL_USER, sickrage.srConfig.EMAIL_PASSWORD, to, msg):
@@ -114,10 +114,10 @@ class EmailNotifier(srNotifiers):
                     except:
                         msg = MIMEText('Episode Downloaded')
 
-                msg[b'Subject'] = 'Downloaded: ' + ep_name
-                msg[b'From'] = sickrage.srConfig.EMAIL_FROM
-                msg[b'To'] = ','.join(to)
-                msg[b'Date'] = formatdate(localtime=True)
+                msg['Subject'] = 'Downloaded: ' + ep_name
+                msg['From'] = sickrage.srConfig.EMAIL_FROM
+                msg['To'] = ','.join(to)
+                msg['Date'] = formatdate(localtime=True)
                 if self._sendmail(sickrage.srConfig.EMAIL_HOST, sickrage.srConfig.EMAIL_PORT, sickrage.srConfig.EMAIL_FROM,
                                   sickrage.srConfig.EMAIL_TLS,
                                   sickrage.srConfig.EMAIL_USER, sickrage.srConfig.EMAIL_PASSWORD, to, msg):
@@ -154,9 +154,9 @@ class EmailNotifier(srNotifiers):
                     except:
                         msg = MIMEText("Episode Subtitle Downloaded")
 
-                msg[b'Subject'] = lang + ' Subtitle Downloaded: ' + ep_name
-                msg[b'From'] = sickrage.srConfig.EMAIL_FROM
-                msg[b'To'] = ','.join(to)
+                msg['Subject'] = lang + ' Subtitle Downloaded: ' + ep_name
+                msg['From'] = sickrage.srConfig.EMAIL_FROM
+                msg['To'] = ','.join(to)
                 if self._sendmail(sickrage.srConfig.EMAIL_HOST, sickrage.srConfig.EMAIL_PORT, sickrage.srConfig.EMAIL_FROM,
                                   sickrage.srConfig.EMAIL_TLS,
                                   sickrage.srConfig.EMAIL_USER, sickrage.srConfig.EMAIL_PASSWORD, to, msg):
@@ -178,8 +178,8 @@ class EmailNotifier(srNotifiers):
         # Grab the recipients for the show
         for s in show:
             for subs in main_db.MainDB().select("SELECT notify_list FROM tv_shows WHERE show_name = ?", (s,)):
-                if subs[b'notify_list']:
-                    for addr in subs[b'notify_list'].split(','):
+                if subs['notify_list']:
+                    for addr in subs['notify_list'].split(','):
                         if (len(addr.strip()) > 0):
                             addrs.append(addr)
 

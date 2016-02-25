@@ -21,7 +21,7 @@
 from __future__ import unicode_literals
 
 import sickrage
-from clients import GenericClient
+from sickrage.clients import GenericClient
 
 
 class DownloadStationAPI(GenericClient):
@@ -37,7 +37,7 @@ class DownloadStationAPI(GenericClient):
 
         try:
             self.response = self.session.get(auth_url, verify=False)
-            self.auth = self.response.json()['data'][b'sid']
+            self.auth = self.response.json()['data']['sid']
         except Exception:
             return None
 
@@ -55,7 +55,7 @@ class DownloadStationAPI(GenericClient):
         }
 
         if sickrage.srConfig.TORRENT_PATH:
-            data[b'destination'] = sickrage.srConfig.TORRENT_PATH
+            data['destination'] = sickrage.srConfig.TORRENT_PATH
         self._request(method='post', data=data)
 
         return self.response.json()['success']
@@ -71,7 +71,7 @@ class DownloadStationAPI(GenericClient):
         }
 
         if sickrage.srConfig.TORRENT_PATH:
-            data[b'destination'] = sickrage.srConfig.TORRENT_PATH
+            data['destination'] = sickrage.srConfig.TORRENT_PATH
         files = {'file': (result.name + '.torrent', result.content)}
         self._request(method='post', data=data, files=files)
 

@@ -19,8 +19,8 @@
 from __future__ import unicode_literals
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class STRIKEProvider(TorrentProvider):
@@ -55,12 +55,12 @@ class STRIKEProvider(TorrentProvider):
 
                 results = []
 
-                for item in jdata[b'torrents']:
-                    seeders = ('seeds' in item and item[b'seeds']) or 0
-                    leechers = ('leeches' in item and item[b'leeches']) or 0
-                    title = ('torrent_title' in item and item[b'torrent_title']) or ''
-                    size = ('size' in item and item[b'size']) or 0
-                    download_url = ('magnet_uri' in item and item[b'magnet_uri']) or ''
+                for item in jdata['torrents']:
+                    seeders = ('seeds' in item and item['seeds']) or 0
+                    leechers = ('leeches' in item and item['leeches']) or 0
+                    title = ('torrent_title' in item and item['torrent_title']) or ''
+                    size = ('size' in item and item['size']) or 0
+                    download_url = ('magnet_uri' in item and item['magnet_uri']) or ''
 
                     if not all([title, download_url]):
                         continue

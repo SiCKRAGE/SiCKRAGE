@@ -19,29 +19,29 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import re
 import threading
-from datetime import datetime, date
 from xml.etree.ElementTree import ElementTree
 
 import sickrage
-from core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
+from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
-from core.databases import main_db
-from core.exceptions import NoNFOException, \
+from sickrage.core.databases import main_db
+from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleEpisodesInDatabaseException
-from core.helpers import isMediaFile, tryInt, replaceExtension, \
+from sickrage.core.helpers import isMediaFile, tryInt, replaceExtension, \
     rename_ep_file, touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, \
     safe_getattr
-from core.nameparser import NameParser, InvalidNameException, InvalidShowException
-from core.processors.post_processor import PostProcessor
-from core.scene_numbering import xem_refresh, get_scene_absolute_numbering, get_scene_numbering
-from core.searchers import subtitle_searcher
-from core.tv import dirty_setter
-from core.updaters import tz_updater
-from indexers.indexer_exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
-from notifiers import srNotifiers
+from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
+from sickrage.core.processors.post_processor import PostProcessor
+from sickrage.core.scene_numbering import xem_refresh, get_scene_absolute_numbering, get_scene_numbering
+from sickrage.core.searchers import subtitle_searcher
+from sickrage.core.tv import dirty_setter
+from sickrage.core.updaters import tz_updater
+from sickrage.indexers.indexer_exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
+from sickrage.notifiers import srNotifiers
 
 
 class TVEpisode(object):
@@ -57,8 +57,8 @@ class TVEpisode(object):
         self._description = ""
         self._subtitles = []
         self._subtitles_searchcount = 0
-        self._subtitles_lastsearch = str(datetime.min)
-        self._airdate = date.fromordinal(1)
+        self._subtitles_lastsearch = str(datetime.datetime.min)
+        self._airdate = datetime.date.fromordinal(1)
         self._hasnfo = False
         self._hastbn = False
         self._status = UNKNOWN
@@ -135,7 +135,7 @@ class TVEpisode(object):
         self.subtitles, newSubtitles = subtitle_searcher.downloadSubtitles(subtitles_info)
 
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
-        self.subtitles_lastsearch = datetime.now().strftime(dateTimeFormat)
+        self.subtitles_lastsearch = datetime.datetime.now().strftime(dateTimeFormat)
         self.saveToDB()
 
         if newSubtitles:
@@ -196,7 +196,7 @@ class TVEpisode(object):
                 sickrage.srLogger.error("%s: There was an error loading the NFO for episode S%02dE%02d" % (
                     self.show.indexerid, season or 0, episode or 0))
 
-        # try loading episode from indexers
+        # try loading episode from sickrage.indexers
         try:
             if self.loadFromIndexer(season, episode):
                 return True
@@ -224,28 +224,28 @@ class TVEpisode(object):
         else:
             self._season = season
             self._episode = episode
-            self._name = sqlResults[0][b"name"] or self.name
-            self._absolute_number = sqlResults[0][b"absolute_number"] or self.absolute_number
-            self._description = sqlResults[0][b"description"] or self.description
-            self._subtitles = sqlResults[0][b"subtitles"].split(",") or self.subtitles
-            self._subtitles_searchcount = sqlResults[0][b"subtitles_searchcount"] or self.subtitles_searchcount
-            self._subtitles_lastsearch = sqlResults[0][b"subtitles_lastsearch"] or self.subtitles_lastsearch
-            self._airdate = date.fromordinal(int(sqlResults[0][b"airdate"])) or self.airdate
-            self._status = tryInt(sqlResults[0][b"status"], self.status)
-            self.location = os.path.normpath(sqlResults[0][b"location"]) or self.location
-            self._file_size = tryInt(sqlResults[0][b"file_size"], self.file_size)
-            self._indexerid = tryInt(sqlResults[0][b"indexerid"], self.indexerid)
-            self._indexer = tryInt(sqlResults[0][b"indexer"], self.indexer)
-            self._release_name = sqlResults[0][b"release_name"] or self.release_name
-            self._release_group = sqlResults[0][b"release_group"] or self.release_group
-            self._is_proper = tryInt(sqlResults[0][b"is_proper"], self.is_proper)
-            self._version = tryInt(sqlResults[0][b"version"], self.version)
+            self._name = sqlResults[0]["name"] or self.name
+            self._absolute_number = sqlResults[0]["absolute_number"] or self.absolute_number
+            self._description = sqlResults[0]["description"] or self.description
+            self._subtitles = sqlResults[0]["subtitles"].split(",") or self.subtitles
+            self._subtitles_searchcount = sqlResults[0]["subtitles_searchcount"] or self.subtitles_searchcount
+            self._subtitles_lastsearch = sqlResults[0]["subtitles_lastsearch"] or self.subtitles_lastsearch
+            self._airdate = datetime.date.fromordinal(int(sqlResults[0]["airdate"])) or self.airdate
+            self._status = tryInt(sqlResults[0]["status"], self.status)
+            self.location = os.path.normpath(sqlResults[0]["location"]) or self.location
+            self._file_size = tryInt(sqlResults[0]["file_size"], self.file_size)
+            self._indexerid = tryInt(sqlResults[0]["indexerid"], self.indexerid)
+            self._indexer = tryInt(sqlResults[0]["indexer"], self.indexer)
+            self._release_name = sqlResults[0]["release_name"] or self.release_name
+            self._release_group = sqlResults[0]["release_group"] or self.release_group
+            self._is_proper = tryInt(sqlResults[0]["is_proper"], self.is_proper)
+            self._version = tryInt(sqlResults[0]["version"], self.version)
 
             xem_refresh(self.show.indexerid, self.show.indexer)
 
-            self.scene_season = tryInt(sqlResults[0][b"scene_season"], self.scene_season)
-            self.scene_episode = tryInt(sqlResults[0][b"scene_episode"], self.scene_episode)
-            self.scene_absolute_number = tryInt(sqlResults[0][b"scene_absolute_number"], self.scene_absolute_number)
+            self.scene_season = tryInt(sqlResults[0]["scene_season"], self.scene_season)
+            self.scene_episode = tryInt(sqlResults[0]["scene_episode"], self.scene_episode)
+            self.scene_absolute_number = tryInt(sqlResults[0]["scene_absolute_number"], self.scene_absolute_number)
 
             if self.scene_absolute_number == 0:
                 self.scene_absolute_number = get_scene_absolute_numbering(
@@ -281,13 +281,13 @@ class TVEpisode(object):
                     lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(self.indexer).api_params.copy()
 
                     if not cache:
-                        lINDEXER_API_PARMS[b'cache'] = False
+                        lINDEXER_API_PARMS['cache'] = False
 
                     if indexer_lang:
-                        lINDEXER_API_PARMS[b'language'] = indexer_lang
+                        lINDEXER_API_PARMS['language'] = indexer_lang
 
                     if self.show.dvdorder != 0:
-                        lINDEXER_API_PARMS[b'dvdorder'] = True
+                        lINDEXER_API_PARMS['dvdorder'] = True
 
                     t = sickrage.srCore.INDEXER_API(self.indexer).indexer(**lINDEXER_API_PARMS)
                 else:
@@ -325,7 +325,7 @@ class TVEpisode(object):
                 self.show.name, season or 0, episode or 0, indexer_name))
         else:
             sickrage.srLogger.debug("{}: The absolute_number for S{}E{} is: {}".format(
-                self.show.indexerid, season or 0, episode or 0, myEp[b"absolute_number"]))
+                self.show.indexerid, season or 0, episode or 0, myEp["absolute_number"]))
             self.absolute_number = tryInt(safe_getattr(myEp, 'absolute_number'), self.absolute_number)
 
         self.season = season
@@ -347,10 +347,10 @@ class TVEpisode(object):
 
         self.description = safe_getattr(myEp, 'overview', self.description)
 
-        firstaired = safe_getattr(myEp, 'firstaired') or date.fromordinal(1)
+        firstaired = safe_getattr(myEp, 'firstaired') or datetime.date.fromordinal(1)
         try:
             rawAirdate = [int(x) for x in str(firstaired).split("-")]
-            self.airdate = date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
+            self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
         except (ValueError, IndexError):
             sickrage.srLogger.warning("Malformed air date of {} retrieved from {} for ({} - S{}E{})".format(
                 firstaired, indexer_name, self.show.name, season or 0, episode or 0))
@@ -380,7 +380,7 @@ class TVEpisode(object):
                                      self.location))
 
         if not os.path.isfile(self.location):
-            if self.airdate >= date.today() or self.airdate == date.fromordinal(1):
+            if self.airdate >= datetime.date.today() or self.airdate == datetime.date.fromordinal(1):
                 sickrage.srLogger.debug(
                     "Episode airs in the future or has no airdate, marking it %s" % statusStrings[
                         UNAIRED])
@@ -484,10 +484,10 @@ class TVEpisode(object):
 
                     self.description = epDetails.findtext('plot') or self.description
 
-                    self.airdate = date.fromordinal(1)
+                    self.airdate = datetime.date.fromordinal(1)
                     if epDetails.findtext('aired'):
                         rawAirdate = [int(x) for x in epDetails.findtext('aired').split("-")]
-                        self.airdate = date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
+                        self.airdate = datetime.date(rawAirdate[0], rawAirdate[1], rawAirdate[2])
 
                     self.hasnfo = True
 
@@ -557,10 +557,10 @@ class TVEpisode(object):
             self.season) + " AND episode=" + str(self.episode)
         main_db.MainDB().action(sql)
 
-        data = sickrage.srCore.NOTIFIERS.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
+        data = sickrage.srCore.notifiersDict.trakt_notifier.trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.srConfig.USE_TRAKT and sickrage.srConfig.TRAKT_SYNC_WATCHLIST and data:
             sickrage.srLogger.debug("Deleting myself from Trakt")
-            sickrage.srCore.NOTIFIERS.trakt_notifier.update_watchlist(self.show, data_episode=data, update="remove")
+            sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(self.show, data_episode=data, update="remove")
 
         if full:
             sickrage.srLogger.info('Attempt to delete episode file %s' % self.location)
@@ -795,7 +795,7 @@ class TVEpisode(object):
         if sickrage.srConfig.FILE_TIMESTAMP_TIMEZONE == 'local':
             airdatetime = airdatetime.astimezone(tz_updater.sr_timezone)
 
-        filemtime = datetime.fromtimestamp(os.path.getmtime(self.location)).replace(
+        filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location)).replace(
             tzinfo=tz_updater.sr_timezone)
 
         if filemtime != airdatetime:
@@ -901,19 +901,19 @@ class TVEpisode(object):
 
         # try to get the release group
         rel_grp = {}
-        rel_grp[b"SiCKRAGE"] = 'SiCKRAGE'
+        rel_grp["SiCKRAGE"] = 'SiCKRAGE'
         if hasattr(self, 'location'):  # from the location name
-            rel_grp[b'location'] = release_group(self.show, self.location)
-            if not rel_grp[b'location']:
-                del rel_grp[b'location']
+            rel_grp['location'] = release_group(self.show, self.location)
+            if not rel_grp['location']:
+                del rel_grp['location']
         if hasattr(self, '_release_group'):  # from the release group field in db
-            rel_grp[b'database'] = self.release_group
-            if not rel_grp[b'database']:
-                del rel_grp[b'database']
+            rel_grp['database'] = self.release_group
+            if not rel_grp['database']:
+                del rel_grp['database']
         if hasattr(self, 'release_name'):  # from the release name field in db
-            rel_grp[b'release_name'] = release_group(self.show, self.release_name)
-            if not rel_grp[b'release_name']:
-                del rel_grp[b'release_name']
+            rel_grp['release_name'] = release_group(self.show, self.release_name)
+            if not rel_grp['release_name']:
+                del rel_grp['release_name']
 
         # use release_group, release_name, location in that order
         if 'database' in rel_grp:
@@ -1202,9 +1202,9 @@ class TVEpisode(object):
 
     def __getstate__(self):
         d = dict(self.__dict__)
-        del d[b'lock']
+        del d['lock']
         return d
 
     def __setstate__(self, d):
-        d[b'lock'] = threading.Lock()
+        d['lock'] = threading.Lock()
         self.__dict__.update(d)

@@ -31,10 +31,10 @@ import requests
 import tmdbsimple as tmdb
 
 import sickrage
-from core.helpers import chmodAsParent, indentXML, replaceExtension, \
-    validateShow
 from helpers import getShowImage
-from indexers.indexer_exceptions import indexer_error
+from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension, \
+    validateShow
+from sickrage.indexers.indexer_exceptions import indexer_error
 
 
 __all__ = ['metadata_helpers.py', 'kodi', 'kodi_12plus', 'mediabrowser', 'ps3', 'wdtv', 'tivo', 'mede8er']
@@ -741,13 +741,13 @@ class GenericMetadata(object):
             # change the language value elsewhere
             lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(show_obj.indexer).api_params.copy()
 
-            lINDEXER_API_PARMS[b'banners'] = True
+            lINDEXER_API_PARMS['banners'] = True
 
             if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS[b'language'] = indexer_lang
+                lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
-                lINDEXER_API_PARMS[b'dvdorder'] = True
+                lINDEXER_API_PARMS['dvdorder'] = True
 
             t = sickrage.srCore.INDEXER_API(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
@@ -765,7 +765,7 @@ class GenericMetadata(object):
 
         if image_type == 'poster_thumb':
             if getattr(indexer_show_obj, 'poster', None):
-                image_url = re.sub('posters', '_cache/posters', indexer_show_obj[b'poster'])
+                image_url = re.sub('posters', '_cache/posters', indexer_show_obj['poster'])
             if not image_url:
                 # Try and get images from Fanart.TV
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
@@ -774,7 +774,7 @@ class GenericMetadata(object):
                 image_url = self._retrieve_show_images_from_tmdb(show_obj, image_type)
         elif image_type == 'banner_thumb':
             if getattr(indexer_show_obj, 'banner', None):
-                image_url = re.sub('graphical', '_cache/graphical', indexer_show_obj[b'banner'])
+                image_url = re.sub('graphical', '_cache/graphical', indexer_show_obj['banner'])
             if not image_url:
                 # Try and get images from Fanart.TV
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
@@ -813,13 +813,13 @@ class GenericMetadata(object):
             # change the language value elsewhere
             lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(show_obj.indexer).api_params.copy()
 
-            lINDEXER_API_PARMS[b'banners'] = True
+            lINDEXER_API_PARMS['banners'] = True
 
             if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS[b'language'] = indexer_lang
+                lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
-                lINDEXER_API_PARMS[b'dvdorder'] = True
+                lINDEXER_API_PARMS['dvdorder'] = True
 
             t = sickrage.srCore.INDEXER_API(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
@@ -834,11 +834,11 @@ class GenericMetadata(object):
         if not getattr(indexer_show_obj, '_banners', None):
             return result
 
-        if 'season' not in indexer_show_obj[b'_banners'] or 'season' not in indexer_show_obj[b'_banners'][b'season']:
+        if 'season' not in indexer_show_obj['_banners'] or 'season' not in indexer_show_obj['_banners']['season']:
             return result
 
         # Give us just the normal poster-style season graphics
-        seasonsArtObj = indexer_show_obj[b'_banners'][b'season'][b'season']
+        seasonsArtObj = indexer_show_obj['_banners']['season']['season']
 
         # Returns a nested dictionary of season art with the season
         # number as primary key. It's really overkill but gives the option
@@ -848,9 +848,9 @@ class GenericMetadata(object):
 
         # find the correct season in the TVDB object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
-            if int(seasonsArtObj[seasonArtID][b'season']) == season and \
-                            seasonsArtObj[seasonArtID][b'language'] == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                result[season][seasonArtID] = seasonsArtObj[seasonArtID][b'_bannerpath']
+            if int(seasonsArtObj[seasonArtID]['season']) == season and \
+                            seasonsArtObj[seasonArtID]['language'] == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+                result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
 
         return result
 
@@ -873,10 +873,10 @@ class GenericMetadata(object):
             # change the language value elsewhere
             lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(show_obj.indexer).api_params.copy()
 
-            lINDEXER_API_PARMS[b'banners'] = True
+            lINDEXER_API_PARMS['banners'] = True
 
             if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                lINDEXER_API_PARMS[b'language'] = indexer_lang
+                lINDEXER_API_PARMS['language'] = indexer_lang
 
             t = sickrage.srCore.INDEXER_API(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
             indexer_show_obj = t[show_obj.indexerid]
@@ -892,12 +892,12 @@ class GenericMetadata(object):
             return result
 
         # if we have no season banners then just finish
-        if 'season' not in indexer_show_obj[b'_banners'] or 'seasonwide' not in indexer_show_obj[b'_banners'][
-            b'season']:
+        if 'season' not in indexer_show_obj['_banners'] or 'seasonwide' not in indexer_show_obj['_banners'][
+            'season']:
             return result
 
         # Give us just the normal season graphics
-        seasonsArtObj = indexer_show_obj[b'_banners'][b'season'][b'seasonwide']
+        seasonsArtObj = indexer_show_obj['_banners']['season']['seasonwide']
 
         # Returns a nested dictionary of season art with the season
         # number as primary key. It's really overkill but gives the option
@@ -907,9 +907,9 @@ class GenericMetadata(object):
 
         # find the correct season in the TVDB object and just copy the dict into our result dict
         for seasonArtID in seasonsArtObj.keys():
-            if int(seasonsArtObj[seasonArtID][b'season']) == season and seasonsArtObj[seasonArtID][
-                b'language'] == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
-                result[season][seasonArtID] = seasonsArtObj[seasonArtID][b'_bannerpath']
+            if int(seasonsArtObj[seasonArtID]['season']) == season and seasonsArtObj[seasonArtID][
+                'language'] == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+                result[season][seasonArtID] = seasonsArtObj[seasonArtID]['_bannerpath']
 
         return result
 
@@ -929,7 +929,7 @@ class GenericMetadata(object):
             return empty_return
 
         try:
-            sickrage.srLogger.debug("Loading show info from metadata file in {}".format(folder))
+            sickrage.srLogger.debug("Loading show info from sickrage.metadata file in {}".format(folder))
         except:
             pass
 
@@ -1002,8 +1002,8 @@ class GenericMetadata(object):
         tmdb.API_KEY = sickrage.srConfig.TMDB_API_KEY
         config = tmdb.Configuration()
         response = sickrage.srConfig.info()
-        base_url = response[b'images'][b'base_url']
-        sizes = response[b'images'][b'poster_sizes']
+        base_url = response['images']['base_url']
+        sizes = response['images']['poster_sizes']
 
         def size_str_to_int(x):
             return float("inf") if x == 'original' else int(x[1:])
@@ -1012,9 +1012,9 @@ class GenericMetadata(object):
 
         try:
             search = tmdb.Search()
-            from core.helpers.show_names import allPossibleShowNames
+            from sickrage.core.helpers.show_names import allPossibleShowNames
             for show_name in set(allPossibleShowNames(show)):
-                for result in search.collection(query=show_name)[b'results'] + search.tv(query=show_name)[b'results']:
+                for result in search.collection(query=show_name)['results'] + search.tv(query=show_name)['results']:
                     if types[img_type] and getattr(result, types[img_type]):
                         return "{0}{1}{2}".format(base_url, max_size, result[types[img_type]])
         except:
@@ -1045,7 +1045,7 @@ class GenericMetadata(object):
                 )
 
                 resp = request.response()
-                url = resp[types[img_type]][0][b'url']
+                url = resp[types[img_type]][0]['url']
                 if thumb:
                     url = re.sub('/fanart/', '/preview/', url)
                 return url

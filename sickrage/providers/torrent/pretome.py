@@ -23,9 +23,9 @@ import traceback
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class PretomeProvider(TorrentProvider):
@@ -121,11 +121,11 @@ class PretomeProvider(TorrentProvider):
                             size = None
                             link = cells[1].find('a', attrs={'style': 'font-size: 1.25em; font-weight: bold;'})
 
-                            torrent_id = link[b'href'].replace('details.php?id=', '')
+                            torrent_id = link['href'].replace('details.php?id=', '')
 
                             try:
                                 if link.has_key('title'):
-                                    title = link[b'title']
+                                    title = link['title']
                                 else:
                                     title = link.contents[0]
 

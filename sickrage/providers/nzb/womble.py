@@ -19,8 +19,8 @@
 from __future__ import unicode_literals
 
 import sickrage
-from core.caches import tv_cache
-from providers import NZBProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import NZBProvider
 
 
 class WombleProvider(NZBProvider):
@@ -66,4 +66,4 @@ class WombleCache(tv_cache.TVCache):
         return True
 
     def _checkAuth(self, data):
-        return data if data[b'feed'] and data[b'feed'][b'title'] != 'Invalid Link' else None
+        return data if data['feed'] and data['feed']['title'] != 'Invalid Link' else None

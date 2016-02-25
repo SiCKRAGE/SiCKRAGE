@@ -27,9 +27,9 @@ import requests
 from requests.auth import AuthBase
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class BLUETIGERSProvider(TorrentProvider):
@@ -96,7 +96,7 @@ class BLUETIGERSProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
-                self.search_params[b'search'] = search_string
+                self.search_params['search'] = search_string
 
                 data = self.getURL(self.urls['search'], params=self.search_params)
                 if not data:
@@ -113,7 +113,7 @@ class BLUETIGERSProvider(TorrentProvider):
                         if result_linkz:
                             for link in result_linkz:
                                 title = link.text
-                                download_url = self.urls['base_url'] + "/" + link[b'href']
+                                download_url = self.urls['base_url'] + "/" + link['href']
                                 download_url = download_url.replace("torrents-details", "download")
                                 # FIXME
                                 size = -1
@@ -156,7 +156,7 @@ class BLUETIGERSAuth(AuthBase):
         self.token = token
 
     def __call__(self, r):
-        r.headers[b'Authorization'] = self.token
+        r.headers['Authorization'] = self.token
         return r
 
 

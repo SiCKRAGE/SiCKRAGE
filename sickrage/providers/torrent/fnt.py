@@ -25,9 +25,9 @@ import traceback
 import requests
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class FNTProvider(TorrentProvider):
@@ -93,7 +93,7 @@ class FNTProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
-                self.search_params[b'recherche'] = search_string
+                self.search_params['recherche'] = search_string
 
                 data = self.getURL(self.urls['search'], params=self.search_params)
                 if not data:
@@ -122,7 +122,7 @@ class FNTProvider(TorrentProvider):
                                         continue
 
                                     try:
-                                        detailseedleech = link[b'mtcontent']
+                                        detailseedleech = link['mtcontent']
                                         seeders = int(
                                                 detailseedleech.split("<font color='#00b72e'>")[1].split("</font>")[0])
                                         leechers = int(

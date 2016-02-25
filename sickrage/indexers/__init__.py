@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 import os
 
 import sickrage
-from indexers.indexer_config import indexerConfig, initConfig
+from sickrage.indexers.indexer_config import indexerConfig, initConfig
 
 
 class srIndexerApi(object):
@@ -33,7 +33,7 @@ class srIndexerApi(object):
 
     def indexer(self, *args, **kwargs):
         if self.indexerID:
-            return indexerConfig[self.indexerID][b'module'](*args, **kwargs)
+            return indexerConfig[self.indexerID]['module'](*args, **kwargs)
 
     @property
     def config(self):
@@ -41,37 +41,37 @@ class srIndexerApi(object):
             return indexerConfig[self.indexerID]
         _ = initConfig
         if sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE in _:
-            del _[_[b'valid_languages'].index(sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE)]
-        _[b'valid_languages'].sort()
-        _[b'valid_languages'].insert(0, sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE)
+            del _[_['valid_languages'].index(sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE)]
+        _['valid_languages'].sort()
+        _['valid_languages'].insert(0, sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE)
         return _
 
     @property
     def name(self):
         if self.indexerID:
-            return indexerConfig[self.indexerID][b'name']
+            return indexerConfig[self.indexerID]['name']
 
     @property
     def api_params(self):
         if self.indexerID:
             if sickrage.srConfig.CACHE_DIR:
-                indexerConfig[self.indexerID][b'api_params'][b'cache'] = os.path.join(sickrage.srConfig.CACHE_DIR, 'indexers',
+                indexerConfig[self.indexerID]['api_params']['cache'] = os.path.join(sickrage.srConfig.CACHE_DIR, 'indexers',
                                                                                       self.name)
             if sickrage.srConfig.PROXY_SETTING and sickrage.srConfig.PROXY_INDEXERS:
-                indexerConfig[self.indexerID][b'api_params'][b'proxy'] = sickrage.srConfig.PROXY_SETTING
+                indexerConfig[self.indexerID]['api_params']['proxy'] = sickrage.srConfig.PROXY_SETTING
 
-            return indexerConfig[self.indexerID][b'api_params']
+            return indexerConfig[self.indexerID]['api_params']
 
     @property
     def cache(self):
         if sickrage.srConfig.CACHE_DIR:
-            return self.api_params[b'cache']
+            return self.api_params['cache']
 
     @property
     def indexers(self):
-        return dict((int(x[b'id']), x[b'name']) for x in indexerConfig.values())
+        return dict((int(x['id']), x['name']) for x in indexerConfig.values())
 
     @property
     def session(self):
         if self.indexerID:
-            return indexerConfig[self.indexerID][b'session']
+            return indexerConfig[self.indexerID]['session']

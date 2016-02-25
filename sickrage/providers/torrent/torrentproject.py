@@ -21,9 +21,9 @@ from __future__ import unicode_literals
 from urllib import quote_plus
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import tryInt
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import tryInt
+from sickrage.providers import TorrentProvider
 
 
 class TORRENTPROJECTProvider(TorrentProvider):
@@ -56,24 +56,24 @@ class TORRENTPROJECTProvider(TorrentProvider):
 
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
                 torrents = self.getURL(searchURL, json=True)
-                if not (torrents and "total_found" in torrents and int(torrents[b"total_found"]) > 0):
+                if not (torrents and "total_found" in torrents and int(torrents["total_found"]) > 0):
                     sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
                     continue
 
-                del torrents[b"total_found"]
+                del torrents["total_found"]
 
                 results = []
                 for i in torrents:
-                    title = torrents[i][b"title"]
-                    seeders = tryInt(torrents[i][b"seeds"], 1)
-                    leechers = tryInt(torrents[i][b"leechs"], 0)
+                    title = torrents[i]["title"]
+                    seeders = tryInt(torrents[i]["seeds"], 1)
+                    leechers = tryInt(torrents[i]["leechs"], 0)
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
                             sickrage.srLogger.debug("Torrent doesn't meet minimum seeds & leechers not selecting : %s" % title)
                         continue
 
-                    t_hash = torrents[i][b"torrent_hash"]
-                    size = int(torrents[i][b"torrent_size"])
+                    t_hash = torrents[i]["torrent_hash"]
+                    size = int(torrents[i]["torrent_size"])
 
                     try:
                         assert seeders < 10

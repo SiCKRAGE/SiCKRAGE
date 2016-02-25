@@ -20,11 +20,8 @@
 
 from __future__ import unicode_literals
 
-import codecs
 import collections
 import functools
-import locale
-import sys
 import types
 from itertools import imap
 from os import name
@@ -33,33 +30,8 @@ import six
 
 import sickrage
 
-
-def encodingInit():
-    # map the following codecs to utf-8
-    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
-    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp1252' else None)
-
-    # get locale encoding
-    try:
-        locale.setlocale(locale.LC_ALL, "")
-        encoding = locale.getpreferredencoding()
-    except (locale.Error, IOError):
-        encoding = None
-
-    # enforce UTF-8
-    if not encoding or codecs.lookup(encoding).name == 'ascii':
-        encoding = 'UTF-8'
-
-    # wrap i/o in unicode
-    sys.stdout = codecs.getwriter(encoding)(sys.stdout)
-    sys.stdin = codecs.getreader(encoding)(sys.stdin)
-
-    return encoding
-
-
 def getEncoding():
-    return sickrage.srCore.SYS_ENCODING or "UTF-8"
-
+    return sickrage.SYS_ENCODING or "UTF-8"
 
 def f(*args, **kwargs):
     """

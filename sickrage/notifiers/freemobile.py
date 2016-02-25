@@ -23,9 +23,9 @@ from __future__ import unicode_literals
 import urllib2
 
 import sickrage
-from core.common import NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT, \
+from sickrage.core.common import NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT, \
     notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class FreeMobileNotifier(srNotifiers):

@@ -25,7 +25,7 @@ import urlparse
 
 import requests
 
-from core.helpers import getURL, bs4_parser
+from sickrage.core.helpers import getURL, bs4_parser
 from tests import SiCKRAGETestDBCase
 
 

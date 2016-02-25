@@ -295,7 +295,7 @@ class Quality(object):
         :return: Quality prefix
         """
 
-        from metadata.helpers import qualityFromFileMeta
+        from sickrage.metadata.helpers import qualityFromFileMeta
         quality = qualityFromFileMeta(name)
         if quality != Quality.UNKNOWN:
             return quality

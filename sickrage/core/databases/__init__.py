@@ -31,7 +31,7 @@ from contextlib import contextmanager
 from collections import defaultdict
 
 import sickrage
-from core.helpers import backupVersionedFile, restoreVersionedFile
+from sickrage.core.helpers import backupVersionedFile, restoreVersionedFile
 
 def prettyName(class_name):
     return ' '.join([x.group() for x in re.finditer("([A-Z])([a-z0-9]+)", class_name)])
@@ -51,6 +51,13 @@ def dbFilename(filename=None, suffix=None):
     if suffix:
         filename = filename + ".{}".format(suffix)
     return os.path.join(sickrage.DATA_DIR, filename)
+
+class UniRow(sqlite3.Row):
+    def __init__(self, *args, **kwargs):
+        super(UniRow, self).__init__(*args, **kwargs)
+
+    def __getitem__(self, y):
+        return super(UniRow, self).__getitem__(str(y))
 
 
 class Transaction(object):
@@ -140,7 +147,7 @@ class Transaction(object):
 class Connection(object):
     def __init__(self, filename=None, suffix=None, row_type=None, timeout=None):
         self.filename = dbFilename(filename, suffix)
-        self.row_type = row_type or sqlite3.Row
+        self.row_type = row_type or UniRow
         self._shared_map_lock = threading.Lock()
         self._db_lock = threading.Lock()
         self._connections = {}
@@ -190,7 +197,7 @@ class Connection(object):
         """Get a :class:`Transaction` object for interacting directly
         with the underlying SQLite database.
         """
-        threading.Thread().setName("DB")
+        threading.currentThread().setName("DB")
         yield Transaction(self)
 
     def _get_id(self):
@@ -285,7 +292,7 @@ class Connection(object):
         sqlResult = self.select("PRAGMA table_info(`{}`)".format(tableName))
 
         for column in sqlResult:
-            columns[column[b'name']] = {'type': column[b'type']}
+            columns[column['name']] = {'type': column['type']}
 
         return columns
 

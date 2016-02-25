@@ -25,7 +25,7 @@ from xml.dom.minidom import parseString
 from xml.etree import ElementTree
 
 import sickrage
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class NMJv2Notifier(srNotifiers):

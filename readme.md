@@ -60,7 +60,7 @@ A full list can be found here: [Link](https://github.com/SiCKRAGETV/sickrage-iss
 ![image](http://kat.cr/favicon.ico)[KickAssTorrents](https://kat.cr)
 ![image](https://nzb.cat/favicon.ico)[NZB.cat](https://nzb.cat/)
 ![image](https://nzbgeek.info/favicon.ico)[NZBGeek](https://nzbgeek.info)
-![image](https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/slick/images/providers/dognzb.png)[DOGnzb](dognzb.cr)
+![image](https://raw.githubusercontent.com/SiCKRAGETV/SickRage/master/gui/default/images/providers/dognzb.png)[DOGnzb](dognzb.cr)
 
 #### News and Changelog
 [news.md and CHANGES.md have moved to a separate repo, click here](http://github.com/SiCKRAGETV/sickrage-news)

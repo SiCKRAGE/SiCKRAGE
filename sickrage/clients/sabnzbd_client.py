@@ -24,9 +24,9 @@ import httplib
 import json
 import urllib
 import urllib2
+from datetime import date, timedelta
 
 import MultipartPostHandler
-from datetime import date, timedelta
 
 import sickrage
 
@@ -43,11 +43,11 @@ class SabNZBd(object):
         # set up a dict with the URL params in it
         params = {}
         if sickrage.srConfig.SAB_USERNAME is not None:
-            params[b'ma_username'] = sickrage.srConfig.SAB_USERNAME
+            params['ma_username'] = sickrage.srConfig.SAB_USERNAME
         if sickrage.srConfig.SAB_PASSWORD is not None:
-            params[b'ma_password'] = sickrage.srConfig.SAB_PASSWORD
+            params['ma_password'] = sickrage.srConfig.SAB_PASSWORD
         if sickrage.srConfig.SAB_APIKEY is not None:
-            params[b'apikey'] = sickrage.srConfig.SAB_APIKEY
+            params['apikey'] = sickrage.srConfig.SAB_APIKEY
         category = sickrage.srConfig.SAB_CATEGORY
         if nzb.show.is_anime:
             category = sickrage.srConfig.SAB_CATEGORY_ANIME
@@ -60,14 +60,14 @@ class SabNZBd(object):
                     category = sickrage.srConfig.SAB_CATEGORY_ANIME_BACKLOG
 
         if category is not None:
-            params[b'cat'] = category
+            params['cat'] = category
 
         # use high priority if specified (recently aired episode)
         if nzb.priority == 1:
             if sickrage.srConfig.SAB_FORCED == 1:
-                params[b'priority'] = 2
+                params['priority'] = 2
             else:
-                params[b'priority'] = 1
+                params['priority'] = 1
 
         try:
             f = None
@@ -80,11 +80,11 @@ class SabNZBd(object):
                     if not id:
                         sickrage.srLogger.error("Unable to send NZB to sab, can't find ID in URL " + str(nzb.url))
                         return False
-                    params[b'mode'] = 'addid'
-                    params[b'name'] = id
+                    params['mode'] = 'addid'
+                    params['name'] = id
                 else:
-                    params[b'mode'] = 'addurl'
-                    params[b'name'] = nzb.url
+                    params['mode'] = 'addurl'
+                    params['name'] = nzb.url
 
                 url = sickrage.srConfig.SAB_HOST + "api?" + urllib.urlencode(params)
                 sickrage.srLogger.info("Sending NZB to SABnzbd")
@@ -95,7 +95,7 @@ class SabNZBd(object):
                     f = urllib.urlopen(url)
 
             elif nzb.resultType == "nzbdata":
-                params[b'mode'] = 'addfile'
+                params['mode'] = 'addfile'
                 multiPartParams = {"nzbfile": (nzb.name + ".nzb", nzb.extraInfo[0])}
 
                 url = sickrage.srConfig.SAB_HOST + "api?" + urllib.urlencode(params)
@@ -177,8 +177,8 @@ class SabNZBd(object):
             sickrage.srLogger.error("Incorrect username/password sent to SAB")
             return False, "Incorrect username/password sent to SAB"
         elif 'error' in sabJson:
-            sickrage.srLogger.error(sabJson[b'error'])
-            return False, sabJson[b'error']
+            sickrage.srLogger.error(sabJson['error'])
+            return False, sabJson['error']
         else:
             return True, sabText
 
@@ -241,11 +241,11 @@ class SabNZBd(object):
 
         # build up the URL parameters
         params = {}
-        params[b'mode'] = 'queue'
-        params[b'output'] = 'json'
-        params[b'ma_username'] = username
-        params[b'ma_password'] = password
-        params[b'apikey'] = apikey
+        params['mode'] = 'queue'
+        params['output'] = 'json'
+        params['ma_username'] = username
+        params['ma_password'] = password
+        params['apikey'] = apikey
         url = host + "api?" + urllib.urlencode(params)
 
         # send the test request

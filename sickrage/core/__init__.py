@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import re
 import shutil
@@ -29,73 +30,71 @@ import traceback
 import urllib
 import urlparse
 
-from datetime import datetime
-
 import sickrage
-from core.caches.name_cache import srNameCache
-from core.classes import SiCKRAGEURLopener, AttrDict
-from core.common import SD, SKIPPED, WANTED
-from core.databases import main_db, cache_db, failed_db
-from core.helpers import encrypt, findCertainShow, \
+from sickrage.core.caches.name_cache import srNameCache
+from sickrage.core.classes import SiCKRAGEURLopener, AttrDict, providersDict
+from sickrage.core.common import SD, SKIPPED, WANTED
+from sickrage.core.databases import main_db, cache_db, failed_db
+from sickrage.core.helpers import encrypt, findCertainShow, \
     generateCookieSecret, makeDir, removetree, restoreDB, get_lan_ip
-from core.helpers.encoding import encodingInit
-from core.helpers.sessions import get_temp_dir
-from core.nameparser.validator import check_force_season_folders
-from core.processors import auto_postprocessor
-from core.processors.auto_postprocessor import srPostProcessor
-from core.queues.search import srSearchQueue
-from core.queues.show import srShowQueue
-from core.searchers.backlog_searcher import srBacklogSearcher, \
+from sickrage.core.helpers.sessions import get_temp_dir
+from sickrage.core.nameparser.validator import check_force_season_folders
+from sickrage.core.processors import auto_postprocessor
+from sickrage.core.processors.auto_postprocessor import srPostProcessor
+from sickrage.core.queues.search import srSearchQueue
+from sickrage.core.queues.show import srShowQueue
+from sickrage.core.searchers.backlog_searcher import srBacklogSearcher, \
     get_backlog_cycle_time
-from core.searchers.daily_searcher import srDailySearcher
-from core.searchers.proper_searcher import srProperSearcher
-from core.searchers.subtitle_searcher import srSubtitleSearcher
-from core.searchers.trakt_searcher import srTraktSearcher
-from core.srconfig import srConfig
-from core.srlogger import srLogger
-from core.srscheduler import srIntervalTrigger, srScheduler
-from core.tv.show import TVShow
-from core.updaters.show_updater import srShowUpdater
-from core.updaters.tz_updater import update_network_dict
-from core.version_updater import srVersionUpdater
-from core.webserver import srWebServer
-from indexers import srIndexerApi
-from metadata import get_metadata_generator_dict, kodi, kodi_12plus, \
+from sickrage.core.searchers.daily_searcher import srDailySearcher
+from sickrage.core.searchers.proper_searcher import srProperSearcher
+from sickrage.core.searchers.subtitle_searcher import srSubtitleSearcher
+from sickrage.core.searchers.trakt_searcher import srTraktSearcher
+from sickrage.core.srconfig import srConfig
+from sickrage.core.srlogger import srLogger
+from sickrage.core.srscheduler import srIntervalTrigger, srScheduler
+from sickrage.core.tv.show import TVShow
+from sickrage.core.updaters.show_updater import srShowUpdater
+from sickrage.core.updaters.tz_updater import update_network_dict
+from sickrage.core.version_updater import srVersionUpdater
+from sickrage.core.webserver import srWebServer
+from sickrage.indexers import srIndexerApi
+from sickrage.metadata import get_metadata_generator_dict, kodi, kodi_12plus, \
     mede8er, mediabrowser, ps3, tivo, wdtv
-from notifiers.boxcar import BoxcarNotifier
-from notifiers.boxcar2 import Boxcar2Notifier
-from notifiers.emailnotify import EmailNotifier
-from notifiers.emby import EMBYNotifier
-from notifiers.freemobile import FreeMobileNotifier
-from notifiers.growl import GrowlNotifier
-from notifiers.kodi import KODINotifier
-from notifiers.libnotify import LibnotifyNotifier
-from notifiers.nma import NMA_Notifier
-from notifiers.nmj import NMJNotifier
-from notifiers.nmjv2 import NMJv2Notifier
-from notifiers.plex import PLEXNotifier
-from notifiers.prowl import ProwlNotifier
-from notifiers.pushalot import PushalotNotifier
-from notifiers.pushbullet import PushbulletNotifier
-from notifiers.pushover import PushoverNotifier
-from notifiers.pytivo import pyTivoNotifier
-from notifiers.synoindex import synoIndexNotifier
-from notifiers.synologynotifier import synologyNotifier
-from notifiers.trakt import TraktNotifier
-from notifiers.tweet import TwitterNotifier
-from providers import GenericProvider, NZBProvider, TorrentProvider
+from sickrage.notifiers.boxcar import BoxcarNotifier
+from sickrage.notifiers.boxcar2 import Boxcar2Notifier
+from sickrage.notifiers.emailnotify import EmailNotifier
+from sickrage.notifiers.emby import EMBYNotifier
+from sickrage.notifiers.freemobile import FreeMobileNotifier
+from sickrage.notifiers.growl import GrowlNotifier
+from sickrage.notifiers.kodi import KODINotifier
+from sickrage.notifiers.libnotify import LibnotifyNotifier
+from sickrage.notifiers.nma import NMA_Notifier
+from sickrage.notifiers.nmj import NMJNotifier
+from sickrage.notifiers.nmjv2 import NMJv2Notifier
+from sickrage.notifiers.plex import PLEXNotifier
+from sickrage.notifiers.prowl import ProwlNotifier
+from sickrage.notifiers.pushalot import PushalotNotifier
+from sickrage.notifiers.pushbullet import PushbulletNotifier
+from sickrage.notifiers.pushover import PushoverNotifier
+from sickrage.notifiers.pytivo import pyTivoNotifier
+from sickrage.notifiers.synoindex import synoIndexNotifier
+from sickrage.notifiers.synologynotifier import synologyNotifier
+from sickrage.notifiers.trakt import TraktNotifier
+from sickrage.notifiers.tweet import TwitterNotifier
 
 urllib._urlopener = SiCKRAGEURLopener()
 urlparse.uses_netloc.append('scgi')
 
 
 class srCore(object):
-    def __init__(self):
+    def __init__(self, config_file, console=None, debug=None, web_port=None, open_broswser=None):
         self.STARTED = False
-        self.PID = None
+        self.RESTARTED = False
+        self.CONSOLE = console
+        self.DEBUG = debug
 
-        # init system encoding
-        self.SYS_ENCODING = encodingInit()
+        # process id
+        self.PID = os.getpid()
 
         # Check if we need to perform a restore first
         os.chdir(sickrage.DATA_DIR)
@@ -106,16 +105,8 @@ class srCore(object):
             if success:
                 os.execl(sys.executable, sys.executable, *sys.argv)
 
-        # sickrage version
-        self.VERSION = None
-        self.NEWEST_VERSION = None
-        self.NEWEST_VERSION_STRING = None
-
-        # show list
-        self.SHOWLIST = []
-
-        # notifiers
-        self.NOTIFIERS = AttrDict(
+        # generate notifiers dict
+        self.notifiersDict = AttrDict(
             libnotify=LibnotifyNotifier(),
             kodi_notifier=KODINotifier(),
             plex_notifier=PLEXNotifier(),
@@ -140,21 +131,45 @@ class srCore(object):
             email_notifier=EmailNotifier()
         )
 
-        # services
-        self.SCHEDULER = None
-        self.WEBSERVER = None
+        # generate metadata providers dict
+        self.metadataProviderDict = get_metadata_generator_dict()
+
+        # generate providers dict
+        self.providersDict = providersDict()
+
+        # init logger
+        sickrage.srLogger = srLogger()
+
+        # init config
+        sickrage.srConfig = srConfig(config_file, debug)
+
+        # init scheduler
+        sickrage.srScheduler = srScheduler()
+
+        # init webserver
+        sickrage.srWebServer = srWebServer(web_port=web_port, open_browser=open_broswser)
+
+        # sickrage version
+        self.VERSION = None
+        self.NEWEST_VERSION = None
+        self.NEWEST_VERSION_STRING = None
+
+        # show list
+        self.SHOWLIST = []
+
+        # indexers
         self.INDEXER_API = None
         self.VERSIONUPDATER = None
 
-        # init caches
+        # name cache
         self.NAMECACHE = None
 
-        # init queues
+        # queues
         self.SHOWUPDATER = None
         self.SHOWQUEUE = None
         self.SEARCHQUEUE = None
 
-        # init searchers
+        # searchers
         self.DAILYSEARCHER = None
         self.BACKLOGSEARCHER = None
         self.PROPERSEARCHER = None
@@ -164,18 +179,23 @@ class srCore(object):
         # init postprocessor
         self.AUTOPOSTPROCESSOR = None
 
-        self.metadataProviderDict = None
-
-        self.providersDict = {
-            GenericProvider.NZB: {p.id: p for p in NZBProvider.getProviderList()},
-            GenericProvider.TORRENT: {p.id: p for p in TorrentProvider.getProviderList()},
-        }
-
-        self.newznabProviderList = None
-        self.torrentRssProviderList = None
-
     def start(self):
-        self.PID = os.getpid()
+        # load config
+        sickrage.srConfig.load()
+
+        # setup logger settings
+        sickrage.srLogger.logSize = sickrage.srConfig.LOG_SIZE
+        sickrage.srLogger.logNr = sickrage.srConfig.LOG_NR
+        sickrage.srLogger.debugLogging = sickrage.srConfig.DEBUG or self.DEBUG
+        sickrage.srLogger.consoleLogging = self.CONSOLE
+        sickrage.srLogger.logFile = os.path.abspath(os.path.join(
+            sickrage.DATA_DIR,
+            sickrage.srConfig.LOG_DIR,
+            sickrage.srConfig.LOG_FILE
+        ))
+
+        # start logger
+        sickrage.srLogger.start()
 
         # set socket timeout
         socket.setdefaulttimeout(sickrage.srConfig.SOCKET_TIMEOUT)
@@ -186,9 +206,7 @@ class srCore(object):
         # init updater and get current version
         self.VERSION = self.VERSIONUPDATER.updater.version
 
-        # init services
-        self.SCHEDULER = srScheduler()
-        self.WEBSERVER = srWebServer()
+        # init indexers
         self.INDEXER_API = srIndexerApi
 
         # init caches
@@ -246,7 +264,8 @@ class srCore(object):
 
                     try:
                         if os.path.isdir(dst_dir):
-                            bak_filename = '{}-{}'.format(path_leaf(dst_dir), datetime.now().strftime('%Y%m%d_%H%M%S'))
+                            bak_filename = '{}-{}'.format(path_leaf(dst_dir),
+                                                          datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
                             shutil.move(dst_dir, os.path.join(os.path.dirname(dst_dir), bak_filename))
 
                         shutil.move(src_dir, dst_dir)
@@ -288,10 +307,6 @@ class srCore(object):
         if sickrage.srConfig.NZB_METHOD not in ('blackhole', 'sabnzbd', 'nzbget'):
             sickrage.srConfig.NZB_METHOD = 'blackhole'
 
-        if not sickrage.srConfig.PROVIDER_ORDER:
-            sickrage.srConfig.PROVIDER_ORDER = self.providersDict[GenericProvider.NZB].keys() + \
-                                         self.providersDict[GenericProvider.TORRENT].keys()
-
         if sickrage.srConfig.TORRENT_METHOD not in (
                 'blackhole', 'utorrent', 'transmission', 'deluge', 'deluged', 'download_station', 'rtorrent',
                 'qbittorrent', 'mlnet'):
@@ -329,10 +344,7 @@ class srCore(object):
         if sickrage.srConfig.SUBTITLES_LANGUAGES[0] == '':
             sickrage.srConfig.SUBTITLES_LANGUAGES = []
 
-        sickrage.srConfig.TIME_PRESET = sickrage.srConfig.TIME_PRESET_W_SECONDS.replace(":%S", "")
-
         # initialize metadata_providers
-        self.metadataProviderDict = get_metadata_generator_dict()
         for cur_metadata_tuple in [(sickrage.srConfig.METADATA_KODI, kodi),
                                    (sickrage.srConfig.METADATA_KODI_12PLUS, kodi_12plus),
                                    (sickrage.srConfig.METADATA_MEDIABROWSER, mediabrowser),
@@ -347,7 +359,7 @@ class srCore(object):
             self.metadataProviderDict[tmp_provider.name] = tmp_provider
 
         # add version checker job to scheduler
-        self.SCHEDULER.add_job(
+        sickrage.srScheduler.add_job(
             self.VERSIONUPDATER.run,
             srIntervalTrigger(
                 **{'hours': sickrage.srConfig.VERSION_UPDATER_FREQ, 'min': sickrage.srConfig.MIN_VERSION_UPDATER_FREQ}),
@@ -357,7 +369,7 @@ class srCore(object):
         )
 
         # add network timezones updater job to scheduler
-        self.SCHEDULER.add_job(
+        sickrage.srScheduler.add_job(
             update_network_dict,
             srIntervalTrigger(**{'days': 1}),
             name="TZUPDATER",
@@ -366,16 +378,17 @@ class srCore(object):
         )
 
         # add namecache updater job to scheduler
-        self.SCHEDULER.add_job(
+        sickrage.srScheduler.add_job(
             self.NAMECACHE.run,
-            srIntervalTrigger(**{'minutes': sickrage.srConfig.NAMECACHE_FREQ, 'min': sickrage.srConfig.MIN_NAMECACHE_FREQ}),
+            srIntervalTrigger(
+                **{'minutes': sickrage.srConfig.NAMECACHE_FREQ, 'min': sickrage.srConfig.MIN_NAMECACHE_FREQ}),
             name="NAMECACHE",
             id="NAMECACHE",
             replace_existing=True
         )
 
         # add show queue job to scheduler
-        self.SCHEDULER.add_job(
+        sickrage.srScheduler.add_job(
             self.SHOWQUEUE.run,
             srIntervalTrigger(**{'seconds': 3}),
             name="SHOWQUEUE",
@@ -384,7 +397,7 @@ class srCore(object):
         )
 
         # add search queue job to scheduler
-        self.SCHEDULER.add_job(
+        sickrage.srScheduler.add_job(
             self.SEARCHQUEUE.run,
             srIntervalTrigger(**{'seconds': 1}),
             name="SEARCHQUEUE",
@@ -393,18 +406,18 @@ class srCore(object):
         )
 
         # add show updater job to scheduler
-        self.SCHEDULER.add_job(
+        sickrage.srScheduler.add_job(
             self.SHOWUPDATER.run,
             srIntervalTrigger(
                 **{'hours': 1,
-                   'start_date': datetime.now().replace(hour=sickrage.srConfig.SHOWUPDATE_HOUR)}),
+                   'start_date': datetime.datetime.now().replace(hour=sickrage.srConfig.SHOWUPDATE_HOUR)}),
             name="SHOWUPDATER",
             id="SHOWUPDATER",
             replace_existing=True
         )
 
         # add daily search job to scheduler
-        self.SCHEDULER.add_job(
+        sickrage.srScheduler.add_job(
             self.DAILYSEARCHER.run,
             srIntervalTrigger(
                 **{'minutes': sickrage.srConfig.DAILY_SEARCHER_FREQ, 'min': sickrage.srConfig.MIN_DAILY_SEARCHER_FREQ}),
@@ -414,7 +427,7 @@ class srCore(object):
         )
 
         # add backlog search job to scheduler
-        self.SCHEDULER.add_job(
+        sickrage.srScheduler.add_job(
             self.BACKLOGSEARCHER.run,
             srIntervalTrigger(
                 **{'minutes': sickrage.srConfig.BACKLOG_SEARCHER_FREQ,
@@ -425,7 +438,7 @@ class srCore(object):
         )
 
         # add auto-postprocessing job to scheduler
-        job = self.SCHEDULER.add_job(
+        job = sickrage.srScheduler.add_job(
             self.AUTOPOSTPROCESSOR.run,
             srIntervalTrigger(**{'minutes': sickrage.srConfig.AUTOPOSTPROCESSOR_FREQ,
                                  'min': sickrage.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ}),
@@ -436,7 +449,7 @@ class srCore(object):
         (job.pause, job.resume)[sickrage.srConfig.PROCESS_AUTOMATICALLY]()
 
         # add find proper job to scheduler
-        job = self.SCHEDULER.add_job(
+        job = sickrage.srScheduler.add_job(
             self.PROPERSEARCHER.run,
             srIntervalTrigger(**{
                 'minutes': {'15m': 15, '45m': 45, '90m': 90, '4h': 4 * 60, 'daily': 24 * 60}[
@@ -448,7 +461,7 @@ class srCore(object):
         (job.pause, job.resume)[sickrage.srConfig.DOWNLOAD_PROPERS]()
 
         # add trakt.tv checker job to scheduler
-        job = self.SCHEDULER.add_job(
+        job = sickrage.srScheduler.add_job(
             self.TRAKTSEARCHER.run,
             srIntervalTrigger(**{'hours': 1}),
             name="TRAKTSEARCHER",
@@ -458,7 +471,7 @@ class srCore(object):
         (job.pause, job.resume)[sickrage.srConfig.USE_TRAKT]()
 
         # add subtitles finder job to scheduler
-        job = self.SCHEDULER.add_job(
+        job = sickrage.srScheduler.add_job(
             self.SUBTITLESEARCHER.run,
             srIntervalTrigger(**{'hours': sickrage.srConfig.SUBTITLE_SEARCHER_FREQ}),
             name="SUBTITLESEARCHER",
@@ -467,37 +480,70 @@ class srCore(object):
         )
         (job.pause, job.resume)[sickrage.srConfig.USE_SUBTITLES]()
 
-        # add scheduler callback
-        self.SCHEDULER.start()
+        # start scheduler
+        sickrage.srScheduler.start()
+
+        # set web port
+        if sickrage.srWebServer.port == 8081:
+            sickrage.srWebServer.port = sickrage.srConfig.WEB_PORT
+
+        # start webserver
+        self.STARTED = True
+        sickrage.srWebServer.start()
 
     def halt(self):
         sickrage.srLogger.info("Aborting all threads")
 
         # shutdown scheduler
         sickrage.srLogger.info("Shutting down scheduler jobs")
-        self.SCHEDULER.shutdown()
+        sickrage.srScheduler.shutdown()
 
         if sickrage.srConfig.ADBA_CONNECTION:
             sickrage.srLogger.info("Logging out ANIDB connection")
             sickrage.srConfig.ADBA_CONNECTION.logout()
 
-        self.STARTED = False
+    def shutdown(self, status=None, restart=False):
+        self.RESTARTED = restart
 
-    def shutdown(self):
-        # stop all background services
-        self.halt()
+        if self.STARTED:
+            if restart:
+                sickrage.srLogger.info('SiCKRAGE IS PERFORMING A RESTART!')
+            else:
+                sickrage.srLogger.info('SiCKRAGE IS PERFORMING A SHUTDOWN!')
 
-        # save all settings
-        self.save_all()
+            # stop all background services
+            self.halt()
+
+            # save all settings
+            self.save_all()
+
+            # shutdown/restart webserver
+            sickrage.srWebServer.shutdown()
+
+            if restart:
+                sickrage.srLogger.info('SiCKRAGE IS RESTARTING!')
+            else:
+                sickrage.srLogger.info('SiCKRAGE IS SHUTDOWN!')
+
+        # shutdown logging
+        sickrage.srLogger.shutdown()
+
+        # system exit with status
+        if not restart:
+            sys.exit(status)
 
     def save_all(self):
         # write all shows
         sickrage.srLogger.info("Saving all shows to the database")
         for SHOW in self.SHOWLIST:
-            SHOW.saveToDB()
+            try:SHOW.saveToDB()
+            except:continue
 
         # save config
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
+
+        # save providers
+        self.providersDict.save()
 
     def load_shows(self):
         """
@@ -506,13 +552,13 @@ class srCore(object):
 
         for sqlShow in main_db.MainDB().select("SELECT * FROM tv_shows"):
             try:
-                curshow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
+                curshow = TVShow(int(sqlShow["indexer"]), int(sqlShow["indexer_id"]))
                 sickrage.srLogger.debug("Loading data for show: [{}]".format(curshow.name))
                 self.NAMECACHE.buildNameCache(curshow)
                 curshow.nextEpisode()
                 self.SHOWLIST += [curshow]
             except Exception as e:
                 sickrage.srLogger.error(
-                    "There was an error creating the show in {}: {}".format(sqlShow[b"location"], e.message))
+                    "There was an error creating the show in {}: {}".format(sqlShow["location"], e.message))
                 sickrage.srLogger.debug(traceback.format_exc())
                 continue

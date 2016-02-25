@@ -22,9 +22,9 @@ from __future__ import unicode_literals
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from core.exceptions import AuthException
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.exceptions import AuthException
+from sickrage.providers import TorrentProvider
 
 
 class TitansOfTVProvider(TorrentProvider):
@@ -79,7 +79,7 @@ class TitansOfTVProvider(TorrentProvider):
         if self._checkAuthFromData(parsedJSON):
 
             try:
-                found_torrents = parsedJSON[b'results']
+                found_torrents = parsedJSON['results']
             except Exception:
                 found_torrents = {}
 
@@ -111,14 +111,14 @@ class TitansOfTVProvider(TorrentProvider):
         return results
 
     def _get_season_search_strings(self, ep_obj):
-        search_params = {'limit': 100, b'season': 'Season %02d' % ep_obj.scene_season}
+        search_params = {'limit': 100, 'season': 'Season %02d' % ep_obj.scene_season}
 
         if ep_obj.show.indexer == 1:
-            search_params[b'series_id'] = ep_obj.show.indexerid
+            search_params['series_id'] = ep_obj.show.indexerid
         elif ep_obj.show.indexer == 2:
             tvdbid = ep_obj.show.mapIndexers()[1]
             if tvdbid:
-                search_params[b'series_id'] = tvdbid
+                search_params['series_id'] = tvdbid
 
         return [search_params]
 
@@ -127,16 +127,16 @@ class TitansOfTVProvider(TorrentProvider):
         if not ep_obj:
             return [{}]
 
-        search_params = {'limit': 100, b'episode': 'S%02dE%02d' % (ep_obj.scene_season, ep_obj.scene_episode)}
+        search_params = {'limit': 100, 'episode': 'S%02dE%02d' % (ep_obj.scene_season, ep_obj.scene_episode)}
 
         # Do a general name search for the episode, formatted like SXXEYY
 
         if ep_obj.show.indexer == 1:
-            search_params[b'series_id'] = ep_obj.show.indexerid
+            search_params['series_id'] = ep_obj.show.indexerid
         elif ep_obj.show.indexer == 2:
             tvdbid = ep_obj.show.mapIndexers()[1]
             if tvdbid:
-                search_params[b'series_id'] = tvdbid
+                search_params['series_id'] = tvdbid
 
         return [search_params]
 

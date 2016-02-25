@@ -22,7 +22,7 @@ import feedparser
 from feedparser import FeedParserDict
 
 import sickrage
-from core.helpers import normalize_url
+from sickrage.core.helpers import normalize_url
 
 def getFeed(url, request_headers=None, handlers=None):
     feed = FeedParserDict()
@@ -31,7 +31,7 @@ def getFeed(url, request_headers=None, handlers=None):
             feed = feedparser.parse(normalize_url(url), False, False, request_headers, handlers=handlers)
         except AttributeError:
             sickrage.srLogger.debug('RSS ERROR:[{}] CODE:[{}]'.format(
-                    feed.feed[b'error'][b'description'], feed.feed[b'error'][b'code']))
+                    feed.feed['error']['description'], feed.feed['error']['code']))
     except:pass
 
     return feed

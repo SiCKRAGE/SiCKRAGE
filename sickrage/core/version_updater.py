@@ -18,7 +18,7 @@
 
 from __future__ import unicode_literals
 
-import ctypes
+import datetime
 import io
 import os
 import platform
@@ -26,16 +26,16 @@ import re
 import stat
 import subprocess
 import tarfile
+import threading
 import time
 import traceback
 
 import github
-from datetime import datetime
 
 import sickrage
-from core.helpers import backupAll, getURL, download_file, removetree
-from core.ui import notifications
-from notifiers import srNotifiers
+from sickrage.core.helpers import backupAll, getURL, download_file, removetree
+from sickrage.core.ui import notifications
+from sickrage.notifiers import srNotifiers
 
 
 class srVersionUpdater(object):
@@ -55,15 +55,18 @@ class srVersionUpdater(object):
 
         self.amActive = True
 
+        # set thread name
+        threading.currentThread().setName(self.name)
+
         try:
             if self.updater:
                 if self.check_for_new_version(force):
                     if self.run_backup_if_safe() is True:
-                        from core.ui import notifications
+                        from sickrage.core.ui import notifications
                         if self.update():
                             sickrage.srLogger.info("Update was successful!")
                             notifications.message('Update was successful')
-                            sickrage.srCore.WEBSERVER.server_restart()
+                            sickrage.srCore.shutdown(restart=True)
                         else:
                             sickrage.srLogger.info("Update failed!")
                             notifications.message('Update failed!')
@@ -122,10 +125,10 @@ class srVersionUpdater(object):
 
     def safe_to_update(self):
         def postprocessor_safe():
-            if not sickrage.srConfig.STARTED:
+            if not sickrage.srCore.STARTED:
                 return True
 
-            if not sickrage.srCore.SCHEDULER.get_job('POSTPROCESSOR').func.im_self.amActive:
+            if not sickrage.srScheduler.get_job('POSTPROCESSOR').func.im_self.amActive:
                 sickrage.srLogger.debug("We can proceed with the update. Post-Processor is not running")
                 return True
             else:
@@ -133,10 +136,10 @@ class srVersionUpdater(object):
                 return False
 
         def showupdate_safe():
-            if not sickrage.srConfig.STARTED:
+            if not sickrage.srCore.STARTED:
                 return True
 
-            if not sickrage.srCore.SCHEDULER.get_job('SHOWUPDATER').func.im_self.amActive:
+            if not sickrage.srScheduler.get_job('SHOWUPDATER').func.im_self.amActive:
                 sickrage.srLogger.debug("We can proceed with the update. Shows are not being updated")
                 return True
             else:
@@ -228,7 +231,7 @@ class srVersionUpdater(object):
                 return news or ''
 
             try:
-                last_read = datetime.strptime(sickrage.srConfig.NEWS_LAST_READ, '%Y-%m-%d')
+                last_read = datetime.datetime.strptime(sickrage.srConfig.NEWS_LAST_READ, '%Y-%m-%d')
             except:
                 last_read = 0
 
@@ -240,7 +243,7 @@ class srVersionUpdater(object):
                     sickrage.srConfig.NEWS_LATEST = match.group(1)
 
                 try:
-                    if datetime.strptime(match.group(1), '%Y-%m-%d') > last_read:
+                    if datetime.datetime.strptime(match.group(1), '%Y-%m-%d') > last_read:
                         sickrage.srConfig.NEWS_UNREAD += 1
                 except Exception:
                     pass
@@ -287,13 +290,6 @@ class UpdateManager(object):
                 user_agent="SiCKRAGE")
         except:
             return github.Github(user_agent="SiCKRAGE")
-
-    @staticmethod
-    def root_check():
-        try:
-            return not os.getuid() == 0
-        except AttributeError:
-            return not ctypes.windll.shell32.IsUserAnAdmin() != 0
 
 class GitUpdateManager(UpdateManager):
     def __init__(self):
@@ -701,7 +697,7 @@ class SourceUpdateManager(UpdateManager):
             return False
 
         # Notify update successful
-        sickrage.srCore.NOTIFIERS.notify_git_update(sickrage.srCore.NEWEST_VERSION_STRING)
+        sickrage.srCore.notifiersDict.notify_git_update(sickrage.srCore.NEWEST_VERSION_STRING)
 
         return True
 
@@ -776,4 +772,17 @@ class PipUpdateManager(UpdateManager):
         # Notify update successful
         sickrage.srLogger.info("Updating SiCKRAGE from PyPi servers")
         srNotifiers.notify_version_update(sickrage.srCore.NEWEST_VERSION_STRING)
+
+        from pip.commands.install import InstallCommand
+        options = InstallCommand().parse_args([])[0]
+        options.use_user_site = all([not sickrage.isElevatedUser(), not sickrage.isVirtualEnv()])
+        options.cache_dir = None
+        options.upgrade = True
+        options.quiet = 1
+
+        options.ignore_dependencies = True
+        InstallCommand().run(options, ['sickrage'])
+        options.ignore_dependencies = False
+        InstallCommand().run(options, ['sickrage'])
+
         return True

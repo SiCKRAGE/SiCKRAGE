@@ -26,9 +26,9 @@ import urllib
 import requests
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class HDTorrentsProvider(TorrentProvider):
@@ -152,9 +152,9 @@ class HDTorrentsProvider(TorrentProvider):
                             for cell in cells:
                                 try:
                                     if None is title and cell.get('title') and cell.get('title') in 'Download':
-                                        title = re.search('f=(.*).torrent', cell.a[b'href']).group(1).replace('+', '.')
+                                        title = re.search('f=(.*).torrent', cell.a['href']).group(1).replace('+', '.')
                                         title = title.decode('utf-8')
-                                        download_url = self.urls['home'] % cell.a[b'href']
+                                        download_url = self.urls['home'] % cell.a['href']
                                         continue
                                     if None is seeders and cell.get('class')[0] and cell.get('class')[
                                         0] in 'green' 'yellow' 'red':

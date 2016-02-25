@@ -22,8 +22,8 @@ import re
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class NyaaProvider(TorrentProvider):
@@ -66,7 +66,7 @@ class NyaaProvider(TorrentProvider):
                     "order": 1
                 }
                 if mode is not 'RSS':
-                    params[b"term"] = search_string.encode('utf-8')
+                    params["term"] = search_string.encode('utf-8')
 
                 searchURL = self.url + '?' + urllib.urlencode(params)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
@@ -76,12 +76,12 @@ class NyaaProvider(TorrentProvider):
 
                 results = []
                 for curItem in self.cache.getRSSFeed(searchURL)['entries'] or []:
-                    title = curItem[b'title']
-                    download_url = curItem[b'link']
+                    title = curItem['title']
+                    download_url = curItem['link']
                     if not all([title, download_url]):
                         continue
 
-                    seeders, leechers, size, verified = s.findall(curItem[b'summary'])[0]
+                    seeders, leechers, size, verified = s.findall(curItem['summary'])[0]
                     size = self._convertSize(size)
 
                     # Filter unseeded torrent

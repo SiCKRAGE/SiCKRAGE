@@ -19,6 +19,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import os.path
 import platform
@@ -27,26 +28,28 @@ import urlparse
 import uuid
 
 from configobj import ConfigObj
-from datetime import datetime
 
 import sickrage
-from core.common import SD, WANTED, SKIPPED
-from core.databases import main_db
-from core.helpers import backupVersionedFile, decrypt, encrypt, makeDir, generateCookieSecret
-from core.nameparser import validator
-from core.nameparser.validator import check_force_season_folders
-from core.searchers import backlog_searcher
-from core.srscheduler import srIntervalTrigger
-from providers import NewznabProvider, TorrentRssProvider, GenericProvider
+from sickrage.core.common import SD, WANTED, SKIPPED
+from sickrage.core.databases import main_db
+from sickrage.core.helpers import backupVersionedFile, decrypt, encrypt, makeDir, generateCookieSecret
+from sickrage.core.nameparser import validator
+from sickrage.core.nameparser.validator import check_force_season_folders
+from sickrage.core.searchers import backlog_searcher
+from sickrage.core.srscheduler import srIntervalTrigger
 
 
 class srConfig(object):
-    def __init__(self, config_file):
+    def __init__(self, config_file, debug=False):
         self.CONFIG_FILE = os.path.abspath(os.path.join(sickrage.DATA_DIR, config_file))
-        self.CONFIG_VERSION = 7
+        self.DEBUG = debug
+
+        self.CONFIG_VERSION = 9
         self.ENCRYPTION_VERSION = 0
         self.ENCRYPTION_SECRET = None
         self.CONFIG_OBJ = None
+
+        self.CENSORED_ITEMS = {}
 
         self.USER_AGENT = '({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
         self.NAMING_EP_TYPE = ("%(seasonnumber)dx%(episodenumber)02d",
@@ -65,7 +68,6 @@ class srConfig(object):
         self.NAMING_SEP_TYPE = (" - ", " ")
         self.NAMING_SEP_TYPE_TEXT = (" - ", "space")
 
-        # censored log items
         self.LOG_DIR = None
         self.LOG_FILE = None
         self.LOG_SIZE = 1048576
@@ -130,7 +132,6 @@ class srConfig(object):
         self.TRASH_REMOVE_SHOW = False
         self.TRASH_ROTATE_LOGS = False
         self.SORT_ARTICLE = False
-        self.DEBUG = False
         self.DISPLAY_ALL_SEASONS = True
         self.DEFAULT_PAGE = None
         self.USE_LISTVIEW = False
@@ -151,7 +152,6 @@ class srConfig(object):
         self.SCENE_DEFAULT = False
         self.ANIME_DEFAULT = False
         self.ARCHIVE_DEFAULT = False
-        self.PROVIDER_ORDER = None
         self.NAMING_MULTI_EP = False
         self.NAMING_ANIME_MULTI_EP = False
         self.NAMING_PATTERN = None
@@ -441,8 +441,6 @@ class srConfig(object):
         self.TRAKT_OAUTH_URL = 'https://trakt.tv/'
         self.TRAKT_API_URL = 'https://api-v2launch.trakt.tv/'
         self.FANART_API_KEY = '9b3afaf26f6241bdb57d6cc6bd798da7'
-        self.NEWZNAB_DATA = None
-        self.TORRENTRSS_DATA = None
         self.SHOWS_RECENT = []
 
         self.DEFAULT_AUTOPOSTPROCESSOR_FREQ = 10
@@ -610,10 +608,10 @@ class srConfig(object):
         if self.AUTOPOSTPROCESSOR_FREQ < self.MIN_AUTOPOSTPROCESSOR_FREQ:
             self.AUTOPOSTPROCESSOR_FREQ = self.MIN_AUTOPOSTPROCESSOR_FREQ
 
-        sickrage.srCore.SCHEDULER.modify_job('POSTPROCESSOR',
-                                             trigger=srIntervalTrigger(
-                                                 **{'minutes': self.AUTOPOSTPROCESSOR_FREQ,
-                                                    'min': self.MIN_AUTOPOSTPROCESSOR_FREQ}))
+        sickrage.srScheduler.modify_job('POSTPROCESSOR',
+                                        trigger=srIntervalTrigger(
+                                            **{'minutes': self.AUTOPOSTPROCESSOR_FREQ,
+                                               'min': self.MIN_AUTOPOSTPROCESSOR_FREQ}))
 
     def change_daily_searcher_freq(self, freq):
         """
@@ -622,10 +620,10 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.DAILY_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_DAILY_SEARCHER_FREQ)
-        sickrage.srCore.SCHEDULER.modify_job('DAILYSEARCHER',
-                                             trigger=srIntervalTrigger(
-                                                 **{'minutes': self.DAILY_SEARCHER_FREQ,
-                                                    'min': self.MIN_DAILY_SEARCHER_FREQ}))
+        sickrage.srScheduler.modify_job('DAILYSEARCHER',
+                                        trigger=srIntervalTrigger(
+                                            **{'minutes': self.DAILY_SEARCHER_FREQ,
+                                               'min': self.MIN_DAILY_SEARCHER_FREQ}))
 
     def change_backlog_searcher_freq(self, freq):
         """
@@ -635,10 +633,10 @@ class srConfig(object):
         """
         self.BACKLOG_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_BACKLOG_SEARCHER_FREQ)
         self.MIN_BACKLOG_SEARCHER_FREQ = backlog_searcher.get_backlog_cycle_time()
-        sickrage.srCore.SCHEDULER.modify_job('BACKLOG',
-                                             trigger=srIntervalTrigger(
-                                                 **{'minutes': self.BACKLOG_SEARCHER_FREQ,
-                                                    'min': self.MIN_BACKLOG_SEARCHER_FREQ}))
+        sickrage.srScheduler.modify_job('BACKLOG',
+                                        trigger=srIntervalTrigger(
+                                            **{'minutes': self.BACKLOG_SEARCHER_FREQ,
+                                               'min': self.MIN_BACKLOG_SEARCHER_FREQ}))
 
     def change_updater_freq(self, freq):
         """
@@ -647,10 +645,10 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.VERSION_UPDATER_FREQ = self.to_int(freq, default=self.DEFAULT_VERSION_UPDATE_FREQ)
-        sickrage.srCore.SCHEDULER.modify_job('VERSIONUPDATER',
-                                             trigger=srIntervalTrigger(
-                                                 **{'hours': self.VERSION_UPDATER_FREQ,
-                                                    'min': self.MIN_VERSION_UPDATER_FREQ}))
+        sickrage.srScheduler.modify_job('VERSIONUPDATER',
+                                        trigger=srIntervalTrigger(
+                                            **{'hours': self.VERSION_UPDATER_FREQ,
+                                               'min': self.MIN_VERSION_UPDATER_FREQ}))
 
     def change_showupdate_hour(self, freq):
         """
@@ -662,11 +660,11 @@ class srConfig(object):
         if self.SHOWUPDATE_HOUR < 0 or self.SHOWUPDATE_HOUR > 23:
             self.SHOWUPDATE_HOUR = 0
 
-        sickrage.srCore.SCHEDULER.modify_job('SHOWUPDATER',
-                                             trigger=srIntervalTrigger(
-                                                 **{'hours': 1,
-                                                    'start_date': datetime.now().replace(
-                                                        hour=self.SHOWUPDATE_HOUR)}))
+        sickrage.srScheduler.modify_job('SHOWUPDATER',
+                                        trigger=srIntervalTrigger(
+                                            **{'hours': 1,
+                                               'start_date': datetime.datetime.now().replace(
+                                                   hour=self.SHOWUPDATE_HOUR)}))
 
     def change_subtitle_searcher_freq(self, freq):
         """
@@ -675,10 +673,10 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.SUBTITLE_SEARCHER_FREQ = self.to_int(freq, default=self.DEFAULT_SUBTITLE_SEARCHER_FREQ)
-        sickrage.srCore.SCHEDULER.modify_job('SUBTITLESEARCHER',
-                                             trigger=srIntervalTrigger(
-                                                 **{'hours': self.SUBTITLE_SEARCHER_FREQ,
-                                                    'min': self.MIN_SUBTITLE_SEARCHER_FREQ}))
+        sickrage.srScheduler.modify_job('SUBTITLESEARCHER',
+                                        trigger=srIntervalTrigger(
+                                            **{'hours': self.SUBTITLE_SEARCHER_FREQ,
+                                               'min': self.MIN_SUBTITLE_SEARCHER_FREQ}))
 
     def change_version_notify(self, version_notify):
         """
@@ -698,7 +696,7 @@ class srConfig(object):
         :param download_propers: New desired state
         """
         self.DOWNLOAD_PROPERS = self.checkbox_to_value(download_propers)
-        job = sickrage.srCore.SCHEDULER.get_job('PROPERSEARCHER')
+        job = sickrage.srScheduler.get_job('PROPERSEARCHER')
         (job.pause, job.resume)[self.DOWNLOAD_PROPERS]()
 
     def change_use_trakt(self, use_trakt):
@@ -709,7 +707,7 @@ class srConfig(object):
         :param use_trakt: New desired state
         """
         self.USE_TRAKT = self.checkbox_to_value(use_trakt)
-        job = sickrage.srCore.SCHEDULER.get_job('TRAKTSEARCHER')
+        job = sickrage.srScheduler.get_job('TRAKTSEARCHER')
         (job.pause, job.resume)[self.USE_TRAKT]()
 
     def change_use_subtitles(self, use_subtitles):
@@ -720,7 +718,7 @@ class srConfig(object):
         :param use_subtitles: New desired state
         """
         self.USE_SUBTITLES = self.checkbox_to_value(use_subtitles)
-        job = sickrage.srCore.SCHEDULER.get_job('SUBTITLESEARCHER')
+        job = sickrage.srScheduler.get_job('SUBTITLESEARCHER')
         (job.pause, job.resume)[self.USE_SUBTITLES]()
 
     def change_process_automatically(self, process_automatically):
@@ -731,7 +729,7 @@ class srConfig(object):
         :param process_automatically: New desired state
         """
         self.PROCESS_AUTOMATICALLY = self.checkbox_to_value(process_automatically)
-        job = sickrage.srCore.SCHEDULER.get_job('POSTPROCESSOR')
+        job = sickrage.srScheduler.get_job('POSTPROCESSOR')
         (job.pause, job.resume)[self.PROCESS_AUTOMATICALLY]()
 
     def check_section(self, section):
@@ -918,7 +916,7 @@ class srConfig(object):
     ################################################################################
 
     def check_setting_str(self, cfg_name, item_name, def_val="", silent=True):
-        # For passwords you must include the word `password` in the item_name and add `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save_config()
+        # For passwords you must include the word `password` in the item_name and add `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save()
         if bool(item_name.find('password') + 1):
             encryption_version = self.ENCRYPTION_VERSION
         else:
@@ -937,15 +935,15 @@ class srConfig(object):
                 self.CONFIG_OBJ[cfg_name][item_name] = encrypt(my_val, encryption_version)
 
         censored_regex = re.compile(r"|".join(re.escape(word) for word in ["password", "token", "api"]), re.I)
-        if censored_regex.search(item_name) or (cfg_name, item_name) in sickrage.srLogger.censored_items:
-            sickrage.srLogger.censored_items[cfg_name, item_name] = my_val
+        if censored_regex.search(item_name) or (cfg_name, item_name) in self.CENSORED_ITEMS:
+            self.CENSORED_ITEMS[cfg_name, item_name] = my_val
 
         if not silent:
             print(item_name + " -> " + my_val)
 
         return my_val
 
-    def load_config(self):
+    def load(self):
         # Make sure we can write to the config file
         if not os.access(self.CONFIG_FILE, os.W_OK):
             if os.path.isfile(self.CONFIG_FILE):
@@ -954,11 +952,8 @@ class srConfig(object):
                 raise SystemExit(
                     "Config file root dir '" + os.path.dirname(self.CONFIG_FILE) + "' must be writeable.")
 
-        # create config object from config file
-        self.CONFIG_OBJ = ConfigObj(self.CONFIG_FILE)
-
         # migrate config settings
-        ConfigMigrator(self.CONFIG_OBJ).migrate_config()
+        self.CONFIG_OBJ = ConfigMigrator(ConfigObj(self.CONFIG_FILE)).migrate_config()
 
         # config sanity check
         self.check_section('General')
@@ -1007,7 +1002,7 @@ class srConfig(object):
             os.path.join(self.LOG_DIR, self.check_setting_str('General', 'log_file', 'sickrage.log')))
 
         # misc settings
-        self.GUI_NAME = self.check_setting_str('GUI', 'gui_name', 'slick')
+        self.GUI_NAME = self.check_setting_str('GUI', 'gui_name', 'default')
         self.GUI_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'gui', self.GUI_NAME)
         self.THEME_NAME = self.check_setting_str('GUI', 'theme_name', 'dark')
         self.SOCKET_TIMEOUT = self.check_setting_int('General', 'socket_timeout', 30)
@@ -1501,695 +1496,474 @@ class srConfig(object):
         self.TRIM_ZERO = bool(self.check_setting_int('GUI', 'trim_zero', 0))
         self.DATE_PRESET = self.check_setting_str('GUI', 'date_preset', '%x')
         self.TIME_PRESET_W_SECONDS = self.check_setting_str('GUI', 'time_preset', '%I:%M:%S%p')
+        self.TIME_PRESET = self.TIME_PRESET_W_SECONDS.replace(":%S", "")
         self.TIMEZONE_DISPLAY = self.check_setting_str('GUI', 'timezone_display', 'local')
         self.POSTER_SORTBY = self.check_setting_str('GUI', 'poster_sortby', 'name')
         self.POSTER_SORTDIR = self.check_setting_int('GUI', 'poster_sortdir', 1)
         self.FILTER_ROW = bool(self.check_setting_int('GUI', 'filter_row', 1))
         self.DISPLAY_ALL_SEASONS = bool(self.check_setting_int('General', 'display_all_seasons', 1))
 
-        self.NEWZNAB_DATA = self.check_setting_str('Newznab', 'newznab_data',
-                                                   NewznabProvider.getDefaultProviders())
-        self.TORRENTRSS_DATA = self.check_setting_str('TorrentRss', 'torrentrss_data',
-                                                      TorrentRssProvider.getDefaultProviders())
+        # save config settings
+        return self.save()
 
-        # init provider info
-        sickrage.srCore.newznabProviderList = NewznabProvider.getProviderList(self.NEWZNAB_DATA)
-        sickrage.srCore.torrentRssProviderList = TorrentRssProvider.getProviderList(self.TORRENTRSS_DATA)
-
-        self.PROVIDER_ORDER = self.check_setting_str('General', 'provider_order', '').split()
-
-        # TORRENT PROVIDER SETTINGS
-        for providerID, providerObj in sickrage.srCore.providersDict[GenericProvider.TORRENT].items():
-            providerObj.enabled = bool(self.check_setting_int(providerID.upper(), providerID, 0))
-
-            if hasattr(providerObj, 'api_key'):
-                providerObj.api_key = self.check_setting_str(
-                    providerID.upper(), providerID + '_api_key', ''
-                )
-
-            if hasattr(providerObj, 'hash'):
-                providerObj.hash = self.check_setting_str(
-                    providerID.upper(), providerID + '_hash', ''
-                )
-
-            if hasattr(providerObj, 'digest'):
-                providerObj.digest = self.check_setting_str(
-                    providerID.upper(), providerID + '_digest', ''
-                )
-
-            if hasattr(providerObj, 'username'):
-                providerObj.username = self.check_setting_str(
-                    providerID.upper(), providerID + '_username', ''
-                )
-
-            if hasattr(providerObj, 'password'):
-                providerObj.password = self.check_setting_str(
-                    providerID.upper(), providerID + '_password', ''
-                )
-
-            if hasattr(providerObj, 'passkey'):
-                providerObj.passkey = self.check_setting_str(providerID.upper(),
-                                                             providerID + '_passkey', '')
-            if hasattr(providerObj, 'pin'):
-                providerObj.pin = self.check_setting_str(providerID.upper(),
-                                                         providerID + '_pin', '')
-            if hasattr(providerObj, 'confirmed'):
-                providerObj.confirmed = bool(self.check_setting_int(providerID.upper(),
-                                                                    providerID + '_confirmed', 1))
-            if hasattr(providerObj, 'ranked'):
-                providerObj.ranked = bool(self.check_setting_int(providerID.upper(),
-                                                                 providerID + '_ranked', 1))
-
-            if hasattr(providerObj, 'engrelease'):
-                providerObj.engrelease = bool(self.check_setting_int(providerID.upper(),
-                                                                     providerID + '_engrelease', 0))
-
-            if hasattr(providerObj, 'onlyspasearch'):
-                providerObj.onlyspasearch = bool(self.check_setting_int(providerID.upper(),
-                                                                        providerID + '_onlyspasearch',
-                                                                        0))
-
-            if hasattr(providerObj, 'sorting'):
-                providerObj.sorting = self.check_setting_str(providerID.upper(),
-                                                             providerID + '_sorting', 'seeders')
-            if hasattr(providerObj, 'options'):
-                providerObj.options = self.check_setting_str(providerID.upper(),
-                                                             providerID + '_options', '')
-            if hasattr(providerObj, 'ratio'):
-                providerObj.ratio = self.check_setting_str(providerID.upper(),
-                                                           providerID + '_ratio', '')
-            if hasattr(providerObj, 'minseed'):
-                providerObj.minseed = self.check_setting_int(providerID.upper(),
-                                                             providerID + '_minseed', 1)
-            if hasattr(providerObj, 'minleech'):
-                providerObj.minleech = self.check_setting_int(providerID.upper(),
-                                                              providerID + '_minleech', 0)
-            if hasattr(providerObj, 'freeleech'):
-                providerObj.freeleech = bool(self.check_setting_int(providerID.upper(),
-                                                                    providerID + '_freeleech', 0))
-            if hasattr(providerObj, 'search_mode'):
-                providerObj.search_mode = self.check_setting_str(providerID.upper(),
-                                                                 providerID + '_search_mode',
-                                                                 'eponly')
-            if hasattr(providerObj, 'search_fallback'):
-                providerObj.search_fallback = bool(self.check_setting_int(providerID.upper(),
-                                                                          providerID + '_search_fallback',
-                                                                          0))
-
-            if hasattr(providerObj, 'enable_daily'):
-                providerObj.enable_daily = bool(self.check_setting_int(providerID.upper(),
-                                                                       providerID + '_enable_daily',
-                                                                       1))
-
-            if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supportsBacklog'):
-                providerObj.enable_backlog = bool(self.check_setting_int(providerID.upper(),
-                                                                         providerID + '_enable_backlog',
-                                                                         providerObj.supportsBacklog))
-
-            if hasattr(providerObj, 'cat'):
-                providerObj.cat = self.check_setting_int(providerID.upper(),
-                                                         providerID + '_cat', 0)
-            if hasattr(providerObj, 'subtitle'):
-                providerObj.subtitle = bool(self.check_setting_int(providerID.upper(),
-                                                                   providerID + '_subtitle', 0))
-
-        # NZB PROVIDER SETTINGS
-        for providerID, providerObj in sickrage.srCore.providersDict[GenericProvider.NZB].items():
-            providerObj.enabled = bool(
-                self.check_setting_int(providerID.upper(), providerID, 0))
-            if hasattr(providerObj, 'api_key'):
-                providerObj.api_key = self.check_setting_str(providerID.upper(),
-                                                             providerID + '_api_key', '')
-            if hasattr(providerObj, 'username'):
-                providerObj.username = self.check_setting_str(providerID.upper(),
-                                                              providerID + '_username', '')
-            if hasattr(providerObj, 'search_mode'):
-                providerObj.search_mode = self.check_setting_str(providerID.upper(),
-                                                                 providerID + '_search_mode',
-                                                                 'eponly')
-            if hasattr(providerObj, 'search_fallback'):
-                providerObj.search_fallback = bool(self.check_setting_int(providerID.upper(),
-                                                                          providerID + '_search_fallback',
-                                                                          0))
-            if hasattr(providerObj, 'enable_daily'):
-                providerObj.enable_daily = bool(self.check_setting_int(providerID.upper(),
-                                                                       providerID + '_enable_daily',
-                                                                       1))
-
-            if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supportsBacklog'):
-                providerObj.enable_backlog = bool(self.check_setting_int(providerID.upper(),
-                                                                         providerID + '_enable_backlog',
-                                                                         providerObj.supportsBacklog))
-
-        return self.save_config()
-
-    def save_config(self):
+    def save(self):
         sickrage.srLogger.debug("Saving settings to disk")
 
-        new_config = ConfigObj(self.CONFIG_OBJ.filename)
+        new_config = ConfigObj(self.CONFIG_FILE)
 
-        # For passwords you must include the word `password` in the item_name and add `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save_config()
-        new_config[b'General'] = {}
-        new_config[b'General'][b'git_autoissues'] = int(self.GIT_AUTOISSUES)
-        new_config[b'General'][b'git_username'] = self.GIT_USERNAME
-        new_config[b'General'][b'git_password'] = encrypt(self.GIT_PASSWORD, self.ENCRYPTION_VERSION)
-        new_config[b'General'][b'git_reset'] = int(self.GIT_RESET)
-        new_config[b'General'][b'git_remote'] = self.GIT_REMOTE
-        new_config[b'General'][b'git_remote_url'] = self.GIT_REMOTE_URL
-        new_config[b'General'][b'git_newver'] = int(self.GIT_NEWVER)
-        new_config[b'General'][b'config_version'] = self.CONFIG_VERSION
-        new_config[b'General'][b'encryption_version'] = int(self.ENCRYPTION_VERSION)
-        new_config[b'General'][b'encryption_secret'] = self.ENCRYPTION_SECRET
-        new_config[b'General'][b'log_dir'] = os.path.abspath(
+        # For passwords you must include the word `password` in the item_name and add `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save()
+        new_config['General'] = {}
+        new_config['General']['git_autoissues'] = int(self.GIT_AUTOISSUES)
+        new_config['General']['git_username'] = self.GIT_USERNAME
+        new_config['General']['git_password'] = encrypt(self.GIT_PASSWORD, self.ENCRYPTION_VERSION)
+        new_config['General']['git_reset'] = int(self.GIT_RESET)
+        new_config['General']['git_remote'] = self.GIT_REMOTE
+        new_config['General']['git_remote_url'] = self.GIT_REMOTE_URL
+        new_config['General']['git_newver'] = int(self.GIT_NEWVER)
+        new_config['General']['config_version'] = self.CONFIG_VERSION
+        new_config['General']['encryption_version'] = int(self.ENCRYPTION_VERSION)
+        new_config['General']['encryption_secret'] = self.ENCRYPTION_SECRET
+        new_config['General']['log_dir'] = os.path.abspath(
             os.path.join(sickrage.DATA_DIR, self.LOG_DIR or 'Logs'))
-        new_config[b'General'][b'log_nr'] = int(self.LOG_NR)
-        new_config[b'General'][b'log_size'] = int(self.LOG_SIZE)
-        new_config[b'General'][b'socket_timeout'] = self.SOCKET_TIMEOUT
-        new_config[b'General'][b'web_port'] = self.WEB_PORT
-        new_config[b'General'][b'web_host'] = self.WEB_HOST
-        new_config[b'General'][b'web_ipv6'] = int(self.WEB_IPV6)
-        new_config[b'General'][b'web_log'] = int(self.WEB_LOG)
-        new_config[b'General'][b'web_root'] = self.WEB_ROOT
-        new_config[b'General'][b'web_username'] = self.WEB_USERNAME
-        new_config[b'General'][b'web_password'] = encrypt(self.WEB_PASSWORD, self.ENCRYPTION_VERSION)
-        new_config[b'General'][b'web_cookie_secret'] = self.WEB_COOKIE_SECRET
-        new_config[b'General'][b'web_use_gzip'] = int(self.WEB_USE_GZIP)
-        new_config[b'General'][b'ssl_verify'] = int(self.SSL_VERIFY)
-        new_config[b'General'][b'download_url'] = self.DOWNLOAD_URL
-        new_config[b'General'][b'localhost_ip'] = self.LOCALHOST_IP
-        new_config[b'General'][b'cpu_preset'] = self.CPU_PRESET
-        new_config[b'General'][b'anon_redirect'] = self.ANON_REDIRECT
-        new_config[b'General'][b'api_key'] = self.API_KEY
-        new_config[b'General'][b'debug'] = int(self.DEBUG)
-        new_config[b'General'][b'default_page'] = self.DEFAULT_PAGE
-        new_config[b'General'][b'enable_https'] = int(self.ENABLE_HTTPS)
-        new_config[b'General'][b'https_cert'] = self.HTTPS_CERT
-        new_config[b'General'][b'https_key'] = self.HTTPS_KEY
-        new_config[b'General'][b'handle_reverse_proxy'] = int(self.HANDLE_REVERSE_PROXY)
-        new_config[b'General'][b'use_nzbs'] = int(self.USE_NZBS)
-        new_config[b'General'][b'use_torrents'] = int(self.USE_TORRENTS)
-        new_config[b'General'][b'nzb_method'] = self.NZB_METHOD
-        new_config[b'General'][b'torrent_method'] = self.TORRENT_METHOD
-        new_config[b'General'][b'usenet_retention'] = int(self.USENET_RETENTION)
-        new_config[b'General'][b'autopostprocessor_frequency'] = int(self.AUTOPOSTPROCESSOR_FREQ)
-        new_config[b'General'][b'dailysearch_frequency'] = int(self.DAILY_SEARCHER_FREQ)
-        new_config[b'General'][b'backlog_frequency'] = int(self.BACKLOG_SEARCHER_FREQ)
-        new_config[b'General'][b'update_frequency'] = int(self.VERSION_UPDATER_FREQ)
-        new_config[b'General'][b'showupdate_hour'] = int(self.SHOWUPDATE_HOUR)
-        new_config[b'General'][b'download_propers'] = int(self.DOWNLOAD_PROPERS)
-        new_config[b'General'][b'randomize_providers'] = int(self.RANDOMIZE_PROVIDERS)
-        new_config[b'General'][b'check_propers_interval'] = self.PROPER_SEARCHER_INTERVAL
-        new_config[b'General'][b'allow_high_priority'] = int(self.ALLOW_HIGH_PRIORITY)
-        new_config[b'General'][b'skip_removed_files'] = int(self.SKIP_REMOVED_FILES)
-        new_config[b'General'][b'quality_default'] = int(self.QUALITY_DEFAULT)
-        new_config[b'General'][b'status_default'] = int(self.STATUS_DEFAULT)
-        new_config[b'General'][b'status_default_after'] = int(self.STATUS_DEFAULT_AFTER)
-        new_config[b'General'][b'flatten_folders_default'] = int(self.FLATTEN_FOLDERS_DEFAULT)
-        new_config[b'General'][b'indexer_default'] = int(self.INDEXER_DEFAULT)
-        new_config[b'General'][b'indexer_timeout'] = int(self.INDEXER_TIMEOUT)
-        new_config[b'General'][b'anime_default'] = int(self.ANIME_DEFAULT)
-        new_config[b'General'][b'scene_default'] = int(self.SCENE_DEFAULT)
-        new_config[b'General'][b'archive_default'] = int(self.ARCHIVE_DEFAULT)
-        new_config[b'General'][b'provider_order'] = ' '.join(self.PROVIDER_ORDER)
-        new_config[b'General'][b'version_notify'] = int(self.VERSION_NOTIFY)
-        new_config[b'General'][b'auto_update'] = int(self.AUTO_UPDATE)
-        new_config[b'General'][b'notify_on_update'] = int(self.NOTIFY_ON_UPDATE)
-        new_config[b'General'][b'naming_strip_year'] = int(self.NAMING_STRIP_YEAR)
-        new_config[b'General'][b'naming_pattern'] = self.NAMING_PATTERN
-        new_config[b'General'][b'naming_custom_abd'] = int(self.NAMING_CUSTOM_ABD)
-        new_config[b'General'][b'naming_abd_pattern'] = self.NAMING_ABD_PATTERN
-        new_config[b'General'][b'naming_custom_sports'] = int(self.NAMING_CUSTOM_SPORTS)
-        new_config[b'General'][b'naming_sports_pattern'] = self.NAMING_SPORTS_PATTERN
-        new_config[b'General'][b'naming_custom_anime'] = int(self.NAMING_CUSTOM_ANIME)
-        new_config[b'General'][b'naming_anime_pattern'] = self.NAMING_ANIME_PATTERN
-        new_config[b'General'][b'naming_multi_ep'] = int(self.NAMING_MULTI_EP)
-        new_config[b'General'][b'naming_anime_multi_ep'] = int(self.NAMING_ANIME_MULTI_EP)
-        new_config[b'General'][b'naming_anime'] = int(self.NAMING_ANIME)
-        new_config[b'General'][b'indexerDefaultLang'] = self.INDEXER_DEFAULT_LANGUAGE
-        new_config[b'General'][b'ep_default_deleted_status'] = int(self.EP_DEFAULT_DELETED_STATUS)
-        new_config[b'General'][b'launch_browser'] = int(self.LAUNCH_BROWSER)
-        new_config[b'General'][b'trash_remove_show'] = int(self.TRASH_REMOVE_SHOW)
-        new_config[b'General'][b'trash_rotate_logs'] = int(self.TRASH_ROTATE_LOGS)
-        new_config[b'General'][b'sort_article'] = int(self.SORT_ARTICLE)
-        new_config[b'General'][b'proxy_setting'] = self.PROXY_SETTING
-        new_config[b'General'][b'proxy_indexers'] = int(self.PROXY_INDEXERS)
+        new_config['General']['log_nr'] = int(self.LOG_NR)
+        new_config['General']['log_size'] = int(self.LOG_SIZE)
+        new_config['General']['socket_timeout'] = self.SOCKET_TIMEOUT
+        new_config['General']['web_port'] = self.WEB_PORT
+        new_config['General']['web_host'] = self.WEB_HOST
+        new_config['General']['web_ipv6'] = int(self.WEB_IPV6)
+        new_config['General']['web_log'] = int(self.WEB_LOG)
+        new_config['General']['web_root'] = self.WEB_ROOT
+        new_config['General']['web_username'] = self.WEB_USERNAME
+        new_config['General']['web_password'] = encrypt(self.WEB_PASSWORD, self.ENCRYPTION_VERSION)
+        new_config['General']['web_cookie_secret'] = self.WEB_COOKIE_SECRET
+        new_config['General']['web_use_gzip'] = int(self.WEB_USE_GZIP)
+        new_config['General']['ssl_verify'] = int(self.SSL_VERIFY)
+        new_config['General']['download_url'] = self.DOWNLOAD_URL
+        new_config['General']['localhost_ip'] = self.LOCALHOST_IP
+        new_config['General']['cpu_preset'] = self.CPU_PRESET
+        new_config['General']['anon_redirect'] = self.ANON_REDIRECT
+        new_config['General']['api_key'] = self.API_KEY
+        new_config['General']['debug'] = int(self.DEBUG)
+        new_config['General']['default_page'] = self.DEFAULT_PAGE
+        new_config['General']['enable_https'] = int(self.ENABLE_HTTPS)
+        new_config['General']['https_cert'] = self.HTTPS_CERT
+        new_config['General']['https_key'] = self.HTTPS_KEY
+        new_config['General']['handle_reverse_proxy'] = int(self.HANDLE_REVERSE_PROXY)
+        new_config['General']['use_nzbs'] = int(self.USE_NZBS)
+        new_config['General']['use_torrents'] = int(self.USE_TORRENTS)
+        new_config['General']['nzb_method'] = self.NZB_METHOD
+        new_config['General']['torrent_method'] = self.TORRENT_METHOD
+        new_config['General']['usenet_retention'] = int(self.USENET_RETENTION)
+        new_config['General']['autopostprocessor_frequency'] = int(self.AUTOPOSTPROCESSOR_FREQ)
+        new_config['General']['dailysearch_frequency'] = int(self.DAILY_SEARCHER_FREQ)
+        new_config['General']['backlog_frequency'] = int(self.BACKLOG_SEARCHER_FREQ)
+        new_config['General']['update_frequency'] = int(self.VERSION_UPDATER_FREQ)
+        new_config['General']['showupdate_hour'] = int(self.SHOWUPDATE_HOUR)
+        new_config['General']['download_propers'] = int(self.DOWNLOAD_PROPERS)
+        new_config['General']['randomize_providers'] = int(self.RANDOMIZE_PROVIDERS)
+        new_config['General']['check_propers_interval'] = self.PROPER_SEARCHER_INTERVAL
+        new_config['General']['allow_high_priority'] = int(self.ALLOW_HIGH_PRIORITY)
+        new_config['General']['skip_removed_files'] = int(self.SKIP_REMOVED_FILES)
+        new_config['General']['quality_default'] = int(self.QUALITY_DEFAULT)
+        new_config['General']['status_default'] = int(self.STATUS_DEFAULT)
+        new_config['General']['status_default_after'] = int(self.STATUS_DEFAULT_AFTER)
+        new_config['General']['flatten_folders_default'] = int(self.FLATTEN_FOLDERS_DEFAULT)
+        new_config['General']['indexer_default'] = int(self.INDEXER_DEFAULT)
+        new_config['General']['indexer_timeout'] = int(self.INDEXER_TIMEOUT)
+        new_config['General']['anime_default'] = int(self.ANIME_DEFAULT)
+        new_config['General']['scene_default'] = int(self.SCENE_DEFAULT)
+        new_config['General']['archive_default'] = int(self.ARCHIVE_DEFAULT)
+        new_config['General']['version_notify'] = int(self.VERSION_NOTIFY)
+        new_config['General']['auto_update'] = int(self.AUTO_UPDATE)
+        new_config['General']['notify_on_update'] = int(self.NOTIFY_ON_UPDATE)
+        new_config['General']['naming_strip_year'] = int(self.NAMING_STRIP_YEAR)
+        new_config['General']['naming_pattern'] = self.NAMING_PATTERN
+        new_config['General']['naming_custom_abd'] = int(self.NAMING_CUSTOM_ABD)
+        new_config['General']['naming_abd_pattern'] = self.NAMING_ABD_PATTERN
+        new_config['General']['naming_custom_sports'] = int(self.NAMING_CUSTOM_SPORTS)
+        new_config['General']['naming_sports_pattern'] = self.NAMING_SPORTS_PATTERN
+        new_config['General']['naming_custom_anime'] = int(self.NAMING_CUSTOM_ANIME)
+        new_config['General']['naming_anime_pattern'] = self.NAMING_ANIME_PATTERN
+        new_config['General']['naming_multi_ep'] = int(self.NAMING_MULTI_EP)
+        new_config['General']['naming_anime_multi_ep'] = int(self.NAMING_ANIME_MULTI_EP)
+        new_config['General']['naming_anime'] = int(self.NAMING_ANIME)
+        new_config['General']['indexerDefaultLang'] = self.INDEXER_DEFAULT_LANGUAGE
+        new_config['General']['ep_default_deleted_status'] = int(self.EP_DEFAULT_DELETED_STATUS)
+        new_config['General']['launch_browser'] = int(self.LAUNCH_BROWSER)
+        new_config['General']['trash_remove_show'] = int(self.TRASH_REMOVE_SHOW)
+        new_config['General']['trash_rotate_logs'] = int(self.TRASH_ROTATE_LOGS)
+        new_config['General']['sort_article'] = int(self.SORT_ARTICLE)
+        new_config['General']['proxy_setting'] = self.PROXY_SETTING
+        new_config['General']['proxy_indexers'] = int(self.PROXY_INDEXERS)
 
-        new_config[b'General'][b'use_listview'] = int(self.USE_LISTVIEW)
-        new_config[b'General'][b'metadata_kodi'] = self.METADATA_KODI
-        new_config[b'General'][b'metadata_kodi_12plus'] = self.METADATA_KODI_12PLUS
-        new_config[b'General'][b'metadata_mediabrowser'] = self.METADATA_MEDIABROWSER
-        new_config[b'General'][b'metadata_ps3'] = self.METADATA_PS3
-        new_config[b'General'][b'metadata_wdtv'] = self.METADATA_WDTV
-        new_config[b'General'][b'metadata_tivo'] = self.METADATA_TIVO
-        new_config[b'General'][b'metadata_mede8er'] = self.METADATA_MEDE8ER
+        new_config['General']['use_listview'] = int(self.USE_LISTVIEW)
+        new_config['General']['metadata_kodi'] = self.METADATA_KODI
+        new_config['General']['metadata_kodi_12plus'] = self.METADATA_KODI_12PLUS
+        new_config['General']['metadata_mediabrowser'] = self.METADATA_MEDIABROWSER
+        new_config['General']['metadata_ps3'] = self.METADATA_PS3
+        new_config['General']['metadata_wdtv'] = self.METADATA_WDTV
+        new_config['General']['metadata_tivo'] = self.METADATA_TIVO
+        new_config['General']['metadata_mede8er'] = self.METADATA_MEDE8ER
 
-        new_config[b'General'][b'backlog_days'] = int(self.BACKLOG_DAYS)
+        new_config['General']['backlog_days'] = int(self.BACKLOG_DAYS)
 
-        new_config[b'General'][b'cache_dir'] = self.CACHE_DIR or 'cache'
-        new_config[b'General'][b'root_dirs'] = self.ROOT_DIRS or ''
-        new_config[b'General'][b'tv_download_dir'] = self.TV_DOWNLOAD_DIR
-        new_config[b'General'][b'keep_processed_dir'] = int(self.KEEP_PROCESSED_DIR)
-        new_config[b'General'][b'process_method'] = self.PROCESS_METHOD
-        new_config[b'General'][b'del_rar_contents'] = int(self.DELRARCONTENTS)
-        new_config[b'General'][b'move_associated_files'] = int(self.MOVE_ASSOCIATED_FILES)
-        new_config[b'General'][b'sync_files'] = self.SYNC_FILES
-        new_config[b'General'][b'postpone_if_sync_files'] = int(self.POSTPONE_IF_SYNC_FILES)
-        new_config[b'General'][b'nfo_rename'] = int(self.NFO_RENAME)
-        new_config[b'General'][b'process_automatically'] = int(self.PROCESS_AUTOMATICALLY)
-        new_config[b'General'][b'no_delete'] = int(self.NO_DELETE)
-        new_config[b'General'][b'unpack'] = int(self.UNPACK)
-        new_config[b'General'][b'rename_episodes'] = int(self.RENAME_EPISODES)
-        new_config[b'General'][b'airdate_episodes'] = int(self.AIRDATE_EPISODES)
-        new_config[b'General'][b'file_timestamp_timezone'] = self.FILE_TIMESTAMP_TIMEZONE
-        new_config[b'General'][b'create_missing_show_dirs'] = int(self.CREATE_MISSING_SHOW_DIRS)
-        new_config[b'General'][b'add_shows_wo_dir'] = int(self.ADD_SHOWS_WO_DIR)
+        new_config['General']['cache_dir'] = self.CACHE_DIR or 'cache'
+        new_config['General']['root_dirs'] = self.ROOT_DIRS or ''
+        new_config['General']['tv_download_dir'] = self.TV_DOWNLOAD_DIR
+        new_config['General']['keep_processed_dir'] = int(self.KEEP_PROCESSED_DIR)
+        new_config['General']['process_method'] = self.PROCESS_METHOD
+        new_config['General']['del_rar_contents'] = int(self.DELRARCONTENTS)
+        new_config['General']['move_associated_files'] = int(self.MOVE_ASSOCIATED_FILES)
+        new_config['General']['sync_files'] = self.SYNC_FILES
+        new_config['General']['postpone_if_sync_files'] = int(self.POSTPONE_IF_SYNC_FILES)
+        new_config['General']['nfo_rename'] = int(self.NFO_RENAME)
+        new_config['General']['process_automatically'] = int(self.PROCESS_AUTOMATICALLY)
+        new_config['General']['no_delete'] = int(self.NO_DELETE)
+        new_config['General']['unpack'] = int(self.UNPACK)
+        new_config['General']['rename_episodes'] = int(self.RENAME_EPISODES)
+        new_config['General']['airdate_episodes'] = int(self.AIRDATE_EPISODES)
+        new_config['General']['file_timestamp_timezone'] = self.FILE_TIMESTAMP_TIMEZONE
+        new_config['General']['create_missing_show_dirs'] = int(self.CREATE_MISSING_SHOW_DIRS)
+        new_config['General']['add_shows_wo_dir'] = int(self.ADD_SHOWS_WO_DIR)
 
-        new_config[b'General'][b'extra_scripts'] = '|'.join(self.EXTRA_SCRIPTS)
-        new_config[b'General'][b'git_path'] = self.GIT_PATH
-        new_config[b'General'][b'ignore_words'] = self.IGNORE_WORDS
-        new_config[b'General'][b'require_words'] = self.REQUIRE_WORDS
-        new_config[b'General'][b'ignored_subs_list'] = self.IGNORED_SUBS_LIST
-        new_config[b'General'][b'calendar_unprotected'] = int(self.CALENDAR_UNPROTECTED)
-        new_config[b'General'][b'calendar_icons'] = int(self.CALENDAR_ICONS)
-        new_config[b'General'][b'no_restart'] = int(self.NO_RESTART)
-        new_config[b'General'][b'developer'] = int(self.DEVELOPER)
-        new_config[b'General'][b'display_all_seasons'] = int(self.DISPLAY_ALL_SEASONS)
-        new_config[b'General'][b'news_last_read'] = self.NEWS_LAST_READ
+        new_config['General']['extra_scripts'] = '|'.join(self.EXTRA_SCRIPTS)
+        new_config['General']['git_path'] = self.GIT_PATH
+        new_config['General']['ignore_words'] = self.IGNORE_WORDS
+        new_config['General']['require_words'] = self.REQUIRE_WORDS
+        new_config['General']['ignored_subs_list'] = self.IGNORED_SUBS_LIST
+        new_config['General']['calendar_unprotected'] = int(self.CALENDAR_UNPROTECTED)
+        new_config['General']['calendar_icons'] = int(self.CALENDAR_ICONS)
+        new_config['General']['no_restart'] = int(self.NO_RESTART)
+        new_config['General']['developer'] = int(self.DEVELOPER)
+        new_config['General']['display_all_seasons'] = int(self.DISPLAY_ALL_SEASONS)
+        new_config['General']['news_last_read'] = self.NEWS_LAST_READ
 
-        new_config[b'Blackhole'] = {}
-        new_config[b'Blackhole'][b'nzb_dir'] = self.NZB_DIR
-        new_config[b'Blackhole'][b'torrent_dir'] = self.TORRENT_DIR
+        new_config['Blackhole'] = {}
+        new_config['Blackhole']['nzb_dir'] = self.NZB_DIR
+        new_config['Blackhole']['torrent_dir'] = self.TORRENT_DIR
 
-        new_config[b'NZBs'] = {}
-        new_config[b'NZBs'][b'nzbs'] = int(self.NZBS)
-        new_config[b'NZBs'][b'nzbs_uid'] = self.NZBS_UID
-        new_config[b'NZBs'][b'nzbs_hash'] = self.NZBS_HASH
+        new_config['NZBs'] = {}
+        new_config['NZBs']['nzbs'] = int(self.NZBS)
+        new_config['NZBs']['nzbs_uid'] = self.NZBS_UID
+        new_config['NZBs']['nzbs_hash'] = self.NZBS_HASH
 
-        new_config[b'Newzbin'] = {}
-        new_config[b'Newzbin'][b'newzbin'] = int(self.NEWZBIN)
-        new_config[b'Newzbin'][b'newzbin_username'] = self.NEWZBIN_USERNAME
-        new_config[b'Newzbin'][b'newzbin_password'] = encrypt(self.NEWZBIN_PASSWORD,
-                                                              self.ENCRYPTION_VERSION)
-
-        new_config[b'SABnzbd'] = {}
-        new_config[b'SABnzbd'][b'sab_username'] = self.SAB_USERNAME
-        new_config[b'SABnzbd'][b'sab_password'] = encrypt(self.SAB_PASSWORD, self.ENCRYPTION_VERSION)
-        new_config[b'SABnzbd'][b'sab_apikey'] = self.SAB_APIKEY
-        new_config[b'SABnzbd'][b'sab_category'] = self.SAB_CATEGORY
-        new_config[b'SABnzbd'][b'sab_category_backlog'] = self.SAB_CATEGORY_BACKLOG
-        new_config[b'SABnzbd'][b'sab_category_anime'] = self.SAB_CATEGORY_ANIME
-        new_config[b'SABnzbd'][b'sab_category_anime_backlog'] = self.SAB_CATEGORY_ANIME_BACKLOG
-        new_config[b'SABnzbd'][b'sab_host'] = self.SAB_HOST
-        new_config[b'SABnzbd'][b'sab_forced'] = int(self.SAB_FORCED)
-
-        new_config[b'NZBget'] = {}
-
-        new_config[b'NZBget'][b'nzbget_username'] = self.NZBGET_USERNAME
-        new_config[b'NZBget'][b'nzbget_password'] = encrypt(self.NZBGET_PASSWORD,
+        new_config['Newzbin'] = {}
+        new_config['Newzbin']['newzbin'] = int(self.NEWZBIN)
+        new_config['Newzbin']['newzbin_username'] = self.NEWZBIN_USERNAME
+        new_config['Newzbin']['newzbin_password'] = encrypt(self.NEWZBIN_PASSWORD,
                                                             self.ENCRYPTION_VERSION)
-        new_config[b'NZBget'][b'nzbget_category'] = self.NZBGET_CATEGORY
-        new_config[b'NZBget'][b'nzbget_category_backlog'] = self.NZBGET_CATEGORY_BACKLOG
-        new_config[b'NZBget'][b'nzbget_category_anime'] = self.NZBGET_CATEGORY_ANIME
-        new_config[b'NZBget'][b'nzbget_category_anime_backlog'] = self.NZBGET_CATEGORY_ANIME_BACKLOG
-        new_config[b'NZBget'][b'nzbget_host'] = self.NZBGET_HOST
-        new_config[b'NZBget'][b'nzbget_use_https'] = int(self.NZBGET_USE_HTTPS)
-        new_config[b'NZBget'][b'nzbget_priority'] = self.NZBGET_PRIORITY
 
-        new_config[b'TORRENT'] = {}
-        new_config[b'TORRENT'][b'torrent_username'] = self.TORRENT_USERNAME
-        new_config[b'TORRENT'][b'torrent_password'] = encrypt(self.TORRENT_PASSWORD,
-                                                              self.ENCRYPTION_VERSION)
-        new_config[b'TORRENT'][b'torrent_host'] = self.TORRENT_HOST
-        new_config[b'TORRENT'][b'torrent_path'] = self.TORRENT_PATH
-        new_config[b'TORRENT'][b'torrent_seed_time'] = int(self.TORRENT_SEED_TIME)
-        new_config[b'TORRENT'][b'torrent_paused'] = int(self.TORRENT_PAUSED)
-        new_config[b'TORRENT'][b'torrent_high_bandwidth'] = int(self.TORRENT_HIGH_BANDWIDTH)
-        new_config[b'TORRENT'][b'torrent_label'] = self.TORRENT_LABEL
-        new_config[b'TORRENT'][b'torrent_label_anime'] = self.TORRENT_LABEL_ANIME
-        new_config[b'TORRENT'][b'torrent_verify_cert'] = int(self.TORRENT_VERIFY_CERT)
-        new_config[b'TORRENT'][b'torrent_rpcurl'] = self.TORRENT_RPCURL
-        new_config[b'TORRENT'][b'torrent_auth_type'] = self.TORRENT_AUTH_TYPE
+        new_config['SABnzbd'] = {}
+        new_config['SABnzbd']['sab_username'] = self.SAB_USERNAME
+        new_config['SABnzbd']['sab_password'] = encrypt(self.SAB_PASSWORD, self.ENCRYPTION_VERSION)
+        new_config['SABnzbd']['sab_apikey'] = self.SAB_APIKEY
+        new_config['SABnzbd']['sab_category'] = self.SAB_CATEGORY
+        new_config['SABnzbd']['sab_category_backlog'] = self.SAB_CATEGORY_BACKLOG
+        new_config['SABnzbd']['sab_category_anime'] = self.SAB_CATEGORY_ANIME
+        new_config['SABnzbd']['sab_category_anime_backlog'] = self.SAB_CATEGORY_ANIME_BACKLOG
+        new_config['SABnzbd']['sab_host'] = self.SAB_HOST
+        new_config['SABnzbd']['sab_forced'] = int(self.SAB_FORCED)
 
-        new_config[b'KODI'] = {}
-        new_config[b'KODI'][b'use_kodi'] = int(self.USE_KODI)
-        new_config[b'KODI'][b'kodi_always_on'] = int(self.KODI_ALWAYS_ON)
-        new_config[b'KODI'][b'kodi_notify_onsnatch'] = int(self.KODI_NOTIFY_ONSNATCH)
-        new_config[b'KODI'][b'kodi_notify_ondownload'] = int(self.KODI_NOTIFY_ONDOWNLOAD)
-        new_config[b'KODI'][b'kodi_notify_onsubtitledownload'] = int(self.KODI_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'KODI'][b'kodi_update_library'] = int(self.KODI_UPDATE_LIBRARY)
-        new_config[b'KODI'][b'kodi_update_full'] = int(self.KODI_UPDATE_FULL)
-        new_config[b'KODI'][b'kodi_update_onlyfirst'] = int(self.KODI_UPDATE_ONLYFIRST)
-        new_config[b'KODI'][b'kodi_host'] = self.KODI_HOST
-        new_config[b'KODI'][b'kodi_username'] = self.KODI_USERNAME
-        new_config[b'KODI'][b'kodi_password'] = encrypt(self.KODI_PASSWORD, self.ENCRYPTION_VERSION)
+        new_config['NZBget'] = {}
 
-        new_config[b'Plex'] = {}
-        new_config[b'Plex'][b'use_plex'] = int(self.USE_PLEX)
-        new_config[b'Plex'][b'plex_notify_onsnatch'] = int(self.PLEX_NOTIFY_ONSNATCH)
-        new_config[b'Plex'][b'plex_notify_ondownload'] = int(self.PLEX_NOTIFY_ONDOWNLOAD)
-        new_config[b'Plex'][b'plex_notify_onsubtitledownload'] = int(self.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'Plex'][b'plex_update_library'] = int(self.PLEX_UPDATE_LIBRARY)
-        new_config[b'Plex'][b'plex_server_host'] = self.PLEX_SERVER_HOST
-        new_config[b'Plex'][b'plex_server_token'] = self.PLEX_SERVER_TOKEN
-        new_config[b'Plex'][b'plex_host'] = self.PLEX_HOST
-        new_config[b'Plex'][b'plex_username'] = self.PLEX_USERNAME
-        new_config[b'Plex'][b'plex_password'] = encrypt(self.PLEX_PASSWORD, self.ENCRYPTION_VERSION)
-
-        new_config[b'Emby'] = {}
-        new_config[b'Emby'][b'use_emby'] = int(self.USE_EMBY)
-        new_config[b'Emby'][b'emby_host'] = self.EMBY_HOST
-        new_config[b'Emby'][b'emby_apikey'] = self.EMBY_APIKEY
-
-        new_config[b'Growl'] = {}
-        new_config[b'Growl'][b'use_growl'] = int(self.USE_GROWL)
-        new_config[b'Growl'][b'growl_notify_onsnatch'] = int(self.GROWL_NOTIFY_ONSNATCH)
-        new_config[b'Growl'][b'growl_notify_ondownload'] = int(self.GROWL_NOTIFY_ONDOWNLOAD)
-        new_config[b'Growl'][b'growl_notify_onsubtitledownload'] = int(self.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'Growl'][b'growl_host'] = self.GROWL_HOST
-        new_config[b'Growl'][b'growl_password'] = encrypt(self.GROWL_PASSWORD,
+        new_config['NZBget']['nzbget_username'] = self.NZBGET_USERNAME
+        new_config['NZBget']['nzbget_password'] = encrypt(self.NZBGET_PASSWORD,
                                                           self.ENCRYPTION_VERSION)
+        new_config['NZBget']['nzbget_category'] = self.NZBGET_CATEGORY
+        new_config['NZBget']['nzbget_category_backlog'] = self.NZBGET_CATEGORY_BACKLOG
+        new_config['NZBget']['nzbget_category_anime'] = self.NZBGET_CATEGORY_ANIME
+        new_config['NZBget']['nzbget_category_anime_backlog'] = self.NZBGET_CATEGORY_ANIME_BACKLOG
+        new_config['NZBget']['nzbget_host'] = self.NZBGET_HOST
+        new_config['NZBget']['nzbget_use_https'] = int(self.NZBGET_USE_HTTPS)
+        new_config['NZBget']['nzbget_priority'] = self.NZBGET_PRIORITY
 
-        new_config[b'FreeMobile'] = {}
-        new_config[b'FreeMobile'][b'use_freemobile'] = int(self.USE_FREEMOBILE)
-        new_config[b'FreeMobile'][b'freemobile_notify_onsnatch'] = int(self.FREEMOBILE_NOTIFY_ONSNATCH)
-        new_config[b'FreeMobile'][b'freemobile_notify_ondownload'] = int(self.FREEMOBILE_NOTIFY_ONDOWNLOAD)
-        new_config[b'FreeMobile'][b'freemobile_notify_onsubtitledownload'] = int(
+        new_config['TORRENT'] = {}
+        new_config['TORRENT']['torrent_username'] = self.TORRENT_USERNAME
+        new_config['TORRENT']['torrent_password'] = encrypt(self.TORRENT_PASSWORD,
+                                                            self.ENCRYPTION_VERSION)
+        new_config['TORRENT']['torrent_host'] = self.TORRENT_HOST
+        new_config['TORRENT']['torrent_path'] = self.TORRENT_PATH
+        new_config['TORRENT']['torrent_seed_time'] = int(self.TORRENT_SEED_TIME)
+        new_config['TORRENT']['torrent_paused'] = int(self.TORRENT_PAUSED)
+        new_config['TORRENT']['torrent_high_bandwidth'] = int(self.TORRENT_HIGH_BANDWIDTH)
+        new_config['TORRENT']['torrent_label'] = self.TORRENT_LABEL
+        new_config['TORRENT']['torrent_label_anime'] = self.TORRENT_LABEL_ANIME
+        new_config['TORRENT']['torrent_verify_cert'] = int(self.TORRENT_VERIFY_CERT)
+        new_config['TORRENT']['torrent_rpcurl'] = self.TORRENT_RPCURL
+        new_config['TORRENT']['torrent_auth_type'] = self.TORRENT_AUTH_TYPE
+
+        new_config['KODI'] = {}
+        new_config['KODI']['use_kodi'] = int(self.USE_KODI)
+        new_config['KODI']['kodi_always_on'] = int(self.KODI_ALWAYS_ON)
+        new_config['KODI']['kodi_notify_onsnatch'] = int(self.KODI_NOTIFY_ONSNATCH)
+        new_config['KODI']['kodi_notify_ondownload'] = int(self.KODI_NOTIFY_ONDOWNLOAD)
+        new_config['KODI']['kodi_notify_onsubtitledownload'] = int(self.KODI_NOTIFY_ONSUBTITLEDOWNLOAD)
+        new_config['KODI']['kodi_update_library'] = int(self.KODI_UPDATE_LIBRARY)
+        new_config['KODI']['kodi_update_full'] = int(self.KODI_UPDATE_FULL)
+        new_config['KODI']['kodi_update_onlyfirst'] = int(self.KODI_UPDATE_ONLYFIRST)
+        new_config['KODI']['kodi_host'] = self.KODI_HOST
+        new_config['KODI']['kodi_username'] = self.KODI_USERNAME
+        new_config['KODI']['kodi_password'] = encrypt(self.KODI_PASSWORD, self.ENCRYPTION_VERSION)
+
+        new_config['Plex'] = {}
+        new_config['Plex']['use_plex'] = int(self.USE_PLEX)
+        new_config['Plex']['plex_notify_onsnatch'] = int(self.PLEX_NOTIFY_ONSNATCH)
+        new_config['Plex']['plex_notify_ondownload'] = int(self.PLEX_NOTIFY_ONDOWNLOAD)
+        new_config['Plex']['plex_notify_onsubtitledownload'] = int(self.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD)
+        new_config['Plex']['plex_update_library'] = int(self.PLEX_UPDATE_LIBRARY)
+        new_config['Plex']['plex_server_host'] = self.PLEX_SERVER_HOST
+        new_config['Plex']['plex_server_token'] = self.PLEX_SERVER_TOKEN
+        new_config['Plex']['plex_host'] = self.PLEX_HOST
+        new_config['Plex']['plex_username'] = self.PLEX_USERNAME
+        new_config['Plex']['plex_password'] = encrypt(self.PLEX_PASSWORD, self.ENCRYPTION_VERSION)
+
+        new_config['Emby'] = {}
+        new_config['Emby']['use_emby'] = int(self.USE_EMBY)
+        new_config['Emby']['emby_host'] = self.EMBY_HOST
+        new_config['Emby']['emby_apikey'] = self.EMBY_APIKEY
+
+        new_config['Growl'] = {}
+        new_config['Growl']['use_growl'] = int(self.USE_GROWL)
+        new_config['Growl']['growl_notify_onsnatch'] = int(self.GROWL_NOTIFY_ONSNATCH)
+        new_config['Growl']['growl_notify_ondownload'] = int(self.GROWL_NOTIFY_ONDOWNLOAD)
+        new_config['Growl']['growl_notify_onsubtitledownload'] = int(self.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD)
+        new_config['Growl']['growl_host'] = self.GROWL_HOST
+        new_config['Growl']['growl_password'] = encrypt(self.GROWL_PASSWORD,
+                                                        self.ENCRYPTION_VERSION)
+
+        new_config['FreeMobile'] = {}
+        new_config['FreeMobile']['use_freemobile'] = int(self.USE_FREEMOBILE)
+        new_config['FreeMobile']['freemobile_notify_onsnatch'] = int(self.FREEMOBILE_NOTIFY_ONSNATCH)
+        new_config['FreeMobile']['freemobile_notify_ondownload'] = int(self.FREEMOBILE_NOTIFY_ONDOWNLOAD)
+        new_config['FreeMobile']['freemobile_notify_onsubtitledownload'] = int(
             self.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'FreeMobile'][b'freemobile_id'] = self.FREEMOBILE_ID
-        new_config[b'FreeMobile'][b'freemobile_apikey'] = self.FREEMOBILE_APIKEY
+        new_config['FreeMobile']['freemobile_id'] = self.FREEMOBILE_ID
+        new_config['FreeMobile']['freemobile_apikey'] = self.FREEMOBILE_APIKEY
 
-        new_config[b'Prowl'] = {}
-        new_config[b'Prowl'][b'use_prowl'] = int(self.USE_PROWL)
-        new_config[b'Prowl'][b'prowl_notify_onsnatch'] = int(self.PROWL_NOTIFY_ONSNATCH)
-        new_config[b'Prowl'][b'prowl_notify_ondownload'] = int(self.PROWL_NOTIFY_ONDOWNLOAD)
-        new_config[b'Prowl'][b'prowl_notify_onsubtitledownload'] = int(self.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'Prowl'][b'prowl_api'] = self.PROWL_API
-        new_config[b'Prowl'][b'prowl_priority'] = self.PROWL_PRIORITY
+        new_config['Prowl'] = {}
+        new_config['Prowl']['use_prowl'] = int(self.USE_PROWL)
+        new_config['Prowl']['prowl_notify_onsnatch'] = int(self.PROWL_NOTIFY_ONSNATCH)
+        new_config['Prowl']['prowl_notify_ondownload'] = int(self.PROWL_NOTIFY_ONDOWNLOAD)
+        new_config['Prowl']['prowl_notify_onsubtitledownload'] = int(self.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD)
+        new_config['Prowl']['prowl_api'] = self.PROWL_API
+        new_config['Prowl']['prowl_priority'] = self.PROWL_PRIORITY
 
-        new_config[b'Twitter'] = {}
-        new_config[b'Twitter'][b'use_twitter'] = int(self.USE_TWITTER)
-        new_config[b'Twitter'][b'twitter_notify_onsnatch'] = int(self.TWITTER_NOTIFY_ONSNATCH)
-        new_config[b'Twitter'][b'twitter_notify_ondownload'] = int(self.TWITTER_NOTIFY_ONDOWNLOAD)
-        new_config[b'Twitter'][b'twitter_notify_onsubtitledownload'] = int(
+        new_config['Twitter'] = {}
+        new_config['Twitter']['use_twitter'] = int(self.USE_TWITTER)
+        new_config['Twitter']['twitter_notify_onsnatch'] = int(self.TWITTER_NOTIFY_ONSNATCH)
+        new_config['Twitter']['twitter_notify_ondownload'] = int(self.TWITTER_NOTIFY_ONDOWNLOAD)
+        new_config['Twitter']['twitter_notify_onsubtitledownload'] = int(
             self.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'Twitter'][b'twitter_username'] = self.TWITTER_USERNAME
-        new_config[b'Twitter'][b'twitter_password'] = encrypt(self.TWITTER_PASSWORD,
-                                                              self.ENCRYPTION_VERSION)
-        new_config[b'Twitter'][b'twitter_prefix'] = self.TWITTER_PREFIX
-        new_config[b'Twitter'][b'twitter_dmto'] = self.TWITTER_DMTO
-        new_config[b'Twitter'][b'twitter_usedm'] = int(self.TWITTER_USEDM)
+        new_config['Twitter']['twitter_username'] = self.TWITTER_USERNAME
+        new_config['Twitter']['twitter_password'] = encrypt(self.TWITTER_PASSWORD,
+                                                            self.ENCRYPTION_VERSION)
+        new_config['Twitter']['twitter_prefix'] = self.TWITTER_PREFIX
+        new_config['Twitter']['twitter_dmto'] = self.TWITTER_DMTO
+        new_config['Twitter']['twitter_usedm'] = int(self.TWITTER_USEDM)
 
-        new_config[b'Boxcar'] = {}
-        new_config[b'Boxcar'][b'use_boxcar'] = int(self.USE_BOXCAR)
-        new_config[b'Boxcar'][b'boxcar_notify_onsnatch'] = int(self.BOXCAR_NOTIFY_ONSNATCH)
-        new_config[b'Boxcar'][b'boxcar_notify_ondownload'] = int(self.BOXCAR_NOTIFY_ONDOWNLOAD)
-        new_config[b'Boxcar'][b'boxcar_notify_onsubtitledownload'] = int(self.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'Boxcar'][b'boxcar_username'] = self.BOXCAR_USERNAME
+        new_config['Boxcar'] = {}
+        new_config['Boxcar']['use_boxcar'] = int(self.USE_BOXCAR)
+        new_config['Boxcar']['boxcar_notify_onsnatch'] = int(self.BOXCAR_NOTIFY_ONSNATCH)
+        new_config['Boxcar']['boxcar_notify_ondownload'] = int(self.BOXCAR_NOTIFY_ONDOWNLOAD)
+        new_config['Boxcar']['boxcar_notify_onsubtitledownload'] = int(self.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD)
+        new_config['Boxcar']['boxcar_username'] = self.BOXCAR_USERNAME
 
-        new_config[b'Boxcar2'] = {}
-        new_config[b'Boxcar2'][b'use_boxcar2'] = int(self.USE_BOXCAR2)
-        new_config[b'Boxcar2'][b'boxcar2_notify_onsnatch'] = int(self.BOXCAR2_NOTIFY_ONSNATCH)
-        new_config[b'Boxcar2'][b'boxcar2_notify_ondownload'] = int(self.BOXCAR2_NOTIFY_ONDOWNLOAD)
-        new_config[b'Boxcar2'][b'boxcar2_notify_onsubtitledownload'] = int(
+        new_config['Boxcar2'] = {}
+        new_config['Boxcar2']['use_boxcar2'] = int(self.USE_BOXCAR2)
+        new_config['Boxcar2']['boxcar2_notify_onsnatch'] = int(self.BOXCAR2_NOTIFY_ONSNATCH)
+        new_config['Boxcar2']['boxcar2_notify_ondownload'] = int(self.BOXCAR2_NOTIFY_ONDOWNLOAD)
+        new_config['Boxcar2']['boxcar2_notify_onsubtitledownload'] = int(
             self.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'Boxcar2'][b'boxcar2_accesstoken'] = self.BOXCAR2_ACCESSTOKEN
+        new_config['Boxcar2']['boxcar2_accesstoken'] = self.BOXCAR2_ACCESSTOKEN
 
-        new_config[b'Pushover'] = {}
-        new_config[b'Pushover'][b'use_pushover'] = int(self.USE_PUSHOVER)
-        new_config[b'Pushover'][b'pushover_notify_onsnatch'] = int(self.PUSHOVER_NOTIFY_ONSNATCH)
-        new_config[b'Pushover'][b'pushover_notify_ondownload'] = int(self.PUSHOVER_NOTIFY_ONDOWNLOAD)
-        new_config[b'Pushover'][b'pushover_notify_onsubtitledownload'] = int(
+        new_config['Pushover'] = {}
+        new_config['Pushover']['use_pushover'] = int(self.USE_PUSHOVER)
+        new_config['Pushover']['pushover_notify_onsnatch'] = int(self.PUSHOVER_NOTIFY_ONSNATCH)
+        new_config['Pushover']['pushover_notify_ondownload'] = int(self.PUSHOVER_NOTIFY_ONDOWNLOAD)
+        new_config['Pushover']['pushover_notify_onsubtitledownload'] = int(
             self.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'Pushover'][b'pushover_userkey'] = self.PUSHOVER_USERKEY
-        new_config[b'Pushover'][b'pushover_apikey'] = self.PUSHOVER_APIKEY
-        new_config[b'Pushover'][b'pushover_device'] = self.PUSHOVER_DEVICE
-        new_config[b'Pushover'][b'pushover_sound'] = self.PUSHOVER_SOUND
+        new_config['Pushover']['pushover_userkey'] = self.PUSHOVER_USERKEY
+        new_config['Pushover']['pushover_apikey'] = self.PUSHOVER_APIKEY
+        new_config['Pushover']['pushover_device'] = self.PUSHOVER_DEVICE
+        new_config['Pushover']['pushover_sound'] = self.PUSHOVER_SOUND
 
-        new_config[b'Libnotify'] = {}
-        new_config[b'Libnotify'][b'use_libnotify'] = int(self.USE_LIBNOTIFY)
-        new_config[b'Libnotify'][b'libnotify_notify_onsnatch'] = int(self.LIBNOTIFY_NOTIFY_ONSNATCH)
-        new_config[b'Libnotify'][b'libnotify_notify_ondownload'] = int(self.LIBNOTIFY_NOTIFY_ONDOWNLOAD)
-        new_config[b'Libnotify'][b'libnotify_notify_onsubtitledownload'] = int(
+        new_config['Libnotify'] = {}
+        new_config['Libnotify']['use_libnotify'] = int(self.USE_LIBNOTIFY)
+        new_config['Libnotify']['libnotify_notify_onsnatch'] = int(self.LIBNOTIFY_NOTIFY_ONSNATCH)
+        new_config['Libnotify']['libnotify_notify_ondownload'] = int(self.LIBNOTIFY_NOTIFY_ONDOWNLOAD)
+        new_config['Libnotify']['libnotify_notify_onsubtitledownload'] = int(
             self.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD)
 
-        new_config[b'NMJ'] = {}
-        new_config[b'NMJ'][b'use_nmj'] = int(self.USE_NMJ)
-        new_config[b'NMJ'][b'nmj_host'] = self.NMJ_HOST
-        new_config[b'NMJ'][b'nmj_database'] = self.NMJ_DATABASE
-        new_config[b'NMJ'][b'nmj_mount'] = self.NMJ_MOUNT
+        new_config['NMJ'] = {}
+        new_config['NMJ']['use_nmj'] = int(self.USE_NMJ)
+        new_config['NMJ']['nmj_host'] = self.NMJ_HOST
+        new_config['NMJ']['nmj_database'] = self.NMJ_DATABASE
+        new_config['NMJ']['nmj_mount'] = self.NMJ_MOUNT
 
-        new_config[b'NMJv2'] = {}
-        new_config[b'NMJv2'][b'use_nmjv2'] = int(self.USE_NMJv2)
-        new_config[b'NMJv2'][b'nmjv2_host'] = self.NMJv2_HOST
-        new_config[b'NMJv2'][b'nmjv2_database'] = self.NMJv2_DATABASE
-        new_config[b'NMJv2'][b'nmjv2_dbloc'] = self.NMJv2_DBLOC
+        new_config['NMJv2'] = {}
+        new_config['NMJv2']['use_nmjv2'] = int(self.USE_NMJv2)
+        new_config['NMJv2']['nmjv2_host'] = self.NMJv2_HOST
+        new_config['NMJv2']['nmjv2_database'] = self.NMJv2_DATABASE
+        new_config['NMJv2']['nmjv2_dbloc'] = self.NMJv2_DBLOC
 
-        new_config[b'Synology'] = {}
-        new_config[b'Synology'][b'use_synoindex'] = int(self.USE_SYNOINDEX)
+        new_config['Synology'] = {}
+        new_config['Synology']['use_synoindex'] = int(self.USE_SYNOINDEX)
 
-        new_config[b'SynologyNotifier'] = {}
-        new_config[b'SynologyNotifier'][b'use_synologynotifier'] = int(self.USE_SYNOLOGYNOTIFIER)
-        new_config[b'SynologyNotifier'][b'synologynotifier_notify_onsnatch'] = int(
+        new_config['SynologyNotifier'] = {}
+        new_config['SynologyNotifier']['use_synologynotifier'] = int(self.USE_SYNOLOGYNOTIFIER)
+        new_config['SynologyNotifier']['synologynotifier_notify_onsnatch'] = int(
             self.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH)
-        new_config[b'SynologyNotifier'][b'synologynotifier_notify_ondownload'] = int(
+        new_config['SynologyNotifier']['synologynotifier_notify_ondownload'] = int(
             self.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD)
-        new_config[b'SynologyNotifier'][b'synologynotifier_notify_onsubtitledownload'] = int(
+        new_config['SynologyNotifier']['synologynotifier_notify_onsubtitledownload'] = int(
             self.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD)
 
-        new_config[b'theTVDB'] = {}
-        new_config[b'theTVDB'][b'thetvdb_apitoken'] = self.THETVDB_APITOKEN
+        new_config['theTVDB'] = {}
+        new_config['theTVDB']['thetvdb_apitoken'] = self.THETVDB_APITOKEN
 
-        new_config[b'Trakt'] = {}
-        new_config[b'Trakt'][b'use_trakt'] = int(self.USE_TRAKT)
-        new_config[b'Trakt'][b'trakt_username'] = self.TRAKT_USERNAME
-        new_config[b'Trakt'][b'trakt_access_token'] = self.TRAKT_ACCESS_TOKEN
-        new_config[b'Trakt'][b'trakt_refresh_token'] = self.TRAKT_REFRESH_TOKEN
-        new_config[b'Trakt'][b'trakt_remove_watchlist'] = int(self.TRAKT_REMOVE_WATCHLIST)
-        new_config[b'Trakt'][b'trakt_remove_serieslist'] = int(self.TRAKT_REMOVE_SERIESLIST)
-        new_config[b'Trakt'][b'trakt_remove_show_from_sickrage'] = int(self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE)
-        new_config[b'Trakt'][b'trakt_sync_watchlist'] = int(self.TRAKT_SYNC_WATCHLIST)
-        new_config[b'Trakt'][b'trakt_method_add'] = int(self.TRAKT_METHOD_ADD)
-        new_config[b'Trakt'][b'trakt_start_paused'] = int(self.TRAKT_START_PAUSED)
-        new_config[b'Trakt'][b'trakt_use_recommended'] = int(self.TRAKT_USE_RECOMMENDED)
-        new_config[b'Trakt'][b'trakt_sync'] = int(self.TRAKT_SYNC)
-        new_config[b'Trakt'][b'trakt_sync_remove'] = int(self.TRAKT_SYNC_REMOVE)
-        new_config[b'Trakt'][b'trakt_default_indexer'] = int(self.TRAKT_DEFAULT_INDEXER)
-        new_config[b'Trakt'][b'trakt_timeout'] = int(self.TRAKT_TIMEOUT)
-        new_config[b'Trakt'][b'trakt_blacklist_name'] = self.TRAKT_BLACKLIST_NAME
+        new_config['Trakt'] = {}
+        new_config['Trakt']['use_trakt'] = int(self.USE_TRAKT)
+        new_config['Trakt']['trakt_username'] = self.TRAKT_USERNAME
+        new_config['Trakt']['trakt_access_token'] = self.TRAKT_ACCESS_TOKEN
+        new_config['Trakt']['trakt_refresh_token'] = self.TRAKT_REFRESH_TOKEN
+        new_config['Trakt']['trakt_remove_watchlist'] = int(self.TRAKT_REMOVE_WATCHLIST)
+        new_config['Trakt']['trakt_remove_serieslist'] = int(self.TRAKT_REMOVE_SERIESLIST)
+        new_config['Trakt']['trakt_remove_show_from_sickrage'] = int(self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE)
+        new_config['Trakt']['trakt_sync_watchlist'] = int(self.TRAKT_SYNC_WATCHLIST)
+        new_config['Trakt']['trakt_method_add'] = int(self.TRAKT_METHOD_ADD)
+        new_config['Trakt']['trakt_start_paused'] = int(self.TRAKT_START_PAUSED)
+        new_config['Trakt']['trakt_use_recommended'] = int(self.TRAKT_USE_RECOMMENDED)
+        new_config['Trakt']['trakt_sync'] = int(self.TRAKT_SYNC)
+        new_config['Trakt']['trakt_sync_remove'] = int(self.TRAKT_SYNC_REMOVE)
+        new_config['Trakt']['trakt_default_indexer'] = int(self.TRAKT_DEFAULT_INDEXER)
+        new_config['Trakt']['trakt_timeout'] = int(self.TRAKT_TIMEOUT)
+        new_config['Trakt']['trakt_blacklist_name'] = self.TRAKT_BLACKLIST_NAME
 
-        new_config[b'pyTivo'] = {}
-        new_config[b'pyTivo'][b'use_pytivo'] = int(self.USE_PYTIVO)
-        new_config[b'pyTivo'][b'pytivo_notify_onsnatch'] = int(self.PYTIVO_NOTIFY_ONSNATCH)
-        new_config[b'pyTivo'][b'pytivo_notify_ondownload'] = int(self.PYTIVO_NOTIFY_ONDOWNLOAD)
-        new_config[b'pyTivo'][b'pytivo_notify_onsubtitledownload'] = int(self.PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'pyTivo'][b'pyTivo_update_library'] = int(self.PYTIVO_UPDATE_LIBRARY)
-        new_config[b'pyTivo'][b'pytivo_host'] = self.PYTIVO_HOST
-        new_config[b'pyTivo'][b'pytivo_share_name'] = self.PYTIVO_SHARE_NAME
-        new_config[b'pyTivo'][b'pytivo_tivo_name'] = self.PYTIVO_TIVO_NAME
+        new_config['pyTivo'] = {}
+        new_config['pyTivo']['use_pytivo'] = int(self.USE_PYTIVO)
+        new_config['pyTivo']['pytivo_notify_onsnatch'] = int(self.PYTIVO_NOTIFY_ONSNATCH)
+        new_config['pyTivo']['pytivo_notify_ondownload'] = int(self.PYTIVO_NOTIFY_ONDOWNLOAD)
+        new_config['pyTivo']['pytivo_notify_onsubtitledownload'] = int(self.PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD)
+        new_config['pyTivo']['pyTivo_update_library'] = int(self.PYTIVO_UPDATE_LIBRARY)
+        new_config['pyTivo']['pytivo_host'] = self.PYTIVO_HOST
+        new_config['pyTivo']['pytivo_share_name'] = self.PYTIVO_SHARE_NAME
+        new_config['pyTivo']['pytivo_tivo_name'] = self.PYTIVO_TIVO_NAME
 
-        new_config[b'NMA'] = {}
-        new_config[b'NMA'][b'use_nma'] = int(self.USE_NMA)
-        new_config[b'NMA'][b'nma_notify_onsnatch'] = int(self.NMA_NOTIFY_ONSNATCH)
-        new_config[b'NMA'][b'nma_notify_ondownload'] = int(self.NMA_NOTIFY_ONDOWNLOAD)
-        new_config[b'NMA'][b'nma_notify_onsubtitledownload'] = int(self.NMA_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'NMA'][b'nma_api'] = self.NMA_API
-        new_config[b'NMA'][b'nma_priority'] = self.NMA_PRIORITY
+        new_config['NMA'] = {}
+        new_config['NMA']['use_nma'] = int(self.USE_NMA)
+        new_config['NMA']['nma_notify_onsnatch'] = int(self.NMA_NOTIFY_ONSNATCH)
+        new_config['NMA']['nma_notify_ondownload'] = int(self.NMA_NOTIFY_ONDOWNLOAD)
+        new_config['NMA']['nma_notify_onsubtitledownload'] = int(self.NMA_NOTIFY_ONSUBTITLEDOWNLOAD)
+        new_config['NMA']['nma_api'] = self.NMA_API
+        new_config['NMA']['nma_priority'] = self.NMA_PRIORITY
 
-        new_config[b'Pushalot'] = {}
-        new_config[b'Pushalot'][b'use_pushalot'] = int(self.USE_PUSHALOT)
-        new_config[b'Pushalot'][b'pushalot_notify_onsnatch'] = int(self.PUSHALOT_NOTIFY_ONSNATCH)
-        new_config[b'Pushalot'][b'pushalot_notify_ondownload'] = int(self.PUSHALOT_NOTIFY_ONDOWNLOAD)
-        new_config[b'Pushalot'][b'pushalot_notify_onsubtitledownload'] = int(
+        new_config['Pushalot'] = {}
+        new_config['Pushalot']['use_pushalot'] = int(self.USE_PUSHALOT)
+        new_config['Pushalot']['pushalot_notify_onsnatch'] = int(self.PUSHALOT_NOTIFY_ONSNATCH)
+        new_config['Pushalot']['pushalot_notify_ondownload'] = int(self.PUSHALOT_NOTIFY_ONDOWNLOAD)
+        new_config['Pushalot']['pushalot_notify_onsubtitledownload'] = int(
             self.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'Pushalot'][b'pushalot_authorizationtoken'] = self.PUSHALOT_AUTHORIZATIONTOKEN
+        new_config['Pushalot']['pushalot_authorizationtoken'] = self.PUSHALOT_AUTHORIZATIONTOKEN
 
-        new_config[b'Pushbullet'] = {}
-        new_config[b'Pushbullet'][b'use_pushbullet'] = int(self.USE_PUSHBULLET)
-        new_config[b'Pushbullet'][b'pushbullet_notify_onsnatch'] = int(self.PUSHBULLET_NOTIFY_ONSNATCH)
-        new_config[b'Pushbullet'][b'pushbullet_notify_ondownload'] = int(self.PUSHBULLET_NOTIFY_ONDOWNLOAD)
-        new_config[b'Pushbullet'][b'pushbullet_notify_onsubtitledownload'] = int(
+        new_config['Pushbullet'] = {}
+        new_config['Pushbullet']['use_pushbullet'] = int(self.USE_PUSHBULLET)
+        new_config['Pushbullet']['pushbullet_notify_onsnatch'] = int(self.PUSHBULLET_NOTIFY_ONSNATCH)
+        new_config['Pushbullet']['pushbullet_notify_ondownload'] = int(self.PUSHBULLET_NOTIFY_ONDOWNLOAD)
+        new_config['Pushbullet']['pushbullet_notify_onsubtitledownload'] = int(
             self.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'Pushbullet'][b'pushbullet_api'] = self.PUSHBULLET_API
-        new_config[b'Pushbullet'][b'pushbullet_device'] = self.PUSHBULLET_DEVICE
+        new_config['Pushbullet']['pushbullet_api'] = self.PUSHBULLET_API
+        new_config['Pushbullet']['pushbullet_device'] = self.PUSHBULLET_DEVICE
 
-        new_config[b'Email'] = {}
-        new_config[b'Email'][b'use_email'] = int(self.USE_EMAIL)
-        new_config[b'Email'][b'email_notify_onsnatch'] = int(self.EMAIL_NOTIFY_ONSNATCH)
-        new_config[b'Email'][b'email_notify_ondownload'] = int(self.EMAIL_NOTIFY_ONDOWNLOAD)
-        new_config[b'Email'][b'email_notify_onsubtitledownload'] = int(self.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD)
-        new_config[b'Email'][b'email_host'] = self.EMAIL_HOST
-        new_config[b'Email'][b'email_port'] = int(self.EMAIL_PORT)
-        new_config[b'Email'][b'email_tls'] = int(self.EMAIL_TLS)
-        new_config[b'Email'][b'email_user'] = self.EMAIL_USER
-        new_config[b'Email'][b'email_password'] = encrypt(self.EMAIL_PASSWORD,
-                                                          self.ENCRYPTION_VERSION)
-        new_config[b'Email'][b'email_from'] = self.EMAIL_FROM
-        new_config[b'Email'][b'email_list'] = self.EMAIL_LIST
+        new_config['Email'] = {}
+        new_config['Email']['use_email'] = int(self.USE_EMAIL)
+        new_config['Email']['email_notify_onsnatch'] = int(self.EMAIL_NOTIFY_ONSNATCH)
+        new_config['Email']['email_notify_ondownload'] = int(self.EMAIL_NOTIFY_ONDOWNLOAD)
+        new_config['Email']['email_notify_onsubtitledownload'] = int(self.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD)
+        new_config['Email']['email_host'] = self.EMAIL_HOST
+        new_config['Email']['email_port'] = int(self.EMAIL_PORT)
+        new_config['Email']['email_tls'] = int(self.EMAIL_TLS)
+        new_config['Email']['email_user'] = self.EMAIL_USER
+        new_config['Email']['email_password'] = encrypt(self.EMAIL_PASSWORD,
+                                                        self.ENCRYPTION_VERSION)
+        new_config['Email']['email_from'] = self.EMAIL_FROM
+        new_config['Email']['email_list'] = self.EMAIL_LIST
 
-        new_config[b'Newznab'] = {}
-        new_config[b'Newznab'][b'newznab_data'] = self.NEWZNAB_DATA
+        new_config['GUI'] = {}
+        new_config['GUI']['gui_name'] = self.GUI_NAME
+        new_config['GUI']['theme_name'] = self.THEME_NAME
+        new_config['GUI']['home_layout'] = self.HOME_LAYOUT
+        new_config['GUI']['history_layout'] = self.HISTORY_LAYOUT
+        new_config['GUI']['history_limit'] = self.HISTORY_LIMIT
+        new_config['GUI']['display_show_specials'] = int(self.DISPLAY_SHOW_SPECIALS)
+        new_config['GUI']['coming_eps_layout'] = self.COMING_EPS_LAYOUT
+        new_config['GUI']['coming_eps_display_paused'] = int(self.COMING_EPS_DISPLAY_PAUSED)
+        new_config['GUI']['coming_eps_sort'] = self.COMING_EPS_SORT
+        new_config['GUI']['coming_eps_missed_range'] = int(self.COMING_EPS_MISSED_RANGE)
+        new_config['GUI']['fuzzy_dating'] = int(self.FUZZY_DATING)
+        new_config['GUI']['trim_zero'] = int(self.TRIM_ZERO)
+        new_config['GUI']['date_preset'] = self.DATE_PRESET
+        new_config['GUI']['time_preset'] = self.TIME_PRESET_W_SECONDS
+        new_config['GUI']['timezone_display'] = self.TIMEZONE_DISPLAY
+        new_config['GUI']['poster_sortby'] = self.POSTER_SORTBY
+        new_config['GUI']['poster_sortdir'] = self.POSTER_SORTDIR
+        new_config['GUI']['filter_row'] = int(self.FILTER_ROW)
 
-        new_config[b'TorrentRss'] = {}
-        new_config[b'TorrentRss'][b'torrentrss_data'] = '!!!'.join(
-            [x.configStr() for x in sickrage.srCore.torrentRssProviderList])
+        new_config['Subtitles'] = {}
+        new_config['Subtitles']['use_subtitles'] = \
+            int(self.USE_SUBTITLES)
+        new_config['Subtitles']['subtitles_languages'] = \
+            ','.join(self.SUBTITLES_LANGUAGES)
+        new_config['Subtitles']['SUBTITLES_SERVICES_LIST'] = \
+            ','.join(self.SUBTITLES_SERVICES_LIST)
+        new_config['Subtitles']['SUBTITLES_SERVICES_ENABLED'] = \
+            '|'.join([str(x) for x in self.SUBTITLES_SERVICES_ENABLED])
+        new_config['Subtitles']['subtitles_dir'] = \
+            self.SUBTITLES_DIR
+        new_config['Subtitles']['subtitles_default'] = \
+            int(self.SUBTITLES_DEFAULT)
+        new_config['Subtitles']['subtitles_history'] = \
+            int(self.SUBTITLES_HISTORY)
+        new_config['Subtitles']['embedded_subtitles_all'] = \
+            int(self.EMBEDDED_SUBTITLES_ALL)
+        new_config['Subtitles']['subtitles_hearing_impaired'] = \
+            int(self.SUBTITLES_HEARING_IMPAIRED)
+        new_config['Subtitles']['subtitles_finder_frequency'] = \
+            int(self.SUBTITLE_SEARCHER_FREQ)
+        new_config['Subtitles']['subtitles_multi'] = \
+            int(self.SUBTITLES_MULTI)
+        new_config['Subtitles']['subtitles_extra_scripts'] = \
+            '|'.join(self.SUBTITLES_EXTRA_SCRIPTS)
 
-        new_config[b'GUI'] = {}
-        new_config[b'GUI'][b'gui_name'] = self.GUI_NAME
-        new_config[b'GUI'][b'theme_name'] = self.THEME_NAME
-        new_config[b'GUI'][b'home_layout'] = self.HOME_LAYOUT
-        new_config[b'GUI'][b'history_layout'] = self.HISTORY_LAYOUT
-        new_config[b'GUI'][b'history_limit'] = self.HISTORY_LIMIT
-        new_config[b'GUI'][b'display_show_specials'] = int(self.DISPLAY_SHOW_SPECIALS)
-        new_config[b'GUI'][b'coming_eps_layout'] = self.COMING_EPS_LAYOUT
-        new_config[b'GUI'][b'coming_eps_display_paused'] = int(self.COMING_EPS_DISPLAY_PAUSED)
-        new_config[b'GUI'][b'coming_eps_sort'] = self.COMING_EPS_SORT
-        new_config[b'GUI'][b'coming_eps_missed_range'] = int(self.COMING_EPS_MISSED_RANGE)
-        new_config[b'GUI'][b'fuzzy_dating'] = int(self.FUZZY_DATING)
-        new_config[b'GUI'][b'trim_zero'] = int(self.TRIM_ZERO)
-        new_config[b'GUI'][b'date_preset'] = self.DATE_PRESET
-        new_config[b'GUI'][b'time_preset'] = self.TIME_PRESET_W_SECONDS
-        new_config[b'GUI'][b'timezone_display'] = self.TIMEZONE_DISPLAY
-        new_config[b'GUI'][b'poster_sortby'] = self.POSTER_SORTBY
-        new_config[b'GUI'][b'poster_sortdir'] = self.POSTER_SORTDIR
-        new_config[b'GUI'][b'filter_row'] = int(self.FILTER_ROW)
+        new_config['Subtitles']['addic7ed_username'] = self.ADDIC7ED_USER
+        new_config['Subtitles']['addic7ed_password'] = encrypt(
+            self.ADDIC7ED_PASS,
+            self.ENCRYPTION_VERSION
+        )
 
-        new_config[b'Subtitles'] = {}
-        new_config[b'Subtitles'][b'use_subtitles'] = int(self.USE_SUBTITLES)
-        new_config[b'Subtitles'][b'subtitles_languages'] = ','.join(self.SUBTITLES_LANGUAGES)
-        new_config[b'Subtitles'][b'SUBTITLES_SERVICES_LIST'] = ','.join(self.SUBTITLES_SERVICES_LIST)
-        new_config[b'Subtitles'][b'SUBTITLES_SERVICES_ENABLED'] = '|'.join(
-            [str(x) for x in self.SUBTITLES_SERVICES_ENABLED])
-        new_config[b'Subtitles'][b'subtitles_dir'] = self.SUBTITLES_DIR
-        new_config[b'Subtitles'][b'subtitles_default'] = int(self.SUBTITLES_DEFAULT)
-        new_config[b'Subtitles'][b'subtitles_history'] = int(self.SUBTITLES_HISTORY)
-        new_config[b'Subtitles'][b'embedded_subtitles_all'] = int(self.EMBEDDED_SUBTITLES_ALL)
-        new_config[b'Subtitles'][b'subtitles_hearing_impaired'] = int(self.SUBTITLES_HEARING_IMPAIRED)
-        new_config[b'Subtitles'][b'subtitles_finder_frequency'] = int(self.SUBTITLE_SEARCHER_FREQ)
-        new_config[b'Subtitles'][b'subtitles_multi'] = int(self.SUBTITLES_MULTI)
-        new_config[b'Subtitles'][b'subtitles_extra_scripts'] = '|'.join(self.SUBTITLES_EXTRA_SCRIPTS)
+        new_config['Subtitles']['legendastv_username'] = self.LEGENDASTV_USER
+        new_config['Subtitles']['legendastv_password'] = encrypt(
+            self.LEGENDASTV_PASS,
+            self.ENCRYPTION_VERSION
+        )
 
-        new_config[b'Subtitles'][b'addic7ed_username'] = self.ADDIC7ED_USER
-        new_config[b'Subtitles'][b'addic7ed_password'] = encrypt(self.ADDIC7ED_PASS,
-                                                                 self.ENCRYPTION_VERSION)
+        new_config['Subtitles']['opensubtitles_username'] = self.OPENSUBTITLES_USER
+        new_config['Subtitles']['opensubtitles_password'] = encrypt(
+            self.OPENSUBTITLES_PASS,
+            self.ENCRYPTION_VERSION
+        )
 
-        new_config[b'Subtitles'][b'legendastv_username'] = self.LEGENDASTV_USER
-        new_config[b'Subtitles'][b'legendastv_password'] = encrypt(self.LEGENDASTV_PASS,
-                                                                   self.ENCRYPTION_VERSION)
+        new_config['FailedDownloads'] = {}
+        new_config['FailedDownloads']['use_failed_downloads'] = int(self.USE_FAILED_DOWNLOADS)
+        new_config['FailedDownloads']['delete_failed'] = int(self.DELETE_FAILED)
 
-        new_config[b'Subtitles'][b'opensubtitles_username'] = self.OPENSUBTITLES_USER
-        new_config[b'Subtitles'][b'opensubtitles_password'] = encrypt(self.OPENSUBTITLES_PASS,
-                                                                      self.ENCRYPTION_VERSION)
+        new_config['ANIDB'] = {}
+        new_config['ANIDB']['use_anidb'] = int(self.USE_ANIDB)
+        new_config['ANIDB']['anidb_username'] = self.ANIDB_USERNAME
+        new_config['ANIDB']['anidb_password'] = encrypt(self.ANIDB_PASSWORD, self.ENCRYPTION_VERSION)
+        new_config['ANIDB']['anidb_use_mylist'] = int(self.ANIDB_USE_MYLIST)
 
-        new_config[b'FailedDownloads'] = {}
-        new_config[b'FailedDownloads'][b'use_failed_downloads'] = int(self.USE_FAILED_DOWNLOADS)
-        new_config[b'FailedDownloads'][b'delete_failed'] = int(self.DELETE_FAILED)
-
-        new_config[b'ANIDB'] = {}
-        new_config[b'ANIDB'][b'use_anidb'] = int(self.USE_ANIDB)
-        new_config[b'ANIDB'][b'anidb_username'] = self.ANIDB_USERNAME
-        new_config[b'ANIDB'][b'anidb_password'] = encrypt(self.ANIDB_PASSWORD,
-                                                          self.ENCRYPTION_VERSION)
-        new_config[b'ANIDB'][b'anidb_use_mylist'] = int(self.ANIDB_USE_MYLIST)
-
-        new_config[b'ANIME'] = {}
-        new_config[b'ANIME'][b'anime_split_home'] = int(self.ANIME_SPLIT_HOME)
-
-        # dynamically save provider settings
-        for providerID, providerObj in sickrage.srCore.providersDict[GenericProvider.TORRENT].items():
-            new_config[providerID.upper()] = {}
-            new_config[providerID.upper()][providerID] = int(providerObj.enabled)
-            if hasattr(providerObj, 'digest'):
-                new_config[providerID.upper()][
-                    providerID + '_digest'] = providerObj.digest
-            if hasattr(providerObj, 'hash'):
-                new_config[providerID.upper()][
-                    providerID + '_hash'] = providerObj.hash
-            if hasattr(providerObj, 'api_key'):
-                new_config[providerID.upper()][
-                    providerID + '_api_key'] = providerObj.api_key
-            if hasattr(providerObj, 'username'):
-                new_config[providerID.upper()][
-                    providerID + '_username'] = providerObj.username
-            if hasattr(providerObj, 'password'):
-                new_config[providerID.upper()][providerID + '_password'] = encrypt(
-                    providerObj.password, self.ENCRYPTION_VERSION)
-            if hasattr(providerObj, 'passkey'):
-                new_config[providerID.upper()][
-                    providerID + '_passkey'] = providerObj.passkey
-            if hasattr(providerObj, 'pin'):
-                new_config[providerID.upper()][
-                    providerID + '_pin'] = providerObj.pin
-            if hasattr(providerObj, 'confirmed'):
-                new_config[providerID.upper()][providerID + '_confirmed'] = int(
-                    providerObj.confirmed)
-            if hasattr(providerObj, 'ranked'):
-                new_config[providerID.upper()][providerID + '_ranked'] = int(
-                    providerObj.ranked)
-            if hasattr(providerObj, 'engrelease'):
-                new_config[providerID.upper()][providerID + '_engrelease'] = int(
-                    providerObj.engrelease)
-            if hasattr(providerObj, 'onlyspasearch'):
-                new_config[providerID.upper()][providerID + '_onlyspasearch'] = int(
-                    providerObj.onlyspasearch)
-            if hasattr(providerObj, 'sorting'):
-                new_config[providerID.upper()][
-                    providerID + '_sorting'] = providerObj.sorting
-            if hasattr(providerObj, 'ratio'):
-                new_config[providerID.upper()][
-                    providerID + '_ratio'] = providerObj.ratio
-            if hasattr(providerObj, 'minseed'):
-                new_config[providerID.upper()][providerID + '_minseed'] = int(
-                    providerObj.minseed)
-            if hasattr(providerObj, 'minleech'):
-                new_config[providerID.upper()][providerID + '_minleech'] = int(
-                    providerObj.minleech)
-            if hasattr(providerObj, 'options'):
-                new_config[providerID.upper()][
-                    providerID + '_options'] = providerObj.options
-            if hasattr(providerObj, 'freeleech'):
-                new_config[providerID.upper()][providerID + '_freeleech'] = int(
-                    providerObj.freeleech)
-            if hasattr(providerObj, 'search_mode'):
-                new_config[providerID.upper()][
-                    providerID + '_search_mode'] = providerObj.search_mode
-            if hasattr(providerObj, 'search_fallback'):
-                new_config[providerID.upper()][providerID + '_search_fallback'] = int(
-                    providerObj.search_fallback)
-            if hasattr(providerObj, 'enable_daily'):
-                new_config[providerID.upper()][providerID + '_enable_daily'] = int(
-                    providerObj.enable_daily)
-            if hasattr(providerObj, 'enable_backlog'):
-                new_config[providerID.upper()][providerID + '_enable_backlog'] = int(
-                    providerObj.enable_backlog)
-            if hasattr(providerObj, 'cat'):
-                new_config[providerID.upper()][providerID + '_cat'] = int(
-                    providerObj.cat)
-            if hasattr(providerObj, 'subtitle'):
-                new_config[providerID.upper()][providerID + '_subtitle'] = int(
-                    providerObj.subtitle)
-
-        for providerID, providerObj in sickrage.srCore.providersDict[GenericProvider.NZB].items():
-            new_config[providerID.upper()] = {}
-            new_config[providerID.upper()][providerID] = int(providerObj.enabled)
-
-            if hasattr(providerObj, 'api_key'):
-                new_config[providerID.upper()][
-                    providerID + '_api_key'] = providerObj.api_key
-            if hasattr(providerObj, 'username'):
-                new_config[providerID.upper()][
-                    providerID + '_username'] = providerObj.username
-            if hasattr(providerObj, 'search_mode'):
-                new_config[providerID.upper()][
-                    providerID + '_search_mode'] = providerObj.search_mode
-            if hasattr(providerObj, 'search_fallback'):
-                new_config[providerID.upper()][providerID + '_search_fallback'] = int(
-                    providerObj.search_fallback)
-            if hasattr(providerObj, 'enable_daily'):
-                new_config[providerID.upper()][providerID + '_enable_daily'] = int(
-                    providerObj.enable_daily)
-            if hasattr(providerObj, 'enable_backlog'):
-                new_config[providerID.upper()][providerID + '_enable_backlog'] = int(
-                    providerObj.enable_backlog)
+        new_config['ANIME'] = {}
+        new_config['ANIME']['anime_split_home'] = int(self.ANIME_SPLIT_HOME)
 
         new_config.write()
         return new_config
@@ -2207,6 +1981,7 @@ class ConfigMigrator(srConfig):
         # check the version of the config
         self.config_version = self.check_setting_int('General', 'config_version', self.CONFIG_VERSION)
         self.expected_config_version = self.CONFIG_VERSION
+
         self.migration_names = {
             1: 'Custom naming',
             2: 'Sync backup number with version number',
@@ -2214,7 +1989,9 @@ class ConfigMigrator(srConfig):
             4: 'Add newznab catIDs',
             5: 'Metadata update',
             6: 'Convert from XBMC to new KODI variables',
-            7: 'Use version 2 for password encryption'
+            7: 'Use version 2 for password encryption',
+            8: 'Convert config provider settings to new provider object database style',
+            9: 'Rename slick gui template name to default'
         }
 
     def migrate_config(self):
@@ -2240,7 +2017,7 @@ class ConfigMigrator(srConfig):
                 migration_name = ''
 
             sickrage.srLogger.info("Backing up config before upgrade")
-            if not backupVersionedFile(self.CONFIG_OBJ.filename, self.config_version):
+            if not backupVersionedFile(self.CONFIG_FILE, self.config_version):
                 sickrage.srLogger.log_error_and_exit("Config backup failed, abort upgrading config")
             else:
                 sickrage.srLogger.info("Proceeding with upgrade")
@@ -2250,8 +2027,10 @@ class ConfigMigrator(srConfig):
             getattr(self, '_migrate_v' + str(next_version))()
             self.config_version = next_version
 
-            # save new config after migration
+            # update config version to newest
             sickrage.srConfig.CONFIG_VERSION = self.config_version
+
+        return self.CONFIG_OBJ
 
     # Migration v1: Custom naming
     def _migrate_v1(self):
@@ -2512,6 +2291,142 @@ class ConfigMigrator(srConfig):
                                                            'metadata_xbmc_12plus',
                                                            '0|0|0|0|0|0|0|0|0|0')
 
-    # Migration v6: Use version 2 for password encryption
+    # Migration v7: Use version 2 for password encryption
     def _migrate_v7(self):
         self.ENCRYPTION_VERSION = 2
+
+    # Migration v8: Convert config provider settings to new provider object database style
+    def _migrate_v8(self):
+        sickrage.srCore.providersDict.provider_order = \
+            self.check_setting_str('General', 'provider_order', ' '.join(
+                [p for providers in sickrage.srCore.providersDict.all() for p in providers])).split()
+
+        # TORRENT PROVIDER SETTINGS
+        for providerID, providerObj in sickrage.srCore.providersDict.all_torrent().items():
+            providerObj.enabled = bool(self.check_setting_int(providerID.upper(), providerID, 0))
+
+            if hasattr(providerObj, 'api_key'):
+                providerObj.api_key = self.check_setting_str(
+                    providerID.upper(), providerID + '_api_key', ''
+                )
+
+            if hasattr(providerObj, 'hash'):
+                providerObj.hash = self.check_setting_str(
+                    providerID.upper(), providerID + '_hash', ''
+                )
+
+            if hasattr(providerObj, 'digest'):
+                providerObj.digest = self.check_setting_str(
+                    providerID.upper(), providerID + '_digest', ''
+                )
+
+            if hasattr(providerObj, 'username'):
+                providerObj.username = self.check_setting_str(
+                    providerID.upper(), providerID + '_username', ''
+                )
+
+            if hasattr(providerObj, 'password'):
+                providerObj.password = self.check_setting_str(
+                    providerID.upper(), providerID + '_password', ''
+                )
+
+            if hasattr(providerObj, 'passkey'):
+                providerObj.passkey = self.check_setting_str(providerID.upper(),
+                                                             providerID + '_passkey', '')
+            if hasattr(providerObj, 'pin'):
+                providerObj.pin = self.check_setting_str(providerID.upper(),
+                                                         providerID + '_pin', '')
+            if hasattr(providerObj, 'confirmed'):
+                providerObj.confirmed = bool(self.check_setting_int(providerID.upper(),
+                                                                    providerID + '_confirmed', 1))
+            if hasattr(providerObj, 'ranked'):
+                providerObj.ranked = bool(self.check_setting_int(providerID.upper(),
+                                                                 providerID + '_ranked', 1))
+
+            if hasattr(providerObj, 'engrelease'):
+                providerObj.engrelease = bool(self.check_setting_int(providerID.upper(),
+                                                                     providerID + '_engrelease', 0))
+
+            if hasattr(providerObj, 'onlyspasearch'):
+                providerObj.onlyspasearch = bool(self.check_setting_int(providerID.upper(),
+                                                                        providerID + '_onlyspasearch',
+                                                                        0))
+
+            if hasattr(providerObj, 'sorting'):
+                providerObj.sorting = self.check_setting_str(providerID.upper(),
+                                                             providerID + '_sorting', 'seeders')
+            if hasattr(providerObj, 'options'):
+                providerObj.options = self.check_setting_str(providerID.upper(),
+                                                             providerID + '_options', '')
+            if hasattr(providerObj, 'ratio'):
+                providerObj.ratio = self.check_setting_str(providerID.upper(),
+                                                           providerID + '_ratio', '')
+            if hasattr(providerObj, 'minseed'):
+                providerObj.minseed = self.check_setting_int(providerID.upper(),
+                                                             providerID + '_minseed', 1)
+            if hasattr(providerObj, 'minleech'):
+                providerObj.minleech = self.check_setting_int(providerID.upper(),
+                                                              providerID + '_minleech', 0)
+            if hasattr(providerObj, 'freeleech'):
+                providerObj.freeleech = bool(self.check_setting_int(providerID.upper(),
+                                                                    providerID + '_freeleech', 0))
+            if hasattr(providerObj, 'search_mode'):
+                providerObj.search_mode = self.check_setting_str(providerID.upper(),
+                                                                 providerID + '_search_mode',
+                                                                 'eponly')
+            if hasattr(providerObj, 'search_fallback'):
+                providerObj.search_fallback = bool(self.check_setting_int(providerID.upper(),
+                                                                          providerID + '_search_fallback',
+                                                                          0))
+
+            if hasattr(providerObj, 'enable_daily'):
+                providerObj.enable_daily = bool(self.check_setting_int(providerID.upper(),
+                                                                       providerID + '_enable_daily',
+                                                                       1))
+
+            if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supportsBacklog'):
+                providerObj.enable_backlog = bool(self.check_setting_int(providerID.upper(),
+                                                                         providerID + '_enable_backlog',
+                                                                         providerObj.supportsBacklog))
+
+            if hasattr(providerObj, 'cat'):
+                providerObj.cat = self.check_setting_int(providerID.upper(),
+                                                         providerID + '_cat', 0)
+            if hasattr(providerObj, 'subtitle'):
+                providerObj.subtitle = bool(self.check_setting_int(providerID.upper(),
+                                                                   providerID + '_subtitle', 0))
+
+        # NZB PROVIDER SETTINGS
+        for providerID, providerObj in sickrage.srCore.providersDict.all_nzb().items():
+            providerObj.enabled = bool(self.check_setting_int(providerID.upper(), providerID, 0))
+
+            if hasattr(providerObj, 'api_key'):
+                providerObj.api_key = self.check_setting_str(providerID.upper(),
+                                                             providerID + '_api_key', '')
+            if hasattr(providerObj, 'username'):
+                providerObj.username = self.check_setting_str(providerID.upper(),
+                                                              providerID + '_username', '')
+            if hasattr(providerObj, 'search_mode'):
+                providerObj.search_mode = self.check_setting_str(providerID.upper(),
+                                                                 providerID + '_search_mode',
+                                                                 'eponly')
+            if hasattr(providerObj, 'search_fallback'):
+                providerObj.search_fallback = bool(self.check_setting_int(providerID.upper(),
+                                                                          providerID + '_search_fallback',
+                                                                          0))
+            if hasattr(providerObj, 'enable_daily'):
+                providerObj.enable_daily = bool(self.check_setting_int(providerID.upper(),
+                                                                       providerID + '_enable_daily',
+                                                                       1))
+
+            if hasattr(providerObj, 'enable_backlog') and hasattr(providerObj, 'supportsBacklog'):
+                providerObj.enable_backlog = bool(self.check_setting_int(providerID.upper(),
+                                                                         providerID + '_enable_backlog',
+                                                                         providerObj.supportsBacklog))
+
+        # save all provider settings
+        sickrage.srCore.providersDict.save()
+
+    # Migration v9: Rename gui template name from slick to default
+    def _migrate_v9(self):
+        self.CONFIG_OBJ['GUI']['gui_name'] = 'default'

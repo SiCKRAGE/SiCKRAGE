@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 import re
 
 import sickrage
-from clients import GenericClient
+from sickrage.clients import GenericClient
 
 
 class uTorrentAPI(GenericClient):

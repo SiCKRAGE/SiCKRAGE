@@ -18,13 +18,13 @@
 
 from __future__ import unicode_literals
 
-from datetime import date, timedelta
+import datetime
 
 import sickrage
-from core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
-from core.databases import main_db
-from core.helpers.srdatetime import srDateTime
-from core.updaters.tz_updater import parse_date_time
+from sickrage.core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
+from sickrage.core.databases import main_db
+from sickrage.core.helpers.srdatetime import srDateTime
+from sickrage.core.updaters.tz_updater import parse_date_time
 
 
 class ComingEpisodes:
@@ -36,9 +36,9 @@ class ComingEpisodes:
     """
     categories = ['later', 'missed', 'soon', 'today']
     sorts = {
-        'date': (lambda a, b: cmp(a[b'localtime'], b[b'localtime'])),
-        'network': (lambda a, b: cmp((a[b'network'], a[b'localtime']), (b[b'network'], b[b'localtime']))),
-        'show': (lambda a, b: cmp((a[b'show_name'], a[b'localtime']), (b[b'show_name'], b[b'localtime']))),
+        'date': (lambda a, b: cmp(a['localtime'], b['localtime'])),
+        'network': (lambda a, b: cmp((a['network'], a['localtime']), (b['network'], b['localtime']))),
+        'show': (lambda a, b: cmp((a['show_name'], a['localtime']), (b['show_name'], b['localtime']))),
     }
 
     def __init__(self):
@@ -62,9 +62,9 @@ class ComingEpisodes:
         if sort not in ComingEpisodes.sorts.keys():
             sort = 'date'
 
-        today = date.today().toordinal()
-        next_week = (date.today() + timedelta(days=7)).toordinal()
-        recently = (date.today() - timedelta(days=sickrage.srConfig.COMING_EPS_MISSED_RANGE)).toordinal()
+        today = datetime.date.today().toordinal()
+        next_week = (datetime.date.today() + datetime.timedelta(days=7)).toordinal()
+        recently = (datetime.date.today() - datetime.timedelta(days=sickrage.srConfig.COMING_EPS_MISSED_RANGE)).toordinal()
         qualities_list = Quality.DOWNLOADED + \
                          Quality.SNATCHED + \
                          Quality.SNATCHED_BEST + \
@@ -87,7 +87,7 @@ class ComingEpisodes:
                 [today, next_week] + qualities_list
         )
 
-        done_shows_list = [int(result[b'showid']) for result in results]
+        done_shows_list = [int(result['showid']) for result in results]
         placeholder = ','.join(['?'] * len(done_shows_list))
         placeholder2 = ','.join(
                 ['?'] * len(Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER))
@@ -124,8 +124,8 @@ class ComingEpisodes:
         results = [dict(result) for result in results]
 
         for index, item in enumerate(results):
-            results[index][b'localtime'] = srDateTime.convert_to_setting(
-                    parse_date_time(item[b'airdate'], item[b'airs'], item[b'network']))
+            results[index]['localtime'] = srDateTime.convert_to_setting(
+                    parse_date_time(item['airdate'], item['airs'], item['network']))
 
         results.sort(ComingEpisodes.sorts[sort])
 
@@ -135,17 +135,17 @@ class ComingEpisodes:
         grouped_results = {category: [] for category in categories}
 
         for result in results:
-            if result[b'paused'] and not paused:
+            if result['paused'] and not paused:
                 continue
 
-            result[b'airs'] = str(result[b'airs']).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
-            result[b'airdate'] = result[b'localtime'].toordinal()
+            result['airs'] = str(result['airs']).replace('am', ' AM').replace('pm', ' PM').replace('  ', ' ')
+            result['airdate'] = result['localtime'].toordinal()
 
-            if result[b'airdate'] < today:
+            if result['airdate'] < today:
                 category = 'missed'
-            elif result[b'airdate'] >= next_week:
+            elif result['airdate'] >= next_week:
                 category = 'later'
-            elif result[b'airdate'] == today:
+            elif result['airdate'] == today:
                 category = 'today'
             else:
                 category = 'soon'
@@ -153,16 +153,16 @@ class ComingEpisodes:
             if len(categories) > 0 and category not in categories:
                 continue
 
-            if not result[b'network']:
-                result[b'network'] = ''
+            if not result['network']:
+                result['network'] = ''
 
-            result[b'quality'] = get_quality_string(result[b'quality'])
-            result[b'airs'] = srDateTime.srftime(result[b'localtime'], t_preset=timeFormat).lstrip('0').replace(' 0',
+            result['quality'] = get_quality_string(result['quality'])
+            result['airs'] = srDateTime.srftime(result['localtime'], t_preset=timeFormat).lstrip('0').replace(' 0',
                                                                                                                 ' ')
-            result[b'weekday'] = 1 + date.fromordinal(result[b'airdate']).weekday()
-            result[b'tvdbid'] = result[b'indexer_id']
-            result[b'airdate'] = srDateTime.srfdate(result[b'localtime'], d_preset=dateFormat)
-            result[b'localtime'] = result[b'localtime'].toordinal()
+            result['weekday'] = 1 + datetime.date.fromordinal(result['airdate']).weekday()
+            result['tvdbid'] = result['indexer_id']
+            result['airdate'] = srDateTime.srfdate(result['localtime'], d_preset=dateFormat)
+            result['localtime'] = result['localtime'].toordinal()
 
             grouped_results[category].append(result)
 

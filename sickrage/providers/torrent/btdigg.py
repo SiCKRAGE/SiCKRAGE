@@ -21,8 +21,8 @@
 from __future__ import unicode_literals
 
 import sickrage
-from core.caches import tv_cache
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.providers import TorrentProvider
 
 
 class BTDIGGProvider(TorrentProvider):
@@ -60,10 +60,10 @@ class BTDIGGProvider(TorrentProvider):
                     return []
 
                 for torrent in jdata:
-                    if not torrent[b'ff']:
-                        title = torrent[b'name']
-                        download_url = torrent[b'magnet']
-                        size = torrent[b'size']
+                    if not torrent['ff']:
+                        title = torrent['name']
+                        download_url = torrent['magnet']
+                        size = torrent['size']
                         # FIXME
                         seeders = 1
                         leechers = 0

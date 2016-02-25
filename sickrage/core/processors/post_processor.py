@@ -28,19 +28,19 @@ import stat
 import subprocess
 
 import sickrage
-from core.common import Quality, ARCHIVED, DOWNLOADED
-from core.databases import main_db
-from core.exceptions import EpisodeNotFoundException, \
+from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
+from sickrage.core.databases import main_db
+from sickrage.core.exceptions import EpisodeNotFoundException, \
     EpisodePostProcessingFailedException, ShowDirectoryNotFoundException
-from core.helpers import findCertainShow, show_names, fixGlob, subtitleExtensions, replaceExtension, makeDir, \
+from sickrage.core.helpers import findCertainShow, show_names, fixGlob, subtitleExtensions, replaceExtension, makeDir, \
     chmodAsParent, moveFile, copyFile, hardlinkFile, moveAndSymlinkFile, remove_non_release_groups, remove_extension, \
     set_up_anidb_connection, isFileLocked, verify_freespace, delete_empty_folders, make_dirs
-from core.nameparser import InvalidNameException, InvalidShowException, \
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from core.searchers.subtitle_searcher import wantedLanguages
-from core.tv.show.history import FailedHistory, History
-from indexers.adba import aniDBAbstracter
-from notifiers import srNotifiers
+from sickrage.core.searchers.subtitle_searcher import wantedLanguages
+from sickrage.core.tv.show.history import FailedHistory, History
+from sickrage.indexers.adba import aniDBAbstracter
+from sickrage.notifiers import srNotifiers
 
 
 class PostProcessor(object):
@@ -259,7 +259,7 @@ class PostProcessor(object):
                 os.remove(cur_file)
 
                 # do the library update for synoindex
-                sickrage.srCore.NOTIFIERS.synoindex_notifier.deleteFile(cur_file)
+                sickrage.srCore.notifiersDict.synoindex_notifier.deleteFile(cur_file)
 
     def _combined_file_operation(self, file_path, new_path, new_base_name, associated_files=False, action=None,
                                  subs=False):
@@ -457,10 +457,10 @@ class PostProcessor(object):
             if len(sql_results) == 0:
                 continue
 
-            indexer_id = int(sql_results[0][b"showid"])
-            season = int(sql_results[0][b"season"])
-            quality = int(sql_results[0][b"quality"])
-            version = int(sql_results[0][b"version"])
+            indexer_id = int(sql_results[0]["showid"])
+            season = int(sql_results[0]["season"])
+            quality = int(sql_results[0]["quality"])
+            version = int(sql_results[0]["version"])
 
             if quality == Quality.UNKNOWN:
                 quality = None
@@ -982,7 +982,7 @@ class PostProcessor(object):
                 chmodAsParent(ep_obj.show.location)
 
                 # do the library update for synoindex
-                sickrage.srCore.NOTIFIERS.synoindex_notifier.addFolder(ep_obj.show.location)
+                sickrage.srCore.notifiersDict.synoindex_notifier.addFolder(ep_obj.show.location)
             except (OSError, IOError):
                 raise EpisodePostProcessingFailedException(
                         "Unable to create the show directory: " + ep_obj.show.location)
@@ -1133,25 +1133,25 @@ class PostProcessor(object):
             srNotifiers.notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))
 
             # do the library update for KODI
-            sickrage.srCore.NOTIFIERS.kodi_notifier.update_library(ep_obj.show.name)
+            sickrage.srCore.notifiersDict.kodi_notifier.update_library(ep_obj.show.name)
 
             # do the library update for Plex
-            sickrage.srCore.NOTIFIERS.plex_notifier.update_library(ep_obj)
+            sickrage.srCore.notifiersDict.plex_notifier.update_library(ep_obj)
 
             # do the library update for EMBY
-            sickrage.srCore.NOTIFIERS.emby_notifier.update_library(ep_obj.show)
+            sickrage.srCore.notifiersDict.emby_notifier.update_library(ep_obj.show)
 
             # do the library update for NMJ
             # nmj_notifier kicks off its library update when the notify_download is issued (inside notifiers)
 
             # do the library update for Synology Indexer
-            sickrage.srCore.NOTIFIERS.synoindex_notifier.addFile(ep_obj.location)
+            sickrage.srCore.notifiersDict.synoindex_notifier.addFile(ep_obj.location)
 
             # do the library update for pyTivo
-            sickrage.srCore.NOTIFIERS.pytivo_notifier.update_library(ep_obj)
+            sickrage.srCore.notifiersDict.pytivo_notifier.update_library(ep_obj)
 
             # do the library update for Trakt
-            sickrage.srCore.NOTIFIERS.trakt_notifier.update_library(ep_obj)
+            sickrage.srCore.notifiersDict.trakt_notifier.update_library(ep_obj)
         except:
             sickrage.srLogger.info("Some notifications could not be sent. Continuing with post-processing...")
 

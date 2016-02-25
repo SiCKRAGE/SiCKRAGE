@@ -24,10 +24,10 @@ import time
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from core.common import cpu_presets
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.common import cpu_presets
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class SCCProvider(TorrentProvider):
@@ -125,11 +125,11 @@ class SCCProvider(TorrentProvider):
 
                             title = link.string
                             if re.search(r'\.\.\.', title):
-                                data = self.getURL(self.url + "/" + link[b'href'])
+                                data = self.getURL(self.url + "/" + link['href'])
                                 if data:
                                     with bs4_parser(data) as details_html:
                                         title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
-                            download_url = self.urls['download'] % url[b'href']
+                            download_url = self.urls['download'] % url['href']
                             seeders = int(result.find('td', attrs={'class': 'ttr_seeders'}).string)
                             leechers = int(result.find('td', attrs={'class': 'ttr_leechers'}).string)
                             size = self._convertSize(result.find('td', attrs={'class': 'ttr_size'}).contents[0])

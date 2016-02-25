@@ -18,15 +18,14 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import threading
 
-from datetime import datetime, date, timedelta
-
 import sickrage
-from core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
-from core.databases import main_db
-from core.queues.search import BacklogQueueItem
-from core.ui import ProgressIndicator
+from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
+from sickrage.core.databases import main_db
+from sickrage.core.queues.search import BacklogQueueItem
+from sickrage.core.ui import ProgressIndicator
 
 
 class srBacklogSearcher(object):
@@ -44,6 +43,9 @@ class srBacklogSearcher(object):
         if self.amActive:
             return
 
+        # set thread name
+        threading.currentThread().setName(self.name)
+
         try:
             self.searchBacklog()
         finally:
@@ -51,13 +53,13 @@ class srBacklogSearcher(object):
 
     def forceSearch(self):
         self._set_lastBacklog(1)
-        self.lastRun = datetime.fromordinal(1)
+        self.lastRun = datetime.datetime.fromordinal(1)
 
     def nextRun(self):
         if self._lastBacklog <= 1:
-            return date.today()
+            return datetime.date.today()
         else:
-            return date.fromordinal(self._lastBacklog + self.cycleTime)
+            return datetime.date.fromordinal(self._lastBacklog + self.cycleTime)
 
     def _resetPI(self):
         self.percentDone = 0
@@ -89,14 +91,14 @@ class srBacklogSearcher(object):
 
         self._get_lastBacklog()
 
-        curDate = date.today().toordinal()
-        fromDate = date.fromordinal(1)
+        curDate = datetime.date.today().toordinal()
+        fromDate = datetime.date.fromordinal(1)
 
         if not which_shows and not ((curDate - self._lastBacklog) >= self.cycleTime):
             sickrage.srLogger.info(
                     "Running limited backlog on missed episodes " + str(
                             sickrage.srConfig.BACKLOG_DAYS) + " day(s) and older only")
-            fromDate = date.today() - timedelta(days=sickrage.srConfig.BACKLOG_DAYS)
+            fromDate = datetime.date.today() - datetime.timedelta(days=sickrage.srConfig.BACKLOG_DAYS)
 
         # go through non air-by-date shows and see if they need any episodes
         for curShow in show_list:
@@ -114,7 +116,7 @@ class srBacklogSearcher(object):
 
         # don't consider this an actual backlog search if we only did recent eps
         # or if we only did certain shows
-        if fromDate == date.fromordinal(1) and not which_shows:
+        if fromDate == datetime.date.fromordinal(1) and not which_shows:
             self._set_lastBacklog(curDate)
 
         self.amActive = False
@@ -128,11 +130,11 @@ class srBacklogSearcher(object):
 
         if len(sqlResults) == 0:
             lastBacklog = 1
-        elif sqlResults[0][b"last_backlog"] is None or sqlResults[0][b"last_backlog"] == "":
+        elif sqlResults[0]["last_backlog"] is None or sqlResults[0]["last_backlog"] == "":
             lastBacklog = 1
         else:
-            lastBacklog = int(sqlResults[0][b"last_backlog"])
-            if lastBacklog > date.today().toordinal():
+            lastBacklog = int(sqlResults[0]["last_backlog"])
+            if lastBacklog > datetime.date.today().toordinal():
                 lastBacklog = 1
 
         self._lastBacklog = lastBacklog
@@ -154,7 +156,7 @@ class srBacklogSearcher(object):
         # check through the list of statuses to see if we want any
         wanted = {}
         for result in sqlResults:
-            curCompositeStatus = int(result[b"status"] or -1)
+            curCompositeStatus = int(result["status"] or -1)
             curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
 
             if bestQualities:
@@ -167,7 +169,7 @@ class srBacklogSearcher(object):
             # if we need a better one then say yes
             if (curStatus in (DOWNLOADED, SNATCHED,
                               SNATCHED_PROPER) and curQuality < highestBestQuality) or curStatus == WANTED:
-                epObj = show.getEpisode(int(result[b"season"]), int(result[b"episode"]))
+                epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
 
                 # only fetch if not archive on first match, or if show is lowest than the lower expected quality
                 if (epObj.show.archive_firstmatch == 0 or curQuality < lowestBestQuality):

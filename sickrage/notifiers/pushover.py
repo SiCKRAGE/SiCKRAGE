@@ -26,9 +26,9 @@ import urllib
 import urllib2
 
 import sickrage
-from core.common import NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT, \
+from sickrage.core.common import NOTIFY_GIT_UPDATE, NOTIFY_GIT_UPDATE_TEXT, \
     notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 API_URL = "https://api.pushover.net/1/messages.json"
 
@@ -89,7 +89,7 @@ class PushoverNotifier(srNotifiers):
                         }
 
             if sickrage.srConfig.PUSHOVER_DEVICE:
-                args[b"device"] = sickrage.srConfig.PUSHOVER_DEVICE
+                args["device"] = sickrage.srConfig.PUSHOVER_DEVICE
 
             conn = httplib.HTTPSConnection("api.pushover.net:443")
             conn.request("POST", "/1/messages.json",

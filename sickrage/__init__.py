@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-
+# -*- coding: utf-8 -*-
 # Author: echel0n <sickrage.tv@gmail.com>
 # URL: http://www.github.com/sickragetv/sickrage/
 #
@@ -18,39 +18,91 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, with_statement
 
-import atexit
-import ctypes
+import codecs
 import getopt
 import io
+import locale
 import os
 import sys
 import threading
 import time
 import traceback
 
-# set thread name
-threading.currentThread().setName('MAIN')
+__all__ = [
+    'srCore',
+    'srLogger',
+    'srConfig',
+    'srScheduler',
+    'srWebServer',
+    'PROG_DIR',
+    'DATA_DIR',
+    'DEVELOPER',
+    'SYS_ENCODING'
+]
 
-time.strptime("2012", "%Y")
+SYS_ENCODING = "UTF-8"
 
-srCore = None
-srLogger = None
-srConfig = None
+DEVELOPER = False
 
 PROG_DIR = os.path.abspath(os.path.dirname(__file__))
 DATA_DIR = os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage'))
 
+srCore = None
+srLogger = None
+srConfig = None
+srScheduler = None
+srWebServer = None
 
-def root_check():
+# fix threading time bug
+time.strptime("2012", "%Y")
+
+# set thread name
+threading.currentThread().setName('MAIN')
+
+
+def print_logo():
+    from colorama import init
+    from termcolor import cprint
+    from pyfiglet import figlet_format
+
+    init(strip=not sys.stdout.isatty())  # strip colors if stdout is redirected
+    cprint(figlet_format('SiCKRAGE', font='doom'))
+
+
+def encodingInit():
+    # map the following codecs to utf-8
+    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+    codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp1252' else None)
+
+    # get locale encoding
     try:
-        return not os.getuid() == 0
+        locale.setlocale(locale.LC_ALL, "")
+        encoding = locale.getpreferredencoding()
+    except (locale.Error, IOError):
+        encoding = None
+
+    # enforce UTF-8
+    if not encoding or codecs.lookup(encoding).name == 'ascii':
+        encoding = 'UTF-8'
+
+    # wrap i/o in unicode
+    sys.stdout = codecs.getwriter(encoding)(sys.stdout)
+    sys.stdin = codecs.getreader(encoding)(sys.stdin)
+
+    return encoding
+
+
+def isElevatedUser():
+    try:
+        return os.getuid() == 0
     except AttributeError:
-        return not ctypes.windll.shell32.IsUserAnAdmin() != 0
+        import ctypes
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
 
 
-def virtualenv_check():
+def isVirtualEnv():
     return hasattr(sys, 'real_prefix')
 
 
@@ -62,7 +114,6 @@ def install_pip():
     file_name = os.path.abspath(os.path.join(os.path.dirname(__file__), url.split('/')[-1]))
     u = urllib2.urlopen(url)
     with io.open(file_name, 'wb') as f:
-        meta = u.info()
         block_sz = 8192
         while True:
             buf = u.read(block_sz)
@@ -72,19 +123,18 @@ def install_pip():
 
     print("Installing pip ...")
     import subprocess
-    subprocess.call([sys.executable, file_name] + ([], ['--user'])[root_check() and virtualenv_check()])
+    subprocess.call([sys.executable, file_name] + ([], ['--user'])[all([isElevatedUser(), not isVirtualEnv()])])
 
     print("Cleaning up downloaded pip files")
     os.remove(file_name)
 
 
-def install_requirements():
-    from pip.commands.install import InstallCommand
-    from pkg_resources import ContextualVersionConflict
+def install_requirements(pkg=None):
+    from pip.commands.install import InstallCommand, InstallationError
 
     requirements = [os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))]
     options = InstallCommand().parse_args([])[0]
-    options.use_user_site = root_check() and not virtualenv_check()
+    options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
     options.requirements = requirements
     options.cache_dir = None
     options.upgrade = True
@@ -101,11 +151,15 @@ def install_requirements():
             InstallCommand().run(options, [])
             options.ignore_dependencies = False
             InstallCommand().run(options, [])
-        except ContextualVersionConflict:
+            return
+        except InstallationError:
+            options.ignore_installed = True
             attempts += 1
-            time.sleep(1)
-        finally:
-            break
+        except Exception as e:
+            attempts += 1
+
+    # failed to install requirements
+    sys.exit(traceback.print_exc())
 
 
 def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
@@ -145,6 +199,7 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         os.dup2(se.fileno(), sys.stderr.fileno())
 
     # Write the PID file
+    import atexit
     atexit.register(lambda: delpid(pidfile))
     file(pidfile, 'w+').write("%s\n" % str(os.getpid()))
 
@@ -183,28 +238,41 @@ def help_message(prog_dir):
     help_msg += "                --config=<path>     Override config filename (full path including filename)\n"
     help_msg += "                                    to load configuration from \n"
     help_msg += "                                    Default: config.ini in " + prog_dir + " or --datadir location\n"
-    help_msg += "                --noresize          Prevent resizing of the banner/posters even if PIL is installed\n"
-    help_msg += "                --install-optional  Install optional pacakges from requirements folder\n"
-    help_msg += "                --ssl               Enables ssl/https\n"
     help_msg += "                --debug             Enable debugging\n"
 
     return help_msg
 
 
-# noinspection PyUnresolvedReferences,PyUnresolvedReferences
 def main():
-    global srCore, srConfig, srLogger, DATA_DIR
+    global srCore, PROG_DIR, DATA_DIR, SYS_ENCODING, DEVELOPER
 
+    # sickrage requires python 2.7+
     if sys.version_info < (2, 7):
-        print("Sorry, SiCKRAGE requires Python 2.7+")
-        sys.exit(1)
+        sys.exit("Sorry, SiCKRAGE requires Python 2.7+")
 
     # add sickrage module to python system path
-    path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
     if path not in sys.path:
-        sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+        sys.path.insert(0, path)
+
+    # setup locale system encoding
+    SYS_ENCODING = encodingInit()
 
     try:
+        # print logo
+        print_logo()
+
+        # defaults
+        SYS_ENCODING = None
+        PIDFILE = None
+        DAEMONIZE = False
+        WEB_PORT = 8081
+        LAUNCH_BROWSER = True
+        DEBUG = False
+        CONFIG_FILE = "config.ini"
+        CONSOLE = not hasattr(sys, "frozen")
+
+        # sickrage startup options
         opts, _ = getopt.getopt(
             sys.argv[1:], "hqdp::",
             ['help',
@@ -216,142 +284,84 @@ def main():
              'port=',
              'datadir=',
              'config=',
-             'noresize',
-             'install-optional',
-             'ssl',
              'debug']
         )
-    except getopt.GetoptError:
-        sys.exit(help_message(PROG_DIR))
 
-    # defaults
-    PIDFILE = os.path.abspath(os.path.join(DATA_DIR, 'sickrage.pid'))
-    DEVELOPER = False
-    DAEMONIZE = False
-    WEB_PORT = None
-    INSTALL_OPTIONAL = False
-    WEB_NOLAUNCH = False
-    SSL = False
-    DEBUG = False
-    CONFIG_FILE = "config.ini"
-    CONSOLE = not hasattr(sys, "frozen")
+        for o, a in opts:
+            # help message
+            if o in ('-h', '--help'):
+                sys.exit(help_message(PROG_DIR))
 
-    for o, a in opts:
-        # help message
-        if o in ('-h', '--help'):
-            sys.exit(help_message(PROG_DIR))
+            # For now we'll just silence the logging
+            if o in ('-q', '--quiet'):
+                CONSOLE = False
 
-        # For now we'll just silence the logging
-        if o in ('-q', '--quiet'):
-            CONSOLE = False
+            # developer mode
+            if o in ('--dev',):
+                print("!!! DEVELOPER MODE ENABLED !!!")
+                DEVELOPER = True
 
-        # developer mode
-        if o in ('--dev',):
-            print("!!! DEVELOPER MODE ENABLED !!!")
-            DEVELOPER = True
+            # Suppress launching web browser
+            if o in ('--nolaunch',):
+                LAUNCH_BROWSER = False
 
-        # Suppress launching web browser
-        # Needed for OSes without default browser assigned
-        # Prevent duplicate browser window when restarting in the app
-        if o in ('--nolaunch',):
-            WEB_NOLAUNCH = True
+            # Override default/configured port
+            if o in ('-p', '--port'):
+                try:
+                    WEB_PORT = int(a)
+                except ValueError:
+                    sys.exit("Port: " + str(a) + " is not a number. Exiting.")
 
-        # Override default/configured port
-        if o in ('-p', '--port'):
-            try:
-                WEB_PORT = int(a)
-            except ValueError:
-                sys.exit("Port: " + str(a) + " is not a number. Exiting.")
+            # Run as a double forked daemon
+            if o in ('-d', '--daemon'):
+                DAEMONIZE = (False, True)[not sys.platform == 'win32']
+                LAUNCH_BROWSER = False
+                CONSOLE = False
 
-        # Run as a double forked daemon
-        if o in ('-d', '--daemon'):
-            DAEMONIZE = (False, True)[not sys.platform == 'win32']
-            WEB_NOLAUNCH = True
-            CONSOLE = False
+            # Write a pidfile if requested
+            if o in ('--pidfile',):
+                PIDFILE = str(a)
 
-        # Write a pidfile if requested
-        if o in ('--pidfile',):
-            PIDFILE = str(a)
+                # If the pidfile already exists, sickrage may still be running, so exit
+                if os.path.exists(PIDFILE):
+                    sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
 
-            # If the pidfile already exists, sickrage may still be running, so exit
-            if os.path.exists(PIDFILE):
-                sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
+            # Specify folder to use as the data dir
+            if o in ('--datadir',):
+                DATA_DIR = os.path.abspath(os.path.expanduser(a))
 
-        # Specify folder to use as the data dir
-        if o in ('--datadir',):
-            DATA_DIR = os.path.abspath(os.path.expanduser(a))
+            # Specify folder to load the config file from
+            if o in ('--config',):
+                CONFIG_FILE = os.path.abspath(os.path.expanduser(a))
 
-        # Specify folder to load the config file from
-        if o in ('--config',):
-            CONFIG_FILE = os.path.abspath(os.path.expanduser(a))
+            # Install ssl packages from requirements folder
+            if o in ('--debug',):
+                print("!!! DEBUGGING MODE ENABLED !!!")
+                DEBUG = True
 
-        # Prevent resizing of the banner/posters even if PIL is installed
-        if o in ('--noresize',):
-            NO_RESIZE = True
-
-        # Install optional packages from requirements folder
-        if o in ('--install-optional',):
-            INSTALL_OPTIONAL = True
-
-        # Install ssl packages from requirements folder
-        if o in ('--ssl',):
-            SSL = True
-
-        # Install ssl packages from requirements folder
-        if o in ('--debug',):
-            print("!!! DEBUGGING MODE ENABLED !!!")
-            DEBUG = True
-
-    try:
         # daemonize sickrage ?
         if DAEMONIZE:
+            if not PIDFILE:
+                os.path.abspath(os.path.join(DATA_DIR, 'sickrage.pid'))
             daemonize(PIDFILE)
-
-        import core
-        from core.helpers import makeDir
 
         # Make sure that we can create the data dir
         if not os.access(DATA_DIR, os.F_OK):
             try:
                 os.makedirs(DATA_DIR, 0o744)
             except os.error:
-                raise SystemExit("Unable to create data directory '" + DATA_DIR + "'")
+                sys.exit("Unable to create data directory '" + DATA_DIR + "'")
 
         # Make sure we can write to the data dir
         if not os.access(DATA_DIR, os.W_OK):
-            raise SystemExit("Data directory must be writeable '" + DATA_DIR + "'")
+            sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
 
-        print("Starting SiCKRAGE ...")
-
-        # init logger
-        srLogger = core.srLogger()
-
-        # init core
-        srCore = core.srCore()
-
-        # init config
-        srConfig = core.srConfig(CONFIG_FILE)
-
-        # load config
-        srConfig.load_config()
-
-        # start logger
-        srLogger.logFile = os.path.abspath(os.path.join(DATA_DIR, srConfig.LOG_DIR, srConfig.LOG_FILE))
-        srLogger.logSize = srConfig.LOG_SIZE
-        srLogger.logNr = srConfig.LOG_NR
-        srLogger.consoleLogging = CONSOLE
-        srLogger.debugLogging = DEBUG or srConfig.DEBUG
-        srLogger.fileLogging = makeDir(os.path.abspath(os.path.join(DATA_DIR, srConfig.LOG_DIR)))
-        srLogger.start()
-
-        # start core
-        srCore.start()
-
-        # start web-ui
-        srCore.WEBSERVER.open_browser = (True, False)[WEB_NOLAUNCH]
-        srCore.WEBSERVER.port = (srConfig.WEB_PORT, WEB_PORT)[WEB_PORT is not None]
-        srCore.WEBSERVER.start()
-    except ImportError:
+        # restart loop, breaks if shutdown
+        while True:
+            from . import core
+            srCore = core.srCore(CONFIG_FILE, CONSOLE, DEBUG, WEB_PORT, LAUNCH_BROWSER)
+            srCore.start()
+    except ImportError as e:
         # install pip package manager
         install_pip()
 
@@ -361,13 +371,11 @@ def main():
         # restart sickrage silently
         os.execl(sys.executable, sys.executable, *sys.argv)
     except KeyboardInterrupt:
-        pass
-    except Exception:
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        traceback.print_tb(exc_traceback)
-        traceback.print_exception(exc_type, exc_value, exc_traceback)
-        sys.exit(1)
-    sys.exit(0)
+        if srCore:
+            srCore.shutdown()
+    except Exception as e:
+        if srCore:
+            srCore.shutdown(status=str(e))
 
 
 if __name__ == '__main__':

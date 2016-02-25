@@ -27,7 +27,7 @@ class srNotifiers(object):
 
     @staticmethod
     def notify_download(ep_name):
-        for n in sickrage.srCore.NOTIFIERS.values():
+        for n in sickrage.srCore.notifiersDict.values():
             try:
                 n._notify_download(ep_name)
             except:
@@ -35,7 +35,7 @@ class srNotifiers(object):
 
     @staticmethod
     def notify_subtitle_download(ep_name, lang):
-        for n in sickrage.srCore.NOTIFIERS.values():
+        for n in sickrage.srCore.notifiersDict.values():
             try:
                 n._notify_subtitle_download(ep_name, lang)
             except:
@@ -43,7 +43,7 @@ class srNotifiers(object):
 
     @staticmethod
     def notify_snatch(ep_name):
-        for n in sickrage.srCore.NOTIFIERS.values():
+        for n in sickrage.srCore.notifiersDict.values():
             try:
                 n._notify_snatch(ep_name)
             except:
@@ -51,7 +51,7 @@ class srNotifiers(object):
 
     @staticmethod
     def notify_version_update(new_version=""):
-        for n in sickrage.srCore.NOTIFIERS.values():
+        for n in sickrage.srCore.notifiersDict.values():
             try:
                 n._notify_version_update(new_version)
             except:

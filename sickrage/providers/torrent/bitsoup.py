@@ -22,9 +22,9 @@ import re
 import traceback
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class BitSoupProvider(TorrentProvider):
@@ -95,7 +95,7 @@ class BitSoupProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
-                self.search_params[b'search'] = search_string
+                self.search_params['search'] = search_string
 
                 data = self.getURL(self.urls['search'], params=self.search_params)
                 if not data:

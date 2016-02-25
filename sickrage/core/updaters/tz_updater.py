@@ -20,13 +20,13 @@
 from __future__ import unicode_literals
 
 import re
-
 from datetime import datetime
+
 from dateutil import tz
 
 import sickrage
-from core.databases import cache_db
-from core.helpers import getURL, tryInt
+from sickrage.core.databases import cache_db
+from sickrage.core.helpers import getURL, tryInt
 
 time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
 sr_timezone = tz.tzwinlocal().display() if tz.tzwinlocal else tz.tzlocal()

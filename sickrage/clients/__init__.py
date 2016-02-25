@@ -281,7 +281,7 @@ class GenericClient(object):
                 sickrage.srLogger.debug('Torrent bencoded data: %r' % result.content)
                 raise
             try:
-                info = torrent_bdecode[b"info"]
+                info = torrent_bdecode["info"]
             except Exception:
                 sickrage.srLogger.error('Unable to find info field in torrent')
                 raise

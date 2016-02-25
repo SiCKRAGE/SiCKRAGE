@@ -23,9 +23,9 @@ from __future__ import print_function, unicode_literals
 import unittest
 
 import sickrage
-from core.processors.post_processor import PostProcessor
-from core.tv.episode import TVEpisode
-from core.tv.show import TVShow
+from sickrage.core.processors.post_processor import PostProcessor
+from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show import TVShow
 from tests import EPISODE, FILENAME, FILEPATH, SEASON, SHOWDIR, \
     SHOWNAME, SiCKRAGETestCase, SiCKRAGETestDBCase
 

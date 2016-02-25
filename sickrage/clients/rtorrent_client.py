@@ -23,7 +23,7 @@ import traceback
 from rtorrent import RTorrent
 
 import sickrage
-from clients import GenericClient
+from sickrage.clients import GenericClient
 
 
 class rTorrentAPI(GenericClient):
@@ -41,10 +41,10 @@ class rTorrentAPI(GenericClient):
 
         sp_kwargs = {}
         if sickrage.srConfig.TORRENT_AUTH_TYPE != 'None':
-            sp_kwargs[b'authtype'] = sickrage.srConfig.TORRENT_AUTH_TYPE
+            sp_kwargs['authtype'] = sickrage.srConfig.TORRENT_AUTH_TYPE
 
         if not sickrage.srConfig.TORRENT_VERIFY_CERT:
-            sp_kwargs[b'check_ssl_cert'] = False
+            sp_kwargs['check_ssl_cert'] = False
 
         if self.username and self.password:
             url_parts = self.host.split('//')

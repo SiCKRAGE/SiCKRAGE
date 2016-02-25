@@ -21,18 +21,17 @@ from __future__ import unicode_literals
 import fnmatch
 import os
 import re
+from datetime import date
 from functools import partial
 
-from datetime import date
-
 import sickrage
-from core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
+from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
     countryList
-from core.databases import main_db
-from core.helpers import sanitizeSceneName
-from core.nameparser import InvalidNameException, InvalidShowException, \
+from sickrage.core.databases import main_db
+from sickrage.core.helpers import sanitizeSceneName
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from core.scene_exceptions import get_scene_exceptions
+from sickrage.core.scene_exceptions import get_scene_exceptions
 
 
 resultFilters = [
@@ -416,7 +415,7 @@ def searchDBForShow(regShowName, log=False):
                                              [showName])
 
         if len(sqlResults) == 1:
-            return int(sqlResults[0][b"indexer_id"])
+            return int(sqlResults[0]["indexer_id"])
         else:
             # if we didn't get exactly one result then try again with the year stripped off if possible
             match = re.match(yearRegex, showName)
@@ -436,4 +435,4 @@ def searchDBForShow(regShowName, log=False):
                     sickrage.srLogger.debug("Multiple results for " + showName + " in the DB, unable to match show name")
                 continue
             else:
-                return int(sqlResults[0][b"indexer_id"])
+                return int(sqlResults[0]["indexer_id"])

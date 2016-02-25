@@ -23,9 +23,9 @@ from __future__ import unicode_literals
 import traceback
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class CpasbienProvider(TorrentProvider):
@@ -85,7 +85,7 @@ class CpasbienProvider(TorrentProvider):
                             try:
                                 link = row.find("a", title=True)
                                 title = link.text.lower().strip()
-                                pageURL = link[b'href']
+                                pageURL = link['href']
 
                                 # downloadTorrentLink = torrentSoup.find("a", title.startswith('Cliquer'))
                                 tmp = pageURL.split('/')[-1].replace('.html', '.torrent')

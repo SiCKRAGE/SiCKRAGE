@@ -21,9 +21,9 @@ from __future__ import unicode_literals
 
 from datetime import date
 
-from core.common import Quality, DOWNLOADED
-from core.nameparser.show import Show
-from core.tv.episode import TVEpisode
+from sickrage.core.common import Quality, DOWNLOADED
+from sickrage.core.nameparser.show import Show
+from sickrage.core.tv.episode import TVEpisode
 
 class Episode(TVEpisode):
     def __init__(self, season, episode, absolute_number, name):

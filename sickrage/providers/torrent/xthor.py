@@ -26,8 +26,8 @@ import urllib
 import requests
 
 import sickrage
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class XthorProvider(TorrentProvider):

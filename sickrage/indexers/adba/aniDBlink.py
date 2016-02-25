@@ -22,7 +22,7 @@ import time
 import zlib
 
 from aniDBresponses import ResponseResolver
-from indexers.adba.aniDBerrors import AniDBBannedError, \
+from sickrage.indexers.adba.aniDBerrors import AniDBBannedError, \
     AniDBMustAuthError, AniDBPacketCorruptedError
 
 

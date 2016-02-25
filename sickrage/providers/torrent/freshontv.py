@@ -25,9 +25,9 @@ import traceback
 import requests
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import tryInt, bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import tryInt, bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class FreshOnTVProvider(TorrentProvider):

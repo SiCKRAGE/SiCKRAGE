@@ -25,10 +25,10 @@ import urllib2
 from xml.etree import ElementTree
 
 import sickrage
-from core.common import NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
+from sickrage.core.common import NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
     NOTIFY_GIT_UPDATE
-from core.common import notifyStrings
-from notifiers import srNotifiers
+from sickrage.core.common import notifyStrings
+from sickrage.notifiers import srNotifiers
 
 
 class PLEXNotifier(srNotifiers):
@@ -77,7 +77,7 @@ class PLEXNotifier(srNotifiers):
 
             response = urllib2.urlopen(req)
 
-            result = response.read().decode(sickrage.srCore.SYS_ENCODING)
+            result = response.read().decode(sickrage.SYS_ENCODING)
             response.close()
 
             sickrage.srLogger.debug('PLEX: HTTP response: ' + result.replace('\n', ''))
@@ -242,15 +242,15 @@ class PLEXNotifier(srNotifiers):
                     continue
 
                 for section in sections:
-                    if 'show' == section.attrib[b'type']:
+                    if 'show' == section.attrib['type']:
 
-                        keyed_host = [(str(section.attrib[b'key']), cur_host)]
+                        keyed_host = [(str(section.attrib['key']), cur_host)]
                         hosts_all.update(keyed_host)
                         if not file_location:
                             continue
 
                         for section_location in section.findall('.//Location'):
-                            section_path = re.sub(r'[/\\]+', '/', section_location.attrib[b'path'].lower())
+                            section_path = re.sub(r'[/\\]+', '/', section_location.attrib['path'].lower())
                             section_path = re.sub(r'^(.{,2})[/\\]', '', section_path)
                             location_path = re.sub(r'[/\\]+', '/', file_location.lower())
                             location_path = re.sub(r'^(.{,2})[/\\]', '', location_path)

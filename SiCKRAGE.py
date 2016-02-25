@@ -18,8 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function, unicode_literals
+from __future__ import unicode_literals
 
 if __name__ == '__main__':
-    import sickrage
-    sickrage.main()
+    from sickrage import main
+    main()

@@ -25,9 +25,9 @@ import traceback
 import urllib
 
 import sickrage
-from core.caches import tv_cache
-from core.helpers import bs4_parser
-from providers import TorrentProvider
+from sickrage.core.caches import tv_cache
+from sickrage.core.helpers import bs4_parser
+from sickrage.providers import TorrentProvider
 
 
 class TorrentBytesProvider(TorrentProvider):
@@ -113,7 +113,7 @@ class TorrentBytesProvider(TorrentProvider):
                             size = None
                             link = cells[1].find('a', attrs={'class': 'index'})
 
-                            full_id = link[b'href'].replace('details.php?id=', '')
+                            full_id = link['href'].replace('details.php?id=', '')
                             torrent_id = full_id.split("&")[0]
 
                             # Free leech torrents are marked with green [F L] in the title (i.e. <font color=green>[F&nbsp;L]</font>)

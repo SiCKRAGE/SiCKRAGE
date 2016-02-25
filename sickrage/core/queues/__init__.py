@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import threading
-
 from datetime import datetime
 
 import sickrage
@@ -40,6 +39,7 @@ class GenericQueue(object):
         self.min_priority = 0
         self.amActive = False
         self._queue = []
+        self._threads = []
 
     @property
     def name(self):
@@ -103,9 +103,6 @@ class GenericQueue(object):
 
             # if there's something in the queue then run it in a thread and take it out of the queue
             if len(self.queue) > 0:
-                self.amActive = True
-
-                workers = len(self.queue) * 2
                 if self.queue[0].priority < self.min_priority:
                     return
 
@@ -120,7 +117,13 @@ class GenericQueue(object):
                     item.finish()
 
                 # thread queue item
-                threading.Thread(target=execute, args=(self.queue.pop(0), self.queue_name)).start()
+                worker = threading.Thread(target=execute, args=(self.queue.pop(0), self.queue_name))
+
+                # start worker
+                worker.start()
+
+                # wait for worker to finish
+                worker.join()
 
             self.amActive = False
 

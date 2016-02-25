@@ -24,7 +24,7 @@ import sickrage
 from aniDBfileInfo import read_anidb_xml, get_file_size, get_file_hash
 from aniDBmaper import AniDBMaper
 from aniDBtvDBmaper import TvDBMap
-from indexers.adba.aniDBerrors import AniDBIncorrectParameterError
+from sickrage.indexers.adba.aniDBerrors import AniDBIncorrectParameterError
 
 
 class aniDBabstractObject(object):

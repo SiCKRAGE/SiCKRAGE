@@ -17,17 +17,16 @@
 
 from __future__ import unicode_literals
 
+import datetime
 from xml.etree.ElementTree import Element, ElementTree, SubElement
 
-from datetime import datetime, date
-
 import sickrage
-from core.common import dateFormat
-from core.exceptions import ShowNotFoundException
-from core.helpers import indentXML
-from indexers.indexer_exceptions import indexer_episodenotfound, \
+from sickrage.core.common import dateFormat
+from sickrage.core.exceptions import ShowNotFoundException
+from sickrage.core.helpers import indentXML
+from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
-from metadata import GenericMetadata
+from sickrage.metadata import GenericMetadata
 
 
 class KODI_12PlusMetadata(GenericMetadata):
@@ -103,13 +102,13 @@ class KODI_12PlusMetadata(GenericMetadata):
         indexer_lang = show_obj.lang
         lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(show_obj.indexer).api_params.copy()
 
-        lINDEXER_API_PARMS[b'actors'] = True
+        lINDEXER_API_PARMS['actors'] = True
 
         if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
-            lINDEXER_API_PARMS[b'language'] = indexer_lang
+            lINDEXER_API_PARMS['language'] = indexer_lang
 
         if show_obj.dvdorder != 0:
-            lINDEXER_API_PARMS[b'dvdorder'] = True
+            lINDEXER_API_PARMS['dvdorder'] = True
 
         t = sickrage.srCore.INDEXER_API(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
@@ -134,15 +133,15 @@ class KODI_12PlusMetadata(GenericMetadata):
             return False
 
         title = SubElement(tv_node, "title")
-        title.text = myShow[b"seriesname"]
+        title.text = myShow["seriesname"]
 
         if getattr(myShow, 'rating', None):
             rating = SubElement(tv_node, "rating")
-            rating.text = myShow[b"rating"]
+            rating.text = myShow["rating"]
 
         if getattr(myShow, 'firstaired', None):
             try:
-                year_text = str(datetime.strptime(myShow[b"firstaired"], dateFormat).year)
+                year_text = str(datetime.datetime.strptime(myShow["firstaired"], dateFormat).year)
                 if year_text:
                     year = SubElement(tv_node, "year")
                     year.text = year_text
@@ -151,51 +150,51 @@ class KODI_12PlusMetadata(GenericMetadata):
 
         if getattr(myShow, 'overview', None):
             plot = SubElement(tv_node, "plot")
-            plot.text = myShow[b"overview"]
+            plot.text = myShow["overview"]
 
         if getattr(myShow, 'id', None):
             episodeguide = SubElement(tv_node, "episodeguide")
             episodeguideurl = SubElement(episodeguide, "url")
-            episodeguideurl.text = sickrage.srCore.INDEXER_API(show_obj.indexer).config[b'base_url'] + str(
-                    myShow[b"id"]) + '/all/en.zip'
+            episodeguideurl.text = sickrage.srCore.INDEXER_API(show_obj.indexer).config['base_url'] + str(
+                    myShow["id"]) + '/all/en.zip'
 
         if getattr(myShow, 'contentrating', None):
             mpaa = SubElement(tv_node, "mpaa")
-            mpaa.text = myShow[b"contentrating"]
+            mpaa.text = myShow["contentrating"]
 
         if getattr(myShow, 'id', None):
             indexerid = SubElement(tv_node, "id")
-            indexerid.text = str(myShow[b"id"])
+            indexerid.text = str(myShow["id"])
 
-        if getattr(myShow, 'genre', None) and isinstance(myShow[b"genre"], basestring):
+        if getattr(myShow, 'genre', None) and isinstance(myShow["genre"], basestring):
             genre = SubElement(tv_node, "genre")
-            genre.text = " / ".join(x.strip() for x in myShow[b"genre"].split('|') if x.strip())
+            genre.text = " / ".join(x.strip() for x in myShow["genre"].split('|') if x.strip())
 
         if getattr(myShow, 'firstaired', None):
             premiered = SubElement(tv_node, "premiered")
-            premiered.text = myShow[b"firstaired"]
+            premiered.text = myShow["firstaired"]
 
         if getattr(myShow, 'network', None):
             studio = SubElement(tv_node, "studio")
-            studio.text = myShow[b"network"].strip()
+            studio.text = myShow["network"].strip()
 
         if getattr(myShow, '_actors', None):
-            for actor in myShow[b'_actors']:
+            for actor in myShow['_actors']:
                 cur_actor = SubElement(tv_node, "actor")
 
-                if 'name' in actor and actor[b'name'].strip():
+                if 'name' in actor and actor['name'].strip():
                     cur_actor_name = SubElement(cur_actor, "name")
-                    cur_actor_name.text = actor[b'name'].strip()
+                    cur_actor_name.text = actor['name'].strip()
                 else:
                     continue
 
-                if 'role' in actor and actor[b'role'].strip():
+                if 'role' in actor and actor['role'].strip():
                     cur_actor_role = SubElement(cur_actor, "role")
-                    cur_actor_role.text = actor[b'role'].strip()
+                    cur_actor_role.text = actor['role'].strip()
 
-                if 'image' in actor and actor[b'image'].strip():
+                if 'image' in actor and actor['image'].strip():
                     cur_actor_thumb = SubElement(cur_actor, "thumb")
-                    cur_actor_thumb.text = actor[b'image'].strip()
+                    cur_actor_thumb.text = actor['image'].strip()
 
         # Make it purdy
         indentXML(tv_node)
@@ -217,13 +216,13 @@ class KODI_12PlusMetadata(GenericMetadata):
 
         lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).api_params.copy()
 
-        lINDEXER_API_PARMS[b'actors'] = True
+        lINDEXER_API_PARMS['actors'] = True
 
         if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
-            lINDEXER_API_PARMS[b'language'] = indexer_lang
+            lINDEXER_API_PARMS['language'] = indexer_lang
 
         if ep_obj.show.dvdorder != 0:
-            lINDEXER_API_PARMS[b'dvdorder'] = True
+            lINDEXER_API_PARMS['dvdorder'] = True
 
         try:
             t = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
@@ -252,7 +251,7 @@ class KODI_12PlusMetadata(GenericMetadata):
                 return None
 
             if not getattr(myEp, 'firstaired', None):
-                myEp[b"firstaired"] = str(date.fromordinal(1))
+                myEp["firstaired"] = str(datetime.date.fromordinal(1))
 
             if not getattr(myEp, 'episodename', None):
                 sickrage.srLogger.debug("Not generating nfo because the ep has no title")
@@ -267,11 +266,11 @@ class KODI_12PlusMetadata(GenericMetadata):
 
             if getattr(myEp, 'episodename', None):
                 title = SubElement(episode, "title")
-                title.text = myEp[b'episodename']
+                title.text = myEp['episodename']
 
             if getattr(myShow, 'seriesname', None):
                 showtitle = SubElement(episode, "showtitle")
-                showtitle.text = myShow[b'seriesname']
+                showtitle.text = myShow['seriesname']
 
             season = SubElement(episode, "season")
             season.text = str(curEpToWrite.season)
@@ -282,68 +281,68 @@ class KODI_12PlusMetadata(GenericMetadata):
             uniqueid = SubElement(episode, "uniqueid")
             uniqueid.text = str(curEpToWrite.indexerid)
 
-            if curEpToWrite.airdate != date.fromordinal(1):
+            if curEpToWrite.airdate != datetime.date.fromordinal(1):
                 aired = SubElement(episode, "aired")
                 aired.text = str(curEpToWrite.airdate)
 
             if getattr(myEp, 'overview', None):
                 plot = SubElement(episode, "plot")
-                plot.text = myEp[b'overview']
+                plot.text = myEp['overview']
 
             if curEpToWrite.season and getattr(myShow, 'runtime', None):
                 runtime = SubElement(episode, "runtime")
-                runtime.text = myShow[b"runtime"]
+                runtime.text = myShow["runtime"]
 
             if getattr(myEp, 'airsbefore_season', None):
                 displayseason = SubElement(episode, "displayseason")
-                displayseason.text = myEp[b'airsbefore_season']
+                displayseason.text = myEp['airsbefore_season']
 
             if getattr(myEp, 'airsbefore_episode', None):
                 displayepisode = SubElement(episode, "displayepisode")
-                displayepisode.text = myEp[b'airsbefore_episode']
+                displayepisode.text = myEp['airsbefore_episode']
 
             if getattr(myEp, 'filename', None):
                 thumb = SubElement(episode, "thumb")
-                thumb.text = myEp[b'filename'].strip()
+                thumb.text = myEp['filename'].strip()
 
             # watched = SubElement(episode, "watched")
             # watched.text = 'false'
 
             if getattr(myEp, 'writer', None):
                 ep_credits = SubElement(episode, "credits")
-                ep_credits.text = myEp[b'writer'].strip()
+                ep_credits.text = myEp['writer'].strip()
 
             if getattr(myEp, 'director', None):
                 director = SubElement(episode, "director")
-                director.text = myEp[b'director'].strip()
+                director.text = myEp['director'].strip()
 
             if getattr(myEp, 'rating', None):
                 rating = SubElement(episode, "rating")
-                rating.text = myEp[b'rating']
+                rating.text = myEp['rating']
 
-            if getattr(myEp, 'gueststars', None) and isinstance(myEp[b'gueststars'], basestring):
-                for actor in (x.strip() for x in myEp[b'gueststars'].split('|') if x.strip()):
+            if getattr(myEp, 'gueststars', None) and isinstance(myEp['gueststars'], basestring):
+                for actor in (x.strip() for x in myEp['gueststars'].split('|') if x.strip()):
                     cur_actor = SubElement(episode, "actor")
                     cur_actor_name = SubElement(cur_actor, "name")
                     cur_actor_name.text = actor
 
             if getattr(myShow, '_actors', None):
-                for actor in myShow[b'_actors']:
+                for actor in myShow['_actors']:
                     cur_actor = SubElement(episode, "actor")
 
-                    if 'name' in actor and actor[b'name'].strip():
+                    if 'name' in actor and actor['name'].strip():
                         cur_actor_name = SubElement(cur_actor, "name")
-                        cur_actor_name.text = actor[b'name'].strip()
+                        cur_actor_name.text = actor['name'].strip()
                     else:
                         continue
 
-                    if 'role' in actor and actor[b'role'].strip():
+                    if 'role' in actor and actor['role'].strip():
                         cur_actor_role = SubElement(cur_actor, "role")
-                        cur_actor_role.text = actor[b'role'].strip()
+                        cur_actor_role.text = actor['role'].strip()
 
-                    if 'image' in actor and actor[b'image'].strip():
+                    if 'image' in actor and actor['image'].strip():
                         cur_actor_thumb = SubElement(cur_actor, "thumb")
-                        cur_actor_thumb.text = actor[b'image'].strip()
+                        cur_actor_thumb.text = actor['image'].strip()
 
         # Make it purdy
         indentXML(rootNode)

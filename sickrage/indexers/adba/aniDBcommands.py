@@ -18,9 +18,9 @@ from __future__ import unicode_literals
 
 from threading import Lock
 
-from indexers.adba.aniDBerrors import AniDBIncorrectParameterError, \
+from sickrage.indexers.adba.aniDBerrors import AniDBIncorrectParameterError, \
     AniDBInternalError
-from indexers.adba.aniDBresponses import MylistResponse, \
+from sickrage.indexers.adba.aniDBresponses import MylistResponse, \
     NoSuchFileResponse, NoSuchMylistEntryResponse, ProducerResponse
 
 

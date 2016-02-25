@@ -18,6 +18,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import re
 import threading
@@ -28,9 +29,8 @@ import urllib
 import markdown2
 from UnRAR2 import RarFile
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, date, timedelta
 from dateutil import tz
-from mako.exceptions import html_error_template, TemplateLookupException
+from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
@@ -39,58 +39,54 @@ from tornado.ioloop import IOLoop
 from tornado.web import HTTPError, RequestHandler, authenticated
 
 import sickrage
-from api import ApiHandler
-from clients import getClientIstance
-from clients.sabnzbd_client import SabNZBd
-from core.blackandwhitelist import BlackAndWhiteList, \
+from sickrage.clients import getClientIstance
+from sickrage.clients.sabnzbd_client import SabNZBd
+from sickrage.core.blackandwhitelist import BlackAndWhiteList, \
     short_group_names
-from core.classes import ErrorViewer, AllShowsListUI
-from core.classes import WarningViewer
-from core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
+from sickrage.core.classes import ErrorViewer, AllShowsListUI
+from sickrage.core.classes import WarningViewer
+from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
     SNATCHED, UNAIRED, WANTED, cpu_presets, statusStrings
-from core.databases import failed_db, main_db
-from core.exceptions import CantRefreshShowException, \
+from sickrage.core.databases import failed_db, main_db
+from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException, NoNFOException, \
     ShowDirectoryNotFoundException
-from core.helpers import argToBool, backupAll, check_url, \
+from sickrage.core.helpers import argToBool, backupAll, check_url, \
     chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, getURL, \
     get_lan_ip, makeDir, readFileBuffered, remove_article, restoreConfigZip, \
     sanitizeFileName, searchIndexerForShowID, set_up_anidb_connection, tryInt
-from core.helpers.browser import foldersAtPath
-from core.imdb_popular import imdb_popular
-from core.nameparser import validator
-from core.process_tv import processDir
-from core.queues.search import BacklogQueueItem, FailedQueueItem, \
+from sickrage.core.helpers.browser import foldersAtPath
+from sickrage.core.imdb_popular import imdb_popular
+from sickrage.core.nameparser import validator
+from sickrage.core.process_tv import processDir
+from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, \
     MANUAL_SEARCH_HISTORY, ManualSearchQueueItem
-from core.scene_exceptions import get_all_scene_exceptions, \
+from sickrage.core.scene_exceptions import get_all_scene_exceptions, \
     get_scene_exceptions, update_scene_exceptions
-from core.scene_numbering import get_scene_absolute_numbering, \
+from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
     get_scene_absolute_numbering_for_show, get_scene_numbering, \
     get_scene_numbering_for_show, get_xem_absolute_numbering_for_show, \
     get_xem_numbering_for_show, set_scene_numbering, xem_refresh
-from core.searchers import subtitle_searcher
-from core.trakt import TraktAPI, traktException
-from core.tv.episode import TVEpisode
-from core.tv.show import TVShow
-from core.tv.show.coming_episodes import ComingEpisodes
-from core.tv.show.history import History as HistoryTool
-from core.ui import notifications
-from core.updaters import tz_updater
-from core.webserver.routes import Route
-from indexers.adba import aniDBAbstracter
-from providers import GenericProvider, NewznabProvider, \
-    TorrentRssProvider, sortedProviderDict
+from sickrage.core.searchers import subtitle_searcher
+from sickrage.core.trakt import TraktAPI, traktException
+from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show import TVShow
+from sickrage.core.tv.show.coming_episodes import ComingEpisodes
+from sickrage.core.tv.show.history import History as HistoryTool
+from sickrage.core.ui import notifications
+from sickrage.core.updaters import tz_updater
+from sickrage.core.webserver.routes import Route
+from sickrage.indexers.adba import aniDBAbstracter
+from sickrage.providers import NewznabProvider, TorrentRssProvider
 
 
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
-        self.io_loop = IOLoop.instance()
-        self.executor = ThreadPoolExecutor(50)
+        self.name = "WEB"
 
-    def initialize(self):
-        self.startTime = time.time()
+        # template settings
         self.mako_lookup = TemplateLookup(
             directories=[os.path.join(sickrage.srConfig.GUI_DIR, 'views{}'.format(os.sep))],
             module_directory=os.path.join(sickrage.srConfig.CACHE_DIR, 'mako{}'.format(os.sep)),
@@ -102,9 +98,18 @@ class BaseHandler(RequestHandler):
             future_imports=['unicode_literals']
         )
 
+        # start time
+        self.startTime = time.time()
+
+        # tornado ioloop
+        self.io_loop = IOLoop.instance()
+
+        # async thread executor
+        self.executor = ThreadPoolExecutor(50)
+
     @run_on_executor
     def async_call(self, function, **kwargs):
-        threading.currentThread().setName("WEB")
+        threading.currentThread().setName(self.name)
         return recursive_unicode(function(
             **{k: (v, ''.join(v))[isinstance(v, list) and len(v) == 1] for k, v in recursive_unicode(kwargs.items())}))
 
@@ -116,19 +121,23 @@ class BaseHandler(RequestHandler):
                 url = url[len(sickrage.srConfig.WEB_ROOT) + 1:]
 
             if url[:3] != 'api':
-                return self.redirect('/')
+                return self.finish(self.render(
+                    '/errors/404.mako',
+                    title='HTTP Error 404',
+                    header='HTTP Error 404')
+                )
             else:
                 self.write('Wrong API key used')
 
         elif self.settings.get("debug") and "exc_info" in kwargs:
-            exc_info = kwargs[b"exc_info"]
+            exc_info = kwargs["exc_info"]
             trace_info = ''.join(["%s<br>" % line for line in traceback.format_exception(*exc_info)])
             request_info = ''.join(["<strong>%s</strong>: %s<br>" % (k, self.request.__dict__[k]) for k in
                                     self.request.__dict__.keys()])
             error = exc_info[1]
 
             self.set_header('Content-Type', 'text/html')
-            self.finish("""<html>
+            self.write("""<html>
                                  <title>{}</title>
                                  <body>
                                     <h2>Error</h2>
@@ -137,7 +146,7 @@ class BaseHandler(RequestHandler):
                                     <p>{}</p>
                                     <h2>Request Info</h2>
                                     <p>{}</p>
-                                    <button onclick="window.location='{}/errorlogs/';">View Log(Errors)</button>
+                                    <button onclick="window.location='{}/logs/';">View Log(Errors)</button>
                                  </body>
                                </html>""".format(error, error, trace_info, request_info,
                                                  sickrage.srConfig.WEB_ROOT))
@@ -156,8 +165,9 @@ class BaseHandler(RequestHandler):
             'header': "",
             'topmenu': "",
             'submenu': "",
+            'controller': "home",
+            'action': "index",
             'srPID': sickrage.srCore.PID,
-            'srRoot': sickrage.srConfig.WEB_ROOT,
             'srHttpsEnabled': sickrage.srConfig.ENABLE_HTTPS or bool(
                 self.request.headers.get('X-Forwarded-Proto') == 'https'),
             'srHost': self.request.headers.get('X-Forwarded-Host', self.request.host.split(':')[0]),
@@ -177,9 +187,12 @@ class BaseHandler(RequestHandler):
 
         try:
             return self.mako_lookup.get_template(template_name).render_unicode(**template_kwargs)
-        except TemplateLookupException as e:
-            sickrage.srLogger.error(e)
-            raise
+        except Exception:
+            kwargs['title'] = 'HTTP Error 500'
+            kwargs['header'] = 'HTTP Error 500'
+            kwargs['backtrace'] = RichTraceback()
+            template_kwargs.update(kwargs)
+            return self.mako_lookup.get_template('/errors/500.mako').render_unicode(**template_kwargs)
 
     def render(self, template_name, **kwargs):
         return self.render_string(template_name, **kwargs)
@@ -192,19 +205,13 @@ class WebHandler(BaseHandler):
     @coroutine
     @authenticated
     def prepare(self, *args, **kwargs):
-        try:
-            # route -> method obj
-            method = getattr(self, self.request.path.strip('/').split('/')[::-1][0].replace('.', '_'),
-                             getattr(self, 'index'))
+        # route -> method obj
+        method = getattr(self, self.request.path.strip('/').split('/')[::-1][0].replace('.', '_'),
+                         getattr(self, 'index'))
 
-            result = yield self.async_call(method, **self.request.arguments)
-
-            if not self._finished:
-                self.finish(result)
-        except Exception:
-            sickrage.srLogger.debug(
-                'Failed doing webui request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
-            raise HTTPError(404)
+        result = yield self.async_call(method, **self.request.arguments)
+        if not self._finished:
+            self.finish(result)
 
 
 class LoginHandler(BaseHandler):
@@ -240,7 +247,14 @@ class LoginHandler(BaseHandler):
                         self.request.remote_ip)
                 )
 
-            return self.render("login.mako", title="Login", header="Login", topmenu="login")
+            return self.render(
+                "/login.mako",
+                title="Login",
+                header="Login",
+                topmenu="login",
+                controller='root',
+                action='login'
+            )
         except Exception:
             sickrage.srLogger.debug(
                 'Failed doing webui login callback [{}]: {}'.format(self.request.uri, traceback.format_exc()))
@@ -284,26 +298,29 @@ class WebRoot(WebHandler):
         )
 
         for result in results:
-            if result[b'showid'] not in episodes:
-                episodes[result[b'showid']] = {}
+            if result['showid'] not in episodes:
+                episodes[result['showid']] = {}
 
-            if result[b'season'] not in episodes[result[b'showid']]:
-                episodes[result[b'showid']][result[b'season']] = []
+            if result['season'] not in episodes[result['showid']]:
+                episodes[result['showid']][result['season']] = []
 
-            episodes[result[b'showid']][result[b'season']].append(result[b'episode'])
+            episodes[result['showid']][result['season']].append(result['episode'])
 
         if len(sickrage.srConfig.API_KEY) == 32:
             apikey = sickrage.srConfig.API_KEY
         else:
             apikey = 'API Key not generated'
 
-        return self.render('apiBuilder.mako',
-                           title='API Builder',
-                           header='API Builder',
-                           shows=shows,
-                           episodes=episodes,
-                           apikey=apikey,
-                           commands=ApiHandler.function_mapper)
+        return self.render(
+            'api_builder.mako',
+            title='API Builder',
+            header='API Builder',
+            shows=shows,
+            episodes=episodes,
+            apikey=apikey,
+            controller='root',
+            action='api_builder'
+        )
 
     def setHomeLayout(self, layout):
 
@@ -321,13 +338,13 @@ class WebRoot(WebHandler):
             sort = 'name'
 
         sickrage.srConfig.POSTER_SORTBY = sort
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
 
     @staticmethod
     def setPosterSortDir(direction):
 
         sickrage.srConfig.POSTER_SORTDIR = int(direction)
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
 
     def setHistoryLayout(self, layout):
 
@@ -374,36 +391,37 @@ class WebRoot(WebHandler):
         return self.redirect("/schedule/")
 
     def schedule(self, layout=None):
-        next_week = date.today() + timedelta(days=7)
-        next_week1 = datetime.combine(next_week, datetime.now().time().replace(tzinfo=tz_updater.sr_timezone))
+        next_week = datetime.date.today() + datetime.timedelta(days=7)
+        next_week1 = datetime.datetime.combine(next_week,
+                                               datetime.datetime.now().time().replace(tzinfo=tz_updater.sr_timezone))
         results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories, sickrage.srConfig.COMING_EPS_SORT,
                                                      False)
-        today = datetime.now().replace(tzinfo=tz_updater.sr_timezone)
+        today = datetime.datetime.now().replace(tzinfo=tz_updater.sr_timezone)
 
         submenu = [
             {
                 'title': 'Sort by:',
                 'path': {
-                    'Date': 'setScheduleSort/?sort=date',
-                    'Show': 'setScheduleSort/?sort=show',
-                    'Network': 'setScheduleSort/?sort=network',
+                    'Date': '/setScheduleSort/?sort=date',
+                    'Show': '/setScheduleSort/?sort=show',
+                    'Network': '/setScheduleSort/?sort=network',
                 }
             },
             {
                 'title': 'Layout:',
                 'path': {
-                    'Banner': 'setScheduleLayout/?layout=banner',
-                    'Poster': 'setScheduleLayout/?layout=poster',
-                    'List': 'setScheduleLayout/?layout=list',
-                    'Calendar': 'setScheduleLayout/?layout=calendar',
+                    'Banner': '/setScheduleLayout/?layout=banner',
+                    'Poster': '/setScheduleLayout/?layout=poster',
+                    'List': '/setScheduleLayout/?layout=list',
+                    'Calendar': '/setScheduleLayout/?layout=calendar',
                 }
             },
             {
                 'title': 'View Paused:',
                 'path': {
-                    'Hide': 'toggleScheduleDisplayPaused'
+                    'Hide': '/toggleScheduleDisplayPaused'
                 } if sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED else {
-                    'Show': 'toggleScheduleDisplayPaused'
+                    'Show': '/toggleScheduleDisplayPaused'
                 }
             },
         ]
@@ -414,15 +432,19 @@ class WebRoot(WebHandler):
         else:
             layout = sickrage.srConfig.COMING_EPS_LAYOUT
 
-        return self.render('schedule.mako',
-                           submenu=submenu,
-                           next_week=next_week1,
-                           today=today,
-                           results=results,
-                           layout=layout,
-                           title='Schedule',
-                           header='Schedule',
-                           topmenu='schedule')
+        return self.render(
+            'schedule.mako',
+            submenu=submenu,
+            next_week=next_week1,
+            today=today,
+            results=results,
+            layout=layout,
+            title='Schedule',
+            header='Schedule',
+            topmenu='schedule',
+            controller='root',
+            action='schedule'
+        )
 
 
 class CalendarHandler(BaseHandler):
@@ -454,8 +476,8 @@ class CalendarHandler(BaseHandler):
         ical += 'PRODID://Sick-Beard Upcoming Episodes//\r\n'
 
         # Limit dates
-        past_date = (date.today() + timedelta(weeks=-52)).toordinal()
-        future_date = (date.today() + timedelta(weeks=52)).toordinal()
+        past_date = (datetime.date.today() + datetime.timedelta(weeks=-52)).toordinal()
+        future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
         calendar_shows = main_db.MainDB().select(
@@ -464,16 +486,16 @@ class CalendarHandler(BaseHandler):
             # Get all episodes of this show airing between today and next month
             episode_list = main_db.MainDB().select(
                 "SELECT indexerid, name, season, episode, description, airdate FROM tv_episodes WHERE airdate >= ? AND airdate < ? AND showid = ?",
-                (past_date, future_date, int(show[b"indexer_id"])))
+                (past_date, future_date, int(show["indexer_id"])))
 
             utc = tz.gettz('GMT')
 
             for episode in episode_list:
 
-                air_date_time = tz_updater.parse_date_time(episode[b'airdate'], show[b"airs"],
-                                                           show[b'network']).astimezone(utc)
-                air_date_time_end = air_date_time + timedelta(
-                    minutes=tryInt(show[b"runtime"], 60))
+                air_date_time = tz_updater.parse_date_time(episode['airdate'], show["airs"],
+                                                           show['network']).astimezone(utc)
+                air_date_time_end = air_date_time + datetime.timedelta(
+                    minutes=tryInt(show["runtime"], 60))
 
                 # Create event for episode
                 ical += 'BEGIN:VEVENT\r\n'
@@ -483,22 +505,22 @@ class CalendarHandler(BaseHandler):
                     "%Y%m%d") + 'T' + air_date_time_end.strftime(
                     "%H%M%S") + 'Z\r\n'
                 if sickrage.srConfig.CALENDAR_ICONS:
-                    ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:https://lh3.googleusercontent.com/-Vp_3ZosvTgg/VjiFu5BzQqI/AAAAAAAA_TY/3ZL_1bC0Pgw/s16-Ic42/SiCKRAGE.png\r\n'
+                    ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:http://www.sickrage.ca/favicon.ico\r\n'
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-DISPLAY:CHIP\r\n'
                 ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(
-                    show[b'show_name'], episode[b'season'], episode[b'episode'], episode[b'name']
+                    show['show_name'], episode['season'], episode['episode'], episode['name']
                 )
-                ical += 'UID:SiCKRAGE-' + str(date.today().isoformat()) + '-' + \
-                        show[b'show_name'].replace(" ", "-") + '-E' + str(episode[b'episode']) + \
-                        'S' + str(episode[b'season']) + '\r\n'
-                if episode[b'description']:
+                ical += 'UID:SiCKRAGE-' + str(datetime.date.today().isoformat()) + '-' + \
+                        show['show_name'].replace(" ", "-") + '-E' + str(episode['episode']) + \
+                        'S' + str(episode['season']) + '\r\n'
+                if episode['description']:
                     ical += 'DESCRIPTION: {0} on {1} \\n\\n {2}\r\n'.format(
-                        (show[b'airs'] or '(Unknown airs)'),
-                        (show[b'network'] or 'Unknown network'),
-                        episode[b'description'].splitlines()[0])
+                        (show['airs'] or '(Unknown airs)'),
+                        (show['network'] or 'Unknown network'),
+                        episode['description'].splitlines()[0])
                 else:
-                    ical += 'DESCRIPTION:' + (show[b'airs'] or '(Unknown airs)') + ' on ' + (
-                        show[b'network'] or 'Unknown network') + '\r\n'
+                    ical += 'DESCRIPTION:' + (show['airs'] or '(Unknown airs)') + ' on ' + (
+                        show['network'] or 'Unknown network') + '\r\n'
 
                 ical += 'END:VEVENT\r\n'
 
@@ -548,10 +570,10 @@ class WebFileBrowser(WebRoot):
         self.set_header("Content-Type", "application/json")
         return json_encode(foldersAtPath(path, True, bool(int(includeFiles))))
 
-    def complete(self, term, includeFiles=0, *args, **kwargs):
+    def complete(self, term, includeFiles=0):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header("Content-Type", "application/json")
-        paths = [entry[b'path'] for entry in
+        paths = [entry['path'] for entry in
                  foldersAtPath(os.path.dirname(term), includeFiles=bool(int(includeFiles))) if 'path' in entry]
 
         return json_encode(paths)
@@ -563,11 +585,15 @@ class Home(WebRoot):
         super(Home, self).__init__(*args, **kwargs)
 
     def _genericMessage(self, subject, message):
-        return self.render("genericMessage.mako",
-                           message=message,
-                           subject=subject,
-                           topmenu="home",
-                           title="")
+        return self.render(
+            "/generic_message.mako",
+            message=message,
+            subject=subject,
+            topmenu="home",
+            title="",
+            controller='home',
+            action='genericmessage'
+        )
 
     @staticmethod
     def _getEpisode(show, season=None, episode=None, absolute=None):
@@ -605,17 +631,21 @@ class Home(WebRoot):
             showlists = [["Shows", sickrage.srCore.SHOWLIST]]
 
         stats = self.show_statistics()
-        return self.render("home.mako",
-                           title="Home",
-                           header="Show List",
-                           topmenu="home",
-                           showlists=showlists,
-                           show_stat=stats[0],
-                           max_download_count=stats[1])
+        return self.render(
+            "/home/index.mako",
+            title="Home",
+            header="Show List",
+            topmenu="home",
+            showlists=showlists,
+            show_stat=stats[0],
+            max_download_count=stats[1],
+            controller='home',
+            action='index'
+        )
 
     @staticmethod
     def show_statistics():
-        today = str(date.today().toordinal())
+        today = str(datetime.date.today().toordinal())
 
         status_quality = '(' + ','.join([str(x) for x in Quality.SNATCHED + Quality.SNATCHED_PROPER]) + ')'
         status_download = '(' + ','.join([str(x) for x in Quality.DOWNLOADED + Quality.ARCHIVED]) + ')'
@@ -640,9 +670,9 @@ class Home(WebRoot):
         show_stat = {}
         max_download_count = 1000
         for cur_result in sql_result:
-            show_stat[cur_result[b'showid']] = cur_result
-            if cur_result[b'ep_total'] > max_download_count:
-                max_download_count = cur_result[b'ep_total']
+            show_stat[cur_result['showid']] = cur_result
+            if cur_result['ep_total'] > max_download_count:
+                max_download_count = cur_result['ep_total']
 
         max_download_count *= 100
 
@@ -659,7 +689,7 @@ class Home(WebRoot):
         self.set_header('Access-Control-Allow-Origin', '*')
         self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
 
-        if sickrage.srConfig.STARTED:
+        if sickrage.srCore.STARTED:
             return callback + '(' + json_encode({"msg": str(sickrage.srCore.PID)}) + ');'
         else:
             return callback + '(' + json_encode({"msg": "nope"}) + ');'
@@ -715,7 +745,8 @@ class Home(WebRoot):
     @staticmethod
     def testFreeMobile(freemobile_id=None, freemobile_apikey=None):
 
-        result, message = sickrage.srCore.NOTIFIERS.freemobile_notifier.test_notify(freemobile_id, freemobile_apikey)
+        result, message = sickrage.srCore.notifiersDict.freemobile_notifier.test_notify(freemobile_id,
+                                                                                        freemobile_apikey)
         if result:
             return "SMS sent successfully"
         else:
@@ -727,7 +758,7 @@ class Home(WebRoot):
 
         host = sickrage.srConfig.clean_host(host, default_port=23053)
 
-        result = sickrage.srCore.NOTIFIERS.growl_notifier.test_notify(host, password)
+        result = sickrage.srCore.notifiersDict.growl_notifier.test_notify(host, password)
         if password is None or password == '':
             pw_append = ''
         else:
@@ -741,7 +772,7 @@ class Home(WebRoot):
     @staticmethod
     def testProwl(prowl_api=None, prowl_priority=0):
 
-        result = sickrage.srCore.NOTIFIERS.prowl_notifier.test_notify(prowl_api, prowl_priority)
+        result = sickrage.srCore.notifiersDict.prowl_notifier.test_notify(prowl_api, prowl_priority)
         if result:
             return "Test prowl notice sent successfully"
         else:
@@ -750,7 +781,7 @@ class Home(WebRoot):
     @staticmethod
     def testBoxcar(username=None):
 
-        result = sickrage.srCore.NOTIFIERS.boxcar_notifier.test_notify(username)
+        result = sickrage.srCore.notifiersDict.boxcar_notifier.test_notify(username)
         if result:
             return "Boxcar notification succeeded. Check your Boxcar clients to make sure it worked"
         else:
@@ -759,7 +790,7 @@ class Home(WebRoot):
     @staticmethod
     def testBoxcar2(accesstoken=None):
 
-        result = sickrage.srCore.NOTIFIERS.boxcar2_notifier.test_notify(accesstoken)
+        result = sickrage.srCore.notifiersDict.boxcar2_notifier.test_notify(accesstoken)
         if result:
             return "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
         else:
@@ -768,7 +799,7 @@ class Home(WebRoot):
     @staticmethod
     def testPushover(userKey=None, apiKey=None):
 
-        result = sickrage.srCore.NOTIFIERS.pushover_notifier.test_notify(userKey, apiKey)
+        result = sickrage.srCore.notifiersDict.pushover_notifier.test_notify(userKey, apiKey)
         if result:
             return "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
         else:
@@ -776,12 +807,12 @@ class Home(WebRoot):
 
     @staticmethod
     def twitterStep1():
-        return sickrage.srCore.NOTIFIERS.twitter_notifier._get_authorization()
+        return sickrage.srCore.notifiersDict.twitter_notifier._get_authorization()
 
     @staticmethod
     def twitterStep2(key):
 
-        result = sickrage.srCore.NOTIFIERS.twitter_notifier._get_credentials(key)
+        result = sickrage.srCore.notifiersDict.twitter_notifier._get_credentials(key)
         sickrage.srLogger.info("result: " + str(result))
         if result:
             return "Key verification successful"
@@ -791,7 +822,7 @@ class Home(WebRoot):
     @staticmethod
     def testTwitter():
 
-        result = sickrage.srCore.NOTIFIERS.twitter_notifier.test_notify()
+        result = sickrage.srCore.notifiersDict.twitter_notifier.test_notify()
         if result:
             return "Tweet successful, check your twitter to make sure it worked"
         else:
@@ -803,8 +834,8 @@ class Home(WebRoot):
         host = sickrage.srConfig.clean_hosts(host)
         finalResult = ''
         for curHost in [x.strip() for x in host.split(",")]:
-            curResult = sickrage.srCore.NOTIFIERS.kodi_notifier.test_notify(urllib.unquote_plus(curHost), username,
-                                                                            password)
+            curResult = sickrage.srCore.notifiersDict.kodi_notifier.test_notify(urllib.unquote_plus(curHost), username,
+                                                                                password)
             if len(curResult.split(":")) > 2 and 'OK' in curResult.split(":")[2]:
                 finalResult += "Test KODI notice sent successfully to " + urllib.unquote_plus(curHost)
             else:
@@ -821,8 +852,9 @@ class Home(WebRoot):
 
         finalResult = ''
         for curHost in [x.strip() for x in host.split(',')]:
-            curResult = sickrage.srCore.NOTIFIERS.plex_notifier.test_notify_pmc(urllib.unquote_plus(curHost), username,
-                                                                                password)
+            curResult = sickrage.srCore.notifiersDict.plex_notifier.test_notify_pmc(urllib.unquote_plus(curHost),
+                                                                                    username,
+                                                                                    password)
             if len(curResult.split(':')) > 2 and 'OK' in curResult.split(':')[2]:
                 finalResult += 'Successful test notice sent to Plex client ... ' + urllib.unquote_plus(curHost)
             else:
@@ -841,9 +873,9 @@ class Home(WebRoot):
 
         finalResult = ''
 
-        curResult = sickrage.srCore.NOTIFIERS.plex_notifier.test_notify_pms(urllib.unquote_plus(host), username,
-                                                                            password,
-                                                                            plex_server_token)
+        curResult = sickrage.srCore.notifiersDict.plex_notifier.test_notify_pms(urllib.unquote_plus(host), username,
+                                                                                password,
+                                                                                plex_server_token)
         if curResult is None:
             finalResult += 'Successful test of Plex server(s) ... ' + urllib.unquote_plus(host.replace(',', ', '))
         elif curResult is False:
@@ -860,16 +892,16 @@ class Home(WebRoot):
     @staticmethod
     def testLibnotify():
 
-        if sickrage.srCore.NOTIFIERS.libnotify_notifier.test_notify():
+        if sickrage.srCore.notifiersDict.libnotify_notifier.test_notify():
             return "Tried sending desktop notification via libnotify"
         else:
-            return sickrage.srCore.NOTIFIERS.libnotify.diagnose()
+            return sickrage.srCore.notifiersDict.libnotify.diagnose()
 
     @staticmethod
     def testEMBY(host=None, emby_apikey=None):
 
         host = sickrage.srConfig.clean_host(host)
-        result = sickrage.srCore.NOTIFIERS.emby_notifier.test_notify(urllib.unquote_plus(host), emby_apikey)
+        result = sickrage.srCore.notifiersDict.emby_notifier.test_notify(urllib.unquote_plus(host), emby_apikey)
         if result:
             return "Test notice sent successfully to " + urllib.unquote_plus(host)
         else:
@@ -879,7 +911,7 @@ class Home(WebRoot):
     def testNMJ(host=None, database=None, mount=None):
 
         host = sickrage.srConfig.clean_host(host)
-        result = sickrage.srCore.NOTIFIERS.nmj_notifier.test_notify(urllib.unquote_plus(host), database, mount)
+        result = sickrage.srCore.notifiersDict.nmj_notifier.test_notify(urllib.unquote_plus(host), database, mount)
         if result:
             return "Successfully started the scan update"
         else:
@@ -889,7 +921,7 @@ class Home(WebRoot):
     def settingsNMJ(host=None):
 
         host = sickrage.srConfig.clean_host(host)
-        result = sickrage.srCore.NOTIFIERS.nmj_notifier.notify_settings(urllib.unquote_plus(host))
+        result = sickrage.srCore.notifiersDict.nmj_notifier.notify_settings(urllib.unquote_plus(host))
         if result:
             return '{"message": "Got settings from %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
                 "host": host, "database": sickrage.srConfig.NMJ_DATABASE,
@@ -901,7 +933,7 @@ class Home(WebRoot):
     def testNMJv2(host=None):
 
         host = sickrage.srConfig.clean_host(host)
-        result = sickrage.srCore.NOTIFIERS.nmjv2_notifier.test_notify(urllib.unquote_plus(host))
+        result = sickrage.srCore.notifiersDict.nmjv2_notifier.test_notify(urllib.unquote_plus(host))
         if result:
             return "Test notice sent successfully to " + urllib.unquote_plus(host)
         else:
@@ -911,7 +943,8 @@ class Home(WebRoot):
     def settingsNMJv2(host=None, dbloc=None, instance=None):
 
         host = sickrage.srConfig.clean_host(host)
-        result = sickrage.srCore.NOTIFIERS.nmjv2_notifier.notify_settings(urllib.unquote_plus(host), dbloc, instance)
+        result = sickrage.srCore.notifiersDict.nmjv2_notifier.notify_settings(urllib.unquote_plus(host), dbloc,
+                                                                              instance)
         if result:
             return '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' % {"host": host,
                                                                                                    "database": sickrage.srConfig.NMJv2_DATABASE}
@@ -930,7 +963,7 @@ class Home(WebRoot):
 
     @staticmethod
     def testTrakt(username=None, blacklist_name=None):
-        return sickrage.srCore.NOTIFIERS.trakt_notifier.test_notify(username, blacklist_name)
+        return sickrage.srCore.notifiersDict.trakt_notifier.test_notify(username, blacklist_name)
 
     @staticmethod
     def loadShowNotifyLists():
@@ -940,9 +973,9 @@ class Home(WebRoot):
         data = {}
         size = 0
         for r in rows:
-            data[r[b'show_id']] = {'id': r[b'show_id'], 'name': r[b'show_name'], 'list': r[b'notify_list']}
+            data[r['show_id']] = {'id': r['show_id'], 'name': r['show_name'], 'list': r['notify_list']}
             size += 1
-        data[b'_size'] = size
+        data['_size'] = size
         return json_encode(data)
 
     @staticmethod
@@ -957,15 +990,15 @@ class Home(WebRoot):
     def testEmail(host=None, port=None, smtp_from=None, use_tls=None, user=None, pwd=None, to=None):
 
         host = sickrage.srConfig.clean_host(host)
-        if sickrage.srCore.NOTIFIERS.email_notifier.test_notify(host, port, smtp_from, use_tls, user, pwd, to):
+        if sickrage.srCore.notifiersDict.email_notifier.test_notify(host, port, smtp_from, use_tls, user, pwd, to):
             return 'Test email sent successfully! Check inbox.'
         else:
-            return 'ERROR: %s' % sickrage.srCore.NOTIFIERS.email_notifier.last_err
+            return 'ERROR: %s' % sickrage.srCore.notifiersDict.email_notifier.last_err
 
     @staticmethod
     def testNMA(nma_api=None, nma_priority=0):
 
-        result = sickrage.srCore.NOTIFIERS.nma_notifier.test_notify(nma_api, nma_priority)
+        result = sickrage.srCore.notifiersDict.nma_notifier.test_notify(nma_api, nma_priority)
         if result:
             return "Test NMA notice sent successfully"
         else:
@@ -974,7 +1007,7 @@ class Home(WebRoot):
     @staticmethod
     def testPushalot(authorizationToken=None):
 
-        result = sickrage.srCore.NOTIFIERS.pushalot_notifier.test_notify(authorizationToken)
+        result = sickrage.srCore.notifiersDict.pushalot_notifier.test_notify(authorizationToken)
         if result:
             return "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
         else:
@@ -983,7 +1016,7 @@ class Home(WebRoot):
     @staticmethod
     def testPushbullet(api=None):
 
-        result = sickrage.srCore.NOTIFIERS.pushbullet_notifier.test_notify(api)
+        result = sickrage.srCore.notifiersDict.pushbullet_notifier.test_notify(api)
         if result:
             return "Pushbullet notification succeeded. Check your device to make sure it worked"
         else:
@@ -993,7 +1026,7 @@ class Home(WebRoot):
     def getPushbulletDevices(api=None):
         # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
-        result = sickrage.srCore.NOTIFIERS.pushbullet_notifier.get_devices(api)
+        result = sickrage.srCore.notifiersDict.pushbullet_notifier.get_devices(api)
         if result:
             return result
         else:
@@ -1012,25 +1045,33 @@ class Home(WebRoot):
             for subject in backend_dirs:
                 rootDir[subject] = getDiskSpaceUsage(subject)
 
-        return self.render("status.mako",
-                           title='Status',
-                           header='Status',
-                           topmenu='system',
-                           tvdirFree=tvdirFree,
-                           rootDir=rootDir)
+        return self.render(
+            "/home/status.mako",
+            title='Status',
+            header='Status',
+            topmenu='system',
+            tvdirFree=tvdirFree,
+            rootDir=rootDir,
+            controller='home',
+            action='status'
+        )
 
     def shutdown(self, pid=None):
-        if sickrage.srCore.WEBSERVER:
-            self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
-            raise KeyboardInterrupt
-        return self.redirect('/{}/'.format(sickrage.srConfig.DEFAULT_PAGE))
+        # shutdown sickrage core
+        self._genericMessage("Shutting down", "SiCKRAGE is shutting down")
+        sickrage.srCore.shutdown()
 
     def restart(self, pid=None):
-        if sickrage.srCore.WEBSERVER:
-            self._genericMessage("Restarting", "SiCKRAGE is restarting")
-            self.io_loop.add_timeout(timedelta(seconds=5), sickrage.srCore.WEBSERVER.server_restart)
-            return self.render("restart.mako", title="Home", header="Restarting SiCKRAGE", topmenu="system")
-        return self.redirect('/{}/'.format(sickrage.srConfig.DEFAULT_PAGE))
+        self._genericMessage("Restarting", "SiCKRAGE is restarting")
+        self.io_loop.add_timeout(datetime.timedelta(seconds=5), lambda: sickrage.srCore.shutdown(restart=True))
+        return self.render(
+            "/home/restart.mako",
+            title="Home",
+            header="Restarting SiCKRAGE",
+            topmenu="system",
+            controller='home',
+            action="restart"
+        )
 
     def updateCheck(self, pid=None):
         if str(pid) != str(sickrage.srCore.PID):
@@ -1048,11 +1089,15 @@ class Home(WebRoot):
 
         if sickrage.srCore.VERSIONUPDATER._runbackup() is True:
             if sickrage.srCore.VERSIONUPDATER.update():
-                self.io_loop.add_timeout(timedelta(seconds=5), sickrage.srCore.WEBSERVER.server_restart)
-                return self.render("restart.mako",
-                                   title="Home",
-                                   header="Restarting SiCKRAGE",
-                                   topmenu="home")
+                sickrage.srCore.shutdown(restart=True)
+                return self.render(
+                    "/home/restart.mako",
+                    title="Home",
+                    header="Restarting SiCKRAGE",
+                    topmenu="home",
+                    controller='home',
+                    action='restart'
+                )
             else:
                 return self._genericMessage("Update Failed",
                                             "Update wasn't successful, not restarting. Check your log for more information.")
@@ -1089,7 +1134,7 @@ class Home(WebRoot):
         )
 
         submenu = [
-            {'title': 'Edit', 'path': 'home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
+            {'title': 'Edit', 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
 
         try:
             showLoc = (showObj.location, True)
@@ -1122,30 +1167,30 @@ class Home(WebRoot):
         if not sickrage.srCore.SHOWQUEUE.isBeingAdded(showObj):
             if not sickrage.srCore.SHOWQUEUE.isBeingUpdated(showObj):
                 if showObj.paused:
-                    submenu.append({'title': 'Resume', 'path': 'home/togglePause?show=%d' % showObj.indexerid,
+                    submenu.append({'title': 'Resume', 'path': '/home/togglePause?show=%d' % showObj.indexerid,
                                     'icon': 'ui-icon ui-icon-play'})
                 else:
-                    submenu.append({'title': 'Pause', 'path': 'home/togglePause?show=%d' % showObj.indexerid,
+                    submenu.append({'title': 'Pause', 'path': '/home/togglePause?show=%d' % showObj.indexerid,
                                     'icon': 'ui-icon ui-icon-pause'})
 
-                submenu.append({'title': 'Remove', 'path': 'home/deleteShow?show=%d' % showObj.indexerid,
+                submenu.append({'title': 'Remove', 'path': '/home/deleteShow?show=%d' % showObj.indexerid,
                                 'class': 'removeshow', 'confirm': True, 'icon': 'ui-icon ui-icon-trash'})
-                submenu.append({'title': 'Re-scan files', 'path': 'home/refreshShow?show=%d' % showObj.indexerid,
+                submenu.append({'title': 'Re-scan files', 'path': '/home/refreshShow?show=%d' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-refresh'})
                 submenu.append({'title': 'Force Full Update',
-                                'path': 'home/updateShow?show=%d&amp;force=1' % showObj.indexerid,
+                                'path': '/home/updateShow?show=%d&amp;force=1' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-transfer-e-w'})
-                submenu.append({'title': 'Update show in KODI', 'path': 'home/updateKODI?show=%d' % showObj.indexerid,
+                submenu.append({'title': 'Update show in KODI', 'path': '/home/updateKODI?show=%d' % showObj.indexerid,
                                 'requires': self.haveKODI(), 'icon': 'submenu-icon-kodi'})
-                submenu.append({'title': 'Update show in Emby', 'path': 'home/updateEMBY?show=%d' % showObj.indexerid,
+                submenu.append({'title': 'Update show in Emby', 'path': '/home/updateEMBY?show=%d' % showObj.indexerid,
                                 'requires': self.haveEMBY(), 'icon': 'ui-icon ui-icon-refresh'})
-                submenu.append({'title': 'Preview Rename', 'path': 'home/testRename?show=%d' % showObj.indexerid,
+                submenu.append({'title': 'Preview Rename', 'path': '/home/testRename?show=%d' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-tag'})
 
                 if sickrage.srConfig.USE_SUBTITLES and not sickrage.srCore.SHOWQUEUE.isBeingSubtitled(
                         showObj) and showObj.subtitles:
                     submenu.append(
-                        {'title': 'Download Subtitles', 'path': 'home/subtitleShow?show=%d' % showObj.indexerid,
+                        {'title': 'Download Subtitles', 'path': '/home/subtitleShow?show=%d' % showObj.indexerid,
                          'icon': 'ui-icon ui-icon-comment'})
 
         epCounts = {}
@@ -1158,9 +1203,9 @@ class Home(WebRoot):
         epCounts[Overview.SNATCHED] = 0
 
         for curResult in sqlResults:
-            curEpCat = showObj.getOverview(int(curResult[b"status"] or -1))
+            curEpCat = showObj.getOverview(int(curResult["status"] or -1))
             if curEpCat:
-                epCats[str(curResult[b"season"]) + "x" + str(curResult[b"episode"])] = curEpCat
+                epCats[str(curResult["season"]) + "x" + str(curResult["episode"])] = curEpCat
                 epCounts[curEpCat] += 1
 
         def titler(x):
@@ -1191,7 +1236,7 @@ class Home(WebRoot):
 
         # Delete any previous occurrances
         for index, recentShow in enumerate(sickrage.srConfig.SHOWS_RECENT):
-            if recentShow[b'indexerid'] == indexerid:
+            if recentShow['indexerid'] == indexerid:
                 del sickrage.srConfig.SHOWS_RECENT[index]
 
         # Only track 5 most recent shows
@@ -1203,24 +1248,27 @@ class Home(WebRoot):
             'name': showObj.name,
         })
 
-        return self.render("displayShow.mako",
-                           submenu=submenu,
-                           showLoc=showLoc,
-                           show_message=show_message,
-                           show=showObj,
-                           sqlResults=sqlResults,
-                           seasonResults=seasonResults,
-                           sortedShowLists=sortedShowLists,
-                           bwl=bwl,
-                           epCounts=epCounts,
-                           epCats=epCats,
-                           all_scene_exceptions=showObj.exceptions,
-                           scene_numbering=get_scene_numbering_for_show(indexerid, indexer),
-                           xem_numbering=get_xem_numbering_for_show(indexerid, indexer),
-                           scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexerid, indexer),
-                           xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexerid, indexer),
-                           title=showObj.name
-                           )
+        return self.render(
+            "/home/display_show.mako",
+            submenu=submenu,
+            showLoc=showLoc,
+            show_message=show_message,
+            show=showObj,
+            sqlResults=sqlResults,
+            seasonResults=seasonResults,
+            sortedShowLists=sortedShowLists,
+            bwl=bwl,
+            epCounts=epCounts,
+            epCats=epCats,
+            all_scene_exceptions=showObj.exceptions,
+            scene_numbering=get_scene_numbering_for_show(indexerid, indexer),
+            xem_numbering=get_xem_numbering_for_show(indexerid, indexer),
+            scene_absolute_numbering=get_scene_absolute_numbering_for_show(indexerid, indexer),
+            xem_absolute_numbering=get_xem_absolute_numbering_for_show(indexerid, indexer),
+            title=showObj.name,
+            controller='home',
+            action="display_show"
+        )
 
     @staticmethod
     def plotDetails(show, season, episode):
@@ -1228,7 +1276,7 @@ class Home(WebRoot):
         try:
             result = main_db.MainDB().select(
                 "SELECT description FROM tv_episodes WHERE showid = ? AND season = ? AND episode = ?",
-                (int(show), int(season), int(episode)))[0][b'description']
+                (int(show), int(season), int(episode)))[0]['description']
         except:
             result = 'Episode not found.'
         return result
@@ -1246,11 +1294,18 @@ class Home(WebRoot):
             out.append("S" + str(season) + ": " + ", ".join(names))
         return "<br>".join(out)
 
-    def editShow(self, show=None, location=None, anyQualities=[], bestQualities=[], exceptions_list=[],
+    def editShow(self, show=None, location=None, anyQualities=None, bestQualities=None, exceptions_list=None,
                  flatten_folders=None, paused=None, directCall=False, air_by_date=None, sports=None, dvdorder=None,
                  indexerLang=None, subtitles=None, archive_firstmatch=None, rls_ignore_words=None,
                  rls_require_words=None, anime=None, blacklist=None, whitelist=None,
                  scene=None, defaultEpStatus=None, quality_preset=None):
+
+        if exceptions_list is None:
+            exceptions_list = []
+        if bestQualities is None:
+            bestQualities = []
+        if anyQualities is None:
+            anyQualities = []
 
         anidb_failed = False
         if show is None:
@@ -1291,22 +1346,30 @@ class Home(WebRoot):
                 scene_exceptions = get_scene_exceptions(showObj.indexerid)
 
             if showObj.is_anime:
-                return self.render("editShow.mako",
-                                   show=showObj,
-                                   quality=showObj.quality,
-                                   scene_exceptions=scene_exceptions,
-                                   groups=groups,
-                                   whitelist=whitelist,
-                                   blacklist=blacklist,
-                                   title='Edit Show',
-                                   header='Edit Show')
+                return self.render(
+                    "/home/edit_show.mako",
+                    show=showObj,
+                    quality=showObj.quality,
+                    scene_exceptions=scene_exceptions,
+                    groups=groups,
+                    whitelist=whitelist,
+                    blacklist=blacklist,
+                    title='Edit Show',
+                    header='Edit Show',
+                    controller='home',
+                    action="edit_show"
+                )
             else:
-                return self.render("editShow.mako",
-                                   show=showObj,
-                                   quality=showObj.quality,
-                                   scene_exceptions=scene_exceptions,
-                                   title='Edit Show',
-                                   header='Edit Show')
+                return self.render(
+                    "/show/edit_show.mako",
+                    show=showObj,
+                    quality=showObj.quality,
+                    scene_exceptions=scene_exceptions,
+                    title='Edit Show',
+                    header='Edit Show',
+                    controller='show',
+                    action="edit"
+                )
 
         flatten_folders = not sickrage.srConfig.checkbox_to_value(flatten_folders)  # UI inverts this value
         dvdorder = sickrage.srConfig.checkbox_to_value(dvdorder)
@@ -1319,7 +1382,7 @@ class Home(WebRoot):
         subtitles = sickrage.srConfig.checkbox_to_value(subtitles)
 
         if indexerLang and indexerLang in sickrage.srCore.INDEXER_API(showObj.indexer).indexer().config[
-            b'valid_languages']:
+            'valid_languages']:
             indexer_lang = indexerLang
         else:
             indexer_lang = showObj.lang
@@ -1556,7 +1619,7 @@ class Home(WebRoot):
         else:
             host = sickrage.srConfig.KODI_HOST
 
-        if sickrage.srCore.NOTIFIERS.kodi_notifier.update_library(showName=showName):
+        if sickrage.srCore.notifiersDict.kodi_notifier.update_library(showName=showName):
             notifications.message("Library update command sent to KODI host(s): " + host)
         else:
             notifications.error("Unable to contact one or more KODI host(s): " + host)
@@ -1567,7 +1630,7 @@ class Home(WebRoot):
             return self.redirect('/home/')
 
     def updatePLEX(self):
-        if None is sickrage.srCore.NOTIFIERS.plex_notifier.update_library():
+        if None is sickrage.srCore.notifiersDict.plex_notifier.update_library():
             notifications.message(
                 "Library update command sent to Plex Media Server host: " + sickrage.srConfig.PLEX_SERVER_HOST)
         else:
@@ -1580,7 +1643,7 @@ class Home(WebRoot):
         if show:
             showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
 
-        if sickrage.srCore.NOTIFIERS.emby_notifier.update_library(showObj):
+        if sickrage.srCore.notifiersDict.emby_notifier.update_library(showObj):
             notifications.message(
                 "Library update command sent to Emby host: " + sickrage.srConfig.EMBY_HOST)
         else:
@@ -1733,19 +1796,20 @@ class Home(WebRoot):
 
                     trakt_data.append((epObj.season, epObj.episode))
 
-            data = sickrage.srCore.NOTIFIERS.trakt_notifier.trakt_episode_data_generate(trakt_data)
+            data = sickrage.srCore.notifiersDict.trakt_notifier.trakt_episode_data_generate(trakt_data)
             if data and sickrage.srConfig.USE_TRAKT and sickrage.srConfig.TRAKT_SYNC_WATCHLIST:
                 if int(status) in [WANTED, FAILED]:
                     sickrage.srLogger.debug(
                         "Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " to Watchlist")
-                    sickrage.srCore.NOTIFIERS.trakt_notifier.update_watchlist(showObj, data_episode=data, update="add")
+                    sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(showObj, data_episode=data,
+                                                                                  update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                     sickrage.srLogger.debug(
                         "Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " from Watchlist")
-                    sickrage.srCore.NOTIFIERS.trakt_notifier.update_watchlist(showObj, data_episode=data,
-                                                                              update="remove")
+                    sickrage.srCore.notifiersDict.trakt_notifier.update_watchlist(showObj, data_episode=data,
+                                                                                  update="remove")
 
             if len(sql_l) > 0:
                 main_db.MainDB().mass_upsert(sql_l)
@@ -1830,14 +1894,18 @@ class Home(WebRoot):
             ep_obj_rename_list.reverse()
 
         submenu = [
-            {'title': 'Edit', 'path': 'home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
+            {'title': 'Edit', 'path': '/home/editShow?show=%d' % showObj.indexerid, 'icon': 'ui-icon ui-icon-pencil'}]
 
-        return self.render("testRename.mako",
-                           submenu=submenu,
-                           ep_obj_list=ep_obj_rename_list,
-                           show=showObj,
-                           title='Preview Rename',
-                           header='Preview Rename')
+        return self.render(
+            "/home/test_renaming.mako",
+            submenu=submenu,
+            ep_obj_list=ep_obj_rename_list,
+            show=showObj,
+            title='Preview Rename',
+            header='Preview Rename',
+            controller='home',
+            action="testrenaming"
+        )
 
     def doRename(self, show=None, eps=None):
         if show is None or eps is None:
@@ -1871,13 +1939,13 @@ class Home(WebRoot):
                 continue
             related_eps_result = main_db.MainDB().select(
                 "SELECT * FROM tv_episodes WHERE location = ? AND episode != ?",
-                [ep_result[0][b"location"], epInfo[1]])
+                [ep_result[0]["location"], epInfo[1]])
 
             root_ep_obj = show_obj.getEpisode(int(epInfo[0]), int(epInfo[1]))
             root_ep_obj.relatedEps = []
 
             for cur_related_ep in related_eps_result:
-                related_ep_obj = show_obj.getEpisode(int(cur_related_ep[b"season"]), int(cur_related_ep[b"episode"]))
+                related_ep_obj = show_obj.getEpisode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
                 if related_ep_obj not in root_ep_obj.relatedEps:
                     root_ep_obj.relatedEps.append(related_ep_obj)
 
@@ -1967,11 +2035,11 @@ class Home(WebRoot):
                     continue
 
             if isinstance(searchThread, ManualSearchQueueItem):
-                if not [x for x in episodes if x[b'episodeindexid'] == searchThread.segment.indexerid]:
+                if not [x for x in episodes if x['episodeindexid'] == searchThread.segment.indexerid]:
                     episodes += getEpisodes(searchThread, searchstatus)
             else:
                 ### These are only Failed Downloads/Retry SearchThreadItems.. lets loop through the segement/episodes
-                if not [i for i, j in zip(searchThread.segment, episodes) if i.indexerid == j[b'episodeindexid']]:
+                if not [i for i, j in zip(searchThread.segment, episodes) if i.indexerid == j['episodeindexid']]:
                     episodes += getEpisodes(searchThread, searchstatus)
 
         return json_encode({'episodes': episodes})
@@ -2050,8 +2118,8 @@ class Home(WebRoot):
             ep_obj = self._getEpisode(show, forSeason, forEpisode)
 
         if isinstance(ep_obj, str):
-            result[b'success'] = False
-            result[b'errorMessage'] = ep_obj
+            result['success'] = False
+            result['errorMessage'] = ep_obj
         elif showObj.is_anime:
             sickrage.srLogger.debug("setAbsoluteSceneNumbering for %s from %s to %s" %
                                     (show, forAbsolute, sceneAbsolute))
@@ -2082,15 +2150,15 @@ class Home(WebRoot):
         if showObj.is_anime:
             sn = get_scene_absolute_numbering(show, indexer, forAbsolute)
             if sn:
-                result[b'sceneAbsolute'] = sn
+                result['sceneAbsolute'] = sn
             else:
-                result[b'sceneAbsolute'] = None
+                result['sceneAbsolute'] = None
         else:
             sn = get_scene_numbering(show, indexer, forSeason, forEpisode)
             if sn:
-                (result[b'sceneSeason'], result[b'sceneEpisode']) = sn
+                (result['sceneSeason'], result['sceneEpisode']) = sn
             else:
-                (result[b'sceneSeason'], result[b'sceneEpisode']) = (None, None)
+                (result['sceneSeason'], result['sceneEpisode']) = (None, None)
 
         return json_encode(result)
 
@@ -2126,21 +2194,25 @@ class Home(WebRoot):
 
 
 @Route('/IRC(/?.*)')
-class HomeIRC(Home):
+class irc(WebRoot):
     def __init__(self, *args, **kwargs):
-        super(HomeIRC, self).__init__(*args, **kwargs)
+        super(irc, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("IRC.mako",
-                           topmenu="system",
-                           header="IRC",
-                           title="IRC")
+        return self.render(
+            "/irc.mako",
+            topmenu="system",
+            header="IRC",
+            title="IRC",
+            controller='root',
+            action='irc'
+        )
 
 
 @Route('/news(/?.*)')
-class HomeNews(Home):
+class news(WebRoot):
     def __init__(self, *args, **kwargs):
-        super(HomeNews, self).__init__(*args, **kwargs)
+        super(news, self).__init__(*args, **kwargs)
 
     def index(self):
         try:
@@ -2151,23 +2223,27 @@ class HomeNews(Home):
 
         sickrage.srConfig.NEWS_LAST_READ = sickrage.srConfig.NEWS_LATEST
         sickrage.srConfig.NEWS_UNREAD = 0
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
 
         data = markdown2.markdown(
             news if news else "The was a problem connecting to github, please refresh and try again",
             extras=['header-ids'])
 
-        return self.render("markdown.mako",
-                           title="News",
-                           header="News",
-                           topmenu="system",
-                           data=data)
+        return self.render(
+            "/markdown.mako",
+            title="News",
+            header="News",
+            topmenu="system",
+            data=data,
+            controller='root',
+            action='news'
+        )
 
 
 @Route('/changes(/?.*)')
-class HomeChangeLog(Home):
+class changelog(WebRoot):
     def __init__(self, *args, **kwargs):
-        super(HomeChangeLog, self).__init__(*args, **kwargs)
+        super(changelog, self).__init__(*args, **kwargs)
 
     def index(self):
         try:
@@ -2181,11 +2257,15 @@ class HomeChangeLog(Home):
             changes if changes else "The was a problem connecting to github, please refresh and try again",
             extras=['header-ids'])
 
-        return self.render("markdown.mako",
-                           title="Changelog",
-                           header="Changelog",
-                           topmenu="system",
-                           data=data)
+        return self.render(
+            "/markdown.mako",
+            title="Changelog",
+            header="Changelog",
+            topmenu="system",
+            data=data,
+            controller='root',
+            action='changelog'
+        )
 
 
 @Route('/home/postprocess(/?.*)')
@@ -2194,10 +2274,14 @@ class HomePostProcess(Home):
         super(HomePostProcess, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("home_postprocess.mako",
-                           title='Post Processing',
-                           header='Post Processing',
-                           topmenu='home')
+        return self.render(
+            "/home/postprocess.mako",
+            title='Post Processing',
+            header='Post Processing',
+            topmenu='home',
+            controller='home',
+            action='postprocess'
+        )
 
     def processEpisode(self, *args, **kwargs):
         pp_options = dict(
@@ -2209,7 +2293,7 @@ class HomePostProcess(Home):
         if not pp_options.has_key('proc_dir'):
             return self.redirect("/home/postprocess/")
 
-        result = processDir(pp_options[b"proc_dir"], **pp_options)
+        result = processDir(pp_options["proc_dir"], **pp_options)
         if pp_options.get("quiet", None):
             return result
 
@@ -2222,14 +2306,18 @@ class HomeAddShows(Home):
         super(HomeAddShows, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("home_addShows.mako",
-                           title='Add Shows',
-                           header='Add Shows',
-                           topmenu='home')
+        return self.render(
+            "/home/add_shows.mako",
+            title='Add Shows',
+            header='Add Shows',
+            topmenu='home',
+            controller='home',
+            action='add_shows'
+        )
 
     @staticmethod
     def getIndexerLanguages():
-        result = sickrage.srCore.INDEXER_API().config[b'valid_languages']
+        result = sickrage.srCore.INDEXER_API().config['valid_languages']
 
         return json_encode({'results': result})
 
@@ -2248,8 +2336,8 @@ class HomeAddShows(Home):
         # Query Indexers for each search term and build the list of results
         for indexer in sickrage.srCore.INDEXER_API().indexers if not int(indexer) else [int(indexer)]:
             lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(indexer).api_params.copy()
-            lINDEXER_API_PARMS[b'language'] = lang
-            lINDEXER_API_PARMS[b'custom_ui'] = AllShowsListUI
+            lINDEXER_API_PARMS['language'] = lang
+            lINDEXER_API_PARMS['custom_ui'] = AllShowsListUI
             t = sickrage.srCore.INDEXER_API(indexer).indexer(**lINDEXER_API_PARMS)
 
             sickrage.srLogger.debug("Searching for Show with searchterm: %s on Indexer: %s" % (
@@ -2262,10 +2350,10 @@ class HomeAddShows(Home):
 
         for i, shows in results.items():
             final_results.extend(
-                [[sickrage.srCore.INDEXER_API(i).name, i, sickrage.srCore.INDEXER_API(i).config[b"show_url"],
-                  int(show[b'id']), show[b'seriesname'], show[b'firstaired']] for show in shows])
+                [[sickrage.srCore.INDEXER_API(i).name, i, sickrage.srCore.INDEXER_API(i).config["show_url"],
+                  int(show['id']), show['seriesname'], show['firstaired']] for show in shows])
 
-        lang_id = sickrage.srCore.INDEXER_API().config[b'langabbv_to_id'][lang]
+        lang_id = sickrage.srCore.INDEXER_API().config['langabbv_to_id'][lang]
         return json_encode({'results': final_results, 'langid': lang_id})
 
     def massAddTable(self, rootDir=None):
@@ -2319,9 +2407,9 @@ class HomeAddShows(Home):
                 dirResults = main_db.MainDB().select("SELECT * FROM tv_shows WHERE location = ?", [cur_path])
 
                 if dirResults:
-                    cur_dir[b'added_already'] = True
+                    cur_dir['added_already'] = True
                 else:
-                    cur_dir[b'added_already'] = False
+                    cur_dir['added_already'] = False
 
                 dir_list.append(cur_dir)
 
@@ -2341,13 +2429,17 @@ class HomeAddShows(Home):
                             if not indexer_id and i:
                                 indexer_id = i
 
-                cur_dir[b'existing_info'] = (indexer_id, show_name, indexer)
+                cur_dir['existing_info'] = (indexer_id, show_name, indexer)
 
                 if indexer_id and findCertainShow(sickrage.srCore.SHOWLIST, indexer_id):
-                    cur_dir[b'added_already'] = True
+                    cur_dir['added_already'] = True
 
-        return self.render("home_massAddTable.mako",
-                           dirList=dir_list)
+        return self.render(
+            "/home/mass_add_table.mako",
+            dirList=dir_list,
+            controller='home',
+            action="mass_add_table"
+        )
 
     def newShow(self, show_to_add=None, other_shows=None, search_string=None):
         """
@@ -2386,50 +2478,57 @@ class HomeAddShows(Home):
 
         provided_indexer = int(indexer or sickrage.srConfig.INDEXER_DEFAULT)
 
-        return self.render("home_newShow.mako",
-                           enable_anime_options=True,
-                           use_provided_info=use_provided_info,
-                           default_show_name=default_show_name,
-                           other_shows=other_shows,
-                           provided_show_dir=show_dir,
-                           provided_indexer_id=provided_indexer_id,
-                           provided_indexer_name=provided_indexer_name,
-                           provided_indexer=provided_indexer,
-                           indexers=sickrage.srCore.INDEXER_API().indexers,
-                           quality=sickrage.srConfig.QUALITY_DEFAULT,
-                           whitelist=[],
-                           blacklist=[],
-                           groups=[],
-                           title='New Show',
-                           header='New Show',
-                           topmenu='home'
-                           )
+        return self.render(
+            "/home/new_show.mako",
+            enable_anime_options=True,
+            use_provided_info=use_provided_info,
+            default_show_name=default_show_name,
+            other_shows=other_shows,
+            provided_show_dir=show_dir,
+            provided_indexer_id=provided_indexer_id,
+            provided_indexer_name=provided_indexer_name,
+            provided_indexer=provided_indexer,
+            indexers=sickrage.srCore.INDEXER_API().indexers,
+            quality=sickrage.srConfig.QUALITY_DEFAULT,
+            whitelist=[],
+            blacklist=[],
+            groups=[],
+            title='New Show',
+            header='New Show',
+            topmenu='home',
+            controller='home',
+            action="new_show"
+        )
 
     def recommendedShows(self):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
         posts them to addNewShow
         """
-        return self.render("home_recommendedShows.mako",
-                           title="Recommended Shows",
-                           header="Recommended Shows",
-                           enable_anime_options=False)
+        return self.render(
+            "/home/recommended_shows.mako",
+            title="Recommended Shows",
+            header="Recommended Shows",
+            enable_anime_options=False,
+            controller='home',
+            action="recommended_shows"
+        )
 
     def getRecommendedShows(self):
         blacklist = False
-        trending_shows = []
+        recommended_shows = []
         trakt_api = TraktAPI(sickrage.srConfig.SSL_VERIFY, sickrage.srConfig.TRAKT_TIMEOUT)
 
         try:
             shows = trakt_api.traktRequest("recommendations/shows?extended=full,images") or []
             for show in shows:
                 show = {'show': show}
-                show_id = int(show[b'show'][b'ids'][b'tvdb']) or None
+                show_id = int(show['show']['ids']['tvdb']) or None
 
                 try:
                     if not findCertainShow(sickrage.srCore.SHOWLIST, [show_id]):
                         library_shows = trakt_api.traktRequest("sync/collection/shows?extended=full") or []
-                        if show_id in (lshow[b'show'][b'ids'][b'tvdb'] for lshow in library_shows):
+                        if show_id in (lshow['show']['ids']['tvdb'] for lshow in library_shows):
                             continue
 
                     if sickrage.srConfig.TRAKT_BLACKLIST_NAME is not None and sickrage.srConfig.TRAKT_BLACKLIST_NAME:
@@ -2437,10 +2536,10 @@ class HomeAddShows(Home):
                             "users/{}/lists/{}/items".format(sickrage.srConfig.TRAKT_USERNAME,
                                                              sickrage.srConfig.TRAKT_BLACKLIST_NAME))
                         if not_liked_show and [nlshow for nlshow in not_liked_show if (
-                                        show_id == nlshow[b'show'][b'ids'][b'tvdb'] and nlshow[b'type'] == 'show')]:
+                                        show_id == nlshow['show']['ids']['tvdb'] and nlshow['type'] == 'show')]:
                             continue
 
-                        trending_shows += [show]
+                        recommended_shows += [show]
                 except MultipleShowObjectsException:
                     continue
 
@@ -2450,21 +2549,29 @@ class HomeAddShows(Home):
         except traktException as e:
             sickrage.srLogger.warning("Could not connect to Trakt service: %s" % e)
 
-        return self.render("trendingShows.mako",
-                           title="Trending Shows",
-                           header="Trending Shows",
-                           trending_shows=trending_shows,
-                           blacklist=blacklist)
+        return self.render(
+            "/home/recommended_shows.mako",
+            title="Recommended Shows",
+            header="Recommended Shows",
+            trending_shows=recommended_shows,
+            blacklist=blacklist,
+            controller='home',
+            action="recommended_shows"
+        )
 
     def trendingShows(self):
         """
         Display the new show page which collects a tvdb id, folder, and extra options and
         posts them to addNewShow
         """
-        return self.render("home_trendingShows.mako",
-                           title="Trending Shows",
-                           header="Trending Shows",
-                           enable_anime_options=False)
+        return self.render(
+            "/home/trending_shows.mako",
+            title="Trending Shows",
+            header="Trending Shows",
+            enable_anime_options=False,
+            controller='home',
+            action="trending_shows"
+        )
 
     def getTrendingShows(self):
         """
@@ -2491,18 +2598,18 @@ class HomeAddShows(Home):
             library_shows = trakt_api.traktRequest("sync/collection/shows?extended=full") or []
             for show in shows:
                 show = {'show': show}
-                show_id = show[b'show'][b'ids'][b'tvdb']
+                show_id = show['show']['ids']['tvdb']
 
                 try:
-                    if not findCertainShow(sickrage.srCore.SHOWLIST, [int(show[b'show'][b'ids'][b'tvdb'])]):
-                        if show_id not in [lshow[b'show'][b'ids'][b'tvdb'] for lshow in library_shows]:
+                    if not findCertainShow(sickrage.srCore.SHOWLIST, [int(show['show']['ids']['tvdb'])]):
+                        if show_id not in [lshow['show']['ids']['tvdb'] for lshow in library_shows]:
                             if sickrage.srConfig.TRAKT_BLACKLIST_NAME:
                                 not_liked_show = trakt_api.traktRequest(
                                     "users/{}/lists/{}/items".format(sickrage.srConfig.TRAKT_USERNAME,
                                                                      sickrage.srConfig.TRAKT_BLACKLIST_NAME))
                                 if not_liked_show and [nlshow for nlshow in not_liked_show if (
-                                                show_id == nlshow[b'show'][b'ids'][b'tvdb'] and nlshow[
-                                            b'type'] == 'show')]:
+                                                show_id == nlshow['show']['ids']['tvdb'] and nlshow[
+                                            'type'] == 'show')]:
                                     continue
 
                                 trending_shows += [show]
@@ -2518,9 +2625,13 @@ class HomeAddShows(Home):
         except traktException as e:
             sickrage.srLogger.warning("Could not connect to Trakt service: %s" % e)
 
-        return self.render("trendingShows.mako",
-                           blacklist=blacklist,
-                           trending_shows=trending_shows)
+        return self.render(
+            "/home/trending_shows.mako",
+            blacklist=blacklist,
+            trending_shows=trending_shows,
+            controller='home',
+            action="trending_shows"
+        )
 
     def popularShows(self):
         """
@@ -2533,12 +2644,16 @@ class HomeAddShows(Home):
         except Exception as e:
             popular_shows = None
 
-        return self.render("home_popularShows.mako",
-                           title="Popular Shows",
-                           header="Popular Shows",
-                           popular_shows=popular_shows,
-                           imdb_exception=e,
-                           topmenu="home")
+        return self.render(
+            "/home/popular_shows.mako",
+            title="Popular Shows",
+            header="Popular Shows",
+            popular_shows=popular_shows,
+            imdb_exception=e,
+            topmenu="home",
+            controller='home',
+            action="popular_shows"
+        )
 
     def addShowToBlacklist(self, indexer_id):
         # URL parameters
@@ -2557,12 +2672,16 @@ class HomeAddShows(Home):
         """
         Prints out the page to add existing shows from a root dir
         """
-        return self.render("home_addExistingShow.mako",
-                           enable_anime_options=False,
-                           quality=sickrage.srConfig.QUALITY_DEFAULT,
-                           title='Existing Show',
-                           header='Existing Show',
-                           topmenu="home")
+        return self.render(
+            "/home/add_existing_shows.mako",
+            enable_anime_options=False,
+            quality=sickrage.srConfig.QUALITY_DEFAULT,
+            title='Existing Show',
+            header='Existing Show',
+            topmenu="home",
+            controller='home',
+            action="add_existing_shows"
+        )
 
     def addTraktShow(self, indexer_id, showName):
         if findCertainShow(sickrage.srCore.SHOWLIST, int(indexer_id)):
@@ -2807,10 +2926,14 @@ class Manage(Home, WebRoot):
         super(Manage, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("manage.mako",
-                           title='Mass Update',
-                           header='Mass Update',
-                           topmenu='manage')
+        return self.render(
+            "/manage/index.mako",
+            title='Mass Update',
+            header='Mass Update',
+            topmenu='manage',
+            controller='manage',
+            action='index'
+        )
 
     @staticmethod
     def showEpisodeStatuses(indexer_id, whichStatus):
@@ -2824,13 +2947,13 @@ class Manage(Home, WebRoot):
 
         result = {}
         for cur_result in cur_show_results:
-            cur_season = int(cur_result[b"season"])
-            cur_episode = int(cur_result[b"episode"])
+            cur_season = int(cur_result["season"])
+            cur_episode = int(cur_result["episode"])
 
             if cur_season not in result:
                 result[cur_season] = {}
 
-            result[cur_season][cur_episode] = cur_result[b"name"]
+            result[cur_season][cur_episode] = cur_result["name"]
 
         return json_encode(result)
 
@@ -2855,24 +2978,28 @@ class Manage(Home, WebRoot):
                 status_list)
 
             for cur_status_result in status_results:
-                cur_indexer_id = int(cur_status_result[b"indexer_id"])
+                cur_indexer_id = int(cur_status_result["indexer_id"])
                 if cur_indexer_id not in ep_counts:
                     ep_counts[cur_indexer_id] = 1
                 else:
                     ep_counts[cur_indexer_id] += 1
 
-                show_names[cur_indexer_id] = cur_status_result[b"show_name"]
+                show_names[cur_indexer_id] = cur_status_result["show_name"]
                 if cur_indexer_id not in sorted_show_ids:
                     sorted_show_ids.append(cur_indexer_id)
 
-        return self.render("manage_episodeStatuses.mako",
-                           title="Episode Overview",
-                           header="Episode Overview",
-                           topmenu='manage',
-                           whichStatus=whichStatus,
-                           show_names=show_names,
-                           ep_counts=ep_counts,
-                           sorted_show_ids=sorted_show_ids)
+        return self.render(
+            "/manage/episode_statuses.mako",
+            title="Episode Overview",
+            header="Episode Overview",
+            topmenu='manage',
+            whichStatus=whichStatus,
+            show_names=show_names,
+            ep_counts=ep_counts,
+            sorted_show_ids=sorted_show_ids,
+            controller='manage',
+            action='episode_statuses'
+        )
 
     def changeEpisodeStatuses(self, oldStatus, newStatus, *args, **kwargs):
         status_list = [int(oldStatus)]
@@ -2902,7 +3029,7 @@ class Manage(Home, WebRoot):
                     "SELECT season, episode FROM tv_episodes WHERE status IN (" + ','.join(
                         ['?'] * len(status_list)) + ") AND season != 0 AND showid = ?",
                     status_list + [cur_indexer_id])
-                all_eps = [str(x[b"season"]) + 'x' + str(x[b"episode"]) for x in all_eps_results]
+                all_eps = [str(x["season"]) + 'x' + str(x["episode"]) for x in all_eps_results]
                 to_change[cur_indexer_id] = all_eps
 
             self.setStatus(cur_indexer_id, '|'.join(to_change[cur_indexer_id]), newStatus, direct=True)
@@ -2919,13 +3046,13 @@ class Manage(Home, WebRoot):
         result = {}
         for cur_result in cur_show_results:
             if whichSubs == 'all':
-                if not frozenset(subtitle_searcher.wantedLanguages()).difference(cur_result[b"subtitles"].split(',')):
+                if not frozenset(subtitle_searcher.wantedLanguages()).difference(cur_result["subtitles"].split(',')):
                     continue
-            elif whichSubs in cur_result[b"subtitles"]:
+            elif whichSubs in cur_result["subtitles"]:
                 continue
 
-            cur_season = int(cur_result[b"season"])
-            cur_episode = int(cur_result[b"episode"])
+            cur_season = int(cur_result["season"])
+            cur_episode = int(cur_result["episode"])
 
             if cur_season not in result:
                 result[cur_season] = {}
@@ -2933,19 +3060,23 @@ class Manage(Home, WebRoot):
             if cur_episode not in result[cur_season]:
                 result[cur_season][cur_episode] = {}
 
-            result[cur_season][cur_episode][b"name"] = cur_result[b"name"]
+            result[cur_season][cur_episode]["name"] = cur_result["name"]
 
-            result[cur_season][cur_episode][b"subtitles"] = cur_result[b"subtitles"]
+            result[cur_season][cur_episode]["subtitles"] = cur_result["subtitles"]
 
         return json_encode(result)
 
     def subtitleMissed(self, whichSubs=None):
         if not whichSubs:
-            return self.render("manage_subtitleMissed.mako",
-                               whichSubs=whichSubs,
-                               title='Episode Overview',
-                               header='Episode Overview',
-                               topmenu='manage')
+            return self.render(
+                "/manage/subtitles_missed.mako",
+                whichSubs=whichSubs,
+                title='Episode Overview',
+                header='Episode Overview',
+                topmenu='manage',
+                controller='manage',
+                action='subtitles_missed'
+            )
 
         status_results = main_db.MainDB().select(
             "SELECT show_name, tv_shows.indexer_id as indexer_id, tv_episodes.subtitles subtitles " +
@@ -2959,29 +3090,33 @@ class Manage(Home, WebRoot):
         for cur_status_result in status_results:
             if whichSubs == 'all':
                 if not frozenset(subtitle_searcher.wantedLanguages()).difference(
-                        cur_status_result[b"subtitles"].split(',')):
+                        cur_status_result["subtitles"].split(',')):
                     continue
-            elif whichSubs in cur_status_result[b"subtitles"]:
+            elif whichSubs in cur_status_result["subtitles"]:
                 continue
 
-            cur_indexer_id = int(cur_status_result[b"indexer_id"])
+            cur_indexer_id = int(cur_status_result["indexer_id"])
             if cur_indexer_id not in ep_counts:
                 ep_counts[cur_indexer_id] = 1
             else:
                 ep_counts[cur_indexer_id] += 1
 
-            show_names[cur_indexer_id] = cur_status_result[b"show_name"]
+            show_names[cur_indexer_id] = cur_status_result["show_name"]
             if cur_indexer_id not in sorted_show_ids:
                 sorted_show_ids.append(cur_indexer_id)
 
-        return self.render("manage_subtitleMissed.mako",
-                           whichSubs=whichSubs,
-                           show_names=show_names,
-                           ep_counts=ep_counts,
-                           sorted_show_ids=sorted_show_ids,
-                           title='Missing Subtitles',
-                           header='Missing Subtitles',
-                           topmenu='manage')
+        return self.render(
+            "/manage/subtitles_missed.mako",
+            whichSubs=whichSubs,
+            show_names=show_names,
+            ep_counts=ep_counts,
+            sorted_show_ids=sorted_show_ids,
+            title='Missing Subtitles',
+            header='Missing Subtitles',
+            topmenu='manage',
+            controller='manage',
+            action='subtitles_missed'
+        )
 
     def downloadSubtitleMissed(self, *args, **kwargs):
         to_download = {}
@@ -3005,7 +3140,7 @@ class Manage(Home, WebRoot):
                 all_eps_results = main_db.MainDB().select(
                     "SELECT season, episode FROM tv_episodes WHERE status LIKE '%4' AND season != 0 AND showid = ?",
                     [cur_indexer_id])
-                to_download[cur_indexer_id] = [str(x[b"season"]) + 'x' + str(x[b"episode"]) for x in all_eps_results]
+                to_download[cur_indexer_id] = [str(x["season"]) + 'x' + str(x["episode"]) for x in all_eps_results]
 
             for epResult in to_download[cur_indexer_id]:
                 season, episode = epResult.split('x')
@@ -3044,22 +3179,26 @@ class Manage(Home, WebRoot):
                 [curShow.indexerid])
 
             for curResult in sqlResults:
-                curEpCat = curShow.getOverview(int(curResult[b"status"] or -1))
+                curEpCat = curShow.getOverview(int(curResult["status"] or -1))
                 if curEpCat:
-                    epCats[str(curResult[b"season"]) + "x" + str(curResult[b"episode"])] = curEpCat
+                    epCats[str(curResult["season"]) + "x" + str(curResult["episode"])] = curEpCat
                     epCounts[curEpCat] += 1
 
             showCounts[curShow.indexerid] = epCounts
             showCats[curShow.indexerid] = epCats
             showSQLResults[curShow.indexerid] = sqlResults
 
-        return self.render("manage_backlogOverview.mako",
-                           showCounts=showCounts,
-                           showCats=showCats,
-                           showSQLResults=showSQLResults,
-                           title='Backlog Overview',
-                           header='Backlog Overview',
-                           topmenu='manage')
+        return self.render(
+            "/manage/backlog_overview.mako",
+            showCounts=showCounts,
+            showCats=showCats,
+            showSQLResults=showSQLResults,
+            title='Backlog Overview',
+            header='Backlog Overview',
+            topmenu='manage',
+            controller='manage',
+            action='backlog_overview'
+        )
 
     def massEdit(self, toEdit=None):
         if not toEdit:
@@ -3189,28 +3328,35 @@ class Manage(Home, WebRoot):
         air_by_date_value = last_air_by_date if air_by_date_all_same else None
         root_dir_list = root_dir_list
 
-        return self.render("manage_massEdit.mako",
-                           showList=toEdit,
-                           showNames=showNames,
-                           archive_firstmatch_value=archive_firstmatch_value,
-                           default_ep_status_value=default_ep_status_value,
-                           paused_value=paused_value,
-                           anime_value=anime_value,
-                           flatten_folders_value=flatten_folders_value,
-                           quality_value=quality_value,
-                           subtitles_value=subtitles_value,
-                           scene_value=scene_value,
-                           sports_value=sports_value,
-                           air_by_date_value=air_by_date_value,
-                           root_dir_list=root_dir_list,
-                           title='Mass Edit',
-                           header='Mass Edit',
-                           topmenu='manage')
+        return self.render(
+            "/manage/mass_edit.mako",
+            showList=toEdit,
+            showNames=showNames,
+            archive_firstmatch_value=archive_firstmatch_value,
+            default_ep_status_value=default_ep_status_value,
+            paused_value=paused_value,
+            anime_value=anime_value,
+            flatten_folders_value=flatten_folders_value,
+            quality_value=quality_value,
+            subtitles_value=subtitles_value,
+            scene_value=scene_value,
+            sports_value=sports_value,
+            air_by_date_value=air_by_date_value,
+            root_dir_list=root_dir_list,
+            title='Mass Edit',
+            header='Mass Edit',
+            topmenu='manage',
+            controller='manage',
+            action='mass_edit'
+        )
 
     def massEditSubmit(self, archive_firstmatch=None, paused=None, default_ep_status=None,
                        anime=None, sports=None, scene=None, flatten_folders=None, quality_preset=None,
-                       subtitles=None, air_by_date=None, anyQualities=[], bestQualities=[], toEdit=None, *args,
-                       **kwargs):
+                       subtitles=None, air_by_date=None, anyQualities=None, bestQualities=None, toEdit=None, **kwargs):
+        if bestQualities is None:
+            bestQualities = []
+        if anyQualities is None:
+            anyQualities = []
         dir_map = {}
         for cur_arg in kwargs:
             if not cur_arg.startswith('orig_root_dir_'):
@@ -3463,12 +3609,16 @@ class Manage(Home, WebRoot):
                                    sickrage.srConfig.TORRENT_PASSWORD) + '@',
                                webui_url)
 
-        return self.render("manage_torrents.mako",
-                           webui_url=webui_url,
-                           info_download_station=info_download_station,
-                           title='Manage Torrents',
-                           header='Manage Torrents',
-                           topmenu='manage')
+        return self.render(
+            "/manage/torrents.mako",
+            webui_url=webui_url,
+            info_download_station=info_download_station,
+            title='Manage Torrents',
+            header='Manage Torrents',
+            topmenu='manage',
+            controller='manage',
+            action='torrents'
+        )
 
     def failedDownloads(self, limit=100, toRemove=None):
         if limit == "0":
@@ -3484,12 +3634,16 @@ class Manage(Home, WebRoot):
         if toRemove:
             return self.redirect('/manage/failedDownloads/')
 
-        return self.render("manage_failedDownloads.mako",
-                           limit=limit,
-                           failedResults=sqlResults,
-                           title='Failed Downloads',
-                           header='Failed Downloads',
-                           topmenu='manage')
+        return self.render(
+            "/manage/failed_downloads.mako",
+            limit=limit,
+            failedResults=sqlResults,
+            title='Failed Downloads',
+            header='Failed Downloads',
+            topmenu='manage',
+            controller='manage',
+            action='failed_downloads'
+        )
 
 
 @Route('/manage/manageSearches(/?.*)')
@@ -3498,19 +3652,23 @@ class ManageSearches(Manage):
         super(ManageSearches, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("manage_manageSearches.mako",
-                           backlogPaused=sickrage.srCore.SEARCHQUEUE.is_backlog_paused(),
-                           backlogRunning=sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress(),
-                           dailySearchStatus=sickrage.srCore.DAILYSEARCHER.amActive,
-                           findPropersStatus=sickrage.srCore.PROPERSEARCHER.amActive,
-                           queueLength=sickrage.srCore.SEARCHQUEUE.queue_length(),
-                           title='Manage Searches',
-                           header='Manage Searches',
-                           topmenu='manage')
+        return self.render(
+            "/manage/searches.mako",
+            backlogPaused=sickrage.srCore.SEARCHQUEUE.is_backlog_paused(),
+            backlogRunning=sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress(),
+            dailySearchStatus=sickrage.srCore.DAILYSEARCHER.amActive,
+            findPropersStatus=sickrage.srCore.PROPERSEARCHER.amActive,
+            queueLength=sickrage.srCore.SEARCHQUEUE.queue_length(),
+            title='Manage Searches',
+            header='Manage Searches',
+            topmenu='manage',
+            controller='manage',
+            action='searches'
+        )
 
     def forceBacklog(self):
         # force it to run the next time it looks
-        result = sickrage.srCore.SCHEDULER.get_job('BACKLOG').func()
+        result = sickrage.srScheduler.get_job('BACKLOG').func()
         if result:
             sickrage.srLogger.info("Backlog search forced")
             notifications.message('Backlog search started')
@@ -3520,7 +3678,7 @@ class ManageSearches(Manage):
     def forceSearch(self):
 
         # force it to run the next time it looks
-        result = sickrage.srCore.SCHEDULER.get_job('DAILYSEARCHER').func()
+        result = sickrage.srScheduler.get_job('DAILYSEARCHER').func()
         if result:
             sickrage.srLogger.info("Daily search forced")
             notifications.message('Daily search started')
@@ -3529,7 +3687,7 @@ class ManageSearches(Manage):
 
     def forceFindPropers(self):
         # force it to run the next time it looks
-        result = sickrage.srCore.SCHEDULER.get_job('PROPERSEARCHER').func()
+        result = sickrage.srScheduler.get_job('PROPERSEARCHER').func()
         if result:
             sickrage.srLogger.info("Find propers search forced")
             notifications.message('Find propers search started')
@@ -3563,59 +3721,63 @@ class History(WebRoot):
 
         sickrage.srConfig.HISTORY_LIMIT = limit
 
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
 
         compact = []
         data = self.historyTool.get(limit)
 
         for row in data:
             action = {
-                'action': row[b'action'],
-                'provider': row[b'provider'],
-                'resource': row[b'resource'],
-                'time': row[b'date']
+                'action': row['action'],
+                'provider': row['provider'],
+                'resource': row['resource'],
+                'time': row['date']
             }
 
-            if not any((history[b'show_id'] == row[b'show_id'] and
-                                history[b'season'] == row[b'season'] and
-                                history[b'episode'] == row[b'episode'] and
-                                history[b'quality'] == row[b'quality']) for history in compact):
+            if not any((history['show_id'] == row['show_id'] and
+                                history['season'] == row['season'] and
+                                history['episode'] == row['episode'] and
+                                history['quality'] == row['quality']) for history in compact):
                 history = {
                     'actions': [action],
-                    'episode': row[b'episode'],
-                    'quality': row[b'quality'],
-                    'resource': row[b'resource'],
-                    'season': row[b'season'],
-                    'show_id': row[b'show_id'],
-                    'show_name': row[b'show_name']
+                    'episode': row['episode'],
+                    'quality': row['quality'],
+                    'resource': row['resource'],
+                    'season': row['season'],
+                    'show_id': row['show_id'],
+                    'show_name': row['show_name']
                 }
 
                 compact.append(history)
             else:
                 index = [i for i, item in enumerate(compact)
-                         if item[b'show_id'] == row[b'show_id'] and
-                         item[b'season'] == row[b'season'] and
-                         item[b'episode'] == row[b'episode'] and
-                         item[b'quality'] == row[b'quality']][0]
+                         if item['show_id'] == row['show_id'] and
+                         item['season'] == row['season'] and
+                         item['episode'] == row['episode'] and
+                         item['quality'] == row['quality']][0]
                 history = compact[index]
-                history[b'actions'].append(action)
-                history[b'actions'].sort(key=lambda x: x[b'time'], reverse=True)
+                history['actions'].append(action)
+                history['actions'].sort(key=lambda x: x['time'], reverse=True)
 
         submenu = [
-            {'title': 'Clear History', 'path': 'history/clearHistory', 'icon': 'ui-icon ui-icon-trash',
+            {'title': 'Clear History', 'path': '/history/clearHistory', 'icon': 'ui-icon ui-icon-trash',
              'class': 'clearhistory', 'confirm': True},
-            {'title': 'Trim History', 'path': 'history/trimHistory', 'icon': 'ui-icon ui-icon-trash',
+            {'title': 'Trim History', 'path': '/history/trimHistory', 'icon': 'ui-icon ui-icon-trash',
              'class': 'trimhistory', 'confirm': True},
         ]
 
-        return self.render("history.mako",
-                           historyResults=data,
-                           compactResults=compact,
-                           limit=limit,
-                           submenu=submenu,
-                           title='History',
-                           header='History',
-                           topmenu="history")
+        return self.render(
+            "/history.mako",
+            historyResults=data,
+            compactResults=compact,
+            limit=limit,
+            submenu=submenu,
+            title='History',
+            header='History',
+            topmenu="history",
+            controller='root',
+            action='history'
+        )
 
     def clearHistory(self):
         self.historyTool.clear()
@@ -3640,24 +3802,28 @@ class Config(WebRoot):
     @staticmethod
     def ConfigMenu():
         menu = [
-            {'title': 'General', 'path': 'config/general/', 'icon': 'ui-icon ui-icon-gear'},
-            {'title': 'Backup/Restore', 'path': 'config/backuprestore/', 'icon': 'ui-icon ui-icon-gear'},
-            {'title': 'Search Settings', 'path': 'config/search/', 'icon': 'ui-icon ui-icon-search'},
-            {'title': 'Search Providers', 'path': 'config/providers/', 'icon': 'ui-icon ui-icon-search'},
-            {'title': 'Subtitles Settings', 'path': 'config/subtitles/', 'icon': 'ui-icon ui-icon-comment'},
-            {'title': 'Post Processing', 'path': 'config/postProcessing/', 'icon': 'ui-icon ui-icon-folder-open'},
-            {'title': 'Notifications', 'path': 'config/notifications/', 'icon': 'ui-icon ui-icon-note'},
-            {'title': 'Anime', 'path': 'config/anime/', 'icon': 'submenu-icon-anime'},
+            {'title': 'General', 'path': '/config/general/', 'icon': 'ui-icon ui-icon-gear'},
+            {'title': 'Backup/Restore', 'path': '/config/backuprestore/', 'icon': 'ui-icon ui-icon-gear'},
+            {'title': 'Search Settings', 'path': '/config/search/', 'icon': 'ui-icon ui-icon-search'},
+            {'title': 'Search Providers', 'path': '/config/providers/', 'icon': 'ui-icon ui-icon-search'},
+            {'title': 'Subtitles Settings', 'path': '/config/subtitles/', 'icon': 'ui-icon ui-icon-comment'},
+            {'title': 'Post Processing', 'path': '/config/postProcessing/', 'icon': 'ui-icon ui-icon-folder-open'},
+            {'title': 'Notifications', 'path': '/config/notifications/', 'icon': 'ui-icon ui-icon-note'},
+            {'title': 'Anime', 'path': '/config/anime/', 'icon': 'submenu-icon-anime'},
         ]
 
         return menu
 
     def index(self):
-        return self.render("config.mako",
-                           submenu=self.ConfigMenu(),
-                           title='Configuration',
-                           header='Configuration',
-                           topmenu="config")
+        return self.render(
+            "/config/index.mako",
+            submenu=self.ConfigMenu(),
+            title='Configuration',
+            header='Configuration',
+            topmenu="config",
+            controller='config',
+            action='index'
+        )
 
 
 @Route('/config/general(/?.*)')
@@ -3666,11 +3832,15 @@ class ConfigGeneral(Config):
         super(ConfigGeneral, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("config_general.mako",
-                           title='Config - General',
-                           header='General Configuration',
-                           topmenu='config',
-                           submenu=self.ConfigMenu())
+        return self.render(
+            "/config/general.mako",
+            title='Config - General',
+            header='General Configuration',
+            topmenu='config',
+            submenu=self.ConfigMenu(),
+            controller='config',
+            action='general'
+        )
 
     @staticmethod
     def generateApiKey():
@@ -3707,7 +3877,7 @@ class ConfigGeneral(Config):
         sickrage.srConfig.SCENE_DEFAULT = sickrage.srConfig.checkbox_to_value(scene)
         sickrage.srConfig.ARCHIVE_DEFAULT = sickrage.srConfig.checkbox_to_value(archive)
 
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
 
     def saveGeneral(self, log_dir=None, log_nr=5, log_size=1048576, web_port=None, web_log=None,
                     encryption_version=None, web_ipv6=None,
@@ -3820,7 +3990,7 @@ class ConfigGeneral(Config):
 
         sickrage.srConfig.DEFAULT_PAGE = default_page
 
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
 
         if len(results) > 0:
             for x in results:
@@ -3839,11 +4009,15 @@ class ConfigBackupRestore(Config):
         super(ConfigBackupRestore, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("config_backuprestore.mako",
-                           submenu=self.ConfigMenu(),
-                           title='Config - Backup/Restore',
-                           header='Backup/Restore',
-                           topmenu='config')
+        return self.render(
+            "/config/backup_restore.mako",
+            submenu=self.ConfigMenu(),
+            title='Config - Backup/Restore',
+            header='Backup/Restore',
+            topmenu='config',
+            controller='config',
+            action='backup_restore'
+        )
 
     @staticmethod
     def backup(backupDir=None):
@@ -3889,11 +4063,15 @@ class ConfigSearch(Config):
         super(ConfigSearch, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("config_search.mako",
-                           submenu=self.ConfigMenu(),
-                           title='Config - Episode Search',
-                           header='Search Settings',
-                           topmenu='config')
+        return self.render(
+            "/config/search.mako",
+            submenu=self.ConfigMenu(),
+            title='Config - Episode Search',
+            header='Search Settings',
+            topmenu='config',
+            controller='config',
+            action='search'
+        )
 
     def saveSearch(self, use_nzbs=None, use_torrents=None, nzb_dir=None, sab_username=None, sab_password=None,
                    sab_apikey=None, sab_category=None, sab_category_anime=None, sab_category_backlog=None,
@@ -3977,7 +4155,7 @@ class ConfigSearch(Config):
         sickrage.srConfig.TORRENT_RPCURL = torrent_rpcurl
         sickrage.srConfig.TORRENT_AUTH_TYPE = torrent_auth_type
 
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
 
         if len(results) > 0:
             for x in results:
@@ -3996,11 +4174,15 @@ class ConfigPostProcessing(Config):
         super(ConfigPostProcessing, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("config_postProcessing.mako",
-                           submenu=self.ConfigMenu(),
-                           title='Config - Post Processing',
-                           header='Post Processing',
-                           topmenu='config')
+        return self.render(
+            "/config/postprocessing.mako",
+            submenu=self.ConfigMenu(),
+            title='Config - Post Processing',
+            header='Post Processing',
+            topmenu='config',
+            controller='config',
+            action='postprocessing'
+        )
 
     def savePostProcessing(self, naming_pattern=None, naming_multi_ep=None,
                            kodi_data=None, kodi_12plus_data=None,
@@ -4065,13 +4247,13 @@ class ConfigPostProcessing(Config):
         sickrage.srConfig.METADATA_TIVO = tivo_data
         sickrage.srConfig.METADATA_MEDE8ER = mede8er_data
 
-        sickrage.srCore.metadataProviderDict[b'KODI'].set_config(sickrage.srConfig.METADATA_KODI)
-        sickrage.srCore.metadataProviderDict[b'KODI 12+'].set_config(sickrage.srConfig.METADATA_KODI_12PLUS)
-        sickrage.srCore.metadataProviderDict[b'MediaBrowser'].set_config(sickrage.srConfig.METADATA_MEDIABROWSER)
-        sickrage.srCore.metadataProviderDict[b'Sony PS3'].set_config(sickrage.srConfig.METADATA_PS3)
-        sickrage.srCore.metadataProviderDict[b'WDTV'].set_config(sickrage.srConfig.METADATA_WDTV)
-        sickrage.srCore.metadataProviderDict[b'TIVO'].set_config(sickrage.srConfig.METADATA_TIVO)
-        sickrage.srCore.metadataProviderDict[b'Mede8er'].set_config(sickrage.srConfig.METADATA_MEDE8ER)
+        sickrage.srCore.metadataProviderDict['KODI'].set_config(sickrage.srConfig.METADATA_KODI)
+        sickrage.srCore.metadataProviderDict['KODI 12+'].set_config(sickrage.srConfig.METADATA_KODI_12PLUS)
+        sickrage.srCore.metadataProviderDict['MediaBrowser'].set_config(sickrage.srConfig.METADATA_MEDIABROWSER)
+        sickrage.srCore.metadataProviderDict['Sony PS3'].set_config(sickrage.srConfig.METADATA_PS3)
+        sickrage.srCore.metadataProviderDict['WDTV'].set_config(sickrage.srConfig.METADATA_WDTV)
+        sickrage.srCore.metadataProviderDict['TIVO'].set_config(sickrage.srConfig.METADATA_TIVO)
+        sickrage.srCore.metadataProviderDict['Mede8er'].set_config(sickrage.srConfig.METADATA_MEDE8ER)
 
         if self.isNamingValid(naming_pattern, naming_multi_ep, anime_type=naming_anime) != "invalid":
             sickrage.srConfig.NAMING_PATTERN = naming_pattern
@@ -4107,7 +4289,7 @@ class ConfigPostProcessing(Config):
             results.append(
                 "You tried saving an invalid sports naming config, not saving your sports settings")
 
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
 
         if len(results) > 0:
             for x in results:
@@ -4130,7 +4312,7 @@ class ConfigPostProcessing(Config):
 
         result = validator.test_name(pattern, multi, abd, sports, anime_type)
 
-        result = os.path.join(result[b'dir'], result[b'name'])
+        result = os.path.join(result['dir'], result['name'])
 
         return result
 
@@ -4194,54 +4376,47 @@ class ConfigProviders(Config):
         super(ConfigProviders, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("config_providers.mako",
-                           submenu=self.ConfigMenu(),
-                           title='Config - Providers',
-                           header='Search Providers',
-                           topmenu='config')
+        return self.render(
+            "/config/providers.mako",
+            submenu=self.ConfigMenu(),
+            title='Config - Providers',
+            header='Search Providers',
+            topmenu='config',
+            controller='config',
+            action='providers'
+        )
 
     @staticmethod
     def canAddNewznabProvider(name):
-
         if not name:
             return json_encode({'error': 'No Provider Name specified'})
 
-        providerDict = dict(
-            zip([x.id for x in sickrage.srCore.newznabProviderList], sickrage.srCore.newznabProviderList))
-
-        tempProvider = NewznabProvider(name, '')
-
-        if tempProvider.id in providerDict:
-            return json_encode({'error': 'Provider Name already exists as ' + providerDict[tempProvider.id].name})
-        else:
-            return json_encode({'success': tempProvider.id})
+        providerID = NewznabProvider(name, '').id
+        if providerID not in sickrage.srCore.providersDict.newznab():
+            return json_encode({'success': providerID})
+        return json_encode({'error': 'Provider Name already exists as ' + name})
 
     @staticmethod
     def saveNewznabProvider(name, url, key=''):
-
         if not name or not url:
             return '0'
 
-        providerDict = dict(
-            zip([x.name for x in sickrage.srCore.newznabProviderList], sickrage.srCore.newznabProviderList))
+        newProvider = NewznabProvider(name, url, key=key)
 
-        if name in providerDict:
-            if not providerDict[name].default:
-                providerDict[name].name = name
-                providerDict[name].url = sickrage.srConfig.clean_url(url)
+        try:
+            providerObj = sickrage.srCore.providersDict.newznab()[newProvider.id]
+            if not providerObj.default:
+                providerObj.url = sickrage.srConfig.clean_url(url)
 
-            providerDict[name].key = key
-            # a 0 in the key spot indicates that no key is needed
+            providerObj.key = key
+            providerObj.needs_auth = True
             if key == '0':
-                providerDict[name].needs_auth = False
-            else:
-                providerDict[name].needs_auth = True
+                providerObj.needs_auth = False
 
-            return providerDict[name].id + '|' + providerDict[name].configStr()
-
-        else:
-            newProvider = NewznabProvider(name, url, key=key)
-            sickrage.srCore.newznabProviderList.append(newProvider)
+            sickrage.srCore.providersDict.newznab().update(**{providerObj.id: providerObj})
+            return providerObj.id + '|' + providerObj.configStr()
+        except Exception:
+            sickrage.srCore.providersDict.newznab().update(**{newProvider.id: newProvider})
             return newProvider.id + '|' + newProvider.configStr()
 
     @staticmethod
@@ -4264,403 +4439,146 @@ class ConfigProviders(Config):
         if error != "":
             return json_encode({'success': False, 'error': error})
 
-        # Get list with Newznabproviders
-        # providerDict = dict(zip([x.id for x in sickrage.newznabProviderList], sickrage.newznabProviderList))
-
         # Get newznabprovider obj with provided name
         tempProvider = NewznabProvider(name, url, key)
-
         success, tv_categories, error = tempProvider.get_newznab_categories()
 
         return json_encode({'success': success, 'tv_categories': tv_categories, 'error': error})
 
     @staticmethod
     def deleteNewznabProvider(nnid):
+        try:
+            providerObj = sickrage.srCore.providersDict.newznab()[nnid]
+            if providerObj.default:
+                raise
 
-        providerDict = dict(
-            zip([x.id for x in sickrage.srCore.newznabProviderList], sickrage.srCore.newznabProviderList))
-
-        if nnid not in providerDict or providerDict[nnid].default:
+            # delete it from the list
+            sickrage.srCore.providersDict.newznab().pop(nnid)
+            if nnid in sickrage.srConfig.PROVIDER_ORDER:
+                sickrage.srConfig.PROVIDER_ORDER.remove(nnid)
+        except:
             return '0'
-
-        # delete it from the list
-        sickrage.srCore.newznabProviderList.remove(providerDict[nnid])
-
-        if nnid in sickrage.srConfig.PROVIDER_ORDER:
-            sickrage.srConfig.PROVIDER_ORDER.remove(nnid)
-
         return '1'
 
     @staticmethod
     def canAddTorrentRssProvider(name, url, cookies, titleTAG):
-
         if not name:
-            return json_encode({'error': 'Invalid name specified'})
+            return json_encode({'error': 'No Provider Name specified'})
 
-        providerDict = dict(
-            zip([x.id for x in sickrage.srCore.torrentRssProviderList], sickrage.srCore.torrentRssProviderList))
-
-        tempProvider = TorrentRssProvider(name, url, cookies, titleTAG)
-
-        if tempProvider.id in providerDict:
-            return json_encode({'error': 'Exists as ' + providerDict[tempProvider.id].name})
-        else:
-            (succ, errMsg) = tempProvider.validateRSS()
+        providerObj = TorrentRssProvider(name, url, cookies, titleTAG)
+        if providerObj.id not in sickrage.srCore.providersDict.torrentrss():
+            (succ, errMsg) = providerObj.validateRSS()
             if succ:
-                return json_encode({'success': tempProvider.id})
-            else:
-                return json_encode({'error': errMsg})
-
-    @staticmethod
-    def saveTorrentRssProvider(name, url, cookies, titleTAG):
-
-        if not name or not url:
-            return '0'
-
-        providerDict = dict(zip([x.name for x in sickrage.srCore.torrentRssProviderList],
-                                sickrage.srCore.torrentRssProviderList))
-
-        if name in providerDict:
-            providerDict[name].name = name
-            providerDict[name].url = sickrage.srConfig.clean_url(url)
-            providerDict[name].cookies = cookies
-            providerDict[name].titleTAG = titleTAG
-
-            return providerDict[name].id + '|' + providerDict[name].configStr()
-
-        else:
-            newProvider = TorrentRssProvider(name, url, cookies, titleTAG)
-            sickrage.srCore.torrentRssProviderList.append(newProvider)
-            return newProvider.id + '|' + newProvider.configStr()
+                return json_encode({'success': providerObj.id})
+            return json_encode({'error': errMsg})
+        return json_encode({'error': 'Provider Name already exists as ' + name})
 
     @staticmethod
     def deleteTorrentRssProvider(id):
-
-        providerDict = dict(
-            zip([x.id for x in sickrage.srCore.torrentRssProviderList], sickrage.srCore.torrentRssProviderList))
-
-        if id not in providerDict:
+        # delete it
+        try:
+            sickrage.srCore.providersDict.torrentrss().pop(id)
+            if id in sickrage.srConfig.PROVIDER_ORDER:
+                sickrage.srConfig.PROVIDER_ORDER.remove(id)
+        except Exception:
             return '0'
-
-        # delete it from the list
-        sickrage.srCore.torrentRssProviderList.remove(providerDict[id])
-
-        if id in sickrage.srConfig.PROVIDER_ORDER:
-            sickrage.srConfig.PROVIDER_ORDER.remove(id)
-
         return '1'
 
-    def saveProviders(self, newznab_string='', torrentrss_string='', provider_order=None, **kwargs):
+    def saveProviders(self, newznab_string='', torrentrss_string='', provider_order='', **kwargs):
         results = []
 
-        provider_str_list = provider_order.split() or []
-
-        newznabProviderDict = dict(
-            zip([x.id for x in sickrage.srCore.newznabProviderList], sickrage.srCore.newznabProviderList))
-
-        torrentRssProviderDict = dict(
-            zip([x.id for x in sickrage.srCore.torrentRssProviderList], sickrage.srCore.torrentRssProviderList))
-
-        # do the enable/disable
-        providers_reordered = []
-        sorted_providers = sortedProviderDict()
-        for curProviderStr in provider_str_list:
+        # enable/disable providers
+        for curProviderStr in provider_order.split():
             curProvider, curEnabled = curProviderStr.split(':')
-            curEnabled = bool(sickrage.srConfig.to_int(curEnabled))
-
-            try:
-                curProvObj = sorted_providers[curProvider]
-                curProvObj.enabled = curEnabled
-                if curEnabled:
-                    providers_reordered.insert(0, curProvider)
-                else:
-                    providers_reordered.append(curProvider)
-            except:
+            if curProvider not in sickrage.srCore.providersDict.all():
                 continue
 
-            if curProvider in newznabProviderDict:
-                newznabProviderDict[curProvider].enabled = curEnabled
-            elif curProvider in torrentRssProviderDict:
-                torrentRssProviderDict[curProvider].enabled = curEnabled
-        sickrage.srConfig.PROVIDER_ORDER = providers_reordered
-        del providers_reordered, sorted_providers
+            curProvObj = sickrage.srCore.providersDict.all()[curProvider]
+            curProvObj.enabled = bool(sickrage.srConfig.to_int(curEnabled))
 
         # add all the newznab info we got into our list
-        finishedNames = []
         if newznab_string:
             for curNewznabProviderStr in newznab_string.split('!!!'):
-
                 if not curNewznabProviderStr:
                     continue
 
                 cur_name, cur_url, cur_key, cur_cat = curNewznabProviderStr.split('|')
                 cur_url = sickrage.srConfig.clean_url(cur_url)
 
-                newProvider = NewznabProvider(cur_name, cur_url, key=cur_key)
-
-                cur_id = newProvider.id
-
-                # if it already exists then update it
-                if cur_id in newznabProviderDict:
-                    newznabProviderDict[cur_id].name = cur_name
-                    newznabProviderDict[cur_id].url = cur_url
-                    newznabProviderDict[cur_id].key = cur_key
-                    newznabProviderDict[cur_id].catIDs = cur_cat
-                    # a 0 in the key spot indicates that no key is needed
-                    if cur_key == '0':
-                        newznabProviderDict[cur_id].needs_auth = False
-                    else:
-                        newznabProviderDict[cur_id].needs_auth = True
-
-                    try:
-                        newznabProviderDict[cur_id].search_mode = str(kwargs[cur_id + '_search_mode']).strip()
-                    except Exception:
-                        pass
-
-                    try:
-                        newznabProviderDict[cur_id].search_fallback = sickrage.srConfig.checkbox_to_value(
-                            kwargs[cur_id + '_search_fallback'])
-                    except Exception:
-                        newznabProviderDict[cur_id].search_fallback = 0
-
-                    try:
-                        newznabProviderDict[cur_id].enable_daily = sickrage.srConfig.checkbox_to_value(
-                            kwargs[cur_id + '_enable_daily'])
-                    except Exception:
-                        newznabProviderDict[cur_id].enable_daily = 0
-
-                    try:
-                        newznabProviderDict[cur_id].enable_backlog = sickrage.srConfig.checkbox_to_value(
-                            kwargs[cur_id + '_enable_backlog'])
-                    except Exception:
-                        newznabProviderDict[cur_id].enable_backlog = 0
+                providerObj = NewznabProvider(cur_name, cur_url, key=cur_key)
+                if providerObj.id not in sickrage.srCore.providersDict.newznab():
+                    sickrage.srCore.providersDict.newznab().update(**{providerObj.id: providerObj})
                 else:
-                    sickrage.srCore.newznabProviderList.append(newProvider)
+                    providerObj = sickrage.srCore.providersDict.newznab()[providerObj.id]
 
-                finishedNames.append(cur_id)
+                # newznab provider settings
+                providerObj.name = cur_name
+                providerObj.url = cur_url
+                providerObj.key = cur_key
+                providerObj.catIDs = cur_cat
+                providerObj.needs_auth = (True, False)[cur_key == 0]
+                providerObj.search_mode = str(getattr(kwargs, providerObj.id + '_search_mode', 'eponly')).strip()
+                providerObj.search_fallback = sickrage.srConfig.checkbox_to_value(
+                    getattr(kwargs, providerObj.id + '_search_fallback', 0))
+                providerObj.enable_daily = sickrage.srConfig.checkbox_to_value(
+                    getattr(kwargs, providerObj.id + '_enable_daily', 0))
+                providerObj.enable_backlog = sickrage.srConfig.checkbox_to_value(
+                    getattr(kwargs, providerObj.id + '_enable_backlog', 0))
 
         if torrentrss_string:
             for curTorrentRssProviderStr in torrentrss_string.split('!!!'):
-
                 if not curTorrentRssProviderStr:
                     continue
 
                 curName, curURL, curCookies, curTitleTAG = curTorrentRssProviderStr.split('|')
                 curURL = sickrage.srConfig.clean_url(curURL)
 
-                newProvider = TorrentRssProvider(curName, curURL, curCookies, curTitleTAG)
-
-                curID = newProvider.id
-
-                # if it already exists then update it
-                if curID in torrentRssProviderDict:
-                    torrentRssProviderDict[curID].name = curName
-                    torrentRssProviderDict[curID].url = curURL
-                    torrentRssProviderDict[curID].cookies = curCookies
-                    torrentRssProviderDict[curID].curTitleTAG = curTitleTAG
+                providerObj = TorrentRssProvider(curName, curURL, curCookies, curTitleTAG)
+                if providerObj.id not in sickrage.srCore.providersDict.torrentrss():
+                    sickrage.srCore.providersDict.torrentrss().update(**{providerObj.id: providerObj})
                 else:
-                    sickrage.srCore.torrentRssProviderList.append(newProvider)
+                    providerObj = sickrage.srCore.providersDict.torrentrss()[providerObj.id]
 
-                finishedNames.append(curID)
-
-        # delete anything that is missing
-        for curProvider in sickrage.srCore.torrentRssProviderList + sickrage.srCore.newznabProviderList:
-            if curProvider.id in finishedNames:
-                finishedNames.pop(finishedNames.index(curProvider.id))
-                continue
-
-            if curProvider.type == GenericProvider.NZB:
-                sickrage.srCore.newznabProviderList.remove(curProvider)
-            elif curProvider.type == GenericProvider.TORRENT:
-                sickrage.srCore.torrentRssProviderList.remove(curProvider)
+                # torrentrss provider settings
+                providerObj.name = curName
+                providerObj.url = curURL
+                providerObj.cookies = curCookies
+                providerObj.curTitleTAG = curTitleTAG
 
         # dynamically load provider settings
-        for providerID, providerObj in sickrage.srCore.providersDict[GenericProvider.TORRENT].items():
+        for providerID, providerObj in sickrage.srCore.providersDict.all().items():
+            providerObj.minseed = int(str(getattr(kwargs, providerID + '_minseed', 0)).strip())
+            providerObj.minleech = int(str(getattr(kwargs, providerID + '_minleech', 0)).strip())
+            providerObj.ratio = str(getattr(kwargs, providerID + '_ratio', None)).strip()
+            providerObj.digest = str(getattr(kwargs, providerID + '_digest', None)).strip()
+            providerObj.hash = str(getattr(kwargs, providerID + '_hash', None)).strip()
+            providerObj.api_key = str(getattr(kwargs, providerID + '_api_key', None)).strip()
+            providerObj.username = str(getattr(kwargs, providerID + '_username', None)).strip()
+            providerObj.password = str(getattr(kwargs, providerID + '_password', None)).strip()
+            providerObj.passkey = str(getattr(kwargs, providerID + '_passkey', None)).strip()
+            providerObj.pin = str(getattr(kwargs, providerID + '_pin', None)).strip()
+            providerObj.confirmed = sickrage.srConfig.checkbox_to_value(getattr(kwargs, providerID + '_confirmed', 0))
+            providerObj.ranked = sickrage.srConfig.checkbox_to_value(getattr(kwargs, providerID + '_ranked', 0))
+            providerObj.engrelease = sickrage.srConfig.checkbox_to_value(getattr(kwargs, providerID + '_engrelease', 0))
+            providerObj.onlyspasearch = sickrage.srConfig.checkbox_to_value(
+                getattr(kwargs, providerID + '_onlyspasearch', 0))
+            providerObj.sorting = str(getattr(kwargs, providerID + '_sorting', 'seeders')).strip()
+            providerObj.freeleech = sickrage.srConfig.checkbox_to_value(getattr(kwargs, providerID + '_freeleech', 0))
+            providerObj.search_mode = str(getattr(kwargs, providerID + '_search_mode', 'eponly')).strip()
+            providerObj.search_fallback = sickrage.srConfig.checkbox_to_value(
+                getattr(kwargs, providerID + '_search_fallback', 0))
+            providerObj.enable_daily = sickrage.srConfig.checkbox_to_value(
+                getattr(kwargs, providerID + '_enable_daily', 0))
+            providerObj.enable_backlog = sickrage.srConfig.checkbox_to_value(
+                getattr(kwargs, providerID + '_enable_backlog', 0))
+            providerObj.cat = int(str(getattr(kwargs, providerID + '_cat', 0)).strip())
+            providerObj.subtitle = sickrage.srConfig.checkbox_to_value(getattr(kwargs, providerID + '_subtitle', 0))
 
-            if hasattr(providerObj, 'minseed'):
-                try:
-                    providerObj.minseed = int(str(kwargs[providerID + '_minseed']).strip())
-                except Exception:
-                    providerObj.minseed = 0
+        # sort providers
+        sickrage.srCore.providersDict.sort(re.findall(r'\w+[^\W\s]', provider_order))
 
-            if hasattr(providerObj, 'minleech'):
-                try:
-                    providerObj.minleech = int(str(kwargs[providerID + '_minleech']).strip())
-                except Exception:
-                    providerObj.minleech = 0
-
-            if hasattr(providerObj, 'ratio'):
-                try:
-                    providerObj.ratio = str(kwargs[providerID + '_ratio']).strip()
-                except Exception:
-                    providerObj.ratio = None
-
-            if hasattr(providerObj, 'digest'):
-                try:
-                    providerObj.digest = str(kwargs[providerID + '_digest']).strip()
-                except Exception:
-                    providerObj.digest = None
-
-            if hasattr(providerObj, 'hash'):
-                try:
-                    providerObj.hash = str(kwargs[providerID + '_hash']).strip()
-                except Exception:
-                    providerObj.hash = None
-
-            if hasattr(providerObj, 'api_key'):
-                try:
-                    providerObj.api_key = str(kwargs[providerID + '_api_key']).strip()
-                except Exception:
-                    providerObj.api_key = None
-
-            if hasattr(providerObj, 'username'):
-                try:
-                    providerObj.username = str(kwargs[providerID + '_username']).strip()
-                except Exception:
-                    providerObj.username = None
-
-            if hasattr(providerObj, 'password'):
-                try:
-                    providerObj.password = str(kwargs[providerID + '_password']).strip()
-                except Exception:
-                    providerObj.password = None
-
-            if hasattr(providerObj, 'passkey'):
-                try:
-                    providerObj.passkey = str(kwargs[providerID + '_passkey']).strip()
-                except Exception:
-                    providerObj.passkey = None
-
-            if hasattr(providerObj, 'pin'):
-                try:
-                    providerObj.pin = str(kwargs[providerID + '_pin']).strip()
-                except Exception:
-                    providerObj.pin = None
-
-            if hasattr(providerObj, 'confirmed'):
-                try:
-                    providerObj.confirmed = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_confirmed'])
-                except Exception:
-                    providerObj.confirmed = 0
-
-            if hasattr(providerObj, 'ranked'):
-                try:
-                    providerObj.ranked = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_ranked'])
-                except Exception:
-                    providerObj.ranked = 0
-
-            if hasattr(providerObj, 'engrelease'):
-                try:
-                    providerObj.engrelease = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_engrelease'])
-                except Exception:
-                    providerObj.engrelease = 0
-
-            if hasattr(providerObj, 'onlyspasearch'):
-                try:
-                    providerObj.onlyspasearch = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_onlyspasearch'])
-                except:
-                    providerObj.onlyspasearch = 0
-
-            if hasattr(providerObj, 'sorting'):
-                try:
-                    providerObj.sorting = str(kwargs[providerID + '_sorting']).strip()
-                except Exception:
-                    providerObj.sorting = 'seeders'
-
-            if hasattr(providerObj, 'freeleech'):
-                try:
-                    providerObj.freeleech = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_freeleech'])
-                except Exception:
-                    providerObj.freeleech = 0
-
-            if hasattr(providerObj, 'search_mode'):
-                try:
-                    providerObj.search_mode = str(kwargs[providerID + '_search_mode']).strip()
-                except Exception:
-                    providerObj.search_mode = 'eponly'
-
-            if hasattr(providerObj, 'search_fallback'):
-                try:
-                    providerObj.search_fallback = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_search_fallback'])
-                except Exception:
-                    providerObj.search_fallback = 0  # these exceptions are catching unselected checkboxes
-
-            if hasattr(providerObj, 'enable_daily'):
-                try:
-                    providerObj.enable_daily = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_enable_daily'])
-                except Exception:
-                    providerObj.enable_daily = 0  # these exceptions are actually catching unselected checkboxes
-
-            if hasattr(providerObj, 'enable_backlog'):
-                try:
-                    providerObj.enable_backlog = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_enable_backlog'])
-                except Exception:
-                    providerObj.enable_backlog = 0  # these exceptions are actually catching unselected checkboxes
-
-            if hasattr(providerObj, 'cat'):
-                try:
-                    providerObj.cat = int(str(kwargs[providerID + '_cat']).strip())
-                except Exception:
-                    providerObj.cat = 0
-
-            if hasattr(providerObj, 'subtitle'):
-                try:
-                    providerObj.subtitle = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_subtitle'])
-                except Exception:
-                    providerObj.subtitle = 0
-
-        for providerID, providerObj in sickrage.srCore.providersDict[GenericProvider.NZB].items():
-
-            if hasattr(providerObj, 'api_key'):
-                try:
-                    providerObj.api_key = str(kwargs[providerID + '_api_key']).strip()
-                except Exception:
-                    providerObj.api_key = None
-
-            if hasattr(providerObj, 'username'):
-                try:
-                    providerObj.username = str(kwargs[providerID + '_username']).strip()
-                except Exception:
-                    providerObj.username = None
-
-            if hasattr(providerObj, 'search_mode'):
-                try:
-                    providerObj.search_mode = str(kwargs[providerID + '_search_mode']).strip()
-                except Exception:
-                    providerObj.search_mode = 'eponly'
-
-            if hasattr(providerObj, 'search_fallback'):
-                try:
-                    providerObj.search_fallback = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_search_fallback'])
-                except Exception:
-                    providerObj.search_fallback = 0  # these exceptions are actually catching unselected checkboxes
-
-            if hasattr(providerObj, 'enable_daily'):
-                try:
-                    providerObj.enable_daily = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_enable_daily'])
-                except Exception:
-                    providerObj.enable_daily = 0  # these exceptions are actually catching unselected checkboxes
-
-            if hasattr(providerObj, 'enable_backlog'):
-                try:
-                    providerObj.enable_backlog = sickrage.srConfig.checkbox_to_value(
-                        kwargs[providerID + '_enable_backlog'])
-                except Exception:
-                    providerObj.enable_backlog = 0  # these exceptions are actually catching unselected checkboxes
-
-        sickrage.srConfig.NEWZNAB_DATA = '!!!'.join([x.configStr() for x in sickrage.srCore.newznabProviderList])
-        sickrage.srConfig.save_config()
+        # save provider settings
+        sickrage.srCore.providersDict.save()
 
         if len(results) > 0:
             for x in results:
@@ -4679,11 +4597,15 @@ class ConfigNotifications(Config):
         super(ConfigNotifications, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("config_notifications.mako",
-                           submenu=self.ConfigMenu(),
-                           title='Config - Notifications',
-                           header='Notifications',
-                           topmenu='config')
+        return self.render(
+            "/config/notifications.mako",
+            submenu=self.ConfigMenu(),
+            title='Config - Notifications',
+            header='Notifications',
+            topmenu='config',
+            controller='config',
+            action='notifications'
+        )
 
     def saveNotifications(self, use_kodi=None, kodi_always_on=None, kodi_notify_onsnatch=None,
                           kodi_notify_ondownload=None,
@@ -4936,7 +4858,7 @@ class ConfigNotifications(Config):
         sickrage.srConfig.PUSHBULLET_API = pushbullet_api
         sickrage.srConfig.PUSHBULLET_DEVICE = pushbullet_device_list
 
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
 
         if len(results) > 0:
             for x in results:
@@ -4955,11 +4877,15 @@ class ConfigSubtitles(Config):
         super(ConfigSubtitles, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("config_subtitles.mako",
-                           submenu=self.ConfigMenu(),
-                           title='Config - Subtitles',
-                           header='Subtitles',
-                           topmenu='config')
+        return self.render(
+            "/config/subtitles.mako",
+            submenu=self.ConfigMenu(),
+            title='Config - Subtitles',
+            header='Subtitles',
+            topmenu='config',
+            controller='config',
+            action='subtitles'
+        )
 
     def saveSubtitles(self, use_subtitles=None, subtitles_plugins=None, subtitles_languages=None, subtitles_dir=None,
                       service_order=None, subtitles_history=None, subtitles_finder_frequency=None,
@@ -5004,7 +4930,7 @@ class ConfigSubtitles(Config):
         sickrage.srConfig.OPENSUBTITLES_USER = opensubtitles_user or ''
         sickrage.srConfig.OPENSUBTITLES_PASS = opensubtitles_pass or ''
 
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
 
         if len(results) > 0:
             for x in results:
@@ -5023,11 +4949,15 @@ class ConfigAnime(Config):
         super(ConfigAnime, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.render("config_anime.mako",
-                           submenu=self.ConfigMenu(),
-                           title='Config - Anime',
-                           header='Anime',
-                           topmenu='config')
+        return self.render(
+            "/config/anime.mako",
+            submenu=self.ConfigMenu(),
+            title='Config - Anime',
+            header='Anime',
+            topmenu='config',
+            controller='config',
+            action='anime'
+        )
 
     def saveAnime(self, use_anidb=None, anidb_username=None, anidb_password=None, anidb_use_mylist=None,
                   split_home=None):
@@ -5040,7 +4970,7 @@ class ConfigAnime(Config):
         sickrage.srConfig.ANIDB_USE_MYLIST = sickrage.srConfig.checkbox_to_value(anidb_use_mylist)
         sickrage.srConfig.ANIME_SPLIT_HOME = sickrage.srConfig.checkbox_to_value(split_home)
 
-        sickrage.srConfig.save_config()
+        sickrage.srConfig.save()
 
         if len(results) > 0:
             for x in results:
@@ -5053,16 +4983,16 @@ class ConfigAnime(Config):
         return self.redirect("/config/anime/")
 
 
-@Route('/errorlogs(/?.*)')
-class ErrorLogs(WebRoot):
+@Route('/logs(/?.*)')
+class Logs(WebRoot):
     def __init__(self, *args, **kwargs):
-        super(ErrorLogs, self).__init__(*args, **kwargs)
+        super(Logs, self).__init__(*args, **kwargs)
 
-    def ErrorLogsMenu(self, level):
+    def LogsMenu(self, level):
         menu = [
-            {'title': 'Clear Errors', 'path': 'errorlogs/clearerrors/',
+            {'title': 'Clear Errors', 'path': '/logs/clearerrors/',
              'requires': self.haveErrors() and level == sickrage.srLogger.ERROR, 'icon': 'ui-icon ui-icon-trash'},
-            {'title': 'Clear Warnings', 'path': 'errorlogs/clearerrors/?level=' + str(sickrage.srLogger.WARNING),
+            {'title': 'Clear Warnings', 'path': '/logs/clearerrors/?level=' + str(sickrage.srLogger.WARNING),
              'requires': self.haveWarnings() and level == sickrage.srLogger.WARNING,
              'icon': 'ui-icon ui-icon-trash'},
         ]
@@ -5071,12 +5001,16 @@ class ErrorLogs(WebRoot):
 
     def index(self, level=None):
         level = int(level or sickrage.srLogger.ERROR)
-        return self.render("errorlogs.mako",
-                           header="Logs &amp; Errors",
-                           title="Logs &amp; Errors",
-                           topmenu="system",
-                           submenu=self.ErrorLogsMenu(level),
-                           logLevel=level)
+        return self.render(
+            "/logs/errors.mako",
+            header="Logs &amp; Errors",
+            title="Logs &amp; Errors",
+            topmenu="system",
+            submenu=self.LogsMenu(level),
+            logLevel=level,
+            controller='logs',
+            action='errors'
+        )
 
     @staticmethod
     def haveErrors():
@@ -5094,7 +5028,7 @@ class ErrorLogs(WebRoot):
         else:
             ErrorViewer.clear()
 
-        return self.redirect("/errorlogs/viewlog/")
+        return self.redirect("/logs/viewlog/")
 
     def viewlog(self, minLevel=None, logFilter='', logSearch='', maxLines=500):
         minLevel = minLevel or sickrage.srLogger.INFO
@@ -5108,7 +5042,8 @@ class ErrorLogs(WebRoot):
              sickrage.srLogger.logLevels[x] >= int(minLevel)])
 
         logRegex = re.compile(
-            r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levelsFiltered, logFilter),
+            r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levelsFiltered,
+                                                                                                logFilter),
             re.S + re.M)
 
         data = []
@@ -5126,15 +5061,19 @@ class ErrorLogs(WebRoot):
         except Exception as e:
             pass
 
-        return self.render("viewlogs.mako",
-                           header="Log File",
-                           title="Logs",
-                           topmenu="system",
-                           logLines="\n".join(logRegex.findall("\n".join(data))),
-                           minLevel=int(minLevel),
-                           logNameFilters=sickrage.srLogger.logNameFilters,
-                           logFilter=logFilter,
-                           logSearch=logSearch)
+        return self.render(
+            "/logs/view.mako",
+            header="Log File",
+            title="Logs",
+            topmenu="system",
+            logLines="\n".join(logRegex.findall("\n".join(data))),
+            minLevel=int(minLevel),
+            logNameFilters=sickrage.srLogger.logNameFilters,
+            logFilter=logFilter,
+            logSearch=logSearch,
+            controller='logs',
+            action='view'
+        )
 
     def submit_errors(self):
         # submitter_result, issue_id = logging.submit_errors()
@@ -5142,4 +5081,4 @@ class ErrorLogs(WebRoot):
         # submitter_notification = notifications.error if issue_id is None else notifications.message
         # submitter_notification(submitter_result)
 
-        return self.redirect("/errorlogs/")
+        return self.redirect("/logs/")

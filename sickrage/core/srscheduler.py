@@ -30,7 +30,7 @@ from apscheduler.util import datetime_to_utc_timestamp
 from dill import dill
 from sqlalchemy.exc import IntegrityError
 
-from core.databases import dbFilename
+from sickrage.core.databases import dbFilename
 
 
 class srIntervalTrigger(IntervalTrigger):

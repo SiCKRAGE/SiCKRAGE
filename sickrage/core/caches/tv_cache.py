@@ -20,20 +20,19 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import itertools
 import time
 import urllib2
 
-from datetime import datetime, timedelta
-
 import sickrage
-from core.common import Quality
-from core.databases import cache_db
-from core.exceptions import AuthException
-from core.helpers import findCertainShow, show_names
-from core.nameparser import InvalidNameException, InvalidShowException, \
+from sickrage.core.common import Quality
+from sickrage.core.databases import cache_db
+from sickrage.core.exceptions import AuthException
+from sickrage.core.helpers import findCertainShow, show_names
+from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from core.rssfeeds import getFeed
+from sickrage.core.rssfeeds import getFeed
 
 
 class CacheDBConnection(cache_db.CacheDB):
@@ -50,7 +49,7 @@ class CacheDBConnection(cache_db.CacheDB):
                     "SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
 
                 for cur_dupe in sqlResults:
-                    self.action("DELETE FROM [" + providerName + "] WHERE url = ?", [cur_dupe[b"url"]])
+                    self.action("DELETE FROM [" + providerName + "] WHERE url = ?", [cur_dupe["url"]])
 
             # add unique index to prevent further dupes from happening if one does not exist
             self.action("CREATE UNIQUE INDEX IF NOT EXISTS idx_url ON [" + providerName + "] (url)")
@@ -122,7 +121,7 @@ class TVCache(object):
                 self.setLastUpdate()
 
                 cl = []
-                for item in data[b'entries']:
+                for item in data['entries']:
                     ci = self._parseItem(item)
                     if ci is not None:
                         cl.append(ci)
@@ -183,30 +182,30 @@ class TVCache(object):
         sqlResults = myDB.select("SELECT time FROM lastUpdate WHERE provider = ?", [self.providerID])
 
         if sqlResults:
-            lastTime = int(sqlResults[0][b"time"])
-            if lastTime > int(time.mktime(datetime.today().timetuple())):
+            lastTime = int(sqlResults[0]["time"])
+            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
         else:
             lastTime = 0
 
-        return datetime.fromtimestamp(lastTime)
+        return datetime.datetime.fromtimestamp(lastTime)
 
     def _getLastSearch(self):
         myDB = self._getDB()
         sqlResults = myDB.select("SELECT time FROM lastSearch WHERE provider = ?", [self.providerID])
 
         if sqlResults:
-            lastTime = int(sqlResults[0][b"time"])
-            if lastTime > int(time.mktime(datetime.today().timetuple())):
+            lastTime = int(sqlResults[0]["time"])
+            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
         else:
             lastTime = 0
 
-        return datetime.fromtimestamp(lastTime)
+        return datetime.datetime.fromtimestamp(lastTime)
 
     def setLastUpdate(self, toDate=None):
         if not toDate:
-            toDate = datetime.today()
+            toDate = datetime.datetime.today()
 
         myDB = self._getDB()
         myDB.upsert("lastUpdate",
@@ -215,7 +214,7 @@ class TVCache(object):
 
     def setLastSearch(self, toDate=None):
         if not toDate:
-            toDate = datetime.today()
+            toDate = datetime.datetime.today()
 
         myDB = self._getDB()
         myDB.upsert("lastSearch",
@@ -227,7 +226,7 @@ class TVCache(object):
 
     def shouldUpdate(self):
         # if we've updated recently then skip the update
-        if datetime.today() - self.lastUpdate < timedelta(minutes=self.minTime):
+        if datetime.datetime.today() - self.lastUpdate < datetime.timedelta(minutes=self.minTime):
             sickrage.srLogger.debug(
                 "Last update was too soon, using old tv cache: " + str(self.lastUpdate) + ". Updated less then " + str(
                     self.minTime) + " minutes ago")
@@ -274,7 +273,7 @@ class TVCache(object):
             episodeText = "|" + "|".join(map(str, episodes)) + "|"
 
             # get the current timestamp
-            curTimestamp = int(time.mktime(datetime.today().timetuple()))
+            curTimestamp = int(time.mktime(datetime.datetime.today().timetuple()))
 
             # get quality of release
             quality = parse_result.quality
@@ -304,7 +303,7 @@ class TVCache(object):
             sql += " AND time >= " + str(int(time.mktime(date.timetuple())))
 
         propers_results = myDB.select(sql)
-        return [x for x in propers_results if x[b'indexerid']]
+        return [x for x in propers_results if x['indexerid']]
 
     def findNeededEpisodes(self, episode, manualSearch=False, downCurQuality=False):
         sqlResults = []
@@ -331,11 +330,11 @@ class TVCache(object):
         # for each cache entry
         for curResult in sqlResults:
             # ignored/required words, and non-tv junk
-            if not show_names.filterBadReleases(curResult[b"name"]):
+            if not show_names.filterBadReleases(curResult["name"]):
                 continue
 
             # get the show object, or if it's not one of our shows then ignore it
-            showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(curResult[b"indexerid"]))
+            showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(curResult["indexerid"]))
             if not showObj:
                 continue
 
@@ -345,31 +344,31 @@ class TVCache(object):
                 continue
 
             # get season and ep data (ignoring multi-eps for now)
-            curSeason = int(curResult[b"season"])
+            curSeason = int(curResult["season"])
             if curSeason == -1:
                 continue
 
-            curEp = curResult[b"episodes"].split("|")[1]
+            curEp = curResult["episodes"].split("|")[1]
             if not curEp:
                 continue
 
             curEp = int(curEp)
 
-            curQuality = int(curResult[b"quality"])
-            curReleaseGroup = curResult[b"release_group"]
-            curVersion = curResult[b"version"]
+            curQuality = int(curResult["quality"])
+            curReleaseGroup = curResult["release_group"]
+            curVersion = curResult["version"]
 
             # if the show says we want that episode then add it to the list
             if not showObj.wantEpisode(curSeason, curEp, curQuality, manualSearch, downCurQuality):
-                sickrage.srLogger.info("Skipping " + curResult[b"name"] + " because we don't want an episode that's " +
+                sickrage.srLogger.info("Skipping " + curResult["name"] + " because we don't want an episode that's " +
                                         Quality.qualityStrings[curQuality])
                 continue
 
             epObj = showObj.getEpisode(curSeason, curEp)
 
             # build a result object
-            title = curResult[b"name"]
-            url = curResult[b"url"]
+            title = curResult["name"]
+            url = curResult["url"]
 
             sickrage.srLogger.info("Found result " + title + " at " + url)
 

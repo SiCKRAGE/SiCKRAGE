@@ -25,7 +25,7 @@ import urllib2
 from xml.etree import ElementTree
 
 import sickrage
-from notifiers import srNotifiers
+from sickrage.notifiers import srNotifiers
 
 
 class NMJNotifier(srNotifiers):
