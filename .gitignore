@@ -1,39 +1,29 @@
 # SR Travis-CI Files #
 ######################
-/.travis.yml
-/.travis
+.travis.yml
+.travis
 
 # SR Markdown Files  #
 ######################
-/contributing.md
-/README.md
-/README.txt
+contributing.md
+readme.md
 
 #  SR User Related   #
 ######################
-/*.db*
-/*.ini
-/cache/
-/Logs/
-/data/
-/restore/
-/backup*/
-/autoProcessTV.cfg
-/server.crt
-/server.key
+*.db*
+*.ini
+autoProcessTV.cfg
+server.crt
+server.key
+cache
+Logs
+data
+restore
+backup*
 
 #  SR Test Related   #
 ######################
-/tests/*.db*
-/tests/*.ini
 /tests/show name/
-/tests/Logs/
-/tests/cache/
-/tests/data/
-/tests/restore/
-/tests/backup*/
-/tests/server.crt
-/tests/server.key
 
 #  Compiled source   #
 ######################
@@ -56,9 +46,9 @@ Session.vim
 *.ipr
 .settings/*
 .pypirc
-/dist
-/build
-/sickrage.egg-info
+dist
+build
+sickrage.egg-info
 
 # OS generated files #
 ######################

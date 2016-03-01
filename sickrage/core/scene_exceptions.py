@@ -21,18 +21,17 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import re
 import threading
 import time
 
-import requests
+from datetime import datetime
 
 import sickrage
-from sickrage.core.databases import cache_db
-from sickrage.core.helpers import full_sanitizeSceneName, getURL, \
+from core.databases import cache_db
+from core.helpers import full_sanitizeSceneName, getURL, \
     sanitizeSceneName
-from sickrage.indexers.adba.aniDBAbstracter import Anime
+from indexers.adba.aniDBAbstracter import Anime
 
 exception_dict = {}
 anidb_exception_dict = {}
@@ -56,7 +55,7 @@ def shouldRefresh(exList):
     rows = cache_db.CacheDB().select("SELECT last_refreshed FROM scene_exceptions_refresh WHERE list = ?", [exList])
     if rows:
         lastRefresh = int(rows[0][b'last_refreshed'])
-        return int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
+        return int(time.mktime(datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
     else:
         return True
 
@@ -68,9 +67,73 @@ def setLastRefresh(exList):
     :param exList: exception list to set refresh time
     """
     cache_db.CacheDB().upsert("scene_exceptions_refresh",
-                              {'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple()))},
+                              {'last_refreshed': int(time.mktime(datetime.today().timetuple()))},
                               {'list': exList})
 
+def retrieve_exceptions(get_xem=True, get_anidb=True):
+    """
+    Looks up the exceptions on github, parses them into a dict, and inserts them into the
+    scene_exceptions table in cache.db. Also clears the scene name cache.
+    """
+
+    for indexer in sickrage.srCore.INDEXER_API().indexers:
+        indexer_name = sickrage.srCore.INDEXER_API(indexer).name
+        if shouldRefresh(indexer_name):
+            sickrage.srLogger.info("Checking for SiCKRAGE scene exception updates for {}".format(indexer_name))
+            loc = sickrage.srCore.INDEXER_API(indexer).config[b'scene_loc']
+
+            try:
+                # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
+                cur_line = None
+                for cur_line in getURL(loc).splitlines():
+                    indexer_id, _, aliases = cur_line.partition(':')  # @UnusedVariable
+                    if not aliases:
+                        continue
+
+                    # regex out the list of shows, taking \' into account
+                    exception_dict[int(indexer_id)] = [{re.sub(r'\\(.)', r'\1', x): -1} for x in re.findall(r"'(.*?)(?<!\\)',?", aliases)]
+                if cur_line is None:
+                    sickrage.srLogger.debug("Check scene exceptions update failed. Unable to update from: {}".format(loc))
+                    continue
+
+                # refreshed successfully
+                setLastRefresh(indexer_name)
+            except Exception:
+                continue
+
+    # XEM scene exceptions
+    if get_xem:
+        _xem_exceptions_fetcher()
+
+    # AniDB scene exceptions
+    if get_anidb:
+        _anidb_exceptions_fetcher()
+
+    sql_l = []
+    for cur_indexer_id in exception_dict:
+        sql_ex = cache_db.CacheDB().select("SELECT * FROM scene_exceptions WHERE indexer_id = ?;", [cur_indexer_id])
+        existing_exceptions = [x[b"show_name"] for x in sql_ex]
+        if not cur_indexer_id in exception_dict:
+            continue
+
+        for cur_exception_dict in exception_dict[cur_indexer_id]:
+            for ex in cur_exception_dict.iteritems():
+                cur_exception, curSeason = ex
+                if cur_exception not in existing_exceptions:
+                    sql_l.append(
+                            ["INSERT OR IGNORE INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?);",
+                             [cur_indexer_id, cur_exception, curSeason]])
+    if len(sql_l) > 0:
+        cache_db.CacheDB().mass_action(sql_l)
+        sickrage.srLogger.debug("Updated scene exceptions")
+        del sql_l  # cleanup
+    else:
+        sickrage.srLogger.debug("No scene exceptions update needed")
+
+    # cleanup
+    exception_dict.clear()
+    anidb_exception_dict.clear()
+    xem_exception_dict.clear()
 
 def get_scene_exceptions(indexer_id, season=-1):
     """
@@ -171,7 +234,7 @@ def get_scene_exception_by_name_multiple(show_name):
         if show_name.lower() in (
                 cur_exception_name.lower(),
                 sanitizeSceneName(cur_exception_name).lower().replace('.', ' ')):
-            sickrage.LOGGER.debug("Scene exception lookup got indexer id " + str(cur_indexer_id) + ", using that")
+            sickrage.srLogger.debug("Scene exception lookup got indexer id " + str(cur_indexer_id) + ", using that")
             out.append((cur_indexer_id, cur_season))
 
     if out:
@@ -179,97 +242,13 @@ def get_scene_exception_by_name_multiple(show_name):
 
     return [(None, None)]
 
-
-def retrieve_exceptions():
-    """
-    Looks up the exceptions on github, parses them into a dict, and inserts them into the
-    scene_exceptions table in cache.db. Also clears the scene name cache.
-    """
-
-    for indexer in sickrage.INDEXER_API().indexers:
-        if shouldRefresh(sickrage.INDEXER_API(indexer).name):
-            sickrage.LOGGER.info("Checking for scene exception updates for " + sickrage.INDEXER_API(indexer).name + "")
-
-            loc = sickrage.INDEXER_API(indexer).config[b'scene_loc']
-            try:
-                data = getURL(loc, session=sickrage.INDEXER_API(indexer).session)
-            except Exception:
-                continue
-
-            if data is None:
-                # When data is None, trouble connecting to github, or reading file failed
-                sickrage.LOGGER.debug("Check scene exceptions update failed. Unable to update from: " + loc)
-                continue
-
-            setLastRefresh(sickrage.INDEXER_API(indexer).name)
-
-            # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
-            for cur_line in data.splitlines():
-                indexer_id, _, aliases = cur_line.partition(':')  # @UnusedVariable
-
-                if not aliases:
-                    continue
-
-                indexer_id = int(indexer_id)
-
-                # regex out the list of shows, taking \' into account
-                # alias_list = [re.sub(r'\\(.)', r'\1', x) for x in re.findall(r"'(.*?)(?<!\\)',?", aliases)]
-                alias_list = [{re.sub(r'\\(.)', r'\1', x): -1} for x in re.findall(r"'(.*?)(?<!\\)',?", aliases)]
-                exception_dict[indexer_id] = alias_list
-                del alias_list
-
-            # cleanup
-            del data
-
-    # XEM scene exceptions
-    _xem_exceptions_fetcher()
-    for xem_ex in xem_exception_dict:
-        if xem_ex in exception_dict:
-            exception_dict[xem_ex] = exception_dict[xem_ex] + xem_exception_dict[xem_ex]
-        else:
-            exception_dict[xem_ex] = xem_exception_dict[xem_ex]
-
-    # AniDB scene exceptions
-    _anidb_exceptions_fetcher()
-    for anidb_ex in anidb_exception_dict:
-        if anidb_ex in exception_dict:
-            exception_dict[anidb_ex] = exception_dict[anidb_ex] + anidb_exception_dict[anidb_ex]
-        else:
-            exception_dict[anidb_ex] = anidb_exception_dict[anidb_ex]
-
-    queries = []
-    for cur_indexer_id in exception_dict:
-        sql_ex = cache_db.CacheDB().select("SELECT * FROM scene_exceptions WHERE indexer_id = ?;", [cur_indexer_id])
-        existing_exceptions = [x[b"show_name"] for x in sql_ex]
-        if not cur_indexer_id in exception_dict:
-            continue
-
-        for cur_exception_dict in exception_dict[cur_indexer_id]:
-            for ex in cur_exception_dict.iteritems():
-                cur_exception, curSeason = ex
-                if cur_exception not in existing_exceptions:
-                    queries.append(
-                            ["INSERT OR IGNORE INTO scene_exceptions (indexer_id, show_name, season) VALUES (?,?,?);",
-                             [cur_indexer_id, cur_exception, curSeason]])
-    if queries:
-        cache_db.CacheDB().mass_action(queries)
-        sickrage.LOGGER.debug("Updated scene exceptions")
-    else:
-        sickrage.LOGGER.debug("No scene exceptions update needed")
-
-    # cleanup
-    exception_dict.clear()
-    anidb_exception_dict.clear()
-    xem_exception_dict.clear()
-
-
 def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     """
     Given a indexer_id, and a list of all show scene exceptions, update the db.
     """
     cache_db.CacheDB().action('DELETE FROM scene_exceptions WHERE indexer_id=? AND season=?', [indexer_id, season])
 
-    sickrage.LOGGER.info("Updating scene exceptions")
+    sickrage.srLogger.info("Updating scene exceptions")
 
     # A change has been made to the scene exception list. Let's clear the cache, to make this visible
     if indexer_id in exceptionsCache:
@@ -283,8 +262,8 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
 
 def _anidb_exceptions_fetcher():
     if shouldRefresh('anidb'):
-        sickrage.LOGGER.info("Checking for scene exception updates for AniDB")
-        for show in sickrage.showList:
+        sickrage.srLogger.info("Checking for scene exception updates for AniDB")
+        for show in sickrage.srCore.SHOWLIST:
             if show.is_anime and show.indexer == 1:
                 try:
                     anime = Anime(None, name=show.name, tvdbid=show.indexerid, autoCorrectName=True)
@@ -295,23 +274,27 @@ def _anidb_exceptions_fetcher():
                         anidb_exception_dict[show.indexerid] = [{anime.name: -1}]
 
         setLastRefresh('anidb')
+
+    for anidb_ex in anidb_exception_dict:
+        if anidb_ex in exception_dict:
+            exception_dict[anidb_ex] = exception_dict[anidb_ex] + anidb_exception_dict[anidb_ex]
+        else:
+            exception_dict[anidb_ex] = anidb_exception_dict[anidb_ex]
+
     return anidb_exception_dict
-
-
-xem_session = requests.Session()
 
 
 def _xem_exceptions_fetcher():
     if shouldRefresh('xem'):
-        for indexer in sickrage.INDEXER_API().indexers:
-            sickrage.LOGGER.info("Checking for XEM scene exception updates for " + sickrage.INDEXER_API(indexer).name)
+        for indexer in sickrage.srCore.INDEXER_API().indexers:
+            sickrage.srLogger.info("Checking for XEM scene exception updates for " + sickrage.srCore.INDEXER_API(indexer).name)
 
-            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickrage.INDEXER_API(indexer).config[
+            url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % sickrage.srCore.INDEXER_API(indexer).config[
                 'xem_origin']
 
-            parsedJSON = getURL(url, session=xem_session, timeout=90, json=True)
+            parsedJSON = getURL(url, timeout=90, json=True)
             if not parsedJSON:
-                sickrage.LOGGER.debug("Check scene exceptions update failed for " + sickrage.INDEXER_API(
+                sickrage.srLogger.debug("Check scene exceptions update failed for " + sickrage.srCore.INDEXER_API(
                         indexer).name + ", Unable to get URL: " + url)
                 continue
 
@@ -322,10 +305,16 @@ def _xem_exceptions_fetcher():
                 try:
                     xem_exception_dict[int(indexerid)] = names
                 except Exception as e:
-                    sickrage.LOGGER.warning("XEM: Rejected entry: indexerid:{0}; names:{1}".format(indexerid, names))
-                    sickrage.LOGGER.debug("XEM: Rejected entry error message:{0}".format(str(e)))
+                    sickrage.srLogger.warning("XEM: Rejected entry: indexerid:{0}; names:{1}".format(indexerid, names))
+                    sickrage.srLogger.debug("XEM: Rejected entry error message:{0}".format(str(e)))
 
         setLastRefresh('xem')
+
+    for xem_ex in xem_exception_dict:
+        if xem_ex in exception_dict:
+            exception_dict[xem_ex] = exception_dict[xem_ex] + xem_exception_dict[xem_ex]
+        else:
+            exception_dict[xem_ex] = xem_exception_dict[xem_ex]
 
     return xem_exception_dict
 

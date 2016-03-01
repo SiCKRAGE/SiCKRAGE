@@ -21,23 +21,38 @@ from __future__ import unicode_literals
 import sickrage
 
 
-def notify_download(ep_name):
-    for n in sickrage.NOTIFIERS.values():
-        try:n.notify_download(ep_name)
-        except:continue
+class srNotifiers(object):
+    def __init__(self):
+        self.session = None
 
-def notify_subtitle_download(ep_name, lang):
-    for n in sickrage.NOTIFIERS.values():
-        try:n.notify_subtitle_download(ep_name, lang)
-        except:continue
+    @staticmethod
+    def notify_download(ep_name):
+        for n in sickrage.srCore.NOTIFIERS.values():
+            try:
+                n._notify_download(ep_name)
+            except:
+                continue
 
-def notify_snatch(ep_name):
-    for n in sickrage.NOTIFIERS.values():
-        try:n.notify_snatch(ep_name)
-        except:continue
+    @staticmethod
+    def notify_subtitle_download(ep_name, lang):
+        for n in sickrage.srCore.NOTIFIERS.values():
+            try:
+                n._notify_subtitle_download(ep_name, lang)
+            except:
+                continue
 
+    @staticmethod
+    def notify_snatch(ep_name):
+        for n in sickrage.srCore.NOTIFIERS.values():
+            try:
+                n._notify_snatch(ep_name)
+            except:
+                continue
 
-def notify_version_update(new_version=""):
-    for n in sickrage.NOTIFIERS.values():
-        try:n.notify_version_update(new_version)
-        except:continue
+    @staticmethod
+    def notify_version_update(new_version=""):
+        for n in sickrage.srCore.NOTIFIERS.values():
+            try:
+                n._notify_version_update(new_version)
+            except:
+                continue

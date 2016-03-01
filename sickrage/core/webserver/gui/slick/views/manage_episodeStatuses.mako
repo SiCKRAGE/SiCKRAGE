@@ -1,8 +1,8 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
-    from sickrage.core.common import DOWNLOADED, SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import statusStrings, Quality, Overview
     import sickrage
+    from core.common import DOWNLOADED, SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import statusStrings, Quality, Overview
 %>
 <%block name="scripts">
 % if whichStatus or (whichStatus and ep_counts):
@@ -62,7 +62,7 @@ Set checked shows/episodes to <select name="newStatus" class="form-control form-
     if int(whichStatus) in statusList:
         statusList.remove(int(whichStatus))
 
-    if int(whichStatus) in [SNATCHED, SNATCHED_PROPER, SNATCHED_BEST] + Quality.ARCHIVED + Quality.DOWNLOADED and sickrage.USE_FAILED_DOWNLOADS:
+    if int(whichStatus) in [SNATCHED, SNATCHED_PROPER, SNATCHED_BEST] + Quality.ARCHIVED + Quality.DOWNLOADED and sickrage.srConfig.USE_FAILED_DOWNLOADS:
         statusList.append(FAILED)
 %>
 

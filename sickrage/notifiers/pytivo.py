@@ -23,31 +23,32 @@ from urllib import urlencode
 from urllib2 import HTTPError, Request, urlopen
 
 import sickrage
+from notifiers import srNotifiers
 
 
-class pyTivoNotifier:
-    def notify_snatch(self, ep_name):
+class pyTivoNotifier(srNotifiers):
+    def _notify_snatch(self, ep_name):
         pass
 
-    def notify_download(self, ep_name):
+    def _notify_download(self, ep_name):
         pass
 
-    def notify_subtitle_download(self, ep_name, lang):
+    def _notify_subtitle_download(self, ep_name, lang):
         pass
 
-    def notify_version_update(self, new_version):
+    def _notify_version_update(self, new_version):
         pass
 
     def update_library(self, ep_obj):
 
         # Values from config
 
-        if not sickrage.USE_PYTIVO:
+        if not sickrage.srConfig.USE_PYTIVO:
             return False
 
-        host = sickrage.PYTIVO_HOST
-        shareName = sickrage.PYTIVO_SHARE_NAME
-        tsn = sickrage.PYTIVO_TIVO_NAME
+        host = sickrage.srConfig.PYTIVO_HOST
+        shareName = sickrage.srConfig.PYTIVO_SHARE_NAME
+        tsn = sickrage.srConfig.PYTIVO_TIVO_NAME
 
         # There are two more values required, the container and file.
         #
@@ -83,7 +84,7 @@ class pyTivoNotifier:
         requestUrl = "http://" + host + "/TiVoConnect?" + urlencode(
                 {'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn})
 
-        sickrage.LOGGER.debug("pyTivo notification: Requesting " + requestUrl)
+        sickrage.srLogger.debug("pyTivo notification: Requesting " + requestUrl)
 
         request = Request(requestUrl)
 
@@ -91,14 +92,14 @@ class pyTivoNotifier:
             response = urlopen(request)  # @UnusedVariable
         except HTTPError  as e:
             if hasattr(e, 'reason'):
-                sickrage.LOGGER.error("pyTivo notification: Error, failed to reach a server - " + e.reason)
+                sickrage.srLogger.error("pyTivo notification: Error, failed to reach a server - " + e.reason)
                 return False
             elif hasattr(e, 'code'):
-                sickrage.LOGGER.error("pyTivo notification: Error, the server couldn't fulfill the request - " + e.code)
+                sickrage.srLogger.error("pyTivo notification: Error, the server couldn't fulfill the request - " + e.code)
             return False
         except Exception as e:
-            sickrage.LOGGER.error("PYTIVO: Unknown exception: {}".format(e))
+            sickrage.srLogger.error("PYTIVO: Unknown exception: {}".format(e.message))
             return False
         else:
-            sickrage.LOGGER.info("pyTivo notification: Successfully requested transfer of file")
+            sickrage.srLogger.info("pyTivo notification: Successfully requested transfer of file")
             return True

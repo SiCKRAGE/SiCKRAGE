@@ -19,16 +19,17 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import io
 import os
 
+from datetime import date
+
 import sickrage
-from sickrage.core.exceptions import ShowNotFoundException
-from sickrage.core.helpers import chmodAsParent
-from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
+from core.exceptions import ShowNotFoundException
+from core.helpers import chmodAsParent
+from indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
-from sickrage.metadata import GenericMetadata
+from metadata import GenericMetadata
 
 
 class TIVOMetadata(GenericMetadata):
@@ -142,7 +143,7 @@ class TIVOMetadata(GenericMetadata):
             metadata_dir_name = os.path.join(os.path.dirname(ep_obj.location), '.meta')
             metadata_file_path = os.path.join(metadata_dir_name, metadata_file_name)
         else:
-            sickrage.LOGGER.debug("Episode location doesn't exist: " + str(ep_obj.location))
+            sickrage.srLogger.debug("Episode location doesn't exist: " + str(ep_obj.location))
             return ''
         return metadata_file_path
 
@@ -171,22 +172,22 @@ class TIVOMetadata(GenericMetadata):
         indexer_lang = ep_obj.show.lang
 
         try:
-            lINDEXER_API_PARMS = sickrage.INDEXER_API(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).api_params.copy()
 
             lINDEXER_API_PARMS[b'actors'] = True
 
-            if indexer_lang and not indexer_lang == sickrage.INDEXER_DEFAULT_LANGUAGE:
+            if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
                 lINDEXER_API_PARMS[b'language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS[b'dvdorder'] = True
 
-            t = sickrage.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = sickrage.srCore.INDEXER_API(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(str(e))
         except indexer_error as e:
-            sickrage.LOGGER.error("Unable to connect to " + sickrage.INDEXER_API(
+            sickrage.srLogger.error("Unable to connect to " + sickrage.srCore.INDEXER_API(
                     ep_obj.show.indexer).name + " while creating meta files - skipping - " + str(e))
             return False
 
@@ -195,12 +196,11 @@ class TIVOMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.LOGGER.info("Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
-                             (curEpToWrite.season, curEpToWrite.episode, sickrage.INDEXER_API(ep_obj.show.indexer).name))
+                sickrage.srLogger.info("Unable to find episode %dx%d on %s, has it been removed? Should I delete from db?" % (curEpToWrite.season, curEpToWrite.episode, sickrage.srCore.INDEXER_API(ep_obj.show.indexer).name))
                 return None
 
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
-                myEp[b"firstaired"] = str(datetime.date.fromordinal(1))
+                myEp[b"firstaired"] = str(date.fromordinal(1))
 
             if not (getattr(myEp, 'episodename', None) and getattr(myEp, 'firstaired', None)):
                 return None
@@ -251,7 +251,7 @@ class TIVOMetadata(GenericMetadata):
             # This must be entered as yyyy-mm-ddThh:mm:ssZ (the t is capitalized and never changes, the Z is also
             # capitalized and never changes). This is the original air date of the episode.
             # NOTE: Hard coded the time to T00:00:00Z as we really don't know when during the day the first run happened.
-            if curEpToWrite.airdate != datetime.date.fromordinal(1):
+            if curEpToWrite.airdate != date.fromordinal(1):
                 data += ("originalAirDate : " + str(curEpToWrite.airdate) + "T00:00:00Z\n")
 
             # This shows up at the beginning of the description on the Program screen and on the Details screen.
@@ -316,11 +316,11 @@ class TIVOMetadata(GenericMetadata):
 
         try:
             if not os.path.isdir(nfo_file_dir):
-                sickrage.LOGGER.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
+                sickrage.srLogger.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
                 chmodAsParent(nfo_file_dir)
 
-            sickrage.LOGGER.debug("Writing episode nfo file to " + nfo_file_path)
+            sickrage.srLogger.debug("Writing episode nfo file to " + nfo_file_path)
 
             with io.open(nfo_file_path, 'w') as nfo_file:
                 # Calling encode directly, b/c often descriptions have wonky characters.
@@ -329,8 +329,8 @@ class TIVOMetadata(GenericMetadata):
             chmodAsParent(nfo_file_path)
 
         except EnvironmentError as e:
-            sickrage.LOGGER.error(
-                    "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
+            sickrage.srLogger.error(
+                    "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e.message))
             return False
 
         return True

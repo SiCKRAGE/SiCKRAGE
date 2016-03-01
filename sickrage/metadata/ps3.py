@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 import os
 
-from sickrage.metadata import GenericMetadata
+from metadata import GenericMetadata
 
 
 class PS3Metadata(GenericMetadata):

@@ -28,7 +28,6 @@ import zipfile
 
 import requests
 import xmltodict
-from tornado import gen
 
 import sickrage
 
@@ -79,7 +78,7 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
                         logger.warning(msg)
                     else:
                         print msg
-                    gen.sleep(mdelay)
+                    time.sleep(mdelay)
                     mtries -= 1
                     mdelay *= backoff
             return f(*args, **kwargs)
@@ -544,6 +543,8 @@ class Tvdb:
 
     @retry(tvdb_error)
     def _loadUrl(self, url, params=None, language=None):
+        resp = None
+
         try:
             # get api v2 token
             if self.config[b'apiver'] == 2:
@@ -554,7 +555,7 @@ class Tvdb:
                 'Accept-Language': self.config[b'language']
             })
 
-            sickrage.LOGGER.debug("Retrieving URL {}".format(url))
+            sickrage.srLogger.debug("Retrieving URL {}".format(url))
 
             # get response from TVDB
             if self.config[b'cache_enabled']:
@@ -563,16 +564,16 @@ class Tvdb:
                         self.config[b'cache_location'], use_dir_lock=True), cache_etags=False)
 
                 if self.config[b'proxy']:
-                    sickrage.LOGGER.debug("Using proxy for URL: {}".format(url))
+                    sickrage.srLogger.debug("Using proxy for URL: {}".format(url))
                     session.proxies = {
                         "http": self.config[b'proxy'],
                         "https": self.config[b'proxy'],
                     }
                 session.headers.update(self.config[b'headers'])
-                resp = session.get(url.strip(), params=params, timeout=sickrage.INDEXER_TIMEOUT)
+                resp = session.get(url.strip(), params=params, timeout=sickrage.srConfig.INDEXER_TIMEOUT)
             else:
                 resp = requests.get(url.strip(), params=params, headers=self.config[b'headers'],
-                                    timeout=sickrage.INDEXER_TIMEOUT)
+                                    timeout=sickrage.srConfig.INDEXER_TIMEOUT)
 
             resp.raise_for_status()
         except requests.exceptions.HTTPError, e:
@@ -586,12 +587,16 @@ class Tvdb:
             raise tvdb_error("Connection timed out {} while loading URL {}".format(e.message, url))
         except Exception as e:
             raise tvdb_error("Unknown exception while loading URL {}: {}".format(url, repr(e)))
+        finally:
+            if resp:
+                [i.raw.release_conn() for i in resp.history]
+                resp.raw.release_conn()
 
         try:
             if 'application/zip' in resp.headers.get("Content-Type", ''):
                 try:
                     from StringIO import StringIO
-                    sickrage.LOGGER.debug("We received a zip file unpacking now ...")
+                    sickrage.srLogger.debug("We received a zip file unpacking now ...")
                     return json.loads(json.dumps(xmltodict.parse(
                             zipfile.ZipFile(StringIO(resp.content)).read("{}.xml".format(language))))
                     )
@@ -670,7 +675,7 @@ class Tvdb:
         and returns the result list
         """
         # series = series.encode("utf-8")
-        sickrage.LOGGER.debug("Searching for show {}".format(series))
+        sickrage.srLogger.debug("Searching for show {}".format(series))
         return self._getetsrc(self.config[b'api'][self.config[b'apiver']][b'getSeries'].format(series))
 
     def _getSeries(self, series):
@@ -681,19 +686,19 @@ class Tvdb:
         """
         allSeries = self.search(series)
         if not allSeries:
-            sickrage.LOGGER.debug('Series result returned zero')
+            sickrage.srLogger.debug('Series result returned zero')
             raise tvdb_shownotfound("Show search returned zero results (cannot find show on TVDB)")
 
         if self.config[b'custom_ui'] is not None:
-            sickrage.LOGGER.debug("Using custom UI {}".format(repr(self.config[b'custom_ui'])))
+            sickrage.srLogger.debug("Using custom UI {}".format(repr(self.config[b'custom_ui'])))
             CustomUI = self.config[b'custom_ui']
             ui = CustomUI(config=self.config)
         else:
             if not self.config[b'interactive']:
-                sickrage.LOGGER.debug('Auto-selecting first search result using BaseUI')
+                sickrage.srLogger.debug('Auto-selecting first search result using BaseUI')
                 ui = BaseUI(config=self.config)
             else:
-                sickrage.LOGGER.debug('Interactively selecting show using ConsoleUI')
+                sickrage.srLogger.debug('Interactively selecting show using ConsoleUI')
                 ui = ConsoleUI(config=self.config)
 
         return ui.selectSeries(allSeries)
@@ -716,11 +721,11 @@ class Tvdb:
 
         This interface will be improved in future versions.
         """
-        sickrage.LOGGER.debug('Getting season banners for {}'.format(sid))
+        sickrage.srLogger.debug('Getting season banners for {}'.format(sid))
         bannersEt = self._getetsrc(self.config[b'api'][self.config[b'apiver']][b'seriesBanner'].format(sid))
 
         if not bannersEt:
-            sickrage.LOGGER.debug('Banners result returned zero')
+            sickrage.srLogger.debug('Banners result returned zero')
             return
 
         banners = {}
@@ -776,11 +781,11 @@ class Tvdb:
         Any key starting with an underscore has been processed (not the raw
         data from the XML)
         """
-        sickrage.LOGGER.debug("Getting actors for {}".format(sid))
+        sickrage.srLogger.debug("Getting actors for {}".format(sid))
         actorsEt = self._getetsrc(self.config[b'api'][self.config[b'apiver']][b'actorsInfo'].format(sid))
 
         if not actorsEt:
-            sickrage.LOGGER.debug('Actors result returned zero')
+            sickrage.srLogger.debug('Actors result returned zero')
             return
 
         cur_actors = Actors()
@@ -807,12 +812,12 @@ class Tvdb:
         """
 
         if self.config[b'language'] is None:
-            sickrage.LOGGER.debug('Config language is none, using show language')
+            sickrage.srLogger.debug('Config language is none, using show language')
             if language is None:
                 raise tvdb_error("config[b'language'] was None, this should not happen")
             getShowInLanguage = language
         else:
-            sickrage.LOGGER.debug(
+            sickrage.srLogger.debug(
                     'Configured language {} override show language of {}'.format(
                             self.config[b'language'],
                             language
@@ -821,13 +826,13 @@ class Tvdb:
             getShowInLanguage = self.config[b'language']
 
         # Parse show information
-        sickrage.LOGGER.debug('Getting all series data for {}'.format(sid))
+        sickrage.srLogger.debug('Getting all series data for {}'.format(sid))
         seriesInfoEt = self._getetsrc(
                 self.config[b'api'][self.config[b'apiver']][b'seriesInfo'].format(sid, getShowInLanguage)
         )
 
         if not seriesInfoEt:
-            sickrage.LOGGER.debug('Series result returned zero')
+            sickrage.srLogger.debug('Series result returned zero')
             raise tvdb_error("Series result returned zero")
 
         # get series data
@@ -851,7 +856,7 @@ class Tvdb:
                 self._parseActors(sid)
 
             # Parse episode data
-            sickrage.LOGGER.debug('Getting all episodes of {}'.format(sid))
+            sickrage.srLogger.debug('Getting all episodes of {}'.format(sid))
             if self.config[b'useZip']:
                 url = self.config[b'api'][self.config[b'apiver']][b'epInfo_zip'].format(sid, language)
             else:
@@ -859,7 +864,7 @@ class Tvdb:
             epsEt = self._getetsrc(url, language=language)
 
             if not epsEt:
-                sickrage.LOGGER.debug('Series results incomplete')
+                sickrage.srLogger.debug('Series results incomplete')
                 raise tvdb_showincomplete("Show search returned incomplete results (cannot find complete show on TVDB)")
 
             if 'episode' not in epsEt:
@@ -871,7 +876,7 @@ class Tvdb:
 
             for cur_ep in episodes:
                 if self.config[b'dvdorder']:
-                    sickrage.LOGGER.debug('Using DVD ordering.')
+                    sickrage.srLogger.debug('Using DVD ordering.')
                     use_dvd = cur_ep[b'dvd_season'] is not None and cur_ep[b'dvd_episodenumber'] is not None
                 else:
                     use_dvd = False
@@ -882,7 +887,7 @@ class Tvdb:
                     seasnum, epno = cur_ep[b'seasonnumber'], cur_ep[b'episodenumber']
 
                 if seasnum is None or epno is None:
-                    sickrage.LOGGER.warning(
+                    sickrage.srLogger.warning(
                             "An episode has incomplete season/episode number (season: %r, episode: %r)".format(
                                     seasnum, epno))
                     continue  # Skip to next episode
@@ -910,10 +915,10 @@ class Tvdb:
         the correct SID.
         """
         if name in self.corrections:
-            sickrage.LOGGER.debug('Correcting {} to {}'.format(name, self.corrections[name]))
+            sickrage.srLogger.debug('Correcting {} to {}'.format(name, self.corrections[name]))
             return self.corrections[name]
         else:
-            sickrage.LOGGER.debug('Getting show {}'.format(name))
+            sickrage.srLogger.debug('Getting show {}'.format(name))
             selected_series = self._getSeries(name)
             if isinstance(selected_series, dict):
                 selected_series = [selected_series]

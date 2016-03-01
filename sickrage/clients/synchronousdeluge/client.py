@@ -1,11 +1,12 @@
+import io
 import os
 import platform
 from collections import defaultdict
 from itertools import imap
 
-from sickrage.clients.synchronousdeluge.exceptions import DelugeRPCError
-from sickrage.clients.synchronousdeluge.protocol import DelugeRPCRequest, DelugeRPCResponse
-from sickrage.clients.synchronousdeluge.transfer import DelugeTransfer
+from clients.synchronousdeluge.exceptions import DelugeRPCError
+from clients.synchronousdeluge.protocol import DelugeRPCRequest, DelugeRPCResponse
+from clients.synchronousdeluge.transfer import DelugeTransfer
 
 __all__ = ["DelugeClient"]
 
@@ -28,6 +29,7 @@ class DelugeClient(object):
         if platform.system() in ('Windows', 'Microsoft'):
             appDataPath = os.environ.get("APPDATA")
             if not appDataPath:
+                # noinspection PyUnresolvedReferences
                 import _winreg
                 hkey = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders")
                 appDataReg = _winreg.QueryValueEx(hkey, "AppData")
@@ -44,25 +46,26 @@ class DelugeClient(object):
 
 
         if os.path.exists(auth_file):
-            for line in open(auth_file):
-                if line.startswith("#"):
-                    # This is a comment line
-                    continue
-                line = line.strip()
-                try:
-                    lsplit = line.split(":")
-                except Exception, e:
-                    continue
+            with io.open(auth_file) as fp:
+                for line in fp.readlines():
+                    if line.startswith("#"):
+                        # This is a comment line
+                        continue
+                    line = line.strip()
+                    try:
+                        lsplit = line.split(":")
+                    except Exception, e:
+                        continue
 
-                if len(lsplit) == 2:
-                    username, password = lsplit
-                elif len(lsplit) == 3:
-                    username, password, level = lsplit
-                else:
-                    continue
+                    if len(lsplit) == 2:
+                        username, password = lsplit
+                    elif len(lsplit) == 3:
+                        username, password, level = lsplit
+                    else:
+                        continue
 
-                if username == "localclient":
-                    return (username, password)
+                    if username == "localclient":
+                        return (username, password)
 
         return ("", "")
 

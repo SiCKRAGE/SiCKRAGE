@@ -22,22 +22,22 @@ from __future__ import unicode_literals
 
 import os
 import re
+import time
 
 from dateutil import parser
-from tornado import gen
 
 import sickrage
-from sickrage.core.classes import ShowListUI
-from sickrage.core.common import Quality
-from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, \
+from core.classes import ShowListUI
+from core.common import Quality
+from core.helpers import findCertainShow, full_sanitizeSceneName, \
     get_all_episodes_from_absolute_number, remove_extension, \
     searchIndexerForShowID
-from sickrage.core.nameparser import regexes
-from sickrage.core.scene_exceptions import get_scene_exception_by_name
-from sickrage.core.scene_numbering import \
+from core.nameparser import regexes
+from core.scene_exceptions import get_scene_exception_by_name
+from core.scene_numbering import \
     get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
     get_indexer_numbering
-from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
+from indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error
 
 
@@ -62,7 +62,7 @@ class NameParser(object):
             self._compile_regexes(self.ALL_REGEX)
 
     def get_show(self, name, tryIndexers=False):
-        if not sickrage.showList:
+        if not sickrage.srCore.SHOWLIST:
             return
 
         showObj = None
@@ -73,27 +73,27 @@ class NameParser(object):
 
         try:
             # check cache for show
-            cache = sickrage.NAMECACHE.retrieveNameFromCache(name)
+            cache = sickrage.srCore.NAMECACHE.retrieveNameFromCache(name)
             if cache:
                 fromCache = True
-                showObj = findCertainShow(sickrage.showList, int(cache))
+                showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(cache))
 
             # try indexers
             if not showObj and tryIndexers:
-                showObj = findCertainShow(sickrage.showList,
+                showObj = findCertainShow(sickrage.srCore.SHOWLIST,
                                           searchIndexerForShowID(full_sanitizeSceneName(name), ui=ShowListUI)[2])
 
             # try scene exceptions
             if not showObj:
                 ShowID = get_scene_exception_by_name(name)[0]
                 if ShowID:
-                    showObj = findCertainShow(sickrage.showList, int(ShowID))
+                    showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(ShowID))
 
             # add show to cache
             if showObj and not fromCache:
-                sickrage.NAMECACHE.addNameToCache(name, showObj.indexerid)
+                sickrage.srCore.NAMECACHE.addNameToCache(name, showObj.indexerid)
         except Exception as e:
-            sickrage.LOGGER.debug("Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
+            sickrage.srLogger.debug("Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
 
         return showObj
 
@@ -132,7 +132,7 @@ class NameParser(object):
                 try:
                     cur_regex = re.compile(cur_pattern, re.VERBOSE | re.IGNORECASE)
                 except re.error, errormsg:
-                    sickrage.LOGGER.info(
+                    sickrage.srLogger.info(
                             "WARNING: Invalid episode_pattern using %s regexs, %s. %s" % (
                             dbg_str, errormsg, cur_pattern))
                 else:
@@ -256,7 +256,7 @@ class NameParser(object):
 
             # if we have an air-by-date show then get the real season/episode numbers
             if bestResult.is_air_by_date:
-                from sickrage.core.databases import main_db
+                from core.databases import main_db
                 airdate = bestResult.air_date.toordinal()
                 sql_result = main_db.MainDB().select(
                         "SELECT season, episode FROM tv_episodes WHERE showid = ? AND indexer = ? AND airdate = ?",
@@ -271,24 +271,24 @@ class NameParser(object):
 
                 if not season_number or not len(episode_numbers):
                     try:
-                        lINDEXER_API_PARMS = sickrage.INDEXER_API(bestResult.show.indexer).api_params.copy()
+                        lINDEXER_API_PARMS = sickrage.srCore.INDEXER_API(bestResult.show.indexer).api_params.copy()
 
                         if bestResult.show.lang:
                             lINDEXER_API_PARMS[b'language'] = bestResult.show.lang
 
-                        t = sickrage.INDEXER_API(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
+                        t = sickrage.srCore.INDEXER_API(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
 
                         epObj = t[bestResult.show.indexerid].airedOn(bestResult.air_date)[0]
 
                         season_number = int(epObj[b"seasonnumber"])
                         episode_numbers = [int(epObj[b"episodenumber"])]
                     except indexer_episodenotfound:
-                        sickrage.LOGGER.warning(
+                        sickrage.srLogger.warning(
                                 "Unable to find episode with date " + bestResult.air_date + " for show " + bestResult.show.name + ", skipping")
                         episode_numbers = []
                     except indexer_error as e:
-                        sickrage.LOGGER.warning(
-                                "Unable to contact " + sickrage.INDEXER_API(bestResult.show.indexer).name + ": {}".format(
+                        sickrage.srLogger.warning(
+                                "Unable to contact " + sickrage.srCore.INDEXER_API(bestResult.show.indexer).name + ": {}".format(
                                         e))
                         episode_numbers = []
 
@@ -365,10 +365,10 @@ class NameParser(object):
                 bestResult.season_number = new_season_numbers[0]
 
             if bestResult.show.is_scene:
-                sickrage.LOGGER.debug("Converted parsed result {} into {}".format(bestResult.original_name, bestResult))
+                sickrage.srLogger.debug("Converted parsed result {} into {}".format(bestResult.original_name, bestResult))
 
         # CPU sleep
-        gen.sleep(1)
+        time.sleep(1)
 
         return bestResult
 
@@ -497,7 +497,7 @@ class NameParser(object):
         if cache_result:
             name_parser_cache.add(name, final_result)
 
-        sickrage.LOGGER.debug("Parsed {} into {}".format(name, final_result))
+        sickrage.srLogger.debug("Parsed {} into {}".format(name, final_result))
         return final_result
 
 
@@ -626,7 +626,7 @@ class NameParserCache(object):
 
     def get(self, name):
         if name in self._previous_parsed:
-            sickrage.LOGGER.debug("Using cached parse result for: {}".format(name))
+            sickrage.srLogger.debug("Using cached parse result for: {}".format(name))
             return self._previous_parsed[name]
 
 

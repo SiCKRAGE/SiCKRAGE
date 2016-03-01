@@ -1,11 +1,12 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
+    from datetime import datetime, date, timedelta
+
     import sickrage
-    import datetime
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Overview, Quality, qualityPresets, qualityPresetStrings
-    from sickrage.core.helpers import srdatetime
-    from sickrage.core.updaters import tz_updater
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import Overview, Quality, qualityPresets, qualityPresetStrings
+    from core.helpers import srdatetime
+    from core.updaters import tz_updater
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/manage_backlogOverview.js"></script>
@@ -21,7 +22,7 @@
 <% totalWanted = 0 %>
 <% totalQual = 0 %>
 
-    % for curShow in sickrage.showList:
+    % for curShow in sickrage.srCore.SHOWLIST:
     <% totalWanted = totalWanted + showCounts[curShow.indexerid][Overview.WANTED] %>
     <% totalQual = totalQual + showCounts[curShow.indexerid][Overview.QUAL] %>
 % endfor
@@ -34,7 +35,7 @@
 <div class="float-left">
 Jump to Show
     <select id="pickShow" class="form-control form-control-inline input-sm">
-        % for curShow in sorted(sickrage.showList, key=lambda x: x.name):
+        % for curShow in sorted(sickrage.srCore.SHOWLIST, key=lambda x: x.name):
         % if showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] != 0:
         <option value="${curShow.indexerid}">${curShow.name}</option>
         % endif
@@ -43,7 +44,7 @@ Jump to Show
 </div>
 
     <table class="sickrageTable" cellspacing="0" border="0" cellpadding="0">
-        % for curShow in sorted(sickrage.showList, key=lambda x: x.name):
+        % for curShow in sorted(sickrage.srCore.SHOWLIST, key=lambda x: x.name):
 
     % if showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] == 0:
         <% continue %>

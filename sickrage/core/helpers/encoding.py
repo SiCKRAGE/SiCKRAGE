@@ -42,21 +42,23 @@ def encodingInit():
     # get locale encoding
     try:
         locale.setlocale(locale.LC_ALL, "")
-        sickrage.SYS_ENCODING = locale.getpreferredencoding()
+        encoding = locale.getpreferredencoding()
     except (locale.Error, IOError):
-        sickrage.SYS_ENCODING = None
+        encoding = None
 
     # enforce UTF-8
-    if not sickrage.SYS_ENCODING or codecs.lookup(sickrage.SYS_ENCODING).name == 'ascii':
-        sickrage.SYS_ENCODING = 'UTF-8'
+    if not encoding or codecs.lookup(encoding).name == 'ascii':
+        encoding = 'UTF-8'
 
     # wrap i/o in unicode
-    sys.stdout = codecs.getwriter(sickrage.SYS_ENCODING)(sys.stdout)
-    sys.stdin = codecs.getreader(sickrage.SYS_ENCODING)(sys.stdin)
+    sys.stdout = codecs.getwriter(encoding)(sys.stdout)
+    sys.stdin = codecs.getreader(encoding)(sys.stdin)
+
+    return encoding
 
 
 def getEncoding():
-    return sickrage.SYS_ENCODING or "UTF-8"
+    return sickrage.srCore.SYS_ENCODING or "UTF-8"
 
 
 def f(*args, **kwargs):

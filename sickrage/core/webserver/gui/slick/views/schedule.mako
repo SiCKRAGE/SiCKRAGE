@@ -2,12 +2,11 @@
 <%!
     import re
     import time
-    import datetime
+    from datetime import datetime, date, timedelta
 
     import sickrage
-    from sickrage.core.helpers import anon_url, srdatetime
-
-    from sickrage.core.media.util import showImage
+    from core.helpers import anon_url, srdatetime
+    from core.media.util import showImage
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/ajaxEpSearch.js?${srPID}"></script>
@@ -29,13 +28,13 @@
 % else:
     <span>Sort By:
         <select name="sort" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
-            <option value="${srRoot}/setScheduleSort/?sort=date" ${('', 'selected="selected"')[sickrage.COMING_EPS_SORT == 'date']} >
+            <option value="${srRoot}/setScheduleSort/?sort=date" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_SORT == 'date']} >
                 Date
             </option>
-            <option value="${srRoot}/setScheduleSort/?sort=network" ${('', 'selected="selected"')[sickrage.COMING_EPS_SORT == 'network']} >
+            <option value="${srRoot}/setScheduleSort/?sort=network" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_SORT == 'network']} >
                 Network
             </option>
-            <option value="${srRoot}/setScheduleSort/?sort=show" ${('', 'selected="selected"')[sickrage.COMING_EPS_SORT == 'show']} >
+            <option value="${srRoot}/setScheduleSort/?sort=show" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_SORT == 'show']} >
                 Show
             </option>
         </select>
@@ -45,10 +44,10 @@
 
     <span>View Paused:
         <select name="viewpaused" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
-            <option value="${srRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[not bool(sickrage.COMING_EPS_DISPLAY_PAUSED)]}>
+            <option value="${srRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[not bool(sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
                 Hidden
             </option>
-            <option value="${srRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[bool(sickrage.COMING_EPS_DISPLAY_PAUSED)]}>
+            <option value="${srRoot}/toggleScheduleDisplayPaused" ${('', 'selected="selected"')[bool(sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED)]}>
                 Shown
             </option>
         </select>
@@ -57,16 +56,16 @@
 
     <span>Layout:
         <select name="layout" class="form-control form-control-inline input-sm" onchange="location = this.options[this.selectedIndex].value;">
-            <option value="${srRoot}/setScheduleLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.COMING_EPS_LAYOUT == 'poster']} >
+            <option value="${srRoot}/setScheduleLayout/?layout=poster" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_LAYOUT == 'poster']} >
                 Poster
             </option>
-            <option value="${srRoot}/setScheduleLayout/?layout=calendar" ${('', 'selected="selected"')[sickrage.COMING_EPS_LAYOUT == 'calendar']} >
+            <option value="${srRoot}/setScheduleLayout/?layout=calendar" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_LAYOUT == 'calendar']} >
                 Calendar
             </option>
-            <option value="${srRoot}/setScheduleLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.COMING_EPS_LAYOUT == 'banner']} >
+            <option value="${srRoot}/setScheduleLayout/?layout=banner" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_LAYOUT == 'banner']} >
                 Banner
             </option>
-            <option value="${srRoot}/setScheduleLayout/?layout=list" ${('', 'selected="selected"')[sickrage.COMING_EPS_LAYOUT == 'list']} >
+            <option value="${srRoot}/setScheduleLayout/?layout=list" ${('', 'selected="selected"')[sickrage.srConfig.COMING_EPS_LAYOUT == 'list']} >
                 List
             </option>
         </select>
@@ -97,7 +96,7 @@
 
     <thead>
         <tr>
-            <th>Airdate (${('local', 'network')[sickrage.TIMEZONE_DISPLAY == 'network']})</th>
+            <th>Airdate (${('local', 'network')[sickrage.srConfig.TIMEZONE_DISPLAY == 'network']})</th>
             <th>Ends</th>
             <th>Show</th>
             <th>Next Ep</th>
@@ -117,13 +116,13 @@
     cur_indexer = int(cur_result[b'indexer'])
     run_time = cur_result[b'runtime']
 
-    if int(cur_result[b'paused']) and not sickrage.COMING_EPS_DISPLAY_PAUSED:
+    if int(cur_result[b'paused']) and not sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED:
         continue
 
     cur_ep_airdate = cur_result[b'localtime'].date()
 
     if run_time:
-        cur_ep_enddate = cur_result[b'localtime'] + datetime.timedelta(minutes = run_time)
+        cur_ep_enddate = cur_result[b'localtime'] + timedelta(minutes = run_time)
         if cur_ep_enddate < today:
             show_div = 'listing-overdue'
         elif cur_ep_airdate >= next_week.date():
@@ -182,11 +181,11 @@
                 % if cur_result[b'imdb_id']:
                     <a href="${anon_url('http://www.imdb.com/title/', cur_result[b'imdb_id'])}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false" title="http://www.imdb.com/title/${cur_result[b'imdb_id']}"><img alt="[imdb]" height="16" width="16" src="${srRoot}/images/imdb.png" /></a>
                 % endif
-                <a href="${anon_url(sickrage.INDEXER_API(cur_indexer).config[b'show_url'], cur_result[b'showid'])}"
+                <a href="${anon_url(sickrage.srCore.INDEXER_API(cur_indexer).config[b'show_url'], cur_result[b'showid'])}"
                    rel="noreferrer" onclick="window.open(this.href, '_blank'); return false"
-                   title="${sickrage.INDEXER_API(cur_indexer).config[b'show_url']}${cur_result[b'showid']}">
-                    <img alt="${sickrage.INDEXER_API(cur_indexer).name}" height="16" width="16"
-                         src="${srRoot}/images/${sickrage.INDEXER_API(cur_indexer).config[b'icon']}"/>
+                   title="${sickrage.srCore.INDEXER_API(cur_indexer).config[b'show_url']}${cur_result[b'showid']}">
+                    <img alt="${sickrage.srCore.INDEXER_API(cur_indexer).name}" height="16" width="16"
+                         src="${srRoot}/images/${sickrage.srCore.INDEXER_API(cur_indexer).config[b'icon']}"/>
                 </a>
             </td>
 
@@ -218,7 +217,7 @@
         today_header = False
         show_div = 'ep_listing listing-default'
     %>
-    % if sickrage.COMING_EPS_SORT == 'show':
+    % if sickrage.srConfig.COMING_EPS_SORT == 'show':
     <br><br>
 % endif
 
@@ -226,18 +225,18 @@
     <%
         cur_indexer = int(cur_result[b'indexer'])
 
-        if int(cur_result[b'paused']) and not sickrage.COMING_EPS_DISPLAY_PAUSED:
+        if int(cur_result[b'paused']) and not sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED:
             continue
 
         run_time = cur_result[b'runtime']
         cur_ep_airdate = cur_result[b'localtime'].date()
 
         if run_time:
-            cur_ep_enddate = cur_result[b'localtime'] + datetime.timedelta(minutes = run_time)
+            cur_ep_enddate = cur_result[b'localtime'] + timedelta(minutes = run_time)
         else:
             cur_ep_enddate = cur_result[b'localtime']
     %>
-    % if sickrage.COMING_EPS_SORT == 'network':
+    % if sickrage.srConfig.COMING_EPS_SORT == 'network':
         <% show_network = ('no network', cur_result[b'network'])[bool(cur_result[b'network'])] %>
         % if cur_segment != show_network:
             <div>
@@ -258,7 +257,7 @@
             % endif
         % endif
 
-    % elif sickrage.COMING_EPS_SORT == 'date':
+    % elif sickrage.srConfig.COMING_EPS_SORT == 'date':
         % if cur_segment != cur_ep_airdate:
             % if cur_ep_enddate < today and cur_ep_airdate != today.date() and not missed_header:
                 <br><h2 class="day">Missed</h2>
@@ -269,12 +268,12 @@
             % elif cur_ep_enddate >= today and cur_ep_airdate < next_week.date():
                 % if cur_ep_airdate == today.date():
                     <br><h2
-                        class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.SYS_ENCODING).capitalize()}
+                        class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}
                     <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
                     <% today_header = True %>
                 % else:
                     <br><h2
-                        class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.SYS_ENCODING).capitalize()}</h2>
+                        class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}</h2>
                 % endif
             % endif
             <% cur_segment = cur_ep_airdate %>
@@ -283,7 +282,7 @@
         % if cur_ep_airdate == today.date() and not today_header:
             <div>
                 <br><h2
-                    class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.SYS_ENCODING).capitalize()}
+                    class="day">${date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}
                 <span style="font-size: 14px; vertical-align: top;">[Today]</span></h2>
             <% today_header = True %>
         % endif
@@ -300,7 +299,7 @@
             % endif
         % endif
 
-    % elif sickrage.COMING_EPS_SORT == 'show':
+    % elif sickrage.srConfig.COMING_EPS_SORT == 'show':
         % if cur_ep_enddate < today:
             <% show_div = 'ep_listing listing-overdue listingradius' %>
         % elif cur_ep_airdate >= next_week.date():
@@ -339,11 +338,11 @@
                         % if cur_result[b'imdb_id']:
                             <a href="${anon_url('http://www.imdb.com/title/', cur_result[b'imdb_id'])}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false" title="http://www.imdb.com/title/${cur_result[b'imdb_id']}"><img alt="[imdb]" height="16" width="16" src="${srRoot}/images/imdb.png" /></a>
                         % endif
-                        <a href="${anon_url(sickrage.INDEXER_API(cur_indexer).config[b'show_url'], cur_result[b'showid'])}"
+                        <a href="${anon_url(sickrage.srCore.INDEXER_API(cur_indexer).config[b'show_url'], cur_result[b'showid'])}"
                            rel="noreferrer" onclick="window.open(this.href, '_blank'); return false"
-                           title="${sickrage.INDEXER_API(cur_indexer).config[b'show_url']}"><img
-                                alt="${sickrage.INDEXER_API(cur_indexer).name}" height="16" width="16"
-                                src="${srRoot}/images/${sickrage.INDEXER_API(cur_indexer).config[b'icon']}"/></a>
+                           title="${sickrage.srCore.INDEXER_API(cur_indexer).config[b'show_url']}"><img
+                                alt="${sickrage.srCore.INDEXER_API(cur_indexer).name}" height="16" width="16"
+                                src="${srRoot}/images/${sickrage.srCore.INDEXER_API(cur_indexer).config[b'icon']}"/></a>
                         <span><a href="${srRoot}/home/searchEpisode?show=${cur_result[b'showid']}&amp;season=${cur_result[b'season']}&amp;episode=${cur_result[b'episode']}" title="Manual Search" id="forceUpdate-${cur_result[b'showid']}" class="epSearch forceUpdate"><img alt="[search]" height="16" width="16" src="${srRoot}/images/search16.png" id="forceUpdateImage-${cur_result[b'showid']}" /></a></span>
                     </span>
                 </div>
@@ -385,7 +384,7 @@
 % endif
 
 % if 'calendar' == layout:
-<% dates = [today.date() + datetime.timedelta(days = i) for i in range(7)] %>
+<% dates = [today.date() + timedelta(days = i) for i in range(7)] %>
 <% tbl_day = 0 %>
 <br>
 <br>
@@ -397,13 +396,13 @@
                cellspacing="0" border="0" cellpadding="0">
             <thead>
             <tr>
-                <th>${day.strftime('%A').decode(sickrage.SYS_ENCODING).capitalize()}</th>
+                <th>${day.strftime('%A').decode(sickrage.srCore.SYS_ENCODING).capitalize()}</th>
             </tr>
             </thead>
         <tbody>
         <% day_has_show = False %>
         % for cur_result in results:
-            % if int(cur_result[b'paused']) and not sickrage.COMING_EPS_DISPLAY_PAUSED:
+            % if int(cur_result[b'paused']) and not sickrage.srConfig.COMING_EPS_DISPLAY_PAUSED:
                 <% continue %>
             % endif
 
@@ -414,8 +413,8 @@
             % if airday == day:
                 % try:
                     <% day_has_show = True %>
-                <% airtime = srdatetime.srDateTime.fromtimestamp(time.mktime(cur_result[b'localtime'].timetuple())).srftime().decode(sickrage.SYS_ENCODING) %>
-                % if sickrage.TRIM_ZERO:
+                <% airtime = srdatetime.srDateTime.fromtimestamp(time.mktime(cur_result[b'localtime'].timetuple())).srftime().decode(sickrage.srCore.SYS_ENCODING) %>
+                % if sickrage.srConfig.TRIM_ZERO:
                         <% airtime = re.sub(r'0(\d:\d\d)', r'\1', airtime, 0, re.IGNORECASE | re.MULTILINE) %>
                     % endif
                 % except OverflowError:

@@ -23,18 +23,21 @@ from __future__ import unicode_literals
 import unittest
 
 import sickrage
-from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.show import TVShow
+from core.tv.episode import TVEpisode
+from core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
 
 class TVShowTests(SiCKRAGETestDBCase):
     def setUp(self, **kwargs):
         super(TVShowTests, self).setUp()
-        sickrage.showList = []
+        sickrage.srCore.SHOWLIST = []
 
     def test_init_indexerid(self):
         show = TVShow(1, 0001, "en")
+        show.saveToDB()
+        show.loadFromDB(skipNFO=True)
+
         self.assertEqual(show.indexerid, 0001)
 
     def test_change_indexerid(self):
@@ -47,10 +50,6 @@ class TVShowTests(SiCKRAGETestDBCase):
         show.default_ep_status = "5"
         show.airs = "monday"
         show.startyear = 1987
-
-        show.saveToDB()
-        show.loadFromDB(skipNFO=True)
-
         show.indexerid = 0002
         show.saveToDB()
         show.loadFromDB(skipNFO=True)
@@ -67,11 +66,14 @@ class TVShowTests(SiCKRAGETestDBCase):
 
 class TVEpisodeTests(SiCKRAGETestDBCase):
     def setUp(self, **kwargs):
-        super(TVEpisodeTests, self).setUp()
-        sickrage.showList = []
+        super(TVEpisodeTests, self).setUp(force_db=True)
+        sickrage.srCore.SHOWLIST = []
 
     def test_init_empty_db(self):
         show = TVShow(1, 0001, "en")
+        show.saveToDB()
+        show.loadFromDB(skipNFO=True)
+
         ep = TVEpisode(show, 1, 1)
         ep.name = "asdasdasdajkaj"
         ep.saveToDB()
@@ -82,7 +84,7 @@ class TVEpisodeTests(SiCKRAGETestDBCase):
 class TVTests(SiCKRAGETestDBCase):
     def setUp(self, **kwargs):
         super(TVTests, self).setUp()
-        sickrage.showList = []
+        sickrage.srCore.SHOWLIST = []
 
     def test_getEpisode(self):
         show = TVShow(1, 0001, "en")
@@ -95,9 +97,8 @@ class TVTests(SiCKRAGETestDBCase):
         show.airs = "monday"
         show.startyear = 1987
         show.saveToDB()
-        sickrage.showList = [show]
-        # TODO: implement
-
+        show.loadFromDB(skipNFO=True)
+        sickrage.srCore.SHOWLIST = [show]
 
 if __name__ == '__main__':
     print "=================="

@@ -17,3 +17,61 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
+
+import os
+
+import sickrage
+from indexers.indexer_config import indexerConfig, initConfig
+
+
+class srIndexerApi(object):
+    def __init__(self, indexerID=None):
+        self.indexerID = int(indexerID or 0)
+
+    def __del__(self):
+        pass
+
+    def indexer(self, *args, **kwargs):
+        if self.indexerID:
+            return indexerConfig[self.indexerID][b'module'](*args, **kwargs)
+
+    @property
+    def config(self):
+        if self.indexerID:
+            return indexerConfig[self.indexerID]
+        _ = initConfig
+        if sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE in _:
+            del _[_[b'valid_languages'].index(sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE)]
+        _[b'valid_languages'].sort()
+        _[b'valid_languages'].insert(0, sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE)
+        return _
+
+    @property
+    def name(self):
+        if self.indexerID:
+            return indexerConfig[self.indexerID][b'name']
+
+    @property
+    def api_params(self):
+        if self.indexerID:
+            if sickrage.srConfig.CACHE_DIR:
+                indexerConfig[self.indexerID][b'api_params'][b'cache'] = os.path.join(sickrage.srConfig.CACHE_DIR, 'indexers',
+                                                                                      self.name)
+            if sickrage.srConfig.PROXY_SETTING and sickrage.srConfig.PROXY_INDEXERS:
+                indexerConfig[self.indexerID][b'api_params'][b'proxy'] = sickrage.srConfig.PROXY_SETTING
+
+            return indexerConfig[self.indexerID][b'api_params']
+
+    @property
+    def cache(self):
+        if sickrage.srConfig.CACHE_DIR:
+            return self.api_params[b'cache']
+
+    @property
+    def indexers(self):
+        return dict((int(x[b'id']), x[b'name']) for x in indexerConfig.values())
+
+    @property
+    def session(self):
+        if self.indexerID:
+            return indexerConfig[self.indexerID][b'session']

@@ -1,8 +1,8 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.core.queues.show import ShowQueueActions
-    from sickrage.core.common import dateTimeFormat
+    from core.queues.show import ShowQueueActions
+    from core.common import dateTimeFormat
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/new/status.js"></script>
@@ -23,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-            % for job in sickrage.Scheduler.get_jobs():
+            % for job in sickrage.srCore.SCHEDULER.get_jobs():
                 <tr>
                     <td>${job}</td>
                 </tr>
@@ -43,39 +43,39 @@
             </tr>
         </thead>
         <tbody>
-            % if sickrage.SHOWQUEUE.currentItem is not None:
+            % if sickrage.srCore.SHOWQUEUE.currentItem is not None:
                 <tr>
                     % try:
-                        <% showindexerid = sickrage.SHOWQUEUE.currentItem.show.indexerid %>
+                        <% showindexerid = sickrage.srCore.SHOWQUEUE.currentItem.show.indexerid %>
                         <td>${showindexerid}</td>
                     % except Exception:
                         <td></td>
                     % endtry
                     % try:
-                        <% showname = sickrage.SHOWQUEUE.currentItem.show.name %>
+                        <% showname = sickrage.srCore.SHOWQUEUE.currentItem.show.name %>
                         <td>${showname}</td>
                     % except Exception:
-                        % if sickrage.SHOWQUEUE.currentItem.action_id == ShowQueueActions.ADD:
-                            <td>${sickrage.SHOWQUEUE.currentItem.showDir}</td>
+                        % if sickrage.srCore.SHOWQUEUE.currentItem.action_id == ShowQueueActions.ADD:
+                            <td>${sickrage.srCore.SHOWQUEUE.currentItem.showDir}</td>
                         % else:
                             <td></td>
                         % endif
                     % endtry
-                        <td>${sickrage.SHOWQUEUE.currentItem.inProgress}</td>
-                        % if sickrage.SHOWQUEUE.currentItem.priority == 10:
+                        <td>${sickrage.srCore.SHOWQUEUE.currentItem.inProgress}</td>
+                        % if sickrage.srCore.SHOWQUEUE.currentItem.priority == 10:
                         <td>LOW</td>
-                        % elif sickrage.SHOWQUEUE.currentItem.priority == 20:
+                        % elif sickrage.srCore.SHOWQUEUE.currentItem.priority == 20:
                         <td>NORMAL</td>
-                        % elif sickrage.SHOWQUEUE.currentItem.priority == 30:
+                        % elif sickrage.srCore.SHOWQUEUE.currentItem.priority == 30:
                         <td>HIGH</td>
                     % else:
-                            <td>sickrage.showQueue.currentItem.priority</td>
+                            <td>showQueue.currentItem.priority</td>
                     % endif
-                        <td>${sickrage.SHOWQUEUE.currentItem.added.strftime(dateTimeFormat)}</td>
-                        <td>${ShowQueueActions.names[sickrage.SHOWQUEUE.currentItem.action_id]}</td>
+                        <td>${sickrage.srCore.SHOWQUEUE.currentItem.added.strftime(dateTimeFormat)}</td>
+                        <td>${ShowQueueActions.names[sickrage.srCore.SHOWQUEUE.currentItem.action_id]}</td>
                 </tr>
             % endif
-            % for item in sickrage.SHOWQUEUE.queue:
+            % for item in sickrage.srCore.SHOWQUEUE.queue:
                 <tr>
                     % try:
                         <% showindexerid = item.show.indexerid %>
@@ -119,10 +119,10 @@
             </tr>
         </thead>
         <tbody>
-            % if sickrage.TV_DOWNLOAD_DIR:
+            % if sickrage.srConfig.TV_DOWNLOAD_DIR:
             <tr>
                 <td>TV Download Directory</td>
-                <td>${sickrage.TV_DOWNLOAD_DIR}</td>
+                <td>${sickrage.srConfig.TV_DOWNLOAD_DIR}</td>
                 % if tvdirFree is not False:
                 <td align="middle">${tvdirFree}</td>
                 % else:

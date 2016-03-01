@@ -18,7 +18,7 @@
 
 from __future__ import unicode_literals
 
-import datetime
+from datetime import datetime, timedelta
 
 import sickrage
 
@@ -35,23 +35,29 @@ class Notifications(object):
         self._messages = []
         self._errors = []
 
-    def message(self, title, message=''):
+    def message(self, title, message=None):
         """
         Add a regular notification to the queue
 
         title: The title of the notification
         message: The message portion of the notification
         """
-        self._messages.append(Notification(title, message, MESSAGE))
+        if message:
+            if isinstance(message, Exception):
+                message = message.message
+            self._messages.append(Notification(title, message, MESSAGE))
 
-    def error(self, title, message=''):
+    def error(self, title, message=None):
         """
         Add an error notification to the queue
 
         title: The title of the notification
         message: The message portion of the notification
         """
-        self._errors.append(Notification(title, message, ERROR))
+        if message:
+            if isinstance(message, Exception):
+                message = message.message
+            self._errors.append(Notification(title, message, ERROR))
 
     def get_notifications(self, remote_ip='127.0.0.1'):
         """
@@ -83,7 +89,7 @@ class Notification(object):
         self.title = title
         self.message = message
 
-        self._when = datetime.datetime.now()
+        self._when = datetime.now()
         self._seen = []
 
         if type:
@@ -94,7 +100,7 @@ class Notification(object):
         if timeout:
             self._timeout = timeout
         else:
-            self._timeout = datetime.timedelta(minutes=1)
+            self._timeout = timedelta(minutes=1)
 
     def is_new(self, remote_ip='127.0.0.1'):
         """
@@ -106,7 +112,7 @@ class Notification(object):
         """
         Returns True if the notification is older than the specified timeout value.
         """
-        return datetime.datetime.now() - self._when > self._timeout
+        return datetime.now() - self._when > self._timeout
 
     def see(self, remote_ip='127.0.0.1'):
         """
@@ -166,7 +172,7 @@ class QueueProgressIndicator():
 
     def nextName(self):
         for curItem in [
-            sickrage.SHOWQUEUE.currentItem] + sickrage.SHOWQUEUE.queue:  # @UndefinedVariable
+            sickrage.srCore.SHOWQUEUE.currentItem] + sickrage.srCore.SHOWQUEUE.queue:  # @UndefinedVariable
             if curItem in self.queueItemList:
                 return curItem.name
 

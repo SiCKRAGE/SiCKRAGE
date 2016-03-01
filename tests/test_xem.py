@@ -24,8 +24,8 @@ import re
 import unittest
 
 import sickrage
-from sickrage.core.databases import main_db
-from sickrage.core.tv.show import TVShow
+from core.databases import main_db
+from core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
 
@@ -40,7 +40,9 @@ class XEMBasicTests(SiCKRAGETestDBCase):
         for sqlShow in sqlResults:
             try:
                 curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
-                sickrage.showList.append(curShow)
+                curShow.saveToDB()
+                curShow.loadFromDB(skipNFO=True)
+                sickrage.srCore.SHOWLIST.append(curShow)
             except Exception:
                 pass
 
@@ -54,7 +56,9 @@ class XEMBasicTests(SiCKRAGETestDBCase):
         for sqlShow in sqlResults:
             try:
                 curShow = TVShow(int(sqlShow[b"indexer"]), int(sqlShow[b"indexer_id"]))
-                sickrage.showList.append(curShow)
+                curShow.saveToDB()
+                curShow.loadFromDB(skipNFO=True)
+                sickrage.srCore.SHOWLIST.append(curShow)
             except Exception as e:
                 print "There was an error creating the show"
 

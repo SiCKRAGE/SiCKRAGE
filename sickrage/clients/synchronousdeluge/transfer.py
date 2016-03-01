@@ -2,10 +2,12 @@ import socket
 import ssl
 import struct
 import zlib
+from _ssl import PROTOCOL_SSLv3, CERT_NONE
 
-from sickrage.clients.synchronousdeluge import rencode
+from clients.synchronousdeluge import rencode
 
 __all__ = ["DelugeTransfer"]
+
 
 class DelugeTransfer(object):
     def __init__(self):
@@ -18,7 +20,7 @@ class DelugeTransfer(object):
             self.disconnect()
 
         self.sock = socket.create_connection(hostport)
-        self.conn = ssl.wrap_socket(self.sock, None, None, False, ssl.CERT_NONE, ssl.PROTOCOL_SSLv3)
+        self.conn = ssl.wrap_socket(self.sock, None, None, False, CERT_NONE, PROTOCOL_SSLv3)
         self.connected = True
 
     def disconnect(self):
@@ -52,5 +54,3 @@ class DelugeTransfer(object):
                 buf = dobj.unused_data
 
             yield message
-
-

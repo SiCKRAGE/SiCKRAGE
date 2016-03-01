@@ -1,9 +1,10 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
+    from datetime import datetime, date, timedelta
+
     import sickrage
-    import datetime
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
 %>
 <%block name="scripts">
 <script type="text/javascript" src="${srRoot}/js/plotTooltip.js?${srPID}"></script>
@@ -34,9 +35,9 @@ ${('Not in progress', 'In Progress')[dailySearchStatus]}<br>
 <br>
 
 <h3>Find Propers Search:</h3>
-    <a class="btn ${('disabled', '')[bool(sickrage.DOWNLOAD_PROPERS)]}"
+    <a class="btn ${('disabled', '')[bool(sickrage.srConfig.DOWNLOAD_PROPERS)]}"
        href="${srRoot}/manage/manageSearches/forceFindPropers"><i class="icon-exclamation-sign"></i> Force</a>
-    % if not sickrage.DOWNLOAD_PROPERS:
+    % if not sickrage.srConfig.DOWNLOAD_PROPERS:
     Propers search disabled <br>
 % elif not findPropersStatus:
     Not in progress<br>

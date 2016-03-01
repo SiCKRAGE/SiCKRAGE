@@ -23,9 +23,9 @@ from __future__ import print_function, unicode_literals
 import unittest
 
 import sickrage
-from sickrage.core.processors.post_processor import PostProcessor
-from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.show import TVShow
+from core.processors.post_processor import PostProcessor
+from core.tv.episode import TVEpisode
+from core.tv.show import TVShow
 from tests import EPISODE, FILENAME, FILEPATH, SEASON, SHOWDIR, \
     SHOWNAME, SiCKRAGETestCase, SiCKRAGETestDBCase
 
@@ -57,13 +57,13 @@ class PPBasicTests(SiCKRAGETestDBCase):
         show.name = SHOWNAME
         show.location = SHOWDIR
         show.saveToDB()
-
-        sickrage.showList = [show]
+        show.loadFromDB(skipNFO=True)
+        sickrage.srCore.SHOWLIST = [show]
         ep = TVEpisode(show, SEASON, EPISODE)
         ep.name = "some ep name"
         ep.saveToDB()
 
-        sickrage.NAMECACHE.addNameToCache('show name', 3)
+        sickrage.srCore.NAMECACHE.addNameToCache('show name', 3)
         self.pp = PostProcessor(FILEPATH, process_method='move')
         self.assertTrue(self.pp.process)
 

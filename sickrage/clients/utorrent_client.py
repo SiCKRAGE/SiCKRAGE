@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 import re
 
 import sickrage
-from sickrage.clients import GenericClient
+from clients import GenericClient
 
 
 class uTorrentAPI(GenericClient):
@@ -67,9 +67,9 @@ class uTorrentAPI(GenericClient):
 
     def _set_torrent_label(self, result):
 
-        label = sickrage.TORRENT_LABEL
+        label = sickrage.srConfig.TORRENT_LABEL
         if result.show.is_anime:
-            label = sickrage.TORRENT_LABEL_ANIME
+            label = sickrage.srConfig.TORRENT_LABEL_ANIME
 
         params = {'action': 'setprops',
                   'hash': result.hash,
@@ -104,8 +104,8 @@ class uTorrentAPI(GenericClient):
 
     def _set_torrent_seed_time(self, result):
 
-        if sickrage.TORRENT_SEED_TIME:
-            time = 3600 * float(sickrage.TORRENT_SEED_TIME)
+        if sickrage.srConfig.TORRENT_SEED_TIME:
+            time = 3600 * float(sickrage.srConfig.TORRENT_SEED_TIME)
             params = {'action': 'setprops',
                       'hash': result.hash,
                       's': 'seed_override',
@@ -133,7 +133,7 @@ class uTorrentAPI(GenericClient):
 
     def _set_torrent_pause(self, result):
 
-        if sickrage.TORRENT_PAUSED:
+        if sickrage.srConfig.TORRENT_PAUSED:
             params = {'action': 'pause', 'hash': result.hash}
         else:
             params = {'action': 'start', 'hash': result.hash}

@@ -22,19 +22,20 @@ import os
 import subprocess
 
 import sickrage
+from notifiers import srNotifiers
 
 
-class synoIndexNotifier:
-    def notify_snatch(self, ep_name):
+class synoIndexNotifier(srNotifiers):
+    def _notify_snatch(self, ep_name):
         pass
 
-    def notify_download(self, ep_name):
+    def _notify_download(self, ep_name):
         pass
 
-    def notify_subtitle_download(self, ep_name, lang):
+    def _notify_subtitle_download(self, ep_name, lang):
         pass
 
-    def notify_version_update(self, new_version):
+    def _notify_version_update(self, new_version):
         pass
 
     def moveFolder(self, old_path, new_path):
@@ -44,18 +45,18 @@ class synoIndexNotifier:
         self.moveObject(old_file, new_file)
 
     def moveObject(self, old_path, new_path):
-        if sickrage.USE_SYNOINDEX:
+        if sickrage.srConfig.USE_SYNOINDEX:
             synoindex_cmd = ['/usr/syno/bin/synoindex', '-N', os.path.abspath(new_path),
                              os.path.abspath(old_path)]
-            sickrage.LOGGER.debug("Executing command " + str(synoindex_cmd))
-            sickrage.LOGGER.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
+            sickrage.srLogger.debug("Executing command " + str(synoindex_cmd))
+            sickrage.srLogger.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                     cwd=sickrage.ROOT_DIR)
+                                     cwd=sickrage.PROG_DIR)
                 out, err = p.communicate()  # @UnusedVariable
-                sickrage.LOGGER.debug("Script result: " + str(out))
+                sickrage.srLogger.debug("Script result: " + str(out))
             except OSError as e:
-                sickrage.LOGGER.error("Unable to run synoindex: {}".format(e))
+                sickrage.srLogger.error("Unable to run synoindex: {}".format(e.message))
 
     def deleteFolder(self, cur_path):
         self.makeObject('-D', cur_path)
@@ -70,14 +71,14 @@ class synoIndexNotifier:
         self.makeObject('-a', cur_file)
 
     def makeObject(self, cmd_arg, cur_path):
-        if sickrage.USE_SYNOINDEX:
+        if sickrage.srConfig.USE_SYNOINDEX:
             synoindex_cmd = ['/usr/syno/bin/synoindex', cmd_arg, os.path.abspath(cur_path)]
-            sickrage.LOGGER.debug("Executing command " + str(synoindex_cmd))
-            sickrage.LOGGER.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
+            sickrage.srLogger.debug("Executing command " + str(synoindex_cmd))
+            sickrage.srLogger.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                     cwd=sickrage.ROOT_DIR)
+                                     cwd=sickrage.PROG_DIR)
                 out, err = p.communicate()  # @UnusedVariable
-                sickrage.LOGGER.debug("Script result: " + str(out))
+                sickrage.srLogger.debug("Script result: " + str(out))
             except OSError as e:
-                sickrage.LOGGER.error("Unable to run synoindex: {}".format(e))
+                sickrage.srLogger.error("Unable to run synoindex: {}".format(e.message))

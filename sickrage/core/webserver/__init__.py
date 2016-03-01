@@ -21,8 +21,6 @@
 from __future__ import unicode_literals
 
 import os
-import subprocess
-import sys
 import threading
 import webbrowser
 
@@ -31,22 +29,24 @@ from tornado.ioloop import IOLoop
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates, generateApiKey
-from sickrage.core.webserver.api import ApiHandler, KeyHandler
-from sickrage.core.webserver.routes import route
-from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
+from core.helpers import create_https_certificates, generateApiKey, get_lan_ip
+from core.webserver.api import ApiHandler, KeyHandler
+from core.webserver.routes import Route
+from core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
 
 
-def launch_browser(protocol='http', startport=8081, web_root='/'):
-    url = '{}://localhost:{}{}/home/'.format(protocol, startport, web_root)
+def launch_browser(protocol=None, startport=None, web_root=None):
+    browserurl = '{}://{}:{}{}/home/'.format(protocol or 'http', get_lan_ip(), startport or 8081, web_root or '/')
 
     try:
-        if sys.platform=='darwin':
-            subprocess.Popen(['open', url])
-        else:
-            webbrowser.open_new_tab(url)
-    except OSError:
-        print 'Please open a browser on: '+url
+        print("Launching browser window")
+
+        try:
+            webbrowser.open(browserurl, 2, 1)
+        except webbrowser.Error:
+            webbrowser.open(browserurl, 1, 1)
+    except webbrowser.Error:
+        print("Unable to launch a browser")
 
 
 class StaticImageHandler(StaticFileHandler):
@@ -55,180 +55,149 @@ class StaticImageHandler(StaticFileHandler):
 
     def get(self, path, include_body=True):
         # image cache check
-        self.root = (self.root, os.path.join(sickrage.CACHE_DIR, 'images'))[
-            os.path.exists(os.path.normpath(os.path.join(sickrage.CACHE_DIR, 'images', path)))
+        self.root = (self.root, os.path.join(sickrage.srConfig.CACHE_DIR, 'images'))[
+            os.path.exists(os.path.normpath(os.path.join(sickrage.srConfig.CACHE_DIR, 'images', path)))
         ]
 
         # image css check
-        self.root = (self.root, os.path.join(sickrage.GUI_DIR, 'css', 'lib', 'images'))[
-            os.path.exists(os.path.normpath(os.path.join(sickrage.GUI_DIR, 'css', 'lib', 'images', path)))
+        self.root = (self.root, os.path.join(sickrage.srConfig.GUI_DIR, 'css', 'lib', 'images'))[
+            os.path.exists(os.path.normpath(os.path.join(sickrage.srConfig.GUI_DIR, 'css', 'lib', 'images', path)))
         ]
 
         return super(StaticImageHandler, self).get(path, include_body)
 
 
-class SRWebServer(object):
-    def __init__(self, **kwargs):
+class srWebServer(object):
+    def __init__(self):
+        self.io_loop = IOLoop.instance()
         self.running = True
         self.restart = False
-        self.io_loop = IOLoop.instance()
+        self.open_browser = False
 
-        self.options = {}
-        self.options.setdefault('port', 8081)
-        self.options.setdefault('host', '0.0.0.0')
-        self.options.setdefault('log_dir', None)
-        self.options.setdefault('username', '')
-        self.options.setdefault('password', '')
-        self.options.setdefault('web_root', '/')
-        self.options.setdefault('stop_timeout', 3)
-        self.options.update(kwargs)
+        self.port = sickrage.srConfig.WEB_PORT
+        self.host = sickrage.srConfig.WEB_HOST
 
         # video root
-        if sickrage.ROOT_DIRS:
-            root_dirs = sickrage.ROOT_DIRS.split('|')
+        if sickrage.srConfig.ROOT_DIRS:
+            root_dirs = sickrage.srConfig.ROOT_DIRS.split('|')
             self.video_root = root_dirs[int(root_dirs[0]) + 1]
         else:
             self.video_root = None
 
         # web root
-        if self.options[b'web_root']:
-            sickrage.WEB_ROOT = self.options[b'web_root'] = ('/' + self.options[b'web_root'].lstrip('/').strip('/'))
+        if sickrage.srConfig.WEB_ROOT:
+            sickrage.srConfig.WEB_ROOT = sickrage.srConfig.WEB_ROOT = ('/' + sickrage.srConfig.WEB_ROOT.lstrip('/').strip('/'))
 
         # api root
-        if not sickrage.API_KEY:
-            sickrage.API_KEY = generateApiKey()
-        self.options[b'api_root'] = r'%s/api/%s' % (sickrage.WEB_ROOT, sickrage.API_KEY)
+        if not sickrage.srConfig.API_KEY:
+            sickrage.srConfig.API_KEY = generateApiKey()
+        self.api_root = r'%s/api/%s' % (sickrage.srConfig.WEB_ROOT, sickrage.srConfig.API_KEY)
 
         # tornado setup
-        self.enable_https = self.options[b'enable_https']
-        self.https_cert = self.options[b'https_cert']
-        self.https_key = self.options[b'https_key']
-
-        if self.enable_https:
+        if sickrage.srConfig.ENABLE_HTTPS:
             # If either the HTTPS certificate or key do not exist, make some self-signed ones.
-            if not (self.https_cert and os.path.exists(self.https_cert)) or not (
-                        self.https_key and os.path.exists(self.https_key)):
-                if not create_https_certificates(self.https_cert, self.https_key):
-                    sickrage.LOGGER.info("Unable to create CERT/KEY files, disabling HTTPS")
-                    sickrage.ENABLE_HTTPS = False
-                    self.enable_https = False
+            if not (sickrage.srConfig.HTTPS_CERT and os.path.exists(sickrage.srConfig.HTTPS_CERT)) or not (
+                        sickrage.srConfig.HTTPS_KEY and os.path.exists(sickrage.srConfig.HTTPS_KEY)):
+                if not create_https_certificates(sickrage.srConfig.HTTPS_CERT, sickrage.srConfig.HTTPS_KEY):
+                    sickrage.srLogger.info("Unable to create CERT/KEY files, disabling HTTPS")
+                    sickrage.srConfig.ENABLE_HTTPS = False
 
-            if not (os.path.exists(self.https_cert) and os.path.exists(self.https_key)):
-                sickrage.LOGGER.warning("Disabled HTTPS because of missing CERT and KEY files")
-                sickrage.ENABLE_HTTPS = False
-                self.enable_https = False
+            if not (os.path.exists(sickrage.srConfig.HTTPS_CERT) and os.path.exists(sickrage.srConfig.HTTPS_KEY)):
+                sickrage.srLogger.warning("Disabled HTTPS because of missing CERT and KEY files")
+                sickrage.srConfig.ENABLE_HTTPS = False
 
         # Load the app
         self.app = Application([],
-                               debug=sickrage.DEBUG,
+                               debug=sickrage.srConfig.DEBUG,
                                autoreload=False,
-                               gzip=sickrage.WEB_USE_GZIP,
-                               xheaders=sickrage.HANDLE_REVERSE_PROXY,
-                               cookie_secret=sickrage.WEB_COOKIE_SECRET,
-                               login_url='%s/login/' % self.options[b'web_root'],
+                               gzip=sickrage.srConfig.WEB_USE_GZIP,
+                               xheaders=sickrage.srConfig.HANDLE_REVERSE_PROXY,
+                               cookie_secret=sickrage.srConfig.WEB_COOKIE_SECRET,
+                               login_url='%s/login/' % sickrage.srConfig.WEB_ROOT,
                                )
 
         # Main Handlers
         self.app.add_handlers('.*$', [
             # webapi handler
-            (r'%s(/?.*)' % self.options[b'api_root'], ApiHandler),
+            (r'%s(/?.*)' % self.api_root, ApiHandler),
 
             # webapi key retrieval
-            (r'%s/getkey(/?.*)' % self.options[b'web_root'], KeyHandler),
+            (r'%s/getkey(/?.*)' % sickrage.srConfig.WEB_ROOT, KeyHandler),
 
             # webapi builder redirect
-            (r'%s/api/builder' % self.options[b'web_root'], RedirectHandler,
-             {"url": self.options[b'web_root'] + '/apibuilder/'}),
+            (r'%s/api/builder' % sickrage.srConfig.WEB_ROOT, RedirectHandler,
+             {"url": sickrage.srConfig.WEB_ROOT + '/apibuilder/'}),
 
             # webui login/logout handlers
-            (r'%s/login(/?)' % self.options[b'web_root'], LoginHandler),
-            (r'%s/logout(/?)' % self.options[b'web_root'], LogoutHandler),
+            (r'%s/login(/?)' % sickrage.srConfig.WEB_ROOT, LoginHandler),
+            (r'%s/logout(/?)' % sickrage.srConfig.WEB_ROOT, LogoutHandler),
 
             # webui handlers
-        ] + route.get_routes(self.options[b'web_root']))
+        ] + Route.get_routes(sickrage.srConfig.WEB_ROOT))
 
         # Web calendar handler (Needed because option Unprotected calendar)
         self.app.add_handlers('.*$', [
-            (r'%s/calendar' % self.options[b'web_root'], CalendarHandler),
+            (r'%s/calendar' % sickrage.srConfig.WEB_ROOT, CalendarHandler),
         ])
 
         # Static File Handlers
         self.app.add_handlers(".*$", [
             # favicon
-            (r'%s/(favicon\.ico)' % self.options[b'web_root'], StaticFileHandler,
-             {"path": os.path.join(self.options[b'gui_root'], 'images/ico/favicon.ico')}),
+            (r'%s/(favicon\.ico)' % sickrage.srConfig.WEB_ROOT, StaticFileHandler,
+             {"path": os.path.join(sickrage.srConfig.GUI_DIR, 'images/ico/favicon.ico')}),
 
             # images
-            (r'%s.*?/images/(.*)' % self.options[b'web_root'], StaticImageHandler,
-             {"path": os.path.join(self.options[b'gui_root'], 'images')}),
+            (r'%s.*?/images/(.*)' % sickrage.srConfig.WEB_ROOT, StaticImageHandler,
+             {"path": os.path.join(sickrage.srConfig.GUI_DIR, 'images')}),
 
             # css
-            (r'%s/css/(.*)' % self.options[b'web_root'], StaticFileHandler,
-             {"path": os.path.join(self.options[b'gui_root'], 'css')}),
+            (r'%s/css/(.*)' % sickrage.srConfig.WEB_ROOT, StaticFileHandler,
+             {"path": os.path.join(sickrage.srConfig.GUI_DIR, 'css')}),
 
             # javascript
-            (r'%s/js/(.*)' % self.options[b'web_root'], StaticFileHandler,
-             {"path": os.path.join(self.options[b'gui_root'], 'js')}),
+            (r'%s/js/(.*)' % sickrage.srConfig.WEB_ROOT, StaticFileHandler,
+             {"path": os.path.join(sickrage.srConfig.GUI_DIR, 'js')}),
 
             # videos
-        ] + [(r'%s/videos/(.*)' % self.options[b'web_root'], StaticFileHandler,
+        ] + [(r'%s/videos/(.*)' % sickrage.srConfig.WEB_ROOT, StaticFileHandler,
               {"path": self.video_root})])
-
-        # daemonize sickrage
-        if sickrage.DAEMONIZE:
-            import daemon
-            ctx = daemon.DaemonContext()
-            ctx.initgroups = False
-            ctx.open()
-
-        # write sickrage pidfile
-        sickrage.PID = os.getpid()
-        if sickrage.CREATEPID:
-            with file(sickrage.PIDFILE, 'w+') as pf:
-                pf.write(str(sickrage.PID))
-
-        self.io_loop.add_callback(sickrage.Scheduler.start)
 
     def start(self):
         threading.currentThread().setName("TORNADO")
 
         try:
             self.server = HTTPServer(self.app)
-            if self.enable_https:
-                self.server.ssl_options = {"certfile": self.https_cert, "keyfile": self.https_key}
-            self.server.listen(self.options[b'port'], self.options[b'host'])
-
-            # start tornado web server
-            from sickrage.core.helpers import get_lan_ip
-            sickrage.LOGGER.info("Starting SiCKRAGE web server on [{}://{}:{}/]".format(
-                            ('http', 'https')[sickrage.ENABLE_HTTPS], get_lan_ip(), sickrage.WEB_PORT))
+            if sickrage.srConfig.ENABLE_HTTPS:
+                self.server.ssl_options = {"certfile": sickrage.srConfig.HTTPS_CERT, "keyfile": sickrage.srConfig.HTTPS_KEY}
+            self.server.listen(self.port, self.host)
 
             # launch browser window
-            if sickrage.LAUNCH_BROWSER and not any([sickrage.WEB_NOLAUNCH, sickrage.DAEMONIZE]):
-                sickrage.LOGGER.info("Launching browser window")
-                threading.Thread(None, lambda: launch_browser(('http', 'https')[sickrage.ENABLE_HTTPS], sickrage.WEB_PORT, sickrage.WEB_ROOT)).start()
+            if self.open_browser:
+                threading.Thread(None, lambda: launch_browser(('http', 'https')[sickrage.srConfig.ENABLE_HTTPS],
+                                                              sickrage.srConfig.WEB_PORT, sickrage.srConfig.WEB_ROOT)).start()
 
-            sickrage.STARTED = True
+            sickrage.srConfig.STARTED = True
+            
+            sickrage.srLogger.info(
+                "SiCKRAGE STARTED :: VERSION:[{}] CONFIG:[{}] URL:[{}://{}:{}/]"
+                    .format(sickrage.srCore.VERSION,
+                            sickrage.srConfig.CONFIG_FILE,
+                            ('http', 'https')[sickrage.srConfig.ENABLE_HTTPS],
+                            get_lan_ip(),
+                            sickrage.srConfig.WEB_PORT)
+            )
+
             self.io_loop.start()
         except (KeyboardInterrupt, SystemExit) as e:
-            sickrage.LOGGER.info('PERFORMING SHUTDOWN')
+            sickrage.srLogger.info('PERFORMING SHUTDOWN')
         except Exception as e:
-            sickrage.LOGGER.info("TORNADO failed to start: {}".format(e))
+            sickrage.srLogger.info("TORNADO failed to start: {}".format(e.message))
         finally:
             self.server_shutdown()
-            sickrage.LOGGER.shutdown()
-
-
-    @staticmethod
-    def remove_pid_file():
-        try:
-            if os.path.exists(sickrage.PIDFILE):
-                os.remove(sickrage.PIDFILE)
-        except (IOError, OSError):
-            pass
+            sickrage.srLogger.shutdown()
 
     def server_restart(self):
-        sickrage.LOGGER.info('PERFORMING RESTART')
+        sickrage.srLogger.info('PERFORMING RESTART')
         import tornado.autoreload
         tornado.autoreload.add_reload_hook(self.server_shutdown)
         tornado.autoreload.start()
@@ -240,11 +209,8 @@ class SRWebServer(object):
             self.io_loop.stop()
 
         # shutdown sickrage
-        if sickrage.STARTED:
-            sickrage.core.halt()
-            sickrage.core.saveall()
+        if sickrage.srCore.STARTED:
+            sickrage.srCore.halt()
+            sickrage.srCore.save_all()
 
-        if sickrage.DAEMONIZE and sickrage.PIDFILE:
-            self.remove_pid_file()
-
-        sickrage.LOGGER.info('SHUTDOWN/RESTART COMPLETED!')
+        sickrage.srLogger.info('SHUTDOWN COMPLETED!')

@@ -1,9 +1,9 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.indexers import adba
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import statusStrings, Quality
+    from indexers import adba
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import statusStrings, Quality
 %>
 
 <%block name="metas">
@@ -48,7 +48,7 @@
                                 <span class="component-title">Show Location</span>
                                 <span class="component-desc">
                                     <input type="hidden" name="show" value="${show.indexerid}" />
-                                    <input type="text" name="location" id="location" value="${show._location}" class="form-control form-control-inline input-sm input350" autocapitalize="off" />
+                                    <input type="text" name="location" id="location" value="${show.location}" class="form-control form-control-inline input-sm input350" autocapitalize="off" />
                                 </span>
                             </label>
                         </div>
@@ -97,7 +97,7 @@
                                     <select name="indexerLang" id="indexerLangSelect"
                                             class="form-control form-control-inline input-sm bfh-languages"
                                             data-language="${show.lang}"
-                                            data-available="${','.join(sickrage.INDEXER_API().config[b'valid_languages'])}"></select>
+                                            data-available="${','.join(sickrage.srCore.INDEXER_API().config[b'valid_languages'])}"></select>
                                     <div class="clear-left"><p>This only applies to episode filenames and the contents of metadata files.</p></div>
                                 </span>
                             </label>
@@ -108,7 +108,7 @@
                                 <span class="component-title">Subtitles</span>
                                 <span class="component-desc">
                                     <input type="checkbox" id="subtitles"
-                                           name="subtitles" ${('', 'checked="checked')[show.subtitles == 1 and sickrage.USE_SUBTITLES == True]} ${('disabled="disabled', '')[bool(sickrage.USE_SUBTITLES)]}/> search for subtitles
+                                           name="subtitles" ${('', 'checked="checked')[show.subtitles == 1 and sickrage.srConfig.USE_SUBTITLES == True]} ${('disabled="disabled', '')[bool(sickrage.srConfig.USE_SUBTITLES)]}/> search for subtitles
                                 </span>
                             </label>
                         </div>
@@ -168,7 +168,7 @@
                                 <span class="component-title">Season folders</span>
                                 <span class="component-desc">
                                     <input type="checkbox" id="season_folders"
-                                           name="flatten_folders" ${('checked="checked"', '')[show.flatten_folders == 1 and not sickrage.NAMING_FORCE_FOLDERS]} ${('', 'disabled="disabled"')[bool(sickrage.NAMING_FORCE_FOLDERS)]}/> group episodes by season folder (uncheck to store in a single folder)
+                                           name="flatten_folders" ${('checked="checked"', '')[show.flatten_folders == 1 and not sickrage.srConfig.NAMING_FORCE_FOLDERS]} ${('', 'disabled="disabled"')[bool(sickrage.srConfig.NAMING_FORCE_FOLDERS)]}/> group episodes by season folder (uncheck to store in a single folder)
                                 </span>
                             </label>
                         </div>

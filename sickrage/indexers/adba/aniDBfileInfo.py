@@ -18,13 +18,14 @@
 from __future__ import unicode_literals, with_statement
 
 import hashlib
+import io
 import os
 import time
 from xml.etree.ElementTree import ElementTree
 
 import requests
 
-from sickrage.core.helpers import download_file
+from core.helpers import download_file
 
 
 def get_file_hash(filePath):
@@ -46,7 +47,7 @@ def get_file_hash(filePath):
         m.update(data)
         return m
 
-    with open(filePath, 'rb') as f:
+    with io.open(filePath, 'rb') as f:
         a = gen(f)
         hashes = [md4_hash(data).digest() for data in a]
         if len(hashes) == 1:
@@ -68,7 +69,7 @@ def _remove_file_failed(file):
 def _download_file(url, filename):
     try:
         r = requests.get(url, stream=True, verify=False)
-        with open(filename, 'wb') as fp:
+        with io.open(filename, 'wb') as fp:
             for chunk in r.iter_content(chunk_size=1024):
                 if chunk:
                     fp.write(chunk)
@@ -129,5 +130,5 @@ def read_xml_into_etree(filePath):
     if not filePath:
         return None
 
-    with open(filePath, "r") as f:
+    with io.open(filePath, "r") as f:
         return ElementTree(file=f)

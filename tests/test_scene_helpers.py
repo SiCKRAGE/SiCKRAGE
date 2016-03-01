@@ -23,12 +23,12 @@ from __future__ import print_function, unicode_literals
 import unittest
 
 import sickrage
-from sickrage.core.common import countryList
-from sickrage.core.databases import cache_db
-from sickrage.core.helpers import show_names
-from sickrage.core.scene_exceptions import exceptionsCache, retrieve_exceptions, get_scene_exceptions, \
+from core.common import countryList
+from core.databases import cache_db
+from core.helpers import show_names
+from core.scene_exceptions import exceptionsCache, get_scene_exceptions, \
     get_scene_exception_by_name
-from sickrage.core.tv.show import TVShow
+from core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
 
@@ -44,6 +44,9 @@ class SceneTests(SiCKRAGETestDBCase):
     def _test_allPossibleShowNames(self, name, indexerid=0, expected=[]):
         s = TVShow(1, indexerid)
         s.name = name
+        s.saveToDB()
+        s.loadFromDB(skipNFO=True)
+
 
         result = show_names.allPossibleShowNames(s)
         self.assertTrue(len(set(expected).intersection(set(result))) == len(expected))
@@ -69,6 +72,8 @@ class SceneTests(SiCKRAGETestDBCase):
             scene_name, show_name = testCase
             s = TVShow(1, 0)
             s.name = show_name
+            s.saveToDB()
+            s.loadFromDB(skipNFO=True)
             self._test_isGoodName(scene_name, s)
             del s
 
@@ -114,7 +119,6 @@ class SceneTests(SiCKRAGETestDBCase):
 class SceneExceptionTestCase(SiCKRAGETestDBCase):
     def setUp(self, **kwargs):
         super(SceneExceptionTestCase, self).setUp()
-        retrieve_exceptions()
 
     def tearDown(self, **kwargs):
         super(SceneExceptionTestCase, self).tearDown()
@@ -138,11 +142,10 @@ class SceneExceptionTestCase(SiCKRAGETestDBCase):
         cache_db.CacheDB().action("DELETE FROM scene_exceptions")
 
         # put something in the cache
-        sickrage.NAMECACHE.addNameToCache('Cached Name', 0)
+        sickrage.srCore.NAMECACHE.addNameToCache('Cached Name', 0)
 
         # updating should not clear the cache this time since our exceptions didn't change
-        retrieve_exceptions()
-        self.assertEqual(sickrage.NAMECACHE.retrieveNameFromCache('Cached Name'), 0)
+        self.assertEqual(sickrage.srCore.NAMECACHE.retrieveNameFromCache('Cached Name'), 0)
 
 
 if __name__ == '__main__':

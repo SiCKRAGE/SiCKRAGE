@@ -25,12 +25,13 @@ import urllib2
 from xml.etree import ElementTree
 
 import sickrage
-from sickrage.core.common import NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
+from core.common import NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, NOTIFY_GIT_UPDATE_TEXT, \
     NOTIFY_GIT_UPDATE
-from sickrage.core.common import notifyStrings
+from core.common import notifyStrings
+from notifiers import srNotifiers
 
 
-class PLEXNotifier:
+class PLEXNotifier(srNotifiers):
     def _send_to_plex(self, command, host, username=None, password=None):
         """Handles communication to Plex hosts via HTTP API
 
@@ -47,12 +48,12 @@ class PLEXNotifier:
 
         # fill in omitted parameters
         if not username:
-            username = sickrage.PLEX_CLIENT_USERNAME
+            username = sickrage.srConfig.PLEX_CLIENT_USERNAME
         if not password:
-            password = sickrage.PLEX_CLIENT_PASSWORD
+            password = sickrage.srConfig.PLEX_CLIENT_PASSWORD
 
         if not host:
-            sickrage.LOGGER.warning('PLEX: No host specified, check your settings')
+            sickrage.srLogger.warning('PLEX: No host specified, check your settings')
             return False
 
         for key in command:
@@ -60,7 +61,7 @@ class PLEXNotifier:
                 command[key] = command[key].encode('utf-8')
 
         enc_command = urllib.urlencode(command)
-        sickrage.LOGGER.debug('PLEX: Encoded API command: ' + enc_command)
+        sickrage.srLogger.debug('PLEX: Encoded API command: ' + enc_command)
 
         url = 'http://%s/xbmcCmds/xbmcHttp/?%s' % (host, enc_command)
         try:
@@ -70,21 +71,21 @@ class PLEXNotifier:
                 base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
                 authheader = 'Basic %s' % base64string
                 req.add_header('Authorization', authheader)
-                sickrage.LOGGER.debug('PLEX: Contacting (with auth header) via url: ' + url)
+                sickrage.srLogger.debug('PLEX: Contacting (with auth header) via url: ' + url)
             else:
-                sickrage.LOGGER.debug('PLEX: Contacting via url: ' + url)
+                sickrage.srLogger.debug('PLEX: Contacting via url: ' + url)
 
             response = urllib2.urlopen(req)
 
-            result = response.read().decode(sickrage.SYS_ENCODING)
+            result = response.read().decode(sickrage.srCore.SYS_ENCODING)
             response.close()
 
-            sickrage.LOGGER.debug('PLEX: HTTP response: ' + result.replace('\n', ''))
+            sickrage.srLogger.debug('PLEX: HTTP response: ' + result.replace('\n', ''))
             # could return result response = re.compile('<html><li>(.+\w)</html>').findall(result)
             return 'OK'
 
         except (urllib2.URLError, IOError) as e:
-            sickrage.LOGGER.warning('PLEX: Warning: Couldn\'t contact Plex at ' + url + ' ' + e)
+            sickrage.srLogger.warning('PLEX: Warning: Couldn\'t contact Plex at ' + url + ' ' + e)
             return False
 
     def _notify_pmc(self, message, title='SiCKRAGE', host=None, username=None, password=None, force=False):
@@ -105,20 +106,20 @@ class PLEXNotifier:
         """
 
         # suppress notifications if the notifier is disabled but the notify options are checked
-        if not sickrage.USE_PLEX_CLIENT and not force:
+        if not sickrage.srConfig.USE_PLEX_CLIENT and not force:
             return False
 
         # fill in omitted parameters
         if not host:
-            host = sickrage.PLEX_HOST
+            host = sickrage.srConfig.PLEX_HOST
         if not username:
-            username = sickrage.PLEX_CLIENT_USERNAME
+            username = sickrage.srConfig.PLEX_CLIENT_USERNAME
         if not password:
-            password = sickrage.PLEX_CLIENT_PASSWORD
+            password = sickrage.srConfig.PLEX_CLIENT_PASSWORD
 
         result = ''
         for curHost in [x.strip() for x in host.split(',')]:
-            sickrage.LOGGER.debug('PLEX: Sending notification to \'%s\' - %s' % (curHost, message))
+            sickrage.srLogger.debug('PLEX: Sending notification to \'%s\' - %s' % (curHost, message))
 
             command = {'command': 'ExecBuiltIn',
                        'parameter': 'Notification(%s,%s)' % (title.encode('utf-8'), message.encode('utf-8'))}
@@ -132,20 +133,20 @@ class PLEXNotifier:
     # Public functions
     ##############################################################################
 
-    def notify_snatch(self, ep_name):
-        if sickrage.PLEX_NOTIFY_ONSNATCH:
+    def _notify_snatch(self, ep_name):
+        if sickrage.srConfig.PLEX_NOTIFY_ONSNATCH:
             self._notify_pmc(ep_name, notifyStrings[NOTIFY_SNATCH])
 
-    def notify_download(self, ep_name):
-        if sickrage.PLEX_NOTIFY_ONDOWNLOAD:
+    def _notify_download(self, ep_name):
+        if sickrage.srConfig.PLEX_NOTIFY_ONDOWNLOAD:
             self._notify_pmc(ep_name, notifyStrings[NOTIFY_DOWNLOAD])
 
-    def notify_subtitle_download(self, ep_name, lang):
-        if sickrage.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD:
+    def _notify_subtitle_download(self, ep_name, lang):
+        if sickrage.srConfig.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify_pmc(ep_name + ': ' + lang, notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD])
 
-    def notify_version_update(self, new_version='??'):
-        if sickrage.USE_PLEX:
+    def _notify_version_update(self, new_version='??'):
+        if sickrage.srConfig.USE_PLEX:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]
             if update_text and title and new_version:
@@ -169,34 +170,34 @@ class PLEXNotifier:
 
         """
 
-        if sickrage.USE_PLEX and sickrage.PLEX_UPDATE_LIBRARY:
+        if sickrage.srConfig.USE_PLEX and sickrage.srConfig.PLEX_UPDATE_LIBRARY:
 
-            if not sickrage.PLEX_SERVER_HOST:
-                sickrage.LOGGER.debug('PLEX: No Plex Media Server host specified, check your settings')
+            if not sickrage.srConfig.PLEX_SERVER_HOST:
+                sickrage.srLogger.debug('PLEX: No Plex Media Server host specified, check your settings')
                 return False
 
             if not host:
-                host = sickrage.PLEX_SERVER_HOST
+                host = sickrage.srConfig.PLEX_SERVER_HOST
             if not username:
-                username = sickrage.PLEX_USERNAME
+                username = sickrage.srConfig.PLEX_USERNAME
             if not password:
-                password = sickrage.PLEX_PASSWORD
+                password = sickrage.srConfig.PLEX_PASSWORD
 
             if not plex_server_token:
-                plex_server_token = sickrage.PLEX_SERVER_TOKEN
+                plex_server_token = sickrage.srConfig.PLEX_SERVER_TOKEN
 
             # if username and password were provided, fetch the auth token from plex.tv
             token_arg = ''
             if plex_server_token:
                 token_arg = '?X-Plex-Token=' + plex_server_token
             elif username and password:
-                sickrage.LOGGER.debug('PLEX: fetching plex.tv credentials for user: ' + username)
+                sickrage.srLogger.debug('PLEX: fetching plex.tv credentials for user: ' + username)
                 req = urllib2.Request('https://plex.tv/users/sign_in.xml', data='')
                 authheader = 'Basic %s' % base64.encodestring('%s:%s' % (username, password))[:-1]
                 req.add_header('Authorization', authheader)
                 req.add_header('X-Plex-Device-Name', 'SiCKRAGE')
                 req.add_header('X-Plex-Product', 'SiCKRAGE Notifier')
-                req.add_header('X-Plex-Client-Identifier', sickrage.USER_AGENT)
+                req.add_header('X-Plex-Client-Identifier', sickrage.srConfig.USER_AGENT)
                 req.add_header('X-Plex-Version', '1.0')
 
                 try:
@@ -206,11 +207,11 @@ class PLEXNotifier:
                     token_arg = '?X-Plex-Token=' + token
 
                 except urllib2.URLError as e:
-                    sickrage.LOGGER.debug(
+                    sickrage.srLogger.debug(
                             'PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, e))
 
                 except (ValueError, IndexError) as e:
-                    sickrage.LOGGER.debug('PLEX: Error parsing plex.tv response: ' + e)
+                    sickrage.srLogger.debug('PLEX: Error parsing plex.tv response: ' + e)
 
             file_location = '' if None is ep_obj else ep_obj.location
             host_list = [x.strip() for x in host.split(',')]
@@ -224,19 +225,19 @@ class PLEXNotifier:
                     xml_tree = ElementTree.parse(urllib.urlopen(url))
                     media_container = xml_tree.getroot()
                 except IOError as e:
-                    sickrage.LOGGER.warning('PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
+                    sickrage.srLogger.warning('PLEX: Error while trying to contact Plex Media Server: {}'.format(e.message))
                     hosts_failed.append(cur_host)
                     continue
                 except Exception as e:
                     if 'invalid token' in str(e):
-                        sickrage.LOGGER.error('PLEX: Please set TOKEN in Plex settings: ')
+                        sickrage.srLogger.error('PLEX: Please set TOKEN in Plex settings: ')
                     else:
-                        sickrage.LOGGER.error('PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
+                        sickrage.srLogger.error('PLEX: Error while trying to contact Plex Media Server: {}'.format(e.message))
                     continue
 
                 sections = media_container.findall('.//Directory')
                 if not sections:
-                    sickrage.LOGGER.debug('PLEX: Plex Media Server not running on: ' + cur_host)
+                    sickrage.srLogger.debug('PLEX: Plex Media Server not running on: ' + cur_host)
                     hosts_failed.append(cur_host)
                     continue
 
@@ -266,13 +267,13 @@ class PLEXNotifier:
                     force and urllib.urlopen(url)
                     host_list.append(cur_host)
                 except Exception as e:
-                    sickrage.LOGGER.warning('PLEX: Error updating library section for Plex Media Server: {}'.format(e))
+                    sickrage.srLogger.warning('PLEX: Error updating library section for Plex Media Server: {}'.format(e.message))
                     hosts_failed.append(cur_host)
 
             if hosts_match:
-                sickrage.LOGGER.debug('PLEX: Updating hosts where TV section paths match the downloaded show: ' + ', '.join(
+                sickrage.srLogger.debug('PLEX: Updating hosts where TV section paths match the downloaded show: ' + ', '.join(
                     set(host_list)))
             else:
-                sickrage.LOGGER.debug('PLEX: Updating all hosts with TV sections: ' + ', '.join(set(host_list)))
+                sickrage.srLogger.debug('PLEX: Updating all hosts with TV sections: ' + ', '.join(set(host_list)))
 
             return (', '.join(set(hosts_failed)), None)[not len(hosts_failed)]

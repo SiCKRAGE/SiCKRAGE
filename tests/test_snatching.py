@@ -23,13 +23,12 @@ from __future__ import unicode_literals
 import unittest
 
 import sickrage
-from sickrage.core.common import HD, SD, WANTED
-from sickrage.core.search import searchProviders
-from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.show import TVShow
-from sickrage.providers import sortedProviderDict
+from core.common import HD, SD, WANTED
+from core.search import searchProviders
+from core.tv.episode import TVEpisode
+from core.tv.show import TVShow
+from providers import sortedProviderDict
 from tests import SiCKRAGETestDBCase
-
 
 tests = {"Dexter": {"a": 1, "q": HD, "s": 5, "e": [7], "b": 'Dexter.S05E07.720p.BluRay.X264-REWARD',
                     "i": ['Dexter.S05E07.720p.BluRay.X264-REWARD', 'Dexter.S05E07.720p.X264-REWARD']},
@@ -78,7 +77,8 @@ def test_generator(tvdbdid, show_name, curData, forceSearch):
         show.name = show_name
         show.quality = curData[b"q"]
         show.saveToDB()
-        sickrage.showList.append(show)
+        show.loadFromDB(skipNFO=True)
+        sickrage.srCore.SHOWLIST.append(show)
         episode = None
 
         for epNumber in curData[b"e"]:

@@ -24,11 +24,12 @@ import gntp
 import gntp.core
 
 import sickrage
-from sickrage.core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
+from core.common import notifyStrings, NOTIFY_SNATCH, NOTIFY_DOWNLOAD, NOTIFY_SUBTITLE_DOWNLOAD, \
     NOTIFY_GIT_UPDATE_TEXT, NOTIFY_GIT_UPDATE
+from notifiers import srNotifiers
 
 
-class GrowlNotifier:
+class GrowlNotifier(srNotifiers):
     sr_logo_url = 'https://raw.githubusercontent.com/SiCKRAGETV/SiCKRAGE/master/gui/slick/images/sickrage-shark-mascot.png'
 
     def test_notify(self, host, password):
@@ -36,20 +37,20 @@ class GrowlNotifier:
         return self._sendGrowl("Test Growl", "Testing Growl settings from SiCKRAGE", "Test", host, password,
                                force=True)
 
-    def notify_snatch(self, ep_name):
-        if sickrage.GROWL_NOTIFY_ONSNATCH:
+    def _notify_snatch(self, ep_name):
+        if sickrage.srConfig.GROWL_NOTIFY_ONSNATCH:
             self._sendGrowl(notifyStrings[NOTIFY_SNATCH], ep_name)
 
-    def notify_download(self, ep_name):
-        if sickrage.GROWL_NOTIFY_ONDOWNLOAD:
+    def _notify_download(self, ep_name):
+        if sickrage.srConfig.GROWL_NOTIFY_ONDOWNLOAD:
             self._sendGrowl(notifyStrings[NOTIFY_DOWNLOAD], ep_name)
 
-    def notify_subtitle_download(self, ep_name, lang):
-        if sickrage.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
+    def _notify_subtitle_download(self, ep_name, lang):
+        if sickrage.srConfig.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendGrowl(notifyStrings[NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
 
-    def notify_version_update(self, new_version="??"):
-        if sickrage.USE_GROWL:
+    def _notify_version_update(self, new_version="??"):
+        if sickrage.srConfig.USE_GROWL:
             update_text = notifyStrings[NOTIFY_GIT_UPDATE_TEXT]
             title = notifyStrings[NOTIFY_GIT_UPDATE]
             self._sendGrowl(title, update_text + new_version)
@@ -97,14 +98,14 @@ class GrowlNotifier:
 
     def _sendGrowl(self, title="SiCKRAGE Notification", message=None, name=None, host=None, password=None,
                    force=False):
-        if not sickrage.USE_GROWL and not force:
+        if not sickrage.srConfig.USE_GROWL and not force:
             return False
 
         if name is None:
             name = title
 
         if host is None:
-            hostParts = sickrage.GROWL_HOST.split(':')
+            hostParts = sickrage.srConfig.GROWL_HOST.split(':')
         else:
             hostParts = host.split(':')
 
@@ -127,7 +128,7 @@ class GrowlNotifier:
         opts[b'debug'] = False
 
         if password is None:
-            opts[b'password'] = sickrage.GROWL_PASSWORD
+            opts[b'password'] = sickrage.srConfig.GROWL_PASSWORD
         else:
             opts[b'password'] = password
 
@@ -136,7 +137,7 @@ class GrowlNotifier:
         for pc in growlHosts:
             opts[b'host'] = pc[0]
             opts[b'port'] = pc[1]
-            sickrage.LOGGER.debug("GROWL: Sending message '" + message + "' to " + opts[b'host'] + ":" + str(opts[b'port']))
+            sickrage.srLogger.debug("GROWL: Sending message '" + message + "' to " + opts[b'host'] + ":" + str(opts[b'port']))
             try:
                 if self._send_growl(opts, message):
                     return True
@@ -146,7 +147,7 @@ class GrowlNotifier:
                     else:
                         return False
             except Exception as e:
-                sickrage.LOGGER.warning(
+                sickrage.srLogger.warning(
                         "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(
                             e))
                 return False
@@ -155,7 +156,7 @@ class GrowlNotifier:
         opts = {}
 
         if host is None:
-            hostParts = sickrage.GROWL_HOST.split(':')
+            hostParts = sickrage.srConfig.GROWL_HOST.split(':')
         else:
             hostParts = host.split(':')
 
@@ -168,7 +169,7 @@ class GrowlNotifier:
         opts[b'port'] = port
 
         if password is None:
-            opts[b'password'] = sickrage.GROWL_PASSWORD
+            opts[b'password'] = sickrage.srConfig.GROWL_PASSWORD
         else:
             opts[b'password'] = password
 
@@ -191,6 +192,6 @@ class GrowlNotifier:
         try:
             return self._send(opts[b'host'], opts[b'port'], register.encode(), opts[b'debug'])
         except Exception as e:
-            sickrage.LOGGER.warning(
-                    "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(e))
+            sickrage.srLogger.warning(
+                    "GROWL: Unable to send growl to " + opts[b'host'] + ":" + str(opts[b'port']) + " - {}".format(e.message))
             return False

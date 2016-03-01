@@ -1,7 +1,7 @@
 $(document).ready(function(){
     $("#tabs").tabs({
         collapsible: true,
-        // selected: ${('0', '-1')[bool(sickrage.ROOT_DIRS)]}
+        // selected: ${('0', '-1')[bool(sickrage.srConfig.ROOT_DIRS)]}
     });
 
     // initialise combos for dirty page refreshes

@@ -13,10 +13,10 @@
 % endif
 
 <div class="h2footer pull-right">Minimum logging level to display: <select name="minLevel" id="minLevel" class="form-control form-control-inline input-sm">
-    <% levels = [x for x in sickrage.LOGGER.logLevels.keys() if any([sickrage.DEBUG and x in ['DEBUG','DB'], x not in ['DEBUG','DB']])]%>
-<% levels.sort(lambda x,y: cmp(sickrage.LOGGER.logLevels[x], sickrage.LOGGER.logLevels[y])) %>
+    <% levels = [x for x in sickrage.srLogger.logLevels.keys() if any([sickrage.srConfig.DEBUG and x in ['DEBUG','DB'], x not in ['DEBUG','DB']])]%>
+<% levels.sort(lambda x,y: cmp(sickrage.srLogger.logLevels[x], sickrage.srLogger.logLevels[y])) %>
 % for level in levels:
-    <option value="${sickrage.LOGGER.logLevels[level]}" ${('', 'selected="selected"')[minLevel == sickrage.LOGGER.logLevels[level]]}>${level.title()}</option>
+    <option value="${sickrage.srLogger.logLevels[level]}" ${('', 'selected="selected"')[minLevel == sickrage.srLogger.logLevels[level]]}>${level.title()}</option>
 % endfor
 </select>
 

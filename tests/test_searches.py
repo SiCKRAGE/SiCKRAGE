@@ -23,12 +23,11 @@ from __future__ import print_function, unicode_literals
 import unittest
 
 import sickrage
-from sickrage.core.common import ANY, Quality, WANTED
-from sickrage.core.tv.episode import TVEpisode
-from sickrage.core.tv.show import TVShow
-from sickrage.providers import sortedProviderDict, GenericProvider
+from core.common import ANY, Quality, WANTED
+from core.tv.episode import TVEpisode
+from core.tv.show import TVShow
+from providers import sortedProviderDict, GenericProvider
 from tests import SiCKRAGETestDBCase
-
 
 tests = {"Game of Thrones":
              {"tvdbid": 121361, "s": 5, "e": [10],
@@ -47,7 +46,9 @@ def test_generator(curData, name, provider, forceSearch):
         show.name = name
         show.quality = ANY | Quality.UNKNOWN | Quality.RAWHDTV
         show.saveToDB()
-        sickrage.showList.append(show)
+        show.loadFromDB(skipNFO=True)
+
+        sickrage.srCore.SHOWLIST.append(show)
 
         for epNumber in curData[b"e"]:
             episode = TVEpisode(show, curData[b"s"], epNumber)

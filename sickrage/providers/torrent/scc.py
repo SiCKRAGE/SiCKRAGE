@@ -20,15 +20,14 @@
 from __future__ import unicode_literals
 
 import re
+import time
 import urllib
 
-from tornado import gen
-
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.core.common import cpu_presets
-from sickrage.core.helpers import bs4_parser
-from sickrage.providers import TorrentProvider
+from core.caches import tv_cache
+from core.common import cpu_presets
+from core.helpers import bs4_parser
+from providers import TorrentProvider
 
 
 class SCCProvider(TorrentProvider):
@@ -66,12 +65,12 @@ class SCCProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.LOGGER.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("Unable to connect to provider")
             return False
 
         if re.search(r'Username or password incorrect', response) \
                 or re.search(r'<title>SceneAccess \| Login</title>', response):
-            sickrage.LOGGER.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -92,19 +91,19 @@ class SCCProvider(TorrentProvider):
 
         for mode in search_strings.keys():
             if mode is not 'RSS':
-                sickrage.LOGGER.debug("Search Mode: %s" % mode)
+                sickrage.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode is not 'RSS':
-                    sickrage.LOGGER.debug("Search string: %s " % search_string)
+                    sickrage.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories[search_mode])
 
                 try:
-                    sickrage.LOGGER.debug("Search URL: %s" % searchURL)
+                    sickrage.srLogger.debug("Search URL: %s" % searchURL)
                     data = self.getURL(searchURL)
-                    gen.sleep(cpu_presets[sickrage.CPU_PRESET])
+                    time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
                 except Exception as e:
-                    sickrage.LOGGER.warning("Unable to fetch data. Error: %s" % repr(e))
+                    sickrage.srLogger.warning("Unable to fetch data. Error: %s" % repr(e))
 
                 if not data:
                     continue
@@ -115,7 +114,7 @@ class SCCProvider(TorrentProvider):
 
                     # Continue only if at least one Release is found
                     if len(torrent_rows) < 2:
-                        sickrage.LOGGER.debug("Data returned from provider does not contain any torrents")
+                        sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
                         continue
 
                     for result in torrent_table.find_all('tr')[1:]:
@@ -143,14 +142,14 @@ class SCCProvider(TorrentProvider):
                         # Filter unseeded torrent
                         if seeders < self.minseed or leechers < self.minleech:
                             if mode is not 'RSS':
-                                sickrage.LOGGER.debug(
+                                sickrage.srLogger.debug(
                                         "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                                 title, seeders, leechers))
                             continue
 
                         item = title, download_url, size, seeders, leechers
                         if mode is not 'RSS':
-                            sickrage.LOGGER.debug("Found result: %s " % title)
+                            sickrage.srLogger.debug("Found result: %s " % title)
 
                         items[mode].append(item)
 

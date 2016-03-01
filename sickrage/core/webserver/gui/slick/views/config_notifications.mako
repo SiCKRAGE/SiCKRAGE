@@ -1,11 +1,11 @@
 <%inherit file="/layouts/main.mako"/>
 <%!
     import re
-    import sickrage
-    from sickrage.core.helpers import anon_url
 
-    from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
-    from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
+    import sickrage
+    from core.helpers import anon_url
+    from core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
+    from core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
 %>
 
 <%block name="scripts">
@@ -44,7 +44,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_kodi"
-                                           id="use_kodi" ${('', 'checked="checked"')[bool(sickrage.USE_KODI)]}/>
+                                           id="use_kodi" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_KODI)]}/>
                                     <p>should SickRage send KODI commands ?<p>
                                 </span>
                             </label>
@@ -56,7 +56,7 @@
                                     <span class="component-title">Always on</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="kodi_always_on"
-                                               id="kodi_always_on" ${('', 'checked="checked"')[bool(sickrage.KODI_ALWAYS_ON)]}/>
+                                               id="kodi_always_on" ${('', 'checked="checked"')[bool(sickrage.srConfig.KODI_ALWAYS_ON)]}/>
                                         <p>log errors when unreachable ?</p>
                                     </span>
                                 </label>
@@ -66,7 +66,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="kodi_notify_onsnatch"
-                                               id="kodi_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.KODI_NOTIFY_ONSNATCH)]}/>
+                                               id="kodi_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.KODI_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -76,7 +76,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="kodi_notify_ondownload"
-                                               id="kodi_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.KODI_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="kodi_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.KODI_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -86,7 +86,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="kodi_notify_onsubtitledownload"
-                                               id="kodi_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.KODI_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="kodi_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.KODI_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -96,7 +96,7 @@
                                     <span class="component-title">Update library</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="kodi_update_library"
-                                               id="kodi_update_library" ${('', 'checked="checked"')[bool(sickrage.KODI_UPDATE_LIBRARY)]}/>
+                                               id="kodi_update_library" ${('', 'checked="checked"')[bool(sickrage.srConfig.KODI_UPDATE_LIBRARY)]}/>
                                         <p>update KODI library when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -106,7 +106,7 @@
                                     <span class="component-title">Full library update</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="kodi_update_full"
-                                               id="kodi_update_full" ${('', 'checked="checked"')[bool(sickrage.KODI_UPDATE_FULL)]}/>
+                                               id="kodi_update_full" ${('', 'checked="checked"')[bool(sickrage.srConfig.KODI_UPDATE_FULL)]}/>
                                         <p>perform a full library update if update per-show fails ?</p>
                                     </span>
                                 </label>
@@ -116,7 +116,7 @@
                                     <span class="component-title">Only update first host</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="kodi_update_onlyfirst"
-                                               id="kodi_update_onlyfirst" ${('', 'checked="checked"')[bool(sickrage.KODI_UPDATE_ONLYFIRST)]}/>
+                                               id="kodi_update_onlyfirst" ${('', 'checked="checked"')[bool(sickrage.srConfig.KODI_UPDATE_ONLYFIRST)]}/>
                                         <p>only send library updates to the first active host ?</p>
                                     </span>
                                 </label>
@@ -124,7 +124,7 @@
                             <div class="field-pair">
                                 <label for="kodi_host">
                                     <span class="component-title">KODI IP:Port</span>
-                                    <input type="text" name="kodi_host" id="kodi_host" value="${sickrage.KODI_HOST}"
+                                    <input type="text" name="kodi_host" id="kodi_host" value="${sickrage.srConfig.KODI_HOST}"
                                            class="form-control input-sm input350" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -140,7 +140,7 @@
                                 <label for="kodi_username">
                                     <span class="component-title">KODI username</span>
                                     <input type="text" name="kodi_username" id="kodi_username"
-                                           value="${sickrage.KODI_USERNAME}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.KODI_USERNAME}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -152,7 +152,7 @@
                                 <label for="kodi_password">
                                     <span class="component-title">KODI password</span>
                                     <input type="password" name="kodi_password" id="kodi_password"
-                                           value="${sickrage.KODI_PASSWORD}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.KODI_PASSWORD}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -183,7 +183,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_plex"
-                                           id="use_plex" ${('', 'checked="checked"')[bool(sickrage.USE_PLEX)]}/>
+                                           id="use_plex" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_PLEX)]}/>
                                     <p>should SickRage send Plex commands ?</p>
                                 </span>
                             </label>
@@ -194,7 +194,7 @@
                                 <label for="plex_server_token">
                                     <span class="component-title">Plex Media Server Auth Token</span>
                                     <input type="text" name="plex_server_token" id="plex_server_token"
-                                           value="${sickrage.PLEX_SERVER_TOKEN}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.PLEX_SERVER_TOKEN}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -212,7 +212,7 @@
                                         <span class="component-title">Server Username</span>
                                         <span class="component-desc">
                                             <input type="text" name="plex_username" id="plex_username"
-                                                   value="${sickrage.PLEX_USERNAME}"
+                                                   value="${sickrage.srConfig.PLEX_USERNAME}"
                                                    class="form-control input-sm input250" autocapitalize="off"/>
                                             <p>blank = no authentication</p>
                                         </span>
@@ -223,7 +223,7 @@
                                         <span class="component-title">Server/client password</span>
                                         <span class="component-desc">
                                             <input type="password" name="plex_password" id="plex_password"
-                                                   value="${'*' * len(sickrage.PLEX_PASSWORD)}"
+                                                   value="${'*' * len(sickrage.srConfig.PLEX_PASSWORD)}"
                                                    class="form-control input-sm input250" autocapitalize="off"/>
                                             <p>blank = no authentication</p>
                                         </span>
@@ -237,7 +237,7 @@
                                         <span class="component-title">Update server library</span>
                                         <span class="component-desc">
                                             <input type="checkbox" class="enabler" name="plex_update_library"
-                                                   id="plex_update_library" ${('', 'checked="checked"')[bool(sickrage.PLEX_UPDATE_LIBRARY)]}/>
+                                                   id="plex_update_library" ${('', 'checked="checked"')[bool(sickrage.srConfig.PLEX_UPDATE_LIBRARY)]}/>
                                             <p>update Plex Media Server library when a download finishes</p>
                                         </span>
                                     </label>
@@ -248,7 +248,7 @@
                                             <span class="component-title">Plex Media Server IP:Port</span>
                                             <span class="component-desc">
                                                 <input type="text" name="plex_server_host" id="plex_server_host"
-                                                       value="${re.sub(r'\b,\b', ', ', sickrage.PLEX_SERVER_HOST)}"
+                                                       value="${re.sub(r'\b,\b', ', ', sickrage.srConfig.PLEX_SERVER_HOST)}"
                                                        class="form-control input-sm input350" autocapitalize="off"/>
                                                 <div class="clear-left">
                                                     <p>one or more hosts running Plex Media Server<br>(eg. 192.168.1.1:32400, 192.168.1.2:32400)</p>
@@ -280,7 +280,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_plex"
-                                           id="use_plex_client" ${('', 'checked="checked"')[bool(sickrage.USE_PLEX_CLIENT)]}/>
+                                           id="use_plex_client" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_PLEX_CLIENT)]}/>
                                     <p>should SickRage send Plex commands ?</p>
                                 </span>
                             </label>
@@ -292,7 +292,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="plex_notify_onsnatch"
-                                               id="plex_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.PLEX_NOTIFY_ONSNATCH)]}/>
+                                               id="plex_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.PLEX_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -302,7 +302,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="plex_notify_ondownload"
-                                               id="plex_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.PLEX_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="plex_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.PLEX_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -312,7 +312,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="plex_notify_onsubtitledownload"
-                                               id="plex_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="plex_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -321,7 +321,7 @@
                                 <label for="plex_host">
                                     <span class="component-title">Plex Client IP:Port</span>
                                     <span class="component-desc">
-                                        <input type="text" name="plex_host" id="plex_host" value="${sickrage.PLEX_HOST}"
+                                        <input type="text" name="plex_host" id="plex_host" value="${sickrage.srConfig.PLEX_HOST}"
                                                class="form-control input-sm input350" autocapitalize="off"/>
                                         <div class="clear-left">
                                             <p>one or more hosts running Plex client<br>(eg. 192.168.1.100:3000, 192.168.1.101:3000)</p>
@@ -335,7 +335,7 @@
                                         <span class="component-title">Server Username</span>
                                         <span class="component-desc">
                                             <input type="text" name="plex_client_username" id="plex_client_username"
-                                                   value="${sickrage.PLEX_CLIENT_USERNAME}"
+                                                   value="${sickrage.srConfig.PLEX_CLIENT_USERNAME}"
                                                    class="form-control input-sm input250" autocapitalize="off"/>
                                             <p>blank = no authentication</p>
                                         </span>
@@ -346,7 +346,7 @@
                                         <span class="component-title">Client Password</span>
                                         <span class="component-desc">
                                             <input type="password" name="plex_client_password" id="plex_client_password"
-                                                   value="${'*' * len(sickrage.PLEX_CLIENT_PASSWORD)}"
+                                                   value="${'*' * len(sickrage.srConfig.PLEX_CLIENT_PASSWORD)}"
                                                    class="form-control input-sm input250" autocapitalize="off"/>
                                             <p>blank = no authentication</p>
                                         </span>
@@ -377,7 +377,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_emby"
-                                           id="use_emby" ${('', 'checked="checked"')[bool(sickrage.USE_EMBY)]} />
+                                           id="use_emby" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_EMBY)]} />
                                     <p>should SickRage send update commands to Emby?<p>
                                 </span>
                             </label>
@@ -386,7 +386,7 @@
                             <div class="field-pair">
                                 <label for="emby_host">
                                     <span class="component-title">Emby IP:Port</span>
-                                    <input type="text" name="emby_host" id="emby_host" value="${sickrage.EMBY_HOST}"
+                                    <input type="text" name="emby_host" id="emby_host" value="${sickrage.srConfig.EMBY_HOST}"
                                            class="form-control input-sm input250" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -398,7 +398,7 @@
                                 <label for="emby_apikey">
                                     <span class="component-title">Emby API Key</span>
                                     <input type="text" name="emby_apikey" id="emby_apikey"
-                                           value="${sickrage.EMBY_APIKEY}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.EMBY_APIKEY}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                             </div>
@@ -423,7 +423,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_nmj"
-                                           id="use_nmj" ${('', 'checked="checked"')[bool(sickrage.USE_NMJ)]}/>
+                                           id="use_nmj" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_NMJ)]}/>
                                     <p>should SickRage send update commands to NMJ ?</p>
                                 </span>
                             </label>
@@ -433,7 +433,7 @@
                             <div class="field-pair">
                                 <label for="nmj_host">
                                     <span class="component-title">Popcorn IP address</span>
-                                    <input type="text" name="nmj_host" id="nmj_host" value="${sickrage.NMJ_HOST}"
+                                    <input type="text" name="nmj_host" id="nmj_host" value="${sickrage.srConfig.NMJ_HOST}"
                                            class="form-control input-sm input250" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -455,8 +455,8 @@
                                 <label for="nmj_database">
                                     <span class="component-title">NMJ database</span>
                                     <input type="text" name="nmj_database" id="nmj_database"
-                                           value="${sickrage.NMJ_DATABASE}" class="form-control input-sm input250"
-                                           autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.NMJ_DATABASE == True]}/>
+                                           value="${sickrage.srConfig.NMJ_DATABASE}" class="form-control input-sm input250"
+                                           autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.srConfig.NMJ_DATABASE == True]}/>
                                 </label>
                                 <label>
                                     <span class="component-title">&nbsp;</span>
@@ -466,9 +466,9 @@
                             <div class="field-pair">
                                 <label for="nmj_mount">
                                     <span class="component-title">NMJ mount url</span>
-                                    <input type="text" name="nmj_mount" id="nmj_mount" value="${sickrage.NMJ_MOUNT}"
+                                    <input type="text" name="nmj_mount" id="nmj_mount" value="${sickrage.srConfig.NMJ_MOUNT}"
                                            class="form-control input-sm input250"
-                                           autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.NMJ_MOUNT == True]}/>
+                                           autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.srConfig.NMJ_MOUNT == True]}/>
                                 </label>
                                 <label>
                                     <span class="component-title">&nbsp;</span>
@@ -495,7 +495,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_nmjv2"
-                                           id="use_nmjv2" ${('', 'checked="checked"')[bool(sickrage.USE_NMJv2)]}/>
+                                           id="use_nmjv2" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_NMJv2)]}/>
                                     <p>should SickRage send update commands to NMJv2 ?</p>
                                 </span>
                             </label>
@@ -505,7 +505,7 @@
                             <div class="field-pair">
                                 <label for="nmjv2_host">
                                     <span class="component-title">Popcorn IP address</span>
-                                    <input type="text" name="nmjv2_host" id="nmjv2_host" value="${sickrage.NMJv2_HOST}"
+                                    <input type="text" name="nmjv2_host" id="nmjv2_host" value="${sickrage.srConfig.NMJv2_HOST}"
                                            class="form-control input-sm input250" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -518,12 +518,12 @@
                                 <span class="component-desc">
                                     <label for="NMJV2_DBLOC_A" class="space-right">
                                         <input type="radio" NAME="nmjv2_dbloc" VALUE="local"
-                                               id="NMJV2_DBLOC_A" ${('', 'checked="checked"')[sickrage.NMJv2_DBLOC == 'local']}/>PCH
+                                               id="NMJV2_DBLOC_A" ${('', 'checked="checked"')[sickrage.srConfig.NMJv2_DBLOC == 'local']}/>PCH
                                         Local Media
                                     </label>
                                     <label for="NMJV2_DBLOC_B">
                                         <input type="radio" NAME="nmjv2_dbloc" VALUE="network"
-                                               id="NMJV2_DBLOC_B" ${('', 'checked="checked"')[sickrage.NMJv2_DBLOC == 'network']}/>PCH
+                                               id="NMJV2_DBLOC_B" ${('', 'checked="checked"')[sickrage.srConfig.NMJv2_DBLOC == 'network']}/>PCH
                                         Network Media
                                     </label>
                                 </span>
@@ -562,8 +562,8 @@
                                 <label for="nmjv2_database">
                                     <span class="component-title">NMJv2 database</span>
                                     <input type="text" name="nmjv2_database" id="nmjv2_database"
-                                           value="${sickrage.NMJv2_DATABASE}" class="form-control input-sm input250"
-                                           autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.NMJv2_DATABASE == True]}/>
+                                           value="${sickrage.srConfig.NMJv2_DATABASE}" class="form-control input-sm input250"
+                                           autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.srConfig.NMJv2_DATABASE == True]}/>
                                 </label>
                                 <label>
                                     <span class="component-title">&nbsp;</span>
@@ -593,7 +593,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_synoindex"
-                                           id="use_synoindex" ${('', 'checked="checked"')[bool(sickrage.USE_SYNOINDEX)]}/>
+                                           id="use_synoindex" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_SYNOINDEX)]}/>
                                     <p>should SickRage send Synology notifications ?</p>
                                 </span>
                             </label>
@@ -624,7 +624,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_synologynotifier"
-                                           id="use_synologynotifier" ${('', 'checked="checked"')[bool(sickrage.USE_SYNOLOGYNOTIFIER)]}/>
+                                           id="use_synologynotifier" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_SYNOLOGYNOTIFIER)]}/>
                                     <p>should SickRage send notifications to the Synology Notifier ?</p>
                                 </span>
                             </label>
@@ -639,7 +639,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="synologynotifier_notify_onsnatch"
-                                               id="synologynotifier_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH)]}/>
+                                               id="synologynotifier_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -649,7 +649,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="synologynotifier_notify_ondownload"
-                                               id="synologynotifier_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="synologynotifier_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -659,7 +659,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="synologynotifier_notify_onsubtitledownload"
-                                               id="synologynotifier_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="synologynotifier_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -682,7 +682,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_pytivo"
-                                           id="use_pytivo" ${('', 'checked="checked"')[bool(sickrage.USE_PYTIVO)]}/>
+                                           id="use_pytivo" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_PYTIVO)]}/>
                                     <p>should SickRage send notifications to pyTivo ?</p>
                                 </span>
                             </label>
@@ -697,7 +697,7 @@
                                 <label for="pytivo_host">
                                     <span class="component-title">pyTivo IP:Port</span>
                                     <input type="text" name="pytivo_host" id="pytivo_host"
-                                           value="${sickrage.PYTIVO_HOST}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.PYTIVO_HOST}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -709,7 +709,7 @@
                                 <label for="pytivo_share_name">
                                     <span class="component-title">pyTivo share name</span>
                                     <input type="text" name="pytivo_share_name" id="pytivo_share_name"
-                                           value="${sickrage.PYTIVO_SHARE_NAME}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.PYTIVO_SHARE_NAME}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -721,7 +721,7 @@
                                 <label for="pytivo_tivo_name">
                                     <span class="component-title">Tivo name</span>
                                     <input type="text" name="pytivo_tivo_name" id="pytivo_tivo_name"
-                                           value="${sickrage.PYTIVO_TIVO_NAME}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.PYTIVO_TIVO_NAME}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -751,7 +751,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_growl"
-                                           id="use_growl" ${('', 'checked="checked"')[bool(sickrage.USE_GROWL)]}/>
+                                           id="use_growl" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_GROWL)]}/>
                                     <p>should SickRage send Growl notifications ?</p>
                                 </span>
                             </label>
@@ -763,7 +763,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="growl_notify_onsnatch"
-                                               id="growl_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.GROWL_NOTIFY_ONSNATCH)]}/>
+                                               id="growl_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.GROWL_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -773,7 +773,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="growl_notify_ondownload"
-                                               id="growl_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.GROWL_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="growl_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.GROWL_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -783,7 +783,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="growl_notify_onsubtitledownload"
-                                               id="growl_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="growl_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -791,7 +791,7 @@
                             <div class="field-pair">
                                 <label for="growl_host">
                                     <span class="component-title">Growl IP:Port</span>
-                                    <input type="text" name="growl_host" id="growl_host" value="${sickrage.GROWL_HOST}"
+                                    <input type="text" name="growl_host" id="growl_host" value="${sickrage.srConfig.GROWL_HOST}"
                                            class="form-control input-sm input250" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -803,7 +803,7 @@
                                 <label for="growl_password">
                                     <span class="component-title">Growl password</span>
                                     <input type="password" name="growl_password" id="growl_password"
-                                           value="${sickrage.GROWL_PASSWORD}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.GROWL_PASSWORD}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -836,7 +836,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_prowl"
-                                           id="use_prowl" ${('', 'checked="checked"')[bool(sickrage.USE_PROWL)]}/>
+                                           id="use_prowl" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_PROWL)]}/>
                                     <p>should SickRage send Prowl notifications ?</p>
                                 </span>
                             </label>
@@ -848,7 +848,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="prowl_notify_onsnatch"
-                                               id="prowl_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.PROWL_NOTIFY_ONSNATCH)]}/>
+                                               id="prowl_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.PROWL_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -858,7 +858,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="prowl_notify_ondownload"
-                                               id="prowl_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.PROWL_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="prowl_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.PROWL_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -868,7 +868,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="prowl_notify_onsubtitledownload"
-                                               id="prowl_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="prowl_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -876,7 +876,7 @@
                             <div class="field-pair">
                                 <label for="prowl_api">
                                     <span class="component-title">Prowl API key:</span>
-                                    <input type="text" name="prowl_api" id="prowl_api" value="${sickrage.PROWL_API}"
+                                    <input type="text" name="prowl_api" id="prowl_api" value="${sickrage.srConfig.PROWL_API}"
                                            class="form-control input-sm input250" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -888,19 +888,19 @@
                                 <label for="prowl_priority">
                                     <span class="component-title">Prowl priority:</span>
                                     <select id="prowl_priority" name="prowl_priority" class="form-control input-sm">
-                                        <option value="-2" ${('', 'selected="selected"')[sickrage.PROWL_PRIORITY == '-2']}>
+                                        <option value="-2" ${('', 'selected="selected"')[sickrage.srConfig.PROWL_PRIORITY == '-2']}>
                                             Very Low
                                         </option>
-                                        <option value="-1" ${('', 'selected="selected"')[sickrage.PROWL_PRIORITY == '-1']}>
+                                        <option value="-1" ${('', 'selected="selected"')[sickrage.srConfig.PROWL_PRIORITY == '-1']}>
                                             Moderate
                                         </option>
-                                        <option value="0" ${('', 'selected="selected"')[sickrage.PROWL_PRIORITY == '0']}>
+                                        <option value="0" ${('', 'selected="selected"')[sickrage.srConfig.PROWL_PRIORITY == '0']}>
                                             Normal
                                         </option>
-                                        <option value="1" ${('', 'selected="selected"')[sickrage.PROWL_PRIORITY == '1']}>
+                                        <option value="1" ${('', 'selected="selected"')[sickrage.srConfig.PROWL_PRIORITY == '1']}>
                                             High
                                         </option>
-                                        <option value="2" ${('', 'selected="selected"')[sickrage.PROWL_PRIORITY == '2']}>
+                                        <option value="2" ${('', 'selected="selected"')[sickrage.srConfig.PROWL_PRIORITY == '2']}>
                                             Emergency
                                         </option>
                                     </select>
@@ -931,7 +931,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_libnotify"
-                                           id="use_libnotify" ${('', 'checked="checked"')[bool(sickrage.USE_LIBNOTIFY)]}/>
+                                           id="use_libnotify" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_LIBNOTIFY)]}/>
                                     <p>should SickRage send Libnotify notifications ?</p>
                                 </span>
                             </label>
@@ -943,7 +943,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="libnotify_notify_onsnatch"
-                                               id="libnotify_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.LIBNOTIFY_NOTIFY_ONSNATCH)]}/>
+                                               id="libnotify_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.LIBNOTIFY_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -953,7 +953,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="libnotify_notify_ondownload"
-                                               id="libnotify_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.LIBNOTIFY_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="libnotify_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.LIBNOTIFY_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -963,7 +963,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="libnotify_notify_onsubtitledownload"
-                                               id="libnotify_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="libnotify_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -989,7 +989,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_pushover"
-                                           id="use_pushover" ${('', 'checked="checked"')[bool(sickrage.USE_PUSHOVER)]}/>
+                                           id="use_pushover" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_PUSHOVER)]}/>
                                     <p>should SickRage send Pushover notifications ?</p>
                                 </span>
                             </label>
@@ -1001,7 +1001,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="pushover_notify_onsnatch"
-                                               id="pushover_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.PUSHOVER_NOTIFY_ONSNATCH)]}/>
+                                               id="pushover_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.PUSHOVER_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -1011,7 +1011,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="pushover_notify_ondownload"
-                                               id="pushover_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.PUSHOVER_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="pushover_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.PUSHOVER_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -1021,7 +1021,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="pushover_notify_onsubtitledownload"
-                                               id="pushover_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="pushover_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -1030,7 +1030,7 @@
                                 <label for="pushover_userkey">
                                     <span class="component-title">Pushover key</span>
                                     <input type="text" name="pushover_userkey" id="pushover_userkey"
-                                           value="${sickrage.PUSHOVER_USERKEY}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.PUSHOVER_USERKEY}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1042,7 +1042,7 @@
                                 <label for="pushover_apikey">
                                     <span class="component-title">Pushover API key</span>
                                     <input type="text" name="pushover_apikey" id="pushover_apikey"
-                                           value="${sickrage.PUSHOVER_APIKEY}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.PUSHOVER_APIKEY}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1054,7 +1054,7 @@
                                 <label for="pushover_device">
                                     <span class="component-title">Pushover devices</span>
                                     <input type="text" name="pushover_device" id="pushover_device"
-                                           value="${sickrage.PUSHOVER_DEVICE}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.PUSHOVER_DEVICE}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1066,73 +1066,73 @@
                                 <label for="pushover_sound">
                                     <span class="component-title">Pushover notification sound</span>
                                     <select id="pushover_sound" name="pushover_sound" class="form-control input-sm">
-                                        <option value="pushover" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'pushover']}>
+                                        <option value="pushover" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'pushover']}>
                                             Pushover
                                         </option>
-                                        <option value="bike" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'bike']}>
+                                        <option value="bike" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'bike']}>
                                             Bike
                                         </option>
-                                        <option value="bugle" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'bugle']}>
+                                        <option value="bugle" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'bugle']}>
                                             Bugle
                                         </option>
-                                        <option value="cashregister" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'cashregister']}>
+                                        <option value="cashregister" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'cashregister']}>
                                             Cash Register
                                         </option>
-                                        <option value="classical" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'classical']}>
+                                        <option value="classical" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'classical']}>
                                             Classical
                                         </option>
-                                        <option value="cosmic" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'cosmic']}>
+                                        <option value="cosmic" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'cosmic']}>
                                             Cosmic
                                         </option>
-                                        <option value="falling" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'falling']}>
+                                        <option value="falling" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'falling']}>
                                             Falling
                                         </option>
-                                        <option value="gamelan" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'gamelan']}>
+                                        <option value="gamelan" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'gamelan']}>
                                             Gamelan
                                         </option>
-                                        <option value="incoming" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'incoming']}>
+                                        <option value="incoming" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'incoming']}>
                                             Incoming
                                         </option>
-                                        <option value="intermission" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'intermission']}>
+                                        <option value="intermission" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'intermission']}>
                                             Intermission
                                         </option>
-                                        <option value="magic" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'magic']}>
+                                        <option value="magic" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'magic']}>
                                             Magic
                                         </option>
-                                        <option value="mechanical" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'mechanical']}>
+                                        <option value="mechanical" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'mechanical']}>
                                             Mechanical
                                         </option>
-                                        <option value="pianobar" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'pianobar']}>
+                                        <option value="pianobar" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'pianobar']}>
                                             Piano Bar
                                         </option>
-                                        <option value="siren" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'siren']}>
+                                        <option value="siren" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'siren']}>
                                             Siren
                                         </option>
-                                        <option value="spacealarm" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'spacealarm']}>
+                                        <option value="spacealarm" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'spacealarm']}>
                                             Space Alarm
                                         </option>
-                                        <option value="tugboat" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'tugboat']}>
+                                        <option value="tugboat" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'tugboat']}>
                                             Tug Boat
                                         </option>
-                                        <option value="alien" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'alien']}>
+                                        <option value="alien" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'alien']}>
                                             Alien Alarm (long)
                                         </option>
-                                        <option value="climb" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'climb']}>
+                                        <option value="climb" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'climb']}>
                                             Climb (long)
                                         </option>
-                                        <option value="persistent" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'persistent']}>
+                                        <option value="persistent" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'persistent']}>
                                             Persistent (long)
                                         </option>
-                                        <option value="echo" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'echo']}>
+                                        <option value="echo" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'echo']}>
                                             Pushover Echo (long)
                                         </option>
-                                        <option value="updown" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'updown']}>
+                                        <option value="updown" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'updown']}>
                                             Up Down (long)
                                         </option>
-                                        <option value="none" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'none']}>
+                                        <option value="none" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'none']}>
                                             None (silent)
                                         </option>
-                                        <option value="default" ${('', 'selected="selected"')[sickrage.PUSHOVER_SOUND == 'default']}>
+                                        <option value="default" ${('', 'selected="selected"')[sickrage.srConfig.PUSHOVER_SOUND == 'default']}>
                                             Device specific
                                         </option>
                                     </select>
@@ -1162,7 +1162,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_boxcar"
-                                           id="use_boxcar" ${('', 'checked="checked"')[bool(sickrage.USE_BOXCAR)]}/>
+                                           id="use_boxcar" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_BOXCAR)]}/>
                                     <p>should SickRage send Boxcar notifications ?</p>
                                 </span>
                             </label>
@@ -1174,7 +1174,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="boxcar_notify_onsnatch"
-                                               id="boxcar_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.BOXCAR_NOTIFY_ONSNATCH)]}/>
+                                               id="boxcar_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.BOXCAR_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -1184,7 +1184,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="boxcar_notify_ondownload"
-                                               id="boxcar_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.BOXCAR_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="boxcar_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.BOXCAR_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -1194,7 +1194,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="boxcar_notify_onsubtitledownload"
-                                               id="boxcar_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="boxcar_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.BOXCAR_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -1203,7 +1203,7 @@
                                 <label for="boxcar_username">
                                     <span class="component-title">Boxcar username</span>
                                     <input type="text" name="boxcar_username" id="boxcar_username"
-                                           value="${sickrage.BOXCAR_USERNAME}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.BOXCAR_USERNAME}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1231,7 +1231,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_boxcar2"
-                                           id="use_boxcar2" ${('', 'checked="checked"')[bool(sickrage.USE_BOXCAR2)]}/>
+                                           id="use_boxcar2" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_BOXCAR2)]}/>
                                     <p>should SickRage send Boxcar2 notifications ?</p>
                                 </span>
                             </label>
@@ -1243,7 +1243,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="boxcar2_notify_onsnatch"
-                                               id="boxcar2_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.BOXCAR2_NOTIFY_ONSNATCH)]}/>
+                                               id="boxcar2_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.BOXCAR2_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -1253,7 +1253,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="boxcar2_notify_ondownload"
-                                               id="boxcar2_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.BOXCAR2_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="boxcar2_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.BOXCAR2_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -1263,7 +1263,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="boxcar2_notify_onsubtitledownload"
-                                               id="boxcar2_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="boxcar2_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -1272,7 +1272,7 @@
                                 <label for="boxcar2_accesstoken">
                                     <span class="component-title">Boxcar2 access token</span>
                                     <input type="text" name="boxcar2_accesstoken" id="boxcar2_accesstoken"
-                                           value="${sickrage.BOXCAR2_ACCESSTOKEN}"
+                                           value="${sickrage.srConfig.BOXCAR2_ACCESSTOKEN}"
                                            class="form-control input-sm input250" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1300,7 +1300,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_nma"
-                                           id="use_nma" ${('', 'checked="checked"')[bool(sickrage.USE_NMA)]}/>
+                                           id="use_nma" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_NMA)]}/>
                                     <p>should SickRage send NMA notifications ?</p>
                                 </span>
                             </label>
@@ -1312,7 +1312,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="nma_notify_onsnatch"
-                                               id="nma_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.NMA_NOTIFY_ONSNATCH)]}/>
+                                               id="nma_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.NMA_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -1322,7 +1322,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="nma_notify_ondownload"
-                                               id="nma_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.NMA_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="nma_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.NMA_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -1332,7 +1332,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="nma_notify_onsubtitledownload"
-                                               id="nma_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.NMA_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="nma_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.NMA_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -1340,7 +1340,7 @@
                             <div class="field-pair">
                                 <label for="nma_api">
                                        <span class="component-title">NMA API key:</span>
-                                    <input type="text" name="nma_api" id="nma_api" value="${sickrage.NMA_API}"
+                                    <input type="text" name="nma_api" id="nma_api" value="${sickrage.srConfig.NMA_API}"
                                            class="form-control input-sm input350" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1352,19 +1352,19 @@
                                 <label for="nma_priority">
                                     <span class="component-title">NMA priority:</span>
                                        <select id="nma_priority" name="nma_priority" class="form-control input-sm">
-                                           <option value="-2" ${('', 'selected="selected"')[sickrage.NMA_PRIORITY == '-2']}>
+                                           <option value="-2" ${('', 'selected="selected"')[sickrage.srConfig.NMA_PRIORITY == '-2']}>
                                                Very Low
                                            </option>
-                                           <option value="-1" ${('', 'selected="selected"')[sickrage.NMA_PRIORITY == '-1']}>
+                                           <option value="-1" ${('', 'selected="selected"')[sickrage.srConfig.NMA_PRIORITY == '-1']}>
                                                Moderate
                                            </option>
-                                           <option value="0" ${('', 'selected="selected"')[sickrage.NMA_PRIORITY == '0']}>
+                                           <option value="0" ${('', 'selected="selected"')[sickrage.srConfig.NMA_PRIORITY == '0']}>
                                                Normal
                                            </option>
-                                           <option value="1" ${('', 'selected="selected"')[sickrage.NMA_PRIORITY == '1']}>
+                                           <option value="1" ${('', 'selected="selected"')[sickrage.srConfig.NMA_PRIORITY == '1']}>
                                                High
                                            </option>
-                                           <option value="2" ${('', 'selected="selected"')[sickrage.NMA_PRIORITY == '2']}>
+                                           <option value="2" ${('', 'selected="selected"')[sickrage.srConfig.NMA_PRIORITY == '2']}>
                                                Emergency
                                            </option>
                                     </select>
@@ -1394,7 +1394,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_pushalot"
-                                           id="use_pushalot" ${('', 'checked="checked"')[bool(sickrage.USE_PUSHALOT)]}/>
+                                           id="use_pushalot" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_PUSHALOT)]}/>
                                     <p>should SickRage send Pushalot notifications ?
                                 </span>
                             </label>
@@ -1406,7 +1406,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="pushalot_notify_onsnatch"
-                                               id="pushalot_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.PUSHALOT_NOTIFY_ONSNATCH)]}/>
+                                               id="pushalot_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.PUSHALOT_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -1416,7 +1416,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="pushalot_notify_ondownload"
-                                               id="pushalot_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.PUSHALOT_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="pushalot_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.PUSHALOT_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -1426,7 +1426,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="pushalot_notify_onsubtitledownload"
-                                               id="pushalot_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="pushalot_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -1436,7 +1436,7 @@
                                     <span class="component-title">Pushalot authorization token</span>
                                     <input type="text" name="pushalot_authorizationtoken"
                                            id="pushalot_authorizationtoken"
-                                           value="${sickrage.PUSHALOT_AUTHORIZATIONTOKEN}"
+                                           value="${sickrage.srConfig.PUSHALOT_AUTHORIZATIONTOKEN}"
                                            class="form-control input-sm input350" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1464,7 +1464,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_pushbullet"
-                                           id="use_pushbullet" ${('', 'checked="checked"')[bool(sickrage.USE_PUSHBULLET)]}/>
+                                           id="use_pushbullet" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_PUSHBULLET)]}/>
                                     <p>should SickRage send Pushbullet notifications ?</p>
                                 </span>
                             </label>
@@ -1476,7 +1476,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="pushbullet_notify_onsnatch"
-                                               id="pushbullet_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.PUSHBULLET_NOTIFY_ONSNATCH)]}/>
+                                               id="pushbullet_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.PUSHBULLET_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -1486,7 +1486,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="pushbullet_notify_ondownload"
-                                               id="pushbullet_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.PUSHBULLET_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="pushbullet_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.PUSHBULLET_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -1496,7 +1496,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="pushbullet_notify_onsubtitledownload"
-                                               id="pushbullet_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="pushbullet_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -1505,7 +1505,7 @@
                                 <label for="pushbullet_api">
                                     <span class="component-title">Pushbullet API key</span>
                                     <input type="text" name="pushbullet_api" id="pushbullet_api"
-                                           value="${sickrage.PUSHBULLET_API}" class="form-control input-sm input350"
+                                           value="${sickrage.srConfig.PUSHBULLET_API}" class="form-control input-sm input350"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1517,7 +1517,7 @@
                                 <label for="pushbullet_device_list">
                                     <span class="component-title">Pushbullet devices</span>
                                     <select name="pushbullet_device_list" id="pushbullet_device_list" class="form-control input-sm"></select>
-                                    <input type="hidden" id="pushbullet_device" value="${sickrage.PUSHBULLET_DEVICE}">
+                                    <input type="hidden" id="pushbullet_device" value="${sickrage.srConfig.PUSHBULLET_DEVICE}">
                                     <input type="button" class="btn btn-inline" value="Update device list" id="getPushbulletDevices" />
                                 </label>
                                 <label>
@@ -1544,7 +1544,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_freemobile"
-                                           id="use_freemobile" ${('', 'checked="checked"')[bool(sickrage.USE_FREEMOBILE)]}/>
+                                           id="use_freemobile" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_FREEMOBILE)]}/>
                                     <p>should SickRage send SMS notifications ?</p>
                                 </span>
                             </label>
@@ -1556,7 +1556,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="freemobile_notify_onsnatch"
-                                               id="freemobile_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.FREEMOBILE_NOTIFY_ONSNATCH)]}/>
+                                               id="freemobile_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.FREEMOBILE_NOTIFY_ONSNATCH)]}/>
                                         <p>send a SMS when a download starts ?</p>
                                     </span>
                                 </label>
@@ -1566,7 +1566,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="freemobile_notify_ondownload"
-                                               id="freemobile_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.FREEMOBILE_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="freemobile_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.FREEMOBILE_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a SMS when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -1576,7 +1576,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="freemobile_notify_onsubtitledownload"
-                                               id="freemobile_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="freemobile_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a SMS when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -1585,7 +1585,7 @@
                                 <label for="freemobile_id">
                                     <span class="component-title">Free Mobile customer ID</span>
                                     <input type="text" name="freemobile_id" id="freemobile_id"
-                                           value="${sickrage.FREEMOBILE_ID}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.FREEMOBILE_ID}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1597,7 +1597,7 @@
                                 <label for="freemobile_password">
                                     <span class="component-title">Free Mobile API Key</span>
                                     <input type="text" name="freemobile_apikey" id="freemobile_apikey"
-                                           value="${sickrage.FREEMOBILE_APIKEY}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.FREEMOBILE_APIKEY}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1628,7 +1628,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_twitter"
-                                           id="use_twitter" ${('', 'checked="checked"')[bool(sickrage.USE_TWITTER)]}/>
+                                           id="use_twitter" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_TWITTER)]}/>
                                     <p>should SickRage post tweets on Twitter ?</p>
                                 </span>
                             </label>
@@ -1644,7 +1644,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="twitter_notify_onsnatch"
-                                               id="twitter_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.TWITTER_NOTIFY_ONSNATCH)]}/>
+                                               id="twitter_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.TWITTER_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -1654,7 +1654,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="twitter_notify_ondownload"
-                                               id="twitter_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.TWITTER_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="twitter_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.TWITTER_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -1664,7 +1664,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="twitter_notify_onsubtitledownload"
-                                               id="twitter_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="twitter_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -1674,7 +1674,7 @@
                                     <span class="component-title">Send direct message</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="twitter_usedm"
-                                               id="twitter_usedm" ${('', 'checked="checked"')[bool(sickrage.TWITTER_USEDM)]}/>
+                                               id="twitter_usedm" ${('', 'checked="checked"')[bool(sickrage.srConfig.TWITTER_USEDM)]}/>
                                         <p>send a notification via Direct Message, not via status update</p>
                                     </span>
                                 </label>
@@ -1683,7 +1683,7 @@
                                 <label for="twitter_dmto">
                                     <span class="component-title">Send DM to</span>
                                     <input type="text" name="twitter_dmto" id="twitter_dmto"
-                                           value="${sickrage.TWITTER_DMTO}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.TWITTER_DMTO}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <p>
@@ -1737,7 +1737,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_trakt"
-                                           id="use_trakt" ${('', 'checked="checked"')[bool(sickrage.USE_TRAKT)]}/>
+                                           id="use_trakt" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_TRAKT)]}/>
                                     <p>should SickRage send Trakt.tv notifications ?</p>
                                 </span>
                             </label>
@@ -1748,15 +1748,15 @@
                                 <label for="trakt_username">
                                     <span class="component-title">Trakt username</span>
                                     <input type="text" name="trakt_username" id="trakt_username"
-                                           value="${sickrage.TRAKT_USERNAME}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.TRAKT_USERNAME}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <p>
                                     <span class="component-desc">username of your Trakt account.</span>
                                 </p>
                             </div>
-                            <input type="hidden" id="trakt_pin_url" value="${sickrage.TRAKT_PIN_URL}">
-                            <input type="button" class="btn ${('', 'hide')[bool(sickrage.TRAKT_ACCESS_TOKEN)]}"
+                            <input type="hidden" id="trakt_pin_url" value="${sickrage.srConfig.TRAKT_PIN_URL}">
+                            <input type="button" class="btn ${('', 'hide')[bool(sickrage.srConfig.TRAKT_ACCESS_TOKEN)]}"
                                    value="Get Trakt PIN" id="TraktGetPin"/>
                             <div class="field-pair">
                                 <label for="trakt_pin">
@@ -1772,7 +1772,7 @@
                                 <label for="trakt_timeout">
                                     <span class="component-title">API Timeout</span>
                                     <input type="text" name="trakt_timeout" id="trakt_timeout"
-                                           value="${sickrage.TRAKT_TIMEOUT}" class="form-control input-sm input75"/>
+                                           value="${sickrage.srConfig.TRAKT_TIMEOUT}" class="form-control input-sm input75"/>
                                 </label>
                                 <p>
                                     <span class="component-desc">
@@ -1785,8 +1785,8 @@
                                     <span class="component-title">Default indexer</span>
                                     <span class="component-desc">
                                         <select id="trakt_default_indexer" name="trakt_default_indexer" class="form-control input-sm">
-                                            % for indexer in sickrage.INDEXER_API().indexers:
-                                                <option value="${indexer}" ${('', 'selected="selected"')[sickrage.TRAKT_DEFAULT_INDEXER == indexer]}>${sickrage.INDEXER_API().indexers[indexer]}</option>
+                                            % for indexer in sickrage.srCore.INDEXER_API().indexers:
+                                                <option value="${indexer}" ${('', 'selected="selected"')[sickrage.srConfig.TRAKT_DEFAULT_INDEXER == indexer]}>${sickrage.srCore.INDEXER_API().indexers[indexer]}</option>
                                             % endfor
                                         </select>
                                     </span>
@@ -1797,7 +1797,7 @@
                                     <span class="component-title">Sync libraries</span>
                                     <span class="component-desc">
                                         <input type="checkbox" class="enabler" name="trakt_sync"
-                                               id="trakt_sync" ${('', 'checked="checked"')[bool(sickrage.TRAKT_SYNC)]}/>
+                                               id="trakt_sync" ${('', 'checked="checked"')[bool(sickrage.srConfig.TRAKT_SYNC)]}/>
                                         <p>sync your SickRage show library with your trakt show library.</p>
                                     </span>
                                 </label>
@@ -1808,7 +1808,7 @@
                                         <span class="component-title">Remove Episodes From Collection</span>
                                         <span class="component-desc">
                                             <input type="checkbox" name="trakt_sync_remove"
-                                                   id="trakt_sync_remove" ${('', 'checked="checked"')[bool(sickrage.TRAKT_SYNC_REMOVE)]}/>
+                                                   id="trakt_sync_remove" ${('', 'checked="checked"')[bool(sickrage.srConfig.TRAKT_SYNC_REMOVE)]}/>
                                             <p>Remove an Episode from your Trakt Collection if it is not in your SickRage Library.</p>
                                         </span>
                                     </label>
@@ -1819,7 +1819,7 @@
                                     <span class="component-title">Sync watchlist</span>
                                     <span class="component-desc">
                                         <input type="checkbox" class="enabler" name="trakt_sync_watchlist"
-                                               id="trakt_sync_watchlist" ${('', 'checked="checked"')[bool(sickrage.TRAKT_SYNC_WATCHLIST)]}/>
+                                               id="trakt_sync_watchlist" ${('', 'checked="checked"')[bool(sickrage.srConfig.TRAKT_SYNC_WATCHLIST)]}/>
                                         <p>sync your SickRage show watchlist with your trakt show watchlist (either Show and Episode).</p>
                                         <p>Episode will be added on watch list when wanted or snatched and will be removed when downloaded </p>
                                     </span>
@@ -1830,13 +1830,13 @@
                                     <label for="trakt_method_add">
                                         <span class="component-title">Watchlist add method</span>
                                            <select id="trakt_method_add" name="trakt_method_add" class="form-control input-sm">
-                                               <option value="0" ${('', 'selected="selected"')[sickrage.TRAKT_METHOD_ADD == 0]}>
+                                               <option value="0" ${('', 'selected="selected"')[sickrage.srConfig.TRAKT_METHOD_ADD == 0]}>
                                                    Skip All
                                                </option>
-                                               <option value="1" ${('', 'selected="selected"')[sickrage.TRAKT_METHOD_ADD == 1]}>
+                                               <option value="1" ${('', 'selected="selected"')[sickrage.srConfig.TRAKT_METHOD_ADD == 1]}>
                                                    Download Pilot Only
                                                </option>
-                                               <option value="2" ${('', 'selected="selected"')[sickrage.TRAKT_METHOD_ADD == 2]}>
+                                               <option value="2" ${('', 'selected="selected"')[sickrage.srConfig.TRAKT_METHOD_ADD == 2]}>
                                                    Get whole show
                                                </option>
                                         </select>
@@ -1851,7 +1851,7 @@
                                         <span class="component-title">Remove episode</span>
                                         <span class="component-desc">
                                             <input type="checkbox" name="trakt_remove_watchlist"
-                                                   id="trakt_remove_watchlist" ${('', 'checked="checked"')[bool(sickrage.TRAKT_REMOVE_WATCHLIST)]}/>
+                                                   id="trakt_remove_watchlist" ${('', 'checked="checked"')[bool(sickrage.srConfig.TRAKT_REMOVE_WATCHLIST)]}/>
                                             <p>remove an episode from your watchlist after it is downloaded.</p>
                                         </span>
                                     </label>
@@ -1861,7 +1861,7 @@
                                         <span class="component-title">Remove series</span>
                                         <span class="component-desc">
                                             <input type="checkbox" name="trakt_remove_serieslist"
-                                                   id="trakt_remove_serieslist" ${('', 'checked="checked"')[bool(sickrage.TRAKT_REMOVE_SERIESLIST)]}/>
+                                                   id="trakt_remove_serieslist" ${('', 'checked="checked"')[bool(sickrage.srConfig.TRAKT_REMOVE_SERIESLIST)]}/>
                                             <p>remove the whole series from your watchlist after any download.</p>
                                         </span>
                                     </label>
@@ -1871,7 +1871,7 @@
                                         <span class="component-title">Remove watched show:</span>
                                         <span class="component-desc">
                                             <input type="checkbox" name="trakt_remove_show_from_sickrage"
-                                                   id="trakt_remove_show_from_sickrage" ${('', 'checked="checked"')[bool(sickrage.TRAKT_REMOVE_SHOW_FROM_SICKRAGE)]}/>
+                                                   id="trakt_remove_show_from_sickrage" ${('', 'checked="checked"')[bool(sickrage.srConfig.TRAKT_REMOVE_SHOW_FROM_SICKRAGE)]}/>
                                             <p>remove the show from sickrage if it's ended and completely watched</p>
                                         </span>
                                     </label>
@@ -1881,7 +1881,7 @@
                                         <span class="component-title">Start paused</span>
                                         <span class="component-desc">
                                             <input type="checkbox" name="trakt_start_paused"
-                                                   id="trakt_start_paused" ${('', 'checked="checked"')[bool(sickrage.TRAKT_START_PAUSED)]}/>
+                                                   id="trakt_start_paused" ${('', 'checked="checked"')[bool(sickrage.srConfig.TRAKT_START_PAUSED)]}/>
                                             <p>show's grabbed from your trakt watchlist start paused.</p>
                                         </span>
                                     </label>
@@ -1891,7 +1891,7 @@
                                 <label for="trakt_blacklist_name">
                                     <span class="component-title">Trakt blackList name</span>
                                     <input type="text" name="trakt_blacklist_name" id="trakt_blacklist_name"
-                                           value="${sickrage.TRAKT_BLACKLIST_NAME}"
+                                           value="${sickrage.srConfig.TRAKT_BLACKLIST_NAME}"
                                            class="form-control input-sm input150" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1918,7 +1918,7 @@
                                 <span class="component-title">Enable</span>
                                 <span class="component-desc">
                                     <input type="checkbox" class="enabler" name="use_email"
-                                           id="use_email" ${('', 'checked="checked"')[bool(sickrage.USE_EMAIL)]}/>
+                                           id="use_email" ${('', 'checked="checked"')[bool(sickrage.srConfig.USE_EMAIL)]}/>
                                     <p>should SickRage send email notifications ?</p>
                                 </span>
                             </label>
@@ -1930,7 +1930,7 @@
                                     <span class="component-title">Notify on snatch</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="email_notify_onsnatch"
-                                               id="email_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.EMAIL_NOTIFY_ONSNATCH)]}/>
+                                               id="email_notify_onsnatch" ${('', 'checked="checked"')[bool(sickrage.srConfig.EMAIL_NOTIFY_ONSNATCH)]}/>
                                         <p>send a notification when a download starts ?</p>
                                     </span>
                                 </label>
@@ -1940,7 +1940,7 @@
                                     <span class="component-title">Notify on download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="email_notify_ondownload"
-                                               id="email_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.EMAIL_NOTIFY_ONDOWNLOAD)]}/>
+                                               id="email_notify_ondownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.EMAIL_NOTIFY_ONDOWNLOAD)]}/>
                                         <p>send a notification when a download finishes ?</p>
                                     </span>
                                 </label>
@@ -1950,7 +1950,7 @@
                                     <span class="component-title">Notify on subtitle download</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="email_notify_onsubtitledownload"
-                                               id="email_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
+                                               id="email_notify_onsubtitledownload" ${('', 'checked="checked"')[bool(sickrage.srConfig.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD)]}/>
                                         <p>send a notification when subtitles are downloaded ?</p>
                                     </span>
                                 </label>
@@ -1958,7 +1958,7 @@
                             <div class="field-pair">
                                 <label for="email_host">
                                     <span class="component-title">SMTP host</span>
-                                    <input type="text" name="email_host" id="email_host" value="${sickrage.EMAIL_HOST}"
+                                    <input type="text" name="email_host" id="email_host" value="${sickrage.srConfig.EMAIL_HOST}"
                                            class="form-control input-sm input250" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1969,7 +1969,7 @@
                             <div class="field-pair">
                                 <label for="email_port">
                                     <span class="component-title">SMTP port</span>
-                                    <input type="text" name="email_port" id="email_port" value="${sickrage.EMAIL_PORT}"
+                                    <input type="text" name="email_port" id="email_port" value="${sickrage.srConfig.EMAIL_PORT}"
                                            class="form-control input-sm input75" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1980,7 +1980,7 @@
                             <div class="field-pair">
                                 <label for="email_from">
                                     <span class="component-title">SMTP from</span>
-                                    <input type="text" name="email_from" id="email_from" value="${sickrage.EMAIL_FROM}"
+                                    <input type="text" name="email_from" id="email_from" value="${sickrage.srConfig.EMAIL_FROM}"
                                            class="form-control input-sm input250" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -1993,7 +1993,7 @@
                                     <span class="component-title">Use TLS</span>
                                     <span class="component-desc">
                                         <input type="checkbox" name="email_tls"
-                                               id="email_tls" ${('', 'checked="checked"')[bool(sickrage.EMAIL_TLS)]}/>
+                                               id="email_tls" ${('', 'checked="checked"')[bool(sickrage.srConfig.EMAIL_TLS)]}/>
                                         <p>check to use TLS encryption.</p>
                                     </span>
                                 </label>
@@ -2001,7 +2001,7 @@
                             <div class="field-pair">
                                 <label for="email_user">
                                     <span class="component-title">SMTP user</span>
-                                    <input type="text" name="email_user" id="email_user" value="${sickrage.EMAIL_USER}"
+                                    <input type="text" name="email_user" id="email_user" value="${sickrage.srConfig.EMAIL_USER}"
                                            class="form-control input-sm input250" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -2013,7 +2013,7 @@
                                 <label for="email_password">
                                     <span class="component-title">SMTP password</span>
                                     <input type="password" name="email_password" id="email_password"
-                                           value="${sickrage.EMAIL_PASSWORD}" class="form-control input-sm input250"
+                                           value="${sickrage.srConfig.EMAIL_PASSWORD}" class="form-control input-sm input250"
                                            autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -2024,7 +2024,7 @@
                             <div class="field-pair">
                                 <label for="email_list">
                                     <span class="component-title">Global email list</span>
-                                    <input type="text" name="email_list" id="email_list" value="${sickrage.EMAIL_LIST}"
+                                    <input type="text" name="email_list" id="email_list" value="${sickrage.srConfig.EMAIL_LIST}"
                                            class="form-control input-sm input350" autocapitalize="off"/>
                                 </label>
                                 <label>
@@ -2061,8 +2061,8 @@
                 </div><!-- /email component-group //-->
 
             </div><!-- /config-components //-->
+            </div>
         </form>
-
         <br><input type="submit" class="config_submitter btn" value="Save Changes" /><br>
 
     </div>

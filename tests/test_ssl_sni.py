@@ -25,8 +25,9 @@ import unittest
 import certifi
 import requests
 
-from sickrage.providers import sortedProviderDict
+from providers import sortedProviderDict
 from tests import SiCKRAGETestCase
+
 
 class SNI_Tests(SiCKRAGETestCase): pass
 

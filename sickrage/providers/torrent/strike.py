@@ -19,8 +19,8 @@
 from __future__ import unicode_literals
 
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.providers import TorrentProvider
+from core.caches import tv_cache
+from providers import TorrentProvider
 
 
 class STRIKEProvider(TorrentProvider):
@@ -40,17 +40,17 @@ class STRIKEProvider(TorrentProvider):
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
         for mode in search_strings.keys():  # Mode = RSS, Season, Episode
-            sickrage.LOGGER.debug("Search Mode: %s" % mode)
+            sickrage.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode is not 'RSS':
-                    sickrage.LOGGER.debug("Search string: " + search_string.strip())
+                    sickrage.srLogger.debug("Search string: " + search_string.strip())
 
                 searchURL = self.url + "api/v2/torrents/search/?category=TV&phrase=" + search_string
-                sickrage.LOGGER.debug("Search URL: %s" % searchURL)
+                sickrage.srLogger.debug("Search URL: %s" % searchURL)
                 jdata = self.getURL(searchURL, json=True)
                 if not jdata:
-                    sickrage.LOGGER.debug("No data returned from provider")
+                    sickrage.srLogger.debug("No data returned from provider")
                     return []
 
                 results = []
@@ -68,13 +68,13 @@ class STRIKEProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            sickrage.LOGGER.debug(
+                            sickrage.srLogger.debug(
                                     "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
                                             title, seeders, leechers))
                         continue
 
                     if mode is not 'RSS':
-                        sickrage.LOGGER.debug("Found result: %s " % title)
+                        sickrage.srLogger.debug("Found result: %s " % title)
 
                     item = title, download_url, size, seeders, leechers
                     items[mode].append(item)

@@ -19,6 +19,8 @@
 
 from __future__ import unicode_literals
 
+__all__ = ["srIntervalTrigger", "srJobStore", "srScheduler"]
+
 from apscheduler.job import Job
 from apscheduler.jobstores.base import ConflictingIdError, JobLookupError
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
@@ -28,21 +30,21 @@ from apscheduler.util import datetime_to_utc_timestamp
 from dill import dill
 from sqlalchemy.exc import IntegrityError
 
-from sickrage.core.databases import dbFilename
+from core.databases import dbFilename
 
 
-class SRIntervalTrigger(IntervalTrigger):
+class srIntervalTrigger(IntervalTrigger):
     def __init__(self, weeks=0, days=0, hours=0, minutes=0, seconds=0, start_date=None, end_date=None, timezone=None,
                  **kwargs):
         min = kwargs.pop('min', 0)
         if min <= weeks + days + hours + minutes + seconds:
-            super(SRIntervalTrigger, self).__init__(weeks, days, hours, minutes, seconds, start_date, end_date,
+            super(srIntervalTrigger, self).__init__(weeks, days, hours, minutes, seconds, start_date, end_date,
                                                     timezone)
 
 
-class SRJobStore(SQLAlchemyJobStore):
+class srJobStore(SQLAlchemyJobStore):
     def __init__(self, *args, **kwargs):
-        super(SRJobStore, self).__init__(*args, **kwargs)
+        super(srJobStore, self).__init__(*args, **kwargs)
 
     def add_job(self, job):
         insert = self.jobs_t.insert().values(**{
@@ -74,7 +76,7 @@ class SRJobStore(SQLAlchemyJobStore):
         return job
 
 
-class Scheduler(TornadoScheduler):
+class srScheduler(TornadoScheduler):
     def __init__(self, gconfig={}, **options):
-        gconfig['jobstores'] = {'default': SRJobStore(url='sqlite:///{}'.format(dbFilename('scheduler.db')))}
-        super(Scheduler, self).__init__(gconfig, **options)
+        gconfig['jobstores'] = {'default': srJobStore(url='sqlite:///{}'.format(dbFilename('scheduler.db')))}
+        super(srScheduler, self).__init__(gconfig, **options)

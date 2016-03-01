@@ -19,6 +19,6 @@ __title__ = "synchronous-deluge"
 __version__ = "0.1"
 __author__ = "Christian Dale"
 
-from sickrage.clients.synchronousdeluge.client import DelugeClient
-from sickrage.clients.synchronousdeluge.exceptions import DelugeRPCError
+from clients.synchronousdeluge.client import DelugeClient
+from clients.synchronousdeluge.exceptions import DelugeRPCError
 

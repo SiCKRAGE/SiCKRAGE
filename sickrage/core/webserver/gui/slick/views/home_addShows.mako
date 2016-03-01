@@ -16,17 +16,17 @@
         <div class="button"><div class="icon-addnewshow"></div></div>
         <div class="buttontext">
             <h3>Add New Show</h3>
-            <p>For shows that you haven't downloaded yet, this option finds a show on theTVDB.com, creates a directory for it's episodes, and adds it to SickRage.</p>
+            <p>For shows that you haven't downloaded yet, this option finds a show on theTVDB.com, creates a directory for it's episodes, and adds it to sickrage.srConfig.</p>
         </div>
     </a>
 
     <br><br>
-    % if sickrage.USE_TRAKT == True:
+    % if sickrage.srConfig.USE_TRAKT == True:
     <a href="${srRoot}/home/addShows/trendingShows/" id="btnNewShow" class="btn btn-large">
         <div class="button"><div class="icon-addtrendingshow"></div></div>
         <div class="buttontext">
             <h3>Add Trending Show</h3>
-            <p>For shows that you haven't downloaded yet, this option lets you choose from a list of current trending shows with ratings to add, creates a directory for its episodes, and adds it to SickRage.</p>
+            <p>For shows that you haven't downloaded yet, this option lets you choose from a list of current trending shows with ratings to add, creates a directory for its episodes, and adds it to sickrage.srConfig.</p>
         </div>
     </a>
 
@@ -36,7 +36,7 @@
         <div class="button"><div class="icon-addrecommendedshow"></div></div>
         <div class="buttontext">
             <h3>Add Recommended Shows</h3>
-            <p>For shows that you haven't downloaded yet, this option recommends shows to add based on your Trakt.tv show library, creates a directory for its episodes, and adds it to SickRage.</p>
+            <p>For shows that you haven't downloaded yet, this option recommends shows to add based on your Trakt.tv show library, creates a directory for its episodes, and adds it to sickrage.srConfig.</p>
         </div>
     </a>
 
