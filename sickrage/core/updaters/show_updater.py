@@ -41,7 +41,7 @@ class srShowUpdater(object):
 
         self.amActive = True
 
-        update_datetime = datetime.datetime.now()
+        update_datetime = datetime.now()
         update_date = update_datetime.date()
 
         if sickrage.srConfig.USE_FAILED_DOWNLOADS:
