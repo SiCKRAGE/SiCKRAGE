@@ -35,7 +35,7 @@ class CpasbienProvider(TorrentProvider):
         self.supportsBacklog = True
         self.public = True
         self.ratio = None
-        self.url = "http://www.cpasbien.io"
+        self.url = "http://www.cpasbien.cm"
 
         self.proper_strings = ['PROPER', 'REPACK']
 
