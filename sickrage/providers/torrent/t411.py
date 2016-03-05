@@ -44,11 +44,11 @@ class T411Provider(TorrentProvider):
 
         self.cache = T411Cache(self)
 
-        self.urls = {'base_url': 'http://www.t411.in/',
-                     'search': 'https://api.t411.in/torrents/search/%s?cid=%s&limit=100',
-                     'rss': 'https://api.t411.in/torrents/top/today',
-                     'login_page': 'https://api.t411.in/auth',
-                     'download': 'https://api.t411.in/torrents/download/%s'}
+        self.urls = {'base_url': 'http://www.t411.ch/',
+                     'search': 'https://api.t411.ch/torrents/search/%s?cid=%s&limit=100',
+                     'rss': 'https://api.t411.ch/torrents/top/today',
+                     'login_page': 'https://api.t411.ch/auth',
+                     'download': 'https://api.t411.ch/torrents/download/%s'}
 
         self.url = self.urls['base_url']
 
