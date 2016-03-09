@@ -33,7 +33,8 @@
     "scrollup": "^2.4.1",
     "qtip2": "^2.2.1",
     "uri.js": "^1.17.1",
-    "jquery.steps": "jquery-steps#^1.1.0"
+    "jquery.steps": "jquery-steps#^1.1.0",
+    "jquery-validation": "^1.15.0"
   },
   "resolutions": {
     "bootstrap": "^3.0.0"

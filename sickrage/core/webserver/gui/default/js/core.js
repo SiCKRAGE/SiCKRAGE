@@ -2184,8 +2184,8 @@ jQuery(document).ready(function ($) {
                                 break;
                             case 'rating':
                                 /* randomise, else the rating_votes can already
-                             * have sorted leaving this with nothing to do.
-                             */
+                                 * have sorted leaving this with nothing to do.
+                                 */
                                 $('#container').isotope({sortBy: 'random'});
                                 sortCriteria = 'rating';
                                 break;
@@ -2260,8 +2260,8 @@ jQuery(document).ready(function ($) {
                                 break;
                             case 'rating':
                                 /* randomise, else the rating_votes can already
-                             * have sorted leaving this with nothing to do.
-                             */
+                                 * have sorted leaving this with nothing to do.
+                                 */
                                 $('#container').isotope({sortBy: 'random'});
                                 sortCriteria = 'rating';
                                 break;
@@ -2390,15 +2390,6 @@ jQuery(document).ready(function ($) {
                                 return true;
                             }
 
-                            $(this).validate({
-                                rules: {
-                                    nameToSearch: {required: true}
-                                },
-                                messages: {
-                                    nameToSearch: {required: "TV Show required"}
-                                }
-                            });
-
                             $(this).validate().settings.ignore = ":disabled,:hidden";
                             return $(this).valid();
                         },
@@ -2407,9 +2398,18 @@ jQuery(document).ready(function ($) {
                             return $(this).valid();
                         },
                         onFinished: function (event, currentIndex) {
-                            // Submit form input
                             SICKRAGE.home.generate_bwlist();
                             $(this).submit();
+                        }
+                    }).validate({
+                        errorPlacement: function errorPlacement(error, element) {
+                            element.after(error);
+                        },
+                        rules: {
+                            nameToSearch: {required: true}
+                        },
+                        messages: {
+                            nameToSearch: {required: "TV Show required"}
                         }
                     });
 
