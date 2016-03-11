@@ -524,13 +524,13 @@ class Tvdb:
         try:
             if refresh and self.config[b'apitoken']:
                 jwtResp.update(**requests.post(self.config[b'api'][self.config[b'apiver']][b'refresh'],
-                                               headers={'Content-type': 'application/json'},
+                                               headers={'User-agent': 'Mozilla/5.0', 'Content-type': 'application/json'},
                                                timeout=timeout
                                                ).json())
             elif not self.config[b'apitoken']:
                 jwtResp.update(**requests.post(self.config[b'api'][self.config[b'apiver']][b'login'],
                                                data=json.dumps(dict(apikey=self.config[b'apikey'])),
-                                               headers={'Content-type': 'application/json'},
+                                               headers={'User-agent': 'Mozilla/5.0', 'Content-type': 'application/json'},
                                                timeout=timeout
                                                ).json())
         except:
@@ -551,6 +551,7 @@ class Tvdb:
                 self.getToken()
 
             self.config[b'headers'].update({
+                'User-agent': 'Mozilla/5.0',
                 'Authorization': 'Bearer {}'.format(self.config[b'apitoken']),
                 'Accept-Language': self.config[b'language']
             })
@@ -580,7 +581,7 @@ class Tvdb:
             if e.response.status_code == 401:
                 self.getToken(True)
                 raise tvdb_error("Session token expired, retrieving new token(401 error)")
-            raise tvdb_error("HTTP error {} while loading URL {}".format(e.errno, url))
+            raise tvdb_error("HTTP error {} while loading URL {}".format(e.response.status_code, url))
         except requests.exceptions.ConnectionError, e:
             raise tvdb_error("Connection error {} while loading URL {}".format(e.message, url))
         except requests.exceptions.Timeout, e:
