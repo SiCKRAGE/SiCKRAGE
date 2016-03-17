@@ -36,11 +36,11 @@ from sickrage.core.webserver.routes import Route
 from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
 
 
-def launch_browser(protocol=None, host=None, startport=None, web_root=None):
-    browserurl = '{}://{}:{}{}/home/'.format(protocol or 'http', host, startport or 8081, web_root or '/')
+def launch_browser(protocol=None, host=None, startport=None):
+    browserurl = '{}://{}:{}/home/'.format(protocol or 'http', host, startport or 8081)
 
     try:
-        print("Launching browser window")
+        sickrage.srLogger.info("Launching browser window")
 
         try:
             webbrowser.open(browserurl, 2, 1)
@@ -69,14 +69,11 @@ class StaticImageHandler(StaticFileHandler):
 
 
 class srWebServer(object):
-    def __init__(self, web_port=8081, web_host=get_lan_ip(), open_browser=True):
+    def __init__(self):
         super(srWebServer, self).__init__()
         self.name = "TORNADO"
         self.io_loop = IOLoop.instance()
         self.started = False
-        self.open_browser = open_browser
-        self.port = web_port
-        self.host = web_host
 
     def start(self):
         self.started = True
@@ -179,12 +176,16 @@ class srWebServer(object):
         self.server = HTTPServer(self.app)
         if sickrage.srConfig.ENABLE_HTTPS:
             self.server.ssl_options = {"certfile": sickrage.srConfig.HTTPS_CERT, "keyfile": sickrage.srConfig.HTTPS_KEY}
-        self.server.listen(self.port, None)
+        self.server.listen(sickrage.srConfig.WEB_PORT, None)
 
         # launch browser window
-        if self.open_browser:
-            threading.Thread(None, lambda: launch_browser(('http', 'https')[sickrage.srConfig.ENABLE_HTTPS],
-                                                          self.host, self.port, sickrage.srConfig.WEB_ROOT)).start()
+        if all([not sickrage.NOLAUNCH, sickrage.srConfig.LAUNCH_BROWSER]):
+            threading.Thread(None,
+                             lambda: launch_browser(
+                                 ('http', 'https')[sickrage.srConfig.ENABLE_HTTPS],
+                                 get_lan_ip(),
+                                 sickrage.srConfig.WEB_PORT
+                             )).start()
 
         # clear mako cache folder
         makocache = os.path.join(sickrage.srConfig.CACHE_DIR, 'mako')
@@ -194,9 +195,9 @@ class srWebServer(object):
         sickrage.srLogger.info(
             "SiCKRAGE STARTED :: VERSION:[{}] CONFIG:[{}] URL:[{}://{}:{}/]"
                 .format(sickrage.srCore.VERSION,
-                        sickrage.srConfig.CONFIG_FILE,
+                        sickrage.CONFIG_FILE,
                         ('http', 'https')[sickrage.srConfig.ENABLE_HTTPS],
-                        get_lan_ip(), self.port)
+                        get_lan_ip(), sickrage.srConfig.WEB_PORT)
         )
 
         self.io_loop.start()

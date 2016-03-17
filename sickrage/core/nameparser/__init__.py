@@ -37,6 +37,7 @@ from sickrage.core.scene_exceptions import get_scene_exception_by_name
 from sickrage.core.scene_numbering import \
     get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
     get_indexer_numbering
+from sickrage.indexers import srIndexerApi
 from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
     indexer_error
 

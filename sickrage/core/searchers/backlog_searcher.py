@@ -18,8 +18,9 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import threading
+
+import datetime
 
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
@@ -32,7 +33,7 @@ class srBacklogSearcher(object):
     def __init__(self, *args, **kwargs):
         self.name = "BACKLOG"
         self.lock = threading.Lock()
-        self._lastBacklog = self._get_lastBacklog()
+        self._lastBacklog = None
         self.cycleTime = sickrage.srConfig.BACKLOG_SEARCHER_FREQ / 60 / 24
         self.amActive = False
         self.amPaused = False
@@ -89,7 +90,7 @@ class srBacklogSearcher(object):
         else:
             show_list = sickrage.srCore.SHOWLIST
 
-        self._get_lastBacklog()
+        self._lastBacklog = self._get_lastBacklog()
 
         curDate = datetime.date.today().toordinal()
         fromDate = datetime.date.fromordinal(1)
@@ -137,8 +138,7 @@ class srBacklogSearcher(object):
             if lastBacklog > datetime.date.today().toordinal():
                 lastBacklog = 1
 
-        self._lastBacklog = lastBacklog
-        return self._lastBacklog
+        return lastBacklog
 
     def _get_segments(self, show, fromDate):
         if show.paused:

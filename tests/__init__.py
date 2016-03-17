@@ -205,7 +205,7 @@ sickrage.srCore.srNotifiers = AttrDict(
 # =================
 # dummy functions
 # =================
-def _dummy_saveConfig(cfgfile=sickrage.srConfig.CONFIG_FILE):
+def _dummy_saveConfig(cfgfile=sickrage.CONFIG_FILE):
     return True
 
 

@@ -20,7 +20,6 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import os
 import random
 import re
@@ -29,6 +28,8 @@ import socket
 import sys
 import traceback
 import urllib
+
+import datetime
 
 import sickrage
 from sickrage.core.caches.name_cache import srNameCache
@@ -82,12 +83,10 @@ from sickrage.notifiers.trakt import TraktNotifier
 from sickrage.notifiers.tweet import TwitterNotifier
 
 
-class srCore(object):
-    def __init__(self, config_file, console=None, debug=None, web_port=None, open_broswser=None):
+class Core(object):
+    def __init__(self):
         self.STARTED = False
         self.RESTARTED = False
-        self.CONSOLE = console
-        self.DEBUG = debug
 
         # random user agent
         urllib.FancyURLopener.version = random.choice(srSession.USER_AGENTS)
@@ -140,13 +139,13 @@ class srCore(object):
         sickrage.srLogger = srLogger()
 
         # init config
-        sickrage.srConfig = srConfig(config_file, debug)
+        sickrage.srConfig = srConfig()
 
         # init scheduler
         sickrage.srScheduler = srScheduler()
 
         # init webserver
-        sickrage.srWebServer = srWebServer(web_port=web_port, open_browser=open_broswser)
+        sickrage.srWebServer = srWebServer()
 
         # sickrage version
         self.VERSION = None
@@ -178,14 +177,16 @@ class srCore(object):
         self.AUTOPOSTPROCESSOR = None
 
     def start(self):
+        self.STARTED = True
+
         # load config
         sickrage.srConfig.load()
 
         # setup logger settings
         sickrage.srLogger.logSize = sickrage.srConfig.LOG_SIZE
         sickrage.srLogger.logNr = sickrage.srConfig.LOG_NR
-        sickrage.srLogger.debugLogging = sickrage.srConfig.DEBUG or self.DEBUG
-        sickrage.srLogger.consoleLogging = self.CONSOLE
+        sickrage.srLogger.debugLogging = sickrage.srConfig.DEBUG
+        sickrage.srLogger.consoleLogging = not sickrage.QUITE
         sickrage.srLogger.logFile = os.path.abspath(os.path.join(
             sickrage.DATA_DIR,
             sickrage.srConfig.LOG_DIR,
@@ -478,12 +479,7 @@ class srCore(object):
         # start scheduler
         sickrage.srScheduler.start()
 
-        # set web port
-        if sickrage.srWebServer.port == 8081:
-            sickrage.srWebServer.port = sickrage.srConfig.WEB_PORT
-
         # start webserver
-        self.STARTED = True
         sickrage.srWebServer.start()
 
     def shutdown(self, status=None, restart=False):

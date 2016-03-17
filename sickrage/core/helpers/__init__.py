@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 import ast
 import base64
 import ctypes
-import datetime
 import errno
 import hashlib
 import httplib
@@ -26,6 +25,7 @@ from _socket import timeout as SocketTimeout
 from contextlib import closing, contextmanager
 from itertools import cycle, izip
 
+import datetime
 import requests
 import six
 from bs4 import BeautifulSoup
@@ -1269,7 +1269,7 @@ def backupAll(backupDir):
                  'config.ini',
                  'failed.db',
                  'cache.db',
-                 sickrage.srConfig.CONFIG_FILE]
+                 sickrage.CONFIG_FILE]
 
     for f in filesList:
         fp = os.path.join(sickrage.DATA_DIR, f)
@@ -1680,7 +1680,7 @@ def restoreDB(srcDir, dstDir):
                      'config.ini',
                      'failed.db',
                      'cache.db',
-                     sickrage.srConfig.CONFIG_FILE]
+                     sickrage.CONFIG_FILE]
 
         for filename in filesList:
             srcFile = os.path.join(srcDir, filename)

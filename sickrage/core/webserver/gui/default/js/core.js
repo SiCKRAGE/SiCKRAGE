@@ -126,16 +126,6 @@ jQuery(document).ready(function ($) {
                     $("[datetime]").timeago();
                 }
 
-                SICKRAGE.common.init_tablesorter();
-                SICKRAGE.common.init_rootdirs();
-                SICKRAGE.common.init_confirmations();
-                SICKRAGE.common.init_bwlist();
-                SICKRAGE.common.init_tooltips();
-
-                SICKRAGE.check_notifications();
-            },
-
-            init_tablesorter: function () {
                 $.tablesorter.addParser(
                     {
                         id: 'loadingNames',
@@ -216,53 +206,7 @@ jQuery(document).ready(function ($) {
                         type: 'numeric'
                     }
                 );
-            },
 
-            init_bwlist: function () {
-                $('#removeW').click(function () {
-                    !$('#white option:selected').remove().appendTo('#pool');
-                });
-
-                $('#addW').click(function () {
-                    !$('#pool option:selected').remove().appendTo('#white');
-                });
-
-                $('#addB').click(function () {
-                    !$('#pool option:selected').remove().appendTo('#black');
-                });
-
-                $('#removeP').click(function () {
-                    !$('#pool option:selected').remove();
-                });
-
-                $('#removeB').click(function () {
-                    !$('#black option:selected').remove().appendTo('#pool');
-                });
-
-                $('#addToWhite').click(function () {
-                    var group = $('#addToPoolText').val();
-                    if (group !== '') {
-                        var option = $('<option>');
-                        option.attr('value', group);
-                        option.html(group);
-                        option.appendTo('#white');
-                        $('#addToPoolText').val('');
-                    }
-                });
-
-                $('#addToBlack').click(function () {
-                    var group = $('#addToPoolText').val();
-                    if (group !== '') {
-                        var option = $('<option>');
-                        option.attr('value', group);
-                        option.html(group);
-                        option.appendTo('#black');
-                        $('#addToPoolText').val('');
-                    }
-                });
-            },
-
-            init_confirmations: function () {
                 $('a.shutdown').on('click', function (e) {
                     e.preventDefault();
                     var target = $(this).attr('href');
@@ -396,104 +340,7 @@ jQuery(document).ready(function ($) {
                         }
                     });
                 });
-            },
 
-            init_rootdirs: function () {
-                var methods = [
-                    'assert',
-                    'clear',
-                    'count',
-                    'debug',
-                    'dir',
-                    'dirxml',
-                    'error',
-                    'exception',
-                    'group',
-                    'groupCollapsed',
-                    'groupEnd',
-                    'info',
-                    'log',
-                    'markTimeline',
-                    'profile',
-                    'profileEnd',
-                    'table',
-                    'time',
-                    'timeEnd',
-                    'timeStamp',
-                    'trace',
-                    'warn'
-                ];
-
-                var length = methods.length;
-                var console = (window.console = window.console || {});
-
-                while (length--) {
-                    // Only stub undefined methods.
-                    var method = methods[length];
-                    if (!console[method]) {
-                        console[method] = function () {
-                        };
-                    }
-                }
-
-                $('#addRootDir').click(function () {
-                    SICKRAGE.browser.nFileBrowser(SICKRAGE.root_dirs.addRootDir);
-                });
-                $('#editRootDir').click(function () {
-                    SICKRAGE.browser.nFileBrowser(SICKRAGE.root_dirs.editRootDir, {initialDir: $("#rootDirs option:selected").val()});
-                });
-
-                $('#deleteRootDir').click(function () {
-                    if ($("#rootDirs option:selected").length) {
-
-                        var toDelete = $("#rootDirs option:selected");
-
-                        var newDefault = (toDelete.attr('id') === $("#whichDefaultRootDir").val());
-                        var deletedNum = $("#rootDirs option:selected").attr('id').substr(3);
-
-                        toDelete.remove();
-
-                        if (newDefault) {
-
-                            console.log('new default when deleting');
-
-                            // we deleted the default so this isn't valid anymore
-                            $("#whichDefaultRootDir").val('');
-
-                            // if we're deleting the default and there are options left then pick a new default
-                            if ($("#rootDirs option").length) {
-                                SICKRAGE.root_dirs.setDefault($('#rootDirs option').attr('id'));
-                            }
-
-                        } else if ($("#whichDefaultRootDir").val().length) {
-                            var oldDefaultNum = $("#whichDefaultRootDir").val().substr(3);
-                            if (oldDefaultNum > deletedNum) {
-                                $("#whichDefaultRootDir").val('rd-' + (oldDefaultNum - 1));
-                            }
-                        }
-
-                    }
-                    SICKRAGE.root_dirs.refreshRootDirs();
-                    $.get('/config/general/saveRootDirs', {rootDirString: $('#rootDirText').val()});
-                });
-
-                $('#defaultRootDir').click(function () {
-                    if ($("#rootDirs option:selected").length) {
-                        SICKRAGE.root_dirs.setDefault($("#rootDirs option:selected").attr('id'));
-                    }
-                    SICKRAGE.root_dirs.refreshRootDirs();
-                    $.get('/config/general/saveRootDirs', {rootDirString: $('#rootDirText').val()});
-                });
-
-                $('#rootDirs').click(SICKRAGE.root_dirs.refreshRootDirs);
-
-                // set up buttons on page load
-                //syncOptionIDs();
-                SICKRAGE.root_dirs.setDefault($('#whichDefaultRootDir').val(), true);
-                SICKRAGE.root_dirs.refreshRootDirs();
-            },
-
-            init_tooltips: function () {
                 // plot tooltips
                 $('.plotInfo').qtip({
                     content: {
@@ -567,6 +414,50 @@ jQuery(document).ready(function ($) {
                         classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
                     }
                 });
+
+                $('#removeW').click(function () {
+                    !$('#white option:selected').remove().appendTo('#pool');
+                });
+
+                $('#addW').click(function () {
+                    !$('#pool option:selected').remove().appendTo('#white');
+                });
+
+                $('#addB').click(function () {
+                    !$('#pool option:selected').remove().appendTo('#black');
+                });
+
+                $('#removeP').click(function () {
+                    !$('#pool option:selected').remove();
+                });
+
+                $('#removeB').click(function () {
+                    !$('#black option:selected').remove().appendTo('#pool');
+                });
+
+                $('#addToWhite').click(function () {
+                    var group = $('#addToPoolText').val();
+                    if (group !== '') {
+                        var option = $('<option>');
+                        option.attr('value', group);
+                        option.html(group);
+                        option.appendTo('#white');
+                        $('#addToPoolText').val('');
+                    }
+                });
+
+                $('#addToBlack').click(function () {
+                    var group = $('#addToPoolText').val();
+                    if (group !== '') {
+                        var option = $('<option>');
+                        option.attr('value', group);
+                        option.html(group);
+                        option.appendTo('#black');
+                        $('#addToPoolText').val('');
+                    }
+                });
+
+                SICKRAGE.check_notifications();
             }
         },
 
@@ -1073,6 +964,101 @@ jQuery(document).ready(function ($) {
         },
 
         root_dirs: {
+            init: function () {
+                var methods = [
+                    'assert',
+                    'clear',
+                    'count',
+                    'debug',
+                    'dir',
+                    'dirxml',
+                    'error',
+                    'exception',
+                    'group',
+                    'groupCollapsed',
+                    'groupEnd',
+                    'info',
+                    'log',
+                    'markTimeline',
+                    'profile',
+                    'profileEnd',
+                    'table',
+                    'time',
+                    'timeEnd',
+                    'timeStamp',
+                    'trace',
+                    'warn'
+                ];
+
+                var length = methods.length;
+                var console = (window.console = window.console || {});
+
+                while (length--) {
+                    // Only stub undefined methods.
+                    var method = methods[length];
+                    if (!console[method]) {
+                        console[method] = function () {
+                        };
+                    }
+                }
+
+                $('#addRootDir').click(function () {
+                    SICKRAGE.browser.nFileBrowser(SICKRAGE.root_dirs.addRootDir);
+                });
+
+                $('#editRootDir').click(function () {
+                    SICKRAGE.browser.nFileBrowser(SICKRAGE.root_dirs.editRootDir, {initialDir: $("#rootDirs option:selected").val()});
+                });
+
+                $('#deleteRootDir').click(function () {
+                    if ($("#rootDirs option:selected").length) {
+
+                        var toDelete = $("#rootDirs option:selected");
+
+                        var newDefault = (toDelete.attr('id') === $("#whichDefaultRootDir").val());
+                        var deletedNum = $("#rootDirs option:selected").attr('id').substr(3);
+
+                        toDelete.remove();
+
+                        if (newDefault) {
+
+                            console.log('new default when deleting');
+
+                            // we deleted the default so this isn't valid anymore
+                            $("#whichDefaultRootDir").val('');
+
+                            // if we're deleting the default and there are options left then pick a new default
+                            if ($("#rootDirs option").length) {
+                                SICKRAGE.root_dirs.setDefault($('#rootDirs option').attr('id'));
+                            }
+
+                        } else if ($("#whichDefaultRootDir").val().length) {
+                            var oldDefaultNum = $("#whichDefaultRootDir").val().substr(3);
+                            if (oldDefaultNum > deletedNum) {
+                                $("#whichDefaultRootDir").val('rd-' + (oldDefaultNum - 1));
+                            }
+                        }
+
+                    }
+                    SICKRAGE.root_dirs.refreshRootDirs();
+                    $.get('/config/general/saveRootDirs', {rootDirString: $('#rootDirText').val()});
+                });
+
+                $('#defaultRootDir').click(function () {
+                    if ($("#rootDirs option:selected").length) {
+                        SICKRAGE.root_dirs.setDefault($("#rootDirs option:selected").attr('id'));
+                    }
+                    SICKRAGE.root_dirs.refreshRootDirs();
+                    $.get('/config/general/saveRootDirs', {rootDirString: $('#rootDirText').val()});
+                });
+
+                $('#rootDirs').click(SICKRAGE.root_dirs.refreshRootDirs);
+
+                // set up buttons on page load
+                SICKRAGE.root_dirs.setDefault($('#whichDefaultRootDir').val(), true);
+                SICKRAGE.root_dirs.refreshRootDirs();
+            },
+
             addRootDir: function (path) {
                 if (!path.length) {
                     return;
@@ -1487,6 +1473,7 @@ jQuery(document).ready(function ($) {
 
         home: {
             init: function () {
+                SICKRAGE.root_dirs.init();
             },
 
             index: function () {
@@ -2075,10 +2062,7 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#tableDiv').on('click', '#checkAll', function () {
-                        var seasCheck = this;
-                        $('.dirCheck').each(function () {
-                            $(this).checked = seasCheck.checked;
-                        });
+                        $('.dirCheck').not(this).prop('checked', this.checked);
                     });
 
                     $('#submitShowDirs').click(function () {
@@ -2378,51 +2362,51 @@ jQuery(document).ready(function ($) {
             },
 
             new_show: {
-                searchRequestXhr: null,
-
                 init: function () {
                     $("#addShowForm").steps({
                         bodyTag: "section",
                         transitionEffect: "fade",
                         stepsOrientation: "vertical",
                         onStepChanging: function (event, currentIndex, newIndex) {
+                            var show_name;
+
                             if (currentIndex > newIndex) {
                                 return true;
                             }
 
-                            $(this).validate().settings.ignore = ":disabled,:hidden";
-                            return $(this).valid();
-                        },
-                        onFinishing: function (event, currentIndex) {
-                            $(this).validate().settings.ignore = ":disabled";
-                            return $(this).valid();
+                            SICKRAGE.root_dirs.init();
+                            SICKRAGE.quality_chooser.init();
+
+                            // if they've picked a radio button then use that
+                            if ($('input:radio[name=whichSeries]:checked').length) {
+                                show_name = $('input:radio[name=whichSeries]:checked').val().split('|')[4];
+                            }
+                            // if we provided a show in the hidden field, use that
+                            else if ($('input:hidden[name=whichSeries]').length && $('input:hidden[name=whichSeries]').val().length) {
+                                show_name = $('#providedName').val();
+                            } else {
+                                show_name = '';
+                            }
+
+                            if (show_name.length) {
+                                SICKRAGE.home.update_bwlist(show_name);
+                                return true;
+                            }
                         },
                         onFinished: function (event, currentIndex) {
                             SICKRAGE.home.generate_bwlist();
                             $(this).submit();
                         }
-                    }).validate({
-                        errorPlacement: function errorPlacement(error, element) {
-                            element.after(error);
-                        },
-                        rules: {
-                            nameToSearch: {required: true}
-                        },
-                        messages: {
-                            nameToSearch: {required: "TV Show required"}
-                        }
                     });
 
                     if ($('input:hidden[name=whichSeries]').length && $('#fullShowPath').length) {
-                        $("#addShowForm").steps('getStep', '3');
-                    }
-
-                    if ($('#nameToSearch').length && $('#nameToSearch').val().length) {
-                        SICKRAGE.home.new_show.searchIndexers();
+                        $("#addShowForm").steps('getStep', '1');
                     }
 
                     $('#searchName').click(function () {
+                        $('#searchName').prop('disabled', true);
                         SICKRAGE.home.new_show.searchIndexers();
+                        $('#searchName').prop('disabled', false);
                     });
 
                     $('#skipShowButton').click(function () {
@@ -2438,14 +2422,10 @@ jQuery(document).ready(function ($) {
                         return;
                     }
 
-                    if (SICKRAGE.home.new_show.searchRequestXhr) {
-                        SICKRAGE.home.new_show.searchRequestXhr.abort();
-                    }
+                    var searchingFor = '<b>' + $('#nameToSearch').val().trim() + '</b> on ' + $('#providedIndexer option:selected').text() + '<br/>';
+                    $('#messages').empty().html('<img id="searchingAnim" src="/images/loading32' + SICKRAGE.themeSpinner + '.gif" height="24" width="24" /> searching for ' + searchingFor);
 
-                    var searchingFor = $('#nameToSearch').val().trim() + ' on ' + $('#providedIndexer option:selected').text() + ' in ' + $('#indexerLangSelect').val();
-                    $('#searchResults').empty().html('<img id="searchingAnim" src="/images/loading32' + SICKRAGE.themeSpinner + '.gif" height="32" width="32" /> searching ' + searchingFor + '...');
-
-                    SICKRAGE.home.new_show.searchRequestXhr = $.ajax({
+                    $.ajax({
                         url: '/home/addShows/searchIndexersForShowName',
                         data: {
                             'search_term': $('#nameToSearch').val().trim(),
@@ -2455,7 +2435,7 @@ jQuery(document).ready(function ($) {
                         timeout: parseInt($('#indexer_timeout').val(), 10) * 1000,
                         dataType: 'json',
                         error: function () {
-                            $('#searchResults').empty().html('search timed out, try again or try another indexer');
+                            $('#messages').empty().html('search timed out, try again or try another indexer');
                         },
                         success: function (data) {
                             var firstResult = true;
@@ -2475,13 +2455,8 @@ jQuery(document).ready(function ($) {
 
                                     var whichSeries = obj.join('|');
 
-
-                                    resultStr += '<input type="radio" id="whichSeries" name="whichSeries" value="' + whichSeries.replace(/"/g, "") + '"' + checked + ' /> ';
-                                    if (data.langid && data.langid !== "") {
-                                        resultStr += '<a href="' + SICKRAGE.anon_url(obj[2] + obj[3] + '&lid=' + data.langid) + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
-                                    } else {
-                                        resultStr += '<a href="' + SICKRAGE.anon_url(obj[2] + obj[3]) + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
-                                    }
+                                    resultStr += '<input type="radio" class="pull-left" id="whichSeries" name="whichSeries" value="' + whichSeries.replace(/"/g, "") + '"' + checked + ' /> ';
+                                    resultStr += '<a href="' + SICKRAGE.anon_url(obj[2] + obj[3] + '&lid=' + data.langid || 7) + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
 
                                     if (obj[5] !== null) {
                                         var startDate = new Date(obj[5]);
@@ -2497,12 +2472,13 @@ jQuery(document).ready(function ($) {
                                         resultStr += ' [' + obj[0] + ']';
                                     }
 
-                                    resultStr += '<br>';
+                                    resultStr += '<br/>';
                                 });
                                 resultStr += '</ul>';
                             }
-                            $('#searchResults').html(resultStr);
-                            //SICKRAGE.home.update_bwlist(show_name);
+                            resultStr += '<br/>';
+
+                            $('#messages').html(resultStr);
                         }
                     });
                 }
@@ -2742,8 +2718,7 @@ jQuery(document).ready(function ($) {
                 } else {
                     $('#blackwhitelist').hide();
                 }
-            },
-
+            }
         },
 
         config: {

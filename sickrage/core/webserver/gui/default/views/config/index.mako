@@ -40,7 +40,7 @@
     <tr><td class="infoTableHeader">SR Locale:</td><td class="infoTableCell">${sickrage.SYS_ENCODING}</td></tr>
     <tr>
         <td class="infoTableHeader">SR Config:</td>
-        <td class="infoTableCell">${sickrage.srConfig.CONFIG_FILE}</td>
+        <td class="infoTableCell">${sickrage.CONFIG_FILE}</td>
     </tr>
     <tr>
         <td class="infoTableHeader">SR Database:</td>

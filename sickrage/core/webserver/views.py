@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import os
 import re
 import threading
@@ -26,6 +25,7 @@ import time
 import traceback
 import urllib
 
+import datetime
 import markdown2
 from UnRAR2 import RarFile
 from concurrent.futures import ThreadPoolExecutor
@@ -3999,7 +3999,7 @@ class ConfigGeneral(Config):
             notifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.srConfig.CONFIG_FILE))
+            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/general/")
 
@@ -4164,7 +4164,7 @@ class ConfigSearch(Config):
             notifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.srConfig.CONFIG_FILE))
+            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/search/")
 
@@ -4298,7 +4298,7 @@ class ConfigPostProcessing(Config):
             notifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.srConfig.CONFIG_FILE))
+            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/postProcessing/")
 
@@ -4529,7 +4529,7 @@ class ConfigProviders(Config):
             notifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.srConfig.CONFIG_FILE))
+            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/providers/")
 
@@ -4809,7 +4809,7 @@ class ConfigNotifications(Config):
             notifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.srConfig.CONFIG_FILE))
+            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/notifications/")
 
@@ -4881,7 +4881,7 @@ class ConfigSubtitles(Config):
             notifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.srConfig.CONFIG_FILE))
+            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/subtitles/")
 
@@ -4921,7 +4921,7 @@ class ConfigAnime(Config):
             notifications.error('Error(s) Saving Configuration',
                                 '<br>\n'.join(results))
         else:
-            notifications.message('Configuration Saved', os.path.join(sickrage.srConfig.CONFIG_FILE))
+            notifications.message('Configuration Saved', os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/anime/")
 

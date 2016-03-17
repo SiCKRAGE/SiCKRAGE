@@ -10,7 +10,6 @@ CacheControl
 certifi
 chardet
 click
-colorama
 configobj
 decorator
 dill
@@ -68,11 +67,10 @@ stevedore
 subliminal
 sympy
 Tempita
-termcolor
 tmdbsimple
 tornado
 tzlocal
 wheel
 xmltodict
 yarg
-git+https://github.com/pwaller/pyfiglet
+pyfiglet

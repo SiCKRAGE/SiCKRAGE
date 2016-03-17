@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 import os
 import threading
 import traceback
+
 from datetime import date
 
 import sickrage
@@ -31,7 +32,7 @@ from sickrage.core.databases import main_db
 from sickrage.core.helpers import findCertainShow, sanitizeFileName, makeDir, chmodAsParent
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.trakt import TraktAPI, traktException
-
+from sickrage.indexers import srIndexerApi
 
 
 def setEpisodeToWanted(show, s, e):

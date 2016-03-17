@@ -19,7 +19,6 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import os
 import os.path
 import platform
@@ -27,6 +26,7 @@ import re
 import urlparse
 import uuid
 
+import datetime
 from configobj import ConfigObj
 
 import sickrage
@@ -40,9 +40,8 @@ from sickrage.core.srscheduler import srIntervalTrigger
 
 
 class srConfig(object):
-    def __init__(self, config_file, debug=False):
-        self.CONFIG_FILE = os.path.abspath(os.path.join(sickrage.DATA_DIR, config_file))
-        self.DEBUG = debug
+    def __init__(self):
+        self.DEBUG = None
 
         self.CONFIG_VERSION = 9
         self.ENCRYPTION_VERSION = 0
@@ -945,15 +944,15 @@ class srConfig(object):
 
     def load(self):
         # Make sure we can write to the config file
-        if not os.access(self.CONFIG_FILE, os.W_OK):
-            if os.path.isfile(self.CONFIG_FILE):
-                raise SystemExit("Config file '" + self.CONFIG_FILE + "' must be writeable.")
-            elif not os.access(os.path.dirname(self.CONFIG_FILE), os.W_OK):
+        if not os.access(sickrage.CONFIG_FILE, os.W_OK):
+            if os.path.isfile(sickrage.CONFIG_FILE):
+                raise SystemExit("Config file '" + sickrage.CONFIG_FILE + "' must be writeable.")
+            elif not os.access(os.path.dirname(sickrage.CONFIG_FILE), os.W_OK):
                 raise SystemExit(
-                    "Config file root dir '" + os.path.dirname(self.CONFIG_FILE) + "' must be writeable.")
+                    "Config file root dir '" + os.path.dirname(sickrage.CONFIG_FILE) + "' must be writeable.")
 
         # migrate config settings
-        self.CONFIG_OBJ = ConfigMigrator(ConfigObj(self.CONFIG_FILE)).migrate_config()
+        self.CONFIG_OBJ = ConfigMigrator(ConfigObj(sickrage.CONFIG_FILE)).migrate_config()
 
         # config sanity check
         self.check_section('General')
@@ -991,8 +990,8 @@ class srConfig(object):
             'General', 'encryption_secret', generateCookieSecret()
         )
 
-        self.DEBUG = bool(self.check_setting_int('General', 'debug', 0))
-        self.DEVELOPER = bool(self.check_setting_int('General', 'developer', 0))
+        self.DEBUG = sickrage.DEBUG or bool(self.check_setting_int('General', 'debug', 0))
+        self.DEVELOPER = sickrage.DEVELOPER or bool(self.check_setting_int('General', 'developer', 0))
 
         # logging settings
         self.LOG_NR = self.check_setting_int('General', 'log_nr', 5)
@@ -1030,6 +1029,9 @@ class srConfig(object):
 
         # web settings
         self.WEB_PORT = self.check_setting_int('General', 'web_port', 8081)
+        if sickrage.WEB_PORT != 8081:
+            self.WEB_PORT = sickrage.WEB_PORT
+
         self.WEB_HOST = self.check_setting_str('General', 'web_host', '0.0.0.0')
         self.WEB_IPV6 = bool(self.check_setting_int('General', 'web_ipv6', 0))
         self.WEB_ROOT = self.check_setting_str('General', 'web_root', '').rstrip("/")
@@ -1509,7 +1511,7 @@ class srConfig(object):
     def save(self):
         sickrage.srLogger.debug("Saving settings to disk")
 
-        new_config = ConfigObj(self.CONFIG_FILE)
+        new_config = ConfigObj(sickrage.CONFIG_FILE)
 
         # For passwords you must include the word `password` in the item_name and add `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save()
         new_config['General'] = {}
@@ -1975,7 +1977,7 @@ class ConfigMigrator(srConfig):
         Initializes a config migrator that can take the config from the version indicated in the config
         file up to the latest version
         """
-        super(ConfigMigrator, self).__init__(config_obj.filename)
+        super(ConfigMigrator, self).__init__()
         self.CONFIG_OBJ = config_obj
 
         # check the version of the config
@@ -2017,7 +2019,7 @@ class ConfigMigrator(srConfig):
                 migration_name = ''
 
             sickrage.srLogger.info("Backing up config before upgrade")
-            if not backupVersionedFile(self.CONFIG_FILE, self.config_version):
+            if not backupVersionedFile(sickrage.CONFIG_FILE, self.config_version):
                 sickrage.srLogger.log_error_and_exit("Config backup failed, abort upgrading config")
             else:
                 sickrage.srLogger.info("Proceeding with upgrade")

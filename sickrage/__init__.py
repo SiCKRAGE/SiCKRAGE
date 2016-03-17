@@ -20,8 +20,8 @@
 
 from __future__ import unicode_literals, with_statement
 
+import argparse
 import codecs
-import getopt
 import io
 import locale
 import os
@@ -42,19 +42,24 @@ __all__ = [
     'SYS_ENCODING'
 ]
 
-SYS_ENCODING = "UTF-8"
-
-DEBUG = False
-DEVELOPER = False
-
-PROG_DIR = os.path.abspath(os.path.dirname(__file__))
-DATA_DIR = os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage'))
-
 srCore = None
 srLogger = None
 srConfig = None
 srScheduler = None
 srWebServer = None
+
+PROG_DIR = os.path.abspath(os.path.dirname(__file__))
+DATA_DIR = os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage'))
+
+SYS_ENCODING = None
+DEBUG = None
+WEB_PORT = None
+DEVELOPER = None
+DAEMONIZE = None
+NOLAUNCH = None
+QUITE = None
+CONFIG_FILE = None
+PIDFILE = None
 
 # fix threading time bug
 time.strptime("2012", "%Y")
@@ -64,12 +69,8 @@ threading.currentThread().setName('MAIN')
 
 
 def print_logo():
-    from colorama import init
-    from termcolor import cprint
-    from pyfiglet import figlet_format
-
-    init(strip=not sys.stdout.isatty())  # strip colors if stdout is redirected
-    cprint(figlet_format('SiCKRAGE', font='doom'))
+    from pyfiglet import print_figlet
+    print_figlet('SiCKRAGE', font='doom')
 
 
 def encodingInit():
@@ -211,41 +212,8 @@ def delpid(pidfile):
         os.remove(pidfile)
 
 
-def help_message(prog_dir):
-    """
-    LOGGER.info help message for commandline options
-    """
-
-    help_msg = "\n"
-    help_msg += "Usage: SiCKRAGE <option> <another option>\n"
-    help_msg += "\n"
-    help_msg += "Options:\n"
-    help_msg += "\n"
-    help_msg += "    -h          --help              LOGGER.infos this message\n"
-    help_msg += "    -q          --quiet             Disables logging to CONSOLE\n"
-    help_msg += "                --nolaunch          Suppress launching web browser on startup\n"
-
-    if sys.platform == 'win32' or sys.platform == 'darwin':
-        help_msg += "    -d          --daemon            Running as real daemon is not supported on Windows\n"
-        help_msg += "                                    On Windows and MAC, --daemon is substituted with: --quiet --nolaunch\n"
-    else:
-        help_msg += "    -d          --daemon            Run as double forked daemon (includes options --quiet --nolaunch)\n"
-        help_msg += "                --pidfile=<path>    Combined with --daemon creates a pidfile (full path including filename)\n"
-
-    help_msg += "    -p <port>   --port=<port>       Override default/configured port to listen on\n"
-    help_msg += "                --datadir=<path>    Override folder (full path) as location for\n"
-    help_msg += "                                    storing database, configfile, cache, logfiles \n"
-    help_msg += "                                    Default: " + prog_dir + "\n"
-    help_msg += "                --config=<path>     Override config filename (full path including filename)\n"
-    help_msg += "                                    to load configuration from \n"
-    help_msg += "                                    Default: config.ini in " + prog_dir + " or --datadir location\n"
-    help_msg += "                --debug             Enable debugging\n"
-
-    return help_msg
-
-
 def main():
-    global srCore, PROG_DIR, DATA_DIR, SYS_ENCODING, DEVELOPER, DEBUG
+    global srCore, SYS_ENCODING, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     # sickrage requires python 2.7+
     if sys.version_info < (2, 7):
@@ -256,93 +224,74 @@ def main():
     if path not in sys.path:
         sys.path.insert(0, path)
 
-    try:
-        # setup locale system encoding
-        SYS_ENCODING = encodingInit()
+    # set locale encoding
+    SYS_ENCODING = encodingInit()
 
+    try:
         # print logo
         print_logo()
 
-        # defaults
-        PIDFILE = None
-        DAEMONIZE = False
-        WEB_PORT = 8081
-        LAUNCH_BROWSER = True
-        CONFIG_FILE = "config.ini"
-        CONSOLE = not hasattr(sys, "frozen")
-
         # sickrage startup options
-        opts, _ = getopt.getopt(
-            sys.argv[1:], "hqdp::",
-            ['help',
-             'dev',
-             'quiet',
-             'nolaunch',
-             'daemon',
-             'pidfile=',
-             'port=',
-             'datadir=',
-             'config=',
-             'debug']
-        )
+        parser = argparse.ArgumentParser(prog='sickrage')
+        parser.add_argument('--version',
+                            action='version',
+                            version='%(prog)s 8.0')
+        parser.add_argument('-d', '--daemon',
+                            action='store_true',
+                            help='Run as a daemon (*NIX ONLY)')
+        parser.add_argument('-q', '--quite',
+                            action='store_true',
+                            help='Disables logging to CONSOLE')
+        parser.add_argument('-p', '--port',
+                            default=8081,
+                            type=int,
+                            help='Override default/configured port to listen on')
+        parser.add_argument('--dev',
+                            action='store_true',
+                            help='Enable developer mode')
+        parser.add_argument('--debug',
+                            action='store_true',
+                            help='Enable debugging')
+        parser.add_argument('--datadir',
+                            default=DATA_DIR,
+                            help='Overrides data folder for database, configfile, cache, logfiles (full path)')
+        parser.add_argument('--config',
+                            default=os.path.abspath(os.path.join(DATA_DIR, 'config.ini')),
+                            help='Overrides config filename (full path including filename)')
+        parser.add_argument('--pidfile',
+                            default=os.path.abspath(os.path.join(DATA_DIR, 'sickrage.pid')),
+                            help='Creates a pidfile (full path including filename)')
+        parser.add_argument('--nolaunch',
+                            action='store_true',
+                            help='Suppress launching web browser on startup')
 
-        for o, a in opts:
-            # help message
-            if o in ('-h', '--help'):
-                sys.exit(help_message(PROG_DIR))
+        args = parser.parse_args()
 
-            # For now we'll just silence the logging
-            if o in ('-q', '--quiet'):
-                CONSOLE = False
+        # Quite
+        QUITE = args.quite
 
-            # developer mode
-            if o in ('--dev',):
-                print("!!! DEVELOPER MODE ENABLED !!!")
-                DEVELOPER = True
+        # Override default/configured port
+        WEB_PORT = args.port
 
-            # Suppress launching web browser
-            if o in ('--nolaunch',):
-                LAUNCH_BROWSER = False
+        # Launch browser
+        NOLAUNCH = args.nolaunch
 
-            # Override default/configured port
-            if o in ('-p', '--port'):
-                try:
-                    WEB_PORT = int(a)
-                except ValueError:
-                    sys.exit("Port: " + str(a) + " is not a number. Exiting.")
+        # Pidfile for daemon
+        PIDFILE = os.path.abspath(os.path.expanduser(args.pidfile))
+        if os.path.exists(PIDFILE):
+            sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
 
-            # Run as a double forked daemon
-            if o in ('-d', '--daemon'):
-                DAEMONIZE = (False, True)[not sys.platform == 'win32']
-                LAUNCH_BROWSER = False
-                CONSOLE = False
+        DEVELOPER = args.dev
+        if DEVELOPER:
+            print("!!! DEVELOPER MODE ENABLED !!!")
 
-            # Write a pidfile if requested
-            if o in ('--pidfile',):
-                PIDFILE = str(a)
+        DEBUG = args.debug
+        if DEBUG:
+            print("!!! DEBUG MODE ENABLED !!!")
 
-                # If the pidfile already exists, sickrage may still be running, so exit
-                if os.path.exists(PIDFILE):
-                    sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
-
-            # Specify folder to use as the data dir
-            if o in ('--datadir',):
-                DATA_DIR = os.path.abspath(os.path.expanduser(a))
-
-            # Specify folder to load the config file from
-            if o in ('--config',):
-                CONFIG_FILE = os.path.abspath(os.path.expanduser(a))
-
-            # Install ssl packages from requirements folder
-            if o in ('--debug',):
-                print("!!! DEBUGGING MODE ENABLED !!!")
-                DEBUG = True
-
-        # daemonize sickrage ?
-        if DAEMONIZE:
-            if not PIDFILE:
-                os.path.abspath(os.path.join(DATA_DIR, 'sickrage.pid'))
-            daemonize(PIDFILE)
+        # Specify folder to use as the data dir
+        DATA_DIR = os.path.abspath(os.path.expanduser(args.datadir))
+        CONFIG_FILE = os.path.abspath(os.path.expanduser(args.config))
 
         # Make sure that we can create the data dir
         if not os.access(DATA_DIR, os.F_OK):
@@ -355,10 +304,17 @@ def main():
         if not os.access(DATA_DIR, os.W_OK):
             sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
 
-        # restart loop, breaks if shutdown
+        # daemonize if requested
+        DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
+        if DAEMONIZE:
+            NOLAUNCH = False
+            QUITE = False
+            daemonize(PIDFILE)
+
+        # main app loop
         while True:
-            from . import core
-            srCore = core.srCore(CONFIG_FILE, CONSOLE, DEBUG, WEB_PORT, LAUNCH_BROWSER)
+            from .core import Core
+            srCore = Core()
             srCore.start()
     except ImportError as e:
         if DEBUG:

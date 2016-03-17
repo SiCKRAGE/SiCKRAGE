@@ -34,6 +34,7 @@ from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_sho
 from sickrage.core.trakt import TraktAPI
 from sickrage.core.tv.show import TVShow
 from sickrage.core.ui import notifications
+from sickrage.indexers import srIndexerApi
 from sickrage.indexers.indexer_exceptions import indexer_attributenotfound, \
     indexer_error, indexer_exception
 
