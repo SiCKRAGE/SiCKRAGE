@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import os
 import traceback
 
 import sickrage
@@ -40,7 +41,7 @@ from sickrage.indexers.indexer_exceptions import indexer_attributenotfound, \
 
 
 class srShowQueue(GenericQueue):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args):
         super(srShowQueue, self).__init__()
         self.queue_name = "SHOWQUEUE"
 
@@ -202,15 +203,13 @@ class ShowQueueItem(QueueItem):
         return self in sickrage.srCore.SHOWQUEUE.queue + [
             sickrage.srCore.SHOWQUEUE.currentItem]  # @UndefinedVariable
 
-    def _getName(self):
+    @property
+    def show_name(self):
         return str(self.show.indexerid)
 
-    def _isLoading(self):
+    @property
+    def isLoading(self):
         return False
-
-    show_name = property(_getName)
-    isLoading = property(_isLoading)
-
 
 class QueueItemAdd(ShowQueueItem):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles, anime,
@@ -240,27 +239,24 @@ class QueueItemAdd(ShowQueueItem):
         # Process add show in priority
         self.priority = QueuePriorities.HIGH
 
-    def _getName(self):
+    @property
+    def show_name(self):
         """
         Returns the show name if there is a show object created, if not returns
         the dir that the show is being added to.
         """
         if self.show is None:
-            return self.showDir
+            return os.path.basename(self.showDir)
         return self.show.name
 
-    show_name = property(_getName)
-
-    def _isLoading(self):
+    @property
+    def isLoading(self):
         """
         Returns True if we've gotten far enough to have a show object, or False
         if we still only know the folder name.
         """
         if self.show is None:
             return True
-        return False
-
-    isLoading = property(_isLoading)
 
     def run(self):
         ShowQueueItem.run(self)
@@ -268,9 +264,6 @@ class QueueItemAdd(ShowQueueItem):
         sickrage.srLogger.info("Started adding show {}".format(self.showDir))
 
         index_name = srIndexerApi(self.indexer).name
-
-        # update internal name cache
-        sickrage.srCore.NAMECACHE.buildNameCache()
 
         # make sure the Indexer IDs are valid
         try:
@@ -462,6 +455,8 @@ class QueueItemAdd(ShowQueueItem):
         self.show.default_ep_status = self.default_status_after
 
         self.show.saveToDB()
+
+        sickrage.srCore.NAMECACHE.buildNameCache()
 
         sickrage.srLogger.info("Finished adding show {}".format(self.showDir))
 

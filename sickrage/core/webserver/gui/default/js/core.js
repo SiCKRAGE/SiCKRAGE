@@ -1054,9 +1054,9 @@ jQuery(document).ready(function ($) {
 
                 $('#rootDirs').click(SICKRAGE.root_dirs.refreshRootDirs);
 
-                // set up buttons on page load
-                SICKRAGE.root_dirs.setDefault($('#whichDefaultRootDir').val(), true);
                 SICKRAGE.root_dirs.refreshRootDirs();
+                SICKRAGE.root_dirs.refreshRootDirs();
+                SICKRAGE.root_dirs.setDefault($('#whichDefaultRootDir').val(), true);
             },
 
             addRootDir: function (path) {
@@ -1072,13 +1072,12 @@ jQuery(document).ready(function ($) {
 
                 $('#rootDirs').append('<option value="' + path + '">' + path + '</option>');
 
-                //syncOptionIDs();
+                SICKRAGE.root_dirs.refreshRootDirs();
 
                 if (isDefault) {
                     SICKRAGE.root_dirs.setDefault($('#rootDirs option').attr('id'));
                 }
 
-                SICKRAGE.root_dirs.refreshRootDirs();
                 $.get('/config/general/saveRootDirs', {rootDirString: $('#rootDirText').val()});
             },
 
@@ -1749,7 +1748,7 @@ jQuery(document).ready(function ($) {
                         $('.epCheck:visible').each(function () {
                             var epParts = $(this).attr('id').split('x');
                             if (epParts[0] === seasNo) {
-                                $(this).checked = seasCheck.checked;
+                                $(this).prop("checked", seasCheck.checked);
                             }
                         });
                     });
@@ -1770,7 +1769,7 @@ jQuery(document).ready(function ($) {
                                 case 2:
                                     return false;
                                 case 1:
-                                    $(this).checked = lastCheck.checked;
+                                    $(this).prop("checked", lastCheck.checked);
                             }
 
                             if ($(this) === check || $(this) === lastCheck) {
@@ -1782,20 +1781,20 @@ jQuery(document).ready(function ($) {
                     // selects all visible episode checkboxes.
                     $('.seriesCheck').on('click', function () {
                         $('.epCheck:visible').each(function () {
-                            $(this).checked = true;
+                            $(this).prop("checked", true);
                         });
                         $('.seasonCheck:visible').each(function () {
-                            $(this).checked = true;
+                            $(this).prop("checked", true);
                         });
                     });
 
                     // clears all visible episode checkboxes and the season selectors
                     $('.clearAll').on('click', function () {
                         $('.epCheck:visible').each(function () {
-                            $(this).checked = false;
+                            $(this).prop("checked", false);
                         });
                         $('.seasonCheck:visible').each(function () {
-                            $(this).checked = false;
+                            $(this).prop("checked", false);
                         });
                     });
 
@@ -2295,11 +2294,11 @@ jQuery(document).ready(function ($) {
                     var serCheck = this;
 
                     $('.seasonCheck:visible').each(function () {
-                        $(this).checked = serCheck.checked;
+                        $(this).prop("checked", serCheck.checked);
                     });
 
                     $('.epCheck:visible').each(function () {
-                        $(this).checked = serCheck.checked;
+                        $(this).prop("checked", serCheck.checked);
                     });
                 });
 
@@ -2311,7 +2310,7 @@ jQuery(document).ready(function ($) {
                         var epParts = $(this).attr('id').split('x');
 
                         if (epParts[0] === seasNo) {
-                            $(this).checked = seasCheck.checked;
+                            $(this).prop("checked", seasCheck.checked);
                         }
                     });
                 });
@@ -2577,7 +2576,7 @@ jQuery(document).ready(function ($) {
 
                     $('.' + whichBulkCheck).each(function () {
                         if (!$(this).disabled) {
-                            $(this).checked = !$(this).checked;
+                            $(this).prop("checked", !$(this).checked);
                         }
                     });
                 });
@@ -2600,7 +2599,7 @@ jQuery(document).ready(function ($) {
                                     return false;
                                 case 1:
                                     if (!$(this).disabled) {
-                                        $(this).checked = lastCheck.checked;
+                                        $(this).prop("checked", lastCheck.checked);
                                     }
                             }
                             if (this === check || this === lastCheck) {
@@ -5121,7 +5120,7 @@ jQuery(document).ready(function ($) {
                     var whichBulkCheck = $(bulkCheck).attr('id');
 
                     $('.' + whichBulkCheck + ':visible').each(function () {
-                        $(this).checked = bulkCheck.checked;
+                        $(this).prop("checked", bulkCheck.checked);
                     });
                 });
 
@@ -5141,7 +5140,7 @@ jQuery(document).ready(function ($) {
                                 case 2:
                                     return false;
                                 case 1:
-                                    $(this).checked = lastCheck.checked;
+                                    $(this).prop("checked", lastCheck.checked);
                             }
 
                             if (this === check || this === lastCheck) {
@@ -5206,20 +5205,20 @@ jQuery(document).ready(function ($) {
                 // selects all visible episode checkboxes.
                 $('.selectAllShows').click(function () {
                     $('.allCheck').each(function () {
-                        $(this).checked = true;
+                        $(this).prop("checked", true);
                     });
                     $('input[class*="-epcheck"]').each(function () {
-                        $(this).checked = true;
+                        $(this).prop("checked", true);
                     });
                 });
 
                 // clears all visible episode checkboxes and the season selectors
                 $('.unselectAllShows').click(function () {
                     $('.allCheck').each(function () {
-                        $(this).checked = false;
+                        $(this).prop("checked", false);
                     });
                     $('input[class*="-epcheck"]').each(function () {
-                        $(this).checked = false;
+                        $(this).prop("checked", false);
                     });
                 });
             },
@@ -5276,20 +5275,20 @@ jQuery(document).ready(function ($) {
                 // selects all visible episode checkboxes.
                 $('.selectAllShows').click(function () {
                     $('.allCheck').each(function () {
-                        $(this).checked = true;
+                        $(this).prop("checked", true);
                     });
                     $('input[class*="-epcheck"]').each(function () {
-                        $(this).checked = true;
+                        $(this).prop("checked", true);
                     });
                 });
 
                 // clears all visible episode checkboxes and the season selectors
                 $('.unselectAllShows').click(function () {
                     $('.allCheck').each(function () {
-                        $(this).checked = false;
+                        $(this).prop("checked", false);
                     });
                     $('input[class*="-epcheck"]').each(function () {
-                        $(this).checked = false;
+                        $(this).prop("checked", false);
                     });
                 });
             }

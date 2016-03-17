@@ -47,7 +47,7 @@ from sickrage.core.exceptions import MultipleShowObjectsException, ShowDirectory
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
 from sickrage.core.helpers import listMediaFiles, isMediaFile, update_anime_support, findCertainShow, tryInt, safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
-from sickrage.core.tv import dirty_setter
+from sickrage.indexers import srIndexerApi
 from sickrage.indexers.indexer_config import INDEXER_TVRAGE
 from sickrage.indexers.indexer_exceptions import indexer_attributenotfound
 
@@ -98,77 +98,330 @@ class TVShow(object):
 
         self.loadFromDB()
 
-    name = property(lambda self: self._name, dirty_setter("_name"))
-    indexerid = property(lambda self: self._indexerid, dirty_setter("_indexerid"))
-    indexer = property(lambda self: self._indexer, dirty_setter("_indexer"))
-    imdbid = property(lambda self: self._imdbid, dirty_setter("_imdbid"))
-    tmdbid = property(lambda self: self._tmdbid, dirty_setter("_tmdbid"))
-    network = property(lambda self: self._network, dirty_setter("_network"))
-    genre = property(lambda self: self._genre, dirty_setter("_genre"))
-    classification = property(lambda self: self._classification, dirty_setter("_classification"))
-    runtime = property(lambda self: self._runtime, dirty_setter("_runtime"))
-    imdb_info = property(lambda self: self._imdb_info, dirty_setter("_imdb_info"))
-    tmdb_info = property(lambda self: self._tmdb_info, dirty_setter("_tmdb_info"))
-    quality = property(lambda self: self._quality, dirty_setter("_quality"))
-    flatten_folders = property(lambda self: self._flatten_folders, dirty_setter("_flatten_folders"))
-    status = property(lambda self: self._status, dirty_setter("_status"))
-    airs = property(lambda self: self._airs, dirty_setter("_airs"))
-    startyear = property(lambda self: self._startyear, dirty_setter("_startyear"))
-    paused = property(lambda self: self._paused, dirty_setter("_paused"))
-    air_by_date = property(lambda self: self._air_by_date, dirty_setter("_air_by_date"))
-    subtitles = property(lambda self: self._subtitles, dirty_setter("_subtitles"))
-    dvdorder = property(lambda self: self._dvdorder, dirty_setter("_dvdorder"))
-    archive_firstmatch = property(lambda self: self._archive_firstmatch, dirty_setter("_archive_firstmatch"))
-    lang = property(lambda self: self._lang, dirty_setter("_lang"))
-    last_update_indexer = property(lambda self: self._last_update_indexer, dirty_setter("_last_update_indexer"))
-    sports = property(lambda self: self._sports, dirty_setter("_sports"))
-    anime = property(lambda self: self._anime, dirty_setter("_anime"))
-    scene = property(lambda self: self._scene, dirty_setter("_scene"))
-    rls_ignore_words = property(lambda self: self._rls_ignore_words, dirty_setter("_rls_ignore_words"))
-    rls_require_words = property(lambda self: self._rls_require_words, dirty_setter("_rls_require_words"))
-    default_ep_status = property(lambda self: self._default_ep_status, dirty_setter("_default_ep_status"))
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        if self._name != value:
+            self.dirty = True
+        self._name = value
+
+    @property
+    def indexerid(self):
+        return self._indexerid
+
+    @indexerid.setter
+    def indexerid(self, value):
+        if self._indexerid != value:
+            self.dirty = True
+        self._indexerid = value
+
+    @property
+    def indexer(self):
+        return self._indexer
+
+    @indexer.setter
+    def indexer(self, value):
+        if self._indexer != value:
+            self.dirty = True
+        self._indexer = value
+
+    @property
+    def imdbid(self):
+        return self._imdbid
+
+    @imdbid.setter
+    def imdbid(self, value):
+        if self._imdbid != value:
+            self.dirty = True
+        self._imdbid = value
+
+    @property
+    def tmdbid(self):
+        return self._tmdbid
+
+    @tmdbid.setter
+    def tmdbid(self, value):
+        if self._tmdbid != value:
+            self.dirty = True
+        self._tmdbid = value
+
+    @property
+    def network(self):
+        return self._network
+
+    @network.setter
+    def network(self, value):
+        if self._network != value:
+            self.dirty = True
+        self._network = value
+
+    @property
+    def genre(self):
+        return self._genre
+
+    @genre.setter
+    def genre(self, value):
+        if self._genre != value:
+            self.dirty = True
+        self._genre = value
+
+    @property
+    def classification(self):
+        return self._classification
+
+    @classification.setter
+    def classification(self, value):
+        if self._classification != value:
+            self.dirty = True
+        self._classification = value
+
+    @property
+    def runtime(self):
+        return self._runtime
+
+    @runtime.setter
+    def runtime(self, value):
+        if self._runtime != value:
+            self.dirty = True
+        self._runtime = value
+
+    @property
+    def imdb_info(self):
+        return self._imdb_info
+
+    @imdb_info.setter
+    def imdb_info(self, value):
+        if self._imdb_info != value:
+            self.dirty = True
+        self._imdb_info = value
+
+    @property
+    def tmdb_info(self):
+        return self._tmdb_info
+
+    @tmdb_info.setter
+    def tmdb_info(self, value):
+        if self._tmdb_info != value:
+            self.dirty = True
+        self._tmdb_info = value
+
+    @property
+    def quality(self):
+        return self._quality
+
+    @quality.setter
+    def quality(self, value):
+        if self._quality != value:
+            self.dirty = True
+        self._quality = value
+
+    @property
+    def flatten_folders(self):
+        return self._flatten_folders
+
+    @flatten_folders.setter
+    def flatten_folders(self, value):
+        if self._flatten_folders != value:
+            self.dirty = True
+        self._flatten_folders = value
+
+    @property
+    def status(self):
+        return self._status
+
+    @status.setter
+    def status(self, value):
+        if self._status != value:
+            self.dirty = True
+        self._status = value
+
+    @property
+    def airs(self):
+        return self._airs
+
+    @airs.setter
+    def airs(self, value):
+        if self._airs != value:
+            self.dirty = True
+        self._airs = value
+
+    @property
+    def startyear(self):
+        return self._startyear
+
+    @startyear.setter
+    def startyear(self, value):
+        if self._startyear != value:
+            self.dirty = True
+        self._startyear = value
+
+    @property
+    def paused(self):
+        return self._paused
+
+    @paused.setter
+    def paused(self, value):
+        if self._paused != value:
+            self.dirty = True
+        self._paused = value
+
+    @property
+    def air_by_date(self):
+        return self._air_by_date
+
+    @air_by_date.setter
+    def air_by_date(self, value):
+        if self._air_by_date != value:
+            self.dirty = True
+        self._air_by_date = value
+
+    @property
+    def subtitles(self):
+        return self._subtitles
+
+    @subtitles.setter
+    def subtitles(self, value):
+        if self._subtitles != value:
+            self.dirty = True
+        self._subtitles = value
+
+    @property
+    def dvdorder(self):
+        return self._dvdorder
+
+    @dvdorder.setter
+    def dvdorder(self, value):
+        if self._dvdorder != value:
+            self.dirty = True
+        self._dvdorder = value
+
+    @property
+    def archive_firstmatch(self):
+        return self._archive_firstmatch
+
+    @archive_firstmatch.setter
+    def archive_firstmatch(self, value):
+        if self._archive_firstmatch != value:
+            self.dirty = True
+        self._archive_firstmatch = value
+
+    @property
+    def lang(self):
+        return self._lang
+
+    @lang.setter
+    def lang(self, value):
+        if self._lang != value:
+            self.dirty = True
+        self._lang = value
+
+    @property
+    def last_update_indexer(self):
+        return self._last_update_indexer
+
+    @last_update_indexer.setter
+    def last_update_indexer(self, value):
+        if self._last_update_indexer != value:
+            self.dirty = True
+        self._last_update_indexer = value
+
+    @property
+    def sports(self):
+        return self._sports
+
+    @sports.setter
+    def sports(self, value):
+        if self._sports != value:
+            self.dirty = True
+        self._sports = value
+
+    @property
+    def anime(self):
+        return self._anime
+
+    @anime.setter
+    def anime(self, value):
+        if self._anime != value:
+            self.dirty = True
+        self._anime = value
+
+    @property
+    def scene(self):
+        return self._scene
+
+    @scene.setter
+    def scene(self, value):
+        if self._scene != value:
+            self.dirty = True
+        self._scene = value
+
+    @property
+    def rls_ignore_words(self):
+        return self._rls_ignore_words
+
+    @rls_ignore_words.setter
+    def rls_ignore_words(self, value):
+        if self._rls_ignore_words != value:
+            self.dirty = True
+        self._rls_ignore_words = value
+
+    @property
+    def rls_require_words(self):
+        return self._rls_require_words
+
+    @rls_require_words.setter
+    def rls_require_words(self, value):
+        if self._rls_require_words != value:
+            self.dirty = True
+        self._rls_require_words = value
+
+    @property
+    def default_ep_status(self):
+        return self._default_ep_status
+
+    @default_ep_status.setter
+    def default_ep_status(self, value):
+        if self._default_ep_status != value:
+            self.dirty = True
+        self._default_ep_status = value
 
     @property
     def is_anime(self):
         if int(self.anime) > 0:
             return True
-        else:
-            return False
 
     @property
     def is_sports(self):
         if int(self.sports) > 0:
             return True
-        else:
-            return False
 
     @property
     def is_scene(self):
         if int(self.scene) > 0:
             return True
-        else:
-            return False
 
     @property
     def network_logo_name(self):
         return self.network.replace('\u00C9', 'e').replace('\u00E9', 'e').lower()
 
-    def _get_location(self):
-        # no dir check needed if missing show dirs are created during post-processing
-        if sickrage.srConfig.CREATE_MISSING_SHOW_DIRS or os.path.isdir(self._location):
+    @property
+    def location(self):
+        if any([sickrage.srConfig.CREATE_MISSING_SHOW_DIRS, os.path.isdir(self._location)]):
             return self._location
-        else:
+
+        raise ShowDirectoryNotFoundException("Invalid folder for the show!")
+
+    @location.setter
+    def location(self, new_location):
+        if not any([sickrage.srConfig.ADD_SHOWS_WO_DIR, os.path.isdir(new_location)]):
             raise ShowDirectoryNotFoundException("Invalid folder for the show!")
 
-    def _set_location(self, new_location):
         sickrage.srLogger.debug("Setter sets location to " + new_location)
-        # Don't validate dir if user wants to add shows without creating a dir
-        if sickrage.srConfig.ADD_SHOWS_WO_DIR or os.path.isdir(new_location):
-            dirty_setter("_location")(self, new_location)
-        else:
-            raise ShowDirectoryNotFoundException("Invalid folder for the show!")
-
-    location = property(_get_location, _set_location)
+        self.dirty = True
+        self._location = new_location
 
     # delete references to anything that's not in the internal lists
     def flushEpisodes(self):
@@ -282,7 +535,7 @@ class TVShow(object):
 
         if sql_result:
             last_airdate = datetime.date.fromordinal(sql_result[0]['airdate'])
-            if last_airdate >= (update_date - graceperiod) and last_airdate <= (update_date + graceperiod):
+            if (update_date - graceperiod) <= last_airdate <= (update_date + graceperiod):
                 return True
 
         # get next upcoming UNAIRED episode to compare against today + graceperiod

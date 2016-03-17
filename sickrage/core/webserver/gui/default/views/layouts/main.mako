@@ -113,7 +113,6 @@
                     <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
                         <a href="/home/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
                            data-hover="dropdown"><span>Shows</span>
-                            <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="/home/"><i class="menu-icon-home"></i>&nbsp;Show List</a></li>
@@ -131,18 +130,10 @@
                         <div style="clear:both;"></div>
                     </li>
 
-                    <li id="NAVschedule"${('', ' class="active"')[topmenu == 'schedule']}>
-                        <a href="/schedule/">Schedule</a>
-                    </li>
-
-                    <li id="NAVhistory"${('', ' class="active"')[topmenu == 'history']}>
-                        <a href="/history/">History</a>
-                    </li>
-
                     <li id="NAVmanage" class="navbar-split dropdown${('', ' active')[topmenu == 'manage']}">
                         <a href="/manage/episodeStatuses/" class="dropdown-toggle" aria-haspopup="true"
-                           data-toggle="dropdown" data-hover="dropdown"><span>Manage</span>
-                            <b class="caret"></b>
+                           data-toggle="dropdown" data-hover="dropdown">
+                            <span>Manage</span>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="/manage/"><i class="menu-icon-manage"></i>&nbsp;Mass Update</a></li>
@@ -180,11 +171,18 @@
                         <div style="clear:both;"></div>
                     </li>
 
+                    <li id="NAVschedule"${('', ' class="active"')[topmenu == 'schedule']}>
+                        <a href="/schedule/">Schedule</a>
+                    </li>
+
+                    <li id="NAVhistory"${('', ' class="active"')[topmenu == 'history']}>
+                        <a href="/history/">History</a>
+                    </li>
+
                     <li id="NAVconfig" class="navbar-split dropdown${('', ' active')[topmenu == 'config']}">
                         <a href="/config/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
                            data-hover="dropdown"><span class="visible-xs">Config</span><img
                                 src="/images/menu/system18.png" class="navbaricon hidden-xs"/>
-                            <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="/config/"><i class="menu-icon-help"></i>&nbsp;Help &amp; Info</a></li>
@@ -231,7 +229,6 @@
                         <a href="/home/status/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
                            data-hover="dropdown"><span class="visible-xs">Tools</span><img
                                 src="/images/menu/system18-2.png" class="navbaricon hidden-xs"/>${toolsBadge}
-                            <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="/news/"><i class="menu-icon-help"></i>&nbsp;News${newsBadge}</a></li>
@@ -273,9 +270,9 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-    % if not submenu is UNDEFINED:
+    % if submenu:
         <div id="SubMenu" class="hidden-print">
-            <span>
+            <span class="btn-group btn-inline">
             <% first = True %>
                 % for menuItem in submenu:
                     % if 'requires' not in menuItem or menuItem['requires']:

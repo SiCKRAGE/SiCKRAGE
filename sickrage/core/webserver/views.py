@@ -18,6 +18,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import re
 import threading
@@ -25,7 +26,6 @@ import time
 import traceback
 import urllib
 
-import datetime
 import markdown2
 from UnRAR2 import RarFile
 from concurrent.futures import ThreadPoolExecutor
@@ -1362,7 +1362,7 @@ class Home(WebRoot):
                 )
             else:
                 return self.render(
-                    "/show/edit_show.mako",
+                    "/home/edit_show.mako",
                     show=showObj,
                     quality=showObj.quality,
                     scene_exceptions=scene_exceptions,

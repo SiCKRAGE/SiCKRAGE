@@ -38,7 +38,6 @@ from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidSh
 from sickrage.core.processors.post_processor import PostProcessor
 from sickrage.core.scene_numbering import xem_refresh, get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.searchers import subtitle_searcher
-from sickrage.core.tv import dirty_setter
 from sickrage.core.updaters import tz_updater
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.indexer_exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
@@ -82,34 +81,206 @@ class TVEpisode(object):
 
         self.populateEpisode(self.season, self.episode)
 
-    name = property(lambda self: self._name, dirty_setter("_name"))
-    season = property(lambda self: self._season, dirty_setter("_season"))
-    episode = property(lambda self: self._episode, dirty_setter("_episode"))
-    absolute_number = property(lambda self: self._absolute_number, dirty_setter("_absolute_number"))
-    description = property(lambda self: self._description, dirty_setter("_description"))
-    subtitles = property(lambda self: self._subtitles, dirty_setter("_subtitles"))
-    subtitles_searchcount = property(lambda self: self._subtitles_searchcount,dirty_setter("_subtitles_searchcount"))
-    subtitles_lastsearch = property(lambda self: self._subtitles_lastsearch, dirty_setter("_subtitles_lastsearch"))
-    airdate = property(lambda self: self._airdate, dirty_setter("_airdate"))
-    hasnfo = property(lambda self: self._hasnfo, dirty_setter("_hasnfo"))
-    hastbn = property(lambda self: self._hastbn, dirty_setter("_hastbn"))
-    status = property(lambda self: self._status, dirty_setter("_status"))
-    indexer = property(lambda self: self._indexer, dirty_setter("_indexer"))
-    indexerid = property(lambda self: self._indexerid, dirty_setter("_indexerid"))
-    file_size = property(lambda self: self._file_size, dirty_setter("_file_size"))
-    release_name = property(lambda self: self._release_name, dirty_setter("_release_name"))
-    is_proper = property(lambda self: self._is_proper, dirty_setter("_is_proper"))
-    version = property(lambda self: self._version, dirty_setter("_version"))
-    release_group = property(lambda self: self._release_group, dirty_setter("_release_group"))
+    @property
+    def name(self):
+        return self._name
 
-    def _set_location(self, new_location):
-        if not os.path.isfile(new_location):
-            return
+    @name.setter
+    def name(self, value):
+        if self._name != value:
+            self.dirty = True
+        self._name = value
 
-        sickrage.srLogger.debug("Setter sets location to " + new_location)
-        dirty_setter("_location")(self, new_location)
+    @property
+    def season(self):
+        return self._season
 
-    location = property(lambda self: self._location, _set_location)
+    @season.setter
+    def season(self, value):
+        if self._season != value:
+            self.dirty = True
+        self._season = value
+
+    @property
+    def episode(self):
+        return self._episode
+
+    @episode.setter
+    def episode(self, value):
+        if self._episode != value:
+            self.dirty = True
+        self._episode = value
+
+    @property
+    def absolute_number(self):
+        return self._absolute_number
+
+    @absolute_number.setter
+    def absolute_number(self, value):
+        if self._absolute_number != value:
+            self.dirty = True
+        self._absolute_number = value
+
+    @property
+    def description(self):
+        return self._description
+
+    @description.setter
+    def description(self, value):
+        if self._description != value:
+            self.dirty = True
+        self._description = value
+
+    @property
+    def subtitles(self):
+        return self._subtitles
+
+    @subtitles.setter
+    def subtitles(self, value):
+        if self._subtitles != value:
+            self.dirty = True
+        self._subtitles = value
+
+    @property
+    def subtitles_searchcount(self):
+        return self._subtitles_searchcount
+
+    @subtitles_searchcount.setter
+    def subtitles_searchcount(self, value):
+        if self._subtitles_searchcount != value:
+            self.dirty = True
+        self._subtitles_searchcount = value
+
+    @property
+    def subtitles_lastsearch(self):
+        return self._subtitles_lastsearch
+
+    @subtitles_lastsearch.setter
+    def subtitles_lastsearch(self, value):
+        if self._subtitles_lastsearch != value:
+            self.dirty = True
+        self._subtitles_lastsearch = value
+
+    @property
+    def airdate(self):
+        return self._airdate
+
+    @airdate.setter
+    def airdate(self, value):
+        if self._airdate != value:
+            self.dirty = True
+        self._airdate = value
+
+    @property
+    def hasnfo(self):
+        return self._hasnfo
+
+    @hasnfo.setter
+    def hasnfo(self, value):
+        if self._hasnfo != value:
+            self.dirty = True
+        self._hasnfo = value
+
+    @property
+    def hastbn(self):
+        return self._hastbn
+
+    @hastbn.setter
+    def hastbn(self, value):
+        if self._hastbn != value:
+            self.dirty = True
+        self._hastbn = value
+
+    @property
+    def status(self):
+        return self._status
+
+    @status.setter
+    def status(self, value):
+        if self._status != value:
+            self.dirty = True
+        self._status = value
+
+    @property
+    def indexer(self):
+        return self._indexer
+
+    @indexer.setter
+    def indexer(self, value):
+        if self._indexer != value:
+            self.dirty = True
+        self._indexer = value
+
+    @property
+    def indexerid(self):
+        return self._indexerid
+
+    @indexerid.setter
+    def indexerid(self, value):
+        if self._indexerid != value:
+            self.dirty = True
+        self._indexerid = value
+
+    @property
+    def file_size(self):
+        return self._file_size
+
+    @file_size.setter
+    def file_size(self, value):
+        if self._file_size != value:
+            self.dirty = True
+        self._file_size = value
+
+    @property
+    def release_name(self):
+        return self._release_name
+
+    @release_name.setter
+    def release_name(self, value):
+        if self._release_name != value:
+            self.dirty = True
+        self._release_name = value
+
+    @property
+    def is_proper(self):
+        return self._is_proper
+
+    @is_proper.setter
+    def is_proper(self, value):
+        if self._is_proper != value:
+            self.dirty = True
+        self._is_proper = value
+
+    @property
+    def version(self):
+        return self._version
+
+    @version.setter
+    def version(self, value):
+        if self._version != value:
+            self.dirty = True
+        self._version = value
+
+    @property
+    def release_group(self):
+        return self._release_group
+
+    @release_group.setter
+    def release_group(self, value):
+        if self._release_group != value:
+            self.dirty = True
+        self._release_group = value
+
+    @property
+    def location(self):
+        return self._location
+
+    @location.setter
+    def location(self, new_location):
+        if os.path.isfile(new_location):
+            sickrage.srLogger.debug("Setter sets location to " + new_location)
+            self.dirty = True
+        self._location = new_location
 
     def refreshSubtitles(self):
         """Look for subtitles files and refresh the subtitles property"""
@@ -120,7 +291,7 @@ class TVEpisode(object):
     def downloadSubtitles(self, force=False):
         if not os.path.isfile(self.location):
             sickrage.srLogger.debug("%s: Episode file doesn't exist, can't download subtitles for S%02dE%02d" %
-                                         (self.show.indexerid, self.season or 0, self.episode or 0))
+                                    (self.show.indexerid, self.season or 0, self.episode or 0))
             return
 
         sickrage.srLogger.debug(
@@ -142,12 +313,12 @@ class TVEpisode(object):
         if newSubtitles:
             subtitleList = ", ".join([subtitle_searcher.fromietf(newSub).name for newSub in newSubtitles])
             sickrage.srLogger.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
-                                         (self.show.indexerid, subtitleList, self.season or 0, self.episode or 0))
+                                    (self.show.indexerid, subtitleList, self.season or 0, self.episode or 0))
 
             srNotifiers.notify_subtitle_download(self.prettyName(), subtitleList)
         else:
             sickrage.srLogger.debug("%s: No subtitles downloaded for S%02dE%02d" %
-                                         (self.show.indexerid, self.season or 0, self.episode or 0))
+                                    (self.show.indexerid, self.season or 0, self.episode or 0))
 
     def checkForMetaFiles(self):
 
@@ -453,7 +624,8 @@ class TVEpisode(object):
 
                 for epDetails in showXML.iter('episodedetails'):
                     if epDetails.findtext('season') is None or int(epDetails.findtext('season')) != self.season or \
-                                    epDetails.findtext('episode') is None or int(epDetails.findtext('episode')) != self.episode:
+                                    epDetails.findtext('episode') is None or int(
+                        epDetails.findtext('episode')) != self.episode:
                         sickrage.srLogger.debug(
                             "%s: NFO has an <episodedetails> block for a different episode - wanted S%02dE%02d but got S%02dE%02d" %
                             (
@@ -804,7 +976,7 @@ class TVEpisode(object):
 
             airdatetime = airdatetime.timetuple()
             sickrage.srLogger.debug(str(self.show.indexerid) + ": About to modify date of '" + self.location +
-                                         "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+                                    "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
             try:
                 if touchFile(self.location, time.mktime(airdatetime)):
                     sickrage.srLogger.info(

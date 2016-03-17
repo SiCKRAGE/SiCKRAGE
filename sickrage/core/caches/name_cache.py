@@ -33,7 +33,7 @@ class srNameCache(object):
     def __init__(self, *args, **kwargs):
         self.name = "NAMECACHE"
         self.amActive = False
-        self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
+        self.lastUpdate = {}
         self.minTime = sickrage.srConfig.NAMECACHE_FREQ
         self.cache = {}
 
@@ -57,9 +57,10 @@ class srNameCache(object):
 
         self.amActive = False
 
-    def shouldUpdate(self):
+    def shouldUpdate(self, show):
         # if we've updated recently then skip the update
-        if not datetime.today() - self.lastUpdate < timedelta(minutes=self.minTime):
+        if datetime.today() - getattr(self.lastUpdate, show.name, datetime.fromtimestamp(
+                int(time.mktime(datetime.today().timetuple())))) < timedelta(minutes=self.minTime):
             return True
 
     def addNameToCache(self, name, indexer_id=0):
@@ -110,12 +111,12 @@ class srNameCache(object):
         :param show: Specify show to build name cache for, if None, just do all shows
         """
 
-        if not show and self.shouldUpdate():
+        if not show:
             retrieve_exceptions()
             for show in sickrage.srCore.SHOWLIST:
                 self.buildNameCache(show)
-        else:
-            self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
+        elif self.shouldUpdate(show):
+            self.lastUpdate[show.name] = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
             sickrage.srLogger.debug("Building internal name cache for [{}]".format(show.name))
             self.clearCache(show.indexerid)
