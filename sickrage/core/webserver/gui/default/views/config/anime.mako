@@ -8,10 +8,10 @@
 <div id="content960">
 <h1 class="header">${header}</h1>
 <div id="config">
-    <div id="config-content">
+    <div id="ui-content">
 
         <form id="configForm" action="saveAnime" method="post">
-            <div id="config-components">
+            <div id="ui-components">
 
                 <ul>
                     <li><a href="#core-component-group1">AnimeDB Settings</a></li>
@@ -95,7 +95,7 @@
 
                 <br><input type="submit" class="btn config_submitter" value="Save Changes" /><br>
 
-            </div><!-- /config-components //-->
+            </div><!-- /ui-components //-->
 
         </form>
     </div>

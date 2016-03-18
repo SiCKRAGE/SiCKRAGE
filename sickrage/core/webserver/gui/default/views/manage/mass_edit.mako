@@ -18,11 +18,11 @@
 
     <div id="config">
 
-    <div id="config-content">
+    <div id="ui-content">
         <form action="massEditSubmit" method="post">
             <input type="hidden" name="toEdit" value="${showList}" />
 
-            <div id="config-components">
+            <div id="ui-components">
                 <ul>
                     <li><a href="#core-component-group1">Main</a></li>
                 </ul>

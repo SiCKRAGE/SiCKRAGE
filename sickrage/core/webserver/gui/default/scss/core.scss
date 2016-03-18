@@ -1,6 +1,14 @@
 /* =======================================================================
-inc_top.mako
+DEFAULTS
 ========================================================================== */
+#ui-content {
+  display: block;
+  width: 960px;
+  padding: 0 0 40px;
+  margin: 0 auto;
+  clear: both;
+  text-align: left; }
+
 .navbaricon {
   margin-top: -15px;
   margin-bottom: -15px; }
@@ -272,9 +280,6 @@ inc_top.mako
 .submenu-icon-kodi {
   background-position: -378px 0px; }
 
-/* =======================================================================
-inc_bottom.mako
-========================================================================== */
 .footer {
   width: 100%;
   padding: 20px 0;
@@ -1169,14 +1174,6 @@ h2.day, h2.network {
 /* =======================================================================
 config*.mako
 ========================================================================== */
-#config-content {
-  display: block;
-  width: 960px;
-  padding: 0 0 40px;
-  margin: 0 auto;
-  clear: both;
-  text-align: left; }
-
 .component-group {
   padding: 15px 15px 25px;
   border-bottom: 1px dotted #ccc;

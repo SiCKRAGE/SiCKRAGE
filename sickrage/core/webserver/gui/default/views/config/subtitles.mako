@@ -19,10 +19,10 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
 
 <h1 class="header">${header}</h1>
 <div id="config">
-<div id="config-content">
+<div id="ui-content">
 <form id="configForm" action="saveSubtitles" method="post">
 
-            <div id="config-components">
+            <div id="ui-components">
                 <ul>
                     <li><a href="#core-component-group1">Subtitles Search</a></li>
                     <li><a href="#core-component-group2">Subtitles Plugin</a></li>
@@ -218,7 +218,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
                         <br><input type="submit" class="btn config_submitter" value="Save Changes" /><br>
                     </fieldset>
                 </div><!-- /component-group3 //-->
-            </div><!-- /config-components //-->
+            </div><!-- /ui-components //-->
 
 </form>
 </div>

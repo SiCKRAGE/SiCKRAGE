@@ -7,8 +7,9 @@
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
     from sickrage.core.helpers.srdatetime import srDateTime, date_presets, time_presets
-    from sickrage.metadata import GenericMetadata
     from sickrage.core.helpers import anon_url
+    from sickrage.indexers import srIndexerApi
+    from sickrage.metadata import GenericMetadata
 
 %>
 <%block name="content">
@@ -19,9 +20,9 @@
 % endif
 
 <div id="config">
-    <div id="config-content">
+    <div id="ui-content">
         <form id="configForm" action="saveGeneral" method="post">
-            <div id="config-components">
+            <div id="ui-components">
                 <ul>
                     <li><a href="#core-component-group1">Misc</a></li>
                     <li><a href="#core-component-group2">Interface</a></li>
@@ -844,7 +845,7 @@
                         class="path">${sickrage.DATA_DIR}</span></b></h6>
                 <input type="submit" class="btn pull-left config_submitter button" value="Save Changes" />
 
-            </div><!-- /config-components //-->
+            </div><!-- /ui-components //-->
 
         </form>
     </div>

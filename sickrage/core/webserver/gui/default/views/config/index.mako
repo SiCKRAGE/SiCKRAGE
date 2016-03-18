@@ -8,7 +8,7 @@
 %>
 <%block name="content">
 <h1 class="header">${header}</h1>
-<div id="config-content">
+<div id="ui-content">
 <table class="infoTable" cellspacing="1" border="0" cellpadding="0" width="100%">
     <tr>
         <td class="infoTableHeader">SR Version: </td>

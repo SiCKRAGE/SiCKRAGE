@@ -1368,8 +1368,8 @@ class Home(WebRoot):
                     scene_exceptions=scene_exceptions,
                     title='Edit Show',
                     header='Edit Show',
-                    controller='show',
-                    action="edit"
+                    controller='home',
+                    action="edit_show"
                 )
 
         flatten_folders = not sickrage.srConfig.checkbox_to_value(flatten_folders)  # UI inverts this value

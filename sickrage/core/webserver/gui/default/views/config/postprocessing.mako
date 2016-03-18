@@ -13,9 +13,9 @@
 <div id="content960">
 <h1 class="header">${header}</h1>
 <div id="config">
-    <div id="config-content">
+    <div id="ui-content">
         <form id="configForm" action="savePostProcessing" method="post">
-            <div id="config-components">
+            <div id="ui-components">
                 <ul>
                     <li><a href="#core-component-group1">Post-Processing</a></li>
                     <li><a href="#core-component-group2">Episode Naming</a></li>

@@ -5,7 +5,7 @@
 <%block name="content">
     <h1 class="header">${header}</h1>
     <div id="newShowPortal">
-        <div id="config-components">
+        <div id="ui-components">
             <ul>
                 <li><a href="#core-component-group1">Add Existing Show</a></li>
             </ul>

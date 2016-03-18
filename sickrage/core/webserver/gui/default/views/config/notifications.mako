@@ -12,9 +12,9 @@
 <%block name="content">
 <h1 class="header">${header}</h1>
 <div id="config">
-    <div id="config-content">
+    <div id="ui-content">
         <form id="configForm" action="saveNotifications" method="post">
-            <div id="config-components">
+            <div id="ui-components">
                 <ul>
                     <li><a href="#tabs-1">Home Theater / NAS</a></li>
                     <li><a href="#tabs-2">Devices</a></li>
@@ -2051,7 +2051,7 @@
                     </fieldset>
                 </div><!-- /email component-group //-->
 
-            </div><!-- /config-components //-->
+            </div><!-- /ui-components //-->
             </div>
         </form>
         <br><input type="submit" class="config_submitter btn" value="Save Changes" /><br>

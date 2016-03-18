@@ -457,6 +457,47 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
+                $("#ui-components").tabs({
+                    activate: function (event, ui) {
+                        var lastOpenedPanel = $(this).data("lastOpenedPanel");
+                        //var selected = this.tabs('option', 'selected');
+
+                        if (!lastOpenedPanel) {
+                            lastOpenedPanel = $(ui.oldPanel);
+                        }
+
+                        if (!$(this).data("topPositionTab")) {
+                            $(this).data("topPositionTab", $(ui.newPanel).position().top);
+                        }
+
+                        //Dont use the builtin fx effects. This will fade in/out both tabs, we dont want that
+                        //Fadein the new tab yourself
+                        $(ui.newPanel).hide().fadeIn(0);
+
+                        if (lastOpenedPanel) {
+                            // 1. Show the previous opened tab by removing the jQuery UI class
+                            // 2. Make the tab temporary position:absolute so the two tabs will overlap
+                            // 3. Set topposition so they will overlap if you go from tab 1 to tab 0
+                            // 4. Remove position:absolute after animation
+                            lastOpenedPanel
+                                .toggleClass("ui-tabs-hide")
+                                .css("position", "absolute")
+                                .css("top", $(this).data("topPositionTab") + "px")
+                                .fadeOut(0, function () {
+                                    $(this)
+                                        .css("position", "");
+                                });
+                        }
+
+                        //Saving the last tab has been opened
+                        $(this).data("lastOpenedPanel", $(ui.newPanel));
+                    }
+                });
+
+                SICKRAGE.browser.init();
+                SICKRAGE.root_dirs.init();
+                SICKRAGE.quality_chooser.init();
+
                 SICKRAGE.check_notifications();
             }
         },
@@ -765,11 +806,20 @@ jQuery(document).ready(function ($) {
         },
 
         browser: {
+            defaults: {
+                title: 'Choose Directory',
+                url: '/browser/',
+                autocompleteURL: '/browser/complete',
+                includeFiles: 0,
+                showBrowseButton: true
+            },
             fileBrowserDialog: null,
             currentBrowserPath: null,
             currentRequest: null,
 
             init: function () {
+                $.fn.nFileBrowser = SICKRAGE.browser.nFileBrowser;
+                $.fn.fileBrowser = SICKRAGE.browser.fileBrowser;
             },
 
             browse: function (path, endpoint, includeFiles) {
@@ -778,7 +828,6 @@ jQuery(document).ready(function ($) {
                 }
 
                 SICKRAGE.browser.currentBrowserPath = path;
-
                 if (SICKRAGE.browser.currentRequest) {
                     SICKRAGE.browser.currentRequest.abort();
                 }
@@ -790,48 +839,59 @@ jQuery(document).ready(function ($) {
                     includeFiles: includeFiles
                 }, function (data) {
                     SICKRAGE.browser.fileBrowserDialog.empty();
-                    var first_val = data[0];
+                    var firstVal = data[0];
                     var i = 0;
                     var list, link = null;
                     data = $.grep(data, function () {
                         return i++ !== 0;
                     });
-                    $('<h2>').text(first_val.current_path).appendTo(SICKRAGE.browser.fileBrowserDialog);
+
+                    $('<input type="text" class="form-control input-sm">')
+                        .val(firstVal.currentPath)
+                        .on('keypress', function (e) {
+                            if (e.which === 13) {
+                                SICKRAGE.browser.browse(e.target.value, endpoint, includeFiles);
+                            }
+                        })
+                        .appendTo(SICKRAGE.browser.fileBrowserDialog)
+                        .fileBrowser({showBrowseButton: false})
+                        .on('autocompleteselect', function (e, ui) {
+                            SICKRAGE.browser.browse(ui.item.value, endpoint, includeFiles);
+                        });
+
                     list = $('<ul>').appendTo(SICKRAGE.browser.fileBrowserDialog);
                     $.each(data, function (i, entry) {
-                        link = $("<a href='javascript:void(0)' />").click(function () {
-                            SICKRAGE.browser.browse(entry.path, endpoint, includeFiles);
-                        }).text(entry.name);
-                        $('<span class="ui-icon ui-icon-folder-collapsed"></span>').prependTo(link);
-                        link.hover(
-                            function () {
-                                $("span", this).addClass("ui-icon-folder-open");
-                            },
-                            function () {
-                                $("span", this).removeClass("ui-icon-folder-open");
+                        link = $('<a href="javascript:void(0)">').on('click', function () {
+                            if (entry.isFile) {
+                                SICKRAGE.browser.currentBrowserPath = entry.path;
+                                $('.browserDialog .ui-button:contains("Ok")').click();
+                            } else {
+                                SICKRAGE.browser.browse(entry.path, endpoint, includeFiles);
                             }
-                        );
+                        }).text(entry.name);
+                        if (entry.isFile) {
+                            link.prepend('<span class="ui-icon ui-icon-blank"></span>');
+                        } else {
+                            link.prepend('<span class="ui-icon ui-icon-folder-collapsed"></span>')
+                                .on('mouseenter', function () {
+                                    $('span', this).addClass('ui-icon-folder-open');
+                                })
+                                .on('mouseleave', function () {
+                                    $('span', this).removeClass('ui-icon-folder-open');
+                                });
+                        }
                         link.appendTo(list);
                     });
-                    $("a", list).wrap('<li class="ui-state-default ui-corner-all">');
+                    $('a', list).wrap('<li class="ui-state-default ui-corner-all">');
                     SICKRAGE.browser.fileBrowserDialog.dialog('option', 'dialogClass', 'browserDialog');
                 });
             },
 
             nFileBrowser: function (callback, options) {
-                var defaults = {
-                    title: 'Choose Directory',
-                    url: '/browser/',
-                    autocompleteURL: '/browser/complete',
-                    includeFiles: 0,
-                    showBrowseButton: true
-                };
-
-                options = $.extend({}, defaults, options);
+                options = $.extend({}, SICKRAGE.browser.defaults, options);
 
                 // make a fileBrowserDialog object if one doesn't exist already
                 if (!SICKRAGE.browser.fileBrowserDialog) {
-
                     // set up the jquery dialog
                     SICKRAGE.browser.fileBrowserDialog = $('<div id="fileBrowserDialog" style="display:hidden"></div>').appendTo('body').dialog({
                         dialogClass: 'browserDialog',
@@ -877,17 +937,9 @@ jQuery(document).ready(function ($) {
                 return false;
             },
 
-            fileBrowser: function (field, options) {
-                var defaults = {
-                    title: 'Choose Directory',
-                    url: '/browser/',
-                    autocompleteURL: '/browser/complete',
-                    includeFiles: 0,
-                    showBrowseButton: true
-                };
-
-                options = $.extend({}, defaults, options);
-                options.field = field;
+            fileBrowser: function (options) {
+                options = $.extend({}, SICKRAGE.browser.defaults, options);
+                options.field = $(this);
 
                 if (options.field.autocomplete && options.autocompleteURL) {
                     var query = '';
@@ -930,7 +982,7 @@ jQuery(document).ready(function ($) {
                 }
 
                 var path, callback, ls = false;
-                // if the text field is empty and we're given a key then populate it with the last browsed value from localStorage
+
                 try {
                     ls = !!(localStorage.getItem);
                 } catch (e) {
@@ -954,12 +1006,19 @@ jQuery(document).ready(function ($) {
                 };
 
                 // append the browse button and give it a click behaviour
-                return options.field.addClass('fileBrowserField').after($('<input type="button" value="Browse&hellip;" class="btn btn-inline fileBrowser" />').click(function () {
-                    var initialDir = options.field.val() || (options.key && path) || '';
-                    var optionsWithInitialDir = $.extend({}, options, {initialDir: initialDir});
-                    SICKRAGE.browser.nFileBrowser(callback, optionsWithInitialDir);
-                    return false;
-                }));
+                options.field.addClass('fileBrowserField');
+                if (options.showBrowseButton) {
+                    // append the browse button and give it a click behaviour
+                    options.field.after(
+                        $('<input type="button" value="Browse&hellip;" class="btn btn-inline fileBrowser">').on('click', function () {
+                            var initialDir = options.field.val() || (options.key && path) || '';
+                            var optionsWithInitialDir = $.extend({}, options, {initialDir: initialDir});
+                            $(this).nFileBrowser(callback, optionsWithInitialDir);
+                            return false;
+                        })
+                    );
+                }
+                return options.field;
             }
         },
 
@@ -1003,11 +1062,11 @@ jQuery(document).ready(function ($) {
                 }
 
                 $('#addRootDir').click(function () {
-                    SICKRAGE.browser.nFileBrowser(SICKRAGE.root_dirs.addRootDir);
+                    $(this).nFileBrowser(SICKRAGE.root_dirs.addRootDir);
                 });
 
                 $('#editRootDir').click(function () {
-                    SICKRAGE.browser.nFileBrowser(SICKRAGE.root_dirs.editRootDir, {initialDir: $("#rootDirs option:selected").val()});
+                    $(this).nFileBrowser(SICKRAGE.root_dirs.editRootDir, {initialDir: $("#rootDirs option:selected").val()});
                 });
 
                 $('#deleteRootDir').click(function () {
@@ -1989,7 +2048,7 @@ jQuery(document).ready(function ($) {
                 init: function () {
                     var allExceptions = [];
 
-                    SICKRAGE.browser.fileBrowser('#location', {title: 'Select Show Location'});
+                    $('#location').fileBrowser({title: 'Select Show Location'});
 
                     $('#submit').click(function () {
                         var allExceptions = [];
@@ -2053,8 +2112,6 @@ jQuery(document).ready(function ($) {
 
             add_existing_shows: {
                 init: function () {
-                    SICKRAGE.quality_chooser.init();
-
                     $("#tabs").tabs({
                         collapsible: true,
                         selected: (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? -1 : 0)
@@ -2130,7 +2187,7 @@ jQuery(document).ready(function ($) {
             },
 
             postprocess: function () {
-                SICKRAGE.browser.fileBrowser('#episodeDir', {
+                $('#episodeDir').fileBrowser({
                     title: 'Select Unprocessed Episode Folder',
                     key: 'postprocessPath'
                 });
@@ -2620,7 +2677,7 @@ jQuery(document).ready(function ($) {
                     $('.edit_root_dir').click(function () {
                         var curIndex = SICKRAGE.home.mass_edit.findDirIndex($(this).attr('id'));
                         var initialDir = $("#new_root_dir_" + curIndex).val();
-                        SICKRAGE.browser.nFileBrowser(SICKRAGE.home.mass_edit.editRootDir, {
+                        $(this).nFileBrowser(SICKRAGE.home.mass_edit.editRootDir, {
                             initialDir: initialDir,
                             whichId: curIndex
                         });
@@ -2722,43 +2779,6 @@ jQuery(document).ready(function ($) {
 
         config: {
             init: function () {
-                $("#config-components").tabs({
-                    activate: function (event, ui) {
-                        var lastOpenedPanel = $(this).data("lastOpenedPanel");
-                        //var selected = this.tabs('option', 'selected');
-
-                        if (!lastOpenedPanel) {
-                            lastOpenedPanel = $(ui.oldPanel);
-                        }
-
-                        if (!$(this).data("topPositionTab")) {
-                            $(this).data("topPositionTab", $(ui.newPanel).position().top);
-                        }
-
-                        //Dont use the builtin fx effects. This will fade in/out both tabs, we dont want that
-                        //Fadein the new tab yourself
-                        $(ui.newPanel).hide().fadeIn(0);
-
-                        if (lastOpenedPanel) {
-                            // 1. Show the previous opened tab by removing the jQuery UI class
-                            // 2. Make the tab temporary position:absolute so the two tabs will overlap
-                            // 3. Set topposition so they will overlap if you go from tab 1 to tab 0
-                            // 4. Remove position:absolute after animation
-                            lastOpenedPanel
-                                .toggleClass("ui-tabs-hide")
-                                .css("position", "absolute")
-                                .css("top", $(this).data("topPositionTab") + "px")
-                                .fadeOut(0, function () {
-                                    $(this)
-                                        .css("position", "");
-                                });
-                        }
-
-                        //Saving the last tab has been opened
-                        $(this).data("lastOpenedPanel", $(ui.newPanel));
-                    }
-                });
-
                 $('#configForm').ajaxForm({
                     beforeSubmit: function () {
                         $('.config_submitter .config_submitter_refresh').each(function () {
@@ -2806,7 +2826,7 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                SICKRAGE.browser.fileBrowser('#log_dir', {title: 'Select log file folder location'});
+                $('#log_dir').fileBrowser({title: 'Select log file folder location'});
 
 
                 $(".enabler").each(function () {
@@ -2897,7 +2917,7 @@ jQuery(document).ready(function ($) {
 
             subtitles: {
                 init: function () {
-                    SICKRAGE.browser.fileBrowser('#subtitles_dir', {title: 'Select Subtitles Download Directory'});
+                    $('#subtitles_dir').fileBrowser({title: 'Select Subtitles Download Directory'});
 
                     $('#editAService').change(function () {
                         SICKRAGE.config.subtitles.showHideServices();
@@ -2963,121 +2983,11 @@ jQuery(document).ready(function ($) {
 
             search: {
                 init: function () {
-                    SICKRAGE.config.search.torrentMethodHandler = function () {
-                        $('#options_torrent_clients').hide();
-                        $('#options_torrent_blackhole').hide();
-
-                        var selectedProvider = $('#torrent_method :selected').val(),
-                            host = ' host:port',
-                            username = ' username',
-                            password = ' password',
-                            client = '',
-                            optionPanel = '#options_torrent_blackhole',
-                            rpcurl = ' RPC URL';
-
-                        $('#torrent_method_icon').removeClass(function (index, css) {
-                            return (css.match(/(^|\s)add-client-icon-\S+/g) || []).join(' ');
-                        });
-                        $('#torrent_method_icon').addClass('add-client-icon-' + selectedProvider.replace('_', '-'));
-
-                        if (selectedProvider.toLowerCase() !== 'blackhole') {
-                            $('#label_warning_deluge').hide();
-                            $('#label_anime_warning_deluge').hide();
-                            $('#host_desc_torrent').show();
-                            $('#torrent_verify_cert_option').hide();
-                            $('#torrent_verify_deluge').hide();
-                            $('#torrent_verify_rtorrent').hide();
-                            $('#torrent_auth_type_option').hide();
-                            $('#torrent_path_option').show();
-                            $('#torrent_path_option').find('.fileBrowser').show();
-                            $('#torrent_seed_time_option').hide();
-                            $('#torrent_high_bandwidth_option').hide();
-                            $('#torrent_label_option').show();
-                            $('#torrent_label_anime_option').show();
-                            $('#path_synology').hide();
-                            $('#torrent_paused_option').show();
-                            $('#torrent_rpcurl_option').hide();
-
-                            if (selectedProvider.toLowerCase() === 'utorrent') {
-                                client = 'uTorrent';
-                                $('#torrent_path_option').hide();
-                                $('#torrent_seed_time_label').text('Minimum seeding time is');
-                                $('#torrent_seed_time_option').show();
-                                $('#host_desc_torrent').text('URL to your uTorrent client (e.g. http://localhost:8000)');
-                            } else if (selectedProvider.toLowerCase() === 'transmission') {
-                                client = 'Transmission';
-                                $('#torrent_seed_time_label').text('Stop seeding when inactive for');
-                                $('#torrent_seed_time_option').show();
-                                $('#torrent_high_bandwidth_option').show();
-                                $('#torrent_label_option').hide();
-                                $('#torrent_label_anime_option').hide();
-                                $('#torrent_rpcurl_option').show();
-                                $('#host_desc_torrent').text('URL to your Transmission client (e.g. http://localhost:9091)');
-                            } else if (selectedProvider.toLowerCase() === 'deluge') {
-                                client = 'Deluge';
-                                $('#torrent_verify_cert_option').show();
-                                $('#torrent_verify_deluge').show();
-                                $('#torrent_verify_rtorrent').hide();
-                                $('#label_warning_deluge').show();
-                                $('#label_anime_warning_deluge').show();
-                                $('#torrent_username_option').hide();
-                                $('#torrent_username').prop('value', '');
-                                $('#host_desc_torrent').text('URL to your Deluge client (e.g. http://localhost:8112)');
-                            } else if (selectedProvider.toLowerCase() === 'deluged') {
-                                client = 'Deluge';
-                                $('#torrent_verify_cert_option').hide();
-                                $('#torrent_verify_deluge').hide();
-                                $('#torrent_verify_rtorrent').hide();
-                                $('#label_warning_deluge').show();
-                                $('#label_anime_warning_deluge').show();
-                                $('#torrent_username_option').show();
-                                $('#host_desc_torrent').text('IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)');
-                            } else if (selectedProvider.toLowerCase() === 'download_station') {
-                                client = 'Synology DS';
-                                $('#torrent_label_option').hide();
-                                $('#torrent_label_anime_option').hide();
-                                $('#torrent_paused_option').hide();
-                                $('#torrent_path_option').find('.fileBrowser').hide();
-                                $('#host_desc_torrent').text('URL to your Synology DS client (e.g. http://localhost:5000)');
-                                $('#path_synology').show();
-                            } else if (selectedProvider.toLowerCase() === 'rtorrent') {
-                                client = 'rTorrent';
-                                $('#torrent_paused_option').hide();
-                                $('#host_desc_torrent').text('URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)');
-                                $('#torrent_verify_cert_option').show();
-                                $('#torrent_verify_deluge').hide();
-                                $('#torrent_verify_rtorrent').show();
-                                $('#torrent_auth_type_option').show();
-                            } else if (selectedProvider.toLowerCase() === 'qbittorrent') {
-                                client = 'qbittorrent';
-                                $('#torrent_path_option').hide();
-                                $('#label_warning_qbittorrent').show();
-                                $('#label_anime_warning_qbittorrent').show();
-                                $('#host_desc_torrent').text('URL to your qbittorrent client (e.g. http://localhost:8080)');
-                            } else if (selectedProvider.toLowerCase() === 'mlnet') {
-                                client = 'mlnet';
-                                $('#torrent_path_option').hide();
-                                $('#torrent_label_option').hide();
-                                $('#torrent_verify_cert_option').hide();
-                                $('#torrent_verify_deluge').hide();
-                                $('#torrent_verify_rtorrent').hide();
-                                $('#torrent_label_anime_option').hide();
-                                $('#torrent_paused_option').hide();
-                                $('#host_desc_torrent').text('URL to your MLDonkey (e.g. http://localhost:4080)');
-                            }
-                            $('#host_title').text(client + host);
-                            $('#username_title').text(client + username);
-                            $('#password_title').text(client + password);
-                            $('#torrent_client').text(client);
-                            $('#rpcurl_title').text(client + rpcurl);
-                            optionPanel = '#options_torrent_clients';
-                        }
-                        $(optionPanel).show();
-                    };
-
                     $('#nzb_method').change(SICKRAGE.config.search.nzbMethodHandler);
+                    $('#torrent_method').change(SICKRAGE.config.search.torrentMethodHandler);
 
                     SICKRAGE.config.search.nzbMethodHandler();
+                    SICKRAGE.config.search.torrentMethodHandler();
 
                     $('#testSABnzbd').click(function () {
                         $('#testSABnzbd_result').html(SICKRAGE.loading);
@@ -3096,11 +3006,6 @@ jQuery(document).ready(function ($) {
                                 $('#testSABnzbd_result').html(data);
                             });
                     });
-
-
-                    $('#torrent_method').change(SICKRAGE.config.search.torrentMethodHandler);
-
-                    SICKRAGE.config.search.torrentMethodHandler();
 
                     $('#use_torrents').click(function () {
                         SICKRAGE.config.search.toggleTorrentTitle();
@@ -3127,9 +3032,9 @@ jQuery(document).ready(function ($) {
                     $('#torrent_host').change(SICKRAGE.config.search.rtorrentScgi);
 
 
-                    SICKRAGE.browser.fileBrowser('#nzb_dir', {title: 'Select .nzb blackhole/watch location'});
-                    SICKRAGE.browser.fileBrowser('#torrent_dir', {title: 'Select .torrent blackhole/watch location'});
-                    SICKRAGE.browser.fileBrowser('#torrent_path', {title: 'Select .torrent download location'});
+                    $('#nzb_dir').fileBrowser({title: 'Select .nzb blackhole/watch location'});
+                    $('#torrent_dir').fileBrowser({title: 'Select .torrent blackhole/watch location'});
+                    $('#torrent_path').fileBrowser({title: 'Select .torrent download location'});
                 },
 
                 toggleTorrentTitle: function () {
@@ -3141,28 +3046,133 @@ jQuery(document).ready(function ($) {
                 },
 
                 nzbMethodHandler: function () {
-                    var selectedProvider = $('#nzb_method :selected').val(),
-                        blackholeSettings = '#blackhole_settings',
-                        sabnzbdSettings = '#sabnzbd_settings',
-                        testSABnzbd = '#testSABnzbd',
-                        testSABnzbdResult = '#testSABnzbd_result',
-                        nzbgetSettings = '#nzbget_settings';
+                    $('#blackhole_settings').hide();
+                    $('#sabnzbd_settings').hide();
+                    $('#testSABnzbd').hide();
+                    $('#testSABnzbd_result').hide();
+                    $('#nzbget_settings').hide();
 
-                    $(blackholeSettings).hide();
-                    $(sabnzbdSettings).hide();
-                    $(testSABnzbd).hide();
-                    $(testSABnzbdResult).hide();
-                    $(nzbgetSettings).hide();
-
-                    if (selectedProvider.toLowerCase() === 'blackhole') {
-                        $(blackholeSettings).show();
-                    } else if (selectedProvider.toLowerCase() === 'nzbget') {
-                        $(nzbgetSettings).show();
+                    if ($('#nzb_method').val().toLowerCase() === 'blackhole') {
+                        $('#blackhole_settings').show();
+                    } else if ($('#nzb_method').val().toLowerCase() === 'nzbget') {
+                        $('#nzbget_settings').show();
                     } else {
-                        $(sabnzbdSettings).show();
-                        $(testSABnzbd).show();
-                        $(testSABnzbdResult).show();
+                        $('#sabnzbd_settings').show();
+                        $('#testSABnzbd').show();
+                        $('#testSABnzbd_result').show();
                     }
+                },
+
+                torrentMethodHandler: function () {
+                    $('#options_torrent_clients').hide();
+                    $('#options_torrent_blackhole').hide();
+
+                    var selectedProvider = $('#torrent_method').val(),
+                        host = ' host:port',
+                        username = ' username',
+                        password = ' password',
+                        client = '',
+                        optionPanel = '#options_torrent_blackhole',
+                        rpcurl = ' RPC URL';
+
+                    $('#torrent_method_icon').removeClass(function (index, css) {
+                        return (css.match(/(^|\s)add-client-icon-\S+/g) || []).join(' ');
+                    });
+                    $('#torrent_method_icon').addClass('add-client-icon-' + selectedProvider.replace('_', '-'));
+
+                    if (selectedProvider.toLowerCase() !== 'blackhole') {
+                        $('#label_warning_deluge').hide();
+                        $('#label_anime_warning_deluge').hide();
+                        $('#host_desc_torrent').show();
+                        $('#torrent_verify_cert_option').hide();
+                        $('#torrent_verify_deluge').hide();
+                        $('#torrent_verify_rtorrent').hide();
+                        $('#torrent_auth_type_option').hide();
+                        $('#torrent_path_option').show();
+                        $('#torrent_path_option').find('.fileBrowser').show();
+                        $('#torrent_seed_time_option').hide();
+                        $('#torrent_high_bandwidth_option').hide();
+                        $('#torrent_label_option').show();
+                        $('#torrent_label_anime_option').show();
+                        $('#path_synology').hide();
+                        $('#torrent_paused_option').show();
+                        $('#torrent_rpcurl_option').hide();
+
+                        if (selectedProvider.toLowerCase() === 'utorrent') {
+                            client = 'uTorrent';
+                            $('#torrent_path_option').hide();
+                            $('#torrent_seed_time_label').text('Minimum seeding time is');
+                            $('#torrent_seed_time_option').show();
+                            $('#host_desc_torrent').text('URL to your uTorrent client (e.g. http://localhost:8000)');
+                        } else if (selectedProvider.toLowerCase() === 'transmission') {
+                            client = 'Transmission';
+                            $('#torrent_seed_time_label').text('Stop seeding when inactive for');
+                            $('#torrent_seed_time_option').show();
+                            $('#torrent_high_bandwidth_option').show();
+                            $('#torrent_label_option').hide();
+                            $('#torrent_label_anime_option').hide();
+                            $('#torrent_rpcurl_option').show();
+                            $('#host_desc_torrent').text('URL to your Transmission client (e.g. http://localhost:9091)');
+                        } else if (selectedProvider.toLowerCase() === 'deluge') {
+                            client = 'Deluge';
+                            $('#torrent_verify_cert_option').show();
+                            $('#torrent_verify_deluge').show();
+                            $('#torrent_verify_rtorrent').hide();
+                            $('#label_warning_deluge').show();
+                            $('#label_anime_warning_deluge').show();
+                            $('#torrent_username_option').hide();
+                            $('#torrent_username').prop('value', '');
+                            $('#host_desc_torrent').text('URL to your Deluge client (e.g. http://localhost:8112)');
+                        } else if (selectedProvider.toLowerCase() === 'deluged') {
+                            client = 'Deluge';
+                            $('#torrent_verify_cert_option').hide();
+                            $('#torrent_verify_deluge').hide();
+                            $('#torrent_verify_rtorrent').hide();
+                            $('#label_warning_deluge').show();
+                            $('#label_anime_warning_deluge').show();
+                            $('#torrent_username_option').show();
+                            $('#host_desc_torrent').text('IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)');
+                        } else if (selectedProvider.toLowerCase() === 'download_station') {
+                            client = 'Synology DS';
+                            $('#torrent_label_option').hide();
+                            $('#torrent_label_anime_option').hide();
+                            $('#torrent_paused_option').hide();
+                            $('#torrent_path_option').find('.fileBrowser').hide();
+                            $('#host_desc_torrent').text('URL to your Synology DS client (e.g. http://localhost:5000)');
+                            $('#path_synology').show();
+                        } else if (selectedProvider.toLowerCase() === 'rtorrent') {
+                            client = 'rTorrent';
+                            $('#torrent_paused_option').hide();
+                            $('#host_desc_torrent').text('URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)');
+                            $('#torrent_verify_cert_option').show();
+                            $('#torrent_verify_deluge').hide();
+                            $('#torrent_verify_rtorrent').show();
+                            $('#torrent_auth_type_option').show();
+                        } else if (selectedProvider.toLowerCase() === 'qbittorrent') {
+                            client = 'qbittorrent';
+                            $('#torrent_path_option').hide();
+                            $('#label_warning_qbittorrent').show();
+                            $('#label_anime_warning_qbittorrent').show();
+                            $('#host_desc_torrent').text('URL to your qbittorrent client (e.g. http://localhost:8080)');
+                        } else if (selectedProvider.toLowerCase() === 'mlnet') {
+                            client = 'mlnet';
+                            $('#torrent_path_option').hide();
+                            $('#torrent_label_option').hide();
+                            $('#torrent_verify_cert_option').hide();
+                            $('#torrent_verify_deluge').hide();
+                            $('#torrent_verify_rtorrent').hide();
+                            $('#torrent_label_anime_option').hide();
+                            $('#torrent_paused_option').hide();
+                            $('#host_desc_torrent').text('URL to your MLDonkey (e.g. http://localhost:4080)');
+                        }
+                        $('#host_title').text(client + host);
+                        $('#username_title').text(client + username);
+                        $('#password_title').text(client + password);
+                        $('#torrent_client').text(client);
+                        $('#rpcurl_title').text(client + rpcurl);
+                        optionPanel = '#options_torrent_clients';
+                    }
+                    $(optionPanel).show();
                 },
 
                 rtorrentScgi: function () {
@@ -3352,7 +3362,7 @@ jQuery(document).ready(function ($) {
                         }
                     });
 
-                    SICKRAGE.browser.fileBrowser('#tv_download_dir', {title: 'Select TV Download Directory'});
+                    $('#tv_download_dir').fileBrowser({title: 'Select TV Download Directory'});
                 },
 
                 typewatch: function () {
@@ -4374,11 +4384,11 @@ jQuery(document).ready(function ($) {
                         });
                 });
 
-                SICKRAGE.browser.fileBrowser('#backupDir', {
+                $('#backupDir').fileBrowser({
                     title: 'Select backup folder to save to',
                     key: 'backupPath'
                 });
-                SICKRAGE.browser.fileBrowser('#backupFile', {
+                $('#backupFile').fileBrowser({
                     title: 'Select backup files to restore',
                     key: 'backupFile',
                     includeFiles: 1
@@ -5076,7 +5086,7 @@ jQuery(document).ready(function ($) {
             },
 
             mass_edit: function () {
-                SICKRAGE.browser.fileBrowser('#location', {title: 'Select Show Location'});
+                $('#location').fileBrowser({title: 'Select Show Location'});
             },
 
             backlog_overview: function () {
