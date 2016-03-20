@@ -514,10 +514,7 @@ class TVShow(object):
                         sickrage.srLogger.debug("%s: Loading info from %s for episode S%02dE%02d" % (
                             self.indexerid, sickrage.srCore.INDEXER_API(self.indexer).name, season or 0, episode or 0))
 
-                        sql_q = curEp.saveToDB(False)
-                        if sql_q:
-                            sql_l.append(sql_q)
-                            del sql_q  # cleanup
+                        curEp.saveToDB()
 
                     scannedEps[season][episode] = True
                 except EpisodeNotFoundException:
