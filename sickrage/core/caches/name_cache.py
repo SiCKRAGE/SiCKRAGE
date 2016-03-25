@@ -37,6 +37,10 @@ class srNameCache(object):
         self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
         self.minTime = sickrage.srConfig.NAMECACHE_FREQ
         self.cache = {}
+        sqlResults = cache_db.CacheDB(row_type='dict').select(
+                "SELECT indexer_id, name FROM scene_names")
+        for row in sqlResults:
+	    self.cache[row[b"name"]] = int(row[b"indexer_id"])
 
     def run(self, force=False):
         """
@@ -120,6 +124,7 @@ class srNameCache(object):
                 self._buildNameCache(show)
 
             self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
+            self.saveNameCacheToDb()
 
     def _buildNameCache(self, show=None):
         """Build internal name cache for a single show"""
