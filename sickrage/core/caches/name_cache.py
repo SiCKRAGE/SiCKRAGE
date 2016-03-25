@@ -115,19 +115,24 @@ class srNameCache(object):
             if not show:
                 retrieve_exceptions()
                 for show in sickrage.srCore.SHOWLIST:
-                    self.buildNameCache(show)
+                    self._buildNameCache(show)
             else:
-                self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
+                self._buildNameCache(show)
 
-                sickrage.srLogger.debug("Building internal name cache for [{}]".format(show.name))
-                self.clearCache(show.indexerid)
-                for curSeason in [-1] + get_scene_seasons(show.indexerid):
-                    for name in list(set(get_scene_exceptions(
-                            show.indexerid, season=curSeason) + [show.name])):
+            self.lastUpdate = datetime.fromtimestamp(int(time.mktime(datetime.today().timetuple())))
 
-                        name = full_sanitizeSceneName(name)
-                        if name not in self.cache:
-                            self.cache[name] = int(show.indexerid)
+    def _buildNameCache(self, show=None):
+        """Build internal name cache for a single show"""
 
-                sickrage.srLogger.debug("Internal name cache for [{}] set to: [{}]".format(
-                    show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))
+	sickrage.srLogger.debug("Building internal name cache for [{}]".format(show.name))
+	self.clearCache(show.indexerid)
+	for curSeason in [-1] + get_scene_seasons(show.indexerid):
+	    for name in list(set(get_scene_exceptions(
+		    show.indexerid, season=curSeason) + [show.name])):
+
+		name = full_sanitizeSceneName(name)
+		if name not in self.cache:
+		    self.cache[name] = int(show.indexerid)
+
+	sickrage.srLogger.debug("Internal name cache for [{}] set to: [{}]".format(
+	    show.name, [key for key, value in self.cache.items() if value == show.indexerid][0]))
