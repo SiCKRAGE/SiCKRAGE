@@ -819,6 +819,26 @@ class TVEpisode(object):
                     str(self.show.indexerid) + ": Failed to modify date of '" + os.path.basename(self.location)
                     + "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
 
+            #modify subtitle file air date
+            file_without_ext=re.match('(.*)\....$',self.location)
+            for subtitle in subtitleExtensions:
+              if os.path.isfile(file_without_ext.group(1)+"."+subtitle):
+                subtitle_file=file_without_ext.group(1)+"."+subtitle
+                try:
+                    if touchFile(subtitle_file, time.mktime(airdatetime)):
+                        sickrage.srLogger.info(
+                            str(self.show.indexerid) + ": Changed modify subtitle date of " + os.path.basename(subtitle_file)
+                            + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+                    else:
+                        sickrage.srLogger.error(
+                            str(self.show.indexerid) + ": Unable to modify subtitle date of " + os.path.basename(
+                                subtitle_file)
+                            + " to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+                except Exception:
+                    sickrage.srLogger.error(
+                        str(self.show.indexerid) + ": Failed to modify subtitle date of '" + os.path.basename(subtitle_file)
+                        + "' to show air date " + time.strftime("%b %d,%Y (%H:%M)", airdatetime))
+
     def _ep_name(self):
         """
         Returns the name of the episode to use during renaming. Combines the names of related episodes.
