@@ -19,21 +19,22 @@
 
 from __future__ import unicode_literals
 
+import base64
 import datetime
 import os
 import os.path
-import pickle
 import platform
 import re
 import urlparse
 import uuid
+from itertools import izip, cycle
 
 from configobj import ConfigObj
 
 import sickrage
 from sickrage.core.common import SD, WANTED, SKIPPED
 from sickrage.core.databases import main_db
-from sickrage.core.helpers import backupVersionedFile, decrypt, encrypt, makeDir, generateCookieSecret
+from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret
 from sickrage.core.nameparser import validator
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.searchers import backlog_searcher
@@ -916,27 +917,21 @@ class srConfig(object):
     ################################################################################
 
     def check_setting_str(self, cfg_name, item_name, def_val="", silent=True):
-        # For passwords you must include the word `password` in the item_name and add `helpers.encrypt(ITEM_NAME, ENCRYPTION_VERSION)` in save()
-        if bool(item_name.find('password') + 1):
-            encryption_version = self.ENCRYPTION_VERSION
-        else:
-            encryption_version = 0
-
         try:
-            my_val = decrypt(self.CONFIG_OBJ[cfg_name][item_name], encryption_version)
+            my_val = self.CONFIG_OBJ[cfg_name][item_name]
             if str(my_val) == str(None):
                 raise
+
+            censored_regex = re.compile(r"|".join(re.escape(word) for word in ["password", "token", "api"]), re.I)
+            if censored_regex.search(item_name) or (cfg_name, item_name) in self.CENSORED_ITEMS:
+                self.CENSORED_ITEMS[cfg_name, item_name] = my_val
         except Exception:
             my_val = def_val
             try:
-                self.CONFIG_OBJ[cfg_name][item_name] = encrypt(my_val, encryption_version)
+                self.CONFIG_OBJ[cfg_name][item_name] = my_val
             except Exception:
                 self.CONFIG_OBJ[cfg_name] = {}
-                self.CONFIG_OBJ[cfg_name][item_name] = encrypt(my_val, encryption_version)
-
-        censored_regex = re.compile(r"|".join(re.escape(word) for word in ["password", "token", "api"]), re.I)
-        if censored_regex.search(item_name) or (cfg_name, item_name) in self.CENSORED_ITEMS:
-            self.CENSORED_ITEMS[cfg_name, item_name] = my_val
+                self.CONFIG_OBJ[cfg_name][item_name] = my_val
 
         if not silent:
             print(item_name + " -> " + my_val)
@@ -981,15 +976,12 @@ class srConfig(object):
         self.check_section('pyTivo')
         self.check_section('theTVDB')
         self.check_section('Trakt')
+        self.check_section('Providers')
 
-        # Need to be before any passwords
-        self.ENCRYPTION_VERSION = self.check_setting_int(
-            'General', 'encryption_version', 0
-        )
-
-        self.ENCRYPTION_SECRET = self.check_setting_str(
-            'General', 'encryption_secret', generateCookieSecret()
-        )
+        # decrypt settings
+        self.ENCRYPTION_VERSION = self.check_setting_int('General', 'encryption_version', 0)
+        self.ENCRYPTION_SECRET = self.check_setting_str('General', 'encryption_secret', generateCookieSecret())
+        self.CONFIG_OBJ.walk(self.decrypt, call_on_sections=True)
 
         self.DEBUG = sickrage.DEBUG or bool(self.check_setting_int('General', 'debug', 0))
         self.DEVELOPER = sickrage.DEVELOPER or bool(self.check_setting_int('General', 'developer', 0))
@@ -1508,12 +1500,11 @@ class srConfig(object):
 
         for providerID, providerObj in sickrage.srCore.providersDict.all().items():
             try:
-                providerSettings = pickle.loads(self.check_setting_str('PROVIDERS', providerID))
+                providerSettings = self.check_setting_str('Providers', providerID)
             except:
                 providerSettings = {}
 
-            providerObj.__dict__.update(
-                {k: providerSettings[k] for k in set(providerObj.__dict__) - set(['urls', 'cache']) if k in providerSettings})
+            providerObj.__dict__.update(providerSettings)
 
         # save config settings
         return self.save()
@@ -1521,21 +1512,21 @@ class srConfig(object):
     def save(self, general=False, search=False, notifications=False, postprocessing=False, providers=False,
              subtitles=False, anime=False):
 
-        new_config = ConfigObj(sickrage.CONFIG_FILE)
+        new_config = ConfigObj(sickrage.CONFIG_FILE, indent_type='  ')
 
         if general or not any([general, search, notifications, postprocessing, providers, subtitles, anime]):
             sickrage.srLogger.debug("Saving GENERAL settings to disk")
             new_config['General'] = {}
+            new_config['General']['config_version'] = self.CONFIG_VERSION
+            new_config['General']['encryption_version'] = int(self.ENCRYPTION_VERSION)
+            new_config['General']['encryption_secret'] = self.ENCRYPTION_SECRET
             new_config['General']['git_autoissues'] = int(self.GIT_AUTOISSUES)
             new_config['General']['git_username'] = self.GIT_USERNAME
-            new_config['General']['git_password'] = encrypt(self.GIT_PASSWORD, self.ENCRYPTION_VERSION)
+            new_config['General']['git_password'] = self.GIT_PASSWORD
             new_config['General']['git_reset'] = int(self.GIT_RESET)
             new_config['General']['git_remote'] = self.GIT_REMOTE
             new_config['General']['git_remote_url'] = self.GIT_REMOTE_URL
             new_config['General']['git_newver'] = int(self.GIT_NEWVER)
-            new_config['General']['config_version'] = self.CONFIG_VERSION
-            new_config['General']['encryption_version'] = int(self.ENCRYPTION_VERSION)
-            new_config['General']['encryption_secret'] = self.ENCRYPTION_SECRET
             new_config['General']['log_dir'] = os.path.abspath(
                 os.path.join(sickrage.DATA_DIR, self.LOG_DIR or 'Logs'))
             new_config['General']['log_nr'] = int(self.LOG_NR)
@@ -1547,7 +1538,7 @@ class srConfig(object):
             new_config['General']['web_log'] = int(self.WEB_LOG)
             new_config['General']['web_root'] = self.WEB_ROOT
             new_config['General']['web_username'] = self.WEB_USERNAME
-            new_config['General']['web_password'] = encrypt(self.WEB_PASSWORD, self.ENCRYPTION_VERSION)
+            new_config['General']['web_password'] = self.WEB_PASSWORD
             new_config['General']['web_cookie_secret'] = self.WEB_COOKIE_SECRET
             new_config['General']['web_use_gzip'] = int(self.WEB_USE_GZIP)
             new_config['General']['ssl_verify'] = int(self.SSL_VERIFY)
@@ -1681,11 +1672,11 @@ class srConfig(object):
             new_config['Newzbin'] = {}
             new_config['Newzbin']['newzbin'] = int(self.NEWZBIN)
             new_config['Newzbin']['newzbin_username'] = self.NEWZBIN_USERNAME
-            new_config['Newzbin']['newzbin_password'] = encrypt(self.NEWZBIN_PASSWORD, self.ENCRYPTION_VERSION)
+            new_config['Newzbin']['newzbin_password'] = self.NEWZBIN_PASSWORD
 
             new_config['SABnzbd'] = {}
             new_config['SABnzbd']['sab_username'] = self.SAB_USERNAME
-            new_config['SABnzbd']['sab_password'] = encrypt(self.SAB_PASSWORD, self.ENCRYPTION_VERSION)
+            new_config['SABnzbd']['sab_password'] = self.SAB_PASSWORD
             new_config['SABnzbd']['sab_apikey'] = self.SAB_APIKEY
             new_config['SABnzbd']['sab_category'] = self.SAB_CATEGORY
             new_config['SABnzbd']['sab_category_backlog'] = self.SAB_CATEGORY_BACKLOG
@@ -1696,8 +1687,7 @@ class srConfig(object):
 
             new_config['NZBget'] = {}
             new_config['NZBget']['nzbget_username'] = self.NZBGET_USERNAME
-            new_config['NZBget']['nzbget_password'] = encrypt(self.NZBGET_PASSWORD,
-                                                              self.ENCRYPTION_VERSION)
+            new_config['NZBget']['nzbget_password'] = self.NZBGET_PASSWORD
             new_config['NZBget']['nzbget_category'] = self.NZBGET_CATEGORY
             new_config['NZBget']['nzbget_category_backlog'] = self.NZBGET_CATEGORY_BACKLOG
             new_config['NZBget']['nzbget_category_anime'] = self.NZBGET_CATEGORY_ANIME
@@ -1708,7 +1698,7 @@ class srConfig(object):
 
             new_config['TORRENT'] = {}
             new_config['TORRENT']['torrent_username'] = self.TORRENT_USERNAME
-            new_config['TORRENT']['torrent_password'] = encrypt(self.TORRENT_PASSWORD, self.ENCRYPTION_VERSION)
+            new_config['TORRENT']['torrent_password'] = self.TORRENT_PASSWORD
             new_config['TORRENT']['torrent_host'] = self.TORRENT_HOST
             new_config['TORRENT']['torrent_path'] = self.TORRENT_PATH
             new_config['TORRENT']['torrent_seed_time'] = int(self.TORRENT_SEED_TIME)
@@ -1733,7 +1723,7 @@ class srConfig(object):
             new_config['KODI']['kodi_update_onlyfirst'] = int(self.KODI_UPDATE_ONLYFIRST)
             new_config['KODI']['kodi_host'] = self.KODI_HOST
             new_config['KODI']['kodi_username'] = self.KODI_USERNAME
-            new_config['KODI']['kodi_password'] = encrypt(self.KODI_PASSWORD, self.ENCRYPTION_VERSION)
+            new_config['KODI']['kodi_password'] = self.KODI_PASSWORD
 
             new_config['Plex'] = {}
             new_config['Plex']['use_plex'] = int(self.USE_PLEX)
@@ -1745,7 +1735,7 @@ class srConfig(object):
             new_config['Plex']['plex_server_token'] = self.PLEX_SERVER_TOKEN
             new_config['Plex']['plex_host'] = self.PLEX_HOST
             new_config['Plex']['plex_username'] = self.PLEX_USERNAME
-            new_config['Plex']['plex_password'] = encrypt(self.PLEX_PASSWORD, self.ENCRYPTION_VERSION)
+            new_config['Plex']['plex_password'] = self.PLEX_PASSWORD
 
             new_config['Emby'] = {}
             new_config['Emby']['use_emby'] = int(self.USE_EMBY)
@@ -1758,8 +1748,7 @@ class srConfig(object):
             new_config['Growl']['growl_notify_ondownload'] = int(self.GROWL_NOTIFY_ONDOWNLOAD)
             new_config['Growl']['growl_notify_onsubtitledownload'] = int(self.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD)
             new_config['Growl']['growl_host'] = self.GROWL_HOST
-            new_config['Growl']['growl_password'] = encrypt(self.GROWL_PASSWORD,
-                                                            self.ENCRYPTION_VERSION)
+            new_config['Growl']['growl_password'] = self.GROWL_PASSWORD
 
             new_config['FreeMobile'] = {}
             new_config['FreeMobile']['use_freemobile'] = int(self.USE_FREEMOBILE)
@@ -1785,8 +1774,7 @@ class srConfig(object):
             new_config['Twitter']['twitter_notify_onsubtitledownload'] = int(
                 self.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD)
             new_config['Twitter']['twitter_username'] = self.TWITTER_USERNAME
-            new_config['Twitter']['twitter_password'] = encrypt(self.TWITTER_PASSWORD,
-                                                                self.ENCRYPTION_VERSION)
+            new_config['Twitter']['twitter_password'] = self.TWITTER_PASSWORD
             new_config['Twitter']['twitter_prefix'] = self.TWITTER_PREFIX
             new_config['Twitter']['twitter_dmto'] = self.TWITTER_DMTO
             new_config['Twitter']['twitter_usedm'] = int(self.TWITTER_USEDM)
@@ -1913,7 +1901,7 @@ class srConfig(object):
             new_config['Email']['email_port'] = int(self.EMAIL_PORT)
             new_config['Email']['email_tls'] = int(self.EMAIL_TLS)
             new_config['Email']['email_user'] = self.EMAIL_USER
-            new_config['Email']['email_password'] = encrypt(self.EMAIL_PASSWORD, self.ENCRYPTION_VERSION)
+            new_config['Email']['email_password'] = self.EMAIL_PASSWORD
             new_config['Email']['email_from'] = self.EMAIL_FROM
             new_config['Email']['email_list'] = self.EMAIL_LIST
 
@@ -1934,20 +1922,11 @@ class srConfig(object):
             new_config['Subtitles']['subtitles_multi'] = int(self.SUBTITLES_MULTI)
             new_config['Subtitles']['subtitles_extra_scripts'] = '|'.join(self.SUBTITLES_EXTRA_SCRIPTS)
             new_config['Subtitles']['addic7ed_username'] = self.ADDIC7ED_USER
-            new_config['Subtitles']['addic7ed_password'] = encrypt(
-                self.ADDIC7ED_PASS,
-                self.ENCRYPTION_VERSION
-            )
+            new_config['Subtitles']['addic7ed_password'] = self.ADDIC7ED_PASS
             new_config['Subtitles']['legendastv_username'] = self.LEGENDASTV_USER
-            new_config['Subtitles']['legendastv_password'] = encrypt(
-                self.LEGENDASTV_PASS,
-                self.ENCRYPTION_VERSION
-            )
+            new_config['Subtitles']['legendastv_password'] = self.LEGENDASTV_PASS
             new_config['Subtitles']['opensubtitles_username'] = self.OPENSUBTITLES_USER
-            new_config['Subtitles']['opensubtitles_password'] = encrypt(
-                self.OPENSUBTITLES_PASS,
-                self.ENCRYPTION_VERSION
-            )
+            new_config['Subtitles']['opensubtitles_password'] = self.OPENSUBTITLES_PASS
 
         if postprocessing or not any([general, search, notifications, postprocessing, providers, subtitles, anime]):
             sickrage.srLogger.debug("Saving POSTPROCESSING settings to disk")
@@ -1960,7 +1939,7 @@ class srConfig(object):
             new_config['ANIDB'] = {}
             new_config['ANIDB']['use_anidb'] = int(self.USE_ANIDB)
             new_config['ANIDB']['anidb_username'] = self.ANIDB_USERNAME
-            new_config['ANIDB']['anidb_password'] = encrypt(self.ANIDB_PASSWORD, self.ENCRYPTION_VERSION)
+            new_config['ANIDB']['anidb_password'] = self.ANIDB_PASSWORD
             new_config['ANIDB']['anidb_use_mylist'] = int(self.ANIDB_USE_MYLIST)
 
             new_config['ANIME'] = {}
@@ -1971,11 +1950,53 @@ class srConfig(object):
 
             new_config['PROVIDERS'] = {}
             new_config['PROVIDERS']['providers_order'] = sickrage.srCore.providersDict.provider_order
-            for providerID, providerObj in sickrage.srCore.providersDict.all().items():
-                new_config['PROVIDERS'][providerID] = pickle.dumps(providerObj.__dict__)
 
+            settings = ['confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio', 'minseed',
+                        'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily', 'enable_backlog',
+                        'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password', 'passkey', 'pin']
+
+            for providerID, providerObj in sickrage.srCore.providersDict.all().items():
+                new_config['PROVIDERS'][providerID] = {x: providerObj.__dict__[x] for x in settings if
+                                                       x in providerObj.__dict__}
+
+        # encrypt settings
+        new_config.walk(self.encrypt, call_on_sections=True)
         new_config.write()
+
         return new_config
+
+    def encrypt(self, section, key, _decrypt=False):
+        """
+        :rtype: basestring
+        """
+
+        if key in ['config_version', 'encryption_version', 'encryption_secret']:
+            return
+
+        data = section[key]
+        if isinstance(data, (tuple, list, dict)):
+            return
+
+        if self.ENCRYPTION_VERSION == 1:
+            unique_key1 = hex(uuid.getnode() ** 2)
+
+            if _decrypt:
+                section[key] = ''.join(
+                    chr(ord(x) ^ ord(y)) for (x, y) in izip(base64.decodestring(data), cycle(unique_key1)))
+            else:
+                section[key] = base64.encodestring(
+                    ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(str(data), cycle(unique_key1)))).strip()
+        elif self.ENCRYPTION_VERSION == 2:
+            if _decrypt:
+                section[key] = ''.join(chr(ord(x) ^ ord(y)) for (x, y) in
+                                       izip(base64.decodestring(data), cycle(sickrage.srConfig.ENCRYPTION_SECRET)))
+            else:
+                section[key] = base64.encodestring(
+                    ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(str(data), cycle(
+                        sickrage.srConfig.ENCRYPTION_SECRET)))).strip()
+
+    def decrypt(self, section, key):
+        return self.encrypt(section, key, _decrypt=True)
 
 
 class ConfigMigrator(srConfig):

@@ -24,7 +24,6 @@ import uuid
 import zipfile
 from _socket import timeout as SocketTimeout
 from contextlib import closing, contextmanager
-from itertools import cycle, izip
 
 import requests
 import six
@@ -1035,40 +1034,6 @@ def anon_url(*url):
         url = 'http://' + url
 
     return '{}{}'.format(sickrage.srConfig.ANON_REDIRECT, url)
-
-
-unique_key1 = hex(uuid.getnode() ** 2)  # Used in encryption v1
-
-
-def encrypt(data, encryption_version=0, _decrypt=False):
-    # Version 1: Simple XOR encryption (this is not very secure, but works)
-    """
-
-    :rtype: basestring
-    """
-    if encryption_version == 1:
-        if _decrypt:
-            return ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(base64.decodestring(data), cycle(unique_key1)))
-        else:
-            return base64.encodestring(
-                ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(unique_key1)))).strip()
-    # Version 2: Simple XOR encryption (this is not very secure, but works)
-    elif encryption_version == 2:
-        if _decrypt:
-            return ''.join(chr(ord(x) ^ ord(y)) for (x, y) in
-                           izip(base64.decodestring(data), cycle(sickrage.srConfig.ENCRYPTION_SECRET)))
-        else:
-            return base64.encodestring(
-                ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(data, cycle(
-                    sickrage.srConfig.ENCRYPTION_SECRET)))).strip()
-    # Version 0: Plain text
-    else:
-        return data
-
-
-def decrypt(data, encryption_version=0):
-    return encrypt(data, encryption_version, _decrypt=True)
-
 
 def full_sanitizeSceneName(name):
     return re.sub('[. -]', ' ', sanitizeSceneName(name)).lower().lstrip()

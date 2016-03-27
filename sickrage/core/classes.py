@@ -110,7 +110,6 @@ class NZBSearchResult(SearchResult):
     def __init__(self, episodes):
         super(NZBSearchResult, self).__init__(episodes)
         self.resultType = "nzb"
-        self.provider = self
 
 
 class NZBDataSearchResult(SearchResult):

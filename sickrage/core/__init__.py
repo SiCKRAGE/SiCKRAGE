@@ -35,7 +35,7 @@ from sickrage.core.caches.name_cache import srNameCache
 from sickrage.core.classes import AttrDict
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.databases import main_db, cache_db, failed_db
-from sickrage.core.helpers import encrypt, findCertainShow, \
+from sickrage.core.helpers import findCertainShow, \
     generateCookieSecret, makeDir, removetree, restoreDB, get_lan_ip, get_temp_dir
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
