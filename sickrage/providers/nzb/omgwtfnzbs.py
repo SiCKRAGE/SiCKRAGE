@@ -33,13 +33,16 @@ from sickrage.providers import NZBProvider
 
 class OmgwtfnzbsProvider(NZBProvider):
     def __init__(self):
-        super(OmgwtfnzbsProvider, self).__init__("omgwtfnzbs")
+        super(OmgwtfnzbsProvider, self).__init__("omgwtfnzbs", 'omgwtfnzbs.org')
 
         self.username = None
         self.api_key = None
         self.cache = OmgwtfnzbsCache(self)
 
-        self.url = 'omgwtfnzbs.org'
+        self.urls.update({
+            'search': 'api.{base_url}/json/?%s'.format(base_url=self.urls['base_url']),
+            'rss': 'rss.{base_url}/rss-download.php?%s'.format(base_url=self.urls['base_url'])
+        })
 
         self.supportsBacklog = True
 
@@ -107,7 +110,7 @@ class OmgwtfnzbsProvider(NZBProvider):
         if retention or not params['retention']:
             params['retention'] = retention
 
-        searchURL = 'https://api.omgwtfnzbs.org/json/?' + urllib.urlencode(params)
+        searchURL = self.urls['search'] % urllib.urlencode(params)
         sickrage.srLogger.debug("Search string: %s" % params)
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
@@ -178,7 +181,7 @@ class OmgwtfnzbsCache(TVCache):
                   'eng': 1,
                   'catid': '19,20'}  # SD,HD
 
-        rss_url = 'https://rss.omgwtfnzbs.org/rss-download.php?' + urllib.urlencode(params)
+        rss_url = self.provider.urls['rss'] % urllib.urlencode(params)
 
         sickrage.srLogger.debug("Cache update URL: %s" % rss_url)
 

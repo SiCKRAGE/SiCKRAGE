@@ -28,6 +28,7 @@ import re
 import time
 import urllib
 from base64 import b16encode, b32decode
+from collections import OrderedDict
 
 import bencode
 import requests
@@ -44,7 +45,7 @@ from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT
 from sickrage.core.databases import main_db
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import chmodAsParent, download_file, \
-    findCertainShow, getURL, readFileBuffered, remove_file_failed, \
+    findCertainShow, getURL, remove_file_failed, \
     sanitizeFileName, sanitizeSceneName
 from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -53,26 +54,9 @@ from sickrage.core.scene_exceptions import get_scene_exceptions
 
 
 class GenericProvider(object):
-    NZB = 'nzb'
-    TORRENT = 'torrent'
-    NEWZNAB = 'newznab'
-    TORRENTRSS = 'torrentrss'
-
-    types = {
-        'all': [NZB, NEWZNAB, TORRENT, TORRENTRSS],
-        NZB: [NZB, NEWZNAB],
-        TORRENT: [TORRENT, TORRENTRSS]
-    }
-
-    type = None
-
-    def __init__(self, name):
-        # these need to be set in the subclass
+    def __init__(self, name, url):
         self.name = name
-
-        self.url = ""
-        self.urls = {'base_url': re.sub(r'/$', '', self.url)}
-
+        self.urls = {'base_url': url}
         self.show = None
         self.supportsBacklog = False
         self.supportsAbsoluteNumbering = False
@@ -100,7 +84,7 @@ class GenericProvider(object):
 
     @property
     def id(self):
-        return self._makeID()
+        return str(re.sub(r"[^\w\d_]", "_", self.name.strip().lower()))
 
     @property
     def isEnabled(self):
@@ -108,12 +92,7 @@ class GenericProvider(object):
 
     @property
     def imageName(self):
-        if os.path.isfile(os.path.join(sickrage.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
-            return self.id + '.png'
-        return self.type + '.png'
-
-    def _makeID(self):
-        return str(re.sub(r"[^\w\d_]", "_", self.name.strip().lower()))
+        return ""
 
     def _checkAuth(self):
         return True
@@ -134,7 +113,7 @@ class GenericProvider(object):
         Returns a result of the correct type for this provider
         """
         try:
-            result = {'nzb': NZBSearchResult, 'torrent': TorrentSearchResult}[self.type](episodes)
+            result = {'nzb': NZBSearchResult, 'torrent': TorrentSearchResult}[getattr(self, 'type')](episodes)
         except:
             result = SearchResult(episodes)
 
@@ -147,10 +126,11 @@ class GenericProvider(object):
         for providers with special URL requirements (like cookies)
         """
 
-        return getURL(url, post_data=post_data, params=params, headers=self.headers, timeout=timeout,
+        return getURL(url.format(base_url=self.urls['base_url']), post_data=post_data, params=params,
+                      headers=self.headers, timeout=timeout,
                       session=self.session, json=json, needBytes=needBytes)
 
-    def _makeURL(self, result):
+    def make_url(self, result):
         urls = []
         filename = ''
         if result.url.startswith('magnet'):
@@ -177,14 +157,6 @@ class GenericProvider(object):
         else:
             urls = [result.url]
 
-        if self.type == self.TORRENT:
-            filename = os.path.join(sickrage.srConfig.TORRENT_DIR,
-                                    sanitizeFileName(result.name) + '.' + self.type)
-
-        elif self.type == self.NZB:
-            filename = os.path.join(sickrage.srConfig.NZB_DIR,
-                                    sanitizeFileName(result.name) + '.' + self.type)
-
         return urls, filename
 
     def downloadResult(self, result):
@@ -196,7 +168,7 @@ class GenericProvider(object):
         if not self._doLogin:
             return False
 
-        urls, filename = self._makeURL(result)
+        urls, filename = self.make_url(result)
 
         for url in urls:
             if 'NO_DOWNLOAD_NAME' in url:
@@ -208,8 +180,8 @@ class GenericProvider(object):
             sickrage.srLogger.info("Downloading a result from " + self.name + " at " + url)
 
             # Support for Jackett/TorzNab
-            if url.endswith(GenericProvider.TORRENT) and filename.endswith(GenericProvider.NZB):
-                filename = filename.rsplit('.', 1)[0] + '.' + GenericProvider.TORRENT
+            if url.endswith('torrent') and filename.endswith('nzb'):
+                filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
 
             if download_file(url, filename, session=self.session, headers=self.headers):
                 if self._verify_download(filename):
@@ -230,14 +202,11 @@ class GenericProvider(object):
         """
 
         # primitive verification of torrents, just make sure we didn't get a text file or something
-        if file_name.endswith(GenericProvider.TORRENT):
+        if file_name.endswith('torrent'):
             try:
-                for byte in readFileBuffered(file_name):
-                    mime_type = guessParser(StringInputStream(byte))._getMimeType()
+                with open(file_name, 'rb') as file:
+                    mime_type = guessParser(StringInputStream(file.read()))._getMimeType()
                     if mime_type == 'application/x-bittorrent':
-                        # clean up
-                        del mime_type
-
                         return True
             except Exception as e:
                 sickrage.srLogger.debug("Failed to validate torrent file: {}".format(e.message))
@@ -444,8 +413,6 @@ class GenericProvider(object):
             # add parsed result to cache for usage later on
             if addCacheEntry:
                 sickrage.srLogger.debug("Adding item from search to cache: " + title)
-                # pylint: disable=W0212
-                # Access to a protected member of a client class
                 ci = self.cache._addCacheEntry(title, url, parse_result=parse_result)
                 if ci is not None:
                     cl.append(ci)
@@ -523,7 +490,7 @@ class GenericProvider(object):
 
     @classmethod
     def getDefaultProviders(cls):
-        return ''
+        pass
 
     @classmethod
     def getProvider(cls, name):
@@ -539,8 +506,8 @@ class GenericProvider(object):
 
     @classmethod
     def getProviders(cls):
-        modules = []
-        for type in GenericProvider.types:
+        modules = [TorrentProvider.type, NZBProvider.type]
+        for type in []:
             modules += cls.loadProviders(type)
         return modules
 
@@ -566,14 +533,20 @@ class GenericProvider(object):
 
 
 class TorrentProvider(GenericProvider):
-    type = GenericProvider.TORRENT
+    type = 'torrent'
 
-    def __init__(self, name):
-        super(TorrentProvider, self).__init__(name)
+    def __init__(self, name, url):
+        super(TorrentProvider, self).__init__(name, url)
 
     @property
     def isActive(self):
         return sickrage.srConfig.USE_TORRENTS and self.isEnabled
+
+    @property
+    def imageName(self):
+        if os.path.isfile(os.path.join(sickrage.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
+            return self.id + '.png'
+        return self.type + '.png'
 
     def _get_title_and_url(self, item):
         title = None
@@ -658,6 +631,13 @@ class TorrentProvider(GenericProvider):
     def _clean_title_from_provider(title):
         return (title or '').replace(' ', '.')
 
+    def make_url(self, result):
+        urls, filename = super(TorrentProvider, self).make_url(result)
+        filename = os.path.join(sickrage.srConfig.TORRENT_DIR,
+                                sanitizeFileName(result.name) + '.' + self.type)
+
+        return urls, filename
+
     def findPropers(self, search_date=datetime.datetime.today()):
 
         results = []
@@ -685,18 +665,26 @@ class TorrentProvider(GenericProvider):
 
     @classmethod
     def getProviders(cls):
-        return super(TorrentProvider, cls).loadProviders(GenericProvider.TORRENT)
+        return super(TorrentProvider, cls).loadProviders(cls.type)
 
 
 class NZBProvider(GenericProvider):
-    type = GenericProvider.NZB
+    type = 'nzb'
 
-    def __init__(self, name):
-        super(NZBProvider, self).__init__(name)
+    def __init__(self, name, url):
+        super(NZBProvider, self).__init__(name, url)
+        self.api_key = None
+        self.username = None
 
     @property
     def isActive(self):
         return sickrage.srConfig.USE_NZBS and self.isEnabled
+
+    @property
+    def imageName(self):
+        if os.path.isfile(os.path.join(sickrage.srConfig.GUI_DIR, 'images', 'providers', self.id + '.png')):
+            return self.id + '.png'
+        return self.type + '.png'
 
     def _get_size(self, item):
         try:
@@ -709,13 +697,19 @@ class NZBProvider(GenericProvider):
 
         return int(size)
 
+    def make_url(self, result):
+        urls, filename = super(NZBProvider, self).make_url(result)
+        filename = os.path.join(sickrage.srConfig.NZB_DIR,
+                                sanitizeFileName(result.name) + '.' + self.type)
+        return urls, filename
+
     @classmethod
     def getProviders(cls):
-        return super(NZBProvider, cls).loadProviders(GenericProvider.NZB)
+        return super(NZBProvider, cls).loadProviders(cls.type)
 
 
 class TorrentRssProvider(TorrentProvider):
-    type = GenericProvider.TORRENT
+    type = 'torrentrss'
 
     def __init__(self,
                  name,
@@ -727,13 +721,9 @@ class TorrentRssProvider(TorrentProvider):
                  enable_daily=False,
                  enable_backlog=False,
                  default=False):
-        super(TorrentRssProvider, self).__init__(name)
+        super(TorrentRssProvider, self).__init__(name, url)
 
         self.cache = TorrentRssCache(self)
-
-        self.url = url
-        self.urls = {'base_url': re.sub(r'/$', '', self.url)}
-
         self.ratio = None
         self.supportsBacklog = False
 
@@ -781,7 +771,7 @@ class TorrentRssProvider(TorrentProvider):
             # Access to a protected member of a client class
             data = self.cache._getRSSData()['entries']
             if not data:
-                return False, 'No items found in the RSS feed ' + self.url
+                return False, 'No items found in the RSS feed ' + self.urls['base_url']
 
             (title, url) = self._get_title_and_url(data[0])
 
@@ -838,7 +828,7 @@ class TorrentRssProvider(TorrentProvider):
 
 
 class NewznabProvider(NZBProvider):
-    type = GenericProvider.NZB
+    type = 'newznab'
 
     def __init__(self,
                  name,
@@ -850,10 +840,7 @@ class NewznabProvider(NZBProvider):
                  enable_daily=False,
                  enable_backlog=False,
                  default=False):
-        super(NewznabProvider, self).__init__(name)
-
-        self.url = url
-        self.urls = {'base_url': re.sub(r'/$', '', self.url)}
+        super(NewznabProvider, self).__init__(name, url)
 
         self.cache = NewznabCache(self)
         self.search_mode = search_mode
@@ -887,7 +874,7 @@ class NewznabProvider(NZBProvider):
             params['apikey'] = self.key
 
         try:
-            data = xmltodict.parse(getURL("{}api?{}".format(self.url, urllib.urlencode(params))))
+            data = xmltodict.parse(getURL("{}api?{}".format(self.urls['base_url'], urllib.urlencode(params))))
             for category in data["caps"]["categories"]["category"]:
                 if category.get('@name') == 'TV':
                     categories += [{"id": category['@id'], "name": category['@name']}]
@@ -1169,3 +1156,82 @@ class NewznabCache(TVCache):
 
         sickrage.srLogger.debug("Attempting to add item from RSS to cache: %s" % title)
         return self._addCacheEntry(title, url, indexer_id=tvrageid)
+
+class providersDict(dict):
+    def __init__(self):
+        super(providersDict, self).__init__()
+
+        self.filename = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'providers.db'))
+
+        self[NZBProvider.type] = {p.id: p for p in NZBProvider.getProviders()}
+        self[TorrentProvider.type] = {p.id: p for p in TorrentProvider.getProviders()}
+        self[NewznabProvider.type] = {p.id: p for p in NewznabProvider.getProviders()}
+        self[TorrentRssProvider.type] = {p.id: p for p in TorrentRssProvider.getProviders()}
+
+        self.provider_order = []
+        self.sort()
+
+    def sync(self):
+        remove = []
+
+        # find
+        for p in self.provider_order:
+            if p not in self.all():
+                remove.append(p)
+
+        # remove
+        for r in remove:
+            self.provider_order.pop(self.provider_order.index(r))
+
+    def sort(self, key=None, randomize=False):
+        sorted_providers = []
+
+        if not key:
+            key = self.provider_order or [x.id for x in self.all().values()]
+
+        if randomize:
+            random.shuffle(key)
+
+        for p in [self.all()[x] for x in key]:
+            (lambda: sorted_providers.append(p), lambda: sorted_providers.insert(0, p))[p.isEnabled]()
+
+        self.provider_order = [x.id for x in sorted_providers]
+        return OrderedDict([(x.id, x) for x in sorted_providers])
+
+    def enabled(self):
+        return {pID: pObj for pID, pObj in self.all().items() if pObj.isEnabled}
+
+    def disabled(self):
+        return {pID: pObj for pID, pObj in self.all().items() if not pObj.isEnabled}
+
+    def all(self):
+        return reduce(lambda a, b: a.update(b) or a, [
+            self.nzb(),
+            self.torrent(),
+            self.newznab(),
+            self.torrentrss()
+        ], {})
+
+    def all_nzb(self):
+        return reduce(lambda a, b: a.update(b) or a, [
+            self.nzb(),
+            self.newznab()
+        ], {})
+
+    def all_torrent(self):
+        return reduce(lambda a, b: a.update(b) or a, [
+            self.torrent(),
+            self.torrentrss()
+        ], {})
+
+    def nzb(self):
+        return self[NZBProvider.type]
+
+    def newznab(self):
+        return self[NewznabProvider.type]
+
+    def torrent(self):
+        return self[TorrentProvider.type]
+
+    def torrentrss(self):
+        return self[TorrentRssProvider.type]

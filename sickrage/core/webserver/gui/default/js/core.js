@@ -256,22 +256,19 @@ jQuery(document).ready(function ($) {
                     var target = $(this).attr('href');
                     var showname = document.getElementById("showtitle").getAttribute('data-showname');
                     $.confirm({
-                        'title': 'Remove Show',
-                        'message': 'Are you sure you want to remove <span class="footerhighlight">' + showname + '</span> from the database ?<br><br><input type="checkbox" id="deleteFiles"> <span class="red-text">Check to delete files as well. IRREVERSIBLE</span></input>',
-                        'buttons': {
-                            'Yes': {
-                                'class': 'green',
-                                'action': function () {
-                                    location.href = target + (document.getElementById('deleteFiles').checked ? '&full=1' : '');
-                                    // If checkbox is ticked, remove show and delete files. Else just remove show.
-                                }
-                            },
-                            'No': {
-                                'class': 'red',
-                                'action': function () {
-                                }	// Nothing to do in this case. You can as well omit the action property.
-                            }
-                        }
+                        title: 'Remove Show',
+                        text: 'Are you sure you want to remove <span class="footerhighlight">' + showname + '</span> from the database ?<br><br><input type="checkbox" id="deleteFiles"> <span class="red-text">Check to delete files as well. IRREVERSIBLE</span></input>',
+                        confirmButton: 'Yes',
+                        cancelButton: 'No',
+                        confirmButtonClass: "btn-warning",
+                        cancelButtonClass: "btn-default",
+                        dialogClass: "modal-dialog",
+                        confirm: function (button) {
+                            location.href = target + (document.getElementById('deleteFiles').checked ? '&full=1' : '');
+                            // If checkbox is ticked, remove show and delete files. Else just remove show.
+                        },
+                        cancel: function (button) {
+                        }	// Nothing to do in this case. You can as well omit the action property.
                     });
                 });
 
@@ -1531,6 +1528,7 @@ jQuery(document).ready(function ($) {
 
         home: {
             init: function () {
+                SICKRAGE.home.add_show_options();
                 SICKRAGE.root_dirs.init();
             },
 
@@ -2430,6 +2428,7 @@ jQuery(document).ready(function ($) {
                                 return true;
                             }
 
+                            SICKRAGE.home.add_show_options();
                             SICKRAGE.root_dirs.init();
                             SICKRAGE.quality_chooser.init();
 
@@ -2807,8 +2806,6 @@ jQuery(document).ready(function ($) {
                         }, 2000);
                     }
                 });
-
-                //SICKRAGE.config.providers.init();
             },
 
             general: function () {

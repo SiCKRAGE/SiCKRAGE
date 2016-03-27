@@ -30,6 +30,7 @@ from sickrage.core.databases import main_db
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantRemoveShowException, CantUpdateShowException, EpisodeDeletedException, \
     MultipleShowObjectsException, ShowDirectoryNotFoundException
+from sickrage.core.helpers import scrub
 from sickrage.core.queues import GenericQueue, QueueItem, QueuePriorities
 from sickrage.core.scene_numbering import xem_refresh, get_xem_numbering_for_show
 from sickrage.core.trakt import TraktAPI
@@ -96,20 +97,19 @@ class srShowQueue(GenericQueue):
 
         if self.isBeingAdded(show):
             raise CantUpdateShowException(
-                str(show.name) + " is still being added, wait until it is finished before you update.")
+                str(show.name) + " is still being added, please wait until it is finished before trying to update.")
 
         if self.isBeingUpdated(show):
             raise CantUpdateShowException(
-                str(
-                    show.name) + " is already being updated by Post-processor or manually started, can't update again until it's done.")
+                str(show.name) + " is already being updated, can't update again until it's done.")
 
         if self.isInUpdateQueue(show):
             raise CantUpdateShowException(
-                str(
-                    show.name) + " is in process of being updated by Post-processor or manually started, can't update again until it's done.")
+                str(show.name) + " is in the process of being updated, can't update again until it's done.")
 
         if force:
             return self.add_item(QueueItemForceUpdate(show))
+
         return self.add_item(QueueItemUpdate(show))
 
     def refreshShow(self, show, force=False):
@@ -278,7 +278,7 @@ class QueueItemAdd(ShowQueueItem):
             s = t[self.indexer_id]
 
             # this usually only happens if they have an NFO in their show dir which gave us a Indexer ID that has no proper english version of the show
-            if getattr(s, 'seriesname', None) is None:
+            if not getattr(s, 'seriesname'):
                 sickrage.srLogger.error(
                     "Show in {} has no name on {}, probably the wrong language used to search with".format(self.showDir,
                                                                                                            index_name))
@@ -288,7 +288,7 @@ class QueueItemAdd(ShowQueueItem):
                 return self._finishEarly()
 
             # if the show has no episodes/seasons
-            if not s:
+            if not len(s):
                 sickrage.srLogger.error("Show " + str(s['seriesname']) + " is on " + str(
                     srIndexerApi(self.indexer).name) + " but contains no season/episode data.")
                 notifications.error("Unable to add show",
@@ -456,12 +456,12 @@ class QueueItemAdd(ShowQueueItem):
 
         self.show.saveToDB()
 
-        sickrage.srCore.NAMECACHE.buildNameCache()
+        sickrage.srCore.NAMECACHE.buildNameCache(self.show)
 
         sickrage.srLogger.info("Finished adding show {}".format(self.showDir))
 
     def _finishEarly(self):
-        if self.show is not None:
+        if self.show:
             sickrage.srCore.SHOWQUEUE.removeShow(self.show)
 
 
@@ -608,16 +608,10 @@ class QueueItemUpdate(ShowQueueItem):
             # for each ep we found on the Indexer delete it from the DB list
             sql_l = []
             for curSeason in IndexerEpList:
-                for curEpisode in IndexerEpList[curSeason]:
+                for curEpisode in set(IndexerEpList[curSeason]).difference(DBEpList.get(curSeason, {})):
                     sql_q = self.show.getEpisode(curSeason, curEpisode).saveToDB(False)
                     if sql_q:
                         sql_l.append(sql_q)
-                        del sql_q  # cleanup
-
-                    try:
-                        del DBEpList[curSeason][curEpisode]
-                    except:
-                        pass
 
             if len(sql_l) > 0:
                 main_db.MainDB().mass_upsert(sql_l)
@@ -625,7 +619,7 @@ class QueueItemUpdate(ShowQueueItem):
 
             # remaining episodes in the DB list are not on the indexer, just delete them from the DB
             for curSeason in DBEpList:
-                for curEpisode in DBEpList[curSeason]:
+                for curEpisode in set(DBEpList[curSeason]).difference(IndexerEpList.get(curSeason, {})):
                     sickrage.srLogger.info("Permanently deleting episode " + str(curSeason) + "x" + str(
                         curEpisode) + " from the database")
 
@@ -635,8 +629,8 @@ class QueueItemUpdate(ShowQueueItem):
                         pass
 
         # cleanup
-        del DBEpList
-        del IndexerEpList
+        scrub(DBEpList)
+        scrub(IndexerEpList)
 
         sickrage.srLogger.info("Finished updates for show: {}".format(self.show.name))
 

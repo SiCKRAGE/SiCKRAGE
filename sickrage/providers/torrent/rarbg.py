@@ -36,7 +36,7 @@ class GetOutOfLoop(Exception):
 
 class RarbgProvider(TorrentProvider):
     def __init__(self):
-        super(RarbgProvider, self).__init__("Rarbg")
+        super(RarbgProvider, self).__init__("Rarbg",'torrentapi.org')
 
         self.supportsBacklog = True
 
@@ -48,13 +48,12 @@ class RarbgProvider(TorrentProvider):
         self.token = None
         self.tokenExpireDate = None
 
-        self.url = 'torrentapi.org'
         self.urls.update({
-            'token': '{base_url}/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage',
-            'listing': '{base_url}/pubapi_v2.php?mode=list&app_id=sickrage',
-            'search': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_string={search_string}',
-            'search_tvdb': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb={tvdb}&search_string={search_string}',
-            'api_spec': '{base_url}/apidocs_v2.txt'
+            'token': '{base_url}/pubapi_v2.php?get_token=get_token&format=json&app_id=sickrage'.format(base_url=self.urls['base_url']),
+            'listing': '{base_url}/pubapi_v2.php?mode=list&app_id=sickrage'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_string=%s'.format(base_url=self.urls['base_url']),
+            'search_tvdb': '{base_url}/pubapi_v2.php?mode=search&app_id=sickrage&search_tvdb=%s&search_string=%s'.format(base_url=self.urls['base_url']),
+            'api_spec': '{base_url}/apidocs_v2.txt'.format(base_url=self.urls['base_url'])
         })
 
         self.urlOptions = {'categories': '&category={categories}',
@@ -82,7 +81,7 @@ class RarbgProvider(TorrentProvider):
 
         response = self.getURL(self.urls['token'], timeout=30, json=True)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         try:
@@ -122,16 +121,14 @@ class RarbgProvider(TorrentProvider):
                     searchURL = self.urls['listing'] + self.defaultOptions
                 elif mode == 'Season':
                     if ep_indexer == INDEXER_TVDB:
-                        searchURL = self.urls['search_tvdb'].format(search_string=search_string,
-                                                                    tvdb=ep_indexerid) + self.defaultOptions
+                        searchURL = self.urls['search_tvdb'] % (ep_indexerid, search_string) + self.defaultOptions
                     else:
-                        searchURL = self.urls['search'].format(search_string=search_string) + self.defaultOptions
+                        searchURL = self.urls['search'] % (search_string) + self.defaultOptions
                 elif mode == 'Episode':
                     if ep_indexer == INDEXER_TVDB:
-                        searchURL = self.urls['search_tvdb'].format(search_string=search_string,
-                                                                    tvdb=ep_indexerid) + self.defaultOptions
+                        searchURL = self.urls['search_tvdb'] % (ep_indexerid, search_string) + self.defaultOptions
                     else:
-                        searchURL = self.urls['search'].format(search_string=search_string) + self.defaultOptions
+                        searchURL = self.urls['search'] % (search_string) + self.defaultOptions
                 else:
                     sickrage.srLogger.error("Invalid search mode: %s " % mode)
 

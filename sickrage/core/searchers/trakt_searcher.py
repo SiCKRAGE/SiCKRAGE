@@ -22,7 +22,6 @@ from __future__ import unicode_literals
 import os
 import threading
 import traceback
-
 from datetime import date
 
 import sickrage
@@ -52,9 +51,6 @@ def setEpisodeToWanted(show, s, e):
             epObj.saveToDB()
 
         sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(show, [epObj]))
-
-        # cleanup
-        del epObj
 
         sickrage.srLogger.info(
                 "Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (

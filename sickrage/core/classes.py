@@ -20,14 +20,10 @@
 from __future__ import unicode_literals
 
 import datetime
-import os
-import random
 import re
 import sys
-from collections import OrderedDict
 
 from dateutil import parser
-from dill import dill
 
 import sickrage
 from sickrage.core.common import Quality, dateFormat, dateTimeFormat
@@ -305,111 +301,3 @@ class AttrDict(dict):
             del self[name]
         else:
             raise AttributeError("No such attribute: " + name)
-
-
-class providersDict(dict):
-    def __init__(self):
-        super(providersDict, self).__init__()
-
-        # provider settings database filename
-        self.filename = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'providers.db'))
-
-        # provider order
-        self.provider_order = []
-
-        # individual provider types
-        from sickrage.providers import \
-            GenericProvider, \
-            NZBProvider, \
-            TorrentProvider, \
-            NewznabProvider, \
-            TorrentRssProvider
-
-        self[GenericProvider.NZB] = {p.id: p for p in NZBProvider.getProviders()}
-        self[GenericProvider.TORRENT] = {p.id: p for p in TorrentProvider.getProviders()}
-        self[GenericProvider.NEWZNAB] = {p.id: p for p in NewznabProvider.getProviders()}
-        self[GenericProvider.TORRENTRSS] = {p.id: p for p in TorrentRssProvider.getProviders()}
-
-        # load providers from database file
-        self.load()
-
-    def sync(self):
-        remove = []
-
-        # find
-        for p in self.provider_order:
-            if p not in self.all():
-                remove.append(p)
-
-        # remove
-        for r in remove:
-            self.provider_order.pop(self.provider_order.index(r))
-
-    def sort(self, key=None, randomize=False):
-        sorted_providers = []
-
-        if not key:
-            key = self.provider_order or [x.id for x in self.all().values()]
-
-        if randomize:
-            random.shuffle(key)
-
-        for p in [self.all()[x] for x in key]:
-            (lambda: sorted_providers.append(p), lambda: sorted_providers.insert(0, p))[p.isEnabled]()
-
-        self.provider_order = [x.id for x in sorted_providers]
-        return OrderedDict([(x.id, x) for x in sorted_providers])
-
-    def enabled(self):
-        return {pID:pObj for pID, pObj in self.all().items() if pObj.isEnabled}
-
-    def disabled(self):
-        return {pID:pObj for pID, pObj in self.all().items() if not pObj.isEnabled}
-
-    def all(self):
-        return reduce(lambda a, b: a.update(b) or a, [
-            self.nzb(),
-            self.torrent(),
-            self.newznab(),
-            self.torrentrss()
-        ], {})
-
-    def all_nzb(self):
-        return reduce(lambda a, b: a.update(b) or a, [
-            self.nzb(),
-            self.newznab()
-        ], {})
-
-    def all_torrent(self):
-        return reduce(lambda a, b: a.update(b) or a, [
-            self.torrent(),
-            self.torrentrss()
-        ], {})
-
-    def nzb(self):
-        from sickrage.providers import GenericProvider
-        return self[GenericProvider.NZB]
-
-    def newznab(self):
-        from sickrage.providers import GenericProvider
-        return self[GenericProvider.NEWZNAB]
-
-    def torrent(self):
-        from sickrage.providers import GenericProvider
-        return self[GenericProvider.TORRENT]
-
-    def torrentrss(self):
-        from sickrage.providers import GenericProvider
-        return self[GenericProvider.TORRENTRSS]
-
-    def load(self):
-        try:
-            return self.update(dill.load(open(self.filename, 'rb')))
-        except:
-            dill.dump(self, open(self.filename, 'wb'))
-            return self.update(dill.load(open(self.filename, 'rb')))
-
-    def save(self):
-        self.filename = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'providers.db'))
-        self.sync()
-        dill.dump(self, open(self.filename, 'wb'))

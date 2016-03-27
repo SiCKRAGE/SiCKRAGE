@@ -27,7 +27,7 @@ from sickrage.providers import TorrentProvider
 
 class HDBitsProvider(TorrentProvider):
     def __init__(self):
-        super(HDBitsProvider, self).__init__("HDBits")
+        super(HDBitsProvider, self).__init__("HDBits",'hdbits.org')
 
         self.supportsBacklog = True
 
@@ -37,11 +37,10 @@ class HDBitsProvider(TorrentProvider):
 
         self.cache = HDBitsCache(self)
 
-        self.url = 'hdbits.org'
         self.urls.update({
-            'search': '{base_url}/api/torrents',
-            'rss': '{base_url}/api/torrents',
-            'download': '{base_url}/download.php?'
+            'search': '{base_url}/api/torrents'.format(base_url=self.urls['base_url']),
+            'rss': '{base_url}/api/torrents'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/download.php?'.format(base_url=self.urls['base_url'])
         })
 
     def _checkAuth(self):
@@ -56,7 +55,7 @@ class HDBitsProvider(TorrentProvider):
 
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
-                sickrage.srLogger.warning("Invalid username or password. Check your settings")
+                sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 

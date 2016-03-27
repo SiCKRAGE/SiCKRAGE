@@ -33,7 +33,7 @@ from sickrage.providers import TorrentProvider
 class SCCProvider(TorrentProvider):
     def __init__(self):
 
-        super(SCCProvider, self).__init__("SceneAccess")
+        super(SCCProvider, self).__init__("SceneAccess",'sceneaccess.eu')
 
         self.supportsBacklog = True
 
@@ -45,12 +45,11 @@ class SCCProvider(TorrentProvider):
 
         self.cache = SCCCache(self)
 
-        self.url = 'sceneaccess.eu'
         self.urls.update({
-            'login': '{base_url}/login',
-            'detail': '{base_url}/details?id=%s',
-            'search': '{base_url}/all?search=%s&method=1&%s',
-            'download': '{base_url}/%s'
+            'login': '{base_url}/login'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/details?id=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/all?search=%s&method=1&%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
         })
 
         self.categories = {'sponly': 'c26=26&c44=44&c45=45',
@@ -65,12 +64,12 @@ class SCCProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search(r'Username or password incorrect', response) \
                 or re.search(r'<title>SceneAccess \| Login</title>', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

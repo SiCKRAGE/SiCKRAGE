@@ -28,17 +28,17 @@ from sickrage.providers import TorrentProvider
 
 class TitansOfTVProvider(TorrentProvider):
     def __init__(self):
-        super(TitansOfTVProvider, self).__init__('TitansOfTV')
+        super(TitansOfTVProvider, self).__init__('TitansOfTV','titansof.tv')
         self.supportsBacklog = True
 
         self.supportsAbsoluteNumbering = True
         self.api_key = None
         self.ratio = None
         self.cache = TitansOfTVCache(self)
-        self.url = 'titansof.tv'
+
         self.urls.update({
-            'api': '{base_url}/api/torrents',
-            'download': '{base_url}/api/torrents/%s/download?apikey=%s'
+            'api': '{base_url}/api/torrents'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/api/torrents/%s/download?apikey=%s'.format(base_url=self.urls['base_url'])
         })
 
     def seedRatio(self):

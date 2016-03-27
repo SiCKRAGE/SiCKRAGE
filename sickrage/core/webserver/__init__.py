@@ -203,7 +203,7 @@ class srWebServer(object):
         self.io_loop.start()
 
     def shutdown(self):
-        self.server.stop()
         if self.started:
+            self.server.stop()
             self.io_loop.stop()
-        self.started = False
+            self.started = False

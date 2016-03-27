@@ -139,6 +139,10 @@ class DailySearchQueueItem(QueueItem):
     def run(self):
         QueueItem.run(self)
 
+        if not len(sickrage.srCore.providersDict.enabled()):
+            sickrage.srLogger.warning("No NZB/Torrent providers enabled. Please check your settings.")
+            return self.finish()
+
         try:
             sickrage.srLogger.info("Beginning daily search for new episodes")
             foundResults = searchForNeededEpisodes()
@@ -172,6 +176,10 @@ class ManualSearchQueueItem(QueueItem):
 
     def run(self):
         QueueItem.run(self)
+
+        if not len(sickrage.srCore.providersDict.enabled()):
+            sickrage.srLogger.warning("No NZB/Torrent providers enabled. Please check your settings.")
+            return self.finish()
 
         try:
             sickrage.srLogger.info("Beginning manual search for: [" + self.segment.prettyName() + "]")
@@ -214,6 +222,10 @@ class BacklogQueueItem(QueueItem):
     def run(self):
         QueueItem.run(self)
 
+        if not len(sickrage.srCore.providersDict.enabled()):
+            sickrage.srLogger.warning("No NZB/Torrent providers enabled. Please check your settings.")
+            return self.finish()
+
         if not self.show.paused:
             try:
                 sickrage.srLogger.info("Beginning backlog search for: [" + self.show.name + "]")
@@ -245,6 +257,11 @@ class FailedQueueItem(QueueItem):
 
     def run(self):
         QueueItem.run(self)
+
+        if not len(sickrage.srCore.providersDict.enabled()):
+            sickrage.srLogger.warning("No NZB/Torrent providers enabled. Please check your settings.")
+            return self.finish()
+
         self.started = True
 
         try:
@@ -274,9 +291,6 @@ class FailedQueueItem(QueueItem):
 
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
-            else:
-                pass
-                # LOGGER.info(u"No valid episode found to retry for: [" + self.segment.prettyName() + "]")
         except Exception:
             sickrage.srLogger.debug(traceback.format_exc())
 

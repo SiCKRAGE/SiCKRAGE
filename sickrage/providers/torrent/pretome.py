@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class PretomeProvider(TorrentProvider):
     def __init__(self):
-        super(PretomeProvider, self).__init__("Pretome")
+        super(PretomeProvider, self).__init__("Pretome",'pretome.info')
 
         self.supportsBacklog = True
 
@@ -41,12 +41,11 @@ class PretomeProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.url = 'pretome.info'
         self.urls.update({
-            'login': '{base_url}/takelogin.php',
-            'detail': '{base_url}/details.php?id=%s',
-            'search': '{base_url}/browse.php?search=%s%s',
-            'download': '{base_url}/download.php/%s/%s.torrent'
+            'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse.php?search=%s%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/download.php/%s/%s.torrent'.format(base_url=self.urls['base_url'])
         })
 
         self.categories = "&st=1&cat%5B%5D=7"
@@ -70,11 +69,11 @@ class PretomeProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

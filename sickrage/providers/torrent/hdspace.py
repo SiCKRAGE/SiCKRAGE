@@ -33,7 +33,7 @@ from sickrage.providers import TorrentProvider
 
 class HDSpaceProvider(TorrentProvider):
     def __init__(self):
-        super(HDSpaceProvider, self).__init__("HDSpace")
+        super(HDSpaceProvider, self).__init__("HDSpace", 'hd-space.org')
 
         self.supportsBacklog = True
 
@@ -45,11 +45,10 @@ class HDSpaceProvider(TorrentProvider):
 
         self.cache = HDSpaceCache(self)
 
-        self.url = 'hd-space.org'
         self.urls.update({
-            'login': '{base_url}/index.php?page=login',
-            'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category=',
-            'rss': '{base_url}/rss_torrents.php?feed=dl'
+            'login': '{base_url}/index.php?page=login'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/index.php?page=torrents&search=%s&active=1&options=0&category='.format(base_url=self.urls['base_url']),
+            'rss': '{base_url}/rss_torrents.php?feed=dl'.format(base_url=self.urls['base_url'])
         })
 
         self.categories = [15, 21, 22, 24, 25, 40]  # HDTV/DOC 1080/720, bluray, remux
@@ -61,7 +60,7 @@ class HDSpaceProvider(TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -75,11 +74,11 @@ class HDSpaceProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Password Incorrect', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

@@ -404,7 +404,7 @@ class TVEpisode(object):
             self._subtitles_lastsearch = sqlResults[0]["subtitles_lastsearch"] or self.subtitles_lastsearch
             self._airdate = datetime.date.fromordinal(int(sqlResults[0]["airdate"])) or self.airdate
             self._status = tryInt(sqlResults[0]["status"], self.status)
-            self.location = os.path.normpath(sqlResults[0]["location"]) or self.location
+            self.location = sqlResults[0]["location"] or self.location
             self._file_size = tryInt(sqlResults[0]["file_size"], self.file_size)
             self._indexerid = tryInt(sqlResults[0]["indexerid"], self.indexerid)
             self._indexer = tryInt(sqlResults[0]["indexer"], self.indexer)
@@ -943,7 +943,6 @@ class TVEpisode(object):
                 sql_q = relEp.saveToDB(False)
                 if sql_q:
                     sql_l.append(sql_q)
-                    del sql_q  # cleanup
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)

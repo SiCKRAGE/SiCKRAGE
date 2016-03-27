@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class IPTorrentsProvider(TorrentProvider):
     def __init__(self):
-        super(IPTorrentsProvider, self).__init__("IPTorrents")
+        super(IPTorrentsProvider, self).__init__("IPTorrents", 'iptorrents.eu')
 
         self.supportsBacklog = True
 
@@ -42,10 +42,9 @@ class IPTorrentsProvider(TorrentProvider):
 
         self.cache = IPTorrentsCache(self)
 
-        self.url = 'iptorrents.eu'
         self.urls.update({
-            'login': '{base_url}/torrents/',
-            'search': '{base_url}/t?%s%s&q=%s&qf=#torrents'
+            'login': '{base_url}/torrents/'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/t?%s%s&q=%s&qf=#torrents'.format(base_url=self.urls['base_url'])
         })
 
         self.categories = '73=&60='
@@ -66,7 +65,7 @@ class IPTorrentsProvider(TorrentProvider):
         self.getURL(self.urls['login'], timeout=30)
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('tries left', response):
@@ -74,7 +73,7 @@ class IPTorrentsProvider(TorrentProvider):
                 "You tried too often, please try again after 1 hour! Disable IPTorrents for at least 1 hour")
             return False
         if re.search('Password not correct', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

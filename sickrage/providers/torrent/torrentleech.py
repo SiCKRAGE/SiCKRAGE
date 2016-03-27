@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 class TorrentLeechProvider(TorrentProvider):
     def __init__(self):
 
-        super(TorrentLeechProvider, self).__init__("TorrentLeech")
+        super(TorrentLeechProvider, self).__init__("TorrentLeech",'torrentleech.org')
 
         self.supportsBacklog = True
 
@@ -41,13 +41,12 @@ class TorrentLeechProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.url = 'torrentleech.org'
         self.urls.update({
-            'login': '{base_url}/user/account/login/',
-            'detail': '{base_url}/torrent/%s',
-            'search': '{base_url}/torrents/browse/index/query/%s/categories/%s',
-            'download': '{base_url}/%s',
-            'index': '{base_url}/torrents/browse/index/categories/%s'
+            'login': '{base_url}/user/account/login/'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/torrent/%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/torrents/browse/index/query/%s/categories/%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/%s'.format(base_url=self.urls['base_url']),
+            'index': '{base_url}/torrents/browse/index/categories/%s'.format(base_url=self.urls['base_url'])
         })
 
         self.categories = "2,7,26,27,32,34,35"
@@ -65,12 +64,12 @@ class TorrentLeechProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Invalid Username/password', response) or re.search('<title>Login :: TorrentLeech.org</title>',
                                                                          response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

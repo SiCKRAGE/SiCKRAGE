@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class GFTrackerProvider(TorrentProvider):
     def __init__(self):
-        super(GFTrackerProvider, self).__init__("GFTracker")
+        super(GFTrackerProvider, self).__init__("GFTracker",'www.thegft.org')
 
         self.supportsBacklog = True
 
@@ -40,11 +40,10 @@ class GFTrackerProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.url = 'www.thegft.org'
         self.urls.update({
-            'login': '{base_url}/loginsite.php',
-            'search': '{base_url}/browse.php?view=%s%s',
-            'download': '{base_url}/%s',
+            'login': '{base_url}/loginsite.php'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse.php?view=%s%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
         })
 
         self.cookies = None
@@ -72,11 +71,11 @@ class GFTrackerProvider(TorrentProvider):
         self.cookies = self.headers.get('Set-Cookie')
 
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

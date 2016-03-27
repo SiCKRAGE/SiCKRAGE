@@ -29,14 +29,13 @@ from sickrage.providers import TorrentProvider
 
 class BitSoupProvider(TorrentProvider):
     def __init__(self):
-        super(BitSoupProvider, self).__init__("BitSoup")
+        super(BitSoupProvider, self).__init__("BitSoup",'www.bitsoup.me')
 
-        self.url = 'www.bitsoup.me'
         self.urls.update({
-            'login': '{base_url}/takelogin.php',
-            'detail': '{base_url}/details.php?id=%s',
-            'search': '{base_url}/browse.php',
-            'download': '{base_url}/%s'
+            'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse.php'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
         })
 
         self.supportsBacklog = True
@@ -55,7 +54,7 @@ class BitSoupProvider(TorrentProvider):
 
     def _checkAuth(self):
         if not self.username or not self.password:
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -69,11 +68,11 @@ class BitSoupProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

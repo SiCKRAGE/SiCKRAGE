@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class HoundDawgsProvider(TorrentProvider):
     def __init__(self):
-        super(HoundDawgsProvider, self).__init__("HoundDawgs")
+        super(HoundDawgsProvider, self).__init__("HoundDawgs",'hounddawgs.org')
 
         self.supportsBacklog = True
 
@@ -41,10 +41,9 @@ class HoundDawgsProvider(TorrentProvider):
 
         self.cache = HoundDawgsCache(self)
 
-        self.url = 'hounddawgs.org'
         self.urls.update({
-            'search': '{base_url}/torrents.php',
-            'login': '{base_url}/login.php'
+            'search': '{base_url}/torrents.php'.format(base_url=self.urls['base_url']),
+            'login': '{base_url}/login.php'.format(base_url=self.urls['base_url'])
         })
 
         self.search_params = {
@@ -73,13 +72,13 @@ class HoundDawgsProvider(TorrentProvider):
         self.getURL(self.urls['base_url'], timeout=30)
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Dit brugernavn eller kodeord er forkert.', response) \
                 or re.search('<title>Login :: HoundDawgs</title>', response) \
                 or re.search('Dine cookies er ikke aktiveret.', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

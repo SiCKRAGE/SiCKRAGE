@@ -66,12 +66,7 @@ def check_force_season_folders(pattern=None, multi=None, anime_type=None):
     if anime_type is None:
         anime_type = sickrage.srConfig.NAMING_ANIME
 
-    valid = not validate_name(pattern=pattern, anime_type=anime_type, file_only=True)
-
-    if multi is not None:
-        valid = valid or not validate_name(pattern, multi, anime_type, file_only=True)
-
-    return valid
+    return not validate_name(pattern, multi, anime_type, file_only=True)
 
 
 def check_valid_naming(pattern=None, multi=None, anime_type=None):
@@ -89,14 +84,8 @@ def check_valid_naming(pattern=None, multi=None, anime_type=None):
     if anime_type is None:
         anime_type = sickrage.srConfig.NAMING_ANIME
 
-    sickrage.srLogger.debug("Checking whether the pattern " + pattern + " is valid for a single episode")
-    valid = validate_name(pattern=pattern, anime_type=anime_type)
-
-    if multi is not None:
-        sickrage.srLogger.debug("Checking whether the pattern " + pattern + " is valid for a multi episode")
-        valid = valid and validate_name(pattern, multi, anime_type)
-
-    return valid
+    sickrage.srLogger.debug("Checking whether the pattern " + pattern + " is valid")
+    return validate_name(pattern, multi, anime_type)
 
 
 def check_valid_abd_naming(pattern=None):
@@ -238,5 +227,4 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
 
 def test_name(pattern, multi=None, abd=False, sports=False, anime_type=None):
     ep = generate_sample_ep(multi, abd, sports, anime_type)
-
     return {'name': ep.formatted_filename(pattern, multi, anime_type), 'dir': ep.formatted_dir(pattern, multi)}

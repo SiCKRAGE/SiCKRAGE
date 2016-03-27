@@ -26,13 +26,12 @@ from sickrage.providers import TorrentProvider
 
 class TVChaosUKProvider(TorrentProvider):
     def __init__(self):
-        super(TVChaosUKProvider, self).__init__('TvChaosUK')
+        super(TVChaosUKProvider, self).__init__('TvChaosUK','tvchaosuk.com')
 
-        self.url = 'tvchaosuk.com'
         self.urls.update({
-            'login': '{base_url}/takelogin.php',
-            'index': '{base_url}/index.php',
-            'search': '{base_url}/browse.php'
+            'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
+            'index': '{base_url}/index.php'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse.php'.format(base_url=self.urls['base_url'])
         })
 
         self.supportsBacklog = True
@@ -109,11 +108,11 @@ class TVChaosUKProvider(TorrentProvider):
         login_params = {'username': self.username, 'password': self.password}
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Error: Username or password incorrect!', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

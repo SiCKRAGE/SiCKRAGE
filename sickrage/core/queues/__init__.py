@@ -60,6 +60,7 @@ class GenericQueue(object):
                     return -1
             else:
                 return y.priority - x.priority
+
         self._queue.sort(cmp=sorter)
         return self._queue
 
@@ -101,6 +102,8 @@ class GenericQueue(object):
             if self.amActive:
                 return
 
+            self.amActive = True
+
             # if there's something in the queue then run it in a thread and take it out of the queue
             if len(self.queue) > 0:
                 if self.queue[0].priority < self.min_priority:
@@ -122,9 +125,6 @@ class GenericQueue(object):
                 # start worker
                 worker.start()
 
-                # wait for worker to finish
-                worker.join()
-
             self.amActive = False
 
 
@@ -140,13 +140,12 @@ class QueueItem(object):
 
     def run(self):
         """Implementing classes should call this"""
-        threading.currentThread().setName(self.name)
 
+        threading.currentThread().setName(self.name)
         self.inProgress = True
 
     def finish(self):
         """Implementing Classes should call this"""
 
         self.inProgress = False
-
         threading.currentThread().setName(self.name)

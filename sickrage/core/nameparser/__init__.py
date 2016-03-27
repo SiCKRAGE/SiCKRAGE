@@ -27,7 +27,6 @@ import time
 from dateutil import parser
 
 import sickrage
-from sickrage.core.classes import ShowListUI
 from sickrage.core.common import Quality
 from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, \
     get_all_episodes_from_absolute_number, remove_extension, \
@@ -82,7 +81,7 @@ class NameParser(object):
             # try indexers
             if not showObj and tryIndexers:
                 showObj = findCertainShow(sickrage.srCore.SHOWLIST,
-                                          searchIndexerForShowID(full_sanitizeSceneName(name), ui=ShowListUI)[2])
+                                          searchIndexerForShowID(full_sanitizeSceneName(name))[2])
 
             # try scene exceptions
             if not showObj:

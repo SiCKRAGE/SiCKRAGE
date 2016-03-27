@@ -35,7 +35,7 @@ from sickrage.providers import TorrentProvider
 class TORRENTZProvider(TorrentProvider):
     def __init__(self):
 
-        super(TORRENTZProvider, self).__init__("Torrentz")
+        super(TORRENTZProvider, self).__init__("Torrentz",'torrentz.eu')
 
         self.supportsBacklog = True
         self.confirmed = True
@@ -44,10 +44,9 @@ class TORRENTZProvider(TorrentProvider):
         self.minleech = None
         self.cache = TORRENTZCache(self)
 
-        self.url = 'torrentz.eu'
         self.urls.update({
-            'verified': '{base_url}/feed_verified',
-            'feed': '{base_url}/feed',
+            'verified': '{base_url}/feed_verified'.format(base_url=self.urls['base_url']),
+            'feed': '{base_url}/feed'.format(base_url=self.urls['base_url'])
         })
 
     def seedRatio(self):

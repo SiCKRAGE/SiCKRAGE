@@ -27,7 +27,7 @@ from sickrage.providers import TorrentProvider
 class ShazbatProvider(TorrentProvider):
     def __init__(self):
 
-        super(ShazbatProvider, self).__init__("Shazbat.tv")
+        super(ShazbatProvider, self).__init__("Shazbat.tv",'www.shazbat.tv')
 
         self.supportsBacklog = False
 
@@ -37,9 +37,8 @@ class ShazbatProvider(TorrentProvider):
 
         self.cache = ShazbatCache(self)
 
-        self.url = 'www.shazbat.tv'
         self.urls.update({
-            'login': '{base_url}/login'
+            'login': '{base_url}/login'.format(base_url=self.urls['base_url'])
         })
 
     def _checkAuth(self):
@@ -52,7 +51,7 @@ class ShazbatProvider(TorrentProvider):
         if not self.passkey:
             self._checkAuth()
         elif not (data['entries'] and data['feed']):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 

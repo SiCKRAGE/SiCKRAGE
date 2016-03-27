@@ -35,14 +35,15 @@ from sickrage.providers import TorrentProvider
 
 class LibertaliaProvider(TorrentProvider):
     def __init__(self):
-        super(LibertaliaProvider, self).__init__("Libertalia")
+        super(LibertaliaProvider, self).__init__("Libertalia","libertalia.me")
 
         self.supportsBacklog = True
 
         self.cj = cookielib.CookieJar()
 
-        self.url = "https://libertalia.me"
-        self.urlsearch = "https://libertalia.me/torrents.php?name=%s%s"
+        self.urls.update({
+            'search': "{base_url}/torrents.php?name=%s%s".format(base_url=self.urls['base_url'])
+        })
 
         self.categories = "&cat%5B%5D=9&cat%5B%5D=10"
 
@@ -64,11 +65,11 @@ class LibertaliaProvider(TorrentProvider):
 
         response = self.getURL(self.urls['base_url'] + '/login.php', post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if not re.search('upload.php', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -89,7 +90,7 @@ class LibertaliaProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
-                searchURL = self.urlsearch % (urllib.quote(search_string), self.categories)
+                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
                 data = self.getURL(searchURL)
                 if not data:

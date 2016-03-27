@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 class ThePirateBayProvider(TorrentProvider):
     def __init__(self):
 
-        super(ThePirateBayProvider, self).__init__("ThePirateBay")
+        super(ThePirateBayProvider, self).__init__("ThePirateBay",'pirateproxy.la')
 
         self.supportsBacklog = True
 
@@ -40,10 +40,9 @@ class ThePirateBayProvider(TorrentProvider):
 
         self.cache = ThePirateBayCache(self)
 
-        self.url = 'pirateproxy.la'
         self.urls.update({
-            'search': '{base_url}/s/',
-            'rss': '{base_url}/tv/latest'
+            'search': '{base_url}/s/'.format(base_url=self.urls['base_url']),
+            'rss': '{base_url}/tv/latest'.format(base_url=self.urls['base_url'])
         })
 
         """

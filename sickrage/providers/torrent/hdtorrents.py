@@ -33,7 +33,7 @@ from sickrage.providers import TorrentProvider
 
 class HDTorrentsProvider(TorrentProvider):
     def __init__(self):
-        super(HDTorrentsProvider, self).__init__("HDTorrents")
+        super(HDTorrentsProvider, self).__init__("HDTorrents",'hd-torrents.org')
 
         self.supportsBacklog = True
 
@@ -43,12 +43,11 @@ class HDTorrentsProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.url = 'hd-torrents.org'
         self.urls.update({
-            'login': '{base_url}/login.php',
-            'search': '{base_url}/torrents.php?search=%s&active=1&options=0%s',
-            'rss': '{base_url}/torrents.php?search=&active=1&options=0%s',
-            'home': '{base_url}/%s'
+            'login': '{base_url}/login.php'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/torrents.php?search=%s&active=1&options=0%s'.format(base_url=self.urls['base_url']),
+            'rss': '{base_url}/torrents.php?search=&active=1&options=0%s'.format(base_url=self.urls['base_url']),
+            'home': '{base_url}/%s'.format(base_url=self.urls['base_url'])
         })
 
         self.categories = "&category[]=59&category[]=60&category[]=30&category[]=38"
@@ -59,7 +58,7 @@ class HDTorrentsProvider(TorrentProvider):
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -74,11 +73,11 @@ class HDTorrentsProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('You need cookies enabled to log in.', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

@@ -115,7 +115,7 @@ class srLogger(logging.getLoggerClass()):
             self.addHandler(console)
 
         # rotating log file handler
-        if self.fileLogging and makeDir(self.logFile):
+        if self.logFile and makeDir(os.path.dirname(self.logFile)):
             rfh = RotatingFileHandler(
                 filename=self.logFile,
                 maxBytes=self.logSize,

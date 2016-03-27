@@ -1,7 +1,7 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.providers import GenericProvider, NZBProvider, TorrentProvider
+    from sickrage.providers import NZBProvider, TorrentProvider, NewznabProvider, TorrentRssProvider
     from sickrage.providers.torrent import thepiratebay
     from sickrage.core.helpers import anon_url
 %>
@@ -15,7 +15,7 @@
                     SICKRAGE.config.providers.addNewznabProvider(
                             '${providerID}',
                             '${providerObj.name}',
-                            '${providerObj.url}',
+                            '${providerObj.urls["base_url"]}',
                             '${providerObj.key}',
                             '${providerObj.catIDs}',
                             '${int(providerObj.default)}',
@@ -28,7 +28,7 @@
                     SICKRAGE.config.providers.addTorrentRssProvider(
                             '${providerID}',
                             '${providerObj.name}',
-                            '${providerObj.url}',
+                            '${providerObj.urls["base_url"]}',
                             '${providerObj.cookies}',
                             '${providerObj.titleTAG}',
                             '${("false", "true")[bool(sickrage.srConfig.USE_TORRENTS)]}');
@@ -76,12 +76,13 @@
                         <fieldset class="component-group-list">
                             <ul id="provider_order_list">
                                 % for providerID, providerObj in sickrage.srCore.providersDict.sort().items():
-                                    % if (providerObj.type in [GenericProvider.NZB, GenericProvider.NEWZNAB] and sickrage.srConfig.USE_NZBS) or (providerObj.type in [GenericProvider.TORRENT, GenericProvider.TORRENTRSS] and sickrage.srConfig.USE_TORRENTS):
-                                        <li class="ui-state-default ${('nzb-provider', 'torrent-provider')[bool(providerObj.type == GenericProvider.TORRENT)]}"
+                                    % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.srConfig.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider] and sickrage.srConfig.USE_TORRENTS):
+                                        <li class="ui-state-default ${('nzb-provider', 'torrent-provider')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider])]}"
                                             id="${providerID}">
                                             <input type="checkbox" id="enable_${providerID}"
                                                    class="provider_enabler" ${('', 'checked="checked"')[providerObj.isEnabled == True]}/>
-                                            <a href="${anon_url(providerObj.url)}" class="imgLink" rel="noreferrer"
+                                            <a href="${anon_url(providerObj.urls['base_url'])}" class="imgLink"
+                                               rel="noreferrer"
                                                onclick="window.open(this.href, '_blank'); return false;"><img
                                                     src="/images/providers/${providerObj.imageName}"
                                                     alt="${providerObj.name}" title="${providerObj.name}" width="16"
@@ -133,7 +134,7 @@
                                                 <span class="component-title">URL:</span>
                                                 <span class="component-desc">
                                                     <input type="text" id="${providerID}_url"
-                                                           value="${providerObj.url}"
+                                                           value="${providerObj.urls['base_url']}"
                                                            class="form-control input-sm input350"
                                                            autocapitalize="off" disabled/>
                                                 </span>

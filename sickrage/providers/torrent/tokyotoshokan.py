@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 class TokyoToshokanProvider(TorrentProvider):
     def __init__(self):
 
-        super(TokyoToshokanProvider, self).__init__("TokyoToshokan")
+        super(TokyoToshokanProvider, self).__init__("TokyoToshokan",'tokyotosho.info')
 
         self.supportsBacklog = True
 
@@ -39,8 +39,6 @@ class TokyoToshokanProvider(TorrentProvider):
         self.ratio = None
 
         self.cache = TokyoToshokanCache(self)
-
-        self.url = 'tokyotosho.info'
 
     def seedRatio(self):
         return self.ratio

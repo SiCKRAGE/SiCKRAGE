@@ -6,7 +6,6 @@
     import time
 
     import sickrage
-    from sickrage.providers import GenericProvider
     from sickrage.core.helpers import srdatetime
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED, DOWNLOADED, SUBTITLED
     from sickrage.core.common import Quality, statusStrings, Overview

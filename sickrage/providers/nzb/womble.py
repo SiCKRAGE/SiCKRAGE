@@ -25,10 +25,9 @@ from sickrage.providers import NZBProvider
 
 class WombleProvider(NZBProvider):
     def __init__(self):
-        super(WombleProvider, self).__init__("Womble's Index")
+        super(WombleProvider, self).__init__("Womble's Index", 'newshost.co.za')
 
         self.cache = WombleCache(self)
-        self.url = 'newshost.co.za'
 
 
 class WombleCache(tv_cache.TVCache):

@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class MoreThanTVProvider(TorrentProvider):
     def __init__(self):
-        super(MoreThanTVProvider, self).__init__("MoreThanTV")
+        super(MoreThanTVProvider, self).__init__("MoreThanTV",'www.morethan.tv')
 
         self.supportsBacklog = True
 
@@ -45,12 +45,11 @@ class MoreThanTVProvider(TorrentProvider):
         self.minleech = None
         # self.freeleech = False
 
-        self.url = 'www.morethan.tv'
         self.urls.update({
-            'login': '{base_url}/login.php',
-            'detail': '{base_url}/torrents.php?id=%s',
-            'search': '{base_url}/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s',
-            'download': '{base_url}/torrents.php?action=download&id=%s'
+            'login': '{base_url}/login.php'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/torrents.php?id=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/torrents.php?tags_type=1&order_by=time&order_way=desc&action=basic&searchsubmit=1&searchstr=%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/torrents.php?action=download&id=%s'.format(base_url=self.urls['base_url'])
         })
 
         self.cookies = None
@@ -80,11 +79,11 @@ class MoreThanTVProvider(TorrentProvider):
 
             response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
             if not response:
-                sickrage.srLogger.warning("Unable to connect to provider")
+                sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
 
             if re.search('Your username or password was incorrect.', response):
-                sickrage.srLogger.warning("Invalid username or password. Check your settings")
+                sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
                 return False
 
             return True

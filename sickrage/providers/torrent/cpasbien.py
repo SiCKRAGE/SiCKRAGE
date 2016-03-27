@@ -30,12 +30,14 @@ from sickrage.providers import TorrentProvider
 
 class CpasbienProvider(TorrentProvider):
     def __init__(self):
-        super(CpasbienProvider, self).__init__("Cpasbien")
+        super(CpasbienProvider, self).__init__("Cpasbien","www.cpasbien.io")
 
         self.supportsBacklog = True
 
         self.ratio = None
-        self.url = "http://www.cpasbien.io"
+        self.urls.update({
+            'download': '{base_url}/telechargement/%s'.format(base_url=self.urls['base_url'])
+        })
 
         self.proper_strings = ['PROPER', 'REPACK']
 
@@ -90,7 +92,7 @@ class CpasbienProvider(TorrentProvider):
                                 # downloadTorrentLink = torrentSoup.find("a", title.startswith('Cliquer'))
                                 tmp = pageURL.split('/')[-1].replace('.html', '.torrent')
 
-                                downloadTorrentLink = ('http://www.cpasbien.io/telechargement/%s' % tmp)
+                                downloadTorrentLink = (self.urls['download'] % tmp)
 
                                 if downloadTorrentLink:
                                     download_url = downloadTorrentLink

@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 
 class AlphaRatioProvider(TorrentProvider):
     def __init__(self):
-        super(AlphaRatioProvider, self).__init__("AlphaRatio")
+        super(AlphaRatioProvider, self).__init__("AlphaRatio", 'alpharatio.cc')
         self.supportsBacklog = True
         self.username = None
         self.password = None
@@ -39,12 +39,11 @@ class AlphaRatioProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.url = 'alpharatio.cc'
         self.urls.update({
-            'login': '{base_url}/login.php',
-            'detail': '{base_url}/torrents.php?torrentid=%s',
-            'search': '{base_url}/torrents.php?searchstr=%s%s',
-            'download': '{base_url}/%s'
+            'login': '{base_url}/login.php'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/torrents.php?torrentid=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/torrents.php?searchstr=%s%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/%s'.format(base_url=self.urls['base_url'])
         })
 
         self.catagories = "&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1"
@@ -61,12 +60,12 @@ class AlphaRatioProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Invalid Username/password', response) \
                 or re.search('<title>Login :: AlphaRatio.cc</title>', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

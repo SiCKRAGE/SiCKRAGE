@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import ast
 import base64
 import ctypes
+import datetime
 import errno
 import hashlib
 import httplib
@@ -25,13 +26,13 @@ from _socket import timeout as SocketTimeout
 from contextlib import closing, contextmanager
 from itertools import cycle, izip
 
-import datetime
 import requests
 import six
 from bs4 import BeautifulSoup
 
 import sickrage
 from sickrage.clients import http_error_code
+from sickrage.core.classes import ShowListUI
 from sickrage.core.exceptions import MultipleShowObjectsException
 from sickrage.core.srsession import srSession
 from sickrage.indexers import adba, srIndexerApi
@@ -393,7 +394,7 @@ def makeDir(path):
     return True
 
 
-def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=None):
+def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=ShowListUI):
     """
     Contacts indexer to check for information on shows by showid
 
@@ -1833,3 +1834,14 @@ def get_temp_dir():
             return os.path.join(tempfile.gettempdir(), "sickrage")
 
     return os.path.join(tempfile.gettempdir(), "sickrage-%s" % uid)
+
+
+def scrub(obj):
+    if isinstance(obj, dict):
+        for k in obj.keys():
+            scrub(obj[k])
+            del obj[k]
+    elif isinstance(obj, list):
+        for i in reversed(range(len(obj))):
+            scrub(obj[i])
+            del obj[i]

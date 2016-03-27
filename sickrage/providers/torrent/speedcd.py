@@ -28,7 +28,7 @@ from sickrage.providers import TorrentProvider
 class SpeedCDProvider(TorrentProvider):
     def __init__(self):
 
-        super(SpeedCDProvider, self).__init__("Speedcd")
+        super(SpeedCDProvider, self).__init__("Speedcd",'speed.cd')
 
         self.supportsBacklog = True
 
@@ -39,12 +39,11 @@ class SpeedCDProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.url = 'speed.cd'
         self.urls.update({
-            'login': '{base_url}/take_login.php',
-            'detail': '{base_url}/t/%s',
-            'search': '{base_url}/V3/API/API.php',
-            'download': '{base_url}/download.php?torrent=%s'
+            'login': '{base_url}/take_login.php'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/t/%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/V3/API/API.php'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/download.php?torrent=%s'.format(base_url=self.urls['base_url'])
         })
 
         self.categories = {'Season': {'c14': 1}, 'Episode': {'c2': 1, 'c49': 1}, 'RSS': {'c14': 1, 'c2': 1, 'c49': 1}}
@@ -60,11 +59,11 @@ class SpeedCDProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Incorrect username or Password. Please try again.', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

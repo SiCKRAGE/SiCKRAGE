@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 class TorrentDayProvider(TorrentProvider):
     def __init__(self):
 
-        super(TorrentDayProvider, self).__init__("TorrentDay")
+        super(TorrentDayProvider, self).__init__("TorrentDay",'classic.torrentday.com')
 
         self.supportsBacklog = True
 
@@ -47,11 +47,10 @@ class TorrentDayProvider(TorrentProvider):
 
         self.cache = TorrentDayCache(self)
 
-        self.url = 'classic.torrentday.com'
         self.urls.update({
-            'login': '{base_url}/torrents/',
-            'search': '{base_url}/V3/API/API.php',
-            'download': '{base_url}/download.php/%s/%s'
+            'login': '{base_url}/torrents/'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/V3/API/API.php'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/download.php/%s/%s'.format(base_url=self.urls['base_url'])
         })
 
         self.cookies = None
@@ -75,7 +74,7 @@ class TorrentDayProvider(TorrentProvider):
 
             response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
             if not response:
-                sickrage.srLogger.warning("Unable to connect to provider")
+                sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
 
             if re.search('You tried too often', response):

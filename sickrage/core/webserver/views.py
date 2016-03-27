@@ -619,6 +619,9 @@ class Home(WebRoot):
         return epObj
 
     def index(self):
+        if not len(sickrage.srCore.SHOWLIST):
+            return self.redirect('/home/addShows/')
+
         if sickrage.srConfig.ANIME_SPLIT_HOME:
             shows = []
             anime = []
@@ -1129,7 +1132,7 @@ class Home(WebRoot):
             [showObj.indexerid]
         )
 
-        sqlResults = main_db.MainDB().select(
+        episodeResults = main_db.MainDB().select(
             "SELECT * FROM tv_episodes WHERE showid = ? ORDER BY season DESC, episode DESC",
             [showObj.indexerid]
         )
@@ -1203,10 +1206,10 @@ class Home(WebRoot):
         epCounts[Overview.UNAIRED] = 0
         epCounts[Overview.SNATCHED] = 0
 
-        for curResult in sqlResults:
-            curEpCat = showObj.getOverview(int(curResult["status"] or -1))
+        for curEp in episodeResults:
+            curEpCat = showObj.getOverview(int(curEp["status"] or -1))
             if curEpCat:
-                epCats[str(curResult["season"]) + "x" + str(curResult["episode"])] = curEpCat
+                epCats[str(curEp["season"]) + "x" + str(curEp["episode"])] = curEpCat
                 epCounts[curEpCat] += 1
 
         def titler(x):
@@ -1255,7 +1258,7 @@ class Home(WebRoot):
             showLoc=showLoc,
             show_message=show_message,
             show=showObj,
-            sqlResults=sqlResults,
+            episodeResults=episodeResults,
             seasonResults=seasonResults,
             sortedShowLists=sortedShowLists,
             bwl=bwl,
@@ -1793,7 +1796,6 @@ class Home(WebRoot):
                     sql_q = epObj.saveToDB(False)
                     if sql_q:
                         sql_l.append(sql_q)
-                        del sql_q  # cleanup
 
                     trakt_data.append((epObj.season, epObj.episode))
 
@@ -2713,7 +2715,7 @@ class HomeAddShows(Home):
                                               default_status_after=sickrage.srConfig.STATUS_DEFAULT_AFTER,
                                               archive=sickrage.srConfig.ARCHIVE_DEFAULT)
 
-            notifications.message('Show added', 'Adding the specified show into ' + show_dir)
+            notifications.message('Adding Show', 'Adding the specified show into ' + show_dir)
         else:
             sickrage.srLogger.error("There was an error creating the show, no root directory setting found")
             return "No root directories setup, please go back and add one."
@@ -2837,7 +2839,7 @@ class HomeAddShows(Home):
         sickrage.srCore.SHOWQUEUE.addShow(indexer, indexer_id, show_dir, int(defaultStatus), newQuality,
                                           flatten_folders, indexerLang, subtitles, anime,
                                           scene, None, blacklist, whitelist, int(defaultStatusAfter), archive)
-        notifications.message('Show added', 'Adding the specified show into ' + show_dir)
+        notifications.message('Adding Show', 'Adding the specified show into ' + show_dir)
 
         return finishAddShow()
 
@@ -4462,7 +4464,7 @@ class ConfigProviders(Config):
 
                 # newznab provider settings
                 providerObj.name = cur_name
-                providerObj.url = cur_url
+                providerObj.urls['base_url'] = cur_url
                 providerObj.key = cur_key
                 providerObj.catIDs = cur_cat
                 providerObj.search_mode = str(getattr(kwargs, providerObj.id + '_search_mode', 'eponly')).strip()
@@ -4484,7 +4486,7 @@ class ConfigProviders(Config):
 
                 # torrentrss provider settings
                 providerObj.name = curName
-                providerObj.url = curURL
+                providerObj.urls['base_url'] = curURL
                 providerObj.cookies = curCookies
                 providerObj.curTitleTAG = curTitleTAG
 
@@ -4521,7 +4523,7 @@ class ConfigProviders(Config):
         sickrage.srCore.providersDict.sort(re.findall(r'\w+[^\W\s]', provider_order))
 
         # save provider settings
-        sickrage.srCore.providersDict.save()
+        sickrage.srConfig.save(providers=True)
 
         if len(results) > 0:
             for x in results:

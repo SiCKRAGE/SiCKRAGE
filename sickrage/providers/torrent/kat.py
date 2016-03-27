@@ -32,10 +32,9 @@ from sickrage.providers import TorrentProvider
 
 class KATProvider(TorrentProvider):
     def __init__(self):
-        super(KATProvider, self).__init__("KickAssTorrents")
+        super(KATProvider, self).__init__("KickAssTorrents", 'kickass.unblocked.la')
 
         self.supportsBacklog = True
-
 
         self.confirmed = True
         self.ratio = None
@@ -44,11 +43,9 @@ class KATProvider(TorrentProvider):
 
         self.cache = KATCache(self)
 
-        self.url = 'kickass.unblocked.la'
         self.urls.update({
-            'search': '{base_url}/%s/'
+            'search': '{base_url}/%s/'.format(base_url=self.urls['base_url'])
         })
-
 
         self.search_params = {
             'q': '',

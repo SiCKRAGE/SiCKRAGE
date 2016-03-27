@@ -28,7 +28,7 @@ from sickrage.providers import TorrentProvider
 
 class BitCannonProvider(TorrentProvider):
     def __init__(self):
-        super(BitCannonProvider, self).__init__("BitCannon")
+        super(BitCannonProvider, self).__init__("BitCannon",'127.0.0.1:1337')
 
         self.supportsBacklog = True
 
@@ -38,10 +38,9 @@ class BitCannonProvider(TorrentProvider):
 
         self.cache = BitCannonCache(self)
 
-        self.url = '127.0.0.1:1337'
         self.urls.update({
-            'search': '{base_url}/search/',
-            'trackers': '{base_url}/stats',
+            'search': '{base_url}/search/'.format(base_url=self.urls['base_url']),
+            'trackers': '{base_url}/stats'.format(base_url=self.urls['base_url']),
         })
 
     def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):

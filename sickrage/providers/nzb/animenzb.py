@@ -32,12 +32,11 @@ from sickrage.providers import NZBProvider
 
 class AnimeNZBProvider(NZBProvider):
     def __init__(self):
-        super(AnimeNZBProvider, self).__init__("AnimeNZB")
+        super(AnimeNZBProvider, self).__init__("AnimeNZB", 'animenzb.com')
         self.supportsBacklog = False
         self.supportsAbsoluteNumbering = True
         self.anime_only = True
         self.cache = animenzbCache(self)
-        self.url = 'animenzb.com'
 
     def _get_season_search_strings(self, ep_obj):
         return [x for x in show_names.makeSceneSeasonSearchString(self.show, ep_obj)]

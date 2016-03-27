@@ -31,15 +31,14 @@ from sickrage.providers import TorrentProvider
 
 class newpctProvider(TorrentProvider):
     def __init__(self):
-        super(newpctProvider, self).__init__("Newpct")
+        super(newpctProvider, self).__init__("Newpct",'www.newpct.com')
 
         self.supportsBacklog = True
         self.onlyspasearch = None
         self.cache = newpctCache(self)
 
-        self.url = 'www.newpct.com'
         self.urls.update({
-            'search': '{base_url}/buscar-descargas/'
+            'search': '{base_url}/buscar-descargas/'.format(base_url=self.urls['base_url'])
         })
 
 

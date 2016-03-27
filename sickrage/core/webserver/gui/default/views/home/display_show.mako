@@ -376,7 +376,7 @@
         <% curSeason = -1 %>
         <% odd = 0 %>
 
-        % for epResult in sqlResults:
+        % for epResult in episodeResults:
             <%
                 epStr = str(epResult["season"]) + "x" + str(epResult["episode"])
                 if not epStr in epCats or not sickrage.srConfig.DISPLAY_SHOW_SPECIALS and int(epResult["season"]) == 0:

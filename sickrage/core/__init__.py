@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import datetime
 import os
 import random
 import re
@@ -29,11 +30,9 @@ import sys
 import traceback
 import urllib
 
-import datetime
-
 import sickrage
 from sickrage.core.caches.name_cache import srNameCache
-from sickrage.core.classes import AttrDict, providersDict
+from sickrage.core.classes import AttrDict
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.databases import main_db, cache_db, failed_db
 from sickrage.core.helpers import encrypt, findCertainShow, \
@@ -81,6 +80,7 @@ from sickrage.notifiers.synoindex import synoIndexNotifier
 from sickrage.notifiers.synologynotifier import synologyNotifier
 from sickrage.notifiers.trakt import TraktNotifier
 from sickrage.notifiers.tweet import TwitterNotifier
+from sickrage.providers import providersDict
 
 
 class Core(object):
@@ -531,9 +531,6 @@ class Core(object):
 
         # save config
         sickrage.srConfig.save()
-
-        # save providers
-        self.providersDict.save()
 
     def load_shows(self):
         """

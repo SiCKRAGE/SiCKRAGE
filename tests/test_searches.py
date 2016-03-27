@@ -22,12 +22,11 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-from providers import sortedProviderDict, GenericProvider
-
 import sickrage
 from sickrage.core.common import ANY, Quality, WANTED
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import TVShow
+from sickrage.providers import TorrentProvider
 from tests import SiCKRAGETestDBCase
 
 tests = {"Game of Thrones":
@@ -119,13 +118,13 @@ for forceSearch in (True, False):
     for name, curData in tests.items():
         fname = name.replace(' ', '_')
 
-        for provider in sortedProviderDict().values():
-            if provider.type == GenericProvider.TORRENT:
+        for providerID, providerObj in sickrage.srCore.providersDict:
+            if providerObj.type == TorrentProvider.type:
                 if forceSearch:
-                    test_name = 'test_manual_%s_%s_%s' % (fname, curData["tvdbid"], provider.name)
+                    test_name = 'test_manual_%s_%s_%s' % (fname, curData["tvdbid"], providerObj.name)
                 else:
-                    test_name = 'test_%s_%s_%s' % (fname, curData["tvdbid"], provider.name)
-                test = test_generator(curData, name, provider, forceSearch)
+                    test_name = 'test_%s_%s_%s' % (fname, curData["tvdbid"], providerObj.name)
+                test = test_generator(curData, name, providerObj, forceSearch)
                 setattr(SearchTest, test_name, test)
 
 

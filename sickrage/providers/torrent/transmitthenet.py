@@ -29,9 +29,7 @@ from sickrage.providers import TorrentProvider
 class TransmitTheNetProvider(TorrentProvider):
     def __init__(self):
 
-        super(TransmitTheNetProvider, self).__init__("TransmitTheNet")
-
-        self.url = 'transmithe.net'
+        super(TransmitTheNetProvider, self).__init__("TransmitTheNet",'transmithe.net')
 
         self.supportsBacklog = True
 
@@ -67,11 +65,11 @@ class TransmitTheNetProvider(TorrentProvider):
 
         response = self.getURL(self.urls['base_url'], params={'page': 'login'}, post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username Incorrect', response) or re.search('Password Incorrect', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

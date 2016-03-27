@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class T411Provider(TorrentProvider):
     def __init__(self):
-        super(T411Provider, self).__init__("T411")
+        super(T411Provider, self).__init__("T411",'www.t411.in')
 
         self.supportsBacklog = True
 
@@ -44,12 +44,11 @@ class T411Provider(TorrentProvider):
 
         self.cache = T411Cache(self)
 
-        self.url = 'www.t411.in'
         self.urls.update({
-            'search': '{base_url}/torrents/search/%s?cid=%s&limit=100',
-            'rss': '{base_url}/torrents/top/today',
-            'login': '{base_url}/auth',
-            'download': '{base_url}/torrents/download/%s'
+            'search': '{base_url}/torrents/search/%s?cid=%s&limit=100'.format(base_url=self.urls['base_url']),
+            'rss': '{base_url}/torrents/top/today'.format(base_url=self.urls['base_url']),
+            'login': '{base_url}/auth'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/torrents/download/%s'.format(base_url=self.urls['base_url'])
         })
 
         self.subcategories = [433, 637, 455, 639]
@@ -69,7 +68,7 @@ class T411Provider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30, json=True)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if response and 'token' in response:

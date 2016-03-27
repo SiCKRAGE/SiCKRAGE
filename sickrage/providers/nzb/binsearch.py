@@ -30,10 +30,9 @@ from sickrage.providers import NZBProvider
 
 class BinSearchProvider(NZBProvider):
     def __init__(self):
-        super(BinSearchProvider, self).__init__("BinSearch")
+        super(BinSearchProvider, self).__init__("BinSearch", 'www.binsearch.info')
 
         self.cache = BinSearchCache(self)
-        self.url = 'www.binsearch.info'
 
 
 class BinSearchCache(tv_cache.TVCache):

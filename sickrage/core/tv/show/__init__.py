@@ -685,7 +685,6 @@ class TVShow(object):
             sql_q = curEpisode.saveToDB(False)
             if sql_q:
                 sql_l.append(sql_q)
-                del sql_q  # cleanup
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)
@@ -770,7 +769,6 @@ class TVShow(object):
                         sql_q = curEp.saveToDB(False)
                         if sql_q:
                             sql_l.append(sql_q)
-                            del sql_q  # cleanup
 
                     scannedEps[season][episode] = True
                 except EpisodeNotFoundException:
@@ -946,7 +944,6 @@ class TVShow(object):
                 sql_q = curEp.saveToDB(False)
                 if sql_q:
                     sql_l.append(sql_q)
-                    del sql_q  # cleanup
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)
@@ -1382,7 +1379,6 @@ class TVShow(object):
                         sql_q = curEp.saveToDB(False)
                         if sql_q:
                             sql_l.append(sql_q)
-                            del sql_q  # cleanup
             else:
                 # the file exists, set its modify file stamp
                 if sickrage.srConfig.AIRDATE_EPISODES:

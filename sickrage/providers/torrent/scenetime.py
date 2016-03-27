@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 class SceneTimeProvider(TorrentProvider):
     def __init__(self):
 
-        super(SceneTimeProvider, self).__init__("SceneTime")
+        super(SceneTimeProvider, self).__init__("SceneTime",'www.scenetime.com')
 
         self.supportsBacklog = True
 
@@ -43,12 +43,11 @@ class SceneTimeProvider(TorrentProvider):
 
         self.cache = SceneTimeCache(self)
 
-        self.url = 'www.scenetime.com'
         self.urls.update({
-            'login': '{base_url}/takelogin.php',
-            'detail': '{base_url}/details.php?id=%s',
-            'search': '{base_url}/browse.php?search=%s%s',
-            'download': '{base_url}/download.php/%s/%s'
+            'login': '{base_url}/takelogin.php'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse.php?search=%s%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/download.php/%s/%s'.format(base_url=self.urls['base_url'])
         })
 
         self.categories = "&c2=1&c43=13&c9=1&c63=1&c77=1&c79=1&c100=1&c101=1"
@@ -60,11 +59,11 @@ class SceneTimeProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

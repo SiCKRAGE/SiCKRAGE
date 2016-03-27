@@ -32,11 +32,10 @@ from sickrage.providers import TorrentProvider
 
 class ExtraTorrentProvider(TorrentProvider):
     def __init__(self):
-        super(ExtraTorrentProvider, self).__init__("ExtraTorrent")
+        super(ExtraTorrentProvider, self).__init__("ExtraTorrent",'extratorrent.cc')
 
-        self.url = 'extratorrent.cc'
         self.urls.update({
-            'rss': '{base_url}/rss.xml',
+            'rss': '{base_url}/rss.xml'.format(base_url=self.urls['base_url'])
         })
 
         self.supportsBacklog = True

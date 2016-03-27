@@ -108,7 +108,6 @@ class srDailySearcher(object):
                 sql_q = ep.saveToDB(False)
                 if sql_q:
                     sql_l.append(sql_q)
-                    del sql_q
 
         if len(sql_l) > 0:
             main_db.MainDB().mass_upsert(sql_l)

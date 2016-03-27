@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class FNTProvider(TorrentProvider):
     def __init__(self):
-        super(FNTProvider, self).__init__("FNT")
+        super(FNTProvider, self).__init__("FNT",'fnt.nu')
 
         self.supportsBacklog = True
 
@@ -44,10 +44,9 @@ class FNTProvider(TorrentProvider):
 
         self.cache = FNTCache(self)
 
-        self.url = 'fnt.nu'
         self.urls.update({
-            'search': '{base_url}/torrents/recherche/',
-            'login': '{base_url}/account-login.php',
+            'search': '{base_url}/torrents/recherche/'.format(base_url=self.urls['base_url']),
+            'login': '{base_url}/account-login.php'.format(base_url=self.urls['base_url'])
         })
 
         self.search_params = {
@@ -68,11 +67,11 @@ class FNTProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Pseudo ou mot de passe non valide', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

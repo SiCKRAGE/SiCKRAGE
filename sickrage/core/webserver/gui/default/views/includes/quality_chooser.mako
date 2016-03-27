@@ -17,12 +17,13 @@
 %>
 
 <label for="qualityPreset">
-    <select id="qualityPreset" name="quality_preset" class="form-control form-control-inline">
+    <select id="qualityPreset" name="quality_preset" class="form-control form-control-inline input-sm">
         <option value="0">Custom</option>
         % for curPreset in sorted(qualityPresets):
             <option value="${curPreset}" ${('', 'selected="selected"')[curPreset == overall_quality]} ${('', 'style="padding-left: 15px;"')[qualityPresetStrings[curPreset].endswith("0p")]}>${qualityPresetStrings[curPreset]}</option>
         % endfor
     </select>
+    Quality for episodes
 </label>
 
 <div id="customQuality" style="padding-left: 0;">

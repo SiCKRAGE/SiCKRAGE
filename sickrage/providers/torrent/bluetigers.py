@@ -34,7 +34,7 @@ from sickrage.providers import TorrentProvider
 
 class BLUETIGERSProvider(TorrentProvider):
     def __init__(self):
-        super(BLUETIGERSProvider, self).__init__("BLUETIGERS")
+        super(BLUETIGERSProvider, self).__init__("BLUETIGERS",'www.bluetigers.ca')
 
         self.supportsBacklog = True
 
@@ -46,11 +46,10 @@ class BLUETIGERSProvider(TorrentProvider):
 
         self.cache = BLUETIGERSCache(self)
 
-        self.url = 'www.bluetigers.ca'
         self.urls.update({
-            'search': '{base_url}/torrents-search.php',
-            'login': '{base_url}/account-login.php',
-            'download': '{base_url}/torrents-details.php?id=%s&hit=1',
+            'search': '{base_url}/torrents-search.php'.format(base_url=self.urls['base_url']),
+            'login': '{base_url}/account-login.php'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/torrents-details.php?id=%s&hit=1'.format(base_url=self.urls['base_url'])
         })
 
         self.search_params = {
@@ -69,11 +68,11 @@ class BLUETIGERSProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if not re.search('/account-logout.php', response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True

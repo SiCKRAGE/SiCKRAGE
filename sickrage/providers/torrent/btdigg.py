@@ -27,15 +27,14 @@ from sickrage.providers import TorrentProvider
 
 class BTDIGGProvider(TorrentProvider):
     def __init__(self):
-        super(BTDIGGProvider, self).__init__("BTDigg")
+        super(BTDIGGProvider, self).__init__("BTDigg",'btdigg.org')
 
         self.supportsBacklog = True
 
         self.ratio = 0
 
-        self.url = 'btdigg.org'
         self.urls.update({
-            'api': 'api.{base_url}/'
+            'api': 'api.{base_url}/'.format(base_url=self.urls['base_url'])
         })
 
         self.cache = BTDiggCache(self)

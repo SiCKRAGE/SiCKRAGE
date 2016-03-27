@@ -28,12 +28,11 @@ from sickrage.providers import TorrentProvider
 
 class TORRENTPROJECTProvider(TorrentProvider):
     def __init__(self):
-        super(TORRENTPROJECTProvider, self).__init__("TorrentProject")
+        super(TORRENTPROJECTProvider, self).__init__("TorrentProject",'torrentproject.se')
 
         self.supportsBacklog = True
 
         self.ratio = 0
-        self.url = 'torrentproject.se'
 
         self.minseed = None
         self.minleech = None

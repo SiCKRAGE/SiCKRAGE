@@ -925,7 +925,6 @@ class CMD_EpisodeSetStatus(ApiCall):
                 sql_q = epObj.saveToDB(False)
                 if sql_q:
                     sql_l.append(sql_q)
-                    del sql_q  # cleanup
 
                 if self.status == WANTED:
                     start_backlog = True

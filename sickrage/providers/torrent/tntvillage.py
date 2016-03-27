@@ -60,7 +60,7 @@ category_excluded = {'Sport': 22,
 
 class TNTVillageProvider(TorrentProvider):
     def __init__(self):
-        super(TNTVillageProvider, self).__init__("TNTVillage")
+        super(TNTVillageProvider, self).__init__("TNTVillage", 'forum.tntvillage.scambioetico.org')
 
         self.supportsBacklog = True
 
@@ -96,13 +96,12 @@ class TNTVillageProvider(TorrentProvider):
                               'Documentari': 14,
                               'All': 0}
 
-        self.url = 'forum.tntvillage.scambioetico.org'
         self.urls.update({
-            'login': '{base_url}/index.php?act=Login&CODE=01',
-            'detail': '{base_url}/index.php?showtopic=%s',
-            'search': '{base_url}/?act=allreleases&%s',
-            'search_page': '{base_url}/?act=allreleases&st={0}&{1}',
-            'download': '{base_url}/index.php?act=Attach&type=post&id=%s'
+            'login': '{base_url}/index.php?act=Login&CODE=01'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/index.php?showtopic=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/?act=allreleases&%s'.format(base_url=self.urls['base_url']),
+            'search_page': '{base_url}/?act=allreleases&st=%s&%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/index.php?act=Attach&type=post&id=%s'.format(base_url=self.urls['base_url'])
         })
 
         self.cookies = None
@@ -131,12 +130,12 @@ class TNTVillageProvider(TorrentProvider):
 
         response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
-            sickrage.srLogger.warning("Unable to connect to provider")
+            sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Sono stati riscontrati i seguenti errori', response) or re.search('<title>Connettiti</title>',
                                                                                         response):
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
@@ -311,10 +310,9 @@ class TNTVillageProvider(TorrentProvider):
                         break
 
                     if mode is not 'RSS':
-                        searchURL = (self.urls['search_page'] + '&filter={2}').format(z, self.categories,
-                                                                                      search_string)
+                        searchURL = (self.urls['search_page'] + '&filter=%s') % (z, self.categories, search_string)
                     else:
-                        searchURL = self.urls['search_page'].format(z, self.categories)
+                        searchURL = self.urls['search_page'] % (z, self.categories)
 
                     if mode is not 'RSS':
                         sickrage.srLogger.debug("Search string: %s " % search_string)
@@ -395,8 +393,8 @@ class TNTVillageProvider(TorrentProvider):
                                 if seeders < self.minseed or leechers < self.minleech:
                                     if mode is not 'RSS':
                                         sickrage.srLogger.debug(
-                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                title, seeders, leechers))
+                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: %s (S:%s L:%s)" % (
+                                            title, seeders, leechers))
                                     continue
 
                                 item = title, download_url, size, seeders, leechers

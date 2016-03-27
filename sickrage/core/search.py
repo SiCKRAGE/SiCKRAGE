@@ -39,7 +39,7 @@ from sickrage.core.nzbSplitter import splitNZBResult
 from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.core.ui import notifications
 from sickrage.notifiers import srNotifiers
-from sickrage.providers import GenericProvider
+from sickrage.providers import NZBProvider
 
 
 def _downloadResult(result):
@@ -167,7 +167,6 @@ def snatchEpisode(result, endStatus=SNATCHED):
             sql_q = curEpObj.saveToDB(False)
             if sql_q:
                 sql_l.append(sql_q)
-                del sql_q  # cleanup
 
         if curEpObj.status not in Quality.DOWNLOADED:
             try:
@@ -311,7 +310,7 @@ def isFirstBestMatch(result):
     Checks if the given result is a best quality match and if we want to archive the episode on first match.
     """
 
-    sickrage.srLogger.debug("Checking if we should archive our first best quality match for for episode " + result.name)
+    sickrage.srLogger.debug("Checking if we should archive our first best quality match for episode " + result.name)
 
     show_obj = result.episodes[0].show
 
@@ -421,10 +420,6 @@ def searchForNeededEpisodes():
 
                 foundResults[curEp] = bestResult
 
-        if not didSearch:
-            sickrage.srLogger.warning(
-                    "No NZB/Torrent providers found or enabled in the sickrage config for daily searches. Please check your settings.")
-
         return foundResults.values()
     return perform_searches()
 
@@ -438,7 +433,12 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
     :param downCurQuality: Boolean, should we redownload currently avaialble quality file
     :return: results for search
     """
+
     foundResults = {}
+
+    if not len(sickrage.srCore.providersDict.enabled()):
+        sickrage.srLogger.warning("No NZB/Torrent providers enabled. Please check your settings.")
+        return
 
     # build name cache for show
     sickrage.srCore.NAMECACHE.buildNameCache(show)
@@ -574,7 +574,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
 
                 else:
 
-                    if bestSeasonResult.provider.type == GenericProvider.NZB:
+                    if bestSeasonResult.provider.type == NZBProvider.type:
                         sickrage.srLogger.debug("Breaking apart the NZB and adding the individual ones to our results")
 
                         # if not, break it apart and add them as the lowest priority results
@@ -703,10 +703,6 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False):
             # make sure we search every provider for results unless we found everything we wanted
             if wantedEpCount == len(episodes):
                 break
-
-        if not didSearch:
-            sickrage.srLogger.warning(
-                    "No NZB/Torrent providers found or enabled in the sickrage config for backlog searches. Please check your settings.")
 
         return finalResults
     return perform_searches()

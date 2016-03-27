@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class FreshOnTVProvider(TorrentProvider):
     def __init__(self):
-        super(FreshOnTVProvider, self).__init__("FreshOnTV")
+        super(FreshOnTVProvider, self).__init__("FreshOnTV",'freshon.tv')
 
         self.supportsBacklog = True
 
@@ -47,21 +47,19 @@ class FreshOnTVProvider(TorrentProvider):
 
         self.cache = FreshOnTVCache(self)
 
-        self.url = 'freshon.tv'
         self.urls.update({
-                     'login': '{base_url}/login.php?action=makelogin',
-                     'detail': '{base_url}/details.php?id=%s',
-                     'search': '{base_url}/browse.php?incldead=%s&words=0&cat=0&search=%s',
-                     'download': '{base_url}/download.php?id=%s&type=torrent'
+            'login': '{base_url}/login.php?action=makelogin'.format(base_url=self.urls['base_url']),
+            'detail': '{base_url}/details.php?id=%s'.format(base_url=self.urls['base_url']),
+            'search': '{base_url}/browse.php?incldead=%s&words=0&cat=0&search=%s'.format(base_url=self.urls['base_url']),
+            'download': '{base_url}/download.php?id=%s&type=torrent'.format(base_url=self.urls['base_url'])
         })
-
 
         self.cookies = None
 
     def _checkAuth(self):
 
         if not self.username or not self.password:
-            sickrage.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
         return True
 
@@ -78,7 +76,7 @@ class FreshOnTVProvider(TorrentProvider):
 
             response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
             if not response:
-                sickrage.srLogger.warning("Unable to connect to provider")
+                sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
 
             if re.search('/logout.php', response):
@@ -98,7 +96,7 @@ class FreshOnTVProvider(TorrentProvider):
 
             else:
                 if re.search('Username does not exist in the userbase or the account is not confirmed yet.', response):
-                    sickrage.srLogger.warning("Invalid username or password. Check your settings")
+                    sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
 
                 if re.search('DDoS protection by CloudFlare', response):
                     sickrage.srLogger.warning("Unable to login to provider due to CloudFlare DDoS javascript check")
@@ -198,7 +196,7 @@ class FreshOnTVProvider(TorrentProvider):
                                     title = individual_torrent.find('a', {'class': 'torrent_name_link'})['title']
                                 except Exception:
                                     sickrage.srLogger.warning(
-                                            "Unable to parse torrent title. Traceback: %s " % traceback.format_exc())
+                                        "Unable to parse torrent title. Traceback: %s " % traceback.format_exc())
                                     continue
 
                                 try:
@@ -206,9 +204,9 @@ class FreshOnTVProvider(TorrentProvider):
                                     torrent_id = int((re.match('.*?([0-9]+)$', details_url).group(1)).strip())
                                     download_url = self.urls['download'] % (str(torrent_id))
                                     seeders = tryInt(individual_torrent.find('td', {'class': 'table_seeders'}).find(
-                                            'span').text.strip(), 1)
+                                        'span').text.strip(), 1)
                                     leechers = tryInt(individual_torrent.find('td', {'class': 'table_leechers'}).find(
-                                            'a').text.strip(), 0)
+                                        'a').text.strip(), 0)
                                     # FIXME
                                     size = -1
                                 except Exception:
@@ -221,8 +219,8 @@ class FreshOnTVProvider(TorrentProvider):
                                 if seeders < self.minseed or leechers < self.minleech:
                                     if mode is not 'RSS':
                                         sickrage.srLogger.debug(
-                                                "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
-                                                        title, seeders, leechers))
+                                            "Discarding torrent because it doesn't meet the minimum seeders or leechers: {0} (S:{1} L:{2})".format(
+                                                title, seeders, leechers))
                                     continue
 
                                 item = title, download_url, size, seeders, leechers
