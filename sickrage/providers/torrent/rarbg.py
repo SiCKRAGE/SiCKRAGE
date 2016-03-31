@@ -79,7 +79,7 @@ class RarbgProvider(TorrentProvider):
         if self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
             return True
 
-        response = self.getURL(self.urls['token'], timeout=30, json=True)
+        response = srSession(self.session, self.headers).get(self.urls['token'], timeout=30, json=True)
         if not response:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -95,7 +95,7 @@ class RarbgProvider(TorrentProvider):
 
         return False
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -154,7 +154,7 @@ class RarbgProvider(TorrentProvider):
                             time_out = time_out + 1
                             time.sleep(1)
 
-                        data = self.getURL(searchURL + self.urlOptions['token'].format(token=self.token))
+                        data = srSession(self.session, self.headers).get(searchURL + self.urlOptions['token'].format(token=self.token))
 
                         self.next_request = datetime.datetime.now() + datetime.timedelta(seconds=10)
 
@@ -252,4 +252,4 @@ class RarbgCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

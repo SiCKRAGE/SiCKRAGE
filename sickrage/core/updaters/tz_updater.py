@@ -26,7 +26,8 @@ from dateutil import tz
 
 import sickrage
 from sickrage.core.databases import cache_db
-from sickrage.core.helpers import getURL, tryInt
+from sickrage.core.helpers import tryInt
+from sickrage.core.srsession import srSession
 
 time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
 sr_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
@@ -37,7 +38,7 @@ def update_network_dict():
     """Update timezone information from SR repositories"""
 
     url = 'http://sickragetv.github.io/network_timezones/network_timezones.txt'
-    url_data = getURL(url)
+    url_data = srSession().get(url)
     if not url_data:
         sickrage.srLogger.warning(
             'Updating network timezones failed, this can happen from time to time. URL: %s' % url)
@@ -57,7 +58,7 @@ def update_network_dict():
     network_timezones = dict(cache_db.CacheDB().select('SELECT * FROM network_timezones;'))
 
     queries = []
-    for network, timezone in d.iteritems():
+    for network, timezone in d.items():
         existing = network in network_timezones
         if not existing:
             queries.append(['INSERT OR IGNORE INTO network_timezones VALUES (?,?);', [network, timezone]])

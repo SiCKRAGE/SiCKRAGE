@@ -21,6 +21,7 @@ import time
 from time import localtime, strftime
 from types import FunctionType, MethodType
 
+import sickrage
 from aniDBlink import AniDBLink
 from sickrage.indexers.adba.aniDBcommands import AnimeCommand, AuthCommand, \
     BuddyAcceptCommand, BuddyAddCommand, BuddyDelCommand, BuddyDenyCommand, \
@@ -35,7 +36,6 @@ from sickrage.indexers.adba.aniDBerrors import AniDBBannedError, \
     AniDBCommandTimeoutError
 
 version = 100
-
 
 class Connection(threading.Thread):
     def __init__(self, clientname='adba', server='api.anidb.info', port=9000, myport=9876, user=None, password=None,
@@ -196,23 +196,32 @@ class Connection(threading.Thread):
         mtu     - maximum transmission unit (max packet size) (default: 1400)
         
         """
-        self.log("ok1")
-        if self.keepAlive:
-            self.log("ok2")
-            self._username = username
-            self._password = password
-            if self.is_alive() == False:
-                self.log("You wanted to keep this thing alive!")
-                if self._iamALIVE == False:
-                    self.log("Starting thread now...")
-                    self.start()
-                    self._iamALIVE = True
-                else:
-                    self.log("not starting thread seams like it is already running. this must be a _reAuthenticate")
 
-        self.lastAuth = time.time()
-        return self.handle(AuthCommand(username, password, 3, self.clientname, self.clientver, nat, 1, 'utf8', mtu),
-                           callback)
+        if not all([username, password]):
+            sickrage.srLogger.debug("anidb username and/or password are not set. Aborting anidb lookup.")
+            return False
+
+        authed = self.authed()
+        if not authed:
+            self.log("ok1")
+            if self.keepAlive:
+                self.log("ok2")
+                self._username = username
+                self._password = password
+                if self.is_alive() == False:
+                    self.log("You wanted to keep this thing alive!")
+                    if self._iamALIVE == False:
+                        self.log("Starting thread now...")
+                        self.start()
+                        self._iamALIVE = True
+                    else:
+                        self.log("not starting thread seams like it is already running. this must be a _reAuthenticate")
+
+            self.lastAuth = time.time()
+            return self.handle(AuthCommand(username, password, 3, self.clientname, self.clientver, nat, 1, 'utf8', mtu),
+                               callback)
+
+        return authed
 
     def logout(self, cutConnection=False, callback=None):
         """

@@ -1,5 +1,6 @@
+#!/usr/bin/env python2
 # Author: echel0n <sickrage.tv@gmail.com>
-# URL: http://github.com/SiCKRAGETV/SickRage/
+# URL: http://www.github.com/sickragetv/sickrage/
 #
 # This file is part of SickRage.
 #
@@ -18,20 +19,5 @@
 
 from __future__ import unicode_literals
 
-import feedparser
-from feedparser import FeedParserDict
-
-from sickrage.core.srsession import srSession
-
-
-def getFeed(url, request_headers=None, handlers=None):
-    try:
-        return feedparser.parse(
-            srSession.normalize_url(url),
-            etag=False,
-            modified=False,
-            request_headers=request_headers,
-            handlers=handlers
-        )
-    except Exception:
-        return FeedParserDict()
+def cmp(a, b):
+    return (a > b) - (a < b)

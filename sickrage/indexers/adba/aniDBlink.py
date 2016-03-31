@@ -144,7 +144,7 @@ class AniDBLink(threading.Thread):
                     cmd.waiter.release()
                 except:
                     pass
-                for tag, cmd in self.cmd_queue.iteritems():
+                for tag, cmd in self.cmd_queue.items():
                     try:
                         cmd.waiter.release()
                     except:
@@ -153,7 +153,7 @@ class AniDBLink(threading.Thread):
 
     def _handle_timeouts(self):
         willpop = []
-        for tag, cmd in self.cmd_queue.iteritems():
+        for tag, cmd in self.cmd_queue.items():
             if not tag:
                 continue
             if time.time() - cmd.started > self.timeout:

@@ -29,8 +29,7 @@ from dateutil import parser
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, \
-    get_all_episodes_from_absolute_number, remove_extension, \
-    searchIndexerForShowID
+    get_all_episodes_from_absolute_number, remove_extension
 from sickrage.core.nameparser import regexes
 from sickrage.core.scene_exceptions import get_scene_exception_by_name
 from sickrage.core.scene_numbering import \
@@ -80,8 +79,7 @@ class NameParser(object):
 
             # try indexers
             if not showObj and tryIndexers:
-                showObj = findCertainShow(sickrage.srCore.SHOWLIST,
-                                          searchIndexerForShowID(full_sanitizeSceneName(name))[2])
+                showObj = findCertainShow(sickrage.srCore.SHOWLIST, srIndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
 
             # try scene exceptions
             if not showObj:

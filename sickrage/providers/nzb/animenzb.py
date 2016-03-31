@@ -44,7 +44,7 @@ class AnimeNZBProvider(NZBProvider):
     def _get_episode_search_strings(self, ep_obj, add_string=''):
         return [x for x in show_names.makeSceneSearchString(self.show, ep_obj)]
 
-    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         sickrage.srLogger.debug("Search string: %s " % search_string)
 
@@ -76,7 +76,7 @@ class AnimeNZBProvider(NZBProvider):
 
         results = []
 
-        for item in self._doSearch("v2|v3|v4|v5"):
+        for item in self.search("v2|v3|v4|v5"):
 
             (title, url) = self._get_title_and_url(item)
 

@@ -260,7 +260,7 @@ class PLEXNotifier(srNotifiers):
 
             hosts_try = (hosts_all.copy(), hosts_match.copy())[bool(hosts_match)]
             host_list = []
-            for section_key, cur_host in hosts_try.iteritems():
+            for section_key, cur_host in hosts_try.items():
 
                 url = 'http://%s/library/sections/%s/refresh%s' % (cur_host, section_key, token_arg)
                 try:

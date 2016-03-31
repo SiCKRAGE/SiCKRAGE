@@ -3,6 +3,7 @@
     import sickrage
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import statusStrings
+    from sickrage.core.helpers.compat import cmp
 %>
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
@@ -13,7 +14,9 @@
         <table id="massUpdateTable" class="sickrageTable tablesorter" cellspacing="1" border="0" cellpadding="0">
             <thead>
             <tr>
-                <th class="col-checkbox">Selected<br><input type="checkbox" class="bulkCheck" id="editCheck"/></th>
+                <th class="col-checkbox">Selected<br/>
+                    <input type="checkbox" class="bulkCheck" id="checkAll"/>
+                </th>
                 <th class="nowrap" style="text-align: left;">Show Name</th>
                 <th class="col-quality">Quality</th>
                 <th class="col-legend">Sports</th>
@@ -53,36 +56,36 @@
 
                     <tr>
                         <td align="center">
-                            <input type="checkbox" class="showCheck" id="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingUpdated(curShow),sickrage.srCore.SHOWQUEUE.isInUpdateQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRefreshed(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingSubtitled(curShow), sickrage.srCore.SHOWQUEUE.isInSubtitleQueue(curShow)]))]}/>
+                            <input type="checkbox" class="showCheck"
+                                   id="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingUpdated(curShow),sickrage.srCore.SHOWQUEUE.isInUpdateQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRefreshed(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingSubtitled(curShow), sickrage.srCore.SHOWQUEUE.isInSubtitleQueue(curShow)]))]}/>
                         </td>
                         <td class="tvShow"><a href="/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
                         </td>
                         <td align="center">${renderQualityPill(curShow.quality, showTitle=True)}</td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_sports) == 1]}"
+                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_sports)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_scene) == 1]}"
+                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_scene)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.is_anime) == 1]}"
+                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_anime)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[not int(curShow.flatten_folders) == 1]}"
+                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[not bool(curShow.flatten_folders)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.archive_firstmatch) == 1]}"
+                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.archive_firstmatch)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.paused) == 1]}"
+                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.paused)]}"
                                 width="16" height="16"/></td>
                         <td align="center"><img
-                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[int(curShow.subtitles) == 1]}"
+                                src="/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.subtitles)]}"
                                 width="16" height="16"/></td>
                         <td align="center">${statusStrings[curShow.default_ep_status]}</td>
                         <td align="center">${curShow.status}</td>
                     </tr>
-
                 % endfor
             </tbody>
         </table>

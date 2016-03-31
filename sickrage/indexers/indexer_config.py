@@ -35,7 +35,6 @@ indexerConfig = {
                        'language': 'en',
                        'useZip': True,
                        },
-        'session': None,
         'trakt_id': 'tvdb_id',
         'xem_origin': 'tvdb',
         'icon': 'thetvdb16.png',

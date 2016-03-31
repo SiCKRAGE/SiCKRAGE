@@ -500,7 +500,7 @@ class MediaBrowserMetadata(GenericMetadata):
 
                 # fill in Persons section with collected directors, guest starts and writers
                 Persons = SubElement(episode, "Persons")
-                for person_type, names in persons_dict.iteritems():
+                for person_type, names in persons_dict.items():
                     # remove doubles
                     names = list(set(names))
                     for cur_name in names:

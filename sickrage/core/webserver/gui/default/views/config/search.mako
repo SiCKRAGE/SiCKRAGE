@@ -592,7 +592,7 @@
                                         <select name="torrent_auth_type" id="torrent_auth_type"
                                                 class="form-control input-sm">
                                             <% http_authtype = {'none': "None", 'basic': "Basic", 'digest': "Digest"} %>
-                                            % for authvalue, authname in http_authtype.iteritems():
+                                            % for authvalue, authname in http_authtype.items():
                                                 <option id="torrent_auth_type_value"
                                                         value="${authvalue}" ${('', 'selected="selected"')[sickrage.srConfig.TORRENT_AUTH_TYPE == authvalue]}>${authname}</option>
                                             % endfor

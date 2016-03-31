@@ -18,6 +18,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with enzyme.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import unicode_literals
+
 __all__ = ['Parser']
 
 import logging
@@ -152,15 +154,15 @@ class Ogm(core.AVContainer):
             # Regular File end
             return None, None
         elif len(h) < 27:
-            log.debug(u'%d Bytes of Garbage found after End.' % len(h))
+            log.debug('%d Bytes of Garbage found after End.' % len(h))
             return None, None
         if h[:4] != "OggS":
-            log.debug(u'Invalid Ogg')
+            log.debug('Invalid Ogg')
             raise ParseError()
 
         version = ord(h[4])
         if version != 0:
-            log.debug(u'Unsupported OGG/OGM Version %d' % version)
+            log.debug('Unsupported OGG/OGM Version %d' % version)
             return None, None
 
         head = struct.unpack('<BQIIIB', h[5:])
@@ -275,7 +277,7 @@ class Ogm(core.AVContainer):
                 (type, ssize, timeunit, ai.samplerate, ai.length, buffersize, \
                  ai.bitrate, ai.channels, bloc, ai.bitrate) = streamheader
                 self.samplerate = ai.samplerate
-                log.debug(u'Samplerate %d' % self.samplerate)
+                log.debug('Samplerate %d' % self.samplerate)
                 self.audio.append(ai)
                 self.all_streams.append(ai)
 
@@ -286,7 +288,7 @@ class Ogm(core.AVContainer):
                 self.all_streams.append(subtitle)
 
         else:
-            log.debug(u'Unknown Header')
+            log.debug('Unknown Header')
 
 
     def _extractHeaderString(self, header):

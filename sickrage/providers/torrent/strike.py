@@ -33,7 +33,7 @@ class STRIKEProvider(TorrentProvider):
         self.cache = StrikeCache(self)
         self.minseed, self.minleech = 2 * [None]
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -47,7 +47,7 @@ class STRIKEProvider(TorrentProvider):
 
                 searchURL = self.urls['base_url'] + "/api/v2/torrents/search/?category=TV&phrase=" + search_string
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                jdata = self.getURL(searchURL, json=True)
+                jdata = srSession(self.session, self.headers).get(searchURL, json=True)
                 if not jdata:
                     sickrage.srLogger.debug("No data returned from provider")
                     return []
@@ -97,4 +97,4 @@ class StrikeCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['x264']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

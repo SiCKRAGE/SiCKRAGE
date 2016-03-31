@@ -62,7 +62,7 @@ class SCCProvider(TorrentProvider):
                         'password': self.password,
                         'submit': 'come on in'}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -79,7 +79,7 @@ class SCCProvider(TorrentProvider):
         title = r'<title>.+? \| %s</title>' % section
         return re.search(title, text, re.IGNORECASE)
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
 
@@ -99,7 +99,7 @@ class SCCProvider(TorrentProvider):
 
                 try:
                     sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                    data = self.getURL(searchURL)
+                    data = srSession(self.session, self.headers).get(searchURL)
                     time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
                 except Exception as e:
                     sickrage.srLogger.warning("Unable to fetch data. Error: %s" % repr(e))
@@ -124,7 +124,7 @@ class SCCProvider(TorrentProvider):
 
                             title = link.string
                             if re.search(r'\.\.\.', title):
-                                data = self.getURL(self.urls['base_url'] + "/" + link['href'])
+                                data = srSession(self.session, self.headers).get(self.urls['base_url'] + "/" + link['href'])
                                 if data:
                                     with bs4_parser(data) as details_html:
                                         title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
@@ -186,4 +186,4 @@ class SCCCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

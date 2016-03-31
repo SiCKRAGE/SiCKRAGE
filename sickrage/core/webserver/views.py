@@ -32,9 +32,9 @@ from concurrent.futures import ThreadPoolExecutor
 from dateutil import tz
 from mako.exceptions import html_error_template, RichTraceback
 from mako.lookup import TemplateLookup
+from tornado import gen
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
-from tornado.gen import coroutine
 from tornado.ioloop import IOLoop
 from tornado.web import HTTPError, RequestHandler, authenticated
 
@@ -53,10 +53,10 @@ from sickrage.core.exceptions import CantRefreshShowException, \
     MultipleShowObjectsException, NoNFOException, \
     ShowDirectoryNotFoundException
 from sickrage.core.helpers import argToBool, backupAll, check_url, \
-    chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, getURL, \
-    get_lan_ip, makeDir, readFileBuffered, remove_article, restoreConfigZip, \
-    sanitizeFileName, searchIndexerForShowID, set_up_anidb_connection, tryInt
+    chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, get_lan_ip, makeDir, readFileBuffered, remove_article, restoreConfigZip, \
+    sanitizeFileName, tryInt
 from sickrage.core.helpers.browser import foldersAtPath
+from sickrage.core.helpers.compat import cmp
 from sickrage.core.imdb_popular import imdbPopular
 from sickrage.core.nameparser import validator
 from sickrage.core.process_tv import processDir
@@ -69,6 +69,7 @@ from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
     get_scene_numbering_for_show, get_xem_absolute_numbering_for_show, \
     get_xem_numbering_for_show, set_scene_numbering, xem_refresh
 from sickrage.core.searchers import subtitle_searcher
+from sickrage.core.srsession import srSession
 from sickrage.core.trakt import TraktAPI, traktException
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import TVShow
@@ -80,7 +81,6 @@ from sickrage.core.webserver.routes import Route
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.adba import aniDBAbstracter
 from sickrage.providers import NewznabProvider, TorrentRssProvider
-
 
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
@@ -112,7 +112,9 @@ class BaseHandler(RequestHandler):
     def async_call(self, function, **kwargs):
         threading.currentThread().setName(self.name)
         return recursive_unicode(function(
-            **{k: (v, ''.join(v))[isinstance(v, list) and len(v) == 1] for k, v in recursive_unicode(kwargs.items())}))
+            **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
+                    recursive_unicode(kwargs.items())])
+        ))
 
     def write_error(self, status_code, **kwargs):
         # handle 404 http errors
@@ -203,8 +205,8 @@ class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(WebHandler, self).__init__(*args, **kwargs)
 
-    @coroutine
     @authenticated
+    @gen.coroutine
     def prepare(self, *args, **kwargs):
         # route -> method obj
         method = getattr(self, self.request.path.strip('/').split('/')[::-1][0].replace('.', '_'),
@@ -219,12 +221,12 @@ class LoginHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(LoginHandler, self).__init__(*args, **kwargs)
 
-    @coroutine
+    @gen.coroutine
     def prepare(self, *args, **kwargs):
         try:
             result = yield self.async_call(self.checkAuth)
             if not self._finished:
-                self.finish(result)
+                raise self.finish(result)
         except Exception:
             sickrage.srLogger.debug(
                 'Failed doing webui login request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
@@ -1292,7 +1294,7 @@ class Home(WebRoot):
             return "No scene exceptions"
 
         out = []
-        for season, names in iter(sorted(exceptionsList.iteritems())):
+        for season, names in iter(sorted(exceptionsList.items())):
             if season == -1:
                 season = "*"
             out.append("S" + str(season) + ": " + ", ".join(names))
@@ -1336,9 +1338,9 @@ class Home(WebRoot):
                 whitelist = showObj.release_groups.whitelist
                 blacklist = showObj.release_groups.blacklist
 
-                if set_up_anidb_connection() and not anidb_failed:
+                if sickrage.srCore.ADBA_CONNECTION and not anidb_failed:
                     try:
-                        anime = aniDBAbstracter.Anime(sickrage.srConfig.ADBA_CONNECTION, name=showObj.name)
+                        anime = aniDBAbstracter.Anime(sickrage.srCore.ADBA_CONNECTION, name=showObj.name)
                         groups = anime.get_groups()
                     except Exception as e:
                         anidb_failed = True
@@ -1822,7 +1824,7 @@ class Home(WebRoot):
             msg = "Backlog was automatically started for the following seasons of <b>" + showObj.name + "</b>:<br>"
             msg += '<ul>'
 
-            for season, segment in segments.iteritems():
+            for season, segment in segments.items():
                 sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(showObj, segment))
 
                 msg += "<li>Season " + str(season) + "</li>"
@@ -1841,7 +1843,7 @@ class Home(WebRoot):
             msg = "Retrying Search was automatically started for the following season of <b>" + showObj.name + "</b>:<br>"
             msg += '<ul>'
 
-            for season, segment in segments.iteritems():
+            for season, segment in segments.items():
                 sickrage.srCore.SEARCHQUEUE.add_item(FailedQueueItem(showObj, segment))
 
                 msg += "<li>Season " + str(season) + "</li>"
@@ -1965,16 +1967,8 @@ class Home(WebRoot):
             ep_queue_item = ManualSearchQueueItem(ep_obj.show, ep_obj, bool(int(downCurQuality)))
 
             sickrage.srCore.SEARCHQUEUE.add_item(ep_queue_item)
-
-            if not ep_queue_item.started and ep_queue_item.success is None:
-                return json_encode(
-                    {
-                        'result': 'success'})  # I Actually want to call it queued, because the search hasnt been started yet!
-            if ep_queue_item.started and ep_queue_item.success is None:
+            if not all([ep_queue_item.started, ep_queue_item.success]):
                 return json_encode({'result': 'success'})
-            else:
-                return json_encode({'result': 'failure'})
-
         return json_encode({'result': 'failure'})
 
     ### Returns the current ep_queue_item status for the current viewed show.
@@ -2171,24 +2165,17 @@ class Home(WebRoot):
         if isinstance(ep_obj, TVEpisode):
             # make a queue item for it and put it on the queue
             ep_queue_item = FailedQueueItem(ep_obj.show, [ep_obj], bool(int(downCurQuality)))
+
             sickrage.srCore.SEARCHQUEUE.add_item(ep_queue_item)
-
-            if not ep_queue_item.started and ep_queue_item.success is None:
-                return json_encode(
-                    {
-                        'result': 'success'})  # I Actually want to call it queued, because the search hasnt been started yet!
-            if ep_queue_item.started and ep_queue_item.success is None:
+            if not all([ep_queue_item.started, ep_queue_item.success]):
                 return json_encode({'result': 'success'})
-            else:
-                return json_encode({'result': 'failure'})
-
         return json_encode({'result': 'failure'})
 
     @staticmethod
     def fetch_releasegroups(show_name):
         sickrage.srLogger.info('ReleaseGroups: %s' % show_name)
-        if set_up_anidb_connection():
-            anime = aniDBAbstracter.Anime(sickrage.srConfig.ADBA_CONNECTION, name=show_name)
+        if sickrage.srCore.ADBA_CONNECTION:
+            anime = aniDBAbstracter.Anime(sickrage.srCore.ADBA_CONNECTION, name=show_name)
             groups = anime.get_groups()
             sickrage.srLogger.info('ReleaseGroups: %s' % groups)
             return json_encode({'result': 'success', 'groups': groups})
@@ -2250,7 +2237,7 @@ class changelog(WebRoot):
 
     def index(self):
         try:
-            changes = getURL(sickrage.srConfig.CHANGES_URL)
+            changes = srSession().get(sickrage.srConfig.CHANGES_URL)
         except Exception:
             sickrage.srLogger.debug('Could not load changes from repo, giving a link!')
             changes = 'Could not load changes from the repo. [Click here for CHANGES.md]({})'.format(
@@ -2416,25 +2403,25 @@ class HomeAddShows(Home):
 
                 dir_list.append(cur_dir)
 
-                indexer_id = show_name = indexer = None
+                showid = show_name = indexer = None
                 for cur_provider in sickrage.srCore.metadataProviderDict.values():
-                    if not (indexer_id and show_name):
-                        (indexer_id, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
+                    if not (showid and show_name):
+                        (showid, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
 
                         # default to TVDB if indexer was not detected
-                        if show_name and not (indexer or indexer_id):
-                            (sn, idxr, i) = searchIndexerForShowID(show_name, indexer, indexer_id)
+                        if show_name and not (indexer or showid):
+                            (sn, idxr, i) = srIndexerApi(indexer).searchForShowID(show_name, showid)
 
                             # set indexer and indexer_id from found info
                             if not indexer and idxr:
                                 indexer = idxr
 
-                            if not indexer_id and i:
-                                indexer_id = i
+                            if not showid and i:
+                                showid = i
 
-                cur_dir['existing_info'] = (indexer_id, show_name, indexer)
+                cur_dir['existing_info'] = (showid, show_name, indexer)
 
-                if indexer_id and findCertainShow(sickrage.srCore.SHOWLIST, indexer_id):
+                if showid and findCertainShow(sickrage.srCore.SHOWLIST, showid):
                     cur_dir['added_already'] = True
 
         return self.render(
@@ -2934,8 +2921,7 @@ class Manage(Home, WebRoot):
             title='Mass Update',
             header='Mass Update',
             topmenu='manage',
-            controller='manage',
-            action='index'
+            controller='manage'
         )
 
     @staticmethod
@@ -3469,6 +3455,7 @@ class Manage(Home, WebRoot):
 
     def massUpdate(self, toUpdate=None, toRefresh=None, toRename=None, toDelete=None, toRemove=None, toMetadata=None,
                    toSubtitle=None):
+
         if toUpdate is not None:
             toUpdate = toUpdate.split('|')
         else:
@@ -3935,7 +3922,7 @@ class ConfigGeneral(Config):
         sickrage.srConfig.CALENDAR_UNPROTECTED = sickrage.srConfig.checkbox_to_value(calendar_unprotected)
         sickrage.srConfig.CALENDAR_ICONS = sickrage.srConfig.checkbox_to_value(calendar_icons)
         sickrage.srConfig.NO_RESTART = sickrage.srConfig.checkbox_to_value(no_restart)
-        sickrage.srConfig.DEBUG = sickrage.srConfig.checkbox_to_value(debug)
+        sickrage.DEBUG = sickrage.srConfig.checkbox_to_value(debug)
         sickrage.srConfig.SSL_VERIFY = sickrage.srConfig.checkbox_to_value(ssl_verify)
         # sickrage.LOG_DIR is set in sickrage.CONFIG.change_log_dir()
         sickrage.srConfig.COMING_EPS_MISSED_RANGE = sickrage.srConfig.to_int(coming_eps_missed_range,
@@ -4523,7 +4510,7 @@ class ConfigProviders(Config):
         sickrage.srCore.providersDict.sort(re.findall(r'\w+[^\W\s]', provider_order))
 
         # save provider settings
-        sickrage.srConfig.save(providers=True)
+        sickrage.srConfig.save()
 
         if len(results) > 0:
             for x in results:
@@ -4979,8 +4966,7 @@ class Logs(WebRoot):
         minLevel = minLevel or sickrage.srLogger.INFO
 
         logFiles = [sickrage.srConfig.LOG_FILE] + ["{}.{}".format(sickrage.srConfig.LOG_FILE, x) for x in
-                                                   xrange(int(
-                                                       sickrage.srConfig.LOG_NR))]
+                                                   xrange(int(sickrage.srConfig.LOG_NR))]
 
         levelsFiltered = b'|'.join(
             [x for x in sickrage.srLogger.logLevels.keys() if

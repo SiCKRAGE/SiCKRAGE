@@ -28,8 +28,8 @@ import time
 
 import sickrage
 from sickrage.core.databases import cache_db
-from sickrage.core.helpers import full_sanitizeSceneName, getURL, \
-    sanitizeSceneName
+from sickrage.core.helpers import full_sanitizeSceneName, sanitizeSceneName
+from sickrage.core.srsession import srSession
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.adba.aniDBAbstracter import Anime
 
@@ -87,7 +87,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
             try:
                 # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
                 cur_line = None
-                for cur_line in getURL(loc).splitlines():
+                for cur_line in srSession().get(loc).splitlines():
                     indexer_id, _, aliases = cur_line.partition(':')  # @UnusedVariable
                     if not aliases:
                         continue
@@ -121,7 +121,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
             continue
 
         for cur_exception_dict in exception_dict[cur_indexer_id]:
-            for ex in cur_exception_dict.iteritems():
+            for ex in cur_exception_dict.items():
                 cur_exception, curSeason = ex
                 if cur_exception not in existing_exceptions:
                     sql_l.append(
@@ -299,7 +299,7 @@ def _xem_exceptions_fetcher():
             url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % srIndexerApi(indexer).config[
                 'xem_origin']
 
-            parsedJSON = getURL(url, timeout=90, json=True)
+            parsedJSON = srSession().get(url, timeout=90, json=True)
             if not parsedJSON:
                 sickrage.srLogger.debug("Check scene exceptions update failed for " + srIndexerApi(
                     indexer).name + ", Unable to get URL: " + url)
@@ -308,7 +308,7 @@ def _xem_exceptions_fetcher():
             if parsedJSON['result'] == 'failure':
                 continue
 
-            for indexerid, names in parsedJSON['data'].iteritems():
+            for indexerid, names in parsedJSON['data'].items():
                 try:
                     xem_exception_dict[int(indexerid)] = names
                 except Exception as e:

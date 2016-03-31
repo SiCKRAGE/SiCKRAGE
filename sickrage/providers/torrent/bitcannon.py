@@ -23,6 +23,7 @@ from urllib import quote_plus
 
 import sickrage
 from sickrage.core.caches import tv_cache
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -43,11 +44,12 @@ class BitCannonProvider(TorrentProvider):
             'trackers': '{base_url}/stats'.format(base_url=self.urls['base_url']),
         })
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        trackers = (self.getURL(self.urls['trackers'], json=True) or {}).get('Trackers', [])
+        trackers = (srSession(self.session, self.headers).get(self.urls['trackers'], json=True) or {}).get('Trackers', [])
+
         if not trackers:
             sickrage.srLogger.info('Could not get tracker list from BitCannon, aborting search')
             return results
@@ -57,7 +59,7 @@ class BitCannonProvider(TorrentProvider):
             for search_string in search_strings[mode]:
                 searchURL = self.urls['search'] + search_string
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = self.getURL(searchURL, json=True)
+                data = srSession(self.session, self.headers).get(searchURL, json=True)
                 for item in data or []:
                     if 'tv' not in (item.get('Category') or '').lower():
                         continue
@@ -113,4 +115,4 @@ class BitCannonCache(tv_cache.TVCache):
     def _getRSSData(self):
         return {'entries': []}
         # search_strings = {'RSS': ['']}
-        # return {'entries': self.provider._doSearch(search_strings)}
+        # return {'entries': self.provider.search(search_strings)}

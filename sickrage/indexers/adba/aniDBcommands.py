@@ -61,7 +61,7 @@ class Command:
 
     def flatten(self, command, parameters):
         tmp = []
-        for key, value in parameters.iteritems():
+        for key, value in parameters.items():
             if value is None:
                 continue
             tmp.append("%s=%s" % (self.escape(key), self.escape(value)))

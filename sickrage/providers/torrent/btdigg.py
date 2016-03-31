@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 
 import sickrage
 from sickrage.core.caches import tv_cache
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -39,7 +40,7 @@ class BTDIGGProvider(TorrentProvider):
 
         self.cache = BTDiggCache(self)
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -54,7 +55,7 @@ class BTDIGGProvider(TorrentProvider):
                 searchURL = self.urls['api'] + "api/private-341ada3245790954/s02?q=" + search_string + "&p=0&order=1"
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
-                jdata = self.getURL(searchURL, json=True)
+                jdata = srSession(self.session, self.headers).get(searchURL, json=True)
                 if not jdata:
                     sickrage.srLogger.info("No data returned to be parsed!!!")
                     return []
@@ -104,4 +105,4 @@ class BTDiggCache(tv_cache.TVCache):
     def _getRSSData(self):
         # Use x264 for RSS search since most results will use that codec and since the site doesnt have latest results search
         search_params = {'RSS': ['x264']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

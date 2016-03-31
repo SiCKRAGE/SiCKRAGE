@@ -24,6 +24,7 @@ import traceback
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import bs4_parser
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -66,7 +67,7 @@ class BitSoupProvider(TorrentProvider):
             'ssl': 'yes'
         }
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -77,7 +78,7 @@ class BitSoupProvider(TorrentProvider):
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -94,7 +95,7 @@ class BitSoupProvider(TorrentProvider):
 
                 self.search_params['search'] = search_string
 
-                data = self.getURL(self.urls['search'], params=self.search_params)
+                data = srSession(self.session, self.headers, self.search_params).get(self.urls['search'])
                 if not data:
                     continue
 
@@ -163,4 +164,4 @@ class BitSoupCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

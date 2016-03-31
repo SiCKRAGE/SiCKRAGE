@@ -62,8 +62,8 @@ class IPTorrentsProvider(TorrentProvider):
                         'password': self.password,
                         'login': 'submit'}
 
-        self.getURL(self.urls['login'], timeout=30)
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        srSession(self.session, self.headers).get(self.urls['login'], timeout=30)
+        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -78,7 +78,7 @@ class IPTorrentsProvider(TorrentProvider):
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -100,7 +100,7 @@ class IPTorrentsProvider(TorrentProvider):
                 searchURL += ';o=seeders' if mode is not 'RSS' else ''
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
-                data = self.getURL(searchURL)
+                data = srSession(self.session, self.headers).get(searchURL)
                 if not data:
                     continue
 
@@ -187,4 +187,4 @@ class IPTorrentsCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

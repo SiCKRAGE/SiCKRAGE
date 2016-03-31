@@ -111,7 +111,7 @@ class srWebServer(object):
 
         # Load the app
         self.app = Application([],
-                               debug=sickrage.srConfig.DEBUG,
+                               debug=sickrage.DEBUG,
                                autoreload=False,
                                gzip=sickrage.srConfig.WEB_USE_GZIP,
                                xheaders=sickrage.srConfig.HANDLE_REVERSE_PROXY,

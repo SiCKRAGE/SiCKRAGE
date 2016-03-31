@@ -44,13 +44,14 @@ from sickrage.core.classes import NZBSearchResult, Proper, SearchResult, \
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT
 from sickrage.core.databases import main_db
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import chmodAsParent, download_file, \
-    findCertainShow, getURL, remove_file_failed, \
+from sickrage.core.helpers import chmodAsParent, \
+    findCertainShow, remove_file_failed, \
     sanitizeFileName, sanitizeSceneName
 from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
+from sickrage.core.srsession import srSession
 
 
 class GenericProvider(object):
@@ -120,16 +121,6 @@ class GenericProvider(object):
         result.provider = self
         return result
 
-    def getURL(self, url, post_data=None, params=None, timeout=30, json=False, needBytes=False):
-        """
-        By default this is just a simple urlopen call but this method should be overridden
-        for providers with special URL requirements (like cookies)
-        """
-
-        return getURL(url.format(base_url=self.urls['base_url']), post_data=post_data, params=params,
-                      headers=self.headers, timeout=timeout,
-                      session=self.session, json=json, needBytes=needBytes)
-
     def make_url(self, result):
         urls = []
         filename = ''
@@ -183,7 +174,7 @@ class GenericProvider(object):
             if url.endswith('torrent') and filename.endswith('nzb'):
                 filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
 
-            if download_file(url, filename, session=self.session, headers=self.headers):
+            if srSession(self.session, self.headers).download(url, filename):
                 if self._verify_download(filename):
                     sickrage.srLogger.info("Saved result to " + filename)
                     return True
@@ -231,7 +222,7 @@ class GenericProvider(object):
         quality = Quality.sceneQuality(title, anime)
         return quality
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
         return []
 
     def _get_season_search_strings(self, episode):
@@ -307,7 +298,7 @@ class GenericProvider(object):
                 sickrage.srLogger.debug('First search_string has rid')
 
             for curString in search_strings:
-                itemList += self._doSearch(curString, search_mode, len(episodes), epObj=epObj)
+                itemList += self.search(curString, search_mode, len(episodes), epObj=epObj)
                 if first:
                     first = False
                     if itemList:
@@ -336,8 +327,8 @@ class GenericProvider(object):
                     else:
                         items[quality].append(item)
 
-            itemList = list(itertools.chain(*[v for (k, v) in sorted(items.iteritems(), reverse=True)]))
-            itemList += itemsUnknown if itemsUnknown else []
+            itemList = list(itertools.chain(*[v for (k, v) in sorted(items.items(), reverse=True)]))
+            itemList += itemsUnknown or []
 
         # filter results
         cl = []
@@ -657,7 +648,7 @@ class TorrentProvider(GenericProvider):
                 for term in self.proper_strings:
                     searchString = self._get_episode_search_strings(curEp, add_string=term)
 
-                    for item in self._doSearch(searchString[0]):
+                    for item in self.search(searchString[0]):
                         title, url = self._get_title_and_url(item)
                         results.append(Proper(title, url, datetime.datetime.today(), show))
 
@@ -787,7 +778,9 @@ class TorrentRssProvider(TorrentProvider):
                 if self.cookies:
                     requests.utils.add_dict_to_cookiejar(self.session.cookies,
                                                          dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
-                torrent_file = self.getURL(url)
+
+                torrent_file = srSession(self.session, self.headers).get(url)
+
                 try:
                     bencode.bdecode(torrent_file)
                 except Exception as e:
@@ -853,9 +846,6 @@ class NewznabProvider(NZBProvider):
         self.default = default
         self.last_search = datetime.datetime.now()
 
-    def _getURL(self, url, post_data=None, params=None, timeout=30, json=False):
-        return self.getURL(url, post_data=post_data, params=params, timeout=timeout, json=json)
-
     def get_newznab_categories(self):
         """
         Uses the newznab provider url and apikey to get the capabilities.
@@ -874,7 +864,7 @@ class NewznabProvider(NZBProvider):
             params['apikey'] = self.key
 
         try:
-            data = xmltodict.parse(getURL("{}api?{}".format(self.urls['base_url'], urllib.urlencode(params))))
+            data = xmltodict.parse(srSession(self.session, self.headers).get("{}api?{}".format(self.urls['base_url'], urllib.urlencode(params))))
             for category in data["caps"]["categories"]["category"]:
                 if category.get('@name') == 'TV':
                     categories += [{"id": category['@id'], "name": category['@name']}]
@@ -948,7 +938,7 @@ class NewznabProvider(NZBProvider):
         return to_return
 
     def _doGeneralSearch(self, search_string):
-        return self._doSearch({'q': search_string})
+        return self.search({'q': search_string})
 
     def _checkAuth(self):
         return True
@@ -985,7 +975,7 @@ class NewznabProvider(NZBProvider):
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         self._checkAuth()
 
@@ -1074,7 +1064,7 @@ class NewznabProvider(NZBProvider):
                 curEp = self.show.getEpisode(int(sqlshow["season"]), int(sqlshow["episode"]))
                 searchStrings = self._get_episode_search_strings(curEp, add_string='PROPER|REPACK')
                 for searchString in searchStrings:
-                    for item in self._doSearch(searchString):
+                    for item in self.search(searchString):
                         title, url = self._get_title_and_url(item)
                         if re.match(r'.*(REPACK|PROPER).*', title, re.I):
                             results.append(Proper(title, url, datetime.datetime.today(), self.show))
@@ -1163,10 +1153,10 @@ class providersDict(dict):
 
         self.filename = os.path.abspath(os.path.join(sickrage.DATA_DIR, 'providers.db'))
 
-        self[NZBProvider.type] = {p.id: p for p in NZBProvider.getProviders()}
-        self[TorrentProvider.type] = {p.id: p for p in TorrentProvider.getProviders()}
-        self[NewznabProvider.type] = {p.id: p for p in NewznabProvider.getProviders()}
-        self[TorrentRssProvider.type] = {p.id: p for p in TorrentRssProvider.getProviders()}
+        self[NZBProvider.type] = dict([(p.id, p) for p in NZBProvider.getProviders()])
+        self[TorrentProvider.type] = dict([(p.id, p) for p in TorrentProvider.getProviders()])
+        self[NewznabProvider.type] = dict([(p.id, p) for p in NewznabProvider.getProviders()])
+        self[TorrentRssProvider.type] = dict([(p.id, p) for p in TorrentRssProvider.getProviders()])
 
         self.provider_order = []
         self.sort()
@@ -1199,10 +1189,10 @@ class providersDict(dict):
         return OrderedDict([(x.id, x) for x in sorted_providers])
 
     def enabled(self):
-        return {pID: pObj for pID, pObj in self.all().items() if pObj.isEnabled}
+        return dict([(pID, pObj) for pID, pObj in self.all().items() if pObj.isEnabled])
 
     def disabled(self):
-        return {pID: pObj for pID, pObj in self.all().items() if not pObj.isEnabled}
+        return dict([(pID, pObj) for pID, pObj in self.all().items() if not pObj.isEnabled])
 
     def all(self):
         return reduce(lambda a, b: a.update(b) or a, [

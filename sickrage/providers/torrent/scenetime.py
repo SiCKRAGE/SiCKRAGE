@@ -57,7 +57,7 @@ class SceneTimeProvider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -68,7 +68,7 @@ class SceneTimeProvider(TorrentProvider):
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -86,7 +86,7 @@ class SceneTimeProvider(TorrentProvider):
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
-                data = self.getURL(searchURL)
+                data = srSession(self.session, self.headers).get(searchURL)
                 if not data:
                     continue
 
@@ -167,4 +167,4 @@ class SceneTimeCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

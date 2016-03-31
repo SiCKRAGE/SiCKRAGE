@@ -121,7 +121,7 @@ class Asf(core.AVContainer):
         if reserved1 != 0x01 or reserved2 != 0x02:
             raise ParseError()
 
-        log.debug(u'Header size: %d / %d objects' % (objsize, objnum))
+        log.debug('Header size: %d / %d objects' % (objsize, objnum))
         header = file.read(objsize - 30)
         for _ in range(0, objnum):
             h = self._getnextheader(header)
@@ -178,7 +178,7 @@ class Asf(core.AVContainer):
             # WORD
             value = struct.unpack('<H', descriptorvalue)[0]
         else:
-            log.debug(u'Unknown Descriptor Type %d' % descriptortype)
+            log.debug('Unknown Descriptor Type %d' % descriptortype)
         return (pos, descriptorname, value)
 
     def _parsekv2(self, s):
@@ -211,7 +211,7 @@ class Asf(core.AVContainer):
             # WORD
             value = struct.unpack('<H', descriptorvalue)[0]
         else:
-            log.debug(u'Unknown Descriptor Type %d' % descriptortype)
+            log.debug('Unknown Descriptor Type %d' % descriptortype)
         return (pos, descriptorname, value, strno)
 
     def _getnextheader(self, s):
@@ -219,14 +219,14 @@ class Asf(core.AVContainer):
         (guidstr, objsize) = r
         guid = self._parseguid(guidstr)
         if guid == GUIDS['ASF_File_Properties_Object']:
-            log.debug(u'File Properties Object')
+            log.debug('File Properties Object')
             val = struct.unpack('<16s6Q4I', s[24:24 + 80])
             (fileid, size, date, packetcount, duration, senddur, preroll, flags, minpack, maxpack, maxbr) = val
             # FIXME: parse date to timestamp
             self.length = duration / 10000000.0
 
         elif guid == GUIDS['ASF_Stream_Properties_Object']:
-            log.debug(u'Stream Properties Object [%d]' % objsize)
+            log.debug('Stream Properties Object [%d]' % objsize)
             streamtype = self._parseguid(s[24:40])
             errortype = self._parseguid(s[40:56])
             offset, typelen, errorlen, flags = struct.unpack('<QIIH', s[56:74])
@@ -263,24 +263,24 @@ class Asf(core.AVContainer):
             self._apply_extinfo(streamid)
 
         elif guid == GUIDS['ASF_Header_Extension_Object']:
-            log.debug(u'ASF_Header_Extension_Object %d' % objsize)
+            log.debug('ASF_Header_Extension_Object %d' % objsize)
             size = struct.unpack('<I', s[42:46])[0]
             data = s[46:46 + size]
             while len(data):
-                log.debug(u'Sub:')
+                log.debug('Sub:')
                 h = self._getnextheader(data)
                 data = data[h[1]:]
 
         elif guid == GUIDS['ASF_Codec_List_Object']:
-            log.debug(u'List Object')
+            log.debug('List Object')
             pass
 
         elif guid == GUIDS['ASF_Error_Correction_Object']:
-            log.debug(u'Error Correction')
+            log.debug('Error Correction')
             pass
 
         elif guid == GUIDS['ASF_Content_Description_Object']:
-            log.debug(u'Content Description Object')
+            log.debug('Content Description Object')
             val = struct.unpack('<5H', s[24:24 + 10])
             pos = 34
             strings = []
@@ -329,7 +329,7 @@ class Asf(core.AVContainer):
                 idlen = struct.unpack('<B', s[pos:pos + 1])[0]
                 idstring = s[pos + 1:pos + 1 + idlen]
                 idstring = unicode(idstring, 'utf-16').replace('\0', '')
-                log.debug(u'Language: %d/%d: %r' % (i + 1, count, idstring))
+                log.debug('Language: %d/%d: %r' % (i + 1, count, idstring))
                 self._languages.append(idstring)
                 pos += 1 + idlen
 
@@ -348,11 +348,11 @@ class Asf(core.AVContainer):
             # Just print the type:
             for h in GUIDS.keys():
                 if GUIDS[h] == guid:
-                    log.debug(u'Unparsed %r [%d]' % (h, objsize))
+                    log.debug('Unparsed %r [%d]' % (h, objsize))
                     break
             else:
                 u = "%.8X-%.4X-%.4X-%.2X%.2X-%s" % guid
-                log.debug(u'unknown: len=%d [%d]' % (len(u), objsize))
+                log.debug('unknown: len=%d [%d]' % (len(u), objsize))
         return r
 
 

@@ -71,13 +71,13 @@ class Response:
 
         m = 0
         for line in self.datalines:
-            for k, v in line.iteritems():
+            for k, v in line.items():
                 if len(k) > m:
                     m = len(k)
 
         for line in self.datalines:
             tmp += "  Line:\n"
-            for k, v in line.iteritems():
+            for k, v in line.items():
                 tmp += "    %s:%s %s\n" % (k, (m - len(k)) * ' ', v)
         return tmp
 

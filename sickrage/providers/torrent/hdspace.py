@@ -28,6 +28,7 @@ import requests
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import bs4_parser
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -72,7 +73,7 @@ class HDSpaceProvider(TorrentProvider):
         login_params = {'uid': self.username,
                         'pwd': self.password}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -83,7 +84,7 @@ class HDSpaceProvider(TorrentProvider):
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -104,7 +105,7 @@ class HDSpaceProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s" % search_string)
 
-                data = self.getURL(searchURL)
+                data = srSession(self.session, self.headers).get(searchURL)
                 if not data or 'please try later' in data:
                     sickrage.srLogger.debug("No data returned from provider")
                     continue
@@ -177,13 +178,13 @@ class HDSpaceProvider(TorrentProvider):
         size, modifier = size.split(' ')
         size = float(size)
         if modifier in 'KB':
-            size = size * 1024
+            size *= 1024
         elif modifier in 'MB':
-            size = size * 1024 ** 2
+            size *= 1024 ** 2
         elif modifier in 'GB':
-            size = size * 1024 ** 3
+            size *= 1024 ** 3
         elif modifier in 'TB':
-            size = size * 1024 ** 4
+            size *= 1024 ** 4
         return int(size)
 
 
@@ -196,4 +197,4 @@ class HDSpaceCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

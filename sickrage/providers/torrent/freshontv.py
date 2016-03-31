@@ -27,6 +27,7 @@ import requests
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import tryInt, bs4_parser
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -74,7 +75,7 @@ class FreshOnTVProvider(TorrentProvider):
                             'password': self.password,
                             'login': 'submit'}
 
-            response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+            response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
             if not response:
                 sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
@@ -103,7 +104,7 @@ class FreshOnTVProvider(TorrentProvider):
 
                     return False
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -122,7 +123,7 @@ class FreshOnTVProvider(TorrentProvider):
 
                 searchURL = self.urls['search'] % (freeleech, search_string)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = self.getURL(searchURL)
+                data = srSession(self.session, self.headers).get(searchURL)
                 max_page_number = 0
 
                 if not data:
@@ -165,8 +166,7 @@ class FreshOnTVProvider(TorrentProvider):
 
                         time.sleep(1)
                         page_searchURL = searchURL + '&page=' + str(i)
-                        # '.log(u"Search string: " + page_searchURL, LOGGER.DEBUG)
-                        page_html = self.getURL(page_searchURL)
+                        page_html = srSession(self.session, self.headers).get(page_searchURL)
 
                         if not page_html:
                             continue
@@ -252,4 +252,4 @@ class FreshOnTVCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

@@ -42,7 +42,7 @@ class NyaaProvider(TorrentProvider):
         self.minleech = 0
         self.confirmed = False
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         if self.show and not self.show.is_anime:
             return []
 
@@ -133,4 +133,4 @@ class NyaaCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

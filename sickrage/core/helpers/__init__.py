@@ -22,21 +22,13 @@ import traceback
 import urlparse
 import uuid
 import zipfile
-from _socket import timeout as SocketTimeout
-from contextlib import closing, contextmanager
+from contextlib import contextmanager
 
-import requests
 import six
 from bs4 import BeautifulSoup
 
 import sickrage
-from sickrage.clients import http_error_code
-from sickrage.core.classes import ShowListUI
 from sickrage.core.exceptions import MultipleShowObjectsException
-from sickrage.core.srsession import srSession
-from sickrage.indexers import adba, srIndexerApi
-from sickrage.indexers.indexer_exceptions import indexer_episodenotfound, \
-    indexer_seasonnotfound
 
 mediaExtensions = [
     'avi', 'mkv', 'mpg', 'mpeg', 'wmv',
@@ -79,32 +71,29 @@ def readFileBuffered(filename, reverse=False):
             del data
 
 
-def normalize_url(url):
-    url = str(url)
-    segments = url.split('/')
-    correct_segments = []
-    for segment in segments:
-        if segment != '':
-            correct_segments.append(segment)
-    first_segment = str(correct_segments[0])
-    if first_segment.find('http') == -1:
-        correct_segments = ['http:'] + correct_segments
-    correct_segments[0] = correct_segments[0] + '/'
-    normalized_url = '/'.join(correct_segments)
-    return normalized_url
-
-
 def argToBool(x):
     """
     convert argument of unknown type to a bool:
     """
 
-    class FalseStrings:
-        val = ("", "0", "false", "f", "no", "n", "off")
-
     if isinstance(x, six.string_types):
-        return (x.lower() not in FalseStrings.val)
+        if x.lower() in ("0", "false", "f", "no", "n", "off"):
+            return False
+        elif x.lower() in ("1", "true", "t", "yes", "y", "on"):
+            return True
+        raise ValueError("failed to cast as boolean")
+
     return bool(x)
+
+
+def autoType(s):
+    for fn in (argToBool, int, float):
+        try:
+            return fn(s)
+        except ValueError:
+            pass
+
+    return (s, None)[s.lower() == "none"]
 
 
 def fixGlob(path):
@@ -195,7 +184,7 @@ def remove_non_release_groups(name):
     }
 
     _name = name
-    for remove_string, remove_type in removeWordsList.iteritems():
+    for remove_string, remove_type in removeWordsList.items():
         if remove_type == 'search':
             _name = _name.replace(remove_string, '')
         elif remove_type == 'searchre':
@@ -330,7 +319,7 @@ def sanitizeFileName(name):
     # remove bad chars from the filename
     name = re.sub(r'[\\/\*]', '-', name)
     name = re.sub(r'[:"<>|?]', '', name)
-    name = re.sub(ur'\u2122', '', name)  # Trade Mark Sign
+    name = re.sub(r'\u2122', '', name)  # Trade Mark Sign
 
     # remove leading/trailing periods and spaces
     name = name.strip(' .')
@@ -391,61 +380,6 @@ def makeDir(path):
         except OSError:
             return False
     return True
-
-
-def searchIndexerForShowID(regShowName, indexer=None, indexer_id=None, ui=ShowListUI):
-    """
-    Contacts indexer to check for information on shows by showid
-
-    :param regShowName: Name of show
-    :param indexer: Which indexer to use
-    :param indexer_id: Which indexer ID to look for
-    :param ui: Custom UI for indexer use
-    :return:
-    """
-
-    showNames = [re.sub('[. -]', ' ', regShowName)]
-
-    # Query Indexers for each search term and build the list of results
-    for i in srIndexerApi().indexers if not indexer else int(indexer or []):
-        # Query Indexers for each search term and build the list of results
-        lINDEXER_API_PARMS = srIndexerApi(i).api_params.copy()
-        if ui is not None:
-            lINDEXER_API_PARMS['custom_ui'] = ui
-        t = srIndexerApi(i).indexer(**lINDEXER_API_PARMS)
-
-        for name in showNames:
-            sickrage.srLogger.debug("Trying to find " + name + " on " + srIndexerApi(i).name)
-
-            try:
-                search = t[indexer_id] if indexer_id else t[name]
-            except Exception:
-                continue
-
-            try:
-                seriesname = search[0]['seriesname']
-            except Exception:
-                seriesname = None
-
-            try:
-                series_id = search[0]['id']
-            except Exception:
-                series_id = None
-
-            if not (seriesname and series_id):
-                continue
-            ShowObj = findCertainShow(sickrage.srCore.SHOWLIST, int(series_id))
-            # Check if we can find the show in our list (if not, it's not the right show)
-            if (indexer_id is None) and (ShowObj is not None) and (ShowObj.indexerid == int(series_id)):
-                return seriesname, i, int(series_id)
-            elif (indexer_id is not None) and (int(indexer_id) == int(series_id)):
-                return seriesname, i, int(indexer_id)
-
-        if indexer:
-            break
-
-    return None, None, None
-
 
 def listMediaFiles(path):
     """
@@ -516,7 +450,7 @@ def link(src, dst):
     """
 
     if os.name == 'nt':
-        if ctypes.windll.kernel32.CreateHardLinkW(unicode(dst), unicode(src), 0) == 0:
+        if ctypes.windll.kernel32.CreateHardLinkW(dst, src, 0) == 0:
             raise ctypes.WinError()
     else:
         os.link(src, dst)
@@ -548,7 +482,7 @@ def symlink(src, dst):
     """
 
     if os.name == 'nt':
-        if ctypes.windll.kernel32.CreateSymbolicLinkW(unicode(dst), unicode(src),
+        if ctypes.windll.kernel32.CreateSymbolicLinkW(dst, src,
                                                       1 if os.path.isdir(src) else 0) in [0, 1280]:
             raise ctypes.WinError()
     else:
@@ -1035,6 +969,7 @@ def anon_url(*url):
 
     return '{}{}'.format(sickrage.srConfig.ANON_REDIRECT, url)
 
+
 def full_sanitizeSceneName(name):
     return re.sub('[. -]', ' ', sanitizeSceneName(name)).lower().lstrip()
 
@@ -1052,7 +987,7 @@ def is_hidden_folder(folder):
 
     def has_hidden_attribute(filepath):
         try:
-            attrs = ctypes.windll.kernel32.GetFileAttributesW(unicode(filepath))
+            attrs = ctypes.windll.kernel32.GetFileAttributesW(filepath)
             assert attrs != -1
             result = bool(attrs & 2)
         except (AttributeError, AssertionError):
@@ -1071,61 +1006,6 @@ def real_path(path):
     Returns: the canonicalized absolute pathname. The resulting path will have no symbolic link, '/./' or '/../' components.
     """
     return os.path.normpath(os.path.normcase(os.path.realpath(path)))
-
-
-def validateShow(show, season=None, episode=None):
-    indexer_lang = show.lang
-
-    try:
-        lINDEXER_API_PARMS = srIndexerApi(show.indexer).api_params.copy()
-
-        if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
-            lINDEXER_API_PARMS['language'] = indexer_lang
-
-        if show.dvdorder != 0:
-            lINDEXER_API_PARMS['dvdorder'] = True
-
-        t = srIndexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
-        if season is None and episode is None:
-            return t
-
-        return t[show.indexerid][season][episode]
-    except (indexer_episodenotfound, indexer_seasonnotfound):
-        pass
-
-
-def set_up_anidb_connection():
-    """Connect to anidb"""
-
-    if not sickrage.srConfig.USE_ANIDB:
-        sickrage.srLogger.debug("Usage of anidb disabled. Skiping")
-        return False
-
-    if not sickrage.srConfig.ANIDB_USERNAME and not sickrage.srConfig.ANIDB_PASSWORD:
-        sickrage.srLogger.debug("anidb username and/or password are not set. Aborting anidb lookup.")
-        return False
-
-    if not sickrage.srConfig.ADBA_CONNECTION:
-        def anidb_logger(msg):
-            return sickrage.srLogger.debug("anidb: %s " % msg)
-
-        try:
-            sickrage.srConfig.ADBA_CONNECTION = adba.Connection(keepAlive=True, log=anidb_logger)
-        except Exception as e:
-            sickrage.srLogger.warning("anidb exception msg: %r " % repr(e))
-            return False
-
-    try:
-        if not sickrage.srConfig.ADBA_CONNECTION.authed():
-            sickrage.srConfig.ADBA_CONNECTION.auth(sickrage.srConfig.ANIDB_USERNAME, sickrage.srConfig.ANIDB_PASSWORD)
-        else:
-            return True
-    except Exception as e:
-        sickrage.srLogger.warning("anidb exception msg: %r " % repr(e))
-        return False
-
-    return sickrage.srConfig.ADBA_CONNECTION.authed()
-
 
 def makeZip(fileList, archive):
     """
@@ -1279,127 +1159,6 @@ def touchFile(fname, atime=None):
 
     return False
 
-
-def codeDescription(status_code):
-    """
-    Returns the description of the URL error code
-    """
-    if status_code in http_error_code:
-        return http_error_code[status_code]
-    else:
-        sickrage.srLogger.error("Unknown error code: %s. Please submit an issue" % status_code)
-        return 'unknown'
-
-
-def getURL(url, post_data=None, params=None, headers=None, timeout=None, session=None, json=False, needBytes=False):
-    """
-    Returns a byte-string retrieved from the url provider.
-    """
-
-    resp = None
-
-    if headers is None:
-        headers = {}
-
-    if not requests.__version__ < (2, 8):
-        sickrage.srLogger.debug(
-            "Requests version 2.8+ needed to avoid SSL cert verify issues, please upgrade your copy")
-
-    url = normalize_url(url)
-    session = srSession(headers, params).session or session
-
-    try:
-        # decide if we get or post data to server
-        if post_data:
-            if isinstance(post_data, (list, dict)):
-                for param in post_data:
-                    if isinstance(post_data[param], unicode):
-                        post_data[param] = post_data[param].encode('utf-8')
-
-            session.headers.update({'Content-Type': 'application/x-www-form-urlencoded'})
-            resp = session.post(url, data=post_data, timeout=timeout, allow_redirects=True, verify=session.verify)
-        else:
-            resp = session.get(url, timeout=timeout, allow_redirects=True, verify=session.verify)
-
-        if resp.ok:
-            return (resp.text, resp.content)[needBytes] if not json else resp.json()
-    except (SocketTimeout, TypeError) as e:
-        sickrage.srLogger.warning("Connection timed out (sockets) accessing getURL %s Error: %r" % (url, e))
-    except requests.exceptions.HTTPError as e:
-        sickrage.srLogger.debug("HTTP error in getURL %s Error: %r" % (url, e))
-    except requests.exceptions.ConnectionError as e:
-        sickrage.srLogger.debug("Connection error to getURL %s Error: %r" % (url, e))
-    except requests.exceptions.Timeout as e:
-        sickrage.srLogger.warning("Connection timed out accessing getURL %s Error: %r" % (url, e))
-    except requests.exceptions.ContentDecodingError:
-        sickrage.srLogger.debug("Content-Encoding was gzip, but content was not compressed. getURL: %s" % url)
-        sickrage.srLogger.debug(traceback.format_exc())
-    except Exception as e:
-        sickrage.srLogger.debug("Unknown exception in getURL %s Error: %r" % (url, e))
-        sickrage.srLogger.debug(traceback.format_exc())
-
-
-def download_file(url, filename, session=None, headers=None):
-    """
-    Downloads a file specified
-
-    :param url: Source URL
-    :param filename: Target file on filesystem
-    :param session: request session to use
-    :param headers: override existing headers in request session
-    :return: True on success, False on failure
-    """
-
-    resp = None
-
-    if headers is None:
-        headers = {}
-    url = normalize_url(url)
-    session = srSession(headers).session or session
-    session.stream = True
-
-    try:
-        with closing(session.get(url, allow_redirects=True, verify=session.verify)) as resp:
-            if not resp.ok:
-                return False
-
-            try:
-                with io.open(filename, 'wb') as fp:
-                    for chunk in resp.iter_content(chunk_size=1024):
-                        if chunk:
-                            fp.write(chunk)
-                            fp.flush()
-
-                chmodAsParent(filename)
-
-                [i.raw.release_conn() for i in resp.history]
-                resp.raw.release_conn()
-
-                return True
-            except Exception:
-                sickrage.srLogger.warning("Problem setting permissions or writing file to: %s" % filename)
-
-    except (SocketTimeout, TypeError) as e:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning("Connection timed out (sockets) while loading download URL %s Error: %r" % (url, e))
-    except requests.exceptions.HTTPError as e:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning("HTTP error %r while loading download URL %s " % e, url)
-    except requests.exceptions.ConnectionError as e:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning("Connection error %r while loading download URL %s " % e, url)
-    except requests.exceptions.Timeout as e:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning("Connection timed out %r while loading download URL %s " % e, url)
-    except EnvironmentError as e:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning("Unable to save the file: %r " % e)
-    except Exception:
-        remove_file_failed(filename)
-        sickrage.srLogger.warning(
-            "Unknown exception while loading download URL %s : %r" % (url, traceback.format_exc()))
-
-
 def get_size(start_path='.'):
     """
     Find the total dir and filesize of a path
@@ -1457,7 +1216,7 @@ def pretty_filesize(file_bytes):
 def remove_article(text=''):
     """Remove the english articles from a text string"""
 
-    return re.sub(ur'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
+    return re.sub(r'(?i)^(?:(?:A(?!\s+to)n?)|The)\s(\w)', r'\1', text)
 
 
 def generateCookieSecret():

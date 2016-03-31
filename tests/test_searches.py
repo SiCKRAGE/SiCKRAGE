@@ -90,7 +90,7 @@ def test_generator(curData, name, provider, forceSearch):
             if not provider.public:
                 continue
 
-            items = provider._doSearch(search_strings)
+            items = provider.search(search_strings)
             if not items:
                 print("No results from provider?")
                 continue

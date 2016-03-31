@@ -29,6 +29,7 @@ from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 category_excluded = {'Sport': 22,
@@ -128,7 +129,7 @@ class TNTVillageProvider(TorrentProvider):
                         'CookieDate': 0,
                         'submit': 'Connettiti al Forum'}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -279,7 +280,7 @@ class TNTVillageProvider(TorrentProvider):
         if int(episodes[0]['count']) == len(parse_result.episode_numbers):
             return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -318,7 +319,7 @@ class TNTVillageProvider(TorrentProvider):
                         sickrage.srLogger.debug("Search string: %s " % search_string)
 
                     sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                    data = self.getURL(searchURL)
+                    data = srSession(self.session, self.headers).get(searchURL)
                     if not data:
                         sickrage.srLogger.debug("No data returned from provider")
                         continue
@@ -394,7 +395,7 @@ class TNTVillageProvider(TorrentProvider):
                                     if mode is not 'RSS':
                                         sickrage.srLogger.debug(
                                             "Discarding torrent because it doesn't meet the minimum seeders or leechers: %s (S:%s L:%s)" % (
-                                            title, seeders, leechers))
+                                                title, seeders, leechers))
                                     continue
 
                                 item = title, download_url, size, seeders, leechers
@@ -426,4 +427,4 @@ class TNTVillageCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': []}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

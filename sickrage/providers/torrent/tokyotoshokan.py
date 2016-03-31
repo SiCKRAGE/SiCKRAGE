@@ -24,6 +24,7 @@ import urllib
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import show_names, bs4_parser
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -49,7 +50,7 @@ class TokyoToshokanProvider(TorrentProvider):
     def _get_episode_search_strings(self, ep_obj, add_string=''):
         return [x.replace('.', ' ') for x in show_names.makeSceneSearchString(self.show, ep_obj)]
 
-    def _doSearch(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_string, search_mode='eponly', epcount=0, age=0, epObj=None):
         # FIXME ADD MODE
         if self.show and not self.show.is_anime:
             return []
@@ -63,7 +64,7 @@ class TokyoToshokanProvider(TorrentProvider):
 
         searchURL = self.urls['base_url'] + '/search.php?' + urllib.urlencode(params)
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
-        data = self.getURL(searchURL)
+        data = srSession(self.session, self.headers).get(searchURL)
 
         if not data:
             return []

@@ -96,7 +96,7 @@ class Media(object):
                     continue
                 elif isinstance(value[0], basestring):
                     # Just a list of strings (keywords?), so don't treat it specially.
-                    value = u', '.join(value)
+                    value = ', '.join(value)
                 else:
                     lists.append((key, value))
                     continue
@@ -105,18 +105,18 @@ class Media(object):
                 continue
             if key in UNPRINTABLE_KEYS:
                 value = '<unprintable data, size=%d>' % len(value)
-            result += u'| %10s: %s\n' % (unicode(key), unicode(value))
+            result += '| %10s: %s\n' % (unicode(key), unicode(value))
 
         # print tags (recursively, to support nested tags).
         def print_tags(tags, suffix, show_label):
             result = ''
             for n, (name, tag) in enumerate(tags.items()):
-                result += u'| %12s%s%s = ' % (u'tags: ' if n == 0 and show_label else '', suffix, name)
+                result += '| %12s%s%s = ' % ('tags: ' if n == 0 and show_label else '', suffix, name)
                 if isinstance(tag, list):
                     # TODO: doesn't support lists/dicts within lists.
-                    result += u'%s\n' % ', '.join(subtag.value for subtag in tag)
+                    result += '%s\n' % ', '.join(subtag.value for subtag in tag)
                 else:
-                    result += u'%s\n' % (tag.value or '')
+                    result += '%s\n' % (tag.value or '')
                 if isinstance(tag, dict):
                     result += print_tags(tag, '    ', False)
             return result
@@ -128,7 +128,7 @@ class Media(object):
                 label = '+-- ' + key.rstrip('s').capitalize()
                 if key not in ['tracks', 'subtitles', 'chapters']:
                     label += ' Track'
-                result += u'%s #%d\n' % (label, n + 1)
+                result += '%s #%d\n' % (label, n + 1)
                 result += '|    ' + re.sub(r'\n(.)', r'\n|    \1', unicode(item))
 
         # print tables
@@ -140,13 +140,13 @@ class Media(object):
 #                    try:
 #                        value = unicode(value)
 #                        if len(value) > 50:
-#                            value = u'<unprintable data, size=%d>' % len(value)
+#                            value = '<unprintable data, size=%d>' % len(value)
 #                    except (UnicodeDecodeError, TypeError):
 #                        try:
-#                            value = u'<unprintable data, size=%d>' % len(value)
+#                            value = '<unprintable data, size=%d>' % len(value)
 #                        except AttributeError:
-#                            value = u'<unprintable data>'
-#                    result += u'|    | %s: %s\n' % (unicode(key), value)
+#                            value = '<unprintable data>'
+#                    result += '|    | %s: %s\n' % (unicode(key), value)
         return result
 
     def __str__(self):
@@ -211,7 +211,7 @@ class Media(object):
             if isinstance(value, str):
                 setattr(self, key, str_to_unicode(value))
             if isinstance(value, unicode):
-                setattr(self, key, value.strip().rstrip().replace(u'\0', u''))
+                setattr(self, key, value.strip().rstrip().replace('\0', u''))
             if isinstance(value, list) and value and isinstance(value[0], Media):
                 for submenu in value:
                     submenu._finalize()
@@ -228,7 +228,7 @@ class Media(object):
                         value = str_to_unicode(str(value))
                     elif isinstance(value, str):
                         value = str_to_unicode(value)
-                    value = value.strip().rstrip().replace(u'\0', u'')
+                    value = value.strip().rstrip().replace('\0', u'')
                     setattr(self, attr, value)
 
         if 'fourcc' in self._keys and 'codec' in self._keys and self.codec is not None:
@@ -387,7 +387,7 @@ class Music(AudioStream):
             try:
                 # XXX Why is this needed anyway?
                 if int(self.trackno) < 10:
-                    self.trackno = u'0%s' % int(self.trackno)
+                    self.trackno = '0%s' % int(self.trackno)
             except (AttributeError, ValueError):
                 pass
 

@@ -19,11 +19,16 @@
 
 from __future__ import unicode_literals
 
+import io
 import os
 import random
 import tempfile
+import traceback
+import urllib
 import urllib2
 import urlparse
+from _socket import timeout as SocketTimeout
+from contextlib import closing
 
 import cachecontrol
 import certifi
@@ -31,8 +36,7 @@ import requests
 from cachecontrol.caches import FileCache
 
 import sickrage
-
-urlparse.uses_netloc.append('scgi')
+from sickrage.core.helpers import remove_file_failed, chmodAsParent
 
 
 class srSession(object):
@@ -90,16 +94,21 @@ class srSession(object):
         {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1"}
     ]
 
-    def __init__(self, headers=None, params=None):
+    def __init__(self, session=None, headers=None, params=None):
         """
         Returns a session initialized with default cache and parameter settings
 
+        :param session: existing session to pass in
         :param headers: Headers to pass to session
+        :param params: Params to pass to session
         :return: session object
         """
 
+        urlparse.uses_netloc.append('scgi')
+        urllib.FancyURLopener.version = random.choice(self.USER_AGENTS)
+
         self.session = cachecontrol.CacheControl(
-            requests.session(), cache=FileCache(
+            session or requests.session(), cache=FileCache(
                 os.path.join(tempfile.gettempdir(), 'cachecontrol'), use_dir_lock=True
             ), cache_etags=False
         )
@@ -137,3 +146,123 @@ class srSession(object):
 
         if isinstance(params, (list, dict)):
             self.session.params = params
+
+    def request(self, *args, **kwargs):
+        return self.session.request(*args, **kwargs)
+
+    def get(self, url, post_data=None, timeout=None, json=False, needBytes=False):
+        """
+        Returns a byte-string retrieved from the url provider.
+        """
+        if not requests.__version__ < (2, 8):
+            sickrage.srLogger.debug(
+                "Requests version 2.8+ needed to avoid SSL cert verify issues, please upgrade your copy")
+
+        # normalize url
+        url = self.normalize_url(url)
+
+        try:
+            # decide if we get or post data to server
+            if post_data:
+                if isinstance(post_data, (list, dict)):
+                    for param in post_data:
+                        if isinstance(post_data[param], unicode):
+                            post_data[param] = post_data[param].encode('utf-8')
+
+                self.session.headers.update({'Content-Type': 'application/x-www-form-urlencoded'})
+                resp = self.session.post(url, data=post_data, timeout=timeout, allow_redirects=True,
+                                         verify=self.session.verify)
+            else:
+                resp = self.session.get(url, timeout=timeout, allow_redirects=True, verify=self.session.verify)
+
+            if resp.ok:
+                return (resp.text, resp.content)[needBytes] if not json else resp.json()
+
+        except (SocketTimeout, TypeError) as e:
+            sickrage.srLogger.warning("Connection timed out (sockets) accessing url %s Error: %r" % (url, e))
+        except requests.exceptions.HTTPError as e:
+            sickrage.srLogger.debug("HTTP error in url %s Error: %r" % (url, e))
+        except requests.exceptions.ConnectionError as e:
+            sickrage.srLogger.debug("Connection error to url %s Error: %r" % (url, e))
+        except requests.exceptions.Timeout as e:
+            sickrage.srLogger.warning("Connection timed out accessing url %s Error: %r" % (url, e))
+        except requests.exceptions.ContentDecodingError:
+            sickrage.srLogger.debug("Content-Encoding was gzip, but content was not compressed. url: %s" % url)
+            sickrage.srLogger.debug(traceback.format_exc())
+        except Exception as e:
+            sickrage.srLogger.debug("Unknown exception in url %s Error: %r" % (url, e))
+            sickrage.srLogger.debug(traceback.format_exc())
+
+    def download(self, url, filename):
+        """
+        Downloads a file specified
+
+        :param url: Source URL
+        :param filename: Target file on filesystem
+        :return: True on success, False on failure
+        """
+
+        # normalize url
+        url = self.normalize_url(url)
+
+        self.session.stream = True
+
+        try:
+            with closing(self.session.get(url, allow_redirects=True, verify=self.session.verify)) as resp:
+                if not resp.ok:
+                    return False
+
+                try:
+                    with io.open(filename, 'wb') as fp:
+                        for chunk in resp.iter_content(chunk_size=1024):
+                            if chunk:
+                                fp.write(chunk)
+                                fp.flush()
+
+                    chmodAsParent(filename)
+
+                    [i.raw.release_conn() for i in resp.history]
+                    resp.raw.release_conn()
+
+                    return True
+                except Exception:
+                    sickrage.srLogger.warning("Problem setting permissions or writing file to: %s" % filename)
+
+        except (SocketTimeout, TypeError) as e:
+            remove_file_failed(filename)
+            sickrage.srLogger.warning(
+                "Connection timed out (sockets) while loading download URL %s Error: %r" % (url, e))
+        except requests.exceptions.HTTPError as e:
+            remove_file_failed(filename)
+            sickrage.srLogger.warning("HTTP error %r while loading download URL %s " % e, url)
+        except requests.exceptions.ConnectionError as e:
+            remove_file_failed(filename)
+            sickrage.srLogger.warning("Connection error %r while loading download URL %s " % e, url)
+        except requests.exceptions.Timeout as e:
+            remove_file_failed(filename)
+            sickrage.srLogger.warning("Connection timed out %r while loading download URL %s " % e, url)
+        except EnvironmentError as e:
+            remove_file_failed(filename)
+            sickrage.srLogger.warning("Unable to save the file: %r " % e)
+        except Exception:
+            remove_file_failed(filename)
+            sickrage.srLogger.warning(
+                "Unknown exception while loading download URL %s : %r" % (url, traceback.format_exc()))
+
+    @staticmethod
+    def normalize_url(url):
+        url = str(url)
+        segments = url.split('/')
+        correct_segments = []
+
+        for segment in segments:
+            if segment != '':
+                correct_segments.append(segment)
+
+        first_segment = str(correct_segments[0])
+        if first_segment.find('http') == -1:
+            correct_segments = ['http:'] + correct_segments
+
+        correct_segments[0] += '/'
+
+        return '/'.join(correct_segments)

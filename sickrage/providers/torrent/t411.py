@@ -66,7 +66,7 @@ class T411Provider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30, json=True)
+        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30, json=True)
         if not response:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -81,7 +81,7 @@ class T411Provider(TorrentProvider):
             sickrage.srLogger.warning("Token not found in authentication response")
             return False
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -101,7 +101,7 @@ class T411Provider(TorrentProvider):
                         mode is 'RSS']
                 for searchURL in searchURLS:
                     sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                    data = self.getURL(searchURL, json=True)
+                    data = srSession(self.session, self.headers).get(searchURL, json=True)
                     if not data:
                         continue
 
@@ -191,4 +191,4 @@ class T411Cache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

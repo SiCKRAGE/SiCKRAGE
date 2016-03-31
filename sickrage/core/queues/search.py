@@ -118,6 +118,10 @@ class srSearchQueue(GenericQueue):
         return length
 
     def add_item(self, item):
+        if not len(sickrage.srCore.providersDict.enabled()):
+            sickrage.srLogger.warning("Search Failed, No NZB/Torrent providers enabled")
+            return
+
         if isinstance(item, DailySearchQueueItem):
             # daily searches
             GenericQueue.add_item(self, item)
@@ -133,15 +137,13 @@ class srSearchQueue(GenericQueue):
 
 class DailySearchQueueItem(QueueItem):
     def __init__(self):
-        self.success = None
         QueueItem.__init__(self, 'Daily Search', DAILY_SEARCH)
+        self.success = False
+        self.started = False
 
     def run(self):
         QueueItem.run(self)
-
-        if not len(sickrage.srCore.providersDict.enabled()):
-            sickrage.srLogger.warning("No NZB/Torrent providers enabled. Please check your settings.")
-            return self.finish()
+        self.started = True
 
         try:
             sickrage.srLogger.info("Beginning daily search for new episodes")
@@ -160,26 +162,20 @@ class DailySearchQueueItem(QueueItem):
         except Exception:
             sickrage.srLogger.debug(traceback.format_exc())
 
-        if self.success is None:
-            self.success = False
-
 class ManualSearchQueueItem(QueueItem):
     def __init__(self, show, segment, downCurQuality=False):
         QueueItem.__init__(self, 'Manual Search', MANUAL_SEARCH)
-        self.priority = QueuePriorities.HIGH
         self.name = 'MANUAL-' + str(show.indexerid)
-        self.success = None
         self.show = show
         self.segment = segment
-        self.started = None
+        self.success = False
+        self.started = False
+        self.priority = QueuePriorities.HIGH
         self.downCurQuality = downCurQuality
 
     def run(self):
         QueueItem.run(self)
-
-        if not len(sickrage.srCore.providersDict.enabled()):
-            sickrage.srLogger.warning("No NZB/Torrent providers enabled. Please check your settings.")
-            return self.finish()
+        self.started = True
 
         try:
             sickrage.srLogger.info("Beginning manual search for: [" + self.segment.prettyName() + "]")
@@ -207,24 +203,19 @@ class ManualSearchQueueItem(QueueItem):
         ### Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
 
-        if self.success is None:
-            self.success = False
-
 class BacklogQueueItem(QueueItem):
     def __init__(self, show, segment):
         QueueItem.__init__(self, 'Backlog', BACKLOG_SEARCH)
-        self.priority = QueuePriorities.LOW
-        self.name = 'BACKLOG-' + str(show.indexerid)
-        self.success = None
         self.show = show
+        self.name = 'BACKLOG-' + str(show.indexerid)
+        self.success = False
+        self.started = False
         self.segment = segment
+        self.priority = QueuePriorities.LOW
 
     def run(self):
         QueueItem.run(self)
-
-        if not len(sickrage.srCore.providersDict.enabled()):
-            sickrage.srLogger.warning("No NZB/Torrent providers enabled. Please check your settings.")
-            return self.finish()
+        self.started = True
 
         if not self.show.paused:
             try:
@@ -247,21 +238,16 @@ class BacklogQueueItem(QueueItem):
 class FailedQueueItem(QueueItem):
     def __init__(self, show, segment, downCurQuality=False):
         QueueItem.__init__(self, 'Retry', FAILED_SEARCH)
-        self.priority = QueuePriorities.HIGH
-        self.name = 'RETRY-' + str(show.indexerid)
         self.show = show
+        self.name = 'RETRY-' + str(show.indexerid)
+        self.success = False
+        self.started = False
         self.segment = segment
-        self.success = None
-        self.started = None
+        self.priority = QueuePriorities.HIGH
         self.downCurQuality = downCurQuality
 
     def run(self):
         QueueItem.run(self)
-
-        if not len(sickrage.srCore.providersDict.enabled()):
-            sickrage.srLogger.warning("No NZB/Torrent providers enabled. Please check your settings.")
-            return self.finish()
-
         self.started = True
 
         try:
@@ -296,9 +282,6 @@ class FailedQueueItem(QueueItem):
 
         ### Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
-
-        if self.success is None:
-            self.success = False
 
 def fifo(myList, item, maxSize=100):
     if len(myList) >= maxSize:

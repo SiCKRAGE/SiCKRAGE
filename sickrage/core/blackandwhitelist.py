@@ -22,7 +22,6 @@ from __future__ import unicode_literals
 
 import sickrage
 from sickrage.core.databases import main_db
-from sickrage.core.helpers import set_up_anidb_connection
 from sickrage.indexers.adba.aniDBerrors import AniDBCommandTimeoutError
 
 
@@ -152,10 +151,10 @@ def short_group_names(groups):
     """
     groups = groups.split(",")
     shortGroupList = []
-    if set_up_anidb_connection():
+    if sickrage.srCore.ADBA_CONNECTION:
         for groupName in groups:
             try:
-                group = sickrage.srConfig.ADBA_CONNECTION.group(gname=groupName)
+                group = sickrage.srCore.ADBA_CONNECTION.group(gname=groupName)
             except AniDBCommandTimeoutError:
                 sickrage.srLogger.debug("Timeout while loading group from AniDB. Trying next group")
             except Exception:

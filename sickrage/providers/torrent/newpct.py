@@ -68,7 +68,7 @@ class newpctProvider(TorrentProvider):
             'q': ''
         }
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -88,7 +88,7 @@ class newpctProvider(TorrentProvider):
 
                 sickrage.srLogger.debug(
                         "Search URL: %s" % self.urls['search'] + '?' + urlencode(self.search_params))
-                data = self.getURL(self.urls['search'], post_data=self.search_params, timeout=30)
+                data = srSession(self.session, self.headers).get(self.urls['search'], post_data=self.search_params, timeout=30)
                 if not data:
                     continue
 

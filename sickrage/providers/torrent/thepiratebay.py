@@ -59,7 +59,7 @@ class ThePirateBayProvider(TorrentProvider):
 
         self.re_title_url = r'/torrent/(?P<id>\d+)/(?P<title>.*?)".+?(?P<url>magnet.*?)".+?Size (?P<size>[\d\.]*&nbsp;[TGKMiB]{2,3}).+?(?P<seeders>\d+)</td>.+?(?P<leechers>\d+)</td>'
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -75,8 +75,8 @@ class ThePirateBayProvider(TorrentProvider):
 
                 searchURL = self.urls[('search', 'rss')[mode is 'RSS']] + '?' + urlencode(self.search_params)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = self.getURL(searchURL)
-                # data = self.getURL(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
+                data = srSession(self.session, self.headers).get(searchURL)
+                # data = srSession(self.session, self.headers).get(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
                 if not data:
                     continue
 
@@ -147,4 +147,4 @@ class ThePirateBayCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

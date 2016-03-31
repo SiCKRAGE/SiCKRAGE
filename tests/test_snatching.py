@@ -22,8 +22,6 @@ from __future__ import unicode_literals
 
 import unittest
 
-from providers import sortedProviderDict
-
 import sickrage
 from sickrage.core.common import HD, SD, WANTED
 from sickrage.core.search import searchProviders
@@ -62,10 +60,6 @@ class SearchTest(SiCKRAGETestDBCase):
         return True
 
     def __init__(self, something):
-        for provider in sortedProviderDict().values():
-            provider.getURL = self._fake_getURL
-            # provider.isActive = self._fake_isActive
-
         super(SearchTest, self).__init__(something)
         super(SearchTest, self).setUp()
 

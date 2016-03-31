@@ -80,7 +80,7 @@ class TVShow(object):
         self._dvdorder = 0
         self._archive_firstmatch = 0
         self._lang = lang
-        self._last_update_indexer = 1
+        self._last_update_indexer = datetime.datetime.now().toordinal()
         self._sports = 0
         self._anime = 0
         self._scene = 0
@@ -548,11 +548,9 @@ class TVShow(object):
             if next_airdate <= (update_date + graceperiod):
                 return True
 
-        self.last_update_indexer = datetime.date.fromordinal(self.last_update_indexer)
-
         # in the first year after ended (last airdate), update every 30 days
         if (update_date - last_airdate) < datetime.timedelta(days=450) and (
-                    update_date - self.last_update_indexer) > datetime.timedelta(days=30):
+                    update_date - datetime.date.fromordinal(self.last_update_indexer)) > datetime.timedelta(days=30):
             return True
 
         return False
@@ -1150,7 +1148,7 @@ class TVShow(object):
 
             # Rename dict keys without spaces for DB upsert
             self.imdb_info = dict(
-                (k.replace(' ', '_'), k(v) if hasattr(v, 'keys') else v) for k, v in imdb_info.iteritems())
+                (k.replace(' ', '_'), k(v) if hasattr(v, 'keys') else v) for k, v in imdb_info.items())
             sickrage.srLogger.debug(
                 str(self.indexerid) + ": Obtained IMDb info from TMDb ->" + str(self.imdb_info))
 

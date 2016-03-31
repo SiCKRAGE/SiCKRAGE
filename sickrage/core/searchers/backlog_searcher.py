@@ -18,9 +18,8 @@
 
 from __future__ import unicode_literals
 
-import threading
-
 import datetime
+import threading
 
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
@@ -109,7 +108,7 @@ class srBacklogSearcher(object):
 
             segments = self._get_segments(curShow, fromDate)
 
-            for season, segment in segments.iteritems():
+            for season, segment in segments.items():
                 self.currentSearchInfo = {'title': curShow.name + " Season " + str(season)}
                 sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(curShow, segment))  # @UndefinedVariable
             else:

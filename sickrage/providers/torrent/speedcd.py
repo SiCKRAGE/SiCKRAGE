@@ -57,7 +57,7 @@ class SpeedCDProvider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -68,7 +68,7 @@ class SpeedCDProvider(TorrentProvider):
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -88,7 +88,7 @@ class SpeedCDProvider(TorrentProvider):
                 post_data = dict({'/browse.php?': None, 'cata': 'yes', 'jxt': 4, 'jxw': 'b', 'search': search_string},
                                  **self.categories[mode])
 
-                parsedJSON = self.getURL(self.urls['search'], post_data=post_data, json=True)
+                parsedJSON = srSession(self.session, self.headers).get(self.urls['search'], post_data=post_data, json=True)
                 if not parsedJSON:
                     continue
 
@@ -146,4 +146,4 @@ class SpeedCDCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

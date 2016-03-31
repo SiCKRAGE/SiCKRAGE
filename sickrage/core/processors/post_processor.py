@@ -34,7 +34,7 @@ from sickrage.core.exceptions import EpisodeNotFoundException, \
     EpisodePostProcessingFailedException, ShowDirectoryNotFoundException
 from sickrage.core.helpers import findCertainShow, show_names, fixGlob, subtitleExtensions, replaceExtension, makeDir, \
     chmodAsParent, moveFile, copyFile, hardlinkFile, moveAndSymlinkFile, remove_non_release_groups, remove_extension, \
-    set_up_anidb_connection, isFileLocked, verify_freespace, delete_empty_folders, make_dirs
+    isFileLocked, verify_freespace, delete_empty_folders, make_dirs
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.searchers.subtitle_searcher import wantedLanguages
@@ -566,9 +566,9 @@ class PostProcessor(object):
 
         :param filePath: file to add to mylist
         """
-        if set_up_anidb_connection():
+        if sickrage.srCore.ADBA_CONNECTION:
             if not self.anidbEpisode:  # seems like we could parse the name before, now lets build the anidb object
-                self.anidbEpisode = self._build_anidb_episode(sickrage.srConfig.ADBA_CONNECTION, filePath)
+                self.anidbEpisode = self._build_anidb_episode(sickrage.srCore.ADBA_CONNECTION, filePath)
 
             self._log("Adding the file to the anidb mylist", sickrage.srLogger.DEBUG)
             try:

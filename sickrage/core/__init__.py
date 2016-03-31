@@ -22,13 +22,11 @@ from __future__ import unicode_literals
 
 import datetime
 import os
-import random
 import re
 import shutil
 import socket
 import sys
 import traceback
-import urllib
 
 import sickrage
 from sickrage.core.caches.name_cache import srNameCache
@@ -51,12 +49,12 @@ from sickrage.core.searchers.trakt_searcher import srTraktSearcher
 from sickrage.core.srconfig import srConfig
 from sickrage.core.srlogger import srLogger
 from sickrage.core.srscheduler import srIntervalTrigger, srScheduler
-from sickrage.core.srsession import srSession
 from sickrage.core.tv.show import TVShow
 from sickrage.core.updaters.show_updater import srShowUpdater
 from sickrage.core.updaters.tz_updater import update_network_dict
 from sickrage.core.version_updater import srVersionUpdater
 from sickrage.core.webserver import srWebServer
+from sickrage.indexers import adba
 from sickrage.metadata import get_metadata_generator_dict, kodi, kodi_12plus, \
     mede8er, mediabrowser, ps3, tivo, wdtv
 from sickrage.notifiers.boxcar import BoxcarNotifier
@@ -87,9 +85,6 @@ class Core(object):
     def __init__(self):
         self.STARTED = False
         self.RESTARTED = False
-
-        # random user agent
-        urllib.FancyURLopener.version = random.choice(srSession.USER_AGENTS)
 
         # process id
         self.PID = os.getpid()
@@ -173,19 +168,20 @@ class Core(object):
         self.TRAKTSEARCHER = None
         self.SUBTITLESEARCHER = None
 
-        # init postprocessor
+        # auto postprocessor
         self.AUTOPOSTPROCESSOR = None
 
-    def start(self):
-        self.STARTED = True
+        # anidb connection
+        self.ADBA_CONNECTION = None
 
-        # load config
+    def start(self):
         sickrage.srConfig.load()
+        self.STARTED = True
 
         # setup logger settings
         sickrage.srLogger.logSize = sickrage.srConfig.LOG_SIZE
         sickrage.srLogger.logNr = sickrage.srConfig.LOG_NR
-        sickrage.srLogger.debugLogging = sickrage.srConfig.DEBUG
+        sickrage.srLogger.debugLogging = sickrage.DEBUG
         sickrage.srLogger.consoleLogging = not sickrage.QUITE
         sickrage.srLogger.logFile = os.path.abspath(os.path.join(
             sickrage.DATA_DIR,
@@ -285,6 +281,15 @@ class Core(object):
                     except Exception as e:
                         sickrage.srLogger.warning(
                             "Restore: Unable to remove the cache/{} directory: {1}".format(cleanupDir, e))
+
+
+        # init anidb connection
+        if not sickrage.srConfig.USE_ANIDB:
+            try:
+                self.ADBA_CONNECTION = adba.Connection(keepAlive=True, log=lambda msg: sickrage.srLogger.debug(
+                    "AniDB: %s " % msg)).auth(sickrage.srConfig.ANIDB_USERNAME, sickrage.srConfig.ANIDB_PASSWORD)
+            except Exception as e:
+                sickrage.srLogger.warning("AniDB exception msg: %r " % repr(e))
 
         if sickrage.srConfig.WEB_PORT < 21 or sickrage.srConfig.WEB_PORT > 65535:
             sickrage.srConfig.WEB_PORT = 8081
@@ -498,9 +503,9 @@ class Core(object):
             sickrage.srLogger.info("Shutting down scheduler jobs")
             sickrage.srScheduler.shutdown()
 
-            if sickrage.srConfig.ADBA_CONNECTION:
+            if sickrage.srCore.ADBA_CONNECTION:
                 sickrage.srLogger.info("Logging out ANIDB connection")
-                sickrage.srConfig.ADBA_CONNECTION.logout()
+                sickrage.srCore.ADBA_CONNECTION.logout()
 
             # save all settings
             self.save_all()

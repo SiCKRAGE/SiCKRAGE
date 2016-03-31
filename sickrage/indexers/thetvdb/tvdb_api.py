@@ -36,7 +36,7 @@ try:
 except ImportError:
     gzip = None
 
-from tvdb_ui import BaseUI, ConsoleUI
+from tvdb_ui import BaseUI
 from tvdb_exceptions import (tvdb_error, tvdb_shownotfound, tvdb_showincomplete,
                              tvdb_seasonnotfound, tvdb_episodenotfound, tvdb_attributenotfound)
 
@@ -671,19 +671,12 @@ class Tvdb:
         allSeries = self.search(series)
         if not allSeries:
             sickrage.srLogger.debug('Series result returned zero')
-            raise tvdb_shownotfound("Show search returned zero results (cannot find show on TVDB)")
+            raise tvdb_shownotfound("Show search returned zero results (cannot find show on theTVDB)")
 
+        ui = BaseUI(config=self.config)
         if self.config['custom_ui'] is not None:
-            sickrage.srLogger.debug("Using custom UI {}".format(repr(self.config['custom_ui'])))
             CustomUI = self.config['custom_ui']
             ui = CustomUI(config=self.config)
-        else:
-            if not self.config['interactive']:
-                sickrage.srLogger.debug('Auto-selecting first search result using BaseUI')
-                ui = BaseUI(config=self.config)
-            else:
-                sickrage.srLogger.debug('Interactively selecting show using ConsoleUI')
-                ui = ConsoleUI(config=self.config)
 
         return ui.selectSeries(allSeries)
 

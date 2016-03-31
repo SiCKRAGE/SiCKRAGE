@@ -185,7 +185,7 @@ class srLogger(logging.getLoggerClass()):
         issue_id = None
 
         from sickrage.core.classes import ErrorViewer
-        if not (sickrage.srConfig.GIT_USERNAME and sickrage.srConfig.GIT_PASSWORD and sickrage.srConfig.DEBUG and len(
+        if not (sickrage.srConfig.GIT_USERNAME and sickrage.srConfig.GIT_PASSWORD and sickrage.DEBUG and len(
                 ErrorViewer.errors) > 0):
             submitter_result = 'Please set your GitHub username and password in the config and enable debug. Unable to submit issue ticket to GitHub!'
             return submitter_result, issue_id

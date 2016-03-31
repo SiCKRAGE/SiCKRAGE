@@ -32,10 +32,9 @@ import tmdbsimple as tmdb
 
 import sickrage
 from helpers import getShowImage
-from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension, \
-    validateShow
+from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension
 from sickrage.indexers import srIndexerApi
-from sickrage.indexers.indexer_exceptions import indexer_error
+from sickrage.indexers.indexer_exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
 
 __all__ = ['metadata_helpers.py', 'kodi', 'kodi_12plus', 'mediabrowser', 'ps3', 'wdtv', 'tivo', 'mede8er']
 
@@ -343,7 +342,7 @@ class GenericMetadata(object):
     def create_season_posters(self, show_obj):
         if self.season_posters and show_obj:
             result = []
-            for season, _ in show_obj.episodes.iteritems():  # @UnusedVariable
+            for season, _ in show_obj.episodes.items():  # @UnusedVariable
                 if not self._has_season_poster(show_obj, season):
                     sickrage.srLogger.debug(
                         "Metadata provider " + self.name + " creating season posters for " + show_obj.name)
@@ -355,7 +354,7 @@ class GenericMetadata(object):
         if self.season_banners and show_obj:
             result = []
             sickrage.srLogger.debug("Metadata provider " + self.name + " creating season banners for " + show_obj.name)
-            for season, _ in show_obj.episodes.iteritems():  # @UnusedVariable
+            for season, _ in show_obj.episodes.items():  # @UnusedVariable
                 if not self._has_season_banner(show_obj, season):
                     result = result + [self.save_season_banners(show_obj, season)]
             return all(result)
@@ -385,12 +384,12 @@ class GenericMetadata(object):
         all_eps = [ep_obj] + ep_obj.relatedEps
 
         # validate show
-        if not validateShow(ep_obj.show):
+        if not self.validateShow(ep_obj.show):
             return None
 
         # try all included episodes in case some have thumbs and others don't
         for cur_ep in all_eps:
-            myEp = validateShow(cur_ep.show, cur_ep.season, cur_ep.episode)
+            myEp = self.validateShow(cur_ep.show, cur_ep.season, cur_ep.episode)
             if not myEp:
                 continue
 
@@ -1062,3 +1061,24 @@ class GenericMetadata(object):
             pass
 
         sickrage.srLogger.info("Could not find any " + img_type + " images on Fanart.tv for " + show.name)
+
+    @staticmethod
+    def validateShow(show, season=None, episode=None):
+        indexer_lang = show.lang
+
+        try:
+            lINDEXER_API_PARMS = srIndexerApi(show.indexer).api_params.copy()
+
+            if indexer_lang and not indexer_lang == sickrage.srConfig.INDEXER_DEFAULT_LANGUAGE:
+                lINDEXER_API_PARMS['language'] = indexer_lang
+
+            if show.dvdorder != 0:
+                lINDEXER_API_PARMS['dvdorder'] = True
+
+            t = srIndexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
+            if season is None and episode is None:
+                return t
+
+            return t[show.indexerid][season][episode]
+        except (indexer_episodenotfound, indexer_seasonnotfound):
+            pass

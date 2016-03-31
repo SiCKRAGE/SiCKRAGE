@@ -27,7 +27,7 @@ from datetime import date, timedelta
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.helpers import tryInt
-from sickrage.providers import GenericProvider
+from sickrage.core.srsession import srSession
 
 
 class NZBGet(object):
@@ -116,8 +116,7 @@ class NZBGet(object):
                     nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
                 else:
                     if nzb.resultType == "nzb":
-                        genProvider = GenericProvider("")
-                        data = genProvider.getURL(nzb.url)
+                        data = srSession().get(nzb.url)
                         if data is None:
                             return False
                         nzbcontent64 = standard_b64encode(data)

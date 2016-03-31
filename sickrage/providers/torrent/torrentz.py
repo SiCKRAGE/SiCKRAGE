@@ -29,13 +29,14 @@ import xmltodict
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.common import cpu_presets
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
 class TORRENTZProvider(TorrentProvider):
     def __init__(self):
 
-        super(TORRENTZProvider, self).__init__("Torrentz",'torrentz.eu')
+        super(TORRENTZProvider, self).__init__("Torrentz", 'torrentz.eu')
 
         self.supportsBacklog = True
         self.confirmed = True
@@ -57,7 +58,7 @@ class TORRENTZProvider(TorrentProvider):
         match = re.findall(r'[0-9]+', description)
         return int(match[0]) * 1024 ** 2, int(match[1]), int(match[2])
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
@@ -68,7 +69,7 @@ class TORRENTZProvider(TorrentProvider):
                     search_url += '?q=' + quote_plus(search_string)
 
                 sickrage.srLogger.info(search_url)
-                data = self.getURL(search_url)
+                data = srSession(self.session, self.headers).get(search_url)
                 if not data:
                     sickrage.srLogger.info('Seems to be down right now!')
                     continue
@@ -140,4 +141,4 @@ class TORRENTZCache(tv_cache.TVCache):
         self.minTime = 15
 
     def _getRSSData(self):
-        return {'entries': self.provider._doSearch({'RSS': ['']})}
+        return {'entries': self.provider.search({'RSS': ['']})}

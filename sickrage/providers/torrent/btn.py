@@ -67,7 +67,7 @@ class BTNProvider(TorrentProvider):
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         self._checkAuth()
 
@@ -115,7 +115,7 @@ class BTNProvider(TorrentProvider):
                     if 'torrents' in parsedJSON:
                         found_torrents.update(parsedJSON['torrents'])
 
-            for torrentid, torrent_info in found_torrents.iteritems():
+            for torrentid, torrent_info in found_torrents.items():
                 (title, url) = self._get_title_and_url(torrent_info)
 
                 if title and url:
@@ -260,7 +260,7 @@ class BTNProvider(TorrentProvider):
     def _doGeneralSearch(self, search_string):
         # 'search' looks as broad is it can find. Can contain episode overview and title for example,
         # use with caution!
-        return self._doSearch({'search': search_string})
+        return self.search({'search': search_string})
 
     def findPropers(self, search_date=None):
         results = []
@@ -268,7 +268,7 @@ class BTNProvider(TorrentProvider):
         search_terms = ['%.proper.%', '%.repack.%']
 
         for term in search_terms:
-            for item in self._doSearch({'release': term}, age=4 * 24 * 60 * 60):
+            for item in self.search({'release': term}, age=4 * 24 * 60 * 60):
                 if item['Time']:
                     try:
                         result_date = datetime.datetime.fromtimestamp(float(item['Time']))
@@ -308,4 +308,4 @@ class BTNCache(tv_cache.TVCache):
                     "The last known successful update was more than 24 hours ago, only trying to fetch the last 24 hours!")
             seconds_since_last_update = 86400
 
-        return {'entries': self.provider._doSearch(search_params=None, age=seconds_since_last_update)}
+        return {'entries': self.provider.search(search_params=None, age=seconds_since_last_update)}

@@ -28,6 +28,7 @@ from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import Proper
 from sickrage.core.helpers.show_names import makeSceneSearchString, \
     makeSceneSeasonSearchString
+from sickrage.core.srsession import srSession
 from sickrage.providers import NZBProvider
 
 
@@ -96,7 +97,7 @@ class OmgwtfnzbsProvider(NZBProvider):
 
         return size
 
-    def _doSearch(self, search, search_mode='eponly', epcount=0, retention=0, epObj=None):
+    def search(self, search, search_mode='eponly', epcount=0, retention=0, epObj=None):
 
         self._checkAuth()
 
@@ -114,7 +115,7 @@ class OmgwtfnzbsProvider(NZBProvider):
         sickrage.srLogger.debug("Search string: %s" % params)
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
-        parsedJSON = self.getURL(searchURL, json=True)
+        parsedJSON = srSession(self.session, self.headers).get(searchURL, json=True)
         if not parsedJSON:
             return []
 
@@ -135,7 +136,7 @@ class OmgwtfnzbsProvider(NZBProvider):
         results = []
 
         for term in search_terms:
-            for item in self._doSearch(term, retention=4):
+            for item in self.search(term, retention=4):
                 if 'usenetage' in item:
 
                     title, url = self._get_title_and_url(item)

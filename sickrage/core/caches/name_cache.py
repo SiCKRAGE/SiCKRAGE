@@ -94,7 +94,7 @@ class srNameCache(object):
         """
         cache_db.CacheDB().action("DELETE FROM scene_names WHERE indexer_id = ? OR indexer_id = ?", (indexerid, 0))
 
-        toRemove = [key for key, value in self.cache.iteritems() if value == 0 or value == indexerid]
+        toRemove = [key for key, value in self.cache.items() if value == 0 or value == indexerid]
         for key in toRemove:
             del self.cache[key]
 

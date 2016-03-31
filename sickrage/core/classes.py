@@ -27,7 +27,6 @@ from dateutil import parser
 
 import sickrage
 from sickrage.core.common import Quality, dateFormat, dateTimeFormat
-from sickrage.indexers import srIndexerApi
 
 
 class SearchResult(object):
@@ -222,7 +221,7 @@ class Proper(object):
 
     def __str__(self):
         return str(self.date) + " " + self.name + " " + str(self.season) + "x" + str(self.episode) + " of " + str(
-            self.indexerid) + " from " + str(srIndexerApi(self.indexer).name)
+            self.indexerid)
 
 
 class UIError(object):

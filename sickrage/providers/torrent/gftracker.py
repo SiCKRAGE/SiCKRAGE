@@ -25,6 +25,7 @@ import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -66,7 +67,7 @@ class GFTrackerProvider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
         # Save cookies from response
         self.cookies = self.headers.get('Set-Cookie')
 
@@ -80,7 +81,7 @@ class GFTrackerProvider(TorrentProvider):
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -101,7 +102,7 @@ class GFTrackerProvider(TorrentProvider):
                 # Set cookies from response
                 self.headers.update({'Cookie': self.cookies})
                 # Returns top 30 results by default, expandable in user profile
-                data = self.getURL(searchURL)
+                data = srSession(self.session, self.headers).get(searchURL)
                 if not data:
                     continue
 
@@ -197,4 +198,4 @@ class GFTrackerCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

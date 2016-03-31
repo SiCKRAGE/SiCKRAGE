@@ -120,8 +120,8 @@ class ApiHandler(RequestHandler):
     @coroutine
     def prepare(self, *args, **kwargs):
         args = args[1:]
-        kwargs = {k: (v, ''.join(v))[isinstance(v, list) and len(v) == 1] for k, v in
-                  recursive_unicode(self.request.arguments.items())}
+        kwargs = dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
+                       recursive_unicode(self.request.arguments.items())])
 
         # set the output callback
         # default json
@@ -169,7 +169,9 @@ class ApiHandler(RequestHandler):
     def async_call(self, function, *args, **kwargs):
         threading.currentThread().setName("API")
         return recursive_unicode(function(
-            **{k: (v, ''.join(v))[isinstance(v, list) and len(v) == 1] for k, v in recursive_unicode(kwargs.items())}))
+            **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
+                    recursive_unicode(kwargs.items())])
+        ))
 
     def _out_as_image(self, _dict):
         self.set_header('Content-Type', _dict['image'].get_media_type())
@@ -680,9 +682,9 @@ class CMD_ComingEpisodes(ApiCall):
     def run(self):
         """ Get the coming episodes """
         grouped_coming_episodes = ComingEpisodes.get_coming_episodes(self.type, self.sort, True, self.paused)
-        data = {section: [] for section in grouped_coming_episodes.keys()}
+        data = dict([(section, []) for section in grouped_coming_episodes.keys()])
 
-        for section, coming_episodes in grouped_coming_episodes.iteritems():
+        for section, coming_episodes in grouped_coming_episodes.items():
             for coming_episode in coming_episodes:
                 data[section].append({
                     'airdate': coming_episode['airdate'],
@@ -815,7 +817,7 @@ class CMD_EpisodeSearch(ApiCall):
             ManualSearchQueueItem(showObj, epObj))  # @UndefinedVariable
 
         # wait until the queue item tells us whether it worked or not
-        while ep_queue_item.success is None:  # @UndefinedVariable
+        while not ep_queue_item.success:  # @UndefinedVariable
             time.sleep(1)
 
         # return the correct json value
@@ -937,7 +939,7 @@ class CMD_EpisodeSetStatus(ApiCall):
 
         extra_msg = ""
         if start_backlog:
-            for season, segment in segments.iteritems():
+            for season, segment in segments.items():
                 sickrage.srCore.SEARCHQUEUE.add_item(BacklogQueueItem(showObj, segment))  # @UndefinedVariable
                 sickrage.srLogger.info("API :: Starting backlog for " + showObj.name + " season " + str(
                     season) + " because some episodes were set to WANTED")
@@ -1393,7 +1395,7 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
 
         root_dirs_new = [urllib.unquote_plus(x) for x in root_dirs]
         root_dirs_new.insert(0, index)
-        root_dirs_new = '|'.join(unicode(x) for x in root_dirs_new)
+        root_dirs_new = '|'.join(x for x in root_dirs_new)
 
         sickrage.srConfig.ROOT_DIRS = root_dirs_new
         return _responds(RESULT_SUCCESS, _getRootDirs(), msg="Root directories updated")
@@ -1485,7 +1487,7 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
         root_dirs_new = [urllib.unquote_plus(x) for x in root_dirs_new]
         if len(root_dirs_new) > 0:
             root_dirs_new.insert(0, newIndex)
-        root_dirs_new = "|".join(unicode(x) for x in root_dirs_new)
+        root_dirs_new = "|".join(x for x in root_dirs_new)
 
         sickrage.srConfig.ROOT_DIRS = root_dirs_new
         # what if the root dir was not found?
@@ -1689,7 +1691,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
 
                 # found show
                 results = [{indexer_ids[_indexer]: int(myShow.data['id']),
-                            "name": unicode(myShow.data['seriesname']),
+                            "name": myShow.data['seriesname'],
                             "first_aired": myShow.data['firstaired'],
                             "indexer": int(_indexer)}]
                 break

@@ -18,6 +18,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with enzyme.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import unicode_literals
+
 __all__ = ['Parser']
 
 import logging
@@ -90,12 +92,12 @@ class Riff(core.AVContainer):
             while self._parseRIFFChunk(file):
                 pass
         except IOError:
-            log.exception(u'error in file, stop parsing')
+            log.exception('error in file, stop parsing')
 
         self._find_subtitles(file.name)
 
         if not self.has_idx and isinstance(self, core.AVContainer):
-            log.debug(u'WARNING: avi has no index')
+            log.debug('WARNING: avi has no index')
             self._set('corrupt', True)
 
 
@@ -135,7 +137,7 @@ class Riff(core.AVContainer):
           retval['dwStart'],
           retval['dwLength']) = v
         if retval['dwMicroSecPerFrame'] == 0:
-            log.warning(u'ERROR: Corrupt AVI')
+            log.warning('ERROR: Corrupt AVI')
             raise ParseError()
 
         return retval
@@ -144,7 +146,7 @@ class Riff(core.AVContainer):
     def _parseSTRH(self, t):
         retval = {}
         retval['fccType'] = t[0:4]
-        log.debug(u'_parseSTRH(%r) : %d bytes' % (retval['fccType'], len(t)))
+        log.debug('_parseSTRH(%r) : %d bytes' % (retval['fccType'], len(t)))
         if retval['fccType'] != 'auds':
             retval['fccHandler'] = t[4:8]
             v = struct.unpack('<IHHIIIIIIIII', t[8:52])
@@ -249,7 +251,7 @@ class Riff(core.AVContainer):
             elif key == 'strf':
                 retval[key] = self._parseSTRF(value, retval['strh'])
             else:
-                log.debug(u'_parseSTRL: unsupported stream tag %r', key)
+                log.debug('_parseSTRL: unsupported stream tag %r', key)
 
             i += sz
 
@@ -265,7 +267,7 @@ class Riff(core.AVContainer):
         i += 8
         value = t[i:]
         if key != 'dmlh':
-            log.debug(u'_parseODML: Error')
+            log.debug('_parseODML: Error')
 
         i += sz - 8
         return (retval, i)
@@ -440,7 +442,7 @@ class Riff(core.AVContainer):
                 i += 8
                 # in most cases this is some info stuff
                 if not key in AVIINFO.keys() and key != 'IDIT':
-                    log.debug(u'Unknown Key: %r, len: %d' % (key, sz))
+                    log.debug('Unknown Key: %r, len: %d' % (key, sz))
                 value = t[i:i + sz]
                 if key == 'ISFT':
                     # product information
@@ -466,7 +468,7 @@ class Riff(core.AVContainer):
                             except ValueError:
                                 pass
                         else:
-                            log.debug(u'no support for time format %r', value)
+                            log.debug('no support for time format %r', value)
                 i += sz
         return retval
 
@@ -491,15 +493,15 @@ class Riff(core.AVContainer):
                 self._parseLISTmovi(size - 4, file)
                 return True
             elif size > 80000:
-                log.debug(u'RIFF LIST %r too long to parse: %r bytes' % (key, size))
+                log.debug('RIFF LIST %r too long to parse: %r bytes' % (key, size))
                 t = file.seek(size - 4, 1)
                 return True
             elif size < 5:
-                log.debug(u'RIFF LIST %r too short: %r bytes' % (key, size))
+                log.debug('RIFF LIST %r too short: %r bytes' % (key, size))
                 return True
 
             t = file.read(size - 4)
-            log.debug(u'parse RIFF LIST %r: %d bytes' % (key, size))
+            log.debug('parse RIFF LIST %r: %d bytes' % (key, size))
             value = self._parseLIST(t)
             self.header[key] = value
             if key == 'INFO':
@@ -511,7 +513,7 @@ class Riff(core.AVContainer):
                 # no need to add this info to a table
                 pass
             else:
-                log.debug(u'Skipping table info %r' % key)
+                log.debug('Skipping table info %r' % key)
 
         elif name == 'JUNK':
             self.junkStart = file.tell() - 8
@@ -519,14 +521,14 @@ class Riff(core.AVContainer):
             file.seek(size, 1)
         elif name == 'idx1':
             self.has_idx = True
-            log.debug(u'idx1: %r bytes' % size)
+            log.debug('idx1: %r bytes' % size)
             # no need to parse this
             t = file.seek(size, 1)
         elif name == 'RIFF':
-            log.debug(u'New RIFF chunk, extended avi [%i]' % size)
+            log.debug('New RIFF chunk, extended avi [%i]' % size)
             type = file.read(4)
             if type != 'AVIX':
-                log.debug(u'Second RIFF chunk is %r, not AVIX, skipping', type)
+                log.debug('Second RIFF chunk is %r, not AVIX, skipping', type)
                 file.seek(size - 4, 1)
             # that's it, no new informations should be in AVIX
             return False
@@ -557,10 +559,10 @@ class Riff(core.AVContainer):
             # check if name is something usefull at all, maybe it is no
             # avi or broken
             t = file.seek(size, 1)
-            log.debug(u'Skipping %r [%i]' % (name, size))
+            log.debug('Skipping %r [%i]' % (name, size))
         else:
             # bad avi
-            log.debug(u'Bad or broken avi')
+            log.debug('Bad or broken avi')
             return False
         return True
 

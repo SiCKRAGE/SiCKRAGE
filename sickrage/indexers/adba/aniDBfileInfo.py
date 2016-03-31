@@ -25,7 +25,7 @@ from xml.etree.ElementTree import ElementTree
 
 import requests
 
-from sickrage.core.helpers import download_file
+from sickrage.core.srsession import srSession
 
 
 def get_file_hash(filePath):
@@ -89,10 +89,10 @@ def _download_file(url, filename):
     return True
 
 def get_anime_titles_xml(path):
-    return download_file("https://raw.githubusercontent.com/ScudLee/anime-lists/master/animetitles.xml", path)
+    return srSession().download("https://raw.githubusercontent.com/ScudLee/anime-lists/master/animetitles.xml", path)
 
 def get_anime_list_xml(path):
-    return download_file("https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml", path)
+    return srSession().download("https://raw.githubusercontent.com/ScudLee/anime-lists/master/anime-list.xml", path)
 
 def read_anidb_xml(filePath=None):
     if not filePath:

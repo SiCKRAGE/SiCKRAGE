@@ -55,7 +55,7 @@ class KATProvider(TorrentProvider):
             'category': 'tv'
         }
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
@@ -77,8 +77,8 @@ class KATProvider(TorrentProvider):
                 try:
                     searchURL = self.urls['search'] % url_fmt_string + '?' + urlencode(self.search_params)
                     sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                    data = self.getURL(searchURL)
-                    # data = self.getURL(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
+                    data = srSession(self.session, self.headers).get(searchURL)
+                    # data = srSession(self.session, self.headers).get(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
                     if not data:
                         sickrage.srLogger.debug("No data returned from provider")
                         continue
@@ -169,4 +169,4 @@ class KATCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['tv', 'anime']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

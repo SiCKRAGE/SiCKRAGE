@@ -37,7 +37,7 @@
         % endif
         <td align="center">
             <select name="indexer">
-                % for curIndexer in srIndexerApi().indexers.iteritems():
+                % for curIndexer in srIndexerApi().indexers.items():
                     <option value="${curIndexer[0]}" ${('', 'selected="selected"')[curIndexer[0] == indexer]}>${curIndexer[1]}</option>
                 % endfor
             </select>

@@ -2539,167 +2539,6 @@ jQuery(document).ready(function ($) {
                 }
             },
 
-            mass_update: function () {
-                $('#submitMassEdit').on('click', function () {
-                    var editArr = [];
-
-                    $('.editCheck').each(function () {
-                        if ($(this).checked === true) {
-                            editArr.push($(this).attr('id').split('-')[1]);
-                        }
-                    });
-
-                    if (editArr.length === 0) {
-                        return;
-                    }
-
-                    window.location.href = 'massEdit?toEdit=' + editArr.join('|');
-                });
-
-                $('#submitMassUpdate').on('click', function () {
-                    var updateArr = [];
-                    var refreshArr = [];
-                    var renameArr = [];
-                    var subtitleArr = [];
-                    var deleteArr = [];
-                    var removeArr = [];
-                    var metadataArr = [];
-
-                    $('.updateCheck').each(function () {
-                        if ($(this).checked === true) {
-                            updateArr.push($(this).attr('id').split('-')[1]);
-                        }
-                    });
-
-                    $('.refreshCheck').each(function () {
-                        if ($(this).checked === true) {
-                            refreshArr.push($(this).attr('id').split('-')[1]);
-                        }
-                    });
-
-                    $('.renameCheck').each(function () {
-                        if ($(this).checked === true) {
-                            renameArr.push($(this).attr('id').split('-')[1]);
-                        }
-                    });
-
-                    $('.subtitleCheck').each(function () {
-                        if ($(this).checked === true) {
-                            subtitleArr.push($(this).attr('id').split('-')[1]);
-                        }
-                    });
-
-                    $('.removeCheck').each(function () {
-                        if ($(this).checked === true) {
-                            removeArr.push($(this).attr('id').split('-')[1]);
-                        }
-                    });
-
-                    var deleteCount = 0;
-
-                    $('.deleteCheck').each(function () {
-                        if ($(this).checked === true) {
-                            deleteCount++;
-                        }
-                    });
-
-                    if (deleteCount >= 1) {
-                        $.bootbox.confirm("You have selected to delete " + deleteCount + " show(s).  Are you sure you wish to continue? All files will be removed from your system.", function (result) {
-                            if (result) {
-                                $('.deleteCheck').each(function () {
-                                    if ($(this).checked === true) {
-                                        deleteArr.push($(this).attr('id').split('-')[1]);
-                                    }
-                                });
-                            }
-                            if (updateArr.length + refreshArr.length + renameArr.length + subtitleArr.length + deleteArr.length + removeArr.length + metadataArr.length === 0) {
-                                return false;
-                            }
-
-                            window.location.href = 'massUpdate?toUpdate=' + updateArr.join('|') + '&toRefresh=' + refreshArr.join('|') + '&toRename=' + renameArr.join('|') + '&toSubtitle=' + subtitleArr.join('|') + '&toDelete=' + deleteArr.join('|') + '&toRemove=' + removeArr.join('|') + '&toMetadata=' + metadataArr.join('|');
-                        });
-                    } else {
-                        if (updateArr.length + refreshArr.length + renameArr.length + subtitleArr.length + deleteArr.length + removeArr.length + metadataArr.length === 0) {
-                            return false;
-                        }
-                        window.location.href = 'massUpdate?toUpdate=' + updateArr.join('|') + '&toRefresh=' + refreshArr.join('|') + '&toRename=' + renameArr.join('|') + '&toSubtitle=' + subtitleArr.join('|') + '&toDelete=' + deleteArr.join('|') + '&toRemove=' + removeArr.join('|') + '&toMetadata=' + metadataArr.join('|');
-                    }
-                });
-
-                $('.bulkCheck').on('click', function () {
-                    var bulkCheck = this;
-                    var whichBulkCheck = $(bulkCheck).attr('id');
-
-                    $('.' + whichBulkCheck).each(function () {
-                        if (!$(this).disabled) {
-                            $(this).prop("checked", !$(this).checked);
-                        }
-                    });
-                });
-
-                ['.editCheck', '.updateCheck', '.refreshCheck', '.renameCheck', '.deleteCheck', '.removeCheck'].forEach(function (name) {
-                    var lastCheck = null;
-
-                    $(name).on('click', function (event) {
-                        if (!lastCheck || !event.shiftKey) {
-                            lastCheck = this;
-                            return;
-                        }
-
-                        var check = this;
-                        var found = 0;
-
-                        $(name).each(function () {
-                            switch (found) {
-                                case 2:
-                                    return false;
-                                case 1:
-                                    if (!$(this).disabled) {
-                                        $(this).prop("checked", lastCheck.checked);
-                                    }
-                            }
-                            if (this === check || this === lastCheck) {
-                                found++;
-                            }
-                        });
-                    });
-                });
-            },
-
-            mass_edit: {
-                init: function () {
-                    $('.new_root_dir').change(function () {
-                        var curIndex = SICKRAGE.home.mass_edit.findDirIndex($(this).attr('id'));
-                        $('#display_new_root_dir_' + curIndex).html('<b>' + $(this).val() + '</b>');
-                    });
-
-                    $('.edit_root_dir').click(function () {
-                        var curIndex = SICKRAGE.home.mass_edit.findDirIndex($(this).attr('id'));
-                        var initialDir = $("#new_root_dir_" + curIndex).val();
-                        $(this).nFileBrowser(SICKRAGE.home.mass_edit.editRootDir, {
-                            initialDir: initialDir,
-                            whichId: curIndex
-                        });
-                    });
-
-                    $('.delete_root_dir').click(function () {
-                        var curIndex = SICKRAGE.home.mass_edit.findDirIndex($(this).attr('id'));
-                        $('#new_root_dir_' + curIndex).val(null);
-                        $('#display_new_root_dir_' + curIndex).html('<b>DELETED</b>');
-                    });
-                },
-
-                findDirIndex: function (which) {
-                    var dirParts = which.split('_');
-                    return dirParts[dirParts.length - 1];
-                },
-
-                editRootDir: function (path, options) {
-                    $('#new_root_dir_' + options.whichId).val(path);
-                    $('#new_root_dir_' + options.whichId).change();
-                }
-            },
-
             add_show_options: function () {
                 $('#saveDefaultsButton').click(function () {
                     var anyQualArray = [];
@@ -5026,10 +4865,11 @@ jQuery(document).ready(function ($) {
 
         manage: {
             init: function () {
-
+                SICKRAGE.manage.mass_update();
+                SICKRAGE.manage.mass_edit.init();
             },
 
-            index: function () {
+            mass_update: function () {
                 $("#massUpdateTable:has(tbody tr)").tablesorter({
                     sortList: [[1, 0]],
                     textExtraction: {
@@ -5080,12 +4920,140 @@ jQuery(document).ready(function ($) {
                         17: {sorter: false}
                     }
                 });
+
+                $('#submitMassEdit').on('click', function () {
+                    var checkArr = [];
+
+                    $('.showCheck:checked').each(function () {
+                        checkArr.push($(this).attr('id'));
+                    });
+
+                    if (checkArr.length === 0) {
+                        return;
+                    }
+
+                    window.location.href = 'massEdit?toEdit=' + checkArr.join('|');
+                });
+
+                $('#submitMassUpdate').on('click', function () {
+                    var checkArr = [];
+
+                    $('.showCheck:checked').each(function () {
+                        checkArr.push($(this).attr('id'));
+                    });
+
+                    if (checkArr.length === 0) {
+                        return;
+                    }
+
+                    window.location.href = 'massUpdate?toUpdate=' + checkArr.join('|');
+                });
+
+                $('#submitMassRescan').on('click', function () {
+                    var checkArr = [];
+
+                    $('.showCheck:checked').each(function () {
+                        checkArr.push($(this).attr('id'));
+                    });
+
+                    if (checkArr.length === 0) {
+                        return;
+                    }
+
+                    window.location.href = 'massUpdate?toRefresh=' + checkArr.join('|');
+                });
+
+                $('#submitMassRename').on('click', function () {
+                    var checkArr = [];
+
+                    $('.showCheck:checked').each(function () {
+                            checkArr.push($(this).attr('id'));
+                    });
+
+                    if (checkArr.length === 0) {
+                        return;
+                    }
+
+                    window.location.href = 'massUpdate?toRename=' + checkArr.join('|');
+                });
+
+                $('#submitMassDelete').on('click', function () {
+                    var checkArr = [];
+
+                    $('.showCheck:checked').each(function () {
+                            checkArr.push($(this).attr('id'));
+                    });
+
+                    if (checkArr.length === 0) {
+                        return;
+                    }
+
+                    $.bootbox.confirm("You have selected to delete " + checkArr.length + " show(s).  Are you sure you wish to continue? All files will be removed from your system.", function (result) {
+                        if (result) {
+                            window.location.href = 'massUpdate?toDelete=' + checkArr.join('|');
+                        }
+                    });
+                });
+
+                $('#submitMassRemove').on('click', function () {
+                    var checkArr = [];
+
+                    $('.showCheck:checked').each(function () {
+                            checkArr.push($(this).attr('id'));
+                    });
+
+                    if (checkArr.length === 0) {
+                        return;
+                    }
+
+                    window.location.href = 'massUpdate?toRemove=' + checkArr.join('|');
+                });
+
+                $('.bulkCheck').on('click', function () {
+                    $('.showCheck').each(function () {
+                        if (!$(this).disabled) {
+                            $(this).prop("checked", !$(this).checked);
+                        }
+                    });
+                });
             },
 
-            mass_edit: function () {
-                $('#location').fileBrowser({title: 'Select Show Location'});
-            },
+            mass_edit: {
+                init: function () {
+                    $('#location').fileBrowser({title: 'Select Show Location'});
+                    
+                    $('.new_root_dir').change(function () {
+                        var curIndex = SICKRAGE.manage.mass_edit.findDirIndex($(this).attr('id'));
+                        $('#display_new_root_dir_' + curIndex).html('<b>' + $(this).val() + '</b>');
+                    });
 
+                    $('.edit_root_dir').click(function () {
+                        var curIndex = SICKRAGE.manage.mass_edit.findDirIndex($(this).attr('id'));
+                        var initialDir = $("#new_root_dir_" + curIndex).val();
+                        $(this).nFileBrowser(SICKRAGE.manage.mass_edit.editRootDir, {
+                            initialDir: initialDir,
+                            whichId: curIndex
+                        });
+                    });
+
+                    $('.delete_root_dir').click(function () {
+                        var curIndex = SICKRAGE.manage.mass_edit.findDirIndex($(this).attr('id'));
+                        $('#new_root_dir_' + curIndex).val(null);
+                        $('#display_new_root_dir_' + curIndex).html('<b>DELETED</b>');
+                    });
+                },
+
+                findDirIndex: function (which) {
+                    var dirParts = which.split('_');
+                    return dirParts[dirParts.length - 1];
+                },
+
+                editRootDir: function (path, options) {
+                    $('#new_root_dir_' + options.whichId).val(path);
+                    $('#new_root_dir_' + options.whichId).change();
+                }
+            },
+            
             backlog_overview: function () {
                 $('#pickShow').change(function () {
                     var id = $(this).val();

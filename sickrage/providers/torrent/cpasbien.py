@@ -25,6 +25,7 @@ import traceback
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import bs4_parser
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -43,7 +44,7 @@ class CpasbienProvider(TorrentProvider):
 
         self.cache = CpasbienCache(self)
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         size = -1
         seeders = 1
@@ -61,7 +62,7 @@ class CpasbienProvider(TorrentProvider):
 
                 searchURL = self.urls['base_url'] + '/recherche/' + search_string.replace('.', '-') + '.html'
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = self.getURL(searchURL)
+                data = srSession(self.session, self.headers).get(searchURL)
 
                 if not data:
                     continue

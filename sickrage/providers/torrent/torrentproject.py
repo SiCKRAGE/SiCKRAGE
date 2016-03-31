@@ -23,12 +23,13 @@ from urllib import quote_plus
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import tryInt
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
 class TORRENTPROJECTProvider(TorrentProvider):
     def __init__(self):
-        super(TORRENTPROJECTProvider, self).__init__("TorrentProject",'torrentproject.se')
+        super(TORRENTPROJECTProvider, self).__init__("TorrentProject", 'torrentproject.se')
 
         self.supportsBacklog = True
 
@@ -38,7 +39,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
         self.minleech = None
         self.cache = TORRENTPROJECTCache(self)
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -50,10 +51,10 @@ class TORRENTPROJECTProvider(TorrentProvider):
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['base_url'] + "?s=%s&out=json&filter=2101&num=150" % quote_plus(
-                        search_string.encode('utf-8'))
+                    search_string.encode('utf-8'))
 
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                torrents = self.getURL(searchURL, json=True)
+                torrents = srSession(self.session, self.headers).get(searchURL, json=True)
                 if not (torrents and "total_found" in torrents and int(torrents["total_found"]) > 0):
                     sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
                     continue
@@ -67,7 +68,8 @@ class TORRENTPROJECTProvider(TorrentProvider):
                     leechers = tryInt(torrents[i]["leechs"], 0)
                     if seeders < self.minseed or leechers < self.minleech:
                         if mode is not 'RSS':
-                            sickrage.srLogger.debug("Torrent doesn't meet minimum seeds & leechers not selecting : %s" % title)
+                            sickrage.srLogger.debug(
+                                "Torrent doesn't meet minimum seeds & leechers not selecting : %s" % title)
                         continue
 
                     t_hash = torrents[i]["torrent_hash"]
@@ -78,10 +80,10 @@ class TORRENTPROJECTProvider(TorrentProvider):
                         assert mode is not 'RSS'
                         sickrage.srLogger.debug("Torrent has less than 10 seeds getting dyn trackers: " + title)
                         trackerUrl = self.urls['base_url'] + "" + t_hash + "/trackers_json"
-                        jdata = self.getURL(trackerUrl, json=True)
+                        jdata = srSession(self.session, self.headers).get(trackerUrl, json=True)
                         assert jdata is not "maintenance"
                         download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "".join(
-                                ["&tr=" + s for s in jdata])
+                            ["&tr=" + s for s in jdata])
                     except (Exception, AssertionError):
                         download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://open.demonii.com:1337&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://exodus.desync.com:6969"
 
@@ -114,4 +116,4 @@ class TORRENTPROJECTCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'RSS': ['0day']}
-        return {'entries': self.provider._doSearch(search_params)}
+        return {'entries': self.provider.search(search_params)}

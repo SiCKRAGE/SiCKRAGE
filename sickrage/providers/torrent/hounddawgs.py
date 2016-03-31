@@ -69,8 +69,8 @@ class HoundDawgsProvider(TorrentProvider):
                         'keeplogged': 'on',
                         'login': 'Login'}
 
-        self.getURL(self.urls['base_url'], timeout=30)
-        response = self.getURL(self.urls['login'], post_data=login_params, timeout=30)
+        srSession(self.session, self.headers).get(self.urls['base_url'], timeout=30)
+        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
         if not response:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -83,7 +83,7 @@ class HoundDawgsProvider(TorrentProvider):
 
         return True
 
-    def _doSearch(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_strings, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
@@ -100,7 +100,7 @@ class HoundDawgsProvider(TorrentProvider):
 
                 self.search_params['searchstr'] = search_string
 
-                data = self.getURL(self.urls['search'], params=self.search_params)
+                data = srSession(self.session, self.headers).get(self.urls['search'], params=self.search_params)
                 startTableIndex = data.find("<table class=\"torrent_table")
                 data = data[startTableIndex:]
                 if not data:
@@ -188,4 +188,4 @@ class HoundDawgsCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_strings = {'RSS': ['']}
-        return {'entries': self.provider._doSearch(search_strings)}
+        return {'entries': self.provider.search(search_strings)}

@@ -128,6 +128,16 @@ default_host = {
 }
 
 
+def codeDescription(status_code):
+    """
+    Returns the description of the URL error code
+    """
+    if status_code in http_error_code:
+        return http_error_code[status_code]
+    else:
+        sickrage.srLogger.error("Unknown error code: %s. Please submit an issue" % status_code)
+        return 'unknown'
+
 def getClientModule(name):
     name = name.lower()
     prefix = "sickrage.clients."
@@ -155,7 +165,7 @@ class GenericClient(object):
         self.response = None
         self.auth = None
         self.last_time = time.time()
-        self.session = srSession().session
+        self.session = srSession()
         self.session.auth = (self.username, self.password)
 
     def _request(self, method='get', params=None, data=None, files=None):
@@ -191,7 +201,7 @@ class GenericClient(object):
             return False
 
         if self.response.status_code == 401:
-            sickrage.srLogger.error(self.name + u': Invalid Username or Password, check your config')
+            sickrage.srLogger.error(self.name + ': Invalid Username or Password, check your config')
             return False
 
         if self.response.status_code in http_error_code.keys():
@@ -344,7 +354,7 @@ class GenericClient(object):
     def testAuthentication(self):
 
         try:
-            self.response = self.session.get(self.url, timeout=120, verify=False)
+            self.response = self.session.get(self.url, timeout=120)
         except requests.exceptions.ConnectionError:
             return False, 'Error: ' + self.name + ' Connection Error'
         except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):

@@ -589,7 +589,7 @@
                                 <span class="component-title">Enable debug</span>
                                 <span class="component-desc">
                                     <input type="checkbox" name="debug"
-                                           id="debug" ${('', 'checked="checked"')[bool(sickrage.srConfig.DEBUG)]}/>
+                                           id="debug" ${('', 'checked="checked"')[bool(sickrage.DEBUG)]}/>
                                     <p>Enable debug logs<p>
                                 </span>
                             </label>
@@ -621,12 +621,11 @@
 
                         <div class="field-pair">
                             <label for="encryption_version">
-                                <span class="component-title">Encrypt passwords</span>
+                                <span class="component-title">Encrypt settings</span>
                                 <span class="component-desc">
                                     <input type="checkbox" name="encryption_version"
                                            id="encryption_version" ${('', 'checked="checked"')[bool(sickrage.srConfig.ENCRYPTION_VERSION)]}/>
-                                    <p>in the <code>sickrage.srConfig.ini</code> file.
-                                    <b>Warning:</b> Passwords must only contain <a target="_blank" href="${anon_url('http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters')}">ASCII characters</a></p>
+                                    <p>in the <code>sickrage.srConfig.ini</code> file.</p>
                                 </span>
                             </label>
                         </div>
@@ -741,7 +740,7 @@
                                         <% gh_branch = sickrage.srCore.VERSIONUPDATER.list_remote_branches %>
                                         % if gh_branch:
                                             % for cur_branch in gh_branch:
-                                                % if sickrage.srConfig.GIT_USERNAME and sickrage.srConfig.GIT_PASSWORD and sickrage.srConfig.DEVELOPER == 1:
+                                                % if sickrage.srConfig.GIT_USERNAME and sickrage.srConfig.GIT_PASSWORD and sickrage.DEVELOPER == 1:
                                                     <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSION == cur_branch]}>${cur_branch}</option>
                                                 % elif sickrage.srConfig.GIT_USERNAME and sickrage.srConfig.GIT_PASSWORD and cur_branch in ['master', 'develop']:
                                                     <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSION == cur_branch]}>${cur_branch}</option>

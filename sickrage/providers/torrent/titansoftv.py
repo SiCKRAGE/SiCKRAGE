@@ -58,7 +58,7 @@ class TitansOfTVProvider(TorrentProvider):
 
         return True
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
         # FIXME ADD MODE
         self._checkAuth()
         results = []
@@ -72,7 +72,7 @@ class TitansOfTVProvider(TorrentProvider):
         sickrage.srLogger.debug("Search string: %s " % search_params)
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
-        parsedJSON = self.getURL(searchURL, json=True)  # do search
+        parsedJSON = srSession(self.session, self.headers).get(searchURL, json=True)  # do search
 
         if not parsedJSON:
             sickrage.srLogger.debug("No data returned from provider")
@@ -151,4 +151,4 @@ class TitansOfTVCache(tv_cache.TVCache):
 
     def _getRSSData(self):
         search_params = {'limit': 100}
-        return self.provider._doSearch(search_params)
+        return self.provider.search(search_params)

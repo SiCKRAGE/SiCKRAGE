@@ -26,9 +26,9 @@ from xml.etree import ElementTree
 import classes
 import sickrage
 from sickrage.core.common import Quality
-from sickrage.core.helpers import getURL
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
+from sickrage.core.srsession import srSession
 
 
 def getSeasonNZBs(name, urlData, season):
@@ -125,7 +125,7 @@ def splitNZBResult(result):
     :param result: search result object
     :return: False upon failure, a list of episode objects otherwise
     """
-    urlData = getURL(result.url, needBytes=True)
+    urlData = srSession().get(result.url, needBytes=True)
     if urlData is None:
         sickrage.srLogger.error("Unable to load url " + result.url + ", can't download season NZB")
         return False

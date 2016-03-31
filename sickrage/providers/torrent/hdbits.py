@@ -22,12 +22,13 @@ import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.classes import Proper
 from sickrage.core.exceptions import AuthException
+from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
 class HDBitsProvider(TorrentProvider):
     def __init__(self):
-        super(HDBitsProvider, self).__init__("HDBits",'hdbits.org')
+        super(HDBitsProvider, self).__init__("HDBits", 'hdbits.org')
 
         self.supportsBacklog = True
 
@@ -50,8 +51,7 @@ class HDBitsProvider(TorrentProvider):
 
         return True
 
-    @staticmethod
-    def _checkAuthFromData(parsedJSON):
+    def _checkAuthFromData(self, parsedJSON):
 
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
@@ -77,7 +77,7 @@ class HDBitsProvider(TorrentProvider):
 
         return title, url
 
-    def _doSearch(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
+    def search(self, search_params, search_mode='eponly', epcount=0, age=0, epObj=None):
 
         # FIXME
         results = []
@@ -86,7 +86,7 @@ class HDBitsProvider(TorrentProvider):
 
         self._checkAuth()
 
-        parsedJSON = self.getURL(self.urls['search'], post_data=search_params, json=True)
+        parsedJSON = srSession(self.session, self.headers).get(self.urls['search'], post_data=search_params, json=True)
         if not parsedJSON:
             return []
 
@@ -108,7 +108,7 @@ class HDBitsProvider(TorrentProvider):
         search_terms = [' proper ', ' repack ']
 
         for term in search_terms:
-            for item in self._doSearch(self._make_post_data_JSON(search_term=term)):
+            for item in self.search(self._make_post_data_JSON(search_term=term)):
                 if item['utadded']:
                     try:
                         result_date = datetime.datetime.fromtimestamp(int(item['utadded']))
@@ -182,7 +182,6 @@ class HDBitsProvider(TorrentProvider):
 
 class HDBitsCache(tv_cache.TVCache):
     def __init__(self, provider_obj):
-
         tv_cache.TVCache.__init__(self, provider_obj)
 
         # only poll HDBits every 15 minutes max
@@ -192,10 +191,9 @@ class HDBitsCache(tv_cache.TVCache):
         results = []
 
         try:
-            parsedJSON = self.provider.getURL(self.provider.urls['rss'],
-                                              post_data=self.provider._make_post_data_JSON(),
-                                              json=True)
-
+            parsedJSON = srSession(self.provider.session, self.provider.headers).get(self.provider.urls['rss'],
+                                                                                     post_data=self.provider._make_post_data_JSON(),
+                                                                                     json=True)
             if self.provider._checkAuthFromData(parsedJSON):
                 results = parsedJSON['data']
         except Exception:

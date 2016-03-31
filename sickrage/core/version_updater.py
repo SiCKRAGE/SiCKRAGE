@@ -33,7 +33,8 @@ import traceback
 import github
 
 import sickrage
-from sickrage.core.helpers import backupAll, getURL, download_file, removetree
+from sickrage.core.helpers import backupAll, removetree
+from sickrage.core.srsession import srSession
 from sickrage.core.ui import notifications
 from sickrage.notifiers import srNotifiers
 
@@ -220,7 +221,7 @@ class srVersionUpdater(object):
         # Grab a copy of the news
         sickrage.srLogger.debug('check_for_new_news: Checking GitHub for latest news.')
         try:
-            news = getURL(sickrage.srConfig.NEWS_URL, session=self.session)
+            news = srSession().get(sickrage.srConfig.NEWS_URL)
         except:
             sickrage.srLogger.warning('check_for_new_news: Could not load news from repo.')
 
@@ -595,7 +596,7 @@ class SourceUpdateManager(UpdateManager):
     def _check_for_new_version(self):
         git_version_url = "https://raw.githubusercontent.com/{}/{}/master/sickrage/version.txt".format(
             sickrage.srConfig.GIT_ORG, sickrage.srConfig.GIT_REPO)
-        git_version = getURL(git_version_url) or self._find_installed_version()
+        git_version = srSession().get(git_version_url) or self._find_installed_version()
         return git_version
 
     def set_newest_text(self):
@@ -636,7 +637,7 @@ class SourceUpdateManager(UpdateManager):
             # retrieve file
             sickrage.srLogger.info("Downloading update from " + repr(tar_download_url))
             tar_download_path = os.path.join(sr_update_dir, 'sr-update.tar')
-            download_file(tar_download_url, tar_download_path)
+            srSession().download(tar_download_url, tar_download_path)
 
             if not os.path.isfile(tar_download_path):
                 sickrage.srLogger.warning(
