@@ -29,7 +29,6 @@ import xmltodict
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.common import cpu_presets
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -69,8 +68,10 @@ class TORRENTZProvider(TorrentProvider):
                     search_url += '?q=' + quote_plus(search_string)
 
                 sickrage.srLogger.info(search_url)
-                data = srSession(self.session, self.headers).get(search_url)
-                if not data:
+
+                try:
+                    data = self.session.get(search_url).content
+                except Exception:
                     sickrage.srLogger.info('Seems to be down right now!')
                     continue
 

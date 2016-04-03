@@ -29,7 +29,6 @@ from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 category_excluded = {'Sport': 22,
@@ -129,8 +128,9 @@ class TNTVillageProvider(TorrentProvider):
                         'CookieDate': 0,
                         'submit': 'Connettiti al Forum'}
 
-        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
+        try:
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
@@ -319,8 +319,10 @@ class TNTVillageProvider(TorrentProvider):
                         sickrage.srLogger.debug("Search string: %s " % search_string)
 
                     sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                    data = srSession(self.session, self.headers).get(searchURL)
-                    if not data:
+
+                    try:
+                        data = self.session.get(searchURL).content
+                    except Exception:
                         sickrage.srLogger.debug("No data returned from provider")
                         continue
 

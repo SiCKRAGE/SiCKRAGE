@@ -23,7 +23,6 @@ from urllib import quote_plus
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -48,9 +47,9 @@ class BitCannonProvider(TorrentProvider):
         results = []
         items = {'Season': [], 'Episode': [], 'RSS': []}
 
-        trackers = (srSession(self.session, self.headers).get(self.urls['trackers'], json=True) or {}).get('Trackers', [])
-
-        if not trackers:
+        try:
+            trackers = self.session.get(self.urls['trackers']).json().get('Trackers')
+        except Exception:
             sickrage.srLogger.info('Could not get tracker list from BitCannon, aborting search')
             return results
 
@@ -59,8 +58,13 @@ class BitCannonProvider(TorrentProvider):
             for search_string in search_strings[mode]:
                 searchURL = self.urls['search'] + search_string
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = srSession(self.session, self.headers).get(searchURL, json=True)
-                for item in data or []:
+
+                try:
+                    data = self.session.get(searchURL).json()
+                except Exception:
+                    continue
+
+                for item in data:
                     if 'tv' not in (item.get('Category') or '').lower():
                         continue
 

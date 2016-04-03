@@ -69,9 +69,9 @@ class HoundDawgsProvider(TorrentProvider):
                         'keeplogged': 'on',
                         'login': 'Login'}
 
-        srSession(self.session, self.headers).get(self.urls['base_url'], timeout=30)
-        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
+        try:
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
@@ -100,14 +100,13 @@ class HoundDawgsProvider(TorrentProvider):
 
                 self.search_params['searchstr'] = search_string
 
-                data = srSession(self.session, self.headers).get(self.urls['search'], params=self.search_params)
-                startTableIndex = data.find("<table class=\"torrent_table")
-                data = data[startTableIndex:]
-                if not data:
+                try:
+                    data = self.session.get(self.urls['search'], params=self.search_params).content
+                except Exception:
                     continue
 
                 try:
-                    with bs4_parser(data) as html:
+                    with bs4_parser(data[data.find("<table class=\"torrent_table")]) as html:
                         result_table = html.find('table', {'id': 'torrent_table'})
 
                         if not result_table:

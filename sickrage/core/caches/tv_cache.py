@@ -147,11 +147,8 @@ class TVCache(object):
             scheme, address = urllib2.splittype(sickrage.srConfig.PROXY_SETTING)
             address = sickrage.srConfig.PROXY_SETTING if scheme else 'http://' + sickrage.srConfig.PROXY_SETTING
             handlers = [urllib2.ProxyHandler({'http': address, 'https': address})]
-            self.provider.headers.update({'Referer': address})
-        elif 'Referer' in self.provider.headers:
-            self.provider.headers.pop('Referer')
 
-        return getFeed(url, request_headers=self.provider.headers, handlers=handlers)
+        return getFeed(url, handlers=handlers)
 
     def _translateTitle(self, title):
         return '' + title.replace(' ', '.')

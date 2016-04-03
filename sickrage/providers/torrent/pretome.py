@@ -67,8 +67,9 @@ class PretomeProvider(TorrentProvider):
                         'password': self.password,
                         'login_pin': self.pin}
 
-        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
+        try:
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
@@ -96,8 +97,9 @@ class PretomeProvider(TorrentProvider):
                 searchURL = self.urls['search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
-                data = srSession(self.session, self.headers).get(searchURL)
-                if not data:
+                try:
+                    data = self.session.get(searchURL).content
+                except Exception:
                     continue
 
                 try:

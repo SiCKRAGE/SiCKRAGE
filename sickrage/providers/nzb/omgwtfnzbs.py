@@ -28,7 +28,6 @@ from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import Proper
 from sickrage.core.helpers.show_names import makeSceneSearchString, \
     makeSceneSeasonSearchString
-from sickrage.core.srsession import srSession
 from sickrage.providers import NZBProvider
 
 
@@ -115,8 +114,9 @@ class OmgwtfnzbsProvider(NZBProvider):
         sickrage.srLogger.debug("Search string: %s" % params)
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
-        parsedJSON = srSession(self.session, self.headers).get(searchURL, json=True)
-        if not parsedJSON:
+        try:
+            parsedJSON = self.session.get(searchURL).json()
+        except Exception:
             return []
 
         if self._checkAuthFromData(parsedJSON, is_XML=False):

@@ -27,7 +27,6 @@ import requests
 
 import sickrage
 from sickrage.core.helpers import bs4_parser
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -51,7 +50,6 @@ class XthorProvider(TorrentProvider):
         self.ratio = None
 
     def _doLogin(self):
-
         if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
             return True
 
@@ -59,8 +57,9 @@ class XthorProvider(TorrentProvider):
                         'password': self.password,
                         'submitme': 'X'}
 
-        response = srSession(self.session, self.headers).get(self.urls['base_url'] + '/takelogin.php', post_data=login_params, timeout=30)
-        if not response:
+        try:
+            response = self.session.post(self.urls['base_url'] + '/takelogin.php', data=login_params, timeout=30).content
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
@@ -88,9 +87,10 @@ class XthorProvider(TorrentProvider):
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = srSession(self.session, self.headers).get(searchURL)
 
-                if not data:
+                try:
+                    data = self.session.get(searchURL).content
+                except Exception:
                     continue
 
                 with bs4_parser(data) as html:

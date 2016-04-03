@@ -24,17 +24,15 @@ import re
 import sickrage
 from sickrage.core.classes import ShowListUI
 from sickrage.core.helpers import findCertainShow
-from sickrage.core.srsession import srSession
 from sickrage.indexers.indexer_config import indexerConfig
 
 
 class srIndexerApi(object):
-    def __init__(self, indexerID=1, session=None):
+    def __init__(self, indexerID=1):
         self.indexerID = indexerID
-        self.session = session or srSession().session
 
     def indexer(self, *args, **kwargs):
-        return indexerConfig[self.indexerID]['module'](session=self.session, *args, **kwargs)
+        return indexerConfig[self.indexerID]['module'](*args, **kwargs)
 
     @property
     def config(self):

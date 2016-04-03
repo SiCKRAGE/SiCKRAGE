@@ -514,7 +514,7 @@ def make_dirs(path):
     parents
     """
 
-    sickrage.srLogger.debug("Checking if the path %s already exists" % path)
+    sickrage.srLogger.debug("Checking if the path [{}] already exists".format(path))
 
     if not os.path.isdir(path):
         # Windows, create all missing folders
@@ -1201,7 +1201,7 @@ def generateApiKey():
     m.update(r)
 
     # Return a hex digest of the md5, eg 49f68a5c8493ec2c0bf489821c21fc3b
-    sickrage.srLogger.info("New API generated")
+    sickrage.srLogger.debug("New API generated")
     return m.hexdigest()
 
 

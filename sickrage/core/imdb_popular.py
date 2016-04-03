@@ -26,7 +26,7 @@ import re
 
 import sickrage
 from sickrage.core.helpers import bs4_parser
-from sickrage.core.srsession import srSession
+from sickrage.core.srwebsession import srWebSession
 
 
 class imdbPopular(object):
@@ -43,14 +43,14 @@ class imdbPopular(object):
             'year': '%s,%s' % (datetime.date.today().year - 1, datetime.date.today().year + 1)
         }
 
-        self.session = None
+        self.session = srWebSession()
 
     def fetch_popular_shows(self):
         """Get popular show information from IMDB"""
 
         popular_shows = []
 
-        data = srSession(self.session, {'Referer': 'http://akas.imdb.com/'}, self.params).get(self.url)
+        data = self.session.get(self.url, headers={'Referer': 'http://akas.imdb.com/'}, params=self.params)
         if not data:
             return None
 
@@ -137,4 +137,4 @@ class imdbPopular(object):
         full_path = os.path.join(path, os.path.basename(image_url))
 
         if not os.path.isfile(full_path):
-            srSession(self.session).download(image_url, full_path)
+            self.session.download(image_url, full_path)

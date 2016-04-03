@@ -18,16 +18,19 @@
 
 from __future__ import unicode_literals
 
+import random
+
 import feedparser
 from feedparser import FeedParserDict
 
-from sickrage.core.srsession import srSession
+from sickrage.core.srwebsession import srWebSession, USER_AGENTS
 
 
 def getFeed(url, request_headers=None, handlers=None):
     try:
         return feedparser.parse(
-            srSession.normalize_url(url),
+            srWebSession.normalize_url(url),
+            agent=random.choice(USER_AGENTS),
             etag=False,
             modified=False,
             request_headers=request_headers,

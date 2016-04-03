@@ -703,7 +703,6 @@ class TVShow(object):
             curEpisode = int(curResult["episode"])
 
             if curSeason not in scannedEps:
-                sickrage.srLogger.debug("Not curSeason in scannedEps")
                 scannedEps[curSeason] = {}
 
             try:
@@ -1173,7 +1172,7 @@ class TVShow(object):
 
             requests.packages.urllib3.disable_warnings()
             response = requests.request(method, url, params=params, data=json.dumps(payload)
-            if payload else payload, headers=self.headers, verify=False)
+            if payload else payload, verify=False)
 
             response.raise_for_status()
             response.encoding = 'utf-8'

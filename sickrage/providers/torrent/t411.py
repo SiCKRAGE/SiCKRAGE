@@ -66,12 +66,13 @@ class T411Provider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30, json=True)
-        if not response:
+        try:
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).json()
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
-        if response and 'token' in response:
+        if 'token' in response:
             self.token = response['token']
             self.tokenLastUpdate = time.time()
             self.uid = response['uid'].encode('ascii', 'ignore')
@@ -101,8 +102,10 @@ class T411Provider(TorrentProvider):
                         mode is 'RSS']
                 for searchURL in searchURLS:
                     sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                    data = srSession(self.session, self.headers).get(searchURL, json=True)
-                    if not data:
+
+                    try:
+                        data = self.session.get(searchURL).json()
+                    except Exception:
                         continue
 
                     try:

@@ -863,7 +863,7 @@ class PostProcessor(object):
         :return: True on success, False on failure
         """
 
-        self._log("Processing " + self.file_path + " (" + str(self.nzb_name) + ")")
+        self._log("Processing {}".format(self.file_path))
 
         if os.path.isdir(self.file_path):
             self._log("File %s seems to be a directory" % self.file_path)

@@ -51,7 +51,7 @@ from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
-from sickrage.core.srsession import srSession
+from sickrage.core.srwebsession import srWebSession
 
 
 class GenericProvider(object):
@@ -68,12 +68,9 @@ class GenericProvider(object):
         self.enable_daily = False
         self.enable_backlog = False
         self.cache = TVCache(self)
-        self.session = None
+        self.session = srWebSession()
         self.proper_strings = ['PROPER|REPACK|REAL']
         self.private = False
-
-        self.headers = {}
-        self.session = None
 
         self.btCacheURLS = [
             'http://torcache.net/torrent/{torrent_hash}.torrent',
@@ -165,16 +162,15 @@ class GenericProvider(object):
             if 'NO_DOWNLOAD_NAME' in url:
                 continue
 
-            if url.startswith('http'):
-                self.headers.update({'Referer': '/'.join(url.split('/')[:3]) + '/'})
-
             sickrage.srLogger.info("Downloading a result from " + self.name + " at " + url)
 
             # Support for Jackett/TorzNab
             if url.endswith('torrent') and filename.endswith('nzb'):
                 filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
 
-            if srSession(self.session, self.headers).download(url, filename):
+            if self.session.download(url, filename, headers=(None, {'Referer': '/'.join(url.split('/')[:3]) + '/'})[
+                url.startswith('http')]):
+
                 if self._verify_download(filename):
                     sickrage.srLogger.info("Saved result to " + filename)
                     return True
@@ -779,7 +775,7 @@ class TorrentRssProvider(TorrentProvider):
                     requests.utils.add_dict_to_cookiejar(self.session.cookies,
                                                          dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
 
-                torrent_file = srSession(self.session, self.headers).get(url)
+                torrent_file = self.session.get(url)
 
                 try:
                     bencode.bdecode(torrent_file)
@@ -864,7 +860,9 @@ class NewznabProvider(NZBProvider):
             params['apikey'] = self.key
 
         try:
-            data = xmltodict.parse(srSession(self.session, self.headers).get("{}api?{}".format(self.urls['base_url'], urllib.urlencode(params))))
+            data = xmltodict.parse(self.session.get(
+                "{}api?{}".format(self.urls['base_url'], params=urllib.urlencode(params))))
+
             for category in data["caps"]["categories"]["category"]:
                 if category.get('@name') == 'TV':
                     categories += [{"id": category['@id'], "name": category['@name']}]
@@ -1146,6 +1144,7 @@ class NewznabCache(TVCache):
 
         sickrage.srLogger.debug("Attempting to add item from RSS to cache: %s" % title)
         return self._addCacheEntry(title, url, indexer_id=tvrageid)
+
 
 class providersDict(dict):
     def __init__(self):

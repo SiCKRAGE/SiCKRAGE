@@ -25,7 +25,7 @@ import traceback
 import sickrage
 from sickrage.core.common import Quality, get_quality_string
 from sickrage.core.helpers import tryInt
-from sickrage.core.srsession import srSession
+from sickrage.core.srwebsession import srWebSession
 
 extensions = {
     'tvshow': ['mkv', 'wmv', 'avi', 'mpg', 'mpeg', 'mp4', 'm2ts', 'iso', 'img', 'mdf', 'ts', 'm4v', 'flv'],
@@ -94,12 +94,12 @@ def getShowImage(url, imgNum=None):
 
     sickrage.srLogger.debug("Fetching image from " + tempURL)
 
-    image_data = srSession().get(tempURL, needBytes=True)
+    image_data = srWebSession().get(tempURL)
     if image_data is None:
         sickrage.srLogger.warning("There was an error trying to retrieve the image, aborting")
         return
 
-    return image_data
+    return image_data.content
 
 def getFileMetadata(filename):
     import enzyme

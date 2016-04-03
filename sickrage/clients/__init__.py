@@ -23,11 +23,10 @@ import time
 from base64 import b16encode, b32decode
 from hashlib import sha1
 
-import requests
 from bencode import BTFailure, bdecode, bencode
 
 import sickrage
-from sickrage.core.srsession import srSession
+from sickrage.core.srwebsession import srWebSession
 
 __all__ = [
     'utorrent',
@@ -138,6 +137,7 @@ def codeDescription(status_code):
         sickrage.srLogger.error("Unknown error code: %s. Please submit an issue" % status_code)
         return 'unknown'
 
+
 def getClientModule(name):
     name = name.lower()
     prefix = "sickrage.clients."
@@ -165,50 +165,38 @@ class GenericClient(object):
         self.response = None
         self.auth = None
         self.last_time = time.time()
-        self.session = srSession()
+        self.session = srWebSession()
         self.session.auth = (self.username, self.password)
 
-    def _request(self, method='get', params=None, data=None, files=None):
+    def _request(self, method='get', params=None, data=None, files=None, cookies=None):
 
         if time.time() > self.last_time + 1800 or not self.auth:
             self.last_time = time.time()
             self._get_auth()
 
-        sickrage.srLogger.debug(
-                self.name + ': Requested a ' + method.upper() + ' connection to url ' + self.url +
-                ' with Params: ' + str(params) + ' Data: ' + str(data)[0:99] + ('...' if len(str(data)) > 200 else ''))
+        sickrage.srLogger.debug('{}: Requested a {} connection to url {} with Params: {} Data: {}'.format(
+            self.name,
+            method.upper(),
+            self.url,
+            str(params),
+            str(data)[0:99] + ('...' if len(str(data)) > 200 else '')))
 
         if not self.auth:
             sickrage.srLogger.warning(self.name + ': Authentication Failed')
             return False
+
         try:
-            self.response = self.session.__getattribute__(method)(self.url, params=params, data=data, files=files,
-                                                                  timeout=120, verify=False)
-        except requests.exceptions.ConnectionError as e:
-            sickrage.srLogger.error(self.name + ': Unable to connect ' + str(e))
-            return False
-        except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):
-            sickrage.srLogger.error(self.name + ': Invalid Host')
-            return False
-        except requests.exceptions.HTTPError as e:
-            sickrage.srLogger.error(self.name + ': Invalid HTTP Request ' + str(e))
-            return False
-        except requests.exceptions.Timeout as e:
-            sickrage.srLogger.warning(self.name + ': Connection Timeout ' + str(e))
-            return False
-        except Exception as e:
-            sickrage.srLogger.error(self.name + ': Unknown exception raised when send torrent to ' + self.name + ': ' + str(e))
-            return False
+            self.response = self.session.request(method.upper(), self.url,
+                                                 params=params,
+                                                 data=data,
+                                                 files=files,
+                                                 cookies=cookies,
+                                                 timeout=120,
+                                                 verify=False)
 
-        if self.response.status_code == 401:
-            sickrage.srLogger.error(self.name + ': Invalid Username or Password, check your config')
+            sickrage.srLogger.debug(self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
+        except Exception:
             return False
-
-        if self.response.status_code in http_error_code.keys():
-            sickrage.srLogger.debug(self.name + ': ' + http_error_code[self.response.status_code])
-            return False
-
-        sickrage.srLogger.debug(self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
 
         return True
 
@@ -346,26 +334,18 @@ class GenericClient(object):
 
         except Exception as e:
             sickrage.srLogger.error(self.name + ': Failed Sending Torrent')
-            sickrage.srLogger.debug(self.name + ': Exception raised when sending torrent: ' + str(result) + '. Error: ' + str(e))
+            sickrage.srLogger.debug(
+                self.name + ': Exception raised when sending torrent: ' + str(result) + '. Error: ' + str(e))
             return r_code
 
         return r_code
 
     def testAuthentication(self):
-
         try:
-            self.response = self.session.get(self.url, timeout=120)
-        except requests.exceptions.ConnectionError:
-            return False, 'Error: ' + self.name + ' Connection Error'
-        except (requests.exceptions.MissingSchema, requests.exceptions.InvalidURL):
-            return False, 'Error: Invalid ' + self.name + ' host'
+            self.response = self.session.get(self.url, timeout=120, verify=False)
 
-        if self.response.status_code == 401:
-            return False, 'Error: Invalid ' + self.name + ' Username or Password, check your config!'
-
-        try:
             self._get_auth()
-            if self.response.status_code == 200 and self.auth:
+            if self.auth:
                 return True, 'Success: Connected and Authenticated'
             else:
                 return False, 'Error: Unable to get ' + self.name + ' Authentication, check your config!'

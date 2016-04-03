@@ -75,9 +75,10 @@ class ThePirateBayProvider(TorrentProvider):
 
                 searchURL = self.urls[('search', 'rss')[mode is 'RSS']] + '?' + urlencode(self.search_params)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = srSession(self.session, self.headers).get(searchURL)
-                # data = srSession(self.session, self.headers).get(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
-                if not data:
+
+                try:
+                    data = self.session.get(searchURL).content
+                except Exception:
                     continue
 
                 matches = re.compile(self.re_title_url, re.DOTALL).finditer(data)

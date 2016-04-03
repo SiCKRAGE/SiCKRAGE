@@ -24,7 +24,6 @@ import unittest
 import urlparse
 
 from sickrage.core.helpers import bs4_parser
-from sickrage.core.srsession import srSession
 from tests import SiCKRAGETestDBCase
 
 

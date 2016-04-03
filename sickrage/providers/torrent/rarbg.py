@@ -29,11 +29,6 @@ from sickrage.core.caches import tv_cache
 from sickrage.indexers.indexer_config import INDEXER_TVDB
 from sickrage.providers import TorrentProvider
 
-
-class GetOutOfLoop(Exception):
-    pass
-
-
 class RarbgProvider(TorrentProvider):
     def __init__(self):
         super(RarbgProvider, self).__init__("Rarbg",'torrentapi.org')
@@ -79,8 +74,9 @@ class RarbgProvider(TorrentProvider):
         if self.token and self.tokenExpireDate and datetime.datetime.now() < self.tokenExpireDate:
             return True
 
-        response = srSession(self.session, self.headers).get(self.urls['token'], timeout=30, json=True)
-        if not response:
+        try:
+            response = self.session.get(self.urls['token'], timeout=30).json()
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
@@ -154,19 +150,20 @@ class RarbgProvider(TorrentProvider):
                             time_out = time_out + 1
                             time.sleep(1)
 
-                        data = srSession(self.session, self.headers).get(searchURL + self.urlOptions['token'].format(token=self.token))
-
                         self.next_request = datetime.datetime.now() + datetime.timedelta(seconds=10)
 
-                        if not data:
+                        try:
+                            data = self.session.get(searchURL + self.urlOptions['token'].format(token=self.token)).content
+                        except Exception:
                             sickrage.srLogger.debug("No data returned from provider")
-                            raise GetOutOfLoop
+                            raise StopIteration
+
                         if re.search('ERROR', data):
                             sickrage.srLogger.debug("Error returned from provider")
-                            raise GetOutOfLoop
+                            raise StopIteration
                         if re.search('No results found', data):
                             sickrage.srLogger.debug("No results found")
-                            raise GetOutOfLoop
+                            raise StopIteration
                         if re.search('Invalid token set!', data):
                             sickrage.srLogger.warning("Invalid token!")
                             return results
@@ -178,7 +175,7 @@ class RarbgProvider(TorrentProvider):
                         if re.search('Cant find search_tvdb in database. Are you sure this imdb exists?', data):
                             sickrage.srLogger.warning(
                                 "No results found. The tvdb id: %s do not exist on provider" % ep_indexerid)
-                            raise GetOutOfLoop
+                            raise StopIteration
                         if re.search('Invalid token. Use get_token for a new one!', data):
                             sickrage.srLogger.debug("Invalid token, retrieving new token")
                             retry = retry - 1
@@ -195,7 +192,7 @@ class RarbgProvider(TorrentProvider):
                     else:
                         sickrage.srLogger.debug("Retried 3 times without getting results")
                         continue
-                except GetOutOfLoop:
+                except StopIteration:
                     continue
 
                 try:

@@ -23,7 +23,6 @@ from urllib import quote_plus
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import tryInt
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -54,12 +53,15 @@ class TORRENTPROJECTProvider(TorrentProvider):
                     search_string.encode('utf-8'))
 
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                torrents = srSession(self.session, self.headers).get(searchURL, json=True)
-                if not (torrents and "total_found" in torrents and int(torrents["total_found"]) > 0):
+
+                try:
+                    torrents = self.session.get(searchURL).json()
+                    if not ("total_found" in torrents and int(torrents["total_found"]) > 0):
+                        continue
+                    del torrents["total_found"]
+                except Exception:
                     sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
                     continue
-
-                del torrents["total_found"]
 
                 results = []
                 for i in torrents:
@@ -80,11 +82,11 @@ class TORRENTPROJECTProvider(TorrentProvider):
                         assert mode is not 'RSS'
                         sickrage.srLogger.debug("Torrent has less than 10 seeds getting dyn trackers: " + title)
                         trackerUrl = self.urls['base_url'] + "" + t_hash + "/trackers_json"
-                        jdata = srSession(self.session, self.headers).get(trackerUrl, json=True)
+                        jdata = self.session.get(trackerUrl).json()
                         assert jdata is not "maintenance"
                         download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "".join(
                             ["&tr=" + s for s in jdata])
-                    except (Exception, AssertionError):
+                    except Exception:
                         download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://open.demonii.com:1337&tr=udp://tracker.leechers-paradise.org:6969&tr=udp://exodus.desync.com:6969"
 
                     if not all([title, download_url]):

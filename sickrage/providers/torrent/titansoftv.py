@@ -63,7 +63,6 @@ class TitansOfTVProvider(TorrentProvider):
         self._checkAuth()
         results = []
         params = {}
-        self.headers.update({'X-Authorization': self.api_key})
 
         if search_params:
             params.update(search_params)
@@ -72,14 +71,13 @@ class TitansOfTVProvider(TorrentProvider):
         sickrage.srLogger.debug("Search string: %s " % search_params)
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
-        parsedJSON = srSession(self.session, self.headers).get(searchURL, json=True)  # do search
-
-        if not parsedJSON:
+        try:
+            parsedJSON = self.session.get(searchURL, headers={'X-Authorization': self.api_key}).json()
+        except Exception:
             sickrage.srLogger.debug("No data returned from provider")
             return results
 
         if self._checkAuthFromData(parsedJSON):
-
             try:
                 found_torrents = parsedJSON['results']
             except Exception:

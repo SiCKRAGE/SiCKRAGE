@@ -57,8 +57,9 @@ class SpeedCDProvider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
+        try:
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
@@ -88,17 +89,13 @@ class SpeedCDProvider(TorrentProvider):
                 post_data = dict({'/browse.php?': None, 'cata': 'yes', 'jxt': 4, 'jxw': 'b', 'search': search_string},
                                  **self.categories[mode])
 
-                parsedJSON = srSession(self.session, self.headers).get(self.urls['search'], post_data=post_data, json=True)
-                if not parsedJSON:
-                    continue
-
                 try:
-                    torrents = parsedJSON.get('Fs', [])[0].get('Cn', {}).get('torrents', [])
+                    parsedJSON = self.session.post(self.urls['search'], data=post_data).json()
+                    torrents = parsedJSON['Fs'][0]['Cn']['torrents']
                 except Exception:
                     continue
 
                 for torrent in torrents:
-
                     if self.freeleech and not torrent['free']:
                         continue
 

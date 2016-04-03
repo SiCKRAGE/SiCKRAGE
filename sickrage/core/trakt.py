@@ -24,17 +24,15 @@ from __future__ import unicode_literals
 import json
 import time
 
-import certifi
 import requests
 
 import sickrage
-from sickrage.core.srsession import srSession
+from sickrage.core.srwebsession import srWebSession
 
 
 class TraktAPI():
     def __init__(self, ssl_verify=True, timeout=30):
-        self.session = srSession()
-        self.verify = certifi.where() if ssl_verify else False
+        self.session = srWebSession()
         self.timeout = timeout if timeout else None
         self.auth_url = sickrage.srConfig.TRAKT_OAUTH_URL
         self.api_url = sickrage.srConfig.TRAKT_API_URL
@@ -104,8 +102,10 @@ class TraktAPI():
         headers['Authorization'] = 'Bearer ' + sickrage.srConfig.TRAKT_ACCESS_TOKEN
 
         try:
-            resp = self.session.request(method, url + path, headers=headers, timeout=self.timeout,
-                                        data=json.dumps(data) if data else [], verify=self.verify)
+            resp = self.session.request(method, url + path,
+                                        headers=headers,
+                                        timeout=self.timeout,
+                                        data=json.dumps(data) if data else [])
 
             # check for http errors and raise if any are present
             resp.raise_for_status()
@@ -116,7 +116,8 @@ class TraktAPI():
             code = getattr(e.response, 'status_code', None)
             if not code:
                 if 'timed out' in e:
-                    sickrage.srLogger.warning('Timeout connecting to Trakt. Try to increase timeout value in Trakt settings')
+                    sickrage.srLogger.warning(
+                        'Timeout connecting to Trakt. Try to increase timeout value in Trakt settings')
                 # This is pretty much a fatal error if there is no status_code
                 # It means there basically was no response at all                    
                 else:

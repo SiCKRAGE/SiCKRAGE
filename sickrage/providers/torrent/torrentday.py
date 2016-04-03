@@ -26,7 +26,6 @@ import requests
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -73,8 +72,9 @@ class TorrentDayProvider(TorrentProvider):
                             'submit.x': 0,
                             'submit.y': 0}
 
-            response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
-            if not response:
+            try:
+                response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+            except Exception:
                 sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
 
@@ -83,15 +83,11 @@ class TorrentDayProvider(TorrentProvider):
                 return False
 
             try:
-                if requests.utils.dict_from_cookiejar(self.session.cookies)['uid'] and \
-                        requests.utils.dict_from_cookiejar(self.session.cookies)['pass']:
                     self._uid = requests.utils.dict_from_cookiejar(self.session.cookies)['uid']
                     self._hash = requests.utils.dict_from_cookiejar(self.session.cookies)['pass']
-
-                    self.cookies = {'uid': self._uid,
-                                    'pass': self._hash}
+                    self.cookies = {'uid': self._uid, 'pass': self._hash}
                     return True
-            except:
+            except Exception:
                 pass
 
             sickrage.srLogger.warning("Unable to obtain cookie")
@@ -120,20 +116,14 @@ class TorrentDayProvider(TorrentProvider):
                 if self.freeleech:
                     post_data.update({'free': 'on'})
 
-                parsedJSON = srSession(self.session, self.headers).get(self.urls['search'], post_data=post_data,
-                                                                       json=True)
-                if not parsedJSON:
+                try:
+                    parsedJSON = self.session.post(self.urls['search'], data=post_data).json()
+                    torrents = parsedJSON['Fs'][0]['Cn']['torrents']
+                except Exception:
                     sickrage.srLogger.debug("No data returned from provider")
                     continue
 
-                try:
-                    torrents = parsedJSON.get('Fs', [])[0].get('Cn', {}).get('torrents', [])
-                except Exception:
-                    sickrage.srLogger.debug("Data returned from provider does not contain any torrents")
-                    continue
-
                 for torrent in torrents:
-
                     title = re.sub(r"\[.*=.*\].*\[/.*\]", "", torrent['name'])
                     download_url = self.urls['download'] % (torrent['id'], torrent['fname'])
                     seeders = int(torrent['seed'])

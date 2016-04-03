@@ -22,7 +22,6 @@ from __future__ import unicode_literals
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -55,8 +54,9 @@ class BTDIGGProvider(TorrentProvider):
                 searchURL = self.urls['api'] + "api/private-341ada3245790954/s02?q=" + search_string + "&p=0&order=1"
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
-                jdata = srSession(self.session, self.headers).get(searchURL, json=True)
-                if not jdata:
+                try:
+                    jdata = self.session.get(searchURL).json()
+                except Exception:
                     sickrage.srLogger.info("No data returned to be parsed!!!")
                     return []
 

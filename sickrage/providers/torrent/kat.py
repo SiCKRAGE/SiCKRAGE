@@ -77,9 +77,10 @@ class KATProvider(TorrentProvider):
                 try:
                     searchURL = self.urls['search'] % url_fmt_string + '?' + urlencode(self.search_params)
                     sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                    data = srSession(self.session, self.headers).get(searchURL)
-                    # data = srSession(self.session, self.headers).get(self.urls[('search', 'rss')[mode is 'RSS']], params=self.search_params)
-                    if not data:
+
+                    try:
+                        data = self.session.get(searchURL).content
+                    except Exception:
                         sickrage.srLogger.debug("No data returned from provider")
                         continue
 

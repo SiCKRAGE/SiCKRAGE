@@ -21,11 +21,12 @@ from __future__ import unicode_literals
 import re
 import traceback
 
+import requests
+
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import bs4_parser
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -67,17 +68,20 @@ class GFTrackerProvider(TorrentProvider):
         login_params = {'username': self.username,
                         'password': self.password}
 
-        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
-        # Save cookies from response
-        self.cookies = self.headers.get('Set-Cookie')
 
-        if not response:
+
+        try:
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
+        # Save cookies from response
         if re.search('Username or password incorrect', response):
             sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
+
+        requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
 
         return True
 
@@ -100,10 +104,11 @@ class GFTrackerProvider(TorrentProvider):
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 # Set cookies from response
-                self.headers.update({'Cookie': self.cookies})
                 # Returns top 30 results by default, expandable in user profile
-                data = srSession(self.session, self.headers).get(searchURL)
-                if not data:
+
+                try:
+                    data = self.session.get(searchURL, cookies=self.cookies).content
+                except Exception:
                     continue
 
                 try:

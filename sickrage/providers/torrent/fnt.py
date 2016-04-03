@@ -27,7 +27,6 @@ import requests
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import bs4_parser
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -66,8 +65,9 @@ class FNTProvider(TorrentProvider):
                         'submit': 'Se loguer'
                         }
 
-        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
+        try:
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
@@ -95,8 +95,9 @@ class FNTProvider(TorrentProvider):
 
                 self.search_params['recherche'] = search_string
 
-                data = srSession(self.session, self.headers, self.search_params).get(self.urls['search'])
-                if not data:
+                try:
+                    data = self.session.get(self.urls['search'], params=self.search_params).content
+                except Exception:
                     continue
 
                 try:

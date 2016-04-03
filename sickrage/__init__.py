@@ -131,7 +131,7 @@ def install_pip():
     os.remove(file_name)
 
 
-def install_requirements(pkg=None):
+def install_requirements(upgrade=False):
     from pip.commands.install import InstallCommand, InstallationError
 
     requirements = [os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))]
@@ -139,7 +139,7 @@ def install_requirements(pkg=None):
     options.use_user_site = all([not isElevatedUser(), not isVirtualEnv()])
     options.requirements = requirements
     options.cache_dir = None
-    options.upgrade = True
+    options.upgrade = upgrade
     options.quiet = 1
     options.pre = True
 
@@ -151,8 +151,12 @@ def install_requirements(pkg=None):
         try:
             options.ignore_dependencies = True
             InstallCommand().run(options, [])
-            options.ignore_dependencies = False
-            InstallCommand().run(options, [])
+
+            if not upgrade and attempts < 1:
+                options.ignore_dependencies = False
+                InstallCommand().run(options, [])
+
+            # finished
             return
         except InstallationError:
             options.ignore_installed = True

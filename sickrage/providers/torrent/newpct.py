@@ -88,8 +88,10 @@ class newpctProvider(TorrentProvider):
 
                 sickrage.srLogger.debug(
                         "Search URL: %s" % self.urls['search'] + '?' + urlencode(self.search_params))
-                data = srSession(self.session, self.headers).get(self.urls['search'], post_data=self.search_params, timeout=30)
-                if not data:
+
+                try:
+                    data = self.session.post(self.urls['search'], data=self.search_params, timeout=30).content
+                except Exception:
                     continue
 
                 try:

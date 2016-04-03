@@ -21,7 +21,6 @@ import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import sanitizeSceneName, show_names, bs4_parser
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -107,8 +106,10 @@ class TVChaosUKProvider(TorrentProvider):
     def _doLogin(self):
 
         login_params = {'username': self.username, 'password': self.password}
-        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
+
+        try:
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
@@ -134,10 +135,10 @@ class TVChaosUKProvider(TorrentProvider):
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
                 self.search_params['keywords'] = search_string.strip()
-                data = srSession(self.session, self.headers, self.search_params).get(self.urls['search'])
-                # url_searched = self.urls['search'] + '?' + urlencode(self.search_params)
 
-                if not data:
+                try:
+                    data = self.session.get(self.urls['search'], params=self.search_params).content
+                except Exception:
                     sickrage.srLogger.debug("No data returned from provider")
                     continue
 

@@ -28,7 +28,6 @@ import requests
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import bs4_parser
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -72,8 +71,9 @@ class HDTorrentsProvider(TorrentProvider):
                         'pwd': self.password,
                         'submit': 'Confirm'}
 
-        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
+        try:
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
@@ -104,8 +104,9 @@ class HDTorrentsProvider(TorrentProvider):
                 if mode is not 'RSS':
                     sickrage.srLogger.debug("Search string: %s" % search_string)
 
-                data = srSession(self.session, self.headers).get(searchURL)
-                if not data or 'please try later' in data:
+                try:
+                    data = self.session.get(searchURL).content
+                except Exception:
                     sickrage.srLogger.debug("No data returned from provider")
                     continue
 

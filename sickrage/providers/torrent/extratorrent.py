@@ -27,7 +27,6 @@ import xmltodict
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import tryInt
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -63,8 +62,10 @@ class ExtraTorrentProvider(TorrentProvider):
 
                 try:
                     self.search_params.update({'type': ('search', 'rss')[mode is 'RSS'], 'search': search_string})
-                    data = srSession(self.session, self.headers, self.search_params).get(self.urls['rss'])
-                    if not data:
+
+                    try:
+                        data = self.session.get(self.urls['rss'], params=self.search_params).content
+                    except Exception:
                         sickrage.srLogger.debug("No data returned from provider")
                         continue
 
@@ -124,8 +125,9 @@ class ExtraTorrentProvider(TorrentProvider):
         return results
 
     def _magnet_from_details(self, link):
-        details = srSession(self.session, self.headers).get(link)
-        if not details:
+        try:
+            details = self.session.get(link).content
+        except Exception:
             return ''
 
         match = re.search(r'href="(magnet.*?)"', details)

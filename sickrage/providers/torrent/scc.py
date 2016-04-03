@@ -20,12 +20,10 @@
 from __future__ import unicode_literals
 
 import re
-import time
 import urllib
 
 import sickrage
 from sickrage.core.caches import tv_cache
-from sickrage.core.common import cpu_presets
 from sickrage.core.helpers import bs4_parser
 from sickrage.providers import TorrentProvider
 
@@ -62,8 +60,9 @@ class SCCProvider(TorrentProvider):
                         'password': self.password,
                         'submit': 'come on in'}
 
-        response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
-        if not response:
+        try:
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+        except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
 
@@ -96,15 +95,11 @@ class SCCProvider(TorrentProvider):
                     sickrage.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories[search_mode])
+                sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                    data = srSession(self.session, self.headers).get(searchURL)
-                    time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
-                except Exception as e:
-                    sickrage.srLogger.warning("Unable to fetch data. Error: %s" % repr(e))
-
-                if not data:
+                    data = self.session.get(searchURL).content
+                except Exception:
                     continue
 
                 with bs4_parser(data) as html:
@@ -124,15 +119,14 @@ class SCCProvider(TorrentProvider):
 
                             title = link.string
                             if re.search(r'\.\.\.', title):
-                                data = srSession(self.session, self.headers).get(self.urls['base_url'] + "/" + link['href'])
-                                if data:
-                                    with bs4_parser(data) as details_html:
-                                        title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
+                                data = self.session.get(self.urls['base_url'] + "/" + link['href']).content
+                                with bs4_parser(data) as details_html:
+                                    title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
                             download_url = self.urls['download'] % url['href']
                             seeders = int(result.find('td', attrs={'class': 'ttr_seeders'}).string)
                             leechers = int(result.find('td', attrs={'class': 'ttr_leechers'}).string)
                             size = self._convertSize(result.find('td', attrs={'class': 'ttr_size'}).contents[0])
-                        except (AttributeError, TypeError):
+                        except Exception:
                             continue
 
                         if not all([title, download_url]):

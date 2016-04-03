@@ -24,7 +24,6 @@ import urllib
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import show_names, bs4_parser
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -64,9 +63,10 @@ class TokyoToshokanProvider(TorrentProvider):
 
         searchURL = self.urls['base_url'] + '/search.php?' + urllib.urlencode(params)
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
-        data = srSession(self.session, self.headers).get(searchURL)
 
-        if not data:
+        try:
+            data = self.session.get(searchURL).content
+        except Exception:
             return []
 
         results = []

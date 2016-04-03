@@ -54,6 +54,7 @@ pyxdg
 PyYAML
 requests[security]==2.9.1
 requests-oauthlib
+requests-futures
 rtorrent-python
 Send2Trash
 simplejson

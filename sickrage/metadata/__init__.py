@@ -998,7 +998,7 @@ class GenericMetadata(object):
 
             requests.packages.urllib3.disable_warnings()
             response = requests.request(method, url, params=params, data=json.dumps(payload)
-            if payload else payload, headers=self.headers, verify=False)
+            if payload else payload, verify=False)
 
             response.raise_for_status()
             response.encoding = 'utf-8'

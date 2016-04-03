@@ -47,8 +47,10 @@ class STRIKEProvider(TorrentProvider):
 
                 searchURL = self.urls['base_url'] + "/api/v2/torrents/search/?category=TV&phrase=" + search_string
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                jdata = srSession(self.session, self.headers).get(searchURL, json=True)
-                if not jdata:
+
+                try:
+                    jdata = self.session.get(searchURL).json()
+                except Exception:
                     sickrage.srLogger.debug("No data returned from provider")
                     return []
 

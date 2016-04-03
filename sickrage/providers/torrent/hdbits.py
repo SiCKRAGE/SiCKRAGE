@@ -22,7 +22,6 @@ import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.classes import Proper
 from sickrage.core.exceptions import AuthException
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -86,8 +85,9 @@ class HDBitsProvider(TorrentProvider):
 
         self._checkAuth()
 
-        parsedJSON = srSession(self.session, self.headers).get(self.urls['search'], post_data=search_params, json=True)
-        if not parsedJSON:
+        try:
+            parsedJSON = self.session.post(self.urls['search'], data=search_params).json()
+        except Exception:
             return []
 
         if self._checkAuthFromData(parsedJSON):
@@ -191,11 +191,11 @@ class HDBitsCache(tv_cache.TVCache):
         results = []
 
         try:
-            parsedJSON = srSession(self.provider.session, self.provider.headers).get(self.provider.urls['rss'],
-                                                                                     post_data=self.provider._make_post_data_JSON(),
-                                                                                     json=True)
-            if self.provider._checkAuthFromData(parsedJSON):
-                results = parsedJSON['data']
+            resp = self.provider.session.post(self.provider.urls['rss'],
+                                              data=self.provider._make_post_data_JSON()).json()
+
+            if self.provider._checkAuthFromData(resp):
+                results = resp['data']
         except Exception:
             pass
 

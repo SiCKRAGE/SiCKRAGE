@@ -27,7 +27,6 @@ import requests
 import sickrage
 from sickrage.core.caches import tv_cache
 from sickrage.core.helpers import tryInt, bs4_parser
-from sickrage.core.srsession import srSession
 from sickrage.providers import TorrentProvider
 
 
@@ -75,8 +74,9 @@ class FreshOnTVProvider(TorrentProvider):
                             'password': self.password,
                             'login': 'submit'}
 
-            response = srSession(self.session, self.headers).get(self.urls['login'], post_data=login_params, timeout=30)
-            if not response:
+            try:
+                response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+            except Exception:
                 sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
 
@@ -123,10 +123,11 @@ class FreshOnTVProvider(TorrentProvider):
 
                 searchURL = self.urls['search'] % (freeleech, search_string)
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
-                data = srSession(self.session, self.headers).get(searchURL)
                 max_page_number = 0
 
-                if not data:
+                try:
+                    data = self.session.get(searchURL).content
+                except Exception:
                     sickrage.srLogger.debug("No data returned from provider")
                     continue
 
@@ -163,12 +164,12 @@ class FreshOnTVProvider(TorrentProvider):
                 # Freshon starts counting pages from zero, even though it displays numbers from 1
                 if max_page_number > 1:
                     for i in range(1, max_page_number):
-
                         time.sleep(1)
                         page_searchURL = searchURL + '&page=' + str(i)
-                        page_html = srSession(self.session, self.headers).get(page_searchURL)
 
-                        if not page_html:
+                        try:
+                            page_html = self.session.get(page_searchURL).content
+                        except Exception:
                             continue
 
                         data_response_list.append(page_html)

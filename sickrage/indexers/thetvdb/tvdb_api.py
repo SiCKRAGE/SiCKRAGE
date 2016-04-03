@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
 from __future__ import unicode_literals
 
 import functools
@@ -30,6 +31,7 @@ import requests
 import xmltodict
 
 import sickrage
+from sickrage.core.srwebsession import srWebSession
 
 try:
     import gzip
@@ -69,12 +71,12 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
             while mtries > 1:
                 try:
                     return f(*args, **kwargs)
-                except ExceptionToCheck, e:
+                except ExceptionToCheck as e:
                     msg = "{}, Retrying in {} seconds...".format(e, mdelay)
                     if logger:
                         logger.warning(msg)
                     else:
-                        print msg
+                        print(msg)
                     time.sleep(mdelay)
                     mtries -= 1
                     mdelay *= backoff
@@ -256,13 +258,12 @@ class Episode(dict):
         if term is None:
             raise TypeError("must supply string to search for (contents)")
 
-        term = unicode(term).lower()
         for cur_key, cur_value in self.items():
-            cur_key, cur_value = unicode(cur_key).lower(), unicode(cur_value).lower()
+            cur_key, cur_value = cur_key.lower(), cur_value.lower()
             if key is not None and cur_key != key:
                 # Do not search this key
                 continue
-            if cur_value.find(unicode(term).lower()) > -1:
+            if cur_value.find(term.lower()) > -1:
                 return self
 
 
@@ -307,7 +308,6 @@ class Tvdb:
                  custom_ui=None,
                  language='all',
                  apikey='F9C450E78D99172E',
-                 session=None,
                  useZip=False,
                  dvdorder=False,
                  proxy=None,
@@ -326,14 +326,6 @@ class Tvdb:
 
         debug (True/False) DEPRECATED:
              Replaced with proper use of logging module. To show debug messages:
-
-        cache (True/False/str/unicode/urllib2 opener):
-            Retrieved XML are persisted to to disc. If true, stores in
-            thetvdb folder under your systems TEMP_DIR, if set to
-            str/unicode instance it will use this as the cache
-            location. If False, disables caching.  Can also be passed
-            an arbitrary Python object, which is used as a urllib2
-            opener, which should be created by urllib2.build_opener
 
         banners (True/False):
             Retrieves the banners for a show. These are accessed
@@ -421,8 +413,6 @@ class Tvdb:
             self.config['cache_location'] = cache
         else:
             raise ValueError("Invalid value for Cache %r (type was {})".format(cache, type(cache)))
-
-        self.config['session'] = session
 
         self.config['banners_enabled'] = banners
         self.config['actors_enabled'] = actors
@@ -513,16 +503,16 @@ class Tvdb:
 
         try:
             if refresh and self.config['apitoken']:
-                jwtResp.update(**self.config['session'].post(self.config['api'][self.config['apiver']]['refresh'],
-                                                             headers={'Content-type': 'application/json'},
-                                                             timeout=timeout
-                                                             ).json())
+                jwtResp.update(**srWebSession().post(self.config['api'][self.config['apiver']]['refresh'],
+                                                     headers={'Content-type': 'application/json'},
+                                                     timeout=timeout
+                                                     ).json())
             elif not self.config['apitoken']:
-                jwtResp.update(**self.config['session'].post(self.config['api'][self.config['apiver']]['login'],
-                                                             json={'apikey': self.config['apikey']},
-                                                             headers={'Content-type': 'application/json'},
-                                                             timeout=timeout
-                                                             ).json())
+                jwtResp.update(**srWebSession().post(self.config['api'][self.config['apiver']]['login'],
+                                                     json={'apikey': self.config['apikey']},
+                                                     headers={'Content-type': 'application/json'},
+                                                     timeout=timeout
+                                                     ).json())
 
             self.config['apitoken'] = jwtResp['token']
             self.config['headers']['authorization'] = 'Bearer {}'.format(jwtResp['token'])
@@ -544,44 +534,32 @@ class Tvdb:
 
             sickrage.srLogger.debug("Retrieving URL {}".format(url))
 
-            # get response from TVDB
-            if self.config['cache_enabled']:
-                if self.config['proxy']:
-                    sickrage.srLogger.debug("Using proxy for URL: {}".format(url))
-                    self.config['session'].proxies = {
-                        "http": self.config['proxy'],
-                        "https": self.config['proxy'],
-                    }
-                self.config['session'].headers.update(self.config['headers'])
-                resp = self.config['session'].get(url.strip(), params=params, timeout=sickrage.srConfig.INDEXER_TIMEOUT)
-            else:
-                resp = requests.get(url.strip(), params=params, headers=self.config['headers'],
-                                    timeout=sickrage.srConfig.INDEXER_TIMEOUT)
+            # get response from theTVDB
+            resp = srWebSession(self.config['cache_enabled']).get(url,
+                                      headers=self.config['headers'],
+                                      params=params,
+                                      timeout=sickrage.srConfig.INDEXER_TIMEOUT)
 
             resp.raise_for_status()
-        except requests.exceptions.HTTPError, e:
+        except requests.exceptions.HTTPError as e:
             if e.response.status_code == 401:
                 self.getToken(True)
                 raise tvdb_error("Session token expired, retrieving new token(401 error)")
             raise tvdb_error("HTTP error {} while loading URL {}".format(e.errno, url))
-        except requests.exceptions.ConnectionError, e:
+        except requests.exceptions.ConnectionError as e:
             raise tvdb_error("Connection error {} while loading URL {}".format(e.message, url))
-        except requests.exceptions.Timeout, e:
+        except requests.exceptions.Timeout as e:
             raise tvdb_error("Connection timed out {} while loading URL {}".format(e.message, url))
         except Exception as e:
             raise tvdb_error("Unknown exception while loading URL {}: {}".format(url, repr(e)))
-        finally:
-            if resp:
-                [i.raw.release_conn() for i in resp.history]
-                resp.raw.release_conn()
 
         try:
             if 'application/zip' in resp.headers.get("Content-Type", ''):
                 try:
-                    from StringIO import StringIO
+                    import StringIO
                     sickrage.srLogger.debug("We received a zip file unpacking now ...")
                     return json.loads(json.dumps(xmltodict.parse(
-                        zipfile.ZipFile(StringIO(resp.content)).read(
+                        zipfile.ZipFile(StringIO.StringIO(resp.content)).read(
                             "{}.xml".format(language or self.config['language']))))
                     )
                 except zipfile.BadZipfile:
@@ -611,7 +589,7 @@ class Tvdb:
 
         try:
             return keys2lower(self._loadUrl(url, params=params, language=language)).values()[0]
-        except Exception, e:
+        except Exception as e:
             raise tvdb_error(e)
 
     def _setItem(self, sid, seas, ep, attrib, value):

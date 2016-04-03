@@ -731,5 +731,5 @@ class srTraktSearcher(object):
                 show = uniqueShows[searchedShow]
                 show['seasons'].append({'number': searchedSeason, 'episodes': episodesList})
                 traktShowList.append(show)
-        post_data = {'shows': traktShowList}
-        return post_data
+
+        return {'shows': traktShowList}
