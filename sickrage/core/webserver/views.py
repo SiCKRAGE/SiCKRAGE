@@ -53,7 +53,8 @@ from sickrage.core.exceptions import CantRefreshShowException, \
     MultipleShowObjectsException, NoNFOException, \
     ShowDirectoryNotFoundException
 from sickrage.core.helpers import argToBool, backupAll, check_url, \
-    chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, get_lan_ip, makeDir, readFileBuffered, remove_article, restoreConfigZip, \
+    chmodAsParent, findCertainShow, generateApiKey, getDiskSpaceUsage, get_lan_ip, makeDir, readFileBuffered, \
+    remove_article, restoreConfigZip, \
     sanitizeFileName, tryInt
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
@@ -81,6 +82,7 @@ from sickrage.core.webserver.routes import Route
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.adba import aniDBAbstracter
 from sickrage.providers import NewznabProvider, TorrentRssProvider
+
 
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
@@ -2634,16 +2636,15 @@ class HomeAddShows(Home):
         except Exception as e:
             popular_shows = None
 
-        return self.render(
-            "/home/popular_shows.mako",
-            title="Popular Shows",
-            header="Popular Shows",
-            popular_shows=popular_shows,
-            imdb_exception=e,
-            topmenu="home",
-            controller='home',
-            action="popular_shows"
-        )
+        return self.render("/home/popular_shows.mako",
+                           title="Popular Shows",
+                           header="Popular Shows",
+                           popular_shows=popular_shows,
+                           imdb_exception=e,
+                           topmenu="home",
+                           controller='home',
+                           action="popular_shows"
+                           )
 
     def addShowToBlacklist(self, indexer_id):
         # URL parameters
@@ -2662,16 +2663,15 @@ class HomeAddShows(Home):
         """
         Prints out the page to add existing shows from a root dir
         """
-        return self.render(
-            "/home/add_existing_shows.mako",
-            enable_anime_options=False,
-            quality=sickrage.srConfig.QUALITY_DEFAULT,
-            title='Existing Show',
-            header='Existing Show',
-            topmenu="home",
-            controller='home',
-            action="add_existing_shows"
-        )
+        return self.render("/home/add_existing_shows.mako",
+                           enable_anime_options=False,
+                           quality=sickrage.srConfig.QUALITY_DEFAULT,
+                           title='Existing Show',
+                           header='Existing Show',
+                           topmenu="home",
+                           controller='home',
+                           action="add_existing_shows"
+                           )
 
     def addTraktShow(self, indexer_id, showName):
         if findCertainShow(sickrage.srCore.SHOWLIST, int(indexer_id)):

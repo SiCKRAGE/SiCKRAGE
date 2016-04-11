@@ -518,8 +518,12 @@ class Core(object):
             else:
                 sickrage.srLogger.info('SiCKRAGE IS SHUTDOWN!')
 
-        # shutdown logging
-        sickrage.srLogger.shutdown()
+            # shutdown logging
+            sickrage.srLogger.shutdown()
+
+        # delete pid file
+        if sickrage.DAEMONIZE:
+            sickrage.delpid(sickrage.PIDFILE)
 
         # system exit with status
         if not restart:

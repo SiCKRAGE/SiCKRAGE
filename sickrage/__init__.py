@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals, with_statement
+from __future__ import print_function, unicode_literals, with_statement
 
 import argparse
 import codecs
@@ -39,9 +39,11 @@ __all__ = [
     'PROG_DIR',
     'DATA_DIR',
     'DEVELOPER',
-    'SYS_ENCODING'
+    'SYS_ENCODING',
+    'PIDFILE'
 ]
 
+status = None
 srCore = None
 srLogger = None
 srConfig = None
@@ -212,12 +214,12 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
 
 def delpid(pidfile):
     # Removes the PID file
-    if os.path.exists(pidfile):
+    if pidfile and os.path.exists(pidfile):
         os.remove(pidfile)
 
 
 def main():
-    global srCore, SYS_ENCODING, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
+    global srCore, status, SYS_ENCODING, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     # sickrage requires python 2.7+
     if sys.version_info < (2, 7):
@@ -306,12 +308,16 @@ def main():
         # Pidfile for daemon
         PIDFILE = os.path.abspath(os.path.join(DATA_DIR, args.pidfile))
         if os.path.exists(PIDFILE):
-            sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
+            if os.path.exists("/proc/{}".format(io.open(PIDFILE).read())):
+                sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
+
+            # remove stale pidfile
+            delpid(PIDFILE)
 
         # daemonize if requested
         DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
         if DAEMONIZE:
-            print 'Daemonizing SiCKRAGE'
+            print("!!! DAEMON MODE ENABLED !!!")
             NOLAUNCH = False
             QUITE = False
             daemonize(PIDFILE)
@@ -335,14 +341,13 @@ def main():
             # restart sickrage silently
             os.execl(sys.executable, sys.executable, *sys.argv)
     except KeyboardInterrupt:
-        if srCore:
-            srCore.shutdown()
+        pass
     except Exception as e:
         traceback.print_exc()
+        status = e.message
+    finally:
         if srCore:
-            srCore.shutdown(status=str(e))
-        sys.exit(str(e))
-
+            srCore.shutdown(status)
 
 if __name__ == '__main__':
     main()

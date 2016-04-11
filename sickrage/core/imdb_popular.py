@@ -50,7 +50,7 @@ class imdbPopular(object):
 
         popular_shows = []
 
-        data = self.session.get(self.url, headers={'Referer': 'http://akas.imdb.com/'}, params=self.params)
+        data = self.session.get(self.url, headers={'Referer': 'http://akas.imdb.com/'}, params=self.params).text
         if not data:
             return None
 
