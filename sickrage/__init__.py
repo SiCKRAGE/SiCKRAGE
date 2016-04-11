@@ -217,6 +217,16 @@ def delpid(pidfile):
     if pidfile and os.path.exists(pidfile):
         os.remove(pidfile)
 
+def pid_exists(pid):
+    """Check whether pid exists in the current process table."""
+    if pid < 0:
+        return False
+    try:
+        os.kill(pid, 0)
+    except OSError as e:
+        return False
+    else:
+        return True
 
 def main():
     global srCore, status, SYS_ENCODING, PROG_DIR, DATA_DIR, CONFIG_FILE, PIDFILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
@@ -308,7 +318,7 @@ def main():
         # Pidfile for daemon
         PIDFILE = os.path.abspath(os.path.join(DATA_DIR, args.pidfile))
         if os.path.exists(PIDFILE):
-            if os.path.exists("/proc/{}".format(io.open(PIDFILE).read())):
+            if pid_exists(int(io.open(PIDFILE).read())):
                 sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
 
             # remove stale pidfile
