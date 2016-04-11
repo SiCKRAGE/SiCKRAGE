@@ -1,13 +1,8 @@
 import io
 import os
 import shutil
-import sys
 
 from setuptools import setup, Command
-
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist bdist_wheel upload clean')
-    sys.exit()
 
 # Get the version number
 with io.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sickrage', 'version.txt')) as f:
