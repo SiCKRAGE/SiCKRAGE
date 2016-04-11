@@ -1909,7 +1909,7 @@ class Home(WebRoot):
             title='Preview Rename',
             header='Preview Rename',
             controller='home',
-            action="testrenaming"
+            action="test_renaming"
         )
 
     def doRename(self, show=None, eps=None):

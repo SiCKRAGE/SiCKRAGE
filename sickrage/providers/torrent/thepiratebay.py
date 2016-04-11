@@ -77,7 +77,7 @@ class ThePirateBayProvider(TorrentProvider):
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = self.session.get(searchURL).content
+                    data = self.session.get(searchURL).text
                 except Exception:
                     continue
 

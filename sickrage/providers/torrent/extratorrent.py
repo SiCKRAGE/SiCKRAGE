@@ -64,7 +64,7 @@ class ExtraTorrentProvider(TorrentProvider):
                     self.search_params.update({'type': ('search', 'rss')[mode is 'RSS'], 'search': search_string})
 
                     try:
-                        data = self.session.get(self.urls['rss'], params=self.search_params).content
+                        data = self.session.get(self.urls['rss'], params=self.search_params).text
                     except Exception:
                         sickrage.srLogger.debug("No data returned from provider")
                         continue
@@ -126,7 +126,7 @@ class ExtraTorrentProvider(TorrentProvider):
 
     def _magnet_from_details(self, link):
         try:
-            details = self.session.get(link).content
+            details = self.session.get(link).text
         except Exception:
             return ''
 

@@ -75,7 +75,7 @@ class FreshOnTVProvider(TorrentProvider):
                             'login': 'submit'}
 
             try:
-                response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+                response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
             except Exception:
                 sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
@@ -126,7 +126,7 @@ class FreshOnTVProvider(TorrentProvider):
                 max_page_number = 0
 
                 try:
-                    data = self.session.get(searchURL).content
+                    data = self.session.get(searchURL).text
                 except Exception:
                     sickrage.srLogger.debug("No data returned from provider")
                     continue
@@ -168,7 +168,7 @@ class FreshOnTVProvider(TorrentProvider):
                         page_searchURL = searchURL + '&page=' + str(i)
 
                         try:
-                            page_html = self.session.get(page_searchURL).content
+                            page_html = self.session.get(page_searchURL).text
                         except Exception:
                             continue
 

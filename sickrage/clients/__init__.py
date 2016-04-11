@@ -168,7 +168,7 @@ class GenericClient(object):
         self.session = srWebSession()
         self.session.auth = (self.username, self.password)
 
-    def _request(self, method='get', params=None, data=None, files=None, cookies=None):
+    def _request(self, method='get', *args, **kwargs):
 
         if time.time() > self.last_time + 1800 or not self.auth:
             self.last_time = time.time()
@@ -178,22 +178,15 @@ class GenericClient(object):
             self.name,
             method.upper(),
             self.url,
-            str(params),
-            str(data)[0:99] + ('...' if len(str(data)) > 200 else '')))
+            str(kwargs.get('params')),
+            str(kwargs.get('data'))[0:99] + ('...' if len(str(kwargs.get('data'))) > 200 else '')))
 
         if not self.auth:
             sickrage.srLogger.warning(self.name + ': Authentication Failed')
             return False
 
         try:
-            self.response = self.session.request(method.upper(), self.url,
-                                                 params=params,
-                                                 data=data,
-                                                 files=files,
-                                                 cookies=cookies,
-                                                 timeout=120,
-                                                 verify=False)
-
+            self.response = self.session.request(method.upper(), self.url, timeout=120, *args, **kwargs)
             sickrage.srLogger.debug(self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
         except Exception:
             return False

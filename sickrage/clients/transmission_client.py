@@ -45,25 +45,26 @@ class TransmissionAPI(GenericClient):
         self.url = self.host + self.rpcurl + '/rpc'
 
     def _get_auth(self):
-
-        post_data = json.dumps({'method': 'session-get',})
-
         try:
-            self.response = self.session.post(self.url, data=post_data.encode('utf-8'), timeout=120,
+            self.response = self.session.post(self.url,
+                                              data=json.dumps({'method': 'session-get',}).encode('utf-8'),
+                                              timeout=120,
                                               verify=sickrage.srConfig.TORRENT_VERIFY_CERT)
+
             self.auth = re.search(r'X-Transmission-Session-Id:\s*(\w+)', self.response.text).group(1)
         except Exception:
             return None
 
-        self.session.headers.update({'x-transmission-session-id': self.auth})
-
         # Validating Transmission authorization
-        post_data = json.dumps({'arguments': {},
-                                'method': 'session-get'})
-
-        self._request(method='post', data=post_data)
+        self._request(method='post',
+                      data=json.dumps({'arguments': {}, 'method': 'session-get'}),
+                      headers={'x-transmission-session-id': self.auth})
 
         return self.auth
+
+    def _request(self, *args, **kwargs):
+        kwargs.setdefault('headers', {}).update({'x-transmission-session-id': self.auth})
+        return super(TransmissionAPI, self)._request(*args, **kwargs)
 
     def _add_torrent_uri(self, result):
 
@@ -74,9 +75,8 @@ class TransmissionAPI(GenericClient):
         post_data = json.dumps({'arguments': arguments,
                                 'method': 'torrent-add'})
 
-        self._request(method='post', data=post_data)
-
-        return self.response.json()['result'] == "success"
+        if self._request(method='post', data=post_data):
+            return self.response.json()['result'] == "success"
 
     def _add_torrent_file(self, result):
 
@@ -87,9 +87,8 @@ class TransmissionAPI(GenericClient):
         post_data = json.dumps({'arguments': arguments,
                                 'method': 'torrent-add'})
 
-        self._request(method='post', data=post_data)
-
-        return self.response.json()['result'] == "success"
+        if self._request(method='post', data=post_data):
+            return self.response.json()['result'] == "success"
 
     def _set_torrent_ratio(self, result):
 
@@ -113,9 +112,8 @@ class TransmissionAPI(GenericClient):
         post_data = json.dumps({'arguments': arguments,
                                 'method': 'torrent-set'})
 
-        self._request(method='post', data=post_data)
-
-        return self.response.json()['result'] == "success"
+        if self._request(method='post', data=post_data):
+            return self.response.json()['result'] == "success"
 
     def _set_torrent_seed_time(self, result):
 
@@ -128,9 +126,8 @@ class TransmissionAPI(GenericClient):
             post_data = json.dumps({'arguments': arguments,
                                     'method': 'torrent-set'})
 
-            self._request(method='post', data=post_data)
-
-            return self.response.json()['result'] == "success"
+            if self._request(method='post', data=post_data):
+                return self.response.json()['result'] == "success"
         else:
             return True
 
@@ -153,9 +150,8 @@ class TransmissionAPI(GenericClient):
         post_data = json.dumps({'arguments': arguments,
                                 'method': 'torrent-set'})
 
-        self._request(method='post', data=post_data)
-
-        return self.response.json()['result'] == "success"
+        if self._request(method='post', data=post_data):
+            return self.response.json()['result'] == "success"
 
 
 api = TransmissionAPI()

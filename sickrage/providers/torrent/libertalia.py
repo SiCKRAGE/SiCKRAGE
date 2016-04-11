@@ -64,7 +64,7 @@ class LibertaliaProvider(TorrentProvider):
                         'password': self.password}
 
         try:
-            response = self.session.post(self.urls['base_url'] + '/login.php', data=login_params, timeout=30).content
+            response = self.session.post(self.urls['base_url'] + '/login.php', data=login_params, timeout=30).text
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -95,7 +95,7 @@ class LibertaliaProvider(TorrentProvider):
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = self.session.get(searchURL).content
+                    data = self.session.get(searchURL).text
                 except Exception:
                     continue
 

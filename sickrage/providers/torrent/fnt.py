@@ -66,7 +66,7 @@ class FNTProvider(TorrentProvider):
                         }
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -96,7 +96,7 @@ class FNTProvider(TorrentProvider):
                 self.search_params['recherche'] = search_string
 
                 try:
-                    data = self.session.get(self.urls['search'], params=self.search_params).content
+                    data = self.session.get(self.urls['search'], params=self.search_params).text
                 except Exception:
                     continue
 

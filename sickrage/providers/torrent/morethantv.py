@@ -78,7 +78,7 @@ class MoreThanTVProvider(TorrentProvider):
                             'keeplogged': '1'}
 
             try:
-                response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+                response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
             except Exception:
                 sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
@@ -111,7 +111,7 @@ class MoreThanTVProvider(TorrentProvider):
 
                 # returns top 15 results by default, expandable in user profile to 100
                 try:
-                    data = self.session.get(searchURL).content
+                    data = self.session.get(searchURL).text
                 except Exception:
                     continue
 

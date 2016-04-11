@@ -90,7 +90,7 @@ class newpctProvider(TorrentProvider):
                         "Search URL: %s" % self.urls['search'] + '?' + urlencode(self.search_params))
 
                 try:
-                    data = self.session.post(self.urls['search'], data=self.search_params, timeout=30).content
+                    data = self.session.post(self.urls['search'], data=self.search_params, timeout=30).text
                 except Exception:
                     continue
 

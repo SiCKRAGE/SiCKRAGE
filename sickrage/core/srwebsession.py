@@ -20,15 +20,19 @@
 from __future__ import unicode_literals
 
 import io
+import os
 import random
+import tempfile
 import traceback
 import urllib
 import urllib2
 import urlparse
 from _socket import timeout as SocketTimeout
 
+import cachecontrol
 import certifi
 import requests
+from cachecontrol.caches import FileCache
 from requests_futures.sessions import FuturesSession
 
 import sickrage
@@ -94,37 +98,40 @@ urllib.FancyURLopener.version = random.choice(USER_AGENTS)
 
 class srWebSession(FuturesSession):
     def __init__(self, cache=True, *args, **kwargs):
-        super(srWebSession, self).__init__(max_workers=10, *args, **kwargs)
-        #self.session = requests.Session() if not cache else cachecontrol.CacheControl(
-        #    requests.Session(),
-        #    cache=FileCache(os.path.join(tempfile.gettempdir(), 'cachecontrol'), use_dir_lock=True),
-        #    cache_etags=False)
+        super(srWebSession, self).__init__(
+            max_workers=10, session=requests.Session() if not cache else cachecontrol.CacheControl(
+                requests.Session(),
+                cache=FileCache(os.path.join(tempfile.gettempdir(), 'cachecontrol'), use_dir_lock=True),
+                cache_etags=False), *args, **kwargs
+        )
 
     def request(self, method, url, headers=None, params=None, *args, **kwargs):
         url = self.normalize_url(url)
-        self.session.params.update(params or {})
-        self.session.headers.update(headers or {})
-        if method == 'POST':
-            self.headers.update({"Content-type": "application/x-www-form-urlencoded"})
-        self.session.headers.update({'Accept-Encoding': 'gzip,deflate'})
-        self.session.headers.update(random.choice(USER_AGENTS))
+        kwargs.setdefault('params', {}).update(params or {})
+        kwargs.setdefault('headers', {}).update(headers or {})
+
+        #if method == 'POST':
+        #    self.session.headers.update({"Content-type": "application/x-www-form-urlencoded"})
+        kwargs.setdefault('headers', {}).update({'Accept-Encoding': 'gzip, deflate'})
+        kwargs.setdefault('headers', {}).update(random.choice(USER_AGENTS))
 
         # request session ssl verify
-        self.session.verify = False
+        kwargs['verify'] = False
         if sickrage.srConfig.SSL_VERIFY:
             try:
-                self.session.verify = certifi.where()
+                kwargs['verify'] = certifi.where()
             except:
                 pass
         # request session proxies
-        if 'Referer' not in self.session.headers and sickrage.srConfig.PROXY_SETTING:
+        if 'Referer' not in kwargs.get('headers', {}) and sickrage.srConfig.PROXY_SETTING:
             sickrage.srLogger.debug("Using global proxy: " + sickrage.srConfig.PROXY_SETTING)
             scheme, address = urllib2.splittype(sickrage.srConfig.PROXY_SETTING)
             address = ('http://{}'.format(sickrage.srConfig.PROXY_SETTING), sickrage.srConfig.PROXY_SETTING)[scheme]
-            self.session.proxies.update({"http": address, "https": address})
-            self.session.headers.update({'Referer': address})
+            kwargs.setdefault('proxies', {}).update({"http": address, "https": address})
+            kwargs.setdefault('headers', {}).update({'Referer': address})
 
         try:
+            # get result
             return super(srWebSession, self).request(method, url, *args, **kwargs).result()
         except (SocketTimeout, TypeError) as e:
             sickrage.srLogger.warning("Connection timed out (sockets) accessing url %s Error: %r" % (url, e))

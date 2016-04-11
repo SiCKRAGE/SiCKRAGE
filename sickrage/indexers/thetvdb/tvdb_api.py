@@ -498,7 +498,7 @@ class Tvdb:
         return os.path.join(tempfile.gettempdir(), "thetvdb-{}".format(uid))
 
     def getToken(self, refresh=False):
-        jwtResp = {'token': ''}
+        jwtResp = {'token': self.config['apitoken']}
         timeout = 10
 
         try:
@@ -545,6 +545,8 @@ class Tvdb:
             if e.response.status_code == 401:
                 self.getToken(True)
                 raise tvdb_error("Session token expired, retrieving new token(401 error)")
+            elif e.response.status_code == 404:
+                return
             raise tvdb_error("HTTP error {} while loading URL {}".format(e.errno, url))
         except requests.exceptions.ConnectionError as e:
             raise tvdb_error("Connection error {} while loading URL {}".format(e.message, url))

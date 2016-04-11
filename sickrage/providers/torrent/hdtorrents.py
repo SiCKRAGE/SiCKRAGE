@@ -72,7 +72,7 @@ class HDTorrentsProvider(TorrentProvider):
                         'submit': 'Confirm'}
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30).content
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -105,7 +105,7 @@ class HDTorrentsProvider(TorrentProvider):
                     sickrage.srLogger.debug("Search string: %s" % search_string)
 
                 try:
-                    data = self.session.get(searchURL).content
+                    data = self.session.get(searchURL).text
                 except Exception:
                     sickrage.srLogger.debug("No data returned from provider")
                     continue

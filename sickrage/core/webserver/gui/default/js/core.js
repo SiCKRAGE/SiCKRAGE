@@ -1769,7 +1769,7 @@ jQuery(document).ready(function ($) {
                         var epArr = [];
 
                         $('.epCheck').each(function () {
-                            if ($(this).checked === true) {
+                            if ($(this).prop('checked')) {
                                 epArr.push($(this).attr('id'));
                             }
                         });
@@ -1785,7 +1785,7 @@ jQuery(document).ready(function ($) {
                         var epArr = [];
 
                         $('.epCheck').each(function () {
-                            if ($(this).checked === true) {
+                            if ($(this).prop('checked')) {
                                 epArr.push($(this).attr('id'));
                             }
                         });
@@ -2122,7 +2122,7 @@ jQuery(document).ready(function ($) {
                     $('#submitShowDirs').click(function () {
                         var dirArr = [];
                         $('.dirCheck').each(function () {
-                            if ($(this).checked === true) {
+                            if ($(this).prop('checked')) {
                                 var show = $(this).attr('id');
                                 var indexer = $(this).closest('tr').find('select').val();
                                 dirArr.push(encodeURIComponent(indexer + '|' + show));
@@ -2374,7 +2374,7 @@ jQuery(document).ready(function ($) {
                     var epArr = [];
 
                     $('.epCheck').each(function () {
-                        if ($(this).checked === true) {
+                        if ($(this).prop('checked')) {
                             epArr.push($(this).attr('id'));
                         }
                     });
@@ -3037,7 +3037,7 @@ jQuery(document).ready(function ($) {
             postprocessing: {
                 init: function () {
                     $('#unpack').on('change', function () {
-                        if ($(this).checked) {
+                        if ($(this).prop('checked')) {
                             SICKRAGE.config.postprocessing.israr_supported();
                         } else {
                             $('#unpack').qtip('toggle', false);
@@ -5012,7 +5012,7 @@ jQuery(document).ready(function ($) {
                 $('.bulkCheck').on('click', function () {
                     $('.showCheck').each(function () {
                         if (!$(this).disabled) {
-                            $(this).prop("checked", !$(this).checked);
+                            $(this).prop("checked", !this.checked);
                         }
                     });
                 });
@@ -5078,7 +5078,7 @@ jQuery(document).ready(function ($) {
                     var removeArr = [];
 
                     $('.removeCheck').each(function () {
-                        if ($(this).checked === true) {
+                        if ($(this).prop('checked')) {
                             removeArr.push($(this).attr('id').split('-')[1]);
                         }
                     });
