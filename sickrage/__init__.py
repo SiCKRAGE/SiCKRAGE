@@ -174,7 +174,7 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         if pid > 0:
             # Exit from first parent
             sys.exit(0)
-    except OSError, e:
+    except OSError as e:
         sys.stderr.write("Fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
         sys.exit(1)
 
@@ -189,17 +189,17 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         if pid > 0:
             # Exit from second parent
             sys.exit(0)
-    except OSError, e:
+    except OSError as e:
         sys.stderr.write("Fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
         sys.exit(1)
 
-    if sys.platform != 'darwin':  # This block breaks on OS X
+    if sys.platform != 'darwin':
         # Redirect standard file descriptors
         sys.stdout.flush()
         sys.stderr.flush()
-        si = file(stdin, 'r')
-        so = file(stdout, 'a+')
-        se = file(stderr, 'a+', 0)
+        si = io.open(stdin, 'r')
+        so = io.open(stdout, 'a+')
+        se = io.open(stderr, 'a+')
         os.dup2(si.fileno(), sys.stdin.fileno())
         os.dup2(so.fileno(), sys.stdout.fileno())
         os.dup2(se.fileno(), sys.stderr.fileno())
@@ -207,7 +207,7 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
     # Write the PID file
     import atexit
     atexit.register(lambda: delpid(pidfile))
-    file(pidfile, 'w+').write("%s\n" % str(os.getpid()))
+    io.open(pidfile, 'w+').write("%s\n" % str(os.getpid()))
 
 
 def delpid(pidfile):
@@ -237,7 +237,7 @@ def main():
 
         # sickrage startup options
         parser = argparse.ArgumentParser(prog='sickrage')
-        parser.add_argument('--version',
+        parser.add_argument('-v', '--version',
                             action='version',
                             version='%(prog)s 8.0')
         parser.add_argument('-d', '--daemon',
@@ -260,10 +260,10 @@ def main():
                             default=DATA_DIR,
                             help='Overrides data folder for database, configfile, cache, logfiles (full path)')
         parser.add_argument('--config',
-                            default=os.path.abspath(os.path.join(DATA_DIR, 'config.ini')),
+                            default='config.ini',
                             help='Overrides config filename (full path including filename)')
         parser.add_argument('--pidfile',
-                            default=os.path.abspath(os.path.join(DATA_DIR, 'sickrage.pid')),
+                            default='sickrage.pid',
                             help='Creates a pidfile (full path including filename)')
         parser.add_argument('--nolaunch',
                             action='store_true',
@@ -279,11 +279,6 @@ def main():
 
         # Launch browser
         NOLAUNCH = args.nolaunch
-
-        # Pidfile for daemon
-        PIDFILE = os.path.abspath(os.path.expanduser(args.pidfile))
-        if os.path.exists(PIDFILE):
-            sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
 
         DEVELOPER = args.dev
         if DEVELOPER:
@@ -308,9 +303,15 @@ def main():
         if not os.access(DATA_DIR, os.W_OK):
             sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
 
+        # Pidfile for daemon
+        PIDFILE = os.path.abspath(os.path.join(DATA_DIR, args.pidfile))
+        if os.path.exists(PIDFILE):
+            sys.exit("PID file: " + PIDFILE + " already exists. Exiting.")
+
         # daemonize if requested
         DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
         if DAEMONIZE:
+            print 'Daemonizing SiCKRAGE'
             NOLAUNCH = False
             QUITE = False
             daemonize(PIDFILE)

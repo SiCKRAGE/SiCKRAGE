@@ -889,10 +889,7 @@ class Tvdb:
         The dict index should be the show id
         """
         if isinstance(key, (int, long)):
-            # Item is integer, treat as show id
-            if key not in self.shows:
-                self._getShowData(key, self.config['language'], True)
-            return self.shows[key]
+            return self.shows.get(key, self._getShowData(key, self.config['language'], True))
 
         self.config['searchterm'] = key
         selected_series = self._getSeries(key)
