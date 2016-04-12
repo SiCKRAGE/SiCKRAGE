@@ -167,7 +167,7 @@ class srVersionUpdater(object):
 
         import pip
 
-        if os.path.isdir(os.path.join(sickrage.PROG_DIR, '.git')):
+        if os.path.isdir(os.path.join(os.path.dirname(sickrage.PROG_DIR), '.git')):
             # git install
             return GitUpdateManager()
         else:
@@ -205,7 +205,7 @@ class srVersionUpdater(object):
         news = ''
 
         # Grab a copy of the news
-        sickrage.srLogger.debug('check_for_new_news: Checking GitHub for latest news.')
+        sickrage.srLogger.debug('check_for_new_news: Checking server for latest news.')
         try:
             news = srWebSession().get(sickrage.srConfig.NEWS_URL).text
         except:
@@ -424,10 +424,10 @@ class GitUpdateManager(UpdateManager):
         # update remote origin url
         self.update_remote_origin()
 
-        # get all new info from github
+        # get all new info from server
         output, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'fetch ' + self.remote_url)
         if not exit_status == 0:
-            sickrage.srLogger.warning("Unable to contact github, can't check for update")
+            sickrage.srLogger.warning("Unable to contact server, can't check for update")
             return
 
         # get latest commit_hash from remote
@@ -442,7 +442,7 @@ class GitUpdateManager(UpdateManager):
         sickrage.srCore.NEWEST_VERSION_STRING = None
 
         if self.version != self.get_newest_version:
-            newest_text = 'There is a newer version available on GitHub, version {}'.format(self.get_newest_version)
+            newest_text = 'There is a newer version available, version {}'.format(self.get_newest_version)
             newest_text += "&mdash; <a href=\"{}\">Update Now</a>".format(self.get_update_url())
         else:
             return
@@ -460,7 +460,7 @@ class GitUpdateManager(UpdateManager):
             if self.version != self.get_newest_version:
                 return True
         except Exception as e:
-            sickrage.srLogger.warning("Unable to contact github, can't check for update: " + repr(e))
+            sickrage.srLogger.warning("Unable to contact server, can't check for update: " + repr(e))
             return False
 
     def update(self):
@@ -561,7 +561,7 @@ class SourceUpdateManager(UpdateManager):
                 sickrage.srLogger.debug("Source Version checkout: {} -> {}".format(self.version, git_version))
                 return True
         except Exception as e:
-            sickrage.srLogger.warning("Unable to contact github, can't check for update: " + repr(e))
+            sickrage.srLogger.warning("Unable to contact server, can't check for update: " + repr(e))
             return False
 
     def _check_for_new_version(self):
@@ -581,14 +581,14 @@ class SourceUpdateManager(UpdateManager):
             newest_text += "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
 
         else:
-            newest_text = 'There is a newer version available on GitHub, version {}'.format(self.get_newest_version)
+            newest_text = 'There is a newer version available, version {}'.format(self.get_newest_version)
             newest_text += "&mdash; <a href=\"" + self.get_update_url() + "\">Update Now</a>"
 
         sickrage.srCore.NEWEST_VERSION_STRING = newest_text
 
     def update(self):
         """
-        Downloads the latest source tarball from github and installs it over the existing version.
+        Downloads the latest source tarball from server and installs it over the existing version.
         """
 
         tar_download_url = 'http://www.sickrage.ca/sr-update.tar'
