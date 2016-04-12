@@ -29,7 +29,7 @@ class Poster(Media):
     Get the poster of a show
     """
 
-    def __init__(self, indexer_id, media_format=None):
+    def __init__(self, indexer_id, media_format='normal'):
         super(Poster, self).__init__(indexer_id, media_format)
 
     def get_default_media_name(self):

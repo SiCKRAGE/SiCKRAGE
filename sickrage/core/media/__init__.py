@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import io
 import os
 from mimetypes import guess_type
 
@@ -36,7 +37,16 @@ class Media(object):
         :return: The content of the desired media file
         """
 
-        return os.path.relpath(self.get_static_media_path()).replace('\\','/')
+        return os.path.realpath(self.get_static_media_path()).replace('\\','/')
+
+    @property
+    def get_media_bytes(self):
+        """
+        :return: The content of the desired media file
+        """
+
+        with io.open(os.path.abspath(self.get_static_media_path()).replace('\\', '/'), 'rb') as media:
+            return media.read()
 
     def get_media_path(self):
         """

@@ -207,135 +207,47 @@ jQuery(document).ready(function ($) {
                     }
                 );
 
-                $('a.shutdown').on('click', function (e) {
-                    e.preventDefault();
-                    var target = $(this).attr('href');
-                    $.confirm({
-                        'title': 'Shutdown',
-                        'message': 'Are you sure you want to shutdown SiCKRAGE ?',
-                        'buttons': {
-                            'Yes': {
-                                'class': 'green',
-                                'action': function () {
-                                    location.href = target;
-                                }
-                            },
-                            'No': {
-                                'class': 'red',
-                                'action': function () {
-                                }	// Nothing to do in this case. You can as well omit the action property.
-                            }
-                        }
-                    });
+                $.confirm.options = {
+                    confirmButton: "Yes",
+                    cancelButton: "Cancel",
+                    dialogClass: "modal-dialog",
+                    post: false,
+                    confirm: function (e) {
+                        location.href = e.context.href;
+                    }
+                };
+
+                $('a.shutdown').confirm({
+                    title: 'Shutdown',
+                    text: 'Are you sure you want to shutdown SiCKRAGE ?'
                 });
 
-                $('a.restart').on('click', function (e) {
-                    e.preventDefault();
-                    var target = $(this).attr('href');
-                    $.confirm({
-                        'title': 'Restart',
-                        'message': 'Are you sure you want to restart SiCKRAGE ?',
-                        'buttons': {
-                            'Yes': {
-                                'class': 'green',
-                                'action': function () {
-                                    location.href = target;
-                                }
-                            },
-                            'No': {
-                                'class': 'red',
-                                'action': function () {
-                                }	// Nothing to do in this case. You can as well omit the action property.
-                            }
-                        }
-                    });
+                $('a.restart').confirm({
+                    title: 'Restart',
+                    text: 'Are you sure you want to restart SiCKRAGE ?'
                 });
 
-                $('a.removeshow').on('click', function (e) {
-                    e.preventDefault();
-                    var target = $(this).attr('href');
-                    var showname = document.getElementById("showtitle").getAttribute('data-showname');
-                    $.confirm({
-                        title: 'Remove Show',
-                        text: 'Are you sure you want to remove <span class="footerhighlight">' + showname + '</span> from the database ?<br><br><input type="checkbox" id="deleteFiles"> <span class="red-text">Check to delete files as well. IRREVERSIBLE</span></input>',
-                        confirmButton: 'Yes',
-                        cancelButton: 'No',
-                        confirmButtonClass: "btn-warning",
-                        cancelButtonClass: "btn-default",
-                        dialogClass: "modal-dialog",
-                        confirm: function (button) {
-                            location.href = target + (document.getElementById('deleteFiles').checked ? '&full=1' : '');
-                            // If checkbox is ticked, remove show and delete files. Else just remove show.
-                        },
-                        cancel: function (button) {
-                        }	// Nothing to do in this case. You can as well omit the action property.
-                    });
+                $('a.clearhistory').confirm({
+                    title: 'Clear History',
+                    text: 'Are you sure you want to clear all download history ?'
                 });
 
-                $('a.clearhistory').on('click', function (e) {
-                    e.preventDefault();
-                    var target = $(this).attr('href');
-                    $.confirm({
-                        'title': 'Clear History',
-                        'message': 'Are you sure you want to clear all download history ?',
-                        'buttons': {
-                            'Yes': {
-                                'class': 'green',
-                                'action': function () {
-                                    location.href = target;
-                                }
-                            },
-                            'No': {
-                                'class': 'red',
-                                'action': function () {
-                                }	// Nothing to do in this case. You can as well omit the action property.
-                            }
-                        }
-                    });
+                $('a.trimhistory').confirm({
+                    title: 'Trim History',
+                    text: 'Are you sure you want to trim all download history older than 30 days ?'
                 });
 
-                $('a.trimhistory').on('click', function (e) {
-                    e.preventDefault();
-                    var target = $(this).attr('href');
-                    $.confirm({
-                        'title': 'Trim History',
-                        'message': 'Are you sure you want to trim all download history older than 30 days ?',
-                        'buttons': {
-                            'Yes': {
-                                'class': 'green',
-                                'action': function () {
-                                    location.href = target;
-                                }
-                            },
-                            'No': {
-                                'class': 'red',
-                                'action': function () {
-                                }	// Nothing to do in this case. You can as well omit the action property.
-                            }
-                        }
-                    });
+                $('a.submiterrors').confirm({
+                    title: 'Submit Errors',
+                    text: 'Are you sure you want to submit these errors ?<br><br><span class="red-text">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>'
                 });
 
-                $('a.submiterrors').on('click', function (e) {
-                    e.preventDefault();
-                    var target = $(this).attr('href');
-                    $.confirm({
-                        'title': 'Submit Errors',
-                        'message': 'Are you sure you want to submit these errors ?<br><br><span class="red-text">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>',
-                        'buttons': {
-                            'Yes': {
-                                'class': 'green',
-                                'action': function () {
-                                    location.href = target;
-                                }
-                            },
-                            'No': {
-                                'class': 'red',
-                                'action': function () {
-                                }  // Nothing to do in this case. You can as well omit the action property.
-                            }
-                        }
-                    });
+                $('a.removeshow').confirm({
+                    title: 'Remove Show',
+                    text: 'Are you sure you want to remove <span class="footerhighlight">' + $('#showtitle').data('showname') + '</span> from the database?<br><br><input type="checkbox" id="deleteFiles"> <span class="red-text">Check to delete files as well. IRREVERSIBLE</span></input>',
+                    confirm: function (e) {
+                        location.href = e.context.href + ($('#deleteFiles')[0].checked ? '&full=1' : '');
+                    }
                 });
 
                 // plot tooltips
@@ -941,29 +853,29 @@ jQuery(document).ready(function ($) {
                 if (options.field.autocomplete && options.autocompleteURL) {
                     var query = '';
                     options.field.autocomplete({
-                            position: {my: "top", at: "bottom", collision: "flipfit"},
-                            source: function (request, response) {
-                                //keep track of user submitted search term
-                                query = $.ui.autocomplete.escapeRegex(request.term, options.includeFiles);
-                                $.ajax({
-                                    url: options.autocompleteURL,
-                                    data: request,
-                                    dataType: "json",
-                                    success: function (data) {
-                                        //implement a startsWith filter for the results
-                                        var matcher = new RegExp("^" + query, "i");
-                                        var a = $.grep(data, function (item) {
-                                            return matcher.test(item);
-                                        });
-                                        response(a);
-                                    }
-                                });
-                            },
-                            open: function () {
-                                $(".ui-autocomplete li.ui-menu-item a").removeClass("ui-corner-all");
-                                $(".ui-autocomplete li.ui-menu-item:odd a").addClass("ui-menu-item-alternate");
-                            }
-                        })
+                        position: {my: "top", at: "bottom", collision: "flipfit"},
+                        source: function (request, response) {
+                            //keep track of user submitted search term
+                            query = $.ui.autocomplete.escapeRegex(request.term, options.includeFiles);
+                            $.ajax({
+                                url: options.autocompleteURL,
+                                data: request,
+                                dataType: "json",
+                                success: function (data) {
+                                    //implement a startsWith filter for the results
+                                    var matcher = new RegExp("^" + query, "i");
+                                    var a = $.grep(data, function (item) {
+                                        return matcher.test(item);
+                                    });
+                                    response(a);
+                                }
+                            });
+                        },
+                        open: function () {
+                            $(".ui-autocomplete li.ui-menu-item a").removeClass("ui-corner-all");
+                            $(".ui-autocomplete li.ui-menu-item:odd a").addClass("ui-menu-item-alternate");
+                        }
+                    })
                         .data("ui-autocomplete")._renderItem = function (ul, item) {
                         //highlight the matched search term from the item -- note that this is global and will match anywhere
                         var result_item = item.label;
@@ -1932,11 +1844,11 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#popover').popover({
-                            placement: 'bottom',
-                            html: true, // required if content has HTML
-                            content: '<div id="popover-target"></div>'
-                        })
-                        // bootstrap popover event triggered when the popover opens
+                        placement: 'bottom',
+                        html: true, // required if content has HTML
+                        content: '<div id="popover-target"></div>'
+                    })
+                    // bootstrap popover event triggered when the popover opens
                         .on('shown.bs.popover', function () {
                             $.tablesorter.columnSelector.attachTo($("#showTable, #animeTable"), '#popover-target');
                         });
@@ -4967,7 +4879,7 @@ jQuery(document).ready(function ($) {
                     var checkArr = [];
 
                     $('.showCheck:checked').each(function () {
-                            checkArr.push($(this).attr('id'));
+                        checkArr.push($(this).attr('id'));
                     });
 
                     if (checkArr.length === 0) {
@@ -4981,7 +4893,7 @@ jQuery(document).ready(function ($) {
                     var checkArr = [];
 
                     $('.showCheck:checked').each(function () {
-                            checkArr.push($(this).attr('id'));
+                        checkArr.push($(this).attr('id'));
                     });
 
                     if (checkArr.length === 0) {
@@ -4999,7 +4911,7 @@ jQuery(document).ready(function ($) {
                     var checkArr = [];
 
                     $('.showCheck:checked').each(function () {
-                            checkArr.push($(this).attr('id'));
+                        checkArr.push($(this).attr('id'));
                     });
 
                     if (checkArr.length === 0) {
@@ -5021,7 +4933,7 @@ jQuery(document).ready(function ($) {
             mass_edit: {
                 init: function () {
                     $('#location').fileBrowser({title: 'Select Show Location'});
-                    
+
                     $('.new_root_dir').change(function () {
                         var curIndex = SICKRAGE.manage.mass_edit.findDirIndex($(this).attr('id'));
                         $('#display_new_root_dir_' + curIndex).html('<b>' + $(this).val() + '</b>');
@@ -5053,7 +4965,7 @@ jQuery(document).ready(function ($) {
                     $('#new_root_dir_' + options.whichId).change();
                 }
             },
-            
+
             backlog_overview: function () {
                 $('#pickShow').change(function () {
                     var id = $(this).val();

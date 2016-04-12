@@ -48,7 +48,6 @@ class srVersionUpdater(object):
         self.name = "VERSIONUPDATER"
         self.amActive = False
         self.updater = self.find_install_type()
-        self.session = None
 
     def run(self, force=False):
         if self.amActive:
@@ -62,15 +61,17 @@ class srVersionUpdater(object):
         try:
             if self.updater:
                 if self.check_for_new_version(force):
-                    if self.run_backup_if_safe() is True:
-                        from sickrage.core.ui import notifications
-                        if self.update():
-                            sickrage.srLogger.info("Update was successful!")
-                            notifications.message('Update was successful')
-                            sickrage.srCore.shutdown(restart=True)
-                        else:
-                            sickrage.srLogger.info("Update failed!")
-                            notifications.message('Update failed!')
+                    if sickrage.srConfig.AUTO_UPDATE:
+                        sickrage.srLogger.info("New update found for SiCKRAGE, starting auto-updater ...")
+                        notifications.message('New update found for SiCKRAGE, starting auto-updater')
+                        if self.run_backup_if_safe() is True:
+                            if self.update():
+                                sickrage.srLogger.info("Update was successful!")
+                                notifications.message('Update was successful')
+                                sickrage.srCore.shutdown(restart=True)
+                            else:
+                                sickrage.srLogger.info("Update failed!")
+                                notifications.message('Update failed!')
 
                 self.check_for_new_news(force)
         finally:
@@ -185,27 +186,12 @@ class srVersionUpdater(object):
         :param force: if true the VERSION_NOTIFY setting will be ignored and a check will be forced
         """
 
-        if not self.updater or not all([sickrage.srConfig.VERSION_NOTIFY, sickrage.srConfig.AUTO_UPDATE, force]):
-            sickrage.srLogger.debug("Version checking is disabled, not checking for the newest version")
+        if not self.updater and any([sickrage.srConfig.VERSION_NOTIFY, force]):
             return False
-
-        # checking for updates
-        if force or not sickrage.srConfig.AUTO_UPDATE:
-            sickrage.srLogger.info("Checking for updates using " + self.updater.type.upper())
 
         if self.updater.need_update():
             self.updater.set_newest_text()
-
-            if sickrage.srConfig.AUTO_UPDATE:
-                sickrage.srLogger.info("New update found for SiCKRAGE, starting auto-updater ...")
-                notifications.message('New update found for SiCKRAGE, starting auto-updater')
-
             return True
-
-        # no updates needed if we made it here
-        if force:
-            notifications.message('No update needed')
-            sickrage.srLogger.info("No update needed")
 
     def check_for_new_news(self, force=False):
         """
@@ -221,7 +207,7 @@ class srVersionUpdater(object):
         # Grab a copy of the news
         sickrage.srLogger.debug('check_for_new_news: Checking GitHub for latest news.')
         try:
-            news = srWebSession().get(sickrage.srConfig.NEWS_URL)
+            news = srWebSession().get(sickrage.srConfig.NEWS_URL).text
         except:
             sickrage.srLogger.warning('check_for_new_news: Could not load news from repo.')
 
@@ -596,7 +582,7 @@ class SourceUpdateManager(UpdateManager):
     def _check_for_new_version(self):
         git_version_url = "https://raw.githubusercontent.com/{}/{}/master/sickrage/version.txt".format(
             sickrage.srConfig.GIT_ORG, sickrage.srConfig.GIT_REPO)
-        git_version = srWebSession().get(git_version_url) or self._find_installed_version()
+        git_version = srWebSession().get(git_version_url).text or self._find_installed_version()
         return git_version
 
     def set_newest_text(self):

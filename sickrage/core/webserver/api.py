@@ -19,14 +19,14 @@
 
 from __future__ import unicode_literals
 
-import io
+import collections
+import datetime
 import os
 import re
 import threading
 import time
 import traceback
 import urllib
-from datetime import datetime
 
 from concurrent.futures import ThreadPoolExecutor
 from tornado.concurrent import run_on_executor
@@ -46,7 +46,7 @@ from sickrage.core.databases import cache_db, failed_db, main_db
 from sickrage.core.exceptions import CantUpdateShowException, \
     ShowDirectoryNotFoundException
 from sickrage.core.helpers import chmodAsParent, findCertainShow, makeDir, \
-    pretty_filesize, sanitizeFileName, srdatetime, tryInt
+    pretty_filesize, sanitizeFileName, srdatetime, tryInt, readFileBuffered
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
@@ -107,8 +107,7 @@ class KeyHandler(RequestHandler):
 class ApiHandler(RequestHandler):
     """ api class that returns json results """
     version = 5  # use an int since float-point is unpredictable
-    api_calls = {}
-    
+
     def __init__(self, application, request, *args, **kwargs):
         super(ApiHandler, self).__init__(application, request)
         self.io_loop = IOLoop.instance()
@@ -175,7 +174,7 @@ class ApiHandler(RequestHandler):
 
     def _out_as_image(self, _dict):
         self.set_header('Content-Type', _dict['image'].get_media_type())
-        return _dict['image'].get_media
+        return _dict['image'].get_media_bytes
 
     def _out_as_json(self, _dict):
         self.set_header("Content-Type", "application/json;charset=UTF-8")
@@ -189,6 +188,10 @@ class ApiHandler(RequestHandler):
             out = '{"result": "%s", "message": "error while composing output: %s"}' % \
                   (result_type_map[RESULT_ERROR], e)
         return out
+
+    @property
+    def api_calls(self):
+        return dict((cls._cmd, cls) for cls in ApiCall.__subclasses__() if '_cmd' in cls.__dict__)
 
     def call_dispatcher(self, *args, **kwargs):
         """ calls the appropriate CMD class
@@ -216,10 +219,13 @@ class ApiHandler(RequestHandler):
             if not (multiCmds and cmd in ('show.getbanner', 'show.getfanart', 'show.getnetworklogo',
                                           'show.getposter')):  # skip these cmd while chaining
                 try:
+                    # backport old sb calls
+                    cmd = (cmd, 'sr' + cmd[2:])[cmd[:2] == 'sb']
+
                     if cmd in self.api_calls:
                         # call function and get response back
                         curOutDict = self.api_calls[cmd](self.application, self.request, *curArgs,
-                                                               **curKwargs).run()
+                                                         **curKwargs).run()
                     elif _is_int(cmd):
                         curOutDict = TVDBShorthandWrapper(cmd, self.application, self.request, *curArgs,
                                                           **curKwargs).run()
@@ -287,6 +293,7 @@ class ApiHandler(RequestHandler):
                 continue
 
         return curArgs, curKwargs
+
 
 class ApiCall(ApiHandler):
     _help = {"desc": "This command is not documented. Please report this to the developers."}
@@ -628,6 +635,7 @@ class IntParseError(Exception):
 
 
 class CMD_Help(ApiCall):
+    _cmd = "help"
     _help = {
         "desc": "Get help about a given command",
         "optionalParameters": {
@@ -641,7 +649,6 @@ class CMD_Help(ApiCall):
         self.subject, args = self.check_params("subject", "help", False, "string", self.api_calls.keys(), args,
                                                kwargs)
         super(CMD_Help, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["help"] = self.__class__
 
     def run(self):
         """ Get help about a given command """
@@ -654,6 +661,7 @@ class CMD_Help(ApiCall):
 
 
 class CMD_ComingEpisodes(ApiCall):
+    _cmd = "future"
     _help = {
         "desc": "Get the coming episodes",
         "optionalParameters": {
@@ -677,7 +685,6 @@ class CMD_ComingEpisodes(ApiCall):
                                               *args, **kwargs)
         # super, missing, help
         super(CMD_ComingEpisodes, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["future"] = self.__class__
 
     def run(self):
         """ Get the coming episodes """
@@ -707,6 +714,7 @@ class CMD_ComingEpisodes(ApiCall):
 
 
 class CMD_Episode(ApiCall):
+    _cmd = "episode"
     _help = {
         "desc": "Get detailed information about an episode",
         "requiredParameters": {
@@ -731,7 +739,6 @@ class CMD_Episode(ApiCall):
         self.fullPath, args = self.check_params("full_path", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
         super(CMD_Episode, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["episode"] = self.__class__
 
     def run(self):
         """ Get detailed information about an episode """
@@ -772,13 +779,14 @@ class CMD_Episode(ApiCall):
 
         status, quality = Quality.splitCompositeStatus(int(episode["status"]))
         episode["status"] = _get_status_Strings(status)
-        episode["quality"] = quality.get_quality_string(quality)
+        episode["quality"] = get_quality_string(quality)
         episode["file_size_human"] = pretty_filesize(episode["file_size"])
 
         return _responds(RESULT_SUCCESS, episode)
 
 
 class CMD_EpisodeSearch(ApiCall):
+    _cmd = "episode.search"
     _help = {
         "desc": "Search for an episode. The response might take some time.",
         "requiredParameters": {
@@ -799,7 +807,6 @@ class CMD_EpisodeSearch(ApiCall):
         # optional
         # super, missing, help
         super(CMD_EpisodeSearch, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["episode.search"] = self.__class__
 
     def run(self):
         """ Search for an episode """
@@ -824,13 +831,14 @@ class CMD_EpisodeSearch(ApiCall):
         if ep_queue_item.success:
             status, quality = Quality.splitCompositeStatus(epObj.status)  # @UnusedVariable
             # TODO: split quality and status?
-            return _responds(RESULT_SUCCESS, {"quality": quality.get_quality_string(quality)},
-                             "Snatched (" + quality.get_quality_string(quality) + ")")
+            return _responds(RESULT_SUCCESS, {"quality": get_quality_string(quality)},
+                             "Snatched (" + get_quality_string(quality) + ")")
 
         return _responds(RESULT_FAILURE, msg='Unable to find episode')
 
 
 class CMD_EpisodeSetStatus(ApiCall):
+    _cmd = "episode.setstatus"
     _help = {
         "desc": "Set the status of an episode or a season (when no episode is provided)",
         "requiredParameters": {
@@ -856,7 +864,6 @@ class CMD_EpisodeSetStatus(ApiCall):
         self.force, args = self.check_params("force", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
         super(CMD_EpisodeSetStatus, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["episode.setstatus"] = self.__class__
 
     def run(self):
         """ Set the status of an episode or a season (when no episode is provided) """
@@ -953,6 +960,7 @@ class CMD_EpisodeSetStatus(ApiCall):
 
 
 class CMD_SubtitleSearch(ApiCall):
+    _cmd = "episode.subtitlesearch"
     _help = {
         "desc": "Search for an episode subtitles. The response might take some time.",
         "requiredParameters": {
@@ -973,7 +981,6 @@ class CMD_SubtitleSearch(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SubtitleSearch, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["episode.subtitlesearch"] = self.__class__
 
     def run(self):
         """ Search for an episode subtitles """
@@ -1010,6 +1017,7 @@ class CMD_SubtitleSearch(ApiCall):
 
 
 class CMD_Exceptions(ApiCall):
+    _cmd = "exceptions"
     _help = {
         "desc": "Get the scene exceptions for all or a given show",
         "optionalParameters": {
@@ -1025,7 +1033,6 @@ class CMD_Exceptions(ApiCall):
 
         # super, missing, help
         super(CMD_Exceptions, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["exceptions"] = self.__class__
 
     def run(self):
         """ Get the scene exceptions for all or a given show """
@@ -1056,6 +1063,7 @@ class CMD_Exceptions(ApiCall):
 
 
 class CMD_History(ApiCall):
+    _cmd = "history"
     _help = {
         "desc": "Get the downloaded and/or snatched history",
         "optionalParameters": {
@@ -1073,7 +1081,6 @@ class CMD_History(ApiCall):
 
         # super, missing, help
         super(CMD_History, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["history"] = self.__class__
 
     def run(self):
         """ Get the downloaded and/or snatched history """
@@ -1105,6 +1112,7 @@ class CMD_History(ApiCall):
 
 
 class CMD_HistoryClear(ApiCall):
+    _cmd = "history.clear"
     _help = {"desc": "Clear the entire history"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1112,7 +1120,6 @@ class CMD_HistoryClear(ApiCall):
         # optional
         # super, missing, help
         super(CMD_HistoryClear, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["history.clear"] = self.__class__
 
     def run(self):
         """ Clear the entire history """
@@ -1122,6 +1129,7 @@ class CMD_HistoryClear(ApiCall):
 
 
 class CMD_HistoryTrim(ApiCall):
+    _cmd = "history.trim"
     _help = {"desc": "Trim history entries older than 30 days"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1129,7 +1137,6 @@ class CMD_HistoryTrim(ApiCall):
         # optional
         # super, missing, help
         super(CMD_HistoryTrim, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["history.trim"] = self.__class__
 
     def run(self):
         """ Trim history entries older than 30 days """
@@ -1139,6 +1146,7 @@ class CMD_HistoryTrim(ApiCall):
 
 
 class CMD_Failed(ApiCall):
+    _cmd = "failed"
     _help = {
         "desc": "Get the failed downloads",
         "optionalParameters": {
@@ -1152,7 +1160,6 @@ class CMD_Failed(ApiCall):
         self.limit, args = self.check_params("limit", 100, False, "int", [], *args, **kwargs)
         # super, missing, help
         super(CMD_Failed, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["failed"] = self.__class__
 
     def run(self):
         """ Get the failed downloads """
@@ -1167,6 +1174,7 @@ class CMD_Failed(ApiCall):
 
 
 class CMD_Backlog(ApiCall):
+    _cmd = "backlog"
     _help = {"desc": "Get the backlogged episodes"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1174,7 +1182,6 @@ class CMD_Backlog(ApiCall):
         # optional
         # super, missing, help
         super(CMD_Backlog, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["backlog"] = self.__class__
 
     def run(self):
         """ Get the backlogged episodes """
@@ -1207,6 +1214,7 @@ class CMD_Backlog(ApiCall):
 
 
 class CMD_Logs(ApiCall):
+    _cmd = "logs"
     _help = {
         "desc": "Get the logs",
         "optionalParameters": {
@@ -1225,55 +1233,38 @@ class CMD_Logs(ApiCall):
                                                  ["error", "warning", "info", "debug"], *args, **kwargs)
         # super, missing, help
         super(CMD_Logs, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["logs"] = self.__class__
 
     def run(self):
         """ Get the logs """
-        # 10 = Debug / 20 = Info / 30 = Warning / 40 = Error
-        minLevel = sickrage.srLogger.logLevels[str(self.min_level).upper()]
+        maxLines = 50
+
+        levelsFiltered = '|'.join(
+            [x for x in sickrage.srLogger.logLevels.keys() if
+             sickrage.srLogger.logLevels[x] >= int(sickrage.srLogger.logLevels[str(self.min_level).upper()])])
+
+        logRegex = re.compile(
+            r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levelsFiltered, ""),
+            re.S + re.M)
 
         data = []
-        if os.path.isfile(sickrage.srConfig.LOG_FILE):
-            with io.open(sickrage.srConfig.LOG_FILE, 'r', encoding='utf-8') as f:
-                data = f.readlines()
+        try:
+            if os.path.isfile(sickrage.srConfig.LOG_FILE):
+                data += list(reversed(re.findall("((?:^.+?{}.+?$))".format(""),
+                                                 "\n".join(next(readFileBuffered(sickrage.srConfig.LOG_FILE, reverse=True)).splitlines()),
+                                                 re.S + re.M + re.I)))
+                maxLines -= len(data)
+                if len(data) == maxLines:
+                    raise StopIteration
+        except StopIteration:
+            pass
+        except Exception as e:
+            pass
 
-        regex = r"^(\d\d\d\d)\-(\d\d)\-(\d\d)\s*(\d\d)\:(\d\d):(\d\d)\s*([A-Z]+)\s*(.+?)\s*\:\:\s*(.*)$"
-
-        finalData = []
-
-        numLines = 0
-        lastLine = False
-        numToShow = min(50, len(data))
-
-        for x in reversed(data):
-
-            match = re.match(regex, x)
-
-            if match:
-                level = match.group(7)
-                if level not in sickrage.srLogger.logLevels:
-                    lastLine = False
-                    continue
-
-                if sickrage.srLogger.logLevels[level] >= minLevel:
-                    lastLine = True
-                    finalData.append(x.rstrip("\n"))
-                else:
-                    lastLine = False
-                    continue
-
-            elif lastLine:
-                finalData.append("AA" + x)
-
-            numLines += 1
-
-            if numLines >= numToShow:
-                break
-
-        return _responds(RESULT_SUCCESS, finalData)
+        return _responds(RESULT_SUCCESS, "\n".join(logRegex.findall("\n".join(data))))
 
 
 class CMD_PostProcess(ApiCall):
+    _cmd = "postprocess"
     _help = {
         "desc": "Manually post-process the files in the download folder",
         "optionalParameters": {
@@ -1300,7 +1291,6 @@ class CMD_PostProcess(ApiCall):
         self.type, args = self.check_params("type", "auto", None, "string", ["auto", "manual"], *args, **kwargs)
         # super, missing, help
         super(CMD_PostProcess, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["postprocess"] = self.__class__
 
     def run(self):
         """ Manually post-process the files in the download folder """
@@ -1323,6 +1313,7 @@ class CMD_PostProcess(ApiCall):
 
 
 class CMD_SiCKRAGE(ApiCall):
+    _cmd = "sr"
     _help = {"desc": "Get miscellaneous information about SiCKRAGE"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1330,16 +1321,16 @@ class CMD_SiCKRAGE(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SiCKRAGE, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr"] = self.__class__
 
     def run(self):
-        """ dGet miscellaneous information about SiCKRAGE """
-        data = {"sr_version": sickrage.srCore.VERSION, "api_version": self.version,
+        """ Get miscellaneous information about SiCKRAGE """
+        data = {"app_version": sickrage.srCore.VERSION, "api_version": self.version,
                 "api_commands": sorted(self.api_calls.keys())}
         return _responds(RESULT_SUCCESS, data)
 
 
 class CMD_SiCKRAGEAddRootDir(ApiCall):
+    _cmd = "sr.addrootdir"
     _help = {
         "desc": "Add a new root (parent) directory to SiCKRAGE",
         "requiredParameters": {
@@ -1357,7 +1348,6 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
         self.default, args = self.check_params("default", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
         super(CMD_SiCKRAGEAddRootDir, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.addrootdir"] = self.__class__
 
     def run(self):
         """ Add a new root (parent) directory to SiCKRAGE """
@@ -1402,6 +1392,7 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
 
 
 class CMD_SiCKRAGECheckVersion(ApiCall):
+    _cmd = "sr.checkversion"
     _help = {"desc": "Check if a new version of SiCKRAGE is available"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1409,7 +1400,6 @@ class CMD_SiCKRAGECheckVersion(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SiCKRAGECheckVersion, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.checkversion"] = self.__class__
 
     def run(self):
         return _responds(RESULT_SUCCESS, {
@@ -1419,11 +1409,12 @@ class CMD_SiCKRAGECheckVersion(ApiCall):
             "latest_version": {
                 "version": sickrage.srCore.VERSIONUPDATER.updater.get_newest_version,
             },
-            "needs_update": sickrage.srCore.VERSIONUPDATER.check_for_new_version(),
+            "needs_update": sickrage.srCore.VERSIONUPDATER.check_for_new_version(True),
         })
 
 
 class CMD_SiCKRAGECheckScheduler(ApiCall):
+    _cmd = "sr.checkscheduler"
     _help = {"desc": "Get information about the scheduler"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1431,7 +1422,6 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SiCKRAGECheckScheduler, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.checkscheduler"] = self.__class__
 
     def run(self):
         """ Get information about the scheduler """
@@ -1448,6 +1438,7 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
 
 
 class CMD_SiCKRAGEDeleteRootDir(ApiCall):
+    _cmd = "sr.deleterootdir"
     _help = {"desc": "Delete a root (parent) directory from SiCKRAGE", "requiredParameters": {
         "location": {"desc": "The full path to the root (parent) directory to remove"},
     }}
@@ -1458,7 +1449,6 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SiCKRAGEDeleteRootDir, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.deleterootdir"] = self.__class__
 
     def run(self):
         """ Delete a root (parent) directory from SiCKRAGE """
@@ -1495,6 +1485,7 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
 
 
 class CMD_SiCKRAGEGetDefaults(ApiCall):
+    _cmd = "sr.getdefaults"
     _help = {"desc": "Get SiCKRAGE's user default configuration value"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1502,7 +1493,6 @@ class CMD_SiCKRAGEGetDefaults(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SiCKRAGEGetDefaults, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.getdefaults"] = self.__class__
 
     def run(self):
         """ Get SiCKRAGE's user default configuration value """
@@ -1516,6 +1506,7 @@ class CMD_SiCKRAGEGetDefaults(ApiCall):
 
 
 class CMD_SiCKRAGEGetMessages(ApiCall):
+    _cmd = "sr.getmessages"
     _help = {"desc": "Get all messages"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1523,7 +1514,6 @@ class CMD_SiCKRAGEGetMessages(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SiCKRAGEGetMessages, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.getmessages"] = self.__class__
 
     def run(self):
         messages = []
@@ -1535,6 +1525,7 @@ class CMD_SiCKRAGEGetMessages(ApiCall):
 
 
 class CMD_SiCKRAGEGetRootDirs(ApiCall):
+    _cmd = "sr.getrootdirs"
     _help = {"desc": "Get all root (parent) directories"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1542,7 +1533,6 @@ class CMD_SiCKRAGEGetRootDirs(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SiCKRAGEGetRootDirs, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.getrootdirs"] = self.__class__
 
     def run(self):
         """ Get all root (parent) directories """
@@ -1551,6 +1541,7 @@ class CMD_SiCKRAGEGetRootDirs(ApiCall):
 
 
 class CMD_SiCKRAGEPauseBacklog(ApiCall):
+    _cmd = "sr.pausebacklog"
     _help = {
         "desc": "Pause or unpause the backlog search",
         "optionalParameters": {
@@ -1564,7 +1555,6 @@ class CMD_SiCKRAGEPauseBacklog(ApiCall):
         self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
         super(CMD_SiCKRAGEPauseBacklog, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.pausebacklog"] = self.__class__
 
     def run(self):
         """ Pause or unpause the backlog search """
@@ -1577,6 +1567,7 @@ class CMD_SiCKRAGEPauseBacklog(ApiCall):
 
 
 class CMD_SiCKRAGEPing(ApiCall):
+    _cmd = "sr.ping"
     _help = {"desc": "Ping SiCKRAGE to check if it is running"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1584,7 +1575,6 @@ class CMD_SiCKRAGEPing(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SiCKRAGEPing, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.ping"] = self.__class__
 
     def run(self):
         """ Ping SiCKRAGE to check if it is running """
@@ -1595,6 +1585,7 @@ class CMD_SiCKRAGEPing(ApiCall):
 
 
 class CMD_SiCKRAGERestart(ApiCall):
+    _cmd = "sr.restart"
     _help = {"desc": "Restart SiCKRAGE"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1602,7 +1593,6 @@ class CMD_SiCKRAGERestart(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SiCKRAGERestart, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.restart"] = self.__class__
 
     def run(self):
         """ Restart SiCKRAGE """
@@ -1611,6 +1601,7 @@ class CMD_SiCKRAGERestart(ApiCall):
 
 
 class CMD_SiCKRAGESearchIndexers(ApiCall):
+    _cmd = "sr.searchindexers"
     _help = {
         "desc": "Search for a show with a given name on all the indexers, in a specific language",
         "optionalParameters": {
@@ -1632,7 +1623,6 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
 
         # super, missing, help
         super(CMD_SiCKRAGESearchIndexers, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.searchindexers"] = self.__class__
 
     def run(self):
         """ Search for a show with a given name on all the indexers, in a specific language """
@@ -1702,6 +1692,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
 
 
 class CMD_SiCKRAGESearchTVDB(CMD_SiCKRAGESearchIndexers):
+    _cmd = "sr.searchtvdb"
     _help = {
         "desc": "Search for a show with a given name on The TVDB, in a specific language",
         "optionalParameters": {
@@ -1713,15 +1704,11 @@ class CMD_SiCKRAGESearchTVDB(CMD_SiCKRAGESearchIndexers):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_SiCKRAGESearchTVDB, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.searchtvdb"] = self.__class__
         self.indexerid, args = self.check_params("tvdbid", None, False, "int", [], *args, **kwargs)
 
 
 class CMD_SiCKRAGESearchTVRAGE(CMD_SiCKRAGESearchIndexers):
-    """
-    Deprecated, TVRage is no more.
-    """
-
+    _cmd = "sr.searchtvrage"
     _help = {
         "desc":
             "Search for a show with a given name on TVRage, in a specific language. "
@@ -1736,13 +1723,13 @@ class CMD_SiCKRAGESearchTVRAGE(CMD_SiCKRAGESearchIndexers):
         # Leave this one as APICall so it doesnt try and search anything
         # pylint: disable=W0233,W0231
         super(CMD_SiCKRAGESearchTVRAGE, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.searchtvrage"] = self.__class__
 
     def run(self):
         return _responds(RESULT_FAILURE, msg="TVRage is disabled, invalid result")
 
 
 class CMD_SiCKRAGESetDefaults(ApiCall):
+    _cmd = "sr.setdefaults"
     _help = {
         "desc": "Set SiCKRAGE's user default configuration value",
         "optionalParameters": {
@@ -1770,7 +1757,6 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
                                               kwargs)
         # super, missing, help
         super(CMD_SiCKRAGESetDefaults, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.setdefaults"] = self.__class__
 
     def run(self):
         """ Set SiCKRAGE's user default configuration value """
@@ -1789,10 +1775,10 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
         iqualityID = []
         aqualityID = []
 
-        if self.initial:
+        if isinstance(self.initial, collections.Iterable):
             for quality in self.initial:
                 iqualityID.append(quality_map[quality])
-        if self.archive:
+        if isinstance(self.archive, collections.Iterable):
             for quality in self.archive:
                 aqualityID.append(quality_map[quality])
 
@@ -1823,6 +1809,7 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
 
 
 class CMD_SiCKRAGEShutdown(ApiCall):
+    _cmd = "sr.shutdown"
     _help = {"desc": "Shutdown SiCKRAGE"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1830,7 +1817,6 @@ class CMD_SiCKRAGEShutdown(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SiCKRAGEShutdown, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.shutdown"] = self.__class__
 
     def run(self):
         """ Shutdown SiCKRAGE """
@@ -1841,6 +1827,7 @@ class CMD_SiCKRAGEShutdown(ApiCall):
 
 
 class CMD_SiCKRAGEUpdate(ApiCall):
+    _cmd = "sr.update"
     _help = {"desc": "Update SiCKRAGE to the latest version available"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -1848,7 +1835,6 @@ class CMD_SiCKRAGEUpdate(ApiCall):
         # optional
         # super, missing, help
         super(CMD_SiCKRAGEUpdate, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["sr.update"] = self.__class__
 
     def run(self):
         if sickrage.srCore.VERSIONUPDATER.check_for_new_version():
@@ -1863,6 +1849,7 @@ class CMD_SiCKRAGEUpdate(ApiCall):
 
 
 class CMD_Show(ApiCall):
+    _cmd = "show"
     _help = {
         "desc": "Get detailed information about a show",
         "requiredParameters": {
@@ -1879,7 +1866,6 @@ class CMD_Show(ApiCall):
         # optional
         # super, missing, help
         super(CMD_Show, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show"] = self.__class__
 
     def run(self):
         """ Get detailed information about a show """
@@ -1957,6 +1943,7 @@ class CMD_Show(ApiCall):
 
 
 class CMD_ShowAddExisting(ApiCall):
+    _cmd = "show.addexisting"
     _help = {
         "desc": "Add an existing show in SiCKRAGE",
         "requiredParameters": {
@@ -1992,7 +1979,6 @@ class CMD_ShowAddExisting(ApiCall):
                                                  kwargs)
         # super, missing, help
         super(CMD_ShowAddExisting, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.addexisting"] = self.__class__
 
     def run(self):
         """ Add an existing show in SiCKRAGE """
@@ -2034,10 +2020,10 @@ class CMD_ShowAddExisting(ApiCall):
         iqualityID = []
         aqualityID = []
 
-        if self.initial:
+        if isinstance(self.initial, collections.Iterable):
             for quality in self.initial:
                 iqualityID.append(quality_map[quality])
-        if self.archive:
+        if isinstance(self.archive, collections.Iterable):
             for quality in self.archive:
                 aqualityID.append(quality_map[quality])
 
@@ -2054,6 +2040,7 @@ class CMD_ShowAddExisting(ApiCall):
 
 
 class CMD_ShowAddNew(ApiCall):
+    _cmd = "show.addnew"
     _help = {
         "desc": "Add a new show to SiCKRAGE",
         "requiredParameters": {
@@ -2111,7 +2098,6 @@ class CMD_ShowAddNew(ApiCall):
 
         # super, missing, help
         super(CMD_ShowAddNew, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.addnew"] = self.__class__
 
     def run(self):
         """ Add a new show to SiCKRAGE """
@@ -2147,10 +2133,10 @@ class CMD_ShowAddNew(ApiCall):
         iqualityID = []
         aqualityID = []
 
-        if self.initial:
+        if isinstance(self.initial, collections.Iterable):
             for quality in self.initial:
                 iqualityID.append(quality_map[quality])
-        if self.archive:
+        if isinstance(self.archive, collections.Iterable):
             for quality in self.archive:
                 aqualityID.append(quality_map[quality])
 
@@ -2231,6 +2217,7 @@ class CMD_ShowAddNew(ApiCall):
 
 
 class CMD_ShowCache(ApiCall):
+    _cmd = "show.cache"
     _help = {
         "desc": "Check SiCKRAGE's cache to see if the images (poster, banner, fanart) for a show are valid",
         "requiredParameters": {
@@ -2247,7 +2234,6 @@ class CMD_ShowCache(ApiCall):
         # optional
         # super, missing, help
         super(CMD_ShowCache, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.cache"] = self.__class__
 
     def run(self):
         """ Check SiCKRAGE's cache to see if the images (poster, banner, fanart) for a show are valid """
@@ -2272,6 +2258,7 @@ class CMD_ShowCache(ApiCall):
 
 
 class CMD_ShowDelete(ApiCall):
+    _cmd = "delete"
     _help = {
         "desc": "Delete a show in SiCKRAGE",
         "requiredParameters": {
@@ -2292,7 +2279,6 @@ class CMD_ShowDelete(ApiCall):
         self.removefiles, args = self.check_params("removefiles", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
         super(CMD_ShowDelete, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["delete"] = self.__class__
 
     def run(self):
         """ Delete a show in SiCKRAGE """
@@ -2305,6 +2291,7 @@ class CMD_ShowDelete(ApiCall):
 
 
 class CMD_ShowGetQuality(ApiCall):
+    _cmd = "show.getquality"
     _help = {
         "desc": "Get the quality setting of a show",
         "requiredParameters": {
@@ -2321,7 +2308,6 @@ class CMD_ShowGetQuality(ApiCall):
         # optional
         # super, missing, help
         super(CMD_ShowGetQuality, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.getquality"] = self.__class__
 
     def run(self):
         """ Get the quality setting of a show """
@@ -2335,6 +2321,7 @@ class CMD_ShowGetQuality(ApiCall):
 
 
 class CMD_ShowGetPoster(ApiCall):
+    _cmd = "show.getposter"
     _help = {
         "desc": "Get the poster of a show",
         "requiredParameters": {
@@ -2351,7 +2338,6 @@ class CMD_ShowGetPoster(ApiCall):
         # optional
         # super, missing, help
         super(CMD_ShowGetPoster, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.getposter"] = self.__class__
 
     def run(self):
         """ Get the poster a show """
@@ -2362,6 +2348,7 @@ class CMD_ShowGetPoster(ApiCall):
 
 
 class CMD_ShowGetBanner(ApiCall):
+    _cmd = "show.getbanner"
     _help = {
         "desc": "Get the banner of a show",
         "requiredParameters": {
@@ -2378,7 +2365,6 @@ class CMD_ShowGetBanner(ApiCall):
         # optional
         # super, missing, help
         super(CMD_ShowGetBanner, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.getbanner"] = self.__class__
 
     def run(self):
         """ Get the banner of a show """
@@ -2389,6 +2375,7 @@ class CMD_ShowGetBanner(ApiCall):
 
 
 class CMD_ShowGetNetworkLogo(ApiCall):
+    _cmd = "show.getnetworklogo"
     _help = {
         "desc": "Get the network logo of a show",
         "requiredParameters": {
@@ -2405,7 +2392,6 @@ class CMD_ShowGetNetworkLogo(ApiCall):
         # optional
         # super, missing, help
         super(CMD_ShowGetNetworkLogo, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.getnetworklogo"] = self.__class__
 
     def run(self):
         """
@@ -2418,6 +2404,7 @@ class CMD_ShowGetNetworkLogo(ApiCall):
 
 
 class CMD_ShowGetFanArt(ApiCall):
+    _cmd = "show.getfanart"
     _help = {
         "desc": "Get the fan art of a show",
         "requiredParameters": {
@@ -2434,7 +2421,6 @@ class CMD_ShowGetFanArt(ApiCall):
         # optional
         # super, missing, help
         super(CMD_ShowGetFanArt, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.getfanart"] = self.__class__
 
     def run(self):
         """ Get the fan art of a show """
@@ -2445,6 +2431,7 @@ class CMD_ShowGetFanArt(ApiCall):
 
 
 class CMD_ShowPause(ApiCall):
+    _cmd = "show.pause"
     _help = {
         "desc": "Pause or unpause a show",
         "requiredParameters": {
@@ -2463,7 +2450,6 @@ class CMD_ShowPause(ApiCall):
         self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
         # super, missing, help
         super(CMD_ShowPause, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.pause"] = self.__class__
 
     def run(self):
         """ Pause or unpause a show """
@@ -2476,6 +2462,7 @@ class CMD_ShowPause(ApiCall):
 
 
 class CMD_ShowRefresh(ApiCall):
+    _cmd = "show.refresh"
     _help = {
         "desc": "Refresh a show in SiCKRAGE",
         "requiredParameters": {
@@ -2492,7 +2479,6 @@ class CMD_ShowRefresh(ApiCall):
         # optional
         # super, missing, help
         super(CMD_ShowRefresh, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.refresh"] = self.__class__
 
     def run(self):
         """ Refresh a show in SiCKRAGE """
@@ -2505,6 +2491,7 @@ class CMD_ShowRefresh(ApiCall):
 
 
 class CMD_ShowSeasonList(ApiCall):
+    _cmd = "show.seasonlist"
     _help = {
         "desc": "Get the list of seasons of a show",
         "requiredParameters": {
@@ -2523,7 +2510,6 @@ class CMD_ShowSeasonList(ApiCall):
         self.sort, args = self.check_params("sort", "desc", False, "string", ["asc", "desc"], *args, **kwargs)
         # super, missing, help
         super(CMD_ShowSeasonList, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.seasonlist"] = self.__class__
 
     def run(self):
         """ Get the list of seasons of a show """
@@ -2547,6 +2533,7 @@ class CMD_ShowSeasonList(ApiCall):
 
 
 class CMD_ShowSeasons(ApiCall):
+    _cmd = "show.seasons"
     _help = {
         "desc": "Get the list of episodes for one or all seasons of a show",
         "requiredParameters": {
@@ -2565,7 +2552,6 @@ class CMD_ShowSeasons(ApiCall):
         self.season, args = self.check_params("season", None, False, "int", [], *args, **kwargs)
         # super, missing, help
         super(CMD_ShowSeasons, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.seasons"] = self.__class__
 
     def run(self):
         """ Get the list of episodes for one or all seasons of a show """
@@ -2623,6 +2609,7 @@ class CMD_ShowSeasons(ApiCall):
 
 
 class CMD_ShowSetQuality(ApiCall):
+    _cmd = "show.setquality"
     _help = {
         "desc": "Set the quality setting of a show. If no quality is provided, the default user setting is used.",
         "requiredParameters": {
@@ -2650,7 +2637,6 @@ class CMD_ShowSetQuality(ApiCall):
                                                 "hdbluray", "fullhdbluray"], *args, **kwargs)
         # super, missing, help
         super(CMD_ShowSetQuality, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.setquality"] = self.__class__
 
     def run(self):
         """ Set the quality setting of a show. If no quality is provided, the default user setting is used. """
@@ -2674,10 +2660,10 @@ class CMD_ShowSetQuality(ApiCall):
         iqualityID = []
         aqualityID = []
 
-        if self.initial:
+        if isinstance(self.initial, collections.Iterable):
             for quality in self.initial:
                 iqualityID.append(quality_map[quality])
-        if self.archive:
+        if isinstance(self.archive, collections.Iterable):
             for quality in self.archive:
                 aqualityID.append(quality_map[quality])
 
@@ -2690,6 +2676,7 @@ class CMD_ShowSetQuality(ApiCall):
 
 
 class CMD_ShowStats(ApiCall):
+    _cmd = "show.stats"
     _help = {
         "desc": "Get episode statistics for a given show",
         "requiredParameters": {
@@ -2706,7 +2693,6 @@ class CMD_ShowStats(ApiCall):
         # optional
         # super, missing, help
         super(CMD_ShowStats, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.stats"] = self.__class__
 
     def run(self):
         """ Get episode statistics for a given show """
@@ -2802,6 +2788,7 @@ class CMD_ShowStats(ApiCall):
 
 
 class CMD_ShowUpdate(ApiCall):
+    _cmd = "show.update"
     _help = {
         "desc": "Update a show in SiCKRAGE",
         "requiredParameters": {
@@ -2818,7 +2805,6 @@ class CMD_ShowUpdate(ApiCall):
         # optional
         # super, missing, help
         super(CMD_ShowUpdate, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["show.update"] = self.__class__
 
     def run(self):
         """ Update a show in SiCKRAGE """
@@ -2835,6 +2821,7 @@ class CMD_ShowUpdate(ApiCall):
 
 
 class CMD_Shows(ApiCall):
+    _cmd = "shows"
     _help = {
         "desc": "Get all shows in SiCKRAGE",
         "optionalParameters": {
@@ -2850,7 +2837,6 @@ class CMD_Shows(ApiCall):
         self.paused, args = self.check_params("paused", None, False, "bool", [], *args, **kwargs)
         # super, missing, help
         super(CMD_Shows, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["shows"] = self.__class__
 
     def run(self):
         """ Get all shows in SiCKRAGE """
@@ -2897,6 +2883,7 @@ class CMD_Shows(ApiCall):
 
 
 class CMD_ShowsStats(ApiCall):
+    _cmd = "shows.stats"
     _help = {"desc": "Get the global shows and episodes statistics"}
 
     def __init__(self, application, request, *args, **kwargs):
@@ -2904,7 +2891,6 @@ class CMD_ShowsStats(ApiCall):
         # optional
         # super, missing, help
         super(CMD_ShowsStats, self).__init__(application, request, *args, **kwargs)
-        self.api_calls["shows.stats"] = self.__class__
 
     def run(self):
         """ Get the global shows and episodes statistics """
