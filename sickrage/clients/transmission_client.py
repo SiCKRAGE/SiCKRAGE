@@ -93,7 +93,7 @@ class TransmissionAPI(GenericClient):
     def _set_torrent_ratio(self, result):
 
         ratio = None
-        if result.ratio:
+        if isinstance(result.ratio, (int, long)):
             ratio = result.ratio
 
         mode = 0
