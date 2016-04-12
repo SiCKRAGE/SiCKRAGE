@@ -186,7 +186,7 @@ class srVersionUpdater(object):
         :param force: if true the VERSION_NOTIFY setting will be ignored and a check will be forced
         """
 
-        if not self.updater and any([sickrage.srConfig.VERSION_NOTIFY, force]):
+        if not self.updater or not any([sickrage.srConfig.VERSION_NOTIFY, force]):
             return False
 
         if self.updater.need_update():
@@ -240,15 +240,14 @@ class srVersionUpdater(object):
         if self.updater:
             # check for updates
             if self.updater.need_update():
-                update_status = self.updater.update()
-                if update_status:
+                if self.updater.update():
                     # Clean up after update
                     toclean = os.path.join(sickrage.srConfig.CACHE_DIR, 'mako')
+
                     for root, dirs, files in os.walk(toclean, topdown=False):
-                        for name in files:
-                            os.remove(os.path.join(root, name))
-                        for name in dirs:
-                            os.rmdir(os.path.join(root, name))
+                        [os.remove(os.path.join(root, name)) for name in files]
+                        [os.rmdir(os.path.join(root, name)) for name in dirs]
+
                     return True
 
     @property
