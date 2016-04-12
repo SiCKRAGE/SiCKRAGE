@@ -252,11 +252,6 @@ class srVersionUpdater(object):
                     return True
 
     @property
-    def list_remote_branches(self):
-        if self.updater and self.updater.type == "git":
-            return self.updater.list_remote_branches
-
-    @property
     def get_version(self):
         if self.updater:
             return self.updater.version
@@ -276,6 +271,7 @@ class UpdateManager(object):
                 user_agent="SiCKRAGE")
         except:
             return github.Github(user_agent="SiCKRAGE")
+
 
 class GitUpdateManager(UpdateManager):
     def __init__(self):
@@ -425,22 +421,17 @@ class GitUpdateManager(UpdateManager):
         commit hash. If there is a newer version it sets _num_commits_behind.
         """
 
-        _num_commits_behind = 0
-        _num_commits_ahead = 0
-
         # update remote origin url
         self.update_remote_origin()
 
         # get all new info from github
-        output, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH,
-                                               'fetch %s' % sickrage.srConfig.GIT_REMOTE)
+        output, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'fetch ' + self.remote_url)
         if not exit_status == 0:
             sickrage.srLogger.warning("Unable to contact github, can't check for update")
             return
 
         # get latest commit_hash from remote
-        output, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH,
-                                               'rev-parse --verify --quiet "@{upstream}"')
+        output, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'rev-parse --verify --quiet "@{upstream}"')
 
         if exit_status == 0 and output:
             return output.strip()
@@ -487,12 +478,9 @@ class GitUpdateManager(UpdateManager):
             self.reset()
 
         if self.version == self._find_installed_version():
-            _, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH,
-                                              'pull -f %s %s' % (
-                                                  sickrage.srConfig.GIT_REMOTE, self.version))  # @UnusedVariable
+            _, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'pull -f origin ' + self.version)
         else:
-            _, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH,
-                                              'checkout -f ' + self.version)  # @UnusedVariable
+            _, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'checkout -f ' + self.version)
 
         if exit_status == 0:
             _, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'submodule update --init --recursive')
@@ -517,7 +505,7 @@ class GitUpdateManager(UpdateManager):
         Calls git clean to remove all untracked files. Returns a bool depending
         on the call's success.
         """
-        _, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'clean -df ""')  # @UnusedVariable
+        _, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'clean -df ""')
         if exit_status == 0:
             return True
 
@@ -526,31 +514,28 @@ class GitUpdateManager(UpdateManager):
         Calls git reset --hard to perform a hard reset. Returns a bool depending
         on the call's success.
         """
-        _, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'reset --hard')  # @UnusedVariable
+        _, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'reset --hard')
         if exit_status == 0:
             return True
 
     @property
-    def list_remote_branches(self):
+    def remote_branches(self):
         # update remote origin url
         self.update_remote_origin()
 
-        branches, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH,
-                                                 'ls-remote --heads %s' % sickrage.srConfig.GIT_REMOTE)  # @UnusedVariable
+        branches, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'ls-remote --heads origin')
         if exit_status == 0 and branches:
-            if branches:
-                return re.findall(r'refs/heads/(.*)', branches)
+            return re.findall(r'refs/heads/(.*)', branches)
         return []
 
     def update_remote_origin(self):
-        self._run_git(sickrage.srConfig.GIT_PATH, 'config remote.%s.url %s' % (
-            sickrage.srConfig.GIT_REMOTE, sickrage.srConfig.GIT_REMOTE_URL))
+        self._run_git(sickrage.srConfig.GIT_PATH, 'config remote.origin.url ' + self.remote_url)
 
-        if sickrage.srConfig.GIT_USERNAME:
-            self._run_git(sickrage.srConfig.GIT_PATH, 'config remote.%s.pushurl %s' % (
-                sickrage.srConfig.GIT_REMOTE,
-                sickrage.srConfig.GIT_REMOTE_URL.replace(sickrage.srConfig.GIT_ORG,
-                                                              sickrage.srConfig.GIT_USERNAME)))
+    @property
+    def remote_url(self):
+        url, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'config --get remote.origin.url')
+        if exit_status == 0 and url:
+            return url
 
 
 class SourceUpdateManager(UpdateManager):
@@ -580,8 +565,7 @@ class SourceUpdateManager(UpdateManager):
             return False
 
     def _check_for_new_version(self):
-        git_version_url = "https://raw.githubusercontent.com/{}/{}/master/sickrage/version.txt".format(
-            sickrage.srConfig.GIT_ORG, sickrage.srConfig.GIT_REPO)
+        git_version_url = "http://www.sickrage.ca/version.txt"
         git_version = srWebSession().get(git_version_url).text or self._find_installed_version()
         return git_version
 
@@ -607,7 +591,7 @@ class SourceUpdateManager(UpdateManager):
         Downloads the latest source tarball from github and installs it over the existing version.
         """
 
-        tar_download_url = 'http://github.com/' + sickrage.srConfig.GIT_ORG + '/' + sickrage.srConfig.GIT_REPO + '/tarball/' + self.version
+        tar_download_url = 'http://www.sickrage.ca/sr-update.tar'
 
         try:
             # prepare the update dir

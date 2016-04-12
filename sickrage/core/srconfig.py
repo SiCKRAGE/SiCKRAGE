@@ -83,12 +83,7 @@ class srConfig(object):
         self.VERSION_NOTIFY = False
         self.AUTO_UPDATE = False
         self.NOTIFY_ON_UPDATE = False
-        self.GIT_ORG = 'SiCKRAGETV'
-        self.GIT_REPO = 'SiCKRAGE'
-        self.GITHUB = None
         self.GIT_RESET = True
-        self.GIT_REMOTE = None
-        self.GIT_REMOTE_URL = None
         self.GIT_USERNAME = None
         self.GIT_PASSWORD = None
         self.GIT_PATH = None
@@ -930,19 +925,12 @@ class srConfig(object):
 
         self.DEFAULT_PAGE = self.check_setting_str('General', 'default_page', 'home')
 
-        # git settings
-        self.GIT_REMOTE_URL = self.check_setting_str(
-            'General', 'git_remote_url',
-            'https://github.com/{}/{}.git'.format(self.GIT_ORG, self.GIT_REPO)
-        )
-
         self.GIT_PATH = self.check_setting_str('General', 'git_path', '')
         self.GIT_AUTOISSUES = bool(self.check_setting_int('General', 'git_autoissues', 0))
         self.GIT_USERNAME = self.check_setting_str('General', 'git_username', '')
         self.GIT_PASSWORD = self.check_setting_str('General', 'git_password', '')
         self.GIT_NEWVER = bool(self.check_setting_int('General', 'git_newver', 0))
         self.GIT_RESET = bool(self.check_setting_int('General', 'git_reset', 1))
-        self.GIT_REMOTE = self.check_setting_str('General', 'git_remote', 'origin')
 
         # cache settings
         self.CACHE_DIR = self.check_setting_str('General', 'cache_dir', 'cache')
@@ -1202,8 +1190,7 @@ class srConfig(object):
             self.check_setting_int('Twitter', 'twitter_notify_onsubtitledownload', 0))
         self.TWITTER_USERNAME = self.check_setting_str('Twitter', 'twitter_username', '')
         self.TWITTER_PASSWORD = self.check_setting_str('Twitter', 'twitter_password', '')
-        self.TWITTER_PREFIX = self.check_setting_str('Twitter', 'twitter_prefix',
-                                                     self.GIT_REPO)
+        self.TWITTER_PREFIX = self.check_setting_str('Twitter', 'twitter_prefix', 'SiCKRAGE')
         self.TWITTER_DMTO = self.check_setting_str('Twitter', 'twitter_dmto', '')
         self.TWITTER_USEDM = bool(self.check_setting_int('Twitter', 'twitter_usedm', 0))
 
@@ -1451,8 +1438,6 @@ class srConfig(object):
         new_config['General']['git_username'] = self.GIT_USERNAME
         new_config['General']['git_password'] = self.GIT_PASSWORD
         new_config['General']['git_reset'] = int(self.GIT_RESET)
-        new_config['General']['git_remote'] = self.GIT_REMOTE
-        new_config['General']['git_remote_url'] = self.GIT_REMOTE_URL
         new_config['General']['git_newver'] = int(self.GIT_NEWVER)
         new_config['General']['log_dir'] = os.path.abspath(
             os.path.join(sickrage.DATA_DIR, self.LOG_DIR or 'Logs'))

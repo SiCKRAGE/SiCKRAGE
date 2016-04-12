@@ -737,14 +737,16 @@
                                 <span class="component-title">Branch version:</span>
                                 <span class="component-desc">
                                     <select id="branchVersion" class="form-control form-control-inline input-sm pull-left">
-                                        <% gh_branch = sickrage.srCore.VERSIONUPDATER.list_remote_branches %>
+                                        <%
+                                            gh_branch = None
+                                            if sickrage.srCore.VERSIONUPDATER.updater.type == "git":
+                                                gh_branch = sickrage.srCore.VERSIONUPDATER.updater.remote_branches
+                                        %>
                                         % if gh_branch:
                                             % for cur_branch in gh_branch:
-                                                % if sickrage.srConfig.GIT_USERNAME and sickrage.srConfig.GIT_PASSWORD and sickrage.DEVELOPER == 1:
+                                                % if sickrage.DEVELOPER == 1:
                                                     <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSION == cur_branch]}>${cur_branch}</option>
-                                                % elif sickrage.srConfig.GIT_USERNAME and sickrage.srConfig.GIT_PASSWORD and cur_branch in ['master', 'develop']:
-                                                    <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSION == cur_branch]}>${cur_branch}</option>
-                                                % elif cur_branch == 'master':
+                                                % elif cur_branch in ['master', 'develop']:
                                                     <option value="${cur_branch}" ${('', 'selected="selected"')[sickrage.srCore.VERSION == cur_branch]}>${cur_branch}</option>
                                                 % endif
                                             % endfor
@@ -760,41 +762,6 @@
                                     % else:
                                        <div class="clear-left"><p>select branch to use (restart required)</p></div>
                                     % endif
-                                </span>
-                            </label>
-                        </div>
-
-                        <div class="field-pair">
-                            <label for="git_username">
-                                <span class="component-title">GitHub username</span>
-                                <span class="component-desc">
-                                    <input type="text" name="git_username" id="git_username"
-                                           value="${sickrage.srConfig.GIT_USERNAME}" class="form-control input-sm input300"
-                                           autocapitalize="off"/>
-                                    <div class="clear-left"><p>*** (REQUIRED FOR SUBMITTING ISSUES) ***</p></div>
-                                </span>
-                            </label>
-                        </div>
-
-                        <div class="field-pair">
-                            <label for="git_password">
-                                <span class="component-title">GitHub password</span>
-                                <span class="component-desc">
-                                    <input type="password" name="git_password" id="git_password"
-                                           value="${sickrage.srConfig.GIT_PASSWORD}" class="form-control input-sm input300"
-                                           autocapitalize="off"/>
-                                    <div class="clear-left"><p>*** (REQUIRED FOR SUBMITTING ISSUES) ***</p></div>
-                                </span>
-                            </label>
-                        </div>
-
-                        <div class="field-pair">
-                            <label for="git_remote">
-                                <span class="component-title">GitHub remote for branch</span>
-                                <span class="component-desc">
-                                    <input type="text" name="git_remote" id="git_remote" value="${sickrage.srConfig.GIT_REMOTE}"
-                                           class="form-control input-sm input300" autocapitalize="off"/>
-                                    <div class="clear-left"><p>default:origin. Access repo configured remotes (save then refresh browser)</p></div>
                                 </span>
                             </label>
                         </div>
