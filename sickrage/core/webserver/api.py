@@ -1250,7 +1250,8 @@ class CMD_Logs(ApiCall):
         try:
             if os.path.isfile(sickrage.srConfig.LOG_FILE):
                 data += list(reversed(re.findall("((?:^.+?{}.+?$))".format(""),
-                                                 "\n".join(next(readFileBuffered(sickrage.srConfig.LOG_FILE, reverse=True)).splitlines()),
+                                                 "\n".join(next(readFileBuffered(sickrage.srConfig.LOG_FILE,
+                                                                                 reverse=True)).splitlines()),
                                                  re.S + re.M + re.I)))
                 maxLines -= len(data)
                 if len(data) == maxLines:
