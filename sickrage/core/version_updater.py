@@ -202,14 +202,14 @@ class srVersionUpdater(object):
         force: ignored
         """
 
-        news = ''
 
         # Grab a copy of the news
-        sickrage.srLogger.debug('check_for_new_news: Checking server for latest news.')
+        news = ""
         try:
-            news = srWebSession().get(sickrage.srConfig.NEWS_URL).text
+            resp = srWebSession().get(sickrage.srConfig.NEWS_URL)
+            news = ("", resp.text)[resp.ok]
         except:
-            sickrage.srLogger.warning('check_for_new_news: Could not load news from repo.')
+            pass
 
         if news:
             dates = re.finditer(r'^####(\d{4}-\d{2}-\d{2})####$', news, re.M)
@@ -520,6 +520,7 @@ class GitUpdateManager(UpdateManager):
             return url
         return ""
 
+
 class SourceUpdateManager(UpdateManager):
     def __init__(self):
         self.type = "source"
@@ -548,7 +549,8 @@ class SourceUpdateManager(UpdateManager):
 
     def _check_for_new_version(self):
         git_version_url = "http://www.sickrage.ca/version.txt"
-        git_version = srWebSession().get(git_version_url).text or self._find_installed_version()
+        resp = srWebSession().get(git_version_url)
+        git_version = (self._find_installed_version(), resp.text)[resp.ok]
         return git_version
 
     def set_newest_text(self):
