@@ -738,6 +738,10 @@
                         </div>
 
                         % if sickrage.srCore.VERSIONUPDATER.updater.type == "git":
+                        <%
+                            git_branch = sickrage.srCore.VERSIONUPDATER.updater.remote_branches
+                        %>
+
                             <div class="component-group">
 
                                 <div class="component-group-desc">
@@ -751,9 +755,6 @@
                                 <span class="component-desc">
                                     <select id="branchVersion"
                                             class="form-control form-control-inline input-sm pull-left">
-                                        <%
-                                            git_branch = sickrage.srCore.VERSIONUPDATER.updater().remote_branches
-                                        %>
                                         % if git_branch:
                                             % for cur_branch in git_branch:
                                                 % if sickrage.DEVELOPER == 1:
