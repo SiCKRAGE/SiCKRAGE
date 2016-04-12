@@ -294,10 +294,9 @@ class GitUpdateManager(UpdateManager):
     def _find_working_git(self):
         test_cmd = 'version'
 
+        main_git = 'git'
         if sickrage.srConfig.GIT_PATH:
             main_git = '"' + sickrage.srConfig.GIT_PATH + '"'
-        else:
-            main_git = 'git'
 
         sickrage.srLogger.debug("Checking if we can use git commands: " + main_git + ' ' + test_cmd)
         _, _, exit_status = self._run_git(main_git, test_cmd)
@@ -309,8 +308,6 @@ class GitUpdateManager(UpdateManager):
             sickrage.srLogger.debug("Not using: " + main_git)
 
         # trying alternatives
-
-
         alternative_git = []
 
         # osx people who start sr from launchd have a broken path, so try a hail-mary attempt for them
@@ -421,9 +418,6 @@ class GitUpdateManager(UpdateManager):
         commit hash. If there is a newer version it sets _num_commits_behind.
         """
 
-        # update remote origin url
-        self.update_remote_origin()
-
         # get all new info from server
         output, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'fetch ' + self.remote_url)
         if not exit_status == 0:
@@ -468,9 +462,6 @@ class GitUpdateManager(UpdateManager):
         Calls git pull origin <branch> in order to update SiCKRAGE. Returns a bool depending
         on the call's success.
         """
-
-        # update remote origin url
-        self.update_remote_origin()
 
         # remove untracked files and performs a hard reset on git branch to avoid update issues
         if sickrage.srConfig.GIT_RESET:
@@ -520,23 +511,17 @@ class GitUpdateManager(UpdateManager):
 
     @property
     def remote_branches(self):
-        # update remote origin url
-        self.update_remote_origin()
-
         branches, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'ls-remote --heads origin')
         if exit_status == 0 and branches:
             return re.findall(r'refs/heads/(.*)', branches)
         return []
-
-    def update_remote_origin(self):
-        self._run_git(sickrage.srConfig.GIT_PATH, 'config remote.origin.url ' + self.remote_url)
 
     @property
     def remote_url(self):
         url, _, exit_status = self._run_git(sickrage.srConfig.GIT_PATH, 'config --get remote.origin.url')
         if exit_status == 0 and url:
             return url
-
+        return ""
 
 class SourceUpdateManager(UpdateManager):
     def __init__(self):

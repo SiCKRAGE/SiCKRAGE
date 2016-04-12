@@ -925,7 +925,7 @@ class srConfig(object):
 
         self.DEFAULT_PAGE = self.check_setting_str('General', 'default_page', 'home')
 
-        self.GIT_PATH = self.check_setting_str('General', 'git_path', '')
+        self.GIT_PATH = self.check_setting_str('General', 'git_path', 'git')
         self.GIT_AUTOISSUES = bool(self.check_setting_int('General', 'git_autoissues', 0))
         self.GIT_USERNAME = self.check_setting_str('General', 'git_username', '')
         self.GIT_PASSWORD = self.check_setting_str('General', 'git_password', '')
