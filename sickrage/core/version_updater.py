@@ -195,7 +195,7 @@ class srVersionUpdater(object):
 
     def check_for_new_news(self, force=False):
         """
-        Checks GitHub for the latest news.
+        Checks server for the latest news.
 
         returns: unicode, a copy of the news
 
