@@ -204,12 +204,11 @@ class srVersionUpdater(object):
 
 
         # Grab a copy of the news
-        news = ""
         try:
             resp = srWebSession().get(sickrage.srConfig.NEWS_URL)
             news = ("", resp.text)[resp.ok]
         except:
-            pass
+            news = ""
 
         if news:
             dates = re.finditer(r'^####(\d{4}-\d{2}-\d{2})####$', news, re.M)
