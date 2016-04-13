@@ -19,6 +19,7 @@ import stat
 import tempfile
 import time
 import traceback
+import urllib2
 import urlparse
 import uuid
 import zipfile
@@ -40,6 +41,21 @@ mediaExtensions = [
 
 subtitleExtensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
 
+def get_remote_md5_sum(url, max_file_size=100*1024*1024):
+    remote = urllib2.urlopen(url)
+    hash = hashlib.md5()
+
+    total_read = 0
+    while True:
+        data = remote.read(4096)
+        total_read += 4096
+
+        if not data or total_read > max_file_size:
+            break
+
+        hash.update(data)
+
+    return hash.hexdigest()
 
 def safe_getattr(object, name, default=None):
     try:
