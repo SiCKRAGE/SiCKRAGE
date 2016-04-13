@@ -1,2 +1,4 @@
 include README.txt
 recursive-include sickrage *
+exclude sickrage/core/webserver/gui/default/css/core.css
+exclude sickrage/core/webserver/gui/default/js/core.js
