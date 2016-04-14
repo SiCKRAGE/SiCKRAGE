@@ -299,11 +299,12 @@ class GenericProvider:
             logger.log(u"Torrent Generic providers doesn't have _get_size() implemented yet", logger.DEBUG)
             return -1
         else:
-            size = item.get('links')[1].get('length')
-            if size:
-                size = int(size)
-                return size
-            else:
+            try:
+                size = item.get('links')[1].get('length')
+                if size:
+                    size = int(size)
+                    return size
+            except:
                 logger.log(u"Size was not found in your provider response", logger.DEBUG)
                 return -1
 
