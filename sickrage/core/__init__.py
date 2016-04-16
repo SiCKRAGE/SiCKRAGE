@@ -53,6 +53,7 @@ from sickrage.core.tv.show import TVShow
 from sickrage.core.updaters.show_updater import srShowUpdater
 from sickrage.core.updaters.tz_updater import update_network_dict
 from sickrage.core.version_updater import srVersionUpdater
+from sickrage.core.webclient.session import srFuturesSession
 from sickrage.core.webserver import srWebServer
 from sickrage.indexers import adba
 from sickrage.metadata import get_metadata_generator_dict, kodi, kodi_12plus, \
@@ -139,8 +140,11 @@ class Core(object):
         # init scheduler
         sickrage.srScheduler = srScheduler()
 
-        # init webserver
+        # init web server
         sickrage.srWebServer = srWebServer()
+
+        # init web client session
+        sickrage.srWebSession = srFuturesSession()
 
         # sickrage version
         self.VERSION = None

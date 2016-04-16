@@ -66,11 +66,11 @@ class MoreThanTVProvider(TorrentProvider):
         return True
 
     def _doLogin(self):
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies).values()):
             return True
 
         if self._uid and self._hash:
-            requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
+            requests.utils.add_dict_to_cookiejar(sickrage.srWebSession.cookies, self.cookies)
         else:
             login_params = {'username': self.username,
                             'password': self.password,
@@ -78,7 +78,7 @@ class MoreThanTVProvider(TorrentProvider):
                             'keeplogged': '1'}
 
             try:
-                response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
+                response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
             except Exception:
                 sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
@@ -111,7 +111,7 @@ class MoreThanTVProvider(TorrentProvider):
 
                 # returns top 15 results by default, expandable in user profile to 100
                 try:
-                    data = self.session.get(searchURL).text
+                    data = sickrage.srWebSession.get(searchURL).text
                 except Exception:
                     continue
 

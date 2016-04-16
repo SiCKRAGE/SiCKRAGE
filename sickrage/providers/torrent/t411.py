@@ -67,7 +67,7 @@ class T411Provider(TorrentProvider):
                         'password': self.password}
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30).json()
+            response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30, auth=T411Auth(self.token)).json()
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -76,7 +76,6 @@ class T411Provider(TorrentProvider):
             self.token = response['token']
             self.tokenLastUpdate = time.time()
             self.uid = response['uid'].encode('ascii', 'ignore')
-            self.session.auth = T411Auth(self.token)
             return True
         else:
             sickrage.srLogger.warning("Token not found in authentication response")
@@ -104,7 +103,7 @@ class T411Provider(TorrentProvider):
                     sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                     try:
-                        data = self.session.get(searchURL).json()
+                        data = sickrage.srWebSession.get(searchURL, auth=T411Auth(self.token)).json()
                     except Exception:
                         continue
 

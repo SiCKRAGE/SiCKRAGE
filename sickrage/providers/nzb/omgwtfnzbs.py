@@ -115,7 +115,7 @@ class OmgwtfnzbsProvider(NZBProvider):
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
         try:
-            parsedJSON = self.session.get(searchURL).json()
+            parsedJSON = sickrage.srWebSession.get(searchURL).json()
         except Exception:
             return []
 

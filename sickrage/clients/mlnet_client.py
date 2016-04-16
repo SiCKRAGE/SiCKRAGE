@@ -20,6 +20,7 @@
 
 from __future__ import unicode_literals
 
+import sickrage
 from sickrage.clients import GenericClient
 
 
@@ -29,12 +30,11 @@ class mlnetAPI(GenericClient):
         super(mlnetAPI, self).__init__('mlnet', host, username, password)
 
         self.url = self.host
-        # self.session.auth = HTTPDigestAuth(self.username, self.password);
 
     def _get_auth(self):
 
         try:
-            self.response = self.session.get(self.host, verify=False)
+            self.response = sickrage.srWebSession.get(self.host, verify=False)
             self.auth = self.response.content
         except Exception:
             return None

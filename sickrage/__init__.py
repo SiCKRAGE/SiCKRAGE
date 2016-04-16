@@ -36,6 +36,7 @@ __all__ = [
     'srConfig',
     'srScheduler',
     'srWebServer',
+    'srWebSession',
     'PROG_DIR',
     'DATA_DIR',
     'DEVELOPER',
@@ -49,6 +50,7 @@ srLogger = None
 srConfig = None
 srScheduler = None
 srWebServer = None
+srWebSession = None
 
 PROG_DIR = os.path.abspath(os.path.dirname(__file__))
 DATA_DIR = os.path.abspath(os.path.join(os.path.expanduser("~"), '.sickrage'))
@@ -195,6 +197,8 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
         sys.stderr.write("Fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
         sys.exit(1)
 
+    print("Daemonized successfully, pid %s" % os.getpid())
+
     if sys.platform != 'darwin':
         # Redirect standard file descriptors
         sys.stdout.flush()
@@ -210,7 +214,6 @@ def daemonize(pidfile, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'
     import atexit
     atexit.register(lambda: delpid(pidfile))
     io.open(pidfile, 'w+').write("%s\n" % str(os.getpid()))
-
 
 def delpid(pidfile):
     # Removes the PID file
@@ -327,7 +330,6 @@ def main():
         # daemonize if requested
         DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
         if DAEMONIZE:
-            print("!!! DAEMON MODE ENABLED !!!")
             NOLAUNCH = False
             QUITE = False
             daemonize(PIDFILE)

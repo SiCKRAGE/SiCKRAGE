@@ -26,7 +26,6 @@ from hashlib import sha1
 from bencode import BTFailure, bdecode, bencode
 
 import sickrage
-from sickrage.core.srwebsession import srWebSession
 
 __all__ = [
     'utorrent',
@@ -165,8 +164,6 @@ class GenericClient(object):
         self.response = None
         self.auth = None
         self.last_time = time.time()
-        self.session = srWebSession()
-        self.session.auth = (self.username, self.password)
 
     def _request(self, method='get', *args, **kwargs):
 
@@ -186,7 +183,12 @@ class GenericClient(object):
             return False
 
         try:
-            self.response = self.session.request(method.upper(), self.url, timeout=120, *args, **kwargs)
+            self.response = sickrage.srWebSession.request(method.upper(),
+                                                 self.url,
+                                                 auth=(self.username, self.password),
+                                                 timeout=120,
+                                                 *args,
+                                                 **kwargs)
             sickrage.srLogger.debug(self.name + ': Response to ' + method.upper() + ' request is ' + self.response.text)
         except Exception:
             return False
@@ -335,7 +337,7 @@ class GenericClient(object):
 
     def testAuthentication(self):
         try:
-            self.response = self.session.get(self.url, timeout=120, verify=False)
+            self.response = sickrage.srWebSession.get(self.url, timeout=120, verify=False)
 
             self._get_auth()
             if self.auth:

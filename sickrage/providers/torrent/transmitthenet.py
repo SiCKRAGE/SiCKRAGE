@@ -64,7 +64,7 @@ class TransmitTheNetProvider(TorrentProvider):
         }
 
         try:
-            response = self.session.post(self.urls['base_url'], params={'page': 'login'}, data=login_params, timeout=30).text
+            response = sickrage.srWebSession.post(self.urls['base_url'], params={'page': 'login'}, data=login_params, timeout=30).text
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -93,7 +93,7 @@ class TransmitTheNetProvider(TorrentProvider):
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = self.session.get(searchURL).text
+                    data = sickrage.srWebSession.get(searchURL).text
                 except Exception:
                     sickrage.srLogger.debug("No data returned from provider")
                     continue

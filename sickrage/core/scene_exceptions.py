@@ -29,7 +29,6 @@ import time
 import sickrage
 from sickrage.core.databases import cache_db
 from sickrage.core.helpers import full_sanitizeSceneName, sanitizeSceneName
-from sickrage.core.srwebsession import srWebSession
 from sickrage.indexers import srIndexerApi
 from sickrage.indexers.adba.aniDBAbstracter import Anime
 
@@ -87,7 +86,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
             try:
                 # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
                 cur_line = None
-                for cur_line in srWebSession().get(loc).splitlines():
+                for cur_line in sickrage.srWebSession.get(loc).splitlines():
                     indexer_id, _, aliases = cur_line.partition(':')  # @UnusedVariable
                     if not aliases:
                         continue
@@ -299,7 +298,7 @@ def _xem_exceptions_fetcher():
             url = "http://thexem.de/map/allNames?origin=%s&seasonNumbers=1" % srIndexerApi(indexer).config[
                 'xem_origin']
 
-            parsedJSON = srWebSession().get(url, timeout=90).json()
+            parsedJSON = sickrage.srWebSession.get(url, timeout=90).json()
             if not parsedJSON:
                 sickrage.srLogger.debug("Check scene exceptions update failed for " + srIndexerApi(
                     indexer).name + ", Unable to get URL: " + url)

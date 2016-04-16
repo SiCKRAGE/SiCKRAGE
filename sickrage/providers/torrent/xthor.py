@@ -50,7 +50,7 @@ class XthorProvider(TorrentProvider):
         self.ratio = None
 
     def _doLogin(self):
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -58,7 +58,7 @@ class XthorProvider(TorrentProvider):
                         'submitme': 'X'}
 
         try:
-            response = self.session.post(self.urls['base_url'] + '/takelogin.php', data=login_params, timeout=30).text
+            response = sickrage.srWebSession.post(self.urls['base_url'] + '/takelogin.php', data=login_params, timeout=30).text
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -89,7 +89,7 @@ class XthorProvider(TorrentProvider):
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = self.session.get(searchURL).text
+                    data = sickrage.srWebSession.get(searchURL).text
                 except Exception:
                     continue
 

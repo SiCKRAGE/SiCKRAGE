@@ -28,7 +28,6 @@ import sys
 import time
 
 import sickrage
-from sickrage.core.srwebsession import srWebSession
 
 sickragePath = os.path.split(os.path.split(sys.argv[0])[0])[0]
 sys.path.append(sickragePath)
@@ -218,7 +217,7 @@ def main():
     print ("Opening URL: " + url + ' with params=' + str(params))
 
     try:
-        response = srWebSession().get(url, auth=(username, password), params=params, verify=False)
+        response = sickrage.srWebSession.get(url, auth=(username, password), params=params, verify=False)
     except Exception as e:
         scriptlogger.error(': Unknown exception raised when opening url: ' + str(e))
         time.sleep(3)

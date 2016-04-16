@@ -55,7 +55,7 @@ class BTDIGGProvider(TorrentProvider):
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    jdata = self.session.get(searchURL).json()
+                    jdata = sickrage.srWebSession.get(searchURL).json()
                 except Exception:
                     sickrage.srLogger.info("No data returned to be parsed!!!")
                     return []

@@ -58,7 +58,7 @@ class SpeedCDProvider(TorrentProvider):
                         'password': self.password}
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -90,7 +90,7 @@ class SpeedCDProvider(TorrentProvider):
                                  **self.categories[mode])
 
                 try:
-                    parsedJSON = self.session.post(self.urls['search'], data=post_data).json()
+                    parsedJSON = sickrage.srWebSession.post(self.urls['search'], data=post_data).json()
                     torrents = parsedJSON['Fs'][0]['Cn']['torrents']
                 except Exception:
                     continue

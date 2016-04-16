@@ -31,7 +31,6 @@ import requests
 import xmltodict
 
 import sickrage
-from sickrage.core.srwebsession import srWebSession
 
 try:
     import gzip
@@ -503,16 +502,16 @@ class Tvdb:
 
         try:
             if refresh and self.config['apitoken']:
-                jwtResp.update(**srWebSession().post(self.config['api'][self.config['apiver']]['refresh'],
-                                                     headers={'Content-type': 'application/json'},
-                                                     timeout=timeout
-                                                     ).json())
+                jwtResp.update(**sickrage.srWebSession.post(self.config['api'][self.config['apiver']]['refresh'],
+                                                            headers={'Content-type': 'application/json'},
+                                                            timeout=timeout
+                                                            ).json())
             elif not self.config['apitoken']:
-                jwtResp.update(**srWebSession().post(self.config['api'][self.config['apiver']]['login'],
-                                                     json={'apikey': self.config['apikey']},
-                                                     headers={'Content-type': 'application/json'},
-                                                     timeout=timeout
-                                                     ).json())
+                jwtResp.update(**sickrage.srWebSession.post(self.config['api'][self.config['apiver']]['login'],
+                                                            json={'apikey': self.config['apikey']},
+                                                            headers={'Content-type': 'application/json'},
+                                                            timeout=timeout
+                                                            ).json())
 
             self.config['apitoken'] = jwtResp['token']
             self.config['headers']['authorization'] = 'Bearer {}'.format(jwtResp['token'])
@@ -535,10 +534,11 @@ class Tvdb:
             sickrage.srLogger.debug("Retrieving URL {}".format(url))
 
             # get response from theTVDB
-            resp = srWebSession(self.config['cache_enabled']).get(url,
-                                      headers=self.config['headers'],
-                                      params=params,
-                                      timeout=sickrage.srConfig.INDEXER_TIMEOUT)
+            resp = sickrage.srWebSession.get(url,
+                                             cache=self.config['cache_enabled'],
+                                             headers=self.config['headers'],
+                                             params=params,
+                                             timeout=sickrage.srConfig.INDEXER_TIMEOUT)
 
             resp.raise_for_status()
         except requests.exceptions.HTTPError as e:

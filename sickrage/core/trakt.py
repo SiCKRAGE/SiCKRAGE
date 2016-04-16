@@ -27,12 +27,12 @@ import time
 import requests
 
 import sickrage
-from sickrage.core.srwebsession import srWebSession
+
 
 
 class TraktAPI():
     def __init__(self, ssl_verify=True, timeout=30):
-        self.session = srWebSession()
+        self.session = sickrage.srWebSession
         self.timeout = timeout if timeout else None
         self.auth_url = sickrage.srConfig.TRAKT_OAUTH_URL
         self.api_url = sickrage.srConfig.TRAKT_API_URL

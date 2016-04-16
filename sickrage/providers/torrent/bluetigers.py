@@ -57,7 +57,7 @@ class BLUETIGERSProvider(TorrentProvider):
         }
 
     def _doLogin(self):
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies).values()):
             return True
 
         login_params = {
@@ -67,7 +67,7 @@ class BLUETIGERSProvider(TorrentProvider):
         }
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -97,7 +97,7 @@ class BLUETIGERSProvider(TorrentProvider):
                 self.search_params['search'] = search_string
 
                 try:
-                    data = self.session.get(self.urls['search'], params=self.search_params).text
+                    data = sickrage.srWebSession.get(self.urls['search'], params=self.search_params).text
                 except Exception:
                     continue
 

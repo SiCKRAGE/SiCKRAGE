@@ -26,7 +26,7 @@ import re
 
 import sickrage
 from sickrage.core.helpers import bs4_parser
-from sickrage.core.srwebsession import srWebSession
+
 
 
 class imdbPopular(object):
@@ -43,7 +43,7 @@ class imdbPopular(object):
             'year': '%s,%s' % (datetime.date.today().year - 1, datetime.date.today().year + 1)
         }
 
-        self.session = srWebSession()
+        self.session = sickrage.srWebSession
 
     def fetch_popular_shows(self):
         """Get popular show information from IMDB"""

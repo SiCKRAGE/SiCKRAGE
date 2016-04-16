@@ -6,7 +6,7 @@ backports-abc
 backports.ssl-match-hostname
 beautifulsoup4
 bencode
-CacheControl
+cachecontrol[filecache]
 certifi
 chardet
 click
@@ -33,7 +33,6 @@ idna
 ipaddress
 imdbpie
 jsonrpclib
-lockfile
 Mako
 markdown2
 MarkupSafe
@@ -63,6 +62,7 @@ six
 SQLAlchemy
 sqlalchemy-migrate
 SQLObject
+sqlite-cache
 sqlparse
 stevedore
 subliminal

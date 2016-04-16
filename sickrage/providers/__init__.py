@@ -51,7 +51,7 @@ from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
-from sickrage.core.srwebsession import srWebSession
+
 
 
 class GenericProvider(object):
@@ -68,7 +68,6 @@ class GenericProvider(object):
         self.enable_daily = False
         self.enable_backlog = False
         self.cache = TVCache(self)
-        self.session = srWebSession()
         self.proper_strings = ['PROPER|REPACK|REAL']
         self.private = False
 
@@ -168,7 +167,7 @@ class GenericProvider(object):
             if url.endswith('torrent') and filename.endswith('nzb'):
                 filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
 
-            if self.session.download(url, filename, headers=(None, {'Referer': '/'.join(url.split('/')[:3]) + '/'})[
+            if sickrage.srWebSession.download(url, filename, headers=(None, {'Referer': '/'.join(url.split('/')[:3]) + '/'})[
                 url.startswith('http')]):
 
                 if self._verify_download(filename):
@@ -772,10 +771,10 @@ class TorrentRssProvider(TorrentProvider):
                 return True, 'RSS feed Parsed correctly'
             else:
                 if self.cookies:
-                    requests.utils.add_dict_to_cookiejar(self.session.cookies,
+                    requests.utils.add_dict_to_cookiejar(sickrage.srWebSession.cookies,
                                                          dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
 
-                torrent_file = self.session.get(url)
+                torrent_file = sickrage.srWebSession.get(url)
 
                 try:
                     bencode.bdecode(torrent_file)
@@ -860,7 +859,7 @@ class NewznabProvider(NZBProvider):
             params['apikey'] = self.key
 
         try:
-            data = xmltodict.parse(self.session.get(
+            data = xmltodict.parse(sickrage.srWebSession.get(
                 "{}api?{}".format(self.urls['base_url'], params=urllib.urlencode(params))))
 
             for category in data["caps"]["categories"]["category"]:

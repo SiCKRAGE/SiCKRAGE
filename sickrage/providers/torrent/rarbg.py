@@ -75,7 +75,7 @@ class RarbgProvider(TorrentProvider):
             return True
 
         try:
-            response = self.session.get(self.urls['token'], timeout=30).json()
+            response = sickrage.srWebSession.get(self.urls['token'], timeout=30).json()
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -153,7 +153,7 @@ class RarbgProvider(TorrentProvider):
                         self.next_request = datetime.datetime.now() + datetime.timedelta(seconds=10)
 
                         try:
-                            data = self.session.get(searchURL + self.urlOptions['token'].format(token=self.token)).content
+                            data = sickrage.srWebSession.get(searchURL + self.urlOptions['token'].format(token=self.token)).content
                         except Exception:
                             sickrage.srLogger.debug("No data returned from provider")
                             raise StopIteration

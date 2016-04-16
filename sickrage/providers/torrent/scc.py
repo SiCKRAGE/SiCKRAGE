@@ -61,7 +61,7 @@ class SCCProvider(TorrentProvider):
                         'submit': 'come on in'}
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -98,7 +98,7 @@ class SCCProvider(TorrentProvider):
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = self.session.get(searchURL).text
+                    data = sickrage.srWebSession.get(searchURL).text
                 except Exception:
                     continue
 
@@ -119,7 +119,7 @@ class SCCProvider(TorrentProvider):
 
                             title = link.string
                             if re.search(r'\.\.\.', title):
-                                data = self.session.get(self.urls['base_url'] + "/" + link['href']).text
+                                data = sickrage.srWebSession.get(self.urls['base_url'] + "/" + link['href']).text
                                 with bs4_parser(data) as details_html:
                                     title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
                             download_url = self.urls['download'] % url['href']

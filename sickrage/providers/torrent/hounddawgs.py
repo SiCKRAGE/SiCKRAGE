@@ -70,7 +70,7 @@ class HoundDawgsProvider(TorrentProvider):
                         'login': 'Login'}
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -101,7 +101,7 @@ class HoundDawgsProvider(TorrentProvider):
                 self.search_params['searchstr'] = search_string
 
                 try:
-                    data = self.session.get(self.urls['search'], params=self.search_params).text
+                    data = sickrage.srWebSession.get(self.urls['search'], params=self.search_params).text
                 except Exception:
                     continue
 

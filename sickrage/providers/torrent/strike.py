@@ -49,7 +49,7 @@ class STRIKEProvider(TorrentProvider):
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    jdata = self.session.get(searchURL).json()
+                    jdata = sickrage.srWebSession.get(searchURL).json()
                 except Exception:
                     sickrage.srLogger.debug("No data returned from provider")
                     return []

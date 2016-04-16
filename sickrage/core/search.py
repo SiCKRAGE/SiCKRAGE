@@ -36,7 +36,6 @@ from sickrage.core.databases import main_db
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names, chmodAsParent
 from sickrage.core.nzbSplitter import splitNZBResult
-from sickrage.core.srwebsession import srWebSession
 from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.core.ui import notifications
 from sickrage.notifiers import srNotifiers
@@ -133,7 +132,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
             dlResult = _downloadResult(result)
         else:
             if not result.content and not result.url.startswith('magnet'):
-                result.content = srWebSession().get(result.url, needBytes=True)
+                result.content = sickrage.srWebSession.get(result.url, needBytes=True)
 
             if result.content or result.url.startswith('magnet'):
                 client = getClientIstance(sickrage.srConfig.TORRENT_METHOD)()
@@ -382,7 +381,6 @@ def searchForNeededEpisodes():
 
     # perform provider searchers
     def perform_searches():
-        didSearch = False
         for providerID, providerObj in sickrage.srCore.providersDict.sort(
                 randomize=sickrage.srConfig.RANDOMIZE_PROVIDERS).items():
             if not providerObj.isEnabled:
@@ -401,8 +399,6 @@ def searchForNeededEpisodes():
                     "Error while searching " + providerObj.name + ", skipping: {}".format(e.message))
                 sickrage.srLogger.debug(traceback.format_exc())
                 return
-
-            didSearch = True
 
             # pick a single result for each episode, respecting existing results
             for curEp in curFoundResults:

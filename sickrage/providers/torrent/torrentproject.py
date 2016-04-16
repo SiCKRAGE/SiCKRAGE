@@ -55,7 +55,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
                 sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    torrents = self.session.get(searchURL).json()
+                    torrents = sickrage.srWebSession.get(searchURL).json()
                     if not ("total_found" in torrents and int(torrents["total_found"]) > 0):
                         continue
                     del torrents["total_found"]
@@ -82,7 +82,7 @@ class TORRENTPROJECTProvider(TorrentProvider):
                         assert mode is not 'RSS'
                         sickrage.srLogger.debug("Torrent has less than 10 seeds getting dyn trackers: " + title)
                         trackerUrl = self.urls['base_url'] + "" + t_hash + "/trackers_json"
-                        jdata = self.session.get(trackerUrl).json()
+                        jdata = sickrage.srWebSession.get(trackerUrl).json()
                         assert jdata is not "maintenance"
                         download_url = "magnet:?xt=urn:btih:" + t_hash + "&dn=" + title + "".join(
                             ["&tr=" + s for s in jdata])

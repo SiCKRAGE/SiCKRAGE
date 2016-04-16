@@ -79,7 +79,7 @@ class KATProvider(TorrentProvider):
                     sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
                     try:
-                        data = self.session.get(searchURL).text
+                        data = sickrage.srWebSession.get(searchURL).text
                     except Exception:
                         sickrage.srLogger.debug("No data returned from provider")
                         continue

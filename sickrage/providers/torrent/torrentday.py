@@ -60,11 +60,11 @@ class TorrentDayProvider(TorrentProvider):
 
     def _doLogin(self):
 
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies).values()):
             return True
 
         if self._uid and self._hash:
-            requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
+            requests.utils.add_dict_to_cookiejar(sickrage.srWebSession.cookies, self.cookies)
         else:
 
             login_params = {'username': self.username,
@@ -73,7 +73,7 @@ class TorrentDayProvider(TorrentProvider):
                             'submit.y': 0}
 
             try:
-                response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
+                response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
             except Exception:
                 sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
@@ -83,8 +83,8 @@ class TorrentDayProvider(TorrentProvider):
                 return False
 
             try:
-                    self._uid = requests.utils.dict_from_cookiejar(self.session.cookies)['uid']
-                    self._hash = requests.utils.dict_from_cookiejar(self.session.cookies)['pass']
+                    self._uid = requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies)['uid']
+                    self._hash = requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies)['pass']
                     self.cookies = {'uid': self._uid, 'pass': self._hash}
                     return True
             except Exception:
@@ -117,7 +117,7 @@ class TorrentDayProvider(TorrentProvider):
                     post_data.update({'free': 'on'})
 
                 try:
-                    parsedJSON = self.session.post(self.urls['search'], data=post_data).json()
+                    parsedJSON = sickrage.srWebSession.post(self.urls['search'], data=post_data).json()
                     torrents = parsedJSON['Fs'][0]['Cn']['torrents']
                 except Exception:
                     sickrage.srLogger.debug("No data returned from provider")

@@ -71,7 +71,7 @@ class GFTrackerProvider(TorrentProvider):
 
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
             return False
@@ -81,7 +81,7 @@ class GFTrackerProvider(TorrentProvider):
             sickrage.srLogger.warning("[{}]: Invalid username or password. Check your settings".format(self.name))
             return False
 
-        requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
+        requests.utils.add_dict_to_cookiejar(sickrage.srWebSession.cookies, self.cookies)
 
         return True
 
@@ -107,7 +107,7 @@ class GFTrackerProvider(TorrentProvider):
                 # Returns top 30 results by default, expandable in user profile
 
                 try:
-                    data = self.session.get(searchURL, cookies=self.cookies).text
+                    data = sickrage.srWebSession.get(searchURL, cookies=self.cookies).text
                 except Exception:
                     continue
 

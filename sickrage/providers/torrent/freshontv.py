@@ -64,18 +64,18 @@ class FreshOnTVProvider(TorrentProvider):
         return True
 
     def _doLogin(self):
-        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies).values()):
             return True
 
         if self._uid and self._hash:
-            requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
+            requests.utils.add_dict_to_cookiejar(sickrage.srWebSession.cookies, self.cookies)
         else:
             login_params = {'username': self.username,
                             'password': self.password,
                             'login': 'submit'}
 
             try:
-                response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
+                response = sickrage.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
             except Exception:
                 sickrage.srLogger.warning("[{}]: Unable to connect to provider".format(self.name))
                 return False
@@ -83,10 +83,10 @@ class FreshOnTVProvider(TorrentProvider):
             if re.search('/logout.php', response):
 
                 try:
-                    if requests.utils.dict_from_cookiejar(self.session.cookies)['uid'] and \
-                            requests.utils.dict_from_cookiejar(self.session.cookies)['pass']:
-                        self._uid = requests.utils.dict_from_cookiejar(self.session.cookies)['uid']
-                        self._hash = requests.utils.dict_from_cookiejar(self.session.cookies)['pass']
+                    if requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies)['uid'] and \
+                            requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies)['pass']:
+                        self._uid = requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies)['uid']
+                        self._hash = requests.utils.dict_from_cookiejar(sickrage.srWebSession.cookies)['pass']
 
                         self.cookies = {'uid': self._uid,
                                         'pass': self._hash}
@@ -126,7 +126,7 @@ class FreshOnTVProvider(TorrentProvider):
                 max_page_number = 0
 
                 try:
-                    data = self.session.get(searchURL).text
+                    data = sickrage.srWebSession.get(searchURL).text
                 except Exception:
                     sickrage.srLogger.debug("No data returned from provider")
                     continue
@@ -168,7 +168,7 @@ class FreshOnTVProvider(TorrentProvider):
                         page_searchURL = searchURL + '&page=' + str(i)
 
                         try:
-                            page_html = self.session.get(page_searchURL).text
+                            page_html = sickrage.srWebSession.get(page_searchURL).text
                         except Exception:
                             continue
 

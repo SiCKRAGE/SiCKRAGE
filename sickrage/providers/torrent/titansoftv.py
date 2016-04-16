@@ -72,7 +72,7 @@ class TitansOfTVProvider(TorrentProvider):
         sickrage.srLogger.debug("Search URL: %s" % searchURL)
 
         try:
-            parsedJSON = self.session.get(searchURL, headers={'X-Authorization': self.api_key}).json()
+            parsedJSON = sickrage.srWebSession.get(searchURL, headers={'X-Authorization': self.api_key}).json()
         except Exception:
             sickrage.srLogger.debug("No data returned from provider")
             return results

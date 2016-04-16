@@ -70,7 +70,6 @@ from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
     get_scene_numbering_for_show, get_xem_absolute_numbering_for_show, \
     get_xem_numbering_for_show, set_scene_numbering, xem_refresh
 from sickrage.core.searchers import subtitle_searcher
-from sickrage.core.srwebsession import srWebSession
 from sickrage.core.trakt import TraktAPI, traktException
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import TVShow
@@ -2239,7 +2238,7 @@ class changelog(WebRoot):
 
     def index(self):
         try:
-            changes = srWebSession().get(sickrage.srConfig.CHANGES_URL)
+            changes = sickrage.srWebSession.get(sickrage.srConfig.CHANGES_URL)
         except Exception:
             sickrage.srLogger.debug('Could not load changes from repo, giving a link!')
             changes = 'Could not load changes from the repo. [Click here for CHANGES.md]({})'.format(

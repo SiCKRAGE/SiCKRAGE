@@ -26,7 +26,6 @@ import traceback
 import sickrage
 from sickrage.core.databases import main_db
 from sickrage.core.helpers import findCertainShow
-from sickrage.core.srwebsession import srWebSession
 from sickrage.indexers import srIndexerApi
 
 
@@ -448,7 +447,6 @@ def xem_refresh(indexer_id, indexer, force=False):
 
     indexer_id = int(indexer_id)
     indexer = int(indexer)
-    xem_session = srWebSession()
 
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
@@ -473,7 +471,7 @@ def xem_refresh(indexer_id, indexer, force=False):
         try:
             # XEM MAP URL
             url = "http://thexem.de/map/havemap?origin=%s" % srIndexerApi(indexer).config['xem_origin']
-            parsedJSON = xem_session.get(url).json()
+            parsedJSON = sickrage.srWebSession.get(url).json()
             if not parsedJSON or 'result' not in parsedJSON or 'success' not in parsedJSON['result'] \
                     or 'data' not in parsedJSON or str(indexer_id) not in parsedJSON['data']:
                 return
@@ -482,7 +480,7 @@ def xem_refresh(indexer_id, indexer, force=False):
             url = "http://thexem.de/map/all?id={}&origin={}&destination=scene".format(
                 indexer_id, srIndexerApi(indexer).config['xem_origin'])
 
-            parsedJSON = xem_session.get(url).json()
+            parsedJSON = sickrage.srWebSession.get(url).json()
             if not ((parsedJSON and 'result' in parsedJSON) and 'success' in parsedJSON['result']):
                 sickrage.srLogger.info(
                     'No XEM data for show "%s on %s"' % (indexer_id, srIndexerApi(indexer).name,))

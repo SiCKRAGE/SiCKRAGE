@@ -34,7 +34,6 @@ import github
 
 import sickrage
 from sickrage.core.helpers import backupAll, removetree
-from sickrage.core.srwebsession import srWebSession
 from sickrage.core.ui import notifications
 from sickrage.notifiers import srNotifiers
 
@@ -205,7 +204,7 @@ class srVersionUpdater(object):
 
         # Grab a copy of the news
         try:
-            resp = srWebSession().get(sickrage.srConfig.NEWS_URL)
+            resp = sickrage.srWebSession.get(sickrage.srConfig.NEWS_URL)
             news = ("", resp.text)[resp.ok]
         except:
             news = ""
@@ -548,7 +547,7 @@ class SourceUpdateManager(UpdateManager):
 
     def _check_for_new_version(self):
         git_version_url = "http://www.sickrage.ca/version.txt"
-        resp = srWebSession().get(git_version_url)
+        resp = sickrage.srWebSession.get(git_version_url)
         git_version = (self._find_installed_version(), resp.text)[resp.ok]
         return git_version
 
@@ -590,7 +589,7 @@ class SourceUpdateManager(UpdateManager):
             # retrieve file
             sickrage.srLogger.info("Downloading update from " + repr(tar_download_url))
             tar_download_path = os.path.join(sr_update_dir, 'sr-update.tar')
-            srWebSession().download(tar_download_url, tar_download_path)
+            sickrage.srWebSession.download(tar_download_url, tar_download_path)
 
             if not os.path.isfile(tar_download_path):
                 sickrage.srLogger.warning(

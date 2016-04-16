@@ -70,7 +70,7 @@ class TORRENTZProvider(TorrentProvider):
                 sickrage.srLogger.info(search_url)
 
                 try:
-                    data = self.session.get(search_url).text
+                    data = sickrage.srWebSession.get(search_url).text
                 except Exception:
                     sickrage.srLogger.info('Seems to be down right now!')
                     continue

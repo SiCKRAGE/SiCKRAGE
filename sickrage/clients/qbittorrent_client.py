@@ -1,5 +1,3 @@
-
-
 # Author: Mr_Orange <mr_orange@hotmail.it>
 # URL: http://github.com/SiCKRAGETV/SickRage/
 #
@@ -28,16 +26,13 @@ from sickrage.clients import GenericClient
 
 class qbittorrentAPI(GenericClient):
     def __init__(self, host=None, username=None, password=None):
-
         super(qbittorrentAPI, self).__init__('qbittorrent', host, username, password)
-
         self.url = self.host
-        self.session.auth = HTTPDigestAuth(self.username, self.password)
 
     def _get_auth(self):
 
         try:
-            self.response = self.session.get(self.host, verify=False)
+            self.response = sickrage.srWebSession.get(self.host, auth=HTTPDigestAuth(self.username, self.password), verify=False)
             self.auth = self.response.content
         except Exception:
             return None

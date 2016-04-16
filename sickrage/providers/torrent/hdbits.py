@@ -86,7 +86,7 @@ class HDBitsProvider(TorrentProvider):
         self._checkAuth()
 
         try:
-            parsedJSON = self.session.post(self.urls['search'], data=search_params).json()
+            parsedJSON = sickrage.srWebSession.post(self.urls['search'], data=search_params).json()
         except Exception:
             return []
 

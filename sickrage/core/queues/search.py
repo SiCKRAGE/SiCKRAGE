@@ -148,10 +148,7 @@ class DailySearchQueueItem(QueueItem):
         try:
             sickrage.srLogger.info("Beginning daily search for new episodes")
             foundResults = searchForNeededEpisodes()
-
-            if not len(foundResults):
-                sickrage.srLogger.info("No needed episodes found")
-            else:
+            if foundResults:
                 for result in foundResults:
                     # just use the first result for now
                     sickrage.srLogger.info("Downloading " + result.name + " from " + result.provider.name)
@@ -159,6 +156,8 @@ class DailySearchQueueItem(QueueItem):
 
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.srConfig.CPU_PRESET])
+            else:
+                sickrage.srLogger.info("No needed episodes found")
         except Exception:
             sickrage.srLogger.debug(traceback.format_exc())
 
@@ -179,10 +178,7 @@ class ManualSearchQueueItem(QueueItem):
 
         try:
             sickrage.srLogger.info("Beginning manual search for: [" + self.segment.prettyName() + "]")
-            self.started = True
-
             searchResult = searchProviders(self.show, [self.segment], True, self.downCurQuality)
-
             if searchResult:
                 # just use the first result for now
                 sickrage.srLogger.info("Downloading " + searchResult[0].name + " from " + searchResult[0].provider.name)
@@ -221,7 +217,6 @@ class BacklogQueueItem(QueueItem):
             try:
                 sickrage.srLogger.info("Beginning backlog search for: [" + self.show.name + "]")
                 searchResult = searchProviders(self.show, self.segment, False)
-
                 if searchResult:
                     for result in searchResult:
                         # just use the first result for now
@@ -252,11 +247,9 @@ class FailedQueueItem(QueueItem):
 
         try:
             for epObj in self.segment:
-
                 sickrage.srLogger.info("Marking episode as bad: [" + epObj.prettyName() + "]")
 
                 FailedHistory.markFailed(epObj)
-
                 (release, provider) = FailedHistory.findFailedRelease(epObj)
                 if release:
                     FailedHistory.logFailed(release)
@@ -268,7 +261,6 @@ class FailedQueueItem(QueueItem):
             # If it is wanted, self.downCurQuality doesnt matter
             # if it isnt wanted, we need to make sure to not overwrite the existing ep that we reverted to!
             searchResult = searchProviders(self.show, self.segment, True, False)
-
             if searchResult:
                 for result in searchResult:
                     # just use the first result for now
