@@ -22,21 +22,50 @@ from __future__ import unicode_literals
 import io
 import os
 import random
+import shelve
 import tempfile
+import threading
 import traceback
 import urllib2
 from _socket import timeout as SocketTimeout
+from contextlib import closing
 
 import cachecontrol
 import certifi
 import requests
-from cachecontrol.caches import FileCache
 from cachecontrol.heuristics import ExpiresAfter
 from requests_futures.sessions import FuturesSession
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
 from sickrage.core.webclient.useragents import USER_AGENTS
+
+
+class DBCache(object):
+    def __init__(self, filename):
+        self.filename = filename
+        self.lock = threading.Lock()
+
+    def get(self, key):
+        with closing(shelve.open(self.filename)) as cache:
+            if key in cache:
+                return cache.get(key)
+
+    def set(self, key, value):
+        with self.lock:
+            with closing(shelve.open(self.filename)) as cache:
+                cache.setdefault(key, value)
+
+    def delete(self, key):
+        with self.lock:
+            with closing(shelve.open(self.filename)) as cache:
+                if key in cache:
+                    del cache[key]
+
+    def clear(self):
+        with self.lock:
+            with closing(shelve.open(self.filename)) as cache:
+                cache.clear()
 
 class srFuturesSession(FuturesSession):
     def __init__(self):
@@ -72,7 +101,7 @@ class srFuturesSession(FuturesSession):
             if cache:
                 self.session = cachecontrol.CacheControl(
                     self.session,
-                    cache=FileCache(os.path.join(tempfile.gettempdir(), 'cachecontrol')),
+                    cache=DBCache(os.path.join(tempfile.gettempdir(), 'cachecontrol.db')),
                     heuristic=ExpiresAfter(days=7))
 
             # get result
