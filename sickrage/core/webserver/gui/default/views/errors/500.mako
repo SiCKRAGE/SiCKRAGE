@@ -1,7 +1,7 @@
 <%inherit file="../layouts/main.mako"/>
 
 <%block name="content">
-<h1 class="header">${header}</h1>
+
 <p>A mako error has occured.</p>
 <hr>
 <a href="#mako-error" class="btn btn-default" data-toggle="collapse">Show/Hide Error</a>

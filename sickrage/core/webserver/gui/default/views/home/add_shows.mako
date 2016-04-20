@@ -6,7 +6,7 @@
 %>
 <%block name="content">
 
-    <h1 class="header">${header}</h1>
+
     <div id="addShowPortal">
         <a href="/home/addShows/newShow/" id="btnNewShow" class="btn btn-large">
             <div class="button">

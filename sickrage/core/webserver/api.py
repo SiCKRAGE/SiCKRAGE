@@ -23,7 +23,6 @@ import collections
 import datetime
 import os
 import re
-import threading
 import traceback
 import urllib
 
@@ -137,7 +136,7 @@ class ApiHandler(RequestHandler):
             del kwargs["profile"]
 
         try:
-            outDict = self.async_call(_call_dispatcher, *args, **kwargs)
+            outDict = yield self.callback(_call_dispatcher, *args, **kwargs)
         except Exception as e:  # real internal error oohhh nooo :(
             sickrage.srCore.srLogger.error("API :: {}".format(e.message))
             errorData = {
@@ -152,12 +151,10 @@ class ApiHandler(RequestHandler):
         if 'outputType' in outDict:
             outputCallback = outputCallbackDict[outDict['outputType']]
 
-        result = outputCallback(outDict)
-        self.finish(result)
+        self.finish(outputCallback(outDict))
 
     @coroutine
-    def async_call(self, function, *args, **kwargs):
-        threading.currentThread().setName("API")
+    def callback(self, function, *args, **kwargs):
         return recursive_unicode(function(
             **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
                     recursive_unicode(kwargs.items())])

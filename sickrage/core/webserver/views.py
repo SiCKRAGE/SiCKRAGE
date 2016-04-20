@@ -98,13 +98,6 @@ class BaseHandler(RequestHandler):
         # start time
         self.startTime = time.time()
 
-    @coroutine
-    def async_call(self, function, **kwargs):
-        return recursive_unicode(function(
-            **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
-                    recursive_unicode(kwargs.items())])
-        ))
-
     def write_error(self, status_code, **kwargs):
         # handle 404 http errors
         if status_code == 404:
@@ -189,6 +182,13 @@ class BaseHandler(RequestHandler):
     def render(self, template_name, **kwargs):
         return self.render_string(template_name, **kwargs)
 
+    @coroutine
+    def callback(self, function, **kwargs):
+        return recursive_unicode(function(
+            **dict([(k, (v, ''.join(v))[isinstance(v, list) and len(v) == 1]) for k, v in
+                    recursive_unicode(kwargs.items())])
+        ))
+
 
 class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
@@ -201,9 +201,8 @@ class WebHandler(BaseHandler):
         method = getattr(self, self.request.path.strip('/').split('/')[::-1][0].replace('.', '_'),
                          getattr(self, 'index'))
 
-        result = yield self.async_call(method, **self.request.arguments)
+        result = yield self.callback(method, **self.request.arguments)
         self.finish(result)
-
 
 class LoginHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
@@ -212,11 +211,9 @@ class LoginHandler(BaseHandler):
     @coroutine
     def prepare(self, *args, **kwargs):
         try:
-            result = yield self.async_call(self.checkAuth)
+            result = yield self.callback(self.checkAuth)
             self.finish(result)
         except Exception:
-            sickrage.srCore.srLogger.debug(
-                'Failed doing webui login request [{}]: {}'.format(self.request.uri, traceback.format_exc()))
             raise HTTPError(404)
 
     def checkAuth(self):

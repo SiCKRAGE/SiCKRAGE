@@ -6,7 +6,7 @@
 %>
 <%block name="content">
 
-<h1 class="header">${header}</h1>
+
 <div id="ui-content">
     <h2 class="header">Scheduler</h2>
     <table id="schedulerStatusTable" class="tablesorter" width="100%">

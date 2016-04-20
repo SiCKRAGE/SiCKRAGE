@@ -13,7 +13,7 @@
 %>
 <%block name="content">
     <%namespace file="/includes/quality_defaults.mako" import="renderQualityPill"/>
-    <h1 class="header">${header}</h1>
+
     <div class="h2footer pull-right"><b>Limit:</b>
         <select name="history_limit" id="history_limit" class="form-control form-control-inline input-sm">
             <option value="10" ${('', 'selected="selected"')[limit == 10]}>10</option>

@@ -17,7 +17,7 @@
 </%block>
 <%block name="content">
 <%namespace file="/includes/quality_defaults.mako" import="renderQualityPill"/>
-<h1 class="header">${header}</h1>
+
 <div class="h2footer pull-right">
 % if layout == 'list':
     <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>

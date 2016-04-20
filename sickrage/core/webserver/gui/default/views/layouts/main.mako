@@ -1,4 +1,4 @@
-    <%!
+<%!
     import datetime
     import re
 
@@ -19,8 +19,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SickRage - VERSION:[${sickrage.srCore.VERSION}] - ${title}</title>
-
+    <title>SickRage - ${title}</title>
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -91,24 +90,25 @@
     <%block name="scripts" />
 
 </head>
-<body data-controller="${controller}" data-action="${action}">
 <nav class="navbar navbar-default navbar-fixed-top hidden-print" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1">
+                    data-target="#navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/home/" title="SiCKRAGE"><img alt="SiCKRAGE"
-                                                                        src="/images/logo.png"
-                                                                        style="width: 200px;height: 50px;"
-                                                                        class="img-responsive pull-left"/></a>
+            <a class="navbar-brand" href="/home/" title="SiCKRAGE">
+                <img alt="SiCKRAGE"
+                     src="/images/logo.png"
+                     style="width: 200px;height: 50px;"
+                     class="img-responsive pull-left"/>
+            </a>
         </div>
         % if current_user:
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="collapse navbar-collapse" id="navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
                         <a href="/home/" class="dropdown-toggle" aria-haspopup="true" data-toggle="dropdown"
@@ -207,22 +207,22 @@
 
                     <%
                         if sickrage.srCore.srConfig.NEWS_UNREAD:
-                                newsBadge = ' <span class="badge">'+str(sickrage.srCore.srConfig.NEWS_UNREAD)+'</span>'
+                                    newsBadge = ' <span class="badge">'+str(sickrage.srCore.srConfig.NEWS_UNREAD)+'</span>'
                         else:
-                                newsBadge = ''
+                                    newsBadge = ''
 
                         numCombined = numErrors + numWarnings + sickrage.srCore.srConfig.NEWS_UNREAD
                         if numCombined:
-                                if numErrors:
-                                    toolsBadgeClass = ' btn-danger'
-                                elif numWarnings:
-                                    toolsBadgeClass = ' btn-warning'
-                                else:
-                                    toolsBadgeClass = ''
+                                    if numErrors:
+                                        toolsBadgeClass = ' btn-danger'
+                                    elif numWarnings:
+                                        toolsBadgeClass = ' btn-warning'
+                                    else:
+                                        toolsBadgeClass = ''
 
-                                toolsBadge = ' <span class="badge'+toolsBadgeClass+'">'+str(numCombined)+'</span>'
+                                    toolsBadge = ' <span class="badge'+toolsBadgeClass+'">'+str(numCombined)+'</span>'
                         else:
-                                toolsBadge = ''
+                                    toolsBadge = ''
                     %>
 
                     <li id="NAVsystem" class="navbar-split dropdown${('', ' active')[topmenu == 'system']}">
@@ -305,15 +305,15 @@
         </div>
     % endif
 
-<div id="contentWrapper">
-    <div id="content">
-            <%block name="content" />
-    </div> <!-- /content -->
-</div> <!-- /contentWrapper -->
+<body data-controller="${controller}" data-action="${action}">
+<div style="padding-top: inherit" id="content">
+        <%block name="content" />
+</div>
+</body>
 
     % if current_user:
         <footer>
-            <div class="footer clearfix">
+            <div class="panel panel-default panel-footer footer clearfix">
                 <%
                     stats = TVShow.overall_stats()
                     ep_downloaded = stats['episodes']['downloaded']
@@ -352,5 +352,4 @@
             </div>
         </footer>
     % endif
-</body>
 </html>

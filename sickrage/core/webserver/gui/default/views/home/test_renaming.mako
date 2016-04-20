@@ -12,7 +12,7 @@
 %>
 <%block name="content">
 
-    <h1 class="header">${header}</h1>
+
     <input type="hidden" id="showID" value="${show.indexerid}"/>
     <h3>Preview of the proposed name changes</h3>
     <blockquote>

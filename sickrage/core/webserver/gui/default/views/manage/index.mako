@@ -8,7 +8,7 @@
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
 
-    <h1 class="header">${header}</h1>
+
     <form name="massUpdateForm" method="post" action="massUpdate">
 
         <table id="massUpdateTable" class="sickrageTable tablesorter" cellspacing="1" border="0" cellpadding="0">

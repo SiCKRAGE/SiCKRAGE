@@ -17,7 +17,7 @@ $("#subtitles_languages").tokenInput([${','.join("{\"id\": \"" + lang.opensubtit
 </%block>
 <%block name="content">
 
-<h1 class="header">${header}</h1>
+
 <div id="config">
 <div id="ui-content">
 <form id="configForm" action="saveSubtitles" method="post">

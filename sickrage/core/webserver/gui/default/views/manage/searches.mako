@@ -7,43 +7,51 @@
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
 %>
 <%block name="content">
-<div id="content800">
+    <div id="content800">
+        <div id="summary2" class="align-left">
+            <h4>Backlog Search:
+                % if not backlogRunning:
+                    <span style="color: red; ">Not in progress</span><br/>
+                % else:
+                ${('', 'Paused:')[bool(backlogPaused)]}<span style="color: green; ">Currently running</span><br/>
+                % endif
+            </h4>
+            <a class="btn" href="/manage/manageSearches/forceBacklog"><i class="icon-exclamation-sign"></i> Force</a>
+            <a class="btn" href="/manage/manageSearches/pauseBacklog?paused=${('1', '0')[bool(backlogPaused)]}"><i
+                    class="icon-${('paused', 'play')[bool(backlogPaused)]}"></i> ${('Pause', 'Unpause')[bool(backlogPaused)]}
+            </a>
+            <br/>
+            <br/>
 
-<h1 class="header">${header}</h1>
-<div id="summary2" class="align-left">
-<h3>Backlog Search:</h3>
-<a class="btn" href="/manage/manageSearches/forceBacklog"><i class="icon-exclamation-sign"></i> Force</a>
-<a class="btn" href="/manage/manageSearches/pauseBacklog?paused=${('1', '0')[bool(backlogPaused)]}"><i class="icon-${('paused', 'play')[bool(backlogPaused)]}"></i> ${('Pause', 'Unpause')[bool(backlogPaused)]}</a>
-% if not backlogRunning:
-    Not in progress<br>
-% else:
-    ${('', 'Paused:')[bool(backlogPaused)]}
-    Currently running<br>
-% endif
-<br>
+            <h4>
+                Daily
+                Search: ${('<span style="color: red; ">Not in progress</span>', '<span style="color: green; ">In Progress</span>')[dailySearchStatus]}
+                <br/>
+            </h4>
+            <a class="btn" href="/manage/manageSearches/forceSearch"><i class="icon-exclamation-sign"></i> Force</a>
+            <br/>
+            <br/>
 
-<h3>Daily Search:</h3>
-<a class="btn" href="/manage/manageSearches/forceSearch"><i class="icon-exclamation-sign"></i> Force</a>
-${('Not in progress', 'In Progress')[dailySearchStatus]}<br>
-<br>
+            <h4>Find Propers Search:
+                % if not sickrage.srCore.srConfig.DOWNLOAD_PROPERS:
+                    <span style="color: red; ">Propers search disabled</span><br>
+                % elif not findPropersStatus:
+                    <span style="color: red; ">Not in progress</span><br>
+                % else:
+                    <span style="color: green; ">In Progress</span><br>
+                % endif
+            </h4>
+            <a class="btn ${('disabled', '')[bool(sickrage.srCore.srConfig.DOWNLOAD_PROPERS)]}"
+               href="/manage/manageSearches/forceFindPropers"><i class="icon-exclamation-sign"></i> Force
+            </a>
+            <br/>
+            <br/>
 
-<h3>Find Propers Search:</h3>
-    <a class="btn ${('disabled', '')[bool(sickrage.srCore.srConfig.DOWNLOAD_PROPERS)]}"
-       href="/manage/manageSearches/forceFindPropers"><i class="icon-exclamation-sign"></i> Force</a>
-    % if not sickrage.srCore.srConfig.DOWNLOAD_PROPERS:
-    Propers search disabled <br>
-% elif not findPropersStatus:
-    Not in progress<br>
-% else:
-    In Progress<br>
-% endif
-<br>
-
-<h3>Search Queue:</h3>
-Backlog: <i>${queueLength['backlog']} pending items</i></br>
-Daily: <i>${queueLength['daily']} pending items</i></br>
-Manual: <i>${queueLength['manual']} pending items</i></br>
-Failed: <i>${queueLength['failed']} pending items</i></br>
-</div>
-</div>
+            <h4>Search Queue:</h4>
+            Backlog: <i>${queueLength['backlog']} pending items</i><br/>
+            Daily: <i>${queueLength['daily']} pending items</i><br/>
+            Manual: <i>${queueLength['manual']} pending items</i><br/>
+            Failed: <i>${queueLength['failed']} pending items</i><br/>
+        </div>
+    </div>
 </%block>

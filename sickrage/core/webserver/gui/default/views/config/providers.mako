@@ -6,7 +6,7 @@
     from sickrage.core.helpers import anon_url
 %>
 <%block name="content">
-    <h1 class="header">${header}</h1>
+
 
     <script type="text/javascript">
         $(document).ready(function () {

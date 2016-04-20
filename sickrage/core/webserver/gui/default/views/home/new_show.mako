@@ -5,7 +5,7 @@
     from sickrage.indexers import srIndexerApi
 %>
 <%block name="content">
-    <h1 class="header">${header}</h1>
+
     <div id="newShowPortal">
         <form id="addShowForm" class="form-inline" method="post" action="/home/addShows/addNewShow">
             <h1>Find a show</h1>

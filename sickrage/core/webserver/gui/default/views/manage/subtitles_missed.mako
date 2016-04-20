@@ -8,7 +8,7 @@
 <%block name="content">
 <div id="content960">
 
-<h1 class="header">${header}</h1>
+
 % if whichSubs:
     <% subsLanguage = subtitle_searcher.fromietf(whichSubs).name if not whichSubs == 'all' else 'All' %>
 % endif

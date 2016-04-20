@@ -10,7 +10,7 @@
 %>
 <%block name="content">
 
-    <h1 class="header">${header}</h1>
+
     <div class="h2footer pull-right"><b>Limit:</b>
         <select name="limit" id="limit" class="form-control form-control-inline input-sm">
             <option value="100" ${('', 'selected="selected"')[limit == '100']}>100</option>

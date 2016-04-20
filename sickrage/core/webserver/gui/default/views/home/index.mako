@@ -14,7 +14,7 @@
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
 
-    <h1 class="header">${header}</h1>
+
     <div id="HomeLayout" class="pull-right hidden-print" style="margin-top: -40px;">
         % if sickrage.srCore.srConfig.HOME_LAYOUT != 'poster':
             <button id="popover" type="button" class="btn btn-inline">Select Columns <b class="caret"></b></button>

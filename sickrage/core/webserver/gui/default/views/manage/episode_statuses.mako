@@ -7,7 +7,7 @@
 <%block name="content">
 <div id="content960">
 
-<h1 class="header">${header}</h1>
+
 % if not whichStatus or (whichStatus and not ep_counts):
     % if whichStatus:
         <h2>None of your episodes have status ${statusStrings[int(whichStatus)]}</h2>

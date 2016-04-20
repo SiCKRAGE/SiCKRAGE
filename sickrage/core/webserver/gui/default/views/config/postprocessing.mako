@@ -11,7 +11,7 @@
 
 <%block name="content">
 <div id="content960">
-<h1 class="header">${header}</h1>
+
 <div id="config">
     <div id="ui-content">
         <form id="configForm" action="savePostProcessing" method="post">

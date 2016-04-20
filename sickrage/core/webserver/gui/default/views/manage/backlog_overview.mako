@@ -10,7 +10,7 @@
 %>
 <%block name="content">
 
-<h1 class="header">${header}</h1><div id="content960">
+<div id="content960">
 <% totalWanted = 0 %>
 <% totalQual = 0 %>
 

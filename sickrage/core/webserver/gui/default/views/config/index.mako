@@ -7,7 +7,7 @@
     from sickrage.core.helpers import anon_url
 %>
 <%block name="content">
-<h1 class="header">${header}</h1>
+
 <div id="ui-content">
 <table class="infoTable" cellspacing="1" border="0" cellpadding="0" width="100%">
     <tr>

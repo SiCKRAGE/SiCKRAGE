@@ -5,7 +5,7 @@
 <%block name="content">
 <div id="content800">
 
-<h1 class="header">${header}</h1>
+
 <div id="postProcess">
     <form name="processForm" method="post" action="processEpisode" style="line-height: 40px;">
     <table>

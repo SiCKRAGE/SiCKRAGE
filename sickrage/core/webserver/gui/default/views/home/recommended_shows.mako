@@ -4,7 +4,7 @@
 %>
 <%block name="content">
 
-<h1 class="header">${header}</h1>
+
 <div id="tabs">
     <ul>
         <li><a href="#tabs-1">Manage Directories</a></li>

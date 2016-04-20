@@ -11,7 +11,7 @@
 </%block>
 
 <%block name="content">
-    <h1 class="header">${header}</h1>
+
     <div id="show">
 
         <div id="ui-content">

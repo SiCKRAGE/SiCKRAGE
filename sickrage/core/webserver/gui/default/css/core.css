@@ -16,10 +16,6 @@ DEFAULTS
     margin-bottom: -15px;
 }
 
-#contentWrapper {
-    /*	background: url("../images/bg.png") repeat 0 0 transparent; */
-}
-
 [class^="icon-"],
 [class*=" icon-"] {
     background-image: url("../images/glyphicons-halflings.png");
@@ -1924,7 +1920,7 @@ bootstrap Overrides
 ========================================================================== */
 
 body {
-    padding-top: 60px;
+    padding-top: 20px;
     overflow-y: scroll;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #000;
